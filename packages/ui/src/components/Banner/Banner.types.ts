@@ -13,7 +13,10 @@ export type BannerKind =
   /** @deprecated Use `Disclosure`. A mandatory honesty line is document content in the reading flow, not a dismissible operator strip. */
   | 'disclaimer'
   | 'cap'
-  | 'bundle';
+  | 'bundle'
+  /** A plain information line — "View only — Rajesh or Operations edit." The "i" glyph on the info
+   *  tone, never dismissible: a fact about what is on screen is not tapped away. */
+  | 'info';
 
 export type BannerTone = 'danger' | 'warning' | 'info' | 'success' | 'accent' | 'neutral';
 
@@ -50,10 +53,10 @@ export interface BannerProps {
   action?: ReactNode;
   onDismiss?: () => void;
   /**
-   * Opt-in only. **Ignored for seven kinds** — `validation`, `data-integrity`, `below-cost`, and the
-   * billing/lifecycle three, `state`, `dunning` and `cap`, plus the superseded `disclaimer`. None of
-   * them stops being true because a user tapped the cross, and `SCR-SHELL-06`'s banner is `BM-32`'s
-   * **guaranteed way back** — a dismissible way back is not one.
+   * Opt-in only. **Ignored for eight kinds** — `validation`, `data-integrity`, `below-cost`, the
+   * billing/lifecycle three, `state`, `dunning` and `cap`, `info`, and the superseded `disclaimer`.
+   * None of them stops being true because a user tapped the cross, and `SCR-SHELL-06`'s banner is
+   * `BM-32`'s **guaranteed way back** — a dismissible way back is not one.
    */
   dismissible?: boolean;
   /** Override the kind's tone. Rarely right. */

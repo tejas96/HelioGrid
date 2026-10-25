@@ -207,9 +207,10 @@
   border: none;
   outline: none;
   background: transparent;
-  font-family: var(--font-mono);
+  /* `Input`'s face, as `NumberField`'s: a typed end reads as what was typed. */
+  font-family: var(--font-sans);
   font-size: 14px;
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-regular);
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
   padding: 0;

@@ -17,18 +17,23 @@ const styles = StyleSheet.create({
   },
   boxFunctional: { height: 40 },
   boxSteppers: { paddingHorizontal: 0 },
+  /* `Input`'s face: a typed figure reads as what was typed, from where the caret starts, and its
+     unit closes the field at the end. */
   input: {
     flex: 1,
     minWidth: 0,
     alignSelf: 'stretch',
-    textAlign: 'right',
-    fontFamily: theme.type.families.mono,
+    textAlign: 'left',
+    fontFamily: theme.type.families.sans,
     fontSize: theme.type.field.value,
-    fontWeight: '700',
+    fontWeight: '400',
+    fontVariant: ['tabular-nums'],
     color: theme.colors['text-primary'],
     padding: 0,
   },
   inputSteppers: { textAlign: 'center' },
+  /* An amount is money, and money is mono wherever it is read (`F7-09`). */
+  inputCurrency: { fontFamily: theme.type.families.mono },
   step: { width: 44, flexShrink: 0, alignSelf: 'stretch' },
   unit: { paddingRight: theme.spacing['sp-1'] },
 });
@@ -80,7 +85,12 @@ export function NumberFieldBox({
         </Pressable>
       ) : null}
       <TextInput
-        style={[styles.input, steppers ? styles.inputSteppers : null, fieldBoxText(disabled)]}
+        style={[
+          styles.input,
+          steppers ? styles.inputSteppers : null,
+          currency ? styles.inputCurrency : null,
+          fieldBoxText(disabled),
+        ]}
         keyboardType="decimal-pad"
         value={draft.draft}
         editable={!disabled}

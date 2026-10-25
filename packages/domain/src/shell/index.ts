@@ -26,6 +26,7 @@ export {
   explainerPageAfter,
   explainerView,
 } from './explainer';
+export type { FilterPanelWords, FilterSetWords } from './filter-words';
 export type { ComposedHome } from './home';
 export { composedHome, HOME_LADDER, homeFor, homesOf } from './home';
 export type {

@@ -31,9 +31,11 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     alignSelf: 'stretch',
-    fontFamily: theme.type.families.mono,
+    // `Input`'s face, as `NumberField`'s: a typed end reads as what was typed.
+    fontFamily: theme.type.families.sans,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '400',
+    fontVariant: ['tabular-nums'],
     color: theme.colors['text-primary'],
     padding: 0,
   },

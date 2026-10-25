@@ -27,6 +27,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 - tapping an open header collapses it (MS4-02)
 - Next states the blocking reason in order (MS4-03)
 - Given a missing product, Then browse/datasheet-upload/manual all work in-flow, with datasheet extraction reviewed before commit; given a selected component, Then Enter specs manually opens pre-filled with its specs and blank certifications and price, and the save is a new own SKU (MS4-06)
+- Given a person with `F2.M01.add-own-catalog-items` (the holders of `onboarding.add_own_catalog_items` in `packages/domain/src/authz/onboarding.ts`) or `F2.M01.manage-catalog`, Then the picker shows inline add; given neither grant, Then inline add is absent (permissions; moved from `T-M01-015`)
 - Given a tenant-entered SKU, Then its provenance shows on the row and travels to compare and BOM (MS4-07)
 - Given an on-order unit, Then the availability badge shows in the picker, not only in compare (MS4-08)
 - Given an IN-market tenant, Then ALMM/DCR flags show and filter as pack-driven data (MS4-09)

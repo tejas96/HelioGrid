@@ -66,3 +66,15 @@ export function percentToBasisPoints(percent: string): BasisPoints {
 export function basisPointsToPercent(rate: number): string {
   return `${Math.floor(rate / 100)}.${String(rate % 100).padStart(2, '0')}`;
 }
+
+/**
+ * A percent as a person typed it — `5`, `5.5` — as the wire's two-decimal text (`"5.00"`). Text
+ * that is no percent of up to two decimals comes back as typed, so the server's refusal names it.
+ */
+export function percentWireOf(typed: string): string {
+  const text = typed.trim();
+  const match = /^(\d{1,3})(?:\.(\d{0,2}))?$/.exec(text);
+  if (match === null) return text;
+  const [, whole = '', fraction = ''] = match;
+  return `${whole}.${fraction.padEnd(2, '0')}`;
+}

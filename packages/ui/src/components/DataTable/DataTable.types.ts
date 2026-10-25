@@ -3,9 +3,9 @@ import type { ReactNode } from 'react';
 import type { PendingActionSpec } from '../PendingAction';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { SurfaceState } from '../UnavailableNote';
-import type { DataTableColumn } from './DataTableColumn.types';
+import type { DataTableColumn, DataTableLeading } from './DataTableColumn.types';
 
-export type { DataTableColumn };
+export type { DataTableColumn, DataTableLeading };
 
 /**
  * **A provenance statement, as a caller may write it**: a bare tier (`"derived"`) or the full
@@ -216,3 +216,30 @@ type DataTableRowActions<Row> =
 
 export type DataTableProps<Row = Record<string, unknown>> = DataTableBaseProps<Row> &
   DataTableRowActions<Row>;
+
+/** The span of records one page shows: "1–20 of 342" is `{ from: 1, to: 20, count: 342 }`. */
+export interface PageRange {
+  from: number;
+  to: number;
+  count: number;
+}
+
+/**
+ * **The pager, on its own** (`D268`): the readout and the two steps `DataTable` draws under its
+ * records, for a list of records that is not a `DataTable` (`SCR-M01-16`'s caller list). Each step
+ * is a 44px target and is disabled at its end.
+ */
+export interface PaginationProps {
+  /** Zero-based page index. */
+  page: number;
+  pageSize: number;
+  /** **How many records exist** — the readout's denominator. */
+  rowCount: number;
+  onPageChange?: (page: number) => void;
+  /** The step back's name, spoken only — the caller's words. */
+  previousLabel: string;
+  /** The step forward's name, spoken only — the caller's words. */
+  nextLabel: string;
+  /** The readout's words for the span shown — "1–20 of 342" — from `packages/i18n`. */
+  readout: (range: PageRange) => string;
+}

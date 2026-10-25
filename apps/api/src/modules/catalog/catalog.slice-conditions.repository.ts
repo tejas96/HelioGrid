@@ -1,10 +1,12 @@
 import type {
+  CatalogSort,
   ComponentKind,
   ImportProductName,
   PanelTechnology,
   ResolvedCatalogItem,
 } from '@heliogrid/domain';
 import { type SQL, sql } from 'drizzle-orm';
+import { rateAmountInForce } from './catalog.rates.repository';
 
 // The predicates the market slice's union narrows by (`catalog.slice.repository.ts`), one table at
 // a time: `ci` is the platform's item table, `t` the tenant's own.
@@ -14,12 +16,22 @@ export interface SliceFilter {
   readonly terms: string | null;
   readonly source?: ResolvedCatalogItem['source'];
   readonly kind?: ComponentKind;
+  /** Any of these kinds; wins over `kind`. */
+  readonly kinds?: readonly ComponentKind[];
+  /** Keep what the tenant hid from its pickers — Catalog settings lists it (`M01-37`). */
+  readonly includeHidden?: boolean;
+  /** Only what this tenant changed: its own SKUs, and platform items its override sets something on. */
+  readonly changed?: boolean;
+  /** The reader sees money, so a price or a tax counts as a change; else only hide and prefer do. */
+  readonly moneyVisible?: boolean;
   readonly wattMin?: number;
   readonly wattMax?: number;
   readonly technology?: PanelTechnology;
   readonly schemes?: readonly string[];
   readonly preferred?: boolean;
   readonly archived: boolean;
+  /** The list's order; `preferred` when unset. */
+  readonly sort?: CatalogSort;
 }
 
 /**
@@ -32,10 +44,11 @@ export function listConditions(filter: SliceFilter, table: 'platform' | 'own'): 
     sql`${alias}.archived = ${filter.archived}`,
     ...panelSpecConditions(alias, filter),
   ];
-  if (table === 'platform') conditions.push(sql`coalesce(o.hidden, false) = false`);
-  if (filter.kind !== undefined) {
-    conditions.push(sql`${alias}.component_kind = ${filter.kind}::component_kind`);
+  if (table === 'platform' && filter.includeHidden !== true && filter.changed !== true) {
+    conditions.push(sql`coalesce(o.hidden, false) = false`);
   }
+  const kinds = filter.kinds ?? (filter.kind === undefined ? [] : [filter.kind]);
+  if (kinds.length > 0) conditions.push(kindIn(alias, kinds));
   if (filter.terms !== null) {
     conditions.push(sql`${textOf(alias)} @@ to_tsquery('simple', ${filter.terms})`);
   }
@@ -49,6 +62,24 @@ export function listConditions(filter: SliceFilter, table: 'platform' | 'own'): 
     );
   }
   return conditions;
+}
+
+/**
+ * A platform item this tenant changed: its override sets *hidden* or *preferred*, and — for a
+ * reader who sees money — a price in force or a tax rate. A reader the wire hides money from must
+ * not learn which items were priced by which come back. An override record that sets nothing is
+ * not a change. Every own SKU is one already.
+ */
+export function overrideSetsSomething(tenantId: string, pricedOn: string, money: boolean): SQL {
+  const flags = sql`coalesce(o.hidden, false) or coalesce(o.preferred, false)`;
+  if (!money) return sql`(${flags})`;
+  return sql`(${flags} or o.tax_pct is not null
+    or ${rateAmountInForce(tenantId, 'override', sql`o.id`, pricedOn)} is not null)`;
+}
+
+/** One kind or several, as one array parameter the kind index still serves. */
+function kindIn(alias: SQL, kinds: readonly ComponentKind[]): SQL {
+  return sql`${alias}.component_kind = any(${`{${kinds.join(',')}}`}::component_kind[])`;
 }
 
 function platformHolds(schemes: readonly string[]): SQL {

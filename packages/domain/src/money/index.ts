@@ -7,6 +7,7 @@ export {
   basisPoints,
   basisPointsToPercent,
   percentToBasisPoints,
+  percentWireOf,
   type Share,
 } from './basis-points';
 export type {

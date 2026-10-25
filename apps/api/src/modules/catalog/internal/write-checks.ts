@@ -1,5 +1,5 @@
 import type { RateWrite, RoleSet } from '@heliogrid/contracts';
-import { type CertificationSchemesPack, can, type FormatPack, limitsOn } from '@heliogrid/domain';
+import { type CertificationSchemesPack, type FormatPack, holdsOutright } from '@heliogrid/domain';
 import { minorUnitsOfDecimal, minorUnitsToDecimal } from '@heliogrid/domain/server';
 import {
   ConflictException,
@@ -89,7 +89,7 @@ export const MANAGE_CATALOG = 'onboarding.manage_catalog';
 
 /** A write is the outright grant's: a limited one — Finance's "view prices & margins" — reads only. */
 export function admitWrite(roles: RoleSet): void {
-  if (!can(roles, MANAGE_CATALOG) || limitsOn(roles, MANAGE_CATALOG).length > 0) {
+  if (!holdsOutright(roles, MANAGE_CATALOG)) {
     throw new ForbiddenException('Your role reads the catalog and does not change it.');
   }
 }

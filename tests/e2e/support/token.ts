@@ -45,3 +45,25 @@ export async function resolvedShadow(page: Page, token: `--${string}`): Promise<
   if (shadow === 'none') throw new Error(`${token} resolves to nothing on this page`);
   return shadow;
 }
+
+/**
+ * A theme font token (`--font-*`, `--fw-*`) as the page resolves it — so a spec reads a face or a
+ * weight, never types one.
+ */
+export async function resolvedFont(
+  page: Page,
+  property: 'fontFamily' | 'fontWeight',
+  token: `--${string}`,
+): Promise<string> {
+  return page.evaluate(
+    ([prop, name]) => {
+      const probe = document.createElement('div');
+      probe.style[prop] = `var(${name})`;
+      document.body.append(probe);
+      const value = getComputedStyle(probe)[prop];
+      probe.remove();
+      return value;
+    },
+    [property, token] as const,
+  );
+}

@@ -1,5 +1,6 @@
 import { type AuditRepository, createAuditRepository } from './audit/repository';
 import { type AuthRepository, createAuthRepository } from './auth/repository';
+import { type CatalogRepository, createCatalogRepository } from './catalog/repository';
 import { createApiClient } from './client/client';
 import { createFileRepository, type FileRepository } from './file/repository';
 import { createHealthRepository, type HealthRepository } from './health/repository';
@@ -10,6 +11,7 @@ import {
   type NotificationRepository,
 } from './notification/repository';
 import { createOnboardingRepository, type OnboardingRepository } from './onboarding/repository';
+import { createPriceBookRepository, type PriceBookRepository } from './price-book/repository';
 import { createSettingsRepository, type SettingsRepository } from './settings/repository';
 import { createTenantRepository, type TenantRepository } from './tenant/repository';
 import type { TokenStorage } from './transport/storage';
@@ -27,11 +29,13 @@ export interface Repositories {
   audit: AuditRepository;
   notification: NotificationRepository;
   auth: AuthRepository;
+  catalog: CatalogRepository;
   file: FileRepository;
   health: HealthRepository;
   invitation: InvitationRepository;
   market: MarketRepository;
   onboarding: OnboardingRepository;
+  priceBook: PriceBookRepository;
   settings: SettingsRepository;
   tenant: TenantRepository;
   user: UserRepository;
@@ -81,11 +85,13 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
     audit: createAuditRepository(api),
     notification: createNotificationRepository(api),
     auth: createAuthRepository(api),
+    catalog: createCatalogRepository(api),
     file: createFileRepository(api),
     health: createHealthRepository(api),
     invitation: createInvitationRepository(api),
     market: createMarketRepository(api),
     onboarding: createOnboardingRepository(api),
+    priceBook: createPriceBookRepository(api),
     settings: createSettingsRepository(api),
     tenant: createTenantRepository(api),
     user: createUserRepository(api),

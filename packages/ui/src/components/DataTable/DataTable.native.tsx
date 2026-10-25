@@ -4,7 +4,12 @@ import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
-import { DATA_TABLE_STACK_BELOW, showsMessage, sortRows } from './DataTable.logic';
+import {
+  DATA_TABLE_STACK_BELOW,
+  showsMessage,
+  sortRows,
+  TABLE_PAGER_WORDS,
+} from './DataTable.logic';
 import type { DataTableProps } from './DataTable.types';
 import { Pagination, SelectionBar } from './DataTableChrome.native';
 import { DataTableGrid } from './DataTableGrid.native';
@@ -170,6 +175,7 @@ export function DataTable<Row = Record<string, unknown>>(props: NativeDataTableP
           pageSize={pageSize}
           rowCount={rowCount ?? rows.length}
           onPageChange={onPageChange}
+          {...TABLE_PAGER_WORDS}
         />
       ) : null}
     </View>

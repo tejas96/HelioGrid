@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
+import { pageWindow } from './DataTable.logic';
+import type { PaginationProps } from './DataTable.types';
 
 /* THE TICK IS THE SYSTEM `Checkbox` (see `DataTableHead`, `DataTableBodyRow`, `DataTableCard`).
    A private `SelectBox` lived here behind the note "until the forms Checkbox folder lands"; the
@@ -47,20 +49,17 @@ export function SelectionBar({
   );
 }
 
+/** The pager: the span shown, then a step back and a step forward, each disabled at its end. */
 export function Pagination({
   page,
   pageSize,
   rowCount,
   onPageChange,
-}: {
-  page: number;
-  pageSize: number;
-  rowCount: number;
-  onPageChange?: (page: number) => void;
-}) {
-  const from = rowCount === 0 ? 0 : page * pageSize + 1;
-  const to = Math.min(rowCount, (page + 1) * pageSize);
-  const last = Math.max(0, Math.ceil(rowCount / pageSize) - 1);
+  previousLabel,
+  nextLabel,
+  readout,
+}: PaginationProps) {
+  const { range, last } = pageWindow(page, pageSize, rowCount);
   const step = (direction: number, label: string, disabled: boolean) => (
     <button
       type="button"
@@ -85,12 +84,10 @@ export function Pagination({
   );
   return (
     <div className="hg-dt-pagination">
-      <span className="hg-dt-pagination-readout">
-        {from}–{to} of {rowCount}
-      </span>
+      <span className="hg-dt-pagination-readout">{readout(range)}</span>
       <span className="hg-dt-pagination-steps">
-        {step(-1, 'Previous page', page <= 0)}
-        {step(1, 'Next page', page >= last)}
+        {step(-1, previousLabel, page <= 0)}
+        {step(1, nextLabel, page >= last)}
       </span>
     </div>
   );

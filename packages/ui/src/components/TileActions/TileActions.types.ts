@@ -14,6 +14,11 @@ export interface TileActionProps {
   label: string;
   /** Word shown while on — "Preferred". Falls back to `label`. */
   onLabel?: string;
+  /**
+   * The act's whole name for a screen reader where the word alone repeats down a list —
+   * *Prefer Adani Solar AS-7-545*. Without it the shown word is the name.
+   */
+  spokenLabel?: string;
   /** Pass to make it a toggle: on = near-black pill, inverse words, announced as pressed. */
   on?: boolean;
   onClick?: () => void;

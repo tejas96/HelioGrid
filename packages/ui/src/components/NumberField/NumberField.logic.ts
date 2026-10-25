@@ -1,3 +1,4 @@
+import type { MarketFormat } from '../../utils/format';
 /**
  * NumberField's commit rules, once, for both platforms — MS12-26 / MS3-26.
  *
@@ -16,6 +17,16 @@
 import type { OutOfRangeMode } from './NumberField.types';
 
 /** The edited representation. Editing is always a plain number — formatting never leaks in; an unset field edits as nothing. */
+/**
+ * A money figure while its field rests: whole rupees as the screen writes them, paise kept — to the
+ * minor unit — wherever the figure has them, so the field never reads a rounded amount.
+ */
+export function restingMoney(format: Pick<MarketFormat, 'money' | 'pack'>, figure: number): string {
+  return format.money(figure, {
+    fractionDigits: Number.isInteger(figure) ? 0 : format.pack.minorUnitDigits,
+  });
+}
+
 export function displayNumber(value: number | undefined): string {
   return value === undefined ? '' : String(value);
 }

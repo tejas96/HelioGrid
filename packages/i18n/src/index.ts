@@ -31,6 +31,43 @@ export {
   grantLineWords,
 } from './copy/assign-roles';
 export { shownInNote } from './copy/authored-content';
+export { catalogAttributionRowOf, catalogAttributionWords } from './copy/catalog-attribution';
+export { CATALOG_EDITOR, releaseChangeWord } from './copy/catalog-editor';
+export type { CatalogStill } from './copy/catalog-settings';
+export {
+  CATALOG_SETTINGS,
+  catalogEditFailed,
+  catalogKind,
+  catalogKinds,
+  catalogLayerWord,
+  catalogNoSchemeFlag,
+  catalogPriceFrom,
+  catalogProvenance,
+  catalogSort,
+  catalogSpecLine,
+  catalogTechnology,
+  catalogViewOnly,
+} from './copy/catalog-settings';
+export type { CatalogFormats, CatalogItemsInput, CatalogRowAct } from './copy/catalog-views';
+export {
+  catalogActToast,
+  catalogEditedItemOf,
+  catalogItemsViewOf,
+  catalogPublishProblem,
+  catalogPublishView,
+  catalogReleaseChangesOf,
+  catalogRowOf,
+  catalogRowStatusWords,
+} from './copy/catalog-views';
+export type { CatalogListFacts, CatalogRowFacts } from './copy/catalog-words';
+export {
+  catalogEditorChips,
+  catalogItemsWords,
+  catalogPriceEditorWords,
+  catalogReleaseStripWords,
+  catalogReleaseWords,
+  catalogRowWords,
+} from './copy/catalog-words';
 export type { CompanyLogoWordFacts, CompanyLogoWords } from './copy/company-logo';
 export { COMPANY_LOGO, companyLogoWords } from './copy/company-logo';
 export {
@@ -69,6 +106,7 @@ export { BASIS_LINE_WORD } from './copy/document-basis';
 export { energySourceLabel } from './copy/energy-source';
 export type { ExplainerWords } from './copy/explainer';
 export { explainerPagerWords } from './copy/explainer';
+export { FILTER_PANEL, filterPanelWords } from './copy/filter-panel';
 export type { FirstRunProfileFacts, FirstRunProfileWords } from './copy/first-run-profile';
 export { FIRST_RUN_PROFILE, firstRunProfileWords } from './copy/first-run-profile';
 export { freshnessLabel } from './copy/freshness';
@@ -102,6 +140,17 @@ export {
   showOlderLabel,
   TYPE_GROUP_NAME,
 } from './copy/notifications';
+export {
+  catalogRatesWords,
+  catalogVersionWords,
+  PRICE_BOOK,
+  priceBookStripWords,
+  rateBasisWord,
+  rateSheetWords,
+  versionRatesOf,
+  versionRowWords,
+  versionSummaryOf,
+} from './copy/price-book';
 export type {
   ProfilePreferencesWordFacts,
   ProfilePreferencesWords,

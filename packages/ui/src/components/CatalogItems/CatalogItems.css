@@ -1,0 +1,164 @@
+/* CatalogItems — Catalog settings' Items panel and the strip both panels open with (`SCR-M01-15`).
+   The panel sizes itself from its own room: beside the 1536 settings list it has about 1100, on a
+   phone 343 (`CATALOG_WIDE_FROM` decides which answer the markup draws). */
+
+.hg-cat-items {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-cat-items[data-wide="true"] {
+  gap: var(--sp-4);
+}
+
+/* ── the strip ─────────────────────────────────────────────────────────────── */
+
+/* The strip is a tile: its fill is `Ground`'s, through `Card`. The board's tight strip (pad 10/12,
+   radius 18) on the nearest steps of the scale. */
+.hg-card[data-density="functional"].hg-cat-strip {
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+}
+
+.hg-cat-strip-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-cat-strip-dot {
+  flex-shrink: 0;
+  width: var(--sp-2);
+  height: var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--mark-subtle);
+}
+
+.hg-cat-strip-dot[data-live="true"] {
+  background: var(--success);
+}
+
+.hg-pressable.hg-cat-strip-open {
+  align-items: stretch;
+  justify-content: center;
+  text-align: left;
+  background: transparent;
+}
+
+.hg-cat-strip-row:focus {
+  outline: none;
+}
+
+.hg-cat-strip-row:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-cat-strip-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-cat-strip-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+}
+
+.hg-cat-strip-act {
+  flex-shrink: 0;
+}
+
+/* ── search, sort and kinds ───────────────────────────────────────────────── */
+
+.hg-cat-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-cat-search-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-cat-search {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-cat-search-row > :not(.hg-cat-search) {
+  flex-shrink: 0;
+}
+
+.hg-cat-kinds {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+/* ── the list ─────────────────────────────────────────────────────────────── */
+
+.hg-cat-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+/* A long name keeps the row to one line; its whole text stays in the row's spoken name. */
+.hg-cat-items[data-wide="true"] .hg-cat-name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hg-cat-figure {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-cat-verified,
+.hg-cat-badge-glyph {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.hg-cat-what {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-cat-badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+
+/* Two 44px acts, side by side, never shrunk by the row (brief decision 5). */
+.hg-cat-acts {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: var(--sp-1);
+}
+
+/* The phone's growing list needs a foot to watch even when nothing waits in it. */
+.hg-cat-more {
+  min-height: var(--sp-1);
+}

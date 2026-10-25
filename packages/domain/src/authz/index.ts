@@ -23,6 +23,7 @@ export type {
 export { VISIBILITY_DOMAINS } from './cells';
 export type { GrantLine } from './grant-line';
 export { grantLine, isCovered } from './grant-line';
+export { holdsOutright } from './outright';
 export { can, grantedCapabilities, limitsOn, visibilityIn } from './policy';
 export type { ReferenceLine, ReferenceRow, ReferenceScope, RoleReference } from './reference';
 export {

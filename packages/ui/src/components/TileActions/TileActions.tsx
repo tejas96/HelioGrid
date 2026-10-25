@@ -23,6 +23,7 @@ export function TileAction({
   icon,
   label,
   onLabel,
+  spokenLabel,
   on,
   onClick,
   disabled = false,
@@ -36,6 +37,7 @@ export function TileAction({
       style={style}
       onPress={onClick}
       disabled={disabled}
+      accessibilityLabel={spokenLabel}
       accessibilityState={on === undefined ? undefined : { selected: on }}
     >
       <span

@@ -188,6 +188,7 @@ are the specification.
 `docs/ux/briefs/SCR-M06-10-builder-step-8-components.md`; they are the specification.
 
 **DONE WHEN:**
+- Given a person with `F2.M01.add-own-catalog-items` (the holders of `onboarding.add_own_catalog_items` in `packages/domain/src/authz/onboarding.ts`) or `F2.M01.manage-catalog`, when they open the builder's component picker, then inline add is present; given neither grant, then it is absent (permissions; moved from `T-M01-015`).
 - Given step 8, when it renders, then it is the mandatory-components surface of §M06.5 and its picker is `modules/M05` §M05.6's pattern — no second picker, no restated definition (M06-14; M06-27, M06-28).
 - Given a Path B proposal with no components, when step 8 renders, then all five sections show Empty, the counter reads "0/5", and Generate blocks jumping here (M06-27).
 - Given a product missing from the resolved catalog mid-pick, when the rep invokes add-in-flow, then single form, datasheet-PDF and spreadsheet-import paths are offered inside the builder, the created SKU is picked in place, and the flow never leaves step 8 (M06-28).

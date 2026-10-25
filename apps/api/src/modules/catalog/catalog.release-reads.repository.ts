@@ -164,6 +164,52 @@ function lineOf(row: {
   };
 }
 
+/** What a line's item is called now: its kind, brand and model, by line key. */
+export interface NamedItem {
+  readonly kind: ComponentKind;
+  readonly brand: string;
+  readonly model: string;
+}
+
+/**
+ * The items a set of lines names, read from the same two tables the detail's named read joins —
+ * an override's line names its platform item, an own SKU's line the SKU — keyed as
+ * `catalog.releases.repository.ts` keys a line (`platform:<id>`, `own:<id>`).
+ */
+export async function namedItems(
+  tx: TenantScopedDb,
+  tenantId: string,
+  items: readonly {
+    readonly catalogItemId: string | null;
+    readonly tenantCatalogItemId: string | null;
+  }[],
+): Promise<Map<string, NamedItem>> {
+  const named = new Map<string, NamedItem>();
+  const platformIds = items.flatMap((item) => item.catalogItemId ?? []);
+  const ownIds = items.flatMap((item) => item.tenantCatalogItemId ?? []);
+  const columns = (table: typeof catalogItem | typeof tenantCatalogItem) => ({
+    id: table.id,
+    kind: table.componentKind,
+    brand: table.brand,
+    model: table.model,
+  });
+  if (platformIds.length > 0) {
+    const rows = await tx
+      .select(columns(catalogItem))
+      .from(catalogItem)
+      .where(inArray(catalogItem.id, platformIds));
+    for (const { id, ...item } of rows) named.set(`platform:${id}`, item);
+  }
+  if (ownIds.length > 0) {
+    const rows = await tx
+      .select(columns(tenantCatalogItem))
+      .from(tenantCatalogItem)
+      .where(and(eq(tenantCatalogItem.tenantId, tenantId), inArray(tenantCatalogItem.id, ownIds)));
+    for (const { id, ...item } of rows) named.set(`own:${id}`, item);
+  }
+  return named;
+}
+
 /** The heads with their lines counted by kind, in ONE grouped read for the page. */
 async function countedHeads(
   tx: TenantScopedDb,

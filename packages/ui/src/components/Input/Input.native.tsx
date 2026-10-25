@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
  */
 export function Input({
   label,
+  labelSpokenOnly = false,
   value,
   onChange,
   placeholder,
@@ -118,7 +119,7 @@ export function Input({
 
   return (
     <View style={[styles.column, style]}>
-      {label === undefined ? null : (
+      {label === undefined || labelSpokenOnly ? null : (
         <Text variant="field-label" color="secondary">
           {label}
         </Text>

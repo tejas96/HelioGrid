@@ -5,7 +5,7 @@ import {
   tenantCatalogOverride,
 } from '@heliogrid/db';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, count, desc, eq, gt, inArray, lte } from 'drizzle-orm';
+import { and, count, desc, eq, gt, inArray, lte, type SQL, sql } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import type { CreationKey } from '../../common/creation-key';
 import { TENANT_DB } from '../../common/db/tenant.token';
@@ -193,6 +193,35 @@ export async function itemRatesInForce(
     if (rate !== undefined) byItem.set(itemId, { ...rate, on: 'override' });
   }
   return byItem;
+}
+
+/** A list row's ledger, by the column naming it: an own SKU's id, or its override's. */
+function ledgerOf(tenantId: string, on: RateParent['on'], parentId: SQL): SQL {
+  const parent =
+    on === 'own_item' ? sql`r.tenant_catalog_item_id` : sql`r.tenant_catalog_override_id`;
+  return sql`r.tenant_id = ${tenantId} and ${parent} = ${parentId}`;
+}
+
+/**
+ * The amount in force on `pricedOn` as a scalar a list orders by — newest date, then newest
+ * sequence, the order both rate indexes hold, so each row reads one index entry. A cleared or
+ * missing rate is null.
+ */
+export function rateAmountInForce(
+  tenantId: string,
+  on: RateParent['on'],
+  parentId: SQL,
+  pricedOn: string,
+): SQL {
+  return sql`(select r.rate_amount from catalog_rate_entry r
+    where ${ledgerOf(tenantId, on, parentId)} and r.entry_date <= ${pricedOn}
+    order by r.entry_date desc, r.sequence desc limit 1)`;
+}
+
+/** When a row's ledger last took an entry — a price change is a change to the item. */
+export function lastRateRecordedAt(tenantId: string, on: RateParent['on'], parentId: SQL): SQL {
+  return sql`(select max(r.recorded_at) from catalog_rate_entry r
+    where ${ledgerOf(tenantId, on, parentId)})`;
 }
 
 /**

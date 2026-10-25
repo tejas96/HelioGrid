@@ -1,43 +1,62 @@
 /* The control one dimension's KIND maps to (web) — the dispatch and the value each control wants,
-   kept apart from the block's label, summary and hint. */
+   kept apart from the section's name, summary and hint. */
 
-import { Checkbox } from '../Checkbox';
+import { useState } from 'react';
+import { Button } from '../Button';
 import { FacetChips, FilterChips } from '../FilterBar';
 import { RangeField } from '../RangeField';
-import { facetDimensionValues, oneOfAllValue, rangeDimensionValue } from './FilterPanel.logic';
-import type { FilterDimension, FilterDimensionValue } from './FilterPanel.types';
+import { Switch } from '../Switch';
+import { chosenChips, rangeDimensionValue, shownChipOptions } from './FilterPanel.logic';
+import type { FilterDimension, FilterDimensionValue, FilterSetWords } from './FilterPanel.types';
 
 interface FilterDimensionControlProps {
   dim: FilterDimension;
   value: FilterDimensionValue;
   onChange: (key: string, value: FilterDimensionValue) => void;
+  words: FilterSetWords;
 }
 
 /**
  * FOUR KINDS, AND EACH ONE IS AN EXISTING CONTROL, NOT A NEW LOOK:
  * facet → `FacetChips` (several values) · one-of → `FilterChips` (exactly one) ·
- * range → `RangeField` (two ends) · flag → `Checkbox` in a 44px row.
+ * range → `RangeField` (two ends) · flag → a `Switch` row, 44px tall.
+ * A chip list longer than six shows six and any chosen one, then *Show all N <noun>*.
  */
-export function FilterDimensionControl({ dim, value, onChange }: FilterDimensionControlProps) {
-  if (dim.kind === 'facet') {
+export function FilterDimensionControl({
+  dim,
+  value,
+  onChange,
+  words,
+}: FilterDimensionControlProps) {
+  const [showAll, setShowAll] = useState(false);
+  if (dim.kind === 'facet' || dim.kind === 'one-of') {
+    const chosen = chosenChips(dim, value);
+    const { shown, capped } = shownChipOptions(dim.options, chosen, showAll);
     return (
-      <FacetChips
-        label={dim.label}
-        options={dim.options}
-        counts={dim.counts}
-        values={facetDimensionValues(value)}
-        onChange={(v) => onChange(dim.key, v)}
-      />
-    );
-  }
-  if (dim.kind === 'one-of') {
-    return (
-      <FilterChips
-        options={dim.options}
-        counts={dim.counts}
-        value={typeof value === 'string' ? value : oneOfAllValue(dim)}
-        onChange={(v) => onChange(dim.key, v)}
-      />
+      <div className="hg-filter-chip-list">
+        {dim.kind === 'facet' ? (
+          <FacetChips
+            label={dim.label}
+            options={shown}
+            counts={dim.counts}
+            values={chosen}
+            onChange={(v) => onChange(dim.key, v)}
+          />
+        ) : (
+          <FilterChips
+            label={dim.label}
+            options={shown}
+            counts={dim.counts}
+            value={chosen[0]}
+            onChange={(v) => onChange(dim.key, v)}
+          />
+        )}
+        {capped ? (
+          <Button variant="ghost" size="sm" onClick={() => setShowAll(true)}>
+            {words.showAll(dim.options.length, dim.noun)}
+          </Button>
+        ) : null}
+      </div>
     );
   }
   if (dim.kind === 'range') {
@@ -55,16 +74,13 @@ export function FilterDimensionControl({ dim, value, onChange }: FilterDimension
       />
     );
   }
-  if (dim.kind === 'flag') {
-    return (
-      <div className="hg-filter-dimension-flag">
-        <Checkbox
-          checked={value === true}
-          label={dim.optionLabel || dim.label}
-          onChange={(checked) => onChange(dim.key, checked)}
-        />
-      </div>
-    );
-  }
-  return null;
+  return (
+    <div className="hg-filter-flag">
+      <Switch
+        checked={value === true}
+        label={dim.optionLabel ?? dim.label}
+        onChange={(checked) => onChange(dim.key, checked)}
+      />
+    </div>
+  );
 }
