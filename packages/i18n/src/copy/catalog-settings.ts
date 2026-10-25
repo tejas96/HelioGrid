@@ -20,6 +20,7 @@ export const CATALOG_SETTINGS = {
   pastReleases: /*i18n*/ { id: 'past releases' },
   noRelease: /*i18n*/ { id: 'No release published yet' },
   publish: /*i18n*/ { id: 'Publish' },
+  importFile: /*i18n*/ { id: 'Import a file' },
   search: /*i18n*/ { id: 'Search brand, model or SKU' },
   searchLabel: /*i18n*/ { id: 'Search the catalog' },
   filters: /*i18n*/ { id: 'Filters' },

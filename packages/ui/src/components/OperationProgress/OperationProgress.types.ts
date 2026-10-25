@@ -22,7 +22,11 @@ export type CancelEffect = 'stops-the-work' | 'stops-watching';
  */
 export type OperationState = 'running' | 'done' | 'failed' | 'cancelled';
 
-export type OperationProgressSize = 'block' | 'inline';
+/**
+ * block = the bar with its words · inline = one line · **ring** = a round progress ring with the
+ * count's done figure inside and its total under it (`SCR-M01-17`'s run): needs `count`.
+ */
+export type OperationProgressSize = 'block' | 'inline' | 'ring';
 
 export interface OperationCount {
   done: number;
@@ -68,6 +72,11 @@ export interface OperationProgressProps {
   destination?: ReactNode;
   /** Brand gradient fill for AI / studio computation, per the one-accent-gesture rule. */
   gradient?: boolean;
-  /** `block` (default) or `inline` — smaller label, tighter rhythm, for a tray row or a cell. */
+  /** `block` (default), `inline` — smaller label, tighter rhythm, for a tray row or a cell — or `ring`. */
   size?: OperationProgressSize;
+  /**
+   * `ring` only: the words under the done figure inside the ring — *of 405 rows* — from the caller,
+   * plural and language its own. `label` stays the ring's accessible name.
+   */
+  countCaption?: string;
 }

@@ -140,20 +140,23 @@ export class CatalogSliceRepository {
   ): Promise<readonly NamedItem[]> {
     if (names.length === 0) return [];
     return this.db.withTenantTransaction(tenantId, (tx) =>
-      namedIn(tx, tenantId, marketCode, names),
+      namedIn(tx, tenantId, marketCode, { names }),
     );
   }
 }
 
-/** `named`, inside the caller's transaction — a fix reads its candidates under its job's lock. */
+/**
+ * `named`, inside the caller's transaction — a fix reads its candidates under its job's lock — or
+ * the items rows named, by id, which a question names them by (`T-M01-017`).
+ */
 export async function namedIn(
   tx: TenantScopedDb,
   tenantId: string,
   marketCode: string,
-  names: readonly ImportProductName[],
+  read: { readonly names: readonly ImportProductName[] } | { readonly ids: readonly string[] },
 ): Promise<readonly NamedItem[]> {
-  if (names.length === 0) return [];
-  const rows = await tx.execute<UnionRow>(unionOf(tenantId, marketCode, { names }));
+  if (('names' in read ? read.names : read.ids).length === 0) return [];
+  const rows = await tx.execute<UnionRow>(unionOf(tenantId, marketCode, read));
   return rows.map(({ source, id, brand, model, spec, overrideId }) => ({
     source,
     id,
@@ -208,6 +211,7 @@ function unionOf(
   read:
     | { readonly filter: SliceFilter; readonly pricedOn: string }
     | { readonly id: string }
+    | { readonly ids: readonly string[] }
     | { readonly names: readonly ImportProductName[] },
 ): SQL {
   const filter = 'filter' in read ? read.filter : null;
@@ -216,6 +220,14 @@ function unionOf(
   if ('id' in read) {
     platform.push(sql`ci.id = ${read.id}`);
     own.push(sql`t.id = ${read.id}`);
+  }
+  if ('ids' in read) {
+    const ids = sql.join(
+      read.ids.map((id) => sql`${id}::uuid`),
+      sql`, `,
+    );
+    platform.push(sql`ci.id in (${ids})`);
+    own.push(sql`t.id in (${ids})`);
   }
   if ('names' in read) platform.push(...namedConditions(sql`ci`, read.names, true));
   if ('names' in read) own.push(...namedConditions(sql`t`, read.names, false));

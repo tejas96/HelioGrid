@@ -90,7 +90,7 @@ export class CatalogImportRunService {
         );
         const overrideOf = (id: string) => named.find((item) => item.id === id)?.overrideId ?? null;
         return batch.rows.map((row, index) =>
-          rowWrite(row.rowNumber, verdicts[index], priced, overrideOf),
+          rowWrite(row.rowNumber, verdicts[index], { priced, overrideOf, judged: batch.rows }),
         );
       },
     );
@@ -116,8 +116,15 @@ export class CatalogImportRunService {
 function rowWrite(
   rowNumber: number,
   match: CatalogImportRowMatch | undefined,
-  priced: (amount: string) => RateToAppend,
-  overrideOf: (platformItemId: string) => string | null,
+  {
+    priced,
+    overrideOf,
+    judged,
+  }: {
+    readonly priced: (amount: string) => RateToAppend;
+    readonly overrideOf: (platformItemId: string) => string | null;
+    readonly judged: readonly { readonly rowNumber: number }[];
+  },
 ): RowWrite {
   switch (match?.outcome) {
     case 'price_override': {
@@ -139,7 +146,7 @@ function rowWrite(
         rowNumber,
         on: 'nothing',
         failure: 'changed_since_preview',
-        verdict: verdictOf({ rowNumber }, match),
+        verdict: verdictOf({ rowNumber }, match, judged),
       };
   }
 }

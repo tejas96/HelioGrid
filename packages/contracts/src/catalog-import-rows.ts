@@ -7,9 +7,11 @@ import {
   CATALOG_IMPORT_ROW_RESULTS,
   type CatalogImportCounts,
   type CatalogImportRowFix,
+  catalogSpecSchema,
 } from '@heliogrid/domain';
 import { z } from 'zod';
 import { catalogItemSourceSchema, resolvedRateSchema } from './catalog';
+import { componentKindSchema } from './catalog-query';
 import { amountSchema, extensibleEnum, paginationQuerySchema, uuidSchema } from './common';
 
 /*
@@ -45,9 +47,10 @@ const importCellsSchema = z.record(z.string(), z.string());
  * decision 7) — null when the cell holds no readable price, or the item no rate. Once the import
  * has run, what the run did with the row, and why when it failed (`T-M01-030f`); and the report's
  * two prices (`T-M01-030g`): on a row the run wrote, the rate in force just before its write and
- * the rate it wrote; on any other row, the rate its matched item holds now and none applied. Both
- * are null on a row not yet run; `priceBefore` is null where the item had no price, or where the
- * row names no item (`match` null — a needs-attention row stores none, `deferred.md` D129).
+ * the rate it wrote; on any other row, the rate its item holds now and none applied — the item it
+ * matched, else the one item its name named (a row left out at its question still names its
+ * product). Both are null on a row not yet run; `priceBefore` is null where the item had no price,
+ * or where the row names no item or several.
  */
 export const catalogImportRowSchema = z.object({
   rowNumber: z.number().int().positive(),
@@ -63,6 +66,25 @@ export const catalogImportRowSchema = z.object({
     }),
   ),
   match: z.object({ source: catalogItemSourceSchema, id: uuidSchema }).nullable(),
+  /**
+   * The items the row's brand and model named, with what a question names them by: the one it
+   * matched, the one it conflicts with, or the candidates it asks between (`several_matches`).
+   * Empty where the name matched nothing, and on a row the pass judged before named items were kept.
+   */
+  named: z.array(
+    z.object({
+      source: catalogItemSourceSchema,
+      id: uuidSchema,
+      brand: z.string(),
+      model: z.string(),
+      kind: componentKindSchema,
+      spec: catalogSpecSchema,
+    }),
+  ),
+  /** On a `repeated_in_file` row, the earlier row naming the same product, and the price it asks. */
+  repeats: z
+    .object({ rowNumber: z.number().int().positive(), filePrice: amountSchema.nullable() })
+    .nullable(),
   filePrice: amountSchema.nullable(),
   catalogPrice: resolvedRateSchema.nullable(),
   result: extensibleEnum(CATALOG_IMPORT_ROW_RESULTS).nullable(),
@@ -72,9 +94,26 @@ export const catalogImportRowSchema = z.object({
 });
 export type CatalogImportRowWire = z.infer<typeof catalogImportRowSchema>;
 
+/** A comma list of one closed set, each member once; a member the set lacks refuses the read. */
+function commaListOf<const T extends readonly [string, ...string[]]>(members: T) {
+  return z
+    .string()
+    .min(1)
+    .transform((list) => [...new Set(list.split(','))])
+    .pipe(z.array(z.enum(members)).min(1));
+}
+
+/**
+ * The preview grid's and the report's reads: `outcomes` and `results` keep any listed and win over
+ * `outcome` and `result` (a group holds two — a match on a platform item or an own SKU); `q` keeps
+ * the rows one of whose cells holds it, the file's text or the person's typed value.
+ */
 export const catalogImportRowsQuerySchema = paginationQuerySchema.extend({
   outcome: catalogImportRowOutcomeSchema.optional(),
+  outcomes: commaListOf(CATALOG_IMPORT_ROW_OUTCOMES).optional(),
   result: catalogImportRowResultSchema.optional(),
+  results: commaListOf(CATALOG_IMPORT_ROW_RESULTS).optional(),
+  q: z.string().trim().min(1).max(100).optional(),
 });
 export type CatalogImportRowsQuery = z.infer<typeof catalogImportRowsQuerySchema>;
 
@@ -90,7 +129,7 @@ export const catalogImportRowFixSchema = z
   .object({
     cells: z.record(catalogImportFieldSchema, z.string()).optional(),
     leaveOut: z.boolean().optional(),
-    answer: catalogImportConflictAnswerSchema.optional(),
+    answer: catalogImportConflictAnswerSchema.nullable().optional(),
   })
   .strict()
   .transform((body, context): CatalogImportRowFix => {

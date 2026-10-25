@@ -10,7 +10,8 @@ import { identityOf, productNameOf } from './import-text';
 export type CatalogImportRowFix =
   | { readonly cells: CatalogImportCells }
   | { readonly leaveOut: boolean }
-  | { readonly answer: CatalogImportConflictAnswer };
+  /** `null` takes an answer back, and the row asks its question again. */
+  | { readonly answer: CatalogImportConflictAnswer | null };
 
 /** What a row holds from the file and the person, and what the matching pass last asked of it. */
 export interface CatalogImportRowState {

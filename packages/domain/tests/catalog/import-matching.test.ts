@@ -158,11 +158,16 @@ describe('matchImportRows — the matching pass (M01-41, §M01.4 edge cases)', (
       'an unreadable price on a match',
       priced('Waaree', 'WS-545', '2,380/pc'),
       [{ reason: 'price_unreadable', fields: [] }],
+      [{ source: 'platform_item', id: 'p-waaree' }],
     ],
     [
       'two own SKUs with one brand and model',
       priced('Twin', 'T-1'),
       [{ reason: 'several_matches', fields: [] }],
+      [
+        { source: 'own_item', id: 'o-twin-1' },
+        { source: 'own_item', id: 'o-twin-2' },
+      ],
     ],
     [
       'a new item with no kind',
@@ -189,9 +194,9 @@ describe('matchImportRows — the matching pass (M01-41, §M01.4 edge cases)', (
       { ...priced('Havells', 'HX-5K'), ...INVERTER_CELLS, maxDcV: '500' },
       [{ reason: 'spec_invalid', fields: ['maxDcV'] }],
     ],
-  ] as const)('%s needs attention', (_, cells, attention) => {
+  ] as const)('%s needs attention', (_, cells, attention, named?: readonly unknown[]) => {
     expect(matchImportRows([row(cells)], CATALOG)).toEqual([
-      { outcome: 'needs_attention', attention },
+      { outcome: 'needs_attention', attention, named: named ?? [], repeats: null },
     ]);
   });
 
@@ -203,6 +208,8 @@ describe('matchImportRows — the matching pass (M01-41, §M01.4 edge cases)', (
         {
           outcome: 'needs_attention',
           attention: [{ reason: 'spec_conflict', fields: ['kind', 'watt'] }],
+          named: [{ source: 'platform_item', id: 'p-waaree' }],
+          repeats: null,
         },
       ]);
     });
@@ -261,17 +268,6 @@ describe('matchImportRows — the matching pass (M01-41, §M01.4 edge cases)', (
   ] as const)('%s', (_, leftOut, outcomes) => {
     const rows = leftOut.map((out) => row(priced('Waaree', 'WS-545'), null, out));
     expect(matchImportRows(rows, CATALOG).map((match) => match.outcome)).toEqual(outcomes);
-  });
-
-  it('a repeated row names the repeat as its reason', () => {
-    const [, second] = matchImportRows(
-      [row(priced('Waaree', 'WS-545')), row(priced('Waaree', 'WS-545'))],
-      CATALOG,
-    );
-    expect(second).toEqual({
-      outcome: 'needs_attention',
-      attention: [{ reason: 'repeated_in_file', fields: [] }],
-    });
   });
 });
 

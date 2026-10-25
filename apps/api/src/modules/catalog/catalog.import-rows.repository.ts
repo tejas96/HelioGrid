@@ -14,11 +14,14 @@ import type {
   CatalogImportRowResult,
   CatalogImportState,
   ImportAttention,
+  ImportNamedItem,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, asc, eq, sql } from 'drizzle-orm';
+import { and, asc, eq, inArray, type SQL, sql } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
+import { namesOnPage, type RepeatedRow } from './catalog.import-row-names.repository';
 import { type ItemRate, itemRatesInForce, type RatedItem } from './catalog.rates.repository';
+import type { NamedItem } from './catalog.slice.repository';
 import { type WrittenRate, writtenRates } from './catalog.written-rates.repository';
 
 /** One row as the matching pass judged it, ready to store. */
@@ -29,12 +32,14 @@ export interface JudgedRow {
   readonly attention: readonly ImportAttention[];
   readonly catalogItemId: string | null;
   readonly tenantCatalogItemId: string | null;
+  readonly namedItems: readonly ImportNamedItem[];
+  readonly repeatsRow: number | null;
 }
 
 /** A row's verdict, as the matching pass stores it and a fix or a failed write replaces it. */
 export type RowVerdict = Pick<
   JudgedRow,
-  'outcome' | 'attention' | 'catalogItemId' | 'tenantCatalogItemId'
+  'outcome' | 'attention' | 'catalogItemId' | 'tenantCatalogItemId' | 'namedItems' | 'repeatsRow'
 >;
 
 /**
@@ -50,6 +55,10 @@ export interface PreviewRow extends JudgedRow {
   readonly rateEntryId: string | null;
   readonly rate: ItemRate | null;
   readonly written: WrittenRate | null;
+  /** The items the row named, as its question names them. */
+  readonly named: readonly NamedItem[];
+  /** The earlier row a `repeated_in_file` row points at. */
+  readonly repeats: RepeatedRow | null;
 }
 
 /** Enough rows per statement that a long sheet takes few round trips, few enough for the bind limit. */
@@ -66,6 +75,8 @@ export const previewColumns = {
   attention: catalogImportRow.attention,
   catalogItemId: catalogImportRow.catalogItemId,
   tenantCatalogItemId: catalogImportRow.tenantCatalogItemId,
+  namedItems: catalogImportRow.namedItems,
+  repeatsRow: catalogImportRow.repeatsRow,
   result: catalogImportRow.result,
   failure: catalogImportRow.failure,
   rateEntryId: catalogImportRow.rateEntryId,
@@ -139,27 +150,33 @@ export class CatalogImportRowsRepository {
   }
 
   /**
-   * A page of the grid by sheet row number, narrowed to one outcome or one result when asked, each
-   * matched row with the rate its item holds on `pricedOn` and each written row with its entries —
-   * read once for the page, never per row.
+   * A page of the grid by sheet row number, narrowed to the outcomes or results asked and to the
+   * rows a cell of which holds the search, each row as the grid shows it — read once for the page,
+   * never per row.
    */
   async page(
     tenantId: string,
     jobId: string,
     page: {
-      readonly outcome: CatalogImportRowOutcome | undefined;
-      readonly result: CatalogImportRowResult | undefined;
+      readonly outcomes: readonly CatalogImportRowOutcome[] | undefined;
+      readonly results: readonly CatalogImportRowResult[] | undefined;
+      readonly search: string | undefined;
       readonly limit: number;
       readonly offset: number;
-      readonly pricedOn: string;
+      readonly shownOn: ShownOn;
     },
   ): Promise<{ readonly rows: readonly PreviewRow[]; readonly totalCount: number }> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
       const filter = and(
         eq(catalogImportRow.tenantId, tenantId),
         eq(catalogImportRow.jobId, jobId),
-        page.outcome === undefined ? undefined : eq(catalogImportRow.outcome, page.outcome),
-        page.result === undefined ? undefined : eq(catalogImportRow.result, page.result),
+        page.outcomes === undefined
+          ? undefined
+          : inArray(catalogImportRow.outcome, [...page.outcomes]),
+        page.results === undefined
+          ? undefined
+          : inArray(catalogImportRow.result, [...page.results]),
+        page.search === undefined ? undefined : cellsHold(page.search),
       );
       const rows = await tx
         .select(previewColumns)
@@ -173,7 +190,7 @@ export class CatalogImportRowsRepository {
         .from(catalogImportRow)
         .where(filter);
       return {
-        rows: await withRates(tx, tenantId, rows, page.pricedOn),
+        rows: await asShown(tx, tenantId, jobId, rows, page.shownOn),
         totalCount: total?.value ?? 0,
       };
     });
@@ -214,37 +231,68 @@ export async function lockedJob(tx: TenantScopedDb, tenantId: string, jobId: str
   return job ?? null;
 }
 
-/** One stored row, without the rates read beside it. */
-export type StoredRow = Omit<PreviewRow, 'rate' | 'written'>;
+/** One stored row, without what is read beside it. */
+export type StoredRow = Omit<PreviewRow, 'rate' | 'written' | 'named' | 'repeats'>;
+
+/** The day the grid prices on, and the market whose items the rows named. */
+export interface ShownOn {
+  readonly pricedOn: string;
+  readonly marketCode: string;
+}
 
 /**
- * Each row with the rate its matched item holds on `pricedOn`, and each written row with the
- * entry it wrote and the one before it — read once for all of them.
+ * The item whose rate a row shows: the one it matched, else the one item its name named — so a
+ * left-out row's report reads the price its product held (D129). Several candidates name none.
  */
-export async function withRates(
+function pricedItemOf(row: StoredRow): RatedItem | null {
+  if (row.catalogItemId !== null) return { source: 'platform_item', id: row.catalogItemId };
+  if (row.tenantCatalogItemId !== null) return { source: 'own_item', id: row.tenantCatalogItemId };
+  const [only, ...more] = row.namedItems;
+  return only === undefined || more.length > 0 ? null : only;
+}
+
+/**
+ * A search over a row's cells' values — the file's and the typed fix's — case-insensitive, its
+ * `%`, `_` and `\` taken as written; never a key name, so *rate* finds no row for its column.
+ */
+function cellsHold(search: string): SQL {
+  const pattern = `%${search.replace(/[\\%_]/g, (character) => `\\${character}`)}%`;
+  return sql`exists (select 1 from jsonb_each_text(${catalogImportRow.cells} || ${catalogImportRow.fix}) as cell
+    where cell.value ilike ${pattern})`;
+}
+
+/**
+ * Each row as the grid shows it: the rate its item holds on `pricedOn`, each written row's entry and
+ * the one before it, the items it named and the row it repeats — read once for all of them.
+ */
+export async function asShown(
   tx: TenantScopedDb,
   tenantId: string,
+  jobId: string,
   rows: readonly StoredRow[],
-  pricedOn: string,
+  shownOn: ShownOn,
 ): Promise<PreviewRow[]> {
-  const matched: RatedItem[] = rows.flatMap((row): RatedItem[] => {
-    if (row.catalogItemId !== null) return [{ source: 'platform_item', id: row.catalogItemId }];
-    if (row.tenantCatalogItemId !== null)
-      return [{ source: 'own_item', id: row.tenantCatalogItemId }];
-    return [];
-  });
-  const rates = await itemRatesInForce(tx, tenantId, matched, pricedOn);
+  const priced = rows.map(pricedItemOf);
+  const rates = await itemRatesInForce(
+    tx,
+    tenantId,
+    priced.flatMap((item) => (item === null ? [] : [item])),
+    shownOn.pricedOn,
+  );
+  const names = await namesOnPage(tx, tenantId, jobId, shownOn.marketCode, rows);
   const written = await writtenRates(
     tx,
     tenantId,
     rows.flatMap((row) => (row.rateEntryId === null ? [] : [row.rateEntryId])),
   );
-  return rows.map((row) => {
-    const itemId = row.catalogItemId ?? row.tenantCatalogItemId;
+  return rows.map((row, index) => {
+    const itemId = priced[index]?.id ?? null;
     return {
       ...row,
       rate: itemId === null ? null : (rates.get(itemId) ?? null),
       written: row.rateEntryId === null ? null : (written.get(row.rateEntryId) ?? null),
+      named: row.namedItems.flatMap((item) => names.items.get(item.id) ?? []),
+      repeats: row.repeatsRow === null ? null : (names.repeated.get(row.repeatsRow) ?? null),
     };
   });
 }

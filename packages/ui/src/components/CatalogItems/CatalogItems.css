@@ -162,3 +162,14 @@
 .hg-cat-more {
   min-height: var(--sp-1);
 }
+
+/* *Import a file*: centred under the list at 375, right-aligned over the controls at 1536. */
+.hg-cat-entry {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+
+.hg-cat-entry[data-wide] {
+  justify-content: flex-end;
+}

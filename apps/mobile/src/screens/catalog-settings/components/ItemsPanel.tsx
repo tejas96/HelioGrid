@@ -17,6 +17,7 @@ import {
   type useToasts,
 } from '@heliogrid/ui';
 import { useMemo, useState } from 'react';
+import { ImportSheet } from './ImportSheet';
 import { ItemsSheets } from './ItemsSheets';
 
 /**
@@ -42,6 +43,7 @@ export function ItemsPanel({
   const list = useCatalogScroll(view);
   const acts = useCatalogActs((note) => toasts.push(catalogActToast(t, note)));
   const sheets = useCatalogOverlays(acts);
+  const [importing, setImporting] = useState(false);
   const byId = useMemo(() => new Map(list.items.map((item) => [item.id, item])), [list.items]);
   const input = {
     items: list.items,
@@ -96,6 +98,7 @@ export function ItemsPanel({
         }}
         archivedCaption={shown.archivedCaption}
         administers={facts.administers}
+        onImport={facts.administers ? () => setImporting(true) : null}
         onOpen={onItem(sheets.openEditor)}
         onPrefer={onItem(acts.togglePreferred)}
         onHide={onItem(acts.toggleHidden)}
@@ -103,6 +106,7 @@ export function ItemsPanel({
         onRestore={onItem(acts.restore)}
       />
       <ItemsSheets sheets={sheets} schemes={facts.schemes} release={facts.release} />
+      {importing ? <ImportSheet onClose={() => setImporting(false)} /> : null}
     </>
   );
 }

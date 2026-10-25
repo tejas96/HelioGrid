@@ -27,6 +27,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing['sp-2'],
   },
+  /** A caller whose `style` grows the zone (a step it fills) grows the surface with it. */
+  surfaceGrows: { flexGrow: 1, justifyContent: 'center' },
   surfaceFunctional: {
     borderRadius: theme.radius['rf-xl'],
     padding: theme.spacing['sp-5'],
@@ -111,6 +113,7 @@ export function Dropzone({
         onPress={onRequestFiles}
         style={[
           styles.surface,
+          StyleSheet.flatten(style)?.flexGrow === undefined ? undefined : styles.surfaceGrows,
           density === 'functional' ? styles.surfaceFunctional : undefined,
           isError ? styles.surfaceError : undefined,
         ]}

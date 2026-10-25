@@ -1,0 +1,149 @@
+/* ShareFilter — how a whole splits, and the filter onto each part (SCR-M01-17's overview).
+   A part's hue is `--hg-share-hue`, set by its `hg-share-hue-*` class; a ring's arc reads it as
+   `--hg-ring-ink`. A wash mixes the hue over `--hg-ground`, what holds the filter. The 64px dial,
+   the 10px dot and segment floor and the 12px bar are the board's own dimensions.
+
+   `ShareFilter.inks.ts` works the same mixes out for the phone: a share changed here is changed
+   there in the same commit. Toggles are `Pressable`s, whose reset loads later, so each look here is
+   keyed on `.hg-pressable` plus its own class. Nothing animates but the press. */
+
+.hg-share-hue-blue {
+  --hg-share-hue: var(--iris-blue);
+}
+.hg-share-hue-violet {
+  --hg-share-hue: var(--iris-violet);
+}
+/* A warning part is a mark that carries information, so it takes the warning ink that holds 3:1
+   (`packages/theme/src/contrast.ts`), not the bare `--warning` the board draws. */
+.hg-share-hue-warning {
+  --hg-share-hue: var(--warning-text);
+}
+.hg-share-hue-success {
+  --hg-share-hue: var(--success);
+}
+.hg-share-hue-danger {
+  --hg-share-hue: var(--danger);
+}
+
+/* A <fieldset> is the group; its own border, margin and padding are the browser's, not ours. */
+.hg-share-filter {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: var(--font-sans);
+}
+.hg-share-filter[data-layout="rings"] {
+  display: flex;
+  gap: var(--sp-1);
+}
+.hg-share-filter[data-layout="bar"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* ── rings ───────────────────────────────────────────────────────────────── */
+
+.hg-pressable.hg-share-filter-ring {
+  --hg-ring-ink: var(--hg-share-hue);
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: var(--sp-2) var(--sp-1);
+  border-radius: var(--r-md);
+  background: transparent;
+}
+.hg-pressable.hg-share-filter-ring[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--hg-share-hue) 12%, var(--hg-ground));
+}
+.hg-share-filter-dial {
+  position: relative;
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+}
+.hg-share-filter-dial-count {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+.hg-share-filter-ring-label {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+  text-align: center;
+}
+.hg-share-filter-ring-label[data-asks="true"] {
+  font-weight: var(--fw-bold);
+  color: color-mix(in srgb, var(--warning-text) 72%, var(--text-primary));
+}
+
+/* ── bar ─────────────────────────────────────────────────────────────────── */
+
+.hg-share-filter-bar {
+  display: flex;
+  gap: var(--sp-0-5);
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.hg-share-filter-segment {
+  min-width: 0;
+  background: var(--hg-share-hue);
+}
+.hg-share-filter-segment[data-thin="true"] {
+  min-width: 10px;
+}
+.hg-share-filter-counts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.hg-pressable.hg-share-filter-count {
+  min-width: 0;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 10px var(--sp-3);
+  border-radius: 14px;
+  background: var(--hg-control-fill);
+  text-align: left;
+}
+.hg-pressable.hg-share-filter-count[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--hg-share-hue) 14%, var(--hg-ground));
+  box-shadow: inset 0 0 0 1.5px var(--hg-share-hue);
+}
+.hg-share-filter-dot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--r-pill);
+  background: var(--hg-share-hue);
+}
+.hg-share-filter-count-label {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-primary);
+}
+.hg-share-filter-count-figure {
+  flex-shrink: 0;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+.hg-share-filter-chevron {
+  flex-shrink: 0;
+  display: inline-flex;
+}

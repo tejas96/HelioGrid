@@ -1,4 +1,11 @@
-import { CATALOG_EDITOR, CATALOG_SETTINGS, createTranslator, settingsWords } from '@heliogrid/i18n';
+import {
+  CATALOG_EDITOR,
+  CATALOG_SETTINGS,
+  catalogImportNotes,
+  catalogImportWords,
+  createTranslator,
+  settingsWords,
+} from '@heliogrid/i18n';
 import { expect, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { createCompany } from '../support/door';
@@ -14,6 +21,9 @@ import { passTheOwnersMark } from '../support/shell';
 const en = await createTranslator('en');
 const WORDS = settingsWords(en.t);
 const PRICE = '12500';
+const IMPORT = catalogImportWords(en.t);
+const NOTES = catalogImportNotes(en.t);
+const OVER_THE_LIMIT = 2_000_001;
 
 test('an owner prices an item and publishes a release', async ({ page }) => {
   await createCompany(page, en, freshMobile());
@@ -61,4 +71,44 @@ test('an owner prices an item and publishes a release', async ({ page }) => {
 
   await expectNoSidewaysScroll(page);
   await expectNoSeriousViolations(page);
+});
+
+/**
+ * The import wizard's entry (`SCR-M01-17`, `T-M01-017`): *Import a file* opens the empty file step,
+ * and a file over the catalog's limit is refused in words on the device with nothing uploaded. This
+ * lane runs no worker, so no job goes past step 1 — the later steps are proven on the running app.
+ */
+test('an owner opens the import from Catalog and a file over the limit is refused before upload', async ({
+  page,
+}) => {
+  await createCompany(page, en, freshMobile());
+  await passTheOwnersMark(page, en);
+  await page.goto('/more');
+  await page.getByRole('button', { name: WORDS.rows.catalog }).click();
+  await expect(page).toHaveURL(/\/more\/catalog$/);
+
+  await page.getByRole('button', { name: en.t(CATALOG_SETTINGS.importFile) }).click();
+  const wizard = page.getByRole('dialog', { name: IMPORT.title });
+  await expect(wizard.getByText(IMPORT.choose)).toBeVisible();
+  // A company with no import keeps no report, so *Kept reports* is not drawn.
+  await expect(wizard.getByText(IMPORT.keptReports)).toHaveCount(0);
+  await expectNoSeriousViolations(page);
+
+  const declared: string[] = [];
+  page.on('request', (request) => {
+    if (request.method() === 'POST' && new URL(request.url()).pathname === '/files') {
+      declared.push(request.url());
+    }
+  });
+  await wizard.locator('input[type="file"]').setInputFiles({
+    name: 'Price list too big.csv',
+    mimeType: 'text/csv',
+    buffer: Buffer.alloc(OVER_THE_LIMIT, 'a'),
+  });
+  const refusal = NOTES.upload({ state: 'refused', refusal: 'too-large' }, 2) ?? '';
+  await expect(wizard.getByText(refusal)).toBeVisible();
+  expect(declared).toEqual([]);
+
+  await wizard.getByRole('button', { name: IMPORT.close }).click();
+  await expect(wizard).toBeHidden();
 });

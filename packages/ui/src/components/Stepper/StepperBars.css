@@ -1,0 +1,49 @@
+/* `bars` — one 4px bar per step under a sheet's head; done and current take the accent, those
+   ahead the sunken track the board draws. `numbered-bars` adds each step's number and name. */
+.hg-stepper-bars,
+.hg-stepper-numbered-bars {
+  display: flex;
+}
+.hg-stepper-bars {
+  gap: var(--sp-1);
+}
+.hg-stepper-bar {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--canvas-sunken);
+}
+.hg-stepper-bars > .hg-stepper-bar {
+  flex: 1;
+}
+.hg-stepper-bar[data-filled="true"] {
+  background: var(--accent);
+}
+.hg-stepper-numbered-bars {
+  gap: 10px;
+  padding-top: var(--sp-1);
+}
+.hg-stepper-bar-step {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hg-stepper-bar-caption {
+  display: flex;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  font-weight: var(--fw-regular);
+  color: var(--text-secondary);
+}
+.hg-stepper-bar-caption[data-current="true"] {
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+.hg-stepper-bar-number {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}

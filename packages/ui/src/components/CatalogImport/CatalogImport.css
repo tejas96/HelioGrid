@@ -1,0 +1,149 @@
+/* CatalogImport — the catalog import wizard (`SCR-M01-17`). One markup, two widths: `data-wide`
+   is `EditorSurface`'s answer — `true` in the 960px side panel (the 1536 frames), `false` in the
+   sheet (the 375 frames). Where the two boards give a part different tokens, each width is drawn
+   as its board draws it. */
+
+/* ── the sheet ─────────────────────────────────────────────────────────────── */
+
+/* The four steps take the phone's whole height: no band of the caller above, no corner, no lift.
+   The two waits keep the sheet's own hug. */
+.hg-sheet:has(> .hg-sheet-body > .hg-import[data-wait="false"]) {
+  height: 100%;
+  max-height: 100%;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* The head is drawn inside the body, with its own padding; only the body's lists scroll. */
+.hg-sheet-body:has(> .hg-import) {
+  padding: 0;
+}
+
+.hg-import {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-import[data-wide="false"] {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── the 375 head ─────────────────────────────────────────────────────────── */
+
+.hg-import-head {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: var(--sp-3) var(--sp-4) 10px;
+}
+
+.hg-import-head-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-import-head-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-import-head-title {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.hg-pressable.hg-import-location {
+  align-self: flex-start;
+  justify-content: flex-start;
+  gap: var(--sp-0-5);
+  text-align: left;
+}
+
+.hg-import-location-chevron {
+  color: var(--text-secondary);
+}
+
+/* ── the body ──────────────────────────────────────────────────────────────── */
+
+.hg-import[data-wide="false"] .hg-import-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px var(--sp-4) var(--sp-4);
+}
+
+.hg-import[data-wide="false"] .hg-import-body[data-frame="empty"],
+.hg-import[data-wide="false"] .hg-import-body[data-frame="reading"] {
+  padding-bottom: var(--sp-2);
+}
+
+.hg-import[data-wait="true"] .hg-import-body {
+  flex: 0 1 auto;
+  padding-bottom: var(--sp-1);
+}
+
+.hg-import[data-wait="true"] .hg-import-body[data-frame="running"] {
+  padding-bottom: var(--sp-2);
+}
+
+.hg-import[data-wide="true"] .hg-import-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-import-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-import-step[data-step="file"],
+.hg-import[data-wide="true"] .hg-import-step[data-step="columns"] {
+  gap: var(--sp-4);
+}
+
+.hg-import[data-wide="true"] .hg-import-step[data-step="file"],
+.hg-import[data-wide="true"] .hg-import-step[data-step="columns"] {
+  gap: var(--sp-5);
+}
+
+.hg-import-step[data-step="running"] {
+  gap: var(--sp-5);
+}
+
+/* Before a file, the drop surface fills the phone's step. */
+.hg-import[data-wide="false"] .hg-import-step[data-fills="true"] {
+  flex: 1;
+  min-height: 0;
+}
+
+.hg-import[data-wide="false"] .hg-import-drop[data-fills="true"] {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.hg-import[data-wide="false"] .hg-import-drop[data-fills="true"] .hg-dropzone,
+.hg-import[data-wide="false"] .hg-import-drop[data-fills="true"] .hg-dropzone-surface {
+  height: 100%;
+}
+
+.hg-import[data-wide="false"] .hg-import-drop[data-fills="true"] .hg-dropzone-surface {
+  justify-content: center;
+}

@@ -30,6 +30,8 @@ describe('which rows take an answer', () => {
   it.each([
     ['an answer where none is asked', aRow(), { answer: 'import_as_own_item' }, 'asks_no_question'],
     ['an answer to a conflict', CONFLICTED, { answer: 'import_as_own_item' }, null],
+    ['an answer taken back', aRow({ answer: 'keep_catalog_spec' }), { answer: null }, null],
+    ['nothing taken back where none was given', aRow(), { answer: null }, 'asks_no_question'],
     ['a typed cell on a clean row', aRow(), { cells: { watt: '550' } }, null],
     ['a clean row left out', aRow(), { leaveOut: true }, null],
   ] as const)('%s → %s', (_, row, fix, problem) => {
@@ -72,6 +74,11 @@ describe('a row after its fix', () => {
     expect(fixedImportRow(answered, { cells: { model: ' WS-545 ' } }).answer).toBe(
       'keep_catalog_spec',
     );
+  });
+
+  it('takes an answer back, so the row asks its question again', () => {
+    const answered = { ...CONFLICTED, answer: 'keep_catalog_spec' as const };
+    expect(fixedImportRow(answered, { answer: null }).answer).toBeNull();
   });
 
   it('drops an answer once the row names another product', () => {

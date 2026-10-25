@@ -18,6 +18,7 @@ import {
   type useToasts,
 } from '@heliogrid/ui';
 import { useMemo, useState } from 'react';
+import { ImportPanel } from './ImportPanel';
 import { ItemsOverlays } from './ItemsOverlays';
 
 /**
@@ -40,6 +41,7 @@ export function ItemsPanel({
     sort: 'preferred',
   });
   const [page, setPage] = useState(1);
+  const [importing, setImporting] = useState(false);
   const list = useCatalogPage(view, page);
   const acts = useCatalogActs((note) => toasts.push(catalogActToast(t, note)));
   const overlays = useCatalogOverlays(acts);
@@ -110,6 +112,7 @@ export function ItemsPanel({
         }}
         archivedCaption={shown.archivedCaption}
         administers={facts.administers}
+        onImport={facts.administers ? () => setImporting(true) : null}
         onOpen={onItem(overlays.openEditor)}
         onPrefer={onItem(acts.togglePreferred)}
         onHide={onItem(acts.toggleHidden)}
@@ -117,6 +120,7 @@ export function ItemsPanel({
         onRestore={onItem(acts.restore)}
       />
       <ItemsOverlays overlays={overlays} schemes={facts.schemes} release={facts.release} />
+      {importing ? <ImportPanel onClose={() => setImporting(false)} /> : null}
     </>
   );
 }

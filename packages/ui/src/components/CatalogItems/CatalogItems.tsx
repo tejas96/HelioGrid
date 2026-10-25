@@ -74,6 +74,7 @@ export function CatalogItems(props: CatalogItemsProps) {
           </Text>
         </Block>
       )}
+      {wide ? <ImportEntry onImport={props.onImport} label={words.importFile} wide /> : null}
       <CatalogItemsControls
         words={words}
         query={props.query}
@@ -97,6 +98,35 @@ export function CatalogItems(props: CatalogItemsProps) {
       ) : (
         <CatalogList {...props} wide={wide} />
       )}
+      {wide || loading ? null : <ImportEntry onImport={props.onImport} label={words.importFile} />}
+    </div>
+  );
+}
+
+/**
+ * *Import a file*: at 1536 it heads the list's controls, right-aligned, raised; at 375 it closes
+ * the list, centred, quiet — where an owner concludes an item is missing (`SCR-M01-15`).
+ */
+function ImportEntry({
+  onImport,
+  label,
+  wide = false,
+}: {
+  onImport: (() => void) | null;
+  label: string;
+  wide?: boolean;
+}) {
+  if (onImport === null) return null;
+  return (
+    <div className="hg-cat-entry" data-wide={wide ? 'true' : undefined}>
+      <Button
+        variant={wide ? 'secondary' : 'ghost'}
+        size="sm"
+        onClick={onImport}
+        icon={<ShellGlyph name="upload" size={wide ? 'sm' : 'md'} tone="primary" />}
+      >
+        {label}
+      </Button>
     </div>
   );
 }

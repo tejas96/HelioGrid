@@ -236,6 +236,7 @@ export function CatalogItemsAsRead({ reader, frame }: { reader: UiLanguage; fram
           frame === 'normal' ? t(CATALOG_SETTINGS.archivedCaption, { count: 23 }) : null
         }
         administers={administers}
+        onImport={administers ? () => undefined : null}
         onOpen={(row) => setOpened(row.id)}
         onPrefer={act('prefer')}
         onHide={act('hide')}

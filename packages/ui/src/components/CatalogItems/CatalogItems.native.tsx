@@ -8,6 +8,7 @@ import { theme } from '@heliogrid/theme';
 import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Banner } from '../Banner/Banner.native';
 import { Block } from '../Block/Block.native';
 import { Button } from '../Button/Button.native';
@@ -161,6 +162,19 @@ function ItemList({ props }: { props: CatalogItemsProps }) {
           {props.archivedCaption}
         </Text>
       )}
+      {props.onImport === null ? null : (
+        /* *Import a file* closes the list, where an owner concludes an item is missing. */
+        <View style={styles.entry}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={props.onImport}
+            icon={<ShellGlyph name="upload" size="md" tone="primary" />}
+          >
+            {words.importFile}
+          </Button>
+        </View>
+      )}
     </View>
   );
 }
@@ -280,4 +294,5 @@ const styles = StyleSheet.create({
   region: { paddingTop: theme.spacing['sp-3'], paddingHorizontal: theme.spacing['sp-4'] },
   spec: { gap: theme.spacing['sp-2'], marginTop: theme.spacing['sp-1'] },
   more: { alignItems: 'center' },
+  entry: { flexDirection: 'row', justifyContent: 'center', gap: theme.spacing['sp-2'] },
 });

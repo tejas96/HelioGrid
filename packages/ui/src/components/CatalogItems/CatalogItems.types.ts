@@ -42,6 +42,8 @@ export interface CatalogItemsProps {
   archivedCaption: string | null;
   /** Every administration act is offered; without it each is absent, never disabled. */
   administers: boolean;
+  /** *Import a file* (`SCR-M01-17`): `null` draws none — absent without the outright grant, never disabled. */
+  onImport: (() => void) | null;
   /** The row was asked for: the app opens its price editor. Absent without the grant. */
   onOpen: (row: CatalogRow) => void;
   onPrefer: (row: CatalogRow) => void;
@@ -132,6 +134,7 @@ export type CatalogPaging =
 
 /** Every fixed word of the panel: `@heliogrid/i18n`'s `catalogItemsWords`. */
 export interface CatalogItemsWords {
+  readonly importFile: string;
   readonly item: string;
   readonly whatItIs: string;
   readonly compliance: string;
