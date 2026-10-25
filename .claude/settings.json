@@ -43,11 +43,6 @@
       "Bash(rm -rf ~*)",
       "Bash(rm -rf $HOME*)"
     ],
-    "ask": [
-      "Bash(git commit*)",
-      "Bash(git -C * commit*)",
-      "Bash(git merge *)",
-      "Bash(git -C * merge *)"
-    ]
+    "ask": []
   }
 }
