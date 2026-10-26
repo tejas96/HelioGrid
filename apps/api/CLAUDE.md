@@ -84,7 +84,7 @@ curl localhost:8084/health                               # liveness · /health/r
 
 ## Done means
 
-Contract implemented AND proven over curl by `qa-api` (`.claude/agents/qa-api.md`), never by Main's own curl · the FAILURE paths driven, not read: a malformed
+Contract implemented AND proven by its HTTP suite in `tests/` · the FAILURE paths driven, not read: a malformed
 request returns field-addressable `details[]`, a contract-violating response returns opaque
 INTERNAL, and the response's request id matches the log with no PII.
 

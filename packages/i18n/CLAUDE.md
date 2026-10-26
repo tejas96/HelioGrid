@@ -76,7 +76,7 @@ Follow `docs/engineering/adding-a-language.md`; the `language-fonts` invariant a
 ## Done means
 
 `extract` leaves the tree clean · every locale has zero missing messages, or the gap is a
-deliberate English fallback · every language RENDERED on web and the phones `/task` step 7 picks, switching and
+deliberate English fallback · every language RENDERED on web and on both phones, switching and
 not merely loading.
 
 ## Traps

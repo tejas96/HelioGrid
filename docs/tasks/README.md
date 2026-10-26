@@ -32,16 +32,16 @@ A task is its header lines, written when the task is:
 **Blocked:** (only while true) what only the owner can clear — a ruling, an account; the work stops here
 **Parked:** (only while true) the owner's reason; the order steps over it
 **DONE WHEN:** the requirement rows' own Given/When/Then, copied verbatim — never paraphrased.
-        The RFC copies them into its *Acceptance criteria* (`.claude/skills/task/rfc-template.md`) and extends them there; the PRD's own lines stay word for word
+        The plan names a test for each of them (`/task`, *Plan*); the PRD's own lines stay word for word
 ```
 
 
 While a task is built, its RFC sits under these lines as `#### RFC` (a part: `#### Part <x> · RFC`),
-in the shape of `.claude/skills/task/rfc-template.md`. The commit that ships it moves the RFC into
+as `/task` (*Plan*) writes it. The commit that ships it moves the RFC into
 the PR body and out of this file: a shipped task keeps only its header lines, and git and the PR
 hold its history. A split task's `#### Parts` table and task RFC stay until its last part ships.
 
-**Size.** A task is one PR; when it splits into parts, and how: `/task` step 3.
+**Size.** A task is one PR; it splits into parts only on the owner's word.
 
 ## Binding rules
 
@@ -56,7 +56,7 @@ hold its history. A split task's `#### Parts` table and task RFC stay until its 
    inside the PR, never tracked as states. A task whose rows moved to another task is `struck` —
    its heading says STRUCK, its stub stays so the id is never reused, and it is never counted as
    open work.
-   **The ORDER is `docs/build-order.md`**, walked by `/task` step 1 — never a task picked from
+   **The ORDER is `docs/build-order.md`**, walked by `/task` — never a task picked from
    memory, and never a later task because it is ready. A ticket with no `Depends on:` line waits on
    nothing, and the RFC writes the line.
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
@@ -73,7 +73,7 @@ hold its history. A split task's `#### Parts` table and task RFC stay until its 
    old research docs, the v1 repo — is a defect in the task. A task never cites an open-question
    id: a PRD row carries its own ruling, and git carries the history.
 3. **`DESIGN: PENDING` blocks the task at its turn**, and so does a board not yet locked
-   (`/task` step 1): the Design track draws, checks and locks the module first. A backend task
+   (`/task`, *Pick*): the Design track draws, checks and locks the module first. A backend task
    waits for the drawings of the screens it serves. A screen's UI is not "done" until it matches
    its board.
 4. **Studio tasks are ports, not rewrites** (ruling S12-1): engineering core moves as-is with

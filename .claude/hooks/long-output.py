@@ -18,6 +18,8 @@ LONG = re.compile(
     + r"|--filter\s+\S+\s+(?:build|typecheck|test:web|test:ct|test:mobile|test))(?![\w:-])"
     + r"|vitest\s+run\b|pnpm\s+exec\s+vitest\b)",
 )
+# A `|` inside a quoted grep pattern or message is text, never a command position.
+QUOTED = re.compile(r"'[^']*'|\"(?:[^\"\\]|\\.)*\"")
 TO_LOG = re.compile(r"(>>?|tee(\s+-a)?)\s*\"?\.qa/[\w./-]+\.log")
 
 FORM = (
@@ -35,7 +37,8 @@ def main() -> int:
     if event.get("tool_name") != "Bash":
         return 0
     command = str((event.get("tool_input") or {}).get("command", ""))
-    if LONG.search(command) and not TO_LOG.search(command):
+    unquoted = QUOTED.sub("''", command)
+    if LONG.search(unquoted) and not TO_LOG.search(command):
         print(FORM, file=sys.stderr)
         return 2
     return 0

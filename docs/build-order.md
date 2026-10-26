@@ -50,7 +50,7 @@ The step is the first open part of a split task, else the first open V1 task on 
 lives in its task's `#### Parts` table; this file never lists parts.
 
 What the step is for each task — build, design <module>, owner merges, owner clears —
-is `/task` step 1's table (`.claude/skills/task/rfc.md`). A backend task waits for the lock of
+is `/task`'s *Pick* (`.claude/skills/task/SKILL.md`). A backend task waits for the lock of
 the screens it serves in its block: a checked drawing states the facts the backend serves. A `**Parked:**` task is stepped over and pulls nothing ahead.
 
 A screen that is not drawn is never skipped for one that is. Design runs one module ahead: while
@@ -204,7 +204,7 @@ Invariants check the task and PRD documents (`.claude/protections.md`, Process):
 cell), `capability-ids-cited` (every capability a task or brief names, by id or by row key, is
 one the matrix holds) and `screens-register-whole` (every screen briefed and designed, every PRD row landed once,
 the V1 count as the scope lock states it). The RFC tests the requirements the task it takes
-carries (`/task` step 2). A screen's boards are drawn on its module's canvas and checked against its
+carries (`/task`, *Plan*). A screen's boards are drawn on its module's canvas and checked against its
 brief, before the build reaches it (`.claude/skills/task/design-track.md`).
 
 Design progress is how many V1 screens have a link on their task's `DESIGN:` line.

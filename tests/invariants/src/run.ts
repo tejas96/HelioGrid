@@ -78,6 +78,12 @@ async function main() {
     console.warn('SKIP invariants: DATABASE_URL/DATABASE_ADMIN_URL not set (local run only)');
     return;
   }
+  // The database checks write seed rows, so the owner's development data is never their target.
+  if ([env.DATABASE_ADMIN_URL, env.DATABASE_URL].some((each) => each?.includes('/heliogrid_dev'))) {
+    throw new Error(
+      "INVARIANTS NOT RUN: a database URL names heliogrid_dev. Put /task's test-database prefix in front.",
+    );
+  }
   const { tables, tenantTables, hasRlsSubjectRole } = await inspectDatabase(url);
 
   /*

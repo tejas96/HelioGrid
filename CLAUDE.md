@@ -6,13 +6,11 @@ Studio is the flagship. Light-only v1 · EN/HI/MR · tenant-currency money (INR 
 
 ## 1. Core principles
 
-**Think before coding.** State assumptions. Two readings the PRD supports → take the simplest, write
-it into the task with one reason, and say it out loud.
+**Two readings the PRD supports** → take the simplest, write it into the task with one reason, and
+say it out loud.
 
 **Propose a better approach when you see one** — with an example in *this* codebase and the cost to
 switch. Never switch silently.
-
-**Keep changes minimal.** Solve the requested problem only. Remove what your change orphaned.
 
 **Verify reality.** A claim about this repo names the file and line that proves it. A bug is
 reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and call sites, not
@@ -22,8 +20,9 @@ declarations. A check you add or change is trusted only after it fires on a plan
 **Every mistake leaves a record.** A mistake found in the work — yours, a reviewer's, a check's or
 the owner's — is fixed at once and listed in the PR body by its kind. One a machine could have
 caught gets that check: a type, a lint rule or a test. One no machine can decide gets one line in
-`.claude/agents/code-reviewer.md`, `rfc-template.md`, `board-check.md`, `docs/start-here.md` *The
-checklist* or its package's `CLAUDE.md` Traps — never a new rule file or a new step.
+`.claude/skills/task/SKILL.md`, `.claude/agents/code-reviewer.md` or `qa-live.md`, `board-check.md`,
+`docs/start-here.md` *The checklist* or its package's `CLAUDE.md` Traps — never a new rule file or
+a new step.
 
 **No new script.** A code fact goes into a type, Biome, dependency-cruiser or a test. Ask the owner
 before adding a script or a command.
@@ -56,43 +55,35 @@ Law ids are stable — never reuse or renumber one.
 ## 3. Workflow
 
 The work follows ONE order, `docs/build-order.md`, and `/task` (`.claude/skills/task/SKILL.md`)
-runs it: one task, three sessions — RFC, build, verify and ship — and one PR per task. Design is
-checked and locked a module ahead of the build (`.claude/skills/task/design-track.md`), so the
-build waits only when that track falls behind. The owner stops the work twice: the yes to the RFC
-(once; a part inside the approved task RFC with no open decision needs none) and the yes to every
-commit; then the owner merges the PR.
-
-**One turn, many calls.** Batch every read, search and check that does not wait on another's result
-into one turn. Long output goes to `.qa/<name>.log` and the chat reads its failures
-(`.claude/skills/task/SKILL.md`, *What keeps a session small*).
+runs it: one task, one session, one PR. The session decides, builds, proves and ships; the owner
+merges. Design is checked and locked a module ahead of the build
+(`.claude/skills/task/design-track.md`), so the build waits only when that track falls behind.
 
 **A PR is one complete task:** every acceptance line is met and proven before it opens, or by its
-CI lane. A task splits into parts only on the owner's word (`/task` step 3). The RFC's shape and
-its edge-case list are `.claude/skills/task/rfc-template.md`. After a source file is deleted or a
-branch switches, a stale `dist/` can keep a check red on code that is gone: `tsc -p` never removes
+CI lane. After a source file is deleted or a branch switches, a stale `dist/` can keep a check red on code that is gone: `tsc -p` never removes
 old output, so delete the app's git-ignored `dist/` (`rm -r apps/api/dist`), then
 `pnpm turbo build --force`.
 
-## 4. Stop and ask the owner before
+## 4. What the owner keeps
 
-- Anything billable or external-account-shaped (cloud, store accounts, paid APIs).
-- Schema or API work outside the current module (Law 9).
-- A layer conflict §7 **When rules conflict** does not resolve.
-- A feature or a number no PRD row implies. A decision that belongs to a LATER module is not an ask:
-  write it into that module's task in `docs/tasks/`, and carry on.
-- **Building before the RFC is approved.** Nothing is built before the owner's yes to the RFC.
-- **Committing.** Each commit waits for the owner's yes to the shown file list and message — a go,
-  a green check, an approved RFC, an earlier yes or the Claude app's Auto-fix never counts; one yes covers a change commit and
-  its clean merge of `origin/main` when they are shown together. Then push and open the PR (`/task`
-  step 9). The owner merges. Never `--no-verify`, never force-push, never push to `main`.
+- **The merge.** Every PR is merged by the owner. Never `--no-verify`, never force-push, never
+  push to `main` (`.claude/settings.json` denies them).
+- **Anything billable or external-account-shaped** (cloud, store accounts, paid APIs): stop and ask.
+- **Their data and machines:** never write the database directly, never touch a product volume,
+  never stop what they left running except as `/task` says.
+
+Everything else is decided in the session and written down with one reason: a reading of the PRD
+(the simplest that meets the row), a layer conflict (§7), a fix outside the task (a
+`docs/tasks/deferred.md` row). Nothing is built that no PRD row implies. Schema or API work a later
+module owns (Law 9) is written into that module's task in `docs/tasks/`, never built here.
 
 ## 5. Commands
 
 | | |
 |---|---|
 | `pnpm infra:up` · `pnpm infra:down` | Before infra-dependent work. The read-only build-order walk and RFC need no stack. |
-| `pnpm check` | **While building** (`/task` step 5). Biome on files that differ from `origin/main`, the workspace typecheck (cached), dependency-cruiser, sherif, turbo boundaries, duplication, `vitest related` on changed .ts files, the domain's 100% coverage bars when a barred domain source changed, catalog freshness when copy, ui or app files changed, and OpenAPI freshness and oasdiff when a contract or domain source changed. Fast; never the proof. |
-| `pnpm check:all` | **Normally once, after review and live QA.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI freshness and the oasdiff breaking-change judge (the build CI pins) against the branch's base on `origin/main`, catalog freshness, unit tests, invariants. Run it on the test database; how often, and when a failure stops for the owner: `/task` step 8. |
+| `pnpm check` | **While building.** Biome on files that differ from `origin/main`, the workspace typecheck (cached), dependency-cruiser, sherif, turbo boundaries, duplication, `vitest related` on changed .ts files, the domain's 100% coverage bars when a barred domain source changed, catalog freshness when copy, ui or app files changed, and OpenAPI freshness and oasdiff when a contract or domain source changed. Fast; never the proof. |
+| `pnpm check:all` | **Normally once, after review and live QA.** The full gate; what it runs is `.claude/protections.md`, top. Run it on the test database, as `/task` does. |
 | `pnpm lint:fix` | Format and auto-fix. |
 | `pnpm test:watch` · `pnpm test:coverage` | Tests while writing · the edge cases you missed (read it, not the pass count). |
 | `pnpm db:migration:new` · `pnpm db:migrate` | Where a migration starts; never hand-author one. |
@@ -113,12 +104,12 @@ allowed imports; §4 decides where a new file goes. Run §4 before creating one.
 |---|---|
 | `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
 | `docs/engineering/` | how this repo is built. |
-| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner: its three phase files, the RFC template, the design track and the board check), `agents/` (its read-only helpers), `hooks/` (the two checks on tool calls: no screenshot, long output to a file), `settings.json` (hard-safety denies, the hooks, and the plugins switched off here because `skills/task/` is the one step runner). |
+| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json`, `skills/task/` (the one step runner), `agents/`, `hooks/`, `settings.json`. |
 | `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads — `components/<name>/`, the pictures a component spec saves, and the `<name>.log` files a task's checks write. A task deletes the trees and temporary files it made before its PR opens, and keeps the logs. |
-| `.design/` | committed, written only by the Design track's lock: `<module>/`, that module's locked boards and the support files they load — each one exactly as the Design track checked it, read from the module's canvas — and `design-system.version`, the canvas's design system version at the lock; a read-only copy. A screen is built only while its boards here equal a fresh read (`/task` step 1). |
+| `.design/` | committed, written only by the Design track's lock (`design-track.md`): each module's locked boards and `design-system.version`; a read-only copy. |
 | `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`env/dev.env`, `env/prod.env`). A console change updates it in the same sitting. |
 | `infra/` | deployment and local-stack material that is NOT application code. |
-| the module canvases | NOT in the repo: one Design artifact in Claude per module (`docs/start-here.md`, *The canvases*), holding each screen's boards and a copy of the design system artifact — the source of truth for design. Claude Code draws and fixes the boards; the owner reviews them there, and the owner's yes locks them. A task's `DESIGN:` line links the canvas; the Design track (`.claude/skills/task/design-track.md`) locks a copy in `.design/`. A studio screen (`ported from the POC`) has none. |
+| the module canvases | NOT in the repo: one Design artifact in Claude per module (`docs/start-here.md`, *The canvases*) — the source of truth for design; the owner's yes locks a board. A studio screen (`ported from the POC`) has none. |
 
 Import a package only through an entry its `package.json` `exports` declares. **Never invent a folder**: every tree is a closed set, and a new category is a
 plan-time decision. `docs/README.md` maps every document.

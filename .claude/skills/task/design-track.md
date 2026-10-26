@@ -2,11 +2,11 @@
 
 A module's boards are drawn, checked, fixed and locked once, before the first task that builds or
 serves them, so the build waits only when this track falls behind. Run it when the owner asks —
-between two build tasks, after the current task's PR is open — or when `/task` step 1 answers
-`design <module>` (`rfc.md`).
+between two build tasks, after the current task's PR is open — or when `/task` (*Pick*) sends a
+screen here.
 
 `<module>` is a screen id's module (`SCR-SHELL-06` → `SHELL`). The screens in scope are the V1
-screens of `<module>` whose tasks are not `shipped` — or, when `/task` step 1 sent the run here,
+screens of `<module>` whose tasks are not `shipped` — or, when `/task` sent the run here,
 only the screens it named (a board that differs from its lock, a screen whose boards load a support
 file that differs from its lock, a screen with no lock, a brief with a `## Redesign owed` section); a design system version that differs from the lock puts every screen
 of the module in scope. A shipped screen is never re-checked, and a studio screen (`ported from the
@@ -91,13 +91,12 @@ second refusal goes to the owner.
    Fill each task's `DESIGN:` line with its canvas link, turn a `planned` task's `Status:` to
    `designed`, delete each brief's `## Redesign owed` section the board now meets, and delete each
    `deferred.md` row the boards now meet (or, for a row naming several modules, its clause for this
-   one). Run the gate as `/task` step 8 runs it, then show the commit. On the owner's yes, commit on
-   `design/<module>` as `chore: <module> design — <screens> locked`, push it, and open the PR as
-   `/task` step 9 does (a draft, marked ready only when CI is green), its body listing the screens
+   one). Run the gate as `/task` runs it, then commit on `design/<module>` as
+   `chore: <module> design — <screens> locked`, push it, and open the PR as `/task` does (a draft, marked ready only when CI is green), its body listing the screens
    locked, the owner's rulings and the `deferred.md` rows added or closed. A
    lock is a commit: every lock commits `.design/<module>/`.
 
-A board or support file changed on the canvas after the lock differs from `/task` step 1's fresh
+A board or support file changed on the canvas after the lock differs from `/task`'s fresh
 read, and only the screens whose boards, or the support files they load, differ come back here. No board is drawn in Hindi or Marathi: those words come
 from the catalog. The repo already holds the design system (`packages/theme/src/_generated/`,
 `packages/ui`), so no board is ever opened in a browser: the build reads the board's code
@@ -123,5 +122,5 @@ module canvas that carries the system (`design-system-components.md`, Update) �
 locked module back here through *Is a board locked?* — and write one `docs/tasks/deferred.md` row
 for the repo's side: the typings re-pulled into `packages/theme/src/_generated/` and the component
 ported in `packages/ui`, naming each screen whose board uses the change, its `reopens when` the
-first of their tasks starting in the build walk (`/task` step 1), not in file order. Until that row ships, the board check reads the change as a known
+first of their tasks starting in the build walk, not in file order. Until that row ships, the board check reads the change as a known
 difference, and a drawing agent is given the changed typing.

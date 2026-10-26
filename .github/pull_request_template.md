@@ -5,9 +5,8 @@
 
 ## RFC
 
-<!-- The approved RFC, pasted whole: it leaves the task file in this commit (`/task` step 9).
-     Then what changed after approval and the re-approval it got, and any owner ruling applied,
-     stated as the rule it became. -->
+<!-- First, every decision the session took, one line each with its reason. Then the plan
+     (the task's `#### RFC`), pasted whole: it leaves the task file in this commit. -->
 
 ## Acceptance criteria → proof
 
@@ -33,7 +32,7 @@
 ## Gate
 
 <!-- `pnpm check:all` on the test database: the result, and the first failing line if it failed
-     once. Then the task's own `tests/e2e/web` specs run locally (`/task` step 8 item 4), or "none
+     once. Then the task's own `tests/e2e/web` specs run locally (`/task`, *Clean up, then the gate*), or "none
      changed". -->
 
 ## Red proofs
@@ -52,7 +51,7 @@
 ## Cost
 
 <!-- The meter's one line for this task, every session summed: effective tokens, main turns,
-     agents, images, hours (`/task` step 9). -->
+     agents, images, hours (`/task`, *Ship*). -->
 
 ## Deferred
 

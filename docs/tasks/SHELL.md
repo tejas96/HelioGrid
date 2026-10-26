@@ -201,7 +201,7 @@ Domain types it reads, adds none: the search-alias law and the plain ranking are
 **DONE WHEN:**
 - Given unread notifications, when the badge renders on any device, then its count derives from the records and matches the list (F6-17). → proof: QA web · ios · android with three unread records the bell badge reads 3 at the foot of the web rail and in the mobile shell and equals the list's unread count; a push dropped in transit changes neither
 - (F4-27, F6-07, F6-12, F6-19, M13-21 and M13-45 carry no dedicated Given/When/Then lines in their PRDs' acceptance blocks; the requirement texts above are the binding criteria — the centre marks read once and up-only per F6-07, and never stands a modal or spinner wall between the reader and their work per F4-27.) → proof: QA web · ios · android open an item on one device and it is read on the other and never un-reads; three proposal-opened events on one day render as one group with three reachable members; the horizon row says the centre is an inbox, not an archive; Mark all read is absent when nothing is unread and no modal or spinner wall stands between the reader and the list; the owner's monthly summary reads in place with the dashboard one control away
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: qa-web every listed state at 1536px · qa-mobile every listed state at 375px
+- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: qa-live every listed state at 1536px · qa-mobile every listed state at 375px
 
 ### T-SHELL-006 · Billing State Banner & Denial Sheets
 **Type:** screen · **Tier:** P0

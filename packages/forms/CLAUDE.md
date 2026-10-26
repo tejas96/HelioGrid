@@ -11,7 +11,7 @@
 
 ## Done means
 
-Consumed by BOTH platforms · the form driven in a browser and on the phones `/task` step 7 picks.
+Consumed by BOTH platforms · the form driven in a browser and on both phones.
 
 ## Traps
 

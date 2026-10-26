@@ -5,8 +5,8 @@
 
 ## What lives here / what must never live here
 
-- This package holds the physical schema; the task's Data model block holds the logical one, and
-  neither restates the other. `docs/engineering/forward-compat.md` lists what your first migration
+- This package holds the physical schema; an open task's Data model block holds the logical one
+  until the task ships, and then the migrations and `src/schema/` are the record. `docs/engineering/forward-compat.md` lists what your first migration
   must already satisfy.
 - The `./uuid` subpath is backend-only; `node:crypto` cannot resolve in a browser or Metro bundle.
 - NEVER: business logic, or a table or column that no migration creates.

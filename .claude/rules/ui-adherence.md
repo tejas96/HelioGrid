@@ -90,7 +90,7 @@ navigator's, and the studio's 3D scene animates in its own code under the same f
   With it on, the end state shows at once.
 - **A loop stops** when its state ends, when its view leaves the screen and when the app or tab goes
   to the background (web: `IntersectionObserver`, `visibilitychange`; phone: screen blur, `AppState`).
-  A loop that never stops also keeps Android from going idle, and every `qa-android` dump then fails.
+  A loop that never stops also keeps Android from going idle, and every `uiautomator` dump then fails.
 - **Nothing waits on an animation.** Content renders at once; motion runs over what is already there.
   No `onAnimationEnd` gates a control or the data, and the rows of a list never arrive one by one.
 - **Heavy motion loads late.** A shader or a motion library loads lazily (`import()` /

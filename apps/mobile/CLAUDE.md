@@ -63,7 +63,7 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 bundle exec pod install
 
 ## Done means
 
-Runs on the iOS simulator, and on Android through `qa-android` when `/task` step 7 calls it, else CI's `android` lane · the per-screen DoD in `docs/prd/foundations/F7-design-language.md`
+Runs on the iOS simulator, and on Android, by `qa-live` and CI's `android` lane · the per-screen DoD in `docs/prd/foundations/F7-design-language.md`
 `F7-43`.
 
 ## Traps

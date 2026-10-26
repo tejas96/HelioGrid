@@ -6,12 +6,12 @@ Deps: `architecture.md` §2 tests/e2e.
 
 - `web/<route>.spec.ts` — one per web route, named as `e2e-flow-per-screen` names it (`/login` →
   `login.spec.ts`, `/` → `root.spec.ts`, a `(group)` folder dropped).
-- `web/qa-seed.setup.ts` is no flow: the seed of the QA companies `/task` step 7 drives
+- `web/qa-seed.setup.ts` is no flow: the seed of the QA companies `qa-live` signs in as
   (`support/qa-accounts.ts`), run only as project `qa-seed`, never in CI.
 - No screenshot baselines: a flow asserts words, roles, states and measured values, never a
   whole-page picture. A look is proven by the component specs (each part's
   CSS against its tokens), by the code reviewer's compare of the locked board's code with the
-  screen's, and by `qa-web`'s measured checks on every screen a change reaches.
+  screen's, and by `qa-live`'s measured checks on every screen a change reaches.
 - `components/<Name>.spec.tsx` — the real `@heliogrid/ui` web halves, mounted with the app's
   stylesheets (`playwright/index.tsx`). A mounted component is imported from the `@heliogrid/ui`
   index; a plain value from `@heliogrid/ui` is read through `support/`, since the component
@@ -39,7 +39,7 @@ Deps: `architecture.md` §2 tests/e2e.
 ## Commands
 
 ```
-pnpm --filter @heliogrid/e2e test:web [<spec files>]  # the web flows — locally only on heliogrid_test, after the gate (/task step 8); all of them in CI
+pnpm --filter @heliogrid/e2e test:web [<spec files>]  # the web flows — locally only on heliogrid_test, after the gate (`/task`); all of them in CI
 pnpm --filter @heliogrid/e2e test:ct [<spec files>]   # the component tests (port 3100)
 pnpm --filter @heliogrid/e2e test:web --project qa-seed  # the QA companies (support/qa-accounts.ts), off CI, with the worker and Temporal up
 pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows by hand, one device per call
@@ -48,9 +48,9 @@ pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows by hand, 
 The web suite runs in CI's `e2e-web` and the component suite beside it in `e2e-components`; the phone flows run in CI on Android
 (`android`; `.github/workflows/ci.yml` says how, and how the repository variable `PHONE_E2E=off`
 switches them off) and on iOS by hand, never in CI — a macOS runner spends 20 minutes on the Xcode
-build alone; the `qa-ios` helper drives a task's iOS rows, not these flows. `test:mobile` runs the
+build alone; `qa-live` runs them on the simulator for each task. `test:mobile` runs the
 flows on a device by hand; it needs Metro, the api and the app installed on the device. The local
-emulator is `Pixel_8_API_36` (`/task` step 7) and CI's is API 34;
+emulator is `Pixel_8_API_36` (the `android-emulator` launch configuration) and CI's is API 34;
 either gets 4 cores and 4 GB of RAM, given on the command line (`emulator -avd <name> -cores 4 -memory 4096`;
 the emulator ignores `hw.ramSize` in the AVD's file) — at 2 GB and below Maestro's on-device
 server dies mid-suite (`DeviceServerDiedException`) while the app shows no fault.
