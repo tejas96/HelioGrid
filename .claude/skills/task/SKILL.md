@@ -31,6 +31,8 @@ stops you; it never means "nothing open". Then, for the task found:
   locked, or its brief has `## Redesign owed` → run `design-track.md` instead.
 - It carries `**Blocked:**` or waits on a parked or later-block task → say `owner clears <id>`
   with at most two ways to clear it, and stop.
+- The task itself has an open PR (`feat/<id>`) → it is in review: skip it and walk on. A split
+  task (`#### Parts`) is taken by its first part that is not shipped and has no open PR.
 - Otherwise continue `feat/<id>`, or cut it from `origin/main` on a clean tree. A dirty tree on
   another branch is someone else's work: name its files and stop.
 
@@ -48,8 +50,10 @@ open point yourself — the simplest build that meets the row — and write the 
 reason. On a screen with a board, the board's look wins over saving code.
 
 Write the plan under the task's header lines as `#### RFC`: what the user gets; the decisions; the
-files; the build order; the tests, each `` `<file>` › *<title>* `` as the test file writes it
-(invariant `rfc-proofs-hold` reads them); `**Deleted:** D…, D…` — the deferred rows this task
+files; the build order; the proof, one table row per `DONE WHEN` line —
+`| AC-n | main-dev | `<file>` › *<title>* |` for a test, its title as the test file writes it, or
+`| AC-n | qa-live | <what is checked live> |` (invariant `rfc-proofs-hold` reads the `main-dev`
+rows); `**Deleted:** D…, D…` — the deferred rows this task
 closes — or `**Deleted:** none`. It is the plan, never the research, and never copied from an
 earlier RFC or PR.
 
@@ -68,8 +72,11 @@ deferred rows the plan lists. `pnpm check > .qa/check.log 2>&1` before the revie
 
 What is running before you start — listeners on 3002, 8084, 8081 and 3100, booted phones
 (`xcrun simctl list devices booted`, `adb devices`), `docker ps` — is the owner's and is left as
-found, except an `api` or `web` it holds: stop that one by its preview id, since the seed, the
-database switch and the gate need those ports, and start it again at the end. Then:
+found, except an `api`, `web` or `worker` it holds: stop that one by its preview id, since the
+seed, the database switch and the gate need those ports, and a worker started on `heliogrid_dev`
+(`pgrep -f '@heliogrid/worker'`; it has no port) would take the seed's workflow work into the
+owner's data. Start it again at the end. One started outside the preview tool is the owner's to
+stop: ask. Then:
 
 1. Switch both database lines of `.env.local` to `heliogrid_test`
    (`sed -i '' 's/heliogrid_dev/heliogrid_test/' .env.local`), then `<prefix> pnpm db:migrate` and
@@ -108,7 +115,8 @@ made; keep `.qa/*.log`. Then:
 
 A `SKIP ` line fails the gate. Playwright reads a spec path as a pattern: escape a route's
 brackets (`'web/more-\[row\]'`) and check the log names every spec. Start again what you stopped
-from the owner's list.
+from the owner's list — a web dev server after `rm -rf apps/web/.next`, since the gate's build
+leaves a production `.next` that `next dev` cannot serve.
 
 ## Ship
 
@@ -117,7 +125,9 @@ lines (those above its first `####`) — the plan moves into the PR body. Messag
 `feat: <id> — <what the user gets>`. Merge `origin/main` when the branch is behind; never rebase.
 Push `feat/<id>`, open the PR as a draft from `.github/pull_request_template.md`, its `## Cost`
 from `python3 -I ~/.claude/projects/-Volumes-works-space-heliogrid/harness-meter.py <id>`, and
-mark it ready (`gh pr ready`) when every CI job of the head's latest run has passed. A red job:
+mark it ready (`gh pr ready`) when every job of the head's latest run is `success`, or `skipped`
+while `changes` passed, and — when `android` ran and the repository variable `PHONE_E2E` is not
+`off` — its step `Phone flows (tests/e2e/mobile) on the emulator` ran. A red job:
 `gh run view <run> --log-failed > .qa/ci.log`, fix, push.
 
 The same failure after two real fixes: leave the PR a draft, write in its body what fails and the

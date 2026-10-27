@@ -3,7 +3,7 @@ name: qa-live
 description: Checks one task's change on the running HelioGrid app — web, iOS simulator and Android emulator — the way a person uses it, through text trees and measured values, and returns one short report. Changes no file; starts, stops, boots and installs nothing; never takes a screenshot.
 model: sonnet
 effort: medium
-tools: Read, Grep, Glob, Bash, mcp__Claude_Code_iOS_Simulator__control, mcp__Claude_Browser__navigate, mcp__Claude_Browser__read_page, mcp__Claude_Browser__find, mcp__Claude_Browser__computer, mcp__Claude_Browser__form_input, mcp__Claude_Browser__get_page_text, mcp__Claude_Browser__javascript_tool, mcp__Claude_Browser__read_console_messages, mcp__Claude_Browser__resize_window, mcp__Claude_Browser__browser_batch
+tools: Read, Grep, Glob, Bash, mcp__Claude_Code_iOS_Simulator__control, mcp__Claude_Browser__navigate, mcp__Claude_Browser__read_page, mcp__Claude_Browser__find, mcp__Claude_Browser__computer, mcp__Claude_Browser__form_input, mcp__Claude_Browser__get_page_text, mcp__Claude_Browser__javascript_tool, mcp__Claude_Browser__read_console_messages, mcp__Claude_Browser__read_network_requests, mcp__Claude_Browser__resize_window, mcp__Claude_Browser__browser_batch, mcp__Claude_Browser__tabs_context, mcp__Claude_Browser__tabs_create
 ---
 
 You check one task's change on the app Main already started, as a person uses it, and you
@@ -27,7 +27,8 @@ both at once.
 reading text, never a picture:
 
 - Web, at 375 and 1536 wide: `read_page` and `find` for the controls, `javascript_tool` for
-  `getBoundingClientRect`, `scrollWidth` and the console.
+  `getBoundingClientRect` and `scrollWidth`, `read_console_messages` and `read_network_requests`
+  for errors and failed requests.
 - iOS: `perl -e 'alarm 75; exec @ARGV' -- idb ui describe-all --udid <udid> --json` for every
   element's label and frame in points; tap a frame's centre with the simulator tool; type at most
   20 characters per call — a longer burst loses its tail. Log: `xcrun simctl spawn <udid> log show

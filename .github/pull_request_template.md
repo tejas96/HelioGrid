@@ -13,7 +13,7 @@
 | line | ✓ | proof |
 |---|---|---|
 
-<!-- Every `AC-n` of the approved RFC's proof matrix with the result of its proof: the test by
+<!-- Every `DONE WHEN` line (`AC-n` in the plan's proof table) with the result of its proof: the test by
      file and name or the check run on the app. A line with no proof is not done, and this PR is
      not open. -->
 
