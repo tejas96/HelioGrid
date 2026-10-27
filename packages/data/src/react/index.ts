@@ -120,4 +120,6 @@ export type { Team } from './use-team';
 export { useTeam } from './use-team';
 export type { TeamActs } from './use-team-acts';
 export { useTeamActs } from './use-team-acts';
+export type { PaymentTermsEditor, PaymentTermsPage } from './use-tranche-templates';
+export { useTrancheTemplates } from './use-tranche-templates';
 export { useUpdateRequired } from './use-update-required';

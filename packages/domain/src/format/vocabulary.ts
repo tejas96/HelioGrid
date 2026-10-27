@@ -71,18 +71,34 @@ export function isSkippableStage(vocabulary: DisplayVocabulary, stage: string): 
 }
 
 /**
- * India (`F1-51`). Two stage labels and one blocker party, which is every value the PRD names —
- * the rest of `M08`'s chain is labelled when `M08` authors it (Law 9), and inventing labels for
- * stages that do not exist yet would put words on a machine nobody has designed.
+ * India (`F1-51`). Every stage of `M08`'s chain is labelled, because a payment tranche falls due on
+ * one and the Payment terms page names it (`SCR-M01-20`); `F1-51` fixes two of the nine, and the
+ * other seven take neutral words. The blocker party is the one the PRD names.
  *
- * `DISCOM` is an operator-class name in the never-translated set (`F3-08`), so these carry `en`
- * alone: "DISCOM inspection" reads the same in Marathi, and three identical strings would be
- * three places to get it wrong.
+ * `DISCOM` is an operator-class name in the never-translated set (`F3-08`), so its stage and its
+ * party carry `en` alone: "DISCOM inspection" reads the same in Marathi, and three identical
+ * strings would be three places to get it wrong.
  */
 export const IN_VOCABULARY: DisplayVocabulary = {
   stages: [
+    { stage: 'won', label: { en: 'Won', hi: 'सौदा पक्का', mr: 'सौदा पक्का' } },
+    {
+      stage: 'material_ordered',
+      label: { en: 'Material ordered', hi: 'सामान का ऑर्डर', mr: 'साहित्याची ऑर्डर' },
+    },
+    { stage: 'dispatched', label: { en: 'Dispatched', hi: 'रवाना', mr: 'रवाना' } },
+    { stage: 'installation', label: { en: 'Installation', hi: 'इंस्टॉलेशन', mr: 'इन्स्टॉलेशन' } },
+    {
+      stage: 'electrical_metering',
+      label: { en: 'Electrical metering', hi: 'बिजली मीटरिंग', mr: 'वीज मीटरिंग' },
+    },
     { stage: 'utility_inspection', label: { en: 'DISCOM inspection' } },
-    { stage: 'incentive_claimed', label: { en: 'Subsidy claimed' } },
+    { stage: 'commissioned', label: { en: 'Commissioned', hi: 'चालू किया गया', mr: 'कार्यान्वित' } },
+    {
+      stage: 'incentive_claimed',
+      label: { en: 'Subsidy claimed', hi: 'सब्सिडी का दावा', mr: 'अनुदानाचा दावा' },
+    },
+    { stage: 'handed_over', label: { en: 'Handed over', hi: 'सौंप दिया', mr: 'सुपूर्द' } },
   ],
   /** `F1-51`, per `F1-35`. */
   skippableStages: ['incentive_claimed'],

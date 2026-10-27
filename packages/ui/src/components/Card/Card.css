@@ -24,12 +24,30 @@
   cursor: pointer;
 }
 
-.hg-card[data-interactive="true"]:hover {
+.hg-card[data-interactive="true"]:not([data-surface="raised"]):hover {
   background: var(--fill-hover);
 }
 
 .hg-card[data-selected="true"] {
   box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
+/* RAISED: a white card set on the page, not a tile — a page ground (`Ground.css`), so its fill is
+   that ground and a control inside it takes the page's fill. Under the pointer it lifts to --e2;
+   selected, an OUTER ring, because an inset ring on a white card reads as a focused field. These
+   rules come after the density and selected rules they must beat. */
+.hg-card[data-surface="raised"] {
+  border-radius: var(--r-lg);
+  background: var(--hg-ground);
+  box-shadow: var(--e1);
+}
+
+.hg-card[data-surface="raised"][data-interactive="true"]:not([data-selected="true"]):hover {
+  box-shadow: var(--e2);
+}
+
+.hg-card[data-surface="raised"][data-selected="true"] {
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 .hg-card:focus-visible {

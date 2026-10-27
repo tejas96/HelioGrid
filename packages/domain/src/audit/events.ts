@@ -24,6 +24,7 @@ export const AUDIT_EVENT_TYPES = [
   'settings.tranche_template_created',
   'settings.tranche_template_changed',
   'settings.tranche_template_archived',
+  'settings.tranche_template_restored',
   'settings.tranche_template_default_changed',
   'settings.holidays_changed',
   'catalog.item_created',

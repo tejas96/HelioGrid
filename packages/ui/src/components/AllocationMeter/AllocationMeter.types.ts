@@ -6,7 +6,15 @@ export interface AllocationPart {
   /** The part's size in `unit`. `percent` is accepted as an alias. */
   value?: number;
   percent?: number;
+  /** With `variant="split"`: the words under the part's share in the key — the stage it falls due at. */
+  caption?: ReactNode;
 }
+
+/**
+ * `meter` checks the parts against `target`, with the remainder in words. `split` reads a split
+ * that was saved already: a strip and a key, nothing in progress.
+ */
+export type AllocationVariant = 'meter' | 'split';
 
 /** Three states, because a target is an EQUALITY: under is as wrong as over, and `met` is real. */
 export type AllocationState = 'under' | 'met' | 'over';
@@ -78,6 +86,13 @@ export interface AllocationMeterProps {
   note?: ReactNode;
   /** Names each segment beside the bar. Off by default: at 375px the bar and the words come first. */
   showLegend?: boolean;
+  /**
+   * `meter` (default) checks the parts against `target`, with the remainder in words. `split`
+   * **reads a saved split**: one segment per part in its own chart colour and, under it, a key of
+   * each part's share and `caption` — no label row, no remainder, no rule (`SCR-M01-20`'s list of
+   * payment terms). `label` names the section. Never `split` where the parts are being edited.
+   */
+  variant?: AllocationVariant;
   density?: 'expressive' | 'functional';
 }
 

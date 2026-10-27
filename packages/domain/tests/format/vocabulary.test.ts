@@ -7,6 +7,7 @@ import {
   paymentModeLabel,
   stageLabel,
 } from '../../src/format/vocabulary';
+import { PROJECT_STAGE_CHAIN } from '../../src/projects/stages';
 import { IN_PAYMENT_RAILS } from '../../src/rails/pack';
 
 const IN = IN_FORMATS.vocabulary;
@@ -34,8 +35,22 @@ describe('stage and blocker labels — what a user reads for a machine value (F1
     expect(party && packLabel(party, 'hi')).toBe('DISCOM');
   });
 
+  it('labels every stage of the chain a tranche can fall due on (SCR-M01-20)', () => {
+    for (const stage of PROJECT_STAGE_CHAIN) {
+      expect(stageLabel(IN, stage), `no label for ${stage}`).not.toBeNull();
+    }
+  });
+
+  it('labels a stage it now names in Hindi and Marathi', () => {
+    const label = stageLabel(IN, 'material_ordered');
+    expect(label && [packLabel(label, 'hi'), packLabel(label, 'mr')]).toEqual([
+      'सामान का ऑर्डर',
+      'साहित्याची ऑर्डर',
+    ]);
+  });
+
   it('returns null for a stage the market never declared, rather than guessing (F1-09)', () => {
-    expect(stageLabel(IN, 'commissioned')).toBeNull();
+    expect(stageLabel(IN, 'cancelled')).toBeNull();
     expect(blockerPartyLabel(IN, 'customer')).toBeNull();
   });
 });

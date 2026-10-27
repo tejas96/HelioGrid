@@ -31,6 +31,14 @@ export function displayNumber(value: number | undefined): string {
   return value === undefined ? '' : String(value);
 }
 
+/**
+ * A figure while its field rests, at the places its `precision` names: 5 at one place reads 5.0,
+ * as `SCR-M01-16` draws *5.0 kW*. Editing still shows the plain figure, which is what is parsed.
+ */
+export function restingFigure(figure: number, precision: number): string {
+  return figure.toFixed(precision);
+}
+
 /** The spoken representation of a bound: "0.3 m", "2500". */
 export function formatBound(value: number, currency: boolean, unit?: string): string {
   if (currency) return String(value);

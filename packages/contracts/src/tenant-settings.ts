@@ -8,7 +8,7 @@ import {
   taxRegistrationSchema,
   taxRegistrationsSchema,
 } from './business-profile';
-import { createHeadersSchema, extensibleEnum, uuidSchema } from './common';
+import { uuidSchema } from './common';
 import { labelSchema } from './document-content';
 import {
   brandingReadSchema,
@@ -18,12 +18,12 @@ import {
   proposalTemplateSchema,
   timelineTemplateReadSchema,
   timelineTemplateSchema,
-  trancheTemplateSchema,
   trancheTemplateWriteSchema,
 } from './document-templates';
-import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED } from './error';
+import { baseError, errorEnvelope } from './error';
 import { uiLanguageResponseSchema } from './locale';
 import { promptPointFactSchema } from './onboarding';
+import { trancheTemplateRoutes } from './tranche-templates';
 
 const c = initContract();
 
@@ -128,11 +128,8 @@ export const tenantSettingsErrorCodeSchema = z.enum(tenantSettingsErrorCodes);
 export type TenantSettingsErrorCode = z.infer<typeof tenantSettingsErrorCodeSchema>;
 
 const unauthenticated = errorEnvelope(baseError('UNAUTHENTICATED'));
-const notFound = errorEnvelope(baseError('NOT_FOUND'));
-const conflict = errorEnvelope(baseError('CONFLICT'));
 
 const guarded = { 401: unauthenticated } as const;
-const templateParams = z.object({ id: uuidSchema });
 
 export const tenantSettingsContract = c.router({
   effective: {
@@ -234,61 +231,7 @@ export const tenantSettingsContract = c.router({
     summary: 'Replace the timeline phases, in the order sent',
     responses: { 200: timelineTemplateReadSchema, ...guarded },
   },
-  trancheTemplates: {
-    method: 'GET',
-    path: '/settings/tranche-templates',
-    summary: 'Every payment-term template, archived ones flagged, exactly one marked default',
-    responses: { 200: z.object({ items: z.array(trancheTemplateSchema) }), ...guarded },
-  },
-  createTrancheTemplate: {
-    method: 'POST',
-    path: '/settings/tranche-templates',
-    headers: createHeadersSchema,
-    body: trancheTemplateWriteSchema,
-    summary: 'Add a named template — refused unless its lines total exactly 100.00',
-    responses: {
-      201: trancheTemplateSchema,
-      ...guarded,
-      422: errorEnvelope(extensibleEnum(['TRANCHES_NOT_WHOLE', IDEMPOTENCY_KEY_REUSED])),
-    },
-  },
-  saveTrancheTemplate: {
-    method: 'PUT',
-    path: '/settings/tranche-templates/:id',
-    pathParams: templateParams,
-    body: trancheTemplateWriteSchema,
-    summary: 'Replace a template’s name and lines — refused unless they total exactly 100.00',
-    responses: {
-      200: trancheTemplateSchema,
-      ...guarded,
-      404: notFound,
-      /** Archived: an archived template is history, never edited. */
-      409: conflict,
-      422: errorEnvelope(tenantSettingsErrorCodeSchema.extract(['TRANCHES_NOT_WHOLE'])),
-    },
-  },
-  archiveTrancheTemplate: {
-    method: 'POST',
-    path: '/settings/tranche-templates/:id/archive',
-    pathParams: templateParams,
-    body: c.noBody(),
-    summary: 'Archive a template — never deleted; refused while it is the default',
-    responses: { 200: trancheTemplateSchema, ...guarded, 404: notFound, 409: conflict },
-  },
-  makeDefaultTrancheTemplate: {
-    method: 'POST',
-    path: '/settings/tranche-templates/:id/make-default',
-    pathParams: templateParams,
-    body: c.noBody(),
-    summary: 'Make a template the tenant default — the one the builder and Quick mode start from',
-    responses: {
-      200: trancheTemplateSchema,
-      ...guarded,
-      404: notFound,
-      /** Archived: an archived template cannot be the default. */
-      409: conflict,
-    },
-  },
+  ...trancheTemplateRoutes,
   holidays: {
     method: 'GET',
     path: '/settings/holidays',

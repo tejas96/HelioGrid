@@ -7,8 +7,20 @@ export interface CardProps {
   density?: 'expressive' | 'functional';
   /** enables the hover fill + pointer */
   interactive?: boolean;
-  /** the inset 1.5px accent ring a focused field also draws */
+  /** the inset 1.5px accent ring a focused field also draws; on `raised`, an outer 2px ring */
   selected?: boolean;
+  /**
+   * `tile` (default): the grey `--fill` tile (`F7-49`). `raised`: a white `--surface` card on
+   * `--e1`, `--r-lg` — a list of records set on the page (`SCR-M01-20`'s payment terms). It is a
+   * page ground, not a tile, so a control inside it takes the page's fill.
+   */
+  surface?: 'tile' | 'raised';
+  /**
+   * **Names the card as one control** — from `packages/i18n`. With `onClick` it is the card's
+   * accessible name and `selected` reads as current. Opt-in, so a card that holds its own buttons
+   * is never a button around buttons.
+   */
+  label?: string;
   /**
    * **The card has states**, because law 1 ("states are part of done") applies to the surface every
    * screen reaches for first. The card's frame, padding and radius never move between states — only

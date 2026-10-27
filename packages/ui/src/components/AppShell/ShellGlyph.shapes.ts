@@ -1,4 +1,5 @@
 import { CATALOG_GLYPHS } from './ShellGlyph.catalog.shapes';
+import { JOURNEY_GLYPHS } from './ShellGlyph.journey.shapes';
 import { circle, type GlyphMark, path, rect } from './ShellGlyph.marks';
 
 /**
@@ -8,6 +9,7 @@ import { circle, type GlyphMark, path, rect } from './ShellGlyph.marks';
  */
 export const SHELL_GLYPHS = {
   ...CATALOG_GLYPHS,
+  ...JOURNEY_GLYPHS,
   house: [path('M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z')],
   people: [
     path('M9 4.8a3.2 3.2 0 1 1 0 6.4 3.2 3.2 0 0 1 0-6.4'),

@@ -49,7 +49,8 @@ export interface NumberFieldBoxProps {
   disabled: boolean;
   /** Refusal or error — the danger edge; while focused the edge is the focus ring instead. */
   danger: boolean;
-  label?: string;
+  /** The field's accessible name — its `label`, or its `ariaLabel` when no label is drawn. */
+  name?: string;
   unit?: string;
   currency: boolean;
   /** `NumberFieldProps.focusRequest`. */
@@ -63,14 +64,14 @@ export function NumberFieldBox({
   density,
   disabled,
   danger,
-  label,
+  name,
   unit,
   currency,
   focusRequest,
 }: NumberFieldBoxProps) {
   const control = useRef<TextInput>(null);
   useFocusRequest(control, focusRequest);
-  const name = label ?? 'value';
+  const stepperName = name ?? 'value';
   const ink = disabled ? 'disabled' : 'secondary';
   return (
     <View
@@ -85,7 +86,7 @@ export function NumberFieldBox({
         <Pressable
           style={styles.step}
           disabled={disabled}
-          accessibilityLabel={`Decrease ${name}`}
+          accessibilityLabel={`Decrease ${stepperName}`}
           onPress={() => draft.nudge(-1)}
         >
           <Text variant="field-value" color={ink}>
@@ -104,7 +105,7 @@ export function NumberFieldBox({
         keyboardType="decimal-pad"
         value={draft.draft}
         editable={!disabled}
-        accessibilityLabel={label}
+        accessibilityLabel={name}
         accessibilityState={{ disabled }}
         onChangeText={draft.setDraft}
         onFocus={draft.onFocus}
@@ -120,7 +121,7 @@ export function NumberFieldBox({
         <Pressable
           style={styles.step}
           disabled={disabled}
-          accessibilityLabel={`Increase ${name}`}
+          accessibilityLabel={`Increase ${stepperName}`}
           onPress={() => draft.nudge(1)}
         >
           <Text variant="field-value" color={ink}>

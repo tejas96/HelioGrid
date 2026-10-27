@@ -1,0 +1,244 @@
+/* The Payment terms page body (`SCR-M01-20`). `data-columns` is the room the app gives it: one
+   column of cards at 375, two at 1536. The page's side padding is the shell's. Every value is a
+   token but the board's own sizes: the 92 share field and the 480 sheet the preview prints on.
+   The raised cards' ground is `Ground.css`'s; the preview stage's sunken desk is drawn here. */
+
+.hg-pay {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-pay-pretty {
+  text-wrap: pretty;
+}
+
+.hg-pay-grow {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The saved line sits past the phone bar's back control (`List page`); under a drawn title, below it. */
+.hg-pay-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-pay[data-columns="1"] .hg-pay-head:not([data-titled]) {
+  margin-left: calc(var(--sp-10) + var(--sp-4));
+}
+
+/* The 1536 pair (`Page 1536`): the list in its 760 column with no editor; with one, the list takes
+   the room left beside the 440 editor card, the card's top level with the list's head. */
+.hg-pay[data-columns="2"]:not([data-paired]) {
+  max-width: 760px;
+}
+
+.hg-pay-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 440px;
+  column-gap: var(--sp-8);
+  align-items: start;
+}
+
+.hg-pay-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-pay-terms {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-pay-terms-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.hg-pay-terms-acts {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-shrink: 0;
+}
+
+.hg-pay-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--tile-gap);
+}
+
+.hg-pay[data-columns="2"] .hg-pay-cards {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(var(--sp-3) + var(--sp-0-5));
+}
+
+.hg-pay-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-pay-card-top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.hg-pay-card-name {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-pay-marks,
+.hg-pay-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+
+/* The editor (`Editor 375`, `Editor card 1536`). */
+.hg-pay-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-pay-stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  background: var(--canvas-sunken);
+  border-radius: var(--r-lg);
+}
+
+.hg-pay-stage-captions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  padding: 0 var(--sp-1);
+}
+
+.hg-pay-figure {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+
+.hg-pay-number {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-pay-lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-pay-line {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.hg-pay-line-fields {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: flex-end;
+}
+
+/* The board's 92 share field, never squeezed by a long name beside it. */
+.hg-pay-share {
+  flex: 0 0 92px;
+  width: 92px;
+}
+
+/* A ghost button's words sit 16 into its pill: the pill steps out so its words line up with the fields. */
+.hg-pay-due {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-left: calc(-1 * var(--sp-4));
+}
+
+.hg-pay-start {
+  display: flex;
+}
+
+.hg-pay-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-pay-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-pay-foot-refused {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* The editor at width (`Editor card 1536`): its ground is `Ground.css`'s. */
+.hg-pay-editor-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+  padding: var(--sp-5);
+  background: var(--hg-ground);
+  border-radius: var(--r-tile);
+  box-shadow: var(--e2);
+}
+
+.hg-pay-editor-card-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-pay-editor-card-back {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+/* The rule between the body and the foot runs to the card's edges. */
+.hg-pay-rule {
+  height: 1px;
+  margin: 0 calc(-1 * var(--sp-5));
+  background: var(--line-soft);
+}
+
+.hg-pay-pick-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}

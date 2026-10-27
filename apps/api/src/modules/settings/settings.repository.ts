@@ -24,7 +24,7 @@ import type { Act } from '../../common/auth/session-context';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { memberAct, recordAuditEntry } from '../audit/audit.public';
 import { storedProposalTemplate, storedTimelineTemplate } from './settings.templates.repository';
-import { trancheTemplatesOf } from './settings.tranches.repository';
+import { trancheTemplatesOf } from './settings.tranche-reads.repository';
 
 /** The tenant's own row: the signup facts, the two declarations, the locale pair — and its market. */
 export interface TenantRead extends TenantFacts {

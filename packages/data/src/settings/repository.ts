@@ -8,9 +8,15 @@ import type {
   TaxRegistrations,
   TimelineTemplate,
   TimelineTemplateRead,
+  TrancheSchedulePreview,
+  TrancheSchedulePreviewRequest,
+  TrancheTemplate,
+  TrancheTemplateList,
+  TrancheTemplateWrite,
 } from '@heliogrid/contracts';
 import type { ApiClient } from '../client/client';
-import { normalizeClientError, toApiError } from '../errors/errors';
+import { createCreationKeys } from '../client/creation-key';
+import { bodyAt, normalizeClientError, toApiError } from '../errors/errors';
 
 /** A company's settings (`M01-31`). The api answers only a person who manages them. */
 export interface SettingsRepository {
@@ -32,10 +38,30 @@ export interface SettingsRepository {
   timelineTemplate(signal?: AbortSignal): Promise<TimelineTemplateRead>;
   /** Replaces the phases whole, in the order sent. */
   saveTimelineTemplate(timeline: TimelineTemplate): Promise<TimelineTemplateRead>;
+  /** Every payment-term template and who saved one last (`SCR-M01-20`). */
+  trancheTemplates(signal?: AbortSignal): Promise<TrancheTemplateList>;
+  /** A new template; a retry of the same input carries the same key, so one is made (`F4-07`). */
+  createTrancheTemplate(template: TrancheTemplateWrite): Promise<TrancheTemplate>;
+  saveTrancheTemplate(id: string, template: TrancheTemplateWrite): Promise<TrancheTemplate>;
+  /** One of the three acts on a template: each answers the template as it now stands. */
+  actOnTrancheTemplate(id: string, act: TrancheTemplateAct): Promise<TrancheTemplate>;
+  /** The schedule on the sample contract, worked out by the api (`F4-04`). */
+  previewTrancheSchedule(
+    request: TrancheSchedulePreviewRequest,
+    signal?: AbortSignal,
+  ): Promise<TrancheSchedulePreview>;
 }
+
+export type TrancheTemplateAct = 'archive' | 'restore' | 'make-default';
 
 /** The types are INFERRED from the contract, never a hand-written copy of the response. */
 export function createSettingsRepository(api: ApiClient): SettingsRepository {
+  const creationKeys = createCreationKeys();
+  const acts = {
+    archive: api.tenantSettings.archiveTrancheTemplate,
+    restore: api.tenantSettings.restoreTrancheTemplate,
+    'make-default': api.tenantSettings.makeDefaultTrancheTemplate,
+  } satisfies Record<TrancheTemplateAct, unknown>;
   return {
     async businessProfile(signal) {
       try {
@@ -127,5 +153,25 @@ export function createSettingsRepository(api: ApiClient): SettingsRepository {
         throw normalizeClientError(error);
       }
     },
+    trancheTemplates: (signal) =>
+      bodyAt(() => api.tenantSettings.trancheTemplates({ fetchOptions: { signal } }), 200),
+    async createTrancheTemplate(template) {
+      const headers = creationKeys.headersFor(template);
+      const made = await bodyAt(
+        () => api.tenantSettings.createTrancheTemplate({ body: template, headers }),
+        201,
+      );
+      creationKeys.settle();
+      return made;
+    },
+    saveTrancheTemplate: (id, template) =>
+      bodyAt(() => api.tenantSettings.saveTrancheTemplate({ params: { id }, body: template }), 200),
+    actOnTrancheTemplate: (id, act) => bodyAt(() => acts[act]({ params: { id } }), 200),
+    previewTrancheSchedule: (request, signal) =>
+      bodyAt(
+        () =>
+          api.tenantSettings.previewTrancheSchedule({ body: request, fetchOptions: { signal } }),
+        200,
+      ),
   };
 }

@@ -182,6 +182,8 @@ export const trancheTemplate = pgTable(
     archived: boolean('archived').notNull(),
     createdAt: instant('created_at').notNull(),
     changedAt: instant('changed_at'),
+    /** Who made the newest create or save; null on a seeded row and on one saved before it was kept. */
+    changedBy: uuid('changed_by').references(() => userAccount.id),
     archivedAt: instant('archived_at'),
     ...creationKeyColumns(),
   },

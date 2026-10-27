@@ -126,5 +126,32 @@ export {
 export type { AllocationVerdict } from './tranche-allocation';
 export { allocationVerdict, WHOLE_ALLOCATION } from './tranche-allocation';
 export type { TrancheLineDefault, TrancheTemplateDefault } from './tranche-template-defaults';
-export { STANDARD_TRANCHE_TEMPLATES } from './tranche-template-defaults';
+export { STANDARD_TRANCHE_TEMPLATES, TRANCHE_LINE_LIMIT } from './tranche-template-defaults';
+export type {
+  TrancheCard,
+  TrancheDraft,
+  TrancheDraftLine,
+  TrancheDraftText,
+  TrancheEdit,
+  TrancheLineRead,
+  TrancheRefusals,
+  TrancheTemplateRead,
+  TrancheTemplateWriteOf,
+} from './tranche-template-page';
+export {
+  canAddTranche,
+  canRemoveTranche,
+  onSeededTermsOnly,
+  trancheCardsOf,
+  trancheDraftChanged,
+  trancheDraftOf,
+  trancheEdit,
+  trancheNewDraft,
+  tranchePreviewLines,
+  trancheRefusals,
+  trancheSendable,
+  trancheStanding,
+  trancheVerdictOf,
+  trancheWriteOf,
+} from './tranche-template-page';
 export { isNonPaying, TRIAL_DAYS } from './trial';

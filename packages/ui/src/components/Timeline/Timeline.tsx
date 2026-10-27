@@ -1,6 +1,7 @@
 /* Timeline (web) — a SEQUENCE, not a stream. A continuous rail runs through the nodes, lit up to
    the current step and dim beyond it, so it reads as a sequence rather than a list of dots.
-   `variant="compact"` restores the v1 four-row form for sheets.
+   `variant="compact"` restores the v1 four-row form for sheets. With `onChange` the chain is a
+   radio group instead (`TimelinePick.tsx`).
 
    An append-only activity log (13+ kinds, four actor CLASSES, hundreds of entries all `done`) is
    `ActivityStream`: the rail would light every node and say nothing, and `actor` as a free string
@@ -11,6 +12,7 @@ import { classNames } from '../../primitives/class-names';
 import { UnavailableNote } from '../UnavailableNote';
 import type { TimelineProps } from './Timeline.types';
 import { TimelineMessage, TimelineSkeleton } from './TimelineParts';
+import { TimelinePick } from './TimelinePick';
 import { TimelineStep } from './TimelineStep';
 
 interface WebTimelineProps extends TimelineProps {
@@ -31,6 +33,9 @@ export function Timeline({
   retryLabel,
   unavailableTitle = 'No sequence here',
   unavailableMessage,
+  value,
+  onChange,
+  label,
   className,
   style,
 }: WebTimelineProps) {
@@ -62,6 +67,20 @@ export function Timeline({
       <TimelineMessage
         title={emptyTitle}
         message={emptyDescription}
+        className={className}
+        style={style}
+      />
+    );
+  }
+
+  if (onChange) {
+    return (
+      <TimelinePick
+        items={items}
+        value={value}
+        onChange={onChange}
+        label={label}
+        density={density}
         className={className}
         style={style}
       />

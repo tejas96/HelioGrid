@@ -12,6 +12,7 @@
  * package exists to prevent.
  */
 
+export { allocationRefusal, allocationSentence } from './copy/allocation';
 export type { ApiErrorLike, AttemptFailureLike } from './copy/api-error';
 export { apiErrorMessageId, apiErrorRef, attemptFailureMessageId } from './copy/api-error';
 export type {
@@ -160,6 +161,13 @@ export {
   showOlderLabel,
   TYPE_GROUP_NAME,
 } from './copy/notifications';
+export type { PaymentTermsWords } from './copy/payment-terms';
+export {
+  paymentTermsEditorSaid,
+  paymentTermsFailureWords,
+  paymentTermsSavedLine,
+  paymentTermsWords,
+} from './copy/payment-terms';
 export {
   catalogRatesWords,
   catalogVersionWords,
@@ -177,6 +185,7 @@ export type {
   ProfileRoleWords,
 } from './copy/profile-preferences';
 export { PROFILE_PREFERENCES, profilePreferencesWords } from './copy/profile-preferences';
+export { stageWords } from './copy/project-stages';
 export type { ProposalTemplateWords } from './copy/proposal-template';
 export {
   languageName,

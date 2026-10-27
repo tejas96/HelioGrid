@@ -201,3 +201,26 @@ test('a content fit is whole at any width', async ({ mount }) => {
   expect(heights[0]).toBeLessThan(heights[1] ?? 0);
   expect(heights[1]).toBeLessThan(heights[2] ?? 0);
 });
+
+test('two tranches of one name both draw', async ({ mount }) => {
+  /* Tenant data: a company may name two tranches alike and set both on one stage (SCR-M01-20, decision 6). */
+  const twice = { label: 'Advance on signing', when: 'When the order is confirmed', share: '50%' };
+  const schedule = await mount(
+    <DocumentPreview
+      sample={false}
+      parts={['tranches']}
+      companyName={COMPANY}
+      tranchesTitle={words.proposal}
+      tranches={[
+        { ...twice, amount: '₹2,10,000' },
+        { ...twice, amount: '₹2,10,001' },
+      ]}
+      fit="content"
+      width={480}
+      caption=""
+    />,
+  );
+
+  await expect(schedule.locator('.hg-doc-tranche-label')).toHaveText([twice.label, twice.label]);
+  await expect(schedule.locator('.hg-doc-tranche-amount')).toHaveText(['₹2,10,000', '₹2,10,001']);
+});

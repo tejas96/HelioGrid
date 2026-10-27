@@ -212,7 +212,8 @@ export class SettingsService {
     return { source: 'platform', window: marketQuietHours(pack.callingRules) };
   }
 
-  private async packOf(tenantId: string): Promise<MarketPack> {
+  /** The pack of the tenant's market, as the settings reads and the tranche preview read it. */
+  async packOf(tenantId: string): Promise<MarketPack> {
     const own = await this.scoped.tenant(tenantId);
     if (own === null) throw notVisible();
     return this.markets.currentPackOf(own.marketCode);

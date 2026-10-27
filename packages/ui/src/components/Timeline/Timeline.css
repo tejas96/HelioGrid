@@ -8,6 +8,8 @@
    The node ladder (28 page / 20 compact) is the DS's own, and the type scale has no 16px step, so
    the page label's 16px is written out here rather than borrowed from a wrong token. */
 
+@import "./TimelinePick.css";
+
 .hg-timeline {
   list-style: none;
   margin: 0;

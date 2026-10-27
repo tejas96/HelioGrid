@@ -22,6 +22,10 @@ export const queryKeys = {
     branding: (tenantId: string) => ['settings', tenantId, 'branding'] as const,
     proposalTemplate: (tenantId: string) => ['settings', tenantId, 'proposal-template'] as const,
     timelineTemplate: (tenantId: string) => ['settings', tenantId, 'timeline-template'] as const,
+    trancheTemplates: (tenantId: string) => ['settings', tenantId, 'tranche-templates'] as const,
+    /** One schedule per split: the key is the shares, so only the answer for the lines shown is drawn. */
+    trancheSchedule: (tenantId: string, shares: readonly string[]) =>
+      ['settings', tenantId, 'tranche-schedule', shares.join('/')] as const,
   },
   /** A company's people and its invites; a write to either refreshes the whole list under the prefix. */
   team: {

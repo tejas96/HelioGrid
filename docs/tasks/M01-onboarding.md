@@ -687,14 +687,345 @@ Reviewer findings rejected: none.
 **PRD rows:** M01-54 (P0)
 **DESIGN:** SCR-M01-20 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M01-20-payment-terms-settings.md`; they are the specification.
-**Data model:** none — reads `tranche_template` and `tranche_template_line` authored by `T-M01-026` (migration 0006) and the stage labels of the tenant's pack (`T-FCORE-016`, migration 0001).
-**Contract:** `packages/contracts/src/tenant-settings.ts` — GET, POST /settings/tranche-templates · PUT /settings/tranche-templates/{id} (a save whose lines do not sum to 100.00 is refused with the unallocated remainder) · POST /settings/tranche-templates/{id}/archive · POST /settings/tranche-templates/{id}/make-default · `packages/contracts/src/market.ts` — GET /market-packs/{marketCode} (the market's real stages and their labels). Domain read: `commerce/tranche-template-defaults.ts`; the allocation verdict is ONE domain rule both the `AllocationMeter` and the save read — exact 100.00 in two-decimal percentages, no tolerance (`M01-54`): the meter shows the remainder and the save refuses until it is zero, never computed twice.
+**Data model:** reads `tranche_template` and `tranche_template_line` authored by `T-M01-026` (migration 0006) and the stage labels of the tenant's pack (`T-FCORE-016`, migration 0001); adds `tranche_template.changed_by` for the page's saved line and the audit value `settings.tranche_template_restored` (RFC §3).
+**Contract:** `packages/contracts/src/tranche-templates.ts` (spread into `tenantSettingsContract`, `tenant-settings.ts`) — GET, POST /settings/tranche-templates · PUT /settings/tranche-templates/{id} (a save whose lines do not sum to 100.00 is refused with the unallocated remainder) · POST /settings/tranche-templates/{id}/archive · POST /settings/tranche-templates/{id}/make-default · POST /settings/tranche-templates/{id}/restore (archived terms carry *Restore*, brief decision 5; RFC §3) — the list answers the newest save's `changed` · the stage labels and skippable stages from the pack the app's `MarketProvider` binds (`useFormat().pack.vocabulary`; India in v1) — no `GET /market-packs/{marketCode}` read on this screen (RFC §5); POST /settings/tranche-templates/preview (the sample's amounts, `F4-04`). Domain read: `commerce/tranche-template-defaults.ts`; the allocation verdict is ONE domain rule both the `AllocationMeter` and the save read — exact 100.00 in two-decimal percentages, no tolerance (`M01-54`): the meter shows the remainder and the save refuses until it is zero, never computed twice.
 **Depends on:** `T-M01-026` (migration 0006 and the routes; the two seeded templates) · `T-FCORE-016` (the pack's stage labels) · `T-M01-025` (the guard for `onboarding.manage_tenant_settings`) · `PROJECT_STAGES` (`packages/domain/src/projects/stages.ts`, `T-M01-026` — `M08-08`'s chain; M08's slice mirrors it as the pgEnum).
 **Out of scope:** the builder's payment step and Quick mode — `T-M06-009`; the collection schedule at Won — `T-M11-005`; the seeding and the sum refusal — `T-M01-026`; the skippable-stage due-derivation — `T-M11-006`; audit — `T-FPLAT-004`; the sample contract value the preview prices from — a policy number in domain, its tier `assumed`.
 **DONE WHEN:**
 - Given a new tenant, when settings are first opened, then the two seeded templates exist and one is marked default (M01-54). → proof: QA (web and phone) a new tenant's first open lists 10/60/20/10 and 30/60/10 with one marked default; the seed is `T-M01-026`'s unit
 - Given a template whose tranches sum to anything but 100.00, when save is attempted, then it is blocked with the unallocated remainder stated (M01-54). → proof: QA (web and phone) a 10/60/20 split shows the 10% unallocated on the meter and the save is refused naming it; unit packages/domain/tests/commerce/tranche-allocation.test.ts — 10/60/20/10 and 30/60/10 are met, 10/60/20 states 10.00, and the meter and the save share the verdict
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: QA (web and phone) every base and brief-listed state drawn at 375px and 1536px, the colour-literal lint clean on both
+
+#### RFC
+
+**RFC approved:** 2026-10-26 — Q1 A, Q2 A (owner rulings)
+
+**1. Title** — `T-M01-020` — the owner names the payment splits every proposal asks for, sees each split on its card, and sees the customer's schedule before saving.
+
+**2. User impact** — Today More › Settings › *Payment terms* says *coming later*, so every proposal starts from the two seeded splits and nobody can change them. After this task the owner opens *Payment terms*, sees each template as a card that shows where the money falls, and edits one in a sheet (375) or a card (1536): the tranche names, their shares, the project stage each falls due at, and the default. The meter in the editor's foot says what is still unallocated, and *Save terms* stays refused until the split is exactly 100.00%; the top of the editor shows the schedule the customer will get on a sample contract. Templates archive and restore; nothing is ever deleted.
+
+**3. Analysis**
+
+| line | finding | source | fix |
+|---|---|---|---|
+| Contract "GET, POST … archive, make-default" | Missing: the brief and the board give every archived card *Restore* (brief decision 5, *archived-template*; m20-n8), and the archive confirm promises *you can restore it any time* (m20-n9). No route, controller or repository line sets `archived` back to false (`tenant-settings.ts:237-291`; `settings.tranches.repository.ts:150-208`). | brief; board; code | One route, `POST /settings/tranche-templates/{id}/restore` (§7), with its audit event. Task's Contract line corrected. |
+| Data model "none" | Wrong. The page's saved line names who and when — *Saved and in force · Rajesh Kulkarni, 22 Aug 2026* (m20-a), and *Added when your account was created · not changed since* for seeded terms (m20-n2). `tranche_template` keeps `changed_at` only (`packages/db/src/schema/settings.ts:176-197`), and the audit log's only index makes a newest-event read an unbounded scan — Branding's and T-M01-019's case (`0031`, `0032`). | brief; board; `CLAUDE.md` §8 *Queries* | One migration: `tranche_template.changed_by uuid null → user_account(id)`, set where `changed_at` is set (create, save). The list answers the newest save as `lastSaved {at, by}` across the tenant's templates (`settingsChangedSchema`, `document-templates.ts:66`). |
+| D164 | `settings.tranches.repository.ts` is 304 lines; the restore needs room. `packages/contracts/src/tenant-settings.ts` is 305 lines. | `CLAUDE.md` §8 *Shape* | D164's move (`trancheTemplatesOf`, `dueStageOf` to `settings.tranche-reads.repository.ts`); the five tranche routes and the new one move to `packages/contracts/src/tranche-templates.ts` as `trancheTemplateRoutes`, spread into `tenantSettingsContract` so router keys, paths and operation ids stay as they are. |
+| The preview's money | No sample value exists; the board computes *₹4,20,000* and each amount in its script (`.design/M01/SCR-M01-20-Payment-Terms-Mobile.dc.html:326-336`). `F4-04` (`docs/prd/foundations/F4-data-integrity.md:27`): no device computes a money figure — held by `packages/domain/tests/money/device-entry.test.ts:126`, and `packages/domain/CLAUDE.md` sends a new money figure to `./server` only. | `F4-04`; task | **Decision Q2.** Written for A: the api answers the amounts. `PREVIEW_CONTRACT_VALUE` (4,20,000 in the currency's major unit) and `previewTrancheAmounts(total, shares)` in `packages/domain/src/commerce/tranche-preview.ts`, exported from `./server` only; the sample is a whole multiple of 10 000 minor units, so every two-decimal share is exact and the parts sum to it (unit test over every share 1…10 000). One read, `POST /settings/tranche-templates/preview` (§7). The real schedule's remainder rule stays `M11-13`'s (`T-M11-005`). |
+| Stage words | No copy exists for a stage's label, *when* sentence or short form (`grep` over `packages/i18n`). `F1-22` (`docs/prd/foundations/F1-global-market-framework.md:196`): stage display labels are the pack's, and modules never define their own; the pack labels two stages, `en` only (`vocabulary.ts:82-85`), and its comment leaves the other seven to M08 (`:71-76`). *Subsidy claimed* is no operator name (`F3-08` covers *DISCOM* only), so a Hindi screen would show English. | `F1-22` over brief decision 1 (`CLAUDE.md` §7); AC-4 | The seven labels join `IN_VOCABULARY` in en, hi and mr (*Won*, *Material ordered*, *Dispatched*, *Installation*, *Electrical metering*, *Commissioned*, *Handed over*), and *Subsidy claimed* gains hi and mr; the comment says the chain is labelled now because a tranche falls due on it. `packages/i18n` holds only what the pack does not: each stage's short form (*Customer signs*) and *when* sentence, `stageWords(t)`: `Record<ProjectChainStage, {short, when}>` in `copy/project-stages.ts`. Brief decision 1's line corrected to say the labels are the pack's. |
+| Board slip: *when* is `"When " + stage` | The preview's sentence is joined from two strings (Mobile:335, Desktop:227) — no Hindi or Marathi sentence can be built that way. | brief decision 1 | Each stage's *when* is one catalog sentence (above). Known difference: none on screen in English. |
+| Board slip: the pill is the tranche name's first word | *First 33.33%* is `name.split(" ")[0]` (Mobile:360, Desktop:252): *Booking advance* would read *Booking*, and Hindi words do not split that way. | board | **Decision Q1.** |
+| `AllocationMeter`'s sentence | The remainder sentence is English inside the component (`AllocationMeter.model.ts:100-105`); the board passes none. The component takes a replacement (`AllocationMeter.types.ts:65`). | AC-4 | Pass `allocationSentence(t, verdict)` from `packages/i18n`. The meter's other English stays D2's. |
+| Board slip: Save live on an unchanged editor | m20-c3, m20-n7, m20-n9 draw *Save terms* live with nothing changed. | board | Build the board's: *Save terms* with nothing changed closes the editor and sends nothing (the api writes nothing for the same content anyway, `settings.tranches.repository.ts:118`). |
+| Board slip: m20-n2 has no closing line | The brief puts the closing line on the page (brief, *Entry & exit*). | brief | The closing line shows in every list state but loading and the archived view. |
+| Board slip: glyphs drawn by path | The nine stage glyphs and the archive box are paths in the board's script (Mobile:~343), not `ShellGlyph` names; restore's path is `undo`'s (`ShellGlyph.shapes.ts:107`), the remove's is `trash`'s (`:123`). | board | The glyphs the set lacks join `ShellGlyph` with the board's paths; the design-system side is a `docs/tasks/UI.md` row, as T-M01-019 did for `Switch`. |
+| Board slip: the 1536 editor is a hand-drawn `section` | m20-g draws a plain section; 375 uses `EditorSurface`. | board | The 1536 editor is a card inside the page composite (as T-M01-019's editor card), not a new design-system part. |
+| Names in three languages | A template's name and each tranche's name are per-language labels (`packLabelSchema`, `document-content.ts:17-26`); the seed carries en, hi and mr (`tranche-template-defaults.ts:17-24`). The board draws one name field and no language strip. | contract; board | Assumption below: the field shows the name in the screen's language; a changed name is stored as the typed text alone, so no language keeps an old name. AC-17. |
+| Two tranches with one name | `DocumentPreview` keys a tranche row by its label (`DocumentBands.tsx:70`, `.native.tsx:64`), so two rows of one name collide. | code | Key by position in both halves. |
+| `NumberField`'s and `Input`'s `ariaLabel` (change 16) | `packages/ui` already names an unlabelled field by `label` + `labelSpokenOnly` (`NumberField.types.ts:60`, `Input.types.ts:15`). | code; Law 5 | Built as change 16 says: `NumberField` takes `ariaLabel` on both halves — `design-system-props` reads the pulled typing and has no way to map a prop to another name, so the assumption that it would failed at the build; `labelSpokenOnly` stays for its callers, and the two names are a `docs/tasks/UI.md` row. |
+| `TRANCHE_LINE_LIMIT` | The 12 lives in `document-templates.ts:143` only. | Law 5 | Domain owns `TRANCHE_LINE_LIMIT`; contracts reads it (`.max(TRANCHE_LINE_LIMIT)`). |
+| D289 | The board passes no `tone` on the remove `IconButton` (ghost, trash), and check and leave are not drawn here. | board | Out: D289 stays. |
+| D317 | This page is cards and an editor, not a column of form sections. | board | Out: D317 stays. |
+| Missing states | *Add payment terms* (an empty editor), a 13th tranche, the last tranche, an empty or 121-character name (`labelSchema` 1–120), a share outside 0.01–100, the archived view with none, *Restore*'s result, closing the editor with an edit, the list's read failing, an act (archive, make-default, restore) refused 5xx or 409 — a template archived or made default by another owner meanwhile (`settings.tranches.repository.ts:158,186`), the preview's read loading or failing, the brand read failing. | contract; edge list | AC-5 … AC-18; words as assumptions below. |
+| Over-built? | A tenant-level "last change" that also counts archive and make-default would need a new column or an audit read; the saved line is about saves. | `CLAUDE.md` §8 *Solve today's problem* | The saved line names the newest create or save; archive, restore and make-default do not move it (assumption below). |
+
+Assumptions (marked):
+- **Add payment terms** opens the editor with one line *Advance on signing*, 100.00%, due at *Won*, titled *New payment terms*, name field *Name of these terms* empty; *Save terms* refuses an empty name at the field (*Give these terms a name*). `assumed` (not drawn).
+- **The 12-tranche cap**: at 12, *Add a tranche* is replaced by the caption *Payment terms hold up to 12 tranches.* `assumed`.
+- **The last tranche** shows no remove button (a template keeps one line, contract `min(1)`). `assumed`.
+- **An empty tranche name** is refused at its field on save: *Name this tranche*. `assumed` words.
+- **A new tranche** (*Add a tranche*) adds a line named *Tranche {n}*, share empty (0), due at the last line's stage. `assumed`.
+- **Lines list in the order of their stages** (brief: no reorder control); two lines on one stage keep the order they were added in.
+- **Closing the editor with an edit** (✕, *Cancel*, phone Back, the web side list) asks with `LeaveConfirm` {*Leave without saving?*, *Your changes are lost, and the terms in force stay as they are.*, *Discard and leave*, *Keep editing*}. `assumed` — the brief is silent; this is T-M01-019's ruling for an unsaved form.
+- **The saved line** names the newest create or save across the tenant's templates; archive, restore and make-default do not move it. Seeded terms only: *Added when your account was created · not changed since*. `assumed`.
+- **Restore** puts the template back in use, not default, at its place by creation; the archived view stays open until the box button is pressed again; with none archived the button reads 0 and the archived view says *Nothing archived.* `assumed`.
+- **A save refused 409** (archived by another owner meanwhile) shows the save-failed banner with the api's conflict copy (`api-error.ts:35`) and reloads the list. `assumed`.
+- **A name** shows in the screen's language (English where that language has none, F3-05). Typing changes it: on save the label is the typed text alone, under `en` (the one key the contract requires), so a Hindi or Marathi reader sees the new name, never the old one. An unchanged name keeps all its languages. `assumed` — the board draws no language strip.
+- **The list's read failing** shows, in the cards' place, `Banner` {validation, functional, *We couldn't load your payment terms.*, *Open this page again to retry.*}; no head buttons. `assumed`.
+- **An act refused** (archive, make-default, restore: 5xx, or 409 because another owner moved it meanwhile) shows a `Toast` with the api's copy (`attemptFailureMessageId`, `api-error.ts:148`); nothing changes on screen, and a 409 reloads the list. `assumed`.
+- **The preview's amounts** come from the api (Q2 A): the editor reads them for the saved lines on open and again each time the edit becomes met; until an answer comes the stage shows `PreviewFrame`'s loading; a failed read keeps the last schedule shown (or the loading, with none) and is tried again at the next met edit; a newer read aborts an older one, so only the answer for the lines on screen is drawn. `assumed`.
+- **The preview's letterhead** is the tenant's branding through `coverOf` (`packages/data/src/react/branding-cover.ts:36`), as Proposal template draws it; while it loads the stage shows loading; if it fails the band draws with the company name alone. `assumed`.
+- **No connection** on the device replaces the page with `NoConnection` and loses an open edit — D169, as Branding ruled (#362); AC-12 covers the api refusing while online.
+- **The stage picker at 375** closes back to the editor sheet by ✕ or *Done* (a chained sheet); at 1536 by the back `IconButton` or *Done* (m20-h).
+- **The preview** shows the saved lines until the edit reaches exactly 100.00%, then the edit (brief, *live-customer-preview*); a new template shows its first met edit, and nothing before (the band reads *No schedule yet* until then). `assumed` for the new template.
+
+**4. Scope**
+
+- **In:** the *Payment terms* page, web (375, 1536) and phone; the restore and preview routes, the `changed_by` column and the list's `lastSaved`; the seven stage labels in the pack; `useTrancheTemplates` in `packages/data`; the domain page view-model and preview amounts; the stage words; the `packages/ui` ports this board draws (design-system changes 16 and 17, D355); D164.
+- **Out:** the builder's payment step and Quick mode (`T-M06-009`); the collection schedule at Won and its remainder rule (`T-M11-005`, `M11-13`); skippable-stage due-derivation (`T-M11-006`); `IconButton` `tone` and the check and leave glyphs (D289); a settings-sections layout (D317); the `Sheet` safe-area option (D256, owner row).
+- **Non-functional:** F7-43 (375, 1536, Hindi, both halves); 44 px targets; the card and the timeline reachable and pressed by keyboard (D254's proof list); none other stated.
+
+**5. Proposal**
+
+Flow: More › Settings › *Payment terms* (row exists, `packages/domain/src/shell/settings-rows.ts:20,41,61`) → `GET /settings/tranche-templates` → the page draws the in-use cards (default first? no — creation order, as the api answers, `settings.tranches.repository.ts:263`), each with its split → a card opens the editor → `POST …/preview` with the saved lines → edits change a draft; the foot's meter reads `allocationVerdict` over the draft; the preview shows the saved schedule until the draft is met, then `POST …/preview` with the draft → *Save terms* → `PUT …/{id}` (or `POST` for a new one, with a creation key) → the answer replaces the template in the list, the saved line refreshes, the editor closes. *Use for new proposals* → `POST …/make-default`; *Archive* → confirm → `POST …/archive`; *Restore* → `POST …/restore`.
+
+Key decisions:
+- **One verdict.** The meter's `state` and the save's refusal both read `allocationVerdict` (`tranche-allocation.ts:18`) through the page view-model; the server reads the same (`settings.templates.service.ts:146`). The meter is passed the verdict's parts; it computes no second verdict.
+- **The page is a domain view-model** (`packages/domain/src/commerce/tranche-template-page.ts`): templates → in-use and archived cards; a template → the editor draft; each edit; the lines in stage order; the verdict; the refusals (name, line name, share range, cap); the write body; the preview's lines (saved or draft); *changed?*. Both screens render it (Law 11).
+- **One composite, both halves:** `packages/ui` `PaymentTermsSettings` draws the list, the cards, the editor body and foot, and the stage picker from props, as `ProposalTemplateSettings` does (`.claude/rules/screen-parts.md`). The apps own the route, the shell, the sheet or card placement, the confirms and the leave ask.
+- **The stage picker is `Timeline` in pick mode** (change 17), its items built from `PROJECT_STAGE_CHAIN` (never `CANCELLED`), labels by `stageLabel`, short forms by `stageWords`, `tone: warning` and a *Can be skipped* mark where `isSkippableStage` (`vocabulary.ts:69`). The vocabulary is `useFormat().pack.vocabulary` — the pack each app's `MarketProvider` binds (`apps/web/app/providers.tsx:87`, `apps/mobile/App.tsx:99`; India in v1). No screen fetches the pack for words today; this is the first to read `.vocabulary`. The task's Contract line is corrected to say so.
+- **The amounts are the server's** (`F4-04`, Q2 A): `POST /settings/tranche-templates/preview` answers the sample and each line's amount; the screen renders them and computes none.
+- **The restore mirrors archive** — same guard, lock, tenant predicate and no-op when already in use; it never makes the template the default.
+
+Reused: `coverOf` and Branding's reads (data) for the preview's letterhead; `allocationVerdict`, `percentToBasisPoints`, `basisPointsToPercent`, `percentWireOf`, `PROJECT_STAGE_CHAIN`, `stageLabel`, `isSkippableStage`, `standingOf` (domain); the five routes, their audit, `wire.ts` (api); `createCreationKeys`, `toApiError` (data); `settingsSavedLine`, `attemptFailureMessageId` (i18n); `AllocationMeter`, `Card`, `NumberField`, `Timeline`, `Input`, `IconButton`, `Button`, `Badge`, `Banner`, `Modal`, `EditorSurface`, `SheetActions`, `PreviewFrame`, `DocumentPreview` (its tranche band, `DocumentBands.tsx:61-75`), `Provenance`, `LoadingBars`, `LeaveConfirm`, `ShellGlyph` (ui); web `lib/leave-guard.tsx`, `SettingsLayout`; the phone's `use-leave-ask.ts`, `useSettingsDrillDown`; `opensSettingsRow` + `notFound()` / the phone's not-found state.
+
+Twin: one screen on both platforms. Shared: `PaymentTermsSettings` (ui), `paymentTermsWords` + `stageWords` (i18n), the view-model (domain), `useTrancheTemplates` (data). Per platform: the route, the editor's place (`EditorSurface` sheet at 375; the 440-wide card beside the cards at 1536), the picker's place (chained sheet / the card's body), the confirms, the leave ask.
+
+Motion (`F7-51`):
+
+| moment | what moves | the design system's motion | owner |
+|---|---|---|---|
+| editor opens / closes (375) | the sheet | its existing open and close | `EditorSurface` |
+| stage picker opens / closes (375) | the chained sheet | its existing open and close | `EditorSurface` |
+| editor and picker at 1536 | nothing moves — the card shows and its body swaps at once | none | `PaymentTermsSettings` |
+| archive and leave confirms | the dialog | its existing open and close | `Modal`, `LeaveConfirm` |
+| loading → content | the bars give way | `LoadingBars`' existing pulse | `LoadingBars` |
+| a share typed | nothing moves — the meter and split redraw in place | none | `AllocationMeter` |
+| a stage picked | nothing moves — the check and tint move at once | none | `Timeline` |
+| *Save terms* pressed | the button's busy state | its existing loading | `Button` |
+| save-failed or teaching banner | nothing moves | none | `Banner` |
+
+Reduced motion: the sheets and dialogs open at their end state at once. No moment moves what a built screen did not move before.
+
+**6. Frame map** (`.design/M01/SCR-M01-20-*`, lock `1792727572-2244`; the board's English names the catalog key; sample money from the board script, `Mobile.dc.html:326-336`: *₹4,20,000*, each amount `4,20,000 × share` — built from the api's answer, Q2)
+
+Shared blocks:
+- **Chrome 375** — `MobileTopBar` {title *Payment terms*, sticky false, leading `ShellAction` round *Back to settings* (chevron-left md primary), *Search*, *Notifications*}; `BottomNav` value `more`, under the sheets. Column gap `--sp-4`, padding `0 --screen-pad-mobile --sp-6`.
+- **List page** — saved line (caption, `--text-secondary`, margin-left `calc(--sp-10 + --sp-4)`) *Saved and in force · {name}, {date}*; head (gap `--sp-3`): h2 *Your payment terms*, then (gap `--sp-2`) the archive `Button` {ghost, sm, box glyph, aria-pressed false; visually hidden *Archived payment terms,* + mono count} and `IconButton` {*Add payment terms*, 36, surface, plus}; cards gap `--tile-gap`; closing line, centred caption *These terms start every new proposal and become its collection schedule at Won; a sent one keeps its own.*
+- **Template card** — `Card` {surface `raised`, functional, column gap `--sp-3`, interactive, label *{name}* or *{name}, default*, selected when open}: name (body-sm bold) + `ShellGlyph` chevron-right md secondary; marks (gap `--sp-1`): `Badge` accent *Default*, `Badge` neutral *Platform standard* (seeded and unchanged); `AllocationMeter` {variant `split`, label *{name} split*, functional, parts [{label tranche, value share, caption stage label}]}.
+- **Editor 375** — `EditorSurface` {open, inset, panelAbove 720, size `full`, functional, showClose, overline *Not saved yet* while changed, title the name, footer the foot}; body gap `--sp-4`: preview stage (`--canvas-sunken`, `--r-lg`, padding and gap `--sp-3`) → `PreviewFrame` {sheet, designWidth 480, minScale 0.6, maxHeight 150} holding `DocumentPreview` {sample false, the tenant's brand and letterhead, parts [`tranches`], tranchesTitle *Payment schedule*, fit `content`, caption "", width 480, tranches [{label, when (the stage's sentence), share, amount}]}; captions (padding `0 --sp-1`, gap `--sp-0-5`): *Your customer sees this when you save* · *Sample contract* *₹4,20,000* `Provenance` {assumed, 12, inline} · *Each amount* `Provenance` {derived, 12, inline}; lines (gap `--sp-3`, each with a 1 px `--line-soft` foot, padding-bottom `--sp-3`, gap `--sp-1`): row (gap `--sp-2`, flex-end): `Input` {label *Name* on the first line, else label *Name of {t}* with `labelSpokenOnly`, commit on blur} · `NumberField` 92 wide {label *Share* on the first line, else *Share of {t}* with `labelSpokenOnly` (the board's `ariaLabel`), unit %, min 0.01, max 100, precision 2, steppers false, outOfRange refuse, refusal *A tranche carries a share between 0.01% and 100%.*} · `IconButton` {*Remove {t}*, 40, ghost, trash}; under it `Button` {ghost, sm, chevron-down right, margin-left `-sp-4`} *Due at {stage}*; then `Button` secondary sm *Add a tranche*; then (gap `--sp-2`) `Button` secondary md *Use for new proposals* · ghost md *Archive*.
+- **Editor foot** — column, gap `--sp-2`: [banner] → `AllocationMeter` {label *Tranche allocation*, parts [{label, value}], tolerance 0, enforcement immediate, enforcementNote "", functional, the sentence from `allocationSentence`}; refused: primary md full-width *Save terms* {`aria-disabled`, disabledReason} over ghost md full-width *Cancel*; met: `SheetActions` (ghost md *Cancel*, primary md *Save terms*).
+- **Stage picker 375** — chained `EditorSurface` {zIndex above the editor, overline *{tranche} · {share}%*, title *When is it due?*, showClose}: `Timeline` {label *When is {tranche} due?*, value the stage, onChange, functional, nine items {id, label, description = short form, icon the stage glyph, `tone` warning + `marks` `Badge` warning *Can be skipped* where skippable, content: one `Badge` functional per tranche due there, *{pill}* — this tranche's accent, others neutral}}; foot: caption *A skipped stage moves its tranche to the next one.* and primary md *Done*.
+- **Chrome 1536** — `AppShell` (rail *Main*, More current; header with the company and search *Name, phone or city*); settings side list 248 wide, *Payment terms* current (`--accent-subtle`, `--accent`, bold, glyph accent), no breadcrumb; content padding `--sp-6 --sp-8 0`.
+- **Page 1536** — grid `minmax(0,760px)` with no editor, `minmax(0,1fr) 440px` with it, column gap `--sp-8`, row gap `--sp-4`; h1 (`--fs-h2`) *Payment terms* over the saved line; the head; cards in two columns, gap `calc(--sp-3 + --sp-0-5)`; the closing line.
+- **Editor card 1536** — section labelled *Edit {name}*: `--surface`, `--r-tile`, `--e2`, padding `--sp-5`, gap `--sp-4`; overline *Not saved yet* while changed; h2 (body, bold) the name; preview stage padding `--sp-2`, `PreviewFrame` maxHeight 220; the 375 lines and controls; a 1 px `--line-soft` rule bleeding `-sp-5`; the foot. The open template's card is `selected`.
+
+| frame | state that shows it | what differs from the blocks |
+|---|---|---|
+| m20-a | 375 list, six in use | *Standard 10/60/20/10* (default, seeded) · *Standard 30/60/10* (seeded) · *Housing society, in thirds* 33.33/33.33/33.34 · *Commercial, above 100 kWp* 15/55/20/10 · *Government, PM Surya Ghar* 20/60/20 · *Factory rooftop, staged* 10/30/30/20/10; archive count *2* |
+| m20-b | m20-a at its end | closing line |
+| m20-c | editor, 33.33 × 3 | *First/Second/Final instalment* at Won/Dispatched/Commissioned; preview the SAVED 33.33/33.33/33.34 = *₹1,39,986 / ₹1,39,986 / ₹1,40,028*; meter under *0.01% unallocated.*; refused Save, *Allocate the remaining 0.01% to save these terms.* |
+| m20-c2 | m20-c at its foot | the foot |
+| m20-c3 | the default's editor | *Standard 10/60/20/10*, no overline; preview 42,000/2,52,000/84,000/42,000; met; live Save; *Use for new proposals* and *Archive* replaced by body-sm *New proposals use these terms.* |
+| m20-d | stage picker over m20-c | overline *Final instalment · 33.33%*; value Commissioned; pills at Won, Dispatched, Commissioned (this one accent) |
+| m20-n1 | loading | no saved line, no head buttons, no closing line; `LoadingBars` {*Loading your payment terms*, [panel, panel, panel]} |
+| m20-n2 | seeded only | saved line *Added when your account was created · not changed since*; `Banner` {preliminary, functional, *You're starting with the two standard terms.*, *Both work as they are, so your team can send proposals today.*}; count *0*; the two seeded cards; the closing line (§3) |
+| m20-n3 | save failed | *Booking advance* 40 / 30 / 30, met; preview the edit 1,68,000/1,26,000/1,26,000; foot `Banner` {validation, functional, *We couldn't save these payment terms.*, *Nothing you typed is lost, and customers keep the terms already in force.*} over the meter and a live Save |
+| m20-n4 | 12% under | 30/28/30; saved preview; *12% unallocated.*; *Allocate the remaining 12% to save these terms.* |
+| m20-n5 | 18% over | 30/60/28; meter past its target in warning; *18% over-allocated.*; *Take 18% off the tranches to save these terms.* |
+| m20-n6 | the edit met | 40/30/30 in the preview; live `SheetActions`; *Not saved yet* |
+| m20-n7 | skippable stage | *Government, PM Surya Ghar*; on *On subsidy* (*Due at Subsidy claimed*): `Badge` warning *This stage can be skipped* + caption *If a project skips this stage, the tranche falls due at the next stage that happens.*; Save live |
+| m20-n8 | archived view | h2 *Archived payment terms*; archive `Button` {secondary, aria-pressed true} *2*; no add button; caption *Kept for proposals already sent. Restore one to use it again.*; cards *Subsidy-linked, 2024* (30/50/20) and *Standard 20/70/10 (old)*, not interactive, no chevron, `Button` {secondary, sm, restore glyph, aria-label *Restore {name}*} *Restore*; no closing line |
+| m20-n9 | archive confirm | `Modal` {sm, functional, neutral, *Archive Housing society, in thirds?*, *New proposals stop offering it; you can restore it any time and nothing is deleted.*, showClose; `SheetActions` secondary *Keep it* · primary *Archive*} over the editor |
+| m20-f | 1536 page | 760 column, two-column cards, no editor |
+| m20-g | 1536 editor, 0.01% short | the editor card with the draft; *Housing society* card selected; refused Save |
+| m20-h | 1536 stage picker | the card's body: `IconButton` {*Back to Housing society, in thirds*, 40, surface, chevron-left}; overline *Final instalment · 33.33%*; h2 *When is it due?*; `Timeline`; rule; picker foot |
+| m20-n10 | 1536, 12% under | m20-n4's data in the card |
+| m20-n11 | 1536, met | m20-n6's data in the card; `SheetActions` |
+
+Not drawn at 1536 (brief: the phone's answer holds at width): loading, seeded, save failed, over, skippable, archived, the archive confirm (centred `Modal`). Not drawn anywhere, built from the drawn parts (§3 assumptions): *Add payment terms*, the 12-tranche cap, the last line, a field's refusal, the archived view with none, *Restore*'s result, the leave ask, the 409. Every frame is reachable with data QA makes through the app (m20-n3: the save refused in the page on the web; on the phone `not reachable live — the api refused is proven by packages/data's refused-connection test and P8's spec`; m20-n1: the read held on the web; m20-n2: a fresh company; m20-a's six cards and m20-n8's two archived: made by QA through the app first).
+
+**7. Changes**
+
+- **Packages.** New exports: `@heliogrid/contracts` `trancheTemplateListSchema` (the list + `lastSaved`), `trancheSchedulePreviewSchema`, the `restoreTrancheTemplate` and `previewTrancheSchedule` routes; `@heliogrid/domain` (index) `tranche-template-page.ts`'s `trancheCardsOf`, `trancheDraftOf`, `trancheEdit`, `trancheRefusals`, `trancheWriteOf`, `trancheDraftChanged`, `TRANCHE_LINE_LIMIT`; (`./server` only) `PREVIEW_CONTRACT_VALUE`, `previewTrancheAmounts`; `'settings.tranche_template_restored'` in `AUDIT_EVENT_TYPES`; `@heliogrid/data` `useTrancheTemplates`; `@heliogrid/i18n` `paymentTermsWords`, `stageWords`, `allocationSentence`; `@heliogrid/ui` `PaymentTermsSettings`, the new `ShellGlyph` names. Direction unchanged.
+- **Guards (Law 12).** The audit event: `AUDIT_EVENT_TYPES` → the pgEnum (`packages/db/src/schema/audit.ts:8`) and its migration; the routes: `RouteAccessMap` (`apps/api/src/common/auth/access.ts:6-12,33-37` — a route it does not name fails to compile), the OpenAPI freshness check and oasdiff; the glyph names: `ShellGlyph`'s name union (typecheck). No new brand, token, table or error code.
+- **Data and schema.** Migration `0033_tranche_template_changed_by` (`pnpm db:migration:new`): `tranche_template.changed_by uuid null references user_account(id)`; `ALTER TYPE audit_event_type ADD VALUE 'settings.tranche_template_restored'`. No index (read inside the tenant's rows, at most a few dozen). Old api ignores the column; new api over an old row: `by` null → the saved line names the date alone. Rollback: drop the column (an enum value stays, unused). The seven labels change `IN_PACK` (`packages/domain/src/market/pack.ts:63`), so the release publishes a new IN pack revision (`pack:publish`, `docs/engineering/09-observability-and-ops.md:284-289`); added labels, so an old reader and the new parse both read it.
+- **API and contracts.** `GET /settings/tranche-templates` answers `{items, lastSaved}` — `lastSaved: settingsChangedSchema.nullable().optional()`, the newest `changed_at` with its `changed_by`'s name, `null` when none was saved (named apart from each item's `changed: boolean`, `document-templates.ts:151-152`, which says a seeded split was edited). `POST /settings/tranche-templates/preview` — body `{lines: [{percent}]}` (1–`TRANCHE_LINE_LIMIT`); 200 `{currencyCode, contract, amounts[]}` — `currencyCodeSchema`, `amountSchema` (`packages/contracts/src/common.ts:58-66`), `contract` the sample in the tenant's currency; 422 `TRANCHES_NOT_WHOLE` when the lines are not met; writes nothing, no audit; the same grant. `POST /settings/tranche-templates/{id}/restore` — no body; 200 the template; 404 another tenant's or none; idempotent (already in use → 200, nothing written); audit `settings.tranche_template_restored`; never default. Create and save set `changed_by` = the actor. Permission `onboarding.manage_tenant_settings` (`settings.controller.ts:12`); tenant from the session. Old app → new api: ignores `lastSaved`, never calls restore or preview. New app → old api: `lastSaved` absent → no saved line; restore and preview answer 404 → the act's `Toast`, the preview's loading stays. OpenAPI regenerated; oasdiff: additive.
+- **Jobs.** None.
+
+Files:
+
+| action | path | purpose |
+|---|---|---|
+| add · modify | `packages/contracts/src/tranche-templates.ts` · `tenant-settings.ts` · `document-templates.ts` · `index.ts` · `openapi/openapi.json` | the five tranche routes moved and spread back; the list's `lastSaved`; restore; preview; `.max(TRANCHE_LINE_LIMIT)`; spec regenerated |
+| add · modify | `packages/db/migrations/0033_tranche_template_changed_by.sql` · `packages/db/src/schema/settings.ts` | `changed_by`; the audit value |
+| modify | `packages/domain/src/audit/events.ts` | the restore event |
+| add · modify | `apps/api/src/modules/settings/settings.tranche-reads.repository.ts` · `settings.tranches.repository.ts` · `settings.templates.service.ts` · `settings.controller.ts` · `settings.repository.ts` (import) | D164's move; restore; preview; `changed_by`; the list's `lastSaved` |
+| add · modify | `apps/api/tests/settings/tranche-templates.test.ts` · `tranche-route-access.test.ts` (HTTP, `bootHttp`, as `apps/api/tests/price-book/route-access.test.ts:18`) | restore and its cross-tenant 404; the preview's amounts; who and when; the 422 on PUT; the grant on restore and preview over HTTP |
+| add · modify | `packages/domain/src/commerce/tranche-template-page.ts` · `tranche-preview.ts` · `commerce/index.ts` · `src/server.ts` · `format/vocabulary.ts` + `tests/commerce/tranche-template-page.test.ts` · `tranche-preview.test.ts` · `tests/format/vocabulary.test.ts` (its null case moves to a value outside the chain, `:36-38`; a newly labelled stage in hi and mr) | the view-model; the preview amounts on `./server` (`device-entry.test.ts` unchanged and green); the chain's labels in the pack |
+| add · modify | `packages/data/src/react/use-tranche-templates.ts` · `use-tranche-schedule.ts` · `src/settings/repository.ts` · `cache/keys.ts` · `react/index.ts` + `tests/react/use-tranche-templates.test.ts` · `tranche-templates-origin.ts` | reads, the draft, the five acts, the creation key, refusals |
+| add · modify | `packages/i18n/src/copy/payment-terms.ts` · `copy/project-stages.ts` · `copy/allocation.ts` · `src/index.ts` · `locales/{en,hi,mr}` + `tests/payment-terms.test.ts` | the words (EN; HI and MR drafted for native review) |
+| modify | `packages/theme/src/_generated/contracts/**/{AllocationMeter,Card,NumberField,Timeline}.d.ts.txt` | ds:pull of changes 16 and 17 |
+| modify | `packages/ui/src/components/AllocationMeter/*` | `variant="split"`, part `caption` (change 16) |
+| modify | `packages/ui/src/components/Card/*` | `surface="raised"`, `label` — one control, Enter and Space (change 16) |
+| modify | `packages/ui/src/components/NumberField/*` | the phone draws a committed figure at its precision (D355); change 16's `ariaLabel` (§3) |
+| modify | `packages/ui/src/components/DocumentPreview/DocumentBands.tsx` · `.native.tsx` | a tranche row keyed by position |
+| modify | `packages/ui/src/components/Timeline/*` | pick mode: `value`, `onChange`, `label`; items `icon`, `marks`, `tone`; arrow keys, one tab stop (change 17) |
+| modify | `packages/ui/src/components/AppShell/ShellGlyph.shapes.ts` (+ names type) | an `archive` box glyph and the stage glyphs the set lacks (each board path matched against an existing name first; restore is `undo`, `:107`) |
+| add | `packages/ui/src/components/PaymentTermsSettings/*` (types, logic, view, both halves: page, card list, editor body, editor foot, picker, css, index) · modify `src/index.ts` · `styles.css` | the shared page body |
+| add · modify | `apps/web/app/(inside)/more/payment-terms/page.tsx` · `apps/web/features/payment-terms/*` | the web route and screen, the editor card, the confirms, the leave ask |
+| add · modify | `apps/mobile/src/screens/payment-terms/*` · `screens/settings/SettingsRowScreen.tsx` | the phone screen; its `BUILT_ROW` entry |
+| add · modify | `tests/e2e/components/{PaymentTermsSettings,AllocationMeter,Card,NumberField,Timeline,DocumentPreview}.spec.tsx` · stories · `support/payment-terms-sample.ts` | component proofs |
+| add | `tests/e2e/web/more-payment-terms.spec.ts` | the web flow |
+| modify | `tests/invariants/src/e2e-flow-per-screen.ts` | holds the screen without a phone flow, as `proposal-template` is held |
+| modify | `docs/ux/briefs/SCR-M01-20-payment-terms-settings.md` · `docs/tasks/UI.md` · `deferred.md` · this file | the brief's assumptions, decision 1's labels line and Q1's ruling; the glyphs' and `ariaLabel`'s design-system rows; the rows this task closes; the task's Contract and Data model lines |
+| modify | `apps/api/src/modules/settings/settings.service.ts` · `internal/wire.ts` · `settings.templates.repository.ts` | added while building: `packOf` opened to the preview (the tenant's currency and digits); `lastSaveOf` moved beside `LastSave` so the tranche reads and the templates share one copy |
+| modify | `vitest.config.mts` | added while building: the two new domain files join the 100% bars |
+| add · modify | `packages/ui/src/components/AppShell/ShellGlyph.journey.shapes.ts` · `AllocationMeter/AllocationSplit.tsx` · `.native.tsx` · `AllocationLegend.native.tsx` · `primitives/Ground/Ground.css` | added while building: the six new glyphs in their own file (the shapes file holds 300 lines); the split as its own part; the meter's phone legend moved out to keep it under 300; the raised card joins the page grounds |
+| add | `packages/ui/src/components/PaymentTermsSettings/PaymentTermsSettings.view.ts` | added while building: the editor's wiring to the parts, once for both apps |
+| modify | `packages/i18n/src/copy/payment-terms.ts` (`paymentTermsFailureWords`) · `packages/data/src/index.ts` | added while building: a failed act's words, once for both apps; `TrancheTemplateAct` exported |
+Each `add` folder is architecture §4 rule 8 (ui component) or 9 (an app's feature tree).
+
+**8. Diagram**
+
+```mermaid
+sequenceDiagram
+  participant O as Owner (web / phone)
+  participant S as PaymentTermsSettings + useTrancheTemplates
+  participant A as api /settings/tranche-templates
+  participant D as Postgres
+  O->>S: open Payment terms
+  S->>A: GET (list + lastSaved)
+  A-->>S: templates, newest save
+  O->>S: open a card, edit lines (meter redraws)
+  S->>A: POST preview (saved lines, then each met edit)
+  A-->>S: sample + amounts
+  O->>S: Save terms (verdict met)
+  S->>A: PUT /{id} (or POST + creation key)
+  A->>D: replace lines, changed_at/by, audit
+  O->>S: Use for new proposals / Archive / Restore
+  S->>A: POST make-default / archive / restore
+  A->>D: one row, audit
+```
+
+**9. Build steps**
+
+| step | files | AC | done when |
+|---|---|---|---|
+| 1 | domain `TRANCHE_LINE_LIMIT`; contracts (move, `lastSaved`, restore, preview) | AC-9, AC-10, AC-16 | typecheck; OpenAPI regenerated; oasdiff additive |
+| 2 | migration, schema, audit event | AC-10 | `pnpm db:migrate` on the test db |
+| 3 | domain preview amounts on `./server` + tests | AC-16 | 100% on the file; `device-entry.test.ts` green unchanged |
+| 4 | api: D164 move, restore, preview, `changed_by`, `lastSaved` + tests | AC-5, AC-9, AC-10, AC-16 | tests green; the 403 and the cross-tenant 404 seen red once |
+| 4b | domain view-model, vocabulary + tests | AC-2, AC-6, AC-7, AC-11, AC-13, AC-17 | 100% on the new file |
+| 5 | data hook + tests | AC-7, AC-12, AC-14, AC-18 | tests green |
+| 6 | i18n copy + catalogs | AC-4 | catalog check clean; HI and MR listed for review |
+| 7 | ds:pull of changes 16 and 17 | — | `design-system-props` clean |
+| 8a · parallel | `AllocationMeter` + spec | AC-2 | spec green |
+| 8b · parallel | `Card` + spec | AC-15 | spec green |
+| 8c · parallel | `NumberField` (both, D355) + spec | AC-13 | spec green |
+| 8d · parallel | `Timeline` pick mode + spec | AC-11, AC-15 | spec green |
+| 8e · parallel | `ShellGlyph` glyphs | AC-9, AC-11 | typecheck |
+| 9 | `PaymentTermsSettings` + spec | AC-3, AC-4 | every frame at 375 and 1536, HI and MR |
+| 10 · parallel | web route, screen, editor card, confirms | AC-1 … AC-18 | `pnpm check` clean |
+| 11 · parallel | phone screen, `BUILT_ROW` | AC-1 … AC-18 | typecheck clean |
+| 12 | `more-payment-terms.spec.ts`, invariant | AC-5, AC-6 | runs at step 8 item 4 |
+
+**10. Risks**
+
+- **Money** — the preview's amounts are the server's (`F4-04`), exact by construction (the sample is a multiple of 10 000 minor units), tier `assumed` on the sample and `derived` on each amount; lakh grouping through the tenant format. The real schedule is not computed here.
+- **Permission** — a Sales Executive writing terms: the routes' grant; a 403 test on restore, seen red.
+- **Tenancy** — restore's tenant predicate; another tenant's id answers 404, seen red.
+- **Release** — additive answer, nullable column, an added enum value (§7).
+- **One default** — make-default is one transaction under the tenant lock (`settings.tranches.repository.ts:177-208`); restore never touches the default.
+- **Two owners** — last save wins (no version check, as every settings form); an archive meanwhile answers 409 (assumption §3).
+
+**11. Regression**
+
+| feature | kept by |
+|---|---|
+| tranche routes, seeding, the 100.00 refusal | `apps/api/tests/settings/tranche-templates.test.ts` unchanged lines; `tranche-allocation.test.ts` |
+| the effective settings' default terms (D164's moved reads) | `effective-settings.test.ts`; `settings.repository.ts`'s import only |
+| `AllocationMeter`, `Card`, `NumberField`, `Timeline` callers | their specs run unchanged; P26 reads Catalog's number fields and a `Card` on Team; P34 reads Catalog's *AC power* 5.0 at precision 1 on the phone (D355) |
+| `DocumentPreview` callers (Branding, Proposal template) | `DocumentPreview.spec.tsx`, `BrandingSettings.spec.tsx`, `ProposalTemplateSettings.spec.tsx` unchanged |
+| the device entry computes no money | `packages/domain/tests/money/device-entry.test.ts` unchanged and green |
+| the settings list and placeholder rows | `more-[row].spec.ts`, `more.spec.ts` |
+
+**12. Acceptance criteria**
+
+- **AC-1** — Given a new tenant, when settings are first opened, then the two seeded templates exist and one is marked default (M01-54).
+- **AC-2** — Given a template whose tranches sum to anything but 100.00, when save is attempted, then it is blocked with the unallocated remainder stated (M01-54).
+- **AC-3** — Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+- **AC-4** — Given Hindi or Marathi, when the page, the editor and the picker draw at 375 and 1536, then no word clips, nothing scrolls sideways, and no English shows but the never-translated names (*DISCOM*, kW).
+- **AC-5** — Given a person without `onboarding.manage_tenant_settings`, when they open `/more/payment-terms`, then it is not found (web 404, phone not-found state) and the row is not listed; each write answers 403.
+- **AC-6** — Given a template, when its name, a share, a stage, an added or a removed tranche is saved, then the card's split reads it back after a reload, the saved line names who and when, and a save with nothing changed sends nothing.
+- **AC-7** — Given *Add payment terms*, when a met, named template is saved, then one template is added (a second tap sends no second create), not default unless none is.
+- **AC-8** — Given a template in use, when *Use for new proposals* is pressed, then it carries *Default* and the old default does not; its editor shows *New proposals use these terms.* and no *Archive*.
+- **AC-9** — Given a template that is not default, when *Archive* is pressed, then the confirm asks; *Keep it* changes nothing; *Archive* moves it to the archived view and the count grows; *Restore* there puts it back in use, not default; nothing is deleted.
+- **AC-10** — Given the api, then restore is a write of its own: an archived template comes back (200, audit `settings.tranche_template_restored`), one in use answers 200 and writes nothing, another tenant's answers 404, and the list's `lastSaved` names the newest save's person and time.
+- **AC-11** — Given the stage picker, then it lists the nine chain stages in order with the pack's labels and never *Cancelled*; each shows the tranches due there; a skippable stage reads *Can be skipped* and stays choosable; two tranches may share a stage and Save stays live (brief decision 6); the editor's binding warns in words.
+- **AC-12** — Given a save the api refuses while the device is online (5xx, or the connection refused), when it answers, then the edit stays, the foot's banner reads *We couldn't save these payment terms.* · *Nothing you typed is lost, and customers keep the terms already in force.*, and *Save terms* again saves.
+- **AC-13** — Given the editor, then a share outside 0.01–100 is refused at the field, an empty tranche or template name is refused on save, a 13th tranche cannot be added, and the last tranche has no remove.
+- **AC-14** — Given an edit, when the editor is closed (✕, *Cancel*, Back, the side list), then *Leave without saving?* asks; *Keep editing* stays; *Discard and leave* drops the edit; with nothing changed nothing asks.
+- **AC-15** — Given a keyboard, then each card is one stop pressed by Enter or Space and names itself (*{name}, default*); the timeline is one stop moved by the arrow keys and picks by Enter, Space or click.
+- **AC-16** — Given the preview, then it shows the saved schedule until the edit totals exactly 100.00%, then the edit; the sample contract reads *₹4,20,000* `assumed` and each amount `derived`; every amount is the api's (`POST …/preview`), and they sum to the sample.
+- **AC-17** — Given a name shown in Hindi or Marathi, when it is changed and saved, then every language reads the new name; an unchanged name keeps its three languages.
+- **AC-18** — Given the list's read failing, then the page says so in the cards' place; given archive, make-default or restore refused (5xx, or 409 because another owner moved it), then a toast says so, nothing changes on screen, and a 409 reloads the list.
+
+Edge cases with no line of their own: a device drop mid-edit — D169, as Branding ruled; a session expiring mid-edit — the transport renews it as on every settings form; a list past one page, search — none (a few dozen templates, one read); billing — not gated; a record deleted while open — a template is never deleted; a lapsed tenant still reads — reads are not gated.
+
+**13. Proof** — each AC has one owning row; `(surface)` marks another surface's check. Phone rows follow `/task` step 7's *Which phone runs a row*.
+
+| row | AC | owner | surface | action → expected | test data, setup and cleanup |
+|---|---|---|---|---|---|
+| P1 | AC-10 | main-dev | api | `apps/api/tests/settings/tranche-templates.test.ts` › *an archived template is restored*; › *restoring one in use writes nothing*; › *another tenant's template is not found to restore* (seen red); › *the list names the newest save* | test db |
+| P2 | AC-5 | main-dev | api | `apps/api/tests/settings/tranche-route-access.test.ts` › *a reader without the grant is refused restore and preview* (seen red) | test db, `bootHttp` |
+| P3 | AC-2 | main-dev | unit | `packages/domain/tests/commerce/tranche-allocation.test.ts` (exists) and `tranche-template-page.test.ts` › *the meter and the save read one verdict*; › *10/60/20 states 10.00 unallocated* | — |
+| P4 | AC-13 | main-dev | unit | `tranche-template-page.test.ts` › *a share outside its range is refused*; › *a name is required*; › *twelve tranches is the most*; › *the last tranche stays*; › *lines list in stage order*; › *two tranches may share a name and a stage* | — |
+| P5 | AC-16 | main-dev | api | `packages/domain/tests/commerce/tranche-preview.test.ts` › *every share of the sample is exact*; › *the amounts sum to the sample*; `apps/api/tests/settings/tranche-templates.test.ts` › *the preview answers the sample and each amount*; › *a preview short of the whole is refused* | test db |
+| P6 | AC-7 | main-dev | unit | `packages/data/tests/react/use-tranche-templates.test.ts` › *a second save while one runs sends nothing*; › *a create carries one key across a retry* | origin answering 201 late |
+| P7 | AC-12 | main-dev | unit | `use-tranche-templates.test.ts` › *a failed save keeps the draft*; › *a refused connection keeps the draft* | origin 500, refused connection |
+| P7b | AC-18 | main-dev | unit | `use-tranche-templates.test.ts` › *an older preview answer is never drawn over a newer one*; › *a refused act changes nothing*; › *a conflict reloads the list*; › *a failed read says so* | origin 500, 409 |
+| P7c | AC-17 | main-dev | unit | `tranche-template-page.test.ts` › *a changed name is stored as typed*; › *an unchanged name keeps its languages* | — |
+| P8 | AC-3 | main-dev | component | `PaymentTermsSettings.spec.tsx` › *every frame at 375 and 1536*; › *the loading frame*; › *the seeded frame*; › *a failed save at 375 and 1536*; › *the archived view*; › *the list's read failed* | — |
+| P9 | AC-4 | main-dev | component | `PaymentTermsSettings.spec.tsx` › *Hindi and Marathi at 375 and 1536* | — |
+| P10 | AC-15 | main-dev | component | `Card.spec.tsx` › *a labelled card is pressed by Enter and Space*; › *the raised card's ring*; `Timeline.spec.tsx` › *a pick by click*; › *arrow keys move the pick with one stop*; `AllocationMeter.spec.tsx` › *the split's key in one row up to four parts*; `NumberField.spec.tsx` › *an ariaLabel names the field*; `DocumentPreview.spec.tsx` › *two tranches of one name both draw* | — |
+| P11 | AC-1 | qa-api | api | a fresh company: `GET /settings/tranche-templates` → 200, two items, *Standard 10/60/20/10* `isDefault` true, `lastSaved` null | a fresh number |
+| P12 | AC-10 (surface) | qa-api | api | as Owner API One: archive a non-default → restore → 200 `archived` false `isDefault` false; restore again → 200, no new audit row; archive the default → 409; a save → `GET` `lastSaved.by.name` *Owner API One*; `POST …/preview` 33.33/33.33/33.34 → `contract` *420000.00*, amounts *139986.00*, *139986.00*, *140028.00* | API One |
+| P13 | AC-5 (surface) | qa-api | api | as Isha API One (Sales): `PUT`, archive, make-default, restore, preview → 403 `FORBIDDEN` | API One |
+| P14 | AC-2 (surface) | qa-api | api | `PUT` with 10/60/20 → 422 `TRANCHES_NOT_WHOLE`, message *10.00% is still unallocated.* | API One |
+| P15 | AC-1 (surface) | qa-web | web | a fresh company at 375: m20-n2 against the frame map | a fresh number |
+| P16 | AC-3 (surface) | qa-web | web | 375: m20-a, m20-b, m20-c, m20-c2, m20-c3, m20-d, m20-n1 (the read held: `window.fetch` patched to hold the `GET` 5 s), m20-n4, m20-n5, m20-n6, m20-n7, m20-n8, m20-n9; a 10/60/20 split → *10% unallocated.* and the refused Save naming it | Owner Web; QA makes the six in use and two archived through the app first |
+| P17 | AC-3 (surface) | qa-web | web | 1536: m20-f, m20-g, m20-h, m20-n10, m20-n11, and the 375-only states at width | Owner Web |
+| P18 | AC-6 | qa-web | web | rename a template, change a share and a stage, add and remove a tranche, save → reload → each reads back on the card; the saved line names Owner Web; *Save terms* unchanged → no `PUT` | Owner Web |
+| P19 | AC-7 (surface) | qa-web | web | *Add payment terms*, name it, 50/50, save → one card; double-click *Save terms* → one `POST` | Owner Web |
+| P20 | AC-8 | qa-web | web | *Use for new proposals* on *Standard 30/60/10* → *Default* moves; its editor m20-c3's words; put the default back after | Owner Web |
+| P21 | AC-9 | qa-web | web | *Archive* → m20-n9; *Keep it*; *Archive* → the count grows, the archived view; *Restore* → in use, not default | Owner Web |
+| P22 | AC-11 | qa-web | web | the picker: nine stages in order, no *Cancelled*, the pills, *Subsidy claimed* *Can be skipped*; pick it → m20-n7's binding; two tranches on Won → Save live and saved | Owner Web |
+| P23 | AC-12 (surface) | qa-web | web | the `PUT` refused in the page (`fetch` answers 500) → m20-n3; refusal lifted, *Save terms* → saved | Owner Web |
+| P23b | AC-18 (surface) | qa-web | web | archive and restore refused in the page (`fetch` answers 500) → the toast, nothing moves; the `GET` refused on load → the read-failed banner | Owner Web |
+| P24 | AC-13 (surface) | qa-web | web | 0 and 100.01 in a share → the refusal; an empty name → refused; 12 tranches → the cap caption; one tranche → no remove | Owner Web |
+| P25 | AC-14 | qa-web | web | edit, then ✕, *Cancel*, the side list → *Leave without saving?*; *Keep editing*; *Discard and leave*; unchanged → no ask | Owner Web |
+| P26 | AC-15 (surface) | qa-web | web | keyboard only: Tab to a card, Enter opens it; Tab to the timeline, arrows move, Enter picks; every control 44 px; §11's callers (Catalog's number fields, a Team card, Branding's and Proposal template's previews) unchanged | Owner Web |
+| P27 | AC-4 (surface) | qa-web | web | Hindi, then Marathi, at 375 and 1536: no clip, no sideways scroll, no English but *DISCOM*; rename a seeded tranche in Hindi, save, switch to English → the new name (AC-17) | Owner Web |
+| P28 | AC-16 (surface) | qa-web | web | m20-c: the saved amounts; type to 100.00 → a `POST …/preview` in the network log and the edit's amounts, *Not saved yet*; the three amounts sum to *₹4,20,000* | Owner Web |
+| P29 | AC-5 (surface) | qa-web | web | as Isha Web: no *Payment terms* row; `/more/payment-terms` → not found | Isha Web |
+| P30 | AC-3 (surface) | qa-ios | iOS | m20-a, m20-b, m20-c, m20-c2, m20-c3, m20-d, m20-n4, m20-n5, m20-n6, m20-n7, m20-n8, m20-n9 against the frame map; a 10/60/20 split → *10% unallocated.*; shares read *33.33* after commit (D355). m20-n1 and m20-n3 are not reachable on a phone (the local api answers in milliseconds; the api refused is P7's) — P8 holds them | Owner iOS |
+| P30b | AC-1 (surface) | qa-ios | iOS | a fresh company: m20-n2 | a fresh number |
+| P31 | AC-14 (surface) | qa-ios | iOS | edit, then Back and the sheet's ✕ → the leave ask; the keyboard on a name and a share leaves the field above it | Owner iOS |
+| P32 | AC-14 (surface) | qa-android | Android | P31 with the system Back and the keyboard | Owner Android |
+| P33 | AC-4 (surface) | qa-ios | iOS | Hindi at 402: the editor, the picker and the meter whole | Owner iOS |
+| P34 | AC-4 (surface) | qa-android | Android | Marathi: the editor, the picker and the meter whole; shares at two places; Catalog's *AC power* 5.0 at precision 1 reads *5.0* (D355) | Owner Android |
+| P35 | AC-5 (surface) | qa-android | Android | as Isha Android: no row; `heliogrid://more/payment-terms` → not found | Isha Android |
+| P35b | AC-5 (surface) | qa-ios | iOS | P35 as Isha iOS | Isha iOS |
+| P36 | AC-6 (surface) | qa-ios | iOS | save a share and a stage, cold-start → both read back | Owner iOS |
+| P36b | AC-6 (surface) | qa-android | Android | P36 | Owner Android |
+| P37 | §5 motion | main-dev | component | `EditorSurface.spec.tsx` › *the sheet and the panel open at their end state*; `Modal.spec.tsx` › *a dialog opens at its end state with reduced motion* (exist) | — |
+| P38 | §5 motion | qa-android | Android | `transition_animation_scale 0`: the editor, the picker and the archive confirm at their end state at once; back to `1` after | Owner Android |
+| P38b | §5 motion | qa-ios | iOS | Reduce Motion on: P38's three at their end state; off after | Owner iOS |
+| P39 | AC-6 (surface) | main-dev | web | `tests/e2e/web/more-payment-terms.spec.ts` › *an owner saves a split and reads it back*; › *a split short of the whole is refused*; › *a reader without the grant meets not found* (seen red) | test db, step 8 item 4 |
+| P40 | AC-3 (surface) | ci | lint, invariants | the colour-literal and off-scale lint (Biome) clean on every changed web and phone file; `e2e-flow-per-screen` holds the screen, its phone proof P30–P36b | — |
+
+**14. Deferred rows**
+
+- **Join:** D164 (the restore needs the room); D254's changes 16 and 17 (change 16's `ariaLabel` as the design system names it, §3); D355 (shares at two places on the phone).
+- **Stay, in part:** D240 — `Sheet` `meta` and `AppRail` `label` are already in `packages/ui` (`Sheet.types.ts:43`, `AppRail.types.ts:39`); `Accordion` `description` and `ListRow` `wrapTitle` are not on this board → rewritten, reopens `touches packages/ui/src/components/Accordion/ · touches packages/ui/src/components/ListRow/`.
+- **Stay, unchanged trigger moved:** D289 (the board passes no `tone`; check and leave not drawn here) → `owner: the next design-system change`; D317 (cards and an editor, no column of sections) → `owner: redraw SCR-M01-12 and SCR-M01-05`.
+- **Stay, unchanged:** D2 (now also names `AllocationMeter`'s English other than the sentence this page passes); D225, D256, D275 (owner rows); met only by a folder this task touches: D92, D205, D311, D312, D327, D329, D350 — none is this screen's change; D169 as Branding ruled it.
+- **Deleted:** D164, D254, D355
+
+**15. Size** — about 100 changed files; ~4,000 code lines, ~2,100 test lines. One PR.
+
+**16. Decisions for the owner**
+
+- **Q1 · The pill on a stage in the picker.** The board writes the tranche name's first word and its share (*First 33.33%*), which breaks for *Booking advance* and for Hindi and Marathi. A — the tranche's whole name and share (*Final instalment · 33.33%*), the pill wrapping on two lines when long (recommended: no new words, reads in every language). B — a position word per line from the catalog (*First*, *Second* … *Twelfth*), as the board looks, but a pill can then disagree with the tranche's own name.
+- **Q2 · Where the preview's amounts are worked out.** `F4-04` says no device computes a money figure, and a test holds it. A — the api answers them: one read, `POST /settings/tranche-templates/preview`, called when the editor opens and each time the edit totals 100% (recommended: the law as written, the guard unchanged; costs one route and a short wait before the new amounts show). B — the owner rules in `F4-04` that a sample shown in settings is no money figure, and the screen works them out (no route; the guard's reviewed list gains an entry, and every later screen can cite it).
+
+**Build note:**
+- Landed, by slice: contracts (the tranche routes in `tranche-templates.ts`, `lastSaved`, restore, preview) · migration 0033 + the audit value · domain preview amounts on `./server` and the page view-model, the pack's nine stage labels · api D164 move, restore, preview, `changed_by` · `useTrancheTemplates` + `useTrancheSchedule` · i18n words in three languages (HI/MR drafted, 75 lines for native review) · ui changes 16 and 17, six journey glyphs, D355, `PaymentTermsSettings` (list, editor, foot, picker, editor card, shared view) · web and phone screens · the web flow spec (runs at step 8).
+- Seen red by name: *another tenant’s template is not found to restore* (restore answering archived for a missing row); *a reader without the grant is refused restore and preview* (restore opened to `member`). The web flow's not-found case is seen red at step 8.
+- Read first: `PaymentTermsSettings.view.ts` and `use-tranche-templates.ts` (one wiring for both apps; `save` reads the latest draft from a ref), then `Timeline` pick mode and `Card` `label`.
+- Left open: §3's `ariaLabel` assumption failed — `NumberField` takes the design system's `ariaLabel` beside `labelSpokenOnly`; an existing template's name field is drawn on no board (needed for AC-6's rename); after D355 the phone shows a share at two places (*10.00*) where the web and the board show *10* — owner's call; the phone keyboard over a lower share field is unproven until P31.
+- `pnpm check`: clean (5,474 unit tests, catalogs and OpenAPI fresh, oasdiff additive); invariants clean; component specs 99 passed.
 
 ### T-M01-021 · Message Template Settings
 **Type:** screen · **Tier:** P0

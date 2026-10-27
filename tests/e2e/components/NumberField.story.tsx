@@ -64,3 +64,19 @@ export function HeldNumberField({
     </ProvenanceWordsProvider>
   );
 }
+
+/** A field named the two ways a screen names one: a drawn `label`, or an `ariaLabel` alone. */
+export function NamedNumberField({ label, ariaLabel }: { label?: string; ariaLabel?: string }) {
+  const [value, setValue] = useState<number | undefined>(undefined);
+  return (
+    <NumberField
+      {...(label === undefined ? {} : { label })}
+      {...(ariaLabel === undefined ? {} : { ariaLabel })}
+      unit="%"
+      precision={2}
+      steppers={false}
+      value={value}
+      onCommit={setValue}
+    />
+  );
+}

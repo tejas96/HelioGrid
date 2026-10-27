@@ -41,7 +41,9 @@ export class SettingsController {
     createTrancheTemplate: MANAGE,
     saveTrancheTemplate: MANAGE,
     archiveTrancheTemplate: MANAGE,
+    restoreTrancheTemplate: MANAGE,
     makeDefaultTrancheTemplate: MANAGE,
+    previewTrancheSchedule: MANAGE,
     holidays: MANAGE,
     saveHolidays: MANAGE,
   })
@@ -114,6 +116,14 @@ export class SettingsController {
       archiveTrancheTemplate: async ({ params }) => ({
         status: 200,
         body: await this.templates.archiveTrancheTemplate(tenantId(), params.id, actOf(req)),
+      }),
+      restoreTrancheTemplate: async ({ params }) => ({
+        status: 200,
+        body: await this.templates.restoreTrancheTemplate(tenantId(), params.id, actOf(req)),
+      }),
+      previewTrancheSchedule: async ({ body }) => ({
+        status: 200,
+        body: await this.templates.previewTrancheSchedule(tenantId(), body),
       }),
       makeDefaultTrancheTemplate: async ({ params }) => ({
         status: 200,

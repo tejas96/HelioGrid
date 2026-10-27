@@ -78,7 +78,8 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
   });
 
   it('lists the two seeded splits — the first the default, neither changed, none archived', async () => {
-    const { items } = await templates.trancheTemplates(here.tenantId);
+    const { items, lastSaved } = await templates.trancheTemplates(here.tenantId);
+    expect(lastSaved).toBeNull();
     expect(items.map((item) => [item.isDefault, item.changed, item.archived])).toEqual([
       [true, false, false],
       [false, false, false],
@@ -163,6 +164,41 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
     ).toHaveLength(1);
   });
 
+  it('an archived template is restored — back in use, never the default, with its entry', async () => {
+    const restored = await templates.restoreTrancheTemplate(here.tenantId, added, by());
+    expect(restored).toMatchObject({ id: added, archived: false, isDefault: false });
+    const event = 'settings.tranche_template_restored';
+    expect(await entriesOf(pools, here.tenantId, event)).toHaveLength(1);
+  });
+
+  it('restoring one in use writes nothing', async () => {
+    const again = await templates.restoreTrancheTemplate(here.tenantId, added, by());
+    expect(again).toMatchObject({ archived: false });
+    const event = 'settings.tranche_template_restored';
+    expect(await entriesOf(pools, here.tenantId, event)).toHaveLength(1);
+  });
+
+  it('another tenant’s template is not found to restore', async () => {
+    await expect(templates.restoreTrancheTemplate(elsewhere.tenantId, added, by())).rejects.toThrow(
+      'That template is not this company’s.',
+    );
+  });
+
+  it('the preview answers the sample and each amount, in the tenant’s currency', async () => {
+    const shares = ['33.33', '33.33', '33.34'].map((percent) => ({ percent }));
+    expect(await templates.previewTrancheSchedule(here.tenantId, { lines: shares })).toEqual({
+      currencyCode: 'INR',
+      contract: '420000.00',
+      amounts: ['139986.00', '139986.00', '140028.00'],
+    });
+  });
+
+  it('a preview short of the whole is refused', async () => {
+    const shares = ['10.00', '60.00', '20.00'].map((percent) => ({ percent }));
+    const attempt = templates.previewTrancheSchedule(here.tenantId, { lines: shares });
+    await expect(attempt).rejects.toMatchObject({ code: 'TRANCHES_NOT_WHOLE' });
+  });
+
   it('replaces a template’s name and lines, marking it the tenant’s own, with its entry', async () => {
     const saved = await templates.saveTrancheTemplate(
       here.tenantId,
@@ -203,6 +239,15 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
     await expect(attempt).rejects.toMatchObject({ code: IDEMPOTENCY_KEY_REUSED });
     const there = await templates.createTrancheTemplate(elsewhere.tenantId, body, headers, by());
     expect(there.id).not.toBe(made.id);
+  });
+
+  it('the list names the newest save — its person and time', async () => {
+    const byColleague = { actorUserId: colleague.userId, now: Date.now() };
+    const body = { name: { en: 'Colleague’s' }, lines: [line('All', '100.00')] };
+    await templates.saveTrancheTemplate(here.tenantId, added, body, byColleague);
+    const { lastSaved } = await templates.trancheTemplates(here.tenantId);
+    expect(lastSaved?.by).toEqual({ id: colleague.userId, name: 'Meera Iyer' });
+    expect(Date.parse(lastSaved?.at ?? '')).toBe(byColleague.now);
   });
 
   async function countOf(tenantId: string): Promise<number> {

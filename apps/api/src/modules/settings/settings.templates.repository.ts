@@ -16,7 +16,7 @@ import { eq } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { memberAct, recordAuditEntry } from '../audit/audit.public';
-import type { LastSave } from './internal/wire';
+import { type LastSave, lastSaveOf } from './internal/wire';
 
 /**
  * The proposal and timeline templates on the runtime pool (`M01-51`, `M01-52`): one row each,
@@ -168,8 +168,4 @@ function proposalColumns() {
     sectionsIncluded: proposalTemplateSettings.sectionsIncluded,
     defaultTerms: proposalTemplateSettings.defaultTerms,
   };
-}
-
-function lastSaveOf(row: { at: Date; byId: string | null; byName: string | null }): LastSave {
-  return { at: row.at, by: row.byId === null ? null : { id: row.byId, name: row.byName ?? null } };
 }

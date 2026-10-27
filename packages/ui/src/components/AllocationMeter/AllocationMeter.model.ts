@@ -174,3 +174,13 @@ export function allocationModel({
 }
 
 export { partValue };
+
+/**
+ * Up to four parts keep ONE key row, so template cards side by side stay one height; five or more
+ * wrap. Both halves read it, so the phone and the web break the key at the same count.
+ */
+const SPLIT_KEY_ONE_ROW_LIMIT = 4;
+
+export function splitKeyFitsOneRow(partCount: number): boolean {
+  return partCount <= SPLIT_KEY_ONE_ROW_LIMIT;
+}

@@ -50,7 +50,7 @@ export interface NumberFieldProps {
   max?: number;
   /** The nudge size. Meaningless with `steppers={false}`, which is money's default. Default 1. */
   step?: number;
-  /** Decimal places applied on commit. */
+  /** Decimal places applied on commit — and, on the phone, the places a resting figure is drawn at. */
   precision?: number;
   label?: string;
   /**
@@ -58,6 +58,12 @@ export interface NumberFieldProps {
    * (`SCR-M01-15`'s version rows). The field keeps its accessible name.
    */
   labelSpokenOnly?: boolean;
+  /**
+   * The input's accessible name **when no visible `label` is drawn** — a repeated line that labels
+   * its column once (`SCR-M01-20`: *"Share of Second instalment"*). The stepper buttons take the
+   * same name. Ignored when `label` is set.
+   */
+  ariaLabel?: string;
   unit?: string;
   hint?: string;
   disabled?: boolean;

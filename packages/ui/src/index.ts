@@ -103,6 +103,7 @@ export * from './components/NumberField';
 export * from './components/OperationProgress';
 export * from './components/OptionCardGroup';
 export * from './components/OtpInput';
+export * from './components/PaymentTermsSettings';
 export * from './components/PendingAction';
 export * from './components/PhoneField';
 export * from './components/PhotoField';

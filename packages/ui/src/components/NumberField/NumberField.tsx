@@ -35,6 +35,7 @@ export function NumberField({
   precision,
   label,
   labelSpokenOnly = false,
+  ariaLabel,
   unit,
   hint,
   disabled = false,
@@ -108,6 +109,7 @@ export function NumberField({
         disabled={disabled}
         danger={danger}
         label={label}
+        ariaLabel={label === undefined ? ariaLabel : undefined}
         unit={unit}
         currency={currency}
         focusRequest={focusRequest}
