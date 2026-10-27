@@ -122,7 +122,9 @@ leaves a production `.next` that `next dev` cannot serve.
 
 One commit: the change, the task's `**Status:** shipped`, and the task cut to its title and header
 lines (those above its first `####`) — the plan moves into the PR body. Message
-`feat: <id> — <what the user gets>`. Merge `origin/main` when the branch is behind; never rebase.
+`feat: <id> — <what the user gets>`; a commit the hook refused is retried with its message passed
+again, never `.git/COMMIT_EDITMSG`, which still holds the last good commit's. Merge `origin/main`
+when the branch is behind; never rebase.
 Push `feat/<id>`, open the PR as a draft from `.github/pull_request_template.md`, its `## Cost`
 from `python3 -I ~/.claude/projects/-Volumes-works-space-heliogrid/harness-meter.py <id>`, and
 mark it ready (`gh pr ready`) when every job of the head's latest run is `success`, or `skipped`
