@@ -10,7 +10,7 @@
       and ignores this attribute entirely — see values-v31/styles.xml. minSdk is 24 and
       targetSdk 36, so both ranges ship and both get tested.
 
-      @color/splash_canvas is GENERATED from design/ds-source by packages/tokens/build.ts.
+      @color/splash_canvas has no generator: it is set by hand to match @heliogrid/theme (deferred D114).
       Never hardcode a hex here.
     -->
     <!--

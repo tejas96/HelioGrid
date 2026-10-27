@@ -506,6 +506,59 @@ module.exports = {
     },
 
     {
+      name: 'web-no-env-server',
+      severity: 'error',
+      comment:
+        "apps/web reads its environment only through lib/env.ts; @heliogrid/env/server is Node's reader and would put the server's variables in a browser bundle. Both forms, as web-no-db: the specifier and the on-disk path.",
+      from: { path: '^apps/web/' },
+      to: { path: '^@heliogrid/env/server|^packages/env/(src|dist)/server' },
+    },
+    {
+      name: 'mobile-i18n-rn-one-importer',
+      severity: 'error',
+      comment:
+        'Only apps/mobile/src/i18n.ts imports @heliogrid/i18n/rn: it installs the Hermes Intl polyfills once, before any screen formats a word.',
+      from: { path: '^apps/mobile/', pathNot: '^apps/mobile/src/i18n\\.ts$' },
+      to: { path: '^@heliogrid/i18n/rn|^packages/i18n/(src|dist)/rn/' },
+    },
+    {
+      name: 'mobile-no-expo',
+      severity: 'error',
+      comment:
+        'apps/mobile is bare React Native: no expo package, and no AsyncStorage (auth tokens go through src/auth/keychain-storage.ts).',
+      from: { path: '^apps/mobile/' },
+      to: {
+        path: '^(expo($|[-/])|@expo/|@react-native-async-storage/)|node_modules/(expo($|[-/])|@expo/|@react-native-async-storage/)',
+      },
+    },
+    {
+      name: 'ui-web-half-no-react-native',
+      severity: 'error',
+      comment:
+        'A packages/ui file that is not a .native half never imports react-native: webpack and Turbopack would bundle it into the web, and no typecheck refuses it.',
+      from: { path: '^packages/ui/src/', pathNot: '\\.native\\.tsx?$' },
+      to: { path: '^react-native($|/)|node_modules/react-native/' },
+    },
+    {
+      name: 'ui-primitives-below-components',
+      severity: 'error',
+      comment:
+        "A primitive is built before any component, so primitives/ never imports components/ — save AttentionGlyph, which draws from the design system's one glyph set (ShellGlyphMarks).",
+      from: {
+        path: '^packages/ui/src/primitives/',
+        pathNot: '^packages/ui/src/primitives/Icon/AttentionGlyph(\\.native)?\\.tsx$',
+      },
+      to: { path: '^packages/ui/src/components/' },
+    },
+    {
+      name: 'no-web-suffix',
+      severity: 'error',
+      comment:
+        'A web half is <Name>.tsx, never <Name>.web.tsx: Metro resolves .native.tsx ahead of .tsx with no config, while webpack and Turbopack never look for .web.* — a .web file fails at runtime.',
+      from: { path: '\\.web\\.tsx?$' },
+      to: {},
+    },
+    {
       name: 'no-circular',
       severity: 'error',
       from: {},

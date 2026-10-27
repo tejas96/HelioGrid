@@ -558,7 +558,7 @@
     },
     {
       "includes": [
-        "packages/env/src/**",
+        "packages/env/src/server.ts",
         "apps/web/lib/env.ts",
         "infra/temporal/spike/**",
         "vitest.config.mts",
@@ -634,7 +634,8 @@
                   "lucide-react-native": "Icons are DRAWN in packages/ui — one SVG per glyph, currentColor, 1.5px stroke — and serve both platform halves (owner ruling; docs/engineering/03 Icons row, F7-19). An icon PACKAGE ties the family to someone else's release and splits it in two, one library per platform. Add the shape to SHELL_GLYPHS (AppShell/ShellGlyph.shapes.ts) and draw it by name.",
                   "react-hook-form": "Import useZodForm/Controller from '@heliogrid/forms' — the fenced form layer (foundation-dx spec §2.2).",
                   "@hookform/resolvers/zod": "zodResolver is wired inside @heliogrid/forms' useZodForm — import that instead (foundation-dx spec §2.2).",
-                  "zod": "Import z from '@heliogrid/forms' — the app bundler's zod is a DIFFERENT instance (dual ESM/CJS), so installFormsErrorMap's translated defaults never apply to schemas built with it. Real schemas live in @heliogrid/contracts."
+                  "zod": "Import z from '@heliogrid/forms' — the app bundler's zod is a DIFFERENT instance (dual ESM/CJS), so installFormsErrorMap's translated defaults never apply to schemas built with it. Real schemas live in @heliogrid/contracts.",
+                  "@tanstack/react-query": "Apps reach data only through @heliogrid/data's hooks (usePaginatedList, usePagedList and the rest): a list is never a hand-wired useInfiniteQuery, and React Query imported by an app as well as by the package loads twice under Metro, splitting its context."
                 }
               }
             }
@@ -704,6 +705,10 @@
               "level": "error",
               "options": {
                 "paths": {
+                  "@nestjs/common": {
+                    "importNames": ["Get", "Post", "Put", "Patch", "Delete", "Res"],
+                    "message": "A route is a ts-rest contract handled with @TsRestHandler, never a hand-written Nest route; cookies go through responseOf(req) (common/auth/cookies.ts), never an injected @Res()."
+                  },
                   "node:fs": "A service reads no file of its own. Its identity — the signed token and the mTLS certificates — is read by @heliogrid/env/server, the one reader both services use, so a rotation that works for one works for the other. The single exception is the boot assertion that a BUILD artifact exists, and it is excluded by path.",
                   "fs": "A service reads no file of its own. Its identity — the signed token and the mTLS certificates — is read by @heliogrid/env/server, the one reader both services use. Use 'node:fs' inside @heliogrid/env, never a bare specifier.",
                   "zod/v4": "Zod 4 is banned until ts-rest ships stable Zod-4 support (docs/engineering/03 §4, spike S3). Import from 'zod' only.",
@@ -744,7 +749,8 @@
                   "lucide-react-native": "Icons are DRAWN in packages/ui — one SVG per glyph, currentColor, 1.5px stroke — and serve both platform halves (owner ruling; docs/engineering/03 Icons row, F7-19). An icon PACKAGE ties the family to someone else's release and splits it in two, one library per platform. Add the shape to SHELL_GLYPHS (AppShell/ShellGlyph.shapes.ts) and draw it by name.",
                   "react-hook-form": "Import useZodForm/Controller from '@heliogrid/forms' — the fenced form layer (foundation-dx spec §2.2).",
                   "@hookform/resolvers/zod": "zodResolver is wired inside @heliogrid/forms' useZodForm — import that instead (foundation-dx spec §2.2).",
-                  "zod": "Import z from '@heliogrid/forms' — the app bundler's zod is a DIFFERENT instance (dual ESM/CJS), so installFormsErrorMap's translated defaults never apply to schemas built with it. Real schemas live in @heliogrid/contracts."
+                  "zod": "Import z from '@heliogrid/forms' — the app bundler's zod is a DIFFERENT instance (dual ESM/CJS), so installFormsErrorMap's translated defaults never apply to schemas built with it. Real schemas live in @heliogrid/contracts.",
+                  "@tanstack/react-query": "Apps reach data only through @heliogrid/data's hooks (usePaginatedList, usePagedList and the rest): a list is never a hand-wired useInfiniteQuery, and React Query imported by an app as well as by the package loads twice under Metro, splitting its context."
                 }
               }
             }

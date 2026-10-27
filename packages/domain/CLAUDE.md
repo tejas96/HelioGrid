@@ -1,15 +1,11 @@
 # @heliogrid/domain — pure isomorphic domain logic, the bottom layer
 
-Imports no workspace package except build config. Contracts derives from this package
-(`z.enum(ROLE_PRESETS)`), so importing contracts here is a cycle.
-
 ## What lives here / what must never live here
 
 - `src/authz/` is the whole permission model (presets, capability matrix, OR across held roles,
   widest-wins visibility per domain). It takes ROLES in and never reads a session, tenant or
   request.
-- NEVER a framework (NestJS, React, React Native), storage, or any I/O. Biome refuses clocks,
-  timers, `crypto` and `node:` imports here.
+- NEVER a framework (NestJS, React, React Native), storage, or any I/O.
 - Rules, catalogs and market config arrive as INJECTED parameters. A module-level global is the
   specific anti-pattern this package exists to prevent.
 - **Two entries: the index every device bundles, and `./server` (`src/server.ts`) for `apps/api` and
@@ -22,16 +18,13 @@ Imports no workspace package except build config. Contracts derives from this pa
 
 ## Local conventions
 
-- Reducers are `(state, event) => state` — total, synchronous, no timers. `packages/data`'s hook
-  owns timers and I/O, the app navigation and rendering; the reducer owns the decision.
-- Parse a date with `Date.parse` and pass the epoch to Intl (Biome refuses `new Date` and
-  `Date.now` here).
+- Reducers are `(state, event) => state` — total and synchronous; the reducer owns the decision,
+  `packages/data`'s hook its timers and I/O.
+- Parse a date with `Date.parse` and pass the epoch to Intl.
 - Capability rows live in `authz/<area>.ts`, one file per product area named for what it holds
   (`survey.ts`, never `m04.ts`), joined in `capabilities.ts` and `visibility.ts`. A module adds its
   rows to its own file when its slice begins. Write every cell; never add a default.
-- Keep `format/pack.ts` flat: the design system's `MarketProvider` fixes `id`, `locale`,
-  `currency`, `currencyFractionDigits`, `clock` and `taxIdLabel`, and `design-system-props` fails
-  on a dropped one.
+- Keep `format/pack.ts` flat: the design system's `MarketProvider` reads its fields as they stand.
 - **A market fact is a key on `MarketPack` (`market/pack.ts`), never a constant.** A new key adds
   its folder beside `format/`, its property on `MarketPack` and India's values on `IN_PACK`, and
   imports `MarketCode` from `market/code` by path, never the market index.
@@ -57,8 +50,7 @@ Imports no workspace package except build config. Contracts derives from this pa
   each, and `money/` is the ONLY slice that rounds — `applyRate` for a fraction of an
   amount, `amountForQuantity` for a quantity at a per-unit price — so BOM, proposal and invoice can
   only agree. `tax/breakdown.ts` is the one tax computation and `subsidy/amount.ts` the one incentive
-  computation: a module that needs either calls it and never multiplies a rate itself. All of
-  these compute, so all of them are on `./server`.
+  computation: a module that needs either calls it and never multiplies a rate itself.
 
 ## Done means
 
