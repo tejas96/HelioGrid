@@ -52,8 +52,8 @@ Law ids are stable — never reuse or renumber one.
 ## 3. Workflow
 
 The work follows ONE order, `docs/build-order.md`, and `/task` (`.claude/skills/task/SKILL.md`)
-runs it: one task, one session, one PR. The session decides, builds, proves and ships; the owner
-merges. Design is checked and locked a module ahead of the build
+runs it: one task, one session, one PR. The session decides, builds and proves; the owner keeps
+what §4 lists. Design is checked and locked a module ahead of the build
 (`.claude/skills/task/design-track.md`), so the build waits only when that track falls behind.
 
 **A PR is one complete task:** every acceptance line is met and proven before it opens, or by its
@@ -64,6 +64,8 @@ code that is gone — `tsc -p` never removes old output, and the web typecheck r
 
 ## 4. What the owner keeps
 
+- **Every commit** waits for the owner's yes to its file list and message; one yes is one commit
+  and its push.
 - **The merge.** Every PR is merged by the owner. Never `--no-verify`, never force-push, never
   push to `main` (`.claude/settings.json` denies them).
 - **Anything billable or external-account-shaped** (cloud, store accounts, paid APIs): stop and ask.

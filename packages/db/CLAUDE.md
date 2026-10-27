@@ -37,6 +37,7 @@ It prints the database it migrates before it applies anything, and refuses a URL
 
 ## Rules
 
+- Migrations are append-only: add a new file; the runner refuses an edited applied one.
 - A migration runs in one transaction. One that cannot (`CREATE INDEX CONCURRENTLY`) starts with
   `-- heliogrid:no-transaction`, and then every statement in it is idempotent (`IF NOT EXISTS`):
   a crash mid-apply runs it again.

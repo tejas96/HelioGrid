@@ -9,7 +9,7 @@ model: opus
 # /task — one task, one session, one pull request
 
 You own the task: you pick it, plan it, decide every open point, build, prove and ship it. The
-owner merges the PR; nothing else waits on them. The laws are `CLAUDE.md`.
+owner keeps what `CLAUDE.md` §4 lists; nothing else waits on them. The laws are `CLAUDE.md`.
 
 **The test-database prefix** points one command at `heliogrid_test`, never the owner's
 `heliogrid_dev`:
@@ -122,15 +122,15 @@ leaves a production `.next` that `next dev` cannot serve.
 
 One commit: the change, the task's `**Status:** shipped`, and the task cut to its title and header
 lines (those above its first `####`) — the plan moves into the PR body. Message
-`feat: <id> — <what the user gets>`; a commit the hook refused is retried with its message passed
-again, never `.git/COMMIT_EDITMSG`, which still holds the last good commit's. Merge `origin/main`
+`feat: <id> — <what the user gets>`, committed as `CLAUDE.md` §4 says. A commit the hook refused
+is retried with its message passed again, never `.git/COMMIT_EDITMSG`, which still holds the last good commit's. Merge `origin/main`
 when the branch is behind; never rebase.
 Push `feat/<id>`, open the PR as a draft from `.github/pull_request_template.md`, its `## Cost`
 from `python3 -I ~/.claude/projects/-Volumes-works-space-heliogrid/harness-meter.py <id>`, and
 mark it ready (`gh pr ready`) when every job of the head's latest run is `success`, or `skipped`
 while `changes` passed, and — when `android` ran and the repository variable `PHONE_E2E` is not
 `off` — its step `Phone flows (tests/e2e/mobile) on the emulator` ran. A red job:
-`gh run view <run> --log-failed > .qa/ci.log`, fix, push.
+`gh run view <run> --log-failed > .qa/ci.log`, fix, commit (`CLAUDE.md` §4), push.
 
 The same failure after two real fixes: leave the PR a draft, write in its body what fails and the
 two ways forward, and stop.

@@ -91,7 +91,7 @@ second refusal goes to the owner.
    Fill each task's `DESIGN:` line with its canvas link, turn a `planned` task's `Status:` to
    `designed`, delete each brief's `## Redesign owed` section the board now meets, and delete each
    `deferred.md` row the boards now meet (or, for a row naming several modules, its clause for this
-   one). Run the gate as `/task` runs it, then commit on `design/<module>` as
+   one). Run the gate as `/task` runs it, then commit (`CLAUDE.md` §4) on `design/<module>` as
    `chore: <module> design — <screens> locked`, push it, and open the PR as `/task` does (a draft, marked ready only when CI is green), its body listing the screens
    locked, the owner's rulings and the `deferred.md` rows added or closed. A
    lock is a commit: every lock commits `.design/<module>/`.
