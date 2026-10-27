@@ -37,9 +37,8 @@ A task is its header lines, written when the task is:
 
 
 While a task is built, its RFC sits under these lines as `#### RFC` (a part: `#### Part <x> · RFC`),
-as `/task` (*Plan*) writes it. The commit that ships it moves the RFC into
-the PR body and out of this file: a shipped task keeps only its header lines, and git and the PR
-hold its history. A split task's `#### Parts` table and task RFC stay until its last part ships.
+as `/task` (*Plan*) writes it. The commit that ships it takes the RFC out of this file: a shipped
+task keeps only its header lines, and git holds its history. A split task's `#### Parts` table and task RFC stay until its last part ships.
 
 **Size.** A task is one PR; it splits into parts only on the owner's word.
 

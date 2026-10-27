@@ -68,9 +68,12 @@ code that is gone — `tsc -p` never removes old output, and the web typecheck r
   and its push.
 - **The merge.** Every PR is merged by the owner. Never `--no-verify`, never force-push, never
   push to `main` (`.claude/settings.json` denies them).
+- **The look:** a board, or a change to the design system, is locked only by the owner's yes
+  (`.claude/skills/task/design-track.md`).
 - **Anything billable or external-account-shaped** (cloud, store accounts, paid APIs): stop and ask.
-- **Their data and machines:** never write the database directly, never touch a product volume,
-  never stop what they left running except as `/task` says.
+- **Their data and machines:** never write the database directly (`/task` alone rebuilds the
+  disposable `heliogrid_test`), never touch a product volume, never stop what they left running
+  except as `/task` says.
 
 Everything else is decided in the session and written down with one reason: a reading of the PRD
 (the simplest that meets the row), a layer conflict (§7), a fix outside the task (a
