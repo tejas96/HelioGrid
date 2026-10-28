@@ -57,7 +57,7 @@ export const phoneE164Schema = z
 /**
  * Money travels as a decimal STRING scaled to the currency's minor unit (INR: exactly 2
  * fraction digits; numeric(14,3) in the DB) — never a float. A money-bearing payload
- * carries ONE document-level currency_code; the route's object schema refines the scale
+ * carries ONE document-level currencyCode; the route's object schema refines the scale
  * against it. Rendering uses formatMoney(amount, currency, locale) exclusively — market
  * grouping per currency (lakh/crore for INR).
  */

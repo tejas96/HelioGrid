@@ -376,7 +376,7 @@ jobs:
 
   # The android job builds the debug app, then runs the phone flows on it: tests/e2e/mobile/run.sh
   # against the BUILT api and a Metro this job starts, since a debug build loads its JavaScript
-  # from Metro and bundles none. The iOS flows run by hand or by the qa-ios helper, never here: a
+  # from Metro and bundles none. The iOS flows run by hand or by the qa-live helper, never here: a
   # macOS runner spends 20 minutes on the Xcode build alone (the ios job below proves the build and
   # nothing more). The android job runs on main as well as the pull request: setup-gradle and a
   # cache written on a pull request stay with that pull request, so main is what warms them for

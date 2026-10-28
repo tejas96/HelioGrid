@@ -26,8 +26,9 @@ paths:
 ## A screen is its locked board
 
 A screen with locked boards (`.design/<module>/<screen id>-*.dc.html`) is built frame by frame
-(`data-frame="…"`) from the components the frame names — `component-from-global-scope="…<Name>"`,
-`h(NS.<Name>` — in its order, with its props. The app shell draws the top bar, nav and rail, and the
+(`data-frame="…"`) from the frame's markup — the components it names
+(`component-from-global-scope="…<Name>"`, `h(NS.<Name>`), their order, nesting and props, and its
+layout — never from the names alone. The app shell draws the top bar, nav and rail, and the
 words come from the catalog, never from the board. A component the frame does not name, or a
 different structure, is a defect even when every test passes.
 
@@ -67,6 +68,20 @@ how untranslated copy ships.
 - **A component never states a value it was not told** — a default that invents a limit, a size or
   a ceiling promises one thing while the caller refuses another.
 
+## States, saves and focus — decided before the markup
+
+The plan names them for each read and each action a screen has (`/task`, *Plan*); the code builds
+what the plan names (`F7-23` N5 and N10, `F7-43` items 2 and 3):
+
+- **A read** draws loading, empty and failed. Failed says what happened and offers its retry; a
+  part whose read is still out draws its loading, never nothing.
+- **An action**, while it is out: its fields and acts are inert, every other way out waits for its
+  answer, and a second press sends nothing. Its failure shows where the person acted, never
+  swallowed and never only in another part.
+- **A control that removes itself or swaps its card** when pressed — *Try again*, *Undo*,
+  *Remove*, *Dismiss*, a toast's act — moves focus to where the person goes next: what replaced
+  it, else its heading. Both halves do it, through the component's focus handle.
+
 ## Motion — calm, and never a dropped frame
 
 What motion is for and its four floors are `F7-51`; which tool does which job is
@@ -90,7 +105,7 @@ navigator's, and the studio's 3D scene animates in its own code under the same f
   With it on, the end state shows at once.
 - **A loop stops** when its state ends, when its view leaves the screen and when the app or tab goes
   to the background (web: `IntersectionObserver`, `visibilitychange`; phone: screen blur, `AppState`).
-  A loop that never stops also keeps Android from going idle, and every `qa-android` dump then fails.
+  A loop that never stops also keeps Android from going idle, and every Android view-tree read then fails.
 - **Nothing waits on an animation.** Content renders at once; motion runs over what is already there.
   No `onAnimationEnd` gates a control or the data, and the rows of a list never arrive one by one.
 - **Heavy motion loads late.** A shader or a motion library loads lazily (`import()` /
@@ -103,19 +118,20 @@ Hindi and Marathi words are written once, in the catalog, when a screen's words 
 another screen already shows is reused as it stands. A newly drafted line is listed in the task for
 a native review. A frame drawn in another language is never a word source: it is a second copy.
 
-Every word a screen shows comes from `@heliogrid/i18n` — `<Trans id="…">` in markup, `t(COPY.key)`
-in hooks and handlers. No check finds a bare English literal in JSX.
+Every word a screen shows comes from `@heliogrid/i18n`, as `packages/i18n/CLAUDE.md` says. No check
+finds a bare English literal in JSX.
 
 ## Presentation and logic live in different files
 
 **Style never lives in a web component file** — it is `<Name>.css`; a phone screen's layout is its
 `styles.ts` (`apps/mobile/CLAUDE.md`), and a `packages/ui` native half keeps its `StyleSheet` below
 its markup. Three roles:
-a **container** (`<Name>Screen.tsx`) holds data, state, handlers and navigation and little markup;
-a **presentational** component takes props and returns markup, with no data access and no
-navigation; **logic** sits in a `use-<thing>.ts` hook beside them, or in a shared package when
-both platforms need it (Law 11). A `.tsx` holding both a data-fetching effect chain and the markup
-it feeds is a review finding.
+a **container** (`<Name>Screen.tsx`) composes and holds only visual state; a **presentational**
+component takes props and returns markup, with no data access and no navigation; **logic** both
+platforms need lives in a shared package — a `domain` view model filled by a `data` hook (Law 11)
+— and an app's `use-<thing>.ts` is its platform adapter only (`apps/web/CLAUDE.md`,
+`apps/mobile/CLAUDE.md`). A `.tsx` holding both a data-fetching effect chain and the markup it
+feeds is a review finding.
 
 ## Done means
 

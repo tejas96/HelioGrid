@@ -9,16 +9,22 @@ import json
 import re
 import sys
 
-# A command position: the start, or after `;`, `&&`, `||`, `|`, `(` or a newline — never a word
-# inside a file edit, a heredoc line of prose or a message.
-COMMAND_START = r"(?:^|[;&|(]|\n)\s*(?:cd\s+\S+\s*(?:&&|;)\s*)?"
+# A command position: the start, or after `;`, `&&`, `||`, `|`, `(` or a newline, past any `VAR=value`
+# in front — never a word inside a file edit or a message.
+COMMAND_START = r"(?:^|[;&|(]|\n)\s*(?:cd\s+\S+\s*(?:&&|;)\s*)?(?:\w+=\S+\s+)*"
 LONG = re.compile(
     COMMAND_START
     + r"(?:pnpm\s+(?:check(?::all)?|test:unit|test:coverage|test:watch|lint|turbo\s+(?:build|test|typecheck)"
-    + r"|--filter\s+\S+\s+(?:build|typecheck|test:web|test:ct|test:mobile|test))(?![\w:-])"
-    + r"|vitest\s+run\b|pnpm\s+exec\s+vitest\b)",
+    + r"|--filter\s+\S+\s+(?:build|typecheck|test:web|test:ct|test:mobile|test|ios|android))(?![\w:-])"
+    + r"|vitest\s+run\b|pnpm\s+exec\s+vitest\b"
+    + r"|adb\s+(?:-s\s+\S+\s+)?logcat\b|xcrun\s+simctl\s+spawn\s+\S+\s+log\s+show\b)",
 )
-TO_LOG = re.compile(r"(>>?|tee(\s+-a)?)\s*\"?\.qa/[\w./-]+\.log")
+# A heredoc body is a file's or a script's text, never a command of this call.
+HEREDOC = re.compile(r"((?<!<)<<-?\s*(['\"]?)(\w+)\2[^\n]*\n).*?(?:^\t*\3[ \t]*$|\Z)", re.S | re.M)
+# A `|` inside a quoted grep pattern or message is text, never a command position.
+QUOTED = re.compile(r"'[^']*'|\"(?:[^\"\\]|\\.)*\"")
+# `tee` still prints to the chat, so only a redirect counts.
+TO_LOG = re.compile(r">>?\s*\"?\.qa/[\w./${}-]+\.log")
 
 FORM = (
     "Long output goes to a file, never into the chat. Run it as:\n"
@@ -35,7 +41,8 @@ def main() -> int:
     if event.get("tool_name") != "Bash":
         return 0
     command = str((event.get("tool_input") or {}).get("command", ""))
-    if LONG.search(command) and not TO_LOG.search(command):
+    unquoted = QUOTED.sub("''", HEREDOC.sub(r"\1", command))
+    if LONG.search(unquoted) and not TO_LOG.search(command):
         print(FORM, file=sys.stderr)
         return 2
     return 0

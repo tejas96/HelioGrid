@@ -2,10 +2,9 @@
 
 ## What lives here / what must never live here
 
-- NEVER: UI, navigation or business logic (that is `@heliogrid/domain`); `baseUrl` is passed in,
-  never read from the environment.
-- Three entries only: `.` (framework-free), `./react` (React Query adapter), `./server` (one
-  request-scoped Next context). React lives only under `src/react/` and `src/server/`.
+- NEVER: UI, navigation or business logic (that is `@heliogrid/domain`); `baseUrl` is passed in.
+  Entries: `.` (framework-free), `./react` (React Query adapter), `./server` (one request-scoped
+  Next context).
 
 ## Local conventions
 
@@ -13,9 +12,8 @@
   never hand-written. That is what makes a data-source swap one change for both platforms.
 - **Every hook, feature hooks included, lives in `src/react/`** (`use-health.ts`, not
   `health/hooks.ts`).
-- Apps construct only through `createDataLayer` and `createServerDataContext`; never export
-  `createApiClient` or `createTransport`. **A new repository is one edit**: add it to
-  `createRepositoryRegistry` (`src/composition.ts`).
+- **A new repository is one edit**: add it to `createRepositoryRegistry` (`src/composition.ts`);
+  apps construct only through `createDataLayer` and `createServerDataContext`.
 - **Every failure leaves this package as a `DataError`.** A repository normalises in its own
   `catch`; raw `ZodError`s and ts-rest classes never reach a screen.
 - **Retry is `DataError.retryable`, not a count**, set where the failure is classified:

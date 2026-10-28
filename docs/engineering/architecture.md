@@ -241,9 +241,9 @@ error envelope, global ts-rest response validation, the request-id seam (common/
 — assign before CORS and body parsing, echo on every response, expose through CORS), the
 log shape and its redaction (common/logging.ts — the ONE authoring; there is no shared
 packages/config/logging.ts), the explicit body limit and its canonical 413, the tenancy
-runtime precondition, and the RUNTIME_DB/ADMIN_DB pool pair in
-common/db (fenced by admin-pool-fenced — db provides the factory, this app builds the
-pair). Allowed deps: contracts, domain, db, env, i18n (its React-free `.` entry only — a
+runtime precondition, and the TENANT_DB, REFERENCE_DB and ADMIN_DB pools in
+common/db (fenced by admin-pool-fenced and reference-pool-fenced — db provides the factory,
+this app builds the pools). Allowed deps: contracts, domain, db, env, i18n (its React-free `.` entry only — a
 notification's words are rendered in the reader's language when it is written, `F6-08`), config.
 Platform scope: backend only (Node). Belongs: the HTTP edge, its repositories, and `src/scripts/`
 commands that drive a service. Never: ui/theme/data (frontend layers — held by the `app-api`

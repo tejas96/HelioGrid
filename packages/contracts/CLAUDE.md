@@ -20,14 +20,11 @@ src/workflows/              Temporal workflow message schemas — the ./workflow
 src/ports/<capability>.ts   a provider port interface and its DI token; its implementation
                             lives with its consumer, never here
 src/scripts/                the OpenAPI emitter run by the openapi script
-src/index.ts                the main entry; ./workflows is the only other
 openapi/openapi.json        emitted, committed, checked by `pnpm check:openapi` — never hand-edited
 ```
 
 ## Rules
 
-- A breaking wire change needs a versioned route, agreed with the owner before building; prefer
-  an additive change.
 - **Every closed business set is ONE `z.enum`**, with its inferred type exported from the index;
   consumers import the type. A status or variant map is `Record<TheEnum, …>`, so a new value fails
   to compile.
@@ -35,29 +32,20 @@ openapi/openapi.json        emitted, committed, checked by `pnpm check:openapi` 
   `extensibleEnum(...)` where a RESPONSE carries it**, its reader keeps a fallback, and the closed
   `z.enum` stays beside it for writes and the pgEnum mirror. A FIXED set stays closed on both sides.
 - Every route declares its error union via `errorEnvelope(z.enum([...]))`; codes are UPPER_SNAKE.
-  The HTTP mapping is `httpStatusFor` (over the unexported `HTTP_STATUS_BY_CODE`) and its reverse
-  `genericErrorCodeByStatus`, both in `src/error.ts`. Do not invent a mapping.
-- The shared 400 `VALIDATION_FAILED`, 403 `FORBIDDEN` and 500 `INTERNAL` reach every route from
-  `sharedRefusals` (`src/error.ts`), mounted once as `commonResponses` on the root contract — never
-  redeclare them. A route's own entry for one of those statuses REPLACES the shared one, so a route
-  adding a code there still names the shared code beside it.
-- Import `ErrorDetail` (inferred from `errorDetailSchema`); never re-type the wire shape.
-- **Tenant identity NEVER crosses the wire** — no `tenant_id`/`tenantId` in any body or query
-  schema at any depth; it comes from verified session claims. Workflow payloads DO carry
-  `tenantId`: a durable workflow has no session to derive it from.
+  The shared 400, 403 and 500 reach every route from `sharedRefusals`; a route's own entry for one
+  of those statuses REPLACES the shared one, so it names the shared code beside its own.
+- Workflow payloads carry `tenantId`, though no HTTP body or query ever does: a durable workflow
+  has no session to derive it from.
 - Money crosses the wire as a decimal string scaled to the currency's minor unit, never a float;
-  a money-bearing payload carries `currency_code` at document level.
+  a money-bearing payload carries `currencyCode` at document level.
 - **A protocol constant a SCREEN needs lives in `@heliogrid/domain`** and a contract IMPORTS it —
   domain is the bottom layer. Two things that are NOT that: a MARKET fact (calling code,
   national-number grouping and length) belongs to `pack.formats`; and a WIRE fact no screen ever
   sees belongs HERE, because contracts is the wire truth and domain is business truth.
-- Pagination is offset + `totalCount`. A cursor-based route needs an owner ruling.
-
-## Cross-cutting concerns
-
-Before a module's first contract, read its row in `docs/engineering/forward-compat.md`.
-Permissions, tenancy, money, audit and i18n are provisioned by that first contract, behind one
-seam, even before anything consumes them.
+- Pagination is offset + `totalCount`; a cursor-based route is a decision the plan records.
+- Before a module's first contract, read its row in `docs/engineering/forward-compat.md`.
+  Permissions, tenancy, money, audit and i18n are provisioned by that first contract, behind one
+  seam, even before anything consumes them.
 
 ## Done means
 
@@ -66,7 +54,7 @@ The change builds, OpenAPI emits, AND the consuming app slice ships against it i
 
 ## Traps
 
-- A new BASE error code that no route's union names is invisible to the emitted OpenAPI, so "spec unchanged" is not evidence that nothing happened → check the three edits by hand: `baseErrorCodes`, `HTTP_STATUS_BY_CODE` in `src/error.ts`, then the i18n copy `Record`, which fails to compile until the code is there.
+- A new BASE error code that no route's union names is invisible to the emitted OpenAPI, so "spec unchanged" is not evidence that nothing happened → add it to `baseErrorCodes` by hand; `HTTP_STATUS_BY_CODE` (`src/error.ts`) and the i18n copy `Record` then fail to compile until the code is there.
 - Zod 3 runs a `.refine` even after an earlier check on the same string failed, so a refine that can THROW on malformed input (`toISOString()` on an invalid date, `JSON.parse`) turns a 400 into an opaque 500 → guard the refine so it returns false instead of throwing.
-- The breaking-change judge (`oasdiff`, in `pnpm check:openapi`) grades by version: the build CI pins rates a value added to a response enum ERR where older builds only warn → declare a set that grows as `extensibleEnum`; a response property made nullable and a request bound (`max`, `min`, a new required field) are ERR-level too, so grow a response with a NEW property. A request rule that refuses what the base accepted is a breaking change wherever it is held, and needs the owner's ruling, stated in the change.
+- The breaking-change judge (`oasdiff`, in `pnpm check:openapi`) grades by version: the build CI pins rates a value added to a response enum ERR where older builds only warn → declare a set that grows as `extensibleEnum`; a response property made nullable and a request bound (`max`, `min`, a new required field) are ERR-level too, so grow a response with a NEW property. A request rule that refuses what the base accepted is a breaking change wherever it is held: prefer an additive change, and a breaking one is a versioned route the PR names.
 - Every name in `src/workflows/` is permanent once a durable history exists: a type name is written into history, a task queue is what a running worker polls, a workflow id is an outbox dedupe key → choose each once; renaming one later is a migration, not a rename.

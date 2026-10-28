@@ -1,17 +1,8 @@
 # @heliogrid/forms — the headless form layer, the ONLY form-state path for apps
 
-## What lives here / what must never live here
-
-- Exports: `useZodForm` (a contract schema, or a `.pick()`/`.omit()` of it, drives both types and
-  validation) · `applyServerErrors` (envelope `details[]` → field errors) · `fieldBinder` (one
-  `Controller` per field, handed to a `packages/ui` component that draws the fields) ·
-  `installFormsErrorMap` (translated zod defaults) · `z` and the react-hook-form re-exports.
-- NEVER: UI components, copy, data fetching, an environment read, or a schema definition —
-  schemas live in `@heliogrid/contracts`.
-
-## Done means
-
-Consumed by BOTH platforms · the form driven in a browser and on the phones `/task` step 7 picks.
+`useZodForm` takes a contract schema (or a `.pick()`/`.omit()` of it) for both types and
+validation; `applyServerErrors` maps an envelope's `details[]` to field errors. NEVER a schema
+definition — schemas live in `@heliogrid/contracts` — nor UI, copy or data fetching.
 
 ## Traps
 

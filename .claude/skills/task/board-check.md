@@ -16,8 +16,8 @@ is HTML: read its frames, their names and every element, with the component, pro
 tokens each one uses. A board path that does not open is `verdict: BLOCKED` with the error, and
 nothing is judged; so is a prompt that gives no board path.
 
-Read first, too: the brief whole; every PRD row it cites, whole (`docs/prd/`); each task's `DONE
-WHEN` (`docs/tasks/`); `docs/ux/design-context.md` (the laws); `docs/start-here.md`, *The
+Read first, too: the brief whole; every PRD row it cites, by its id (`grep -n '^| <id> ' docs/prd/...`); each task's `DONE
+WHEN` (`docs/tasks/`, by its heading's line range); `docs/ux/design-context.md` (the laws); `docs/start-here.md`, *The
 checklist* and *The fix prompt*. Of the checklist, leave out its two word bullets — *No paragraph*
 and the word budget in *The self-audit holds*: the brief's word plan settled the words.
 

@@ -24,10 +24,10 @@ import { passTheOwnersMark } from '../support/shell';
  * shell. A new company's owner is alone on it, so the page teaches — the owner's own card with
  * *You*, its *Deactivate* off because they are the only EPC Owner, and the empty state, with no
  * list head; at the desktop width the quiet table shows the owner's row and the head count. CI's
- * company has no team, so a search, the chips, the other rows and their acts are the qa-web rows of
+ * company has no team, so a search, the chips, the other rows and their acts are the live-QA rows of
  * the task. The teaching state's *Invite your first teammate*, and at the desktop width the page
  * head's *Invite teammate*, open Invite Teammate over the page (`SCR-M01-07`, `T-M01-007`); a send
- * is the task's qa-web rows. The owner's own row opens Assign Roles (`SCR-M01-13`, `T-M01-013`): as
+ * is the task's live-QA rows. The owner's own row opens Assign Roles (`SCR-M01-13`, `T-M01-013`): as
  * the only EPC Owner they cannot clear it, and the grant line says what the one preset gives. A
  * save whose request is cut off is read back before anything is said (`F8-36`), keeps the ticks
  * and says nothing changed; *Save roles* then retries. A save that takes a preset away asks first,

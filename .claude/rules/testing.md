@@ -8,12 +8,10 @@ paths:
 
 # Testing law — which layers, one place, what a test proves
 
-- **Unit tests cover the LOGIC layers** — `domain`, `contracts`, `forms`, `api`, `worker`, `data`
-  (its hooks, through the real client — `packages/data/CLAUDE.md` says how), and `i18n`'s
-  `runtime.ts` and its `copy/` functions. Not the frontend: `ui`, `web` and `mobile` are proven by running them, `db` by
-  migrations and `tests/invariants/`. The set is written once, in `packages/config/unit-test-packages.json`, which
-  the runner and the dependency-cruiser rule both read; changing the set changes this line and that
-  file together.
+- **Unit tests cover the LOGIC layers** — the set `packages/config/unit-test-packages.json` names,
+  which the runner and the dependency-cruiser rule both read; `data`'s hooks run through the real
+  client (`packages/data/CLAUDE.md`). The frontend is not unit-tested: `ui`, `web` and `mobile` are
+  proven by running them, `db` by migrations and `tests/invariants/`.
 - **A unit test is `<package>/tests/**/*.test.ts`** — never `*.spec.*` (e2e only), `__tests__/` or
   `src/` (the build would ship it). A test imports `../../src/…`; `@heliogrid/<pkg>` resolves to the
   last BUILD.
@@ -31,8 +29,8 @@ paths:
   `heliogrid_test` locally (`infra/README.md`): off CI `vitest.config.mts` collects them only when
   both `DATABASE_URL` and `DATABASE_ADMIN_URL` name `heliogrid_test` and skips them with a warning
   otherwise; whenever they are collected (as with `CI` set) a URL naming `heliogrid_dev` throws
-  before collection. One file runs locally on the test database with the line in `/task` step
-  5 (`.claude/skills/task/build.md`); `CI=1` is never the way in.
+  before collection. One file runs locally on the test database with the line in `/task`
+  (`.claude/skills/task/SKILL.md`, *Build*); `CI=1` is never the way in.
 - **`tests/e2e/` is the regression suite** (`tests/e2e/CLAUDE.md`); it never replaces checking the
   running app.
 - **Unit tests do not replace `tests/invariants/`.** An invariant proves a property of the SYSTEM
