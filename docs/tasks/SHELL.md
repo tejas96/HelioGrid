@@ -64,6 +64,79 @@ Task-id prefix: `T-SHELL-`. RFC and part-size rules live in `docs/tasks/README.m
 
 ---
 
+### T-SHELL-013 · A read's and an action's state, typed once — loading, empty, failed with its retry, and inert while a save is out
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**PRD rows:** F7-23 (P0), F7-43 (P0)
+**Design:** none — an engine task; it waits on no drawing and changes built screens.
+**Why:** A person whose second read fails sees a spinner forever or nothing at all, and text typed while a save is out is dropped: about fifteen hooks each spell a read's state their own way, `state?` is optional on every component that draws one, and seventeen hand-written guards hold a save in flight. One state, owned once, makes a missing state or an unguarded save a compile error.
+**Depends on:** `T-M01-020` (its branch is built on the components this task changes).
+
+**PRD rows (verbatim):**
+
+- **F7-23** (P0, `docs/prd/foundations/F7-design-language.md`) — **The ten numbered interaction and accessibility rules are product law, carried unchanged.**
+- **F7-43** (P0, `docs/prd/foundations/F7-design-language.md`) — **A screen is done only when it satisfies every item of the per-screen Definition of Done — violating any single item means it is not done.**
+
+**DONE WHEN:**
+- **D1** · **Given** any screen, **when** it is audited against the ten rules, **then** it satisfies all ten, and any exception cited is `F7-10`'s overline and nothing else (`F7-23`). → proof, for N10: every read reaches its component as one `Read<T>` owned by `packages/domain` — loading, empty, failed with its words and its retry, ready with its value — built in `packages/data` and required by every `packages/ui` component that draws a read; a planted call with no state, and one that is failed with no retry, each fail `pnpm turbo typecheck`; `packages/data/tests/react/` drives each kind through the real client. While an action is out, its fields and acts are inert and a second press sends nothing: a `packages/data/tests/react/` test of the one action helper that forces the overlap, and a component spec that a pending `Button` refuses a press. No hook hands a screen a raw query result or its own state union: a dependency-cruiser or Biome rule, seen red.
+- **D2** · **Given** any screen proposed as complete, **when** it is checked against the twelve items, **then** all twelve pass, and a single failure means the screen is not done (`F7-43`). → proof, for item 2: D1's typecheck holds every built screen, and `qa-live` sees each one's loading, empty and failed state.
+
+---
+
+### T-SHELL-014 · Focus lands where the person goes next when a control removes itself — one helper, a required prop
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**PRD rows:** F7-23 (P0), F7-24 (P0)
+**Design:** none — an engine task; it waits on no drawing and changes built screens.
+**Why:** A screen-reader or keyboard user who presses *Try again*, *Undo*, *Remove* or *Dismiss* is left with focus on nothing, because the shared controls that leave have no way to say where focus goes; six private focus hooks and a dozen hand-written copies each answer it another way, per half.
+**Depends on:** `T-M01-020` (its branch is built on the components this task changes).
+
+**PRD rows (verbatim):**
+
+- **F7-23** (P0, `docs/prd/foundations/F7-design-language.md`) — **The ten numbered interaction and accessibility rules are product law, carried unchanged.**
+- **F7-24** (P0, `docs/prd/foundations/F7-design-language.md`) — **Focus is always visible, and it is never removed.**
+
+**DONE WHEN:**
+- **D1** · **Given** any screen, **when** it is audited against the ten rules, **then** it satisfies all ten, and any exception cited is `F7-10`'s overline and nothing else (`F7-23`). → proof, for N5: `RetryButton`, a failed card's retry, `Banner` and toast acts, `PendingAction` and every control that removes itself require a `focusAfter` target on one shared `.types.ts`, met by one focus helper in `packages/ui/src/primitives/` with a web and a phone half that replaces the private ones; a planted call without it fails `pnpm turbo typecheck`.
+- **D2** · **Given** any interactive element on either platform, **when** it receives focus by keyboard or assistive technology, **then** a visible focus ring is present (`F7-24`). → proof: a component spec per control reads the focused element after the press and its ring; the phone's screen-reader focus by `qa-live`.
+
+---
+
+### T-SHELL-015 · One view model per screen pair, and a component's logic in its `.logic.ts` — both platforms draw from one assembly
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**PRD rows:** F7-30 (P0), F7-31 (P0)
+**Design:** none — an engine task; it waits on no drawing and changes built screens.
+**Why:** The web and the phone show the same screen differently — a company name read from two places, an act bar one platform never gets — because what both screens draw is assembled again in each screen file, and a component's web and phone halves each compute the same things (129 copies, 3,288 lines). Assembled once, the two cannot drift.
+**Depends on:** `T-SHELL-013` (the view model hands the screens its `Read<T>` states) · `T-M01-020`.
+
+**PRD rows (verbatim):**
+
+- **F7-30** (P0, `docs/prd/foundations/F7-design-language.md`) — **Principle 1 — mobile-first at 375 px, with full parity and no reduced edition.**
+- **F7-31** (P0, `docs/prd/foundations/F7-design-language.md`) — **Principle 2 — parity is symmetric: the web experience stays full-featured and the mobile experience feels native and extremely fast.**
+
+**DONE WHEN:**
+- **D1** · **Given** any feature in any module, **when** its surfaces are listed, **then** both platforms carry it, the mobile design is the origin rather than the reduction, and the studio is included (`F7-30`, `F7-31`). → proof: every built screen pair draws from one `packages/domain` view model, filled by one `packages/data/src/react/` hook, that holds everything both screens draw — facts, words input, parts, overlay and leave state, the save and where its refusal goes — and each screen file holds markup and its platform adapters only; a dependency-cruiser or Biome rule refuses an assembly builder or local state in an `apps/web/features` or `apps/mobile/src/screens` file, seen red. A `packages/ui` component computes in its `.logic.ts` what both halves need, and `pnpm check:dupes`' web and phone threshold is lowered to what the lift leaves.
+
+---
+
+### T-SHELL-016 · No English inside `packages/ui` — every copy prop takes the `TranslatedText` brand
+**Type:** engine · **Tier:** P0
+**Status:** planned
+**PRD rows:** F3-07 (P0)
+**Design:** none — an engine task; it waits on no drawing and changes built screens.
+**Why:** A Hindi or Marathi user hears and reads English where a component carries its own words — about 246 English defaults (`label = 'Sort'`) and 48 literal screen-reader labels — and new components copy the pattern because nothing refuses it. This is `docs/tasks/UI.md`'s English-string mechanism: it closes the rows *Hard-coded accessibility labels*, `Stepper`, `CoachMark`, `StatusChip`, `FieldOverride`, `SourceDocument` · `Dropzone`, `RichText` and `AllocationMeter`.
+**Depends on:** `T-M01-020` (its branch is built on the components this task changes).
+
+**PRD rows (verbatim):**
+
+- **F3-07** (P0, `docs/prd/foundations/F3-localization.md`) — **Everything the product says is translated content.**
+
+**DONE WHEN:**
+- **D1** · Given any product-supplied user-visible string, when the language set is enumerated, then a translation exists for it in every language or `F3-05`'s fallback applies — and no string is designated permanently English-only (`F3-07`). → proof: `TranslatedText` is declared in `packages/contracts`, minted only by `packages/i18n`, and enrolled with its `brand-cast` plugin; every copy prop on a `packages/ui` `.types.ts`, and every `aria-label`, `accessibilityLabel`, `title` and `placeholder` there, takes it with no default; a planted literal, template literal and English default each fail `pnpm turbo typecheck`, and every caller passes catalog words.
+
+---
+
 ### T-SHELL-001 · App Shell & Navigation — mobile
 **Type:** screen · **Tier:** P0
 **Status:** shipped (#209)

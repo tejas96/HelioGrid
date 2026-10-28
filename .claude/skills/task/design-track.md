@@ -2,8 +2,8 @@
 
 A module's boards are drawn, checked, fixed and locked once, before the first task that builds or
 serves them, so the build waits only when this track falls behind. Run it when the owner asks —
-between two build tasks, after the current task's PR is open — or when `/task` (*Pick*) sends a
-screen here.
+between two build tasks, once the task session has said `owner merges #<n>` — or when `/task`
+(*Pick*) sends a screen here.
 
 `<module>` is a screen id's module (`SCR-SHELL-06` → `SHELL`). The screens in scope are the V1
 screens of `<module>` whose tasks are not `shipped` — or, when `/task` sent the run here,
@@ -91,7 +91,8 @@ second refusal goes to the owner.
    Fill each task's `DESIGN:` line with its canvas link, turn a `planned` task's `Status:` to
    `designed`, delete each brief's `## Redesign owed` section the board now meets, and delete each
    `deferred.md` row the boards now meet (or, for a row naming several modules, its clause for this
-   one). Run the gate as `/task` runs it, then commit (`CLAUDE.md` §4) on `design/<module>` as
+   one). Run the gate as `/task` runs it, then commit (`CLAUDE.md` §4) on `design/<module>`, cut from `origin/main` on a clean tree as
+   `/task` *Pick* cuts a branch, as
    `chore: <module> design — <screens> locked`, push it, and open the PR as `/task` does (a draft, marked ready only when CI is green), its body listing the screens
    locked, the owner's rulings and the `deferred.md` rows added or closed. A
    lock is a commit: every lock commits `.design/<module>/`.

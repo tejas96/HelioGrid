@@ -16,7 +16,7 @@ export interface QaPerson {
 }
 
 export interface QaCompany {
-  readonly surface: 'web' | 'ios' | 'android' | 'api' | 'api-second';
+  readonly surface: 'web' | 'ios' | 'android';
   readonly companyName: string;
   readonly owner: QaPerson;
   /** Joined by invite: a second EPC Owner, a three-preset member and a Sales Executive. */
@@ -41,6 +41,4 @@ export const QA_COMPANIES: readonly QaCompany[] = [
   company('web', 'Web', 1),
   company('ios', 'iOS', 5),
   company('android', 'Android', 9),
-  company('api', 'API One', 13),
-  company('api-second', 'API Two', 17),
 ];

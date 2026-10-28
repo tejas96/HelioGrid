@@ -68,6 +68,7 @@ code that is gone — `tsc -p` never removes old output, and the web typecheck r
   and its push.
 - **The merge.** Every PR is merged by the owner. Never `--no-verify`, never force-push, never
   push to `main` (`.claude/settings.json` denies them).
+- **A split:** a task is split into parts only on the owner's word (`docs/tasks/README.md`).
 - **The look:** a board, or a change to the design system, is locked only by the owner's yes
   (`.claude/skills/task/design-track.md`).
 - **Anything billable or external-account-shaped** (cloud, store accounts, paid APIs): stop and ask.
@@ -110,8 +111,10 @@ only through the `clean-dev-ports` launch configuration, never by port or proces
   tasks: the source of truth.
 - `.claude/rules/` — a law that spans packages; a one-package rule goes in that package's
   `CLAUDE.md`.
-- `.qa/` (git-ignored) — the dev logs (`api.log`, `web.log`, `metro.log`) and each check's
-  `<name>.log`.
+- `.qa/` (git-ignored) — one task's `*.log` files (the dev servers' and each check's), deleted once
+  its QA is done and again once its PR is ready; `pr-body.md`, the PR's draft; and
+  `env.local.dev`, the owner's `.env.local` while `/task` points it at the test database — never
+  deleted.
 - `.design/<module>/` — the locked boards, a read-only copy written only by `design-track.md`.
 - The module canvases — not in the repo; the design's source of truth, listed in
   `docs/start-here.md`.

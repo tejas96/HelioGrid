@@ -32,7 +32,7 @@ Deps: `architecture.md` §2 tests/e2e.
 - A flake is a bug and is fixed; there are no retries.
 - Every route's spec ends its landing with `support/axe.ts`'s `expectNoSeriousViolations` once
   the landing's words are visible: a `serious` or `critical` violation fails the suite (`F7-26`).
-- Network loss and aborted requests are tested here and nowhere else —
+- A screen's handling of network loss and aborted requests is tested here —
   `page.context().setOffline(true)`, `page.route(<path>, (r) => r.abort())` (`F8-36`).
 
 ## Commands
@@ -46,10 +46,10 @@ pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows by hand, 
 
 The phone flows run in CI on Android only; on iOS `qa-live` runs them on the simulator.
 `test:mobile` needs Metro, the api and the app installed on the device, and drives one device per
-call — two at once lose the first keys typed. An emulator gets 4 cores and 4 GB on the command
-line (the `android-emulator` launch configuration does it; the AVD's `hw.ramSize` is ignored): at
-2 GB Maestro's on-device server dies mid-suite (`DeviceServerDiedException`) while the app shows
-no fault.
+call; one call per phone may run at the same time. An emulator gets 2 cores, 4 GB and the host GPU on the
+command line (the `android-emulator` launch configuration does it; the AVD's `hw.ramSize` is
+ignored): at 2 GB Maestro's on-device server dies mid-suite (`DeviceServerDiedException`) while the
+app shows no fault, and 4 cores only doubles the CPU peak for the same run time.
 
 ## Local conventions
 

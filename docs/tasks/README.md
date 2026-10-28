@@ -19,8 +19,8 @@ A task is its header lines, written when the task is:
 **Type:** screen · **Tier:** P0        (screen | engine | policy | integration | port · the highest tier among its rows)
 **Status:** planned                    (planned | designed | shipped | struck — the one ledger)
 **PRD rows:** M02-<nn> (P0), M02-<nn> (P0), M02-<nn> (P1)        — every id carries its tier (rule 6)
-**DESIGN:** SCR-<module>-<nn> → PENDING          — filled with the module's canvas link by the Design track's lock commit, or by the board move of D221 (`docs/start-here.md` *Recording a drawn screen*); whether its boards are locked is `.design/<module>/`'s answer (`.claude/skills/task/design-track.md`); a studio screen reads `ported from the POC`
-**Design:** (older tasks, instead of DESIGN:) `none — <reason>` for a task with no screen, the existing boards it reuses, or `the same canvas as <task id>'s DESIGN line` and the frames it uses — only the last makes the walk wait, until that task's `DESIGN:` holds a link
+**DESIGN:** SCR-<module>-<nn> → PENDING          — filled with the module's canvas link by the Design track's lock commit, or by the board move of D223 (`docs/start-here.md` *Recording a drawn screen*); whether its boards are locked is `.design/<module>/`'s answer (`.claude/skills/task/design-track.md`); a studio screen reads `ported from the POC`
+**Design:** (instead of `DESIGN:`) `none — <reason>` for a task with no screen of its own, the existing boards it reuses, or `the same canvas as <task id>'s DESIGN line` and the frames it uses — only the last makes the walk wait, until that task's `DESIGN:` holds a link
 **PORT:** (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
         — files to READ AND PORT FROM, never files to create here. A PORT entry that names a
         POC `*.test.ts` ports the LOGIC it proves into the studio package's own
