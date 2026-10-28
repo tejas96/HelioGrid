@@ -6,7 +6,7 @@ import { installFormsErrorMap } from '@heliogrid/forms';
 import { type I18nRuntime, provenanceWords } from '@heliogrid/i18n';
 import { KeyboardHost, MarketProvider, PortalHost, ProvenanceWordsProvider } from '@heliogrid/ui';
 import { type ReactNode, useCallback, useState } from 'react';
-import { StatusBar } from 'react-native';
+import { LogBox, StatusBar } from 'react-native';
 import { getVersion } from 'react-native-device-info';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { keychainStorage } from './src/auth/keychain-storage';
@@ -21,6 +21,11 @@ import {
 import { AppNavigation } from './src/navigation';
 import { thisPlatform } from './src/push/messaging';
 import { ReactQueryHost } from './src/react-query-host';
+
+/* Reanimated notes, in development only, that the device asks for reduced motion. The app already
+   honours it (`useReducedMotion`, `F7-51`), and the note's box sits over the act at the screen's
+   foot on CI's emulator, where animations are off, so a flow's tap lands on the note instead. */
+LogBox.ignoreLogs(['[Reanimated] Reduced motion setting is enabled']);
 
 /**
  * App entry: composes providers and renders the navigator — nothing else.
