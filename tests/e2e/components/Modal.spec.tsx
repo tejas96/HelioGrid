@@ -1,6 +1,7 @@
 import { createTranslator, SHELL } from '@heliogrid/i18n';
 import { Modal } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { animationsSettled } from '../support/motion';
 
 const en = await createTranslator('en');
@@ -24,8 +25,8 @@ for (const density of ['expressive', 'functional'] as const) {
     );
     await animationsSettled(page);
     const dialog = page.getByRole('dialog');
-    const lastLine = await dialog.getByText(en.t(SHELL.grievanceNotPublished)).boundingBox();
-    const panel = await dialog.boundingBox();
+    const lastLine = await settledBox(dialog.getByText(en.t(SHELL.grievanceNotPublished)));
+    const panel = await settledBox(dialog);
     const sidePadding = await dialog.evaluate((el) =>
       getComputedStyle(el).getPropertyValue('--hg-modal-pad'),
     );

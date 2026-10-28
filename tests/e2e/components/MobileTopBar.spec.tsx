@@ -1,6 +1,7 @@
 import { backToSettings, createTranslator, SHELL, settingsRowName } from '@heliogrid/i18n';
 import { Avatar, IconButton, MobileTopBar, ShellAction, ShellGlyph } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { resolvedColour, resolvedLength } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 
@@ -31,7 +32,7 @@ test('the bar is the tile, then the company name as bold words on one line, cut 
   const bar = screen.getByRole('banner');
   const name = screen.getByText(LONG_NAME);
 
-  expect((await bar.boundingBox())?.height).toBe(await resolvedLength(page, '--topbar-h-mobile'));
+  expect((await settledBox(bar))?.height).toBe(await resolvedLength(page, '--topbar-h-mobile'));
   const side = `${await resolvedLength(page, '--screen-pad-mobile')}px`;
   await expect(bar).toHaveCSS('padding-left', side);
   await expect(bar).toHaveCSS('padding-right', side);
@@ -41,7 +42,7 @@ test('the bar is the tile, then the company name as bold words on one line, cut 
   await expect(name).toHaveCSS('text-overflow', 'ellipsis');
   await expect(name).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   expect(await name.evaluate((node) => node.scrollWidth > node.clientWidth)).toBe(true);
-  expect(((await bar.boundingBox())?.width ?? 0) <= 375).toBe(true);
+  expect(((await settledBox(bar))?.width ?? 0) <= 375).toBe(true);
 });
 
 test('search and the bell are round grey 44 buttons with primary icons', async ({
@@ -64,7 +65,7 @@ test('search and the bell are round grey 44 buttons with primary icons', async (
 
   for (const label of [words.searchLabel, words.notificationsLabel]) {
     const button = screen.getByRole('button', { name: label });
-    const box = await button.boundingBox();
+    const box = await settledBox(button);
     expect(box?.width).toBe(MIN_TOUCH_TARGET);
     expect(box?.height).toBe(MIN_TOUCH_TARGET);
     await expect(button).toHaveCSS('background-color', fill);
@@ -141,11 +142,9 @@ test('a page opened from a list shows its way back and its title alone, the titl
   await expect(screen.getByRole('button', { name: back })).toBeVisible();
   await expect(screen.getByRole('button')).toHaveCount(1);
   await expect(screen.locator('.hg-logo-tile, .hg-app-shell-topbar-company')).toHaveCount(0);
-  const gap = (await heading.boundingBox())?.x ?? 0;
-  const button = await screen.getByRole('button', { name: back }).boundingBox();
-  expect(gap - ((button?.x ?? 0) + (button?.width ?? 0))).toBe(
-    await resolvedLength(page, '--sp-3'),
-  );
+  const gap = (await settledBox(heading))?.x ?? 0;
+  const button = await settledBox(screen.getByRole('button', { name: back }));
+  expect(gap - (button.x + button.width)).toBe(await resolvedLength(page, '--sp-3'));
 });
 
 test('a bar with content scrolled under it lifts on --e2; at the top it has no shadow', async ({

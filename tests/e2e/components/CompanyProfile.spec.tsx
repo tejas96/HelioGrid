@@ -12,6 +12,7 @@ import {
   expectNoSidewaysScroll,
   expectNothingClipped,
   expectSharedEdge,
+  settledBox,
 } from '../support/layout';
 import { resolvedColour, resolvedLength } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
@@ -66,7 +67,7 @@ test('a new company meets five flat parts, the first open on its name, and a liv
   await expect(headers).toHaveCount(5);
   for (const [index, title] of Object.values(TITLE).entries()) {
     await expect(headers.nth(index)).toContainText(title);
-    const box = await headers.nth(index).boundingBox();
+    const box = await settledBox(headers.nth(index));
     expect(box?.width).toBe(COLUMN);
     expect(box?.height).toBeGreaterThanOrEqual(HEADER);
   }
@@ -91,7 +92,7 @@ test('a new company meets five flat parts, the first open on its name, and a liv
     await resolvedColour(page, '--mark-subtle'),
   );
   const dotSize = await resolvedLength(page, '--sp-2');
-  expect(await addressDot.boundingBox()).toMatchObject({ width: dotSize, height: dotSize });
+  expect(await settledBox(addressDot)).toMatchObject({ width: dotSize, height: dotSize });
 
   const name = profile.getByRole('textbox', { name: en.t(COMPANY_SIGNUP.companyName) });
   await expect(name).toHaveValue('Suryodaya Solar Solutions Pvt Ltd');
@@ -99,14 +100,14 @@ test('a new company meets five flat parts, the first open on its name, and a liv
   await expect(line).toHaveCSS('color', await resolvedColour(page, '--text-secondary'));
   const field = profile.locator('.hg-input');
   await expect(field).toHaveCount(1);
-  expect(((await line.boundingBox())?.y ?? 0) - (await bottomOf(field))).toBe(
+  expect(((await settledBox(line))?.y ?? 0) - (await bottomOf(field))).toBe(
     await resolvedLength(page, '--sp-2'),
   );
 
   const act = profile.getByRole('button', { name: SAVE });
   await expect(act).toBeEnabled();
   await expect(act).toHaveText(en.t(COMPANY_PROFILE.save));
-  expect(await act.boundingBox()).toMatchObject({ width: COLUMN, height: ACT });
+  expect(await settledBox(act)).toMatchObject({ width: COLUMN, height: ACT });
   expect(await bottomOf(act)).toBeLessThanOrEqual(HEIGHT);
   await expect(profile.getByText(en.t(COMPANY_PROFILE.reseedScope))).toHaveCount(0);
   await act.click();
@@ -156,8 +157,8 @@ test('the address part asks the street, reads back the city and asks the PIN cod
   const city = profile.getByRole('textbox', { name: en.t(COMPANY_SIGNUP.city) });
   const pin = profile.getByRole('textbox', { name: en.t(COMPANY_PROFILE.postalCode) });
   await expectSharedEdge([street, city, pin], 'left');
-  expect(await bottomOf(street)).toBeLessThan((await city.boundingBox())?.y ?? 0);
-  expect(await bottomOf(city)).toBeLessThan((await pin.boundingBox())?.y ?? 0);
+  expect(await bottomOf(street)).toBeLessThan((await settledBox(city))?.y ?? 0);
+  expect(await bottomOf(city)).toBeLessThan((await settledBox(pin))?.y ?? 0);
 
   await expect(street).toHaveAttribute('placeholder', en.t(COMPANY_PROFILE.streetExample));
   await expect(pin).toHaveAttribute('placeholder', en.t(COMPANY_PROFILE.postalCodeExample));
@@ -168,10 +169,10 @@ test('the address part asks the street, reads back the city and asks the PIN cod
   const boxes = profile.locator('.hg-input-shell');
   await expect(boxes).toHaveCount(3);
   for (const index of [0, 1, 2]) {
-    expect(await boxes.nth(index).boundingBox()).toMatchObject({ width: COLUMN, height: FIELD });
+    expect(await settledBox(boxes.nth(index))).toMatchObject({ width: COLUMN, height: FIELD });
   }
   const purpose = profile.getByText(en.t(COMPANY_PROFILE.addressPurpose));
-  expect((await purpose.boundingBox())?.y).toBeGreaterThan(await bottomOf(pin));
+  expect((await settledBox(purpose))?.y).toBeGreaterThan(await bottomOf(pin));
 
   await street.fill('Plot 14, Baner Road');
   await pin.fill('411045');
@@ -213,7 +214,7 @@ test('the bank part holds four facts in order, the holder already the company, a
     await expect(field).toBeVisible();
     const next = fields[index + 1];
     if (next !== undefined) {
-      expect(await bottomOf(field)).toBeLessThan((await next.boundingBox())?.y ?? 0);
+      expect(await bottomOf(field)).toBeLessThan((await settledBox(next))?.y ?? 0);
     }
   }
   const [bank, holder, number, routing] = fields as [Locator, Locator, Locator, Locator];
@@ -227,8 +228,8 @@ test('the bank part holds four facts in order, the holder already the company, a
 
   const checked = profile.getByText(en.t(COMPANY_PROFILE.formatChecked));
   const purpose = profile.getByText(en.t(COMPANY_PROFILE.bankPurpose));
-  expect((await checked.boundingBox())?.y).toBeGreaterThan(await bottomOf(routing));
-  expect((await purpose.boundingBox())?.y).toBeGreaterThan(await bottomOf(checked));
+  expect((await settledBox(checked))?.y).toBeGreaterThan(await bottomOf(routing));
+  expect((await settledBox(purpose))?.y).toBeGreaterThan(await bottomOf(checked));
 
   await bank.fill('HDFC Bank');
   await holder.fill('Suryodaya Solar');
@@ -250,7 +251,7 @@ for (const reader of ['hi', 'mr'] as const) {
     const headers = profile.locator('.hg-accordion-toggle');
     await expect(headers).toHaveCount(5);
     for (const index of [0, 1, 2, 3, 4]) {
-      const box = await headers.nth(index).boundingBox();
+      const box = await settledBox(headers.nth(index));
       expect(box?.width).toBe(COLUMN);
       const standing = headers.nth(index).locator('.hg-accordion-standing');
       if ((await standing.count()) > 0) {

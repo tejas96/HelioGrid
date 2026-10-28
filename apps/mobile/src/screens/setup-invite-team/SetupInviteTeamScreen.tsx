@@ -2,9 +2,9 @@ import { useSetupInvite } from '@heliogrid/data/react';
 import { DOOR_SEGMENT, SETTINGS_SEGMENT } from '@heliogrid/domain';
 import { setupInviteWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
-import { SetupInviteTeam, ToastHost, useFormat, useToasts } from '@heliogrid/ui';
+import { closeKeyboard, SetupInviteTeam, ToastHost, useFormat, useToasts } from '@heliogrid/ui';
 import { useState } from 'react';
-import { Keyboard, Linking } from 'react-native';
+import { Linking } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { linkingOptions } from '../../navigation/linking';
 import { InsetDoor } from '../shared/InsetDoor';
@@ -39,15 +39,15 @@ export function SetupInviteTeamScreen() {
         onSend={() => {
           /* The field lets go first, on every way out: on Android a focused field that unmounts
              hands the keyboard to the next screen's field, Team's search among them. */
-          Keyboard.dismiss();
+          closeKeyboard();
           fields.onSend();
         }}
         onSkip={() => {
-          Keyboard.dismiss();
+          closeKeyboard();
           void invite.skip();
         }}
         onOpenTeam={async () => {
-          Keyboard.dismiss();
+          closeKeyboard();
           await invite.openTeam();
           void Linking.openURL(TEAM_ROW_LINK).catch(() => undefined);
         }}

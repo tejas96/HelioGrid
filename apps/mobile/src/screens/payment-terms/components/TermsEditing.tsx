@@ -7,13 +7,13 @@ import {
 } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
+  closeKeyboard,
   type PaymentTermsContext,
   type PaymentTermsLetterhead,
   type TermsEditorActs,
   termsEditorViewOf,
 } from '@heliogrid/ui';
 import { useState } from 'react';
-import { Keyboard } from 'react-native';
 import { TermsArchiveConfirm, TermsLeaveAsk } from './TermsAsks';
 import { TermsEditorSheet } from './TermsEditorSheet';
 import { TermsStageSheet } from './TermsStageSheet';
@@ -60,7 +60,7 @@ export function TermsEditing({
       edit: page.edit,
       // The keyboard closes on the act, so the refusal or the failed save's banner is in view.
       save: () => {
-        Keyboard.dismiss();
+        closeKeyboard();
         page.save();
       },
       makeDefault: (templateId) => page.act(templateId, 'make-default'),

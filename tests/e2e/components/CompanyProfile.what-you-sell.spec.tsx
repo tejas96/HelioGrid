@@ -16,6 +16,7 @@ import {
   expectNothingClipped,
   expectSharedEdge,
   rightOf,
+  settledBox,
 } from '../support/layout';
 import { resolvedColour } from '../support/token';
 import { expectTouchFloor, MIN_TOUCH_TARGET } from '../support/touch-target';
@@ -103,32 +104,32 @@ test('what you sell holds the kind as three cards in one column and the size wit
     await expect(cards.nth(index).locator('.hg-option-card-description')).toHaveText(
       kind.description,
     );
-    expect((await cards.nth(index).boundingBox())?.width).toBe(COLUMN);
+    expect((await settledBox(cards.nth(index)))?.width).toBe(COLUMN);
   }
   await expectSharedEdge([cards.nth(0), cards.nth(1), cards.nth(2)], 'left');
-  expect(await bottomOf(cards.nth(0))).toBeLessThan((await cards.nth(1).boundingBox())?.y ?? 0);
+  expect(await bottomOf(cards.nth(0))).toBeLessThan((await settledBox(cards.nth(1)))?.y ?? 0);
   await expect(cards.nth(0)).toBeChecked();
 
   await expect(size).toHaveValue('5');
   const box = profile.locator('.hg-number-field-box');
-  expect(await box.boundingBox()).toMatchObject({ width: COLUMN, height: FIELD });
+  expect(await settledBox(box)).toMatchObject({ width: COLUMN, height: FIELD });
   await expect(box.getByText(UNIT, { exact: true })).toBeVisible();
   await expect(steppers).toHaveCount(2);
   for (const index of [0, 1]) {
-    expect(await steppers.nth(index).boundingBox()).toMatchObject({
+    expect(await settledBox(steppers.nth(index))).toMatchObject({
       width: MIN_TOUCH_TARGET,
       height: FIELD,
     });
   }
   for (const word of TIER_LINE) await expect(tier).toContainText(word);
   await expect(tier).toHaveCSS('color', await resolvedColour(page, '--text-secondary'));
-  expect((await tier.boundingBox())?.y).toBeGreaterThanOrEqual(await bottomOf(box));
+  expect((await settledBox(tier))?.y).toBeGreaterThanOrEqual(await bottomOf(box));
   await expect(profile.getByText(en.t(COMPANY_PROFILE.sizeHint))).toBeVisible();
 
   const act = profile.getByRole('button', { name: SAVE });
   await expect(act).toBeEnabled();
   const line = profile.getByText(RESEED);
-  expect((await line.boundingBox())?.y).toBeGreaterThanOrEqual(await bottomOf(act));
+  expect((await settledBox(line))?.y).toBeGreaterThanOrEqual(await bottomOf(act));
   await expectNoSidewaysScroll(page);
 });
 
@@ -175,7 +176,7 @@ test('an owner whose answers did not save reads that in the lede, meets the part
   await expect(profile.getByText(TIER_LINE[1] ?? '')).toHaveCount(0);
   const act = profile.getByRole('button', { name: SAVE });
   await expect(act).toBeEnabled();
-  expect((await profile.getByText(MARKET_DEFAULTS).boundingBox())?.y).toBeGreaterThanOrEqual(
+  expect((await settledBox(profile.getByText(MARKET_DEFAULTS)))?.y).toBeGreaterThanOrEqual(
     await bottomOf(act),
   );
 
@@ -199,8 +200,8 @@ for (const reader of ['hi', 'mr'] as const) {
     await expect(cards).toHaveCount(3);
     const titles = profile.locator('.hg-option-card-title');
     for (const index of [0, 1, 2]) {
-      expect((await cards.nth(index).boundingBox())?.width).toBe(COLUMN);
-      expect((await titles.nth(index).boundingBox())?.height).toBeLessThan(
+      expect((await settledBox(cards.nth(index)))?.width).toBe(COLUMN);
+      expect((await settledBox(titles.nth(index)))?.height).toBeLessThan(
         TWO_LINES * (await fontSizeOf(titles.nth(index))),
       );
     }
@@ -222,7 +223,7 @@ for (const reader of ['hi', 'mr'] as const) {
     await expect(act).toBeInViewport();
     const line = profile.getByText(t(COMPANY_PROFILE.reseedScope));
     await expect(line).toBeInViewport();
-    expect((await line.boundingBox())?.height).toBeLessThan(TWO_LINES * (await fontSizeOf(line)));
+    expect((await settledBox(line))?.height).toBeLessThan(TWO_LINES * (await fontSizeOf(line)));
     await expectNoSidewaysScroll(page);
   });
 }

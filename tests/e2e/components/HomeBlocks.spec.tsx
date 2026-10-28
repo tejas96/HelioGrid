@@ -2,7 +2,7 @@ import { HOME_LADDER } from '@heliogrid/domain';
 import { createTranslator, homeBlocksWords } from '@heliogrid/i18n';
 import { HomeBlocks } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { expectNoSidewaysScroll, expectSharedEdge } from '../support/layout';
+import { expectNoSidewaysScroll, expectSharedEdge, settledBox } from '../support/layout';
 
 const en = await createTranslator('en');
 const [OWNER, MANAGER] = HOME_LADDER;
@@ -16,10 +16,7 @@ test.describe('at 1536', () => {
     const teaching = region.getByText(words.emptyTitle);
 
     await expect(teaching).toHaveCount(2);
-    const [own, composed] = [
-      await teaching.nth(0).boundingBox(),
-      await teaching.nth(1).boundingBox(),
-    ];
+    const [own, composed] = [await settledBox(teaching.nth(0)), await settledBox(teaching.nth(1))];
     expect(composed?.x).toBeGreaterThan((own?.x ?? 0) + (own?.width ?? 0));
     await expectSharedEdge([teaching.nth(0), teaching.nth(1)], 'top');
     await expectNoSidewaysScroll(page);
@@ -33,10 +30,7 @@ test.describe('at 375', () => {
     const region = await mount(<HomeBlocks {...words} load="ready" onRetry={() => undefined} />);
     const teaching = region.getByText(words.emptyTitle);
 
-    const [own, composed] = [
-      await teaching.nth(0).boundingBox(),
-      await teaching.nth(1).boundingBox(),
-    ];
+    const [own, composed] = [await settledBox(teaching.nth(0)), await settledBox(teaching.nth(1))];
     expect(composed?.y).toBeGreaterThan(own?.y ?? 0);
   });
 });

@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { createTranslator, PROFILE_PREFERENCES, SIGN_IN, TYPE_GROUP_NAME } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { expectNoSidewaysScroll, expectNothingClipped } from '../support/layout';
+import { expectNoSidewaysScroll, expectNothingClipped, settledBox } from '../support/layout';
 import { resolvedColour } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 import { ProfilePreferencesAsHeld } from './ProfilePreferences.story';
@@ -138,7 +138,7 @@ test.describe('at 1536', () => {
     const rows = push.locator('.hg-settings-section-row');
     await expect(rows).toHaveCount(5);
     for (const row of await rows.all()) {
-      expect((await row.boundingBox())?.height).toBeGreaterThanOrEqual(64);
+      expect((await settledBox(row))?.height).toBeGreaterThanOrEqual(64);
     }
     await expect(push.getByRole('switch', { name: GROUP('billing') })).toBeDisabled();
     await expect(rows.last().getByRole('button', { name: W('whyBilling') })).toBeVisible();

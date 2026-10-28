@@ -1,20 +1,23 @@
 import { theme } from '@heliogrid/theme';
-import { DoorTopInset } from '@heliogrid/ui';
+import { DoorBottomInset, DoorTopInset } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
-import { StyleSheet } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 /**
  * A door under the phone's insets. The bloom runs from the screen's top edge, under a transparent
  * status bar (`SCR-M01-01`), so the top inset is handed to the frame as its padding — the bloom is
- * placed absolutely and ignores it — while the home-indicator band is added here, on the canvas.
+ * placed absolutely and ignores it. The home-indicator band is handed in too: the frame keeps it in
+ * its footer, which rides on the keyboard and drops the band behind it.
  */
 export function InsetDoor({ children }: { children: ReactNode }) {
-  const { top } = useSafeAreaInsets();
+  const { top, bottom } = useSafeAreaInsets();
   return (
-    <SafeAreaView style={styles.inset} edges={['bottom']}>
-      <DoorTopInset.Provider value={top}>{children}</DoorTopInset.Provider>
-    </SafeAreaView>
+    <View style={styles.inset}>
+      <DoorTopInset.Provider value={top}>
+        <DoorBottomInset.Provider value={bottom}>{children}</DoorBottomInset.Provider>
+      </DoorTopInset.Provider>
+    </View>
   );
 }
 

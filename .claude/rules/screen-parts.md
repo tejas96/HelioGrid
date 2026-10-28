@@ -24,9 +24,9 @@ shared part lives. For each part ask: does the other platform draw the same thin
 
 ## What stays in the screen
 
-- **The platform adapter the package refuses to hold** — a safe-area inset, a keyboard avoider,
-  a sheet where the other platform has a panel — one app-owned wrapper AROUND the package's
-  component, never a copy of it.
+- **The platform adapter the package refuses to hold** — a safe-area inset, a sheet where the
+  other platform has a panel (the keyboard is `packages/ui`'s `KeyboardFrame`) — one app-owned
+  wrapper AROUND the package's component, never a copy of it.
 
 ## When the package may not import what the part needs
 

@@ -1,5 +1,6 @@
 import { CATALOG_SETTINGS, createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { resolvedColour, resolvedLength } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 import { KindTable, PagedList } from './DataTable.story';
@@ -24,8 +25,8 @@ test.describe('a kind tile and a quiet line on the primary cell (D268)', () => {
         <KindTable label={label} value={value} sub={issue} stacked={form.stacked} />,
       );
       const tile = table.locator('.hg-iris-tile');
-      const tileBox = await tile.boundingBox();
-      const nameBox = await table.getByText(value, { exact: true }).boundingBox();
+      const tileBox = await settledBox(tile);
+      const nameBox = await settledBox(table.getByText(value, { exact: true }));
 
       await expect(tile).toHaveAttribute('aria-hidden', 'true');
       await expect(tile).toHaveCSS('width', '34px');
@@ -46,8 +47,8 @@ test.describe('a kind tile and a quiet line on the primary cell (D268)', () => {
         <KindTable label={label} value={value} sub={issue} stacked={form.stacked} />,
       );
       const sub = table.getByText(issue, { exact: true });
-      const subBox = await sub.boundingBox();
-      const nameBox = await table.getByText(value, { exact: true }).boundingBox();
+      const subBox = await settledBox(sub);
+      const nameBox = await settledBox(table.getByText(value, { exact: true }));
 
       expect(subBox?.y ?? 0).toBeGreaterThanOrEqual((nameBox?.y ?? 0) + (nameBox?.height ?? 0) - 1);
       expect(Math.abs((subBox?.x ?? 0) - (nameBox?.x ?? 0))).toBeLessThan(1);
@@ -68,8 +69,8 @@ test('Pagination pages on its own', async ({ mount }) => {
 
   await expect(frame.getByText('1–20 / 45')).toBeVisible();
   await expect(back).toBeDisabled();
-  expect((await forward.boundingBox())?.height).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
-  expect((await forward.boundingBox())?.width).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
+  expect((await settledBox(forward))?.height).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
+  expect((await settledBox(forward))?.width).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
 
   await forward.click();
   await expect(frame).toHaveAttribute('data-page', '1');

@@ -3,7 +3,12 @@ import { type RoleCardNames, type RolePreset, roleCard } from '@heliogrid/domain
 import { createTranslator, roleCardWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Page } from '@playwright/test';
-import { bottomOf, expectNoSidewaysScroll, expectNothingClipped } from '../support/layout';
+import {
+  bottomOf,
+  expectNoSidewaysScroll,
+  expectNothingClipped,
+  settledBox,
+} from '../support/layout';
 import { animationsSettled } from '../support/motion';
 import { resolvedLength } from '../support/token';
 import { RoleExplainerAsHeld } from './RoleExplainer.story';
@@ -30,7 +35,7 @@ const PICTURES = join(import.meta.dirname, '../../../.qa/components/role-explain
 /** The vertical gap from `above`'s bottom to `below`'s top. */
 async function gapBetween(page: Page, above: string, below: string): Promise<number> {
   const [top, bottom] = await Promise.all([
-    page.locator(below).first().boundingBox(),
+    settledBox(page.locator(below).first()),
     bottomOf(page.locator(above).first()),
   ]);
   return Math.round((top?.y ?? 0) - bottom);
@@ -87,12 +92,12 @@ test.describe('at 375', () => {
     const region = page.getByRole('region');
     expect(await region.evaluate((node) => node.scrollHeight > node.clientHeight)).toBe(true);
     const [heading, head] = await Promise.all([
-      page.getByRole('heading', { level: 1 }).boundingBox(),
-      page.locator('.hg-role-card-presets').boundingBox(),
+      settledBox(page.getByRole('heading', { level: 1 })),
+      settledBox(page.locator('.hg-role-card-presets')),
     ]);
     await region.evaluate((node) => node.scrollTo({ top: node.scrollHeight }));
-    expect(await page.getByRole('heading', { level: 1 }).boundingBox()).toEqual(heading);
-    expect(await page.locator('.hg-role-card-presets').boundingBox()).toEqual(head);
+    expect(await settledBox(page.getByRole('heading', { level: 1 }))).toEqual(heading);
+    expect(await settledBox(page.locator('.hg-role-card-presets'))).toEqual(head);
     await expect(page.getByRole('note')).toBeInViewport();
     await expect(page.getByRole('button', { name: STACKED.act })).toBeInViewport();
     await page.screenshot({ path: `${PICTURES}/m-stacked-end.png` });
@@ -184,17 +189,17 @@ test.describe('at 1536', () => {
     await mount(<RoleExplainerAsHeld reader="en" names={BOARD} />);
     await animationsSettled(page);
     const [heading, card, act, line] = await Promise.all([
-      page.getByRole('heading', { level: 1 }).boundingBox(),
-      page.locator('.hg-role-card').boundingBox(),
-      page.getByRole('button', { name: SALES.act }).boundingBox(),
-      page.locator('.hg-role-explainer-act .hg-text').boundingBox(),
+      settledBox(page.getByRole('heading', { level: 1 })),
+      settledBox(page.locator('.hg-role-card')),
+      settledBox(page.getByRole('button', { name: SALES.act })),
+      settledBox(page.locator('.hg-role-explainer-act .hg-text')),
     ]);
     const sp16 = await resolvedLength(page, '--sp-16');
     expect((heading?.x ?? 0) + (heading?.width ?? 0)).toBeLessThanOrEqual(512);
     expect(card?.x).toBe(512 + sp16);
     expect(Math.round((card?.x ?? 0) + (card?.width ?? 0))).toBe(1536 - sp16);
     const [grants, limits] = await Promise.all(
-      [0, 1].map((n) => page.locator('.hg-role-card-section').nth(n).boundingBox()),
+      [0, 1].map((n) => settledBox(page.locator('.hg-role-card-section').nth(n))),
     );
     expect(limits?.y).toBe(grants?.y);
     expect(gapOf(grants, limits)).toBe(await resolvedLength(page, '--sp-8'));

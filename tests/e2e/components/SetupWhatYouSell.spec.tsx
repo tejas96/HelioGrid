@@ -7,7 +7,13 @@ import {
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator } from '@playwright/test';
-import { bottomOf, expectNoSidewaysScroll, expectSharedEdge, rightOf } from '../support/layout';
+import {
+  bottomOf,
+  expectNoSidewaysScroll,
+  expectSharedEdge,
+  rightOf,
+  settledBox,
+} from '../support/layout';
 import { resolvedColour } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 import { WhatYouSellStepAsHeld } from './SetupWhatYouSell.story';
@@ -54,13 +60,13 @@ test.describe('at 375', () => {
     await expect(cards).toHaveCount(3);
     await expectSharedEdge([cards.nth(0), cards.nth(1), cards.nth(2)], 'left');
     await expectSharedEdge([cards.nth(0), cards.nth(1), cards.nth(2)], 'right');
-    expect(await bottomOf(cards.nth(0))).toBeLessThan((await cards.nth(1).boundingBox())?.y ?? 0);
+    expect(await bottomOf(cards.nth(0))).toBeLessThan((await settledBox(cards.nth(1)))?.y ?? 0);
 
     const helper = step.getByText(en.t(SETUP_WHAT_YOU_SELL.sizeHelper));
-    expect(await bottomOf(helper)).toBeLessThanOrEqual((await size.boundingBox())?.y ?? 0);
+    expect(await bottomOf(helper)).toBeLessThanOrEqual((await settledBox(size))?.y ?? 0);
 
     const way = step.getByRole('button', { name: CONTINUE });
-    expect((await way.boundingBox())?.width).toBe((await cards.nth(0).boundingBox())?.width);
+    expect((await settledBox(way))?.width).toBe((await settledBox(cards.nth(0)))?.width);
     expect(await bottomOf(step.getByText(SAVES_BOTH))).toBeLessThanOrEqual(HEIGHT);
     await expectNoSidewaysScroll(page);
   });
@@ -168,7 +174,7 @@ test.describe('at 375', () => {
     await expect(heading).toHaveCSS('color', await resolvedColour(page, '--danger-text'));
     await expect(alert).toContainText(en.t(SETUP_WHAT_YOU_SELL.notSavedBody));
     await expect(alert.getByRole('button')).toHaveCount(0);
-    expect((await ask.boundingBox())?.x).toBeGreaterThanOrEqual(await rightOf(heading));
+    expect((await settledBox(ask))?.x).toBeGreaterThanOrEqual(await rightOf(heading));
     expect(await rightOf(ask)).toBeGreaterThanOrEqual(await rightOf(alert));
     expect(await rightOf(ask)).toBeLessThanOrEqual(await rightOf(cards.nth(0)));
     await expect(cards.nth(0)).toBeChecked();
@@ -177,13 +183,13 @@ test.describe('at 375', () => {
     const again = step.getByRole('button', { name: TRY_AGAIN });
     const later = step.getByRole('button', { name: FINISH_LATER });
     for (const control of [ask, cards.nth(0), cards.nth(1), cards.nth(2), size, again, later]) {
-      const box = await control.boundingBox();
+      const box = await settledBox(control);
       expect(box?.width).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
       expect(box?.height).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
     }
     await expectSharedEdge([again, later], 'top');
-    const againBox = await again.boundingBox();
-    const laterBox = await later.boundingBox();
+    const againBox = await settledBox(again);
+    const laterBox = await settledBox(later);
     expect(laterBox?.x).toBeGreaterThan((againBox?.x ?? 0) + (againBox?.width ?? 0));
     expect(laterBox?.width).toBe(againBox?.width);
     expect(
@@ -247,18 +253,18 @@ test.describe('at 1536', () => {
     const { cards, size } = partsOf(step);
     await expectSharedEdge([cards.nth(0), cards.nth(1), cards.nth(2)], 'left');
     await expectSharedEdge([cards.nth(0), cards.nth(1), cards.nth(2)], 'right');
-    expect(await bottomOf(cards.nth(0))).toBeLessThan((await cards.nth(1).boundingBox())?.y ?? 0);
+    expect(await bottomOf(cards.nth(0))).toBeLessThan((await settledBox(cards.nth(1)))?.y ?? 0);
 
     const door = step.locator('.hg-door');
     await expect(door).toHaveAttribute('data-measure', 'list');
     const measure = await door.evaluate((node) =>
       Number.parseFloat(getComputedStyle(node).getPropertyValue('--door-measure')),
     );
-    const card = await cards.nth(0).boundingBox();
+    const card = await settledBox(cards.nth(0));
     expect(card?.width).toBe(measure);
-    expect(await bottomOf(cards.nth(2))).toBeLessThan((await size.boundingBox())?.y ?? 0);
+    expect(await bottomOf(cards.nth(2))).toBeLessThan((await settledBox(size))?.y ?? 0);
 
-    const heading = await step.getByRole('heading', { level: 1 }).boundingBox();
+    const heading = await settledBox(step.getByRole('heading', { level: 1 }));
     expect((heading?.x ?? Infinity) + (heading?.width ?? 0)).toBeLessThan(card?.x ?? 0);
     await expectNoSidewaysScroll(page);
   });
@@ -272,8 +278,8 @@ test.describe('at 1536', () => {
     const line = step.getByText(SAVES_BOTH);
     await expectSharedEdge([card, way], 'right');
     await expectSharedEdge([card, line], 'left');
-    const wayBox = await way.boundingBox();
-    const lineBox = await line.boundingBox();
+    const wayBox = await settledBox(way);
+    const lineBox = await settledBox(line);
     expect((lineBox?.x ?? Infinity) + (lineBox?.width ?? 0)).toBeLessThanOrEqual(wayBox?.x ?? 0);
     expect(lineBox?.y).toBeGreaterThanOrEqual(wayBox?.y ?? Infinity);
     expect(await bottomOf(line)).toBeLessThanOrEqual(await bottomOf(way));
@@ -289,11 +295,11 @@ test.describe('at 1536', () => {
     await expectSharedEdge([card, again], 'left');
     await expectSharedEdge([card, later], 'right');
     await expectSharedEdge([again, later], 'top');
-    expect((await later.boundingBox())?.width).toBe((await again.boundingBox())?.width);
-    const line = await step.getByText(en.t(SETUP_WHAT_YOU_SELL.untilYouFinish)).boundingBox();
+    expect((await settledBox(later))?.width).toBe((await settledBox(again))?.width);
+    const line = await settledBox(step.getByText(en.t(SETUP_WHAT_YOU_SELL.untilYouFinish)));
     expect(line?.y).toBeGreaterThanOrEqual(await bottomOf(again));
 
     const fix = step.getByRole('alert');
-    expect(await rightOf(fix)).toBeLessThan((await card.boundingBox())?.x ?? 0);
+    expect(await rightOf(fix)).toBeLessThan((await settledBox(card))?.x ?? 0);
   });
 });

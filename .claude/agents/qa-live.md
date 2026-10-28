@@ -1,6 +1,6 @@
 ---
 name: qa-live
-description: Checks one task's change on one surface of the running HelioGrid app — the api, the web, the iOS simulator or the Android emulator — by probing its changed routes, or by running its flows and then looking once at each changed screen, and returns one short report. Changes no file; starts, stops, boots and installs nothing.
+description: Checks one task's change on one surface of the running HelioGrid app — the api, the web, the iOS simulator or the Android emulator — by probing its changed routes, or by checking each changed screen by hand and looking once at it in Hindi, and returns one short report. Changes no file; starts, stops, boots and installs nothing.
 model: sonnet
 effort: medium
 tools: Read, Grep, Glob, Bash, mcp__Claude_Code_iOS_Simulator__control, mcp__Claude_Browser__navigate, mcp__Claude_Browser__read_page, mcp__Claude_Browser__find, mcp__Claude_Browser__computer, mcp__Claude_Browser__form_input, mcp__Claude_Browser__get_page_text, mcp__Claude_Browser__javascript_tool, mcp__Claude_Browser__read_console_messages, mcp__Claude_Browser__read_network_requests, mcp__Claude_Browser__resize_window, mcp__Claude_Browser__browser_batch, mcp__Claude_Browser__tabs_context, mcp__Claude_Browser__tabs_create
@@ -16,7 +16,7 @@ api is checked first; the other surfaces are checked after it, at the same time;
 yours.
 
 **Sign in** as your surface's QA company in `tests/e2e/support/qa-accounts.ts` (`api` and
-`api-second`, `web`, `ios`, `android`) — on a phone after step 1, whose first flow clears the app and signs up a new company. The code is `DEV_OTP_CODE` in `.env.local`; a fresh number's code is the newest
+`api-second`, `web`, `ios`, `android`) — on a phone at the app's own door. The code is `DEV_OTP_CODE` in `.env.local`; a fresh number's code is the newest
 `Message for <number> via` line in `.qa/api.log`. No code, cookie or token goes in your report.
 Never deactivate a QA company's person — the api cannot switch them back on; a check that needs
 it invites a person of its own first. A check that needs an empty list uses a new company.
@@ -38,19 +38,15 @@ change adds or changes:
    test that proves each one you skip.
 
 Two calls fired together mostly run one after the other, so a race is the tests' to force, never
-yours. Each check names the request, and the status and body you saw. Steps 1 and 2 below are a
-screen's.
+yours. Each check names the request, and the status and body you saw.
 
-**1. Let the runner drive** (a phone). On iOS, first `attach` the simulator panel so the owner can
-watch. Then `pnpm --filter @heliogrid/e2e test:mobile <udid or serial> > .qa/mobile-<device>.log 2>&1`. The
-flows carry the task's checks. A failing step leaves its screenshot and view tree in the newest
-folder under `~/.maestro/tests/`. A re-check is given the log of the flow Main reran after its fix,
-and repeats only the looks it is given.
-
-**2. Then look once at each changed screen in Hindi** (Marathi on Android): its longer words
-show a clip or a wrap that English hides. The flows and the web specs (both widths, labels, the
-44 floor, sideways scroll) check English. Switch the language once on the app's Profile screen,
-look at every screen, and set it back after:
+**A screen.** No phone suite runs here: CI runs the phone flows on Android. On iOS, first `attach`
+the simulator panel so the owner can watch. On each changed screen, check what its `DONE WHEN`
+lines say, acting by hand (below); a re-check repeats only the checks it is given. Then look once
+at each changed screen in Hindi (Marathi on Android): its longer words show a clip or a wrap that
+English hides, while the web specs (both widths, labels, the 44 floor, sideways scroll) check
+English. Switch the language once on the app's Profile screen, look at every screen, and set it
+back after. Read a screen with:
 
 - Phone: `maestro --device <udid or serial> hierarchy --compact` for every element's label and
   bounds, and the screen itself (the simulator tool's `screenshot`; on Android `adb -s <serial>
@@ -62,10 +58,11 @@ look at every screen, and set it back after:
 On each: what the `DONE WHEN` lines say is there; every control you use is at least 44 on both
 axes and has a spoken label; no text is clipped or overlaps and no button label wraps; the focused
 field sits above the keyboard; the web never scrolls sideways; no crash, error line or failed
-request since you began. A picture stays in your context for every later turn, so take one where
-it shows what text cannot.
+request since you began. A picture stays in your context for every later turn, so a tap, a typed
+word or a scroll is confirmed by the tree, never by a picture; a picture is taken once per screen
+(and per width) for its Hindi look, and once more only for a `FAIL` the tree cannot show.
 
-To act by hand where no flow does: tap a bound's centre with the simulator tool and type at most
+To act by hand: tap a bound's centre with the simulator tool and type at most
 20 characters per call (a longer burst loses its tail); on Android `adb -s <serial> shell input
 tap|text|keyevent`. dp = px ÷ (`wm density` ÷ 160), using its `Override density` when it has one.
 A keyboard inset of zero height while `dumpsys input_method` reads `mInputShown=true` is Gboard's

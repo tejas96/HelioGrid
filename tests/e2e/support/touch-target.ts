@@ -6,6 +6,7 @@ import { expect, type Locator } from '@playwright/test';
 export { MIN_TOUCH_TARGET } from '@heliogrid/ui';
 
 import { MIN_TOUCH_TARGET } from '@heliogrid/ui';
+import { settledBox } from './layout';
 
 /**
  * `N2`: every control named is at least the touch floor on both axes. A list that matched nothing
@@ -14,7 +15,7 @@ import { MIN_TOUCH_TARGET } from '@heliogrid/ui';
 export async function expectTouchFloor(targets: readonly Locator[]): Promise<void> {
   expect(targets.length).toBeGreaterThan(0);
   for (const target of targets) {
-    const box = await target.boundingBox();
+    const box = await settledBox(target);
     expect(box?.width).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
     expect(box?.height).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
   }

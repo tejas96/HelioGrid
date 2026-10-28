@@ -10,7 +10,7 @@ import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator, Page } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { framesDrawn } from '../support/catalog-import-frames';
-import { expectNoSidewaysScroll, expectNothingClipped } from '../support/layout';
+import { expectNoSidewaysScroll, expectNothingClipped, settledBox } from '../support/layout';
 import { animationsSettled } from '../support/motion';
 import { expectTouchFloor } from '../support/touch-target';
 import { CatalogImportAsRead, type ImportBoardFrame } from './CatalogImport.story';
@@ -198,7 +198,7 @@ async function expectHead(page: Page, width: number, step: number, lead: string 
     return;
   }
   const panel = page.getByRole('dialog', { name: en.title });
-  expect((await panel.boundingBox())?.width).toBe(960);
+  expect((await settledBox(panel))?.width).toBe(960);
   const steps = panel.getByRole('navigation', { name: en.stepsLabel });
   await expect(steps.locator('[aria-current="step"]')).toContainText(en.steps[step] ?? '');
   await expectBarsDrawn(steps);
@@ -209,7 +209,7 @@ async function expectHead(page: Page, width: number, step: number, lead: string 
 async function expectBarsDrawn(within: Locator) {
   const bars = within.locator('.hg-stepper-bar');
   await expect(bars).toHaveCount(4);
-  for (const bar of await bars.all()) expect((await bar.boundingBox())?.height).toBe(4);
+  for (const bar of await bars.all()) expect((await settledBox(bar))?.height).toBe(4);
 }
 
 /** The board frames that are a press away from their job: a group opened, the step list. */

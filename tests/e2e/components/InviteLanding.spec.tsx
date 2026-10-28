@@ -2,6 +2,7 @@ import type { InviteFacts, InviteLandingEvent } from '@heliogrid/domain';
 import { createTranslator, INVITE_LANDING, SIGN_IN } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator, Page } from '@playwright/test';
+import { settledBox } from '../support/layout';
 import { resolvedLength } from '../support/token';
 import { InviteLandingAt } from './InviteLanding.story';
 
@@ -170,8 +171,8 @@ test.describe('the code at 375', () => {
     mount,
   }) => {
     const root = await mount(<InviteLandingAt reader="en" events={FRAMES.joinFailed} />);
-    const banner = await root.getByText(words(INVITE_LANDING.joinFailedLine)).boundingBox();
-    const card = await root.getByText(words(INVITE_LANDING.codeWent)).boundingBox();
+    const banner = await settledBox(root.getByText(words(INVITE_LANDING.joinFailedLine)));
+    const card = await settledBox(root.getByText(words(INVITE_LANDING.codeWent)));
     expect(banner?.y ?? 0).toBeLessThan(card?.y ?? 0);
     const boxes = code(root).locator('input');
     await expect(boxes.first()).toHaveAttribute('readonly', '');
@@ -190,8 +191,8 @@ test.describe('the code at 375', () => {
     page,
   }) => {
     const root = await mount(<InviteLandingAt reader="en" events={FRAMES.normal} />);
-    const resend = await root.locator('.hg-invite-landing-resend').boundingBox();
-    const join = await root.getByRole('button', { name: words(INVITE_LANDING.join) }).boundingBox();
+    const resend = await settledBox(root.locator('.hg-invite-landing-resend'));
+    const join = await settledBox(root.getByRole('button', { name: words(INVITE_LANDING.join) }));
     expect((join?.y ?? 0) - ((resend?.y ?? 0) + (resend?.height ?? 0))).toBe(
       await resolvedLength(page, '--sp-4'),
     );
@@ -214,13 +215,13 @@ test.describe('the code at 1536', () => {
   }) => {
     const root = await mount(<InviteLandingAt reader="en" events={FRAMES.normal} />);
     await expect(code(root).locator('input').first()).toBeFocused();
-    const field = await code(root).boundingBox();
-    const join = await root.getByRole('button', { name: words(INVITE_LANDING.join) }).boundingBox();
-    const resend = await root.locator('.hg-invite-landing-resend').boundingBox();
+    const field = await settledBox(code(root));
+    const join = await settledBox(root.getByRole('button', { name: words(INVITE_LANDING.join) }));
+    const resend = await settledBox(root.locator('.hg-invite-landing-resend'));
     expect(field?.y ?? 0).toBeLessThan(join?.y ?? 0);
     expect(join?.y ?? 0).toBeLessThan(resend?.y ?? 0);
-    const pane = await root.locator('.hg-door-task').boundingBox();
-    const column = await root.locator('.hg-invite-landing').boundingBox();
+    const pane = await settledBox(root.locator('.hg-door-task'));
+    const column = await settledBox(root.locator('.hg-invite-landing'));
     const left = (column?.x ?? 0) - (pane?.x ?? 0);
     const right = (pane?.x ?? 0) + (pane?.width ?? 0) - ((column?.x ?? 0) + (column?.width ?? 0));
     expect(Math.abs(left - right)).toBeLessThanOrEqual(1);
@@ -228,8 +229,8 @@ test.describe('the code at 1536', () => {
 
   test('the invite’s facts sit in the context pane, with no card', async ({ mount }) => {
     const root = await mount(<InviteLandingAt reader="en" events={FRAMES.normal} />);
-    const identity = await root.locator('.hg-door-identity').boundingBox();
-    const facts = await root.getByText(words(INVITE_LANDING.codeWent)).boundingBox();
+    const identity = await settledBox(root.locator('.hg-door-identity'));
+    const facts = await settledBox(root.getByText(words(INVITE_LANDING.codeWent)));
     expect(facts?.x ?? 0).toBeLessThan((identity?.x ?? 0) + (identity?.width ?? 0));
     await expect(root.locator('.hg-door-identity .hg-card')).toHaveCount(0);
   });
@@ -279,10 +280,10 @@ test.describe('the task at 1536 in reading order', () => {
     mount,
   }) => {
     const before = await mount(<InviteLandingAt reader="en" events={FRAMES.normal} />);
-    const normal = await code(before).boundingBox();
+    const normal = await settledBox(code(before));
     await before.unmount();
     const after = await mount(<InviteLandingAt reader="en" events={FRAMES.wrong} />);
-    const wrong = await code(after).boundingBox();
+    const wrong = await settledBox(code(after));
     expect(wrong?.x).toBeCloseTo(normal?.x ?? 0, 0);
     expect(wrong?.width).toBeCloseTo(normal?.width ?? 0, 0);
   });

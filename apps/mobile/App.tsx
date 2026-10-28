@@ -4,7 +4,7 @@ import { DataProvider, useSession } from '@heliogrid/data/react';
 import { uiLanguageOfTag } from '@heliogrid/domain';
 import { installFormsErrorMap } from '@heliogrid/forms';
 import { type I18nRuntime, provenanceWords } from '@heliogrid/i18n';
-import { MarketProvider, PortalHost, ProvenanceWordsProvider } from '@heliogrid/ui';
+import { KeyboardHost, MarketProvider, PortalHost, ProvenanceWordsProvider } from '@heliogrid/ui';
 import { type ReactNode, useCallback, useState } from 'react';
 import { StatusBar } from 'react-native';
 import { getVersion } from 'react-native-device-info';
@@ -71,14 +71,17 @@ export default function App() {
             exists, and its phone field reads the dial code and the number's length from here. */}
         <ReaderMarket>
           <SafeAreaProvider>
-            {/* The ONE portal host, above navigation: every menu, sheet and modal escapes its
+            {/* The ONE keyboard host, above every page, door and sheet that holds a field. */}
+            <KeyboardHost>
+              {/* The ONE portal host, above navigation: every menu, sheet and modal escapes its
                 screen through here; without it a Portal renders in place (Portal.native). */}
-            <InsetPortalHost>
-              {/* Transparent, with dark icons, on every Android version: the door's bloom runs under it
+              <InsetPortalHost>
+                {/* Transparent, with dark icons, on every Android version: the door's bloom runs under it
                   (`SCR-M01-01`), and each screen keeps clear of the top inset itself. */}
-              <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
-              <AppNavigation />
-            </InsetPortalHost>
+                <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
+                <AppNavigation />
+              </InsetPortalHost>
+            </KeyboardHost>
           </SafeAreaProvider>
         </ReaderMarket>
       </SessionLanguage>

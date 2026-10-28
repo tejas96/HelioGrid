@@ -11,7 +11,7 @@ import {
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator } from '@playwright/test';
 import { REFUSED_IMAGE } from '../support/company-logo';
-import { expectNoSidewaysScroll, expectNothingClipped } from '../support/layout';
+import { expectNoSidewaysScroll, expectNothingClipped, settledBox } from '../support/layout';
 import { resolvedColour } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 import { CompanyProfileAsHeld } from './CompanyProfile.story';
@@ -62,8 +62,8 @@ test.describe('at 375, under a finger', () => {
     await expect(area(profile).locator('.hg-dropzone-label')).toHaveText(WORDS.add);
     await expect(area(profile).locator('.hg-dropzone-line')).toHaveText(TAP);
     const name = profile.getByLabel(en.t(COMPANY_SIGNUP.companyName));
-    const areaBox = await area(profile).boundingBox();
-    const nameBox = await name.boundingBox();
+    const areaBox = await settledBox(area(profile));
+    const nameBox = await settledBox(name);
     expect((areaBox?.y ?? 0) + (areaBox?.height ?? 0)).toBeLessThanOrEqual(nameBox?.y ?? 0);
 
     const input = area(profile).locator('input[type="file"]');
@@ -154,7 +154,7 @@ test.describe('at 1536', () => {
     await expect(tile(withPicture)).toHaveText('');
     const picture = tile(withPicture).locator('img');
     await expect(picture).toHaveAttribute('src', PICTURE);
-    expect(await picture.boundingBox()).toEqual(await tile(withPicture).boundingBox());
+    expect(await settledBox(picture)).toEqual(await settledBox(tile(withPicture)));
     await expect(withPicture.locator('.hg-company-profile-preview')).toHaveAttribute(
       'aria-hidden',
       'true',

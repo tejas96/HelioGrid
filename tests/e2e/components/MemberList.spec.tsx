@@ -1,5 +1,6 @@
 import { createTranslator, SIGN_IN, TEAM, TEAM_EMPTY_CHIP, teamActWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { TeamListStory } from './MemberList.story';
 
 /**
@@ -125,11 +126,10 @@ test('an active card opens the person; an invite does not, and a card act runs i
   await expect(frame).toHaveAttribute('data-acted', 'Vikram Deshpande');
   await expect(frame).toHaveAttribute('data-opened', '');
   /* A tap on the role badges opens the person: the row of words lets it through to the card. */
-  const badges = await page
-    .locator('.hg-record-card', { hasText: 'Rajesh Patil' })
-    .locator('.hg-record-card-marks')
-    .boundingBox();
-  await page.mouse.click((badges?.x ?? 0) + 8, (badges?.y ?? 0) + 8);
+  const badges = await settledBox(
+    page.locator('.hg-record-card', { hasText: 'Rajesh Patil' }).locator('.hg-record-card-marks'),
+  );
+  await page.mouse.click(badges.x + 8, badges.y + 8);
   await expect(frame).toHaveAttribute('data-opened', 'Rajesh Patil');
 });
 

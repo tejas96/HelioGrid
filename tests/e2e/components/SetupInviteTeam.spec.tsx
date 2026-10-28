@@ -1,5 +1,6 @@
 import { createTranslator, inviteWords, setupInviteWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { resolvedLength } from '../support/token';
 import { SetupInviteTeamAsHeld } from './SetupInviteTeam.story';
 
@@ -22,8 +23,8 @@ test.describe('at 375', () => {
     await expect(step.getByText(en.phoneHelper)).toBeVisible();
     await expect(step.getByText(en.lasts)).toBeVisible();
     await expect(step.getByText(en.afterYouSend.heading)).toBeHidden();
-    const skip = await step.getByRole('button', { name: en.skip }).boundingBox();
-    const send = await step.getByRole('button', { name: en.send }).boundingBox();
+    const skip = await settledBox(step.getByRole('button', { name: en.skip }));
+    const send = await settledBox(step.getByRole('button', { name: en.send }));
     expect(skip?.y).toBe(send?.y);
     expect(send?.width).toBeGreaterThan(skip?.width ?? 0);
     await step.getByRole('button', { name: en.skip }).click();
@@ -53,7 +54,7 @@ test.describe('at 375', () => {
     await expect(step.getByRole('button', { name: en.skip })).toHaveCount(0);
     const onward = step.getByRole('button', { name: en.continueSetup });
     await expect(onward).toBeFocused();
-    const act = await onward.boundingBox();
+    const act = await settledBox(onward);
     expect(act?.width).toBe(375 - 2 * (await resolvedLength(step.page(), '--screen-pad-mobile')));
     expect(act?.height).toBe(await resolvedLength(step.page(), '--sp-12'));
     await onward.click();
@@ -88,14 +89,14 @@ test.describe('at 1536', () => {
     await expect(step.getByText(en.lasts)).toHaveCount(0);
     await expect(step.getByText(en.phoneHelper)).toHaveCount(0);
 
-    const name = await step.getByLabel(en.name).boundingBox();
-    const phone = await step.getByLabel(en.phone).boundingBox();
+    const name = await settledBox(step.getByLabel(en.name));
+    const phone = await settledBox(step.getByLabel(en.phone));
     expect(phone?.y).toBe(name?.y);
     expect(phone?.x).toBeGreaterThan((name?.x ?? 0) + (name?.width ?? 0));
 
-    const heading = await step.getByRole('heading', { name: en.title, level: 1 }).boundingBox();
-    const send = await step.getByRole('button', { name: en.send }).boundingBox();
-    const skip = await step.getByRole('button', { name: en.skip }).boundingBox();
+    const heading = await settledBox(step.getByRole('heading', { name: en.title, level: 1 }));
+    const send = await settledBox(step.getByRole('button', { name: en.send }));
+    const skip = await settledBox(step.getByRole('button', { name: en.skip }));
     expect(send?.x).toBeGreaterThan(skip?.x ?? 0);
     expect((name?.x ?? 0) - (heading?.x ?? 0)).toBeGreaterThan(400);
     expect(Math.round((send?.x ?? 0) + (send?.width ?? 0))).toBe(

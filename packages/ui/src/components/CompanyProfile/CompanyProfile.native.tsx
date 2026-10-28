@@ -1,7 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect } from 'react';
-import { AccessibilityInfo, Keyboard, StyleSheet, View } from 'react-native';
+import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { closeKeyboard } from '../../primitives/Keyboard/use-keyboard.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Accordion } from '../Accordion/Accordion.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
@@ -160,7 +161,7 @@ function ProfileAct({ words, saving, onSave, onContinueWithout }: CompanyProfile
         spokenName={act.primarySpoken}
         onClick={() => {
           // The field is left before the act, so the keyboard never covers what the save answers.
-          Keyboard.dismiss();
+          closeKeyboard();
           onSave();
         }}
       >

@@ -1,0 +1,8 @@
+# The first setup step: an owner whose company was just made chooses the app's language, here
+# keeping the one offered (`SCR-M01-03`).
+appId: com.heliogrid.app
+---
+- extendedWaitUntil:
+    visible: ${SETUP_LANGUAGE_TITLE}
+    timeout: 30000
+- tapOn: ${CONTINUE}

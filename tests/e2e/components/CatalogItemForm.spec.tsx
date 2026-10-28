@@ -3,7 +3,12 @@ import { catalogAddItemWords, catalogItemFailureWords, createTranslator } from '
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Page } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { bottomOf, expectNoSidewaysScroll, expectNothingClipped } from '../support/layout';
+import {
+  bottomOf,
+  expectNoSidewaysScroll,
+  expectNothingClipped,
+  settledBox,
+} from '../support/layout';
 import { animationsSettled } from '../support/motion';
 import { expectTouchFloor } from '../support/touch-target';
 import { ALMM_REFERENCE, FRAMES } from './CatalogItemForm.frames';
@@ -52,8 +57,8 @@ async function expectBody(page: Page, setup: ItemFormSetup) {
   await expect(tile).toContainText(en.spreadsheet);
   await expect(tile).toContainText(en.spreadsheetSub);
   /* The datasheet tile is not built: the spreadsheet tile fills the body's width alone. */
-  const tileWidth = (await tile.boundingBox())?.width;
-  expect(tileWidth).toBe((await page.locator('.hg-item-form').boundingBox())?.width);
+  const tileWidth = (await settledBox(tile))?.width;
+  expect(tileWidth).toBe((await settledBox(page.locator('.hg-item-form')))?.width);
 }
 
 const WINDOW_ENDS = new Set(['mppt.minV', 'mppt.maxV']);
@@ -94,7 +99,7 @@ async function expectFoot(page: Page, setup: ItemFormSetup, wide: boolean) {
     return;
   }
   await expect(line).toHaveText(wide ? en.consequence : en.consequenceNarrow);
-  expect(await bottomOf(line)).toBeLessThanOrEqual((await cancel.boundingBox())?.y ?? 0);
+  expect(await bottomOf(line)).toBeLessThanOrEqual((await settledBox(cancel))?.y ?? 0);
 }
 
 /** What one frame holds beyond the parts every frame draws. */
@@ -152,7 +157,7 @@ async function expectFrame(page: Page, name: FrameName, wide: boolean): Promise<
   await entrySettled(page);
   if (wide) {
     const panel = page.getByRole('dialog', { name: en.title });
-    expect((await panel.boundingBox())?.width, name).toBe(900);
+    expect((await settledBox(panel))?.width, name).toBe(900);
   }
   if (name === 's16-i') {
     await expectDiscard(page, setup);

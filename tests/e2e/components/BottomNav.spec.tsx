@@ -1,6 +1,7 @@
 import { createTranslator, destinationLabel, verbLabel } from '@heliogrid/i18n';
 import { BottomNav, type BottomNavItem, ShellGlyph } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { resolvedLength } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 
@@ -26,15 +27,13 @@ test('the pill floats on the footer tokens, with no border and the e4 shadow', a
     </div>,
   );
   const pill = screen.getByRole('navigation');
-  const frame = await screen.boundingBox();
-  const box = await pill.boundingBox();
+  const frame = await settledBox(screen);
+  const box = await settledBox(pill);
 
   expect(box?.height).toBe(await resolvedLength(page, '--bottomnav-pill-h'));
-  expect((box?.x ?? 0) - (frame?.x ?? 0)).toBe(await resolvedLength(page, '--bottomnav-inset'));
-  const frameBottom = (frame?.y ?? 0) + (frame?.height ?? 0);
-  expect(frameBottom - ((box?.y ?? 0) + (box?.height ?? 0))).toBe(
-    await resolvedLength(page, '--bottomnav-gap'),
-  );
+  expect(box.x - frame.x).toBe(await resolvedLength(page, '--bottomnav-inset'));
+  const frameBottom = frame.y + frame.height;
+  expect(frameBottom - (box.y + box.height)).toBe(await resolvedLength(page, '--bottomnav-gap'));
   await expect(pill).toHaveCSS('border-top-width', '0px');
   const e4 = await page.evaluate(() => {
     const probe = document.createElement('div');
@@ -75,7 +74,7 @@ test('the verb runs its act, never becomes the item in view, and every slot clea
   expect(changes).toEqual([]);
 
   for (const item of await screen.getByRole('button').all()) {
-    const slot = await item.boundingBox();
+    const slot = await settledBox(item);
     expect(slot?.width).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
     expect(slot?.height).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
   }

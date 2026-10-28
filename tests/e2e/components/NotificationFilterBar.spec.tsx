@@ -1,5 +1,6 @@
 import { createTranslator, NOTIFICATION_CENTRE, TYPE_GROUP_NAME } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 import { FilterBarAsHeld } from './NotificationFilterBar.story';
 
@@ -45,7 +46,7 @@ test('Unread toggles on its own and stays on beside a group', async ({ mount }) 
 test('every button is a 44 target, and a pressed one keeps the focus', async ({ mount }) => {
   const bar = await mount(<FilterBarAsHeld />);
   for (const button of await bar.getByRole('button').all()) {
-    const box = await button.boundingBox();
+    const box = await settledBox(button);
     expect(box?.height ?? 0).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
     expect(box?.width ?? 0).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
   }

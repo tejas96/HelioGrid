@@ -1,0 +1,9 @@
+# Branding: the owner's logo, colour and letterhead, opened from settings and closed back to it.
+appId: com.heliogrid.app
+---
+- runFlow:
+    file: steps/open-setting.yaml
+    env:
+      ROW: ${ROW_BRANDING}
+- assertVisible: "(.*, )?${ROW_BRANDING}"
+- tapOn: ${BACK_TO_SETTINGS}

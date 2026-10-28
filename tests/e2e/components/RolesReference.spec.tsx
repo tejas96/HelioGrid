@@ -3,7 +3,7 @@ import { createTranslator, rolesReferenceWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Page } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { expectNoSidewaysScroll, expectNothingClipped } from '../support/layout';
+import { expectNoSidewaysScroll, expectNothingClipped, settledBox } from '../support/layout';
 import { animationsSettled } from '../support/motion';
 import { resolvedColour } from '../support/token';
 import { RolesReferenceAsRead } from './RolesReference.story';
@@ -187,8 +187,8 @@ test.describe('opened from Assign Roles, at 1536', () => {
     const frame = await mount(<RolesReferenceAsRead reader="en" fromAssign />);
     const back = page.getByRole('button', { name: en.backToAssign });
     const [backBox, titleBox] = await Promise.all([
-      back.boundingBox(),
-      page.getByRole('heading', { level: 1, name: en.title }).boundingBox(),
+      settledBox(back),
+      settledBox(page.getByRole('heading', { level: 1, name: en.title })),
     ]);
     expect(backBox?.x ?? 0).toBeLessThan(titleBox?.x ?? 0);
     await back.click();

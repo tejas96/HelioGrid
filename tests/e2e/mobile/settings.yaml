@@ -1,0 +1,13 @@
+# Settings: the list names the rows an owner may open. It stays at its top, since the pages' flows
+# open the rows from top to bottom; Catalog, below the fold, is `catalog-settings.yaml`'s.
+appId: com.heliogrid.app
+---
+- extendedWaitUntil:
+    visible: ${SETTINGS_TITLE}
+    timeout: 15000
+- assertVisible: "(.*, )?${ROW_PROFILE}"
+- assertVisible: ${ROW_TEAM}
+- assertVisible: ${ROW_ROLES}
+- assertVisible: ${ROW_BRANDING}
+- assertVisible: ${ROW_PROPOSAL_TEMPLATES}
+- assertVisible: ${ROW_PAYMENT_TERMS}

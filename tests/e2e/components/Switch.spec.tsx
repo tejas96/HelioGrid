@@ -1,6 +1,7 @@
 import { createTranslator, PROFILE_PREFERENCES } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator } from '@playwright/test';
+import { settledBox } from '../support/layout';
 import { resolvedColour, resolvedLength } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 import { HeldSwitch } from './Switch.story';
@@ -63,8 +64,8 @@ for (const width of [343, 640]) {
       await expect(description).toHaveCSS('color', await resolvedColour(page, '--text-secondary'));
       await expect(description).not.toHaveCSS('white-space', 'nowrap');
 
-      const titleBox = await title.boundingBox();
-      const descriptionBox = await description.boundingBox();
+      const titleBox = await settledBox(title);
+      const descriptionBox = await settledBox(description);
       expect(
         Math.round((descriptionBox?.y ?? 0) - ((titleBox?.y ?? 0) + (titleBox?.height ?? 0))),
       ).toBe(Math.round(await resolvedLength(page, '--sp-0-5')));
@@ -75,10 +76,10 @@ for (const width of [343, 640]) {
       const row = await mount(
         <HeldSwitch width={width} label={TITLE} description={DESCRIPTION} toggleAt="end" />,
       );
-      const box = await row.boundingBox();
-      const label = await row.locator('.hg-switch').boundingBox();
-      const track = await row.locator('.hg-switch-track').boundingBox();
-      const words = await row.locator('.hg-switch-words').boundingBox();
+      const box = await settledBox(row);
+      const label = await settledBox(row.locator('.hg-switch'));
+      const track = await settledBox(row.locator('.hg-switch-track'));
+      const words = await settledBox(row.locator('.hg-switch-words'));
       if (!box || !label || !track || !words) throw new Error('the row did not lay out');
 
       /* The row takes the whole width; the track ends at its end and keeps its own size. */
@@ -113,9 +114,9 @@ test('without a description or a place, the switch keeps its look', async ({ mou
   await expect(label).toHaveCSS('color', await resolvedColour(page, '--text-primary'));
 
   /* The track leads, and the row is only as wide as its words. */
-  const box = await row.boundingBox();
-  const track = await row.locator('.hg-switch-track').boundingBox();
-  const hit = await row.locator('.hg-switch').boundingBox();
+  const box = await settledBox(row);
+  const track = await settledBox(row.locator('.hg-switch-track'));
+  const hit = await settledBox(row.locator('.hg-switch'));
   expect(Math.round(track?.x ?? -1)).toBe(Math.round(box?.x ?? 0));
   expect(hit?.width ?? 0).toBeLessThan(box?.width ?? 0);
   await expectTouchFloor([row.locator('.hg-switch')]);

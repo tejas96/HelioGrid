@@ -1,0 +1,15 @@
+# Opens one settings row from the settings list and waits for its page. Not a screen: a step every
+# settings page's flow shares. A row's name may follow its avatar's words (*Profile & preferences*).
+appId: com.heliogrid.app
+---
+# The row is brought to the middle: one at the list's foot sits behind the floating pill, where a
+# tap opens the pill's item instead.
+- scrollUntilVisible:
+    element: "(.*, )?${ROW}"
+    centerElement: true
+- tapOn: "(.*, )?${ROW}"
+- extendedWaitUntil:
+    visible: ${BACK_TO_SETTINGS}
+    timeout: 15000
+# A row whose page has not landed opens the placeholder; a built page never shows it.
+- assertNotVisible: ${PLACEHOLDER}

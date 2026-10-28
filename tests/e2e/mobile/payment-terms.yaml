@@ -1,0 +1,9 @@
+# Payment terms: the owner's terms, opened from settings and closed back to it (`SCR-M01-20`).
+appId: com.heliogrid.app
+---
+- runFlow:
+    file: steps/open-setting.yaml
+    env:
+      ROW: ${ROW_PAYMENT_TERMS}
+- assertVisible: ${YOUR_PAYMENT_TERMS}
+- tapOn: ${BACK_TO_SETTINGS}

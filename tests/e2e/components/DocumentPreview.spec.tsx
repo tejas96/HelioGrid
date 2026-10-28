@@ -2,6 +2,7 @@ import { COMPANY_LOGO_LIMITS, compliantShades, hexToRgb } from '@heliogrid/domai
 import { brandingWords, createTranslator } from '@heliogrid/i18n';
 import { DocumentPreview } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { resolvedColour, resolvedFont } from '../support/token';
 
 /**
@@ -184,14 +185,14 @@ test('a content fit is whole at any width', async ({ mount }) => {
        since a face that loads late grows the sheet and the window follows a frame later. */
     await expect
       .poll(async () => {
-        const [outer, inner] = [await frame.boundingBox(), await drawn.boundingBox()];
+        const [outer, inner] = [await settledBox(frame), await settledBox(drawn)];
         return outer === null || inner === null
           ? Number.POSITIVE_INFINITY
           : Math.abs(outer.height - inner.height);
       })
       .toBeLessThanOrEqual(1);
-    const box = await frame.boundingBox();
-    const last = await sheet.locator('.hg-doc-terms [data-flow-row]').last().boundingBox();
+    const box = await settledBox(frame);
+    const last = await settledBox(sheet.locator('.hg-doc-terms [data-flow-row]').last());
     if (box === null || last === null) throw new Error(`nothing drawn at ${width}`);
     expect(last.y).toBeGreaterThanOrEqual(box.y);
     expect(last.y + last.height).toBeLessThanOrEqual(box.y + box.height + 0.5);

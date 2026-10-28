@@ -7,7 +7,7 @@ import {
   settingsRowName,
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { bottomOf, expectNoSidewaysScroll } from '../support/layout';
+import { bottomOf, expectNoSidewaysScroll, settledBox } from '../support/layout';
 import { CompanyProfileAsHeld } from './CompanyProfile.story';
 
 /**
@@ -49,20 +49,20 @@ test.describe('at 375', () => {
     const headers = profile.locator('.hg-accordion-toggle');
     await expect(headers).toHaveCount(5);
     for (const header of await headers.all()) {
-      expect((await header.boundingBox())?.height).toBe(HEADER);
+      expect((await settledBox(header))?.height).toBe(HEADER);
     }
     for (const card of await profile.getByRole('radio').all()) {
       // The record measures whole pixels; the card draws a half one under it.
-      expect(Math.round((await card.boundingBox())?.height ?? 0)).toBe(CARD);
+      expect(Math.round((await settledBox(card))?.height ?? 0)).toBe(CARD);
     }
-    expect((await profile.locator('.hg-number-field-box').boundingBox())?.height).toBe(FIELD);
+    expect((await settledBox(profile.locator('.hg-number-field-box')))?.height).toBe(FIELD);
 
     const act = profile.getByRole('button', { name: SAVE });
     await expect(act).toHaveText(en.t(COMPANY_PROFILE.saveChanges));
-    expect((await act.boundingBox())?.height).toBe(ACT);
-    expect((await act.boundingBox())?.y).toBeGreaterThan(await bottomOf(headers.last()));
+    expect((await settledBox(act))?.height).toBe(ACT);
+    expect((await settledBox(act))?.y).toBeGreaterThan(await bottomOf(headers.last()));
     const line = profile.getByText(en.t(COMPANY_PROFILE.reseedScope));
-    expect((await line.boundingBox())?.y).toBeGreaterThan(await bottomOf(act));
+    expect((await settledBox(line))?.y).toBeGreaterThan(await bottomOf(act));
     await expect(profile.getByRole('button', { name: en.t(COMPANY_PROFILE.onward) })).toHaveCount(
       0,
     );
@@ -78,7 +78,7 @@ test.describe('at 375', () => {
     const fields = profile.locator('.hg-input-shell');
     await expect(fields).toHaveCount(4);
     for (const field of await fields.all()) {
-      expect((await field.boundingBox())?.height).toBe(FIELD);
+      expect((await settledBox(field))?.height).toBe(FIELD);
     }
   });
 
@@ -148,15 +148,15 @@ test.describe('at 1536', () => {
     );
     const headers = profile.locator('.hg-accordion-toggle');
     for (const header of await headers.all()) {
-      expect((await header.boundingBox())?.width).toBe(640);
+      expect((await settledBox(header))?.width).toBe(640);
     }
     const act = profile.getByRole('button', { name: SAVE });
-    const actBox = await act.boundingBox();
+    const actBox = await settledBox(act);
     expect(actBox?.height).toBe(ACT);
     expect(actBox?.width).toBeLessThan(300);
     expect(actBox?.y).toBeGreaterThan(await bottomOf(headers.last()));
-    const line = await profile.getByText(en.t(COMPANY_PROFILE.reseedScope)).boundingBox();
-    expect(line?.x).toBeGreaterThan((actBox?.x ?? 0) + (actBox?.width ?? 0));
+    const line = await settledBox(profile.getByText(en.t(COMPANY_PROFILE.reseedScope)));
+    expect(line?.x).toBeGreaterThan(actBox.x + actBox.width);
     await expect(profile.locator('.hg-company-profile-preview')).toBeVisible();
     await expectNoSidewaysScroll(page);
     await page.screenshot({ path: `${PICTURES}/en-1536.png`, fullPage: true });
@@ -173,8 +173,8 @@ test.describe('at 1536', () => {
       </div>,
     );
     await expect(profile.locator('.hg-company-profile-preview')).toBeHidden();
-    const room = (await profile.locator('.hg-company-profile-room').boundingBox())?.width;
-    expect((await profile.locator('.hg-company-profile-page').boundingBox())?.width).toBe(room);
+    const room = (await settledBox(profile.locator('.hg-company-profile-room')))?.width;
+    expect((await settledBox(profile.locator('.hg-company-profile-page')))?.width).toBe(room);
     await expectNoSidewaysScroll(page);
   });
 

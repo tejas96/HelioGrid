@@ -1,0 +1,9 @@
+# Team: the owner's roster, opened from settings and closed back to it.
+appId: com.heliogrid.app
+---
+- runFlow:
+    file: steps/open-setting.yaml
+    env:
+      ROW: ${ROW_TEAM}
+- assertVisible: "(.*, )?${ROW_TEAM}"
+- tapOn: ${BACK_TO_SETTINGS}

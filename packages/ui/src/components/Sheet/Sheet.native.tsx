@@ -1,7 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
-import { Animated, BackHandler, PanResponder, ScrollView, StyleSheet, View } from 'react-native';
+import { Animated, BackHandler, PanResponder, StyleSheet, View } from 'react-native';
+import { KeyboardFrame } from '../../primitives/Keyboard/KeyboardFrame.native';
 import { Portal, usePortalBottomInset } from '../../primitives/Portal/Portal.native';
 import { OverlayBody } from './OverlayBody.native';
 import type { SheetDensity, SheetProps, SheetSize } from './Sheet.types';
@@ -9,7 +10,6 @@ import { SheetBackdrop } from './SheetBackdrop.native';
 import { SheetHandle } from './SheetHandle.native';
 import { SheetHeader } from './SheetHeader.native';
 import { SheetSkeleton } from './SheetSkeleton.native';
-import { useFocusedFieldInView } from './use-focused-field-in-view.native';
 import { percentOf, SHEET_HEIGHT, useKeyboardLift } from './use-keyboard-lift.native';
 import { useSheetEntry } from './use-sheet-entry.native';
 
@@ -79,7 +79,6 @@ export function Sheet({
   const [scrolled, setScrolled] = useState(false);
   const draggable = dragToDismiss && dismissible;
   const { panelLift, bottomInset } = useKeyboardLift(open, size, usePortalBottomInset());
-  const focused = useFocusedFieldInView(open, scrollTop);
   /* Read through a ref: Android calls the newest listener first, so re-registering on a new
      `onClose` would put a lower sheet's Back above the sheet on top of it. */
   const closeOnBack = useRef(onClose);
@@ -160,6 +159,12 @@ export function Sheet({
       {children}
     </OverlayBody>
   );
+  const footerView =
+    footer === null ? undefined : (
+      <View style={[styles.footer, ladder.footerPad, clearBand(ladder.footerPad, bottomInset)]}>
+        {footer}
+      </View>
+    );
   return (
     <Portal>
       <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
@@ -205,32 +210,26 @@ export function Sheet({
           <SheetMeta meta={meta} density={density} />
 
           {bodyScrolls ? (
-            <ScrollView
-              ref={focused.scroll}
-              onLayout={focused.onBodyLayout}
-              onScroll={(event) => {
-                scrollTop.current = event.nativeEvent.contentOffset.y;
-                setScrolled(event.nativeEvent.contentOffset.y > 2);
-              }}
-              scrollEventThrottle={16}
+            /* The panel itself rises over the keyboard, so the frame only keeps the focused field
+               and its line above the footer. */
+            <KeyboardFrame
+              rises
               style={BODY_FLEX[size]}
+              onScrollOffset={(top) => {
+                scrollTop.current = top;
+                setScrolled(top > 2);
+              }}
               contentContainerStyle={bodyPad}
+              foot={footerView}
             >
-              <View ref={focused.content} collapsable={false} style={styles.bodyFill}>
-                {content}
-              </View>
-            </ScrollView>
+              <View style={styles.bodyFill}>{content}</View>
+            </KeyboardFrame>
           ) : (
-            /* A held body: its content bounds itself and scrolls its own part. */
-            <View style={[BODY_FLEX[size], styles.bodyHeld, bodyPad]}>{content}</View>
-          )}
-
-          {footer === null ? null : (
-            <View
-              style={[styles.footer, ladder.footerPad, clearBand(ladder.footerPad, bottomInset)]}
-            >
-              {footer}
-            </View>
+            <>
+              {/* A held body: its content bounds itself and scrolls its own part. */}
+              <View style={[BODY_FLEX[size], styles.bodyHeld, bodyPad]}>{content}</View>
+              {footerView}
+            </>
           )}
         </Animated.View>
       </View>

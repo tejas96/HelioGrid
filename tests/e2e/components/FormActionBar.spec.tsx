@@ -2,7 +2,7 @@ import { COMPANY_PROFILE, createTranslator, PRICE_BOOK } from '@heliogrid/i18n';
 import { FormActionBar } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator, Page } from '@playwright/test';
-import { bottomOf, expectNoSidewaysScroll, rightOf } from '../support/layout';
+import { bottomOf, expectNoSidewaysScroll, rightOf, settledBox } from '../support/layout';
 import { resolvedColour, resolvedLength, resolvedShadow } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 
@@ -48,8 +48,8 @@ async function expectOneOrder(bar: Locator, words: Words): Promise<void> {
   const save = bar.getByRole('button', { name: words.t(COMPANY_PROFILE.saveChanges) });
   const discard = bar.getByRole('button', { name: words.t(PRICE_BOOK.cancel) });
   await expect(consequence).toBeVisible();
-  expect(await bottomOf(consequence)).toBeLessThanOrEqual((await save.boundingBox())?.y ?? 0);
-  const discardBox = await discard.boundingBox();
+  expect(await bottomOf(consequence)).toBeLessThanOrEqual((await settledBox(save))?.y ?? 0);
+  const discardBox = await settledBox(discard);
   const sameRow = (discardBox?.y ?? 0) < (await bottomOf(save));
   if (sameRow) expect(await rightOf(save)).toBeLessThanOrEqual(discardBox?.x ?? 0);
   else expect(await bottomOf(save)).toBeLessThanOrEqual(discardBox?.y ?? 0);

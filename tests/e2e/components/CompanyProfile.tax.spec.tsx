@@ -7,7 +7,12 @@ import {
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator } from '@playwright/test';
-import { bottomOf, expectNoSidewaysScroll, expectNothingClipped } from '../support/layout';
+import {
+  bottomOf,
+  expectNoSidewaysScroll,
+  expectNothingClipped,
+  settledBox,
+} from '../support/layout';
 import { resolvedColour } from '../support/token';
 import { CompanyProfileAsHeld } from './CompanyProfile.story';
 
@@ -50,17 +55,17 @@ test('the tax part asks one optional registration, says the market’s format as
   await expect(field).toHaveCSS('font-family', /Mono/);
   const boxes = profile.locator('.hg-input-shell');
   await expect(boxes).toHaveCount(1);
-  expect(await boxes.boundingBox()).toMatchObject({ width: COLUMN, height: FIELD });
+  expect(await settledBox(boxes)).toMatchObject({ width: COLUMN, height: FIELD });
 
   const secondary = await resolvedColour(page, '--text-secondary');
   const format = profile.getByText(FORMAT);
   await expect(format).toHaveCount(1);
   await expect(format).toHaveCSS('color', secondary);
-  expect((await format.boundingBox())?.y).toBeGreaterThanOrEqual(await bottomOf(boxes));
+  expect((await settledBox(format))?.y).toBeGreaterThanOrEqual(await bottomOf(boxes));
   await expect(profile.locator('.hg-input-error')).toHaveCount(0);
   const checked = profile.getByText(CHECKED);
   await expect(checked).toHaveCSS('color', secondary);
-  expect((await checked.boundingBox())?.y).toBeGreaterThanOrEqual(await bottomOf(format));
+  expect((await settledBox(checked))?.y).toBeGreaterThanOrEqual(await bottomOf(format));
   await expectNothingClipped(page, '.hg-text, .hg-input-label');
 
   await expect(profile.getByRole('button', { name: SAVE })).toBeEnabled();

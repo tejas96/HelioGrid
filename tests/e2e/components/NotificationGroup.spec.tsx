@@ -1,6 +1,7 @@
 import { createTranslator, groupSentence, NOTIFICATION_CENTRE } from '@heliogrid/i18n';
 import { IconButton, NotificationGroup } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { resolvedColour } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 
@@ -82,7 +83,7 @@ for (const width of [335, 456]) {
       );
       for (const member of members) {
         const link = opened.getByRole('button', { name: member.name });
-        const box = await link.boundingBox();
+        const box = await settledBox(link);
         expect(box?.height ?? 0).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
       }
     });
@@ -150,9 +151,9 @@ for (const width of [335, 456]) {
         />,
       );
       const rows = group.locator('.hg-notification-member');
-      const first = await rows.nth(0).boundingBox();
-      const second = await rows.nth(1).boundingBox();
-      const card = await group.locator('.hg-notification-card').boundingBox();
+      const first = await settledBox(rows.nth(0));
+      const second = await settledBox(rows.nth(1));
+      const card = await settledBox(group.locator('.hg-notification-card'));
       if (first === null || second === null || card === null) throw new Error('all render');
       expect(Math.round(second.y - (first.y + first.height))).toBe(8);
       expect(Math.round(first.y - (card.y + card.height))).toBe(8);
@@ -187,8 +188,8 @@ for (const width of [335, 456]) {
           .map((child) => child.className);
       });
       expect(overflow).toEqual([]);
-      const title = await group.getByText(groupSentence(hi.t, 'proposal_opened', 3)).boundingBox();
-      const toggle = await group.getByRole('button').boundingBox();
+      const title = await settledBox(group.getByText(groupSentence(hi.t, 'proposal_opened', 3)));
+      const toggle = await settledBox(group.getByRole('button'));
       if (title === null || toggle === null) throw new Error('both render');
       expect(title.y + title.height).toBeLessThanOrEqual(toggle.y);
     });

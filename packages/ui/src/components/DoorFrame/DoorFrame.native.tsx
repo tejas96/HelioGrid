@@ -1,19 +1,13 @@
 import { theme } from '@heliogrid/theme';
 import { useContext } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import { KeyboardFrame } from '../../primitives/Keyboard/KeyboardFrame.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project.
    Metro resolves both spellings to the same module, so this is the same import, correctly typed. */
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
 import { Wordmark } from '../Wordmark/Wordmark.native';
-import { DOOR_BOUNDED_MIN_HEIGHT, DoorTopInset } from './DoorFrame.logic';
+import { DOOR_BOUNDED_MIN_HEIGHT, DoorBottomInset, DoorTopInset } from './DoorFrame.logic';
 import type { DoorFrameProps } from './DoorFrame.types';
 
 const WORDMARK_SIZE = 24;
@@ -40,6 +34,9 @@ export function DoorFrame({
   children,
 }: DoorFrameProps) {
   const topInset = useContext(DoorTopInset);
+  const bottomInset = useContext(DoorBottomInset);
+  /* The band under the door's last part: the footer's, or the column's when there is none. */
+  const band = { paddingBottom: theme.spacing['sp-6'] + bottomInset };
   const { height, fontScale } = useWindowDimensions();
   /* Grown text needs the room a taller screen gives, so the floor is read in unscaled points. */
   const holdsStill = bounded && height / fontScale >= DOOR_BOUNDED_MIN_HEIGHT;
@@ -62,26 +59,21 @@ export function DoorFrame({
   return (
     <View style={[styles.root, { paddingTop: topInset }]}>
       <BrandBloom placement="top" />
-      <KeyboardAvoidingView
+      <KeyboardFrame
         style={styles.fill}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        scrolls={!holdsStill}
+        contentContainerStyle={[
+          holdsStill ? null : styles.scroll,
+          footer === undefined ? { paddingBottom: bottomInset } : null,
+        ]}
+        foot={
+          footer === undefined ? undefined : <View style={[styles.footer, band]}>{footer}</View>
+        }
+        footBandUnderKeyboard={bottomInset}
+        onFootHeight={onFooterHeight}
       >
-        {holdsStill ? (
-          <View style={styles.fill}>{columnView}</View>
-        ) : (
-          <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-            {columnView}
-          </ScrollView>
-        )}
-        {footer === undefined ? null : (
-          <View
-            style={styles.footer}
-            onLayout={(event) => onFooterHeight?.(event.nativeEvent.layout.height)}
-          >
-            {footer}
-          </View>
-        )}
-      </KeyboardAvoidingView>
+        {columnView}
+      </KeyboardFrame>
     </View>
   );
 }

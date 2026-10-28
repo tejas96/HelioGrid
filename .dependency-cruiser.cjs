@@ -579,7 +579,7 @@ module.exports = {
     exclude: {
       // The regression suite's generated output — the component build, the report, the traces — is
       // git-ignored bundled code, never source.
-      path: '(^|/)(\\.next|\\.turbo)/|^apps/mobile/(ios|android|vendor)/|^tests/e2e/(playwright/\\.cache|playwright-report|test-results)/',
+      path: '(^|/)(\\.next|\\.turbo)/|^apps/mobile/(ios|android|vendor)/|^tests/e2e/(playwright/\\.cache|playwright-report(-ct)?|test-results(-ct)?)/',
     },
     tsPreCompilationDeps: true,
     tsConfig: { fileName: 'tsconfig.base.json' },

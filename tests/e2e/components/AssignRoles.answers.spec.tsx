@@ -9,7 +9,7 @@ import {
 import { assignRolesRefusalWords, assignRolesWords, createTranslator } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Page } from '@playwright/test';
-import { expectNoSidewaysScroll, expectNothingClipped } from '../support/layout';
+import { expectNoSidewaysScroll, expectNothingClipped, settledBox } from '../support/layout';
 import { resolvedColour, resolvedLength } from '../support/token';
 import { AssignRolesAsHeld } from './AssignRoles.story';
 
@@ -70,8 +70,8 @@ for (const [width, height, form] of [
       await expect(bars.first().locator('.hg-loading-option-line:visible')).toHaveCount(
         form === 'panel' ? 1 : 2,
       );
-      const title = await bars.first().locator('.hg-loading-option-title > span').boundingBox();
-      const text = await bars.first().locator('.hg-loading-option-text').boundingBox();
+      const title = await settledBox(bars.first().locator('.hg-loading-option-title > span'));
+      const text = await settledBox(bars.first().locator('.hg-loading-option-text'));
       expect(Math.round(((title?.width ?? 0) / (text?.width ?? 1)) * 100)).toBe(
         form === 'panel' ? 35 : 45,
       );
@@ -104,8 +104,8 @@ for (const [width, height, form] of [
       const banner = page.locator('.hg-banner');
       await expect(banner.locator('.hg-banner-title')).toHaveText(words.title ?? '');
       await expect(banner.locator('.hg-banner-body')).toHaveText(words.body);
-      const bannerBox = await banner.boundingBox();
-      const cardBox = await page.getByRole('region', { name: en.gives }).boundingBox();
+      const bannerBox = await settledBox(banner);
+      const cardBox = await settledBox(page.getByRole('region', { name: en.gives }));
       expect((bannerBox?.y ?? 0) + (bannerBox?.height ?? 0)).toBeLessThanOrEqual(cardBox?.y ?? 0);
       await expect(rowOf(page, FINANCE)).toHaveAttribute('aria-checked', 'true');
       await page.getByRole('button', { name: en.save }).click();

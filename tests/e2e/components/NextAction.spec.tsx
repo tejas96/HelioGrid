@@ -2,6 +2,7 @@ import { createTranslator, presetName, SIGN_IN, TEAM, teamStatusWord } from '@he
 import { Avatar, Badge, Button, ProgressBar, RecordCard, TileAction } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator } from '@playwright/test';
+import { settledBox } from '../support/layout';
 import { resolvedColour, resolvedLength } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 
@@ -19,7 +20,7 @@ const ROLES = [
 ] as const;
 
 async function box(locator: Locator) {
-  const drawn = await locator.boundingBox();
+  const drawn = await settledBox(locator);
   if (drawn === null) throw new Error('the part is drawn');
   return drawn;
 }

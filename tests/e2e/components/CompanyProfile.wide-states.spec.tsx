@@ -1,6 +1,12 @@
 import { COMPANY_PROFILE, createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { bottomOf, expectNoSidewaysScroll, expectNothingClipped, rightOf } from '../support/layout';
+import {
+  bottomOf,
+  expectNoSidewaysScroll,
+  expectNothingClipped,
+  rightOf,
+  settledBox,
+} from '../support/layout';
 import { expectTouchFloor } from '../support/touch-target';
 import { CompanyProfileAsHeld } from './CompanyProfile.story';
 
@@ -28,7 +34,7 @@ test('while the record loads the list is five bars, every line of the letterhead
   const profile = await mount(<CompanyProfileAsHeld reader="en" status="loading" />);
   const region = page.getByRole('status', { name: en.t(COMPANY_PROFILE.loading) });
   await expect(region.locator('.hg-loading-bar')).toHaveCount(5);
-  expect((await region.boundingBox())?.x).toBe(EDITOR_LEFT);
+  expect((await settledBox(region))?.x).toBe(EDITOR_LEFT);
 
   const sheet = profile.locator('.hg-company-profile-sheet');
   await expect(sheet).toHaveAttribute('data-loading', 'true');
@@ -37,7 +43,7 @@ test('while the record loads the list is five bars, every line of the letterhead
 
   const act = profile.getByRole('button', { name: en.t(COMPANY_PROFILE.saveSpoken) });
   await expect(act).toHaveAttribute('aria-disabled', 'true');
-  expect((await act.boundingBox())?.width).toBeLessThan(ACT_WIDEST);
+  expect((await settledBox(act))?.width).toBeLessThan(ACT_WIDEST);
   await expect(profile.getByText(en.t(COMPANY_PROFILE.stillLoading))).toBeVisible();
 });
 
@@ -49,13 +55,13 @@ test('a profile that could not be read is one centred message with its retry and
   await expect(profile.locator('.hg-company-profile-preview')).toHaveCount(0);
   await expect(profile.getByRole('heading', { level: 1 })).toHaveCount(0);
   const title = profile.getByText(en.t(COMPANY_PROFILE.unreadTitle));
-  const box = await title.boundingBox();
+  const box = await settledBox(title);
   expect(Math.abs((box?.x ?? 0) + (box?.width ?? 0) / 2 - WIDTH / 2)).toBeLessThanOrEqual(1);
 
   const onward = profile.getByRole('button', { name: en.t(COMPANY_PROFILE.onwardUnreadSpoken) });
-  expect((await onward.boundingBox())?.y).toBeGreaterThanOrEqual(await bottomOf(title));
+  expect((await settledBox(onward))?.y).toBeGreaterThanOrEqual(await bottomOf(title));
   await expect(onward).toBeInViewport();
-  const onwardBox = await onward.boundingBox();
+  const onwardBox = await settledBox(onward);
   expect(
     Math.abs((onwardBox?.x ?? 0) + (onwardBox?.width ?? 0) / 2 - WIDTH / 2),
   ).toBeLessThanOrEqual(1);
@@ -86,7 +92,7 @@ test('a failed save says so once above the two acts, side by side at their own w
   await expect(retry).toHaveText(TRY_AGAIN);
   await expect(onward).toHaveText(ONWARD);
 
-  const [retryBox, onwardBox] = [await retry.boundingBox(), await onward.boundingBox()];
+  const [retryBox, onwardBox] = [await settledBox(retry), await settledBox(onward)];
   expect(retryBox?.x).toBe(EDITOR_LEFT);
   expect(retryBox?.y).toBeGreaterThanOrEqual(await bottomOf(alert));
   expect(onwardBox?.y).toBe(retryBox?.y);
@@ -109,7 +115,7 @@ test('the one line at the act stands beside it', async ({ mount }) => {
   const profile = await mount(<CompanyProfileAsHeld reader="en" open="declarations" />);
   const act = profile.getByRole('button', { name: en.t(COMPANY_PROFILE.saveSpoken) });
   const line = profile.getByText(en.t(COMPANY_PROFILE.reseedScope));
-  const [actBox, lineBox] = [await act.boundingBox(), await line.boundingBox()];
+  const [actBox, lineBox] = [await settledBox(act), await settledBox(line)];
   expect(lineBox?.x).toBeGreaterThanOrEqual(await rightOf(act));
   expect(lineBox?.y).toBeGreaterThanOrEqual(actBox?.y ?? Infinity);
   expect(await bottomOf(line)).toBeLessThanOrEqual(await bottomOf(act));

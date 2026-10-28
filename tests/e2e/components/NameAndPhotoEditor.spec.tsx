@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import type { FirstRunProfileEvent } from '@heliogrid/domain';
 import { createTranslator, FIRST_RUN_PROFILE, NAME_AND_PHOTO_EDITOR, SHELL } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { expectNoSidewaysScroll, expectNothingClipped } from '../support/layout';
+import { expectNoSidewaysScroll, expectNothingClipped, settledBox } from '../support/layout';
 import { animationsSettled } from '../support/motion';
 import { pngOf } from '../support/png';
 import { resolvedLength } from '../support/token';
@@ -55,8 +55,8 @@ test.describe('at 375', () => {
     const add = sheet.getByRole('button', { name: F('photoAdd') });
     const save = sheet.getByRole('button', { name: E('save') });
     await expectTouchFloor([add, save]);
-    const body = await sheet.locator('.hg-name-photo-editor').boundingBox();
-    const saveBox = await save.boundingBox();
+    const body = await settledBox(sheet.locator('.hg-name-photo-editor'));
+    const saveBox = await settledBox(save);
     expect(saveBox?.width ?? 0).toBeGreaterThanOrEqual((body?.width ?? 0) - 1);
     await expect(sheet.locator('.hg-name-photo-editor')).toHaveCSS(
       'row-gap',
@@ -213,7 +213,7 @@ test.describe('at 1536', () => {
     const card = await mount(<NameAndPhotoEditorAsHeld reader="en" />);
     const panel = page.getByRole('dialog', { name: F('aboutTitle') });
     await animationsSettled(page);
-    const box = await panel.boundingBox();
+    const box = await settledBox(panel);
     expect(box?.width).toBe(480);
     expect((box?.x ?? 0) + (box?.width ?? 0)).toBe(1536);
     await expect(panel.locator('.hg-photo-field')).toHaveAttribute('data-size', '120');
@@ -248,7 +248,7 @@ test.describe('at 1536', () => {
     );
     expect(longest).toBeLessThanOrEqual(1);
     await animationsSettled(page);
-    const box = await panel.boundingBox();
+    const box = await settledBox(panel);
     expect((box?.x ?? 0) + (box?.width ?? 0)).toBe(1536);
   });
 

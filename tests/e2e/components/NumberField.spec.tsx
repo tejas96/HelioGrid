@@ -1,5 +1,6 @@
 import { createTranslator, SETUP_LANGUAGE } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { resolvedColour, resolvedFont } from '../support/token';
 import { HeldNumberField, NamedNumberField } from './NumberField.story';
 
@@ -164,9 +165,9 @@ test('the value starts at the left in the sans face', async ({ mount, page }) =>
   await expect(input).toHaveCSS('text-align', 'start');
   const unit = field.getByText(UNIT, { exact: true });
   await expect(unit).toHaveCSS('color', await resolvedColour(page, '--text-secondary'));
-  const inputBox = await input.boundingBox();
-  const unitBox = await unit.boundingBox();
-  expect(unitBox?.x).toBeGreaterThanOrEqual((inputBox?.x ?? 0) + (inputBox?.width ?? 0));
+  const inputBox = await settledBox(input);
+  const unitBox = await settledBox(unit);
+  expect(unitBox?.x).toBeGreaterThanOrEqual(inputBox.x + inputBox.width);
   await field.unmount();
 
   const stepped = await mount(<HeldNumberField label={LABEL} unit={UNIT} initial={5} steppers />);

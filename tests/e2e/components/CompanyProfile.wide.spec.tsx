@@ -7,7 +7,13 @@ import {
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator } from '@playwright/test';
-import { bottomOf, expectNoSidewaysScroll, expectSharedEdge, rightOf } from '../support/layout';
+import {
+  bottomOf,
+  expectNoSidewaysScroll,
+  expectSharedEdge,
+  rightOf,
+  settledBox,
+} from '../support/layout';
 import { resolvedColour, resolvedLength } from '../support/token';
 import { CompanyProfileAsHeld } from './CompanyProfile.story';
 
@@ -68,28 +74,28 @@ test.describe('at 1536', () => {
       [profile.locator('.hg-door-wordmark-desktop'), title, lede, headers.first(), field, act],
       'left',
     );
-    expect((await title.boundingBox())?.x).toBe(EDITOR_LEFT);
+    expect((await settledBox(title))?.x).toBe(EDITOR_LEFT);
     for (const header of await headers.all()) {
-      expect(await header.boundingBox()).toMatchObject({ x: EDITOR_LEFT, width: MEASURE });
+      expect(await settledBox(header)).toMatchObject({ x: EDITOR_LEFT, width: MEASURE });
     }
-    expect(await field.boundingBox()).toMatchObject({ x: EDITOR_LEFT, width: MEASURE });
+    expect(await settledBox(field)).toMatchObject({ x: EDITOR_LEFT, width: MEASURE });
 
-    const actBox = await act.boundingBox();
+    const actBox = await settledBox(act);
     expect(actBox?.height).toBe(ACT);
     expect(actBox?.width).toBeLessThan(ACT_WIDEST);
 
     await expect(title).toHaveCSS('font-size', `${await resolvedLength(page, '--fs-h1')}px`);
-    expect((await lede.boundingBox())?.y).toBe(
+    expect((await settledBox(lede))?.y).toBe(
       (await bottomOf(title)) + (await resolvedLength(page, '--sp-3')),
     );
-    expect((await headers.first().boundingBox())?.y).toBe(
+    expect((await settledBox(headers.first()))?.y).toBe(
       (await bottomOf(lede)) + (await resolvedLength(page, '--sp-8')),
     );
 
-    const previewBox = await preview(profile).boundingBox();
+    const previewBox = await settledBox(preview(profile));
     expect(previewBox?.x).toBe(PREVIEW.left);
     expect(await rightOf(preview(profile))).toBe(PREVIEW.right);
-    expect(await sheet(profile).boundingBox()).toMatchObject({ x: SHEET.left, width: SHEET.width });
+    expect(await settledBox(sheet(profile))).toMatchObject({ x: SHEET.left, width: SHEET.width });
     await expectNoSidewaysScroll(page);
   });
 
@@ -157,7 +163,7 @@ test.describe('at 1536', () => {
       .filter({ hasText: en.t(COMPANY_PROFILE_PART_TITLE.tax) });
     await expect(header).toHaveAttribute('aria-expanded', 'true');
     await expect(header).toHaveAttribute('aria-invalid', 'true');
-    expect(await profile.locator('.hg-input-shell').boundingBox()).toMatchObject({
+    expect(await settledBox(profile.locator('.hg-input-shell'))).toMatchObject({
       x: EDITOR_LEFT,
       width: MEASURE,
     });
@@ -169,7 +175,7 @@ test.describe('at 1536', () => {
 
     const act = profile.getByRole('button', { name: SAVE });
     await expect(act).toBeEnabled();
-    expect((await act.boundingBox())?.x).toBe(EDITOR_LEFT);
+    expect((await settledBox(act))?.x).toBe(EDITOR_LEFT);
     await act.click();
     await expect(profile.getByTestId('pressed')).toHaveText('save');
   });
@@ -184,11 +190,9 @@ test.describe('at the door’s breakpoint', () => {
   }) => {
     const profile = await mount(<CompanyProfileAsHeld reader="en" />);
     const header = profile.locator('.hg-accordion-toggle').first();
-    expect((await header.boundingBox())?.width).toBeGreaterThanOrEqual(PHONE_COLUMN);
-    expect(await rightOf(header)).toBeLessThanOrEqual(
-      (await preview(profile).boundingBox())?.x ?? 0,
-    );
-    expect((await sheet(profile).boundingBox())?.width).toBe(SHEET.width);
+    expect((await settledBox(header))?.width).toBeGreaterThanOrEqual(PHONE_COLUMN);
+    expect(await rightOf(header)).toBeLessThanOrEqual((await settledBox(preview(profile)))?.x ?? 0);
+    expect((await settledBox(sheet(profile)))?.width).toBe(SHEET.width);
     expect(await rightOf(sheet(profile))).toBeLessThanOrEqual(await rightOf(preview(profile)));
     await expectNoSidewaysScroll(page);
   });
@@ -205,7 +209,7 @@ test.describe('one pixel under the breakpoint', () => {
     await expect(preview(profile)).toBeHidden();
     const header = profile.locator('.hg-accordion-toggle').first();
     const act = profile.getByRole('button', { name: SAVE });
-    expect((await act.boundingBox())?.width).toBe((await header.boundingBox())?.width);
+    expect((await settledBox(act))?.width).toBe((await settledBox(header))?.width);
     await expect(
       profile.getByRole('textbox', { name: en.t(COMPANY_SIGNUP.companyName) }),
     ).toBeVisible();

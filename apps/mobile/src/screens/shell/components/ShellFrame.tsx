@@ -1,10 +1,8 @@
-import { BottomNav, type BottomNavItem } from '@heliogrid/ui';
-import { type ReactNode, useRef } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { BottomNav, type BottomNavItem, KeyboardFrame, useKeyboardUp } from '@heliogrid/ui';
+import type { ReactNode } from 'react';
+import { View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles, underPill } from '../styles';
-import { useFocusedFieldInView } from '../use-focused-field-in-view';
-import { useKeyboardUp } from '../use-keyboard-up';
 
 export interface ShellFrameProps {
   topBar: ReactNode;
@@ -54,52 +52,39 @@ export function ShellFrame({
   const insets = useSafeAreaInsets();
   const pill = items.length > 0 && foot === undefined;
   const keyboardUp = useKeyboardUp();
-  const scroll = useRef<ScrollView>(null);
-  const fieldInView = useFocusedFieldInView(scroll);
   return (
     <SafeAreaView style={styles.page} edges={['top']}>
       {topBar}
-      {/* A page with fields (the company profile in settings) keeps the field typed in above the
-          keyboard, and a tap on a control while it is up is not swallowed. */}
-      <KeyboardAvoidingView
+      {/* A page with fields keeps the field typed in, its line and the act bar above the keyboard,
+          and a tap on a control while it is up is not swallowed. */}
+      <KeyboardFrame
         style={styles.page}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        foot={foot}
+        footBandUnderKeyboard={insets.bottom}
+        /* The held head is the first child, or the second under a lead that scrolls away. */
+        heldChild={stickyHead === undefined ? undefined : lead === undefined ? 0 : 1}
+        onScrollOffset={(offset) => onScrolledChange?.(offset > 0)}
+        contentContainerStyle={[
+          styles.scroll,
+          // With no pill the page is Frame 8, centred in the whole region: the home's top gap
+          // would push it 16 below the middle (`D77`).
+          footPadding(pill, foot !== undefined, insets.bottom),
+          stickyHead === undefined && lead === undefined ? null : styles.listRhythm,
+          pad === 'functional' ? styles.functionalPad : null,
+        ]}
       >
-        <ScrollView
-          ref={scroll}
-          keyboardShouldPersistTaps="handled"
-          scrollEventThrottle={16}
-          onLayout={fieldInView.onLayout}
-          /* The held head is the first child, or the second under a lead that scrolls away. */
-          stickyHeaderIndices={stickyHead === undefined ? undefined : [lead === undefined ? 0 : 1]}
-          onScroll={(event) => {
-            const offset = event.nativeEvent.contentOffset.y;
-            fieldInView.onScroll(offset);
-            onScrolledChange?.(offset > 0);
-          }}
-          contentContainerStyle={[
-            styles.scroll,
-            // With no pill the page is Frame 8, centred in the whole region: the home's top gap
-            // would push it 16 below the middle (`D77`).
-            footPadding(pill, foot !== undefined, insets.bottom),
-            stickyHead === undefined && lead === undefined ? null : styles.listRhythm,
-            pad === 'functional' ? styles.functionalPad : null,
-          ]}
-        >
-          {lead === undefined ? null : (
-            <View style={[styles.lead, stickyHead === undefined ? null : styles.leadOverHead]}>
-              {lead}
-            </View>
-          )}
-          {stickyHead === undefined ? null : (
-            <View style={styles.stickyHead}>
-              <View style={styles.stickyHeadParts}>{stickyHead}</View>
-            </View>
-          )}
-          {children}
-        </ScrollView>
-        {foot}
-      </KeyboardAvoidingView>
+        {lead === undefined ? null : (
+          <View style={[styles.lead, stickyHead === undefined ? null : styles.leadOverHead]}>
+            {lead}
+          </View>
+        )}
+        {stickyHead === undefined ? null : (
+          <View style={styles.stickyHead}>
+            <View style={styles.stickyHeadParts}>{stickyHead}</View>
+          </View>
+        )}
+        {children}
+      </KeyboardFrame>
       {pill && !keyboardUp ? (
         <View pointerEvents="box-none" style={[styles.pillFrame, { bottom: insets.bottom }]}>
           <BottomNav items={items} value={inView} />

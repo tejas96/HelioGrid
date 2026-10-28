@@ -1,6 +1,6 @@
 import { createTranslator, LANGUAGE_META, SETUP_LANGUAGE, SIGN_IN } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { expectNoSidewaysScroll, expectSharedEdge } from '../support/layout';
+import { expectNoSidewaysScroll, expectSharedEdge, settledBox } from '../support/layout';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 import { LanguageStepAsHeld } from './SetupLanguage.story';
 
@@ -31,14 +31,14 @@ test.describe('at 375', () => {
     const step = await mount(<LanguageStepAsHeld reader="en" device="en" failed={false} />);
     const cards = step.getByRole('radio');
     await expect(cards).toHaveCount(3);
-    const boxes = await Promise.all([0, 1, 2].map((index) => cards.nth(index).boundingBox()));
+    const boxes = await Promise.all([0, 1, 2].map((index) => settledBox(cards.nth(index))));
 
     await expectSharedEdge([cards.nth(0), cards.nth(1), cards.nth(2)], 'left');
     await expectSharedEdge([cards.nth(0), cards.nth(1), cards.nth(2)], 'right');
     expect(boxes[1]?.y).toBeGreaterThan((boxes[0]?.y ?? 0) + (boxes[0]?.height ?? 0));
     expect(boxes[2]?.y).toBeGreaterThan((boxes[1]?.y ?? 0) + (boxes[1]?.height ?? 0));
 
-    const way = await step.getByRole('button', { name: CONTINUE }).boundingBox();
+    const way = await settledBox(step.getByRole('button', { name: CONTINUE }));
     expect((way?.y ?? Infinity) + (way?.height ?? 0)).toBeLessThanOrEqual(HEIGHT);
     expect(way?.width).toBe(boxes[0]?.width);
     await expectNoSidewaysScroll(page);
@@ -55,7 +55,7 @@ test.describe('at 375', () => {
       step.getByRole('button', { name: CONTINUE_ANYWAY }),
     ];
     for (const control of controls) {
-      const box = await control.boundingBox();
+      const box = await settledBox(control);
       expect(box?.width).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
       expect(box?.height).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
     }
@@ -83,8 +83,8 @@ test.describe('at 375', () => {
     const alert = step.getByRole('alert');
     await expect(alert).toContainText(en.t(SETUP_LANGUAGE.notSavedTitle));
     await expect(alert).toContainText(en.t(SETUP_LANGUAGE.notSavedBody));
-    const alertBox = await alert.boundingBox();
-    const first = await step.getByRole('radio').nth(0).boundingBox();
+    const alertBox = await settledBox(alert);
+    const first = await settledBox(step.getByRole('radio').nth(0));
     expect((alertBox?.y ?? 0) + (alertBox?.height ?? 0)).toBeLessThan(first?.y ?? 0);
 
     const again = step.getByRole('button', { name: TRY_AGAIN });
@@ -92,8 +92,8 @@ test.describe('at 375', () => {
     await expect(step.getByRole('button', { name: CONTINUE, exact: true })).toHaveCount(0);
     await expectSharedEdge([again, anyway], 'left');
     await expectSharedEdge([again, anyway], 'right');
-    const againBox = await again.boundingBox();
-    const anywayBox = await anyway.boundingBox();
+    const againBox = await settledBox(again);
+    const anywayBox = await settledBox(anyway);
     expect(anywayBox?.y).toBeGreaterThan((againBox?.y ?? 0) + (againBox?.height ?? 0));
 
     await again.click();
@@ -124,13 +124,11 @@ test.describe('at 375', () => {
       const words = await createTranslator(reader);
       const step = await mount(<LanguageStepAsHeld reader={reader} device={reader} failed />);
       await expect(step.getByRole('alert')).toContainText(words.t(SETUP_LANGUAGE.notSavedBody));
-      const anyway = await step
-        .getByRole('button', { name: words.t(SETUP_LANGUAGE.continueAnyway) })
-        .boundingBox();
-      const lastCard = await step.getByRole('radio').nth(2).boundingBox();
-      const again = await step
-        .getByRole('button', { name: words.t(SIGN_IN.tryAgain) })
-        .boundingBox();
+      const anyway = await settledBox(
+        step.getByRole('button', { name: words.t(SETUP_LANGUAGE.continueAnyway) }),
+      );
+      const lastCard = await settledBox(step.getByRole('radio').nth(2));
+      const again = await settledBox(step.getByRole('button', { name: words.t(SIGN_IN.tryAgain) }));
       expect((anyway?.y ?? Infinity) + (anyway?.height ?? 0)).toBeLessThanOrEqual(HEIGHT);
       expect((lastCard?.y ?? Infinity) + (lastCard?.height ?? 0)).toBeLessThanOrEqual(
         again?.y ?? 0,
@@ -171,8 +169,8 @@ test.describe('at 968, where the task column is at its narrowest', () => {
     const step = await mount(<LanguageStepAsHeld reader="en" device="en" failed={false} />);
     const cards = step.getByRole('radio');
     await expectSharedEdge([cards.nth(0), cards.nth(1), cards.nth(2)], 'left');
-    const card = await cards.nth(0).boundingBox();
-    const pill = await cards.nth(0).getByText(DEVICE_PILL).boundingBox();
+    const card = await settledBox(cards.nth(0));
+    const pill = await settledBox(cards.nth(0).getByText(DEVICE_PILL));
     expect((pill?.x ?? Infinity) + (pill?.width ?? 0)).toBeLessThanOrEqual(
       (card?.x ?? 0) + (card?.width ?? 0),
     );
@@ -191,18 +189,18 @@ test.describe('at 1536', () => {
     const cards = step.getByRole('radio');
     await expectSharedEdge([cards.nth(0), cards.nth(1), cards.nth(2)], 'top');
     await expectSharedEdge([cards.nth(0), cards.nth(1), cards.nth(2)], 'bottom');
-    const boxes = await Promise.all([0, 1, 2].map((index) => cards.nth(index).boundingBox()));
+    const boxes = await Promise.all([0, 1, 2].map((index) => settledBox(cards.nth(index))));
     expect(boxes[1]?.width).toBe(boxes[0]?.width);
     expect(boxes[2]?.width).toBe(boxes[0]?.width);
     expect(boxes[1]?.x).toBeGreaterThan((boxes[0]?.x ?? 0) + (boxes[0]?.width ?? 0));
-    const pill = await cards.nth(0).getByText(DEVICE_PILL).boundingBox();
+    const pill = await settledBox(cards.nth(0).getByText(DEVICE_PILL));
     expect((pill?.x ?? Infinity) + (pill?.width ?? 0)).toBeLessThanOrEqual(
       (boxes[0]?.x ?? 0) + (boxes[0]?.width ?? 0),
     );
 
-    const heading = await step
-      .getByRole('heading', { name: en.t(SETUP_LANGUAGE.title) })
-      .boundingBox();
+    const heading = await settledBox(
+      step.getByRole('heading', { name: en.t(SETUP_LANGUAGE.title) }),
+    );
     expect((heading?.x ?? Infinity) + (heading?.width ?? 0)).toBeLessThan(boxes[0]?.x ?? 0);
     await expectNoSidewaysScroll(page);
   });
@@ -214,9 +212,9 @@ test.describe('at 1536', () => {
     const again = step.getByRole('button', { name: TRY_AGAIN });
     const anyway = step.getByRole('button', { name: CONTINUE_ANYWAY });
     await expectSharedEdge([again, anyway], 'top');
-    const againBox = await again.boundingBox();
-    const anywayBox = await anyway.boundingBox();
-    const card = await step.getByRole('radio').nth(0).boundingBox();
+    const againBox = await settledBox(again);
+    const anywayBox = await settledBox(anyway);
+    const card = await settledBox(step.getByRole('radio').nth(0));
     expect(anywayBox?.x).toBeGreaterThan((againBox?.x ?? 0) + (againBox?.width ?? 0));
     expect(againBox?.x).toBe(card?.x);
     expect(againBox?.y).toBeGreaterThan((card?.y ?? 0) + (card?.height ?? 0));
@@ -227,9 +225,9 @@ test.describe('at 1536', () => {
     mount,
   }) => {
     const step = await mount(<LanguageStepAsHeld reader="en" device={null} failed />);
-    const card = await step.getByRole('radio').nth(0).boundingBox();
+    const card = await settledBox(step.getByRole('radio').nth(0));
     for (const finding of [step.getByRole('alert'), step.getByRole('status')]) {
-      const box = await finding.boundingBox();
+      const box = await settledBox(finding);
       expect((box?.x ?? Infinity) + (box?.width ?? 0)).toBeLessThan(card?.x ?? 0);
     }
   });

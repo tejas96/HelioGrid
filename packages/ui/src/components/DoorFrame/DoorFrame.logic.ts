@@ -9,6 +9,13 @@ import { createContext } from 'react';
 export const DoorTopInset = createContext(0);
 
 /**
+ * The height of the phone's home-indicator band under the door, in points. The frame keeps it in
+ * its own last part — the footer's padding, or the column's when there is no footer — so the part
+ * that rides on the keyboard knows how much of itself the keyboard covers (`KeyboardFrame`).
+ */
+export const DoorBottomInset = createContext(0);
+
+/**
  * The shortest screen a `bounded` frame holds still, in points (CSS px on the web). Under it the
  * heading, the card's head and the act leave the rows no room, so the column scrolls whole as an
  * unbounded door's does, and nothing is cut off. `DoorPanes.css` writes the same value in its
