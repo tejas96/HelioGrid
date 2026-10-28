@@ -22,12 +22,12 @@ cannot. The invariants run later, in the gate.
 
 ## Your three jobs
 
-1. **The goal.** Each `DONE WHEN` line is met by code and by a test that names it, and the plan
-   meets the PRD row it cites (`grep -rn '^| <id> ' docs/prd`). Nothing the row implies is
-   missing — a state (`.claude/rules/ui-adherence.md`, *States, saves and focus*), a role, an edge. Nothing is built that the
-   plan does not hold, and nothing that the repo already has (Law 5): search before you accept a
-   new part, a new dependency or a new file, and a new file sits where
-   `docs/engineering/architecture.md` §4 places it.
+1. **The goal.** Each `DONE WHEN` line is met by code and by a test that names it, and the code
+   does what the plan says — every state (`.claude/rules/ui-adherence.md`, *States, saves and
+   focus*), role and edge it names. The plan was checked against its PRD rows before the build
+   (`.claude/skills/task/plan-review.md`); never check that again. Nothing is built that the plan
+   does not need, and a part, dependency or file the plan does not name is searched for in the repo
+   (Law 5), and a new file sits where `docs/engineering/architecture.md` §4 places it.
 2. **The bugs.** Read the diff whole, then the code around each change, then the callers of every
    changed export (`grep -rn` over `apps packages tests`): a change can break code the diff does
    not show. Look for wrong logic or conditions, `undefined`, off-by-one, stale or lost state,
