@@ -17,7 +17,7 @@ declarations. A check you add or change is trusted only after it fires on a plan
 **Every mistake leaves a record.** A mistake found in the work — yours, a reviewer's, a check's or
 the owner's — is fixed at once and listed in the PR body by its kind. One a machine could have
 caught gets that check: a type, a lint rule or a test. One no machine can decide gets one line in
-`.claude/skills/task/SKILL.md`, `.claude/agents/code-reviewer.md` or `qa-live.md`, `board-check.md`,
+`.claude/skills/task/SKILL.md`, `.claude/agents/code-reviewer.md` or `qa-live.md`, `board-check.md`, `plan-review.md`,
 `docs/start-here.md` *The checklist* or its package's `CLAUDE.md` Traps — never a new rule file or
 a new step.
 

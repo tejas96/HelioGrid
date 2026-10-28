@@ -69,7 +69,8 @@ before either screen; the build order; the proof, one table row per `DONE WHEN` 
 (`D1`, else `AC-n`) — `| D1 | main-dev | `<file>` › *<title>* |` for a test, its title as the test
 file writes it, or `| D1 | qa-live | <what is checked live> |` (invariant `rfc-proofs-hold` reads the `main-dev`
 rows); `**Deleted:** D…, D…` — the deferred rows this task closes — or `**Deleted:** none`. It is
-the plan, never the research, and never copied from an earlier RFC or PR.
+the plan, never the research, and never copied from an earlier RFC or PR. Then review it once, as
+`plan-review.md` says.
 
 ## Build
 
