@@ -1,11 +1,7 @@
 # @heliogrid/worker — NestJS standalone: durable orchestration and heavy compute
 
 Deps: `architecture.md` §2 apps/worker. Orchestration is Temporal (ADR-0025); the local stack, its
-runbooks and traps are in `infra/temporal/README.md`.
-
-## What lives here / what must never live here
-
-- NEVER: an HTTP surface, or a reach into another module except through its `<area>.public.ts`.
+runbooks and traps are in `infra/temporal/README.md`. No HTTP surface.
 
 ## Folder shape
 
@@ -13,9 +9,9 @@ runbooks and traps are in `infra/temporal/README.md`.
 src/{config,common,modules}
 src/worker.workflows.ts                        the bundle's ONE entry: re-exports every area's workflows
 src/modules/<area>/<area>.workflows.ts         DETERMINISTIC. The sequence.
-                   <area>.activities.types.ts  the activity signatures, and nothing else
-                   <area>.activities.ts        the side effects. Idempotent, always.
                    <area>.public.ts            what the root composes; asserts the name match
+                   <area>.activities.types.ts  only where the steps run here: their signatures
+                   <area>.activities.ts        only where the steps run here: the side effects
 ```
 
 Copy `modules/platform/` for a new area whose steps run here, `modules/outbox/` for one whose
@@ -31,18 +27,14 @@ pnpm --filter @heliogrid/worker dev | build | typecheck    # build also emits th
 
 ## Local conventions
 
-- **A workflow is replayed from history:** no `Date.now()`, `Math.random()`, `fetch` or database
-  in `*.workflows.ts` — time comes from the workflow clock and every side effect from an activity.
-- A workflow imports activity signatures type-only from `*.activities.types.ts`, never
-  `*.activities.ts` — that drags the database driver into the workflow sandbox.
+- **A workflow is replayed from its history,** so its sequence of steps is fixed for every run in
+  flight: changing what a deployed workflow does — a step added, removed or reordered — goes behind
+  `patched()` from `@temporalio/workflow`, or a running workflow fails on replay. Every side effect
+  is an activity.
 - **An activity is retried, so it is idempotent:** key the effect and use
   `INSERT … ON CONFLICT DO NOTHING`.
-- Workflow names and payloads live in `@heliogrid/contracts/workflows` — a contract between api
-  and worker, like an HTTP route.
 - The workflow type name must equal its exported function name — a mismatch starts, then fails
-  every task, with no type error. Each `<area>.public.ts` asserts it with `satisfies`.
-- A module hands the host a `TemporalWorkerRegistration`; only `common/temporal` opens the
-  Temporal connection.
+  every task. Copying `modules/platform/` carries the `satisfies` that asserts it.
 
 ## Done means
 

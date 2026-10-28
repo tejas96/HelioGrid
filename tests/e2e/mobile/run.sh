@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # The phone suite on ONE device: every flow in this folder, in the order a new person meets the
-# screens — `bash mobile/run.sh <device id>`, a simulator UDID or an emulator serial. Devices run one
-# after the other, never together: under two phones' load a field loses the first keys typed into it.
+# screens — `bash mobile/run.sh <device id>`, a simulator UDID or an emulator serial. Each phone takes
+# its own call, and two calls may run at the same time.
 # Metro, the api and the device are already up, and the app is installed. Maestro reads no file
 # mid-flow, so between the number and the code this script reads the code the api sent
 # (support/mobile-cli.ts) and hands it to the next flow.

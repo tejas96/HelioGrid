@@ -6,13 +6,8 @@ Studio is the flagship. Light-only v1 · EN/HI/MR · tenant-currency money (INR 
 
 ## 1. Core principles
 
-**Think before coding.** State assumptions. Two readings the PRD supports → take the simplest, write
-it into the task with one reason, and say it out loud.
-
-**Propose a better approach when you see one** — with an example in *this* codebase and the cost to
-switch. Never switch silently.
-
-**Keep changes minimal.** Solve the requested problem only. Remove what your change orphaned.
+**A better approach than the task's** — one that meets the same PRD row more simply — is taken and
+written into the plan with one reason. Never switch silently.
 
 **Verify reality.** A claim about this repo names the file and line that proves it. A bug is
 reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and call sites, not
@@ -22,11 +17,12 @@ declarations. A check you add or change is trusted only after it fires on a plan
 **Every mistake leaves a record.** A mistake found in the work — yours, a reviewer's, a check's or
 the owner's — is fixed at once and listed in the PR body by its kind. One a machine could have
 caught gets that check: a type, a lint rule or a test. One no machine can decide gets one line in
-`.claude/agents/code-reviewer.md`, `rfc-template.md`, `board-check.md`, `docs/start-here.md` *The
-checklist* or its package's `CLAUDE.md` Traps — never a new rule file or a new step.
+`.claude/skills/task/SKILL.md`, `.claude/agents/code-reviewer.md` or `qa-live.md`, `board-check.md`,
+`docs/start-here.md` *The checklist* or its package's `CLAUDE.md` Traps — never a new rule file or
+a new step.
 
-**No new script.** A code fact goes into a type, Biome, dependency-cruiser or a test. Ask the owner
-before adding a script or a command.
+**No new script.** A code fact goes into a type, Biome, dependency-cruiser or a test. A script or
+a `package.json` command is added only when none of those can hold the fact, and the PR says why.
 
 **A rule is written once, plainly, with no date** — cite it elsewhere, never restate it; when and
 why it changed is the commit's job.
@@ -56,80 +52,81 @@ Law ids are stable — never reuse or renumber one.
 ## 3. Workflow
 
 The work follows ONE order, `docs/build-order.md`, and `/task` (`.claude/skills/task/SKILL.md`)
-runs it: one task, three sessions — RFC, build, verify and ship — and one PR per task. Design is
-checked and locked a module ahead of the build (`.claude/skills/task/design-track.md`), so the
-build waits only when that track falls behind. The owner stops the work twice: the yes to the RFC
-(once; a part inside the approved task RFC with no open decision needs none) and the yes to every
-commit; then the owner merges the PR.
-
-**One turn, many calls.** Batch every read, search and check that does not wait on another's result
-into one turn. Long output goes to `.qa/<name>.log` and the chat reads its failures
-(`.claude/skills/task/SKILL.md`, *What keeps a session small*).
+runs it: one task, one session, one PR. The session decides, builds and proves; the owner keeps
+what §4 lists. Design is checked and locked a module ahead of the build
+(`.claude/skills/task/design-track.md`), so the build waits only when that track falls behind.
 
 **A PR is one complete task:** every acceptance line is met and proven before it opens, or by its
-CI lane. A task splits into parts only on the owner's word (`/task` step 3). The RFC's shape and
-its edge-case list are `.claude/skills/task/rfc-template.md`. After a source file is deleted or a
-branch switches, a stale `dist/` can keep a check red on code that is gone: `tsc -p` never removes
-old output, so delete the app's git-ignored `dist/` (`rm -r apps/api/dist`), then
-`pnpm turbo build --force`.
+CI lane. After a source file is deleted or a branch switches, stale build output keeps a check red on
+code that is gone — `tsc -p` never removes old output, and the web typecheck reads
+`apps/web/.next/types` — so delete the git-ignored `dist/` (`rm -r apps/api/dist`) or
+`apps/web/.next`, then `pnpm turbo build --force`.
 
-## 4. Stop and ask the owner before
+## 4. What the owner keeps
 
-- Anything billable or external-account-shaped (cloud, store accounts, paid APIs).
-- Schema or API work outside the current module (Law 9).
-- A layer conflict §7 **When rules conflict** does not resolve.
-- A feature or a number no PRD row implies. A decision that belongs to a LATER module is not an ask:
-  write it into that module's task in `docs/tasks/`, and carry on.
-- **Building before the RFC is approved.** Nothing is built before the owner's yes to the RFC.
-- **Committing.** Each commit waits for the owner's yes to the shown file list and message — a go,
-  a green check, an approved RFC, an earlier yes or the Claude app's Auto-fix never counts; one yes covers a change commit and
-  its clean merge of `origin/main` when they are shown together. Then push and open the PR (`/task`
-  step 9). The owner merges. Never `--no-verify`, never force-push, never push to `main`.
+- **Every commit** waits for the owner's yes to its file list and message; one yes is one commit
+  and its push.
+- **The merge.** Every PR is merged by the owner. Never `--no-verify`, never force-push, never
+  push to `main` (`.claude/settings.json` denies them).
+- **A split:** a task is split into parts only on the owner's word (`docs/tasks/README.md`).
+- **The look:** a board, or a change to the design system, is locked only by the owner's yes
+  (`.claude/skills/task/design-track.md`).
+- **Anything billable or external-account-shaped** (cloud, store accounts, paid APIs): stop and ask.
+- **Their data and machines:** never write the database directly (`/task` alone rebuilds the
+  disposable `heliogrid_test`), never touch a product volume, never stop what they left running
+  except as `/task` says.
+
+Everything else is decided in the session and written down with one reason: a reading of the PRD
+(the simplest that meets the row), a layer conflict (§7), a fix outside the task (a
+`docs/tasks/deferred.md` row). Nothing is built that no PRD row implies. Schema or API work a later
+module owns (Law 9) is written into that module's task in `docs/tasks/`, never built here.
 
 ## 5. Commands
 
-| | |
-|---|---|
-| `pnpm infra:up` · `pnpm infra:down` | Before infra-dependent work. The read-only build-order walk and RFC need no stack. |
-| `pnpm check` | **While building** (`/task` step 5). Biome on files that differ from `origin/main`, the workspace typecheck (cached), dependency-cruiser, sherif, turbo boundaries, duplication, `vitest related` on changed .ts files, the domain's 100% coverage bars when a barred domain source changed, catalog freshness when copy, ui or app files changed, and OpenAPI freshness and oasdiff when a contract or domain source changed. Fast; never the proof. |
-| `pnpm check:all` | **Normally once, after review and live QA.** Build, lint (Biome, dependency-cruiser, sherif, turbo boundaries), typecheck, duplication, OpenAPI freshness and the oasdiff breaking-change judge (the build CI pins) against the branch's base on `origin/main`, catalog freshness, unit tests, invariants. Run it on the test database; how often, and when a failure stops for the owner: `/task` step 8. |
-| `pnpm lint:fix` | Format and auto-fix. |
-| `pnpm test:watch` · `pnpm test:coverage` | Tests while writing · the edge cases you missed (read it, not the pass count). |
-| `pnpm db:migration:new` · `pnpm db:migrate` | Where a migration starts; never hand-author one. |
+- `pnpm infra:up` · `pnpm infra:down` — the local Docker stack.
+- `pnpm check` — the fast check on what differs from `origin/main`, while building; never the proof.
+- `pnpm check:all` — the full gate (`.claude/protections.md`, top), on the test database as `/task`
+  runs it.
+- `pnpm lint:fix` — format and auto-fix.
+- `pnpm db:migration:new` · `pnpm db:migrate` — every migration starts here; never hand-author one.
 
-The database invariants need the local Postgres; without it they SKIP loudly, and over an empty
-schema they report VACUOUS. Neither is a pass. Never weaken a check to make a change pass.
+Tests, invariants and QA run on `heliogrid_test`, never the owner's `heliogrid_dev`: put the
+test-database prefix (`.claude/skills/task/SKILL.md`, top) in front. The api tests, the web flows
+and the invariants refuse `heliogrid_dev`. An invariant that SKIPs (no database) or reports
+VACUOUS (empty schema) has not passed. Never weaken
+a check to make a change pass.
 
-**Ports are dedicated** — web `3002` · api `8084` · metro `8081` · postgres `5544` · object store
-`9000` · temporal `7233` · component tests `3100`. Reuse a healthy HelioGrid service; free a
-foreign listener only through `clean-dev-ports`, never by port or process name.
+**Ports are dedicated:** web 3002 · api 8084 · Metro 8081 · Postgres 5544 · object store 9000 ·
+Temporal 7233 · component tests 3100. Reuse a healthy HelioGrid service; free a foreign listener
+only through the `clean-dev-ports` launch configuration, never by port or process name.
 
 ## 6. Where everything lives
 
-**`docs/engineering/architecture.md` is the authority** — §2 owns package responsibilities and
-allowed imports; §4 decides where a new file goes. Run §4 before creating one.
+`docs/engineering/architecture.md` is the authority: §2 says what each package owns and may import,
+§4 where a new file goes — run §4 before creating one. Import a package only through its
+`package.json` `exports`. Never invent a folder; a new category is a plan-time decision.
+`docs/README.md` maps every document.
 
-| tree | what it is |
-|---|---|
-| `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` | the product spec · one brief per screen · engineering work. **Source of truth.** |
-| `docs/engineering/` | how this repo is built. |
-| `.claude/` | closed set: `rules/` (law spanning more than one package — a one-package rule goes in its `CLAUDE.md`), `protections.md`, `launch.json` (dev servers), `skills/task/` (the one step runner: its three phase files, the RFC template, the design track and the board check), `agents/` (its read-only helpers), `hooks/` (the two checks on tool calls: no screenshot, long output to a file), `settings.json` (hard-safety denies, the hooks, and the plugins switched off here because `skills/task/` is the one step runner). |
-| `.qa/` | git-ignored: `api.log`, `web.log`, `metro.log` — the development logs the launch configurations append to and the e2e suite reads — `components/<name>/`, the pictures a component spec saves, and the `<name>.log` files a task's checks write. A task deletes the trees and temporary files it made before its PR opens, and keeps the logs. |
-| `.design/` | committed, written only by the Design track's lock: `<module>/`, that module's locked boards and the support files they load — each one exactly as the Design track checked it, read from the module's canvas — and `design-system.version`, the canvas's design system version at the lock; a read-only copy. A screen is built only while its boards here equal a fresh read (`/task` step 1). |
-| `.ops/` | the owner's private infra record, git-ignored: every external account, project and client id, what is still owed, and each environment's values (`env/dev.env`, `env/prod.env`). A console change updates it in the same sitting. |
-| `infra/` | deployment and local-stack material that is NOT application code. |
-| the module canvases | NOT in the repo: one Design artifact in Claude per module (`docs/start-here.md`, *The canvases*), holding each screen's boards and a copy of the design system artifact — the source of truth for design. Claude Code draws and fixes the boards; the owner reviews them there, and the owner's yes locks them. A task's `DESIGN:` line links the canvas; the Design track (`.claude/skills/task/design-track.md`) locks a copy in `.design/`. A studio screen (`ported from the POC`) has none. |
-
-Import a package only through an entry its `package.json` `exports` declares. **Never invent a folder**: every tree is a closed set, and a new category is a
-plan-time decision. `docs/README.md` maps every document.
+- `docs/prd/` · `docs/ux/briefs/` · `docs/tasks/` — the product spec, one brief per screen, the
+  tasks: the source of truth.
+- `.claude/rules/` — a law that spans packages; a one-package rule goes in that package's
+  `CLAUDE.md`.
+- `.qa/` (git-ignored) — one task's `*.log` files (the dev servers' and each check's) and the api
+  check's `*.cookies`, deleted once its QA is done and again once its PR is ready; `pr-body.md`, the PR's draft; and
+  `env.local.dev`, the owner's `.env.local` while `/task` points it at the test database — never
+  deleted.
+- `.design/<module>/` — the locked boards, a read-only copy written only by `design-track.md`.
+- The module canvases — not in the repo; the design's source of truth, listed in
+  `docs/start-here.md`.
+- `.ops/` (git-ignored) — the owner's private record of external accounts and each environment's
+  values; a console change updates it the same day.
 
 ## 7. When rules conflict
 
 Higher wins: **the product spec (`docs/prd/`; a row carries its own ruling) →
 `docs/engineering/architecture.md` → contracts → design system → this file → package `CLAUDE.md`
 → implementation detail.** A package `CLAUDE.md` beats a cross-cutting rule, being closer to the
-code; between two records the later-dated one wins. If a doc and the code disagree, fix the doc or
-ask.
+code. If a doc and the code disagree, fix the one that is wrong in the same PR.
 
 ## 8. Coding standards
 
@@ -147,7 +144,7 @@ ask.
 - **Solve today's problem.** No speculative abstraction, no config for one caller, no indirection
   for a future that has not been specified — unless a PRD row asks for the extension point; then
   it is built, and an acceptance line proves it.
-- **Shape.** A file stays under 300 lines, split by responsibility and named for what it does —
+- **Shape.** A file is split by responsibility (Biome refuses one over 300 lines) and named for what it does —
   never `*2`/`*-extra`, never for a layer or a document id. A package builds and typechecks with
   `tsc -p`, never `tsc -b`.
 - **Queries are correct the first time.** Index-backed, no N+1, no `select *`, no unbounded scan,
@@ -162,8 +159,8 @@ ask.
 - **A bug you find is reported at once.** In scope: fix it now. Out of scope: one row in
   `docs/tasks/deferred.md` (issue, next step, `reopens when`), never in this diff.
 - **Dependencies change only through `pnpm add`/`pnpm remove`** — never a hand-edited dependency
-  block or lockfile. **Never write the database directly**: schema goes through a migration and
-  test or development data through the application.
+  block or lockfile. Schema goes through a migration, and test or development data through the
+  application (§4).
 
 ## 9. Product law
 

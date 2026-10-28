@@ -1,16 +1,13 @@
 # @heliogrid/mobile — bare React Native (iOS + Android), NO Expo anywhere
 
-Deps: `architecture.md` §2 apps/mobile · platform rules: §3.
-
-## What lives here / what must never live here
-
-- A module's screen lands in `src/screens/` and replaces its shell placeholder in
-  `src/navigation/routes/app.ts`.
-- NEVER: an expo package, EAS, AsyncStorage for tokens, `@heliogrid/db`, or a web-only dependency.
+Deps: `architecture.md` §2 apps/mobile · platform rules: §3. Never an expo package, EAS,
+AsyncStorage for tokens, or a web-only dependency.
 
 ## Where files go
 
 `src/` is `{auth, files, navigation, push, screens}` plus root `env.ts`, `i18n.ts` and `react-query-host.tsx`.
+A module's screen lands in `src/screens/` and replaces its shell placeholder in
+`src/navigation/routes/app.ts`.
 
 ```
 src/screens/<name>/       same shape as web's feature, in RN's location
@@ -25,7 +22,7 @@ src/screens/shared/       the door's inset wrapper two screens share, the hand-o
                           web also draws is `packages/ui`'s (`screen-parts.md`)
 src/navigation/           React Navigation static config
 src/auth/ · src/push/ · src/files/   native adapters, one per capability; push isolates
-                          Firebase/Notifee, files the system's photo picker
+                          Firebase/Notifee, files the system's photo and document pickers
 src/react-query-host.tsx  the ONE host-lifecycle adapter (AppState → focus, NetInfo → online)
 ```
 
@@ -44,27 +41,21 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 bundle exec pod install
 - **`src/i18n.ts` is the one importer of `@heliogrid/i18n/rn`** (it installs the Hermes Intl
   polyfills). `App.tsx` builds the runtime (one per mount: `packages/i18n/CLAUDE.md`). A screen
   takes language from `@heliogrid/i18n/react` and never calls `i18n.activate`.
-- **Native capability** — camera, storage, notifications, keychain — is isolated in its own module
-  under `src/`, never called inline from a screen. Auth tokens go through
-  `src/auth/keychain-storage.ts` and nowhere else.
+- Native capability lives in its own module under `src/`, never inline in a screen. Auth tokens go
+  through `src/auth/keychain-storage.ts` and nowhere else.
 - Focus and reconnect are wired once in `src/react-query-host.tsx`; there is no offline
   persistence and no mutation queue.
 - **Navigation is React Navigation 7 static config.** Add a screen with ONE entry in
   `src/navigation/routes/app.ts` (signed in), `auth.ts` (signed out) or `open.ts` (a link either
-  phase opens, past the boot); its param type (inferred),
-  deep link and gate follow. Screens get `route` only and navigate with `useNavigation()`.
-  Navigation chrome lives here, never in `@heliogrid/ui` — the shell takes items as props.
-- Protocol constants (`OTP_LENGTH`, `OTP_EXPIRY_SECONDS`) come from `@heliogrid/domain`; the dial
-  code and number length are market facts in the format pack's `phone`.
-- A screen's `useState` holds only a visual fact (an open sheet, a focused field); its flow is a
-  `@heliogrid/domain` reducer driven by a `@heliogrid/data` hook.
+  phase opens, past the boot); its param type (inferred), deep link and gate follow. Screens get
+  `route` only and navigate with `useNavigation()`. Navigation chrome lives here, never in
+  `@heliogrid/ui` — the shell takes items as props.
 - Paginated screens: `FlatList` + `usePaginatedList`, never inside a `ScrollView`.
-- An API failure's words come from `@heliogrid/i18n`.
 
 ## Done means
 
-Runs on the iOS simulator, and on Android through `qa-android` when `/task` step 7 calls it, else CI's `android` lane · the per-screen DoD in `docs/prd/foundations/F7-design-language.md`
-`F7-43`.
+Runs on the iOS simulator and on Android, by `qa-live` and CI's `android` lane · the per-screen DoD
+in `docs/prd/foundations/F7-design-language.md` `F7-43`.
 
 ## Traps
 
@@ -74,5 +65,3 @@ Runs on the iOS simulator, and on Android through `qa-android` when `/task` step
 - A navigation group keyed by ROLE declares a shared screen twice, because roles are stackable, and a duplicate route name throws → key groups by CAPABILITY.
 - react-native-firebase needs `use_modular_headers!` in the Podfile → keep it.
 - A library imported by BOTH this app and a workspace package loads twice under Metro (the package's CommonJS build beside the app's ES build), so React contexts and singletons split — `useQueryClient()` throws inside `QueryClientProvider`, and nothing fails a check → import the library only through the workspace package that owns it (`followHostLifecycle` in `@heliogrid/data/react`); never add it to this app's dependencies.
-- Port 8081 may be held by another React Native project's Metro, and the preview tool will not start over it → it is a foreign listener, freed through the `clean-dev-ports` launch configuration.
-- The native splash colour (android `splash_canvas` in `res/values/colors.xml`, and its iOS launch screen) has no generator → never hand-edit it.

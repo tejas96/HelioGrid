@@ -5,14 +5,13 @@ Deps: `architecture.md` §2 tests/e2e.
 ## What lives here / what must never live here
 
 - `web/<route>.spec.ts` — one per web route, named as `e2e-flow-per-screen` names it (`/login` →
-  `login.spec.ts`, `/` → `root.spec.ts`, a `(group)` folder dropped).
-- `web/qa-seed.setup.ts` is no flow: the seed of the QA companies `/task` step 7 drives
+  `login.spec.ts`, `/` → `root.spec.ts`, a `(group)` folder dropped); a route may add a feature
+  spec beside it (`company-profile-logo.spec.ts`).
+- `web/qa-seed.setup.ts` is no flow: the seed of the QA companies `qa-live` signs in as
   (`support/qa-accounts.ts`), run only as project `qa-seed`, never in CI.
 - No screenshot baselines: a flow asserts words, roles, states and measured values, never a
-  whole-page picture. A look is proven by the component specs (each part's
-  CSS against its tokens), by the code reviewer's compare of the locked board's code with the
-  screen's, and by `qa-web`'s measured checks on every screen a change reaches.
-- `components/<Name>.spec.tsx` — the real `@heliogrid/ui` web halves, mounted with the app's
+  whole-page picture.
+- `components/<Name>.spec.tsx` (or `<Name>.<facet>.spec.tsx`) — the real `@heliogrid/ui` web halves, mounted with the app's
   stylesheets (`playwright/index.tsx`). A mounted component is imported from the `@heliogrid/ui`
   index; a plain value from `@heliogrid/ui` is read through `support/`, since the component
   transform refuses a value imported beside a component.
@@ -30,34 +29,27 @@ Deps: `architecture.md` §2 tests/e2e.
 - A flow names its company `E2E <its 10-digit number>`. A web flow names its owner
   `support/door.ts`'s `OWNER_NAME`, one fixed name, so the owner's words never carry the run's
   number; the phone flow names it `Owner <number>` (`mobile/run.sh`).
-- Never a retry: a flake is a bug and is fixed.
-- Every web spec ends its landing with `support/axe.ts`'s `expectNoSeriousViolations` once the
-  landing's words are visible: a `serious` or `critical` violation fails the suite (`F7-26`).
-- Network loss and aborted requests are tested here and nowhere else —
+- A flake is a bug and is fixed; there are no retries.
+- Every route's spec ends its landing with `support/axe.ts`'s `expectNoSeriousViolations` once
+  the landing's words are visible: a `serious` or `critical` violation fails the suite (`F7-26`).
+- A screen's handling of network loss and aborted requests is tested here —
   `page.context().setOffline(true)`, `page.route(<path>, (r) => r.abort())` (`F8-36`).
 
 ## Commands
 
 ```
-pnpm --filter @heliogrid/e2e test:web [<spec files>]  # the web flows — locally only on heliogrid_test, after the gate (/task step 8); all of them in CI
+pnpm --filter @heliogrid/e2e test:web [<spec files>]  # the web flows — locally only on heliogrid_test, after the gate (`/task`); all of them in CI
 pnpm --filter @heliogrid/e2e test:ct [<spec files>]   # the component tests (port 3100)
 pnpm --filter @heliogrid/e2e test:web --project qa-seed  # the QA companies (support/qa-accounts.ts), off CI, with the worker and Temporal up
 pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows by hand, one device per call
 ```
 
-The web suite runs in CI's `e2e-web` and the component suite beside it in `e2e-components`; the phone flows run in CI on Android
-(`android`; `.github/workflows/ci.yml` says how, and how the repository variable `PHONE_E2E=off`
-switches them off) and on iOS by hand, never in CI — a macOS runner spends 20 minutes on the Xcode
-build alone; the `qa-ios` helper drives a task's iOS rows, not these flows. `test:mobile` runs the
-flows on a device by hand; it needs Metro, the api and the app installed on the device. The local
-emulator is `Pixel_8_API_36` (`/task` step 7) and CI's is API 34;
-either gets 4 cores and 4 GB of RAM, given on the command line (`emulator -avd <name> -cores 4 -memory 4096`;
-the emulator ignores `hw.ramSize` in the AVD's file) — at 2 GB and below Maestro's on-device
-server dies mid-suite (`DeviceServerDiedException`) while the app shows no fault.
-Maestro drives one device per `run.sh` (two at once lose the first keys typed), but the three QA
-helpers may drive web, iPhone and Android at once on one stack: proven on one api, one Metro and
-two phones — three helpers each typing their own number and reading only their own code, then the
-same keys sent to all three surfaces in one instant, with no key lost or crossed.
+The phone flows run in CI on Android only; on iOS `qa-live` runs them on the simulator.
+`test:mobile` needs Metro, the api and the app installed on the device, and drives one device per
+call; one call per phone may run at the same time. An emulator gets 2 cores, 4 GB and the host GPU on the
+command line (the `android-emulator` launch configuration does it; the AVD's `hw.ramSize` is
+ignored): at 2 GB Maestro's on-device server dies mid-suite (`DeviceServerDiedException`) while the
+app shows no fault, and 4 cores only doubles the CPU peak for the same run time.
 
 ## Local conventions
 

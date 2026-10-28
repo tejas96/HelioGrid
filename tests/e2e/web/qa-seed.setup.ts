@@ -44,7 +44,7 @@ for (const qa of QA_COMPANIES) {
       if (row?.status === 'active') continue;
       expect(
         row,
-        `${member.name} was deactivated, which /task step 7 forbids; the api cannot switch them back on: ask the owner`,
+        `${member.name} was deactivated, which qa-live never does; the api cannot switch them back on: ask the owner`,
       ).toBeUndefined();
       const since = Date.now();
       await invite(owner.context, member);

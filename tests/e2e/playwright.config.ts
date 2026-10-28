@@ -51,7 +51,7 @@ if (
 /**
  * The web suite, against the BUILT api and web. `webServer` is the one thing that starts them: in
  * CI, whose ports are free, it starts both; locally it starts both too, on the test database, after
- * `/task` step 8's clean-up has freed the ports. Every flow runs at the two viewports `F7-43` item 1 names. `retries: 0` — a flake
+ * `/task`'s clean-up has freed the ports. Every flow runs at the two viewports `F7-43` item 1 names. `retries: 0` — a flake
  * is a bug to fix, never a pass on the second try; the trace of a failure is kept for replay.
  */
 export default defineConfig({
