@@ -93,7 +93,10 @@ if (command === 'words') {
 async function companyFor(national: string, phoneE164: string): Promise<void> {
   const since = Date.now();
   const challenge = await call('/auth/otp/request', { phoneE164, channel: 'sms' });
-  const { challengeId } = (await challenge.json()) as { challengeId: string };
+  const { challengeId, resendAvailableAt } = (await challenge.json()) as {
+    challengeId: string;
+    resendAvailableAt: string;
+  };
   const code = await codeSentTo(phoneE164, since);
   const verified = await call('/auth/otp/verify', { challengeId, code, platform: 'web' });
   const cookie = verified.headers
@@ -102,6 +105,10 @@ async function companyFor(national: string, phoneE164: string): Promise<void> {
     .join('; ');
   const made = { companyName: `E2E ${national}`, ownerName: `Owner ${national}`, city: 'Pune' };
   await call('/tenants', made, cookie);
+  /* The phone asks the same number for a code next, and the api sends none until the resend time
+     it gave here has passed — a code asked for sooner never reaches the api log. */
+  const wait = Date.parse(resendAvailableAt) - Date.now();
+  if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
 }
 
 async function call(route: string, body: object, cookie?: string): Promise<Response> {
