@@ -23,7 +23,8 @@ LONG = re.compile(
 HEREDOC = re.compile(r"((?<!<)<<-?\s*(['\"]?)(\w+)\2[^\n]*\n).*?(?:^\t*\3[ \t]*$|\Z)", re.S | re.M)
 # A `|` inside a quoted grep pattern or message is text, never a command position.
 QUOTED = re.compile(r"'[^']*'|\"(?:[^\"\\]|\\.)*\"")
-TO_LOG = re.compile(r"(>>?|tee(\s+-a)?)\s*\"?\.qa/[\w./${}-]+\.log")
+# `tee` still prints to the chat, so only a redirect counts.
+TO_LOG = re.compile(r">>?\s*\"?\.qa/[\w./${}-]+\.log")
 
 FORM = (
     "Long output goes to a file, never into the chat. Run it as:\n"

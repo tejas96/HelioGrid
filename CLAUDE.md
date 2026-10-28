@@ -111,8 +111,8 @@ only through the `clean-dev-ports` launch configuration, never by port or proces
   tasks: the source of truth.
 - `.claude/rules/` — a law that spans packages; a one-package rule goes in that package's
   `CLAUDE.md`.
-- `.qa/` (git-ignored) — one task's `*.log` files (the dev servers' and each check's), deleted once
-  its QA is done and again once its PR is ready; `pr-body.md`, the PR's draft; and
+- `.qa/` (git-ignored) — one task's `*.log` files (the dev servers' and each check's) and the api
+  check's `*.cookies`, deleted once its QA is done and again once its PR is ready; `pr-body.md`, the PR's draft; and
   `env.local.dev`, the owner's `.env.local` while `/task` points it at the test database — never
   deleted.
 - `.design/<module>/` — the locked boards, a read-only copy written only by `design-track.md`.

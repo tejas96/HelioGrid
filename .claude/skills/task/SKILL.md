@@ -11,7 +11,8 @@ model: opus
 You own the task: you pick it, plan it, decide every open point, build, prove and ship it. The
 owner keeps what `CLAUDE.md` §4 lists; nothing else waits on them. One `/task` session runs at a
 time: the test database, the ports, `.qa/` and `.env.local` are shared. The same failure after two
-real fixes, or a third re-check round, stops the task: say what fails and the two ways forward.
+real fixes, a third re-check round (the review's and live QA's counted together), or a third red
+gate or CI run, whatever failed, stops the task: say what fails and the two ways forward.
 
 **The test-database prefix** points one command at `heliogrid_test`, and stops if it cannot:
 
@@ -80,9 +81,9 @@ docker exec heliogrid-pg-local psql -U heliogrid -d heliogrid_dev -v ON_ERROR_ST
 ```
 
 Contracts and shared types first, then the parts both platforms draw — the `domain` view model,
-the `i18n` copy, the `packages/ui` component (Laws 7, 11) — then the screens. Before a screen is
-built, read its locked boards whole from `.design/<module>/`, once, and build it as
-`.claude/rules/ui-adherence.md` *A screen is its locked board* says. Tests first. A test that
+the `i18n` copy, the `packages/ui` component (Laws 7, 11) — then the screens. Build each frame from
+its markup in `.design/<module>/`, read whole when you build that frame — from its `data-frame` to
+the next — as `.claude/rules/ui-adherence.md` *A screen is its locked board* says. Tests first. A test that
 `.claude/rules/testing.md` says is proven red is broken in a scratchpad copy of its file, copied
 back after — never `git checkout` a file this task changed — and its failing line kept for the
 PR's *Proof*. A new phone screen joins `tests/e2e/mobile/run.sh` with its flow; a new
@@ -107,8 +108,9 @@ a test and fixed, or closed with one reason in the PR's *Notes*.
 
 ## Run the app
 
-Only once the review's fixes are in. A change no screen shows (api, worker or database only)
-skips this and *Live QA*: its tests prove it. What is running before you start — listeners on 3002, 8084,
+Only once the review's fixes are in. A change no screen shows and no route serves (worker or
+database only) skips this and *Live QA*: its tests prove it. A route change with no screen needs
+only steps 1 to 3's `worker` and `api`. What is running before you start — listeners on 3002, 8084,
 8081 and 3100, booted phones (`xcrun simctl list devices booted`, `adb devices`), browser tabs
 (`tabs_context`), `docker ps` — is the owner's and is left as found, except an `api`, `web` or
 `worker` it holds: stop that one by its preview id, since the seed and the gate need those ports,
@@ -119,13 +121,13 @@ owner's to stop: ask. Then:
 1. Point `.env.local` at the test database, once — a `.qa/env.local.dev` that exists already holds
    the owner's copy, and a second copy would overwrite it:
    `[ -e .qa/env.local.dev ] || { cp .env.local .qa/env.local.dev && sed -i '' '/^DATABASE_/s/heliogrid_dev/heliogrid_test/' .env.local; }`.
-   Then `<prefix> pnpm db:migrate > .qa/migrate.log 2>&1` and
-   `pnpm --filter @heliogrid/api pack:publish > .qa/pack.log 2>&1`.
+   Then `pnpm --filter @heliogrid/api pack:publish > .qa/pack.log 2>&1`; *Build* migrated it.
 2. Start `worker` through `.claude/launch.json` (`preview_start`), then seed the QA companies
    while port 8084 is free — the seed starts its own api:
    `pnpm turbo build --filter=@heliogrid/api > .qa/build-api.log 2>&1 &&
    <prefix> pnpm --filter @heliogrid/e2e test:web --project qa-seed > .qa/seed.log 2>&1`.
-3. Start `api`, then what the surfaces in scope need: `web`, `mobile-metro`, an iPhone simulator
+3. Start `api` — the api check starts now (*Live QA*) — then, while it runs, what the screen
+   surfaces in scope need: `web`, `mobile-metro`, an iPhone simulator
    that holds `com.heliogrid.app` (`xcrun simctl boot <udid>`; `xcrun simctl get_app_container
    <udid> com.heliogrid.app` answers once it is booted), and `android-emulator` only when Android
    is in scope. Build and install the phone app when the device does not hold it, when the change
@@ -136,10 +138,14 @@ owner's to stop: ask. Then:
 
 ## Live QA
 
-Start one `qa-live` (Sonnet) per surface in scope, all in one message, so they run at once: each
-gets its surface, its device, the `DONE WHEN` lines and the screens or routes the change reaches,
-and signs in as its own QA company. The web is in scope for a change a web screen shows; iOS for
-any phone change — CI never runs it; Android only for native code, an `.android.*` file, the
+**The api first**, when the change adds or changes a route: one `qa-live` (Sonnet) on the api, with
+the `DONE WHEN` lines and the routes, started as soon as `api` is up. Fix its every `FAIL`
+(*Fixing*) before any screen is checked: every screen calls the api.
+
+**Then the screens:** one `qa-live` per screen surface in scope, all in one message, so they run at
+once: each gets its surface, its device, the `DONE WHEN` lines and the screens or routes the change
+reaches, and signs in as its own QA company. The web is in scope for a change a web screen shows; iOS for
+any phone change — CI builds it but runs none of its flows; Android only for native code, an `.android.*` file, the
 keyboard or Back, since CI's `android` lane runs its flows. A change to one half of a twinned
 screen brings the other platform in (`.claude/rules/screen-parts.md`). Fix every `FAIL` (*Fixing*). A
 `BLOCKED` check gets what it needs and a re-check, or, when nothing here can give it, a line in
@@ -147,11 +153,12 @@ the PR's *Notes*.
 
 ## Fixing
 
-Each fix starts with a test that fails for the bug — a unit or api test, or an assertion in the
+A behaviour fix starts with a test that fails for the bug — a unit or api test, or an assertion in the
 screen's flow or spec — and then makes it pass. After each round of fixes, run
 `<prefix> pnpm check > .qa/check.log 2>&1` — its typecheck builds the packages the app reads — and
-any phone flow the round changed, before any re-check; a web spec runs only in the gate
-(*Clean up*). Re-check with a fresh agent given the fixed files and the findings or checks they
+the phone flow that failed or changed, whose log the re-check is given, before any re-check; a web
+spec runs only in the gate (*Clean up*), and a red that only the specs show reruns only their
+command. Re-check with a fresh agent given the fixed files and the findings or checks they
 answer; a QA fix that touches money, tenancy or permissions goes back to the reviewer too. After
 *Clean up*, a fix that needs a live re-check runs *Run the app* again; any other is proven by its
 tests and the gate.
@@ -164,7 +171,7 @@ made. QA is done, so delete its logs and the phone runs it left, then restore `.
 task that skipped *Run the app* deletes only the logs):
 
 ```bash
-find ~/.maestro/tests -mindepth 1 -maxdepth 1 -newer .qa/env.local.dev -exec rm -rf {} +; find .qa -maxdepth 1 -name '*.log' -delete; mv .qa/env.local.dev .env.local
+find ~/.maestro/tests -mindepth 1 -maxdepth 1 -newer .qa/env.local.dev -exec rm -rf {} +; find .qa -maxdepth 1 \( -name '*.log' -o -name '*.cookies' \) -delete; mv .qa/env.local.dev .env.local
 ```
 
 A task that skipped *Run the app* first stops the owner's `api`, `web` or `worker` as it says:
@@ -208,5 +215,5 @@ line from
 `python3 -I ~/.claude/projects/-Volumes-works-space-heliogrid/harness-meter.py <id>`. A red job:
 `gh run view <run> --log-failed > .qa/ci.log`, fix, commit, push, and wait for CI again. Once the
 PR is ready, the task's files are waste:
-`find .qa -maxdepth 1 \( -name '*.log' -o -name pr-body.md \) -delete`. Say the PR's link and
+`find .qa -maxdepth 1 \( -name '*.log' -o -name '*.cookies' -o -name pr-body.md \) -delete`. Say the PR's link and
 `owner merges #<n>`; the session ends there.
