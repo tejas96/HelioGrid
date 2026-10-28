@@ -6,6 +6,9 @@ import {
   PROJECT_STAGE_CHAIN,
   type ProjectChainStage,
   packLabel,
+  percentToBasisPoints,
+  shareOfBasisPoints,
+  shareTextOf,
   stageLabel,
   type TrancheCard,
   type TrancheDraft,
@@ -14,7 +17,7 @@ import {
   type UiLanguage,
 } from '@heliogrid/domain';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
-import { brandingCoverProps } from '../BrandingSettings/BrandingSettings.logic';
+import { brandingCoverProps, brandingDocumentOf } from '../BrandingSettings/BrandingSettings.logic';
 import type { DocumentPreviewProps } from '../DocumentPreview/DocumentPreview.types';
 import type {
   PaymentTermsCardView,
@@ -85,11 +88,6 @@ function stageNameOf(context: PaymentTermsContext, stage: ProjectChainStage): st
   return label === null ? '' : packLabel(label, context.language);
 }
 
-/** A share as the board writes it: `33.33`, `10`. */
-function shareText(percent: number): string {
-  return String(Math.round(percent * 100) / 100);
-}
-
 export function termsCardsOf(
   cards: readonly TrancheCard[],
   openId: string | null,
@@ -125,7 +123,7 @@ export function termsLinesOf(
       key: line.key,
       name: line.label.shown,
       ...(refused?.label === 'required' ? { nameError: context.words.trancheNameNeeded } : {}),
-      ...(line.share === null ? {} : { share: line.share / 100 }),
+      ...(line.share === null ? {} : { share: shareOfBasisPoints(line.share) }),
       ...(refused?.share === 'range' ? { shareError: context.words.shareRange } : {}),
       stage: stageNameOf(context, line.dueOnStage),
       skippable: isSkippableStage(context.vocabulary, line.dueOnStage),
@@ -149,7 +147,7 @@ export function termsPreviewOf(
     tranches: preview.lines.map((line, index) => ({
       label: authoredIn(line.label, context.language).value,
       when: context.stages[line.dueOnStage].when,
-      share: `${shareText(Number(line.percent))}%`,
+      share: `${shareTextOf(percentToBasisPoints(line.percent))}%`,
       amount: context.money(schedule?.amounts[index] ?? '0'),
     })),
     empty: false,
@@ -162,7 +160,10 @@ export function termsFootOf(
   verdict: AllocationVerdict,
 ): Pick<PaymentTermsFootProps, 'parts' | 'state'> {
   return {
-    parts: draft.lines.map((line) => ({ label: line.label.shown, value: (line.share ?? 0) / 100 })),
+    parts: draft.lines.map((line) => ({
+      label: line.label.shown,
+      value: shareOfBasisPoints(line.share ?? 0),
+    })),
     state: verdict.state,
   };
 }
@@ -183,7 +184,7 @@ export function termsStagesOf(
       .filter((line) => line.dueOnStage === stage)
       .map((line) => ({
         key: line.key,
-        text: context.words.trancheShare(line.label.shown, shareText((line.share ?? 0) / 100)),
+        text: context.words.trancheShare(line.label.shown, shareTextOf(line.share ?? 0)),
         mine: line.key === picking,
       })),
   }));
@@ -199,19 +200,32 @@ export function termsPickerWordsOf(
   const name = line?.label.shown ?? '';
   return {
     label: words.whenDue(name),
-    overline: words.trancheShare(name, shareText((line?.share ?? 0) / 100)),
+    overline: words.trancheShare(name, shareTextOf(line?.share ?? 0)),
   };
+}
+
+/**
+ * The preview's letterhead: the company's branding as Proposal template draws it. Until the
+ * branding is read, or when its read fails, the band draws with no letterhead — the schedule is
+ * never held back for it.
+ */
+export function termsLetterheadOf(
+  cover: Parameters<typeof brandingDocumentOf>[0],
+  colour: string | null,
+  taxIdLabel: string,
+): PaymentTermsLetterhead {
+  return { facts: brandingDocumentOf(cover, taxIdLabel), colour };
 }
 
 /** The preview's document: the tenant's letterhead over the schedule alone. */
 export function termsDocumentProps(
-  letterhead: PaymentTermsLetterhead | null,
+  letterhead: PaymentTermsLetterhead,
   preview: PaymentTermsPreviewView,
   words: Pick<PaymentTermsSettingsWords, 'schedule' | 'noSchedule' | 'logoAlt'>,
 ): DocumentPreviewProps {
-  const facts = letterhead?.facts ?? { companyName: '', letterhead: { lines: [] } };
+  const { facts } = letterhead;
   return {
-    ...brandingCoverProps(facts, letterhead?.colour ?? null, {
+    ...brandingCoverProps(facts, letterhead.colour, {
       documentTitle: words.schedule,
       logoAlt: words.logoAlt(facts.companyName),
     }),

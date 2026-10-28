@@ -58,7 +58,9 @@ export type TrancheSchedulePreview = z.infer<typeof trancheSchedulePreviewSchema
 const guarded = { 401: errorEnvelope(baseError('UNAUTHENTICATED')) } as const;
 const notFound = errorEnvelope(baseError('NOT_FOUND'));
 const conflict = errorEnvelope(baseError('CONFLICT'));
-const notWhole = errorEnvelope(z.enum(['TRANCHES_NOT_WHOLE']));
+/** The refusal only a tranche write raises; `tenantSettingsErrorCodes` enrols it with the others. */
+export const trancheTemplateErrorCodes = ['TRANCHES_NOT_WHOLE'] as const;
+const notWhole = errorEnvelope(z.enum(trancheTemplateErrorCodes));
 const templateParams = z.object({ id: uuidSchema });
 
 export const trancheTemplateRoutes = c.router({
@@ -78,7 +80,7 @@ export const trancheTemplateRoutes = c.router({
     responses: {
       201: trancheTemplateSchema,
       ...guarded,
-      422: errorEnvelope(extensibleEnum(['TRANCHES_NOT_WHOLE', IDEMPOTENCY_KEY_REUSED])),
+      422: errorEnvelope(extensibleEnum([...trancheTemplateErrorCodes, IDEMPOTENCY_KEY_REUSED])),
     },
   },
   saveTrancheTemplate: {

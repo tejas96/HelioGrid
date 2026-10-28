@@ -9,6 +9,7 @@ export {
   termsCardsOf,
   termsContextOf,
   termsFootOf,
+  termsLetterheadOf,
   termsLinesOf,
   termsPreviewOf,
   termsStagesOf,

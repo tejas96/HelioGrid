@@ -131,6 +131,38 @@ describe('the Payment terms page — its list, its editor and its acts, through 
     expect(view.result.current.cards.inUse).toHaveLength(3);
   });
 
+  it('a create answered after an edit is never sent twice', async () => {
+    const view = await mounted();
+    termsOrigin.writes = [{ status: 200, afterMs: 200 }];
+
+    act(() => view.result.current.openNew());
+    act(() => view.result.current.edit({ kind: 'name', text: 'All upfront' }));
+    act(() => view.result.current.save());
+    act(() => view.result.current.edit({ kind: 'name', text: 'All upfront, kept' }));
+    await waitFor(() => expect(view.result.current.editor?.saving).toBe(false));
+    expect(view.result.current.editor?.made).toBe(true);
+    act(() => view.result.current.save());
+    await waitFor(() => expect(view.result.current.editor).toBeNull());
+
+    expect(termsOrigin.sent.map((one) => one.method)).toEqual(['POST', 'PUT']);
+    expect(view.result.current.cards.inUse).toHaveLength(3);
+  });
+
+  it('a create answered while another new editor is open leaves that editor as it is', async () => {
+    const view = await mounted();
+    termsOrigin.writes = [{ status: 200, afterMs: 200 }];
+
+    act(() => view.result.current.openNew());
+    act(() => view.result.current.edit({ kind: 'name', text: 'All upfront' }));
+    act(() => view.result.current.save());
+    act(() => view.result.current.openNew());
+    await waitFor(() => expect(view.result.current.cards.inUse).toHaveLength(3));
+
+    expect(view.result.current.editor?.draft.id).toBeNull();
+    expect(view.result.current.editor?.draft.name.shown).toBe('');
+    expect(view.result.current.editor?.made).toBe(true);
+  });
+
   it('the preview prices the saved lines, then the edit once it is whole', async () => {
     const view = await mounted();
 
@@ -168,6 +200,34 @@ describe('the Payment terms page — its list, its editor and its acts, through 
       '84000.00',
     ]);
   });
+
+  it('a failed preview never prices other lines', async () => {
+    const view = await mounted();
+    termsOrigin.previews = [
+      { status: 200 },
+      ...[1, 2, 3, 4].map(() => ({ status: 500, body: refusal('INTERNAL') })),
+    ];
+
+    act(() => view.result.current.open(STANDARD));
+    await waitFor(() => expect(view.result.current.editor?.preview?.schedule).not.toBeNull());
+    act(() => {
+      view.result.current.edit({ kind: 'line-share', key: 1, share: 3000 });
+      view.result.current.edit({ kind: 'line-share', key: 2, share: 5000 });
+    });
+    // The read and its two retries are refused; one refusal stays unasked.
+    await waitFor(() => expect(termsOrigin.previews).toHaveLength(1), { timeout: 8000 });
+
+    await waitFor(() => {
+      const preview = view.result.current.editor?.preview;
+      expect(preview?.lines.map((one) => one.percent)).toEqual([
+        '10.00',
+        '60.00',
+        '20.00',
+        '10.00',
+      ]);
+      expect(preview?.schedule?.amounts).toEqual(['42000.00', '252000.00', '84000.00', '42000.00']);
+    });
+  }, 12_000);
 
   it('a refused act changes nothing', async () => {
     const view = await mounted();

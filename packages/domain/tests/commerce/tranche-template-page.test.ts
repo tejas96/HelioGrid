@@ -234,8 +234,14 @@ describe('what Save sends and whether anything changed (AC-6)', () => {
     expect(trancheDraftChanged(opened(), trancheEdit(opened(), edit))).toBe(changed);
   });
 
-  it('a new template is always a change', () => {
-    expect(trancheDraftChanged(trancheNewDraft('en'), trancheNewDraft('en'))).toBe(true);
+  it.each([
+    { edit: null, changed: false },
+    { edit: { kind: 'name', text: 'All upfront' } as const, changed: true },
+  ])('a new template untouched is no change; edited, it is ($changed)', ({ edit, changed }) => {
+    const draft = trancheNewDraft('en');
+    expect(trancheDraftChanged(draft, edit === null ? draft : trancheEdit(draft, edit))).toBe(
+      changed,
+    );
   });
 
   it('a new template starts as one whole tranche on signing, due at Won, with no name', () => {

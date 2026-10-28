@@ -23,7 +23,7 @@ import {
 import { baseError, errorEnvelope } from './error';
 import { uiLanguageResponseSchema } from './locale';
 import { promptPointFactSchema } from './onboarding';
-import { trancheTemplateRoutes } from './tranche-templates';
+import { trancheTemplateErrorCodes, trancheTemplateRoutes } from './tranche-templates';
 
 const c = initContract();
 
@@ -121,7 +121,7 @@ export type EffectiveSettings = z.infer<typeof effectiveSettingsSchema>;
  * — `details[].issue` carries the market's format sentence in the reader's language.
  */
 export const tenantSettingsErrorCodes = [
-  'TRANCHES_NOT_WHOLE',
+  ...trancheTemplateErrorCodes,
   'TAX_REGISTRATION_MALFORMED',
 ] as const;
 export const tenantSettingsErrorCodeSchema = z.enum(tenantSettingsErrorCodes);

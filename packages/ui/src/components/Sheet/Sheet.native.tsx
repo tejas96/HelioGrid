@@ -9,6 +9,7 @@ import { SheetBackdrop } from './SheetBackdrop.native';
 import { SheetHandle } from './SheetHandle.native';
 import { SheetHeader } from './SheetHeader.native';
 import { SheetSkeleton } from './SheetSkeleton.native';
+import { useFocusedFieldInView } from './use-focused-field-in-view.native';
 import { percentOf, SHEET_HEIGHT, useKeyboardLift } from './use-keyboard-lift.native';
 import { useSheetEntry } from './use-sheet-entry.native';
 
@@ -78,6 +79,7 @@ export function Sheet({
   const [scrolled, setScrolled] = useState(false);
   const draggable = dragToDismiss && dismissible;
   const { panelLift, bottomInset } = useKeyboardLift(open, size, usePortalBottomInset());
+  const focused = useFocusedFieldInView(open, scrollTop);
   /* Read through a ref: Android calls the newest listener first, so re-registering on a new
      `onClose` would put a lower sheet's Back above the sheet on top of it. */
   const closeOnBack = useRef(onClose);
@@ -204,6 +206,8 @@ export function Sheet({
 
           {bodyScrolls ? (
             <ScrollView
+              ref={focused.scroll}
+              onLayout={focused.onBodyLayout}
               onScroll={(event) => {
                 scrollTop.current = event.nativeEvent.contentOffset.y;
                 setScrolled(event.nativeEvent.contentOffset.y > 2);
@@ -212,7 +216,9 @@ export function Sheet({
               style={BODY_FLEX[size]}
               contentContainerStyle={bodyPad}
             >
-              {content}
+              <View ref={focused.content} collapsable={false} style={styles.bodyFill}>
+                {content}
+              </View>
             </ScrollView>
           ) : (
             /* A held body: its content bounds itself and scrolls its own part. */

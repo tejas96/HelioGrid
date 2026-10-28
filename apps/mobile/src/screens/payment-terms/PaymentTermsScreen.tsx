@@ -7,10 +7,10 @@ import {
 } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
-  brandingDocumentOf,
   PaymentTermsList,
   termsCardsOf,
   termsContextOf,
+  termsLetterheadOf,
   useFormat,
 } from '@heliogrid/ui';
 import { useState } from 'react';
@@ -65,10 +65,7 @@ export function PaymentTermsScreen() {
           editor={editor}
           words={words}
           context={context}
-          letterhead={{
-            facts: brandingDocumentOf(page.cover, format.pack.taxIdLabel),
-            colour: page.brandColour,
-          }}
+          letterhead={termsLetterheadOf(page.cover, page.brandColour, format.pack.taxIdLabel)}
           leave={leave}
         />
       )}

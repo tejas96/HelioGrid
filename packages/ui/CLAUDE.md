@@ -67,6 +67,7 @@ part there fails it.
 
 ## Traps
 
+- On touch a tap on a button never leaves the focused field first, so a field that commits on blur has not reported its edit when a ✕, *Cancel*, Back or *Save* in the same press reads the draft, and the edit is lost with no ask → a field in a form with a way out commits as typed (`NumberField` `commits="as-typed"`, `Input` `onChange`), as `PaymentTermsEditor` does.
 - On Fabric, a `zIndex` that changes with state re-orders the parent's native children, so a sibling holding a focused field is taken out and put back, and Android drops the keyboard → set a `zIndex` once in the base style and toggle only the look.
 - Native clips a `Text`'s ink to its own box, so a line box shorter than the face's own line loses ो ी ं off the top and reads as a spacing bug; the box is raised to the bundled face's declared line, but a parent's `overflow: hidden` on a heading's top edge, or a style that shrinks the box, brings the clip back → leave the raised box alone and give the parent room.
 - React Native's `flattenStyle` copies EVERY key of every style object, `undefined` values included, so a later `{ x: maybeUndefined }` ERASES the `x` a variant beneath it set — on the phone only, since the web half does the opposite → append the object conditionally (`cond ? { x } : undefined`), never a key whose value may be undefined.

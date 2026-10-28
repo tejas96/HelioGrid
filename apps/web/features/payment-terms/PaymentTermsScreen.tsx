@@ -14,7 +14,6 @@ import {
 import { useI18n } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
 import {
-  brandingDocumentOf,
   LeaveConfirm,
   PaymentTermsEditorCard,
   PaymentTermsList,
@@ -23,6 +22,7 @@ import {
   termsCardsOf,
   termsContextOf,
   termsEditorViewOf,
+  termsLetterheadOf,
   useFormat,
   useOwnWidth,
 } from '@heliogrid/ui';
@@ -99,7 +99,7 @@ function PaymentTermsIn() {
       : termsEditorViewOf({
           editor,
           context,
-          letterhead: letterheadOf(page, format.pack.taxIdLabel),
+          letterhead: termsLetterheadOf(page.cover, page.brandColour, format.pack.taxIdLabel),
           said: paymentTermsEditorSaid(t, editor),
           picking,
           acting: page.acting === 'restore' ? null : page.acting,
@@ -175,13 +175,6 @@ function savedLineOf(
 ): string | undefined {
   if (page.standing === null) return undefined;
   return paymentTermsSavedLine(t, page.standing, { date: (epochMs) => date(new Date(epochMs)) });
-}
-
-/** The preview's letterhead: the company's branding as Proposal template draws it, once it is read. */
-function letterheadOf(page: PaymentTermsPage, taxIdLabel: string) {
-  return page.cover === null
-    ? null
-    : { facts: brandingDocumentOf(page.cover, taxIdLabel), colour: page.brandColour };
 }
 
 /** At width the editor stands beside the cards, as the list's `aside`; below it, a sheet. */

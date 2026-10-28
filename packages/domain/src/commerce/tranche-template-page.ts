@@ -1,5 +1,10 @@
 import { authoredIn, type PackLabel, type UiLanguage } from '../format/languages';
-import { type BasisPoints, basisPoints, basisPointsToPercent } from '../money/basis-points';
+import {
+  type BasisPoints,
+  basisPoints,
+  basisPointsToPercent,
+  percentToBasisPoints,
+} from '../money/basis-points';
 import { PROJECT_STAGE_CHAIN, type ProjectChainStage } from '../projects/stages';
 import {
   type SettingsLastSave,
@@ -126,7 +131,7 @@ export function trancheDraftOf(template: TrancheTemplateRead, language: UiLangua
       template.lines.map((line, key) => ({
         key,
         label: textOf(line.label, language),
-        share: shareOfPercent(line.percent),
+        share: percentToBasisPoints(line.percent),
         dueOnStage: line.dueOnStage,
       })),
     ),
@@ -216,10 +221,6 @@ function shareOf(share: number | null): BasisPoints {
   return basisPoints(Math.min(Math.max(share ?? 0, 0), WHOLE_ALLOCATION));
 }
 
-function shareOfPercent(percent: string): number {
-  return Math.round(Number(percent) * 100);
-}
-
 export interface TrancheRefusals {
   readonly name: 'required' | null;
   readonly lines: ReadonlyMap<
@@ -274,7 +275,6 @@ export function trancheWriteOf(draft: TrancheDraft): TrancheTemplateWriteOf {
 
 /** Whether the draft differs from what it opened as — *Save terms* sends nothing, and leaving asks nothing, when it does not. */
 export function trancheDraftChanged(opened: TrancheDraft, draft: TrancheDraft): boolean {
-  if (draft.id === null) return true;
   return !sameContent(trancheWriteOf(opened), trancheWriteOf(draft));
 }
 

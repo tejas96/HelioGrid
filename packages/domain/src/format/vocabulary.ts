@@ -92,7 +92,10 @@ export const IN_VOCABULARY: DisplayVocabulary = {
       stage: 'electrical_metering',
       label: { en: 'Electrical metering', hi: 'बिजली मीटरिंग', mr: 'वीज मीटरिंग' },
     },
-    { stage: 'utility_inspection', label: { en: 'DISCOM inspection' } },
+    {
+      stage: 'utility_inspection',
+      label: { en: 'DISCOM inspection', hi: 'DISCOM निरीक्षण', mr: 'DISCOM तपासणी' },
+    },
     { stage: 'commissioned', label: { en: 'Commissioned', hi: 'चालू किया गया', mr: 'कार्यान्वित' } },
     {
       stage: 'incentive_claimed',

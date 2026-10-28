@@ -1,3 +1,4 @@
+import { basisPointsOfShare } from '@heliogrid/domain';
 import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button/Button';
@@ -59,13 +60,16 @@ export function PaymentTermsEditor(props: PaymentTermsEditorProps) {
           </div>
         </div>
       </div>
-      <Input
-        label={words.termsName}
-        value={props.name}
-        onChange={props.onName}
-        density="functional"
-        {...(props.nameError === undefined ? {} : { error: props.nameError })}
-      />
+      {/* Only new terms carry a name field: no locked frame draws one on saved terms. */}
+      {props.standing === 'new' ? (
+        <Input
+          label={words.termsName}
+          value={props.name}
+          onChange={props.onName}
+          density="functional"
+          {...(props.nameError === undefined ? {} : { error: props.nameError })}
+        />
+      ) : null}
       <div className="hg-pay-lines">
         {props.lines.map((line, index) => (
           <TrancheLine key={line.key} line={line} first={index === 0} {...props} />
@@ -105,8 +109,7 @@ function TrancheLine({
             label={first ? words.name : words.nameOf(line.name)}
             labelSpokenOnly={!first}
             value={line.name}
-            commitOnBlur
-            onCommit={(name) => onLineName(line.key, name)}
+            onChange={(name) => onLineName(line.key, name)}
             density="functional"
             {...(line.nameError === undefined ? {} : { error: line.nameError })}
           />
@@ -115,7 +118,10 @@ function TrancheLine({
           <NumberField
             {...(first ? { label: words.share } : { ariaLabel: words.shareOf(line.name) })}
             {...(line.share === undefined ? {} : { value: line.share })}
-            onCommit={(share) => onLineShare(line.key, Math.round(share * 100))}
+            // As typed: on touch a tap on ✕ or *Save terms* never leaves the field first, so a
+            // figure kept for the leave would be lost, or saved without the leave asking.
+            commits="as-typed"
+            onCommit={(share) => onLineShare(line.key, basisPointsOfShare(share))}
             density="functional"
             unit="%"
             min={0.01}

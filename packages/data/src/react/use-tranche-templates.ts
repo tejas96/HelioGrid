@@ -43,6 +43,8 @@ import { useTrancheSchedule } from './use-tranche-schedule';
 /** The open editor: the draft, the one verdict, what it refuses, and the schedule it previews. */
 export interface PaymentTermsEditor {
   readonly draft: TrancheDraft;
+  /** Opened by *Add payment terms* — it stays so after its first save lands, so its name field stays. */
+  readonly made: boolean;
   /** The template as saved; `null` for *Add payment terms*. */
   readonly saved: TrancheTemplateRead | null;
   readonly changed: boolean;
@@ -97,6 +99,8 @@ export interface PaymentTermsPage {
 
 interface Editing {
   readonly opened: TrancheDraft;
+  /** Opened by *Add payment terms*: it keeps its name field after its first save lands. */
+  readonly made: boolean;
   readonly draft: TrancheDraft;
   readonly refusalsShown: boolean;
 }
@@ -145,7 +149,7 @@ export function useTrancheTemplates(language: UiLanguage): PaymentTermsPage {
 
   const save = useMutation({
     networkMode: 'always',
-    mutationFn: (draft: TrancheDraft) => {
+    mutationFn: ({ draft }: Editing) => {
       const body = trancheWriteOf(draft);
       const write = { name: body.name, lines: body.lines.map((line) => ({ ...line })) };
       return draft.id === null
@@ -158,8 +162,18 @@ export function useTrancheTemplates(language: UiLanguage): PaymentTermsPage {
     onSuccess: (template, sent) => {
       held(template);
       void readAgain();
-      // Only the draft the save sent is let go: an edit typed while it was out stays open.
-      setEditing((was) => (was?.draft === sent ? null : was));
+      // Only the editor the save was sent from is touched, and only the draft it sent is let go. An
+      // edit typed there while it was out stays open, now on the saved template, so its next save
+      // replaces it — a create is never sent twice. Another editor opened meanwhile is left as it is.
+      setEditing((was) => {
+        if (was === null || was.draft === sent.draft) return null;
+        if (was.opened !== sent.opened) return was;
+        return {
+          ...was,
+          opened: trancheDraftOf(template, language),
+          draft: { ...was.draft, id: template.id },
+        };
+      });
     },
     onError: (error) => {
       if (answerOf(error)?.status === CONFLICT) void readAgain();
@@ -187,7 +201,7 @@ export function useTrancheTemplates(language: UiLanguage): PaymentTermsPage {
       ? null
       : (templates.find((template) => template.id === editing.draft.id) ?? null);
   const preview = editing === null ? null : tranchePreviewLines(saved, editing.draft);
-  const schedule = useTrancheSchedule(tenantId, preview?.lines ?? null);
+  const priced = useTrancheSchedule(tenantId, editing?.opened ?? null, preview);
 
   return {
     status: statusOf(list.data !== undefined, list.isError),
@@ -201,7 +215,7 @@ export function useTrancheTemplates(language: UiLanguage): PaymentTermsPage {
             saving: save.isPending,
             saveFailure: save.isError ? (save.error as DataError) : null,
             saveConflict: save.isError && answerOf(save.error)?.status === CONFLICT,
-            preview: preview === null ? null : { ...preview, schedule },
+            preview: priced,
           }),
     acting: acts.isPending ? acts.variables.act : null,
     actFailure,
@@ -212,12 +226,12 @@ export function useTrancheTemplates(language: UiLanguage): PaymentTermsPage {
       if (template === undefined) return;
       const draft = trancheDraftOf(template, language);
       save.reset();
-      setEditing({ opened: draft, draft, refusalsShown: false });
+      setEditing({ opened: draft, draft, made: false, refusalsShown: false });
     },
     openNew: () => {
       const draft = trancheNewDraft(language);
       save.reset();
-      setEditing({ opened: draft, draft, refusalsShown: false });
+      setEditing({ opened: draft, draft, made: true, refusalsShown: false });
     },
     // From what was last held, never from this render: two edits can land before the next one.
     edit: (next) =>
@@ -227,12 +241,12 @@ export function useTrancheTemplates(language: UiLanguage): PaymentTermsPage {
       save.reset();
     },
     save: () => {
-      const held = latest.current;
-      if (held === null || sending.current) return;
-      if (!trancheDraftChanged(held.opened, held.draft)) return setEditing(null);
-      if (!trancheSendable(held.draft)) return setEditing({ ...held, refusalsShown: true });
+      const open = latest.current;
+      if (open === null || sending.current) return;
+      if (!trancheDraftChanged(open.opened, open.draft)) return setEditing(null);
+      if (!trancheSendable(open.draft)) return setEditing({ ...open, refusalsShown: true });
       sending.current = true;
-      save.mutate(held.draft);
+      save.mutate(open);
     },
     act: (id, act) => {
       if (!acts.isPending) acts.mutate({ id, act });
@@ -254,6 +268,7 @@ function editorOf(
 ): PaymentTermsEditor {
   return {
     draft: editing.draft,
+    made: editing.made,
     saved,
     changed: trancheDraftChanged(editing.opened, editing.draft),
     verdict: trancheVerdictOf(editing.draft),

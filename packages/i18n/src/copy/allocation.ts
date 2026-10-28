@@ -3,7 +3,7 @@
  * remainder line, and the reason *Save terms* is refused. Both read the ONE verdict
  * (`allocationVerdict`), so the meter and the save can never say different things.
  */
-import type { AllocationVerdict } from '@heliogrid/domain';
+import { type AllocationVerdict, shareTextOf } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 
 const ALLOCATION = {
@@ -16,7 +16,7 @@ const ALLOCATION = {
 
 /** The remainder as a person reads it: `1200` basis points is `12`, `1` is `0.01`. */
 function shareOf(verdict: AllocationVerdict): string {
-  return String(Math.abs(verdict.remainder) / 100);
+  return shareTextOf(Math.abs(verdict.remainder));
 }
 
 /** The meter's line: *12% unallocated.* · *18% over-allocated.* · *Fully allocated.* */

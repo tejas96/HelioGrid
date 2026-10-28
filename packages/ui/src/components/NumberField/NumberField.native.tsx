@@ -6,7 +6,7 @@ import { renderOverride } from '../FieldOverride/FieldOverride.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import { renderAttribution } from '../ValueSource/ValueSource.native';
-import { restingFigure, restingMoney } from './NumberField.logic';
+import { restingMoney } from './NumberField.logic';
 import { useNumberFieldDraft } from './NumberField.state';
 import type { NumberFieldProps } from './NumberField.types';
 import { NumberFieldBox } from './NumberFieldBox.native';
@@ -62,13 +62,6 @@ export function NumberField({
 }: NativeNumberFieldProps) {
   const showSteppers = steppers ?? !currency;
   const format = useFormat();
-  /* A resting figure is drawn at its places on the phone (D355): an amount in the market's money
-     format, any other figure at its `precision`. */
-  const restingFormat = () => {
-    if (currency) return { idle: (figure: number) => restingMoney(format, figure) };
-    if (precision === undefined) return {};
-    return { idle: (figure: number) => restingFigure(figure, precision) };
-  };
   const draft = useNumberFieldDraft({
     value,
     onCommit,
@@ -78,7 +71,7 @@ export function NumberField({
     step,
     precision,
     currency,
-    ...restingFormat(),
+    ...(currency ? { idle: (figure: number) => restingMoney(format, figure) } : {}),
     unit,
     outOfRange,
     correctionMessage,

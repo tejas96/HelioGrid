@@ -154,11 +154,11 @@ export interface PaymentTermsLetterhead {
 
 export interface PaymentTermsEditorProps {
   readonly words: PaymentTermsSettingsWords;
-  readonly letterhead: PaymentTermsLetterhead | null;
+  readonly letterhead: PaymentTermsLetterhead;
   readonly preview: PaymentTermsPreviewView;
   /** The preview stage's height on this surface: 150 in the sheet, 220 in the 1536 card. */
   readonly previewHeight: number;
-  /** The template's own name field. */
+  /** The name field, drawn for new terms only (`standing` `new`). */
   readonly name: string;
   readonly nameError?: string;
   onName(name: string): void;

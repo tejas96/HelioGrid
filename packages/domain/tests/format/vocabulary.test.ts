@@ -28,10 +28,13 @@ describe('stage and blocker labels — what a user reads for a machine value (F1
     expect(label && packLabel(label, 'en')).toBe('DISCOM');
   });
 
-  it('reads DISCOM identically in Marathi — an operator name is never translated (F3-08)', () => {
+  it('keeps DISCOM in every language and translates the rest of its stage — only an operator name is never translated (F3-08)', () => {
     const stage = stageLabel(IN, 'utility_inspection');
     const party = blockerPartyLabel(IN, 'utility');
-    expect(stage && packLabel(stage, 'mr')).toBe('DISCOM inspection');
+    expect(stage && [packLabel(stage, 'hi'), packLabel(stage, 'mr')]).toEqual([
+      'DISCOM निरीक्षण',
+      'DISCOM तपासणी',
+    ]);
     expect(party && packLabel(party, 'hi')).toBe('DISCOM');
   });
 

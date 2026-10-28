@@ -67,6 +67,21 @@ export function basisPointsToPercent(rate: number): string {
   return `${Math.floor(rate / 100)}.${String(rate % 100).padStart(2, '0')}`;
 }
 
+/** A share as a field holds it — `33.33` — as whole basis points (`3333`); float noise rounds away. */
+export function basisPointsOfShare(share: number): number {
+  return Math.round(share * 100);
+}
+
+/** Whole basis points as a field's share: `3333` is `33.33`. */
+export function shareOfBasisPoints(rate: number): number {
+  return rate / 100;
+}
+
+/** Whole basis points as a person reads a share, trailing zeros dropped: `1000` is `10`, `3333` is `33.33`. */
+export function shareTextOf(rate: number): string {
+  return String(shareOfBasisPoints(rate));
+}
+
 /**
  * A percent as a person typed it — `5`, `5.5` — as the wire's two-decimal text (`"5.00"`). Text
  * that is no percent of up to two decimals comes back as typed, so the server's refusal names it.

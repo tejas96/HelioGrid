@@ -50,7 +50,7 @@ export interface NumberFieldProps {
   max?: number;
   /** The nudge size. Meaningless with `steppers={false}`, which is money's default. Default 1. */
   step?: number;
-  /** Decimal places applied on commit — and, on the phone, the places a resting figure is drawn at. */
+  /** Decimal places applied on commit. */
   precision?: number;
   label?: string;
   /**

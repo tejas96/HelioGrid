@@ -26,6 +26,8 @@ import type {
 /** The open editor as `@heliogrid/data`'s `useTrancheTemplates` answers it — read by shape. */
 export interface TermsEditorFacts {
   readonly draft: TrancheDraft;
+  /** Opened by *Add payment terms*: new until the editor closes, though its first save landed. */
+  readonly made: boolean;
   readonly saved: { readonly isDefault: boolean } | null;
   readonly changed: boolean;
   readonly verdict: AllocationVerdict;
@@ -80,7 +82,7 @@ export interface TermsEditorView {
 export function termsEditorViewOf(input: {
   readonly editor: TermsEditorFacts;
   readonly context: PaymentTermsContext;
-  readonly letterhead: PaymentTermsLetterhead | null;
+  readonly letterhead: PaymentTermsLetterhead;
   readonly said: TermsEditorSaid;
   readonly picking: number | null;
   readonly acting: 'make-default' | 'archive' | null;
@@ -91,7 +93,7 @@ export function termsEditorViewOf(input: {
   const { draft } = editor;
   const id = draft.id;
   return {
-    title: id === null ? words.newTerms : draft.name.shown,
+    title: editor.made ? words.newTerms : draft.name.shown,
     ...(editor.changed ? { overline: words.notSaved } : {}),
     body: {
       words,
@@ -133,7 +135,7 @@ export function termsEditorViewOf(input: {
 }
 
 function standingOf(editor: TermsEditorFacts): PaymentTermsEditorProps['standing'] {
-  if (editor.draft.id === null) return 'new';
+  if (editor.made) return 'new';
   return editor.saved?.isDefault === true ? 'default' : 'other';
 }
 
