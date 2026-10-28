@@ -4,9 +4,9 @@ import { DataProvider, useSession } from '@heliogrid/data/react';
 import { uiLanguageOfTag } from '@heliogrid/domain';
 import { installFormsErrorMap } from '@heliogrid/forms';
 import { type I18nRuntime, provenanceWords } from '@heliogrid/i18n';
-import { MarketProvider, PortalHost, ProvenanceWordsProvider } from '@heliogrid/ui';
+import { KeyboardHost, MarketProvider, PortalHost, ProvenanceWordsProvider } from '@heliogrid/ui';
 import { type ReactNode, useCallback, useState } from 'react';
-import { StatusBar } from 'react-native';
+import { LogBox, StatusBar } from 'react-native';
 import { getVersion } from 'react-native-device-info';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { keychainStorage } from './src/auth/keychain-storage';
@@ -21,6 +21,11 @@ import {
 import { AppNavigation } from './src/navigation';
 import { thisPlatform } from './src/push/messaging';
 import { ReactQueryHost } from './src/react-query-host';
+
+/* Reanimated notes, in development only, that the device asks for reduced motion. The app already
+   honours it (`useReducedMotion`, `F7-51`), and the note's box sits over the act at the screen's
+   foot on CI's emulator, where animations are off, so a flow's tap lands on the note instead. */
+LogBox.ignoreLogs(['[Reanimated] Reduced motion setting is enabled']);
 
 /**
  * App entry: composes providers and renders the navigator — nothing else.
@@ -71,14 +76,17 @@ export default function App() {
             exists, and its phone field reads the dial code and the number's length from here. */}
         <ReaderMarket>
           <SafeAreaProvider>
-            {/* The ONE portal host, above navigation: every menu, sheet and modal escapes its
+            {/* The ONE keyboard host, above every page, door and sheet that holds a field. */}
+            <KeyboardHost>
+              {/* The ONE portal host, above navigation: every menu, sheet and modal escapes its
                 screen through here; without it a Portal renders in place (Portal.native). */}
-            <InsetPortalHost>
-              {/* Transparent, with dark icons, on every Android version: the door's bloom runs under it
+              <InsetPortalHost>
+                {/* Transparent, with dark icons, on every Android version: the door's bloom runs under it
                   (`SCR-M01-01`), and each screen keeps clear of the top inset itself. */}
-              <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
-              <AppNavigation />
-            </InsetPortalHost>
+                <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
+                <AppNavigation />
+              </InsetPortalHost>
+            </KeyboardHost>
           </SafeAreaProvider>
         </ReaderMarket>
       </SessionLanguage>

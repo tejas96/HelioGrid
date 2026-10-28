@@ -1,7 +1,7 @@
 import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
 import { LoadingBars } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { bottomOf } from '../support/layout';
+import { bottomOf, settledBox } from '../support/layout';
 import { resolvedColour, resolvedLength, resolvedShadow } from '../support/token';
 
 /**
@@ -26,15 +26,15 @@ test('one bar per part, at its size, the list wide and 8 apart, in a busy region
   );
   const bars = region.locator('.hg-loading-bar');
   const gap = await resolvedLength(page, '--sp-2');
-  const width = (await region.boundingBox())?.width;
+  const width = (await settledBox(region))?.width;
 
   await expect(page.getByRole('status', { name: label })).toHaveAttribute('aria-busy', 'true');
   await expect(bars).toHaveCount(5);
   for (const [index, height] of [PANEL, ROW, ROW, ROW, ROW].entries()) {
-    expect(await bars.nth(index).boundingBox()).toMatchObject({ height, width });
+    expect(await settledBox(bars.nth(index))).toMatchObject({ height, width });
   }
   for (const index of [1, 2, 3, 4]) {
-    expect((await bars.nth(index).boundingBox())?.y).toBe(
+    expect((await settledBox(bars.nth(index)))?.y).toBe(
       (await bottomOf(bars.nth(index - 1))) + gap,
     );
   }
@@ -63,12 +63,12 @@ test('a line is a mark a glyph wide and a text-high bar beside it, 12 apart, on 
 
   await expect(page.getByRole('status', { name: label })).toHaveAttribute('aria-busy', 'true');
   await expect(lines).toHaveCount(2);
-  const mark = await lines.first().locator('.hg-loading-line-mark').boundingBox();
-  const bar = await lines.first().locator('.hg-loading-line-bar').boundingBox();
+  const mark = await settledBox(lines.first().locator('.hg-loading-line-mark'));
+  const bar = await settledBox(lines.first().locator('.hg-loading-line-bar'));
   expect(mark).toMatchObject({ width: glyph, height: glyph });
   expect(bar?.height).toBe(text);
-  expect(bar?.x).toBe((mark?.x ?? 0) + glyph + text);
-  expect((await lines.nth(1).boundingBox())?.y).toBe((await bottomOf(lines.first())) + text);
+  expect(bar?.x).toBe(mark.x + glyph + text);
+  expect((await settledBox(lines.nth(1)))?.y).toBe((await bottomOf(lines.first())) + text);
   await expect(lines.first().locator('.hg-loading-line-bar')).toHaveCSS(
     'animation-name',
     'hg-sheet-shimmer',
@@ -100,11 +100,11 @@ test('an option is the card it stands for: the grey, the tile radius, a 20 mark,
     'border-radius',
     `${await resolvedLength(page, '--r-tile')}px`,
   );
-  const mark = await options.first().locator('.hg-loading-option-mark').boundingBox();
+  const mark = await settledBox(options.first().locator('.hg-loading-option-mark'));
   const glyph = await resolvedLength(page, '--sp-5');
   expect(mark).toMatchObject({ width: glyph, height: glyph });
   await expect(options.first().locator('.hg-loading-option-line:visible')).toHaveCount(2);
-  expect((await options.nth(1).boundingBox())?.y).toBe((await bottomOf(options.first())) + gap);
+  expect((await settledBox(options.nth(1)))?.y).toBe((await bottomOf(options.first())) + gap);
   await expect(options.first().locator('.hg-loading-option-mark')).toHaveCSS(
     'animation-name',
     'hg-sheet-shimmer',
@@ -131,8 +131,8 @@ test("a control is one control row's height, before the parts it stands over", a
   await expect(page.getByRole('status', { name: label })).toHaveAttribute('aria-busy', 'true');
   await expect(bars).toHaveCount(3);
   for (const [index, height] of [CONTROL, PANEL, ROW].entries()) {
-    expect((await bars.nth(index).boundingBox())?.height).toBe(height);
+    expect((await settledBox(bars.nth(index)))?.height).toBe(height);
   }
-  expect((await bars.nth(1).boundingBox())?.y).toBe((await bottomOf(bars.first())) + gap);
+  expect((await settledBox(bars.nth(1)))?.y).toBe((await bottomOf(bars.first())) + gap);
   await expect(bars.first()).toHaveCSS('animation-name', 'hg-sheet-shimmer');
 });

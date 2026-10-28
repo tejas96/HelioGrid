@@ -1,7 +1,8 @@
 /* Cross-component imports in a native half point at the NATIVE file — see NextAction.native.tsx. */
 import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
-import { Keyboard, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { closeKeyboard } from '../../primitives/Keyboard/use-keyboard.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Banner } from '../Banner/Banner.native';
 import { Button } from '../Button/Button.native';
@@ -35,7 +36,7 @@ export function InviteDecline({ words, decline, onPress }: InviteDeclineProps) {
         size="md"
         disabled={decline.held}
         onClick={() => {
-          Keyboard.dismiss();
+          closeKeyboard();
           onPress('decline');
         }}
       >

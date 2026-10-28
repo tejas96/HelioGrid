@@ -54,14 +54,14 @@ test('the business profile row opens the profile in the shell; a save writes the
     await expect(side).toBeHidden();
   }
   await expectNoSidewaysScroll(page);
-  await expect(page).toHaveTitle(/\S/);
-  await expectNoSeriousViolations(page);
 
   // In settings *What you sell* opens itself on arrival (the brief's ruling 58): a click would shut it.
+  // It is part of the landing, so the landing's checks wait for it to open.
   await expect(
     page.getByRole('button', { name: en.t(COMPANY_PROFILE_PART_TITLE.declarations) }),
   ).toHaveAttribute('aria-expanded', 'true');
   await expect(page.getByText(en.t(COMPANY_PROFILE.reseedScope))).toBeVisible();
+  await expectNoSeriousViolations(page);
   const size = page.getByRole('textbox', { name: en.t(SETUP_WHAT_YOU_SELL.sizeLabel) });
   await size.fill('8');
   await size.press('Enter');

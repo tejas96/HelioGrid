@@ -1,0 +1,15 @@
+# What do you sell: the owner picks who they sell to and their typical size, then continues
+# (`SCR-M01-04`). The size field is the second element its label's words name, as on the door.
+appId: com.heliogrid.app
+---
+- extendedWaitUntil:
+    visible: ${WHAT_YOU_SELL_TITLE}
+    timeout: 30000
+- tapOn: "${FIRST_SEGMENT}.*"
+- tapOn:
+    text: "${SIZE_LABEL}.*"
+    index: 1
+- waitForAnimationToEnd
+- inputText: "5"
+- pressKey: Enter
+- tapOn: ${CONTINUE}

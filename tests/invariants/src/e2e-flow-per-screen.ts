@@ -31,51 +31,6 @@ const FLOW = /\.yaml$/;
  */
 const PHONE_SCREENS_HELD: ReadonlyMap<string, string> = new Map([
   [
-    'shell',
-    'reached only by a member with a company: no flow yet signs a seeded member in, and the ' +
-      "sign-up flow's Create company press never reaches the api on iOS inside Maestro, while the " +
-      'same tap on a still screen does — it is checked by hand',
-  ],
-  [
-    'setup-language',
-    'reached only after Create company, the press no Maestro flow lands on iOS (the shell above): ' +
-      'its flows are the web suite and the phone QA rows of its task',
-  ],
-  [
-    'setup-what-you-sell',
-    'reached only after Create company and the language step, behind the press no Maestro flow ' +
-      'lands on iOS (the shell above): its flows are the web suite and the phone QA rows of its task',
-  ],
-  [
-    'company-profile',
-    'reached only by a member with a company — after Create company and the two steps before it, ' +
-      'or through More in settings — behind the press no Maestro flow lands on iOS (the shell ' +
-      'above): its flows are the web suite and the phone QA rows of its task (T-M01-005o)',
-  ],
-  [
-    'setup-invite-team',
-    'reached only after Create company and the three steps before it, behind the press no Maestro ' +
-      'flow lands on iOS (the shell above): its flows are the web suite and the phone QA rows of ' +
-      'its task (T-M01-007c)',
-  ],
-  [
-    'setup-ready',
-    'reached only after Create company and the four steps before it, behind the press no Maestro ' +
-      'flow lands on iOS (the shell above): its flows are the web suite and the phone QA rows of ' +
-      'its task (T-M01-006)',
-  ],
-  [
-    'profile',
-    'reached only by a member with a company, through More, behind the press no Maestro flow lands ' +
-      'on iOS (the shell above): its flows are the web suite and the phone QA rows of its task ' +
-      '(T-M01-011a)',
-  ],
-  [
-    'settings',
-    'reached only by a member with a company, behind the press no Maestro flow lands on iOS (the ' +
-      'shell above): its flows are the web suite and the phone QA rows of its task (T-M01-005f)',
-  ],
-  [
     'first-run-profile',
     'reached only right after an invite join, whose link lives in the api log no Maestro flow can ' +
       'read: its flows are the web suite and the phone QA rows of its task (T-M01-009b)',
@@ -84,36 +39,6 @@ const PHONE_SCREENS_HELD: ReadonlyMap<string, string> = new Map([
     'role-explainer',
     'reached only right after an invite join, as first-run-profile is: its flows are the web suite ' +
       'and the phone QA rows of its task (T-M01-010c)',
-  ],
-  [
-    'branding',
-    'reached only by a member with a company, through More in settings, behind the press no ' +
-      'Maestro flow lands on iOS (the shell above): its flows are the web suite and the phone QA ' +
-      'rows of its task (T-M01-018)',
-  ],
-  [
-    'proposal-template',
-    'reached only by a member with a company, through More in settings, behind the press no ' +
-      'Maestro flow lands on iOS (the shell above): its flows are the web suite and the phone QA ' +
-      'rows of its task (T-M01-019)',
-  ],
-  [
-    'catalog-settings',
-    'reached only by a member with a company, through More in settings, behind the press no ' +
-      'Maestro flow lands on iOS (the shell above): its flows are the web suite and the phone QA ' +
-      'rows of its task (T-M01-015)',
-  ],
-  [
-    'roles-reference',
-    'reached only by a member with a company, through More in settings or Assign Roles, behind ' +
-      'the press no Maestro flow lands on iOS (the shell above): its flows are the web suite and ' +
-      'the phone QA rows of its task (T-M01-014)',
-  ],
-  [
-    'team',
-    'reached only by a member with a company, through More in settings, behind the press no ' +
-      'Maestro flow lands on iOS (the shell above): its flows are the web suite and the phone QA ' +
-      'rows of its task (T-M01-012b)',
   ],
 ]);
 

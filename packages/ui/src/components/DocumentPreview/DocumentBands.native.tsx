@@ -61,7 +61,8 @@ export function DocumentTranchesBand({ doc }: { doc: ResolvedDocument }) {
       <DocumentOverline spaced>{doc.tranchesTitle}</DocumentOverline>
       <View>
         {doc.tranches.map((tranche, index) => (
-          <View key={tranche.label} style={docStyles.trancheRow}>
+          // biome-ignore lint/suspicious/noArrayIndexKey: a schedule is positional, and two tranches may share a name
+          <View key={index} style={docStyles.trancheRow}>
             <Text style={docStyles.trancheIndex}>{String(index + 1).padStart(2, '0')}</Text>
             <View style={docStyles.trancheCell}>
               <Text style={docStyles.trancheLabel}>{tranche.label}</Text>

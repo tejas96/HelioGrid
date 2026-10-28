@@ -143,6 +143,15 @@ export interface LastSave {
   readonly by: { readonly id: string; readonly name: string | null } | null;
 }
 
+/** A last-save row as read: the account joined, which may hold no name. */
+export function lastSaveOf(row: {
+  at: Date;
+  byId: string | null;
+  byName: string | null;
+}): LastSave {
+  return { at: row.at, by: row.byId === null ? null : { id: row.byId, name: row.byName ?? null } };
+}
+
 /** The page's `changed` on the wire: `null` until the first save. */
 export function lastSaveWire(last: LastSave | null): {
   at: string;

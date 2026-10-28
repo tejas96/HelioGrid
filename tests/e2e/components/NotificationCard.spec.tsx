@@ -1,6 +1,7 @@
 import { createTranslator, NOTIFICATION_CENTRE, notificationCardName } from '@heliogrid/i18n';
 import { NotificationAnnouncement, NotificationCard, NotificationLanding } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { resolvedColour } from '../support/token';
 
 /** The centre's parts (`SCR-SHELL-03`), at the phone's 335 and the web panel's 456. */
@@ -64,11 +65,11 @@ for (const width of [335, 456]) {
       mount,
     }) => {
       const card = await mount(<NotificationCard {...item} name={name} />);
-      const glyph = await card.locator('.hg-notification-glyph').boundingBox();
+      const glyph = await settledBox(card.locator('.hg-notification-glyph'));
       expect(glyph?.width).toBe(40);
       expect(glyph?.height).toBe(40);
-      const title = await card.getByText(item.title).boundingBox();
-      const body = await card.getByText(item.body).boundingBox();
+      const title = await settledBox(card.getByText(item.title));
+      const body = await settledBox(card.getByText(item.body));
       if (title === null || body === null) throw new Error('the title and the body both render');
       expect(Math.round(body.y - (title.y + title.height))).toBe(2);
     });
@@ -82,8 +83,8 @@ for (const width of [335, 456]) {
     test('a long title, emoji and Devanagari wrap and stay whole', async ({ mount }) => {
       const long = `${'प्रस्ताव खोला गया — '.repeat(8)}☀️`;
       const card = await mount(<NotificationCard {...item} title={long} name={name} />);
-      const box = await card.boundingBox();
-      const text = await card.getByText(long).boundingBox();
+      const box = await settledBox(card);
+      const text = await settledBox(card.getByText(long));
       if (box === null || text === null) throw new Error('the card renders');
       expect(text.x + text.width).toBeLessThanOrEqual(box.x + box.width);
     });
@@ -115,11 +116,11 @@ for (const width of [335, 456]) {
         padding: '16px',
         radius: '22px',
       });
-      const dot = await card.locator('.hg-notification-dot').boundingBox();
+      const dot = await settledBox(card.locator('.hg-notification-dot'));
       expect([dot?.width, dot?.height]).toEqual([10, 10]);
-      const tileBox = await tile.boundingBox();
-      const act = await card.getByRole('button', { name: actWord }).boundingBox();
-      expect(Math.round((act?.x ?? 0) - (tileBox?.x ?? 0))).toBe(16 + 40 + 12);
+      const tileBox = await settledBox(tile);
+      const act = await settledBox(card.getByRole('button', { name: actWord }));
+      expect(Math.round(act.x - tileBox.x)).toBe(16 + 40 + 12);
       expect(errors).toEqual([]);
     });
 
@@ -133,7 +134,7 @@ for (const width of [335, 456]) {
           name="HelioGrid 2.4"
         />,
       );
-      const logo = await card.locator('.hg-notification-logo > *').first().boundingBox();
+      const logo = await settledBox(card.locator('.hg-notification-logo > *').first());
       expect([logo?.width, logo?.height]).toEqual([32, 32]);
     });
 

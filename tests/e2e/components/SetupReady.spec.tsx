@@ -2,6 +2,7 @@ import type { DemoDoor } from '@heliogrid/domain';
 import { createTranslator, setupReadyWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator, Page } from '@playwright/test';
+import { settledBox } from '../support/layout';
 import { resolvedLength } from '../support/token';
 import { SetupReadyAsHeld } from './SetupReady.story';
 
@@ -17,10 +18,10 @@ const DEMO_STATES: readonly DemoDoor[] = ['ready', 'loading', 'unavailable'];
 
 /** Where the heading and door one sit, and door two's height, for one demo state. */
 async function placesOf(page: Page, root: Locator) {
-  const heading = await root.getByRole('heading', { level: 1 }).boundingBox();
+  const heading = await settledBox(root.getByRole('heading', { level: 1 }));
   const doors = root.locator('.hg-setup-ready-doors > *');
-  const one = await doors.nth(0).boundingBox();
-  const two = await doors.nth(1).boundingBox();
+  const one = await settledBox(doors.nth(0));
+  const two = await settledBox(doors.nth(1));
   const sideways = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
@@ -75,10 +76,10 @@ test.describe('at 375', () => {
       en.demo.title,
     ]);
     await expect(root.getByText(en.demo.badge, { exact: true })).toBeVisible();
-    const wordmark = await root.locator('.hg-door-wordmark').boundingBox();
-    const heading = await root.getByRole('heading', { level: 1 }).boundingBox();
-    const line = await root.getByText(en.companyLine(COMPANY)).boundingBox();
-    const first = await root.locator('.hg-setup-ready-doors > *').first().boundingBox();
+    const wordmark = await settledBox(root.locator('.hg-door-wordmark'));
+    const heading = await settledBox(root.getByRole('heading', { level: 1 }));
+    const line = await settledBox(root.getByText(en.companyLine(COMPANY)));
+    const first = await settledBox(root.locator('.hg-setup-ready-doors > *').first());
     expect((heading?.y ?? 0) - ((wordmark?.y ?? 0) + (wordmark?.height ?? 0))).toBe(
       await resolvedLength(page, '--sp-8'),
     );
@@ -90,7 +91,7 @@ test.describe('at 375', () => {
     );
     const pad = await resolvedLength(page, '--screen-pad-mobile');
     for (const name of [en.lead.act, en.demo.act]) {
-      const act = await root.getByRole('button', { name }).boundingBox();
+      const act = await settledBox(root.getByRole('button', { name }));
       expect(act?.height).toBe(await resolvedLength(page, '--sp-12'));
       expect(act?.width).toBeLessThan(375 - 2 * pad);
       expect(act?.width).toBeGreaterThan(
@@ -98,8 +99,8 @@ test.describe('at 375', () => {
       );
     }
     const doors = root.locator('.hg-setup-ready-doors > *');
-    const one = await doors.nth(0).boundingBox();
-    const two = await doors.nth(1).boundingBox();
+    const one = await settledBox(doors.nth(0));
+    const two = await settledBox(doors.nth(1));
     expect((two?.y ?? 0) - ((one?.y ?? 0) + (one?.height ?? 0))).toBe(
       await resolvedLength(page, '--sp-4'),
     );
@@ -145,8 +146,8 @@ test.describe('the wall', () => {
       await expect(root.getByText(words.wall.line)).toBeVisible();
       await expect(root.getByRole('heading', { level: 2 })).toHaveCount(0);
       await expect(root.getByRole('button')).toHaveCount(1);
-      const wordmark = await root.locator('.hg-door-wordmark').boundingBox();
-      const title = await root.getByText(words.wall.title).boundingBox();
+      const wordmark = await settledBox(root.locator('.hg-door-wordmark'));
+      const title = await settledBox(root.getByText(words.wall.title));
       expect(title?.y).toBeGreaterThan((wordmark?.y ?? 0) + (wordmark?.height ?? 0));
       expect(title?.y).toBeLessThan(400);
       const sideways = await page.evaluate(
@@ -170,13 +171,13 @@ test.describe('at 1536', () => {
       <SetupReadyAsHeld reader="en" demo="unavailable" company={COMPANY} unreachable />,
     );
     await expect(root.getByRole('heading', { level: 1 })).toHaveCount(0);
-    const wall = await root.getByText(en.wall.title).boundingBox();
-    const pane = await root.locator('.hg-door-task').boundingBox();
+    const wall = await settledBox(root.getByText(en.wall.title));
+    const pane = await settledBox(root.locator('.hg-door-task'));
     expect(
       Math.abs((wall?.x ?? 0) + (wall?.width ?? 0) / 2 - ((pane?.x ?? 0) + (pane?.width ?? 0) / 2)),
     ).toBeLessThan(1);
     expect(pane?.height).toBe(1000);
-    const block = await root.locator('.hg-setup-ready-wall').boundingBox();
+    const block = await settledBox(root.locator('.hg-setup-ready-wall'));
     expect(Math.abs((block?.y ?? 0) + (block?.height ?? 0) / 2 - 500)).toBeLessThan(1);
   });
 
@@ -185,10 +186,10 @@ test.describe('at 1536', () => {
     page,
   }) => {
     const root = await mount(<SetupReadyAsHeld reader="en" demo="ready" company={COMPANY} />);
-    const heading = await root.getByRole('heading', { level: 1 }).boundingBox();
+    const heading = await settledBox(root.getByRole('heading', { level: 1 }));
     const doors = root.locator('.hg-setup-ready-doors > *');
-    const one = await doors.nth(0).boundingBox();
-    const two = await doors.nth(1).boundingBox();
+    const one = await settledBox(doors.nth(0));
+    const two = await settledBox(doors.nth(1));
     expect(two?.y).toBe(one?.y);
     expect(two?.height).toBe(one?.height);
     expect(Math.round((two?.x ?? 0) - ((one?.x ?? 0) + (one?.width ?? 0)))).toBe(
@@ -196,7 +197,7 @@ test.describe('at 1536', () => {
     );
     expect(Math.round(one?.y ?? 0)).toBe(Math.round(heading?.y ?? 0));
     expect((one?.x ?? 0) - (heading?.x ?? 0)).toBeGreaterThan(400);
-    const act = await root.getByRole('button', { name: en.lead.act }).boundingBox();
+    const act = await settledBox(root.getByRole('button', { name: en.lead.act }));
     expect(act?.width).toBeLessThan((one?.width ?? 0) / 2);
     const line = root.getByText(en.lead.line);
     await expect(line).toHaveCSS('font-size', `${await resolvedLength(page, '--fs-body')}px`);

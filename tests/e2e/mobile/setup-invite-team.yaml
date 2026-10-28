@@ -1,0 +1,7 @@
+# Invite your team, as setup's fourth step: the owner skips it for now (`SCR-M01-07`).
+appId: com.heliogrid.app
+---
+- extendedWaitUntil:
+    visible: ${INVITE_TITLE}
+    timeout: 30000
+- tapOn: ${SKIP_FOR_NOW}

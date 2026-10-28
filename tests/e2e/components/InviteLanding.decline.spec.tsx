@@ -2,7 +2,7 @@ import type { InviteFacts, InviteLandingEvent } from '@heliogrid/domain';
 import { createTranslator, INVITE_DECLINE, INVITE_LANDING, SIGN_IN } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator, Page } from '@playwright/test';
-import { bottomOf, expectNoSidewaysScroll } from '../support/layout';
+import { bottomOf, expectNoSidewaysScroll, settledBox } from '../support/layout';
 import { animationsSettled } from '../support/motion';
 import { resolvedLength } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
@@ -183,8 +183,8 @@ test.describe('the decline at 375', () => {
   }) => {
     const root = await mount(<InviteLandingAt reader="en" events={FRAMES.normal} />);
     const join = root.getByRole('button', { name: words(INVITE_LANDING.join) });
-    const joinBox = await join.boundingBox();
-    const box = await control(root).boundingBox();
+    const joinBox = await settledBox(join);
+    const box = await settledBox(control(root));
     expect((box?.y ?? 0) - (await bottomOf(join))).toBe(await resolvedLength(page, '--sp-3'));
     const centre = (b: typeof box) => (b?.x ?? 0) + (b?.width ?? 0) / 2;
     expect(Math.abs(centre(box) - centre(joinBox))).toBeLessThanOrEqual(1);
@@ -239,7 +239,7 @@ test.describe('the decline at 1536', () => {
       const root = await mount(<InviteLandingAt reader={reader} events={FRAMES.confirming} />);
       await expectStackedActs(page);
       const dialog = page.getByRole('dialog');
-      const box = await dialog.boundingBox();
+      const box = await settledBox(dialog);
       expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(1000);
       await expectNoSidewaysScroll(page);
       await dialog.getByRole('button').last().click();
@@ -254,8 +254,8 @@ async function expectStackedActs(page: Page): Promise<void> {
   await animationsSettled(page);
   const [keep, go] = await page.getByRole('dialog').getByRole('button').all();
   if (keep === undefined || go === undefined) throw new Error('the confirm draws two acts');
-  const keepBox = await keep.boundingBox();
-  const goBox = await go.boundingBox();
+  const keepBox = await settledBox(keep);
+  const goBox = await settledBox(go);
   expect(await bottomOf(go)).toBeLessThanOrEqual(keepBox?.y ?? 0);
   expect(goBox?.width).toBe(keepBox?.width);
   expect(goBox?.x).toBe(keepBox?.x);
@@ -271,5 +271,5 @@ async function expectStackedActs(page: Page): Promise<void> {
 }
 
 async function topOf(locator: Locator): Promise<number> {
-  return (await locator.boundingBox())?.y ?? 0;
+  return (await settledBox(locator))?.y ?? 0;
 }

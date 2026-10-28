@@ -58,6 +58,12 @@ export interface NumberFieldProps {
    * (`SCR-M01-15`'s version rows). The field keeps its accessible name.
    */
   labelSpokenOnly?: boolean;
+  /**
+   * The input's accessible name **when no visible `label` is drawn** — a repeated line that labels
+   * its column once (`SCR-M01-20`: *"Share of Second instalment"*). The stepper buttons take the
+   * same name. Ignored when `label` is set.
+   */
+  ariaLabel?: string;
   unit?: string;
   hint?: string;
   disabled?: boolean;

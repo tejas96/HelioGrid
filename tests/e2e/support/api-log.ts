@@ -3,6 +3,9 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { OTP_LENGTH } from '@heliogrid/domain';
 
+/** Where the api listens on every machine the suite runs on, the developer's and CI's. */
+export const API = 'http://localhost:8084';
+
 /**
  * The api's output: the `api` and `api-built` launch configurations write it here, and so does this
  * suite's own server, so one reader serves a local run and CI. The development delivery writes each

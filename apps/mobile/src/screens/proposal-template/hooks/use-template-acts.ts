@@ -1,7 +1,7 @@
 import type { ProposalTemplatePage } from '@heliogrid/data/react';
 import { SETTINGS_SEGMENT } from '@heliogrid/domain';
+import { closeKeyboard } from '@heliogrid/ui';
 import { StackActions, useNavigation } from '@react-navigation/native';
-import { Keyboard } from 'react-native';
 
 /** The page's phone acts: the save, and the ways to Branding and the Business profile. */
 export function useTemplateActs(page: ProposalTemplatePage) {
@@ -13,7 +13,7 @@ export function useTemplateActs(page: ProposalTemplatePage) {
   return {
     // The keyboard closes on the act, so the banner a failed save raises is in view.
     save: () => {
-      Keyboard.dismiss();
+      closeKeyboard();
       page.save();
     },
     openBranding: () => open('branding'),

@@ -2,6 +2,7 @@ import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
 import { Button, type DoorColumn, DoorFrame, Text } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Page } from '@playwright/test';
+import { settledBox } from '../support/layout';
 import { resolvedLength } from '../support/token';
 
 /**
@@ -88,11 +89,11 @@ test.describe('at 375', () => {
   }) => {
     const door = await mount(placedDoor('centred', false));
     await settledType(page);
-    const header = await door.locator('header').boundingBox();
-    const heading = await door
-      .getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) })
-      .boundingBox();
-    const task = await door.getByTestId('task').boundingBox();
+    const header = await settledBox(door.locator('header'));
+    const heading = await settledBox(
+      door.getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) }),
+    );
+    const task = await settledBox(door.getByTestId('task'));
 
     const above = (heading?.y ?? 0) - ((header?.y ?? 0) + (header?.height ?? 0));
     const under = 812 - ((task?.y ?? 0) + (task?.height ?? 0));
@@ -103,10 +104,10 @@ test.describe('at 375', () => {
   test('a deep column puts its heading sp-8 under the step header', async ({ mount, page }) => {
     const door = await mount(placedDoor('deep', true));
     await settledType(page);
-    const lead = await door.getByTestId('lead').boundingBox();
-    const heading = await door
-      .getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) })
-      .boundingBox();
+    const lead = await settledBox(door.getByTestId('lead'));
+    const heading = await settledBox(
+      door.getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) }),
+    );
 
     const gap = (heading?.y ?? 0) - ((lead?.y ?? 0) + (lead?.height ?? 0));
     expect(gap).toBe(await resolvedLength(page, '--sp-8'));
@@ -115,10 +116,10 @@ test.describe('at 375', () => {
   test('a near column puts its heading sp-4 under the step header', async ({ mount, page }) => {
     const door = await mount(placedDoor('near', true));
     await settledType(page);
-    const lead = await door.getByTestId('lead').boundingBox();
-    const heading = await door
-      .getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) })
-      .boundingBox();
+    const lead = await settledBox(door.getByTestId('lead'));
+    const heading = await settledBox(
+      door.getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) }),
+    );
 
     const gap = (heading?.y ?? 0) - ((lead?.y ?? 0) + (lead?.height ?? 0));
     expect(gap).toBe(await resolvedLength(page, '--sp-4'));
@@ -133,8 +134,8 @@ test.describe('at 375', () => {
     const heading = door.getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) });
     const action = door.getByRole('button', { name: en.t(COMPANY_SIGNUP.createAnyway) });
 
-    const leadBox = await lead.boundingBox();
-    const headingBox = await heading.boundingBox();
+    const leadBox = await settledBox(lead);
+    const headingBox = await settledBox(heading);
     expect(leadBox?.y).toBeLessThan(headingBox?.y ?? 0);
     await expect(heading).toHaveCSS('font-size', `${await resolvedLength(page, '--fs-h2')}px`);
     await expect(door.getByText(INTRO)).toHaveCSS(
@@ -142,7 +143,7 @@ test.describe('at 375', () => {
       `${await resolvedLength(page, '--fs-body')}px`,
     );
 
-    const actionBox = await action.boundingBox();
+    const actionBox = await settledBox(action);
     expect((actionBox?.y ?? Infinity) + (actionBox?.height ?? 0)).toBeLessThanOrEqual(812);
   });
 });
@@ -155,19 +156,19 @@ test.describe('at 1536', () => {
     page,
   }) => {
     const door = await mount(doorTree());
-    const lead = await door.getByTestId('lead').boundingBox();
-    const task = await door.getByTestId('task').boundingBox();
+    const lead = await settledBox(door.getByTestId('lead'));
+    const task = await settledBox(door.getByTestId('task'));
     const heading = door.getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) });
-    const action = await door
-      .getByRole('button', { name: en.t(COMPANY_SIGNUP.createAnyway) })
-      .boundingBox();
+    const action = await settledBox(
+      door.getByRole('button', { name: en.t(COMPANY_SIGNUP.createAnyway) }),
+    );
 
     await expect(heading).toHaveCSS('font-size', `${await resolvedLength(page, '--fs-h1')}px`);
     await expect(door.getByText(INTRO)).toHaveCSS(
       'font-size',
       `${await resolvedLength(page, '--fs-body-lg')}px`,
     );
-    const headingBox = await heading.boundingBox();
+    const headingBox = await settledBox(heading);
     const identityRight = (headingBox?.x ?? 0) + (headingBox?.width ?? 0);
     expect(lead?.x).toBe(task?.x);
     expect(action?.x).toBe(task?.x);
@@ -202,14 +203,14 @@ test.describe('the onboarding panes at 1536', () => {
     page,
   }) => {
     const door = await mount(onboardingTree());
-    const pane = await door.locator('.hg-door-identity').boundingBox();
-    const task = await door.getByTestId('task').boundingBox();
-    const heading = await door
-      .getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) })
-      .boundingBox();
-    const action = await door
-      .getByRole('button', { name: en.t(COMPANY_SIGNUP.createAnyway) })
-      .boundingBox();
+    const pane = await settledBox(door.locator('.hg-door-identity'));
+    const task = await settledBox(door.getByTestId('task'));
+    const heading = await settledBox(
+      door.getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) }),
+    );
+    const action = await settledBox(
+      door.getByRole('button', { name: en.t(COMPANY_SIGNUP.createAnyway) }),
+    );
     const sp12 = await resolvedLength(page, '--sp-12');
     const sp16 = await resolvedLength(page, '--sp-16');
 
@@ -244,7 +245,7 @@ test.describe('the held action at 375', () => {
         <div data-testid="task" style={{ height: SHORT_TASK }} />
       </DoorFrame>,
     );
-    const footer = await door.locator('.hg-door-footer').boundingBox();
+    const footer = await settledBox(door.locator('.hg-door-footer'));
     await expect.poll(() => heights.at(-1)).toBe(footer?.height);
   });
 });

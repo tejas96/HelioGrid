@@ -56,6 +56,8 @@ export interface NumberFieldBoxProps {
   /** Refusal or error — the inset danger ring, which the focus ring is drawn ON TOP of. */
   danger: boolean;
   label?: string;
+  /** The input's own name — set only when no `label` names it (`NumberFieldProps.ariaLabel`). */
+  ariaLabel?: string;
   unit?: string;
   currency: boolean;
   describedBy?: string;
@@ -72,6 +74,7 @@ export function NumberFieldBox({
   disabled,
   danger,
   label,
+  ariaLabel,
   unit,
   currency,
   describedBy,
@@ -79,7 +82,7 @@ export function NumberFieldBox({
 }: NumberFieldBoxProps) {
   const control = useRef<HTMLInputElement>(null);
   useFocusRequest(control, focusRequest);
-  const name = label ?? 'value';
+  const name = label ?? ariaLabel ?? 'value';
   return (
     <div
       className="hg-number-field-box"
@@ -111,6 +114,7 @@ export function NumberFieldBox({
         inputMode="decimal"
         value={draft.draft}
         disabled={disabled}
+        aria-label={ariaLabel}
         aria-invalid={danger ? true : undefined}
         aria-describedby={describedBy}
         onChange={(e) => draft.setDraft(e.target.value)}

@@ -1,13 +1,13 @@
 import { useInvite } from '@heliogrid/data/react';
 import {
   Button,
+  closeKeyboard,
   type FocusHandle,
   type InviteEditorProps,
   ShellGlyph,
   useFormat,
 } from '@heliogrid/ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Keyboard } from 'react-native';
 import { useInviteForm } from './use-invite-form';
 
 /**
@@ -22,7 +22,7 @@ export function useTeamInvite(
   const { pack } = useFormat();
   const [isOpen, setOpen] = useState(false);
   /* The native sheet returns no focus: the screen reader's place goes back to *Invite teammate*.
-     The sheet's field lets go first (`Keyboard.dismiss` blurs it): on Android a focused field that
+     The sheet's field lets go first (`closeKeyboard` blurs it): on Android a focused field that
      unmounts hands the keyboard's focus to the page's next field, Team's search. Stable, as the
      sheet's close handler. */
   const act = useRef<FocusHandle>(null);
@@ -30,7 +30,7 @@ export function useTeamInvite(
      list redraws and the lead *Invite teammate* is the one to wait for. */
   const first = useRef<FocusHandle>(null);
   const close = useCallback(() => {
-    Keyboard.dismiss();
+    closeKeyboard();
     setOpen(false);
     (act.current ?? first.current)?.focus();
   }, []);

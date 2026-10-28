@@ -88,7 +88,7 @@ the next — as `.claude/rules/ui-adherence.md` *A screen is its locked board* s
 back after — never `git checkout` a file this task changed — and its failing line kept for the
 PR's *Proof*. A new phone screen joins `tests/e2e/mobile/run.sh` with its flow; a new
 web route gets its `tests/e2e/web` spec. What a `DONE WHEN` line shows on a screen is asserted in
-that flow or spec, so the runner, not an agent, checks it. After the rebuild and after each new
+that flow or spec, so CI's runner, not an agent, checks it. After the rebuild and after each new
 migration, `<prefix> pnpm db:migrate > .qa/migrate.log 2>&1`; an `apps/api/tests` file runs as
 `<prefix> pnpm exec vitest run <file> > .qa/<name>.log 2>&1`. Delete the deferred rows the plan
 lists. Then `<prefix> pnpm check > .qa/check.log 2>&1` — it runs the unit and api tests related to
@@ -145,18 +145,25 @@ the `DONE WHEN` lines and the routes, started as soon as `api` is up. Fix its ev
 **Then the screens:** one `qa-live` per screen surface in scope, all in one message, so they run at
 once: each gets its surface, its device, the `DONE WHEN` lines and the screens or routes the change
 reaches, and signs in as its own QA company. The web is in scope for a change a web screen shows; iOS for
-any phone change — CI builds it but runs none of its flows; Android only for native code, an `.android.*` file, the
-keyboard or Back, since CI's `android` lane runs its flows. A change to one half of a twinned
+any phone change — CI builds it but runs none of its flows; Android only for what CI's `android`
+lane cannot show: native code or a native dependency, an `.android.*` file or a `Platform.OS`
+branch, the keyboard, Back, the screen's insets, a system picker or a permission. No phone suite
+runs here, on either phone. A change to one half of a twinned
 screen brings the other platform in (`.claude/rules/screen-parts.md`). Fix every `FAIL` (*Fixing*). A
 `BLOCKED` check gets what it needs and a re-check, or, when nothing here can give it, a line in
 the PR's *Notes*.
 
 ## Fixing
 
-A behaviour fix starts with a test that fails for the bug — a unit or api test, or an assertion in the
-screen's flow or spec — and then makes it pass. After each round of fixes, run
-`<prefix> pnpm check > .qa/check.log 2>&1` — its typecheck builds the packages the app reads — and
-the phone flow that failed or changed, whose log the re-check is given, before any re-check; a web
+A bug seen once that two tries on the running app do not repeat is a `deferred.md` row naming the
+tries, never a third try. A round's fixes start once every agent of that round has reported: an edit while one still checks
+reloads the app under it, and its report then blames the reload. A behaviour fix starts with a test
+that fails for the bug — a unit or api test, or an assertion in the screen's flow or spec — and then
+makes it pass. After each round of fixes, run
+`pnpm lint:fix > .qa/lint.log 2>&1; echo "lint exit $?"; <prefix> pnpm check > .qa/check.log 2>&1; echo "check exit $?"`
+— each step on its own exit, since a step chained behind a failed one never runs and leaves the
+last round's log to be read as this one's; the check's typecheck builds the packages the app
+reads — before any re-check; no phone flow runs here (CI runs them on Android); a web
 spec runs only in the gate (*Clean up*), and a red that only the specs show reruns only their
 command. Re-check with a fresh agent given the fixed files and the findings or checks they
 answer; a QA fix that touches money, tenancy or permissions goes back to the reviewer too. After
@@ -167,11 +174,11 @@ tests and the gate.
 
 Stop every server, phone and browser tab this task started, by its preview id,
 `xcrun simctl shutdown <udid>` or `tabs_close`. Never quit Docker. Delete the temporary files you
-made. QA is done, so delete its logs and the phone runs it left, then restore `.env.local` (a
+made. QA is done, so delete its logs, then restore `.env.local` (a
 task that skipped *Run the app* deletes only the logs):
 
 ```bash
-find ~/.maestro/tests -mindepth 1 -maxdepth 1 -newer .qa/env.local.dev -exec rm -rf {} +; find .qa -maxdepth 1 \( -name '*.log' -o -name '*.cookies' \) -delete; mv .qa/env.local.dev .env.local
+find .qa -maxdepth 1 \( -name '*.log' -o -name '*.cookies' -o -name '*.png' \) -delete; mv .qa/env.local.dev .env.local
 ```
 
 A task that skipped *Run the app* first stops the owner's `api`, `web` or `worker` as it says:
@@ -192,7 +199,9 @@ server after `rm -rf apps/web/.next`, since the gate's build leaves a production
 
 ## Ship
 
-Every commit, a merge too, goes as `CLAUDE.md` §4 says. When the branch is behind, merge
+Every commit, a merge too, goes as `CLAUDE.md` §4 says. Stage with `git add -A`, and commit only when `git diff --cached --name-only` names
+exactly the files the owner was shown — every step joined by `&&`, so a failed add never commits
+what was staged before it. When the branch is behind, merge
 `origin/main` first (never rebase). A conflict is resolved to keep both sides' intent; one that
 cannot keep both stops the task with its files named. If the merge brought a migration, renumber
 this task's after it (`packages/db/CLAUDE.md`) and rebuild `heliogrid_test` (*Build*). After a
@@ -215,5 +224,5 @@ line from
 `python3 -I ~/.claude/projects/-Volumes-works-space-heliogrid/harness-meter.py <id>`. A red job:
 `gh run view <run> --log-failed > .qa/ci.log`, fix, commit, push, and wait for CI again. Once the
 PR is ready, the task's files are waste:
-`find .qa -maxdepth 1 \( -name '*.log' -o -name '*.cookies' -o -name pr-body.md \) -delete`. Say the PR's link and
+`find .qa -maxdepth 1 \( -name '*.log' -o -name '*.cookies' -o -name '*.png' -o -name pr-body.md \) -delete`. Say the PR's link and
 `owner merges #<n>`; the session ends there.

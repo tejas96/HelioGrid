@@ -42,6 +42,11 @@
 .hg-branding-card,
 /* The Proposal template's editor card at width (`ProposalTemplateSettings`, `Editor 1536`). */
 .hg-template-card,
+/* The Payment terms editor card at width (`PaymentTermsEditorCard`, `Editor card 1536`). */
+.hg-pay-editor-card,
+/* A raised `Card` (`surface="raised"`, `SCR-M01-20`'s payment terms): a white card on the page,
+   not a tile — it beats the tiles' one-class `.hg-card` entry, and paints its fill from this ground. */
+.hg-card[data-surface="raised"],
 /* The add sheet's raised cards, its spreadsheet tile and a scheme row switched off
    (`CatalogItemForm`): white over the sheet, each painting its ground. */
 .hg-item-card,

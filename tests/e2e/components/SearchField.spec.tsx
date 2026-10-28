@@ -8,6 +8,7 @@ import {
 } from '@heliogrid/i18n';
 import { FacetChips, FilterChips, SearchField } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { resolvedColour } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 import { FocusHandlesStory } from './SearchField.story';
@@ -32,7 +33,7 @@ test('the expressive pill is 50 tall at --r-pill on --fill, its clear button whi
   const field = await mount(
     <SearchField ariaLabel={search} placeholder={search} value="Kulkarni" onClear={() => {}} />,
   );
-  const box = await field.boundingBox();
+  const box = await settledBox(field);
   expect(box?.height).toBe(50);
   await expect(field).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   expect(
@@ -79,14 +80,14 @@ test('with onFilterClick the 50 square rides beside the pill, near-black, named 
     />,
   );
   const square = row.getByRole('button', { name: `${filters}, 3 active` });
-  const box = await square.boundingBox();
+  const box = await settledBox(square);
   expect(box?.width).toBe(50);
   expect(box?.height).toBe(50);
   await expect(square).toHaveCSS(
     'background-color',
     await resolvedColour(page, '--action-primary'),
   );
-  const pill = await row.locator('.hg-search-field').boundingBox();
+  const pill = await settledBox(row.locator('.hg-search-field'));
   expect((pill?.x ?? 0) + (pill?.width ?? 0)).toBeLessThan(box?.x ?? 0);
 });
 
@@ -108,7 +109,7 @@ test('a kind chip is 44 tall; the chosen one is near-black with inverse words an
   const chosen = chips.getByRole('tab', { name: `${sales} 4` });
   await expect(chosen).toHaveAttribute('aria-selected', 'true');
   const pill = chosen.locator('.hg-filter-pill');
-  expect((await pill.boundingBox())?.height).toBe(44);
+  expect((await settledBox(pill))?.height).toBe(44);
   await expect(pill).toHaveCSS('background-color', await resolvedColour(page, '--action-primary'));
   const rest = chips.getByRole('tab', { name: `${delivery} 2` }).locator('.hg-filter-pill');
   await expect(rest).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
@@ -119,7 +120,7 @@ test('the functional box keeps the 44 floor, as the shell header draws it', asyn
   const field = await mount(
     <SearchField density="functional" ariaLabel={search} placeholder={search} />,
   );
-  expect((await field.boundingBox())?.height).toBe(44);
+  expect((await settledBox(field))?.height).toBe(44);
 });
 
 test('a kind chip draws its 18 glyph before the label, in the chip’s ink', async ({
@@ -144,9 +145,9 @@ test('a kind chip draws its 18 glyph before the label, in the chip’s ink', asy
     />,
   );
   const glyph = chips.locator('.hg-filter-pill svg').first();
-  const box = await glyph.boundingBox();
+  const box = await settledBox(glyph);
   expect(box?.width).toBe(18);
-  const pill = await chips.locator('.hg-filter-pill').boundingBox();
+  const pill = await settledBox(chips.locator('.hg-filter-pill'));
   expect((box?.x ?? 0) - (pill?.x ?? 0)).toBeLessThan((pill?.width ?? 0) / 2);
   await expect(glyph).toHaveCSS('color', await resolvedColour(page, '--text-inverse'));
 });

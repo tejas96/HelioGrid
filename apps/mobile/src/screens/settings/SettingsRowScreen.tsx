@@ -8,6 +8,7 @@ import type { ComponentType } from 'react';
 import { BrandingSettingsScreen } from '../branding';
 import { CatalogSettingsScreen } from '../catalog-settings';
 import { CompanyProfileSettingsScreen } from '../company-profile';
+import { PaymentTermsScreen } from '../payment-terms';
 import { ProfileScreen } from '../profile';
 import { ProposalTemplateScreen } from '../proposal-template';
 import { RolesReferenceScreen } from '../roles-reference';
@@ -28,6 +29,7 @@ const BUILT_ROW: Partial<Record<SettingsRow, ComponentType<{ from: string | null
   catalog: CatalogSettingsScreen,
   branding: BrandingSettingsScreen,
   proposal_templates: ProposalTemplateScreen,
+  payment_terms: PaymentTermsScreen,
 };
 
 /**

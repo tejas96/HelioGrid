@@ -1,6 +1,7 @@
 import { COMPANY_SIGNUP, companyFieldRefusal, createTranslator } from '@heliogrid/i18n';
 import { Input } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { resolvedColour, resolvedLength } from '../support/token';
 
 /**
@@ -18,7 +19,7 @@ test('an expressive field is the fill, the field height, and takes focus as an i
   const ground = field.locator('[data-field-box]');
 
   await expect(ground).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
-  const box = await ground.boundingBox();
+  const box = await settledBox(ground);
   expect(box?.height).toBe(await resolvedLength(page, '--field-h'));
 
   await field.getByRole('textbox').focus();

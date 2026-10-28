@@ -6,6 +6,8 @@ export interface AllocationPart {
   /** The part's size in `unit`. `percent` is accepted as an alias. */
   value?: number;
   percent?: number;
+  /** With `variant="split"`: the words under the part's share in the key — the stage it falls due at. */
+  caption?: React.ReactNode;
 }
 
 export interface AllocationMeterProps {
@@ -54,6 +56,13 @@ export interface AllocationMeterProps {
   note?: React.ReactNode;
   /** Names each segment beside the bar. Off by default: at 375px the bar and the words come first. */
   showLegend?: boolean;
+  /**
+   * `meter` (default) checks the parts against `target`, with the remainder in words. `split` **reads a
+   * saved split**: one segment per part in its own chart colour and, under it, a key of each part's
+   * share and `caption` — no label row, no remainder, no rule (`SCR-M01-20`'s list of payment terms).
+   * Never `split` where the parts are being edited.
+   */
+  variant?: "meter" | "split";
   density?: "expressive" | "functional";
   style?: React.CSSProperties;
 }

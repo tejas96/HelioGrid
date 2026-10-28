@@ -1,0 +1,8 @@
+# The company profile, as setup asks for it once: the owner saves what signup already holds and
+# goes on (`SCR-M01-05`). Settings opens the same page; its fields are the web suite's.
+appId: com.heliogrid.app
+---
+- extendedWaitUntil:
+    visible: ${COMPANY_PROFILE_TITLE}
+    timeout: 30000
+- tapOn: ${SAVE_COMPANY_PROFILE}

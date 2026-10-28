@@ -2,9 +2,12 @@ import { describe, expect, it } from 'vitest';
 import {
   applyRate,
   basisPoints,
+  basisPointsOfShare,
   basisPointsToPercent,
   percentToBasisPoints,
   percentWireOf,
+  shareOfBasisPoints,
+  shareTextOf,
 } from '../../src/money/basis-points';
 import { minorUnits } from '../../src/money/minor-units';
 
@@ -64,6 +67,20 @@ describe('percentToBasisPoints / basisPointsToPercent — the wire’s two-decim
       expect(() => percentToBasisPoints(percent)).toThrow(RangeError);
     },
   );
+});
+
+describe('a share as a field holds it and as a person reads it', () => {
+  it.each([
+    { share: 0.01, rate: 1, text: '0.01' },
+    { share: 10, rate: 1000, text: '10' },
+    { share: 33.33, rate: 3333, text: '33.33' },
+    { share: 0.1 + 0.2, rate: 30, text: '0.3' },
+    { share: 100, rate: 10_000, text: '100' },
+  ])('$share is $rate basis points, read $text', ({ share, rate, text }) => {
+    expect(basisPointsOfShare(share)).toBe(rate);
+    expect(shareOfBasisPoints(rate)).toBe(Number(text));
+    expect(shareTextOf(rate)).toBe(text);
+  });
 });
 
 describe("percentWireOf — a typed percent as the wire's two decimals", () => {

@@ -1,0 +1,8 @@
+# The shell: a member with a company is inside, and the pill's More opens the settings list
+# (`SCR-SHELL-01`).
+appId: com.heliogrid.app
+---
+- extendedWaitUntil:
+    visible: ${MORE}
+    timeout: 30000
+- tapOn: ${MORE}

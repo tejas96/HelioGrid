@@ -24,6 +24,12 @@ export interface TimelineItem {
   /** Arbitrary node under the step: photos, a StatCard pair, an action. */
   content?: ReactNode;
   status?: TimelineStatus;
+  /** Pick mode: the step's own glyph, drawn in its node — a `ShellGlyph` the caller draws. */
+  icon?: ReactNode;
+  /** Pick mode: badges beside the name — *Can be skipped*. */
+  marks?: ReactNode;
+  /** Pick mode: `warning` gives the node the warning tint (a stage a project may skip). */
+  tone?: 'warning';
 }
 
 export interface TimelineProps {
@@ -42,4 +48,14 @@ export interface TimelineProps {
   /** `unavailable`: there is no sequence here to draw. Neutral, and no retry. */
   unavailableTitle?: string;
   unavailableMessage?: string;
+  /**
+   * **Pick mode** — with `onChange` the timeline is a radio group over its steps (`SCR-M01-20`'s
+   * stage picker): `value` is the chosen item's `id`, `label` names the group. Each step shows its
+   * `icon`, name, `description`, `marks` and `content`; the chosen one is tinted with a filled node
+   * and a check at the row's end. The rail stays neutral. Arrow keys move and choose; one step is
+   * tabbable. An item without an `id` cannot be chosen.
+   */
+  value?: string;
+  onChange?: (id: string) => void;
+  label?: string;
 }

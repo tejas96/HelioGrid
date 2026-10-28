@@ -1,6 +1,6 @@
 import { COMPANY_PROFILE, createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { bottomOf, expectNoSidewaysScroll } from '../support/layout';
+import { bottomOf, expectNoSidewaysScroll, settledBox } from '../support/layout';
 import { resolvedColour } from '../support/token';
 import { CompanyProfileAsHeld } from './CompanyProfile.story';
 
@@ -63,8 +63,8 @@ test('a profile that could not be read says so in the list’s place, with the r
   await expect(onward).toHaveText(ONWARD);
   await expect(onward).toHaveAttribute('data-variant', 'secondary');
   await expect(retry).toHaveAttribute('data-variant', 'primary');
-  expect(await bottomOf(retry)).toBeLessThan((await onward.boundingBox())?.y ?? 0);
-  expect(await onward.boundingBox()).toMatchObject({ width: COLUMN, height: ACT });
+  expect(await bottomOf(retry)).toBeLessThan((await settledBox(onward))?.y ?? 0);
+  expect(await settledBox(onward)).toMatchObject({ width: COLUMN, height: ACT });
   expect(await bottomOf(onward)).toBeLessThanOrEqual(HEIGHT);
   await expect(profile.getByRole('button')).toHaveCount(2);
 
@@ -97,7 +97,7 @@ test('a failed save keeps everything typed and the same part open, and says so o
   /* The held acts cover the column's foot at rest; scrolled into view, the part's last line stands whole above them. */
   const purpose = profile.getByText(en.t(COMPANY_PROFILE.addressPurpose));
   await purpose.scrollIntoViewIfNeeded();
-  const foot = (await profile.locator('.hg-door-footer').boundingBox())?.y ?? 0;
+  const foot = (await settledBox(profile.locator('.hg-door-footer')))?.y ?? 0;
   expect(await bottomOf(purpose)).toBeLessThanOrEqual(foot);
 
   const alert = profile.getByRole('alert');
@@ -109,10 +109,10 @@ test('a failed save keeps everything typed and the same part open, and says so o
   const onward = profile.getByRole('button', { name: en.t(COMPANY_PROFILE.onwardUnsavedSpoken) });
   await expect(retry).toHaveText(TRY_AGAIN);
   await expect(onward).toHaveText(ONWARD);
-  expect(await bottomOf(alert)).toBeLessThanOrEqual((await retry.boundingBox())?.y ?? 0);
-  expect(await bottomOf(retry)).toBeLessThan((await onward.boundingBox())?.y ?? 0);
+  expect(await bottomOf(alert)).toBeLessThanOrEqual((await settledBox(retry))?.y ?? 0);
+  expect(await bottomOf(retry)).toBeLessThan((await settledBox(onward))?.y ?? 0);
   for (const act of [retry, onward]) {
-    expect(await act.boundingBox()).toMatchObject({ width: COLUMN, height: ACT });
+    expect(await settledBox(act)).toMatchObject({ width: COLUMN, height: ACT });
   }
   expect(await bottomOf(onward)).toBeLessThanOrEqual(HEIGHT);
 

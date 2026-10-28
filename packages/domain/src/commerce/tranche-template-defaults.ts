@@ -2,6 +2,9 @@ import type { PackLabel } from '../format/languages';
 import { type BasisPoints, basisPoints } from '../money/basis-points';
 import type { ProjectChainStage } from '../projects/stages';
 
+/** The most tranches one template holds (`SCR-M01-20`): the editor stops adding and the wire refuses a 13th. */
+export const TRANCHE_LINE_LIMIT = 12;
+
 export interface TrancheLineDefault {
   readonly label: PackLabel;
   readonly share: BasisPoints;
@@ -13,7 +16,8 @@ export interface TrancheTemplateDefault {
   readonly lines: readonly TrancheLineDefault[];
 }
 
-const ON_SIGNING: PackLabel = {
+/** The first tranche of both splits, and of a template a tenant adds (`SCR-M01-20`). */
+export const ON_SIGNING: PackLabel = {
   en: 'Advance on signing',
   hi: 'हस्ताक्षर पर अग्रिम',
   mr: 'स्वाक्षरीवर आगाऊ रक्कम',

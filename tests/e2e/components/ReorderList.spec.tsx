@@ -1,7 +1,7 @@
 import { COMPANY_SIGNUP, createTranslator, PROFILE_PREFERENCES } from '@heliogrid/i18n';
 import { ReorderList } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { bottomOf, rightOf } from '../support/layout';
+import { bottomOf, rightOf, settledBox } from '../support/layout';
 import { resolvedColour } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 import { FootReorderStory } from './ReorderList.story';
@@ -42,15 +42,15 @@ test.describe('controls at the foot, at 375', () => {
 
     await expectTouchFloor([up, buttons.nth(2), remove]);
     // The line sits under the body …
-    expect((await up.boundingBox())?.y).toBeGreaterThanOrEqual(await bottomOf(body));
+    expect((await settledBox(up))?.y).toBeGreaterThanOrEqual(await bottomOf(body));
     // … ends where the body ends, so the body has the row's whole width beside the digit …
     expect(Math.abs((await rightOf(remove)) - (await rightOf(body)))).toBeLessThanOrEqual(1);
     // … and the three targets share that one line, in order.
     const ys = await Promise.all(
-      [up, buttons.nth(2), remove].map(async (target) => (await target.boundingBox())?.y),
+      [up, buttons.nth(2), remove].map(async (target) => (await settledBox(target))?.y),
     );
     expect(new Set(ys).size).toBe(1);
-    expect((await up.boundingBox())?.x ?? 0).toBeLessThan((await remove.boundingBox())?.x ?? 0);
+    expect((await settledBox(up))?.x ?? 0).toBeLessThan((await settledBox(remove))?.x ?? 0);
   });
 
   test("the row's own act starts the line", async ({ mount, page }) => {
@@ -59,8 +59,8 @@ test.describe('controls at the foot, at 375', () => {
     const action = row.getByRole('button', { name: editLabel, exact: true });
     const up = row.getByRole('button', { name: isFirstLabel(first), exact: true });
 
-    const actionBox = await action.boundingBox();
-    const upBox = await up.boundingBox();
+    const actionBox = await settledBox(action);
+    const upBox = await settledBox(up);
     expect(actionBox?.x ?? Infinity).toBeLessThan(upBox?.x ?? 0);
     // One line: the pencil and ⌃ share a centre.
     const centre = (box: typeof upBox) => (box ? box.y + box.height / 2 : Infinity);

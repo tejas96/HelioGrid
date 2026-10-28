@@ -1,7 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
-import { Animated, Easing, ScrollView, StyleSheet, View } from 'react-native';
+import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { KeyboardFrame } from '../../primitives/Keyboard/KeyboardFrame.native';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { OverlayBody } from '../Sheet/OverlayBody.native';
 import { SheetBackdrop } from '../Sheet/SheetBackdrop.native';
@@ -88,6 +89,19 @@ export function DetailPanel({
     outputRange: [0, side === 'left' ? -panelWidth : panelWidth],
   });
 
+  const footerView =
+    footer === null ? undefined : (
+      <View
+        style={{
+          flexShrink: 0,
+          paddingTop: theme.spacing['sp-3'],
+          paddingHorizontal: pad,
+          paddingBottom: pad,
+        }}
+      >
+        {footer}
+      </View>
+    );
   return (
     <Portal>
       <View style={styles.layer} pointerEvents="box-none">
@@ -122,10 +136,12 @@ export function DetailPanel({
             </View>
           )}
 
-          <ScrollView
-            onScroll={(event) => setScrolled(event.nativeEvent.contentOffset.y > 2)}
-            scrollEventThrottle={16}
+          {/* A panel can hold a form: its focused field, its line and the footer stay above the
+              keyboard. */}
+          <KeyboardFrame
+            onScrollOffset={(top) => setScrolled(top > 2)}
             style={styles.body}
+            foot={footerView}
             contentContainerStyle={{
               paddingTop: theme.spacing['sp-1'],
               paddingHorizontal: pad,
@@ -150,20 +166,7 @@ export function DetailPanel({
             >
               {children}
             </OverlayBody>
-          </ScrollView>
-
-          {footer === null ? null : (
-            <View
-              style={{
-                flexShrink: 0,
-                paddingTop: theme.spacing['sp-3'],
-                paddingHorizontal: pad,
-                paddingBottom: pad,
-              }}
-            >
-              {footer}
-            </View>
-          )}
+          </KeyboardFrame>
         </Animated.View>
       </View>
     </Portal>

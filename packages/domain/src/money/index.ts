@@ -5,10 +5,13 @@
 export {
   type BasisPoints,
   basisPoints,
+  basisPointsOfShare,
   basisPointsToPercent,
   percentToBasisPoints,
   percentWireOf,
   type Share,
+  shareOfBasisPoints,
+  shareTextOf,
 } from './basis-points';
 export type {
   EquationSign,

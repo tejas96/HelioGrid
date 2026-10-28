@@ -3,6 +3,7 @@ import type { BannerForm } from '@heliogrid/ui';
 import { Banner, BannerAction, ShellGlyph } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator } from '@playwright/test';
+import { settledBox } from '../support/layout';
 import { resolvedColour } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 
@@ -18,9 +19,9 @@ const actionWords = en.t(SHELL.signOut);
 
 /** True when the action sits beside the copy: its left edge is past the copy's right edge. */
 async function actionBesideCopy(screen: Locator): Promise<boolean> {
-  const copy = await screen.getByText(body).boundingBox();
-  const action = await screen.getByRole('button', { name: actionWords }).boundingBox();
-  return (action?.x ?? 0) > (copy?.x ?? 0) + (copy?.width ?? 0);
+  const copy = await settledBox(screen.getByText(body));
+  const action = await settledBox(screen.getByRole('button', { name: actionWords }));
+  return action.x > copy.x + copy.width;
 }
 
 /** Resizes the wrapper and waits two frames, so the banner's observer has measured the new width. */
@@ -56,12 +57,11 @@ test('at 600 the action sits beside the copy', async ({ mount }) => {
 
 test('at 343 the action drops under the body and keeps its 44px target', async ({ mount }) => {
   const screen = await mount(<div style={{ width: 343 }}>{banner({})}</div>);
-  const copy = (await screen.getByText(body).boundingBox()) ?? undefined;
-  const action =
-    (await screen.getByRole('button', { name: actionWords }).boundingBox()) ?? undefined;
+  const copy = (await settledBox(screen.getByText(body))) ?? undefined;
+  const action = (await settledBox(screen.getByRole('button', { name: actionWords }))) ?? undefined;
 
-  expect(action?.y).toBeGreaterThanOrEqual((copy?.y ?? 0) + (copy?.height ?? 0));
-  expect(action?.x).toBeLessThan((copy?.x ?? 0) + 4);
+  expect(action?.y).toBeGreaterThanOrEqual(copy.y + copy.height);
+  expect(action?.x).toBeLessThan(copy.x + 4);
   expect(action?.height).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
 });
 

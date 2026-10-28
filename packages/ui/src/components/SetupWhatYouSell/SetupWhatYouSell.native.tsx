@@ -1,6 +1,7 @@
 import { TYPICAL_SYSTEM_KWP } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
-import { AccessibilityInfo, Keyboard, StyleSheet, View } from 'react-native';
+import { AccessibilityInfo, StyleSheet, View } from 'react-native';
+import { closeKeyboard } from '../../primitives/Keyboard/use-keyboard.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
 import { DoorFrame } from '../DoorFrame/DoorFrame.native';
@@ -65,7 +66,7 @@ export function SetupWhatYouSell({
                 onClick={() => {
                   // The field is left before the way on: a box emptied over a declared size shows
                   // that size again, which is the one that is saved.
-                  Keyboard.dismiss();
+                  closeKeyboard();
                   onContinue();
                 }}
               >

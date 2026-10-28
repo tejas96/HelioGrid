@@ -67,7 +67,8 @@ export function DocumentTranchesBand({ doc }: { doc: ResolvedDocument }) {
       <table className="hg-doc-table" data-tight="true">
         <tbody>
           {doc.tranches.map((tranche, index) => (
-            <tr key={tranche.label}>
+            // biome-ignore lint/suspicious/noArrayIndexKey: a schedule is positional, and two tranches may share a name
+            <tr key={index}>
               <td className="hg-doc-tranche-index">{String(index + 1).padStart(2, '0')}</td>
               <td className="hg-doc-tranche-cell">
                 <span className="hg-doc-tranche-label">{tranche.label}</span>

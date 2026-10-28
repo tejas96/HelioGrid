@@ -123,6 +123,8 @@ export default defineConfig({
       thresholds: {
         'packages/domain/src/authz/**': COMPLETE,
         'packages/domain/src/commerce/tranche-allocation.ts': COMPLETE,
+        'packages/domain/src/commerce/tranche-preview.ts': COMPLETE,
+        'packages/domain/src/commerce/tranche-template-page.ts': COMPLETE,
         'packages/domain/src/money/**': COMPLETE,
         'packages/domain/src/pricing/**': COMPLETE,
         'packages/domain/src/subsidy/**': COMPLETE,

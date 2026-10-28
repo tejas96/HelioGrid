@@ -8,6 +8,7 @@ import type {
   AllocationPart,
   AllocationState,
 } from './AllocationMeter.types';
+import { AllocationSplit } from './AllocationSplit';
 
 interface WebAllocationMeterProps extends AllocationMeterProps {
   className?: string;
@@ -150,10 +151,23 @@ export function AllocationMeter(props: WebAllocationMeterProps) {
     note,
     showLegend = false,
     density = 'expressive',
+    variant = 'meter',
     className,
     style,
   } = props;
   const model = allocationModel(props);
+  if (variant === 'split') {
+    return (
+      <AllocationSplit
+        label={label}
+        parts={model.parts}
+        unit={unit}
+        density={density}
+        className={className}
+        style={style}
+      />
+    );
+  }
   const words = remainderWords ?? model.remainder ?? unresolvedNote;
   const state = model.resolved ? model.state : 'under';
   const valueText =

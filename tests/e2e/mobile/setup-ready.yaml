@@ -1,0 +1,8 @@
+# You're ready: the corridor's end, whose first door taken closes setup and opens the shell
+# (`SCR-M01-06`).
+appId: com.heliogrid.app
+---
+- extendedWaitUntil:
+    visible: ${READY_TITLE}
+    timeout: 30000
+- tapOn: ${FIRST_LEAD}

@@ -41,10 +41,10 @@ Deps: `architecture.md` §2 tests/e2e.
 pnpm --filter @heliogrid/e2e test:web [<spec files>]  # the web flows — locally only on heliogrid_test, after the gate (`/task`); all of them in CI
 pnpm --filter @heliogrid/e2e test:ct [<spec files>]   # the component tests (port 3100)
 pnpm --filter @heliogrid/e2e test:web --project qa-seed  # the QA companies (support/qa-accounts.ts), off CI, with the worker and Temporal up
-pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows by hand, one device per call
+pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows by hand, only to repeat a CI failure
 ```
 
-The phone flows run in CI on Android only; on iOS `qa-live` runs them on the simulator.
+The phone flows run in CI on Android only; no one runs them on iOS, and `/task` runs none locally.
 `test:mobile` needs Metro, the api and the app installed on the device, and drives one device per
 call; one call per phone may run at the same time. An emulator gets 2 cores, 4 GB and the host GPU on the
 command line (the `android-emulator` launch configuration does it; the AVD's `hw.ramSize` is

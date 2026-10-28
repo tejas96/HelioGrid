@@ -1,6 +1,7 @@
 import { accountMenuWords, createTranslator } from '@heliogrid/i18n';
 import { AccountMenu } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 
 const en = await createTranslator('en');
 const words = accountMenuWords(en.t, 'Amit Rane');
@@ -28,8 +29,8 @@ test('rises when the list would not fit below', async ({ mount, page }) => {
   const trigger = menu.getByRole('button', { name: words.triggerName });
 
   await trigger.click();
-  const list = await page.getByRole('menu').boundingBox();
-  const button = await trigger.boundingBox();
+  const list = await settledBox(page.getByRole('menu'));
+  const button = await settledBox(trigger);
 
   expect(list).not.toBeNull();
   expect(button).not.toBeNull();
@@ -43,8 +44,8 @@ test('drops when there is room below', async ({ mount, page }) => {
   const trigger = menu.getByRole('button', { name: words.triggerName });
 
   await trigger.click();
-  const list = await page.getByRole('menu').boundingBox();
-  const button = await trigger.boundingBox();
+  const list = await settledBox(page.getByRole('menu'));
+  const button = await settledBox(trigger);
 
   expect(list).not.toBeNull();
   expect(button).not.toBeNull();

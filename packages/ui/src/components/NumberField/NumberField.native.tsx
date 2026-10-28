@@ -42,6 +42,7 @@ export function NumberField({
   precision,
   label,
   labelSpokenOnly = false,
+  ariaLabel,
   unit,
   hint,
   disabled = false,
@@ -101,7 +102,7 @@ export function NumberField({
         density={density}
         disabled={disabled}
         danger={danger}
-        label={label}
+        name={label ?? ariaLabel}
         unit={unit}
         currency={currency}
         focusRequest={focusRequest}

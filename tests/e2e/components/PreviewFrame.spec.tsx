@@ -2,6 +2,7 @@ import { COMPANY_LOGO_LIMITS } from '@heliogrid/domain';
 import { brandingWords, createTranslator } from '@heliogrid/i18n';
 import { DocumentPreview, PreviewFrame } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 
 /**
  * The stage while the tenant's values load (`SCR-M01-18`'s s18-j): the frame keeps its footprint
@@ -38,7 +39,7 @@ test('loading names what it loads', async ({ mount, page }) => {
   await expect(wait).toHaveAttribute('aria-busy', 'true');
   await expect(wait).toHaveCSS('animation-name', 'hg-sheet-shimmer');
   await expect(wait).toHaveCSS('box-shadow', 'none');
-  expect((await wait.boundingBox())?.height).toBe(STAGE.maxHeight);
+  expect((await settledBox(wait))?.height).toBe(STAGE.maxHeight);
   /* No subject is drawn, or read out, while it waits. */
   await expect(frame.getByText(COMPANY)).toBeHidden();
   await expect(frame.locator('.hg-preview-frame-subject')).toHaveAttribute('aria-hidden', 'true');

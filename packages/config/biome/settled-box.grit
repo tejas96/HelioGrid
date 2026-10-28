@@ -1,0 +1,6 @@
+// A spec measures a box only through `settledBox` (tests/e2e/support/layout.ts): a raw
+// `.boundingBox()` can read the layout mid-change on a slow machine, and a box not drawn yet
+// passes on as `null`, which `?.y ?? 0` turns into a wrong number instead of a named failure.
+`$receiver.boundingBox()` as $call where {
+  register_diagnostic(span=$call, message="Measure through settledBox (tests/e2e/support/layout.ts): it waits until the element is drawn and still, and fails by name when it is not.")
+}

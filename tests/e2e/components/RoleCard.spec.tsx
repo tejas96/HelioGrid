@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { type RoleCardNames, type RolePreset, roleCard } from '@heliogrid/domain';
 import { createTranslator, PROFILE_PREFERENCES, roleCardWords, SHELL } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { expectNoSidewaysScroll, expectNothingClipped } from '../support/layout';
+import { expectNoSidewaysScroll, expectNothingClipped, settledBox } from '../support/layout';
 import { animationsSettled } from '../support/motion';
 import { resolvedColour } from '../support/token';
 import { RoleCardAsHeld, RoleCardOpenedFromARow } from './RoleCard.story';
@@ -118,9 +118,9 @@ test.describe('at 375', () => {
       const sheet = page.getByRole('dialog');
       const region = sheet.getByRole('region');
       expect(await region.evaluate((node) => node.scrollHeight > node.clientHeight)).toBe(true);
-      const head = await sheet.locator('.hg-role-card-presets').boundingBox();
+      const head = await settledBox(sheet.locator('.hg-role-card-presets'));
       await region.evaluate((node) => node.scrollTo({ top: node.scrollHeight }));
-      expect(await sheet.locator('.hg-role-card-presets').boundingBox()).toEqual(head);
+      expect(await settledBox(sheet.locator('.hg-role-card-presets'))).toEqual(head);
       await expect(sheet.getByRole('note')).toBeInViewport();
       await region.evaluate((node) => node.scrollTo({ top: 0 }));
       await expectNothingClipped(page, TEXT);
@@ -140,12 +140,12 @@ test.describe('at 1536', () => {
     await mount(<RoleCardAsHeld reader="en" names={BOARD} />);
     const panel = page.getByRole('dialog', { name: SALES.surfaceTitle });
     await animationsSettled(page);
-    const box = await panel.boundingBox();
+    const box = await settledBox(panel);
     expect(box?.width).toBe(480);
     expect((box?.x ?? 0) + (box?.width ?? 0)).toBe(1536);
     await expect(panel.getByRole('region')).toHaveCount(0);
     const [grants, limits] = await Promise.all(
-      [0, 1].map((n) => panel.locator('.hg-role-card-section').nth(n).boundingBox()),
+      [0, 1].map((n) => settledBox(panel.locator('.hg-role-card-section').nth(n))),
     );
     expect(limits?.y ?? 0).toBeGreaterThan((grants?.y ?? 0) + (grants?.height ?? 0));
     await page.screenshot({ path: `${PICTURES}/d-reopened.png` });

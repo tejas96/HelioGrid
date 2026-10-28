@@ -17,7 +17,7 @@ import {
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Page } from '@playwright/test';
-import { expectNoSidewaysScroll, expectNothingClipped } from '../support/layout';
+import { expectNoSidewaysScroll, expectNothingClipped, settledBox } from '../support/layout';
 import { animationsSettled } from '../support/motion';
 import { resolvedColour, resolvedLength } from '../support/token';
 import { AssignRolesAsHeld } from './AssignRoles.story';
@@ -100,7 +100,7 @@ for (const [width, height, form] of [
       await expect(save).toHaveAttribute('aria-disabled', 'true');
       await expect(save).toHaveAccessibleDescription(en.saveOff('unchanged') ?? '');
       if (form === 'panel') {
-        const box = await editor.boundingBox();
+        const box = await settledBox(editor);
         expect(Math.round(box?.width ?? 0)).toBe(560);
       }
       await expectNoSidewaysScroll(page);
@@ -226,7 +226,7 @@ for (const [width, height, form] of [
       const heading = page.locator('.hg-assign-roles-heading');
       const reference = heading.getByRole('button', { name: en.reference });
       await expect(reference).toBeVisible();
-      const [row, button] = await Promise.all([heading.boundingBox(), reference.boundingBox()]);
+      const [row, button] = await Promise.all([settledBox(heading), settledBox(reference)]);
       expect((button?.x ?? 0) + (button?.width ?? 0)).toBeCloseTo(
         (row?.x ?? 0) + (row?.width ?? 0),
         0,

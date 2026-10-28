@@ -1,8 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import { defineConfig, devices } from '@playwright/test';
-import { API_LOG } from './support/api-log';
+import { API, API_LOG } from './support/api-log';
 
-const API = 'http://localhost:8084';
 const WEB = 'http://localhost:3002';
 
 /* The flows sign companies up through the api and remove none, so off CI they run only against

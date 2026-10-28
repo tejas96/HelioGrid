@@ -1,0 +1,9 @@
+# Proposal template: what every proposal carries, opened from settings and closed back to it.
+appId: com.heliogrid.app
+---
+- runFlow:
+    file: steps/open-setting.yaml
+    env:
+      ROW: ${ROW_PROPOSAL_TEMPLATES}
+- assertVisible: "(.*, )?${ROW_PROPOSAL_TEMPLATES}"
+- tapOn: ${BACK_TO_SETTINGS}

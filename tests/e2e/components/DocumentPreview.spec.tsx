@@ -2,6 +2,7 @@ import { COMPANY_LOGO_LIMITS, compliantShades, hexToRgb } from '@heliogrid/domai
 import { brandingWords, createTranslator } from '@heliogrid/i18n';
 import { DocumentPreview } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { resolvedColour, resolvedFont } from '../support/token';
 
 /**
@@ -184,14 +185,14 @@ test('a content fit is whole at any width', async ({ mount }) => {
        since a face that loads late grows the sheet and the window follows a frame later. */
     await expect
       .poll(async () => {
-        const [outer, inner] = [await frame.boundingBox(), await drawn.boundingBox()];
+        const [outer, inner] = [await settledBox(frame), await settledBox(drawn)];
         return outer === null || inner === null
           ? Number.POSITIVE_INFINITY
           : Math.abs(outer.height - inner.height);
       })
       .toBeLessThanOrEqual(1);
-    const box = await frame.boundingBox();
-    const last = await sheet.locator('.hg-doc-terms [data-flow-row]').last().boundingBox();
+    const box = await settledBox(frame);
+    const last = await settledBox(sheet.locator('.hg-doc-terms [data-flow-row]').last());
     if (box === null || last === null) throw new Error(`nothing drawn at ${width}`);
     expect(last.y).toBeGreaterThanOrEqual(box.y);
     expect(last.y + last.height).toBeLessThanOrEqual(box.y + box.height + 0.5);
@@ -200,4 +201,27 @@ test('a content fit is whole at any width', async ({ mount }) => {
   }
   expect(heights[0]).toBeLessThan(heights[1] ?? 0);
   expect(heights[1]).toBeLessThan(heights[2] ?? 0);
+});
+
+test('two tranches of one name both draw', async ({ mount }) => {
+  /* Tenant data: a company may name two tranches alike and set both on one stage (SCR-M01-20, decision 6). */
+  const twice = { label: 'Advance on signing', when: 'When the order is confirmed', share: '50%' };
+  const schedule = await mount(
+    <DocumentPreview
+      sample={false}
+      parts={['tranches']}
+      companyName={COMPANY}
+      tranchesTitle={words.proposal}
+      tranches={[
+        { ...twice, amount: '₹2,10,000' },
+        { ...twice, amount: '₹2,10,001' },
+      ]}
+      fit="content"
+      width={480}
+      caption=""
+    />,
+  );
+
+  await expect(schedule.locator('.hg-doc-tranche-label')).toHaveText([twice.label, twice.label]);
+  await expect(schedule.locator('.hg-doc-tranche-amount')).toHaveText(['₹2,10,000', '₹2,10,001']);
 });

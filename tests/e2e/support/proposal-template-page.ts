@@ -2,7 +2,7 @@ import { DEFAULT_TIMELINE_PHASES, type UiLanguage } from '@heliogrid/domain';
 import { createTranslator, languageName, proposalTemplateWords } from '@heliogrid/i18n';
 import { expect } from '@playwright/experimental-ct-react';
 import type { Locator, Page } from '@playwright/test';
-import { expectNoSidewaysScroll } from './layout';
+import { expectNoSidewaysScroll, settledBox } from './layout';
 import { resolvedColour, resolvedLength, resolvedShadow } from './token';
 import { expectTouchFloor } from './touch-target';
 
@@ -51,7 +51,7 @@ export const actBar = (body: Locator) => body.locator('.hg-form-action-bar');
 export const card = (body: Locator) => body.getByRole('region', { name: en.editor });
 
 export async function heightOf(locator: Locator): Promise<number> {
-  return (await locator.boundingBox())?.height ?? 0;
+  return (await settledBox(locator))?.height ?? 0;
 }
 
 /**
@@ -82,18 +82,18 @@ export async function expectStageAndEditor(page: Page, body: Locator, wide: bool
       'border-top-left-radius',
       `${await resolvedLength(page, '--r-tile')}px`,
     );
-    const deskBox = await desk.boundingBox();
-    const cardBox = await editor.boundingBox();
+    const deskBox = await settledBox(desk);
+    const cardBox = await settledBox(editor);
     expect(cardBox?.width).toBe(EDITOR_CARD_WIDTH);
     expect((cardBox?.x ?? 0) - ((deskBox?.x ?? 0) + (deskBox?.width ?? 0))).toBe(
       await resolvedLength(page, '--sp-8'),
     );
     expect(cardBox?.y).toBe(deskBox?.y);
-    expect((await frameWindow(body).boundingBox())?.width).toBe(SHEET_WIDTH);
+    expect((await settledBox(frameWindow(body)))?.width).toBe(SHEET_WIDTH);
   } else {
     /* At 375 the window leads and the editor follows the stage. */
-    const deskBox = await desk.boundingBox();
-    const switchBox = await partSwitch(body).boundingBox();
+    const deskBox = await settledBox(desk);
+    const switchBox = await settledBox(partSwitch(body));
     expect(switchBox?.y ?? 0).toBeGreaterThan((deskBox?.y ?? Infinity) + (deskBox?.height ?? 0));
   }
   await expectNoSidewaysScroll(page);

@@ -1,0 +1,12 @@
+// A phone answers the on-screen keyboard in one place, packages/ui's primitives/Keyboard: its
+// KeyboardFrame keeps the focused field, its line and the act bar above the keyboard on both
+// phones. React Native's own Keyboard and KeyboardAvoidingView, or the keyboard library itself,
+// reached anywhere else is a second answer, and each one has hidden a field on one phone.
+JsImport() as $import where {
+  $import <: or {
+    includes "Keyboard",
+    includes "keyboard-controller"
+  },
+  $import <: r"(?s).*(?:\bKeyboard(?:AvoidingView)?\b[^;]*from\s*['\x22]react-native['\x22]|from\s*['\x22]react-native-keyboard-controller['\x22]).*",
+  register_diagnostic(span=$import, message="Answer the keyboard through @heliogrid/ui: KeyboardFrame, useKeyboardUp, useKeyboardHeight or closeKeyboard (packages/ui/src/primitives/Keyboard).")
+}

@@ -1,7 +1,7 @@
 import { COMPANY_SIGNUP, companyFieldRefusal, createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { Accordion } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { bottomOf, expectNoSidewaysScroll, rightOf } from '../support/layout';
+import { bottomOf, expectNoSidewaysScroll, rightOf, settledBox } from '../support/layout';
 import { resolvedColour, resolvedLength } from '../support/token';
 
 /**
@@ -57,12 +57,12 @@ test('the sections are flat: a thin line above every section after the first, no
     await expect(later).toHaveCSS('border-top-width', `${LINE}px`);
     await expect(later).toHaveCSS('border-top-color', line);
   }
-  expect((await items.nth(0).boundingBox())?.height).toBe(HEADER);
-  expect((await items.nth(1).boundingBox())?.height).toBe(HEADER + LINE);
-  expect((await items.nth(1).boundingBox())?.y).toBe(await bottomOf(items.nth(0)));
+  expect((await settledBox(items.nth(0)))?.height).toBe(HEADER);
+  expect((await settledBox(items.nth(1)))?.height).toBe(HEADER + LINE);
+  expect((await settledBox(items.nth(1)))?.y).toBe(await bottomOf(items.nth(0)));
 
-  const list = await accordion.boundingBox();
-  const header = await accordion.getByRole('button', { name: title }).boundingBox();
+  const list = await settledBox(accordion);
+  const header = await settledBox(accordion.getByRole('button', { name: title }));
   expect(header?.x).toBe(list?.x);
   expect(header?.width).toBe(list?.width);
 });
@@ -91,12 +91,12 @@ test('where a section stands reads beside its title: the word secondary, an 8px 
 
     await expect(word).toHaveCSS('color', await resolvedColour(page, '--text-secondary'));
     await expect(dot).toHaveCSS('background-color', await resolvedColour(page, mark));
-    expect(await dot.boundingBox()).toMatchObject({ width: dotSize, height: dotSize });
+    expect(await settledBox(dot)).toMatchObject({ width: dotSize, height: dotSize });
 
-    const wordBox = await word.boundingBox();
+    const wordBox = await settledBox(word);
     expect(wordBox?.x).toBeGreaterThan(await rightOf(item.getByText(heading, { exact: true })));
     expect(await rightOf(word)).toBeLessThan(
-      (await item.locator('.hg-accordion-chevron').boundingBox())?.x ?? 0,
+      (await settledBox(item.locator('.hg-accordion-chevron')))?.x ?? 0,
     );
     /* Beside the title, not pushed to the row's end: the title row holds it. */
     await expect(item.locator('.hg-accordion-title-wrap').getByText(standing)).toBeVisible();
@@ -123,7 +123,7 @@ test('an item in errors has no tint and its head says so', async ({ mount, page 
   );
   /* Outside the title row: the errored word closes the header, before the chevron. */
   await expect(item.locator('.hg-accordion-title-wrap').getByText(toFix)).toHaveCount(0);
-  expect((await item.getByText(toFix).boundingBox())?.x).toBeGreaterThan(
+  expect((await settledBox(item.getByText(toFix)))?.x).toBeGreaterThan(
     await rightOf(item.locator('.hg-accordion-title-wrap')),
   );
 });
@@ -158,7 +158,7 @@ test('the settings density keeps the 56 header and tightens the open panel', asy
     />,
   );
 
-  expect((await accordion.getByRole('button', { name: title }).boundingBox())?.height).toBe(HEADER);
+  expect((await settledBox(accordion.getByRole('button', { name: title })))?.height).toBe(HEADER);
   await expect(accordion.locator('.hg-accordion-panel')).toHaveCSS(
     'padding-bottom',
     `${FUNCTIONAL_PANEL_FOOT}px`,
@@ -207,7 +207,7 @@ test.describe('at 375, in Hindi', () => {
     const header = accordion.getByRole('button', { name: longTitle });
 
     await expectNoSidewaysScroll(page);
-    expect((await header.boundingBox())?.height).toBeGreaterThan(HEADER);
+    expect((await settledBox(header))?.height).toBeGreaterThan(HEADER);
     for (const words of [longTitle, longStanding]) {
       const text = accordion.getByText(words, { exact: true });
       expect(await rightOf(text)).toBeLessThanOrEqual(await rightOf(header));

@@ -102,6 +102,25 @@
   },
   "plugins": [
     {
+      "path": "./packages/config/biome/keyboard-in-one-place.grit",
+      "includes": [
+        "**/apps/mobile/**/*.{ts,tsx}",
+        "**/packages/ui/src/**/*.{ts,tsx}",
+        "!**/packages/ui/src/primitives/Keyboard/**",
+        "!**/node_modules/**",
+        "!**/ios/**",
+        "!**/android/**"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/settled-box.grit",
+      "includes": [
+        "**/tests/e2e/**/*.{ts,tsx}",
+        "!**/tests/e2e/support/layout.ts",
+        "!**/node_modules/**"
+      ]
+    },
+    {
       "path": "./packages/config/biome/raw-colour.grit",
       "includes": [
         "**/apps/mobile/src/**/*.{ts,tsx,mts,cts,jsx}",

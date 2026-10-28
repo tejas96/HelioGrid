@@ -1,0 +1,157 @@
+/* ── pick mode — the chain as a radio group (SCR-M01-20) ─────────────────────
+   The rail is neutral: nothing is done or current, so nothing is lit. The chosen step is tinted,
+   its node filled with the accent and a check at the row's end; every other step's end is an
+   empty ring in --mark-subtle (3:1 on white). Nothing moves: tint and check change at once. */
+
+.hg-timeline-pick {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-sans);
+}
+
+/* The step's tint reaches past the text by the padding it is drawn with, taken back as margin so
+   the names line up with whatever sits above the picker. */
+.hg-timeline-pick-step {
+  display: flex;
+  align-items: stretch;
+  gap: var(--sp-3);
+  margin: 0 calc(-1 * var(--sp-3));
+  padding: 0 var(--sp-3);
+  border: none;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.hg-timeline-pick-step[data-checked="true"] {
+  background: var(--accent-subtle);
+}
+
+.hg-timeline-pick-step:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.hg-timeline-pick-rail-cell {
+  width: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.hg-timeline-pick-rail {
+  width: 2px;
+  flex-shrink: 0;
+  background: var(--line-soft);
+}
+
+.hg-timeline-pick-rail[data-drawn="false"] {
+  background: transparent;
+}
+
+/* The segment above the node is the step's own top padding, so the node sits level with the name. */
+.hg-timeline-pick-rail[data-part="before"] {
+  height: 10px;
+}
+.hg-timeline-pick[data-density="functional"] .hg-timeline-pick-rail[data-part="before"] {
+  height: var(--sp-2);
+}
+.hg-timeline-pick-rail[data-part="after"] {
+  flex: 1;
+}
+
+.hg-timeline-pick-node {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: var(--canvas-sunken);
+  color: var(--text-secondary);
+}
+
+.hg-timeline-pick-node[data-tone="warning"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.hg-timeline-pick-node[data-checked="true"] {
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+/* The node owns its glyph's ink: the caller's ShellGlyph takes the node's colour whatever tone it
+   was drawn with, or a chosen step's glyph would vanish into the accent. Three selectors deep so it
+   outranks ShellGlyph.css's own tone rule wherever the two sheets load. */
+.hg-timeline-pick-node .hg-shell-glyph[data-tone] {
+  color: inherit;
+}
+
+.hg-timeline-pick-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 10px 0;
+}
+
+.hg-timeline-pick[data-density="functional"] .hg-timeline-pick-body {
+  padding: var(--sp-2) 0;
+}
+
+.hg-timeline-pick-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hg-timeline-pick-label {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.hg-timeline-pick-label[data-checked="true"] {
+  font-weight: var(--fw-bold);
+}
+
+.hg-timeline-pick-description {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+.hg-timeline-pick-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--sp-1);
+}
+
+.hg-timeline-pick-end {
+  display: flex;
+  align-items: center;
+}
+
+.hg-timeline-pick-check {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 0 0 1.5px var(--mark-subtle);
+}
+
+.hg-timeline-pick-check[data-checked="true"] {
+  background: var(--accent);
+  box-shadow: none;
+}

@@ -13,7 +13,7 @@ import {
 import { expect } from '@playwright/experimental-ct-react';
 import type { Locator, Page } from '@playwright/test';
 import { REFUSED_IMAGE } from './company-logo';
-import { expectNoSidewaysScroll } from './layout';
+import { expectNoSidewaysScroll, settledBox } from './layout';
 import { pngOf } from './png';
 import { resolvedColour, resolvedLength, resolvedShadow } from './token';
 import { expectTouchFloor } from './touch-target';
@@ -74,7 +74,7 @@ export const partSwitch = (page: Locator) => page.getByRole('radiogroup', { name
 export const closing = (page: Locator) => page.locator('.hg-branding-closing');
 
 export async function heightOf(locator: Locator): Promise<number> {
-  return (await locator.boundingBox())?.height ?? 0;
+  return (await settledBox(locator))?.height ?? 0;
 }
 
 /** Every frame's shared blocks: the stage on its desk, its switch row, the part switch, the profile row. */
@@ -98,17 +98,17 @@ export async function expectStageAndEditor(page: Page, body: Locator, wide: bool
     const card = editor(body, true);
     await expect(card).toHaveCSS('box-shadow', await resolvedShadow(page, '--e2'));
     await expect(card).toHaveCSS('position', 'sticky');
-    expect((await card.boundingBox())?.width).toBe(EDITOR_CARD_WIDTH);
-    const deskBox = await desk.boundingBox();
-    const cardBox = await card.boundingBox();
+    expect((await settledBox(card))?.width).toBe(EDITOR_CARD_WIDTH);
+    const deskBox = await settledBox(desk);
+    const cardBox = await settledBox(card);
     expect((cardBox?.x ?? 0) - ((deskBox?.x ?? 0) + (deskBox?.width ?? 0))).toBe(
       await resolvedLength(page, '--sp-8'),
     );
     expect(cardBox?.y).toBe(deskBox?.y);
   } else {
     /* At 375 the window leads and its switch row follows it. */
-    const windowBox = await frameWindow(body).boundingBox();
-    const switchBox = await previewSwitch(body).boundingBox();
+    const windowBox = await settledBox(frameWindow(body));
+    const switchBox = await settledBox(previewSwitch(body));
     expect(switchBox?.y ?? 0).toBeGreaterThan(windowBox?.y ?? Infinity);
   }
   await expectNoSidewaysScroll(page);

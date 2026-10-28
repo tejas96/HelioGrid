@@ -1,7 +1,8 @@
 import { createTranslator, SETUP_LANGUAGE } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { resolvedColour, resolvedFont } from '../support/token';
-import { HeldNumberField } from './NumberField.story';
+import { HeldNumberField, NamedNumberField } from './NumberField.story';
 
 /**
  * A number field with no value is UNSET: an empty box beside its unit, never `0` — a figure nobody
@@ -164,9 +165,9 @@ test('the value starts at the left in the sans face', async ({ mount, page }) =>
   await expect(input).toHaveCSS('text-align', 'start');
   const unit = field.getByText(UNIT, { exact: true });
   await expect(unit).toHaveCSS('color', await resolvedColour(page, '--text-secondary'));
-  const inputBox = await input.boundingBox();
-  const unitBox = await unit.boundingBox();
-  expect(unitBox?.x).toBeGreaterThanOrEqual((inputBox?.x ?? 0) + (inputBox?.width ?? 0));
+  const inputBox = await settledBox(input);
+  const unitBox = await settledBox(unit);
+  expect(unitBox?.x).toBeGreaterThanOrEqual(inputBox.x + inputBox.width);
   await field.unmount();
 
   const stepped = await mount(<HeldNumberField label={LABEL} unit={UNIT} initial={5} steppers />);
@@ -186,4 +187,19 @@ test('an amount keeps the mono face', async ({ mount, page }) => {
     await resolvedFont(page, 'fontWeight', '--fw-regular'),
   );
   await expect(input).toHaveCSS('text-align', 'start');
+});
+
+/* The column on `SCR-M01-20` labels its shares once; each row's field is named by `ariaLabel`. */
+const SHARE_NAME = 'Share of Second instalment';
+
+test('an ariaLabel names the field', async ({ mount }) => {
+  const unlabelled = await mount(<NamedNumberField ariaLabel={SHARE_NAME} />);
+  await expect(unlabelled.getByRole('textbox', { name: SHARE_NAME })).toBeVisible();
+  await expect(unlabelled.locator('label')).toHaveCount(0);
+  await expect(unlabelled.getByText(SHARE_NAME)).toHaveCount(0);
+  await unlabelled.unmount();
+
+  const labelled = await mount(<NamedNumberField label={LABEL} ariaLabel={SHARE_NAME} />);
+  await expect(labelled.getByRole('textbox', { name: LABEL })).toBeVisible();
+  await expect(labelled.getByRole('textbox', { name: SHARE_NAME })).toHaveCount(0);
 });

@@ -1,5 +1,6 @@
 import { createTranslator, inviteWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { InviteFormAsHeld } from './InviteForm.story';
 
 const en = inviteWords((await createTranslator('en')).t);
@@ -134,12 +135,12 @@ test.describe('at 1536, wide', () => {
     mount,
   }) => {
     const form = await mount(<InviteFormAsHeld reader="en" layout="wide" />);
-    const name = await form.getByLabel(en.name).boundingBox();
-    const phone = await form.getByLabel(en.phone).boundingBox();
-    expect(Math.abs((name?.y ?? 0) - (phone?.y ?? 1))).toBeLessThan(2);
+    const name = await settledBox(form.getByLabel(en.name));
+    const phone = await settledBox(form.getByLabel(en.phone));
+    expect(Math.abs(name.y - (phone?.y ?? 1))).toBeLessThan(2);
     const roles = form.getByRole('checkbox');
     const tops = await Promise.all(
-      [0, 1, 2, 3].map(async (i) => (await roles.nth(i).boundingBox())?.y ?? -1),
+      [0, 1, 2, 3].map(async (i) => (await settledBox(roles.nth(i)))?.y ?? -1),
     );
     expect(tops[0]).toBe(tops[1]);
     expect(tops[1]).toBe(tops[2]);

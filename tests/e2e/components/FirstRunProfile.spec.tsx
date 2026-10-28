@@ -2,6 +2,7 @@ import type { FirstRunProfileEvent } from '@heliogrid/domain';
 import { createTranslator, FIRST_RUN_PROFILE } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Page } from '@playwright/test';
+import { settledBox } from '../support/layout';
 import { FirstRunProfileAt } from './FirstRunProfile.story';
 
 /**
@@ -73,13 +74,13 @@ for (const [width, height] of [
       mount,
     }) => {
       const root = await mount(<FirstRunProfileAt reader="en" events={FRAMES.normal} />);
-      const field = await root.getByRole('textbox').boundingBox();
-      const photo = await root
-        .getByRole('group', { name: words(FIRST_RUN_PROFILE.photoLabel) })
-        .boundingBox();
-      const act = await root
-        .getByRole('button', { name: words(FIRST_RUN_PROFILE.save) })
-        .boundingBox();
+      const field = await settledBox(root.getByRole('textbox'));
+      const photo = await settledBox(
+        root.getByRole('group', { name: words(FIRST_RUN_PROFILE.photoLabel) }),
+      );
+      const act = await settledBox(
+        root.getByRole('button', { name: words(FIRST_RUN_PROFILE.save) }),
+      );
       if (field === null || photo === null || act === null) throw new Error('not drawn');
       if (wide) expect(photo.y).toBeLessThan(field.y);
       else expect(field.y).toBeLessThan(photo.y);
@@ -106,8 +107,8 @@ for (const [width, height] of [
       await expect(root.getByText(words(FIRST_RUN_PROFILE.saveFailed))).toBeVisible();
       await expect(root.getByText(words(FIRST_RUN_PROFILE.saveFailedLine))).toBeVisible();
       await expect(root.getByRole('textbox')).toHaveValue('Anjali Kulkarni');
-      const banner = await root.getByText(words(FIRST_RUN_PROFILE.saveFailed)).boundingBox();
-      const field = await root.getByRole('textbox').boundingBox();
+      const banner = await settledBox(root.getByText(words(FIRST_RUN_PROFILE.saveFailed)));
+      const field = await settledBox(root.getByRole('textbox'));
       if (banner === null || field === null) throw new Error('not drawn');
       // Under the heading on the phone; just above the act at 1536 (ruling 11).
       if (wide) expect(banner.y).toBeGreaterThan(field.y);
@@ -177,8 +178,8 @@ test.describe('at 1536 only', () => {
   }) => {
     const root = await mount(<FirstRunProfileAt reader="en" events={FRAMES.normal} />);
     const column = root.locator('.hg-first-run');
-    const box = await column.boundingBox();
-    const pane = await page.locator('.hg-door-task').boundingBox();
+    const box = await settledBox(column);
+    const pane = await settledBox(page.locator('.hg-door-task'));
     const measure = await column.evaluate((node) =>
       Number.parseFloat(getComputedStyle(node).getPropertyValue('--door-measure')),
     );

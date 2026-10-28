@@ -2,7 +2,12 @@ import { join } from 'node:path';
 import { SETTINGS_GROUPS, SETTINGS_ROWS, settingsRowsFor } from '@heliogrid/domain';
 import { createTranslator, settingsWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { expectNoSidewaysScroll, expectNothingClipped, expectSharedEdge } from '../support/layout';
+import {
+  expectNoSidewaysScroll,
+  expectNothingClipped,
+  expectSharedEdge,
+  settledBox,
+} from '../support/layout';
 import { resolvedColour } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 import { SettingsListAsHeld } from './SettingsList.story';
@@ -42,7 +47,7 @@ test.describe('at 375', () => {
     const person = list.locator('.hg-settings-person');
     await expect(person).toContainText(PERSON);
     await expect(person).toContainText(WORDS.rows.profile);
-    expect((await person.boundingBox())?.height).toBeGreaterThanOrEqual(96);
+    expect((await settledBox(person))?.height).toBeGreaterThanOrEqual(96);
     const rows = list.getByRole('button');
     await expect(rows).toHaveCount(OWNER_ROWS.length);
     await expect(list.locator('.hg-settings-row-name')).toHaveText(
@@ -53,7 +58,7 @@ test.describe('at 375', () => {
     await expectSharedEdge([person, ...tiles], 'right');
     const all = await rows.all();
     for (const row of all.slice(1)) {
-      const box = await row.boundingBox();
+      const box = await settledBox(row);
       expect(box?.height).toBeGreaterThanOrEqual(ROW);
     }
     await expect(list.locator('.hg-settings-row-icon')).toHaveCount(OWNER_ROWS.length - 1);
@@ -87,8 +92,8 @@ test.describe('at 375', () => {
       range.selectNodeContents(node);
       return range.getBoundingClientRect().right;
     });
-    const box = await name.boundingBox();
-    expect(inkRight).toBeLessThanOrEqual((box?.x ?? 0) + (box?.width ?? 0) + 1);
+    const box = await settledBox(name);
+    expect(inkRight).toBeLessThanOrEqual(box.x + box.width + 1);
     await expect(name).toHaveText('Owner 9112345678');
   });
 
@@ -130,7 +135,7 @@ test.describe('the side form, beside a settings page at 1536', () => {
       <SettingsListAsHeld reader="en" held={['epc_owner']} form="side" current="company_profile" />,
     );
     const nav = list.getByRole('navigation', { name: WORDS.title });
-    expect((await nav.boundingBox())?.width).toBe(248);
+    expect((await settledBox(nav))?.width).toBe(248);
     const rows = nav.getByRole('button');
     await expect(rows).toHaveText(OWNER_ROWS.map((row) => WORDS.rows[row]));
     for (const group of HEADED)

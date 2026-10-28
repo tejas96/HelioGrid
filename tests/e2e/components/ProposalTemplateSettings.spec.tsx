@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/experimental-ct-react';
-import { expectNoSidewaysScroll } from '../support/layout';
+import { expectNoSidewaysScroll, settledBox } from '../support/layout';
 import {
   actBar,
   card,
@@ -134,8 +134,8 @@ for (const width of WIDTHS) {
       const failure = body.getByText(en.saveFailed);
       await expect(failure).toBeVisible();
       await expect(body.getByText(en.saveFailedBody)).toBeVisible();
-      expect((await failure.boundingBox())?.y ?? Infinity).toBeLessThan(
-        (await bar.boundingBox())?.y ?? 0,
+      expect((await settledBox(failure))?.y ?? Infinity).toBeLessThan(
+        (await settledBox(bar))?.y ?? 0,
       );
       if (wide) await expect(card(body).locator('.hg-form-action-bar')).toHaveCount(1);
       else await expect(body.locator('.hg-template-foot')).toHaveCSS('position', 'sticky');

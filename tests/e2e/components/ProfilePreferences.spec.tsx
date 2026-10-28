@@ -8,7 +8,7 @@ import {
   settingsRowName,
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { expectNoSidewaysScroll, expectNothingClipped } from '../support/layout';
+import { expectNoSidewaysScroll, expectNothingClipped, settledBox } from '../support/layout';
 import { pngOf } from '../support/png';
 import { resolvedColour, resolvedLength, resolvedShadow } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
@@ -69,7 +69,7 @@ test.describe('at 375', () => {
     const tile = card.locator('.hg-profile-preferences-tile');
     await expect(tile).toHaveCSS('box-shadow', await resolvedShadow(page, '--e2'));
     for (const row of await tile.locator('.hg-list-row').all()) {
-      expect((await row.boundingBox())?.height).toBeGreaterThanOrEqual(64);
+      expect((await settledBox(row))?.height).toBeGreaterThanOrEqual(64);
     }
     await expectTouchFloor(await card.getByRole('radio').all());
     await expectNoSidewaysScroll(page);
@@ -191,13 +191,13 @@ test.describe('at 1536', () => {
       'border-top-left-radius',
       `${await resolvedLength(page, '--r-tile')}px`,
     );
-    const page760 = await card.locator('.hg-profile-preferences').boundingBox();
+    const page760 = await settledBox(card.locator('.hg-profile-preferences'));
     expect(page760?.width).toBeLessThanOrEqual(760);
     await expect(card.getByRole('heading', { level: 2, name: W('account') })).toBeVisible();
     // Language, units, and the four push groups a Sales Executive is shown.
     await expect(card.locator('.hg-settings-section-row')).toHaveCount(6);
     for (const row of await card.locator('.hg-settings-section-row').all()) {
-      expect((await row.boundingBox())?.height).toBeGreaterThanOrEqual(64);
+      expect((await settledBox(row))?.height).toBeGreaterThanOrEqual(64);
     }
     await expect(card.locator('.hg-segmented-control-segment span[lang="hi"]')).toHaveText(
       LANGUAGE_META.hi.endonym,
@@ -219,11 +219,11 @@ test.describe('at 1536', () => {
     const row = card.locator('.hg-profile-preferences-name');
     await expect(row.locator('img')).toHaveAttribute('src', PHOTO);
     const edit = row.getByRole('button', { name: W('editName') });
-    const rowBox = await row.boundingBox();
-    const editBox = await edit.boundingBox();
-    expect(
-      (rowBox?.x ?? 0) + (rowBox?.width ?? 0) - ((editBox?.x ?? 0) + (editBox?.width ?? 0)),
-    ).toBeLessThanOrEqual((await resolvedLength(card.page(), '--sp-6')) + 1);
+    const rowBox = await settledBox(row);
+    const editBox = await settledBox(edit);
+    expect(rowBox.x + rowBox.width - (editBox.x + editBox.width)).toBeLessThanOrEqual(
+      (await resolvedLength(card.page(), '--sp-6')) + 1,
+    );
     await edit.click();
     await expect(card).toHaveAttribute('data-edit-opened', 'true');
   });

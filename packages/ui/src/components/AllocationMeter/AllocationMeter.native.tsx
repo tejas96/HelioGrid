@@ -6,13 +6,11 @@ import Svg from 'react-native-svg';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { AllocationLegend } from './AllocationLegend.native';
 import type { AllocationModel } from './AllocationMeter.model';
-import { allocationModel, formatAllocation, partValue } from './AllocationMeter.model';
-import type {
-  AllocationMeterProps,
-  AllocationPart,
-  AllocationState,
-} from './AllocationMeter.types';
+import { allocationModel, formatAllocation } from './AllocationMeter.model';
+import type { AllocationMeterProps, AllocationState } from './AllocationMeter.types';
+import { AllocationSplit } from './AllocationSplit.native';
 
 interface NativeAllocationMeterProps extends AllocationMeterProps {
   style?: StyleProp<ViewStyle>;
@@ -140,24 +138,6 @@ function Track({
 }
 
 /** Names each segment beside the bar. Off by default: at 375px the bar and the words come first. */
-function Legend({ parts, unit }: { parts: AllocationPart[]; unit: string }) {
-  return (
-    <View style={styles.legend}>
-      {parts.map((part) => (
-        <View key={`${part.label ?? ''}-${partValue(part)}`} style={styles.legendItem}>
-          <View style={styles.swatch} />
-          <Text variant="caption" color="secondary">
-            {part.label}
-          </Text>
-          <Text variant="mono" color="tertiary">
-            {`${formatAllocation(partValue(part))}${unit}`}
-          </Text>
-        </View>
-      ))}
-    </View>
-  );
-}
-
 function Note({ words }: { words: ReactNode }) {
   return words === null || words === undefined ? null : (
     <Text variant="caption" color="tertiary">
@@ -179,9 +159,21 @@ export function AllocationMeter(props: NativeAllocationMeterProps) {
     note,
     showLegend = false,
     density = 'expressive',
+    variant = 'meter',
     style,
   } = props;
   const model = allocationModel(props);
+  if (variant === 'split') {
+    return (
+      <AllocationSplit
+        label={label}
+        parts={model.parts}
+        unit={unit}
+        density={density}
+        style={style}
+      />
+    );
+  }
   const words = remainderWords ?? model.remainder ?? unresolvedNote;
   const state = model.resolved ? model.state : 'under';
   const name = label === undefined ? 'Allocation' : `${label} allocation`;
@@ -206,7 +198,9 @@ export function AllocationMeter(props: NativeAllocationMeterProps) {
           {words}
         </Text>
       </View>
-      {showLegend && model.parts.length > 0 ? <Legend parts={model.parts} unit={unit} /> : null}
+      {showLegend && model.parts.length > 0 ? (
+        <AllocationLegend parts={model.parts} unit={unit} />
+      ) : null}
       <Note words={enforcementNote ?? model.enforcement} />
       <Note words={note} />
     </View>
@@ -283,23 +277,5 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  legend: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: theme.spacing['sp-1'],
-    columnGap: 14,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  swatch: {
-    width: theme.spacing['sp-2'],
-    height: theme.spacing['sp-2'],
-    borderRadius: 2,
-    backgroundColor: theme.colors.accent,
-    flexShrink: 0,
   },
 });

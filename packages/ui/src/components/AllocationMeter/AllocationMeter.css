@@ -178,3 +178,82 @@
   color: var(--text-tertiary);
   text-wrap: pretty;
 }
+
+/* ── variant="split": a saved split, read and not checked ──────────────────────
+   One segment per part in its own chart colour (the hue comes from .hg-charts-slot, the one
+   palette rule every plot paints through) and a key under it. Up to four parts keep ONE key row
+   whose columns are never narrower than their longest word, so "Commissioned" is never split;
+   five or more wrap onto more rows. The 10px gaps, the 3px strip gap and the 88px wrapping column
+   are the DS source's own. */
+
+.hg-allocation-split {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: var(--font-sans);
+}
+
+.hg-allocation-split-strip {
+  display: flex;
+  gap: 3px;
+}
+
+.hg-allocation-split-strip[data-density="expressive"] {
+  height: 10px;
+}
+
+.hg-allocation-split-strip[data-density="functional"] {
+  height: 8px;
+}
+
+.hg-allocation-split-segment {
+  flex-shrink: 1;
+  flex-basis: 0;
+  min-width: 3px;
+  border-radius: var(--r-pill);
+}
+
+.hg-allocation-split-key {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-2) 10px;
+}
+
+.hg-allocation-split-key[data-rows="one"] {
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(min-content, 1fr);
+}
+
+.hg-allocation-split-key[data-rows="many"] {
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+}
+
+.hg-allocation-split-entry {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-allocation-split-share-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hg-allocation-split-share {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.hg-allocation-split-caption {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}

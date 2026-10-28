@@ -1,6 +1,7 @@
 import { createTranslator, NOTIFICATION_CENTRE, SHELL } from '@heliogrid/i18n';
 import { Sheet } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { animationsSettled } from '../support/motion';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 
@@ -27,7 +28,7 @@ test('the close under a handle sits wholly inside the header and takes a touch a
   );
   await animationsSettled(page);
   const close = page.getByRole('dialog').getByRole('button');
-  const box = await close.boundingBox();
+  const box = await settledBox(close);
   const header = await page
     .getByRole('heading', { name: en.t(NOTIFICATION_CENTRE.title) })
     .evaluate((title) => {

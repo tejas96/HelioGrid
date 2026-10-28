@@ -15,6 +15,7 @@ export { readImportPrice } from './catalog/import-cells';
 export { matchImportRows } from './catalog/import-matching';
 export { readReleaseSnapshot } from './catalog/release';
 export { resolveCatalogItem } from './catalog/resolve';
+export { PREVIEW_CONTRACT_VALUE, previewTrancheAmounts } from './commerce/tranche-preview';
 export { applyRate } from './money/basis-points';
 export { reconcileMinorUnits, resolvePayable } from './money/equation';
 export {

@@ -1,6 +1,7 @@
 import { createTranslator, SIGN_IN, teamActWords } from '@heliogrid/i18n';
 import { Button, Card } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import { settledBox } from '../support/layout';
 import { resolvedColour, resolvedShadow } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 
@@ -19,7 +20,7 @@ test('a medium secondary button on the page is white and raised, and no shorter 
 
   await expect(button).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
   await expect(button).toHaveCSS('box-shadow', await resolvedShadow(page, '--e2'));
-  const box = await button.boundingBox();
+  const box = await settledBox(button);
   expect(box?.height).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
 });
 
@@ -85,7 +86,7 @@ test('a loading button keeps its words for a screen reader and says it is busy (
   expect(named?.name?.value).toBe(sendCode);
   const words = button.getByText(sendCode);
   await expect(words).toHaveCSS('clip-path', 'inset(50%)');
-  const box = await words.boundingBox();
+  const box = await settledBox(words);
   expect(box?.width).toBeLessThanOrEqual(1);
   expect(box?.height).toBeLessThanOrEqual(1);
 });

@@ -3,8 +3,7 @@ import type { CompanyProfileLife } from '@heliogrid/domain';
 import { COMPANY_PROFILE, companyProfileStepWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
-import { CompanyProfile, ToastHost, useFormat, useToasts } from '@heliogrid/ui';
-import { Keyboard } from 'react-native';
+import { CompanyProfile, closeKeyboard, ToastHost, useFormat, useToasts } from '@heliogrid/ui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { pickImage } from '../../../files/pick-image';
 import { underPill } from '../../shell/styles';
@@ -31,7 +30,7 @@ export function ProfileEditor({
   });
   // The keyboard closes on the act: a toast at the pill's height would otherwise sit under it.
   const save = () => {
-    Keyboard.dismiss();
+    closeKeyboard();
     step.save();
   };
   const requestLogo = () => {

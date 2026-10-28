@@ -4,6 +4,11 @@ import { FieldOverrideSpec } from "../data/FieldOverride";
 import { ValueSourceSpec, ValueSourceLevel } from "../data/ValueSource";
 
 export interface NumberFieldProps {
+  /**
+   * The figure, or none: with no `value` the field is UNSET — an empty box beside its unit, never
+   * `0`. A figure nobody declared has no tier that could qualify it (`F8-01`). An empty draft
+   * committed on an unset field leaves it unset; `onCommit` only ever receives a figure.
+   */
   value?: number;
   /** Fires once, on blur or Enter. Never per keystroke. */
   onCommit?: (value: number) => void;
@@ -14,6 +19,11 @@ export interface NumberFieldProps {
   /** Decimal places applied on commit. */
   precision?: number;
   label?: string;
+  /**
+   * The input's accessible name **when no visible `label` is drawn** — a repeated line that labels
+   * its column once (`SCR-M01-20`: *"Share of Second instalment"*). Ignored when `label` is set.
+   */
+  ariaLabel?: string;
   unit?: string;
   hint?: string;
   disabled?: boolean;
@@ -74,7 +84,9 @@ export interface NumberFieldProps {
   /**
    * The +/− buttons and the ArrowUp/ArrowDown nudge. Defaults to `!currency`: **`step` and stepper
    * buttons are a dimension's grammar**, and nobody arrives at a received payment by pressing +
-   * eleven times. With them off the amount right-aligns, like every other figure in the product.
+   * eleven times. With them off the value starts at the left, in `Input`'s face, with the unit or
+   * the currency symbol in secondary at the field's end — an amount (`currency`) in the mono face,
+   * as `F7-09` requires for every monetary amount.
    */
   steppers?: boolean;
   /**

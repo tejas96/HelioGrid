@@ -1,12 +1,14 @@
 /* Timeline (native) — the same sequence, the same rail, the same five states. A continuous rail
-   runs through the nodes, lit up to the current step and dim beyond it. Display only: nothing in
-   this component is pressable except the error state's retry (a `Button`). */
+   runs through the nodes, lit up to the current step and dim beyond it. Without `onChange` it is
+   display only: nothing is pressable but the error state's retry (a `Button`). With it, the chain
+   is a radio group (`TimelinePick.native.tsx`). */
 
 import type { StyleProp, ViewStyle } from 'react-native';
 import { View } from 'react-native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import type { TimelineProps } from './Timeline.types';
 import { NODE_SIZE, TimelineMessage, TimelineSkeleton } from './TimelineParts.native';
+import { TimelinePick } from './TimelinePick.native';
 import { TimelineStep } from './TimelineStep.native';
 
 interface NativeTimelineProps extends TimelineProps {
@@ -26,6 +28,9 @@ export function Timeline({
   retryLabel,
   unavailableTitle = 'No sequence here',
   unavailableMessage,
+  value,
+  onChange,
+  label,
   style,
 }: NativeTimelineProps) {
   if (state === 'loading') {
@@ -60,6 +65,19 @@ export function Timeline({
       <View style={style}>
         <TimelineMessage title={emptyTitle} message={emptyDescription} />
       </View>
+    );
+  }
+
+  if (onChange) {
+    return (
+      <TimelinePick
+        items={items}
+        value={value}
+        onChange={onChange}
+        label={label}
+        density={density}
+        style={style}
+      />
     );
   }
 

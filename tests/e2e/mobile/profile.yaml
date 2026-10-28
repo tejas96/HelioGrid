@@ -1,0 +1,9 @@
+# Profile & preferences: the member's own name, photo and language, opened from settings and closed back to it.
+appId: com.heliogrid.app
+---
+- runFlow:
+    file: steps/open-setting.yaml
+    env:
+      ROW: ${ROW_PROFILE}
+- assertVisible: "(.*, )?${ROW_PROFILE}"
+- tapOn: ${BACK_TO_SETTINGS}

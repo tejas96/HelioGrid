@@ -22,7 +22,7 @@ import {
   windowHeightAt,
   wordsIn,
 } from '../support/branding-page';
-import { expectNoSidewaysScroll } from '../support/layout';
+import { expectNoSidewaysScroll, settledBox } from '../support/layout';
 import { resolvedColour } from '../support/token';
 import { BrandingAsHeld } from './BrandingSettings.story';
 
@@ -58,7 +58,7 @@ for (const width of WIDTHS) {
       await expect(body.getByText(en.limits)).toBeVisible();
       await expect(closing(body)).toHaveText(en.sentKeep);
       expect(await heightOf(frameWindow(body))).toBe(windowHeightAt(wide, false));
-      if (wide) expect((await frameWindow(body).boundingBox())?.width).toBe(SHEET.width);
+      if (wide) expect((await settledBox(frameWindow(body)))?.width).toBe(SHEET.width);
       await body.unmount();
 
       // m18-b — the colour part: the field drawn short, no specimen.
@@ -130,11 +130,11 @@ for (const width of WIDTHS) {
       await expect(body.getByText(en.notSaved)).toBeVisible();
       await expect(body.getByRole('button', { name: en.save })).toBeVisible();
       await expect(closing(body)).toHaveCount(0);
-      const failure = await body.locator('.hg-branding-failure').boundingBox();
-      expect(failure?.y ?? Infinity).toBeLessThan((await stage(body).boundingBox())?.y ?? 0);
+      const failure = await settledBox(body.locator('.hg-branding-failure'));
+      expect(failure?.y ?? Infinity).toBeLessThan((await settledBox(stage(body)))?.y ?? 0);
       if (wide) {
         /* Across both columns, under the heading row. */
-        expect(failure?.width).toBe((await body.locator('.hg-branding').boundingBox())?.width);
+        expect(failure?.width).toBe((await settledBox(body.locator('.hg-branding')))?.width);
       }
       await body.unmount();
 

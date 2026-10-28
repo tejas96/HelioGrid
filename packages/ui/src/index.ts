@@ -103,6 +103,7 @@ export * from './components/NumberField';
 export * from './components/OperationProgress';
 export * from './components/OptionCardGroup';
 export * from './components/OtpInput';
+export * from './components/PaymentTermsSettings';
 export * from './components/PendingAction';
 export * from './components/PhoneField';
 export * from './components/PhotoField';
@@ -170,10 +171,16 @@ export type {
 export { Box, Stack } from './primitives/Box';
 export type { FieldProps } from './primitives/Field';
 export { Field } from './primitives/Field';
-export type { FocusedFieldMeasured } from './primitives/focused-field';
-export { measureFocusedField } from './primitives/focused-field';
 export type { IconProps, IconSize } from './primitives/Icon';
 export { AttentionGlyph, ICON_SIZE, Icon } from './primitives/Icon';
+export type { KeyboardFrameProps, KeyboardHostProps } from './primitives/Keyboard';
+export {
+  closeKeyboard,
+  KeyboardFrame,
+  KeyboardHost,
+  useKeyboardHeight,
+  useKeyboardUp,
+} from './primitives/Keyboard';
 export type { PortalHostProps, PortalProps } from './primitives/Portal';
 export { Portal, PortalHost } from './primitives/Portal';
 export type { PressableProps } from './primitives/Pressable';

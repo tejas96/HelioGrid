@@ -13,7 +13,7 @@ import {
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Page } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
-import { expectNoSidewaysScroll, expectNothingClipped } from '../support/layout';
+import { expectNoSidewaysScroll, expectNothingClipped, settledBox } from '../support/layout';
 import { animationsSettled } from '../support/motion';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 import { PriceEditorAsRead, ReleaseAsRead } from './CatalogEditors.story';
@@ -70,7 +70,7 @@ test('every items frame at 375 and 1536', async ({ mount, page }) => {
       const star = page.getByRole('button', {
         name: t(CATALOG_SETTINGS.stopPreferringNamed, { name: ADANI }),
       });
-      const box = await star.boundingBox();
+      const box = await settledBox(star);
       expect(box?.width ?? 0).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
       expect(box?.height ?? 0).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
       await page.getByRole('button', { name: en.sortNamed(en.sorts.preferred) }).click();
@@ -197,7 +197,7 @@ test('draws Add an item only when it is offered', async ({ mount, page }) => {
     const add = page.getByRole('button', { name: en.addItem });
     const importing = page.getByRole('button', { name: en.importFile });
     await expect(add).toBeVisible();
-    const [addBox, importBox] = [await add.boundingBox(), await importing.boundingBox()];
+    const [addBox, importBox] = [await settledBox(add), await settledBox(importing)];
     /* 1536 heads the controls: the import, then the add; 375 closes the list: the add first. */
     if (wide) expect(addBox?.x ?? 0).toBeGreaterThan(importBox?.x ?? 0);
     else expect(addBox?.x ?? 0).toBeLessThan(importBox?.x ?? 0);

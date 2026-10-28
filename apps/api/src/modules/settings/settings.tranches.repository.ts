@@ -5,20 +5,16 @@ import {
   trancheTemplate,
   trancheTemplateLine,
 } from '@heliogrid/db';
-import {
-  basisPoints,
-  isTrancheDueStage,
-  type ProjectChainStage,
-  type TrancheTemplate,
-  type TrancheTemplateContent,
-} from '@heliogrid/domain';
+import type { TrancheTemplate, TrancheTemplateContent } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, asc, eq, inArray, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { type CreationKey, type Keyed, replayOf } from '../../common/creation-key';
 import { lockCreationKey } from '../../common/db/creation-key-lock';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { memberAct, recordAuditEntry } from '../audit/audit.public';
+import type { LastSave } from './internal/wire';
+import { trancheTemplatesLastSave, trancheTemplatesOf } from './settings.tranche-reads.repository';
 
 export type TemplateOutcome =
   | { readonly outcome: 'done'; readonly template: TrancheTemplate }
@@ -34,8 +30,14 @@ export class SettingsTranchesRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(@Inject(TENANT_DB) private readonly db: TenantPool) {}
 
-  async trancheTemplates(tenantId: string): Promise<readonly TrancheTemplate[]> {
-    return this.db.withTenantTransaction(tenantId, (tx) => trancheTemplatesOf(tx, tenantId));
+  /** Every template, and the newest create or save among them, read in one transaction. */
+  async trancheTemplates(
+    tenantId: string,
+  ): Promise<{ templates: readonly TrancheTemplate[]; lastSave: LastSave | null }> {
+    return this.db.withTenantTransaction(tenantId, async (tx) => ({
+      templates: await trancheTemplatesOf(tx, tenantId),
+      lastSave: await trancheTemplatesLastSave(tx, tenantId),
+    }));
   }
 
   /**
@@ -82,6 +84,7 @@ export class SettingsTranchesRepository {
           archived: false,
           createdAt: new Date(act.now),
           changedAt: new Date(act.now),
+          changedBy: act.actorUserId,
           creationKey: key?.key,
           creationFingerprint: key?.fingerprint,
         })
@@ -118,7 +121,7 @@ export class SettingsTranchesRepository {
       if (isDeepStrictEqual({ name, lines }, content)) return { outcome: 'done', template: stored };
       await tx
         .update(trancheTemplate)
-        .set({ name: content.name, changedAt: new Date(act.now) })
+        .set({ name: content.name, changedAt: new Date(act.now), changedBy: act.actorUserId })
         .where(and(eq(trancheTemplate.tenantId, tenantId), eq(trancheTemplate.id, id)));
       await tx
         .delete(trancheTemplateLine)
@@ -164,6 +167,33 @@ export class SettingsTranchesRepository {
         tx,
         memberAct(
           'settings.tranche_template_archived',
+          tenantId,
+          { kind: 'tranche_template', ref: id },
+          act,
+        ),
+      );
+      return { outcome: 'done', template: await templateById(tx, tenantId, id) };
+    });
+  }
+
+  /**
+   * Back in use, never as the default: the template keeps its place by creation. Restoring one
+   * already in use is the same act repeated — a retry — and answers it, writing nothing (`F4-07`).
+   */
+  async restoreTrancheTemplate(tenantId: string, id: string, act: Act): Promise<TemplateOutcome> {
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
+      await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${tenantId}))`);
+      const [stored] = await trancheTemplatesOf(tx, tenantId, id);
+      if (stored === undefined) return { outcome: 'not-found' };
+      if (!stored.archived) return { outcome: 'done', template: stored };
+      await tx
+        .update(trancheTemplate)
+        .set({ archived: false, archivedAt: null })
+        .where(and(eq(trancheTemplate.tenantId, tenantId), eq(trancheTemplate.id, id)));
+      await recordAuditEntry(
+        tx,
+        memberAct(
+          'settings.tranche_template_restored',
           tenantId,
           { kind: 'tranche_template', ref: id },
           act,
@@ -234,71 +264,4 @@ async function templateById(
   const [template] = await trancheTemplatesOf(tx, tenantId, id);
   if (!template) throw new Error('the tranche template vanished inside its own transaction');
   return template;
-}
-
-/**
- * Every template with its lines in order, oldest first — or one template by id. Two reads
- * over the tenant index, never one per template. `dueOnStage` is stored text validated on the
- * way in, so it reads back as the chain stage it was written as.
- */
-export async function trancheTemplatesOf(
-  tx: TenantScopedDb,
-  tenantId: string,
-  onlyId?: string,
-): Promise<readonly TrancheTemplate[]> {
-  const rows = await tx
-    .select({
-      id: trancheTemplate.id,
-      name: trancheTemplate.name,
-      isDefault: trancheTemplate.isDefault,
-      archived: trancheTemplate.archived,
-      changedAt: trancheTemplate.changedAt,
-    })
-    .from(trancheTemplate)
-    .where(
-      onlyId === undefined
-        ? eq(trancheTemplate.tenantId, tenantId)
-        : and(eq(trancheTemplate.tenantId, tenantId), eq(trancheTemplate.id, onlyId)),
-    )
-    .orderBy(asc(trancheTemplate.createdAt), asc(trancheTemplate.id));
-  const ids = rows.map((row) => row.id);
-  const lines =
-    ids.length === 0
-      ? []
-      : await tx
-          .select({
-            trancheTemplateId: trancheTemplateLine.trancheTemplateId,
-            position: trancheTemplateLine.position,
-            label: trancheTemplateLine.label,
-            shareBasisPoints: trancheTemplateLine.shareBasisPoints,
-            dueOnStage: trancheTemplateLine.dueOnStage,
-          })
-          .from(trancheTemplateLine)
-          .where(
-            and(
-              eq(trancheTemplateLine.tenantId, tenantId),
-              inArray(trancheTemplateLine.trancheTemplateId, ids),
-            ),
-          )
-          .orderBy(asc(trancheTemplateLine.position));
-  return rows.map((row) => ({
-    id: row.id,
-    name: row.name,
-    isDefault: row.isDefault,
-    archived: row.archived,
-    changed: row.changedAt !== null,
-    lines: lines
-      .filter((line) => line.trancheTemplateId === row.id)
-      .map((line) => ({
-        label: line.label,
-        share: basisPoints(line.shareBasisPoints),
-        dueOnStage: dueStageOf(line.dueOnStage),
-      })),
-  }));
-}
-
-/** A stored stage was validated on the way in; a value outside the chain is a corrupted row, said loudly. */
-function dueStageOf(stored: string): ProjectChainStage {
-  if (!isTrancheDueStage(stored)) throw new Error(`tranche line bound to unknown stage ${stored}`);
-  return stored;
 }

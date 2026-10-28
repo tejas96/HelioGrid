@@ -4,16 +4,27 @@ import {
   type ProposalTemplateRead,
   type TimelineTemplate,
   type TimelineTemplateRead,
+  type TrancheSchedulePreview,
+  type TrancheSchedulePreviewRequest,
+  type TrancheTemplateList,
   type TrancheTemplate as TrancheTemplateWire,
   type TrancheTemplateWrite,
   tenantSettingsContract,
 } from '@heliogrid/contracts';
 import {
   allocationVerdict,
+  type BasisPoints,
   basisPointsToPercent,
+  minorUnits,
+  percentToBasisPoints,
   sectionsIncluded,
   type TrancheTemplateContent,
 } from '@heliogrid/domain';
+import {
+  minorUnitsToDecimal,
+  PREVIEW_CONTRACT_VALUE,
+  previewTrancheAmounts,
+} from '@heliogrid/domain/server';
 import {
   ConflictException,
   HttpStatus,
@@ -98,8 +109,29 @@ export class SettingsTemplatesService {
     };
   }
 
-  async trancheTemplates(tenantId: string): Promise<{ items: TrancheTemplateWire[] }> {
-    return { items: (await this.tranches.trancheTemplates(tenantId)).map(trancheTemplateWire) };
+  async trancheTemplates(tenantId: string): Promise<TrancheTemplateList> {
+    const { templates, lastSave } = await this.tranches.trancheTemplates(tenantId);
+    return { items: templates.map(trancheTemplateWire), lastSaved: lastSaveWire(lastSave) };
+  }
+
+  /**
+   * The schedule on the sample contract in the tenant's currency (`F4-04`: the server works out
+   * every money figure). Writes nothing; refused, as a save is, unless the shares are whole.
+   */
+  async previewTrancheSchedule(
+    tenantId: string,
+    body: TrancheSchedulePreviewRequest,
+  ): Promise<TrancheSchedulePreview> {
+    const shares = wholeShares(body.lines.map((line) => percentToBasisPoints(line.percent)));
+    const { currency, minorUnitDigits } = (await this.settings.packOf(tenantId)).formats;
+    const contract = minorUnits(PREVIEW_CONTRACT_VALUE * 10 ** minorUnitDigits);
+    return {
+      currencyCode: currency,
+      contract: minorUnitsToDecimal(contract, minorUnitDigits),
+      amounts: previewTrancheAmounts(contract, shares).map((amount) =>
+        minorUnitsToDecimal(amount, minorUnitDigits),
+      ),
+    };
   }
 
   async createTrancheTemplate(
@@ -131,6 +163,14 @@ export class SettingsTemplatesService {
     return admitted(await this.tranches.archiveTrancheTemplate(tenantId, id, act));
   }
 
+  async restoreTrancheTemplate(
+    tenantId: string,
+    id: string,
+    act: Act,
+  ): Promise<TrancheTemplateWire> {
+    return admitted(await this.tranches.restoreTrancheTemplate(tenantId, id, act));
+  }
+
   async makeDefaultTrancheTemplate(
     tenantId: string,
     id: string,
@@ -143,7 +183,13 @@ export class SettingsTemplatesService {
 /** The lines as domain holds them, admitted only when they total the whole (`M01-54`). */
 function wholeContent(body: TrancheTemplateWrite): TrancheTemplateContent {
   const lines = body.lines.map(trancheLineFromWire);
-  const verdict = allocationVerdict(lines.map((line) => line.share));
+  wholeShares(lines.map((line) => line.share));
+  return { name: body.name, lines };
+}
+
+/** The shares, admitted only when they total the whole; the refusal names what is still unplaced. */
+function wholeShares(shares: readonly BasisPoints[]): readonly BasisPoints[] {
+  const verdict = allocationVerdict(shares);
   if (verdict.state !== 'met') {
     const remainder = basisPointsToPercent(Math.abs(verdict.remainder));
     throw new ContractException(
@@ -154,7 +200,7 @@ function wholeContent(body: TrancheTemplateWrite): TrancheTemplateContent {
       HttpStatus.UNPROCESSABLE_ENTITY,
     );
   }
-  return { name: body.name, lines };
+  return shares;
 }
 
 /** The template a transition produced, or its refusal as the contract declares it. */

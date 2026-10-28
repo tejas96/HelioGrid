@@ -4,6 +4,7 @@ import {
   PROJECT_STAGE_CHAIN,
   PROPOSAL_SECTIONS,
   TIMELINE_PHASE_LIMIT,
+  TRANCHE_LINE_LIMIT,
 } from '@heliogrid/domain';
 import { z } from 'zod';
 import { percentSchema, uuidSchema } from './common';
@@ -140,7 +141,7 @@ export type TrancheLine = z.infer<typeof trancheLineSchema>;
 /** What a save carries: the name and the lines; the sum rule is the server's verdict (`M01-54`). */
 export const trancheTemplateWriteSchema = z.object({
   name: packLabelSchema,
-  lines: z.array(trancheLineSchema).min(1).max(12),
+  lines: z.array(trancheLineSchema).min(1).max(TRANCHE_LINE_LIMIT),
 });
 export type TrancheTemplateWrite = z.infer<typeof trancheTemplateWriteSchema>;
 

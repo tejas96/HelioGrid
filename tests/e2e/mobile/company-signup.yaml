@@ -22,7 +22,7 @@ appId: com.heliogrid.app
 - inputText: ${CITY_EXAMPLE}
 - pressKey: Enter
 # The form stops here, filled: pressing Create company inside a Maestro flow never reaches the api on
-# iOS, while the same tap on a still screen does, so creating the company and the home it opens are
-# checked by hand (T-FPLAT-079, R9; gate 33's one held screen).
+# iOS, while the same tap on a still screen does (`D5`), so `run.sh` makes the next company through
+# the api and the flows after this one sign in to it.
 - scrollUntilVisible:
     element: ${CREATE_COMPANY}

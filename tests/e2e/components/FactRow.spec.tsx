@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator } from '@playwright/test';
+import { settledBox } from '../support/layout';
 import { resolvedLength } from '../support/token';
 import { FactRowAsHeld, FactRowsAsHeld, type HeldRow } from './FactRow.story';
 
@@ -13,7 +14,7 @@ const ADDRESS = 'Plot 14, Sector 21, Kharghar, Navi Mumbai 410210';
 const DATE: HeldRow = { label: 'Survey date', value: '14 Mar 2026' };
 
 async function box(locator: Locator) {
-  const found = await locator.boundingBox();
+  const found = await settledBox(locator);
   if (found === null) throw new Error('not laid out');
   return found;
 }

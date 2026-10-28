@@ -64,6 +64,8 @@ export * from './session';
 export * from './tenant';
 // Tenant settings (`T-M01-026`): every setting's one home, and the resolved read.
 export * from './tenant-settings';
+// The payment-term templates (`T-M01-020`): spread into the tenant settings router.
+export * from './tranche-templates';
 // The account's own profile write (`T-M01-025`).
 export * from './user';
 
