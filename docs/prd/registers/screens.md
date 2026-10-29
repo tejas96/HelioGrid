@@ -2197,7 +2197,7 @@ Nothing below is renumbered.*
 | M12-10 | P0 | integration | integration | T-M12-007 |
 | M12-11 | P0 | integration | integration | T-M12-007 |
 | M12-12 | P1 | policy | policy | T-M12-007 |
-| M12-13 | P1 | policy | policy | T-M12-005 |
+| M12-13 | P1 | policy | policy | T-M12-005, T-M12-007 |
 | M12-14 | P0 | policy | policy | T-M12-005 |
 | M12-15 | P0 | policy | policy | LAW |
 | M12-16 | P0 | engine | engine | T-M12-008 |

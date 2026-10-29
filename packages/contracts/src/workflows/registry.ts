@@ -21,6 +21,7 @@ export const TASK_QUEUES = [
   'heliogrid-outbox',
   'heliogrid-catalog',
   'heliogrid-team',
+  'heliogrid-billing',
 ] as const;
 export type TaskQueue = (typeof TASK_QUEUES)[number];
 

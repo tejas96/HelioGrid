@@ -20,6 +20,7 @@ import { userContract } from './user';
 export * from './audit';
 // The front door (`T-M01-025`): a phone and a code, the session, the token life.
 export * from './auth';
+export * from './billing';
 // The company's identity facts (`T-M01-026`): the profile and its tax registrations.
 export * from './business-profile';
 // The catalog (`T-M01-027`): its closed sets, the resolved read and the tenant's writes.

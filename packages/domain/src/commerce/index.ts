@@ -61,6 +61,18 @@ export type {
 } from './effective-settings';
 export { absentFacts, resolveEffectiveSettings, SETTING_SOURCES } from './effective-settings';
 export { appliesImmediately, forfeitsPriceProtection } from './grandfathering';
+export type { DueTimedCause, SubscriptionCause, SubscriptionClock } from './lifecycle';
+export {
+  billingPhaseAt,
+  dueTimedCause,
+  ENTITLEMENT_BUFFER_DAYS,
+  entitledUntil,
+  METERED_PAUSE_DAY,
+  nextState,
+  PAST_DUE_GRACE_DAYS,
+  SUBSCRIPTION_CAUSES,
+  trialEndsAtFor,
+} from './lifecycle';
 export type { Meter } from './meters';
 export { METERS } from './meters';
 export type { ProposalCover, ProposalSection } from './proposal-template-defaults';

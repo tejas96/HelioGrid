@@ -10,6 +10,8 @@
  * former sibling. Do not add one back.
  */
 
+export type { BillingTimersActivities } from './billing-timers';
+export { BILLING_TIMERS_SCHEDULE_ID, billingTimersWorkflow } from './billing-timers';
 export type {
   CatalogImportActivities,
   CatalogImportStepInput,

@@ -21,6 +21,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **Status:** designed
 **PRD rows:** M12-08 (P0), M12-46 (P0), M12-47 (P0), M12-50 (P0), M12-55 (P0)
 **DESIGN:** SCR-M12-02 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
+**Contract:** declares the company's billing standing read — its state and phase from `T-M12-005`'s `subscription` row and `billingPhaseAt` — as the first screen that shows it; `T-SHELL-006` reads the same route.
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-02-billing-home.md`; they are the specification. (M12-55 is a shared row: its plan-selection half lands on SCR-M12-03 / T-M12-003; the row is dispositioned here.)
 **DONE WHEN:**
 - Given a tenant halted for a year, when the owner pays, then a new gateway subscription exists, entitlements are live immediately, and every record is as they left it (M12-08).
@@ -64,7 +65,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-005 · Subscription lifecycle machine
 
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped
 **PRD rows:** M12-04, M12-05, M12-06, M12-07, M12-13, M12-14, M12-52
 **Requirements (verbatim):**
 - **M12-04** (P0) — **The lifecycle is one machine, six states, history append-only:** `trialing` → (pay) `active` · `trialing` → (14 days unconverted) `expired` [terminal] · `active` → (charge fails) `past_due` → (7 days unpaid) `halted` → (payment) `active` · `active` → (owner cancels) `cancelled` (runs to the paid period end, then behaves as `halted`). One non-terminal subscription per tenant. The six names are `BM-33`'s suite vocabulary and no other state name exists anywhere.
@@ -105,13 +106,15 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 
 **Type:** integration · **Tier:** P0
 **Status:** planned
-**PRD rows:** M12-03, M12-10, M12-11, M12-12
+**PRD rows:** M12-03, M12-10, M12-11, M12-12, M12-13
 **Requirements (verbatim):**
 - **M12-03** (P0) — **Billing is provider-neutral; the launch market's gateway is a reference implementation.** Subscription billing, mandates, hosted checkout and webhooks are capabilities behind provider-neutral billing ports; the billing schema is per-currency and provider-neutral, one currency per tenant (`F1-07`/`F1-27` consumed). The v1 reference implementation is Razorpay (`R4`, the IN rail) — named here once, as reference implementation only; another market adds adapters, never product change.
 - **M12-10** (P0) — **Checkout is the gateway's hosted flow; the platform never sees a payment instrument.** Card, mandate and bank details exist only at the gateway (the market's localisation obligations stay the gateway's problem — IN instance per `F1-43`). The product's own screens collect nothing sensitive.
 - **M12-11** (P0) — **The mandate is established at conversion, never at signup, on the market pack's rails.** Which rail collects which cycle is pack data (`F1-40`/`F1-41` for IN: mandate ladder for monthly self-serve; e-NACH/invoice for Enterprise; every yearly total exceeds the mandate cap and is collected as a single payment link/invoice per year, renewal a fresh invoice). Pre-debit notifications before each charge are the gateway's duty; dunning copy may reference them and builds nothing.
 - **M12-12** (P1) — **Every tier exists as two gateway plan objects (monthly + yearly), mirrored 1:1 by per-currency plan-price rows.** Our tables are the source of truth for entitlements; the gateway's for money. A cycle switch (monthly → yearly) follows exactly the tier-upgrade mechanics: immediate entitlements, prorated delta, new subscription at the boundary (M12-48).
+- **M12-13** (P1) — **Pause/resume is not offered.** No pause state exists in the machine; if the gateway ever emits such an event it is logged and alerted, never applied. — *Split with T-M12-005:* the machine has no pause state there; the gateway event is handled here, at the webhook port.
 **DONE WHEN:**
+- Given a gateway pause or resume event, when its webhook lands, then it is logged and an alert is raised, and the subscription's state and history are unchanged (M12-13 — the no-pause-state half is T-M12-005's).
 - Given the module body, when searched for vendor names, then the only occurrence is M12-03's reference-implementation naming (M12-03).
 - Given conversion, when checkout confirms, then the subscription exists at the gateway, the mandate rides the pack's rail, and entitlements are active immediately (M12-54 — dispositioned to T-M12-003; carried here as well because these ports are what it exercises end-to-end, and it is the only PRD acceptance line that touches hosted checkout and the mandate rail).
 - (M12-10, M12-11 and M12-12 carry no dedicated Given/When/Then lines in the PRD's acceptance blocks; the requirement texts above are the binding criteria — checkout is the gateway's hosted flow and the platform never sees a payment instrument (M12-10); the mandate is established at conversion, never at signup, on the market pack's rails, with pre-debit notification the gateway's duty (M12-11); every tier exists as two gateway plan objects, monthly and yearly, mirrored 1:1 by per-currency plan-price rows, with our tables the source of truth for entitlements and the gateway's for money, and a cycle switch following M12-48's tier-upgrade mechanics exactly (M12-12). M12-14's line under T-M12-005 exercises M12-11's "never at signup" half; M12-48's line under T-M12-003 exercises M12-12's cycle-switch half.)
@@ -268,7 +271,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 | M12-10 | T-M12-007 |
 | M12-11 | T-M12-007 |
 | M12-12 | T-M12-007 |
-| M12-13 | T-M12-005 |
+| M12-13 | T-M12-005, T-M12-007 |
 | M12-14 | T-M12-005 |
 | M12-15 | LAW |
 | M12-16 | T-M12-008 |
