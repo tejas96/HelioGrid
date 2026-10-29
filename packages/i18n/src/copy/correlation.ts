@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ObservationWindow } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 
@@ -17,6 +18,6 @@ export const AGENT_CALL_CORRELATION: MessageRef = /*i18n*/ {
 export function agentCallCorrelation(
   translate: Translator['t'],
   window: ObservationWindow,
-): string {
+): TranslatedText {
   return translate(AGENT_CALL_CORRELATION, { days: window });
 }

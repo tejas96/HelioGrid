@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { BlockAnnouncement, BlockTone } from '@heliogrid/domain';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
 
@@ -7,9 +8,9 @@ import type { ExplainerProps } from '../Explainer/Explainer.types';
  */
 export interface TintedBlockProps {
   tone: BlockTone;
-  title: string;
+  title: TranslatedText;
   /** What to do next, when the controls under the block do not already say it; omitted, the title stands alone. */
-  body?: string;
+  body?: TranslatedText;
   /**
    * How the block is spoken when it appears. `alert` — it answers a press, so it says itself at
    * once, title then body: a region that mounts already holding its words is not reliably spoken.

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * What a split that must total exactly the whole says (`M01-54`, `SCR-M01-20`): the meter's
  * remainder line, and the reason *Save terms* is refused. Both read the ONE verdict
@@ -20,7 +21,7 @@ function shareOf(verdict: AllocationVerdict): string {
 }
 
 /** The meter's line: *12% unallocated.* · *18% over-allocated.* · *Fully allocated.* */
-export function allocationSentence(t: Translator['t'], verdict: AllocationVerdict): string {
+export function allocationSentence(t: Translator['t'], verdict: AllocationVerdict): TranslatedText {
   if (verdict.state === 'met') return t(ALLOCATION.met);
   return t(verdict.state === 'under' ? ALLOCATION.under : ALLOCATION.over, {
     share: shareOf(verdict),
@@ -28,7 +29,10 @@ export function allocationSentence(t: Translator['t'], verdict: AllocationVerdic
 }
 
 /** Why the save is refused, or `null` when the split is whole. */
-export function allocationRefusal(t: Translator['t'], verdict: AllocationVerdict): string | null {
+export function allocationRefusal(
+  t: Translator['t'],
+  verdict: AllocationVerdict,
+): TranslatedText | null {
   if (verdict.state === 'met') return null;
   return t(verdict.state === 'under' ? ALLOCATION.allocateRest : ALLOCATION.takeOff, {
     share: shareOf(verdict),

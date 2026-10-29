@@ -1,4 +1,8 @@
-import type { PriceBookRateWire, PriceBookVersionSummaryWire } from '@heliogrid/contracts';
+import type {
+  PriceBookRateWire,
+  PriceBookVersionSummaryWire,
+  TranslatedText,
+} from '@heliogrid/contracts';
 import {
   authoredIn,
   PRICE_BOOK_RATE_BASES,
@@ -91,7 +95,7 @@ export const rateBasisWord = (t: Translator['t'], basis: PriceBookRateBasis) => 
 const bases = (t: Translator['t']) =>
   Object.fromEntries(
     PRICE_BOOK_RATE_BASES.map((basis) => [basis, rateBasisWord(t, basis)]),
-  ) as Record<PriceBookRateBasis, string>;
+  ) as Record<PriceBookRateBasis, TranslatedText>;
 
 /** The Rates panel's fixed words. */
 export function catalogRatesWords(t: Translator['t']) {

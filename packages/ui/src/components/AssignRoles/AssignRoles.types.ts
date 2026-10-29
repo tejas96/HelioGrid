@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { Read, RolePreset } from '@heliogrid/domain';
 import type { TeamConfirmWords } from '../MemberCard/MemberCard.types';
 import type { OverlayStatus } from '../Sheet/Sheet.types';
@@ -33,7 +34,7 @@ export interface AssignRolesProps {
   /** The grant line: `grantLine(picked).speakers`, and their sentence in parts. */
   grant: AssignRolesGrant;
   /** Why *Save roles* is off — nothing changed, or nothing ticked — or null when it may run. */
-  saveOffReason: string | null;
+  saveOffReason: TranslatedText | null;
   saving: boolean;
   onSave: () => void;
   /**
@@ -47,16 +48,16 @@ export interface AssignRolesProps {
 
 export interface AssignRolesRefusalProp {
   /** Null when no one can say the save failed — it may have landed (F8-36). */
-  readonly title: string | null;
-  readonly body: string;
+  readonly title: TranslatedText | null;
+  readonly body: TranslatedText;
 }
 
 export interface AssignRolesRow {
   readonly value: RolePreset;
-  readonly title: string;
-  readonly description: string;
+  readonly title: TranslatedText;
+  readonly description: TranslatedText;
   /** The row is held and cannot be cleared — the reason, on its own line under the description. */
-  readonly lockReason: string | null;
+  readonly lockReason: TranslatedText | null;
 }
 
 export interface AssignRolesGrant {
@@ -66,19 +67,19 @@ export interface AssignRolesGrant {
 }
 
 export interface AssignRolesWordsProp {
-  readonly overline: string;
+  readonly overline: TranslatedText;
   /** The list's heading, in the head, and the group's spoken name. */
-  readonly presets: string;
+  readonly presets: TranslatedText;
   /** The round button's name, *Roles reference*. */
-  readonly reference: string;
+  readonly reference: TranslatedText;
   /** *Every change is recorded under your name — roles before and after.* */
-  readonly recorded: string;
+  readonly recorded: TranslatedText;
   /** The grant card's overline and its region's name. */
-  readonly gives: string;
-  readonly save: string;
-  readonly close: string;
+  readonly gives: TranslatedText;
+  readonly save: TranslatedText;
+  readonly close: TranslatedText;
   /** The skeleton's spoken name — *Loading Vikram's presets*. */
-  readonly loading: string;
+  readonly loading: TranslatedText;
 }
 
 /** The removal's confirm: its words, *Remove role* and *Cancel*. */

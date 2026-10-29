@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import {
   firstNameOf,
   type TeamAct,
@@ -45,22 +46,22 @@ const SPOKEN: Record<TeamAct, { id: string }> = {
 
 /** A confirm's title, go button and sentence. */
 export interface TeamAskWords {
-  readonly title: string;
-  readonly go: string;
-  readonly body: string;
+  readonly title: TranslatedText;
+  readonly go: TranslatedText;
+  readonly body: TranslatedText;
 }
 
 export interface TeamActWords {
-  act(act: TeamAct): string;
+  act(act: TeamAct): TranslatedText;
   /** The act's accessible name, with the person in it — `Button`'s `spokenName`. */
-  spoken(act: TeamAct, name: string): string;
+  spoken(act: TeamAct, name: string): TranslatedText;
   /** The table's act column, named for a screen reader only. */
-  readonly actions: string;
-  readonly onlyOwner: string;
+  readonly actions: TranslatedText;
+  readonly onlyOwner: TranslatedText;
   deactivate(name: string): TeamAskWords;
   revoke(name: string): TeamAskWords;
   /** Why an act was turned down, in the shipped words for its code; an unknown code says INTERNAL's. */
-  turnedDown(code: string): string;
+  turnedDown(code: string): TranslatedText;
   /** The open confirm's words, or null while it is shut. */
   confirm(state: TeamConfirmState): TeamConfirmShown | null;
   /** The toast a settled act raises, or null when the moved list says it all. */
@@ -69,13 +70,13 @@ export interface TeamActWords {
 
 /** What an open confirm says: its question and act, then either what the act does or the refusal. */
 export interface TeamConfirmShown {
-  readonly title: string;
-  readonly go: string;
-  readonly leave: string;
-  readonly body?: string;
-  readonly refusal?: { readonly title: string; readonly body: string | null };
+  readonly title: TranslatedText;
+  readonly go: TranslatedText;
+  readonly leave: TranslatedText;
+  readonly body?: TranslatedText;
+  readonly refusal?: { readonly title: TranslatedText; readonly body: TranslatedText | null };
   /** The go button is off on the refused form, with this route out. */
-  readonly goOffReason?: string;
+  readonly goOffReason?: TranslatedText;
 }
 
 export interface TeamActToast {

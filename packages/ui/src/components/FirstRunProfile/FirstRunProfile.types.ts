@@ -1,39 +1,40 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ExplainerPagerWords, FirstRunProfileFrame } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { PickedFile } from '../Dropzone/Dropzone.types';
 
 /** Every word the screen draws, already translated: `@heliogrid/i18n`'s `firstRunProfileWords`. */
 export interface FirstRunProfileWords {
-  readonly heading: string;
+  readonly heading: TranslatedText;
   readonly about: {
-    readonly label: string;
-    readonly title: string;
-    readonly pages: readonly [string, string, string];
+    readonly label: TranslatedText;
+    readonly title: TranslatedText;
+    readonly pages: readonly [TranslatedText, TranslatedText, TranslatedText];
   } & ExplainerPagerWords;
-  readonly reasons: readonly [string, string, string];
+  readonly reasons: readonly [TranslatedText, TranslatedText, TranslatedText];
   readonly name: {
-    readonly label: string;
-    readonly loading: string;
-    readonly helper: string;
-    readonly error: string | null;
-    readonly success: string | null;
+    readonly label: TranslatedText;
+    readonly loading: TranslatedText;
+    readonly helper: TranslatedText;
+    readonly error: TranslatedText | null;
+    readonly success: TranslatedText | null;
   };
   readonly photo: {
-    readonly label: string;
-    readonly choosePhone: string;
-    readonly chooseWide: string;
-    readonly replace: string;
-    readonly remove: string;
-    readonly helper: string;
+    readonly label: TranslatedText;
+    readonly choosePhone: TranslatedText;
+    readonly chooseWide: TranslatedText;
+    readonly replace: TranslatedText;
+    readonly remove: TranslatedText;
+    readonly helper: TranslatedText;
     readonly error: {
-      readonly title: string;
-      readonly phone: string;
-      readonly wide: string;
+      readonly title: TranslatedText;
+      readonly phone: TranslatedText;
+      readonly wide: TranslatedText;
     } | null;
   };
-  readonly act: string;
-  readonly actReason: string | null;
-  readonly saveFailed: { readonly title: string; readonly line: string } | null;
+  readonly act: TranslatedText;
+  readonly actReason: TranslatedText | null;
+  readonly saveFailed: { readonly title: TranslatedText; readonly line: TranslatedText } | null;
 }
 
 /**

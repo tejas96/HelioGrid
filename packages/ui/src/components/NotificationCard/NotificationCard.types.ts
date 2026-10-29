@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 /**
@@ -8,12 +9,14 @@ import type { ReactNode } from 'react';
 export interface NotificationCardProps {
   /** The notification's type; it picks the glyph, and a type this build does not know gets the bell. */
   type: string;
+  // biome-ignore lint/plugin/copy-prop-type: the record's words, fixed in its reader's language when the api wrote it (F6-08)
   title: string;
+  // biome-ignore lint/plugin/copy-prop-type: the record's words, fixed in its reader's language when the api wrote it (F6-08)
   body: string;
   /** When it was emitted, already on the tenant's clock — `16:12`. */
   time: string;
   /** The word for an unread item, shown beside the time and announced; absent once read. */
-  unreadLabel?: string;
+  unreadLabel?: TranslatedText;
   /** The whole face's name for a screen reader — the sentence `notificationCardName` writes. */
   name: string;
   /** What a tap on the face does. Absent, the face is not a control. */
@@ -30,8 +33,10 @@ export interface NotificationCardProps {
  */
 export interface NotificationAnnouncementProps {
   /** "From HelioGrid · product news". */
-  overline: string;
+  overline: TranslatedText;
+  // biome-ignore lint/plugin/copy-prop-type: the record's words, fixed in its reader's language when the api wrote it (F6-08)
   title: string;
+  // biome-ignore lint/plugin/copy-prop-type: the record's words, fixed in its reader's language when the api wrote it (F6-08)
   body: string;
   time: string;
   name: string;
@@ -42,10 +47,12 @@ export interface NotificationAnnouncementProps {
 /** One member of a group: its own record and its own link (`F6-12`). */
 export interface NotificationMemberProps {
   id: string;
+  // biome-ignore lint/plugin/copy-prop-type: the record's words, fixed in its reader's language when the api wrote it (F6-08)
   title: string;
   /** The body and the time, one line — `Opened 15:48 · Nashik MIDC, Nashik`. */
+  // biome-ignore lint/plugin/copy-prop-type: the record's body and its time
   line: string;
-  unreadLabel?: string;
+  unreadLabel?: TranslatedText;
   name: string;
   onOpen?: () => void;
   /** An icon act only: a member row has no width for a verb. */
@@ -59,15 +66,15 @@ export interface NotificationMemberProps {
 export interface NotificationGroupProps {
   type: string;
   /** "3 proposals opened". */
-  sentence: string;
+  sentence: TranslatedText;
   /** "15:48 latest". */
   latest: string;
   /** "2 unread", or absent when every member is read. */
-  unreadLabel?: string;
+  unreadLabel?: TranslatedText;
   open: boolean;
   onToggle: () => void;
   /** "Show these 3" / "Hide these 3", by `open`. */
-  toggleLabel: string;
+  toggleLabel: TranslatedText;
   members: readonly NotificationMemberProps[];
 }
 
@@ -76,9 +83,9 @@ export interface NotificationGroupProps {
  * see. It names nobody and no date — only that the record is out of reach, and the way back.
  */
 export interface NotificationLandingProps {
-  title: string;
-  message: string;
-  backLabel: string;
+  title: TranslatedText;
+  message: TranslatedText;
+  backLabel: TranslatedText;
   onBack: () => void;
 }
 
@@ -97,12 +104,12 @@ export interface NotificationListGroup<T> {
   kind: 'group';
   key: string;
   type: string;
-  sentence: string;
+  sentence: TranslatedText;
   latest: string;
-  unreadLabel?: string;
+  unreadLabel?: TranslatedText;
   /** "Show these 3" and "Hide these 3": the list holds whether the group is open. */
-  showLabel: string;
-  hideLabel: string;
+  showLabel: TranslatedText;
+  hideLabel: TranslatedText;
   members: readonly ({ item: T } & Omit<NotificationMemberProps, 'onOpen' | 'sideAct'>)[];
 }
 
@@ -115,7 +122,7 @@ export type NotificationListRow<T> =
 export interface NotificationListDay<T> {
   /** The day itself, `YYYY-MM-DD` — its key. */
   date: string;
-  label: string;
+  label: TranslatedText;
   rows: readonly NotificationListRow<T>[];
 }
 
@@ -129,7 +136,7 @@ export interface NotificationListProps<T> {
   /** A card, an announcement or a group's member was tapped. */
   onOpen: (item: T) => void;
   /** "Show older" — present while older matches remain; absent, the horizon shows instead. */
-  olderLabel?: string;
+  olderLabel?: TranslatedText;
   onShowOlder?: () => void;
   loadingOlder?: boolean;
   /** "Couldn't load older notifications. Try again." — shown over Show older when a page failed. */
@@ -159,11 +166,11 @@ export interface NotificationHeadProps {
  */
 export interface NotificationFilterBarProps {
   /** The toolbar's name — "Filter notifications". */
-  label: string;
-  unread: { label: string; name: string };
+  label: TranslatedText;
+  unread: { label: TranslatedText; name: TranslatedText };
   unreadOn: boolean;
   onUnread: (on: boolean) => void;
-  groups: readonly { value: string; label: string }[];
+  groups: readonly { value: string; label: TranslatedText }[];
   /** The open group, or null for every group. */
   openGroup: string | null;
   onGroup: (value: string | null) => void;

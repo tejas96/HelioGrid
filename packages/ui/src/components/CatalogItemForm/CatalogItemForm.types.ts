@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CertificationScheme, ItemDraft, ItemDraftEvent, Read } from '@heliogrid/domain';
 
 /**
@@ -15,7 +16,7 @@ export interface CatalogItemFormProps {
   /** The market's declared schemes, each with the evidence it collects; empty draws none. */
   schemes: readonly CertificationScheme[];
   /** Each failed field's words, by its body path (`brand`, `spec.vocV`, `certifications.ALMM`). */
-  failures: Readonly<Record<string, string>>;
+  failures: Readonly<Record<string, TranslatedText>>;
   /** Counts the refused sends: each new one lands focus on the first field `failures` names. */
   refusal: number;
   /** The person may write a price: the Price card shows. Without it the card is absent. */
@@ -45,88 +46,88 @@ export interface CatalogItemFormProps {
 /** A choice in a list: its value and its words. */
 export interface CatalogItemFormOption<Value extends string = string> {
   readonly value: Value;
-  readonly label: string;
+  readonly label: TranslatedText;
 }
 
 /** A spec field's label and unit; the unit is a symbol as written or a counted word. */
 export interface CatalogItemFormField {
-  readonly label: string;
+  readonly label: TranslatedText;
   readonly unit: string | null;
 }
 
 /** Every word the sheet shows: `@heliogrid/i18n`'s `catalogAddItemWords`. */
 export interface CatalogItemFormWords {
   /** The caller's line over the title; a record id in it is the caller's to set in mono. */
-  readonly overline: string;
-  readonly title: string;
-  readonly spreadsheet: string;
-  readonly spreadsheetSub: string;
-  readonly theItem: string;
-  readonly specification: string;
-  readonly certification: string;
-  readonly price: string;
-  readonly yourOwn: string;
-  readonly whatItIs: string;
-  readonly kindHelper: string;
+  readonly overline: TranslatedText;
+  readonly title: TranslatedText;
+  readonly spreadsheet: TranslatedText;
+  readonly spreadsheetSub: TranslatedText;
+  readonly theItem: TranslatedText;
+  readonly specification: TranslatedText;
+  readonly certification: TranslatedText;
+  readonly price: TranslatedText;
+  readonly yourOwn: TranslatedText;
+  readonly whatItIs: TranslatedText;
+  readonly kindHelper: TranslatedText;
   readonly kinds: readonly CatalogItemFormOption[];
-  readonly brand: string;
-  readonly brandPlaceholder: string;
-  readonly model: string;
-  readonly modelPlaceholder: string;
+  readonly brand: TranslatedText;
+  readonly brandPlaceholder: TranslatedText;
+  readonly model: TranslatedText;
+  readonly modelPlaceholder: TranslatedText;
   /** A pre-filled form's helpers and banner; `null` on a fresh form. */
-  readonly copied: string | null;
-  readonly modelCopied: string | null;
-  readonly banner: string | null;
+  readonly copied: TranslatedText | null;
+  readonly modelCopied: TranslatedText | null;
+  readonly banner: TranslatedText | null;
   /** Each spec field of the draft's kind, by its dotted path. */
   readonly fields: Readonly<Record<string, CatalogItemFormField>>;
-  readonly technologyPlaceholder: string;
+  readonly technologyPlaceholder: TranslatedText;
   readonly technologies: readonly CatalogItemFormOption[];
   readonly chemistries: readonly CatalogItemFormOption[];
   /** `'1'` and `'3'`: the inverter's phase count as a choice. */
   readonly phases: readonly CatalogItemFormOption[];
-  readonly mpptWindow: string;
-  readonly low: string;
-  readonly high: string;
-  readonly addOptional: string;
-  readonly optional: string;
+  readonly mpptWindow: TranslatedText;
+  readonly low: TranslatedText;
+  readonly high: TranslatedText;
+  readonly addOptional: TranslatedText;
+  readonly optional: TranslatedText;
   /** The panel kind's *About the optional values*; `null` draws no ask. */
   readonly optionalAsk: {
-    readonly label: string;
-    readonly title: string;
-    readonly body: string;
+    readonly label: TranslatedText;
+    readonly title: TranslatedText;
+    readonly body: TranslatedText;
   } | null;
   /** Each declared scheme's switch words, and its reference field's label on a list scheme. */
   readonly schemeRows: Readonly<
-    Record<string, { readonly label: string; readonly reference: string | null }>
+    Record<string, { readonly label: TranslatedText; readonly reference: TranslatedText | null }>
   >;
-  readonly schemeNote: string;
-  readonly yourPrice: string;
-  readonly priceHint: string;
-  readonly priceNote: string | null;
-  readonly cancel: string;
-  readonly close: string;
-  readonly primary: string;
+  readonly schemeNote: TranslatedText;
+  readonly yourPrice: TranslatedText;
+  readonly priceHint: TranslatedText;
+  readonly priceNote: TranslatedText | null;
+  readonly cancel: TranslatedText;
+  readonly close: TranslatedText;
+  readonly primary: TranslatedText;
   /** The line over the acts at 1536, and at 375 (`consequenceNarrow`). */
-  readonly consequence: string;
-  readonly consequenceNarrow: string;
-  readonly returned: string;
-  readonly tryAgain: string;
-  readonly dismiss: string;
+  readonly consequence: TranslatedText;
+  readonly consequenceNarrow: TranslatedText;
+  readonly returned: TranslatedText;
+  readonly tryAgain: TranslatedText;
+  readonly dismiss: TranslatedText;
   /** The Empty state's *What this form needs*. */
   readonly needs: {
-    readonly label: string;
-    readonly needed: string;
-    readonly optional: string;
-    readonly neededValues: readonly string[];
-    readonly optionalValues: readonly string[];
+    readonly label: TranslatedText;
+    readonly needed: TranslatedText;
+    readonly optional: TranslatedText;
+    readonly neededValues: readonly TranslatedText[];
+    readonly optionalValues: readonly TranslatedText[];
   };
-  readonly loading: string;
+  readonly loading: TranslatedText;
   readonly discard: {
-    readonly title: string;
+    readonly title: TranslatedText;
     /** Said first, in bold: what is true — nothing was created. */
-    readonly lead: string;
-    readonly body: string;
-    readonly keep: string;
-    readonly discard: string;
+    readonly lead: TranslatedText;
+    readonly body: TranslatedText;
+    readonly keep: TranslatedText;
+    readonly discard: TranslatedText;
   };
 }

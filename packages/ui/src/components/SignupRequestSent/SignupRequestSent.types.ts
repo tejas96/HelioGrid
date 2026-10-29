@@ -1,15 +1,16 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 /** Every word the frame draws; `@heliogrid/i18n`'s `requestSentWords` writes them. */
 export interface SignupRequestSentWords {
-  title: string;
+  title: TranslatedText;
   /** Whose owner holds the request, and how the answer arrives. */
-  body: string;
+  body: TranslatedText;
   /** Over the asker's name and number. */
-  sentAs: string;
+  sentAs: TranslatedText;
   /** Over the one route back to creating. */
-  prompt: string;
-  createInstead: string;
+  prompt: TranslatedText;
+  createInstead: TranslatedText;
 }
 
 /**

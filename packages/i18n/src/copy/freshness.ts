@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import {
   type FreshnessWarning,
   type PackKey,
@@ -45,7 +46,10 @@ const CHANGE_SEPARATOR = ', ';
  * The freshness warning in the reader's language — `translate` is the mount's `t`. A stale figure
  * names what moved in `PINNED_INPUTS` order, the pack's keys standing where the pack stands.
  */
-export function freshnessLabel(translate: Translator['t'], freshness: FreshnessWarning): string {
+export function freshnessLabel(
+  translate: Translator['t'],
+  freshness: FreshnessWarning,
+): TranslatedText {
   if (freshness.kind !== 'stale') return translate(FRESHNESS_WORD[freshness.kind]);
   const changes = PINNED_INPUTS.filter((input) => freshness.moved.includes(input)).flatMap(
     (input) =>

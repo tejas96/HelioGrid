@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { BrandingWords } from '@heliogrid/i18n';
 import { Button, Modal, SheetActions, Text } from '@heliogrid/ui';
 
@@ -13,7 +14,7 @@ export function RemoveLogoConfirm({
   onKeep,
 }: {
   open: boolean;
-  closeLabel: string;
+  closeLabel: TranslatedText;
   words: Pick<BrandingWords, 'removeTitle' | 'removeBody' | 'sentKeep' | 'removeConfirm' | 'keep'>;
   onRemove: () => void;
   onKeep: () => void;

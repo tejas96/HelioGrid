@@ -1,4 +1,4 @@
-import type { RolePreset } from '@heliogrid/contracts';
+import type { RolePreset, TranslatedText } from '@heliogrid/contracts';
 import type { Translator } from '../runtime';
 
 /**
@@ -23,6 +23,6 @@ const HOME_TITLE: Record<RolePreset, { id: string }> = {
 };
 
 /** The home's title in the reader's language — `translate` is the mount's `t`. */
-export function homeTitle(translate: Translator['t'], preset: RolePreset): string {
+export function homeTitle(translate: Translator['t'], preset: RolePreset): TranslatedText {
   return translate(HOME_TITLE[preset]);
 }

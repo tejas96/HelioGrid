@@ -5,8 +5,9 @@
  * the source, and the places the words were corrected are recorded in `T-M01-036`. The join
  * steer and the request-sent state are `T-M01-035`'s (`M01-09`).
  */
-import type { CreateTenant } from '@heliogrid/contracts';
+import type { CreateTenant, TranslatedText } from '@heliogrid/contracts';
 import type { MessageRef, Translator } from '../runtime';
+import { shownAsSent } from './assembled';
 import type { ExplainerWords } from './explainer';
 
 export const COMPANY_SIGNUP = {
@@ -122,8 +123,8 @@ export function signupExplainers(translate: Translator['t']): SignupExplainers {
 
 /** The flow's name and its three steps, in order, for the step header (`SCR-M01-02` decisions 4 and 13). */
 export interface SignupStepsWords {
-  readonly label: string;
-  readonly steps: readonly [string, string, string];
+  readonly label: TranslatedText;
+  readonly steps: readonly [TranslatedText, TranslatedText, TranslatedText];
 }
 
 export function signupStepsWords(translate: Translator['t']): SignupStepsWords {
@@ -162,8 +163,8 @@ export function companyFieldRefusal(
   translate: Translator['t'],
   field: keyof CreateTenant,
   error: { readonly type?: string; readonly message?: string } | undefined,
-): string | undefined {
+): TranslatedText | undefined {
   if (error === undefined) return undefined;
   if (MISSING_VALUE.has(String(error.type))) return translate(COMPANY_FIELD_NEEDED[field]);
-  return error.message;
+  return shownAsSent(error.message);
 }

@@ -1,33 +1,34 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { InviteDeclineFrame, InviteLandingFrame, InviteLandingPress } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
 
 /** A centred state with its one act and the line under it (`m-empty`, `m-reinvite-requested`). */
 export interface InviteLandingPlaceWords {
-  title: string;
-  line: string;
-  act: string;
-  note: string;
+  title: TranslatedText;
+  line: TranslatedText;
+  act: TranslatedText;
+  note: TranslatedText;
 }
 
 /** An in-page statement above the invite: the join or the ask failed, or the invite ran out. */
 export interface InviteLandingBannerWords {
   tone: 'danger' | 'warning';
-  title: string;
-  line: string | null;
+  title: TranslatedText;
+  line: TranslatedText | null;
 }
 
 /** The decline on the live invite (brief decision 6): its control, its confirm, and why the last one did not go through. */
 export interface InviteLandingDeclineWords {
   /** *This invite isn't for me*. */
-  open: string;
-  title: string;
+  open: TranslatedText;
+  title: TranslatedText;
   /** Both consequences and the way back: the sheet's body at 375, the dialog's description at 1536. */
-  line: string;
-  keep: string;
-  go: string;
+  line: TranslatedText;
+  keep: TranslatedText;
+  go: TranslatedText;
   /** The door's words for a decline with no answer or a refusal (brief ruling 19); `null` when it has not failed. */
-  refused: string | null;
+  refused: TranslatedText | null;
 }
 
 /** The decline's control and its confirm, drawn together wherever the control sits. */
@@ -43,35 +44,36 @@ export interface InviteDeclineProps {
  */
 export interface InviteLandingWords {
   /** The loading skeleton's spoken name. */
-  loading: string;
+  loading: TranslatedText;
   /** Who invited, and the label under the name: *EPC Owner · {company}* (brief decision 3). */
-  inviter: { name: string; label: string } | null;
-  title: string | null;
+  // biome-ignore lint/plugin/copy-prop-type: the inviter's name
+  inviter: { name: string; label: TranslatedText } | null;
+  title: TranslatedText | null;
   /** The invite card: its overline, the facts, and the line that names the way out. */
   facts: {
-    label: string;
-    rolesLabel: string;
-    roles: string[];
-    phoneLabel: string;
-    line: string;
+    label: TranslatedText;
+    rolesLabel: TranslatedText;
+    roles: TranslatedText[];
+    phoneLabel: TranslatedText;
+    line: TranslatedText;
   } | null;
   banner: InviteLandingBannerWords | null;
   /** The code family's own block — a cap, the lock, a send that failed — read as the door reads it. */
   block: Pick<TintedBlockProps, 'tone' | 'title'> | null;
-  codeLabel: string;
-  codeHelper: string | null;
-  codeError: string | null;
-  primary: string | null;
+  codeLabel: TranslatedText;
+  codeHelper: TranslatedText | null;
+  codeError: TranslatedText | null;
+  primary: TranslatedText | null;
   /** The resend, live. */
-  resend: string | null;
+  resend: TranslatedText | null;
   /** The resend gap, in the waiting control's own label and its spoken name. */
-  wait: { label: string; spoken: string } | null;
+  wait: { label: TranslatedText; spoken: TranslatedText } | null;
   /** The line under the expired frame's act. */
-  foot: string | null;
+  foot: TranslatedText | null;
   /** The centred state that names no live invite: the link is gone, the ask was sent, or it was declined. */
   place: InviteLandingPlaceWords | null;
   /** The read got no answer: nothing about the invite is known. */
-  loadError: { title: string; line: string } | null;
+  loadError: { title: TranslatedText; line: TranslatedText } | null;
   decline: InviteLandingDeclineWords | null;
 }
 

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import {
   type AllocationVerdict,
   isTrancheDueStage,
@@ -56,23 +57,27 @@ export interface TermsEditorActs {
 /** The words the foot says that come off the verdict and the failure — `@heliogrid/i18n`'s. */
 export interface TermsEditorSaid {
   /** `allocationSentence`. */
-  readonly sentence: string;
+  readonly sentence: TranslatedText;
   /** `allocationRefusal`; null when the split is whole. */
-  readonly refusal: string | null;
+  readonly refusal: TranslatedText | null;
   /** The api's words for a save refused by a conflict; absent otherwise. */
-  readonly conflict?: string;
+  readonly conflict?: TranslatedText;
 }
 
 /** What the open editor draws, on whichever surface holds it — the 375 sheet or the 1536 card. */
 export interface TermsEditorView {
   /** The surface's heading: the template's name, or *New payment terms*. */
+  // biome-ignore lint/plugin/copy-prop-type: New terms, or the template's name as the company wrote it
   readonly title: string;
   /** *Not saved yet* while the draft differs from what was opened. */
-  readonly overline?: string;
+  readonly overline?: TranslatedText;
   readonly body: Omit<PaymentTermsEditorProps, 'previewHeight'>;
   readonly foot: PaymentTermsFootProps;
   /** The stage picker, while a line's *When is it due?* is open. */
-  readonly picker: { readonly overline: string; readonly body: PaymentTermsPickerProps } | null;
+  readonly picker: {
+    readonly overline: TranslatedText;
+    readonly body: PaymentTermsPickerProps;
+  } | null;
 }
 
 /**

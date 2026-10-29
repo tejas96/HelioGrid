@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The Google door's own words (`SCR-M01-01`): the Google control on the phone step, and the link
  * step a first Google sign-in lands on. Keyed by what `packages/domain` decides (`phoneGoogle`,
@@ -21,19 +22,19 @@ import { SIGN_IN } from './sign-in';
 /** A tinted block's words on the door: what happened, and why when the title alone does not say. */
 export interface DoorBlockWords {
   readonly tone: BlockTone;
-  readonly title: string;
+  readonly title: TranslatedText;
   /** Omitted where the title says it all, as the lock's does (`F7-46`). */
-  readonly body?: string;
+  readonly body?: TranslatedText;
   /** How it is spoken when it appears; omitted, it is read in its place like any text. */
   readonly announce?: BlockAnnouncement;
 }
 
 /** The phone step's Google part: the "or", the control, and a sign-in that did not finish. */
 export interface PhoneGoogleWords {
-  readonly or: string;
-  readonly label: string;
+  readonly or: TranslatedText;
+  readonly label: TranslatedText;
   /** The account rule lives here, not in a caption (`SCR-M01-01` decision 12). */
-  readonly aria: string;
+  readonly aria: TranslatedText;
   readonly failed: DoorBlockWords | null;
 }
 
@@ -57,20 +58,20 @@ export function phoneGoogleWords(
 
 /** Every string the link step draws; `null` where its frame has no such part. */
 export interface GoogleLinkWords {
-  readonly title: string;
-  readonly body: string;
+  readonly title: TranslatedText;
+  readonly body: TranslatedText;
   /** Beside the title on the open step, with its pager's words; the locked step drops it. */
   readonly explainer: (ExplainerWords & ExplainerPagerWords) | null;
-  readonly tileOverline: string;
+  readonly tileOverline: TranslatedText;
   readonly email: string;
   /** The phone puts "Not you?" under the tile; the desktop's shorter link sits under Send code. */
-  readonly anotherAccount: { readonly underTile: string; readonly short: string };
-  readonly useNumber: { readonly label: string; readonly aria: string };
-  readonly phoneLabel: string;
+  readonly anotherAccount: { readonly underTile: TranslatedText; readonly short: TranslatedText };
+  readonly useNumber: { readonly label: TranslatedText; readonly aria: TranslatedText };
+  readonly phoneLabel: TranslatedText;
   /** The field's own answer to a number of the wrong length; absent as the step opens. */
-  readonly phoneError: string | undefined;
-  readonly send: { readonly label: string; readonly aria: string } | null;
-  readonly locked: { readonly block: DoorBlockWords; readonly sentence: string } | null;
+  readonly phoneError: TranslatedText | undefined;
+  readonly send: { readonly label: TranslatedText; readonly aria: TranslatedText } | null;
+  readonly locked: { readonly block: DoorBlockWords; readonly sentence: TranslatedText } | null;
 }
 
 export function googleLinkWords(

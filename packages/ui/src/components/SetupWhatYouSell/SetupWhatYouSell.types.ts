@@ -1,39 +1,41 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { TenantSegment } from '@heliogrid/domain';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
 
 /** One kind of business as its card says it. */
 export interface SetupWhatYouSellOption {
   value: TenantSegment;
-  title: string;
-  description: string;
+  title: TranslatedText;
+  description: TranslatedText;
 }
 
 /** Every word the screen draws; `@heliogrid/i18n`'s `setupWhatYouSellWords` writes them. */
 export interface SetupWhatYouSellWords {
   /** The question; after a failed save, what went wrong. */
-  title: string;
+  title: TranslatedText;
   /** Why the step asks; after a failed save, what was kept — behind the ask. */
   explainer: ExplainerProps;
   /** What fixes a failed save — with the title and the ask, one block in the title's place. */
-  failure: string | null;
+  failure: TranslatedText | null;
   /** The option group's visible name. */
-  group: string;
+  group: TranslatedText;
   options: readonly SetupWhatYouSellOption[];
-  groupError: string | null;
+  groupError: TranslatedText | null;
   /** What to type, read before the field. */
-  sizeHelper: string;
-  sizeLabel: string;
+  sizeHelper: TranslatedText;
+  sizeLabel: TranslatedText;
+  // biome-ignore lint/plugin/copy-prop-type: kWp, a unit never translated
   unit: string;
   /** Where the size comes from — beside its tier. */
-  sizeSource: string;
-  sizeError: string | null;
-  primary: string;
+  sizeSource: TranslatedText;
+  sizeError: TranslatedText | null;
+  primary: TranslatedText;
   /** Why the primary cannot be pressed yet. */
-  waiting: string | null;
+  waiting: TranslatedText | null;
   /** The way on that leaves the step for later; drawn only after a failed save. */
-  secondary: string | null;
+  secondary: TranslatedText | null;
   /** The one line at the act. */
-  actLine: string | null;
+  actLine: TranslatedText | null;
 }
 
 /**

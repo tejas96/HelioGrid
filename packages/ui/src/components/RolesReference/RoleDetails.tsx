@@ -94,7 +94,7 @@ export function RoleDetails({
                 <span className="hg-role-details-text">
                   {line.text}
                   {line.scope === null ? null : (
-                    <span className="hg-role-details-scope"> · {line.scope}</span>
+                    <span className="hg-role-details-scope">{` · ${line.scope}`}</span>
                   )}
                 </span>
               </li>

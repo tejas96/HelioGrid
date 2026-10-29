@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The words of company signup's two frames off the flow (`SCR-M01-02`): the number that already
  * has an account (`M01-08`) and the request sent (`M01-09`) — authored once for both platforms
@@ -10,17 +11,17 @@ import { type ExplainerWords, explainerPagerWords } from './explainer';
 import { SIGN_IN } from './sign-in';
 
 export interface KnownNumberWords {
-  readonly title: string;
+  readonly title: TranslatedText;
   /** The rule behind the finding — one number, one account — beside the title. */
   readonly explainer: ExplainerWords & ExplainerPagerWords;
-  readonly intro: string;
+  readonly intro: TranslatedText;
   /** What signing up again would not do, and the way into another company. */
-  readonly finding: { readonly title: string; readonly body: string };
-  readonly phoneLabel: string;
+  readonly finding: { readonly title: TranslatedText; readonly body: TranslatedText };
+  readonly phoneLabel: TranslatedText;
   /** The road into the account the number has. */
-  readonly enter: string;
+  readonly enter: TranslatedText;
   /** The road back to step 1, for another number. */
-  readonly leave: string;
+  readonly leave: TranslatedText;
 }
 
 export function knownNumberWords(translate: Translator['t']): KnownNumberWords {
@@ -42,14 +43,14 @@ export function knownNumberWords(translate: Translator['t']): KnownNumberWords {
 }
 
 export interface RequestSentWords {
-  readonly title: string;
+  readonly title: TranslatedText;
   /** Whose owner holds the request, and how the answer arrives. */
-  readonly body: string;
+  readonly body: TranslatedText;
   /** Over the asker's name and number. */
-  readonly sentAs: string;
+  readonly sentAs: TranslatedText;
   /** Over the one route back to creating. */
-  readonly prompt: string;
-  readonly createInstead: string;
+  readonly prompt: TranslatedText;
+  readonly createInstead: TranslatedText;
 }
 
 export function requestSentWords(

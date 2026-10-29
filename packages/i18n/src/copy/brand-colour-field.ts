@@ -1,9 +1,11 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The brand colour field's words (`BrandColorField`, `F7-07`, `SCR-M01-18`), authored once for both
  * platforms. A sentence that names which ink rides on the colour is one whole message per ink, never
  * a name joined into a sentence: word order differs by language. Ratios are the field's own figures.
  */
 import type { MessageRef, Translator } from '../runtime';
+import { assembled } from './assembled';
 
 type T = Translator['t'];
 type Ink = 'white' | 'near-black';
@@ -73,9 +75,9 @@ const TEXT_ON_PASSES: Record<Ink, MessageRef> = {
 const HEX_SLOT = '\u0000';
 
 /** The words either side of `{hex}` in one translated message. */
-function around(t: T, message: MessageRef): { before: string; after: string } {
+function around(t: T, message: MessageRef): { before: TranslatedText; after: TranslatedText } {
   const [before = '', after = ''] = t(message, { hex: HEX_SLOT }).split(HEX_SLOT);
-  return { before, after };
+  return { before: assembled(before), after: assembled(after) };
 }
 
 /** Every word `BrandColorField` draws, in the reader's language — its `words` prop. */

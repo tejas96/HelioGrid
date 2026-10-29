@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The Branding page's words (`SCR-M01-18`, `M01-50`), authored once for both platforms (Law 11) in
  * three languages (`F3-07`). The standing line, the logo's refusal and the switch names are chosen
@@ -104,7 +105,7 @@ export function brandingStandingLine(
   t: T,
   standing: SettingsStanding,
   formats: BrandingFormats,
-): string {
+): TranslatedText {
   return settingsSavedLine(t, standing, formats) ?? t(BRANDING.neverSet);
 }
 
@@ -116,7 +117,7 @@ export function brandingLogoRefusal(
   t: T,
   refusal: CompanyLogoRefusal | null,
   fileName: string | null,
-): string | null {
+): TranslatedText | null {
   if (refusal === null) return null;
   const [missed] = refusal.missed;
   if (missed === undefined) return null;
@@ -130,7 +131,7 @@ export function letterheadRefusalWords(
   t: T,
   refusal: LetterheadRefusal | null,
   field: 'tagline' | 'lines' | 'footerNote',
-): string | null {
+): TranslatedText | null {
   if (refusal === null) return null;
   if (refusal === 'too-many-lines')
     return t(BRANDING.tooManyLines, { count: LETTERHEAD_LIMITS.lines });

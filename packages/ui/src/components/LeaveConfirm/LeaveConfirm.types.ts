@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * LeaveConfirm — *Leave without saving?* (`SCR-M01-18` s18-w, `SCR-M01-19` m19-n10): the ask a
  * settings page raises when the person moves away holding an unsaved change. The move waits on an
@@ -7,9 +8,9 @@
 export interface LeaveConfirmProps {
   open: boolean;
   /** The question, from `packages/i18n`. */
-  title: string;
+  title: TranslatedText;
   /** What is lost by leaving, from `packages/i18n`. */
-  body: string;
+  body: TranslatedText;
   /** The destructive answer that drops the change and leaves. */
   discard: string;
   /** The answer that stays on the page with the change held. */

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The words of Profile & preferences (`SCR-M01-11`), for the view domain's
  * `profilePreferencesView` decides — authored once for both platforms (Law 11). Each language is
@@ -59,45 +60,49 @@ export interface ProfilePreferencesWordFacts {
 /** One role as its badge reads it. */
 export interface ProfileRoleWords {
   readonly preset: RolePreset;
-  readonly label: string;
+  readonly label: TranslatedText;
 }
 
 /** Every word the page draws; `error` is `null` while that control's last save held. */
 export interface ProfilePreferencesWords {
-  readonly title: string;
-  readonly account: string;
+  readonly title: TranslatedText;
+  readonly account: TranslatedText;
   /** The name row's act: opens the name and photo editor. */
-  readonly editName: string;
-  readonly languageAndUnits: string;
-  readonly roles: { readonly title: string; readonly badges: readonly ProfileRoleWords[] };
+  readonly editName: TranslatedText;
+  readonly languageAndUnits: TranslatedText;
+  readonly roles: { readonly title: TranslatedText; readonly badges: readonly ProfileRoleWords[] };
   readonly language: {
-    readonly label: string;
+    readonly label: TranslatedText;
     readonly options: readonly {
       readonly value: UiLanguage;
-      readonly label: string;
+      readonly label: TranslatedText;
       readonly lang: string;
     }[];
-    readonly source: string;
-    readonly error: string | null;
+    readonly source: TranslatedText;
+    readonly error: TranslatedText | null;
   };
   readonly units: {
-    readonly label: string;
-    readonly metric: string;
-    readonly imperial: string;
-    readonly source: string;
-    readonly error: string | null;
+    readonly label: TranslatedText;
+    readonly metric: TranslatedText;
+    readonly imperial: TranslatedText;
+    readonly source: TranslatedText;
+    readonly error: TranslatedText | null;
   };
   readonly push: {
-    readonly title: string;
-    readonly about: { readonly label: string; readonly line: string };
-    readonly whyBilling: { readonly label: string; readonly line: string };
-    readonly groups: Readonly<Record<NotificationTypeGroup, string>>;
+    readonly title: TranslatedText;
+    readonly about: { readonly label: TranslatedText; readonly line: TranslatedText };
+    readonly whyBilling: { readonly label: TranslatedText; readonly line: TranslatedText };
+    readonly groups: Readonly<Record<NotificationTypeGroup, TranslatedText>>;
     /** Under a switch whose last write was refused (D219). */
-    readonly notSaved: string;
+    readonly notSaved: TranslatedText;
   };
   /** The push read's frames: its loading bars' name, and its error banner. */
-  readonly loading: string;
-  readonly loadFailed: { readonly title: string; readonly body: string; readonly retry: string };
+  readonly loading: TranslatedText;
+  readonly loadFailed: {
+    readonly title: TranslatedText;
+    readonly body: TranslatedText;
+    readonly retry: TranslatedText;
+  };
 }
 
 export function profilePreferencesWords(
@@ -106,7 +111,7 @@ export function profilePreferencesWords(
   facts: ProfilePreferencesWordFacts,
 ): ProfilePreferencesWords {
   const own = translate(PROFILE_PREFERENCES.yourChoice);
-  const sourceOf = (source: PreferenceSource, inherited: string) =>
+  const sourceOf = (source: PreferenceSource, inherited: TranslatedText) =>
     source === 'own' ? own : inherited;
   const notSaved = translate(PROFILE_PREFERENCES.notSaved);
   return {

@@ -8,7 +8,7 @@ import {
   joinSteerWords,
 } from '../src/copy/company-signup-frames';
 import { joinRequestNotice } from '../src/copy/join-request';
-import { createTranslator } from '../src/runtime';
+import { createTranslator, type Translator } from '../src/runtime';
 
 /**
  * The five frames the company step draws (`SCR-M01-02`), in words both platforms say the same
@@ -125,8 +125,9 @@ describe('companySignupWords', () => {
     ['an empty City', '', "Where you're based."],
     ['spaces only', '  ', "Where you're based."],
     ['a typed City', 'Pune', undefined],
-  ] as const)('the city line under %s', (_name, city, line) => {
-    const helpers = { ownerName: null, cityWhileEmpty: "Where you're based." };
+  ] as const)('the city line under %s', async (_name, city, line) => {
+    const { t } = await createTranslator('en');
+    const helpers = { ownerName: null, cityWhileEmpty: t("Where you're based.") };
     expect(cityHelper(helpers, city)).toBe(line);
     expect(cityHelper(undefined, city)).toBeUndefined();
   });
@@ -144,10 +145,10 @@ describe('companySignupWords', () => {
  * label and example, the step's line under it for the value typed, and its answer to a press.
  */
 describe('companyFieldWords', () => {
-  const opens = {
-    ownerName: 'You become the first EPC owner.',
-    cityWhileEmpty: "Where you're based.",
-  };
+  const opensIn = (t: Translator['t']) => ({
+    ownerName: t('You become the first EPC owner.'),
+    cityWhileEmpty: t("Where you're based."),
+  });
   const untouched = { helpers: undefined, value: '', error: undefined };
 
   it.each([
@@ -182,7 +183,9 @@ describe('companyFieldWords', () => {
     ['city', 'P', undefined],
   ] as const)('%s holding "%s": the step’s line under it', async (field, value, line) => {
     const { t } = await createTranslator('en');
-    expect(companyFieldWords(t, field, { ...untouched, helpers: opens, value }).helper).toBe(line);
+    expect(companyFieldWords(t, field, { ...untouched, helpers: opensIn(t), value }).helper).toBe(
+      line,
+    );
     expect(companyFieldWords(t, field, { ...untouched, value }).helper).toBeUndefined();
     const none = { ownerName: null, cityWhileEmpty: null };
     expect(

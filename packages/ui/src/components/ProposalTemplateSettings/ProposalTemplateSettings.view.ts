@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ProposalSection, TemplateEdit, TimelinePhase, UiLanguage } from '@heliogrid/domain';
 import { brandingDocumentOf } from '../BrandingSettings/BrandingSettings.logic';
 import type { BrandingDocumentFacts } from '../BrandingSettings/BrandingSettings.types';
@@ -47,7 +48,9 @@ export interface TemplateViewShape {
     readonly origin: TemplateOrigin;
     readonly phases: readonly {
       readonly key: number;
+      // biome-ignore lint/plugin/copy-prop-type: the phase's name as the company wrote it
       readonly title: string;
+      // biome-ignore lint/plugin/copy-prop-type: the phase's note as the company wrote it
       readonly note: string;
       readonly phase: TimelinePhase;
     }[];
@@ -57,15 +60,18 @@ export interface TemplateViewShape {
 
 export interface TemplateBinding {
   /** The strip's languages in the set's order, each named in itself. */
-  readonly languages: readonly { readonly code: UiLanguage; readonly label: string }[];
+  readonly languages: readonly { readonly code: UiLanguage; readonly label: TranslatedText }[];
   readonly coverLanguage: UiLanguage;
   readonly termsLanguage: UiLanguage;
   onCoverLanguage(language: UiLanguage): void;
   onTermsLanguage(language: UiLanguage): void;
   /** A section's name and line in the reader's words (`sectionWords`). */
-  sectionWord(key: ProposalSection): { readonly title: string; readonly about: string };
-  readonly aboutError?: string;
-  readonly termsError?: string;
+  sectionWord(key: ProposalSection): {
+    readonly title: TranslatedText;
+    readonly about: TranslatedText;
+  };
+  readonly aboutError?: TranslatedText;
+  readonly termsError?: TranslatedText;
   edit(edit: TemplateEdit): void;
   /** Opens the editor on a phase: its key, and the phase as it stands. */
   onEditPhase(key: number, phase: TimelinePhase): void;
@@ -175,6 +181,7 @@ export function templateDocumentOf(
   view: TemplateViewShape | null,
   facts: {
     readonly cover: Omit<BrandingDocumentFacts, 'taxIdLabel'> | null;
+    // biome-ignore lint/plugin/copy-prop-type: the market pack's name for the tax id
     readonly taxIdLabel: string;
     readonly colour: string | null;
     readonly docDate: string;
@@ -203,7 +210,7 @@ export function phaseEditorFieldsOf(
     editWhat(text: string): void;
   },
   languages: TemplateBinding['languages'],
-  errors: { readonly nameError?: string; readonly whatError?: string },
+  errors: { readonly nameError?: TranslatedText; readonly whatError?: TranslatedText },
 ): TemplatePhaseEditorProps['fields'] {
   return {
     strip: phaseStripOf(languages, editor.phase.name, editor.language, editor.chooseLanguage),

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { PriceBookRateBasis, Read, UiLanguage } from '@heliogrid/domain';
 import type { CatalogStrip } from '../CatalogItems/CatalogItems.types';
 
@@ -27,21 +28,21 @@ export interface CatalogRate {
 
 /** `@heliogrid/i18n`'s `catalogRatesWords`. */
 export interface CatalogRatesWords {
-  readonly bases: Readonly<Record<PriceBookRateBasis, string>>;
-  readonly searchRates: string;
-  readonly chargedLabel: string;
-  readonly allBases: string;
-  readonly rate: string;
-  readonly charged: string;
-  readonly amount: string;
-  readonly ratesInForce: string;
-  readonly noRates: string;
-  readonly noRatesBody: string;
-  readonly addFirstRate: string;
-  readonly noMatch: string;
-  readonly loadFailed: string;
-  readonly tryAgain: string;
-  readonly loading: string;
+  readonly bases: Readonly<Record<PriceBookRateBasis, TranslatedText>>;
+  readonly searchRates: TranslatedText;
+  readonly chargedLabel: TranslatedText;
+  readonly allBases: TranslatedText;
+  readonly rate: TranslatedText;
+  readonly charged: TranslatedText;
+  readonly amount: TranslatedText;
+  readonly ratesInForce: TranslatedText;
+  readonly noRates: TranslatedText;
+  readonly noRatesBody: TranslatedText;
+  readonly addFirstRate: TranslatedText;
+  readonly noMatch: TranslatedText;
+  readonly loadFailed: TranslatedText;
+  readonly tryAgain: TranslatedText;
+  readonly loading: TranslatedText;
 }
 
 /**
@@ -66,6 +67,7 @@ export interface CatalogVersionSummary {
   readonly number: number;
   /** *v7* — the tile's disc. */
   readonly tag: string;
+  // biome-ignore lint/plugin/copy-prop-type: the release note as a person wrote it
   readonly note: string;
   /** *12 Aug 2026 · Rajesh Kulkarni*. */
   readonly byline: string;
@@ -81,6 +83,7 @@ export interface CatalogVersionRead {
   readonly words: CatalogVersionWords;
   readonly margin: string;
   readonly rateCount: string;
+  // biome-ignore lint/plugin/copy-prop-type: the release note as a person wrote it
   readonly note: string;
   readonly rates: readonly CatalogRate[];
   /** The version's read: its margin, note and rates draw once it is in. */
@@ -93,12 +96,13 @@ export interface CatalogVersionEdit {
   /** The default margin as typed, a percent. */
   readonly margin: string;
   readonly onMargin: (margin: string) => void;
+  // biome-ignore lint/plugin/copy-prop-type: the release note as a person types it
   readonly note: string;
   readonly onNote: (note: string) => void;
   readonly rows: readonly CatalogVersionRow[];
   readonly onAddRate: () => void;
   /** Under *What changed* when it alone holds the version back; `null` otherwise. */
-  readonly noteHint: string | null;
+  readonly noteHint: TranslatedText | null;
   readonly problem: string | null;
 }
 
@@ -126,39 +130,40 @@ export interface CatalogVersionRow {
 export interface CatalogRateEditProps {
   readonly names: readonly {
     readonly language: UiLanguage;
-    readonly label: string;
+    readonly label: TranslatedText;
     readonly value: string;
-    /** English, shown while this language is empty. */
+    /** The English name the company wrote, shown while this language is empty. */
+    // biome-ignore lint/plugin/copy-prop-type: the English name the company wrote
     readonly placeholder: string;
     /** *No Hindi name yet — English shows in its place.*; `null` when written. */
-    readonly missing: string | null;
+    readonly missing: TranslatedText | null;
   }[];
   readonly onName: (language: UiLanguage, name: string) => void;
   readonly basis: PriceBookRateBasis;
-  readonly basisLabel: string;
+  readonly basisLabel: TranslatedText;
   readonly bases: Readonly<Record<PriceBookRateBasis, string>>;
   readonly onBasis: (basis: PriceBookRateBasis) => void;
   /** `null` for a rate not yet in the list. */
-  readonly remove: { readonly label: string; readonly onRemove: () => void } | null;
+  readonly remove: { readonly label: TranslatedText; readonly onRemove: () => void } | null;
 }
 
 /** `@heliogrid/i18n`'s `catalogVersionWords`. */
 export interface CatalogVersionWords {
-  readonly bases: Readonly<Record<PriceBookRateBasis, string>>;
-  readonly inForce: string;
-  readonly readOnly: string;
-  readonly defaultMargin: string;
-  readonly rates: string;
-  readonly whatChanged: string;
-  readonly addRate: string;
+  readonly bases: Readonly<Record<PriceBookRateBasis, TranslatedText>>;
+  readonly inForce: TranslatedText;
+  readonly readOnly: TranslatedText;
+  readonly defaultMargin: TranslatedText;
+  readonly rates: TranslatedText;
+  readonly whatChanged: TranslatedText;
+  readonly addRate: TranslatedText;
   /** The phone's next page of versions. */
-  readonly moreVersions: string;
-  readonly rateName: string;
-  readonly changed: string;
-  readonly was: (amount: string) => string;
-  readonly loadFailed: string;
-  readonly tryAgain: string;
-  readonly loading: string;
+  readonly moreVersions: TranslatedText;
+  readonly rateName: TranslatedText;
+  readonly changed: TranslatedText;
+  readonly was: (amount: string) => TranslatedText;
+  readonly loadFailed: TranslatedText;
+  readonly tryAgain: TranslatedText;
+  readonly loading: TranslatedText;
 }
 
 /**
@@ -184,21 +189,21 @@ export interface CatalogAttributionRow {
 
 /** `@heliogrid/i18n`'s `catalogAttributionWords`. */
 export interface CatalogAttributionWords {
-  readonly caption: string;
-  readonly item: string;
-  readonly whatItIs: string;
-  readonly price: string;
-  readonly priceFrom: string;
-  readonly taxRate: string;
-  readonly pickers: string;
-  readonly preferred: string;
-  readonly noPrice: string;
-  readonly noMarketRate: string;
-  readonly yourOverride: string;
-  readonly defaultSource: string;
-  readonly more: string;
-  readonly loadFailed: string;
-  readonly tryAgain: string;
+  readonly caption: TranslatedText;
+  readonly item: TranslatedText;
+  readonly whatItIs: TranslatedText;
+  readonly price: TranslatedText;
+  readonly priceFrom: TranslatedText;
+  readonly taxRate: TranslatedText;
+  readonly pickers: TranslatedText;
+  readonly preferred: TranslatedText;
+  readonly noPrice: TranslatedText;
+  readonly noMarketRate: TranslatedText;
+  readonly yourOverride: TranslatedText;
+  readonly defaultSource: TranslatedText;
+  readonly more: TranslatedText;
+  readonly loadFailed: TranslatedText;
+  readonly tryAgain: TranslatedText;
 }
 
 /** *Why a price is what it is*: the changed items as cards, and the way to more of them. */

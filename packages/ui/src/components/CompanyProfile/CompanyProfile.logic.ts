@@ -72,6 +72,7 @@ export const LETTER_PARAGRAPHS = [4, 2] as const;
 /** One field of a part: what it asks, what it holds, and the line a reader depends on under it. */
 export interface ProfileFieldSpec {
   readonly field: CompanyProfileField;
+  // biome-ignore lint/plugin/copy-prop-type: a field's name, or the market pack's name for it
   readonly label: string;
   readonly value: string;
   /** An example shown while the field is empty. */
@@ -79,8 +80,10 @@ export interface ProfileFieldSpec {
   /** An identifier is set in the mono face. */
   readonly mono: boolean;
   /** Where the value came from, or what was checked — read under the field. */
+  // biome-ignore lint/plugin/copy-prop-type: where the value came from, or the market pack's example of its format
   readonly line: string | null;
   /** Why what is typed does not read as the field's fact; it takes the line's place. */
+  // biome-ignore lint/plugin/copy-prop-type: a refusal, or the market pack's example of the format
   readonly error: string | null;
 }
 

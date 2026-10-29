@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { GoogleLinkFrame, LoginPress } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
@@ -8,23 +9,24 @@ import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
  * the frame has no such part.
  */
 export interface DoorLinkStepWords {
-  title: string;
-  body: string;
+  title: TranslatedText;
+  body: TranslatedText;
   /** The linking rule, beside the title on the open step; the locked step drops it. */
   explainer: ExplainerProps | null;
-  tileOverline: string;
+  tileOverline: TranslatedText;
   /** The Google login being linked. */
+  // biome-ignore lint/plugin/copy-prop-type: the Google account's address
   email: string;
   /** Under the door's breakpoint "Not you?" sits under the tile; from it the shorter link sits under Send code. */
-  anotherAccount: { underTile: string; short: string };
+  anotherAccount: { underTile: TranslatedText; short: TranslatedText };
   /** The way back to the number step, in the header row. */
-  useNumber: { label: string; aria: string };
-  phoneLabel: string;
+  useNumber: { label: TranslatedText; aria: TranslatedText };
+  phoneLabel: TranslatedText;
   /** The field's own answer to a number of the wrong length; absent as the step opens. */
-  phoneError: string | undefined;
-  send: { label: string; aria: string } | null;
+  phoneError: TranslatedText | undefined;
+  send: { label: TranslatedText; aria: TranslatedText } | null;
   /** The number is under its SMS lock: the block, and the sentence that says linking waits. */
-  locked: { block: Pick<TintedBlockProps, 'tone' | 'title'>; sentence: string } | null;
+  locked: { block: Pick<TintedBlockProps, 'tone' | 'title'>; sentence: TranslatedText } | null;
 }
 
 /**

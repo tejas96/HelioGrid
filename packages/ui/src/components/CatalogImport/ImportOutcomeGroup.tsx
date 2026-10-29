@@ -210,7 +210,7 @@ function PricePair({ view, words }: { view: ImportListRowView; words: CatalogImp
         </span>
       )}
       <span className="hg-import-pair-word" role="img" aria-label={words.becomes}>
-        →
+        {'→'}
       </span>
       {view.now === null ? (
         <span className="hg-import-pair-word">{words.unchanged}</span>

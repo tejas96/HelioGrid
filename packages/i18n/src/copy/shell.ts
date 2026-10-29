@@ -1,4 +1,4 @@
-import type { RolePreset } from '@heliogrid/contracts';
+import type { RolePreset, TranslatedText } from '@heliogrid/contracts';
 import type {
   CentreVerb,
   ComposedHome,
@@ -124,22 +124,25 @@ const SWITCH_MARK = {
   body: /*i18n*/ { id: 'Your home is the {preset} one. Open the title to switch.' },
 };
 
-export function presetName(translate: Translator['t'], preset: RolePreset): string {
+export function presetName(translate: Translator['t'], preset: RolePreset): TranslatedText {
   return translate(PRESET_NAME[preset]);
 }
 
 export function destinationLabel(
   translate: Translator['t'],
   destination: StandingDestination,
-): string {
+): TranslatedText {
   return translate(DESTINATION_LABEL[destination]);
 }
 
-export function updateOnStoreLabel(translate: Translator['t'], store: StorePlatform): string {
+export function updateOnStoreLabel(
+  translate: Translator['t'],
+  store: StorePlatform,
+): TranslatedText {
   return translate(UPDATE_ON_STORE[store]);
 }
 
-export function verbLabel(translate: Translator['t'], verb: CentreVerb): string {
+export function verbLabel(translate: Translator['t'], verb: CentreVerb): TranslatedText {
   return translate(VERB_LABEL[verb]);
 }
 
@@ -248,14 +251,14 @@ export function homeBlocksWords(translate: Translator['t'], home: ComposedHome) 
 }
 
 /** A door's title — the screen it opens is named for what it is, until its module draws it. */
-export function doorTitle(translate: Translator['t'], door: ShellDoor): string {
+export function doorTitle(translate: Translator['t'], door: ShellDoor): TranslatedText {
   if (door === 'add_lead' || door === 'start_survey') return verbLabel(translate, door);
   if (door === 'search') return translate(SHELL.search);
   return destinationLabel(translate, door);
 }
 
 /** The line over the home's title; `date` is today, already in the market's style. */
-export function todayLine(translate: Translator['t'], date: string): string {
+export function todayLine(translate: Translator['t'], date: string): TranslatedText {
   return translate(SHELL.today, { date });
 }
 
@@ -268,7 +271,7 @@ export function presetLine(
   translate: Translator['t'],
   home: RolePreset,
   held: readonly RolePreset[],
-): string {
+): TranslatedText {
   const preset = presetName(translate, home);
   const [highest] = held;
   if (held.length <= 1) return translate(SHELL.onlyPreset, { preset });

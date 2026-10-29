@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The Proposal template's field refusals and the phase editor's words (`SCR-M01-19` m19-g): its
  * heading, its act and each field's refusal. The page's other words are `proposal-template.ts`'s.
@@ -21,7 +22,7 @@ function phaseEditorHeading(
     readonly count: number;
   },
   reader: UiLanguage,
-): { readonly title: string; readonly subtitle: string } {
+): { readonly title: string; readonly subtitle: TranslatedText } {
   if (phase.adding) {
     return {
       title: t(TEMPLATE.newPhase),
@@ -39,7 +40,7 @@ export function templateRefusalWords(
   t: T,
   field: 'name' | 'what' | 'terms' | 'about',
   refusal: TemplateRefusal | null,
-): string | null {
+): TranslatedText | null {
   if (refusal === null) return null;
   if (refusal === 'too-long') return t(TEMPLATE.nameTooLong, { count: PHASE_NAME_LIMIT });
   const words = {
@@ -55,7 +56,7 @@ export function templateRefusalWords(
 export function templateFieldRefusals(
   t: T,
   refusals: { readonly terms: TemplateRefusal | null; readonly about: TemplateRefusal | null },
-): { readonly termsError?: string; readonly aboutError?: string } {
+): { readonly termsError?: TranslatedText; readonly aboutError?: TranslatedText } {
   const terms = templateRefusalWords(t, 'terms', refusals.terms);
   const about = templateRefusalWords(t, 'about', refusals.about);
   return {
@@ -82,11 +83,12 @@ export function phaseEditorWords(
   },
   reader: UiLanguage,
 ): {
+  /** *New phase*, or the phase's name as the company wrote it. */
   readonly title: string;
-  readonly subtitle: string;
-  readonly act: string;
-  readonly nameError?: string;
-  readonly whatError?: string;
+  readonly subtitle: TranslatedText;
+  readonly act: TranslatedText;
+  readonly nameError?: TranslatedText;
+  readonly whatError?: TranslatedText;
 } {
   const nameError = templateRefusalWords(t, 'name', phase.shown.name);
   const whatError = templateRefusalWords(t, 'what', phase.shown.description);

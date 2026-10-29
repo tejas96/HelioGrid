@@ -1,18 +1,19 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CompanyLetterhead } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { COMPANY_PROFILE } from './company-profile';
 
 /** The wide screen's preview: only what the fields hold; a `null` or an empty line is drawn as nothing. */
 export interface CompanyLetterheadWords {
-  readonly overline: string;
-  readonly logo: string;
+  readonly overline: TranslatedText;
+  readonly logo: TranslatedText;
   readonly name: string;
   readonly address: string;
   readonly taxLabel: string;
   /** The registration as typed; `owed` while it does not read as the market's format. */
   readonly tax: { readonly value: string; readonly owed: boolean } | null;
-  readonly bank: string;
-  readonly bankLine: string | null;
+  readonly bank: TranslatedText;
+  readonly bankLine: TranslatedText | null;
 }
 
 /** Until the profile is read nothing is known to be on it, whatever the screen was handed. */

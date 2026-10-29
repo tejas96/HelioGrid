@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { RolePreset, SettingsListGroup, SettingsRow } from '@heliogrid/domain';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 
@@ -38,6 +39,8 @@ export const PRESET_GLYPH: Record<RolePreset, ShellGlyphName> = {
 };
 
 /** The person's own row, when the person's group is drawn as their tile. */
-export function personRow(group: SettingsListGroup): SettingsListGroup['rows'][number] | null {
+export function personRow(
+  group: SettingsListGroup<TranslatedText>,
+): SettingsListGroup<TranslatedText>['rows'][number] | null {
   return group.key === 'you' ? (group.rows[0] ?? null) : null;
 }

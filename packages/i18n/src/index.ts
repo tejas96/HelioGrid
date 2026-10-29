@@ -145,8 +145,6 @@ export { INVITE_LANDING, inviteLandingWords } from './copy/invite-landing';
 export type { JoinRequestAsker } from './copy/join-request';
 export { joinRequestNotice } from './copy/join-request';
 export { languageSwitcherWords } from './copy/language-switcher';
-export type { TextPart } from './copy/list-join';
-export { joinAnd, joinParts } from './copy/list-join';
 export type { NameAndPhotoEditorWords } from './copy/name-and-photo-editor';
 export { NAME_AND_PHOTO_EDITOR, nameAndPhotoEditorWords } from './copy/name-and-photo-editor';
 export { centreActToast, centreFilterWords, centreHeadWords } from './copy/notification-head';

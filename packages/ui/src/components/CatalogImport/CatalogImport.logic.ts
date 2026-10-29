@@ -1,4 +1,4 @@
-import type { CatalogImportRowWire, CatalogImportWire } from '@heliogrid/contracts';
+import type { CatalogImportRowWire, CatalogImportWire, TranslatedText } from '@heliogrid/contracts';
 import {
   CATALOG_IMPORT_ATTENTION_REASONS,
   CATALOG_IMPORT_ROW_FAILURES,
@@ -104,10 +104,12 @@ export function rowFacts(
 
 export interface ImportCardView {
   readonly rowNumber: number;
+  // biome-ignore lint/plugin/copy-prop-type: the row's product, by brand and model
   readonly title: string;
   readonly sub: string;
   readonly question: string;
   readonly act: ImportFixAct;
+  // biome-ignore lint/plugin/copy-prop-type: an item's name and kind, or a kind's word
   readonly options: readonly { readonly value: string; readonly label: string }[];
   readonly busy: boolean;
   /** Sends a choice: the request and its undo are domain's. */
@@ -168,11 +170,12 @@ export function fixedLineOf(
 
 export interface ImportListRowView {
   readonly rowNumber: number;
+  // biome-ignore lint/plugin/copy-prop-type: the row's product, by brand and model
   readonly title: string;
   readonly sub: string;
-  readonly reason: string | null;
+  readonly reason: TranslatedText | null;
   readonly reasonTone: 'danger' | 'warning' | null;
-  readonly chip: { readonly label: string; readonly tone: StatusTone };
+  readonly chip: { readonly label: TranslatedText; readonly tone: StatusTone };
   /** The price before, formatted; `null` draws *No price*. */
   readonly was: string | null;
   /** The price after, formatted; `null` draws *Unchanged*. */

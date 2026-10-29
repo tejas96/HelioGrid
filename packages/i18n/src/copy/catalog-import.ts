@@ -1,5 +1,7 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { COMPONENT_KINDS, type ComponentKind, type ImportContinueGate } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
+import { assembled } from './assembled';
 import { catalogImportFields } from './catalog-import-fields';
 import { catalogKind } from './catalog-settings';
 
@@ -135,8 +137,8 @@ const GATE: Record<ImportContinueGate | 'nothing_ready', { id: string }> = {
   nothing_ready: /*i18n*/ { id: 'No row is ready to import yet.' },
 };
 
-const map = <K extends string>(keys: readonly K[], word: (key: K) => string) =>
-  Object.fromEntries(keys.map((key) => [key, word(key)])) as Record<K, string>;
+const map = <K extends string>(keys: readonly K[], word: (key: K) => TranslatedText) =>
+  Object.fromEntries(keys.map((key) => [key, word(key)])) as Record<K, TranslatedText>;
 
 /**
  * Every fixed word of the import wizard, and the sentences built from its facts. The row words —
@@ -198,7 +200,7 @@ export function catalogImportWordsBase(t: T) {
     willDo: t(WORDS.willDo),
     didDo: t(WORDS.didDo),
     barSentence: (parts: readonly { readonly label: string; readonly count: number }[]) =>
-      parts.map((part) => t(WORDS.barPart, part)).join(', '),
+      assembled(parts.map((part) => t(WORDS.barPart, part)).join(', ')),
     ringLabel: (label: string, count: number) => t(WORDS.ringLabel, { label, count }),
     groups: map(Object.keys(GROUP) as (keyof typeof GROUP)[], (group) => t(GROUP[group])),
     groupTitle: (group: string, count: number) => t(WORDS.groupTitle, { group, count }),

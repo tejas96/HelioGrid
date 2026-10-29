@@ -4,7 +4,7 @@
  * (Law 11), the same shape as `signInWords`. Nothing here chooses a frame: the screen says which
  * facts hold, and each sentence is looked up by its key.
  */
-import type { CreateTenant } from '@heliogrid/contracts';
+import type { CreateTenant, TranslatedText } from '@heliogrid/contracts';
 import type { WriteFailure } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { COMPANY_SIGNUP, companyFieldRefusal } from './company-signup';
@@ -25,9 +25,9 @@ export interface CompanySignupFrame {
 
 /** The line under a field on the step as it opens; `null` where the frame carries none. */
 export interface CompanyFieldHelpers {
-  readonly ownerName: string | null;
+  readonly ownerName: TranslatedText | null;
   /** The city's line, which stands only while City is empty: read it through `companyFieldWords`. */
-  readonly cityWhileEmpty: string | null;
+  readonly cityWhileEmpty: TranslatedText | null;
 }
 
 /**
@@ -37,7 +37,7 @@ export interface CompanyFieldHelpers {
 export function cityHelper(
   helpers: CompanyFieldHelpers | undefined,
   city: string,
-): string | undefined {
+): TranslatedText | undefined {
   return city.trim() === '' ? (helpers?.cityWhileEmpty ?? undefined) : undefined;
 }
 
@@ -56,10 +56,10 @@ const COMPANY_FIELD: Record<
 
 /** Every word one company field shows; `undefined` where it shows none. */
 export interface CompanyFieldWords {
-  readonly label: string;
-  readonly placeholder: string;
-  readonly helper: string | undefined;
-  readonly error: string | undefined;
+  readonly label: TranslatedText;
+  readonly placeholder: TranslatedText;
+  readonly helper: TranslatedText | undefined;
+  readonly error: TranslatedText | undefined;
 }
 
 /**
@@ -90,7 +90,7 @@ function lineUnder(
   field: keyof CreateTenant,
   helpers: CompanyFieldHelpers | undefined,
   value: string,
-): string | undefined {
+): TranslatedText | undefined {
   if (field === 'city') return cityHelper(helpers, value);
   return field === 'ownerName' ? (helpers?.ownerName ?? undefined) : undefined;
 }
@@ -99,7 +99,7 @@ function lineUnder(
 export function companyFacts(
   translate: Translator['t'],
   values: CreateTenant,
-): readonly { readonly label: string; readonly value: string }[] {
+): readonly { readonly label: TranslatedText; readonly value: string }[] {
   return [
     { label: translate(COMPANY_FIELD.companyName.label), value: values.companyName },
     { label: translate(COMPANY_FIELD.ownerName.label), value: values.ownerName },
@@ -108,13 +108,13 @@ export function companyFacts(
 }
 
 export interface CompanySignupWords {
-  readonly title: string;
+  readonly title: TranslatedText;
   /** Follows the title on the normal frame only. */
-  readonly intro: string | null;
+  readonly intro: TranslatedText | null;
   /** The primary's label: create, creating, or try again. */
-  readonly primary: string;
+  readonly primary: TranslatedText;
   /** Above the held primary: what the write means while it runs, what to do if it keeps failing. */
-  readonly caption: string | null;
+  readonly caption: TranslatedText | null;
   /** Under the heading after a write that did not land: what is known about it (`F8-36`). */
   readonly block: DoorBlockWords | null;
   readonly helpers: CompanyFieldHelpers;
@@ -171,7 +171,7 @@ function helpers(t: Translator['t'], frame: CompanySignupFrame): CompanyFieldHel
 function heading(
   t: Translator['t'],
   frame: CompanySignupFrame,
-): { title: string; intro: string | null } {
+): { title: TranslatedText; intro: TranslatedText | null } {
   if (frame.failure === 'failed') return { title: t(COMPANY_SIGNUP.couldNotCreate), intro: null };
   if (frame.failure === 'unreached')
     return { title: t(COMPANY_SIGNUP.couldNotConfirm), intro: null };
@@ -180,20 +180,20 @@ function heading(
   return { title: t(COMPANY_SIGNUP.yourCompany), intro };
 }
 
-function primaryLabel(t: Translator['t'], frame: CompanySignupFrame): string {
+function primaryLabel(t: Translator['t'], frame: CompanySignupFrame): TranslatedText {
   if (frame.writing) return t(COMPANY_SIGNUP.creatingYourCompany);
   return frame.failure === null ? t(COMPANY_SIGNUP.createCompany) : t(SIGN_IN.tryAgain);
 }
 
-function caption(t: Translator['t'], frame: CompanySignupFrame): string | null {
+function caption(t: Translator['t'], frame: CompanySignupFrame): TranslatedText | null {
   if (frame.writing) return t(COMPANY_SIGNUP.writtenNow);
   return frame.failure === null ? null : t(COMPANY_SIGNUP.errorFoot);
 }
 
 /** The join steer's finding: the company found, and where a request goes. */
 export interface JoinBlockWords {
-  readonly title: string;
-  readonly body: string;
+  readonly title: TranslatedText;
+  readonly body: TranslatedText;
 }
 
 /**
@@ -205,7 +205,7 @@ export interface JoinBlockWords {
 export function joinSteerWords(
   translate: Translator['t'],
   failure: WriteFailure | null,
-): { primary: string; failure: DoorBlockWords | null } {
+): { primary: TranslatedText; failure: DoorBlockWords | null } {
   const primary = failure === null ? COMPANY_SIGNUP.requestToJoin : COMPANY_SIGNUP.sendRequestAgain;
   return {
     primary: translate(primary),

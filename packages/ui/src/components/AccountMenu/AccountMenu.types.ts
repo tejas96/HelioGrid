@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { MenuAlign } from '../Menu/Menu.types';
 
 /**
@@ -11,9 +12,9 @@ export interface AccountMenuProps {
   /** The avatar button's accessible name: whose account, and what it opens. */
   triggerName: string;
   /** The list's accessible name. */
-  menuLabel: string;
-  grievanceLabel: string;
-  signOutLabel: string;
+  menuLabel: TranslatedText;
+  grievanceLabel: TranslatedText;
+  signOutLabel: TranslatedText;
   onGrievance: () => void;
   onSignOut: () => void;
   /** Which edge the list lines up with: the phone's top bar opens it leftward from the end. */

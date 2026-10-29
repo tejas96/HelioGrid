@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { PaymentTermsWords } from '@heliogrid/i18n';
 import { Button, Modal, SheetActions } from '@heliogrid/ui';
 
@@ -15,7 +16,7 @@ export function TermsArchiveConfirm({
   /** The template asked about; `null` while nothing is asked. */
   name: string | null;
   words: Pick<PaymentTermsWords, 'archiveTitle' | 'archiveBody' | 'keepIt' | 'archive'>;
-  closeLabel: string;
+  closeLabel: TranslatedText;
   onArchive: () => void;
   onKeep: () => void;
 }) {

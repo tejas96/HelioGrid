@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import {
   type FormatPack,
   formatClockAt,
@@ -20,24 +21,24 @@ export interface TeamListWords {
   /** One row's words on the market's clock. */
   row(row: TeamRow): TeamRowWords;
   /** A preset's name, in the reader's words. */
-  role(preset: RolePreset): string;
+  role(preset: RolePreset): TranslatedText;
   /** The list's accessible name — *Everyone at <company>*, or *… matching <words>* under a search. */
-  label: string;
-  loading: string;
-  loadFailed: string;
-  tryAgain: string;
-  alone: string;
-  aloneLine: string;
-  noMatch: string;
-  clearSearch: string;
+  label: TranslatedText;
+  loading: TranslatedText;
+  loadFailed: TranslatedText;
+  tryAgain: TranslatedText;
+  alone: TranslatedText;
+  aloneLine: TranslatedText;
+  noMatch: TranslatedText;
+  clearSearch: TranslatedText;
   /** What the chosen Status chip says with nobody under it; null under *All*, which always holds the reader. */
-  emptyChip: string | null;
-  showAll: string;
-  find: string;
-  statusFilter: string;
-  you: string;
+  emptyChip: TranslatedText | null;
+  showAll: TranslatedText;
+  find: TranslatedText;
+  statusFilter: TranslatedText;
+  you: TranslatedText;
   /** The Status chips, *All* first, then each status in the list's order. */
-  statusOptions: { value: TeamStatusFilter; label: string }[];
+  statusOptions: { value: TeamStatusFilter; label: TranslatedText }[];
 }
 
 export function teamListWords(

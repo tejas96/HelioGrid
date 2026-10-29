@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
 
@@ -29,9 +30,9 @@ export type DoorPanes = 'door' | 'onboarding';
 
 /** A door's heading, the one ask beside it, and the line under it (`SCR-M01-02` decision 26). */
 export interface DoorTitleProps {
-  title: string;
+  title: TranslatedText;
   explainer?: ExplainerProps;
-  intro?: string;
+  intro?: TranslatedText;
 }
 
 /**

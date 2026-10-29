@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { NotificationType, NotificationTypeGroup } from '@heliogrid/domain';
 import { NOTIFICATION_CENTRE_HORIZON_DAYS } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
@@ -118,7 +119,11 @@ const ANY_GROUP: MessageRef = /*i18n*/ {
 };
 
 /** A group's sentence; a type this build does not know still reads as a count of notifications. */
-export function groupSentence(translate: Translator['t'], type: string, count: number): string {
+export function groupSentence(
+  translate: Translator['t'],
+  type: string,
+  count: number,
+): TranslatedText {
   const sentence = (GROUP_SENTENCE as Record<string, MessageRef | undefined>)[type] ?? ANY_GROUP;
   return translate(sentence, { count });
 }
@@ -130,7 +135,7 @@ export function groupSentence(translate: Translator['t'], type: string, count: n
 export function centreHeadLine(
   translate: Translator['t'],
   facts: { filtered: boolean; match: number; unread: number | null; total: number },
-): string {
+): TranslatedText {
   const days = NOTIFICATION_CENTRE_HORIZON_DAYS;
   /* An unread count not yet known is left out, never shown as 0 (`F8-01`). */
   if (facts.unread === null) {
@@ -155,19 +160,19 @@ export function centreHeadLine(
 export function centreDayLabel(
   translate: Translator['t'],
   day: { daysAgo: number; date: string; weekday: string },
-): string {
+): TranslatedText {
   if (day.daysAgo === 0) return translate(NOTIFICATION_CENTRE.today, { date: day.date });
   if (day.daysAgo === 1) return translate(NOTIFICATION_CENTRE.yesterday, { date: day.date });
   return translate(NOTIFICATION_CENTRE.earlierDay, { weekday: day.weekday, date: day.date });
 }
 
 /** Show older's words — "Show older matches" under a filter. */
-export function showOlderLabel(translate: Translator['t'], filtered: boolean): string {
+export function showOlderLabel(translate: Translator['t'], filtered: boolean): TranslatedText {
   return translate(filtered ? NOTIFICATION_CENTRE.showOlderMatches : NOTIFICATION_CENTRE.showOlder);
 }
 
 /** The horizon sentence, its number read from the one constant the reads are bounded by. */
-export function centreHorizonLine(translate: Translator['t']): string {
+export function centreHorizonLine(translate: Translator['t']): TranslatedText {
   return translate(NOTIFICATION_CENTRE.horizon, { days: NOTIFICATION_CENTRE_HORIZON_DAYS });
 }
 
@@ -175,7 +180,7 @@ export function centreHorizonLine(translate: Translator['t']): string {
 export function notificationCardName(
   translate: Translator['t'],
   card: { title: string; body: string; time: string; unread: boolean },
-): string {
+): TranslatedText {
   const name = card.unread ? NOTIFICATION_CENTRE.unreadCardName : NOTIFICATION_CENTRE.cardName;
   return translate(name, { title: clause(card.title), body: clause(card.body), time: card.time });
 }

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The logo's words on the company profile (`SCR-M01-05`, `logo-invalid-limits-stated`): the capture
  * area, the limits stated before any upload, and what a refused image is told — authored once for
@@ -38,15 +39,15 @@ export const REFUSED_FOR: Record<CompanyLogoMiss, MessageRef> = {
 };
 
 export interface CompanyLogoWords {
-  readonly add: string;
+  readonly add: TranslatedText;
   /** The capture area's name once it holds a logo. */
-  readonly held: string;
+  readonly held: TranslatedText;
   /** How to choose a file where a finger does it, and where a pointer can also drop one. */
-  readonly hintTouch: string;
-  readonly hintDrop: string;
-  readonly limits: string;
+  readonly hintTouch: TranslatedText;
+  readonly hintDrop: TranslatedText;
+  readonly limits: TranslatedText;
   /** The chosen image's own size and width against every limit it missed; `null` when none was refused. */
-  readonly refusal: string | null;
+  readonly refusal: TranslatedText | null;
 }
 
 export interface CompanyLogoWordFacts {
@@ -86,10 +87,10 @@ export interface CompanyLogoCapture {
   /** The act while no logo is held, then the held logo. */
   readonly name: string;
   /** Where a finger chooses: how, then the limits. The limits alone once a logo is held. */
-  readonly hint: string;
+  readonly hint: TranslatedText;
   /** The same where a pointer can also drop a file. */
-  readonly hintPointer: string;
-  readonly refusal: string | null;
+  readonly hintPointer: TranslatedText;
+  readonly refusal: TranslatedText | null;
   readonly held: boolean;
 }
 

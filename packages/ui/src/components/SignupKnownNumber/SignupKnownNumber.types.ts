@@ -1,17 +1,18 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
 import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
 
 /** Every word the frame draws; `@heliogrid/i18n`'s `knownNumberWords` writes them. */
 export interface SignupKnownNumberWords {
-  title: string;
+  title: TranslatedText;
   /** The rule behind the finding — one number, one account — beside the title. */
   explainer: ExplainerProps;
-  intro: string;
+  intro: TranslatedText;
   finding: Pick<TintedBlockProps, 'title' | 'body'>;
-  phoneLabel: string;
-  enter: string;
-  leave: string;
+  phoneLabel: TranslatedText;
+  enter: TranslatedText;
+  leave: TranslatedText;
 }
 
 /**

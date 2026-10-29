@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ProposalTemplateWords } from '@heliogrid/i18n';
 import {
   DocumentPreview,
@@ -22,7 +23,7 @@ export function TemplateFullSize({
 }: {
   open: boolean;
   words: ProposalTemplateWords;
-  closeLabel: string;
+  closeLabel: TranslatedText;
   document: TemplateDocument;
   onClose: () => void;
 }) {

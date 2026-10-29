@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import {
   type RolePreset,
   type SettingsGroup,
@@ -51,9 +52,9 @@ const ROW_NAME: Record<SettingsRow, { id: string }> = {
 
 /** Every word the settings list draws, in the reader's language. */
 export interface SettingsWords {
-  readonly title: string;
-  readonly groups: Readonly<Record<SettingsGroup, string>>;
-  readonly rows: Readonly<Record<SettingsRow, string>>;
+  readonly title: TranslatedText;
+  readonly groups: Readonly<Record<SettingsGroup, TranslatedText>>;
+  readonly rows: Readonly<Record<SettingsRow, TranslatedText>>;
 }
 
 export function settingsWords(translate: Translator['t']): SettingsWords {
@@ -85,12 +86,12 @@ export function settingsWords(translate: Translator['t']): SettingsWords {
 }
 
 /** A settings screen's way back to the list — the name of its back control. */
-export function backToSettings(translate: Translator['t']): string {
+export function backToSettings(translate: Translator['t']): TranslatedText {
   return translate(SETTINGS.back);
 }
 
 /** One row's name — the title its screen takes when it lands. */
-export function settingsRowName(translate: Translator['t'], row: SettingsRow): string {
+export function settingsRowName(translate: Translator['t'], row: SettingsRow): TranslatedText {
   return translate(ROW_NAME[row]);
 }
 
@@ -102,7 +103,7 @@ export function settingsRowName(translate: Translator['t'], row: SettingsRow): s
 export function settingsListFor(
   translate: Translator['t'],
   roles: readonly RolePreset[],
-): SettingsListView {
+): SettingsListView<TranslatedText> {
   const words = settingsWords(translate);
   return {
     title: words.title,
@@ -122,7 +123,7 @@ export function settingsSavedLine(
   translate: Translator['t'],
   standing: SettingsStanding,
   formats: { readonly date: (epochMs: number) => string },
-): string | null {
+): TranslatedText | null {
   if (standing.kind === 'never-set') return null;
   if (standing.kind === 'saved-unknown') return translate(SETTINGS.saved);
   const date = formats.date(standing.at);

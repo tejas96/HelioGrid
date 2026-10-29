@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { InviteRefusal, RolePreset } from '@heliogrid/domain';
 import type { ReactElement, ReactNode, Ref } from 'react';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
@@ -11,7 +12,7 @@ export interface InviteFieldState<Value> {
   value: Value;
   onChange: (value: Value) => void;
   /** The field's own answer when *Send invite* is pressed; absent until it refuses. */
-  error: string | undefined;
+  error: TranslatedText | undefined;
 }
 
 /**
@@ -30,25 +31,28 @@ export interface InviteFieldBinder {
 /** One preset in the role list: its name and what it can do. */
 export interface InviteRole {
   value: RolePreset;
-  title: string;
-  description: string;
+  title: TranslatedText;
+  description: TranslatedText;
 }
 
 /** Every word the form draws; `@heliogrid/i18n`'s `inviteWords` writes them. */
 export interface InviteFormWords {
-  name: string;
-  namePlaceholder: string;
-  phone: string;
-  phoneHelper: string;
-  rolesHeading: string;
+  name: TranslatedText;
+  namePlaceholder: TranslatedText;
+  phone: TranslatedText;
+  phoneHelper: TranslatedText;
+  rolesHeading: TranslatedText;
   /** The role list's spoken name. */
-  rolesGroup: string;
+  rolesGroup: TranslatedText;
   /** The ask beside the heading (`F7-46`): why a role is needed, and that roles can change later. */
   rolesAsk: ExplainerProps;
   /** The refusal at the top of the role list when *Send invite* is pressed with none ticked (F2-21). */
-  noRole: string;
+  noRole: TranslatedText;
   /** A refusal the form draws in place of the send: its title and the line under it, if any. */
-  refusal: (refusal: InviteRefusal) => { readonly title: string; readonly body: string | null };
+  refusal: (refusal: InviteRefusal) => {
+    readonly title: TranslatedText;
+    readonly body: TranslatedText | null;
+  };
 }
 
 /**
@@ -92,14 +96,14 @@ export interface InviteFormProps {
 
 /** The editor's own words, over the form's. */
 export interface InviteEditorWords extends InviteFormWords {
-  title: string;
-  send: string;
-  cancel: string;
+  title: TranslatedText;
+  send: TranslatedText;
+  cancel: TranslatedText;
   /** The close control's spoken name. */
-  close: string;
+  close: TranslatedText;
   /** *Invite lasts 7 days · cancel it from Team*, centred under the acts. */
-  lasts: string;
-  differentNumber: string;
+  lasts: TranslatedText;
+  differentNumber: TranslatedText;
 }
 
 /**

@@ -1,10 +1,11 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { Read } from '@heliogrid/domain';
 
 /** One block of the home: the home's own work, or a composed preset's (`M13-10`). */
 export interface HomeBlock {
   key: string;
   /** The preset whose work the block holds — its overline. */
-  overline: string;
+  overline: TranslatedText;
 }
 
 /**
@@ -16,9 +17,9 @@ export interface HomeBlocksProps {
   blocks: HomeBlock[];
   /** The shell's own read, passed straight through; a ready read teaches. */
   read: Read<unknown>;
-  emptyTitle: string;
-  emptyMessage: string;
-  errorTitle: string;
-  errorMessage: string;
-  retryLabel: string;
+  emptyTitle: TranslatedText;
+  emptyMessage: TranslatedText;
+  errorTitle: TranslatedText;
+  errorMessage: TranslatedText;
+  retryLabel: TranslatedText;
 }

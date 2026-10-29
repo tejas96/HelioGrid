@@ -1,0 +1,27 @@
+// Words in packages/ui are the caller's, which only packages/i18n mints, so a part's markup types
+// none: no literal or template literal in aria-label, accessibilityLabel, accessibilityHint, title
+// or placeholder, and no quoted word in braces between tags ({'Save'}, {`Step ${n}`}) — bare text
+// between tags is Biome's noJsxLiterals. A symbol with no letter (→, ·) is not a word.
+or {
+  JsxAttribute() as $attr where {
+    $attr <: or {
+      includes "aria-label",
+      includes "accessibilityLabel",
+      includes "accessibilityHint",
+      includes "title",
+      includes "placeholder"
+    },
+    $attr <: r"(?s)^(?:aria-label|accessibilityLabel|accessibilityHint|title|placeholder)\s*=\s*(?:[\x22\x27]|\{\s*[\x22\x27\x60]).*",
+    register_diagnostic(span=$attr, message="Words typed into a component reach a Hindi or Marathi reader in English — take them as a TranslatedText prop from @heliogrid/i18n.")
+  },
+  JsxExpressionChild() as $child where {
+    $child <: or {
+      contains JsStringLiteralExpression() as $text where {
+        $text <: r"(?s)^[\x22\x27].*[A-Za-z].*"
+      },
+      contains JsTemplateChunkElement() as $chunk where { $chunk <: r"(?s).*[A-Za-z].*" }
+    },
+    $child <: r"(?s)^\{\s*[\x22\x27\x60].*",
+    register_diagnostic(span=$child, message="Words typed into a component reach a Hindi or Marathi reader in English — take them as a TranslatedText prop from @heliogrid/i18n.")
+  }
+}

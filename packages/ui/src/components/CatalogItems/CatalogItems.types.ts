@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type {
   CatalogFilter,
   CatalogLayer,
@@ -42,7 +43,7 @@ export interface CatalogItemsProps {
   rowStates: Readonly<Record<string, CatalogRowStatus>>;
   paging: CatalogPaging;
   /** The archived count's caption under the list, or `null` when there are none or the list is the archived one. */
-  archivedCaption: string | null;
+  archivedCaption: TranslatedText | null;
   /** Every administration act is offered; without it each is absent, never disabled. */
   administers: boolean;
   /** *Import a file* (`SCR-M01-17`): `null` draws none — absent without the outright grant, never disabled. */
@@ -64,7 +65,7 @@ export interface CatalogItemsProps {
 /** The versioning strip that opens each panel: the release in force, or the price-book version. */
 export interface CatalogStrip {
   /** *Release* · *Price book*. */
-  readonly title: string;
+  readonly title: TranslatedText;
   /** *r2026-08* or *V7*: mono, or a chip on the price book. `null` before the first. */
   readonly tag: string | null;
   readonly tagAs: 'mono' | 'chip';
@@ -84,7 +85,7 @@ export interface CatalogRow {
   readonly kind: ComponentKind;
   readonly name: string;
   /** *Panel · 545 Wp · Mono PERC*. */
-  readonly specLine: string;
+  readonly specLine: TranslatedText;
   readonly layer: CatalogLayer;
   readonly layerWord: string;
   /** *Your override* · *Your SKU* · *Platform* — the 1536 *Price comes from* column. */
@@ -112,12 +113,12 @@ export interface CatalogRowLabels {
 }
 
 export type CatalogRowStatus =
-  | { readonly state: 'saving'; readonly label: string }
+  | { readonly state: 'saving'; readonly label: TranslatedText }
   | {
       readonly state: 'failed';
-      readonly label: string;
+      readonly label: TranslatedText;
       /** What did not save and what is therefore still true. */
-      readonly reason: string;
+      readonly reason: TranslatedText;
       readonly onRetry: () => void;
       readonly onDismiss: () => void;
     };
@@ -141,72 +142,72 @@ export type CatalogPaging =
 
 /** Every fixed word of the panel: `@heliogrid/i18n`'s `catalogItemsWords`. */
 export interface CatalogItemsWords {
-  readonly importFile: string;
-  readonly addItem: string;
-  readonly item: string;
-  readonly whatItIs: string;
-  readonly compliance: string;
-  readonly effectivePrice: string;
-  readonly priceComesFrom: string;
-  readonly noPrice: string;
-  readonly preferred: string;
-  readonly prefer: string;
-  readonly hidden: string;
-  readonly hide: string;
-  readonly archive: string;
-  readonly restore: string;
-  readonly hiddenFromPickers: string;
+  readonly importFile: TranslatedText;
+  readonly addItem: TranslatedText;
+  readonly item: TranslatedText;
+  readonly whatItIs: TranslatedText;
+  readonly compliance: TranslatedText;
+  readonly effectivePrice: TranslatedText;
+  readonly priceComesFrom: TranslatedText;
+  readonly noPrice: TranslatedText;
+  readonly preferred: TranslatedText;
+  readonly prefer: TranslatedText;
+  readonly hidden: TranslatedText;
+  readonly hide: TranslatedText;
+  readonly archive: TranslatedText;
+  readonly restore: TranslatedText;
+  readonly hiddenFromPickers: TranslatedText;
   /** *No ALMM or DCR flag recorded*, from the market's schemes. */
-  readonly noSchemeFlag: string;
-  readonly marks: string;
-  readonly search: string;
-  readonly searchLabel: string;
-  readonly filters: string;
-  readonly kindLabel: string;
-  readonly allKinds: string;
-  readonly kinds: Readonly<Record<ComponentKind, string>>;
-  readonly technologies: Readonly<Record<PanelTechnology, string>>;
-  readonly sortLabel: string;
-  readonly sortNamed: (order: string) => string;
-  readonly sorts: Readonly<Record<CatalogSort, string>>;
+  readonly noSchemeFlag: TranslatedText;
+  readonly marks: TranslatedText;
+  readonly search: TranslatedText;
+  readonly searchLabel: TranslatedText;
+  readonly filters: TranslatedText;
+  readonly kindLabel: TranslatedText;
+  readonly allKinds: TranslatedText;
+  readonly kinds: Readonly<Record<ComponentKind, TranslatedText>>;
+  readonly technologies: Readonly<Record<PanelTechnology, TranslatedText>>;
+  readonly sortLabel: TranslatedText;
+  readonly sortNamed: (order: string) => TranslatedText;
+  readonly sorts: Readonly<Record<CatalogSort, TranslatedText>>;
   /** *342 items · every kind · preferred first* — the phone's summary, the table's caption. */
-  readonly summary: string;
-  readonly region: string;
-  readonly pageRange: (from: number, to: number, count: number) => string;
-  readonly previousPage: string;
-  readonly nextPage: string;
-  readonly makeItYours: string;
-  readonly loadingRelease: string;
-  readonly loadingKinds: string;
-  readonly loadingList: string;
-  readonly loadFailed: string;
-  readonly loadFailedBody: string;
-  readonly tryAgain: string;
+  readonly summary: TranslatedText;
+  readonly region: TranslatedText;
+  readonly pageRange: (from: number, to: number, count: number) => TranslatedText;
+  readonly previousPage: TranslatedText;
+  readonly nextPage: TranslatedText;
+  readonly makeItYours: TranslatedText;
+  readonly loadingRelease: TranslatedText;
+  readonly loadingKinds: TranslatedText;
+  readonly loadingList: TranslatedText;
+  readonly loadFailed: TranslatedText;
+  readonly loadFailedBody: TranslatedText;
+  readonly tryAgain: TranslatedText;
   /** A failed row's *Dismiss*. */
-  readonly dismiss: string;
+  readonly dismiss: TranslatedText;
   /** The filter sheet's close. */
-  readonly closeFilters: string;
+  readonly closeFilters: TranslatedText;
   /** The row acts column's spoken name. */
-  readonly actions: string;
+  readonly actions: TranslatedText;
   /** The phone list's next-page act. */
-  readonly loadMore: string;
+  readonly loadMore: TranslatedText;
   readonly filterPanel: FilterPanelWords & CatalogFilterWords;
   readonly explainer: ExplainerPagerWords;
 }
 
 /** The filter panel's dimension names and options for the catalog. */
 export interface CatalogFilterWords {
-  readonly source: string;
-  readonly platform: string;
-  readonly yourSkus: string;
-  readonly kindNoun: string;
-  readonly wattage: string;
-  readonly technology: string;
-  readonly technologyNoun: string;
-  readonly anyTechnology: string;
-  readonly panelSpecs: string;
-  readonly scheme: string;
-  readonly preferredOnly: string;
-  readonly archivedInstead: string;
-  readonly resultNoun: string;
+  readonly source: TranslatedText;
+  readonly platform: TranslatedText;
+  readonly yourSkus: TranslatedText;
+  readonly kindNoun: TranslatedText;
+  readonly wattage: TranslatedText;
+  readonly technology: TranslatedText;
+  readonly technologyNoun: TranslatedText;
+  readonly anyTechnology: TranslatedText;
+  readonly panelSpecs: TranslatedText;
+  readonly scheme: TranslatedText;
+  readonly preferredOnly: TranslatedText;
+  readonly archivedInstead: TranslatedText;
+  readonly resultNoun: TranslatedText;
 }

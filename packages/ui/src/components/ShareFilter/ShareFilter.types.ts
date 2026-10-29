@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * **How a whole splits, and the filter onto each part** (`SCR-M01-17`'s overview): one entry per
  * part with its count and its hue. `rings` draws a row of share rings — each arc its part's share,
@@ -8,9 +9,9 @@
 export interface ShareFilterProps {
   layout: 'rings' | 'bar';
   /** The group's accessible name: *What the import will do*. */
-  label: string;
+  label: TranslatedText;
   /** `bar` only: the stacked bar's accessible sentence, every part and its count. */
-  barLabel?: string;
+  barLabel?: TranslatedText;
   items: readonly ShareFilterItem[];
   /** The part in force, or `null` when nothing is scoped. */
   pressed: string | null;
@@ -21,9 +22,9 @@ export interface ShareFilterProps {
 /** One part: its id, its words, its count and the hue it is drawn in. */
 export interface ShareFilterItem {
   readonly id: string;
-  readonly label: string;
+  readonly label: TranslatedText;
   /** The toggle's accessible name: *Price overrides, 318 rows*. */
-  readonly accessibleLabel: string;
+  readonly accessibleLabel: TranslatedText;
   readonly count: number;
   /**
    * The part's hue: `blue` and `violet` the brand's two iris inks (`--iris-blue`, `--iris-violet`),

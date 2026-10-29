@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { Translator } from '../runtime';
 
 type T = Translator['t'];
@@ -21,7 +22,7 @@ interface UploadFacts {
 /** The import wizard's refusals (`SCR-M01-17`): a file refused or not uploaded, an act refused. */
 export function catalogImportNotes(t: T) {
   return {
-    upload: (upload: UploadFacts, maxSizeMB: number): string | null => {
+    upload: (upload: UploadFacts, maxSizeMB: number): TranslatedText | null => {
       if (upload.state === 'failed') return t(NOTE.uploadFailed);
       if (upload.state !== 'refused') return null;
       return upload.refusal === 'too-large'

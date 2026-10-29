@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { Read, ReleaseChangeKind } from '@heliogrid/domain';
 
 /**
@@ -11,6 +12,7 @@ export type CatalogReleaseProps = CatalogPublishBody | CatalogContentsBody;
 export interface CatalogPublishBody {
   readonly mode: 'publish';
   readonly words: CatalogReleaseWords;
+  // biome-ignore lint/plugin/copy-prop-type: the release's name as the person types it
   readonly label: string;
   readonly onLabel: (label: string) => void;
   /** Under the name: *A release already has this name…*; `null` while there is none. */
@@ -20,7 +22,7 @@ export interface CatalogPublishBody {
   /** The preview's read: the dialog waits, or says it failed with *Try again*. */
   readonly read: Read<unknown>;
   /** The next page of change cards, while more remain than are shown; `null` when all are. */
-  readonly more: { readonly label: string; readonly onMore: () => void } | null;
+  readonly more: { readonly label: TranslatedText; readonly onMore: () => void } | null;
 }
 
 export interface CatalogContentsBody {
@@ -75,11 +77,11 @@ export interface CatalogEarlierRelease {
 
 /** `@heliogrid/i18n`'s `catalogReleaseWords`. */
 export interface CatalogReleaseWords {
-  readonly releaseName: string;
-  readonly newValue: string;
-  readonly inForce: string;
-  readonly earlier: string;
-  readonly loadFailed: string;
-  readonly tryAgain: string;
-  readonly loading: string;
+  readonly releaseName: TranslatedText;
+  readonly newValue: TranslatedText;
+  readonly inForce: TranslatedText;
+  readonly earlier: TranslatedText;
+  readonly loadFailed: TranslatedText;
+  readonly tryAgain: TranslatedText;
+  readonly loading: TranslatedText;
 }

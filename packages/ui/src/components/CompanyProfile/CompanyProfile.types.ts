@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type {
   CompanyProfileField,
   CompanyProfileLife,
@@ -12,8 +13,8 @@ import type { PickedFile } from '../Dropzone/Dropzone.types';
 /** One part of the profile as its header says it: its title, where it stands, and how that is marked. */
 export interface CompanyProfilePartWords {
   readonly key: CompanyProfilePart;
-  readonly title: string;
-  readonly standing: string;
+  readonly title: TranslatedText;
+  readonly standing: TranslatedText;
   readonly mark: StandingMark;
 }
 
@@ -24,73 +25,81 @@ export interface CompanyProfilePartWords {
  * component cannot draw one state under another's words.
  */
 export interface CompanyProfileWords {
-  readonly title: string;
-  readonly lede: string;
+  readonly title: TranslatedText;
+  readonly lede: TranslatedText;
   /** The five parts, in the screen's order. */
   readonly parts: readonly CompanyProfilePartWords[];
-  readonly identity: { readonly companyName: string; readonly fromSignup: string };
+  readonly identity: { readonly companyName: TranslatedText; readonly fromSignup: TranslatedText };
   readonly address: {
-    readonly street: string;
-    readonly streetExample: string;
-    readonly city: string;
-    readonly fromSignup: string;
-    readonly postalCode: string;
-    readonly postalCodeExample: string;
-    readonly purpose: string;
+    readonly street: TranslatedText;
+    readonly streetExample: TranslatedText;
+    readonly city: TranslatedText;
+    readonly fromSignup: TranslatedText;
+    readonly postalCode: TranslatedText;
+    readonly postalCodeExample: TranslatedText;
+    readonly purpose: TranslatedText;
   };
   readonly tax: {
     /** The market pack's name for its registration, marked optional. */
-    readonly label: string;
+    readonly label: TranslatedText;
     /** The market's format in one line: the field's help, until `error` says it instead. */
+    // biome-ignore lint/plugin/copy-prop-type: the market pack's example of the tax id's format
     readonly format: string;
     /** The format again, as the field's error, while what is typed does not read as one. */
+    // biome-ignore lint/plugin/copy-prop-type: the market pack's example of the tax id's format
     readonly error: string | null;
     /** What was checked and what was not — printed whole under the field. */
-    readonly checked: string;
+    readonly checked: TranslatedText;
   };
   readonly bank: {
-    readonly bankName: string;
-    readonly bankNameExample: string;
-    readonly accountHolder: string;
-    readonly accountNumber: string;
-    readonly accountNumberExample: string;
+    readonly bankName: TranslatedText;
+    readonly bankNameExample: TranslatedText;
+    readonly accountHolder: TranslatedText;
+    readonly accountNumber: TranslatedText;
+    readonly accountNumberExample: TranslatedText;
     /** The market pack's name for its bank-routing identifier. */
+    // biome-ignore lint/plugin/copy-prop-type: the market pack's name for the bank's routing code
     readonly routing: string;
-    readonly routingExample: string;
+    readonly routingExample: TranslatedText;
     /** What was checked and what was not — printed whole under the routing field. */
-    readonly checked: string;
-    readonly purpose: string;
+    readonly checked: TranslatedText;
+    readonly purpose: TranslatedText;
   };
   readonly declarations: {
     /** The kinds' group, named above its cards. */
-    readonly group: string;
+    readonly group: TranslatedText;
     readonly options: readonly {
       readonly value: TenantSegment;
-      readonly title: string;
-      readonly description: string;
+      readonly title: TranslatedText;
+      readonly description: TranslatedText;
     }[];
-    readonly sizeLabel: string;
+    readonly sizeLabel: TranslatedText;
+    // biome-ignore lint/plugin/copy-prop-type: kWp, a unit never translated
     readonly unit: string;
-    readonly sizeHint: string;
+    readonly sizeHint: TranslatedText;
     /** Where the size comes from — beside its tier. */
-    readonly sizeSource: string;
+    readonly sizeSource: TranslatedText;
   };
   /**
    * The letterhead the profile builds, previewed beside the list on a wide screen. It shows only
    * what the fields hold: an empty line, or a `null`, is drawn as a bar.
    */
   readonly letterhead: {
-    readonly overline: string;
+    readonly overline: TranslatedText;
     /** Stands in the logo's place until one is added. */
-    readonly logo: string;
+    readonly logo: TranslatedText;
+    // biome-ignore lint/plugin/copy-prop-type: the company's name as the profile holds it
     readonly name: string;
+    // biome-ignore lint/plugin/copy-prop-type: the address as the profile holds it
     readonly address: string;
     /** The market pack's name for its registration. */
+    // biome-ignore lint/plugin/copy-prop-type: the market pack's name for the tax id
     readonly taxLabel: string;
     /** The registration as typed; `owed` while it does not read as the market's format. */
+    // biome-ignore lint/plugin/copy-prop-type: the registration as typed
     readonly tax: { readonly value: string; readonly owed: boolean } | null;
-    readonly bank: string;
-    readonly bankLine: string | null;
+    readonly bank: TranslatedText;
+    readonly bankLine: TranslatedText | null;
   };
   /**
    * The logo's capture area, above the company name; `null` draws none. `name` is the act, or the
@@ -98,34 +107,35 @@ export interface CompanyProfileWords {
    * pointer can also drop a file; `refusal` is what the image last chosen missed.
    */
   readonly logo: {
+    // biome-ignore lint/plugin/copy-prop-type: the act's word, or the held logo's file name
     readonly name: string;
-    readonly hint: string;
-    readonly hintPointer: string;
-    readonly refusal: string | null;
+    readonly hint: TranslatedText;
+    readonly hintPointer: TranslatedText;
+    readonly refusal: TranslatedText | null;
     readonly held: boolean;
   } | null;
-  readonly loading: string | null;
+  readonly loading: TranslatedText | null;
   readonly unread: {
-    readonly title: string;
-    readonly line: string;
-    readonly retry: string;
+    readonly title: TranslatedText;
+    readonly line: TranslatedText;
+    readonly retry: TranslatedText;
     /** The way on without the profile — the setup life's alone: settings has nowhere onward. */
-    readonly onward: string | null;
-    readonly onwardSpoken: string | null;
+    readonly onward: TranslatedText | null;
+    readonly onwardSpoken: TranslatedText | null;
   } | null;
   /** None when the profile could not be read: `unread` holds both ways. */
   readonly act: {
-    readonly primary: string;
-    readonly primarySpoken: string;
+    readonly primary: TranslatedText;
+    readonly primarySpoken: TranslatedText;
     /** Why the primary cannot be pressed yet. */
-    readonly waiting: string | null;
+    readonly waiting: TranslatedText | null;
     /** The way on without saving, after a failed save alone. */
-    readonly secondary: string | null;
-    readonly secondarySpoken: string | null;
+    readonly secondary: TranslatedText | null;
+    readonly secondarySpoken: TranslatedText | null;
     /** The failed save, said once, above the acts. */
-    readonly alert: string | null;
+    readonly alert: TranslatedText | null;
     /** The one line under the act. */
-    readonly line: string | null;
+    readonly line: TranslatedText | null;
   } | null;
 }
 

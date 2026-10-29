@@ -9,7 +9,14 @@ import { describe, expect, it } from 'vitest';
 import { explainerPagerWords } from '../src/copy/explainer';
 import { SIGN_IN } from '../src/copy/sign-in';
 import { signInWords } from '../src/copy/sign-in-frames';
-import { createTranslator, type MessageRef } from '../src/runtime';
+import { createTranslator, type MessageRef, type Translator } from '../src/runtime';
+
+/** A door's ask, as words a translator hands out: the catalog holds none of them, so each reads as written. */
+const askIn = (t: Translator['t']) => ({
+  label: t('About the ask'),
+  title: t('The ask'),
+  pages: [t('One page.')] as const,
+});
 
 /**
  * No answer is never told as our failure (`F8-36`, `SCR-M01-01` decision 17): each request or check
@@ -49,13 +56,12 @@ describe('signInWords — a request or a check with no answer names both sides',
  * where the frame carries no rule of its own, and a limit frame keeps its own (`SCR-M01-01`).
  */
 describe('signInWords — the door’s ask beside the title', () => {
-  const ask = { label: 'About the ask', title: 'The ask', pages: ['One page.'] } as const;
   it.each([
     ['a sent code shows the door’s ask', otp({}), 'The ask'],
     ['a capped frame keeps its own rule', otp({ request: 'capped' }), 'Code limits'],
   ] as const)('%s', async (_name, state, title) => {
     const { t } = await createTranslator('en');
-    const words = signInWords(t, loginFrame(state, false), FACTS, { explainer: ask });
+    const words = signInWords(t, loginFrame(state, false), FACTS, { explainer: askIn(t) });
     expect(words.explainer?.title).toBe(title);
   });
 });
@@ -65,13 +71,12 @@ describe('signInWords — the door’s ask beside the title', () => {
  * frame's rule and a door's ask both leave here complete, and a frame with no ask carries none.
  */
 describe('signInWords — the ask beside the title carries the pager’s words', () => {
-  const ask = { label: 'About the ask', title: 'The ask', pages: ['One page.'] } as const;
   it.each(LANGUAGES)('the frame’s own rule and the door’s ask, in %s', async (language) => {
     const { t } = await createTranslator(language);
     const pager = explainerPagerWords(t);
     const asks = [
       signInWords(t, loginFrame(otp({ request: 'capped' }), false), FACTS).explainer,
-      signInWords(t, loginFrame(otp({}), false), FACTS, { explainer: ask }).explainer,
+      signInWords(t, loginFrame(otp({}), false), FACTS, { explainer: askIn(t) }).explainer,
     ];
     for (const explainer of asks) {
       expect(explainer?.nextLabel).toBe(pager.nextLabel);

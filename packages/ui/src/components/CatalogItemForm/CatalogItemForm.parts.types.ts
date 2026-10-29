@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ItemDraft, ItemDraftEvent, SchemeDraft } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
@@ -18,14 +19,14 @@ export interface FieldFocus {
 export interface ItemCardProps {
   glyph: ShellGlyphName;
   iris: IrisHue;
-  title: string;
+  title: TranslatedText;
   /** Beside the title, at its end: the specification's *Your own*. */
   trailing?: ReactNode;
   children?: ReactNode;
 }
 
 export interface SheetAcceleratorProps {
-  title: string;
+  title: TranslatedText;
   sub: string;
   /** The create is out: the tile is inert until it answers. */
   disabled: boolean;
@@ -34,10 +35,10 @@ export interface SheetAcceleratorProps {
 
 export interface SchemeSwitchRowProps {
   scheme: string;
-  words: { readonly label: string; readonly reference: string | null };
+  words: { readonly label: TranslatedText; readonly reference: TranslatedText | null };
   held: SchemeDraft;
   /** The reference field's words under it, when the gate refused it. */
-  error?: string;
+  error?: TranslatedText;
   /** `Input`'s `focusRequest` for the reference field. */
   focusRequest?: number;
   /** The create is out: the switch and its reference are inert until it answers. */

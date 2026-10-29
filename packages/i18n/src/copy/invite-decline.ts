@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The words of the invite landing's decline (`SCR-M01-08` declined-notifies-owner, `S1.wrong.2`):
  * the control on the live invite, the confirm that names both consequences and the way back, and
@@ -30,12 +31,12 @@ export const NOT_THROUGH: Record<'unreached' | 'failed', MessageRef> = {
 
 /** The decline on the live invite: its control, its confirm, and why the last one did not go through. */
 export interface InviteDeclineWords {
-  readonly open: string;
-  readonly title: string;
-  readonly line: string;
-  readonly keep: string;
-  readonly go: string;
-  readonly refused: string | null;
+  readonly open: TranslatedText;
+  readonly title: TranslatedText;
+  readonly line: TranslatedText;
+  readonly keep: TranslatedText;
+  readonly go: TranslatedText;
+  readonly refused: TranslatedText | null;
 }
 
 export function inviteDeclineWords(
@@ -59,7 +60,7 @@ export function inviteDeclineWords(
 export function declinedWords(
   translate: Translator['t'],
   invite: InviteFacts | null,
-): { readonly title: string; readonly line: string } {
+): { readonly title: TranslatedText; readonly line: TranslatedText } {
   return {
     title: translate(INVITE_DECLINE.closed),
     line: translate(INVITE_DECLINE.closedLine, namesOf(invite)),

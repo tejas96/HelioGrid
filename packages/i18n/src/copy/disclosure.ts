@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { RuledDisclosure } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { BASIS_LINE_WORD } from './document-basis';
@@ -30,11 +31,11 @@ export const DISCLOSURE_LEAD_WORD: Record<RuledDisclosure, MessageRef> = {
 };
 
 /** The ruled line in the reader's language — `translate` is the mount's `t`. */
-export function disclosureLine(translate: Translator['t'], kind: RuledDisclosure): string {
+export function disclosureLine(translate: Translator['t'], kind: RuledDisclosure): TranslatedText {
   return translate(DISCLOSURE_LINE_WORD[kind]);
 }
 
 /** The lead clause in the reader's language — `translate` is the mount's `t`. */
-export function disclosureLead(translate: Translator['t'], kind: RuledDisclosure): string {
+export function disclosureLead(translate: Translator['t'], kind: RuledDisclosure): TranslatedText {
   return translate(DISCLOSURE_LEAD_WORD[kind]);
 }

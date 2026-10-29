@@ -100,7 +100,7 @@ describe('the add sheet’s words', () => {
         copiedFrom,
       });
       expect([words.primary, words.consequence]).toEqual([primary, line]);
-      expect(words.needs.optionalValues.includes('Price')).toBe(priced);
+      expect(words.needs.optionalValues.some((value) => value === 'Price')).toBe(priced);
     },
   );
 

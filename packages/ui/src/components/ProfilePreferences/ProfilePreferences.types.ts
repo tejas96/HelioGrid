@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type {
   MeasurementSystem,
   NotificationTypeGroup,
@@ -11,44 +12,49 @@ import type {
 /** Every word the page draws, already translated: `@heliogrid/i18n`'s `profilePreferencesWords`. */
 export interface ProfilePreferencesWords {
   /** The page's title — the web draws it as the page's heading; the phone's bar holds it. */
-  readonly title: string;
-  readonly account: string;
+  readonly title: TranslatedText;
+  readonly account: TranslatedText;
   /** The name row's act. */
-  readonly editName: string;
-  readonly languageAndUnits: string;
+  readonly editName: TranslatedText;
+  readonly languageAndUnits: TranslatedText;
   readonly roles: {
-    readonly title: string;
-    readonly badges: readonly { readonly preset: RolePreset; readonly label: string }[];
+    readonly title: TranslatedText;
+    readonly badges: readonly { readonly preset: RolePreset; readonly label: TranslatedText }[];
   };
   readonly language: {
-    readonly label: string;
+    readonly label: TranslatedText;
     readonly options: readonly {
       readonly value: UiLanguage;
-      readonly label: string;
+      readonly label: TranslatedText;
+      // biome-ignore lint/plugin/copy-prop-type: a BCP 47 language tag
       readonly lang: string;
     }[];
-    readonly source: string;
-    readonly error: string | null;
+    readonly source: TranslatedText;
+    readonly error: TranslatedText | null;
   };
   readonly units: {
-    readonly label: string;
-    readonly metric: string;
-    readonly imperial: string;
-    readonly source: string;
-    readonly error: string | null;
+    readonly label: TranslatedText;
+    readonly metric: TranslatedText;
+    readonly imperial: TranslatedText;
+    readonly source: TranslatedText;
+    readonly error: TranslatedText | null;
   };
   readonly push: {
-    readonly title: string;
-    readonly about: { readonly label: string; readonly line: string };
-    readonly whyBilling: { readonly label: string; readonly line: string };
-    readonly groups: Readonly<Record<NotificationTypeGroup, string>>;
+    readonly title: TranslatedText;
+    readonly about: { readonly label: TranslatedText; readonly line: TranslatedText };
+    readonly whyBilling: { readonly label: TranslatedText; readonly line: TranslatedText };
+    readonly groups: Readonly<Record<NotificationTypeGroup, TranslatedText>>;
     /** Under a switch whose last write was refused (D219). */
-    readonly notSaved: string;
+    readonly notSaved: TranslatedText;
   };
   /** The loading bars' name while the push read is out. */
-  readonly loading: string;
+  readonly loading: TranslatedText;
   /** The banner the page draws when the push read failed. */
-  readonly loadFailed: { readonly title: string; readonly body: string; readonly retry: string };
+  readonly loadFailed: {
+    readonly title: TranslatedText;
+    readonly body: TranslatedText;
+    readonly retry: TranslatedText;
+  };
 }
 
 /**

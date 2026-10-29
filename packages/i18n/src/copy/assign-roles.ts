@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The words of Assign Roles (`SCR-M01-13`, `M01-20`) — authored once for both platforms (Law 11).
  * The grant line is one whole sentence per language with a `{name}` and a `{list}` slot, so a
@@ -58,7 +59,7 @@ const PRESET_CLAUSE: Record<RolePreset, { id: string }> = {
 };
 
 /** A preset's clause, as the grant line says it — the removal confirm negates the same words. */
-export function presetClause(translate: Translator['t'], preset: RolePreset): string {
+export function presetClause(translate: Translator['t'], preset: RolePreset): TranslatedText {
   return translate(PRESET_CLAUSE[preset]);
 }
 
@@ -109,23 +110,23 @@ export function grantLineWords(
 /** One preset row: its name, what it can do, and why it is off, when it is. */
 export interface AssignRolesPresetWords {
   readonly value: RolePreset;
-  readonly title: string;
-  readonly description: string;
-  readonly lockReason: string | null;
+  readonly title: TranslatedText;
+  readonly description: TranslatedText;
+  readonly lockReason: TranslatedText | null;
 }
 
 export interface AssignRolesWords {
-  readonly overline: string;
-  readonly presets: string;
+  readonly overline: TranslatedText;
+  readonly presets: TranslatedText;
   /** The round button beside *Presets* that opens the Roles reference (`SCR-M01-14`). */
-  readonly reference: string;
-  readonly recorded: string;
-  readonly gives: string;
-  readonly save: string;
+  readonly reference: TranslatedText;
+  readonly recorded: TranslatedText;
+  readonly gives: TranslatedText;
+  readonly save: TranslatedText;
   /** Why *Save roles* is off (`saveRolesOff`), or null when it may run. */
-  saveOff(off: SaveRolesOff | null): string | null;
-  readonly close: string;
-  readonly loading: string;
+  saveOff(off: SaveRolesOff | null): TranslatedText | null;
+  readonly close: TranslatedText;
+  readonly loading: TranslatedText;
   /** The twelve presets in F2's order (`ROLE_PRESETS`). */
   readonly rows: readonly AssignRolesPresetWords[];
 }
@@ -174,8 +175,8 @@ const REFUSAL_BODY: Record<Exclude<AssignRolesRefusal['kind'], 'unconfirmed'>, {
 /** The banner over the grant card (`m-error`). */
 export interface AssignRolesRefusalWords {
   /** Null when no one can say the save failed — it may have landed (F8-36). */
-  readonly title: string | null;
-  readonly body: string;
+  readonly title: TranslatedText | null;
+  readonly body: TranslatedText;
 }
 
 export function assignRolesRefusalWords(
@@ -196,9 +197,9 @@ export function assignRolesRefusalWords(
 /** What the open editor shows, as both screens hand it to `AssignRoles`. */
 export interface AssignRolesShown {
   readonly words: AssignRolesWords;
-  readonly status: string;
+  readonly status: TranslatedText;
   readonly grant: { readonly speakers: readonly RolePreset[]; readonly parts: readonly TextPart[] };
-  readonly saveOffReason: string | null;
+  readonly saveOffReason: TranslatedText | null;
   readonly refusal: AssignRolesRefusalWords | null;
 }
 

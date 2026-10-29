@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { PaymentTermsWords } from '@heliogrid/i18n';
 import {
   EditorSurface,
@@ -20,7 +21,7 @@ export function TermsStageSheet({
   /** The open line's picker; `null` while the picker is shut. */
   picker: TermsEditorView['picker'];
   words: PaymentTermsWords;
-  closeLabel: string;
+  closeLabel: TranslatedText;
   onClose: () => void;
 }) {
   if (picker === null) return null;

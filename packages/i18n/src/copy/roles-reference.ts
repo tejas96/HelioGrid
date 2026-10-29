@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ExplainerPagerWords } from '@heliogrid/domain';
 import {
   ROLE_PRESETS,
@@ -44,51 +45,51 @@ export const ROLES_REFERENCE = {
 /** One row of a role's list: the row's words and, on a scoped grant, the person's part of it. */
 export interface ReferenceLineWords {
   readonly key: string;
-  readonly text: string;
-  readonly scope: string | null;
+  readonly text: TranslatedText;
+  readonly scope: TranslatedText | null;
 }
 
 /** Someone named under a role but not counted, with their status in words. */
 export interface UncountedHolderWords extends UncountedHolder {
-  readonly word: string;
+  readonly word: TranslatedText;
 }
 
 /** One role as its tile and its details say it. */
 export interface RoleReferenceWords {
   readonly value: RolePreset;
   readonly name: string;
-  readonly summary: string;
+  readonly summary: TranslatedText;
   /** *2 people* — null while the counts are out or did not load. */
-  readonly count: string | null;
-  readonly loadingCount: string;
+  readonly count: TranslatedText | null;
+  readonly loadingCount: TranslatedText;
   /** The active holders' names, in the roster's order — empty when nobody holds it. */
   readonly holders: readonly string[];
   readonly others: readonly UncountedHolderWords[];
-  readonly canTab: string;
-  readonly cantTab: string;
-  readonly canList: string;
-  readonly cantList: string;
+  readonly canTab: TranslatedText;
+  readonly cantTab: TranslatedText;
+  readonly canList: TranslatedText;
+  readonly cantList: TranslatedText;
   readonly can: readonly ReferenceLineWords[];
   readonly cant: readonly ReferenceLineWords[];
 }
 
 export interface RolesReferenceWords {
-  readonly title: string;
-  readonly lede: string;
-  readonly ledeWide: string;
+  readonly title: TranslatedText;
+  readonly lede: TranslatedText;
+  readonly ledeWide: TranslatedText;
   /** *About roles*: two pages and the pager's words. */
   readonly about: ExplainerPagerWords & {
-    readonly label: string;
-    readonly pages: readonly [string, string];
+    readonly label: TranslatedText;
+    readonly pages: readonly [TranslatedText, TranslatedText];
   };
-  readonly roles: string;
-  readonly countGap: string;
-  readonly countsFailed: string;
-  readonly retry: string;
-  readonly nobody: string;
-  readonly show: string;
-  readonly close: string;
-  readonly backToAssign: string;
+  readonly roles: TranslatedText;
+  readonly countGap: TranslatedText;
+  readonly countsFailed: TranslatedText;
+  readonly retry: TranslatedText;
+  readonly nobody: TranslatedText;
+  readonly show: TranslatedText;
+  readonly close: TranslatedText;
+  readonly backToAssign: TranslatedText;
   /** The twelve presets in F2's order (`ROLE_PRESETS`). */
   readonly presets: readonly RoleReferenceWords[];
 }

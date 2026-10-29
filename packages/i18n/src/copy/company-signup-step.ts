@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * Every word company signup's step 3 picks by what holds (`SCR-M01-02`): the plain step's frames,
  * and the join steer that takes the primary's place (`M01-09`) — authored once for both platforms
@@ -31,20 +32,23 @@ export interface CompanyStepFrame extends CompanySignupFrame {
 
 export interface CompanyStepWords {
   readonly steps: SignupStepsWords;
-  readonly title: string;
+  readonly title: TranslatedText;
   /** Follows the title on the step as it opens only. */
-  readonly intro: string | null;
+  readonly intro: TranslatedText | null;
   /** A create or a request that did not land, under the heading: it says itself as it appears. */
   readonly block: DoorBlockWords | null;
   /** The verified number's label and chip; `null` where a block or the steer takes its place. */
-  readonly account: { readonly label: string; readonly verified: string } | null;
+  readonly account: { readonly label: TranslatedText; readonly verified: TranslatedText } | null;
   /** Under the account on a resumed step that has nothing else to say (`M01-10`). */
-  readonly resumeLine: string | null;
-  readonly caption: string | null;
+  readonly resumeLine: TranslatedText | null;
+  readonly caption: TranslatedText | null;
   /** Create, creating or try again; under the steer the join road, named in full until a request fails. */
-  readonly primary: { readonly label: string; readonly aria: string | undefined };
+  readonly primary: { readonly label: TranslatedText; readonly aria: TranslatedText | undefined };
   /** The steer's finding and its second road; `null` on the plain step. */
-  readonly steer: { readonly finding: JoinBlockWords; readonly createAnyway: string } | null;
+  readonly steer: {
+    readonly finding: JoinBlockWords;
+    readonly createAnyway: TranslatedText;
+  } | null;
   /** The lines under the fields, for `companyFieldWords`; under the steer the fields carry none. */
   readonly helpers: CompanyFieldHelpers | undefined;
 }

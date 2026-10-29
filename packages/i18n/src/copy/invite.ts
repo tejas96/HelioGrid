@@ -1,4 +1,4 @@
-import { createInvitationSchema } from '@heliogrid/contracts';
+import { createInvitationSchema, type TranslatedText } from '@heliogrid/contracts';
 import {
   type FormatPack,
   INVITATION_EXPIRY_DAYS,
@@ -10,6 +10,7 @@ import {
   type RolePreset,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
+import { shownAsSent } from './assembled';
 import { type ExplainerWords, explainerPagerWords } from './explainer';
 import { presetAbility } from './role-presets';
 import { presetName, SHELL } from './shell';
@@ -86,45 +87,48 @@ function longestName(): number {
 /** One preset as the role list draws it: its name and what it can do. */
 export interface InviteRoleWords {
   readonly value: RolePreset;
-  readonly title: string;
-  readonly description: string;
+  readonly title: TranslatedText;
+  readonly description: TranslatedText;
 }
 
 /** The invite form's words, both lives; each screen places them. */
 export interface InviteWords {
-  readonly title: string;
-  readonly inviteTeammate: string;
-  readonly inviteFirst: string;
-  readonly name: string;
-  readonly namePlaceholder: string;
-  readonly phone: string;
-  readonly phoneHelper: string;
-  readonly rolesHeading: string;
-  readonly rolesGroup: string;
+  readonly title: TranslatedText;
+  readonly inviteTeammate: TranslatedText;
+  readonly inviteFirst: TranslatedText;
+  readonly name: TranslatedText;
+  readonly namePlaceholder: TranslatedText;
+  readonly phone: TranslatedText;
+  readonly phoneHelper: TranslatedText;
+  readonly rolesHeading: TranslatedText;
+  readonly rolesGroup: TranslatedText;
   readonly rolesAsk: ExplainerWords & ReturnType<typeof explainerPagerWords>;
-  readonly noRole: string;
-  readonly send: string;
-  readonly cancel: string;
+  readonly noRole: TranslatedText;
+  readonly send: TranslatedText;
+  readonly cancel: TranslatedText;
   /** The editor's close control, spoken. */
-  readonly close: string;
-  readonly lasts: string;
+  readonly close: TranslatedText;
+  readonly lasts: TranslatedText;
   /** Why the send did not go out, when nothing usable came back. */
-  readonly failed: string;
+  readonly failed: TranslatedText;
   /** The twelve presets in F2's order (`ROLE_PRESETS`). */
   readonly roles: readonly InviteRoleWords[];
   /** The phone field's answer to a number with the wrong count of digits for this market. */
-  digitsMismatch(typed: number, needed: number): string;
+  digitsMismatch(typed: number, needed: number): TranslatedText;
   /** The phone field's answer to a number nothing can be sent to. */
-  readonly notCovered: string;
+  readonly notCovered: TranslatedText;
   /** The phone field's answer when nothing was typed — the name field's words for the same. */
-  readonly required: string;
+  readonly required: TranslatedText;
   /** The name field's answer past the contract's longest name. */
-  readonly nameTooLong: string;
+  readonly nameTooLong: TranslatedText;
   /** A refusal the form draws in place of the send: its title and the line under it, if any. */
-  refusal(refusal: InviteRefusal): { readonly title: string; readonly body: string | null };
-  readonly differentNumber: string;
+  refusal(refusal: InviteRefusal): {
+    readonly title: TranslatedText;
+    readonly body: TranslatedText | null;
+  };
+  readonly differentNumber: TranslatedText;
   /** The toast when the reader no longer invites (a 403). */
-  readonly forbidden: string;
+  readonly forbidden: TranslatedText;
 }
 
 export function inviteWords(translate: Translator['t']): InviteWords {
@@ -167,20 +171,20 @@ export function inviteWords(translate: Translator['t']): InviteWords {
 
 /** One step the setup step's brand pane says comes after a send: what happens, and the line under it. */
 export interface AfterSendStep {
-  readonly title: string;
-  readonly line: string | null;
+  readonly title: TranslatedText;
+  readonly line: TranslatedText | null;
 }
 
 /** The setup step's own words, over the form's (`SCR-M01-07` m-default, d-default, m-cap-reached). */
 export interface SetupInviteWords {
-  readonly skip: string;
+  readonly skip: TranslatedText;
   /** The way on at the cap, where nothing can be sent. */
-  readonly continueSetup: string;
+  readonly continueSetup: TranslatedText;
   /** The refusal banner's act: Team, where the number's row is. */
-  readonly openTeam: string;
+  readonly openTeam: TranslatedText;
   /** The brand pane at 1536: its heading, and what happens once the invite is sent. */
   readonly afterYouSend: {
-    readonly heading: string;
+    readonly heading: TranslatedText;
     readonly message: AfterSendStep;
     readonly lasts: AfterSendStep;
     readonly join: AfterSendStep;
@@ -207,7 +211,7 @@ export function setupInviteWords(translate: Translator['t']): SetupInviteWords {
 function refusalWords(
   translate: Translator['t'],
   refusal: InviteRefusal,
-): { title: string; body: string | null } {
+): { title: TranslatedText; body: TranslatedText | null } {
   switch (refusal) {
     case 'already_member':
       return { title: translate(INVITE.alreadyMember), body: null };
@@ -237,13 +241,15 @@ export function inviteFieldWords(
   /* A form names an array's items too (`roles.0`); any of them answers as the list. */
   field: 'inviteeName' | 'phoneE164' | 'roles' | `roles.${number}`,
   state: { readonly value: unknown; readonly error: { readonly message?: string } | undefined },
-): { error: string | undefined } {
+): { error: TranslatedText | undefined } {
   if (state.error === undefined) return { error: undefined };
   if (field === 'roles' || field.startsWith('roles.')) return { error: words.noRole };
   if (field === 'inviteeName') {
     const name = typeof state.value === 'string' ? state.value.trim() : '';
     if (name === '') return { error: words.required };
-    return { error: name.length > NAME_MAX ? words.nameTooLong : state.error.message };
+    return {
+      error: name.length > NAME_MAX ? words.nameTooLong : shownAsSent(state.error.message),
+    };
   }
   const phone = typeof state.value === 'string' ? state.value : '';
   if (nationalNumber(pack, phone) === '') return { error: words.required };

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The words of First-Run Profile (`SCR-M01-09`, `M01-14`), for the frame domain's
  * `firstRunProfileFrame` decides — authored once for both platforms (Law 11). The heading and the
@@ -61,40 +62,40 @@ export interface FirstRunProfileFacts {
 
 /** Every word the screen draws for one frame; `null` where the frame has no such part. */
 export interface FirstRunProfileWords {
-  readonly heading: string;
+  readonly heading: TranslatedText;
   readonly about: {
-    readonly label: string;
-    readonly title: string;
+    readonly label: TranslatedText;
+    readonly title: TranslatedText;
     /** The phone's three pages. */
-    readonly pages: readonly [string, string, string];
+    readonly pages: readonly [TranslatedText, TranslatedText, TranslatedText];
   } & ExplainerPagerWords;
   /** The three lines of the 1536 brand pane. */
-  readonly reasons: readonly [string, string, string];
+  readonly reasons: readonly [TranslatedText, TranslatedText, TranslatedText];
   readonly name: {
-    readonly label: string;
-    readonly loading: string;
-    readonly helper: string;
-    readonly error: string | null;
-    readonly success: string | null;
+    readonly label: TranslatedText;
+    readonly loading: TranslatedText;
+    readonly helper: TranslatedText;
+    readonly error: TranslatedText | null;
+    readonly success: TranslatedText | null;
   };
   readonly photo: {
-    readonly label: string;
+    readonly label: TranslatedText;
     /** The act on the phone, then at 1536: a photo is taken there, chosen here (ruling 11). */
-    readonly choosePhone: string;
-    readonly chooseWide: string;
-    readonly replace: string;
-    readonly remove: string;
-    readonly helper: string;
+    readonly choosePhone: TranslatedText;
+    readonly chooseWide: TranslatedText;
+    readonly replace: TranslatedText;
+    readonly remove: TranslatedText;
+    readonly helper: TranslatedText;
     /** The refusal banner, with the line the phone and 1536 each draw under its title. */
     readonly error: {
-      readonly title: string;
-      readonly phone: string;
-      readonly wide: string;
+      readonly title: TranslatedText;
+      readonly phone: TranslatedText;
+      readonly wide: TranslatedText;
     } | null;
   };
-  readonly act: string;
-  readonly actReason: string | null;
-  readonly saveFailed: { readonly title: string; readonly line: string } | null;
+  readonly act: TranslatedText;
+  readonly actReason: TranslatedText | null;
+  readonly saveFailed: { readonly title: TranslatedText; readonly line: TranslatedText } | null;
 }
 
 const MAX_MEGABYTES = megabytesShown(FILE_SUBJECT_RULES.user_account.maxBytes);
@@ -121,14 +122,18 @@ function photoErrorOf(
 export function refusedPhotoLine(
   t: Translator['t'],
   photo: Extract<FirstRunPhoto, { kind: 'refused' }>,
-): string {
+): TranslatedText {
   return t(REFUSED_FOR[photo.missed], {
     megabytes: photo.megabytes,
     maxMegabytes: MAX_MEGABYTES,
   });
 }
 
-function photoHelperOf(t: Translator['t'], frame: FirstRunProfileFrame, named: boolean): string {
+function photoHelperOf(
+  t: Translator['t'],
+  frame: FirstRunProfileFrame,
+  named: boolean,
+): TranslatedText {
   if (frame.photo.kind === 'chosen') return t(FIRST_RUN_PROFILE.photoHeld);
   return t(named ? FIRST_RUN_PROFILE.photoOptional : FIRST_RUN_PROFILE.photoOptionalNameless);
 }
