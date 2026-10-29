@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { BrandingWords } from '@heliogrid/i18n';
 import { Button, LeaveConfirm, Modal, ModalActions, Text } from '@heliogrid/ui';
 
@@ -14,7 +15,7 @@ export function RemoveLogoAsk({
 }: {
   open: boolean;
   words: BrandingWords;
-  closeLabel: string;
+  closeLabel: TranslatedText;
   onKeep: () => void;
   onRemove: () => void;
 }) {

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { RolePreset } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 
@@ -38,7 +39,7 @@ const PRESET_LINE: Record<RolePreset, { id: string }> = {
   },
 };
 
-export function presetAbility(translate: Translator['t'], preset: RolePreset): string {
+export function presetAbility(translate: Translator['t'], preset: RolePreset): TranslatedText {
   return translate(PRESET_LINE[preset]);
 }
 
@@ -61,6 +62,6 @@ export const PRESET_SUMMARY: Record<RolePreset, { id: string }> = {
   marketing: /*i18n*/ { id: 'Campaigns and the enquiries they capture' },
 };
 
-export function presetSummary(translate: Translator['t'], preset: RolePreset): string {
+export function presetSummary(translate: Translator['t'], preset: RolePreset): TranslatedText {
   return translate(PRESET_SUMMARY[preset]);
 }

@@ -1,4 +1,8 @@
-import type { CatalogReleaseLineWire, ResolvedCatalogItemWire } from '@heliogrid/contracts';
+import type {
+  CatalogReleaseLineWire,
+  ResolvedCatalogItemWire,
+  TranslatedText,
+} from '@heliogrid/contracts';
 import {
   catalogLayerOf,
   RELEASE_CHANGE_KINDS,
@@ -246,7 +250,7 @@ export function catalogActToast(
 export function catalogPublishProblem(
   t: T,
   refusal: 'label-taken' | 'nothing-changed' | 'failed' | null,
-): string | null {
+): TranslatedText | null {
   if (refusal === null) return null;
   if (refusal === 'label-taken') return t(CATALOG_EDITOR.labelTaken);
   if (refusal === 'nothing-changed') return t(CATALOG_EDITOR.nothingChanged);

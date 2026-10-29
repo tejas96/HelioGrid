@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import {
   type AllocationVerdict,
   authoredIn,
@@ -195,7 +196,7 @@ export function termsPickerWordsOf(
   draft: TrancheDraft,
   picking: number,
   words: Pick<PaymentTermsSettingsWords, 'whenDue' | 'trancheShare'>,
-): { readonly label: string; readonly overline: string } {
+): { readonly label: TranslatedText; readonly overline: TranslatedText } {
   const line = draft.lines.find((one) => one.key === picking);
   const name = line?.label.shown ?? '';
   return {

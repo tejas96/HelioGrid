@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import {
   type CatalogFilter,
   COMPONENT_KINDS,
@@ -141,7 +142,9 @@ export function catalogFilterOf(value: FilterValue): CatalogFilter {
 
 /** A row's pending or failed line: its words, joined to the act's *Retry* and *Dismiss*. */
 export function catalogRowStatesOf(
-  words: Readonly<Record<string, { readonly label: string; readonly reason: string }>>,
+  words: Readonly<
+    Record<string, { readonly label: TranslatedText; readonly reason: TranslatedText }>
+  >,
   acts: Readonly<
     Record<
       string,

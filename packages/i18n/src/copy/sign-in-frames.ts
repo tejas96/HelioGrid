@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The words of each code-step frame (`SCR-M01-01`, the `m-*` code family), keyed by the
  * vocabularies `packages/domain`'s `loginFrame` decides. Nothing here chooses: a frame's
@@ -185,29 +186,29 @@ export interface SignInLabels {
 /** Every string a code frame draws; `null` where the frame has no such part. */
 export interface SignInWords {
   /** The way back to the number step, in the header row. */
-  readonly changeNumber: string;
-  readonly title: string;
-  readonly sub: string;
-  readonly block: { readonly tone: FrameTone; readonly title: string } | null;
+  readonly changeNumber: TranslatedText;
+  readonly title: TranslatedText;
+  readonly sub: TranslatedText;
+  readonly block: { readonly tone: FrameTone; readonly title: TranslatedText } | null;
   /** The rule behind the frame, in an Explainer beside the title, with its pager's words; `null` when the frame has none. */
   readonly explainer: (ExplainerWords & ExplainerPagerWords) | null;
   /** The code field's label: it names how many digits a code has. */
-  readonly codeLabel: string;
-  readonly codeError: string | null;
-  readonly primary: string | null;
+  readonly codeLabel: TranslatedText;
+  readonly codeError: TranslatedText | null;
+  readonly primary: TranslatedText | null;
   /** The primary's accessible name where it says more than its label; `null` where the label is enough. */
-  readonly primaryAria: string | null;
-  readonly resend: string | null;
+  readonly primaryAria: TranslatedText | null;
+  readonly resend: TranslatedText | null;
   /** The resend gap, in the waiting control's own label ("Resend code in 0:24") and its spoken name. */
-  readonly wait: { readonly label: string; readonly spoken: string } | null;
-  readonly call: string | null;
-  readonly foot: string | null;
+  readonly wait: { readonly label: TranslatedText; readonly spoken: TranslatedText } | null;
+  readonly call: TranslatedText | null;
+  readonly foot: TranslatedText | null;
   /** "Links {email}" under the number while a Google login is being linked. */
-  readonly links: string | null;
+  readonly links: TranslatedText | null;
   readonly google: {
-    readonly sentence: string | null;
-    readonly label: string;
-    readonly aria: string;
+    readonly sentence: TranslatedText | null;
+    readonly label: TranslatedText;
+    readonly aria: TranslatedText;
   } | null;
 }
 
@@ -255,19 +256,25 @@ export function signInWords(
 
 function explainerWords(
   explainer: FrameExplainer | null,
-  t: (message: MessageRef) => string,
+  t: (message: MessageRef) => TranslatedText,
 ): ExplainerWords | null {
   if (explainer === null) return null;
   const { label, title, page } = EXPLAINER[explainer];
   return { label: t(label), title: t(title), pages: [t(page)] };
 }
 
-function googleWords(copy: GoogleCopy, t: (message: MessageRef) => string): SignInWords['google'] {
+function googleWords(
+  copy: GoogleCopy,
+  t: (message: MessageRef) => TranslatedText,
+): SignInWords['google'] {
   const { sentence, label, aria } = copy;
   return { sentence: sentence === null ? null : t(sentence), label: t(label), aria: t(aria) };
 }
 
-function primaryAriaOf(frame: LoginFrame, t: (message: MessageRef) => string): string | null {
+function primaryAriaOf(
+  frame: LoginFrame,
+  t: (message: MessageRef) => TranslatedText,
+): TranslatedText | null {
   if (frame.primary?.label === 'sign-in-by-number') return t(SIGN_IN.signInWithThisNumberLabel);
   if (frame.primary?.label === 'verify' && frame.linkedEmail !== null) {
     return t(SIGN_IN.verifyAndLinkLabel);

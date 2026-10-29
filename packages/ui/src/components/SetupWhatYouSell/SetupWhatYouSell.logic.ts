@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { WhatYouSellQuestion } from '@heliogrid/domain';
 import { useEffect, useRef } from 'react';
 import type { SetupWhatYouSellWords } from './SetupWhatYouSell.types';
@@ -5,7 +6,7 @@ import type { SetupWhatYouSellWords } from './SetupWhatYouSell.types';
 /** A question a refusal marks, with the one line that fixes it. */
 export interface RefusedQuestion {
   question: WhatYouSellQuestion;
-  error: string;
+  error: TranslatedText;
 }
 
 /** The first question the words mark as refused, in the screen's order. */

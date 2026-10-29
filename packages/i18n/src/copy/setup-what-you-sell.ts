@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The words of the second setup step (`SCR-M01-04`, `M01-23`): the two questions, each one's
  * refusal, the size's source, and what a failed save says — authored once for both platforms
@@ -74,35 +75,35 @@ export const KWP = 'kWp';
 
 export interface SetupWhatYouSellOption {
   readonly value: TenantSegment;
-  readonly title: string;
-  readonly description: string;
+  readonly title: TranslatedText;
+  readonly description: TranslatedText;
 }
 
 export interface SetupWhatYouSellWords {
   /** The question; after a failed save, what went wrong. */
-  readonly title: string;
+  readonly title: TranslatedText;
   /** Why the step asks; after a failed save, what was kept and where the second way leads. */
   readonly explainer: ExplainerWords & ExplainerPagerWords;
   /** What fixes a failed save. */
-  readonly failure: string | null;
-  readonly group: string;
+  readonly failure: TranslatedText | null;
+  readonly group: TranslatedText;
   readonly options: readonly SetupWhatYouSellOption[];
-  readonly groupError: string | null;
+  readonly groupError: TranslatedText | null;
   /** What to type, read before the field. */
-  readonly sizeHelper: string;
-  readonly sizeLabel: string;
+  readonly sizeHelper: TranslatedText;
+  readonly sizeLabel: TranslatedText;
   readonly unit: string;
   /** Where the size comes from — beside its tier. */
-  readonly sizeSource: string;
-  readonly sizeError: string | null;
+  readonly sizeSource: TranslatedText;
+  readonly sizeError: TranslatedText | null;
   /** Saves both answers: `Continue`, and `Try again` after a failed save. */
-  readonly primary: string;
+  readonly primary: TranslatedText;
   /** Why the primary cannot be pressed yet. */
-  readonly waiting: string | null;
+  readonly waiting: TranslatedText | null;
   /** Leaves the step for later, after a failed save alone. */
-  readonly secondary: string | null;
+  readonly secondary: TranslatedText | null;
   /** The one line at the act; none while the primary waits or a question is refused. */
-  readonly actLine: string | null;
+  readonly actLine: TranslatedText | null;
 }
 
 /**
@@ -162,7 +163,7 @@ export function setupWhatYouSellWords(
   };
 }
 
-function actLine(translate: Translator['t'], facts: SetupWhatYouSellFacts): string | null {
+function actLine(translate: Translator['t'], facts: SetupWhatYouSellFacts): TranslatedText | null {
   if (facts.failed) return translate(SETUP_WHAT_YOU_SELL.untilYouFinish);
   if (facts.checking || facts.refused.length > 0) return null;
   return translate(SETUP_WHAT_YOU_SELL.savesBoth);

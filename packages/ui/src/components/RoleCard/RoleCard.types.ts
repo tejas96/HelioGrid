@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { Read } from '@heliogrid/domain';
 
 /** One grant or limit phrase, keyed by its line in domain's `ROLE_CARD_LINES`. */
@@ -9,21 +10,25 @@ export interface RoleCardLine {
 /** Every word the card draws, already translated: `@heliogrid/i18n`'s `roleCardWords`. */
 export interface RoleCardWords {
   /** The held presets' names, joined. */
-  readonly presets: string;
+  readonly presets: TranslatedText;
   /** *Last set by …*; `null` when nobody set the roles (the founder) or the name has not arrived. */
-  readonly credit: string | null;
-  readonly canDo: string;
-  readonly cannotDo: string;
+  readonly credit: TranslatedText | null;
+  readonly canDo: TranslatedText;
+  readonly cannotDo: TranslatedText;
   /** The rows' region name. */
-  readonly region: string;
+  readonly region: TranslatedText;
   /** The rows' name while they wait. */
-  readonly loading: string;
+  readonly loading: TranslatedText;
   readonly grants: readonly RoleCardLine[];
   /** Empty for a person who lacks nothing: no *What you cannot do*. */
   readonly limits: readonly RoleCardLine[];
   /** Who adds a teammate; `null` when the person does it themself, or no owner name has arrived. */
-  readonly note: { readonly title: string; readonly message: string } | null;
-  readonly error: { readonly title: string; readonly body: string; readonly retry: string };
+  readonly note: { readonly title: TranslatedText; readonly message: TranslatedText } | null;
+  readonly error: {
+    readonly title: TranslatedText;
+    readonly body: TranslatedText;
+    readonly retry: TranslatedText;
+  };
 }
 
 /**
@@ -55,6 +60,6 @@ export interface RoleCardSurfaceProps extends Omit<RoleCardProps, 'layout'> {
   readonly open: boolean;
   readonly onClose: () => void;
   /** *Your role* or *Your roles*. */
-  readonly title: string;
-  readonly closeLabel: string;
+  readonly title: TranslatedText;
+  readonly closeLabel: TranslatedText;
 }

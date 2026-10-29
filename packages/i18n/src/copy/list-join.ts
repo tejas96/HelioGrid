@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * Lists joined with the reader's *and* — authored once for every sentence that names several
  * things (the role card's presets, Assign Roles' clauses). Hermes ships no list formatter, so the
@@ -5,6 +6,7 @@
  */
 
 import type { Translator } from '../runtime';
+import { assembled } from './assembled';
 
 export const LIST_JOIN = {
   twoAnd: /*i18n*/ { id: '{first} and {second}' },
@@ -17,13 +19,15 @@ export interface TextPart {
   readonly strong: boolean;
 }
 
-export function joinAnd(translate: Translator['t'], names: readonly string[]): string {
-  return joinParts(
-    translate,
-    names.map((text) => ({ text, strong: false })),
-  )
-    .map((part) => part.text)
-    .join('');
+export function joinAnd(translate: Translator['t'], names: readonly string[]): TranslatedText {
+  return assembled(
+    joinParts(
+      translate,
+      names.map((text) => ({ text, strong: false })),
+    )
+      .map((part) => part.text)
+      .join(''),
+  );
 }
 
 /** Each item kept whole, with the language's joining words between them as plain parts. */

@@ -78,26 +78,26 @@ export interface SettingsGroupRows {
   readonly rows: readonly SettingsRow[];
 }
 
-/** One row of the list, worded: the screen it leads to and its name. */
-export interface SettingsListRow {
+/** One row of the list, worded: the screen it leads to and its name. `Words` is `packages/i18n`'s words, which this package may not name. */
+export interface SettingsListRow<Words extends string = string> {
   readonly key: SettingsRow;
-  readonly name: string;
+  readonly name: Words;
 }
 
 /** One group of the list, worded: its name and its rows in order. */
-export interface SettingsListGroup {
+export interface SettingsListGroup<Words extends string = string> {
   readonly key: SettingsGroup;
-  readonly name: string;
-  readonly rows: readonly SettingsListRow[];
+  readonly name: Words;
+  readonly rows: readonly SettingsListRow<Words>[];
 }
 
 /**
  * The list as a screen draws it — the groups a person's presets leave them, each row named. One
  * shape: `packages/i18n` words it, `packages/ui` draws it, and neither may import the other.
  */
-export interface SettingsListView {
-  readonly title: string;
-  readonly groups: readonly SettingsListGroup[];
+export interface SettingsListView<Words extends string = string> {
+  readonly title: Words;
+  readonly groups: readonly SettingsListGroup<Words>[];
 }
 
 /** Whether the held presets open this row — a row every person has, or one the matrix grants. */

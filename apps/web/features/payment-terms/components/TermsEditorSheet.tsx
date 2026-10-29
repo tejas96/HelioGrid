@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { PaymentTermsWords } from '@heliogrid/i18n';
 import {
   EditorSurface,
@@ -32,7 +33,7 @@ export function TermsEditorSheet({
 }: {
   view: TermsEditorView | null;
   words: PaymentTermsWords;
-  closeLabel: string;
+  closeLabel: TranslatedText;
   onClose: () => void;
   onDonePicking: () => void;
 }) {

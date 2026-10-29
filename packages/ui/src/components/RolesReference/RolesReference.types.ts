@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ExplainerPagerWords, Read, RolePreset, UncountedHolder } from '@heliogrid/domain';
 
 /**
@@ -26,27 +27,27 @@ export interface RolesReferenceProps {
 }
 
 export interface RolesReferenceBack {
-  readonly label: string;
+  readonly label: TranslatedText;
   readonly onPress: () => void;
 }
 
 export interface RolesReferenceWordsProp {
-  readonly title: string;
+  readonly title: TranslatedText;
   /** The phone's lede (*Tap one…*); `ledeWide` where a pointer chooses (*Choose one…*). */
-  readonly lede: string;
-  readonly ledeWide: string;
+  readonly lede: TranslatedText;
+  readonly ledeWide: TranslatedText;
   readonly about: ExplainerPagerWords & {
-    readonly label: string;
-    readonly pages: readonly [string, string];
+    readonly label: TranslatedText;
+    readonly pages: readonly [TranslatedText, TranslatedText];
   };
   /** The tiles' group name. */
-  readonly roles: string;
-  readonly countGap: string;
-  readonly countsFailed: string;
-  readonly retry: string;
-  readonly nobody: string;
-  readonly show: string;
-  readonly close: string;
+  readonly roles: TranslatedText;
+  readonly countGap: TranslatedText;
+  readonly countsFailed: TranslatedText;
+  readonly retry: TranslatedText;
+  readonly nobody: TranslatedText;
+  readonly show: TranslatedText;
+  readonly close: TranslatedText;
   readonly presets: readonly RolesReferencePreset[];
 }
 
@@ -54,7 +55,7 @@ export interface RolesReferenceWordsProp {
 export interface RolesReferencePreset {
   readonly value: RolePreset;
   readonly name: string;
-  readonly summary: string;
+  readonly summary: TranslatedText;
   /** *2 people*, or null while the counts are out or did not load. */
   readonly count: string | null;
   /** The count's wait, spoken: *Loading how many people hold Finance*. */

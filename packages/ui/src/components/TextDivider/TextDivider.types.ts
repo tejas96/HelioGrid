@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * TextDivider — one short word between two ways to do the same thing ("or" between Send code and
  * Continue with Google, `SCR-M01-01`). The word alone, centred across the full width, with no
@@ -5,5 +6,5 @@
  */
 export interface TextDividerProps {
   /** The word, already in the reader's language — no English default (`D2`). */
-  label: string;
+  label: TranslatedText;
 }

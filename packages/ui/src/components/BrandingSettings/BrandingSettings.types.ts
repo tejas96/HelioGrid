@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { Read } from '@heliogrid/domain';
 import type { BrandColorFieldWords } from '../BrandColorField/BrandColorField.types';
 import type { DocumentLetterhead } from '../DocumentPreview/DocumentPreview.types';
@@ -11,47 +12,47 @@ export type BrandingPart = 'logo' | 'colour' | 'letterhead';
 
 /** Every word the page draws; `@heliogrid/i18n`'s `brandingWords` and `brandColourFieldWords` write them. */
 export interface BrandingSettingsWords {
-  readonly preview: string;
-  readonly proposal: string;
-  readonly linkPage: string;
-  readonly edit: string;
-  readonly logo: string;
-  readonly colour: string;
-  readonly letterhead: string;
-  readonly openFullSize: string;
+  readonly preview: TranslatedText;
+  readonly proposal: TranslatedText;
+  readonly linkPage: TranslatedText;
+  readonly edit: TranslatedText;
+  readonly logo: TranslatedText;
+  readonly colour: TranslatedText;
+  readonly letterhead: TranslatedText;
+  readonly openFullSize: TranslatedText;
   /** The stage's name at width (*What your customers get*). */
-  readonly stage: string;
+  readonly stage: TranslatedText;
   /** The editor card's name at width (*Edit your branding*). */
-  readonly editor: string;
-  readonly addLogo: string;
-  readonly limits: string;
-  readonly replace: string;
-  readonly remove: string;
-  readonly logoAlt: string;
+  readonly editor: TranslatedText;
+  readonly addLogo: TranslatedText;
+  readonly limits: TranslatedText;
+  readonly replace: TranslatedText;
+  readonly remove: TranslatedText;
+  readonly logoAlt: TranslatedText;
   /** The logo's image did not load: said in its place, the logo itself still saved. */
-  readonly logoUnavailable: string;
-  readonly profileRow: string;
-  readonly profileRowFrom: string;
-  readonly sentKeep: string;
-  readonly tagline: string;
-  readonly lines: string;
-  readonly linesPlaceholder: string;
-  readonly linesHint: string;
-  readonly footerNote: string;
-  readonly loadingCover: string;
-  readonly loading: string;
-  readonly notSaved: string;
-  readonly save: string;
-  readonly discard: string;
-  readonly saveFailed: string;
-  readonly retry: string;
+  readonly logoUnavailable: TranslatedText;
+  readonly profileRow: TranslatedText;
+  readonly profileRowFrom: TranslatedText;
+  readonly sentKeep: TranslatedText;
+  readonly tagline: TranslatedText;
+  readonly lines: TranslatedText;
+  readonly linesPlaceholder: TranslatedText;
+  readonly linesHint: TranslatedText;
+  readonly footerNote: TranslatedText;
+  readonly loadingCover: TranslatedText;
+  readonly loading: TranslatedText;
+  readonly notSaved: TranslatedText;
+  readonly save: TranslatedText;
+  readonly discard: TranslatedText;
+  readonly saveFailed: TranslatedText;
+  readonly retry: TranslatedText;
   /** The cover's title in ink (*Proposal*): the document prints no word it is not handed. */
-  readonly documentTitle: string;
+  readonly documentTitle: TranslatedText;
   readonly linkPreview: {
-    readonly ready: string;
-    readonly awaiting: string;
-    readonly accept: string;
-    readonly ask: string;
+    readonly ready: TranslatedText;
+    readonly awaiting: TranslatedText;
+    readonly accept: TranslatedText;
+    readonly ask: TranslatedText;
   };
   readonly colourField: BrandColorFieldWords;
 }
@@ -62,6 +63,7 @@ export interface BrandingDocumentFacts {
   /** The stored or chosen logo, drawn on white; absent → the company name alone. */
   readonly logoSrc?: string;
   readonly taxId?: string;
+  // biome-ignore lint/plugin/copy-prop-type: the market pack's name for the tax id, not the catalog's
   readonly taxIdLabel?: string;
   readonly address?: string;
   readonly letterhead: DocumentLetterhead;
@@ -71,10 +73,11 @@ export interface BrandingDocumentFacts {
 export interface BrandingLetterheadFields {
   readonly tagline: string;
   readonly lines: string;
+  // biome-ignore lint/plugin/copy-prop-type: the footer note as the company types it
   readonly footerNote: string;
-  readonly taglineError?: string;
-  readonly linesError?: string;
-  readonly footerNoteError?: string;
+  readonly taglineError?: TranslatedText;
+  readonly linesError?: TranslatedText;
+  readonly footerNoteError?: TranslatedText;
   onTagline(text: string): void;
   onLines(text: string): void;
   onFooterNote(text: string): void;
@@ -95,7 +98,7 @@ export interface BrandingSettingsProps {
    */
   readonly read: Read<unknown>;
   /** The page's title, drawn above the standing line; a phone whose bar holds the title passes none. */
-  readonly title?: string;
+  readonly title?: TranslatedText;
   /** What is in force and since when (`brandingStandingLine`); absent while loading. */
   readonly standing?: string;
   readonly preview: BrandingPreview;

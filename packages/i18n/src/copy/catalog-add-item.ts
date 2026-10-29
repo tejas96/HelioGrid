@@ -8,6 +8,7 @@ import {
   SPEC_FIELDS,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
+import { NO_WORDS } from './assembled';
 import {
   type AddItemFieldWords,
   addItemFieldWords,
@@ -128,7 +129,7 @@ export interface AddItemFacts {
   readonly copiedFrom: string | null;
 }
 
-const unique = (labels: readonly string[]) =>
+const unique = <Label extends string>(labels: readonly Label[]) =>
   labels.filter((label, at) => labels.indexOf(label) === at);
 
 /** The spec block's words: each field's label and unit, and the choices its lists offer. */
@@ -136,7 +137,7 @@ function specWords(t: T, kind: ComponentKind) {
   const fields: Readonly<Record<string, AddItemFieldWords>> = Object.fromEntries(
     SPEC_FIELDS[kind].map((field) => [field.path, addItemFieldWords(t, field.path)]),
   );
-  const labelOf = (path: string) => fields[path]?.label ?? path;
+  const labelOf = (path: string) => fields[path]?.label ?? addItemFieldWords(t, path).label;
   return {
     fields,
     technologyPlaceholder: t(WORDS.technologyPlaceholder),
@@ -232,7 +233,7 @@ export function catalogAddItemWords(t: T, facts: AddItemFacts) {
   const { kind, schemes, priced, copiedFrom } = facts;
   const spec = specWords(t, kind);
   return {
-    overline: facts.caller === 'settings' ? t(WORDS.overlineSettings) : '',
+    overline: facts.caller === 'settings' ? t(WORDS.overlineSettings) : NO_WORDS,
     title: t(TITLE[kind]),
     spreadsheet: t(WORDS.spreadsheet),
     spreadsheetSub: t(WORDS.spreadsheetSub),

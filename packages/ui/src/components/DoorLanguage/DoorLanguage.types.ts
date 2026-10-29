@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { UiLanguage } from '@heliogrid/domain';
 
 /**
@@ -7,9 +8,9 @@ import type { UiLanguage } from '@heliogrid/domain';
  */
 export interface DoorLanguageProps {
   /** The menu's accessible name. */
-  label: string;
+  label: TranslatedText;
   current: UiLanguage;
   /** Each language's own name; the set and its order are `domain`'s. */
-  names: Readonly<Record<UiLanguage, string>>;
+  names: Readonly<Record<UiLanguage, TranslatedText>>;
   onChoose: (language: UiLanguage) => void;
 }

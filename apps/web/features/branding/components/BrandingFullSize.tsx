@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { BrandingWords } from '@heliogrid/i18n';
 import {
   BRANDING_FULL_SIZE,
@@ -28,7 +29,7 @@ export function BrandingFullSize({
   onClose: () => void;
   preview: BrandingPreview;
   words: BrandingWords;
-  closeLabel: string;
+  closeLabel: TranslatedText;
   document: BrandingDocumentFacts;
   colour: string | null;
 }) {

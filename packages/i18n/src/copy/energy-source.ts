@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { type EnergySource, ESTIMATE_TOLERANCE_PERCENT, inLadderOrder } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 
@@ -15,7 +16,10 @@ export const ENERGY_SOURCE_WORD: Record<EnergySource['kind'], MessageRef> = {
 const DATABASE_SEPARATOR = ', ';
 
 /** The source label in the reader's language — `translate` is the mount's `t`. */
-export function energySourceLabel(translate: Translator['t'], source: EnergySource): string {
+export function energySourceLabel(
+  translate: Translator['t'],
+  source: EnergySource,
+): TranslatedText {
   if (source.kind === 'estimate') {
     return translate(ENERGY_SOURCE_WORD.estimate, { tolerance: ESTIMATE_TOLERANCE_PERCENT });
   }

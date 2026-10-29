@@ -1,4 +1,4 @@
-import type { CreateTenant } from '@heliogrid/contracts';
+import type { CreateTenant, TranslatedText } from '@heliogrid/contracts';
 import type { ReactElement, ReactNode } from 'react';
 import type { SignupStepsWords } from '../SignupSteps/SignupSteps.types';
 import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
@@ -9,7 +9,7 @@ import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
  * system's chip for its standing. At 1536 it is the identity half's (decision 11).
  */
 export interface SignupAccountProps {
-  words: { label: string; verified: string };
+  words: { label: TranslatedText; verified: TranslatedText };
   /** The verified number, in E.164. */
   phoneE164: string;
 }
@@ -21,7 +21,7 @@ export interface SignupAccountProps {
  */
 export interface SignupFactsProps {
   /** One row per company detail, in the fields' order; `@heliogrid/i18n`'s `companyFacts` writes them. */
-  facts: readonly { label: string; value: string }[];
+  facts: readonly { label: TranslatedText; value: string }[];
 }
 
 /**
@@ -31,12 +31,12 @@ export interface SignupFactsProps {
 export interface SignupFieldState {
   value: string;
   onChange: (value: string) => void;
-  label: string;
-  placeholder: string;
+  label: TranslatedText;
+  placeholder: TranslatedText;
   /** The step's line under the field; absent where the frame carries none. */
   helper: string | undefined;
   /** The field's own answer when Create company is pressed; absent until it refuses. */
-  error: string | undefined;
+  error: TranslatedText | undefined;
 }
 
 /**
@@ -71,21 +71,24 @@ export interface SignupFieldsProps {
  */
 export interface SignupCompanyStepWords {
   steps: SignupStepsWords;
-  title: string;
+  title: TranslatedText;
   /** Follows the title on the step as it opens only. */
-  intro: string | null;
+  intro: TranslatedText | null;
   /** A create or a request that did not land, under the heading. */
   block: TintedBlockProps | null;
   /** The verified number's label and chip; `null` where a block or the steer takes its place. */
   account: SignupAccountProps['words'] | null;
   /** Under the account on a resumed step. */
-  resumeLine: string | null;
+  resumeLine: TranslatedText | null;
   /** Under the fields: what the write means while it runs, what to do if it keeps failing. */
-  caption: string | null;
+  caption: TranslatedText | null;
   /** Create company on the plain step, the join road under the steer; `aria` names it in full. */
-  primary: { label: string; aria: string | undefined };
+  primary: { label: TranslatedText; aria: TranslatedText | undefined };
   /** The join steer's finding and its second road; `null` on the plain step. */
-  steer: { finding: { title: string; body: string }; createAnyway: string } | null;
+  steer: {
+    finding: { title: TranslatedText; body: TranslatedText };
+    createAnyway: TranslatedText;
+  } | null;
 }
 
 /**

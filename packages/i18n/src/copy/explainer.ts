@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ExplainerPagerWords, ExplainerPages } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 
@@ -16,8 +17,8 @@ type PagesOneCountAtATime<T> = T extends unknown ? { readonly pages: T } : never
  * `Explainer` with `explainerPagerWords`.
  */
 export type ExplainerWords = {
-  readonly label: string;
-  readonly title: string;
+  readonly label: TranslatedText;
+  readonly title: TranslatedText;
 } & PagesOneCountAtATime<Exclude<ExplainerPages<string>, string>>;
 
 /** A paged ask's words in the reader's language — spread onto `Explainer`; `translate` is the mount's `t`. */

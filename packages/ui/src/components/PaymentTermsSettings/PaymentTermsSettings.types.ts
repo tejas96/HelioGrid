@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { Read } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
@@ -13,71 +14,74 @@ import type { DocumentTranche } from '../DocumentPreview/DocumentPreview.types';
 
 /** Every word the page draws; `@heliogrid/i18n`'s `paymentTermsWords` writes them. */
 export interface PaymentTermsSettingsWords {
-  readonly yourTerms: string;
-  readonly archivedTitle: string;
-  readonly addTerms: string;
-  readonly defaultMark: string;
-  readonly platformStandard: string;
-  readonly closing: string;
-  readonly archivedCaption: string;
-  readonly restore: string;
-  readonly nothingArchived: string;
-  readonly loading: string;
-  readonly unreadTitle: string;
-  readonly tryAgain: string;
-  readonly seededTitle: string;
-  readonly seededBody: string;
-  readonly termsName: string;
-  readonly previewCaption: string;
-  readonly sampleContract: string;
-  readonly eachAmount: string;
-  readonly schedule: string;
-  readonly noSchedule: string;
-  readonly name: string;
-  readonly share: string;
-  readonly shareRange: string;
-  readonly trancheNameNeeded: string;
-  readonly termsNameNeeded: string;
-  readonly newTerms: string;
-  readonly notSaved: string;
-  readonly addTranche: string;
-  readonly cap: string;
-  readonly makeDefault: string;
-  readonly isDefault: string;
-  readonly archive: string;
-  readonly allocation: string;
-  readonly save: string;
-  readonly cancel: string;
-  readonly saveFailedTitle: string;
-  readonly saveFailedBody: string;
-  readonly skippableMark: string;
-  readonly skippableRule: string;
-  readonly canBeSkipped: string;
-  readonly skipRule: string;
-  readonly done: string;
-  readonly pickerTitle: string;
-  archivedCount(count: number): string;
+  readonly yourTerms: TranslatedText;
+  readonly archivedTitle: TranslatedText;
+  readonly addTerms: TranslatedText;
+  readonly defaultMark: TranslatedText;
+  readonly platformStandard: TranslatedText;
+  readonly closing: TranslatedText;
+  readonly archivedCaption: TranslatedText;
+  readonly restore: TranslatedText;
+  readonly nothingArchived: TranslatedText;
+  readonly loading: TranslatedText;
+  readonly unreadTitle: TranslatedText;
+  readonly tryAgain: TranslatedText;
+  readonly seededTitle: TranslatedText;
+  readonly seededBody: TranslatedText;
+  readonly termsName: TranslatedText;
+  readonly previewCaption: TranslatedText;
+  readonly sampleContract: TranslatedText;
+  readonly eachAmount: TranslatedText;
+  readonly schedule: TranslatedText;
+  readonly noSchedule: TranslatedText;
+  readonly name: TranslatedText;
+  readonly share: TranslatedText;
+  readonly shareRange: TranslatedText;
+  readonly trancheNameNeeded: TranslatedText;
+  readonly termsNameNeeded: TranslatedText;
+  readonly newTerms: TranslatedText;
+  readonly notSaved: TranslatedText;
+  readonly addTranche: TranslatedText;
+  readonly cap: TranslatedText;
+  readonly makeDefault: TranslatedText;
+  readonly isDefault: TranslatedText;
+  readonly archive: TranslatedText;
+  readonly allocation: TranslatedText;
+  readonly save: TranslatedText;
+  readonly cancel: TranslatedText;
+  readonly saveFailedTitle: TranslatedText;
+  readonly saveFailedBody: TranslatedText;
+  readonly skippableMark: TranslatedText;
+  readonly skippableRule: TranslatedText;
+  readonly canBeSkipped: TranslatedText;
+  readonly skipRule: TranslatedText;
+  readonly done: TranslatedText;
+  readonly pickerTitle: TranslatedText;
+  archivedCount(count: number): TranslatedText;
   /** *Add a tranche* names the line it adds by its number. */
-  newTranche(number: number): string;
-  /** A card's spoken name: *{name}, default* on the default. */
+  newTranche(number: number): TranslatedText;
+  /** A card's spoken name: its name as the company wrote it, *{name}, default* on the default. */
+  // biome-ignore lint/plugin/copy-prop-type: the template's name as the company wrote it, or a sentence about it
   cardLabel(name: string, isDefault: boolean): string;
-  split(name: string): string;
-  dueAt(stage: string): string;
-  nameOf(tranche: string): string;
-  shareOf(tranche: string): string;
-  remove(tranche: string): string;
-  restoreName(name: string): string;
-  edit(name: string): string;
-  backTo(name: string): string;
-  whenDue(tranche: string): string;
+  split(name: string): TranslatedText;
+  dueAt(stage: string): TranslatedText;
+  nameOf(tranche: string): TranslatedText;
+  shareOf(tranche: string): TranslatedText;
+  remove(tranche: string): TranslatedText;
+  restoreName(name: string): TranslatedText;
+  edit(name: string): TranslatedText;
+  backTo(name: string): TranslatedText;
+  whenDue(tranche: string): TranslatedText;
   /** *{tranche} · {share}%* — the picker's overline and a stage's pill (owner ruling Q1 A). */
-  trancheShare(tranche: string, share: string): string;
+  trancheShare(tranche: string, share: string): TranslatedText;
   /** The letterhead logo's spoken name — *{company} logo*. */
-  logoAlt(company: string): string;
+  logoAlt(company: string): TranslatedText;
 }
 
 /** One part of a card's split: the share and the stage it falls due at. */
 export interface PaymentTermsSplitPart {
+  /** The tranche's name as the company wrote it. */
+  // biome-ignore lint/plugin/copy-prop-type: the tranche's name as the company wrote it
   readonly label: string;
   readonly share: number;
   readonly stage: string;
@@ -87,7 +91,8 @@ export interface PaymentTermsSplitPart {
 export interface PaymentTermsCardView {
   readonly id: string;
   readonly name: string;
-  /** The card's spoken name — *{name}, default* on the default. */
+  /** The card's spoken name — its name as written, *{name}, default* on the default. */
+  // biome-ignore lint/plugin/copy-prop-type: the template's name as the company wrote it
   readonly label: string;
   readonly isDefault: boolean;
   readonly platformStandard: boolean;
@@ -100,9 +105,9 @@ export interface PaymentTermsListProps {
   /** The list's read: its bars until it came; failed, the banner stands in the cards' place, with no head buttons. */
   readonly read: Read<unknown>;
   /** The page's own title (1536); a phone or a 375 page whose bar holds the title passes none. */
-  readonly title?: string;
+  readonly title?: TranslatedText;
   /** *Saved and in force · …* or *Added when your account was created · not changed since*. */
-  readonly savedLine?: string;
+  readonly savedLine?: TranslatedText;
   /** Only the two given splits exist: the teaching banner above the cards. */
   readonly teaching: boolean;
   /** The archived view is shown (the archive button pressed). */
@@ -126,10 +131,10 @@ export interface PaymentTermsListProps {
 export interface PaymentTermsLineView {
   readonly key: number;
   readonly name: string;
-  readonly nameError?: string;
+  readonly nameError?: TranslatedText;
   /** The share as a percent, absent while empty. */
   readonly share?: number;
-  readonly shareError?: string;
+  readonly shareError?: TranslatedText;
   /** The stage's label as the pack says it. */
   readonly stage: string;
   /** The stage is one a project may skip: the binding warns in words. */
@@ -161,7 +166,7 @@ export interface PaymentTermsEditorProps {
   readonly previewHeight: number;
   /** The name field, drawn for new terms only (`standing` `new`). */
   readonly name: string;
-  readonly nameError?: string;
+  readonly nameError?: TranslatedText;
   onName(name: string): void;
   readonly lines: readonly PaymentTermsLineView[];
   readonly canAdd: boolean;
@@ -181,10 +186,11 @@ export interface PaymentTermsEditorProps {
 
 export interface PaymentTermsFootProps {
   readonly words: PaymentTermsSettingsWords;
+  // biome-ignore lint/plugin/copy-prop-type: the tranche's name as the company wrote it
   readonly parts: readonly { readonly label: string; readonly value: number }[];
   readonly state: 'under' | 'met' | 'over';
   /** The meter's line — `allocationSentence`. */
-  readonly sentence: string;
+  readonly sentence: TranslatedText;
   /** Why *Save terms* is refused — `allocationRefusal`; absent when the split is whole. */
   readonly refusal?: string;
   readonly saving: boolean;
@@ -198,6 +204,8 @@ export interface PaymentTermsFootProps {
 /** A stage in the picker. */
 export interface PaymentTermsStageView {
   readonly id: string;
+  /** The market pack's name for the stage, in the reader's language — a pack's word, not the catalog's. */
+  // biome-ignore lint/plugin/copy-prop-type: the market pack's name for the stage
   readonly label: string;
   readonly short: string;
   readonly glyph: ShellGlyphName;
@@ -205,7 +213,7 @@ export interface PaymentTermsStageView {
   /** The tranches due here, worded *{tranche} · {share}%*; `mine` is the one being picked. */
   readonly pills: readonly {
     readonly key: number;
-    readonly text: string;
+    readonly text: TranslatedText;
     readonly mine: boolean;
   }[];
 }
@@ -213,7 +221,7 @@ export interface PaymentTermsStageView {
 export interface PaymentTermsPickerProps {
   readonly words: PaymentTermsSettingsWords;
   /** The group's name — *When is {tranche} due?*. */
-  readonly label: string;
+  readonly label: TranslatedText;
   readonly stages: readonly PaymentTermsStageView[];
   readonly value: string;
   onChange(stage: string): void;

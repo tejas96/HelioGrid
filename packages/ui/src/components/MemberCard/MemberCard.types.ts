@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type {
   Read,
   RolePreset,
@@ -12,7 +13,7 @@ import type { FocusHandle } from '../SearchField/SearchField.types';
 
 /** One preset a person holds, worded, in its kind's iris tone (design-system change 7). */
 export interface MemberRole {
-  label: string;
+  label: TranslatedText;
   tone: IrisHue;
 }
 
@@ -35,8 +36,8 @@ export interface MemberCardProps {
   name: string;
   mark: AvatarMark;
   /** The reader's own card: the words of the badge beside the name. */
-  youLabel?: string;
-  line: string;
+  youLabel?: TranslatedText;
+  line: TranslatedText;
   /** In F2's order, every one held — never capped (F2-10). */
   roles: MemberRole[];
   invite?: MemberInvite;
@@ -49,37 +50,37 @@ export interface MemberCardProps {
 /** The three placeholder cards a team list shows while its read is out (`SCR-M01-12`, `m-loading`). */
 export interface MemberCardsLoadingProps {
   /** Required words — what is loading. A busy region with no name tells a screen reader nothing. */
-  label: string;
+  label: TranslatedText;
 }
 
 /** The list's words, every one the caller's (`@heliogrid/i18n`'s `TEAM`). */
 /** A row's words, as `@heliogrid/i18n`'s `teamRowWords` gives them — the caller's, never this package's. */
 export interface MemberRowWords {
-  readonly line: string;
-  readonly day: string | null;
-  readonly expires: string | null;
+  readonly line: TranslatedText;
+  readonly day: TranslatedText | null;
+  readonly expires: TranslatedText | null;
 }
 
 export interface MemberListWords {
   /** The list's accessible name — *Everyone at <company>*. */
-  label: string;
-  loading: string;
-  loadFailed: string;
-  tryAgain: string;
-  alone: string;
-  aloneLine: string;
+  label: TranslatedText;
+  loading: TranslatedText;
+  loadFailed: TranslatedText;
+  tryAgain: TranslatedText;
+  alone: TranslatedText;
+  aloneLine: TranslatedText;
   /** *No one matches "<text>"*, already worded with the search. */
-  noMatch: string;
-  clearSearch: string;
+  noMatch: TranslatedText;
+  clearSearch: TranslatedText;
   /** What the chosen Status chip says with nobody under it; null under *All*. */
-  emptyChip: string | null;
-  showAll: string;
+  emptyChip: TranslatedText | null;
+  showAll: TranslatedText;
   /** The reader's badge — *You*. */
-  you: string;
+  you: TranslatedText;
   /** One row's line and invite words (`@heliogrid/i18n`'s `teamRowWords`). */
   row(row: TeamRow): MemberRowWords;
   /** A preset's name, in the reader's words. */
-  role(preset: RolePreset): string;
+  role(preset: RolePreset): TranslatedText;
 }
 
 /**
@@ -117,7 +118,7 @@ export interface MemberListProps {
  */
 export interface MemberPersonProps {
   name: string;
-  youLabel?: string;
+  youLabel?: TranslatedText;
   /** The status in words — the chip carries a word as well as its tone. */
   status: string;
   tone: AvatarMark;
@@ -130,15 +131,15 @@ export interface MemberPersonProps {
  */
 export interface MemberActProps {
   act: TeamAct;
-  label: string;
+  label: TranslatedText;
   size: 'md' | 'sm';
   fullWidth?: boolean;
   /** Why the act cannot run — the only EPC Owner's own *Deactivate*; opens in the reason bubble. */
-  offReason?: string;
+  offReason?: TranslatedText;
   /** The act's write is out. */
   busy?: boolean;
   /** What a screen reader hears — the act's words, then the person (D291). */
-  spokenName: string;
+  spokenName: TranslatedText;
   onPress: () => void;
   /** Lets the caller send focus back to this act when a confirm it opened closes. */
   ref?: Ref<FocusHandle>;
@@ -165,18 +166,18 @@ export interface TeamConfirmProps {
 /** A confirm's words: its question and act, then what the act does or the refusal (`@heliogrid/i18n`). */
 export interface TeamConfirmWords {
   /** *Deactivate Anjali Kulkarni?* */
-  title: string;
-  go: string;
+  title: TranslatedText;
+  go: TranslatedText;
   /** *Cancel*, or *Close* on the refused form. */
-  leave: string;
+  leave: TranslatedText;
   /** What the act does; the refused form shows its banner instead. */
-  body?: string;
+  body?: TranslatedText;
   /** The refused form: what stopped it, and who changed when exactly one person did. */
-  refusal?: { title: string; body: string | null };
+  refusal?: { title: TranslatedText; body: TranslatedText | null };
   /** The go button is off, and why — the refused form's route out. */
-  goOffReason?: string;
+  goOffReason?: TranslatedText;
   /** The way back, under the body: a bold lead, then the rest of the sentence. */
-  note?: { lead: string; rest: string };
+  note?: { lead: TranslatedText; rest: TranslatedText };
 }
 
 /**
@@ -194,7 +195,7 @@ export interface MemberListHeadProps {
   words: {
     find: string;
     statusFilter: string;
-    statusOptions: { value: TeamStatusFilter; label: string }[];
+    statusOptions: { value: TeamStatusFilter; label: TranslatedText }[];
   };
   /**
    * At the table's width the search and the chips share a line and the chips wrap. A phone never

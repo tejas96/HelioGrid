@@ -1,15 +1,16 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /** Every word the switch decision draws; `@heliogrid/i18n`'s `doorSwitchWords` writes them. */
 export interface DoorSwitchWords {
   /** Who is signing in, and how much held work the switch discards. */
-  title: string;
+  title: TranslatedText;
   /** When the work was taken, and that the switch cannot be undone. */
-  subtitle: string;
-  upload: string;
+  subtitle: TranslatedText;
+  upload: TranslatedText;
   /** Why the upload road cannot be taken yet. */
-  uploadReason: string;
-  confirm: string;
+  uploadReason: TranslatedText;
+  confirm: TranslatedText;
   /** The sheet's close label. The web half is a panel and reads none. */
-  close: string;
+  close: TranslatedText;
 }
 
 /**

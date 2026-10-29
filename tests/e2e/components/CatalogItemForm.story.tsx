@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import {
   blankItemDraft,
   type ComponentKind,
@@ -66,7 +67,7 @@ function failuresOf(
   draft: ItemDraft,
   priced: boolean,
   t: (typeof READERS)['en']['t'],
-): Record<string, string> {
+): Record<string, TranslatedText> {
   const verdict = judgeItemDraft(draft, SCHEMES, { priced });
   if (verdict.ok) return {};
   return Object.fromEntries(

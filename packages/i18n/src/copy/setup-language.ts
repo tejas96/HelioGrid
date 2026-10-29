@@ -3,7 +3,7 @@
  * own name, where an unmade choice came from, and what a failed save says — authored once for both
  * platforms (Law 11). The component picks no word by state; it draws what this returns.
  */
-import { UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
+import { type TranslatedText, UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
 import type { ExplainerPagerWords } from '@heliogrid/domain';
 import { languageOptions } from '../languages';
 import type { Translator } from '../runtime';
@@ -35,28 +35,28 @@ export const SETUP_LANGUAGE = {
 /** One language as its card shows it: its own name, never translated, under its own tag. */
 export interface SetupLanguageOption {
   readonly value: UiLanguage;
-  readonly title: string;
+  readonly title: TranslatedText;
   readonly lang: string;
   /** Set on the one card whose language nobody chose — the device's, or English in its place. */
   readonly current?: true;
   /** Where that card's language came from. */
-  readonly currentLabel?: string;
+  readonly currentLabel?: TranslatedText;
 }
 
 export interface SetupLanguageWords {
-  readonly title: string;
+  readonly title: TranslatedText;
   /** Where the choice lives afterwards, and that it follows the person — behind the ask. */
   readonly explainer: ExplainerWords & ExplainerPagerWords;
-  readonly group: string;
+  readonly group: TranslatedText;
   readonly options: readonly SetupLanguageOption[];
   /** Why English was chosen, when the device's language is outside the set. */
-  readonly notice: string | null;
+  readonly notice: TranslatedText | null;
   /** What went wrong and what fixes it, after the step's save failed. */
-  readonly failure: { readonly title: string; readonly body: string } | null;
+  readonly failure: { readonly title: TranslatedText; readonly body: TranslatedText } | null;
   /** Records the step: `Continue`, and `Try again` after a failed save. */
-  readonly primary: string;
+  readonly primary: TranslatedText;
   /** Moves on without the record, after a failed save alone. */
-  readonly secondary: string | null;
+  readonly secondary: TranslatedText | null;
 }
 
 /**

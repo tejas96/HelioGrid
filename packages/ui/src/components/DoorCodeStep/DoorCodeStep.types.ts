@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { LoginFrame, LoginPress } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { DoorTaskMeasure } from '../DoorFrame/DoorFrame.types';
@@ -10,27 +11,27 @@ import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
  */
 export interface DoorCodeStepWords {
   /** The way back to the number step, in the header row. */
-  changeNumber: string;
-  title: string;
+  changeNumber: TranslatedText;
+  title: TranslatedText;
   /** The rule behind the frame, or the door's ask, beside the title. */
   explainer: ExplainerProps | null;
   /** The lead-in over the number: what was done to it. */
-  sub: string;
+  sub: TranslatedText;
   /** "Links {email}" under the number while a Google login is being linked. */
-  links: string | null;
+  links: TranslatedText | null;
   block: Pick<TintedBlockProps, 'tone' | 'title'> | null;
-  codeLabel: string;
-  codeError: string | null;
-  primary: string | null;
+  codeLabel: TranslatedText;
+  codeError: TranslatedText | null;
+  primary: TranslatedText | null;
   /** The primary's accessible name where it says more than its label. */
-  primaryAria: string | null;
-  resend: string | null;
+  primaryAria: TranslatedText | null;
+  resend: TranslatedText | null;
   /** The resend gap, in the waiting control's own label and its spoken name. */
-  wait: { label: string; spoken: string } | null;
-  call: string | null;
+  wait: { label: TranslatedText; spoken: TranslatedText } | null;
+  call: TranslatedText | null;
   /** The Google way a frame keeps open; its sentence says why it still works (`M01-04`). */
-  google: { sentence: string | null; label: string; aria: string } | null;
-  foot: string | null;
+  google: { sentence: TranslatedText | null; label: TranslatedText; aria: TranslatedText } | null;
+  foot: TranslatedText | null;
 }
 
 /**

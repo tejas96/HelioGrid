@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 /**
@@ -7,7 +8,7 @@ import type { ReactNode } from 'react';
  */
 export interface SettingsSectionProps {
   /** The section's name, its heading. */
-  title: string;
+  title: TranslatedText;
   /** Beside the title — the section's `Explainer`. */
   titleAside?: ReactNode;
   /** The rows: `SettingsSectionRow`s, or a `ListRow` drawn flat on the card. */

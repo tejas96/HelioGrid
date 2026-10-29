@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type {
   BatteryChemistry,
   CatalogLayer,
@@ -8,6 +9,7 @@ import type {
   PanelTechnology,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
+import { assembled } from './assembled';
 
 /** Catalog settings' Items panel (`SCR-M01-15`), chosen once for both apps (Law 11). */
 export const CATALOG_SETTINGS = {
@@ -218,8 +220,8 @@ export function catalogSpecLine(
   t: Translator['t'],
   spec: CatalogSpec,
   number: (value: number) => string,
-): string {
-  return [t(KIND[spec.kind]), ...specFacts(t, spec, number)].join(' · ');
+): TranslatedText {
+  return assembled([t(KIND[spec.kind]), ...specFacts(t, spec, number)].join(' · '));
 }
 
 function specFacts(
@@ -246,7 +248,7 @@ function specFacts(
 }
 
 /** The view-only line names the owners; with none read it still names whose acts these are. */
-export function catalogViewOnly(t: Translator['t'], owners: readonly string[]): string {
+export function catalogViewOnly(t: Translator['t'], owners: readonly string[]): TranslatedText {
   const [first, second] = owners;
   if (first === undefined) return t(CATALOG_SETTINGS.viewOnlyNobody);
   const named = second === undefined ? first : t(CATALOG_SETTINGS.schemesJoin, { first, second });
@@ -254,7 +256,10 @@ export function catalogViewOnly(t: Translator['t'], owners: readonly string[]): 
 }
 
 /** *No ALMM or DCR flag recorded* — the market's own schemes, joined as the language joins two. */
-export function catalogNoSchemeFlag(t: Translator['t'], schemes: readonly string[]): string {
+export function catalogNoSchemeFlag(
+  t: Translator['t'],
+  schemes: readonly string[],
+): TranslatedText {
   const [first, second] = schemes;
   const named =
     second === undefined ? (first ?? '') : t(CATALOG_SETTINGS.schemesJoin, { first, second });

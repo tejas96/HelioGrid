@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The words of the invite landing (`SCR-M01-08`, `M01-13`), for the frame domain's
  * `inviteLandingFrame` decides — authored once for both platforms (Law 11). The code area is the
@@ -62,36 +63,36 @@ export const INVITE_LANDING = {
 
 /** Every word the landing draws for one frame; `null` where the frame has no such part. */
 export interface InviteLandingWords {
-  readonly loading: string;
-  readonly inviter: { readonly name: string; readonly label: string } | null;
-  readonly title: string | null;
+  readonly loading: TranslatedText;
+  readonly inviter: { readonly name: string; readonly label: TranslatedText } | null;
+  readonly title: TranslatedText | null;
   readonly facts: {
-    readonly label: string;
-    readonly rolesLabel: string;
-    readonly roles: string[];
-    readonly phoneLabel: string;
-    readonly line: string;
+    readonly label: TranslatedText;
+    readonly rolesLabel: TranslatedText;
+    readonly roles: TranslatedText[];
+    readonly phoneLabel: TranslatedText;
+    readonly line: TranslatedText;
   } | null;
   readonly banner: {
     readonly tone: 'danger' | 'warning';
-    readonly title: string;
-    readonly line: string | null;
+    readonly title: TranslatedText;
+    readonly line: TranslatedText | null;
   } | null;
-  readonly block: { readonly tone: 'danger' | 'warning'; readonly title: string } | null;
-  readonly codeLabel: string;
-  readonly codeHelper: string | null;
-  readonly codeError: string | null;
-  readonly primary: string | null;
-  readonly resend: string | null;
-  readonly wait: { readonly label: string; readonly spoken: string } | null;
-  readonly foot: string | null;
+  readonly block: { readonly tone: 'danger' | 'warning'; readonly title: TranslatedText } | null;
+  readonly codeLabel: TranslatedText;
+  readonly codeHelper: TranslatedText | null;
+  readonly codeError: TranslatedText | null;
+  readonly primary: TranslatedText | null;
+  readonly resend: TranslatedText | null;
+  readonly wait: { readonly label: TranslatedText; readonly spoken: TranslatedText } | null;
+  readonly foot: TranslatedText | null;
   readonly place: {
-    readonly title: string;
-    readonly line: string;
-    readonly act: string;
-    readonly note: string;
+    readonly title: TranslatedText;
+    readonly line: TranslatedText;
+    readonly act: TranslatedText;
+    readonly note: TranslatedText;
   } | null;
-  readonly loadError: { readonly title: string; readonly line: string } | null;
+  readonly loadError: { readonly title: TranslatedText; readonly line: TranslatedText } | null;
   readonly decline: InviteDeclineWords | null;
 }
 
@@ -182,7 +183,7 @@ export function inviteLandingWords(
 /** Who invited, the heading, and the invite card's facts. */
 function inviteHead(
   translate: Translator['t'],
-  t: (message: MessageRef) => string,
+  t: (message: MessageRef) => TranslatedText,
   invite: InviteFacts | null,
 ): Pick<InviteLandingWords, 'inviter' | 'title' | 'facts'> {
   if (invite === null) return { inviter: null, title: null, facts: null };
@@ -207,7 +208,7 @@ function inviteHead(
 /** The code, its act and its resend: the door's family, with the board's own code words. */
 function codeArea(
   translate: Translator['t'],
-  t: (message: MessageRef) => string,
+  t: (message: MessageRef) => TranslatedText,
   frame: InviteLandingFrame,
   facts: InviteLandingFacts,
 ): Partial<InviteLandingWords> {
@@ -249,14 +250,14 @@ const LANDING_PRIMARY: Partial<Record<InvitePrimaryLabel, MessageRef>> = {
 
 function primaryOf(
   label: InvitePrimaryLabel,
-  t: (message: MessageRef) => string,
-  door: string | null,
-): string | null {
+  t: (message: MessageRef) => TranslatedText,
+  door: TranslatedText | null,
+): TranslatedText | null {
   const own = LANDING_PRIMARY[label];
   return own === undefined ? door : t(own);
 }
 
-function gonePlace(t: (message: MessageRef) => string): InviteLandingWords['place'] {
+function gonePlace(t: (message: MessageRef) => TranslatedText): InviteLandingWords['place'] {
   return {
     title: t(INVITE_LANDING.goneTitle),
     line: t(INVITE_LANDING.goneLine),
@@ -265,7 +266,7 @@ function gonePlace(t: (message: MessageRef) => string): InviteLandingWords['plac
   };
 }
 
-function askedPlace(t: (message: MessageRef) => string): InviteLandingWords['place'] {
+function askedPlace(t: (message: MessageRef) => TranslatedText): InviteLandingWords['place'] {
   return {
     title: t(INVITE_LANDING.askedTitle),
     line: t(INVITE_LANDING.askedLine),

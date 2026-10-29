@@ -1,0 +1,7 @@
+// A translator turns a catalog message into TranslatedText, and hands back any id it does not hold
+// unchanged — so `t('Close')` or `t({ id: 'Close' })` outside packages/i18n mints English as words.
+// A screen, a component or a hook passes a copy module's descriptor (packages/i18n/CLAUDE.md).
+JsCallExpression() as $call where {
+  $call <: r"(?s)^(?:t|translate)\s*\(\s*(?:[\x22\x27\x60]|\{\s*id\s*:\s*[\x22\x27\x60]).*",
+  register_diagnostic(span=$call, message="Words come from a copy module's descriptor in packages/i18n, never a literal handed to the translator.")
+}

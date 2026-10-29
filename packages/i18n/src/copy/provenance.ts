@@ -1,4 +1,4 @@
-import type { ProvenanceStanding, ProvenanceTier } from '@heliogrid/contracts';
+import type { ProvenanceStanding, ProvenanceTier, TranslatedText } from '@heliogrid/contracts';
 import type { EnergySource, FreshnessWarning } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { energySourceLabel } from './energy-source';
@@ -28,12 +28,15 @@ export const PROVENANCE_STANDING_WORD: Record<ProvenanceStanding, MessageRef> = 
 };
 
 /** The tier in the reader's language — `translate` is the mount's `t`. */
-export function tierLabel(translate: Translator['t'], tier: ProvenanceTier): string {
+export function tierLabel(translate: Translator['t'], tier: ProvenanceTier): TranslatedText {
   return translate(PROVENANCE_TIER_WORD[tier]);
 }
 
 /** The standing in the reader's language — `translate` is the mount's `t`. */
-export function standingLabel(translate: Translator['t'], standing: ProvenanceStanding): string {
+export function standingLabel(
+  translate: Translator['t'],
+  standing: ProvenanceStanding,
+): TranslatedText {
   return translate(PROVENANCE_STANDING_WORD[standing]);
 }
 

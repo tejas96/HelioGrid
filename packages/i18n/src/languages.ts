@@ -1,5 +1,11 @@
-import { UI_LANGUAGES, type UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
+import {
+  type TranslatedText,
+  UI_LANGUAGES,
+  type UI_SOURCE_LOCALE,
+  type UiLanguage,
+} from '@heliogrid/contracts';
 import type { Messages } from '@lingui/core';
+import { namedInItself } from './copy/assembled';
 import { messages as sourceMessages } from './locales/en/messages';
 
 /**
@@ -36,12 +42,12 @@ export const LANGUAGE_META = {
 /** Every language a picker offers, each named in itself and tagged for a screen reader (`F3-03`). */
 export function languageOptions(): readonly {
   readonly value: UiLanguage;
-  readonly label: string;
+  readonly label: TranslatedText;
   readonly lang: string;
 }[] {
   return UI_LANGUAGES.map((value) => ({
     value,
-    label: LANGUAGE_META[value].endonym,
+    label: namedInItself(LANGUAGE_META[value].endonym),
     lang: LANGUAGE_META[value].tag,
   }));
 }

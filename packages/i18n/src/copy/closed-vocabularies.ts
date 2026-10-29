@@ -1,5 +1,5 @@
 import type { UiLanguage } from '@heliogrid/contracts';
-import type { MessageRef, Translator } from '../runtime';
+import type { MessageRef } from '../runtime';
 import { COMPANY_PROFILE_PART_TITLE, COMPANY_PROFILE_STANDING_WORD } from './company-profile';
 import { DISCLOSURE_LEAD_WORD } from './disclosure';
 import { BASIS_LINE_WORD } from './document-basis';
@@ -86,7 +86,8 @@ export function readerForm(language: UiLanguage, word: string): string {
 /** Every pair of members in the group that a reader of `language` would read as one word. */
 export function membersReadAsOneWord(
   language: UiLanguage,
-  translate: Translator['t'],
+  /** Only compares how members read, so any reading of a message will do — a test's ids included. */
+  translate: (message: MessageRef) => string,
   group: ClosedVocabularyGroup,
 ): [string, string][] {
   const firstMemberByWord = new Map<string, string>();

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The Payment terms page's words (`SCR-M01-20`, `M01-54`), authored once for both platforms
  * (Law 11) in three languages (`F3-07`). A stage's label is the pack's (`stageLabel`); its short
@@ -12,6 +13,7 @@ import {
 import type { Translator } from '../runtime';
 import { allocationRefusal, allocationSentence } from './allocation';
 import { type AttemptFailureLike, attemptFailureMessageId } from './api-error';
+import { shownAsSent } from './assembled';
 import { backToSettings, settingsRowName, settingsSavedLine } from './settings';
 
 type T = Translator['t'];
@@ -100,7 +102,7 @@ const NAMED = {
 export function paymentTermsWords(t: T) {
   const fixed = Object.fromEntries(
     Object.entries(TERMS).map(([key, message]) => [key, t(message)]),
-  ) as Record<keyof typeof TERMS, string>;
+  ) as Record<keyof typeof TERMS, TranslatedText>;
   return {
     ...fixed,
     title: settingsRowName(t, 'payment_terms'),
@@ -136,7 +138,7 @@ export function paymentTermsSavedLine(
   t: T,
   standing: SettingsStanding,
   formats: { readonly date: (epochMs: number) => string },
-): string {
+): TranslatedText {
   return settingsSavedLine(t, standing, formats) ?? t(TERMS.neverChanged);
 }
 
@@ -144,9 +146,9 @@ export function paymentTermsSavedLine(
  * The words of an act or a save that failed (`F8-36`): the failure's when no readable answer came,
  * else the api's code's; the api's own message when the catalog names neither.
  */
-export function paymentTermsFailureWords(t: T, error: Failure): string {
+export function paymentTermsFailureWords(t: T, error: Failure): TranslatedText {
   const id = attemptFailureMessageId(error);
-  return id === undefined ? error.message : t({ id });
+  return id === undefined ? shownAsSent(error.message) : t({ id });
 }
 
 /**
@@ -160,7 +162,11 @@ export function paymentTermsEditorSaid(
     readonly saveConflict: boolean;
     readonly saveFailure: Failure | null;
   },
-): { readonly sentence: string; readonly refusal: string | null; readonly conflict?: string } {
+): {
+  readonly sentence: TranslatedText;
+  readonly refusal: TranslatedText | null;
+  readonly conflict?: TranslatedText;
+} {
   const conflict =
     editor.saveConflict && editor.saveFailure !== null
       ? { conflict: paymentTermsFailureWords(t, editor.saveFailure) }

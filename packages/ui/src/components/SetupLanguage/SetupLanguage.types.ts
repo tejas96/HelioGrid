@@ -1,30 +1,31 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { UiLanguage } from '@heliogrid/domain';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
 
 /** One language as its card shows it: its own name under its own tag, and where an unmade choice came from. */
 export interface SetupLanguageOption {
   value: UiLanguage;
-  title: string;
+  title: TranslatedText;
   lang: string;
   current?: boolean;
-  currentLabel?: string;
+  currentLabel?: TranslatedText;
 }
 
 /** Every word the screen draws; `@heliogrid/i18n`'s `setupLanguageWords` writes them. */
 export interface SetupLanguageWords {
-  title: string;
+  title: TranslatedText;
   /** Where the choice lives afterwards, and that it follows the person — behind the ask. */
   explainer: ExplainerProps;
   /** The option group's visible name. */
-  group: string;
+  group: TranslatedText;
   options: readonly SetupLanguageOption[];
   /** Why English was chosen, when the device's language is outside the set. */
-  notice: string | null;
+  notice: TranslatedText | null;
   /** What went wrong and what fixes it, after the step's save failed. */
-  failure: { title: string; body: string } | null;
-  primary: string;
+  failure: { title: TranslatedText; body: TranslatedText } | null;
+  primary: TranslatedText;
   /** The way on without the record; drawn only after a failed save. */
-  secondary: string | null;
+  secondary: TranslatedText | null;
 }
 
 /**

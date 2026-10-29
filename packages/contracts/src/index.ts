@@ -66,6 +66,8 @@ export * from './tenant';
 export * from './tenant-settings';
 // The payment-term templates (`T-M01-020`): spread into the tenant settings router.
 export * from './tranche-templates';
+// Words the product says, minted only by packages/i18n (`T-SHELL-016`).
+export type { TranslatedText } from './translated-text';
 // The account's own profile write (`T-M01-025`).
 export * from './user';
 

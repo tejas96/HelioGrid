@@ -147,6 +147,8 @@ Sequenced with `docs/engineering/17`, per that rule; enrol the brand in a `brand
 Biome plugin on the day it lands — the invariant `brand-registry` refuses it otherwise — or the
 cast hole stays open.
 
+The repo's port carries the brand and the design system does not: its typings keep `string` and `ReactNode` for copy (owner ruling at `T-SHELL-016`), so a board still types its words as text.
+
 **Has an owner, so not listed above:** `F3-13`'s React Native half — components read
 `theme.type.families.sans` and RN has no per-codepoint fallback, so Devanagari falls to the OS face.
 `T-FPLAT-007` owns it with `F3-17`'s per-script line height. The web half is fixed.

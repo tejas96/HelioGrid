@@ -1,7 +1,8 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /** The flow's name and its three steps, in order; `@heliogrid/i18n`'s `signupStepsWords` writes them. */
 export interface SignupStepsWords {
-  label: string;
-  steps: readonly [string, string, string];
+  label: TranslatedText;
+  steps: readonly [TranslatedText, TranslatedText, TranslatedText];
 }
 
 /**

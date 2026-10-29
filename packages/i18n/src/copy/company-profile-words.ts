@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The words the company profile's setup life draws (`SCR-M01-05`), picked by state from
  * `COMPANY_PROFILE`. The component picks no word by state; it draws what this returns. The tax
@@ -35,87 +36,87 @@ import { SIGN_IN } from './sign-in';
 
 export interface CompanyProfilePartWords {
   readonly key: CompanyProfilePart;
-  readonly title: string;
-  readonly standing: string;
+  readonly title: TranslatedText;
+  readonly standing: TranslatedText;
   readonly mark: StandingMark;
 }
 
 export interface CompanyProfileOption {
   readonly value: TenantSegment;
-  readonly title: string;
-  readonly description: string;
+  readonly title: TranslatedText;
+  readonly description: TranslatedText;
 }
 
 /** Every word the setup life draws. A `null` is a line or an act the state does not have. */
 export interface CompanyProfileWords {
-  readonly title: string;
-  readonly lede: string;
+  readonly title: TranslatedText;
+  readonly lede: TranslatedText;
   readonly parts: readonly CompanyProfilePartWords[];
-  readonly identity: { readonly companyName: string; readonly fromSignup: string };
+  readonly identity: { readonly companyName: TranslatedText; readonly fromSignup: TranslatedText };
   readonly address: {
-    readonly street: string;
-    readonly streetExample: string;
-    readonly city: string;
-    readonly fromSignup: string;
-    readonly postalCode: string;
-    readonly postalCodeExample: string;
-    readonly purpose: string;
+    readonly street: TranslatedText;
+    readonly streetExample: TranslatedText;
+    readonly city: TranslatedText;
+    readonly fromSignup: TranslatedText;
+    readonly postalCode: TranslatedText;
+    readonly postalCodeExample: TranslatedText;
+    readonly purpose: TranslatedText;
   };
   readonly tax: {
-    readonly label: string;
+    readonly label: TranslatedText;
     /** The market's format in one line: the field's help, and its error when `error` repeats it. */
     readonly format: string;
     readonly error: string | null;
     /** What was checked and what was not (`F8-03`) — printed whole. */
-    readonly checked: string;
+    readonly checked: TranslatedText;
   };
   readonly bank: {
-    readonly bankName: string;
-    readonly bankNameExample: string;
-    readonly accountHolder: string;
-    readonly accountNumber: string;
-    readonly accountNumberExample: string;
+    readonly bankName: TranslatedText;
+    readonly bankNameExample: TranslatedText;
+    readonly accountHolder: TranslatedText;
+    readonly accountNumber: TranslatedText;
+    readonly accountNumberExample: TranslatedText;
     readonly routing: string;
-    readonly routingExample: string;
-    readonly checked: string;
-    readonly purpose: string;
+    readonly routingExample: TranslatedText;
+    readonly checked: TranslatedText;
+    readonly purpose: TranslatedText;
   };
   readonly declarations: {
-    readonly group: string;
+    readonly group: TranslatedText;
     readonly options: readonly CompanyProfileOption[];
-    readonly sizeLabel: string;
+    readonly sizeLabel: TranslatedText;
     readonly unit: string;
-    readonly sizeHint: string;
+    readonly sizeHint: TranslatedText;
     /** Where the size comes from — beside its tier. */
-    readonly sizeSource: string;
+    readonly sizeSource: TranslatedText;
   };
   /** The wide screen's preview: only what the fields hold; a `null` or an empty line is drawn as nothing. */
   readonly letterhead: CompanyLetterheadWords;
   /** The logo's capture area; none until a screen can upload one. */
   readonly logo: CompanyLogoCapture | null;
   /** The busy region's name while the record loads. */
-  readonly loading: string | null;
+  readonly loading: TranslatedText | null;
   /** The profile could not be read: the message in the list's place; a way on in setup alone. */
   readonly unread: {
-    readonly title: string;
-    readonly line: string;
-    readonly retry: string;
-    readonly onward: string | null;
-    readonly onwardSpoken: string | null;
+    readonly title: TranslatedText;
+    readonly line: TranslatedText;
+    readonly retry: TranslatedText;
+    readonly onward: TranslatedText | null;
+    readonly onwardSpoken: TranslatedText | null;
   } | null;
   /** The act and what stands at it; none when the profile could not be read — `unread` holds both ways. */
   readonly act: {
-    readonly primary: string;
-    readonly primarySpoken: string;
+    readonly primary: TranslatedText;
+    readonly primarySpoken: TranslatedText;
     /** Why the primary cannot be pressed yet. */
-    readonly waiting: string | null;
+    readonly waiting: TranslatedText | null;
     /** The way on without saving, after a failed save alone. */
-    readonly secondary: string | null;
-    readonly secondarySpoken: string | null;
+    readonly secondary: TranslatedText | null;
+    readonly secondarySpoken: TranslatedText | null;
     /** The failed save, said once, at the act. */
-    readonly alert: string | null;
+    readonly alert: TranslatedText | null;
     /** The one line at the act: a consequence read before it. */
-    readonly line: string | null;
+    readonly line: TranslatedText | null;
   } | null;
 }
 
@@ -269,7 +270,10 @@ function lede(facts: CompanyProfileWordFacts): MessageRef {
 }
 
 /** Only a profile that was read keeps a line; an undeclared value's cost outranks the re-seed scope. */
-function actLine(translate: Translator['t'], facts: CompanyProfileWordFacts): string | null {
+function actLine(
+  translate: Translator['t'],
+  facts: CompanyProfileWordFacts,
+): TranslatedText | null {
   if (facts.read !== 'ready' || facts.saveFailed) return null;
   if (facts.standings.declarations === 'not_declared') {
     return translate(COMPANY_PROFILE.marketDefaults);

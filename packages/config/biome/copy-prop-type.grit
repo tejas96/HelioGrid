@@ -1,0 +1,30 @@
+// A component's words are typed TranslatedText, so English typed into a component fails to compile.
+// In a part's packages/ui types, a copy-named member, or any member of a *Words* interface or type,
+// whose type holds `string` — itself, in a union, list, or record value, or returned by a function
+// — is refused; a nested object's own members are read one by one. A member that carries a fact — a name a person typed, a pack's word, a
+// figure — keeps `string` with a biome-ignore that names the fact.
+or {
+  TsPropertySignatureTypeMember() as $member where {
+    $member <: r"(?s)^(?:readonly\s+)?(?:label|title|caption|hint|description|placeholder|body|line|overline|intro|lede|summary|message|reason|error|note|sentence|subtitle|heading|alt|[A-Za-z]+(?:Label|Title|Caption|Hint|Description|Placeholder|Sentence|Spoken|Heading|Overline|Message|Reason|Error|Line|Note))\??\s*:[^(){}]*?\bstring\s*(?:[^,\s\w]|$).*",
+    register_diagnostic(span=$member, message="A copy prop takes TranslatedText, never string — or, for a fact, a biome-ignore that names it.")
+  },
+  or {
+    TsPropertySignatureTypeMember(),
+    TsMethodSignatureTypeMember()
+  } as $word where {
+    $word <: within or {
+      TsInterfaceDeclaration() as $words where {
+        $words <: r"(?s)^(?:export\s+)?interface\s+\w*Words\w*\b.*"
+      },
+      TsTypeAliasDeclaration() as $alias where {
+        $alias <: r"(?s)^(?:export\s+)?type\s+\w*Words\w*\b.*"
+      }
+    } ,
+    $word <: or {
+      r"(?s)^(?:readonly\s+)?[\w$]+\??\s*:[^(){}=]*?\bstring\s*(?:[^,\s\w]|$).*",
+      r"(?s)^[^{]*=>[^;{]*?\bstring\s*(?:[^,\s\w]|$).*",
+      r"(?s)^(?:readonly\s+)?[\w$]+\??\s*\([^)]*\)\s*:[^;{]*?\bstring\s*(?:[^,\s\w]|$).*"
+    },
+    register_diagnostic(span=$word, message="A words interface holds TranslatedText, never string — or, for a fact, a biome-ignore that names it.")
+  }
+}

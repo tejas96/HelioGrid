@@ -205,7 +205,7 @@ function PricePair({ view, words }: { view: ImportListRowView; words: CatalogImp
       )}
       <View accessible accessibilityLabel={words.becomes}>
         <Text variant="caption" color="secondary">
-          →
+          {'→'}
         </Text>
       </View>
       {view.now === null ? (

@@ -1,20 +1,21 @@
-import { UI_LANGUAGES, type UiLanguage } from '@heliogrid/contracts';
+import { type TranslatedText, UI_LANGUAGES, type UiLanguage } from '@heliogrid/contracts';
+import { namedInItself } from '../copy/assembled';
 import { SIGN_IN } from '../copy/sign-in';
 import { LANGUAGE_META } from '../languages';
 import { useI18n } from './provider';
 
 /** What a language control draws and raises: its name, the mount's language, each language's own name, and the choice. */
 export interface LanguageChoice {
-  label: string;
+  label: TranslatedText;
   current: UiLanguage;
   /** Never translated: you read a language's name in itself. */
-  names: Readonly<Record<UiLanguage, string>>;
+  names: Readonly<Record<UiLanguage, TranslatedText>>;
   onChoose: (language: UiLanguage) => void;
 }
 
 const NAMES = Object.fromEntries(
-  UI_LANGUAGES.map((code) => [code, LANGUAGE_META[code].endonym]),
-) as Record<UiLanguage, string>;
+  UI_LANGUAGES.map((code) => [code, namedInItself(LANGUAGE_META[code].endonym)]),
+) as Record<UiLanguage, TranslatedText>;
 
 /**
  * The language control's facts for the mount: a signed-out person switches language before anyone

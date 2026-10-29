@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The words of *You're ready*, setup's last screen (`SCR-M01-06`, `M01-26`): the heading, the
  * company read back, the two doors, and the wall when the company cannot be read — authored once for both platforms (Law 11).
@@ -22,24 +23,24 @@ export const SETUP_READY = {
 };
 
 export interface SetupReadyDoorWords {
-  readonly title: string;
-  readonly line: string;
-  readonly act: string;
+  readonly title: TranslatedText;
+  readonly line: TranslatedText;
+  readonly act: TranslatedText;
 }
 
 export interface SetupReadyWords {
-  readonly title: string;
+  readonly title: TranslatedText;
   /** The company read back (brief decision 9); the name is the tenant's own, never translated. */
-  readonly companyLine: (company: string) => string;
+  readonly companyLine: (company: string) => TranslatedText;
   readonly lead: SetupReadyDoorWords;
   readonly demo: SetupReadyDoorWords & {
-    readonly badge: string;
-    readonly loading: string;
-    readonly failed: string;
+    readonly badge: TranslatedText;
+    readonly loading: TranslatedText;
+    readonly failed: TranslatedText;
   };
   /** The company could not be read: the wall, and a line so a fetch failure never reads as a lost signup. */
-  readonly wall: { readonly title: string; readonly line: string };
-  readonly tryAgain: string;
+  readonly wall: { readonly title: TranslatedText; readonly line: TranslatedText };
+  readonly tryAgain: TranslatedText;
 }
 
 export function setupReadyWords(translate: Translator['t']): SetupReadyWords {

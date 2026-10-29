@@ -37,7 +37,7 @@ export function CatalogStripBar({ strip, focusRef }: CatalogStripProps) {
         {strip.link === null ? null : (
           <View style={styles.link}>
             <Text variant="caption" color="secondary">
-              ·{' '}
+              {'· '}
             </Text>
             <Text variant="caption" color="secondary" bold>
               {strip.link}

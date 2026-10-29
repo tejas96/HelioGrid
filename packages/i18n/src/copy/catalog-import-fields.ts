@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CatalogImportField } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 
@@ -44,10 +45,12 @@ const FIELD: Record<CatalogImportField, { id: string }> = {
   ratedInputW: /*i18n*/ { id: 'Rated input (W)' },
 };
 
-export function catalogImportFields(t: Translator['t']): Record<CatalogImportField, string> {
+export function catalogImportFields(
+  t: Translator['t'],
+): Record<CatalogImportField, TranslatedText> {
   const entries = Object.entries(FIELD) as [CatalogImportField, { id: string }][];
   return Object.fromEntries(entries.map(([field, word]) => [field, t(word)])) as Record<
     CatalogImportField,
-    string
+    TranslatedText
   >;
 }

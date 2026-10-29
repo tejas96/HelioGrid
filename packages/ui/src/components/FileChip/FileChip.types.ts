@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * **One chosen file, named** (`SCR-M01-17` step 1): a sheet glyph, the file's name, one line of
  * what was read in it — *412 rows · 9 columns* — or what went wrong, and *Replace* when the caller
@@ -15,5 +16,5 @@ export interface FileChipProps {
   /** Absent: no *Replace* is drawn (the run, which has a file it can no longer change). */
   onReplace?: () => void;
   /** Required whenever `onReplace` is given. */
-  replaceLabel?: string;
+  replaceLabel?: TranslatedText;
 }

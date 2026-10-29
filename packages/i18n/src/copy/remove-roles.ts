@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The words of a roles save that takes presets away (`SCR-M01-13` m-confirm, m-after) — authored
  * once for both platforms (Law 11). The confirm names every preset leaving and, in the grant line's
@@ -33,13 +34,13 @@ export const REMOVE_ROLES = {
 
 /** The confirm's words, in the shape `TeamConfirm` draws with `look="roles"`. */
 export interface RemoveRolesWords {
-  readonly title: string;
-  readonly go: string;
-  readonly leave: string;
+  readonly title: TranslatedText;
+  readonly go: TranslatedText;
+  readonly leave: TranslatedText;
   /** What the person can no longer do; absent when a kept preset covers every loss. */
-  readonly body?: string;
+  readonly body?: TranslatedText;
   /** The way back: a bold lead, then the rest of the sentence. */
-  readonly note: { readonly lead: string; readonly rest: string };
+  readonly note: { readonly lead: TranslatedText; readonly rest: TranslatedText };
 }
 
 /** `change` is `roleChange(before, after)`; only a change that removes something is confirmed. */
@@ -117,7 +118,11 @@ export function rolesUndoFailedToast(
     readonly removed: readonly RolePreset[];
     readonly companyName: string;
   },
-): { readonly tone: 'danger'; readonly title: string; readonly description?: string } {
+): {
+  readonly tone: 'danger';
+  readonly title: TranslatedText;
+  readonly description?: TranslatedText;
+} {
   const first = firstNameOf(facts.name);
   const words = assignRolesRefusalWords(translate, refusal, {
     firstName: first,

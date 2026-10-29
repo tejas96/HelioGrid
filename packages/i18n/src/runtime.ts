@@ -1,4 +1,4 @@
-import { UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
+import { type TranslatedText, UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
 import { withLatinDigits } from '@heliogrid/domain';
 import { type I18n, type Messages, setupI18n } from '@lingui/core';
 import { LANGUAGE_META, loadCatalog, SOURCE_CATALOG } from './languages';
@@ -13,7 +13,7 @@ export interface Translator {
   readonly locale: UiLanguage;
   readonly dir: 'ltr' | 'rtl';
   /** Takes a copy module's descriptor as is, or its id (THE CONVENTION, packages/i18n/CLAUDE.md). */
-  t(message: string | MessageRef, values?: Record<string, unknown>): string;
+  t(message: string | MessageRef, values?: Record<string, unknown>): TranslatedText;
 }
 
 function idOf(message: string | MessageRef): string {
@@ -57,14 +57,23 @@ export interface I18nRuntime {
   readonly locale: UiLanguage;
   /** Async because a catalog is fetched. Both platforms get the same signature. */
   setLocale(next: UiLanguage): Promise<void>;
-  t(message: string | MessageRef, values?: Record<string, unknown>): string;
+  t(message: string | MessageRef, values?: Record<string, unknown>): TranslatedText;
+}
+
+/** The ONE place `TranslatedText` is minted: a message read out of the active catalog. */
+function wordsOf(
+  i18n: I18n,
+  message: string | MessageRef,
+  values?: Record<string, unknown>,
+): TranslatedText {
+  return i18n._(idOf(message), values) as TranslatedText;
 }
 
 function translatorFor(i18n: I18n, locale: UiLanguage): Translator {
   return {
     locale,
     dir: LANGUAGE_META[locale].dir,
-    t: (message, values) => i18n._(idOf(message), values),
+    t: (message, values) => wordsOf(i18n, message, values),
   };
 }
 
@@ -106,6 +115,6 @@ export function createI18nRuntime(initial: UiLanguage = UI_SOURCE_LOCALE): I18nR
       activate(i18n, next, messages);
       current = next;
     },
-    t: (message, values) => i18n._(idOf(message), values),
+    t: (message, values) => wordsOf(i18n, message, values),
   };
 }

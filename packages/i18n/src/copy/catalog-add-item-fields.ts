@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ItemFieldFailure } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 
@@ -91,7 +92,7 @@ const SI_UNIT: Record<string, string> = {
 
 /** A spec field's label and unit — a symbol as written, a word in the person's language. */
 export interface AddItemFieldWords {
-  readonly label: string;
+  readonly label: TranslatedText;
   readonly unit: string | null;
 }
 
@@ -114,7 +115,7 @@ const BELOW_ZERO = new Set(['tempCoeffVocPct', 'tempCoeffPmaxPct']);
 const BELOW_ONE_HUNDRED = new Set(['efficiencyPct']);
 const WHOLE = new Set(['mppt.count', 'mppt.stringsPerMppt', 'cycleLife']);
 
-function invalidWords(t: T, field: string): string {
+function invalidWords(t: T, field: string): TranslatedText {
   if (field === 'brand' || field === 'model') return t(FAILED.tooLong);
   if (BELOW_ZERO.has(field)) return t(FAILED.belowZero);
   if (BELOW_ONE_HUNDRED.has(field)) return t(FAILED.belowHundred);
@@ -124,7 +125,7 @@ function invalidWords(t: T, field: string): string {
 }
 
 /** A failed field's words, under the field; `spec.` and `certifications.` are dropped to name it. */
-export function catalogItemFailureWords(t: T, failure: ItemFieldFailure): string {
+export function catalogItemFailureWords(t: T, failure: ItemFieldFailure): TranslatedText {
   const field = failure.path.replace(/^spec\./, '');
   if (failure.path.startsWith('certifications.')) {
     return t(FAILED.reference, { scheme: failure.path.slice('certifications.'.length) });
@@ -147,7 +148,7 @@ export function catalogItemFailureWords(t: T, failure: ItemFieldFailure): string
 export function catalogItemFailuresOf(
   t: T,
   failures: readonly ItemFieldFailure[],
-): Readonly<Record<string, string>> {
+): Readonly<Record<string, TranslatedText>> {
   return Object.fromEntries(
     failures.map((failure) => [failure.path, catalogItemFailureWords(t, failure)]),
   );

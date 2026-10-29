@@ -3,6 +3,7 @@ import type {
   CatalogImportRowWire,
   CatalogImportSummaryWire,
   CatalogImportWire,
+  TranslatedText,
 } from '@heliogrid/contracts';
 import type {
   CatalogImportAttentionReason,
@@ -87,7 +88,7 @@ export interface CatalogImportProps {
   /** *Fix the N rows*. */
   onFixOpenRows: () => void;
   /** A refusal the step must say, in words the app chose; `null` says nothing. */
-  notice: { readonly title: string; readonly message: string } | null;
+  notice: { readonly title: TranslatedText; readonly message: TranslatedText } | null;
 }
 
 /** Where a chosen file stands before its job exists. */
@@ -98,7 +99,7 @@ export interface ImportUpload {
   /** The catalog file rule's ceiling, in MB, for the hint. */
   readonly maxSizeMB: number;
   /** The words of a refusal or a failed upload; `null` otherwise. */
-  readonly message: string | null;
+  readonly message: TranslatedText | null;
   readonly onRetry: () => void;
 }
 
@@ -143,127 +144,145 @@ export type ImportGroupId =
 /** What a row's question or reason names, for the words that ask it. */
 export interface ImportRowWordsFacts {
   /** The product the row names: its own cells' brand and model, or its file text. */
+  // biome-ignore lint/plugin/copy-prop-type: a fact of the file's row
   readonly product: string;
   /** The one item it named, by brand and model; `null` where it named none or several. */
+  // biome-ignore lint/plugin/copy-prop-type: a fact of the file's row
   readonly named: string | null;
   /** The field that disagrees, and both values, on a spec conflict. */
   readonly conflict: {
+    // biome-ignore lint/plugin/copy-prop-type: the field's name, or its key where the catalog names none
     readonly field: string;
+    // biome-ignore lint/plugin/copy-prop-type: a fact of the file's row
     readonly file: string;
+    // biome-ignore lint/plugin/copy-prop-type: a fact of the catalog's item
     readonly catalog: string;
   } | null;
   /** The price cell as the file wrote it. */
+  // biome-ignore lint/plugin/copy-prop-type: a fact of the file's row
   readonly priceText: string;
   /** The earlier row of a repeat, and its price. */
+  // biome-ignore lint/plugin/copy-prop-type: a fact of the file's row
   readonly repeat: { readonly row: number; readonly price: string | null } | null;
   /** *one metre* · *one piece*: what a unit of the row is, or `null` where the file says none. */
+  // biome-ignore lint/plugin/copy-prop-type: a unit as the file writes it
   readonly unit: string | null;
 }
 
 /** Every word the wizard draws. Facts in, sentences out; the language is the caller's. */
 export interface CatalogImportWords {
-  readonly title: string;
-  readonly close: string;
-  readonly back: string;
-  readonly steps: readonly [string, string, string, string];
-  readonly stepsLabel: string;
-  readonly location: (step: number) => string;
-  readonly locationLabel: (step: number) => string;
-  readonly whereYouAre: string;
-  readonly reportAfterRun: string;
-  readonly choose: string;
-  readonly chooseHint: (maxSizeMB: number) => string;
-  readonly dropAnother: string;
-  readonly dropAnotherHint: (maxSizeMB: number) => string;
-  readonly replace: string;
-  readonly fileMeta: (rows: number, columns: number) => string;
-  readonly fileProblem: string;
-  readonly subtitle: (file: string, rows: number) => string;
-  readonly subtitleImported: (file: string, rows: number, date: string, time: string) => string;
-  readonly stamp: (date: string, time: string) => string;
-  readonly sheetLabel: string;
-  readonly sheetHelper: (count: number) => string;
-  readonly headerRowLabel: string;
-  readonly rowOption: (row: number) => string;
-  readonly rowReads: (row: number) => string;
-  readonly rowOfFile: (row: number) => string;
-  readonly untouched: string;
-  readonly keptReports: string;
-  readonly saved: (date: string) => string;
-  readonly showMore: string;
-  readonly tryAgain: string;
-  readonly unreadableTitle: string;
-  readonly unreadableMessage: string;
-  readonly matchedIntro: (matched: number, columns: number, open: number) => string;
-  readonly matchedAutomatically: string;
-  readonly chooseField: string;
-  readonly importColumnAs: (header: string) => string;
-  readonly leftOutHelper: string;
-  readonly leaveColumnOut: string;
-  readonly fields: Readonly<Record<CatalogImportField, string>>;
-  readonly matching: string;
-  readonly heading: (rows: number) => string;
-  readonly readyShort: (ready: number) => string;
-  readonly readyLong: (ready: number, needYou: number) => string;
-  readonly written: (applied: number, created: number) => string;
-  readonly willDo: string;
-  readonly didDo: string;
+  readonly title: TranslatedText;
+  readonly close: TranslatedText;
+  readonly back: TranslatedText;
+  readonly steps: readonly [TranslatedText, TranslatedText, TranslatedText, TranslatedText];
+  readonly stepsLabel: TranslatedText;
+  readonly location: (step: number) => TranslatedText;
+  readonly locationLabel: (step: number) => TranslatedText;
+  readonly whereYouAre: TranslatedText;
+  readonly reportAfterRun: TranslatedText;
+  readonly choose: TranslatedText;
+  readonly chooseHint: (maxSizeMB: number) => TranslatedText;
+  readonly dropAnother: TranslatedText;
+  readonly dropAnotherHint: (maxSizeMB: number) => TranslatedText;
+  readonly replace: TranslatedText;
+  readonly fileMeta: (rows: number, columns: number) => TranslatedText;
+  readonly fileProblem: TranslatedText;
+  readonly subtitle: (file: string, rows: number) => TranslatedText;
+  readonly subtitleImported: (
+    file: string,
+    rows: number,
+    date: string,
+    time: string,
+  ) => TranslatedText;
+  readonly stamp: (date: string, time: string) => TranslatedText;
+  readonly sheetLabel: TranslatedText;
+  readonly sheetHelper: (count: number) => TranslatedText;
+  readonly headerRowLabel: TranslatedText;
+  readonly rowOption: (row: number) => TranslatedText;
+  readonly rowReads: (row: number) => TranslatedText;
+  readonly rowOfFile: (row: number) => TranslatedText;
+  readonly untouched: TranslatedText;
+  readonly keptReports: TranslatedText;
+  readonly saved: (date: string) => TranslatedText;
+  readonly showMore: TranslatedText;
+  readonly tryAgain: TranslatedText;
+  readonly unreadableTitle: TranslatedText;
+  readonly unreadableMessage: TranslatedText;
+  readonly matchedIntro: (matched: number, columns: number, open: number) => TranslatedText;
+  readonly matchedAutomatically: TranslatedText;
+  readonly chooseField: TranslatedText;
+  readonly importColumnAs: (header: string) => TranslatedText;
+  readonly leftOutHelper: TranslatedText;
+  readonly leaveColumnOut: TranslatedText;
+  readonly fields: Readonly<Record<CatalogImportField, TranslatedText>>;
+  readonly matching: TranslatedText;
+  readonly heading: (rows: number) => TranslatedText;
+  readonly readyShort: (ready: number) => TranslatedText;
+  readonly readyLong: (ready: number, needYou: number) => TranslatedText;
+  readonly written: (applied: number, created: number) => TranslatedText;
+  readonly willDo: TranslatedText;
+  readonly didDo: TranslatedText;
   readonly barSentence: (
-    parts: readonly { readonly label: string; readonly count: number }[],
-  ) => string;
-  readonly ringLabel: (label: string, count: number) => string;
-  readonly groups: Readonly<Record<ImportGroupId, string>>;
-  readonly groupTitle: (group: string, count: number) => string;
-  readonly countRows: (count: number) => string;
-  readonly overrideLine: string;
-  readonly find: string;
-  readonly matchLine: (found: number, rows: number, query: string) => string;
-  readonly needYou: string;
-  readonly readyToImport: string;
-  readonly fixedProgress: (fixed: number, of: number) => string;
+    parts: readonly { readonly label: TranslatedText; readonly count: number }[],
+  ) => TranslatedText;
+  readonly ringLabel: (label: string, count: number) => TranslatedText;
+  readonly groups: Readonly<Record<ImportGroupId, TranslatedText>>;
+  readonly groupTitle: (group: string, count: number) => TranslatedText;
+  readonly countRows: (count: number) => TranslatedText;
+  readonly overrideLine: TranslatedText;
+  readonly find: TranslatedText;
+  readonly matchLine: (found: number, rows: number, query: string) => TranslatedText;
+  readonly needYou: TranslatedText;
+  readonly readyToImport: TranslatedText;
+  readonly fixedProgress: (fixed: number, of: number) => TranslatedText;
   readonly rowSub: (
     row: number,
     product: string | null,
     kind: 'override' | 'own' | 'new' | 'notCreated' | 'matches' | 'several' | 'plain',
-  ) => string;
-  readonly question: (reason: CatalogImportAttentionReason, facts: ImportRowWordsFacts) => string;
-  readonly yourPrice: string;
-  readonly setPrice: string;
-  readonly leaveOut: string;
-  readonly keepSpec: string;
-  readonly importAsOwn: string;
-  readonly useThisPrice: string;
-  readonly whichProduct: string;
-  readonly chooseProduct: string;
-  readonly kindLabel: string;
-  readonly chooseKind: string;
-  readonly kinds: Readonly<Record<ComponentKind, string>>;
+  ) => TranslatedText;
+  readonly question: (
+    reason: CatalogImportAttentionReason,
+    facts: ImportRowWordsFacts,
+  ) => TranslatedText;
+  readonly yourPrice: TranslatedText;
+  readonly setPrice: TranslatedText;
+  readonly leaveOut: TranslatedText;
+  readonly keepSpec: TranslatedText;
+  readonly importAsOwn: TranslatedText;
+  readonly useThisPrice: TranslatedText;
+  readonly whichProduct: TranslatedText;
+  readonly chooseProduct: TranslatedText;
+  readonly kindLabel: TranslatedText;
+  readonly chooseKind: TranslatedText;
+  readonly kinds: Readonly<Record<ComponentKind, TranslatedText>>;
   readonly fixedLine: (
     fix: 'price' | 'answer' | 'kind' | 'pick' | 'repeat' | 'leftOut',
     value: string | null,
-  ) => string;
-  readonly undo: string;
-  readonly outcomes: Readonly<Record<'override' | 'own' | 'new' | 'leftOut' | 'failed', string>>;
-  readonly noPrice: string;
-  readonly unchanged: string;
-  readonly becomes: string;
+  ) => TranslatedText;
+  readonly undo: TranslatedText;
+  readonly outcomes: Readonly<
+    Record<'override' | 'own' | 'new' | 'leftOut' | 'failed', TranslatedText>
+  >;
+  readonly noPrice: TranslatedText;
+  readonly unchanged: TranslatedText;
+  readonly becomes: TranslatedText;
   readonly reason: (
     facts: ImportRowWordsFacts & {
       readonly attention: CatalogImportAttentionReason | null;
       readonly failure: CatalogImportRowFailure | null;
     },
-  ) => string;
-  readonly importRows: (count: number) => string;
-  readonly undoLine: string;
-  readonly nextColumns: string;
-  readonly nextRows: string;
-  readonly continue: string;
-  readonly gates: Readonly<Record<ImportContinueGate | 'nothing_ready', string>>;
-  readonly importing: string;
-  readonly ofRows: (total: number) => string;
-  readonly stopWatching: string;
-  readonly keepsRunning: string;
-  readonly fixRows: (count: number) => string;
-  readonly kept: string;
-  readonly opening: string;
+  ) => TranslatedText;
+  readonly importRows: (count: number) => TranslatedText;
+  readonly undoLine: TranslatedText;
+  readonly nextColumns: TranslatedText;
+  readonly nextRows: TranslatedText;
+  readonly continue: TranslatedText;
+  readonly gates: Readonly<Record<ImportContinueGate | 'nothing_ready', TranslatedText>>;
+  readonly importing: TranslatedText;
+  readonly ofRows: (total: number) => TranslatedText;
+  readonly stopWatching: TranslatedText;
+  readonly keepsRunning: TranslatedText;
+  readonly fixRows: (count: number) => TranslatedText;
+  readonly kept: TranslatedText;
+  readonly opening: TranslatedText;
 }

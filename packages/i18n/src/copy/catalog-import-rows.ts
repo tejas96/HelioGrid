@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CatalogImportAttentionReason, CatalogImportRowFailure } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { catalogImportWordsBase } from './catalog-import';
@@ -120,7 +121,11 @@ const FIXED = {
 
 export type ImportRowSubKind = keyof typeof SUB;
 
-function asked(t: T, reason: CatalogImportAttentionReason, facts: ImportRowWordsFacts): string {
+function asked(
+  t: T,
+  reason: CatalogImportAttentionReason,
+  facts: ImportRowWordsFacts,
+): TranslatedText {
   const text = facts.priceText;
   if ((reason === 'price_missing' || reason === 'price_unreadable') && facts.unit !== null) {
     return t(ASK_PER_UNIT[reason], { text, unit: facts.unit });

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { InviteRefusal } from '@heliogrid/domain';
 import type { Ref } from 'react';
 import type {
@@ -9,8 +10,8 @@ import type { FocusHandle } from '../SearchField/SearchField.types';
 
 /** One step the brand pane says comes after a send: what happens, and the line under it. */
 export interface SetupInviteAfterStep {
-  title: string;
-  line: string | null;
+  title: TranslatedText;
+  line: TranslatedText | null;
 }
 
 /**
@@ -18,19 +19,19 @@ export interface SetupInviteAfterStep {
  * `setupInviteWords` write them.
  */
 export interface SetupInviteTeamWords extends InviteFormWords {
-  title: string;
-  send: string;
-  skip: string;
+  title: TranslatedText;
+  send: TranslatedText;
+  skip: TranslatedText;
   /** The way on at the cap, where nothing can be sent. */
-  continueSetup: string;
+  continueSetup: TranslatedText;
   /** The refusal banner's act. */
-  openTeam: string;
-  differentNumber: string;
+  openTeam: TranslatedText;
+  differentNumber: TranslatedText;
   /** *Invite lasts 7 days · cancel it from Team*, under the acts at 375 — at 1536 the brand pane says it. */
-  lasts: string;
+  lasts: TranslatedText;
   /** The brand pane at 1536: its heading, and what happens once the invite is sent. */
   afterYouSend: {
-    heading: string;
+    heading: TranslatedText;
     message: SetupInviteAfterStep;
     lasts: SetupInviteAfterStep;
     join: SetupInviteAfterStep;

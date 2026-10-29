@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { DoorRoad, LoginPress } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { DoorTaskMeasure, DoorTitleProps } from '../DoorFrame/DoorFrame.types';
@@ -7,12 +8,12 @@ import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
 export interface DoorNumberStepWords {
   /** Above the number, in reading order. */
   blocks: readonly TintedBlockProps[];
-  phoneLabel: string;
+  phoneLabel: TranslatedText;
   /** The field's own answer to a number of the wrong length; absent as the step opens. */
-  phoneError: string | undefined;
-  primary: string;
+  phoneError: TranslatedText | undefined;
+  primary: TranslatedText;
   /** `null` on a door with no Google sheet: no divider and no control are drawn. */
-  google: { or: string; label: string; aria: string } | null;
+  google: { or: TranslatedText; label: TranslatedText; aria: TranslatedText } | null;
 }
 
 /**

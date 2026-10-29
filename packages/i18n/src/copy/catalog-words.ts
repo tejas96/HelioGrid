@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import {
   CATALOG_SORTS,
   type CatalogLayer,
@@ -88,8 +89,8 @@ function listWords(t: T, list: CatalogListFacts) {
   };
 }
 
-const byKey = <K extends string>(keys: readonly K[], word: (key: K) => string) =>
-  Object.fromEntries(keys.map((key) => [key, word(key)])) as Record<K, string>;
+const byKey = <K extends string>(keys: readonly K[], word: (key: K) => TranslatedText) =>
+  Object.fromEntries(keys.map((key) => [key, word(key)])) as Record<K, TranslatedText>;
 
 /** Every fixed word of the Items panel, in the reader's language. */
 export function catalogItemsWords(t: T, schemes: readonly string[], list: CatalogListFacts) {

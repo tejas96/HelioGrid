@@ -62,8 +62,9 @@ part there fails it.
   `inline-svg-mark` refuse path data and marks written anywhere else.
 - The `design-system-props` invariant checks only that each design-system prop is declared;
   nothing compares the two halves, so the types file is what you must keep honest.
-- **Existing components still carry hard-coded English labels** (`docs/tasks/UI.md`, *Hard-coded
-  accessibility labels*) and no check finds them yet — never copy that pattern.
+- **Components outside `T-SHELL-016`'s parts so far still carry hard-coded English labels**
+  (`docs/tasks/UI.md`, *Hard-coded accessibility labels*) — never copy that pattern. A component a
+  part has reached is held by Biome plugins `copy-prop-type`, `copy-literal` and `noJsxLiterals`.
 
 ## Traps
 

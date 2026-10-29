@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The number step's words (`SCR-M01-01` `m-normal` and its answers; frame 1 of `SCR-M01-02`), chosen
  * by the facts both doors hold: what the field refuses, what the primary is doing, whether the door
@@ -21,9 +22,9 @@ export interface NumberStepFacts {
 export interface NumberStepWords {
   /** Above the number, in reading order: a Google sign-in that did not finish, then the door's notice. */
   readonly blocks: readonly DoorBlockWords[];
-  readonly phoneLabel: string;
-  readonly phoneError: string | undefined;
-  readonly primary: string;
+  readonly phoneLabel: TranslatedText;
+  readonly phoneError: TranslatedText | undefined;
+  readonly primary: TranslatedText;
   readonly google: Omit<PhoneGoogleWords, 'failed'> | null;
 }
 
@@ -76,14 +77,14 @@ export interface DoorSwitchFacts {
 }
 
 export interface DoorSwitchWords {
-  readonly title: string;
-  readonly subtitle: string;
-  readonly upload: string;
+  readonly title: TranslatedText;
+  readonly subtitle: TranslatedText;
+  readonly upload: TranslatedText;
   /** Why the upload road cannot be taken yet. */
-  readonly uploadReason: string;
-  readonly confirm: string;
+  readonly uploadReason: TranslatedText;
+  readonly confirm: TranslatedText;
   /** The sheet's close label; the sheet cannot be dismissed, and a screen reader still names it. */
-  readonly close: string;
+  readonly close: TranslatedText;
 }
 
 /** The switch decision's words (`F4-37`): the loss is named before the roads, upload first. */

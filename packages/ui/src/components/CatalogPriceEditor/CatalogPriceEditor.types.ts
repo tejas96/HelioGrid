@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ExplainerPagerWords } from '@heliogrid/domain';
 
 /**
@@ -27,7 +28,7 @@ export interface CatalogPriceEditorProps {
 
 export interface CatalogEditedItem {
   /** *Platform item* · *Your SKU*. */
-  readonly overline: string;
+  readonly overline: TranslatedText;
   readonly name: string;
   /** *Panel* · *550 Wp · verified datasheet* · *TOPCon*. */
   readonly chips: readonly string[];
@@ -46,20 +47,20 @@ export interface CatalogEditorSwitches {
 
 /** `@heliogrid/i18n`'s `catalogPriceEditorWords`. */
 export interface CatalogPriceEditorWords {
-  readonly howItResolves: string;
-  readonly resolvesPages: readonly [string, string];
+  readonly howItResolves: TranslatedText;
+  readonly resolvesPages: readonly [TranslatedText, TranslatedText];
   readonly explainer: ExplainerPagerWords;
-  readonly yourPrice: string;
-  readonly price: string;
-  readonly priceHint: string;
-  readonly taxRate: string;
-  readonly edited: string;
-  readonly noMarketRate: string;
+  readonly yourPrice: TranslatedText;
+  readonly price: TranslatedText;
+  readonly priceHint: TranslatedText;
+  readonly taxRate: TranslatedText;
+  readonly edited: TranslatedText;
+  readonly noMarketRate: TranslatedText;
   /** *No market rate yet. Your 5% stays until one is set.* — `null` while no tax is set. */
-  readonly taxStays: string | null;
-  readonly yourOverride: string;
-  readonly defaultSource: string;
-  readonly inPickers: string;
-  readonly hideFromPickers: string;
-  readonly preferredInPickers: string;
+  readonly taxStays: TranslatedText | null;
+  readonly yourOverride: TranslatedText;
+  readonly defaultSource: TranslatedText;
+  readonly inPickers: TranslatedText;
+  readonly hideFromPickers: TranslatedText;
+  readonly preferredInPickers: TranslatedText;
 }

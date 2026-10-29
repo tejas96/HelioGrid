@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { type PhaseOpen, type ProposalTemplatePage, usePhaseEditor } from '@heliogrid/data/react';
 import { type ProposalTemplateWords, phaseEditorWords, templateLanguages } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
@@ -34,7 +35,7 @@ export function TemplateOverlays({
 }: {
   page: ProposalTemplatePage;
   words: ProposalTemplateWords;
-  closeLabel: string;
+  closeLabel: TranslatedText;
   document: TemplateDocument;
   state: TemplateOverlayState;
   leave: { asking: boolean; stay: () => void; discardAndLeave: () => void };

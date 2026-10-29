@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CoverCount, Read, TemplatePart } from '@heliogrid/domain';
 import type { BrandingDocumentFacts } from '../BrandingSettings/BrandingSettings.types';
 import type {
@@ -24,65 +25,69 @@ export type TemplateOrigin = 'platform' | 'own';
 
 /** Every word the page draws; `@heliogrid/i18n`'s `proposalTemplateWords` writes them. */
 export interface ProposalTemplateSettingsWords {
-  readonly intro: string;
-  readonly stage: string;
-  readonly stageCaption: string;
-  readonly openFullSize: string;
-  readonly editor: string;
-  readonly edit: string;
-  readonly cover: string;
-  readonly sections: string;
-  readonly terms: string;
-  readonly timeline: string;
-  readonly language: string;
-  readonly languageNoun: string;
+  readonly intro: TranslatedText;
+  readonly stage: TranslatedText;
+  readonly stageCaption: TranslatedText;
+  readonly openFullSize: TranslatedText;
+  readonly editor: TranslatedText;
+  readonly edit: TranslatedText;
+  readonly cover: TranslatedText;
+  readonly sections: TranslatedText;
+  readonly terms: TranslatedText;
+  readonly timeline: TranslatedText;
+  readonly language: TranslatedText;
+  readonly languageNoun: TranslatedText;
   /** What the strip counts in a language — the parts of the template it holds. */
-  readonly partsNoun: string;
-  readonly document: string;
-  readonly documentName: string;
+  readonly partsNoun: TranslatedText;
+  readonly document: TranslatedText;
+  readonly documentName: TranslatedText;
   /** The document's ruled name (`F3-11`), stated as content, never a greyed field. */
-  readonly proposal: string;
-  readonly about: string;
-  readonly declaredByYou: string;
-  readonly alwaysPrints: string;
-  readonly projectPhases: string;
-  readonly phasesNoun: string;
-  readonly addPhase: string;
-  readonly phaseCap: string;
-  readonly brandingRow: string;
-  readonly brandingFrom: string;
-  readonly bankRow: string;
-  readonly pageEnd: string;
-  readonly teachTitle: string;
-  readonly teachBody: string;
-  readonly writeOwn: string;
-  readonly loadingPreview: string;
-  readonly loading: string;
-  readonly notSaved: string;
-  readonly consequence: string;
-  readonly save: string;
-  readonly discard: string;
-  readonly saveFailed: string;
-  readonly saveFailedBody: string;
-  readonly sectionsTitle: string;
-  readonly termsTitle: string;
-  readonly sampleCustomer: string;
-  readonly sampleCustomerPlace: string;
-  readonly counts: Readonly<Record<TemplateCoverCount, string>>;
+  readonly proposal: TranslatedText;
+  readonly about: TranslatedText;
+  readonly declaredByYou: TranslatedText;
+  readonly alwaysPrints: TranslatedText;
+  readonly projectPhases: TranslatedText;
+  readonly phasesNoun: TranslatedText;
+  readonly addPhase: TranslatedText;
+  readonly phaseCap: TranslatedText;
+  readonly brandingRow: TranslatedText;
+  readonly brandingFrom: TranslatedText;
+  readonly bankRow: TranslatedText;
+  readonly pageEnd: TranslatedText;
+  readonly teachTitle: TranslatedText;
+  readonly teachBody: TranslatedText;
+  readonly writeOwn: TranslatedText;
+  readonly loadingPreview: TranslatedText;
+  readonly loading: TranslatedText;
+  readonly notSaved: TranslatedText;
+  readonly consequence: TranslatedText;
+  readonly save: TranslatedText;
+  readonly discard: TranslatedText;
+  readonly saveFailed: TranslatedText;
+  readonly saveFailedBody: TranslatedText;
+  readonly sectionsTitle: TranslatedText;
+  readonly termsTitle: TranslatedText;
+  readonly sampleCustomer: TranslatedText;
+  readonly sampleCustomerPlace: TranslatedText;
+  readonly counts: Readonly<Record<TemplateCoverCount, TranslatedText>>;
   readonly platform: Readonly<
     Record<
       TemplatePartName,
-      { readonly layer: string; readonly source: string; readonly field: string }
+      {
+        readonly layer: TranslatedText;
+        readonly source: TranslatedText;
+        readonly field: TranslatedText;
+      }
     >
   >;
-  sectionsPrint(printing: number, of: number): string;
+  sectionsPrint(printing: number, of: number): TranslatedText;
   /** *Terms in English* — the language named as the strip names it. */
-  termsIn(language: string): string;
+  termsIn(language: string): TranslatedText;
   /** *≈ 3 pages*, under the terms editor; nothing at zero. */
-  pages(count: number): string;
-  editPhase(phase: string): string;
+  pages(count: number): TranslatedText;
+  editPhase(phase: string): TranslatedText;
   /** The cover logo's spoken name — *{company} logo*. */
-  logoAlt(company: string): string;
+  logoAlt(company: string): TranslatedText;
   readonly richText: RichTextWords;
   readonly languageSwitcher: LanguageSwitcherWords;
 }
@@ -90,7 +95,7 @@ export interface ProposalTemplateSettingsWords {
 /** A language in a part's strip (`LanguageSwitcher`, `labelHidden`): named in itself, written or not. */
 export interface TemplateLanguage {
   readonly code: string;
-  readonly label: string;
+  readonly label: TranslatedText;
   readonly state: LanguageContentState;
 }
 
@@ -106,7 +111,7 @@ export interface TemplateCoverPart {
   readonly strip: TemplateLanguageStrip;
   /** The *About* text in the strip's language. */
   readonly about: string;
-  readonly aboutError?: string;
+  readonly aboutError?: TranslatedText;
   onAbout(text: string): void;
   readonly counts: Readonly<Record<TemplateCoverCount, number | null>>;
   onCount(count: TemplateCoverCount, value: number | null): void;
@@ -115,8 +120,8 @@ export interface TemplateCoverPart {
 /** One section row in the document's order; the floor row draws a lock and *Always prints*, no switch. */
 export interface TemplateSectionRow {
   readonly key: string;
-  readonly title: string;
-  readonly about: string;
+  readonly title: TranslatedText;
+  readonly about: TranslatedText;
   readonly on: boolean;
   readonly floor: boolean;
 }
@@ -136,14 +141,17 @@ export interface TemplateTermsPart {
   /** The strip's language's name, for *Terms in …*. */
   readonly languageName: string;
   readonly value: RichTextValue;
-  readonly error?: string;
+  readonly error?: TranslatedText;
   onChange(value: RichTextValue): void;
 }
 
 /** A phase row: its name and sentence in the reader's language, and the key it moves by. */
 export interface TemplatePhaseRow {
   readonly key: number;
+  /** The phase's name as the company wrote it. */
+  // biome-ignore lint/plugin/copy-prop-type: the phase's name as the company wrote it
   readonly title: string;
+  // biome-ignore lint/plugin/copy-prop-type: the phase's note as the company wrote it
   readonly note: string;
 }
 
@@ -170,7 +178,7 @@ export interface TemplateAct {
 export interface TemplateDocument {
   readonly facts: BrandingDocumentFacts;
   readonly colour: string | null;
-  readonly sections: readonly { readonly label: string; readonly included: boolean }[];
+  readonly sections: readonly { readonly label: TranslatedText; readonly included: boolean }[];
   readonly terms: RichTextValue;
   /** The sample's number and date, as the app formats them; the customer is the words' sample. */
   readonly docNumber: string;
@@ -185,7 +193,7 @@ export interface ProposalTemplateSettingsProps {
    */
   readonly read: Read<unknown>;
   /** The page's title; a phone whose bar holds the title passes none. */
-  readonly title?: string;
+  readonly title?: TranslatedText;
   /** *Saved and in force · …*; absent while loading and while never saved. */
   readonly standing?: string;
   readonly part: TemplatePartName;
@@ -206,7 +214,7 @@ export interface ProposalTemplateSettingsProps {
   readonly terms: TemplateTermsPart;
   readonly timeline: TemplateTimelinePart;
   /** *{bank} · from Business profile*, or its *not added yet* line. */
-  readonly bankLine: string;
+  readonly bankLine: TranslatedText;
   onOpenBranding(): void;
   onOpenProfile(): void;
   onOpenFullSize(): void;
@@ -233,8 +241,8 @@ export interface TemplatePhaseFieldsProps {
   readonly strip: TemplateLanguageStrip;
   readonly name: string;
   readonly what: string;
-  readonly nameError?: string;
-  readonly whatError?: string;
+  readonly nameError?: TranslatedText;
+  readonly whatError?: TranslatedText;
   onName(text: string): void;
   onWhat(text: string): void;
 }
@@ -245,13 +253,15 @@ export interface TemplatePhaseFieldsProps {
  */
 export interface TemplatePhaseEditorProps {
   readonly open: boolean;
+  /** *New phase*, or the phase's name as the company wrote it. */
+  // biome-ignore lint/plugin/copy-prop-type: New phase, or the phase's name as the company wrote it
   readonly title: string;
-  readonly subtitle: string;
-  readonly closeLabel: string;
+  readonly subtitle: TranslatedText;
+  readonly closeLabel: TranslatedText;
   readonly words: TemplatePhaseFieldsProps['words'] & {
-    readonly cancel: string;
+    readonly cancel: TranslatedText;
     /** *Save phase*, or *Add phase* for a new one. */
-    readonly act: string;
+    readonly act: TranslatedText;
   };
   readonly fields: Omit<TemplatePhaseFieldsProps, 'words'>;
   onClose(): void;
@@ -262,11 +272,11 @@ export interface TemplatePhaseEditorProps {
 export interface TemplatePhaseDeleteProps {
   /** The phase asked about; `null` keeps the confirm closed. */
   readonly phase: string | null;
-  readonly closeLabel: string;
+  readonly closeLabel: TranslatedText;
   readonly words: {
-    deleteTitle(phase: string): string;
-    readonly deleteBody: string;
-    readonly deleteConfirm: string;
+    deleteTitle(phase: string): TranslatedText;
+    readonly deleteBody: TranslatedText;
+    readonly deleteConfirm: TranslatedText;
     readonly keep: string;
   };
   onDelete(): void;

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The notice a company's EPC Owner reads when someone signing up asks to be added to it
  * (`M01-09`). The api renders it in the OWNER's language when the request arrives and stores it as
@@ -20,7 +21,7 @@ export function joinRequestNotice(
   translate: Translator['t'],
   asker: JoinRequestAsker,
   company: string,
-): { title: string; body: string } {
+): { title: TranslatedText; body: TranslatedText } {
   return {
     title: translate(JOIN_REQUEST_NOTICE.title, { name: asker.name }),
     body: translate(JOIN_REQUEST_NOTICE.body, { phone: asker.phone, company }),

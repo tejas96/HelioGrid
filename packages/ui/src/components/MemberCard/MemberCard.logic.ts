@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import {
   INVITATION_EXPIRY_DAYS,
   type RolePreset,
@@ -25,8 +26,8 @@ import type {
 export function memberCardOf(
   row: TeamRow,
   words: MemberRowWords,
-  roleName: (preset: RolePreset) => string,
-  youLabel: string,
+  roleName: (preset: RolePreset) => TranslatedText,
+  youLabel: TranslatedText,
 ): MemberCardProps {
   return {
     name: row.name,
@@ -52,8 +53,8 @@ export function memberCardOf(
 /** An empty list's one sentence, its glyph and the act that leaves it. */
 export interface MemberListEmpty {
   readonly glyph: ShellGlyphName;
-  readonly title: string;
-  readonly act: string;
+  readonly title: TranslatedText;
+  readonly act: TranslatedText;
   readonly onAct: () => void;
 }
 
@@ -101,9 +102,9 @@ export function memberActOf(
   row: TeamRow,
   roster: readonly TeamRow[],
   words: {
-    act(act: TeamAct): string;
-    spoken(act: TeamAct, name: string): string;
-    onlyOwner: string;
+    act(act: TeamAct): TranslatedText;
+    spoken(act: TeamAct, name: string): TranslatedText;
+    onlyOwner: TranslatedText;
   },
   /** This row's write is out. */
   sending: (rowId: string) => boolean,

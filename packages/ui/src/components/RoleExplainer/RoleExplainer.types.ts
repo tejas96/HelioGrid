@@ -1,14 +1,15 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { Read } from '@heliogrid/domain';
 import type { RoleCardWords } from '../RoleCard/RoleCard.types';
 
 /** Every word the screen draws, already translated: `@heliogrid/i18n`'s `roleCardWords`. */
 export interface RoleExplainerWords extends RoleCardWords {
   /** *Your role at …*, the screen's heading. */
-  readonly title: string;
+  readonly title: TranslatedText;
   /** The one act, named for the home it opens (*Go to my day*). */
-  readonly act: string;
+  readonly act: TranslatedText;
   /** The line under the act: where the card opens again, or the home one switch away. */
-  readonly atAct: string;
+  readonly atAct: TranslatedText;
 }
 
 /**

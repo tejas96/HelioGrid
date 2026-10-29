@@ -1,5 +1,7 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { TeamRow, TeamRowStatus } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
+import { NO_WORDS } from './assembled';
 
 /**
  * The Team screen's words (`SCR-M01-12`), chosen once for both apps (Law 11). A row's words come
@@ -63,21 +65,21 @@ export interface TeamClock {
 }
 
 export interface TeamRowWords {
-  readonly status: string;
+  readonly status: TranslatedText;
   /** The phone card's line under the name. */
-  readonly line: string;
+  readonly line: TranslatedText;
   /** An open invite's day of seven and its expiry, on the phone card; null otherwise. */
-  readonly day: string | null;
-  readonly expires: string | null;
+  readonly day: TranslatedText | null;
+  readonly expires: TranslatedText | null;
   /** The 1536 table's last cell; empty for a member never seen. */
-  readonly lastActive: string;
+  readonly lastActive: TranslatedText;
 }
 
-export function teamStatusWord(translate: Translator['t'], status: TeamRowStatus): string {
+export function teamStatusWord(translate: Translator['t'], status: TeamRowStatus): TranslatedText {
   return translate(TEAM_STATUS_WORD[status]);
 }
 
-function seenLine(translate: Translator['t'], row: TeamRow, clock: TeamClock): string {
+function seenLine(translate: Translator['t'], row: TeamRow, clock: TeamClock): TranslatedText {
   const active = row.status === 'active';
   if (row.lastActiveAt === null) return teamStatusWord(translate, row.status);
   if (clock.isToday(row.lastActiveAt)) {
@@ -88,7 +90,7 @@ function seenLine(translate: Translator['t'], row: TeamRow, clock: TeamClock): s
 }
 
 function memberLastActive(translate: Translator['t'], at: string | null, clock: TeamClock) {
-  if (at === null) return '';
+  if (at === null) return NO_WORDS;
   const time = clock.clockAt(at);
   return clock.isToday(at)
     ? translate(ROW.today, { time })

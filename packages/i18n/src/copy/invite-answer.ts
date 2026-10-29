@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The notices the invited person's two answers raise (`M01.2` S1.wrong.1, S1.wrong.2). The api
  * renders each in the RECIPIENT's language when the answer arrives and stores it as written
@@ -21,7 +22,7 @@ export function inviteDeclinedNotice(
   translate: Translator['t'],
   invitee: string,
   company: string,
-): { title: string; body: string } {
+): { title: TranslatedText; body: TranslatedText } {
   return {
     title: translate(INVITE_ANSWER_NOTICE.declinedTitle, { name: invitee }),
     body: translate(INVITE_ANSWER_NOTICE.declinedBody, { company }),
@@ -32,7 +33,7 @@ export function reinviteRequestedNotice(
   translate: Translator['t'],
   invitee: string,
   company: string,
-): { title: string; body: string } {
+): { title: TranslatedText; body: TranslatedText } {
   return {
     title: translate(INVITE_ANSWER_NOTICE.reinviteTitle, { name: invitee }),
     body: translate(INVITE_ANSWER_NOTICE.reinviteBody, { company }),

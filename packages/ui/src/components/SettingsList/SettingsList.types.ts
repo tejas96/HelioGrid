@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { SettingsListGroup, SettingsRow } from '@heliogrid/domain';
 
 /** The signed-in person, as the first tile draws them: the name over their own settings row. */
@@ -16,9 +17,9 @@ export interface SettingsListPerson {
  * `SettingsListView`); every word is i18n's; this draws, one column in page order.
  */
 export interface SettingsListProps {
-  title: string;
+  title: TranslatedText;
   person: SettingsListPerson;
-  groups: readonly SettingsListGroup[];
+  groups: readonly SettingsListGroup<TranslatedText>[];
   /** A row pressed: the app routes to its screen. */
   onOpen: (row: SettingsRow) => void;
   /**

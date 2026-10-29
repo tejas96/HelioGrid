@@ -1,25 +1,26 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { FirstRunProfileFrame } from '@heliogrid/domain';
 import type { PickedFile } from '../Dropzone/Dropzone.types';
 
 /** Every word the editor draws, already translated: `@heliogrid/i18n`'s `nameAndPhotoEditorWords`. */
 export interface NameAndPhotoEditorWords {
-  readonly title: string;
-  readonly close: string;
+  readonly title: TranslatedText;
+  readonly close: TranslatedText;
   readonly name: {
-    readonly label: string;
-    readonly error: string | null;
-    readonly success: string | null;
+    readonly label: TranslatedText;
+    readonly error: TranslatedText | null;
+    readonly success: TranslatedText | null;
   };
   readonly photo: {
-    readonly label: string;
-    readonly choosePhone: string;
-    readonly chooseWide: string;
-    readonly replace: string;
-    readonly remove: string;
-    readonly error: { readonly title: string; readonly line: string } | null;
+    readonly label: TranslatedText;
+    readonly choosePhone: TranslatedText;
+    readonly chooseWide: TranslatedText;
+    readonly replace: TranslatedText;
+    readonly remove: TranslatedText;
+    readonly error: { readonly title: TranslatedText; readonly line: TranslatedText } | null;
   };
-  readonly act: string;
-  readonly saveFailed: { readonly title: string; readonly line: string } | null;
+  readonly act: TranslatedText;
+  readonly saveFailed: { readonly title: TranslatedText; readonly line: TranslatedText } | null;
 }
 
 /**

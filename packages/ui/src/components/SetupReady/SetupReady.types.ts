@@ -1,29 +1,30 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { DemoDoor, Read } from '@heliogrid/domain';
 
 /** One door's words: its name, the line under it, and its one act. */
 export interface SetupReadyDoorWords {
-  title: string;
-  line: string;
-  act: string;
+  title: TranslatedText;
+  line: TranslatedText;
+  act: TranslatedText;
 }
 
 /** Every word *You're ready* draws; `@heliogrid/i18n`'s `setupReadyWords` writes them. */
 export interface SetupReadyWords {
-  title: string;
+  title: TranslatedText;
   /** The company read back: *Suryodaya Solar Solutions is set up.* */
-  companyLine: (company: string) => string;
+  companyLine: (company: string) => TranslatedText;
   lead: SetupReadyDoorWords;
   demo: SetupReadyDoorWords & {
     /** The `Demo` mark beside the door's name, so it is on screen before the tap (brief decision 7). */
-    badge: string;
+    badge: TranslatedText;
     /** Laid over the door's loading card. */
-    loading: string;
+    loading: TranslatedText;
     /** The door's error card's title. */
-    failed: string;
+    failed: TranslatedText;
   };
   /** The wall when the company cannot be read. */
-  wall: { title: string; line: string };
-  tryAgain: string;
+  wall: { title: TranslatedText; line: TranslatedText };
+  tryAgain: TranslatedText;
 }
 
 /**

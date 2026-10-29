@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The words of the role card (`SCR-M01-10`) for the lines `roleCard` decides — authored once for
  * both lives and both platforms (Law 11). Lists join with a per-language *and* or *or* message:
@@ -101,26 +102,30 @@ const ROLE_CARD_NEXT_HOME: Record<RolePreset, { id: string }> = {
 
 export interface RoleCardLineWords {
   readonly key: RoleCardLineKey;
-  readonly text: string;
+  readonly text: TranslatedText;
 }
 
 export interface RoleCardWords {
-  readonly title: string;
+  readonly title: TranslatedText;
   /** The reopened life's sheet and panel title. */
-  readonly surfaceTitle: string;
-  readonly presets: string;
-  readonly credit: string | null;
-  readonly canDo: string;
-  readonly cannotDo: string;
-  readonly region: string;
-  readonly loading: string;
+  readonly surfaceTitle: TranslatedText;
+  readonly presets: TranslatedText;
+  readonly credit: TranslatedText | null;
+  readonly canDo: TranslatedText;
+  readonly cannotDo: TranslatedText;
+  readonly region: TranslatedText;
+  readonly loading: TranslatedText;
   readonly grants: readonly RoleCardLineWords[];
   readonly limits: readonly RoleCardLineWords[];
   /** `null` when the person adds teammates themself, or no owner name has arrived. */
-  readonly note: { readonly title: string; readonly message: string } | null;
-  readonly act: string;
-  readonly atAct: string;
-  readonly error: { readonly title: string; readonly body: string; readonly retry: string };
+  readonly note: { readonly title: TranslatedText; readonly message: TranslatedText } | null;
+  readonly act: TranslatedText;
+  readonly atAct: TranslatedText;
+  readonly error: {
+    readonly title: TranslatedText;
+    readonly body: TranslatedText;
+    readonly retry: TranslatedText;
+  };
 }
 
 export function roleCardWords(
@@ -177,7 +182,7 @@ export function roleCardWords(
 function ownersHolder(
   translate: Translator['t'],
   owners: NonNullable<RoleCardNames['owners']>,
-): string | null {
+): TranslatedText | null {
   const [first, second] = owners.names;
   if (first === undefined) return null;
   if (second === undefined) return translate(ROLE_CARD.ownerOne, { name: first });
@@ -185,7 +190,7 @@ function ownersHolder(
   return translate(ROLE_CARD.ownersMore, { first, second, more: owners.more });
 }
 
-function errorBody(translate: Translator['t'], facts: RoleCardNames): string {
+function errorBody(translate: Translator['t'], facts: RoleCardNames): TranslatedText {
   const { companyName: company, setterName: name } = facts;
   if (company === null) return translate(ROLE_CARD.errorPlain);
   if (name === null) return translate(ROLE_CARD.errorWait, { company });

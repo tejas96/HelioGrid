@@ -1,4 +1,5 @@
 'use client';
+import type { TranslatedText } from '@heliogrid/contracts';
 import { type PaymentTermsPage, useSession, useTrancheTemplates } from '@heliogrid/data/react';
 import { opensSettingsRow } from '@heliogrid/domain';
 import {
@@ -172,7 +173,7 @@ function savedLineOf(
   t: ReturnType<typeof useI18n>['t'],
   page: PaymentTermsPage,
   date: (value: Date) => string,
-): string | undefined {
+): TranslatedText | undefined {
   if (page.standing === null) return undefined;
   return paymentTermsSavedLine(t, page.standing, { date: (epochMs) => date(new Date(epochMs)) });
 }

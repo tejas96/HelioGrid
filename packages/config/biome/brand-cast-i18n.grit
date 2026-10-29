@@ -1,0 +1,11 @@
+// A brand minted by packages/i18n (declared in packages/contracts, which packages/ui may import) is
+// never obtained by a cast — `x as B`, `x as unknown as B` or `<B>x` — outside packages/i18n. A
+// brand added for packages/i18n to mint joins both lists below.
+or {
+  TsAsExpression(ty=$type),
+  TsTypeAssertionExpression(ty=$type)
+} as $cast where {
+  $type <: or { includes "TranslatedText" },
+  $type <: r"(?s)(?:TranslatedText)\b.*",
+  register_diagnostic(span=$cast, message="Words are never obtained by a cast — take them from packages/i18n's translator instead.")
+}

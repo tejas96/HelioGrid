@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The Proposal template page's words (`SCR-M01-19`, `M01-51`, `M01-52`), authored once for both
  * platforms (Law 11) in three languages (`F3-07`). The section names are a `Record` over domain's
@@ -14,6 +15,7 @@ import {
 } from '@heliogrid/domain';
 import { LANGUAGE_META } from '../languages';
 import type { MessageRef, Translator } from '../runtime';
+import { namedInItself } from './assembled';
 import { languageSwitcherWords } from './language-switcher';
 import { richTextWords } from './rich-text';
 import { settingsRowName, settingsSavedLine } from './settings';
@@ -162,15 +164,15 @@ export function sectionWords(t: T, phaseCount: number) {
 }
 
 /** A language's name as the strip and *Terms in …* say it: in itself (`F3-03`). */
-export function languageName(language: UiLanguage): string {
-  return LANGUAGE_META[language].endonym;
+export function languageName(language: UiLanguage): TranslatedText {
+  return namedInItself(LANGUAGE_META[language].endonym);
 }
 
 /** Every fixed word the Proposal template page draws, in the reader's language. */
 export function proposalTemplateWords(t: T) {
   const fixed = Object.fromEntries(
     Object.entries(TEMPLATE).map(([key, message]) => [key, t(message)]),
-  ) as Record<keyof typeof TEMPLATE, string>;
+  ) as Record<keyof typeof TEMPLATE, TranslatedText>;
   return {
     ...fixed,
     title: settingsRowName(t, 'proposal_templates'),
@@ -186,7 +188,10 @@ export function proposalTemplateWords(t: T) {
         part,
         { layer: t(line.layer), source: t(line.source), field: t(line.field) },
       ]),
-    ) as Record<keyof typeof PLATFORM_PART, { layer: string; source: string; field: string }>,
+    ) as Record<
+      keyof typeof PLATFORM_PART,
+      { layer: TranslatedText; source: TranslatedText; field: TranslatedText }
+    >,
     sectionsPrint: (printing: number, of: number) => t(TEMPLATE.sectionsPrint, { printing, of }),
     /** *Terms in English*: the language as the strip names it (`languageName`). */
     termsIn: (language: string) => t(TEMPLATE.termsIn, { language }),
@@ -208,7 +213,7 @@ export function proposalTemplatePageWords(
   t: T,
   page: { readonly standing: SettingsStanding | null },
   formats: { readonly date: (epochMs: number) => string },
-): { readonly standing?: string } {
+): { readonly standing?: TranslatedText } {
   const standing = page.standing === null ? null : settingsSavedLine(t, page.standing, formats);
   return standing === null ? {} : { standing };
 }
@@ -216,7 +221,7 @@ export function proposalTemplatePageWords(
 /** The strips' languages in the set's order, each named in itself (`F3-03`). */
 export function templateLanguages(): readonly {
   readonly code: UiLanguage;
-  readonly label: string;
+  readonly label: TranslatedText;
 }[] {
   return UI_LANGUAGES.map((code) => ({ code, label: languageName(code) }));
 }

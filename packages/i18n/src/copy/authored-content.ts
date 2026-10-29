@@ -1,4 +1,4 @@
-import type { UiLanguage } from '@heliogrid/contracts';
+import type { TranslatedText, UiLanguage } from '@heliogrid/contracts';
 import { LANGUAGE_META } from '../languages';
 import type { Translator } from '../runtime';
 
@@ -17,7 +17,7 @@ export function shownInNote(
   translate: Translator['t'],
   shownIn: UiLanguage,
   requested: UiLanguage,
-): string | null {
+): TranslatedText | null {
   if (shownIn === requested) return null;
   return translate(SHOWN_IN, {
     shown: LANGUAGE_META[shownIn].endonym,

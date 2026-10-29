@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ProposalTemplateWords } from '@heliogrid/i18n';
 import {
   BRANDING_FULL_SIZE,
@@ -22,7 +23,7 @@ export function TemplateFullSize({
   open: boolean;
   onClose: () => void;
   words: ProposalTemplateWords;
-  closeLabel: string;
+  closeLabel: TranslatedText;
   document: TemplateDocument;
 }) {
   return (
