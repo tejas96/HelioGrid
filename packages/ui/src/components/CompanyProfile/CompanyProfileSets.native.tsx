@@ -17,6 +17,7 @@ type SetProps = Pick<
   | 'onEdit'
   | 'onChooseSegment'
   | 'onDeclareSize'
+  | 'saving'
   | 'logoPicture'
   | 'onRequestLogo'
 > & {
@@ -37,6 +38,7 @@ export function ProfileSet({
   onChooseSegment,
   onDeclareSize,
   density,
+  saving,
   logoPicture = null,
   onRequestLogo,
 }: SetProps) {
@@ -48,6 +50,7 @@ export function ProfileSet({
         onChooseSegment={onChooseSegment}
         onDeclareSize={onDeclareSize}
         density={density}
+        saving={saving}
       />
     );
   }
@@ -60,6 +63,7 @@ export function ProfileSet({
       placeholder={spec.example}
       mono={spec.mono}
       error={spec.error ?? undefined}
+      disabled={saving}
       onChange={(value) => onEdit(spec.field, value)}
     />
   );
@@ -67,7 +71,11 @@ export function ProfileSet({
     <View style={set.disclosure === null ? styles.set : styles.disclosed}>
       {/* Where the logo goes, above the name. A phone has no pointer to drop with: the finger's hint. */}
       {part === 'identity' && words.logo !== null ? (
-        <Dropzone {...logoCapture(words.logo, logoPicture, false)} onRequestFiles={onRequestLogo} />
+        <Dropzone
+          {...logoCapture(words.logo, logoPicture, false)}
+          disabled={saving}
+          onRequestFiles={onRequestLogo}
+        />
       ) : null}
       {/* One wrapper whether or not the field has a line: a field whose line gives way to its
           error keeps its place in the tree, and so its focus, while a person types. */}
@@ -102,7 +110,8 @@ function WhatYouSellSet({
   onChooseSegment,
   onDeclareSize,
   density,
-}: Pick<SetProps, 'values' | 'onChooseSegment' | 'onDeclareSize' | 'density'> & {
+  saving,
+}: Pick<SetProps, 'values' | 'onChooseSegment' | 'onDeclareSize' | 'density' | 'saving'> & {
   words: SetProps['words']['declarations'];
 }) {
   return (
@@ -112,12 +121,13 @@ function WhatYouSellSet({
         density={density}
         options={[...words.options]}
         value={values.segment ?? undefined}
+        disabled={saving}
         onChange={(value) => {
           const chosen = words.options.find((option) => option.value === value);
           if (chosen !== undefined) onChooseSegment(chosen.value);
         }}
       />
-      <NumberField {...sizeField(words, values)} onCommit={onDeclareSize} />
+      <NumberField {...sizeField(words, values)} disabled={saving} onCommit={onDeclareSize} />
     </View>
   );
 }

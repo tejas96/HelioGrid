@@ -1,9 +1,12 @@
 import {
   IN_FORMATS,
   opensAssignRoles,
+  type Read,
+  type TeamList,
   type TeamStatusFilter,
   type TeamSurface,
   teamRoster,
+  teamRosterView,
 } from '@heliogrid/domain';
 import { createTranslator, teamActWords, teamListWords } from '@heliogrid/i18n';
 import { MemberAct, MemberList, memberActOf } from '@heliogrid/ui';
@@ -68,7 +71,8 @@ export function TeamListStory({
   withActs = false,
   withOpen = false,
 }: {
-  surface: TeamSurface;
+  /** The read's wait or failure, or the body its value draws. */
+  surface: 'loading' | 'failed' | TeamSurface;
   company: string;
   query?: string;
   status?: TeamStatusFilter;
@@ -96,6 +100,12 @@ export function TeamListStory({
       : surface === 'empty-chip'
         ? []
         : ROWS;
+  const read: Read<TeamList> =
+    surface === 'loading'
+      ? { kind: 'loading' }
+      : surface === 'failed'
+        ? { kind: 'failed', failure: 'no_answer', retry: onRetry }
+        : { kind: 'ready', value: { view: { ...teamRosterView(ROWS, '', 'all'), rows }, surface } };
   const acts = teamActWords(en.t, company);
   return (
     <div data-opened={opened} data-acted={acted}>
@@ -103,17 +113,15 @@ export function TeamListStory({
         {...(withActs
           ? {
               actOf: (row) => {
-                const act = memberActOf(row, ROWS, acts, null);
+                const act = memberActOf(row, ROWS, acts, () => false);
                 return act === null ? null : (
                   <MemberAct {...act} size="md" fullWidth onPress={() => setActed(row.name)} />
                 );
               },
             }
           : {})}
-        surface={surface}
-        rows={rows}
+        read={read}
         words={words}
-        onRetry={onRetry}
         onClearSearch={onClearSearch}
         onShowAll={onShowAll}
         openOf={

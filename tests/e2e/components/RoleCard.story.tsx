@@ -1,7 +1,14 @@
-import { type RoleCardNames, type RolePreset, roleCard, type UiLanguage } from '@heliogrid/domain';
+import {
+  type ReadKind,
+  type RoleCardNames,
+  type RolePreset,
+  roleCard,
+  type UiLanguage,
+} from '@heliogrid/domain';
 import { createTranslator, PROFILE_PREFERENCES, roleCardWords, SHELL } from '@heliogrid/i18n';
-import { type RoleCardState, RoleCardSurface } from '@heliogrid/ui';
+import { RoleCardSurface } from '@heliogrid/ui';
 import { useEffect, useState } from 'react';
+import { readIn } from '../support/read';
 
 const READERS = {
   en: await createTranslator('en'),
@@ -23,7 +30,7 @@ export function RoleCardAsHeld({
   reader: UiLanguage;
   roles?: readonly RolePreset[];
   names: RoleCardNames;
-  surface?: RoleCardState;
+  surface?: ReadKind;
 }) {
   const [open, setOpen] = useState(true);
   const [retried, setRetried] = useState(false);
@@ -43,11 +50,10 @@ export function RoleCardAsHeld({
         title={words.surfaceTitle}
         closeLabel={t(SHELL.close)}
         words={words}
-        surface={state}
-        onRetry={() => {
+        read={readIn(state, names, () => {
           setRetried(true);
           setState('ready');
-        }}
+        })}
       />
     </div>
   );
@@ -77,8 +83,7 @@ export function RoleCardOpenedFromARow({ names }: { names: RoleCardNames }) {
         title={words.surfaceTitle}
         closeLabel={t(SHELL.close)}
         words={words}
-        surface="ready"
-        onRetry={() => undefined}
+        read={{ kind: 'ready', value: names }}
       />
     </div>
   );

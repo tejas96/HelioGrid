@@ -116,8 +116,9 @@ const RAYZON_NEW = row(7, ['Rayzon Solar', 'RSM-580 580 Wp TOPCon'], {
 });
 const ELMEX_NEW = row(41, ['Elmex', 'MC4 connector pair'], { ...NEW, filePrice: '165' });
 
+const ALL_SHOWN = { hasMore: false, onMore: () => undefined };
 const list = (rows: readonly Row[], total = rows.length): ImportRowList => ({
-  ...{ rows, total, loading: false, hasMore: false, onMore: () => undefined },
+  ...{ read: { kind: 'ready', value: rows }, total, ...ALL_SHOWN },
 });
 
 const PREVIEW: ImportLists = {
@@ -289,7 +290,7 @@ export function CatalogImportAsRead({
         query={query}
         onQuery={setQuery}
         fixed={fixed}
-        busy={new Set()}
+        busy={() => false}
         onFix={act('fix')}
         onUndo={act('undo')}
         gate={importContinueGate(setup.frame, mapping?.columns ?? [])}

@@ -52,7 +52,7 @@ export function ProfileEditor({
         onDeclareSize={step.declareSize}
         saving={step.saving}
         onSave={save}
-        onRetryRead={step.retryRead}
+        read={step.read}
         onContinueWithout={step.continueWithout}
         logoPicture={step.logoPicture}
         onRequestLogo={requestLogo}

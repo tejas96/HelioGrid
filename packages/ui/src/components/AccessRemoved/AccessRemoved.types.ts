@@ -10,8 +10,9 @@ export interface AccessRemovedProps {
   description: string;
   /** "Sign in with another account". */
   actionLabel: string;
-  /** Pressed once only: the action turns off, keeping its name, so a second press sends nothing. */
   onAction: () => void;
+  /** The sign-out is out: the action turns off, keeping its name, so a second press sends nothing. */
+  pending: boolean;
   grievanceLabel: string;
   onGrievance: () => void;
 }

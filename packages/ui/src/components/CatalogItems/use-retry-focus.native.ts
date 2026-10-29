@@ -1,3 +1,4 @@
+import type { ReadKind } from '@heliogrid/domain';
 import { useEffect, useRef } from 'react';
 import { AccessibilityInfo, findNodeHandle, type View } from 'react-native';
 
@@ -5,15 +6,15 @@ import { AccessibilityInfo, findNodeHandle, type View } from 'react-native';
  * *Try again* leaves with the error state it sits in, so once the panel is back the reader's focus
  * goes to its strip's title, which stays (`RoleCard` does the same).
  */
-export function useRetryFocus(surface: 'loading' | 'error' | 'ready') {
+export function useRetryFocus(read: ReadKind) {
   const target = useRef<View>(null);
   const retried = useRef(false);
   useEffect(() => {
-    if (!retried.current || surface !== 'ready') return;
+    if (!retried.current || read !== 'ready') return;
     retried.current = false;
     const tag = findNodeHandle(target.current);
     if (tag !== null) AccessibilityInfo.setAccessibilityFocus(tag);
-  }, [surface]);
+  }, [read]);
   return {
     target,
     retrying: (run: () => void) => () => {

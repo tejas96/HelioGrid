@@ -59,9 +59,9 @@ export function ProfileScreen() {
         }}
         onLanguage={(next) => void setLocale(next)}
         onUnits={(next) => void setUnitPreference(next)}
-        push={push}
+        read={push.read}
+        refused={push.refused}
         onPush={push.flip}
-        onRetry={push.retry}
       />
       <NameAndPhotoEditor
         open={editor.isOpen}
@@ -86,8 +86,7 @@ export function ProfileScreen() {
         title={roleWords.surfaceTitle}
         closeLabel={t(SHELL.close)}
         words={roleWords}
-        surface={role.surface}
-        onRetry={role.retry}
+        read={role.read}
       />
     </ShellPage>
   );

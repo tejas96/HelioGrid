@@ -10,7 +10,8 @@ const LABELS = { taxIdLabel: 'GSTIN', bankRoutingLabel: 'IFSC' };
 const LOGO = { limits: COMPANY_LOGO_LIMITS, refusal: null, held: false };
 const STEP = {
   life: 'setup',
-  status: 'ready',
+  read: { kind: 'ready' },
+  saveFailed: false,
   arrivedUndeclared: false,
   standings: AT_SIGNUP.standings,
   open: AT_SIGNUP.open,

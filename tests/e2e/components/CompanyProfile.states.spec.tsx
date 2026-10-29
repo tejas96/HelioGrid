@@ -123,11 +123,15 @@ test('a failed save keeps everything typed and the same part open, and says so o
   await expectNoSidewaysScroll(page);
 });
 
-test('while a save is under way the primary is busy; after a failed one the second act is off too', async ({
+test('while a save is under way the primary is busy and the fields are held; after a failed one the second act is off too', async ({
   mount,
 }) => {
   const saving = await mount(<CompanyProfileAsHeld reader="en" saving />);
   await expect(saving.locator('.hg-button[aria-busy="true"]')).toHaveCount(1);
+  await expect(saving.getByRole('textbox').first()).toBeVisible();
+  for (const field of await saving.locator('input, textarea, [role="combobox"]').all()) {
+    await expect(field).toBeDisabled();
+  }
   await saving.unmount();
 
   const retrying = await mount(<CompanyProfileAsHeld reader="en" status="save-failed" saving />);

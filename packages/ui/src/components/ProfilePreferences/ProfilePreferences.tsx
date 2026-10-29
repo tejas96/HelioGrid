@@ -1,4 +1,4 @@
-import { useId, useRef } from 'react';
+import { type RefObject, useId, useRef } from 'react';
 import { useOwnWidth } from '../../primitives/use-own-width';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar/Avatar';
@@ -22,6 +22,7 @@ import {
   languageOf,
   PROFILE_PREFERENCES_LOADING,
   PROFILE_PREFERENCES_WIDE_FROM,
+  pushSwitchesOf,
   pushSwitchWords,
   roleBadges,
   unitOptions,
@@ -39,35 +40,38 @@ export function ProfilePreferences(props: ProfilePreferencesProps) {
   const [room, width] = useOwnWidth<HTMLDivElement>();
   const wide = width !== null && width >= PROFILE_PREFERENCES_WIDE_FROM;
   const title = useRef<HTMLHeadingElement>(null);
-  /* *Try again* leaves with its banner, so focus goes to the title, which stays through the
-     loading bars and the page that follow. */
-  const onRetry = () => {
-    title.current?.focus({ preventScroll: true });
-    props.onRetry();
-  };
   return (
     <div ref={room} className="hg-profile-preferences" data-wide={wide ? 'true' : undefined}>
       <h1 ref={title} tabIndex={-1} className="hg-profile-preferences-title">
         {props.words.title}
       </h1>
-      <PageBody {...props} onRetry={onRetry} wide={wide} />
+      <PageBody {...props} title={title} wide={wide} />
     </div>
   );
 }
 
 /** Until the push read answers, the page is its loading bars (`m-loading`) or its banner (`m-error`). */
-function PageBody({ wide, ...props }: ProfilePreferencesProps & { wide: boolean }) {
-  const { words, push, onRetry } = props;
-  if (push.surface === 'loading') {
+function PageBody({
+  wide,
+  title,
+  ...props
+}: ProfilePreferencesProps & { wide: boolean; title: RefObject<HTMLElement | null> }) {
+  const { words, read } = props;
+  if (read.kind === 'loading') {
     return <LoadingBars label={words.loading} bars={PROFILE_PREFERENCES_LOADING} />;
   }
-  if (push.surface === 'error') {
+  if (read.kind === 'failed') {
+    /* *Try again* leaves with its banner: focus goes to the title, which stays through what follows. */
+    const retry = () => {
+      title.current?.focus({ preventScroll: true });
+      read.retry();
+    };
     return (
       <Banner
         kind="state"
         tone="danger"
         title={words.loadFailed.title}
-        action={<BannerAction onClick={onRetry}>{words.loadFailed.retry}</BannerAction>}
+        action={<BannerAction onClick={retry}>{words.loadFailed.retry}</BannerAction>}
       >
         {words.loadFailed.body}
       </Banner>
@@ -88,9 +92,7 @@ function Roles({ words }: Pick<ProfilePreferencesProps, 'words'>) {
   );
 }
 
-function Chevron() {
-  return <ShellGlyph name="chevron-right" size="md" tone="secondary" />;
-}
+const CHEVRON = <ShellGlyph name="chevron-right" size="md" tone="secondary" />;
 
 function PhonePage({
   words,
@@ -101,7 +103,8 @@ function PhonePage({
   onRole,
   onLanguage,
   onUnits,
-  push,
+  read,
+  refused,
   onPush,
 }: ProfilePreferencesProps) {
   const ids = useId();
@@ -127,7 +130,7 @@ function PhonePage({
             density="functional"
             marks={<Roles words={words} />}
             onClick={onRole}
-            trailing={<Chevron />}
+            trailing={CHEVRON}
           />
         </SettingsCard>
       </section>
@@ -172,8 +175,8 @@ function PhonePage({
           <AboutPush words={words} />
         </div>
         <div className="hg-profile-preferences-switches">
-          {push.switches.map((one) => {
-            const { label, error } = pushSwitchWords(words, push, one);
+          {pushSwitchesOf(read).map((one) => {
+            const { label, error } = pushSwitchWords(words, refused, one);
             if (!one.locked) {
               return (
                 <Switch
@@ -211,7 +214,8 @@ function WidePage({
   onRole,
   onLanguage,
   onUnits,
-  push,
+  read,
+  refused,
   onPush,
 }: ProfilePreferencesProps) {
   const ids = useId();
@@ -231,7 +235,7 @@ function WidePage({
           density="functional"
           marks={<Roles words={words} />}
           onClick={onRole}
-          trailing={<Chevron />}
+          trailing={CHEVRON}
         />
       </SettingsSection>
       <SettingsSection title={words.languageAndUnits}>
@@ -269,8 +273,8 @@ function WidePage({
         />
       </SettingsSection>
       <SettingsSection title={words.push.title} titleAside={<AboutPush words={words} />}>
-        {push.switches.map((one) => {
-          const { label, error } = pushSwitchWords(words, push, one);
+        {pushSwitchesOf(read).map((one) => {
+          const { label, error } = pushSwitchWords(words, refused, one);
           const id = `${ids}-push-${one.group}`;
           return (
             <SettingsSectionRow

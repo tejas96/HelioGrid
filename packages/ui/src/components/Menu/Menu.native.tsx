@@ -99,9 +99,12 @@ export function Menu({
             onPress={() => setAnchor(null)}
             style={styles.scrim}
           />
+          {/* Modal while open: a sheet's modal panel hides every other layer from a screen
+              reader, this menu's own portal layer included. */}
           <View
             accessibilityRole="menu"
             accessibilityLabel={label}
+            accessibilityViewIsModal
             style={[
               styles.list,
               {

@@ -1,4 +1,4 @@
-import type { PriceBookRateBasis, UiLanguage } from '@heliogrid/domain';
+import type { PriceBookRateBasis, Read, UiLanguage } from '@heliogrid/domain';
 import type { CatalogStrip } from '../CatalogItems/CatalogItems.types';
 
 /**
@@ -9,8 +9,8 @@ import type { CatalogStrip } from '../CatalogItems/CatalogItems.types';
  */
 export interface CatalogRatesProps {
   words: CatalogRatesWords;
-  surface: 'loading' | 'error' | 'ready';
-  onRetry: () => void;
+  /** The price book's read: its strip and rates draw once it is in. */
+  read: Read<unknown>;
   strip: CatalogStrip;
   rates: readonly CatalogRate[];
   /** Before the first version: the empty teaching, with its first act for the grant. */
@@ -54,8 +54,8 @@ export interface CatalogVersionList {
   readonly mode: 'list';
   readonly words: CatalogVersionWords;
   readonly versions: readonly CatalogVersionSummary[];
-  readonly surface: 'loading' | 'error' | 'ready';
-  readonly onRetry: () => void;
+  /** The versions' read: they draw once it is in. */
+  readonly read: Read<unknown>;
   readonly onOpen: (id: string) => void;
   readonly hasMore: boolean;
   readonly onMore: () => void;
@@ -83,8 +83,8 @@ export interface CatalogVersionRead {
   readonly rateCount: string;
   readonly note: string;
   readonly rates: readonly CatalogRate[];
-  readonly surface: 'loading' | 'error' | 'ready';
-  readonly onRetry: () => void;
+  /** The version's read: its margin, note and rates draw once it is in. */
+  readonly read: Read<unknown>;
 }
 
 export interface CatalogVersionEdit {
@@ -205,8 +205,7 @@ export interface CatalogAttributionWords {
 export interface CatalogAttributionProps {
   words: CatalogAttributionWords;
   /** The changed list's read: nothing while it loads, the failure with *Try again* if it fails. */
-  surface: 'loading' | 'error' | 'ready';
-  onRetry: () => void;
+  read: Read<unknown>;
   rows: readonly CatalogAttributionRow[];
   /** `null` when every changed item is listed. */
   onMore: (() => void) | null;

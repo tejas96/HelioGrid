@@ -1,4 +1,4 @@
-import type { ExplainerPagerWords, RolePreset, TeamLoad, UncountedHolder } from '@heliogrid/domain';
+import type { ExplainerPagerWords, Read, RolePreset, UncountedHolder } from '@heliogrid/domain';
 
 /**
  * **Roles reference** (`SCR-M01-14`, `M01-21`): the twelve fixed roles as tiles with how many active
@@ -8,10 +8,11 @@ import type { ExplainerPagerWords, RolePreset, TeamLoad, UncountedHolder } from 
  */
 export interface RolesReferenceProps {
   words: RolesReferenceWordsProp;
-  /** Where the holder counts stand; the roles, their words and their lists never wait. */
-  counts: RolesReferenceCounts;
-  /** The banner's *Try again*, when the counts did not load. */
-  onRetry: () => void;
+  /**
+   * The Team roster's read, which the holder counts come from; a failed one draws the banner and its
+   * *Try again*. The roles, their words and their lists never wait.
+   */
+  read: Read<unknown>;
   /**
    * `page` — the page draws its own title, with the ask beside it and the lede under it (the web);
    * `bar` — the screen's bar holds the title, so the lede leads with the ask beside it (the phone).
@@ -23,9 +24,6 @@ export interface RolesReferenceProps {
    */
   back?: RolesReferenceBack | null;
 }
-
-/** The Team roster's read, which the counts come from. */
-export type RolesReferenceCounts = TeamLoad;
 
 export interface RolesReferenceBack {
   readonly label: string;

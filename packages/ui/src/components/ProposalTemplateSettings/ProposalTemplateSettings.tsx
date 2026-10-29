@@ -75,8 +75,8 @@ function WidePage(props: BodyProps) {
  * The title when the page draws it, then the standing line (absent while loading or never saved)
  * and the Quick line. With the title in the phone's bar, the lines sit under the bar's title.
  */
-function PageHead({ title, standing, loading, words }: BodyProps) {
-  const standingShown = loading ? undefined : standing;
+function PageHead({ title, standing, read, words }: BodyProps) {
+  const standingShown = read.kind === 'ready' ? standing : undefined;
   return (
     <div className="hg-template-head" data-titled={title === undefined ? undefined : 'true'}>
       {title === undefined ? null : (
@@ -97,8 +97,8 @@ function PageHead({ title, standing, loading, words }: BodyProps) {
 }
 
 /** Every part is HelioGrid's: the one line that says so and what to do (m19-n2, D267). */
-function Teaching({ teaching, loading, words }: BodyProps) {
-  if (!teaching || loading) return null;
+function Teaching({ teaching, read, words }: BodyProps) {
+  if (!teaching || read.kind !== 'ready') return null;
   return (
     <div className="hg-template-teaching">
       <Banner kind="info" title={words.teachTitle} density="functional">
@@ -110,8 +110,9 @@ function Teaching({ teaching, loading, words }: BodyProps) {
 
 /** The part's switch, the part and the two rows — or, while the reads are out, their bars. */
 function EditorBody(props: BodyProps) {
-  const { words, loading } = props;
-  if (loading) return <LoadingBars label={words.loading} bars={['control', 'panel', 'row']} />;
+  const { words, read } = props;
+  if (read.kind !== 'ready')
+    return <LoadingBars label={words.loading} bars={['control', 'panel', 'row']} />;
   return (
     <>
       <TemplatePartSwitch {...props} />
@@ -122,8 +123,8 @@ function EditorBody(props: BodyProps) {
 }
 
 /** *Proposals already sent keep…*: gone while the reads are out or a change is held (the bar says it). */
-function PageEnd({ words, loading, held, act }: BodyProps) {
-  if (loading || held || act !== undefined) return null;
+function PageEnd({ words, read, held, act }: BodyProps) {
+  if (read.kind !== 'ready' || held || act !== undefined) return null;
   return (
     <Text
       as="p"

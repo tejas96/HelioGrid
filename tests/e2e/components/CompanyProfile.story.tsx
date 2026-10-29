@@ -9,6 +9,7 @@ import {
   companyProfileStanding,
   IN_PACK,
   inLanguage,
+  type Read,
   type UiLanguage,
 } from '@heliogrid/domain';
 import { companyProfileWords, createTranslator, provenanceWords } from '@heliogrid/i18n';
@@ -76,6 +77,15 @@ function factsOf(values: CompanyProfileValues, logo: LogoState): CompanyProfileF
  * `companyProfileWords`' in the reader's language, with the India pack's three labels. The words
  * are built while the component renders, so they cannot come through `mount`.
  */
+/** The page's read as the story's state names it; a failed save follows a read that came. */
+function readAs(status: StoryStatus, retry: () => void): Read<null> {
+  if (status === 'loading') return { kind: 'loading' };
+  if (status === 'unread') return { kind: 'failed', failure: 'refused', retry };
+  return { kind: 'ready', value: null };
+}
+
+type StoryStatus = 'loading' | 'ready' | 'unread' | 'save-failed';
+
 export function CompanyProfileAsHeld({
   reader,
   life = 'setup',
@@ -94,7 +104,7 @@ export function CompanyProfileAsHeld({
   life?: CompanyProfileLife;
   /** The phone's settings bar holds the title. */
   titleInBar?: boolean;
-  status?: 'loading' | 'ready' | 'unread' | 'save-failed';
+  status?: StoryStatus;
   skipped?: boolean;
   saving?: boolean;
   /** The step before did not save: what the company sells is still owed. */
@@ -115,6 +125,7 @@ export function CompanyProfileAsHeld({
   const [pressed, setPressed] = useState('');
   const [chosen, setChosen] = useState<readonly string[]>([]);
   const { t } = READERS[reader];
+  const read = readAs(status, () => setPressed('retry-read'));
   const facts = factsOf(values, logo);
   const standings = Object.fromEntries(
     COMPANY_PROFILE_PARTS.map((part) => [part, companyProfileStanding(part, facts, IN_PACK.tax)]),
@@ -131,7 +142,8 @@ export function CompanyProfileAsHeld({
           titleInBar={titleInBar}
           words={companyProfileWords(t, {
             life,
-            status,
+            read: read.kind,
+            saveFailed: status === 'save-failed',
             skipped,
             arrivedUndeclared: undeclared,
             standings,
@@ -164,7 +176,7 @@ export function CompanyProfileAsHeld({
           onDeclareSize={(typicalSystemKwp) => setValues((held) => ({ ...held, typicalSystemKwp }))}
           saving={saving}
           onSave={() => setPressed('save')}
-          onRetryRead={() => setPressed('retry-read')}
+          read={read}
           onContinueWithout={() => setPressed('continue-without')}
           logoPicture={picture}
           onChooseLogo={(file) => setChosen((list) => [...list, `${file.name}:${file.type}`])}

@@ -1,6 +1,8 @@
 'use client';
 import { DEFAULT_PAGE_LIMIT, type Paginated } from '@heliogrid/contracts';
+import { mapRead } from '@heliogrid/domain';
 import { keepPreviousData, type QueryKey, useQuery } from '@tanstack/react-query';
+import { readOf } from './read';
 
 interface PagedListOptions<TItem> {
   queryKey: QueryKey;
@@ -13,8 +15,8 @@ interface PagedListOptions<TItem> {
 
 /**
  * SINGLE-PAGE pagination — web numbered-pager tables (foundation-dx spec §4.3).
- * keepPreviousData keeps the old page rendered while the next loads, so page flips never
- * flash empty. For infinite scroll / load-more use usePaginatedList instead.
+ * keepPreviousData keeps the old page ready while the next loads, so page flips never flash a
+ * skeleton. For infinite scroll / load-more use usePaginatedList instead.
  */
 export function usePagedList<TItem>({
   queryKey,
@@ -32,12 +34,9 @@ export function usePagedList<TItem>({
 
   const totalCount = query.data?.totalCount ?? 0;
   return {
-    items: query.data?.items ?? [],
+    read: mapRead(readOf(query), (answer): readonly TItem[] => answer.items),
     totalCount,
     pageCount: Math.ceil(totalCount / limit),
-    status: query.status,
-    error: query.error,
     isPlaceholderData: query.isPlaceholderData,
-    refetch: query.refetch,
   };
 }

@@ -15,14 +15,10 @@ export function SetupReadyScreen() {
   const { t } = useI18n();
   const router = useRouter();
   const ready = useSetupReady();
-  if (ready.company.status === 'pending') return null;
-  const words = setupReadyWords(t);
   return (
     <SetupReady
-      words={{
-        ...words,
-        companyLine: ready.company.status === 'ready' ? words.companyLine(ready.company.name) : '',
-      }}
+      read={ready.company}
+      words={setupReadyWords(t)}
       demo={ready.demo}
       leaving={ready.leaving}
       onStartWithLead={() => {
@@ -30,9 +26,7 @@ export function SetupReadyScreen() {
         void ready.startWithLead();
       }}
       onOpenDemo={() => undefined}
-      unreachable={ready.company.status === 'failed'}
       retrying={ready.retrying}
-      onTryAgain={ready.tryAgain}
     />
   );
 }

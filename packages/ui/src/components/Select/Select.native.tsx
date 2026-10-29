@@ -182,32 +182,36 @@ export function Select({
       ) : null}
       {anchor !== null ? (
         <Portal>
-          <Pressable
-            accessibilityLabel="Close the list"
-            onPress={() => setAnchor(null)}
-            style={StyleSheet.absoluteFill}
-          >
-            <View />
-          </Pressable>
-          <View
-            style={[
-              styles.list,
-              {
-                left: anchor.left,
-                width: anchor.width,
-                ...(anchor.up
-                  ? { bottom: anchor.windowHeight - anchor.y + GAP }
-                  : { top: anchor.top }),
-              },
-            ]}
-          >
-            <SelectListbox
-              activeIndex={Math.max(0, selectedIndex)}
-              maxHeight={anchor.max}
-              onCommit={commit}
-              options={opts}
-              value={value}
-            />
+          {/* Modal while open: a sheet's modal panel hides every other layer from a screen
+              reader, this list's own portal layer included, so its options would not be read. */}
+          <View style={StyleSheet.absoluteFill} pointerEvents="box-none" accessibilityViewIsModal>
+            <Pressable
+              accessibilityLabel="Close the list"
+              onPress={() => setAnchor(null)}
+              style={StyleSheet.absoluteFill}
+            >
+              <View />
+            </Pressable>
+            <View
+              style={[
+                styles.list,
+                {
+                  left: anchor.left,
+                  width: anchor.width,
+                  ...(anchor.up
+                    ? { bottom: anchor.windowHeight - anchor.y + GAP }
+                    : { top: anchor.top }),
+                },
+              ]}
+            >
+              <SelectListbox
+                activeIndex={Math.max(0, selectedIndex)}
+                maxHeight={anchor.max}
+                onCommit={commit}
+                options={opts}
+                value={value}
+              />
+            </View>
           </View>
         </Portal>
       ) : null}

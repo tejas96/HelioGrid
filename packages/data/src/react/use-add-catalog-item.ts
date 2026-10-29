@@ -12,12 +12,15 @@ import {
   itemDraftFrom,
   judgeItemDraft,
   type OwnItemCreateBody,
+  type Read,
 } from '@heliogrid/domain';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { ApiError } from '../errors/errors';
+import { useAction } from './action';
 import { useRepositories } from './context';
+import { readOf } from './read';
 import { companyRead } from './shell-reads';
 import { useTenantId } from './use-tenant-id';
 
@@ -41,6 +44,9 @@ function opened(state: Opened, event: ItemDraftEvent | { type: 'open'; draft: It
   if (event.type === 'open') return { draft: event.draft, opened: event.draft };
   return { ...state, draft: itemDraftAfter(state.draft, event) };
 }
+
+/** A fresh form has nothing to read before it draws. */
+const NOTHING_TO_READ: Read<null> = { kind: 'ready', value: null };
 
 /** The body paths a drawn field reads: a refusal at any other path is the returned line. */
 const DRAWN = /^(brand|model|rate\.amount|spec\..+|certifications\.[^.]+)$/u;
@@ -103,41 +109,41 @@ export function useAddCatalogItem(options: AddCatalogItemOptions) {
     [pack.data],
   );
   const [failures, setFailures] = useState<readonly ItemFieldFailure[]>([]);
-  const [saving, setSaving] = useState(false);
   const [returned, setReturned] = useState(false);
   const [confirming, setConfirming] = useState(false);
   /** Counts the refused sends: each lands focus on the first field it names. */
   const [refusal, setRefusal] = useState(0);
-  const inFlight = useRef(false);
+  const create = useAction(
+    async (body: OwnItemCreateBody) => {
+      setFailures([]);
+      setReturned(false);
+      const item = await repositories.catalog.createItem(body);
+      await client.invalidateQueries({ queryKey: queryKeys.catalog.all(tenantId) });
+      return item;
+    },
+    {
+      onDone: (item) => onAdded(item),
+      onFailed: (error, body) => {
+        const fields = failuresOf(error, body);
+        if (fields === null) setReturned(true);
+        else {
+          setFailures(fields);
+          setRefusal((count) => count + 1);
+        }
+      },
+    },
+  );
 
+  /* A press while the create is out finds its lock held and sends nothing. */
   const submit = useCallback(async () => {
-    if (inFlight.current) return;
     const judged = judgeItemDraft(state.draft, schemes, { priced });
     if (!judged.ok) {
       setFailures(judged.failures);
       setRefusal((count) => count + 1);
       return;
     }
-    inFlight.current = true;
-    setFailures([]);
-    setReturned(false);
-    setSaving(true);
-    try {
-      const item = await repositories.catalog.createItem(judged.body);
-      await client.invalidateQueries({ queryKey: queryKeys.catalog.all(tenantId) });
-      onAdded(item);
-    } catch (error) {
-      const fields = failuresOf(error, judged.body);
-      if (fields === null) setReturned(true);
-      else {
-        setFailures(fields);
-        setRefusal((count) => count + 1);
-      }
-    } finally {
-      inFlight.current = false;
-      setSaving(false);
-    }
-  }, [state.draft, schemes, priced, repositories, client, tenantId, onAdded]);
+    await create.run(judged.body);
+  }, [create.run, state.draft, schemes, priced]);
 
   const change = useCallback((event: ItemDraftEvent) => dispatch(event), []);
   const dismissReturned = useCallback(() => setReturned(false), []);
@@ -145,13 +151,13 @@ export function useAddCatalogItem(options: AddCatalogItemOptions) {
   /** Cancel, close, Esc or the backdrop: nothing typed leaves at once; anything typed asks first. */
   const cancel = useCallback(() => {
     /* A create that is out may land: leaving now would say nothing was created when it was. */
-    if (inFlight.current) return;
+    if (create.isOut()) return;
     if (dirty) setConfirming(true);
     else onClose();
-  }, [dirty, onClose]);
+  }, [create.isOut, dirty, onClose]);
   const keep = useCallback(() => setConfirming(false), []);
 
-  const loading = fromItemId !== null && selected.data === undefined && !selected.isError;
+  const prefill = fromItemId === null ? NOTHING_TO_READ : readOf(selected);
   return {
     /** The selected item's name, for *Filled in from …*; `null` for a fresh form. */
     copiedFrom: selected.data ? `${selected.data.brand} ${selected.data.model}` : null,
@@ -163,9 +169,9 @@ export function useAddCatalogItem(options: AddCatalogItemOptions) {
       refusal,
       onSpreadsheet: priced ? onSpreadsheet : null,
       schemes,
-      /** The pre-fill is being read: the spec block is its placeholder. */
-      loading,
-      saving,
+      /** The pre-fill's read: while it is out, the spec block is its placeholder. */
+      read: prefill,
+      saving: create.pending,
       returned,
       confirmingDiscard: confirming,
       onChange: change,

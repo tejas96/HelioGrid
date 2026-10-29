@@ -32,7 +32,7 @@ export function CatalogRelease(props: CatalogReleaseProps) {
 function PublishBody(props: CatalogPublishBody) {
   const { words, label, onLabel, problem, changes, more } = props;
   const focus = useMoreFocus<HTMLDivElement>(more !== null);
-  const retry = useRetryFocus(props.surface);
+  const retry = useRetryFocus(props.read.kind);
   return (
     <div ref={retry.target} tabIndex={-1} className="hg-cat-release">
       <Input
@@ -42,7 +42,7 @@ function PublishBody(props: CatalogPublishBody) {
         density="functional"
         error={problem ?? undefined}
       />
-      {waitOrFail(props, retry.retrying(props.onRetry)) ??
+      {waitOrFail(props, retry.retrying) ??
         (changes === null ? null : (
           <div ref={focus.target} tabIndex={-1} className="hg-cat-release">
             <Changes changes={changes} words={words} grouped={false} />
@@ -59,8 +59,8 @@ function PublishBody(props: CatalogPublishBody) {
 
 function ContentsBody(props: CatalogContentsBody) {
   const { words, release, changes } = props;
-  const retry = useRetryFocus(props.surface);
-  const waiting = waitOrFail(props, retry.retrying(props.onRetry));
+  const retry = useRetryFocus(props.read.kind);
+  const waiting = waitOrFail(props, retry.retrying);
   if (waiting !== null) return waiting;
   return (
     <div ref={retry.target} tabIndex={-1} className="hg-cat-release">
@@ -210,21 +210,24 @@ function ChangeCard({ item, words }: { item: CatalogReleaseItem; words: CatalogR
 }
 
 /**
- * A body's read still out, or failed with *Try again*; `null` once it is in. `onRetry` moves the
+ * A body's read still out, or failed with *Try again*; `null` once it is in. `retrying` moves the
  * reader's focus to the body that comes back.
  */
-function waitOrFail(props: CatalogPublishBody | CatalogContentsBody, onRetry: () => void) {
-  const { words } = props;
-  if (props.surface === 'loading') {
+function waitOrFail(
+  props: CatalogPublishBody | CatalogContentsBody,
+  retrying: (retry: () => void) => () => void,
+) {
+  const { words, read } = props;
+  if (read.kind === 'loading') {
     return <LoadingBars label={words.loading} bars={['panel', 'row', 'row']} />;
   }
-  if (props.surface === 'error') {
+  if (read.kind === 'failed') {
     return (
       <EmptyState
         glow={false}
         title={words.loadFailed}
         action={
-          <Button variant="secondary" size="lg" onClick={onRetry}>
+          <Button variant="secondary" size="lg" onClick={retrying(read.retry)}>
             {words.tryAgain}
           </Button>
         }

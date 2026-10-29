@@ -178,9 +178,7 @@ describe('teamActWords — the row acts’ confirms, refusal and toasts', () => 
   } as const satisfies TeamRow;
 
   it('an open deactivate confirm reads its question, act and Cancel', () => {
-    expect(
-      words().confirm({ kind: 'asking', act: 'deactivate', row: rajesh, busy: false }),
-    ).toEqual({
+    expect(words().confirm({ kind: 'asking', act: 'deactivate', row: rajesh })).toEqual({
       title: 'Deactivate Rajesh Kulkarni?',
       go: 'Deactivate Rajesh',
       body: 'Rajesh loses access to Suryodaya Solar. Everything Rajesh did stays in Rajesh’s name.',

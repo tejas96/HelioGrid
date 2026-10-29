@@ -1,16 +1,20 @@
 'use client';
+import type { Liveness } from '@heliogrid/contracts';
+import type { Read } from '@heliogrid/domain';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '../cache/keys';
 import { useRepositories } from './context';
+import { readOf } from './read';
 
 /**
  * React Query lives ONLY in this directory. Replacing it touches these files and no
  * repository, no screen — the adapter boundary the `data-core-is-framework-free` gate holds.
  */
-export function useLiveness() {
+export function useLiveness(): Read<Liveness> {
   const { health } = useRepositories();
-  return useQuery({
+  const liveness = useQuery({
     queryKey: queryKeys.health.liveness,
     queryFn: ({ signal }) => health.liveness(signal),
   });
+  return readOf(liveness);
 }

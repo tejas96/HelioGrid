@@ -37,7 +37,7 @@ export function RatesPanel({
   const book = usePriceBook();
   const draft = usePriceBookDraft();
   const [browsing, setBrowsing] = useState(false);
-  const inForce = book.data;
+  const inForce = book.kind === 'ready' ? book.value : undefined;
   const head = inForce?.version ?? null;
   const begin = () => {
     if (inForce) draft.start(inForce);
@@ -52,8 +52,7 @@ export function RatesPanel({
     <>
       <CatalogRates
         words={catalogRatesWords(t)}
-        surface={book.isError ? 'error' : inForce ? 'ready' : 'loading'}
-        onRetry={() => void book.refetch()}
+        read={book}
         strip={{
           ...priceBookStripWords(
             t,
@@ -96,7 +95,7 @@ export function RatesPanel({
             onCancel={draft.close}
             act={t(PRICE_BOOK.saveAs, { number: next })}
             onAct={save}
-            busy={draft.publishing.busy}
+            busy={draft.publishing.pending}
             off={draft.incomplete}
           />
         }
@@ -118,7 +117,7 @@ export function RatesPanel({
           }))}
           onAddRate={draft.addRate}
           noteHint={draft.noteMissing ? t(PRICE_BOOK.noteNeeded) : null}
-          problem={draft.publishing.failed ? t(PRICE_BOOK.saveFailed) : null}
+          problem={draft.publishing.failure === null ? null : t(PRICE_BOOK.saveFailed)}
         />
       </EditorSurface>
       <RateSheet draft={draft} />

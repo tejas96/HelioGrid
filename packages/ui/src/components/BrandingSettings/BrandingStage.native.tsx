@@ -18,7 +18,7 @@ import type { BrandingPreview, BrandingSettingsProps } from './BrandingSettings.
 type StageProps = Pick<
   BrandingSettingsProps,
   | 'words'
-  | 'loading'
+  | 'read'
   | 'preview'
   | 'onPreview'
   | 'part'
@@ -37,7 +37,7 @@ type StageProps = Pick<
  */
 export function BrandingStage({
   words,
-  loading,
+  read,
   preview,
   onPreview,
   part,
@@ -54,7 +54,7 @@ export function BrandingStage({
   const note = unsaved ? words.notSaved : undefined;
   return (
     <Surface background="canvas-sunken" radius="lg" style={styles.stage}>
-      {loading ? (
+      {read.kind !== 'ready' ? (
         <PreviewFrame
           {...frame}
           surface="sheet"

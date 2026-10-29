@@ -204,8 +204,13 @@ export function CatalogItemsAsRead({ reader, frame }: { reader: UiLanguage; fram
     >
       <CatalogItems
         words={words}
-        surface={frame === 'loading' ? 'loading' : frame === 'error' ? 'error' : 'ready'}
-        onRetry={() => setRetried(true)}
+        read={
+          frame === 'loading'
+            ? { kind: 'loading' }
+            : frame === 'error'
+              ? { kind: 'failed', failure: 'no_answer', retry: () => setRetried(true) }
+              : { kind: 'ready', value: null }
+        }
         strip={{
           ...catalogReleaseStripWords(
             t,

@@ -9,7 +9,7 @@ import type { SchemeSwitchRowProps } from './CatalogItemForm.parts.types';
  * takes the success wash; off, it lies white on the card inside its own thin edge.
  */
 export function SchemeSwitchRow(props: SchemeSwitchRowProps) {
-  const { scheme, words, held, error, focusRequest, onChange } = props;
+  const { scheme, words, held, error, focusRequest, disabled, onChange } = props;
   const asksReference = held.on && words.reference !== null;
   return (
     <div className="hg-item-scheme" data-on={held.on} data-reference={asksReference}>
@@ -17,6 +17,7 @@ export function SchemeSwitchRow(props: SchemeSwitchRowProps) {
         className="hg-item-scheme-switch"
         label={words.label}
         checked={held.on}
+        disabled={disabled}
         onChange={(on) => onChange({ type: 'scheme', scheme, on })}
       />
       {asksReference ? (
@@ -26,6 +27,7 @@ export function SchemeSwitchRow(props: SchemeSwitchRowProps) {
           onChange={(value) => onChange({ type: 'reference', scheme, value })}
           density="functional"
           error={error}
+          disabled={disabled}
           focusRequest={focusRequest}
         />
       ) : null}

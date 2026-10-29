@@ -38,7 +38,6 @@ export type TeamConfirmState =
       readonly kind: 'asking';
       readonly act: Exclude<TeamAct, 'invite-again'>;
       readonly row: TeamRow;
-      readonly busy: boolean;
     }
   | { readonly kind: 'refused'; readonly row: TeamRow; readonly lostOwner: string | null };
 

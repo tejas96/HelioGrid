@@ -4475,11 +4475,6 @@ msgid "Open the usage screen and the subscription invoice list"
 msgstr "Open the usage screen and the subscription invoice list"
 
 #. js-lingui-explicit-id
-#: src/copy/payment-terms.ts:34
-msgid "Open this page again to retry."
-msgstr "Open this page again to retry."
-
-#. js-lingui-explicit-id
 #: src/copy/catalog-import-fields.ts:18
 msgid "Open-circuit voltage (V)"
 msgstr "Open-circuit voltage (V)"
@@ -6961,6 +6956,7 @@ msgstr "Tranche allocation"
 #: src/copy/catalog-editor.ts:76
 #: src/copy/catalog-import.ts:48
 #: src/copy/catalog-settings.ts:90
+#: src/copy/payment-terms.ts:34
 #: src/copy/price-book.ts:78
 #: src/copy/proposal-template.ts:78
 #: src/copy/role-card.ts:38

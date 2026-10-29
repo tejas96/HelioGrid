@@ -118,7 +118,7 @@ export function BrandingAsHeld({
   const { fieldErrors, ...said } = brandingPageWords(
     t,
     {
-      status: saveFailed ? 'save-failed' : 'ready',
+      saveFailed,
       standing: loading ? null : standingFact,
       logo: {
         refusal:
@@ -149,7 +149,7 @@ export function BrandingAsHeld({
     <div lang={reader}>
       <BrandingSettings
         words={words}
-        loading={loading}
+        read={loading ? { kind: 'loading' } : { kind: 'ready', value: null }}
         {...(titled ? { title: settingsRowName(t, 'branding') } : {})}
         {...said}
         preview={preview}

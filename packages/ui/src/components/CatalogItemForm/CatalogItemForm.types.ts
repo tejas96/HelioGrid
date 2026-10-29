@@ -1,4 +1,4 @@
-import type { CertificationScheme, ItemDraft, ItemDraftEvent } from '@heliogrid/domain';
+import type { CertificationScheme, ItemDraft, ItemDraftEvent, Read } from '@heliogrid/domain';
 
 /**
  * **The add sheet** (`SCR-M01-16`, `M01-36`, `M01-39`): one own item typed into the catalog — what
@@ -22,8 +22,8 @@ export interface CatalogItemFormProps {
   priced: boolean;
   /** *Add many at once from a spreadsheet*: `null` draws no tile (no outright manage grant). */
   onSpreadsheet: (() => void) | null;
-  /** The pre-fill is being read: the spec block is its placeholder. */
-  loading: boolean;
+  /** The pre-fill's read: while it is out, the spec block is its placeholder. */
+  read: Read<unknown>;
   /** The create is out: the primary is busy and a press does nothing. */
   saving: boolean;
   /** The create came back unsent: the foot's returned line with *Try again* and *Dismiss*. */

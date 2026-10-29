@@ -19,9 +19,8 @@ export function RoleExplainerScreen() {
     <InsetDoor>
       <RoleExplainer
         words={roleCardWords(t, role.card, role.facts)}
-        surface={role.surface}
-        names={role.namesPending ? 'pending' : 'ready'}
-        onRetry={role.retry}
+        read={role.read}
+        namesPending={role.namesPending}
         onAct={() => {
           endFirstRun();
           goInside();

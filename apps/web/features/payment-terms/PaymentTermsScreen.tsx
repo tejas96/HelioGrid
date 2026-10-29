@@ -118,7 +118,7 @@ function PaymentTermsIn() {
     <div className="hg-shell-page" ref={room}>
       <PaymentTermsList
         words={words}
-        state={page.status}
+        read={page.read}
         title={words.title}
         savedLine={savedLineOf(t, page, format.date)}
         teaching={page.seededOnly}

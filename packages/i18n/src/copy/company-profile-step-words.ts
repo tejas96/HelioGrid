@@ -3,20 +3,18 @@ import {
   type CompanyProfilePart,
   type CompanyProfileView,
   inLanguage,
+  type ReadKind,
   type UiLanguage,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import type { CompanyLogoCaptureFacts } from './company-logo';
-import {
-  type CompanyProfileWordFacts,
-  type CompanyProfileWords,
-  companyProfileWords,
-} from './company-profile-words';
+import { type CompanyProfileWords, companyProfileWords } from './company-profile-words';
 
 /** The profile as its hook hands it to a screen: its life, what is held, and what it says about it. */
 export interface CompanyProfileStepFacts extends CompanyProfileView {
   readonly life: CompanyProfileLife;
-  readonly status: CompanyProfileWordFacts['status'];
+  readonly read: { readonly kind: ReadKind };
+  readonly saveFailed: boolean;
   readonly arrivedUndeclared: boolean;
   readonly open: CompanyProfilePart | null;
   readonly values: { readonly city: string };
@@ -37,7 +35,8 @@ export function companyProfileStepWords(
 ): CompanyProfileWords {
   return companyProfileWords(translate, {
     life: step.life,
-    status: step.status,
+    read: step.read.kind,
+    saveFailed: step.saveFailed,
     skipped: false,
     arrivedUndeclared: step.arrivedUndeclared,
     standings: step.standings,

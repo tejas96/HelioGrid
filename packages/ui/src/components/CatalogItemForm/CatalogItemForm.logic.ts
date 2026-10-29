@@ -22,11 +22,11 @@ export const MPPT_WINDOW = { min: 0, max: 1000, step: 10 } as const;
 
 /** What the body shows above the item card: the pre-fill's banner, else the spreadsheet tile. */
 export function bodyHeadOf(props: CatalogItemFormProps) {
-  const { words, onSpreadsheet, draft, loading } = props;
+  const { words, onSpreadsheet, draft, read } = props;
   return {
     banner: words.banner,
     spreadsheet: words.banner === null ? onSpreadsheet : null,
-    needs: !loading && draftIsBlank(draft),
+    needs: read.kind !== 'loading' && draftIsBlank(draft),
   };
 }
 
@@ -110,6 +110,8 @@ export interface SpecCellFacts {
   readonly draft: ItemDraft;
   readonly words: CatalogItemFormWords;
   readonly failures: CatalogItemFormProps['failures'];
+  /** The create is out: every field is inert until it answers. */
+  readonly disabled: boolean;
   readonly onChange: (event: ItemDraftEvent) => void;
 }
 
@@ -118,7 +120,7 @@ export interface SpecCellFacts {
  * reaches the draft as typed, and emptying it unsets it. A pre-fill's fields say where they came from.
  */
 export function figureFieldOf(
-  { draft, words, failures, focus, onChange }: SpecCellFacts,
+  { draft, words, failures, focus, disabled, onChange }: SpecCellFacts,
   cell: Extract<SpecCell, { as: 'number' }>,
 ): NumberFieldProps {
   const field = words.fields[cell.path];
@@ -133,6 +135,7 @@ export function figureFieldOf(
     hint: words.copied ?? undefined,
     error: specFailureOf(failures, cell),
     focusRequest: focusFor(focus, `spec.${cell.path}`),
+    disabled,
     onCommit: (value) => onChange({ type: 'spec', path: cell.path, value }),
     onClear: () => onChange({ type: 'spec', path: cell.path, value: null }),
   };
@@ -140,7 +143,7 @@ export function figureFieldOf(
 
 /** A list's field: its choices, the datasheet's own prompt while unset. */
 export function choiceFieldOf(
-  { draft, words, failures, onChange }: SpecCellFacts,
+  { draft, words, failures, disabled, onChange }: SpecCellFacts,
   cell: ListCell,
 ): SelectProps {
   return {
@@ -152,6 +155,7 @@ export function choiceFieldOf(
     density: 'functional',
     helper: words.copied ?? undefined,
     error: specFailureOf(failures, cell),
+    disabled,
     onChange: (value) => onChange(choiceEvent(cell, value)),
   };
 }
@@ -161,7 +165,7 @@ export function choiceFieldOf(
  * The track has no readout of its own words, so an untouched pair shows none.
  */
 export function windowFieldOf(
-  { draft, words, failures, onChange }: SpecCellFacts,
+  { draft, words, failures, disabled, onChange }: SpecCellFacts,
   cell: SpecCell,
 ): RangeFieldProps {
   return {
@@ -174,6 +178,7 @@ export function windowFieldOf(
     anyLabel: '',
     hint: words.copied ?? undefined,
     error: specFailureOf(failures, cell),
+    disabled,
     onCommit: (value) => {
       for (const event of windowEvents(draft, value)) onChange(event);
     },
@@ -187,7 +192,7 @@ export function kindNamed(value: string): ComponentKind | null {
 
 /** The item card's three fields: what it is, its brand, its model, each with its words. */
 export function itemFieldsOf(props: CatalogItemFormProps) {
-  const { draft, words, failures, onChange } = props;
+  const { draft, words, failures, saving, onChange } = props;
   const focus = fieldFocusOf(props);
   const kind: SelectProps = {
     label: words.whatItIs,
@@ -196,6 +201,7 @@ export function itemFieldsOf(props: CatalogItemFormProps) {
     placeholder: words.whatItIs,
     helper: words.kindHelper,
     density: 'functional',
+    disabled: saving,
     onChange: (value) => {
       const picked = kindNamed(value);
       if (picked !== null) onChange({ type: 'kind', kind: picked });
@@ -209,6 +215,7 @@ export function itemFieldsOf(props: CatalogItemFormProps) {
     error: failures.brand,
     focusRequest: focusFor(focus, 'brand'),
     density: 'functional',
+    disabled: saving,
     onChange: (value) => onChange({ type: 'brand', value }),
   };
   const model: InputProps = {
@@ -219,6 +226,7 @@ export function itemFieldsOf(props: CatalogItemFormProps) {
     error: failures.model,
     focusRequest: focusFor(focus, 'model'),
     density: 'functional',
+    disabled: saving,
     onChange: (value) => onChange({ type: 'model', value }),
   };
   return { kind, brand, model };
@@ -239,6 +247,7 @@ export function priceFieldOf(props: CatalogItemFormProps) {
     density: 'functional',
     error: failures['rate.amount'],
     focusRequest: focusFor(fieldFocusOf(props), 'rate.amount'),
+    disabled: props.saving,
     onCommit: (value) => onChange({ type: 'price', value: String(value) }),
     onClear: () => onChange({ type: 'price', value: '' }),
   } satisfies NumberFieldProps;
@@ -248,7 +257,7 @@ const SCHEME_OFF: SchemeDraft = { on: false, reference: '' };
 
 /** One row per declared scheme the words name: its switch words, what the draft holds, its verdict. */
 export function schemeRowsOf(props: CatalogItemFormProps) {
-  const { schemes, words, draft, failures } = props;
+  const { schemes, words, draft, failures, saving } = props;
   const focus = fieldFocusOf(props);
   return schemes.flatMap(({ scheme }) => {
     const rowWords = words.schemeRows[scheme];
@@ -256,7 +265,14 @@ export function schemeRowsOf(props: CatalogItemFormProps) {
     const held = draft.schemes[scheme] ?? SCHEME_OFF;
     const path = `certifications.${scheme}`;
     return [
-      { scheme, words: rowWords, held, error: failures[path], focusRequest: focusFor(focus, path) },
+      {
+        scheme,
+        words: rowWords,
+        held,
+        error: failures[path],
+        focusRequest: focusFor(focus, path),
+        disabled: saving,
+      },
     ];
   });
 }

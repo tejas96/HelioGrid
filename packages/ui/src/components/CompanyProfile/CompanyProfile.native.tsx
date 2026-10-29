@@ -53,7 +53,7 @@ function SetupDoor(props: CompanyProfileProps) {
           )
         }
       >
-        <Unread unread={unread} onRetry={props.onRetryRead} />
+        <Unread unread={unread} read={props.read} />
       </DoorFrame>
     );
   }
@@ -84,7 +84,7 @@ function SettingsPage(props: CompanyProfileProps) {
   if (words.unread !== null) {
     return (
       <View style={styles.page}>
-        <Unread unread={words.unread} onRetry={props.onRetryRead} />
+        <Unread unread={words.unread} read={props.read} />
       </View>
     );
   }
@@ -112,6 +112,7 @@ function ProfileList({
   onEdit,
   onChooseSegment,
   onDeclareSize,
+  saving,
   logoPicture,
   onRequestLogo,
 }: CompanyProfileProps) {
@@ -130,6 +131,7 @@ function ProfileList({
           onChooseSegment={onChooseSegment}
           onDeclareSize={onDeclareSize}
           density={PARTS_DENSITY[life]}
+          saving={saving}
           logoPicture={logoPicture}
           onRequestLogo={onRequestLogo}
         />
@@ -191,11 +193,14 @@ function ProfileAct({ words, saving, onSave, onContinueWithout }: CompanyProfile
 /** A profile that could not be read: one centred message and its retry. */
 function Unread({
   unread,
-  onRetry,
+  read,
 }: {
   unread: NonNullable<CompanyProfileWords['unread']>;
-  onRetry: () => void;
+  read: CompanyProfileProps['read'];
 }) {
+  const retry = () => {
+    if (read.kind === 'failed') read.retry();
+  };
   return (
     <View style={styles.unread}>
       <EmptyState
@@ -203,7 +208,7 @@ function Unread({
         title={unread.title}
         description={unread.line}
         action={
-          <Button variant="primary" size="lg" onClick={onRetry}>
+          <Button variant="primary" size="lg" onClick={retry}>
             {unread.retry}
           </Button>
         }

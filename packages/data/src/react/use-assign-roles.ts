@@ -19,6 +19,7 @@ import {
 } from '@heliogrid/domain';
 import { useCallback, useRef, useState } from 'react';
 import { answerOf, DataError } from '../errors/errors';
+import { useAction } from './action';
 import { useAssignRolesDraft } from './assign-roles-draft';
 import { useRepositories } from './context';
 import { useSession } from './use-session';
@@ -82,6 +83,9 @@ export interface RolesRemoval {
   readonly removed: readonly RolePreset[];
 }
 
+/** A save as it leaves: the sheet it is sent from, what a removal names, and the ticks. */
+type SaveOut = { from: number; removal: RolesRemoval; ticks: readonly RolePreset[] };
+
 /** What a write came back with: the server's answer, or why none came (`F8-36`). */
 interface Sent {
   readonly answer: TeamActAnswer;
@@ -111,9 +115,6 @@ export function useAssignRoles(team: Team, notes: RolesRemovalNotes): AssignRole
   const openPerson = useRef<string | null>(null);
   /* The sheet open now, null while none is. */
   const openSheet = useRef<number | null>(null);
-  /* The sheet whose save is out: one write per tap on that sheet, and its button alone shows it. */
-  const [savingOn, setSavingOn] = useState<number | null>(null);
-  const inFlight = useRef<number | null>(null);
 
   /* Stable: the overlay re-runs its focus effect whenever its close handler changes. */
   const close = useCallback(() => {
@@ -184,32 +185,27 @@ export function useAssignRoles(team: Team, notes: RolesRemovalNotes): AssignRole
     if (openSheet.current === from) setRefusal({ kind: 'failed' });
   };
 
+  /* One write per tap on a sheet, and that sheet's button alone shows it is out. */
+  const saved = useAction(
+    async ({ from, removal, ticks }: SaveOut) =>
+      settle(from, removal, ticks, await write(removal.id, ticks)),
+    { key: ({ from }) => String(from) },
+  );
+  const savingOn = (on: number | null) => on !== null && saved.pendingFor(String(on));
+
   const send = (asked: RoleChange | null) => {
     /* A tap while the editor closes saves nothing: it is still drawn, but it was dismissed. */
     const from = openSheet.current;
-    if (person === null || from === null || inFlight.current === from) return;
+    if (person === null || from === null || savingOn(from)) return;
     if (saveRolesOff(person, picked, refusal) !== null) return;
     const change = asked ?? roleChange(person.roles, picked);
     if (asked === null && change.removed.length > 0) {
       setConfirm(change);
       return;
     }
-    const ticks = picked;
-    const removal = {
-      name: person.name,
-      id: person.id,
-      before: person.roles,
-      removed: change.removed,
-    };
-    inFlight.current = from;
-    setSavingOn(from);
+    const { name, id, roles: before } = person;
     setRefusal(null);
-    void write(removal.id, ticks)
-      .then((sent) => settle(from, removal, ticks, sent))
-      .finally(() => {
-        if (inFlight.current === from) inFlight.current = null;
-        setSavingOn((now) => (now === from ? null : now));
-      });
+    void saved.run({ from, removal: { name, id, before, removed: change.removed }, ticks: picked });
   };
 
   const removeConfirmed = () => {
@@ -256,7 +252,7 @@ export function useAssignRoles(team: Team, notes: RolesRemovalNotes): AssignRole
 
   const draft = useAssignRolesDraft(
     team,
-    { open, person, picked, saving: savingOn !== null && savingOn === sheet },
+    { open, person, picked, saving: savingOn(sheet) },
     { close, openOn },
   );
 
@@ -285,7 +281,7 @@ export function useAssignRoles(team: Team, notes: RolesRemovalNotes): AssignRole
     picked,
     locks: person === null ? {} : lockedPresets(person, team.roster),
     saveOff: person === null ? null : saveRolesOff(person, picked, refusal),
-    saving: savingOn !== null && savingOn === sheet,
+    saving: savingOn(sheet),
     refusal,
     confirm,
     openerOf: (row) => (opensAssignRoles(row) ? () => openOn(row, row.roles) : undefined),

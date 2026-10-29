@@ -42,7 +42,7 @@ function CompanyProfileIn({ life }: { life: CompanyProfileLife }) {
       onDeclareSize={step.declareSize}
       saving={step.saving}
       onSave={step.save}
-      onRetryRead={step.retryRead}
+      read={step.read}
       onContinueWithout={step.continueWithout}
       logoPicture={step.logoPicture}
       onChooseLogo={chooseLogoFile}

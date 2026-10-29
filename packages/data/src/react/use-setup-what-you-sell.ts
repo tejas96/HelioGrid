@@ -9,9 +9,10 @@ import {
   whatYouSellStep,
   whatYouSellUnanswered,
 } from '@heliogrid/domain';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useReducer } from 'react';
 import { queryKeys } from '../cache/keys';
+import { useAction } from './action';
 import { useRepositories } from './context';
 import { useSession } from './use-session';
 
@@ -58,21 +59,16 @@ export function useSetupWhatYouSell(): SetupWhatYouSellStep {
   const profile = useQuery(profileRead);
   const stored = profile.data ?? null;
 
-  const save = useMutation({
-    networkMode: 'always',
-    mutationFn: async (declared: WhatYouSellAnswers) => {
-      const read = await queryClient.fetchQuery(profileRead);
-      const saved = await repositories.settings.saveBusinessProfile({ ...read, ...declared });
-      queryClient.setQueryData(profileRead.queryKey, saved);
-      return repositories.onboarding.recordStep('what_you_sell', 'completed');
-    },
-    onSuccess: (progress) => {
-      queryClient.setQueryData(queryKeys.setup.progress(tenantId), progress);
-    },
+  const save = useAction(async (declared: WhatYouSellAnswers) => {
+    const read = await queryClient.fetchQuery(profileRead);
+    const saved = await repositories.settings.saveBusinessProfile({ ...read, ...declared });
+    queryClient.setQueryData(profileRead.queryKey, saved);
+    const progress = await repositories.onboarding.recordStep('what_you_sell', 'completed');
+    queryClient.setQueryData(queryKeys.setup.progress(tenantId), progress);
   });
-  const { mutate, isPending, isError } = save;
+  const { pending, failure, run } = save;
   // A save reads again when the first read got no answer; that read is the save's, not a check.
-  const checking = profile.isPending && !isPending;
+  const checking = stored === null && profile.error === null && !pending;
 
   return useMemo(() => {
     const answers = whatYouSellAnswers(step, stored);
@@ -81,16 +77,16 @@ export function useSetupWhatYouSell(): SetupWhatYouSellStep {
       checking,
       refused: whatYouSellRefused(step, stored),
       refusals: step.refusals,
-      saving: isPending,
-      failed: isError,
+      saving: pending,
+      failed: failure !== null,
       chooseSegment: (segment) => dispatch({ type: 'segment-chosen', segment }),
       declareSize: (kwp) => dispatch({ type: 'size-declared', kwp }),
       submit: () => {
-        if (isPending) return;
+        if (pending) return;
         dispatch({ type: 'continue-pressed', stored });
-        if (whatYouSellUnanswered(answers).length === 0) mutate(answers);
+        if (whatYouSellUnanswered(answers).length === 0) void run(answers);
       },
       putOff: () => putOffSetup('what_you_sell'),
     };
-  }, [step, stored, checking, isPending, isError, mutate, putOffSetup]);
+  }, [step, stored, checking, pending, failure, run, putOffSetup]);
 }

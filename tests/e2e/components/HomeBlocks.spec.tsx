@@ -12,7 +12,7 @@ test.describe('at 1536', () => {
   test.use({ viewport: { width: 1536, height: 960 } });
 
   test('a loaded home teaches in every block, side by side', async ({ mount, page }) => {
-    const region = await mount(<HomeBlocks {...words} load="ready" onRetry={() => undefined} />);
+    const region = await mount(<HomeBlocks {...words} read={{ kind: 'ready', value: null }} />);
     const teaching = region.getByText(words.emptyTitle);
 
     await expect(teaching).toHaveCount(2);
@@ -27,7 +27,7 @@ test.describe('at 375', () => {
   test.use({ viewport: { width: 375, height: 812 } });
 
   test('the blocks stack, the composed one under the own', async ({ mount }) => {
-    const region = await mount(<HomeBlocks {...words} load="ready" onRetry={() => undefined} />);
+    const region = await mount(<HomeBlocks {...words} read={{ kind: 'ready', value: null }} />);
     const teaching = region.getByText(words.emptyTitle);
 
     const [own, composed] = [await settledBox(teaching.nth(0)), await settledBox(teaching.nth(1))];
@@ -40,9 +40,12 @@ test('a failed load offers the retry in each block', async ({ mount }) => {
   const region = await mount(
     <HomeBlocks
       {...words}
-      load="failed"
-      onRetry={() => {
-        retries += 1;
+      read={{
+        kind: 'failed',
+        failure: 'no_connection',
+        retry: () => {
+          retries += 1;
+        },
       }}
     />,
   );

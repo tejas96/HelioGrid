@@ -12,8 +12,7 @@ import type { RoleExplainerProps } from './RoleExplainer.types';
  * screen's height, the heading, then the card — whose rows scroll under its head — and the act
  * right under it. The act follows the card in every state.
  */
-export function RoleExplainer({ words, surface, names, onRetry, onAct }: RoleExplainerProps) {
-  const pending = names === 'pending';
+export function RoleExplainer({ words, read, namesPending: pending, onAct }: RoleExplainerProps) {
   return (
     <DoorFrame
       column="near"
@@ -30,8 +29,7 @@ export function RoleExplainer({ words, surface, names, onRetry, onAct }: RoleExp
         <RoleCard
           words={pending ? { ...words, credit: null } : words}
           layout="bounded"
-          surface={pending ? 'loading' : surface}
-          onRetry={onRetry}
+          read={pending ? { kind: 'loading' } : read}
         />
         <View style={styles.act}>
           <Button variant="primary" size="lg" fullWidth onClick={onAct}>

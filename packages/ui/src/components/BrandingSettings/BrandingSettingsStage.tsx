@@ -90,10 +90,10 @@ function SwitchRow({ wide, words, preview, onPreview, onOpenFullSize }: StagePro
 
 /** The framed subject, or the frame's named wait while the reads are out (s18-j). */
 function StageFrame(props: StageProps) {
-  const { words, loading, unsaved, preview } = props;
+  const { words, read, unsaved, preview } = props;
   const geometry = frameGeometry(props);
   const note = unsaved ? { note: words.notSaved } : {};
-  if (loading) {
+  if (read.kind !== 'ready') {
     return <PreviewFrame {...geometry} {...note} loading loadingLabel={words.loadingCover} />;
   }
   return (

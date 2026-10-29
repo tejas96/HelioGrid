@@ -44,7 +44,7 @@ describe('companyProfileWords — the settings life (`m-settings`, `d-settings`)
 
   it('after a failed save says so at the same act, with no way on without it', async () => {
     const { t } = await createTranslator('en');
-    const { act } = companyProfileWords(t, { ...IN_SETTINGS, status: 'save-failed' });
+    const { act } = companyProfileWords(t, { ...IN_SETTINGS, saveFailed: true });
     expect([act?.primary, act?.alert, act?.secondary, act?.secondarySpoken]).toEqual([
       t(COMPANY_PROFILE.saveChanges),
       t(COMPANY_PROFILE.notSaved),
@@ -55,9 +55,9 @@ describe('companyProfileWords — the settings life (`m-settings`, `d-settings`)
 
   it('after a failed read offers the retry alone', async () => {
     const { t } = await createTranslator('en');
-    const { unread } = companyProfileWords(t, { ...IN_SETTINGS, status: 'unread' });
+    const { unread } = companyProfileWords(t, { ...IN_SETTINGS, read: 'failed' });
     expect([unread?.onward, unread?.onwardSpoken]).toEqual([null, null]);
-    expect(companyProfileWords(t, { ...AT_SIGNUP, status: 'unread' }).unread?.onward).toBe(
+    expect(companyProfileWords(t, { ...AT_SIGNUP, read: 'failed' }).unread?.onward).toBe(
       t(COMPANY_PROFILE.onward),
     );
   });

@@ -1,12 +1,13 @@
 'use client';
 import { type Invitation, MAX_PAGE_LIMIT, type Member, type Paginated } from '@heliogrid/contracts';
 import {
+  allReads,
+  mapRead,
+  type Read,
   type RolePreset,
-  type TeamLoad,
-  type TeamRosterView,
+  type TeamList,
   type TeamRow,
   type TeamStatusFilter,
-  type TeamSurface,
   teamRoster,
   teamRosterView,
   teamSurface,
@@ -16,15 +17,16 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { useRepositories } from './context';
+import { readOf } from './read';
 import { useSession } from './use-session';
 
 /** The Team screen's read (`SCR-M01-12`), as both platforms render it (Law 11). */
 export interface Team {
-  /** Every read answered, one is still out, or one got no answer (the screen shows the error state). */
-  readonly load: TeamLoad;
-  readonly view: TeamRosterView;
-  /** Which body the list shows — `teamSurface`'s answer. */
-  readonly surface: TeamSurface;
+  /**
+   * The list in view and which body draws it — `teamSurface`'s answer — once every read has
+   * answered; its failed retry asks again each read that got no answer.
+   */
+  readonly read: Read<TeamList>;
   readonly query: string;
   readonly status: TeamStatusFilter;
   find(query: string): void;
@@ -38,12 +40,9 @@ export interface Team {
   reread(): Promise<readonly TeamRow[] | null>;
   /**
    * A write the server answered 200: the person's row holds `roles` at once, so the list is right
-   * while its re-read is out. A re-read that gets no answer still shows the list's load failure
-   * (`F8-36`): a list that could not be read is never drawn as if it were.
+   * while its re-read is out.
    */
   holds(membershipId: string, roles: readonly RolePreset[]): void;
-  /** Asks again for every read: a list missing half its people is not shown. */
-  retry(): void;
 }
 
 /** Every page of a list, read at the largest page the api serves — a team fits in a few. */
@@ -83,12 +82,6 @@ export function useTeam(language: UiLanguage): Team {
     enabled: reading,
   });
 
-  const reads = [members, invites];
-  const load: TeamLoad = reads.some((read) => read.isError)
-    ? 'failed'
-    : reads.every((read) => read.isSuccess)
-      ? 'ready'
-      : 'loading';
   const rosterOf = (held: readonly Member[] | undefined, sent: readonly Invitation[] | undefined) =>
     teamRoster(held ?? [], sent ?? [], viewerUserId, Date.now(), language);
   // biome-ignore lint/correctness/useExhaustiveDependencies: `rosterOf` reads only these inputs.
@@ -98,7 +91,7 @@ export function useTeam(language: UiLanguage): Team {
   );
   const reread = async () => {
     const [held, sent] = await Promise.all([members.refetch(), invites.refetch()]);
-    return held.isError || sent.isError ? null : rosterOf(held.data, sent.data);
+    return held.error !== null || sent.error !== null ? null : rosterOf(held.data, sent.data);
   };
   const holds = (membershipId: string, roles: readonly RolePreset[]) => {
     const key = queryKeys.team.members(tenantId);
@@ -111,11 +104,14 @@ export function useTeam(language: UiLanguage): Team {
     );
   };
   const view = useMemo(() => teamRosterView(roster, query, status), [roster, query, status]);
+  /* Both lists or neither: a list missing half its people is never drawn. */
+  const read = mapRead(allReads([readOf(members), readOf(invites)]), () => ({
+    view,
+    surface: teamSurface(view, query, status),
+  }));
 
   return {
-    load,
-    view,
-    surface: teamSurface(load, view, query, status),
+    read,
     query,
     status,
     find,
@@ -123,6 +119,5 @@ export function useTeam(language: UiLanguage): Team {
     roster,
     reread,
     holds,
-    retry: () => void reread(),
   };
 }

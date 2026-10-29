@@ -1,6 +1,7 @@
 'use client';
-import type { OnboardingProgress, Tenant } from '@heliogrid/contracts';
+import type { MarketPackRead, OnboardingProgress, Tenant } from '@heliogrid/contracts';
 import {
+  allReads,
   announcesSave,
   COMPANY_PROFILE_UNREAD,
   type CompanyLogoCaptureFacts,
@@ -15,6 +16,8 @@ import {
   companyProfileSaveOf,
   companyProfileValuesAtRead,
   companyProfileView,
+  mapRead,
+  type Read,
   registrationsChanged,
   type TaxPack,
   type TenantSegment,
@@ -22,18 +25,23 @@ import {
   whatYouSellAnsweredBy,
   whatYouSellUnanswered,
 } from '@heliogrid/domain';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMemo, useRef, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
+import { useAction } from './action';
 import { useRepositories } from './context';
+import { pageRead } from './page-read';
+import { readOf } from './read';
 import { type ChosenPicture, useCompanyLogo } from './use-company-logo';
 import { useSession } from './use-session';
 
 /** The company profile in one of its lives, as both screens consume it (Law 11). */
 export interface CompanyProfileStep extends CompanyProfileView {
   readonly life: CompanyProfileLife;
-  /** The reads are still out, they answered, one got no answer, or the last save did not land. */
-  readonly status: 'loading' | 'ready' | 'unread' | 'save-failed';
+  /** The profile as stored and the tax rules it is checked by; `failed` when a read got no answer. */
+  readonly read: Read<ProfileRead>;
+  /** The last save did not land. */
+  readonly saveFailed: boolean;
   readonly values: CompanyProfileValues;
   readonly open: CompanyProfilePart | null;
   /** The profile was read without the two answers of the step before. */
@@ -54,8 +62,6 @@ export interface CompanyProfileStep extends CompanyProfileView {
    * no step: its company passed setup long ago, and a save there must not move it.
    */
   save(): void;
-  /** Asks again for the reads that got no answer. */
-  retryRead(): void;
   /** Moves on with nothing saved; the next sign-in asks for the step again. */
   continueWithout(): void;
 }
@@ -64,6 +70,12 @@ export interface CompanyProfileStep extends CompanyProfileView {
 interface Saved {
   readonly logoRefused: boolean;
   readonly progress: OnboardingProgress | null;
+}
+
+/** What the page is drawn from once read: the profile as stored, and the market's tax rules. */
+export interface ProfileRead {
+  readonly stored: CompanyProfileStored;
+  readonly tax: TaxPack;
 }
 
 interface Draft {
@@ -118,49 +130,38 @@ export function useCompanyProfile(
     ...ASKED_ONCE,
   });
 
-  const stored = useMemo<CompanyProfileStored | null>(
-    () =>
-      profile.data === undefined || registrations.data === undefined
-        ? null
-        : { profile: profile.data, registrations: registrations.data.registrations },
-    [profile.data, registrations.data],
+  const storedRead = mapRead(
+    allReads([readOf(profile), readOf(registrations)]),
+    ([held, list]): CompanyProfileStored => ({ profile: held, registrations: list.registrations }),
   );
-  const tax = useMemo(
-    () => (pack.data === undefined ? null : taxPackOf(pack.data.tax)),
-    [pack.data],
+  const read = pageRead(
+    mapRead(
+      allReads([storedRead, taxReadOf(readOf(pack), () => void pack.refetch())]),
+      ([stored, tax]) => ({ stored, tax }),
+    ),
+    [readOf(company)],
   );
-  const read = stored !== null && tax !== null ? { stored, tax } : null;
+  const stored = storedRead.kind === 'ready' ? storedRead.value : null;
   // Fixed at the first read: a save replaces the profile held here before its last write lands,
   // and an answer the owner took out on this screen never arrived missing.
   const arrivedUndeclared = useRef<boolean | null>(null);
   if (arrivedUndeclared.current === null && stored !== null) {
     arrivedUndeclared.current = whatYouSellUnanswered(stored.profile).length > 0;
   }
-  // A pack that answers without tax rules is no answer: the registration could not be checked.
-  const unread =
-    profile.isError ||
-    registrations.isError ||
-    company.isError ||
-    pack.isError ||
-    (pack.data !== undefined && tax === null);
 
   const [typed, setTyped] = useState<Draft | null>(null);
-  const asRead = useMemo<Draft | null>(
-    () =>
-      stored === null || tax === null
-        ? null
-        : {
-            values: companyProfileValuesAtRead(stored, tax),
-            open: companyProfileOpenAtRead(stored, tax, life),
-          },
-    [stored, tax, life],
-  );
+  const asRead: Draft | null =
+    read.kind === 'ready'
+      ? {
+          values: companyProfileValuesAtRead(read.value.stored, read.value.tax),
+          open: companyProfileOpenAtRead(read.value.stored, read.value.tax, life),
+        }
+      : null;
   const draft = typed ?? asRead;
   const logo = useCompanyLogo(tenantId, profile.data?.logoFileId);
 
-  const save = useMutation({
-    networkMode: 'always',
-    mutationFn: async (sent: {
+  const save = useAction(
+    async (sent: {
       values: CompanyProfileValues;
       stored: CompanyProfileStored;
       tax: TaxPack;
@@ -196,15 +197,16 @@ export function useCompanyProfile(
         progress: await repositories.onboarding.recordStep('business_profile', writes.step),
       };
     },
-    onSuccess: (saved, sent) => {
-      if (sent.logo !== null) (saved.logoRefused ? logo.refuse : logo.saved)(sent.logo);
-      if (saved.progress !== null) queryClient.setQueryData(progressKey, saved.progress);
-      if (announcesSave(life, saved.logoRefused)) onSaved?.();
+    {
+      onDone: (saved, sent) => {
+        if (sent.logo !== null) (saved.logoRefused ? logo.refuse : logo.saved)(sent.logo);
+        if (saved.progress !== null) queryClient.setQueryData(progressKey, saved.progress);
+        if (announcesSave(life, saved.logoRefused)) onSaved?.();
+      },
     },
-  });
-  const { mutate, isPending, isError } = save;
+  );
 
-  const held = read !== null && draft !== null ? { ...read, ...draft } : null;
+  const held = read.kind === 'ready' && draft !== null ? { ...read.value, ...draft } : null;
   // From what was last held, never from this render: two reports can land before the next one.
   const change = (next: (draft: Draft) => Draft) => {
     if (asRead !== null) setTyped((was) => next(was ?? asRead));
@@ -213,14 +215,15 @@ export function useCompanyProfile(
     change(({ values, open }) => ({ values: next(values), open }));
   return {
     life,
-    status: statusOf(held !== null, unread, isError),
+    read,
+    saveFailed: save.failure !== null,
     values: held?.values ?? COMPANY_PROFILE_UNREAD.values,
     open: held?.open ?? null,
     ...(held === null
       ? COMPANY_PROFILE_UNREAD.view
       : companyProfileView(held.values, held.stored, held.tax, logo.chosen !== null)),
     arrivedUndeclared: arrivedUndeclared.current ?? false,
-    saving: isPending,
+    saving: save.pending,
     logo: logo.facts,
     logoPicture: logo.picture,
     chooseLogo: logo.choose,
@@ -229,13 +232,7 @@ export function useCompanyProfile(
     chooseSegment: (segment) => edited((values) => ({ ...values, segment })),
     declareSize: (kwp) => edited((values) => ({ ...values, typicalSystemKwp: kwp })),
     save: () => {
-      if (held !== null && !isPending) mutate({ ...held, logo: logo.chosen });
-    },
-    retryRead: () => {
-      for (const query of [profile, registrations, company, pack]) {
-        if (query.isError) void query.refetch();
-      }
-      if (pack.data !== undefined && tax === null) void pack.refetch();
+      if (held !== null) void save.run({ ...held, logo: logo.chosen });
     },
     // Settings sits in no corridor: there is no step to put off.
     continueWithout: () => {
@@ -244,12 +241,11 @@ export function useCompanyProfile(
   };
 }
 
-/** A failed save outranks the reads it followed; a read with no answer outranks the wait for the rest. */
-function statusOf(
-  read: boolean,
-  unread: boolean,
-  saveFailed: boolean,
-): CompanyProfileStep['status'] {
-  if (read) return saveFailed ? 'save-failed' : 'ready';
-  return unread ? 'unread' : 'loading';
+/** A pack that answers without tax rules is no answer: the registration could not be checked. */
+function taxReadOf(pack: Read<MarketPackRead>, askAgain: () => void): Read<TaxPack> {
+  if (pack.kind !== 'ready') return pack;
+  const tax = taxPackOf(pack.value.tax);
+  return tax === null
+    ? { kind: 'failed', failure: 'refused', retry: askAgain }
+    : { kind: 'ready', value: tax };
 }

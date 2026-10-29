@@ -1,6 +1,7 @@
 import {
   formatMoney,
   IN_FORMATS,
+  type Read,
   type TrancheEdit,
   trancheCardsOf,
   trancheDraftOf,
@@ -56,6 +57,8 @@ export interface TermsFrame {
   saveFailed?: boolean;
   /** The preview's answer has not come. */
   previewLoading?: boolean;
+  /** What *Try again* on the failed list asks. */
+  onRetry?: () => void;
 }
 
 /**
@@ -83,7 +86,7 @@ export function PaymentTermsAsHeld(frame: TermsFrame) {
       <div lang={frame.reader} style={{ padding: '0 var(--screen-pad-mobile)' }}>
         <PaymentTermsList
           words={words}
-          state={list.state}
+          read={list.read}
           {...(frame.wide ? { title: words.title } : {})}
           savedLine={paymentTermsSavedLine(t, list.standing, { date: () => '22 Aug 2026' })}
           teaching={list.seeded}
@@ -110,18 +113,25 @@ export function PaymentTermsAsHeld(frame: TermsFrame) {
   );
 }
 
+/** The list's read as the frame names it. */
+function readOf(list: TermsFrame['list'], retry: () => void): Read<null> {
+  if (list === 'loading') return { kind: 'loading' };
+  if (list === 'unread') return { kind: 'failed', failure: 'refused', retry };
+  return { kind: 'ready', value: null };
+}
+
 /** The list a frame holds: the seeded pair, or the board's six in use and two archived. */
 function listOf(frame: TermsFrame) {
   const seeded = frame.list === 'seeded';
   const templates = seeded ? IN_USE.slice(0, 2) : [...IN_USE, ...ARCHIVED];
   const cards = trancheCardsOf(templates);
   const archived = frame.list === 'archived' || frame.list === 'none-archived';
-  const state = frame.list === 'loading' || frame.list === 'unread' ? frame.list : 'ready';
+  const read = readOf(frame.list, frame.onRetry ?? noop);
   return {
     templates,
     seeded,
     archived,
-    state,
+    read,
     archivedCount: seeded ? 0 : cards.archived.length,
     shown: frame.list === 'none-archived' ? [] : archived ? cards.archived : cards.inUse,
     standing: seeded

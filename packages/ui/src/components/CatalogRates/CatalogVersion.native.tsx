@@ -27,20 +27,16 @@ export function CatalogVersion(props: CatalogVersionProps) {
 }
 
 /** The read surfaces' wait and failure, shared by the list and one version. */
-function Unready({
-  surface,
-  words,
-  onRetry,
-}: Pick<CatalogVersionRead, 'surface' | 'words' | 'onRetry'>) {
-  if (surface === 'ready') return null;
-  if (surface === 'loading')
+function Unready({ read, words }: Pick<CatalogVersionRead, 'read' | 'words'>) {
+  if (read.kind === 'loading')
     return <LoadingBars label={words.loading} bars={['row', 'row', 'row']} />;
+  if (read.kind !== 'failed') return null;
   return (
     <EmptyState
       glow={false}
       title={words.loadFailed}
       action={
-        <Button variant="secondary" size="sm" onClick={onRetry}>
+        <Button variant="secondary" size="sm" onClick={read.retry}>
           {words.tryAgain}
         </Button>
       }
@@ -49,8 +45,9 @@ function Unready({
 }
 
 function VersionList(props: CatalogVersionList) {
-  const { words, versions, surface, onRetry, onOpen } = props;
-  if (surface !== 'ready') return <Unready surface={surface} words={words} onRetry={onRetry} />;
+  const { words, versions, read, onOpen } = props;
+  if (read.kind === 'loading' || read.kind === 'failed')
+    return <Unready read={read} words={words} />;
   const years = [...new Set(versions.map((version) => version.year))];
   return (
     <View style={styles.body}>
@@ -116,9 +113,9 @@ function VersionTile({
 }
 
 function VersionRead(props: CatalogVersionRead) {
-  const { words, surface } = props;
-  if (surface !== 'ready')
-    return <Unready surface={surface} words={words} onRetry={props.onRetry} />;
+  const { words, read } = props;
+  if (read.kind === 'loading' || read.kind === 'failed')
+    return <Unready read={read} words={words} />;
   return (
     <View style={[styles.body, styles.readBody]}>
       <View style={styles.stats}>

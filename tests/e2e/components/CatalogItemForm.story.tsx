@@ -43,6 +43,8 @@ export interface ItemFormSetup {
   /** The person pressed the primary: each field the judge refused carries its words. */
   readonly judged?: boolean;
   readonly confirmingDiscard?: boolean;
+  /** The create is out. */
+  readonly saving?: boolean;
 }
 
 const SCHEMES = IN_CERTIFICATION_SCHEMES.schemes;
@@ -109,8 +111,8 @@ export function CatalogItemFormAsRead({
         refusal={refusal}
         priced={priced}
         onSpreadsheet={setup.spreadsheet === false ? null : act('spreadsheet')}
-        loading={setup.loading === true}
-        saving={false}
+        read={setup.loading === true ? { kind: 'loading' } : { kind: 'ready', value: null }}
+        saving={setup.saving === true}
         returned={setup.returned === true}
         confirmingDiscard={setup.confirmingDiscard === true}
         onChange={(event) => setDraft((now) => itemDraftAfter(now, event))}

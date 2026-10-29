@@ -41,7 +41,7 @@ export function PaymentTermsScreen() {
     <ShellPage inView="more" drillDown={drillDown}>
       <PaymentTermsList
         words={words}
-        state={page.status}
+        read={page.read}
         {...(page.standing === null
           ? {}
           : {

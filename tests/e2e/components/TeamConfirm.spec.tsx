@@ -65,7 +65,7 @@ test('Cancel shuts the confirm and gives focus back to the act that opened it (A
 }) => {
   const { t } = await createTranslator('en');
   const words = teamActWords(t, 'Suryodaya Solar');
-  const shown = words.confirm({ kind: 'asking', act: 'deactivate', row: rajesh, busy: false });
+  const shown = words.confirm({ kind: 'asking', act: 'deactivate', row: rajesh });
   if (shown === null) throw new Error('an open confirm has words');
   await mount(<TeamConfirmStory act={words.act('deactivate')} words={shown} />);
 
@@ -130,7 +130,6 @@ test('a Team act keeps its look: no handle, a danger sm modal (AC-23)', async ({
     kind: 'asking',
     act: 'deactivate',
     row: rajesh,
-    busy: false,
   });
   if (shown === null) throw new Error('an open confirm has words');
   await page.setViewportSize({ width: 375, height: 812 });

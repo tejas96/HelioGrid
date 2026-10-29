@@ -1,6 +1,7 @@
 import {
   MEASUREMENT_SYSTEMS,
   type MeasurementSystem,
+  type NotificationTypeGroup,
   type PushSwitch,
   roleKind,
   UI_LANGUAGES,
@@ -8,7 +9,7 @@ import {
 } from '@heliogrid/domain';
 import { ROLE_KIND_TONE } from '../Chip/Chip.logic';
 import type { LoadingBarSize } from '../LoadingBars/LoadingBars.types';
-import type { ProfilePreferencesWords, ProfilePush } from './ProfilePreferences.types';
+import type { ProfilePreferencesProps, ProfilePreferencesWords } from './ProfilePreferences.types';
 
 /** The web page's own room from which it draws the desktop's cards; below it, the phone's page. */
 export const PROFILE_PREFERENCES_WIDE_FROM = 640;
@@ -25,13 +26,18 @@ export const PROFILE_PREFERENCES_LOADING: readonly LoadingBarSize[] = [
 /** A switch's name, and its refusal while its last write was refused (D219). */
 export function pushSwitchWords(
   words: ProfilePreferencesWords,
-  push: ProfilePush,
+  refused: readonly NotificationTypeGroup[],
   one: PushSwitch,
 ) {
   return {
     label: words.push.groups[one.group],
-    error: push.refused.includes(one.group) ? words.push.notSaved : undefined,
+    error: refused.includes(one.group) ? words.push.notSaved : undefined,
   };
+}
+
+/** The switches the page draws: none until the push read is ready. */
+export function pushSwitchesOf(read: ProfilePreferencesProps['read']): readonly PushSwitch[] {
+  return read.kind === 'ready' ? read.value : [];
 }
 
 /** A role badge's tone is its kind's iris hue, as on Team. */

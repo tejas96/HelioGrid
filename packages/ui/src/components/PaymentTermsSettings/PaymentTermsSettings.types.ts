@@ -1,3 +1,4 @@
+import type { Read } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import type { BrandingDocumentFacts } from '../BrandingSettings/BrandingSettings.types';
@@ -23,7 +24,7 @@ export interface PaymentTermsSettingsWords {
   readonly nothingArchived: string;
   readonly loading: string;
   readonly unreadTitle: string;
-  readonly unreadBody: string;
+  readonly tryAgain: string;
   readonly seededTitle: string;
   readonly seededBody: string;
   readonly termsName: string;
@@ -96,8 +97,8 @@ export interface PaymentTermsCardView {
 
 export interface PaymentTermsListProps {
   readonly words: PaymentTermsSettingsWords;
-  /** `unread`: the list's read failed — the banner stands in the cards' place, with no head buttons. */
-  readonly state: 'loading' | 'ready' | 'unread';
+  /** The list's read: its bars until it came; failed, the banner stands in the cards' place, with no head buttons. */
+  readonly read: Read<unknown>;
   /** The page's own title (1536); a phone or a 375 page whose bar holds the title passes none. */
   readonly title?: string;
   /** *Saved and in force · …* or *Added when your account was created · not changed since*. */

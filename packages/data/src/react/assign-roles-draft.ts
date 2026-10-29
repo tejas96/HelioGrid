@@ -40,7 +40,7 @@ export function useAssignRolesDraft(team: Team, now: EditorNow, moves: EditorMov
 
   /* A draft is judged against the list as read, never against a list still loading. */
   useEffect(() => {
-    if (!resuming || team.load !== 'ready') return;
+    if (!resuming || team.read.kind !== 'ready') return;
     setResuming(false);
     const draft = queryClient.getQueryData<AssignRolesDraft>(draftKey);
     if (draft === undefined) return;

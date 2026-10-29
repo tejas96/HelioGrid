@@ -18,7 +18,8 @@ import { ProposalTemplateStage } from './ProposalTemplateStage.native';
  * the failure banner there; given one, the page ends with them.
  */
 export function ProposalTemplateSettings(props: ProposalTemplateSettingsProps) {
-  const { words, loading, title, standing, teaching, saveFailed, act } = props;
+  const { words, read, title, standing, teaching, saveFailed, act } = props;
+  const loading = read.kind !== 'ready';
   const editor = useRef<View>(null);
   /* Branding's phone hook is this page's rule too: it follows a bar this page draws, never a logo. */
   useFocusAfterGone(editor, {

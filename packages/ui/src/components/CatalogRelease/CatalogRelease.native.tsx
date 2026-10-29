@@ -258,17 +258,17 @@ const styles = StyleSheet.create({
 
 /** A body's read still out, or failed with *Try again*; `null` once it is in. */
 function waitOrFail(props: CatalogPublishBody | CatalogContentsBody) {
-  const { words } = props;
-  if (props.surface === 'loading') {
+  const { words, read } = props;
+  if (read.kind === 'loading') {
     return <LoadingBars label={words.loading} bars={['panel', 'row']} />;
   }
-  if (props.surface === 'error') {
+  if (read.kind === 'failed') {
     return (
       <EmptyState
         glow={false}
         title={words.loadFailed}
         action={
-          <Button variant="secondary" size="sm" onClick={props.onRetry}>
+          <Button variant="secondary" size="sm" onClick={read.retry}>
             {words.tryAgain}
           </Button>
         }

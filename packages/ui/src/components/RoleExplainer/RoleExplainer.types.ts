@@ -1,4 +1,5 @@
-import type { RoleCardState, RoleCardWords } from '../RoleCard/RoleCard.types';
+import type { Read } from '@heliogrid/domain';
+import type { RoleCardWords } from '../RoleCard/RoleCard.types';
 
 /** Every word the screen draws, already translated: `@heliogrid/i18n`'s `roleCardWords`. */
 export interface RoleExplainerWords extends RoleCardWords {
@@ -20,15 +21,13 @@ export interface RoleExplainerWords extends RoleCardWords {
 export interface RoleExplainerProps {
   readonly words: RoleExplainerWords;
   /** The card's reads: the rows wait for the owners read; a failed read is the error card. */
-  readonly surface: RoleCardState;
+  readonly read: Read<unknown>;
   /**
-   * `pending` — the company and who set the roles are still being read, with nothing from the join
-   * to name them: the heading and the credit line wait undrawn and the rows wait as loading lines,
+   * The company and who set the roles are still being read, with nothing from the join to name
+   * them: the heading and the credit line wait undrawn and the rows wait as loading lines,
    * so no title is drawn that then changes. The frame and the act draw at once.
    */
-  readonly names: 'ready' | 'pending';
-  /** *Try again* on the error card. */
-  readonly onRetry: () => void;
+  readonly namesPending: boolean;
   /** The act: on to the home, and the card is not returned to. */
   readonly onAct: () => void;
 }

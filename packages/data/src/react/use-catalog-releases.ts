@@ -4,7 +4,9 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { answerOf } from '../errors/errors';
+import { useAction } from './action';
 import { useRepositories } from './context';
+import { readOf } from './read';
 import { usePaginatedList } from './use-paginated-list';
 import { useTenantId } from './use-tenant-id';
 
@@ -23,12 +25,13 @@ export function useCatalogReleases(enabled: boolean) {
 export function useCatalogRelease(id: string | null) {
   const repositories = useRepositories();
   const tenantId = useTenantId();
-  return useQuery({
+  const release = useQuery({
     queryKey: queryKeys.catalog.release(tenantId, id ?? ''),
     queryFn: ({ signal }) =>
       repositories.catalog.release(id ?? '', { page: 1, limit: DEFAULT_PAGE_LIMIT }, signal),
     enabled: id !== null && tenantId !== '',
   });
+  return readOf(release);
 }
 
 /**
@@ -68,7 +71,8 @@ export function useReleasePreview(open: boolean) {
 export type PublishRefusal = 'label-taken' | 'nothing-changed' | 'failed';
 
 export interface PublishRelease {
-  readonly busy: boolean;
+  /** The publish is out: the dialog's name and acts wait for its answer. */
+  readonly pending: boolean;
   readonly refusal: PublishRefusal | null;
   /** Resolves `true` once the release is published and the catalog read again. */
   publish(label: string): Promise<boolean>;
@@ -81,33 +85,25 @@ export function usePublishRelease(): PublishRelease {
   const repositories = useRepositories();
   const queryClient = useQueryClient();
   const tenantId = useTenantId();
-  const [busy, setBusy] = useState(false);
   const [refusal, setRefusal] = useState<PublishRefusal | null>(null);
+  const publishing = useAction(
+    async (label: string) => {
+      setRefusal(null);
+      await repositories.catalog.publish(label);
+      await queryClient.invalidateQueries({ queryKey: queryKeys.catalog.all(tenantId) });
+    },
+    { onFailed: (error) => setRefusal(publishRefusalOf(error)) },
+  );
   return {
-    busy,
+    pending: publishing.pending,
     refusal,
     clear: () => setRefusal(null),
-    async publish(label) {
-      if (busy) return false;
-      setBusy(true);
-      setRefusal(null);
-      try {
-        await repositories.catalog.publish(label);
-        await queryClient.invalidateQueries({ queryKey: queryKeys.catalog.all(tenantId) });
-        return true;
-      } catch (error) {
-        const code = answerOf(error)?.code;
-        setRefusal(
-          code === 'CATALOG_LABEL_TAKEN'
-            ? 'label-taken'
-            : code === 'CATALOG_NOTHING_CHANGED'
-              ? 'nothing-changed'
-              : 'failed',
-        );
-        return false;
-      } finally {
-        setBusy(false);
-      }
-    },
+    publish: async (label) => (await publishing.run(label)).kind === 'done',
   };
+}
+
+function publishRefusalOf(error: unknown): PublishRefusal {
+  const code = answerOf(error)?.code;
+  if (code === 'CATALOG_LABEL_TAKEN') return 'label-taken';
+  return code === 'CATALOG_NOTHING_CHANGED' ? 'nothing-changed' : 'failed';
 }

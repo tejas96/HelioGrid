@@ -1,12 +1,16 @@
 // @vitest-environment happy-dom
 import type { CatalogItemWire } from '@heliogrid/contracts';
-import { NO_CATALOG_FILTER } from '@heliogrid/domain';
+import { NO_CATALOG_FILTER, type Read } from '@heliogrid/domain';
 import { act, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { useAddCatalogItem } from '../../src/react/use-add-catalog-item';
 import { useCatalogPage } from '../../src/react/use-catalog-items';
 import { useSession } from '../../src/react/use-session';
 import { mountedOver, OWN_SKU, origin, refusal } from './catalog-origin';
+
+/** The rows a list read holds: none until it is in. */
+const rowsOf = <T>(read: Read<readonly T[]>): readonly T[] =>
+  read.kind === 'ready' ? read.value : [];
 
 const SAATVIK: Record<string, number | string> = {
   watt: 575,
@@ -144,7 +148,7 @@ describe('adding an own item, through the real client', () => {
         onSpreadsheet: () => {},
       }),
     }));
-    await waitFor(() => expect(view.result.current.page.items).toHaveLength(1));
+    await waitFor(() => expect(rowsOf(view.result.current.page.read)).toHaveLength(1));
     await waitFor(() => expect(view.result.current.add.form.schemes).toHaveLength(2));
     origin.item = { ...OWN_SKU, brand: 'Saatvik' };
     act(() => {
@@ -154,7 +158,7 @@ describe('adding an own item, through the real client', () => {
       for (const [path, value] of Object.entries(SAATVIK)) change({ type: 'spec', path, value });
     });
     await act(() => view.result.current.add.submit());
-    await waitFor(() => expect(view.result.current.page.items[0]?.brand).toBe('Saatvik'));
+    await waitFor(() => expect(rowsOf(view.result.current.page.read)[0]?.brand).toBe('Saatvik'));
   });
 
   it.each([
@@ -177,7 +181,7 @@ describe('adding an own item, through the real client', () => {
 
   it('reads a selected item into the form, and asks before leaving once it changes', async () => {
     const view = await mounted(true, OWN_SKU.id);
-    await waitFor(() => expect(view.result.current.add.form.loading).toBe(false));
+    await waitFor(() => expect(view.result.current.add.form.read.kind).toBe('ready'));
     expect(view.result.current.add.copiedFrom).toBe('Own Panels OP-550');
     expect(view.result.current.add.form.draft.spec.watt).toBe(550);
     act(() => view.result.current.add.form.onCancel());
@@ -199,19 +203,22 @@ describe('the list with an item just added', () => {
     const view = mountedOver(() =>
       useCatalogPage({ q: '', filter: NO_CATALOG_FILTER, sort: 'preferred' }, 1, fresh),
     );
-    await waitFor(() => expect(view.result.current.items).toHaveLength(2));
-    expect(view.result.current.items.map((item) => item.brand)).toEqual(['Fresh', 'Own Panels']);
+    await waitFor(() => expect(rowsOf(view.result.current.read)).toHaveLength(2));
+    expect(rowsOf(view.result.current.read).map((item) => item.brand)).toEqual([
+      'Fresh',
+      'Own Panels',
+    ]);
     origin.item = { ...OWN_SKU, preferred: true };
     const fresh2 = mountedOver(() =>
       useCatalogPage({ q: '', filter: NO_CATALOG_FILTER, sort: 'preferred' }, 1, listed),
     );
-    await waitFor(() => expect(fresh2.result.current.items[0]?.preferred).toBe(true));
+    await waitFor(() => expect(rowsOf(fresh2.result.current.read)[0]?.preferred).toBe(true));
     origin.item = OWN_SKU;
     view.rerender();
     const again = mountedOver(() =>
       useCatalogPage({ q: '', filter: NO_CATALOG_FILTER, sort: 'preferred' }, 1, listed),
     );
-    await waitFor(() => expect(again.result.current.items).toHaveLength(1));
-    expect(again.result.current.items[0]?.id).toBe(OWN_SKU.id);
+    await waitFor(() => expect(rowsOf(again.result.current.read)).toHaveLength(1));
+    expect(rowsOf(again.result.current.read)[0]?.id).toBe(OWN_SKU.id);
   });
 });

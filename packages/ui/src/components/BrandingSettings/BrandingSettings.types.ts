@@ -1,3 +1,4 @@
+import type { Read } from '@heliogrid/domain';
 import type { BrandColorFieldWords } from '../BrandColorField/BrandColorField.types';
 import type { DocumentLetterhead } from '../DocumentPreview/DocumentPreview.types';
 import type { PickedFile } from '../Dropzone/Dropzone.types';
@@ -88,8 +89,11 @@ export interface BrandingAct {
 
 export interface BrandingSettingsProps {
   readonly words: BrandingSettingsWords;
-  /** The reads are out: the stage's loading form and the editor's bars (s18-j). */
-  readonly loading: boolean;
+  /**
+   * The page's reads. Until ready, the stage's loading form and the editor's bars (s18-j); a read
+   * with no answer is the screen's own page, never drawn here.
+   */
+  readonly read: Read<unknown>;
   /** The page's title, drawn above the standing line; a phone whose bar holds the title passes none. */
   readonly title?: string;
   /** What is in force and since when (`brandingStandingLine`); absent while loading. */

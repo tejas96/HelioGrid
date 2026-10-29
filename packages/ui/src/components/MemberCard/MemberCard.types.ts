@@ -1,9 +1,10 @@
 import type {
+  Read,
   RolePreset,
   TeamAct,
+  TeamList,
   TeamRow,
   TeamStatusFilter,
-  TeamSurface,
 } from '@heliogrid/domain';
 import type { ReactNode, Ref } from 'react';
 import type { AvatarMark, IrisHue } from '../Avatar/Avatar.types';
@@ -89,12 +90,12 @@ export interface MemberListWords {
  * them stay this component's.
  */
 export interface MemberListProps {
-  /** Which body to show — `@heliogrid/domain`'s `teamSurface`. */
-  surface: TeamSurface;
-  /** The rows in view, in the list's order; each becomes a card through `memberCardOf`. */
-  rows: readonly TeamRow[];
+  /**
+   * The list's read: its wait, its failure with *Try again*, then the rows in view in the list's
+   * order — each a card through `memberCardOf` — drawn as `@heliogrid/domain`'s `teamSurface` says.
+   */
+  read: Read<TeamList>;
   words: MemberListWords;
-  onRetry: () => void;
   onClearSearch: () => void;
   /** Back to *All* from a Status chip with nobody under it. */
   onShowAll: () => void;

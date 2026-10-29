@@ -8,6 +8,7 @@ import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Card, IconCircle } from '../Card/Card.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { ScopeNote, scopeNotePanelFrame } from '../ScopeNote/ScopeNote.native';
+import { readSurface } from '../UnavailableNote/read-surface';
 import type { RoleCardLine, RoleCardProps, RoleCardWords } from './RoleCard.types';
 
 /**
@@ -17,27 +18,27 @@ import type { RoleCardLine, RoleCardProps, RoleCardWords } from './RoleCard.type
  * *Try again* leaves with the error card, so once the card is back the reader's focus goes to the
  * presets' name, which stays.
  */
-export function RoleCard({ words, layout, surface, onRetry }: RoleCardProps) {
+export function RoleCard({ words, layout, read }: RoleCardProps) {
   const presets = useRef<View>(null);
   const retried = useRef(false);
   useEffect(() => {
-    if (!retried.current || surface === 'error') return;
+    if (!retried.current || read.kind === 'failed') return;
     retried.current = false;
     const tag = findNodeHandle(presets.current);
     if (tag !== null) AccessibilityInfo.setAccessibilityFocus(tag);
-  }, [surface]);
+  }, [read.kind]);
   const bounded = layout === 'bounded';
-  if (surface === 'error') {
+  if (read.kind === 'failed') {
     return (
       <Card
         style={bounded ? styles.bounded : undefined}
-        state="error"
+        {...readSurface(read)}
         errorTitle={words.error.title}
         errorMessage={words.error.body}
         retryLabel={words.error.retry}
         onRetry={() => {
           retried.current = true;
-          onRetry();
+          read.retry();
         }}
       />
     );
@@ -62,7 +63,7 @@ export function RoleCard({ words, layout, surface, onRetry }: RoleCardProps) {
             )}
           </View>
         </View>
-        {surface === 'loading' ? (
+        {read.kind === 'loading' ? (
           <Waiting words={words} />
         ) : bounded ? (
           <ScrollView

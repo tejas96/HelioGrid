@@ -1,5 +1,11 @@
 'use client';
-import { useConnection, useSession, useShell, useUnreadCount } from '@heliogrid/data/react';
+import {
+  useAction,
+  useConnection,
+  useSession,
+  useShell,
+  useUnreadCount,
+} from '@heliogrid/data/react';
 import { offersDoor } from '@heliogrid/domain';
 import {
   accessRemovedWords,
@@ -65,7 +71,8 @@ function ShellIn({ children }: { children: ReactNode }) {
   const rail = useRailItems(shell, goTo);
   const showGrievance = () => setGrievance(true);
   // A page holding a change asks first, as every in-app move does (D1 A).
-  const signOut = () => guarded(() => void session.signOut());
+  const leaving = useAction<void, void>(() => session.signOut());
+  const signOut = () => guarded(() => void leaving.run());
   const note = <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />;
   const connection = useConnection();
 
@@ -77,6 +84,7 @@ function ShellIn({ children }: { children: ReactNode }) {
         <AccessRemoved
           {...accessRemovedWords(t, shell.companyName)}
           onAction={signOut}
+          pending={leaving.pending}
           onGrievance={showGrievance}
         />
         {note}

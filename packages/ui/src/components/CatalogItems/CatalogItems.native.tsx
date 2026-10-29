@@ -40,18 +40,18 @@ const LOADING_ROWS = ['panel', 'panel', 'panel', 'panel', 'panel', 'panel'] as c
  * cards. Every word is the caller's; the sheets a row opens are the app's.
  */
 export function CatalogItems(props: CatalogItemsProps) {
-  const { words, surface, onRetry, strip, query, onQuery, filter, onFilter, schemes } = props;
+  const { words, read, strip, query, onQuery, filter, onFilter, schemes } = props;
   const [filtersOpen, setFiltersOpen] = useState(false);
   const dimensions = useMemo(() => catalogFilterDimensions(words, schemes), [words, schemes]);
-  const focus = useRetryFocus(surface);
+  const focus = useRetryFocus(read.kind);
 
-  if (surface === 'error') {
+  if (read.kind === 'failed') {
     return (
       <EmptyState
         title={words.loadFailed}
         description={words.loadFailedBody}
         action={
-          <Button variant="secondary" size="lg" onClick={focus.retrying(onRetry)}>
+          <Button variant="secondary" size="lg" onClick={focus.retrying(read.retry)}>
             {words.tryAgain}
           </Button>
         }
@@ -59,7 +59,7 @@ export function CatalogItems(props: CatalogItemsProps) {
     );
   }
 
-  const loading = surface === 'loading';
+  const loading = read.kind === 'loading';
   const kindOptions = COMPONENT_KINDS.map((kind) => ({ value: kind, label: words.kinds[kind] }));
   return (
     <View style={styles.panel}>

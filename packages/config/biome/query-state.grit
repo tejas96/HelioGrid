@@ -1,0 +1,40 @@
+// A hook hands its screen a Read (packages/data/src/react/read.ts) or an Action
+// (packages/data/src/react/action.ts), never the query library's own state: a screen that reads
+// isPending or isError spells loading, failed and its retry its own way, and forgets one.
+// read.ts and action.ts are left out of this check in biome.json's includes.
+or {
+  `$query.$flag` as $read where {
+    $flag <: r"^(?:isPending|isError|isLoading|isSuccess|isFetching|isRefetching|fetchStatus|errorUpdateCount)$",
+    register_diagnostic(span=$read, message="Query state read by hand — build the read with readOf, or the action with useAction (packages/data/src/react/read.ts, action.ts).")
+  },
+  JsObjectBindingPatternShorthandProperty() as $read where {
+    $read <: r"^(?:isPending|isError|isLoading|isSuccess|isFetching|isRefetching|fetchStatus|errorUpdateCount)$",
+    register_diagnostic(span=$read, message="Query state read by hand — build the read with readOf, or the action with useAction (packages/data/src/react/read.ts, action.ts).")
+  },
+  `$query.status === $value` as $read where {
+    $value <: r"[\x22\x27](?:pending|error|success)[\x22\x27]",
+    register_diagnostic(span=$read, message="Query state read by hand — build the read with readOf, or the action with useAction (packages/data/src/react/read.ts, action.ts).")
+  },
+  `$query.status !== $value` as $read where {
+    $value <: r"[\x22\x27](?:pending|error|success)[\x22\x27]",
+    register_diagnostic(span=$read, message="Query state read by hand — build the read with readOf, or the action with useAction (packages/data/src/react/read.ts, action.ts).")
+  },
+  `return $call` as $raw where {
+    $call <: `$hook($args)` where {
+      $hook <: r"^(?:useQuery|useQueries|useInfiniteQuery|useSuspenseQuery|useSuspenseInfiniteQuery|useMutation)$"
+    },
+    register_diagnostic(span=$raw, message="A raw query or mutation handed to a screen — return readOf(…) or useAction(…) (packages/data/src/react/read.ts, action.ts).")
+  },
+  `$hook($args)` as $raw where {
+    $hook <: r"^(?:useQuery|useQueries|useInfiniteQuery|useSuspenseQuery|useSuspenseInfiniteQuery|useMutation)$",
+    $raw <: within `($params) => $raw` ,
+    register_diagnostic(span=$raw, message="A raw query or mutation handed to a screen — return readOf(…) or useAction(…) (packages/data/src/react/read.ts, action.ts).")
+  },
+  `function $name($params) { $body }` where {
+    $body <: contains `const $held = $hook($args)` where {
+      $hook <: r"^(?:useQuery|useQueries|useInfiniteQuery|useSuspenseQuery|useSuspenseInfiniteQuery|useMutation)$"
+    },
+    $body <: contains `return $held` as $raw,
+    register_diagnostic(span=$raw, message="A raw query or mutation handed to a screen — return readOf(…) or useAction(…) (packages/data/src/react/read.ts, action.ts).")
+  }
+}

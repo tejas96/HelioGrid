@@ -11,10 +11,11 @@ export function ReleasesSurface({ open, onClose }: { open: boolean; onClose: () 
   const formats = useCatalogFormats();
   const releases = useCatalogReleases(open);
   const [chosen, setChosen] = useState<string | null>(null);
-  const newest = releases.items[0];
+  const listed = releases.read.kind === 'ready' ? releases.read.value : [];
+  const newest = listed[0];
   const shown = chosen ?? newest?.id ?? null;
   const detail = useCatalogRelease(open ? shown : null);
-  const opened = detail.data?.release;
+  const opened = detail.kind === 'ready' ? detail.value : undefined;
   return (
     <EditorSurface
       open={open}
@@ -35,24 +36,20 @@ export function ReleasesSurface({ open, onClose }: { open: boolean; onClose: () 
           opened === undefined
             ? null
             : {
-                tag: opened.label,
-                when: t(CATALOG_EDITOR.inForceSince, { date: formats.date(opened.publishedAt) }),
-                inForce: opened.id === newest?.id,
+                tag: opened.release.label,
+                when: t(CATALOG_EDITOR.inForceSince, {
+                  date: formats.date(opened.release.publishedAt),
+                }),
+                inForce: opened.release.id === newest?.id,
               }
         }
         changes={
-          detail.data === undefined
+          opened === undefined
             ? null
-            : catalogReleaseChangesOf(
-                t,
-                detail.data.release.counts,
-                detail.data.lines.items,
-                formats,
-              )
+            : catalogReleaseChangesOf(t, opened.release.counts, opened.lines.items, formats)
         }
-        surface={detail.isError ? 'error' : detail.data === undefined ? 'loading' : 'ready'}
-        onRetry={() => void detail.refetch()}
-        earlier={releases.items
+        read={detail}
+        earlier={listed
           .filter((entry) => entry.id !== shown)
           .map((entry) => ({
             id: entry.id,

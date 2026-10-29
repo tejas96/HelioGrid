@@ -7,21 +7,25 @@ import { mountedOver } from './catalog-origin';
 /** The price book through the real client: a new version is the one in force once it lands. */
 describe('the price book, through the real client', () => {
   it('a published version becomes the active one', async () => {
+    const told: number[] = [];
     const view = mountedOver(() => ({
       book: usePriceBook(),
-      publish: usePublishPriceBookVersion(),
+      publish: usePublishPriceBookVersion((number) => told.push(number)),
     }));
-    await waitFor(() => expect(view.result.current.book.data?.version).toBeNull());
-    let number: number | null = null;
+    const active = () => {
+      const { book } = view.result.current;
+      return book.kind === 'ready' ? book.value : undefined;
+    };
+    await waitFor(() => expect(active()?.version).toBeNull());
     await act(async () => {
-      number = await view.result.current.publish.publish({
+      await view.result.current.publish.run({
         note: 'First rates',
         defaultMarginPct: '16.50',
         rates: [{ name: { en: 'Site survey' }, basis: 'per_visit', amount: '1500' }],
       });
     });
-    expect(number).toBe(1);
-    await waitFor(() => expect(view.result.current.book.data?.version?.number).toBe(1));
-    expect(view.result.current.book.data?.rates).toHaveLength(1);
+    expect(told).toEqual([1]);
+    await waitFor(() => expect(active()?.version?.number).toBe(1));
+    expect(active()?.rates).toHaveLength(1);
   });
 });

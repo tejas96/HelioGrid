@@ -126,8 +126,7 @@ export function ReleaseAsRead({
           problem={null}
           changes={changes}
           more={null}
-          surface="ready"
-          onRetry={() => setLabel(label)}
+          read={{ kind: 'ready', value: null }}
         />
       ) : (
         <CatalogRelease
@@ -135,8 +134,7 @@ export function ReleaseAsRead({
           words={words}
           release={{ tag: 'r2026-08', when: '12 Aug 2026', inForce: true }}
           changes={changes}
-          surface="ready"
-          onRetry={() => undefined}
+          read={{ kind: 'ready', value: null }}
           earlier={[
             { id: 'r6', tag: 'r2026-06', when: '9 Jun 2026' },
             { id: 'r3', tag: 'r2026-03', when: '4 Mar 2026' },

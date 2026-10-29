@@ -32,7 +32,7 @@ export function CatalogSettingsScreen() {
       drillDown={drillDown}
       lead={
         /* A page that did not load is its error alone (s-error-load): nothing to switch between. */
-        facts.surface === 'error' ? undefined : (
+        facts.read.kind === 'failed' ? undefined : (
           <SegmentedControl
             options={[
               { value: 'items', label: t(CATALOG_SETTINGS.items) },

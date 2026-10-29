@@ -5,35 +5,36 @@ import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Card, IconCircle } from '../Card/Card';
 import { LoadingBars } from '../LoadingBars/LoadingBars';
 import { ScopeNote, scopeNotePanelFrame } from '../ScopeNote/ScopeNote';
+import { readSurface } from '../UnavailableNote/read-surface';
 import type { RoleCardLine, RoleCardProps, RoleCardWords } from './RoleCard.types';
 
 /**
  * The role card on the web: its head, then its rows, or their loading lines. *Try again* leaves
  * with the error card, so once the card is back focus goes to the presets' name, which stays.
  */
-export function RoleCard({ words, layout, surface, onRetry }: RoleCardProps) {
+export function RoleCard({ words, layout, read }: RoleCardProps) {
   const presets = useRef<HTMLSpanElement>(null);
   const retried = useRef(false);
   useEffect(() => {
-    if (!retried.current || surface === 'error') return;
+    if (!retried.current || read.kind === 'failed') return;
     retried.current = false;
     presets.current?.focus({ preventScroll: true });
-  }, [surface]);
+  }, [read.kind]);
   const frame = classNames(
     'hg-role-card',
     layout === 'bounded' ? 'hg-role-card-bounded' : undefined,
   );
-  if (surface === 'error') {
+  if (read.kind === 'failed') {
     return (
       <Card
         className={frame}
-        state="error"
+        {...readSurface(read)}
         errorTitle={words.error.title}
         errorMessage={words.error.body}
         retryLabel={words.error.retry}
         onRetry={() => {
           retried.current = true;
-          onRetry();
+          read.retry();
         }}
       />
     );
@@ -54,7 +55,11 @@ export function RoleCard({ words, layout, surface, onRetry }: RoleCardProps) {
             )}
           </div>
         </div>
-        {surface === 'loading' ? <Waiting words={words} /> : <Rows words={words} layout={layout} />}
+        {read.kind === 'loading' ? (
+          <Waiting words={words} />
+        ) : (
+          <Rows words={words} layout={layout} />
+        )}
       </div>
     </Card>
   );

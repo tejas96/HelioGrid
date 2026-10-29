@@ -1,17 +1,21 @@
 'use client';
 import { DEFAULT_PAGE_LIMIT, type ResolvedCatalogItemWire } from '@heliogrid/contracts';
 import {
+  allReads,
   badgedSchemesOf,
   type CatalogFilter,
   type CatalogSort,
   catalogTeaches,
   holdsOutright,
+  mapRead,
+  type Read,
 } from '@heliogrid/domain';
 import { useQuery } from '@tanstack/react-query';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { queryKeys } from '../cache/keys';
 import type { CatalogItemsAsk } from '../catalog/repository';
 import { useRepositories } from './context';
+import { readOf } from './read';
 import { companyRead } from './shell-reads';
 import { ownersRead } from './use-owners';
 import { usePagedList } from './use-paged-list';
@@ -54,6 +58,15 @@ export function catalogAskOf(view: CatalogView, page: number, limit: number): Ca
  * The item just added stands first, once (`SCR-M01-16` decision 1): a page that brings it back
  * after the catalog refreshes drops its own copy, so the list never names it twice.
  */
+function usePinnedFirst<Item extends { readonly id: string }>(
+  read: Read<readonly Item[]>,
+  added: Item | null,
+): Read<readonly Item[]> {
+  const rows = read.kind === 'ready' ? read.value : null;
+  const pinned = useMemo(() => (rows === null ? null : pinnedFirst(rows, added)), [rows, added]);
+  return mapRead(read, (value) => pinned ?? value);
+}
+
 function pinnedFirst<Item extends { readonly id: string }>(
   items: readonly Item[],
   added: Item | null,
@@ -78,8 +91,7 @@ export function useCatalogPage(
     page,
     enabled: tenantId !== '',
   });
-  const items = useMemo(() => pinnedFirst(list.items, added), [list.items, added]);
-  return { ...list, items };
+  return { ...list, read: usePinnedFirst(list.read, added) };
 }
 
 /** The list growing as the person scrolls — the phone's cards — with the added item first. */
@@ -92,8 +104,7 @@ export function useCatalogScroll(view: CatalogView, added: ResolvedCatalogItemWi
     enabled: tenantId !== '',
     keepPreviousWhileLoading: true,
   });
-  const items = useMemo(() => pinnedFirst(list.items, added), [list.items, added]);
-  return { ...list, items };
+  return { ...list, read: usePinnedFirst(list.read, added) };
 }
 
 /**
@@ -128,9 +139,15 @@ export interface CatalogFacts {
   /** Every item of the slice and the tenant, hidden ones included: the *Items* tab's figure. */
   readonly allCount: number;
   readonly owners: { readonly names: readonly string[]; readonly more: number } | null;
-  readonly surface: 'loading' | 'error' | 'ready';
-  retry(): void;
+  /**
+   * The facts' reads as one: still out until each is in, failed — with the retry that asks each
+   * failed one again — once any failed. The owners line counts only when it fails: it is read
+   * for a person who does not administer, and the page never waits on it.
+   */
+  readonly read: Read<unknown>;
 }
+
+const READY: Read<null> = { kind: 'ready', value: null };
 
 /** The page's counts, counted as the list counts — hidden items included, as settings lists them. */
 const COUNT_ASKS: Record<'all' | 'archived' | 'changed', CatalogItemsAsk> = {
@@ -169,18 +186,20 @@ export function useCatalogFacts(): CatalogFacts {
   const all = useQuery(counted('all'));
   const owners = useQuery(ownersRead(repositories, tenantId, reading && !administers));
 
-  const reads = [company, pack, releases, archived, changed, all] as const;
-  const failed = reads.some((read) => read.isError) || owners.isError;
-  const pending = reads.some((read) => read.isPending);
+  const ownersLine = readOf(owners);
+  const read = allReads([
+    readOf(company),
+    readOf(pack),
+    readOf(releases),
+    readOf(archived),
+    readOf(changed),
+    readOf(all),
+    ownersLine.kind === 'failed' ? ownersLine : READY,
+  ]);
   const schemes = useMemo(
     () => badgedSchemesOf(pack.data?.certificationSchemes) ?? [],
     [pack.data],
   );
-  const retry = useCallback(() => {
-    for (const read of [company, pack, releases, archived, changed, all, owners]) {
-      if (read.isError) void read.refetch();
-    }
-  }, [company, pack, releases, archived, changed, all, owners]);
   const latest = releases.data?.items[0];
   return {
     administers,
@@ -195,7 +214,6 @@ export function useCatalogFacts(): CatalogFacts {
     owners: owners.data
       ? { names: owners.data.owners.map((owner) => owner.name), more: owners.data.more }
       : null,
-    surface: failed ? 'error' : pending ? 'loading' : 'ready',
-    retry,
+    read,
   };
 }

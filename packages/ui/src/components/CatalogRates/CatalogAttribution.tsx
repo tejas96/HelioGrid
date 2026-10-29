@@ -13,15 +13,16 @@ import type { CatalogAttributionProps, CatalogAttributionRow } from './CatalogRa
 export function CatalogAttribution(props: CatalogAttributionProps) {
   const { words, rows, onMore } = props;
   const focus = useMoreFocus<HTMLElement>(onMore !== null);
-  const retry = useRetryFocus(props.surface);
-  if (props.surface === 'loading') return null;
-  if (props.surface === 'error') {
+  const { read } = props;
+  const retry = useRetryFocus(read.kind);
+  if (read.kind === 'loading') return null;
+  if (read.kind === 'failed') {
     return (
       <EmptyState
         glow={false}
         title={words.loadFailed}
         action={
-          <Button variant="secondary" size="sm" onClick={retry.retrying(props.onRetry)}>
+          <Button variant="secondary" size="sm" onClick={retry.retrying(read.retry)}>
             {words.tryAgain}
           </Button>
         }

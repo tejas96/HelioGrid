@@ -54,7 +54,8 @@ const TIER_LINE = [tierLabel(en.t, 'estimated'), en.t(SETUP_WHAT_YOU_SELL.declar
 /* The three kinds as the screen's words give them: the one vocabulary's title, this screen's line. */
 const KINDS = companyProfileWords(en.t, {
   life: 'setup',
-  status: 'ready',
+  read: 'ready',
+  saveFailed: false,
   skipped: false,
   arrivedUndeclared: false,
   standings: {

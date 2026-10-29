@@ -3,6 +3,7 @@ import type {
   NotificationTypeGroup,
   ProfilePreferencesView,
   PushSwitch,
+  Read,
   RolePreset,
   UiLanguage,
 } from '@heliogrid/domain';
@@ -51,16 +52,6 @@ export interface ProfilePreferencesWords {
 }
 
 /**
- * The push section's facts: the read's state, its switches (domain's `pushSwitches`), and the
- * groups whose last write was refused.
- */
-export interface ProfilePush {
-  readonly surface: 'loading' | 'error' | 'ready';
-  readonly switches: readonly PushSwitch[];
-  readonly refused: readonly NotificationTypeGroup[];
-}
-
-/**
  * Profile & preferences (`SCR-M01-11`): the person's name and roles, then their language and
  * units, then a push switch per group, each applied as it is touched — no Save (brief decision 2).
  * Until the push read answers the page is its loading bars, and its error banner if it fails.
@@ -81,10 +72,11 @@ export interface ProfilePreferencesProps {
   readonly onRole: () => void;
   readonly onLanguage: (next: UiLanguage) => void;
   readonly onUnits: (next: MeasurementSystem) => void;
-  readonly push: ProfilePush;
+  /** The push read — its switches (domain's `pushSwitches`); a failed read's banner asks it again. */
+  readonly read: Read<readonly PushSwitch[]>;
+  /** The groups whose last write was refused. */
+  readonly refused: readonly NotificationTypeGroup[];
   /** A group's switch was tapped: its push flips. The page passes no value, since a second tap can
    * land before the switch redraws; the caller flips from what it last asked for. */
   readonly onPush: (group: NotificationTypeGroup) => void;
-  /** *Try again* on the error banner. */
-  readonly onRetry: () => void;
 }

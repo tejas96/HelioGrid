@@ -79,7 +79,7 @@ function CaptionRow({ wide, words, onOpenFullSize }: StageProps) {
  * The document hugs its bands (`fit: content`), so at width the window is the whole sheet; the
  * wait keeps an A4 sheet's footprint there, having no document to measure.
  */
-function StageFrame({ wide, words, loading, unsaved, part, document }: StageProps) {
+function StageFrame({ wide, words, read, unsaved, part, document }: StageProps) {
   const note = unsaved ? { note: words.notSaved } : {};
   const geometry = wide
     ? { designWidth: BRANDING_SHEET.width }
@@ -88,7 +88,7 @@ function StageFrame({ wide, words, loading, unsaved, part, document }: StageProp
         minScale: TEMPLATE_STAGE_MIN_SCALE,
         maxHeight: templateStageHeight(part),
       };
-  if (loading) {
+  if (read.kind !== 'ready') {
     return (
       <PreviewFrame
         surface="sheet"

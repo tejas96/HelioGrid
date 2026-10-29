@@ -251,3 +251,24 @@ test('reduced motion shows the end state', async ({ mount, page }) => {
     await root.unmount();
   }
 });
+
+test('while the create is out every field is held', async ({ mount, page }) => {
+  await mount(<CatalogItemFormAsRead reader="en" setup={{ ...FRAMES['m16-f'], saving: true }} />);
+  const form = page.locator('.hg-item-form');
+  await expect(form.getByRole('textbox').first()).toBeVisible();
+  for (const role of ['textbox', 'combobox', 'switch'] as const) {
+    for (const field of await form.getByRole(role).all()) await expect(field).toBeDisabled();
+  }
+  await expect(form.getByRole('combobox').first()).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: wordsOf(FRAMES['m16-f']).addOptional }),
+  ).toBeDisabled();
+  await expect(page.locator('.hg-item-accelerator')).toBeDisabled();
+});
+
+test('the discard confirm draws its words as one paragraph', async ({ mount, page }) => {
+  await mount(<CatalogItemFormAsRead reader="en" setup={FRAMES['s16-i']} />);
+  const confirm = page.getByRole('dialog', { name: wordsOf(FRAMES['s16-i']).discard.title });
+  await expect(confirm).toBeVisible();
+  await expect(confirm.locator('p p')).toHaveCount(0);
+});

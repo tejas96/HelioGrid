@@ -42,7 +42,7 @@ export function DiscardConfirm({ open, words, onKeep, onDiscard }: DiscardConfir
       }
     >
       <Text variant="body-sm" color="secondary">
-        <Text variant="body-sm" color="primary" bold>
+        <Text as="span" variant="body-sm" color="primary" bold>
           {words.lead}
         </Text>{' '}
         {words.body}

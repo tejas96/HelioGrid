@@ -66,7 +66,7 @@ Task-id prefix: `T-SHELL-`. RFC and part-size rules live in `docs/tasks/README.m
 
 ### T-SHELL-013 · A read's and an action's state, typed once — loading, empty, failed with its retry, and inert while a save is out
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped
 **PRD rows:** F7-23 (P0), F7-43 (P0)
 **Design:** none — an engine task; it waits on no drawing and changes built screens.
 **Why:** A person whose second read fails sees a spinner forever or nothing at all, and text typed while a save is out is dropped: about fifteen hooks each spell a read's state their own way, `state?` is optional on every component that draws one, and seventeen hand-written guards hold a save in flight. One state, owned once, makes a missing state or an unguarded save a compile error.

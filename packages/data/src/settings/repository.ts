@@ -52,7 +52,9 @@ export interface SettingsRepository {
   ): Promise<TrancheSchedulePreview>;
 }
 
-export type TrancheTemplateAct = 'archive' | 'restore' | 'make-default';
+/** A template's acts besides its save; the screen tells which one is out by this list. */
+export const TRANCHE_TEMPLATE_ACTS = ['archive', 'restore', 'make-default'] as const;
+export type TrancheTemplateAct = (typeof TRANCHE_TEMPLATE_ACTS)[number];
 
 /** The types are INFERRED from the contract, never a hand-written copy of the response. */
 export function createSettingsRepository(api: ApiClient): SettingsRepository {

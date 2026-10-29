@@ -1,9 +1,15 @@
 'use client';
-import { DEFAULT_PAGE_LIMIT, type PriceBookPublish } from '@heliogrid/contracts';
+import {
+  DEFAULT_PAGE_LIMIT,
+  type PriceBookPublish,
+  type PriceBookVersionHeadWire,
+} from '@heliogrid/contracts';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
 import { queryKeys } from '../cache/keys';
+import { type Action, useAction } from './action';
 import { useRepositories } from './context';
+import { readOf } from './read';
 import { usePaginatedList } from './use-paginated-list';
 import { useTenantId } from './use-tenant-id';
 
@@ -11,11 +17,12 @@ import { useTenantId } from './use-tenant-id';
 export function usePriceBook() {
   const repositories = useRepositories();
   const tenantId = useTenantId();
-  return useQuery({
+  const book = useQuery({
     queryKey: queryKeys.priceBook.active(tenantId),
     queryFn: ({ signal }) => repositories.priceBook.active(signal),
     enabled: tenantId !== '',
   });
+  return readOf(book);
 }
 
 /** Every version, newest first, the one in force marked. */
@@ -33,46 +40,30 @@ export function usePriceBookVersions(enabled: boolean) {
 export function usePriceBookVersion(id: string | null) {
   const repositories = useRepositories();
   const tenantId = useTenantId();
-  return useQuery({
+  const version = useQuery({
     queryKey: queryKeys.priceBook.version(tenantId, id ?? ''),
     queryFn: ({ signal }) => repositories.priceBook.version(id ?? '', signal),
     enabled: id !== null && tenantId !== '',
   });
+  return readOf(version);
 }
 
-export interface PublishPriceBook {
-  readonly busy: boolean;
-  readonly failed: boolean;
-  /** The new version's number once it is in force; `null` when it did not land. */
-  publish(body: PriceBookPublish): Promise<number | null>;
-}
-
-/** A new version is the whole rate set again; once in force, the price book is read afresh. */
-export function usePublishPriceBookVersion(): PublishPriceBook {
+/**
+ * A new version is the whole rate set again; once in force, the price book is read afresh and
+ * `onPublished` hears its number. The action's `failure` is the save that did not land.
+ */
+export function usePublishPriceBookVersion(
+  onPublished: (number: number) => void,
+): Action<PriceBookPublish, PriceBookVersionHeadWire> {
   const repositories = useRepositories();
   const queryClient = useQueryClient();
   const tenantId = useTenantId();
-  const [busy, setBusy] = useState(false);
-  const [failed, setFailed] = useState(false);
-  return {
-    busy,
-    failed,
-    async publish(body) {
-      if (busy) return null;
-      setBusy(true);
-      setFailed(false);
-      try {
-        const head = await repositories.priceBook.publish(body);
-        await queryClient.invalidateQueries({ queryKey: queryKeys.priceBook.all(tenantId) });
-        return head.number;
-      } catch {
-        setFailed(true);
-        return null;
-      } finally {
-        setBusy(false);
-      }
+  return useAction((body: PriceBookPublish) => repositories.priceBook.publish(body), {
+    onDone: async (head) => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.priceBook.all(tenantId) });
+      onPublished(head.number);
     },
-  };
+  });
 }
 
 /** Browsing the versions: the list, and one opened read-only; closing forgets which. */

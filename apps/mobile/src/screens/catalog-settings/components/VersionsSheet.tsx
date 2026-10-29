@@ -7,7 +7,6 @@ import {
   EditorSurface,
   IconButton,
   ShellGlyph,
-  surfaceOf,
   useCatalogFormats,
 } from '@heliogrid/ui';
 import { useEffect } from 'react';
@@ -22,7 +21,9 @@ export function VersionsSheet({ open, onClose }: { open: boolean; onClose: () =>
   const formats = useCatalogFormats();
   const words = catalogVersionWords(t);
   const browse = usePriceBookBrowse(open, onClose);
-  const opened = browse.picked === null ? undefined : browse.one.data;
+  const opened =
+    browse.picked !== null && browse.one.kind === 'ready' ? browse.one.value : undefined;
+  const versions = browse.list.read.kind === 'ready' ? browse.list.read.value : [];
   const listTitle = opened === undefined;
   /* Android's Back from one version returns to the list, as *Back to versions* does; this handler is
      added after the sheet's own, so it runs first. */
@@ -65,9 +66,8 @@ export function VersionsSheet({ open, onClose }: { open: boolean; onClose: () =>
           <CatalogVersion
             mode="list"
             words={words}
-            versions={browse.list.items.map((row) => versionSummaryOf(t, row, formats))}
-            surface={surfaceOf(browse.list.status)}
-            onRetry={() => void browse.list.refetch()}
+            versions={versions.map((row) => versionSummaryOf(t, row, formats))}
+            read={browse.list.read}
             onOpen={browse.pick}
             hasMore={browse.list.hasNextPage}
             onMore={() => void browse.list.fetchNextPage()}
@@ -80,8 +80,7 @@ export function VersionsSheet({ open, onClose }: { open: boolean; onClose: () =>
             rateCount={opened ? formats.number(opened.rates.length) : ''}
             note={opened?.note ?? ''}
             rates={versionRatesOf(opened?.rates ?? [], locale)}
-            surface={surfaceOf(browse.one.status)}
-            onRetry={() => void browse.one.refetch()}
+            read={browse.one}
           />
         )}
       </View>

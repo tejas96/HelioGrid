@@ -130,7 +130,7 @@ test.describe('at 375', () => {
     mount,
     page,
   }) => {
-    const screen = await mount(<RoleExplainerAsHeld reader="en" names={BOARD} surface="error" />);
+    const screen = await mount(<RoleExplainerAsHeld reader="en" names={BOARD} surface="failed" />);
     await expect(page.locator('.hg-role-explainer')).toContainText(SALES.error.title);
     await expect(page.locator('.hg-role-card-presets')).toHaveCount(0);
     await expect(page.getByRole('button', { name: SALES.act })).toBeEnabled();

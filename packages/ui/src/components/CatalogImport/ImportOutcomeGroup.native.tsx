@@ -11,7 +11,7 @@ import { StatusChip } from '../StatusChip/StatusChip.native';
 import { type ImportFormats, type ImportListRowView, listRowOf } from './CatalogImport.logic';
 import { CARD_RADIUS, raisedCard, rowDivider } from './CatalogImport.surfaces.native';
 import type { CatalogImportWords, ImportGroupId, ImportRowList } from './CatalogImport.types';
-import { groupSampleOf, type ImportSampleItem } from './CatalogImport.view';
+import { groupSampleOf, type ImportSampleItem, rowsOf } from './CatalogImport.view';
 import { ImportGlyph } from './ImportGlyph.native';
 
 type Phase = 'preview' | 'report';
@@ -43,7 +43,7 @@ interface ImportOutcomeGroupProps {
 export function ImportOutcomeGroup(props: ImportOutcomeGroupProps) {
   const { group, open, words } = props;
   const tile = GROUP_TILE[group.id] ?? { glyph: 'lines', hue: 'blue' };
-  const sample = groupSampleOf(group.rows, words, props.formats, props.phase);
+  const sample = groupSampleOf(rowsOf(group), words, props.formats, props.phase);
   return (
     <View style={styles.group}>
       <Pressable
@@ -68,7 +68,7 @@ export function ImportOutcomeGroup(props: ImportOutcomeGroupProps) {
       {open ? (
         <>
           <ImportOutcomeList
-            rows={group.rows}
+            rows={rowsOf(group)}
             words={words}
             formats={props.formats}
             phase={props.phase}
@@ -110,10 +110,11 @@ function Sample({
 
 /** *Show more*: the next page of an opened list. */
 export function MoreRows({ list, words }: { list: ImportRowList; words: CatalogImportWords }) {
-  if (list.failed === true && list.onRetry !== undefined) {
+  const { read } = list;
+  if (read.kind === 'failed') {
     return (
       <View style={styles.more}>
-        <Button variant="secondary" size="sm" onClick={list.onRetry}>
+        <Button variant="secondary" size="sm" onClick={read.retry}>
           {words.tryAgain}
         </Button>
       </View>
@@ -122,7 +123,7 @@ export function MoreRows({ list, words }: { list: ImportRowList; words: CatalogI
   if (!list.hasMore) return null;
   return (
     <View style={styles.more}>
-      <Button variant="ghost" size="sm" loading={list.loading} onClick={list.onMore}>
+      <Button variant="ghost" size="sm" onClick={list.onMore}>
         {words.showMore}
       </Button>
     </View>

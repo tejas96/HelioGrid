@@ -30,9 +30,8 @@ export function RoleExplainerScreen() {
   return (
     <RoleExplainer
       words={roleCardWords(t, role.card, role.facts)}
-      surface={role.surface}
-      names={role.namesPending ? 'pending' : 'ready'}
-      onRetry={role.retry}
+      read={role.read}
+      namesPending={role.namesPending}
       onAct={() => {
         endFirstRun();
         router.replace(HOME_ROUTE);

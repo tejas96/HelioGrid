@@ -91,7 +91,7 @@ test.describe('at 375', () => {
     mount,
     page,
   }) => {
-    const card = await mount(<ProfilePreferencesAsHeld reader="en" push="error" />);
+    const card = await mount(<ProfilePreferencesAsHeld reader="en" push="failed" />);
     await expect(card.getByText(W('loadFailed'))).toBeVisible();
     await expect(card.getByText(W('nothingChanged'))).toBeVisible();
     await expect(card.getByRole('switch')).toHaveCount(0);
@@ -148,7 +148,7 @@ test.describe('at 1536', () => {
   });
 
   test('d-error: the title, then the danger banner', async ({ mount, page }) => {
-    const card = await mount(<ProfilePreferencesAsHeld reader="en" push="error" />);
+    const card = await mount(<ProfilePreferencesAsHeld reader="en" push="failed" />);
     await expect(card.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(card.getByText(W('loadFailed'))).toBeVisible();
     await expect(card.locator('.hg-settings-section')).toHaveCount(0);

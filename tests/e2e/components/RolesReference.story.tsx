@@ -1,7 +1,8 @@
-import { roleHolders, type UiLanguage } from '@heliogrid/domain';
+import { type ReadKind, roleHolders, type UiLanguage } from '@heliogrid/domain';
 import { createTranslator, rolesReferenceWords } from '@heliogrid/i18n';
-import { RolesReference, type RolesReferenceCounts } from '@heliogrid/ui';
+import { RolesReference } from '@heliogrid/ui';
 import { useState } from 'react';
+import { readIn } from '../support/read';
 import { BOARD_ROSTER } from './roles-reference-roster';
 
 const READERS = {
@@ -21,7 +22,7 @@ export function RolesReferenceAsRead({
   fromAssign = false,
 }: {
   reader: UiLanguage;
-  counts?: RolesReferenceCounts;
+  counts?: ReadKind;
   title?: 'page' | 'bar';
   fromAssign?: boolean;
 }) {
@@ -39,8 +40,7 @@ export function RolesReferenceAsRead({
     >
       <RolesReference
         words={words}
-        counts={counts}
-        onRetry={() => setRetried(true)}
+        read={readIn(counts, BOARD_ROSTER, () => setRetried(true))}
         title={title}
         back={fromAssign ? { label: words.backToAssign, onPress: () => setBack(true) } : null}
       />

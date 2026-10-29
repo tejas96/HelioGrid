@@ -4,7 +4,6 @@ export {
   catalogFilterOf,
   catalogFilterValue,
   catalogRowStatesOf,
-  surfaceOf,
 } from './CatalogItems.logic';
 export { CATALOG_KIND_LEADING, CATALOG_WIDE_FROM, catalogRowPending } from './CatalogItems.rows';
 export * from './CatalogItems.types';

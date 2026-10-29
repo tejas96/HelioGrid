@@ -16,7 +16,6 @@ import {
   catalogEditorSwitches,
   EditorSurface,
   Modal,
-  surfaceOf,
   Text,
   useCatalogFormats,
 } from '@heliogrid/ui';
@@ -104,7 +103,7 @@ function PriceEditorSurface({
             variant="primary"
             size="lg"
             fullWidth
-            loading={draft.busy}
+            loading={draft.pending}
             onClick={() => void draft.save()}
           >
             {t(platform ? CATALOG_EDITOR.saveOverride : CATALOG_EDITOR.savePrice)}
@@ -169,7 +168,10 @@ function PublishSurface({ overlays, release }: { overlays: CatalogOverlays; rele
   const preview = useReleasePreview(overlays.publishing);
   const shown = catalogPublishView(
     t,
-    { counts: preview.counts, lines: preview.lines.items },
+    {
+      counts: preview.counts,
+      lines: preview.lines.read.kind === 'ready' ? preview.lines.read.value : [],
+    },
     overlays.publish.refusal,
     formats,
   );
@@ -201,7 +203,7 @@ function PublishSurface({ overlays, release }: { overlays: CatalogOverlays; rele
             variant="primary"
             size="lg"
             fullWidth
-            loading={publish.busy}
+            loading={publish.pending}
             disabled={overlays.label.trim() === '' || !shown.sendable}
             onClick={() => void overlays.sendPublish()}
           >
@@ -217,8 +219,7 @@ function PublishSurface({ overlays, release }: { overlays: CatalogOverlays; rele
         onLabel={overlays.setLabel}
         problem={shown.problem}
         changes={shown.changes}
-        surface={surfaceOf(preview.lines.status)}
-        onRetry={() => void preview.lines.refetch()}
+        read={preview.lines.read}
         more={
           preview.lines.hasNextPage
             ? { label: shown.moreLabel, onMore: () => void preview.lines.fetchNextPage() }

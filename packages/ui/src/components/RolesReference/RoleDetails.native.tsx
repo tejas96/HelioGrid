@@ -1,3 +1,4 @@
+import type { ReadKind } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { type ReactNode, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -12,7 +13,6 @@ import { PRESET_GLYPH } from '../SettingsList/SettingsList.logic';
 import { StatusChip } from '../StatusChip/StatusChip.native';
 import { linesOn, ROLES_PANEL_ABOVE, ROLES_PANEL_WIDTH } from './RolesReference.logic';
 import type {
-  RolesReferenceCounts,
   RolesReferencePreset,
   RolesReferenceSide,
   RolesReferenceWordsProp,
@@ -23,7 +23,7 @@ interface RoleDetailsProps {
   preset: RolesReferencePreset | null;
   open: boolean;
   /** Holders are named only once the roster is read: before, *Nobody* would be a guess. */
-  counts: RolesReferenceCounts;
+  counts: ReadKind;
   words: RolesReferenceWordsProp;
   side: RolesReferenceSide;
   onSide: (side: RolesReferenceSide) => void;

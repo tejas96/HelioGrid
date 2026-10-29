@@ -1,3 +1,4 @@
+import type { ReadKind } from '@heliogrid/domain';
 import { Pressable } from '../../primitives/Pressable/Pressable';
 import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
@@ -6,11 +7,11 @@ import { LoadingBars } from '../LoadingBars/LoadingBars';
 import { NamedGap } from '../NamedGap/NamedGap';
 import { PRESET_GLYPH } from '../SettingsList/SettingsList.logic';
 import { spokenName } from './RolesReference.logic';
-import type { RolesReferenceCounts, RolesReferencePreset } from './RolesReference.types';
+import type { RolesReferencePreset } from './RolesReference.types';
 
 interface RoleTileProps {
   preset: RolesReferencePreset;
-  counts: RolesReferenceCounts;
+  counts: ReadKind;
   countGap: string;
   open: boolean;
   onOpen: () => void;

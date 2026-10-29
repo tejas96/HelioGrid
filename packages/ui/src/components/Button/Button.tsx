@@ -86,7 +86,8 @@ export function Button({
           reason.onPress();
           return;
         }
-        if (disabled) {
+        // A working button sends nothing more: its first press is still out.
+        if (disabled || loading) {
           return;
         }
         onClick?.();

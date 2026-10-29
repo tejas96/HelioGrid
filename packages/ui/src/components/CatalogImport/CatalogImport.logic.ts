@@ -141,9 +141,7 @@ export function cardOf(
     question: words.question(reason, facts),
     act,
     options,
-    busy:
-      props.busy.has(row.rowNumber) ||
-      (row.repeats !== null && props.busy.has(row.repeats.rowNumber)),
+    busy: props.busy(row.rowNumber) || (row.repeats !== null && props.busy(row.repeats.rowNumber)),
     choose: (choice) => {
       const request = importFixRequest(row, choice);
       if (request !== null) props.onFix(row, request.target, request.body, request.undo);

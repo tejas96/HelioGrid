@@ -44,6 +44,7 @@ export function ItemFormBody({ props, wide }: BodyProps) {
         <SheetAccelerator
           title={words.spreadsheet}
           sub={words.spreadsheetSub}
+          disabled={props.saving}
           wide={wide}
           onPress={head.spreadsheet}
         />
@@ -91,7 +92,8 @@ function TheItemCard({ props, wide }: BodyProps) {
 }
 
 function SpecificationCard({ props, wide }: BodyProps) {
-  const { words, loading } = props;
+  const { words } = props;
+  const loading = props.read.kind === 'loading';
   return (
     <ItemCard
       glyph="bolt"
@@ -118,6 +120,7 @@ function SpecificationCard({ props, wide }: BodyProps) {
           words={words}
           failures={props.failures}
           focus={fieldFocusOf(props)}
+          disabled={props.saving}
           wide={wide}
           onChange={props.onChange}
         />

@@ -165,6 +165,6 @@ export async function mounted(ready = true) {
   const wrapper = ({ children }: { children: ReactNode }) =>
     createElement(DataProvider, { layer, children });
   const view = renderHook(() => useTrancheTemplates('en'), { wrapper });
-  if (ready) await waitFor(() => expect(view.result.current.status).toBe('ready'));
+  if (ready) await waitFor(() => expect(view.result.current.read.kind).toBe('ready'));
   return view;
 }

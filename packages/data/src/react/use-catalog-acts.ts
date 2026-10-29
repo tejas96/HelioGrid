@@ -5,6 +5,7 @@ import { useCallback, useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import type { Repositories } from '../data-layer';
 import { ApiError } from '../errors/errors';
+import { useAction } from './action';
 import { useRepositories } from './context';
 import { useSession } from './use-session';
 
@@ -32,6 +33,14 @@ export interface CatalogPrice {
 }
 
 export type CatalogSaveOutcome = 'saved' | 'refused' | 'failed';
+
+/** One row's write as it is sent, and sent again by *Retry*. */
+interface RowWrite {
+  readonly item: Item;
+  readonly act: CatalogAct;
+  readonly write: () => Promise<unknown>;
+  readonly landed: () => void;
+}
 
 /** What the screen tells the person once a write lands. */
 export type CatalogActNote =
@@ -62,7 +71,6 @@ export function useCatalogActs(onNote: (note: CatalogActNote) => void): CatalogA
   const tenantId = useSession().user?.tenant?.id ?? '';
   const [rows, setRows] = useState<Record<string, CatalogRowState>>({});
   const asked = useRef(new Map<string, boolean>());
-  const out = useRef(new Set<string>());
 
   const settleRow = useCallback((id: string) => {
     setRows(({ [id]: _settled, ...rest }) => rest);
@@ -73,35 +81,36 @@ export function useCatalogActs(onNote: (note: CatalogActNote) => void): CatalogA
     [queryClient, tenantId],
   );
 
-  const send = useCallback(
-    async (
-      item: Item,
-      act: CatalogAct,
-      write: () => Promise<unknown>,
-      landed: () => void = () => undefined,
-    ): Promise<boolean> => {
-      if (out.current.has(item.id)) return false;
-      out.current.add(item.id);
-      setRows((now) => ({ ...now, [item.id]: { state: 'saving', act } }));
-      try {
-        await write();
-        settleRow(item.id);
-        await refresh();
-        landed();
-        return true;
-      } catch {
-        const again = () => void send(item, act, write, landed);
+  /* One write per row at a time: a second tap on a row whose write is out sends nothing. */
+  const rowWrite = useAction(
+    async (ask: RowWrite) => {
+      setRows((now) => ({ ...now, [ask.item.id]: { state: 'saving', act: ask.act } }));
+      await ask.write();
+      settleRow(ask.item.id);
+      await refresh();
+      ask.landed();
+    },
+    {
+      key: (ask) => ask.item.id,
+      onFailed: (_error, ask) =>
         setRows((now) => ({
           ...now,
-          [item.id]: { state: 'failed', act, retry: again, dismiss: () => settleRow(item.id) },
-        }));
-        return false;
-      } finally {
-        out.current.delete(item.id);
-      }
+          [ask.item.id]: {
+            state: 'failed',
+            act: ask.act,
+            retry: () => void rowWrite.run(ask),
+            dismiss: () => settleRow(ask.item.id),
+          },
+        })),
     },
-    [refresh, settleRow],
   );
+  const send = (
+    item: Item,
+    act: CatalogAct,
+    write: () => Promise<unknown>,
+    landed: () => void = () => undefined,
+  ): Promise<boolean> =>
+    rowWrite.run({ item, act, write, landed }).then((answer) => answer.kind === 'done');
 
   const flip = (item: Item, field: 'preferred' | 'hidden') => {
     const key = `${field}:${item.id}`;

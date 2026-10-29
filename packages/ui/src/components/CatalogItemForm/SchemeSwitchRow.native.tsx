@@ -16,6 +16,7 @@ export function SchemeSwitchRow({
   held,
   error,
   focusRequest,
+  disabled,
   onChange,
 }: SchemeSwitchRowProps) {
   const card = useGround();
@@ -32,6 +33,7 @@ export function SchemeSwitchRow({
         <Switch
           label={words.label}
           checked={held.on}
+          disabled={disabled}
           onChange={(on) => onChange({ type: 'scheme', scheme, on })}
           style={styles.switch}
         />
@@ -42,6 +44,7 @@ export function SchemeSwitchRow({
             onChange={(value) => onChange({ type: 'reference', scheme, value })}
             density="functional"
             error={error}
+            disabled={disabled}
             focusRequest={focusRequest}
           />
         ) : null}

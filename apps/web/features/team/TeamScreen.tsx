@@ -1,6 +1,7 @@
 'use client';
 import { useSession, useShell, useTeam, useTeamActs } from '@heliogrid/data/react';
 import {
+  mapRead,
   noteLeavesRow,
   OPENED_FROM_ASSIGN_ROLES,
   opensSettingsRow,
@@ -67,7 +68,7 @@ function TeamIn() {
     query: team.query,
     status: team.status,
   });
-  const ready = team.load === 'ready';
+  const list = team.read.kind === 'ready' ? team.read.value : null;
   const actWords = teamActWords(t, company);
   const toasts = useToasts();
   const search = useRef<FocusHandle>(null);
@@ -145,6 +146,17 @@ function TeamIn() {
     );
   };
 
+  /* One table for the wait and the rows: it draws its own loading. */
+  const table = wide ? (
+    <TeamTable
+      read={mapRead(team.read, (shown) => shown.view.rows)}
+      words={words}
+      actions={actWords.actions}
+      actOf={(row) => actOf(row, 'sm')}
+      openOf={openOf}
+    />
+  ) : undefined;
+
   return (
     <div className="hg-shell-page" ref={room}>
       <header className="hg-team-head">
@@ -152,24 +164,24 @@ function TeamIn() {
           <Text as="h1" variant="h2">
             {settingsRowName(t, 'team')}
           </Text>
-          {wide && ready ? (
+          {wide && list !== null ? (
             <Text variant="body-sm" color="secondary">
-              {t(TEAM.headCount, { people: team.view.people, invites: team.view.invites })}
+              {t(TEAM.headCount, { people: list.view.people, invites: list.view.invites })}
             </Text>
           ) : null}
         </div>
         {wide ? inviteAct : null}
       </header>
-      {!wide && team.surface !== 'teaching' ? (
+      {!wide && list?.surface !== 'teaching' ? (
         <div className="hg-team-invite">{inviteAct}</div>
       ) : null}
-      {showsListHead(team.surface) ? (
+      {showsListHead(team.read) ? (
         <MemberListHead
           query={team.query}
           onFind={team.find}
           status={team.status}
           onFilter={team.filter}
-          counts={ready ? team.view.counts : undefined}
+          counts={list?.view.counts}
           words={words}
           wide={wide}
           searchRef={search}
@@ -177,37 +189,15 @@ function TeamIn() {
         />
       ) : null}
       <MemberList
-        surface={team.surface}
-        rows={team.view.rows}
+        read={team.read}
         words={words}
         teachingAction={inviteFirstAct}
-        onRetry={team.retry}
         onClearSearch={clearSearch}
         onShowAll={showAll}
         actOf={(row) => actOf(row, 'md')}
         openOf={openOf}
-        records={
-          wide ? (
-            <TeamTable
-              rows={team.view.rows}
-              words={words}
-              actions={actWords.actions}
-              actOf={(row) => actOf(row, 'sm')}
-              openOf={openOf}
-            />
-          ) : undefined
-        }
-        waiting={
-          wide ? (
-            <TeamTable
-              rows={[]}
-              words={words}
-              actions={actWords.actions}
-              actOf={() => null}
-              loading
-            />
-          ) : undefined
-        }
+        records={table}
+        waiting={table}
       />
       <TeamConfirm
         words={actWords.confirm(acts.confirm)}
@@ -216,7 +206,12 @@ function TeamIn() {
         onLeave={leave}
       />
       <InviteEditor {...invite.editor} />
-      <TeamAssignRoles editor={roles} companyName={company} onReference={openReference} />
+      <TeamAssignRoles
+        editor={roles}
+        list={team.read}
+        companyName={company}
+        onReference={openReference}
+      />
       <ToastHost toasts={toasts.toasts} onDismiss={toasts.dismiss} />
     </div>
   );

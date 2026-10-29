@@ -51,7 +51,7 @@ for (const [width, height, form] of [
       mount,
       page,
     }) => {
-      await mount(<AssignRolesAsHeld reader="en" held={VIKRAM} state="loading" />);
+      await mount(<AssignRolesAsHeld reader="en" held={VIKRAM} loading />);
       const editor = page.getByRole('dialog', { name: 'Vikram Deshpande', exact: true });
       await expect(editor.getByText(formatPhone(IN_PACK.formats, '+919876543210'))).toBeVisible();
       await expect(editor.getByText(en.presets, { exact: true })).toBeVisible();
@@ -82,7 +82,7 @@ for (const [width, height, form] of [
 
     test(`loading with reduced motion: the bars hold still (${form})`, async ({ mount, page }) => {
       await page.emulateMedia({ reducedMotion: 'reduce' });
-      await mount(<AssignRolesAsHeld reader="en" held={VIKRAM} state="loading" />);
+      await mount(<AssignRolesAsHeld reader="en" held={VIKRAM} loading />);
       const mark = page.locator('.hg-loading-option-mark').first();
       const at = () => mark.evaluate((node) => getComputedStyle(node).backgroundPosition);
       const first = await at();
@@ -157,7 +157,7 @@ for (const [width, height, form] of [
         mount,
         page,
       }) => {
-        await mount(<AssignRolesAsHeld reader={reader} held={VIKRAM} state="loading" />);
+        await mount(<AssignRolesAsHeld reader={reader} held={VIKRAM} loading />);
         await expect(page.locator('.hg-loading-option')).toHaveCount(9);
         await expectNoSidewaysScroll(page);
       });

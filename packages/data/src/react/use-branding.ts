@@ -1,6 +1,7 @@
 'use client';
 import type { BrandingRead, BrandingSave } from '@heliogrid/contracts';
 import {
+  allReads,
   type BrandingDraft,
   type BrandingDraftWrite,
   type BrandingEdit,
@@ -15,22 +16,29 @@ import {
   type CompanyLogoCaptureFacts,
   companyProfileValuesAtRead,
   companyProfileView,
+  mapRead,
+  type Read,
   type SettingsStanding,
   taxPackOf,
 } from '@heliogrid/domain';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMemo, useRef, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import type { DataError } from '../errors/errors';
+import { useAction } from './action';
 import { type BrandingCover, type BrandingFields, coverOf, fieldsOf } from './branding-cover';
 import { useRepositories } from './context';
+import { pageRead } from './page-read';
+import { readOf } from './read';
 import { type ChosenPicture, useCompanyLogo } from './use-company-logo';
 import { useSession } from './use-session';
 
 /** The Branding page as both screens consume it (Law 11, `SCR-M01-18`). */
 export interface BrandingPage {
-  /** The reads are out, they answered, one got no answer, or the last save did not land. */
-  readonly status: 'loading' | 'ready' | 'unread' | 'save-failed';
+  /** Branding and the profile as saved; `failed` when a read got no answer before they came. */
+  readonly read: Read<BrandingSaved>;
+  /** The last save did not land. */
+  readonly saveFailed: boolean;
   /** Why the last save did not land; the banner says it in the shared failure words. */
   readonly saveFailure: DataError | null;
   readonly draft: BrandingDraft | null;
@@ -54,7 +62,6 @@ export interface BrandingPage {
   discard(): void;
   /** Stores a chosen logo, then sends the one write. */
   save(): void;
-  retryRead(): void;
 }
 
 /** Neither a read nor the save waits for a connection: held back offline, each would spin with no end. */
@@ -123,13 +130,13 @@ export function useBranding(): BrandingPage {
     ...ASKED_ONCE,
   });
 
-  const saved = useMemo(
-    () =>
-      branding.data === undefined || profile.data === undefined
-        ? null
-        : savedOf(branding.data, profile.data.logoFileId),
-    [branding.data, profile.data],
+  const read = pageRead(
+    mapRead(allReads([readOf(branding), readOf(profile)]), ([held, stored]) =>
+      savedOf(held, stored.logoFileId),
+    ),
+    [readOf(registrations), readOf(companyRead), readOf(pack)],
   );
+  const saved = read.kind === 'ready' ? read.value : null;
   const company = useMemo(() => {
     const tax = pack.data === undefined ? null : taxPackOf(pack.data.tax);
     if (profile.data === undefined || registrations.data === undefined || tax === null) return null;
@@ -139,18 +146,11 @@ export function useBranding(): BrandingPage {
 
   const [typed, setTyped] = useState<BrandingDraft | null>(null);
   const [chosenName, setChosenName] = useState<string | null>(null);
-  // Set before the request leaves, so a second press in the same frame finds it out.
-  const sending = useRef(false);
   const draft = typed ?? (saved === null ? null : brandingDraftOf(saved));
   const logo = useCompanyLogo(tenantId, draft?.logoFileId);
 
-  const save = useMutation({
-    networkMode: 'always',
-    mutationFn: async (sent: {
-      saved: BrandingSaved;
-      draft: BrandingDraft;
-      image: ChosenPicture | null;
-    }) => {
+  const save = useAction(
+    async (sent: { saved: BrandingSaved; draft: BrandingDraft; image: ChosenPicture | null }) => {
       const storedNow = sent.image === null ? null : await logo.store(sent.image);
       // The api found another type in the bytes: refused at the logo, and nothing is written.
       if (sent.image !== null && storedNow === null) return { logoRefused: true } as const;
@@ -169,20 +169,16 @@ export function useBranding(): BrandingPage {
       );
       return { logoRefused: false } as const;
     },
-    onSettled: () => {
-      sending.current = false;
+    {
+      onDone: (result, sent) => {
+        if (sent.image !== null) (result.logoRefused ? logo.refuse : logo.saved)(sent.image);
+        if (result.logoRefused) return;
+        logo.dismiss();
+        // Only the draft the save sent is let go: an edit typed while it was out stays held.
+        setTyped((held) => (held === null || held === sent.draft ? null : held));
+      },
     },
-    onSuccess: (result, sent) => {
-      if (sent.image !== null) (result.logoRefused ? logo.refuse : logo.saved)(sent.image);
-      if (result.logoRefused) return;
-      logo.dismiss();
-      // Only the draft the save sent is let go: an edit typed while it was out stays held.
-      setTyped((held) => (held === null || held === sent.draft ? null : held));
-    },
-  });
-  const { mutate, isPending, isError, error } = save;
-
-  const reads = [branding, profile, registrations, companyRead, pack];
+  );
   const changed =
     saved !== null && draft !== null && (logo.chosen !== null || brandingChanged(saved, draft));
   // From what was last held, never from this render: two edits can land before the next one.
@@ -190,16 +186,16 @@ export function useBranding(): BrandingPage {
     if (saved !== null) setTyped((was) => brandingEdit(was ?? brandingDraftOf(saved), next));
   };
   return {
-    status: statusOf(
-      saved !== null,
-      reads.some((read) => read.isError),
-      isError,
-    ),
-    saveFailure: isError && !(error instanceof LogoNotSaved) ? (error as DataError) : null,
+    read,
+    saveFailed: save.failure !== null,
+    saveFailure:
+      save.failure === null || save.failure instanceof LogoNotSaved
+        ? null
+        : (save.failure as DataError),
     draft,
     standing: saved === null ? null : brandingStanding(saved, branding.data?.changed),
     changed,
-    saving: isPending,
+    saving: save.pending,
     company,
     cover: company === null || draft === null ? null : coverOf(company, draft, logo.picture),
     logo: logo.facts,
@@ -219,23 +215,12 @@ export function useBranding(): BrandingPage {
       if (logo.chosen !== null) logo.saved(logo.chosen);
       logo.dismiss();
       setTyped(null);
-      save.reset();
+      save.clear();
     },
     save: () => {
-      if (saved === null || draft === null || sending.current || !brandingSendable(draft)) return;
-      sending.current = true;
-      mutate({ saved, draft, image: logo.chosen });
-    },
-    retryRead: () => {
-      for (const query of reads) {
-        if (query.isError) void query.refetch();
+      if (saved !== null && draft !== null && brandingSendable(draft)) {
+        void save.run({ saved, draft, image: logo.chosen });
       }
     },
   };
-}
-
-/** A failed save outranks the reads it followed; a read with no answer outranks the wait for the rest. */
-function statusOf(read: boolean, unread: boolean, saveFailed: boolean): BrandingPage['status'] {
-  if (read) return saveFailed ? 'save-failed' : 'ready';
-  return unread ? 'unread' : 'loading';
 }

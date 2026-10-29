@@ -228,6 +228,36 @@
       ]
     },
     {
+      "path": "./packages/config/biome/query-state.grit",
+      "includes": [
+        "**/packages/data/src/react/**/*.{ts,tsx}",
+        "!**/packages/data/src/react/read.ts",
+        "!**/packages/data/src/react/action.ts"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/read-union.grit",
+      "includes": [
+        "**/packages/data/src/react/**/*.{ts,tsx}",
+        "**/packages/ui/src/**/*.types.ts",
+        "!**/packages/ui/src/components/UnavailableNote/UnavailableNote.types.ts",
+        "!**/packages/ui/src/components/DatePicker/DatePicker.types.ts",
+        "!**/packages/ui/src/components/Image/Image.types.ts",
+        "!**/packages/ui/src/components/SourceDocument/SourceDocument.types.ts",
+        "!**/packages/ui/src/components/UsageMeter/UsageMeter.types.ts"
+      ]
+    },
+    {
+      "path": "./packages/config/biome/hand-state.grit",
+      "includes": [
+        "**/apps/**/*.tsx",
+        "!**/node_modules/**",
+        "!**/.next/**",
+        "!**/ios/**",
+        "!**/android/**"
+      ]
+    },
+    {
       "path": "./packages/config/biome/role-literal.grit",
       "includes": [
         "**/apps/**/*.{ts,tsx}",

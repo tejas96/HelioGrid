@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useRef } from 'react';
 import { queryKeys } from '../cache/keys';
 import { useRepositories } from './context';
+import { readOf } from './read';
 
 /** No read waits for a connection: held back offline, it would spin with no end. */
 const ASKED_ONCE = { staleTime: Number.POSITIVE_INFINITY, networkMode: 'always' } as const;
@@ -30,7 +31,7 @@ export function useTrancheSchedule<Source extends string>(
 ): PricedLines<Source> | null {
   const repositories = useRepositories();
   const shares = (asked?.lines ?? []).map((line) => line.percent);
-  const read = useQuery({
+  const query = useQuery({
     queryKey: queryKeys.settings.trancheSchedule(tenantId, shares),
     queryFn: ({ signal }) =>
       repositories.settings.previewTrancheSchedule(
@@ -42,12 +43,13 @@ export function useTrancheSchedule<Source extends string>(
   });
   const lastPriced = useRef<{ editor: object; priced: PricedLines<Source> } | null>(null);
   if (asked === null || editor === null) return null;
-  if (read.data !== undefined) {
-    const priced = { ...asked, schedule: read.data };
+  const read = readOf(query);
+  if (read.kind === 'ready') {
+    const priced = { ...asked, schedule: read.value };
     lastPriced.current = { editor, priced };
     return priced;
   }
   const kept = lastPriced.current;
-  if (read.isError && kept !== null && kept.editor === editor) return kept.priced;
+  if (read.kind === 'failed' && kept !== null && kept.editor === editor) return kept.priced;
   return { ...asked, schedule: null };
 }

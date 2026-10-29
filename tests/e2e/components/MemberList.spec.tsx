@@ -79,7 +79,7 @@ test('the cards sit in a region named for the company, the open invite first', a
   mount,
   page,
 }) => {
-  await mount(<TeamListStory company={COMPANY} surface="ready" />);
+  await mount(<TeamListStory company={COMPANY} surface="rows" />);
   const region = page.getByRole('region', { name: en.t(TEAM.everyone, { company: COMPANY }) });
   await expect(region).toBeVisible();
   await expect(region.getByText(/Anjali Kulkarni|Rajesh Patil/)).toHaveText([
@@ -101,7 +101,7 @@ test('each card carries its one act, and the only EPC Owner’s own Deactivate i
   page,
 }) => {
   const acts = teamActWords(en.t, COMPANY);
-  await mount(<TeamListStory company={COMPANY} surface="ready" withActs />);
+  await mount(<TeamListStory company={COMPANY} surface="rows" withActs />);
 
   await expect(page.getByRole('button', { name: acts.act('revoke') })).toBeEnabled();
   const own = page
@@ -115,7 +115,7 @@ test('an active card opens the person; an invite does not, and a card act runs i
   mount,
   page,
 }) => {
-  const frame = await mount(<TeamListStory surface="ready" company={COMPANY} withActs withOpen />);
+  const frame = await mount(<TeamListStory surface="rows" company={COMPANY} withActs withOpen />);
   const targets = page.locator('.hg-record-card-target');
   await expect(targets).toHaveCount(2);
   await expect(targets.nth(0)).toHaveAccessibleName('Rajesh Patil');
@@ -138,7 +138,7 @@ test('each act is heard with its person, and still found by its visible words (D
   page,
 }) => {
   const acts = teamActWords(en.t, COMPANY);
-  await mount(<TeamListStory company={COMPANY} surface="ready" withActs />);
+  await mount(<TeamListStory company={COMPANY} surface="rows" withActs />);
   const vikram = page.locator('.hg-record-card', { hasText: 'Vikram Deshpande' });
   await expect(vikram.getByRole('button', { name: acts.act('deactivate') })).toHaveAccessibleName(
     acts.spoken('deactivate', 'Vikram Deshpande'),

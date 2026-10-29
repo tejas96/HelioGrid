@@ -3,21 +3,10 @@ import {
   IMPORT_PREVIEW_GROUPS,
   IMPORT_READY_OUTCOMES,
   IMPORT_REPORT_GROUPS,
+  type Read,
 } from '@heliogrid/domain';
 import type { CatalogImportRowsAsk } from '../catalog/import-repository';
-import { useCatalogImportRows } from './use-catalog-import-rows';
-
-/** One list as the wizard draws it. */
-export interface ImportListRead {
-  readonly rows: ReturnType<typeof useCatalogImportRows>['items'];
-  readonly total: number;
-  readonly loading: boolean;
-  /** The read failed past its own retries: the list offers *Try again*. */
-  readonly failed: boolean;
-  readonly onRetry: () => void;
-  readonly hasMore: boolean;
-  readonly onMore: () => void;
-}
+import { type ImportRow, useCatalogImportRows } from './use-catalog-import-rows';
 
 /** How many rows a list shows before *Show more*. */
 const PAGE = 50;
@@ -25,16 +14,17 @@ const PAGE = 50;
 const OPEN_RESULTS = [...IMPORT_REPORT_GROUPS.leftOut, ...IMPORT_REPORT_GROUPS.failed].join(',');
 const list = (values: readonly string[]) => values.join(',');
 
-function useList(jobId: string | null, ask: CatalogImportRowsAsk | null): ImportListRead {
-  const read = useCatalogImportRows(ask === null ? null : jobId, ask ?? {}, PAGE);
+/** A list the step does not show reads nothing, and holds no rows. */
+const NOT_ASKED: Read<readonly ImportRow[]> = { kind: 'empty' };
+
+/** One list as the wizard draws it: its read, and its paging beside it. */
+function useList(jobId: string | null, ask: CatalogImportRowsAsk | null) {
+  const rows = useCatalogImportRows(ask === null ? null : jobId, ask ?? {}, PAGE);
   return {
-    rows: read.items,
-    total: read.totalCount,
-    loading: read.status === 'pending' && ask !== null,
-    failed: read.status === 'error',
-    onRetry: () => void read.refetch(),
-    hasMore: read.hasNextPage,
-    onMore: () => void read.fetchNextPage(),
+    read: ask === null ? NOT_ASKED : rows.read,
+    total: rows.totalCount,
+    hasMore: rows.hasNextPage,
+    onMore: () => void rows.fetchNextPage(),
   };
 }
 

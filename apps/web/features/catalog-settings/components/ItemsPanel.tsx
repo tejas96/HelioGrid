@@ -7,7 +7,7 @@ import {
   useCatalogOverlays,
   useCatalogPage,
 } from '@heliogrid/data/react';
-import { catalogFiltersOn, NO_CATALOG_FILTER } from '@heliogrid/domain';
+import { allReads, catalogFiltersOn, NO_CATALOG_FILTER } from '@heliogrid/domain';
 import { catalogActToast, catalogItemAddedToast, catalogItemsViewOf } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
@@ -21,6 +21,8 @@ import { useMemo, useState } from 'react';
 import { AddItemPanel } from './AddItemPanel';
 import { ImportPanel } from './ImportPanel';
 import { ItemsOverlays } from './ItemsOverlays';
+
+const NO_ITEMS: readonly ResolvedCatalogItemWire[] = [];
 
 /**
  * The Items panel on the web (`SCR-M01-15`): one numbered page of the resolved catalog, its search,
@@ -49,13 +51,16 @@ export function ItemsPanel({
   const list = useCatalogPage(view, page, added);
   const acts = useCatalogActs((note) => toasts.push(catalogActToast(t, note)));
   const overlays = useCatalogOverlays(acts);
-  const { status, totalCount } = list;
+  const { totalCount } = list;
+  const items = list.read.kind === 'ready' ? list.read.value : NO_ITEMS;
+  /* The list draws once it is in; the page's facts hold it back only when they failed. */
+  const read = facts.read.kind === 'failed' ? allReads([list.read, facts.read]) : list.read;
 
-  const byId = useMemo(() => new Map(list.items.map((item) => [item.id, item])), [list.items]);
+  const byId = useMemo(() => new Map(items.map((item) => [item.id, item])), [items]);
   const shown = catalogItemsViewOf(
     t,
     {
-      items: list.items,
+      items,
       totalCount,
       wholeCount: facts.allCount,
       preferredFirst: view.sort === 'preferred',
@@ -90,17 +95,7 @@ export function ItemsPanel({
     <>
       <CatalogItems
         words={shown.words}
-        surface={
-          status === 'error' || facts.surface === 'error'
-            ? 'error'
-            : status === 'pending'
-              ? 'loading'
-              : 'ready'
-        }
-        onRetry={() => {
-          void list.refetch();
-          facts.retry();
-        }}
+        read={read}
         strip={{
           ...shown.strip,
           /* *Publish* is hidden while the add panel lies over the list (`SCR-M01-16`). */

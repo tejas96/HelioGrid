@@ -24,6 +24,7 @@ import { useEffect, useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { ApiError } from '../errors/errors';
 import { REFUSED_AS_ANOTHER_TYPE } from '../file/repository';
+import { useAction } from './action';
 import {
   type ChosenSpreadsheet,
   type ImportActFailure,
@@ -35,6 +36,7 @@ import {
   stateOf,
 } from './catalog-import-facts';
 import { useRepositories } from './context';
+import { readOf } from './read';
 import { useTenantId } from './use-tenant-id';
 
 /**
@@ -53,7 +55,6 @@ export function useCatalogImport(entryPoint: CatalogImportEntryPoint) {
   const [upload, setUpload] = useState<ImportUpload>({ state: 'idle' });
   const [failure, setFailure] = useState<ImportActFailure | null>(null);
   const stored = useRef<{ readonly file: ChosenSpreadsheet; readonly fileId: string } | null>(null);
-  const running = useRef<Promise<void> | null>(null);
   // The file whose upload failed before it was stored: *Try again* sends it whole.
   const pending = useRef<ChosenSpreadsheet | null>(null);
 
@@ -73,6 +74,7 @@ export function useCatalogImport(entryPoint: CatalogImportEntryPoint) {
         : false;
     },
   });
+  const jobRead = readOf(read);
   const job = read.data ?? null;
   const status = jobId === null ? null : job === null ? 'reading' : stateOf(job);
   const frame = importWizardFrame(status, view);
@@ -143,6 +145,25 @@ export function useCatalogImport(entryPoint: CatalogImportEntryPoint) {
 
   const remap = (mapping: CatalogImportMapping) => setDraft(mapping);
 
+  /* One run for any number of presses: a press while one is out sends nothing. */
+  const running = useAction(
+    async (id: string) => {
+      setFailure(null);
+      return repositories.catalogImport.run(id);
+    },
+    {
+      onDone: (next) => {
+        settle(next);
+        void queryClient.invalidateQueries({ queryKey: queryKeys.catalog.imports(tenantId) });
+        move({ type: 'ran' });
+      },
+      onFailed: (error) => {
+        setFailure({ act: 'run', conflict: error instanceof ApiError && error.status === 409 });
+        void read.refetch();
+      },
+    },
+  );
+
   return {
     tenantId,
     jobId,
@@ -151,12 +172,13 @@ export function useCatalogImport(entryPoint: CatalogImportEntryPoint) {
     status,
     frame,
     step: importWizardStepIndex(frame),
-    /** The kept report reopening: its job not yet read. */
-    opening: jobId !== null && read.isPending,
+    /**
+     * The job's read; `null` before a file is chosen. Still out is a kept report reopening;
+     * failed, the screen says so — and the read keeps trying on its own.
+     */
+    jobRead: jobId === null ? null : jobRead,
     /** A failed upload holds a file to send again; a file the device could not read does not. */
     canRetry: pending.current !== null,
-    /** The job could not be read: the screen says so; the read keeps trying on its own. */
-    readFailed: jobId !== null && job === null && read.isError,
     draft,
     gate: importContinueGate(frame, draft?.columns ?? []) satisfies ImportContinueGate | null,
     upload,
@@ -219,26 +241,8 @@ export function useCatalogImport(entryPoint: CatalogImportEntryPoint) {
       }
     },
     back: () => move({ type: 'back' }),
-    /** One run for any number of presses: a press while one is out waits on it. */
-    run() {
-      if (jobId === null || running.current !== null) return running.current ?? undefined;
-      setFailure(null);
-      running.current = repositories.catalogImport
-        .run(jobId)
-        .then((next) => {
-          settle(next);
-          void queryClient.invalidateQueries({ queryKey: queryKeys.catalog.imports(tenantId) });
-          move({ type: 'ran' });
-        })
-        .catch((error: unknown) => {
-          setFailure({ act: 'run', conflict: error instanceof ApiError && error.status === 409 });
-          void read.refetch();
-        })
-        .finally(() => {
-          running.current = null;
-        });
-      return running.current;
-    },
+    /** Starts the run; resolves `true` once it is started. */
+    run: async () => jobId !== null && (await running.run(jobId)).kind === 'done',
     /** A fix's answer: the job's counts as they now stand. */
     takeCounts(counts: CatalogImportCounts) {
       if (job !== null) settle({ ...job, counts });

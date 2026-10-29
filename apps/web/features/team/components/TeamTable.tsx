@@ -1,5 +1,5 @@
 'use client';
-import { roleKind, type TeamRow } from '@heliogrid/domain';
+import { type Read, roleKind, type TeamRow } from '@heliogrid/domain';
 import { TEAM, type TeamListWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import {
@@ -8,12 +8,14 @@ import {
   type DataTableColumn,
   MemberPerson,
   ROLE_KIND_TONE,
+  readSurface,
   TEAM_STATUS_TONE,
 } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 
 interface TeamTableProps {
-  rows: readonly TeamRow[];
+  /** The rows in view, in the list's order — the table draws its own wait. */
+  read: Read<readonly TeamRow[]>;
   words: TeamListWords;
   /** The act column's name, for a screen reader only. */
   actions: string;
@@ -21,7 +23,6 @@ interface TeamTableProps {
   actOf: (row: TeamRow) => ReactNode;
   /** A row's open — Assign Roles for an active person; undefined for a row that opens nothing. */
   openOf?: (row: TeamRow) => (() => void) | undefined;
-  loading?: boolean;
 }
 
 /**
@@ -29,14 +30,7 @@ interface TeamTableProps {
  * the status), Roles and Last active, in the owner's 2.2 : 2.4 : 1.2, on `DataTable`'s quiet head
  * (design-system change 20), and each row's act in a column of its own.
  */
-export function TeamTable({
-  rows,
-  words,
-  actions,
-  actOf,
-  openOf,
-  loading = false,
-}: TeamTableProps) {
+export function TeamTable({ read, words, actions, actOf, openOf }: TeamTableProps) {
   const t = useTranslate();
   const columns: DataTableColumn<TeamRow>[] = [
     {
@@ -81,7 +75,7 @@ export function TeamTable({
       head="quiet"
       caption={words.label}
       columns={columns}
-      rows={[...rows]}
+      rows={read.kind === 'ready' ? [...read.value] : []}
       rowKey="id"
       rowLabel={(row) => row.name}
       rowActions={(row) => actOf(row)}
@@ -92,7 +86,7 @@ export function TeamTable({
             rowOpens: (row: TeamRow) => openOf(row) !== undefined,
           })}
       actionsLabel={actions}
-      state={loading ? 'loading' : 'ready'}
+      {...readSurface(read)}
       stackBelow={0}
     />
   );

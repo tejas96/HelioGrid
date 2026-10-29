@@ -7,12 +7,14 @@ import {
   profilePreferencesView,
   pushGroupsShownTo,
   pushSwitches,
+  type ReadKind,
   type RolePreset,
   type UiLanguage,
 } from '@heliogrid/domain';
 import { createTranslator, profilePreferencesWords } from '@heliogrid/i18n';
 import { ProfilePreferences } from '@heliogrid/ui';
 import { useState } from 'react';
+import { readIn } from '../support/read';
 
 const READERS = {
   en: await createTranslator('en'),
@@ -46,7 +48,7 @@ export function ProfilePreferencesAsHeld({
   refused?: readonly ProfilePreference[];
   /** `m-empty`: the set holding only the language in use. */
   onlyLanguage?: boolean;
-  push?: 'loading' | 'error' | 'ready';
+  push?: ReadKind;
   muted?: readonly NotificationTypeGroup[];
   refusedGroups?: readonly NotificationTypeGroup[];
 }) {
@@ -98,13 +100,13 @@ export function ProfilePreferencesAsHeld({
         onRole={() => setRoleOpened((count) => count + 1)}
         onLanguage={setLanguage}
         onUnits={setUnits}
-        push={{ surface: push, switches: pushSwitches(answered, roles), refused: refusedGroups }}
+        read={readIn(push, pushSwitches(answered, roles), () => setRetried(true))}
+        refused={refusedGroups}
         onPush={(group) =>
           setMuted((held) =>
             held.includes(group) ? held.filter((one) => one !== group) : [...held, group],
           )
         }
-        onRetry={() => setRetried(true)}
       />
     </div>
   );

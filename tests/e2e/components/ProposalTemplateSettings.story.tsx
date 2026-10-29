@@ -152,7 +152,7 @@ export function ProposalTemplateAsHeld({
       <div lang={reader} style={{ padding: '0 var(--screen-pad-mobile)' }}>
         <ProposalTemplateSettings
           words={words}
-          loading={loading}
+          read={loading ? { kind: 'loading' } : { kind: 'ready', value: null }}
           {...(titled ? { title: words.title } : {})}
           {...(standing === null ? {} : { standing })}
           part={part}

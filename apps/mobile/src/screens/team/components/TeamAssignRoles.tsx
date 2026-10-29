@@ -1,4 +1,5 @@
 import { type AssignRolesEditor, type Team, useAssignRoles } from '@heliogrid/data/react';
+import { mapRead } from '@heliogrid/domain';
 import {
   assignRolesShown,
   removeRolesWords,
@@ -52,9 +53,12 @@ export function useTeamRoles(
  */
 export function TeamAssignRoles({
   editor,
+  list,
   companyName,
 }: {
   editor: AssignRolesEditor;
+  /** The Team list's read, which the person's presets come with. */
+  list: Team['read'];
   companyName: string;
 }) {
   const t = useTranslate();
@@ -74,7 +78,7 @@ export function TeamAssignRoles({
         phone: format.phone(person.phoneE164),
       }}
       words={shown.words}
-      rows={shown.words.rows}
+      read={mapRead(list, () => shown.words.rows)}
       picked={editor.picked}
       onPick={editor.pick}
       grant={shown.grant}

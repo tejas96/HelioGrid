@@ -34,8 +34,7 @@ function RolesReferenceIn({ fromAssign }: { fromAssign: boolean }) {
     <div className="hg-shell-page">
       <RolesReference
         words={words}
-        counts={reference.load}
-        onRetry={reference.retry}
+        read={reference.read}
         title="page"
         back={fromAssign ? { label: words.backToAssign, onPress: backToAssign } : null}
       />

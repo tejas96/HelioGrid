@@ -1,8 +1,5 @@
-import type {
-  RolesReferenceCounts,
-  RolesReferencePreset,
-  RolesReferenceSide,
-} from './RolesReference.types';
+import type { ReadKind } from '@heliogrid/domain';
+import type { RolesReferencePreset, RolesReferenceSide } from './RolesReference.types';
 
 /** The side panel's width the board gives at 1536 (`d-open`); `RolesReference.css` keeps the tiles clear of it. */
 export const ROLES_PANEL_WIDTH = 480;
@@ -27,7 +24,7 @@ export function linesOn(preset: RolesReferencePreset, side: RolesReferenceSide) 
  */
 export function spokenName(
   preset: RolesReferencePreset,
-  counts: RolesReferenceCounts,
+  counts: ReadKind,
   countGap: string,
 ): string {
   if (counts === 'loading') return `${preset.name}, ${preset.loadingCount}`;

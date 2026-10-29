@@ -4,7 +4,6 @@ import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
 import type { AccessRemovedProps } from './AccessRemoved.types';
-import { useAccessRemoved } from './useAccessRemoved';
 
 /** Frame 8 — what happened, the one way on, and the grievance contact, centred in the page. */
 export function AccessRemoved({
@@ -12,10 +11,10 @@ export function AccessRemoved({
   description,
   actionLabel,
   onAction,
+  pending,
   grievanceLabel,
   onGrievance,
 }: AccessRemovedProps) {
-  const { busy, act } = useAccessRemoved(onAction);
   return (
     <View style={styles.page}>
       <EmptyState
@@ -24,7 +23,7 @@ export function AccessRemoved({
         description={description}
         action={
           <View style={styles.actions}>
-            <Button onClick={act} disabled={busy}>
+            <Button onClick={onAction} disabled={pending}>
               {actionLabel}
             </Button>
             <Button variant="ghost" onClick={onGrievance}>

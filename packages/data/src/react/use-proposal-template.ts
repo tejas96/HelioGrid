@@ -6,7 +6,10 @@ import type {
 } from '@heliogrid/contracts';
 import {
   aboutRefusal,
+  allReads,
+  mapRead,
   onPlatformTemplate,
+  type Read,
   type SettingsStanding,
   type TemplateDraft,
   type TemplateEdit,
@@ -21,20 +24,27 @@ import {
   templateWritesOf,
   termsRefusal,
 } from '@heliogrid/domain';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMemo, useRef, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import type { DataError } from '../errors/errors';
+import { useAction } from './action';
 import type { BrandingCover } from './branding-cover';
 import { useRepositories } from './context';
+import { pageRead } from './page-read';
 import { richTextWireOf } from './proposal-template-view';
+import { readOf } from './read';
 import { useBranding } from './use-branding';
 import { useSession } from './use-session';
 
 /** The Proposal template page as both screens consume it (Law 11, `SCR-M01-19`). */
 export interface ProposalTemplatePage {
-  /** The reads are out, they answered, one got no answer, or the last save did not land. */
-  readonly status: 'loading' | 'ready' | 'unread' | 'save-failed';
+  /**
+   * The template and the timeline as saved, ready once Branding's cover has answered or failed;
+   * `failed` when a read got no answer before then.
+   */
+  readonly read: Read<TemplateSaved>;
+  /** Why the last save did not land; `null` while none failed. */
   readonly saveFailure: DataError | null;
   readonly draft: TemplateDraft | null;
   readonly standing: SettingsStanding | null;
@@ -59,13 +69,15 @@ export interface ProposalTemplatePage {
   discard(): void;
   /** Sends only the records that changed, the template first. */
   save(): void;
-  retryRead(): void;
 }
 
 /** Neither a read nor the save waits for a connection: held back offline, each would spin with no end. */
 const ASKED_ONCE = { staleTime: Number.POSITIVE_INFINITY, networkMode: 'always' } as const;
 
 const UNCHANGED = { template: false, timeline: false } as const;
+
+/** Branding's read with no answer: the page is drawn without its cover, never held back by it. */
+const COVER_FAILED = { kind: 'ready', value: null } as const;
 
 function savedOf(template: ProposalTemplateRead, timeline: TimelineTemplateRead): TemplateSaved {
   const { changed: _template, ...content } = template;
@@ -113,22 +125,22 @@ export function useProposalTemplate(): ProposalTemplatePage {
     ...ASKED_ONCE,
   });
 
-  const saved = useMemo(
-    () =>
-      template.data === undefined || timeline.data === undefined
-        ? null
-        : savedOf(template.data, timeline.data),
-    [template.data, timeline.data],
+  const own = mapRead(allReads([readOf(template), readOf(timeline)]), ([held, phases]) =>
+    savedOf(held, phases),
   );
-  const opened = useMemo(() => (saved === null ? null : templateDraftOf(saved)), [saved]);
+  // The cover is Branding's: the page waits for its answer, and draws without it when it failed.
+  const cover = branding.read.kind === 'failed' ? COVER_FAILED : branding.read;
+  const read = pageRead(
+    mapRead(allReads([own, cover]), ([value]) => value),
+    [readOf(profile), branding.read],
+  );
+  const saved = own.kind === 'ready' ? own.value : null;
+  const opened = saved === null ? null : templateDraftOf(saved);
   const [typed, setTyped] = useState<TemplateDraft | null>(null);
-  // Set before the request leaves, so a second press in the same frame finds it out.
-  const sending = useRef(false);
   const draft = typed ?? opened;
 
-  const save = useMutation({
-    networkMode: 'always',
-    mutationFn: async (sent: { saved: TemplateSaved; draft: TemplateDraft }) => {
+  const save = useAction(
+    async (sent: { saved: TemplateSaved; draft: TemplateDraft }) => {
       const writes = templateWritesOf(sent.saved, sent.draft);
       if (writes.template !== undefined) {
         const answer = await repositories.settings.saveProposalTemplate(
@@ -144,23 +156,14 @@ export function useProposalTemplate(): ProposalTemplatePage {
         );
       }
     },
-    onSettled: () => {
-      sending.current = false;
-    },
     // Only the draft the save sent is let go: an edit typed while it was out stays held.
-    onSuccess: (_answer, sent) => setTyped((held) => (held === sent.draft ? null : held)),
-  });
-  const { mutate, isPending, isError, error } = save;
+    { onDone: (_answer, sent) => setTyped((held) => (held === sent.draft ? null : held)) },
+  );
 
-  const reads = [template, timeline, profile];
   const changed = saved === null || draft === null ? UNCHANGED : templateChanged(saved, draft);
   return {
-    status: statusOf(
-      saved !== null && branding.status !== 'loading',
-      reads.some((read) => read.isError) || branding.status === 'unread',
-      isError,
-    ),
-    saveFailure: isError ? (error as DataError) : null,
+    read,
+    saveFailure: save.failure === null ? null : (save.failure as DataError),
     draft,
     // Read off what is saved, never the draft: an edit not yet saved says nothing about the last save.
     standing:
@@ -168,7 +171,7 @@ export function useProposalTemplate(): ProposalTemplatePage {
         ? null
         : templateStanding(opened, template.data?.changed, timeline.data?.changed),
     changed,
-    saving: isPending,
+    saving: save.pending,
     teaching: draft !== null && onPlatformTemplate(draft),
     refusals: {
       terms: draft === null ? null : termsRefusal(draft),
@@ -184,28 +187,12 @@ export function useProposalTemplate(): ProposalTemplatePage {
     },
     discard: () => {
       setTyped(null);
-      save.reset();
+      save.clear();
     },
     save: () => {
-      if (saved === null || draft === null || sending.current || !templateSendable(draft)) return;
-      sending.current = true;
-      mutate({ saved, draft });
-    },
-    retryRead: () => {
-      for (const query of reads) {
-        if (query.isError) void query.refetch();
+      if (saved !== null && draft !== null && templateSendable(draft)) {
+        void save.run({ saved, draft });
       }
-      branding.retryRead();
     },
   };
-}
-
-/** A failed save outranks the reads it followed; a read with no answer outranks the wait for the rest. */
-function statusOf(
-  read: boolean,
-  unread: boolean,
-  saveFailed: boolean,
-): ProposalTemplatePage['status'] {
-  if (read) return saveFailed ? 'save-failed' : 'ready';
-  return unread ? 'unread' : 'loading';
 }

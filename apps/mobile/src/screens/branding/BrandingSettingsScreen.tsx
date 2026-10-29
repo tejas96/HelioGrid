@@ -47,10 +47,10 @@ export function BrandingSettingsScreen() {
   const document = brandingDocumentOf(page.cover, taxIdLabel);
   const colour = page.draft?.brandColour ?? null;
 
-  if (page.status === 'unread') {
+  if (page.read.kind === 'failed') {
     return (
       <ShellPage inView="more" drillDown={drillDown}>
-        <BrandingUnread words={words} onTryAgain={page.retryRead} />
+        <BrandingUnread words={words} onTryAgain={page.read.retry} />
       </ShellPage>
     );
   }
@@ -76,7 +76,7 @@ export function BrandingSettingsScreen() {
     >
       <BrandingSettings
         words={words}
-        loading={page.status === 'loading'}
+        read={page.read}
         {...said}
         preview={preview}
         onPreview={setPreview}

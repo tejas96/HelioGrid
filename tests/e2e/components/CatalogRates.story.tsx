@@ -57,8 +57,13 @@ export function CatalogRatesAsRead({ reader, frame }: { reader: UiLanguage; fram
     <div lang={reader} data-added={added} style={{ padding: 16, maxWidth: 1104 }}>
       <CatalogRates
         words={catalogRatesWords(t)}
-        surface={frame === 'loading' ? 'loading' : frame === 'error' ? 'error' : 'ready'}
-        onRetry={() => undefined}
+        read={
+          frame === 'loading'
+            ? { kind: 'loading' }
+            : frame === 'error'
+              ? { kind: 'failed', failure: 'no_answer', retry: () => undefined }
+              : { kind: 'ready', value: null }
+        }
         strip={{
           ...priceBookStripWords(
             t,
@@ -96,8 +101,7 @@ export function CatalogVersionAsRead({
         <CatalogVersion
           mode="list"
           words={words}
-          surface="ready"
-          onRetry={() => undefined}
+          read={{ kind: 'ready', value: null }}
           onOpen={setOpened}
           hasMore={false}
           onMore={() => undefined}
@@ -147,8 +151,7 @@ export function CatalogVersionAsRead({
           rateCount="11"
           note="Default margin raised from 15%."
           rates={V7}
-          surface="ready"
-          onRetry={() => undefined}
+          read={{ kind: 'ready', value: null }}
         />
       </div>
     );
@@ -247,8 +250,7 @@ export function CatalogAttributionAsRead({ reader }: { reader: UiLanguage }) {
     <div lang={reader} data-more={more} style={{ padding: 16, maxWidth: 375 }}>
       <CatalogAttribution
         words={catalogAttributionWords(t, { changed: 6, total: 342 }, String)}
-        surface="ready"
-        onRetry={() => undefined}
+        read={{ kind: 'ready', value: null }}
         rows={CHANGED()}
         onMore={() => setMore(true)}
       />

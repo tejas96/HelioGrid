@@ -1,0 +1,32 @@
+// A read's states are one type, Read<T> in packages/domain/src/shell/read.ts. A private read
+// union — 'ready' beside 'loading', 'pending', 'error' or 'failed' — in a hook or a component's
+// props drifts from it and from its retry, and so does the word 'loading' outside a Read's own
+// `kind`. A design-system component's state comes from readSurface
+// (packages/ui/src/components/UnavailableNote/read-surface.ts); the design system's own state
+// types (SurfaceState, DatePicker, Image, SourceDocument, UsageMeter) are pulled typings, so
+// biome.json leaves those five files out.
+or {
+  TsUnionType() as $union where {
+    $union <: contains TsStringLiteralType() as $ready where {
+      $ready <: r"[\x22\x27]ready[\x22\x27]"
+    },
+    $union <: contains TsStringLiteralType() as $waiting where {
+      $waiting <: r"[\x22\x27](?:loading|pending|error|failed)[\x22\x27]"
+    },
+    register_diagnostic(span=$union, message="A private read state — take Read<T> from @heliogrid/domain (shell/read.ts) instead of a 'ready' union.")
+  },
+  or {
+    JsStringLiteralExpression(),
+    TsStringLiteralType()
+  } as $word where {
+    $word <: r"[\x22\x27]loading[\x22\x27]",
+    not $word <: within or {
+      `$read.kind === $_`,
+      `$read.kind !== $_`,
+      `kind: $_`,
+      JsCaseClause()
+    } ,
+    not $word <: within TsUnionType() ,
+    register_diagnostic(span=$word, message="A private read state — take Read<T> from @heliogrid/domain (shell/read.ts) instead of writing 'loading'.")
+  }
+}

@@ -38,7 +38,8 @@ export interface ButtonProps {
   /**
    * Replaces the label with a spinner for the eye; a screen reader still hears the words, and the
    * button is busy. Web: a `spokenOnly` copy of the words and `aria-busy`. Native:
-   * `accessibilityLabel` and `accessibilityState.busy`.
+   * `accessibilityLabel` and `accessibilityState.busy`. A press while loading sends nothing: the
+   * first press is still out.
    */
   loading?: boolean;
   /**

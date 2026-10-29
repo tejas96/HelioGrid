@@ -15,12 +15,10 @@ const styles = StyleSheet.create({
   list: { gap: theme.layout['tile-gap'] },
 });
 
-/** A team list's body (`SCR-M01-12`): one of its states (`TeamSurface`), never two at once. */
+/** A team list's body (`SCR-M01-12`): its read's state or one of its bodies (`TeamSurface`), never two at once. */
 export function MemberList({
-  surface,
-  rows,
+  read,
   words,
-  onRetry,
   onClearSearch,
   onShowAll,
   records,
@@ -29,7 +27,8 @@ export function MemberList({
   openOf,
   teachingAction,
 }: MemberListProps) {
-  if (surface === 'loading') {
+  /* The reader is on every team, so its read is never empty: only the wait draws here. */
+  if (read.kind === 'loading' || read.kind === 'empty') {
     if (waiting === undefined) return <MemberCardsLoading label={words.loading} />;
     return (
       <View
@@ -42,16 +41,17 @@ export function MemberList({
       </View>
     );
   }
-  if (surface === 'failed') {
+  if (read.kind === 'failed') {
     return (
       <Banner
         kind="state"
         density="functional"
         title={words.loadFailed}
-        action={<BannerAction onClick={onRetry}>{words.tryAgain}</BannerAction>}
+        action={<BannerAction onClick={read.retry}>{words.tryAgain}</BannerAction>}
       />
     );
   }
+  const { surface, view } = read.value;
   const empty = memberListEmptyOf({ surface, words, onClearSearch, onShowAll });
   if (empty !== null) {
     return (
@@ -68,7 +68,7 @@ export function MemberList({
   }
   const list = records ?? (
     <View style={styles.list} accessibilityLabel={words.label} role="region" collapsable={false}>
-      {rows.map((row) => (
+      {view.rows.map((row) => (
         <MemberCard
           key={row.id}
           {...memberCardOf(row, words.row(row), words.role, words.you)}

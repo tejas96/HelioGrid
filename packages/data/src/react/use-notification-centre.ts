@@ -7,10 +7,12 @@ import {
   NOTIFICATION_TYPE_GROUPS,
   type NotificationReadFilter,
   type NotificationTypeGroup,
+  type Read,
 } from '@heliogrid/domain';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { queryKeys } from '../cache/keys';
+import { useAction } from './action';
 import { useRepositories } from './context';
 import { usePaginatedList } from './use-paginated-list';
 import { useSession } from './use-session';
@@ -47,10 +49,11 @@ export interface NotificationCentre {
    */
   readonly view: CentreView<Notification>;
   /**
-   * What the surface shows: the list, or its loading, error or empty frame. Empty is nothing at
-   * all reached the reader; a filter that matches nothing keeps the list, its head "0 match".
+   * The records read — what the surface shows: the list, or its loading, failed or empty frame.
+   * Empty is nothing at all reached the reader; a filter that matches nothing keeps the list, its
+   * head "0 match".
    */
-  readonly surface: 'loading' | 'error' | 'empty' | 'ready';
+  readonly read: Read<readonly Notification[]>;
   /** The filter bar stays on screen whenever there is something to filter or a filter to undo. */
   readonly showsFilters: boolean;
   /** The facts the head words are chosen by. */
@@ -83,7 +86,6 @@ export interface NotificationCentre {
    * shown, so an item that lands after the render stays unread.
    */
   markAllRead(): Promise<MarkAllOutcome>;
-  retry(): void;
 }
 
 /** The centre on the tenant's clock; `timeZone` is the market's, which the formatters share. */
@@ -107,37 +109,39 @@ export function useNotificationCentre(timeZone: string): NotificationCentre {
 
   /* The list and the badge share one prefix: a read refreshes both, so they cannot disagree. */
   const refreshAll = () => queryClient.invalidateQueries({ queryKey: everything });
-  /* A ref, not the mutation's state: a second press lands before React renders the first. */
-  const markingAll = useRef(false);
   const readOne = useMutation({
     mutationFn: (id: string) => repositories.notification.markRead(id),
     onSettled: refreshAll,
   });
-  const readAll = useMutation({
-    mutationFn: (seenThrough: string) =>
-      repositories.notification.markAllRead(seenThrough, typeGroups),
-    onSettled: refreshAll,
-  });
+  /* A press while one is out sends nothing, and is busy. */
+  const readAll = useAction(
+    (seenThrough: string) => repositories.notification.markAllRead(seenThrough, typeGroups),
+    { onDone: () => refreshAll(), onFailed: () => void refreshAll() },
+  );
 
-  const olderFailed = list.isFetchNextPageError;
-  const status = olderFailed ? 'success' : list.status;
   const filtered = readState !== 'all' || typeGroups.length > 0;
-  const view = centreView(list.items, { now: Date.now(), timeZone, hasMore: list.hasNextPage });
-  const surface = surfaceOf(status, list.items.length === 0 && !filtered);
+  /* A *Show older* that failed keeps the list shown, with its note under it (`olderFailed`). */
+  const listed: Read<readonly Notification[]> = list.isFetchNextPageError
+    ? { kind: 'ready', value: list.shown }
+    : list.read;
+  const items = listed.kind === 'ready' ? listed.value : [];
+  const view = centreView(items, { now: Date.now(), timeZone, hasMore: list.hasNextPage });
+  const read: Read<readonly Notification[]> =
+    listed.kind === 'ready' && items.length === 0 && !filtered ? { kind: 'empty' } : listed;
   return {
     view,
-    surface,
-    showsFilters: surface === 'ready' || filtered,
+    read,
+    showsFilters: read.kind === 'ready' || filtered,
     head: {
       readState,
       filtered,
       match: list.totalCount,
       unread,
-      unreadListed: list.items.filter((item) => item.readAt === null).length,
+      unreadListed: items.filter((item) => item.readAt === null).length,
       markAllShows: view.markAllShows,
     },
-    olderFailed,
-    markingAll: readAll.isPending,
+    olderFailed: list.isFetchNextPageError,
+    markingAll: readAll.pending,
     filtered,
     unreadOn: readState === 'unread',
     openGroup: typeGroups[0] ?? null,
@@ -155,28 +159,15 @@ export function useNotificationCentre(timeZone: string): NotificationCentre {
     },
     markAllRead: async () => {
       const seenThrough = view.seenThrough;
-      if (markingAll.current || seenThrough === null) return { kind: 'busy' };
-      markingAll.current = true;
-      try {
-        return { kind: 'marked', count: await readAll.mutateAsync(seenThrough) };
-      } catch {
-        return { kind: 'failed' };
-      } finally {
-        markingAll.current = false;
-      }
+      if (seenThrough === null) return BUSY;
+      const answer = await readAll.run(seenThrough);
+      if (answer.kind === 'done') return { kind: 'marked', count: answer.output };
+      return answer.kind === 'failed' ? { kind: 'failed' } : BUSY;
     },
-    retry: () => void list.refetch(),
   };
 }
 
-function surfaceOf(
-  status: 'pending' | 'error' | 'success',
-  nothing: boolean,
-): NotificationCentre['surface'] {
-  if (status === 'pending') return 'loading';
-  if (status === 'error') return 'error';
-  return nothing ? 'empty' : 'ready';
-}
+const BUSY: MarkAllOutcome = { kind: 'busy' };
 
 /**
  * Whose notifications, and whether to read them at all: a removed member reads nothing, since

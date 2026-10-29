@@ -17,13 +17,7 @@ import { RoleTile } from './RoleTile.native';
  * banner when they did not load, the twelve tiles two across, and the opened role's sheet.
  * Read-only: no act here changes a role (`M01-21`).
  */
-export function RolesReference({
-  words,
-  counts,
-  onRetry,
-  title,
-  back = null,
-}: RolesReferenceProps) {
+export function RolesReference({ words, read, title, back = null }: RolesReferenceProps) {
   const [open, setOpen] = useState<RolePreset | null>(null);
   const [last, setLast] = useState<RolePreset | null>(null);
   const [side, setSide] = useState<RolesReferenceSide>('can');
@@ -73,12 +67,12 @@ export function RolesReference({
           {about}
         </View>
       )}
-      {counts === 'failed' ? (
+      {read.kind === 'failed' ? (
         <Banner
           kind="data-integrity"
           density="functional"
           title={words.countsFailed}
-          action={<BannerAction onClick={onRetry}>{words.retry}</BannerAction>}
+          action={<BannerAction onClick={read.retry}>{words.retry}</BannerAction>}
         />
       ) : null}
       <View accessibilityRole="list" accessibilityLabel={words.roles} style={styles.tiles}>
@@ -88,7 +82,7 @@ export function RolesReference({
               <RoleTile
                 key={each.value}
                 preset={each}
-                counts={counts}
+                counts={read.kind}
                 countGap={words.countGap}
                 open={each.value === open}
                 onOpen={() => {
@@ -104,7 +98,7 @@ export function RolesReference({
       <RoleDetails
         preset={shown}
         open={open !== null}
-        counts={counts}
+        counts={read.kind}
         words={words}
         side={side}
         onSide={setSide}
