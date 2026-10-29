@@ -45,7 +45,12 @@ test('a person changes language and units in place, and a reload keeps both', as
   await expectNoSeriousViolations(page);
 
   const units = page.getByRole('radiogroup', { name: W('measurements') });
+  /* The choice draws at once and its save follows: a reload before the save answers stops it. */
+  const unitsSaved = page.waitForResponse(
+    (response) => response.url().endsWith('/users/me') && response.request().method() === 'PATCH',
+  );
   await units.getByRole('radio', { name: W('feet') }).click();
+  expect((await unitsSaved).status()).toBe(200);
   await expect(units.getByRole('radio', { name: W('feet') })).toHaveAttribute(
     'aria-checked',
     'true',
@@ -58,10 +63,14 @@ test('a person changes language and units in place, and a reload keeps both', as
       .getByRole('radio', { name: W('feet') }),
   ).toHaveAttribute('aria-checked', 'true');
 
+  const languageSaved = page.waitForResponse(
+    (response) => response.url().endsWith('/users/me') && response.request().method() === 'PATCH',
+  );
   await page
     .getByRole('radiogroup', { name: W('language') })
     .getByRole('radio', { name: LANGUAGE_META.hi.endonym })
     .click();
+  expect((await languageSaved).status()).toBe(200);
   const hindiTitle = page.getByRole('heading', {
     level: 1,
     name: settingsRowName(hi.t, 'profile'),
