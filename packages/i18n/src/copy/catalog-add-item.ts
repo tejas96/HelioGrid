@@ -15,6 +15,8 @@ import {
   addItemPhaseWords,
 } from './catalog-add-item-fields';
 import { catalogChemistryOption, catalogKind, catalogTechnology } from './catalog-settings';
+import { numberFieldWords } from './number-field';
+import { SELECT } from './select';
 
 type T = Translator['t'];
 
@@ -264,6 +266,9 @@ export function catalogAddItemWords(t: T, facts: AddItemFacts) {
       keep: t(WORDS.keepFilling),
       discard: t(WORDS.discard),
     },
+    selectPlaceholder: t(SELECT.placeholder),
+    closeList: t(SELECT.closeList),
+    numberField: numberFieldWords(t),
   };
 }
 

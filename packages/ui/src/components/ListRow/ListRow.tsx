@@ -7,6 +7,7 @@ import { renderGap } from '../NamedGap';
 import { renderPending } from '../PendingAction';
 import { renderProvenance } from '../Provenance';
 import { renderAttribution } from '../ValueSource';
+import { leadingCircleSize } from './ListRow.logic';
 import { isPendingInFlight } from './ListRow.pending';
 import type { ListRowProps } from './ListRow.types';
 
@@ -42,7 +43,6 @@ export function ListRow({
   className,
   style,
 }: WebListRowProps) {
-  const isExpr = density === 'expressive';
   const gapNode = renderGap(gap, { scale: 'field' });
   const prov = renderProvenance(provenance, { size: 12 });
   const attr = renderAttribution(attribution, { size: 12 });
@@ -65,7 +65,7 @@ export function ListRow({
     >
       {avatar ||
         (icon ? (
-          <IconCircle color={iconColor} size={isExpr ? 40 : 32}>
+          <IconCircle color={iconColor} size={leadingCircleSize(density)}>
             {icon}
           </IconCircle>
         ) : null)}

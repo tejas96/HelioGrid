@@ -15,7 +15,10 @@ import type {
   ImportWizardFrame,
   Read,
 } from '@heliogrid/domain';
-import type { PickedFile } from '../Dropzone/Dropzone.types';
+import type { DropzoneWords, PickedFile } from '../Dropzone/Dropzone.types';
+import type { NumberFieldWords } from '../NumberField/NumberField.types';
+import type { OperationProgressWords } from '../OperationProgress/OperationProgress.types';
+import type { StepperWords } from '../Stepper/Stepper.types';
 
 /**
  * **The catalog import wizard** (`SCR-M01-17`, `M01-41`): File · Columns · Preview · Import report,
@@ -285,4 +288,12 @@ export interface CatalogImportWords {
   readonly fixRows: (count: number) => TranslatedText;
   readonly kept: TranslatedText;
   readonly opening: TranslatedText;
+  /** What a select, the search, the steps, the drop, a price field and the waits say of their own. */
+  readonly selectPlaceholder: TranslatedText;
+  readonly closeList: TranslatedText;
+  readonly clearSearch: TranslatedText;
+  readonly stepper: StepperWords;
+  readonly dropzone: DropzoneWords;
+  readonly numberField: NumberFieldWords;
+  readonly progress: OperationProgressWords;
 }

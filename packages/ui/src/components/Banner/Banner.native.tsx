@@ -1,26 +1,29 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { NO_FOCUS_AFTER, useFocusAfter } from '../../primitives/FocusAfter';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import { bannerKind, isNeverDismissible } from './Banner.kinds';
+import { bannerKind } from './Banner.kinds';
 import {
   ACTION_BELOW,
   actionStacks,
   BANNER_GLYPH,
+  bannerDismissal,
   useDisclaimerWarning,
   useFormReport,
 } from './Banner.logic';
 import type { BannerGlyph, BannerProps, BannerTone } from './Banner.types';
 
-interface NativeBannerProps extends BannerProps {
+type NativeBannerProps = BannerProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 interface TonePair {
   text: string;
@@ -58,7 +61,15 @@ function Glyph({ name, size, color }: { name: BannerGlyph; size: number; color: 
  * Without a title the body IS the statement, so it keeps the tone colour and a heavier weight.
  * Under a title it steps back to --text-secondary at 400: the title is the fact, this is detail.
  */
-function Body({ title, children, tone }: { title?: string; children: ReactNode; tone: string }) {
+function Body({
+  title,
+  children,
+  tone,
+}: {
+  title?: TranslatedText;
+  children: ReactNode;
+  tone: string;
+}) {
   if (title === undefined) {
     return (
       <Text variant="body-sm" style={[styles.bodyAlone, { color: tone }]}>
@@ -80,7 +91,7 @@ function Content({
   children,
   actionBelowBody,
 }: {
-  title?: string;
+  title?: TranslatedText;
   tone: string;
   children?: ReactNode;
   actionBelowBody?: ReactNode;
@@ -104,9 +115,17 @@ function Content({
   );
 }
 
-function Dismiss({ tone, onDismiss }: { tone: string; onDismiss: () => void }) {
+function Dismiss({
+  tone,
+  label,
+  onDismiss,
+}: {
+  tone: string;
+  label: TranslatedText;
+  onDismiss: () => void;
+}) {
   return (
-    <Pressable accessibilityLabel="Dismiss" onPress={onDismiss} style={styles.dismiss}>
+    <Pressable accessibilityLabel={label} onPress={onDismiss} style={styles.dismiss}>
       <Svg
         width={15}
         height={15}
@@ -129,6 +148,8 @@ export function Banner({
   children,
   action,
   onDismiss,
+  dismissLabel,
+  focusAfter,
   dismissible,
   tone,
   variant = 'block',
@@ -140,7 +161,8 @@ export function Banner({
 }: NativeBannerProps) {
   const meta = bannerKind(kind);
   const pair = TONES[tone ?? meta.tone];
-  const canDismiss = (dismissible ?? false) && !isNeverDismissible(kind) && onDismiss !== undefined;
+  const dismissal = bannerDismissal({ dismissible, kind, onDismiss, dismissLabel });
+  const leaving = useFocusAfter(focusAfter ?? NO_FOCUS_AFTER);
   const [width, setWidth] = useState<number | null>(null);
   const stacked = actionStacks(action !== undefined, width, actionBelow);
   useFormReport(stacked, width, onFormChange);
@@ -195,7 +217,13 @@ export function Banner({
           {children}
         </Content>
         {action === undefined || stacked ? null : <View style={styles.actionSlot}>{action}</View>}
-        {canDismiss ? <Dismiss tone={pair.text} onDismiss={onDismiss} /> : null}
+        {dismissal === null ? null : (
+          <Dismiss
+            tone={pair.text}
+            label={dismissal.label}
+            onDismiss={leaving(dismissal.onDismiss)}
+          />
+        )}
       </GroundProvider>
     </View>
   );

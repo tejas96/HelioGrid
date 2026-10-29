@@ -1,4 +1,6 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { clampCount } from '../../utils/count';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { SurfaceRead, SurfaceState } from '../UnavailableNote';
@@ -19,10 +21,11 @@ import type { SurfaceRead, SurfaceState } from '../UnavailableNote';
  */
 export type BlockState = SurfaceState;
 
-export interface BlockProps {
+/** Everything a block takes but the read it shows. */
+export interface BlockFrameProps {
   /** Uppercase micro-label above the title. */
-  overline?: string;
-  title?: string;
+  overline?: TranslatedText;
+  title?: TranslatedText;
   /** The object this block reads and the version in force (`M08-16`) — "Quote v4 · 12 Aug 2026". */
   meta?: ReactNode;
   /** Header-right slot: a link, a small button, a menu. */
@@ -39,8 +42,11 @@ export interface BlockProps {
   count?: number;
   /** Clamp the numeral: `countMax={99}` renders "99+". Unset by default, because clamping a total lies. */
   countMax?: number;
-  /** Words for the count in the accessible name — "documents", "open blockers". */
-  countLabel?: string;
+  /**
+   * Words for the count in the accessible name — "documents", "open blockers" — spoken after the
+   * grouped numeral, which leads in every language the product speaks.
+   */
+  countLabel?: TranslatedText;
   /**
    * In the header row beside the count — a `StatusChip` or a provider badge, with or without a
    * `title`. **A count goes in `count`, not here.**
@@ -51,20 +57,18 @@ export interface BlockProps {
   /** Provenance for the block's figures, rendered in the footer. */
   provenance?: ProvenanceProps | ProvenanceTierSpec;
   /**
-   * The read this frame shows. Pass none when it holds static content: it draws `ready`. `failed`
-   * draws the error with its retry; `unavailable` draws none.
+   * The empty sentence. Say what is true — "No blockers — nothing is waiting on anyone". Each
+   * state's words are drawn only when given — `@heliogrid/i18n`'s `BLOCK` holds the usual ones.
    */
-  read?: SurfaceRead;
-  /** The empty sentence. Say what is true — "No blockers — nothing is waiting on anyone". */
-  emptyMessage?: string;
-  emptyTitle?: string;
+  emptyMessage?: TranslatedText;
+  emptyTitle?: TranslatedText;
   emptyAction?: ReactNode;
-  errorTitle?: string;
-  errorMessage?: string;
+  errorTitle?: TranslatedText;
+  errorMessage?: TranslatedText;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
-  unavailableTitle?: string;
-  unavailableMessage?: string;
+  retryLabel?: TranslatedText;
+  unavailableTitle?: TranslatedText;
+  unavailableMessage?: TranslatedText;
   density?: 'expressive' | 'functional';
   /**
    * Changes nothing: a block is always a heading on the page (`F7-49`), with no surface or shadow
@@ -74,6 +78,37 @@ export interface BlockProps {
   flat?: boolean;
   children?: ReactNode;
 }
+
+/**
+ * The read this frame shows. Pass none when it holds static content: it draws `ready`. `failed`
+ * draws the error with its retry; `unavailable` draws none. A block that shows a read names what
+ * it is loading — `loadingLabel`, spoken while the read is out ("Loading documents").
+ */
+export type BlockRead =
+  | { read?: undefined; loadingLabel?: undefined }
+  | { read: SurfaceRead; loadingLabel: TranslatedText };
+
+export type BlockProps = BlockFrameProps & BlockRead;
+
+/** The body both halves draw under the header — the one part that moves between states. */
+export type BlockBodyProps = {
+  state: SurfaceState;
+  onRetry?: () => void;
+  loadingLabel?: TranslatedText;
+  /** The block's frame, where focus lands once its retry has left. */
+  focusAfter: FocusAfter;
+} & Pick<
+  BlockFrameProps,
+  | 'children'
+  | 'emptyMessage'
+  | 'emptyTitle'
+  | 'emptyAction'
+  | 'errorTitle'
+  | 'errorMessage'
+  | 'retryLabel'
+  | 'unavailableTitle'
+  | 'unavailableMessage'
+>;
 
 export interface BlockGridProps {
   children?: ReactNode;

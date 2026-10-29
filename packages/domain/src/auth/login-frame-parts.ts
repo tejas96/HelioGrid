@@ -20,17 +20,6 @@ export type BlockTone = FrameTone | 'info';
  */
 export type BlockAnnouncement = 'alert' | 'status';
 
-/**
- * The road at the foot of the number step: the question, the label, and where it goes
- * (`SCR-M01-02`). Both doors draw one, and the other door is where it leads. A screen fills
- * it from its words and its navigator; both platforms read this one shape.
- */
-export interface DoorRoad {
-  readonly question: string;
-  readonly label: string;
-  readonly onPress: () => void;
-}
-
 /** The line under the title that names the number: what was done to it. */
 export type SubLine =
   | 'sent-by-sms'

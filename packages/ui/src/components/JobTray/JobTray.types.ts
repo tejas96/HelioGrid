@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { OperationProgressProps } from '../OperationProgress/OperationProgress.types';
 
@@ -9,7 +10,7 @@ import type { OperationProgressProps } from '../OperationProgress/OperationProgr
 export interface BackgroundJob extends Omit<OperationProgressProps, 'label' | 'size' | 'style'> {
   id: string | number;
   /** The work, named — "Importing leads · Nashik list.csv". */
-  label: ReactNode;
+  label: TranslatedText;
   /**
    * **Where the finished thing is, as a real control.** A job you left is unreachable without one:
    * `M02-21`'s finished import "produces a report naming every rejected row and why", and
@@ -33,7 +34,32 @@ export interface BackgroundJob extends Omit<OperationProgressProps, 'label' | 's
  *
  * Renders **nothing** with no jobs. A tray with nothing in it is chrome.
  */
-export interface JobTrayProps {
+/** What the tray's trigger says, in the reader's language. */
+export interface JobTrayWords {
+  /** The trigger's spoken name: the tray, then what it holds — "Background work, 2 running". */
+  readonly trigger: (label: TranslatedText, summary: string) => TranslatedText;
+  /** "2 running". */
+  readonly running: (count: number) => TranslatedText;
+  /** "1 failed". */
+  readonly failed: (count: number) => TranslatedText;
+  /** "1 finished". */
+  readonly finished: (count: number) => TranslatedText;
+}
+
+/** A tray with no way to clear it. */
+interface JobTrayKept {
+  onClear?: undefined;
+  clearLabel?: undefined;
+}
+
+/** A tray that clears its finished and failed jobs. */
+interface JobTrayClearable {
+  /** Clears the finished and failed jobs. The control appears only when there are some. */
+  onClear: () => void;
+  clearLabel: TranslatedText;
+}
+
+interface JobTrayOwnProps {
   /**
    * Every job the person has left running, plus the finished ones they have not opened yet. A
    * finished job **stays** until it is opened or cleared — the opposite of `Toast`'s rule, and the
@@ -43,17 +69,19 @@ export interface JobTrayProps {
   jobs: BackgroundJob[];
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  /** Accessible name and the panel's overline. Default "Background work". */
-  label?: string;
-  /** Clears the finished and failed jobs. The control appears only when there are some. */
-  onClear?: () => void;
-  clearLabel?: string;
+  /** Accessible name and the panel's overline — "Background work". */
+  label: TranslatedText;
+  /** The trigger's summary and its spoken name. */
+  words: JobTrayWords;
   align?: 'right' | 'left';
 }
 
+export type JobTrayProps = JobTrayOwnProps & (JobTrayKept | JobTrayClearable);
+
 /** The one line the shell can say, because the trigger is 44px of top bar, not a panel. */
 export interface JobTraySummary {
-  words: string;
+  /** A count alone — a figure, no word — when nothing is running, failed or finished. */
+  words: TranslatedText | string;
   /** Something is still running: the trigger shows the travelling rail, not a clock. */
   busy: boolean;
   /** The tone of the resting state, where there is one. Never a raw colour. */

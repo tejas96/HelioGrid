@@ -1,27 +1,10 @@
-import type { ReactNode } from 'react';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote';
-import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
-import type { OverlayStateVariant } from './OverlayStates';
 import { OverlayEmpty, OverlayError } from './OverlayStates';
+import type { OverlayBodyStateProps } from './Sheet.types';
 
-interface OverlayBodyProps {
-  children?: ReactNode;
-  emptyAction?: ReactNode;
-  emptyMessage?: string;
-  emptyTitle?: string;
-  errorMessage?: string;
-  errorTitle?: string;
-  onRetry?: () => void;
-  retryLabel?: string;
-  /** The surface's own `loading` shape — a sheet's bars are not a panel's. */
-  skeleton: ReactNode;
-  state: SurfaceState;
+interface OverlayBodyProps extends OverlayBodyStateProps {
   /** The wrapper class that pads `unavailable` inside this particular surface. */
   unavailableClassName: string;
-  unavailableAction?: ReactNode;
-  unavailableMessage?: string;
-  unavailableTitle?: string;
-  variant: OverlayStateVariant;
 }
 
 /**
@@ -39,6 +22,7 @@ export function OverlayBody({
   emptyTitle,
   errorMessage,
   errorTitle,
+  focusAfter,
   onRetry,
   retryLabel,
   skeleton,
@@ -55,6 +39,7 @@ export function OverlayBody({
   if (state === 'error') {
     return (
       <OverlayError
+        focusAfter={focusAfter}
         message={errorMessage}
         onRetry={onRetry}
         retryLabel={retryLabel}
@@ -65,7 +50,8 @@ export function OverlayBody({
   }
   /* No retry and no warning tint: the absence is stated, not styled as a fault. */
   if (state === 'unavailable') {
-    return (
+    /* The note is its title; with none given there is nothing to state, and no content either. */
+    return unavailableTitle === undefined ? null : (
       <div className={unavailableClassName}>
         <UnavailableNote
           action={unavailableAction}

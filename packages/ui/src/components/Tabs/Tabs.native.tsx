@@ -1,15 +1,14 @@
 import { theme } from '@heliogrid/theme';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { clampCount } from '../../utils/count';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { renderActionReason } from '../ActionReason/ActionReason.native';
 import { renderMarks } from '../ChipGroup/ChipGroup.native';
-import { hasReason, normalise, TAB_COUNT_MAX } from './Tabs.options';
+import { hasReason, reasonedTabs, tabCountText } from './Tabs.options';
 import type { TabsProps } from './Tabs.types';
 
 interface NativeTabsProps extends TabsProps {
@@ -36,7 +35,6 @@ interface Slot {
  * reachable, while activation is refused here; a tab with nothing to hear takes the inert form.
  */
 export function Tabs({ tabs, value, onChange, style }: NativeTabsProps) {
-  const items = useMemo(() => normalise(tabs), [tabs]);
   const [slots, setSlots] = useState<Record<string, Slot>>({});
   const left = useRef(new Animated.Value(0)).current;
   const width = useRef(new Animated.Value(0)).current;
@@ -68,14 +66,14 @@ export function Tabs({ tabs, value, onChange, style }: NativeTabsProps) {
     });
   };
 
-  const reasoned = items.filter((tab) => tab.disabled === true && hasReason(tab));
+  const reasoned = reasonedTabs(tabs);
 
   return (
     <View style={style}>
       {/* The strip is the `tablist` the web half spells; the role goes on this plain View, so
           each tab underneath stays separately reachable. */}
       <View accessibilityRole="tablist" style={styles.strip}>
-        {items.map((tab) => {
+        {tabs.map((tab) => {
           const active = tab.value === value;
           const off = tab.disabled === true;
           const stated = off && hasReason(tab);
@@ -104,7 +102,7 @@ export function Tabs({ tabs, value, onChange, style }: NativeTabsProps) {
                 {tab.count !== undefined ? (
                   <View style={[styles.count, active ? styles.countActive : styles.countRest]}>
                     <Text variant="caption" style={countStyle(active, off)}>
-                      {clampCount(tab.count, TAB_COUNT_MAX)}
+                      {tabCountText(tab.count)}
                     </Text>
                   </View>
                 ) : null}

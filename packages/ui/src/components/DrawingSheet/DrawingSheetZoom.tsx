@@ -1,7 +1,7 @@
 import { Icon } from '../../primitives/Icon';
 import { Pressable } from '../../primitives/Pressable';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
-import type { DrawingSheetZoom } from './DrawingSheet.types';
+import type { DrawingSheetWords, DrawingSheetZoom } from './DrawingSheet.types';
 
 const DEFAULT_LEVELS = [0.5, 0.75, 1, 1.5, 2];
 
@@ -29,7 +29,13 @@ function ZoomGlyph({ plus }: { plus: boolean }) {
  * MS8-02: zoom either works or is not advertised — this renders only when `onChange` exists, and
  * it is `screen-only`, because a zoom control has no meaning once the sheet is paper.
  */
-export function ZoomControls({ zoom }: { zoom: DrawingSheetZoom }) {
+export function ZoomControls({
+  zoom,
+  words,
+}: {
+  zoom: DrawingSheetZoom;
+  words: Pick<DrawingSheetWords, 'zoomIn' | 'zoomOut'>;
+}) {
   const levels = zoom.levels ?? DEFAULT_LEVELS;
   const i = Math.max(0, levels.indexOf(zoom.value ?? 1));
   const go = (d: number) => {
@@ -40,16 +46,16 @@ export function ZoomControls({ zoom }: { zoom: DrawingSheetZoom }) {
     <div data-print="screen-only" className="hg-drawing-sheet-zoom">
       <Pressable
         className="hg-drawing-sheet-zoom-button"
-        accessibilityLabel="Zoom out"
+        accessibilityLabel={words.zoomOut}
         disabled={i <= 0}
         onPress={() => go(-1)}
       >
         <ZoomGlyph plus={false} />
       </Pressable>
-      <span className="hg-drawing-sheet-zoom-value">{Math.round((zoom.value ?? 1) * 100)}%</span>
+      <span className="hg-drawing-sheet-zoom-value">{`${Math.round((zoom.value ?? 1) * 100)}%`}</span>
       <Pressable
         className="hg-drawing-sheet-zoom-button"
-        accessibilityLabel="Zoom in"
+        accessibilityLabel={words.zoomIn}
         disabled={i >= levels.length - 1}
         onPress={() => go(1)}
       >

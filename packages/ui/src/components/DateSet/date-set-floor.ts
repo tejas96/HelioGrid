@@ -1,5 +1,8 @@
-import type { ComplianceFloorSpec } from '../ComplianceFloor/ComplianceFloor.types';
-import type { DateSetEntry } from './DateSet.types';
+import type {
+  ComplianceFloorSpec,
+  ComplianceFloorWords,
+} from '../ComplianceFloor/ComplianceFloor.types';
+import type { DateSetEntry, DateSetWords } from './DateSet.types';
 
 /**
  * The floor a pack-supplied date carries, composed when the caller has not written one.
@@ -13,19 +16,17 @@ export function floorFor(
   entry: DateSetEntry | undefined,
   packName: string,
   given: ComplianceFloorSpec | undefined,
+  words: DateSetWords,
+  floorWords: ComplianceFloorWords,
 ): ComplianceFloorSpec {
   if (given !== undefined) {
     return given;
   }
   return {
-    floor: 'Market calling window',
-    authority: `${packName} · narrower only, never wider`,
-    subject: entry?.name === undefined ? 'A market holiday' : `“${entry.name}”`,
+    floor: words.floorName,
+    authority: words.narrowerOnly(packName),
+    subject: entry?.name === undefined ? words.anyHoliday : words.namedHoliday(entry.name),
     act: 'removed',
+    words: floorWords,
   };
-}
-
-/** The refusal's own second sentence, when the caller has not supplied one. */
-export function refusalMessage(packName: string): string {
-  return `${packName} supplies this date. The calling window can be narrowed, never widened — so a market holiday is not the tenant's to remove.`;
 }

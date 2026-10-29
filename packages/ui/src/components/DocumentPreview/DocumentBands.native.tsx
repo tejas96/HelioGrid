@@ -1,5 +1,6 @@
 import { View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { listOrdinal } from './DocumentPreview.logic';
 import { DocumentOverline, DocumentRule, docStyles } from './DocumentSheet.native';
 import type { ResolvedDocument } from './document-model';
 
@@ -27,7 +28,9 @@ export function DocumentItemsBand({ doc }: { doc: ResolvedDocument }) {
         <Text style={docStyles.totalLabel}>{doc.totalLabel}</Text>
         <Text style={[docStyles.totalValue, { color: doc.ink }]}>{doc.totalText}</Text>
       </View>
-      {doc.subsidyLine === null ? null : <Text style={docStyles.subsidy}>{doc.subsidyLine}</Text>}
+      {doc.subsidyNote === undefined ? null : (
+        <Text style={docStyles.subsidy}>{doc.subsidyNote}</Text>
+      )}
     </View>
   );
 }
@@ -41,7 +44,7 @@ export function DocumentSectionsBand({ doc }: { doc: ResolvedDocument }) {
       <View style={docStyles.sectionList}>
         {doc.sections.map((section, index) => (
           <View key={section.label} style={docStyles.sectionItem}>
-            <Text style={docStyles.sectionIndex}>{String(index + 1).padStart(2, '0')}</Text>
+            <Text style={docStyles.sectionIndex}>{listOrdinal(index)}</Text>
             <Text style={docStyles.sectionLabel}>{section.label}</Text>
             {section.meta === undefined ? null : (
               <Text style={docStyles.sectionMeta}>{section.meta}</Text>
@@ -63,7 +66,7 @@ export function DocumentTranchesBand({ doc }: { doc: ResolvedDocument }) {
         {doc.tranches.map((tranche, index) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: a schedule is positional, and two tranches may share a name
           <View key={index} style={docStyles.trancheRow}>
-            <Text style={docStyles.trancheIndex}>{String(index + 1).padStart(2, '0')}</Text>
+            <Text style={docStyles.trancheIndex}>{listOrdinal(index)}</Text>
             <View style={docStyles.trancheCell}>
               <Text style={docStyles.trancheLabel}>{tranche.label}</Text>
               {tranche.when === undefined ? null : (

@@ -24,7 +24,11 @@ describe('companyStepWords', () => {
   it('the plain step as it opens: the step header, the title, the account, the create primary', async () => {
     const { t } = await createTranslator('en');
     expect(companyStepWords(t, plain)).toEqual({
-      steps: { label: 'Create a company', steps: ['Your number', 'Code', 'Your company'] },
+      steps: {
+        label: 'Create a company',
+        steps: ['Your number', 'Code', 'Your company'],
+        stepper: expect.any(Object),
+      },
       title: 'Your company',
       intro: "Three details, and you're in.",
       block: null,
@@ -130,7 +134,11 @@ describe('companyStepWords', () => {
   it('under the steer: its own title, the finding, both roads, and no line under a field', async () => {
     const { t } = await createTranslator('en');
     expect(companyStepWords(t, { ...plain, steer: steered })).toEqual({
-      steps: { label: 'Create a company', steps: ['Your number', 'Code', 'Your company'] },
+      steps: {
+        label: 'Create a company',
+        steps: ['Your number', 'Code', 'Your company'],
+        stepper: expect.any(Object),
+      },
       title: 'This company may already be here',
       intro: null,
       block: null,

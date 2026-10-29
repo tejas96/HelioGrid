@@ -11,3 +11,8 @@ export function recordInitials(name: string): string {
     .join('')
     .toUpperCase();
 }
+
+/** The face's letters: the caller's initials, or the name's own. */
+export function faceInitials(initials: string | undefined, name: string): string {
+  return initials || recordInitials(name);
+}

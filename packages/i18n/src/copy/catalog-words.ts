@@ -22,8 +22,12 @@ import {
   catalogSpecLine,
   catalogTechnology,
 } from './catalog-settings';
+import { DATA_TABLE, dataTableWords } from './data-table';
 import { explainerPagerWords } from './explainer';
+import { filterBarWords } from './filter-bar';
 import { filterPanelWords } from './filter-panel';
+import { numberFieldWords } from './number-field';
+import { SEARCH_FIELD } from './search-field';
 
 type T = Translator['t'];
 
@@ -89,11 +93,29 @@ function listWords(t: T, list: CatalogListFacts) {
   };
 }
 
+/** `DataTable`'s own words, by a name the catalog's words can carry out of this package. */
+export interface CatalogDataTableWords extends ReturnType<typeof dataTableWords> {}
+
+/**
+ * What a catalog table draws and speaks of its own, and its blocked states' words — the same for
+ * the items, the rates and the changed items, spread into each `DataTable`.
+ */
+export function catalogTableWords(t: T) {
+  const words: CatalogDataTableWords = dataTableWords(t);
+  return {
+    words,
+    emptyTitle: t(DATA_TABLE.emptyTitle),
+    errorTitle: t(DATA_TABLE.errorTitle),
+    unavailableTitle: t(DATA_TABLE.unavailableTitle),
+  };
+}
+
 const byKey = <K extends string>(keys: readonly K[], word: (key: K) => TranslatedText) =>
   Object.fromEntries(keys.map((key) => [key, word(key)])) as Record<K, TranslatedText>;
 
 /** Every fixed word of the Items panel, in the reader's language. */
 export function catalogItemsWords(t: T, schemes: readonly string[], list: CatalogListFacts) {
+  const filterBar = filterBarWords(t);
   return {
     importFile: t(CATALOG_SETTINGS.importFile),
     addItem: t(CATALOG_SETTINGS.addItem),
@@ -114,7 +136,10 @@ export function catalogItemsWords(t: T, schemes: readonly string[], list: Catalo
     marks: t(CATALOG_SETTINGS.marks),
     search: t(CATALOG_SETTINGS.search),
     searchLabel: t(CATALOG_SETTINGS.searchLabel),
+    clearSearch: t(SEARCH_FIELD.clear),
     filters: t(CATALOG_SETTINGS.filters),
+    filtersActive: filterBar.filtersActive,
+    selectedKind: filterBar.selected,
     kindLabel: t(CATALOG_SETTINGS.kindLabel),
     allKinds: t(CATALOG_SETTINGS.allKinds),
     kinds: byKey(COMPONENT_KINDS, (kind) => catalogKinds(t, kind)),
@@ -144,6 +169,7 @@ export function catalogItemsWords(t: T, schemes: readonly string[], list: Catalo
       showResults: (count: number) => t(SHOW_ITEMS, { count }),
     },
     explainer: explainerPagerWords(t),
+    table: catalogTableWords(t),
   };
 }
 
@@ -230,6 +256,7 @@ export function catalogPriceEditorWords(t: T, taxStays: string | null) {
     inPickers: t(CATALOG_EDITOR.inPickers),
     hideFromPickers: t(CATALOG_EDITOR.hideFromPickers),
     preferredInPickers: t(CATALOG_EDITOR.preferredInPickers),
+    numberField: numberFieldWords(t),
   };
 }
 

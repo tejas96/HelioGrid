@@ -5,7 +5,7 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { MapMarker } from './MapSurface.types';
 import { MAP_TONE } from './MapTokens.native';
-import { markerLabel } from './map-placement';
+import { type MarkerWords, markerChipOf, markerLabel } from './map-placement';
 
 const PULSE_MS = 2000;
 
@@ -91,16 +91,17 @@ export function MapMarkerDot({
   lastSeen,
   label,
   onClick,
-}: MapMarker) {
+  words,
+}: MapMarker & { words: MarkerWords }) {
   const colour = MAP_TONE[tone];
   const stale = !live;
-  const chip = label !== undefined || (stale && lastSeen !== undefined);
+  const chip = markerChipOf(label, live, lastSeen, words);
 
   return (
     <View style={[styles.marker, { left: `${x}%`, top: `${y}%` }]}>
       <View style={styles.column}>
         <Pressable
-          accessibilityLabel={markerLabel(label, live, lastSeen)}
+          accessibilityLabel={markerLabel(label, live, lastSeen, words)}
           onPress={onClick}
           style={styles.hit}
         >
@@ -115,13 +116,13 @@ export function MapMarkerDot({
             ]}
           />
         </Pressable>
-        {chip ? (
+        {chip === null ? null : (
           <View style={styles.chip}>
             <Text variant="caption" color={stale ? 'secondary' : 'primary'} style={styles.chipText}>
-              {`${label ?? ''}${stale && lastSeen !== undefined ? ` · last seen ${lastSeen}` : ''}`}
+              {chip}
             </Text>
           </View>
-        ) : null}
+        )}
       </View>
     </View>
   );

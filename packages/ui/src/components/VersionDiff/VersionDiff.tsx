@@ -12,16 +12,10 @@
    grouping are `VersionDiff.resolve` — shared with the native half so both agree. */
 
 import type { CSSProperties } from 'react';
-import { useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
-import {
-  diffSummary,
-  groupDiffRows,
-  resolveDiffEntries,
-  resolveDiffRow,
-  resolveDiffSides,
-} from './VersionDiff.resolve';
+import { useDiffView } from './use-diff-view';
+import { resolveDiffRow, resolveDiffSides } from './VersionDiff.resolve';
 import type { VersionDiffProps } from './VersionDiff.types';
 import { VersionDiffGroup } from './VersionDiffGroup';
 import { VersionDiffHeader } from './VersionDiffHeader';
@@ -37,34 +31,26 @@ export function VersionDiff({
   after = {},
   rows = [],
   changeNote,
-  changeNoteLabel = 'What changed and why',
+  words,
+  changeNoteLabel = words.whatChanged,
   showUnchanged: showUnchangedProp,
-  removedLabel = 'Not in this version',
+  removedLabel = words.notInThisVersion,
   addedLabel,
   mode = 'versions',
-  emptyMessage = 'Nothing changed between these two versions.',
+  emptyMessage = words.nothingChanged,
   className,
   style,
 }: WebVersionDiffProps) {
-  const sides = resolveDiffSides(before, after, mode);
-  const resolved = resolveDiffEntries(rows);
-  const [openUnchanged, setOpenUnchanged] = useState(Boolean(showUnchangedProp));
-  const show = showUnchangedProp === undefined ? openUnchanged : showUnchangedProp;
-  const moved = resolved.filter((r) => r.state !== 'unchanged');
-  const unchanged = resolved.filter((r) => r.state === 'unchanged');
-  const groups = groupDiffRows(show ? resolved : moved);
+  const sides = resolveDiffSides(before, after, mode, words);
+  const view = useDiffView(rows, showUnchangedProp, words);
 
   return (
     <section
-      aria-label={caption || `${sides.beforeLabel} compared with ${sides.afterLabel}`}
+      aria-label={caption || words.compared(sides.beforeLabel, sides.afterLabel)}
       className={classNames('hg-version-diff', className)}
       style={style}
     >
-      <VersionDiffHeader
-        caption={caption}
-        sides={sides}
-        summary={diffSummary(resolved.map((r) => r.state))}
-      />
+      <VersionDiffHeader caption={caption} sides={sides} summary={view.summary} />
 
       {/* The change note is M06-42's own requirement — a version without one is not a version. */}
       {changeNote ? (
@@ -74,10 +60,10 @@ export function VersionDiff({
         </div>
       ) : null}
 
-      {moved.length === 0 && !show ? (
+      {view.nothingShown ? (
         <p className="hg-version-diff-empty">{emptyMessage}</p>
       ) : (
-        groups.map((g) => (
+        view.groups.map((g) => (
           <VersionDiffGroup
             key={g.name || g.rows[0]?.id}
             group={g}
@@ -85,24 +71,23 @@ export function VersionDiff({
             afterStamp={sides.afterStamp}
             removedLabel={removedLabel}
             addedLabel={addedLabel}
+            words={words}
           />
         ))
       )}
 
       {/* Unchanged is a state, so it is counted and reachable — never silently dropped. */}
-      {unchanged.length > 0 && showUnchangedProp === undefined ? (
+      {view.collapsible ? (
         <div className="hg-version-diff-toggle-row">
           {/* A collapse that does not say whether it is open is not reachable, so the expanded
               state goes through the primitive — `aria-expanded` here, `accessibilityState.expanded`
               on the native half, one declaration — and the 44px floor comes with it. */}
           <Pressable
             className="hg-version-diff-toggle"
-            accessibilityState={{ expanded: show }}
-            onPress={() => setOpenUnchanged((o) => !o)}
+            accessibilityState={{ expanded: view.showUnchanged }}
+            onPress={view.toggleUnchanged}
           >
-            {`${show ? 'Hide' : 'Show'} ${unchanged.length} unchanged field${
-              unchanged.length === 1 ? '' : 's'
-            }`}
+            {words.unchangedToggle(view.showUnchanged, view.unchangedCount)}
           </Pressable>
         </div>
       ) : null}

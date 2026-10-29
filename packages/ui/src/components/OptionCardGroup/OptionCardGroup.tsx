@@ -25,7 +25,7 @@ export function OptionCardGroup(props: WebOptionCardGroupProps) {
     columns = 1,
     density = 'expressive',
     disabled = false,
-    currentLabel = 'Current plan',
+    currentLabel,
     error,
     invalid = false,
     describedBy,

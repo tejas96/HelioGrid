@@ -1,12 +1,13 @@
 import { PRICE_BOOK_RATE_BASES, type PriceBookRateBasis } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import { CatalogStripBar } from '../CatalogItems/CatalogStrip';
-import { useRetryFocus } from '../CatalogItems/use-retry-focus';
 import { EmptyState } from '../EmptyState/EmptyState.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { useFormat } from '../MarketProvider/market-context';
@@ -17,23 +18,31 @@ import type { CatalogRate, CatalogRatesProps } from './CatalogRates.types';
  * how each is charged — or, before the first version, the teaching with its first act.
  */
 export function CatalogRates({ words, read, strip, rates, onAddFirst }: CatalogRatesProps) {
-  const focus = useRetryFocus(read.kind);
-  if (read.kind === 'loading') return <LoadingBars label={words.loading} bars={['row', 'panel']} />;
+  /* *Try again* leaves with the failure: the screen reader goes to the panel, which stays while it
+     reloads. */
+  const panel = useRef<View>(null);
+  if (read.kind === 'loading') {
+    return (
+      <View ref={panel} style={styles.panel}>
+        <LoadingBars label={words.loading} bars={['row', 'panel']} />
+      </View>
+    );
+  }
   if (read.kind === 'failed') {
     return (
-      <EmptyState
-        title={words.loadFailed}
-        action={
-          <Button variant="secondary" size="lg" onClick={focus.retrying(read.retry)}>
-            {words.tryAgain}
-          </Button>
-        }
-      />
+      <View ref={panel} style={styles.panel}>
+        <EmptyState
+          title={words.loadFailed}
+          action={
+            <RetryButton size="lg" onRetry={read.retry} label={words.tryAgain} focusAfter={panel} />
+          }
+        />
+      </View>
     );
   }
   return (
-    <View style={styles.panel}>
-      <CatalogStripBar strip={strip} focusRef={focus.target} />
+    <View ref={panel} style={styles.panel}>
+      <CatalogStripBar strip={strip} />
       {rates.length === 0 ? (
         <EmptyState
           glow={false}

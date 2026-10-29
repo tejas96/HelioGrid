@@ -8,7 +8,7 @@ import { renderOverride } from '../FieldOverride';
 import { renderAttribution } from '../ValueSource';
 import { useCommitDraft } from './commit-draft';
 import type { InputNote as Note } from './Input.logic';
-import { inputNote } from './Input.logic';
+import { inputNote, ringTone } from './Input.logic';
 import type { InputProps } from './Input.types';
 
 interface WebInputProps extends InputProps {
@@ -55,33 +55,19 @@ export function Input({
   const fieldId = id ?? autoId;
   const control = useRef<HTMLInputElement>(null);
   useFocusRequest(control, focusRequest);
-  const { draft, setDraft, focus, setFocus, commit, cancel } = useCommitDraft(
+  const { focus, setFocus, commit, cancel, shown, change, leave } = useCommitDraft(
     value,
     commitOnBlur,
     onCommit,
+    onChange,
   );
 
   const note = inputNote({ error, success, helper });
-  const tone = note?.kind === 'error' ? 'error' : 'none';
+  const tone = ringTone(note);
   /* FieldOverride owns the marker/superseded-value/reset line and ValueSource owns the layer line.
      Resolving the override first is also the mutual-exclusion test: whatever it returns is what
      occupies the slot, and attribution only speaks when the slot is empty. */
   const overrideNode = renderOverride(override);
-
-  const handleChange = (next: string) => {
-    if (commitOnBlur) {
-      setDraft(next);
-      return;
-    }
-    onChange?.(next);
-  };
-
-  const handleBlur = () => {
-    setFocus(false);
-    if (commitOnBlur) {
-      commit();
-    }
-  };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -117,10 +103,10 @@ export function Input({
           type={type}
           placeholder={placeholder}
           disabled={disabled}
-          value={commitOnBlur ? draft : (value ?? '')}
-          onChange={(event) => handleChange(event.target.value)}
+          value={shown}
+          onChange={(event) => change(event.target.value)}
           onFocus={() => setFocus(true)}
-          onBlur={handleBlur}
+          onBlur={leave}
           onKeyDown={commitOnBlur ? handleKeyDown : undefined}
         />
         {trailing}

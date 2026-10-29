@@ -14,6 +14,7 @@ interface NativeStepListProps extends StepListProps {
  * half of M05-03. Same reachability rule as `Stepper`; rows are 52dp.
  */
 export function StepList({
+  words,
   steps = [],
   current = 0,
   onStepClick,
@@ -27,7 +28,7 @@ export function StepList({
     // ROLE rather than `accessible` because every row below is its own focusable 52dp Pressable.
     <View
       accessibilityRole="list"
-      accessibilityLabel={label ?? 'Steps'}
+      accessibilityLabel={label ?? words.steps}
       style={[styles.list, style]}
     >
       {resolved.map((step, index) => (
@@ -38,6 +39,7 @@ export function StepList({
           onStepClick={onStepClick}
           step={step}
           total={resolved.length}
+          words={words}
         />
       ))}
     </View>

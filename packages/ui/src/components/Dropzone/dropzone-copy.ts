@@ -1,18 +1,16 @@
-/* THE FILE TYPES ONLY — never a size. The ceiling comes from `maxSizeMB` below, because a component
-   that states a limit nobody told it promises one thing while the caller refuses another. */
-const ACCEPTS_HINT: Record<string, string> = {
-  image: 'JPG or PNG',
-  pdf: 'PDF',
-};
+import type { TranslatedText } from '@heliogrid/contracts';
+import { takesImages } from './Dropzone.logic';
+import type { DropzoneWords } from './Dropzone.types';
 
 export interface CaptureLineInput {
   busy: boolean;
-  hint: string | undefined;
+  hint: TranslatedText | undefined;
   accept: string;
   capture: 'user' | 'environment' | undefined;
   maxSizeMB: number;
-  /** "Drop files here or tap to browse" on web; "Tap to browse" where there is no drop target. */
-  browsePhrase: string;
+  /** The web takes a drop; a phone only browses. */
+  drop: boolean;
+  words: DropzoneWords;
 }
 
 /**
@@ -21,6 +19,9 @@ export interface CaptureLineInput {
  * THE NAME OF THE ACT SURVIVES THE WAIT: "Uploading…" is this line, never the label — replacing the
  * label is the shape the readme names as a defect on `Button loading`. The spinner is the progress
  * channel; the state goes here, where the hint lives.
+ *
+ * The browse line names the file types and the ceiling from `maxSizeMB`, never a size of its own: a
+ * component that states a limit nobody told it promises one thing while the caller refuses another.
  */
 export function captureLine({
   busy,
@@ -28,23 +29,17 @@ export function captureLine({
   accept,
   capture,
   maxSizeMB,
-  browsePhrase,
-}: CaptureLineInput): string {
+  drop,
+  words,
+}: CaptureLineInput): TranslatedText {
   if (busy) {
-    return 'Uploading…';
+    return words.uploading;
   }
   if (hint !== undefined) {
     return hint;
   }
   if (capture !== undefined) {
-    return 'Tap to capture or upload';
+    return words.captureOrUpload;
   }
-  const acceptHint = ACCEPTS_HINT[accept.startsWith('image') ? 'image' : 'pdf'];
-  const limit = `up to ${maxSizeMB} MB`;
-  return `${browsePhrase} · ${acceptHint === undefined ? limit : `${acceptHint} ${limit}`}`;
-}
-
-/** The default when a file was refused: state the problem AND the fix. */
-export function sizeErrorMessage(maxSizeMB: number): string {
-  return `That file is over ${maxSizeMB} MB. Retake the photo at a lower resolution or pick a smaller file.`;
+  return words.browse({ drop, kind: takesImages(accept) ? 'image' : 'pdf', maxSizeMB });
 }

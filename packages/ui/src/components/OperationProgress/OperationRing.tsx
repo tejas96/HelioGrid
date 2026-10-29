@@ -1,14 +1,16 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { type CSSProperties, type ReactNode, useId } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { useFormat } from '../MarketProvider';
 import type { OperationCount } from './OperationProgress.types';
+import { ringSpokenName } from './operation-progress-model';
 import { ProgressRing } from './ProgressRing';
-import { doneShare, RUN_RING } from './progress-ring';
+import { countShare, RUN_RING } from './progress-ring';
 
 interface OperationRingProps {
   label: ReactNode;
   count: OperationCount | null;
-  countCaption?: string;
+  countCaption?: TranslatedText;
   className?: string;
   style?: CSSProperties;
 }
@@ -27,7 +29,7 @@ export function OperationRing({
 }: OperationRingProps) {
   const { number } = useFormat();
   const labelId = useId();
-  const spoken = typeof label === 'string' ? label : undefined;
+  const spoken = ringSpokenName(label);
   return (
     <div
       className={classNames('hg-operation-ring', className)}
@@ -44,10 +46,7 @@ export function OperationRing({
           {label}
         </span>
       ) : null}
-      <ProgressRing
-        geometry={RUN_RING}
-        share={count === null ? 0 : doneShare(count.done, count.total)}
-      />
+      <ProgressRing geometry={RUN_RING} share={countShare(count)} />
       <span className="hg-operation-ring-centre">
         {count === null ? null : (
           <span className="hg-operation-ring-figure">{number(count.done)}</span>

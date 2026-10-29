@@ -66,7 +66,13 @@ export function ImportHead({
           </Button>
         ) : null}
       </div>
-      <Stepper variant="bars" steps={[...words.steps]} current={step} label={words.stepsLabel} />
+      <Stepper
+        variant="bars"
+        steps={[...words.steps]}
+        current={step}
+        label={words.stepsLabel}
+        words={words.stepper}
+      />
     </div>
   );
 }

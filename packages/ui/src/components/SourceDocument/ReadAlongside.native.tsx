@@ -5,12 +5,13 @@
    against the sheet" is the whole task. */
 
 import { theme } from '@heliogrid/theme';
-import { cloneElement, isValidElement, useState } from 'react';
+import { useState } from 'react';
 import type { DimensionValue, LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
-import type { ReadAlongsideProps, SourceDocumentProps } from './SourceDocument.types';
+import { ALONGSIDE_DEFAULTS, documentAtHeight, sitsAlongside } from './SourceDocument.logic';
+import type { ReadAlongsideProps } from './SourceDocument.types';
 
 const styles = StyleSheet.create({
   root: { alignItems: 'flex-start', minWidth: 0 },
@@ -34,13 +35,13 @@ interface NativeReadAlongsideProps extends ReadAlongsideProps {
 export function ReadAlongside({
   document: doc,
   children,
-  breakpoint = 720,
-  documentWidth = '42%',
-  stackedHeight = 300,
-  expandedHeight = 560,
-  expandLabel = 'Expand document',
-  collapseLabel = 'Collapse document',
-  gap = 20,
+  breakpoint = ALONGSIDE_DEFAULTS.breakpoint,
+  documentWidth = ALONGSIDE_DEFAULTS.documentWidth,
+  stackedHeight = ALONGSIDE_DEFAULTS.stackedHeight,
+  expandedHeight = ALONGSIDE_DEFAULTS.expandedHeight,
+  expandLabel,
+  collapseLabel,
+  gap = ALONGSIDE_DEFAULTS.gap,
   label,
   style,
 }: NativeReadAlongsideProps) {
@@ -48,11 +49,8 @@ export function ReadAlongside({
   const [big, setBig] = useState(false);
   const onLayout = (e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width);
 
-  const side = width === null || width >= breakpoint;
-  const sized =
-    isValidElement<SourceDocumentProps>(doc) && !side
-      ? cloneElement(doc, { height: big ? expandedHeight : stackedHeight })
-      : doc;
+  const side = sitsAlongside(width, breakpoint);
+  const sized = documentAtHeight(doc, { side, expanded: big, stackedHeight, expandedHeight });
 
   /* `documentWidth` is the DS's `number | string`; RN narrows a percentage to DimensionValue. */
   const docWidth = documentWidth as DimensionValue;

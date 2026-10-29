@@ -9,18 +9,23 @@ import {
   fieldBoxPlaceholder,
   fieldBoxText,
 } from '../../primitives/FieldBox/FieldBox.native';
+import { closingPress } from '../../primitives/FocusAfter';
 import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { FiltersButton } from '../FilterBar/FilterBar.native';
+import { clearActOf, searchName } from './SearchField.logic';
 import type { SearchFieldProps } from './SearchField.types';
 
 type NativeSearchFieldProps = SearchFieldProps & {
   style?: StyleProp<ViewStyle>;
 };
 
-type SearchPillProps = Omit<SearchFieldProps, 'onFilterClick' | 'filterCount' | 'filterLabel'> & {
+type SearchPillProps = Omit<
+  SearchFieldProps,
+  'onFilterClick' | 'filterCount' | 'filterLabel' | 'filterActiveLabel'
+> & {
   style?: StyleProp<ViewStyle>;
 };
 
@@ -33,11 +38,16 @@ type SearchPillProps = Omit<SearchFieldProps, 'onFilterClick' | 'filterCount' | 
  */
 export function SearchField(props: NativeSearchFieldProps) {
   if (props.onFilterClick === undefined) return <SearchPill {...props} />;
-  const { onFilterClick, filterCount, filterLabel, style, ...pill } = props;
+  const { onFilterClick, filterCount, filterLabel, filterActiveLabel, style, ...pill } = props;
   return (
     <View style={[styles.row, style]}>
       <SearchPill {...pill} style={styles.rowPill} />
-      <FiltersButton onClick={onFilterClick} count={filterCount} label={filterLabel} />
+      <FiltersButton
+        onClick={onFilterClick}
+        count={filterCount}
+        label={filterLabel}
+        activeLabel={filterActiveLabel}
+      />
     </View>
   );
 }
@@ -45,9 +55,10 @@ export function SearchField(props: NativeSearchFieldProps) {
 function SearchPill({
   value,
   onChange,
-  placeholder = 'Search name, phone or city',
+  placeholder,
   density = 'expressive',
   onClear,
+  clearLabel,
   disabled = false,
   ariaLabel,
   ref,
@@ -55,8 +66,9 @@ function SearchPill({
 }: SearchPillProps) {
   const [focus, setFocus] = useState(false);
   const input = useRef<TextInput>(null);
+  /* The clear leaves with the value it cleared: the screen reader goes back to the field. */
+  const clearAct = clearActOf(value, onClear, clearLabel);
   useImperativeHandle(ref, () => ({ focus: () => focusScreenReaderOn(() => input.current) }), []);
-  const hasValue = value !== undefined && value !== '';
   return (
     <View
       style={[
@@ -86,18 +98,22 @@ function SearchPill({
         editable={!disabled}
         placeholder={placeholder}
         placeholderTextColor={fieldBoxPlaceholder(disabled)}
-        accessibilityLabel={ariaLabel ?? placeholder}
+        accessibilityLabel={searchName(ariaLabel, placeholder)}
         onChangeText={(next) => onChange?.(next)}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
         returnKeyType="search"
         autoCorrect={false}
       />
-      {hasValue && onClear !== undefined ? (
+      {clearAct !== null ? (
         /* The well is the ground of what sits in it, as RichText's frame is: a control there takes
            the opposite of the well. */
         <GroundProvider ground="tile">
-          <Pressable accessibilityLabel="Clear search" onPress={onClear} style={styles.clear}>
+          <Pressable
+            accessibilityLabel={clearAct.label}
+            onPress={closingPress(input)(clearAct.clear)}
+            style={styles.clear}
+          >
             <ClearPill />
           </Pressable>
         </GroundProvider>

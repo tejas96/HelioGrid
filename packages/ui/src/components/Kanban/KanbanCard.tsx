@@ -1,19 +1,20 @@
 import type { ReactNode } from 'react';
-import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { Avatar } from '../Avatar';
 import { Card } from '../Card';
 import { renderPending } from '../PendingAction';
 import { renderProvenance } from '../Provenance';
 import type { KanbanDragHandlers, KanbanDragState } from './Kanban.drag';
-import { kanbanProvenance, moveTargets } from './Kanban.logic';
-import type { KanbanCardItem, KanbanColumn, KanbanProps } from './Kanban.types';
+import type { MoveStep } from './Kanban.logic';
+import { cardPendingOf, kanbanProvenance, moveStepsOf } from './Kanban.logic';
+import type { KanbanCardItem, KanbanColumn, KanbanProps, KanbanWords } from './Kanban.types';
 
 interface MoveControlsProps {
   columns: KanbanColumn[];
   column: KanbanColumn;
   item: KanbanCardItem;
   onMove: NonNullable<KanbanProps['onMove']>;
+  words: KanbanWords;
 }
 
 /**
@@ -22,14 +23,14 @@ interface MoveControlsProps {
  * an Android tablet and a keyboard user get the same capability as a dragger. On the phone form
  * they are the ONLY route, because the destination column is not on screen at all. 44×44.
  */
-function MoveControls({ columns, column, item, onMove }: MoveControlsProps) {
-  const { prev, next } = moveTargets(columns, column);
-  const button = (target: KanbanColumn | undefined, label: string, glyph: ShellGlyphName) => (
+function MoveControls({ columns, column, item, onMove, words }: MoveControlsProps) {
+  const { back, on } = moveStepsOf(columns, column, words);
+  const button = ({ target, label, glyph }: MoveStep) => (
     <button
       type="button"
       className="hg-kanban-move-button"
       disabled={!target}
-      aria-label={target ? `${label} — move to ${target.label}` : label}
+      aria-label={label}
       onClick={(e) => {
         e.stopPropagation();
         if (target) onMove(item.id, target.key, column.key);
@@ -52,8 +53,8 @@ function MoveControls({ columns, column, item, onMove }: MoveControlsProps) {
   );
   return (
     <div className="hg-kanban-move">
-      {button(prev, 'Move back a stage', 'chevron-left')}
-      {button(next, 'Move on a stage', 'chevron-right')}
+      {button(back)}
+      {button(on)}
     </div>
   );
 }
@@ -98,6 +99,7 @@ export interface KanbanCardProps {
   onMove?: KanbanProps['onMove'];
   renderCard?: KanbanProps['renderCard'];
   cardPending?: KanbanProps['cardPending'];
+  words: KanbanWords;
 }
 
 /**
@@ -115,9 +117,9 @@ export function KanbanCard({
   onMove,
   renderCard,
   cardPending,
+  words,
 }: KanbanCardProps) {
-  const pending = cardPending ? cardPending(item, column) : null;
-  const busy = pending !== null && pending.state !== 'returned';
+  const { pending, busy } = cardPendingOf(item, column, cardPending);
   const card: ReactNode = renderCard ? (
     renderCard(item, column)
   ) : (
@@ -140,7 +142,7 @@ export function KanbanCard({
       {card}
       {pending ? <div className="hg-kanban-card-pending">{renderPending(pending)}</div> : null}
       {onMove ? (
-        <MoveControls columns={columns} column={column} item={item} onMove={onMove} />
+        <MoveControls columns={columns} column={column} item={item} onMove={onMove} words={words} />
       ) : null}
     </div>
   );

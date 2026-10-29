@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { useFormat } from '../MarketProvider';
@@ -9,7 +10,7 @@ interface WebTitleBlockProps extends TitleBlockProps {
   style?: CSSProperties;
 }
 
-function MetaField({ label, value }: { label: string; value: string }) {
+function MetaField({ label, value }: { label: TranslatedText; value: string }) {
   return (
     <div>
       <p className="hg-title-block-overline">{label}</p>
@@ -35,8 +36,9 @@ export function TitleBlock({
   version,
   validUntil,
   preparedBy,
-  docTitle = 'Solar proposal',
+  docTitle,
   audience = 'customer',
+  words,
   className,
   style,
 }: WebTitleBlockProps) {
@@ -46,7 +48,7 @@ export function TitleBlock({
     <header data-keep-together="" className={classNames('hg-title-block', className)} style={style}>
       <div className="hg-title-block-top">
         <div className="hg-title-block-identity">
-          <p className="hg-title-block-overline">{docTitle}</p>
+          <p className="hg-title-block-overline">{docTitle ?? words.docTitle}</p>
           {/* The customer-facing name, at document heading size. A missing one is a named gap —
               the product does not invent a project name, and it must not fall back to the
               design's. */}
@@ -54,7 +56,7 @@ export function TitleBlock({
             <h1 className="hg-title-block-name">{projectName}</h1>
           ) : (
             <div className="hg-title-block-gap">
-              <NamedGap gap="No project name yet" scale="headline" />
+              <NamedGap gap={words.noProjectName} scale="headline" />
             </div>
           )}
           {customer && (
@@ -65,7 +67,7 @@ export function TitleBlock({
           )}
           {/* Only ever on the internal variant. MS9-04 keeps this off a customer artefact. */}
           {audience === 'internal' && internalName && (
-            <p className="hg-title-block-internal">Internal design name · {internalName}</p>
+            <p className="hg-title-block-internal">{words.internalName(internalName)}</p>
           )}
         </div>
         <div className="hg-title-block-prepared">
@@ -77,17 +79,17 @@ export function TitleBlock({
           ))}
           {pb.person && (
             <p className="hg-title-block-person">
-              Prepared by {pb.person}
+              {words.preparedBy(pb.person)}
               {pb.role ? ` · ${pb.role}` : ''}
             </p>
           )}
         </div>
       </div>
       <div className="hg-title-block-fields">
-        <MetaField label="Proposal no." value={proposalNumber || '—'} />
-        <MetaField label="Issued" value={issueDate ? mkt.date(issueDate) : '—'} />
-        <MetaField label="Revision" value={version || '—'} />
-        <MetaField label="Valid until" value={validUntil ? mkt.date(validUntil) : '—'} />
+        <MetaField label={words.proposalNumber} value={proposalNumber || '—'} />
+        <MetaField label={words.issued} value={issueDate ? mkt.date(issueDate) : '—'} />
+        <MetaField label={words.revision} value={version || '—'} />
+        <MetaField label={words.validUntil} value={validUntil ? mkt.date(validUntil) : '—'} />
       </div>
     </header>
   );

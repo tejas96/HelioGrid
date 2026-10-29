@@ -1,10 +1,11 @@
 import { useFormat } from '../MarketProvider/market-context';
 import { renderProvenance } from '../Provenance';
 import { alignOf } from './DataTable.logic';
-import type { DataTableProps, DataTableTotalRow } from './DataTable.types';
+import type { DataTableProps, DataTableTotalRow, DataTableWords } from './DataTable.types';
+import { isMonoColumn } from './DataTableCell.logic';
 import type { DataTableColumn } from './DataTableColumn.types';
 import type { TotalModel } from './DataTableTotal.logic';
-import { buildTotal } from './DataTableTotal.logic';
+import { buildTotal, totalFiguresOf } from './DataTableTotal.logic';
 
 interface TotalProps<Row> {
   totalRow: DataTableTotalRow;
@@ -13,6 +14,7 @@ interface TotalProps<Row> {
   page: DataTableProps<Row>['page'];
   pageSize: number;
   renderedRows: number;
+  words: DataTableWords;
 }
 
 function TotalNotes({
@@ -78,7 +80,7 @@ function TotalCell<Row>({
       data-first={first ? 'true' : undefined}
       data-last={index === columnCount - 1 && !hasActions ? 'true' : undefined}
       data-align={first ? 'left' : alignOf(column)}
-      data-mono={!first && (column.mono === true || column.numeric === true) ? 'true' : undefined}
+      data-mono={!first && isMonoColumn(column) ? 'true' : undefined}
       data-numeric={column.numeric === true ? 'true' : undefined}
     >
       {first ? (
@@ -105,10 +107,11 @@ export function TotalFoot<Row>({
   page,
   pageSize,
   renderedRows,
+  words,
 }: TotalProps<Row> & { selectable: boolean; hasActions: boolean }) {
   /* The market pack's money, read here and threaded into the model — every figure this row states
      is the same figure, formatted the same way, as the lines above it (`F1` / `F3-20`). */
-  const model = buildTotal(totalRow, rowCount, page, pageSize, renderedRows, useFormat());
+  const model = buildTotal(totalRow, rowCount, page, pageSize, renderedRows, useFormat(), words);
   const span = (selectable ? 1 : 0) + columns.length + (hasActions ? 1 : 0);
   const showNotes =
     model.defectNote !== null ||
@@ -160,12 +163,10 @@ export function TotalBlock<Row>({
   page,
   pageSize,
   renderedRows,
+  words,
 }: TotalProps<Row>) {
-  const model = buildTotal(totalRow, rowCount, page, pageSize, renderedRows, useFormat());
-  /* The card's figures are the same columns the row states, with the column's own label — nothing
-     here invents a second vocabulary for the same total. */
-  const stated = columns.filter((column) => totalRow.values?.[column.key] !== undefined);
-  const main = stated[stated.length - 1];
+  const model = buildTotal(totalRow, rowCount, page, pageSize, renderedRows, useFormat(), words);
+  const { main, others } = totalFiguresOf(totalRow, columns);
 
   return (
     <div className="hg-dt-total-block">
@@ -178,9 +179,9 @@ export function TotalBlock<Row>({
         )}
       </div>
       {model.scope === null ? null : <span className="hg-dt-total-block-scope">{model.scope}</span>}
-      {stated.length > 1 ? (
+      {others.length > 0 ? (
         <dl className="hg-dt-total-block-list">
-          {stated.slice(0, -1).map((column) => (
+          {others.map((column) => (
             <div className="hg-dt-total-block-pair" key={column.key}>
               <dt>{column.label}</dt>
               <dd>{model.valueFor(column as DataTableColumn<unknown>)}</dd>

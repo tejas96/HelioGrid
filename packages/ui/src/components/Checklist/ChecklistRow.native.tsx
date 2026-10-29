@@ -10,7 +10,8 @@ import { Text } from '../../primitives/Text/Text.native';
 import { renderActorClass } from '../ActorClass/ActorClass.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { renderPending } from '../PendingAction/PendingAction.native';
-import type { ChecklistItem, ChecklistProps } from './Checklist.types';
+import { materialsLineOf, stepStateOf } from './Checklist.logic';
+import type { ChecklistItem, ChecklistRowProps, ChecklistWords } from './Checklist.types';
 
 /* Off-scale design-system measurements: the box, its radius, and the row's own rhythm. */
 const BOX = 22;
@@ -97,11 +98,20 @@ function TickBox({
   );
 }
 
-function Body({ item, number }: { item: ChecklistItem; number: string | number }) {
+function Body({
+  item,
+  number,
+  words,
+}: {
+  item: ChecklistItem;
+  number: string | number;
+  words: ChecklistWords;
+}) {
   /* Attribution is ActorClass's job — the same four classes the stream and the task list use.
      Only a DONE item has anyone to name. */
   const attribution =
     item.done === true ? renderActorClass(item.doneBy, { form: 'stream', size: 12 }) : null;
+  const materials = materialsLineOf(item);
   return (
     <View style={styles.body}>
       <View style={styles.titleRow}>
@@ -117,21 +127,21 @@ function Body({ item, number }: { item: ChecklistItem; number: string | number }
           {item.detail}
         </Text>
       )}
-      {item.materials !== undefined && item.materials.length > 0 ? (
+      {materials === null ? null : (
         <Text variant="caption" color="tertiary">
           <Text variant="caption" color="tertiary" style={{ fontWeight: '600' }}>
-            Materials{' '}
+            {words.materials}{' '}
           </Text>
-          {item.materials.join(' · ')}
+          {materials}
         </Text>
-      ) : null}
+      )}
       {/* MS10-10's proof. `href` cannot be followed from inside the design system — opening a URL
           is the host's act, not a component's — so the touch form fires `onOpen` and the caller
           decides where it goes. */}
       {item.evidence === undefined ? null : (
         <Pressable onPress={item.evidence.onOpen} style={styles.evidence}>
           <Text variant="body-sm" color="accent" style={{ fontWeight: '500' }}>
-            {item.evidence.label ?? 'See the evidence'}
+            {item.evidence.label ?? words.evidence}
           </Text>
           <Icon size="sm" color={theme.colors.accent}>
             <Svg
@@ -152,7 +162,7 @@ function Body({ item, number }: { item: ChecklistItem; number: string | number }
           {attribution}
           {attribution !== null && item.doneAt !== undefined ? (
             <Text variant="caption" color="tertiary">
-              ·
+              {'·'}
             </Text>
           ) : null}
           {item.doneAt}
@@ -168,26 +178,15 @@ function Body({ item, number }: { item: ChecklistItem; number: string | number }
  * One step. **A tick is a server write, not a checkbox flip** — the box holds its previous state,
  * `item.pending` names the act, the row stays operable, and only confirmed data flips it (`F8-36`).
  */
-export function ChecklistRow({
-  item,
-  number,
-  onToggle,
-  surface,
-}: {
-  item: ChecklistItem;
-  number: string | number;
-  onToggle: ChecklistProps['onToggle'];
-  surface: NonNullable<ChecklistProps['surface']>;
-}) {
-  const done = item.done === true;
-  const waiting = Boolean(item.pending);
+export function ChecklistRow({ item, number, onToggle, surface, words }: ChecklistRowProps) {
+  const { done, waiting, tickLabel } = stepStateOf(item, words);
 
   if (surface === 'document') {
     return (
       /* Paper, not a tile: a printed checklist's rows lie on the sheet (`Ground.css`). */
       <View role="listitem" style={styles.rowDocument}>
         <TickBox done={done} printable />
-        <Body item={item} number={number} />
+        <Body item={item} number={number} words={words} />
       </View>
     );
   }
@@ -201,14 +200,14 @@ export function ChecklistRow({
         <Pressable
           accessibilityRole="checkbox"
           accessibilityState={{ checked: done, busy: waiting }}
-          accessibilityLabel={`${typeof item.title === 'string' ? item.title : ''}${done ? ', done' : ', not done'}`}
+          accessibilityLabel={tickLabel}
           onPress={() => onToggle?.(item, !done)}
           style={styles.toggle}
         >
           <TickBox done={done} waiting={waiting} />
         </Pressable>
         <View style={styles.rowBody}>
-          <Body item={item} number={number} />
+          <Body item={item} number={number} words={words} />
         </View>
       </GroundProvider>
     </View>

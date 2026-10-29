@@ -1,18 +1,19 @@
-import { useShell, useUnreadCount } from '@heliogrid/data/react';
-import { offersDoor } from '@heliogrid/domain';
+import type { ShellScreen } from '@heliogrid/data/react';
 import { accountMenuWords, NOTIFICATION_CENTRE, SHELL } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { AccountMenu, MobileTopBar } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
 import { NotificationSheet } from '../../notifications';
 import { DESTINATION_ROUTE } from '../doors';
 
 interface ShellTopBarProps {
-  /** The company's name, or none while it loads or after it failed — the bar then shows none. */
-  companyName: string | null;
-  /** The person and the avatar's acts. Absent on Frame 8, whose bar names the company and nothing else. */
-  account?: { personName: string; onGrievance: () => void; onSignOut: () => void };
+  /**
+   * The page's `useShellScreen()`: the company's name (none while it loads or after it failed — the
+   * bar then shows none), the bell, its centre and the avatar's acts.
+   */
+  screen: ShellScreen;
+  /** Frame 8's bar names the company and nothing else. */
+  nameOnly?: boolean;
 }
 
 /**
@@ -21,43 +22,40 @@ interface ShellTopBarProps {
  * which opens the notification centre over the screen in view, and the avatar. Frame 8 keeps the
  * tile and the name only (`SCR-SHELL-01`): every read is refused there.
  */
-export function ShellTopBar({ companyName, account }: ShellTopBarProps) {
+export function ShellTopBar({ screen, nameOnly = false }: ShellTopBarProps) {
   const t = useTranslate();
   const navigation = useNavigation();
-  const shell = useShell();
-  const unread = useUnreadCount();
-  const [centreOpen, setCentreOpen] = useState(false);
-  const offersLeads = offersDoor(shell, 'leads');
+  const { centre, unread } = screen;
   const goToLeads = () => {
-    setCentreOpen(false);
+    centre.close();
     navigation.navigate(DESTINATION_ROUTE.leads);
   };
   return (
     <>
       <MobileTopBar
-        company={companyName ?? undefined}
+        company={screen.shell.companyName ?? undefined}
         searchLabel={t(SHELL.search)}
         notificationsLabel={t(SHELL.notifications)}
         notificationsName={t(NOTIFICATION_CENTRE.bellName, { count: unread ?? 0 })}
-        notifications={account === undefined ? undefined : (unread ?? undefined)}
-        onSearchClick={account === undefined ? undefined : () => navigation.navigate('Search')}
-        onNotificationsClick={account === undefined ? undefined : () => setCentreOpen(true)}
+        notifications={nameOnly ? undefined : (unread ?? undefined)}
+        onSearchClick={nameOnly ? undefined : () => navigation.navigate('Search')}
+        onNotificationsClick={nameOnly ? undefined : centre.open}
         avatar={
-          account === undefined ? undefined : (
+          nameOnly ? undefined : (
             <AccountMenu
-              {...accountMenuWords(t, account.personName)}
-              name={account.personName}
+              {...accountMenuWords(t, screen.personName)}
+              name={screen.personName}
               align="end"
-              onGrievance={account.onGrievance}
-              onSignOut={account.onSignOut}
+              onGrievance={screen.grievance.open}
+              onSignOut={screen.signOut}
             />
           )
         }
       />
-      {centreOpen ? (
+      {centre.isOpen ? (
         <NotificationSheet
-          onClose={() => setCentreOpen(false)}
-          onGoToLeads={offersLeads ? goToLeads : undefined}
+          onClose={centre.close}
+          onGoToLeads={screen.offersLeads ? goToLeads : undefined}
         />
       ) : null}
     </>

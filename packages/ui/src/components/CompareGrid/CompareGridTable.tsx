@@ -1,5 +1,5 @@
 import { renderProvenance } from '../Provenance';
-import { bestPerAttribute } from './CompareGrid.logic';
+import { bestPerAttribute, isZebraRow } from './CompareGrid.logic';
 import type { CompareGridProps, CompareOption, CompareProvenanceSpec } from './CompareGrid.types';
 import { CompareOptionHead } from './CompareOptionHead';
 import { CompareValueCell } from './CompareValueCell';
@@ -18,7 +18,7 @@ function AttributeProvenance({ spec }: { spec?: CompareProvenanceSpec }) {
 type TableProps<Opt extends CompareOption> = Required<
   Pick<
     CompareGridProps<Opt>,
-    'attributes' | 'options' | 'selectLabel' | 'selectedLabel' | 'currentLabel'
+    'attributes' | 'options' | 'selectLabel' | 'selectedLabel' | 'currentLabel' | 'words'
   >
 > &
   Pick<CompareGridProps<Opt>, 'selectedKey' | 'onSelect'> & { captionId?: string };
@@ -40,6 +40,7 @@ export function CompareGridTable<Opt extends CompareOption>({
   selectedLabel,
   currentLabel,
   captionId,
+  words,
 }: TableProps<Opt>) {
   const best = bestPerAttribute(attributes, options);
   const isSelected = (option: Opt) => selectedKey !== undefined && option.key === selectedKey;
@@ -49,7 +50,7 @@ export function CompareGridTable<Opt extends CompareOption>({
       <thead>
         <tr>
           <th scope="col" className="hg-compare-pin hg-compare-pin--head">
-            <span className="hg-spoken-only">Attribute</span>
+            <span className="hg-spoken-only">{words.attribute}</span>
           </th>
           {options.map((option) => (
             <CompareOptionHead
@@ -64,7 +65,7 @@ export function CompareGridTable<Opt extends CompareOption>({
       </thead>
       <tbody>
         {attributes.map((attribute, index) => (
-          <tr key={attribute.key} data-zebra={index % 2 === 1 ? 'true' : undefined}>
+          <tr key={attribute.key} data-zebra={isZebraRow(index) ? 'true' : undefined}>
             {/* THE FIXED THING. Pinned at the left edge, so the reader holds "payback" still and
                 slides the variants past it. */}
             <th scope="row" className="hg-compare-pin">
@@ -81,6 +82,7 @@ export function CompareGridTable<Opt extends CompareOption>({
                 option={option}
                 selected={isSelected(option)}
                 best={best[attribute.key] === option.key}
+                words={words}
               />
             ))}
           </tr>
@@ -90,7 +92,7 @@ export function CompareGridTable<Opt extends CompareOption>({
         <tfoot>
           <tr>
             <th scope="row" className="hg-compare-pin hg-compare-pin--foot">
-              <span className="hg-spoken-only">Choose an option</span>
+              <span className="hg-spoken-only">{words.chooseOption}</span>
             </th>
             {options.map((option) => (
               <td

@@ -6,7 +6,7 @@ import {
   type UiLanguage,
 } from '@heliogrid/domain';
 import { createTranslator, firstRunProfileWords } from '@heliogrid/i18n';
-import { FirstRunProfile, PhotoField } from '@heliogrid/ui';
+import { FirstRunProfile } from '@heliogrid/ui';
 import { useReducer, useState } from 'react';
 
 const READERS = {
@@ -74,36 +74,6 @@ export function FirstRunProfileAt({
         onSave={act('save', { type: 'save' })}
       />
       <output data-testid="pressed">{pressed}</output>
-    </div>
-  );
-}
-
-/** `PhotoField` alone, for its own spec: each act glyph, the refusal, the drop. */
-export function PhotoFieldAt({
-  size,
-  actIcon,
-  error,
-}: {
-  size: 72 | 120;
-  actIcon: 'camera' | 'upload' | 'retry';
-  error?: string;
-}) {
-  const [dropped, setDropped] = useState('');
-  return (
-    <div>
-      <PhotoField
-        label="Profile photo, optional"
-        name="Anjali Kulkarni"
-        size={size}
-        actIcon={actIcon}
-        chooseLabel="Add a photo"
-        onChoose={() => undefined}
-        onDrop={size === 120 ? (file) => setDropped(file.name) : undefined}
-        error={error}
-        errorTitle={error === undefined ? undefined : 'That photo did not upload'}
-        helper="Optional — without one, your initials show."
-      />
-      <output data-testid="dropped">{dropped}</output>
     </div>
   );
 }

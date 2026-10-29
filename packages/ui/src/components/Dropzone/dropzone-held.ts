@@ -12,20 +12,14 @@
    or reject to say it failed, `retryTimeout` stops a flush that never answers, and any other
    outcome says nothing — a success is never claimed unobserved. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { DropzoneProps } from './Dropzone.types';
+import { takesImages } from './Dropzone.logic';
+import type { DropzoneProps, DropzoneWords } from './Dropzone.types';
 
-/** The generated sentence, when the caller has not written a better one for their own noun. */
-const HELD_SENTENCE =
-  "Saved on this phone. They upload once there's a connection — nothing captured is lost.";
-
-export const HELD_DEFAULTS = {
-  failedMessage: 'Still nothing to upload over — they stay on this phone.',
-  retryLabel: 'Try uploading now',
-  retryTimeout: 10000,
-  timeoutMessage: "That's taking too long to answer — they stay on this phone.",
-} as const;
+/** Milliseconds before a flush that never answers is called one. */
+export const HELD_RETRY_TIMEOUT = 10000;
 
 /** What a flush reported. `null` covers both "not tried" and "said nothing we can claim". */
 export type HeldFlushFailure = 'failed' | 'timeout' | null;
@@ -35,10 +29,10 @@ export type HeldRetry = NonNullable<DropzoneProps['onRetry']>;
 
 export interface HeldNouns {
   accept: string;
-  /** What is waiting, singular — "photo", "document", "file". */
-  heldNoun?: string;
-  /** Its plural, when adding "s" is wrong. */
-  heldNounPlural?: string;
+  /** What is waiting, singular, in the caller's words — "document". */
+  heldNoun?: TranslatedText;
+  /** Its plural; without it the singular names any count. */
+  heldNounPlural?: TranslatedText;
 }
 
 /**
@@ -54,27 +48,36 @@ export function heldTotal(heldCount: number | undefined, fileCount: number): num
  * The count line, in the CALLER'S noun. Photos are the common case, not the only one: SCR-M08-03's
  * checklist rows hold PDFs, and "3 photos saved on this phone" was wrong on every one of them.
  */
-export function heldCountWords(held: number, nouns: HeldNouns): string | null {
+export function heldCountWords(
+  held: number,
+  nouns: HeldNouns,
+  words: DropzoneWords,
+): TranslatedText | null {
   if (held <= 0) {
     return null;
   }
-  const one = nouns.heldNoun ?? (nouns.accept.startsWith('image') ? 'photo' : 'file');
-  const many = nouns.heldNounPlural ?? (one === 'photo' ? 'photos' : `${one}s`);
-  return `${held} ${held === 1 ? one : many} waiting`;
+  if (nouns.heldNoun === undefined) {
+    return words.heldCount({
+      count: held,
+      kind: takesImages(nouns.accept) ? 'photo' : 'file',
+    });
+  }
+  const noun = held === 1 ? nouns.heldNoun : (nouns.heldNounPlural ?? nouns.heldNoun);
+  return words.heldCountOf(held, noun);
 }
 
 /** `heldMessage` overrides the SENTENCE. The count above it is untouched — that is the point. */
-export function heldSentence(heldMessage?: ReactNode): ReactNode {
+export function heldSentence(heldMessage: ReactNode, held: TranslatedText): ReactNode {
   return heldMessage === undefined || heldMessage === null || heldMessage === false
-    ? HELD_SENTENCE
+    ? held
     : heldMessage;
 }
 
 /** The words for what the last flush reported. */
 export function heldFailureWords(
   failure: HeldFlushFailure,
-  words: { failedMessage: string; timeoutMessage: string },
-): string | null {
+  words: { failedMessage: TranslatedText; timeoutMessage: TranslatedText },
+): TranslatedText | null {
   if (failure === null) {
     return null;
   }

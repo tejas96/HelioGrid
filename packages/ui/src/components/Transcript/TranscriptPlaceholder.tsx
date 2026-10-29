@@ -3,21 +3,9 @@
    below it changes. */
 
 import { RetryButton } from '../Button/RetryButton';
-import type { SurfaceState } from '../UnavailableNote';
 import { UnavailableNote } from '../UnavailableNote';
-
-interface TranscriptPlaceholderProps {
-  state: SurfaceState;
-  turnCount: number;
-  density: 'expressive' | 'functional';
-  emptyTitle: string;
-  emptyDescription: string;
-  errorMessage: string;
-  onRetry?: () => void;
-  retryLabel?: string;
-  unavailableTitle: string;
-  unavailableMessage: string;
-}
+import { placeholderOf, TRANSCRIPT_SKELETON_BARS } from './Transcript.logic';
+import type { TranscriptPlaceholderProps } from './Transcript.types';
 
 export function TranscriptPlaceholder({
   state,
@@ -30,20 +18,24 @@ export function TranscriptPlaceholder({
   retryLabel,
   unavailableTitle,
   unavailableMessage,
+  loadingLabel,
+  focusAfter,
 }: TranscriptPlaceholderProps) {
-  if (state === 'loading') {
+  const kind = placeholderOf(state, turnCount);
+
+  if (kind === 'loading') {
     return (
       <div
         role="status"
-        aria-label="Loading the transcript"
+        aria-label={loadingLabel}
         className="hg-transcript-skeleton"
         data-density={density}
       >
-        {['a', 'b', 'c', 'd'].map((row, i) => (
+        {TRANSCRIPT_SKELETON_BARS.map((bar) => (
           <span
-            key={row}
+            key={bar.key}
             className="hg-transcript-skeleton-bar"
-            data-tall={i % 2 ? undefined : 'true'}
+            data-tall={bar.tall ? 'true' : undefined}
             data-density={density}
           />
         ))}
@@ -51,24 +43,26 @@ export function TranscriptPlaceholder({
     );
   }
 
-  if (state === 'error') {
+  if (kind === 'error') {
     return (
       <div className="hg-transcript-error" data-density={density}>
         <p className="hg-transcript-error-body">{errorMessage}</p>
-        <RetryButton onRetry={onRetry} label={retryLabel} />
+        <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
       </div>
     );
   }
 
-  if (state === 'unavailable') {
+  if (kind === 'unavailable') {
     return <UnavailableNote title={unavailableTitle} message={unavailableMessage} />;
   }
 
-  if (turnCount === 0) {
+  if (kind === 'empty') {
     return (
       <div className="hg-transcript-empty" data-density={density}>
         <p className="hg-transcript-empty-title">{emptyTitle}</p>
-        <p className="hg-transcript-empty-body">{emptyDescription}</p>
+        {emptyDescription === undefined ? null : (
+          <p className="hg-transcript-empty-body">{emptyDescription}</p>
+        )}
       </div>
     );
   }

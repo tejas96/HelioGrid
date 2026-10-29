@@ -1,15 +1,41 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { ComplianceFloorSpec } from '../ComplianceFloor';
 
 export type ReorderListControls = 'stack' | 'row' | 'foot';
 export type ReorderListDensity = 'expressive' | 'functional';
 
+/**
+ * Every sentence the list says, in the reader's language — `@heliogrid/i18n`'s `reorderListWords`.
+ * The row's name is in each, because "moved down" alone is useless to someone who cannot see which
+ * row moved. Positions are 1-based.
+ */
+export interface ReorderListWords {
+  /** "Structure mounting moved to position 2 of 5." */
+  moved: (name: string, position: number, total: number) => TranslatedText;
+  /** "Structure mounting is already first." — said when the first row's ⌃ is pressed. */
+  alreadyFirst: (name: string) => TranslatedText;
+  alreadyLast: (name: string) => TranslatedText;
+  /** "Structure mounting deleted. 4 phases remain." — `noun` is the list's `itemNoun`. */
+  deleted: (name: string, remaining: number, noun: TranslatedText | undefined) => TranslatedText;
+  /** ⌃'s name — "Move Structure mounting up to position 1". */
+  moveUp: (name: string, position: number) => TranslatedText;
+  moveDown: (name: string, position: number) => TranslatedText;
+  /** The end arrows stay focusable and say why they cannot act — "Structure mounting is first". */
+  isFirst: (name: string) => TranslatedText;
+  isLast: (name: string) => TranslatedText;
+  /** The row's position with its denominator — "1 of 5". */
+  position: (position: number, total: number) => TranslatedText;
+  /** The delete's name — "Delete Structure mounting, position 1 of 5". */
+  deleteRow: (name: string, position: number, total: number) => TranslatedText;
+}
+
 export interface ReorderListProps<T = unknown> {
   items: T[];
   /** Stable identity. The move affordance is keyed by it — that is what lets focus travel with a row. */
   keyOf?: (item: T, index: number) => string | number;
-  /** The row's name. Said in every announcement and every button label. */
-  labelOf?: (item: T, index: number) => string;
+  /** The row's name — the caller's word or a fact it holds. Said in every announcement and label. */
+  labelOf: (item: T, index: number) => string;
   /** The row body — the record's own content, never a field: a row is a tile (`F7-49`), and a
    *  field is edited in a sheet. Anything focusable inside stays reachable. */
   renderItem?: (item: T, index: number) => ReactNode;
@@ -29,10 +55,12 @@ export interface ReorderListProps<T = unknown> {
   /** Below this many rows every delete button disappears — "at least one phase" is a real rule. */
   minItems?: number;
   /** The list's accessible name. */
-  label?: string;
-  /** Plural noun for announcements — "phases", "tranches", "brands". */
-  itemNoun?: string;
-  emptyMessage?: string;
+  label: TranslatedText;
+  /** Plural noun for the delete announcement — "phases", "tranches", "brands". */
+  itemNoun?: TranslatedText;
+  /** What an empty list says. Drawn only when given; the empty line still takes focus after a delete. */
+  emptyMessage?: TranslatedText;
+  words: ReorderListWords;
   /**
    * Where the ⌃ ⌄ 🗑 targets sit. Defaults: `stack` (expressive/phone), `row` (functional). `foot` sets
    * them in one line under the row's body, at its end, so the body takes the row's full width — for a

@@ -66,14 +66,20 @@ export function usePublishPriceBookVersion(
   });
 }
 
-/** Browsing the versions: the list, and one opened read-only; closing forgets which. */
-export function usePriceBookBrowse(open: boolean, onClose: () => void) {
+/**
+ * Browsing the versions (`SCR-M01-15` d-versions, s-versions): whether the browser is open, the
+ * list, and one opened read-only; closing forgets which.
+ */
+export function usePriceBookBrowse() {
+  const [open, setOpen] = useState(false);
   const list = usePriceBookVersions(open);
   const [picked, setPicked] = useState<string | null>(null);
   const one = usePriceBookVersion(open ? picked : null);
   /* Stable, so a screen may hold the platform's Back with it. */
   const back = useCallback(() => setPicked(null), []);
   return {
+    open,
+    show: () => setOpen(true),
     list,
     picked,
     one,
@@ -81,7 +87,9 @@ export function usePriceBookBrowse(open: boolean, onClose: () => void) {
     back,
     close() {
       setPicked(null);
-      onClose();
+      setOpen(false);
     },
   };
 }
+
+export type PriceBookBrowse = ReturnType<typeof usePriceBookBrowse>;

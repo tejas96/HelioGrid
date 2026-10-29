@@ -112,6 +112,7 @@ export function SetupWhatYouSell({
           </Text>
           <NumberField
             label={words.sizeLabel}
+            words={words.numberField}
             unit={words.unit}
             value={typicalSystemKwp ?? undefined}
             precision={TYPICAL_SYSTEM_KWP.precision}

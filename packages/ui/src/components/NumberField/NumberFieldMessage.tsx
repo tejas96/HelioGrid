@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 interface NumberFieldMessageProps {
@@ -5,8 +6,8 @@ interface NumberFieldMessageProps {
   errId: string;
   refused: ReactNode;
   error: ReactNode;
-  correction: string | null;
-  hint?: string;
+  correction: TranslatedText | null;
+  hint?: TranslatedText;
 }
 
 /**

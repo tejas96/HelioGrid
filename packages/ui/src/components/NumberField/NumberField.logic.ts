@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { MarketFormat } from '../../utils/format';
 /**
  * NumberField's commit rules, once, for both platforms — MS12-26 / MS3-26.
@@ -14,7 +15,7 @@ import type { MarketFormat } from '../../utils/format';
  * both modes, rather than in an invented locale.
  */
 
-import type { OutOfRangeMode } from './NumberField.types';
+import type { NumberFieldWords, OutOfRangeMode } from './NumberField.types';
 
 /** The edited representation. Editing is always a plain number — formatting never leaks in; an unset field edits as nothing. */
 /**
@@ -37,27 +38,21 @@ export function formatBound(value: number, currency: boolean, unit?: string): st
   return unit === undefined ? String(value) : `${value} ${unit}`;
 }
 
-/** "the amount has to be 1 or more" — the component owns the constraint clause and stops there. */
-export function boundWords(opts: {
-  currency: boolean;
-  unit?: string;
-  min?: number;
-  max?: number;
-}): string {
-  const { currency, unit, min, max } = opts;
-  const noun = currency ? 'the amount' : 'the value';
-  if (min !== undefined && max !== undefined) {
-    return `${noun} has to be between ${formatBound(min, currency, unit)} and ${formatBound(max, currency, unit)}`;
-  }
-  if (min !== undefined) return `${noun} has to be ${formatBound(min, currency, unit)} or more`;
-  if (max !== undefined) return `${noun} can't be more than ${formatBound(max, currency, unit)}`;
-  return `${noun} is out of range`;
+/** "12 can't be recorded — the amount has to be 1 or more": the component owns the constraint and stops there. */
+function refusalOf(n: number, input: NumberCommitInput): TranslatedText {
+  const { currency, unit, min, max } = input;
+  return input.words.refused({
+    figure: formatBound(n, currency, unit),
+    money: currency,
+    ...(min === undefined ? {} : { min: formatBound(min, currency, unit) }),
+    ...(max === undefined ? {} : { max: formatBound(max, currency, unit) }),
+  });
 }
 
 export type NumberCommit =
   | { kind: 'restore' }
-  | { kind: 'refuse'; constraint: string }
-  | { kind: 'accept'; value: number; correction: string | null };
+  | { kind: 'refuse'; constraint: TranslatedText }
+  | { kind: 'accept'; value: number; correction: TranslatedText | null };
 
 export interface NumberCommitInput {
   draft: string;
@@ -69,20 +64,23 @@ export interface NumberCommitInput {
   currency: boolean;
   unit?: string;
   outOfRange: OutOfRangeMode;
-  correctionMessage?: string;
+  correctionMessage?: TranslatedText;
+  words: Pick<NumberFieldWords, 'roundedUp' | 'capped' | 'refused'>;
 }
 
-function correctionFor(bound: number, kind: 'min' | 'max', input: NumberCommitInput): string {
+function correctionFor(
+  bound: number,
+  kind: 'min' | 'max',
+  input: NumberCommitInput,
+): TranslatedText {
   if (input.correctionMessage !== undefined) return input.correctionMessage;
-  const suffix = !input.currency && input.unit !== undefined ? ` ${input.unit}` : '';
-  return kind === 'min'
-    ? `Rounded up to the ${bound}${suffix} minimum.`
-    : `Capped at the ${bound}${suffix} maximum.`;
+  const shown = formatBound(bound, input.currency, input.unit);
+  return kind === 'min' ? input.words.roundedUp(shown) : input.words.capped(shown);
 }
 
 /** The whole of blur/Enter, as a decision the platform half only has to render. */
 export function commitDraft(input: NumberCommitInput): NumberCommit {
-  const { draft, min, max, precision, currency, unit, outOfRange } = input;
+  const { draft, min, max, precision, outOfRange } = input;
   const n = Number.parseFloat(draft);
   if (draft.trim() === '' || Number.isNaN(n)) return { kind: 'restore' };
 
@@ -92,14 +90,11 @@ export function commitDraft(input: NumberCommitInput): NumberCommit {
   /* REFUSE: the last good value returns, the constraint is stated in place, and nothing the
      person did not type is written. */
   if (outOfRange === 'refuse' && (below || above)) {
-    return {
-      kind: 'refuse',
-      constraint: `${formatBound(n, currency, unit)} can't be recorded — ${boundWords({ currency, unit, min, max })}. `,
-    };
+    return { kind: 'refuse', constraint: refusalOf(n, input) };
   }
 
   let v = n;
-  let correction: string | null = null;
+  let correction: TranslatedText | null = null;
   if (below && min !== undefined) {
     v = min;
     correction = correctionFor(min, 'min', input);

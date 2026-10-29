@@ -1,19 +1,21 @@
 import type { CSSProperties } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { landFocusOn } from '../../primitives/FocusAfter';
 import { Pressable } from '../../primitives/Pressable';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { Button } from '../Button/Button';
 import { Toast } from '../Toast/Toast';
+import { shownToasts } from './ToastHost.logic';
 import type { ToastHostProps, ToastItem } from './ToastHost.types';
 
 /** A caller's offset rides in as a custom property so the placement rules stay in ToastHost.css. */
 type HostVars = CSSProperties & Record<`--${string}`, string>;
 
-interface WebToastHostProps extends ToastHostProps {
+type WebToastHostProps = ToastHostProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 function DismissGlyph() {
   return (
@@ -41,6 +43,8 @@ function DismissGlyph() {
 export function ToastHost({
   toasts = [],
   onDismiss,
+  dismissLabel,
+  focusAfter,
   position = 'bottom-center',
   max = 3,
   duration = 4000,
@@ -48,7 +52,7 @@ export function ToastHost({
   className,
   style,
 }: WebToastHostProps) {
-  const shown = useMemo(() => toasts.slice(-max), [toasts, max]);
+  const shown = useMemo(() => shownToasts(toasts, max), [toasts, max]);
   /* The pointer and the keyboard pause the queue apart: one leaving never restarts the clock while
      the other still holds a toast. */
   const [hovered, setHovered] = useState(false);
@@ -116,6 +120,7 @@ export function ToastHost({
                   onClick={() => {
                     leave(toast.id);
                     toast.undo?.onUndo();
+                    if (toast.undo !== undefined) landFocusOn(toast.undo.focusAfter);
                   }}
                 >
                   {toast.undo.label}
@@ -125,8 +130,11 @@ export function ToastHost({
               (onDismiss === undefined ? undefined : (
                 <Pressable
                   className="hg-toast-host-dismiss"
-                  accessibilityLabel="Dismiss"
-                  onPress={() => leave(toast.id)}
+                  accessibilityLabel={dismissLabel}
+                  onPress={() => {
+                    leave(toast.id);
+                    if (focusAfter !== undefined) landFocusOn(focusAfter);
+                  }}
                 >
                   <DismissGlyph />
                 </Pressable>

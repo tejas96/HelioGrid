@@ -1,10 +1,12 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import type { FieldOverrideSpec } from '../FieldOverride/FieldOverride.types';
-import type { NamedGapSpec } from '../NamedGap';
+import type { NamedGapInput, NamedGapSpec } from '../NamedGap';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 import type { ValueSourceSpec } from '../ValueSource';
-import type { DataTableProps, DataTableSort, PageRange, PaginationProps } from './DataTable.types';
+import type { DataTableProps, DataTableSort, DataTableWords, PageRange } from './DataTable.types';
 import type { DataTableColumn } from './DataTableColumn.types';
 
 /* Rows are COMFORTABLE by default: 64px rows, 14px cells, 20px gutters, 24px edges. Functional
@@ -53,6 +55,9 @@ export const DENSITY: Record<NonNullable<DataTableProps['density']>, DensitySpec
  */
 export const DATA_TABLE_STACK_BELOW = 640;
 
+/** What a table takes when the caller names nothing: rows keyed by `id`, ten to a page, comfortable. */
+export const DATA_TABLE_DEFAULTS = { rowKey: 'id', pageSize: 10, density: 'comfortable' } as const;
+
 /**
  * **The quiet head's geometry** (design-system change 20, `SCR-M01-12`): a caption line over a 16px
  * gap, edges at the gutter, and rows that hold a 40px face with a name over a status chip — 82 tall
@@ -63,6 +68,14 @@ export const QUIET_HEAD = { headH: 34, headGap: 16, cellPadY: 14, rowH: 82 } as 
 /** The density spec a quiet table's wide form draws with. */
 export function quietSpec(spec: DensitySpec): DensitySpec {
   return { ...spec, edge: spec.gutter, headH: QUIET_HEAD.headH, rowH: QUIET_HEAD.rowH };
+}
+
+/** The spec the wide form draws with at a density — the quiet head's when the table is quiet. */
+export function densitySpecOf(
+  density: NonNullable<DataTableProps['density']>,
+  quiet: boolean,
+): DensitySpec {
+  return quiet ? quietSpec(DENSITY[density]) : DENSITY[density];
 }
 
 /** The span a page shows and the last page there is, for both halves of `Pagination`. */
@@ -81,19 +94,6 @@ export function pageWindow(
   };
 }
 
-type PagerWords = Pick<PaginationProps, 'previousLabel' | 'nextLabel' | 'readout'>;
-
-/**
- * The words the table's own pager has always said — English in `packages/ui`, the debt
- * `.claude/rules/ui-adherence.md` names. A list that needs them translated draws `Pagination`,
- * whose words are required props.
- */
-export const TABLE_PAGER_WORDS: PagerWords = {
-  previousLabel: 'Previous page',
-  nextLabel: 'Next page',
-  readout: ({ from, to, count }) => `${from}–${to} of ${count}`,
-};
-
 /** Reads a row property by column key without widening the row type to `any`. */
 export function readField(row: unknown, key: string): unknown {
   if (typeof row !== 'object' || row === null) return undefined;
@@ -109,6 +109,14 @@ export function rowKeyOf<Row>(
   const value = typeof rowKey === 'function' ? rowKey(row) : readField(row, rowKey);
   if (typeof value === 'string' || typeof value === 'number') return value;
   return index;
+}
+
+/** Every rendered row's identity, in order — what *select all* selects. */
+export function rowKeysOf<Row>(
+  rows: Row[],
+  rowKey: NonNullable<DataTableProps<Row>['rowKey']>,
+): (string | number)[] {
+  return rows.map((row, index) => rowKeyOf(rowKey, row, index));
 }
 
 /** Sorting only ever touches `rows` — which is what keeps the total row out of its reach. */
@@ -165,6 +173,16 @@ export function sortStateOf<Row>(
   };
 }
 
+/** The header's sort arrow: down for a descending column, up otherwise. */
+export function sortGlyphOf(dir: DataTableSort['dir'] | null): ShellGlyphName {
+  return dir === 'desc' ? 'caret-down' : 'caret-up';
+}
+
+/** The select-all tick's name: what a press does — clear the lot, or select every row. */
+export function selectAllLabelOf(allSelected: boolean, words: DataTableWords): TranslatedText {
+  return allSelected ? words.clearSelection : words.selectEveryRow;
+}
+
 /**
  * **The table says something instead of showing records.** Any state but `ready`, and a `ready`
  * table with nothing in it — one predicate, so a state can never be handled on one platform and
@@ -199,10 +217,7 @@ export function isLiveCell<Row>(
  * gap renders nothing still has a value to show. A module shared by both halves cannot import a
  * component, so the half that has one hands it in.
  */
-export type GapRenderer = (
-  spec?: ReactNode | NamedGapSpec,
-  extra?: Partial<NamedGapSpec>,
-) => ReactNode;
+export type GapRenderer = (spec?: NamedGapInput | null, extra?: Partial<NamedGapSpec>) => ReactNode;
 
 export interface CellParts {
   /** True when the column is editable AND the table has a commit path — two hands on the switch. */
@@ -211,7 +226,7 @@ export interface CellParts {
   gap: ReactNode;
   hasGap: boolean;
   /** The validation message for the edit in flight. */
-  issue: string | null;
+  issue: TranslatedText | null;
   /** The override spec, suppressed by a gap — nothing was superseded. */
   override: FieldOverrideSpec | null;
   /**

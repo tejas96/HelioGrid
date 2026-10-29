@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useRef } from 'react';
+import { type ReactNode, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
@@ -9,16 +9,10 @@ import type { RoleCardLine, RoleCardProps, RoleCardWords } from './RoleCard.type
 
 /**
  * The role card on the web: its head, then its rows, or their loading lines. *Try again* leaves
- * with the error card, so once the card is back focus goes to the presets' name, which stays.
+ * with the error card, so focus goes to the presets' name, which the card draws while it reloads.
  */
 export function RoleCard({ words, layout, read }: RoleCardProps) {
   const presets = useRef<HTMLSpanElement>(null);
-  const retried = useRef(false);
-  useEffect(() => {
-    if (!retried.current || read.kind === 'failed') return;
-    retried.current = false;
-    presets.current?.focus({ preventScroll: true });
-  }, [read.kind]);
   const frame = classNames(
     'hg-role-card',
     layout === 'bounded' ? 'hg-role-card-bounded' : undefined,
@@ -27,13 +21,9 @@ export function RoleCard({ words, layout, read }: RoleCardProps) {
     return (
       <Card
         className={frame}
-        read={{
-          ...read,
-          retry: () => {
-            retried.current = true;
-            read.retry();
-          },
-        }}
+        read={read}
+        loadingLabel={words.loading}
+        focusAfter={presets}
         errorTitle={words.error.title}
         errorMessage={words.error.body}
         retryLabel={words.error.retry}

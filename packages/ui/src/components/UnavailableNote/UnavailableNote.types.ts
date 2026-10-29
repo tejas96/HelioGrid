@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { Read } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 
@@ -42,9 +43,9 @@ export type UnavailableNoteAlign = 'start' | 'center';
 
 export interface UnavailableNoteProps {
   /** The sentence's subject — "No tile coverage here", "This market declares no schemes". */
-  title?: string;
+  title: TranslatedText;
   /** What is true and why, in the product's plain voice. Never blames, never apologises. */
-  message?: string;
+  message?: TranslatedText;
   /** A quiet third line: a scope, a date, a rule that was applied. */
   detail?: ReactNode;
   /** Replaces the slashed-circle mark. Keep it neutral — never the warning glyph. */

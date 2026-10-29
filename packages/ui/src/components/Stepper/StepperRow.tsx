@@ -1,6 +1,8 @@
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ResolvedStep } from './resolve-steps';
-import { stateWord } from './resolve-steps';
+import { rowStateWord, spokenStep } from './resolve-steps';
+import { isLastStep, isStepClickable } from './Stepper.logic';
+import type { StepperWords } from './Stepper.types';
 import { StepperMarker } from './StepperMarker';
 
 interface StepperRowProps {
@@ -10,6 +12,7 @@ interface StepperRowProps {
   onStepClick?: (index: number) => void;
   step: ResolvedStep;
   total: number;
+  words: StepperWords;
 }
 
 /** One row per step — the body of the mobile step-list sheet, and the desktop rail's row. */
@@ -20,13 +23,14 @@ export function StepperRow({
   onStepClick,
   step,
   total,
+  words,
 }: StepperRowProps) {
-  const clickable = onStepClick !== undefined && step.reachable;
-  const word = stateWord(step);
+  const clickable = isStepClickable(step, onStepClick !== undefined);
+  const word = rowStateWord(step, words);
   const active = index === current;
   return (
     <li className="hg-stepper-item">
-      {connector && index < total - 1 ? (
+      {connector && !isLastStep(index, total) ? (
         <span
           className="hg-stepper-connector"
           aria-hidden="true"
@@ -38,9 +42,9 @@ export function StepperRow({
         type="button"
         disabled={!clickable}
         aria-current={active ? 'step' : undefined}
-        aria-label={`Step ${index + 1} of ${total}, ${step.label}, ${word.toLowerCase()}`}
+        aria-label={spokenStep(step, index, total, words)}
         data-clickable={clickable}
-        onClick={clickable ? () => onStepClick(index) : undefined}
+        onClick={clickable ? () => onStepClick?.(index) : undefined}
       >
         <StepperMarker index={index} step={step} />
         <span className="hg-stepper-body">
@@ -48,7 +52,7 @@ export function StepperRow({
             {step.label}
           </span>
           <span className="hg-stepper-word" data-state={step.state}>
-            {step.optional === true ? `${word} · optional` : word}
+            {word}
           </span>
         </span>
         {clickable && !active ? (

@@ -5,6 +5,7 @@
 import type { CSSProperties, KeyboardEvent } from 'react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { actOnChoice, MENU_GAP } from './Menu.logic';
 import type { MenuItem, MenuProps } from './Menu.types';
 import { MenuItemRow } from './MenuItemRow';
 import { MenuTrigger } from './MenuTrigger';
@@ -19,9 +20,6 @@ interface WebMenuProps extends MenuProps {
 }
 
 const FOCUSABLE = 'button,[href],[tabindex]:not([tabindex="-1"])';
-
-/** The list's gap from its trigger — `Menu.css`'s `calc(100% + 6px)`, both ways. */
-const GAP = 6;
 
 /**
  * Actions / overflow menu with real menu semantics (`MS12-12`): button → menu → menuitem roles,
@@ -41,7 +39,7 @@ const GAP = 6;
 export function Menu({
   items = [],
   trigger,
-  label = 'More actions',
+  label,
   align = 'end',
   width = 220,
   selection = 'none',
@@ -100,8 +98,8 @@ export function Menu({
       return;
     }
     const trigger = wrap.getBoundingClientRect();
-    const below = window.innerHeight - trigger.bottom - GAP;
-    const above = trigger.top - GAP;
+    const below = window.innerHeight - trigger.bottom - MENU_GAP;
+    const above = trigger.top - MENU_GAP;
     setRises(below < list.offsetHeight && above > below);
   }, [open]);
 
@@ -116,11 +114,7 @@ export function Menu({
       return;
     }
     close();
-    item.onSelect?.();
-    const key = item.key ?? item.label;
-    if (onSelect !== undefined && key !== undefined) {
-      onSelect(key);
-    }
+    actOnChoice(item, onSelect);
   };
 
   const onKey = (event: KeyboardEvent<HTMLDivElement>) => {

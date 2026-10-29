@@ -1,18 +1,19 @@
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { useFormat } from '../MarketProvider';
 import { renderProvenance } from '../Provenance';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
+import { shownCountOf } from './Block.logic';
 import type { BlockProps } from './Block.types';
-import { blockCount } from './Block.types';
 import { BlockGrid } from './BlockGrid.native';
 import { BlockHeader } from './BlockHeader.native';
 import { BlockBody } from './BlockMessage.native';
 
-interface NativeBlockProps extends BlockProps {
+type NativeBlockProps = BlockProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 const styles = StyleSheet.create({
   block: { minWidth: 0 },
@@ -47,13 +48,14 @@ export function Block({
   footer,
   provenance,
   read,
-  emptyMessage = 'Nothing here yet.',
+  loadingLabel,
+  emptyMessage,
   emptyTitle,
   emptyAction,
-  errorTitle = "Couldn't load this",
-  errorMessage = 'Try again. If it keeps failing, tell your admin what you were doing.',
+  errorTitle,
+  errorMessage,
   retryLabel,
-  unavailableTitle = 'Not available',
+  unavailableTitle,
   unavailableMessage,
   badge,
   count,
@@ -65,11 +67,10 @@ export function Block({
 }: NativeBlockProps) {
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
+  const frame = useRef<View>(null);
   const market = useFormat();
   const prov = renderProvenance(provenance, { size: 12 });
-  const shownCount = blockCount(count, countMax, (n) =>
-    market.number(n, { maximumFractionDigits: 0 }),
-  );
+  const shownCount = shownCountOf(count, countMax, market);
 
   return (
     /* The web half is `<section aria-label={title}>` — a landmark RN has no counterpart for. The
@@ -78,6 +79,7 @@ export function Block({
        it draws whenever `title` is defined. A role here would name the frame a second time, and
        `accessible` would swallow the header, the body and every action inside it. */
     <View
+      ref={frame}
       style={[
         styles.block,
         density === 'functional' ? styles.functional : styles.expressive,
@@ -96,8 +98,8 @@ export function Block({
       />
 
       <BlockBody
-        title={title}
         state={state}
+        loadingLabel={loadingLabel}
         emptyMessage={emptyMessage}
         emptyTitle={emptyTitle}
         emptyAction={emptyAction}
@@ -105,6 +107,7 @@ export function Block({
         errorMessage={errorMessage}
         onRetry={onRetry}
         retryLabel={retryLabel}
+        focusAfter={frame}
         unavailableTitle={unavailableTitle}
         unavailableMessage={unavailableMessage}
       >

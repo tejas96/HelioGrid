@@ -8,13 +8,16 @@
    · the shimmer keyframe has no RN equivalent, so the loading bars are the same footprint in
      --canvas-sunken. Nothing reflows when the figure lands, which is what the shimmer was for. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
+import { messageGlyphOf, nodeGlyphSize } from './Timeline.logic';
 import type { TimelineStatus } from './Timeline.types';
 
 export const NODE_SIZE = { page: 28, compact: 20 } as const;
@@ -77,7 +80,7 @@ export function TimelineNode({
   compact: boolean;
 }) {
   const size = compact ? NODE_SIZE.compact : NODE_SIZE.page;
-  const inner = compact ? 11 : 15;
+  const inner = nodeGlyphSize(compact);
   const ring = compact ? 4 : 5;
   const tick = theme.colors['text-inverse'];
   const { controlFill } = useGround();
@@ -155,11 +158,11 @@ export function TimelineNode({
  * child here is a coloured block, so `accessible` folds no reachable control — and announced
  * politely, which is the same fact web's status region states.
  */
-export function TimelineSkeleton() {
+export function TimelineSkeleton({ label }: { label?: TranslatedText }) {
   return (
     <View
       accessible
-      accessibilityLabel="Loading activity"
+      accessibilityLabel={label}
       accessibilityLiveRegion="polite"
       style={styles.skeleton}
     >
@@ -182,12 +185,14 @@ export function TimelineMessage({
   message,
   onRetry,
   retryLabel,
+  focusAfter,
 }: {
   tone?: 'warning';
-  title: string;
-  message?: string;
+  title?: TranslatedText;
+  message?: TranslatedText;
   onRetry?: () => void;
-  retryLabel?: string;
+  retryLabel?: TranslatedText;
+  focusAfter: FocusAfter;
 }) {
   const warning = tone === 'warning';
   return (
@@ -210,18 +215,20 @@ export function TimelineMessage({
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <ShellGlyphMarks name={warning ? 'alert-circle' : 'clock-tall'} />
+          <ShellGlyphMarks name={messageGlyphOf(tone)} />
         </Svg>
       </View>
-      <Text variant="body-lg" align="center" style={styles.messageTitle}>
-        {title}
-      </Text>
+      {title ? (
+        <Text variant="body-lg" align="center" style={styles.messageTitle}>
+          {title}
+        </Text>
+      ) : null}
       {message ? (
         <Text variant="body-sm" color="secondary" align="center" style={styles.messageBody}>
           {message}
         </Text>
       ) : null}
-      <RetryButton onRetry={onRetry} label={retryLabel} />
+      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
     </View>
   );
 }

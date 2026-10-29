@@ -1,5 +1,7 @@
-import { type PhaseOpen, templateViewOf, useProposalTemplate } from '@heliogrid/data/react';
-import type { UiLanguage } from '@heliogrid/domain';
+import {
+  type ProposalTemplateScreen as ProposalTemplate,
+  useProposalTemplateScreen,
+} from '@heliogrid/data/react';
 import {
   proposalTemplatePageWords,
   proposalTemplateWords,
@@ -18,9 +20,9 @@ import {
   templateSettingsParts,
   useFormat,
 } from '@heliogrid/ui';
-import { useState } from 'react';
+import { useRef } from 'react';
+import { View } from 'react-native';
 import { useSettingsDrillDown } from '../settings/hooks/use-settings-drill-down';
-import { useLeaveAsk } from '../shared/use-leave-ask';
 import { ShellPage } from '../shell/components/ShellPage';
 import { TemplateActBar } from './components/TemplateActBar';
 import { TemplateOverlays } from './components/TemplateOverlays';
@@ -29,14 +31,15 @@ import { useTemplateActs } from './hooks/use-template-acts';
 /**
  * The Proposal template behind `More` on the phone (`SCR-M01-19`, the 375 frames): the settings
  * page's bar holds the title and the way back, the shared page draws the stage and the editor, and
- * while a change is held the act bar stands in the nav's place (m19-n5). What is read, edited and
- * saved is `useProposalTemplate`'s; this screen holds which part, which language and which
- * overlay is open.
+ * while a change is held the act bar stands in the nav's place (m19-n5). What it draws is
+ * `useProposalTemplateScreen`'s, the web's too; the phone's own parts are the keyboard and the way
+ * back.
  */
 export function ProposalTemplateScreen() {
   const drillDown = useSettingsDrillDown('proposal_templates');
-  const { t } = useI18n();
-  const page = useProposalTemplate();
+  const { t, locale } = useI18n();
+  const screen = useProposalTemplateScreen(locale);
+  const { page } = screen;
   const words = proposalTemplateWords(t);
   if (page.read.kind === 'failed') {
     return (
@@ -52,36 +55,28 @@ export function ProposalTemplateScreen() {
       </ShellPage>
     );
   }
-  return <TemplatePage page={page} drillDown={drillDown} />;
+  return <TemplatePage screen={screen} drillDown={drillDown} />;
 }
 
 function TemplatePage({
-  page,
+  screen,
   drillDown,
 }: {
-  page: ReturnType<typeof useProposalTemplate>;
+  screen: ProposalTemplate;
   drillDown: ReturnType<typeof useSettingsDrillDown>;
 }) {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const format = useFormat();
-  const acts = useTemplateActs(page);
-  const [part, setPart] = useState<TemplatePartName>('cover');
-  const [coverLanguage, setCoverLanguage] = useState<UiLanguage>('en');
-  const [termsLanguage, setTermsLanguage] = useState<UiLanguage>('en');
-  const [phaseOpen, setPhaseOpen] = useState<PhaseOpen | null>(null);
-  const [deleteAsked, setDeleteAsked] = useState<{ key: number; title: string } | null>(null);
-  const [fullSizeOpen, setFullSizeOpen] = useState(false);
-  const changed = page.changed.template || page.changed.timeline;
-  const leave = useLeaveAsk(changed);
+  const acts = useTemplateActs(screen);
+  const { page, view, overlays } = screen;
+  /* A saved or discarded change takes the act bar away: the screen reader goes on to the page. */
+  const body = useRef<View>(null);
 
   const words = proposalTemplateWords(t);
   const said = proposalTemplatePageWords(t, page, {
     date: (epochMs) => format.date(new Date(epochMs)),
   });
-  const draft = page.draft;
-  const languages = { cover: coverLanguage, terms: termsLanguage };
-  const view = templateViewOf(draft, languages, locale);
-  const sectionWord = sectionWords(t, draft?.phases.length ?? 0);
+  const sectionWord = sectionWords(t, page.draft?.phases.length ?? 0);
   const document = templateDocumentOf(
     view,
     {
@@ -92,87 +87,74 @@ function TemplatePage({
     },
     sectionWord,
   );
-  const act = changed ? (
+  const act = screen.held ? (
     <TemplateActBar
       words={words}
       saving={page.saving}
       saveFailed={page.saveFailure !== null}
-      onSave={() => {
-        // A refused save opens the part whose field says why, so the reason is in view.
-        if (page.refusedPart !== null) setPart(page.refusedPart);
-        acts.save();
-      }}
+      onSave={acts.save}
       onDiscard={page.discard}
+      focusAfter={body}
     />
   ) : undefined;
 
   return (
     <ShellPage inView="more" drillDown={drillDown} foot={act}>
-      <ProposalTemplateSettings
-        {...bodyProps({ page, words, said, document, acts })}
-        part={part}
-        onPart={setPart}
-        {...templateSettingsParts(view, {
-          languages: templateLanguages(),
-          coverLanguage,
-          termsLanguage,
-          onCoverLanguage: setCoverLanguage,
-          onTermsLanguage: setTermsLanguage,
-          sectionWord,
-          ...templateFieldRefusals(t, page.refusals),
-          edit: page.edit,
-          onEditPhase: (key, phase) => setPhaseOpen({ key, phase }),
-          onDeletePhase: (key, title) => setDeleteAsked({ key, title }),
-          onAddPhase: () => setPhaseOpen({ key: null }),
-        })}
-        onOpenFullSize={() => setFullSizeOpen(true)}
-      />
+      <View ref={body}>
+        <ProposalTemplateSettings
+          {...bodyProps({ screen, words, said, document, acts })}
+          part={screen.part}
+          onPart={screen.choosePart}
+          {...templateSettingsParts(view, {
+            languages: templateLanguages(),
+            coverLanguage: screen.coverLanguage,
+            termsLanguage: screen.termsLanguage,
+            onCoverLanguage: screen.chooseCoverLanguage,
+            onTermsLanguage: screen.chooseTermsLanguage,
+            sectionWord,
+            ...templateFieldRefusals(t, page.refusals),
+            edit: page.edit,
+            onEditPhase: overlays.editPhase,
+            onDeletePhase: overlays.askDeletePhase,
+            onAddPhase: overlays.addPhase,
+          })}
+          onOpenFullSize={overlays.openFullSize}
+        />
+      </View>
       <TemplateOverlays
         page={page}
         words={words}
         closeLabel={t(SHELL.close)}
         document={document}
-        state={{
-          phaseOpen,
-          deleteAsked,
-          fullSizeOpen,
-          closePhase: () => setPhaseOpen(null),
-          closeDelete: () => setDeleteAsked(null),
-          closeFullSize: () => setFullSizeOpen(false),
-        }}
-        leave={{
-          asking: leave.asking,
-          stay: leave.stay,
-          discardAndLeave: () => leave.leave(page.discard),
-        }}
+        overlays={overlays}
+        leave={screen.leave}
       />
     </ShellPage>
   );
 }
 
-type Page = ReturnType<typeof useProposalTemplate>;
-
 /** The page body's props that follow from the page alone: its words, state and the two rows. */
 function bodyProps({
-  page,
+  screen,
   words,
   said,
   document,
   acts,
 }: {
-  page: Page;
+  screen: ProposalTemplate;
   words: ReturnType<typeof proposalTemplateWords>;
   said: ReturnType<typeof proposalTemplatePageWords>;
   document: ReturnType<typeof templateDocumentOf>;
   acts: ReturnType<typeof useTemplateActs>;
 }) {
+  const { page } = screen;
   return {
     words,
     read: page.read,
     ...(said.standing === undefined ? {} : { standing: said.standing }),
     document,
     unsaved: page.changed.template,
-    held: page.changed.template || page.changed.timeline,
+    held: screen.held,
     teaching: page.teaching,
     onWriteOwn: (part: TemplatePartName) => page.edit({ kind: 'writeOwn', part }),
     bankLine: words.bankFrom(page.bankName),

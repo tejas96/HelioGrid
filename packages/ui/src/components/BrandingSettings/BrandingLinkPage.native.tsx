@@ -37,6 +37,7 @@ export function BrandingLinkPage({
               alt={words.logoAlt}
               missingLabel={words.logoUnavailable}
               missingDetail=""
+              words={words.image}
               width={BRANDING_LINK_MARK.width}
               height={BRANDING_LINK_MARK.height}
               fit="contain"

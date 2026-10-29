@@ -74,6 +74,7 @@ export function CatalogImport(given: CatalogImportProps) {
               steps={[...words.steps]}
               current={step}
               label={words.stepsLabel}
+              words={words.stepper}
             />
           ),
           footer: <ImportFoot {...props} act={act} wide />,

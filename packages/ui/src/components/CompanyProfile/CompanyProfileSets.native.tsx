@@ -73,6 +73,7 @@ export function ProfileSet({
       {part === 'identity' && words.logo !== null ? (
         <Dropzone
           {...logoCapture(words.logo, logoPicture, false)}
+          words={words.dropzone}
           disabled={saving}
           onRequestFiles={onRequestLogo}
         />

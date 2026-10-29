@@ -11,8 +11,8 @@ import { Text } from '../../primitives/Text/Text.native';
 import type { TextVariant } from '../../primitives/Text/Text.types';
 import { useFormat } from '../MarketProvider/market-context';
 import { renderProvenance } from '../Provenance/Provenance.native';
-import { noPriceSentence } from './MoneySummary.sentences';
-import type { MoneySummaryProps, ResolvedMoney } from './MoneySummary.types';
+import { isPriceWithheld, noPriceSentence } from './MoneySummary.sentences';
+import type { MoneySummaryProps, MoneySummaryWords, ResolvedMoney } from './MoneySummary.types';
 
 /* THE DOCUMENT STEPS ARE PRINT TOKENS. `--doc-fs-figure` (22px) is emitted to CSS only — the RN
    theme object carries no `doc` family — so the payable maps to the NEAREST theme type role rather
@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
 
 export function MoneySummaryTotal({
   money,
+  words,
   payableLabel,
   provenance,
   note,
@@ -55,6 +56,7 @@ export function MoneySummaryTotal({
 }: {
   /** The server's resolved equation — the one money path (`F4-04`). */
   money: ResolvedMoney;
+  words: MoneySummaryWords;
   payableLabel: string;
   provenance?: MoneySummaryProps['provenance'];
   note?: MoneySummaryProps['note'];
@@ -63,15 +65,13 @@ export function MoneySummaryTotal({
   smallVariant: TextVariant;
 }) {
   const mkt = useFormat();
-  const defect = money.reconciliation !== null && !money.reconciliation.agrees;
-  const unresolved = money.unresolved.length > 0;
 
   return (
     <View style={styles.total}>
-      {defect || unresolved ? (
+      {isPriceWithheld(money) ? (
         <View accessibilityRole="alert" accessibilityLiveRegion="assertive">
           <Text variant={variant} color="danger" style={styles.defect}>
-            {noPriceSentence(money, mkt)}
+            {noPriceSentence(money, mkt, words)}
           </Text>
         </View>
       ) : (
@@ -87,7 +87,7 @@ export function MoneySummaryTotal({
           {money.zeroOrBelow ? (
             <View accessibilityRole="alert" accessibilityLiveRegion="assertive">
               <Text variant={smallVariant} color="warning" style={styles.belowZero}>
-                {`The deductions bring the payable to ${mkt.amount(money.payable)}. A figure at or below zero is not a refund — a warning here, a block at Generate.`}
+                {words.belowZero(mkt.amount(money.payable))}
               </Text>
             </View>
           ) : null}
@@ -96,7 +96,10 @@ export function MoneySummaryTotal({
           ) : null}
           {money.reconciliation?.agrees ? (
             <Text variant={smallVariant} color="secondary" style={styles.reconciled}>
-              {`${money.reconciliation.label} reconciles · ${mkt.amount(money.reconciliation.amount)}`}
+              {words.reconciles(
+                money.reconciliation.label,
+                mkt.amount(money.reconciliation.amount),
+              )}
             </Text>
           ) : null}
         </>

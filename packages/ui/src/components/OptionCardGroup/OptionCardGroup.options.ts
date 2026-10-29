@@ -1,9 +1,9 @@
-import { isValidElement } from 'react';
+import { reasonText } from '../ActionReason/ActionReason.logic';
 import type { OptionCardItem } from './OptionCardGroup.types';
 
 /**
- * Does this option have a reason to hear? An exact mirror of `renderActionReason`'s own decision,
- * without either platform's renderer — a sentence, a spec with words in it, or a ready node.
+ * Does this option have a reason to hear? The question `renderActionReason` asks before drawing
+ * one — a sentence, a spec with words in it, or a ready node — without either platform's renderer.
  *
  * The arrow-key walk asks it before any card has rendered, and it has to give the answer the cards
  * give: an option with a stated reason is walked onto and is `aria-disabled` rather than natively
@@ -11,16 +11,5 @@ import type { OptionCardItem } from './OptionCardGroup.types';
  * the rendered node, so the two can never drift.
  */
 export function hasReason(option: OptionCardItem): boolean {
-  const spec = option.disabledReason;
-  if (spec === undefined || spec === null || spec === false || spec === '') {
-    return false;
-  }
-  if (isValidElement(spec) || typeof spec === 'string') {
-    return true;
-  }
-  if (typeof spec !== 'object' || !('reason' in spec)) {
-    return false;
-  }
-  const { reason } = spec;
-  return reason !== undefined && reason !== null && reason !== false && reason !== '';
+  return reasonText(option.disabledReason) !== null;
 }

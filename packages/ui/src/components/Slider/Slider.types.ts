@@ -1,7 +1,16 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 
 /** Density mode — expressive is the brand's roomy default, functional the dense working set. */
 export type SliderDensity = 'expressive' | 'functional';
+
+/** The steppers' spoken names, in the reader's language. */
+export interface SliderWords {
+  /** The minus's name — the slider's `label` in it, or the bare value's when it has none. */
+  decrease: (name?: TranslatedText) => TranslatedText;
+  /** The plus's name, the same way. */
+  increase: (name?: TranslatedText) => TranslatedText;
+}
 
 export interface SliderProps {
   value?: number;
@@ -16,11 +25,13 @@ export interface SliderProps {
   min?: number;
   max?: number;
   step?: number;
-  label?: string;
+  label?: TranslatedText;
   /** Displayed after the value; the unit toggle itself is a SegmentedControl. */
   unit?: string;
   /** Role-aware line under the track. */
-  hint?: string;
+  hint?: TranslatedText;
+  /** The steppers' names — `sliderWords(t)`. */
+  words: SliderWords;
   /** Custom value formatter — overrides value + unit. */
   format?: (value: number) => string;
   /** 44px minus/plus buttons either side. On by default (MS12-26). */

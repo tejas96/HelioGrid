@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
@@ -12,6 +13,8 @@ import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Button } from '../Button/Button.native';
 import { AudioGlyph } from './AudioGlyph.native';
+import { positionTextOf, progressOf, skipOf, speedPillOf } from './AudioPlayer.logic';
+import type { AudioPlayerWords } from './AudioPlayer.types';
 import { formatClock } from './AudioPlayer.types';
 
 const type = theme.type.roles;
@@ -90,7 +93,7 @@ export function RoundButton({
   disabled = false,
   children,
 }: {
-  label: string;
+  label: TranslatedText;
   onPress: () => void;
   kind: 'primary' | 'ghost';
   disabled?: boolean;
@@ -112,26 +115,29 @@ export function RoundButton({
   );
 }
 
-/** ±10s back and +30s forward — a full sales call on a 375px phone is ~3 seconds per pixel. */
+/** A ghost skip: back or forward by `skipOf`'s step. */
 export function SkipButton({
   back,
   disabled = false,
   onSeek,
+  words,
 }: {
   back: boolean;
   disabled?: boolean;
   onSeek: (delta: number) => void;
+  words: AudioPlayerWords;
 }) {
+  const skip = skipOf(back, words);
   return (
     <RoundButton
       kind="ghost"
       disabled={disabled}
-      label={back ? 'Back 10 seconds' : 'Forward 30 seconds'}
-      onPress={() => onSeek(back ? -10 : 30)}
+      label={skip.label}
+      onPress={() => onSeek(skip.delta)}
     >
       <View style={styles.skip}>
-        <AudioGlyph name={back ? 'back' : 'fwd'} size={15} color={theme.colors['text-secondary']} />
-        <Text style={styles.skipCount}>{back ? 10 : 30}</Text>
+        <AudioGlyph name={skip.glyph} size={15} color={theme.colors['text-secondary']} />
+        <Text style={styles.skipCount}>{skip.count}</Text>
       </View>
     </RoundButton>
   );
@@ -156,15 +162,17 @@ export function Scrubber({
   total,
   disabled = false,
   onSeek,
+  words,
 }: {
   at: number;
   total: number;
   disabled?: boolean;
   onSeek: (seconds: number) => void;
+  words: AudioPlayerWords;
 }) {
   const [width, setWidth] = useState(0);
   const live = !disabled && total > 0;
-  const ratio = total > 0 ? Math.min(1, Math.max(0, at / total)) : 0;
+  const ratio = Math.min(1, Math.max(0, progressOf(at, total)));
   const jump = (event: GestureResponderEvent) => {
     if (!live || width <= 0) return;
     onSeek((Math.min(width, Math.max(0, event.nativeEvent.locationX)) / width) * total);
@@ -184,9 +192,9 @@ export function Scrubber({
     <View
       accessible
       accessibilityRole="adjustable"
-      accessibilityLabel="Seek within the recording"
+      accessibilityLabel={words.seek}
       accessibilityState={{ disabled: !live }}
-      accessibilityValue={{ text: `${formatClock(at)} of ${formatClock(total)}` }}
+      accessibilityValue={{ text: positionTextOf(at, total, words) }}
       accessibilityActions={live ? [{ name: 'increment' }, { name: 'decrement' }] : []}
       onAccessibilityAction={onAction}
       onLayout={(event: LayoutChangeEvent) => setWidth(event.nativeEvent.layout.width)}
@@ -211,22 +219,24 @@ export function SpeedButton({
   speeds,
   disabled = false,
   onChange,
+  words,
 }: {
   rate: number;
   speeds: number[];
   disabled?: boolean;
   onChange: (rate: number) => void;
+  words: AudioPlayerWords;
 }) {
+  const pill = speedPillOf(rate, speeds, words);
   const next = () => {
-    const value = speeds[(speeds.indexOf(rate) + 1) % speeds.length];
-    if (value !== undefined) onChange(value);
+    if (pill.next !== undefined) onChange(pill.next);
   };
-  const changed = rate !== 1;
+  const changed = pill.changed;
   /* A control is the opposite of what holds it (`F7-15`): the well on the page, white in a tile. */
   const { controlFill } = useGround();
   return (
     <Pressable
-      accessibilityLabel={`Playback speed ${rate}×. Tap to change.`}
+      accessibilityLabel={pill.label}
       disabled={disabled}
       onPress={next}
       style={[
@@ -236,13 +246,13 @@ export function SpeedButton({
         disabled ? styles.dimmed : null,
       ]}
     >
-      <Text style={[styles.speedText, changed ? styles.speedTextChanged : null]}>{`${rate}×`}</Text>
+      <Text style={[styles.speedText, changed ? styles.speedTextChanged : null]}>{pill.mark}</Text>
     </Pressable>
   );
 }
 
 /** The door to the transcript. It is offered in EVERY state, including error. */
-export function TranscriptDoor({ label, onPress }: { label: string; onPress: () => void }) {
+export function TranscriptDoor({ label, onPress }: { label: TranslatedText; onPress: () => void }) {
   return (
     <Button
       variant="secondary"

@@ -19,7 +19,7 @@ type PagesOneCountAtATime<T> = T extends unknown ? { readonly pages: T } : never
 export type ExplainerWords = {
   readonly label: TranslatedText;
   readonly title: TranslatedText;
-} & PagesOneCountAtATime<Exclude<ExplainerPages<string>, string>>;
+} & PagesOneCountAtATime<Exclude<ExplainerPages<TranslatedText>, TranslatedText>>;
 
 /** A paged ask's words in the reader's language — spread onto `Explainer`; `translate` is the mount's `t`. */
 export function explainerPagerWords(translate: Translator['t']): ExplainerPagerWords {

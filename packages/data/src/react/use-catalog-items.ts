@@ -77,11 +77,15 @@ function pinnedFirst<Item extends { readonly id: string }>(
   return [shown, ...items.filter((item) => item.id !== added.id)];
 }
 
-/** One numbered page of the list — the 1536 table and its pager — with the added item first. */
+/**
+ * One numbered page of the list — the 1536 table and its pager — with the added item first.
+ * `enabled` false reads nothing: the phone lists by scrolling.
+ */
 export function useCatalogPage(
   view: CatalogView,
   page: number,
   added: ResolvedCatalogItemWire | null = null,
+  enabled = true,
 ) {
   const repositories = useRepositories();
   const tenantId = useTenantId();
@@ -89,19 +93,26 @@ export function useCatalogPage(
     queryKey: queryKeys.catalog.items(tenantId, { ...view, mode: 'page' }),
     fetchPage: (n) => repositories.catalog.items(catalogAskOf(view, n, DEFAULT_PAGE_LIMIT)),
     page,
-    enabled: tenantId !== '',
+    enabled: enabled && tenantId !== '',
   });
   return { ...list, read: usePinnedFirst(list.read, added) };
 }
 
-/** The list growing as the person scrolls — the phone's cards — with the added item first. */
-export function useCatalogScroll(view: CatalogView, added: ResolvedCatalogItemWire | null = null) {
+/**
+ * The list growing as the person scrolls — the phone's cards — with the added item first.
+ * `enabled` false reads nothing: the web lists by numbered pages.
+ */
+export function useCatalogScroll(
+  view: CatalogView,
+  added: ResolvedCatalogItemWire | null = null,
+  enabled = true,
+) {
   const repositories = useRepositories();
   const tenantId = useTenantId();
   const list = usePaginatedList({
     queryKey: queryKeys.catalog.items(tenantId, { ...view, mode: 'scroll' }),
     fetchPage: (n) => repositories.catalog.items(catalogAskOf(view, n, DEFAULT_PAGE_LIMIT)),
-    enabled: tenantId !== '',
+    enabled: enabled && tenantId !== '',
     keepPreviousWhileLoading: true,
   });
   return { ...list, read: usePinnedFirst(list.read, added) };

@@ -7,18 +7,17 @@ import type { EditorSurfaceProps } from './EditorSurface.types';
 import {
   isDecision,
   isPanel,
-  modalChrome,
+  modalFormProps,
   PANEL_ABOVE,
-  panelChrome,
+  panelFormProps,
   resolveForForm,
-  sheetChrome,
+  sheetFormProps,
 } from './editor-form-props';
-import { editorStateProps } from './editor-state-props';
 import { probeStyleFor, useEditorForm, useLayerWidth } from './use-editor-form';
 
-interface WebEditorSurfaceProps extends EditorSurfaceProps {
+type WebEditorSurfaceProps = EditorSurfaceProps & {
   style?: CSSProperties;
-}
+};
 
 /**
  * `F7-21`'s one sheet grammar, PERFORMED instead of described: a sheet on mobile, a side panel on
@@ -37,24 +36,11 @@ interface WebEditorSurfaceProps extends EditorSurfaceProps {
 export function EditorSurface(props: WebEditorSurfaceProps) {
   const {
     open = false,
-    onClose,
     panelAbove = PANEL_ABOVE,
-    title,
-    status,
-    subtitle,
-    subtitleFace,
-    overline,
     children,
-    footer,
-    modal = true,
     desktop = 'panel',
-    side = 'right',
-    width = 480,
-    dismissible = true,
-    leading = null,
     meta = null,
     inset = false,
-    zIndex = 40,
     sheetProps = {},
     panelProps = {},
     modalProps = {},
@@ -78,20 +64,7 @@ export function EditorSurface(props: WebEditorSurfaceProps) {
     return (
       <>
         {probe}
-        <Modal
-          {...modalChrome(props)}
-          description={subtitle}
-          dismissible={dismissible}
-          footer={footer}
-          inset={inset}
-          onClose={onClose}
-          open
-          overline={overline}
-          style={style}
-          title={title}
-          zIndex={zIndex}
-          {...modalProps}
-        >
+        <Modal {...modalFormProps(props)} inset={inset} style={style} {...modalProps}>
           {body}
         </Modal>
       </>
@@ -103,25 +76,9 @@ export function EditorSurface(props: WebEditorSurfaceProps) {
       <>
         {probe}
         <DetailPanel
-          {...editorStateProps(props)}
-          {...panelChrome(props)}
-          dismissible={dismissible}
-          footer={footer}
+          {...panelFormProps(props, metaRow)}
           inset={inset}
-          leading={leading}
-          meta={metaRow}
-          modal={modal}
-          onClose={onClose}
-          open
-          overline={overline}
-          side={side}
-          status={status}
           style={style}
-          subtitle={subtitle}
-          subtitleFace={subtitleFace}
-          title={title}
-          width={width}
-          zIndex={zIndex}
           {...panelProps}
         >
           {body}
@@ -133,26 +90,7 @@ export function EditorSurface(props: WebEditorSurfaceProps) {
   return (
     <>
       {probe}
-      <Sheet
-        {...editorStateProps(props)}
-        {...sheetChrome(props)}
-        dismissible={dismissible}
-        footer={footer}
-        inset={inset}
-        modal={modal}
-        onClose={onClose}
-        open
-        leading={leading}
-        meta={metaRow}
-        overline={overline}
-        status={status}
-        style={style}
-        subtitle={subtitle}
-        subtitleFace={subtitleFace}
-        title={title}
-        zIndex={zIndex}
-        {...sheetProps}
-      >
+      <Sheet {...sheetFormProps(props, metaRow)} inset={inset} style={style} {...sheetProps}>
         {body}
       </Sheet>
     </>

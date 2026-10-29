@@ -13,7 +13,11 @@ import {
 } from '@heliogrid/domain';
 import { LANGUAGE_META } from '../languages';
 import type { Translator } from '../runtime';
+import { catalogTableWords } from './catalog-words';
 import { FILTER_PANEL } from './filter-panel';
+import { numberFieldWords } from './number-field';
+import { SEARCH_FIELD } from './search-field';
+import { SELECT } from './select';
 
 /** Catalog settings' Rates panel (`SCR-M01-15`, `M01-48`), chosen once for both apps (Law 11). */
 export const PRICE_BOOK = {
@@ -102,6 +106,7 @@ export function catalogRatesWords(t: Translator['t']) {
   return {
     bases: bases(t),
     searchRates: t(PRICE_BOOK.searchRates),
+    clearSearch: t(SEARCH_FIELD.clear),
     chargedLabel: t(PRICE_BOOK.chargedLabel),
     allBases: t(PRICE_BOOK.allBases),
     rate: t(PRICE_BOOK.rate),
@@ -115,6 +120,7 @@ export function catalogRatesWords(t: Translator['t']) {
     loadFailed: t(PRICE_BOOK.loadFailed),
     tryAgain: t(PRICE_BOOK.tryAgain),
     loading: t(LOADING),
+    table: catalogTableWords(t),
   };
 }
 
@@ -135,6 +141,7 @@ export function catalogVersionWords(t: Translator['t']) {
     loadFailed: t(PRICE_BOOK.loadFailed),
     tryAgain: t(PRICE_BOOK.tryAgain),
     loading: t(LOADING),
+    numberField: numberFieldWords(t),
   };
 }
 
@@ -211,10 +218,15 @@ export function rateSheetWords(
       };
     }),
     basis: t(PRICE_BOOK.rateBasis, { name: named }),
+    select: { placeholder: t(SELECT.placeholder), closeLabel: t(SELECT.closeList) },
     remove: added ? null : t(PRICE_BOOK.removeRate, { name: named }),
-    done: t(FILTER_PANEL.done),
-    cancel: t(PRICE_BOOK.cancel),
+    ...rateSheetActs(t),
   };
+}
+
+/** The rate sheet's two acts: the same whichever rate is open, so a closing sheet keeps its words. */
+export function rateSheetActs(t: Translator['t']) {
+  return { done: t(FILTER_PANEL.done), cancel: t(PRICE_BOOK.cancel) };
 }
 
 /** One version as the list shows it: its note, *date · who*, its year and margin. */

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 /**
@@ -59,39 +60,39 @@ export interface RichTextTemplate {
  */
 export interface RichTextWords {
   /** The toolbar's spoken name — "Formatting". */
-  formatting: string;
+  formatting: TranslatedText;
   /** The five mark buttons' spoken names. */
-  bold: string;
-  italic: string;
-  heading: string;
-  bulletedList: string;
-  numberedList: string;
+  bold: TranslatedText;
+  italic: TranslatedText;
+  heading: TranslatedText;
+  bulletedList: TranslatedText;
+  numberedList: TranslatedText;
   /** The link button's spoken name — "Link". */
-  link: string;
+  link: TranslatedText;
   /** The link field's spoken name — "Link address". */
-  linkAddress: string;
+  linkAddress: TranslatedText;
   /** The button that applies the link — "Add link". */
-  addLink: string;
+  addLink: TranslatedText;
   /** The logo button's word while the logo is off — "Add logo". */
-  addLogo: string;
+  addLogo: TranslatedText;
   /** Its word while the logo is on — "Logo on". */
-  logoOn: string;
+  logoOn: TranslatedText;
   /** Its spoken name while off — "Add the logo". */
-  addTheLogo: string;
+  addTheLogo: TranslatedText;
   /** Its spoken name while on — "Remove the logo". */
-  removeTheLogo: string;
+  removeTheLogo: TranslatedText;
   /** The placed logo's stand-in inside the editor — "Logo prints here". */
-  logoPrintsHere: string;
+  logoPrintsHere: TranslatedText;
   /** The web template select's empty choice — "Load template…". */
-  loadTemplate: string;
+  loadTemplate: TranslatedText;
   /** The web template select's spoken name — "Load a saved template". */
-  loadSavedTemplate: string;
+  loadSavedTemplate: TranslatedText;
   /** The phone's spoken name of one saved template's button — "Load template: {name}". */
-  loadTemplateNamed: (name: string) => string;
+  loadTemplateNamed: (name: string) => TranslatedText;
   /** The text box's spoken name when no `label` is shown — "Terms and conditions". */
-  editorName: string;
+  editorName: TranslatedText;
   /** The footer count — "{count}/{max} characters", or "{count} characters" with no `max`. */
-  characters: (count: number, max?: number) => string;
+  characters: (count: number, max?: number) => TranslatedText;
 }
 
 export interface RichTextProps {
@@ -102,10 +103,10 @@ export interface RichTextProps {
   onChange?: (value: RichTextValue) => void;
   /** Once, on blur. The value a template save or a persist should read. */
   onCommit?: (value: RichTextValue) => void;
-  label?: string;
-  helper?: string;
+  label?: TranslatedText;
+  helper?: TranslatedText;
   /** The hint while the body is empty. Omit and no hint shows. */
-  placeholder?: string;
+  placeholder?: TranslatedText;
   /** Editor height floor. Design at the cap: `M06-15` allows three pages, not a two-line box. */
   minHeight?: number;
   /**
@@ -123,7 +124,7 @@ export interface RichTextProps {
   onLoadTemplate?: (id: string) => void;
   onSaveAsTemplate?: (value: RichTextValue, metrics: RichTextMetrics) => void;
   /** The save button's words. The button shows only with both this and `onSaveAsTemplate`. */
-  saveTemplateLabel?: string;
+  saveTemplateLabel?: TranslatedText;
   /**
    * **The seam left for `M06-15`'s "≈ PDF page estimate".** Supplied by the caller, rendered in the
    * footer beside the character count, and **nothing** when empty — the editor never prints "≈ 1
@@ -141,7 +142,7 @@ export interface RichTextViewProps {
   /** Fills a `logo` block. Without it, the block draws a labelled placeholder slot. */
   logoSrc?: string;
   /** The placeholder slot's words while `logoSrc` is absent — the caller's, never a default. */
-  logoLabel: string;
+  logoLabel: TranslatedText;
   /** Base size. 14 on screen, 11 inside a `DocumentPreview` sheet. Never below 12 on screen. */
   fontSize?: number;
   /** The ink — inside a `CustomerSurface` this is the tenant's contrast-gated colour. */
@@ -149,5 +150,5 @@ export interface RichTextViewProps {
   /** The quieter ink, for body copy and list items. */
   muted?: string;
   /** What to say when there is no content. Omit and nothing renders. */
-  emptyText?: string;
+  emptyText?: TranslatedText;
 }

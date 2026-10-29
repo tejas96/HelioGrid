@@ -4,8 +4,9 @@ import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { useFormat } from '../MarketProvider';
 import { renderProvenance } from '../Provenance';
 import { BAND_TONES, BandChip } from './BandChip';
+import { bandedReading } from './BandedFigure.logic';
 import type { BandedFigureProps } from './BandedFigure.types';
-import { bandedReadOut, formatFigure, resolveBand } from './BandedFigure.types';
+import { resolveBand } from './BandedFigure.types';
 import { BandedLine } from './BandedLine';
 
 interface WebBandedFigureProps extends BandedFigureProps {
@@ -55,12 +56,16 @@ export function BandedFigure({
   className,
   style,
 }: WebBandedFigureProps) {
-  const format = useFormat();
-  const resolved = resolveBand(value, bands, band);
+  const {
+    resolved,
+    shown,
+    move,
+    readOut: accessibilityLabel,
+  } = bandedReading(
+    { label, value, unit, bands, band, remedy, compact, money, ariaLabel },
+    useFormat(),
+  );
   const tone = resolved?.tone ?? 'neutral';
-  const shown = formatFigure(value, format, { money, compact });
-  const move = remedy ?? resolved?.remedy;
-  const accessibilityLabel = ariaLabel ?? bandedReadOut(label, shown, unit, resolved, move);
   const big = variant === 'box';
 
   if (variant === 'line') {

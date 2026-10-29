@@ -1,15 +1,7 @@
 import type { ReactNode } from 'react';
-import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { drawsModalMark, MODAL_TONE_GLYPH } from './Modal.logic';
 import type { ModalTone } from './Modal.types';
-
-/** The glyph each tone draws. `success` is a tick, so it takes no ring around it. */
-const TONE_GLYPH: Record<ModalTone, ShellGlyphName | null> = {
-  neutral: null,
-  danger: 'alert-circle',
-  warning: 'alert-circle',
-  success: 'tick-long',
-};
 
 interface ModalMarkProps {
   icon?: ReactNode;
@@ -24,8 +16,8 @@ interface ModalMarkProps {
  * destructive, in which case the caller reaches for `variant="destructive"`.
  */
 export function ModalMark({ icon, tone }: ModalMarkProps) {
-  const glyph = TONE_GLYPH[tone];
-  if (icon === undefined && glyph === null) {
+  const glyph = MODAL_TONE_GLYPH[tone];
+  if (!drawsModalMark(icon, tone)) {
     return null;
   }
   return (

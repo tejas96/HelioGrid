@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { DetailPanelProps, DetailPanelSide } from '../DetailPanel/DetailPanel.types';
 import type { ModalProps } from '../Modal/Modal.types';
@@ -44,7 +45,7 @@ export interface UseEditorFormOptions {
  * remain the two forms it renders; reach for them directly only when a surface is one of them by
  * nature.
  */
-export interface EditorSurfaceProps extends OverlayCloseWords {
+interface EditorSurfaceOwnProps extends OverlayCloseWords {
   open?: boolean;
   onClose?: () => void;
   /**
@@ -52,13 +53,16 @@ export interface EditorSurfaceProps extends OverlayCloseWords {
    * Default 720.
    */
   panelAbove?: number;
+  /** The surface's heading: its words, or the record's own name (a person, a lead) the board draws. */
+  // biome-ignore lint/plugin/copy-prop-type: a heading may be the record's own name, a fact
   title?: string;
   /** Drawn beside the title, on its line — sheet and panel; a decision's modal draws none. */
   status?: OverlayStatus;
-  subtitle?: string;
+  /** The line under the title — a decision's modal draws it as its description, so it is words. */
+  subtitle?: TranslatedText;
   /** The sheet's subtitle face; the panel always sets its subtitle in mono. */
   subtitleFace?: OverlaySubtitleFace;
-  overline?: string;
+  overline?: TranslatedText;
   /**
    * The editor's content. A function child receives `{panel, layerWidth}` for content that has to
    * arrange itself around the answer — not to redraw the frame, which is this component's job.
@@ -88,24 +92,16 @@ export interface EditorSurfaceProps extends OverlayCloseWords {
   /** Sheet height when it is a sheet. A non-modal sheet defaults to `half` so its subject stays visible. */
   size?: SheetSize;
   density?: EditorSurfaceDensity;
-  /**
-   * The system's five (`SurfaceState`), passed straight to whichever form is rendering. An editor
-   * is a surface: `unavailable` is the record no market pack covers — neutral, no retry — and it is
-   * not `error`, which offers one (law 1).
-   *
-   * The read this frame shows. Pass none when it holds static content: it draws `ready`. `failed`
-   * draws the error with its retry; `unavailable` draws none.
-   */
-  read?: SurfaceRead;
-  errorTitle?: string;
-  errorMessage?: string;
+  errorTitle?: TranslatedText;
+  errorMessage?: TranslatedText;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
-  emptyTitle?: string;
-  emptyMessage?: string;
+  retryLabel?: TranslatedText;
+  emptyTitle?: TranslatedText;
+  emptyMessage?: TranslatedText;
   emptyAction?: ReactNode;
-  unavailableTitle?: string;
-  unavailableMessage?: string;
+  /** No unavailable note is drawn without its title. */
+  unavailableTitle?: TranslatedText;
+  unavailableMessage?: TranslatedText;
   unavailableAction?: ReactNode;
   showClose?: boolean;
   dismissible?: boolean;
@@ -119,10 +115,31 @@ export interface EditorSurfaceProps extends OverlayCloseWords {
   /** Position inside the nearest positioned ancestor — device frames, specimen cards. The probe follows. */
   inset?: boolean;
   zIndex?: number;
-  /** Escape hatch for props only `Sheet` has. */
-  sheetProps?: Partial<SheetProps>;
-  /** Escape hatch for props only `DetailPanel` has. */
-  panelProps?: Partial<DetailPanelProps>;
+  /** Escape hatch for props only `Sheet` has. The read is the editor's own, never a form's. */
+  sheetProps?: Partial<Omit<SheetProps, 'read' | 'loadingLabel'>>;
+  /** Escape hatch for props only `DetailPanel` has. The read is the editor's own, never a form's. */
+  panelProps?: Partial<Omit<DetailPanelProps, 'read' | 'loadingLabel'>>;
   /** Carries `Modal`'s own chrome — `tone`, `icon`, `size` — for a decision. */
   modalProps?: Partial<ModalProps>;
 }
+
+/** An editor of static content: it draws `ready`. */
+interface EditorSurfaceStatic {
+  read?: undefined;
+  loadingLabel?: undefined;
+}
+
+/**
+ * The system's five (`SurfaceState`), passed straight to whichever form is rendering. An editor is
+ * a surface: `unavailable` is the record no market pack covers — neutral, no retry — and it is not
+ * `error`, which offers one (law 1).
+ */
+interface EditorSurfaceReading {
+  /** The read this frame shows: `failed` draws the error with its retry; `unavailable` none. */
+  read: SurfaceRead;
+  /** What is loading, spoken while the read is out. */
+  loadingLabel: TranslatedText;
+}
+
+export type EditorSurfaceProps = EditorSurfaceOwnProps &
+  (EditorSurfaceStatic | EditorSurfaceReading);

@@ -1,11 +1,14 @@
 import type { CSSProperties } from 'react';
+import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { closingPress } from '../../primitives/FocusAfter';
 import { Button } from '../Button/Button';
 import { useFormat } from '../MarketProvider';
 import { UnavailableNote } from '../UnavailableNote';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { applyFilter, filterDimensions } from './ActivityStream.filter';
 import { ACTIVITY_KINDS, sortEntries } from './ActivityStream.kinds';
+import { ACTIVITY_STREAM_DEFAULTS, streamMarkOf, streamStageOf } from './ActivityStream.logic';
 import type { ActivityStreamProps } from './ActivityStream.types';
 import { ActivityStreamList } from './ActivityStreamList';
 import { StreamMessage, StreamSkeleton } from './ActivityStreamStates';
@@ -25,97 +28,106 @@ export function ActivityStream({
   entries,
   kinds = {},
   total,
-  order = 'newest',
-  groupBy = 'day',
-  visibleCount = 25,
-  step = 25,
+  order = ACTIVITY_STREAM_DEFAULTS.order,
+  groupBy = ACTIVITY_STREAM_DEFAULTS.groupBy,
+  visibleCount = ACTIVITY_STREAM_DEFAULTS.visibleCount,
+  step = ACTIVITY_STREAM_DEFAULTS.step,
   hasMore = false,
   onLoadMore,
   loadingMore = false,
   filtered = false,
   onClearFilters,
   toolbar,
-  countLabel = 'entries',
-  todayLabel = 'Today',
-  yesterdayLabel = 'Yesterday',
+  countLabel,
+  todayLabel,
+  yesterdayLabel,
   read,
-  emptyTitle = 'No activity yet',
-  emptyDescription = 'Notes, calls, stage changes and payments all land here as they happen.',
-  filteredEmptyTitle = 'Nothing matches these filters',
-  filteredEmptyDescription = 'There is activity on this record — none of it is of the kinds you have picked.',
-  errorTitle = "Couldn't load the activity",
-  errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
+  emptyTitle,
+  emptyDescription,
+  filteredEmptyTitle,
+  filteredEmptyDescription,
+  errorTitle,
+  errorMessage,
   retryLabel,
-  unavailableTitle = 'No activity is kept here',
+  unavailableTitle,
   unavailableMessage,
-  density = 'expressive',
+  density = ACTIVITY_STREAM_DEFAULTS.density,
+  words,
   className,
   style,
 }: WebActivityStreamProps) {
-  const state = surfaceStateOf(read);
+  const stage = streamStageOf(surfaceStateOf(read), entries.length, filtered);
   const onRetry = retryOf(read);
   const format = useFormat();
   const { shown, reveal } = useActivityWindow(entries.length, visibleCount);
+  /* The stream's own frame in every state but `ready`: a failed read reloads into it, so *Try
+     again* hands focus to it. */
+  const holder = useRef<HTMLDivElement>(null);
 
   /* Sorted before any early return, and deliberately not memoised: a hook after a conditional
      return changes the hook order between states, which is how a state transition crashes. */
   const sorted = sortEntries(entries, order);
-  const circle = {
-    '--hg-stream-circle': density === 'functional' ? '32px' : '36px',
-  } as CSSProperties;
+  const circle = { '--hg-stream-circle': `${streamMarkOf(density).circle}px` } as CSSProperties;
   const frame = {
     className: classNames('hg-stream', className),
     'data-density': density,
     style: { ...circle, ...style },
   };
+  const stateFrame = {
+    ...frame,
+    className: classNames('hg-stream', 'hg-focus-target', className),
+    ref: holder,
+    tabIndex: -1,
+  };
 
-  if (state === 'loading') {
+  if (stage === 'loading') {
     return (
-      <div {...frame}>
-        <StreamSkeleton />
+      <div {...stateFrame}>
+        <StreamSkeleton label={words.loading} />
       </div>
     );
   }
-  if (state === 'error') {
+  if (stage === 'error') {
     return (
-      <div {...frame}>
+      <div {...stateFrame}>
         <StreamMessage
           tone="warning"
           title={errorTitle}
           message={errorMessage}
           onRetry={onRetry}
           retryLabel={retryLabel}
+          focusAfter={holder}
         />
       </div>
     );
   }
-  if (state === 'unavailable') {
+  if (stage === 'unavailable') {
     return (
-      <div {...frame}>
+      <div {...stateFrame}>
         <UnavailableNote variant="region" title={unavailableTitle} message={unavailableMessage} />
       </div>
     );
   }
-  /* `timeline-filtered` with nothing in it is NOT "no activity yet" — the record is not empty, the
-     filter is narrow, and the sentence has to say which is true or the reader clears the wrong
-     thing. The action clears the filters; it never offers to add activity. */
-  if (state === 'empty' || entries.length === 0) {
-    if (!filtered) {
-      return (
-        <div {...frame}>
-          <StreamMessage title={emptyTitle} message={emptyDescription} />
-        </div>
-      );
-    }
+  if (stage === 'empty') {
     return (
-      <div {...frame}>
+      <div {...stateFrame}>
+        <StreamMessage title={emptyTitle} message={emptyDescription} focusAfter={holder} />
+      </div>
+    );
+  }
+  /* `timeline-filtered`: the act clears the filters; it never offers to add activity. */
+  if (stage === 'filtered-empty') {
+    return (
+      <div {...stateFrame}>
         <StreamMessage
           title={filteredEmptyTitle}
           message={filteredEmptyDescription}
+          focusAfter={holder}
           action={
+            /* Clearing takes the filtered-empty state away: focus goes to the stream that stays. */
             onClearFilters !== undefined ? (
-              <Button variant="secondary" size="md" onClick={onClearFilters}>
-                Clear filters
+              <Button variant="secondary" size="md" onClick={closingPress(holder)(onClearFilters)}>
+                {words.clearFilters}
               </Button>
             ) : null
           }
@@ -140,6 +152,7 @@ export function ActivityStream({
         countLabel={countLabel}
         todayLabel={todayLabel}
         yesterdayLabel={yesterdayLabel}
+        words={words}
         density={density}
         total={total}
         onLoadMore={onLoadMore}

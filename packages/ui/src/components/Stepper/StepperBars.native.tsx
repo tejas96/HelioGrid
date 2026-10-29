@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
@@ -7,7 +8,7 @@ import type { StepperStep } from './Stepper.types';
 import type { BarsVariant } from './stepper-bars';
 
 interface BarsProps {
-  steps: (StepperStep | string)[];
+  steps: (StepperStep | TranslatedText)[];
   index: number;
   style?: StyleProp<ViewStyle>;
 }
@@ -34,7 +35,7 @@ function PlainBars({ steps, index, style }: BarsProps) {
 }
 
 interface NumberedBarsProps extends BarsProps {
-  label?: string;
+  label?: TranslatedText;
 }
 
 /**

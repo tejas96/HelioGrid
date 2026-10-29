@@ -1,5 +1,7 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
-import type { ActorClassName } from '../ActorClass';
+import type { MarketFormat } from '../../utils/format';
+import type { ActorClassName, ActorClassWords } from '../ActorClass';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { SurfaceRead } from '../UnavailableNote';
 
@@ -15,8 +17,8 @@ export interface ActivityEntry {
    * What kind of thing happened. **An open vocabulary** — the default registry covers `SCR-M02-04`'s
    * thirteen (`note`, `call`, `agent-call`, `stage`, `assignment`, `proposal`, `link-open`, `survey`,
    * `design`, `sign-off`, `payment`, `document`, `task`, `system`) plus `dunning` and `reversal`, and
-   * an unknown kind renders with a neutral mark and a humanised label. Extend it through `kinds`
-   * rather than editing the component.
+   * an unknown kind renders with a neutral mark and its code as its name until a screen names it.
+   * Extend it through `kinds` rather than editing the component.
    */
   kind: string;
   /** When it happened — a `Date`, an ISO string or an epoch. Drives day grouping and the clock. */
@@ -44,13 +46,46 @@ export interface ActivityEntry {
 export type ActivityTone = 'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'info';
 
 export interface ActivityKindSpec {
-  label: string;
+  label: TranslatedText;
   tone?: ActivityTone;
   /**
    * A glyph name from the built-in set: note, phone, flag, user, doc, link, clipboard, grid, check,
    * rupee, cog, bell, undo, dot.
    */
   glyph?: string;
+}
+
+/** How the default registry draws a kind; its name is the words' `kind`. */
+export type ActivityKindLook = Omit<ActivityKindSpec, 'label'>;
+
+/**
+ * `@heliogrid/i18n`'s `activityStreamWords`: what the stream draws and speaks of its own — and what
+ * `filterDimensions` names its options with.
+ */
+export interface ActivityStreamWords {
+  /** The loading form's name. */
+  readonly loading: TranslatedText;
+  /** The filtered empty state's act. */
+  readonly clearFilters: TranslatedText;
+  /** *Show more* while the next page is out. */
+  readonly loadingMore: TranslatedText;
+  /** *Show more*, with how many it reveals. */
+  readonly showMore: (count: number) => TranslatedText;
+  /** The count line — the whole, in the pack's figures, with the caller's noun (`countLabel`). */
+  readonly count: (total: string, noun: string) => TranslatedText;
+  /** The count line of a window: how many are shown of the whole, and whether filters narrowed it. */
+  readonly countOf: (
+    shown: string,
+    total: string,
+    noun: string,
+    filtered: boolean,
+  ) => TranslatedText;
+  /** A kind's name: the default registry's, or the code itself for a kind no registry names. */
+  readonly kind: (kind: string) => TranslatedText;
+  /** Each entry's actor line, and the classes as the filter offers them (`actorClassWords`). */
+  readonly actor: ActorClassWords;
+  /** Why the actor dimension tells the agent, the system and the customer apart. */
+  readonly actorHint: TranslatedText;
 }
 
 export interface ActivityStreamProps {
@@ -86,25 +121,61 @@ export interface ActivityStreamProps {
   onClearFilters?: () => void;
   /** Header-right slot — where the screen's `FiltersButton` and `FacetChips` go. */
   toolbar?: ReactNode;
-  /** The noun in the count line. Default "entries". */
-  countLabel?: string;
+  /** The noun in the count line — "entries". */
+  countLabel: TranslatedText;
   /** Copy, not market-pack data: the day headings for today and yesterday. */
-  todayLabel?: string;
-  yesterdayLabel?: string;
+  todayLabel: TranslatedText;
+  yesterdayLabel: TranslatedText;
   /**
    * **Required:** what this draws always comes from a read. `failed` draws the error with its
    * retry; `unavailable` draws none.
    */
   read: SurfaceRead;
-  emptyTitle?: string;
-  emptyDescription?: string;
-  filteredEmptyTitle?: string;
-  filteredEmptyDescription?: string;
-  errorTitle?: string;
-  errorMessage?: string;
+  emptyTitle: TranslatedText;
+  emptyDescription?: TranslatedText;
+  filteredEmptyTitle: TranslatedText;
+  filteredEmptyDescription?: TranslatedText;
+  errorTitle: TranslatedText;
+  errorMessage?: TranslatedText;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
-  unavailableTitle?: string;
-  unavailableMessage?: string;
+  retryLabel?: TranslatedText;
+  unavailableTitle: TranslatedText;
+  unavailableMessage?: TranslatedText;
   density?: 'expressive' | 'functional';
+  words: ActivityStreamWords;
+}
+
+/* The inner parts' contracts (Law 7): both halves of a part implement the one interface. */
+
+export interface ActivityStreamListProps
+  extends Required<
+      Pick<
+        ActivityStreamProps,
+        | 'kinds'
+        | 'groupBy'
+        | 'step'
+        | 'hasMore'
+        | 'loadingMore'
+        | 'filtered'
+        | 'countLabel'
+        | 'todayLabel'
+        | 'yesterdayLabel'
+        | 'density'
+      >
+    >,
+    Pick<ActivityStreamProps, 'total' | 'onLoadMore' | 'toolbar' | 'words'> {
+  /** Already sorted; the window is applied here so the count line can state the whole. */
+  sorted: ActivityEntry[];
+  shown: number;
+  reveal: (step: number) => void;
+  format: MarketFormat;
+}
+
+export interface StreamEntryProps {
+  entry: ActivityEntry;
+  kinds: Record<string, ActivityKindSpec>;
+  /** A kind's name when `kinds` gives none, and the actor line's words. */
+  words: ActivityStreamWords;
+  density: 'expressive' | 'functional';
+  format: MarketFormat;
 }

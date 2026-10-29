@@ -8,6 +8,7 @@ import Svg, { Rect, Text as SvgText } from 'react-native-svg';
    identically, and no web bundler ever reads a .native.tsx. */
 import { Text } from '../../primitives/Text/Text.native';
 import { BrandGradientDefs } from '../../utils/brand-gradient.native';
+import { GRID, HELIO, PRODUCT_INITIAL, PRODUCT_NAME } from './Wordmark.name';
 import type { LogoTileProps, WordmarkProps } from './Wordmark.types';
 
 /** −0.03em, the system's own display tracking, expressed against the caller's size. */
@@ -17,8 +18,6 @@ const BASELINE = 0.78;
 /** Geist Bold's runs are about this many em wide; the measuring twins correct them on first layout. */
 const HELIO_WIDTH_EM = 2.6;
 const GRID_WIDTH_EM = 2.2;
-const HELIO = 'Helio';
-const GRID = 'Grid';
 
 interface NativeWordmarkProps extends WordmarkProps {
   style?: StyleProp<ViewStyle>;
@@ -77,7 +76,7 @@ export function Wordmark({ size = 22, tone = 'default', style }: NativeWordmarkP
   const [helioWidth, setHelioWidth] = useState(size * HELIO_WIDTH_EM);
   const [gridWidth, setGridWidth] = useState(size * GRID_WIDTH_EM);
   if (tone === 'mono') {
-    return <Text style={[base, style]}>HelioGrid</Text>;
+    return <Text style={[base, style]}>{PRODUCT_NAME}</Text>;
   }
   const run = {
     y: size * BASELINE,
@@ -90,7 +89,7 @@ export function Wordmark({ size = 22, tone = 'default', style }: NativeWordmarkP
     <View
       accessible
       accessibilityRole="text"
-      accessibilityLabel="HelioGrid"
+      accessibilityLabel={PRODUCT_NAME}
       style={[{ width: helioWidth + gridWidth, height: size }, style]}
     >
       <MeasuringTwin run={HELIO} type={base} onWidth={setHelioWidth} />
@@ -126,7 +125,7 @@ export function LogoTile({ size = 40, radius = 12, style }: NativeLogoTileProps)
     <View
       accessible
       accessibilityRole="image"
-      accessibilityLabel="HelioGrid"
+      accessibilityLabel={PRODUCT_NAME}
       style={[frame, theme.elevation.e2, style]}
     >
       <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
@@ -151,7 +150,7 @@ export function LogoTile({ size = 40, radius = 12, style }: NativeLogoTileProps)
           color: theme.colors['text-inverse'],
         }}
       >
-        H
+        {PRODUCT_INITIAL}
       </Text>
     </View>
   );

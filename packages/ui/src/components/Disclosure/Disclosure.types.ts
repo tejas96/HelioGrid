@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { RuledDisclosure } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 
@@ -28,7 +29,7 @@ export interface DisclosureSpec {
   /** Read **only** for `kind="custom"` — a market pack's own required line. */
   text?: string;
   /** The particulars: which figures, whose survey, as of when. Never a replacement for the line. */
-  detail?: string;
+  detail?: TranslatedText;
   /**
    * `screen` (default) — `--fs-body-lg` (17px) with a 700 lead clause, at or above every run of
    * prose around it, so the default surface is already in the reading flow (`F5-37`).
@@ -60,9 +61,9 @@ export interface DisclosureSetProps {
  */
 export interface DisclosureWords {
   /** The 700 lead clause. */
-  lead: (kind: RuledDisclosure) => string;
+  lead: (kind: RuledDisclosure) => TranslatedText;
   /** The verbatim sentence. */
-  line: (kind: RuledDisclosure) => string;
+  line: (kind: RuledDisclosure) => TranslatedText;
 }
 
 /** What every `disclosure` / `disclaimer` host prop runs through. */

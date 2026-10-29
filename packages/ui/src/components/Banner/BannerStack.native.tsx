@@ -1,10 +1,8 @@
-import type { ReactElement } from 'react';
-import { Children, isValidElement } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
-import { bannerRank, isNeverDismissible } from './Banner.kinds';
-import type { BannerProps, BannerStackProps } from './Banner.types';
+import { stackedBanners } from './Banner.logic';
+import type { BannerStackProps } from './Banner.types';
 
 interface NativeBannerStackProps extends BannerStackProps {
   style?: StyleProp<ViewStyle>;
@@ -22,29 +20,19 @@ export function BannerStack({
   mode = 'stack',
   max = 3,
   gap = 8,
+  moreLabel,
   style,
 }: NativeBannerStackProps) {
-  const items = Children.toArray(children).filter((child): child is ReactElement<BannerProps> =>
-    isValidElement<BannerProps>(child),
-  );
-  const ordered = [...items].sort((a, b) => bannerRank(a.props.kind) - bannerRank(b.props.kind));
-  const mandatory = ordered.filter((el) => isNeverDismissible(el.props.kind));
-  const rest = ordered.filter((el) => !isNeverDismissible(el.props.kind));
-  const room =
-    mode === 'single' ? (mandatory.length > 0 ? 0 : 1) : Math.max(0, max - mandatory.length);
-  const shown = [...mandatory, ...rest.slice(0, room)].sort(
-    (a, b) => bannerRank(a.props.kind) - bannerRank(b.props.kind),
-  );
-  const hidden = ordered.length - shown.length;
+  const { shown, hidden, saysMore } = stackedBanners(children, mode, max);
   if (shown.length === 0) {
     return null;
   }
   return (
     <View style={[styles.root, { gap }, style]}>
       {shown}
-      {mode === 'stack' && hidden > 0 ? (
+      {saysMore ? (
         <Text variant="caption" color="tertiary" style={styles.more}>
-          {`${hidden} more ${hidden === 1 ? 'notice' : 'notices'} on this screen`}
+          {moreLabel(hidden)}
         </Text>
       ) : null}
     </View>

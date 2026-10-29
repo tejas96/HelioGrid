@@ -8,40 +8,14 @@
 
 import { Text } from '../../primitives/Text';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
-import type { StatCardDeltaDir, StatCardSentiment } from './StatCard.types';
-import { DELTA_DIR_GLYPH } from './StatCardDelta.logic';
+import type { StatCardDeltaProps } from './StatCard.types';
+import { DELTA_DIR_GLYPH, deltaChipOf } from './StatCardDelta.logic';
 
-/** Sentiment: a tint AND a word. Neutral makes no claim, which is why it is the default. */
-const SENTIMENT_WORD: Record<StatCardSentiment, string | null> = {
-  good: 'better',
-  bad: 'worse',
-  neutral: null,
-};
-
-const DIR_WORD: Record<StatCardDeltaDir, string> = {
-  up: 'Up',
-  down: 'Down',
-  flat: 'No change',
-};
-
-export function StatCardDelta({
-  delta,
-  dir,
-  sentiment,
-  sentimentLabel,
-  suppressed,
-}: {
-  delta?: string;
-  dir: StatCardDeltaDir;
-  sentiment: StatCardSentiment;
-  sentimentLabel?: string;
-  /** The figure is a named gap, so there is nothing for a delta to be a change IN. */
-  suppressed: boolean;
-}) {
-  if (delta === undefined || delta === null || suppressed) {
-    return null;
-  }
-  const sentWord = sentimentLabel || SENTIMENT_WORD[sentiment];
+export function StatCardDelta({ dir, ...chipFacts }: StatCardDeltaProps) {
+  const chip = deltaChipOf(chipFacts);
+  if (chip === null) return null;
+  const { sentiment, words } = chipFacts;
+  const { delta, verdict: sentWord } = chip;
   return (
     <span className="hg-stat-card-delta" data-sentiment={sentiment}>
       {/* Direction's channel: the arrow. Sentiment's: the tint AND the word after it. */}
@@ -61,13 +35,17 @@ export function StatCardDelta({
       {/* NAME_FROM_CONTENT (check h): the arrow is hidden, so DIRECTION is carried in words — and
           those words are CONTENT here where the native half folds the whole chip into one
           `accessibilityLabel`. Through the DS `Text` primitive so the name source is declared
-          rather than left in a clipped `<span>` the parity gate cannot read. */}
-      <Text as="span" spokenOnly>{`${DIR_WORD[dir]} `}</Text>
-      {delta}
+          rather than left in a clipped `<span>` the parity gate cannot read. The direction and the
+          figure are one phrase, in the order the reader's language says them, so the drawn
+          figure is hidden from the screen reader that hears it there. */}
+      <Text as="span" spokenOnly>
+        {words.moved(dir, delta)}
+      </Text>
+      <span aria-hidden="true">{delta}</span>
       {sentWord ? (
         <>
           <span aria-hidden="true" className="hg-stat-card-delta-sep">
-            ·
+            {'·'}
           </span>
           <span>{sentWord}</span>
         </>

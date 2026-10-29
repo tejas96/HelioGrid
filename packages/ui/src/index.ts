@@ -171,6 +171,8 @@ export type {
 export { Box, Stack } from './primitives/Box';
 export type { FieldProps } from './primitives/Field';
 export { Field } from './primitives/Field';
+export type { FocusAfter, FocusHandle, LeavingPress } from './primitives/FocusAfter';
+export { useFocusAfter } from './primitives/FocusAfter';
 export type { IconProps, IconSize } from './primitives/Icon';
 export { AttentionGlyph, ICON_SIZE, Icon } from './primitives/Icon';
 export type { KeyboardFrameProps, KeyboardHostProps } from './primitives/Keyboard';

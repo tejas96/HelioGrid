@@ -1,22 +1,10 @@
+import { useFocusAfter } from '../../primitives/FocusAfter';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
-import type { ComplianceFloorSpec } from '../ComplianceFloor';
 import { ComplianceFloor } from '../ComplianceFloor';
-import { weekdayOf } from '../DatePicker/calendar-grid';
-import type { MarketFormat } from '../DatePicker/DatePicker.types';
 import { ValueSource } from '../ValueSource';
-import type { DateSetEntry } from './DateSet.types';
+import { dateRowReading } from './DateSet.logic';
+import type { DateSetRowProps } from './DateSet.types';
 import { floorFor } from './date-set-floor';
-
-export interface DateSetRowProps {
-  entry: DateSetEntry;
-  mkt: MarketFormat;
-  packName: string;
-  floor: ComplianceFloorSpec | undefined;
-  /** True while this row's removal is the one that was just refused. */
-  blocked: boolean;
-  density: 'expressive' | 'functional';
-  onRemove?: (date: string, spokenName: string) => void;
-}
 
 /** One date. Deletability follows origin: a tenant row has a 44px delete, a pack row has the floor. */
 export function DateSetRow({
@@ -24,13 +12,15 @@ export function DateSetRow({
   mkt,
   packName,
   floor,
+  words,
+  floorWords,
   blocked,
   density,
   onRemove,
+  focusAfter,
 }: DateSetRowProps) {
-  const d = new Date(`${entry.date}T00:00:00`);
-  const pack = entry.origin === 'pack';
-  const spoken = entry.name ?? mkt.date(d);
+  const row = dateRowReading({ entry, mkt, packName, words, onRemove });
+  const leaving = useFocusAfter(focusAfter);
   return (
     <li
       className="hg-date-set-row"
@@ -39,10 +29,8 @@ export function DateSetRow({
     >
       <div className="hg-date-set-row-body">
         <span className="hg-date-set-row-head">
-          <span className="hg-date-set-row-date">{mkt.date(d)}</span>
-          <span className="hg-date-set-row-weekday">
-            {weekdayOf(d, mkt.weekdayNames('long'), mkt.firstDayOfWeek)}
-          </span>
+          <span className="hg-date-set-row-date">{row.date}</span>
+          <span className="hg-date-set-row-weekday">{row.weekday}</span>
         </span>
         {entry.name === undefined ? null : (
           <span className="hg-date-set-row-name">{entry.name}</span>
@@ -50,20 +38,18 @@ export function DateSetRow({
         {/* ORIGIN AS PERSISTENT CONTENT — never a tone and never a tooltip (`F8-07`). It is the
             same which-layer-supplied-this the rates panel renders, so it is the same component:
             `inherited` · "India market pack" against `own` · "Added by you". */}
-        <ValueSource
-          level={pack ? 'inherited' : 'own'}
-          layerName={pack ? packName : 'Added by you'}
-          source={pack ? 'Market holiday' : (entry.addedBy ?? 'Tenant holiday')}
-        />
+        <ValueSource {...row.origin} />
         {/* Deletability follows origin: the floor takes the delete's place. */}
-        {pack ? <ComplianceFloor {...floorFor(entry, packName, floor)} /> : null}
+        {row.pack ? (
+          <ComplianceFloor {...floorFor(entry, packName, floor, words, floorWords)} />
+        ) : null}
       </div>
-      {!pack && onRemove !== undefined ? (
+      {row.remove === null ? null : (
         <button
           type="button"
           className="hg-date-set-delete"
-          aria-label={`Remove ${spoken}`}
-          onClick={() => onRemove(entry.date, spoken)}
+          aria-label={words.remove(row.spoken)}
+          onClick={leaving(row.remove)}
         >
           <svg
             width="18"
@@ -79,7 +65,7 @@ export function DateSetRow({
             <ShellGlyphMarks name="trash" />
           </svg>
         </button>
-      ) : null}
+      )}
     </li>
   );
 }

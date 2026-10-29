@@ -1,21 +1,27 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 
 /**
  * The same vocabulary `Stepper` uses one component over (`M05-03`): the state is a word, not a colour.
- * `errors` shows "N to fix" from `errorCount`, sets `aria-invalid` on the header, marks the state
- * word and its dot in the danger tone, and **opens the section** — a system that refuses a save must
+ * `errors` sets `aria-invalid` on the header, marks the state word — the caller's *3 to fix* — and its
+ * dot in the danger tone, and **opens the section** — a system that refuses a save must
  * not then hide which of eight sections to fix (`M07-19`). The section takes no tint: it is a heading
  * on the page, and its body may hold a field (`F7-49`). Every other word reads beside the title
  * (`standingPlace`), a marked state's with a dot before it.
  */
 export type AccordionItemState = 'default' | 'done' | 'empty' | 'errors';
 
+/**
+ * A section, and where it stands. `stateLabel` is the state's word — *Done*, *Empty*, *3 to fix*, or a
+ * screen's own vocabulary (`M06-27`'s Selected) — in the reader's language. The standing (the word
+ * and its dot) is drawn only when the word is given.
+ */
 export interface AccordionItem {
   key: string;
-  title: string;
+  title: TranslatedText;
   /** Right-aligned micro text — a count, a status ("12 items"). **Not a tier**, and not a total. */
-  meta?: string;
+  meta?: TranslatedText;
   /**
    * The sum this section's own lines come to (`M05-71`'s *own total*) — mono, tabular, right of the
    * meta. Law 16's rule holds here: `total` is a **sum of the parts shown**, never a denominator, a
@@ -31,10 +37,9 @@ export interface AccordionItem {
   /** A header action — `M05-71`'s "Refresh from design". A **sibling** of the toggle, never inside it. */
   action?: ReactNode;
   state?: AccordionItemState;
-  /** `errors` → "3 to fix". */
+  /** How many things in an `errors` section need fixing — the count the caller's `stateLabel` says. */
   errorCount?: number;
-  /** Replaces the state's default word, for a section vocabulary of the screen's own (`M06-27`). */
-  stateLabel?: string;
+  stateLabel?: TranslatedText;
   /**
    * The tier for a figure this section header summarises (`F8-01` / `F8-07`) — beside the meta, which
    * is where the figure already is. Keeps tiers out of `meta` as free text.
@@ -42,6 +47,9 @@ export interface AccordionItem {
   provenance?: ProvenanceProps | ProvenanceTierSpec;
   content: ReactNode;
 }
+
+/** The three states that carry a word and a mark. `default` carries neither unless asked to. */
+export type AccordionMarkedState = Exclude<AccordionItemState, 'default'>;
 
 export interface AccordionProps {
   items: AccordionItem[];
@@ -55,23 +63,9 @@ export interface AccordionProps {
   density?: 'expressive' | 'functional';
 }
 
-/** The three states that carry a word and a mark. `default` carries neither unless asked to. */
-export type AccordionMarkedState = Exclude<AccordionItemState, 'default'>;
-
-/**
- * The word the header prints. `stateLabel` always wins, so a screen with its own section vocabulary
- * (`M06-27`'s Selected / Empty) replaces the default without losing the mark.
- */
-export function accordionStateWord(item: AccordionItem): string | undefined {
-  if (item.stateLabel !== undefined) return item.stateLabel;
-  if (item.state === 'errors') {
-    return item.errorCount !== undefined && item.errorCount > 0
-      ? `${item.errorCount} to fix`
-      : 'Needs fixing';
-  }
-  if (item.state === 'done') return 'Done';
-  if (item.state === 'empty') return 'Empty';
-  return undefined;
+/** The word the header prints — always the caller's, so a marked state keeps its mark beside it. */
+export function accordionStateWord(item: AccordionItem): TranslatedText | undefined {
+  return item.stateLabel;
 }
 
 /**

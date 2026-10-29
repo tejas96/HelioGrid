@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 /** Take control of the retry lifecycle. Omit to let the component run its own. */
@@ -10,9 +11,9 @@ export type NoConnectionStatus = 'idle' | 'trying' | 'failed';
  * Says nothing about sync, because the product queues nothing.
  */
 export interface NoConnectionProps {
-  title?: string;
+  title: TranslatedText;
   /** Sentence case, states the fact and the fix. Never mentions sync, queues or pending work. */
-  message?: string;
+  message: TranslatedText;
   /**
    * The retry. Return `false` or reject to say it failed and the screen will say so; return a
    * promise that resolves to anything else (or nothing at all) and the screen assumes the host is
@@ -24,11 +25,16 @@ export interface NoConnectionProps {
    * The retry's words, from `packages/i18n` — required: the retry is this screen's only action, and
    * an English default would reach a Hindi or Marathi reader.
    */
-  retryLabel: string;
+  retryLabel: TranslatedText;
   /** Shown when a retry came back with nothing. */
-  failedMessage?: string;
+  failedMessage: TranslatedText;
   /** Shown when a retry never answered inside `retryTimeout`. */
-  timeoutMessage?: string;
+  timeoutMessage: TranslatedText;
+  /**
+   * The outcome line once the component ran the retry itself: the failure `message` it was handed,
+   * then when it was last tried — one sentence, so a language may order the two its own way.
+   */
+  lastTriedSentence: (message: TranslatedText, time: string) => TranslatedText;
   /** Milliseconds before an unanswered retry is called unanswered rather than left spinning. */
   retryTimeout?: number;
   /** Take control of the retry lifecycle. Omit to let the component run its own. */

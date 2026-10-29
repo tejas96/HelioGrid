@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { ValueSourceLevel, ValueSourceSpec } from '../ValueSource';
 
@@ -7,8 +8,8 @@ export type TextareaDensity = 'expressive' | 'functional';
 export interface TextareaProps {
   value?: string;
   onChange?: (value: string) => void;
-  label?: string;
-  placeholder?: string;
+  label?: TranslatedText;
+  placeholder?: TranslatedText;
   rows?: number;
   /** Shows a counter that warns before it blocks. */
   maxLength?: number;
@@ -25,7 +26,7 @@ export interface TextareaProps {
   attribution?: ValueSourceSpec | ValueSourceLevel | ReactNode;
   density?: TextareaDensity;
   disabled?: boolean;
-  helper?: string;
-  error?: string;
+  helper?: TranslatedText;
+  error?: TranslatedText;
   name?: string;
 }

@@ -1,9 +1,10 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactElement, ReactNode } from 'react';
-import type { ActionReasonSpec } from '../ActionReason/ActionReason.types';
+import type { ActionReasonInput } from '../ActionReason/ActionReason.types';
 
 export interface MenuItem {
   key?: string;
-  label?: string;
+  label?: TranslatedText;
   icon?: ReactNode;
   /** Right-aligned micro text — a shortcut, a count. **Not a mark**: use `marks`. */
   meta?: string;
@@ -25,7 +26,7 @@ export interface MenuItem {
    * disabled, because a skipped item is one whose reason a keyboard user can never hear; selection
    * still refuses it.
    */
-  disabledReason?: ReactNode | ActionReasonSpec;
+  disabledReason?: ActionReasonInput;
   onSelect?: () => void;
   /** Renders a gap instead of an item. */
   separator?: boolean;
@@ -44,7 +45,8 @@ export interface MenuProps {
   items: MenuItem[];
   /** Custom trigger element. Defaults to a 44×44 overflow button. */
   trigger?: ReactElement;
-  label?: string;
+  /** The menu's accessible name, and the default trigger's — "More actions". */
+  label: TranslatedText;
   align?: MenuAlign;
   width?: number;
   /**

@@ -1,8 +1,10 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { ActionReasonInput } from '../ActionReason/ActionReason.types';
 
 export interface SegmentedOption {
   value: string;
-  label: string;
+  label: TranslatedText;
   /**
    * BCP-47 tag for this segment's own words when they differ from the page's — a language
    * picker's हिन्दी read under English rules fails `F3-03`'s accessible name. Omitted, the segment
@@ -30,12 +32,12 @@ export interface SegmentedOption {
    * **still focusable**, and the sentence renders under the control, tied to it by
    * `aria-describedby`.
    */
-  disabledReason?: ReactNode | { reason: ReactNode };
+  disabledReason?: ActionReasonInput;
 }
 
 export interface SegmentedControlProps {
-  /** array of {value,label,count,marks,disabled} or plain strings */
-  options: (SegmentedOption | string)[];
+  /** array of {value,label,count,marks,disabled} — a label is words, so never a bare value string */
+  options: SegmentedOption[];
   value: string;
   onChange?: (value: string) => void;
   /**
@@ -43,13 +45,13 @@ export interface SegmentedControlProps {
    * required choice needs one: step 3 of the proposal builder puts ONGRID / OFFGRID / HYBRID in
    * this control, and a highlighted field with no name is a highlight of nothing.
    */
-  label?: string;
+  label?: TranslatedText;
   /**
    * The group's spoken name when its visible name sits outside it — a settings row's label to its
    * left (`SCR-M01-11` at 1536) — so no second visible line is drawn. It makes the control a field,
    * as `label` does; `label` wins.
    */
-  ariaLabel?: string;
+  ariaLabel?: TranslatedText;
   /**
    * **The caller's validation failure** — danger ring on the pill container, danger words under
    * it, `aria-invalid` on the group, described rather than announced. `M06-22` (P0) kills the
@@ -62,5 +64,5 @@ export interface SegmentedControlProps {
    * `aria-invalid` is not supported on `role="group"`, so the field form could not state its own
    * failure while the plain view-switcher form (a row of buttons, no role) is right as it is.
    */
-  error?: ReactNode;
+  error?: TranslatedText;
 }

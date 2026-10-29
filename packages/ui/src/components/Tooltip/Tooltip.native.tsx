@@ -1,9 +1,9 @@
 import { theme } from '@heliogrid/theme';
-import { useCallback, useEffect, useRef, useState } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TooltipPlacement, TooltipProps } from './Tooltip.types';
+import { useDelayedOpen } from './use-delayed-open';
 
 interface NativeTooltipProps extends TooltipProps {
   style?: StyleProp<ViewStyle>;
@@ -36,20 +36,7 @@ export function Tooltip({
   delay = 300,
   style,
 }: NativeTooltipProps) {
-  const [open, setOpen] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  const show = useCallback(() => {
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setOpen(true), delay);
-  }, [delay]);
-
-  const hide = useCallback(() => {
-    clearTimeout(timer.current);
-    setOpen(false);
-  }, []);
-
-  useEffect(() => () => clearTimeout(timer.current), []);
+  const { open, show, hide } = useDelayedOpen(delay);
 
   return (
     <View

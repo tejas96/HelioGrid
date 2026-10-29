@@ -17,6 +17,7 @@ import {
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { type ExplainerWords, explainerPagerWords } from './explainer';
+import { phoneFieldWords } from './phone-field';
 import { SIGN_IN } from './sign-in';
 
 /** A tinted block's words on the door: what happened, and why when the title alone does not say. */
@@ -68,6 +69,8 @@ export interface GoogleLinkWords {
   readonly anotherAccount: { readonly underTile: TranslatedText; readonly short: TranslatedText };
   readonly useNumber: { readonly label: TranslatedText; readonly aria: TranslatedText };
   readonly phoneLabel: TranslatedText;
+  /** The number box's spoken name. */
+  readonly phoneField: ReturnType<typeof phoneFieldWords>;
   /** The field's own answer to a number of the wrong length; absent as the step opens. */
   readonly phoneError: TranslatedText | undefined;
   readonly send: { readonly label: TranslatedText; readonly aria: TranslatedText } | null;
@@ -106,6 +109,7 @@ export function googleLinkWords(
     },
     useNumber: { label: t(SIGN_IN.useMyNumberInstead), aria: t(SIGN_IN.useMyNumberInsteadLabel) },
     phoneLabel: t(SIGN_IN.mobileNumber),
+    phoneField: phoneFieldWords(translate),
     phoneError:
       problem === null
         ? undefined

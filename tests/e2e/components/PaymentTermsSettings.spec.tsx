@@ -207,9 +207,14 @@ for (const width of WIDTHS) {
       await expect(body.getByText(en.unreadTitle)).toBeVisible();
       await body.getByRole('button', { name: en.tryAgain }).click();
       expect(retried).toBe(1);
+      /* The read goes out again, and the retry leaves with its banner: focus waits on the head,
+         which stays through the wait and the list that follows it. */
+      await body.update(<PaymentTermsAsHeld reader="en" wide={wide} list="loading" />);
+      const head = body.locator('.hg-pay-head');
+      await expect(head).toBeFocused();
       await body.update(<PaymentTermsAsHeld reader="en" wide={wide} />);
       await expect(body.getByRole('heading', { name: en.yourTerms })).toBeVisible();
-      await expect(body.locator('[tabindex="-1"]').filter({ hasText: en.yourTerms })).toBeFocused();
+      await expect(head).toBeFocused();
     });
 
     test('Hindi and Marathi at 375 and 1536', async ({ mount, page }) => {

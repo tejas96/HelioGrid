@@ -1,13 +1,15 @@
 import type { ReactNode } from 'react';
 import { createContext, useCallback, useMemo, useState } from 'react';
-import type { DerivationGroupProps, DerivationPart } from './Derivation.types';
-import { partsKey } from './Derivation.types';
+import type { DerivationGroupProps, DerivationKindWords, DerivationPart } from './Derivation.types';
+import { kindWordsKey, partsKey } from './Derivation.types';
 
 export interface DerivationEntry {
   id: string;
   label: ReactNode;
   summary: ReactNode;
   parts: DerivationPart[];
+  /** The panel's kind headings, so the appendix heads each part as the panel does. */
+  kindWords: DerivationKindWords;
 }
 
 /**
@@ -46,7 +48,8 @@ export function useDerivationGroup(
       if (
         current !== undefined &&
         partsKey(current.parts) === partsKey(data.parts) &&
-        current.label === data.label
+        current.label === data.label &&
+        kindWordsKey(current.kindWords) === kindWordsKey(data.kindWords)
       ) {
         return previous;
       }

@@ -1,4 +1,7 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
+import type { ImageWords } from '../Image/Image.types';
 
 export interface SourceDocumentPage {
   url: string;
@@ -6,7 +9,7 @@ export interface SourceDocumentPage {
   width?: number;
   height?: number;
   /** A page caption — "Page 2 · Electrical characteristics". */
-  label?: string;
+  label?: TranslatedText;
 }
 
 export type SourceDocumentFit = 'width' | 'page';
@@ -23,11 +26,33 @@ export type SourceDocumentFit = 'width' | 'page';
  */
 export type SourceDocumentState = 'auto' | 'loading' | 'ready' | 'unsupported' | 'failed' | 'empty';
 
+/** What the frame actually shows — `auto` resolved against the pages it was handed. */
+export type ResolvedDocumentState = Exclude<SourceDocumentState, 'auto'>;
+
+/**
+ * `@heliogrid/i18n`'s `sourceDocumentWords`: what the document draws and speaks of its own — its
+ * frame's name, its loading name, a page's description, and the paging and fit controls.
+ */
+export interface SourceDocumentWords {
+  /** The frame's name when the caller gives no `label` — "contract.pdf — source document". */
+  readonly named: (name: string) => TranslatedText;
+  /** The loading page's name — "Loading contract.pdf". */
+  readonly loading: (name: string) => TranslatedText;
+  /** A page with no caption of its own — "contract.pdf, page 2 of 9". */
+  readonly pageOf: (name: string, page: number, count: number) => TranslatedText;
+  readonly previousPage: TranslatedText;
+  readonly nextPage: TranslatedText;
+  readonly fitWidth: TranslatedText;
+  readonly fitPage: TranslatedText;
+  /** Each page's frame: what a page that did not load says (`@heliogrid/i18n`'s `imageWords`). */
+  readonly image: ImageWords;
+}
+
 export interface SourceDocumentProps {
   /** The file as the user knows it — its own name, in mono, never renamed by the product. */
-  name?: string;
+  name: string;
   /** Beside the name: "PDF · 2.4 MB · uploaded 12 Mar 2026". The caller's words. */
-  meta?: string;
+  meta?: TranslatedText;
   /** One entry per page, in document order. */
   pages?: SourceDocumentPage[];
   page?: number;
@@ -45,18 +70,20 @@ export interface SourceDocumentProps {
    */
   originalUrl?: string;
   onOpenOriginal?: () => void;
-  openLabel?: string;
+  openLabel: TranslatedText;
   onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
-  unsupportedTitle?: string;
-  unsupportedMessage?: string;
-  failedTitle?: string;
-  failedMessage?: string;
-  emptyTitle?: string;
-  emptyMessage?: string;
-  label?: string;
+  retryLabel?: TranslatedText;
+  unsupportedTitle: TranslatedText;
+  unsupportedMessage?: TranslatedText;
+  failedTitle: TranslatedText;
+  failedMessage?: TranslatedText;
+  emptyTitle: TranslatedText;
+  emptyMessage?: TranslatedText;
+  /** The frame's name; without it, the file's name said as what it is. */
+  label?: TranslatedText;
   density?: 'expressive' | 'functional';
+  words: SourceDocumentWords;
 }
 
 export interface ReadAlongsideProps {
@@ -69,8 +96,53 @@ export interface ReadAlongsideProps {
   documentWidth?: number | string;
   stackedHeight?: number;
   expandedHeight?: number;
-  expandLabel?: string;
-  collapseLabel?: string;
+  /** The stacked arrangement's toggle, closed and open. */
+  expandLabel: TranslatedText;
+  collapseLabel: TranslatedText;
   gap?: number;
-  label?: string;
+  label?: TranslatedText;
+}
+
+/* The inner parts' contracts (Law 7): both halves of a part implement the one interface. */
+
+export interface SourceDocumentHeaderProps {
+  name: string;
+  meta?: TranslatedText;
+  resolved: ResolvedDocumentState;
+  /** Zero-based; the reader is shown `pageNumber + 1`. */
+  pageNumber: number;
+  count: number;
+  fit: SourceDocumentFit;
+  onPage: (n: number) => void;
+  onFit: (f: SourceDocumentFit) => void;
+  originalUrl?: string;
+  onOpenOriginal?: () => void;
+  openLabel: TranslatedText;
+  words: SourceDocumentWords;
+}
+
+export interface SourceDocumentBodyProps {
+  resolved: ResolvedDocumentState;
+  name: string;
+  page: SourceDocumentPage | null;
+  /** Zero-based; the reader is shown `pageNumber + 1`. */
+  pageNumber: number;
+  count: number;
+  aspect: number;
+  bodyHeight: number;
+  fit: SourceDocumentFit;
+  originalUrl?: string;
+  onOpenOriginal?: () => void;
+  openLabel: TranslatedText;
+  onRetry?: () => void;
+  retryLabel?: TranslatedText;
+  unsupportedTitle: TranslatedText;
+  unsupportedMessage?: TranslatedText;
+  failedTitle: TranslatedText;
+  failedMessage?: TranslatedText;
+  emptyTitle: TranslatedText;
+  emptyMessage?: TranslatedText;
+  words: SourceDocumentWords;
+  /** The document's frame, which stays while a failed file reloads. */
+  focusAfter: FocusAfter;
 }

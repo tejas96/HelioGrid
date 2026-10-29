@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { IrisTile } from '../IrisTile/IrisTile.native';
+import { cellLeadOf } from './DataTableCell.logic';
 import type { DataTableColumn } from './DataTableColumn.types';
 
 /** Quiet under a bold name. Bare words take the caption face; nodes bring their own. */
@@ -35,9 +36,9 @@ export function CellLead<Row>({
   column: DataTableColumn<Row>;
   children: ReactNode;
 }) {
-  const leading = column.leading?.(row) ?? null;
-  const sub = column.sub?.(row) ?? null;
-  if (leading === null && sub === null) return children;
+  const lead = cellLeadOf(row, column);
+  if (lead === null) return children;
+  const { leading, sub } = lead;
 
   return (
     <View style={styles.lead}>

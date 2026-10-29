@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
@@ -8,9 +9,10 @@ import { Portal } from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { listPlacement } from './Select.logic';
 import type { SelectDensity, SelectOption, SelectProps } from './Select.types';
 import { SelectListbox } from './SelectListbox.native';
-import { normaliseOptions } from './select-options';
+import { committableOption, normaliseOptions, openingIndex, pickedOption } from './select-options';
 
 interface NativeSelectProps extends SelectProps {
   style?: StyleProp<ViewStyle>;
@@ -27,7 +29,6 @@ interface Anchor {
 }
 
 const GAP = theme.spacing['sp-2'];
-const MIN_BELOW = 160;
 
 /**
  * Web measures the nearest CLIPPING ANCESTOR; RN has no such box, so the equivalent measurement is
@@ -35,12 +36,10 @@ const MIN_BELOW = 160;
  * shortens to fit rather than assuming "8dp under the trigger, 260dp tall".
  */
 function anchorFor(x: number, y: number, w: number, h: number, windowHeight: number): Anchor {
-  const below = windowHeight - (y + h) - GAP;
-  const above = y - GAP;
-  const up = below < MIN_BELOW && above > below;
+  const { up, max } = listPlacement(windowHeight - (y + h) - GAP, y - GAP);
   return {
     left: x,
-    max: Math.max(120, Math.min(260, up ? above : below)),
+    max,
     top: y + h + GAP,
     up,
     width: w,
@@ -50,14 +49,14 @@ function anchorFor(x: number, y: number, w: number, h: number, windowHeight: num
 }
 
 interface TriggerProps {
-  accessibilityLabel?: string;
+  accessibilityLabel?: TranslatedText;
   current?: SelectOption;
   density: SelectDensity;
   disabled: boolean;
   errored: boolean;
   onPress: () => void;
   open: boolean;
-  placeholder: string;
+  placeholder: TranslatedText;
 }
 
 /** The borderless trigger: the picked label (or the placeholder) and the chevron. */
@@ -123,19 +122,19 @@ export function Select({
   onChange,
   options = [],
   label,
-  placeholder = 'Select an option',
+  placeholder,
   density = 'expressive',
   disabled = false,
   helper,
   error,
   ariaLabel,
+  closeLabel,
   style,
 }: NativeSelectProps) {
   const [anchor, setAnchor] = useState<Anchor | null>(null);
   const wrapRef = useRef<View>(null);
   const opts = normaliseOptions(options);
-  const current = opts.find((option) => option.value === value);
-  const selectedIndex = opts.findIndex((option) => option.value === value);
+  const current = pickedOption(opts, value);
 
   const toggle = () => {
     if (anchor !== null) {
@@ -148,8 +147,8 @@ export function Select({
   };
 
   const commit = (index: number) => {
-    const option = opts[index];
-    if (option === undefined || option.disabled === true) {
+    const option = committableOption(opts, index);
+    if (option === undefined) {
       return;
     }
     onChange?.(option.value);
@@ -186,7 +185,7 @@ export function Select({
               reader, this list's own portal layer included, so its options would not be read. */}
           <View style={StyleSheet.absoluteFill} pointerEvents="box-none" accessibilityViewIsModal>
             <Pressable
-              accessibilityLabel="Close the list"
+              accessibilityLabel={closeLabel}
               onPress={() => setAnchor(null)}
               style={StyleSheet.absoluteFill}
             >
@@ -205,7 +204,7 @@ export function Select({
               ]}
             >
               <SelectListbox
-                activeIndex={Math.max(0, selectedIndex)}
+                activeIndex={openingIndex(opts, value)}
                 maxHeight={anchor.max}
                 onCommit={commit}
                 options={opts}

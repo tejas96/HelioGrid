@@ -1,7 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef, useState } from 'react';
 import type { DimensionValue, LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
-import { AccessibilityInfo, Animated, Easing, StyleSheet, View } from 'react-native';
+import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { useReducedMotion } from '../../primitives/use-reduced-motion';
 import { BrandGradientFill } from '../ProgressBar/BrandGradientFill.native';
 import type { IndeterminateRailProps } from './PendingAction.types';
 
@@ -53,27 +54,6 @@ function useTravel(trackWidth: number, reduce: boolean) {
   return progress;
 }
 
-/** `prefers-reduced-motion` for RN. */
-function useReduceMotion() {
-  const [reduce, setReduce] = useState(false);
-  useEffect(() => {
-    let alive = true;
-    AccessibilityInfo.isReduceMotionEnabled()
-      .then((enabled) => {
-        if (alive) {
-          setReduce(enabled);
-        }
-      })
-      .catch(() => undefined);
-    const sub = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduce);
-    return () => {
-      alive = false;
-      sub.remove();
-    };
-  }, []);
-  return reduce;
-}
-
 /**
  * The travelling segment. `width` is the rail; `thickness` its height.
  *
@@ -87,7 +67,7 @@ export function IndeterminateRail({
   gradient = false,
   style,
 }: NativeIndeterminateRailProps) {
-  const reduce = useReduceMotion();
+  const reduce = useReducedMotion();
   const [trackWidth, setTrackWidth] = useState(typeof width === 'number' ? width : 0);
   const progress = useTravel(trackWidth, reduce);
 

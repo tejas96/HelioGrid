@@ -1,5 +1,8 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
-import type { SurfaceRead } from '../UnavailableNote';
+import type { FocusAfter } from '../../primitives/FocusAfter';
+import type { ActorClassWords } from '../ActorClass';
+import type { SurfaceRead, SurfaceState } from '../UnavailableNote';
 
 /**
  * The two fixed participants. Not `ActorClassName`'s four: a third speaker in a call transcript is
@@ -33,6 +36,45 @@ export interface LanguageSwitch {
 /** The call's language. A string or `{name}`. **Per transcript, not per turn.** */
 export type TranscriptLanguage = string | { name: string; code?: string } | null;
 
+/** A mid-call change as the language sentence says it: the language, and when (`m:ss`, if known). */
+export interface TranscriptSpokenSwitch {
+  readonly to: string;
+  readonly at: string | null;
+}
+
+/**
+ * `@heliogrid/i18n`'s `transcriptWords`: what the transcript draws and speaks of its own — the
+ * language sentence and the switch marker, the count line, each turn's speaker and seek name,
+ * and the reveal control.
+ */
+export interface TranscriptWords {
+  /** The loading form's name. */
+  readonly loading: TranslatedText;
+  /** The named gap when the call's language was never recorded. */
+  readonly languageNotRecorded: TranslatedText;
+  /** "In Hindi" — or "In Hindi, switched to English at 2:38". */
+  readonly language: (
+    language: string,
+    switches: readonly TranscriptSpokenSwitch[],
+  ) => TranslatedText;
+  /** The marker in the flow where the language changed, with its offset when known. */
+  readonly switchedTo: (language: string, time: string | null) => TranslatedText;
+  /** "12 turns · Suryodaya agent and Anil Kulkarni" — the participants' names, when given. */
+  readonly count: (count: number, names: readonly string[]) => TranslatedText;
+  /** Each turn's speaker, in the actor line's own words (`actorClassWords`) — not a second set. */
+  readonly actor: ActorClassWords;
+  /** Whose turn an offset seeks into. */
+  readonly turn: Readonly<Record<TranscriptParty, TranslatedText>>;
+  /** The seek control's name: the offset, and whose turn it is. */
+  readonly playFrom: (offset: string, turn: string) => TranslatedText;
+  /** The reveal control while the next page is out. */
+  readonly loadingMore: TranslatedText;
+  /** The reveal control while turns already handed over are unshown. */
+  readonly showRest: (count: number) => TranslatedText;
+  /** The reveal control once it asks the caller for the next page. */
+  readonly showMore: TranslatedText;
+}
+
 export interface TranscriptProps {
   turns: TranscriptTurn[];
   language?: TranscriptLanguage;
@@ -45,11 +87,11 @@ export interface TranscriptProps {
   /** The participants' names. `agentName` is the tenant's agent, not the class word. */
   agentName?: string;
   customerName?: string;
-  title?: string;
+  title: TranslatedText;
   /** The call's identity line — "12 Mar 2026, 4:12 pm · 4 min 12 sec · outbound". */
-  meta?: string;
+  meta?: TranslatedText;
   /** Why the words are here when the audio is not: "Recording deleted 14 Jun 2026 · transcript retained". */
-  retainedNote?: string;
+  retainedNote?: TranslatedText;
   /** Seconds currently playing — marks the turn, so the words and the audio stay in step. */
   currentAt?: number;
   /** Given **only** while the recording is playable. Absent, the offsets stay as legible text. */
@@ -64,12 +106,56 @@ export interface TranscriptProps {
   total?: number;
   /** Required: what this draws always comes from a read, and a failed read carries its retry. */
   read: SurfaceRead;
-  emptyTitle?: string;
-  emptyDescription?: string;
-  errorMessage?: string;
+  emptyTitle: TranslatedText;
+  emptyDescription?: TranslatedText;
+  /** The failed state's one line — it draws no title. */
+  errorMessage: TranslatedText;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
-  unavailableTitle?: string;
-  unavailableMessage?: string;
+  retryLabel?: TranslatedText;
+  unavailableTitle: TranslatedText;
+  unavailableMessage?: TranslatedText;
   density?: 'expressive' | 'functional';
+  words: TranscriptWords;
+}
+
+/* The inner parts' contracts (Law 7): both halves of a part implement the one interface. */
+
+export interface TranscriptPlaceholderProps {
+  state: SurfaceState;
+  turnCount: number;
+  density: 'expressive' | 'functional';
+  emptyTitle: TranslatedText;
+  emptyDescription?: TranslatedText;
+  errorMessage: TranslatedText;
+  onRetry?: () => void;
+  retryLabel?: TranslatedText;
+  unavailableTitle: TranslatedText;
+  unavailableMessage?: TranslatedText;
+  /** The loading form's name. */
+  loadingLabel: TranslatedText;
+  /** The transcript's frame, which stays while a failed read reloads. */
+  focusAfter: FocusAfter;
+}
+
+export interface TranscriptTurnListProps {
+  /** The turns currently on screen — the window, not the whole call. */
+  turns: TranscriptTurn[];
+  /** Turn index → the language it switched to. */
+  marks: Record<number, string>;
+  currentAt?: number;
+  agentName?: string;
+  customerName?: string;
+  onSeek?: (seconds: number) => void;
+  density: 'expressive' | 'functional';
+  words: TranscriptWords;
+}
+
+export interface TranscriptTurnRowProps {
+  turn: TranscriptTurn;
+  current: boolean;
+  agentName?: string;
+  customerName?: string;
+  onSeek?: (seconds: number) => void;
+  density: 'expressive' | 'functional';
+  words: TranscriptWords;
 }

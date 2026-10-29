@@ -17,6 +17,8 @@ import { LANGUAGE_META } from '../languages';
 import type { MessageRef, Translator } from '../runtime';
 import { namedInItself } from './assembled';
 import { languageSwitcherWords } from './language-switcher';
+import { numberFieldWords } from './number-field';
+import { reorderListWords } from './reorder-list';
 import { richTextWords } from './rich-text';
 import { settingsRowName, settingsSavedLine } from './settings';
 
@@ -178,6 +180,8 @@ export function proposalTemplateWords(t: T) {
     title: settingsRowName(t, 'proposal_templates'),
     richText: richTextWords(t),
     languageSwitcher: languageSwitcherWords(t),
+    reorderList: reorderListWords(t),
+    numberField: numberFieldWords(t),
     counts: {
       totalCapacityInstalledKw: t(COUNT_NAME.totalCapacityInstalledKw),
       happyCustomers: t(COUNT_NAME.happyCustomers),

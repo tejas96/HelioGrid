@@ -3,8 +3,9 @@
    `accessibilityLabel` names it without making it a leaf, so each step stays separately
    reachable. The rail is neutral: nothing is done or current here, so nothing is lit. */
 
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { TranslatedText } from '@heliogrid/contracts';
 import { View } from 'react-native';
+import { stepKeyOf } from './Timeline.logic';
 import { pickedIndex } from './Timeline.pick';
 import type { TimelineDensity, TimelineItem } from './Timeline.types';
 import { TimelinePickStep } from './TimelinePickStep.native';
@@ -15,21 +16,19 @@ export function TimelinePick({
   onChange,
   label,
   density,
-  style,
 }: {
   items: TimelineItem[];
   value: string | undefined;
   onChange: (id: string) => void;
-  label: string | undefined;
+  label: TranslatedText | undefined;
   density: TimelineDensity;
-  style?: StyleProp<ViewStyle>;
 }) {
   const picked = pickedIndex(items, value);
   return (
-    <View accessibilityRole="radiogroup" accessibilityLabel={label} style={style}>
+    <View accessibilityRole="radiogroup" accessibilityLabel={label}>
       {items.map((item, index) => (
         <TimelinePickStep
-          key={item.id ?? `${index}-${item.label}`}
+          key={stepKeyOf(item, index)}
           item={item}
           checked={index === picked}
           density={density}

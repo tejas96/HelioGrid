@@ -63,6 +63,7 @@ export function DoorLinkStep({
       <div className="hg-door-link-form">
         <PhoneField
           label={words.phoneLabel}
+          words={words.phoneField}
           value={phone}
           onChange={onPhone}
           disabled={frame.kind === 'link-locked'}

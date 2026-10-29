@@ -27,3 +27,6 @@ export const CMD: ToolCommand[] = [
 ];
 
 export const LINK_GLYPH: ShellGlyphName = 'link-wide';
+
+/** The link field's hint: a scheme, read the same in every language. */
+export const LINK_SCHEME = 'https://';

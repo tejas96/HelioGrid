@@ -1,8 +1,10 @@
-import { createTranslator, provenanceWords } from '@heliogrid/i18n';
+import type { TranslatedText } from '@heliogrid/contracts';
+import { createTranslator, numberFieldWords, provenanceWords } from '@heliogrid/i18n';
 import { NumberField, type ProvenanceEmphasis, ProvenanceWordsProvider } from '@heliogrid/ui';
 import { useState } from 'react';
 
 const en = await createTranslator('en');
+const WORDS = numberFieldWords(en.t);
 
 /**
  * A number field as a screen holds it: the figure lives here, in the browser, and arrives only
@@ -21,7 +23,7 @@ export function HeldNumberField({
   clears = false,
   currency = false,
 }: {
-  label: string;
+  label: TranslatedText;
   unit: string;
   /** None: the field starts unset. */
   initial?: number;
@@ -43,6 +45,7 @@ export function HeldNumberField({
   return (
     <ProvenanceWordsProvider value={provenanceWords(en.t)}>
       <NumberField
+        words={WORDS}
         label={label}
         unit={unit}
         value={value}
@@ -66,10 +69,17 @@ export function HeldNumberField({
 }
 
 /** A field named the two ways a screen names one: a drawn `label`, or an `ariaLabel` alone. */
-export function NamedNumberField({ label, ariaLabel }: { label?: string; ariaLabel?: string }) {
+export function NamedNumberField({
+  label,
+  ariaLabel,
+}: {
+  label?: TranslatedText;
+  ariaLabel?: TranslatedText;
+}) {
   const [value, setValue] = useState<number | undefined>(undefined);
   return (
     <NumberField
+      words={WORDS}
       {...(label === undefined ? {} : { label })}
       {...(ariaLabel === undefined ? {} : { ariaLabel })}
       unit="%"

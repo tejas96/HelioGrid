@@ -1,41 +1,24 @@
-import {
-  useCatalogImport,
-  useCatalogImportFixes,
-  useCatalogImportLists,
-  useCatalogImports,
-} from '@heliogrid/data/react';
-import { importListStep } from '@heliogrid/domain';
+import { useCatalogImportPanel } from '@heliogrid/data/react';
 import { catalogImportNotes, catalogImportWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import { CatalogImport, IMPORT_FILE_ACCEPT, IMPORT_FILE_MAX_MB } from '@heliogrid/ui';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { pickSpreadsheet } from '../../../files/pick-document';
 
-/** A job that could not be read is said as an act that did not go through. */
-const READ_FAILED = { conflict: false };
-
-/** How many kept reports show before *Show more*. */
-const KEPT_PAGE = 20;
-
 /**
- * The import wizard opened from Catalog settings on the phone (`SCR-M01-17`): the data hooks read
- * and write the import, the catalog's words name it, `CatalogImport` draws it as a sheet. The file
- * comes from the system's document picker (`src/files/pick-document.ts`). Mounted only while open,
- * so each opening starts on the file step with nothing held from the last.
+ * The import wizard opened from Catalog settings on the phone (`SCR-M01-17`): what it draws is
+ * `useCatalogImportPanel`'s, the web's too; the catalog's words name it, `CatalogImport` draws it
+ * as a sheet. The file comes from the system's document picker (`src/files/pick-document.ts`).
+ * Mounted only while open, so each opening starts on the file step with nothing held from the last.
  */
 export function ImportSheet({ onClose }: { onClose: () => void }) {
   const { t } = useI18n();
   const { top } = useSafeAreaInsets();
   const words = useMemo(() => catalogImportWords(t), [t]);
   const notes = useMemo(() => catalogImportNotes(t), [t]);
-  const wizard = useCatalogImport('settings');
-  const [scope, setScope] = useState<string | null>(null);
-  const [query, setQuery] = useState('');
-  const step = importListStep(wizard.frame, wizard.status);
-  const fixes = useCatalogImportFixes(wizard.jobId, step, wizard.takeCounts);
-  const lists = useCatalogImportLists(wizard.jobId, step, query);
-  const kept = useCatalogImports(wizard.frame === 'empty', KEPT_PAGE);
+  const panel = useCatalogImportPanel();
+  const { wizard, fixes } = panel;
   const requestFile = () =>
     void pickSpreadsheet()
       .then((file) => {
@@ -70,18 +53,14 @@ export function ImportSheet({ onClose }: { onClose: () => void }) {
       mapping={wizard.draft}
       onSheet={wizard.chooseSheet}
       onHeaderRow={wizard.chooseHeaderRow}
-      kept={{
-        rows: kept.read.kind === 'ready' ? kept.read.value : [],
-        hasMore: kept.hasNextPage,
-        onMore: () => void kept.fetchNextPage(),
-      }}
+      kept={panel.kept}
       onOpenKept={wizard.reopen}
       onPlace={wizard.placeColumn}
-      lists={lists}
-      scope={scope}
-      onScope={(group) => setScope((now) => (now === group ? null : group))}
-      query={query}
-      onQuery={setQuery}
+      lists={panel.lists}
+      scope={panel.scope}
+      onScope={panel.toggleScope}
+      query={panel.query}
+      onQuery={panel.search}
       fixed={fixes.fixed}
       busy={fixes.busy}
       onFix={(card, target, body, undo) => void fixes.fix(card, target, body, undo)}
@@ -92,9 +71,7 @@ export function ImportSheet({ onClose }: { onClose: () => void }) {
       onRun={() => void wizard.run()}
       onStopWatching={onClose}
       onFixOpenRows={wizard.fixOpenRows}
-      notice={notes.notice(
-        wizard.failure ?? fixes.failure ?? (wizard.jobRead?.kind === 'failed' ? READ_FAILED : null),
-      )}
+      notice={notes.notice(panel.failure)}
     />
   );
 }

@@ -1,13 +1,15 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { MarkInView } from '@heliogrid/domain';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import type { CoachMarkProps } from './CoachMark.types';
 
 /** The words a first-run mark shows — `firstRunMarkWords` and `firstRunMarkLabels` in `i18n`. */
 export interface FirstRunMarkWords {
-  title: string;
-  body: string;
-  counterLabel: string;
-  nextLabel: string;
-  dismissLabel: string;
+  title: TranslatedText;
+  body: TranslatedText;
+  counterLabel: TranslatedText;
+  nextLabel: TranslatedText;
+  dismissLabel: TranslatedText;
 }
 
 /**
@@ -20,20 +22,20 @@ export function firstRunMarkProps(
   inView: Pick<MarkInView, 'step' | 'total'>,
   words: FirstRunMarkWords,
   actions: { onPass: (step: number) => void; onDismiss: () => void },
+  /** The control the mark points at, which takes the focus once the run has closed. */
+  focusAfter: FocusAfter,
 ): CoachMarkProps {
   const { step, total } = inView;
-  const counted = total > 1;
-  return {
+  const mark = {
     open: true,
     ring: true,
     title: words.title,
     body: words.body,
-    step: counted ? step : undefined,
-    total: counted ? total : undefined,
-    counterLabel: words.counterLabel,
     nextLabel: words.nextLabel,
     dismissLabel: words.dismissLabel,
     onNext: step < total ? () => actions.onPass(step) : undefined,
     onDismiss: actions.onDismiss,
+    focusAfter,
   };
+  return total > 1 ? { ...mark, step, total, counterLabel: words.counterLabel } : mark;
 }

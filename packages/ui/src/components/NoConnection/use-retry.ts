@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { NoConnectionProps, NoConnectionStatus } from './NoConnection.types';
 
@@ -96,12 +97,11 @@ export function useRetryLifecycle(
 /** The one place the screen is allowed to be specific: what actually happened last time. */
 export function failureSentence(
   failure: RetryFailure | null,
-  failedMessage: string,
-  timeoutMessage: string,
-): string | null {
+  words: Pick<NoConnectionProps, 'failedMessage' | 'timeoutMessage' | 'lastTriedSentence'>,
+): TranslatedText | null {
   if (failure === null) {
     return null;
   }
-  const head = failure.kind === 'timeout' ? timeoutMessage : failedMessage;
-  return failure.at === null ? head : `${head} Last tried at ${failure.at}.`;
+  const head = failure.kind === 'timeout' ? words.timeoutMessage : words.failedMessage;
+  return failure.at === null ? head : words.lastTriedSentence(head, failure.at);
 }

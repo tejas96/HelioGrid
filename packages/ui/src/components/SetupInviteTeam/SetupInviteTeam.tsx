@@ -1,5 +1,6 @@
 import { numberOnTeam, sendsNothing } from '@heliogrid/domain';
 import { useEffect, useRef } from 'react';
+import type { FocusHandle } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { useDesktopShell } from '../AppShell/use-desktop-shell';
@@ -8,7 +9,6 @@ import { Button } from '../Button/Button';
 import { IconCircle } from '../Card/Card';
 import { DoorFrame } from '../DoorFrame/DoorFrame';
 import { InviteForm } from '../InviteForm/InviteForm';
-import type { FocusHandle } from '../SearchField/SearchField.types';
 import type { SetupInviteAfterStep, SetupInviteTeamProps } from './SetupInviteTeam.types';
 
 /* The board's `stepCircle`: each step's mark in a 44 circle (`SCR-M01-07` d-default). */
@@ -96,7 +96,11 @@ export function SetupInviteTeam({
         layout={wide ? 'wide' : 'stacked'}
         presses={presses}
         refusal={refusal}
-        refusalAction={<BannerAction onClick={onOpenTeam}>{words.openTeam}</BannerAction>}
+        refusalAction={
+          <BannerAction onClick={onOpenTeam} focusAfter={onward}>
+            {words.openTeam}
+          </BannerAction>
+        }
         phoneRef={phoneRef}
       />
     </DoorFrame>

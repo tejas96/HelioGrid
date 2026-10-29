@@ -1,5 +1,5 @@
 import { type TranslatedText, UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
-import { withLatinDigits } from '@heliogrid/domain';
+import { inLanguage, type PackLabel, withLatinDigits } from '@heliogrid/domain';
 import { type I18n, type Messages, setupI18n } from '@lingui/core';
 import { LANGUAGE_META, loadCatalog, SOURCE_CATALOG } from './languages';
 
@@ -67,6 +67,15 @@ function wordsOf(
   values?: Record<string, unknown>,
 ): TranslatedText {
   return i18n._(idOf(message), values) as TranslatedText;
+}
+
+/**
+ * The other source of words: a market pack's own label in the reader's language — a tax id's
+ * format line, a routing code's name (`F3-05`'s fallback to English where the pack has none).
+ * The pack authors it per language, so it is words, minted here like the catalog's.
+ */
+export function packWords(label: PackLabel, reader: UiLanguage): TranslatedText {
+  return inLanguage(label, reader) as TranslatedText;
 }
 
 function translatorFor(i18n: I18n, locale: UiLanguage): Translator {

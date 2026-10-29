@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
@@ -6,6 +7,7 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFocusRequest } from '../../primitives/use-focus-request';
 import type { NumberDraftState } from './NumberField.state';
+import type { NumberFieldWords } from './NumberField.types';
 
 const styles = StyleSheet.create({
   /* The well and its edge ring are FieldBox's; the padding gives up the edge's width so the
@@ -50,11 +52,12 @@ export interface NumberFieldBoxProps {
   /** Refusal or error — the danger edge; while focused the edge is the focus ring instead. */
   danger: boolean;
   /** The field's accessible name — its `label`, or its `ariaLabel` when no label is drawn. */
-  name?: string;
+  name?: TranslatedText;
   unit?: string;
   currency: boolean;
   /** `NumberFieldProps.focusRequest`. */
   focusRequest?: number;
+  words: Pick<NumberFieldWords, 'decrease' | 'increase'>;
 }
 
 /** The control itself: the two nudge targets (each a Pressable, so each is 44px), and the figure. */
@@ -68,10 +71,10 @@ export function NumberFieldBox({
   unit,
   currency,
   focusRequest,
+  words,
 }: NumberFieldBoxProps) {
   const control = useRef<TextInput>(null);
   useFocusRequest(control, focusRequest);
-  const stepperName = name ?? 'value';
   const ink = disabled ? 'disabled' : 'secondary';
   return (
     <View
@@ -86,11 +89,11 @@ export function NumberFieldBox({
         <Pressable
           style={styles.step}
           disabled={disabled}
-          accessibilityLabel={`Decrease ${stepperName}`}
+          accessibilityLabel={words.decrease(name)}
           onPress={() => draft.nudge(-1)}
         >
           <Text variant="field-value" color={ink}>
-            −
+            {'−'}
           </Text>
         </Pressable>
       ) : null}
@@ -121,11 +124,11 @@ export function NumberFieldBox({
         <Pressable
           style={styles.step}
           disabled={disabled}
-          accessibilityLabel={`Increase ${stepperName}`}
+          accessibilityLabel={words.increase(name)}
           onPress={() => draft.nudge(1)}
         >
           <Text variant="field-value" color={ink}>
-            +
+            {'+'}
           </Text>
         </Pressable>
       ) : null}

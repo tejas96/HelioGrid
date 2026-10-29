@@ -8,30 +8,30 @@
 
 import { useFormat } from '../MarketProvider';
 import { renderProvenance } from '../Provenance';
-import { noPriceSentence } from './MoneySummary.sentences';
-import type { MoneySummaryProps, ResolvedMoney } from './MoneySummary.types';
+import { isPriceWithheld, noPriceSentence } from './MoneySummary.sentences';
+import type { MoneySummaryProps, MoneySummaryWords, ResolvedMoney } from './MoneySummary.types';
 
 export function MoneySummaryTotal({
   money,
+  words,
   payableLabel,
   provenance,
   note,
 }: {
   /** The server's resolved equation — the one money path (`F4-04`). */
   money: ResolvedMoney;
+  words: MoneySummaryWords;
   payableLabel: string;
   provenance?: MoneySummaryProps['provenance'];
   note?: MoneySummaryProps['note'];
 }) {
   const mkt = useFormat();
-  const defect = money.reconciliation !== null && !money.reconciliation.agrees;
-  const unresolved = money.unresolved.length > 0;
 
   return (
     <div data-keep-together="" className="hg-money-summary-total">
-      {defect || unresolved ? (
+      {isPriceWithheld(money) ? (
         <p role="alert" className="hg-money-summary-defect">
-          {noPriceSentence(money, mkt)}
+          {noPriceSentence(money, mkt, words)}
         </p>
       ) : (
         <>
@@ -41,7 +41,7 @@ export function MoneySummaryTotal({
           </div>
           {money.zeroOrBelow ? (
             <p role="alert" className="hg-money-summary-below-zero">
-              {`The deductions bring the payable to ${mkt.amount(money.payable)}. A figure at or below zero is not a refund — a warning here, a block at Generate.`}
+              {words.belowZero(mkt.amount(money.payable))}
             </p>
           ) : null}
           {provenance ? (
@@ -51,7 +51,10 @@ export function MoneySummaryTotal({
           ) : null}
           {money.reconciliation?.agrees ? (
             <p className="hg-money-summary-reconciled">
-              {`${money.reconciliation.label} reconciles · ${mkt.amount(money.reconciliation.amount)}`}
+              {words.reconciles(
+                money.reconciliation.label,
+                mkt.amount(money.reconciliation.amount),
+              )}
             </p>
           ) : null}
         </>

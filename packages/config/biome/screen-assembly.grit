@@ -1,0 +1,18 @@
+// A screen file holds markup and its platform adapters only (`T-SHELL-015`, F7-30): what both
+// platforms draw is assembled once, in the screen's packages/data hook. So a screen holds no local
+// state (`useState`; `useReducer` is refused by the apps' noRestrictedImports) and calls no
+// packages/domain function — it imports from domain only constants (UPPER_SNAKE) and types. A
+// platform adapter that must hold state carries a biome-ignore that names the platform.
+or {
+  JsCallExpression() as $state where {
+    $state <: r"(?s)^(?:React\.)?useState\s*(?:<.*?>)?\s*\(.*",
+    register_diagnostic(span=$state, message="Local state in a screen — the screen's hook in packages/data holds it, for both platforms.")
+  },
+  JsShorthandNamedImportSpecifier() as $name where {
+    $name <: r"^[a-z]\w*$",
+    $name <: within JsImport() as $import where {
+      $import <: r"(?s).*\bfrom\s+[\x22\x27]@heliogrid/domain[\x22\x27].*"
+    } ,
+    register_diagnostic(span=$name, message="A domain function called by a screen — the screen's hook in packages/data calls it, for both platforms.")
+  }
+}

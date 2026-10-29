@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Circle, Polyline, Svg } from 'react-native-svg';
+import { fenceKeyOf, routePointsOf } from './MapSurface.logic';
 import type { MapAccuracy, MapGeofence, MapRoutePoint } from './MapSurface.types';
 import { MAP_ACCENT, MAP_INFO } from './MapTokens.native';
 
@@ -22,6 +23,7 @@ const styles = StyleSheet.create({
  * shapes do; the widths below are chosen against the same 0–100 space the web half uses.
  */
 export function MapVectors({ geofences, accuracy, route }: MapVectorsProps) {
+  const routePoints = routePointsOf(route);
   return (
     <Svg
       viewBox="0 0 100 100"
@@ -33,7 +35,7 @@ export function MapVectors({ geofences, accuracy, route }: MapVectorsProps) {
     >
       {geofences.map((fence) => (
         <Circle
-          key={String(fence.id ?? `${fence.x}-${fence.y}-${fence.r}`)}
+          key={fenceKeyOf(fence)}
           cx={fence.x}
           cy={fence.y}
           r={fence.r}
@@ -58,9 +60,9 @@ export function MapVectors({ geofences, accuracy, route }: MapVectorsProps) {
           strokeDasharray={[1.4, 1.2]}
         />
       )}
-      {route !== null && route.length > 1 ? (
+      {routePoints === null ? null : (
         <Polyline
-          points={route.map((p) => `${p.x},${p.y}`).join(' ')}
+          points={routePoints}
           fill="none"
           stroke={MAP_ACCENT}
           strokeWidth={0.8}
@@ -68,7 +70,7 @@ export function MapVectors({ geofences, accuracy, route }: MapVectorsProps) {
           strokeLinejoin="round"
           strokeOpacity={0.85}
         />
-      ) : null}
+      )}
     </Svg>
   );
 }

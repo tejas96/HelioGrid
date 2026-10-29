@@ -1,4 +1,5 @@
 import { theme } from '@heliogrid/theme';
+import { type RefObject, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { AllocationMeter } from '../AllocationMeter/AllocationMeter.native';
@@ -7,7 +8,6 @@ import { Banner } from '../Banner/Banner.native';
 import { BannerAction } from '../Banner/BannerAction.native';
 import { Button } from '../Button/Button.native';
 import { Card } from '../Card/Card.native';
-import { useRetryFocus } from '../CatalogItems/use-retry-focus.native';
 import { Badge } from '../Chip/Chip.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
@@ -20,9 +20,15 @@ import type { PaymentTermsCardView, PaymentTermsListProps } from './PaymentTerms
  */
 export function PaymentTermsList(props: PaymentTermsListProps) {
   const { title, read } = props;
+  /* *Try again* leaves with the failure: the screen reader goes to the head, which stays while the
+     list reloads. */
+  const head = useRef<View>(null);
   return (
     <View style={styles.page}>
-      <View style={[styles.head, title === undefined ? styles.underBarTitle : styles.titled]}>
+      <View
+        ref={head}
+        style={[styles.head, title === undefined ? styles.underBarTitle : styles.titled]}
+      >
         {title === undefined ? null : <Text variant="h2">{title}</Text>}
         {read.kind === 'ready' && props.savedLine !== undefined ? (
           <Text variant="caption" color="secondary">
@@ -30,15 +36,14 @@ export function PaymentTermsList(props: PaymentTermsListProps) {
           </Text>
         ) : null}
       </View>
-      <ListBody {...props} />
+      <ListBody {...props} head={head} />
       {props.aside}
     </View>
   );
 }
 
-function ListBody(props: PaymentTermsListProps) {
+function ListBody({ head, ...props }: PaymentTermsListProps & { head: RefObject<View | null> }) {
   const { words } = props;
-  const focus = useRetryFocus(props.read.kind);
   if (props.read.kind === 'loading') {
     return <LoadingBars label={words.loading} bars={['panel', 'panel', 'panel']} />;
   }
@@ -49,7 +54,9 @@ function ListBody(props: PaymentTermsListProps) {
         density="functional"
         title={words.unreadTitle}
         action={
-          <BannerAction onClick={focus.retrying(props.read.retry)}>{words.tryAgain}</BannerAction>
+          <BannerAction onClick={props.read.retry} focusAfter={head}>
+            {words.tryAgain}
+          </BannerAction>
         }
       />
     );
@@ -63,7 +70,7 @@ function ListBody(props: PaymentTermsListProps) {
       ) : null}
       <View style={styles.terms}>
         <View style={styles.termsHead}>
-          <View ref={focus.target} style={styles.grow} accessible accessibilityRole="header">
+          <View style={styles.grow} accessible accessibilityRole="header">
             <Text variant="body-sm" bold>
               {props.archived ? words.archivedTitle : words.yourTerms}
             </Text>
@@ -77,7 +84,7 @@ function ListBody(props: PaymentTermsListProps) {
               spokenName={words.archivedCount(props.archivedCount)}
               onClick={props.onToggleArchived}
             >
-              {String(props.archivedCount)}
+              {words.archivedShown(props.archivedCount)}
             </Button>
             {props.archived ? null : (
               <IconButton label={words.addTerms} size={36} variant="surface" onClick={props.onAdd}>

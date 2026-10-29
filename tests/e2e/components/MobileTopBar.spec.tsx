@@ -153,14 +153,14 @@ test('a bar with content scrolled under it lifts on --e2; at the top it has no s
 }) => {
   const resting = await mount(
     <div>
-      <MobileTopBar {...words} title="Team" />
+      <MobileTopBar {...words} title={settingsRowName(en.t, 'team')} />
     </div>,
   );
   await expect(resting.getByRole('banner')).toHaveCSS('box-shadow', 'none');
   await resting.unmount();
   const lifted = await mount(
     <div>
-      <MobileTopBar {...words} title="Team" scrolled />
+      <MobileTopBar {...words} title={settingsRowName(en.t, 'team')} scrolled />
     </div>,
   );
   const shadow = await page.evaluate(() => {

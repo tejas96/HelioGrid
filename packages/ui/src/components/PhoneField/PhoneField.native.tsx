@@ -1,4 +1,3 @@
-import { nationalNumber } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useImperativeHandle, useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
@@ -7,6 +6,7 @@ import { FIELD_BOX_EDGE, fieldBox, fieldBoxText } from '../../primitives/FieldBo
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/MarketProvider.native';
+import { e164Of } from './PhoneField.logic';
 import type { PhoneFieldDensity, PhoneFieldProps, PhoneValueProps } from './PhoneField.types';
 
 interface NativePhoneFieldProps extends PhoneFieldProps {
@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
  */
 export function PhoneField({
   label,
+  words,
   value = '',
   onChange,
   density = 'expressive',
@@ -86,11 +87,7 @@ export function PhoneField({
 
   const shown = mkt.phone(value, { nsn: true });
 
-  /* A number pasted whole carries its `+` and code, which the box already shows beside it. */
-  const commit = (typed: string): void => {
-    const entered = nationalNumber(mkt.pack, typed);
-    onChange?.(entered.length === 0 ? '' : `${dialCode}${entered}`);
-  };
+  const commit = (typed: string): void => onChange?.(e164Of(mkt.pack, typed));
 
   const message = error ?? helper;
 
@@ -116,7 +113,7 @@ export function PhoneField({
           ref={input}
           autoFocus={autoFocus}
           // The whole number, so the reader hears one number rather than a code and some groups.
-          accessibilityLabel={`${label}, ${mkt.phone(value)}`}
+          accessibilityLabel={words.spokenNumber(label, mkt.phone(value))}
           editable={!disabled && !readOnly}
           keyboardType="phone-pad"
           textContentType="telephoneNumber"

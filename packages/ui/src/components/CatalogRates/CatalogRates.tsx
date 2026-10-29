@@ -1,13 +1,13 @@
 import { PRICE_BOOK_RATE_BASES, type PriceBookRateBasis } from '@heliogrid/domain';
-import { type RefObject, useState } from 'react';
+import { useState } from 'react';
 import { Text } from '../../primitives/Text/Text';
 import { useOwnWidth } from '../../primitives/use-own-width';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
+import { RetryButton } from '../Button/RetryButton';
 import { Card } from '../Card';
 import { CATALOG_WIDE_FROM } from '../CatalogItems/CatalogItems.rows';
 import { CatalogStripBar } from '../CatalogItems/CatalogStrip';
-import { useRetryFocus } from '../CatalogItems/use-retry-focus';
 import { Badge, Chip } from '../Chip';
 import { DataTable } from '../DataTable';
 import { EmptyState } from '../EmptyState';
@@ -27,43 +27,38 @@ export function CatalogRates(props: CatalogRatesProps) {
   const { words, read } = props;
   const [room, width] = useOwnWidth();
   const wide = width !== null && width >= CATALOG_WIDE_FROM;
-  const focus = useRetryFocus(read.kind);
+  /* *Try again* leaves with the failure: focus goes to the panel, which stays while it reloads. */
   return (
-    <div className="hg-cat-rates" ref={room} data-wide={wide ? 'true' : undefined}>
+    <div
+      ref={room}
+      tabIndex={-1}
+      className="hg-cat-rates hg-focus-target"
+      data-wide={wide ? 'true' : undefined}
+    >
       {read.kind === 'failed' ? (
         <EmptyState
           glow={false}
           icon={<ShellGlyph name="alert-circle" size="xl" />}
           title={words.loadFailed}
           action={
-            <Button variant="secondary" size="lg" onClick={focus.retrying(read.retry)}>
-              {words.tryAgain}
-            </Button>
+            <RetryButton size="lg" onRetry={read.retry} label={words.tryAgain} focusAfter={room} />
           }
         />
       ) : read.kind === 'loading' ? (
         <LoadingBars label={words.loading} bars={['row', 'row', 'row', 'row']} />
       ) : (
-        <RatesReady props={props} wide={wide} focusRef={focus.target} />
+        <RatesReady props={props} wide={wide} />
       )}
     </div>
   );
 }
 
 /** The strip and the rates in force, or the first-day teaching. */
-function RatesReady({
-  props,
-  wide,
-  focusRef,
-}: {
-  props: CatalogRatesProps;
-  wide: boolean;
-  focusRef: RefObject<HTMLDivElement | null>;
-}) {
+function RatesReady({ props, wide }: { props: CatalogRatesProps; wide: boolean }) {
   const { words } = props;
   return (
     <>
-      <CatalogStripBar strip={props.strip} focusRef={focusRef} />
+      <CatalogStripBar strip={props.strip} />
       {props.rates.length === 0 ? (
         <EmptyState
           glow={false}
@@ -154,6 +149,7 @@ function RatesTable({
             value={query}
             onChange={setQuery}
             onClear={() => setQuery('')}
+            clearLabel={words.clearSearch}
           />
         </span>
         <fieldset className="hg-cat-rates-bases" aria-label={words.chargedLabel}>
@@ -173,6 +169,7 @@ function RatesTable({
         </fieldset>
       </div>
       <DataTable<CatalogRate>
+        {...words.table}
         read={read}
         rows={matchingRates(rates, query, bases)}
         rowKey="key"

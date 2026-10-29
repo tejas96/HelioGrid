@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 /**
@@ -14,15 +15,23 @@ export interface DerivationPart {
   kind: DerivationKind;
   text: ReactNode;
   /** Overrides the kind's own heading. */
-  label?: string;
+  label?: TranslatedText;
 }
+
+/**
+ * Each kind's heading in the reader's language — `@heliogrid/i18n`'s `derivationWords(t).kinds`.
+ * A part with no `label` of its own is headed by its kind's word.
+ */
+export type DerivationKindWords = Readonly<Record<DerivationKind, TranslatedText>>;
 
 export interface DerivationProps {
   /** What number this explains — "Mounting rail · line 12". Also its key in the print appendix. */
   label?: ReactNode;
   /** The trigger words. Short by obligation: it sits on a table line forty times. */
-  summary?: ReactNode;
+  summary: TranslatedText;
   parts: DerivationPart[];
+  /** The kinds' headings — `derivationWords(t).kinds`. */
+  kindWords: DerivationKindWords;
   /** `cell` (default) — a 12px trigger under a value. `block` — a section under a headline figure. */
   variant?: 'cell' | 'block';
   open?: boolean;
@@ -49,17 +58,18 @@ export interface DerivationGroupProps {
    * them in place.
    */
   printAs?: 'appendix' | 'inline';
-  appendixTitle?: string;
+  /** The print appendix's heading — `derivationWords(t).appendixTitle`. */
+  appendixTitle: TranslatedText;
 }
 
-/** The heading each kind carries when a part does not override it. */
-export const DERIVATION_KINDS: Record<DerivationKind, { label: string }> = {
-  formula: { label: 'How it is worked out' },
-  assumption: { label: 'Assumed' },
-  boundary: { label: 'Where the model stops' },
-  exclusion: { label: 'Not included' },
-  note: { label: 'Note' },
-};
+/** The kinds, in the order an explanation reads them. Their headings are the caller's words. */
+export const DERIVATION_KINDS: readonly DerivationKind[] = [
+  'formula',
+  'assumption',
+  'boundary',
+  'exclusion',
+  'note',
+];
 
 /**
  * A serialised identity for a `parts` array — the effect dependency that stops an inline array
@@ -69,4 +79,9 @@ export function partsKey(parts: DerivationPart[] | undefined): string {
   return (parts ?? [])
     .map((part) => `${part.kind}|${typeof part.text === 'string' ? part.text : ''}`)
     .join('~');
+}
+
+/** The kind headings' serialised identity — so a language change re-registers the appendix. */
+export function kindWordsKey(kindWords: DerivationKindWords): string {
+  return DERIVATION_KINDS.map((kind) => kindWords[kind]).join('~');
 }

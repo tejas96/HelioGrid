@@ -41,11 +41,12 @@ function DrawingSheetRoot({
   sheets = 1,
   titleBlock,
   drawing,
-  drawingLabel = 'Single-line diagram',
+  drawingLabel,
   symbols,
   disclaimer,
   north = true,
   zoom,
+  words,
   className,
   style,
 }: WebDrawingSheetProps) {
@@ -61,11 +62,11 @@ function DrawingSheetRoot({
 
   return (
     <div className={classNames('hg-drawing-sheet-frame', className)} style={style}>
-      {zoom?.onChange && <ZoomControls zoom={zoom} />}
+      {zoom?.onChange && <ZoomControls zoom={zoom} words={words} />}
       <section
         className="hg-sheet hg-drawing-sheet"
         data-screen-label={`Drawing ${sheet}`}
-        aria-label={`${tb.drawingTitle || drawingLabel} · sheet ${sheet} of ${sheets}`}
+        aria-label={words.sheetName(tb.drawingTitle || drawingLabel, sheet, sheets)}
         style={{
           width: g.width,
           height: g.height,
@@ -87,16 +88,14 @@ function DrawingSheetRoot({
                  does not reflow when it arrives, and it says what belongs here at what scale. */
               <div className="hg-drawing-sheet-reservation">
                 <span className="hg-drawing-sheet-reservation-name">
-                  {drawingLabel.toLowerCase()} renders here
+                  {words.rendersHere(drawingLabel.toLowerCase())}
                 </span>
-                <span className="hg-drawing-sheet-reservation-meta">
-                  {scale} · {g.label}
-                </span>
+                <span className="hg-drawing-sheet-reservation-meta">{`${scale} · ${g.label}`}</span>
               </div>
             )}
             {north && (
               <span className="hg-drawing-sheet-north">
-                <NorthMark />
+                <NorthMark name={words.north} />
               </span>
             )}
           </div>
@@ -107,8 +106,9 @@ function DrawingSheetRoot({
               scale={scale}
               drawingLabel={drawingLabel}
               paperLabel={g.label.split(' · ')[0] ?? g.label}
+              words={words}
             />
-            <Legend symbols={legend} />
+            <Legend symbols={legend} title={words.legend} />
           </aside>
         </div>
 
@@ -117,9 +117,7 @@ function DrawingSheetRoot({
           <div className="hg-drawing-sheet-disclaimer">
             {renderDisclosure(disclaimer || { kind: 'structure' }, { surface: 'document' })}
           </div>
-          <span className="hg-drawing-sheet-count">
-            Sheet {sheet} of {sheets} · {scale}
-          </span>
+          <span className="hg-drawing-sheet-count">{`${words.sheetOf(sheet, sheets)} · ${scale}`}</span>
         </div>
       </section>
     </div>

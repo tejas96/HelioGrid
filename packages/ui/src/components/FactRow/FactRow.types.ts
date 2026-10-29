@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { NamedGapSpec } from '../NamedGap/NamedGap.types';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance/Provenance.types';
@@ -34,7 +35,7 @@ export interface FactRowsForm {
 
 export interface FactRowProps {
   /** The row's word. Sentence case, no trailing colon — the arrangement already says it is a label. */
-  label: ReactNode;
+  label: TranslatedText;
   /** A short value (a number, a date, a name, a state) or a long one. Nodes welcome. */
   value?: ReactNode;
   /** A list of values. Short items are joined on the line with a middle dot; items long enough to
@@ -56,7 +57,7 @@ export interface FactRowProps {
    *  the tier and warns. */
   gap?: NamedGapSpec;
   /** Named in the gap action's accessible label. Defaults to this row's own label. */
-  fieldName?: string;
+  fieldName?: TranslatedText;
   density?: FactDensity;
   /** The reading measure in characters for a standalone row's `pair` form. Inside a `FactRows`
    *  the group owns it. */
@@ -74,7 +75,7 @@ export interface FactRowProps {
 export interface FactRowsProps {
   children?: ReactNode;
   /** Names the set for a screen reader — "Site details". */
-  label?: string;
+  label?: TranslatedText;
   density?: FactDensity;
   /** The reading measure in characters for the `pair` form. Never a percentage of the region. */
   measure?: number;

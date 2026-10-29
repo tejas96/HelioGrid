@@ -44,12 +44,13 @@ export function AssignRoles({
         overline={words.overline}
         title={person.name}
         status={person.status}
-        subtitle={person.phone}
         subtitleFace="mono"
         showClose
         density="functional"
         width={ASSIGN_ROLES_PANEL_WIDTH}
-        sheetProps={{ size: 'full' }}
+        // The phone is a fact: each form's own subtitle takes one; the editor's is a modal's words.
+        sheetProps={{ size: 'full', subtitle: person.phone }}
+        panelProps={{ subtitle: person.phone }}
         meta={({ panel }) => (
           <div className="hg-assign-roles-heading" data-form={panel ? 'panel' : 'sheet'}>
             <span>{words.presets}</span>

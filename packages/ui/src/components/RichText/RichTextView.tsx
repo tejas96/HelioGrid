@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties, ReactNode } from 'react';
 import { foldRows, isListBlock, keyed } from './RichText.model';
 import type {
@@ -7,6 +8,7 @@ import type {
   RichTextSpan,
   RichTextViewProps,
 } from './RichText.types';
+import { headingAbove, richTextViewMeasures } from './RichTextView.logic';
 
 interface WebRichTextViewProps extends RichTextViewProps {
   className?: string;
@@ -42,21 +44,21 @@ function LogoRow({
   fontSize,
 }: {
   logoSrc?: string;
-  logoLabel: string;
+  logoLabel: TranslatedText;
   fontSize: number;
 }) {
-  const height = Math.round(fontSize * 2.4);
+  const { logoHeight, logoWidth, logoLabelSize } = richTextViewMeasures(fontSize);
   return (
     <div data-flow-row="" className="hg-rich-text-logo-row">
       {logoSrc === undefined ? (
         <span
           className="hg-rich-text-logo-slot"
-          style={{ width: Math.round(fontSize * 6), height, fontSize: Math.max(9, fontSize - 4) }}
+          style={{ width: logoWidth, height: logoHeight, fontSize: logoLabelSize }}
         >
           {logoLabel}
         </span>
       ) : (
-        <img src={logoSrc} alt="" style={{ height }} />
+        <img src={logoSrc} alt="" style={{ height: logoHeight }} />
       )}
     </div>
   );
@@ -132,7 +134,7 @@ export function RichTextView({
       </p>
     );
   }
-  const gap = Math.round(fontSize * 0.7);
+  const { gap, headingSize, headingBelow } = richTextViewMeasures(fontSize);
   return (
     <div
       className={['hg-rich-text-view', className].filter((c) => c !== undefined).join(' ')}
@@ -161,8 +163,8 @@ export function RichTextView({
               data-flow-row=""
               className="hg-rich-text-h"
               style={{
-                margin: `${i > 0 ? fontSize : 0}px 0 ${Math.round(fontSize * 0.4)}px`,
-                fontSize: fontSize + 1,
+                margin: `${headingAbove(i, fontSize)}px 0 ${headingBelow}px`,
+                fontSize: headingSize,
               }}
             >
               {renderSpans(b.spans, `${key}-s`)}

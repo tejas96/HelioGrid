@@ -4,6 +4,8 @@ import type {
   TranslatedText,
 } from '@heliogrid/contracts';
 import {
+  type CatalogItemsListed,
+  type CatalogRowAct,
   catalogLayerOf,
   RELEASE_CHANGE_KINDS,
   type ReleaseChangeKind,
@@ -131,7 +133,6 @@ export function catalogReleaseChangesOf(
 }
 
 /** A row act, as its pending line names it and its failed line says what is still true. */
-export type CatalogRowAct = 'price' | 'preferred' | 'hidden' | 'archive' | 'restore';
 
 const ACT: Record<CatalogRowAct, { id: string }> = {
   price: CATALOG_EDITOR.savePrice,
@@ -154,26 +155,8 @@ export function catalogRowStatusWords(t: T, act: CatalogRowAct, item: ResolvedCa
   return { label: t(ACT[act]), reason: catalogEditFailed(t, stillOf(act, item)) };
 }
 
-/** What the Items panel shows, as the page's reads hand it over. */
-export interface CatalogItemsInput {
-  readonly items: readonly ResolvedCatalogItemWire[];
-  readonly totalCount: number;
-  /** Every item, hidden ones included, whatever the search and filters: the summary's "of N". */
-  readonly wholeCount: number;
-  readonly preferredFirst: boolean;
-  readonly schemes: readonly string[];
-  readonly administers: boolean;
-  readonly owners: readonly string[];
-  readonly release: { readonly label: string; readonly publishedAt: string } | null;
-  readonly teaches: boolean;
-  readonly archivedCount: number;
-  readonly archivedFilter: boolean;
-  readonly narrowed: boolean;
-  /** Each row whose act is out or failed, by item id. */
-  readonly acts: Readonly<
-    Record<string, { readonly state: 'saving' | 'failed'; readonly act: CatalogRowAct }>
-  >;
-}
+/** What the Items panel shows, as the page's reads hand it over (`packages/domain`'s shape). */
+export type CatalogItemsInput = CatalogItemsListed<ResolvedCatalogItemWire>;
 
 /**
  * The Items panel's words and rows in one (`SCR-M01-15`): the strip, the view-only line, the

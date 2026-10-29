@@ -95,6 +95,7 @@ function CountField({
   return (
     <NumberField
       label={words.counts[count]}
+      words={words.numberField}
       {...(value === null ? {} : { value })}
       onCommit={(next) => cover.onCount(count, next)}
       onClear={() => cover.onCount(count, null)}

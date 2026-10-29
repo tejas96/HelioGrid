@@ -13,14 +13,7 @@ import { FacetChips, FilterChips } from '../FilterBar/FilterBar.native';
 import { RangeField } from '../RangeField/RangeField.native';
 import { Switch } from '../Switch/Switch.native';
 import { chosenChips, rangeDimensionValue, shownChipOptions } from './FilterPanel.logic';
-import type { FilterDimension, FilterDimensionValue, FilterSetWords } from './FilterPanel.types';
-
-interface FilterDimensionControlProps {
-  dim: FilterDimension;
-  value: FilterDimensionValue;
-  onChange: (key: string, value: FilterDimensionValue) => void;
-  words: FilterSetWords;
-}
+import type { FilterDimensionControlProps } from './FilterPanel.types';
 
 /**
  * FOUR KINDS, AND EACH ONE IS AN EXISTING CONTROL, NOT A NEW LOOK:
@@ -43,6 +36,7 @@ export function FilterDimensionControl({
         {dim.kind === 'facet' ? (
           <FacetChips
             label={dim.label}
+            selectedLabel={words.selectedTick}
             options={shown}
             counts={dim.counts}
             values={chosen}
@@ -76,6 +70,7 @@ export function FilterDimensionControl({
         format={dim.format}
         hint={dim.hint}
         anyLabel={dim.anyLabel}
+        boxLabels={words.rangeEnds}
         onCommit={(v) => onChange(dim.key, v)}
       />
     );

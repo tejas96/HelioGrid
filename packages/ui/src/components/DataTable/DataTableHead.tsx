@@ -3,8 +3,8 @@ import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { Checkbox } from '../Checkbox';
 import type { ProvenanceProps } from '../Provenance';
 import type { ColumnSortState } from './DataTable.logic';
-import { alignOf, sortStateOf } from './DataTable.logic';
-import type { DataTableProps, DataTableSort } from './DataTable.types';
+import { alignOf, selectAllLabelOf, sortGlyphOf, sortStateOf } from './DataTable.logic';
+import type { DataTableProps, DataTableSort, DataTableWords } from './DataTable.types';
 import type { DataTableColumn } from './DataTableColumn.types';
 import { ColumnTier } from './DataTableProvenance';
 
@@ -21,7 +21,7 @@ function SortGlyph({ dir }: { dir: DataTableSort['dir'] | null }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <ShellGlyphMarks name={dir === 'desc' ? 'caret-down' : 'caret-up'} />
+      <ShellGlyphMarks name={sortGlyphOf(dir)} />
     </svg>
   );
 }
@@ -132,6 +132,7 @@ export function DataTableHead<Row>({
   actionsLabel,
   tableSpec,
   quiet = false,
+  words,
 }: {
   columns: DataTableProps<Row>['columns'];
   selectable: boolean;
@@ -146,6 +147,7 @@ export function DataTableHead<Row>({
   tableSpec: ProvenanceProps | null;
   /** The quiet head (design-system change 20). */
   quiet?: boolean;
+  words: DataTableWords;
 }) {
   return (
     <thead className="hg-dt-head">
@@ -155,7 +157,7 @@ export function DataTableHead<Row>({
             <Checkbox
               className="hg-dt-tick"
               checked={allSelected}
-              ariaLabel={allSelected ? 'Clear selection' : 'Select every row'}
+              ariaLabel={selectAllLabelOf(allSelected, words)}
               onChange={onToggleAll}
             />
           </th>

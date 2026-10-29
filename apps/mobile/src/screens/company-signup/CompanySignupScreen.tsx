@@ -3,12 +3,10 @@ import {
   type CompanySignup,
   failureOf,
   type SignIn,
-  useCompanySignup,
-  useSession,
-  useSignIn,
+  useCompanySignupScreen,
   useSteerDroppedOnEdit,
 } from '@heliogrid/data/react';
-import { homeOf, type SessionUser, signupView } from '@heliogrid/domain';
+import type { SessionUser } from '@heliogrid/domain';
 import { fieldBinder, useZodForm } from '@heliogrid/forms';
 import {
   COMPANY_SIGNUP,
@@ -44,70 +42,60 @@ import { InsetDoor } from '../shared/InsetDoor';
  * Company signup (`SCR-M01-02`): the number, the code, then three fields, over the flow
  * `T-M01-036` landed. Two routes render it — the door's "Create a company account" while signed
  * out, and the company step for a verified number without a company (`M01-10`). Which panel
- * shows is `signupView`'s, over the join steer `useCompanySignup` holds (`M01-09`); this
- * composes.
+ * shows is `useCompanySignupScreen`'s, the web's too, over the join steer it holds (`M01-09`);
+ * this composes.
  */
 export function CompanySignupScreen() {
   const t = useTranslate();
   const language = <DoorLanguage {...useLanguageChoice()} />;
   const navigation = useNavigation();
-  const session = useSession();
   const { pack } = useFormat();
-  const signIn = useSignIn(pack, 'signup');
-  const signup = useCompanySignup();
-  const view = signupView(session, signIn.state.step, signup.steer);
+  const { signIn, signup, panel } = useCompanySignupScreen(pack);
 
-  /** The held account's session ends, and the number step comes back with the field cleared. */
-  const leaveForAnotherNumber = () => {
-    void session.leaveKnownAccount();
-    signIn.press('change-number');
-    signIn.typePhone('');
-  };
-
-  if (view === 'known' && session.known !== null) {
+  if (panel.view === 'known') {
     return (
       <InsetDoor>
         <SignupKnownNumber
           language={language}
           words={knownNumberWords(t)}
-          phoneE164={session.known.next.phoneE164}
-          onEnter={session.enterKnownAccount}
-          onLeave={leaveForAnotherNumber}
+          phoneE164={panel.phoneE164}
+          onEnter={panel.enter}
+          onLeave={panel.leave}
         />
       </InsetDoor>
     );
   }
-  if (view === 'done') {
-    const home = homeOf(session.user);
+  if (panel.view === 'done') {
+    const { home } = panel;
     const destination = home === null ? t(SIGN_IN.companySetup) : homeTitle(t, home);
     return (
       <SuccessDwell title={t(SIGN_IN.youAreIn)} line={t(SIGN_IN.takingYouTo, { destination })} />
     );
   }
-  if (view === 'sent' && session.user !== null && signup.found !== null) {
+  if (panel.view === 'sent') {
     return (
       <InsetDoor>
         <SignupRequestSent
           language={language}
-          words={requestSentWords(t, signup.found)}
-          name={signup.typedName ?? session.user.name}
-          phoneE164={session.user.phoneE164}
+          words={requestSentWords(t, panel.found)}
+          name={panel.name}
+          phoneE164={panel.phoneE164}
           onCreateInstead={() => void signup.createAnyway()}
         />
       </InsetDoor>
     );
   }
-  if ((view === 'company' || view === 'join') && session.user !== null) {
+  if (panel.view === 'company' || panel.view === 'join') {
     return (
       <SignupDetailsStep
-        user={session.user}
-        restored={session.restored}
-        joining={view === 'join'}
+        user={panel.user}
+        restored={panel.restored}
+        joining={panel.view === 'join'}
         signup={signup}
       />
     );
   }
-  if (view === 'code') {
+  if (panel.view === 'code') {
     return (
       <InsetDoor>
         <DoorCodeStep
@@ -146,7 +134,7 @@ function SignupDetailsStep({
 }: {
   user: SessionUser;
   restored: boolean;
-  /** The view is `join` (`signupView`): the steer replaces the primary. */
+  /** The panel is `join`: the steer replaces the primary. */
   joining: boolean;
   signup: CompanySignup;
 }) {

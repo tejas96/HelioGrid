@@ -9,7 +9,7 @@ import { ChartFrame } from './ChartFrame.native';
 import type { LineChartProps } from './Charts.types';
 import { CHART_GRIDLINE, chartColor } from './ChartTokens.native';
 import { chartTicks } from './chart-palette';
-import { lineGeometry, longestSeries, toLineSeries } from './chart-series';
+import { lineGeometry, lineSetDrawing, longestSeries, toLineSeries } from './chart-series';
 
 interface NativeLineChartProps extends LineChartProps {
   style?: StyleProp<ViewStyle>;
@@ -56,7 +56,7 @@ export function LineChart({
             height={geo.height}
             viewBox={`0 0 ${geo.width} ${geo.height}`}
             accessibilityRole="image"
-            accessibilityLabel={frame.title ?? 'Line chart'}
+            accessibilityLabel={frame.title ?? frame.words.lineChart}
           >
             {chartTicks(geo.height, gridlines).map((offset) => (
               <Line
@@ -70,32 +70,25 @@ export function LineChart({
               />
             ))}
             {sets.map((set, si) => {
-              const points = set.points
-                .map((p, i) => `${geo.x(i, set.points.length)},${geo.y(p.y)}`)
-                .join(' ');
+              const drawn = lineSetDrawing(set, si, geo, area && sets.length === 1);
               const stroke = set.color ?? chartColor(si);
-              const last = set.points[set.points.length - 1];
               return (
-                <G key={set.name === undefined || set.name === '' ? `series-${si}` : set.name}>
-                  {area && sets.length === 1 ? (
-                    <Polygon
-                      points={`${geo.pad},${geo.height} ${points} ${geo.width - geo.pad},${geo.height}`}
-                      fill={stroke}
-                      opacity={0.08}
-                    />
-                  ) : null}
+                <G key={drawn.key}>
+                  {drawn.area === null ? null : (
+                    <Polygon points={drawn.area} fill={stroke} opacity={0.08} />
+                  )}
                   <Polyline
-                    points={points}
+                    points={drawn.points}
                     fill="none"
                     stroke={stroke}
                     strokeWidth={2}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
-                  {last === undefined ? null : (
+                  {drawn.end === null ? null : (
                     <Circle
-                      cx={geo.x(set.points.length - 1, set.points.length)}
-                      cy={geo.y(last.y)}
+                      cx={drawn.end.x}
+                      cy={drawn.end.y}
                       r={4}
                       fill={ground}
                       stroke={stroke}

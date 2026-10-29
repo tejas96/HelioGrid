@@ -14,6 +14,7 @@ import type {
   ProvenanceProps,
   ProvenanceStanding,
   ProvenanceTierSpec,
+  ProvenanceWords,
 } from './Provenance.types';
 
 /** The mark each tier takes. */
@@ -66,4 +67,72 @@ export function isProvenanceEmpty(p: ProvenanceProps = {}): boolean {
 /** The clamped type step. The contract is 12 or 13; never below 12 — the type floor. */
 export function provenanceStep(size: number): 12 | 13 {
   return size >= 13 ? 13 : 12;
+}
+
+/**
+ * One part of the line, in the order it prints. A marked part (standing, freshness, tier) carries
+ * its dot; standing and freshness also carry the ink their words take. Prose carries neither.
+ */
+export interface ProvenanceLinePart {
+  id: 'standing' | 'freshness' | 'tier' | 'energySource' | 'source' | 'projection' | 'note';
+  words: string;
+  mark: ProvenanceMarkToken | null;
+  ink: ProvenanceMarkToken | null;
+}
+
+/**
+ * `standing · freshness · tier · energy source · source · projection · note` — standing leads,
+ * because "this is not final" outranks "this is how it was worked out".
+ */
+export function provenanceLineParts(
+  { tier, standing, freshness, energySource, source, projection, note }: ProvenanceProps,
+  words: ProvenanceWords,
+): ProvenanceLinePart[] {
+  const parts: ProvenanceLinePart[] = [];
+  if (standing) {
+    const st = STANDING_MARK[standing];
+    parts.push({ id: 'standing', words: words.standing(standing), mark: st.mark, ink: st.color });
+  }
+  const warning = freshnessWarning(freshness);
+  if (warning) {
+    parts.push({
+      id: 'freshness',
+      words: words.freshness(warning),
+      mark: FRESHNESS_MARK.mark,
+      ink: FRESHNESS_MARK.color,
+    });
+  }
+  const t = tierOf(tier);
+  if (t) {
+    parts.push({ id: 'tier', words: words.tier(t), mark: TIER_MARK[t], ink: null });
+  }
+  for (const [id, prose] of [
+    ['energySource', energySource ? words.energySource(energySource) : undefined],
+    ['source', source],
+    ['projection', projection],
+    ['note', note],
+  ] as const) {
+    if (prose) {
+      parts.push({ id, words: prose, mark: null, ink: null });
+    }
+  }
+  return parts;
+}
+
+/**
+ * What a host's `provenance` prop draws: a spec, or a bare tier made one, with the host's extras
+ * over it — or nothing when it would render nothing. A bare tier goes through the same emptiness
+ * guard as a spec: `renderProvenance("unmarked")` must hand back null, or every host draws its
+ * slot around the deliberate absence.
+ */
+export function provenanceSpecOf(
+  spec: ProvenanceProps | ProvenanceTierSpec | null | undefined,
+  extra: Partial<ProvenanceProps>,
+): ProvenanceProps | null {
+  if (!spec) {
+    return null;
+  }
+  const props: ProvenanceProps = typeof spec === 'string' ? { tier: spec } : spec;
+  const merged = { ...props, ...extra };
+  return isProvenanceEmpty(merged) ? null : merged;
 }

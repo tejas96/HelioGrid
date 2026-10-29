@@ -11,9 +11,11 @@ import {
   TRANCHE_LINE_LIMIT,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
-import { allocationRefusal, allocationSentence } from './allocation';
+import { allocationMeterWords, allocationRefusal, allocationSentence } from './allocation';
 import { type AttemptFailureLike, attemptFailureMessageId } from './api-error';
 import { shownAsSent } from './assembled';
+import { numberFieldWords } from './number-field';
+import { PRICE_BOOK } from './price-book';
 import { backToSettings, settingsRowName, settingsSavedLine } from './settings';
 
 type T = Translator['t'];
@@ -110,6 +112,8 @@ export function paymentTermsWords(t: T) {
     cap: t(NAMED.cap, { count: TRANCHE_LINE_LIMIT }),
     /** The archive button's spoken name: *Archived payment terms, 2*. */
     archivedCount: (count: number) => t(NAMED.archivedCount, { count }),
+    /** The archive button's drawn count, in the reader's digits. */
+    archivedShown: (count: number) => t(PRICE_BOOK.groupCount, { count }),
     /** A card names itself, and says when it is the default. */
     cardLabel: (name: string, isDefault: boolean) =>
       isDefault ? t(NAMED.cardDefault, { name }) : name,
@@ -128,6 +132,8 @@ export function paymentTermsWords(t: T) {
     /** *Add a tranche* names the line it adds by its number. */
     newTranche: (number: number) => t(NAMED.newTranche, { number }),
     logoAlt: (company: string) => t(NAMED.logoAlt, { company }),
+    meter: allocationMeterWords(t),
+    numberField: numberFieldWords(t),
   };
 }
 

@@ -1,8 +1,12 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import type { StepperWords } from '../Stepper/Stepper.types';
+
 /** The flow's name and its three steps, in order; `@heliogrid/i18n`'s `signupStepsWords` writes them. */
 export interface SignupStepsWords {
   label: TranslatedText;
   steps: readonly [TranslatedText, TranslatedText, TranslatedText];
+  /** What the stepper says on its own — its counter and each step's state. */
+  stepper: StepperWords;
 }
 
 /**

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { NamedGapSpec } from '../NamedGap';
+import type { NamedGapInput } from '../NamedGap';
 import type { PendingActionSpec } from '../PendingAction';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { ValueSourceLevel, ValueSourceSpec } from '../ValueSource';
@@ -18,7 +18,7 @@ export interface ListRowProps {
    * Rendered by `NamedGap` in the subtitle's place, and it **replaces** the subtitle rather than
    * joining it: there is one value, and it is absent. Never a blank line, never a dash.
    */
-  gap?: ReactNode | NamedGapSpec;
+  gap?: NamedGapInput;
   /** Marks this row carries — nodes, rendered through `MarkRow`, under the subtitle. */
   marks?: ReactNode | ReactNode[];
   /**

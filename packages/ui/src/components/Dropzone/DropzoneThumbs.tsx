@@ -1,14 +1,19 @@
+import { closingPress, type FocusAfter } from '../../primitives/FocusAfter';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
-import type { DropzoneFile } from './Dropzone.types';
+import { isStillUploading, progressPercent, thumbName } from './Dropzone.logic';
+import type { DropzoneFile, DropzoneWords } from './Dropzone.types';
 import { FileGlyph } from './DropzoneGlyphs';
 
 interface DropzoneThumbsProps {
   files: DropzoneFile[];
   onRemove?: (file: DropzoneFile, index: number) => void;
+  words: Pick<DropzoneWords, 'uploadedPhoto' | 'remove'>;
+  /** Where focus lands once a removed file has taken its thumbnail away — the capture surface. */
+  focusAfter: FocusAfter;
 }
 
 /** The captured files. The remove control is a 28px circle inside a 44px target — two rectangles. */
-export function DropzoneThumbs({ files, onRemove }: DropzoneThumbsProps) {
+export function DropzoneThumbs({ files, onRemove, words, focusAfter }: DropzoneThumbsProps) {
   return (
     <ul className="hg-dropzone-thumbs">
       {files.map((file, index) => (
@@ -18,17 +23,13 @@ export function DropzoneThumbs({ files, onRemove }: DropzoneThumbsProps) {
               <FileGlyph />
             </span>
           ) : (
-            <img
-              className="hg-dropzone-thumb-image"
-              src={file.url}
-              alt={file.name ?? 'Uploaded photo'}
-            />
+            <img className="hg-dropzone-thumb-image" src={file.url} alt={thumbName(file, words)} />
           )}
-          {file.progress !== undefined && file.progress < 100 ? (
+          {isStillUploading(file) ? (
             <span className="hg-dropzone-thumb-track">
               <span
                 className="hg-dropzone-thumb-fill"
-                style={{ width: `${Math.max(0, Math.min(100, file.progress))}%` }}
+                style={{ width: `${progressPercent(file.progress)}%` }}
               />
             </span>
           ) : null}
@@ -36,8 +37,8 @@ export function DropzoneThumbs({ files, onRemove }: DropzoneThumbsProps) {
             <button
               type="button"
               className="hg-dropzone-thumb-remove"
-              aria-label={`Remove ${file.name ?? 'photo'}`}
-              onClick={() => onRemove(file, index)}
+              aria-label={words.remove(file.name)}
+              onClick={closingPress(focusAfter)(() => onRemove(file, index))}
             >
               <span className="hg-dropzone-thumb-remove-circle">
                 <svg

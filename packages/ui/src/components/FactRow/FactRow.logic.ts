@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import {
   Children,
   createContext,
@@ -16,7 +17,9 @@ import type {
   FactInkKind,
   FactInkProps,
   FactReason,
+  FactRowForm,
   FactRowProps,
+  FactRowsForm,
   FactShape,
 } from './FactRow.types';
 
@@ -99,9 +102,78 @@ export function shapeOf(lead: boolean, stacked: boolean): FactShape {
   return stacked ? 'stack' : 'flow';
 }
 
+/**
+ * A row on its own takes its forced form, else `lead` when it is declared long, under the floor or
+ * does not fit. Its answer is reported only once it is settled and its box has been measured.
+ */
+export function loneRowForm(input: {
+  forced: FactForm | 'auto';
+  declaredLong: boolean;
+  floor: boolean;
+  fits: boolean;
+  answered: boolean;
+  width: number | null;
+  stacked: boolean;
+  hasMark: boolean;
+}): { lead: boolean; shape: FactShape; answer: FactRowForm | null } {
+  const { forced, declaredLong, floor, width } = input;
+  const lead = forced !== 'auto' ? forced === 'lead' : declaredLong || floor || !input.fits;
+  const shape = shapeOf(lead, input.stacked);
+  const settled = forced !== 'auto' || declaredLong || floor || input.answered;
+  const answer: FactRowForm | null =
+    settled && width !== null
+      ? { form: lead ? 'lead' : 'pair', shape, width, hasMark: input.hasMark }
+      : null;
+  return { lead, shape, answer };
+}
+
+/** A row in a group takes its own forced form, else the group's — and the group's density unless its own. */
+export function groupedRowShape(props: FactRowProps, group: FactGroupAnswer) {
+  const { items, stacked } = rowShape(props, group.longAt);
+  const forced = props.form ?? 'auto';
+  const lead = forced !== 'auto' ? forced === 'lead' : group.form === 'lead';
+  return {
+    items,
+    stacked,
+    shape: shapeOf(lead, stacked),
+    hasMarkCol: group.hasMark,
+    density: props.density ?? group.density,
+  };
+}
+
+/**
+ * A group's form and why, from its rows and its box — reported only once it is settled and its box
+ * has been measured.
+ */
+export function rowsGroupForm(input: {
+  forced: FactForm | 'auto';
+  declared: boolean;
+  floor: boolean;
+  fits: boolean;
+  answered: boolean;
+  width: number | null;
+  hasMark: boolean;
+}): { form: FactForm; reason: FactReason; answer: FactRowsForm | null } {
+  const { forced, declared, floor, width, hasMark } = input;
+  const { form, reason } = groupForm({ forced, declared, floor, fits: input.fits });
+  const settled = forced !== 'auto' || declared || floor || input.answered;
+  const answer = settled && width !== null ? { form, width, hasMark, reason } : null;
+  return { form, reason, answer };
+}
+
 /** The rows a group holds — its element children. */
 export function factRowsOf(children: ReactNode): ReactElement<Partial<FactRowProps>>[] {
   return Children.toArray(children).filter(isFactRowElement);
+}
+
+/** A group's rows, whether any declares itself long, and whether any carries a mark. */
+export function groupedRows(children: ReactNode, longAt: number) {
+  const rows = factRowsOf(children).map((row) => row.props);
+  return {
+    rows,
+    declared: rows.some((row) => factWantsLead(row, longAt)),
+    hasMark: rows.some((row) => Boolean(row.mark)),
+  };
 }
 
 /** A child element read for its row props: a group holds rows and nothing else. */
@@ -129,11 +201,10 @@ export function contentSignature(rows: readonly Partial<FactRowProps>[]): string
  *  names one. */
 export function gapWithName(
   gap: NamedGapSpec,
-  fieldName: string | undefined,
-  label: ReactNode,
+  fieldName: TranslatedText | undefined,
+  label: TranslatedText,
 ): NamedGapSpec {
-  const name = fieldName ?? gap.fieldName ?? (typeof label === 'string' ? label : undefined);
-  return name === undefined ? gap : { ...gap, fieldName: name };
+  return { ...gap, fieldName: fieldName ?? gap.fieldName ?? label };
 }
 
 /** Reports an answer once per change of `key`, never on a render that did not change it. `info`
@@ -152,15 +223,14 @@ export function useAnswerReport<T>(
 }
 
 /** A tier answers how a figure was arrived at; beside a gap there is no figure, so it is dropped. */
-export function useGapDropsTier(gap: unknown, provenance: unknown, label: ReactNode): void {
-  const named = typeof label === 'string' ? label : '';
+export function useGapDropsTier(gap: unknown, provenance: unknown, label: TranslatedText): void {
   useEffect(() => {
     if (gap && provenance) {
       console.warn(
-        `FactRow ${JSON.stringify(named)}: a named gap takes no provenance tier (law 10) — the tier was dropped.`,
+        `FactRow ${JSON.stringify(label)}: a named gap takes no provenance tier (law 10) — the tier was dropped.`,
       );
     }
-  }, [gap, provenance, named]);
+  }, [gap, provenance, label]);
 }
 
 /** The group's answer every row in it lands on. */

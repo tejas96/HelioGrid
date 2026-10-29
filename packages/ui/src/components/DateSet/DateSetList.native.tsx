@@ -1,9 +1,14 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
-import type { ComplianceFloorSpec } from '../ComplianceFloor/ComplianceFloor.types';
+import type {
+  ComplianceFloorSpec,
+  ComplianceFloorWords,
+} from '../ComplianceFloor/ComplianceFloor.types';
 import type { MarketFormat } from '../DatePicker/DatePicker.types';
-import type { DateSetEntry } from './DateSet.types';
+import type { DateSetEntry, DateSetWords } from './DateSet.types';
 import { DateSetRow } from './DateSetRow.native';
 
 const styles = StyleSheet.create({
@@ -16,8 +21,10 @@ interface DateSetListProps {
   mkt: MarketFormat;
   packName: string;
   floor: ComplianceFloorSpec | undefined;
-  listLabel: string;
-  emptyMessage: string;
+  words: DateSetWords;
+  floorWords: ComplianceFloorWords;
+  listLabel: TranslatedText;
+  emptyMessage: TranslatedText;
   blocked: string | null;
   density: 'expressive' | 'functional';
   onRemove?: (date: string, spokenName: string) => void;
@@ -29,14 +36,18 @@ export function DateSetList({
   mkt,
   packName,
   floor,
+  words,
+  floorWords,
   listLabel,
   emptyMessage,
   blocked,
   density,
   onRemove,
 }: DateSetListProps) {
+  /* A removed date takes its row away: the screen reader goes to the list it sat in. */
+  const list = useRef<View>(null);
   return (
-    <View style={styles.list}>
+    <View ref={list} style={styles.list}>
       <Text variant="overline" color="tertiary">
         {listLabel}
       </Text>
@@ -54,9 +65,12 @@ export function DateSetList({
               mkt={mkt}
               packName={packName}
               floor={floor}
+              words={words}
+              floorWords={floorWords}
               blocked={blocked === entry.date}
               density={density}
               onRemove={onRemove}
+              focusAfter={list}
             />
           ))}
         </View>

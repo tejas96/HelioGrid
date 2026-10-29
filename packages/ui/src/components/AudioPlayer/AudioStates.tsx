@@ -1,8 +1,9 @@
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
 import { AudioGlyph } from './AudioGlyph';
-import type { AudioPlayerProps, AudioUnavailableReason } from './AudioPlayer.types';
-import { AUDIO_REASONS, audioReasonFootnote } from './AudioPlayer.types';
+import { reasonPanelOf } from './AudioPlayer.logic';
+import type { AudioPlayerProps, AudioUnavailableProps } from './AudioPlayer.types';
 import { TranscriptDoor } from './AudioTransport';
 
 /** The fetch failed — which is NOT the same fact as there being no recording, so it retries. */
@@ -10,27 +11,28 @@ export function AudioError({
   errorMessage,
   onRetry,
   retryLabel,
+  focusAfter,
   onOpenTranscript,
   transcriptLabel,
-}: Required<Pick<AudioPlayerProps, 'errorMessage' | 'transcriptLabel'>> &
-  Pick<AudioPlayerProps, 'retryLabel' | 'onOpenTranscript'> & { onRetry?: () => void }) {
+}: Required<Pick<AudioPlayerProps, 'transcriptLabel'>> &
+  Pick<AudioPlayerProps, 'errorMessage' | 'retryLabel' | 'onOpenTranscript'> & {
+    onRetry?: () => void;
+    /** The player's frame, where focus lands once the retry has left. */
+    focusAfter: FocusAfter;
+  }) {
   return (
     <div className="hg-audio-panel" data-tone="error">
-      <p className="hg-audio-panel-error-text">{errorMessage}</p>
+      {errorMessage !== undefined ? (
+        <p className="hg-audio-panel-error-text">{errorMessage}</p>
+      ) : null}
       <div className="hg-audio-panel-actions">
-        <RetryButton onRetry={onRetry} label={retryLabel} />
+        <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
         {onOpenTranscript !== undefined ? (
           <TranscriptDoor label={transcriptLabel} onPress={onOpenTranscript} />
         ) : null}
       </div>
     </div>
   );
-}
-
-export interface AudioUnavailableProps
-  extends Pick<AudioPlayerProps, 'consentAt' | 'purgedAt' | 'retentionBound' | 'onOpenTranscript'> {
-  reason?: AudioUnavailableReason;
-  transcriptLabel: string;
 }
 
 /**
@@ -40,11 +42,10 @@ export interface AudioUnavailableProps
  */
 export function AudioUnavailable({
   reason,
-  consentAt,
-  purgedAt,
-  retentionBound,
   onOpenTranscript,
   transcriptLabel,
+  words,
+  ...facts
 }: AudioUnavailableProps) {
   const door =
     onOpenTranscript !== undefined ? (
@@ -53,21 +54,20 @@ export function AudioUnavailable({
   if (reason === undefined) {
     return (
       <UnavailableNote
-        title="No recording on this call"
-        message="The call is on the record; the audio is not. The transcript and the rep's notes are still here."
+        title={words.noRecording.title}
+        message={words.noRecording.body}
         action={door}
       />
     );
   }
-  const copy = AUDIO_REASONS[reason];
-  const note = audioReasonFootnote(reason, { purgedAt, retentionBound, consentAt });
+  const panel = reasonPanelOf(reason, words, facts);
   return (
     <div role="status" className="hg-audio-panel" data-tone={reason}>
-      <AudioGlyph name={copy.glyph} size={20} />
+      <AudioGlyph name={panel.glyph} size={20} />
       <div className="hg-audio-panel-body">
-        <div className="hg-audio-panel-title">{copy.title}</div>
-        <div className="hg-audio-panel-text">{copy.body}</div>
-        {note !== '' ? <div className="hg-audio-panel-note">{note}</div> : null}
+        <div className="hg-audio-panel-title">{panel.title}</div>
+        <div className="hg-audio-panel-text">{panel.body}</div>
+        {panel.footnote !== '' ? <div className="hg-audio-panel-note">{panel.footnote}</div> : null}
         {door !== null ? <div className="hg-audio-panel-door">{door}</div> : null}
       </div>
     </div>

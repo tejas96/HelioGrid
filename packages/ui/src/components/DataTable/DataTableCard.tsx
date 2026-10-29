@@ -54,6 +54,7 @@ function CardNotes<Row>({
             issue={state.issue}
             fixed={state.fixed}
             action={table.rowIssueAction?.(row) ?? null}
+            fixedLine={table.words.fixed}
           />
         </div>
       ) : null}
@@ -103,7 +104,7 @@ export function DataTableCard<Row>({
   const open = rowOpenOf(table, row);
   const { primary, secondary, trailing, rest } = slots;
   const state = resolveRow(table, rowKey, row, index, selected);
-  const name = rowNameOf(row, primary, table.rowLabel);
+  const name = rowNameOf(row, primary, table.rowLabel, table.words.openRecord);
   /* Gated on the RENDERED node, not on the prop: a table with a `rowProvenance` that returns null
      for this record must not grow an empty standing box under its name. */
   const standing = renderProvenance(state.standing, { size: 12 });
@@ -131,7 +132,7 @@ export function DataTableCard<Row>({
               <Checkbox
                 className="hg-dt-tick"
                 checked={state.isSelected}
-                ariaLabel={`Select ${name}`}
+                ariaLabel={table.words.selectNamed(name)}
                 onChange={() => onToggleRow(state.key)}
               />
             </span>
@@ -148,6 +149,7 @@ export function DataTableCard<Row>({
                   align={alignOf(primary)}
                   cellIssue={table.cellIssue}
                   onCellCommit={table.onCellCommit}
+                  words={table.words}
                 />
               </span>
               {trailing === undefined ? null : (
@@ -161,6 +163,7 @@ export function DataTableCard<Row>({
                     align={alignOf(trailing)}
                     cellIssue={table.cellIssue}
                     onCellCommit={table.onCellCommit}
+                    words={table.words}
                   />
                 </span>
               )}
@@ -176,6 +179,7 @@ export function DataTableCard<Row>({
                   align={alignOf(secondary)}
                   cellIssue={table.cellIssue}
                   onCellCommit={table.onCellCommit}
+                  words={table.words}
                 />
               </div>
             )}

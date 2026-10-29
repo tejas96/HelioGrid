@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react';
+import { useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text';
 import { Banner } from '../Banner/Banner';
 import { Button } from '../Button/Button';
@@ -24,7 +25,9 @@ export function DeclineControl({ words, decline, onPress }: InviteDeclineProps) 
  * the focus to the control on Keep. Drawn at the landing's root, never inside the acts: their
  * sticky row is a stacking context, and a fixed overlay inside it paints under the page beside it.
  */
-export function DeclineConfirm({ words, decline, onPress }: InviteDeclineProps) {
+export function DeclineConfirm({ words, decline, onPress, focusAfter }: InviteDeclineProps) {
+  /* A confirmed decline takes the confirm and the invite away: focus goes to the declined frame's act. */
+  const leaving = useFocusAfter(focusAfter);
   // One close for the confirm's whole life: the overlay re-runs its focus move whenever `onClose`
   // changes, and the landing re-renders on every tick of the resend gap while the confirm is open.
   const press = useRef(onPress);
@@ -58,7 +61,7 @@ export function DeclineConfirm({ words, decline, onPress }: InviteDeclineProps) 
             variant="destructive"
             size="lg"
             loading={decline.sending}
-            onClick={() => onPress('confirm-decline')}
+            onClick={leaving(() => onPress('confirm-decline'))}
           >
             {words.go}
           </Button>

@@ -12,6 +12,7 @@ import {
 } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { type ExplainerWords, explainerPagerWords } from './explainer';
+import { numberFieldWords } from './number-field';
 import { SETUP_LANGUAGE } from './setup-language';
 import { SIGN_IN } from './sign-in';
 
@@ -96,6 +97,8 @@ export interface SetupWhatYouSellWords {
   /** Where the size comes from — beside its tier. */
   readonly sizeSource: TranslatedText;
   readonly sizeError: TranslatedText | null;
+  /** The size field's own words. */
+  readonly numberField: ReturnType<typeof numberFieldWords>;
   /** Saves both answers: `Continue`, and `Try again` after a failed save. */
   readonly primary: TranslatedText;
   /** Why the primary cannot be pressed yet. */
@@ -156,6 +159,7 @@ export function setupWhatYouSellWords(
     unit: KWP,
     sizeSource: translate(SETUP_WHAT_YOU_SELL.declaredByYou),
     sizeError: refused.includes('size') ? translate(SETUP_WHAT_YOU_SELL.addSize) : null,
+    numberField: numberFieldWords(translate),
     primary: translate(failed ? SIGN_IN.tryAgain : SETUP_LANGUAGE.continue),
     waiting: checking ? translate(SETUP_WHAT_YOU_SELL.stillChecking) : null,
     secondary: failed ? translate(SETUP_WHAT_YOU_SELL.finishLater) : null,

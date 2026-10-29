@@ -5,8 +5,10 @@ import {
   FIRST_RUN_COACH_MARKS,
   type MarkInView,
   markInView,
+  offeredDoors,
   type Read,
   type RolePreset,
+  type ShellDoor,
   type ShellView,
   shellViewFor,
 } from '@heliogrid/domain';
@@ -34,6 +36,8 @@ export interface Shell extends ShellView {
    */
   readonly accessRemoved: boolean;
   readonly companyName: string | null;
+  /** The doors this person's shell opens (`F7-48`); a door by address outside them is not found. */
+  readonly doors: readonly ShellDoor[];
   /** How many of `coachMarks` are passed; the marks after it are the ones still to show. */
   readonly coachMarksPassed: number | null;
   /** The one mark to show and its place in the run (`M01-16`) — none while the count loads or once all are passed. */
@@ -109,6 +113,7 @@ export function useShell(): Shell {
     read: allReads([readOf(company), readOf(membership)] as const),
     accessRemoved,
     companyName: company.data?.companyName ?? null,
+    doors: offeredDoors(view),
     coachMarksPassed: passed,
     coachMarkInView: markInView(view.coachMarks, passed),
     chooseHome,

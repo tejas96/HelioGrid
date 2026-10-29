@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { useFormat } from '../MarketProvider';
 import { OperationActions } from './OperationActions';
@@ -7,7 +8,13 @@ import { OperationMessage } from './OperationMessage';
 import type { OperationProgressProps } from './OperationProgress.types';
 import { OperationRing } from './OperationRing';
 import { OperationStages } from './OperationStages';
-import { countWords, resolveCancel, resolvePercent, stepWords } from './operation-progress-model';
+import {
+  countWords,
+  offersOperationActs,
+  resolveCancel,
+  resolvePercent,
+  stepWords,
+} from './operation-progress-model';
 
 interface WebOperationProgressProps extends OperationProgressProps {
   className?: string;
@@ -24,6 +31,7 @@ interface WebOperationProgressProps extends OperationProgressProps {
  */
 export function OperationProgress({
   label,
+  words,
   value = null,
   count = null,
   unit,
@@ -47,16 +55,15 @@ export function OperationProgress({
   className,
   style,
 }: WebOperationProgressProps) {
+  /* The frame stays while a retry reloads the work, so focus lands on it once Try again leaves. */
+  const frame = useRef<HTMLDivElement>(null);
   const running = state === 'running';
   const pct = resolvePercent(state, value);
-  const cancel = resolveCancel(onCancel, cancelEffect);
+  const cancel = resolveCancel(onCancel, cancelEffect, words);
   const { number } = useFormat();
-  const counted = countWords(count, unit, number);
-  const step = stepWords(stageIndex, stageTotal);
-  const showActions =
-    cancel !== null ||
-    destination !== undefined ||
-    (state === 'failed' && onRetry !== undefined && retryLabel !== undefined);
+  const counted = countWords(count, unit, number, words);
+  const step = stepWords(stageIndex, stageTotal, words);
+  const showActions = offersOperationActs({ cancel, destination, state, onRetry, retryLabel });
 
   if (size === 'ring') {
     return (
@@ -71,7 +78,13 @@ export function OperationProgress({
   }
 
   return (
-    <div data-size={size} className={classNames('hg-operation-progress', className)} style={style}>
+    <div
+      ref={frame}
+      tabIndex={-1}
+      data-size={size}
+      className={classNames('hg-operation-progress', 'hg-focus-target', className)}
+      style={style}
+    >
       <OperationHead
         label={label}
         pct={pct}
@@ -82,7 +95,9 @@ export function OperationProgress({
         counted={counted}
       />
 
-      {stages !== undefined && stages.length > 0 ? <OperationStages stages={stages} /> : null}
+      {stages !== undefined && stages.length > 0 ? (
+        <OperationStages stages={stages} stateWords={words.stageState} />
+      ) : null}
 
       {/* M02-21's promise, said where the person is: you may leave. */}
       {running && leaveNote !== undefined ? (
@@ -103,6 +118,7 @@ export function OperationProgress({
           state={state}
           onRetry={onRetry}
           retryLabel={retryLabel}
+          frame={frame}
           destination={destination}
         />
       ) : null}

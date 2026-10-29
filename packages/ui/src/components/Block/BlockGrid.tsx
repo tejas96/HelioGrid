@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { BLOCK_GRID_GAP, BLOCK_GRID_MIN } from './Block.logic';
 import type { BlockGridProps } from './Block.types';
 
 interface WebBlockGridProps extends BlockGridProps {
@@ -13,8 +14,8 @@ interface WebBlockGridProps extends BlockGridProps {
  */
 export function BlockGrid({
   children,
-  min = 320,
-  gap = 20,
+  min = BLOCK_GRID_MIN,
+  gap = BLOCK_GRID_GAP,
   columns,
   className,
   style,

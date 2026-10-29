@@ -1,8 +1,10 @@
 import type { CSSProperties } from 'react';
+import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { ProgressBar } from '../ProgressBar';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { buildChecklist, NO_PHASE } from './Checklist.groups';
+import { checklistNameOf, countLineOf, rowKeyOf } from './Checklist.logic';
 import type { ChecklistProps } from './Checklist.types';
 import { ChecklistRow } from './ChecklistRow';
 import { ChecklistStateBody } from './ChecklistState';
@@ -33,15 +35,16 @@ export function Checklist({
   label,
   progressNote,
   countWords,
-  noun = 'steps',
+  noun,
+  words,
   surface = 'screen',
   read,
-  emptyTitle = 'No steps yet',
-  emptyMessage = 'This checklist is built from the design. Generate one and the steps appear here.',
-  errorTitle = "Couldn't load the checklist",
-  errorMessage = 'Tap Try again — no tick is lost while this fails.',
+  emptyTitle,
+  emptyMessage,
+  errorTitle,
+  errorMessage,
   retryLabel,
-  unavailableTitle = 'No checklist for this job',
+  unavailableTitle,
   unavailableMessage,
   note,
   className,
@@ -50,19 +53,28 @@ export function Checklist({
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
   const model = buildChecklist(items, phases);
+  /* The list's frame outlives its states, so focus lands on it once the retry has left. */
+  const frame = useRef<HTMLElement>(null);
 
   if (state !== 'ready') {
     return (
-      <section className={classNames('hg-checklist', className)} style={style}>
+      <section
+        ref={frame}
+        tabIndex={-1}
+        className={classNames('hg-checklist', 'hg-focus-target', className)}
+        style={style}
+      >
         {label === undefined ? null : <p className="hg-checklist-overline">{label}</p>}
         <ChecklistStateBody
           state={state}
+          loadingLabel={words.loading}
           emptyTitle={emptyTitle}
           emptyMessage={emptyMessage}
           errorTitle={errorTitle}
           errorMessage={errorMessage}
           onRetry={onRetry}
           retryLabel={retryLabel}
+          focusAfter={frame}
           unavailableTitle={unavailableTitle}
           unavailableMessage={unavailableMessage}
         />
@@ -72,16 +84,16 @@ export function Checklist({
 
   return (
     <section
-      aria-label={typeof label === 'string' ? label : 'Checklist'}
-      className={classNames('hg-checklist', className)}
+      ref={frame}
+      tabIndex={-1}
+      aria-label={checklistNameOf(label, words)}
+      className={classNames('hg-checklist', 'hg-focus-target', className)}
       style={style}
     >
       <div className="hg-checklist-head">
         {label === undefined ? null : <p className="hg-checklist-overline">{label}</p>}
         {/* The count in words, then its meaning. A percentage alone says how far, never what. */}
-        <p className="hg-checklist-count">
-          {countWords ?? `${model.done} of ${model.list.length} ${noun} done`}
-        </p>
+        <p className="hg-checklist-count">{countLineOf(model, countWords, noun, words)}</p>
         <ProgressBar value={model.percent} />
         {progressNote === undefined ? null : <p className="hg-checklist-micro">{progressNote}</p>}
       </div>
@@ -92,7 +104,7 @@ export function Checklist({
             <div className="hg-checklist-phase">
               <h4 className="hg-checklist-overline">{group.heading}</h4>
               <span className="hg-checklist-micro hg-checklist-phase-count">
-                {group.doneCount} of {group.items.length}
+                {words.phaseCount(group.doneCount, group.items.length)}
               </span>
             </div>
           )}
@@ -101,14 +113,13 @@ export function Checklist({
           )}
           <ul className="hg-checklist-rows">
             {group.items.map((item) => (
-              /* The counted number is the item's position in the WHOLE list, so it is unique
-                 across every group — no second count, and no array index, can disagree. */
               <ChecklistRow
-                key={item.id ?? `${group.key}-${String(model.numberFor(item))}`}
+                key={rowKeyOf(item, group, model)}
                 item={item}
                 number={model.numberFor(item)}
                 onToggle={onToggle}
                 surface={surface}
+                words={words}
               />
             ))}
           </ul>

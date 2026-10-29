@@ -1,7 +1,9 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 export interface AllocationPart {
   /** The part's name — a tranche label ("On signing", "On delivery"). Titles its segment. */
+  // biome-ignore lint/plugin/copy-prop-type: a tranche's name, as the owner typed it
   label?: string;
   /** The part's size in `unit`. `percent` is accepted as an alias. */
   value?: number;
@@ -40,9 +42,34 @@ export type AllocationEnforcement = 'at-generate' | 'immediate' | 'none';
  * *ceiling you may cross for money*, a target is an *equality*. So: no period, no tier, no billing
  * states.
  */
-export interface AllocationMeterProps {
+/**
+ * The meter's own sentences in the reader's language. Every figure arrives formatted with its
+ * unit — "12%", "100%" — so a sentence never joins a number to a word itself.
+ */
+export interface AllocationMeterWords {
+  /** The meter's spoken name: "Payment schedule allocation" — "Allocation" with no `label`. */
+  readonly name: (label?: TranslatedText) => TranslatedText;
+  /** The figure's denominator, after the sum: "of 100%". */
+  readonly ofTarget: (target: string) => TranslatedText;
+  /** The whole figure as a screen reader hears it: "62% of 100% — 38% unallocated." */
+  readonly figure: (sum: string, target: string, remainder: TranslatedText) => TranslatedText;
+  /** "Fully allocated." */
+  readonly met: TranslatedText;
+  /** "12% unallocated." */
+  readonly under: (amount: string) => TranslatedText;
+  /** "18% over-allocated." */
+  readonly over: (amount: string) => TranslatedText;
+  /** `immediate`: "This has to reach 100% before it can be saved." */
+  readonly blocksSave: (target: string) => TranslatedText;
+  /** `at-generate`: "Generate is blocked until the allocation reaches 100%." */
+  readonly blocksGenerate: (target: string) => TranslatedText;
+  /** No resolved figure at all: "Nothing allocated yet." */
+  readonly unresolved: TranslatedText;
+}
+
+interface AllocationMeterBase {
   /** What is being allocated — "Payment schedule", "Tranche allocation". */
-  label?: string;
+  label?: TranslatedText;
   /**
    * The parts. Their sum is the figure, so a segment per tranche is drawn and a segment that
    * straddles the target is **split at the target line** rather than tinted by its whole.
@@ -69,21 +96,21 @@ export interface AllocationMeterProps {
    */
   tolerance?: number;
   /** The rule, said once above the bar — `M06-13`'s *"Total allocation must = 100%"*. */
-  targetLabel?: string;
+  targetLabel?: TranslatedText;
   /** Replaces the generated remainder sentence ("12% unallocated."). */
-  remainderWords?: ReactNode;
+  remainderWords?: TranslatedText;
   /**
    * **Where the rule bites, in words.** `at-generate` (default, `M06-13` post-R12: shown live,
    * enforced only at Generate) · `immediate` · `none` for a meter that blocks nothing.
    */
   enforcement?: AllocationEnforcement;
-  /** Replaces the generated enforcement sentence. */
-  enforcementNote?: ReactNode;
+  /** Replaces the generated enforcement sentence; `null` says none. */
+  enforcementNote?: TranslatedText | null;
   /** Force the state. Otherwise derived from the figure against the target. */
   state?: AllocationState;
-  /** The words when there is no resolved figure at all. Default "Nothing allocated yet." */
-  unresolvedNote?: ReactNode;
-  note?: ReactNode;
+  /** The words when there is no resolved figure at all, in place of `words.unresolved`. */
+  unresolvedNote?: TranslatedText;
+  note?: TranslatedText;
   /** Names each segment beside the bar. Off by default: at 375px the bar and the words come first. */
   showLegend?: boolean;
   /**
@@ -96,6 +123,20 @@ export interface AllocationMeterProps {
   density?: 'expressive' | 'functional';
 }
 
+/** The meter: checks the parts against `target`, and says so in `words`. */
+interface AllocationMeterChecking extends AllocationMeterBase {
+  variant?: 'meter';
+  words: AllocationMeterWords;
+}
+
+/** A saved split, read: a strip and a key, no sentence of its own. */
+interface AllocationMeterReading extends AllocationMeterBase {
+  variant: 'split';
+  words?: undefined;
+}
+
+export type AllocationMeterProps = AllocationMeterChecking | AllocationMeterReading;
+
 /** One drawn piece of the bar: the part inside the target, or the part beyond it. */
 export interface AllocationSpan {
   key: string;
@@ -103,5 +144,6 @@ export interface AllocationSpan {
   width: number;
   /** Past the target line — takes --warning-text, the only warning mark that clears 3:1. */
   over: boolean;
+  // biome-ignore lint/plugin/copy-prop-type: a tranche's name, as the owner typed it
   label?: string;
 }

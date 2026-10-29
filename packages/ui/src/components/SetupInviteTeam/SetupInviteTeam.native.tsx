@@ -2,12 +2,12 @@ import { numberOnTeam, sendsNothing } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import type { FocusHandle } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { BannerAction } from '../Banner/BannerAction.native';
 import { Button } from '../Button/Button.native';
 import { DoorFrame } from '../DoorFrame/DoorFrame.native';
 import { InviteForm } from '../InviteForm/InviteForm.native';
-import type { FocusHandle } from '../SearchField/SearchField.types';
 import type { SetupInviteTeamProps } from './SetupInviteTeam.types';
 
 /**
@@ -99,7 +99,11 @@ export function SetupInviteTeam({
         words={words}
         roles={roles}
         refusal={refusal}
-        refusalAction={<BannerAction onClick={onOpenTeam}>{words.openTeam}</BannerAction>}
+        refusalAction={
+          <BannerAction onClick={onOpenTeam} focusAfter={onward}>
+            {words.openTeam}
+          </BannerAction>
+        }
         phoneRef={phoneRef}
       />
     </DoorFrame>

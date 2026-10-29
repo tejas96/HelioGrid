@@ -4,9 +4,10 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { badgeName, showsBadge } from '../AppShell/AppShell.types';
+import { showsBadge } from '../AppShell/AppShell.types';
 import { CountBadge } from '../AppShell/CountBadge.native';
 import type { CoachMarkAnchor } from '../CoachMark/CoachMark.types';
+import { isRefAnchor, navItemIcon, spokenItemName } from './AppRail.logic';
 import type { BottomNavProps, RailItem } from './AppRail.types';
 import { isInView, PILL_NAV_SLOT_HEIGHT, PILL_NAV_SLOT_WIDTH, pressItem } from './AppRail.types';
 
@@ -57,15 +58,15 @@ function NavItem({ item, inView, onPress }: NavItemProps) {
       {/* A destination, not a tab: the web half says so with `aria-current="page"`, which React
           Native has no partner for — the same answer `AppRail` gives. */}
       <Pressable
-        accessibilityLabel={badgeName(item.label, item.badge)}
+        accessibilityLabel={spokenItemName(item)}
         onPress={onPress}
         style={[styles.item, inView ? styles.inView : undefined]}
       >
         <View style={styles.icon}>
-          {inView ? (item.activeIcon ?? item.icon) : item.icon}
+          {navItemIcon(item, inView)}
           {showsBadge(item.badge) ? (
             <View style={styles.badge}>
-              <CountBadge count={item.badge} label={item.label.toLowerCase()} />
+              <CountBadge count={item.badge} />
             </View>
           ) : null}
         </View>
@@ -81,8 +82,7 @@ function NavItem({ item, inView, onPress }: NavItemProps) {
 
 /** A coach mark measures the View this ref holds; any other anchor has no meaning on the phone. */
 function viewRef(anchor: CoachMarkAnchor | undefined): RefObject<View | null> | undefined {
-  if (anchor === undefined || typeof anchor === 'string' || !('current' in anchor))
-    return undefined;
+  if (!isRefAnchor(anchor)) return undefined;
   return anchor as RefObject<View | null>;
 }
 

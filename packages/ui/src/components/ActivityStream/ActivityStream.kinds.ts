@@ -1,45 +1,47 @@
-import type { ActivityEntry, ActivityKindSpec } from './ActivityStream.types';
+import type {
+  ActivityEntry,
+  ActivityKindLook,
+  ActivityKindSpec,
+  ActivityStreamWords,
+} from './ActivityStream.types';
 
 /**
- * The default kind registry. OPEN: an unknown kind renders with a neutral mark and a humanised
- * label, so a screen with its own vocabulary works without editing this file — `SCR-M12-02`'s
- * dunning steps and `SCR-M11-02`'s reversal pairs each name their own.
+ * The default kind registry's look; each kind's name is the words' `kind`. OPEN: an unknown kind
+ * renders with a neutral mark and its code as its name, so a screen with its own vocabulary works
+ * without editing this file — `SCR-M12-02`'s dunning steps and `SCR-M11-02`'s reversal pairs each
+ * name their own.
  */
-export const ACTIVITY_KINDS: Record<string, ActivityKindSpec> = {
-  note: { label: 'Note', tone: 'neutral', glyph: 'note' },
-  call: { label: 'Call', tone: 'accent', glyph: 'phone' },
-  'agent-call': { label: 'Agent call', tone: 'info', glyph: 'phone' },
-  stage: { label: 'Stage change', tone: 'accent', glyph: 'flag' },
-  assignment: { label: 'Assignment', tone: 'neutral', glyph: 'user' },
-  proposal: { label: 'Proposal', tone: 'accent', glyph: 'doc' },
-  'link-open': { label: 'Link opened', tone: 'info', glyph: 'link' },
-  survey: { label: 'Survey', tone: 'success', glyph: 'clipboard' },
-  design: { label: 'Design', tone: 'accent', glyph: 'grid' },
-  'sign-off': { label: 'Sign-off', tone: 'success', glyph: 'check' },
-  payment: { label: 'Payment', tone: 'success', glyph: 'rupee' },
-  document: { label: 'Document', tone: 'neutral', glyph: 'doc' },
-  task: { label: 'Task', tone: 'warning', glyph: 'check' },
-  system: { label: 'System', tone: 'neutral', glyph: 'cog' },
-  dunning: { label: 'Dunning', tone: 'warning', glyph: 'bell' },
-  reversal: { label: 'Reversal', tone: 'danger', glyph: 'undo' },
+export const ACTIVITY_KINDS: Record<string, ActivityKindLook> = {
+  note: { tone: 'neutral', glyph: 'note' },
+  call: { tone: 'accent', glyph: 'phone' },
+  'agent-call': { tone: 'info', glyph: 'phone' },
+  stage: { tone: 'accent', glyph: 'flag' },
+  assignment: { tone: 'neutral', glyph: 'user' },
+  proposal: { tone: 'accent', glyph: 'doc' },
+  'link-open': { tone: 'info', glyph: 'link' },
+  survey: { tone: 'success', glyph: 'clipboard' },
+  design: { tone: 'accent', glyph: 'grid' },
+  'sign-off': { tone: 'success', glyph: 'check' },
+  payment: { tone: 'success', glyph: 'rupee' },
+  document: { tone: 'neutral', glyph: 'doc' },
+  task: { tone: 'warning', glyph: 'check' },
+  system: { tone: 'neutral', glyph: 'cog' },
+  dunning: { tone: 'warning', glyph: 'bell' },
+  reversal: { tone: 'danger', glyph: 'undo' },
 };
 
-/** "link-open" → "Link open". What an unregistered kind is called until a screen names it. */
-export function humanise(kind: string): string {
-  const words = String(kind).replace(/[-_]/g, ' ');
-  return words.charAt(0).toUpperCase() + words.slice(1);
-}
-
-/** The caller's registry wins, then the default, then a neutral dot with a humanised label. */
+/** The caller's registry wins, then the default, then a neutral dot named by the words. */
 export function kindOf(
   kinds: Record<string, ActivityKindSpec>,
   kind: string,
+  name: ActivityStreamWords['kind'],
 ): Required<ActivityKindSpec> {
-  const spec = kinds[kind] ?? ACTIVITY_KINDS[kind];
+  const spec = kinds[kind];
+  const look = spec ?? ACTIVITY_KINDS[kind];
   return {
-    label: spec?.label ?? humanise(kind),
-    tone: spec?.tone ?? 'neutral',
-    glyph: spec?.glyph ?? 'dot',
+    label: spec?.label ?? name(kind),
+    tone: look?.tone ?? 'neutral',
+    glyph: look?.glyph ?? 'dot',
   };
 }
 

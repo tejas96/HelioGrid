@@ -1,4 +1,4 @@
-import { usePriceBook, usePriceBookDraft } from '@heliogrid/data/react';
+import { useCatalogRates } from '@heliogrid/data/react';
 import {
   catalogRatesWords,
   catalogVersionWords,
@@ -15,7 +15,6 @@ import {
   useCatalogFormats,
   type useToasts,
 } from '@heliogrid/ui';
-import { useState } from 'react';
 import { RateSheet } from './RateSheet';
 import { SheetFoot } from './SheetFoot';
 import { VersionsSheet } from './VersionsSheet';
@@ -23,7 +22,7 @@ import { VersionsSheet } from './VersionsSheet';
 /**
  * The Rates panel on the phone (`SCR-M01-15` m15-d, s-versions, s-version-new): the version in
  * force grouped by how each rate is charged, the versions in a sheet, and a new version written
- * whole in a full sheet. `usePriceBook` reads, `usePriceBookDraft` writes.
+ * whole in a full sheet. What it draws is `useCatalogRates`'s, the web's too.
  */
 export function RatesPanel({
   administers,
@@ -34,25 +33,17 @@ export function RatesPanel({
 }) {
   const { t, locale } = useI18n();
   const formats = useCatalogFormats();
-  const book = usePriceBook();
-  const draft = usePriceBookDraft();
-  const [browsing, setBrowsing] = useState(false);
-  const inForce = book.kind === 'ready' ? book.value : undefined;
+  const rates = useCatalogRates(administers, (number) =>
+    toasts.push({ tone: 'success', title: t(PRICE_BOOK.saved, { number }) }),
+  );
+  const { draft, next, inForce } = rates;
   const head = inForce?.version ?? null;
-  const begin = () => {
-    if (inForce) draft.start(inForce);
-  };
-  const next = (draft.from ?? 0) + 1;
-  const save = () =>
-    void draft.publish().then((number) => {
-      if (number !== null) toasts.push({ tone: 'success', title: t(PRICE_BOOK.saved, { number }) });
-    });
 
   return (
     <>
       <CatalogRates
         words={catalogRatesWords(t)}
-        read={book}
+        read={rates.book}
         strip={{
           ...priceBookStripWords(
             t,
@@ -65,13 +56,13 @@ export function RatesPanel({
               : null,
             administers,
           ),
-          onLink: () => setBrowsing(true),
-          onAction: begin,
+          onLink: rates.versions.show,
+          onAction: rates.start,
         }}
         rates={versionRatesOf(inForce?.rates ?? [], locale)}
-        onAddFirst={administers && head === null ? begin : null}
+        onAddFirst={rates.addFirst}
       />
-      <VersionsSheet open={browsing} onClose={() => setBrowsing(false)} />
+      <VersionsSheet browse={rates.versions} />
       <EditorSurface
         open={draft.open}
         onClose={draft.close}
@@ -94,7 +85,7 @@ export function RatesPanel({
             cancel={t(PRICE_BOOK.cancel)}
             onCancel={draft.close}
             act={t(PRICE_BOOK.saveAs, { number: next })}
-            onAct={save}
+            onAct={() => void rates.publish()}
             busy={draft.publishing.pending}
             off={draft.incomplete}
           />

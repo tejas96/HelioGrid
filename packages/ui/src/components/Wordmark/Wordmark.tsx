@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { GRID, HELIO, PRODUCT_INITIAL, PRODUCT_NAME } from './Wordmark.name';
 import type { LogoTileProps, WordmarkProps } from './Wordmark.types';
 
 /**
@@ -28,13 +29,14 @@ export function Wordmark({ size = 22, tone = 'default', className, style }: WebW
   if (tone === 'mono') {
     return (
       <span className={classNames('hg-wordmark', className)} data-tone={tone} style={vars}>
-        HelioGrid
+        {PRODUCT_NAME}
       </span>
     );
   }
   return (
     <span className={classNames('hg-wordmark', className)} data-tone={tone} style={vars}>
-      Helio<span className="hg-wordmark-grid">Grid</span>
+      {HELIO}
+      <span className="hg-wordmark-grid">{GRID}</span>
     </span>
   );
 }
@@ -49,12 +51,12 @@ export function LogoTile({ size = 40, radius = 12, className, style }: WebLogoTi
   };
   return (
     <span
-      aria-label="HelioGrid"
+      aria-label={PRODUCT_NAME}
       role="img"
       className={classNames('hg-logo-tile', className)}
       style={vars}
     >
-      H
+      {PRODUCT_INITIAL}
     </span>
   );
 }

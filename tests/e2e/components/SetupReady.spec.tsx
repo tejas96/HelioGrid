@@ -18,6 +18,10 @@ const DEMO_STATES: readonly DemoDoor[] = ['ready', 'loading', 'unavailable'];
 
 /** Where the heading and door one sit, and door two's height, for one demo state. */
 async function placesOf(page: Page, root: Locator) {
+  /* Under a loaded run the first mount can be measured before its face has loaded, a line off. */
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+  });
   const heading = await settledBox(root.getByRole('heading', { level: 1 }));
   const doors = root.locator('.hg-setup-ready-doors > *');
   const one = await settledBox(doors.nth(0));

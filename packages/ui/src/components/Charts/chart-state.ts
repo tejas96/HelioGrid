@@ -1,4 +1,8 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
+import type { ChartFrameProps, ChartWords } from './Charts.types';
+import { chartProvenanceFacts, type ProvenanceFacts } from './chart-provenance';
 
 /** The surface state a frame is in. `unavailable` is neutral and never grows a retry. */
 export type ChartSurfaceState = SurfaceState;
@@ -6,57 +10,102 @@ export type ChartSurfaceState = SurfaceState;
 export type ChartNoteTone = 'warning' | 'neutral';
 
 export interface ChartNote {
-  title: string;
-  message?: string;
+  title: TranslatedText;
+  message?: TranslatedText;
   tone: ChartNoteTone;
 }
 
-/* Copy the reference implementation fixes in the component rather than on a prop. Anything a
-   caller can change is a prop on ChartFrameProps and is defaulted at the destructure. */
-export const CHART_INSUFFICIENT_TITLE = 'Not enough data';
-export const CHART_LOADING_LABEL = 'Loading chart';
-/* ChartFrame's unavailable copy, handed to `<UnavailableNote variant="region">`. The design
-   system's `charts/Charts.d.ts.txt` contract declares NO prop for it — its JSX takes an
-   `unavailableTitle`, but the published typings do not, and the typings are what this repo ports
-   against (docs/engineering/17 §6) — so it is not overridable here. Adding the prop would be widening past
-   the contract, not restoring it; see the port notes. */
-export const CHART_UNAVAILABLE_TITLE = 'Not available for this scope';
+type ChartNoteWords = Pick<
+  ChartFrameProps,
+  'emptyTitle' | 'emptyMessage' | 'insufficientMessage' | 'errorTitle' | 'errorMessage'
+>;
 
-/** Defaults ChartFrame applies; the reference implementation sets them at the destructure. */
-export const CHART_EMPTY_TITLE = 'No data yet';
-export const CHART_INSUFFICIENT_MESSAGE =
-  'Not enough data to show a trend — this needs at least two periods.';
-export const CHART_ERROR_TITLE = "Couldn't load this chart";
-export const CHART_ERROR_MESSAGE =
-  'Tap Try again. If it keeps failing, tell your admin what you were doing.';
-
-interface ChartNoteInput {
+interface ChartNoteInput extends ChartNoteWords {
   state: ChartSurfaceState;
   insufficient: boolean;
-  emptyTitle: string;
-  emptyMessage?: string;
-  insufficientMessage: string;
-  errorTitle: string;
-  errorMessage: string;
+  words: ChartWords;
 }
 
 /**
- * The one place error / empty / not-enough-data resolve to words. `error` is the only tone that
- * carries the warning tint — and the only one that may offer a retry.
+ * The one place error / empty / not-enough-data resolve to words: the chart's own, else the
+ * frame's `words`. `error` is the only tone that carries the warning tint — and the only one
+ * that may offer a retry.
  */
 export function chartNote(input: ChartNoteInput): ChartNote | null {
+  const { words } = input;
   if (input.state === 'error') {
-    return { title: input.errorTitle, message: input.errorMessage, tone: 'warning' };
+    return {
+      title: input.errorTitle ?? words.errorTitle,
+      message: input.errorMessage ?? words.errorMessage,
+      tone: 'warning',
+    };
   }
   if (input.state === 'empty') {
-    return { title: input.emptyTitle, message: input.emptyMessage, tone: 'neutral' };
+    return {
+      title: input.emptyTitle ?? words.emptyTitle,
+      message: input.emptyMessage,
+      tone: 'neutral',
+    };
   }
   if (input.insufficient) {
     return {
-      title: CHART_INSUFFICIENT_TITLE,
-      message: input.insufficientMessage,
+      title: words.insufficientTitle,
+      message: input.insufficientMessage ?? words.insufficientMessage,
       tone: 'neutral',
     };
   }
   return null;
+}
+
+/** The frame read once for both platforms: what it draws around the plot, and when. */
+export interface ChartFrameReading {
+  state: ChartSurfaceState;
+  onRetry: (() => void) | undefined;
+  /** One provenance line under the headline value — word first, dot second (F8-07). */
+  facts: ProvenanceFacts | null;
+  stateNote: ChartNote | null;
+  hasCaption: boolean;
+  /** The legend shows only beside a drawn plot: no state note, and not while loading. */
+  showsLegend: boolean;
+}
+
+export function chartFrameReading({
+  read,
+  provenance,
+  standing,
+  source,
+  projection,
+  note,
+  insufficient = false,
+  words,
+  emptyTitle,
+  emptyMessage,
+  insufficientMessage,
+  errorTitle,
+  errorMessage,
+  overline,
+  title,
+  value,
+  action,
+  legend,
+}: ChartFrameProps): ChartFrameReading {
+  const state = surfaceStateOf(read);
+  const stateNote = chartNote({
+    state,
+    insufficient,
+    words,
+    emptyTitle,
+    emptyMessage,
+    insufficientMessage,
+    errorTitle,
+    errorMessage,
+  });
+  return {
+    state,
+    onRetry: retryOf(read),
+    facts: chartProvenanceFacts({ provenance, standing, source, projection, note }),
+    stateNote,
+    hasCaption: Boolean(overline) || Boolean(title) || Boolean(value) || Boolean(action),
+    showsLegend: Boolean(legend) && stateNote === null && state !== 'loading',
+  };
 }

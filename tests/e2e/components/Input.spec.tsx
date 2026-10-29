@@ -9,7 +9,9 @@ import { resolvedColour, resolvedLength } from '../support/token';
  * page, `--field-h` tall, and focus drawn as an inset accent ring — the field every board draws.
  */
 const en = await createTranslator('en');
-const needed = companyFieldRefusal(en.t, 'companyName', { type: 'too_small' }) ?? '';
+const refused = companyFieldRefusal(en.t, 'companyName', { type: 'too_small' });
+if (refused === undefined) throw new Error('a company with no name is refused in words');
+const needed = refused;
 
 test('an expressive field is the fill, the field height, and takes focus as an inset accent ring', async ({
   mount,

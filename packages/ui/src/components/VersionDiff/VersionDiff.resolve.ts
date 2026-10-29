@@ -8,10 +8,17 @@
    exactly the tier change F8-05 and SCR-M06-18 exist to show; comparing the printed words would
    hide it wherever a language gave two tiers one word. `unmarked` and no tier both mean none. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import { tierOf } from '../Provenance/Provenance.tiers';
 import type { ProvenanceTierSpec } from '../Provenance/Provenance.types';
-import type { DiffRow, DiffState, VersionDiffMode, VersionSide } from './VersionDiff.types';
+import type {
+  DiffRow,
+  DiffState,
+  VersionDiffMode,
+  VersionDiffWords,
+  VersionSide,
+} from './VersionDiff.types';
 
 function text(value: ReactNode): string {
   return value === null || value === undefined ? '' : String(value);
@@ -53,6 +60,82 @@ export function isTierOnly(row: DiffRow, state: DiffState): boolean {
   );
 }
 
+/** One line of a row: the version's own stamp, its figure and the tier THAT version pinned — or,
+    where the version holds nothing, the named absence. `side` keys it within its row. */
+export interface DiffSideSpec {
+  side: 'before' | 'after' | 'both';
+  stamp: string;
+  value?: ReactNode;
+  unit?: string;
+  tier?: ProvenanceTierSpec;
+  strong?: boolean;
+  gap?: TranslatedText;
+}
+
+/**
+ * What one row draws under its head. `tier-only`: the value held and the TIER moved — on
+ * SCR-M06-18 that tier change is the content. `moved`: the before line, then the after line under
+ * an arrow. `sides`: the lines as they stand.
+ */
+export type DiffRowBody =
+  | { kind: 'tier-only' }
+  | { kind: 'sides'; sides: DiffSideSpec[] }
+  | { kind: 'moved'; from: DiffSideSpec; to: DiffSideSpec };
+
+/** The two stamps a row's lines carry, and what a removed field's absence is called. */
+export interface DiffRowStamps {
+  beforeStamp: string;
+  afterStamp: string;
+  removedLabel: TranslatedText;
+}
+
+/** What every row in the list is told, beside its own field: the stamps, and the added note. */
+export interface DiffRowFrame extends DiffRowStamps {
+  addedLabel?: ReactNode;
+  words: VersionDiffWords;
+}
+
+/** The lines one row shows for its state — the later version's figure is the strong one. */
+export function diffRowBodyOf(row: DiffRow, state: DiffState, stamps: DiffRowStamps): DiffRowBody {
+  if (isTierOnly(row, state)) return { kind: 'tier-only' };
+  const { beforeStamp, afterStamp, removedLabel } = stamps;
+  const before: DiffSideSpec = {
+    side: 'before',
+    stamp: beforeStamp,
+    value: row.before,
+    unit: row.unit,
+    tier: row.beforeTier,
+  };
+  const after: DiffSideSpec = {
+    side: 'after',
+    stamp: afterStamp,
+    value: row.after,
+    unit: row.unit,
+    tier: row.afterTier,
+    strong: true,
+  };
+  if (state === 'added') return { kind: 'sides', sides: [after] };
+  if (state === 'removed') {
+    const absence: DiffSideSpec = {
+      side: 'after',
+      stamp: afterStamp,
+      gap: row.gapLabel || removedLabel,
+    };
+    return { kind: 'sides', sides: [before, absence] };
+  }
+  if (state === 'unchanged') {
+    const held: DiffSideSpec = {
+      side: 'both',
+      stamp: `${beforeStamp} · ${afterStamp}`,
+      value: row.after ?? row.before,
+      unit: row.unit,
+      tier: row.afterTier || row.beforeTier,
+    };
+    return { kind: 'sides', sides: [held] };
+  }
+  return { kind: 'moved', from: before, to: after };
+}
+
 /** One row with the state it resolved to and the identity the list renders it under. */
 export interface DiffEntry {
   row: DiffRow;
@@ -71,8 +154,8 @@ export function resolveDiffEntries(rows: DiffRow[]): DiffEntry[] {
 
 /** What the two versions are CALLED — the headings, the per-line stamps and their notes. */
 export interface DiffSides {
-  beforeLabel: string;
-  afterLabel: string;
+  beforeLabel: TranslatedText;
+  afterLabel: TranslatedText;
   beforeStamp: string;
   afterStamp: string;
   /** Both sides' notes on one line — empty when neither side carries one. */
@@ -87,17 +170,18 @@ export function resolveDiffSides(
   before: VersionSide,
   after: VersionSide,
   mode: VersionDiffMode,
+  words: VersionDiffWords,
 ): DiffSides {
-  const beforeLabel = before.label || (mode === 'upgrade' ? 'Now' : 'v1');
-  const afterLabel = after.label || (mode === 'upgrade' ? 'Upgraded' : 'v2');
+  const beforeLabel = before.label || words.sides[mode].before;
+  const afterLabel = after.label || words.sides[mode].after;
   return {
     beforeLabel,
     afterLabel,
     beforeStamp: before.stamp || beforeLabel,
     afterStamp: after.stamp || afterLabel,
     notes: [
-      before.note ? `${beforeLabel}: ${before.note}` : null,
-      after.note ? `${afterLabel}: ${after.note}` : null,
+      before.note ? words.sideNote(beforeLabel, before.note) : null,
+      after.note ? words.sideNote(afterLabel, after.note) : null,
     ]
       .filter(Boolean)
       .join(' · '),
@@ -126,7 +210,7 @@ export function groupDiffRows(entries: DiffEntry[]): DiffGroup[] {
 }
 
 /** The counts line — "3 changed · 1 added · 1 removed · 6 unchanged". */
-export function diffSummary(states: DiffState[]): string {
+export function diffSummary(states: DiffState[], words: VersionDiffWords): string {
   const counts: Record<DiffState, number> = {
     changed: 0,
     unchanged: 0,
@@ -138,6 +222,6 @@ export function diffSummary(states: DiffState[]): string {
   }
   return (['changed', 'added', 'removed', 'unchanged'] as const)
     .filter((k) => counts[k] > 0)
-    .map((k) => `${counts[k]} ${k}`)
+    .map((k) => words.counted(k, counts[k]))
     .join(' · ');
 }

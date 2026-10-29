@@ -1,8 +1,8 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
-import type { NamedGapSpec } from './NamedGap.types';
+import { fillActOf, namedGapFor } from './NamedGap.logic';
+import type { NamedGapInput, NamedGapSpec } from './NamedGap.types';
 
 interface WebNamedGapProps extends NamedGapSpec {
   className?: string;
@@ -22,12 +22,13 @@ export function NamedGap({
   scale = 'field',
   align = 'left',
   onFill,
-  fillLabel = 'Add',
+  fillLabel,
   fieldName,
   className,
   style,
 }: WebNamedGapProps) {
   if (!gap) return null;
+  const act = fillActOf({ onFill, fillLabel, fieldName });
   return (
     <span
       className={classNames('hg-named-gap', className)}
@@ -37,34 +38,24 @@ export function NamedGap({
     >
       <span className="hg-named-gap-ring" aria-hidden="true" />
       <span className="hg-named-gap-words">{gap}</span>
-      {onFill ? (
+      {act === null ? null : (
         <Pressable
           className="hg-named-gap-fill"
-          onPress={onFill}
-          accessibilityLabel={fieldName ? `${fillLabel}: ${fieldName}` : undefined}
+          onPress={act.onFill}
+          accessibilityLabel={act.spokenName}
         >
-          {fillLabel}
+          {act.label}
         </Pressable>
-      ) : null}
+      )}
     </span>
   );
 }
 
-function isGapSpec(value: object): value is NamedGapSpec {
-  return 'gap' in value;
-}
-
-/** What every `gap` host prop runs through: a sentence, a spec, or a ready node. */
 export function renderGap(
-  spec?: ReactNode | NamedGapSpec,
+  spec?: NamedGapInput | null,
   extra: Partial<NamedGapSpec> = {},
 ): ReactNode {
-  if (!spec) return null;
-  if (isValidElement(spec)) return spec;
-  if (typeof spec === 'string') return <NamedGap gap={spec} {...extra} />;
-  if (typeof spec !== 'object' || !isGapSpec(spec)) return null;
-  if (!spec.gap) return null;
-  return <NamedGap {...spec} {...extra} />;
+  return namedGapFor(spec, (plain) => <NamedGap {...plain} {...extra} />);
 }
 
 NamedGap.render = renderGap;

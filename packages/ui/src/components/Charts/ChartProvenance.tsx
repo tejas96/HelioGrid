@@ -22,7 +22,7 @@ export function ChartProvenance({ facts }: ChartProvenanceProps) {
         <Fragment key={part.id}>
           {index > 0 ? (
             <span aria-hidden="true" className="hg-charts-prov-sep">
-              ·
+              {'·'}
             </span>
           ) : null}
           <span

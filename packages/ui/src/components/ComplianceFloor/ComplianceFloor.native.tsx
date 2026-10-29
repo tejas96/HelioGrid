@@ -1,13 +1,14 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import { isValidElement } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
+import { noteLineScale } from '../ActionReason/ActionReason.logic';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { complianceFloorFor } from './ComplianceFloor.logic';
 import type { ComplianceFloorSpec } from './ComplianceFloor.types';
-import { complianceFloorWords } from './ComplianceFloor.words';
+import { complianceFloorSentences } from './ComplianceFloor.words';
 
 interface NativeComplianceFloorProps extends ComplianceFloorSpec {
   style?: StyleProp<ViewStyle>;
@@ -34,8 +35,8 @@ function ShieldGlyph({ size, color }: { size: number; color: string }) {
 /** A floor named on the row it protects, or the save it refused. */
 export function ComplianceFloor(props: NativeComplianceFloorProps) {
   const { action, variant = 'line', size = 12, message, style } = props;
-  const { head, named, body } = complianceFloorWords(props);
-  const step = Math.max(12, size);
+  const { head, named, body } = complianceFloorSentences(props);
+  const scale = noteLineScale(size);
 
   if (variant === 'refusal') {
     return (
@@ -61,23 +62,27 @@ export function ComplianceFloor(props: NativeComplianceFloorProps) {
   return (
     <View style={[styles.line, style]}>
       <View style={styles.lineGlyph}>
-        <ShieldGlyph size={step + 1} color={theme.colors['text-tertiary']} />
+        <ShieldGlyph size={scale.glyphSize} color={theme.colors['text-tertiary']} />
       </View>
-      <Text variant={step >= 13 ? 'body-sm' : 'caption'} color="secondary" style={styles.lineWords}>
+      <Text
+        variant={scale.large ? 'body-sm' : 'caption'}
+        color="secondary"
+        style={styles.lineWords}
+      >
         <Text
-          variant={step >= 13 ? 'body-sm' : 'caption'}
+          variant={scale.large ? 'body-sm' : 'caption'}
           color="secondary"
           style={styles.lineHead}
         >
           {head}
         </Text>
         {named === '' ? null : (
-          <Text variant={step >= 13 ? 'body-sm' : 'caption'} color="secondary">
+          <Text variant={scale.large ? 'body-sm' : 'caption'} color="secondary">
             {` · ${named}`}
           </Text>
         )}
         {message === undefined ? null : (
-          <Text variant={step >= 13 ? 'body-sm' : 'caption'} color="secondary">
+          <Text variant={scale.large ? 'body-sm' : 'caption'} color="secondary">
             {` ${message}`}
           </Text>
         )}
@@ -86,25 +91,11 @@ export function ComplianceFloor(props: NativeComplianceFloorProps) {
   );
 }
 
-function isFloorSpec(value: object): value is ComplianceFloorSpec {
-  return !(Symbol.iterator in value);
-}
-
-/** What every `lock` / `floor` host prop runs through: a spec object, or a ready node. */
 export function renderComplianceFloor(
   spec?: ComplianceFloorSpec | ReactNode,
   extra: Partial<ComplianceFloorSpec> = {},
 ): ReactNode {
-  if (!spec) {
-    return null;
-  }
-  if (isValidElement(spec)) {
-    return spec;
-  }
-  if (typeof spec !== 'object' || !isFloorSpec(spec)) {
-    return null;
-  }
-  return <ComplianceFloor {...spec} {...extra} />;
+  return complianceFloorFor(spec, (plain) => <ComplianceFloor {...plain} {...extra} />);
 }
 
 ComplianceFloor.render = renderComplianceFloor;

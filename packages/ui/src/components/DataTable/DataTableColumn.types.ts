@@ -1,8 +1,9 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import type { IrisHue } from '../Avatar/Avatar.types';
 import type { FieldOverrideSpec } from '../FieldOverride/FieldOverride.types';
-import type { NamedGapSpec } from '../NamedGap';
+import type { NamedGapInput } from '../NamedGap';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { ValueSourceSpec } from '../ValueSource';
 
@@ -18,7 +19,7 @@ export interface DataTableLeading {
 
 export interface DataTableColumn<Row = Record<string, unknown>> {
   key: string;
-  label: string;
+  label: TranslatedText;
   /** Right-aligns, uses Geist Mono and tabular-nums. */
   numeric?: boolean;
   mono?: boolean;
@@ -78,7 +79,8 @@ export interface DataTableColumn<Row = Record<string, unknown>> {
    * visible `<label>`, so the editors carry it on the control itself.
    */
   editor?: 'text' | 'number' | 'select';
-  options?: { value: string; label: string }[] | string[];
+  /** A bare value is a fact the editor shows as it is — a pack's word, a code. */
+  options?: { value: string; label: TranslatedText }[] | string[];
   /** The raw value the editor edits, when `render` produces something richer than the value. */
   editValue?: (row: Row) => string | number | undefined;
   /**
@@ -111,7 +113,7 @@ export interface DataTableColumn<Row = Record<string, unknown>> {
    * the value, not asking for it). Tertiary-grey words in the cell were the colour of a gap and
    * none of its behaviour.
    */
-  gap?: (row: Row) => ReactNode | NamedGapSpec | null;
+  gap?: (row: Row) => NamedGapInput | null;
   /**
    * **The cell may take more than one line.** The rule a `ChipGroup` column needs: the chips wrap,
    * the row grows (`rowH` is a floor, not a cap), and the column takes the **full width** of the

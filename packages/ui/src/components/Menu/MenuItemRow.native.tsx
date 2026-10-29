@@ -30,13 +30,10 @@ interface MenuItemRowProps {
  */
 export function MenuItemRow({ item, onSelect, radio }: MenuItemRowProps) {
   const shape = menuRowShape(item, radio);
-  const { checked, destructive, disabled, stated } = shape;
+  const { checked, destructive, disabled, inert } = shape;
   const reason: ReactNode = disabled ? renderActionReason(item.disabledReason) : null;
   const twoLine = reason !== null;
   const glyphColour = disabled ? theme.colors['text-tertiary'] : theme.colors['danger-text'];
-  /* Off with NO reason is the only row that stops being pressable — one with a stated reason stays
-     reachable, or the sentence explaining it is announced to nobody. */
-  const inert = disabled && !stated;
 
   return (
     <Pressable

@@ -6,6 +6,7 @@
  * print scoping have no React Native equivalent, and a phone never produces the artefact.
  * This file still has to stay platform-neutral because both tsconfig projects compile it.
  */
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { DisclosureKind, DisclosureSpec } from '../Disclosure';
 import type { RichTextMetrics } from '../RichText/RichText.types';
@@ -29,6 +30,7 @@ export interface PageGeometry {
   paper: Paper;
   orientation: PageOrientation;
   /** "A4 · 210 × 297 mm" — printed in a drawing sheet's title block. */
+  // biome-ignore lint/plugin/copy-prop-type: the paper's standard name and size, as the standard writes it
   label: string;
   width: number;
   height: number;
@@ -103,7 +105,7 @@ export interface DocumentSection<Row = unknown> {
    */
   screenOnly?: boolean;
   /** The band's own overline — "Internal notes", "Costing workings". */
-  label?: string;
+  label?: TranslatedText;
   /** Adds `data-keep-together` in the web rendering too. */
   keepTogether?: boolean;
 }
@@ -125,12 +127,59 @@ export interface TitleBlockSpec {
   validUntil?: string | Date;
   /** Prepared-by **with company identity**: `{company, lines, person, role}`. */
   preparedBy?: { company?: string; lines?: string[]; person?: string; role?: string };
-  docTitle?: string;
+  /** The overline — the document's kind. Omitted, the words' `docTitle` ("Solar proposal"). */
+  docTitle?: TranslatedText;
+}
+
+/** The title block's own words, from `packages/i18n`'s `pagedDocumentWords(t).titleBlock`. */
+export interface TitleBlockWords {
+  /** The overline when the spec names no document — "Solar proposal". */
+  docTitle: TranslatedText;
+  /** The named gap where the customer-facing project name is not set yet. */
+  noProjectName: TranslatedText;
+  /** The internal variant's line — "Internal design name · {name}". */
+  internalName: (name: string) => TranslatedText;
+  /** "Prepared by {person}". */
+  preparedBy: (person: string) => TranslatedText;
+  /** The four fields' overlines. */
+  proposalNumber: TranslatedText;
+  issued: TranslatedText;
+  revision: TranslatedText;
+  validUntil: TranslatedText;
 }
 
 /** `MS9-01`'s title block. The customer-facing name is a different prop from the internal one. */
 export interface TitleBlockProps extends TitleBlockSpec {
   audience?: DocumentAudience;
+  words: TitleBlockWords;
+}
+
+/**
+ * The words a paged document says of its own, from `packages/i18n`'s `pagedDocumentWords`: its
+ * sheets' numbering and names, the internal marks, the annotation band, its states and its title
+ * block's. The document's own `errorTitle` … `unavailableMessage` replace one state's words.
+ */
+export interface PagedDocumentWords {
+  /** The foot's counted numbering — "Sheet 3 of 7". `numbering` replaces it. */
+  sheetOf: (sheet: number, sheets: number) => TranslatedText;
+  /** Each sheet's accessible name — "{document} · sheet 3 of 7". */
+  sheetName: (document: string, sheet: number, sheets: number) => TranslatedText;
+  /** The running head's mark on an internal sheet. */
+  internalCopy: TranslatedText;
+  /** The internal stamp — "Internal copy — not for the customer." */
+  internalStamp: TranslatedText;
+  /** An annotation's overline when its section names none. */
+  internalNote: TranslatedText;
+  /** An annotation's overline — "{note} · saved, not printed". */
+  savedNotPrinted: (note: string) => TranslatedText;
+  /** The pending cut's busy name — "Laying out the document". */
+  layingOut: TranslatedText;
+  errorTitle: TranslatedText;
+  errorMessage: TranslatedText;
+  /** The failed read's *Try again*. */
+  retry: TranslatedText;
+  unavailableTitle: TranslatedText;
+  titleBlock: TitleBlockWords;
 }
 
 /** One section's own span through the cut, 1-based, in the units the sheet foot prints. */
@@ -183,10 +232,10 @@ export interface PagedDocumentProps<Row = unknown> {
   disclosuresAfter?: string;
   /** The letterhead's foot, on every sheet. */
   footNote?: ReactNode;
-  /** The numbering words. Default `Sheet 3 of 7`. The **count is counted**, never passed in. */
-  numbering?: (sheet: number, sheets: number) => string;
-  /** Accessible name for the document and its sheets. */
-  label?: string;
+  /** The numbering words. Default the words' `sheetOf`. The **count is counted**, never passed in. */
+  numbering?: (sheet: number, sheets: number) => TranslatedText;
+  /** Accessible name for the document and its sheets — "Proposal"; the head without a title block. */
+  label: TranslatedText;
   /**
    * Fires with the **counted** cut. This is the number a `PageEstimate` stops estimating with, and
    * the way a caller reads the page count without running a second layout pass.
@@ -194,12 +243,13 @@ export interface PagedDocumentProps<Row = unknown> {
   onCut?: (info: PagedDocumentCut) => void;
   /** Required: what this draws always comes from a read, and a failed read carries its retry. */
   read: SurfaceRead;
-  errorTitle?: string;
-  errorMessage?: string;
-  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
-  unavailableTitle?: string;
-  unavailableMessage?: string;
+  /** Every word the document says of its own; the four below replace one state's words. */
+  words: PagedDocumentWords;
+  errorTitle?: TranslatedText;
+  errorMessage?: TranslatedText;
+  unavailableTitle?: TranslatedText;
+  /** Drawn under the unavailable title only when given — `words` holds no such message. */
+  unavailableMessage?: TranslatedText;
 }
 
 export interface PrintScopeProps {
@@ -217,6 +267,20 @@ export interface PageEstimateOptions extends PageGeometryOptions {
   advance?: number;
 }
 
+/**
+ * The numbers an estimate rests on, so a reader can check it instead of trusting it. Facts, not
+ * words: `PageEstimate` says them through its words' `basis`.
+ */
+export interface PageEstimateBasis {
+  /** The paper's standard name and size — "A4 · 210 × 297 mm". */
+  paper: string;
+  /** The body size in points. */
+  points: number;
+  /** The column's width in px. */
+  column: number;
+  linesPerPage: number;
+}
+
 export interface PageEstimateResult {
   /** 0 at zero characters — the editor never prints "≈ 0 pages". */
   pages: number;
@@ -224,11 +288,23 @@ export interface PageEstimateResult {
   linesPerPage: number;
   charsPerLine: number;
   geometry: PageGeometry;
-  /** The numbers in words — "A4 · 210 × 297 mm · 12pt · 698px column · 42 lines a page". */
-  basis: string;
+  basis: PageEstimateBasis;
+}
+
+/** `PageEstimate`'s words, from `packages/i18n`'s `pageEstimateWords`. */
+export interface PageEstimateWords {
+  /** A counted number — "3 pages". */
+  pages: (count: number) => TranslatedText;
+  /** An estimate — "≈ 3 pages". */
+  aboutPages: (count: number) => TranslatedText;
+  /** The cap, stated — "1 over the 3-page limit". */
+  overLimit: (over: number, max: number) => TranslatedText;
+  /** The basis, spoken — "A4 · 210 × 297 mm · 12pt · 698px column · 42 lines a page". */
+  basis: (paper: string, points: number, column: number, linesPerPage: number) => TranslatedText;
 }
 
 export interface PageEstimateProps {
+  words: PageEstimateWords;
   metrics?: RichTextMetrics;
   /** The counted number from `onCut`'s `pagesOf(sectionId)` — it drops the "≈". */
   measured?: number;

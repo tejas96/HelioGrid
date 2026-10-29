@@ -1,5 +1,6 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode, Ref } from 'react';
-import type { FocusHandle } from '../SearchField/SearchField.types';
+import type { FocusHandle } from '../../primitives/FocusAfter';
 
 /* THE TOUCH TARGET AND THE VISIBLE PILL ARE TWO DIFFERENT RECTANGLES (N2 / F7-29 / F7-32).
 
@@ -12,11 +13,13 @@ import type { FocusHandle } from '../SearchField/SearchField.types';
    remember. Callers get the floor for free and cannot opt out of it. */
 
 /**
- * `icon` — an 18px glyph drawn before the label (kind chips), in the chip's own ink: an inline
- * `<svg>` stroked in `currentColor` on the web, a `react-native-svg` element stroked in
- * `currentColor` on the phone, which the chip hands its words' colour.
+ * A bare string is a value that is its own words — a figure, a name; product words come in the
+ * object form, `label` in the reader's language. `icon` — an 18px glyph drawn before the label
+ * (kind chips), in the chip's own ink: an inline `<svg>` stroked in `currentColor` on the web, a
+ * `react-native-svg` element stroked in `currentColor` on the phone, which the chip hands its
+ * words' colour.
  */
-export type FilterOption = string | { value: string; label: string; icon?: ReactNode };
+export type FilterOption = string | { value: string; label: TranslatedText; icon?: ReactNode };
 
 /** The pill heights and the filter square's side, one declaration for both platforms. */
 export const PILL_HEIGHT = {
@@ -41,7 +44,7 @@ export interface FilterChipsProps {
   /** Horizontal scroll for the phone row. */
   scroll?: boolean;
   /** **The tablist's accessible name** — "Stage", "Outcome". A tablist with no name is a defect. */
-  label?: string;
+  label?: TranslatedText;
   /**
    * Id of a name already visible on the screen — preferred over `label` whenever one exists
    * (Kanban points this at its own visible overline, so one string does both jobs).
@@ -61,7 +64,12 @@ export interface FacetChipsProps {
   onChange?: (values: string[]) => void;
   counts?: Record<string, number>;
   /** Accessible name for the group — "Certification scheme", "Outcome". */
-  label?: string;
+  label?: TranslatedText;
+  /**
+   * The tick's name on the web — *Selected* — read with a chosen chip's words. The phone says the
+   * same through the chip's selected state, which its tick cannot carry.
+   */
+  selectedLabel: TranslatedText;
   /** Single scrolling row instead of wrapping. */
   scroll?: boolean;
 }
@@ -70,14 +78,21 @@ export interface SortPillsProps {
   options: FilterOption[];
   value?: string;
   onChange?: (value: string) => void;
-  label?: string;
+  /** The word before the pills — *Sort*. */
+  label: TranslatedText;
 }
 
 export interface FiltersButtonProps {
   onClick?: () => void;
   /** Number of active filters — shown as an accent counter. */
   count?: number;
-  label?: string;
+  /** The square's name and its title — *Filters*. */
+  label: TranslatedText;
+  /**
+   * The square's whole spoken name while `count` is above zero — *Filters, 3 active*. The square
+   * has no words and the counter is a bare number, so the name must say what the number counts.
+   */
+  activeLabel: (count: number) => TranslatedText;
 }
 
 /** `{ value, label, icon }` for a plain string option or a spec object, in one place. */

@@ -14,6 +14,7 @@ interface WebStepListProps extends StepListProps {
  * half of M05-03. Same reachability rule as `Stepper`; rows are 52px.
  */
 export function StepList({
+  words,
   steps = [],
   current = 0,
   onStepClick,
@@ -26,7 +27,7 @@ export function StepList({
   return (
     <ol
       className={classNames('hg-stepper-list', className)}
-      aria-label={label ?? 'Steps'}
+      aria-label={label ?? words.steps}
       style={style}
     >
       {resolved.map((step, index) => (
@@ -37,6 +38,7 @@ export function StepList({
           onStepClick={onStepClick}
           step={step}
           total={resolved.length}
+          words={words}
         />
       ))}
     </ol>

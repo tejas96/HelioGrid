@@ -1,11 +1,17 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { Animated as RNAnimated } from 'react-native';
 import { Animated, View } from 'react-native';
 import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
-import { bestPerAttribute } from './CompareGrid.logic';
-import type { CompareAttribute, CompareOption, CompareProvenanceSpec } from './CompareGrid.types';
+import { bestPerAttribute, isZebraRow } from './CompareGrid.logic';
+import type {
+  CompareAttribute,
+  CompareGridWords,
+  CompareOption,
+  CompareProvenanceSpec,
+} from './CompareGrid.types';
 import { cellBoxes, cellGround, compareStyles, type Density } from './CompareGridStyles.native';
 import { CompareOptionHead } from './CompareOptionHead.native';
 import { CompareValueCell } from './CompareValueCell.native';
@@ -26,13 +32,14 @@ interface GridProps<Opt extends CompareOption> {
   options: Opt[];
   selectedKey?: string;
   onSelect?: (key: string) => void;
-  selectLabel: string;
-  selectedLabel: string;
-  currentLabel: string;
+  selectLabel: TranslatedText;
+  selectedLabel: TranslatedText;
+  currentLabel: TranslatedText;
   density: Density;
   columnWidth: number;
   labelWidth: number;
   scrollX: RNAnimated.Value;
+  words: CompareGridWords;
 }
 
 /**
@@ -54,6 +61,7 @@ export function CompareGridTable<Opt extends CompareOption>({
   columnWidth,
   labelWidth,
   scrollX,
+  words,
 }: GridProps<Opt>) {
   const best = bestPerAttribute(attributes, options);
   const isSelected = (option: Opt) => selectedKey !== undefined && option.key === selectedKey;
@@ -80,7 +88,7 @@ export function CompareGridTable<Opt extends CompareOption>({
       </View>
 
       {attributes.map((attribute, index) => {
-        const zebra = index % 2 === 1;
+        const zebra = isZebraRow(index);
         return (
           <View key={attribute.key} style={compareStyles.row}>
             <Animated.View
@@ -105,6 +113,7 @@ export function CompareGridTable<Opt extends CompareOption>({
                 zebra={zebra}
                 best={best[attribute.key] === option.key}
                 box={box.cell}
+                words={words}
               />
             ))}
           </View>
@@ -124,7 +133,13 @@ export function CompareGridTable<Opt extends CompareOption>({
               {isSelected(option) ? (
                 /* The selected column's tint holds its choice as a tile does — see `Ground.css`. */
                 <GroundProvider ground="tile">
-                  <ChooseButton option={option} chosen label={selectedLabel} onSelect={onSelect} />
+                  <ChooseButton
+                    option={option}
+                    chosen
+                    label={selectedLabel}
+                    onSelect={onSelect}
+                    words={words}
+                  />
                 </GroundProvider>
               ) : (
                 <ChooseButton
@@ -132,6 +147,7 @@ export function CompareGridTable<Opt extends CompareOption>({
                   chosen={false}
                   label={selectLabel}
                   onSelect={onSelect}
+                  words={words}
                 />
               )}
             </View>
@@ -153,18 +169,20 @@ function ChooseButton<Opt extends CompareOption>({
   chosen,
   label,
   onSelect,
+  words,
 }: {
   option: Opt;
   chosen: boolean;
-  label: string;
+  label: TranslatedText;
   onSelect: (key: string) => void;
+  words: CompareGridWords;
 }) {
   const { controlFill } = useGround();
   return (
     <Pressable
       accessibilityState={{ selected: chosen }}
       onPress={() => onSelect(option.key)}
-      accessibilityLabel={`${label}: ${option.name}`}
+      accessibilityLabel={words.optionNamed(label, option.name)}
       style={[
         compareStyles.choose,
         chosen ? compareStyles.chooseSelected : null,

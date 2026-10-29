@@ -12,7 +12,12 @@ import './ImportOverview.css';
 export function ImportMatching({ words }: { words: CatalogImportWords }) {
   return (
     <div className="hg-import-step" data-step="matching">
-      <OperationProgress label={words.matching} value={null} state="running" />
+      <OperationProgress
+        label={words.matching}
+        words={words.progress}
+        value={null}
+        state="running"
+      />
     </div>
   );
 }
@@ -34,6 +39,7 @@ export function ImportRunning(props: CatalogImportProps & { formats: ImportForma
         <OperationProgress
           size="ring"
           label={words.importing}
+          words={words.progress}
           count={{ done, total }}
           countCaption={words.ofRows(total)}
           state="running"

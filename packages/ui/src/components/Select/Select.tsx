@@ -6,7 +6,7 @@ import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { SelectProps } from './Select.types';
 import { SelectListbox } from './SelectListbox';
 import { handleSelectKey } from './select-keys';
-import { normaliseOptions } from './select-options';
+import { committableOption, normaliseOptions, openingIndex, pickedOption } from './select-options';
 import { useSelectPlacement } from './use-select-placement';
 
 interface WebSelectProps extends SelectProps {
@@ -28,7 +28,7 @@ export function Select({
   onChange,
   options = [],
   label,
-  placeholder = 'Select an option',
+  placeholder,
   density = 'expressive',
   disabled = false,
   helper,
@@ -43,15 +43,14 @@ export function Select({
   const wrapRef = useRef<HTMLDivElement>(null);
   const place = useSelectPlacement(wrapRef, open);
   const opts = normaliseOptions(options);
-  const current = opts.find((option) => option.value === value);
+  const current = pickedOption(opts, value);
   const autoId = useId();
   const listId = `${autoId}-list`;
-  const selectedIndex = opts.findIndex((option) => option.value === value);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: the selected index is read ONCE, as the list opens — re-reading it on every value change would fight the arrow keys.
   useEffect(() => {
     if (open) {
-      setActive(Math.max(0, selectedIndex));
+      setActive(openingIndex(opts, value));
     }
   }, [open]);
 
@@ -70,8 +69,8 @@ export function Select({
   }, [open]);
 
   const commit = (index: number) => {
-    const option = opts[index];
-    if (option === undefined || option.disabled === true) {
+    const option = committableOption(opts, index);
+    if (option === undefined) {
       return;
     }
     onChange?.(option.value);

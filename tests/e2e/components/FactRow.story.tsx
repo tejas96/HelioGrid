@@ -97,15 +97,20 @@ function Mark() {
   );
 }
 
-function rowProps(row: HeldRow, onFill: () => void) {
-  const { mark, gap, fill, ...rest } = row;
+/** A held row as `FactRow` takes it: its sample words read through the reader's catalog, which
+ *  holds no message for them, so they come back as written. */
+function rowProps(row: HeldRow, reader: Reader, onFill: () => void) {
+  const { t } = READERS[reader];
+  const { mark, gap, fill, label, fieldName, ...rest } = row;
   return {
     ...rest,
+    label: t(label),
+    fieldName: fieldName === undefined ? undefined : t(fieldName),
     mark: mark ? <Mark /> : undefined,
     gap:
       gap === undefined
         ? undefined
-        : { gap, ...(fill === undefined ? {} : { fillLabel: fill, onFill }) },
+        : { gap: t(gap), ...(fill === undefined ? {} : { fillLabel: t(fill), onFill }) },
   };
 }
 
@@ -159,7 +164,7 @@ export function FactRowsAsHeld({
   return (
     <Held reader={reader} width={width} forms={forms} filled={filled}>
       <FactRows
-        label={label}
+        label={label === undefined ? undefined : READERS[reader].t(label)}
         density={density}
         measure={measure}
         leadBelow={leadBelow}
@@ -168,7 +173,7 @@ export function FactRowsAsHeld({
         onFormChange={(next) => setForms((all) => [...all, next])}
       >
         {rows.map((row) => (
-          <FactRow key={row.label} {...rowProps(row, () => setFilled(row.label))} />
+          <FactRow key={row.label} {...rowProps(row, reader, () => setFilled(row.label))} />
         ))}
       </FactRows>
     </Held>
@@ -189,7 +194,7 @@ export function FactRowAsHeld({
   return (
     <Held reader={reader} width={width} forms={forms} filled={filled}>
       <FactRow
-        {...rowProps(row, () => setFilled(row.label))}
+        {...rowProps(row, reader ?? 'en', () => setFilled(row.label))}
         measure={measure}
         leadBelow={leadBelow}
         longAt={longAt}

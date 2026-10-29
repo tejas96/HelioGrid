@@ -1,3 +1,5 @@
+import type { FocusAfter } from '../../primitives/FocusAfter';
+import { focusAfterWithin } from '../../primitives/FocusAfter/focus-after-within';
 import { Text } from '../../primitives/Text/Text';
 import { useOwnWidth } from '../../primitives/use-own-width';
 import { Banner } from '../Banner';
@@ -7,9 +9,9 @@ import { TemplateLinks, TemplatePart, TemplatePartSwitch } from './ProposalTempl
 import { TEMPLATE_WIDE_FROM } from './ProposalTemplateSettings.logic';
 import type { ProposalTemplateSettingsProps, TemplateAct } from './ProposalTemplateSettings.types';
 import { ProposalTemplateStage } from './ProposalTemplateStage';
-import { useFocusAfterGone } from './use-focus-after-gone';
 
-type BodyProps = ProposalTemplateSettingsProps & { wide: boolean };
+/** `partSwitch` — where focus lands once a saved or discarded change has taken the act bar away. */
+type BodyProps = ProposalTemplateSettingsProps & { wide: boolean; partSwitch: FocusAfter };
 
 /**
  * The Proposal template page body (`SCR-M01-19`): the PDF the customer opens, the one part being
@@ -20,18 +22,23 @@ type BodyProps = ProposalTemplateSettingsProps & { wide: boolean };
 export function ProposalTemplateSettings(props: ProposalTemplateSettingsProps) {
   const [room, width] = useOwnWidth<HTMLDivElement>();
   const wide = width !== null && width >= TEMPLATE_WIDE_FROM;
-  useFocusAfterGone(room, props.act !== undefined);
+  /* The part's switch stays through a save and a discard: the person goes on editing. */
+  const partSwitch = focusAfterWithin(room, '.hg-template-part-switch [aria-checked="true"]');
   return (
     <div ref={room} className="hg-template" data-layout={wide ? 'wide' : 'narrow'}>
-      <PageHead {...props} wide={wide} />
-      {wide ? <WidePage {...props} wide /> : <NarrowPage {...props} wide={false} />}
+      <PageHead {...props} wide={wide} partSwitch={partSwitch} />
+      {wide ? (
+        <WidePage {...props} wide partSwitch={partSwitch} />
+      ) : (
+        <NarrowPage {...props} wide={false} partSwitch={partSwitch} />
+      )}
     </div>
   );
 }
 
 /** The 375 column: every block one under the other, `--sp-4` apart, the act bar its sticky foot. */
 function NarrowPage(props: BodyProps) {
-  const { act } = props;
+  const { act, partSwitch } = props;
   return (
     <>
       <ProposalTemplateStage {...props} />
@@ -43,7 +50,7 @@ function NarrowPage(props: BodyProps) {
       {act === undefined ? null : (
         <div className="hg-template-foot">
           <SaveFailed {...props} />
-          <ActBar act={act} words={props.words} placement="sticky" />
+          <ActBar act={act} words={props.words} placement="sticky" focusAfter={partSwitch} />
         </div>
       )}
     </>
@@ -52,7 +59,7 @@ function NarrowPage(props: BodyProps) {
 
 /** The 1536 pair: the stage and the editor card, whose foot is the act bar or the page end. */
 function WidePage(props: BodyProps) {
-  const { act, words } = props;
+  const { act, words, partSwitch } = props;
   return (
     <>
       <Teaching {...props} />
@@ -63,7 +70,7 @@ function WidePage(props: BodyProps) {
         {act === undefined ? null : (
           <>
             <SaveFailed {...props} />
-            <ActBar act={act} words={words} placement="footer" />
+            <ActBar act={act} words={words} placement="footer" focusAfter={partSwitch} />
           </>
         )}
       </section>
@@ -154,10 +161,12 @@ function ActBar({
   act,
   words,
   placement,
+  focusAfter,
 }: {
   act: TemplateAct;
   words: ProposalTemplateSettingsProps['words'];
   placement: 'sticky' | 'footer';
+  focusAfter: FocusAfter;
 }) {
   return (
     <FormActionBar
@@ -169,6 +178,7 @@ function ActBar({
       saving={act.saving}
       onSave={act.onSave}
       onDiscard={act.onDiscard}
+      focusAfter={focusAfter}
     />
   );
 }

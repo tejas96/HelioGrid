@@ -1,13 +1,6 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { Ref } from 'react';
-
-/**
- * What a caller holds to send focus to a control after the thing it opened closes or its row moves:
- * on web the keyboard's focus, on native the screen reader's. Shared by `Button`, `SearchField` and
- * `FilterChips`.
- */
-export interface FocusHandle {
-  focus(): void;
-}
+import type { FocusHandle } from '../../primitives/FocusAfter';
 
 /** Density mode — expressive is the brand's roomy default, functional the dense working set. */
 export type SearchFieldDensity = 'expressive' | 'functional';
@@ -15,12 +8,11 @@ export type SearchFieldDensity = 'expressive' | 'functional';
 interface SearchFieldOwnProps {
   value?: string;
   onChange?: (value: string) => void;
-  placeholder?: string;
+  /** The words in the empty pill, and its spoken name when there is no `ariaLabel`. Required. */
+  placeholder: TranslatedText;
   density?: SearchFieldDensity;
-  /** Shows a clear button once there's a value. */
-  onClear?: () => void;
   disabled?: boolean;
-  ariaLabel?: string;
+  ariaLabel?: TranslatedText;
   /**
    * A focus handle for the caller, which sends focus here after the thing it acted on leaves (a
    * row removed, a list cleared): web focuses the input, native the `TextInput`.
@@ -28,11 +20,29 @@ interface SearchFieldOwnProps {
   ref?: Ref<FocusHandle>;
 }
 
+/** A clear button once there's a value. */
+interface SearchFieldClearing {
+  /** Shows a clear button once there's a value. */
+  onClear?: () => void;
+  /**
+   * The clear button's spoken name ("Clear search"). Required with `onClear`: the button carries
+   * no words, so this is all a screen reader hears.
+   */
+  clearLabel: TranslatedText;
+}
+
+/** No clear button. */
+interface SearchFieldNotClearing {
+  onClear?: undefined;
+  clearLabel?: undefined;
+}
+
 /** The search pill alone. */
 interface SearchFieldAloneProps extends SearchFieldOwnProps {
   onFilterClick?: undefined;
   filterCount?: undefined;
   filterLabel?: undefined;
+  filterActiveLabel?: undefined;
 }
 
 /** The search pill with the filter square beside it. */
@@ -45,11 +55,17 @@ interface SearchFieldWithFilterProps extends SearchFieldOwnProps {
    * Accessible name of the filter square. Required with `onFilterClick`: the square carries no
    * words, so this is all a screen reader hears, and the caller passes it from `@heliogrid/i18n`.
    */
-  filterLabel: string;
+  filterLabel: TranslatedText;
+  /**
+   * The square's whole spoken name while `filterCount` is above zero — *Filters, 3 active* — the
+   * `activeLabel` `FiltersButton` takes.
+   */
+  filterActiveLabel: (count: number) => TranslatedText;
 }
 
 /**
  * Grey search pill, magnifier left, tertiary placeholder; 1.5px accent edge on focus. Pass
  * `onFilterClick` with its `filterLabel` for the black filter square beside it.
  */
-export type SearchFieldProps = SearchFieldAloneProps | SearchFieldWithFilterProps;
+export type SearchFieldProps = (SearchFieldAloneProps | SearchFieldWithFilterProps) &
+  (SearchFieldClearing | SearchFieldNotClearing);

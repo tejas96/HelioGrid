@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { Badge, ShellGlyph, Timeline } from '@heliogrid/ui';
 import { useState } from 'react';
 
@@ -22,7 +23,7 @@ export function StagePicker({
   stages,
   initial,
 }: {
-  label: string;
+  label: TranslatedText;
   stages: PickStage[];
   initial?: string;
 }) {

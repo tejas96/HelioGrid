@@ -1,8 +1,9 @@
 import type { CSSProperties, Ref } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { badgeName, showsBadge } from '../AppShell/AppShell.types';
+import { showsBadge } from '../AppShell/AppShell.types';
 import { CountBadge } from '../AppShell/CountBadge';
 import type { CoachMarkAnchor } from '../CoachMark/CoachMark.types';
+import { isRefAnchor, navItemIcon, spokenItemName } from './AppRail.logic';
 import type { BottomNavProps, RailItem } from './AppRail.types';
 import { isInView, PILL_NAV_SLOT_HEIGHT, PILL_NAV_SLOT_WIDTH, pressItem } from './AppRail.types';
 
@@ -66,16 +67,16 @@ function NavItem({ item, inView, onClick }: NavItemProps) {
       ref={elementRef(item.anchor)}
       type="button"
       aria-current={inView ? 'page' : undefined}
-      aria-label={badgeName(item.label, item.badge)}
+      aria-label={spokenItemName(item)}
       onClick={onClick}
       className="hg-bottom-nav-item"
       data-in-view={inView ? 'true' : undefined}
     >
       <span className="hg-bottom-nav-icon">
-        {inView ? (item.activeIcon ?? item.icon) : item.icon}
+        {navItemIcon(item, inView)}
         {showsBadge(item.badge) ? (
           <span className="hg-bottom-nav-badge">
-            <CountBadge count={item.badge} label={item.label.toLowerCase()} />
+            <CountBadge count={item.badge} />
           </span>
         ) : null}
       </span>
@@ -90,7 +91,6 @@ function NavItem({ item, inView, onClick }: NavItemProps) {
 
 /** A coach mark reads the element this ref holds; a selector anchor needs no ref at all. */
 function elementRef(anchor: CoachMarkAnchor | undefined): Ref<HTMLButtonElement> | undefined {
-  if (anchor === undefined || typeof anchor === 'string' || !('current' in anchor))
-    return undefined;
+  if (!isRefAnchor(anchor)) return undefined;
   return anchor as Ref<HTMLButtonElement>;
 }

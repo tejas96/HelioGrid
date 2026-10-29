@@ -1,14 +1,14 @@
 import type { CSSProperties, DragEvent } from 'react';
 import { useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { closingPress, type FocusHandle } from '../../primitives/FocusAfter';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
-import { initialsOf } from '../Avatar/Avatar.types';
 import { Banner } from '../Banner';
 import { Button } from '../Button';
 import type { PickedFile } from '../Dropzone/Dropzone.types';
 import { pickedFileOf } from '../Dropzone/picked-file';
-import type { FocusHandle } from '../SearchField/SearchField.types';
+import { actLabel, drawsNamelessMark, isDesktopComposition, removalOf } from './PhotoField.logic';
 import type { PhotoFieldProps } from './PhotoField.types';
 
 interface WebPhotoFieldProps extends PhotoFieldProps {
@@ -16,18 +16,9 @@ interface WebPhotoFieldProps extends PhotoFieldProps {
   style?: CSSProperties;
 }
 
-/** The act's words: replacing a photo is a different act from choosing a first one. */
-function actLabel(hasPhoto: boolean, chooseLabel: string, replaceLabel?: string): string {
-  return hasPhoto && replaceLabel !== undefined ? replaceLabel : chooseLabel;
-}
-
-/**
- * `Avatar` derives its fallback from `name`, so an EMPTY name renders an empty tinted circle. That
- * is a rendering fault rather than "no name yet", so a nameless field draws a neutral mark — the
- * fill follows whatever is behind it, and `F7-19` forbids inventing an image to fill it.
- */
+/** A nameless field's neutral mark takes its fill from whatever is behind it. */
 function Mark({ src, name, size }: { src?: string; name: string; size: number }) {
-  if (src === undefined && initialsOf(name).length === 0) {
+  if (drawsNamelessMark(src, name)) {
     return <span className="hg-photo-field-nameless" aria-hidden="true" />;
   }
   return <Avatar src={src} name={name} size={size} />;
@@ -86,10 +77,7 @@ export function PhotoField({
   const messageId = useId();
   const hasPhoto = src !== undefined;
   const inert = disabled || loading;
-  const removal =
-    hasPhoto && onRemove !== undefined && removeLabel !== undefined
-      ? { remove: onRemove, label: removeLabel }
-      : null;
+  const removal = removalOf(hasPhoto, onRemove, removeLabel);
   const drop = useDrop(onDrop, inert);
   // *Remove* goes away once pressed: the focus stays in the group, on the act that takes its place.
   const chooseRef = useRef<FocusHandle>(null);
@@ -118,10 +106,7 @@ export function PhotoField({
         <Button
           variant="ghost"
           size="md"
-          onClick={() => {
-            removal.remove();
-            chooseRef.current?.focus();
-          }}
+          onClick={closingPress(chooseRef)(removal.remove)}
           disabled={inert}
         >
           {removal.label}
@@ -154,7 +139,7 @@ export function PhotoField({
       >
         <Mark src={src} name={name} size={size} />
       </div>
-      {size === 120 ? (
+      {isDesktopComposition(size) ? (
         <div className="hg-photo-field-column">
           {banner}
           {acts}

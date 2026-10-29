@@ -11,3 +11,8 @@ export const AUDIO_GLYPH: Record<AudioGlyphName, ShellGlyphName> = {
   clock: 'clock',
   doc: 'file-text',
 };
+
+/** Play and pause are drawn filled; every other audio glyph is stroked. */
+export function isFilledGlyph(name: AudioGlyphName): boolean {
+  return name === 'play' || name === 'pause';
+}

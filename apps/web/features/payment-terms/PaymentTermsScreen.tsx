@@ -1,7 +1,10 @@
 'use client';
 import type { TranslatedText } from '@heliogrid/contracts';
-import { type PaymentTermsPage, useSession, useTrancheTemplates } from '@heliogrid/data/react';
-import { opensSettingsRow } from '@heliogrid/domain';
+import {
+  type PaymentTermsPage,
+  type PaymentTermsScreen as PaymentTermsScreenView,
+  usePaymentTermsScreen,
+} from '@heliogrid/data/react';
 import {
   type PaymentTermsWords,
   paymentTermsEditorSaid,
@@ -11,6 +14,7 @@ import {
   SHELL,
   stageWords,
   type Translator,
+  toastHostWords,
 } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
@@ -28,7 +32,6 @@ import {
   useOwnWidth,
 } from '@heliogrid/ui';
 import { notFound } from 'next/navigation';
-import { useState } from 'react';
 import { useLeaveGuard } from '../../lib/leave-guard';
 import { TermsArchiveConfirm } from './components/TermsArchiveConfirm';
 import { TermsEditorSheet } from './components/TermsEditorSheet';
@@ -46,53 +49,30 @@ const TERMS_WIDE_FROM = EDITOR_CARD_WIDTH * 2 + theme.spacing['sp-8'];
 /**
  * Payment terms behind `More` on the web (`SCR-M01-20`, `M01-54`): each template as a card that
  * shows its split, and the one being edited — a sheet below width, a card beside the cards at it.
- * What is read, edited and saved is `useTrancheTemplates`'s; this holds the web's own parts — where
- * the editor and its stage picker stand, the archive confirm, the leave ask and the act's toast.
- * Only a person whose presets open the row reaches it (`F7-48`).
+ * What is read, edited and saved, the cards in view, the stage picker and the two asks are
+ * `usePaymentTermsScreen`'s, the phone's too; this holds the web's own parts — where the editor and
+ * its stage picker stand, the in-app moves the leave ask holds, and the act's toast. Only a person
+ * whose presets open the row reaches it (`F7-48`).
  */
 export function PaymentTermsScreen() {
-  const { user } = useSession();
-  if (!opensSettingsRow(user?.tenant?.roles ?? [], 'payment_terms')) notFound();
-  return <PaymentTermsIn />;
+  const { locale } = useI18n();
+  const screen = usePaymentTermsScreen(locale);
+  if (!screen.allowed) notFound();
+  return <PaymentTermsIn screen={screen} />;
 }
 
-function PaymentTermsIn() {
+function PaymentTermsIn({ screen }: { screen: PaymentTermsScreenView }) {
   const { t, locale } = useI18n();
   const format = useFormat();
-  const page = useTrancheTemplates(locale);
+  const { page } = screen;
   const [room, width] = useOwnWidth<HTMLDivElement>();
   const wide = width !== null && width >= TERMS_WIDE_FROM;
-  const [archived, setArchived] = useState(false);
-  const [picking, setPicking] = useState<number | null>(null);
-  const [archiveAsked, setArchiveAsked] = useState(false);
-  const [leaveAsked, setLeaveAsked] = useState<(() => void) | null>(null);
   const editor = page.editor;
-  const changed = editor?.changed ?? false;
-  useLeaveGuard(changed, (leave) => setLeaveAsked(() => leave));
+  useLeaveGuard(editor?.changed ?? false, screen.askLeave);
 
   const words = paymentTermsWords(t);
   const closeLabel = t(SHELL.close);
   const context = termsContextOf(words, stageWords(t), locale, format);
-
-  // A held change asks first; `then` runs once the person chose to drop it, or at once.
-  const leaveEditor = (then: () => void) => {
-    if (changed) {
-      setLeaveAsked(() => then);
-      return;
-    }
-    setPicking(null);
-    then();
-  };
-  const discardAndLeave = () => {
-    const move = leaveAsked;
-    setLeaveAsked(null);
-    setPicking(null);
-    page.close();
-    move?.();
-  };
-  const openCard = (id: string) => {
-    if (id !== editor?.draft.id) leaveEditor(() => page.open(id));
-  };
 
   const view =
     editor === null
@@ -102,68 +82,66 @@ function PaymentTermsIn() {
           context,
           letterhead: termsLetterheadOf(page.cover, page.brandColour, format.pack.taxIdLabel),
           said: paymentTermsEditorSaid(t, editor),
-          picking,
+          picking: screen.picking,
           acting: page.acting === 'restore' ? null : page.acting,
           acts: {
             edit: page.edit,
             save: page.save,
             makeDefault: (id) => page.act(id, 'make-default'),
-            pickStage: setPicking,
-            askArchive: () => setArchiveAsked(true),
-            cancel: () => leaveEditor(page.close),
+            pickStage: screen.pickStage,
+            askArchive: screen.askArchive,
+            cancel: screen.closeEditor,
           },
         });
-  const archiveId = archiveAsked ? (editor?.draft.id ?? null) : null;
 
   return (
-    <div className="hg-shell-page" ref={room}>
+    /* A closed toast hands the keyboard back to the page it spoke about. */
+    <div ref={room} tabIndex={-1} className="hg-shell-page hg-focus-target">
       <PaymentTermsList
         words={words}
         read={page.read}
         title={words.title}
         savedLine={savedLineOf(t, page, format.date)}
         teaching={page.seededOnly}
-        archived={archived}
+        archived={screen.archived}
         archivedCount={page.cards.archived.length}
-        cards={termsCardsOf(
-          archived ? page.cards.archived : page.cards.inUse,
-          editor?.draft.id ?? null,
-          context,
-        )}
+        cards={termsCardsOf(screen.cards, editor?.draft.id ?? null, context)}
         columns={wide ? 2 : 1}
-        onOpen={openCard}
-        onAdd={() => leaveEditor(page.openNew)}
-        onToggleArchived={() => setArchived((was) => !was)}
+        onOpen={screen.openCard}
+        onAdd={screen.add}
+        onToggleArchived={screen.toggleArchived}
         onRestore={(id) => page.act(id, 'restore')}
-        {...asideOf(wide ? view : null, words, () => setPicking(null))}
+        {...asideOf(wide ? view : null, words, screen.donePicking)}
       />
       <TermsEditorSheet
         view={wide ? null : view}
         words={words}
         closeLabel={closeLabel}
-        onClose={() => leaveEditor(page.close)}
-        onDonePicking={() => setPicking(null)}
+        onClose={screen.closeEditor}
+        onDonePicking={screen.donePicking}
       />
       <TermsArchiveConfirm
-        name={archiveId === null ? null : (view?.title ?? '')}
+        name={screen.archiveAsked ? (view?.title ?? '') : null}
         words={words}
         closeLabel={closeLabel}
-        onKeep={() => setArchiveAsked(false)}
-        onArchive={() => {
-          setArchiveAsked(false);
-          if (archiveId !== null) page.act(archiveId, 'archive');
-        }}
+        onKeep={screen.keepTemplate}
+        onArchive={screen.archive}
       />
       <LeaveConfirm
-        open={leaveAsked !== null}
+        open={screen.leaveAsked}
         title={words.leaveTitle}
         body={words.leaveBody}
         discard={words.leaveConfirm}
         keep={words.keepEditing}
-        onKeep={() => setLeaveAsked(null)}
-        onLeave={discardAndLeave}
+        onKeep={screen.keepEditing}
+        onLeave={screen.discardAndLeave}
       />
-      <ToastHost toasts={toastsOf(t, page)} onDismiss={page.dismissActFailure} />
+      <ToastHost
+        toasts={toastsOf(t, page)}
+        onDismiss={page.dismissActFailure}
+        {...toastHostWords(t)}
+        focusAfter={room}
+      />
     </div>
   );
 }

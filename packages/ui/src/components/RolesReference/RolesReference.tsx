@@ -1,5 +1,5 @@
 import type { RolePreset } from '@heliogrid/domain';
-import { type CSSProperties, useState } from 'react';
+import { type CSSProperties, useRef, useState } from 'react';
 import { Text } from '../../primitives/Text/Text';
 import { ShellAction } from '../AppShell/ShellAction';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
@@ -24,6 +24,8 @@ export function RolesReference({ words, read, title, back = null }: RolesReferen
   const [open, setOpen] = useState<RolePreset | null>(null);
   const [last, setLast] = useState<RolePreset | null>(null);
   const [side, setSide] = useState<RolesReferenceSide>('can');
+  /* *Try again* leaves with its banner: focus goes to the role tiles, which stay. */
+  const tiles = useRef<HTMLUListElement>(null);
   const shown = words.presets.find((each) => each.value === last) ?? null;
   const about = (
     <Explainer
@@ -74,10 +76,19 @@ export function RolesReference({ words, read, title, back = null }: RolesReferen
             kind="data-integrity"
             density="functional"
             title={words.countsFailed}
-            action={<BannerAction onClick={read.retry}>{words.retry}</BannerAction>}
+            action={
+              <BannerAction onClick={read.retry} focusAfter={tiles}>
+                {words.retry}
+              </BannerAction>
+            }
           />
         ) : null}
-        <ul aria-label={words.roles} className="hg-roles-reference-tiles">
+        <ul
+          ref={tiles}
+          tabIndex={-1}
+          aria-label={words.roles}
+          className="hg-roles-reference-tiles hg-focus-target"
+        >
           {words.presets.map((each) => (
             <li key={each.value} className="hg-roles-reference-tile">
               <RoleTile

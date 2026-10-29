@@ -4,9 +4,9 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { reasonPage } from '../ActionReason/ActionReason.logic';
 import type { ReasonTriggerProps } from '../ActionReason/ActionReason.types';
 import { ReasonExplainer } from '../ActionReason/ReasonExplainer.native';
+import { isStatedOff } from '../Button/Button.logic';
 import type { IconButtonProps, IconButtonVariant } from './IconButton.types';
 
 interface NativeIconButtonProps extends IconButtonProps {
@@ -51,7 +51,7 @@ export function IconButton({
   const visual = VARIANT[variant];
   const { controlFill, controlFillDisabled } = useGround();
   const reasonId = useId();
-  const stated = disabled && reasonPage(disabledReason) !== '';
+  const stated = isStatedOff(disabled, disabledReason);
 
   const circle = (reason?: ReasonTriggerProps) => (
     <Pressable

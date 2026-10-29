@@ -6,7 +6,6 @@
 
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
@@ -14,7 +13,13 @@ import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import { resolveValueSourceLevel, valueSourceStep } from './ValueSource.levels';
+import {
+  attributionFor,
+  overrideActOf,
+  resolveValueSourceLevel,
+  VALUE_SOURCE_GLYPH,
+  valueSourceStep,
+} from './ValueSource.levels';
 import type { ValueSourceLevel, ValueSourceSpec } from './ValueSource.types';
 
 const styles = StyleSheet.create({
@@ -63,7 +68,7 @@ function Glyph({ name, color }: { name: 'own' | 'inherited'; color: string }) {
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <ShellGlyphMarks name={name === 'inherited' ? 'layers' : 'layer'} />
+        <ShellGlyphMarks name={VALUE_SOURCE_GLYPH[name]} />
       </Svg>
     </Icon>
   );
@@ -75,7 +80,7 @@ export function ValueSource({
   source,
   fieldName,
   onOverride,
-  overrideLabel = 'Override for this tenant',
+  overrideLabel,
   size = 12,
   style,
 }: NativeValueSourceProps) {
@@ -83,8 +88,7 @@ export function ValueSource({
   if (!entry) {
     return null;
   }
-  const word = layerName || entry.word;
-  const inherited = level === 'inherited';
+  const act = overrideActOf({ level, onOverride, overrideLabel, fieldName });
   const step = valueSourceStep(size);
   const glyphColor = theme.colors['text-secondary'];
   return (
@@ -92,7 +96,7 @@ export function ValueSource({
       <View style={styles.layer}>
         <Glyph name={entry.glyph} color={glyphColor} />
         <Text variant="caption" color="secondary" style={[SIZE[step], styles.word]}>
-          {word}
+          {layerName}
         </Text>
       </View>
       {source ? (
@@ -103,39 +107,31 @@ export function ValueSource({
           </Text>
         </View>
       ) : null}
-      {inherited && onOverride ? (
+      {act === null ? null : (
         <Pressable
-          onPress={onOverride}
-          accessibilityLabel={fieldName ? `${overrideLabel}: ${fieldName}` : overrideLabel}
+          onPress={act.onOverride}
+          accessibilityLabel={act.spokenName ?? act.label}
           style={styles.action}
         >
           <Text variant="body-sm" style={styles.actionWord}>
-            {overrideLabel}
+            {act.label}
           </Text>
         </Pressable>
-      ) : null}
+      )}
     </View>
   );
 }
 
-/** Accepts an `attribution` host prop — a spec object, a bare level string, or a ready node. */
+/**
+ * Accepts an `attribution` host prop — a spec object, a bare level string, or a ready node. A bare
+ * level names no layer, and a layer's word is the caller's, so it draws nothing: the words come in
+ * a spec.
+ */
 export function renderAttribution(
   spec?: ValueSourceSpec | ValueSourceLevel | ReactNode,
   extra: Partial<ValueSourceSpec> = {},
 ): ReactNode {
-  if (!spec) {
-    return null;
-  }
-  if (isValidElement(spec)) {
-    return spec;
-  }
-  if (typeof spec === 'string') {
-    return <ValueSource level={spec as ValueSourceLevel} {...extra} />;
-  }
-  if (typeof spec !== 'object') {
-    return null;
-  }
-  return <ValueSource {...(spec as ValueSourceSpec)} {...extra} />;
+  return attributionFor(spec, (plain) => <ValueSource {...plain} {...extra} />);
 }
 
 ValueSource.render = renderAttribution;

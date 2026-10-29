@@ -1,30 +1,11 @@
 import { theme } from '@heliogrid/theme';
-import type { ReactNode } from 'react';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
-
-/** `sheet` bodies are 280px wide and 28/24 padded; `panel` bodies 300px and 48 padded. */
-export type OverlayStateVariant = 'sheet' | 'panel';
-
-interface OverlayEmptyProps {
-  title?: string;
-  message?: string;
-  action?: ReactNode;
-  variant: OverlayStateVariant;
-}
-
-interface OverlayErrorProps {
-  title?: string;
-  message?: string;
-  onRetry?: () => void;
-  variant: OverlayStateVariant;
-  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
-}
+import type { OverlayEmptyProps, OverlayErrorProps } from './Sheet.types';
 
 /**
  * `empty` means none YET, so it invites: no tint, no glyph, an optional action that makes the
@@ -55,7 +36,14 @@ export function OverlayEmpty({ title, message, action, variant }: OverlayEmptyPr
  * retry — because trying again may work. `unavailable` is the state that gets neither, and it
  * renders through `UnavailableNote` instead.
  */
-export function OverlayError({ title, message, onRetry, variant, retryLabel }: OverlayErrorProps) {
+export function OverlayError({
+  title,
+  message,
+  onRetry,
+  variant,
+  retryLabel,
+  focusAfter,
+}: OverlayErrorProps) {
   return (
     <View style={[styles.state, variant === 'panel' ? styles.panelPad : styles.sheetPad]}>
       <View style={styles.mark}>
@@ -83,7 +71,7 @@ export function OverlayError({ title, message, onRetry, variant, retryLabel }: O
           {message}
         </Text>
       )}
-      <RetryButton onRetry={onRetry} label={retryLabel} />
+      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
     </View>
   );
 }

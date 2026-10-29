@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { PayableReconciliation } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { PendingActionSpec } from '../PendingAction';
@@ -34,7 +35,7 @@ export interface DataTableReconcile extends PayableReconciliation {
 
 export interface DataTableTotalRow {
   /** The row's own name — "Bill of materials total", "Tranches". */
-  label: string;
+  label: TranslatedText;
   /** By column key. A number is formatted by the market pack; a node is rendered as given. */
   values?: Record<string, ReactNode | number>;
   /**
@@ -75,8 +76,9 @@ interface DataTableBaseProps<Row> {
    */
   rowOpens?: (row: Row) => boolean;
   /**
-   * The stacked card's whole-card target is a real button, so it needs an accessible name.
-   * Defaults to the primary column's raw value; pass this when that column renders a node.
+   * The stacked card's whole-card target is a real button, so it needs an accessible name: the
+   * record's own name. Defaults to the primary column's raw value; pass this when that column
+   * renders a node.
    */
   rowLabel?: (row: Row) => string;
   /**
@@ -112,16 +114,16 @@ interface DataTableBaseProps<Row> {
    * this row, or null — so a 400-row import with twelve broken rows says which twelve, in words,
    * where they are. The row takes the warning tint and grows a line under its cells.
    */
-  rowIssue?: (row: Row) => string | null;
+  rowIssue?: (row: Row) => TranslatedText | null;
   /**
    * The row the caller has accepted as fixed — success tint and a confirming line. Return a string
    * to set that line's words. **The table never decides this itself:** it commits a cell and
    * re-reads `cellIssue` / `rowIssue` from the caller, because a grid that cleared its own warning
    * would be claiming to have validated something it cannot see.
    */
-  rowResolved?: (row: Row) => boolean | string;
+  rowResolved?: (row: Row) => boolean | TranslatedText;
   /** Per-cell validation message. Renders under the cell and rings its editor in danger. */
-  cellIssue?: (row: Row, columnKey: string) => string | null;
+  cellIssue?: (row: Row, columnKey: string) => TranslatedText | null;
   /**
    * **The commit path for a cell.** Fires once — blur or Enter, never per keystroke; Escape
    * reverts; empty never commits (the last good value is restored). Required for any `editable`
@@ -137,22 +139,24 @@ interface DataTableBaseProps<Row> {
    * retry; `unavailable` draws none.
    */
   read: SurfaceRead;
-  emptyTitle?: string;
-  emptyDescription?: string;
+  emptyTitle: TranslatedText;
+  emptyDescription?: TranslatedText;
   emptyAction?: ReactNode;
-  errorTitle?: string;
-  errorMessage?: string;
+  errorTitle: TranslatedText;
+  errorMessage?: TranslatedText;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
+  retryLabel?: TranslatedText;
   /** `unavailable`: these records were never going to be here. Neutral, and no retry. */
-  unavailableTitle?: string;
-  unavailableMessage?: string;
+  unavailableTitle: TranslatedText;
+  unavailableMessage?: TranslatedText;
+  /** `@heliogrid/i18n`'s `dataTableWords`: what the table draws and speaks of its own. */
+  words: DataTableWords;
   /**
    * Overline caption above the records (`F7-27`). **It renders in both forms and in every state**
    * — it sits in the table's shell, not inside the `<table>`, and both forms take their accessible
    * name from it. As a `<caption>` element it disappeared along with the `<table>` on every phone.
    */
-  caption?: string;
+  caption?: TranslatedText;
   /**
    * **A continuation of the same table on a later page.** The caption says which it is — "Bill of
    * materials (continued)". `PagedDocument` passes it in; nothing else should set it.
@@ -220,7 +224,7 @@ type DataTableRowActions<Row> =
        */
       rowActions: (row: Row, form: DataTableForm) => ReactNode;
       /** The actions column's name, spoken only — the caller's words. */
-      actionsLabel: string;
+      actionsLabel: TranslatedText;
     };
 
 export type DataTableProps<Row = Record<string, unknown>> = DataTableBaseProps<Row> &
@@ -246,9 +250,53 @@ export interface PaginationProps {
   rowCount: number;
   onPageChange?: (page: number) => void;
   /** The step back's name, spoken only — the caller's words. */
-  previousLabel: string;
+  previousLabel: TranslatedText;
   /** The step forward's name, spoken only — the caller's words. */
-  nextLabel: string;
+  nextLabel: TranslatedText;
   /** The readout's words for the span shown — "1–20 of 342" — from `packages/i18n`. */
-  readout: (range: PageRange) => string;
+  readout: (range: PageRange) => TranslatedText;
+}
+
+/**
+ * **What the table draws and speaks of its own** — `@heliogrid/i18n`'s `dataTableWords`: its
+ * loading name, the selection band and ticks, a fixed row's line, a continued caption, what a
+ * paged total covers and whether it reconciles, the phone's spoken sort, and its pager.
+ */
+export interface DataTableWords {
+  readonly loading: TranslatedText;
+  /** The selection band's count, drawn and spoken — "3 selected". */
+  readonly selected: (count: number) => TranslatedText;
+  readonly clearSelection: TranslatedText;
+  readonly selectEveryRow: TranslatedText;
+  /** A row's tick, named by the row's key. */
+  readonly selectRow: (key: string) => TranslatedText;
+  /** A card's tick, named by its record. */
+  readonly selectNamed: (name: string) => TranslatedText;
+  /** A `select` cell's trigger while nothing is picked. */
+  readonly choosePlaceholder: TranslatedText;
+  /** The phone's name for the scrim that closes a `select` cell's open list. */
+  readonly closeList: TranslatedText;
+  /** A row the caller accepted as fixed, when it gave no line of its own. */
+  readonly fixed: TranslatedText;
+  /** A card's name when its record has none to give. */
+  readonly openRecord: TranslatedText;
+  /** A table continued on a later page — "Bill of materials (continued)". */
+  readonly continued: (caption: string) => TranslatedText;
+  /** What a paged total covers — "all 40 lines". */
+  readonly allLines: (count: number) => TranslatedText;
+  /** The server's verdict that the total agrees with the figure it was judged against. */
+  readonly reconciles: (label: string) => TranslatedText;
+  /** The disagreement, a defect: the other figure, and how far apart the two are. */
+  readonly disagrees: (label: string, amount: string, gap: string) => TranslatedText;
+  /** A phone header's spoken name: the column, and whether and which way it sorts. */
+  readonly notSorted: (column: string) => TranslatedText;
+  readonly sortedAscending: (column: string) => TranslatedText;
+  readonly sortedDescending: (column: string) => TranslatedText;
+  /** What a press on a phone header does. */
+  readonly sortsAscending: TranslatedText;
+  readonly sortsDescending: TranslatedText;
+  /** The table's pager. */
+  readonly previousPage: TranslatedText;
+  readonly nextPage: TranslatedText;
+  readonly pageRange: (range: PageRange) => TranslatedText;
 }

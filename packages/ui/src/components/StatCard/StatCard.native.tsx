@@ -11,6 +11,7 @@
    is written is `StatCard.format`, shared by both halves so the two print the same number. */
 
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
@@ -23,6 +24,7 @@ import { renderProvenance } from '../Provenance/Provenance.native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { formatStatValue } from './StatCard.format';
 import type { StatCardProps } from './StatCard.types';
+import { DELTA_DEFAULTS } from './StatCardDelta.logic';
 import { StatCardDelta } from './StatCardDelta.native';
 import { StatCardStates } from './StatCardStates.native';
 
@@ -52,30 +54,33 @@ interface NativeStatCardProps extends StatCardProps {
 
 export function StatCard({
   label,
+  words,
   value,
   unit,
   money = false,
   compact = false,
   gap,
   delta,
-  deltaDir = 'up',
-  deltaSentiment = 'neutral',
+  deltaDir = DELTA_DEFAULTS.dir,
+  deltaSentiment = DELTA_DEFAULTS.sentiment,
   sentimentLabel,
   band,
   provenance,
   onClick,
   ariaLabel,
   read,
-  emptyMessage = 'No figure for this period yet.',
-  errorMessage = "Couldn't read this figure. Try again — nothing here is a stale number.",
+  emptyMessage,
+  errorMessage,
   retryLabel,
-  unavailableTitle = 'Not measured here',
+  unavailableTitle,
   unavailableMessage,
   style,
   children,
 }: NativeStatCardProps) {
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
+  /* The card's frame outlives its states, so focus lands on it once the retry has left. */
+  const frame = useRef<View>(null);
   const f = useFormat();
   const gapNode = renderGap(gap, { scale: 'headline' });
   const shown = formatStatValue(value, { money, compact, format: f });
@@ -91,16 +96,17 @@ export function StatCard({
   /* Every non-ready state returns here, and none of them prints a figure. */
   if (state !== 'ready') {
     return (
-      <View style={[tileSurface, styles.card, style]}>
+      <View ref={frame} style={[tileSurface, styles.card, style]}>
         <GroundProvider ground="tile">
           {overline}
           <StatCardStates
             state={state}
-            label={label}
+            loadingLabel={words.loading(label)}
             emptyMessage={emptyMessage}
             errorMessage={errorMessage}
             onRetry={onRetry}
             retryLabel={retryLabel}
+            focusAfter={frame}
             unavailableTitle={unavailableTitle}
             unavailableMessage={unavailableMessage}
           />
@@ -136,6 +142,7 @@ export function StatCard({
         dir={deltaDir}
         sentiment={deltaSentiment}
         sentimentLabel={sentimentLabel}
+        words={words}
         suppressed={Boolean(gapNode)}
       />
       {children}
@@ -145,6 +152,7 @@ export function StatCard({
   if (onClick) {
     return (
       <Pressable
+        hostRef={frame}
         onPress={onClick}
         accessibilityLabel={ariaLabel}
         style={[tileSurface, styles.card, styles.button, style]}
@@ -153,5 +161,9 @@ export function StatCard({
       </Pressable>
     );
   }
-  return <View style={[tileSurface, styles.card, style]}>{body}</View>;
+  return (
+    <View ref={frame} style={[tileSurface, styles.card, style]}>
+      {body}
+    </View>
+  );
 }

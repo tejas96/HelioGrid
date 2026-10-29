@@ -1,28 +1,19 @@
 'use client';
-import { useCatalogRelease, useCatalogReleases } from '@heliogrid/data/react';
+import type { CatalogReleasesBrowse } from '@heliogrid/data/react';
 import { CATALOG_EDITOR, catalogReleaseChangesOf, catalogReleaseWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import { CatalogRelease, EditorSurface, useCatalogFormats } from '@heliogrid/ui';
-import { useState } from 'react';
 
 /** The releases, newest first: the newest opened as its before-and-after, the earlier ones under it. */
-export function ReleasesSurface({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function ReleasesSurface({ releases }: { releases: CatalogReleasesBrowse }) {
   const { t } = useI18n();
   const formats = useCatalogFormats();
-  const releases = useCatalogReleases(open);
-  const [chosen, setChosen] = useState<string | null>(null);
-  const listed = releases.read.kind === 'ready' ? releases.read.value : [];
-  const newest = listed[0];
-  const shown = chosen ?? newest?.id ?? null;
-  const detail = useCatalogRelease(open ? shown : null);
+  const detail = releases.opened;
   const opened = detail.kind === 'ready' ? detail.value : undefined;
   return (
     <EditorSurface
-      open={open}
-      onClose={() => {
-        setChosen(null);
-        onClose();
-      }}
+      open={releases.open}
+      onClose={releases.close}
       closeLabel={t(CATALOG_EDITOR.close)}
       showClose
       title={t(CATALOG_EDITOR.releases)}
@@ -40,7 +31,7 @@ export function ReleasesSurface({ open, onClose }: { open: boolean; onClose: () 
                 when: t(CATALOG_EDITOR.inForceSince, {
                   date: formats.date(opened.release.publishedAt),
                 }),
-                inForce: opened.release.id === newest?.id,
+                inForce: opened.release.id === releases.newestId,
               }
         }
         changes={
@@ -49,14 +40,14 @@ export function ReleasesSurface({ open, onClose }: { open: boolean; onClose: () 
             : catalogReleaseChangesOf(t, opened.release.counts, opened.lines.items, formats)
         }
         read={detail}
-        earlier={listed
-          .filter((entry) => entry.id !== shown)
+        earlier={releases.listed
+          .filter((entry) => entry.id !== releases.openedId)
           .map((entry) => ({
             id: entry.id,
             tag: entry.label,
             when: formats.date(entry.publishedAt),
           }))}
-        onOpenEarlier={setChosen}
+        onOpenEarlier={releases.choose}
       />
     </EditorSurface>
   );

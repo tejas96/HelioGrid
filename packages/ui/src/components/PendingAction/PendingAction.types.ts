@@ -1,4 +1,6 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 
 export type PendingActionState = 'waiting' | 'returned';
 export type PendingActionAlign = 'left' | 'right';
@@ -15,7 +17,7 @@ export type PendingActionAlign = 'left' | 'right';
  * row tint, no pointer-events change, no `aria-invalid`. Hosts set `aria-busy` on the row and
  * leave it operable.
  */
-export interface PendingActionSpec {
+interface PendingActionOwnSpec {
   /**
    * **The act being awaited, named** — "Assigning to Priya Sharma", "Moving to Installation".
    * Present tense, because it is happening. This is the prop `Button loading` has no equivalent
@@ -41,22 +43,54 @@ export interface PendingActionSpec {
    * usual." The rail never changes speed to imply it: a slower animation is not a sentence.
    */
   slowNote?: ReactNode;
-  /** A 44px retry on a returned act. The act is the caller's to re-fire, not the row's. */
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
-  /**
-   * Clears the returned line. Without it the line is permanent — which is correct for a failure
-   * the reader must see, and wrong for a list they keep working in, so most callers pass it.
-   */
-  onDismiss?: () => void;
-  dismissLabel?: string;
+  retryLabel?: TranslatedText;
   /** Floor is 12px (the type floor). Default 12. */
   size?: number;
   align?: PendingActionAlign;
 }
 
-export interface PendingActionProps extends PendingActionSpec {}
+/** A returned line that stays, with no act — correct for a failure the reader must see. */
+interface PendingActionKept {
+  onRetry?: undefined;
+  onDismiss?: undefined;
+  dismissLabel?: undefined;
+  focusAfter?: undefined;
+}
+
+/**
+ * Where focus lands once the line has gone (`F7-23` N5) — cleared, or taken away with a retry. A
+ * retry the line outlives (the act out again, `waiting`) keeps the focus on the line.
+ */
+interface PendingActionLeaving {
+  focusAfter: FocusAfter;
+}
+
+/** A returned line the reader may only try again. */
+interface PendingActionRetried extends PendingActionLeaving {
+  /** A 44px retry on a returned act. The act is the caller's to re-fire, not the row's. */
+  onRetry: () => void;
+  onDismiss?: undefined;
+  dismissLabel?: undefined;
+}
+
+/**
+ * A returned line the reader may clear — right for a list they keep working in, so most callers
+ * pass it — and may try again.
+ */
+interface PendingActionClearable extends PendingActionLeaving {
+  /** A 44px retry on a returned act. The act is the caller's to re-fire, not the row's. */
+  onRetry?: () => void;
+  /** Clears the returned line. */
+  onDismiss: () => void;
+  /** The clearing button's words, from `packages/i18n`. */
+  dismissLabel: TranslatedText;
+}
+
+export type PendingActionSpec = PendingActionOwnSpec &
+  (PendingActionKept | PendingActionRetried | PendingActionClearable);
+
+export type PendingActionProps = PendingActionSpec;
 
 /**
  * The travelling segment on its own — an operation whose end is not known. Under

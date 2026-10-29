@@ -52,6 +52,7 @@ function CardPair<Row>({
           align={alignOf(column)}
           cellIssue={table.cellIssue}
           onCellCommit={table.onCellCommit}
+          words={table.words}
         />
       </View>
     </View>

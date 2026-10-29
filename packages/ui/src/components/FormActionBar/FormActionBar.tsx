@@ -1,4 +1,5 @@
 import { classNames } from '../../primitives/class-names';
+import { useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text';
 import { Button } from '../Button/Button';
 import type { FormActionBarProps } from './FormActionBar.types';
@@ -19,11 +20,13 @@ export function FormActionBar({
   onSave,
   discardLabel,
   onDiscard,
+  focusAfter,
   saving = false,
   placement = 'sticky',
   align = 'start',
   className,
 }: WebFormActionBarProps) {
+  const leaving = useFocusAfter(focusAfter);
   return (
     <div
       className={classNames('hg-form-action-bar', className)}
@@ -41,10 +44,20 @@ export function FormActionBar({
         </Text>
       )}
       <div className="hg-form-action-bar-acts">
-        <Button variant="primary" size="md" loading={saving} onClick={onSave}>
+        <Button
+          variant="primary"
+          size="md"
+          loading={saving}
+          onClick={onSave === undefined ? undefined : leaving(onSave)}
+        >
           {saveLabel}
         </Button>
-        <Button variant="ghost" size="md" disabled={saving} onClick={onDiscard}>
+        <Button
+          variant="ghost"
+          size="md"
+          disabled={saving}
+          onClick={onDiscard === undefined ? undefined : leaving(onDiscard)}
+        >
           {discardLabel}
         </Button>
       </div>

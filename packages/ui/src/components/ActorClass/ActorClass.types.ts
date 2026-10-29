@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactElement } from 'react';
 
 /** The four actor classes — `person | agent | system | customer`. */
@@ -11,79 +12,93 @@ export type ActorTone = 'neutral' | 'accent' | 'info';
 
 export interface ActorClassProps {
   actorClass?: ActorClassName;
-  /** The name, where there is one. A person is a name; every other class still states its class. */
+  /** The name, where there is one — a fact. A person is a name; every other class still states its class. */
   actor?: string;
   /**
    * `stream` — what happened and who by ("HelioGrid agent", "Automatic"): the `ActivityStream` form.
    * `origin` — why a task exists ("Created by a rule · no contact in 3 days"): the task form.
    */
   form?: 'stream' | 'origin';
-  /** The act, in `origin` form: "Created by", "Reopened by", "Resurfaced by" (SCR-M07-04). */
-  verb?: string;
-  /** The rule's own name — M07-06's "a rep always sees WHY a task exists". */
+  /**
+   * The act, in `origin` form: "Created by", "Reopened by", "Resurfaced by" (SCR-M07-04). Without
+   * it, `words.createdBy`.
+   */
+  verb?: TranslatedText;
+  /** The rule's own name, as the company wrote it — M07-06's "a rep always sees WHY a task exists". */
   rule?: string;
   size?: number;
   color?: string;
-}
-
-/** A spec object, a bare class name, or a ready node — what every host's attribution prop takes. */
-export type ActorClassSpec = ActorClassName | ActorClassProps | ReactElement;
-
-export interface ActorClassDescriptor {
-  label: string;
-  glyph: ActorGlyphName;
-  tone: ActorTone;
-  /** The `stream` wording — what happened, and who by. */
-  word: (name?: string) => string;
-  /** The `origin` wording — the tail of "<verb> …", so a task can say why it exists. */
-  origin: (name?: string) => string;
+  /** The class's words in the reader's language (`@heliogrid/i18n`'s `actorClassWords`). */
+  words: ActorClassWords;
 }
 
 /**
- * One vocabulary, three hosts (`ActivityStream.entry`, `NextAction.origin`, `Transcript`'s turns).
- * A person is a name; every other class states its class in words, so an automatic resurface can
- * never read as a human act even when a person's name sits beside it.
+ * A spec object or a ready node — what every host's attribution prop takes. A bare class name
+ * carries no words, and the words are the caller's, so it comes as a spec.
+ */
+export type ActorClassSpec = ActorClassProps | ReactElement;
+
+/** The classes that print a name beside their class; a person IS the name. */
+export type NamedActorClass = Exclude<ActorClassName, 'person'>;
+
+/**
+ * Every word the actor line prints, in the reader's language. A person is a name; every other
+ * class states its class in words, so an automatic resurface never reads as a human act.
+ */
+export interface ActorClassWords {
+  /** Each class as a filter offers it — "A person", "The agent", "The system", "The customer". */
+  label: Record<ActorClassName, TranslatedText>;
+  /** `stream` form with no name — "A team member", "HelioGrid agent", "Automatic", "The customer". */
+  unnamed: Record<ActorClassName, TranslatedText>;
+  /** `stream` form with a name — "Ravi · agent", "Automatic · <name>", "Asha · customer". */
+  named: Record<NamedActorClass, (name: string) => TranslatedText>;
+  /** `origin` form's actor with no name — "a team member", "the agent", "a rule", "the customer". */
+  originUnnamed: Record<ActorClassName, TranslatedText>;
+  /** `origin` form's actor with a name — "Ravi, the agent", "a rule · <name>", "Asha, the customer". */
+  originNamed: Record<NamedActorClass, (name: string) => TranslatedText>;
+  /** The `origin` sentence — "<verb> <actor>": "Created by the agent". */
+  origin: (verb: string, actor: string) => TranslatedText;
+  /** The verb a caller that names none gets — "Created by". */
+  createdBy: TranslatedText;
+}
+
+export interface ActorClassDescriptor {
+  glyph: ActorGlyphName;
+  tone: ActorTone;
+}
+
+/**
+ * One vocabulary, three hosts (`ActivityStream.entry`, `NextAction.origin`, `Transcript`'s turns):
+ * the glyph and the tone each class draws. The words are the caller's (`ActorClassWords`).
  */
 export const ACTOR_CLASSES: Record<ActorClassName, ActorClassDescriptor> = {
-  person: {
-    label: 'A person',
-    glyph: 'user',
-    tone: 'neutral',
-    word: (name) => name ?? 'A team member',
-    origin: (name) => name ?? 'a team member',
-  },
-  agent: {
-    label: 'The agent',
-    glyph: 'agent',
-    tone: 'info',
-    word: (name) => (name !== undefined ? `${name} · agent` : 'HelioGrid agent'),
-    origin: (name) => (name !== undefined ? `${name}, the agent` : 'the agent'),
-  },
-  system: {
-    label: 'The system',
-    glyph: 'cog',
-    tone: 'neutral',
-    word: (name) => (name !== undefined ? `Automatic · ${name}` : 'Automatic'),
-    origin: (name) => (name !== undefined ? `a rule · ${name}` : 'a rule'),
-  },
-  customer: {
-    label: 'The customer',
-    glyph: 'customer',
-    tone: 'accent',
-    word: (name) => (name !== undefined ? `${name} · customer` : 'The customer'),
-    origin: (name) => (name !== undefined ? `${name}, the customer` : 'the customer'),
-  },
+  person: { glyph: 'user', tone: 'neutral' },
+  agent: { glyph: 'agent', tone: 'info' },
+  system: { glyph: 'cog', tone: 'neutral' },
+  customer: { glyph: 'customer', tone: 'accent' },
 };
 
 export interface ActorClassOption {
   value: ActorClassName;
-  label: string;
+  label: TranslatedText;
 }
 
 /** `FilterSet` options for the four classes, in one order, so every host filters alike. */
-export function actorClassOptions(): ActorClassOption[] {
+export function actorClassOptions(words: ActorClassWords): ActorClassOption[] {
   const order: ActorClassName[] = ['person', 'agent', 'system', 'customer'];
-  return order.map((value) => ({ value, label: ACTOR_CLASSES[value].label }));
+  return order.map((value) => ({ value, label: words.label[value] }));
+}
+
+/** Who did it, in `stream` form: a person with a name is the name itself. */
+function streamWords(words: ActorClassWords, actorClass: ActorClassName, actor?: string): string {
+  if (actor === undefined) return words.unnamed[actorClass];
+  return actorClass === 'person' ? actor : words.named[actorClass](actor);
+}
+
+/** The actor after the verb, in `origin` form. */
+function originActor(words: ActorClassWords, actorClass: ActorClassName, actor?: string): string {
+  if (actor === undefined) return words.originUnnamed[actorClass];
+  return actorClass === 'person' ? actor : words.originNamed[actorClass](actor);
 }
 
 /** The words this spec renders — one implementation, so both platforms print the same sentence. */
@@ -91,10 +106,13 @@ export function actorWords({
   actorClass = 'system',
   actor,
   form = 'stream',
-  verb = 'Created by',
+  verb,
   rule,
+  words,
 }: ActorClassProps): string {
-  const descriptor = ACTOR_CLASSES[actorClass];
-  const words = form === 'origin' ? `${verb} ${descriptor.origin(actor)}` : descriptor.word(actor);
-  return rule !== undefined ? `${words} · ${rule}` : words;
+  const said =
+    form === 'origin'
+      ? words.origin(verb ?? words.createdBy, originActor(words, actorClass, actor))
+      : streamWords(words, actorClass, actor);
+  return rule !== undefined ? `${said} · ${rule}` : said;
 }

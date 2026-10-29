@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Dimensions, Pressable as RNPressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Portal } from '../../primitives/Portal/Portal.native';
+import { actOnChoice, MENU_GAP } from './Menu.logic';
 import type { MenuItem, MenuProps } from './Menu.types';
 import { MenuItemRow } from './MenuItemRow.native';
 import { MenuTrigger } from './MenuTrigger.native';
@@ -19,7 +20,6 @@ interface Anchor {
   up: boolean;
 }
 
-const GAP = 6;
 const MIN_BELOW = 160;
 
 /**
@@ -39,7 +39,7 @@ const MIN_BELOW = 160;
 export function Menu({
   items = [],
   trigger,
-  label = 'More actions',
+  label,
   align = 'end',
   width = 220,
   selection = 'none',
@@ -54,14 +54,14 @@ export function Menu({
   const openMenu = () => {
     wrapRef.current?.measureInWindow((x, y, triggerWidth, height) => {
       const windowSize = Dimensions.get('window');
-      const below = windowSize.height - (y + height) - GAP;
-      const above = y - GAP;
+      const below = windowSize.height - (y + height) - MENU_GAP;
+      const above = y - MENU_GAP;
       const up = below < MIN_BELOW && above > below;
       const left = align === 'end' ? x + triggerWidth - width : x;
       setAnchor({
-        left: Math.max(GAP, Math.min(left, windowSize.width - width - GAP)),
+        left: Math.max(MENU_GAP, Math.min(left, windowSize.width - width - MENU_GAP)),
         max: Math.max(120, up ? above : below),
-        top: up ? y - GAP : y + height + GAP,
+        top: up ? y - MENU_GAP : y + height + MENU_GAP,
         up,
       });
     });
@@ -72,11 +72,7 @@ export function Menu({
       return;
     }
     setAnchor(null);
-    item.onSelect?.();
-    const key = item.key ?? item.label;
-    if (onSelect !== undefined && key !== undefined) {
-      onSelect(key);
-    }
+    actOnChoice(item, onSelect);
   };
 
   const toggle = () => (open ? setAnchor(null) : openMenu());

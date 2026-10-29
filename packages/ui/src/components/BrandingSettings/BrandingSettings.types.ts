@@ -1,14 +1,11 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { Read } from '@heliogrid/domain';
+import type { BrandingPart, BrandingPreview, Read } from '@heliogrid/domain';
 import type { BrandColorFieldWords } from '../BrandColorField/BrandColorField.types';
 import type { DocumentLetterhead } from '../DocumentPreview/DocumentPreview.types';
-import type { PickedFile } from '../Dropzone/Dropzone.types';
+import type { DropzoneWords, PickedFile } from '../Dropzone/Dropzone.types';
+import type { ImageWords } from '../Image/Image.types';
 
-/** Which customer surface the stage shows (`SCR-M01-18`, *Proposal · Link page*). */
-export type BrandingPreview = 'proposal' | 'link';
-
-/** Which part's fields the editor shows (*Logo · Colour · Letterhead*). */
-export type BrandingPart = 'logo' | 'colour' | 'letterhead';
+export type { BrandingPart, BrandingPreview } from '@heliogrid/domain';
 
 /** Every word the page draws; `@heliogrid/i18n`'s `brandingWords` and `brandColourFieldWords` write them. */
 export interface BrandingSettingsWords {
@@ -55,6 +52,10 @@ export interface BrandingSettingsWords {
     readonly ask: TranslatedText;
   };
   readonly colourField: BrandColorFieldWords;
+  /** The logo's place to add one says these itself (`dropzoneWords`). */
+  readonly dropzone: DropzoneWords;
+  /** The logo's frame says these itself (`imageWords`). */
+  readonly image: ImageWords;
 }
 
 /** The tenant's own facts the cover and the link page print — no sample value (`T-M01-029`). */
@@ -112,7 +113,7 @@ export interface BrandingSettingsProps {
   readonly saveFailure?: string;
   onRetry(): void;
   /** The logo part: a picture while one is held, and the last refusal's words (s18-p). */
-  readonly logoRefusal?: string;
+  readonly logoRefusal?: TranslatedText;
   /** A file chosen or dropped, as the device handed it over. */
   onChooseLogo(picked: PickedFile): void;
   /** A finger's way to choose: the app opens the system's picker (the phone has no drop). */
@@ -134,7 +135,10 @@ export interface BrandingSettingsProps {
 
 /** The customer's link page as it will open (`SCR-M01-18`, *Link page*): the stage's and a full-size view's. */
 export interface BrandingLinkPageProps {
-  readonly words: Pick<BrandingSettingsWords, 'linkPreview' | 'logoAlt' | 'logoUnavailable'>;
+  readonly words: Pick<
+    BrandingSettingsWords,
+    'linkPreview' | 'logoAlt' | 'logoUnavailable' | 'image'
+  >;
   readonly document: BrandingDocumentFacts;
   readonly colour: string | null;
   /** Fills its window at width (`d18-h`); at 375 it keeps the board's own height. */

@@ -1,8 +1,10 @@
 import type { CSSProperties } from 'react';
 import { useFormat } from '../MarketProvider/market-context';
 import { ChartFrame } from './ChartFrame';
+import { barPercent, barScale } from './Charts.logic';
 import type { BarChartProps, ChartDatum } from './Charts.types';
-import { chartSlot, chartTicks } from './chart-palette';
+import { chartSlot } from './chart-palette';
+import { datumReading } from './chart-series';
 import { useChartWidth } from './use-chart-width';
 
 interface WebBarChartProps extends BarChartProps {
@@ -33,14 +35,7 @@ export function BarChart({
   const { ref, width } = useChartWidth();
   const mkt = useFormat();
   const fmt = format ?? mkt.number;
-  /* Honesty is a product law: below `minPoints` real values the frame says so instead of
-     drawing a confident-looking bar. A value that is not a real number is not a real value. */
-  const real = data.filter((d) => typeof d.value === 'number' && !Number.isNaN(d.value));
-  const insufficient = real.length < minPoints;
-  const max = Math.max(1, ...data.map((d) => d.value || 0));
-  const ticks = chartTicks(max, gridlines);
-  const rawGap = width / (data.length * 6);
-  const gap = Math.max(4, Math.min(16, Number.isFinite(rawGap) && rawGap !== 0 ? rawGap : 8));
+  const { insufficient, max, ticks, gap } = barScale(data, minPoints, gridlines, width);
 
   return (
     <div ref={ref}>
@@ -56,7 +51,7 @@ export function BarChart({
                     <span
                       className="hg-charts-bar-fill hg-charts-slot"
                       data-slot={paint.slot}
-                      style={{ width: `${((d.value || 0) / max) * 100}%`, ...paint.style }}
+                      style={{ width: `${barPercent(d, max)}%`, ...paint.style }}
                     />
                   </span>
                   <span className="hg-charts-bar-row-value">{fmt(d.value)}</span>
@@ -78,12 +73,12 @@ export function BarChart({
                   <div
                     key={d.label}
                     className="hg-charts-bar-column"
-                    title={`${d.label}: ${fmt(d.value)}`}
+                    title={datumReading(d.label, fmt(d.value))}
                   >
                     <span
                       className="hg-charts-bar-bar hg-charts-slot"
                       data-slot={paint.slot}
-                      style={{ height: `${((d.value || 0) / max) * 100}%`, ...paint.style }}
+                      style={{ height: `${barPercent(d, max)}%`, ...paint.style }}
                     />
                   </div>
                 );

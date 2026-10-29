@@ -5,6 +5,7 @@ import { Animated, Easing, StyleSheet, View } from 'react-native';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { hasErrorLine } from './Switch.logic';
 import type { SwitchProps } from './Switch.types';
 
 interface NativeSwitchProps extends SwitchProps {
@@ -40,7 +41,7 @@ export function Switch({
   style,
 }: NativeSwitchProps) {
   const offset = useRef(new Animated.Value(checked ? THUMB_TRAVEL : 0)).current;
-  const hasError = error !== undefined && error !== null && error !== false;
+  const hasError = hasErrorLine(error);
   const { ground, controlFill, controlFillDisabled } = useGround();
   const on = checked && !disabled;
   const atEnd = toggleAt === 'end';

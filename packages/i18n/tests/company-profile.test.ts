@@ -246,7 +246,12 @@ describe('companyProfileWords', () => {
     'in %s a new company’s profile reads whole',
     async (reader) => {
       const { t } = await createTranslator(reader);
-      expect(companyProfileWords(t, AT_SIGNUP)).toEqual(WORDS[reader]);
+      // The size field's and the logo area's own words are their components' (`number-field.ts`, `dropzone.ts`).
+      expect(companyProfileWords(t, AT_SIGNUP)).toEqual({
+        ...WORDS[reader],
+        declarations: { ...WORDS[reader].declarations, numberField: expect.any(Object) },
+        dropzone: expect.any(Object),
+      });
     },
   );
 

@@ -1,25 +1,6 @@
-import type { ReactNode } from 'react';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
-
-/** `sheet` bodies are 280px wide and 28/24 padded; `panel` bodies 300px and 48 padded. */
-export type OverlayStateVariant = 'sheet' | 'panel';
-
-interface OverlayEmptyProps {
-  title?: string;
-  message?: string;
-  action?: ReactNode;
-  variant: OverlayStateVariant;
-}
-
-interface OverlayErrorProps {
-  title?: string;
-  message?: string;
-  onRetry?: () => void;
-  variant: OverlayStateVariant;
-  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
-}
+import type { OverlayEmptyProps, OverlayErrorProps } from './Sheet.types';
 
 /**
  * `empty` means none YET, so it invites: no tint, no glyph, an optional action that makes the
@@ -41,7 +22,14 @@ export function OverlayEmpty({ title, message, action, variant }: OverlayEmptyPr
  * retry — because trying again may work. `unavailable` is the state that gets neither, and it
  * renders through `UnavailableNote` instead.
  */
-export function OverlayError({ title, message, onRetry, variant, retryLabel }: OverlayErrorProps) {
+export function OverlayError({
+  title,
+  message,
+  onRetry,
+  variant,
+  retryLabel,
+  focusAfter,
+}: OverlayErrorProps) {
   return (
     <div className="hg-overlay-state" data-variant={variant}>
       <span className="hg-overlay-state-mark">
@@ -61,7 +49,7 @@ export function OverlayError({ title, message, onRetry, variant, retryLabel }: O
       </span>
       <div className="hg-overlay-state-title">{title}</div>
       {message !== undefined ? <div className="hg-overlay-state-message">{message}</div> : null}
-      <RetryButton onRetry={onRetry} label={retryLabel} />
+      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
     </div>
   );
 }

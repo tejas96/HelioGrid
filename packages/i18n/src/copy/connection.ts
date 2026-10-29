@@ -3,6 +3,7 @@
  * boot check with no answer and a device gone offline say the same thing, because neither knows
  * whose side failed (`F8-36`). No board draws this screen; the Hindi and Marathi owe a native review.
  */
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { Translator } from '../runtime';
 import { SIGN_IN } from './sign-in';
 
@@ -11,6 +12,7 @@ export const CONNECTION = {
   message: /*i18n*/ { id: 'It may be your connection or ours. Try again in a moment.' },
   stillNoAnswer: /*i18n*/ { id: 'Still no answer from HelioGrid.' },
   tooLong: /*i18n*/ { id: 'That is taking too long to answer.' },
+  lastTried: /*i18n*/ { id: '{message} Last tried at {time}.' },
 } as const;
 
 /** Every word `NoConnection` draws, so its English defaults never reach a reader. */
@@ -21,5 +23,7 @@ export function connectionWords(translate: Translator['t']) {
     retryLabel: translate(SIGN_IN.tryAgain),
     failedMessage: translate(CONNECTION.stillNoAnswer),
     timeoutMessage: translate(CONNECTION.tooLong),
+    lastTriedSentence: (message: TranslatedText, time: string) =>
+      translate(CONNECTION.lastTried, { message, time }),
   };
 }

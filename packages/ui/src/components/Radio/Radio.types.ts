@@ -1,3 +1,5 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+
 /**
  * 20px radio. Checked = 2px accent ring + accent dot.
  *
@@ -14,7 +16,7 @@ export interface RadioProps {
    * Every call site in the DS ignores the event (`onChange={() => setM('rooftop')}`).
    */
   onChange?: () => void;
-  label?: string;
+  label?: TranslatedText;
   /** Group members share one `name` — that is what makes them one radio group. */
   name?: string;
   value?: string;

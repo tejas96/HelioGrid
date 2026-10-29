@@ -1,4 +1,5 @@
 'use client';
+import type { TranslatedText } from '@heliogrid/contracts';
 import { EmptyState, Text } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 
@@ -11,8 +12,8 @@ export function EmptyShellPage({
   description,
   action,
 }: {
-  title: string;
-  description?: string;
+  title: TranslatedText;
+  description?: TranslatedText;
   action?: ReactNode;
 }) {
   return (

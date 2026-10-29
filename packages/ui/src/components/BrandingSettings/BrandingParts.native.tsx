@@ -1,5 +1,7 @@
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { type FocusAfter, useFocusAfter } from '../../primitives/FocusAfter';
 import { Surface } from '../../primitives/Surface/Surface.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Banner } from '../Banner/Banner.native';
@@ -44,21 +46,18 @@ export function BrandingPart(props: PartProps) {
  * it and the limits; with none, the capture surface a tap opens the system's picker from. A file
  * refused is said first, and the mark it would have replaced stays (s18-p).
  */
-function LogoPart({
-  words,
-  document,
-  logoRefusal,
-  onChooseLogo,
-  onPickLogo,
-  onRemoveLogo,
-}: PartProps) {
+function LogoPart(props: PartProps) {
+  const { words, document, logoRefusal, onChooseLogo, onPickLogo } = props;
+  /* A removed logo gives way to the capture surface, where the person adds the next one. */
+  const logo = useRef<View>(null);
   return (
-    <View style={styles.logo}>
+    <View ref={logo} style={styles.logo}>
       {logoRefusal === undefined ? null : (
         <Banner kind="validation" tone="warning" title={logoRefusal} density="functional" />
       )}
       {document.logoSrc === undefined ? (
         <Dropzone
+          words={words.dropzone}
           label={words.addLogo}
           hint={words.limits}
           accept={LOGO_ACCEPT}
@@ -71,36 +70,51 @@ function LogoPart({
           }}
         />
       ) : (
-        <>
-          {/* The paper the mark prints on: a page ground, whatever holds it. */}
-          <Surface background="surface" radius="md" style={styles.paper}>
-            <ImageFrame
-              src={document.logoSrc}
-              alt={words.logoAlt}
-              missingLabel={words.logoUnavailable}
-              missingDetail=""
-              width={BRANDING_LOGO_MARK.narrow.width}
-              height={BRANDING_LOGO_MARK.narrow.height}
-              fit="contain"
-              density="functional"
-            />
-          </Surface>
-          <View style={styles.logoFoot}>
-            <View style={styles.logoActs}>
-              <Button variant="secondary" size="sm" onClick={onPickLogo}>
-                {words.replace}
-              </Button>
-              <Button variant="ghost" size="sm" tone="danger" onClick={onRemoveLogo}>
-                {words.remove}
-              </Button>
-            </View>
-            <Text variant="caption" color="secondary" align="center">
-              {words.limits}
-            </Text>
-          </View>
-        </>
+        <HeldLogo {...props} logoSrc={document.logoSrc} focusAfter={logo} />
       )}
     </View>
+  );
+}
+
+/** A held mark on the white it prints on, with *Replace* and *Remove* under it and the limits. */
+function HeldLogo({
+  words,
+  logoSrc,
+  onPickLogo,
+  onRemoveLogo,
+  focusAfter,
+}: PartProps & { logoSrc: string; focusAfter: FocusAfter }) {
+  const leaving = useFocusAfter(focusAfter);
+  return (
+    <>
+      {/* The paper the mark prints on: a page ground, whatever holds it. */}
+      <Surface background="surface" radius="md" style={styles.paper}>
+        <ImageFrame
+          src={logoSrc}
+          alt={words.logoAlt}
+          missingLabel={words.logoUnavailable}
+          missingDetail=""
+          words={words.image}
+          width={BRANDING_LOGO_MARK.narrow.width}
+          height={BRANDING_LOGO_MARK.narrow.height}
+          fit="contain"
+          density="functional"
+        />
+      </Surface>
+      <View style={styles.logoFoot}>
+        <View style={styles.logoActs}>
+          <Button variant="secondary" size="sm" onClick={onPickLogo}>
+            {words.replace}
+          </Button>
+          <Button variant="ghost" size="sm" tone="danger" onClick={leaving(onRemoveLogo)}>
+            {words.remove}
+          </Button>
+        </View>
+        <Text variant="caption" color="secondary" align="center">
+          {words.limits}
+        </Text>
+      </View>
+    </>
   );
 }
 

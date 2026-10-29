@@ -7,8 +7,8 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { RetryButton } from '../Button/RetryButton.native';
-import type { SurfaceState } from '../UnavailableNote';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
+import type { StatCardStatesProps } from './StatCard.types';
 
 const styles = StyleSheet.create({
   loading: { marginTop: 10, gap: theme.spacing['sp-2'] },
@@ -25,23 +25,15 @@ const styles = StyleSheet.create({
 
 export function StatCardStates({
   state,
-  label,
+  loadingLabel,
   emptyMessage,
   errorMessage,
   onRetry,
   retryLabel,
+  focusAfter,
   unavailableTitle,
   unavailableMessage,
-}: {
-  state: SurfaceState;
-  label: string;
-  emptyMessage: string;
-  errorMessage: string;
-  onRetry?: () => void;
-  retryLabel?: string;
-  unavailableTitle: string;
-  unavailableMessage?: string;
-}) {
+}: StatCardStatesProps) {
   if (state === 'loading') {
     return (
       /* The role is a figure too, and this state prints none: web's `role="status"` has no RN
@@ -49,7 +41,7 @@ export function StatCardStates({
          accessibility element over pure decoration, named and announced politely, is the fact. */
       <View
         accessible
-        accessibilityLabel={`Loading ${label}`}
+        accessibilityLabel={loadingLabel}
         accessibilityLiveRegion="polite"
         style={styles.loading}
       >
@@ -64,14 +56,16 @@ export function StatCardStates({
         <Text variant="body-sm" style={styles.errorBody}>
           {errorMessage}
         </Text>
-        <RetryButton onRetry={onRetry} label={retryLabel} />
+        <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
       </View>
     );
   }
   if (state === 'unavailable') {
     return (
       <View style={styles.block}>
-        <UnavailableNote title={unavailableTitle} message={unavailableMessage} />
+        {unavailableTitle !== undefined ? (
+          <UnavailableNote title={unavailableTitle} message={unavailableMessage} />
+        ) : null}
       </View>
     );
   }

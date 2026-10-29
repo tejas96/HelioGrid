@@ -42,6 +42,7 @@ export function DoorNumberStep({
         ))}
         <PhoneField
           label={words.phoneLabel}
+          words={words.phoneField}
           value={phone}
           onChange={onPhone}
           readOnly={busy}

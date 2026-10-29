@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
@@ -13,9 +14,9 @@ interface SheetHeaderProps {
   leading?: ReactNode;
   /** With a handle above it the header loses its own top padding, as on web. */
   handle: boolean;
-  closeLabel: string;
+  closeLabel: TranslatedText;
   onClose?: () => void;
-  overline?: string;
+  overline?: TranslatedText;
   /** The scroll shadow — luminance, never a divider line. */
   scrolled: boolean;
   showClose: boolean;

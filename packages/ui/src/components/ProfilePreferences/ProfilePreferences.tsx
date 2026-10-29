@@ -42,7 +42,7 @@ export function ProfilePreferences(props: ProfilePreferencesProps) {
   const title = useRef<HTMLHeadingElement>(null);
   return (
     <div ref={room} className="hg-profile-preferences" data-wide={wide ? 'true' : undefined}>
-      <h1 ref={title} tabIndex={-1} className="hg-profile-preferences-title">
+      <h1 ref={title} tabIndex={-1} className="hg-profile-preferences-title hg-focus-target">
         {props.words.title}
       </h1>
       <PageBody {...props} title={title} wide={wide} />
@@ -62,16 +62,16 @@ function PageBody({
   }
   if (read.kind === 'failed') {
     /* *Try again* leaves with its banner: focus goes to the title, which stays through what follows. */
-    const retry = () => {
-      title.current?.focus({ preventScroll: true });
-      read.retry();
-    };
     return (
       <Banner
         kind="state"
         tone="danger"
         title={words.loadFailed.title}
-        action={<BannerAction onClick={retry}>{words.loadFailed.retry}</BannerAction>}
+        action={
+          <BannerAction onClick={read.retry} focusAfter={title}>
+            {words.loadFailed.retry}
+          </BannerAction>
+        }
       >
         {words.loadFailed.body}
       </Banner>

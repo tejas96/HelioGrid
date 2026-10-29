@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { TextStyle } from 'react-native';
 import { Image, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { bandContactLine, coverLines } from './DocumentPreview.logic';
 import { DocumentSlot, docStyles } from './DocumentSheet.native';
 import type { ResolvedDocument } from './document-model';
 
@@ -43,16 +44,16 @@ function BandLines({
   colour: string;
   fade: 'on' | 'off';
 }) {
-  const lines = doc.letterhead?.lines ?? [];
-  if (doc.taxId === '' && lines.length === 0) {
+  const contact = bandContactLine(doc);
+  if (contact === null) {
     return null;
   }
   const line: TextStyle[] = [docStyles.lines, { color: colour }];
   return (
     <Text style={[...line, { opacity: FADE.lines[fade] }]}>
-      {doc.taxId === '' ? null : <TaxNumber doc={doc} line={line} />}
-      {doc.taxId !== '' && lines.length > 0 ? ' · ' : null}
-      {lines.join(' · ')}
+      {contact.taxed ? <TaxNumber doc={doc} line={line} /> : null}
+      {contact.separated ? ' · ' : null}
+      {contact.written}
     </Text>
   );
 }
@@ -81,7 +82,7 @@ export function DocumentBandHeader({ doc }: { doc: ResolvedDocument }) {
   // biome-ignore lint/plugin/raw-white: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen
   const bandColour = doc.bandOk ? doc.brandHex : theme.colors.surface;
   const bandText = doc.bandOk ? doc.bandTextColor : theme.colors['text-primary'];
-  const tagline = doc.letterhead?.tagline;
+  const tagline = doc.letterhead?.tagline === '' ? undefined : doc.letterhead?.tagline;
   return (
     <View
       style={[
@@ -94,7 +95,7 @@ export function DocumentBandHeader({ doc }: { doc: ResolvedDocument }) {
         {doc.companyName === '' ? null : (
           <Text style={[docStyles.company, { color: bandText }]}>{doc.companyName}</Text>
         )}
-        {tagline === undefined || tagline === '' ? null : (
+        {tagline === undefined ? null : (
           <Text style={[docStyles.tagline, { color: bandText, opacity: FADE.tagline[fade] }]}>
             {tagline}
           </Text>
@@ -116,8 +117,7 @@ export function DocumentBandHeader({ doc }: { doc: ResolvedDocument }) {
 
 /** Who the document is for, and what it is. A blank recipient line reads as a missing value. */
 export function DocumentCover({ doc }: { doc: ResolvedDocument }) {
-  const named = doc.customerName !== '';
-  const titled = doc.docTitle !== '' || doc.docNumber !== '' || doc.docDateText !== '';
+  const { named, titled } = coverLines(doc);
   if (!named && !titled) {
     return null;
   }
@@ -125,7 +125,7 @@ export function DocumentCover({ doc }: { doc: ResolvedDocument }) {
     <View style={docStyles.cover}>
       {named ? (
         <View>
-          {doc.preparedForLabel === '' ? null : (
+          {doc.preparedForLabel === undefined ? null : (
             <Text style={docStyles.overline}>{doc.preparedForLabel}</Text>
           )}
           <Text style={docStyles.customerName}>{doc.customerName}</Text>
@@ -138,7 +138,7 @@ export function DocumentCover({ doc }: { doc: ResolvedDocument }) {
       )}
       {titled ? (
         <View style={docStyles.metaBlock}>
-          {doc.docTitle === '' ? null : (
+          {doc.docTitle === undefined ? null : (
             <Text style={[docStyles.docTitle, { color: doc.ink }]}>{doc.docTitle}</Text>
           )}
           {doc.docNumber === '' ? null : <Text style={docStyles.docNumber}>{doc.docNumber}</Text>}
@@ -151,14 +151,12 @@ export function DocumentCover({ doc }: { doc: ResolvedDocument }) {
 
 /** The line that runs along the bottom of every page (`M01-50`); its figures in mono (`F7-09`). */
 export function DocumentFooter({ doc }: { doc: ResolvedDocument }) {
-  const footerNote = doc.letterhead?.footerNote;
+  const footerNote = doc.letterhead?.footerNote === '' ? undefined : doc.letterhead?.footerNote;
   const line: TextStyle[] = [docStyles.footerText];
   return (
     <View style={docStyles.footer}>
       <Text style={line}>{doc.taxId === '' ? null : <TaxNumber doc={doc} line={line} />}</Text>
-      {footerNote === undefined || footerNote === '' ? null : (
-        <Text style={docStyles.footerNote}>{footerNote}</Text>
-      )}
+      {footerNote === undefined ? null : <Text style={docStyles.footerNote}>{footerNote}</Text>}
       <Text variant="mono" style={[...line, docStyles.figure]}>
         {doc.phone}
       </Text>

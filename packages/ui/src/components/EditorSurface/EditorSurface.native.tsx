@@ -9,18 +9,17 @@ import type { EditorSurfaceProps } from './EditorSurface.types';
 import {
   isDecision,
   isPanel,
-  modalChrome,
+  modalFormProps,
   PANEL_ABOVE,
-  panelChrome,
+  panelFormProps,
   resolveForForm,
-  sheetChrome,
+  sheetFormProps,
 } from './editor-form-props';
-import { editorStateProps } from './editor-state-props';
 import { PROBE_STYLE, useEditorForm, useLayerWidth } from './use-editor-form.native';
 
-interface NativeEditorSurfaceProps extends EditorSurfaceProps {
+type NativeEditorSurfaceProps = EditorSurfaceProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 /**
  * `F7-21`'s one sheet grammar, PERFORMED instead of described: a sheet on mobile, a side panel on
@@ -37,24 +36,11 @@ interface NativeEditorSurfaceProps extends EditorSurfaceProps {
 export function EditorSurface(props: NativeEditorSurfaceProps) {
   const {
     open = false,
-    onClose,
     panelAbove = PANEL_ABOVE,
-    title,
-    status,
-    subtitle,
-    subtitleFace,
-    overline,
     children,
-    footer,
-    modal = true,
     desktop = 'panel',
-    side = 'right',
-    width = 480,
-    dismissible = true,
-    leading = null,
     meta = null,
     inset = false,
-    zIndex = 40,
     sheetProps = {},
     panelProps = {},
     modalProps = {},
@@ -79,19 +65,7 @@ export function EditorSurface(props: NativeEditorSurfaceProps) {
     return (
       <>
         {probe}
-        <Modal
-          {...modalChrome(props)}
-          description={subtitle}
-          dismissible={dismissible}
-          footer={footer}
-          onClose={onClose}
-          open
-          overline={overline}
-          style={style}
-          title={title}
-          zIndex={zIndex}
-          {...modalProps}
-        >
+        <Modal {...modalFormProps(props)} style={style} {...modalProps}>
           {body}
         </Modal>
       </>
@@ -102,27 +76,7 @@ export function EditorSurface(props: NativeEditorSurfaceProps) {
     return (
       <>
         {probe}
-        <DetailPanel
-          {...editorStateProps(props)}
-          {...panelChrome(props)}
-          dismissible={dismissible}
-          footer={footer}
-          leading={leading}
-          meta={metaRow}
-          modal={modal}
-          onClose={onClose}
-          open
-          overline={overline}
-          side={side}
-          status={status}
-          style={style}
-          subtitle={subtitle}
-          subtitleFace={subtitleFace}
-          title={title}
-          width={width}
-          zIndex={zIndex}
-          {...panelProps}
-        >
+        <DetailPanel {...panelFormProps(props, metaRow)} style={style} {...panelProps}>
           {body}
         </DetailPanel>
       </>
@@ -132,25 +86,7 @@ export function EditorSurface(props: NativeEditorSurfaceProps) {
   return (
     <>
       {probe}
-      <Sheet
-        {...editorStateProps(props)}
-        {...sheetChrome(props)}
-        dismissible={dismissible}
-        footer={footer}
-        modal={modal}
-        onClose={onClose}
-        open
-        leading={leading}
-        meta={metaRow}
-        overline={overline}
-        status={status}
-        style={style}
-        subtitle={subtitle}
-        subtitleFace={subtitleFace}
-        title={title}
-        zIndex={zIndex}
-        {...sheetProps}
-      >
+      <Sheet {...sheetFormProps(props, metaRow)} style={style} {...sheetProps}>
         {body}
       </Sheet>
     </>

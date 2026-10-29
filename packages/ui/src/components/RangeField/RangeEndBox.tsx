@@ -1,18 +1,7 @@
-import { useEffect, useId, useState } from 'react';
+import { useId } from 'react';
 import { fieldBox } from '../../primitives/FieldBox';
-import { commitEnd } from './RangeField.logic';
-
-export interface RangeEndBoxProps {
-  label: string;
-  value: number;
-  /** This end's own window — the other end is the bound it may not cross. */
-  min: number;
-  max: number;
-  step: number;
-  unit?: string;
-  disabled?: boolean;
-  onCommit: (value: number) => void;
-}
+import type { RangeEndBoxProps } from './RangeField.types';
+import { useEndDraft } from './use-end-draft';
 
 /** Compact commit-once numeric box. 44px target; the value it holds is one end of the range. */
 export function RangeEndBox({
@@ -26,22 +15,13 @@ export function RangeEndBox({
   onCommit,
 }: RangeEndBoxProps) {
   const id = useId();
-  const [draft, setDraft] = useState(String(value));
-  const [focus, setFocus] = useState(false);
-
-  useEffect(() => {
-    if (!focus) setDraft(String(value));
-  }, [value, focus]);
-
-  const commit = () => {
-    const next = commitEnd(draft, min, max, step);
-    if (next === null) {
-      setDraft(String(value));
-      return;
-    }
-    setDraft(String(next));
-    if (next !== value) onCommit(next);
-  };
+  const { draft, setDraft, focus, setFocus, commit } = useEndDraft({
+    value,
+    min,
+    max,
+    step,
+    onCommit,
+  });
 
   return (
     <span className="hg-range-end">

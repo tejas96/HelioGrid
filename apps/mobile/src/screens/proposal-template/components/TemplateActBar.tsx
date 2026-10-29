@@ -1,5 +1,5 @@
 import type { ProposalTemplateWords } from '@heliogrid/i18n';
-import { Banner, FormActionBar } from '@heliogrid/ui';
+import { Banner, type FocusAfter, FormActionBar } from '@heliogrid/ui';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from '../styles';
@@ -15,12 +15,14 @@ export function TemplateActBar({
   saveFailed,
   onSave,
   onDiscard,
+  focusAfter,
 }: {
   words: ProposalTemplateWords;
   saving: boolean;
   saveFailed: boolean;
   onSave: () => void;
   onDiscard: () => void;
+  focusAfter: FocusAfter;
 }) {
   const insets = useSafeAreaInsets();
   return (
@@ -40,6 +42,7 @@ export function TemplateActBar({
         onSave={onSave}
         discardLabel={words.discard}
         onDiscard={onDiscard}
+        focusAfter={focusAfter}
         saving={saving}
         bottomInset={insets.bottom}
       />

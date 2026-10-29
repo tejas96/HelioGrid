@@ -6,6 +6,7 @@
  * block sized to A3/A4, none of which React Native has an equivalent for. This file still has to
  * stay platform-neutral because both tsconfig projects compile it.
  */
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { DisclosureSpec } from '../Disclosure';
 import type { PageOrientation, Paper } from '../PagedDocument/PagedDocument.types';
@@ -13,7 +14,8 @@ import type { PageOrientation, Paper } from '../PagedDocument/PagedDocument.type
 export interface SheetSymbol {
   /** The drafting code — "PV", "INV", "ACDB". Mono, beside the mark. */
   code?: string;
-  label: string;
+  /** What the symbol stands for — "PV module". */
+  label: TranslatedText;
   /** A node for a real symbol; otherwise a 12px mark in `mark`'s colour. */
   glyph?: ReactNode;
   mark?: string;
@@ -22,13 +24,43 @@ export interface SheetSymbol {
 
 export interface DrawingTitleBlock {
   project?: string;
-  drawingTitle?: string;
+  /** What this sheet draws — "Roof layout". Printed under the project, or as the title without one. */
+  drawingTitle?: TranslatedText;
   drawingNumber?: string;
   revision?: string;
   issueDate?: string | Date;
   drawnBy?: string;
   checkedBy?: string;
   client?: string;
+}
+
+/**
+ * The words a drawing sheet says of its own, from `packages/i18n`'s `drawingSheetWords`: its
+ * counted numbering and name, the empty slot's reservation, the north mark, the legend, the title
+ * block's field names and the zoom controls' names.
+ */
+export interface DrawingSheetWords {
+  /** The sheet's accessible name — "{drawing} · sheet 2 of 5". */
+  sheetName: (drawing: string, sheet: number, sheets: number) => TranslatedText;
+  /** The foot's counted numbering — "Sheet 2 of 5". */
+  sheetOf: (sheet: number, sheets: number) => TranslatedText;
+  /** The empty slot's reservation — "single-line diagram renders here". */
+  rendersHere: (drawing: string) => TranslatedText;
+  north: TranslatedText;
+  legend: TranslatedText;
+  /** The title block's overline: a named project's, else the drawing's. */
+  project: TranslatedText;
+  drawing: TranslatedText;
+  /** The title block's field names. */
+  drawingNumber: TranslatedText;
+  revision: TranslatedText;
+  scale: TranslatedText;
+  paper: TranslatedText;
+  issued: TranslatedText;
+  drawnBy: TranslatedText;
+  checked: TranslatedText;
+  zoomIn: TranslatedText;
+  zoomOut: TranslatedText;
 }
 
 /**
@@ -58,8 +90,11 @@ export interface DrawingSheetProps {
    * unfinished sheet is not mistakable for a finished one.
    */
   drawing?: ReactNode;
-  /** What belongs in the slot — "Single-line diagram", "Roof layout". Used by the reservation. */
-  drawingLabel?: string;
+  /**
+   * What belongs in the slot — "Single-line diagram", "Roof layout". The reservation's words, and
+   * the sheet's name and title wherever the title block names no drawing.
+   */
+  drawingLabel: TranslatedText;
   /**
    * `MS8-17`: *"the legend lists **only symbols the sheet actually renders**"* — enforced, not
    * remembered: this is read **only when `drawing` exists**, so an empty slot produces no legend.
@@ -73,6 +108,7 @@ export interface DrawingSheetProps {
   disclaimer?: DisclosureSpec | ReactNode;
   north?: boolean;
   zoom?: DrawingSheetZoom;
+  words: DrawingSheetWords;
 }
 
 /**

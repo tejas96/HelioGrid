@@ -1,5 +1,7 @@
-import { COMPANY_LOGO_LIMITS } from '@heliogrid/domain';
+import { BRANDING_PARTS, COMPANY_LOGO_LIMITS } from '@heliogrid/domain';
 import { useRef } from 'react';
+import { type FocusAfter, useFocusAfter } from '../../primitives/FocusAfter';
+import { focusAfterWithin } from '../../primitives/FocusAfter/focus-after-within';
 import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Banner } from '../Banner';
@@ -17,7 +19,7 @@ import type { BrandingSettingsProps, BrandingPart as Part } from './BrandingSett
 /** The lines field never opens shorter than two rows (s18-k3), and grows with each line held. */
 const LINES_ROWS_AT_LEAST = 2;
 
-const PARTS: readonly Part[] = ['logo', 'colour', 'letterhead'];
+const PARTS: readonly Part[] = BRANDING_PARTS;
 
 type PartProps = BrandingSettingsProps & { wide: boolean };
 
@@ -66,13 +68,16 @@ export function BrandingPart(props: PartProps) {
  */
 function LogoPart(props: PartProps) {
   const { words, document, logoRefusal, onChooseLogo } = props;
+  /* A removed logo gives way to the drop surface, where the person adds the next one. */
+  const logo = useRef<HTMLDivElement>(null);
   return (
-    <div className="hg-branding-logo">
+    <div ref={logo} className="hg-branding-logo">
       {logoRefusal === undefined ? null : (
         <Banner kind="validation" tone="warning" title={logoRefusal} density="functional" />
       )}
       {document.logoSrc === undefined ? (
         <Dropzone
+          words={words.dropzone}
           label={words.addLogo}
           hint={words.limits}
           accept={COMPANY_LOGO_LIMITS.contentTypes.join(',')}
@@ -83,7 +88,11 @@ function LogoPart(props: PartProps) {
           }}
         />
       ) : (
-        <HeldLogo {...props} logoSrc={document.logoSrc} />
+        <HeldLogo
+          {...props}
+          logoSrc={document.logoSrc}
+          dropSurface={focusAfterWithin(logo, 'button, input')}
+        />
       )}
     </div>
   );
@@ -100,8 +109,10 @@ function HeldLogo({
   onChooseLogo,
   onPickLogo,
   onRemoveLogo,
-}: PartProps & { logoSrc: string }) {
+  dropSurface,
+}: PartProps & { logoSrc: string; dropSurface: FocusAfter }) {
   const chooser = useRef<HTMLInputElement>(null);
+  const leaving = useFocusAfter(dropSurface);
   const mark = wide ? BRANDING_LOGO_MARK.wide : BRANDING_LOGO_MARK.narrow;
   return (
     <>
@@ -111,6 +122,7 @@ function HeldLogo({
           alt={words.logoAlt}
           missingLabel={words.logoUnavailable}
           missingDetail=""
+          words={words.image}
           width={mark.width}
           height={mark.height}
           fit="contain"
@@ -126,7 +138,7 @@ function HeldLogo({
           >
             {words.replace}
           </Button>
-          <Button variant="ghost" size="sm" tone="danger" onClick={onRemoveLogo}>
+          <Button variant="ghost" size="sm" tone="danger" onClick={leaving(onRemoveLogo)}>
             {words.remove}
           </Button>
         </div>

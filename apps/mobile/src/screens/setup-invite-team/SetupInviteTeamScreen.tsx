@@ -1,6 +1,6 @@
 import { useSetupInvite } from '@heliogrid/data/react';
 import { DOOR_SEGMENT, SETTINGS_SEGMENT } from '@heliogrid/domain';
-import { setupInviteWords } from '@heliogrid/i18n';
+import { setupInviteWords, toastHostWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import { closeKeyboard, SetupInviteTeam, ToastHost, useFormat, useToasts } from '@heliogrid/ui';
 import { useState } from 'react';
@@ -27,6 +27,7 @@ export function SetupInviteTeamScreen() {
   const invite = useSetupInvite(pack);
   const { bottom } = useSafeAreaInsets();
   /* The held acts' height, told by the frame: the toast stands on them, whatever their words wrap to. */
+  // biome-ignore lint/plugin/screen-assembly: a native layout measurement of the held acts; the web's toast stands in the page's own flow
   const [actsHeight, setActsHeight] = useState(0);
   const { words, fields } = useInviteForm(invite, toasts.push, invite.skip);
   return (
@@ -52,7 +53,13 @@ export function SetupInviteTeamScreen() {
           void Linking.openURL(TEAM_ROW_LINK).catch(() => undefined);
         }}
       />
-      <ToastHost toasts={toasts.toasts} onDismiss={toasts.dismiss} offset={bottom + actsHeight} />
+      <ToastHost
+        toasts={toasts.toasts}
+        onDismiss={toasts.dismiss}
+        {...toastHostWords(t)}
+        focusAfter={fields.phoneRef}
+        offset={bottom + actsHeight}
+      />
     </InsetDoor>
   );
 }

@@ -6,7 +6,12 @@ import type { DisclosureKind, DisclosureSpec } from '../Disclosure';
 import { DisclosureSet } from '../Disclosure';
 import type { AnnotationItem } from './DocumentChrome';
 import type { FlowAtom, SheetPart } from './document-cut';
-import type { DocumentAudience, DocumentSection, TitleBlockSpec } from './PagedDocument.types';
+import type {
+  DocumentAudience,
+  DocumentSection,
+  TitleBlockSpec,
+  TitleBlockWords,
+} from './PagedDocument.types';
 import { TitleBlock } from './TitleBlock';
 
 export interface FlowItem<Row> extends FlowAtom {
@@ -26,6 +31,7 @@ export interface BuildFlowArgs<Row> {
   disclosures?: (DisclosureKind | DisclosureSpec)[];
   disclosuresAfter?: string;
   audience: DocumentAudience;
+  titleWords: TitleBlockWords;
 }
 
 /**
@@ -75,6 +81,7 @@ export function buildFlow<Row>({
   disclosures,
   disclosuresAfter,
   audience,
+  titleWords,
 }: BuildFlowArgs<Row>): BuiltFlow<Row> {
   const { printed, annotations } = selectSections(sections, audience);
 
@@ -83,7 +90,7 @@ export function buildFlow<Row>({
     items.push({
       id: '__title',
       kind: 'node',
-      node: <TitleBlock {...titleBlock} audience={audience} />,
+      node: <TitleBlock {...titleBlock} audience={audience} words={titleWords} />,
     });
   }
   /* The disclosures are a REQUIRED atom, not a section: no prop removes them, nothing can mark

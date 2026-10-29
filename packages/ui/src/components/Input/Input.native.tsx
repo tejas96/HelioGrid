@@ -14,7 +14,7 @@ import { useFocusRequest } from '../../primitives/use-focus-request';
 import { renderOverride } from '../FieldOverride/FieldOverride.native';
 import { renderAttribution } from '../ValueSource/ValueSource.native';
 import { useCommitDraft } from './commit-draft';
-import { inputNote } from './Input.logic';
+import { inputNote, ringTone } from './Input.logic';
 import type { InputDensity, InputProps, InputType } from './Input.types';
 
 interface NativeInputProps extends InputProps {
@@ -92,26 +92,12 @@ export function Input({
 }: NativeInputProps) {
   const control = useRef<TextInput>(null);
   useFocusRequest(control, focusRequest);
-  const { draft, setDraft, focus, setFocus, commit } = useCommitDraft(
+  const { focus, setFocus, commit, shown, change, leave } = useCommitDraft(
     value,
     commitOnBlur,
     onCommit,
+    onChange,
   );
-
-  const handleChangeText = (next: string) => {
-    if (commitOnBlur) {
-      setDraft(next);
-      return;
-    }
-    onChange?.(next);
-  };
-
-  const handleBlur = () => {
-    setFocus(false);
-    if (commitOnBlur) {
-      commit();
-    }
-  };
 
   /* Same two owners as the web half: FieldOverride draws the override line, ValueSource the layer
      line, and resolving the override first IS the mutual-exclusion test. */
@@ -123,7 +109,7 @@ export function Input({
     fieldBoxText(disabled),
   ];
   const note = inputNote({ error, success, helper });
-  const tone = note?.kind === 'error' ? 'error' : 'none';
+  const tone = ringTone(note);
 
   return (
     <View style={[styles.column, style]}>
@@ -148,10 +134,10 @@ export function Input({
           secureTextEntry={type === 'password'}
           placeholder={placeholder}
           placeholderTextColor={fieldBoxPlaceholder(disabled)}
-          value={commitOnBlur ? draft : (value ?? '')}
-          onChangeText={handleChangeText}
+          value={shown}
+          onChangeText={change}
           onFocus={() => setFocus(true)}
-          onBlur={handleBlur}
+          onBlur={leave}
           onSubmitEditing={commitOnBlur ? commit : undefined}
           style={controlStyle}
         />

@@ -1,19 +1,27 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';
 import type { EditorSurfaceProps } from './EditorSurface.types';
 
 /** The five-state block every form of the editor takes, unchanged, straight through. */
-export interface EditorStateProps {
-  read?: SurfaceRead;
-  errorTitle?: string;
-  errorMessage?: string;
-  retryLabel?: string;
-  emptyTitle?: string;
-  emptyMessage?: string;
+export type EditorStateProps = {
+  errorTitle?: TranslatedText;
+  errorMessage?: TranslatedText;
+  retryLabel?: TranslatedText;
+  emptyTitle?: TranslatedText;
+  emptyMessage?: TranslatedText;
   emptyAction?: ReactNode;
-  unavailableTitle?: string;
-  unavailableMessage?: string;
+  unavailableTitle?: TranslatedText;
+  unavailableMessage?: TranslatedText;
   unavailableAction?: ReactNode;
+} & (
+  | { read?: undefined; loadingLabel?: undefined }
+  | { read: SurfaceRead; loadingLabel: TranslatedText }
+);
+
+/** The read and the name its loading speaks travel together, so no form gets one without the other. */
+function readOf(props: EditorSurfaceProps): EditorStateProps {
+  return props.read === undefined ? {} : { read: props.read, loadingLabel: props.loadingLabel };
 }
 
 /**
@@ -25,7 +33,7 @@ export interface EditorStateProps {
  */
 export function editorStateProps(props: EditorSurfaceProps): EditorStateProps {
   return {
-    read: props.read,
+    ...readOf(props),
     errorTitle: props.errorTitle,
     errorMessage: props.errorMessage,
     retryLabel: props.retryLabel,

@@ -1,17 +1,20 @@
 import type { ReactNode } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { Icon } from '../../primitives/Icon';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
+import type { ChartWords } from './Charts.types';
 import type { ChartNote, ChartSurfaceState } from './chart-state';
-import { CHART_LOADING_LABEL, CHART_UNAVAILABLE_TITLE } from './chart-state';
 
 interface ChartFrameBodyProps {
   state: ChartSurfaceState;
   height: number;
   note: ChartNote | null;
+  words: ChartWords;
   onRetry?: () => void;
-  retryLabel?: string;
+  /** The frame, which stays while the retried read reloads. */
+  focusAfter: FocusAfter;
   children?: ReactNode;
 }
 
@@ -39,15 +42,16 @@ export function ChartFrameBody({
   state,
   height,
   note,
+  words,
   onRetry,
-  retryLabel,
+  focusAfter,
   children,
 }: ChartFrameBodyProps) {
   if (state === 'loading') {
     return (
       <div
         role="status"
-        aria-label={CHART_LOADING_LABEL}
+        aria-label={words.loading}
         className="hg-charts-skeleton"
         style={{ height }}
       />
@@ -62,7 +66,7 @@ export function ChartFrameBody({
       <div className="hg-charts-region" style={{ height }}>
         <UnavailableNote
           variant="region"
-          title={CHART_UNAVAILABLE_TITLE}
+          title={words.unavailableTitle}
           className="hg-charts-unavailable"
         />
       </div>
@@ -79,7 +83,9 @@ export function ChartFrameBody({
         {note.message === undefined ? null : (
           <div className="hg-charts-note-message">{note.message}</div>
         )}
-        {state === 'error' ? <RetryButton onRetry={onRetry} label={retryLabel} /> : null}
+        {state === 'error' ? (
+          <RetryButton onRetry={onRetry} label={words.retry} focusAfter={focusAfter} />
+        ) : null}
       </div>
     );
   }

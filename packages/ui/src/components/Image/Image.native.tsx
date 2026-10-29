@@ -1,17 +1,24 @@
 import { theme } from '@heliogrid/theme';
-import { useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import type { DimensionValue, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Text`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { imageView, isCompact } from './Image.logic';
-import { IMAGE_RATIOS } from './Image.missing';
+import {
+  aspectRatioOf,
+  IMAGE_DEFAULTS,
+  imageRadiusOf,
+  imageView,
+  isCompact,
+  THUMBNAIL_DEFAULTS,
+} from './Image.logic';
 import type { ImageProps, ThumbnailProps } from './Image.types';
 import { ImageCaption } from './ImageCaption.native';
 import { Glyph } from './ImageMarks.native';
 import { ImageMissing, ImagePhoto } from './ImageStates.native';
+import { usePhotoCredit } from './use-photo-credit';
 
 interface NativeImageProps extends ImageProps {
   style?: StyleProp<ViewStyle>;
@@ -23,8 +30,7 @@ interface NativeThumbnailProps extends ThumbnailProps {
 
 /** "4 / 3" → 1.333…. A caller's own CSS ratio string is parsed the same way. */
 function aspect(ratio: string): number {
-  const raw = IMAGE_RATIOS[ratio] ?? ratio;
-  const parts = raw.split('/');
+  const parts = aspectRatioOf(ratio).split('/');
   const w = Number(parts[0]);
   const h = parts[1] === undefined ? 1 : Number(parts[1]);
   return Number.isFinite(w) && Number.isFinite(h) && h !== 0 ? w / h : 4 / 3;
@@ -48,12 +54,12 @@ function dim(v: number | string | undefined): DimensionValue | undefined {
  */
 export function Image({
   src,
-  alt = '',
-  status = 'auto',
-  ratio = 'photo',
-  width = '100%',
+  alt,
+  status = IMAGE_DEFAULTS.status,
+  ratio = IMAGE_DEFAULTS.ratio,
+  width = IMAGE_DEFAULTS.width,
   height,
-  fit = 'cover',
+  fit = IMAGE_DEFAULTS.fit,
   radius,
   caption,
   credit,
@@ -61,38 +67,32 @@ export function Image({
   meta,
   staleAt,
   referenceOnly = false,
-  referenceLabel = 'Reference only',
-  referenceNote = 'Never measured from',
-  missingReason = 'not-captured',
+  words,
+  referenceLabel = words.referenceOnly,
+  referenceNote = words.neverMeasured,
+  missingReason = IMAGE_DEFAULTS.missingReason,
   missingLabel,
   missingDetail,
   onRetry,
   retryLabel,
   onClick,
-  density = 'expressive',
+  density = IMAGE_DEFAULTS.density,
   style,
 }: NativeImageProps) {
   /* THE STATE BELONGS TO A SOURCE, not to the component: remembering WHICH src decoded means a
      new src is back at its skeleton with no reset effect to keep in step. */
+  /* The frame holds every face, so focus lands on it once a retry has left. */
+  const frameRef = useRef<View>(null);
   const [loadedSrc, setLoadedSrc] = useState<string | undefined>(undefined);
   const [failedSrc, setFailedSrc] = useState<string | undefined>(undefined);
   const loaded = src !== undefined && loadedSrc === src;
   const failed = src !== undefined && failedSrc === src;
 
-  /* THE PHOTO CREDIT IS `credit`, NOT `attribution` — that word is the system's ValueSource slot,
-     and an image frame has no such fact. The old name still works and warns. */
-  const who = credit ?? attribution;
-  useEffect(() => {
-    if (attribution !== undefined) {
-      console.warn(
-        'Image: `attribution` is now `credit` (who took the photograph). `attribution` is the system’s ValueSource slot — which layer supplied a value — and an image frame does not have one.',
-      );
-    }
-  }, [attribution]);
+  const who = usePhotoCredit(credit, attribution);
 
   const { state, reason } = imageView(status, src, loaded, failed, missingReason);
 
-  const r = radius ?? (density === 'functional' ? 12 : 20);
+  const r = imageRadiusOf(radius, density);
   const compact = isCompact(width);
 
   const frame: ViewStyle = {
@@ -102,7 +102,7 @@ export function Image({
 
   const body = (
     <View style={[{ width: dim(width) }, style]}>
-      <View style={[styles.frame, frame]}>
+      <View ref={frameRef} style={[styles.frame, frame]}>
         {state === 'missing' ? (
           <ImageMissing
             alt={alt}
@@ -112,6 +112,8 @@ export function Image({
             missingDetail={missingDetail}
             onRetry={onRetry}
             retryLabel={retryLabel}
+            words={words}
+            focusAfter={frameRef}
           />
         ) : (
           <ImagePhoto
@@ -129,7 +131,7 @@ export function Image({
           <View style={styles.reference}>
             <Glyph name="eye" size={13} color={theme.colors['text-secondary']} />
             <Text variant="overline" color="secondary">
-              {compact ? 'Ref' : referenceLabel}
+              {compact ? words.referenceShort : referenceLabel}
             </Text>
           </View>
         ) : null}
@@ -143,6 +145,7 @@ export function Image({
         referenceNote={referenceNote}
         staleAt={staleAt}
         missing={state === 'missing'}
+        words={words}
       />
     </View>
   );
@@ -157,13 +160,21 @@ export function Image({
 
 /** Thumbnail — the same three states in a small square. */
 export function Thumbnail({
-  size = 64,
-  ratio = 'square',
+  size = THUMBNAIL_DEFAULTS.size,
+  ratio = THUMBNAIL_DEFAULTS.ratio,
   radius,
-  density = 'functional',
+  density = THUMBNAIL_DEFAULTS.density,
   ...rest
 }: NativeThumbnailProps) {
-  return <Image width={size} ratio={ratio} radius={radius ?? 12} density={density} {...rest} />;
+  return (
+    <Image
+      width={size}
+      ratio={ratio}
+      radius={radius ?? THUMBNAIL_DEFAULTS.radius}
+      density={density}
+      {...rest}
+    />
+  );
 }
 
 /** The same component under a name that cannot shadow a global `Image`. Prefer this. */

@@ -1,14 +1,16 @@
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { progressPercent, refusalLine, takesImages } from './Dropzone.logic';
 import type { DropzoneProps } from './Dropzone.types';
 import { CameraGlyph, DropzoneSpinner, FileGlyph } from './DropzoneGlyphs.native';
 import { DropzoneHeld } from './DropzoneHeld.native';
 import { DropzoneThumbs } from './DropzoneThumbs.native';
-import { captureLine, sizeErrorMessage } from './dropzone-copy';
-import { HELD_DEFAULTS, heldCountWords, heldTotal } from './dropzone-held';
+import { captureLine } from './dropzone-copy';
+import { HELD_RETRY_TIMEOUT, heldCountWords, heldTotal } from './dropzone-held';
 
 interface NativeDropzoneProps extends DropzoneProps {
   style?: StyleProp<ViewStyle>;
@@ -61,7 +63,8 @@ const styles = StyleSheet.create({
  * `onRequestFiles` and the app hands the result back through `onFiles`.
  */
 export function Dropzone({
-  label = 'Add roof photos',
+  words,
+  label,
   hint,
   accept = 'image/*',
   capture,
@@ -74,26 +77,28 @@ export function Dropzone({
   heldOnDevice = false,
   heldCount,
   onRetry,
-  retryLabel = HELD_DEFAULTS.retryLabel,
+  retryLabel = words.tryUploadingNow,
   heldMessage,
   heldNoun,
   heldNounPlural,
-  failedMessage = HELD_DEFAULTS.failedMessage,
-  timeoutMessage = HELD_DEFAULTS.timeoutMessage,
-  retryTimeout = HELD_DEFAULTS.retryTimeout,
+  failedMessage = words.flushFailed,
+  timeoutMessage = words.flushTimedOut,
+  retryTimeout = HELD_RETRY_TIMEOUT,
   onRequestFiles,
   density = 'expressive',
   disabled = false,
   style,
 }: NativeDropzoneProps) {
+  /* A removed file takes its thumbnail away: the screen reader goes to the capture surface. */
+  const surface = useRef<View>(null);
   const isError = state === 'error';
   const busy = state === 'uploading';
-  const isImage = accept.startsWith('image');
-  const countWords = heldCountWords(heldTotal(heldCount, files.length), {
-    accept,
-    heldNoun,
-    heldNounPlural,
-  });
+  const isImage = takesImages(accept);
+  const countWords = heldCountWords(
+    heldTotal(heldCount, files.length),
+    { accept, heldNoun, heldNounPlural },
+    words,
+  );
 
   const line = captureLine({
     busy,
@@ -101,13 +106,15 @@ export function Dropzone({
     accept,
     capture,
     maxSizeMB,
-    /* There is no drop target on a phone, so the phrase drops the drag half of the web's. */
-    browsePhrase: 'Tap to browse',
+    /* There is no drop target on a phone, so the line drops the drag half of the web's. */
+    drop: false,
+    words,
   });
 
   return (
     <View style={style}>
       <Pressable
+        hostRef={surface}
         accessibilityLabel={label}
         disabled={disabled}
         onPress={onRequestFiles}
@@ -137,7 +144,7 @@ export function Dropzone({
 
       {busy && progress !== null ? (
         <View style={styles.track}>
-          <View style={[styles.fill, { width: `${Math.max(0, Math.min(100, progress))}%` }]} />
+          <View style={[styles.fill, { width: `${progressPercent(progress)}%` }]} />
         </View>
       ) : null}
 
@@ -146,7 +153,7 @@ export function Dropzone({
            only how Android delivers it. Both, the way every other message in this package does it. */
         <View accessibilityRole="alert" accessibilityLiveRegion="assertive" style={styles.error}>
           <Text variant="body-sm" color="danger">
-            {errorMessage ?? sizeErrorMessage(maxSizeMB)}
+            {refusalLine(errorMessage, words, maxSizeMB)}
           </Text>
         </View>
       ) : null}
@@ -156,6 +163,7 @@ export function Dropzone({
           busy={busy}
           countWords={countWords}
           failedMessage={failedMessage}
+          held={words.held}
           heldMessage={heldMessage}
           onRetry={onRetry}
           retryLabel={retryLabel}
@@ -164,7 +172,9 @@ export function Dropzone({
         />
       ) : null}
 
-      {files.length > 0 ? <DropzoneThumbs files={files} onRemove={onRemove} /> : null}
+      {files.length > 0 ? (
+        <DropzoneThumbs files={files} onRemove={onRemove} words={words} focusAfter={surface} />
+      ) : null}
     </View>
   );
 }

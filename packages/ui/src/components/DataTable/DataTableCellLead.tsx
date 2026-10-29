@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { IrisTile } from '../IrisTile/IrisTile';
+import { cellLeadOf } from './DataTableCell.logic';
 import type { DataTableColumn } from './DataTableColumn.types';
 
 /**
@@ -17,9 +18,9 @@ export function CellLead<Row>({
   column: DataTableColumn<Row>;
   children: ReactNode;
 }) {
-  const leading = column.leading?.(row) ?? null;
-  const sub = column.sub?.(row) ?? null;
-  if (leading === null && sub === null) return children;
+  const lead = cellLeadOf(row, column);
+  if (lead === null) return children;
+  const { leading, sub } = lead;
 
   return (
     <span className="hg-dt-lead">

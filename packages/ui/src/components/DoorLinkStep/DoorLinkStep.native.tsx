@@ -57,6 +57,7 @@ export function DoorLinkStep({ words, frame, phone, onPhone, busy, onPress }: Do
         )}
         <PhoneField
           label={words.phoneLabel}
+          words={words.phoneField}
           value={phone}
           onChange={onPhone}
           disabled={frame.kind === 'link-locked'}

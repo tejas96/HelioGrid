@@ -4,7 +4,13 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { RangeEndBox } from './RangeEndBox.native';
-import { orderPair, rangeIsAny, rangeReadout, resolveRange } from './RangeField.logic';
+import {
+  pinnedPair,
+  rangeIsAny,
+  rangeReadout,
+  reportRange,
+  resolveRange,
+} from './RangeField.logic';
 import type { RangeFieldProps, RangeValue } from './RangeField.types';
 import { RangeTrack } from './RangeTrack.native';
 
@@ -52,29 +58,20 @@ export function RangeField({
   error,
   format,
   boxes = true,
-  boxLabels = ['From', 'To'],
+  boxLabels,
   disabled = false,
-  anyLabel = 'Any',
+  anyLabel,
   style,
 }: NativeRangeFieldProps) {
   const [lo, hi] = resolveRange(value, min, max);
   const isAny = rangeIsAny([lo, hi], min, max);
   const shown = rangeReadout({ lo, hi, min, max, anyLabel, unit, format });
 
-  const set = (next: RangeValue, live: boolean) => {
-    const pair = orderPair(next);
-    if (live) onInput?.(pair);
-    else onCommit?.(pair);
-  };
+  const set = (next: RangeValue, live: boolean) => reportRange(next, live, { onInput, onCommit });
 
   const onDrag = useCallback(
-    (end: 'lo' | 'hi', next: number, live: boolean) => {
-      /* Pinned, never swapped. */
-      const pair: RangeValue = end === 'lo' ? [Math.min(next, hi), hi] : [lo, Math.max(next, lo)];
-      const ordered = orderPair(pair);
-      if (live) onInput?.(ordered);
-      else onCommit?.(ordered);
-    },
+    (end: 'lo' | 'hi', next: number, live: boolean) =>
+      reportRange(pinnedPair(end, next, [lo, hi]), live, { onInput, onCommit }),
     [lo, hi, onInput, onCommit],
   );
 
@@ -119,7 +116,7 @@ export function RangeField({
           />
           <View style={styles.dash}>
             <Text variant="body-sm" color="tertiary">
-              –
+              {'–'}
             </Text>
           </View>
           <RangeEndBox

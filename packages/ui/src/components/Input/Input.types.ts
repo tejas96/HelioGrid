@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { FieldOverrideSpec } from '../FieldOverride/FieldOverride.types';
 import type { ValueSourceLevel, ValueSourceSpec } from '../ValueSource/ValueSource.types';
@@ -7,7 +8,7 @@ import type { ValueSourceLevel, ValueSourceSpec } from '../ValueSource/ValueSour
 export type InputDensity = 'expressive' | 'functional';
 
 export interface InputProps {
-  label?: string;
+  label?: TranslatedText;
   /**
    * The label is spoken and not shown — a row of fields whose column already names them
    * (`SCR-M01-15`'s version rows). The field keeps its accessible name.
@@ -19,6 +20,7 @@ export interface InputProps {
    * so both platforms call it the same way. Ignored in `commitOnBlur` mode.
    */
   onChange?: (value: string) => void;
+  // biome-ignore lint/plugin/copy-prop-type: an example in words, or the record's own value in another language (F3-10)
   placeholder?: string;
   /**
    * The DS passes this straight to the DOM `type`. Both platforms narrow it to the set that has a
@@ -33,14 +35,14 @@ export interface InputProps {
    */
   focusRequest?: number;
   /** error message — inset 1.5px danger ring + text below */
-  error?: string;
+  error?: TranslatedText;
   /**
    * The confirming words — drawn under the field with the success mark, never as a ring: a
    * success ring differs from the error ring by hue alone (`F7-12`). Replaces the helper, as an
    * error does; an error wins.
    */
-  success?: string;
-  helper?: string;
+  success?: TranslatedText;
+  helper?: TranslatedText;
   disabled?: boolean;
   /** monospace value (IDs, kWh, coordinates, invoice numbers) */
   mono?: boolean;

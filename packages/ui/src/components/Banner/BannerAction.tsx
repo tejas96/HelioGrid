@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { useFocusAfter } from '../../primitives/FocusAfter';
 import { Pressable } from '../../primitives/Pressable';
 import type { BannerActionProps } from './Banner.types';
 
@@ -18,9 +19,19 @@ interface WebBannerActionProps extends BannerActionProps {
  * margin is the 6px per side the target borrows back, so a banner does not grow by 12px to gain a
  * target.
  */
-export function BannerAction({ children, onClick, className, style }: WebBannerActionProps) {
+export function BannerAction({
+  children,
+  onClick,
+  focusAfter,
+  className,
+  style,
+}: WebBannerActionProps) {
+  const leaving = useFocusAfter(focusAfter);
   return (
-    <Pressable className="hg-banner-action" onPress={onClick}>
+    <Pressable
+      className="hg-banner-action"
+      onPress={onClick === undefined ? undefined : leaving(onClick)}
+    >
       <span className={classNames('hg-banner-action-pill', className)} style={style}>
         {children}
       </span>

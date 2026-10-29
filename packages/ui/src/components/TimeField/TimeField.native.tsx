@@ -13,9 +13,10 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { useFormat } from '../MarketProvider/market-context';
+import { isInDanger } from './TimeField.logic';
 import type { TimeFieldProps } from './TimeField.types';
 import { TimeFieldMessage } from './TimeFieldMessage.native';
-import { normaliseTime, resolvePreset, timeShape } from './time-parse';
+import { isSameTime, resolvePreset, timeShape } from './time-parse';
 import { useTimeEntry } from './use-time-entry';
 
 interface NativeTimeFieldProps extends TimeFieldProps {
@@ -37,6 +38,7 @@ interface NativeTimeFieldProps extends TimeFieldProps {
  * as the web half reads it — same clock, same placeholder shape, same refusal wording.
  */
 export function TimeField({
+  words,
   value = '',
   onCommit,
   label,
@@ -57,19 +59,19 @@ export function TimeField({
   /* A preset is the opposite of what holds it (`F7-15`); sunk below the fill when disabled. */
   const { controlFill, controlFillDisabled } = useGround();
   const presetFill = disabled ? controlFillDisabled : controlFill;
-  const shape = timeShape(placeholder, format);
+  const shape = timeShape(placeholder, words, format);
   const entry = useTimeEntry({
     format,
     max,
     min,
     onCommit,
-    placeholder: shape,
+    shape,
     refusalMessage,
     value,
     windowName,
+    words,
   });
-  const hasError = error !== undefined && error !== null && error !== false;
-  const danger = entry.refused !== null || hasError || invalid;
+  const danger = isInDanger(entry.refused, error, invalid);
 
   return (
     <View style={[styles.root, style]}>
@@ -121,11 +123,11 @@ export function TimeField({
         <View style={styles.presets}>
           {presets.map((candidate) => {
             const preset = resolvePreset(candidate, format);
-            const active = normaliseTime(preset.value) === normaliseTime(value);
+            const active = isSameTime(preset.value, value);
             return (
               <Pressable
                 key={preset.value}
-                accessibilityLabel={preset.label}
+                accessibilityLabel={preset.shown}
                 disabled={disabled}
                 onPress={() => entry.pick(preset.value)}
                 style={[
@@ -139,7 +141,7 @@ export function TimeField({
                   color={active ? 'inverse' : 'secondary'}
                   style={styles.presetWords}
                 >
-                  {preset.label}
+                  {preset.shown}
                 </Text>
               </Pressable>
             );

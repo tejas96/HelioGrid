@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { View } from 'react-native';
 import { RichTextView } from '../RichText/RichTextView.native';
 import type { DocumentRichTextValue } from './DocumentPreview.types';
@@ -5,11 +6,11 @@ import { DocumentOverline, DocumentRule, docStyles } from './DocumentSheet.nativ
 import { TERMS_FONT_SIZE } from './DocumentTerms.logic';
 
 interface DocumentTermsBandProps {
-  title: string;
+  title: TranslatedText | undefined;
   value: DocumentRichTextValue | undefined;
   logoSrc: string | undefined;
-  logoLabel: string;
-  emptyText: string | undefined;
+  logoLabel: TranslatedText;
+  emptyText: TranslatedText | undefined;
   brandColour: string;
   ruleOpaque: boolean;
 }

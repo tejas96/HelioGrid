@@ -1,9 +1,10 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 export type OperationStageState = 'done' | 'active' | 'waiting';
 
 export interface OperationStage {
-  label: string;
+  label: TranslatedText;
   /** `done` · `active` · `waiting`. Defaults to `active` for the first stage, `waiting` after. */
   state?: OperationStageState;
 }
@@ -33,9 +34,36 @@ export interface OperationCount {
   total: number;
 }
 
+/** A cancel's two words: the button, and the sentence that says what it stops. */
+export interface CancelWords {
+  label: TranslatedText;
+  note: TranslatedText;
+}
+
+/**
+ * Every word the progress composes itself, in the reader's language — `@heliogrid/i18n`'s
+ * `operationProgressWords(t)`. The figures in them arrive formatted by the market's pack.
+ */
+export interface OperationProgressWords {
+  /** Each cancel effect's button and its honest sentence (`CancelEffect`). */
+  cancel: Readonly<Record<CancelEffect, CancelWords>>;
+  /** The count under the rail — *142 of 400 rows*; `unit` is the caller's. */
+  count: (done: string, total: string, unit?: string) => TranslatedText;
+  /** The step in the narration — *Step 2 of 3*. */
+  step: (index: number, total: number) => TranslatedText;
+  /** The phone's indeterminate rail, named — *Importing leads, in progress*. */
+  inProgress: (label: string) => TranslatedText;
+  /** Each stage's state, said after its name to a screen reader — *done*, *running*, *not started*. */
+  stageState: Readonly<Record<OperationStageState, TranslatedText>>;
+  /** A stage and its state as one name, where the phone reads a row whole — *Reading the roof, done*. */
+  stageSpoken: (label: string, state: string) => TranslatedText;
+}
+
 export interface OperationProgressProps {
   /** The work, named. "Computing solar access", "Importing leads — Nashik list.csv". */
-  label: ReactNode;
+  label: TranslatedText;
+  /** The progress's own words — `operationProgressWords(t)`. */
+  words: OperationProgressWords;
   /**
    * 0–100. **`null` or omitted means indeterminate** and is a real distinction: the rail becomes a
    * travelling segment, no percentage is printed, and `role="progressbar"` carries no
@@ -44,7 +72,8 @@ export interface OperationProgressProps {
   value?: number | null;
   /** "142 of 400 rows" — `M02-21`'s row-by-row import. Printed in mono, under the rail. */
   count?: OperationCount | null;
-  unit?: string;
+  /** What the count counts — *rows*. */
+  unit?: TranslatedText;
   /** The stage in words (`M05-45`, `MS2-38`). A percentage says how far; only words say what. */
   stage?: ReactNode;
   stageIndex?: number;
@@ -58,12 +87,13 @@ export interface OperationProgressProps {
   leaveNote?: ReactNode;
   onCancel?: () => void;
   cancelEffect?: CancelEffect;
-  cancelLabel?: string;
+  /** Replaces the effect's own button word (`words.cancel`). */
+  cancelLabel?: TranslatedText;
   /** Overrides the generated sentence naming what the cancel stops. Never removes it. */
   cancelNote?: ReactNode;
   onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
+  retryLabel?: TranslatedText;
   /**
    * **Where the finished thing is** — a real control, not a word: "Open the failure report",
    * "Open the heatmap". A watched computation may have none, because you are already looking at
@@ -78,5 +108,5 @@ export interface OperationProgressProps {
    * `ring` only: the words under the done figure inside the ring — *of 405 rows* — from the caller,
    * plural and language its own. `label` stays the ring's accessible name.
    */
-  countCaption?: string;
+  countCaption?: TranslatedText;
 }

@@ -1,7 +1,9 @@
 import type { CSSProperties } from 'react';
 import { Pressable } from '../../primitives/Pressable';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import type { CoachMarkFootProps, CoachMarkHeadProps } from './CoachMark.types';
 import type { PlacedCoachMark } from './coach-mark-place';
+import { counterDots, forwardAct, ringBox } from './coach-mark-place';
 import type { AnchorRect } from './use-anchor-rect';
 
 /** The system's own 2px accent ring around the live control. There is no scrim. */
@@ -12,10 +14,7 @@ export function CoachMarkRing({ rect, padding }: { rect: AnchorRect; padding: nu
       className="hg-coach-mark-ring"
       style={{
         position: rect.box ? 'absolute' : 'fixed',
-        top: rect.top - padding,
-        left: rect.left - padding,
-        width: rect.width + padding * 2,
-        height: rect.height + padding * 2,
+        ...ringBox(rect, padding),
         borderRadius:
           typeof rect.radius === 'string'
             ? `calc(${rect.radius} + ${padding}px)`
@@ -25,14 +24,7 @@ export function CoachMarkRing({ rect, padding }: { rect: AnchorRect; padding: nu
   );
 }
 
-interface HeadProps {
-  counter: string | null;
-  title: string;
-  dismissLabel: string;
-  onDismiss?: () => void;
-}
-
-export function CoachMarkHead({ counter, title, dismissLabel, onDismiss }: HeadProps) {
+export function CoachMarkHead({ counter, title, dismissLabel, onDismiss }: CoachMarkHeadProps) {
   return (
     <div className="hg-coach-mark-head">
       <div className="hg-coach-mark-heading">
@@ -65,18 +57,16 @@ export function CoachMarkHead({ counter, title, dismissLabel, onDismiss }: HeadP
   );
 }
 
-interface FootProps {
-  steps: number;
-  step?: number;
-  isLast: boolean;
-  nextLabel?: string;
-  onNext?: () => void;
-  onDismiss?: () => void;
-}
-
 /** The counter dots number only the marks the user will actually see, and the one forward act. */
-export function CoachMarkFoot({ steps, step, isLast, nextLabel, onNext, onDismiss }: FootProps) {
-  const dots = steps > 1 ? Array.from({ length: steps }, (_, index) => index + 1) : [];
+export function CoachMarkFoot({
+  steps,
+  step,
+  isLast,
+  nextLabel,
+  onNext,
+  onDismiss,
+}: CoachMarkFootProps) {
+  const dots = counterDots(steps);
   return (
     <div className="hg-coach-mark-foot">
       <div className="hg-coach-mark-dots">
@@ -89,8 +79,8 @@ export function CoachMarkFoot({ steps, step, isLast, nextLabel, onNext, onDismis
           />
         ))}
       </div>
-      <Pressable className="hg-coach-mark-next" onPress={isLast ? (onDismiss ?? onNext) : onNext}>
-        {nextLabel ?? (isLast ? 'Got it' : 'Next')}
+      <Pressable className="hg-coach-mark-next" onPress={forwardAct(isLast, onNext, onDismiss)}>
+        {nextLabel}
       </Pressable>
     </div>
   );

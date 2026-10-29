@@ -25,9 +25,10 @@ export function PaymentTermsFoot(props: PaymentTermsFootProps) {
         parts={props.parts.map((part) => ({ label: part.label, value: part.value }))}
         tolerance={0}
         enforcement="immediate"
-        enforcementNote=""
+        enforcementNote={null}
         state={props.state}
         remainderWords={props.sentence}
+        words={words.meter}
         density="functional"
       />
       {props.refusal === undefined ? (

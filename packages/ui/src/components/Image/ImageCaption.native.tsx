@@ -9,7 +9,7 @@ import { imageMetaParts } from './Image.logic';
 import type { ImageProps } from './Image.types';
 
 export interface ImageCaptionProps extends ImageMetaFacts {
-  caption?: string;
+  caption?: ImageProps['caption'];
   density: NonNullable<ImageProps['density']>;
 }
 
@@ -35,7 +35,7 @@ export function ImageCaption({ caption, density, ...facts }: ImageCaptionProps) 
             </Text>
             {i < parts.length - 1 ? (
               <Text variant="caption" color="tertiary">
-                ·
+                {'·'}
               </Text>
             ) : null}
           </Fragment>

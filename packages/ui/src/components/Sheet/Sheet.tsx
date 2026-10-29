@@ -1,25 +1,27 @@
-import type { CSSProperties, ReactNode, UIEvent } from 'react';
+import type { CSSProperties, UIEvent } from 'react';
 import { useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { OverlayBody } from './OverlayBody';
+import { isBodyScrolled } from './Sheet.logic';
 import type { SheetProps } from './Sheet.types';
 import { SheetBackdrop } from './SheetBackdrop';
 import { SheetHandle } from './SheetHandle';
 import { SheetHeader } from './SheetHeader';
+import { SheetMeta } from './SheetMeta';
 import { SheetSkeleton } from './SheetSkeleton';
-import { sheetBodyAttrs, sheetPanelAttrs } from './sheet-attrs';
+import { readFrameClass, sheetBodyAttrs, sheetPanelAttrs } from './sheet-attrs';
 import { useOverlayDismiss } from './use-overlay-dismiss';
 import { useSheetDrag } from './use-sheet-drag';
 
 /** Panel geometry that is a live number — z-index and the drag offset — rides in as vars. */
 type SheetVars = CSSProperties & Record<`--${string}`, string>;
 
-interface WebSheetProps extends SheetProps {
+type WebSheetProps = SheetProps & {
   className?: string;
   style?: CSSProperties;
   bodyStyle?: CSSProperties;
-}
+};
 
 /**
  * Bottom sheet — the system's primary overlay (≈180 screens). The backdrop blurs the layer behind
@@ -57,10 +59,11 @@ export function Sheet({
   modal = true,
   footer = null,
   read,
-  errorTitle = "Couldn't load this",
-  errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
+  loadingLabel,
+  errorTitle,
+  errorMessage,
   retryLabel,
-  emptyTitle = 'Nothing here yet',
+  emptyTitle,
   emptyMessage,
   emptyAction = null,
   unavailableTitle,
@@ -104,7 +107,7 @@ export function Sheet({
         {...sheetPanelAttrs({ density, dragY, dragging, inset, size })}
         aria-labelledby={namedBy}
         aria-modal={modal ? 'true' : undefined}
-        className={classNames('hg-sheet', className)}
+        className={classNames('hg-sheet', readFrameClass(read), className)}
         ref={panelRef}
         role="dialog"
         style={{ ...vars, ...style }}
@@ -138,7 +141,7 @@ export function Sheet({
           {...sheetBodyAttrs(hasHeader, footer !== null, bodyScrolls)}
           className="hg-sheet-body"
           onScroll={(event: UIEvent<HTMLDivElement>) =>
-            setScrolled(event.currentTarget.scrollTop > 2)
+            setScrolled(isBodyScrolled(event.currentTarget.scrollTop))
           }
           ref={bodyRef}
           style={bodyStyle}
@@ -151,7 +154,8 @@ export function Sheet({
             errorTitle={errorTitle}
             onRetry={onRetry}
             retryLabel={retryLabel}
-            skeleton={<SheetSkeleton density={density} />}
+            focusAfter={panelRef}
+            skeleton={<SheetSkeleton density={density} label={loadingLabel} />}
             state={state}
             unavailableAction={unavailableAction}
             unavailableClassName="hg-sheet-unavailable"
@@ -172,9 +176,4 @@ export function Sheet({
       </div>
     </>
   );
-}
-
-/** The row between the header and the body, drawn only when the caller gave one. */
-function SheetMeta({ meta }: { meta: ReactNode }) {
-  return meta === undefined || meta === null ? null : <div className="hg-sheet-meta">{meta}</div>;
 }

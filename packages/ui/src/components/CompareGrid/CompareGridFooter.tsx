@@ -1,6 +1,7 @@
 import { Icon } from '../../primitives/Icon';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
-import { positionReadout } from './CompareGrid.logic';
+import { axisFootOf } from './CompareGrid.logic';
+import type { CompareGridFooterProps } from './CompareGrid.types';
 
 function Chevron({ back }: { back?: boolean }) {
   return (
@@ -21,15 +22,6 @@ function Chevron({ back }: { back?: boolean }) {
   );
 }
 
-export interface CompareGridFooterProps {
-  scrollable: boolean;
-  first: number;
-  last: number;
-  count: number;
-  note?: string;
-  onStep: (direction: number) => void;
-}
-
 /**
  * **Where the reader is on the option axis, and how they move along it without a touch screen.**
  *
@@ -37,37 +29,29 @@ export interface CompareGridFooterProps {
  * both appear only while the axis actually overflows — on a wide screen four columns fit and
  * neither belongs — and the footer stays for a caller's `note` alone.
  */
-export function CompareGridFooter({
-  scrollable,
-  first,
-  last,
-  count,
-  note,
-  onStep,
-}: CompareGridFooterProps) {
-  if (!scrollable && !note) return null;
+export function CompareGridFooter({ onStep, words, ...position }: CompareGridFooterProps) {
+  const foot = axisFootOf(position, words);
+  if (foot === null) return null;
   return (
     <div className="hg-compare-foot">
-      <span className="hg-compare-readout">
-        {positionReadout({ scrollable, first, last, count, note })}
-      </span>
-      {scrollable ? (
+      <span className="hg-compare-readout">{foot.readout}</span>
+      {position.scrollable ? (
         <span className="hg-compare-steps">
           <button
             type="button"
             className="hg-compare-step"
-            aria-label="Previous option"
+            aria-label={words.previousOption}
             onClick={() => onStep(-1)}
-            disabled={first <= 1}
+            disabled={foot.atFirst}
           >
             <Chevron back />
           </button>
           <button
             type="button"
             className="hg-compare-step"
-            aria-label="Next option"
+            aria-label={words.nextOption}
             onClick={() => onStep(1)}
-            disabled={last >= count}
+            disabled={foot.atLast}
           >
             <Chevron />
           </button>

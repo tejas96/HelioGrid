@@ -8,6 +8,7 @@
    stops the press. The 44px floor is kept by reading MIN_TOUCH_TARGET from that same primitive, so
    there is still one number for the whole system. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { Ref } from 'react';
 import type { PressableStateCallbackType, View } from 'react-native';
@@ -46,7 +47,7 @@ export function ReorderControl({
   controlRef,
 }: {
   kind: ReorderGlyph;
-  label: string;
+  label: TranslatedText;
   disabled?: boolean;
   onPress: () => void;
   tone?: 'neutral' | 'danger';

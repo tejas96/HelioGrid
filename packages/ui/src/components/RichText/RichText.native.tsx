@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
@@ -7,6 +8,7 @@ import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ToolCommand } from './RichText.commands';
+import { LINK_SCHEME } from './RichText.commands';
 import type { RichTextAt } from './RichText.edit';
 import {
   insertAfter,
@@ -18,7 +20,7 @@ import {
   toggleLogoBlock,
   toggleMarkAt,
 } from './RichText.edit';
-import { EMPTY_RICH_TEXT, measure, richTextRows } from './RichText.model';
+import { EMPTY_RICH_TEXT, isBlank, isOverLength, measure, richTextRows } from './RichText.model';
 import type { RichTextProps, RichTextValue } from './RichText.types';
 import { RichTextBlocks } from './RichTextBlocks.native';
 import { RichTextToolbar } from './RichTextToolbar.native';
@@ -79,7 +81,7 @@ function LinkAddress({
   value,
   onChange,
 }: {
-  name: string;
+  name: TranslatedText;
   value: string;
   onChange: (href: string) => void;
 }) {
@@ -89,7 +91,7 @@ function LinkAddress({
       style={[styles.href, { backgroundColor: controlFill }]}
       value={value}
       accessibilityLabel={name}
-      placeholder="https://"
+      placeholder={LINK_SCHEME}
       placeholderTextColor={theme.colors['text-tertiary']}
       autoCapitalize="none"
       onChangeText={onChange}
@@ -129,12 +131,12 @@ export function RichText({
 }: NativeRichTextProps) {
   const [at, setAt] = useState<RichTextAt>({ block: 0 });
   const [linking, setLinking] = useState(false);
-  const [href, setHref] = useState('https://');
+  const [href, setHref] = useState(LINK_SCHEME);
   const [focus, setFocus] = useState(false);
 
   const working = value.blocks.length > 0 ? value : BLANK;
   const m = measure(working);
-  const over = maxLength !== undefined && m.chars > maxLength;
+  const over = isOverLength(m, maxLength);
 
   const emit = (next: RichTextValue) => {
     onChange?.(next);
@@ -207,7 +209,7 @@ export function RichText({
               disabled={disabled}
               words={words}
               placeholder={placeholder}
-              showPlaceholder={m.chars === 0 && !m.hasLogo}
+              showPlaceholder={isBlank(m)}
               label={label}
               onCaret={(next) => {
                 setFocus(true);

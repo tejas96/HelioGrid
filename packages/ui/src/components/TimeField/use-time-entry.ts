@@ -1,7 +1,8 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { useEffect, useState } from 'react';
 import type { MarketFormat } from '../../utils/format';
 import { IN_FORMAT } from '../../utils/format';
-import type { TimeString } from './TimeField.types';
+import type { TimeFieldWords, TimeString } from './TimeField.types';
 import {
   formatTime,
   outsideWindow,
@@ -42,10 +43,11 @@ export interface TimeEntryOptions {
   min?: TimeString;
   onCommit?: (value: TimeString) => void;
   /** The shape named in the unparseable refusal — "HH:MM", or "h:mm AM" in a 12-hour market. */
-  placeholder: string;
-  refusalMessage?: string;
+  shape: TranslatedText;
+  refusalMessage?: TranslatedText;
   value: TimeString;
-  windowName?: string;
+  windowName?: TranslatedText;
+  words: TimeFieldWords;
 }
 
 export interface TimeEntry {
@@ -59,7 +61,7 @@ export interface TimeEntry {
   focusOn: () => void;
   /** The thumb path. A preset outside the window is refused exactly like a typed time. */
   pick: (candidate: TimeString) => void;
-  refused: string | null;
+  refused: TranslatedText | null;
   setDraft: (next: string) => void;
   /** Enter: commit without leaving the box. */
   submit: () => void;
@@ -77,14 +79,15 @@ export function useTimeEntry(options: TimeEntryOptions): TimeEntry {
     max,
     min,
     onCommit,
-    placeholder,
+    shape,
     refusalMessage,
     value,
     windowName,
+    words,
   } = options;
   const [draft, setDraft] = useState(() => showTime(value, format));
   const [focus, setFocus] = useState(false);
-  const [refused, setRefused] = useState<string | null>(null);
+  const [refused, setRefused] = useState<TranslatedText | null>(null);
   const minMinutes = min === undefined ? null : parseTime(min);
   const maxMinutes = max === undefined ? null : parseTime(max);
 
@@ -97,7 +100,10 @@ export function useTimeEntry(options: TimeEntryOptions): TimeEntry {
   }, [value, focus, format]);
 
   const refuse = (minutes: number) =>
-    setRefused(refusalMessage ?? refusalFor(minutes, minMinutes, maxMinutes, windowName, format));
+    setRefused(
+      refusalMessage ??
+        refusalFor(minutes, { minMinutes, maxMinutes, name: windowName }, words, format),
+    );
 
   const restore = () => setDraft(showTime(value, format));
 
@@ -119,7 +125,7 @@ export function useTimeEntry(options: TimeEntryOptions): TimeEntry {
     }
     restore();
     if (verdict.kind === 'shape') {
-      setRefused(shapeRefusalFor(verdict.raw, placeholder, format));
+      setRefused(shapeRefusalFor(verdict.raw, shape, words, format));
     } else if (verdict.kind === 'outside') {
       refuse(verdict.minutes);
     } else {

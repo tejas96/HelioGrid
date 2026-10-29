@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
@@ -6,7 +7,7 @@ import { BandChip } from './BandChip.native';
 import type { BandSpec } from './BandedFigure.types';
 
 export interface BandedLineProps {
-  label: string;
+  label: TranslatedText;
   shown: string;
   unit?: string;
   band: BandSpec | null;

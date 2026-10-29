@@ -25,6 +25,7 @@ export function MemberListHead({
         value={query}
         onChange={onFind}
         onClear={query === '' ? undefined : () => onFind('')}
+        clearLabel={words.clearSearch}
         placeholder={words.find}
         ariaLabel={words.find}
       />

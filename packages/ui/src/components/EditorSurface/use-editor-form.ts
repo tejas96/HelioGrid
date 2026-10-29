@@ -3,8 +3,9 @@
    program, so it declares the lib it needs instead of failing there. */
 /// <reference lib="dom" />
 import type { CSSProperties, RefObject } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useBoxWidth } from '../../primitives/use-box-width';
 import type { UseEditorFormOptions } from './EditorSurface.types';
+import { isPanel, PANEL_ABOVE } from './editor-form-props';
 
 export interface EditorFormAnswer {
   ref: RefObject<HTMLDivElement | null>;
@@ -24,25 +25,7 @@ export interface EditorFormAnswer {
  * rest of the system: own width, not viewport.
  */
 export function useLayerWidth(): [RefObject<HTMLDivElement | null>, number | null] {
-  const ref = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState<number | null>(null);
-
-  useEffect(() => {
-    const element = ref.current;
-    if (element === null) {
-      return;
-    }
-    const read = () => setWidth(element.getBoundingClientRect().width);
-    read();
-    if (typeof ResizeObserver === 'undefined') {
-      return;
-    }
-    const observer = new ResizeObserver(read);
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-
-  return [ref, width];
+  return useBoxWidth<HTMLDivElement>();
 }
 
 export function probeStyleFor(inset: boolean): CSSProperties {
@@ -63,14 +46,14 @@ export function probeStyleFor(inset: boolean): CSSProperties {
  * `<div ref={ref}>` in the layer being measured; `panel` is `null` until the first measurement.
  */
 export function useEditorForm({
-  panelAbove = 720,
+  panelAbove = PANEL_ABOVE,
   inset = false,
 }: UseEditorFormOptions = {}): EditorFormAnswer {
   const [ref, layerWidth] = useLayerWidth();
   return {
     ref,
     layerWidth,
-    panel: layerWidth === null ? null : layerWidth >= panelAbove,
+    panel: isPanel(layerWidth, panelAbove),
     probeStyle: probeStyleFor(inset),
   };
 }

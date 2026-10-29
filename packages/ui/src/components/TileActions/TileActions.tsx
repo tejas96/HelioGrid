@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
+import { tileActionState, tileActionWord } from './TileActions.logic';
 import type { TileActionProps, TileActionsProps } from './TileActions.types';
 
 interface WebTileActionProps extends TileActionProps {
@@ -38,7 +39,7 @@ export function TileAction({
       onPress={onClick}
       disabled={disabled}
       accessibilityLabel={spokenLabel}
-      accessibilityState={on === undefined ? undefined : { selected: on }}
+      accessibilityState={tileActionState(on)}
     >
       <span
         className="hg-tile-action-pill"
@@ -50,7 +51,7 @@ export function TileAction({
             {icon}
           </span>
         ) : null}
-        {on && onLabel ? onLabel : label}
+        {tileActionWord({ label, onLabel, on })}
       </span>
     </Pressable>
   );

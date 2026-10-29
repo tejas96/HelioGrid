@@ -6,7 +6,7 @@ import { StyleSheet, View } from 'react-native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { chipEntries } from './ChipGroup.entries';
+import { chipEntries, chipOverflow, moreControlWords, overflowCount } from './ChipGroup.entries';
 import type { ChipGroupDensity, ChipGroupProps, MarkRowProps } from './ChipGroup.types';
 
 /* The DS "+N" pill heights. No theme token carries either; 44 is MIN_TOUCH_TARGET. */
@@ -39,9 +39,9 @@ function Count({ density, children }: { density: ChipGroupDensity; children: Rea
   );
 }
 
-interface NativeChipGroupProps extends ChipGroupProps {
+type NativeChipGroupProps = ChipGroupProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 interface NativeMarkRowProps extends MarkRowProps {
   style?: StyleProp<ViewStyle>;
@@ -56,6 +56,7 @@ export function ChipGroup({
   children,
   max = 3,
   label,
+  words,
   empty = null,
   expandable = true,
   defaultExpanded = false,
@@ -67,10 +68,9 @@ export function ChipGroup({
   const all = chipEntries(children);
   if (all.length === 0) return empty;
 
-  const capped = max > 0 && all.length > max;
-  const shown = capped && !open ? all.slice(0, max) : all;
-  const hidden = all.length - shown.length;
-  const noun = label ?? 'items';
+  const { capped, shown, hidden } = chipOverflow(all, max, open);
+  const more =
+    capped && words !== undefined ? moreControlWords(words, open, hidden, all.length) : undefined;
 
   return (
     /* `accessibilityRole="list"` is RN's answer to the web half's <ul>; the group keeps the name. */
@@ -86,23 +86,21 @@ export function ChipGroup({
       ))}
       {capped ? (
         <View style={styles.item}>
-          {expandable ? (
+          {expandable && more !== undefined ? (
             /* The "+N" is a real control and its whole contract is announcing whether it is open,
                so the expanded state goes through the primitive — the same one declaration the web
                half spells `aria-expanded` — and the 44dp floor and the pressed treatment come with
                it. `MIN_TOUCH_TARGET` stays only to pull the target back to the pill's height. */
             <Pressable
               accessibilityState={{ expanded: open }}
-              accessibilityLabel={
-                open ? `Show fewer ${noun}` : `Show ${hidden} more ${noun} (${all.length} in total)`
-              }
+              accessibilityLabel={more.spoken}
               onPress={() => setOpen((previous) => !previous)}
               style={[styles.target, { marginVertical: (PILL_H[density] - MIN_TOUCH_TARGET) / 2 }]}
             >
-              <Count density={density}>{open ? 'Show fewer' : `+${hidden}`}</Count>
+              <Count density={density}>{more.seen}</Count>
             </Pressable>
           ) : (
-            <Count density={density}>{`+${hidden}`}</Count>
+            <Count density={density}>{overflowCount(hidden)}</Count>
           )}
         </View>
       ) : null}

@@ -1,4 +1,10 @@
-import type { UsageBillingState, UsageState } from './UsageMeter.types';
+import type { TranslatedText } from '@heliogrid/contracts';
+import type {
+  UsageBillingState,
+  UsageMeterProps,
+  UsageMeterWords,
+  UsageState,
+} from './UsageMeter.types';
 
 /** The FILL only. Words never rely on it (F7-12). */
 export type UsageFill = 'accent' | 'info' | 'warning' | 'neutral';
@@ -7,7 +13,7 @@ export type UsageFill = 'accent' | 'info' | 'warning' | 'neutral';
 export type UsageLineTone = 'danger' | 'warning' | 'info';
 
 export interface UsageLine {
-  words: string;
+  words: TranslatedText;
   tone: UsageLineTone;
 }
 
@@ -77,12 +83,6 @@ export function usageScale(
   };
 }
 
-function capSentence(graceDaysLeft: number | undefined): string {
-  const grace =
-    graceDaysLeft === undefined ? 'Grace period running' : `${graceDaysLeft} days of grace left`;
-  return `Cap reached. ${grace} before new creations pause.`;
-}
-
 /**
  * One sentence, stated plainly, carrying the whole billing situation in words. M12-36 — the meter
  * REPORTS, it never alarms: overage is info because it is expected, billable behaviour rather than
@@ -95,29 +95,22 @@ export function usageStatusLine(
   unit: string | undefined,
   bundleName: string | undefined,
   graceDaysLeft: number | undefined,
+  words: UsageMeterWords,
 ): UsageLine | null {
-  const bundle = bundleName ?? 'the bundle';
   if (state === 'creations-paused') {
-    return {
-      words: 'Paused — the cap was reached and the grace period has ended.',
-      tone: 'danger',
-    };
+    return { words: words.paused, tone: 'danger' };
   }
   if (state === 'cap-reached-grace') {
-    return { words: capSentence(graceDaysLeft), tone: 'warning' };
+    return { words: words.capReached(graceDaysLeft), tone: 'warning' };
   }
   if (state === 'overage-accruing') {
-    const words = `${format(scale.overage)} ${unit ?? ''} beyond ${bundle} — billed as overage this period.`;
-    return { words: words.replace(/\s+/g, ' '), tone: 'info' };
+    return { words: words.overage(format(scale.overage), unit, bundleName), tone: 'info' };
   }
   if (state === 'tracked-seats-accruing') {
-    return {
-      words: `${format(scale.overage)} tracked beyond ${bundle} — billed per seat this period.`,
-      tone: 'info',
-    };
+    return { words: words.trackedSeats(format(scale.overage), bundleName), tone: 'info' };
   }
   if (scale.nearing) {
-    return { words: `${scale.pctOfLimit}% of ${bundle} used.`, tone: 'warning' };
+    return { words: words.nearing(scale.pctOfLimit, bundleName), tone: 'warning' };
   }
   return null;
 }
@@ -126,12 +119,113 @@ export function usageStatusLine(
 export function unmeteredStatusLine(
   state: UsageBillingState,
   graceDaysLeft: number | undefined,
+  words: UsageMeterWords,
 ): UsageLine | null {
   if (state === 'creations-paused') {
-    return { words: 'Paused — new creations are blocked on this plan.', tone: 'danger' };
+    return { words: words.pausedOnPlan, tone: 'danger' };
   }
   if (state === 'cap-reached-grace') {
-    return { words: capSentence(graceDaysLeft), tone: 'warning' };
+    return { words: words.capReached(graceDaysLeft), tone: 'warning' };
   }
   return null;
+}
+
+/**
+ * What the meter draws, checked in the documented order: `error` and `unavailable` first, then a
+ * wait while loading or unresolved, then the figure — against a limit only when one is metered.
+ */
+export type UsageMeterShape =
+  | { draws: 'error' }
+  | { draws: 'unavailable' }
+  | { draws: 'loading' }
+  | { draws: 'unmetered'; billing: UsageBillingState; value: number }
+  | { draws: 'metered'; billing: UsageBillingState; value: number; limit: number };
+
+export function usageMeterShape(
+  state: UsageState,
+  value: number | undefined,
+  limit: number | null | undefined,
+): UsageMeterShape {
+  const billing = normaliseUsageState(state);
+  if (billing === 'error') {
+    return { draws: 'error' };
+  }
+  if (billing === 'unavailable') {
+    return { draws: 'unavailable' };
+  }
+  if (billing === 'loading' || !isResolved(value)) {
+    return { draws: 'loading' };
+  }
+  return isMetered(limit)
+    ? { draws: 'metered', billing, value, limit }
+    : { draws: 'unmetered', billing, value };
+}
+
+/** The track's thickness: the functional density's is the thinner. */
+export function usageTrackHeight(density: NonNullable<UsageMeterProps['density']>): number {
+  return density === 'functional' ? 8 : 10;
+}
+
+/** The wait's one line: what is loading, then the period it is for. */
+export function usageLoadingLine(loadingNote: TranslatedText, period: string | undefined): string {
+  return [loadingNote, period].filter((part) => part !== undefined).join(' · ');
+}
+
+/** What a metered meter knows, on either platform. */
+export interface UsageMeterMeteredFacts {
+  words: UsageMeterWords;
+  label: TranslatedText;
+  value: number;
+  limit: number;
+  unit?: TranslatedText;
+  period?: string;
+  bundleName?: TranslatedText;
+  billing: UsageBillingState;
+  thresholdPercent: number;
+  graceDaysLeft?: number;
+  note?: TranslatedText;
+  format: (value: number) => string;
+}
+
+/** The metered figure read once: its scale, its status sentence and what the track says aloud. */
+export function meteredReading({
+  words,
+  label,
+  value,
+  limit,
+  unit,
+  period,
+  bundleName,
+  billing,
+  thresholdPercent,
+  graceDaysLeft,
+  format,
+}: UsageMeterMeteredFacts): {
+  scale: UsageScale;
+  line: UsageLine | null;
+  trackName: TranslatedText;
+  valueText: TranslatedText;
+} {
+  const scale = usageScale(value, limit, thresholdPercent, billing);
+  const line = usageStatusLine(billing, scale, format, unit, bundleName, graceDaysLeft, words);
+  const beyond = scale.overage > 0 ? format(scale.overage) : undefined;
+  return {
+    scale,
+    line,
+    trackName: period === undefined ? label : words.named(label, period),
+    valueText: words.valueText(format(value), format(limit), unit, beyond),
+  };
+}
+
+/** Which marks the track draws: the overage, the threshold tick inside the bar, the bundle's edge. */
+export function usageTrackMarks(scale: UsageScale): {
+  drawsOver: boolean;
+  drawsTick: boolean;
+  drawsBundleMark: boolean;
+} {
+  return {
+    drawsOver: scale.overPct > 0,
+    drawsTick: scale.threshold > 0 && scale.threshold < 100,
+    drawsBundleMark: scale.overPct > 0 && scale.limitMark < 100,
+  };
 }

@@ -118,7 +118,7 @@ function LogoImage({
     <Image
       source={{ uri: logo }}
       accessible={!showName}
-      accessibilityLabel={showName ? undefined : `${name} logo`}
+      accessibilityLabel={showName ? undefined : name}
       onLoad={(event: NativeSyntheticEvent<ImageLoadEventData>) => {
         const source = event.nativeEvent.source;
         if (source.height > 0) {

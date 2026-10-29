@@ -1,10 +1,13 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { Icon } from '../../primitives/Icon';
 import { Pressable } from '../../primitives/Pressable';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { zoomStepsOf } from './MapSurface.logic';
+import type { MapControlsProps } from './MapSurface.types';
 
 interface CtrlProps {
-  label: string;
+  label: TranslatedText;
   onPress: () => void;
   glyph: ShellGlyphName;
   disabled?: boolean;
@@ -35,15 +38,6 @@ function Ctrl({ label, onPress, glyph, disabled = false }: CtrlProps) {
   );
 }
 
-interface MapControlsProps {
-  zoom?: number;
-  minZoom: number;
-  maxZoom: number;
-  showZoomLevel: boolean;
-  onStepZoom: (delta: number) => void;
-  onRecenter?: (info: { zoom?: number }) => void;
-}
-
 /**
  * The 44px controls. The level is legible on the surface — "Zoom 20" is a fact a surveyor
  * checks, not chrome — and re-centre hands the current level back rather than changing it.
@@ -55,33 +49,27 @@ export function MapControls({
   showZoomLevel,
   onStepZoom,
   onRecenter,
+  words,
 }: MapControlsProps) {
   return (
     <div className="hg-map-surface-controls">
       <div className="hg-map-surface-ctrl-group">
-        <Ctrl
-          label={zoom === undefined ? 'Zoom in' : `Zoom in — level ${zoom}`}
-          onPress={() => onStepZoom(1)}
-          disabled={zoom !== undefined && zoom >= maxZoom}
-          glyph="plus"
-        />
-        <Ctrl
-          label={zoom === undefined ? 'Zoom out' : `Zoom out — level ${zoom}`}
-          onPress={() => onStepZoom(-1)}
-          disabled={zoom !== undefined && zoom <= minZoom}
-          glyph="minus"
-        />
+        {zoomStepsOf(zoom, minZoom, maxZoom, words).map((step) => (
+          <Ctrl
+            key={step.glyph}
+            label={step.label}
+            onPress={() => onStepZoom(step.delta)}
+            disabled={step.disabled}
+            glyph={step.glyph}
+          />
+        ))}
       </div>
       {showZoomLevel && zoom !== undefined ? (
-        <span className="hg-map-surface-zoom-level">Zoom {zoom}</span>
+        <span className="hg-map-surface-zoom-level">{words.zoomLevel(zoom)}</span>
       ) : null}
       {onRecenter === undefined ? null : (
         <div className="hg-map-surface-ctrl-group">
-          <Ctrl
-            label="Recentre — keeps this zoom"
-            onPress={() => onRecenter({ zoom })}
-            glyph="recentre"
-          />
+          <Ctrl label={words.recentre} onPress={() => onRecenter({ zoom })} glyph="recentre" />
         </div>
       )}
     </div>

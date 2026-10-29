@@ -1,19 +1,7 @@
 import { Accordion } from '../Accordion';
 import { FilterDimensionControl } from './FilterDimensionControl';
-import { dimensionSummary, type FilterFold, foldSummary } from './FilterPanel.logic';
-import type {
-  FilterDimension,
-  FilterDimensionValue,
-  FilterSetWords,
-  FilterValue,
-} from './FilterPanel.types';
-
-interface FilterDimensionBlockProps {
-  dim: FilterDimension;
-  value: FilterValue;
-  onChange: (key: string, value: FilterDimensionValue) => void;
-  words: FilterSetWords;
-}
+import { dimensionSummary, foldSummary } from './FilterPanel.logic';
+import type { FilterDimensionBlockProps, FilterSectionProps } from './FilterPanel.types';
 
 /**
  * ONE LABELLED DIMENSION: its name with what is on at its right, the control its kind maps to
@@ -33,10 +21,6 @@ export function FilterDimensionBlock({ dim, value, onChange, words }: FilterDime
       ) : null}
     </div>
   );
-}
-
-interface FilterSectionProps extends FilterDimensionBlockProps {
-  folds: FilterFold[];
 }
 
 /**

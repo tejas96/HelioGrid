@@ -1,5 +1,6 @@
 import { useNotificationCentre } from '@heliogrid/data/react';
 import {
+  CARD,
   centreActToast,
   centreFilterWords,
   centreHeadWords,
@@ -8,6 +9,7 @@ import {
   NOTIFICATION_CENTRE,
   SHELL,
   showOlderLabel,
+  toastHostWords,
 } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import {
@@ -20,6 +22,8 @@ import {
   useFormat,
   useToasts,
 } from '@heliogrid/ui';
+import { useRef } from 'react';
+import { View } from 'react-native';
 
 interface NotificationSheetProps {
   onClose: () => void;
@@ -37,6 +41,8 @@ export function NotificationSheet({ onClose, onGoToLeads }: NotificationSheetPro
   const format = useFormat();
   const centre = useNotificationCentre(format.pack.timeZone);
   const toasts = useToasts();
+  /* A closed toast hands the screen reader back to the notifications it spoke about. */
+  const list = useRef<View>(null);
   const say = (toast: ReturnType<typeof centreActToast>) => {
     if (toast !== null) toasts.push(toast);
   };
@@ -50,6 +56,7 @@ export function NotificationSheet({ onClose, onGoToLeads }: NotificationSheetPro
         size="full"
         showClose
         read={centre.read}
+        loadingLabel={t(CARD.loading)}
         errorTitle={t(NOTIFICATION_CENTRE.errorTitle)}
         errorMessage={t(NOTIFICATION_CENTRE.errorMessage)}
         retryLabel={t(NOTIFICATION_CENTRE.tryAgain)}
@@ -74,24 +81,31 @@ export function NotificationSheet({ onClose, onGoToLeads }: NotificationSheetPro
           ) : null
         }
       >
-        <NotificationHead
-          {...centreHeadWords(t, centre.head)}
-          onMarkAll={async () => say(centreActToast(t, await centre.markAllRead()))}
-          marking={centre.markingAll}
-        />
-        <NotificationList
-          days={centreListWords(t, centre.view.days, format)}
-          onOpen={async (item) => {
-            if (!(await centre.markRead(item))) say(centreActToast(t, { kind: 'read-failed' }));
-          }}
-          olderLabel={centre.view.olderRemain ? showOlderLabel(t, centre.filtered) : undefined}
-          onShowOlder={centre.showOlder}
-          loadingOlder={centre.loadingOlder}
-          olderFailed={centre.olderFailed ? t(NOTIFICATION_CENTRE.olderFailed) : undefined}
-          horizon={centreHorizonLine(t)}
-        />
+        <View ref={list}>
+          <NotificationHead
+            {...centreHeadWords(t, centre.head)}
+            onMarkAll={async () => say(centreActToast(t, await centre.markAllRead()))}
+            marking={centre.markingAll}
+          />
+          <NotificationList
+            days={centreListWords(t, centre.view.days, format)}
+            onOpen={async (item) => {
+              if (!(await centre.markRead(item))) say(centreActToast(t, { kind: 'read-failed' }));
+            }}
+            olderLabel={centre.view.olderRemain ? showOlderLabel(t, centre.filtered) : undefined}
+            onShowOlder={centre.showOlder}
+            loadingOlder={centre.loadingOlder}
+            olderFailed={centre.olderFailed ? t(NOTIFICATION_CENTRE.olderFailed) : undefined}
+            horizon={centreHorizonLine(t)}
+          />
+        </View>
       </Sheet>
-      <ToastHost toasts={toasts.toasts} onDismiss={toasts.dismiss} />
+      <ToastHost
+        toasts={toasts.toasts}
+        onDismiss={toasts.dismiss}
+        {...toastHostWords(t)}
+        focusAfter={list}
+      />
     </>
   );
 }

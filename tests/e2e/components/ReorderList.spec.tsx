@@ -1,10 +1,14 @@
-import { COMPANY_SIGNUP, createTranslator, PROFILE_PREFERENCES } from '@heliogrid/i18n';
-import { ReorderList } from '@heliogrid/ui';
+import {
+  COMPANY_SIGNUP,
+  createTranslator,
+  PROFILE_PREFERENCES,
+  reorderListWords,
+} from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { bottomOf, rightOf, settledBox } from '../support/layout';
 import { resolvedColour } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
-import { FootReorderStory } from './ReorderList.story';
+import { FootReorderStory, PlainReorderStory } from './ReorderList.story';
 
 const en = await createTranslator('en');
 const items = [en.t(COMPANY_SIGNUP.companyName), en.t(COMPANY_SIGNUP.city)];
@@ -12,17 +16,13 @@ const phases = [...items, en.t(COMPANY_SIGNUP.companyNameExample)];
 const editLabel = en.t(PROFILE_PREFERENCES.editName);
 const [first = '', second = ''] = phases;
 
-/* ReorderList still says its own English sentences (deferred D2), so these mirror
-   `ReorderList.defaults.ts` until the component takes its words from the catalog. */
-const isFirstLabel = (name: string) => `${name} is first`;
-const alreadyFirst = (name: string) => `${name} is already first.`;
-const movedTo = (name: string, to: number, total: number) =>
-  `${name} moved to position ${to} of ${total}.`;
+/* The list's sentences, from the catalog — the same ones the story hands the list. */
+const words = reorderListWords(en.t);
 
 /* A row's own controls are ghost arrows with no fill of their own, so there is no white control to
    read here: the row's grey and its flat rest are the whole of the tile. */
 test('a reorder row is a grey tile with no shadow', async ({ mount, page }) => {
-  const list = await mount(<ReorderList items={items} />);
+  const list = await mount(<PlainReorderStory names={items} />);
   const row = list.getByRole('listitem').first();
 
   await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
@@ -57,7 +57,7 @@ test.describe('controls at the foot, at 375', () => {
     const list = await mount(<FootReorderStory names={phases} actionLabel={editLabel} />);
     const row = list.getByRole('listitem').first();
     const action = row.getByRole('button', { name: editLabel, exact: true });
-    const up = row.getByRole('button', { name: isFirstLabel(first), exact: true });
+    const up = row.getByRole('button', { name: words.isFirst(first), exact: true });
 
     const actionBox = await settledBox(action);
     const upBox = await settledBox(up);
@@ -76,13 +76,13 @@ test.describe('controls at the foot, at 375', () => {
     const up = list
       .getByRole('listitem')
       .first()
-      .getByRole('button', { name: isFirstLabel(first), exact: true });
+      .getByRole('button', { name: words.isFirst(first), exact: true });
 
     await expect(up).toHaveAttribute('aria-disabled', 'true');
     // Playwright will not click an aria-disabled control; a keyboard user still presses it.
     await up.focus();
     await page.keyboard.press('Enter');
-    await expect(list.getByRole('status')).toHaveText(alreadyFirst(first));
+    await expect(list.getByRole('status')).toHaveText(words.alreadyFirst(first));
     await expect(list.getByRole('listitem').first()).toContainText(first);
   });
 
@@ -91,7 +91,7 @@ test.describe('controls at the foot, at 375', () => {
     const down = list.getByRole('listitem').first().getByRole('button').nth(2);
 
     await down.click();
-    await expect(list.getByRole('status')).toHaveText(movedTo(first, 2, phases.length));
+    await expect(list.getByRole('status')).toHaveText(words.moved(first, 2, phases.length));
     await expect(list.getByRole('listitem').first()).toContainText(second);
     await expect(list.getByRole('listitem').nth(1)).toContainText(first);
   });

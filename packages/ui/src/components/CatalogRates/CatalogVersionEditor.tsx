@@ -22,6 +22,7 @@ export function VersionEditor(props: CatalogVersionEdit) {
     <div className="hg-cat-version">
       <NumberField
         label={words.defaultMargin}
+        words={words.numberField}
         value={figureOf(props.margin)}
         onCommit={(value) => props.onMargin(String(value))}
         commits="as-typed"
@@ -108,6 +109,7 @@ function EditRow({ row, words }: { row: CatalogVersionRow; words: CatalogVersion
         <NumberField
           labelSpokenOnly
           label={row.labels.amount}
+          words={words.numberField}
           value={figureOf(row.amount)}
           onCommit={(value) => row.onAmount(String(value))}
           commits="as-typed"

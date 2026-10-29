@@ -1,10 +1,13 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
-import type { DayMarker } from './DatePicker.types';
+import { SKELETON_CELLS } from './calendar-grid';
+import type { CalendarCellProps } from './DatePicker.types';
+import { spokenDayOf } from './date-text';
 
 interface CalendarNavProps {
   /** -1 previous, 1 next. The chevron is one path, rotated. */
   dir: -1 | 1;
-  label: string;
+  label: TranslatedText;
   onClick: () => void;
 }
 
@@ -35,18 +38,6 @@ export function CalendarNav({ dir, label, onClick }: CalendarNavProps) {
   );
 }
 
-interface CalendarCellProps {
-  date: Date;
-  selected: boolean;
-  between: boolean;
-  disabled: boolean;
-  locked: boolean;
-  today: boolean;
-  marker: DayMarker | undefined;
-  spokenDate: string;
-  onPick: (d: Date) => void;
-}
-
 /**
  * One day — the same file the native half keeps its cell in, so the `gridcell` role and the
  * chosen/locked states are declared once per platform in the SAME place.
@@ -63,9 +54,8 @@ export function CalendarCell({
   marker,
   spokenDate,
   onPick,
+  words,
 }: CalendarCellProps) {
-  const markerSuffix = marker === undefined ? '' : `, ${marker.label ?? marker.tone ?? ''}`;
-  const lockedSuffix = locked ? ', supplied by the market pack, cannot be removed' : '';
   return (
     // biome-ignore lint/a11y/useSemanticElements: the cell is a real button inside a CSS grid, not a table cell — see the grid comment in Calendar.tsx.
     // biome-ignore lint/a11y/useAriaPropsSupportedByRole: `aria-pressed` on a gridcell is the DS's own spelling of "this date is chosen"; kept verbatim and reported as a DS defect.
@@ -79,7 +69,7 @@ export function CalendarCell({
       disabled={disabled}
       aria-disabled={locked ? true : undefined}
       aria-pressed={selected}
-      aria-label={`${spokenDate}${markerSuffix}${lockedSuffix}`}
+      aria-label={spokenDayOf(words, spokenDate, marker, locked)}
       onClick={() => onPick(date)}
     >
       {date.getDate()}
@@ -95,12 +85,10 @@ export function CalendarCell({
   );
 }
 
-const SKELETON_CELLS = 35;
-
 /** Loading is the grid's own state, not a surface's — five weeks of shimmering cells. */
-export function CalendarSkeleton() {
+export function CalendarSkeleton({ label }: { label: TranslatedText }) {
   return (
-    <div className="hg-calendar-skeleton" role="status" aria-label="Loading">
+    <div className="hg-calendar-skeleton" role="status" aria-label={label}>
       {Array.from({ length: SKELETON_CELLS }, (_, i) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: skeleton cells have no identity but their slot.
         <span key={`skeleton-${i}`} className="hg-calendar-skeleton-cell" />

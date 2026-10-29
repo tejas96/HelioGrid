@@ -1,4 +1,5 @@
-import type { ReactElement, ReactNode } from 'react';
+import type { TranslatedText } from '@heliogrid/contracts';
+import type { ReactElement } from 'react';
 import type { ExplainerTriggerProps } from '../Explainer/Explainer.types';
 
 /**
@@ -6,7 +7,7 @@ import type { ExplainerTriggerProps } from '../Explainer/Explainer.types';
  * "Draw a roof first", "Choose a panel first", not "Invalid state".
  */
 export interface ActionReasonSpec {
-  reason?: ReactNode;
+  reason?: TranslatedText;
   /** The host sets this and points the control's `aria-describedby` at it. */
   id?: string;
   /** 12 (default) or 13. Never below 12 — the type floor. */
@@ -45,6 +46,12 @@ export interface ActionReasonSpec {
  */
 export type ActionReasonProps = ActionReasonSpec;
 
+/** A reason as words: the sentence, or a spec that carries it — what a bubble can open. */
+export type ActionReasonSentence = TranslatedText | ActionReasonSpec;
+
+/** What a host's in-row `disabledReason` takes: the words, or a ready node drawn as it is. */
+export type ActionReasonInput = ActionReasonSentence | ReactElement;
+
 /**
  * What a host's control is handed by `ReasonExplainer`: the ask's trigger props, plus the sentence
  * for a screen reader while the bubble is shut.
@@ -56,7 +63,7 @@ export interface ReasonTriggerProps extends ExplainerTriggerProps {
    * Native: the sentence as words, which the control speaks after its name — React Native has no
    * off-screen text node to describe it by. Absent when the reason is not plain words.
    */
-  spokenReason?: string;
+  spokenReason?: TranslatedText;
 }
 
 /**
@@ -66,7 +73,7 @@ export interface ReasonTriggerProps extends ExplainerTriggerProps {
  * by it while the bubble is shut.
  */
 export interface ReasonExplainerProps {
-  spec?: ReactNode | ActionReasonSpec;
+  spec?: ActionReasonSentence | null;
   /** The hidden sentence's id — the host's own `useId()`. */
   id: string;
   /** Holds the bubble open or shut; unset lets a tap open it. */

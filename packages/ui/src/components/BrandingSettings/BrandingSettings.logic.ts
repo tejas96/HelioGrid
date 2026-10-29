@@ -43,13 +43,13 @@ export function brandingCoverProps(
     parts: ['cover'],
     brandColor: brandingColourShown(colour),
     companyName: facts.companyName,
-    ...(facts.logoSrc === undefined ? {} : { logoSrc: facts.logoSrc, logoLabel: words.logoAlt }),
+    logoLabel: words.logoAlt,
+    ...(facts.logoSrc === undefined ? {} : { logoSrc: facts.logoSrc }),
     ...(facts.taxId === undefined ? {} : { taxId: facts.taxId }),
     ...(facts.taxIdLabel === undefined ? {} : { taxIdLabel: facts.taxIdLabel }),
     ...(facts.address === undefined ? {} : { address: facts.address }),
     letterhead: facts.letterhead,
     docTitle: words.documentTitle,
-    caption: '',
   };
 }
 

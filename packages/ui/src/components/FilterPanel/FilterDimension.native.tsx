@@ -7,20 +7,8 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Accordion } from '../Accordion/Accordion.native';
 import { FilterDimensionControl } from './FilterDimensionControl.native';
-import { dimensionSummary, type FilterFold, foldSummary } from './FilterPanel.logic';
-import type {
-  FilterDimension,
-  FilterDimensionValue,
-  FilterSetWords,
-  FilterValue,
-} from './FilterPanel.types';
-
-interface FilterDimensionBlockProps {
-  dim: FilterDimension;
-  value: FilterValue;
-  onChange: (key: string, value: FilterDimensionValue) => void;
-  words: FilterSetWords;
-}
+import { dimensionSummary, foldSummary } from './FilterPanel.logic';
+import type { FilterDimensionBlockProps, FilterSectionProps } from './FilterPanel.types';
 
 /**
  * ONE LABELLED DIMENSION: its name with what is on at its right, the control its kind maps to
@@ -48,10 +36,6 @@ export function FilterDimensionBlock({ dim, value, onChange, words }: FilterDime
       ) : null}
     </View>
   );
-}
-
-interface FilterSectionProps extends FilterDimensionBlockProps {
-  folds: FilterFold[];
 }
 
 /**

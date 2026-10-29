@@ -4,14 +4,8 @@ import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { IndeterminateRail } from '../PendingAction/IndeterminateRail.native';
-import type { OperationStage, OperationStageState } from './OperationProgress.types';
-
-/** Each stage states its state IN WORDS for a screen reader; the glyph is the second channel. */
-const STATE_WORDS: Record<OperationStageState, string> = {
-  done: 'done',
-  active: 'running',
-  waiting: 'not started',
-};
+import type { OperationProgressWords, OperationStage } from './OperationProgress.types';
+import { stageStateAt } from './operation-progress-model';
 
 function DoneGlyph() {
   return (
@@ -34,16 +28,23 @@ function DoneGlyph() {
  * MS2-38's three narrated steps: done · running · not yet. Defaults are `active` for the first
  * stage and `waiting` after, exactly as the DS resolves them.
  */
-export function OperationStages({ stages }: { stages: OperationStage[] }) {
+export function OperationStages({
+  stages,
+  words,
+}: {
+  stages: OperationStage[];
+  /** Each stage states its state IN WORDS for a screen reader; the glyph is the second channel. */
+  words: Pick<OperationProgressWords, 'stageState' | 'stageSpoken'>;
+}) {
   return (
     <View accessibilityRole="list" style={styles.list}>
       {stages.map((stage, index) => {
-        const state: OperationStageState = stage.state ?? (index === 0 ? 'active' : 'waiting');
+        const state = stageStateAt(stage, index);
         return (
           <View
             key={stage.label}
             accessibilityRole="text"
-            accessibilityLabel={`${stage.label}, ${STATE_WORDS[state]}`}
+            accessibilityLabel={words.stageSpoken(stage.label, words.stageState[state])}
             style={styles.row}
           >
             {state === 'done' ? <DoneGlyph /> : null}

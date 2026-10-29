@@ -126,6 +126,7 @@ export function figureFieldOf(
   const field = words.fields[cell.path];
   return {
     label: field?.label,
+    words: words.numberField,
     unit: field?.unit ?? undefined,
     precision: cell.precision,
     value: figureAt(draft, cell.path),
@@ -151,7 +152,10 @@ export function choiceFieldOf(
     value: choiceAt(draft, cell),
     options: [...choicesOf(words, cell)],
     placeholder:
-      cell.as === 'technology' ? words.technologyPlaceholder : words.fields[cell.path]?.label,
+      cell.as === 'technology'
+        ? words.technologyPlaceholder
+        : (words.fields[cell.path]?.label ?? words.selectPlaceholder),
+    closeLabel: words.closeList,
     density: 'functional',
     helper: words.copied ?? undefined,
     error: specFailureOf(failures, cell),
@@ -175,7 +179,6 @@ export function windowFieldOf(
     unit: words.fields['mppt.minV']?.unit ?? undefined,
     boxes: true,
     boxLabels: [words.low, words.high],
-    anyLabel: '',
     hint: words.copied ?? undefined,
     error: specFailureOf(failures, cell),
     disabled,
@@ -199,6 +202,7 @@ export function itemFieldsOf(props: CatalogItemFormProps) {
     value: draft.kind,
     options: [...words.kinds],
     placeholder: words.whatItIs,
+    closeLabel: words.closeList,
     helper: words.kindHelper,
     density: 'functional',
     disabled: saving,
@@ -237,6 +241,7 @@ export function priceFieldOf(props: CatalogItemFormProps) {
   const { draft, words, failures, onChange } = props;
   return {
     label: words.yourPrice,
+    words: words.numberField,
     hint: words.priceHint,
     value: figureOf(draft.price),
     currency: true,

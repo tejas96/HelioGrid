@@ -1,5 +1,5 @@
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
-import { ACTIVITY_GLYPH, FALLBACK_GLYPH } from './ActivityGlyph.logic';
+import { activityGlyphOf, agentObjectSize } from './ActivityGlyph.logic';
 
 /**
  * A kind's glyph. `agent` is the one gradient in this component — brand/AI features take a
@@ -11,7 +11,7 @@ export function ActivityGlyph({ name, size = 16 }: { name: string; size?: number
       <span
         aria-hidden="true"
         className="hg-stream-agent-object"
-        style={{ width: size - 2, height: size - 2 }}
+        style={{ width: agentObjectSize(size), height: agentObjectSize(size) }}
       />
     );
   }
@@ -28,7 +28,7 @@ export function ActivityGlyph({ name, size = 16 }: { name: string; size?: number
       aria-hidden="true"
       role="presentation"
     >
-      <ShellGlyphMarks name={ACTIVITY_GLYPH[name] ?? FALLBACK_GLYPH} />
+      <ShellGlyphMarks name={activityGlyphOf(name)} />
     </svg>
   );
 }

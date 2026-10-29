@@ -6,9 +6,9 @@ import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { reasonPage } from '../ActionReason/ActionReason.logic';
 import type { ReasonTriggerProps } from '../ActionReason/ActionReason.types';
 import { ReasonExplainer } from '../ActionReason/ReasonExplainer.native';
+import { isStatedOff, toneOf } from './Button.logic';
 import type { ButtonProps, ButtonSize, ButtonTone, ButtonVariant } from './Button.types';
 
 interface NativeButtonProps extends ButtonProps {
@@ -106,8 +106,8 @@ export function Button({
   const holder = useRef<View>(null);
   useImperativeHandle(ref, () => ({ focus: () => focusScreenReaderOn(() => holder.current) }), []);
   /* A spec with no sentence opens nothing and states nothing — see the web half. */
-  const stated = disabled && reasonPage(disabledReason) !== '';
-  const toned = variant === 'secondary' || variant === 'ghost' ? tone : undefined;
+  const stated = isStatedOff(disabled, disabledReason);
+  const toned = toneOf(variant, tone);
   const restColor = toned === undefined ? visual.color : TONE[toned];
   /* A stated disabled label is information, not chrome — see the web half. */
   const labelColor = disabled

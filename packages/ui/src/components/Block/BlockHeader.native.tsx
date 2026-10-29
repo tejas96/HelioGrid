@@ -1,8 +1,10 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
-import type { BlockProps } from './Block.types';
+import { blockHeaderOf, spokenCountOf } from './Block.logic';
+import type { BlockFrameProps } from './Block.types';
 
 const type = theme.type.roles;
 
@@ -60,16 +62,19 @@ const styles = StyleSheet.create({
 });
 
 /** A TOTAL beside a heading, not an unread badge — grouped, tabular, and never clamped by default. */
-function BlockCount({ shownCount, countLabel }: { shownCount: string; countLabel?: string }) {
+function BlockCount({
+  shownCount,
+  countLabel,
+}: {
+  shownCount: string;
+  countLabel?: TranslatedText;
+}) {
   /* The web half hides the bare numeral from the reader and exposes "6 sites" as text instead, so
      the sentence belongs on the numeral itself — a `Text`, which already IS an accessibility
      element. On the wrapper it was announced nowhere. */
   return (
     <View style={styles.count}>
-      <Text
-        accessibilityLabel={countLabel !== undefined ? `${shownCount} ${countLabel}` : shownCount}
-        style={styles.countText}
-      >
+      <Text accessibilityLabel={spokenCountOf(shownCount, countLabel)} style={styles.countText}>
         {shownCount}
       </Text>
     </View>
@@ -78,17 +83,14 @@ function BlockCount({ shownCount, countLabel }: { shownCount: string; countLabel
 
 export interface BlockHeaderProps
   extends Pick<
-    BlockProps,
+    BlockFrameProps,
     'overline' | 'title' | 'meta' | 'action' | 'badge' | 'countLabel' | 'density'
   > {
   /** The grouped numeral, already clamped and formatted; `null` draws nothing. */
   shownCount: string | null;
 }
 
-/**
- * The header row draws for a title, a count OR a badge — the heading is the optional part, so an
- * overline-only block (`overline="AGENT CALLS"`, `count={6}`) still shows the numeral.
- */
+/** The header: overline, the title row (`blockHeaderOf` decides when it draws), meta and action. */
 export function BlockHeader({
   overline,
   title,
@@ -99,10 +101,11 @@ export function BlockHeader({
   density,
   shownCount,
 }: BlockHeaderProps): ReactNode {
-  const titleRow = title !== undefined || shownCount !== null || badge !== undefined;
-  if (overline === undefined && !titleRow && meta === undefined && action === undefined) {
+  const header = blockHeaderOf({ overline, title, meta, action, badge, shownCount });
+  if (header === null) {
     return null;
   }
+  const { titleRow } = header;
   const titleType: TextStyle = { fontSize: density === 'functional' ? 15 : 16 };
   return (
     <View style={styles.head}>

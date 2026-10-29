@@ -61,7 +61,13 @@ export function ImportHead({ words, frame, step, onClose, onBack, onSteps }: Imp
           </View>
         ) : null}
       </View>
-      <Stepper variant="bars" steps={[...words.steps]} current={step} label={words.stepsLabel} />
+      <Stepper
+        variant="bars"
+        steps={[...words.steps]}
+        current={step}
+        label={words.stepsLabel}
+        words={words.stepper}
+      />
     </View>
   );
 }

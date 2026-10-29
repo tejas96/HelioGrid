@@ -1,5 +1,5 @@
 import type { PriceBookDraft } from '@heliogrid/data/react';
-import { catalogVersionWords, PRICE_BOOK, rateSheetWords } from '@heliogrid/i18n';
+import { catalogVersionWords, PRICE_BOOK, rateSheetActs, rateSheetWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import { CatalogRateEdit, EditorSurface } from '@heliogrid/ui';
 import { SheetFoot } from './SheetFoot';
@@ -12,6 +12,7 @@ export function RateSheet({ draft }: { draft: PriceBookDraft }) {
   const { t } = useI18n();
   const editing = draft.editing;
   const words = editing === null ? null : rateSheetWords(t, editing.rate, editing.added);
+  const acts = rateSheetActs(t);
   return (
     <EditorSurface
       open={editing !== null}
@@ -23,9 +24,9 @@ export function RateSheet({ draft }: { draft: PriceBookDraft }) {
       title={words?.title}
       footer={
         <SheetFoot
-          cancel={words?.cancel ?? ''}
+          cancel={acts.cancel}
           onCancel={draft.cancelEdit}
-          act={words?.done ?? ''}
+          act={acts.done}
           onAct={draft.doneEdit}
           off={editing?.nameless ?? true}
         />
@@ -37,6 +38,7 @@ export function RateSheet({ draft }: { draft: PriceBookDraft }) {
           onName={draft.setEditName}
           basis={editing.rate.basis}
           basisLabel={words.basis}
+          select={words.select}
           bases={catalogVersionWords(t).bases}
           onBasis={draft.setEditBasis}
           remove={

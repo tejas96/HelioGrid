@@ -1,18 +1,19 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { ComplianceFloor } from '../ComplianceFloor';
 import { Calendar } from '../DatePicker/Calendar';
 import { parse } from '../DatePicker/calendar-grid';
-import type { CalendarValue, DayMarker, ISODate } from '../DatePicker/DatePicker.types';
+import type { CalendarValue, ISODate } from '../DatePicker/DatePicker.types';
 import { useFormat } from '../MarketProvider/market-context';
+import { dateSetView } from './DateSet.logic';
 import type { DateSetProps } from './DateSet.types';
 import { DateSetList } from './DateSetList';
-import { floorFor, refusalMessage } from './date-set-floor';
+import { floorFor } from './date-set-floor';
+import { useDateSetRoom } from './use-date-set-room';
 
 /** Own-width, never viewport (law 4): grid and list side by side above 640px of THIS component. */
-const BREAK = 640;
-
 interface WebDateSetProps extends DateSetProps {
   className?: string;
   style?: CSSProperties;
@@ -32,12 +33,15 @@ export function DateSet({
   entries = [],
   onAdd,
   onRemove,
-  packName = 'Market pack',
+  packName,
   floor,
-  label = 'Holiday calendar',
-  listLabel = 'Holidays this year',
-  addLabel = 'Tap a date to add a holiday',
-  emptyMessage = 'No holidays yet. Tap a date to add one.',
+  label,
+  listLabel,
+  addLabel,
+  emptyMessage,
+  words,
+  floorWords,
+  calendarWords,
   min,
   max,
   month,
@@ -49,10 +53,9 @@ export function DateSet({
 }: WebDateSetProps) {
   const mkt = useFormat();
   const wrapRef = useRef<HTMLElement>(null);
-  const [wide, setWide] = useState(true);
-  const [own, setOwn] = useState<number | null>(null);
+  const { wide, measure } = useDateSetRoom(onFormChange);
   const [blocked, setBlocked] = useState<ISODate | null>(null);
-  const [say, setSay] = useState('');
+  const [say, setSay] = useState<TranslatedText | null>(null);
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -64,34 +67,20 @@ export function DateSet({
       if (width === undefined) {
         return;
       }
-      setOwn(width);
-      setWide(width >= BREAK);
+      measure(width);
     });
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [measure]);
 
-  useEffect(() => {
-    if (own !== null) {
-      onFormChange?.({ stacked: !wide, width: own });
-    }
-  }, [wide, own, onFormChange]);
-
-  const sorted = useMemo(() => [...entries].sort((a, b) => (a.date < b.date ? -1 : 1)), [entries]);
-  const dates = sorted.map((e) => e.date);
-  const locked = sorted.filter((e) => e.origin === 'pack').map((e) => e.date);
-  const byDate = useMemo(() => new Map(sorted.map((e) => [e.date, e])), [sorted]);
-  const markers = useMemo<Record<string, DayMarker>>(
-    () =>
-      Object.fromEntries(
-        sorted.map((e) => [e.date, { tone: 'holiday' as const, label: e.name ?? 'Holiday' }]),
-      ),
-    [sorted],
+  const { sorted, dates, locked, byDate, markers } = useMemo(
+    () => dateSetView(entries, words.holiday),
+    [entries, words.holiday],
   );
 
   const onBlocked = (key: ISODate) => {
     setBlocked(key);
-    setSay(`${mkt.date(parse(key) ?? key)} is supplied by the ${packName} and cannot be removed.`);
+    setSay(words.supplied(mkt.date(parse(key) ?? key), packName));
   };
 
   /* Calendar hands back the whole set; the difference is the act. Only additions can arrive here —
@@ -103,7 +92,7 @@ export function DateSet({
     const first = added[0];
     if (first !== undefined && onAdd !== undefined) {
       setBlocked(null);
-      setSay(`${mkt.date(parse(first) ?? first)} added.`);
+      setSay(words.added(mkt.date(parse(first) ?? first)));
       onAdd(first);
       return;
     }
@@ -115,7 +104,7 @@ export function DateSet({
       onBlocked(gone);
       return;
     }
-    setSay(`${mkt.date(parse(gone) ?? gone)} removed.`);
+    setSay(words.removed(mkt.date(parse(gone) ?? gone)));
     onRemove(gone);
   };
 
@@ -134,6 +123,7 @@ export function DateSet({
       <div className="hg-date-set-layout" data-stacked={wide ? undefined : 'true'}>
         <div className="hg-date-set-grid">
           <Calendar
+            words={calendarWords}
             mode="set"
             value={dates}
             onChange={toggle}
@@ -152,8 +142,8 @@ export function DateSet({
             <div className="hg-date-set-refusal">
               <ComplianceFloor
                 variant="refusal"
-                {...floorFor(blockedEntry, packName, floor)}
-                message={refusalMessage(packName)}
+                {...floorFor(blockedEntry, packName, floor, words, floorWords)}
+                message={words.refusal(packName)}
               />
             </div>
           )}
@@ -163,6 +153,8 @@ export function DateSet({
           mkt={mkt}
           packName={packName}
           floor={floor}
+          words={words}
+          floorWords={floorWords}
           listLabel={listLabel}
           emptyMessage={emptyMessage}
           blocked={blocked}
@@ -171,7 +163,7 @@ export function DateSet({
             onRemove === undefined
               ? undefined
               : (date, spokenName) => {
-                  setSay(`${spokenName} removed.`);
+                  setSay(words.removed(spokenName));
                   onRemove(date);
                 }
           }

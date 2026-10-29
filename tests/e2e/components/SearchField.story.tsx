@@ -1,3 +1,5 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+import { createTranslator, filterBarWords } from '@heliogrid/i18n';
 import { Button, FilterChips, type FocusHandle, SearchField } from '@heliogrid/ui';
 import { useRef, useState } from 'react';
 
@@ -12,11 +14,11 @@ export function FocusHandlesStory({
   toSearch,
   toChip,
 }: {
-  find: string;
-  status: string;
-  options: { value: string; label: string }[];
-  toSearch: string;
-  toChip: string;
+  find: TranslatedText;
+  status: TranslatedText;
+  options: { value: string; label: TranslatedText }[];
+  toSearch: TranslatedText;
+  toChip: TranslatedText;
 }) {
   const search = useRef<FocusHandle>(null);
   const chips = useRef<FocusHandle>(null);
@@ -39,5 +41,25 @@ export function FocusHandlesStory({
         {toChip}
       </Button>
     </div>
+  );
+}
+
+const en = await createTranslator('en');
+const bar = filterBarWords(en.t);
+
+/**
+ * The search pill with its filter square, the square's name bound in the browser: `filterActiveLabel`
+ * is a function the field calls while it renders, so it cannot be handed to `mount`.
+ */
+export function FilterSquareStory({ label, count }: { label: TranslatedText; count: number }) {
+  return (
+    <SearchField
+      ariaLabel={label}
+      placeholder={label}
+      onFilterClick={() => {}}
+      filterCount={count}
+      filterLabel={bar.filters}
+      filterActiveLabel={bar.filtersActive}
+    />
   );
 }

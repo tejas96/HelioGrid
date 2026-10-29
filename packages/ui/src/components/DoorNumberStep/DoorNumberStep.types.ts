@@ -1,7 +1,8 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { DoorRoad, LoginPress } from '@heliogrid/domain';
+import type { LoginPress } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { DoorTaskMeasure, DoorTitleProps } from '../DoorFrame/DoorFrame.types';
+import type { PhoneFieldWords } from '../PhoneField/PhoneField.types';
 import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
 
 /** Every word the step draws beside its title; `@heliogrid/i18n`'s `numberStepWords` writes them. */
@@ -9,11 +10,20 @@ export interface DoorNumberStepWords {
   /** Above the number, in reading order. */
   blocks: readonly TintedBlockProps[];
   phoneLabel: TranslatedText;
+  /** The number box's spoken name. */
+  phoneField: PhoneFieldWords;
   /** The field's own answer to a number of the wrong length; absent as the step opens. */
   phoneError: TranslatedText | undefined;
   primary: TranslatedText;
   /** `null` on a door with no Google sheet: no divider and no control are drawn. */
   google: { or: TranslatedText; label: TranslatedText; aria: TranslatedText } | null;
+}
+
+/** The way to the other door, at the step's foot: the question, then the act that answers it. */
+export interface DoorRoad {
+  readonly question: TranslatedText;
+  readonly label: TranslatedText;
+  readonly onPress: () => void;
 }
 
 /**
@@ -42,7 +52,7 @@ export interface DoorNumberStepProps {
   /** The signup's step header. */
   lead?: ReactNode;
   taskMeasure?: DoorTaskMeasure;
-  helper?: string;
+  helper?: TranslatedText;
   /**
    * Stands in the form's place while the session holds a pending switch (`F4-37`): at 1536 the
    * decision is the task column's content. The phone draws it as a sheet over the step, so the

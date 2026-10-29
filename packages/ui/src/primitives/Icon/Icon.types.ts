@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 export type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -19,5 +20,5 @@ export interface IconProps {
    * Accessible name. OMIT for decorative icons — they are hidden from assistive tech.
    * Set it when the icon is the only carrier of meaning (an icon-only Pressable child).
    */
-  label?: string;
+  label?: TranslatedText;
 }

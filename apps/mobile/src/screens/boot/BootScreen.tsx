@@ -1,5 +1,5 @@
 import { useSession } from '@heliogrid/data/react';
-import { connectionWords } from '@heliogrid/i18n';
+import { connectionWords, SHELL } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { NoConnection } from '@heliogrid/ui';
 import { PlaceholderScaffold } from '../shared/PlaceholderScaffold';
@@ -12,5 +12,5 @@ export function BootScreen() {
   const { unreachable, retryBoot } = useSession();
   const t = useTranslate();
   if (unreachable) return <NoConnection {...connectionWords(t)} onRetry={retryBoot} />;
-  return <PlaceholderScaffold name="Boot" />;
+  return <PlaceholderScaffold title={t(SHELL.boot)} description={t(SHELL.bootPlaceholder)} />;
 }

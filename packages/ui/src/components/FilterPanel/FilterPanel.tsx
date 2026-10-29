@@ -6,11 +6,13 @@ import { FilterDimensionControl } from './FilterDimensionControl';
 import {
   clearedFilterValue,
   countActiveFilters,
+  dimensionChangeOf,
+  FILTER_PANEL_DEFAULTS,
+  filterFooterOf,
   filterLayout,
   isFilterActive,
-  withDimension,
 } from './FilterPanel.logic';
-import type { FilterDimensionValue, FilterPanelProps, FilterSetProps } from './FilterPanel.types';
+import type { FilterPanelProps, FilterSetProps } from './FilterPanel.types';
 
 interface WebFilterSetProps extends FilterSetProps {
   className?: string;
@@ -43,8 +45,7 @@ export function FilterSet({
   className,
   style,
 }: WebFilterSetProps) {
-  const setOne = (key: string, v: FilterDimensionValue) =>
-    onChange?.(withDimension(dimensions, value, key, v));
+  const setOne = dimensionChangeOf(dimensions, value, onChange);
   const { sections, flags } = filterLayout(dimensions, value);
   return (
     <div className={classNames('hg-filter-set', className)} style={style}>
@@ -98,24 +99,36 @@ export function FilterPanel({
   words,
   resultCount,
   resultNoun,
-  panelAbove = 720,
-  width = 460,
+  panelAbove = FILTER_PANEL_DEFAULTS.panelAbove,
+  width = FILTER_PANEL_DEFAULTS.width,
   inset = false,
   modal = true,
-  zIndex = 40,
+  zIndex = FILTER_PANEL_DEFAULTS.zIndex,
   style,
 }: WebFilterPanelProps) {
-  const n = countActiveFilters(dimensions, value);
-  const clear = () => (onClear ? onClear() : onChange?.(clearedFilterValue(dimensions)));
+  const { nothingOn, clear, doneLabel } = filterFooterOf({
+    dimensions,
+    value,
+    onChange,
+    onClear,
+    resultCount,
+    resultNoun,
+    words,
+  });
   const footer = (
     <div className="hg-filter-panel-footer">
       {showClear ? (
-        <button type="button" className="hg-filter-panel-clear" onClick={clear} disabled={n === 0}>
+        <button
+          type="button"
+          className="hg-filter-panel-clear"
+          onClick={clear}
+          disabled={nothingOn}
+        >
           {words.clearAll}
         </button>
       ) : null}
       <button type="button" className="hg-filter-panel-done" onClick={onClose}>
-        {typeof resultCount === 'number' ? words.showResults(resultCount, resultNoun) : words.done}
+        {doneLabel}
       </button>
     </div>
   );

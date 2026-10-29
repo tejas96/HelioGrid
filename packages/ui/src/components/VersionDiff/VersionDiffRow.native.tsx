@@ -1,6 +1,7 @@
 /* VersionDiff's row (native) — the same block, the same order, the same four words. Phone width is
    what this design was drawn for, so the native half is the design rather than a reduction of it. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -9,16 +10,9 @@ import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
 import { ProvenanceTier } from '../Provenance/Provenance.native';
-import type { ProvenanceTierSpec } from '../Provenance/Provenance.types';
-import { isTierOnly, resolveDiffRow } from './VersionDiff.resolve';
+import type { DiffRowFrame, DiffSideSpec } from './VersionDiff.resolve';
+import { diffRowBodyOf, resolveDiffRow } from './VersionDiff.resolve';
 import type { DiffRow, DiffState } from './VersionDiff.types';
-
-const STATE_WORD: Record<DiffState, string> = {
-  changed: 'Changed',
-  unchanged: 'Unchanged',
-  added: 'Added',
-  removed: 'Removed',
-};
 
 const STATE_TONE: Record<DiffState, { bg: string; fg: string }> = {
   changed: { bg: theme.colors['info-bg'], fg: theme.colors['info-text'] },
@@ -83,13 +77,13 @@ const styles = StyleSheet.create({
   movedSide: { flex: 1, minWidth: 0 },
 });
 
-function StatePill({ state }: { state: DiffState }) {
+function StatePill({ state, word }: { state: DiffState; word: TranslatedText }) {
   const tone = STATE_TONE[state];
   return (
     <View style={[styles.pill, { backgroundColor: tone.bg }]}>
       <View style={[styles.pillDot, { backgroundColor: tone.fg }]} />
       <Text variant="caption" style={[styles.pillWord, { color: tone.fg }]}>
-        {STATE_WORD[state]}
+        {word}
       </Text>
     </View>
   );
@@ -112,21 +106,7 @@ function Figure({ value, unit, strong }: { value: ReactNode; unit?: string; stro
   );
 }
 
-function Side({
-  stamp,
-  value,
-  unit,
-  tier,
-  strong,
-  gap,
-}: {
-  stamp: string;
-  value?: ReactNode;
-  unit?: string;
-  tier?: ProvenanceTierSpec;
-  strong?: boolean;
-  gap?: string;
-}) {
+function Side({ stamp, value, unit, tier, strong, gap }: DiffSideSpec) {
   return (
     <View style={styles.side}>
       <Text variant="overline" color="tertiary" style={styles.stamp}>
@@ -167,25 +147,20 @@ export function VersionDiffRow({
   afterStamp,
   removedLabel,
   addedLabel,
-}: {
-  row: DiffRow;
-  beforeStamp: string;
-  afterStamp: string;
-  removedLabel: string;
-  addedLabel?: ReactNode;
-}) {
+  words,
+}: DiffRowFrame & { row: DiffRow }) {
   const st = resolveDiffRow(row);
-  const tierOnly = isTierOnly(row, st);
+  const body = diffRowBodyOf(row, st, { beforeStamp, afterStamp, removedLabel });
   return (
     <View style={styles.row}>
       <View style={styles.head}>
         <Text variant="body-sm" style={styles.label}>
           {row.label}
         </Text>
-        <StatePill state={st} />
+        <StatePill state={st} word={words.states[st]} />
       </View>
 
-      {tierOnly ? (
+      {body.kind === 'tier-only' ? (
         /* The value did not move; the TIER did — on SCR-M06-18 that tier change is the content. */
         <View style={styles.tierOnly}>
           <Figure value={row.after} unit={row.unit} strong />
@@ -197,39 +172,15 @@ export function VersionDiffRow({
         </View>
       ) : null}
 
-      {!tierOnly && st === 'added' ? (
-        <Side stamp={afterStamp} value={row.after} unit={row.unit} tier={row.afterTier} strong />
-      ) : null}
+      {body.kind === 'sides' ? body.sides.map((side) => <Side key={side.side} {...side} />) : null}
 
-      {!tierOnly && st === 'removed' ? (
+      {body.kind === 'moved' ? (
         <>
-          <Side stamp={beforeStamp} value={row.before} unit={row.unit} tier={row.beforeTier} />
-          <Side stamp={afterStamp} gap={row.gapLabel || removedLabel} />
-        </>
-      ) : null}
-
-      {!tierOnly && st === 'unchanged' ? (
-        <Side
-          stamp={`${beforeStamp} · ${afterStamp}`}
-          value={row.after ?? row.before}
-          unit={row.unit}
-          tier={row.afterTier || row.beforeTier}
-        />
-      ) : null}
-
-      {!tierOnly && st === 'changed' ? (
-        <>
-          <Side stamp={beforeStamp} value={row.before} unit={row.unit} tier={row.beforeTier} />
+          <Side {...body.from} />
           <View style={styles.moved}>
             <Arrow down />
             <View style={styles.movedSide}>
-              <Side
-                stamp={afterStamp}
-                value={row.after}
-                unit={row.unit}
-                tier={row.afterTier}
-                strong
-              />
+              <Side {...body.to} />
             </View>
           </View>
         </>

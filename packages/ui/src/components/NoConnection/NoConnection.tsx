@@ -22,12 +22,13 @@ interface WebNoConnectionProps extends NoConnectionProps {
  * · IT DOES NOT BLOCK WHAT STILL WORKS. `children` is the slot for whatever the app CAN show.
  */
 export function NoConnection({
-  title = "You're not connected",
-  message = 'HelioGrid needs a connection to load this. Check your mobile data or Wi-Fi, then try again.',
+  title,
+  message,
   onRetry,
   retryLabel,
-  failedMessage = 'Still no connection.',
-  timeoutMessage = "That's taking too long to answer.",
+  failedMessage,
+  timeoutMessage,
+  lastTriedSentence,
   retryTimeout = 10000,
   status,
   children,
@@ -49,7 +50,7 @@ export function NoConnection({
     button?.focus({ preventScroll: true });
   }, [autoFocusRetry]);
 
-  const sentence = failureSentence(failure, failedMessage, timeoutMessage);
+  const sentence = failureSentence(failure, { failedMessage, timeoutMessage, lastTriedSentence });
 
   return (
     <section

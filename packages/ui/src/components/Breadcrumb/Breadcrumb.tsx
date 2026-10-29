@@ -6,6 +6,9 @@ interface WebBreadcrumbProps extends BreadcrumbProps {
   style?: CSSProperties;
 }
 
+/** Between crumbs: a mark, never a word, so no language writes it differently. */
+const SEPARATOR = '/';
+
 /** The collapsed middle is a crumb too — it renders as a static "…" carrying the hidden trail. */
 interface Crumb extends BreadcrumbItem {
   ellipsis?: boolean;
@@ -24,6 +27,7 @@ interface Crumb extends BreadcrumbItem {
  * space back; it does not shrink a hit box.
  */
 export function Breadcrumb({
+  label,
   items,
   maxItems = 4,
   onNavigate,
@@ -42,7 +46,7 @@ export function Breadcrumb({
     .join(' / ');
 
   return (
-    <nav aria-label="Breadcrumb" className={className} style={style}>
+    <nav aria-label={label} className={className} style={style}>
       <ol className="hg-breadcrumb-list">
         {shown.map((item, index) => {
           const last = index === shown.length - 1;
@@ -50,7 +54,7 @@ export function Breadcrumb({
             <li key={item.key ?? item.label} className="hg-breadcrumb-item">
               {index > 0 ? (
                 <span aria-hidden="true" className="hg-breadcrumb-separator">
-                  /
+                  {SEPARATOR}
                 </span>
               ) : null}
               {last || item.ellipsis === true ? (

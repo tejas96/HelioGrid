@@ -7,6 +7,8 @@ import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import { MapSkeleton } from './MapSkeleton.native';
+import { mapNoteOf } from './MapSurface.logic';
+import type { MapNoteProps, MapStateLayerProps, MapUnavailableProps } from './MapSurface.types';
 
 const styles = StyleSheet.create({
   note: {
@@ -63,19 +65,11 @@ const EMPTY = (
   </Svg>
 );
 
-interface MapNoteProps {
-  kind: 'error' | 'empty';
-  title: string;
-  message: string;
-  onRetry?: () => void;
-  retryLabel?: string;
-}
-
 /**
  * A failed tile fetch is `error` and offers a retry; nothing to show yet is `empty` and does
  * not. Neither ever leaves blank space that reads as "no sites".
  */
-export function MapNote({ kind, title, message, onRetry, retryLabel }: MapNoteProps) {
+export function MapNote({ kind, title, message, onRetry, retry }: MapNoteProps) {
   const empty = kind === 'empty';
   return (
     <View style={styles.note}>
@@ -100,51 +94,23 @@ export function MapNote({ kind, title, message, onRetry, retryLabel }: MapNotePr
       <Text variant="body-sm" color="secondary" align="center" style={styles.message}>
         {message}
       </Text>
-      {kind === 'error' ? <RetryButton onRetry={onRetry} label={retryLabel} /> : null}
+      {retry === undefined ? null : (
+        <RetryButton onRetry={onRetry} label={retry.label} focusAfter={retry.focusAfter} />
+      )}
     </View>
   );
-}
-
-interface MapUnavailableProps {
-  title: string;
-  message: string;
-}
-
-export interface MapStateLayerProps {
-  state: 'ready' | 'loading' | 'empty' | 'error' | 'unavailable';
-  emptyTitle: string;
-  emptyMessage: string;
-  unavailableTitle: string;
-  unavailableMessage: string;
-  errorTitle: string;
-  errorMessage: string;
-  onRetry?: () => void;
-  retryLabel?: string;
 }
 
 /** Every state that replaces the tiles, in one place. `ready` draws nothing here. */
 export function MapStateLayer(props: MapStateLayerProps) {
   if (props.state === 'loading') {
-    return <MapSkeleton />;
+    return <MapSkeleton label={props.words.loading} />;
   }
   if (props.state === 'unavailable') {
     return <MapUnavailable title={props.unavailableTitle} message={props.unavailableMessage} />;
   }
-  if (props.state === 'error') {
-    return (
-      <MapNote
-        kind="error"
-        title={props.errorTitle}
-        message={props.errorMessage}
-        onRetry={props.onRetry}
-        retryLabel={props.retryLabel}
-      />
-    );
-  }
-  if (props.state === 'empty') {
-    return <MapNote kind="empty" title={props.emptyTitle} message={props.emptyMessage} />;
-  }
-  return null;
+  const note = mapNoteOf(props);
+  return note === null ? null : <MapNote {...note} />;
 }
 
 /**

@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import type { ShellActionProps } from './AppShell.types';
-import { badgeName, showsBadge } from './AppShell.types';
+import { showsBadge } from './AppShell.types';
 import { CountBadge } from './CountBadge';
 
 interface WebShellActionProps extends ShellActionProps {
@@ -11,9 +11,9 @@ interface WebShellActionProps extends ShellActionProps {
 
 /**
  * A 44×44 shell button with an optional count badge riding its corner — the grey circle when
- * `round`, otherwise transparent until the pointer is over it. The accessible name is
- * built here — "Notifications, 7 unread" — and an `aria-label` wins over element contents, so
- * the badge's own sr-only sentence is never the one announced.
+ * `round`, otherwise transparent until the pointer is over it. The accessible name is the
+ * caller's whole name — "Notifications, 7 unread" — and an `aria-label` wins over element
+ * contents, so the badge carries no sentence of its own here.
  */
 export function ShellAction({
   label,
@@ -26,9 +26,7 @@ export function ShellAction({
   className,
   style,
 }: WebShellActionProps) {
-  /* A zero badge keeps the plain name here (the source's `badge ?` test) while it still reaches
-     CountBadge, which renders nothing at zero. The rail and the nav item say "0 unread". */
-  const name = wholeName ?? (badge === 0 ? label : badgeName(label, badge));
+  const name = wholeName ?? label;
   return (
     <button
       type="button"
@@ -42,7 +40,7 @@ export function ShellAction({
       {icon}
       {showsBadge(badge) ? (
         <span className="hg-app-shell-action-badge">
-          <CountBadge count={badge} label={label.toLowerCase()} />
+          <CountBadge count={badge} />
         </span>
       ) : null}
     </button>

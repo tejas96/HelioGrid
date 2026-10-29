@@ -1,6 +1,6 @@
 import Svg from 'react-native-svg';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import { AUDIO_GLYPH } from './AudioGlyph.logic';
+import { AUDIO_GLYPH, isFilledGlyph } from './AudioGlyph.logic';
 import type { AudioGlyphName } from './AudioPlayer.types';
 
 /** The transport and reason glyphs. Play and pause are filled; the rest are stroked. */
@@ -13,7 +13,7 @@ export function AudioGlyph({
   size?: number;
   color: string;
 }) {
-  if (name === 'play' || name === 'pause') {
+  if (isFilledGlyph(name)) {
     return (
       <Svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
         <ShellGlyphMarks name={AUDIO_GLYPH[name]} />

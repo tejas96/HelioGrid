@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { type KeyboardEvent, useRef } from 'react';
 import { fieldBox } from '../../primitives/FieldBox';
 import { Icon } from '../../primitives/Icon';
@@ -6,6 +7,7 @@ import { useFocusRequest } from '../../primitives/use-focus-request';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { NumberDraftState } from './NumberField.state';
+import type { NumberFieldWords } from './NumberField.types';
 
 function StepIcon({ glyph }: { glyph: ShellGlyphName }) {
   return (
@@ -55,14 +57,15 @@ export interface NumberFieldBoxProps {
   disabled: boolean;
   /** Refusal or error — the inset danger ring, which the focus ring is drawn ON TOP of. */
   danger: boolean;
-  label?: string;
+  label?: TranslatedText;
   /** The input's own name — set only when no `label` names it (`NumberFieldProps.ariaLabel`). */
-  ariaLabel?: string;
+  ariaLabel?: TranslatedText;
   unit?: string;
   currency: boolean;
   describedBy?: string;
   /** `NumberFieldProps.focusRequest`. */
   focusRequest?: number;
+  words: Pick<NumberFieldWords, 'decrease' | 'increase'>;
 }
 
 /** The control itself: the two nudge targets, the figure, and the unit suffix. */
@@ -79,10 +82,11 @@ export function NumberFieldBox({
   currency,
   describedBy,
   focusRequest,
+  words,
 }: NumberFieldBoxProps) {
   const control = useRef<HTMLInputElement>(null);
   useFocusRequest(control, focusRequest);
-  const name = label ?? ariaLabel ?? 'value';
+  const name = label ?? ariaLabel;
   return (
     <div
       className="hg-number-field-box"
@@ -99,7 +103,7 @@ export function NumberFieldBox({
         <Pressable
           className="hg-number-field-step"
           disabled={disabled}
-          accessibilityLabel={`Decrease ${name}`}
+          accessibilityLabel={words.decrease(name)}
           onPress={() => draft.nudge(-1)}
         >
           <StepIcon glyph="minus" />
@@ -131,7 +135,7 @@ export function NumberFieldBox({
         <Pressable
           className="hg-number-field-step"
           disabled={disabled}
-          accessibilityLabel={`Increase ${name}`}
+          accessibilityLabel={words.increase(name)}
           onPress={() => draft.nudge(1)}
         >
           <StepIcon glyph="plus" />

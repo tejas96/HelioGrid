@@ -15,7 +15,7 @@ const en = await createTranslator('en');
 /* Tenant data, as a company types it — never a word of the product's. */
 const COMPANY = 'Suryodaya Solar Pvt Ltd';
 
-/* Only the loading words are read; the other facts fill the signature. */
+/* Only the loading words and the logo's name are read; the other facts fill the signature. */
 const words = brandingWords(en.t, {
   limits: COMPANY_LOGO_LIMITS,
   companyName: COMPANY,
@@ -32,7 +32,12 @@ test('loading names what it loads', async ({ mount, page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   const frame = await mount(
     <PreviewFrame {...STAGE} loading loadingLabel={words.loadingCover}>
-      <DocumentPreview sample={false} parts={['cover']} companyName={COMPANY} caption="" />
+      <DocumentPreview
+        sample={false}
+        logoLabel={words.logoAlt}
+        parts={['cover']}
+        companyName={COMPANY}
+      />
     </PreviewFrame>,
   );
   const wait = page.getByRole('status', { name: words.loadingCover });
@@ -59,7 +64,12 @@ test('loading names what it loads', async ({ mount, page }) => {
   /* The wait ends, the loop with it, and the subject is drawn. */
   await frame.update(
     <PreviewFrame {...STAGE}>
-      <DocumentPreview sample={false} parts={['cover']} companyName={COMPANY} caption="" />
+      <DocumentPreview
+        sample={false}
+        logoLabel={words.logoAlt}
+        parts={['cover']}
+        companyName={COMPANY}
+      />
     </PreviewFrame>,
   );
   await expect(page.getByRole('status')).toHaveCount(0);

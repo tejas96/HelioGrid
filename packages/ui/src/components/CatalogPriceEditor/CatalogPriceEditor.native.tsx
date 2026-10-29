@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
@@ -80,6 +81,7 @@ export function CatalogPriceEditor(props: CatalogPriceEditorProps) {
         </Text>
         <NumberField
           label={words.price}
+          words={words.numberField}
           value={figureOf(amount)}
           onCommit={(value) => props.onAmount(String(value))}
           commits="as-typed"
@@ -129,6 +131,7 @@ function TaxField({ props, taxPct }: { props: CatalogPriceEditorProps; taxPct: s
     <View style={styles.tax}>
       <NumberField
         label={words.taxRate}
+        words={words.numberField}
         value={figureOf(taxPct)}
         onCommit={(value) => props.onTaxPct(String(value))}
         commits="as-typed"
@@ -168,7 +171,7 @@ function SwitchRow({
   fromOverride,
   words,
 }: {
-  label: string;
+  label: TranslatedText;
   checked: boolean;
   onChange: (checked: boolean) => void;
   fromOverride: boolean;

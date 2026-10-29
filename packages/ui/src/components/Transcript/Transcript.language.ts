@@ -10,7 +10,13 @@
      not recorded     a NamedGap — "Language not recorded" — never a guess and never silence
    Per-turn `language` is accepted for exactly one job: deriving where the switch fell. */
 
-import type { LanguageSwitch, TranscriptLanguage, TranscriptTurn } from './Transcript.types';
+import type { TranslatedText } from '@heliogrid/contracts';
+import type {
+  LanguageSwitch,
+  TranscriptLanguage,
+  TranscriptTurn,
+  TranscriptWords,
+} from './Transcript.types';
 
 /** Seconds into the call as "m:ss". Null when there is no offset — a KB preview has none. */
 export function clock(seconds?: number | null): string | null {
@@ -30,21 +36,18 @@ export function languageName(language?: TranscriptLanguage): string | undefined 
 
 /** The whole language fact as one sentence. Never one language when two were spoken. */
 export function languageSentence(
+  words: TranscriptWords,
   language?: TranscriptLanguage,
   switches?: LanguageSwitch[],
-): string | null {
+): TranslatedText | null {
   const first = languageName(language);
   if (!first) {
     return null;
   }
-  if (!switches || switches.length === 0) {
-    return `In ${first}`;
-  }
-  const parts = switches.map((s) => {
-    const at = clock(s.at);
-    return at ? `${s.to} at ${at}` : s.to;
-  });
-  return `In ${first}, switched to ${parts.join(', then ')}`;
+  return words.language(
+    first,
+    (switches ?? []).map((s) => ({ to: s.to, at: clock(s.at) })),
+  );
 }
 
 /** A switch is a change from the PREVIOUS turn's language, never the first turn's own label. */
@@ -97,7 +100,12 @@ export function isCurrentTurn(turns: TranscriptTurn[], index: number, currentAt?
 }
 
 /** "12 turns · Suryodaya agent and Anil Kulkarni" — the count line always states the whole call. */
-export function countLine(whole: number, agentName?: string, customerName?: string): string {
-  const who = [agentName, customerName].filter(Boolean).join(' and ');
-  return `${whole} turn${whole === 1 ? '' : 's'}${who ? ` · ${who}` : ''}`;
+export function countLine(
+  words: TranscriptWords,
+  whole: number,
+  agentName?: string,
+  customerName?: string,
+): TranslatedText {
+  const names = [agentName, customerName].filter((name): name is string => Boolean(name));
+  return words.count(whole, names);
 }

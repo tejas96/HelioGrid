@@ -1,8 +1,9 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { InviteRefusal, RolePreset } from '@heliogrid/domain';
 import type { ReactElement, ReactNode, Ref } from 'react';
+import type { FocusHandle } from '../../primitives/FocusAfter';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
-import type { FocusHandle } from '../SearchField/SearchField.types';
+import type { PhoneFieldWords } from '../PhoneField/PhoneField.types';
 
 /**
  * One invite field as its binding hands it over: what it holds, how it changes, and its answer to
@@ -41,6 +42,8 @@ export interface InviteFormWords {
   namePlaceholder: TranslatedText;
   phone: TranslatedText;
   phoneHelper: TranslatedText;
+  /** The number box's spoken name. */
+  phoneField: PhoneFieldWords;
   rolesHeading: TranslatedText;
   /** The role list's spoken name. */
   rolesGroup: TranslatedText;

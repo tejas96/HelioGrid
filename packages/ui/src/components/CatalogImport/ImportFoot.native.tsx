@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -43,7 +44,7 @@ export function ImportFoot({ props, act }: ImportFootProps) {
 }
 
 /** The line of a report with no act: the kept report still opening, or kept. */
-function quietLine(props: CatalogImportProps): string | null {
+function quietLine(props: CatalogImportProps): TranslatedText | null {
   if (props.opening) return props.words.opening;
   return props.frame === 'report' ? props.words.kept : null;
 }

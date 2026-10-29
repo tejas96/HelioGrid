@@ -8,6 +8,7 @@ export function homeBlockProps(region: HomeBlocksProps, block: HomeBlock): Block
   return {
     overline: block.overline,
     read,
+    loadingLabel: region.loadingLabel,
     emptyTitle: region.emptyTitle,
     emptyMessage: region.emptyMessage,
     errorTitle: region.errorTitle,

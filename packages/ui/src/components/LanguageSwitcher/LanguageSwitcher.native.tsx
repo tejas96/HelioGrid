@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { LanguagePill } from './LanguagePill.native';
 import type { AgentLanguage, LanguageSwitcherProps } from './LanguageSwitcher.types';
-import { selectedSentence, summaryLine, totalOf } from './language-state';
+import { switcherReading } from './language-state';
 
 interface NativeLanguageSwitcherProps extends LanguageSwitcherProps {
   style?: StyleProp<ViewStyle>;
@@ -50,14 +50,15 @@ export function LanguageSwitcher({
   density = 'expressive',
   style,
 }: NativeLanguageSwitcherProps) {
-  const primary = languages.find((l) => l.primary === true) ?? languages[0];
-  const idx = Math.max(
-    0,
-    languages.findIndex((l) => l.code === value),
-  );
-  const total = totalOf(languages, sections);
-  const fallbackName = primary?.label ?? '';
-  const headline = summary ?? summaryLine(languages, total, words, { sectionNoun, languageNoun });
+  const { total, nouns, headline, sentence } = switcherReading({
+    words,
+    languages,
+    value,
+    sections,
+    sectionNoun,
+    languageNoun,
+    summary,
+  });
 
   const pill = (lang: AgentLanguage) => (
     <LanguagePill
@@ -66,7 +67,7 @@ export function LanguageSwitcher({
       active={lang.code === value}
       total={total}
       words={words}
-      nouns={{ sectionNoun, languageNoun, fallbackName }}
+      nouns={nouns}
       showCounts={showCounts}
       onPress={(code) => onChange?.(code)}
     />
@@ -112,11 +113,7 @@ export function LanguageSwitcher({
 
       <View accessibilityLiveRegion="polite" style={styles.sentence}>
         <Text variant="caption" color="secondary">
-          {selectedSentence(languages[idx], total, words, {
-            sectionNoun,
-            languageNoun,
-            fallbackName,
-          })}
+          {sentence}
         </Text>
       </View>
     </View>

@@ -1,4 +1,7 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { basisPointsOfShare } from '@heliogrid/domain';
+import { useRef } from 'react';
+import { type FocusAfter, useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button/Button';
@@ -14,7 +17,7 @@ import { TERMS_PREVIEW, termsDocumentProps } from './PaymentTermsSettings.logic'
 import type { PaymentTermsEditorProps, PaymentTermsLineView } from './PaymentTermsSettings.types';
 
 /** The frame's loading while the api's amounts are out, named for the busy region. */
-function loadingOf(loading: boolean, label: string): PreviewFrameLoading {
+function loadingOf(loading: boolean, label: TranslatedText): PreviewFrameLoading {
   return loading ? { loading: true, loadingLabel: label } : { loading: false };
 }
 
@@ -25,6 +28,8 @@ function loadingOf(loading: boolean, label: string): PreviewFrameLoading {
  */
 export function PaymentTermsEditor(props: PaymentTermsEditorProps) {
   const { words, preview } = props;
+  /* A removed tranche takes its line away: focus goes to the lines that stay. */
+  const lines = useRef<HTMLDivElement>(null);
   return (
     <div className="hg-pay-editor">
       <div className="hg-pay-stage">
@@ -70,9 +75,15 @@ export function PaymentTermsEditor(props: PaymentTermsEditorProps) {
           {...(props.nameError === undefined ? {} : { error: props.nameError })}
         />
       ) : null}
-      <div className="hg-pay-lines">
+      <div ref={lines} tabIndex={-1} className="hg-pay-lines hg-focus-target">
         {props.lines.map((line, index) => (
-          <TrancheLine key={line.key} line={line} first={index === 0} {...props} />
+          <TrancheLine
+            key={line.key}
+            line={line}
+            first={index === 0}
+            focusAfter={lines}
+            {...props}
+          />
         ))}
       </div>
       {props.canAdd ? (
@@ -100,7 +111,13 @@ function TrancheLine({
   onLineShare,
   onRemove,
   onPickStage,
-}: PaymentTermsEditorProps & { line: PaymentTermsLineView; first: boolean }) {
+  focusAfter,
+}: PaymentTermsEditorProps & {
+  line: PaymentTermsLineView;
+  first: boolean;
+  focusAfter: FocusAfter;
+}) {
+  const leaving = useFocusAfter(focusAfter);
   return (
     <div className="hg-pay-line">
       <div className="hg-pay-line-fields">
@@ -117,6 +134,7 @@ function TrancheLine({
         <div className="hg-pay-share">
           <NumberField
             {...(first ? { label: words.share } : { ariaLabel: words.shareOf(line.name) })}
+            words={words.numberField}
             {...(line.share === undefined ? {} : { value: line.share })}
             // As typed: on touch a tap on ✕ or *Save terms* never leaves the field first, so a
             // figure kept for the leave would be lost, or saved without the leave asking.
@@ -138,7 +156,7 @@ function TrancheLine({
             label={words.remove(line.name)}
             size={40}
             variant="ghost"
-            onClick={() => onRemove(line.key)}
+            onClick={leaving(() => onRemove(line.key))}
           >
             <ShellGlyph name="trash" size="sm" />
           </IconButton>

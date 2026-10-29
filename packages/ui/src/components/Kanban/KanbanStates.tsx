@@ -1,20 +1,22 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
 import type { KanbanBoardState } from './Kanban.logic';
-import { KANBAN_SKELETON_BARS, KANBAN_SKELETON_COLUMNS } from './KanbanStates.logic';
+import { boardMarkOf, KANBAN_SKELETON_BARS, skeletonColumnsOf } from './KanbanStates.logic';
 
 /**
  * A column-shaped placeholder. Never a value presented as a real one — three empty bars where
  * three cards will be, in the same footprint the column will occupy.
  */
-export function ColumnSkeleton({ stacked }: { stacked: boolean }) {
+export function ColumnSkeleton({ stacked, label }: { stacked: boolean; label: TranslatedText }) {
   return (
     <div
       className="hg-kanban-skeleton"
       data-stacked={stacked ? 'true' : undefined}
       role="status"
-      aria-label="Loading board"
+      aria-label={label}
     >
       <div className="hg-kanban-skeleton-bar hg-kanban-skeleton-head" />
       <div className="hg-kanban-skeleton-bars">
@@ -28,14 +30,23 @@ export function ColumnSkeleton({ stacked }: { stacked: boolean }) {
 
 interface BoardMessageProps {
   tone?: 'warning';
-  title: string;
-  message?: string;
+  title?: TranslatedText;
+  message?: TranslatedText;
   onRetry?: () => void;
-  retryLabel?: string;
+  retryLabel?: TranslatedText;
+  /** The board's frame, where focus lands once the retry has left. */
+  focusAfter: FocusAfter;
 }
 
 /** The board's own empty and error surfaces. `unavailable` is `UnavailableNote`'s, never this. */
-export function BoardMessage({ tone, title, message, onRetry, retryLabel }: BoardMessageProps) {
+export function BoardMessage({
+  tone,
+  title,
+  message,
+  onRetry,
+  retryLabel,
+  focusAfter,
+}: BoardMessageProps) {
   return (
     <div className="hg-kanban-message">
       <span className="hg-kanban-message-mark" data-tone={tone}>
@@ -50,12 +61,12 @@ export function BoardMessage({ tone, title, message, onRetry, retryLabel }: Boar
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          <ShellGlyphMarks name={tone === 'warning' ? 'alert-circle' : 'kanban'} />
+          <ShellGlyphMarks name={boardMarkOf(tone)} />
         </svg>
       </span>
-      <div className="hg-kanban-message-title">{title}</div>
+      {title ? <div className="hg-kanban-message-title">{title}</div> : null}
       {message ? <div className="hg-kanban-message-text">{message}</div> : null}
-      <RetryButton onRetry={onRetry} label={retryLabel} />
+      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
     </div>
   );
 }
@@ -63,14 +74,17 @@ export function BoardMessage({ tone, title, message, onRetry, retryLabel }: Boar
 export interface BoardStateViewProps {
   state: KanbanBoardState;
   stacked: boolean;
-  errorTitle: string;
-  errorMessage: string;
+  loadingLabel: TranslatedText;
+  errorTitle?: TranslatedText;
+  errorMessage?: TranslatedText;
   onRetry?: () => void;
-  retryLabel?: string;
-  unavailableTitle: string;
-  unavailableMessage?: string;
-  emptyTitle: string;
-  emptyDescription?: string;
+  retryLabel?: TranslatedText;
+  /** The board's frame, where focus lands once the retry has left. */
+  focusAfter: FocusAfter;
+  unavailableTitle?: TranslatedText;
+  unavailableMessage?: TranslatedText;
+  emptyTitle?: TranslatedText;
+  emptyDescription?: TranslatedText;
 }
 
 /**
@@ -81,10 +95,12 @@ export interface BoardStateViewProps {
 export function BoardStateView({
   state,
   stacked,
+  loadingLabel,
   errorTitle,
   errorMessage,
   onRetry,
   retryLabel,
+  focusAfter,
   unavailableTitle,
   unavailableMessage,
   emptyTitle,
@@ -98,22 +114,23 @@ export function BoardStateView({
         message={errorMessage}
         onRetry={onRetry}
         retryLabel={retryLabel}
+        focusAfter={focusAfter}
       />
     );
   }
   if (state === 'unavailable') {
-    return (
+    return unavailableTitle === undefined ? null : (
       <UnavailableNote variant="region" title={unavailableTitle} message={unavailableMessage} />
     );
   }
   if (state === 'loading') {
     return (
       <>
-        {(stacked ? KANBAN_SKELETON_COLUMNS.slice(0, 1) : KANBAN_SKELETON_COLUMNS).map((k) => (
-          <ColumnSkeleton key={k} stacked={stacked} />
+        {skeletonColumnsOf(stacked).map((k) => (
+          <ColumnSkeleton key={k} stacked={stacked} label={loadingLabel} />
         ))}
       </>
     );
   }
-  return <BoardMessage title={emptyTitle} message={emptyDescription} />;
+  return <BoardMessage title={emptyTitle} message={emptyDescription} focusAfter={focusAfter} />;
 }

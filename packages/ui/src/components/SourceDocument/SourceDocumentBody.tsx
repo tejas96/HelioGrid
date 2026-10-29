@@ -1,92 +1,46 @@
 import { RetryButton } from '../Button/RetryButton';
 import { ImageFrame } from '../Image';
-import type { ResolvedDocumentState } from './SourceDocument.logic';
-import type { SourceDocumentFit, SourceDocumentPage } from './SourceDocument.types';
+import { documentBodyOf, opensOriginal } from './SourceDocument.logic';
+import type { SourceDocumentBodyProps } from './SourceDocument.types';
 import { Message, OpenOriginal } from './SourceDocumentChrome';
-
-export interface SourceDocumentBodyProps {
-  resolved: ResolvedDocumentState;
-  name: string;
-  page: SourceDocumentPage | null;
-  /** Zero-based; the reader is shown `pageNumber + 1`. */
-  pageNumber: number;
-  count: number;
-  aspect: number;
-  bodyHeight: number;
-  fit: SourceDocumentFit;
-  originalUrl?: string;
-  onOpenOriginal?: () => void;
-  openLabel: string;
-  onRetry?: () => void;
-  retryLabel?: string;
-  unsupportedTitle: string;
-  unsupportedMessage: string;
-  failedTitle: string;
-  failedMessage: string;
-  emptyTitle: string;
-  emptyMessage: string;
-}
 
 /**
  * The reading area itself — the page, or the words that say why there isn't one. None of the four
  * non-reading states is a spinner over a blank rectangle, and **every one of them still offers the
  * original**: a preview is never the only way to see a file.
  */
-export function SourceDocumentBody({
-  resolved,
-  name,
-  page,
-  pageNumber,
-  count,
-  aspect,
-  bodyHeight,
-  fit,
-  originalUrl,
-  onOpenOriginal,
-  openLabel,
-  onRetry,
-  retryLabel,
-  unsupportedTitle,
-  unsupportedMessage,
-  failedTitle,
-  failedMessage,
-  emptyTitle,
-  emptyMessage,
-}: SourceDocumentBodyProps) {
-  const canOpen = Boolean(originalUrl || onOpenOriginal);
-  const retrying = onRetry !== undefined && retryLabel !== undefined;
-  const openAction = canOpen ? (
+export function SourceDocumentBody(props: SourceDocumentBodyProps) {
+  const { originalUrl, onOpenOriginal, onRetry, retryLabel, focusAfter } = props;
+  const view = documentBodyOf(props);
+  const openAction = opensOriginal(originalUrl, onOpenOriginal) ? (
     <OpenOriginal href={originalUrl} onClick={onOpenOriginal}>
-      {openLabel}
+      {props.openLabel}
     </OpenOriginal>
   ) : null;
 
-  if (resolved === 'loading') {
+  if (view.kind === 'loading') {
     /* The page footprint is already the right shape — nothing reflows when the file lands. */
     return (
       <div
         role="status"
-        aria-label={`Loading ${name}`}
+        aria-label={view.label}
         className="hg-source-doc-shimmer"
-        style={{ width: Math.round((bodyHeight - 24) * aspect), height: bodyHeight - 24 }}
+        style={view.footprint}
       />
     );
   }
-  if (resolved === 'unsupported') {
-    return <Message title={unsupportedTitle} message={unsupportedMessage} action={openAction} />;
-  }
-  if (resolved === 'failed') {
+  if (view.kind === 'failed') {
     /* THE STATE THAT MOST NEEDS THE SOURCE IS THE ONE THAT USED TO WITHHOLD IT. Retry first (it
        is the likelier fix), the original beside it. */
     return (
       <Message
         tone="warning"
-        title={failedTitle}
-        message={failedMessage}
+        title={view.title}
+        message={view.message}
         action={
-          retrying || canOpen ? (
+          view.hasActions ? (
             <span className="hg-source-doc-actions">
-              <RetryButton onRetry={onRetry} label={retryLabel} />
+              <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
               {openAction}
             </span>
           ) : null
@@ -94,21 +48,22 @@ export function SourceDocumentBody({
       />
     );
   }
-  if (resolved === 'empty' || page === null) {
-    return <Message title={emptyTitle} message={emptyMessage} action={openAction} />;
+  if (view.kind !== 'page') {
+    return <Message title={view.title} message={view.message} action={openAction} />;
   }
   return (
     <ImageFrame
-      src={page.url}
-      alt={page.label || `${name}, page ${pageNumber + 1} of ${count}`}
-      ratio={`${aspect}`}
-      width={fit === 'page' ? Math.round((bodyHeight - 24) * aspect) : '100%'}
+      src={view.page.url}
+      alt={view.alt}
+      ratio={view.ratio}
+      width={view.width}
       fit="contain"
       radius={10}
       density="functional"
       missingReason="unavailable"
       onRetry={onRetry}
       retryLabel={retryLabel}
+      words={props.words.image}
     />
   );
 }

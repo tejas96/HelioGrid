@@ -6,7 +6,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
-import { resolveStatusChip, STATUS_CHIP_STATUSES } from './StatusChip.registry';
+import { STATUS_CHIP_STATUSES, statusChipTone } from './StatusChip.registry';
 import type { StatusChipDensity, StatusChipProps } from './StatusChip.types';
 
 const styles = StyleSheet.create({
@@ -31,11 +31,10 @@ export function StatusChip({
   dot = true,
   style,
 }: NativeStatusChipProps) {
-  const resolved = resolveStatusChip(status, tone, label);
   return (
     <StatusMark
-      tone={resolved.tone}
-      label={resolved.words}
+      tone={statusChipTone(status, tone)}
+      label={label}
       mark={dot}
       style={[DENSITY[density], style]}
     />

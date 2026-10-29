@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties } from 'react';
 import { PANEL_SKELETON_ROWS } from './PanelSkeleton.logic';
 
@@ -9,15 +10,21 @@ function bar(width: string, height: number): BarVars {
 }
 
 interface PanelSkeletonProps {
-  /** The status region's accessible name. The reference hardcodes it; no prop carries it. */
-  label?: string;
+  /**
+   * The status region's accessible name: what is loading, the caller's `loadingLabel`. A read
+   * always brings one; with none there is no read, so nothing loads and nothing is drawn.
+   */
+  label?: TranslatedText;
 }
 
 /**
  * `loading` — content is coming, and never a placeholder value presented as a real one. The bars
  * carry no numbers for exactly that reason.
  */
-export function PanelSkeleton({ label = 'Loading' }: PanelSkeletonProps) {
+export function PanelSkeleton({ label }: PanelSkeletonProps) {
+  if (label === undefined) {
+    return null;
+  }
   return (
     <div aria-label={label} className="hg-detail-panel-skeleton" role="status">
       <div className="hg-detail-panel-skeleton-pair">

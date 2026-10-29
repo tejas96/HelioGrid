@@ -1,12 +1,15 @@
 import { HOME_LADDER } from '@heliogrid/domain';
-import { createTranslator, homeBlocksWords } from '@heliogrid/i18n';
+import { BLOCK, createTranslator, homeBlocksWords } from '@heliogrid/i18n';
 import { HomeBlocks } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { expectNoSidewaysScroll, expectSharedEdge, settledBox } from '../support/layout';
 
 const en = await createTranslator('en');
 const [OWNER, MANAGER] = HOME_LADDER;
-const words = homeBlocksWords(en.t, { home: OWNER, composed: [MANAGER] });
+const words = {
+  ...homeBlocksWords(en.t, { home: OWNER, composed: [MANAGER] }),
+  loadingLabel: en.t(BLOCK.loading),
+};
 
 test.describe('at 1536', () => {
   test.use({ viewport: { width: 1536, height: 960 } });

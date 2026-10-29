@@ -3,6 +3,7 @@ import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { useFormat } from '../MarketProvider/market-context';
 import { TimeField } from './TimeField';
+import { isPairRinged } from './TimeField.logic';
 import type { TimeRangeFieldProps } from './TimeField.types';
 import { TimeFieldMessage } from './TimeFieldMessage';
 import { useTimeRange } from './use-time-range';
@@ -22,6 +23,7 @@ interface WebTimeRangeFieldProps extends TimeRangeFieldProps {
  * description is "invalid" with no why.
  */
 export function TimeRangeField({
+  words,
   from = '',
   to = '',
   onCommit,
@@ -39,10 +41,10 @@ export function TimeRangeField({
   const format = useFormat();
   const rangeId = useId();
   const msgId = `${rangeId}-msg`;
-  const range = useTimeRange({ format, from, max, min, onCommit, to, windowName });
-  const hasError = error !== undefined && error !== null && error !== false;
-  const ringed = hasError || range.orderError !== null;
+  const range = useTimeRange({ format, from, max, min, onCommit, to, windowName, words });
+  const ringed = isPairRinged(error, range.orderError);
   const half = {
+    words,
     density,
     disabled,
     max,
@@ -59,11 +61,16 @@ export function TimeRangeField({
       <div className="hg-time-range-row">
         <TimeField
           {...half}
-          label="From"
+          label={words.from}
           value={from}
           onCommit={(next) => range.set('from', next)}
         />
-        <TimeField {...half} label="To" value={to} onCommit={(next) => range.set('to', next)} />
+        <TimeField
+          {...half}
+          label={words.to}
+          value={to}
+          onCommit={(next) => range.set('to', next)}
+        />
       </div>
       {/* ONE MESSAGE COMPONENT, NOT TWO. This pair used to re-implement `TimeFieldMessage` inline
           for the sake of putting the id on the refusal branch — same precedence, same class, same

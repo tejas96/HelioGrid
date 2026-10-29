@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactElement } from 'react';
 import { cloneElement } from 'react';
@@ -15,7 +16,7 @@ type TriggerElement = ReactElement<{ disabled?: boolean; onClick?: () => void }>
 interface MenuTriggerProps {
   disabled: boolean;
   /** The menu's accessible name — also the default trigger's `accessibilityLabel`. */
-  label: string;
+  label: TranslatedText;
   onToggle: () => void;
   open: boolean;
   trigger?: ReactElement;

@@ -1,21 +1,11 @@
 import type { CSSProperties } from 'react';
-import { useEffect, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
 import { StatusMark } from '../../primitives/StatusMark';
 import type { FindingListProps, FindingStatus, FindingStatusMeta } from './FindingList.types';
-import {
-  arrangeFindings,
-  countSentence,
-  FINDING_LABEL,
-  FINDING_RANK,
-  FINDING_VERDICT_LABEL,
-  findingVerdict,
-  headingWords,
-  normaliseFindings,
-  readyToggleWords,
-} from './FindingList.verdict';
+import { countSentence, FINDING_RANK, findingVerdict } from './FindingList.verdict';
 import { FINDING_TONE, FindingListRow } from './FindingListRow';
+import { useFindingList } from './use-finding-list';
 
 interface WebFindingListProps extends FindingListProps {
   className?: string;
@@ -23,78 +13,53 @@ interface WebFindingListProps extends FindingListProps {
 }
 
 /* The status table in the web colour vocabulary. Exposed as `FindingList.statuses` so a caller
-   can read the same ranks, words and tokens the list draws with. */
+   can read the same ranks and tokens the list draws with; the words are the caller's. */
 const FINDING_STATUSES: Record<FindingStatus, FindingStatusMeta> = {
   blocking: {
     rank: FINDING_RANK.blocking,
-    label: FINDING_LABEL.blocking,
     tone: 'var(--danger-text)',
     bg: 'var(--danger-bg)',
     mark: 'var(--danger)',
-    verdict: FINDING_VERDICT_LABEL.blocking,
   },
   attention: {
     rank: FINDING_RANK.attention,
-    label: FINDING_LABEL.attention,
     tone: 'var(--warning-text)',
     bg: 'var(--warning-bg)',
     /* The warning MARK takes --warning-text: plain --warning clears no contrast floor. */
     mark: 'var(--warning-text)',
-    verdict: FINDING_VERDICT_LABEL.attention,
   },
   ready: {
     rank: FINDING_RANK.ready,
-    label: FINDING_LABEL.ready,
     tone: 'var(--success-text)',
     bg: 'var(--success-bg)',
     mark: 'var(--success)',
-    verdict: FINDING_VERDICT_LABEL.ready,
   },
 };
-
-/** The two props this component refuses to have. Ignored loudly rather than silently. */
-function useRefusedProps(props: FindingListProps) {
-  const guarded = props as unknown as Record<string, unknown>;
-  const refused = 'max' in guarded || 'mode' in guarded;
-  useEffect(() => {
-    if (refused) {
-      console.warn(
-        'FindingList: `max` and `mode` are not props. A gate that promises every failure cannot cap or rank one away — use BannerStack for facts that can speak for one another.',
-      );
-    }
-  }, [refused]);
-}
 
 /** The gate that lists every failure, counted, each with the act that fixes it. */
 export function FindingList(props: WebFindingListProps) {
   const {
-    findings,
-    actionLabel = 'share',
-    title,
-    order = 'severity',
-    readyMode = 'collapsed',
+    words,
     verdict = true,
     onJump,
-    jumpLabel = 'Go to the step',
-    passTitle = 'Nothing to fix',
+    jumpLabel,
     passMessage,
     note,
     density = 'expressive',
     className,
     style,
   } = props;
-  useRefusedProps(props);
-
-  const list = normaliseFindings(findings);
-  const summary = findingVerdict(list);
-  const [readyOpen, setReadyOpen] = useState(readyMode === 'listed');
-  const { ready, mainList, tailList, showReady } = arrangeFindings(
-    list,
-    order,
-    readyMode,
+  const {
+    summary,
+    heading,
+    mainList,
+    tailList,
+    ready,
     readyOpen,
-  );
-  const heading = title ?? headingWords(summary, actionLabel, passTitle);
+    toggleReady,
+    foldsReady,
+    showsTail,
+  } = useFindingList(props);
 
   return (
     <section
@@ -108,14 +73,14 @@ export function FindingList(props: WebFindingListProps) {
         {verdict ? (
           <StatusMark
             tone={FINDING_TONE[summary.status]}
-            label={FINDING_LABEL[summary.status]}
+            label={words.status[summary.status]}
             className="hg-finding-list-verdict"
           />
         ) : null}
       </div>
 
       <p role="status" className="hg-finding-list-count">
-        {countSentence(summary, passMessage)}
+        {countSentence(summary, words, passMessage)}
       </p>
 
       {mainList.length > 0 ? (
@@ -124,6 +89,7 @@ export function FindingList(props: WebFindingListProps) {
             <FindingListRow
               key={entry.key}
               finding={entry.finding}
+              words={words}
               onJump={onJump}
               jumpLabel={jumpLabel}
             />
@@ -134,21 +100,22 @@ export function FindingList(props: WebFindingListProps) {
       {/* The fold's expanded state goes through the primitive — `aria-expanded` here,
           `accessibilityState.expanded` on the native half, one declaration — and the 44px floor
           and the focus ring come with it. */}
-      {ready.length > 0 && readyMode === 'collapsed' ? (
+      {foldsReady ? (
         <Pressable
           className="hg-finding-list-ready-toggle"
           accessibilityState={{ expanded: readyOpen }}
-          onPress={() => setReadyOpen((open) => !open)}
+          onPress={toggleReady}
         >
-          {readyToggleWords(ready.length, readyOpen)}
+          {words.readyToggle(ready.length, readyOpen)}
         </Pressable>
       ) : null}
-      {tailList.length > 0 && showReady ? (
+      {showsTail ? (
         <ul className="hg-finding-list-items">
           {tailList.map((entry) => (
             <FindingListRow
               key={entry.key}
               finding={entry.finding}
+              words={words}
               onJump={onJump}
               jumpLabel={jumpLabel}
             />

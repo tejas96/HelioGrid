@@ -15,21 +15,16 @@ import {
   FACT_MEASURE,
   flowWords,
   gapWithName,
+  groupedRowShape,
   isUnderFloor,
   isWords,
+  loneRowForm,
   rowShape,
-  shapeOf,
   useAnswerReport,
   useFactGround,
   useGapDropsTier,
 } from './FactRow.logic';
-import type {
-  FactDensity,
-  FactInkKind,
-  FactRowForm,
-  FactRowProps,
-  FactShape,
-} from './FactRow.types';
+import type { FactDensity, FactInkKind, FactRowProps, FactShape } from './FactRow.types';
 import {
   FACT_METRICS,
   FactMeasureProvider,
@@ -174,13 +169,16 @@ function FactRowAlone(props: NativeFactRowProps & { ink: FactInkKind }) {
   const { items, stacked, declaredLong } = rowShape(props, longAt);
   const room = useRoomFit(1, contentSignature([props]));
   const floor = isUnderFloor(room.width, leadBelow);
-  const lead = forced !== 'auto' ? forced === 'lead' : declaredLong || floor || !room.fits;
-  const shape = shapeOf(lead, stacked);
-  const settled = forced !== 'auto' || declaredLong || floor || room.answered;
-  const answer: FactRowForm | null =
-    settled && room.width !== null
-      ? { form: lead ? 'lead' : 'pair', shape, width: room.width, hasMark: Boolean(props.mark) }
-      : null;
+  const { lead, shape, answer } = loneRowForm({
+    forced,
+    declaredLong,
+    floor,
+    fits: room.fits,
+    answered: room.answered,
+    width: room.width,
+    stacked,
+    hasMark: Boolean(props.mark),
+  });
   useAnswerReport(answer, shape, onFormChange);
   const { ch, probe } = useCharWidth(FACT_METRICS[density].valueSize);
   const { reportValue } = room;
@@ -214,20 +212,7 @@ export function FactRow(props: NativeFactRowProps) {
   useGapDropsTier(props.gap, props.provenance, props.label);
   const group = ground.group;
   if (group === undefined) return <FactRowAlone {...props} ink={ground.ink} />;
-  const { items, stacked } = rowShape(props, group.longAt);
-  const forced = props.form ?? 'auto';
-  const lead = forced !== 'auto' ? forced === 'lead' : group.form === 'lead';
-  return (
-    <FactRowBody
-      {...props}
-      items={items}
-      stacked={stacked}
-      shape={shapeOf(lead, stacked)}
-      hasMarkCol={group.hasMark}
-      density={props.density ?? group.density}
-      ink={ground.ink}
-    />
-  );
+  return <FactRowBody {...props} {...groupedRowShape(props, group)} ink={ground.ink} />;
 }
 
 const styles = StyleSheet.create({

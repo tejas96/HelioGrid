@@ -37,6 +37,9 @@ export const compareStyles = StyleSheet.create({
   /* Its fill is the control fill from `useGround()`, set where it is drawn. */
   chooseSelected: { borderWidth: 2, borderColor: theme.colors.accent },
   valueRow: { flexDirection: 'row', alignItems: 'baseline', flexWrap: 'wrap' },
+  /* The web half's `.hg-compare-best` margin: the word stands off the figure by layout, never by
+     spaces typed into it. */
+  best: { marginLeft: 6 },
 });
 
 /* Figures line up digit under digit, which is what makes a column of them comparable at a glance

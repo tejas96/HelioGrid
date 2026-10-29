@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { importWizardStepIndex } from '@heliogrid/domain';
 import { Button } from '../Button';
 import type { actOf } from './CatalogImport.steps';
@@ -58,7 +59,7 @@ export function ImportFoot(props: ImportFootProps) {
 }
 
 /** The line of a report with no act: the kept report still opening, or kept. */
-function quietLine(props: CatalogImportProps): string | null {
+function quietLine(props: CatalogImportProps): TranslatedText | null {
   if (props.opening) return props.words.opening;
   return props.frame === 'report' ? props.words.kept : null;
 }

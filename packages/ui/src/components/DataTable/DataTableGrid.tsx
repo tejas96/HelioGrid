@@ -1,25 +1,11 @@
-import { rowKeyOf } from './DataTable.logic';
-import type { DataTableProps, DataTableSort } from './DataTable.types';
+import { rowKeysOf } from './DataTable.logic';
+import type { GridProps } from './DataTable.parts.types';
 import { DataTableHead } from './DataTableHead';
 import { asProvenanceSpec } from './DataTableProvenance.logic';
 import { DataTableRows } from './DataTableRows';
 import { TotalFoot } from './DataTableTotal';
 
-export interface GridProps<Row> {
-  /** The rows in the order they render — sorting has already happened. */
-  rows: Row[];
-  rowKey: NonNullable<DataTableProps<Row>['rowKey']>;
-  selectable: boolean;
-  selected: (string | number)[];
-  onToggleRow: (key: string | number) => void;
-  onToggleAll: (keys: (string | number)[]) => void;
-  allSelected: boolean;
-  sortable: boolean;
-  sort: DataTableSort | null | undefined;
-  onSort: (next: DataTableSort) => void;
-  labelledBy?: string;
-  table: DataTableProps<Row>;
-  pageSize: number;
+interface WebGridProps<Row> extends GridProps<Row> {
   /** The quiet head: the rows stand in one raised card under the labels. */
   quiet: boolean;
 }
@@ -44,7 +30,7 @@ export function DataTableGrid<Row>({
   table,
   pageSize,
   quiet,
-}: GridProps<Row>) {
+}: WebGridProps<Row>) {
   const { columns, rowActions, totalRow } = table;
   const hasActions = rowActions !== undefined;
   /* Resolved once for the whole header: the statement each column's tier is measured against. */
@@ -56,7 +42,7 @@ export function DataTableGrid<Row>({
         columns={columns}
         selectable={selectable}
         allSelected={allSelected}
-        onToggleAll={() => onToggleAll(rows.map((row, index) => rowKeyOf(rowKey, row, index)))}
+        onToggleAll={() => onToggleAll(rowKeysOf(rows, rowKey))}
         sortable={sortable}
         sort={sort}
         onSort={onSort}
@@ -64,6 +50,7 @@ export function DataTableGrid<Row>({
         actionsLabel={table.actionsLabel}
         tableSpec={tableSpec}
         quiet={quiet}
+        words={table.words}
       />
       <DataTableRows
         rows={rows}
@@ -84,6 +71,7 @@ export function DataTableGrid<Row>({
           page={table.page}
           pageSize={pageSize}
           renderedRows={table.rows.length}
+          words={table.words}
         />
       )}
     </table>

@@ -3,6 +3,7 @@ import { useImperativeHandle, useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, ScrollView, StyleSheet, View } from 'react-native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
+import { chosenChipIndex } from './FilterBar.logic';
 import type { FilterChipsProps } from './FilterBar.types';
 import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
 import {
@@ -47,10 +48,7 @@ export function FilterChips({
   style,
 }: NativeFilterChipsProps) {
   const refs = useRef<(View | null)[]>([]);
-  const selectedIndex = Math.max(
-    0,
-    options.findIndex((option) => optionValue(option) === value),
-  );
+  const selectedIndex = chosenChipIndex(options, value);
   /* Read when the focus lands, not when it was asked for: a caller asks in the same turn it chooses
      the chip. */
   const chosen = useRef(selectedIndex);

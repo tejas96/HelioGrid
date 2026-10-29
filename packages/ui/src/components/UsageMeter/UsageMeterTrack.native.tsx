@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import type { UsageFill, UsageScale } from './usage-meter-model';
+import { usageTrackMarks } from './usage-meter-model';
 
 const FILL: Record<UsageFill, string> = {
   accent: theme.colors.accent,
@@ -17,7 +18,6 @@ interface NativeUsageMeterTrackProps {
   accessibilityLabel: string;
   valueText: string;
   value: number;
-  limit: number;
 }
 
 /**
@@ -31,25 +31,25 @@ export function UsageMeterTrack({
   accessibilityLabel,
   valueText,
   value,
-  limit,
 }: NativeUsageMeterTrackProps) {
   /* The tick and the overage edge are cut-outs: the ground showing through the track. */
   const { ground } = useGround();
+  const marks = usageTrackMarks(scale);
   return (
     <View
       accessibilityRole="progressbar"
       accessibilityLabel={accessibilityLabel}
-      accessibilityValue={{ now: value, min: 0, max: Math.max(limit, value), text: valueText }}
+      accessibilityValue={{ now: value, min: 0, max: scale.scaleMax, text: valueText }}
       style={[styles.track, { height }]}
     >
       <View style={{ width: `${scale.usedPct}%`, backgroundColor: FILL[scale.fill] }} />
-      {scale.overPct > 0 ? (
+      {marks.drawsOver ? (
         <View style={[styles.over, { width: `${scale.overPct}%`, borderLeftColor: ground }]} />
       ) : null}
-      {scale.threshold > 0 && scale.threshold < 100 ? (
+      {marks.drawsTick ? (
         <View style={[styles.tick, { left: `${scale.threshold}%`, backgroundColor: ground }]} />
       ) : null}
-      {scale.overPct > 0 && scale.limitMark < 100 ? (
+      {marks.drawsBundleMark ? (
         <View style={[styles.bundleMark, { left: `${scale.limitMark}%` }]} />
       ) : null}
     </View>

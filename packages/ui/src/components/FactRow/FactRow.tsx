@@ -12,20 +12,15 @@ import {
   FACT_MEASURE,
   FACT_WRAP_LINES,
   gapWithName,
+  groupedRowShape,
   isUnderFloor,
+  loneRowForm,
   rowShape,
-  shapeOf,
   useAnswerReport,
   useFactGround,
   useGapDropsTier,
 } from './FactRow.logic';
-import type {
-  FactDensity,
-  FactInkKind,
-  FactRowForm,
-  FactRowProps,
-  FactShape,
-} from './FactRow.types';
+import type { FactDensity, FactInkKind, FactRowProps, FactShape } from './FactRow.types';
 
 export interface WebFactRowProps extends FactRowProps {
   className?: string;
@@ -201,13 +196,16 @@ function FactRowAlone(props: WebFactRowProps & { ink: FactInkKind }) {
     forced === 'auto' && !declaredLong && !floor,
     `${gen}|${contentSignature([props])}`,
   );
-  const lead = forced !== 'auto' ? forced === 'lead' : declaredLong || floor || !fits;
-  const shape = shapeOf(lead, stacked);
-  const settled = forced !== 'auto' || declaredLong || floor || answered;
-  const answer: FactRowForm | null =
-    settled && width !== null
-      ? { form: lead ? 'lead' : 'pair', shape, width, hasMark: Boolean(props.mark) }
-      : null;
+  const { lead, shape, answer } = loneRowForm({
+    forced,
+    declaredLong,
+    floor,
+    fits,
+    answered,
+    width,
+    stacked,
+    hasMark: Boolean(props.mark),
+  });
   useAnswerReport(answer, shape, onFormChange);
   const vars: FactVars = { '--hg-fact-measure': String(measure) };
   return (
@@ -240,18 +238,5 @@ export function FactRow(props: WebFactRowProps) {
   useGapDropsTier(props.gap, props.provenance, props.label);
   const group = ground.group;
   if (group === undefined) return <FactRowAlone {...props} ink={ground.ink} />;
-  const { items, stacked } = rowShape(props, group.longAt);
-  const forced = props.form ?? 'auto';
-  const lead = forced !== 'auto' ? forced === 'lead' : group.form === 'lead';
-  return (
-    <FactRowBody
-      {...props}
-      items={items}
-      stacked={stacked}
-      shape={shapeOf(lead, stacked)}
-      hasMarkCol={group.hasMark}
-      density={props.density ?? group.density}
-      ink={ground.ink}
-    />
-  );
+  return <FactRowBody {...props} {...groupedRowShape(props, group)} ink={ground.ink} />;
 }

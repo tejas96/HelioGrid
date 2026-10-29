@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { narrationShape } from './operation-progress-model';
 
 interface OperationNarrationProps {
   /** "Step 2 of 3", when the caller has both halves. */
@@ -13,16 +14,16 @@ interface OperationNarrationProps {
  * and on a 40-second solar-access run the words are the whole reason the wait is tolerable.
  */
 export function OperationNarration({ step, stage, counted }: OperationNarrationProps) {
-  const hasNarration = step !== null || stage !== undefined;
-  if (!hasNarration && counted === null) {
+  const shape = narrationShape(step, stage, counted);
+  if (shape === null) {
     return null;
   }
   return (
     <div role="status" aria-live="polite" className="hg-operation-progress-narration">
-      {hasNarration ? (
+      {shape.narrates ? (
         <span className="hg-operation-progress-narration-words">
           {step}
-          {step !== null && stage !== undefined ? ' · ' : ''}
+          {shape.joins ? ' · ' : ''}
           {stage}
         </span>
       ) : null}

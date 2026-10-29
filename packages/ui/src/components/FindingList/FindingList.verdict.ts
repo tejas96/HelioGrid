@@ -1,23 +1,12 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
-import type { Finding, FindingStatus, FindingVerdict } from './FindingList.types';
+import type { Finding, FindingListWords, FindingStatus, FindingVerdict } from './FindingList.types';
 
 /** Blocking > attention > ready. The one ranking, so nothing has to decide it twice. */
 export const FINDING_RANK: Record<FindingStatus, number> = {
   blocking: 3,
   attention: 2,
   ready: 1,
-};
-
-export const FINDING_LABEL: Record<FindingStatus, string> = {
-  blocking: 'Blocking',
-  attention: 'Needs attention',
-  ready: 'Ready',
-};
-
-export const FINDING_VERDICT_LABEL: Record<FindingStatus, string> = {
-  blocking: 'Blocking — this cannot be shared yet',
-  attention: 'Needs attention',
-  ready: 'Ready',
 };
 
 /** An unstated status is `attention`: a check nobody classified is not a check that passed. */
@@ -34,7 +23,10 @@ function normalise(findings: Finding[] | undefined): Finding[] {
  * the list itself read the same answer from the same function rather than three screens each
  * deciding what "mostly fine" means.
  */
-export function findingVerdict(findings: Finding[]): FindingVerdict {
+export function findingVerdict(
+  findings: Finding[],
+  words: Pick<FindingListWords, 'verdict'>,
+): FindingVerdict {
   const list = normalise(findings);
   const open = list.filter((finding) => statusOf(finding) !== 'ready');
   const worst = list.reduce<FindingStatus>((acc, finding) => {
@@ -43,7 +35,7 @@ export function findingVerdict(findings: Finding[]): FindingVerdict {
   }, 'ready');
   return {
     status: worst,
-    label: FINDING_VERDICT_LABEL[worst],
+    label: words.verdict[worst],
     total: list.length,
     openCount: open.length,
     blockingCount: list.filter((finding) => statusOf(finding) === 'blocking').length,
@@ -110,27 +102,38 @@ export function arrangeFindings(
 /** The composed heading. THE COUNT COMES FROM THE LIST even when `title` replaces the words. */
 export function headingWords(
   summary: FindingVerdict,
-  actionLabel: string,
+  words: FindingListWords,
+  actionLabel: string | undefined,
   passTitle: ReactNode,
 ): ReactNode {
   if (summary.passes) {
-    return passTitle;
+    return passTitle ?? words.passTitle;
   }
-  return `Fix ${summary.openCount} ${summary.openCount === 1 ? 'issue' : 'issues'} to ${actionLabel}`;
+  return words.heading(summary.openCount, actionLabel);
 }
 
 /** The counted line. Every member of the set is in one of these numbers. */
-export function countSentence(summary: FindingVerdict, passMessage?: ReactNode): ReactNode {
+export function countSentence(
+  summary: FindingVerdict,
+  words: FindingListWords,
+  passMessage?: ReactNode,
+): ReactNode {
   if (summary.total === 0) {
-    return 'No checks ran.';
+    return words.noChecks;
   }
   if (summary.passes) {
-    return passMessage ?? `All ${summary.total} checks are ready.`;
+    return passMessage ?? words.allReady(summary.total);
   }
-  return `${summary.openCount} of ${summary.total} checks need work — ${summary.blockingCount} blocking, ${summary.attentionCount} to look at. ${summary.readyCount} ready.`;
+  return words.openCount(summary);
 }
 
-/** The words on the ready fold's control. A real control, never a hover affordance. */
-export function readyToggleWords(count: number, open: boolean): string {
-  return `${open ? 'Hide' : 'Show'} the ${count} ready ${count === 1 ? 'check' : 'checks'}`;
+/** The jump's words: the finding's own, else its step's, else the list's. */
+export function jumpWords(
+  finding: Finding,
+  words: FindingListWords,
+  jumpLabel: TranslatedText | undefined,
+): TranslatedText {
+  if (finding.jumpLabel !== undefined) return finding.jumpLabel;
+  if (finding.step !== undefined) return words.fixIn(finding.step);
+  return jumpLabel ?? words.jump;
 }

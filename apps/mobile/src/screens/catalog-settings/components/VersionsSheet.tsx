@@ -1,4 +1,4 @@
-import { usePriceBookBrowse } from '@heliogrid/data/react';
+import type { PriceBookBrowse } from '@heliogrid/data/react';
 import { catalogVersionWords, PRICE_BOOK, versionRatesOf, versionSummaryOf } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
@@ -16,11 +16,10 @@ import { BackHandler, View } from 'react-native';
  * The price book's versions on the phone (`SCR-M01-15` s-versions, s-version-open): a full sheet
  * that lists them by year and opens one read-only in place, *Back to versions* before its title.
  */
-export function VersionsSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function VersionsSheet({ browse }: { browse: PriceBookBrowse }) {
   const { t, locale } = useI18n();
   const formats = useCatalogFormats();
   const words = catalogVersionWords(t);
-  const browse = usePriceBookBrowse(open, onClose);
   const opened =
     browse.picked !== null && browse.one.kind === 'ready' ? browse.one.value : undefined;
   const versions = browse.list.read.kind === 'ready' ? browse.list.read.value : [];
@@ -45,7 +44,7 @@ export function VersionsSheet({ open, onClose }: { open: boolean; onClose: () =>
 
   return (
     <EditorSurface
-      open={open}
+      open={browse.open}
       onClose={browse.close}
       closeLabel={t(PRICE_BOOK.close)}
       showClose

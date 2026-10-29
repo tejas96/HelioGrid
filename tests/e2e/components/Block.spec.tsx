@@ -1,15 +1,20 @@
-import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
+import { BLOCK, createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { Block } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour, resolvedShadow } from '../support/token';
 
 const en = await createTranslator('en');
 const tryAgain = en.t(SIGN_IN.tryAgain);
+const loading = en.t(BLOCK.loading);
 
 test('an errored block on the page draws its retry white and raised', async ({ mount, page }) => {
   let retries = 0;
   const block = await mount(
-    <Block read={{ kind: 'failed', retry: () => (retries += 1) }} retryLabel={tryAgain} />,
+    <Block
+      read={{ kind: 'failed', retry: () => (retries += 1) }}
+      loadingLabel={loading}
+      retryLabel={tryAgain}
+    />,
   );
   const retry = block.getByRole('button', { name: tryAgain });
 
@@ -21,7 +26,11 @@ test('an errored block on the page draws its retry white and raised', async ({ m
 
 test('an errored block with blank words for its retry draws no retry', async ({ mount }) => {
   const block = await mount(
-    <Block read={{ kind: 'failed', retry: () => undefined }} retryLabel="  " />,
+    <Block
+      read={{ kind: 'failed', retry: () => undefined }}
+      loadingLabel={loading}
+      retryLabel={en.t('  ')}
+    />,
   );
 
   await expect(block.getByRole('button')).toHaveCount(0);

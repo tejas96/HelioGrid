@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { moneyLineKey } from './MoneySummary.logic';
 import type { MoneySummaryProps } from './MoneySummary.types';
 import { MoneySummaryRow } from './MoneySummaryRow';
 import { MoneySummaryTotal } from './MoneySummaryTotal';
@@ -25,8 +26,9 @@ interface WebMoneySummaryProps extends MoneySummaryProps {
  */
 export function MoneySummary({
   equation,
-  payableLabel = 'Payable',
-  overline = 'Money summary',
+  words,
+  payableLabel = words.payable,
+  overline = words.overline,
   surface = 'screen',
   provenance,
   note,
@@ -37,21 +39,22 @@ export function MoneySummary({
   return (
     <section
       data-keep-together=""
-      aria-label={overline || payableLabel}
+      aria-label={overline}
       className={classNames('hg-money-summary', className)}
       data-surface={surface}
       data-density={density}
       style={style}
     >
-      {overline ? <p className="hg-money-summary-overline">{overline}</p> : null}
+      <p className="hg-money-summary-overline">{overline}</p>
       <div>
         {equation.lines.map((l) => (
-          <MoneySummaryRow key={l.key || l.label} line={l} />
+          <MoneySummaryRow key={moneyLineKey(l)} line={l} unresolved={words.unresolvedLine} />
         ))}
       </div>
 
       <MoneySummaryTotal
         money={equation}
+        words={words}
         payableLabel={payableLabel}
         provenance={provenance}
         note={note}

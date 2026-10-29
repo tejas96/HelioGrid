@@ -11,25 +11,13 @@ import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import type { StatCardDeltaDir, StatCardSentiment } from './StatCard.types';
-import { DELTA_DIR_GLYPH } from './StatCardDelta.logic';
-
-const SENTIMENT_WORD: Record<StatCardSentiment, string | null> = {
-  good: 'better',
-  bad: 'worse',
-  neutral: null,
-};
+import type { StatCardDeltaProps, StatCardSentiment } from './StatCard.types';
+import { DELTA_DIR_GLYPH, deltaChipOf } from './StatCardDelta.logic';
 
 const SENTIMENT_TONE: Record<StatCardSentiment, { bg: string; fg: string }> = {
   good: { bg: theme.colors['success-bg'], fg: theme.colors['success-text'] },
   bad: { bg: theme.colors['danger-bg'], fg: theme.colors['danger-text'] },
   neutral: { bg: theme.colors['neutral-bg'], fg: theme.colors['neutral-text'] },
-};
-
-const DIR_WORD: Record<StatCardDeltaDir, string> = {
-  up: 'Up',
-  down: 'Down',
-  flat: 'No change',
 };
 
 const styles = StyleSheet.create({
@@ -47,29 +35,19 @@ const styles = StyleSheet.create({
   deltaSep: { opacity: 0.5 },
 });
 
-export function StatCardDelta({
-  delta,
-  dir,
-  sentiment,
-  sentimentLabel,
-  suppressed,
-}: {
-  delta?: string;
-  dir: StatCardDeltaDir;
-  sentiment: StatCardSentiment;
-  sentimentLabel?: string;
-  /** The figure is a named gap, so there is nothing for a delta to be a change IN. */
-  suppressed: boolean;
-}) {
-  if (delta === undefined || delta === null || suppressed) {
-    return null;
-  }
-  const sentWord = sentimentLabel || SENTIMENT_WORD[sentiment];
+export function StatCardDelta({ dir, ...chipFacts }: StatCardDeltaProps) {
+  const chip = deltaChipOf(chipFacts);
+  if (chip === null) return null;
+  const { sentiment, words } = chipFacts;
+  const { delta, verdict: sentWord } = chip;
   const tone = SENTIMENT_TONE[sentiment];
+  /* The two phrases a sighted reader sees either side of the dot: the move, then the verdict. */
+  const moved = words.moved(dir, delta);
+  const spoken = sentWord ? [moved, sentWord].join(' · ') : moved;
   return (
     <View
       accessible
-      accessibilityLabel={`${DIR_WORD[dir]} ${delta}${sentWord ? ` · ${sentWord}` : ''}`}
+      accessibilityLabel={spoken}
       style={[styles.delta, { backgroundColor: tone.bg }]}
     >
       {/* Direction's channel: the arrow. Sentiment's: the tint AND the word after it. */}
@@ -91,7 +69,7 @@ export function StatCardDelta({
       {sentWord ? (
         <>
           <Text variant="caption" style={[styles.deltaSep, { color: tone.fg }]}>
-            ·
+            {'·'}
           </Text>
           <Text variant="caption" style={[styles.deltaWord, { color: tone.fg }]}>
             {sentWord}

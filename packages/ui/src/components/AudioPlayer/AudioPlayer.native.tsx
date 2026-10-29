@@ -1,7 +1,9 @@
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
+import { AUDIO_PLAYER_DEFAULTS } from './AudioPlayer.logic';
 import type { AudioPlayerProps, AudioTransportControl } from './AudioPlayer.types';
 import { AudioPlayerReady } from './AudioPlayerReady.native';
 import { AudioError, AudioLoading, AudioUnavailable } from './AudioStates.native';
@@ -46,19 +48,20 @@ const styles = StyleSheet.create({
 export function AudioPlayer({
   read,
   reason,
-  duration = 0,
+  duration = AUDIO_PLAYER_DEFAULTS.duration,
   title,
   meta,
   consentAt,
   retentionUntil,
   purgedAt,
   retentionBound,
-  errorMessage = "Couldn't load this recording. Tap Try again — the transcript is on this record either way.",
+  errorMessage,
   retryLabel,
   onOpenTranscript,
-  transcriptLabel = 'Open transcript',
-  speeds = [1, 1.25, 1.5, 2],
-  density = 'expressive',
+  words,
+  transcriptLabel = words.openTranscript,
+  speeds = AUDIO_PLAYER_DEFAULTS.speeds,
+  density = AUDIO_PLAYER_DEFAULTS.density,
   playing,
   position,
   rate,
@@ -69,6 +72,8 @@ export function AudioPlayer({
 }: NativeAudioPlayerProps) {
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
+  /* The player's frame outlives its states, so focus lands on it once the retry has left. */
+  const frame = useRef<View>(null);
   const shell: StyleProp<ViewStyle> = [
     styles.shell,
     density === 'functional' ? styles.shellFunctional : null,
@@ -84,21 +89,22 @@ export function AudioPlayer({
 
   if (state === 'loading') {
     return (
-      <View style={shell}>
+      <View ref={frame} style={shell}>
         {header}
-        <AudioLoading />
+        <AudioLoading label={words.loading} />
       </View>
     );
   }
 
   if (state === 'error') {
     return (
-      <View style={shell}>
+      <View ref={frame} style={shell}>
         {header}
         <AudioError
           errorMessage={errorMessage}
           onRetry={onRetry}
           retryLabel={retryLabel}
+          focusAfter={frame}
           onOpenTranscript={onOpenTranscript}
           transcriptLabel={transcriptLabel}
         />
@@ -108,7 +114,7 @@ export function AudioPlayer({
 
   if (state === 'unavailable') {
     return (
-      <View style={shell}>
+      <View ref={frame} style={shell}>
         {header}
         <AudioUnavailable
           reason={reason}
@@ -117,13 +123,14 @@ export function AudioPlayer({
           retentionBound={retentionBound}
           onOpenTranscript={onOpenTranscript}
           transcriptLabel={transcriptLabel}
+          words={words}
         />
       </View>
     );
   }
 
   return (
-    <View style={shell}>
+    <View ref={frame} style={shell}>
       <AudioPlayerReady
         duration={duration}
         consentAt={consentAt}
@@ -134,6 +141,7 @@ export function AudioPlayer({
         speeds={speeds}
         transcriptLabel={transcriptLabel}
         header={header}
+        words={words}
         playing={playing}
         position={position}
         rate={rate}

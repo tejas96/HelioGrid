@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { createTranslator, filterPanelWords, SHELL } from '@heliogrid/i18n';
 import { type FilterDimension, FilterPanel, type FilterValue } from '@heliogrid/ui';
 import { useState } from 'react';
@@ -17,7 +18,7 @@ export function HeldFilterPanel({
 }: {
   dimensions: FilterDimension[];
   initial: FilterValue;
-  resultNoun: string;
+  resultNoun: TranslatedText;
 }) {
   const [value, setValue] = useState<FilterValue>(initial);
   return (

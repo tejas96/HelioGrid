@@ -30,6 +30,8 @@ import {
   COMPANY_PROFILE_STANDING_WORD,
 } from './company-profile';
 import { COMPANY_SIGNUP } from './company-signup';
+import { dropzoneWords } from './dropzone';
+import { numberFieldWords } from './number-field';
 import { settingsRowName } from './settings';
 import { KWP, SETUP_WHAT_YOU_SELL, TENANT_SEGMENT_WORD } from './setup-what-you-sell';
 import { SIGN_IN } from './sign-in';
@@ -65,8 +67,8 @@ export interface CompanyProfileWords {
   readonly tax: {
     readonly label: TranslatedText;
     /** The market's format in one line: the field's help, and its error when `error` repeats it. */
-    readonly format: string;
-    readonly error: string | null;
+    readonly format: TranslatedText | null;
+    readonly error: TranslatedText | null;
     /** What was checked and what was not (`F8-03`) — printed whole. */
     readonly checked: TranslatedText;
   };
@@ -76,7 +78,7 @@ export interface CompanyProfileWords {
     readonly accountHolder: TranslatedText;
     readonly accountNumber: TranslatedText;
     readonly accountNumberExample: TranslatedText;
-    readonly routing: string;
+    readonly routing: TranslatedText;
     readonly routingExample: TranslatedText;
     readonly checked: TranslatedText;
     readonly purpose: TranslatedText;
@@ -89,11 +91,15 @@ export interface CompanyProfileWords {
     readonly sizeHint: TranslatedText;
     /** Where the size comes from — beside its tier. */
     readonly sizeSource: TranslatedText;
+    /** The size field's own words. */
+    readonly numberField: ReturnType<typeof numberFieldWords>;
   };
   /** The wide screen's preview: only what the fields hold; a `null` or an empty line is drawn as nothing. */
   readonly letterhead: CompanyLetterheadWords;
   /** The logo's capture area; none until a screen can upload one. */
   readonly logo: CompanyLogoCapture | null;
+  /** The logo's capture area's own words. */
+  readonly dropzone: ReturnType<typeof dropzoneWords>;
   /** The busy region's name while the record loads. */
   readonly loading: TranslatedText | null;
   /** The profile could not be read: the message in the list's place; a way on in setup alone. */
@@ -137,8 +143,10 @@ export interface CompanyProfileWordFacts {
   readonly open: CompanyProfilePart | null;
   readonly city: string;
   readonly taxIdLabel: string;
-  readonly taxFormat: string;
-  readonly bankRoutingLabel: string;
+  /** The market pack's format line, in the reader's language (`packWords`); null where it has none. */
+  readonly taxFormat: TranslatedText | null;
+  /** The pack's name for the bank routing code (`packWords`). */
+  readonly bankRoutingLabel: TranslatedText;
   /** Domain's `companyLetterhead` for what the fields hold. */
   readonly letterhead: CompanyLetterhead;
   readonly logo: CompanyLogoCaptureFacts | null;
@@ -201,9 +209,11 @@ export function companyProfileWords(
       unit: KWP,
       sizeHint: translate(COMPANY_PROFILE.sizeHint),
       sizeSource: translate(SETUP_WHAT_YOU_SELL.declaredByYou),
+      numberField: numberFieldWords(translate),
     },
     letterhead: companyLetterheadWords(translate, read === 'ready', facts.letterhead, taxIdLabel),
     logo: facts.logo === null ? null : companyLogoCapture(translate, facts.logo),
+    dropzone: dropzoneWords(translate),
     loading: read === 'loading' ? translate(COMPANY_PROFILE.loading) : null,
     unread: read === 'failed' ? unreadWords(translate, facts.life) : null,
     act: read === 'failed' ? null : actWords(translate, facts),

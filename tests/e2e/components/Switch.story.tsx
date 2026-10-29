@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { Switch, type SwitchToggleAt } from '@heliogrid/ui';
 import { useState } from 'react';
 
@@ -14,8 +15,8 @@ export function HeldSwitch({
   initial = false,
 }: {
   width: number;
-  label: string;
-  description?: string;
+  label: TranslatedText;
+  description?: TranslatedText;
   toggleAt?: SwitchToggleAt;
   initial?: boolean;
 }) {

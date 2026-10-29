@@ -16,8 +16,7 @@ import { usePageSize } from '../../utils/page-size';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import {
   Annotations,
-  DocLoading,
-  DocMessage,
+  DocCentre,
   DocUnavailable,
   InternalStamp,
   SheetSkeleton,
@@ -48,13 +47,13 @@ function PagedDocumentRoot<Row>({
   disclosuresAfter,
   footNote,
   numbering,
-  label = 'Proposal',
+  label,
   onCut,
   read,
-  errorTitle = "Couldn't build this document",
-  errorMessage = 'Try again. If it keeps failing, tell your admin what you were doing.',
-  retryLabel,
-  unavailableTitle = 'No document for this proposal',
+  words,
+  errorTitle = words.errorTitle,
+  errorMessage = words.errorMessage,
+  unavailableTitle = words.unavailableTitle,
   unavailableMessage,
   className,
   style,
@@ -82,9 +81,10 @@ function PagedDocumentRoot<Row>({
      declares nothing: it is a page, not paper. */
   usePageSize(rendering === 'paged' ? { paper, orientation } : null);
 
+  const titleWords = words.titleBlock;
   const flow = useMemo(
-    () => buildFlow({ sections, titleBlock, disclosures, disclosuresAfter, audience }),
-    [sections, titleBlock, disclosures, disclosuresAfter, audience],
+    () => buildFlow({ sections, titleBlock, disclosures, disclosuresAfter, audience, titleWords }),
+    [sections, titleBlock, disclosures, disclosuresAfter, audience, titleWords],
   );
 
   const sig = useMemo(
@@ -157,15 +157,17 @@ function PagedDocumentRoot<Row>({
     });
   }, [cut, onCut, rendering, g, audience]);
 
-  if (state === 'loading') return <DocLoading geometry={g} label={label} style={style} />;
-  if (state === 'error') {
+  if (state === 'loading' || state === 'error') {
     return (
-      <DocMessage
+      <DocCentre
+        failed={state === 'error'}
         geometry={g}
+        label={label}
+        layingOut={words.layingOut}
         title={errorTitle}
         message={errorMessage}
         onRetry={onRetry}
-        retryLabel={retryLabel}
+        retryLabel={words.retry}
         style={style}
       />
     );
@@ -189,15 +191,15 @@ function PagedDocumentRoot<Row>({
             {renderWhole(it)}
           </div>
         ))}
-        {flow.annotations.length > 0 && <Annotations items={flow.annotations} web />}
-        {audience === 'internal' && <InternalStamp web />}
+        {flow.annotations.length > 0 && <Annotations items={flow.annotations} words={words} web />}
+        {audience === 'internal' && <InternalStamp stamp={words.internalStamp} web />}
       </article>
     );
   }
 
   const byId = new Map(flow.items.map((it) => [it.id, it] as const));
   const count = cut ? cut.length : 0;
-  const foot = numbering ?? ((n: number, m: number) => `Sheet ${n} of ${m}`);
+  const foot = numbering ?? words.sheetOf;
   const head = titleBlock
     ? [titleBlock.projectName, titleBlock.proposalNumber].filter(Boolean).join(' · ')
     : label;
@@ -235,6 +237,7 @@ function PagedDocumentRoot<Row>({
             audience={audience}
             footNote={footNote}
             footText={foot(si + 1, count)}
+            words={words}
           >
             {parts.map((p) => (
               <div
@@ -250,12 +253,12 @@ function PagedDocumentRoot<Row>({
           {flow.annotations
             .filter((a) => sheetEndsSection(cut, si, a.after))
             .map((a) => (
-              <Annotations key={a.id} items={[a]} width={g.width} />
+              <Annotations key={a.id} items={[a]} words={words} width={g.width} />
             ))}
         </Fragment>
       ))}
 
-      {!cut && <SheetSkeleton geometry={g} />}
+      {!cut && <SheetSkeleton geometry={g} name={words.layingOut} />}
     </div>
   );
 }

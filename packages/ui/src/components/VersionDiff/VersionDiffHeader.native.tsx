@@ -1,6 +1,7 @@
 /* Which two versions these are (native) — the same caption, pair, side notes and counts line as
    the web half. Identity only: it renders no row and no control. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -18,7 +19,7 @@ export function VersionDiffHeader({
   sides,
   summary,
 }: {
-  caption?: string;
+  caption?: TranslatedText;
   sides: DiffSides;
   summary: string;
 }) {

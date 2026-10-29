@@ -2,8 +2,9 @@ import type { PointerEvent as ReactPointerEvent } from 'react';
 import { useState } from 'react';
 import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
-import type { MapPin } from './MapSurface.types';
+import type { MapPin, MapSurfaceWords } from './MapSurface.types';
 import { MAP_PIN_COLOR, MAP_SURFACE } from './MapTokens';
+import { pinReadingOf } from './map-placement';
 
 interface MapLocationPinProps {
   pin: MapPin;
@@ -12,6 +13,7 @@ interface MapLocationPinProps {
   fixed: boolean;
   draggable: boolean;
   onDrag: (event: ReactPointerEvent<HTMLElement>) => void;
+  words: Pick<MapSurfaceWords, 'pinPending' | 'pinConfirmed' | 'draggable'>;
 }
 
 /**
@@ -20,13 +22,23 @@ interface MapLocationPinProps {
  * confirmed". `MS1-18`'s Confirm button is disabled until a pin pends, so the two must be
  * tellable apart at a glance AND on a screen reader — neither reading rests on the colour.
  */
-export function MapLocationPin({ pin, pinState, fixed, draggable, onDrag }: MapLocationPinProps) {
-  const confirmed = pinState === 'confirmed';
+export function MapLocationPin({
+  pin,
+  pinState,
+  fixed,
+  draggable,
+  onDrag,
+  words,
+}: MapLocationPinProps) {
+  const { confirmed, name, spokenName, x, y } = pinReadingOf(
+    pin,
+    pinState,
+    fixed,
+    draggable,
+    words,
+  );
   const colour = MAP_PIN_COLOR[pinState];
-  const words = pin.label ?? (confirmed ? 'Location confirmed' : 'Pin pending');
   const [dragging, setDragging] = useState(false);
-  const x = fixed ? 50 : (pin.x ?? 50);
-  const y = fixed ? 50 : (pin.y ?? 50);
 
   const handlers = draggable
     ? {
@@ -54,11 +66,11 @@ export function MapLocationPin({ pin, pinState, fixed, draggable, onDrag }: MapL
       <StatusMark
         className="hg-map-surface-pin-label"
         tone={confirmed ? 'success' : 'accent'}
-        label={words}
+        label={name}
       />
       <span
         role="img"
-        aria-label={draggable ? `${words}, draggable` : words}
+        aria-label={spokenName}
         className="hg-map-surface-pin-hit"
         data-draggable={draggable ? 'true' : undefined}
         data-dragging={dragging ? 'true' : undefined}

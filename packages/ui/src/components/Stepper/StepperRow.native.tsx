@@ -6,7 +6,9 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ResolvedStep } from './resolve-steps';
-import { stateWord } from './resolve-steps';
+import { rowStateWord, spokenStep } from './resolve-steps';
+import { isLastStep, isStepClickable } from './Stepper.logic';
+import type { StepperWords } from './Stepper.types';
 import { StepperMarker } from './StepperMarker.native';
 
 interface NativeStepperRowProps {
@@ -16,6 +18,7 @@ interface NativeStepperRowProps {
   onStepClick?: (index: number) => void;
   step: ResolvedStep;
   total: number;
+  words: StepperWords;
 }
 
 /** One row per step — the body of the mobile step-list sheet, and the desktop rail's row. */
@@ -26,15 +29,16 @@ export function StepperRow({
   onStepClick,
   step,
   total,
+  words,
 }: NativeStepperRowProps) {
-  const clickable = onStepClick !== undefined && step.reachable;
-  const word = stateWord(step);
+  const clickable = isStepClickable(step, onStepClick !== undefined);
+  const word = rowStateWord(step, words);
   const active = index === current;
   /* The connector is the control fill, the opposite of what holds it (`F7-15`). */
   const { controlFill } = useGround();
   return (
     <View style={styles.item}>
-      {connector && index < total - 1 ? (
+      {connector && !isLastStep(index, total) ? (
         <View
           style={[
             styles.connector,
@@ -44,9 +48,9 @@ export function StepperRow({
         />
       ) : null}
       <Pressable
-        accessibilityLabel={`Step ${index + 1} of ${total}, ${step.label}, ${word.toLowerCase()}`}
+        accessibilityLabel={spokenStep(step, index, total, words)}
         disabled={!clickable}
-        onPress={clickable ? () => onStepClick(index) : undefined}
+        onPress={clickable ? () => onStepClick?.(index) : undefined}
         style={[styles.row, active ? styles.rowActive : undefined]}
       >
         <StepperMarker index={index} step={step} />
@@ -60,7 +64,7 @@ export function StepperRow({
             {step.label}
           </Text>
           <Text variant="caption" color={wordColor(step)}>
-            {step.optional === true ? `${word} · optional` : word}
+            {word}
           </Text>
         </View>
         {clickable && !active ? (

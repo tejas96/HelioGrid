@@ -1,7 +1,7 @@
 import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
-import { DateSet } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour } from '../support/token';
+import { DateSetAt } from './DateSet.story';
 
 const en = await createTranslator('en');
 const entries = [
@@ -14,9 +14,7 @@ test('a date row is a grey tile with no shadow, and the calendar stays on the pa
   mount,
   page,
 }) => {
-  const dateSet = await mount(
-    <DateSet entries={entries} month="2026-10-01" onMonthChange={() => undefined} />,
-  );
+  const dateSet = await mount(<DateSetAt entries={entries} month="2026-10-01" />);
   const row = dateSet.getByRole('listitem');
 
   await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--fill'));

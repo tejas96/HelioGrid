@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import { OverlayClose } from '../Sheet/OverlayClose';
 import type { OverlayStatus, OverlaySubtitleFace } from '../Sheet/Sheet.types';
@@ -6,9 +7,9 @@ import { StatusChip } from '../StatusChip/StatusChip';
 interface PanelHeaderProps {
   /** Leading node, usually an IconCircle or Avatar. */
   leading?: ReactNode;
-  closeLabel: string;
+  closeLabel: TranslatedText;
   onClose?: () => void;
-  overline?: string;
+  overline?: TranslatedText;
   /** The scroll shadow — luminance, never a divider line. */
   scrolled: boolean;
   showClose: boolean;

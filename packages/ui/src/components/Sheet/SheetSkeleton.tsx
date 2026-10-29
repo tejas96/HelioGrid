@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties } from 'react';
 import type { SheetDensity } from './Sheet.types';
 
@@ -11,15 +12,21 @@ function bar(width: string, height: number): BarVars {
 interface SheetSkeletonProps {
   /** Sets the row gap — 16 expressive, 12 functional, the same ladder as the sheet's padding. */
   density?: SheetDensity;
-  /** The status region's accessible name. The reference hardcodes it; no prop carries it. */
-  label?: string;
+  /**
+   * The status region's accessible name: what is loading, the caller's `loadingLabel`. A read
+   * always brings one; with none there is no read, so nothing loads and nothing is drawn.
+   */
+  label?: TranslatedText;
 }
 
 /**
  * `loading` — content is coming, and never a placeholder value presented as a real one. The bars
  * carry no numbers for exactly that reason.
  */
-export function SheetSkeleton({ density = 'expressive', label = 'Loading' }: SheetSkeletonProps) {
+export function SheetSkeleton({ density = 'expressive', label }: SheetSkeletonProps) {
+  if (label === undefined) {
+    return null;
+  }
   return (
     <div aria-label={label} className="hg-sheet-skeleton" data-density={density} role="status">
       <div className="hg-sheet-skeleton-bar" style={bar('62%', 20)} />

@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { AccessibilityInfo, Dimensions, StyleSheet, View } from 'react-native';
+import { closingPress } from '../../primitives/FocusAfter';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { CoachMarkProps } from './CoachMark.types';
@@ -12,13 +13,18 @@ import {
   CoachMarkHead,
   CoachMarkRing,
 } from './CoachMarkParts.native';
-import { COACH_MARK_FALLBACK_HEIGHT, coachMarkCounter, placeCoachMark } from './coach-mark-place';
+import {
+  coachMarkCounter,
+  coachMarkName,
+  placeMeasuredMark,
+  pointsAtNothing,
+} from './coach-mark-place';
 import { useAnchorRect } from './use-anchor-rect.native';
 import { useCoachMarks } from './use-coach-marks.native';
 
-interface NativeCoachMarkProps extends CoachMarkProps {
+type NativeCoachMarkProps = CoachMarkProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 /**
  * One persistent mark anchored to a live control. The screen underneath stays fully usable — no
@@ -42,9 +48,10 @@ export function CoachMark({
   padding = 6,
   width = 292,
   nextLabel,
-  dismissLabel = 'Dismiss',
+  dismissLabel,
   onNext,
   onDismiss,
+  focusAfter,
   onAnchorMissing,
   autoFocus = true,
   ring = true,
@@ -56,7 +63,7 @@ export function CoachMark({
 
   useEffect(() => {
     if (open && autoFocus) {
-      AccessibilityInfo.announceForAccessibility(counter === null ? title : `${title}. ${counter}`);
+      AccessibilityInfo.announceForAccessibility(coachMarkName(title, counter));
     }
   }, [open, autoFocus, title, counter]);
 
@@ -64,19 +71,17 @@ export function CoachMark({
     return null;
   }
   /* Anchored but unresolvable: draw nothing rather than point at nothing. */
-  if (anchor !== undefined && rect === null) {
+  if (pointsAtNothing(anchor, rect)) {
     return null;
   }
 
   const screen = Dimensions.get('window');
-  const placed =
-    rect === null
-      ? null
-      : placeCoachMark(rect, width, cardHeight || COACH_MARK_FALLBACK_HEIGHT, placement, {
-          width: screen.width,
-          height: screen.height,
-        });
+  const placed = placeMeasuredMark(rect, width, cardHeight, placement, {
+    width: screen.width,
+    height: screen.height,
+  });
   const onLayout = (event: LayoutChangeEvent) => setCardHeight(event.nativeEvent.layout.height);
+  const closing = closingPress(focusAfter);
 
   return (
     <Portal>
@@ -87,7 +92,7 @@ export function CoachMark({
           controls inside this card and folding would put both out of reach. */}
       <View
         role="group"
-        accessibilityLabel={counter === null ? title : `${title}. ${counter}`}
+        accessibilityLabel={coachMarkName(title, counter)}
         onLayout={onLayout}
         style={[
           styles.card,
@@ -101,7 +106,7 @@ export function CoachMark({
           counter={counter}
           title={title}
           dismissLabel={dismissLabel}
-          onDismiss={onDismiss}
+          onDismiss={closing(onDismiss)}
         />
         {body === undefined ? null : (
           <Text variant="body-sm" color="secondary" style={styles.body}>
@@ -113,8 +118,8 @@ export function CoachMark({
           step={step}
           isLast={isLast}
           nextLabel={nextLabel}
-          onNext={onNext}
-          onDismiss={onDismiss}
+          onNext={isLast ? closing(onNext) : onNext}
+          onDismiss={closing(onDismiss)}
         />
       </View>
     </Portal>

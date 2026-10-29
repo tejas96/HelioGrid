@@ -54,27 +54,28 @@ export interface RolesReferenceWordsProp {
 /** One role's words: its tile, and its details. */
 export interface RolesReferencePreset {
   readonly value: RolePreset;
-  readonly name: string;
+  readonly name: TranslatedText;
   readonly summary: TranslatedText;
   /** *2 people*, or null while the counts are out or did not load. */
-  readonly count: string | null;
+  readonly count: TranslatedText | null;
   /** The count's wait, spoken: *Loading how many people hold Finance*. */
-  readonly loadingCount: string;
+  readonly loadingCount: TranslatedText;
+  /** The active holders' names, as they were typed. */
   readonly holders: readonly string[];
-  readonly others: readonly (UncountedHolder & { readonly word: string })[];
-  readonly canTab: string;
-  readonly cantTab: string;
-  readonly canList: string;
-  readonly cantList: string;
+  readonly others: readonly (UncountedHolder & { readonly word: TranslatedText })[];
+  readonly canTab: TranslatedText;
+  readonly cantTab: TranslatedText;
+  readonly canList: TranslatedText;
+  readonly cantList: TranslatedText;
   readonly can: readonly RolesReferenceLine[];
   readonly cant: readonly RolesReferenceLine[];
 }
 
 export interface RolesReferenceLine {
   readonly key: string;
-  readonly text: string;
+  readonly text: TranslatedText;
   /** The person's part of a scoped grant, after a *·*; null for a plain one. */
-  readonly scope: string | null;
+  readonly scope: TranslatedText | null;
 }
 
 /** Which list the details show (`Show`), opening on *Can do*. */

@@ -1,9 +1,30 @@
-import type { FilterPanelWords, FilterSetWords } from '@heliogrid/domain';
-
-export type { FilterPanelWords, FilterSetWords };
-
+import type { TranslatedText } from '@heliogrid/contracts';
+import type {
+  FilterPanelWords as PanelWordsShape,
+  FilterSetWords as SetWordsShape,
+} from '@heliogrid/domain';
 import type { FilterOption } from '../FilterBar';
 import type { OverlayCloseWords } from '../Sheet/OverlayClose.types';
+
+/** `domain`'s shape of the words, each one in the reader's language — only `@heliogrid/i18n` mints them. */
+type InReadersLanguage<Shape> = {
+  readonly [Key in keyof Shape]: Shape[Key] extends (...slots: infer Slots) => string
+    ? (...slots: Slots) => TranslatedText
+    : TranslatedText;
+};
+
+/**
+ * Every word the filter body draws that a dimension does not carry (`@heliogrid/i18n`'s
+ * `filterPanelWords`), plus the tick a chosen facet chip carries on the web — *Selected* — and a
+ * range's two ends — *From*, *To*.
+ */
+export interface FilterSetWords extends InReadersLanguage<SetWordsShape> {
+  readonly selectedTick: TranslatedText;
+  readonly rangeEnds: [TranslatedText, TranslatedText];
+}
+
+/** The panel's own words on top of the body's: its title and its footer. */
+export interface FilterPanelWords extends InReadersLanguage<PanelWordsShape>, FilterSetWords {}
 
 /**
  * What one dimension holds. The design system declares the map as `Record<string, any>`; the
@@ -34,13 +55,13 @@ export interface FilterDimensionUnder {
   /** The option of that dimension that must be chosen. */
   value: string;
   /** The folded line's title — *Panel specs*. */
-  group: string;
+  group: TranslatedText;
 }
 
 interface DimensionBase {
   key: string;
-  label: string;
-  hint?: string;
+  label: TranslatedText;
+  hint?: TranslatedText;
   under?: FilterDimensionUnder;
 }
 
@@ -50,7 +71,7 @@ export interface FacetDimension extends DimensionBase {
   options: FilterOption[];
   counts?: Record<string, number>;
   /** What the options are, plural — *Show all 9 kinds* under a list longer than six. */
-  noun?: string;
+  noun?: TranslatedText;
 }
 
 /** Exactly one value — the stage strip's vocabulary. */
@@ -61,7 +82,7 @@ export interface OneOfDimension extends DimensionBase {
   /** The value that means "no filter". Defaults to the first option. */
   allValue?: string;
   /** What the options are, plural — *Show all 8 technologies* under a list longer than six. */
-  noun?: string;
+  noun?: TranslatedText;
 }
 
 /** Two ends — "wattage 300–600 W". */
@@ -72,14 +93,14 @@ export interface RangeDimension extends DimensionBase {
   step?: number;
   unit?: string;
   format?: (v: number) => string;
-  anyLabel?: string;
+  anyLabel?: TranslatedText;
 }
 
 /** A boolean — preferred, archived. A `Switch` row in the last *Show* section. */
 export interface FlagDimension extends DimensionBase {
   kind: 'flag';
   /** The switch row's words — *Preferred items only*. Without it, `label`. */
-  optionLabel?: string;
+  optionLabel?: TranslatedText;
 }
 
 /**
@@ -108,7 +129,7 @@ export interface FilterPanelProps extends OverlayCloseWords {
   words: FilterPanelWords;
   /** Shown on the footer button — "Show 24 results". Omit it and the button reads `words.done`. */
   resultCount?: number;
-  resultNoun?: string;
+  resultNoun?: TranslatedText;
   /** Layer width at or above which the body opens as a side panel instead of a sheet. */
   panelAbove?: number;
   width?: number;
@@ -120,4 +141,31 @@ export interface FilterPanelProps extends OverlayCloseWords {
    */
   modal?: boolean;
   zIndex?: number;
+}
+
+/* The inner parts' contracts (Law 7): both halves of a part implement the one interface. */
+
+/** The dimensions folded under one value of a section's dimension, as one `Accordion` line. */
+export interface FilterFold {
+  key: string;
+  title: TranslatedText;
+  dimensions: FilterDimension[];
+}
+
+export interface FilterDimensionControlProps {
+  dim: FilterDimension;
+  value: FilterDimensionValue;
+  onChange: (key: string, value: FilterDimensionValue) => void;
+  words: FilterSetWords;
+}
+
+export interface FilterDimensionBlockProps {
+  dim: FilterDimension;
+  value: FilterValue;
+  onChange: (key: string, value: FilterDimensionValue) => void;
+  words: FilterSetWords;
+}
+
+export interface FilterSectionProps extends FilterDimensionBlockProps {
+  folds: FilterFold[];
 }

@@ -1,43 +1,16 @@
 import type { MouseEvent } from 'react';
-import type { ResolvedDocumentState } from './SourceDocument.logic';
-import type { SourceDocumentFit } from './SourceDocument.types';
+import { documentHeaderOf } from './SourceDocument.logic';
+import type { SourceDocumentHeaderProps } from './SourceDocument.types';
 import { Chrome, IconBtn } from './SourceDocumentChrome';
-
-export interface SourceDocumentHeaderProps {
-  name: string;
-  meta?: string;
-  resolved: ResolvedDocumentState;
-  /** Zero-based; the reader is shown `pageNumber + 1`. */
-  pageNumber: number;
-  count: number;
-  fit: SourceDocumentFit;
-  onPage: (n: number) => void;
-  onFit: (f: SourceDocumentFit) => void;
-  originalUrl?: string;
-  onOpenOriginal?: () => void;
-  openLabel: string;
-}
 
 /**
  * The file's identity and everything you can do to it while it is readable: which page you are on
  * and how it is fitted, plus the route to the real file. The paging controls are 44×44 and the
  * count is announced politely, because moving a page is the reviewer's main act here.
  */
-export function SourceDocumentHeader({
-  name,
-  meta,
-  resolved,
-  pageNumber,
-  count,
-  fit,
-  onPage,
-  onFit,
-  originalUrl,
-  onOpenOriginal,
-  openLabel,
-}: SourceDocumentHeaderProps) {
-  const paged = resolved === 'ready' && count > 0;
-  const canOpen = Boolean(originalUrl || onOpenOriginal);
+export function SourceDocumentHeader(props: SourceDocumentHeaderProps) {
+  const { name, meta, pageNumber, fit, onPage, onFit, originalUrl, onOpenOriginal, words } = props;
+  const header = documentHeaderOf(props);
   /* Without a URL the anchor has nowhere to go, so the caller's handler is the whole act. */
   const openOriginal = onOpenOriginal
     ? (e: MouseEvent<HTMLAnchorElement>) => {
@@ -54,42 +27,42 @@ export function SourceDocumentHeader({
         <span className="hg-source-doc-name">{name}</span>
         {meta ? <span className="hg-source-doc-meta">{meta}</span> : null}
       </span>
-      {paged ? (
+      {header.paged ? (
         <Chrome>
           <IconBtn
-            label="Previous page"
+            label={words.previousPage}
             glyph="chevron-left"
-            disabled={pageNumber <= 0}
+            disabled={header.atFirst}
             onClick={() => onPage(pageNumber - 1)}
           />
           <span aria-live="polite" className="hg-source-doc-count">
-            {pageNumber + 1} / {count}
+            {header.position}
           </span>
           <IconBtn
-            label="Next page"
+            label={words.nextPage}
             glyph="chevron-right"
-            disabled={pageNumber >= count - 1}
+            disabled={header.atLast}
             onClick={() => onPage(pageNumber + 1)}
           />
         </Chrome>
       ) : null}
-      {paged ? (
+      {header.paged ? (
         <Chrome>
           <IconBtn
-            label="Fit width"
+            label={words.fitWidth}
             pressed={fit === 'width'}
             glyph="fit-width"
             onClick={() => onFit('width')}
           />
           <IconBtn
-            label="Fit whole page"
+            label={words.fitPage}
             pressed={fit === 'page'}
             glyph="fit-page"
             onClick={() => onFit('page')}
           />
         </Chrome>
       ) : null}
-      {canOpen && resolved === 'ready' ? (
+      {header.showsOpen ? (
         <a
           className="hg-source-doc-open"
           href={originalUrl}
@@ -97,7 +70,7 @@ export function SourceDocumentHeader({
           rel="noreferrer"
           onClick={openOriginal}
         >
-          {openLabel}
+          {props.openLabel}
         </a>
       ) : null}
     </header>

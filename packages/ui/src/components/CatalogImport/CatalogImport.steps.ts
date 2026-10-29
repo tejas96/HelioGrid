@@ -1,4 +1,4 @@
-import type { CatalogImportWire } from '@heliogrid/contracts';
+import type { CatalogImportWire, TranslatedText } from '@heliogrid/contracts';
 import {
   type CatalogImportMapping,
   FILE_MAX_BYTES,
@@ -83,7 +83,7 @@ export const openRowsOf = (job: CatalogImportWire) =>
 /** The step's act, its gate and its line, per frame. */
 export function actOf(props: CatalogImportProps, readyNow: number) {
   const { frame, words, gate, job } = props;
-  const gated = (label: string, line: string | null, onPress: () => void) => ({
+  const gated = (label: TranslatedText, line: TranslatedText | null, onPress: () => void) => ({
     label,
     gate: gate === null ? null : words.gates[gate],
     onPress,

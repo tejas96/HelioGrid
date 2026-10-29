@@ -3,7 +3,7 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { renderProvenance } from '../Provenance';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
-import { visibleRange } from './CompareGrid.logic';
+import { axisOverflows, COMPARE_GRID_DEFAULTS, drawsGrid, visibleRange } from './CompareGrid.logic';
 import type { CompareGridProps, CompareOption } from './CompareGrid.types';
 import { CompareGridFooter } from './CompareGridFooter';
 import { CompareGridStatePanel } from './CompareGridStatePanel';
@@ -41,29 +41,32 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
   options,
   selectedKey,
   onSelect,
-  selectLabel = 'Choose',
-  selectedLabel = 'Selected',
-  currentLabel = 'Current',
+  selectLabel,
+  selectedLabel,
+  currentLabel,
   caption,
   provenance,
   note,
-  columnWidth = 196,
-  labelWidth = 128,
+  columnWidth = COMPARE_GRID_DEFAULTS.columnWidth,
+  labelWidth = COMPARE_GRID_DEFAULTS.labelWidth,
   read,
-  emptyTitle = 'Nothing to compare yet',
-  emptyMessage = 'Generate at least two variants and they line up here side by side.',
-  errorTitle = "Couldn't load the comparison",
-  errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
+  emptyTitle,
+  emptyMessage,
+  errorTitle,
+  errorMessage,
   retryLabel,
-  unavailableTitle = 'Not comparable here',
+  unavailableTitle,
   unavailableMessage,
-  density = 'expressive',
+  density = COMPARE_GRID_DEFAULTS.density,
+  words,
   className,
   style,
 }: WebCompareGridProps<Opt>) {
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
   const scroller = useRef<HTMLFieldSetElement>(null);
+  /* The grid's own frame stays while a failed read reloads, so *Try again* hands focus to it. */
+  const frame = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ scrollable: false, first: 1, last: 1 });
   const captionId = useId();
 
@@ -80,7 +83,7 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
       options.length,
     );
     setPosition({
-      scrollable: element.scrollWidth - element.clientWidth > 4,
+      scrollable: axisOverflows(element.scrollWidth, element.clientWidth),
       first: range.first,
       last: range.last,
     });
@@ -112,9 +115,7 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
     '--hg-compare-label': `${labelWidth}px`,
   } as CSSProperties;
 
-  const shell = classNames('hg-compare', className);
-  /* An empty caption names nothing, so it neither draws an overline nor becomes the table's
-     accessible name — an empty name is worse than no name. */
+  const shell = classNames('hg-compare', 'hg-focus-target', className);
   const captioned = caption !== undefined && caption !== '';
   const captionNode = captioned ? (
     <div className="hg-compare-caption" id={captionId}>
@@ -125,11 +126,9 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
      owns the tier's word and mark, and returns null when the spec would say nothing. */
   const provenanceFoot = renderProvenance(provenance, { size: 12 });
 
-  /* No grid to draw — because a state blocks it, or because there is nothing to line up. What
-     stands in its place is the state panel's decision, not this shell's. */
-  if (state !== 'ready' || options.length === 0 || attributes.length === 0) {
+  if (!drawsGrid(state, options.length, attributes.length)) {
     return (
-      <div className={shell} data-density={density} style={shellStyle}>
+      <div ref={frame} tabIndex={-1} className={shell} data-density={density} style={shellStyle}>
         {captionNode}
         <CompareGridStatePanel
           state={state}
@@ -141,13 +140,15 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
           retryLabel={retryLabel}
           unavailableTitle={unavailableTitle}
           unavailableMessage={unavailableMessage}
+          words={words}
+          focusAfter={frame}
         />
       </div>
     );
   }
 
   return (
-    <div className={shell} data-density={density} style={shellStyle}>
+    <div ref={frame} tabIndex={-1} className={shell} data-density={density} style={shellStyle}>
       {captionNode}
 
       {/* <fieldset> IS role="group" — the semantics this needs, in the native element. Its
@@ -155,7 +156,7 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
       <fieldset
         ref={scroller}
         className="hg-compare-scroller"
-        aria-label={`Compare ${options.length} options`}
+        aria-label={words.compare(options.length)}
         // biome-ignore lint/a11y/noNoninteractiveTabindex: the scroller is deliberately focusable — the option axis must be operable without a touch screen, which is what the arrow-key handler is for.
         tabIndex={0}
         onScroll={measure}
@@ -170,6 +171,7 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
           selectedLabel={selectedLabel}
           currentLabel={currentLabel}
           captionId={captioned ? captionId : undefined}
+          words={words}
         />
       </fieldset>
 
@@ -180,6 +182,7 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
         count={options.length}
         note={note}
         onStep={nudge}
+        words={words}
       />
 
       {provenanceFoot === null ? null : (

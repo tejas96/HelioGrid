@@ -161,7 +161,10 @@ export type {
 export type {
   CatalogFilter,
   CatalogItemSource,
+  CatalogItemsListed,
   CatalogLayer,
+  CatalogPaging,
+  CatalogRowAct,
   CatalogSort,
   ReleaseFieldChange,
   ReleaseSide,

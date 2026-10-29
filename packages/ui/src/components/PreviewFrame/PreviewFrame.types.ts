@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 /** `sheet` = white paper, `page` = a live page on canvas, `band` = one band of either. */
@@ -16,17 +17,17 @@ export const DEFAULT_DESIGN_WIDTH = 480;
 
 interface PreviewFrameBase {
   /** Overline above the frame — "PROPOSAL COVER", "CUSTOMER LINK PAGE". */
-  label?: string;
+  label?: TranslatedText;
   /** The line under it. Naming the surface as customer-facing is the caption's job — keep it. */
-  caption?: string;
+  caption?: TranslatedText;
   /** An extra line for an honest consequence the subject reported (a colour that can't carry text). */
-  note?: string;
+  note?: TranslatedText;
   /**
    * The line said when the subject is cropped to its readable size (*Showing the top left, at a size
    * you can read.*), from `packages/i18n`. Not in the design system's contract: its English sat in
    * the component; without it no line is drawn.
    */
-  croppedLabel?: string;
+  croppedLabel?: TranslatedText;
   /** The subject's natural width in px. The frame scales from this. Default 480. */
   designWidth?: number;
   /** The subject's natural height, where it has one (an A4 sheet). Live pages leave it unset. */
@@ -54,11 +55,11 @@ interface PreviewFrameBase {
  * letterhead. A busy region with no name tells a screen reader nothing, so loading carries one.
  */
 export type PreviewFrameLoading =
-  | { loading?: false; loadingLabel?: string }
+  | { loading?: false; loadingLabel?: TranslatedText }
   | {
       loading: true;
       /** The busy region's words while `loading` ("Loading the proposal cover"). */
-      loadingLabel: string;
+      loadingLabel: TranslatedText;
     };
 
 export type PreviewFrameProps = PreviewFrameBase & PreviewFrameLoading;

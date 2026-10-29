@@ -6,8 +6,9 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { renderMarks } from '../ChipGroup';
 import { renderProvenance } from '../Provenance';
+import { standingWordAt } from './Accordion.logic';
 import type { AccordionItem, AccordionProps } from './Accordion.types';
-import { accordionStateWord, markedState, standingPlace } from './Accordion.types';
+import { markedState } from './Accordion.types';
 import { useAccordion } from './useAccordion';
 
 interface NativeAccordionProps extends AccordionProps {
@@ -118,8 +119,8 @@ function Chevron({ open, color }: { open: boolean; color: string }) {
 
 /** Where the section stands, beside its title: a word, and a dot before it for a marked state. */
 function Standing({ item }: { item: AccordionItem }) {
-  const word = accordionStateWord(item);
-  if (word === undefined || standingPlace(item) !== 'title') return null;
+  const word = standingWordAt(item, 'title');
+  if (word === undefined) return null;
   const marked = markedState(item);
   const mark = marked === 'done' ? theme.colors.success : theme.colors['mark-subtle'];
   return (
@@ -133,10 +134,10 @@ function Standing({ item }: { item: AccordionItem }) {
 }
 
 function HeaderFacts({ item }: { item: AccordionItem }) {
-  const word = accordionStateWord(item);
+  const word = standingWordAt(item, 'end');
   return (
     <>
-      {word !== undefined && standingPlace(item) === 'end' ? (
+      {word !== undefined ? (
         <View style={styles.state}>
           <View style={styles.dot} />
           <Text style={styles.stateWord}>{word}</Text>

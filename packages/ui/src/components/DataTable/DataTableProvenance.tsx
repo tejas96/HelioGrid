@@ -1,7 +1,6 @@
-import type { ProvenanceProps } from '../Provenance';
 import { Provenance, ProvenanceTier } from '../Provenance';
-import type { DataTableColumn } from './DataTableColumn.types';
-import { asProvenanceSpec, columnTierMode } from './DataTableProvenance.logic';
+import type { ColumnTierProps } from './DataTable.parts.types';
+import { columnTierOf } from './DataTableProvenance.logic';
 
 /**
  * **A column's tier, as a visible word** (`F8-07`) — in the header, and again on the stacked
@@ -13,21 +12,9 @@ import { asProvenanceSpec, columnTierMode } from './DataTableProvenance.logic';
  * freshness warning, an energy source, a source, a projection — is never suppressed, and renders
  * the whole statement inline.
  */
-export function ColumnTier<Row>({
-  column,
-  tableSpec,
-}: {
-  column: DataTableColumn<Row>;
-  /** The table-wide statement, already resolved by the caller — one call for the whole table. */
-  tableSpec: ProvenanceProps | null;
-}) {
-  const spec = asProvenanceSpec(column.provenance);
-  const mode = columnTierMode(spec, tableSpec);
-  if (spec === null || mode === 'none') {
-    return null;
-  }
-  if (mode === 'inline') {
-    return <Provenance {...spec} inline size={12} />;
-  }
-  return <ProvenanceTier tier={spec.tier} size={12} />;
+export function ColumnTier<Row>({ column, tableSpec }: ColumnTierProps<Row>) {
+  const stated = columnTierOf(column, tableSpec);
+  if (stated === null) return null;
+  if (stated.mode === 'inline') return <Provenance {...stated.spec} inline size={12} />;
+  return <ProvenanceTier tier={stated.spec.tier} size={12} />;
 }

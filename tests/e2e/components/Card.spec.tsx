@@ -1,10 +1,11 @@
-import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
+import { CARD, createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { Button, Card, DataTable } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour, resolvedLength, resolvedShadow } from '../support/token';
 
 const en = await createTranslator('en');
 const tryAgain = en.t(SIGN_IN.tryAgain);
+const loading = en.t(CARD.loading);
 
 test('an errored card draws its retry as the white raised secondary, since a card is a tile', async ({
   mount,
@@ -12,7 +13,11 @@ test('an errored card draws its retry as the white raised secondary, since a car
 }) => {
   let retries = 0;
   const card = await mount(
-    <Card read={{ kind: 'failed', retry: () => (retries += 1) }} retryLabel={tryAgain} />,
+    <Card
+      read={{ kind: 'failed', retry: () => (retries += 1) }}
+      loadingLabel={loading}
+      retryLabel={tryAgain}
+    />,
   );
   const retry = card.getByRole('button', { name: tryAgain });
 
@@ -23,17 +28,23 @@ test('an errored card draws its retry as the white raised secondary, since a car
 });
 
 test('an errored card with no words for its retry draws no retry', async ({ mount }) => {
-  const card = await mount(<Card read={{ kind: 'failed', retry: () => undefined }} />);
+  const card = await mount(
+    <Card read={{ kind: 'failed', retry: () => undefined }} loadingLabel={loading} />,
+  );
 
   await expect(card.getByRole('button')).toHaveCount(0);
 });
 
-test('an errored card with an empty message says its title alone, with no separator', async ({
+test('an errored card with no message says its title alone, with no separator', async ({
   mount,
 }) => {
   const title = en.t(SIGN_IN.tryAgain);
   const card = await mount(
-    <Card read={{ kind: 'failed', retry: () => undefined }} errorTitle={title} errorMessage="" />,
+    <Card
+      read={{ kind: 'failed', retry: () => undefined }}
+      loadingLabel={loading}
+      errorTitle={title}
+    />,
   );
 
   await expect(card.locator('.hg-card-message-text')).toHaveText(title);
@@ -41,7 +52,7 @@ test('an errored card with an empty message says its title alone, with no separa
 
 test('a failed read always carries its retry: the types refuse a surface state written any other way', () => {
   // @ts-expect-error — a failed read with no retry cannot be written
-  const noRetry = <Card read={{ kind: 'failed' }} />;
+  const noRetry = <Card read={{ kind: 'failed' }} loadingLabel={loading} />;
   // @ts-expect-error — a surface takes its read, never a hand-written state
   const handState = <Card state="error" />;
   // @ts-expect-error — the retry lives inside the failed read, never beside it

@@ -57,7 +57,7 @@ export interface UncountedHolderWords extends UncountedHolder {
 /** One role as its tile and its details say it. */
 export interface RoleReferenceWords {
   readonly value: RolePreset;
-  readonly name: string;
+  readonly name: TranslatedText;
   readonly summary: TranslatedText;
   /** *2 people* — null while the counts are out or did not load. */
   readonly count: TranslatedText | null;

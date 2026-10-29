@@ -10,6 +10,12 @@ import type { OperationProgressSize } from './OperationProgress.types';
 
 interface OperationHeadProps {
   label: ReactNode;
+  /**
+   * The indeterminate rail's spoken name — `words.inProgress(label)`. Web's `role="progressbar"`
+   * supplies the "in progress" fact for free beside the label; a plain labelled node has to say it
+   * in words, so it does.
+   */
+  inProgress: string;
   /** The clamped percentage, or null when the operation is indeterminate or finished. */
   pct: number | null;
   running: boolean;
@@ -33,14 +39,6 @@ function renderNode(node: ReactNode, style: TextStyle, variant: 'body' | 'body-s
 }
 
 /**
- * The indeterminate rail's spoken name. Web's `role="progressbar"` supplies the "in progress" fact
- * for free beside the label; a plain labelled node has to say it in words, so it does.
- */
-function railLabel(label: ReactNode) {
-  return typeof label === 'string' ? `${label}, in progress` : 'In progress';
-}
-
-/**
  * The work's name, its figure, its rail and its narration.
  *
  * INDETERMINATE IS A REAL STATE: no percentage is printed and the rail carries no
@@ -48,6 +46,7 @@ function railLabel(label: ReactNode) {
  */
 export function OperationHead({
   label,
+  inProgress,
   pct,
   running,
   gradient,
@@ -80,7 +79,7 @@ export function OperationHead({
            is. The determinate branch above goes through `ProgressBar`, which keeps the role AND
            its value. `accessible` folds only the decoration beneath it — there is no control
            inside to put out of reach. */
-        <View accessible accessibilityLabel={railLabel(label)}>
+        <View accessible accessibilityLabel={inProgress}>
           <IndeterminateRail width="100%" thickness={6} gradient={gradient} />
         </View>
       ) : null}

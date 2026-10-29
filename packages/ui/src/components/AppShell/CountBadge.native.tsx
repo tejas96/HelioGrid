@@ -3,8 +3,8 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { clampCount } from '../../utils/count';
 import type { CountBadgeProps, CountBadgeTone } from './AppShell.types';
+import { badgeDigits, isBadgeDrawn } from './CountBadge.logic';
 
 interface NativeCountBadgeProps extends CountBadgeProps {
   style?: StyleProp<ViewStyle>;
@@ -56,22 +56,17 @@ const TONES: Record<CountBadgeTone, TonePair> = {
 export function CountBadge({
   count,
   max = 99,
-  label = 'items',
+  label,
   tone = 'danger',
   style,
 }: NativeCountBadgeProps) {
   // The ring cuts the badge out of what it rides on, so it is that ground's colour.
   const { ground } = useGround();
-  const n = typeof count === 'number' ? count : null;
-  if (n !== null && n <= 0) {
-    return null;
-  }
-  if (n === null && count !== true) {
+  if (!isBadgeDrawn(count)) {
     return null;
   }
   const pair = TONES[tone];
-  const shown = n === null ? null : clampCount(n, max);
-  const words = n === null ? `Unread ${label}` : `${n} unread ${label}`;
+  const shown = badgeDigits(count, max);
   if (shown === null) {
     /* The bare dot draws no digits, so there is no text node to hang the sentence on — the view
        needs a role of its own. `text` is the honest one: a mark that states a fact and does
@@ -80,7 +75,7 @@ export function CountBadge({
     return (
       <View
         accessibilityRole="text"
-        accessibilityLabel={words}
+        accessibilityLabel={label}
         style={[styles.dot, { backgroundColor: pair.mark }, style]}
       />
     );
@@ -91,7 +86,7 @@ export function CountBadge({
        "3 unread alerts", said once. */
     <View
       accessibilityRole="text"
-      accessibilityLabel={words}
+      accessibilityLabel={label}
       style={[styles.pill, { backgroundColor: pair.bg, borderColor: ground }, style]}
     >
       <Text variant="caption" fixedSize style={[styles.digits, { color: pair.fg }]}>

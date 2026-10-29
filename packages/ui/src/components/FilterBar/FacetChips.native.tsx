@@ -5,8 +5,9 @@ import Svg from 'react-native-svg';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { facetGlyph, toggledFacets } from './FilterBar.logic';
 import type { FacetChipsProps } from './FilterBar.types';
-import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
+import { optionLabel, optionValue } from './FilterBar.types';
 import {
   FilterPill,
   filterStyles,
@@ -75,14 +76,14 @@ export function FacetChips({
   const selected = new Set(values);
   const toggle = (optValue: string) => {
     if (onChange === undefined) return;
-    onChange(selected.has(optValue) ? values.filter((x) => x !== optValue) : [...values, optValue]);
+    onChange(toggledFacets(values, optValue));
   };
 
   const chips = options.map((option) => {
     const optValue = optionValue(option);
     const on = selected.has(optValue);
     const count = counts?.[optValue];
-    const icon = on ? undefined : optionIcon(option);
+    const icon = facetGlyph(option, on);
     const ink = pillInkColor('chip', on);
     return (
       <Pressable

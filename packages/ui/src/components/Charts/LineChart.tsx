@@ -3,7 +3,7 @@ import { ChartFrame } from './ChartFrame';
 import type { LineChartProps } from './Charts.types';
 import { CHART_GRIDLINE_VAR, CHART_GROUND_VAR, chartVar } from './ChartTokens';
 import { chartTicks } from './chart-palette';
-import { lineGeometry, longestSeries, toLineSeries } from './chart-series';
+import { lineGeometry, lineSetDrawing, longestSeries, toLineSeries } from './chart-series';
 import { useChartWidth } from './use-chart-width';
 
 interface WebLineChartProps extends LineChartProps {
@@ -38,10 +38,10 @@ export function LineChart({
             viewBox={`0 0 ${geo.width} ${geo.height}`}
             preserveAspectRatio="none"
             role="img"
-            aria-label={frame.title ?? 'Line chart'}
+            aria-label={frame.title ?? frame.words.lineChart}
             className="hg-charts-line-svg"
           >
-            <title>{frame.title ?? 'Line chart'}</title>
+            <title>{frame.title ?? frame.words.lineChart}</title>
             {chartTicks(geo.height, gridlines).map((offset) => (
               <line
                 key={offset}
@@ -54,22 +54,15 @@ export function LineChart({
               />
             ))}
             {sets.map((set, si) => {
-              const points = set.points
-                .map((p, i) => `${geo.x(i, set.points.length)},${geo.y(p.y)}`)
-                .join(' ');
+              const drawn = lineSetDrawing(set, si, geo, area && sets.length === 1);
               const stroke = set.color ?? chartVar(si);
-              const last = set.points[set.points.length - 1];
               return (
-                <g key={set.name === undefined || set.name === '' ? `series-${si}` : set.name}>
-                  {area && sets.length === 1 ? (
-                    <polygon
-                      points={`${geo.pad},${geo.height} ${points} ${geo.width - geo.pad},${geo.height}`}
-                      fill={stroke}
-                      opacity="0.08"
-                    />
-                  ) : null}
+                <g key={drawn.key}>
+                  {drawn.area === null ? null : (
+                    <polygon points={drawn.area} fill={stroke} opacity="0.08" />
+                  )}
                   <polyline
-                    points={points}
+                    points={drawn.points}
                     fill="none"
                     stroke={stroke}
                     strokeWidth="2"
@@ -77,10 +70,10 @@ export function LineChart({
                     strokeLinejoin="round"
                     vectorEffect="non-scaling-stroke"
                   />
-                  {last === undefined ? null : (
+                  {drawn.end === null ? null : (
                     <circle
-                      cx={geo.x(set.points.length - 1, set.points.length)}
-                      cy={geo.y(last.y)}
+                      cx={drawn.end.x}
+                      cy={drawn.end.y}
                       r={4}
                       fill={CHART_GROUND_VAR}
                       stroke={stroke}

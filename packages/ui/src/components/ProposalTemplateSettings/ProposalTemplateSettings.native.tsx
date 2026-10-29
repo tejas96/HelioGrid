@@ -3,7 +3,6 @@ import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Banner } from '../Banner/Banner.native';
-import { useFocusAfterGone } from '../BrandingSettings/use-focus-after-gone.native';
 import { FormActionBar } from '../FormActionBar/FormActionBar.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { TemplateLinks, TemplatePart, TemplatePartSwitch } from './ProposalTemplateParts.native';
@@ -20,13 +19,9 @@ import { ProposalTemplateStage } from './ProposalTemplateStage.native';
 export function ProposalTemplateSettings(props: ProposalTemplateSettingsProps) {
   const { words, read, title, standing, teaching, saveFailed, act } = props;
   const loading = read.kind !== 'ready';
+  /* A saved or discarded change takes the act bar away: the screen reader goes on to the editor —
+     the part's switch and the part, where the person goes next. */
   const editor = useRef<View>(null);
-  /* Branding's phone hook is this page's rule too: it follows a bar this page draws, never a logo. */
-  useFocusAfterGone(editor, {
-    act: act !== undefined,
-    failure: act !== undefined && saveFailed,
-    logo: false,
-  });
   const standingShown = loading ? undefined : standing;
   return (
     <View style={styles.page}>
@@ -78,6 +73,7 @@ export function ProposalTemplateSettings(props: ProposalTemplateSettingsProps) {
             onSave={act.onSave}
             discardLabel={words.discard}
             onDiscard={act.onDiscard}
+            focusAfter={editor}
             saving={act.saving}
           />
         </View>

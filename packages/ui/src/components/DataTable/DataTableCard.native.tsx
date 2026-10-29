@@ -103,6 +103,7 @@ function CardNotes<Row>({
             issue={state.issue}
             fixed={state.fixed}
             action={table.rowIssueAction?.(row) ?? null}
+            fixedLine={table.words.fixed}
           />
         </View>
       ) : null}
@@ -144,6 +145,7 @@ function CardBody<Row>({
       align={alignOf(column)}
       cellIssue={table.cellIssue}
       onCellCommit={table.onCellCommit}
+      words={table.words}
     />
   );
 
@@ -153,7 +155,7 @@ function CardBody<Row>({
         <View style={styles.select}>
           <Checkbox
             checked={state.isSelected}
-            ariaLabel={`Select ${name}`}
+            ariaLabel={table.words.selectNamed(name)}
             onChange={() => onToggleRow(state.key)}
             style={tickPullback}
           />
@@ -208,7 +210,7 @@ export function DataTableCard<Row>({
 }: NativeCardProps<Row>) {
   const open = rowOpenOf(table, row);
   const state = resolveRow(table, rowKey, row, index, selected);
-  const name = rowNameOf(row, slots.primary, table.rowLabel);
+  const name = rowNameOf(row, slots.primary, table.rowLabel, table.words.openRecord);
   const editable = holdsEditor(slots, table);
   /* A tint holds its buttons as a tile does, an editor's card included — see `Ground.css`. */
   const tinted = state.issue !== null || state.flagged || state.isSelected;

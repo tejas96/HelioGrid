@@ -26,7 +26,7 @@ const DARK_BRAND = '#0D7A4F';
 /* The platform's near-black: the colour of a company that never set one (s18-k). */
 const PLATFORM = '#0A0A0B';
 
-/* Only the cover's title word is read; the other facts fill the signature. */
+/* Only the cover's title word and the logo's name are read; the other facts fill the signature. */
 const words = brandingWords(en.t, {
   limits: COMPANY_LOGO_LIMITS,
   companyName: COMPANY,
@@ -44,12 +44,12 @@ test('the cover prints in the derived ink', async ({ mount, page }) => {
   const pale = await mount(
     <DocumentPreview
       sample={false}
+      logoLabel={words.logoAlt}
       parts={['cover']}
       brandColor={PALE_BRAND}
       companyName={COMPANY}
       docTitle={words.proposal}
       width={480}
-      caption=""
     />,
   );
   await expect(pale.locator('.hg-doc-title')).toHaveText(words.proposal);
@@ -64,12 +64,12 @@ test('the cover prints in the derived ink', async ({ mount, page }) => {
   const dark = await mount(
     <DocumentPreview
       sample={false}
+      logoLabel={words.logoAlt}
       parts={['cover']}
       brandColor={DARK_BRAND}
       companyName={COMPANY}
       docTitle={words.proposal}
       width={480}
-      caption=""
     />,
   );
   await expect(dark.locator('.hg-doc-title')).toHaveCSS(
@@ -86,13 +86,13 @@ test('an empty cover shows the company name alone', async ({ mount }) => {
   const sheet = await mount(
     <DocumentPreview
       sample={false}
+      logoLabel={words.logoAlt}
       parts={['cover']}
       brandColor={PLATFORM}
       companyName={COMPANY}
       address={ADDRESS}
       letterhead={{}}
       width={480}
-      caption=""
     />,
   );
   const band = sheet.locator('.hg-doc-band');
@@ -111,6 +111,7 @@ test('the tax line and the footer phone are mono', async ({ mount, page }) => {
   const sheet = await mount(
     <DocumentPreview
       sample={false}
+      logoLabel={words.logoAlt}
       parts={['cover']}
       brandColor={DARK_BRAND}
       companyName={COMPANY}
@@ -118,7 +119,6 @@ test('the tax line and the footer phone are mono', async ({ mount, page }) => {
       phone={PHONE}
       letterhead={{ lines: LINES }}
       width={480}
-      caption=""
     />,
   );
   const mono = await resolvedFont(page, 'fontFamily', '--font-mono');
@@ -143,7 +143,9 @@ test('the tax line and the footer phone are mono', async ({ mount, page }) => {
 });
 
 /* A template's sections and terms, as a company writes them — long enough that a cut shows. */
-const SECTIONS = ['Site survey', 'System design', 'Bill of materials', 'Warranty', 'Timeline'];
+const SECTIONS = ['Site survey', 'System design', 'Bill of materials', 'Warranty', 'Timeline'].map(
+  (section) => en.t(section),
+);
 const TERMS = {
   version: 1 as const,
   blocks: [
@@ -168,6 +170,7 @@ test('a content fit is whole at any width', async ({ mount }) => {
     const sheet = await mount(
       <DocumentPreview
         sample={false}
+        logoLabel={words.logoAlt}
         parts={['cover', 'sections', 'terms']}
         brandColor={DARK_BRAND}
         companyName={COMPANY}
@@ -176,7 +179,6 @@ test('a content fit is whole at any width', async ({ mount }) => {
         terms={TERMS}
         fit="content"
         width={width}
-        caption=""
       />,
     );
     const frame = sheet.locator('.hg-doc-window');
@@ -209,6 +211,7 @@ test('two tranches of one name both draw', async ({ mount }) => {
   const schedule = await mount(
     <DocumentPreview
       sample={false}
+      logoLabel={words.logoAlt}
       parts={['tranches']}
       companyName={COMPANY}
       tranchesTitle={words.proposal}
@@ -218,7 +221,6 @@ test('two tranches of one name both draw', async ({ mount }) => {
       ]}
       fit="content"
       width={480}
-      caption=""
     />,
   );
 

@@ -1,10 +1,10 @@
 // biome-ignore-all lint/a11y/noAutofocus: `autoFocus` is the caller's contract (.d.ts) — the desktop door has one task, the number.
-import { nationalNumber } from '@heliogrid/domain';
 import type { CSSProperties } from 'react';
 import { useEffect, useId, useImperativeHandle, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import { useFormat } from '../MarketProvider';
+import { e164Of } from './PhoneField.logic';
 import type { PhoneFieldProps, PhoneValueProps } from './PhoneField.types';
 
 interface WebPhoneFieldProps extends PhoneFieldProps {
@@ -59,11 +59,7 @@ export function PhoneField({
      in the caller is what stops two screens grouping one number two ways. */
   const shown = mkt.phone(value, { nsn: true });
 
-  /* A number pasted whole carries its `+` and code, which the box already shows beside it. */
-  const commit = (typed: string): void => {
-    const entered = nationalNumber(mkt.pack, typed);
-    onChange?.(entered.length === 0 ? '' : `${dialCode}${entered}`);
-  };
+  const commit = (typed: string): void => onChange?.(e164Of(mkt.pack, typed));
 
   const message = error ?? helper;
 

@@ -27,8 +27,9 @@ interface WebDerivationProps extends DerivationProps {
  */
 export function Derivation({
   label,
-  summary = 'How this is worked out',
+  summary,
   parts,
+  kindWords,
   variant = 'cell',
   open,
   defaultOpen = false,
@@ -37,7 +38,16 @@ export function Derivation({
   className,
   style,
 }: WebDerivationProps) {
-  const panel = useDerivationPanel({ parts, label, summary, open, defaultOpen, onToggle, id });
+  const panel = useDerivationPanel({
+    parts,
+    label,
+    summary,
+    kindWords,
+    open,
+    defaultOpen,
+    onToggle,
+    id,
+  });
   const big = variant === 'block';
 
   return (
@@ -75,7 +85,7 @@ export function Derivation({
           {label !== undefined && big ? (
             <span className="hg-derivation-panel-label">{label}</span>
           ) : null}
-          <DerivationParts parts={parts} size={big ? 'md' : 'sm'} />
+          <DerivationParts parts={parts} kindWords={kindWords} size={big ? 'md' : 'sm'} />
         </div>
       ) : null}
     </div>

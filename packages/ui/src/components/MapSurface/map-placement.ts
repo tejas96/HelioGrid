@@ -1,5 +1,13 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { SurfaceState } from '../UnavailableNote';
-import type { MapImagerySpec, MapPlacementSpec, MapSurfaceProps } from './MapSurface.types';
+import type {
+  MapImagerySpec,
+  MapMarker,
+  MapPin,
+  MapPlacementSpec,
+  MapSurfaceProps,
+  MapSurfaceWords,
+} from './MapSurface.types';
 
 /**
  * `MS1-16`'s touch/pointer split is **additive**, not a preference: pointer keeps
@@ -9,7 +17,7 @@ import type { MapImagerySpec, MapPlacementSpec, MapSurfaceProps } from './MapSur
 
 export interface ResolvedPlacement {
   fixedPin: boolean;
-  pill: string | null;
+  pill: TranslatedText | null;
   tapToPlace: boolean;
   dragPin: boolean;
 }
@@ -23,12 +31,13 @@ interface PlacementInput {
   canDragPin: boolean;
 }
 
-const PILL_POINTER = 'Drag map to adjust';
-const PILL_TOUCH = 'Tap to place, or drag the map';
+/** The pill's own words: the pointer reading, and the touch reading that adds tapping. */
+type PillWords = Pick<MapSurfaceWords, 'dragMap' | 'tapToPlace'>;
 
 export function normalisePlacement(
   placement: MapSurfaceProps['placement'],
   input: PlacementInput,
+  words: PillWords,
 ): ResolvedPlacement {
   if (placement === null || placement === undefined) {
     return { fixedPin: false, pill: null, tapToPlace: false, dragPin: false };
@@ -36,7 +45,7 @@ export function normalisePlacement(
   const spec: MapPlacementSpec = typeof placement === 'string' ? {} : placement;
   const mode = spec.input ?? 'auto';
   const touch = mode === 'touch' || mode === 'both' || (mode === 'auto' && input.coarse);
-  const defaultPill = touch ? PILL_TOUCH : PILL_POINTER;
+  const defaultPill = touch ? words.tapToPlace : words.dragMap;
   return {
     fixedPin: spec.fixedPin !== false,
     pill: spec.pill === null ? null : (spec.pill ?? defaultPill),
@@ -49,16 +58,19 @@ export function normalisePlacement(
  * `M05-16` in words beside the attribution — *"Imagery 12 Mar 2026 · pinned at capture · Bhuvan"*.
  * A promise nobody can see kept is not one.
  */
-export function imageryWords(imagery: MapImagerySpec | string): string {
+export function imageryWords(
+  imagery: MapImagerySpec | TranslatedText,
+  words: Pick<MapSurfaceWords, 'imageryOn' | 'pinnedAtCapture'>,
+): string {
   if (typeof imagery === 'string') {
     return imagery;
   }
   const parts: string[] = [];
   if (imagery.capturedAt !== undefined && imagery.capturedAt !== '') {
-    parts.push(`Imagery ${imagery.capturedAt}`);
+    parts.push(words.imageryOn(imagery.capturedAt));
   }
   if (imagery.pinned !== false) {
-    parts.push('pinned at capture');
+    parts.push(words.pinnedAtCapture);
   }
   if (imagery.source !== undefined && imagery.source !== '') {
     parts.push(imagery.source);
@@ -90,14 +102,62 @@ export function resolvePinState(pin: MapSurfaceProps['pin']): 'pending' | 'confi
   return pin.state === 'confirmed' ? 'confirmed' : 'pending';
 }
 
+/** The words a marker's name is built from. */
+export type MarkerWords = Pick<MapSurfaceWords, 'position' | 'live' | 'lastSeenName' | 'lastSeen'>;
+
 /** The accessible name for a marker: the live / last-known difference is in the name too. */
-export function markerLabel(label: string | undefined, live: boolean, lastSeen?: string): string {
-  const base = label ?? 'Position';
+export function markerLabel(
+  label: string | undefined,
+  live: boolean,
+  lastSeen: string | undefined,
+  words: MarkerWords,
+): string {
+  const base = label ?? words.position;
   if (live) {
-    return `${base}, live`;
+    return words.live(base);
   }
   if (lastSeen !== undefined && lastSeen !== '') {
-    return `${base}, last seen ${lastSeen}`;
+    return words.lastSeenName(base, lastSeen);
   }
   return base;
+}
+
+/** The chip under a marker: its label, and the last-seen time while it is stale — or none at all. */
+export function markerChipOf(
+  label: string | undefined,
+  live: boolean,
+  lastSeen: string | undefined,
+  words: Pick<MapSurfaceWords, 'lastSeen'>,
+): string | null {
+  const stale = !live;
+  if (label === undefined && !(stale && lastSeen !== undefined)) {
+    return null;
+  }
+  return `${label ?? ''}${stale && lastSeen !== undefined ? ` · ${words.lastSeen(lastSeen)}` : ''}`;
+}
+
+export function markerKeyOf(marker: MapMarker, index: number): string {
+  return String(marker.id ?? `${marker.x}-${marker.y}-${index}`);
+}
+
+/**
+ * Where the pin stands and what it is called. It rides the fixed centre until it has coordinates
+ * of its own, and its name is in words first — pending and confirmed never rest on the colour.
+ */
+export function pinReadingOf(
+  pin: MapPin,
+  pinState: 'pending' | 'confirmed',
+  fixed: boolean,
+  draggable: boolean,
+  words: Pick<MapSurfaceWords, 'pinPending' | 'pinConfirmed' | 'draggable'>,
+): { confirmed: boolean; name: TranslatedText; spokenName: TranslatedText; x: number; y: number } {
+  const confirmed = pinState === 'confirmed';
+  const name = pin.label ?? (confirmed ? words.pinConfirmed : words.pinPending);
+  return {
+    confirmed,
+    name,
+    spokenName: draggable ? words.draggable(name) : name,
+    x: fixed ? 50 : (pin.x ?? 50),
+    y: fixed ? 50 : (pin.y ?? 50),
+  };
 }

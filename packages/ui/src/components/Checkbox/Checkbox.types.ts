@@ -1,3 +1,5 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+
 export interface CheckboxProps {
   checked?: boolean;
   /**
@@ -5,7 +7,7 @@ export interface CheckboxProps {
    * so both platforms call it the same way.
    */
   onChange?: (checked: boolean) => void;
-  label?: string;
+  label?: TranslatedText;
   disabled?: boolean;
   id?: string;
   /**
@@ -13,5 +15,5 @@ export interface CheckboxProps {
    * whose visible name is the record in the row beside it. Ignored when `label` is set, so the two
    * cannot disagree.
    */
-  ariaLabel?: string;
+  ariaLabel?: TranslatedText;
 }

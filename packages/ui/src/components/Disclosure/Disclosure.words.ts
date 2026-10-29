@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { createContext, useContext } from 'react';
 import { ruledKind } from './Disclosure.lines';
 import type { DisclosureKind, DisclosureWords } from './Disclosure.types';
@@ -29,7 +30,11 @@ function useDisclosureWords(): DisclosureWords {
 export function useDisclosureText(
   kind: DisclosureKind,
   text: string | undefined,
-): { lead: string | null; line: string | undefined } {
+): {
+  lead: TranslatedText | null;
+  // biome-ignore lint/plugin/copy-prop-type: a custom line is the market pack's own required words
+  line: string | undefined;
+} {
   const words = useDisclosureWords();
   const ruled = ruledKind(kind);
   if (ruled === null) {

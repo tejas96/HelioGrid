@@ -1,6 +1,8 @@
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { closingPress } from '../../primitives/FocusAfter';
 import { Button } from '../Button/Button.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { useFormat } from '../MarketProvider';
@@ -8,6 +10,7 @@ import { UnavailableNote } from '../UnavailableNote';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { applyFilter, filterDimensions } from './ActivityStream.filter';
 import { ACTIVITY_KINDS, sortEntries } from './ActivityStream.kinds';
+import { ACTIVITY_STREAM_DEFAULTS, streamStageOf } from './ActivityStream.logic';
 import type { ActivityStreamProps } from './ActivityStream.types';
 import { ActivityStreamList } from './ActivityStreamList.native';
 import { StreamMessage, StreamSkeleton } from './ActivityStreamStates.native';
@@ -30,36 +33,40 @@ export function ActivityStream({
   entries,
   kinds = {},
   total,
-  order = 'newest',
-  groupBy = 'day',
-  visibleCount = 25,
-  step = 25,
+  order = ACTIVITY_STREAM_DEFAULTS.order,
+  groupBy = ACTIVITY_STREAM_DEFAULTS.groupBy,
+  visibleCount = ACTIVITY_STREAM_DEFAULTS.visibleCount,
+  step = ACTIVITY_STREAM_DEFAULTS.step,
   hasMore = false,
   onLoadMore,
   loadingMore = false,
   filtered = false,
   onClearFilters,
   toolbar,
-  countLabel = 'entries',
-  todayLabel = 'Today',
-  yesterdayLabel = 'Yesterday',
+  countLabel,
+  todayLabel,
+  yesterdayLabel,
   read,
-  emptyTitle = 'No activity yet',
-  emptyDescription = 'Notes, calls, stage changes and payments all land here as they happen.',
-  filteredEmptyTitle = 'Nothing matches these filters',
-  filteredEmptyDescription = 'There is activity on this record — none of it is of the kinds you have picked.',
-  errorTitle = "Couldn't load the activity",
-  errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
+  emptyTitle,
+  emptyDescription,
+  filteredEmptyTitle,
+  filteredEmptyDescription,
+  errorTitle,
+  errorMessage,
   retryLabel,
-  unavailableTitle = 'No activity is kept here',
+  unavailableTitle,
   unavailableMessage,
-  density = 'expressive',
+  density = ACTIVITY_STREAM_DEFAULTS.density,
+  words,
   style,
 }: NativeActivityStreamProps) {
-  const state = surfaceStateOf(read);
+  const stage = streamStageOf(surfaceStateOf(read), entries.length, filtered);
   const onRetry = retryOf(read);
   const format = useFormat();
   const { shown, reveal } = useActivityWindow(entries.length, visibleCount);
+  /* The stream's own frame stays while a failed read reloads, so *Try again* hands the reader to
+     it. */
+  const holder = useRef<View>(null);
 
   /* Sorted before any early return, and deliberately not memoised: a hook after a conditional
      return changes the hook order between states, which is how a state transition crashes. */
@@ -70,51 +77,51 @@ export function ActivityStream({
     style,
   ];
 
-  if (state === 'loading') {
+  if (stage === 'loading') {
     return (
-      <View style={shell}>
-        <StreamSkeleton />
+      <View ref={holder} style={shell}>
+        <StreamSkeleton label={words.loading} />
       </View>
     );
   }
-  if (state === 'error') {
+  if (stage === 'error') {
     return (
-      <View style={shell}>
+      <View ref={holder} style={shell}>
         <StreamMessage
           tone="warning"
           title={errorTitle}
           message={errorMessage}
-          retry={<RetryButton onRetry={onRetry} label={retryLabel} />}
+          retry={<RetryButton onRetry={onRetry} label={retryLabel} focusAfter={holder} />}
         />
       </View>
     );
   }
-  if (state === 'unavailable') {
+  if (stage === 'unavailable') {
     return (
-      <View style={shell}>
+      <View ref={holder} style={shell}>
         <UnavailableNote variant="region" title={unavailableTitle} message={unavailableMessage} />
       </View>
     );
   }
-  /* A filtered stream with nothing in it is NOT "no activity yet" — the record is not empty, the
-     filter is narrow, and the action clears the filters rather than offering to add anything. */
-  if (state === 'empty' || entries.length === 0) {
-    if (!filtered) {
-      return (
-        <View style={shell}>
-          <StreamMessage title={emptyTitle} message={emptyDescription} />
-        </View>
-      );
-    }
+  if (stage === 'empty') {
     return (
-      <View style={shell}>
+      <View ref={holder} style={shell}>
+        <StreamMessage title={emptyTitle} message={emptyDescription} />
+      </View>
+    );
+  }
+  /* A filtered stream with nothing in it: the act clears the filters, never adds anything. */
+  if (stage === 'filtered-empty') {
+    return (
+      <View ref={holder} style={shell}>
         <StreamMessage
           title={filteredEmptyTitle}
           message={filteredEmptyDescription}
           action={
+            /* Clearing takes the filtered-empty state away: the screen reader goes to the stream. */
             onClearFilters !== undefined ? (
-              <Button variant="secondary" size="md" onClick={onClearFilters}>
-                Clear filters
+              <Button variant="secondary" size="md" onClick={closingPress(holder)(onClearFilters)}>
+                {words.clearFilters}
               </Button>
             ) : null
           }
@@ -124,7 +131,7 @@ export function ActivityStream({
   }
 
   return (
-    <View style={shell}>
+    <View ref={holder} style={shell}>
       <ActivityStreamList
         sorted={sorted}
         shown={shown}
@@ -139,6 +146,7 @@ export function ActivityStream({
         countLabel={countLabel}
         todayLabel={todayLabel}
         yesterdayLabel={yesterdayLabel}
+        words={words}
         density={density}
         total={total}
         onLoadMore={onLoadMore}

@@ -3,16 +3,18 @@ import { useEffect, useMemo, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { landFocusOn } from '../../primitives/FocusAfter';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { Button } from '../Button/Button.native';
 import { Toast } from '../Toast/Toast.native';
+import { shownToasts } from './ToastHost.logic';
 import type { ToastHostProps, ToastItem, ToastPosition } from './ToastHost.types';
 
-interface NativeToastHostProps extends ToastHostProps {
+type NativeToastHostProps = ToastHostProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 function DismissGlyph() {
   return (
@@ -68,6 +70,8 @@ function placement(position: ToastPosition, offset: number): ViewStyle {
 export function ToastHost({
   toasts = [],
   onDismiss,
+  dismissLabel,
+  focusAfter,
   position = 'bottom-center',
   max = 3,
   duration = 4000,
@@ -75,7 +79,7 @@ export function ToastHost({
   offset = theme.layout['bottomnav-h'] + theme.spacing['sp-6'],
   style,
 }: NativeToastHostProps) {
-  const shown = useMemo(() => toasts.slice(-max), [toasts, max]);
+  const shown = useMemo(() => shownToasts(toasts, max), [toasts, max]);
   const [paused, setPaused] = useState(false);
   const oldest: ToastItem | undefined = shown[0];
 
@@ -118,6 +122,7 @@ export function ToastHost({
                     onClick={() => {
                       onDismiss(toast.id);
                       toast.undo?.onUndo();
+                      if (toast.undo !== undefined) landFocusOn(toast.undo.focusAfter);
                     }}
                   >
                     {toast.undo.label}
@@ -127,8 +132,11 @@ export function ToastHost({
                 (onDismiss === undefined ? undefined : (
                   <Pressable
                     style={styles.dismiss}
-                    accessibilityLabel="Dismiss"
-                    onPress={() => onDismiss(toast.id)}
+                    accessibilityLabel={dismissLabel}
+                    onPress={() => {
+                      onDismiss(toast.id);
+                      if (focusAfter !== undefined) landFocusOn(focusAfter);
+                    }}
                   >
                     <DismissGlyph />
                   </Pressable>

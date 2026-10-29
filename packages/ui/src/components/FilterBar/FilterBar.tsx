@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { FacetChips } from './FacetChips';
+import { filtersButtonName } from './FilterBar.logic';
 import type { FiltersButtonProps, ScopeToggleProps, SortPillsProps } from './FilterBar.types';
 import { optionLabel, optionValue } from './FilterBar.types';
 import { FilterChips } from './FilterChips';
@@ -56,7 +57,7 @@ export function SortPills({
   options,
   value,
   onChange,
-  label = 'Sort',
+  label,
   className,
   style,
 }: WebSortPillsProps) {
@@ -98,7 +99,8 @@ export function SortPills({
 export function FiltersButton({
   onClick,
   count = 0,
-  label = 'Filters',
+  label,
+  activeLabel,
   className,
   style,
 }: WebFiltersButtonProps) {
@@ -106,11 +108,7 @@ export function FiltersButton({
     <button
       type="button"
       className={classNames('hg-filters-button', className)}
-      /* THE SQUARE HAS NO WORDS and the counter is a bare number, so the name is the whole
-         sentence: left to the content it would announce "3", saying nothing about what the 3
-         counts. The native half states the same sentence, so both halves name the control
-         identically. */
-      aria-label={count > 0 ? `${label}, ${count} active` : label}
+      aria-label={filtersButtonName({ count, label, activeLabel })}
       title={label}
       onClick={onClick}
       style={style}

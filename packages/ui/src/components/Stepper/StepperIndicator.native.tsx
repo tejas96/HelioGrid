@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
@@ -7,11 +8,13 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ResolvedStep } from './resolve-steps';
+import { indicatorFacts } from './Stepper.logic';
+import type { StepperWords } from './Stepper.types';
 
 interface NavButtonProps {
   direction: number;
   disabled: boolean;
-  name: string;
+  name: TranslatedText;
   onPress: () => void;
 }
 
@@ -40,6 +43,7 @@ interface NativeStepperIndicatorProps {
   onStepClick?: (index: number) => void;
   resolved: readonly ResolvedStep[];
   style?: StyleProp<ViewStyle>;
+  words: StepperWords;
 }
 
 /**
@@ -52,29 +56,33 @@ export function StepperIndicator({
   onStepClick,
   resolved,
   style,
+  words,
 }: NativeStepperIndicatorProps) {
-  const total = resolved.length;
-  const step = resolved[index];
-  const next = resolved[index + 1];
-  const nextReachable = next?.reachable === true;
-  const errors = resolved.filter((entry) => entry.state === 'errors').length;
+  const { total, name, errors, backOff, nextOff } = indicatorFacts(
+    resolved,
+    index,
+    onStepClick !== undefined,
+  );
   /* The opposite of what holds it (`F7-15`): the well on the page, white inside a tile; flat. */
   const { controlFill } = useGround();
   return (
     <View style={[styles.bar, { backgroundColor: controlFill }, style]}>
       <NavButton
         direction={-1}
-        disabled={index === 0 || onStepClick === undefined}
-        name="Previous step"
+        disabled={backOff}
+        name={words.previousStep}
         onPress={() => onStepClick?.(index - 1)}
       />
       {/* Web's button has no aria-label, so its name is its contents — including the "2 to fix"
           span. An explicit label here overrides the children, so the count has to be spelled into
           it or the one urgent word on this bar is announced nowhere. */}
       <Pressable
-        accessibilityLabel={`${index + 1} of ${total}, ${step === undefined ? '' : step.label}${
-          errors > 0 ? `, ${errors} to fix` : ''
-        }`}
+        accessibilityLabel={words.spokenIndicator({
+          current: index + 1,
+          total,
+          name,
+          errors,
+        })}
         disabled={onOpenStepList === undefined}
         onPress={onOpenStepList}
         style={styles.open}
@@ -84,11 +92,11 @@ export function StepperIndicator({
         </Text>
         <View style={styles.dotSep} />
         <Text variant="body-sm" style={styles.current}>
-          {step === undefined ? '' : step.label}
+          {name}
         </Text>
         {errors > 0 ? (
           <Text variant="caption" color="danger" style={styles.errors}>
-            {`${errors} to fix`}
+            {words.toFix(errors)}
           </Text>
         ) : null}
         <Svg
@@ -106,8 +114,8 @@ export function StepperIndicator({
       </Pressable>
       <NavButton
         direction={1}
-        disabled={!nextReachable || onStepClick === undefined}
-        name="Next step"
+        disabled={nextOff}
+        name={words.nextStep}
         onPress={() => onStepClick?.(index + 1)}
       />
     </View>

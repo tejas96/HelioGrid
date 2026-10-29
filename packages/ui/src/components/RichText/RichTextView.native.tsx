@@ -4,6 +4,7 @@ import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Image, Text as RNText, StyleSheet, View } from 'react-native';
 import { foldRows, isListBlock, keyed } from './RichText.model';
 import type { RichTextRow, RichTextSpan, RichTextViewProps } from './RichText.types';
+import { headingAbove, richTextViewMeasures } from './RichTextView.logic';
 
 interface NativeRichTextViewProps extends RichTextViewProps {
   style?: StyleProp<ViewStyle>;
@@ -62,7 +63,8 @@ export function RichTextView({
   const ink = color ?? theme.colors['text-primary'];
   const sub = muted ?? theme.colors['text-secondary'];
   const lineHeight = Math.round(fontSize * 1.6);
-  const gap = Math.round(fontSize * 0.7);
+  const { gap, headingSize, headingBelow, logoHeight, logoWidth, logoLabelSize } =
+    richTextViewMeasures(fontSize);
 
   if (blocks.length === 0) {
     return emptyText === undefined ? null : (
@@ -76,19 +78,17 @@ export function RichTextView({
     lineHeight,
     color: sub,
   };
-  const head: TextStyle = { ...body, fontSize: fontSize + 1, fontWeight: '700', color: ink };
+  const head: TextStyle = { ...body, fontSize: headingSize, fontWeight: '700', color: ink };
 
   return (
     <View style={style}>
       {keyed(blocks, 'b').map(({ key, item: b }, i) => {
         if (b.type === 'logo') {
-          const h = Math.round(fontSize * 2.4);
-          const w = Math.round(fontSize * 6);
           return (
             <View key={key} style={styles.logoRow}>
               {logoSrc === undefined ? (
-                <View style={[styles.logoSlot, { width: w, height: h }]}>
-                  <RNText style={[styles.logoLabel, { fontSize: Math.max(9, fontSize - 4) }]}>
+                <View style={[styles.logoSlot, { width: logoWidth, height: logoHeight }]}>
+                  <RNText style={[styles.logoLabel, { fontSize: logoLabelSize }]}>
                     {logoLabel}
                   </RNText>
                 </View>
@@ -97,7 +97,7 @@ export function RichTextView({
                   source={{ uri: logoSrc }}
                   accessibilityIgnoresInvertColors
                   resizeMode="contain"
-                  style={{ width: w, height: h }}
+                  style={{ width: logoWidth, height: logoHeight }}
                 />
               )}
             </View>
@@ -107,10 +107,7 @@ export function RichTextView({
           return (
             <RNText
               key={key}
-              style={[
-                head,
-                { marginTop: i > 0 ? fontSize : 0, marginBottom: Math.round(fontSize * 0.4) },
-              ]}
+              style={[head, { marginTop: headingAbove(i, fontSize), marginBottom: headingBelow }]}
             >
               {renderSpans(b.spans, `${key}-s`, head)}
             </RNText>

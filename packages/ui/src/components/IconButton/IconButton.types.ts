@@ -1,5 +1,6 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
-import type { ActionReasonSpec } from '../ActionReason/ActionReason.types';
+import type { ActionReasonSentence } from '../ActionReason/ActionReason.types';
 
 export type IconButtonVariant = 'surface' | 'dark' | 'ghost';
 
@@ -8,7 +9,7 @@ export interface IconButtonProps {
   /** diameter in px; visual size (min touch target stays 44) */
   size?: number;
   /** required for a11y — icon-only buttons must carry a label */
-  label: string;
+  label: TranslatedText;
   variant?: IconButtonVariant;
   disabled?: boolean;
   /**
@@ -17,7 +18,7 @@ export interface IconButtonProps {
    * is drawn under it. Only with `disabled`. Where the act is someone else's, the surface owes a
    * `ScopeNote` instead.
    */
-  disabledReason?: ReactNode | ActionReasonSpec;
+  disabledReason?: ActionReasonSentence;
   /** Holds the reason bubble open (`true`) or shut (`false`); unset lets a tap open it. */
   reasonOpen?: boolean;
   onClick?: () => void;

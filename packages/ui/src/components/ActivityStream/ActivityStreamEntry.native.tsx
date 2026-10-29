@@ -2,13 +2,13 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import type { MarketFormat } from '../../utils/format';
 import { ActorClass } from '../ActorClass';
 import { renderMarks } from '../ChipGroup';
 import { renderProvenance } from '../Provenance';
 import { ActivityGlyph } from './ActivityGlyph.native';
-import { asDate, hhmm, isValidDate, kindOf } from './ActivityStream.kinds';
-import type { ActivityEntry, ActivityKindSpec, ActivityTone } from './ActivityStream.types';
+import { kindOf } from './ActivityStream.kinds';
+import { entryClockOf, streamMarkOf } from './ActivityStream.logic';
+import type { ActivityTone, StreamEntryProps } from './ActivityStream.types';
 
 const type = theme.type.roles;
 
@@ -68,19 +68,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export interface StreamEntryProps {
-  entry: ActivityEntry;
-  kinds: Record<string, ActivityKindSpec>;
-  density: 'expressive' | 'functional';
-  format: MarketFormat;
-}
-
 /** One entry: the kind's mark, the kind's word, the clock, the summary and the actor class. */
-export function StreamEntry({ entry, kinds, density, format }: StreamEntryProps) {
-  const spec = kindOf(kinds, entry.kind);
+export function StreamEntry({ entry, kinds, words, density, format }: StreamEntryProps) {
+  const spec = kindOf(kinds, entry.kind, words.kind);
   const tone = TONES[spec.tone];
-  const date = asDate(entry.at);
-  const circle = density === 'functional' ? 32 : 36;
+  const { circle, glyph } = streamMarkOf(density);
+  const clock = entryClockOf(entry, format);
   const summaryType = { fontSize: density === 'functional' ? 14 : type.body.fontSize };
   const summary: ReactNode =
     entry.onOpen !== undefined ? (
@@ -98,23 +91,24 @@ export function StreamEntry({ entry, kinds, density, format }: StreamEntryProps)
           { width: circle, height: circle, borderRadius: circle / 2, backgroundColor: tone.bg },
         ]}
       >
-        <ActivityGlyph
-          name={spec.glyph}
-          size={density === 'functional' ? 15 : 17}
-          color={tone.fg}
-        />
+        <ActivityGlyph name={spec.glyph} size={glyph} color={tone.fg} />
       </View>
       <View style={styles.body}>
         <View style={styles.head}>
           {/* The kind is a word on the entry, not a colour on the mark. */}
           <Text style={styles.kind}>{spec.label}</Text>
-          {isValidDate(date) ? <Text style={styles.time}>{format.time(hhmm(date))}</Text> : null}
+          {clock === null ? null : <Text style={styles.time}>{clock}</Text>}
         </View>
         <View style={styles.summaryRow}>{summary}</View>
         {entry.detail !== undefined ? <Text style={styles.detail}>{entry.detail}</Text> : null}
         {/* THE ACTOR CLASS, always in words — one vocabulary, shared with a task's `origin`. */}
         <View style={styles.actor}>
-          <ActorClass actorClass={entry.actorClass} actor={entry.actor} size={12} />
+          <ActorClass
+            actorClass={entry.actorClass}
+            actor={entry.actor}
+            size={12}
+            words={words.actor}
+          />
         </View>
         {entry.marks !== undefined ? (
           <View style={styles.marks}>{renderMarks(entry.marks)}</View>

@@ -1,16 +1,20 @@
 'use client';
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { Invite } from '@heliogrid/data/react';
 import { fieldBinder, useZodForm } from '@heliogrid/forms';
 import { inviteFieldWords, inviteWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import { type FocusHandle, type InviteEditorProps, useFormat } from '@heliogrid/ui';
-import { useRef } from 'react';
+import { type RefObject, useRef } from 'react';
 
 /** The form's half of an invite host — the editor over Team and the setup step take the same. */
 export type InviteFormFields = Pick<
   InviteEditorProps,
-  'bind' | 'roles' | 'sending' | 'presses' | 'refusal' | 'phoneRef' | 'onDifferentNumber' | 'onSend'
->;
+  'bind' | 'roles' | 'sending' | 'presses' | 'refusal' | 'onDifferentNumber' | 'onSend'
+> & {
+  /** The number field — where focus lands once a send's toast is closed, and a cleared number. */
+  phoneRef: RefObject<FocusHandle | null>;
+};
 
 /**
  * The invite form over the contract's schema, bound to one send (`useInvite` or `useSetupInvite`):
@@ -21,7 +25,7 @@ export type InviteFormFields = Pick<
  */
 export function useInviteForm(
   invite: Invite,
-  push: (toast: { tone: 'danger'; title: string }) => void,
+  push: (toast: { tone: 'danger'; title: TranslatedText }) => void,
   onForbidden: () => void | Promise<void>,
 ) {
   const { t } = useI18n();

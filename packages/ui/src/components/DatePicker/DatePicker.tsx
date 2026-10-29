@@ -5,33 +5,13 @@ import { fieldBox } from '../../primitives/FieldBox';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { useFormat } from '../MarketProvider/market-context';
 import { Calendar } from './Calendar';
-import { asRange, asSet, parse } from './calendar-grid';
-import type { CalendarValue, DatePickerProps, MarketFormat } from './DatePicker.types';
+import { closesPicker } from './calendar-selection';
+import type { DatePickerProps } from './DatePicker.types';
+import { triggerText } from './date-text';
 
 interface WebDatePickerProps extends DatePickerProps {
   className?: string;
   style?: CSSProperties;
-}
-
-/** What the trigger shows: the active market's date, never a hand-spelled order. */
-function triggerText(
-  mode: DatePickerProps['mode'],
-  value: CalendarValue | undefined,
-  mkt: MarketFormat,
-): string {
-  if (mode === 'range') {
-    const range = asRange(value);
-    if (range.from === null) {
-      return '';
-    }
-    return `${mkt.date(range.from)} – ${range.to === null ? '…' : mkt.date(range.to)}`;
-  }
-  if (mode === 'set') {
-    const set = asSet(value);
-    return set.length === 0 ? '' : `${set.length} date${set.length === 1 ? '' : 's'}`;
-  }
-  const single = parse(typeof value === 'string' ? value : null);
-  return single === null ? '' : mkt.date(single);
 }
 
 /**
@@ -40,11 +20,12 @@ function triggerText(
  * elsewhere. There is no `firstDayOfWeek` prop: the week start is a market fact.
  */
 export function DatePicker({
+  words,
   value,
   onChange,
   mode = 'single',
   label,
-  placeholder = 'Select a date',
+  placeholder = words.selectDate,
   min,
   max,
   markers,
@@ -85,7 +66,7 @@ export function DatePicker({
     };
   }, [open]);
 
-  const text = triggerText(mode, value, mkt);
+  const text = triggerText(mode, value, mkt, words);
 
   return (
     <div ref={wrapRef} className={classNames('hg-date-picker', className)} style={style}>
@@ -128,15 +109,17 @@ export function DatePicker({
         </p>
       )}
       {open ? (
-        <div className="hg-date-picker-popover" role="dialog" aria-label={label ?? 'Choose a date'}>
+        <div
+          className="hg-date-picker-popover"
+          role="dialog"
+          aria-label={label ?? words.chooseDate}
+        >
           <Calendar
+            words={words}
             value={value}
             onChange={(next) => {
               onChange?.(next);
-              const closes =
-                mode === 'single' ||
-                (mode === 'range' && !Array.isArray(next) && typeof next === 'object' && next.to);
-              if (closes) {
+              if (closesPicker(mode, next)) {
                 setOpen(false);
               }
             }}

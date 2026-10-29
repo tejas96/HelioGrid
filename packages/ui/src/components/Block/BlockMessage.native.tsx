@@ -1,11 +1,11 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 import type { StyleProp, TextStyle } from 'react-native';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import { RetryButton } from '../Button/RetryButton.native';
-import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
-import type { BlockProps } from './Block.types';
+import type { BlockBodyProps } from './Block.types';
 
 const type = theme.type.roles;
 
@@ -57,8 +57,8 @@ export function BlockMessage({
   action,
 }: {
   tone?: 'warning';
-  title?: string;
-  message?: string;
+  title?: TranslatedText;
+  message?: TranslatedText;
   action?: ReactNode;
 }) {
   const text: StyleProp<TextStyle> = [styles.text, tone === 'warning' ? styles.warning : null];
@@ -78,19 +78,11 @@ export function BlockMessage({
   );
 }
 
-export type BlockBodyProps = { state: SurfaceState; onRetry?: () => void } & Required<
-  Pick<BlockProps, 'emptyMessage' | 'errorTitle' | 'errorMessage' | 'unavailableTitle'>
-> &
-  Pick<
-    BlockProps,
-    'children' | 'title' | 'emptyTitle' | 'emptyAction' | 'retryLabel' | 'unavailableMessage'
-  >;
-
 /** The body is the only part that moves between states; the header and the frame stay put. */
 export function BlockBody({
   children,
-  title,
   state,
+  loadingLabel,
   emptyMessage,
   emptyTitle,
   emptyAction,
@@ -98,6 +90,7 @@ export function BlockBody({
   errorMessage,
   onRetry,
   retryLabel,
+  focusAfter,
   unavailableTitle,
   unavailableMessage,
 }: BlockBodyProps) {
@@ -108,7 +101,7 @@ export function BlockBody({
          accessibility element over pure decoration and announces the same fact politely. */
       <View
         accessible
-        accessibilityLabel={title !== undefined ? `Loading ${title}` : 'Loading'}
+        accessibilityLabel={loadingLabel}
         accessibilityLiveRegion="polite"
         style={styles.loading}
       >
@@ -124,7 +117,7 @@ export function BlockBody({
         tone="warning"
         title={errorTitle}
         message={errorMessage}
-        action={<RetryButton onRetry={onRetry} label={retryLabel} />}
+        action={<RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />}
       />
     );
   }

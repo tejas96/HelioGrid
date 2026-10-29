@@ -1,4 +1,7 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
 /**
  * The system's one surface read, imported from the folder that owns it — exactly as
  * the design system's own MapSurface typings import it from `../feedback/UnavailableNote`, and as
@@ -9,7 +12,7 @@ import type { ReactNode } from 'react';
  * conjure coverage). `tiles-unavailable` is gone; it was this component's private spelling of
  * the fourth state.
  */
-import type { SurfaceRead } from '../UnavailableNote';
+import type { SurfaceRead, SurfaceState } from '../UnavailableNote';
 
 /** Marker tones. A visual map keyed on this union is a `Record`, never a lookup with a default. */
 export type MapMarkerTone = 'accent' | 'success' | 'warning' | 'danger' | 'info' | 'neutral';
@@ -24,6 +27,7 @@ export interface MapMarker {
   live?: boolean;
   /** Shown on the chip and read out — "last seen 10:42 AM". */
   lastSeen?: string;
+  // biome-ignore lint/plugin/copy-prop-type: the marker's name — a person's or a site's
   label?: string;
   onClick?: () => void;
 }
@@ -44,7 +48,7 @@ export interface MapPin {
    */
   state?: 'pending' | 'confirmed';
   /** Replaces the state's words. Never removes them. */
-  label?: string;
+  label?: TranslatedText;
   /** True once the pin has coordinates of its own — it stops riding the fixed centre. */
   placed?: boolean;
 }
@@ -59,7 +63,7 @@ export interface MapPlacementSpec {
   /** The fixed centre pin. Default true. */
   fixedPin?: boolean;
   /** The pill's words — "Drag map to adjust". `null` renders none. */
-  pill?: string | null;
+  pill?: TranslatedText | null;
   /** Force tap-to-place on or off, overriding the input reading. */
   tapToPlace?: boolean;
   /** Force direct pin drag on or off. */
@@ -84,6 +88,7 @@ export interface MapGeofence {
   x: number;
   y: number;
   r: number;
+  // biome-ignore lint/plugin/copy-prop-type: the fenced site's name
   label?: string;
 }
 
@@ -99,6 +104,51 @@ export interface MapImagerySpec {
   capturedAt?: string;
   source?: string;
   pinned?: boolean;
+}
+
+/**
+ * The words the surface says of its own, from `packages/i18n`'s `mapSurfaceWords`: its states and
+ * retry, its controls' names, the placement pill, the pin's two states, a marker's name and the
+ * imagery line. The surface's own `emptyTitle` … `errorMessage` replace one state's words.
+ */
+export interface MapSurfaceWords {
+  /** The loading region's name — "Loading map". */
+  loading: TranslatedText;
+  emptyTitle: TranslatedText;
+  emptyMessage: TranslatedText;
+  unavailableTitle: TranslatedText;
+  unavailableMessage: TranslatedText;
+  errorTitle: TranslatedText;
+  errorMessage: TranslatedText;
+  /** The failed read's *Try again*. */
+  retry: TranslatedText;
+  /** The zoom controls' names with no level supplied, and with one. */
+  zoomIn: TranslatedText;
+  zoomOut: TranslatedText;
+  zoomInFrom: (level: number) => TranslatedText;
+  zoomOutFrom: (level: number) => TranslatedText;
+  /** The level, legible on the surface — "Zoom 20". */
+  zoomLevel: (level: number) => TranslatedText;
+  recentre: TranslatedText;
+  /** The tap-to-place layer's name, which also says the keyboard's way. */
+  placePin: TranslatedText;
+  /** The placement pill's words: the pointer reading, and the touch reading that adds tapping. */
+  dragMap: TranslatedText;
+  tapToPlace: TranslatedText;
+  pinPending: TranslatedText;
+  pinConfirmed: TranslatedText;
+  /** A pin's name while a finger can drag it — "Pin pending, draggable". */
+  draggable: (pin: string) => TranslatedText;
+  /** A marker's name when it has none of its own. */
+  position: TranslatedText;
+  /** A marker's name with the live / last-known difference in it. */
+  live: (name: string) => TranslatedText;
+  lastSeenName: (name: string, time: string) => TranslatedText;
+  /** The last-known chip's words — "last seen 10:42 AM". */
+  lastSeen: (time: string) => TranslatedText;
+  /** The imagery line's parts — "Imagery 12 Mar 2026 · pinned at capture". */
+  imageryOn: (date: string) => TranslatedText;
+  pinnedAtCapture: TranslatedText;
 }
 
 /** Every level change travels through one channel, and it says why. */
@@ -121,14 +171,14 @@ export interface MapSurfaceProps {
    * Required: what this draws always comes from a read, and a failed read carries its retry.
    */
   read: SurfaceRead;
-  emptyTitle?: string;
-  emptyMessage?: string;
-  unavailableTitle?: string;
-  unavailableMessage?: string;
-  errorTitle?: string;
-  errorMessage?: string;
-  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
+  /** Every word the surface says of its own; the six below replace one state's words. */
+  words: MapSurfaceWords;
+  emptyTitle?: TranslatedText;
+  emptyMessage?: TranslatedText;
+  unavailableTitle?: TranslatedText;
+  unavailableMessage?: TranslatedText;
+  errorTitle?: TranslatedText;
+  errorMessage?: TranslatedText;
   controls?: boolean;
   /** Fallbacks, used only when `zoom` is not supplied. Prefer the level. */
   onZoomIn?: () => void;
@@ -159,7 +209,7 @@ export interface MapSurfaceProps {
    * `M05-16` — *"the imagery tile the design is traced on is **pinned at capture**"*. Rendered in
    * words beside the attribution, because a promise nobody can see kept is not one.
    */
-  imagery?: MapImagerySpec | string | null;
+  imagery?: MapImagerySpec | TranslatedText | null;
   /**
    * Node pinned to the bottom of the surface — an address card, a playback scrubber, `MS1-18`'s
    * Confirm Location. It sits **above** the placement layer: a placement layer stacked over it made
@@ -168,4 +218,52 @@ export interface MapSurfaceProps {
    */
   overlay?: ReactNode;
   attribution?: ReactNode;
+}
+
+/* The inner parts' contracts (Law 7): both halves of a part implement the one interface. */
+
+export interface MapNoteProps {
+  kind: 'error' | 'empty';
+  title: TranslatedText;
+  message: TranslatedText;
+  onRetry?: () => void;
+  /** The retry's words and where focus lands once it leaves — an error's only. */
+  retry?: { label: TranslatedText; focusAfter: FocusAfter };
+}
+
+export interface MapUnavailableProps {
+  title: TranslatedText;
+  message: TranslatedText;
+}
+
+export interface MapStateLayerProps {
+  state: SurfaceState;
+  emptyTitle: TranslatedText;
+  emptyMessage: TranslatedText;
+  unavailableTitle: TranslatedText;
+  unavailableMessage: TranslatedText;
+  errorTitle: TranslatedText;
+  errorMessage: TranslatedText;
+  words: Pick<MapSurfaceWords, 'loading' | 'retry'>;
+  onRetry?: () => void;
+  /** The surface, which stays while the retried read reloads. */
+  focusAfter: FocusAfter;
+}
+
+/** One zoom control: the level it steps by, and the control it is drawn as. */
+export interface ZoomStep {
+  delta: 1 | -1;
+  label: TranslatedText;
+  disabled: boolean;
+  glyph: ShellGlyphName;
+}
+
+export interface MapControlsProps {
+  zoom?: number;
+  minZoom: number;
+  maxZoom: number;
+  showZoomLevel: boolean;
+  onStepZoom: (delta: number) => void;
+  onRecenter?: (info: { zoom?: number }) => void;
+  words: MapSurfaceWords;
 }

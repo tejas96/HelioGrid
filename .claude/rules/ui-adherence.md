@@ -126,10 +126,11 @@ finds a bare English literal in JSX.
 **Style never lives in a web component file** — it is `<Name>.css`; a phone screen's layout is its
 `styles.ts` (`apps/mobile/CLAUDE.md`), and a `packages/ui` native half keeps its `StyleSheet` below
 its markup. Three roles:
-a **container** (`<Name>Screen.tsx`) composes and holds only visual state; a **presentational**
+a **container** (`<Name>Screen.tsx`) composes what its pair's `packages/data` hook assembles and
+holds no state (Biome plugin `screen-assembly`); a **presentational**
 component takes props and returns markup, with no data access and no navigation; **logic** both
-platforms need lives in a shared package — a `domain` view model filled by a `data` hook (Law 11)
-— and an app's `use-<thing>.ts` is its platform adapter only (`apps/web/CLAUDE.md`,
+platforms need lives in a shared package — one view model per screen pair, declared and filled by
+its `data` hook over `domain`'s pure builders (Law 11) — and an app's `use-<thing>.ts` is its platform adapter only (`apps/web/CLAUDE.md`,
 `apps/mobile/CLAUDE.md`). A `.tsx` holding both a data-fetching effect chain and the markup it
 feeds is a review finding.
 

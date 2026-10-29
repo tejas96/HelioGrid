@@ -1,10 +1,12 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties, KeyboardEvent } from 'react';
 import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Icon } from '../../primitives/Icon';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { facetGlyph, toggledFacets } from './FilterBar.logic';
 import type { FacetChipsProps } from './FilterBar.types';
-import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
+import { optionLabel, optionValue } from './FilterBar.types';
 import { OptionIcon } from './FilterChips';
 
 interface WebFacetChipsProps extends FacetChipsProps {
@@ -20,7 +22,7 @@ interface WebFacetChipsProps extends FacetChipsProps {
 type Focusable = { focus: () => void };
 
 /** The tick is the second, non-colour channel — a set has to be readable without hue. */
-function Tick() {
+function Tick({ title }: { title: TranslatedText }) {
   return (
     <Icon size="sm">
       <svg
@@ -31,7 +33,7 @@ function Tick() {
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <title>Selected</title>
+        <title>{title}</title>
         <ShellGlyphMarks name="tick" />
       </svg>
     </Icon>
@@ -55,6 +57,7 @@ export function FacetChips({
   onChange,
   counts,
   label,
+  selectedLabel,
   scroll = false,
   className,
   style,
@@ -68,7 +71,7 @@ export function FacetChips({
 
   const toggle = (optValue: string) => {
     if (onChange === undefined) return;
-    onChange(selected.has(optValue) ? values.filter((x) => x !== optValue) : [...values, optValue]);
+    onChange(toggledFacets(values, optValue));
   };
 
   const onKeyDown = (index: number, event: KeyboardEvent<HTMLButtonElement>) => {
@@ -95,7 +98,7 @@ export function FacetChips({
         const optValue = optionValue(option);
         const on = selected.has(optValue);
         const count = counts?.[optValue];
-        const icon = on ? undefined : optionIcon(option);
+        const icon = facetGlyph(option, on);
         return (
           <button
             key={optValue}
@@ -115,7 +118,7 @@ export function FacetChips({
               data-active={on ? 'true' : undefined}
               data-lead={on || icon ? 'true' : undefined}
             >
-              {on ? <Tick /> : null}
+              {on ? <Tick title={selectedLabel} /> : null}
               <OptionIcon icon={icon} />
               {optionLabel(option)}
               {count === undefined ? null : <span className="hg-filter-count">{count}</span>}

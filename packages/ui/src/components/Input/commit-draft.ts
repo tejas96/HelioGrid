@@ -10,6 +10,12 @@ export interface CommitDraft {
   commit: () => void;
   /** Escape, or any other cancel route: restore the last committed value. */
   cancel: () => void;
+  /** What the field shows: the draft in commit-once mode, else the caller's value. */
+  shown: string;
+  /** A keystroke: drafted in commit-once mode, else handed straight to `onChange`. */
+  change: (next: string) => void;
+  /** Leaving the field: commit-once mode commits on the way out. */
+  leave: () => void;
 }
 
 /**
@@ -23,6 +29,7 @@ export function useCommitDraft(
   value: string | undefined,
   commitOnBlur: boolean,
   onCommit?: (value: string) => void,
+  onChange?: (value: string) => void,
 ): CommitDraft {
   const [focus, setFocus] = useState(false);
   const [draft, setDraft] = useState(value ?? '');
@@ -52,5 +59,19 @@ export function useCommitDraft(
     setFocus,
     commit,
     cancel: () => setDraft(value ?? ''),
+    shown: commitOnBlur ? draft : (value ?? ''),
+    change: (next) => {
+      if (commitOnBlur) {
+        setDraft(next);
+        return;
+      }
+      onChange?.(next);
+    },
+    leave: () => {
+      setFocus(false);
+      if (commitOnBlur) {
+        commit();
+      }
+    },
   };
 }

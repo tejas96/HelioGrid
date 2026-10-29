@@ -2,11 +2,9 @@ import type { CSSProperties } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { renderOverride } from '../FieldOverride';
-import { useFormat } from '../MarketProvider/market-context';
 import { renderProvenance } from '../Provenance';
 import { renderAttribution } from '../ValueSource';
-import { restingMoney } from './NumberField.logic';
-import { useNumberFieldDraft } from './NumberField.state';
+import { useNumberField } from './NumberField.state';
 import type { NumberFieldProps } from './NumberField.types';
 import { NumberFieldBox } from './NumberFieldBox';
 import { NumberFieldMessage } from './NumberFieldMessage';
@@ -24,56 +22,29 @@ interface WebNumberFieldProps extends NumberFieldProps {
  * Money is not a dimension: `outOfRange="refuse"` writes nothing and states the constraint, and
  * `currency` drops the steppers. Precedence in the message slot: refusal → error → correction → hint.
  */
-export function NumberField({
-  value,
-  onCommit,
-  onClear,
-  focusRequest,
-  min,
-  max,
-  step = 1,
-  precision,
-  label,
-  labelSpokenOnly = false,
-  ariaLabel,
-  unit,
-  hint,
-  disabled = false,
-  density = 'expressive',
-  currency = false,
-  provenance,
-  override,
-  attribution,
-  outOfRange = 'clamp',
-  commits = 'on-leave',
-  refusalMessage,
-  refusalPath,
-  steppers,
-  correctionMessage,
-  error,
-  className,
-  style,
-}: WebNumberFieldProps) {
-  const autoId = useId();
-  /* A payment is not stepped. An unset `steppers` follows `currency` — the only case where the
-     grammar is knowable from the props the caller already passed. */
-  const showSteppers = steppers ?? !currency;
-  const format = useFormat();
-  const draft = useNumberFieldDraft({
-    value,
-    onCommit,
-    onClear,
-    min,
-    max,
-    step,
-    precision,
-    currency,
-    ...(currency ? { idle: (figure: number) => restingMoney(format, figure) } : {}),
+export function NumberField(props: WebNumberFieldProps) {
+  const {
+    words,
+    focusRequest,
+    label,
+    labelSpokenOnly = false,
+    ariaLabel,
     unit,
-    outOfRange,
-    correctionMessage,
-    commits,
-  });
+    hint,
+    disabled = false,
+    density = 'expressive',
+    currency = false,
+    provenance,
+    override,
+    attribution,
+    refusalMessage,
+    refusalPath,
+    error,
+    className,
+    style,
+  } = props;
+  const autoId = useId();
+  const { draft, showSteppers, danger } = useNumberField(props);
 
   const refused =
     draft.refusal === null
@@ -81,10 +52,10 @@ export function NumberField({
       : (refusalMessage ?? (
           <>
             {draft.refusal}
+            {refusalPath === undefined ? null : ' '}
             {refusalPath}
           </>
         ));
-  const danger = draft.refusal !== null || error !== undefined;
   const errId = `${autoId}-err`;
   const describedBy = error !== undefined && draft.refusal === null ? errId : undefined;
 
@@ -113,6 +84,7 @@ export function NumberField({
         unit={unit}
         currency={currency}
         focusRequest={focusRequest}
+        words={words}
         describedBy={describedBy}
       />
       <NumberFieldSlots

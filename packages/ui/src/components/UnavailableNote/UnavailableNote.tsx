@@ -36,7 +36,7 @@ function Glyph() {
  * never invites.
  */
 function UnavailableNoteBase({
-  title = 'Not available here',
+  title,
   message,
   detail,
   icon,

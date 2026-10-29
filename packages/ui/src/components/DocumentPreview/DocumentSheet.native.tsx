@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -167,8 +168,14 @@ export function DocumentRule({ colour, opaque }: { colour: string; opaque: boole
  * The band's micro-label — drawn only when the caller has a word for it. 9dp is design-space type
  * inside a scaled sheet, not app type.
  */
-export function DocumentOverline({ children, spaced }: { children: string; spaced?: boolean }) {
-  if (children === '') {
+export function DocumentOverline({
+  children,
+  spaced,
+}: {
+  children: TranslatedText | undefined;
+  spaced?: boolean;
+}) {
+  if (children === undefined) {
     return null;
   }
   return (
@@ -179,7 +186,7 @@ export function DocumentOverline({ children, spaced }: { children: string; space
 }
 
 /** The labelled placeholder slot that stands in until a logo arrives — the specimen's only. */
-export function DocumentSlot({ label }: { label: string }) {
+export function DocumentSlot({ label }: { label: TranslatedText }) {
   return (
     <View style={docStyles.slot}>
       <Text style={docStyles.slotLabel}>{label}</Text>

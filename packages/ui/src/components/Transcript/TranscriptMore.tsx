@@ -3,6 +3,8 @@
    next page. The word on it says which. */
 
 import { Button } from '../Button/Button';
+import { moreLabelOf, morePressOf } from './Transcript.logic';
+import type { TranscriptWords } from './Transcript.types';
 
 interface TranscriptMoreProps {
   /** Turns already handed over but not yet shown. Above zero, the press is local. */
@@ -10,6 +12,7 @@ interface TranscriptMoreProps {
   loadingMore: boolean;
   onReveal: () => void;
   onLoadMore?: () => void;
+  words: TranscriptWords;
 }
 
 export function TranscriptMore({
@@ -17,6 +20,7 @@ export function TranscriptMore({
   loadingMore,
   onReveal,
   onLoadMore,
+  words,
 }: TranscriptMoreProps) {
   return (
     <div className="hg-transcript-more">
@@ -24,19 +28,9 @@ export function TranscriptMore({
         variant="secondary"
         size="md"
         disabled={loadingMore}
-        onClick={() => {
-          if (remaining > 0) {
-            onReveal();
-          } else {
-            onLoadMore?.();
-          }
-        }}
+        onClick={morePressOf(remaining, onReveal, onLoadMore)}
       >
-        {loadingMore
-          ? 'Loading…'
-          : remaining > 0
-            ? `Show the rest of the call · ${remaining} more`
-            : 'Show more of the call'}
+        {moreLabelOf(words, remaining, loadingMore)}
       </Button>
     </div>
   );

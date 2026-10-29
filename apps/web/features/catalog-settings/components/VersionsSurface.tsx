@@ -1,5 +1,5 @@
 'use client';
-import { usePriceBookBrowse } from '@heliogrid/data/react';
+import type { PriceBookBrowse } from '@heliogrid/data/react';
 import { catalogVersionWords, PRICE_BOOK, versionRatesOf, versionSummaryOf } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
@@ -16,18 +16,17 @@ import {
  * year, then one past version read-only — *Back to versions* before its title, *Read-only* on
  * the line under it, never greyed. Beside the Rates table at 1536, a sheet below.
  */
-export function VersionsSurface({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function VersionsSurface({ browse }: { browse: PriceBookBrowse }) {
   const { t, locale } = useI18n();
   const formats = useCatalogFormats();
   const words = catalogVersionWords(t);
-  const browse = usePriceBookBrowse(open, onClose);
   const read = browse.picked !== null && browse.one.kind === 'ready' ? browse.one.value : undefined;
   const listing = read === undefined;
   const versions = browse.list.read.kind === 'ready' ? browse.list.read.value : [];
 
   return (
     <EditorSurface
-      open={open}
+      open={browse.open}
       onClose={browse.close}
       closeLabel={t(PRICE_BOOK.close)}
       showClose

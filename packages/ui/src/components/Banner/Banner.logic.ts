@@ -1,6 +1,15 @@
-import { useEffect, useRef } from 'react';
+import type { TranslatedText } from '@heliogrid/contracts';
+import type { ReactElement, ReactNode } from 'react';
+import { Children, isValidElement, useEffect, useRef } from 'react';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
-import type { BannerForm, BannerGlyph, BannerKind } from './Banner.types';
+import { bannerRank, isNeverDismissible } from './Banner.kinds';
+import type {
+  BannerForm,
+  BannerGlyph,
+  BannerKind,
+  BannerProps,
+  BannerStackProps,
+} from './Banner.types';
 
 /** The design system's default: a phone-width banner (343 inside 375) stacks, a 600 strip does not. */
 export const ACTION_BELOW = 400;
@@ -49,4 +58,56 @@ export function useDisclaimerWarning(kind: BannerKind): void {
       );
     }
   }, [kind]);
+}
+
+/**
+ * The dismiss act, offered only when `dismissible` asks, the kind allows it, and both its handler
+ * and its spoken name are given — otherwise none.
+ */
+export function bannerDismissal({
+  dismissible,
+  kind = 'state',
+  onDismiss,
+  dismissLabel,
+}: Pick<BannerProps, 'dismissible' | 'kind' | 'onDismiss' | 'dismissLabel'>): {
+  onDismiss: () => void;
+  label: TranslatedText;
+} | null {
+  if (!(dismissible ?? false) || isNeverDismissible(kind)) return null;
+  if (onDismiss === undefined || dismissLabel === undefined) return null;
+  return { onDismiss, label: dismissLabel };
+}
+
+function byRank(a: ReactElement<BannerProps>, b: ReactElement<BannerProps>): number {
+  return bannerRank(a.props.kind) - bannerRank(b.props.kind);
+}
+
+/** The banners a stack shows, in precedence order, and how many it capped away. */
+export interface StackedBanners {
+  shown: ReactElement<BannerProps>[];
+  hidden: number;
+  /** A capped stack says how many it hid; `single` never does — the broadest fact speaks alone. */
+  saysMore: boolean;
+}
+
+/**
+ * Every never-dismissible banner renders, in precedence order, and the cap applies to the REST:
+ * `single` lets one more speak only when no mandatory one does, `stack` fills up to `max`.
+ */
+export function stackedBanners(
+  children: ReactNode,
+  mode: NonNullable<BannerStackProps['mode']>,
+  max: number,
+): StackedBanners {
+  const items = Children.toArray(children).filter((child): child is ReactElement<BannerProps> =>
+    isValidElement<BannerProps>(child),
+  );
+  const ordered = [...items].sort(byRank);
+  const mandatory = ordered.filter((el) => isNeverDismissible(el.props.kind));
+  const rest = ordered.filter((el) => !isNeverDismissible(el.props.kind));
+  const room =
+    mode === 'single' ? (mandatory.length > 0 ? 0 : 1) : Math.max(0, max - mandatory.length);
+  const shown = [...mandatory, ...rest.slice(0, room)].sort(byRank);
+  const hidden = ordered.length - shown.length;
+  return { shown, hidden, saysMore: mode === 'stack' && hidden > 0 };
 }

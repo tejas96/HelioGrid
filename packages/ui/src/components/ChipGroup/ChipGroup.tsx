@@ -2,13 +2,13 @@ import type { CSSProperties, ReactNode } from 'react';
 import { useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
-import { chipEntries } from './ChipGroup.entries';
+import { chipEntries, chipOverflow, moreControlWords, overflowCount } from './ChipGroup.entries';
 import type { ChipGroupProps, MarkRowProps } from './ChipGroup.types';
 
-interface WebChipGroupProps extends ChipGroupProps {
+type WebChipGroupProps = ChipGroupProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 interface WebMarkRowProps extends MarkRowProps {
   className?: string;
@@ -34,6 +34,7 @@ export function ChipGroup({
   children,
   max = 3,
   label,
+  words,
   empty = null,
   expandable = true,
   defaultExpanded = false,
@@ -46,10 +47,9 @@ export function ChipGroup({
   const all = chipEntries(children);
   if (all.length === 0) return empty;
 
-  const capped = max > 0 && all.length > max;
-  const shown = capped && !open ? all.slice(0, max) : all;
-  const hidden = all.length - shown.length;
-  const noun = label ?? 'items';
+  const { capped, shown, hidden } = chipOverflow(all, max, open);
+  const more =
+    capped && words !== undefined ? moreControlWords(words, open, hidden, all.length) : undefined;
 
   return (
     <ul
@@ -65,7 +65,7 @@ export function ChipGroup({
       ))}
       {capped ? (
         <li className="hg-chip-group-item">
-          {expandable ? (
+          {expandable && more !== undefined ? (
             /* The "+N" is a real control and its whole contract is announcing whether it is open,
                so the expanded state goes through the primitive — one declaration, `aria-expanded`
                here and `accessibilityState.expanded` on the native half — and the 44px floor and
@@ -73,15 +73,13 @@ export function ChipGroup({
             <Pressable
               className="hg-chip-group-more"
               accessibilityState={{ expanded: open }}
-              accessibilityLabel={
-                open ? `Show fewer ${noun}` : `Show ${hidden} more ${noun} (${all.length} in total)`
-              }
+              accessibilityLabel={more.spoken}
               onPress={() => setOpen((previous) => !previous)}
             >
-              <span className="hg-chip-group-count">{open ? 'Show fewer' : `+${hidden}`}</span>
+              <span className="hg-chip-group-count">{more.seen}</span>
             </Pressable>
           ) : (
-            <span className="hg-chip-group-count">+{hidden}</span>
+            <span className="hg-chip-group-count">{overflowCount(hidden)}</span>
           )}
         </li>
       ) : null}

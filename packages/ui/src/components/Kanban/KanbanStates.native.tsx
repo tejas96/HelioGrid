@@ -1,16 +1,18 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Text`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import type { KanbanBoardState } from './Kanban.logic';
-import { KANBAN_SKELETON_BARS, KANBAN_SKELETON_COLUMNS } from './KanbanStates.logic';
+import { boardMarkOf, KANBAN_SKELETON_BARS, skeletonColumnsOf } from './KanbanStates.logic';
 
 /** The web half sweeps a gradient keyframe; RN has no CSS loop, so the bar pulses. */
 function Bar({ style }: { style: object }) {
@@ -35,11 +37,17 @@ function Bar({ style }: { style: object }) {
  * position four pulsing bars have none of. `accessible` folds only those bars — no card here is a
  * drop target or a Pressable yet — so the label speaks without putting anything out of reach.
  */
-export function ColumnSkeleton({ width }: { width: number | '100%' }) {
+export function ColumnSkeleton({
+  width,
+  label,
+}: {
+  width: number | '100%';
+  label: TranslatedText;
+}) {
   return (
     <View
       accessible
-      accessibilityLabel="Loading board"
+      accessibilityLabel={label}
       accessibilityLiveRegion="polite"
       style={[styles.skeleton, { width }]}
     >
@@ -55,14 +63,23 @@ export function ColumnSkeleton({ width }: { width: number | '100%' }) {
 
 interface BoardMessageProps {
   tone?: 'warning';
-  title: string;
-  message?: string;
+  title?: TranslatedText;
+  message?: TranslatedText;
   onRetry?: () => void;
-  retryLabel?: string;
+  retryLabel?: TranslatedText;
+  /** The board's frame, where focus lands once the retry has left. */
+  focusAfter: FocusAfter;
 }
 
 /** The board's own empty and error surfaces. `unavailable` is `UnavailableNote`'s, never this. */
-export function BoardMessage({ tone, title, message, onRetry, retryLabel }: BoardMessageProps) {
+export function BoardMessage({
+  tone,
+  title,
+  message,
+  onRetry,
+  retryLabel,
+  focusAfter,
+}: BoardMessageProps) {
   const warning = tone === 'warning';
   const ink = warning ? theme.colors['warning-text'] : theme.colors['text-tertiary'];
   return (
@@ -79,18 +96,20 @@ export function BoardMessage({ tone, title, message, onRetry, retryLabel }: Boar
             strokeWidth={1.5}
             strokeLinecap="round"
           >
-            <ShellGlyphMarks name={warning ? 'alert-circle' : 'kanban'} />
+            <ShellGlyphMarks name={boardMarkOf(tone)} />
           </Svg>
         </View>
-        <Text variant="h4" align="center">
-          {title}
-        </Text>
+        {title ? (
+          <Text variant="h4" align="center">
+            {title}
+          </Text>
+        ) : null}
         {message ? (
           <Text variant="body-sm" color="secondary" align="center" style={styles.messageText}>
             {message}
           </Text>
         ) : null}
-        <RetryButton onRetry={onRetry} label={retryLabel} />
+        <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
       </GroundProvider>
     </View>
   );
@@ -100,14 +119,17 @@ export interface BoardStateViewProps {
   state: KanbanBoardState;
   stacked: boolean;
   columnWidth: number;
-  errorTitle: string;
-  errorMessage: string;
+  loadingLabel: TranslatedText;
+  errorTitle?: TranslatedText;
+  errorMessage?: TranslatedText;
   onRetry?: () => void;
-  retryLabel?: string;
-  unavailableTitle: string;
-  unavailableMessage?: string;
-  emptyTitle: string;
-  emptyDescription?: string;
+  retryLabel?: TranslatedText;
+  /** The board's frame, where focus lands once the retry has left. */
+  focusAfter: FocusAfter;
+  unavailableTitle?: TranslatedText;
+  unavailableMessage?: TranslatedText;
+  emptyTitle?: TranslatedText;
+  emptyDescription?: TranslatedText;
 }
 
 /**
@@ -119,10 +141,12 @@ export function BoardStateView({
   state,
   stacked,
   columnWidth,
+  loadingLabel,
   errorTitle,
   errorMessage,
   onRetry,
   retryLabel,
+  focusAfter,
   unavailableTitle,
   unavailableMessage,
   emptyTitle,
@@ -136,24 +160,25 @@ export function BoardStateView({
         message={errorMessage}
         onRetry={onRetry}
         retryLabel={retryLabel}
+        focusAfter={focusAfter}
       />
     );
   }
   if (state === 'unavailable') {
-    return (
+    return unavailableTitle === undefined ? null : (
       <UnavailableNote variant="region" title={unavailableTitle} message={unavailableMessage} />
     );
   }
   if (state === 'loading') {
     return (
       <>
-        {(stacked ? KANBAN_SKELETON_COLUMNS.slice(0, 1) : KANBAN_SKELETON_COLUMNS).map((k) => (
-          <ColumnSkeleton key={k} width={stacked ? '100%' : columnWidth} />
+        {skeletonColumnsOf(stacked).map((k) => (
+          <ColumnSkeleton key={k} width={stacked ? '100%' : columnWidth} label={loadingLabel} />
         ))}
       </>
     );
   }
-  return <BoardMessage title={emptyTitle} message={emptyDescription} />;
+  return <BoardMessage title={emptyTitle} message={emptyDescription} focusAfter={focusAfter} />;
 }
 
 const styles = StyleSheet.create({

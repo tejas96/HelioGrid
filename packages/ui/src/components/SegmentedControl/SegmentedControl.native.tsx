@@ -13,7 +13,7 @@ import { clampCount } from '../../utils/count';
 import { renderActionReason } from '../ActionReason/ActionReason.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { renderMarks } from '../ChipGroup/ChipGroup.native';
-import { hasReason, normalise } from './SegmentedControl.options';
+import { isFieldControl, reasonedOptions, selectedIndex } from './SegmentedControl.options';
 import type { SegmentedControlProps, SegmentedOption } from './SegmentedControl.types';
 
 interface NativeSegmentedControlProps extends SegmentedControlProps {
@@ -44,18 +44,14 @@ export function SegmentedControl({
   error,
   style,
 }: NativeSegmentedControlProps) {
-  const items = normalise(options);
-  const index = Math.max(
-    0,
-    items.findIndex((option) => option.value === value),
-  );
+  const index = selectedIndex(options, value);
   const [trackWidth, setTrackWidth] = useState(0);
   /* The track takes the control fill; the active pill, the opposite of the track, the ground. */
   const { ground, controlFill } = useGround();
   const slide = useRef(new Animated.Value(0)).current;
-  const segmentWidth = items.length > 0 ? Math.max(0, trackWidth - PAD * 2) / items.length : 0;
-  const reasoned = items.filter((option) => option.disabled === true && hasReason(option));
-  const isField = label !== undefined || ariaLabel !== undefined || error !== undefined;
+  const segmentWidth = options.length > 0 ? Math.max(0, trackWidth - PAD * 2) / options.length : 0;
+  const reasoned = reasonedOptions(options);
+  const isField = isFieldControl({ label, ariaLabel, error });
 
   useEffect(() => {
     Animated.timing(slide, {
@@ -93,7 +89,7 @@ export function SegmentedControl({
             { width: segmentWidth, backgroundColor: ground, transform: [{ translateX: slide }] },
           ]}
         />
-        {items.map((option) => (
+        {options.map((option) => (
           <Segment
             key={option.value}
             option={option}

@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import type { TooltipProps } from './Tooltip.types';
+import { useDelayedOpen } from './use-delayed-open';
 
 interface WebTooltipProps extends TooltipProps {
   className?: string;
@@ -21,20 +21,7 @@ export function Tooltip({
   className,
   style,
 }: WebTooltipProps) {
-  const [open, setOpen] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  const show = useCallback(() => {
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setOpen(true), delay);
-  }, [delay]);
-
-  const hide = useCallback(() => {
-    clearTimeout(timer.current);
-    setOpen(false);
-  }, []);
-
-  useEffect(() => () => clearTimeout(timer.current), []);
+  const { open, show, hide } = useDelayedOpen(delay);
 
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: the wrapper only mirrors the child control's own hover/focus/Escape; the control inside keeps every semantic it had.

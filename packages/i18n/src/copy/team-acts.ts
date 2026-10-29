@@ -81,8 +81,8 @@ export interface TeamConfirmShown {
 
 export interface TeamActToast {
   readonly tone: 'neutral' | 'danger';
-  readonly title: string;
-  readonly description?: string;
+  readonly title: TranslatedText;
+  readonly description?: TranslatedText;
 }
 
 export function teamActWords(translate: Translator['t'], company: string): TeamActWords {

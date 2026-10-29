@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import type { DimensionValue } from 'react-native';
@@ -7,8 +8,11 @@ import type { SheetDensity } from './Sheet.types';
 interface SheetSkeletonProps {
   /** Sets the row gap — 16 expressive, 12 functional, the same ladder as the sheet's padding. */
   density?: SheetDensity;
-  /** The status region's accessible name. The reference hardcodes it; no prop carries it. */
-  label?: string;
+  /**
+   * The status region's accessible name: what is loading, the caller's `loadingLabel`. A read
+   * always brings one; with none there is no read, so nothing loads and nothing is drawn.
+   */
+  label?: TranslatedText;
 }
 
 /** The web half sweeps a gradient; RN has no CSS gradient loop, so it pulses opacity instead. */
@@ -34,7 +38,10 @@ export function ShimmerBar({ width, height }: { width: DimensionValue; height: n
  * web's `role="status"` has no RN spelling, so this is an accessibility element (folding nothing
  * but shimmer) named by `label` and announced politely.
  */
-export function SheetSkeleton({ density = 'expressive', label = 'Loading' }: SheetSkeletonProps) {
+export function SheetSkeleton({ density = 'expressive', label }: SheetSkeletonProps) {
+  if (label === undefined) {
+    return null;
+  }
   return (
     <View
       accessible

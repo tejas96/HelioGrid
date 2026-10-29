@@ -9,7 +9,8 @@ import {
   DocumentTranchesBand,
 } from './DocumentBands.native';
 import { DocumentBandHeader, DocumentCover, DocumentFooter } from './DocumentHeader.native';
-import type { DocumentPart, DocumentPreviewProps } from './DocumentPreview.types';
+import { shownBands } from './DocumentPreview.logic';
+import type { DocumentPreviewProps } from './DocumentPreview.types';
 import { DOCUMENT_DESIGN_WIDTH } from './DocumentPreview.types';
 import { docStyles } from './DocumentSheet.native';
 import { DocumentTermsBand } from './DocumentTerms.native';
@@ -30,7 +31,8 @@ type NativeDocumentPreviewProps = DocumentPreviewProps & {
  */
 export function DocumentPreview({ style, ...props }: NativeDocumentPreviewProps) {
   const doc = resolveDocument(props, useFormat());
-  const has = (part: DocumentPart) => doc.parts.includes(part);
+  const bands = shownBands(doc);
+  const captionNote = doc.bandOk ? undefined : doc.bandFailsNote;
   const [measuredHeight, setMeasuredHeight] = useState<number | null>(null);
   const sheetHeight = doc.sheetHeight ?? measuredHeight ?? 0;
 
@@ -60,12 +62,12 @@ export function DocumentPreview({ style, ...props }: NativeDocumentPreviewProps)
           ]}
         >
           <DocumentBandHeader doc={doc} />
-          {has('cover') ? <DocumentCover doc={doc} /> : null}
+          {bands.cover ? <DocumentCover doc={doc} /> : null}
           <View style={docStyles.body}>
-            {has('items') && doc.lineItems.length > 0 ? <DocumentItemsBand doc={doc} /> : null}
-            {has('sections') ? <DocumentSectionsBand doc={doc} /> : null}
-            {has('tranches') ? <DocumentTranchesBand doc={doc} /> : null}
-            {has('terms') ? (
+            {bands.items ? <DocumentItemsBand doc={doc} /> : null}
+            {bands.sections ? <DocumentSectionsBand doc={doc} /> : null}
+            {bands.tranches ? <DocumentTranchesBand doc={doc} /> : null}
+            {bands.terms ? (
               <DocumentTermsBand
                 title={doc.termsTitle}
                 value={props.terms}
@@ -80,14 +82,14 @@ export function DocumentPreview({ style, ...props }: NativeDocumentPreviewProps)
           <DocumentFooter doc={doc} />
         </View>
       </View>
-      {doc.caption === '' ? null : (
+      {doc.caption === undefined ? null : (
         <View style={docStyles.caption}>
           <Text variant="caption" color="tertiary">
             {doc.caption}
           </Text>
-          {doc.bandOk || doc.bandFailsNote === '' ? null : (
+          {captionNote === undefined ? null : (
             <Text variant="caption" style={docStyles.captionNote}>
-              {doc.bandFailsNote}
+              {captionNote}
             </Text>
           )}
         </View>

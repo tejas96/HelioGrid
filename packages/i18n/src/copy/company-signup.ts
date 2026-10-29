@@ -9,6 +9,7 @@ import type { CreateTenant, TranslatedText } from '@heliogrid/contracts';
 import type { MessageRef, Translator } from '../runtime';
 import { shownAsSent } from './assembled';
 import type { ExplainerWords } from './explainer';
+import { stepperWords } from './stepper';
 
 export const COMPANY_SIGNUP = {
   createYourCompany: /*i18n*/ { id: 'Create your company' },
@@ -125,6 +126,8 @@ export function signupExplainers(translate: Translator['t']): SignupExplainers {
 export interface SignupStepsWords {
   readonly label: TranslatedText;
   readonly steps: readonly [TranslatedText, TranslatedText, TranslatedText];
+  /** What the stepper says on its own — its counter and each step's state. */
+  readonly stepper: ReturnType<typeof stepperWords>;
 }
 
 export function signupStepsWords(translate: Translator['t']): SignupStepsWords {
@@ -135,6 +138,7 @@ export function signupStepsWords(translate: Translator['t']): SignupStepsWords {
       translate(COMPANY_SIGNUP.stepCode),
       translate(COMPANY_SIGNUP.stepYourCompany),
     ],
+    stepper: stepperWords(translate),
   };
 }
 

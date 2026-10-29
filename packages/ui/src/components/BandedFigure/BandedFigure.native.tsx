@@ -3,8 +3,9 @@ import { useFormat } from '../MarketProvider';
 import { renderProvenance } from '../Provenance';
 import { BAND_TONES, BandChip } from './BandChip.native';
 import { BandedCard } from './BandedCard.native';
+import { bandedReading } from './BandedFigure.logic';
 import type { BandedFigureProps } from './BandedFigure.types';
-import { bandedReadOut, formatFigure, resolveBand } from './BandedFigure.types';
+import { resolveBand } from './BandedFigure.types';
 import { BandedLine } from './BandedLine.native';
 
 interface NativeBandedFigureProps extends BandedFigureProps {
@@ -32,11 +33,15 @@ export function BandedFigure({
   children,
   style,
 }: NativeBandedFigureProps) {
-  const format = useFormat();
-  const resolved = resolveBand(value, bands, band);
-  const shown = formatFigure(value, format, { money, compact });
-  const move = remedy ?? resolved?.remedy;
-  const accessibilityLabel = ariaLabel ?? bandedReadOut(label, shown, unit, resolved, move);
+  const {
+    resolved,
+    shown,
+    move,
+    readOut: accessibilityLabel,
+  } = bandedReading(
+    { label, value, unit, bands, band, remedy, compact, money, ariaLabel },
+    useFormat(),
+  );
 
   if (variant === 'line') {
     return (

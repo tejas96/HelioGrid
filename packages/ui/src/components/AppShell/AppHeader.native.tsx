@@ -7,9 +7,9 @@ import type { AppHeaderProps } from './AppShell.types';
 import { ShellAction } from './ShellAction.native';
 import { ShellGlyph } from './ShellGlyph.native';
 
-interface NativeAppHeaderProps extends AppHeaderProps {
+type NativeAppHeaderProps = AppHeaderProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 /**
  * The desktop top bar, on a tablet-width native surface. Height is `--header-h`.
@@ -28,6 +28,8 @@ export function AppHeader({
   jobs,
   notifications,
   onNotificationsClick,
+  notificationsLabel,
+  notificationsName,
   avatar,
   breadcrumb,
   style,
@@ -66,9 +68,10 @@ export function AppHeader({
         {/* M02-21 — the tray sits before the bell: the bell says something happened while you
             were elsewhere, the tray says something is still happening. */}
         {jobs}
-        {onNotificationsClick !== undefined ? (
+        {onNotificationsClick !== undefined && notificationsLabel !== undefined ? (
           <ShellAction
-            label="Notifications"
+            label={notificationsLabel}
+            name={notificationsName}
             badge={notifications}
             onClick={onNotificationsClick}
             icon={<ShellGlyph name="bell" size="md" />}

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
@@ -10,7 +11,7 @@ import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import type { SliderProps } from './Slider.types';
 import { SliderTrack } from './SliderTrack.native';
-import { clampToRange, fillPercent, formatValue } from './slider-math';
+import { fillPercent, formatValue, nudged, stepperOff } from './slider-math';
 
 interface NativeSliderProps extends SliderProps {
   style?: StyleProp<ViewStyle>;
@@ -19,7 +20,7 @@ interface NativeSliderProps extends SliderProps {
 interface StepButtonProps {
   disabled: boolean;
   glyph: ShellGlyphName;
-  label: string;
+  label: TranslatedText;
   onPress: () => void;
 }
 
@@ -65,6 +66,7 @@ export function Slider({
   label,
   unit,
   hint,
+  words,
   format,
   steppers = true,
   disabled = false,
@@ -74,7 +76,6 @@ export function Slider({
 }: NativeSliderProps) {
   const percent = fillPercent(value, min, max);
   const shown = formatValue(value, unit, format);
-  const named = label ?? 'value';
   /* A props object or a bare tier — `Provenance`'s own resolver decides, at the
      12px type floor. `"unmarked"` comes back null and the slot collapses. */
   const provenanceNode = renderProvenance(provenance, { size: 12 });
@@ -82,7 +83,7 @@ export function Slider({
   const live = (next: number) => onInput?.(next);
   const commit = (next: number) => onCommit?.(next);
   const nudge = (direction: number) => {
-    const next = clampToRange(value + direction * step, min, max, step);
+    const next = nudged(value, direction, min, max, step);
     live(next);
     commit(next);
   };
@@ -102,9 +103,9 @@ export function Slider({
       <View style={styles.row}>
         {steppers ? (
           <StepButton
-            disabled={disabled || value <= min}
+            disabled={stepperOff(-1, value, min, max, disabled)}
             glyph="minus"
-            label={`Decrease ${named}`}
+            label={words.decrease(label)}
             onPress={() => nudge(-1)}
           />
         ) : null}
@@ -123,9 +124,9 @@ export function Slider({
         />
         {steppers ? (
           <StepButton
-            disabled={disabled || value >= max}
+            disabled={stepperOff(1, value, min, max, disabled)}
             glyph="plus"
-            label={`Increase ${named}`}
+            label={words.increase(label)}
             onPress={() => nudge(1)}
           />
         ) : null}

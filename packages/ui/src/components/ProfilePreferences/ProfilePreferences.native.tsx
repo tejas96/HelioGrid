@@ -1,6 +1,6 @@
 import { theme } from '@heliogrid/theme';
-import { useEffect, useRef, useState } from 'react';
-import { AccessibilityInfo, findNodeHandle, StyleSheet, View } from 'react-native';
+import { type RefObject, useRef } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
@@ -35,9 +35,21 @@ import type { ProfilePreferencesProps } from './ProfilePreferences.types';
  * page bar's, not the page's.
  */
 export function ProfilePreferences(props: ProfilePreferencesProps) {
+  /* *Try again* leaves with its banner: the screen reader goes to the page's frame, which stays
+     through the loading bars and the page that follow. */
+  const frame = useRef<View>(null);
+  return (
+    <View ref={frame}>
+      <PageBody {...props} frame={frame} />
+    </View>
+  );
+}
+
+function PageBody({
+  frame,
+  ...props
+}: ProfilePreferencesProps & { frame: RefObject<View | null> }) {
   const { words, read } = props;
-  /* *Try again* leaves with its banner; the page that follows takes the screen reader's focus. */
-  const [retried, setRetried] = useState(false);
   if (read.kind === 'loading') {
     return <LoadingBars label={words.loading} bars={PROFILE_PREFERENCES_LOADING} />;
   }
@@ -48,12 +60,7 @@ export function ProfilePreferences(props: ProfilePreferencesProps) {
         tone="danger"
         title={words.loadFailed.title}
         action={
-          <BannerAction
-            onClick={() => {
-              setRetried(true);
-              read.retry();
-            }}
-          >
+          <BannerAction onClick={read.retry} focusAfter={frame}>
             {words.loadFailed.retry}
           </BannerAction>
         }
@@ -62,7 +69,7 @@ export function ProfilePreferences(props: ProfilePreferencesProps) {
       </Banner>
     );
   }
-  return <Page {...props} takeFocus={retried} />;
+  return <Page {...props} />;
 }
 
 function Page({
@@ -77,18 +84,11 @@ function Page({
   read,
   refused,
   onPush,
-  takeFocus,
-}: ProfilePreferencesProps & { takeFocus: boolean }) {
-  const firstHeading = useRef<View>(null);
-  useEffect(() => {
-    if (!takeFocus) return;
-    const tag = findNodeHandle(firstHeading.current);
-    if (tag !== null) AccessibilityInfo.setAccessibilityFocus(tag);
-  }, [takeFocus]);
+}: ProfilePreferencesProps) {
   return (
     <View style={styles.page}>
       <View style={styles.section}>
-        <Overline headingRef={firstHeading}>{words.account}</Overline>
+        <Overline>{words.account}</Overline>
         <SettingsCard style={styles.tile}>
           <ListRow
             style={styles.row}
@@ -202,9 +202,9 @@ function Page({
   );
 }
 
-function Overline({ children, headingRef }: { children: string; headingRef?: React.Ref<View> }) {
+function Overline({ children }: { children: string }) {
   return (
-    <View ref={headingRef} accessibilityRole="header">
+    <View accessibilityRole="header">
       <Text variant="overline" color="secondary">
         {children}
       </Text>

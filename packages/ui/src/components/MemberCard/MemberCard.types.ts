@@ -8,8 +8,8 @@ import type {
   TeamStatusFilter,
 } from '@heliogrid/domain';
 import type { ReactNode, Ref } from 'react';
+import type { FocusAfter, FocusHandle } from '../../primitives/FocusAfter';
 import type { AvatarMark, IrisHue } from '../Avatar/Avatar.types';
-import type { FocusHandle } from '../SearchField/SearchField.types';
 
 /** One preset a person holds, worded, in its kind's iris tone (design-system change 7). */
 export interface MemberRole {
@@ -97,6 +97,9 @@ export interface MemberListProps {
    */
   read: Read<TeamList>;
   words: MemberListWords;
+  /** Where focus lands once *Try again* has left with the failure — the list's search, which the
+   *  wait that follows draws again. */
+  focusAfter: FocusAfter;
   onClearSearch: () => void;
   /** Back to *All* from a Status chip with nobody under it. */
   onShowAll: () => void;
@@ -120,7 +123,7 @@ export interface MemberPersonProps {
   name: string;
   youLabel?: TranslatedText;
   /** The status in words — the chip carries a word as well as its tone. */
-  status: string;
+  status: TranslatedText;
   tone: AvatarMark;
 }
 
@@ -193,8 +196,10 @@ export interface MemberListHeadProps {
   /** Each chip's count; absent while the list's read is out. */
   counts?: Readonly<Record<TeamStatusFilter, number>>;
   words: {
-    find: string;
-    statusFilter: string;
+    find: TranslatedText;
+    /** The search's clear button, spoken — *Clear search*. */
+    clearSearch: TranslatedText;
+    statusFilter: TranslatedText;
     statusOptions: { value: TeamStatusFilter; label: TranslatedText }[];
   };
   /**

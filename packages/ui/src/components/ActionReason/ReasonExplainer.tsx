@@ -1,6 +1,7 @@
 /// <reference lib="dom" />
 import { useRef } from 'react';
 import { Explainer } from '../Explainer/Explainer';
+import { INERT_TRIGGER } from '../Explainer/Explainer.logic';
 import { reasonPage } from './ActionReason.logic';
 import type { ReasonExplainerProps } from './ActionReason.types';
 
@@ -13,11 +14,15 @@ import type { ReasonExplainerProps } from './ActionReason.types';
 export function ReasonExplainer({ spec, id, open, block = false, children }: ReasonExplainerProps) {
   const control = useRef<HTMLElement | null>(null);
   const page = reasonPage(spec);
+  /* A host mounts this only for a stated reason; with none, its control is drawn and opens nothing. */
+  if (page === '') {
+    return children({ ...INERT_TRIGGER, describedBy: id });
+  }
   return (
     <>
       <Explainer
         className={block ? 'hg-reason-explainer-block' : undefined}
-        label={typeof page === 'string' ? page : ''}
+        label={page}
         pages={page}
         placement="top"
         density="functional"
@@ -34,11 +39,9 @@ export function ReasonExplainer({ spec, id, open, block = false, children }: Rea
           })
         }
       />
-      {page === '' ? null : (
-        <span id={id} className="hg-spoken-only">
-          {page}
-        </span>
-      )}
+      <span id={id} className="hg-spoken-only">
+        {page}
+      </span>
     </>
   );
 }

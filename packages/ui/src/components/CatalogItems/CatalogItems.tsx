@@ -1,9 +1,13 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+import { useRef } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text';
 import { useOwnWidth } from '../../primitives/use-own-width';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Banner } from '../Banner';
 import { Block } from '../Block';
 import { Button } from '../Button';
+import { RetryButton } from '../Button/RetryButton';
 import { DataTable, Pagination } from '../DataTable';
 import { EmptyState } from '../EmptyState';
 import { LoadingBars } from '../LoadingBars';
@@ -20,7 +24,6 @@ import { CatalogItemsControls } from './CatalogItemsControls';
 import { CatalogRowActs } from './CatalogRowActs';
 import { CatalogStripBar } from './CatalogStrip';
 import { useLoadMore } from './use-load-more';
-import { useRetryFocus } from './use-retry-focus';
 import './CatalogItems.css';
 
 /** Six placeholder rows, in the list's own rhythm, while the read is out. */
@@ -36,20 +39,20 @@ export function CatalogItems(props: CatalogItemsProps) {
   const { words, read } = props;
   const [room, width] = useOwnWidth();
   const wide = width !== null && width >= CATALOG_WIDE_FROM;
-  const focus = useRetryFocus(read.kind);
+  /* A dismissed row's line hands the keyboard to the strip's title, which stays. */
+  const stripTitle = useRef<HTMLDivElement>(null);
 
+  /* *Try again* leaves with the failure: focus goes to the panel, which stays while it reloads. */
   if (read.kind === 'failed') {
     return (
-      <div className="hg-cat-items" ref={room}>
+      <div ref={room} tabIndex={-1} className="hg-cat-items hg-focus-target">
         <EmptyState
           glow={false}
           icon={<ShellGlyph name="alert-circle" size="xl" />}
           title={words.loadFailed}
           description={words.loadFailedBody}
           action={
-            <Button variant="secondary" size="lg" onClick={focus.retrying(read.retry)}>
-              {words.tryAgain}
-            </Button>
+            <RetryButton size="lg" onRetry={read.retry} label={words.tryAgain} focusAfter={room} />
           }
         />
       </div>
@@ -58,11 +61,16 @@ export function CatalogItems(props: CatalogItemsProps) {
 
   const loading = read.kind === 'loading';
   return (
-    <div className="hg-cat-items" ref={room} data-wide={wide ? 'true' : undefined}>
+    <div
+      ref={room}
+      tabIndex={-1}
+      className="hg-cat-items hg-focus-target"
+      data-wide={wide ? 'true' : undefined}
+    >
       {loading ? (
         <LoadingBars label={words.loadingRelease} bars={['row']} />
       ) : (
-        <CatalogStripBar strip={props.strip} focusRef={focus.target} />
+        <CatalogStripBar strip={props.strip} focusRef={stripTitle} />
       )}
       {props.viewOnly === null ? null : (
         <Banner kind="info" density="functional" title={props.viewOnly} />
@@ -96,7 +104,7 @@ export function CatalogItems(props: CatalogItemsProps) {
           <LoadingBars label={words.loadingList} bars={LOADING_ROWS} />
         </section>
       ) : (
-        <CatalogList {...props} wide={wide} />
+        <CatalogList {...props} wide={wide} focusAfter={stripTitle} />
       )}
       {wide || loading ? null : <ListEntries props={props} wide={false} />}
     </div>
@@ -125,7 +133,7 @@ function ListEntries({ props, wide }: { props: CatalogItemsProps; wide: boolean 
 }
 
 interface EntryProps {
-  label: string;
+  label: TranslatedText;
   wide: boolean;
 }
 
@@ -150,7 +158,7 @@ function ImportEntry({ onImport, label, wide }: EntryProps & { onImport: () => v
 }
 
 /** The list, its pager or its growing foot, and the archived count's caption under it. */
-function CatalogList(props: CatalogItemsProps & { wide: boolean }) {
+function CatalogList(props: CatalogItemsProps & { wide: boolean; focusAfter: FocusAfter }) {
   const { words, wide, administers } = props;
   const format = useFormat();
   const facts = {
@@ -163,6 +171,7 @@ function CatalogList(props: CatalogItemsProps & { wide: boolean }) {
     <CatalogRowActs row={row} stacked={form.stacked} acts={props} />
   );
   const table = {
+    ...words.table,
     read: props.read,
     rows: [...props.rows],
     rowKey: 'id',
@@ -175,7 +184,8 @@ function CatalogList(props: CatalogItemsProps & { wide: boolean }) {
     rowLabel: (row: CatalogRow) => row.labels.row,
     isRowMuted: (row: CatalogRow) => row.archived,
     isRowHighlighted: (row: CatalogRow) => row.id === props.addedId,
-    rowPending: (row: CatalogRow) => catalogRowPending(props.rowStates[row.id], words),
+    rowPending: (row: CatalogRow) =>
+      catalogRowPending(props.rowStates[row.id], words, props.focusAfter),
     onRowClick: administers ? props.onOpen : undefined,
     rowOpens: (row: CatalogRow) => !row.archived,
   };

@@ -1,6 +1,7 @@
 import {
   createTranslator,
   LANGUAGE_META,
+  languageName,
   proposalTemplateWords,
   SETUP_LANGUAGE,
 } from '@heliogrid/i18n';
@@ -15,16 +16,16 @@ import { HeldLanguageSwitcher } from './LanguageSwitcher.story';
  */
 const en = await createTranslator('en');
 
-/* "Language", the word a language picker already shows; lowered, it is the noun a non-voice
-   screen passes. */
+/* "Language", the word a language picker already shows; "language", the noun a non-voice screen
+   passes, as `SCR-M01-19`'s editor passes it. */
 const LABEL = en.t(SETUP_LANGUAGE.group);
-const NOUN = LABEL.toLowerCase();
-const PARTS = proposalTemplateWords(en.t).partsNoun;
+const { languageNoun: NOUN, partsNoun: PARTS } = proposalTemplateWords(en.t);
 
+/* Each language named in itself, as the editor's strip names it. */
 const LANGUAGES = [
-  { code: 'en', label: LANGUAGE_META.en.endonym, primary: true, state: 'authored' as const },
-  { code: 'hi', label: LANGUAGE_META.hi.endonym, state: 'authored' as const },
-  { code: 'mr', label: LANGUAGE_META.mr.endonym, state: 'empty' as const },
+  { code: 'en', label: languageName('en'), primary: true, state: 'authored' as const },
+  { code: 'hi', label: languageName('hi'), state: 'authored' as const },
+  { code: 'mr', label: languageName('mr'), state: 'empty' as const },
 ];
 
 test('a hidden label still names the tablist', async ({ mount }) => {

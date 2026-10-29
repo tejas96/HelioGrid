@@ -1,11 +1,13 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties } from 'react';
 import { Children, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Text } from '../../primitives/Text';
+import { useBoxWidth } from '../../primitives/use-box-width';
 import type { PreviewFrameGroupProps, PreviewFrameProps } from './PreviewFrame.types';
 import { DEFAULT_DESIGN_WIDTH, DEFAULT_MIN_SCALE } from './PreviewFrame.types';
 import { previewGeometry } from './preview-geometry';
-import { useDetunedSubject, useOwnWidth } from './preview-hooks';
+import { useDetunedSubject } from './preview-hooks';
 
 /** Per-instance geometry rides into PreviewFrame.css as custom properties. */
 type CssVars = CSSProperties & Record<`--${string}`, string>;
@@ -49,7 +51,7 @@ export function PreviewFrame({
   className,
   style,
 }: WebPreviewFrameProps) {
-  const [ref, ownWidth] = useOwnWidth<HTMLElement>();
+  const [ref, ownWidth] = useBoxWidth<HTMLElement>();
   const inner = useRef<HTMLDivElement | null>(null);
   useDetunedSubject(inner);
 
@@ -107,7 +109,7 @@ export function PreviewFrame({
 }
 
 /** While the subject loads, the window is a named wait; otherwise it carries nothing of its own. */
-function waitOf(loading: boolean, label: string | undefined) {
+function waitOf(loading: boolean, label: TranslatedText | undefined) {
   return loading
     ? { 'data-loading': 'true', role: 'status', 'aria-busy': true, 'aria-label': label }
     : {};
@@ -124,7 +126,7 @@ function FrameCaption({
   caption: WebPreviewFrameProps['caption'];
   note: WebPreviewFrameProps['note'];
   cropped: boolean;
-  croppedLabel: string | undefined;
+  croppedLabel: TranslatedText | undefined;
   action: WebPreviewFrameProps['action'];
 }) {
   const croppedShown = cropped && croppedLabel !== undefined;
@@ -133,9 +135,7 @@ function FrameCaption({
     <figcaption className="hg-preview-frame-caption">
       <span className="hg-preview-frame-words">
         {caption}
-        {cropped && croppedLabel !== undefined ? (
-          <span className="hg-preview-frame-line">{croppedLabel}</span>
-        ) : null}
+        {croppedShown ? <span className="hg-preview-frame-line">{croppedLabel}</span> : null}
         {note === undefined ? null : (
           <span className="hg-preview-frame-line hg-preview-frame-note">{note}</span>
         )}
@@ -153,7 +153,7 @@ export function PreviewFrameGroup({
   className,
   style,
 }: WebPreviewFrameGroupProps) {
-  const [ref, ownWidth] = useOwnWidth<HTMLDivElement>();
+  const [ref, ownWidth] = useBoxWidth<HTMLDivElement>();
   const stacked = ownWidth !== null && ownWidth < stackBelow;
   const vars: CssVars = {
     '--hg-preview-group-gap': `${gap}px`,

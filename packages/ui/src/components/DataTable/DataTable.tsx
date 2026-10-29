@@ -1,20 +1,21 @@
 import type { CSSProperties } from 'react';
-import { useEffect, useId, useMemo, useRef } from 'react';
+import { useId, useMemo } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { useOwnWidth } from '../../primitives/use-own-width';
 import { renderProvenance } from '../Provenance';
 import { surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import {
+  DATA_TABLE_DEFAULTS,
   DATA_TABLE_STACK_BELOW,
   showsMessage,
   sortRows,
-  TABLE_PAGER_WORDS,
 } from './DataTable.logic';
 import type { DataTableProps } from './DataTable.types';
 import { Pagination, SelectionBar } from './DataTableChrome';
 import { DataTableGrid } from './DataTableGrid';
 import { TableCaption, TableStates } from './DataTableShell';
 import { DataTableStacked } from './DataTableStacked';
+import { useStackedForm } from './use-stacked-form';
 import { useTableSelection, useTableSort } from './use-table-state';
 
 type WebDataTableProps<Row> = DataTableProps<Row> & {
@@ -43,7 +44,7 @@ export function DataTable<Row = Record<string, unknown>>(props: WebDataTableProp
   const {
     columns,
     rows,
-    rowKey = 'id',
+    rowKey = DATA_TABLE_DEFAULTS.rowKey,
     selectable = false,
     selected,
     onSelectionChange,
@@ -59,16 +60,19 @@ export function DataTable<Row = Record<string, unknown>>(props: WebDataTableProp
     stackBelow = DATA_TABLE_STACK_BELOW,
     onFormChange,
     page,
-    pageSize = 10,
+    pageSize = DATA_TABLE_DEFAULTS.pageSize,
     rowCount,
     onPageChange,
-    density = 'comfortable',
+    density = DATA_TABLE_DEFAULTS.density,
+    words,
     head = 'overline',
     className,
     style,
   } = props;
   const state = surfaceStateOf(read);
 
+  /* The table's own frame: measured for its form, and where *Try again* hands focus — it stays while
+     a failed read reloads. */
   const [ref, ownWidth] = useOwnWidth();
   const captionId = useId();
   const { selection, setSelection, toggleRow, toggleAll, allSelected } = useTableSelection(
@@ -78,25 +82,13 @@ export function DataTable<Row = Record<string, unknown>>(props: WebDataTableProp
   );
   const { sort: activeSort, setSort } = useTableSort(sort, onSortChange);
 
-  const stacked = ownWidth !== null && ownWidth < stackBelow;
-  /* The quiet head is the wide form's; the stacked cards are the same in both. */
+  const stacked = useStackedForm(ownWidth, stackBelow, onFormChange);
   const quiet = head === 'quiet' && !stacked;
-
-  /* The breakpoint is the table's, so the answer is the table's to publish. The callback rides in
-     a ref so a caller's inline arrow cannot turn "whenever the answer changes" into "every render"
-     — and a caller that sets state in it into a loop. `Kanban` publishes its own the same way. */
-  const formCb = useRef(onFormChange);
-  useEffect(() => {
-    formCb.current = onFormChange;
-  }, [onFormChange]);
-  useEffect(() => {
-    if (ownWidth !== null) formCb.current?.({ stacked, width: ownWidth });
-  }, [stacked, ownWidth]);
 
   const sorted = useMemo(() => sortRows(rows, columns, activeSort), [rows, columns, activeSort]);
 
   const shellStyle = { ...style, '--hg-dt-density': density } as CSSProperties;
-  const shell = classNames('hg-dt', className);
+  const shell = classNames('hg-dt', 'hg-focus-target', className);
   const stackedAttr = stacked ? 'true' : undefined;
   const headAttr = quiet ? 'quiet' : undefined;
   const labelledBy = caption === undefined ? undefined : captionId;
@@ -111,23 +103,44 @@ export function DataTable<Row = Record<string, unknown>>(props: WebDataTableProp
         data-density={density}
         data-head={headAttr}
         ref={ref}
+        tabIndex={-1}
         style={shellStyle}
       >
-        <TableCaption caption={caption} continued={continued} id={captionId} spokenOnly={quiet} />
-        <TableStates table={props} stacked={stacked} quiet={quiet} />
+        <TableCaption
+          caption={caption}
+          continued={continued}
+          id={captionId}
+          spokenOnly={quiet}
+          words={words}
+        />
+        <TableStates table={props} stacked={stacked} quiet={quiet} focusAfter={ref} />
       </div>
     );
   }
 
   return (
-    <div className={shell} data-density={density} data-head={headAttr} ref={ref} style={shellStyle}>
-      <TableCaption caption={caption} continued={continued} id={captionId} spokenOnly={quiet} />
+    <div
+      className={shell}
+      data-density={density}
+      data-head={headAttr}
+      ref={ref}
+      tabIndex={-1}
+      style={shellStyle}
+    >
+      <TableCaption
+        caption={caption}
+        continued={continued}
+        id={captionId}
+        spokenOnly={quiet}
+        words={words}
+      />
 
       {selectable && selection.length > 0 ? (
         <SelectionBar
           count={selection.length}
           actions={bulkActions}
           onClear={() => setSelection([])}
+          words={words}
         />
       ) : null}
 
@@ -180,7 +193,9 @@ export function DataTable<Row = Record<string, unknown>>(props: WebDataTableProp
           pageSize={pageSize}
           rowCount={rowCount ?? rows.length}
           onPageChange={onPageChange}
-          {...TABLE_PAGER_WORDS}
+          previousLabel={words.previousPage}
+          nextLabel={words.nextPage}
+          readout={words.pageRange}
         />
       ) : null}
     </div>

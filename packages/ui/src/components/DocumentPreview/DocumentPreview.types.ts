@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { MinorUnits } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type {
@@ -26,11 +27,13 @@ export interface DocumentLetterhead {
    */
   lines?: string[];
   /** The line that runs along the bottom of every page. */
+  // biome-ignore lint/plugin/copy-prop-type: the company's own line, printed as it writes it
   footerNote?: string;
 }
 
 /** One entry of `SCR-M01-20`'s tranche schedule, as the customer will see it. */
 export interface DocumentTranche {
+  // biome-ignore lint/plugin/copy-prop-type: the tranche's name, as the company named it
   label: string;
   /** When it falls due — "On signing", "Before dispatch", "On commissioning". */
   when?: string;
@@ -40,15 +43,15 @@ export interface DocumentTranche {
   amount: MinorUnits | string;
 }
 
-/** One entry of `SCR-M01-19`'s included-sections list. A bare string is a label with no meta. */
+/** One entry of `SCR-M01-19`'s included-sections list. A bare word is a label with no meta. */
 export interface DocumentSection {
-  label: string;
+  label: TranslatedText;
   /** `false` leaves the section out, as the print would. Defaults to included. */
   included?: boolean;
-  meta?: string;
+  meta?: TranslatedText;
 }
 
-export type DocumentSectionInput = DocumentSection | string;
+export type DocumentSectionInput = DocumentSection | TranslatedText;
 
 /** Which bands to draw, always in document order. */
 export type DocumentPart = 'cover' | 'items' | 'sections' | 'tranches' | 'terms';
@@ -81,9 +84,9 @@ export interface DocumentPreviewBase {
    * cover; `T-M01-029`: no sample value can print on a real document). Every sample default drops
    * at once: no sample company, tax number, address or phone, no sample customer (the *Prepared
    * for* block is drawn only for a customer the caller names), no sample number or date, no sample
-   * lines or subsidy (the money band is drawn only for `lineItems` the caller passes), and no word
-   * of the component's own — every word printed is a prop. Default `true`: a specimen draws the
-   * full sample document.
+   * lines or subsidy (the money band is drawn only for `lineItems` the caller passes). Default
+   * `true`: a specimen draws the sample's facts and figures. Either way every word printed is a
+   * prop — the sheet has none of its own.
    */
   sample?: boolean;
   /** The tenant's primary brand colour, "#RRGGBB". */
@@ -94,7 +97,11 @@ export interface DocumentPreviewBase {
    * `sample={false}` the band carries the company name alone — no slot on a real cover.
    */
   logoSrc?: string;
-  logoLabel?: string;
+  /**
+   * The logo slot's words wherever a logo is due and none is given — the specimen's band and a
+   * logo block in the terms. Required: the terms' `RichTextView` names its slot with them.
+   */
+  logoLabel: TranslatedText;
   /**
    * The tenant's tax number. Printed in the band under the address and along the foot of every
    * page, its label in the document's face and its number in the mono face with tabular figures
@@ -102,6 +109,7 @@ export interface DocumentPreviewBase {
    */
   taxId?: string;
   /** What that number is called — defaults to the market pack ("GSTIN" here, "VAT number" elsewhere). */
+  // biome-ignore lint/plugin/copy-prop-type: the market pack's name for the tax number
   taxIdLabel?: string;
   address?: string;
   /** Printed along the foot of every page in the mono face with tabular figures (`F7-09`). */
@@ -113,7 +121,7 @@ export interface DocumentPreviewBase {
   letterhead?: DocumentLetterhead | ReactNode;
   customerName?: string;
   customerMeta?: string;
-  docTitle?: string;
+  docTitle?: TranslatedText;
   docNumber?: string;
   docDate?: string;
   /**
@@ -128,40 +136,41 @@ export interface DocumentPreviewBase {
    * line items — a schedule pretending to be a price list.
    */
   parts?: DocumentPart[];
-  subsidyLabel?: string;
   /**
-   * Overrides the whole generated subsidy sentence — including the payable it states. With
-   * `sample={false}` no sentence is composed here: this is the one the sheet prints.
+   * The scheme the subsidy line speaks of. Declared by the design system's contract; the sheet
+   * composes no sentence of its own, so it prints the caller's `subsidyNote` and reads this nowhere.
    */
-  subsidyNote?: string;
+  subsidyLabel?: TranslatedText;
+  /** The subsidy line under the total — the whole sentence, payable included, in the caller's words. */
+  subsidyNote?: TranslatedText;
   /** `SCR-M01-19`'s included-sections list. `included: false` entries are left out. */
   sections?: DocumentSectionInput[];
-  sectionsTitle?: string;
+  sectionsTitle?: TranslatedText;
   /** `SCR-M01-19`'s default T&C body, rendered read-only so the document and the link page
    *  cannot render the same marks differently (`M06-51`). */
   terms?: DocumentRichTextValue;
-  termsTitle?: string;
+  termsTitle?: TranslatedText;
   /** `SCR-M01-20`'s tranche schedule. */
   tranches?: DocumentTranche[];
-  tranchesTitle?: string;
+  tranchesTitle?: TranslatedText;
   /** `a4` keeps the sheet's proportion (default). `content` hugs the bands drawn. */
   fit?: DocumentFit;
   /** Rendered width in px for standalone use. **Inside a `PreviewFrame`, the frame scales it.** */
   width?: number;
-  /** Set to "" to drop the caption — do that inside a `PreviewFrame`, which carries its own. */
-  caption?: string;
+  /** The line under the sheet. Omit it inside a `PreviewFrame`, which carries its own. */
+  caption?: TranslatedText;
   /*
-   * The sheet's own words. The sample specimen prints its English ones when these are absent;
-   * with `sample={false}` a word that is not passed is not printed.
+   * The sheet's own words — the specimen's as much as a real cover's: a word that is not passed
+   * is not printed, so none reaches a reader untranslated.
    */
   /** The overline over a named customer — "Prepared for". */
-  preparedForLabel?: string;
+  preparedForLabel?: TranslatedText;
   /** The word beside the total — "Total". */
-  totalLabel?: string;
+  totalLabel?: TranslatedText;
   /** The caption's line when the colour forces a white header — `DocumentPreview.bandFails`. */
-  bandFailsNote?: string;
+  bandFailsNote?: TranslatedText;
   /** The terms band's words when no terms are attached. */
-  termsEmptyText?: string;
+  termsEmptyText?: TranslatedText;
 }
 
 /**

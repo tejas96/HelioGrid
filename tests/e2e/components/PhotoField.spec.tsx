@@ -1,5 +1,10 @@
+import { createTranslator, FIRST_RUN_PROFILE } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { PhotoFieldAt } from './FirstRunProfile.story';
+import { PhotoFieldAt } from './PhotoField.story';
+
+const en = await createTranslator('en');
+const add = en.t(FIRST_RUN_PROFILE.photoAdd);
+const refused = en.t(FIRST_RUN_PROFILE.photoFailedWide);
 
 /**
  * `PhotoField` as `SCR-M01-09` extends it: the medium act with its glyph, the refusal as a banner
@@ -8,20 +13,18 @@ import { PhotoFieldAt } from './FirstRunProfile.story';
 for (const actIcon of ['camera', 'upload', 'retry'] as const) {
   test(`the act is medium and carries its ${actIcon} glyph`, async ({ mount }) => {
     const root = await mount(<PhotoFieldAt size={72} actIcon={actIcon} />);
-    const act = root.getByRole('button', { name: 'Add a photo' });
+    const act = root.getByRole('button', { name: add });
     await expect(act.locator('svg')).toHaveCount(1);
   });
 }
 
 for (const size of [72, 120] as const) {
   test(`at ${size} the refusal is a banner inside the group`, async ({ mount }) => {
-    const root = await mount(
-      <PhotoFieldAt size={size} actIcon="camera" error="Try again, or add one later." />,
-    );
-    const group = root.getByRole('group', { name: 'Profile photo, optional' });
-    await expect(group.getByText('That photo did not upload')).toBeVisible();
-    await expect(group.getByText('Try again, or add one later.')).toBeVisible();
-    await expect(group.getByText('Optional — without one, your initials show.')).toBeVisible();
+    const root = await mount(<PhotoFieldAt size={size} actIcon="camera" error={refused} />);
+    const group = root.getByRole('group', { name: en.t(FIRST_RUN_PROFILE.photoLabel) });
+    await expect(group.getByText(en.t(FIRST_RUN_PROFILE.photoFailed))).toBeVisible();
+    await expect(group.getByText(refused)).toBeVisible();
+    await expect(group.getByText(en.t(FIRST_RUN_PROFILE.photoOptional))).toBeVisible();
   });
 }
 

@@ -5,6 +5,7 @@ import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { OperationState } from './OperationProgress.types';
+import { messageGlyph } from './operation-progress-model';
 
 const TONE: Record<OperationState, string> = {
   running: theme.colors['text-secondary'],
@@ -26,9 +27,7 @@ function MessageGlyph({ state }: { state: OperationState }) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <ShellGlyphMarks
-        name={state === 'failed' ? 'alert-circle' : state === 'cancelled' ? 'minus-circle' : 'tick'}
-      />
+      <ShellGlyphMarks name={messageGlyph(state)} />
     </Svg>
   );
 }

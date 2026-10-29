@@ -1,7 +1,9 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type {
   AgentLanguage,
   LanguageContentState,
   LanguageSentenceFacts,
+  LanguageSwitcherProps,
   LanguageSwitcherWords,
 } from './LanguageSwitcher.types';
 
@@ -33,7 +35,7 @@ export function totalOf(languages: AgentLanguage[], sections: number | undefined
 }
 
 /** The nouns every sentence names, as the caller words them. */
-interface Nouns {
+export interface Nouns {
   readonly sectionNoun: string;
   readonly languageNoun: string;
   readonly fallbackName: string;
@@ -56,7 +58,7 @@ export function summaryLine(
   total: number | null,
   words: LanguageSwitcherWords,
   nouns: Omit<Nouns, 'fallbackName'>,
-): string {
+): TranslatedText {
   const written = languages.filter((l) => stateOf(l, total) !== 'empty').length;
   return words.summary({ written, of: languages.length, each: total, ...nouns });
 }
@@ -70,9 +72,9 @@ export function selectedSentence(
   total: number | null,
   words: LanguageSwitcherWords,
   nouns: Nouns,
-): string {
+): TranslatedText | null {
   if (cur === undefined) {
-    return '';
+    return null;
   }
   const facts = factsOf(cur, total, nouns);
   if (cur.primary === true) {
@@ -95,7 +97,7 @@ export function spokenName(
   words: LanguageSwitcherWords,
   nouns: Nouns,
   showFraction: boolean,
-): string {
+): TranslatedText {
   const facts = factsOf(item, showFraction ? total : null, nouns);
   if (item.primary === true) {
     return words.spokenPrimary(facts);
@@ -107,4 +109,55 @@ export function spokenName(
   return state === 'inherited'
     ? words.spokenInherited({ ...facts, total })
     : words.spokenWritten(facts);
+}
+
+/** A pill's fraction — `5/8` — or `null` where counts are off or the language has none. */
+export function fractionOf(
+  item: AgentLanguage,
+  total: number | null,
+  showCounts: boolean,
+): string | null {
+  return showCounts && total !== null && item.written !== undefined
+    ? `${item.written}/${total}`
+    : null;
+}
+
+/** What the strip reads off its languages, the same on both halves. */
+export interface SwitcherReading {
+  /** The selected language's place — the first when none matches, so the strip keeps one stop. */
+  readonly selectedIndex: number;
+  readonly total: number | null;
+  readonly nouns: Nouns;
+  /** The line above the strip; `''` draws none. */
+  readonly headline: TranslatedText | '';
+  /** The selected language's sentence under the strip. */
+  readonly sentence: TranslatedText | null;
+}
+
+export function switcherReading({
+  words,
+  languages,
+  value,
+  sections,
+  sectionNoun,
+  languageNoun,
+  summary,
+}: Pick<
+  LanguageSwitcherProps,
+  'words' | 'languages' | 'value' | 'sections' | 'sectionNoun' | 'languageNoun' | 'summary'
+>): SwitcherReading {
+  const primary = languages.find((l) => l.primary === true) ?? languages[0];
+  const selectedIndex = Math.max(
+    0,
+    languages.findIndex((l) => l.code === value),
+  );
+  const total = totalOf(languages, sections);
+  const nouns: Nouns = { sectionNoun, languageNoun, fallbackName: primary?.label ?? '' };
+  return {
+    selectedIndex,
+    total,
+    nouns,
+    headline: summary ?? summaryLine(languages, total, words, { sectionNoun, languageNoun }),
+    sentence: selectedSentence(languages[selectedIndex], total, words, nouns),
+  };
 }

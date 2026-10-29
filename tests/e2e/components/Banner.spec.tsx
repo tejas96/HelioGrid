@@ -1,4 +1,4 @@
-import { createTranslator, SHELL } from '@heliogrid/i18n';
+import { bannerWords, createTranslator, SHELL } from '@heliogrid/i18n';
 import type { BannerForm } from '@heliogrid/ui';
 import { Banner, BannerAction, ShellGlyph } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
@@ -41,7 +41,7 @@ function banner(props: { actionBelow?: number; onFormChange?: (form: BannerForm)
     <Banner
       kind="review-needed"
       title={title}
-      action={<BannerAction>{actionWords}</BannerAction>}
+      action={<BannerAction focusAfter={{ current: null }}>{actionWords}</BannerAction>}
       {...props}
     >
       {body}
@@ -101,7 +101,7 @@ test('a pill has no action row and reports no form', async ({ mount }) => {
         kind="review-needed"
         variant="pill"
         title={title}
-        action={<BannerAction>{actionWords}</BannerAction>}
+        action={<BannerAction focusAfter={{ current: null }}>{actionWords}</BannerAction>}
         onFormChange={(form) => forms.push(form)}
       />
     </div>,
@@ -112,10 +112,26 @@ test('a pill has no action row and reports no form', async ({ mount }) => {
   expect(forms).toEqual([]);
 });
 
+test('a dismissible banner names where focus lands once it has gone', () => {
+  const dismissible = (
+    // @ts-expect-error a control that removes itself names where focus lands (T-SHELL-014)
+    <Banner title={title} dismissible onDismiss={() => {}} dismissLabel={title} />
+  );
+  expect(dismissible).toBeTruthy();
+});
+
 test('the info kind draws the i glyph and no dismiss', async ({ mount, page }) => {
   const screen = await mount(
     <div>
-      <Banner kind="info" density="functional" title={title} dismissible onDismiss={() => {}} />
+      <Banner
+        kind="info"
+        density="functional"
+        title={title}
+        dismissible
+        onDismiss={() => {}}
+        dismissLabel={bannerWords(en.t).dismissLabel}
+        focusAfter={{ current: null }}
+      />
       <ShellGlyph name="info-circle" />
     </div>,
   );

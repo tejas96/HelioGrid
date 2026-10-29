@@ -1,12 +1,13 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { Pressable } from '../../primitives/Pressable';
 import type { StatusTone } from '../../primitives/StatusMark';
 import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { Button } from '../Button/Button';
 import { renderPending } from '../PendingAction';
-import type { Finding, FindingStatus } from './FindingList.types';
-import { FINDING_LABEL, statusOf } from './FindingList.verdict';
-import { FINDING_MARK_GLYPH } from './FindingListRow.logic';
+import type { Finding, FindingListWords, FindingStatus } from './FindingList.types';
+import { jumpWords, statusOf } from './FindingList.verdict';
+import { FINDING_MARK_GLYPH, findingJump, findingStatusLabel } from './FindingListRow.logic';
 
 /** The three statuses in the StatusMark vocabulary. Ready is a pass, not an absence. */
 export const FINDING_TONE: Record<FindingStatus, StatusTone> = {
@@ -38,16 +39,16 @@ function Mark({ status }: { status: FindingStatus }) {
 
 interface FindingListRowProps {
   finding: Finding;
+  words: FindingListWords;
   onJump?: (finding: Finding) => void;
-  jumpLabel: string;
+  jumpLabel?: TranslatedText;
 }
 
 /** One finding: the mark, the check, its meaning in plain language, and the act that fixes it. */
-export function FindingListRow({ finding, onJump, jumpLabel }: FindingListRowProps) {
+export function FindingListRow({ finding, words, onJump, jumpLabel }: FindingListRowProps) {
   const status = statusOf(finding);
-  const jump = finding.onJump ?? (onJump === undefined ? undefined : () => onJump(finding));
-  const jumpWords =
-    finding.jumpLabel ?? (finding.step === undefined ? jumpLabel : `Fix in ${finding.step}`);
+  const jump = findingJump(finding, onJump);
+  const jumpName = jumpWords(finding, words, jumpLabel);
   const pending = renderPending(finding.pending, { size: 12 });
   return (
     <li className="hg-finding-row">
@@ -57,7 +58,7 @@ export function FindingListRow({ finding, onJump, jumpLabel }: FindingListRowPro
           <span className="hg-finding-title">{finding.title}</span>
           <StatusMark
             tone={FINDING_TONE[status]}
-            label={finding.statusLabel ?? FINDING_LABEL[status]}
+            label={findingStatusLabel(finding, status, words)}
             mark={false}
             className="hg-finding-status"
           />
@@ -93,7 +94,7 @@ export function FindingListRow({ finding, onJump, jumpLabel }: FindingListRowPro
                   </svg>
                 }
               >
-                {jumpWords}
+                {jumpName}
               </Button>
             )}
             {/* The second, inline one-tap fix — MS6-27's "Auto-string now". Optional by design:

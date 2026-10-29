@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
@@ -39,13 +40,15 @@ const styles = StyleSheet.create({
 interface NativeDropzoneHeldProps {
   /** An upload already in flight takes the retry out of reach — there is nothing to flush yet. */
   busy: boolean;
-  countWords: string | null;
-  failedMessage: string;
+  countWords: TranslatedText | null;
+  failedMessage: TranslatedText;
+  /** The held queue's sentence, unless `heldMessage` replaces it. */
+  held: TranslatedText;
   heldMessage?: ReactNode;
   onRetry?: HeldRetry;
-  retryLabel: string;
+  retryLabel: TranslatedText;
   retryTimeout: number;
-  timeoutMessage: string;
+  timeoutMessage: TranslatedText;
 }
 
 /**
@@ -60,6 +63,7 @@ export function DropzoneHeld({
   busy,
   countWords,
   failedMessage,
+  held,
   heldMessage,
   onRetry,
   retryLabel,
@@ -81,7 +85,7 @@ export function DropzoneHeld({
           </Text>
         )}
         <Text variant="body-sm" color="warning">
-          {heldSentence(heldMessage)}
+          {heldSentence(heldMessage, held)}
         </Text>
         {/* What actually happened last time — NoConnection's rule, and the reason `onRetry` may
             report a failure at all. */}

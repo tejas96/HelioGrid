@@ -1,5 +1,6 @@
+import { useRef } from 'react';
 import { Text } from '../../primitives/Text/Text';
-import { Button } from '../Button';
+import { RetryButton } from '../Button/RetryButton';
 import { Card } from '../Card';
 import { useLoadMore } from '../CatalogItems/use-load-more';
 import { EmptyState } from '../EmptyState';
@@ -18,24 +19,33 @@ import { VersionEditor } from './CatalogVersionEditor';
  * being written. The sheet or side panel, its title and its foot are the app's.
  */
 export function CatalogVersion(props: CatalogVersionProps) {
+  /* The frame stays while a retried read loads, so *Try again* hands focus to it once it has gone. */
+  const frame = useRef<HTMLDivElement>(null);
   if (props.mode === 'edit') return <VersionEditor {...props} />;
-  if (props.read.kind === 'loading') {
-    return <LoadingBars label={props.words.loading} bars={['row', 'row', 'row']} />;
-  }
-  if (props.read.kind === 'failed') {
-    return (
-      <EmptyState
-        glow={false}
-        title={props.words.loadFailed}
-        action={
-          <Button variant="secondary" size="lg" onClick={props.read.retry}>
-            {props.words.tryAgain}
-          </Button>
-        }
-      />
-    );
-  }
-  return props.mode === 'list' ? <VersionList {...props} /> : <VersionRead {...props} />;
+  return (
+    <div ref={frame} tabIndex={-1} className="hg-focus-target">
+      {props.read.kind === 'loading' ? (
+        <LoadingBars label={props.words.loading} bars={['row', 'row', 'row']} />
+      ) : props.read.kind === 'failed' ? (
+        <EmptyState
+          glow={false}
+          title={props.words.loadFailed}
+          action={
+            <RetryButton
+              size="lg"
+              onRetry={props.read.retry}
+              label={props.words.tryAgain}
+              focusAfter={frame}
+            />
+          }
+        />
+      ) : props.mode === 'list' ? (
+        <VersionList {...props} />
+      ) : (
+        <VersionRead {...props} />
+      )}
+    </div>
+  );
 }
 
 /** The versions under their year; the one in force says so in words, a past one shows its margin. */

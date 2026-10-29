@@ -1,12 +1,12 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { InviteRefusal } from '@heliogrid/domain';
 import type { Ref } from 'react';
+import type { FocusHandle } from '../../primitives/FocusAfter';
 import type {
   InviteFieldBinder,
   InviteFormWords,
   InviteRole,
 } from '../InviteForm/InviteForm.types';
-import type { FocusHandle } from '../SearchField/SearchField.types';
 
 /** One step the brand pane says comes after a send: what happens, and the line under it. */
 export interface SetupInviteAfterStep {

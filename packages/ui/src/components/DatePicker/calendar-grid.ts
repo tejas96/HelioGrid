@@ -1,4 +1,5 @@
-import type { CalendarValue, DateRange, ISODate } from './DatePicker.types';
+import type { MarketFormat } from '../../utils/format';
+import type { CalendarProps, CalendarValue, DateRange, ISODate } from './DatePicker.types';
 
 /** "YYYY-MM-DD" from a local Date. */
 export function iso(d: Date): ISODate {
@@ -57,8 +58,46 @@ export function monthStart(d: Date): Date {
   return new Date(d.getFullYear(), d.getMonth(), 1);
 }
 
+/** The month a calendar opens on: the one its value starts in, else this month. */
+export function initialView(value: CalendarProps['value']): Date {
+  if (Array.isArray(value)) {
+    return monthStart(parse(value[0]) ?? new Date());
+  }
+  if (value !== undefined && typeof value === 'object') {
+    return monthStart(parse(value.from) ?? new Date());
+  }
+  return monthStart(parse(typeof value === 'string' ? value : null) ?? new Date());
+}
+
+/** The month `by` months from a month's first day. */
+export function monthAfter(view: Date, by: -1 | 1): Date {
+  return new Date(view.getFullYear(), view.getMonth() + by, 1);
+}
+
+/** The loading grid holds five weeks of cells, so nothing reflows when the month lands. */
+export const SKELETON_CELLS = 35;
+
 /** The weekday name for a date, in the market's column order. */
 export function weekdayOf(d: Date, longNames: string[], firstDayOfWeek: number): string {
   const startIdx = firstDayOfWeek % 7;
   return longNames[(d.getDay() - startIdx + 7) % 7] ?? '';
+}
+
+export interface MonthGrid {
+  /** The month's cells in the market's column order, leading blanks included. */
+  cells: Array<Date | null>;
+  /** The letter the eye reads over each column, and the whole weekday a screen reader hears. */
+  narrowDays: string[];
+  longDays: string[];
+  todayIso: ISODate;
+}
+
+/** Everything the grid draws for the month on screen, in the active market's week. */
+export function monthGridOf(view: Date, mkt: MarketFormat): MonthGrid {
+  return {
+    cells: monthCells(view, mkt.firstDayOfWeek),
+    narrowDays: mkt.weekdayNames('narrow'),
+    longDays: mkt.weekdayNames('long'),
+    todayIso: iso(new Date()),
+  };
 }

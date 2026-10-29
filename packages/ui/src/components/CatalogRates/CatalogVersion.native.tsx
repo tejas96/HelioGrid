@@ -1,9 +1,11 @@
 import { theme } from '@heliogrid/theme';
+import { type RefObject, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { Button } from '../Button/Button.native';
+import { RetryButton } from '../Button/RetryButton.native';
+import { ShowMore } from '../CatalogItems/ShowMore.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { StatusChip } from '../StatusChip/StatusChip.native';
@@ -21,13 +23,27 @@ import { VersionEdit } from './CatalogVersionEditor.native';
  * being written. The app's sheet holds it and draws its head (with *Read-only*) and its foot.
  */
 export function CatalogVersion(props: CatalogVersionProps) {
-  if (props.mode === 'list') return <VersionList {...props} />;
-  if (props.mode === 'read') return <VersionRead {...props} />;
-  return <VersionEdit {...props} />;
+  /* The frame stays while a retried read loads and when the last page lands, so *Try again* and
+   *Show more* hand the reader to it once they have gone. */
+  const frame = useRef<View>(null);
+  if (props.mode === 'edit') return <VersionEdit {...props} />;
+  return (
+    <View ref={frame}>
+      {props.mode === 'list' ? (
+        <VersionList {...props} frame={frame} />
+      ) : (
+        <VersionRead {...props} frame={frame} />
+      )}
+    </View>
+  );
 }
 
 /** The read surfaces' wait and failure, shared by the list and one version. */
-function Unready({ read, words }: Pick<CatalogVersionRead, 'read' | 'words'>) {
+function Unready({
+  read,
+  words,
+  frame,
+}: Pick<CatalogVersionRead, 'read' | 'words'> & { frame: RefObject<View | null> }) {
   if (read.kind === 'loading')
     return <LoadingBars label={words.loading} bars={['row', 'row', 'row']} />;
   if (read.kind !== 'failed') return null;
@@ -36,18 +52,16 @@ function Unready({ read, words }: Pick<CatalogVersionRead, 'read' | 'words'>) {
       glow={false}
       title={words.loadFailed}
       action={
-        <Button variant="secondary" size="sm" onClick={read.retry}>
-          {words.tryAgain}
-        </Button>
+        <RetryButton size="sm" onRetry={read.retry} label={words.tryAgain} focusAfter={frame} />
       }
     />
   );
 }
 
-function VersionList(props: CatalogVersionList) {
-  const { words, versions, read, onOpen } = props;
+function VersionList(props: CatalogVersionList & { frame: RefObject<View | null> }) {
+  const { words, versions, read, onOpen, frame } = props;
   if (read.kind === 'loading' || read.kind === 'failed')
-    return <Unready read={read} words={words} />;
+    return <Unready read={read} words={words} frame={frame} />;
   const years = [...new Set(versions.map((version) => version.year))];
   return (
     <View style={styles.body}>
@@ -64,9 +78,7 @@ function VersionList(props: CatalogVersionList) {
         </View>
       ))}
       {props.hasMore ? (
-        <Button variant="ghost" size="sm" onClick={props.onMore}>
-          {words.moreVersions}
-        </Button>
+        <ShowMore label={words.moreVersions} onMore={props.onMore} focusAfter={frame} />
       ) : null}
     </View>
   );
@@ -112,10 +124,10 @@ function VersionTile({
   );
 }
 
-function VersionRead(props: CatalogVersionRead) {
-  const { words, read } = props;
+function VersionRead(props: CatalogVersionRead & { frame: RefObject<View | null> }) {
+  const { words, read, frame } = props;
   if (read.kind === 'loading' || read.kind === 'failed')
-    return <Unready read={read} words={words} />;
+    return <Unready read={read} words={words} frame={frame} />;
   return (
     <View style={[styles.body, styles.readBody]}>
       <View style={styles.stats}>

@@ -6,19 +6,9 @@ import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import type { ImageState } from './Image.logic';
-import { isCompact, missingSpec, showsMissingLabel } from './Image.logic';
-import type { ImageMissingReason, ImageProps } from './Image.types';
+import { missingFaceOf } from './Image.logic';
+import type { ImageMissingProps, ImageProps } from './Image.types';
 import { Glyph, Skeleton } from './ImageMarks.native';
-
-export interface ImageMissingProps {
-  alt: string;
-  width?: number | string;
-  reason: ImageMissingReason;
-  missingLabel?: string;
-  missingDetail?: string;
-  onRetry?: () => void;
-  retryLabel?: string;
-}
 
 /**
  * The frame's resting face: no photo, said in words. **Missing is not an error** — the two kinds
@@ -26,22 +16,11 @@ export interface ImageMissingProps {
  * warning tint and offers the retry. It fills the footprint the frame reserved, so nothing
  * reflows if a photo arrives later.
  */
-export function ImageMissing({
-  alt,
-  width,
-  reason,
-  missingLabel,
-  missingDetail,
-  onRetry,
-  retryLabel,
-}: ImageMissingProps) {
-  const miss = missingSpec(reason);
-  const warning = miss.tone === 'warning';
-  const compact = isCompact(width);
-  const text = missingLabel || miss.label;
-  const detail = missingDetail ?? miss.detail;
+export function ImageMissing({ onRetry, retryLabel, focusAfter, ...missing }: ImageMissingProps) {
+  const face = missingFaceOf(missing);
+  const warning = face.tone === 'warning';
   const ink = warning ? theme.colors['warning-text'] : theme.colors['text-secondary'];
-  const labelVariant = compact ? 'caption' : 'body-sm';
+  const labelVariant = face.compact ? 'caption' : 'body-sm';
   const labelColor = warning ? 'primary' : 'secondary';
   return (
     <View style={[styles.missing, warning ? styles.missingWarning : null]}>
@@ -53,30 +32,30 @@ export function ImageMissing({
       <View
         accessible
         accessibilityRole="image"
-        accessibilityLabel={alt ? `${alt} — ${text}` : text}
+        accessibilityLabel={face.name}
         style={styles.missingMark}
       >
-        <Glyph name={miss.icon} size={compact ? 20 : 24} color={ink} />
-        {showsMissingLabel(width) ? (
+        <Glyph name={face.icon} size={face.glyphSize} color={ink} />
+        {face.showsLabel ? (
           <Text
             variant={labelVariant}
             color={labelColor}
             align="center"
             style={styles.missingLabel}
           >
-            {text}
+            {face.label}
           </Text>
         ) : null}
       </View>
-      {!compact && detail ? (
+      {face.detail === undefined ? null : (
         <Text variant="caption" color="secondary" align="center" style={styles.missingDetail}>
-          {detail}
+          {face.detail}
         </Text>
-      ) : null}
-      {!compact && reason === 'unavailable' ? (
+      )}
+      {face.offersRetry ? (
         /* A tinted panel holds its retry as a tile does — see `Ground.css`. */
         <GroundProvider ground="tile">
-          <RetryButton onRetry={onRetry} label={retryLabel} />
+          <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
         </GroundProvider>
       ) : null}
     </View>
@@ -85,7 +64,7 @@ export function ImageMissing({
 
 export interface ImagePhotoProps {
   src?: string;
-  alt: string;
+  alt?: string;
   state: ImageState;
   fit: NonNullable<ImageProps['fit']>;
   onLoad: () => void;
@@ -103,7 +82,7 @@ export function ImagePhoto({ src, alt, state, fit, onLoad, onError }: ImagePhoto
       {src ? (
         <RNImage
           source={{ uri: src }}
-          accessible={alt !== ''}
+          accessible={Boolean(alt)}
           accessibilityLabel={alt || undefined}
           resizeMode={fit}
           onLoad={onLoad}

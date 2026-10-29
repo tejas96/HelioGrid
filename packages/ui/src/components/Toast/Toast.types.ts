@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 /** The five toast tones. Each resolves to a semantic `-text` on `-bg` pair for the leading mark. */
@@ -12,7 +13,8 @@ export type ToastTone = 'success' | 'warning' | 'danger' | 'info' | 'neutral';
  */
 export interface ToastProps {
   tone?: ToastTone;
-  title: string;
+  title: TranslatedText;
+  // biome-ignore lint/plugin/copy-prop-type: words, or the record a toast names (an item's brand and model)
   description?: string;
   /** override the default semantic icon */
   icon?: ReactNode;

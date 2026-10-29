@@ -15,6 +15,7 @@
    half so the two print the same number. */
 
 import type { CSSProperties } from 'react';
+import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
 import { renderBand } from '../BandedFigure';
@@ -25,6 +26,7 @@ import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read
 import { formatStatValue } from './StatCard.format';
 import type { StatCardProps } from './StatCard.types';
 import { StatCardDelta } from './StatCardDelta';
+import { DELTA_DEFAULTS } from './StatCardDelta.logic';
 import { StatCardStates } from './StatCardStates';
 
 interface WebStatCardProps extends StatCardProps {
@@ -34,24 +36,25 @@ interface WebStatCardProps extends StatCardProps {
 
 export function StatCard({
   label,
+  words,
   value,
   unit,
   money = false,
   compact = false,
   gap,
   delta,
-  deltaDir = 'up',
-  deltaSentiment = 'neutral',
+  deltaDir = DELTA_DEFAULTS.dir,
+  deltaSentiment = DELTA_DEFAULTS.sentiment,
   sentimentLabel,
   band,
   provenance,
   onClick,
   ariaLabel,
   read,
-  emptyMessage = 'No figure for this period yet.',
-  errorMessage = "Couldn't read this figure. Try again — nothing here is a stale number.",
+  emptyMessage,
+  errorMessage,
   retryLabel,
-  unavailableTitle = 'Not measured here',
+  unavailableTitle,
   unavailableMessage,
   className,
   style,
@@ -59,6 +62,8 @@ export function StatCard({
 }: WebStatCardProps) {
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
+  /* The card's frame outlives its states, so focus lands on it once the retry has left. */
+  const frame = useRef<HTMLDivElement>(null);
   const f = useFormat();
   const gapNode = renderGap(gap, { scale: 'headline' });
   const shown = formatStatValue(value, { money, compact, format: f });
@@ -71,15 +76,21 @@ export function StatCard({
   /* Every non-ready state returns here, and none of them prints a figure. */
   if (state !== 'ready') {
     return (
-      <div className={classNames('hg-stat-card', className)} style={style}>
+      <div
+        ref={frame}
+        tabIndex={-1}
+        className={classNames('hg-stat-card', 'hg-focus-target', className)}
+        style={style}
+      >
         {overline}
         <StatCardStates
           state={state}
-          label={label}
+          loadingLabel={words.loading(label)}
           emptyMessage={emptyMessage}
           errorMessage={errorMessage}
           onRetry={onRetry}
           retryLabel={retryLabel}
+          focusAfter={frame}
           unavailableTitle={unavailableTitle}
           unavailableMessage={unavailableMessage}
         />
@@ -107,6 +118,7 @@ export function StatCard({
         dir={deltaDir}
         sentiment={deltaSentiment}
         sentimentLabel={sentimentLabel}
+        words={words}
         suppressed={Boolean(gapNode)}
       />
       {children}
@@ -132,7 +144,12 @@ export function StatCard({
     );
   }
   return (
-    <div className={classNames('hg-stat-card', className)} style={style}>
+    <div
+      ref={frame}
+      tabIndex={-1}
+      className={classNames('hg-stat-card', 'hg-focus-target', className)}
+      style={style}
+    >
       {body}
     </div>
   );

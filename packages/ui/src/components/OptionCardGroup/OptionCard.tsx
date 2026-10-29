@@ -1,10 +1,12 @@
 // biome-ignore-all lint/a11y/useSemanticElements: the CARD is the radio or the checkbox — an
 // <input> cannot hold a title row, a price, a description and a feature list.
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { KeyboardEvent, Ref } from 'react';
 import { StatusMark } from '../../primitives/StatusMark';
 import { renderActionReason } from '../ActionReason';
 import { CheckboxTick } from '../Checkbox/CheckboxTick';
+import { currentWord, optionRole } from './OptionCardGroup.logic';
 import type { OptionCardGroupMode, OptionCardItem } from './OptionCardGroup.types';
 
 interface OptionCardProps {
@@ -19,7 +21,7 @@ interface OptionCardProps {
   onSelect: () => void;
   onKeyDown: (e: KeyboardEvent<HTMLButtonElement>) => void;
   /** The group's word for `current`, unless the option overrides it. */
-  currentLabel: string;
+  currentLabel: TranslatedText | undefined;
 }
 
 /**
@@ -40,9 +42,10 @@ export function OptionCard({
 }: OptionCardProps) {
   /* An option with a stated reason stays in the walk and is aria-disabled rather than natively
      disabled — otherwise the reason it cannot be chosen is unreachable. A sentence, a spec or a
-     ready node, all through ActionReason, which is what `ReactNode | ActionReasonSpec` buys. */
+     ready node, all through ActionReason, which is what `ActionReasonInput` buys. */
   const reason = off ? renderActionReason(option.disabledReason) : null;
   const inert = off && reason === null;
+  const current = currentWord(option, currentLabel);
   return (
     <button
       ref={cardRef}
@@ -70,9 +73,9 @@ export function OptionCard({
             {/* A word, in its own pill — not the accent, which is what selection uses.
                 mark={false}: the words ARE the channel here, and the selection dot next to it
                 is the mark that carries state (StatusMark.mark). */}
-            {option.current === true ? (
-              <StatusMark tone="neutral" mark={false} label={option.currentLabel ?? currentLabel} />
-            ) : null}
+            {current === undefined ? null : (
+              <StatusMark tone="neutral" mark={false} label={current} />
+            )}
             {option.marks}
           </span>
           {option.price !== undefined ? (
@@ -101,7 +104,7 @@ export function OptionCard({
 
 /** The card's role and its picked state: a radio in a single group, a checkbox in a multiple one. */
 function pickRole(mode: OptionCardGroupMode, selected: boolean) {
-  return { role: mode === 'multiple' ? 'checkbox' : 'radio', 'aria-checked': selected } as const;
+  return { role: optionRole(mode), 'aria-checked': selected } as const;
 }
 
 /** The pick's mark: a dot in a single group, a square with a tick in a multiple one. */

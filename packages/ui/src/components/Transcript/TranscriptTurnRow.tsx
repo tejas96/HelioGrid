@@ -4,18 +4,18 @@
    Every turn states its speaker: a conversation alternates, so there is no run of turns for a
    heading to cover. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import { Pressable } from '../../primitives/Pressable';
-import { ACTOR_CLASSES, ActorGlyph } from '../ActorClass';
+import { ActorGlyph } from '../ActorClass';
 import { renderMarks } from '../ChipGroup';
 import { clock } from './Transcript.language';
-import type { TranscriptParty, TranscriptTurn } from './Transcript.types';
-import { PARTY_CLASS } from './TranscriptTurnRow.logic';
-
-const PARTY_WORD: Record<TranscriptParty, string> = { agent: 'Agent', customer: 'Customer' };
+import type { TranscriptTurnRowProps, TranscriptWords } from './Transcript.types';
+import { PARTY_CLASS, speakerOf } from './TranscriptTurnRow.logic';
 
 /** The offset. A real 44px control with `onSeek`; legible text without it. */
 function Offset({
   at,
+  playFrom,
   onSeek,
   current,
   title,
@@ -23,7 +23,8 @@ function Offset({
   at?: number;
   onSeek?: (seconds: number) => void;
   current: boolean;
-  title: string;
+  title: TranslatedText;
+  playFrom: TranscriptWords['playFrom'];
 }) {
   const label = clock(at);
   if (label === null || at === undefined) {
@@ -41,7 +42,7 @@ function Offset({
     <Pressable
       className="hg-transcript-seek"
       onPress={() => onSeek(at)}
-      accessibilityLabel={`Play the call from ${label}, ${title}`}
+      accessibilityLabel={playFrom(label, title)}
     >
       {face}
     </Pressable>
@@ -55,21 +56,18 @@ export function TranscriptTurnRow({
   customerName,
   onSeek,
   density,
-}: {
-  turn: TranscriptTurn;
-  current: boolean;
-  agentName?: string;
-  customerName?: string;
-  onSeek?: (seconds: number) => void;
-  density: 'expressive' | 'functional';
-}) {
-  const party: TranscriptParty = turn.party === 'customer' ? 'customer' : 'agent';
-  const isAgent = party === 'agent';
-  const name = isAgent ? agentName : customerName;
-  const descriptor = ACTOR_CLASSES[PARTY_CLASS[party]];
+  words,
+}: TranscriptTurnRowProps) {
+  const { party, label } = speakerOf(turn, agentName, customerName, words);
   return (
     <li className="hg-transcript-turn">
-      <Offset at={turn.at} onSeek={onSeek} current={current} title={`${PARTY_WORD[party]} turn`} />
+      <Offset
+        at={turn.at}
+        onSeek={onSeek}
+        current={current}
+        title={words.turn[party]}
+        playFrom={words.playFrom}
+      />
       <div
         className="hg-transcript-bubble"
         data-party={party}
@@ -82,7 +80,7 @@ export function TranscriptTurnRow({
           <span className="hg-transcript-speaker-glyph">
             <ActorGlyph actorClass={PARTY_CLASS[party]} size={13} />
           </span>
-          {name ? `${name} · ${PARTY_WORD[party].toLowerCase()}` : descriptor.word()}
+          {label}
         </span>
         <p className="hg-transcript-words" data-density={density}>
           {turn.text}

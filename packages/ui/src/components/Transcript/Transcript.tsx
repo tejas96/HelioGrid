@@ -9,79 +9,69 @@
    VOLUME: a chronological window from the START — the opposite direction from ActivityStream's,
    because a conversation's first turn is the interesting one.
 
-   This file holds the window and the language derivation, and hands the rest to the four parts
-   that own it: `TranscriptHeader`, `TranscriptPlaceholder`, `TranscriptTurnList`, `TranscriptMore`. */
+   The window and the language derivation are `useTranscriptWindow`'s, shared with the phone; this
+   file hands the rest to the four parts that own it: `TranscriptHeader`, `TranscriptPlaceholder`,
+   `TranscriptTurnList`, `TranscriptMore`. */
 
 import type { CSSProperties, ReactNode } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
-import { countLine, deriveSwitches, languageSentence, switchPoints } from './Transcript.language';
 import type { TranscriptProps } from './Transcript.types';
 import { TranscriptHeader } from './TranscriptHeader';
 import { TranscriptMore } from './TranscriptMore';
 import { TranscriptPlaceholder } from './TranscriptPlaceholder';
 import { TranscriptTurnList } from './TranscriptTurnList';
+import { useTranscriptWindow } from './use-transcript-window';
 
 interface WebTranscriptProps extends TranscriptProps {
   className?: string;
   style?: CSSProperties;
 }
 
-export function Transcript({
-  turns = [],
-  language,
-  switches,
-  agentName,
-  customerName,
-  title = 'Transcript',
-  meta,
-  retainedNote,
-  currentAt,
-  onSeek,
-  visibleCount = 40,
-  step = 40,
-  hasMore = false,
-  onLoadMore,
-  loadingMore = false,
-  total,
-  read,
-  emptyTitle = 'No transcript for this call',
-  emptyDescription = "The call connected but nothing was transcribed. The recording and the rep's notes are on this record.",
-  errorMessage = "Couldn't load the transcript. Nothing has been lost — try again.",
-  retryLabel,
-  unavailableTitle = 'No transcript on this call',
-  unavailableMessage = 'This call was not transcribed. The recording is the only record of it.',
-  density = 'expressive',
-  className,
-  style,
-}: WebTranscriptProps) {
-  const state = surfaceStateOf(read);
-  const onRetry = retryOf(read);
-  const [shown, setShown] = useState(visibleCount);
-  useEffect(() => setShown(visibleCount), [visibleCount]);
-
-  const derived = useMemo(
-    () => switches ?? deriveSwitches(turns, language),
-    [switches, turns, language],
-  );
-  const marks = useMemo(() => switchPoints(turns, language), [turns, language]);
-
-  const sentence = languageSentence(language, derived);
-  const whole = total ?? turns.length;
-  const visible = turns.slice(0, shown);
-  const remaining = Math.max(0, turns.length - shown);
-  const more = remaining > 0 || hasMore;
-  /* The count line states the whole call — and only once there is a call to count. */
-  const count =
-    state === 'ready' && turns.length > 0 ? countLine(whole, agentName, customerName) : null;
-  const blocked =
-    state === 'loading' || state === 'error' || state === 'unavailable' || turns.length === 0;
+export function Transcript(props: WebTranscriptProps) {
+  const {
+    agentName,
+    customerName,
+    title,
+    meta,
+    retainedNote,
+    currentAt,
+    onSeek,
+    onLoadMore,
+    loadingMore = false,
+    emptyTitle,
+    emptyDescription,
+    errorMessage,
+    retryLabel,
+    unavailableTitle,
+    unavailableMessage,
+    density = 'expressive',
+    words,
+    className,
+    style,
+  } = props;
+  /* The transcript's own frame stays while a failed read reloads, so *Try again* hands focus to it. */
+  const frame = useRef<HTMLElement>(null);
+  const {
+    state,
+    onRetry,
+    sentence,
+    count,
+    blocked,
+    turnCount,
+    visible,
+    marks,
+    remaining,
+    more,
+    reveal,
+  } = useTranscriptWindow(props);
 
   const shell = (children: ReactNode) => (
     <section
+      ref={frame}
+      tabIndex={-1}
       aria-label={sentence ? `${title} · ${sentence}` : title}
-      className={classNames('hg-transcript', className)}
+      className={classNames('hg-transcript', 'hg-focus-target', className)}
       style={style}
     >
       <TranscriptHeader
@@ -90,6 +80,7 @@ export function Transcript({
         sentence={sentence}
         retainedNote={retainedNote}
         count={count}
+        notRecorded={words.languageNotRecorded}
       />
       {children}
     </section>
@@ -99,7 +90,7 @@ export function Transcript({
     return shell(
       <TranscriptPlaceholder
         state={state}
-        turnCount={turns.length}
+        turnCount={turnCount}
         density={density}
         emptyTitle={emptyTitle}
         emptyDescription={emptyDescription}
@@ -108,6 +99,8 @@ export function Transcript({
         retryLabel={retryLabel}
         unavailableTitle={unavailableTitle}
         unavailableMessage={unavailableMessage}
+        loadingLabel={words.loading}
+        focusAfter={frame}
       />,
     );
   }
@@ -122,13 +115,15 @@ export function Transcript({
         customerName={customerName}
         onSeek={onSeek}
         density={density}
+        words={words}
       />
       {more ? (
         <TranscriptMore
           remaining={remaining}
           loadingMore={loadingMore}
-          onReveal={() => setShown((n) => n + step)}
+          onReveal={reveal}
           onLoadMore={onLoadMore}
+          words={words}
         />
       ) : null}
     </>,

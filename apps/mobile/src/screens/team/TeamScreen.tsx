@@ -1,8 +1,11 @@
-import { useShell, useTeam, useTeamActs } from '@heliogrid/data/react';
-import { noteLeavesRow, showsListHead } from '@heliogrid/domain';
-import { teamActWords, teamListWords } from '@heliogrid/i18n';
+import { useTeamScreen } from '@heliogrid/data/react';
+import {
+  rolesRemovedToast,
+  rolesUndoFailedToast,
+  teamActWords,
+  teamListWords,
+} from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
-import { theme } from '@heliogrid/theme';
 import {
   type FocusHandle,
   InviteEditor,
@@ -11,34 +14,53 @@ import {
   MemberListHead,
   memberActOf,
   TeamConfirm,
-  ToastHost,
   useFormat,
   useToasts,
 } from '@heliogrid/ui';
 import { useRef } from 'react';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSettingsDrillDown } from '../settings/hooks/use-settings-drill-down';
 import { ShellPage } from '../shell/components/ShellPage';
-import { underPill } from '../shell/styles';
-import { TeamAssignRoles, useTeamRoles } from './components/TeamAssignRoles';
-import { InviteTeammate, useTeamInvite } from './components/TeamInvite';
+import { TeamAssignRoles } from './components/TeamAssignRoles';
+import { InviteTeammate, useInviteActs, useTeamInvite } from './components/TeamInvite';
+import { TeamToastHost } from './components/TeamToastHost';
 
 /**
  * The Team page behind `More` on the phone (`SCR-M01-12`, the 375 frames): the settings page's bar
  * with its way back, the search and the Status chips held at the top, and one member card per
  * person and open or run-out invite. The settings row opens it once its presets allow (`F7-48`).
- * What is read is `useTeam`'s, what each act does `useTeamActs`', and every word `teamListWords`'
- * and `teamActWords`'; this composes. *Invite teammate* opens Invite Teammate as a sheet over the
- * page (`SCR-M01-07`, `T-M01-007`); an active person's card opens Assign Roles (`SCR-M01-13`),
- * `useAssignRoles`' editor.
+ * What it draws is `useTeamScreen`'s, the web's too, and every word `teamListWords`' and
+ * `teamActWords`'; the phone's own parts are the sheet's way back, the toasts' inset and focus.
+ * *Invite teammate* opens Invite Teammate as a sheet over the page (`SCR-M01-07`, `T-M01-007`); an
+ * active person's card opens Assign Roles (`SCR-M01-13`).
  */
 export function TeamScreen() {
   const drillDown = useSettingsDrillDown('team');
   const { t, locale } = useI18n();
   const { pack } = useFormat();
-  const shell = useShell();
-  const team = useTeam(locale);
-  const company = shell.companyName ?? '';
+  const toasts = useToasts();
+  const search = useRef<FocusHandle>(null);
+  const allChip = useRef<FocusHandle>(null);
+  /* The screen reader's place returns to the act that opened a confirm when it is cancelled. */
+  const opener = useRef<FocusHandle>(null);
+  const inviteActs = useInviteActs();
+  /* Each note runs on an answer, after this render: it reads the words drawn below. */
+  const screen = useTeamScreen(locale, pack, {
+    onActNote: (note) => {
+      const toast = actWords.toast(note);
+      if (toast !== null) toasts.push(toast);
+    },
+    onLeftRow: () => search.current?.focus(),
+    onRemoved: (removal, undo) => {
+      const { undoLabel, ...toast } = rolesRemovedToast(t, removal);
+      toasts.push({ ...toast, undo: { label: undoLabel, onUndo: undo, focusAfter: search } });
+    },
+    onUndoFailed: (refusal, removal) => {
+      toasts.push(rolesUndoFailedToast(t, refusal, { ...removal, companyName: company }));
+    },
+    onInviteShut: inviteActs.giveBack,
+  });
+  const invite = useTeamInvite(screen.invite, inviteActs, toasts.push);
+  const { team, acts, list, company } = screen;
   const words = teamListWords(t, {
     pack,
     language: locale,
@@ -48,24 +70,6 @@ export function TeamScreen() {
     status: team.status,
   });
   const actWords = teamActWords(t, company);
-  const list = team.read.kind === 'ready' ? team.read.value : null;
-  const toasts = useToasts();
-  const insets = useSafeAreaInsets();
-  const search = useRef<FocusHandle>(null);
-  const allChip = useRef<FocusHandle>(null);
-  /* The screen reader's place returns to the act that opened a confirm when it is cancelled. */
-  const opener = useRef<FocusHandle>(null);
-  const acts = useTeamActs(team, (note) => {
-    const toast = actWords.toast(note);
-    if (toast !== null) toasts.push(toast);
-    if (noteLeavesRow(note)) search.current?.focus();
-  });
-
-  const invite = useTeamInvite(() => team.reread(), toasts.push);
-  /* As a row act that leaves the row, an undo gives the keyboard to the search. */
-  const roles = useTeamRoles(team, toasts, company, () => search.current?.focus());
-  /* The sole-owner reason names the company, so no row opens before its name has arrived. */
-  const openOf = shell.companyName === null ? undefined : roles.openerOf;
 
   return (
     <ShellPage
@@ -73,7 +77,7 @@ export function TeamScreen() {
       drillDown={drillDown}
       lead={list?.surface === 'teaching' ? undefined : <InviteTeammate invite={invite} />}
       stickyHead={
-        showsListHead(team.read) ? (
+        screen.showsHead ? (
           <MemberListHead
             query={team.query}
             onFind={team.find}
@@ -90,6 +94,7 @@ export function TeamScreen() {
       <MemberList
         read={team.read}
         words={words}
+        focusAfter={search}
         teachingAction={<InviteTeammate invite={invite} first />}
         onClearSearch={() => {
           team.find('');
@@ -99,7 +104,7 @@ export function TeamScreen() {
           team.filter('all');
           allChip.current?.focus();
         }}
-        openOf={openOf}
+        openOf={screen.openOf}
         actOf={(row) => {
           const act = memberActOf(row, team.roster, actWords, acts.sending);
           return act === null ? null : (
@@ -123,13 +128,8 @@ export function TeamScreen() {
         }}
       />
       <InviteEditor {...invite.editor} />
-      <TeamAssignRoles editor={roles} list={team.read} companyName={company} />
-      {/* Above the pill, which stands on the device's home-bar inset — the package reads no inset. */}
-      <ToastHost
-        toasts={toasts.toasts}
-        onDismiss={toasts.dismiss}
-        offset={underPill(insets.bottom) + theme.spacing['sp-6']}
-      />
+      <TeamAssignRoles editor={screen.roles} companyName={company} />
+      <TeamToastHost toasts={toasts} focusAfter={search} />
     </ShellPage>
   );
 }

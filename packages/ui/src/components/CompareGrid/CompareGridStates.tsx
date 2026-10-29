@@ -1,11 +1,13 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
 
 /** Six shimmer bars — the loading form. Never a placeholder value presented as a real one. */
-export function CompareSkeleton() {
+export function CompareSkeleton({ label }: { label: TranslatedText }) {
   return (
-    <div className="hg-compare-skeleton" role="status" aria-label="Loading the comparison">
+    <div className="hg-compare-skeleton" role="status" aria-label={label}>
       {['title', 'a', 'b', 'c', 'd', 'e'].map((row) => (
         <span
           className="hg-compare-shimmer"
@@ -30,12 +32,15 @@ export function CompareMessage({
   message,
   onRetry,
   retryLabel,
+  focusAfter,
 }: {
   tone?: 'warning';
   title: ReactNode;
   message?: ReactNode;
   onRetry?: () => void;
-  retryLabel?: string;
+  retryLabel?: TranslatedText;
+  /** Where focus lands once *Try again* has gone with this message. */
+  focusAfter: FocusAfter;
 }) {
   return (
     <div className="hg-compare-message">
@@ -54,7 +59,7 @@ export function CompareMessage({
       </span>
       <div className="hg-compare-message-title">{title}</div>
       {message === undefined ? null : <div className="hg-compare-message-body">{message}</div>}
-      <RetryButton onRetry={onRetry} label={retryLabel} />
+      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
     </div>
   );
 }

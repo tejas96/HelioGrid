@@ -12,8 +12,8 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
-import { encodeQR } from '../../utils/qr-encode';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { darkModules, drawableCode, quietZonedSide, wordsWidth } from './QRCode.logic';
 import type { QRCodeProps } from './QRCode.types';
 
 const styles = StyleSheet.create({
@@ -39,19 +39,9 @@ interface NativeQRCodeProps extends QRCodeProps {
 
 /** The dark modules as one path: `M x y h1 v1 h-1 z` per module. */
 function modulePath(matrix: boolean[][], quietZone: number): string {
-  const parts: string[] = [];
-  for (let r = 0; r < matrix.length; r++) {
-    const row = matrix[r];
-    if (!row) {
-      continue;
-    }
-    for (let c = 0; c < row.length; c++) {
-      if (row[c]) {
-        parts.push(`M${c + quietZone} ${r + quietZone}h1v1h-1z`);
-      }
-    }
-  }
-  return parts.join('');
+  return darkModules(matrix, quietZone)
+    .map(({ x, y }) => `M${x} ${y}h1v1h-1z`)
+    .join('');
 }
 
 /** The link text — the fallback path, and what a customer reads out over a phone call. */
@@ -72,19 +62,13 @@ export function QRCode({
   caption,
   quietZone = 4,
   showValue = true,
-  errorTitle = 'QR code unavailable',
+  errorTitle,
   errorMessage,
   style,
 }: NativeQRCodeProps) {
-  const result = useMemo(() => {
-    try {
-      return encodeQR(value);
-    } catch {
-      return null;
-    }
-  }, [value]);
+  const result = useMemo(() => drawableCode(value), [value]);
 
-  if (!value || !result) {
+  if (result === null) {
     return (
       /* THE PANEL IS NOT ONE ELEMENT. The web half names this wrapper `role="group"`, which groups
          WITHOUT hiding anything inside it. React Native has no `group` role, and `accessible` is not
@@ -110,21 +94,18 @@ export function QRCode({
             {errorTitle}
           </Text>
         </View>
-        <View style={{ maxWidth: size + 80 }}>
+        <View style={{ maxWidth: wordsWidth(size) }}>
           <Text variant="caption" color="secondary" style={styles.centred}>
-            {errorMessage ||
-              (value
-                ? 'This link is too long to encode. Use the link below instead.'
-                : 'No link to encode yet.')}
+            {errorMessage}
           </Text>
         </View>
-        {value && showValue ? <LinkText value={value} width={size + 80} /> : null}
+        {value && showValue ? <LinkText value={value} width={wordsWidth(size)} /> : null}
       </View>
     );
   }
 
   const { matrix, size: n } = result;
-  const total = n + quietZone * 2;
+  const total = quietZonedSide(n, quietZone);
 
   return (
     <View style={[styles.root, style]}>
@@ -134,7 +115,7 @@ export function QRCode({
         viewBox={`0 0 ${total} ${total}`}
         accessible
         accessibilityRole="image"
-        accessibilityLabel={label || `QR code for ${value}`}
+        accessibilityLabel={label}
         style={styles.code}
       >
         {/* biome-ignore lint/plugin/raw-white: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen */}
@@ -146,7 +127,7 @@ export function QRCode({
           {caption}
         </Text>
       ) : null}
-      {showValue ? <LinkText value={value} width={size + 80} /> : null}
+      {showValue ? <LinkText value={value} width={wordsWidth(size)} /> : null}
     </View>
   );
 }

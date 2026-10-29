@@ -1,6 +1,8 @@
 import { theme } from '@heliogrid/theme';
+import { type RefObject, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button } from '../Button/Button.native';
+import { RetryButton } from '../Button/RetryButton.native';
+import { ShowMore } from '../CatalogItems/ShowMore.native';
 import { DataTable } from '../DataTable/DataTable.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
 import { ATTRIBUTION_STACK_BELOW, attributionColumns } from './CatalogRates.attribution';
@@ -11,8 +13,28 @@ import type { CatalogAttributionProps, CatalogAttributionRow } from './CatalogRa
  * as cards, each field beside the layer that supplied it.
  */
 export function CatalogAttribution(props: CatalogAttributionProps) {
-  const { words, rows, onMore } = props;
-  const { read } = props;
+  /* After *Try again* the screen reader lands on the whole table, which stays while it reloads;
+     after *Show more*, on the list it grew. */
+  const frame = useRef<View>(null);
+  const list = useRef<View>(null);
+  return (
+    <View ref={frame}>
+      <AttributionBody {...props} frame={frame} list={list} />
+    </View>
+  );
+}
+
+function AttributionBody({
+  words,
+  rows,
+  onMore,
+  read,
+  frame,
+  list,
+}: CatalogAttributionProps & {
+  frame: RefObject<View | null>;
+  list: RefObject<View | null>;
+}) {
   if (read.kind === 'loading') return null;
   if (read.kind === 'failed') {
     return (
@@ -20,16 +42,15 @@ export function CatalogAttribution(props: CatalogAttributionProps) {
         glow={false}
         title={words.loadFailed}
         action={
-          <Button variant="secondary" size="sm" onClick={read.retry}>
-            {words.tryAgain}
-          </Button>
+          <RetryButton size="sm" onRetry={read.retry} label={words.tryAgain} focusAfter={frame} />
         }
       />
     );
   }
   return (
-    <View style={styles.table}>
+    <View ref={list} style={styles.table}>
       <DataTable<CatalogAttributionRow>
+        {...words.table}
         read={read}
         columns={attributionColumns(words)}
         rows={[...rows]}
@@ -38,11 +59,7 @@ export function CatalogAttribution(props: CatalogAttributionProps) {
         density="compact"
         caption={words.caption}
       />
-      {onMore === null ? null : (
-        <Button variant="ghost" size="sm" onClick={onMore}>
-          {words.more}
-        </Button>
-      )}
+      {onMore === null ? null : <ShowMore label={words.more} onMore={onMore} focusAfter={list} />}
     </View>
   );
 }

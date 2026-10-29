@@ -1,6 +1,6 @@
 'use client';
 import { useShell } from '@heliogrid/data/react';
-import { homeBlocksWords, homeHeadWords, todayLine, verbLabel } from '@heliogrid/i18n';
+import { BLOCK, homeBlocksWords, homeHeadWords, todayLine, verbLabel } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
 import { Button, HomeBlocks, HomeHead, ShellGlyph, Text, useFormat } from '@heliogrid/ui';
@@ -58,7 +58,7 @@ export function HomeScreen() {
           )
         }
       />
-      <HomeBlocks {...homeBlocksWords(t, home)} read={shell.read} />
+      <HomeBlocks {...homeBlocksWords(t, home)} read={shell.read} loadingLabel={t(BLOCK.loading)} />
       <FirstRunMark
         shell={shell}
         within={page}

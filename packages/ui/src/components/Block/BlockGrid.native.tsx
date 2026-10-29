@@ -1,6 +1,7 @@
 import { Children, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { BLOCK_GRID_GAP, BLOCK_GRID_MIN } from './Block.logic';
 import type { BlockGridProps } from './Block.types';
 
 interface NativeBlockGridProps extends BlockGridProps {
@@ -16,7 +17,13 @@ const styles = StyleSheet.create({
  * the row's own width decides how many columns of at least `min` fit, and every cell takes the
  * exact same width — the same result the web half gets from the grid algorithm.
  */
-export function BlockGrid({ children, min = 320, gap = 20, columns, style }: NativeBlockGridProps) {
+export function BlockGrid({
+  children,
+  min = BLOCK_GRID_MIN,
+  gap = BLOCK_GRID_GAP,
+  columns,
+  style,
+}: NativeBlockGridProps) {
   const [width, setWidth] = useState(0);
   const onLayout = (event: LayoutChangeEvent) => setWidth(event.nativeEvent.layout.width);
   const fit = Math.max(1, Math.floor((width + gap) / (min + gap)));

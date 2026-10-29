@@ -77,8 +77,9 @@ export function ActorClass({
   actorClass = 'system',
   actor,
   form = 'stream',
-  verb = 'Created by',
+  verb,
   rule,
+  words,
   size = 12,
   color = theme.colors['text-secondary'],
   style,
@@ -91,17 +92,19 @@ export function ActorClass({
         <ActorGlyph actorClass={actorClass} size={size + 1} color={TONES[descriptor.tone]} />
       </View>
       <Text style={[styles.words, type]}>
-        {actorWords({ actorClass, actor, form, verb, rule })}
+        {actorWords({ actorClass, actor, form, verb, rule, words })}
       </Text>
     </View>
   );
 }
 
-/** Accepts a spec object, a bare class string, or a ready node — so every host offers one prop. */
-export function renderActorClass(spec?: ActorClassSpec, extra?: ActorClassProps): ReactNode {
+/** Accepts a spec object or a ready node — so every host offers one prop. */
+export function renderActorClass(
+  spec?: ActorClassSpec,
+  extra?: Partial<ActorClassProps>,
+): ReactNode {
   if (spec === undefined) return null;
   if (isValidElement(spec)) return spec;
-  if (typeof spec === 'string') return <ActorClass actorClass={spec} {...extra} />;
   return <ActorClass {...spec} {...extra} />;
 }
 

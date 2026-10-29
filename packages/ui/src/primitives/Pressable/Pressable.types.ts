@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 /**
@@ -63,9 +64,10 @@ export interface PressableProps {
   /** Disabled targets stay visible and keep their footprint; they never shrink the target. */
   disabled?: boolean;
   /** Accessible name — required whenever the children are not text (icon-only targets). */
+  // biome-ignore lint/plugin/copy-prop-type: composed by the control that holds it, from its TranslatedText words and facts (a sheet's name)
   accessibilityLabel?: string;
   /** What the target does or holds beyond its name — said after it (`aria-description` on the web). */
-  accessibilityHint?: string;
+  accessibilityHint?: TranslatedText;
   /**
    * WHAT THIS TARGET IS. Omitted means `button` — a bare `<button>` on web, `accessibilityRole
    * ="button"` on native, exactly what every caller got before this prop existed.

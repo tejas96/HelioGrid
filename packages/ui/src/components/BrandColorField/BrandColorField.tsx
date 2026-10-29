@@ -1,4 +1,3 @@
-import { normaliseHexColour } from '@heliogrid/domain';
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Button } from '../Button';
@@ -6,9 +5,11 @@ import { Input } from '../Input';
 import { ProvenanceTier } from '../Provenance/Provenance';
 import type { BrandColorFieldProps } from './BrandColorField.types';
 import {
+  brandColourActs,
   fieldWordsOf,
   fullVerdicts,
-  readBrandColour,
+  isChosenSwatch,
+  readFieldColour,
   shortVerdict,
   specimenWordColour,
 } from './BrandColorField.verdicts';
@@ -52,19 +53,8 @@ export function BrandColorField({
   style,
 }: WebBrandColorFieldProps) {
   const shown = fieldWordsOf(words, { label, helper, specimenLabel, specimenWord });
-  const hex = normaliseHexColour(value);
-  const reading = hex === null ? null : readBrandColour(hex, showSuggestion);
-
-  const set = (next: string) => {
-    const normalised = normaliseHexColour(next);
-    if (normalised !== null) {
-      onChange?.(normalised);
-    }
-  };
-
-  const takeInk = () => {
-    if (reading !== null && reading.fix !== null) set(reading.fix.hex);
-  };
+  const { hex, reading } = readFieldColour(value, showSuggestion);
+  const { set, takeInk } = brandColourActs(reading, onChange);
 
   return (
     <div className={classNames('hg-brand-color', className)} style={style}>
@@ -78,7 +68,7 @@ export function BrandColorField({
               key={preset}
               type="button"
               role="radio"
-              aria-checked={normaliseHexColour(preset) === hex}
+              aria-checked={isChosenSwatch(preset, hex)}
               aria-label={preset}
               disabled={disabled}
               className="hg-brand-color-swatch"

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReadKind } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet } from 'react-native';
@@ -15,7 +16,7 @@ import type { RolesReferencePreset } from './RolesReference.types';
 interface RoleTileProps {
   preset: RolesReferencePreset;
   counts: ReadKind;
-  countGap: string;
+  countGap: TranslatedText;
   open: boolean;
   onOpen: () => void;
 }

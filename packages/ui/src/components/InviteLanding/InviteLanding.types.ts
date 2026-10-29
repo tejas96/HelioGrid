@@ -1,6 +1,8 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { InviteDeclineFrame, InviteLandingFrame, InviteLandingPress } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
+import type { OtpInputWords } from '../OtpInput/OtpInput.types';
 import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
 
 /** A centred state with its one act and the line under it (`m-empty`, `m-reinvite-requested`). */
@@ -36,6 +38,8 @@ export interface InviteDeclineProps {
   words: InviteLandingDeclineWords;
   decline: InviteDeclineFrame;
   onPress: (control: InviteLandingPress) => void;
+  /** Where focus lands once a confirmed decline has taken the invite away — the declined frame's act. */
+  focusAfter: FocusAfter;
 }
 
 /**
@@ -45,6 +49,8 @@ export interface InviteDeclineProps {
 export interface InviteLandingWords {
   /** The loading skeleton's spoken name. */
   loading: TranslatedText;
+  /** The invite card's skeleton, spoken inside the loading region — *Loading*. */
+  loadingCard: TranslatedText;
   /** Who invited, and the label under the name: *EPC Owner · {company}* (brief decision 3). */
   // biome-ignore lint/plugin/copy-prop-type: the inviter's name
   inviter: { name: string; label: TranslatedText } | null;
@@ -61,6 +67,8 @@ export interface InviteLandingWords {
   /** The code family's own block — a cap, the lock, a send that failed — read as the door reads it. */
   block: Pick<TintedBlockProps, 'tone' | 'title'> | null;
   codeLabel: TranslatedText;
+  /** The code boxes' spoken names. */
+  otp: OtpInputWords;
   codeHelper: TranslatedText | null;
   codeError: TranslatedText | null;
   primary: TranslatedText | null;

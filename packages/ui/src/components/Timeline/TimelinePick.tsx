@@ -3,11 +3,14 @@
    Space choose, and Tab leaves the group. The rail is neutral: nothing is done or current here, so
    nothing is lit. */
 
-import type { CSSProperties, KeyboardEvent } from 'react';
+import type { TranslatedText } from '@heliogrid/contracts';
+import type { KeyboardEvent } from 'react';
 import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { stepKeyOf } from './Timeline.logic';
 import { isTabStop, movedIndex, pickedIndex, pickMove } from './Timeline.pick';
 import type { TimelineDensity, TimelineItem } from './Timeline.types';
+import type { TimelineRoot } from './TimelineParts';
 import { TimelinePickStep } from './TimelinePickStep';
 
 export function TimelinePick({
@@ -16,16 +19,14 @@ export function TimelinePick({
   onChange,
   label,
   density,
-  className,
-  style,
+  root,
 }: {
   items: TimelineItem[];
   value: string | undefined;
   onChange: (id: string) => void;
-  label: string | undefined;
+  label: TranslatedText | undefined;
   density: TimelineDensity;
-  className?: string;
-  style?: CSSProperties;
+  root: TimelineRoot;
 }) {
   const steps = useRef<Array<HTMLButtonElement | null>>([]);
   const picked = pickedIndex(items, value);
@@ -47,13 +48,13 @@ export function TimelinePick({
     <div
       role="radiogroup"
       aria-label={label}
-      className={classNames('hg-timeline-pick', className)}
+      className={classNames('hg-timeline-pick', root.className)}
       data-density={density}
-      style={style}
+      style={root.style}
     >
       {items.map((item, index) => (
         <TimelinePickStep
-          key={item.id ?? `${index}-${item.label}`}
+          key={stepKeyOf(item, index)}
           item={item}
           checked={index === picked}
           tabStop={isTabStop(index, picked)}

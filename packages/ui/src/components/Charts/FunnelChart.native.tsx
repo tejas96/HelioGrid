@@ -4,14 +4,13 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { ChartFrame } from './ChartFrame.native';
+import { funnelScale, funnelStage } from './Charts.logic';
 import type { FunnelChartProps } from './Charts.types';
 import { chartColor } from './ChartTokens.native';
 
 interface NativeFunnelChartProps extends FunnelChartProps {
   style?: StyleProp<ViewStyle>;
 }
-
-const INSUFFICIENT = 'A funnel needs at least two stages with recorded values.';
 
 const styles = StyleSheet.create({
   list: { gap: theme.spacing['sp-1'] },
@@ -39,20 +38,18 @@ export function FunnelChart({
 }: NativeFunnelChartProps) {
   const mkt = useFormat();
   const fmt = format ?? mkt.number;
-  const insufficient = stages.length < minPoints;
-  const top = Math.max(1, ...stages.map((s) => s.value || 0));
+  const { insufficient, top, height } = funnelScale(stages, minPoints);
 
   return (
     <ChartFrame
       {...frame}
-      height={Math.max(160, stages.length * 56)}
+      height={height}
       insufficient={insufficient}
-      insufficientMessage={frame.insufficientMessage ?? INSUFFICIENT}
+      insufficientMessage={frame.insufficientMessage ?? frame.words.funnelInsufficient}
     >
       <View style={styles.list}>
         {stages.map((stage, i) => {
-          const prev = i > 0 ? (stages[i - 1]?.value ?? 0) : 0;
-          const conversion = prev ? Math.round(((stage.value || 0) / prev) * 100) : null;
+          const { widthPercent, opacity, conversion } = funnelStage(stages, i, top);
           return (
             <View key={stage.label}>
               <View style={styles.row}>
@@ -64,8 +61,8 @@ export function FunnelChart({
                     style={[
                       styles.fill,
                       {
-                        width: `${Math.max(2, ((stage.value || 0) / top) * 100)}%`,
-                        opacity: 1 - i * 0.13,
+                        width: `${widthPercent}%`,
+                        opacity,
                         backgroundColor: stage.color ?? chartColor(i),
                       },
                     ]}
@@ -81,7 +78,7 @@ export function FunnelChart({
                     variant="caption"
                     color={conversion < lowConversionBelow ? 'warning' : 'tertiary'}
                   >
-                    {conversion}% carried forward
+                    {frame.words.carriedForward(conversion)}
                   </Text>
                 </View>
               )}

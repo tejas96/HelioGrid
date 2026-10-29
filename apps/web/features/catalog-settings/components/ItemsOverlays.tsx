@@ -1,4 +1,5 @@
 'use client';
+import type { TranslatedText } from '@heliogrid/contracts';
 import { type CatalogFacts, type CatalogOverlays, useReleasePreview } from '@heliogrid/data/react';
 import {
   CATALOG_EDITOR,
@@ -31,8 +32,8 @@ function Foot({
   onCancel,
   children,
 }: {
-  line?: string | null;
-  cancel: { label: string; variant?: 'secondary' | 'ghost' };
+  line?: TranslatedText | null;
+  cancel: { label: TranslatedText; variant?: 'secondary' | 'ghost' };
   onCancel: () => void;
   children: ReactNode;
 }) {
@@ -74,7 +75,7 @@ export function ItemsOverlays({
       <PriceEditorSurface overlays={overlays} schemes={schemes} />
       <ArchiveConfirm overlays={overlays} />
       <PublishSurface overlays={overlays} release={release} />
-      <ReleasesSurface open={overlays.releasesOpen} onClose={overlays.closeReleases} />
+      <ReleasesSurface releases={overlays.releases} />
     </>
   );
 }

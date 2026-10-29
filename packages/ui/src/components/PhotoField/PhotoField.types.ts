@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { PickedFile } from '../Dropzone/Dropzone.types';
 
@@ -20,7 +21,7 @@ export type PhotoFieldActIcon = 'camera' | 'upload' | 'retry';
 
 export interface PhotoFieldProps {
   /** The group's accessible name — say that the photo is optional. Already translated. */
-  label: string;
+  label: TranslatedText;
   /** The chosen image. Absent means no photo, which is a legitimate resting state. */
   src?: string;
   /**
@@ -40,11 +41,11 @@ export interface PhotoFieldProps {
    */
   onDrop?: (file: PickedFile) => void;
   /** The act's words when there is no photo yet. Required — a control nobody can read is not one. */
-  chooseLabel: string;
+  chooseLabel: TranslatedText;
   /** The act's words when a photo is already chosen. */
-  replaceLabel?: string;
+  replaceLabel?: TranslatedText;
   /** The removal's words. Required whenever `onRemove` is given. */
-  removeLabel?: string;
+  removeLabel?: TranslatedText;
   /** The act's glyph (`camera` default). The act is always `Button` secondary, size `md`. */
   actIcon?: PhotoFieldActIcon;
   /**
@@ -52,9 +53,9 @@ export interface PhotoFieldProps {
    * photo group — above the act in the 120 composition, under the circle and act on the 72 row — so
    * a name that saved is not put in doubt.
    */
-  error?: string;
+  error?: TranslatedText;
   /** The refusal banner's bold first line. */
-  errorTitle?: string;
+  errorTitle?: TranslatedText;
   /** A sentence under the acts — what the fallback will be, where the photo ends up afterwards. */
   helper?: ReactNode;
   /** The photo is being written. The circle shimmers; the act is not offered greyed out. */

@@ -1,16 +1,12 @@
 import type { CSSProperties } from 'react';
+import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { useFormat } from '../MarketProvider/market-context';
 import { Provenance } from '../Provenance/Provenance';
 import type { UsageMeterProps } from './UsageMeter.types';
 import { UsageMeterMetered } from './UsageMeterMetered';
 import { UsageMeterError, UsageMeterLoading, UsageMeterUnavailable } from './UsageMeterStates';
-import {
-  isMetered,
-  isResolved,
-  normaliseUsageState,
-  unmeteredStatusLine,
-} from './usage-meter-model';
+import { unmeteredStatusLine, usageMeterShape, usageTrackHeight } from './usage-meter-model';
 
 interface WebUsageMeterProps extends UsageMeterProps {
   className?: string;
@@ -33,6 +29,7 @@ interface WebUsageMeterProps extends UsageMeterProps {
  */
 export function UsageMeter({
   label,
+  words,
   value,
   limit = null,
   unit,
@@ -44,24 +41,28 @@ export function UsageMeter({
   thresholdPercent = 80,
   graceDaysLeft,
   note,
-  noLimitNote = 'No bundle on this plan to measure against — this is a count, not a rate.',
-  loadingNote = "Not resolved yet — this period's rollup is still being read.",
-  errorMessage = "Couldn't read this period's usage. Nothing is shown until it resolves, because this screen only ever shows the billed figures.",
+  noLimitNote = words.noLimit,
+  loadingNote = words.loading,
+  errorMessage = words.error,
   onRetry,
   retryLabel,
-  unavailableTitle = 'Not metered on this plan',
+  unavailableTitle = words.unavailable,
   unavailableMessage,
   density = 'expressive',
   className,
   style,
 }: WebUsageMeterProps) {
+  /* Every state draws its own frame, and each takes this one ref: after Try again leaves, focus
+     lands on the meter's frame in whatever state it reloads into. */
+  const frame = useRef<HTMLElement>(null);
   const format = useFormat().number;
-  const trackHeight = density === 'functional' ? '8px' : '10px';
-  const billing = normaliseUsageState(state);
+  const trackHeight = `${usageTrackHeight(density)}px`;
+  const shape = usageMeterShape(state, value, limit);
 
-  if (billing === 'error') {
+  if (shape.draws === 'error') {
     return (
       <UsageMeterError
+        frame={frame}
         label={label}
         period={period}
         errorMessage={errorMessage}
@@ -71,9 +72,10 @@ export function UsageMeter({
     );
   }
 
-  if (billing === 'unavailable') {
+  if (shape.draws === 'unavailable') {
     return (
       <UsageMeterUnavailable
+        frame={frame}
         label={label}
         period={period}
         unavailableTitle={unavailableTitle}
@@ -82,12 +84,14 @@ export function UsageMeter({
     );
   }
 
-  if (billing === 'loading' || !isResolved(value)) {
+  if (shape.draws === 'loading') {
     return (
       <UsageMeterLoading
+        frame={frame}
         label={label}
         period={period}
         loadingNote={loadingNote}
+        spokenName={words.unresolvedName(label, period)}
         trackHeight={trackHeight}
       />
     );
@@ -99,14 +103,19 @@ export function UsageMeter({
     <Provenance tier={provenance} standing={standing} source={period} note={bundleName} size={12} />
   );
 
-  if (!isMetered(limit)) {
-    const line = unmeteredStatusLine(billing, graceDaysLeft);
+  if (shape.draws === 'unmetered') {
+    const line = unmeteredStatusLine(shape.billing, graceDaysLeft, words);
     return (
-      <section className={classNames('hg-usage-meter', className)} style={style}>
+      <section
+        ref={frame}
+        tabIndex={-1}
+        className={classNames('hg-usage-meter', 'hg-focus-target', className)}
+        style={style}
+      >
         <div className="hg-usage-meter-head">
           <span className="hg-usage-meter-label">{label}</span>
           <span className="hg-usage-meter-figure">
-            <strong>{format(value)}</strong>
+            <strong>{format(shape.value)}</strong>
             {unit !== undefined ? <span className="hg-usage-meter-unit"> {unit}</span> : null}
           </span>
         </div>
@@ -124,13 +133,15 @@ export function UsageMeter({
 
   return (
     <UsageMeterMetered
+      frame={frame}
+      words={words}
       label={label}
-      value={value}
-      limit={limit}
+      value={shape.value}
+      limit={shape.limit}
       unit={unit}
       period={period}
       bundleName={bundleName}
-      billing={billing}
+      billing={shape.billing}
       thresholdPercent={thresholdPercent}
       graceDaysLeft={graceDaysLeft}
       note={note}

@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { closingPress } from '../../primitives/FocusAfter';
 import type { CoachMarkProps } from './CoachMark.types';
 import { MAX_STEPS } from './CoachMark.types';
 import {
@@ -10,14 +11,19 @@ import {
   CoachMarkRing,
   coachMarkShell,
 } from './CoachMarkParts';
-import { COACH_MARK_FALLBACK_HEIGHT, coachMarkCounter, placeCoachMark } from './coach-mark-place';
+import {
+  coachMarkCounter,
+  coachMarkName,
+  placeMeasuredMark,
+  pointsAtNothing,
+} from './coach-mark-place';
 import { useAnchorRect } from './use-anchor-rect';
 import { useCoachMarks } from './use-coach-marks';
 
-interface WebCoachMarkProps extends CoachMarkProps {
+type WebCoachMarkProps = CoachMarkProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 function viewport() {
   return typeof window === 'undefined'
@@ -39,9 +45,10 @@ export function CoachMark({
   padding = 6,
   width = 292,
   nextLabel,
-  dismissLabel = 'Dismiss',
+  dismissLabel,
   onNext,
   onDismiss,
+  focusAfter,
   onAnchorMissing,
   autoFocus = true,
   ring = true,
@@ -66,12 +73,12 @@ export function CoachMark({
     // the mark points at must not pass the first-run marks for good.
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && !event.defaultPrevented) {
-        onDismiss?.();
+        closingPress(focusAfter)(onDismiss)?.();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [open, onDismiss]);
+  }, [open, onDismiss, focusAfter]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: `step` is deliberate — the mark takes focus again when a sequence advances, so a keyboard user follows the run.
   useEffect(() => {
@@ -84,21 +91,13 @@ export function CoachMark({
     return null;
   }
   /* Anchored but unresolvable: draw nothing rather than point at nothing. */
-  if (anchor !== undefined && rect === null) {
+  if (pointsAtNothing(anchor, rect)) {
     return null;
   }
 
   const { steps, counter, isLast } = coachMarkCounter(total, step, MAX_STEPS, counterLabel);
-  const placed =
-    rect === null
-      ? null
-      : placeCoachMark(
-          rect,
-          width,
-          cardHeight || COACH_MARK_FALLBACK_HEIGHT,
-          placement,
-          viewport(),
-        );
+  const placed = placeMeasuredMark(rect, width, cardHeight, placement, viewport());
+  const closing = closingPress(focusAfter);
 
   return (
     <>
@@ -108,7 +107,7 @@ export function CoachMark({
         ref={card}
         role="group"
         tabIndex={-1}
-        aria-label={counter === null ? title : `${title}. ${counter}`}
+        aria-label={coachMarkName(title, counter)}
         className={classNames('hg-coach-mark', className)}
         data-anchored={rect === null ? undefined : 'true'}
         style={{ ...coachMarkShell(rect, placed, width), ...style }}
@@ -118,7 +117,7 @@ export function CoachMark({
           counter={counter}
           title={title}
           dismissLabel={dismissLabel}
-          onDismiss={onDismiss}
+          onDismiss={closing(onDismiss)}
         />
         {body === undefined ? null : <p className="hg-coach-mark-body">{body}</p>}
         <CoachMarkFoot
@@ -126,8 +125,8 @@ export function CoachMark({
           step={step}
           isLast={isLast}
           nextLabel={nextLabel}
-          onNext={onNext}
-          onDismiss={onDismiss}
+          onNext={isLast ? closing(onNext) : onNext}
+          onDismiss={closing(onDismiss)}
         />
       </div>
     </>

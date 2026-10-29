@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -5,8 +6,8 @@ import { Text } from '../../primitives/Text/Text.native';
 interface NumberFieldMessageProps {
   refused: ReactNode;
   error: ReactNode;
-  correction: string | null;
-  hint?: string;
+  correction: TranslatedText | null;
+  hint?: TranslatedText;
 }
 
 const styles = StyleSheet.create({

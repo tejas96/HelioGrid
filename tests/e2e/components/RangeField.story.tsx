@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { RangeField, type RangeValue } from '@heliogrid/ui';
 import { useState } from 'react';
 
@@ -13,9 +14,9 @@ export function HeldRangeField({
   min,
   max,
 }: {
-  label: string;
+  label: TranslatedText;
   unit: string;
-  boxLabels: [string, string];
+  boxLabels: [TranslatedText, TranslatedText];
   initial: RangeValue;
   min: number;
   max: number;

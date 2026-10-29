@@ -4,34 +4,16 @@ import Svg from 'react-native-svg';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import type { CoachMarkFootProps, CoachMarkHeadProps } from './CoachMark.types';
 import type { CoachMarkRect, PlacedCoachMark } from './coach-mark-place';
+import { counterDots, forwardAct, ringBox } from './coach-mark-place';
 
 /** The system's own 2px accent ring around the live control. There is no scrim. */
 export function CoachMarkRing({ rect, padding }: { rect: CoachMarkRect; padding: number }) {
-  return (
-    <View
-      pointerEvents="none"
-      style={[
-        styles.ring,
-        {
-          top: rect.top - padding,
-          left: rect.left - padding,
-          width: rect.width + padding * 2,
-          height: rect.height + padding * 2,
-        },
-      ]}
-    />
-  );
+  return <View pointerEvents="none" style={[styles.ring, ringBox(rect, padding)]} />;
 }
 
-interface HeadProps {
-  counter: string | null;
-  title: string;
-  dismissLabel: string;
-  onDismiss?: () => void;
-}
-
-export function CoachMarkHead({ counter, title, dismissLabel, onDismiss }: HeadProps) {
+export function CoachMarkHead({ counter, title, dismissLabel, onDismiss }: CoachMarkHeadProps) {
   return (
     <View style={styles.head}>
       <View style={styles.heading}>
@@ -63,18 +45,16 @@ export function CoachMarkHead({ counter, title, dismissLabel, onDismiss }: HeadP
   );
 }
 
-interface FootProps {
-  steps: number;
-  step?: number;
-  isLast: boolean;
-  nextLabel?: string;
-  onNext?: () => void;
-  onDismiss?: () => void;
-}
-
 /** The counter dots number only the marks the user will actually see, and the one forward act. */
-export function CoachMarkFoot({ steps, step, isLast, nextLabel, onNext, onDismiss }: FootProps) {
-  const dots = steps > 1 ? Array.from({ length: steps }, (_, index) => index + 1) : [];
+export function CoachMarkFoot({
+  steps,
+  step,
+  isLast,
+  nextLabel,
+  onNext,
+  onDismiss,
+}: CoachMarkFootProps) {
+  const dots = counterDots(steps);
   return (
     <View style={styles.foot}>
       <View style={styles.dots}>
@@ -85,9 +65,9 @@ export function CoachMarkFoot({ steps, step, isLast, nextLabel, onNext, onDismis
           />
         ))}
       </View>
-      <Pressable onPress={isLast ? (onDismiss ?? onNext) : onNext} style={styles.next}>
+      <Pressable onPress={forwardAct(isLast, onNext, onDismiss)} style={styles.next}>
         <Text variant="body" style={styles.nextWords}>
-          {nextLabel ?? (isLast ? 'Got it' : 'Next')}
+          {nextLabel}
         </Text>
       </Pressable>
     </View>

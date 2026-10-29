@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { RefObject } from 'react';
 import { useRef } from 'react';
@@ -15,8 +16,8 @@ import { ExplainerActionControl, ExplainerArrow, ExplainerPager } from './Explai
 
 interface BubbleProps {
   bubbleRef: RefObject<View | null>;
-  label: string;
-  title?: string;
+  label: TranslatedText;
+  title?: TranslatedText;
   density: ExplainerDensity;
   placed: PlacedExplainer | null;
   cap: number | null;

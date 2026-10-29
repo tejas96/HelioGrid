@@ -1,11 +1,17 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, Text, View } from 'react-native';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote';
 import { AudioGlyph } from './AudioGlyph.native';
-import type { AudioPlayerProps, AudioUnavailableReason } from './AudioPlayer.types';
-import { AUDIO_REASONS, audioReasonFootnote } from './AudioPlayer.types';
+import { reasonPanelOf } from './AudioPlayer.logic';
+import type {
+  AudioPlayerProps,
+  AudioUnavailableProps,
+  AudioUnavailableReason,
+} from './AudioPlayer.types';
 import { TranscriptDoor } from './AudioTransport.native';
 
 const type = theme.type.roles;
@@ -70,11 +76,11 @@ const styles = StyleSheet.create({
  * includes the ROLE: web's half is `role="status"`, and the RN counterpart is `accessible` plus a
  * polite live region, never `progressbar`, which would promise a position this block has none of.
  */
-export function AudioLoading() {
+export function AudioLoading({ label }: { label: TranslatedText }) {
   return (
     <View
       accessible
-      accessibilityLabel="Loading the recording"
+      accessibilityLabel={label}
       accessibilityLiveRegion="polite"
       style={styles.skeleton}
     />
@@ -86,17 +92,22 @@ export function AudioError({
   errorMessage,
   onRetry,
   retryLabel,
+  focusAfter,
   onOpenTranscript,
   transcriptLabel,
-}: Required<Pick<AudioPlayerProps, 'errorMessage' | 'transcriptLabel'>> &
-  Pick<AudioPlayerProps, 'retryLabel' | 'onOpenTranscript'> & { onRetry?: () => void }) {
+}: Required<Pick<AudioPlayerProps, 'transcriptLabel'>> &
+  Pick<AudioPlayerProps, 'errorMessage' | 'retryLabel' | 'onOpenTranscript'> & {
+    onRetry?: () => void;
+    /** The player's frame, where focus lands once the retry has left. */
+    focusAfter: FocusAfter;
+  }) {
   return (
     <View style={[styles.panel, styles.panelError]}>
-      <Text style={styles.errorText}>{errorMessage}</Text>
+      {errorMessage !== undefined ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
       {/* A tinted panel holds its controls as a tile does — see `Ground.css`. */}
       <GroundProvider ground="tile">
         <View style={styles.actions}>
-          <RetryButton onRetry={onRetry} label={retryLabel} />
+          <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
           {onOpenTranscript !== undefined ? (
             <TranscriptDoor label={transcriptLabel} onPress={onOpenTranscript} />
           ) : null}
@@ -106,23 +117,16 @@ export function AudioError({
   );
 }
 
-export interface AudioUnavailableProps
-  extends Pick<AudioPlayerProps, 'consentAt' | 'purgedAt' | 'retentionBound' | 'onOpenTranscript'> {
-  reason?: AudioUnavailableReason;
-  transcriptLabel: string;
-}
-
 /**
  * Same state, two sentences that must never look alike. With NO named reason the player still
  * says so honestly — it just cannot say which sentence is true, so it does not pretend to.
  */
 export function AudioUnavailable({
   reason,
-  consentAt,
-  purgedAt,
-  retentionBound,
   onOpenTranscript,
   transcriptLabel,
+  words,
+  ...facts
 }: AudioUnavailableProps) {
   const door =
     onOpenTranscript !== undefined ? (
@@ -131,22 +135,21 @@ export function AudioUnavailable({
   if (reason === undefined) {
     return (
       <UnavailableNote
-        title="No recording on this call"
-        message="The call is on the record; the audio is not. The transcript and the rep's notes are still here."
+        title={words.noRecording.title}
+        message={words.noRecording.body}
         action={door}
       />
     );
   }
-  const copy = AUDIO_REASONS[reason];
+  const panel = reasonPanelOf(reason, words, facts);
   const tint = REASON_TINT[reason];
-  const note = audioReasonFootnote(reason, { purgedAt, retentionBound, consentAt });
   return (
     <View accessibilityLiveRegion="polite" style={[styles.panel, { backgroundColor: tint.bg }]}>
-      <AudioGlyph name={copy.glyph} size={20} color={tint.fg} />
+      <AudioGlyph name={panel.glyph} size={20} color={tint.fg} />
       <View style={styles.body}>
-        <Text style={styles.title}>{copy.title}</Text>
-        <Text style={styles.text}>{copy.body}</Text>
-        {note !== '' ? <Text style={styles.note}>{note}</Text> : null}
+        <Text style={styles.title}>{panel.title}</Text>
+        <Text style={styles.text}>{panel.body}</Text>
+        {panel.footnote !== '' ? <Text style={styles.note}>{panel.footnote}</Text> : null}
         {door !== null ? (
           <GroundProvider ground="tile">
             <View style={styles.door}>{door}</View>

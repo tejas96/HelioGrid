@@ -5,6 +5,8 @@ import type {
   LanguageContentState,
   LanguageSwitcherWords,
 } from '../LanguageSwitcher/LanguageSwitcher.types';
+import type { NumberFieldWords } from '../NumberField/NumberField.types';
+import type { ReorderListWords } from '../ReorderList/ReorderList.types';
 import type { RichTextValue, RichTextWords } from '../RichText/RichText.types';
 
 /**
@@ -90,6 +92,10 @@ export interface ProposalTemplateSettingsWords {
   logoAlt(company: string): TranslatedText;
   readonly richText: RichTextWords;
   readonly languageSwitcher: LanguageSwitcherWords;
+  /** The phases' list says these itself (`reorderListWords`). */
+  readonly reorderList: ReorderListWords;
+  /** A cover count's field says these itself (`numberFieldWords`). */
+  readonly numberField: NumberFieldWords;
 }
 
 /** A language in a part's strip (`LanguageSwitcher`, `labelHidden`): named in itself, written or not. */
@@ -231,11 +237,11 @@ export interface ProposalTemplateSettingsProps {
 /** The phase editor's body (m19-g, m19-l): the strip, *Phase name*, *What happens in this phase*. */
 export interface TemplatePhaseFieldsProps {
   readonly words: {
-    readonly language: string;
-    readonly languageNoun: string;
-    readonly partsNoun: string;
-    readonly phaseName: string;
-    readonly phaseWhat: string;
+    readonly language: TranslatedText;
+    readonly languageNoun: TranslatedText;
+    readonly partsNoun: TranslatedText;
+    readonly phaseName: TranslatedText;
+    readonly phaseWhat: TranslatedText;
     readonly languageSwitcher: LanguageSwitcherWords;
   };
   readonly strip: TemplateLanguageStrip;
@@ -277,7 +283,7 @@ export interface TemplatePhaseDeleteProps {
     deleteTitle(phase: string): TranslatedText;
     readonly deleteBody: TranslatedText;
     readonly deleteConfirm: TranslatedText;
-    readonly keep: string;
+    readonly keep: TranslatedText;
   };
   onDelete(): void;
   onKeep(): void;

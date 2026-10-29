@@ -2,13 +2,8 @@ import type { CSSProperties, ReactNode } from 'react';
 import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
-import type { FieldOverrideSpec } from './FieldOverride.types';
-
-/** The marker is a WORD, never a colour or a dot alone. Both words are the DS's own. */
-const MARK_WORD = {
-  overridden: 'Edited',
-  stale: 'Design moved on',
-} as const;
+import { resetName, resetWords, takeName } from './FieldOverride.names';
+import type { FieldOverrideSpec, FieldOverrideWords } from './FieldOverride.types';
 
 interface WebFieldOverrideProps extends FieldOverrideSpec {
   className?: string;
@@ -33,7 +28,8 @@ export function FieldOverride({
   fieldName,
   onReset,
   onTake,
-  autoLabel = 'was',
+  autoLabel,
+  words,
   size = 12,
   className,
   style,
@@ -48,8 +44,9 @@ export function FieldOverride({
       style={style}
     >
       <span className="hg-field-override-mark" data-state={state}>
+        {/* The marker is a WORD, never a colour or a dot alone. */}
         <span className="hg-field-override-dot" aria-hidden="true" />
-        {MARK_WORD[stale ? 'stale' : 'overridden']}
+        {stale ? words.designMovedOn : words.edited}
       </span>
 
       <Superseded
@@ -57,7 +54,8 @@ export function FieldOverride({
         autoValue={autoValue}
         autoSource={autoSource}
         newValue={newValue}
-        autoLabel={autoLabel}
+        autoLabel={autoLabel ?? words.was}
+        words={words}
       />
 
       <span className="hg-field-override-actions">
@@ -65,9 +63,9 @@ export function FieldOverride({
           <Pressable
             className="hg-field-override-button hg-field-override-button--strong"
             onPress={onTake}
-            accessibilityLabel={takeLabel(fieldName, newValue)}
+            accessibilityLabel={takeName(words, fieldName, newValue)}
           >
-            Take the new value
+            {words.take}
           </Pressable>
         ) : null}
         {onReset !== undefined ? (
@@ -78,9 +76,9 @@ export function FieldOverride({
           <Pressable
             className="hg-field-override-button"
             onPress={onReset}
-            accessibilityLabel={resetLabel(stale, fieldName, autoValue)}
+            accessibilityLabel={resetName(words, stale, fieldName, autoValue)}
           >
-            {stale ? 'Keep mine' : resetWords(autoValue)}
+            {resetWords(words, stale, autoValue)}
           </Pressable>
         ) : null}
       </span>
@@ -98,26 +96,28 @@ function Superseded({
   autoSource,
   newValue,
   autoLabel,
+  words,
 }: Pick<FieldOverrideSpec, 'autoValue' | 'autoSource' | 'newValue'> & {
   stale: boolean;
   autoLabel: string;
+  words: FieldOverrideWords;
 }) {
   const source =
     autoSource === undefined ? null : (
       <span className="hg-field-override-source">
-        {stale ? ' · from ' : ' · '}
-        {autoSource}
+        {' · '}
+        {stale ? words.from(autoSource) : autoSource}
       </span>
     );
 
   if (stale) {
     return (
       <span className="hg-field-override-values">
-        yours <strong className="hg-field-override-figure">{autoValue}</strong>
+        {words.yours} <strong className="hg-field-override-figure">{autoValue}</strong>
         {newValue === undefined || newValue === null ? null : (
           <>
-            {' · design now '}
-            <strong className="hg-field-override-figure">{newValue}</strong>
+            {' · '}
+            {words.designNow} <strong className="hg-field-override-figure">{newValue}</strong>
           </>
         )}
         {source}
@@ -132,30 +132,6 @@ function Superseded({
       {source}
     </span>
   );
-}
-
-function takeLabel(fieldName: string | undefined, newValue: ReactNode): string | undefined {
-  return fieldName === undefined
-    ? undefined
-    : `Take the new value for ${fieldName}: ${String(newValue ?? '')}`;
-}
-
-function resetWords(autoValue: ReactNode): string {
-  return autoValue === undefined || autoValue === null
-    ? 'Reset to auto'
-    : `Reset to ${String(autoValue)}`;
-}
-
-function resetLabel(
-  stale: boolean,
-  fieldName: string | undefined,
-  autoValue: ReactNode,
-): string | undefined {
-  if (fieldName === undefined) return undefined;
-  if (stale) return `Keep mine — ${fieldName} stays ${String(autoValue ?? '')}`;
-  return autoValue === undefined || autoValue === null
-    ? `Reset to auto — ${fieldName}`
-    : `Reset to ${String(autoValue)} — ${fieldName}`;
 }
 
 /** Renders a spec object, a ready node, or nothing — what every host prop runs through. */

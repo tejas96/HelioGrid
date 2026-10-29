@@ -10,7 +10,7 @@ export interface AccountMenuProps {
   /** The person's name — the avatar's initials. */
   name: string;
   /** The avatar button's accessible name: whose account, and what it opens. */
-  triggerName: string;
+  triggerName: TranslatedText;
   /** The list's accessible name. */
   menuLabel: TranslatedText;
   grievanceLabel: TranslatedText;

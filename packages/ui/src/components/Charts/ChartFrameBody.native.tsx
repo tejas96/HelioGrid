@@ -2,21 +2,24 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import { ChartSkeleton } from './ChartSkeleton.native';
+import type { ChartWords } from './Charts.types';
 import type { ChartNote, ChartNoteTone, ChartSurfaceState } from './chart-state';
-import { CHART_LOADING_LABEL, CHART_UNAVAILABLE_TITLE } from './chart-state';
 
 interface ChartFrameBodyProps {
   state: ChartSurfaceState;
   height: number;
   note: ChartNote | null;
+  words: ChartWords;
   onRetry?: () => void;
-  retryLabel?: string;
+  /** The frame, which stays while the retried read reloads. */
+  focusAfter: FocusAfter;
   children?: ReactNode;
 }
 
@@ -79,12 +82,13 @@ export function ChartFrameBody({
   state,
   height,
   note,
+  words,
   onRetry,
-  retryLabel,
+  focusAfter,
   children,
 }: ChartFrameBodyProps) {
   if (state === 'loading') {
-    return <ChartSkeleton height={height} label={CHART_LOADING_LABEL} />;
+    return <ChartSkeleton height={height} label={words.loading} />;
   }
 
   if (state === 'unavailable') {
@@ -95,7 +99,7 @@ export function ChartFrameBody({
       <View style={[styles.region, { height }]}>
         <UnavailableNote
           variant="region"
-          title={CHART_UNAVAILABLE_TITLE}
+          title={words.unavailableTitle}
           style={styles.unavailable}
         />
       </View>
@@ -118,7 +122,9 @@ export function ChartFrameBody({
             {note.message}
           </Text>
         )}
-        {state === 'error' ? <RetryButton onRetry={onRetry} label={retryLabel} /> : null}
+        {state === 'error' ? (
+          <RetryButton onRetry={onRetry} label={words.retry} focusAfter={focusAfter} />
+        ) : null}
       </View>
     );
   }

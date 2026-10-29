@@ -2,6 +2,12 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { CatalogImportAttentionReason, CatalogImportRowFailure } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { catalogImportWordsBase } from './catalog-import';
+import { dropzoneWords } from './dropzone';
+import { numberFieldWords } from './number-field';
+import { operationProgressWords } from './operation-progress';
+import { SEARCH_FIELD } from './search-field';
+import { SELECT } from './select';
+import { stepperWords } from './stepper';
 
 type T = Translator['t'];
 
@@ -173,7 +179,21 @@ export function catalogImportRowWords(t: T) {
   };
 }
 
+/** The steps' own words, by a name the wizard's words can carry out of this package. */
+export interface ImportStepperWords extends ReturnType<typeof stepperWords> {}
+
 /** Every word of the import wizard (`SCR-M01-17`), fixed and built from facts. */
 export function catalogImportWords(t: T) {
-  return { ...catalogImportWordsBase(t), ...catalogImportRowWords(t) };
+  const stepper: ImportStepperWords = stepperWords(t);
+  return {
+    ...catalogImportWordsBase(t),
+    ...catalogImportRowWords(t),
+    selectPlaceholder: t(SELECT.placeholder),
+    closeList: t(SELECT.closeList),
+    clearSearch: t(SEARCH_FIELD.clear),
+    stepper,
+    dropzone: dropzoneWords(t),
+    numberField: numberFieldWords(t),
+    progress: operationProgressWords(t),
+  };
 }

@@ -9,18 +9,12 @@
    and `VersionDiff.resolve` — shared by both halves — does the naming, keying and grouping. */
 
 import { theme } from '@heliogrid/theme';
-import { useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import {
-  diffSummary,
-  groupDiffRows,
-  resolveDiffEntries,
-  resolveDiffRow,
-  resolveDiffSides,
-} from './VersionDiff.resolve';
+import { useDiffView } from './use-diff-view';
+import { resolveDiffRow, resolveDiffSides } from './VersionDiff.resolve';
 import type { VersionDiffProps } from './VersionDiff.types';
 import { VersionDiffGroup } from './VersionDiffGroup.native';
 import { VersionDiffHeader } from './VersionDiffHeader.native';
@@ -53,21 +47,17 @@ export function VersionDiff({
   after = {},
   rows = [],
   changeNote,
-  changeNoteLabel = 'What changed and why',
+  words,
+  changeNoteLabel = words.whatChanged,
   showUnchanged: showUnchangedProp,
-  removedLabel = 'Not in this version',
+  removedLabel = words.notInThisVersion,
   addedLabel,
   mode = 'versions',
-  emptyMessage = 'Nothing changed between these two versions.',
+  emptyMessage = words.nothingChanged,
   style,
 }: NativeVersionDiffProps) {
-  const sides = resolveDiffSides(before, after, mode);
-  const resolved = resolveDiffEntries(rows);
-  const [openUnchanged, setOpenUnchanged] = useState(Boolean(showUnchangedProp));
-  const show = showUnchangedProp === undefined ? openUnchanged : showUnchangedProp;
-  const moved = resolved.filter((r) => r.state !== 'unchanged');
-  const unchanged = resolved.filter((r) => r.state === 'unchanged');
-  const groups = groupDiffRows(show ? resolved : moved);
+  const sides = resolveDiffSides(before, after, mode, words);
+  const view = useDiffView(rows, showUnchangedProp, words);
 
   return (
     /* THE PAIR IS ALREADY SPOKEN, SO IT IS NOT SAID TWICE. The web half's `<section aria-label>`
@@ -76,11 +66,7 @@ export function VersionDiff({
        nothing at all; announcing it would repeat the header, and `accessible` would fold every
        field row and the unchanged toggle into one element. So the dead label goes. */
     <View style={[styles.root, style]}>
-      <VersionDiffHeader
-        caption={caption}
-        sides={sides}
-        summary={diffSummary(resolved.map((r) => r.state))}
-      />
+      <VersionDiffHeader caption={caption} sides={sides} summary={view.summary} />
 
       {/* The change note is M06-42's own requirement — a version without one is not a version. */}
       {changeNote ? (
@@ -92,12 +78,12 @@ export function VersionDiff({
         </View>
       ) : null}
 
-      {moved.length === 0 && !show ? (
+      {view.nothingShown ? (
         <Text variant="body-sm" color="secondary">
           {emptyMessage}
         </Text>
       ) : (
-        groups.map((g) => (
+        view.groups.map((g) => (
           <VersionDiffGroup
             key={g.name || g.rows[0]?.id}
             group={g}
@@ -105,6 +91,7 @@ export function VersionDiff({
             afterStamp={sides.afterStamp}
             removedLabel={removedLabel}
             addedLabel={addedLabel}
+            words={words}
           />
         ))
       )}
@@ -112,17 +99,15 @@ export function VersionDiff({
       {/* Unchanged is a state, so it is counted and reachable — never silently dropped. The
           expanded state goes through the primitive, which is also where the 44px floor and the
           pressed treatment come from. */}
-      {unchanged.length > 0 && showUnchangedProp === undefined ? (
+      {view.collapsible ? (
         <View style={styles.toggleRow}>
           <Pressable
-            accessibilityState={{ expanded: show }}
-            onPress={() => setOpenUnchanged((o) => !o)}
+            accessibilityState={{ expanded: view.showUnchanged }}
+            onPress={view.toggleUnchanged}
             style={styles.toggle}
           >
             <Text variant="body-sm" style={styles.toggleWord}>
-              {`${show ? 'Hide' : 'Show'} ${unchanged.length} unchanged field${
-                unchanged.length === 1 ? '' : 's'
-              }`}
+              {words.unchangedToggle(view.showUnchanged, view.unchangedCount)}
             </Text>
           </Pressable>
         </View>

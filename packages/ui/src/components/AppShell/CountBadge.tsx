@@ -1,8 +1,8 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Text } from '../../primitives/Text';
-import { clampCount } from '../../utils/count';
 import type { CountBadgeProps } from './AppShell.types';
+import { badgeDigits, isBadgeDrawn } from './CountBadge.logic';
 
 interface WebCountBadgeProps extends CountBadgeProps {
   className?: string;
@@ -28,20 +28,15 @@ interface WebCountBadgeProps extends CountBadgeProps {
 export function CountBadge({
   count,
   max = 99,
-  label = 'items',
+  label,
   tone = 'danger',
   className,
   style,
 }: WebCountBadgeProps) {
-  const n = typeof count === 'number' ? count : null;
-  if (n !== null && n <= 0) {
+  if (!isBadgeDrawn(count)) {
     return null;
   }
-  if (n === null && count !== true) {
-    return null;
-  }
-  const shown = n === null ? null : clampCount(n, max);
-  const words = n === null ? `Unread ${label}` : `${n} unread ${label}`;
+  const shown = badgeDigits(count, max);
   return (
     <span
       className={classNames('hg-app-shell-badge', className)}
@@ -58,9 +53,11 @@ export function CountBadge({
           on this side. Written through the DS `Text` primitive rather than a bare `<span>` so the
           name SOURCE is declared rather than inferred: a clipped node the parity gate cannot see
           is a name nobody can audit. */}
-      <Text as="span" spokenOnly>
-        {words}
-      </Text>
+      {label === undefined ? null : (
+        <Text as="span" spokenOnly>
+          {label}
+        </Text>
+      )}
     </span>
   );
 }

@@ -202,6 +202,7 @@ export function CatalogRateEditAsRead({ reader }: { reader: UiLanguage }) {
         onName={(language, value) => setName((now) => ({ ...now, [language]: value }))}
         basis="per_job"
         basisLabel={words.basis}
+        select={words.select}
         bases={catalogVersionWords(t).bases}
         onBasis={() => undefined}
         remove={words.remove === null ? null : { label: words.remove, onRemove: () => undefined }}

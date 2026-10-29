@@ -1,7 +1,9 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { AudioGlyph } from './AudioGlyph';
-import type { AudioPlayerProps } from './AudioPlayer.types';
+import { clampPosition, playToggleOf } from './AudioPlayer.logic';
+import type { AudioPlayerProps, AudioPlayerWords } from './AudioPlayer.types';
 import { audioFootnote } from './AudioPlayer.types';
 import {
   RoundButton,
@@ -19,8 +21,9 @@ export interface AudioPlayerReadyProps
   > {
   duration: number;
   speeds: number[];
-  transcriptLabel: string;
+  transcriptLabel: TranslatedText;
   header: ReactNode;
+  words: AudioPlayerWords;
 }
 
 /** The playable state: the transport, the position, the rate, and the two honest footnotes. */
@@ -34,6 +37,7 @@ export function AudioPlayerReady({
   speeds,
   transcriptLabel,
   header,
+  words,
 }: AudioPlayerReadyProps) {
   const element = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -47,7 +51,7 @@ export function AudioPlayerReady({
   }, [rate]);
 
   const seek = (seconds: number) => {
-    const next = Math.min(total, Math.max(0, seconds));
+    const next = clampPosition(seconds, total);
     setAt(next);
     if (element.current !== null) element.current.currentTime = next;
   };
@@ -65,7 +69,8 @@ export function AudioPlayerReady({
     audio.pause();
   };
 
-  const footnote = audioFootnote(consentAt, retentionUntil, retentionBound);
+  const footnote = audioFootnote(words, consentAt, retentionUntil, retentionBound);
+  const play = playToggleOf(playing, words);
   return (
     <>
       {header}
@@ -87,21 +92,17 @@ export function AudioPlayerReady({
       ) : null}
       {/* Transport centres on the play button at every width — nothing reflows. */}
       <div className="hg-audio-transport">
-        <SkipButton back onSeek={(delta) => seek(at + delta)} />
-        <RoundButton
-          kind="primary"
-          label={playing ? 'Pause recording' : 'Play recording'}
-          onPress={toggle}
-        >
-          <AudioGlyph name={playing ? 'pause' : 'play'} size={22} />
+        <SkipButton back onSeek={(delta) => seek(at + delta)} words={words} />
+        <RoundButton kind="primary" label={play.label} onPress={toggle}>
+          <AudioGlyph name={play.glyph} size={22} />
         </RoundButton>
-        <SkipButton back={false} onSeek={(delta) => seek(at + delta)} />
+        <SkipButton back={false} onSeek={(delta) => seek(at + delta)} words={words} />
       </div>
       <div className="hg-audio-line">
         <TimeLabel seconds={at} />
-        <Scrubber at={at} total={total} onSeek={seek} />
+        <Scrubber at={at} total={total} onSeek={seek} words={words} />
         <TimeLabel seconds={total} dim />
-        <SpeedButton rate={rate} speeds={speeds} onChange={setRate} />
+        <SpeedButton rate={rate} speeds={speeds} onChange={setRate} words={words} />
       </div>
       {footnote !== '' || onOpenTranscript !== undefined ? (
         <div className="hg-audio-foot">

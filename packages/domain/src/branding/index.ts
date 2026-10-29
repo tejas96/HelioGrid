@@ -22,6 +22,8 @@ export {
   letterheadLinesOf,
   letterheadLinesRefusal,
 } from './branding-draft';
+export type { BrandingPart, BrandingPreview } from './branding-page';
+export { BRANDING_PARTS } from './branding-page';
 export type { CompliantShades } from './compliant-shades';
 export { compliantShades } from './compliant-shades';
 export { contrastRatio, MARK_CONTRAST_FLOOR, TEXT_CONTRAST_FLOOR } from './contrast';

@@ -7,6 +7,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
  */
 import type { DoorNotice, PhoneDigitsMismatch, PhoneGoogle } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
+import { phoneFieldWords } from './phone-field';
 import { SHELL } from './shell';
 import { SIGN_IN } from './sign-in';
 import { type DoorBlockWords, type PhoneGoogleWords, phoneGoogleWords } from './sign-in-google';
@@ -23,6 +24,8 @@ export interface NumberStepWords {
   /** Above the number, in reading order: a Google sign-in that did not finish, then the door's notice. */
   readonly blocks: readonly DoorBlockWords[];
   readonly phoneLabel: TranslatedText;
+  /** The number box's spoken name. */
+  readonly phoneField: ReturnType<typeof phoneFieldWords>;
   readonly phoneError: TranslatedText | undefined;
   readonly primary: TranslatedText;
   readonly google: Omit<PhoneGoogleWords, 'failed'> | null;
@@ -41,6 +44,7 @@ export function numberStepWords(
   return {
     blocks,
     phoneLabel: translate(SIGN_IN.mobileNumber),
+    phoneField: phoneFieldWords(translate),
     phoneError:
       problem === null
         ? undefined

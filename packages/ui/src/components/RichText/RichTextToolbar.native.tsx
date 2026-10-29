@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
@@ -37,8 +38,9 @@ const styles = StyleSheet.create({
 
 interface ToolButtonProps {
   active?: boolean;
-  label: string;
+  label: TranslatedText;
   glyph?: ShellGlyphName;
+  /** The words drawn beside the glyph — a toolbar word, or a saved template's name. */
   word?: string;
   onPress: () => void;
 }
@@ -89,7 +91,7 @@ interface RichTextToolbarProps {
   hasLogo: boolean;
   linking: boolean;
   templates?: RichTextTemplate[];
-  saveTemplateLabel: string | undefined;
+  saveTemplateLabel: TranslatedText | undefined;
   onRun: (c: ToolCommand) => void;
   onToggleLink: () => void;
   onToggleLogo: () => void;

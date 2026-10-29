@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
 export function MemberList({
   read,
   words,
+  focusAfter,
   onClearSearch,
   onShowAll,
   records,
@@ -47,7 +48,11 @@ export function MemberList({
         kind="state"
         density="functional"
         title={words.loadFailed}
-        action={<BannerAction onClick={read.retry}>{words.tryAgain}</BannerAction>}
+        action={
+          <BannerAction onClick={read.retry} focusAfter={focusAfter}>
+            {words.tryAgain}
+          </BannerAction>
+        }
       />
     );
   }

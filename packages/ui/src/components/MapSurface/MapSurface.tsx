@@ -1,19 +1,12 @@
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { MapContent } from './MapContent';
 import { MapStateLayer } from './MapStates';
 import type { MapPlaceEvent, MapSurfaceProps } from './MapSurface.types';
-import {
-  imageryWords,
-  isBlockedState,
-  normalisePlacement,
-  resolvePinState,
-  toPercent,
-} from './map-placement';
+import { toPercent } from './map-placement';
 import { useCoarsePointer } from './use-coarse-pointer';
-import { useMapZoom } from './use-map-zoom';
+import { useMapView } from './use-map-view';
 
 interface WebMapSurfaceProps extends MapSurfaceProps {
   className?: string;
@@ -25,63 +18,14 @@ interface WebMapSurfaceProps extends MapSurfaceProps {
  * Owns the frame, overlays, 44px controls, the placement interaction and the states; the tiles
  * come from your map library, passed as `children`.
  */
-export function MapSurface({
-  children,
-  height = 320,
-  radius,
-  markers = [],
-  route = null,
-  geofences = [],
-  accuracy = null,
-  read,
-  emptyTitle = 'No sites to show',
-  emptyMessage = 'Assign a job to a technician and their route appears here.',
-  unavailableTitle = 'No map imagery for this area',
-  unavailableMessage = 'This location has no tiles from our provider. The address and the recorded coordinates are still exact.',
-  errorTitle = "Couldn't load the map",
-  errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  retryLabel,
-  controls = true,
-  onZoomIn,
-  onZoomOut,
-  onRecenter,
-  pin = null,
-  placement = null,
-  onPlace,
-  onPinMove,
-  zoom,
-  minZoom = 1,
-  maxZoom = 22,
-  onZoomChange,
-  firstPinZoom = 20,
-  showZoomLevel = true,
-  imagery = null,
-  overlay = null,
-  attribution,
-  className,
-  style,
-}: WebMapSurfaceProps) {
-  const state = surfaceStateOf(read);
-  const onRetry = retryOf(read);
+export function MapSurface(props: WebMapSurfaceProps) {
+  const { className, style } = props;
   const rootRef = useRef<HTMLDivElement>(null);
   const coarse = useCoarsePointer();
-  const place = normalisePlacement(placement, {
+  const { map, state, onRetry, blocked, place, pinState, stepZoom, attributionWords } = useMapView(
+    props,
     coarse,
-    canPlace: onPlace !== undefined,
-    canDragPin: onPinMove !== undefined,
-  });
-  const blocked = isBlockedState(state);
-  const pinState = resolvePinState(pin);
-  const stepZoom = useMapZoom({
-    zoom,
-    minZoom,
-    maxZoom,
-    firstPinZoom,
-    hasPin: pin !== null,
-    onZoomChange,
-    onZoomIn,
-    onZoomOut,
-  });
+  );
 
   const pctFromEvent = (event: { clientX: number; clientY: number }) => {
     const el = rootRef.current;
@@ -105,52 +49,58 @@ export function MapSurface({
     }
   };
 
-  const attributionWords = imagery === null ? null : imageryWords(imagery);
-
   return (
+    /* The root stays while a retried read reloads, so focus lands on it once *Try again* leaves. */
     <div
       ref={rootRef}
-      className={classNames('hg-map-surface', className)}
-      style={{ height, ...(radius === undefined ? {} : { borderRadius: radius }), ...style }}
+      tabIndex={-1}
+      className={classNames('hg-map-surface', 'hg-focus-target', className)}
+      style={{
+        height: map.height,
+        ...(map.radius === undefined ? {} : { borderRadius: map.radius }),
+        ...style,
+      }}
     >
       {blocked ? null : (
         <MapContent
-          markers={markers}
-          route={route}
-          geofences={geofences}
-          accuracy={accuracy}
+          markers={map.markers}
+          route={map.route}
+          geofences={map.geofences}
+          accuracy={map.accuracy}
           place={place}
-          pin={pin}
+          pin={map.pin}
           pinState={pinState}
-          onTap={onPlace === undefined ? undefined : (e) => emit(e, 'tap', onPlace)}
-          onKeyboardPlace={() => onPlace?.({ x: 50, y: 50, source: 'tap' })}
-          onPinDrag={(e: ReactPointerEvent<HTMLElement>) => emit(e, 'pin-drag', onPinMove)}
-          canDragPin={onPinMove !== undefined}
-          controls={controls}
-          zoom={zoom}
-          minZoom={minZoom}
-          maxZoom={maxZoom}
-          showZoomLevel={showZoomLevel}
+          onTap={map.onPlace === undefined ? undefined : (e) => emit(e, 'tap', map.onPlace)}
+          onKeyboardPlace={() => map.onPlace?.({ x: 50, y: 50, source: 'tap' })}
+          onPinDrag={(e: ReactPointerEvent<HTMLElement>) => emit(e, 'pin-drag', map.onPinMove)}
+          canDragPin={map.onPinMove !== undefined}
+          controls={map.controls}
+          zoom={map.zoom}
+          minZoom={map.minZoom}
+          maxZoom={map.maxZoom}
+          showZoomLevel={map.showZoomLevel}
           onStepZoom={stepZoom}
-          onRecenter={onRecenter}
+          onRecenter={map.onRecenter}
           attributionWords={attributionWords}
-          attribution={attribution}
-          overlay={overlay}
+          attribution={map.attribution}
+          overlay={map.overlay}
+          words={map.words}
         >
-          {children}
+          {map.children}
         </MapContent>
       )}
 
       <MapStateLayer
         state={state}
-        emptyTitle={emptyTitle}
-        emptyMessage={emptyMessage}
-        unavailableTitle={unavailableTitle}
-        unavailableMessage={unavailableMessage}
-        errorTitle={errorTitle}
-        errorMessage={errorMessage}
+        emptyTitle={map.emptyTitle}
+        emptyMessage={map.emptyMessage}
+        unavailableTitle={map.unavailableTitle}
+        unavailableMessage={map.unavailableMessage}
+        errorTitle={map.errorTitle}
+        errorMessage={map.errorMessage}
+        words={map.words}
         onRetry={onRetry}
-        retryLabel={retryLabel}
+        focusAfter={rootRef}
       />
     </div>
   );

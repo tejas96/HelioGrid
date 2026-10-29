@@ -12,6 +12,7 @@ import {
 import type { Translator } from '../runtime';
 import { shownAsSent } from './assembled';
 import { type ExplainerWords, explainerPagerWords } from './explainer';
+import { phoneFieldWords } from './phone-field';
 import { presetAbility } from './role-presets';
 import { presetName, SHELL } from './shell';
 import { SIGN_IN } from './sign-in';
@@ -100,6 +101,8 @@ export interface InviteWords {
   readonly namePlaceholder: TranslatedText;
   readonly phone: TranslatedText;
   readonly phoneHelper: TranslatedText;
+  /** The number box's spoken name. */
+  readonly phoneField: ReturnType<typeof phoneFieldWords>;
   readonly rolesHeading: TranslatedText;
   readonly rolesGroup: TranslatedText;
   readonly rolesAsk: ExplainerWords & ReturnType<typeof explainerPagerWords>;
@@ -140,6 +143,7 @@ export function inviteWords(translate: Translator['t']): InviteWords {
     namePlaceholder: translate(INVITE.namePlaceholder),
     phone: translate(INVITE.phone),
     phoneHelper: translate(INVITE.phoneHelper),
+    phoneField: phoneFieldWords(translate),
     rolesHeading: translate(INVITE.rolesHeading),
     rolesGroup: translate(INVITE.rolesGroup),
     rolesAsk: {

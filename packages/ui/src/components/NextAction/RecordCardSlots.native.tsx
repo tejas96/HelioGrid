@@ -7,7 +7,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderMarks } from '../ChipGroup/ChipGroup.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
-import { recordInitials } from './NextAction.initials';
+import { faceInitials } from './NextAction.initials';
 import type { RecordCardProps } from './NextAction.types';
 
 /** The card's face: the caller's `avatar`, or the initials circle in the card's tone. */
@@ -33,7 +33,7 @@ export function RecordFace({
       {/* RN has no color-mix: the 10% tint is the tone itself, at a tenth of its opacity. */}
       <View style={[styles.avatarTint, { backgroundColor: tone }]} />
       <Text variant="caption" style={[styles.avatarWords, { color: tone }]}>
-        {initials || recordInitials(name)}
+        {faceInitials(initials, name)}
       </Text>
     </View>
   );
@@ -69,7 +69,7 @@ export function RecordSlots({
             <Fragment key={`meta-${i}`}>
               {i > 0 ? (
                 <Text variant="mono" style={styles.metaSep}>
-                  ·
+                  {'·'}
                 </Text>
               ) : null}
               <Text variant="mono" color="secondary" style={styles.metaWords}>

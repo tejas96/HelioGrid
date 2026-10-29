@@ -63,22 +63,24 @@ test.describe('a kind tile and a quiet line on the primary cell (D268)', () => {
 test('Pagination pages on its own', async ({ mount }) => {
   const previous = en.t(CATALOG_SETTINGS.previousPage);
   const next = en.t(CATALOG_SETTINGS.nextPage);
+  const span = (from: number, to: number) =>
+    en.t(CATALOG_SETTINGS.pageRange, { from, to, count: 45 });
   const frame = await mount(<PagedList previousLabel={previous} nextLabel={next} />);
   const back = frame.getByRole('button', { name: previous });
   const forward = frame.getByRole('button', { name: next });
 
-  await expect(frame.getByText('1–20 / 45')).toBeVisible();
+  await expect(frame.getByText(span(1, 20))).toBeVisible();
   await expect(back).toBeDisabled();
   expect((await settledBox(forward))?.height).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
   expect((await settledBox(forward))?.width).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
 
   await forward.click();
   await expect(frame).toHaveAttribute('data-page', '1');
-  await expect(frame.getByText('21–40 / 45')).toBeVisible();
+  await expect(frame.getByText(span(21, 40))).toBeVisible();
   await expect(back).toBeEnabled();
 
   await forward.click();
-  await expect(frame.getByText('41–45 / 45')).toBeVisible();
+  await expect(frame.getByText(span(41, 45))).toBeVisible();
   await expect(forward).toBeDisabled();
 
   await back.click();

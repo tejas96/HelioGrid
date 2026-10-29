@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { resolveSteps, stepLabel } from './resolve-steps';
+import { progressCounter, stepperPosition } from './Stepper.logic';
 import type { StepperProps } from './Stepper.types';
 import { StepperBars } from './StepperBars.native';
 import { StepperIndicator } from './StepperIndicator.native';
@@ -20,6 +21,7 @@ interface NativeStepperProps extends StepperProps {
  * in any order unless the flow opts into `reachability="entered"`.
  */
 export function Stepper({
+  words,
   steps = [],
   current = 0,
   variant = 'progress',
@@ -30,13 +32,9 @@ export function Stepper({
   reachability = 'free',
   style,
 }: NativeStepperProps) {
-  const total = steps.length;
-  const index = Math.max(0, Math.min(total - 1, current));
+  const { total, index, percent, stepName } = stepperPosition(steps, current);
   /* The track and the dots are the control fill, the opposite of what holds them (`F7-15`). */
   const { controlFill } = useGround();
-  const percent = total > 1 ? ((index + 1) / total) * 100 : 100;
-  const at = steps[index];
-  const stepName = at === undefined ? '' : stepLabel(at);
 
   if (isBarsVariant(variant)) {
     return (
@@ -56,7 +54,11 @@ export function Stepper({
         {/* The web half is `<nav aria-label>` wrapping `<ol>`. RN has no landmark role, so the name
             rides the node that IS the list — a role, never `accessible`, since each row is its own
             Pressable and folding the rail would make every step unreachable. */}
-        <View accessibilityRole="list" accessibilityLabel={label ?? 'Steps'} style={styles.list}>
+        <View
+          accessibilityRole="list"
+          accessibilityLabel={label ?? words.steps}
+          style={styles.list}
+        >
           {resolved.map((step, position) => (
             <StepperRow
               key={step.label}
@@ -66,6 +68,7 @@ export function Stepper({
               onStepClick={onStepClick}
               step={step}
               total={total}
+              words={words}
             />
           ))}
         </View>
@@ -81,6 +84,7 @@ export function Stepper({
         onStepClick={onStepClick}
         resolved={resolveSteps(steps, current, reachability)}
         style={style}
+        words={words}
       />
     );
   }
@@ -90,7 +94,7 @@ export function Stepper({
       <View style={style}>
         <View style={styles.head}>
           <Text variant="overline" color="tertiary">
-            {`${label === undefined ? '' : `${label} · `}Step ${index + 1} of ${total}`}
+            {progressCounter(words, index, total, label)}
           </Text>
           <Text variant="caption" color="secondary">
             {stepName}
@@ -99,7 +103,7 @@ export function Stepper({
         <View
           style={[styles.track, { backgroundColor: controlFill }]}
           accessibilityRole="progressbar"
-          accessibilityLabel={label ?? 'Progress'}
+          accessibilityLabel={label ?? words.progress}
           accessibilityValue={{ min: 1, max: total, now: index + 1 }}
         >
           <View style={[styles.fill, { width: `${percent}%` }]} />
@@ -116,7 +120,7 @@ export function Stepper({
       // carries. Nothing inside is focusable, but this is still a role, not `accessible`.
       <View
         accessibilityRole="progressbar"
-        accessibilityLabel={label ?? 'Progress'}
+        accessibilityLabel={label ?? words.progress}
         accessibilityValue={{ min: 1, max: total, now: index + 1 }}
         style={[styles.dots, style]}
       >
@@ -146,6 +150,7 @@ export function Stepper({
       onStepClick={onStepClick}
       resolved={resolveSteps(steps, current, reachability)}
       style={style}
+      words={words}
     />
   );
 }

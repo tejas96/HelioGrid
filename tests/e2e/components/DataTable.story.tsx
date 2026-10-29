@@ -1,5 +1,35 @@
-import { Button, DataTable, Pagination } from '@heliogrid/ui';
+import type { TranslatedText } from '@heliogrid/contracts';
+import { createTranslator, DATA_TABLE, dataTableWords } from '@heliogrid/i18n';
+import { Button, DataTable, type DataTableProps, Pagination } from '@heliogrid/ui';
 import { useState } from 'react';
+
+const en = await createTranslator('en');
+/* The table's own words: `selected`, `selectNamed`, `pageRange` and the rest are functions it calls
+   while it renders, so they are bound here, in the browser, with the blocked states' titles. */
+const words = dataTableWords(en.t);
+const blocked = {
+  emptyTitle: en.t(DATA_TABLE.emptyTitle),
+  errorTitle: en.t(DATA_TABLE.errorTitle),
+  unavailableTitle: en.t(DATA_TABLE.unavailableTitle),
+};
+
+/** A table with its own words and its blocked states' titles bound here. */
+export function WordedDataTable(
+  props: Pick<
+    DataTableProps,
+    | 'columns'
+    | 'rows'
+    | 'read'
+    | 'stackBelow'
+    | 'onCellCommit'
+    | 'selectable'
+    | 'totalRow'
+    | 'caption'
+    | 'head'
+  >,
+) {
+  return <DataTable {...blocked} {...props} words={words} />;
+}
 
 /**
  * A stacked table whose one record is broken. `rowIssue` is read while the table renders, and a
@@ -12,14 +42,16 @@ export function FlaggedStackedTable({
   issue,
   withEditor = false,
 }: {
-  label: string;
+  label: TranslatedText;
   value: string;
-  issue: string;
+  issue: TranslatedText;
   /** The record holds an editor and a select box — a card that lies on the page. */
   withEditor?: boolean;
 }) {
   return (
     <DataTable
+      {...blocked}
+      words={words}
       read={{ kind: 'ready' }}
       columns={[{ key: 'name', label, primary: true, editable: withEditor }]}
       rows={[{ id: 1, name: value }]}
@@ -40,8 +72,8 @@ export function OpeningTable({
   act,
   stacked = false,
 }: {
-  label: string;
-  act: string;
+  label: TranslatedText;
+  act: TranslatedText;
   stacked?: boolean;
 }) {
   const [opened, setOpened] = useState('');
@@ -49,6 +81,8 @@ export function OpeningTable({
   return (
     <div data-opened={opened} data-acted={acted}>
       <DataTable
+        {...blocked}
+        words={words}
         read={{ kind: 'ready' }}
         columns={[{ key: 'name', label, primary: true }]}
         rows={[
@@ -79,13 +113,15 @@ export function KindTable({
   sub,
   stacked = false,
 }: {
-  label: string;
+  label: TranslatedText;
   value: string;
   sub: string;
   stacked?: boolean;
 }) {
   return (
     <DataTable
+      {...blocked}
+      words={words}
       read={{ kind: 'ready' }}
       columns={[
         {
@@ -104,14 +140,14 @@ export function KindTable({
 
 /**
  * `Pagination` on its own, over 45 records in pages of 20; the frame reports the page it is on as
- * `data-page`. The readout is read while the pager renders, so it is bound here — figures only.
+ * `data-page`. The readout is read while the pager renders, so it is bound here.
  */
 export function PagedList({
   previousLabel,
   nextLabel,
 }: {
-  previousLabel: string;
-  nextLabel: string;
+  previousLabel: TranslatedText;
+  nextLabel: TranslatedText;
 }) {
   const [page, setPage] = useState(0);
   return (
@@ -123,7 +159,7 @@ export function PagedList({
         onPageChange={setPage}
         previousLabel={previousLabel}
         nextLabel={nextLabel}
-        readout={({ from, to, count }) => `${from}–${to} / ${count}`}
+        readout={words.pageRange}
       />
     </div>
   );

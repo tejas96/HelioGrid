@@ -2,14 +2,15 @@
    type step the surface resolved.
 
    AN UNRESOLVED LINE IS NOT A ZERO. It says so in the amount's own footprint, and the summary
-   withholds the payable on the strength of it. A deduction carries its sign here rather than in the
-   arithmetic: `amount` is a magnitude and `kind` is what it does to the total. */
+   withholds the payable on the strength of it. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextVariant } from '../../primitives/Text/Text.types';
 import { useFormat } from '../MarketProvider/market-context';
+import { signedLineAmount } from './MoneySummary.logic';
 import type { MoneyLine } from './MoneySummary.types';
 
 const styles = StyleSheet.create({
@@ -27,11 +28,14 @@ const styles = StyleSheet.create({
 
 export function MoneySummaryRow({
   line,
+  unresolved,
   variant,
   smallVariant,
   density,
 }: {
   line: MoneyLine;
+  /** What an unresolved amount says in its own footprint — *not resolved yet*. */
+  unresolved: TranslatedText;
   /** The surface's own type step — `screen` or `document`, resolved once by the summary. */
   variant: TextVariant;
   smallVariant: TextVariant;
@@ -51,11 +55,11 @@ export function MoneySummaryRow({
       {line.amount === null ? (
         /* An unresolved line is not a zero. It says so, in its own footprint. */
         <Text variant={smallVariant} color="secondary">
-          not resolved yet
+          {unresolved}
         </Text>
       ) : (
         <Text variant="mono" style={line.strong ? styles.amountStrong : undefined}>
-          {`${line.kind === 'deduct' ? '− ' : ''}${mkt.amount(line.amount)}`}
+          {signedLineAmount(line.kind, line.amount, mkt)}
         </Text>
       )}
     </View>

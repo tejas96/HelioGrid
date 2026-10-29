@@ -1,4 +1,8 @@
-import type { ProvenanceStanding as ContractStanding, ProvenanceTier } from '@heliogrid/contracts';
+import type {
+  ProvenanceStanding as ContractStanding,
+  ProvenanceTier,
+  TranslatedText,
+} from '@heliogrid/contracts';
 import type { EnergySource, Freshness, FreshnessWarning } from '@heliogrid/domain';
 
 /**
@@ -56,11 +60,11 @@ export type ProvenanceStanding = ContractStanding;
  * mounts them once with `ProvenanceWordsProvider`; this package holds no word of its own (`F3-12`).
  */
 export interface ProvenanceWords {
-  tier: (tier: ProvenanceTier) => string;
-  standing: (standing: ProvenanceStanding) => string;
-  energySource: (source: EnergySource) => string;
+  tier: (tier: ProvenanceTier) => TranslatedText;
+  standing: (standing: ProvenanceStanding) => TranslatedText;
+  energySource: (source: EnergySource) => TranslatedText;
   /** Never handed `current`, which prints nothing. */
-  freshness: (warning: FreshnessWarning) => string;
+  freshness: (warning: FreshnessWarning) => TranslatedText;
 }
 
 export type ProvenanceAlign = 'left' | 'right' | 'center';
@@ -86,11 +90,14 @@ export interface ProvenanceProps {
    * printed `"Real · PVGIS (SARAH3)"` or `"Built-in estimate ±10%"` in the reader's language.
    */
   energySource?: EnergySource | null;
-  /** Any word a caller needs beside the tier (`F8-03`) — the catalog's *verified datasheet*. */
+  /**
+   * Any word a caller needs beside the tier (`F8-03`) — the catalog's *verified datasheet*, or a
+   * fact such as a usage meter's billing period — so it stays a string.
+   */
   source?: string;
   /** The assumptions a multi-year figure rides on (`F8-23` / `F5-37`). */
-  projection?: string;
-  note?: string;
+  projection?: TranslatedText;
+  note?: TranslatedText;
   /** 12 (default) or 13. Never below 12 — the type floor. */
   size?: number;
   align?: ProvenanceAlign;

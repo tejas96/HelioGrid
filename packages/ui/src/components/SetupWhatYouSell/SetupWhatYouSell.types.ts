@@ -1,6 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { TenantSegment } from '@heliogrid/domain';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
+import type { NumberFieldWords } from '../NumberField/NumberField.types';
 
 /** One kind of business as its card says it. */
 export interface SetupWhatYouSellOption {
@@ -29,6 +30,8 @@ export interface SetupWhatYouSellWords {
   /** Where the size comes from — beside its tier. */
   sizeSource: TranslatedText;
   sizeError: TranslatedText | null;
+  /** The size field says these itself (`numberFieldWords`). */
+  numberField: NumberFieldWords;
   primary: TranslatedText;
   /** Why the primary cannot be pressed yet. */
   waiting: TranslatedText | null;

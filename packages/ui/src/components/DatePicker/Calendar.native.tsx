@@ -1,29 +1,17 @@
 import { theme } from '@heliogrid/theme';
-import { useEffect, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { CalendarCell, CalendarNav, GRID_WIDTH, styles } from './CalendarChrome.native';
-import { iso, monthCells, monthStart, parse } from './calendar-grid';
-import { inRange, isDisabledDate, isSelected, nextValue } from './calendar-selection';
+import { iso, monthGridOf, SKELETON_CELLS } from './calendar-grid';
+import { dayPicker, dayStateOf } from './calendar-selection';
 import type { CalendarProps } from './DatePicker.types';
+import { useCalendarMonth } from './use-calendar-month';
 
 interface NativeCalendarProps extends CalendarProps {
   style?: StyleProp<ViewStyle>;
 }
-
-function initialView(value: CalendarProps['value']): Date {
-  if (Array.isArray(value)) {
-    return monthStart(parse(value[0]) ?? new Date());
-  }
-  if (value !== undefined && typeof value === 'object') {
-    return monthStart(parse(value.from) ?? new Date());
-  }
-  return monthStart(parse(typeof value === 'string' ? value : null) ?? new Date());
-}
-
-const SKELETON_CELLS = 35;
 
 const local = StyleSheet.create({
   frame: {
@@ -51,6 +39,7 @@ const local = StyleSheet.create({
  * a field device is the thing reduced-motion asks us to drop first.
  */
 export function Calendar({
+  words,
   value,
   onChange,
   mode = 'single',
@@ -69,43 +58,12 @@ export function Calendar({
   style,
 }: NativeCalendarProps) {
   const mkt = useFormat();
-  const [innerMonth, setInnerMonth] = useState(() => initialView(value));
-  const controlled = parse(month);
-  const view = controlled === null ? innerMonth : monthStart(controlled);
+  const { view, pinned, stepMonth } = useCalendarMonth({ value, month, onMonthChange });
+  const rules = { mode, value, min, max, disabledDates, lockedDates };
 
-  /* A `month` with no `onMonthChange` is a PINNED view, and a pinned view draws no arrows. */
-  const pinned = month !== undefined && onMonthChange === undefined;
-  useEffect(() => {
-    if (pinned) {
-      console.warn(
-        'Calendar: `month` was passed without `onMonthChange`, so the view is pinned and the month arrows are not drawn. Hold the month in state and pass both, or pass neither.',
-      );
-    }
-  }, [pinned]);
+  const { cells, narrowDays, longDays, todayIso } = monthGridOf(view, mkt);
 
-  const setView = (d: Date) => {
-    if (onMonthChange === undefined) {
-      setInnerMonth(d);
-      return;
-    }
-    onMonthChange(iso(d));
-  };
-
-  const cells = monthCells(view, mkt.firstDayOfWeek);
-  const narrowDays = mkt.weekdayNames('narrow');
-  const longDays = mkt.weekdayNames('long');
-  const todayIso = iso(new Date());
-
-  const pick = (d: Date) => {
-    if (isDisabledDate(d, min, max, disabledDates)) {
-      return;
-    }
-    if (mode === 'set' && lockedDates.includes(iso(d))) {
-      onBlocked?.(iso(d));
-      return;
-    }
-    onChange?.(nextValue(mode, value, d));
-  };
+  const pick = dayPicker(rules, onChange, onBlocked);
 
   return (
     <View
@@ -113,11 +71,7 @@ export function Calendar({
     >
       <View style={styles.head}>
         {pinned ? null : (
-          <CalendarNav
-            dir={-1}
-            label="Previous month"
-            onPress={() => setView(new Date(view.getFullYear(), view.getMonth() - 1, 1))}
-          />
+          <CalendarNav dir={-1} label={words.previousMonth} onPress={() => stepMonth(-1)} />
         )}
         {/* The month is re-read when the arrows move it — the web half's `aria-live="polite"` on
             this same heading. A pinned view has no arrows, so it has nothing to announce. */}
@@ -130,11 +84,7 @@ export function Calendar({
           </Text>
         </View>
         {pinned ? null : (
-          <CalendarNav
-            dir={1}
-            label="Next month"
-            onPress={() => setView(new Date(view.getFullYear(), view.getMonth() + 1, 1))}
-          />
+          <CalendarNav dir={1} label={words.nextMonth} onPress={() => stepMonth(1)} />
         )}
       </View>
 
@@ -144,7 +94,7 @@ export function Calendar({
            — no CalendarCell is rendered in this branch — so nothing focusable goes out of reach. */
         <View
           accessible
-          accessibilityLabel="Loading"
+          accessibilityLabel={words.loading}
           accessibilityLiveRegion="polite"
           style={styles.grid}
         >
@@ -156,7 +106,7 @@ export function Calendar({
       ) : state === 'empty' ? (
         <View style={styles.empty}>
           <Text variant="body-sm" color="secondary" align="center">
-            {emptyMessage ?? 'No records for this month.'}
+            {emptyMessage ?? words.noRecords}
           </Text>
         </View>
       ) : (
@@ -190,14 +140,11 @@ export function Calendar({
                 <CalendarCell
                   key={iso(d)}
                   date={d}
-                  selected={isSelected(mode, value, d)}
-                  between={inRange(mode, value, d)}
-                  disabled={isDisabledDate(d, min, max, disabledDates)}
-                  locked={mode === 'set' && lockedDates.includes(iso(d))}
-                  today={iso(d) === todayIso}
+                  {...dayStateOf(rules, d, todayIso)}
                   marker={markers[iso(d)]}
                   spokenDate={mkt.date(d)}
                   onPick={pick}
+                  words={words}
                 />
               ),
             )}

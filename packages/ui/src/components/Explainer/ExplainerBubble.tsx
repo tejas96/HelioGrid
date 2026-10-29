@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { KeyboardEvent, RefObject } from 'react';
 import { useRef } from 'react';
 import { type ExplainerPagerModel, swipeMove } from './Explainer.logic';
@@ -8,8 +9,8 @@ import type { PlacedBubble } from './use-explainer-place';
 interface BubbleProps {
   bubbleRef: RefObject<HTMLDivElement | null>;
   titleId: string;
-  label: string;
-  title?: string;
+  label: TranslatedText;
+  title?: TranslatedText;
   placed: PlacedBubble | null;
   content: ExplainerPage | undefined;
   pager: ExplainerPagerModel | null;

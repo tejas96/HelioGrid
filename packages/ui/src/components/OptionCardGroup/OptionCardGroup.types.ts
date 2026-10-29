@@ -1,9 +1,10 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
-import type { ActionReasonSpec } from '../ActionReason/ActionReason.types';
+import type { ActionReasonInput } from '../ActionReason/ActionReason.types';
 
 export interface OptionCardItem {
   value: string;
-  title: string;
+  title: TranslatedText;
   /**
    * BCP-47 tag for this option's own text, when it differs from the page's. A screen reader
    * running in English speaks मराठी under English pronunciation rules, which fails the accessible
@@ -12,11 +13,11 @@ export interface OptionCardItem {
    * everywhere else.
    */
   lang?: string;
-  description?: string;
+  description?: TranslatedText;
   /** Right-aligned mono figure — a price or a rating. */
   price?: string;
   /** Uppercase micro-label under the description. */
-  meta?: string;
+  meta?: TranslatedText;
   /**
    * More than a sentence — a feature list, a note, a small table (`M12`'s pricing page). **Static by
    * contract:** the card *is* the radio, so a focusable child would be a button inside a button.
@@ -30,7 +31,7 @@ export interface OptionCardItem {
    */
   current?: boolean;
   /** Per-option override of the group's `currentLabel`. */
-  currentLabel?: string;
+  currentLabel?: TranslatedText;
   icon?: ReactNode;
   disabled?: boolean;
   /**
@@ -41,7 +42,7 @@ export interface OptionCardItem {
    * change what a description means on every other option in the group. An option with a stated reason
    * stays in the arrow-key walk and is `aria-disabled` rather than natively disabled.
    */
-  disabledReason?: ReactNode | ActionReasonSpec;
+  disabledReason?: ActionReasonInput;
 }
 
 /**
@@ -76,18 +77,21 @@ interface OptionCardGroupShared {
    * danger sentence around nothing for every sighted reader — the same reasoning
    * `SegmentedControl.label` was added on.
    */
-  label?: string;
+  label?: TranslatedText;
   /**
    * The group's spoken name when its visible name sits outside it — a heading above, as
    * `InviteForm`'s *What can they do?* — so no second visible line is drawn. `label` wins.
    */
-  ariaLabel?: string;
+  ariaLabel?: TranslatedText;
   /** Default 1. */
   columns?: number;
   density?: 'expressive' | 'functional';
   disabled?: boolean;
-  /** The word for `option.current`. Default "Current plan". */
-  currentLabel?: string;
+  /**
+   * The word for `option.current` ("Current plan"). Give it whenever an option is `current` and
+   * carries no `currentLabel` of its own: a current option with no word draws no pill.
+   */
+  currentLabel?: TranslatedText;
   /**
    * **The caller's validation failure, and it belongs to the group** — nothing is wrong with option
    * two; the *choice* is missing. So the ring goes round the whole radiogroup (on a wrapper carrying

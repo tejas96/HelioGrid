@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * What one bar stands for while a list's record loads: `row` a closed section's header, `panel` a
  * section that will open with its fields, `control` a switch or one control row (40px —
@@ -24,7 +25,7 @@ export type LoadingBarsProps = LoadingBarsBase &
   (
     | {
         /** Required words — what is loading. */
-        label: string;
+        label: TranslatedText;
         inBusyRegion?: never;
       }
     | { inBusyRegion: true; label?: never }

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { ShellGlyphName } from './ShellGlyph.shapes';
 
@@ -19,24 +20,26 @@ export interface CountBadgeProps {
   /** Above this it reads "99+". Default 99. */
   max?: number;
   /**
-   * The NOUN only — "notifications", "alerts" — used to build **this badge's own** screen-reader
-   * text, "3 unread notifications". On every call site in this system that text is never
-   * announced: `RailButton`, `NavItem` and `ShellAction` each put `aria-label="Notifications, 7
-   * unread"` on the host button, and an `aria-label` wins over element contents. `label` therefore
-   * matters only for a `CountBadge` mounted **outside** a labelled host. Never write the count
-   * into it: the number comes from `count`, and both spellings say it once.
+   * **This badge's own** spoken sentence, its count included — "3 unread notifications" — in the
+   * reader's language. Inside a labelled host it is omitted: `RailButton`, `NavItem` and
+   * `ShellAction` each carry the whole name ("Notifications, 7 unread") on the host button, and
+   * that name wins over element contents. It matters only for a `CountBadge` mounted **outside**
+   * a labelled host.
    */
-  label?: string;
+  label?: TranslatedText;
   tone?: CountBadgeTone;
 }
 
 export interface ShellActionProps {
-  label: string;
+  label: TranslatedText;
   icon?: ReactNode;
   /** A count (or `true`) rides the corner as a `CountBadge`. */
   badge?: number | boolean;
-  /** The whole name, its count included, in the reader's language. Absent, label and count join. */
-  name?: string;
+  /**
+   * The whole name, its count included — "Notifications, 7 unread" — in the reader's language.
+   * Absent, the button is named by `label` alone, so a badged button passes it.
+   */
+  name?: TranslatedText;
   onClick?: () => void;
   active?: boolean;
   /**
@@ -46,9 +49,25 @@ export interface ShellActionProps {
   round?: boolean;
 }
 
-export interface AppHeaderProps {
-  title?: string;
-  subtitle?: string;
+/** A header with no bell. */
+interface AppHeaderQuiet {
+  onNotificationsClick?: undefined;
+  notificationsLabel?: undefined;
+  notificationsName?: undefined;
+}
+
+/** A header with the bell, named in the reader's language. */
+interface AppHeaderWithBell {
+  onNotificationsClick: () => void;
+  /** The bell's name — "Notifications". */
+  notificationsLabel: TranslatedText;
+  /** The bell's whole name with its count — "Notifications, 3 unread". */
+  notificationsName?: TranslatedText;
+}
+
+interface AppHeaderOwnProps {
+  title?: TranslatedText;
+  subtitle?: TranslatedText;
   /**
    * The **product** mark. **Omit it when an `AppRail` is showing the mark** — the rail and the
    * header are one shell, and drawing the tile in both puts the logo on screen twice. Use it when
@@ -74,11 +93,12 @@ export interface AppHeaderProps {
   jobs?: ReactNode;
   /** Unread count for the bell. Read from the record. */
   notifications?: number | boolean;
-  onNotificationsClick?: () => void;
   avatar?: ReactNode;
   breadcrumb?: ReactNode;
   sticky?: boolean;
 }
+
+export type AppHeaderProps = AppHeaderOwnProps & (AppHeaderQuiet | AppHeaderWithBell);
 
 export interface MobileTopBarProps {
   /**
@@ -87,11 +107,11 @@ export interface MobileTopBarProps {
    */
   company?: string;
   /** The Search button's name, in the reader's language — the bar holds no English of its own. */
-  searchLabel: string;
-  /** The bell's name, in the reader's language; the unread count is added to it. */
-  notificationsLabel: string;
-  /** The bell's whole name with its count — "Notifications, 3 unread" — when the caller words it. */
-  notificationsName?: string;
+  searchLabel: TranslatedText;
+  /** The bell's name, in the reader's language. */
+  notificationsLabel: TranslatedText;
+  /** The bell's whole name with its count — "Notifications, 3 unread" — for a bell with a count. */
+  notificationsName?: TranslatedText;
   /** The product mark. Defaults to the 32 `LogoTile`. */
   brand?: ReactNode;
   /** Opens the global search door — the phone's half of `F6-20`. */
@@ -110,7 +130,7 @@ export interface MobileTopBarProps {
    * the product tile and the company — the bar shows its way back and its title. It wraps rather
    * than cuts, so a longer language keeps every word.
    */
-  title?: string;
+  title?: TranslatedText;
   /** Extra round `ShellAction`s. */
   actions?: ReactNode;
   /**
@@ -157,16 +177,4 @@ export interface AppShellProps {
 /** `badge != null && badge !== false` — the render test, which lets 0 through to CountBadge. */
 export function showsBadge(badge: number | boolean | undefined): boolean {
   return badge !== undefined && badge !== false;
-}
-
-/**
- * The accessible name belongs to the HOST, not the badge: "Notifications, 7 unread". Never write
- * the count into the label — one declaration so the rail, the nav item and the shell button all
- * say it the same way.
- */
-export function badgeName(label: string, badge: number | boolean | undefined): string {
-  if (!showsBadge(badge)) {
-    return label;
-  }
-  return typeof badge === 'number' ? `${label}, ${badge} unread` : `${label}, unread`;
 }
