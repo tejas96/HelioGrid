@@ -45,7 +45,7 @@ export function SpecFields(props: SpecFieldsProps & WideProps) {
 }
 
 function OptionalValues(props: SpecFieldsProps & WideProps) {
-  const { words, draft, onChange } = props;
+  const { words, draft, disabled, onChange } = props;
   const ask = words.optionalAsk;
   const explainer =
     ask === null ? null : (
@@ -63,6 +63,7 @@ function OptionalValues(props: SpecFieldsProps & WideProps) {
         <Button
           variant="secondary"
           size="sm"
+          disabled={disabled}
           icon={<ShellGlyph name="plus" size="sm" tone="primary" />}
           onClick={() => onChange({ type: 'unfold' })}
         >

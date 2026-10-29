@@ -4,8 +4,10 @@ import { Text } from '../../primitives/Text/Text.native';
 import { AllocationMeter } from '../AllocationMeter/AllocationMeter.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Banner } from '../Banner/Banner.native';
+import { BannerAction } from '../Banner/BannerAction.native';
 import { Button } from '../Button/Button.native';
 import { Card } from '../Card/Card.native';
+import { useRetryFocus } from '../CatalogItems/use-retry-focus.native';
 import { Badge } from '../Chip/Chip.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
@@ -36,14 +38,20 @@ export function PaymentTermsList(props: PaymentTermsListProps) {
 
 function ListBody(props: PaymentTermsListProps) {
   const { words } = props;
+  const focus = useRetryFocus(props.read.kind);
   if (props.read.kind === 'loading') {
     return <LoadingBars label={words.loading} bars={['panel', 'panel', 'panel']} />;
   }
   if (props.read.kind === 'failed') {
     return (
-      <Banner kind="validation" density="functional" title={words.unreadTitle}>
-        {words.unreadBody}
-      </Banner>
+      <Banner
+        kind="validation"
+        density="functional"
+        title={words.unreadTitle}
+        action={
+          <BannerAction onClick={focus.retrying(props.read.retry)}>{words.tryAgain}</BannerAction>
+        }
+      />
     );
   }
   return (
@@ -55,7 +63,7 @@ function ListBody(props: PaymentTermsListProps) {
       ) : null}
       <View style={styles.terms}>
         <View style={styles.termsHead}>
-          <View style={styles.grow}>
+          <View ref={focus.target} style={styles.grow} accessible accessibilityRole="header">
             <Text variant="body-sm" bold>
               {props.archived ? words.archivedTitle : words.yourTerms}
             </Text>

@@ -24,7 +24,7 @@ export interface PaymentTermsSettingsWords {
   readonly nothingArchived: string;
   readonly loading: string;
   readonly unreadTitle: string;
-  readonly unreadBody: string;
+  readonly tryAgain: string;
   readonly seededTitle: string;
   readonly seededBody: string;
   readonly termsName: string;

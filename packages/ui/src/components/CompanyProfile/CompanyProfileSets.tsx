@@ -16,6 +16,7 @@ type SetProps = Pick<
   | 'onEdit'
   | 'onChooseSegment'
   | 'onDeclareSize'
+  | 'saving'
   | 'logoPicture'
   | 'onChooseLogo'
 > & {
@@ -36,6 +37,7 @@ export function ProfileSet({
   onChooseSegment,
   onDeclareSize,
   density,
+  saving,
   logoPicture = null,
   onChooseLogo,
 }: SetProps) {
@@ -47,6 +49,7 @@ export function ProfileSet({
         onChooseSegment={onChooseSegment}
         onDeclareSize={onDeclareSize}
         density={density}
+        saving={saving}
       />
     );
   }
@@ -59,13 +62,19 @@ export function ProfileSet({
       placeholder={spec.example}
       mono={spec.mono}
       error={spec.error ?? undefined}
+      disabled={saving}
       onChange={(value) => onEdit(spec.field, value)}
     />
   );
   return (
     <div className="hg-company-profile-set" data-disclosed={set.disclosure !== null}>
       {part === 'identity' && words.logo !== null ? (
-        <LogoCapture logo={words.logo} picture={logoPicture} onChoose={onChooseLogo} />
+        <LogoCapture
+          logo={words.logo}
+          picture={logoPicture}
+          disabled={saving}
+          onChoose={onChooseLogo}
+        />
       ) : null}
       {/* One wrapper whether or not the field has a line: a field whose line gives way to its
           error keeps its place in the tree, and so its focus, while a person types. */}
@@ -100,16 +109,19 @@ export function ProfileSet({
 function LogoCapture({
   logo,
   picture,
+  disabled,
   onChoose,
 }: {
   logo: NonNullable<SetProps['words']['logo']>;
   picture: string | null;
+  disabled: boolean;
   onChoose: SetProps['onChooseLogo'];
 }) {
   const finger = useCoarsePointer();
   return (
     <Dropzone
       {...logoCapture(logo, picture, !finger)}
+      disabled={disabled}
       onFiles={([chosen]) => {
         if (chosen !== undefined) onChoose?.(chosen);
       }}
@@ -124,7 +136,8 @@ function WhatYouSellSet({
   onChooseSegment,
   onDeclareSize,
   density,
-}: Pick<SetProps, 'values' | 'onChooseSegment' | 'onDeclareSize' | 'density'> & {
+  saving,
+}: Pick<SetProps, 'values' | 'onChooseSegment' | 'onDeclareSize' | 'density' | 'saving'> & {
   words: SetProps['words']['declarations'];
 }) {
   return (
@@ -134,12 +147,13 @@ function WhatYouSellSet({
         density={density}
         options={[...words.options]}
         value={values.segment ?? undefined}
+        disabled={saving}
         onChange={(value) => {
           const chosen = words.options.find((option) => option.value === value);
           if (chosen !== undefined) onChooseSegment(chosen.value);
         }}
       />
-      <NumberField {...sizeField(words, values)} onCommit={onDeclareSize} />
+      <NumberField {...sizeField(words, values)} disabled={saving} onCommit={onDeclareSize} />
     </div>
   );
 }

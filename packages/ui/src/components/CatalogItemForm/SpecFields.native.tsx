@@ -53,7 +53,7 @@ function SpecGridRow({ row, props }: { row: SpecRow; props: SpecFieldsProps }) {
 }
 
 function OptionalValues(props: SpecFieldsProps) {
-  const { words, draft, onChange } = props;
+  const { words, draft, disabled, onChange } = props;
   const ask = words.optionalAsk;
   const explainer =
     ask === null ? null : (
@@ -71,6 +71,7 @@ function OptionalValues(props: SpecFieldsProps) {
         <Button
           variant="secondary"
           size="sm"
+          disabled={disabled}
           icon={<ShellGlyph name="plus" size="sm" tone="primary" />}
           onClick={() => onChange({ type: 'unfold' })}
         >

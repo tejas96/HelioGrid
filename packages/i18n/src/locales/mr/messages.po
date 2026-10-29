@@ -4475,11 +4475,6 @@ msgid "Open the usage screen and the subscription invoice list"
 msgstr "वापर स्क्रीन आणि सबस्क्रिप्शन बिलांची यादी उघडा"
 
 #. js-lingui-explicit-id
-#: src/copy/payment-terms.ts:34
-msgid "Open this page again to retry."
-msgstr "पुन्हा प्रयत्न करण्यासाठी हे पान पुन्हा उघडा."
-
-#. js-lingui-explicit-id
 #: src/copy/catalog-import-fields.ts:18
 msgid "Open-circuit voltage (V)"
 msgstr "ओपन-सर्किट व्होल्टेज (V)"
@@ -6961,6 +6956,7 @@ msgstr "हप्त्यांची वाटणी"
 #: src/copy/catalog-editor.ts:76
 #: src/copy/catalog-import.ts:48
 #: src/copy/catalog-settings.ts:90
+#: src/copy/payment-terms.ts:34
 #: src/copy/price-book.ts:78
 #: src/copy/proposal-template.ts:78
 #: src/copy/role-card.ts:38

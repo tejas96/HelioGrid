@@ -192,10 +192,24 @@ for (const width of WIDTHS) {
       await expect(body.getByText(en.nothingArchived)).toBeVisible();
     });
 
-    test('the list’s read failed', async ({ mount }) => {
-      const body = await mount(<PaymentTermsAsHeld reader="en" wide={wide} list="unread" />);
+    test('the list’s read failed, and Try again asks for it again', async ({ mount }) => {
+      let retried = 0;
+      const body = await mount(
+        <PaymentTermsAsHeld
+          reader="en"
+          wide={wide}
+          list="unread"
+          onRetry={() => {
+            retried += 1;
+          }}
+        />,
+      );
       await expect(body.getByText(en.unreadTitle)).toBeVisible();
-      await expect(body.getByRole('button')).toHaveCount(0);
+      await body.getByRole('button', { name: en.tryAgain }).click();
+      expect(retried).toBe(1);
+      await body.update(<PaymentTermsAsHeld reader="en" wide={wide} />);
+      await expect(body.getByRole('heading', { name: en.yourTerms })).toBeVisible();
+      await expect(body.locator('[tabindex="-1"]').filter({ hasText: en.yourTerms })).toBeFocused();
     });
 
     test('Hindi and Marathi at 375 and 1536', async ({ mount, page }) => {

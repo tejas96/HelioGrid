@@ -31,7 +31,7 @@ const TERMS = {
   nothingArchived: /*i18n*/ { id: 'Nothing archived.' },
   loading: /*i18n*/ { id: 'Loading your payment terms' },
   unreadTitle: /*i18n*/ { id: "We couldn't load your payment terms." },
-  unreadBody: /*i18n*/ { id: 'Open this page again to retry.' },
+  tryAgain: /*i18n*/ { id: 'Try again' },
   seededTitle: /*i18n*/ { id: "You're starting with the two standard terms." },
   seededBody: /*i18n*/ { id: 'Both work as they are, so your team can send proposals today.' },
   neverChanged: /*i18n*/ { id: 'Added when your account was created · not changed since' },

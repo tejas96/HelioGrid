@@ -27,6 +27,8 @@ export interface ItemCardProps {
 export interface SheetAcceleratorProps {
   title: string;
   sub: string;
+  /** The create is out: the tile is inert until it answers. */
+  disabled: boolean;
   onPress: () => void;
 }
 
@@ -38,6 +40,8 @@ export interface SchemeSwitchRowProps {
   error?: string;
   /** `Input`'s `focusRequest` for the reference field. */
   focusRequest?: number;
+  /** The create is out: the switch and its reference are inert until it answers. */
+  disabled: boolean;
   onChange: (event: ItemDraftEvent) => void;
 }
 
@@ -46,6 +50,8 @@ export interface SpecFieldsProps {
   words: CatalogItemFormWords;
   failures: CatalogItemFormProps['failures'];
   focus: FieldFocus;
+  /** The create is out: every field and *Add optional values* are inert until it answers. */
+  disabled: boolean;
   onChange: (event: ItemDraftEvent) => void;
 }
 

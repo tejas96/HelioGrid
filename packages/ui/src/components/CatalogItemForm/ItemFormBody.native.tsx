@@ -44,6 +44,7 @@ export function ItemFormBody({ props }: BodyProps) {
         <SheetAccelerator
           title={words.spreadsheet}
           sub={words.spreadsheetSub}
+          disabled={props.saving}
           onPress={head.spreadsheet}
         />
       )}
@@ -103,6 +104,7 @@ function SpecificationCard({ props }: BodyProps) {
           words={words}
           failures={props.failures}
           focus={fieldFocusOf(props)}
+          disabled={props.saving}
           onChange={props.onChange}
         />
       )}

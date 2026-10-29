@@ -57,6 +57,8 @@ export interface TermsFrame {
   saveFailed?: boolean;
   /** The preview's answer has not come. */
   previewLoading?: boolean;
+  /** What *Try again* on the failed list asks. */
+  onRetry?: () => void;
 }
 
 /**
@@ -111,10 +113,10 @@ export function PaymentTermsAsHeld(frame: TermsFrame) {
   );
 }
 
-/** The list's read as the frame names it; *Try again* is not drawn on this banner. */
-function readOf(list: TermsFrame['list']): Read<null> {
+/** The list's read as the frame names it. */
+function readOf(list: TermsFrame['list'], retry: () => void): Read<null> {
   if (list === 'loading') return { kind: 'loading' };
-  if (list === 'unread') return { kind: 'failed', failure: 'refused', retry: () => undefined };
+  if (list === 'unread') return { kind: 'failed', failure: 'refused', retry };
   return { kind: 'ready', value: null };
 }
 
@@ -124,7 +126,7 @@ function listOf(frame: TermsFrame) {
   const templates = seeded ? IN_USE.slice(0, 2) : [...IN_USE, ...ARCHIVED];
   const cards = trancheCardsOf(templates);
   const archived = frame.list === 'archived' || frame.list === 'none-archived';
-  const read = readOf(frame.list);
+  const read = readOf(frame.list, frame.onRetry ?? noop);
   return {
     templates,
     seeded,

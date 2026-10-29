@@ -11,9 +11,9 @@ import type { SheetAcceleratorProps } from './CatalogItemForm.parts.types';
  * *Add many at once from a spreadsheet* (`SCR-M01-16`, the 375 frames): the add sheet's one
  * accelerator, a raised tile on its own full-width row that hands the person to the import sheet.
  */
-export function SheetAccelerator({ title, sub, onPress }: SheetAcceleratorProps) {
+export function SheetAccelerator({ title, sub, disabled, onPress }: SheetAcceleratorProps) {
   return (
-    <Pressable onPress={onPress} style={styles.tile}>
+    <Pressable disabled={disabled} onPress={onPress} style={styles.tile}>
       <IrisTile glyph="spreadsheet" iris="blue" size={40} stroke={1.6} />
       <View style={styles.words}>
         <Text variant="body-sm" bold>

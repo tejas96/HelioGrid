@@ -112,6 +112,7 @@ function ProfileList({
   onEdit,
   onChooseSegment,
   onDeclareSize,
+  saving,
   logoPicture,
   onRequestLogo,
 }: CompanyProfileProps) {
@@ -130,6 +131,7 @@ function ProfileList({
           onChooseSegment={onChooseSegment}
           onDeclareSize={onDeclareSize}
           density={PARTS_DENSITY[life]}
+          saving={saving}
           logoPicture={logoPicture}
           onRequestLogo={onRequestLogo}
         />

@@ -2,8 +2,10 @@ import { Text } from '../../primitives/Text/Text';
 import { AllocationMeter } from '../AllocationMeter/AllocationMeter';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Banner } from '../Banner/Banner';
+import { BannerAction } from '../Banner/BannerAction';
 import { Button } from '../Button/Button';
 import { Card } from '../Card/Card';
+import { useRetryFocus } from '../CatalogItems/use-retry-focus';
 import { Badge } from '../Chip/Chip';
 import { IconButton } from '../IconButton/IconButton';
 import { LoadingBars } from '../LoadingBars/LoadingBars';
@@ -50,14 +52,20 @@ export function PaymentTermsList(props: PaymentTermsListProps) {
 
 function ListBody(props: PaymentTermsListProps) {
   const { words } = props;
+  const focus = useRetryFocus(props.read.kind);
   if (props.read.kind === 'loading') {
     return <LoadingBars label={words.loading} bars={['panel', 'panel', 'panel']} />;
   }
   if (props.read.kind === 'failed') {
     return (
-      <Banner kind="validation" density="functional" title={words.unreadTitle}>
-        {words.unreadBody}
-      </Banner>
+      <Banner
+        kind="validation"
+        density="functional"
+        title={words.unreadTitle}
+        action={
+          <BannerAction onClick={focus.retrying(props.read.retry)}>{words.tryAgain}</BannerAction>
+        }
+      />
     );
   }
   return (
@@ -72,9 +80,11 @@ function ListBody(props: PaymentTermsListProps) {
         aria-label={props.archived ? words.archivedTitle : words.yourTerms}
       >
         <div className="hg-pay-terms-head">
-          <Text as="h2" variant="body-sm" bold className="hg-pay-pretty">
-            {props.archived ? words.archivedTitle : words.yourTerms}
-          </Text>
+          <div ref={focus.target} tabIndex={-1}>
+            <Text as="h2" variant="body-sm" bold className="hg-pay-pretty">
+              {props.archived ? words.archivedTitle : words.yourTerms}
+            </Text>
+          </div>
           <div className="hg-pay-terms-acts">
             <Button
               variant={props.archived ? 'secondary' : 'ghost'}
