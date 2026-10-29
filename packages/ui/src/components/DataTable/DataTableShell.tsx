@@ -1,4 +1,5 @@
 import { UnavailableNote } from '../UnavailableNote';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { DataTableProps } from './DataTable.types';
 import { TableMessage, TableSkeleton } from './DataTableChrome';
 import { QuietSkeleton } from './DataTableQuiet';
@@ -45,17 +46,18 @@ export function TableStates<Row>({
   quiet: boolean;
 }) {
   const {
-    state = 'ready',
+    read,
     emptyTitle = 'Nothing here yet',
     emptyDescription,
     emptyAction,
     errorTitle = "Couldn't load these records",
     errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-    onRetry,
     retryLabel,
     unavailableTitle = 'Not available here',
     unavailableMessage,
   } = table;
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
 
   return (
     <>

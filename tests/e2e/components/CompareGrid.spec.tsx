@@ -12,7 +12,9 @@ const options = [
 ];
 
 test('a comparison is a heading on the page — no fill, no shadow', async ({ mount }) => {
-  const grid = await mount(<CompareGrid attributes={attributes} options={options} />);
+  const grid = await mount(
+    <CompareGrid read={{ kind: 'ready' }} attributes={attributes} options={options} />,
+  );
 
   await expect(grid).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   await expect(grid).toHaveCSS('box-shadow', 'none');
@@ -22,7 +24,7 @@ test('a comparison is a heading on the page — no fill, no shadow', async ({ mo
 test('a pinned cell paints the ground that holds it', async ({ mount, page }) => {
   const card = await mount(
     <Card>
-      <CompareGrid attributes={attributes} options={options} />
+      <CompareGrid read={{ kind: 'ready' }} attributes={attributes} options={options} />
     </Card>,
   );
   const pinned = card.getByRole('rowheader', { name: label });

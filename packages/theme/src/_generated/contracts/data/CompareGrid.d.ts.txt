@@ -1,6 +1,6 @@
 import React from "react";
 import { ProvenanceProps, ProvenanceTierSpec } from "./Provenance";
-import { SurfaceState } from "../feedback/UnavailableNote";
+import { SurfaceRead } from "../feedback/UnavailableNote";
 
 export interface CompareAttribute<Opt = any> {
   key: string;
@@ -82,12 +82,15 @@ export interface CompareGridProps<Opt = CompareOption> {
   columnWidth?: number;
   /** Pinned attribute-column width. Default 128 — see `columnWidth` for what that leaves at 375px. */
   labelWidth?: number;
-  state?: SurfaceState;
+  /**
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
+   */
+  read: SurfaceRead;
   emptyTitle?: string;
   emptyMessage?: string;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   unavailableTitle?: string;
   unavailableMessage?: string;
   density?: "expressive" | "functional";

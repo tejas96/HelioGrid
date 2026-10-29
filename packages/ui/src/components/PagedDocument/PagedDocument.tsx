@@ -13,6 +13,7 @@
 import { type CSSProperties, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { usePageSize } from '../../utils/page-size';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import {
   Annotations,
   DocLoading,
@@ -49,16 +50,17 @@ function PagedDocumentRoot<Row>({
   numbering,
   label = 'Proposal',
   onCut,
-  state = 'ready',
+  read,
   errorTitle = "Couldn't build this document",
   errorMessage = 'Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   unavailableTitle = 'No document for this proposal',
   unavailableMessage,
   className,
   style,
 }: WebPagedDocumentProps<Row>) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const g = useMemo(
     () => pageGeometry({ paper, orientation, margin }),
     [paper, orientation, margin],

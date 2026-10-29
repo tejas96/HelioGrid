@@ -4,6 +4,7 @@ import { classNames } from '../../primitives/class-names';
 import { OverlayBody } from '../Sheet/OverlayBody';
 import { SheetBackdrop } from '../Sheet/SheetBackdrop';
 import { useOverlayDismiss } from '../Sheet/use-overlay-dismiss';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { DetailPanelProps } from './DetailPanel.types';
 import { PanelHeader } from './PanelHeader';
 import { PanelSkeleton } from './PanelSkeleton';
@@ -52,10 +53,9 @@ export function DetailPanel({
   showClose = true,
   dismissible = true,
   modal = true,
-  state = 'ready',
+  read,
   errorTitle = "Couldn't load this record",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   emptyTitle = 'Nothing here yet',
   emptyMessage,
@@ -68,6 +68,8 @@ export function DetailPanel({
   className,
   style,
 }: WebDetailPanelProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const panelRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
   const titleId = useId();

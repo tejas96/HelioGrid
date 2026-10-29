@@ -34,6 +34,7 @@ export function CatalogAttribution(props: CatalogAttributionProps) {
     <div ref={retry.target} tabIndex={-1} className="hg-cat-attrib-retry">
       <section ref={focus.target} tabIndex={-1} className="hg-cat-attrib">
         <DataTable<CatalogAttributionRow>
+          read={read}
           columns={attributionColumns(words)}
           rows={[...rows]}
           rowKey="id"

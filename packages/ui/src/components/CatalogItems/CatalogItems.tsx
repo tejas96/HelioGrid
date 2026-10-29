@@ -163,6 +163,7 @@ function CatalogList(props: CatalogItemsProps & { wide: boolean }) {
     <CatalogRowActs row={row} stacked={form.stacked} acts={props} />
   );
   const table = {
+    read: props.read,
     rows: [...props.rows],
     rowKey: 'id',
     columns: wide ? wideColumns(facts) : narrowColumns(facts),

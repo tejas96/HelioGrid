@@ -1,5 +1,5 @@
 import React from "react";
-import { SurfaceState } from "../feedback/UnavailableNote";
+import { SurfaceRead, SurfaceState } from "../feedback/UnavailableNote";
 
 export interface DetailPanelProps {
   open?: boolean;
@@ -26,10 +26,13 @@ export interface DetailPanelProps {
    * device frame, not in the document.
    */
   modal?: boolean;
-  state?: SurfaceState;
+  /**
+   * The read this frame shows. Pass none when it holds static content: it draws `ready`. `failed`
+   * draws the error with its retry; `unavailable` draws none.
+   */
+  read?: SurfaceRead;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** `empty` means none **yet** — the words invite, and `emptyAction` makes the first one. */
   emptyTitle?: string;
   emptyMessage?: string;

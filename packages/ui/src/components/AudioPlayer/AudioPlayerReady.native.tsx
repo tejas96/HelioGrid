@@ -93,7 +93,7 @@ export function AudioPlayerReady({
   useEffect(() => {
     if (wired) return;
     console.warn(
-      'AudioPlayer (React Native): state="ready" draws the transport only — this platform has no decoder. Pass `playing`, `position` and `rate` from your player and handle `onPlayingChange`, `onSeek` and `onRateChange`, or the controls stay disabled.',
+      'AudioPlayer (React Native): a ready read draws the transport only — this platform has no decoder. Pass `playing`, `position` and `rate` from your player and handle `onPlayingChange`, `onSeek` and `onRateChange`, or the controls stay disabled.',
     );
   }, [wired]);
 

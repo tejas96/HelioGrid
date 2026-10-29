@@ -9,6 +9,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { View } from 'react-native';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { countLine, deriveSwitches, languageSentence, switchPoints } from './Transcript.language';
 import type { TranscriptProps } from './Transcript.types';
 import { TranscriptHeader } from './TranscriptHeader.native';
@@ -37,17 +38,18 @@ export function Transcript({
   onLoadMore,
   loadingMore = false,
   total,
-  state = 'ready',
+  read,
   emptyTitle = 'No transcript for this call',
   emptyDescription = "The call connected but nothing was transcribed. The recording and the rep's notes are on this record.",
   errorMessage = "Couldn't load the transcript. Nothing has been lost — try again.",
-  onRetry,
   retryLabel,
   unavailableTitle = 'No transcript on this call',
   unavailableMessage = 'This call was not transcribed. The recording is the only record of it.',
   density = 'expressive',
   style,
 }: NativeTranscriptProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const [shown, setShown] = useState(visibleCount);
   useEffect(() => setShown(visibleCount), [visibleCount]);
 

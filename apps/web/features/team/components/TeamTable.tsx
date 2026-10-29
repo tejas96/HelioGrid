@@ -8,7 +8,6 @@ import {
   type DataTableColumn,
   MemberPerson,
   ROLE_KIND_TONE,
-  readSurface,
   TEAM_STATUS_TONE,
 } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
@@ -86,7 +85,7 @@ export function TeamTable({ read, words, actions, actOf, openOf }: TeamTableProp
             rowOpens: (row: TeamRow) => openOf(row) !== undefined,
           })}
       actionsLabel={actions}
-      {...readSurface(read)}
+      read={read}
       stackBelow={0}
     />
   );

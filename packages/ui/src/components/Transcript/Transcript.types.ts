@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead } from '../UnavailableNote';
 
 /**
  * The two fixed participants. Not `ActorClassName`'s four: a third speaker in a call transcript is
@@ -62,11 +62,11 @@ export interface TranscriptProps {
   loadingMore?: boolean;
   /** The whole call's turn count when only a page was handed over. The count line states the whole. */
   total?: number;
-  state?: SurfaceState;
+  /** Required: what this draws always comes from a read, and a failed read carries its retry. */
+  read: SurfaceRead;
   emptyTitle?: string;
   emptyDescription?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   unavailableTitle?: string;

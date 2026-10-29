@@ -8,7 +8,7 @@ import type {
   SheetProps,
   SheetSize,
 } from '../Sheet/Sheet.types';
-import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
+import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';
 
 /**
  * The **desktop** form. `"panel"` (default) is an edge `DetailPanel` — the editor case, where the
@@ -92,11 +92,13 @@ export interface EditorSurfaceProps extends OverlayCloseWords {
    * The system's five (`SurfaceState`), passed straight to whichever form is rendering. An editor
    * is a surface: `unavailable` is the record no market pack covers — neutral, no retry — and it is
    * not `error`, which offers one (law 1).
+   *
+   * The read this frame shows. Pass none when it holds static content: it draws `ready`. `failed`
+   * draws the error with its retry; `unavailable` draws none.
    */
-  state?: SurfaceState;
+  read?: SurfaceRead;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   emptyTitle?: string;

@@ -4,6 +4,7 @@ import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, type ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { visibleRange } from './CompareGrid.logic';
 import type { CompareGridProps, CompareOption } from './CompareGrid.types';
 import { CompareGridFooter } from './CompareGridFooter.native';
@@ -48,18 +49,19 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
   note,
   columnWidth = 196,
   labelWidth = 128,
-  state = 'ready',
+  read,
   emptyTitle = 'Nothing to compare yet',
   emptyMessage = 'Generate at least two variants and they line up here side by side.',
   errorTitle = "Couldn't load the comparison",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   unavailableTitle = 'Not comparable here',
   unavailableMessage,
   density = 'expressive',
   style,
 }: NativeCompareGridProps<Opt>) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const scroller = useRef<ScrollView>(null);
   const offset = useRef(0);
   const scrollX = useRef(new Animated.Value(0)).current;

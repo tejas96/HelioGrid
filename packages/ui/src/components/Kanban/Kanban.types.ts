@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import type { PendingActionSpec } from '../PendingAction';
 import type { ProvenanceProps, ProvenanceStanding, ProvenanceTierSpec } from '../Provenance';
 import type { SolarStatus } from '../StatusChip';
-import type { SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead } from '../UnavailableNote';
 
 export interface KanbanCardItem {
   id: string | number;
@@ -62,7 +62,11 @@ export interface KanbanProps {
    * move can start while the first is in flight.
    */
   cardPending?: (item: KanbanCardItem, column: KanbanColumn) => PendingActionSpec | null;
-  state?: SurfaceState;
+  /**
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
+   */
+  read: SurfaceRead;
   emptyTitle?: string;
   emptyDescription?: string;
   /** `unavailable`: no such board here at all. Neutral, and no retry. */
@@ -70,7 +74,6 @@ export interface KanbanProps {
   unavailableMessage?: string;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   columnWidth?: number;

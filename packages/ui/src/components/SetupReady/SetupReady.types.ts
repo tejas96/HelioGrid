@@ -43,6 +43,8 @@ export interface SetupReadyProps {
   leaving: boolean;
   onStartWithLead: () => void;
   onOpenDemo: () => void;
+  /** The demo door's *Try again*: *You're ready* is read again (`SCR-M01-06` m-error-demo). */
+  onRetryDemo: () => void;
   /** The wall's *Try again* is out: the company is being read again. */
   retrying: boolean;
 }

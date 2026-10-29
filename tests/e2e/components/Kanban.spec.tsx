@@ -14,10 +14,9 @@ test("an errored board's message is a grey tile with no shadow and its controls 
   const board = await mount(
     <Kanban
       columns={[]}
-      state="error"
+      read={{ kind: 'failed', retry: () => (retries += 1) }}
       errorTitle={tryAgain}
       errorMessage={tryAgain}
-      onRetry={() => (retries += 1)}
       retryLabel={tryAgain}
     />,
   );

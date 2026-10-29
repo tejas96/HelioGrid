@@ -79,7 +79,7 @@ function RatesReady({
           }
         />
       ) : wide ? (
-        <RatesTable rates={props.rates} words={words} />
+        <RatesTable read={props.read} rates={props.rates} words={words} />
       ) : (
         <RateGroups rates={props.rates} bases={words.bases} />
       )}
@@ -129,7 +129,15 @@ export function RateGroups({
 }
 
 /** The 1536 table: *Search rates* and the charge chips over Rate · Charged · Amount, filtered here. */
-function RatesTable({ rates, words }: { rates: readonly CatalogRate[]; words: CatalogRatesWords }) {
+function RatesTable({
+  read,
+  rates,
+  words,
+}: {
+  read: CatalogRatesProps['read'];
+  rates: readonly CatalogRate[];
+  words: CatalogRatesWords;
+}) {
   const format = useFormat();
   const [query, setQuery] = useState('');
   const [bases, setBases] = useState<PriceBookRateBasis[]>([]);
@@ -165,6 +173,7 @@ function RatesTable({ rates, words }: { rates: readonly CatalogRate[]; words: Ca
         </fieldset>
       </div>
       <DataTable<CatalogRate>
+        read={read}
         rows={matchingRates(rates, query, bases)}
         rowKey="key"
         head="quiet"

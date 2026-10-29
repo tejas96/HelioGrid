@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { NumberOptions } from '../../utils/format';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
-import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
+import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';
 
 /**
  * **What a `provenance` prop accepts**, here as everywhere: the full spec object or a bare tier.
@@ -87,13 +87,16 @@ export interface CompareGridProps<Opt extends CompareOption = CompareOption> {
   columnWidth?: number;
   /** Pinned attribute-column width. Default 128 — see `columnWidth` for what that leaves at 375px. */
   labelWidth?: number;
-  /** The system's five. `unavailable` is rendered by `UnavailableNote` — neutral, and no retry. */
-  state?: SurfaceState;
+  /**
+   * The system's five. `unavailable` is rendered by `UnavailableNote` — neutral, and no retry.
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
+   */
+  read: SurfaceRead;
   emptyTitle?: string;
   emptyMessage?: string;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   unavailableTitle?: string;

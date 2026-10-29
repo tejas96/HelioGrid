@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import type { StatusTone } from '../../primitives/StatusMark';
-import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
+import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';
 import type { OverlayCloseWords } from './OverlayClose.types';
 
 /** auto = hugs content (max 92%); half = 56%; full = 92%. */
@@ -65,7 +65,11 @@ export interface SheetProps extends OverlayCloseWords {
   bodyScrolls?: boolean;
   /** Sticky footer. Gets a luminance fade above it, never a divider line. */
   footer?: ReactNode;
-  state?: SurfaceState;
+  /**
+   * The read this frame shows. Pass none when it holds static content: it draws `ready`. `failed`
+   * draws the error with its retry; `unavailable` draws none.
+   */
+  read?: SurfaceRead;
   /** Name what failed. The default claims nothing, because a generic overlay cannot know. */
   errorTitle?: string;
   /**
@@ -73,7 +77,6 @@ export interface SheetProps extends OverlayCloseWords {
    * ("The phone has no signal" on what was really a 500 is a lie the user acts on).
    */
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   /** `empty` means none **yet**, so these words invite — and `emptyAction` makes the first one. */

@@ -49,6 +49,7 @@ export function SetupReadyAsHeld({
         leaving={false}
         onStartWithLead={() => setPressed('lead')}
         onOpenDemo={() => setPressed('demo')}
+        onRetryDemo={() => setPressed('retry-demo')}
         retrying={false}
       />
       <output data-testid="pressed">{pressed}</output>

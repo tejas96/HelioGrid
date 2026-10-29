@@ -5,7 +5,6 @@ import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Card, IconCircle } from '../Card/Card';
 import { LoadingBars } from '../LoadingBars/LoadingBars';
 import { ScopeNote, scopeNotePanelFrame } from '../ScopeNote/ScopeNote';
-import { readSurface } from '../UnavailableNote/read-surface';
 import type { RoleCardLine, RoleCardProps, RoleCardWords } from './RoleCard.types';
 
 /**
@@ -28,14 +27,16 @@ export function RoleCard({ words, layout, read }: RoleCardProps) {
     return (
       <Card
         className={frame}
-        {...readSurface(read)}
+        read={{
+          ...read,
+          retry: () => {
+            retried.current = true;
+            read.retry();
+          },
+        }}
         errorTitle={words.error.title}
         errorMessage={words.error.body}
         retryLabel={words.error.retry}
-        onRetry={() => {
-          retried.current = true;
-          read.retry();
-        }}
       />
     );
   }

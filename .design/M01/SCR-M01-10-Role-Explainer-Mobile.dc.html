@@ -191,7 +191,7 @@ a:hover{color:var(--link-hover)}
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="120px,28px"></x-import>
         </div>
           <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary);text-wrap:pretty">Your role at Suryodaya Solar</h1>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="error" error-title="We couldn't load your role" error-message="You are still part of Suryodaya Solar. Try again, or ask Rajesh to check." dc-props="{{ formCard }}" hint-size="100%,150px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" error-title="We couldn't load your role" error-message="You are still part of Suryodaya Solar. Try again, or ask Rajesh to check." dc-props="{{ formCard }}" hint-size="100%,150px"></x-import>
         <div style="flex-shrink:0;display:flex;flex-direction:column;gap:var(--sp-3)">
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="true" hint-size="100%,52px">Go to my day</x-import>
           <span style="text-align:center;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-wrap:pretty">Reopen anytime from Profile &amp; preferences.</span>
@@ -655,7 +655,7 @@ class Component extends DCLogic {
       pinRef: this.attachScrollEnd,
       /* The error card keeps the Card's own --fill ground, like the role card in every other
          state, so its white "Try again" reads raised against it. */
-      formCard: { onRetry: this.noop },
+      formCard: { read: { kind: "failed", retry: this.noop } },
       /* What the EPC Owner alone holds (F2.M01.manage-team), composed by ScopeNote. */
       ownerActs: ["add a teammate"],
     }, this.profilePage());

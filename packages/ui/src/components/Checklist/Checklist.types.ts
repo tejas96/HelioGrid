@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { ActorClassSpec } from '../ActorClass';
 import type { PendingActionSpec } from '../PendingAction';
-import type { SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead } from '../UnavailableNote';
 
 export interface ChecklistItem {
   id?: string | number;
@@ -56,12 +56,15 @@ export interface ChecklistProps {
    * the progress line and the attribution of what is already done still printed as content.
    */
   surface?: 'screen' | 'document';
-  state?: SurfaceState;
+  /**
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
+   */
+  read: SurfaceRead;
   emptyTitle?: string;
   emptyMessage?: string;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   unavailableTitle?: string;

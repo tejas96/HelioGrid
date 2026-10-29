@@ -13,7 +13,7 @@ const turns = [
 ];
 
 test("the agent's turn is a tile under the agent's name", async ({ mount, page }) => {
-  const transcript = await mount(<Transcript turns={turns} />);
+  const transcript = await mount(<Transcript read={{ kind: 'ready' }} turns={turns} />);
   const turn = transcript.locator('.hg-transcript-bubble').filter({ hasText: agentSaid });
 
   await expect(turn.locator('.hg-transcript-speaker')).toHaveAttribute('data-party', 'agent');
@@ -22,7 +22,9 @@ test("the agent's turn is a tile under the agent's name", async ({ mount, page }
 });
 
 test('the turn being played keeps its accent tint', async ({ mount, page }) => {
-  const transcript = await mount(<Transcript turns={turns} currentAt={0} />);
+  const transcript = await mount(
+    <Transcript read={{ kind: 'ready' }} turns={turns} currentAt={0} />,
+  );
   const turn = transcript.locator('.hg-transcript-bubble').filter({ hasText: agentSaid });
 
   await expect(turn).toHaveCSS('background-color', await resolvedColour(page, '--accent-subtle'));

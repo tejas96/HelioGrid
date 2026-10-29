@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { ChartFrameBody } from './ChartFrameBody.native';
 import { ChartProvenance } from './ChartProvenance.native';
 import type { ChartFrameProps } from './Charts.types';
@@ -52,7 +53,7 @@ export function ChartFrame({
   note,
   legend,
   action,
-  state = 'ready',
+  read,
   height = 200,
   insufficient = false,
   emptyTitle = CHART_EMPTY_TITLE,
@@ -60,11 +61,12 @@ export function ChartFrame({
   insufficientMessage = CHART_INSUFFICIENT_MESSAGE,
   errorTitle = CHART_ERROR_TITLE,
   errorMessage = CHART_ERROR_MESSAGE,
-  onRetry,
   retryLabel,
   children,
   style,
 }: NativeChartFrameProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   /* One provenance line under the headline value — word first, dot second (F8-07). */
   const facts = chartProvenanceFacts({ provenance, standing, source, projection, note });
   const stateNote = chartNote({

@@ -26,6 +26,7 @@ export function SetupReadyScreen() {
         void ready.startWithLead();
       }}
       onOpenDemo={() => undefined}
+      onRetryDemo={ready.retryDemo}
       retrying={ready.retrying}
     />
   );

@@ -20,6 +20,7 @@ export function FlaggedStackedTable({
 }) {
   return (
     <DataTable
+      read={{ kind: 'ready' }}
       columns={[{ key: 'name', label, primary: true, editable: withEditor }]}
       rows={[{ id: 1, name: value }]}
       rowIssue={() => issue}
@@ -48,6 +49,7 @@ export function OpeningTable({
   return (
     <div data-opened={opened} data-acted={acted}>
       <DataTable
+        read={{ kind: 'ready' }}
         columns={[{ key: 'name', label, primary: true }]}
         rows={[
           { id: 1, name: 'Vikram Deshpande', opens: true },
@@ -84,6 +86,7 @@ export function KindTable({
 }) {
   return (
     <DataTable
+      read={{ kind: 'ready' }}
       columns={[
         {
           key: 'name',

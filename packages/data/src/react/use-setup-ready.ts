@@ -18,6 +18,8 @@ export interface SetupReady {
   readonly demo: DemoDoor;
   /** The company is being read again after *Try again*. */
   readonly retrying: boolean;
+  /** The demo door's *Try again*: reads the company again, the door's read until `T-M01-029` adds the demo's own. */
+  retryDemo(): void;
   /** Door one's answer is being recorded. */
   readonly leaving: boolean;
   /**
@@ -69,6 +71,7 @@ export function useSetupReady(): SetupReady {
     company: read,
     demo: 'unavailable',
     retrying: retried.pending,
+    retryDemo: () => void retried.run(undefined),
     leaving: left.pending,
     startWithLead: async () => {
       await left.run(undefined);

@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useCallback, useRef, useState } from 'react';
 import type { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { MapContent } from './MapContent.native';
 import { MapStateLayer } from './MapStates.native';
 import type { MapSurfaceProps } from './MapSurface.types';
@@ -50,14 +51,13 @@ export function MapSurface({
   route = null,
   geofences = [],
   accuracy = null,
-  state = 'ready',
+  read,
   emptyTitle = 'No sites to show',
   emptyMessage = 'Assign a job to a technician and their route appears here.',
   unavailableTitle = 'No map imagery for this area',
   unavailableMessage = 'This location has no tiles from our provider. The address and the recorded coordinates are still exact.',
   errorTitle = "Couldn't load the map",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   controls = true,
   onZoomIn,
@@ -78,6 +78,8 @@ export function MapSurface({
   attribution,
   style,
 }: NativeMapSurfaceProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const rootRef = useRef<View>(null);
   const frame = useRef<Frame>({ pageX: 0, pageY: 0, width: 0, height: 0 });
   const [, setMeasured] = useState(0);

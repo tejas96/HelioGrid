@@ -6,6 +6,7 @@
 import type { StyleProp, ViewStyle } from 'react-native';
 import { View } from 'react-native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { TimelineProps } from './Timeline.types';
 import { NODE_SIZE, TimelineMessage, TimelineSkeleton } from './TimelineParts.native';
 import { TimelinePick } from './TimelinePick.native';
@@ -19,12 +20,11 @@ export function Timeline({
   items = [],
   variant = 'page',
   density = 'expressive',
-  state = 'ready',
+  read,
   emptyTitle = 'No activity yet',
   emptyDescription = 'Steps appear here as the job moves.',
   errorTitle = "Couldn't load the activity",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   unavailableTitle = 'No sequence here',
   unavailableMessage,
@@ -33,6 +33,8 @@ export function Timeline({
   label,
   style,
 }: NativeTimelineProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   if (state === 'loading') {
     return (
       <View style={style}>

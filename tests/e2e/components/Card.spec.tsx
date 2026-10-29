@@ -1,5 +1,5 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
-import { Button, Card } from '@heliogrid/ui';
+import { Button, Card, DataTable } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour, resolvedLength, resolvedShadow } from '../support/token';
 
@@ -12,7 +12,7 @@ test('an errored card draws its retry as the white raised secondary, since a car
 }) => {
   let retries = 0;
   const card = await mount(
-    <Card state="error" onRetry={() => (retries += 1)} retryLabel={tryAgain} />,
+    <Card read={{ kind: 'failed', retry: () => (retries += 1) }} retryLabel={tryAgain} />,
   );
   const retry = card.getByRole('button', { name: tryAgain });
 
@@ -23,7 +23,7 @@ test('an errored card draws its retry as the white raised secondary, since a car
 });
 
 test('an errored card with no words for its retry draws no retry', async ({ mount }) => {
-  const card = await mount(<Card state="error" onRetry={() => undefined} />);
+  const card = await mount(<Card read={{ kind: 'failed', retry: () => undefined }} />);
 
   await expect(card.getByRole('button')).toHaveCount(0);
 });
@@ -32,9 +32,23 @@ test('an errored card with an empty message says its title alone, with no separa
   mount,
 }) => {
   const title = en.t(SIGN_IN.tryAgain);
-  const card = await mount(<Card state="error" errorTitle={title} errorMessage="" />);
+  const card = await mount(
+    <Card read={{ kind: 'failed', retry: () => undefined }} errorTitle={title} errorMessage="" />,
+  );
 
   await expect(card.locator('.hg-card-message-text')).toHaveText(title);
+});
+
+test('a failed read always carries its retry: the types refuse a surface state written any other way', () => {
+  // @ts-expect-error — a failed read with no retry cannot be written
+  const noRetry = <Card read={{ kind: 'failed' }} />;
+  // @ts-expect-error — a surface takes its read, never a hand-written state
+  const handState = <Card state="error" />;
+  // @ts-expect-error — the retry lives inside the failed read, never beside it
+  const looseRetry = <Card onRetry={() => undefined} />;
+  // @ts-expect-error — a data component draws only what a read gave it
+  const noRead = <DataTable columns={[]} rows={[]} />;
+  expect([noRetry, handState, looseRetry, noRead]).toHaveLength(4);
 });
 
 test("a card is the open page's tile: the fill, the tile's radius and padding, no shadow", async ({

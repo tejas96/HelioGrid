@@ -75,7 +75,7 @@ export function CatalogItems(props: CatalogItemsProps) {
         <Block
           overline={words.makeItYours}
           density="functional"
-          state="empty"
+          read={{ kind: 'empty' }}
           emptyMessage={props.teaching}
         />
       )}
@@ -133,6 +133,7 @@ function ItemList({ props }: { props: CatalogItemsProps }) {
   const { words, administers, rowStates } = props;
   const columns = useItemColumns(props);
   const table = {
+    read: props.read,
     columns,
     rows: [...props.rows],
     rowKey: 'id' as const,

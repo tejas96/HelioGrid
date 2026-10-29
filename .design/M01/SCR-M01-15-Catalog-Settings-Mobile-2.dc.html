@@ -523,7 +523,7 @@ class Component extends DCLogic {
         action: h(NS.Button, { variant: "ghost", size: "sm", onClick: noop }, "Past releases") },
       releaseLoading: { label: "Loading the catalog release", bars: ["row"] },
       kindsLoading: { label: "Loading the component kinds", bars: ["row"] },
-      releaseBlockEmpty: { overline: "Catalog release", density: "functional", flat: true, state: "empty", emptyMessage: "No release published yet" },
+      releaseBlockEmpty: { overline: "Catalog release", density: "functional", flat: true, read: { kind: "empty" }, emptyMessage: "No release published yet" },
       btnPublish: { variant: "secondary", size: "sm", onClick: noop },
       btnAdd: { variant: "secondary", size: "sm", onClick: noop, icon: sg("plus", "md", "primary") },
       btnImport: { variant: "ghost", size: "sm", onClick: noop, icon: icon(M.upload, "md") },
@@ -580,7 +580,7 @@ class Component extends DCLogic {
       deskTableG: withRows(desk, { rows: rows.slice(0, 10) }),
       deskTableH: withRows(desk, { rows: rows.slice(11, 20) }),
       deskTableIRO: withRows(desk, Object.assign({ rows: rows.slice(0, 10) }, RO)),
-      deskTableLoading: withRows(desk, Object.assign({ rows: [], state: "loading" }, RO, noPager)),
+      deskTableLoading: withRows(desk, Object.assign({ rows: [], read: { kind: "loading" } }, RO, noPager)),
       deskTableFresh: withRows(desk, { rows: rows.filter((r) => r.layer === "platform").map((r) => Object.assign({}, r, { preferred: false, hidden: false })).slice(0, 6), rowCount: 339, caption: "Catalog — the platform market slice", summary: "339 platform items · nothing of your own yet" }),
       deskTableSearch: withRows(desk, Object.assign({ rows: searchRows }, noPager, { caption: searchCaption, summary: searchSummary })),
       deskTableAttrib: withRows(desk, { rows: rows.slice(2, 8) }),
@@ -591,12 +591,12 @@ class Component extends DCLogic {
 
       /* the empty and error states */
       emptyItemsBlock: {
-        overline: "Make it yours", density: "functional", state: "empty",
+        overline: "Make it yours", density: "functional", read: { kind: "empty" },
         emptyMessage: centred("Your catalog starts with 339 platform items and no prices. Add your own SKUs, or set a platform item's price from the item."),
         emptyAction: addImport,
       },
       emptyItemsBlockLumen: {
-        overline: "Make it yours", density: "functional", state: "empty",
+        overline: "Make it yours", density: "functional", read: { kind: "empty" },
         emptyMessage: centred("Your catalog starts with 214 platform items and no prices. Add your own SKUs, or set a platform item's price from the item."),
         emptyAction: addImport,
       },
@@ -610,7 +610,7 @@ class Component extends DCLogic {
       priceBookBlock: priceBook(7, "12 Aug 2026"),
       priceBookBlockV8: priceBook(8, "1 Sep 2026"),
       priceBookLoading: { label: "Loading the price book", bars: ["panel"] },
-      priceBookBlockEmpty: { overline: "Price book", density: "functional", flat: true, state: "empty", emptyMessage: "No version yet" },
+      priceBookBlockEmpty: { overline: "Price book", density: "functional", flat: true, read: { kind: "empty" }, emptyMessage: "No version yet" },
       marginCard: margin("18.0"),
       marginCardV5: margin("16.5"),
       btnVersions: { variant: "ghost", size: "sm", onClick: noop },
@@ -635,7 +635,7 @@ class Component extends DCLogic {
           { key: "amount", label: "Amount", numeric: true, width: 140, render: (r) => money(r.amount) },
         ],
       }),
-      ratesTableLoading: { rowKey: "id", rows: [], state: "loading", stackBelow: 0, density: "compact", caption: "Price book", columns: deskRateColumns },
+      ratesTableLoading: { rowKey: "id", rows: [], read: { kind: "loading" }, stackBelow: 0, density: "compact", caption: "Price book", columns: deskRateColumns },
       ratesEmpty: {
         glow: false, icon: sg("document", "lg", "secondary"), title: "No rates yet",
         description: "Proposals price only hardware until you add rates. Your first set becomes version 1.",

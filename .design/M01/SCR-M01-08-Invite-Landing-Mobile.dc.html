@@ -98,7 +98,7 @@ a:hover{color:var(--link-hover)}
             <span style="display:block;width:88%;height:var(--sp-6);border-radius:var(--rf-md);{{ shimmer }}"></span>
             <span style="display:block;width:56%;height:var(--sp-6);border-radius:var(--rf-md);{{ shimmer }}"></span>
           </div>
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="loading" density="expressive" style="{{ cardSkeleton }}" hint-size="100%,163px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" read="{{ readLoading }}" density="expressive" style="{{ cardSkeleton }}" hint-size="100%,163px"></x-import>
         </div>
       </div>
     </div>
@@ -378,6 +378,7 @@ class Component extends DCLogic {
       /* The skeleton's sweep: the Card's own shimmer, one step darker so it reads on the white page. */
       shimmer: "background:linear-gradient(90deg,var(--canvas-sunken) 25%,var(--fill) 50%,var(--canvas-sunken) 75%);background-size:320px 100%;animation:hg-sheet-shimmer 1.4s linear infinite",
       /* The invite card's height, so the skeleton holds the place the card will take. */
+      readLoading: { kind: "loading" },
       cardSkeleton: { minHeight: 163, boxSizing: "border-box" },
       yes: true,
       no: false,

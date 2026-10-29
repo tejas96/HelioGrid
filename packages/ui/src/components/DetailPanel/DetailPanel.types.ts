@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { OverlayCloseWords } from '../Sheet/OverlayClose.types';
 import type { OverlayStatus, OverlaySubtitleFace } from '../Sheet/Sheet.types';
-import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
+import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';
 
 export type DetailPanelSide = 'right' | 'left';
 
@@ -41,10 +41,13 @@ export interface DetailPanelProps extends OverlayCloseWords {
    * or a device frame, not in the document.
    */
   modal?: boolean;
-  state?: SurfaceState;
+  /**
+   * The read this frame shows. Pass none when it holds static content: it draws `ready`. `failed`
+   * draws the error with its retry; `unavailable` draws none.
+   */
+  read?: SurfaceRead;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   /** `empty` means none **yet** — the words invite, and `emptyAction` makes the first one. */

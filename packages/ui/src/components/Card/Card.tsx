@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { pressOnEnterOrSpace } from '../../primitives/press-keys';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { CardProps, IconCircleProps } from './Card.types';
 import { CardBody } from './CardBody';
 
@@ -27,13 +28,12 @@ export function Card({
   selected = false,
   surface = 'tile',
   label,
-  state = 'ready',
+  read,
   emptyTitle,
   emptyMessage = 'Nothing here yet.',
   emptyAction,
   errorTitle = "Couldn't load this",
   errorMessage = 'Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   unavailableTitle = 'Not available here',
   unavailableMessage,
@@ -41,6 +41,8 @@ export function Card({
   className,
   style,
 }: WebCardProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const body = (
     <CardBody
       state={state}

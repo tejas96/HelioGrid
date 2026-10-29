@@ -1,6 +1,6 @@
 import React from "react";
 import { ActorClassName } from "./ActorClass";
-import { SurfaceState } from "../feedback/UnavailableNote";
+import { SurfaceRead } from "../feedback/UnavailableNote";
 
 /** The two fixed participants. Not `ActorClassName`'s four: a third speaker in a call transcript is
     a data error, not a fifth class. The *words and glyphs* are `ActorClass`'s. */
@@ -56,11 +56,14 @@ export interface TranscriptProps {
   loadingMore?: boolean;
   /** The whole call's turn count when only a page was handed over. The count line states the whole. */
   total?: number;
-  state?: SurfaceState;
+  /**
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
+   */
+  read: SurfaceRead;
   emptyTitle?: string;
   emptyDescription?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   unavailableTitle?: string;
   unavailableMessage?: string;
   density?: "expressive" | "functional";

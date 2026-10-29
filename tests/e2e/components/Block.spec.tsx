@@ -9,7 +9,7 @@ const tryAgain = en.t(SIGN_IN.tryAgain);
 test('an errored block on the page draws its retry white and raised', async ({ mount, page }) => {
   let retries = 0;
   const block = await mount(
-    <Block state="error" onRetry={() => (retries += 1)} retryLabel={tryAgain} />,
+    <Block read={{ kind: 'failed', retry: () => (retries += 1) }} retryLabel={tryAgain} />,
   );
   const retry = block.getByRole('button', { name: tryAgain });
 
@@ -20,7 +20,9 @@ test('an errored block on the page draws its retry white and raised', async ({ m
 });
 
 test('an errored block with blank words for its retry draws no retry', async ({ mount }) => {
-  const block = await mount(<Block state="error" onRetry={() => undefined} retryLabel="  " />);
+  const block = await mount(
+    <Block read={{ kind: 'failed', retry: () => undefined }} retryLabel="  " />,
+  );
 
   await expect(block.getByRole('button')).toHaveCount(0);
 });

@@ -2,7 +2,7 @@ import React from "react";
 import { ProvenanceProps, ProvenanceTierSpec } from "./Provenance";
 import { FilterDimension, FilterValue } from "./FilterPanel";
 import { ActorClassName } from "./ActorClass";
-import { SurfaceState } from "../feedback/UnavailableNote";
+import { SurfaceRead } from "../feedback/UnavailableNote";
 
 /* WHO DID IT, AS A CLASS RATHER THAN A NAME — and the vocabulary now lives in ./ActorClass, because
    the law it serves is not about this surface. M07-03 states it ("blurring that line is how people
@@ -92,14 +92,17 @@ export interface ActivityStreamProps {
   /** Copy, not market-pack data: the day headings for today and yesterday. */
   todayLabel?: string;
   yesterdayLabel?: string;
-  state?: SurfaceState;
+  /**
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
+   */
+  read: SurfaceRead;
   emptyTitle?: string;
   emptyDescription?: string;
   filteredEmptyTitle?: string;
   filteredEmptyDescription?: string;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   unavailableTitle?: string;
   unavailableMessage?: string;
   density?: "expressive" | "functional";

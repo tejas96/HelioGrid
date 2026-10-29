@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 /**
- * The system's one surface-state vocabulary, imported from the folder that owns it — exactly as
+ * The system's one surface read, imported from the folder that owns it — exactly as
  * the design system's own MapSurface typings import it from `../feedback/UnavailableNote`, and as
  * sixteen sibling folders here already do. The split this component
  * depends on is the honest one: **`error`** means the tiles were there to fetch and the fetch
@@ -9,7 +9,7 @@ import type { ReactNode } from 'react';
  * conjure coverage). `tiles-unavailable` is gone; it was this component's private spelling of
  * the fourth state.
  */
-import type { SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead } from '../UnavailableNote';
 
 /** Marker tones. A visual map keyed on this union is a `Record`, never a lookup with a default. */
 export type MapMarkerTone = 'accent' | 'success' | 'warning' | 'danger' | 'info' | 'neutral';
@@ -116,15 +116,17 @@ export interface MapSurfaceProps {
   geofences?: MapGeofence[];
   /** Accuracy radius around a fix — draw it whenever the fix is coarse. */
   accuracy?: MapAccuracy | null;
-  /** The system's one state vocabulary. Neither `error` nor `unavailable` ever leaves blank space. */
-  state?: SurfaceState;
+  /**
+   * The system's one state vocabulary. Neither `error` nor `unavailable` ever leaves blank space.
+   * Required: what this draws always comes from a read, and a failed read carries its retry.
+   */
+  read: SurfaceRead;
   emptyTitle?: string;
   emptyMessage?: string;
   unavailableTitle?: string;
   unavailableMessage?: string;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   controls?: boolean;

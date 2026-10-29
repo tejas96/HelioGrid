@@ -21,6 +21,7 @@ import { renderBand } from '../BandedFigure';
 import { useFormat } from '../MarketProvider';
 import { renderGap } from '../NamedGap';
 import { renderProvenance } from '../Provenance';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { formatStatValue } from './StatCard.format';
 import type { StatCardProps } from './StatCard.types';
 import { StatCardDelta } from './StatCardDelta';
@@ -46,10 +47,9 @@ export function StatCard({
   provenance,
   onClick,
   ariaLabel,
-  state = 'ready',
+  read,
   emptyMessage = 'No figure for this period yet.',
   errorMessage = "Couldn't read this figure. Try again — nothing here is a stale number.",
-  onRetry,
   retryLabel,
   unavailableTitle = 'Not measured here',
   unavailableMessage,
@@ -57,6 +57,8 @@ export function StatCard({
   style,
   children,
 }: WebStatCardProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const f = useFormat();
   const gapNode = renderGap(gap, { scale: 'headline' });
   const shown = formatStatValue(value, { money, compact, format: f });

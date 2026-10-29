@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { AudioPlayerProps } from './AudioPlayer.types';
 import { AudioPlayerReady } from './AudioPlayerReady';
 import { AudioError, AudioUnavailable } from './AudioStates';
@@ -15,7 +16,7 @@ interface WebAudioPlayerProps extends AudioPlayerProps {
  * 44×44 targets, keyboard seek (arrows ±5s, page keys ±60s, Home/End), ±10s/30s skip.
  */
 export function AudioPlayer({
-  state = 'ready',
+  read,
   reason,
   src,
   duration = 0,
@@ -26,7 +27,6 @@ export function AudioPlayer({
   purgedAt,
   retentionBound,
   errorMessage = "Couldn't load this recording. Tap Try again — the transcript is on this record either way.",
-  onRetry,
   retryLabel,
   onOpenTranscript,
   transcriptLabel = 'Open transcript',
@@ -35,6 +35,8 @@ export function AudioPlayer({
   className,
   style,
 }: WebAudioPlayerProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const shell = classNames('hg-audio', className);
   const header =
     title !== undefined || meta !== undefined ? (

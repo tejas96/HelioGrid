@@ -6,6 +6,7 @@ import { KeyboardFrame } from '../../primitives/Keyboard/KeyboardFrame.native';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { OverlayBody } from '../Sheet/OverlayBody.native';
 import { SheetBackdrop } from '../Sheet/SheetBackdrop.native';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { DetailPanelProps } from './DetailPanel.types';
 import { PanelHeader } from './PanelHeader.native';
 import { PanelSkeleton } from './PanelSkeleton.native';
@@ -46,10 +47,9 @@ export function DetailPanel({
   showClose = true,
   dismissible = true,
   modal = true,
-  state = 'ready',
+  read,
   errorTitle = "Couldn't load this record",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   emptyTitle = 'Nothing here yet',
   emptyMessage,
@@ -59,6 +59,8 @@ export function DetailPanel({
   unavailableAction = null,
   style,
 }: NativeDetailPanelProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const enter = useRef(new Animated.Value(0)).current;
   const [panelWidth, setPanelWidth] = useState(0);
   const [scrolled, setScrolled] = useState(false);

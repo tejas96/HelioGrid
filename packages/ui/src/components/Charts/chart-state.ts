@@ -1,7 +1,7 @@
-import type { ChartFrameProps } from './Charts.types';
+import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 
 /** The surface state a frame is in. `unavailable` is neutral and never grows a retry. */
-export type ChartSurfaceState = NonNullable<ChartFrameProps['state']>;
+export type ChartSurfaceState = SurfaceState;
 
 export type ChartNoteTone = 'warning' | 'neutral';
 

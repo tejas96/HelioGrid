@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import type { BandSpec } from '../BandedFigure';
 import type { NamedGapSpec } from '../NamedGap';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
-import type { SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead } from '../UnavailableNote';
 
 /** **Which way the figure moved, and nothing more.** `flat` draws a bar: zero has no direction. */
 export type StatCardDeltaDir = 'up' | 'down' | 'flat';
@@ -18,7 +18,7 @@ export interface StatCardProps {
    * only when the caller genuinely owns the text.
    *
    * **Required.** An absent figure has two sanctioned routes and neither is an omitted `value`:
-   * `gap` names what is missing in the value's own footprint, and a non-ready `state` says the
+   * `gap` names what is missing in the value's own footprint, and a non-ready `read` says the
    * whole card has nothing to print. Omitting it renders an empty headline, which is neither.
    */
   value: string | number;
@@ -30,7 +30,7 @@ export interface StatCardProps {
   /**
    * **The figure is absent, and this names what is missing** — `M02-03`'s named gaps. Rendered by
    * `NamedGap` in the value's own footprint on an otherwise **ready** card, which is a different
-   * statement from `state="empty"`. A gap **suppresses the delta and the provenance slot**: a delta
+   * statement from an `empty` read. A gap **suppresses the delta and the provenance slot**: a delta
    * of an absent value is arithmetic on nothing, and a tier answers *how a figure was arrived at*,
    * which has no answer when there is no figure.
    */
@@ -71,11 +71,13 @@ export interface StatCardProps {
   /**
    * **An unresolved stat never renders a numeral.** Never a zero, never a dash dressed as a value,
    * never the last figure it happened to hold.
+   *
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
    */
-  state?: SurfaceState;
+  read: SurfaceRead;
   emptyMessage?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   unavailableTitle?: string;

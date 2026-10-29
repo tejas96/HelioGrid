@@ -1,4 +1,4 @@
-import type { SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead } from '../UnavailableNote';
 
 /**
  * **Why there is no recording.** Same state (`unavailable`), two sentences that must never look
@@ -16,11 +16,13 @@ export interface AudioPlayerProps {
    * the fourth state, parallel to `MapSurface`'s `tiles-unavailable`. Now: `ready` plays,
    * `unavailable` + `reason` states why there is no audio, and `loading` / `error` cover the fetch.
    * Neither unavailable reason is an error and neither shows a disabled play button.
+   *
+   * Required: what this draws always comes from a read, and a failed read carries its retry.
    */
-  state?: SurfaceState;
-  /** Required when `state="unavailable"`. Without it the player states the absence generically. */
+  read: SurfaceRead;
+  /** Required when the read is `unavailable`. Without it the player states the absence generically. */
   reason?: AudioUnavailableReason;
-  /** Required for state="ready". */
+  /** Required when the read is `ready`. */
   src?: string;
   /** Known length in seconds, used until the audio reports its own metadata. */
   duration?: number;
@@ -36,7 +38,6 @@ export interface AudioPlayerProps {
   retentionBound?: string;
   /** `error`'s sentence — the fetch failed, which is not the same as there being no recording. */
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   /**

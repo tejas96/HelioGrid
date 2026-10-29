@@ -15,7 +15,6 @@ import {
   NotificationFilterBar,
   NotificationHead,
   NotificationList,
-  readSurface,
   Sheet,
   ToastHost,
   useFormat,
@@ -50,7 +49,7 @@ export function NotificationSheet({ onClose, onGoToLeads }: NotificationSheetPro
         closeLabel={t(SHELL.close)}
         size="full"
         showClose
-        {...readSurface(centre.read)}
+        read={centre.read}
         errorTitle={t(NOTIFICATION_CENTRE.errorTitle)}
         errorMessage={t(NOTIFICATION_CENTRE.errorMessage)}
         retryLabel={t(NOTIFICATION_CENTRE.tryAgain)}

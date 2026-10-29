@@ -1,6 +1,6 @@
 import React from "react";
 import { ProvenanceProps, ProvenanceTierSpec } from "./Provenance";
-import { SurfaceState } from "../feedback/UnavailableNote";
+import { SurfaceRead, SurfaceState } from "../feedback/UnavailableNote";
 
 /**
  * **An alias, not a second union.** A block is a surface, so its states are the system's five
@@ -35,7 +35,7 @@ export interface BlockProps {
    * `CountBadge`, whose accessible name says "unread" and whose tone is danger. Nor is it the same form
    * as the two nav counters, on purpose — `Tabs` clamps at 99 because a destination count is
    * navigational, and `SegmentedControl` renders a bare numeral with no pill because a pill inside a
-   * 32px pill is mush. Nothing is drawn at zero — a block with none of something uses `state="empty"`,
+   * 32px pill is mush. Nothing is drawn at zero — a block with none of something takes an `empty` read,
    * which is a sentence rather than a 0.
    */
   count?: number;
@@ -50,14 +50,17 @@ export interface BlockProps {
   footer?: React.ReactNode;
   /** Provenance for the block's figures, rendered in the footer. */
   provenance?: ProvenanceProps | ProvenanceTierSpec | React.ReactNode;
-  state?: BlockState;
+  /**
+   * The read this frame shows. Pass none when it holds static content: it draws `ready`. `failed`
+   * draws the error with its retry; `unavailable` draws none.
+   */
+  read?: SurfaceRead;
   /** The empty sentence. Say what is true — "No blockers — nothing is waiting on anyone". */
   emptyMessage?: string;
   emptyTitle?: string;
   emptyAction?: React.ReactNode;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   unavailableTitle?: string;
   unavailableMessage?: string;
   density?: "expressive" | "functional";
@@ -68,7 +71,7 @@ export interface BlockProps {
 }
 
 /**
- * The section frame the composed screens are assembled from — header, body, footer, and a `state`.
+ * The section frame the composed screens are assembled from — header, body, footer, and a `read`.
  *
  * **What an empty block does that `EmptyState` would not:** it says so and **stays**, inside its
  * own frame, at its own size, with its header still in place. `EmptyState` is a full-region

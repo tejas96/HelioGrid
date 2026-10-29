@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead } from '../UnavailableNote';
 
 export interface CardProps {
   children?: ReactNode;
@@ -25,16 +25,17 @@ export interface CardProps {
    * **The card has states**, because law 1 ("states are part of done") applies to the surface every
    * screen reaches for first. The card's frame, padding and radius never move between states — only
    * the body changes. `unavailable` renders through `UnavailableNote`: neutral, and no retry.
+   *
+   * The read this frame shows. Pass none when it holds static content: it draws `ready`. `failed`
+   * draws the error with its retry; `unavailable` draws none.
    */
-  state?: SurfaceState;
+  read?: SurfaceRead;
   emptyTitle?: string;
   /** The empty sentence. Default "Nothing here yet." */
   emptyMessage?: string;
   emptyAction?: ReactNode;
   errorTitle?: string;
   errorMessage?: string;
-  /** Draws the retry. `error` is the only state that ever offers one. */
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   unavailableTitle?: string;
