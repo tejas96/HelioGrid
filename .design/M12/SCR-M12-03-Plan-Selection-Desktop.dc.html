@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plans · 1536</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-hover)}
+</style>
+</helmet>
+
+<div style="box-sizing:border-box;width:1632px;height:4398px;overflow:hidden;padding:var(--sp-12);display:flex;flex-direction:column;gap:var(--sp-16);background:var(--canvas)">
+  <sc-for list="{{ frames }}" as="f" hint-placeholder-count="4">
+    <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:1536px">
+      <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;white-space:nowrap;color:var(--text-secondary)">{{ f.label }}</span>
+
+      <div data-screen-label="{{ f.screenLabel }}" data-frame="{{ f.id }}" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ f.rail }}" header="{{ header }}" hint-size="100%,100%" style="height:100%">
+
+          <div style="box-sizing:border-box;display:flex;align-items:flex-start;gap:var(--sp-8);padding-left:var(--sp-8)">
+            <sc-if value="{{ f.sideNav }}" hint-placeholder-val="{{ true }}">
+            <nav aria-label="Settings" style="margin-top:var(--sp-6);flex:0 0 248px;width:248px;display:flex;flex-direction:column;gap:var(--sp-1);padding-top:var(--sp-1)">
+              <span style="display:block;padding:0 var(--sp-3) var(--sp-2);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Settings</span>
+              <sc-for list="{{ settings }}" as="s" hint-placeholder-count="6">
+                <sc-if value="{{ s.heading }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ s.heading }}</span>
+                </sc-if>
+                <sc-if value="{{ s.row }}" hint-placeholder-val="{{ true }}">
+                  <button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);min-height:calc(var(--sp-10) + var(--sp-1));padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="{{ s.glyph }}" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">{{ s.label }}</span></button>
+                </sc-if>
+                <sc-if value="{{ s.current }}" hint-placeholder-val="{{ false }}">
+                  <button type="button" aria-current="page" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);min-height:calc(var(--sp-10) + var(--sp-1));padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:var(--accent-subtle);color:var(--accent);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-medium);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="{{ s.glyph }}" size="md" tone="accent" hint-size="20px,20px"></x-import><span style="min-width:0">{{ s.label }}</span></button>
+                </sc-if>
+              </sc-for>
+            </nav>
+            </sc-if>
+            <div style="flex:1;min-width:0">
+<div style="box-sizing:border-box;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-5) {{ f.padRight }} var(--sp-10) var(--screen-pad-desktop);margin-top:{{ f.offset }}">
+
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Plans</h1>
+            </div>
+
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.planBlock }}" hint-size="100%,150px">
+              <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-6)">
+                <sc-for list="{{ f.planRows }}" as="r" hint-placeholder-count="3">
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ r.label }}" value="{{ r.value }}" form="pair" hint-size="100%,46px"></x-import>
+                </sc-for>
+              </div>
+            </x-import>
+
+            <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+              <sc-if value="{{ f.picking }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+                  <span style="font-size:var(--fs-body-sm);font-weight:var(--fw-medium);color:var(--text-secondary)">Billing cycle</span>
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ cycleSelector }}" hint-size="auto,44px"></x-import>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ f.readOnly }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+                  <span style="font-size:var(--fs-body-sm);font-weight:var(--fw-medium);color:var(--text-secondary)">Plans</span>
+                  <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--tile-gap);align-items:stretch">
+                    <sc-for list="{{ readOnlyCards }}" as="c" hint-placeholder-count="4">
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" density="expressive" hint-size="100%,96px">
+                        <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+                          <span style="font-size:var(--fs-body);font-weight:var(--fw-bold);letter-spacing:var(--tr-h4);color:var(--text-primary)">{{ c.name }}</span>
+                          <div style="display:flex">
+                            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" density="expressive" hint-size="auto,28px">{{ c.word }}</x-import>
+                          </div>
+                        </div>
+                      </x-import>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ f.picking }}" hint-placeholder-val="{{ true }}">
+                <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--tile-gap);align-items:stretch">
+                  <div style="grid-column:span 3;min-width:0">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.OptionCardGroup" dc-props="{{ f.plans }}" hint-size="100%,150px"></x-import>
+                  </div>
+                  <div style="min-width:0;display:grid;grid-template-rows:auto 1fr;gap:var(--sp-2)">
+                    <span style="font-size:var(--fs-body-sm);font-weight:var(--fw-medium);color:var(--text-secondary)">Priced with you</span>
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" density="expressive" style="box-sizing:border-box;height:100%" hint-size="100%,100%">
+                      <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+                        <span style="font-size:var(--fs-body);font-weight:var(--fw-bold);letter-spacing:var(--tr-h4);color:var(--text-primary)">Enterprise</span>
+                        <div style="display:flex">
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" density="expressive" hint-size="auto,28px">Annual contract</x-import>
+                        </div>
+                        {{ enterpriseBody }}
+                        <div style="display:flex;padding-top:var(--sp-1)">
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ talkToSales }}" hint-size="auto,44px">Talk to sales</x-import>
+                        </div>
+                      </div>
+                    </x-import>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ f.picking }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;align-items:flex-start;background:var(--surface-form);border-radius:var(--r-lg);padding:var(--sp-4)">
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ f.act }}" hint-size="auto,48px">Review change</x-import>
+                </div>
+              </sc-if>
+              <sc-if value="{{ f.readOnly }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;padding:0 var(--sp-1)">
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ScopeNote" dc-props="{{ scopeNote }}" hint-size="100%,40px"></x-import>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ f.picking }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1) var(--sp-3);padding:0 var(--sp-1)">
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ bookSource }}" hint-size="auto,18px"></x-import>
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ gstNote }}" hint-size="auto,18px"></x-import>
+                </div>
+              </sc-if>
+            </div>
+
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ compareBlock }}" hint-size="100%,440px">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+                <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+                  <span style="font-size:var(--fs-body-sm);font-weight:var(--fw-medium);color:var(--text-secondary)">Show</span>
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ f.compareShow }}" hint-size="auto,44px"></x-import>
+                </div>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.CompareGrid" dc-props="{{ f.compare }}" hint-size="100%,340px"></x-import>
+              </div>
+            </x-import>
+          </div>
+            </div>
+          </div>
+        </x-import>
+
+        <sc-if value="{{ f.picked }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:var(--header-h);left:var(--rail-w);right:0;bottom:0">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ panel }}" hint-size="100%,100%">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-6)">
+                <sc-for list="{{ panelSections }}" as="sec" hint-placeholder-count="3">
+                  <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+                    <sc-if value="{{ sec.overline }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-tertiary)">{{ sec.overline }}</span>
+                    </sc-if>
+                    <sc-if value="{{ sec.rows }}" hint-placeholder-val="{{ true }}">
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ sec.group }}" hint-size="100%,160px">
+                        <sc-for list="{{ sec.rows }}" as="r" hint-placeholder-count="3">
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ r.label }}" value="{{ r.value }}" provenance="{{ r.prov }}" hint-size="100%,24px"></x-import>
+                        </sc-for>
+                      </x-import>
+                    </sc-if>
+                    <sc-if value="{{ sec.money }}" hint-placeholder-val="{{ false }}">
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MoneySummary" dc-props="{{ sec.money }}" hint-size="100%,170px"></x-import>
+                    </sc-if>
+                    <sc-if value="{{ sec.deriv }}" hint-placeholder-val="{{ false }}">
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Derivation" dc-props="{{ sec.deriv }}" hint-size="100%,44px"></x-import>
+                    </sc-if>
+                    <sc-if value="{{ sec.prov }}" hint-placeholder-val="{{ false }}">
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ sec.prov }}" hint-size="100%,18px"></x-import>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </x-import>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-for>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1632,"height":4398}}'>
+/* The 1536 layer of SCR-M12-03. Same story and same pinned dates as the 375 board: today 15 Sept
+   2026, the cycle in force 1–30 Sept, the next bill 1 Oct 2026. */
+const TODAY = "2026-09-15";
+const NEXT_BILL = "2026-10-01";
+
+const GST = 0.18;
+const GST_PCT = "18%";
+const BOOK_LIST = "India price list · 1 Apr 2026";
+const DAYS_IN_CYCLE = 30;
+const DAYS_LEFT = 16;
+
+const BOOK = {
+  starter: { name: "Starter", mo: 1999, design: "50 kW", proposals: 30, detections: 30, projects: 10 },
+  growth: { name: "Growth", mo: 3999, design: "500 kW", proposals: 300, detections: 100, projects: null },
+  pro: { name: "Pro", mo: 9999, design: "5 MW", proposals: 1500, detections: 400, projects: null },
+  enterprise: { name: "Enterprise", mo: 24999, design: "100 MW", proposals: null, detections: "Custom", projects: null },
+};
+
+const PRORATA = (BOOK.pro.mo - BOOK.growth.mo) * DAYS_LEFT / DAYS_IN_CYCLE;
+const GST_TODAY = PRORATA * GST;
+const TOTAL_TODAY = PRORATA + GST_TODAY;
+const PRO_MONTH_WITH_GST = BOOK.pro.mo * (1 + GST);
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.noop = () => {};
+  }
+
+  componentDidMount() {
+    if (!this.loaded()) {
+      this._poll = setInterval(() => {
+        if (this.loaded()) { clearInterval(this._poll); this._poll = null; this.forceUpdate(); }
+      }, 40);
+    }
+  }
+  loaded() { return !!window.HelioGridDesignSystem_c8aa43; }
+  componentWillUnmount() { if (this._poll) clearInterval(this._poll); }
+  ns() { return window.HelioGridDesignSystem_c8aa43 || {}; }
+
+  g(NS, name, size, filled, tone) {
+    return React.createElement(NS.ShellGlyph, { name: name, size: size || "lg", filled: !!filled, tone: tone });
+  }
+
+  money(text) {
+    return React.createElement("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, text);
+  }
+
+  rightMoney(text) {
+    return React.createElement("span", { style: { display: "block", textAlign: "right" } }, this.money(text));
+  }
+
+  /* F7-22 / F7-48: the persona's standing destinations, More in view; the bell and the account at
+     the rail's foot. */
+  rail(NS, who, second) {
+    const D = NS.DESTINATION_GLYPH;
+    const item = (key) => ({ key: key, label: key === "home" ? "Home" : key.charAt(0).toUpperCase() + key.slice(1), icon: this.g(NS, D[key]), activeIcon: this.g(NS, D[key], "lg", true, "primary") });
+    return React.createElement(NS.AppRail, {
+      label: "Main", value: "more", onChange: this.noop,
+      items: [item("home"), item("leads"), item(second), item("more")],
+      footer: [{ key: "notifications", label: "Notifications", icon: this.g(NS, "bell"), badge: 7, onClick: this.noop }],
+      avatar: React.createElement(NS.AccountMenu, {
+        name: who, triggerName: who + " — account, grievance contact and sign out", menuLabel: "Account",
+        grievanceLabel: "Grievance officer", signOutLabel: "Sign out",
+        onGrievance: this.noop, onSignOut: this.noop, align: "start",
+      }),
+    });
+  }
+
+  /* The header holds only whose HelioGrid this is and the one search. */
+  header(NS) {
+    return React.createElement(NS.AppHeader, {
+      tenant: React.createElement("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
+      search: React.createElement(NS.SearchField, { density: "functional", placeholder: "Search leads, projects, invoices", value: "", onChange: this.noop }),
+    });
+  }
+
+  /* SCR-SHELL-01's settings side list for an EPC Owner: a settings page at 1536 draws it, with no breadcrumb. */
+  settingsList() {
+    const H = (t) => ({ key: "h-" + t, heading: t, row: false, current: false });
+    const R = (label, glyph, cur) => ({ key: label, heading: null, label: label, glyph: glyph, row: !cur, current: !!cur });
+    return [R("Profile & preferences", "people"), H("Your team"), R("Team", "people"), R("Roles reference", "shield"), H("Your company"), R("Business profile", "building"), R("Branding", "palette"), R("Proposal template", "document"), R("Payment terms", "calendar-clock"), H("What you sell"), R("Catalog", "package"), H("Customer calls"), R("Agent & voice", "headset"), H("Money"), R("Collections", "wallet"), R("Billing", "credit-card", true), R("Usage", "gauge")];
+  }
+
+  crumbs(NS) {
+    return React.createElement(NS.Breadcrumb, {
+      items: [{ key: "billing", label: "Billing", onClick: this.noop }, { key: "plans", label: "Plans" }],
+    });
+  }
+
+  /* The plan card shared with SCR-M12-01 and the 375 board: the headline price in mono with tabular
+     figures and its period beside it, then the limits as ONE flowing line. */
+  cardBody(NS, F, tier) {
+    const t = BOOK[tier];
+    const ent = tier === "enterprise";
+    const figure = React.createElement("span", { style: { display: "flex", alignItems: "baseline", gap: "var(--sp-2)", flexWrap: "wrap" } },
+      ent ? React.createElement("span", { key: "from", style: { fontSize: "var(--fs-body-sm)", color: "var(--text-secondary)" } }, "From") : null,
+      React.createElement("span", { key: "n", style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", fontSize: "var(--fs-h1)", lineHeight: "var(--lh-h1)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)" } }, F.money(t.mo)),
+      React.createElement("span", { key: "p", style: { fontSize: "var(--fs-body-sm)", color: "var(--text-secondary)" } }, "a month"));
+    const limits = React.createElement(NS.FactRows, { label: t.name, density: "expressive", form: "lead" },
+      React.createElement(NS.FactRow, { label: "Limits", values: [
+        t.design,
+        (t.proposals === null ? "Unlimited" : F.number(t.proposals)) + " proposals a month",
+        (typeof t.detections === "number" ? F.number(t.detections) : t.detections) + " detections a month",
+      ] }));
+    return React.createElement("span", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-3)" } }, figure, limits);
+  }
+
+  /* The relation chip on its own line, then the card body — one structure for all four columns. */
+  deskCardBody(NS, F, tier, word) {
+    return React.createElement("span", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-2)" } },
+      React.createElement("span", { key: "chip", style: { display: "flex" } },
+        React.createElement(NS.Chip, { density: "expressive" }, word)),
+      React.createElement("span", { key: "body" }, this.cardBody(NS, F, tier)));
+  }
+
+  plans(NS, F, picked) {
+    return {
+      label: "Choose a plan", value: picked || null, onChange: this.noop,
+      currentLabel: "Your plan", density: "expressive", columns: 3,
+      style: { height: "100%", display: "grid", gridTemplateRows: "auto 1fr" },
+      options: [
+        { value: "starter", title: BOOK.starter.name, content: this.deskCardBody(NS, F, "starter", "Downgrade") },
+        { value: "growth", title: BOOK.growth.name, content: this.deskCardBody(NS, F, "growth", "Your plan") },
+        { value: "pro", title: BOOK.pro.name, content: this.deskCardBody(NS, F, "pro", "Upgrade") },
+      ],
+    };
+  }
+
+  /* The full four-plan matrix, one region, the same set selector — never four tables stacked. */
+  compare(F, width) {
+    const val = (t) => ({
+      design: BOOK[t].design,
+      proposals: BOOK[t].proposals ? F.number(BOOK[t].proposals) + " / mo" : "Unlimited",
+      projects: BOOK[t].projects ? F.number(BOOK[t].projects) : "Unlimited",
+      users: "Unlimited",
+    });
+    return {
+      caption: "All four plans · limits", density: "functional", read: { kind: "ready" },
+      columnWidth: Math.floor(width * 0.21), labelWidth: width - 4 * Math.floor(width * 0.21),
+      currentLabel: "Your plan",
+      options: [
+        { key: "starter", name: BOOK.starter.name, values: val("starter") },
+        { key: "growth", name: BOOK.growth.name, current: true, values: val("growth") },
+        { key: "pro", name: BOOK.pro.name, values: val("pro") },
+        { key: "enterprise", name: BOOK.enterprise.name, values: val("enterprise") },
+      ],
+      attributes: [
+        { key: "design", label: "Biggest design" },
+        { key: "proposals", label: "Proposals" },
+        { key: "projects", label: "Active projects" },
+        { key: "users", label: "Users" },
+      ],
+      provenance: { source: BOOK_LIST },
+    };
+  }
+
+  compareShow(owner) {
+    const options = [{ value: "limits", label: "Limits" }, { value: "included", label: "Included" }];
+    if (owner) options.push({ value: "overage", label: "Extra charges" });
+    return { label: "Show", value: "limits", onChange: this.noop, options: options };
+  }
+
+  act(picked) {
+    const base = { variant: "primary", size: "lg", onClick: this.noop };
+    return picked ? base : Object.assign({}, base, { disabled: true, disabledReason: "Pick a plan to see what changes and what you pay." });
+  }
+
+  planBlock(NS, owner) {
+    return {
+      density: "expressive", title: "Your plan",
+      badge: React.createElement(NS.StatusChip, { status: "active", label: "Active", tone: "success", density: "expressive" }),
+      provenance: owner ? { source: BOOK_LIST } : null,
+      action: owner ? React.createElement(NS.Explainer, {
+        label: "About reading and exporting", title: "Reading and exporting",
+        placement: "bottom", inset: true,
+        pages: "Reading and exporting your work never stop, whatever happens to a payment.",
+      }) : null,
+    };
+  }
+
+  /* The review panel: the same groups, rows and words as the 375 sheet. */
+  panelSections(F) {
+    const m = (n) => this.money(F.money(n));
+    return [
+      {
+        key: "changes", overline: "What changes", group: { label: "What changes", density: "expressive", form: "lead" },
+        rows: [
+          { key: "d", label: "Biggest design", value: "500 kW → 5 MW" },
+          { key: "p", label: "Proposals", value: "300 → 1,500 a month" },
+          { key: "a", label: "AI detections", value: "100 → 400 a month" },
+          { key: "s", label: "Storage", value: "50 GB → 250 GB" },
+          { key: "v", label: "Voice minutes", value: "Per minute → 400 a month" },
+          { key: "u", label: "Unchanged", value: "Active projects · Users" },
+        ],
+        prov: { source: BOOK_LIST, size: 12 },
+      },
+      {
+        key: "pay",
+        money: {
+          overline: "What you pay today", surface: "screen", density: "expressive", payableLabel: "Total today",
+          lines: [
+            { key: "delta", label: "Part of this cycle · " + DAYS_LEFT + " of " + DAYS_IN_CYCLE + " days", amount: PRORATA },
+            { key: "gst", label: "GST " + GST_PCT, amount: GST_TODAY },
+          ],
+          provenance: { tier: "unmarked", source: BOOK_LIST },
+        },
+        deriv: {
+          open: false, summary: "How the part-cycle amount is worked out", label: "Part of this cycle",
+          parts: [
+            { kind: "formula", label: "Days", text: DAYS_LEFT + " of this cycle's " + DAYS_IN_CYCLE + " days remain on " + F.date(TODAY) + "." },
+            { kind: "formula", label: "Difference", text: React.createElement("span", null, m(BOOK.pro.mo - BOOK.growth.mo), " a month between Growth's ", m(BOOK.growth.mo), " and Pro's ", m(BOOK.pro.mo), ", before GST.") },
+            { kind: "note", label: "Tax", text: React.createElement("span", null, "GST " + GST_PCT + " on the ", m(PRORATA), " part-cycle charge.") },
+          ],
+        },
+      },
+      {
+        key: "when", overline: "When it starts", group: { label: "When it starts", density: "expressive", form: "lead" },
+        rows: [
+          { key: "s", label: "Plan swaps", value: F.date(NEXT_BILL) },
+          { key: "m", label: "From then, a month", value: this.rightMoney(F.money(PRO_MONTH_WITH_GST, { fractionDigits: 2 })), prov: { tier: "unmarked", note: "with GST", size: 12, align: "right" } },
+        ],
+      },
+    ];
+  }
+
+  /* F7-21's switch: the act opens this side panel, as it opens the sheet at 375. Non-modal — the
+     page beside it is its subject. It mounts in the slot below the header, so the shell stays
+     reachable; the slot is wider than the 720px threshold, so EditorSurface picks the panel itself
+     at its own default width. */
+  panel(NS, F) {
+    return {
+      open: true, onClose: this.noop, modal: false, desktop: "panel", inset: true,
+      density: "expressive", zIndex: 30, showClose: false, dismissible: false,
+      title: "Review", subtitle: "Growth to Pro · monthly",
+      panelProps: { style: { transform: "translateX(0)", animation: "none" } },
+      footer: React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-2)" } },
+        React.createElement(NS.SheetActions, { key: "row" },
+          React.createElement(NS.Button, { onClick: this.noop, fullWidth: true }, React.createElement("span", null, "Pay ", this.money(F.money(TOTAL_TODAY))))),
+        React.createElement("span", {
+          key: "line",
+          style: { fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)", textAlign: "center", textWrap: "pretty" },
+        }, "Paid on your provider's own page — new limits apply at once.")),
+    };
+  }
+
+  frames(NS, F) {
+    const OPEN_PAD = "calc(var(--sp-24) * 5 + var(--screen-pad-desktop))";
+    const SHUT_PAD = "var(--screen-pad-desktop)";
+    const owner = this.rail(NS, "Mahesh Bhosale", "projects");
+    const priced = [
+      { key: "plan", label: "Plan", value: "Growth" },
+      { key: "price", label: "Price", value: this.money(F.money(BOOK.growth.mo) + " / mo + GST") },
+      { key: "bill", label: "Next bill", value: F.date(NEXT_BILL) },
+    ];
+    const base = (o) => Object.assign({
+      offset: "0px", padRight: SHUT_PAD, rail: owner, sideNav: true, picked: false, picking: true, readOnly: false,
+      planBlock: this.planBlock(NS, true), planRows: priced,
+      plans: this.plans(NS, F, null), act: this.act(false),
+      compare: this.compare(F, 1060), compareShow: this.compareShow(true),
+    }, o);
+    return [
+      base({ id: "m12-03-d1", label: "1536 · the default", screenLabel: "Plan selection — default (1536)" }),
+      base({ id: "m12-03-d2", label: "1536 · Pro picked · the review panel", screenLabel: "Plan selection — upgrade review panel (1536)",
+        picked: true, sideNav: false, padRight: OPEN_PAD, plans: this.plans(NS, F, "pro"), act: this.act(true), compare: this.compare(F, 920) }),
+      base({ id: "m12-03-d3", label: "1536 · the foot · all four plans compared", screenLabel: "Plan selection — full matrix (1536)", offset: "-227px" }),
+      base({ id: "m12-03-d4", label: "1536 · not the Owner · read only", screenLabel: "Plan selection — non-Owner, read only (1536)",
+        rail: this.rail(NS, "Priya Sharma", "proposals"), picking: false, readOnly: true,
+        planBlock: this.planBlock(NS, false), planRows: [priced[0], priced[2]],
+        compareShow: this.compareShow(false) }),
+    ];
+  }
+
+  renderVals() {
+    const NS = this.ns();
+    const ready = !!(NS.MarketProvider && NS.AppShell && NS.AppRail && NS.AppHeader && NS.AccountMenu
+      && NS.ShellGlyph && NS.DESTINATION_GLYPH && NS.SearchField && NS.Breadcrumb && NS.Block && NS.FactRows
+      && NS.FactRow && NS.FilterChips && NS.OptionCardGroup && NS.Card && NS.Chip && NS.Button && NS.ScopeNote
+      && NS.Provenance && NS.CompareGrid && NS.StatusChip && NS.Explainer && NS.EditorSurface && NS.SheetActions
+      && NS.MoneySummary && NS.Derivation);
+    if (!ready) return { noop: this.noop, frames: [] };
+    if (this._vals) return this._vals;
+    const F = NS.MarketProvider.createFormat();
+
+    this._vals = {
+      noop: this.noop,
+      frames: this.frames(NS, F),
+      header: this.header(NS),
+      crumbs: this.crumbs(NS), settings: this.settingsList(),
+      cycleSelector: {
+        label: "Billing cycle", value: "monthly", onChange: this.noop,
+        options: [{ value: "monthly", label: "Monthly" }, { value: "yearly", label: "Yearly" }],
+      },
+      enterpriseBody: this.cardBody(NS, F, "enterprise"),
+      talkToSales: { size: "sm", variant: "secondary", icon: this.g(NS, "phone", "sm", false, "primary"), onClick: this.noop },
+      readOnlyCards: [
+        { key: "starter", name: "Starter", word: "Downgrade" },
+        { key: "growth", name: "Growth", word: "Your plan" },
+        { key: "pro", name: "Pro", word: "Upgrade" },
+        { key: "enterprise", name: "Enterprise", word: "Annual contract" },
+      ],
+      scopeNote: { holder: "Mahesh Bhosale (owner)", acts: ["change this plan"], variant: "line", size: 13 },
+      bookSource: { source: BOOK_LIST, size: 12 },
+      gstNote: { note: "Prices exclude GST", size: 12 },
+      compareBlock: { density: "functional", flat: true, style: { padding: 0 }, title: "Compare all plans" },
+      panel: this.panel(NS, F),
+      panelSections: this.panelSections(F),
+    };
+    return this._vals;
+  }
+}
+</script>
+</body>
+</html>

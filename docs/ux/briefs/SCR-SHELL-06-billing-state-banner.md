@@ -17,16 +17,16 @@ in the self-audit. The strip spends its height on rows, never on sentences.
 
 | Fact | Kind | Its form here |
 |---|---|---|
-| The state — trial days left, a failed payment and its day in the grace, a cap at 80% or at its ceiling, halted (`M12-53`, `M12-06`, `M12-30`, `M12-39`) | status · data | the strip's ONE title line: the fact with its count or its date |
+| The state — trial days left, a failed payment and its day in the grace, a cap at its ceiling, halted (`M12-53`, `M12-06`, `M12-30`, `M12-39`) | status · data | the strip's ONE title line: the fact with its count or its date |
 | What paused, and what still works until when (`M12-31`, `M12-39`) | data | at most three short rows under the title — `Paused`, `Still works`, and `Until` with the date in a row of its own, because the deadline is the fact the person acts on. `Paused` and `Still works` are lists, so each gets the full width with its icon and its word leading the line — never a narrow value column beside a label; `Until` is short, so it is one label–value line. At `halted` the always-works set is a four-item list, because it is four items. Never a paragraph, never "account limited" |
-| What resolves it (`M12-31`, `M12-21`) | action | the strip's ONE act; its label IS what resolves it. The day-6 act names the payment method it will charge |
+| What resolves it (`M12-31`, `M12-21`) | action | the strip's ONE act; its label IS what resolves it. The day-6 act names the payment method it will charge, by the gateway's name — `UPI AutoPay` — never a bank or last digits (`M12-10`; owner ruling 2026-10-29) |
 | The automatic retry, while nothing has paused (`M12-39`) | data | that a retry is coming rides the title line; it is not a sentence of reassurance, and no retry date is invented |
 | The forfeiture disclosure, for a tenant inside a protection horizon (`M12-39`) | fixed disclosure | ONE sentence, drawn whole on every rung, never trimmed, never behind a tap — and not counted against any budget |
-| The trial countdown before D-7 (`M12-53`) | status | a chip with its tier mark and no act — a fact, no pressure |
+| The trial countdown before D-7 (`M12-53`) | status | a chip and no act — a fact, no pressure. A count of days carries no tier (`F8-01`) |
 | A blocked act (`M12-21`) | data · action | the denial is a sheet at 375 and a centred modal at 1536: its title names what was blocked; two short lists, `Paused` and `Still works`; ONE primary act — reactivate, pick a plan, or upgrade |
-| The amount (Owner only) | data | in the act's label, or one label–value row. For every other employee the strip renders without it |
+| The amount (Owner only) | data | in the act's label, or one label–value row. For every other employee the strip renders without it. The strip's billing read must carry the amount due, its invoice number and the payment method's name for the Owner (owner ruling 2026-10-29) — `T-SHELL-006`'s read is extended when that task starts |
 | A person who is not the Owner | status | the state and its rows stay; the act's place is taken by ONE line naming whose act it is |
-| Provenance (`F8-07`) | honesty label | ONE row: the tier as a mark — dot and word — beside the `Derivation` disclosure that opens the origins, which charge and which invoice. Never a line of words in the strip, and no separator left hanging after the mark. A recorded date carries none |
+| The amount's working (`F8-07`) | more detail | no tier label on this screen (owner ruling 2026-10-29); where an amount shows, the `Derivation` disclosure `How it is worked out` opens its origins — which charge and which invoice |
 | The billing state could not be read | error | one line and `Try again`. No figure at all — not the last known day, not the amount |
 | No billing condition | — | nothing is rendered: no strip, no chip, no teaching |
 
@@ -43,7 +43,8 @@ in the self-audit. The strip spends its height on rows, never on sentences.
 The first drawing of this screen invented a 30-day trial and a meter called "AI designs" at 40 of 50,
 because this brief carried neither fact. The trial's length, every meter's name and every bundle size
 on this screen are these rows' values; a frame that shows another is wrong. Counts used, dates and the
-invoice are yours to choose.
+invoice are yours to choose. **The capped meter is proposals a month — Growth 300** (`BM-41`, `M12-23`): AI
+detections are a bundle that runs on at ₹10 each, never a cap, so no cap strip names them.
 
 - **M12-52** (P0) — **The trial is modelled in-app only; the gateway subscription is created at conversion.** 14 days, every tier capability, within the trial caps (book data — `BM-41`); no card or mandate to start; one 7-day extension available to support (an audited override, M12-19's family).
 - **BM-41** (P0) — **The India book — the source-derived first instance (IN book; every number below is IN-market data, not the generic model).** Identified by `F1-60`/`F1-61`; canonical here. **Tier prices (INR, ex-GST):** Starter **₹1,999/mo · ₹19,990/yr** — Growth **₹3,999/mo · ₹39,990/yr** — Pro **₹9,999/mo · ₹99,999/yr** — Enterprise **custom, anchored ₹24,999+/mo**, annual contract (owner-set anchors ~₹2k/~₹4k/~₹10k). **Capacity + counts:** single-design ceiling 50 kW / 500 kW / 5 MW / 100 MW (utility: blocks/zones, trackers, terrain); proposals 30 / 300 / 1,500 / unlimited per month; active projects 10 / unlimited / unlimited / unlimited; users unlimited on all four. **Bundles + overage:** AI detections 30 / 100 / 400 / custom per month, then ₹10 each; voice minutes PAYG ₹6/min on Starter and Growth, 400 min/mo bundled then ₹6/min on Pro, custom bundles + BYO number on Enterprise; storage 10 / 50 / 250 GB / custom. **Trial caps:** 25 detections · 15 voice minutes · 5 GB; **proposals are not capped in the trial** (owner ruling 2026-10-08 — a proposal costs the platform little and is the trial's moment of value). **Service terms are pricing-page copy, not book data (owner ruling 2026-09-07):** the IN positioning — support in-app / in-app + WhatsApp / priority + onboarding call / named contact — is rendered by the pricing page as Tier-keyed screen copy per BM-14; the book carries none of it and no entitlement, invoice or gate reads it, and a second market whose terms differ carries them as pack labels (`F1-22`), never in a locale-keyed catalog. Enterprise adds the BM-15 commercial arrangements. **Benchmarks (recorded per BM-39):** Reslink India INR page (owner-supplied, authoritative — Basic ₹60,000/yr at 50 kW · Pro ₹85,000/yr at 500 kW, 1,000 proposals · Premium ₹1,20,000/yr at 5 MW · Enterprise custom) and ARKA per-org pricing; priced under both at every rung — Starter-yearly 67% under Basic, Growth-yearly 53% under Pro, Pro-yearly 17% under Premium with a voice bundle no competitor has, and Pro's 1,500 proposals/mo beat the benchmark's 1,000. **Collection routes:** per the IN mandate ladder, F1-40 (monthly self-serve under the per-debit cap rides UPI AutoPay; Enterprise e-NACH/invoice; every yearly total exceeds the cap and is a single payment link/invoice per year). **V2 add-on prices (owner ruling 2026-08-04 — base tiers confirmed unchanged; every add-on number below is DRAFT pending rate-card verification per BM-17/BM-26):** tracked seat **≈₹99/seat/mo** beyond the tier's included allowance; **included tracked seats: Starter 0 · Growth 3 · Pro 10 · Enterprise custom**; marketing-send bundles **Starter 500 · Growth 2,000 · Pro 10,000 sends/mo**, overage **≈ WhatsApp ₹1.5 · SMS ₹0.35 · email ₹0.10 per send**. A draft add-on rate is not sellable until the owner verifies the channel/seat rate cards against worst-case unit COGS (the ≥40% floor, BM-17) — verification is the revisit trigger.
@@ -54,19 +55,39 @@ recorded date, so it carries no mark.
 
 ## Entry & exit
 
-Reached from: not navigated to — the state banner and countdown chip render in the app shell whenever the tenant is in a trial countdown, a post-expiry soft block, `past_due` grace, cap-ladder or halted state (M12-53, M12-06, M12-30, M12-39); a denial sheet fires when any UI mutation is blocked by the billing-state matrix (M12-21). Leads to: the "Reactivate" (or upgrade) path (M12-21); the day-6 one-tap pay link (M12-39); the plan-pick screen at trial expiry (M12-53 — SCR-M12-03); the usage screen carries the cap ladder's own surface (M12-30 — SCR-M12-04). If the PRD does not pin an entry/exit beyond these, it is not pinned by PRD — designer decides, note the decision.
+Reached from: not navigated to — the state banner and countdown chip render in the app shell whenever the tenant is in a trial countdown, a post-expiry soft block, `past_due` grace, cap-ladder or halted state (M12-53, M12-06, M12-30, M12-39); a denial sheet fires when any UI mutation is blocked by the billing-state matrix (M12-21). Leads to: the "Reactivate" (or upgrade) path (M12-21); the day-6 one-tap pay link (M12-39); the plan-pick screen at trial expiry (M12-53 — SCR-M12-03); the usage screen carries the cap ladder's own surface (M12-30 — SCR-M12-04). Decisions 3, 3a and 6 settle every other route.
 
 **Decisions made in design (2026-09-20) — later screens inherit them.**
 
 1. **The slot.** One pinned slot between the top bar and the scrolling content, one banner at a time (`BannerStack mode="single"`). It never scrolls away and is never dismissed: `BM-32` makes the strip the guaranteed way back.
-2. **The strip's form.** One title line; rows of ONE family — a mark, the row's word leading the line, then its values — `Paused`, `Still works`, and a dated row (`Until`, `Account halts`, `Cycle resets`, `New detections pause`) — the dated row and an amount row take a neutral mark, only the two pause rows a semantic one; then ONE row with the tier mark and the `Derivation` beside it; then the act. The act sits on its own line at 375 and in the banner's action row at 1536, where the strip caps at 1080.
-3. **Where the act goes.** Every dunning, trial and halted act, and both denials' act, route to `SCR-M12-03` and return to the surface they were pressed from; the day-6 act is that route with the card already chosen. The 80% cap's act is `See usage` and routes to `SCR-M12-04`; at 100% and after the grace the act is `Upgrade plan`.
+2. **The strip's form.** One title line; rows of ONE family — a mark, the row's word leading the line, then its values — `Paused`, `Still works`, and a dated row (`Until`, `Account halts`, `Cycle resets`, `New proposals pause`) — the dated row and an amount row take a neutral mark, only the two pause rows a semantic one; then, where an amount shows, the `Derivation` disclosure; then the act. The act sits on its own line at 375 and in the banner's action row at 1536, where the strip caps at 1080.
+3. **Where the act goes.** Every dunning, trial and halted act, and both denials' act, route to `SCR-M12-03` and return to the surface they were pressed from; the day-6 act is that route with the payment method already chosen. At 80% of a cap the shell draws no strip: the pre-warning is the usage screen's (`SCR-M12-04`, `M12-34`; `T-SHELL-006`). At 100% and after the grace the act is `Upgrade plan`.
+3a. **On Billing Home (`SCR-M12-02`) the strip has no act and no amount row** (owner ruling 2026-10-29): that screen's `Needs you`, directly under the strip, carries both.
 4. **A person who is not the Owner.** `ScopeNote` takes the act's place, its holder in the design system's form — `Mahesh Bhosale (owner)` — and no amount is rendered.
 5. **The default frame is `past_due`, day 4 of 7** — the one ordinary rung where something has paused while core selling still works.
+6. **The strip carries no ask and no second route.** How the grace works lives on `SCR-M12-02`, how caps reset on `SCR-M12-04`; the ledger, invoice and plan are reached through the act and More → Billing. Each region's focal point is the act, its headline the title line.
+7. **Act labels by rung:** days 0–3 `Update your payment method`, with the amount as an `Amount due` row · day 4 `Pay {amount} now` · day 6 `Pay {amount} with UPI AutoPay` · halted `Reactivate with one payment of {amount}` · trial D-7 and expired `Pick a plan` · error `Try again`. The amount inside a label is mono.
+8. **Dated rows:** days 0–3 `Voice, AI detections and invites pause · {day-4 date}`; a cap in grace `New proposals pause`; a cap after grace `Cycle resets`. No `Paused` row at halted or expired names engineer sign-off or photos already taken (`M12-24`, `M12-26`).
+9. **The cap rows.** In grace: `Still works` — new proposals, editing, duplicating and sharing existing proposals, reading, export. After grace: `Paused` — new proposals; `Still works` — editing, duplicating and sharing existing proposals, reading, export, every other feature.
+10. **The denials.** Trial expired: overline `Trial ended`, title `Creating a lead is paused`. Past due: overline `Payment overdue`, title `Inviting a teammate is paused`. The blocked control is never disabled beforehand, and the denial's lists are the strip's own two.
+11. **The forfeiture sentence sits in the banner body** at the rows' weight, not in `Disclosure`, whose scale is for documents.
+12. **Loading never holds the app**; the surface behind renders as normal. At 1536 the strip never rides in `AppHeader`, which holds one line.
+13. **The `Derivation` has two parts:** `Grace day` (counted from the failed charge) and `Amount` (the Growth month with its 18% GST, on invoice `HG-INV-2026-0902` in mono).
+14. **The no-amounts sample reader is Sneha Patil, Sales Manager** — the only non-Owner role the dunning strip reaches (`M12-40`).
+15. **Motion.** When the state changes, the strip swaps in its slot with no push on the content below; it never slides away, because it is never dismissed; a denial rises as a sheet at 375 and appears as a centred modal at 1536; the countdown chip does not move (`F7-51`: every motion is the design system's; nothing waits on it, and a figure never animates).
 
 **Decision made in the redesign.** The failed charge is the Growth month — invoice `HG-INV-2026-0902`,
 ₹3,999 + 18% GST = **₹4,718.82** — the same figure `SCR-M12-02` prints with its working. One story, one
 figure across every billing screen.
+
+## Design system gaps
+
+Owner ruling 2026-10-29: a board draws the nearest real component, never a look-alike, and the screen's build adds the missing part to `packages/ui`. *Canvas behind the repo* means the repo already has the part and only the canvas copy lacks it.
+
+- `ShellGlyph` `pause`, `tick`, `clock`, `rupee` — canvas behind the repo; `ShellGlyph` has no `warning` tone for the `Paused` mark.
+- `LoadingBars` has no size the strip fits; the board draws `panel`.
+- No token holds the strip's 1080px cap at 1536.
+- No mono figure inside a `BannerAction` or `Button` label, a `FactRow` value or `Derivation` text (`F7-09`).
 
 ## Requirements (verbatim)
 
@@ -93,7 +114,7 @@ figure across every billing screen.
 - **day6-final-warning-one-tap-pay** — final warning with a one-tap pay link (M12-39)
 - **halted-still-works-list** — `halted`, message confirms read + export + customer links + the billing screens (pay/upgrade/reactivate) still work (M12-39)
 - **protected-tenant-forfeiture-variant** — the same ladder for a tenant inside a protection horizon: from day 0, and on every rung after it, the copy states plainly that a lapse to `cancelled`/`halted` forfeits the launch-price guarantee and reactivation prices at the current book — the no-surprise rule (M12-39, owner ruling 2026-08-04). This is a variant of each dunning rung above, not a rung of its own: the day 0, day 2, day 4, day 6 and day 7 banners each carry the extra disclosure sentence for a protected tenant and omit it for every other tenant, so both lengths must read well. It is a disclosure, never a threat — the consequence named is one that will actually occur, and no dunning copy threatens deletion, because nothing is deleted (M12-41 context — the dunning-honesty law).
-- **cap-80-warning** — the 80% pre-warning; the first notice is never the block (M12-30)
+- **cap-80-warning** — not drawn in the shell: at 80% the shell shows no strip, because the pre-warning is the usage screen's (`SCR-M12-04`; M12-30, M12-34; `T-SHELL-006` DONE WHEN). The first notice is never the block.
 - **cap-100-grace** — the 100% banner with the 7-day grace running (M12-30)
 - **cap-post-grace-paused** — new creations of that type paused until upgrade or the next cycle; reading, editing existing records and exporting never pause (M12-30, M12-31)
 - **typed-denial-with-reactivate-route** — the typed entitlement-blocked denial rendering the state banner and a "Reactivate" (or upgrade) path (M12-21)
@@ -101,21 +122,17 @@ figure across every billing screen.
 
 `loading` is a skeleton in the slot's own footprint with no tone, no glyph and no numeral — a strip that guessed a warning would alarm a tenant whose account is fine. `error` is neutral, never danger.
 
-Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `error`, `trial-countdown-d7-prominent`, `trial-expired-soft-block` (its denial is `typed-denial-with-reactivate-route`'s centred modal), `past-due-day0-3-banner`, `day6-final-warning-one-tap-pay`, `protected-tenant-forfeiture-variant`, `cap-80-warning`, `cap-100-grace`, `cap-post-grace-paused`.
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `error`, `trial-countdown-d7-prominent`, `trial-expired-soft-block` (its denial is `typed-denial-with-reactivate-route`'s centred modal), `past-due-day0-3-banner`, `day6-final-warning-one-tap-pay`, `protected-tenant-forfeiture-variant`, `cap-100-grace`, `cap-post-grace-paused`.
 
 ## Data volume
 
 One banner at a time: gates compose with one rule — the broadest true fact speaks (state before cap, cap before bundle), so a user never gets two banners for one act (M12 §M12.4 behavior detail). The ladder is five rungs plus post-halt weekly × 4 then monthly (M12-39); the cap ladder is 80% → 100% → 7-day grace → pause (M12-30). Every dunning rung has two copy lengths — the ordinary one and the protected tenant's, which carries the forfeiture disclosure from day 0 — so design the banner at the longer of the two without letting the shorter one look empty (M12-39, `BM-42`). Design the denial sheet's "what still works" list at the always-works set's real length — four items at `halted` (M12-39).
 
-## Numbers carrying provenance
+## Numbers and their source
 
-Each of these user-visible numbers/dates carries its F8 provenance tier in the design. This is a billing surface, so it uses plain "actual usage" language per the owner ruling carried in M12-34 — the provenance word "measured" is reserved for engineering/survey data and never appears here (owner ruling 2026-08-04). It binds the cap ladder's consumption figures in particular, which name the same rollups the usage screen states (M12-30 → SCR-M12-04):
+No figure on these screens carries a provenance tier label (owner ruling 2026-10-29, for billing only). Billing screens use plain "actual usage" language — the word "measured" never appears (owner ruling carried in M12-34).
 
-- The trial countdown chip's days remaining, and its D-7 threshold (M12-53)
-- The grace-day position in the dunning ladder — day 0 / 2 / 4 / 6 / 7 (M12-39, M12-06)
-- The cap percentages — 80% warning, 100% banner — and the 7-day cap grace (M12-30)
-- The "until when" in every pause message (M12-31)
-- No money amounts render for non-Owner employees: banners for all employees, acts and their figures for the Owner only (M12 §M12.2 permissions)
+- The amount due (₹4,718.82, the Growth month with its GST) shows its working in `How it is worked out`, naming the charge and the invoice. Owner only (M12 §M12.2 permissions); no amount renders for any other employee.
 
 ---
 

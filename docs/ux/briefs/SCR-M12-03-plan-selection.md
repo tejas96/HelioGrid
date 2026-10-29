@@ -19,12 +19,12 @@ Every fact below is carried. None is a paragraph. The kinds are the context file
 | Enterprise is sales-assisted, never a checkout (`M12-55` context) | action | a row with `Talk to sales` |
 | Billing cycle | action | a two-way selector; the yearly price is the book's own row, and no saving is computed or claimed |
 | What changes between my plan and the chosen one | data | a from–to list in the review sheet; limits that do not change share one line |
-| What I pay today and from the boundary (`M12-48`) | data | label–value rows with the tax line and a total; one tier mark on the group; the prorated amount's working is its `Derivation` disclosure |
-| Entitlements apply at once (`M12-48`) | action line | ONE line at the button — never a paragraph about the boundary |
+| What I pay today and from the boundary (`M12-48`) | data | label–value rows with the tax line and a total; the prorated amount's working is its `Derivation` disclosure |
+| Entitlements apply at once (`M12-48`) | action line | ONE line, centred under the button — never a data row and never a paragraph about the boundary (owner ruling 2026-10-29). It also says where the payment happens, because the act carries one line: `Paid on your provider's own page — new limits apply at once.` |
 | Downgrade — exactly what will be blocked (`M12-49`) | data | the screen's one tinted block, first in the review sheet: a row per blocked thing — its count, what stays readable and exportable, and a route to the list |
 | Downgrade — nothing is over the lower plan's limits (`M12-49`) | data | the same block's place holds ONE row that says so; the preview ran and found nothing, and a missing block would not say that |
 | Downgrade starts at the next cycle, no mid-cycle refund (`M12-49`) | data | a `From <date>` row and a `This cycle · No refund` row |
-| Payment is collected on the gateway's page, at that moment (`M12-54`) | action line · help | one line under the button; the rest waits behind the ask |
+| Payment is collected on the gateway's page, at that moment (`M12-54`) | action line · help | the same ONE line under the button as the row above; the rest waits behind the ask |
 | Trial days do not extend the paid cycle (`M12-54`) | data | a `Paid cycle starts` row in the review sheet, on the trial-expiry entry only |
 | Read and export keep working (`M12-53`, `BM-32`) | help — but data in a dead state | behind the ask for an active tenant; ON the screen, as one line, in `trial-expiry-entry` and after a lapse, where nothing is behind anything |
 | After a lapse the prices are the current book's | data | the plans region's caption names the price list the prices come from |
@@ -57,7 +57,9 @@ are these rows' values. A frame that shows a plan name or a figure these rows do
 - **M12-52** (P0) — **The trial is modelled in-app only; the gateway subscription is created at conversion.** 14 days, every tier capability, within the trial caps (book data — `BM-41`); no card or mandate to start; one 7-day extension available to support (an audited override, M12-19's family).
 - **F1-28** (P0) — The IN tax scheme is **GST**, strategy `per_line_rate`; the tenant tax-registration type is `IN_GST`. All platform prices are **ex-GST**; platform SaaS subscriptions and overage add-ons carry **SAC 998434 (cloud/SaaS) at 18% GST**.
 
-**A price list value's trust label.** Its tier word is `Published` — the PRD's own word for a price list's values (`M12-55`, `M12-35`) — and its source label is the list's name and date. The date is sample content, because a price list is versioned data (`F1-25`): draw `India price list · 1 Apr 2026`.
+**A price list value's trust label.** A figure the price list publishes — a price, a bundle, a rate, a cap — carries no tier (owner ruling 2026-10-29): its region names the list and its date as one quiet source line, prose and never a tier. The date is sample content, because a price list is versioned data (`F1-25`): draw `India price list · 1 Apr 2026`. No figure on the billing screens shows a provenance tier label — `measured`, `derived`, `estimated` or `assumed` — not a computed amount either (owner ruling 2026-10-29, for billing only; the rest of the product keeps `F8-01` for now). Where this brief asks for it, a computed amount shows its working in `How it is worked out`.
+
+**The trial's biggest design is 100 MW** — the top plan's ceiling (owner ruling 2026-10-29): `BM-41` names no trial ceiling, and `M12-52` gives the trial every plan capability. Anything else `BM-41`'s trial caps do not cap — proposals, active projects, users — is not capped on a trial.
 
 ## Entry & exit
 
@@ -72,20 +74,40 @@ Reached from: trial expiry — "expiry leads to a plan-pick screen" (M12-53); th
 
 **Decisions made in design (2026-09-20) — later screens inherit them.**
 
-1. **The plan card.** A plan's name, its relation chip — `Your plan`, `Upgrade` or `Downgrade` — and its price as a figure. At 375 the card also carries the three limits that differ at every plan: `Biggest design`, `Proposals a month`, `AI detections a month`. At 1536 the four cards sit side by side at one height and the limits live in the comparison one region below. Nothing is pre-picked.
+1. **The plan card.** A plan's name, its relation chip — `Your plan`, `Upgrade` or `Downgrade` — and its price as a figure. At 375 the card also carries the limits that differ most, as the redesign's ONE flowing line (below). At 1536 the four cards sit side by side at one height and the limits live in the comparison one region below. Nothing is pre-picked.
 2. **Enterprise is never a checkout.** A row under the cards at 375 and the fourth card at 1536, with `Talk to sales` as its own act and `Annual contract` as a chip.
 3. **The cycle, and every one-of-N choice, is a chip strip** directly above what it changes — `Monthly · Yearly`; `Limits · Included · Extra charges`. The person's words stand in for the price list's: never "bundle", never "overage".
 4. **The comparison is ONE region at both widths.** At 375 a `Compare all plans` row opens it in place: my plan against ONE other, chosen by a chip strip. At 1536 it is present, all four plans as columns.
 5. **The act sits at the foot of the plans region**, off with its one line until a plan is picked, and opens the review — a sheet at 375, `F7-21`'s side panel at 1536, closed until the act opens it.
 6. **The review reads in three groups** — `What changes` (from → to), `What you pay today` (the part of this cycle, `GST 18%`, `Total today`), `When it starts` — values on one edge, amounts on one right edge, the part-cycle amount's working in its `Derivation`, and ONE line at the button.
-7. **Honesty labels.** `Published · India price list · 1 Apr 2026` serves each region; `Prices exclude GST` is its own element beside it; a computed date keeps its own `Derived` mark.
-8. **Still to draw at build:** the `Paid cycle starts` row (`M12-54`), one more row in `When it starts` when the review opens from the trial-expiry entry.
+7. **Honesty labels.** The source line `India price list · 1 Apr 2026` serves each region, no tier (owner ruling 2026-10-29); `Prices exclude GST` is its own element beside it. No figure carries a tier label.
+8. **The trial-expiry review** (`Trial to Growth · monthly`) carries a `Paid cycle starts` row in `When it starts` (`M12-54`): the paid cycle starts at conversion, and trial days never extend it. Its `What changes` runs from the trial's caps to the plan's: `Biggest design · 100 MW → 500 kW`, `Proposals · Not capped → 300 a month`, `AI detections · 25 → 100`, `Voice minutes · 15 → Per minute`, `Storage · 5 GB → 50 GB`.
 
 **Decision made in the redesign — later screens inherit it.** The plan card is one object shared with
-`SCR-M12-01`: the name; the price as the card's headline figure in the design system's figure face
-(sans, tabular) with `a month` beside it, Enterprise `From ₹24,999`; the three limits that differ
-most as ONE flowing line — `Limits — 500 kW · 300 proposals a month · 100 detections a month`. A
-money ROW stays mono; a headline figure does not.
+`SCR-M12-01`: the name; the price as the card's headline figure, mono with tabular figures (`F7-09`; owner ruling
+2026-10-29), with `a month` beside it, Enterprise `From ₹24,999`; the three limits that differ
+most as ONE flowing line — `Limits — 500 kW · 300 proposals a month · 100 detections a month`.
+
+**Decisions made at the board check (2026-10-29).**
+
+1. **The cycle-switch review** (`Growth · monthly to yearly`) is drawn with the upgrade's money block (owner ruling 2026-10-29; `M12-12`: a cycle switch follows the upgrade's mechanics). What changes: `Cycle · Monthly → Yearly`, `Price · ₹3,999 a month → ₹39,990 a year`, `Unchanged · Every limit`. Today: the part-cycle line, its GST and `Total today · ₹0`, with its `Derivation` showing the working — 16 days left at yearly's ₹109.56 a day against monthly's ₹133.30 a day leaves nothing to pay, and the product makes no mid-cycle refund. Then `Yearly starts · 1 Oct 2026` and `From then, a year · ₹47,188.20`. Act `Switch to yearly`, line `Paid on your provider's own page when it starts.`
+2. **A downgrade with nothing over the limits** holds ONE row, `Over Starter's limits · Nothing`, where the blocking block would stand.
+3. **A trial tenant's cards carry no relation chip** (`Your plan`, `Upgrade`, `Downgrade`); checkout-failed is drawn on a trialing tenant, whose `Your plan` stays the unchanged trial.
+4. **After a lapse** the region reads `Halted` and `Halted since`, with `SCR-SHELL-06`'s halted strip without its act; prices after a lapse add `Today's prices — your launch price ended with the lapse.`
+5. **Only a region that prints a price carries the source line**; the Price row reads `₹3,999 / mo + GST`.
+6. **Comparison sets:** `Included` — AI detections · Voice minutes · Storage; `Extra charges` — AI detections `₹10 each` · Voice minutes `₹6 / min`. A non-Owner sees `Limits` and `Included` only.
+7. **Layout.** The default frame is an active Growth tenant with nothing picked, and no strip. The plans region is flat; the cards are the surfaces. The one ask sits in `Your plan`'s header; at 1536 `Your plan` is three cells in one row, the relation chip sits under the card title, and Enterprise is a fourth-column `Card` with `Talk to sales` inside it. The review panel is non-modal under the header. Proration is days left over days in the cycle (16 of 30).
+9. **At 1536 the settings side list stands at the left, `Billing` selected, and there is no breadcrumb** (`SCR-SHELL-01`, *More: the settings list*): Plans opens from Billing. While the review panel is open the list steps aside, as it does for the notification centre, so the plans and the panel keep their room.
+8. **Motion.** The sheet rises from the act at 375 and the panel slides in from the right at 1536 (`EditorSurface`); loading bars give way to content in place; the comparison opens in place; the Pay button shows its spinner during the handoff; a cycle chip swaps prices with no motion, so a figure never seems to animate.
+
+## Design system gaps
+
+Owner ruling 2026-10-29: a board draws the nearest real component, never a look-alike, and the screen's build adds the missing part to `packages/ui`. *Canvas behind the repo* means the repo already has the part and only the canvas copy lacks it.
+
+- `ShellGlyph` has no `warning` tone for the `Paused` mark.
+- No panel-width token: the review panel takes a px width.
+- `CompareGrid` `numeric` right-aligns no figure; the `Extra charges` money column must end on one right edge (`F7-09`).
+- No mono figure inside a `Button` label (`Pay ₹3,776`) or `Derivation` text (`F7-09`).
 
 ## Requirements (verbatim)
 
@@ -114,20 +136,21 @@ Preview mechanics (`docs/prd/modules/M12-platform-billing.md` §M12.8 behavior d
 - **checkout-handoff** — handing to the gateway's hosted flow; the platform's screens collect nothing sensitive (M12-54; M12-10 context); payment collects at that moment and never before.
 - **non-owner-read-only** — a person who is not the Owner arrives, from the expiry route or from Billing Home: the state is visible, the acts are not, no price or amount renders, and the screen says whose act it is (M12-56 context; the same rule SCR-M12-02 carries). The plans stand as plain cards with no cycle selector.
 - **checkout-failed-honest** — gateway failure at conversion: fails honestly, trial state unchanged, nothing half-converts (§M12.2 edge case; `F8-36` context).
+- **yearly-selected** — the cycle chip on `Yearly`: every card shows its yearly price (`BM-13`, `BM-41`).
+- **cycle-switch-review** — monthly to yearly on the same plan: what changes, what is paid today and what is paid from the boundary, where the new yearly subscription starts (`M12-12`, `M12-48`).
+- **downgrade-nothing-over** — a downgrade where nothing is over the lower plan's limits: ONE row says so where the blocking block would stand (`M12-49`).
+- **trial-expiry-review** — the conversion review opened from the trial-expiry entry, with its `Paid cycle starts` row (`M12-54`).
+- **compare-included** and **compare-extra-charges** — the comparison showing its `Included` set and its `Extra charges` set (`BM-41`).
 
-Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `error`, `trial-expiry-entry`, `post-lapse-reprice-at-current-book`, `downgrade-blocked-preview`, `preview-recomputed-changed`, `checkout-handoff`, `checkout-failed-honest`.
+Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `error`, `trial-expiry-entry`, `post-lapse-reprice-at-current-book`, `downgrade-blocked-preview`, `preview-recomputed-changed`, `checkout-handoff`, `checkout-failed-honest`, `yearly-selected`, `cycle-switch-review`, `downgrade-nothing-over`, `trial-expiry-review`, `compare-included`, `compare-extra-charges`.
 
 ## Data volume
 
 Design at the full four-tier, two-cycle choice (the book's published caps/bundles per tier — BM-41 context: ~a dozen values per tier), plus a downgrade preview built from real usage: multiple designs over the target kW ceiling listed as staying readable/exportable, a proposal count standing against caps of 30/300/1,500 per month, and every bundle that shrinks (detections, voice, storage, seats, sends). The blocked-list must stay honest and legible when several items block at once.
 
-## Numbers carrying provenance
+## Numbers and their source
 
-Each user-visible number/money/date carries its F8 provenance tier in the design; billing screens use plain "actual usage" language per the owner ruling carried in M12-34 ("measured" never appears).
+No figure on these screens carries a provenance tier label (owner ruling 2026-10-29, for billing only). Billing screens use plain "actual usage" language — the word "measured" never appears (owner ruling carried in M12-34).
 
-- Tier prices per cycle (book data, pointed at, never restated — BM-09 context).
-- For a tenant returning after a lapse, which book those prices come from: reactivation bills against the current list book's rows, never the signed-up rows, and the screen is explicit about it rather than letting the protected price be assumed (M12-57, M12-39's forfeiture disclosure).
-- The prorated delta amount for the remaining cycle and its one-time invoice (M12-48).
-- The next cycle boundary date (upgrade swap; downgrade effective date) (M12-48, M12-49).
-- Downgrade preview figures: current usage vs the target tier's ceilings and caps — kW per design, proposal count vs cap, bundle sizes before/after (M12-49; §M12.8 behavior detail).
-- Trial days remaining at the conversion moment; the paid cycle starts at conversion — remaining trial days do not extend it (M12-54).
+- Each region that prints a price names the list in one source line; after a lapse that line says which list the prices come from (M12-57, M12-39).
+- What is paid today shows its working in its `Derivation` (M12-48).

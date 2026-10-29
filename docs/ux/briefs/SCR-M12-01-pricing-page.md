@@ -16,17 +16,17 @@ public page and it is still not a manual: its claim is one line, and its proof i
 |---|---|---|
 | Every module is in every plan; a plan sets capacity, never features (`BM-05`) | data | ONE line under the title — the page's single claim, which is also the statement `BM-05` requires the page to make about how others ransom capabilities into higher plans. What "everything" holds is a row that opens in place — never a feature grid with a tick in every cell |
 | Each plan — name, who it is for, price for the chosen cycle | data | one card per plan; ONE positioning line per plan (`BM-14`'s plan-keyed copy) |
-| Billing cycle | action | a two-way selector, and under it ONE data row from `BM-13` — `Yearly — 12 months for the price of 10` (owner ruling). Prices exclude tax — said once, in the plans region's caption. No saving is computed, and no percentage is printed |
+| Billing cycle | action | a two-way selector, and under it ONE data row from `BM-13` — `Yearly — 12 months for the price of 10` (owner ruling). Prices exclude tax — said once, `Prices exclude GST` at the plans region's foot. No saving is computed, and no percentage is printed |
 | Every published cap, bundle and overage rate (`BM-07`) | data | each plan's card shows the three limits that differ most, and an `All limits` row opens the full list in place. Comparing at 375 is TWO plans side by side, each chosen by a selector, with a selector for limits, monthly bundles and overage rates — never a four-plan matrix behind a pager |
 | Service terms per plan | data | a `Support` row in each plan's list — plan-keyed screen copy, never a book value (`BM-14`) |
 | A rate the book marks draft | data | a named gap — never a draft figure on a public page, never a zero |
-| Trial caps | data | label–value rows behind a `During the trial` row that opens in place |
+| Trial caps | data | label–value rows behind a `During the trial` row that opens in place: 25 detections, 15 voice minutes, 5 GB, biggest design 100 MW, proposals not capped |
 | Start a trial — no plan choice, no card, no mandate (`M12-14`) | action | ONE `Start free trial` act for the whole page, not one per plan: the trial is not tied to a plan. ONE line at the button says how long it runs and that no card is needed (`M12-52` context) |
 | Enterprise is sales-assisted (`BM-14`, `BM-15` context) | action | its card's act is `Talk to sales`, never a checkout |
 | How the price compares (`BM-39`, `BM-44` context) | data | a `Compared with` region: label–value rows, our plan beside the named benchmark at the same capacity, each benchmark figure carrying its own source label and date. No adjectives, no paragraph about anyone |
-| Provenance (`F8-07`) | honesty label | once per region, at its foot — `Published` and the price list with its date, one quiet line, never a key above the figures. A benchmark figure differs, so it carries its own |
+| Provenance (`F8-07`) | honesty label | once per region, at its foot — the price list's name and date, one quiet source line and no tier (owner ruling 2026-10-29: a price-list figure carries none), never a key above the figures. A benchmark figure differs, so it carries its own source line |
 | No price list resolves for the visitor's market | teaching | the page says no prices are published for this market yet, and offers `Talk to sales`; never an empty grid, never another market's prices |
-| The price list failed to load | error | one banner — what failed and what to do. No stale and no invented number |
+| The price list failed to load | error | the plans block's failed read — what failed, and `Try again` inside it (the one read state, `T-SHELL-013`; owner ruling 2026-10-29). No stale and no invented number |
 
 ## Arrangement
 
@@ -54,32 +54,53 @@ not carry is wrong.
 - **M12-52** (P0) — **The trial is modelled in-app only; the gateway subscription is created at conversion.** 14 days, every tier capability, within the trial caps (book data — `BM-41`); no card or mandate to start; one 7-day extension available to support (an audited override, M12-19's family).
 - **F1-28** (P0) — The IN tax scheme is **GST**, strategy `per_line_rate`; the tenant tax-registration type is `IN_GST`. All platform prices are **ex-GST**; platform SaaS subscriptions and overage add-ons carry **SAC 998434 (cloud/SaaS) at 18% GST**.
 
-**A price list value's trust label.** Its tier word is `Published` — the PRD's own word for a price list's values (`M12-55`, `M12-35`) — and its source label is the list's name and date. The date is sample content, because a price list is versioned data (`F1-25`): draw `India price list · 1 Apr 2026`.
+**A price list value's trust label.** A figure the price list publishes — a price, a bundle, a rate, a cap — carries no tier (owner ruling 2026-10-29): its region names the list and its date as one quiet source line, prose and never a tier. The date is sample content, because a price list is versioned data (`F1-25`): draw `India price list · 1 Apr 2026`. No figure on the billing screens shows a provenance tier label — `measured`, `derived`, `estimated` or `assumed` — not a computed amount either (owner ruling 2026-10-29, for billing only; the rest of the product keeps `F8-01` for now). Where this brief asks for it, a computed amount shows its working in `How it is worked out`.
+
+**The trial's biggest design is 100 MW** — the top plan's ceiling (owner ruling 2026-10-29): `BM-41` names no trial ceiling, and `M12-52` gives the trial every plan capability. Anything else `BM-41`'s trial caps do not cap — proposals, active projects, users — is not capped on a trial.
 
 ## Entry & exit
 
-Reached from: the public web — the PRD names the pricing page as an M12-owned public surface (`docs/prd/04-business-model.md` §2) but does not pin inbound navigation — not pinned by PRD — designer decides, note the decision. Leads to: the trial funnel — the PRD's analytics events for this surface are "pricing-page tier viewed; trial started; trial converted" (`docs/prd/04-business-model.md` §04.1), and signup itself carries no plan choice, card or mandate (M12-14); Enterprise is sales-assisted (BM-14/BM-15 context), so the Enterprise column's action is a sales contact, never self-serve checkout. Exact exit targets beyond these are not pinned by PRD — designer decides, note the decision.
+Reached from: the public web — the PRD names the pricing page as an M12-owned public surface (`docs/prd/04-business-model.md` §2) but does not pin inbound navigation; decision 1 settles it. Leads to: the trial funnel — the PRD's analytics events for this surface are "pricing-page tier viewed; trial started; trial converted" (`docs/prd/04-business-model.md` §04.1), and signup itself carries no plan choice, card or mandate (M12-14); Enterprise is sales-assisted (BM-14/BM-15 context), so the Enterprise column's action is a sales contact, never self-serve checkout. Decision 1 settles every exit.
 
 **Decisions made in design — later screens inherit them.**
 
 1. **In, and out.** IN: a public URL only, with no in-app entry — the signed-in equivalent is `SCR-M12-03`. OUT: `Start free trial` routes to company signup (`SCR-M01-02`), which carries no plan choice, card or mandate (`M12-14`); `Sign in` routes to `SCR-M01-01`; `Talk to sales` opens the market pack's sales address, a route with no screen of its own; the language control changes the page in place.
-2. **Nothing on this page is ever picked, so the plans are content cards and not a radiogroup.** There is one trial act for the whole page. The card is `SCR-M12-03`'s body — name, mono price figure, the three limits — with its radio absent and this page's own parts added: the positioning slot, a `Support` row, an `All limits` row that grows the card in place.
+2. **Nothing on this page is ever picked, so the plans are content cards and not a radiogroup.** There is one trial act for the whole page. The card is the calm-screens card below (*The plan card is NOT inherited*): the name, the price as its headline figure in mono with its period beside it, the limits as one flowing line — with this page's own parts added: the positioning slot, a `Support` row, an `All limits` row that grows the card in place (owner ruling 2026-10-29).
 3. **No shell at either width.** The page carries `SCR-M01-01`'s pre-auth header — wordmark, language control, `Sign in` — and at 1536 the trial act and its one line sit in that header instead of a pinned foot.
 4. **The trial act is present only where there are prices to read.** In loading, in a market with no book and after a failed load it is absent rather than disabled: what the trial allows is the same book's data.
 5. **A plan that bundles no voice minutes reads `None`, not a named gap.** The book prices voice per minute on Starter and Growth, so the included amount is a real zero and the rate is one chip away in `Extra charges`. A named gap is kept for what is genuinely missing.
 6. **The benchmark page's date is sample content**, on the same grounds the brief already gives the price list's (`F1-25`): drawn as `Reslink India price page · 12 Mar 2026`.
 7. **The matrix carries its period with the value; the card carries it in the label.** A card reads `AI detections a month · 100`; the table, whose label column is 112px at 375, reads `AI detections · 100 / mo`. This is `SCR-M12-03`'s own split between its cards and its comparison.
-8. **Three product facts this brief does not carry were named, not invented** — see `## Read against the whole PRD rows
+8. **Product facts this brief did not carry were named, not invented:**
 
 - **The positioning lines** are `BM-14`'s per-plan law in the person's words, owner-approved: Starter — *For a home-rooftop team of 1 to 5 people.* · Growth — *For 15 or more installs a month, or your first business sites.* · Pro — *For business sites, with voice minutes included.* · Enterprise — *For the largest designs and utility work.*
 - **Tracked seats and marketing sends** are `BM-41`'s V2 add-ons and every one of their numbers is DRAFT. A V1 public page prints neither; this is what the `A rate the book marks draft` row is about. `## Data volume`'s mention of them describes the book's full grid, not this page's V1 rows.
 
+9. **The claim is the page's one sentence**, 13 words over the ten-word guide: `BM-05` requires the page to say it, so the fact wins over the budget.
+10. **`All limits` grows the card's one row group in place**, 4 rows to 10, one form and one value edge; its chevron turns, nothing hangs on hover.
+11. **Comparing at 375 is three chip strips together** — `Plan`, `Against`, `Show` — directly above the table they change; `Against` never offers the plan chosen in `Plan`. At 1536 the four-plan table is the answer and there is no `Compare two plans` row.
+12. **`Compared with` is one group of six rows**, `<plan> · <capacity>`, pairing the two yearly figures; the book's percentages, the 1,500-against-1,000 proposals and the voice-bundle claim are not drawn.
+13. **GST is said once**, `Prices exclude GST` at the plans region's foot; the 18% rate and SAC 998434 belong on invoices.
+14. **Loading, no book, and error.** In loading the header, title, claim and `What every plan includes` stay — none is price-list data — and the cycle chips and the trial act are absent, not disabled. With no book for the market, the comparison, `Compared with` and the trial act go with the prices. Loading is the plans `Block` loading (`Loading the prices`); error is its failed read with `Try again`.
+15. **The plan card is the design system's `Card`**; Enterprise's `Talk to sales` is a secondary button on that card. At 1536 the four cards stand at one height.
+16. **The draft-rate frame is a sample market**, labelled as one: its book leaves the extra-detections rate draft, so that row reads `Not published yet`. The India book has no draft V1 rate — its draft rates are V2 add-ons a V1 page does not print — so no India frame shows `Not published yet`.
+17. **The source line of a price-list figure is `Provenance` `unmarked` with its `source`** — no tier word printed (owner ruling 2026-10-29).
+18. **Motion.** `What every plan includes`, `All limits`, `During the trial` and `Compare two plans` open in place with their chevron turning; a cycle or comparison chip swaps the figures in place with no motion; loading bars give way to the plans in place (`F7-51`: every motion is the design system's; nothing waits on it, and a figure never animates).
+
 **Inherited from `SCR-M12-03` (designed) — reuse, never redraw.**
 
 - **The comparison is `SCR-M12-03`'s** — my plan, or here a chosen plan, against ONE other at 375; all four plans as columns at 1536; the same set words `Limits` · `Included` · `Extra charges`.
-- **The plan card is NOT inherited.** It is the calm-screens proposal's: the name, the price as the card's headline figure with its period beside it, and the limits as ONE flowing line, `Limits — 50 kW · 30 proposals a month · 30 detections a month`. `SCR-M12-03` drew the same object as a mono price row and three label–value rows; the owner moved both screens to this form (2026-09-20), and `SCR-M12-03` carries a `## Redesign owed` for it. This page adds what is its own: the positioning line, `Support`, `All limits`, `Compared with`.
+- **The plan card is NOT inherited.** It is the calm-screens proposal's: the name, the price as the card's headline figure with its period beside it, and the limits as ONE flowing line, `Limits — 50 kW · 30 proposals a month · 30 detections a month`. `SCR-M12-03` drew the same object as a mono price row and three label–value rows; the owner moved both screens to this form (2026-09-20). The headline figure is mono with tabular figures (`F7-09`). This page adds what is its own: the positioning line, `Support`, `All limits`, `Compared with`.
 - **The cycle and every one-of-N choice is a chip strip**, directly above what it changes. The person's words: `Included`, `Extra charges` — never "bundle", never "overage".
-- **Honesty labels:** `Published · India price list · 1 Apr 2026`, with `Prices exclude GST` as its own element.
+- **Honesty labels:** the source line `India price list · 1 Apr 2026`, no tier (owner ruling 2026-10-29), with `Prices exclude GST` as its own element.
+
+## Design system gaps
+
+Owner ruling 2026-10-29: a board draws the nearest real component, never a look-alike, and the screen's build adds the missing part to `packages/ui`. *Canvas behind the repo* means the repo already has the part and only the canvas copy lacks it.
+
+- `DoorLanguage` — canvas behind the repo; the board draws `Menu` with a ghost `Button`.
+- `Block` `retryLabel` and `loadingLabel` — canvas behind the repo.
+- `CompareGrid` `numeric` right-aligns no figure, in the repo or on the canvas; the `Extra charges` money column must end on one right edge (`F7-09`).
 
 ## Requirements (verbatim)
 
@@ -104,12 +125,9 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty
 
 Design at the full IN book grid (`docs/prd/04-business-model.md` BM-41): 4 tiers × 2 cycles, each tier carrying on the order of a dozen published values — monthly and yearly price, single-design kW ceiling, proposals/month, active projects, users (unlimited), AI-detection bundle + overage rate, voice minutes (PAYG rate or bundle), storage, included tracked seats + per-seat rate, marketing-send bundles + per-channel overage rates, trial caps, service terms (Tier-keyed screen copy, never a book value — BM-14, BM-41) — plus competitor benchmark rows per tier. The comparison must stay legible at that density on a phone.
 
-## Numbers carrying provenance
+## Numbers and their source
 
-Each of these is book data stated once in the PRD and pointed to, never restated (BM-09 context); each carries its F8 provenance tier in the design:
+No figure on these screens carries a provenance tier label (owner ruling 2026-10-29, for billing only). Billing screens use plain "actual usage" language — the word "measured" never appears (owner ruling carried in M12-34). Each region names its source once, at its foot:
 
-- Tier prices, monthly and yearly, per market currency (ex-tax posture stated, e.g. ex-GST for IN).
-- Every published cap and ceiling per tier: single-design kW ceiling, proposals/month, active projects, storage GB.
-- Bundle sizes and overage rates: AI detections/month and per-unit overage, voice minutes and per-minute rate, marketing sends per channel and per-send overage, tracked-seat allowance and per-seat price.
-- Trial caps (detections, voice minutes, storage).
-- Benchmark figures in competitor comparisons — claim traceable to the book's recorded benchmarks, provenance shown.
+- Tier prices, monthly and yearly, and every cap, bundle, rate and trial cap — `India price list · 1 Apr 2026`, with `Prices exclude GST` as its own element.
+- Benchmark figures — each with its own source line and date (`Reslink India price page · 12 Mar 2026`), traceable to the book's recorded benchmarks.

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Billing state banner · 375</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-hover)}
+/* Several open overlays on one board can freeze the spring entry at frame 0 in a throttled frame. */
+[role="dialog"]{animation:none !important;transform:none !important}
+</style>
+</helmet>
+
+<div style="box-sizing:border-box;width:2163px;height:3712px;overflow:hidden;padding:var(--sp-12);display:flex;flex-wrap:wrap;align-content:flex-start;gap:var(--sp-16) var(--sp-12);background:var(--canvas)">
+  <sc-for list="{{ frames }}" as="s" hint-placeholder-count="17">
+    <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
+      <span style="display:block;height:var(--sp-8);overflow:hidden;font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ s.label }}</span>
+
+      <sc-if value="{{ s.isSpecimen }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:var(--sp-3) var(--sp-4);background:var(--danger-bg);border-radius:var(--r-sm)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Derivation" dc-props="{{ s.derivOpen }}" hint-size="100%,160px"></x-import>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ s.isFrame }}" hint-placeholder-val="{{ true }}">
+        <div data-screen-label="{{ s.screenLabel }}" data-frame="{{ s.id }}" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+          <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ s.topBar }}" hint-size="100%,64px"></x-import>
+
+          <sc-if value="{{ s.isSkeleton }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:0 0 auto;padding:var(--sp-3) var(--screen-pad-mobile);background:var(--canvas)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.LoadingBars" dc-props="{{ stripLoading }}" hint-size="100%,188px"></x-import>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ s.isPill }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-start;padding:var(--sp-3) var(--screen-pad-mobile);background:var(--canvas)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" variant="pill" kind="{{ s.kind }}" title="{{ s.title }}" hint-size="180px,32px"></x-import>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ s.isStrip }}" hint-placeholder-val="{{ true }}">
+            <div style="flex:0 0 auto;padding:var(--sp-3) var(--screen-pad-mobile);background:var(--canvas)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BannerStack" mode="single" hint-size="100%,200px">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="{{ s.kind }}" tone="{{ s.tone }}" title="{{ s.title }}" action="{{ s.act }}" hint-size="100%,200px">
+                  <sc-if value="{{ s.hasFacts }}" hint-placeholder-val="{{ true }}">
+                    <div style="margin-top:var(--sp-2)">{{ s.facts }}</div>
+                  </sc-if>
+                  <sc-if value="{{ s.disclosure }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:var(--sp-2);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary)">{{ s.disclosure }}</div>
+                  </sc-if>
+                  <sc-if value="{{ s.hasTier }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:var(--sp-3)">
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ s.prov }}" hint-size="76px,17px"></x-import>
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Derivation" dc-props="{{ s.deriv }}" hint-size="100%,44px"></x-import>
+                    </div>
+                  </sc-if>
+                </x-import>
+              </x-import>
+            </div>
+          </sc-if>
+
+          <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;padding:var(--sp-2) var(--screen-pad-mobile) var(--sp-8)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ leadsBlock }}" hint-size="100%,520px">
+              <div style="display:flex;flex-direction:column;gap:var(--tile-gap)">
+                <sc-for list="{{ leads }}" as="r" hint-placeholder-count="4">
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.RecordCard" name="{{ r.name }}" chip="{{ r.chip }}" meta="{{ r.meta }}" provenance="{{ r.prov }}" on-click="{{ noop }}" density="expressive" hint-size="100%,120px"></x-import>
+                </sc-for>
+              </div>
+            </x-import>
+          </div>
+
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ s.nav }}" hint-size="100%,72px"></x-import>
+
+          <sc-if value="{{ s.hasSheet }}" hint-placeholder-val="{{ false }}">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ s.sheet }}" hint-size="100%,340px">{{ s.sheetFacts }}</x-import>
+          </sc-if>
+        </div>
+      </sc-if>
+    </div>
+  </sc-for>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2163,"height":3712}}'>
+/* A drawn spec, not a prototype: one situation per frame, fixed data, nothing behind a click.
+   Every date is pinned so the board does not move. The failed charge is the Growth month —
+   BM-41 ₹3,999 + 18% GST — the figure and invoice SCR-M12-02 prints. */
+const FAILED_ON = "2026-09-11";
+const GRACE_ENDS = "2026-09-18";
+const AMOUNT = 3999 * 1.18;
+const INVOICE = "HG-INV-2026-0902";
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.noop = () => {};
+  }
+
+  componentDidMount() {
+    if (!window.HelioGridDesignSystem_c8aa43) {
+      this._poll = setInterval(() => {
+        if (window.HelioGridDesignSystem_c8aa43) {
+          clearInterval(this._poll); this._poll = null; this.forceUpdate();
+        }
+      }, 40);
+    }
+  }
+  componentWillUnmount() { if (this._poll) clearInterval(this._poll); }
+
+  ns() { return window.HelioGridDesignSystem_c8aa43 || {}; }
+
+  glyph(spec, size, filled) {
+    return React.createElement("svg", {
+      width: size, height: size, viewBox: "0 0 24 24",
+      fill: filled ? "currentColor" : "none", stroke: filled ? "none" : "currentColor",
+      strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true",
+    }, spec.map((c, i) => React.createElement(c[0], Object.assign({ key: "g" + i }, c[1]))));
+  }
+
+  /* A fact row's mark, 16px. FactRow centres it on the row's first line. */
+  markGlyph(spec, color) {
+    return React.createElement("svg", {
+      width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: color,
+      strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true",
+      style: { flexShrink: 0 },
+    }, spec.map((c, i) => React.createElement(c[0], Object.assign({ key: "m" + i }, c[1]))));
+  }
+
+  icons() {
+    const P = (d) => ["path", { d: d }];
+    return {
+      home: [P("M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z")],
+      homeF: [P("M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-6v-6h-4v6H4a1 1 0 0 1-1-1z")],
+      users: [P("M9 4.8a3.2 3.2 0 1 1 0 6.4 3.2 3.2 0 0 1 0-6.4"), P("M2.5 20a6.5 6.5 0 0 1 13 0"), P("M16.6 5.6a3.2 3.2 0 0 1 0 4.9"), P("M18 20a6.4 6.4 0 0 0-2-4.6")],
+      usersF: [["circle", { cx: 12, cy: 8, r: 3.7 }], P("M5 20.5a7 7 0 0 1 14 0z")],
+      doc: [P("M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"), P("M14 3v5h5"), P("M9 13.5h5"), P("M9 17h3.5")],
+      docF: [P("M13.6 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.4z")],
+      dots: [["circle", { cx: 5, cy: 12, r: 1.7 }], ["circle", { cx: 12, cy: 12, r: 1.7 }], ["circle", { cx: 19, cy: 12, r: 1.7 }]],
+      pause: [P("M10 5.5v13M14 5.5v13")],
+      check: [P("m4.5 12.5 5 5 10-11")],
+      clock: [["circle", { cx: 12, cy: 12, r: 8.5 }], P("M12 7.5V12l3 2")],
+      rupee: [P("M7 5h10M7 9h10M15 5c0 4-3.5 4-8 4l8 10")],
+    };
+  }
+
+  /* F7-09: money and identifiers read in the mono face, tabular. */
+  mono(text) {
+    return React.createElement("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, text);
+  }
+
+  /* One inline run, never three flex items: BannerAction's pill is inline-flex, and a flex
+     container drops the spaces at the edges of each text item ("Pay₹4,718.82now"). */
+  withAmount(before, money, after) {
+    return React.createElement("span", null, before, this.mono(money), after);
+  }
+
+  /* SCR-SHELL-01 decision 2: the avatar's menu holds the grievance contact and sign-out, nothing else. */
+  accountMenu(NS, who) {
+    const name = who || "Mahesh Bhosale";
+    return React.createElement(NS.AccountMenu, {
+      name: name, triggerName: name + " — account, grievance contact and sign out", menuLabel: "Account",
+      grievanceLabel: "Grievance officer", signOutLabel: "Sign out",
+      onGrievance: this.noop, onSignOut: this.noop, align: "end",
+    });
+  }
+
+  topBarSpec(NS, who) {
+    return {
+      company: "Suryodaya Solar",
+      searchLabel: "Search", onSearchClick: this.noop,
+      notifications: 7, notificationsLabel: "Notifications", onNotificationsClick: this.noop,
+      avatar: this.accountMenu(NS, who),
+    };
+  }
+
+  /* F7-22: four standing destinations and the verb in the middle, never a fifth slot. */
+  navSpec(NS, manager) {
+    const D = NS.DESTINATION_GLYPH;
+    const sg = (n, filled) => React.createElement(NS.ShellGlyph, { name: n, size: "lg", filled: !!filled, tone: filled ? "inverse" : undefined });
+    return {
+      value: "leads", onChange: this.noop,
+      items: [
+        { key: "day", label: "Home", icon: sg(D.home), activeIcon: sg(D.home, true) },
+        { key: "leads", label: "Leads", icon: sg(D.leads), activeIcon: sg(D.leads, true) },
+        { key: "add", verb: true, label: "Add lead", icon: React.createElement(NS.ShellGlyph, { name: "plus-circle", size: "lg" }), onClick: this.noop },
+        manager ? { key: "proposals", label: "Proposals", icon: sg(D.proposals), activeIcon: sg(D.proposals, true) }
+                : { key: "projects", label: "Projects", icon: sg(D.projects), activeIcon: sg(D.projects, true) },
+        { key: "more", label: "More", icon: sg(D.more), activeIcon: sg(D.more, true) },
+      ],
+    };
+  }
+
+  /* The surface behind the strip — SCR-M02-01's leads list, as context. Mixed sources, so each
+     lead's money keeps its own tier (F8-09). */
+  leadRows(NS, F) {
+    return [
+      { name: "Priya Sharma", status: "proposal-sent", city: "Nashik", size: "8.2 kWp", value: 452000, prov: { tier: "unmarked", source: "Proposal v2" } },
+      { name: "Anand Traders", status: "negotiating", city: "Pune", size: "180 kWp", value: 9200000, prov: { tier: "unmarked", source: "Proposal v4" } },
+      { name: "Rohit Mehta", status: "qualified", city: "Aundh", size: "10 kWp", value: 560000, prov: { tier: "unmarked", source: "No survey yet" } },
+      { name: "Sunita Deshmukh", status: "new-lead", city: "Hadapsar", size: "4.8 kWp", value: 265000, prov: { tier: "unmarked", source: "No survey yet" } },
+    ].map((r) => ({
+      key: r.name, name: r.name,
+      chip: React.createElement(NS.StatusChip, { status: r.status, density: "expressive" }),
+      meta: [r.city, r.size, F.compactMoney(r.value)],
+      prov: r.prov,
+    }));
+  }
+
+  invoiceNote() {
+    return React.createElement("span", null, "The Growth month, ", this.mono("₹3,999"), " + 18% GST, on invoice ", this.mono(INVOICE), ".");
+  }
+
+  /* The default frame's disclosure, shared with its opened specimen. */
+  defaultDeriv(F) {
+    return {
+      summary: "How it is worked out",
+      label: "Grace day and amount",
+      parts: [
+        { kind: "formula", label: "Grace day", text: "Day 4 counted from the charge that failed on " + F.date(FAILED_ON) + ", which is day 0 of the 7-day grace." },
+        { kind: "note", label: "Amount", text: this.invoiceNote() },
+      ],
+    };
+  }
+
+  /* One fact-row family for the strip and the denial: one form, one left edge (FactRows). */
+  facts(NS, label, rows) {
+    const h = React.createElement;
+    return h(NS.FactRows, { label: label, density: "expressive" },
+      rows.map((r) => h(NS.FactRow, Object.assign({ key: r.label, density: "expressive" }, r))));
+  }
+
+  /* The situations, as data. A state supplies its kind, title, rows, tier row (only where an
+     amount shows — F8-01), its one act, and its denial — nothing else. */
+  stateSet(NS, F) {
+    const h = React.createElement;
+    const P = this.icons();
+    const pause = this.markGlyph(P.pause, "var(--warning-text)");
+    const tick = this.markGlyph(P.check, "var(--success-text)");
+    const clock = this.markGlyph(P.clock, "var(--text-secondary)");
+    const rupee = this.markGlyph(P.rupee, "var(--text-secondary)");
+    const L = (label, values, mark) => ({ label: label, values: values, stack: false, mark: mark });
+    const R = (label, value, mark) => ({ label: label, value: value, mark: mark || clock });
+    const money = F.money(AMOUNT, { fractionDigits: 2 });
+    const act = (node) => h(NS.BannerAction, { onClick: this.noop }, node);
+    const payNow = this.withAmount("Pay ", money, " now");
+
+    const dunDeriv = (failed) => ({
+      summary: "How it is worked out", label: "The strip's figures",
+      parts: [
+        { kind: "formula", label: "Grace day", text: "Counted from the charge that failed on " + F.date(failed) + ", which is day 0 of the 7-day grace." },
+        { kind: "note", label: "Amount", text: this.invoiceNote() },
+      ],
+    });
+    const derivedMark = { tier: "unmarked", style: { color: "var(--text-secondary)", whiteSpace: "nowrap" } };
+
+    /* M12-06: what pauses on day 4, and what core selling keeps. */
+    const meteredPaused = L("Paused", ["Voice calls", "AI detections", "teammate invites"], pause);
+    const coreWorks = L("Still works", ["Leads", "surveys", "designs", "proposals", "projects"], tick);
+    /* M12-22's gated set at halted and expired (M12-07). Engineer sign-off on submitted designs and
+       the upload of photos already taken are never gated (M12-24, M12-26), so no item may name them. */
+    const gatedPaused = L("Paused", [
+      "Creating or editing leads, tasks, activities, surveys and designs",
+      "generating or sending proposals", "marking won or lost", "project updates",
+      "new uploads", "voice calls", "AI detections", "teammate invites",
+    ], pause);
+    /* BM-32's always-works set: four items, drawn as four. */
+    const alwaysWorks = L("Still works", ["Reading", "Export", "Customer links", "Billing — pay, upgrade, reactivate"], tick);
+
+    const sheet = (title, overline, actNode) => ({
+      open: true, onClose: this.noop, inset: true, desktop: "modal", size: "auto",
+      density: "expressive", zIndex: 70, showClose: true, title: title, overline: overline,
+      footer: h(NS.SheetActions, {}, h(NS.Button, { onClick: this.noop }, actNode)),
+    });
+
+    const day4Rows = [meteredPaused, coreWorks, R("Until", F.date(GRACE_ENDS))];
+
+    const list = [
+      { id: "s-loading", label: "State 1 · loading", isStrip: false, isSkeleton: true },
+      { id: "s-empty", label: "State 2 · empty · no billing condition", isStrip: false },
+      {
+        id: "s-error", label: "State 3 · error", kind: "state", tone: "neutral",
+        title: "Couldn't read your billing state", act: act("Try again"),
+      },
+      {
+        id: "s-trial-subtle", label: "State 4 · trial countdown, subtle (before D-7)",
+        isStrip: false, isPill: true, kind: "bundle", title: "11 days left in your trial",
+      },
+      {
+        id: "s-trial-d7", label: "State 5 · trial countdown from D-7", kind: "state",
+        title: "7 days left in your trial", rows: [R("Trial ends", F.date("2026-09-22"))],
+        act: act("Pick a plan"),
+      },
+      {
+        id: "s-trial-expired", label: "State 6 · trial expired · soft block, with its denial", kind: "state",
+        title: "Your trial ended on " + F.date("2026-09-14"),
+        rows: [gatedPaused, alwaysWorks],
+        act: act("Pick a plan"),
+        sheet: sheet("Creating a lead is paused", "Trial ended", "Pick a plan"),
+        sheetRows: [gatedPaused, alwaysWorks],
+      },
+      {
+        id: "s-day2", label: "State 7 · past_due day 0–3 · banner, full function", kind: "dunning",
+        title: "Payment failed · day 2 of 7 · a retry is coming",
+        rows: [
+          { label: "Still works", value: "Everything — voice, AI detections and invites included", mark: tick },
+          R("Amount due", this.mono(money), rupee),
+          R("Voice, AI detections and invites pause", F.date("2026-09-17")),
+        ],
+        act: act("Update your payment method"), prov: derivedMark, deriv: dunDeriv("2026-09-13"),
+      },
+      {
+        id: "s-day4", label: "State 8 · past_due day 4 · metered paused (the default)", kind: "dunning",
+        title: "Payment failed · day 4 of the 7-day grace",
+        rows: day4Rows, act: act(payNow), prov: derivedMark, deriv: dunDeriv(FAILED_ON),
+      },
+      {
+        id: "s-day6", label: "State 9 · past_due day 6 · final warning, one-tap pay", kind: "dunning",
+        title: "Payment failed · day 6 of 7 · final warning",
+        rows: [meteredPaused, coreWorks, R("Account halts", F.date("2026-09-16"))],
+        act: act(this.withAmount("Pay ", money, " with UPI AutoPay")), prov: derivedMark, deriv: dunDeriv("2026-09-09"),
+      },
+      {
+        id: "s-halted", label: "State 10 · halted · the four-item always-works list", kind: "dunning",
+        title: "Account halted · the grace window closed",
+        rows: [gatedPaused, alwaysWorks],
+        act: act(this.withAmount("Reactivate with one payment of ", money, "")),
+        prov: derivedMark, deriv: dunDeriv("2026-09-08"),
+      },
+      {
+        id: "s-protected", label: "State 11 · protected tenant · the forfeiture disclosure", kind: "dunning",
+        title: "Payment failed · day 4 of the 7-day grace",
+        rows: day4Rows,
+        disclosure: "If this account lapses to cancelled or halted, the launch-price guarantee is forfeited and reactivation costs today's prices.",
+        act: act(payNow), prov: derivedMark, deriv: dunDeriv(FAILED_ON),
+      },
+      {
+        id: "s-cap100", label: "State 13 · cap at 100% · the 7-day grace running", kind: "cap",
+        title: "Proposals · 300 of 300 used this month · 7-day grace running",
+        rows: [
+          L("Still works", ["New proposals", "editing, duplicating and sharing existing proposals", "reading", "export"], tick),
+          R("New proposals pause", F.date("2026-09-22")),
+          R("Cycle resets", F.date("2026-10-01")),
+        ],
+        act: act("Upgrade plan"),
+      },
+      {
+        id: "s-cap-paused", label: "State 14 · cap grace passed · new creations paused", kind: "cap",
+        title: "Proposals · 300 of 300 used · new proposals paused",
+        rows: [
+          L("Paused", ["New proposals"], pause),
+          L("Still works", ["Editing, duplicating and sharing existing proposals", "reading", "export", "every other feature"], tick),
+          R("Cycle resets", F.date("2026-10-01")),
+        ],
+        act: act("Upgrade plan"),
+      },
+      {
+        id: "s-denial", label: "State 15 · typed denial · the reactivate route", kind: "dunning",
+        title: "Payment failed · day 4 of the 7-day grace",
+        rows: day4Rows, act: act(payNow), prov: derivedMark, deriv: dunDeriv(FAILED_ON),
+        sheet: sheet("Inviting a teammate is paused", "Payment overdue", payNow),
+        sheetRows: [meteredPaused, coreWorks],
+      },
+      {
+        /* M12-40: the dunning strip reaches the Owner and the managers. No amount renders, and
+           the act's place is ScopeNote's. */
+        id: "s-no-amounts", label: "State 16 · no amounts · Sales Manager", who: "Sneha Patil",
+        kind: "dunning", title: "Payment failed · day 4 of the 7-day grace",
+        rows: day4Rows,
+        act: h(NS.ScopeNote, { holder: "Mahesh Bhosale (owner)", acts: ["pay this invoice"], variant: "line", size: 13 }),
+      },
+    ];
+
+    return list.map((o) => {
+      const s = Object.assign({
+        isFrame: true, isSpecimen: false, isStrip: true, isPill: false, isSkeleton: false,
+        kind: undefined, tone: undefined, title: "", rows: [], disclosure: null,
+        prov: null, deriv: null, act: null, sheet: null, sheetRows: null, who: null,
+        screenLabel: o.label + " (375)",
+      }, o);
+      s.hasFacts = s.rows.length > 0;
+      s.facts = s.hasFacts ? this.facts(NS, "Billing state", s.rows) : null;
+      s.hasTier = !!s.prov;
+      s.hasSheet = !!s.sheet;
+      s.sheetFacts = s.sheetRows ? this.facts(NS, "What is paused and what still works", s.sheetRows) : null;
+      return s;
+    });
+  }
+
+  renderVals() {
+    const NS = this.ns();
+    const ready = !!(NS.MarketProvider && NS.StatusChip && NS.AccountMenu && NS.ShellGlyph
+      && NS.PhoneScreen && NS.MobileTopBar && NS.BannerAction && NS.Derivation && NS.Provenance
+      && NS.ScopeNote && NS.EditorSurface && NS.SheetActions && NS.Button && NS.FactRows && NS.FactRow
+      && NS.LoadingBars);
+    const base = { noop: this.noop };
+    if (!ready) return base;
+
+    const F = NS.MarketProvider.createFormat();
+    const states = this.stateSet(NS, F);
+    const day4 = states.filter((s) => s.id === "s-day4")[0];
+    const withShell = (s) => Object.assign({}, s, { topBar: this.topBarSpec(NS, s.who) });
+
+    const defaultFrame = withShell(Object.assign({}, day4, {
+      id: "m-default", label: "Default · past_due day 4 · EPC Owner",
+      screenLabel: "Billing strip · past_due day 4 (375)", deriv: this.defaultDeriv(F),
+    }));
+    const openedDisclosure = withShell(Object.assign({}, day4, {
+      id: "m-default-open", label: "Default · the working, opened",
+      screenLabel: "Billing strip · past_due day 4, working opened (375)", deriv: Object.assign({ open: true }, this.defaultDeriv(F)),
+    }));
+
+    return Object.assign(base, {
+      phoneChrome: { style: { background: "transparent" } },
+      nav: this.navSpec(NS),
+      /* The wait holds the slot with no tone, glyph or numeral: a strip that guessed a warning
+         would alarm a tenant whose account is fine. */
+      stripLoading: { label: "Loading your billing state", bars: ["panel"] },
+      /* Flat, because its children render as cards. The count 212 is a count: no tier (F8-01). */
+      leadsBlock: {
+        density: "expressive", flat: true, style: { padding: 0 },
+        title: "Leads", count: 212, countLabel: "leads",
+        meta: "All stages · newest first",
+      },
+      leads: this.leadRows(NS, F),
+      frames: [defaultFrame, openedDisclosure].concat(states.map(withShell)).map((s) => Object.assign(s, { nav: this.navSpec(NS, s.id === "s-no-amounts") })),
+    });
+  }
+}
+
+</script>
+</body>
+</html>

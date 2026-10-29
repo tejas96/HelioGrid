@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Usage · 1536, states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-hover)}
+</style>
+</helmet>
+
+<div style="box-sizing:border-box;width:1632px;height:4494px;overflow:hidden;padding:var(--sp-12);display:flex;flex-direction:column;gap:var(--sp-16);background:var(--canvas)">
+  <sc-for list="{{ frames }}" as="f" hint-placeholder-count="4">
+    <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:1536px">
+      <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ f.label }}</span>
+      <div data-screen-label="{{ f.screenLabel }}" data-frame="{{ f.id }}" style="position:relative;flex:0 0 auto;width:1536px;height:1024px;overflow:hidden;background:var(--canvas);border-radius:var(--r-lg);box-shadow:var(--e5)">
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.AppShell" rail="{{ f.rail }}" header="{{ header }}" hint-size="100%,100%" style="height:100%">
+
+          <div style="box-sizing:border-box;display:flex;align-items:flex-start;gap:var(--sp-8);padding-left:var(--sp-8)">
+            <sc-if value="{{ yes }}" hint-placeholder-val="{{ true }}">
+            <nav aria-label="Settings" style="margin-top:var(--sp-6);flex:0 0 248px;width:248px;display:flex;flex-direction:column;gap:var(--sp-1);padding-top:var(--sp-1)">
+              <span style="display:block;padding:0 var(--sp-3) var(--sp-2);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Settings</span>
+              <sc-for list="{{ settings }}" as="s" hint-placeholder-count="6">
+                <sc-if value="{{ s.heading }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ s.heading }}</span>
+                </sc-if>
+                <sc-if value="{{ s.row }}" hint-placeholder-val="{{ true }}">
+                  <button type="button" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);min-height:calc(var(--sp-10) + var(--sp-1));padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-primary);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-regular);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="{{ s.glyph }}" size="md" tone="secondary" hint-size="20px,20px"></x-import><span style="min-width:0">{{ s.label }}</span></button>
+                </sc-if>
+                <sc-if value="{{ s.current }}" hint-placeholder-val="{{ false }}">
+                  <button type="button" aria-current="page" onClick="{{ noop }}" style="box-sizing:border-box;width:100%;display:flex;align-items:center;gap:var(--sp-3);min-height:calc(var(--sp-10) + var(--sp-1));padding:0 var(--sp-3);border:none;border-radius:var(--r-sm);background:var(--accent-subtle);color:var(--accent);font-family:var(--font-sans);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);font-weight:var(--fw-medium);text-align:left;cursor:pointer"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ShellGlyph" name="{{ s.glyph }}" size="md" tone="accent" hint-size="20px,20px"></x-import><span style="min-width:0">{{ s.label }}</span></button>
+                </sc-if>
+              </sc-for>
+            </nav>
+            </sc-if>
+            <div style="flex:1;min-width:0">
+<div data-desk-content="{{ f.id }}" style="box-sizing:border-box;width:100%;height:calc(1024px - var(--header-h));display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-5) var(--sp-8) var(--sp-8) 0">
+
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">Usage</h1>
+            </div>
+
+            <sc-if value="{{ f.strip }}" hint-placeholder-val="{{ false }}">
+              <div style="width:1080px;max-width:100%">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" dc-props="{{ f.strip }}" hint-size="100%,120px"></x-import>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ f.banner }}" hint-placeholder-val="{{ false }}">
+              <div style="width:100%;display:flex;flex-direction:column;gap:var(--sp-5)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.banner }}" hint-size="100%,140px"></x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ plansRow }}" hint-size="100%,76px"></x-import>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ f.scope }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;width:100%">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ScopeNote" dc-props="{{ f.scope }}" hint-size="100%,40px"></x-import>
+              </div>
+            </sc-if>
+
+            <div style="flex:1;min-height:0;display:grid;grid-template-columns:{{ f.cols }};grid-template-rows:minmax(0,1fr);gap:var(--sp-6)">
+
+              <!-- The tables lane is its own scroller; the standing column holds still beside it. -->
+              <div data-lane="tables" style="min-height:0;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:{{ f.tablesAlign }}">
+                <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+                  <sc-if value="{{ f.needsMain }}" hint-placeholder-val="{{ false }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.needsMain }}" hint-size="100%,180px">
+                      <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+                        <sc-for list="{{ f.needsRows }}" as="nr" hint-placeholder-count="1">
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ nr.group }}" hint-size="100%,40px">
+                            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ nr.label }}" value="{{ nr.value }}" hint-size="100%,40px"></x-import>
+                          </x-import>
+                        </sc-for>
+                      </div>
+                    </x-import>
+                  </sc-if>
+                  <sc-for list="{{ f.tables }}" as="t" hint-placeholder-count="2">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ t.block }}" hint-size="100%,300px">
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.DataTable" dc-props="{{ t.table }}" hint-size="100%,240px"></x-import>
+                    </x-import>
+                  </sc-for>
+                </div>
+              </div>
+
+              <sc-if value="{{ f.side }}" hint-placeholder-val="{{ true }}">
+                <div data-lane="side" style="position:sticky;top:0;align-self:start;display:flex;flex-direction:column;gap:var(--sp-4);min-width:0">
+                  <sc-if value="{{ f.needs }}" hint-placeholder-val="{{ false }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.needs }}" hint-size="100%,220px">
+                      <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+                        <sc-for list="{{ f.needsRows }}" as="nr" hint-placeholder-count="1">
+                          <div style="display:flex;flex-direction:column;gap:var(--sp-2);min-width:0">
+                            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ nr.group }}" hint-size="100%,40px">
+                              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ nr.label }}" value="{{ nr.value }}" hint-size="100%,40px"></x-import>
+                            </x-import>
+                            <span style="display:block;font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-medium);color:{{ nr.lineInk }};text-wrap:pretty">{{ nr.line }}</span>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </x-import>
+                  </sc-if>
+
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.cycleCard }}" hint-size="100%,150px">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ sideGroup }}" hint-size="100%,60px">
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="Cycle" value="{{ cycleValue }}" hint-size="100%,24px"></x-import>
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="Resets" value="{{ resetValue }}" hint-size="100%,24px"></x-import>
+                    </x-import>
+                  </x-import>
+
+                  <sc-if value="{{ f.extraValue }}" hint-placeholder-val="{{ true }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ extraCard }}" hint-size="100%,150px">
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ sideGroup }}" hint-size="100%,60px">
+                        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="So far" value="{{ f.extraValue }}" provenance="{{ derivedRight }}" hint-size="100%,24px"></x-import>
+                        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="Bills on" value="{{ resetValue }}" hint-size="100%,24px"></x-import>
+                      </x-import>
+                    </x-import>
+                  </sc-if>
+
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ plansRow }}" hint-size="100%,76px"></x-import>
+                </div>
+              </sc-if>
+
+            </div>
+          </div>
+            </div>
+          </div>
+        </x-import>
+
+        <sc-if value="{{ f.panel }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:var(--header-h);right:0;bottom:0;width:504px">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ f.panel }}" hint-size="504px,100%">
+              <sc-if value="{{ f.panelRows }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:0 var(--sp-1)">
+                    <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-tertiary)">Events this cycle</span>
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" source="Actual usage" size="{{ twelve }}" hint-size="auto,18px"></x-import>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:var(--tile-gap)">
+                    <sc-for list="{{ f.panelRows }}" as="ev" hint-placeholder-count="6">
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ ev }}" hint-size="100%,60px"></x-import>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+            </x-import>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1632,"height":4494}}'>
+/* This board holds the foot and the states; -Desktop holds the default and the ledger panel. */
+const FRAME_SET = ["d3", "d4", "d5", "d6"];
+
+/* Pinned facts — the board never reads the clock. Today is 15 Sept 2026. */
+const RESET = "2026-10-01";
+const GAUGE_AT = "2026-09-15";
+const GAUGE_TIME = "02:00";
+const BOOK_LIST = "India price list · 1 Apr 2026";
+const CYCLE = "1–30 Sept 2026";
+
+/* BM-41's Growth row, word for word: caps, bundles, rates, and the drafted V2 allowances. */
+const GROWTH = { proposals: 300, detections: 100, detectionRate: 10, voiceRate: 6, storageGB: 50, design: "500 kW", seats: 3, sends: 2000 };
+
+/* Sample usage — the counts are ours to choose; every denominator and rate above is the book's. */
+const USED = { proposals: 187, projects: 12, detections: 52, voiceMin: 143, storageGB: 18.4, otp: 1204, seats: 2, seatMonths: 1.0, whatsapp: 214, sms: 38 };
+const ZERO = { proposals: 0, projects: 0, detections: 0, voiceMin: 0, storageGB: 0, otp: 0, seats: 0, seatMonths: 0, whatsapp: 0, sms: 0 };
+
+const SITES = [
+  ["Patil residence", "Nashik"], ["Deshmukh bungalow", "Pune"], ["Shree Ganesh Traders", "Aurangabad"],
+  ["Kulkarni farmhouse", "Satara"], ["Om Sai Apartments", "Nagpur"], ["Joshi residence", "Kolhapur"],
+  ["Sunrise Dairy", "Sangli"], ["Mehta warehouse", "Thane"], ["Vidya Vikas School", "Solapur"],
+  ["Rane residence", "Ratnagiri"], ["Bhosale Agro Cold Store", "Baramati"], ["Gokhale residence", "Pune"],
+  ["Navjeevan Hospital", "Ahmednagar"], ["Shinde residence", "Latur"],
+];
+const PEOPLE = ["Rohan Deshmukh", "Priya Sharma", "Anil Kadam", "Sneha Patil"];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.noop = () => {};
+  }
+
+  componentDidMount() {
+    if (!this.loaded()) {
+      this._poll = setInterval(() => {
+        if (this.loaded()) { clearInterval(this._poll); this._poll = null; this.forceUpdate(); }
+      }, 40);
+    }
+  }
+  componentWillUnmount() { if (this._poll) clearInterval(this._poll); }
+  loaded() { return !!window.HelioGridDesignSystem_c8aa43; }
+  ns() { return window.HelioGridDesignSystem_c8aa43 || {}; }
+
+  glyph(spec, size, filled) {
+    return React.createElement("svg", {
+      width: size, height: size, viewBox: "0 0 24 24",
+      fill: filled ? "currentColor" : "none", stroke: filled ? "none" : "currentColor",
+      strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true",
+    }, spec.map((c, i) => React.createElement(c[0], Object.assign({ key: "g" + i }, c[1]))));
+  }
+
+  icons() {
+    const P = (d) => ["path", { d: d }];
+    return {
+      home: [P("M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z")],
+      homeF: [P("M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-6v-6h-4v6H4a1 1 0 0 1-1-1z")],
+      users: [P("M9 4.8a3.2 3.2 0 1 1 0 6.4 3.2 3.2 0 0 1 0-6.4"), P("M2.5 20a6.5 6.5 0 0 1 13 0"), P("M16.6 5.6a3.2 3.2 0 0 1 0 4.9"), P("M18 20a6.4 6.4 0 0 0-2-4.6")],
+      usersF: [["circle", { cx: 12, cy: 8, r: 3.7 }], P("M5 20.5a7 7 0 0 1 14 0z")],
+      doc: [P("M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"), P("M14 3v5h5"), P("M9 13.5h5"), P("M9 17h3.5")],
+      docF: [P("M13.6 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.4z")],
+      dots: [["circle", { cx: 5, cy: 12, r: 1.7 }], ["circle", { cx: 12, cy: 12, r: 1.7 }], ["circle", { cx: 19, cy: 12, r: 1.7 }]],
+      chevRight: [P("m9.5 6 6 6-6 6")],
+      layers: [P("m12 3 9 4.5-9 4.5-9-4.5z"), P("m3 12 9 4.5 9-4.5"), P("m3 16.5 9 4.5 9-4.5")],
+    };
+  }
+
+  mono(text) {
+    return React.createElement("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, text);
+  }
+
+  fig(text) {
+    return React.createElement("span", {
+      style: { display: "block", textAlign: "right", fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" },
+    }, text);
+  }
+
+  /* A rate cell: the amount in mono (F7-09), the words after it in the cell's own face. */
+  rate(amount, words) {
+    return React.createElement("span", null, [
+      React.createElement("span", { key: "a", style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, amount),
+      React.createElement("span", { key: "w" }, words),
+    ]);
+  }
+
+  /* SCR-SHELL-01 decision 8: the bell and the account sit at the rail's foot. */
+  railSpec(NS, who) {
+    const I = this.icons();
+    const g = (s, filled) => this.glyph(s, 20, filled);
+    const name = who || "Mahesh Bhosale";
+    const D = NS.DESTINATION_GLYPH;
+    const sg = (n, filled) => React.createElement(NS.ShellGlyph, { name: n, size: "lg", filled: !!filled, tone: filled ? "primary" : "secondary" });
+    return React.createElement(NS.AppRail, {
+      label: "Main", value: "more", onChange: this.noop,
+      items: [
+        { key: "day", label: "Home", icon: sg(D.home), activeIcon: sg(D.home, true) },
+        { key: "leads", label: "Leads", icon: sg(D.leads), activeIcon: sg(D.leads, true) },
+        { key: "projects", label: "Projects", icon: sg(D.projects), activeIcon: sg(D.projects, true) },
+        { key: "more", label: "More", icon: sg(D.more), activeIcon: sg(D.more, true) },
+      ],
+      footer: [{ key: "notifications", label: "Notifications", icon: React.createElement(NS.ShellGlyph, { name: "bell", size: "lg" }), onClick: this.noop }],
+      avatar: React.createElement(NS.AccountMenu, {
+        name: name, triggerName: name + " — account, grievance contact and sign out", menuLabel: "Account",
+        grievanceLabel: "Grievance officer", signOutLabel: "Sign out",
+        onGrievance: this.noop, onSignOut: this.noop, align: "start",
+      }),
+    });
+  }
+
+  /* The header holds only whose HelioGrid this is and the one search. */
+  deskHeader(NS) {
+    return React.createElement(NS.AppHeader, {
+      tenant: React.createElement("span", { style: { fontSize: "var(--fs-body-sm)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "Suryodaya Solar"),
+      search: React.createElement(NS.SearchField, { density: "functional", placeholder: "Search leads, projects, invoices", value: "", onChange: this.noop }),
+    });
+  }
+
+  /* SCR-SHELL-01's settings side list for an EPC Owner: a settings page at 1536 draws it, with no breadcrumb. */
+  settingsList() {
+    const H = (t) => ({ key: "h-" + t, heading: t, row: false, current: false });
+    const R = (label, glyph, cur) => ({ key: label, heading: null, label: label, glyph: glyph, row: !cur, current: !!cur });
+    return [R("Profile & preferences", "people"), H("Your team"), R("Team", "people"), R("Roles reference", "shield"), H("Your company"), R("Business profile", "building"), R("Branding", "palette"), R("Proposal template", "document"), R("Payment terms", "calendar-clock"), H("What you sell"), R("Catalog", "package"), H("Customer calls"), R("Agent & voice", "headset"), H("Money"), R("Collections", "wallet"), R("Billing", "credit-card"), R("Usage", "gauge", true)];
+  }
+
+  crumbs(NS) {
+    return React.createElement(NS.Breadcrumb, {
+      items: [{ key: "billing", label: "Billing", onClick: this.noop }, { key: "usage", label: "Usage" }],
+    });
+  }
+
+  rowLedger(NS, name) {
+    const I = this.icons();
+    return React.createElement(NS.IconButton, {
+      key: "ledger", label: name + " — events this cycle", variant: "ghost", size: 32, onClick: this.noop,
+    }, this.glyph(I.chevRight, 20));
+  }
+
+  /* The way to a bigger plan, on the meter that is the signal: a raised row act with its glyph. */
+  rowPlans(NS) {
+    return React.createElement(NS.Button, {
+      key: "plans", variant: "secondary", size: "sm", onClick: this.noop,
+      icon: React.createElement(NS.ShellGlyph, { name: "layers", size: "md" }),
+    }, "Bigger plans");
+  }
+
+  /* Two quiet source lines at the card's foot, prose and never a tier (F8-01, brief decision 5). */
+  footLabels(NS) {
+    return React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-0-5)" } }, [
+      React.createElement(NS.Provenance, { key: "u", source: "Actual usage", size: 12 }),
+      React.createElement(NS.Provenance, { key: "p", source: "Limits and rates · " + BOOK_LIST, size: 12 }),
+    ]);
+  }
+
+  /* THE TWO TABLES: meter · used this cycle · included · rate · charges so far. */
+  deskTables(NS, F, o) {
+    o = o || {};
+    const u = Object.assign({}, USED, o.used || {});
+    const used = { key: "used", label: "Used this cycle", numeric: true, width: 150 };
+    const foot = this.footLabels(NS);
+    const gapCell = (words) => ({ gap: words, scale: "cell", align: "right" });
+
+    const limitRows = [
+      { id: "proposals", limit: "Proposals this month", used: F.number(u.proposals), allowed: F.number(GROWTH.proposals) + " a month" },
+      { id: "projects", limit: "Active projects", used: F.number(u.projects), allowed: "No limit on Growth" },
+      { id: "design", limit: "Biggest design", noCount: true, allowed: GROWTH.design },
+    ];
+
+    const incRows = [
+      { id: "detections", meter: "AI detections", used: F.number(u.detections), included: F.number(GROWTH.detections) + " a month", rate: this.rate(F.money(GROWTH.detectionRate), " each beyond " + F.number(GROWTH.detections)), charges: F.money(0) },
+      { id: "voice", meter: "Voice minutes", used: F.number(u.voiceMin) + " min", included: "Pay as you go", rate: this.rate(F.money(GROWTH.voiceRate), " a minute"), charges: F.money(u.voiceMin * GROWTH.voiceRate) },
+      { id: "storage", meter: "Storage", used: F.number(u.storageGB) + " GB", asOf: "As of " + F.date(GAUGE_AT) + ", " + GAUGE_TIME, included: F.number(GROWTH.storageGB) + " GB", rate: "", charges: "" },
+      { id: "otp", meter: "OTP codes", chip: "Not billed", used: F.number(u.otp), included: "Tracked only", rate: "", charges: "" },
+      { id: "seats", meter: "Tracked seats", used: F.number(u.seats) + " seats", included: F.number(GROWTH.seats) + " seats", gap: "Not published yet" },
+      { id: "seatmonths", meter: "Seat-months", used: F.number(u.seatMonths) },
+      { id: "sends", meter: "Marketing sends", used: F.number(u.whatsapp + u.sms) + " sends", included: F.number(GROWTH.sends) + " sends", gap: "Not published yet" },
+      { id: "whatsapp", meter: "WhatsApp sends", used: F.number(u.whatsapp) },
+      { id: "sms", meter: "SMS sends", used: F.number(u.sms) },
+    ];
+
+    return [
+      {
+        key: "limits",
+        block: { density: "functional", title: "Limits", footer: foot },
+        table: {
+          density: "compact", rowKey: "id", read: { kind: "ready" }, caption: "Every cap and ceiling on Growth · " + CYCLE,
+          columns: [
+            { key: "limit", label: "Limit", primary: true, strong: true, width: 280 },
+            Object.assign({}, used),
+            { key: "allowed", label: "Allowed", align: "right", width: 190 },
+          ],
+          rows: limitRows,
+          rowActions: (r) => (r.noCount ? null
+            : o.signal === r.id ? [this.rowPlans(NS), this.rowLedger(NS, r.limit)]
+            : this.rowLedger(NS, r.limit)),
+        },
+      },
+      {
+        key: "included",
+        block: { density: "functional", title: "Included each month", footer: foot },
+        table: {
+          density: "compact", rowKey: "id", read: { kind: "ready" }, caption: "Every meter on Growth · " + CYCLE,
+          columns: [
+            {
+              key: "meter", label: "Meter", primary: true, strong: true, width: 168,
+              render: (r) => (r.chip
+                ? React.createElement("span", { style: { display: "inline-flex", alignItems: "center", flexWrap: "wrap", rowGap: "var(--sp-1)" } }, [
+                    React.createElement("span", { key: "n" }, r.meter),
+                    React.createElement(NS.StatusChip, { key: "c", status: "not-billed", label: r.chip, tone: "neutral", density: "expressive", style: { marginLeft: "var(--sp-2)", verticalAlign: "middle" } }),
+                  ])
+                : r.meter),
+              rowLabel: (r) => r.meter,
+            },
+            Object.assign({}, used, {
+              width: 118,
+              render: (r) => (r.asOf
+                ? React.createElement("span", { style: { display: "block", textAlign: "right" } }, [
+                    React.createElement("span", { key: "v", style: { display: "block" } }, r.used),
+                    React.createElement("span", { key: "a", style: { display: "block", marginTop: "var(--sp-0-5)", fontFamily: "var(--font-sans)", fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", fontWeight: "var(--fw-regular)", color: "var(--text-tertiary)" } }, r.asOf),
+                  ])
+                : r.used),
+            }),
+            { key: "included", label: "Included", align: "right", width: 140 },
+            { key: "rate", label: "Rate", align: "right", width: 208, render: (r) => r.rate, gap: (r) => (r.gap ? gapCell(r.gap) : null) },
+            { key: "charges", label: "Charges so far", numeric: true, width: 116, provenance: "unmarked" },
+          ],
+          rows: incRows,
+          rowLabel: (r) => r.meter,
+          rowActions: (r) => (r.id === "seatmonths" ? null : this.rowLedger(NS, r.meter)),
+        },
+      },
+    ];
+  }
+
+  stChip(word, tone) {
+    return { status: word.toLowerCase().replace(/\s+/g, "-"), label: word, tone: tone, density: "expressive" };
+  }
+
+  needRow(NS, key, name, chipWord, tone, value, line) {
+    const ink = tone === "danger" ? "var(--danger-text)" : tone === "info" ? "var(--info-text)" : "var(--warning-text)";
+    return {
+      key: key,
+      label: React.createElement("span", { style: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--sp-2)", minWidth: 0 } }, [
+        React.createElement("span", { key: "n" }, name),
+        React.createElement(NS.StatusChip, { key: "c", status: chipWord.toLowerCase().replace(/\s+/g, "-"), label: chipWord, tone: tone, density: "expressive" }),
+      ]),
+      value: value ? this.fig(value) : null,
+      line: line || null, lineInk: ink,
+      group: { label: name, density: "expressive", leadBelow: 200, style: { gridTemplateColumns: "minmax(0,1fr) max-content", maxWidth: "100%" } },
+    };
+  }
+
+  /* SCR-SHELL-06's cap strip, reused exactly: title, its rows, and Upgrade plan. */
+  capStrip(NS, title, rows, tone) {
+    const h = React.createElement;
+    return {
+      kind: "cap", tone: tone, title: title,
+      children: h(NS.FactRows, null, rows.map((r) => h(NS.FactRow, { key: r[0], label: r[1], value: r[2] }))),
+      action: h(NS.BannerAction, { onClick: this.noop }, "Upgrade plan"),
+    };
+  }
+
+  /* The meters' failed read — what failed, and Try again inside it (the one read state). */
+  errorBanner(NS) {
+    return { read: { kind: "failed", retry: this.noop }, errorTitle: "Couldn't read this cycle's usage", errorMessage: "Try again — this screen only ever shows the billed figures.", retryLabel: "Try again", loadingLabel: "Loading this cycle's usage", density: "expressive" };
+  }
+
+  /* The chip is the frame's state: this card holds the one status chip the 375 header row holds. */
+  cycleCardSpec(NS, word, tone) {
+    return {
+      density: "expressive", title: "This cycle",
+      badge: React.createElement(NS.StatusChip, this.stChip(word || "Within plan", tone || "success")),
+    };
+  }
+
+  ledgerRows(F) {
+    const rows = [];
+    const n = USED.detections;
+    for (let i = 0; i < n; i++) {
+      const day = 15 - Math.floor((i * 15) / n);
+      const first = Math.ceil((15 - day) * n / 15);
+      const slot = i - first;
+      const mins = 18 * 60 - slot * 137 - ((i * 11) % 19);
+      const hh = String(Math.floor(mins / 60)).padStart(2, "0");
+      const mm = String(mins % 60).padStart(2, "0");
+      const site = SITES[(i * 5) % SITES.length];
+      const who = PEOPLE[(i * 3) % PEOPLE.length];
+      const iso = "2026-09-" + String(day).padStart(2, "0");
+      rows.push({
+        key: "ev" + i,
+        title: site[0] + " · " + site[1],
+        subtitle: F.date(iso) + ", " + hh + ":" + mm + " · " + who,
+        trailing: this.mono("1"),
+        density: "functional",
+        style: { background: "var(--fill)", boxShadow: "none", borderRadius: "var(--r-tile)" },
+      });
+    }
+    return rows;
+  }
+
+  /* One panel, three reads: the events, a failed read with its retry, and a cycle with none. */
+  deskPanelSpec(F, kind) {
+    const base = {
+      open: true, onClose: this.noop, desktop: "panel", inset: true, side: "right", width: 504,
+      density: "expressive", zIndex: 60, showClose: true,
+      title: "AI detections",
+      panelAbove: 0,
+      panelProps: { style: { transform: "translateX(0)", animation: "none" } },
+    };
+    if (kind === "failed") return Object.assign(base, {
+      subtitle: CYCLE, read: { kind: "failed", retry: this.noop },
+      errorTitle: "Couldn't read these events",
+    });
+    if (kind === "empty") return Object.assign(base, {
+      subtitle: CYCLE + " · 0 of " + F.number(GROWTH.detections), read: { kind: "empty" },
+      emptyTitle: "No detections this cycle", emptyMessage: "Each detection you run is listed here.",
+    });
+    return Object.assign(base, {
+      subtitle: CYCLE + " · " + F.number(USED.detections) + " of " + F.number(GROWTH.detections), read: { kind: "ready" },
+    });
+  }
+
+  frameSpecs(NS, F) {
+    const owner = this.railSpec(NS);
+    const soFar = this.fig(F.money(USED.voiceMin * GROWTH.voiceRate));
+    const base = (o) => Object.assign({
+      rail: owner, panel: null, panelRows: null, banner: null, strip: null, scope: null, needs: null, needsMain: null, needsRows: null,
+      cols: "minmax(0, 1fr) 300px", side: true, tablesAlign: "flex-start",
+      tables: this.deskTables(NS, F), cycleCard: this.cycleCardSpec(NS), extraValue: soFar,
+    }, o);
+
+    const all = [
+      base({ key: "d1", id: "m12-04-d1", label: "1536 · default", screenLabel: "Usage — default (1536)" }),
+      base({
+        key: "d2", id: "m12-04-d2", label: "1536 · AI detections events", screenLabel: "Usage — AI detections events (1536)",
+        panel: this.deskPanelSpec(F, "ready"), panelRows: this.ledgerRows(F),
+      }),
+      base({
+        key: "d2f", id: "m12-04-d2f", label: "1536 · events, failed read", screenLabel: "Usage — events, failed read (1536)",
+        panel: this.deskPanelSpec(F, "failed"),
+      }),
+      base({
+        key: "d2e", id: "m12-04-d2e", label: "1536 · events, none this cycle", screenLabel: "Usage — events, none this cycle (1536)",
+        panel: this.deskPanelSpec(F, "empty"), tables: this.deskTables(NS, F, { used: ZERO }), extraValue: null,
+      }),
+      base({
+        key: "d3", id: "m12-04-d3", label: "1536 · default, foot", screenLabel: "Usage — default, foot (1536)",
+        tablesAlign: "flex-end",
+      }),
+      base({
+        key: "d4", id: "m12-04-d4", label: "1536 · cap reached, grace", screenLabel: "Usage — cap reached, grace running (1536)",
+        strip: this.capStrip(NS, "Proposals · 300 of 300 used this month · 7-day grace running", [
+          ["works", "Still works", "New proposals · editing, duplicating and sharing existing proposals · reading · export"],
+          ["pause", "New proposals pause", "22 Sept 2026"],
+          ["reset", "Cycle resets", "1 Oct 2026"]], "warning"),
+        tables: this.deskTables(NS, F, { used: { proposals: 300 }, signal: "proposals" }),
+        cycleCard: this.cycleCardSpec(NS, "At a limit", "warning"),
+        needs: { density: "expressive", title: "Needs you" },
+        needsRows: [this.needRow(NS, "prop", "Proposals this month", "At the cap", "warning", "300 of 300", "Grace ends 22 Sept 2026 · reading, editing and export never stop.")],
+      }),
+      base({
+        key: "d5", id: "m12-04-d5", label: "1536 · error", screenLabel: "Usage — error (1536)",
+        tables: [], cols: "minmax(0, 1fr)", side: false, banner: this.errorBanner(NS),
+      }),
+      base({
+        key: "d6", id: "m12-04-d6", label: "1536 · not the Owner", screenLabel: "Usage — not the Owner, read only (1536)",
+        rail: this.railSpec(NS, "Priya Sharma"), tables: [], cols: "minmax(0, 1fr)", side: false,
+        scope: { holder: "Mahesh Bhosale (owner)", title: "Only Mahesh Bhosale (owner) can see this cycle's usage.", variant: "panel" },
+        needsMain: { density: "expressive", title: "Needs you" },
+        needsRows: [this.needRow(NS, "prop", "Proposals this month", "Paused", "danger", null, null)],
+      }),
+    ];
+    return all.filter((f) => FRAME_SET.indexOf(f.key) !== -1);
+  }
+
+  renderVals() {
+    const NS = this.ns();
+    const ready = !!(NS.MarketProvider && NS.AppShell && NS.AppRail && NS.AppHeader && NS.AccountMenu && NS.ShellGlyph && NS.SearchField
+      && NS.Breadcrumb && NS.DataTable && NS.Block && NS.Provenance && NS.FactRows && NS.FactRow && NS.StatusChip && NS.ListRow
+      && NS.IconButton && NS.Button && NS.EditorSurface && NS.Banner && NS.BannerAction && NS.ScopeNote);
+    const base = { noop: this.noop, twelve: 12, yes: true };
+    if (!ready) return base;
+    const F = NS.MarketProvider.createFormat();
+    const I = this.icons();
+    return Object.assign(base, {
+      header: this.deskHeader(NS),
+      crumbs: this.crumbs(NS), settings: this.settingsList(),
+      sideGroup: { label: "This cycle", density: "expressive", leadBelow: 200, style: { gridTemplateColumns: "minmax(0,1fr) max-content", maxWidth: "100%" } },
+      cycleValue: this.fig(CYCLE),
+      resetValue: this.fig(F.date(RESET)),
+      derivedRight: { tier: "unmarked", align: "right", size: 12 },
+      extraCard: { density: "expressive", title: "Extra charges" },
+      plansRow: {
+        icon: this.glyph(I.layers, 22), iconColor: "var(--text-secondary)",
+        title: "Bigger plans", subtitle: "Pro · Enterprise",
+        trailing: this.glyph(I.chevRight, 20), onClick: this.noop, density: "expressive",
+        style: { background: "var(--fill)", boxShadow: "none", borderRadius: "var(--r-tile)" },
+      },
+      frames: this.frameSpecs(NS, F),
+    });
+  }
+}
+</script>
+</body>
+</html>
