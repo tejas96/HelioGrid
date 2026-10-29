@@ -24,21 +24,22 @@ other meter has, and its chip carries the state — never a red wall, never an a
 | Overage as it accrues (`M12-35`, `BM-27`) | data | on the meter's own row, as the meter's ONE note line: the published rate and the amount so far. ONE total row ends the region, and its one line says when it bills |
 | Plain overage pricing (`M12-36`) | data | the rate rides on the meter's row; no second rate table on this screen |
 | A V2 meter the book has no rate for | data | the meter's row shows its activity; the rate is a named gap — never a zero, never an invented figure |
-| Tracked seats and the accruing seat-months | data | two rows of the same form inside the seats meter — label left, figure right |
+| Tracked seats and the accruing seat-months | data | two rows of the same form inside the seats meter — label left, figure right. The label carries the unit, `Seat-months`, and the figure is bare, `4.5` (owner ruling 2026-10-29) |
+| Tracked seats' and marketing sends' allowance (V2 meters) | data | the included allowance `BM-41` drafts for the plan — Growth: `3` seats, `2,000` sends — as used of included, with the rate a named gap, `Not published yet`; never a draft rate (owner ruling 2026-10-29) |
 | Provenance (`M12-34`, `BM-27`, `F8-07`) | honesty label | once per group, at its FOOT, after the figures: `Actual usage` for what was used, and the price list with its date for what is included and for every rate — two short quiet lines at most, in plain words. Never a key above the figures, never a label per column. The word "measured" never appears |
 | The ledger behind a number (`M12-36`) | more detail | each meter row opens that meter's ledgered events for the cycle — a sheet at 375, a side panel at 1536 (`F7-21`). No register row owns a ledger screen: if the ledger needs more than a sheet holds, NAME the screen in your notes and stop |
-| The way to a bigger plan (`BM-07`) | more detail | a row that leads to `SCR-M12-03`; on a meter that is the signal, the same row sits on that meter |
+| The way to a bigger plan (`BM-07`) | more detail | a row that leads to `SCR-M12-03`, at the foot; on a meter that is the signal — at its cap or paused — the same row also sits on that meter (owner ruling 2026-10-29) |
 | A person who is not the Owner opens this screen (`M12-56` context) | status | no usage figure, no amount and no act is drawn: which meter is at its cap or paused, as its chip, and ONE line naming whose screen this is — the same answer `SCR-M12-02` gives |
 | Nothing used yet | teaching | every cap and bundle still visible at zero; at most two short sentences |
-| The rollup failed | error | one banner — what failed and what to do. No figure is drawn: never a cached, approximate or placeholder number |
+| The rollup failed | error | the meters' failed read — what failed, and `Try again` inside it (the one read state, `T-SHELL-013`). No figure is drawn: never a cached, approximate or placeholder number |
 
 ## Arrangement
 
 - **375.** The title and its one cycle line · `Needs you`, only when a meter qualifies · `Limits` ·
   `Included each month`, ending in the overage total when any accrues. Every meter is a list row —
   name, used of included, a quiet meter — never a table: used-of-included is ONE value.
-- **1536.** The two meter regions become tables with their columns in view — meter · used · included
-  · extra usage · rate — side by side where they fit. `Needs you` and the overage total sit in a side
+- **1536.** The two meter regions become tables with their columns in view — meter · used this cycle ·
+  included · rate · charges so far — side by side where they fit. `Needs you` and the overage total sit in a side
   column, in view while the tables scroll. A meter's ledger opens as a side panel. The `Limits` table
   reads limit · used this cycle · allowed; a ceiling's used cell is empty, because a ceiling has no count.
 - **Inside a card, ONE row form.** Every row reads label left, figure right, on one edge; a meter's bar sits
@@ -55,35 +56,56 @@ is wrong. A V2 meter has no sellable rate in `BM-41`, which is what the
 - **BM-41** (P0) — **The India book — the source-derived first instance (IN book; every number below is IN-market data, not the generic model).** Identified by `F1-60`/`F1-61`; canonical here. **Tier prices (INR, ex-GST):** Starter **₹1,999/mo · ₹19,990/yr** — Growth **₹3,999/mo · ₹39,990/yr** — Pro **₹9,999/mo · ₹99,999/yr** — Enterprise **custom, anchored ₹24,999+/mo**, annual contract (owner-set anchors ~₹2k/~₹4k/~₹10k). **Capacity + counts:** single-design ceiling 50 kW / 500 kW / 5 MW / 100 MW (utility: blocks/zones, trackers, terrain); proposals 30 / 300 / 1,500 / unlimited per month; active projects 10 / unlimited / unlimited / unlimited; users unlimited on all four. **Bundles + overage:** AI detections 30 / 100 / 400 / custom per month, then ₹10 each; voice minutes PAYG ₹6/min on Starter and Growth, 400 min/mo bundled then ₹6/min on Pro, custom bundles + BYO number on Enterprise; storage 10 / 50 / 250 GB / custom. **Trial caps:** 25 detections · 15 voice minutes · 5 GB; **proposals are not capped in the trial** (owner ruling 2026-10-08 — a proposal costs the platform little and is the trial's moment of value). **Service terms are pricing-page copy, not book data (owner ruling 2026-09-07):** the IN positioning — support in-app / in-app + WhatsApp / priority + onboarding call / named contact — is rendered by the pricing page as Tier-keyed screen copy per BM-14; the book carries none of it and no entitlement, invoice or gate reads it, and a second market whose terms differ carries them as pack labels (`F1-22`), never in a locale-keyed catalog. Enterprise adds the BM-15 commercial arrangements. **Benchmarks (recorded per BM-39):** Reslink India INR page (owner-supplied, authoritative — Basic ₹60,000/yr at 50 kW · Pro ₹85,000/yr at 500 kW, 1,000 proposals · Premium ₹1,20,000/yr at 5 MW · Enterprise custom) and ARKA per-org pricing; priced under both at every rung — Starter-yearly 67% under Basic, Growth-yearly 53% under Pro, Pro-yearly 17% under Premium with a voice bundle no competitor has, and Pro's 1,500 proposals/mo beat the benchmark's 1,000. **Collection routes:** per the IN mandate ladder, F1-40 (monthly self-serve under the per-debit cap rides UPI AutoPay; Enterprise e-NACH/invoice; every yearly total exceeds the cap and is a single payment link/invoice per year). **V2 add-on prices (owner ruling 2026-08-04 — base tiers confirmed unchanged; every add-on number below is DRAFT pending rate-card verification per BM-17/BM-26):** tracked seat **≈₹99/seat/mo** beyond the tier's included allowance; **included tracked seats: Starter 0 · Growth 3 · Pro 10 · Enterprise custom**; marketing-send bundles **Starter 500 · Growth 2,000 · Pro 10,000 sends/mo**, overage **≈ WhatsApp ₹1.5 · SMS ₹0.35 · email ₹0.10 per send**. A draft add-on rate is not sellable until the owner verifies the channel/seat rate cards against worst-case unit COGS (the ≥40% floor, BM-17) — verification is the revisit trigger.
 - **M12-52** (P0) — **The trial is modelled in-app only; the gateway subscription is created at conversion.** 14 days, every tier capability, within the trial caps (book data — `BM-41`); no card or mandate to start; one 7-day extension available to support (an audited override, M12-19's family).
 
-**A price list value's trust label.** Its tier word is `Published` — the PRD's own word for a price list's values (`M12-55`, `M12-35`) — and its source label is the list's name and date. The date is sample content, because a price list is versioned data (`F1-25`): draw `India price list · 1 Apr 2026`.
+**A price list value's trust label.** A figure the price list publishes — a price, a bundle, a rate, a cap — carries no tier (owner ruling 2026-10-29): its region names the list and its date as one quiet source line, prose and never a tier. The date is sample content, because a price list is versioned data (`F1-25`): draw `India price list · 1 Apr 2026`. No figure on the billing screens shows a provenance tier label — `measured`, `derived`, `estimated` or `assumed` — not a computed amount either (owner ruling 2026-10-29, for billing only; the rest of the product keeps `F8-01` for now). Where this brief asks for it, a computed amount shows its working in `How it is worked out`.
+
+**The trial's biggest design is 100 MW** — the top plan's ceiling (owner ruling 2026-10-29): `BM-41` names no trial ceiling, and `M12-52` gives the trial every plan capability. Anything else `BM-41`'s trial caps do not cap — proposals, active projects, users — is not capped on a trial.
+
+**The seats sample adds up:** on 15 Sept, halfway through the cycle, `2 of 3` tracked seats give `Seat-months · 1.0`.
 
 ## Entry & exit
 
-Reached from: Billing Home's deep link — "what am I using (deep link to the usage screen)" (`docs/prd/modules/M12-platform-billing.md` §M12.10 behavior detail, SCR-M12-02); the 80% pre-warning and cap banners reference this screen — no gate may fire without the pre-warning having been available here (M12-34; banner surface is SCR-SHELL-06, shared row M12-30). Leads to: ledger detail via deep links (M12-36); the upgrade path when a cap is the signal — "new creations of that type pause until upgrade" (M12-30) and "outgrowing a cap IS the upgrade signal" (BM-07) — the upgrade path leads to SCR-M12-03, the corridor's one plan-selection surface (M12-55 context); decided here, so the billing screens have one way to a bigger plan and not two. Back is the top bar's button at 375 and a `Billing / Usage` breadcrumb at 1536, both to Billing Home (SCR-M12-02).
+Reached from: Billing Home's deep link — "what am I using (deep link to the usage screen)" (`docs/prd/modules/M12-platform-billing.md` §M12.10 behavior detail, SCR-M12-02); the 80% pre-warning and cap banners reference this screen — no gate may fire without the pre-warning having been available here (M12-34; banner surface is SCR-SHELL-06, shared row M12-30). Leads to: ledger detail via deep links (M12-36); the upgrade path when a cap is the signal — "new creations of that type pause until upgrade" (M12-30) and "outgrowing a cap IS the upgrade signal" (BM-07) — the upgrade path leads to SCR-M12-03, the corridor's one plan-selection surface (M12-55 context); decided here, so the billing screens have one way to a bigger plan and not two. Back is the top bar's `Back to Billing` at 375; at 1536 the page draws the settings side list with `Billing` selected and no breadcrumb, because it opens from a settings page (`SCR-SHELL-01`, *More: the settings list*).
 
 **Inherited from `SCR-SHELL-06` (designed) — reuse, never redraw.**
 
 - **The billing strip.** Where a frame shows the billing strip or a denial sheet, it is `SCR-SHELL-06`'s, reused exactly as that file draws it (context file, *REUSED, never redrawn*). This screen designs no second banner.
-- **Arriving from the strip.** The 80% cap strip's act is `See usage` and leads here; at 100% and after the grace the strip's act is `Upgrade plan` and leads to `SCR-M12-03`. The strip's cap frames read `AI detections · 80 of 100` and `100 of 100` on the Growth plan — keep those figures, so the two screens agree.
+- **Arriving from the strip.** At 80% the shell draws no strip: this screen's `Needs you` is the pre-warning (`M12-34`). At 100% and after the grace the strip's act is `Upgrade plan` and leads to `SCR-M12-03`. The strip's cap frames read `Proposals this month · 300 of 300` on the Growth plan — keep that figure, so the two screens agree.
 - **`non-owner-read-only`.** `ScopeNote` takes the act's place, its holder in the design system's form — `Mahesh Bhosale (owner)` — and no amount renders.
 - **One sample story across the billing screens.** Suryodaya Solar · Growth plan · Owner Mahesh Bhosale · today 15 Sept 2026 · the charge that failed on 11 Sept 2026 is the Growth month — invoice `HG-INV-2026-0902`, ₹3,999 + 18% GST = ₹4,718.82 — the same figure every billing screen prints for that charge (owner ruling).
 
 **Inherited from `SCR-M12-03` (designed) — reuse, never redraw.**
 
 - **The person's words for the price list's:** `Included` for a bundle, `Extra charges` for overage, `Biggest design` for the ceiling. A one-of-N choice is a chip strip, directly above what it changes.
-- **The way to a bigger plan is `SCR-M12-03`**, and only that. Honesty label for a price list value: `Published · India price list · 1 Apr 2026`; a usage count keeps `Actual usage`.
+- **The way to a bigger plan is `SCR-M12-03`**, and only that. Honesty label for a price list value: the source line `India price list · 1 Apr 2026`, no tier (owner ruling 2026-10-29); a usage count's source line is `Actual usage`, no tier either.
 
 **Decisions made in design (2026-09-20) — later screens inherit them.**
 
 1. **Two cards, and the meters are rows inside them.** `Limits` and `Included each month`. Every row reads label left, figure right, on ONE edge; a meter's bar sits under its own row, and a row with no meter — `Biggest design · 500 kW`, a sub-fact — looks like the rows that have one.
 2. **One status chip always answers the job.** `Within plan` · `Nearing a limit` · `Past what's included` · `On trial` · `At a limit` · `Paused` — beside the cycle line at 375, on the `This cycle` card at 1536.
 3. **`Needs you` exists only while a meter qualifies.** A row per meter: its name with its own chip, used of included as the figure, and ONE line saying what happens next and when. It is never parked open and empty. A meter in `Needs you` drops its own percentage line, so no meter says it twice.
-4. **Extra charges ride the meter's own row** as its one note line — `₹6 a minute · ₹858 so far`, the amount marked `Derived` — and the card ends in `Extra charges` and `Bills on`.
-5. **The trust label is two quiet lines at each card's foot**, after the figures: `Actual usage`, then `Limits and rates · India price list · 1 Apr 2026`. The storage gauge carries its own `As of` under its figure.
+4. **Extra charges ride the meter's own row:** the meter's note carries the rate (`₹6 a minute`) and the amount so far is its `So far` row (decision 10); the card ends in `Extra charges` and `Bills on`.
+5. **The trust label is two quiet source lines at each card's foot**, after the figures, prose and never a tier: `Actual usage`, then `Limits and rates · India price list · 1 Apr 2026`. A count and a list figure carry no tier (owner ruling 2026-10-29); no figure on this screen carries a tier label. The storage gauge carries its own `As of` under its figure.
 6. **One named chevron per metered row opens that meter's events** — a sheet at 375, `F7-21`'s side panel at 1536. No ledger screen is invented. The ceiling row and the seat-months row carry none: a size has no events, and seat-months' events are the seats row's.
 7. **1536 is two lanes.** The tables — meter · used this cycle · included · rate · charges so far — and a standing column: `This cycle`, `Needs you` where it exists, `Extra charges`, `Bigger plans`. A state with no figure to draw is ONE lane.
-8. **`Bigger plans` leads to `SCR-M12-03`**, the one way to a bigger plan. A person who is not the Owner sees which meter is paused as its chip, no figure, and `ScopeNote` — `Only Mahesh Bhosale (owner) can see this cycle's usage.`
+8. **`Bigger plans` leads to `SCR-M12-03`**, the one way to a bigger plan: at the foot, and on a meter at its cap or paused as well (owner ruling 2026-10-29). A person who is not the Owner sees which meter is paused as its chip, no figure, and `ScopeNote` — `Only Mahesh Bhosale (owner) can see this cycle's usage.`
 9. **Dates, `₹`, `GB`, `kW`, `OTP`, `WhatsApp`, `SMS`, the plan names and the price list's name stay as they are in every language. The paused meter is built as the English frame draws it** — the quiet grey bar with its status line under it — in every language; the board's two language frames are not read (`.claude/rules/ui-adherence.md`, *Screens*).
+
+10. **Overage on a meter row.** The meter's note carries only the rate; the amount so far is a `So far` row under the meter. OTP's `Not billed` chip sits in a `Charges` row under its meter. (Both stand until `UsageMeter` carries them itself.)
+11. **On a trial:** the trial's own window, `No limit on the trial` for proposals and for active projects (`BM-41`'s trial caps are a closed list — detections, voice, storage — and `M12-52` gives every tier capability inside them), no rate, no `So far`, no total, the V2 meters as a count only, and `Pick a plan` at the foot.
+12. **`Bigger plans` on the signal meter:** the same row under the meter at 375; a secondary small button on the table row at 1536.
+13. **The ledger.** One 44px ghost icon button per metered row, named `<meter> — events this cycle`, on the label line — never a whole-row tap wrapping a progress bar. One row per event (52 in the default), functional density, in a full-height sheet whose subtitle is the meter's own figure; each row is the site, the recorded time and who ran it. Its failed read is `Couldn't read these events` with retry; empty is `No detections this cycle` / `Each detection you run is listed here.`
+14. **1536 layout.** The settings side list at the left with `Usage` selected and no breadcrumb (`Usage` is a settings row, `SCR-SHELL-01`); then the tables lane, fluid, and a 300px standing column; the tables lane scrolls inside itself and the standing column holds still; the ledger panel docks over the standing column, so the tables never reflow. Sub-facts become rows of their own; `Marketing sends` shows used of included and the WhatsApp and SMS rows a count only.
+15. **Loading** keeps the list's own facts (rate gaps, the `Not billed` chip); rollup figures wait. **Error** closes the meter cards and keeps `Bigger plans`.
+16. **A count with no allowance** draws no track and no default sentence. The V2 meters are the last rows of `Included each month` and lift out without redrawing it. Overage never enters `Needs you`; the screen's chip says `Past what's included`. In `cap-reached-grace` and `creations-paused` the shell's strip shows above the page — `SCR-SHELL-06`'s, reused exactly; every other frame has no billing condition, so no strip.
+17. **Motion.** A meter's ledger rises as a sheet at 375 and slides in as a side panel at 1536; loading gives way to the figures in place; a meter's bar draws at its value and never fills up on arrival — no scary meters (`M12-36`) (`F7-51`: every motion is the design system's; nothing waits on it, and a figure never animates).
+
+## Design system gaps
+
+Owner ruling 2026-10-29: a board draws the nearest real component, never a look-alike, and the screen's build adds the missing part to `packages/ui`. *Canvas behind the repo* means the repo already has the part and only the canvas copy lacks it.
+
+- `UsageMeter` cannot drop its own percentage line, so a meter in `Needs you` repeats it (decision 3) — needs a `statusLine` switch.
+- `UsageMeter` `note` is a string: the rate's amount cannot be mono, and the `So far` amount and the `Not billed` chip have no slot (decision 10).
+- `SettingsList` `form="side"` — canvas behind the repo.
 
 ## Requirements (verbatim)
 
@@ -112,7 +134,7 @@ Reached from: Billing Home's deep link — "what am I using (deep link to the us
 - **overage-accruing** — usage beyond bundle: accruing overage shown as it happens, in the tenant's currency with its market grouping, at the book's published per-unit rates, billing on the next invoice (M12-35, BM-27).
 - **v2-meter-activity-no-rate** — "the book has no value for a V2 meter slot → the meter exists but cannot be sold; the usage screen shows activity with no rate rather than inventing one" (`docs/prd/modules/M12-platform-billing.md` §M12.5 edge case).
 - **tracked-seats-accruing** — "the usage screen shows current tracked seats and the accruing seat-months beside every other meter" (`docs/prd/modules/M12-platform-billing.md` §M12.5 behavior detail).
-- **trialing** — the caps in force are the book's trial caps (BM-41), enforced through the same gates with the same 80% pre-warning; a paused meter states its manual alternative (M12-52 context).
+- **trialing** — the caps in force are the book's trial caps (BM-41), enforced through the same gates with the same 80% pre-warning; a paused meter states its manual alternative (M12-52 context). Proposals are not capped in the trial (BM-41): a count with no limit. Nothing is billed on a trial — no extra charges, no bill date — and the cycle line is the trial's own 14 days.
 - **non-owner-read-only** — a person who is not the Owner arrives, from a cap banner or from Billing Home: which meter is at its cap or paused stays visible, no usage figure or amount renders, and the screen says whose screen it is (M12-56 context; the same rule SCR-M12-02 carries).
 - **cap-reached-grace** — a cap at 100%: banner appeared, the 7-day grace is running; reading, editing existing records and exporting never pause (BM-34, M12-30).
 - **creations-paused** — grace elapsed: new creations of that type pause until upgrade or the next cycle; the reset lands on the tenant's own billing anchor (BM-34, M12-30).
@@ -123,13 +145,8 @@ Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty
 
 Design at the full metered set (M12-33 context): voice minutes, AI detections, OTP (tracked for cost visibility, not billed in v1), storage (nightly gauge), tracked seats + accruing seat-months (V2), and marketing sends per channel (V2) — roughly 6–8 meters, each carrying a period-labelled rollup, its bundle/cap, and any accruing overage line — plus every capped count and ceiling (proposals/month up to 1,500 on Pro, active projects, single-design kW ceiling per the book). Several meters can warn or overflow at once; the screen must stay informational, not alarming, at that density.
 
-## Numbers carrying provenance
+## Numbers and their source
 
-Every figure here is the enforced/billed rollup — same query, same numbers, no smoothing (M12-34, BM-27) — and each carries its F8 provenance tier in the design. Wording constraint from the rows: plain "actual usage" language; the provenance word "measured" is reserved for engineering/survey data and does not appear on this screen (M12-34).
+No figure on these screens carries a provenance tier label (owner ruling 2026-10-29, for billing only). Billing screens use plain "actual usage" language — the word "measured" never appears (owner ruling carried in M12-34). Every figure is the enforced, billed rollup — same query, same numbers, no smoothing (M12-34, BM-27).
 
-- Each meter's period rollup (plain counts over the cycle window, no proration, no weighting — M12-30) and its period label (M12-34).
-- Each bundle/cap size (book data) and consumption against it, including the 80% threshold moment (BM-07, BM-34).
-- Accruing overage: units beyond bundle, the book's published per-unit rate, and the accrued amount in the tenant's currency with its market grouping (M12-35, BM-27).
-- Current tracked seats and accruing tracked-seat-months (§M12.5 behavior detail).
-- Grace-window days remaining after a 100% cap event; the reset date on the tenant's billing anchor (BM-34, M12-30).
-- V2 meter activity shown with no rate when the book carries no value (§M12.5 edge case).
+- Each card's foot names its sources in two quiet lines: `Actual usage`, then `Limits and rates · India price list · 1 Apr 2026`.

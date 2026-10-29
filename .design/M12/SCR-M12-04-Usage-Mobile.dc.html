@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Usage · 375</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-hover)}
+</style>
+</helmet>
+
+<div style="box-sizing:border-box;width:1740px;height:3648px;overflow:hidden;padding:var(--sp-12);display:flex;flex-wrap:wrap;align-content:flex-start;gap:var(--sp-16) var(--sp-12);background:var(--canvas)">
+  <sc-for list="{{ frames }}" as="f" hint-placeholder-count="16">
+    <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
+      <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ f.label }}</span>
+      <div data-screen-label="{{ f.screenLabel }}" data-frame="{{ f.id }}" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+        <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ topBar }}" hint-size="100%,64px"></x-import>
+        <sc-if value="{{ f.strip }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:0 0 auto;padding:var(--sp-2) var(--screen-pad-mobile) 0"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" dc-props="{{ f.strip }}" hint-size="100%,140px"></x-import></div>
+        </sc-if>
+
+        <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:{{ f.align }}">
+          <div data-content="{{ f.id }}" style="display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-4) var(--screen-pad-mobile) var(--sp-8);margin-top:{{ f.offset }};margin-bottom:{{ f.under }}">
+
+            <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--sp-2) var(--sp-3);min-height:44px;padding:0 var(--sp-1)">
+              <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ f.cycleLine }}</span>
+              <sc-if value="{{ f.chip }}" hint-placeholder-val="{{ true }}">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.StatusChip" dc-props="{{ f.chip }}" hint-size="auto,28px"></x-import>
+              </sc-if>
+            </div>
+
+            <sc-if value="{{ f.banner }}" hint-placeholder-val="{{ false }}">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" dc-props="{{ f.banner }}" hint-size="100%,96px"></x-import>
+            </sc-if>
+
+            <sc-if value="{{ f.teaching }}" hint-placeholder-val="{{ false }}">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.teaching }}" hint-size="100%,120px">
+                <span style="display:block;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">{{ f.teachingBody }}</span>
+              </x-import>
+            </sc-if>
+
+            <sc-if value="{{ f.needs }}" hint-placeholder-val="{{ false }}">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.needs }}" hint-size="100%,220px">
+                <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+                  <sc-for list="{{ f.needsRows }}" as="nr" hint-placeholder-count="1">
+                    <div style="display:flex;flex-direction:column;gap:var(--sp-2);min-width:0">
+                      <div style="display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:var(--sp-2);align-items:start">
+                        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ nr.group }}" hint-size="100%,40px">
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ nr.label }}" value="{{ nr.value }}" hint-size="100%,40px"></x-import>
+                        </x-import>
+                        <span aria-hidden="true"></span>
+                      </div>
+                      <sc-if value="{{ nr.line }}" hint-placeholder-val="{{ false }}">
+                        <span style="display:block;font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-medium);color:{{ nr.lineInk }};text-wrap:pretty">{{ nr.line }}</span>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </x-import>
+            </sc-if>
+
+            <sc-for list="{{ f.regions }}" as="reg" hint-placeholder-count="2">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ reg.block }}" hint-size="100%,320px">
+                <div style="display:flex;flex-direction:column;gap:var(--sp-6)">
+                  <sc-for list="{{ reg.rows }}" as="r" hint-placeholder-count="3">
+                    <div style="display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:var(--sp-2);align-items:start">
+                      <div style="display:flex;flex-direction:column;gap:var(--sp-3);min-width:0">
+                        <sc-if value="{{ r.meter }}" hint-placeholder-val="{{ true }}">
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.UsageMeter" dc-props="{{ r.meter }}" hint-size="100%,64px"></x-import>
+                        </sc-if>
+                        <sc-if value="{{ r.facts }}" hint-placeholder-val="{{ false }}">
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ r.group }}" hint-size="100%,40px">
+                            <sc-for list="{{ r.facts }}" as="fr" hint-placeholder-count="1">
+                              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ fr.label }}" value="{{ fr.value }}" gap="{{ fr.gap }}" provenance="{{ fr.prov }}" hint-size="100%,40px"></x-import>
+                            </sc-for>
+                          </x-import>
+                        </sc-if>
+                        <sc-if value="{{ r.plans }}" hint-placeholder-val="{{ false }}">
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ r.plans }}" hint-size="100%,76px"></x-import>
+                        </sc-if>
+                      </div>
+                      <sc-if value="{{ r.ledger }}" hint-placeholder-val="{{ true }}">
+                        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.IconButton" dc-props="{{ r.ledger }}" hint-size="44px,44px"></x-import>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </x-import>
+            </sc-for>
+
+            <sc-if value="{{ f.scope }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;padding:0 var(--sp-1)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ScopeNote" dc-props="{{ f.scope }}" hint-size="100%,40px"></x-import>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ f.plansRow }}" hint-placeholder-val="{{ true }}">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ f.plansRow }}" hint-size="100%,76px"></x-import>
+            </sc-if>
+
+          </div>
+        </div>
+
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ nav }}" hint-size="100%,72px"></x-import>
+
+        <sc-if value="{{ f.sheet }}" hint-placeholder-val="{{ false }}">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ f.sheet }}" hint-size="100%,700px">
+            <sc-if value="{{ f.sheetRows }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:0 var(--sp-1)">
+                  <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-tertiary)">Events this cycle</span>
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" source="Actual usage" size="{{ twelve }}" hint-size="auto,18px"></x-import>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:var(--tile-gap)">
+                  <sc-for list="{{ f.sheetRows }}" as="ev" hint-placeholder-count="6">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ ev }}" hint-size="100%,60px"></x-import>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+          </x-import>
+        </sc-if>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1740,"height":3648}}'>
+/* Pinned facts — the board never reads the clock. Today is 15 Sept 2026. */
+const RESET = "2026-10-01";
+const GAUGE_AT = "2026-09-15";
+const GAUGE_TIME = "02:00";
+const BOOK_LIST = "India price list · 1 Apr 2026";
+const CYCLE = "1–30 Sept 2026";
+/* The trial's own 14 days: 5–18 Sept 2026 (M12-52). */
+const TRIAL_LINE = "14-day trial · 5–18 Sept 2026";
+const TRIAL_END = "18 Sept 2026";
+
+/* BM-41's Growth row, word for word: caps, bundles, rates, and the drafted V2 allowances. */
+const GROWTH = { proposals: 300, detections: 100, detectionRate: 10, voiceRate: 6, storageGB: 50, design: "500 kW", seats: 3, sends: 2000 };
+/* BM-41's trial caps. Proposals are not capped on the trial. */
+const TRIAL = { detections: 25, voiceCap: 15, storageGB: 5 };
+
+/* Sample usage — the counts are ours to choose; every denominator and rate above is the book's. */
+const USED = { proposals: 187, projects: 12, detections: 52, voiceMin: 143, storageGB: 18.4, otp: 1204, seats: 2, seatMonths: 1.0, whatsapp: 214, sms: 38 };
+const ZERO = { proposals: 0, projects: 0, detections: 0, voiceMin: 0, storageGB: 0, otp: 0, seats: 0, seatMonths: 0, whatsapp: 0, sms: 0 };
+
+const SITES = [
+  ["Patil residence", "Nashik"], ["Deshmukh bungalow", "Pune"], ["Shree Ganesh Traders", "Aurangabad"],
+  ["Kulkarni farmhouse", "Satara"], ["Om Sai Apartments", "Nagpur"], ["Joshi residence", "Kolhapur"],
+  ["Sunrise Dairy", "Sangli"], ["Mehta warehouse", "Thane"], ["Vidya Vikas School", "Solapur"],
+  ["Rane residence", "Ratnagiri"], ["Bhosale Agro Cold Store", "Baramati"], ["Gokhale residence", "Pune"],
+  ["Navjeevan Hospital", "Ahmednagar"], ["Shinde residence", "Latur"],
+];
+const PEOPLE = ["Rohan Deshmukh", "Priya Sharma", "Anil Kadam", "Sneha Patil"];
+
+const W = {
+  limits: "Limits", included: "Included each month",
+  proposals: "Proposals this month", projects: "Active projects", design: "Biggest design",
+  detections: "AI detections", voice: "Voice minutes", storage: "Storage", otp: "OTP codes",
+  seats: "Tracked seats", seatMonths: "Seat-months", sends: "Marketing sends",
+  whatsapp: "WhatsApp", sms: "SMS", rate: "Rate", charges: "Charges", notBilled: "Not billed",
+  notPublished: "Not published yet", soFar: "So far",
+  extra: "Extra charges", billsOn: "Bills on",
+};
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.noop = () => {};
+    this.state = { forms: {} };
+    this._onForm = {};
+  }
+
+  /* One row form inside a card: label left, figure on the card's right edge — the meter's own
+     edges. The group still decides its own form; when it answers `lead` the tracks are withdrawn. */
+  groupStyle(key) {
+    return this.state.forms[key] === "lead" ? {} : { gridTemplateColumns: "minmax(0,1fr) max-content", maxWidth: "100%" };
+  }
+
+  onForm(key) {
+    if (!this._onForm[key]) {
+      this._onForm[key] = (info) => {
+        if (this.state.forms[key] === info.form) return;
+        this.setState((s) => ({ forms: Object.assign({}, s.forms, { [key]: info.form }) }));
+      };
+    }
+    return this._onForm[key];
+  }
+
+  componentDidMount() {
+    if (!this.loaded()) {
+      this._poll = setInterval(() => {
+        if (this.loaded()) { clearInterval(this._poll); this._poll = null; this.forceUpdate(); }
+      }, 40);
+    }
+  }
+  componentWillUnmount() { if (this._poll) clearInterval(this._poll); }
+  loaded() { return !!window.HelioGridDesignSystem_c8aa43; }
+  ns() { return window.HelioGridDesignSystem_c8aa43 || {}; }
+
+  glyph(spec, size, filled) {
+    return React.createElement("svg", {
+      width: size, height: size, viewBox: "0 0 24 24",
+      fill: filled ? "currentColor" : "none", stroke: filled ? "none" : "currentColor",
+      strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true",
+    }, spec.map((c, i) => React.createElement(c[0], Object.assign({ key: "g" + i }, c[1]))));
+  }
+
+  icons() {
+    const P = (d) => ["path", { d: d }];
+    return {
+      home: [P("M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z")],
+      homeF: [P("M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-6v-6h-4v6H4a1 1 0 0 1-1-1z")],
+      users: [P("M9 4.8a3.2 3.2 0 1 1 0 6.4 3.2 3.2 0 0 1 0-6.4"), P("M2.5 20a6.5 6.5 0 0 1 13 0"), P("M16.6 5.6a3.2 3.2 0 0 1 0 4.9"), P("M18 20a6.4 6.4 0 0 0-2-4.6")],
+      usersF: [["circle", { cx: 12, cy: 8, r: 3.7 }], P("M5 20.5a7 7 0 0 1 14 0z")],
+      doc: [P("M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"), P("M14 3v5h5"), P("M9 13.5h5"), P("M9 17h3.5")],
+      docF: [P("M13.6 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.4z")],
+      dots: [["circle", { cx: 5, cy: 12, r: 1.7 }], ["circle", { cx: 12, cy: 12, r: 1.7 }], ["circle", { cx: 19, cy: 12, r: 1.7 }]],
+      chevRight: [P("m9.5 6 6 6-6 6")],
+      layers: [P("m12 3 9 4.5-9 4.5-9-4.5z"), P("m3 12 9 4.5 9-4.5"), P("m3 16.5 9 4.5 9-4.5")],
+    };
+  }
+
+  navSpec(NS) {
+    const I = this.icons();
+    const D = NS.DESTINATION_GLYPH;
+    const sg = (name, filled) => React.createElement(NS.ShellGlyph, { name: name, size: "lg", filled: !!filled, tone: filled ? "inverse" : undefined });
+    return {
+      value: "more", onChange: this.noop,
+      items: [
+        { key: "day", label: "Home", icon: sg(D.home), activeIcon: sg(D.home, true) },
+        { key: "leads", label: "Leads", icon: sg(D.leads), activeIcon: sg(D.leads, true) },
+        { key: "add", fab: true, label: "Add lead", icon: sg("plus-circle"), onClick: this.noop },
+        { key: "projects", label: "Projects", icon: sg(D.projects), activeIcon: sg(D.projects, true) },
+        { key: "more", label: "More", icon: sg(D.more), activeIcon: sg(D.more, true) },
+      ],
+    };
+  }
+
+  /* SCR-SHELL-01 decision 8: the bar holds the page's way back, its title and the one search —
+     no bell, no account, no company. Back returns to Billing Home (SCR-M12-02). */
+  topBarSpec(NS) {
+    return {
+      title: "Usage", sticky: false,
+      leading: React.createElement(NS.ShellAction, {
+        round: true, label: "Back to Billing", onClick: this.noop,
+        icon: React.createElement(NS.ShellGlyph, { name: "chevron-left", size: "md", filled: false, tone: "primary" }),
+      }),
+      searchLabel: "Search", onSearchClick: this.noop,
+      notificationsLabel: "Notifications",
+    };
+  }
+
+  mono(text) {
+    return React.createElement("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, text);
+  }
+
+  /* A figure in a fact row: mono, tabular, on the row's right edge — the meter figure's own edge. */
+  fig(text) {
+    return React.createElement("span", {
+      style: { display: "block", textAlign: "right", fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" },
+    }, text);
+  }
+
+  /* A line whose amounts are mono (F7-09): strings stay prose, { m } parts are money. */
+  line(parts) {
+    return React.createElement("span", null, parts.map((p, i) => (typeof p === "string"
+      ? React.createElement("span", { key: "t" + i }, p)
+      : React.createElement("span", { key: "m" + i, style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, p.m))));
+  }
+
+  /* Two quiet source lines at the card's foot, prose and never a tier (F8-01, brief decision 5). */
+  footLabels(NS) {
+    return React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-0-5)" } }, [
+      React.createElement(NS.Provenance, { key: "u", source: "Actual usage", size: 12 }),
+      React.createElement(NS.Provenance, { key: "p", source: "Limits and rates · " + BOOK_LIST, size: 12 }),
+    ]);
+  }
+
+  ledgerBtn(meter) {
+    const I = this.icons();
+    return {
+      label: meter + " — events this cycle", variant: "ghost", onClick: this.noop,
+      children: this.glyph(I.chevRight, 22),
+      style: { marginTop: "calc(var(--sp-3) * -1)", marginRight: "calc(var(--sp-2) * -1)" },
+    };
+  }
+
+  row(key, meter, facts, ledger, plans) {
+    const name = meter ? meter.label : facts[0].label;
+    return {
+      key: key, meter: meter || null, facts: facts && facts.length ? facts : null, ledger: ledger || null, plans: plans || null,
+      group: { label: name, density: "expressive", leadBelow: 200, style: this.groupStyle(key), onFormChange: this.onForm(key) },
+    };
+  }
+
+  /* The way to a bigger plan is SCR-M12-03, and only that. A trial holds no plan to grow from. */
+  plansRow(trial) {
+    const I = this.icons();
+    return Object.assign({
+      icon: this.glyph(I.layers, 22), iconColor: "var(--text-secondary)",
+      trailing: this.glyph(I.chevRight, 20), onClick: this.noop, density: "expressive",
+      style: { background: "var(--fill)", boxShadow: "none", borderRadius: "var(--r-tile)" },
+    }, trial ? { title: "Pick a plan" } : { title: "Bigger plans", subtitle: "Pro · Enterprise" });
+  }
+
+  /* THE REGIONS, FOR EVERY STATE. The counts, the caps in force, each meter's billing state and
+     whether the rollup has resolved are the options, so no state re-draws a card. */
+  regions(NS, F, o) {
+    o = o || {};
+    const u = Object.assign({}, USED, o.used || {});
+    const trial = !!o.trial;
+    const c = Object.assign({}, GROWTH, trial ? TRIAL : {});
+    const st = o.state || {};
+    const load = o.mode === "loading";
+    const R = (k, m, f, l, p) => this.row(k, m, f, l, p);
+    const right = { align: "right", size: 12 };
+    const gap = { gap: W.notPublished, align: "right" };
+    const voiceSoFar = trial ? 0 : u.voiceMin * c.voiceRate;
+    const detOver = trial ? 0 : Math.max(0, u.detections - c.detections);
+    const extraTotal = voiceSoFar + detOver * c.detectionRate;
+    const noLimit = trial ? "No limit on the trial" : "No limit on Growth";
+
+    /* A meter that has not resolved draws no numeral and no track, and no note. */
+    const M = (key, spec) => {
+      const m = Object.assign({ density: "expressive" }, spec);
+      if (load) {
+        delete m.value; delete m.note; delete m.noLimitNote;
+        m.state = "loading"; m.loadingNote = "";
+        return m;
+      }
+      if (st[key]) {
+        m.state = st[key];
+        if (st[key] === "cap-reached-grace") m.graceDaysLeft = o.graceDays == null ? 7 : o.graceDays;
+      }
+      return m;
+    };
+    /* A rollup's figure waits with the rollup; a list fact (a rate, a chip) does not. */
+    const resolved = (fact) => (load ? null : fact);
+    const soFar = (key, amount) => (amount > 0
+      ? resolved({ key: key, label: W.soFar, value: this.fig(F.money(amount)), prov: Object.assign({ tier: "unmarked" }, right) })
+      : null);
+    const signal = (key) => (o.signal === key ? this.plansRow(false) : null);
+
+    const limits = {
+      key: "limits",
+      block: { density: "expressive", title: W.limits, footer: load ? null : this.footLabels(NS) },
+      rows: [
+        trial
+          ? R("proposals", M("proposals", { label: W.proposals, value: u.proposals, limit: null, noLimitNote: noLimit }), null, this.ledgerBtn(W.proposals))
+          : R("proposals", M("proposals", { label: W.proposals, value: u.proposals, limit: c.proposals }), null, this.ledgerBtn(W.proposals), signal("proposals")),
+        R("projects", M("projects", { label: W.projects, value: u.projects, limit: null, noLimitNote: noLimit }), null, this.ledgerBtn(W.projects)),
+        /* A ceiling is not a count: no meter, the same row. The trial's ceiling is the top plan's (owner ruling). */
+        R("design", null, [{ key: "d", label: W.design, value: this.fig(trial ? "100 MW" : c.design) }]),
+      ],
+    };
+
+    const included = {
+      key: "included",
+      block: { density: "expressive", title: W.included, footer: load ? null : this.footLabels(NS) },
+      rows: [
+        R("detections", M("detections", Object.assign(
+          { label: W.detections, value: u.detections, limit: c.detections },
+          trial ? {} : { note: F.money(c.detectionRate) + " each beyond " + F.number(c.detections) })),
+          [soFar("s", detOver * c.detectionRate)].filter(Boolean), this.ledgerBtn(W.detections)),
+        trial
+          ? R("voice", M("voice", { label: W.voice, value: u.voiceMin, unit: "min", limit: c.voiceCap }), null, this.ledgerBtn(W.voice))
+          : R("voice", M("voice", { label: W.voice, value: u.voiceMin, unit: "min", limit: null, note: F.money(c.voiceRate) + " a minute" }),
+              [soFar("s", voiceSoFar)].filter(Boolean), this.ledgerBtn(W.voice)),
+        R("storage", M("storage", { label: W.storage, value: u.storageGB, limit: c.storageGB, unit: "GB", period: "As of " + F.date(GAUGE_AT) + ", " + GAUGE_TIME }), null, this.ledgerBtn(W.storage)),
+        R("otp", M("otp", { label: W.otp, value: u.otp, limit: null }), [
+          { key: "c", label: W.charges, value: React.createElement(NS.StatusChip, { status: "not-billed", label: W.notBilled, tone: "neutral", density: "expressive" }) },
+        ], this.ledgerBtn(W.otp)),
+        R("seats", M("seats", { label: W.seats, value: u.seats, unit: "seats", limit: trial ? null : c.seats }), [
+          resolved({ key: "m", label: W.seatMonths, value: this.fig(F.number(u.seatMonths)) }),
+          trial ? null : { key: "r", label: W.rate, gap: gap },
+        ].filter(Boolean), this.ledgerBtn(W.seats)),
+        R("sends", M("sends", { label: W.sends, value: u.whatsapp + u.sms, unit: "sends", limit: trial ? null : c.sends }), [
+          resolved({ key: "w", label: W.whatsapp, value: this.fig(F.number(u.whatsapp)) }),
+          resolved({ key: "s", label: W.sms, value: this.fig(F.number(u.sms)) }),
+          trial ? null : { key: "r", label: W.rate, gap: gap },
+        ].filter(Boolean), this.ledgerBtn(W.sends)),
+        /* ONE total row ends the region — only when something accrues, never on a trial. */
+        !load && !trial && extraTotal > 0 ? R("extra", null, [
+          { key: "t", label: W.extra, value: this.fig(F.money(extraTotal)), prov: Object.assign({ tier: "unmarked" }, right) },
+          { key: "b", label: W.billsOn, value: this.fig(F.date(RESET)) },
+        ]) : null,
+      ].filter(Boolean),
+    };
+
+    return [limits, included];
+  }
+
+  /* The ledger behind one number — every detection event of the cycle. */
+  ledgerRows(F) {
+    const rows = [];
+    const n = USED.detections;
+    for (let i = 0; i < n; i++) {
+      const day = 15 - Math.floor((i * 15) / n);
+      const first = Math.ceil((15 - day) * n / 15);
+      const slot = i - first;
+      const mins = 18 * 60 - slot * 137 - ((i * 11) % 19);
+      const hh = String(Math.floor(mins / 60)).padStart(2, "0");
+      const mm = String(mins % 60).padStart(2, "0");
+      const site = SITES[(i * 5) % SITES.length];
+      const who = PEOPLE[(i * 3) % PEOPLE.length];
+      const iso = "2026-09-" + String(day).padStart(2, "0");
+      rows.push({
+        key: "ev" + i,
+        title: site[0] + " · " + site[1],
+        subtitle: F.date(iso) + ", " + hh + ":" + mm + " · " + who,
+        trailing: this.mono("1"),
+        density: "functional",
+        style: { background: "var(--fill)", boxShadow: "none", borderRadius: "var(--r-tile)" },
+      });
+    }
+    return rows;
+  }
+
+  /* One sheet, three reads: the events, a failed read with its retry, and a cycle with none. */
+  ledgerSheet(F, kind) {
+    const base = {
+      open: true, onClose: this.noop, desktop: "panel", inset: true, size: "full",
+      density: "expressive", zIndex: 60, showClose: true,
+      title: "AI detections",
+      sheetProps: { style: { transform: "translateY(0)", animation: "none" } },
+    };
+    if (kind === "failed") return Object.assign(base, {
+      subtitle: CYCLE, read: { kind: "failed", retry: this.noop },
+      errorTitle: "Couldn't read these events",
+    });
+    if (kind === "empty") return Object.assign(base, {
+      subtitle: CYCLE + " · 0 of " + F.number(GROWTH.detections), read: { kind: "empty" },
+      emptyTitle: "No detections this cycle", emptyMessage: "Each detection you run is listed here.",
+    });
+    return Object.assign(base, {
+      subtitle: CYCLE + " · " + F.number(USED.detections) + " of " + F.number(GROWTH.detections), read: { kind: "ready" },
+    });
+  }
+
+  stChip(word, tone) {
+    return { status: word.toLowerCase().replace(/\s+/g, "-"), label: word, tone: tone, density: "expressive" };
+  }
+
+  /* A Needs you row: the meter's name with its own chip, used of included, and ONE line. */
+  needRow(NS, key, name, chipWord, tone, value, line) {
+    const ink = tone === "danger" ? "var(--danger-text)" : tone === "info" ? "var(--info-text)" : "var(--warning-text)";
+    return {
+      key: key,
+      label: React.createElement("span", { style: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--sp-2)", minWidth: 0 } }, [
+        React.createElement("span", { key: "n" }, name),
+        React.createElement(NS.StatusChip, { key: "c", status: chipWord.toLowerCase().replace(/\s+/g, "-"), label: chipWord, tone: tone, density: "expressive" }),
+      ]),
+      value: value ? this.fig(value) : null,
+      line: line ? this.line(line) : null, lineInk: ink,
+      group: { label: name, density: "expressive", leadBelow: 200, style: { gridTemplateColumns: "minmax(0,1fr) max-content", maxWidth: "100%" } },
+    };
+  }
+
+  needsCard() {
+    return { density: "expressive", title: "Needs you" };
+  }
+
+  /* SCR-SHELL-06's cap strip, reused exactly: title, its rows, and Upgrade plan. */
+  capStrip(NS, title, rows, tone) {
+    const h = React.createElement;
+    return {
+      kind: "cap", tone: tone, title: title,
+      children: h(NS.FactRows, null, rows.map((r) => h(NS.FactRow, { key: r[0], label: r[1], value: r[2] }))),
+      action: h(NS.BannerAction, { onClick: this.noop }, "Upgrade plan"),
+    };
+  }
+
+  errorBanner(NS) {
+    return {
+      kind: "state", title: "Couldn't read this cycle's usage",
+      children: "Try again — this screen only ever shows the billed figures.",
+      action: React.createElement(NS.BannerAction, { onClick: this.noop }, "Try again"),
+      actionBelow: 400,
+    };
+  }
+
+  frameSpecs(NS, F) {
+    const base = (o) => Object.assign({
+      align: "flex-start", offset: "0px", under: "0px", chip: this.stChip("Within plan", "success"), banner: null, strip: null,
+      teaching: null, teachingBody: null, needs: null, needsRows: null, scope: null,
+      sheet: null, sheetRows: null, plansRow: this.plansRow(false), cycleLine: CYCLE + " · resets " + F.date(RESET),
+      regions: this.regions(NS, F),
+    }, o);
+    const empty = () => ({
+      teaching: { density: "expressive", title: "Nothing used yet" },
+      teachingBody: "Nothing has been used this cycle. Your caps and what's included are below, ready when you start.",
+      regions: this.regions(NS, F, { used: ZERO }),
+    });
+
+    return [
+      base({ key: "a", id: "m12-04-a", label: "375 · default, top", screenLabel: "Usage — default, top (375)" }),
+      base({ key: "b", id: "m12-04-b", align: "flex-end", label: "375 · default, foot", screenLabel: "Usage — default, foot (375)" }),
+      base({
+        key: "c", id: "m12-04-c", offset: "-330px", label: "375 · AI detections events", screenLabel: "Usage — AI detections events (375)",
+        sheet: this.ledgerSheet(F, "ready"), sheetRows: this.ledgerRows(F),
+      }),
+      base({
+        key: "c2", id: "m12-04-c2", offset: "-330px", label: "375 · events, failed read", screenLabel: "Usage — events, failed read (375)",
+        sheet: this.ledgerSheet(F, "failed"),
+      }),
+      base(Object.assign(empty(), {
+        key: "c3", id: "m12-04-c3", label: "375 · events, none this cycle", screenLabel: "Usage — events, none this cycle (375)",
+        sheet: this.ledgerSheet(F, "empty"),
+      })),
+      base({
+        key: "s1", id: "m12-04-s1", label: "375 · loading", screenLabel: "Usage — loading (375)",
+        chip: null, regions: this.regions(NS, F, { mode: "loading" }),
+      }),
+      base(Object.assign(empty(), { key: "s2", id: "m12-04-s2", label: "375 · empty", screenLabel: "Usage — empty (375)" })),
+      base({
+        key: "s3", id: "m12-04-s3", label: "375 · error", screenLabel: "Usage — error (375)",
+        chip: null, regions: [],
+        teaching: { read: { kind: "failed", retry: this.noop }, errorTitle: "Couldn't read this cycle's usage", errorMessage: "Try again — this screen only ever shows the billed figures.", retryLabel: "Try again", loadingLabel: "Loading this cycle's usage", density: "expressive" },
+      }),
+      base({
+        key: "s4", id: "m12-04-s4", label: "375 · 80% pre-warning", screenLabel: "Usage — 80% pre-warning (375)",
+        chip: this.stChip("Nearing a limit", "warning"),
+        needs: this.needsCard(),
+        needsRows: [
+          this.needRow(NS, "det", "AI detections", "80% used", "warning", "80 of 100", ["Beyond 100, ", { m: F.money(GROWTH.detectionRate) }, " each — no pause, it bills."]),
+          this.needRow(NS, "sto", "Storage", "82% used", "warning", "41 of 50 GB", ["At 50 GB, a 7-day grace, then uploads pause."]),
+        ],
+        regions: this.regions(NS, F, { used: { detections: 80, storageGB: 41 } }),
+      }),
+      base({
+        key: "s5", id: "m12-04-s5", offset: "-300px", label: "375 · overage accruing", screenLabel: "Usage — overage accruing (375)",
+        chip: this.stChip("Past what's included", "info"),
+        regions: this.regions(NS, F, { used: { detections: 118 } }),
+      }),
+      base({ key: "s6", id: "m12-04-s6", align: "flex-end", label: "375 · V2 meter, no rate", screenLabel: "Usage — V2 meter, no rate (375)" }),
+      base({ key: "s7", id: "m12-04-s7", align: "flex-end", under: "-140px", label: "375 · tracked seats accruing", screenLabel: "Usage — tracked seats accruing (375)" }),
+      base({
+        key: "s8", id: "m12-04-s8", label: "375 · trialing", screenLabel: "Usage — trialing (375)",
+        chip: this.stChip("On trial", "info"), cycleLine: TRIAL_LINE, plansRow: this.plansRow(true),
+        needs: this.needsCard(),
+        needsRows: [
+          this.needRow(NS, "voice", "Voice minutes", "Paused", "danger", "15 of 15 min", ["Paused until " + TRIAL_END + " or an upgrade · call from your own phone."]),
+        ],
+        regions: this.regions(NS, F, {
+          trial: true,
+          used: { detections: 9, voiceMin: 15, storageGB: 1.2, proposals: 14, projects: 2, otp: 46, seats: 3, seatMonths: 0.4, whatsapp: 11, sms: 2 },
+          state: { voice: "creations-paused" },
+        }),
+      }),
+      base({
+        key: "s9", id: "m12-04-s9", label: "375 · cap reached, grace", screenLabel: "Usage — cap reached, grace running (375)",
+        strip: this.capStrip(NS, "Proposals · 300 of 300 used this month · 7-day grace running", [
+          ["works", "Still works", "New proposals · editing, duplicating and sharing existing proposals · reading · export"],
+          ["pause", "New proposals pause", "22 Sept 2026"],
+          ["reset", "Cycle resets", "1 Oct 2026"]], "warning"),
+        chip: this.stChip("At a limit", "warning"),
+        needs: this.needsCard(),
+        needsRows: [
+          this.needRow(NS, "prop", "Proposals this month", "At the cap", "warning", "300 of 300", ["Grace ends 22 Sept 2026 · reading, editing and export never stop."]),
+        ],
+        regions: this.regions(NS, F, { used: { proposals: 300 }, state: { proposals: "cap-reached-grace" }, graceDays: 7, signal: "proposals" }),
+      }),
+      base({
+        key: "s10", id: "m12-04-s10", label: "375 · creations paused", screenLabel: "Usage — creations paused (375)",
+        strip: this.capStrip(NS, "Proposals · 300 of 300 used · new proposals paused", [
+          ["paused", "Paused", "New proposals"],
+          ["works", "Still works", "Editing, duplicating and sharing existing proposals · reading · export · every other feature"],
+          ["reset", "Cycle resets", "1 Oct 2026"]], "danger"),
+        chip: this.stChip("Paused", "danger"),
+        needs: this.needsCard(),
+        needsRows: [
+          this.needRow(NS, "prop", "Proposals this month", "Paused", "danger", "300 of 300", ["Paused until 1 Oct 2026 · reading, editing and export never stop."]),
+        ],
+        regions: this.regions(NS, F, { used: { proposals: 300 }, state: { proposals: "creations-paused" }, signal: "proposals" }),
+      }),
+      base({
+        key: "s11", id: "m12-04-s11", label: "375 · not the Owner", screenLabel: "Usage — not the Owner, read only (375)",
+        chip: this.stChip("Paused", "danger"),
+        needs: this.needsCard(),
+        needsRows: [this.needRow(NS, "prop", "Proposals this month", "Paused", "danger", null, null)],
+        scope: { holder: "Mahesh Bhosale (owner)", title: "Only Mahesh Bhosale (owner) can see this cycle's usage.", variant: "panel" },
+        regions: [], plansRow: null,
+      }),
+    ];
+  }
+
+  renderVals() {
+    const NS = this.ns();
+    const ready = !!(NS.MarketProvider && NS.MobileTopBar && NS.PhoneScreen && NS.ShellAction && NS.ShellGlyph && NS.IconButton && NS.Fab && NS.BottomNav
+      && NS.Block && NS.Provenance && NS.FactRows && NS.FactRow && NS.UsageMeter && NS.StatusChip && NS.ListRow && NS.EditorSurface
+      && NS.Banner && NS.BannerAction && NS.ScopeNote);
+    const base = { noop: this.noop, twelve: 12 };
+    if (!ready) return base;
+    const F = NS.MarketProvider.createFormat();
+    return Object.assign(base, {
+      phoneChrome: { style: { background: "transparent" } },
+      topBar: this.topBarSpec(NS),
+      nav: this.navSpec(NS),
+      frames: this.frameSpecs(NS, F),
+    });
+  }
+}
+</script>
+</body>
+</html>

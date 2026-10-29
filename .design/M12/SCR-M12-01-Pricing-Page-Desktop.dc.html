@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pricing page · 1536</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-hover)}
+</style>
+</helmet>
+
+<div style="box-sizing:border-box;width:1632px;height:2215px;overflow:hidden;padding:var(--sp-12);display:flex;flex-direction:column;gap:var(--sp-16);background:var(--canvas)">
+  <sc-for list="{{ frames }}" as="f" hint-placeholder-count="2">
+    <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:1536px">
+      <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ f.label }}</span>
+
+      <div data-screen-label="{{ f.screenLabel }}" data-frame="{{ f.id }}" style="position:relative;flex:0 0 auto;width:1536px;height:1000px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5)">
+
+        <div style="flex-shrink:0;background:var(--surface-form)">
+          <div style="box-sizing:border-box;width:1328px;margin:0 auto;display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-6);padding:var(--sp-5) 0">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmDesktop }}" hint-size="180px,42px"></x-import>
+            <div style="display:flex;align-items:flex-start;gap:var(--sp-2)">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Menu" dc-props="{{ langMenu }}" hint-size="auto,44px"></x-import>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="secondary" size="sm" on-click="{{ noop }}" hint-size="auto,44px">Sign in</x-import>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:var(--sp-2)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="md" on-click="{{ noop }}" hint-size="auto,48px">Start free trial</x-import>
+                <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-align:center">14 days, no card needed.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:1;min-height:0;overflow:hidden">
+          <div style="box-sizing:border-box;width:1328px;margin:0 auto;display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) 0 var(--sp-10);margin-top:{{ f.offset }}">
+
+            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:var(--tile-gap);row-gap:var(--sp-4)">
+              <div style="grid-column:1 / -1;display:flex;flex-direction:column;gap:var(--sp-2)">
+                <h1 style="margin:0;font-size:var(--fs-h1);line-height:var(--lh-h1);letter-spacing:var(--tr-h1);font-weight:var(--fw-bold);color:var(--text-primary)">{{ t.title }}</h1>
+                <span style="font-size:var(--fs-body-lg);line-height:var(--lh-body-lg);color:var(--text-secondary)">{{ t.claim }}</span>
+              </div>
+              <div style="grid-column:span 2">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ includesRow }}" hint-size="100%,64px"></x-import>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+              <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+                <span style="font-size:var(--fs-body-sm);font-weight:var(--fw-medium);color:var(--text-secondary)">{{ t.cycle }}</span>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ cycle }}" hint-size="auto,44px"></x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ dealGroup }}" hint-size="100%,24px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ t.yearly }}" value="{{ t.yearlyDeal }}" hint-size="100%,24px"></x-import></x-import>
+              </div>
+
+              <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--tile-gap);align-items:stretch">
+                <sc-for list="{{ cards }}" as="c" hint-placeholder-count="4">
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" density="expressive" hint-size="100%,300px">
+                    <div style="height:100%;display:flex;flex-direction:column;gap:var(--sp-4)">
+                      <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+                        <span style="font-size:var(--fs-h4);line-height:var(--lh-h4);letter-spacing:var(--tr-h4);font-weight:var(--fw-bold);color:var(--text-primary)">{{ c.name }}</span>
+                        <div style="display:flex;align-items:baseline;gap:var(--sp-2);flex-wrap:wrap"><sc-if value="{{ c.lead }}" hint-placeholder-val="{{ false }}"><span style="font-size:var(--fs-body-sm);color:var(--text-secondary)">{{ c.lead }}</span></sc-if><span style="font-family:var(--font-mono);font-size:var(--fs-h1);line-height:var(--lh-h1);letter-spacing:var(--tr-h1);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;color:var(--text-primary)">{{ c.figure }}</span><span style="font-size:var(--fs-body-sm);color:var(--text-secondary)">{{ c.period }}</span></div>
+                        <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty;min-height:calc(2 * var(--lh-body-sm) * 1em)">{{ c.positioning }}</span>
+                      </div>
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ c.group }}" hint-size="100%,140px">
+                        <sc-for list="{{ c.rows }}" as="r" hint-placeholder-count="2">
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ r.label }}" values="{{ r.values }}" hint-size="100%,24px"></x-import>
+                        </sc-for>
+                      </x-import>
+                      <sc-if value="{{ c.act }}" hint-placeholder-val="{{ false }}">
+                        <div style="margin-top:auto;display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-3)">
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" density="expressive" hint-size="auto,28px">{{ c.footChip }}</x-import>
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ c.act }}" hint-size="100%,44px" style="align-self:stretch">{{ t.talk }}</x-import>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </x-import>
+                </sc-for>
+              </div>
+
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1) var(--sp-3);padding:0 var(--sp-1)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ bookLabel }}" hint-size="auto,18px"></x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ gstNote }}" hint-size="auto,18px"></x-import>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--section-gap);align-items:start">
+              <div style="grid-column:1 / span 8;display:flex;flex-direction:column;gap:var(--sp-4)">
+                <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+                  <span style="font-size:var(--fs-body-sm);font-weight:var(--fw-medium);color:var(--text-secondary)">{{ t.show }}</span>
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ f.showSet }}" hint-size="auto,44px"></x-import>
+                </div>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.CompareGrid" dc-props="{{ f.grid }}" hint-size="100%,400px"></x-import>
+              </div>
+
+              <div style="grid-column:9 / span 4;display:flex;flex-direction:column;gap:var(--sp-3)">
+                <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-tertiary)">{{ t.comparedWith }}</span>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ benchGroup }}" hint-size="100%,160px">
+                  <sc-for list="{{ bench }}" as="b" hint-placeholder-count="6">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ b.label }}" value="{{ b.value }}" hint-size="100%,24px"></x-import>
+                  </sc-for>
+                </x-import>
+                <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding:0 var(--sp-1)">
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ bookLabel }}" hint-size="auto,18px"></x-import>
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ benchLabel }}" hint-size="auto,18px"></x-import>
+                </div>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ trialRow }}" hint-size="100%,64px"></x-import>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ trialGroup }}" hint-size="100%,100px">
+                  <sc-for list="{{ trialRows }}" as="r" hint-placeholder-count="3"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ r.label }}" value="{{ r.value }}" hint-size="100%,24px"></x-import></sc-for>
+                </x-import>
+                <div style="padding:0 var(--sp-1)"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ bookLabel }}" hint-size="auto,18px"></x-import></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-for>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1632,"height":2215}}'>
+/* Product facts are the brief's, word for word: BM-11's four names; BM-41's India book, ex-GST;
+   M12-52's 14-day trial. The two list dates are sample content (F1-25). A price-list figure carries
+   no tier (F8-01): each region names the list once, as an unmarked source line.
+   The grid: content column x=104 → 1,432 (1,328px). The plans region is 4 columns on --tile-gap;
+   the foot row is 12 columns on --section-gap, the matrix spanning 8 and Compared with 4. */
+const BOOK_LIST = "India price list · 1 Apr 2026";
+const BENCH_LIST = "Reslink India price page · 12 Mar 2026";
+
+const BOOK = {
+  starter: { name: "Starter", mo: 1999, design: "50 kW", proposals: 30, projects: 10,
+    detections: 30, detRate: 10, voice: null, voiceRate: 6, storage: "10 GB", support: "supStarter" },
+  growth: { name: "Growth", mo: 3999, design: "500 kW", proposals: 300, projects: null,
+    detections: 100, detRate: 10, voice: null, voiceRate: 6, storage: "50 GB", support: "supGrowth" },
+  pro: { name: "Pro", mo: 9999, design: "5 MW", proposals: 1500, projects: null,
+    detections: 400, detRate: 10, voice: 400, voiceRate: 6, storage: "250 GB", support: "supPro" },
+  enterprise: { name: "Enterprise", mo: 24999, design: "100 MW", proposals: null, projects: null,
+    detections: "custom", detRate: "custom", voice: "custom", voiceRate: "custom", storage: "custom",
+    support: "supEnterprise" },
+};
+const ORDER = ["starter", "growth", "pro", "enterprise"];
+const TRIAL = { design: "100 MW", proposals: "Not capped", detections: "25", voice: "15", storage: "5 GB" };
+const BENCH = [
+  { key: "r1", rung: "50 kW", ours: "Starter", ourYr: 19990, theirs: "Reslink Basic", theirYr: 60000 },
+  { key: "r2", rung: "500 kW", ours: "Growth", ourYr: 39990, theirs: "Reslink Pro", theirYr: 85000 },
+  { key: "r3", rung: "5 MW", ours: "Pro", ourYr: 99999, theirs: "Reslink Premium", theirYr: 120000 },
+];
+const MEASURE = 40;
+
+const T = {
+  langLabel: "Language", langNames: { en: "English", hi: "हिन्दी", mr: "मराठी" },
+  title: "Plans and prices",
+  claim: "Every feature is in every plan — others hold features back for higher plans.",
+  includes: "What every plan includes",
+  cycle: "Billing cycle", monthly: "Monthly", yearly: "Yearly", yearlyDeal: "12 months for the price of 10",
+  design: "Biggest design", support: "Support",
+  limitsLead: "Limits", proposalsWord: "proposals a month", detectionsWord: "detections a month",
+  detShort: "AI detections", propShort: "Proposals", voice: "Voice minutes", storage: "Storage",
+  projects: "Active projects", users: "Users", unlimited: "Unlimited",
+  annual: "Annual contract", talk: "Talk to sales", gst: "Prices exclude GST",
+  show: "Show", setLimits: "Limits", setIncluded: "Included", setCharges: "Extra charges",
+  comparedWith: "Compared with", allPlans: "All four plans", duringTrial: "During the trial",
+  perMo: " / mo", perYr: " / yr", from: "From", perMoWord: "a month",
+  pos_starter: "For a home-rooftop team of 1 to 5 people.",
+  pos_growth: "For 15 or more installs a month, or your first business sites.",
+  pos_pro: "For business sites, with voice minutes included.",
+  pos_enterprise: "For the largest designs and utility work.",
+  each: "each", min: "min", custom: "Custom", none: "None", notPublished: "Not published yet",
+  supStarter: "In the app", supGrowth: "App and WhatsApp", supPro: "Priority, and an onboarding call", supEnterprise: "A named contact",
+};
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.noop = () => {};
+  }
+
+  componentDidMount() {
+    if (!this.loaded()) {
+      this._poll = setInterval(() => {
+        if (this.loaded()) { clearInterval(this._poll); this._poll = null; this.forceUpdate(); }
+      }, 40);
+    }
+  }
+  componentWillUnmount() { if (this._poll) clearInterval(this._poll); }
+
+  loaded() {
+    const n = window.HelioGridDesignSystem_c8aa43;
+    return !!(n && n.FactRows && n.FactRow && n.CompareGrid && n.NamedGap && n.Wordmark && n.MarketProvider
+      && n.Card && n.Menu && n.Button);
+  }
+
+  ns() { return window.HelioGridDesignSystem_c8aa43 || {}; }
+
+  glyph(spec, size) {
+    return React.createElement("svg", {
+      width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor",
+      strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true",
+    }, spec.map((d, i) => React.createElement("path", { key: "g" + i, d: d })));
+  }
+
+  icons() {
+    return {
+      chevDown: ["m6 9.5 6 6 6-6"],
+      chevUp: ["m6 14.5 6-6 6 6"],
+      grid: ["M4 4.8h6.4v6.4H4zM13.6 4.8H20v6.4h-6.4zM4 12.8h6.4v6.4H4zM13.6 12.8H20v6.4h-6.4z"],
+      spark: ["M12 4.5 13.6 9l4.5 1.6-4.5 1.6L12 16.7l-1.6-4.5L5.9 10.6 10.4 9z", "M18 16.5v3M16.5 18h3"],
+    };
+  }
+
+  money(text) {
+    return React.createElement("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, text);
+  }
+
+  langMenu(NS) {
+    return {
+      label: T.langLabel, align: "end", selection: "single",
+      trigger: React.createElement(NS.Button, { variant: "ghost", size: "sm" }, T.langNames.en),
+      items: ["en", "hi", "mr"].map((code) => ({ key: code, label: T.langNames[code], selected: code === "en", onSelect: this.noop })),
+    };
+  }
+
+  values(F, key) {
+    const b = BOOK[key];
+    const custom = (v) => v === "custom";
+    return {
+      design: b.design,
+      proposals: b.proposals === null ? T.unlimited : F.number(b.proposals) + T.perMo,
+      projects: b.projects === null ? T.unlimited : F.number(b.projects),
+      users: T.unlimited,
+      detections: custom(b.detections) ? T.custom : F.number(b.detections) + T.perMo,
+      detRate: custom(b.detRate) ? T.custom : F.money(b.detRate) + " " + T.each,
+      voice: b.voice === null ? T.none : (custom(b.voice) ? T.custom : F.number(b.voice) + T.perMo),
+      voiceRate: custom(b.voiceRate) ? T.custom : F.money(b.voiceRate) + " / " + T.min,
+      storage: custom(b.storage) ? T.custom : b.storage,
+    };
+  }
+
+  planCard(F, key) {
+    const b = BOOK[key];
+    const ent = key === "enterprise";
+    const proposals = b.proposals === null ? T.unlimited : F.number(b.proposals);
+    const detections = b.detections === "custom" ? T.custom : F.number(b.detections);
+    return {
+      key: key,
+      name: b.name,
+      footChip: ent ? T.annual : null,
+      lead: ent ? T.from : null,
+      figure: F.money(b.mo),
+      period: T.perMoWord,
+      positioning: T["pos_" + key],
+      group: { label: b.name, density: "expressive", form: "lead" },
+      rows: [
+        { key: "limits", label: T.limitsLead, values: [b.design, proposals + " " + T.proposalsWord, detections + " " + T.detectionsWord] },
+        { key: "support", label: T.support, values: [T[b.support]] },
+      ],
+      act: ent ? { variant: "secondary", size: "md", fullWidth: true, onClick: this.noop } : null,
+    };
+  }
+
+  attributes(set) {
+    if (set === "included") {
+      return [
+        { key: "detections", label: T.detShort },
+        { key: "voice", label: T.voice },
+        { key: "storage", label: T.storage },
+      ];
+    }
+    if (set === "overage") {
+      return [
+        { key: "detRate", label: T.detShort, numeric: true, gapLabel: T.notPublished },
+        { key: "voiceRate", label: T.voice, numeric: true },
+      ];
+    }
+    return [
+      { key: "design", label: T.design },
+      { key: "proposals", label: T.propShort },
+      { key: "projects", label: T.projects },
+      { key: "users", label: T.users },
+    ];
+  }
+
+  optionValues(F, key, set) {
+    const v = this.values(F, key);
+    if (set === "included") return { detections: v.detections, voice: v.voice, storage: v.storage };
+    if (set === "overage") return { detRate: v.detRate, voiceRate: v.voiceRate };
+    return { design: v.design, proposals: v.proposals, projects: v.projects, users: v.users };
+  }
+
+  /* 200 + 4 × 169 = 876px: the matrix's 8 columns of the foot grid, so no option scrolls away. */
+  matrix(F, set) {
+    return {
+      caption: T.allPlans,
+      density: "functional", columnWidth: 169, labelWidth: 200,
+      attributes: this.attributes(set),
+      options: ORDER.map((k) => ({ key: k, name: BOOK[k].name, values: this.optionValues(F, k, set) })),
+      provenance: { tier: "unmarked", source: BOOK_LIST },
+    };
+  }
+
+  benchRows(F) {
+    const rows = [];
+    BENCH.forEach((r) => {
+      rows.push({ key: r.key + "-ours", label: r.ours + " · " + r.rung, value: this.money(F.money(r.ourYr) + T.perYr) });
+      rows.push({ key: r.key + "-theirs", label: r.theirs + " · " + r.rung, value: this.money(F.money(r.theirYr) + T.perYr) });
+    });
+    return rows;
+  }
+
+  chips(label, value, options) {
+    return { label: label, value: value, onChange: this.noop, options: options };
+  }
+
+  openRow(icon, title, open) {
+    const I = this.icons();
+    return {
+      icon: this.glyph(I[icon], 22), iconColor: "var(--text-secondary)", title: title,
+      trailing: this.glyph(open ? I.chevUp : I.chevDown, 20), onClick: this.noop, density: "expressive",
+    };
+  }
+
+  frameSpecs(F) {
+    const frame = (o) => ({
+      key: o.key, id: o.id, label: o.label, screenLabel: o.screenLabel, offset: o.offset,
+      showSet: this.chips(T.show, "limits", [
+        { value: "limits", label: T.setLimits },
+        { value: "included", label: T.setIncluded },
+        { value: "overage", label: T.setCharges },
+      ]),
+      grid: this.matrix(F, "limits"),
+    });
+    return [
+      frame({ key: "d1", id: "m12-01-d1", offset: "0px", label: "D1 · 1536 · the top", screenLabel: "Pricing page — 1536, the top" }),
+      frame({ key: "d2", id: "m12-01-d2", offset: "-700px", label: "D2 · 1536 · the foot", screenLabel: "Pricing page — 1536, the foot" }),
+    ];
+  }
+
+  renderVals() {
+    const NS = this.ns();
+    const base = {
+      noop: this.noop, t: T, wmDesktop: 30,
+      bookLabel: { tier: "unmarked", source: BOOK_LIST, size: 12 },
+      benchLabel: { tier: "unmarked", source: BENCH_LIST, size: 12 },
+      gstNote: { note: T.gst, size: 12 },
+      includesRow: this.openRow("grid", T.includes, false),
+      dealGroup: { density: "expressive", form: "lead" },
+      benchGroup: { label: T.comparedWith, density: "expressive", form: "pair", measure: MEASURE },
+      trialRow: this.openRow("spark", T.duringTrial, true),
+      trialGroup: { label: T.duringTrial, density: "expressive", form: "pair", measure: MEASURE },
+      trialRows: [
+        { key: "design", label: T.design, value: TRIAL.design },
+        { key: "proposals", label: T.propShort, value: TRIAL.proposals },
+        { key: "det", label: T.detShort, value: TRIAL.detections },
+        { key: "voice", label: T.voice, value: TRIAL.voice },
+        { key: "storage", label: T.storage, value: TRIAL.storage },
+      ],
+    };
+    if (!this.loaded()) return base;
+    const F = NS.MarketProvider.createFormat();
+    return Object.assign(base, {
+      langMenu: this.langMenu(NS),
+      cycle: this.chips(T.cycle, "monthly", [{ value: "monthly", label: T.monthly }, { value: "yearly", label: T.yearly }]),
+      cards: ORDER.map((k) => this.planCard(F, k)),
+      bench: this.benchRows(F),
+      frames: this.frameSpecs(F),
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -19,16 +19,16 @@ pack:** this screen answers three questions and leads to every record; it does n
 | What I am on — plan, cycle, price, next bill and its date (`M12-55`) | data · status | label–value rows in a `Your plan` region; the subscription state is its chip; a `Change plan` row leads to `SCR-M12-03` |
 | The plan's published caps and bundles (`M12-55`) | more detail | a `What my plan includes` row that opens the list in place — never a dozen rows standing on this screen |
 | What I am using (§M12.10) | data · more detail | the two meters nearest their caps, as quiet rows, and an `All usage` row leading to `SCR-M12-04` |
-| The payment method and its mandate (`M12-55`) | data · status · action | one label–value row, the method as the gateway names it, with its chip; a secondary `Update` act that hands off to the gateway. Why the product never sees an instrument is Help |
+| The payment method and its mandate (`M12-55`) | data · status · action | one label–value row, the method as the gateway names it — `UPI AutoPay`, never an instrument detail: no UPI ID, bank or last digits (`M12-10`; owner ruling 2026-10-29) — with its chip; a secondary `Update` act that hands off to the gateway. Why the product never sees an instrument is Help |
 | Invoices, every one exportable in every state (`M12-46`, `M12-55`) | data · more detail | the three latest as list rows — amount, date, what it was for, its state chip, its PDF — then an `All invoices` row leading to the full list with its filter chips. A list at 375, a table at 1536. The PDF act never goes away with the billing state |
 | The 7-day refund window (`M12-47`) | data | a row in `Needs you`, present only while it is open: that a refund is available, and until when. It is gone afterwards — never a hidden clause, never a standing sentence |
 | Dunning history and subscription history (`M12-55`, §M12.2) | more detail | two rows that lead to their append-only lists — state, when, why |
-| Cancel (`M12-50`) | action | the last, quiet act on the screen. Its reason dialog is a sheet: the reasons as a list, `Skip` always offered because a reason is never a gate, and ONE line — the day service runs to, and that the data is kept |
+| Cancel (`M12-50`) | action | the last, quiet act on the screen. Its reason dialog is a sheet: the reasons as a list, `Skip` always offered because a reason is never a gate, and two rows — `Runs until` (the day service runs to) and `Your data · Kept` — with no line under the act |
 | Cancelled, running to its period end (`M12-50`) | status · data · action | the chip, a `Runs until` row, and `Reactivate` |
 | Enterprise (§M12.10) | action | a `Talk to us` row, and nothing self-serve |
 | A person who is not the Owner opens this screen (`M12-56` context) | status | the state chip and ONE line naming whose act it is; no amount and no act is drawn |
 | A fresh trial — no invoices, no mandate yet | teaching | the trial's state and days left in `Your plan`; the invoices region teaches in at most two short sentences |
-| Billing data failed to load | error | one banner — what failed and what to do. This screen is the way back, so retry AND the pay route stay reachable |
+| Billing data failed to load | error | the screen's failed read — what failed, and `Try again` inside it (the one read state, `T-SHELL-013`). This screen is the way back, so retry AND the pay route stay reachable |
 
 ## Arrangement
 
@@ -51,7 +51,9 @@ published figure these rows do not carry is wrong.
 - **M12-39** (P0) — **The dunning ladder runs from the first failed charge, one rung per fact:** day 0 → `past_due`, banner + push + message ("payment failed, we'll retry — update your method here") · day 2 reminder · day 4 → metered features pause, and the message states **exactly what paused and what still works** · day 6 final warning with a one-tap pay link · day 7 → `halted`, and the message **confirms read + export + customer links + the billing screens (pay/upgrade/reactivate) still work** *(Final review: "billing screens" restored — `BM-32`'s always-works list is four items)* · post-halt weekly × 4, then monthly, indefinitely — reactivation always one payment away. **Grandfathering honesty (owner ruling 2026-08-04):** for a tenant inside a protection horizon, the ladder's copy from day 0 states plainly that a lapse to `cancelled`/`halted` **forfeits the launch-price guarantee** and reactivation prices at the current book — the no-surprise rule; win-back messages repeat it.
 - **M12-56** (P0) — **Managing billing is EPC Owner-only; seeing state is everyone's.** Every billing act rides `F2.M12.manage-billing` (v1 matrix, restored capability). The state banner renders for all employees without amounts; the dunning banner's named audience is owner + managers (M12-40); no employee surface shows a price, invoice or usage figure — those are the Owner's screens.
 
-**A price list value's trust label.** Its tier word is `Published` — the PRD's own word for a price list's values (`M12-55`, `M12-35`) — and its source label is the list's name and date. The date is sample content, because a price list is versioned data (`F1-25`): draw `India price list · 1 Apr 2026`.
+**A price list value's trust label.** A figure the price list publishes — a price, a bundle, a rate, a cap — carries no tier (owner ruling 2026-10-29): its region names the list and its date as one quiet source line, prose and never a tier. The date is sample content, because a price list is versioned data (`F1-25`): draw `India price list · 1 Apr 2026`. No figure on the billing screens shows a provenance tier label — `measured`, `derived`, `estimated` or `assumed` — not a computed amount either (owner ruling 2026-10-29, for billing only; the rest of the product keeps `F8-01` for now). Where this brief asks for it, a computed amount shows its working in `How it is worked out`.
+
+**The trial's biggest design is 100 MW** — the top plan's ceiling (owner ruling 2026-10-29): `BM-41` names no trial ceiling, and `M12-52` gives the trial every plan capability. Anything else `BM-41`'s trial caps do not cap — proposals, active projects, users — is not capped on a trial.
 
 ## Entry & exit
 
@@ -60,33 +62,55 @@ Reached from: dunning messages, which "deep-link to the billing screen's one act
 **Decisions made in design — later screens inherit them.**
 
 1. **`Needs you` exists only when something needs the Owner.** In the active state it is absent, not empty. In every other state it is first, and its one act is the state's one act.
-2. **A dead state is the way back, and it does not repeat the strip.** The strip says what paused and what still works; the region below adds the state chip, `To reactivate · ₹4,718.82` with its `Derived` mark and working, `Your data — kept` in the strip's own row form, and ONE act. The trial's way back is `Choose a plan`, not a payment: no mandate ever existed, so no amount is invented.
-3. **Every figure in `Needs you` and every meter ends on the region's right edge** (x=331 at 375), `SCR-M12-04`'s edge. `Your plan`, `What my plan includes`, the payment method and the cancel sheet share one 120px label track.
+2. **A dead state is the way back, and it does not repeat the strip.** The strip says what paused and what still works; the region below adds the state chip, `To reactivate · ₹4,718.82` with its working, `Your data — kept` in the strip's own row form, and ONE act. The trial's way back is `Pick a plan`, not a payment: no mandate ever existed, so no amount is invented.
+3. **Every amount and every meter figure ends on the region's right edge** (x=331 at 375), `SCR-M12-04`'s edge — `Needs you`, the plan price and the invoice amounts alike, so money reads in one face and one alignment (owner ruling 2026-10-29). `Your plan`, `What my plan includes`, the payment method and the cancel sheet share one 120px label track; their values end on that same right edge.
 4. **Every record is routed:** three invoices and `All 24 invoices`; two meters and `All usage`; `Payment reminders` and `Plan history` — a side panel at 1536, where the invoices are a captioned table (`For` is a column there; at 375 the row holds amount, date, state and PDF, and the block's title is its scope).
-5. **One invoice provenance line** at the region's foot — `Derived · India price list · 1 Apr 2026 · 18% GST` — carries every amount's tier.
+5. **One invoice source line** at the region's foot — `India price list · 1 Apr 2026 · 18% GST`.
 6. **Enterprise** shows counts with no cap, and its money and limits name the contract as their source — never the price list; the board draws `BM-41`'s anchor, ₹24,999 + 18% GST. `Talk to us` and nothing self-serve.
 6a. **A subscription that takes no further charge has no live mandate.** Halted, cancelled running and cancelled show the method's chip as `Ended` with no `Update`: reactivation creates a new mandate at the gateway (`M12-08`).
 7. **The empty state is day one of a trial** — meters at zero, no invoice, no mandate, no history; `trialing` is nine days in.
-8. **Entry and exit.** In from dunning messages, the strip's act and any blocked act's route; back is More at 375 and a `More / Billing` breadcrumb at 1536. Out to `SCR-M12-03` (`Change plan`, `Choose a plan`), `SCR-M12-04` (`All usage`), the gateway (`Pay`, `Update`, `Reactivate`, `Ask for a refund`), the PDF, and the two history lists.
+8. **Entry and exit.** In from dunning messages, the strip's act and any blocked act's route; Billing is a settings row (`SCR-SHELL-01`, *More: the settings list*): back is `Back to settings` at 375, and at 1536 the settings side list stands at the left with `Billing` selected, no breadcrumb. Out to `SCR-M12-03` (`Change plan`, `Pick a plan`), `SCR-M12-04` (`All usage`), the gateway (`Pay`, `Update`, `Reactivate`, `Ask for a refund`), the PDF, and the two history lists.
+
+9. **`Next bill` is two lines**: the date, then the amount — one line does not fit beside the 120px track.
+10. **The payment method row is `Method · UPI AutoPay`**, its state chip in the block's header. Enterprise reads `e-NACH · monthly` with no `Update`.
+11. **An invoice row** is the date with its chip under it, the PDF, then the amount on the right edge; at 1536 the columns are Date · For · State · PDF · Amount. Invoice numbers are sample content; the full list runs Sept 2026 back to Oct 2024.
+12. **All invoices** is `Find in this list`, chips `All` · `Paid` · `Failed` with counts, and a source line at its foot — a sheet at 375, a 720px panel holding the table at 1536 (`1–24 of 24`). No match offers `Clear search`.
+13. **Payment reminders and Plan history** are compact timelines, the next reminder shown as upcoming; at 1536 they are non-modal side panels, so the page behind stays readable.
+14. **Past due, days 0–3:** `SCR-SHELL-06`'s day-2 strip; `Needs you` shows the amount and the day the grace ends; the act is `Pay`.
+15. **Cancel.** The sheet's act is `destructive`, `Skip` beside it, no line under it; the page's own act is a danger-toned ghost. At 1536 the 5fr / 7fr columns let the invoice table fit without wrapping.
+16. **On a trial, `What my plan includes` lists the trial's caps** — 25 detections, 15 voice minutes, 5 GB, biggest design 100 MW, proposals not capped — never Growth's.
+17. **A scheduled downgrade's `Next bill` is the new plan's bill** — Starter, ₹1,999 + 18% GST = ₹2,358.82 — beside `Moving to Starter · On 1 Oct 2026`.
+18. **Motion.** A record list (all invoices, payment reminders, plan history) rises as a sheet at 375 and slides in as a side panel at 1536; the cancel reason rises as a sheet at 375 and appears as a centred dialog at 1536; `What my plan includes` opens in place; loading gives way to content in place (`F7-51`: every motion is the design system's; nothing waits on it, and a figure never animates).
 
 **Inherited from `SCR-SHELL-06` (designed) — reuse, never redraw.**
 
 - **The billing strip.** Where a frame shows the billing strip or a denial sheet, it is `SCR-SHELL-06`'s, reused exactly as that file draws it (context file, *REUSED, never redrawn*). This screen designs no second banner.
-- **Routes.** The strip's act and both denials' act lead to `SCR-M12-03` and return to the surface they were pressed from; the 80% cap's `See usage` leads to `SCR-M12-04`. This screen adds no second route to the same act.
+- **On this screen the strip has no act and no amount row** (owner ruling 2026-10-29): `Needs you`, directly under it, carries the act and the amount, so the screen prints neither twice and has one route, not two. Everything else in the strip is `SCR-SHELL-06`'s, reused exactly.
+- **Routes.** The strip's act and both denials' act lead to `SCR-M12-03` and return to the surface they were pressed from; at 80% of a cap the shell draws no strip, and `All usage` leads to `SCR-M12-04`. This screen adds no second route to the same act.
 - **`non-owner-read-only`.** `ScopeNote` takes the act's place, its holder in the design system's form — `Mahesh Bhosale (owner)` — and no amount renders.
 - **One sample story across the billing screens.** Suryodaya Solar · Growth plan · Owner Mahesh Bhosale · today 15 Sept 2026 · the charge that failed on 11 Sept 2026 is the Growth month — invoice `HG-INV-2026-0902`, ₹3,999 + 18% GST = ₹4,718.82 — the same figure every billing screen prints for that charge (owner ruling).
 
 **Inherited from `SCR-M12-03` (designed) — reuse, never redraw.**
 
-- **`Your plan` is `SCR-M12-03`'s block:** three pairs — `Plan`, `Price` (the cycle and `+ GST` ride the value), `Next bill` with its own `Derived` mark — and the subscription state as its one chip. During a trial or after a lapse the chip changes and the end date takes the price row's place.
+- **`Your plan` is `SCR-M12-03`'s block:** three pairs — `Plan`, `Price` (the cycle and `+ GST` ride the value; no tier, owner ruling 2026-10-29), `Next bill` — its date, and its amount — and the subscription state as its one chip. During a trial or after a lapse the chip changes and the end date takes the price row's place.
 - **`Change plan` leads to `SCR-M12-03`**, whose back control returns here; a downgrade returns to this screen's scheduled-downgrade state.
-- **Honesty labels:** `Published · India price list · 1 Apr 2026`. A one-of-N choice is a chip strip, directly above what it changes.
+- **Honesty labels:** the source line `India price list · 1 Apr 2026`, no tier (owner ruling 2026-10-29). A one-of-N choice is a chip strip, directly above what it changes.
 
 **Inherited from `SCR-M12-04` (designed) — reuse, never redraw.**
 
 - **The meter row is `SCR-M12-04`'s:** label left, used of included at the right on one edge, a quiet bar under it, and the state as a chip with its word — `Nearing a limit`, `At a limit`, `Paused`. `Usage this cycle` shows the two meters nearest their limits in exactly that form, and an `All usage` row leads to `SCR-M12-04`.
 - **What needs the person** takes `SCR-M12-04`'s `Needs you` row: the meter's name with its chip, the figure, and ONE line saying what happens next and when.
-- **The trust label** is two quiet lines at the foot of the region: `Actual usage`, then `Limits and rates · India price list · 1 Apr 2026`.
+- **The trust label** is two quiet source lines at the foot of the region, prose and never a tier: `Actual usage`, then `Limits and rates · India price list · 1 Apr 2026`. A count carries no tier and a price-list figure carries none (`F8-01` for the count; owner ruling 2026-10-29 for the list).
+
+## Design system gaps
+
+Owner ruling 2026-10-29: a board draws the nearest real component, never a look-alike, and the screen's build adds the missing part to `packages/ui`. *Canvas behind the repo* means the repo already has the part and only the canvas copy lacks it.
+
+- `ShellGlyph` `pause`, `tick`, `clock`, `rupee` — canvas behind the repo.
+- `SettingsList` `form="side"` — canvas behind the repo; the board draws the side list as the locked M01 settings boards do.
+- `ShellGlyph` has no `warning` tone for the `Paused` mark.
+- No panel-width token: the side panels take a px width.
+- No mono figure inside a `Button` or `BannerAction` label, a `FactRow` value or `Derivation` text; an amount or an invoice number there must be mono (`F7-09`).
 
 ## Requirements (verbatim)
 
@@ -124,20 +148,18 @@ The screen answers three questions at a glance: "what am I on, what am I using (
 - **scheduled-downgrade-pending** — a confirmed downgrade awaiting the cycle boundary shows under "what needs me" (§M12.10 behavior detail). Its one act keeps the current plan instead.
 - **enterprise-contact-us** — Enterprise's sales-assisted arrangements surface here only as "contact us"; no self-serve surface invents Enterprise mechanics (§M12.10 behavior detail).
 - **non-owner-read-only** — a non-Owner opens billing: state visible, acts absent, no amounts shown; the screen says whose act it is (M12-56 context).
+- **all-invoices** — the full invoice list (decision 12); **all-invoices-no-match** — a search with no result, offering `Clear search`.
+- **payment-reminders** and **plan-history** — the two append-only lists (decision 13), at their long volume.
 
-Drawn at 375 only (at 1536 the phone's answer holds at width; the cancel sheet becomes a side panel): `loading`, `empty`, `error`, `trialing`, `halted`, `halted-reactivate`, `expired`, `cancelled-running-to-period-end`, `cancelled`, `cancel-reason-dialog`, `refund-window-visible`, `scheduled-downgrade-pending`, `enterprise-contact-us`, `non-owner-read-only`.
+Drawn at 375 only (at 1536 the phone's answer holds at width; the cancel sheet becomes a centred dialog — `EditorSurface` `desktop="modal"`, the contract's cancel-confirm case (owner ruling 2026-10-29)): `loading`, `empty`, `error`, `trialing`, `halted`, `halted-reactivate`, `expired`, `cancelled-running-to-period-end`, `cancelled`, `cancel-reason-dialog`, `refund-window-visible`, `scheduled-downgrade-pending`, `enterprise-contact-us`, `non-owner-read-only`.
 
 ## Data volume
 
 Design at a mature tenant: an invoice list with PDFs spanning 24+ monthly cycles (every one exportable in every state, M12-46); a dunning history that can be long — the ladder runs day 0/2/4/6/7 then post-halt weekly × 4 then monthly, indefinitely (M12-39 context); an append-only subscription history of every state entered, when and why (§M12.2 behavior detail); plus the current plan's full set of published caps/bundles (the book's ~dozen values).
 
-## Numbers carrying provenance
+## Numbers and their source
 
-Each user-visible number/money/date carries its F8 provenance tier in the design. Per the owner ruling carried in M12-34, billing screens use plain "actual usage" language — the word "measured" never appears here.
+No figure on these screens carries a provenance tier label (owner ruling 2026-10-29, for billing only). Billing screens use plain "actual usage" language — the word "measured" never appears (owner ruling carried in M12-34).
 
-- Current plan price and cycle; the book's published caps and bundle sizes for the current plan (book data, pointed at, never restated — BM-09 context).
-- Every invoice: amount, date, state; the one-time prorated invoice from an upgrade when present.
-- Refund window: eligibility and its end date during the first paid cycle only (M12-47).
-- Dunning: each rung's date and state; days remaining in grace (M12-06 context).
-- Paid-period end date for `cancelled` running to period end (M12-50); scheduled-downgrade boundary date.
-- Subscription history dates (state entered, when).
+- The plan, its caps and bundles name the price list in one source line; the invoices region names it with its GST once at its foot.
+- A computed amount — an amount due, a reactivation payment — shows its working in `How it is worked out`.

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pricing page · 375</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-hover)}
+</style>
+</helmet>
+
+<div style="box-sizing:border-box;width:1740px;height:3646px;overflow:hidden;padding:var(--sp-12);display:flex;flex-wrap:wrap;align-content:flex-start;gap:var(--sp-16) var(--sp-12);background:var(--canvas)">
+  <sc-for list="{{ frames }}" as="f" hint-placeholder-count="13">
+    <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
+      <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ f.label }}</span>
+
+      <div data-screen-label="{{ f.screenLabel }}" data-frame="{{ f.id }}" style="position:relative;flex:0 0 auto;width:375px;height:812px;overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)">
+        <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
+
+        <div style="flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);padding:var(--sp-4) var(--screen-pad-mobile);background:var(--surface-form)">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Wordmark" size="{{ wmMobile }}" hint-size="112px,26px"></x-import>
+          <div style="display:flex;align-items:center;gap:var(--sp-1)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Menu" dc-props="{{ langMenu }}" hint-size="auto,44px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="secondary" size="sm" on-click="{{ noop }}" hint-size="auto,44px">Sign in</x-import>
+          </div>
+        </div>
+
+        <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-6);padding:var(--sp-6) var(--screen-pad-mobile) var(--sp-8);margin-top:{{ f.offset }}">
+
+            <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+                <h1 style="margin:0;font-size:var(--fs-h2);line-height:var(--lh-h2);letter-spacing:var(--tr-h2);font-weight:var(--fw-bold);color:var(--text-primary)">{{ t.title }}</h1>
+                <span style="font-size:var(--fs-body);line-height:var(--lh-body);color:var(--text-secondary);text-wrap:pretty">{{ t.claim }}</span>
+              </div>
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ f.includesRow }}" hint-size="100%,64px"></x-import>
+              <sc-if value="{{ f.includesOpen }}" hint-placeholder-val="{{ false }}">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ includesGroup }}" hint-size="100%,150px">
+                  <sc-for list="{{ includesRows }}" as="r" hint-placeholder-count="2">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ r.label }}" values="{{ r.values }}" hint-size="100%,40px"></x-import>
+                  </sc-for>
+                </x-import>
+              </sc-if>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+              <sc-if value="{{ f.showCycle }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+                  <span style="font-size:var(--fs-body-sm);font-weight:var(--fw-medium);color:var(--text-secondary)">{{ t.cycle }}</span>
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ f.cycle }}" hint-size="auto,44px"></x-import>
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ dealGroup }}" hint-size="100%,24px"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ t.yearly }}" value="{{ t.yearlyDeal }}" hint-size="100%,24px"></x-import></x-import>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ f.cards }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+                  <sc-for list="{{ f.cards }}" as="c" hint-placeholder-count="4">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" density="expressive" hint-size="100%,280px">
+                      <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+                        <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+                          <span style="font-size:var(--fs-h4);line-height:var(--lh-h4);letter-spacing:var(--tr-h4);font-weight:var(--fw-bold);color:var(--text-primary)">{{ c.name }}</span>
+                          <div style="display:flex;align-items:baseline;gap:var(--sp-2);flex-wrap:wrap"><sc-if value="{{ c.lead }}" hint-placeholder-val="{{ false }}"><span style="font-size:var(--fs-body-sm);color:var(--text-secondary)">{{ c.lead }}</span></sc-if><span style="font-family:var(--font-mono);font-size:var(--fs-h1);line-height:var(--lh-h1);letter-spacing:var(--tr-h1);font-weight:var(--fw-bold);font-variant-numeric:tabular-nums;color:var(--text-primary)">{{ c.figure }}</span><span style="font-size:var(--fs-body-sm);color:var(--text-secondary)">{{ c.period }}</span></div>
+                          <span style="font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">{{ c.positioning }}</span>
+                        </div>
+                        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ c.group }}" hint-size="100%,120px">
+                          <sc-for list="{{ c.rows }}" as="r" hint-placeholder-count="4">
+                            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ r.label }}" value="{{ r.value }}" values="{{ r.values }}" gap="{{ r.gap }}" hint-size="100%,24px"></x-import>
+                          </sc-for>
+                        </x-import>
+                        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ c.limitsRow }}" hint-size="100%,64px"></x-import>
+                        <sc-if value="{{ c.act }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-3)">
+                            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Chip" density="expressive" hint-size="auto,28px">{{ c.footChip }}</x-import>
+                            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ c.act }}" hint-size="100%,48px" style="align-self:stretch">{{ t.talk }}</x-import>
+                          </div>
+                        </sc-if>
+                      </div>
+                    </x-import>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ f.plansBlock }}" hint-placeholder-val="{{ false }}">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.plansBlock }}" hint-size="100%,200px"></x-import>
+              </sc-if>
+
+              <sc-if value="{{ f.bookFoot }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1) var(--sp-3);padding:0 var(--sp-1)">
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ f.bookLabel }}" hint-size="auto,18px"></x-import>
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ gstNote }}" hint-size="auto,18px"></x-import>
+                </div>
+              </sc-if>
+            </div>
+
+            <sc-if value="{{ f.compareRow }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ f.compareRow }}" hint-size="100%,64px"></x-import>
+                <sc-if value="{{ f.compareOpen }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+                    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+                      <span style="font-size:var(--fs-body-sm);font-weight:var(--fw-medium);color:var(--text-secondary)">{{ t.planOne }}</span>
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ f.pickA }}" hint-size="auto,44px"></x-import>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+                      <span style="font-size:var(--fs-body-sm);font-weight:var(--fw-medium);color:var(--text-secondary)">{{ t.planTwo }}</span>
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ f.pickB }}" hint-size="auto,44px"></x-import>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2)">
+                      <span style="font-size:var(--fs-body-sm);font-weight:var(--fw-medium);color:var(--text-secondary)">{{ t.show }}</span>
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FilterChips" dc-props="{{ f.showSet }}" hint-size="auto,44px"></x-import>
+                    </div>
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.CompareGrid" dc-props="{{ f.grid }}" hint-size="100%,340px"></x-import>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ f.benchmark }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+                <span style="font-size:var(--fs-overline);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-tertiary)">{{ t.comparedWith }}</span>
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ benchGroup }}" hint-size="100%,160px">
+                  <sc-for list="{{ bench }}" as="b" hint-placeholder-count="6">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ b.label }}" value="{{ b.value }}" hint-size="100%,24px"></x-import>
+                  </sc-for>
+                </x-import>
+                <div style="display:flex;flex-direction:column;gap:var(--sp-1);padding:0 var(--sp-1)">
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ bookLabel }}" hint-size="auto,18px"></x-import>
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ benchLabel }}" hint-size="auto,18px"></x-import>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ f.trialRow }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ f.trialRow }}" hint-size="100%,64px"></x-import>
+                <sc-if value="{{ f.trialOpen }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ trialGroup }}" hint-size="100%,100px">
+                      <sc-for list="{{ trialRows }}" as="r" hint-placeholder-count="3">
+                        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ r.label }}" value="{{ r.value }}" hint-size="100%,24px"></x-import>
+                      </sc-for>
+                    </x-import>
+                    <div style="padding:0 var(--sp-1)">
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ bookLabel }}" hint-size="auto,18px"></x-import>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+
+          </div>
+        </div>
+
+        <sc-if value="{{ f.footer }}" hint-placeholder-val="{{ true }}">
+          <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);padding:var(--sp-4) var(--screen-pad-mobile) var(--sp-5);background:var(--surface-form);box-shadow:var(--e4)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" variant="primary" size="lg" full-width="{{ yes }}" on-click="{{ noop }}" hint-size="100%,52px" style="align-self:stretch">Start free trial</x-import>
+            <span style="font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary);text-align:center">14 days, no card needed.</span>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-for>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1740,"height":3646}}'>
+/* Product facts are the brief's, word for word: BM-11's four names; BM-41's India book, ex-GST;
+   M12-52's 14-day trial. The two list dates are sample content (F1-25). A price-list figure carries
+   no tier (F8-01): each region names the list once, as an unmarked source line. */
+const BOOK_LIST = "India price list · 1 Apr 2026";
+const BENCH_LIST = "Reslink India price page · 12 Mar 2026";
+
+const BOOK = {
+  starter: { name: "Starter", mo: 1999, yr: 19990, design: "50 kW", proposals: 30, projects: 10,
+    detections: 30, detRate: 10, voice: null, voiceRate: 6, storage: "10 GB", support: "supStarter" },
+  growth: { name: "Growth", mo: 3999, yr: 39990, design: "500 kW", proposals: 300, projects: null,
+    detections: 100, detRate: 10, voice: null, voiceRate: 6, storage: "50 GB", support: "supGrowth" },
+  pro: { name: "Pro", mo: 9999, yr: 99999, design: "5 MW", proposals: 1500, projects: null,
+    detections: 400, detRate: 10, voice: 400, voiceRate: 6, storage: "250 GB", support: "supPro" },
+  enterprise: { name: "Enterprise", mo: 24999, yr: null, design: "100 MW", proposals: null, projects: null,
+    detections: "custom", detRate: "custom", voice: "custom", voiceRate: "custom", storage: "custom",
+    support: "supEnterprise" },
+};
+const ORDER = ["starter", "growth", "pro", "enterprise"];
+const TRIAL = { design: "100 MW", proposals: "Not capped", detections: "25", voice: "15", storage: "5 GB" };
+const BENCH = [
+  { key: "r1", rung: "50 kW", ours: "Starter", ourYr: 19990, theirs: "Reslink Basic", theirYr: 60000 },
+  { key: "r2", rung: "500 kW", ours: "Growth", ourYr: 39990, theirs: "Reslink Pro", theirYr: 85000 },
+  { key: "r3", rung: "5 MW", ours: "Pro", ourYr: 99999, theirs: "Reslink Premium", theirYr: 120000 },
+];
+const MEASURE = 40;
+
+const T = {
+  langLabel: "Language", langNames: { en: "English", hi: "हिन्दी", mr: "मराठी" },
+  title: "Plans and prices",
+  claim: "Every feature is in every plan — others hold features back for higher plans.",
+  includes: "What every plan includes",
+  everyPlan: "Every plan", studio: "The full studio",
+  everyPlanItems: ["CRM", "Projects", "Customer links", "All languages"],
+  studioItems: ["Shadow analysis", "All obstruction types", "Tin-shed and metal roof", "Ground mount", "Structures",
+    "SLD, AC/DC and earthing layouts", "Industrial drawing sheets", "PV and energy reports", "DXF, SVG and PDF export"],
+  cycle: "Billing cycle", monthly: "Monthly", yearly: "Yearly", yearlyDeal: "12 months for the price of 10",
+  design: "Biggest design", proposals: "Proposals a month", detections: "AI detections a month", support: "Support",
+  limitsLead: "Limits", proposalsWord: "proposals a month", detectionsWord: "detections a month",
+  detShort: "AI detections", propShort: "Proposals", extraDet: "Extra detections", extraVoice: "Extra voice",
+  voice: "Voice minutes", storage: "Storage", projects: "Active projects", users: "Users", unlimited: "Unlimited",
+  allLimits: "All limits", annual: "Annual contract", talk: "Talk to sales",
+  gst: "Prices exclude GST",
+  compare: "Compare two plans", planOne: "Plan", planTwo: "Against", show: "Show",
+  setLimits: "Limits", setIncluded: "Included", setCharges: "Extra charges",
+  comparedWith: "Compared with", duringTrial: "During the trial",
+  perMo: " / mo", perYr: " / yr", from: "From", perMoWord: "a month", perYrWord: "a year",
+  emptyTitle: "No prices published for this market yet",
+  errorTitle: "Couldn't load the prices", errorMsg: "The price list didn't answer.",
+  retry: "Try again", loading: "Loading the prices",
+  pos_starter: "For a home-rooftop team of 1 to 5 people.",
+  pos_growth: "For 15 or more installs a month, or your first business sites.",
+  pos_pro: "For business sites, with voice minutes included.",
+  pos_enterprise: "For the largest designs and utility work.",
+  each: "each", min: "min", aMonth: "a month", custom: "Custom", none: "None", notPublished: "Not published yet",
+  supStarter: "In the app", supGrowth: "App and WhatsApp", supPro: "Priority, and an onboarding call", supEnterprise: "A named contact",
+};
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.noop = () => {};
+  }
+
+  componentDidMount() {
+    if (!this.loaded()) {
+      this._poll = setInterval(() => {
+        if (this.loaded()) { clearInterval(this._poll); this._poll = null; this.forceUpdate(); }
+      }, 40);
+    }
+  }
+  componentWillUnmount() { if (this._poll) clearInterval(this._poll); }
+
+  loaded() {
+    const n = window.HelioGridDesignSystem_c8aa43;
+    return !!(n && n.FactRows && n.FactRow && n.CompareGrid && n.NamedGap && n.Wordmark && n.MarketProvider
+      && n.Card && n.Block && n.Menu && n.Button && n.PhoneScreen);
+  }
+
+  ns() { return window.HelioGridDesignSystem_c8aa43 || {}; }
+
+  glyph(spec, size) {
+    return React.createElement("svg", {
+      width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor",
+      strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true",
+    }, spec.map((d, i) => React.createElement("path", { key: "g" + i, d: d })));
+  }
+
+  icons() {
+    return {
+      chevDown: ["m6 9.5 6 6 6-6"],
+      chevUp: ["m6 14.5 6-6 6 6"],
+      grid: ["M4 4.8h6.4v6.4H4zM13.6 4.8H20v6.4h-6.4zM4 12.8h6.4v6.4H4zM13.6 12.8H20v6.4h-6.4z"],
+      scales: ["M12 4.5v15", "M6.5 8h11", "m4 14 2.5-6L9 14a2.5 2.5 0 0 1-5 0", "m15 14 2.5-6 2.5 6a2.5 2.5 0 0 1-5 0"],
+      spark: ["M12 4.5 13.6 9l4.5 1.6-4.5 1.6L12 16.7l-1.6-4.5L5.9 10.6 10.4 9z", "M18 16.5v3M16.5 18h3"],
+    };
+  }
+
+  money(text) {
+    return React.createElement("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, text);
+  }
+
+  langMenu(NS) {
+    return {
+      label: T.langLabel, align: "end", selection: "single",
+      trigger: React.createElement(NS.Button, { variant: "ghost", size: "sm" }, T.langNames.en),
+      items: ["en", "hi", "mr"].map((code) => ({ key: code, label: T.langNames[code], selected: code === "en", onSelect: this.noop })),
+    };
+  }
+
+  V(F, key) {
+    const b = BOOK[key];
+    const custom = (v) => v === "custom";
+    return {
+      design: b.design,
+      proposals: b.proposals === null ? T.unlimited : F.number(b.proposals),
+      projects: b.projects === null ? T.unlimited : F.number(b.projects),
+      users: T.unlimited,
+      detections: custom(b.detections) ? T.custom : F.number(b.detections),
+      detRate: custom(b.detRate) ? T.custom : this.money(F.money(b.detRate) + " " + T.each),
+      voice: b.voice === null ? T.none : (custom(b.voice) ? T.custom : F.number(b.voice) + " " + T.aMonth),
+      voiceRate: custom(b.voiceRate) ? T.custom : this.money(F.money(b.voiceRate) + " / " + T.min),
+      storage: custom(b.storage) ? T.custom : b.storage,
+      support: T[b.support],
+    };
+  }
+
+  Vt(F, key) {
+    const v = this.V(F, key);
+    const b = BOOK[key];
+    const custom = (x) => x === "custom";
+    return Object.assign({}, v, {
+      proposals: b.proposals === null ? T.unlimited : F.number(b.proposals) + T.perMo,
+      detections: custom(b.detections) ? T.custom : F.number(b.detections) + T.perMo,
+      voice: b.voice === null ? T.none : (custom(b.voice) ? T.custom : F.number(b.voice) + T.perMo),
+      detRate: custom(b.detRate) ? T.custom : F.money(b.detRate) + " " + T.each,
+      voiceRate: custom(b.voiceRate) ? T.custom : F.money(b.voiceRate) + " / " + T.min,
+    });
+  }
+
+  shortRows(F, key) {
+    const v = this.V(F, key);
+    return [
+      { key: "limits", label: T.limitsLead,
+        values: [v.design, v.proposals + " " + T.proposalsWord, v.detections + " " + T.detectionsWord] },
+      { key: "support", label: T.support, values: [v.support] },
+    ];
+  }
+
+  fullRows(F, key, draft) {
+    const v = this.V(F, key);
+    const rows = [
+      { key: "design", label: T.design, value: v.design },
+      { key: "proposals", label: T.proposals, value: v.proposals },
+      { key: "projects", label: T.projects, value: v.projects },
+      { key: "users", label: T.users, value: v.users },
+      { key: "detections", label: T.detections, value: v.detections },
+      { key: "extraDet", label: T.extraDet, value: v.detRate },
+      { key: "voice", label: T.voice, value: v.voice },
+      { key: "extraVoice", label: T.extraVoice, value: v.voiceRate },
+      { key: "storage", label: T.storage, value: v.storage },
+      { key: "support", label: T.support, value: v.support },
+    ];
+    /* A rate the book marks draft is never a figure on a public page: its row names the gap. */
+    if (draft) {
+      const i = rows.findIndex((r) => r.key === "extraDet");
+      rows[i] = { key: "extraDet", label: T.extraDet, value: null, gap: { gap: T.notPublished, scale: "field" } };
+    }
+    return rows;
+  }
+
+  planCard(F, key, cycle, o) {
+    const I = this.icons();
+    const b = BOOK[key];
+    const ent = key === "enterprise";
+    return {
+      key: key,
+      name: b.name,
+      footChip: ent ? T.annual : null,
+      lead: ent ? T.from : null,
+      figure: F.money(ent ? b.mo : (cycle === "yearly" ? b.yr : b.mo)),
+      period: ent ? T.perMoWord : (cycle === "yearly" ? T.perYrWord : T.perMoWord),
+      positioning: T["pos_" + key],
+      group: { label: b.name, density: "expressive", form: o.open ? "pair" : "lead", measure: MEASURE },
+      rows: o.open ? this.fullRows(F, key, o.draft) : this.shortRows(F, key),
+      limitsRow: {
+        title: T.allLimits,
+        trailing: this.glyph(o.open ? I.chevUp : I.chevDown, 20),
+        onClick: this.noop, density: "expressive",
+      },
+      act: ent ? { variant: "secondary", size: "md", fullWidth: true, onClick: this.noop } : null,
+    };
+  }
+
+  cards(F, cycle, o) {
+    return ORDER.map((k) => this.planCard(F, k, cycle, { open: o.open === k, draft: o.draft && o.open === k }));
+  }
+
+  attributes(set) {
+    if (set === "included") {
+      return [
+        { key: "detections", label: T.detShort },
+        { key: "voice", label: T.voice },
+        { key: "storage", label: T.storage },
+      ];
+    }
+    if (set === "overage") {
+      return [
+        { key: "detRate", label: T.detShort, numeric: true, gapLabel: T.notPublished },
+        { key: "voiceRate", label: T.voice, numeric: true },
+      ];
+    }
+    return [
+      { key: "design", label: T.design },
+      { key: "proposals", label: T.propShort },
+      { key: "projects", label: T.projects },
+      { key: "users", label: T.users },
+    ];
+  }
+
+  optionValues(F, key, set) {
+    const v = this.Vt(F, key);
+    if (set === "included") return { detections: v.detections, voice: v.voice, storage: v.storage };
+    if (set === "overage") return { detRate: v.detRate, voiceRate: v.voiceRate };
+    return { design: v.design, proposals: v.proposals, projects: v.projects, users: v.users };
+  }
+
+  grid375(F, a, b, set) {
+    return {
+      caption: BOOK[a].name + " · " + BOOK[b].name,
+      density: "functional", columnWidth: 110, labelWidth: 112,
+      attributes: this.attributes(set),
+      options: [a, b].map((k) => ({ key: k, name: BOOK[k].name, values: this.optionValues(F, k, set) })),
+      provenance: { tier: "unmarked", source: BOOK_LIST },
+    };
+  }
+
+  /* One group, so every benchmark figure sits on one value edge; the capacity rides in the label. */
+  benchRows(F) {
+    const rows = [];
+    BENCH.forEach((r) => {
+      rows.push({ key: r.key + "-ours", label: r.ours + " · " + r.rung, value: this.money(F.money(r.ourYr) + T.perYr) });
+      rows.push({ key: r.key + "-theirs", label: r.theirs + " · " + r.rung, value: this.money(F.money(r.theirYr) + T.perYr) });
+    });
+    return rows;
+  }
+
+  chips(label, value, options) {
+    return { label: label, value: value, onChange: this.noop, options: options };
+  }
+
+  planChips(label, value, leaveOut) {
+    return this.chips(label, value, ORDER.filter((k) => k !== leaveOut).map((k) => ({ value: k, label: BOOK[k].name })));
+  }
+
+  setChips(value) {
+    return this.chips(T.show, value, [
+      { value: "limits", label: T.setLimits },
+      { value: "included", label: T.setIncluded },
+      { value: "overage", label: T.setCharges },
+    ]);
+  }
+
+  openRow(icon, title, open) {
+    const I = this.icons();
+    return {
+      icon: this.glyph(I[icon], 22), iconColor: "var(--text-secondary)", title: title,
+      trailing: this.glyph(open ? I.chevUp : I.chevDown, 20), onClick: this.noop, density: "expressive",
+    };
+  }
+
+  frame(F, o) {
+    const cycle = o.cycle || "monthly";
+    const a = o.a || "growth";
+    const b = o.b || "pro";
+    const set = o.set || "limits";
+    const priced = !o.plansBlock;
+    return {
+      key: o.key, id: o.id, label: o.label, screenLabel: o.screenLabel, offset: o.offset || "0px",
+      includesRow: this.openRow("grid", T.includes, !!o.includesOpen),
+      includesOpen: !!o.includesOpen,
+      showCycle: priced,
+      cycle: this.chips(T.cycle, cycle, [{ value: "monthly", label: T.monthly }, { value: "yearly", label: T.yearly }]),
+      cards: priced ? this.cards(F, cycle, { open: o.openLimits, draft: o.draft }) : null,
+      plansBlock: o.plansBlock || null,
+      bookFoot: priced,
+      bookLabel: { tier: "unmarked", source: o.draft ? "Sample market price list · draft rate" : BOOK_LIST, size: 12 },
+      compareRow: priced ? this.openRow("scales", T.compare, !!o.compareOpen) : null,
+      compareOpen: !!o.compareOpen,
+      pickA: this.planChips(T.planOne, a, null),
+      pickB: this.planChips(T.planTwo, b, a),
+      showSet: this.setChips(set),
+      grid: this.grid375(F, a, b, set),
+      benchmark: priced,
+      trialRow: priced ? this.openRow("spark", T.duringTrial, !!o.trialOpen) : null,
+      trialOpen: !!o.trialOpen,
+      footer: priced,
+    };
+  }
+
+  frameSpecs(F) {
+    const NS = this.ns();
+    const talkBtn = React.createElement(NS.Button, { variant: "primary", size: "md", onClick: this.noop }, T.talk);
+    const read = (kind) => ({ density: "expressive", loadingLabel: T.loading, retryLabel: T.retry, read: kind });
+    const f = (o) => this.frame(F, o);
+    return [
+      f({ key: "top", id: "m12-01-top", label: "1 · The page at rest · 375", screenLabel: "Pricing page — at rest (375)" }),
+      f({ key: "foot", id: "m12-01-foot", offset: "-1264px", label: "2 · The same page at its foot · 375", screenLabel: "Pricing page — the foot (375)" }),
+      f({ key: "includes", id: "m12-01-includes", includesOpen: true, label: "3 · What every plan includes, opened in place · 375", screenLabel: "Pricing page — what every plan includes (375)" }),
+      f({ key: "limits", id: "m12-01-limits", openLimits: "growth", offset: "-623px", label: "4 · All limits, opened on one plan · 375", screenLabel: "Pricing page — all limits, Growth (375)" }),
+      f({ key: "compare", id: "m12-01-compare", compareOpen: true, offset: "-1841px", label: "5 · Compare two plans, opened in place · 375", screenLabel: "Pricing page — compare two plans (375)" }),
+      f({ key: "charges", id: "m12-01-charges", compareOpen: true, set: "overage", offset: "-1841px", label: "6 · The same comparison, showing extra charges · 375", screenLabel: "Pricing page — extra charges (375)" }),
+      f({ key: "included", id: "m12-01-included", compareOpen: true, set: "included", offset: "-1841px", label: "7 · The same comparison, showing what is included · 375", screenLabel: "Pricing page — included (375)" }),
+      f({ key: "trial", id: "m12-01-trial", trialOpen: true, offset: "-2110px", label: "8 · During the trial, opened in place · 375", screenLabel: "Pricing page — during the trial (375)" }),
+      f({ key: "yearly", id: "m12-01-yearly", cycle: "yearly", label: "9 · Yearly · 375", screenLabel: "Pricing page — yearly (375)" }),
+      f({ key: "loading", id: "m12-01-loading", label: "10 · Loading · 375", screenLabel: "Pricing page — loading (375)",
+        plansBlock: read({ kind: "loading" }) }),
+      f({ key: "empty", id: "m12-01-empty", label: "11 · No prices published for this market · 375", screenLabel: "Pricing page — no price list for this market (375)",
+        plansBlock: Object.assign(read({ kind: "empty" }), { emptyTitle: T.emptyTitle, emptyMessage: "", emptyAction: talkBtn }) }),
+      f({ key: "error", id: "m12-01-error", label: "12 · The price list failed · 375", screenLabel: "Pricing page — price list failed (375)",
+        plansBlock: Object.assign(read({ kind: "failed", retry: this.noop }), { errorTitle: T.errorTitle, errorMessage: T.errorMsg }) }),
+      f({ key: "draft", id: "m12-01-draft", openLimits: "growth", draft: true, offset: "-623px", label: "13 · A sample market, a rate not published yet · 375", screenLabel: "Pricing page — a sample market with a draft rate (375)" }),
+    ];
+  }
+
+  renderVals() {
+    const NS = this.ns();
+    const base = {
+      noop: this.noop, yes: true, t: T, wmMobile: 22,
+      phoneChrome: { style: { background: "transparent" } },
+      bookLabel: { tier: "unmarked", source: BOOK_LIST, size: 12 },
+      benchLabel: { tier: "unmarked", source: BENCH_LIST, size: 12 },
+      gstNote: { note: T.gst, size: 12 },
+      includesGroup: { density: "expressive", form: "lead" },
+      includesRows: [
+        { key: "every", label: T.everyPlan, values: T.everyPlanItems },
+        { key: "studio", label: T.studio, values: T.studioItems },
+      ],
+      dealGroup: { density: "expressive", form: "lead" },
+      benchGroup: { label: T.comparedWith, density: "expressive", form: "pair", measure: MEASURE },
+      trialGroup: { label: T.duringTrial, density: "expressive", form: "pair", measure: MEASURE },
+      trialRows: [
+        { key: "design", label: T.design, value: TRIAL.design },
+        { key: "proposals", label: T.propShort, value: TRIAL.proposals },
+        { key: "det", label: T.detShort, value: TRIAL.detections },
+        { key: "voice", label: T.voice, value: TRIAL.voice },
+        { key: "storage", label: T.storage, value: TRIAL.storage },
+      ],
+    };
+    if (!this.loaded()) return base;
+    const F = NS.MarketProvider.createFormat();
+    return Object.assign(base, {
+      langMenu: this.langMenu(NS),
+      bench: this.benchRows(F),
+      frames: this.frameSpecs(F),
+    });
+  }
+}
+</script>
+</body>
+</html>
