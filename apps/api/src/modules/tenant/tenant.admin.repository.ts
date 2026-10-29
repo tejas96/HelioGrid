@@ -5,6 +5,7 @@ import { and, asc, eq, sql } from 'drizzle-orm';
 import { type CreationKey, type Keyed, replayOf } from '../../common/creation-key';
 import { ADMIN_DB } from '../../common/db/admin.token';
 import { lockCreationKey } from '../../common/db/creation-key-lock';
+import { startTrial } from '../billing/billing.public';
 import { seedTenantSettings } from '../settings/settings.public';
 
 export interface TenantRow {
@@ -108,6 +109,8 @@ export class TenantAdminRepository {
       // What a company has before its owner touches a setting (`M01-28`): the corridor, the
       // empty profile, the two standard splits — in this transaction, so none is ever missing.
       await seedTenantSettings(tx, { tenantId: created.id, now: input.now });
+      // The trial starts with the company, no card and no billing step (`M12-14`, `M12-52`).
+      await startTrial(tx, { tenantId: created.id, now: input.now });
       return { outcome: 'created', row: created };
     });
   }

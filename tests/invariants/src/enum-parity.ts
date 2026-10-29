@@ -1,6 +1,7 @@
 import {
   auditActorKindSchema,
   auditEventTypeSchema,
+  billingStateSchema,
   catalogAvailabilitySchema,
   catalogImportConflictAnswerSchema,
   catalogImportEntryPointSchema,
@@ -25,6 +26,7 @@ import {
   releaseChangeKindSchema,
   rolePresetSchema,
   subjectKindSchema,
+  subscriptionCauseSchema,
   tenantSegmentSchema,
   uiLanguageSchema,
 } from '@heliogrid/contracts';
@@ -61,6 +63,11 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   audit_event_type: { options: auditEventTypeSchema.options, contract: 'auditEventTypeSchema' },
   audit_actor_kind: { options: auditActorKindSchema.options, contract: 'auditActorKindSchema' },
   subject_kind: { options: subjectKindSchema.options, contract: 'subjectKindSchema' },
+  billing_state: { options: billingStateSchema.options, contract: 'billingStateSchema' },
+  subscription_cause: {
+    options: subscriptionCauseSchema.options,
+    contract: 'subscriptionCauseSchema',
+  },
   push_platform: {
     options: pushPlatformSchema.options,
     contract: 'pushPlatformSchema',

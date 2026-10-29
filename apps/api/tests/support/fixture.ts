@@ -17,6 +17,8 @@ import {
   otpChallenge,
   pushDevice,
   session,
+  subscription,
+  subscriptionStateHistory,
   tenant,
   tenantMembership,
   tenantPool,
@@ -245,6 +247,11 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
     return;
   }
   await db.delete(auditLogEntry).where(inArray(auditLogEntry.tenantId, companies));
+  // The history first: each row names its subscription.
+  await db
+    .delete(subscriptionStateHistory)
+    .where(inArray(subscriptionStateHistory.tenantId, companies));
+  await db.delete(subscription).where(inArray(subscription.tenantId, companies));
   for (const catalogTable of TENANT_CATALOG_TABLES) {
     await db.delete(catalogTable).where(inArray(catalogTable.tenantId, companies));
   }

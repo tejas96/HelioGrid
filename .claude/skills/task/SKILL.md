@@ -72,6 +72,11 @@ rows); `**Deleted:** D…, D…` — the deferred rows this task closes — or `
 the plan, never the research, and never copied from an earlier RFC or PR. Then review it once, as
 `plan-review.md` says.
 
+Then stop for the owner's yes. Show them the PR body's *User impact* (what a user gets, with one
+example) and *Flow* (a mermaid diagram of the parts the change touches and how data moves between
+them), as `.github/pull_request_template.md` shapes them, and one line per decision. Build starts
+only on their yes. A change they ask for goes into the RFC first, and they see it again.
+
 ## Build
 
 Rebuild `heliogrid_test` once, so no other branch's migration is left in it (`pnpm infra:up`

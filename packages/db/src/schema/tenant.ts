@@ -64,5 +64,7 @@ export const tenant = pgTable(
       sql`lower(${table.companyName})`,
       sql`lower(${table.city})`,
     ),
+    /** The billing timers find the newest companies with no subscription (`M12-14`). */
+    index('tenant_created_at_idx').on(table.createdAt),
   ],
 );

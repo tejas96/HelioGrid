@@ -68,6 +68,8 @@ code that is gone — `tsc -p` never removes old output, and the web typecheck r
   and its push.
 - **The merge.** Every PR is merged by the owner. Never `--no-verify`, never force-push, never
   push to `main` (`.claude/settings.json` denies them).
+- **The plan:** a task is built only after the owner's yes to its plan
+  (`.claude/skills/task/SKILL.md` *Plan*).
 - **A split:** a task is split into parts only on the owner's word (`docs/tasks/README.md`).
 - **The look:** a board, or a change to the design system, is locked only by the owner's yes
   (`.claude/skills/task/design-track.md`).
