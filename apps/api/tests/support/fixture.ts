@@ -18,6 +18,7 @@ import {
   pushDevice,
   session,
   subscription,
+  subscriptionPayment,
   subscriptionStateHistory,
   tenant,
   tenantMembership,
@@ -247,7 +248,8 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
     return;
   }
   await db.delete(auditLogEntry).where(inArray(auditLogEntry.tenantId, companies));
-  // The history first: each row names its subscription.
+  // The payments and the history first: each row names its subscription.
+  await db.delete(subscriptionPayment).where(inArray(subscriptionPayment.tenantId, companies));
   await db
     .delete(subscriptionStateHistory)
     .where(inArray(subscriptionStateHistory.tenantId, companies));

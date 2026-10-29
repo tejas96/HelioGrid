@@ -21,7 +21,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **Status:** designed
 **PRD rows:** M12-08 (P0), M12-46 (P0), M12-47 (P0), M12-50 (P0), M12-55 (P0)
 **DESIGN:** SCR-M12-02 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
-**Contract:** declares the company's billing standing read — its state and phase from `T-M12-005`'s `subscription` row and `billingPhaseAt` — as the first screen that shows it; `T-SHELL-006` reads the same route.
+**Contract:** declares the company's billing standing read — its state and phase from `T-M12-005`'s `subscription` row and `billingPhaseAt`, and any state history in `id` order, never `entered_at` (a halt undone by a charge inside its grace records an earlier `entered_at`, T-M12-006); reactivation first locks the company's latest subscription row `FOR UPDATE` — the lock T-M12-006's charge path takes — and starts the new row only while that row is still not live, so a late charge and a reactivation run one after the other — as the first screen that shows it; `T-SHELL-006` reads the same route.
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-02-billing-home.md`; they are the specification. (M12-55 is a shared row: its plan-selection half lands on SCR-M12-03 / T-M12-003; the row is dispositioned here.)
 **DONE WHEN:**
 - Given a tenant halted for a year, when the owner pays, then a new gateway subscription exists, entitlements are live immediately, and every record is as they left it (M12-08).
@@ -91,29 +91,30 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 ### T-M12-006 · Charge truth, reconciliation & billing timers
 
 **Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M12-09, M12-43
+**Status:** shipped
+**PRD rows:** M12-09
 **Requirements (verbatim):**
-- **M12-09** (P0) — **A successful charge is the source of truth for entitlement.** It extends the entitled window, writes the payment, triggers the tax invoice and clears dunning — atomically from the tenant's point of view. Stale or out-of-order gateway events can never regress state; a reconcile-by-poll backstop (every 6 h) repairs drift, and every repair raises an internal alert — reconciliation is supposed to be boring.
-- **M12-43** (P1) — **The billing timers are fixed product timers:** the trial-expiry sweep flips entitlements to the soft-block set (read + export always work); reconciliation runs its 6-hour cadence. Carried as product timers, not calendar language.
+- **M12-09** (P0) — **A successful charge is the source of truth for entitlement.** It extends the entitled window, writes the payment, triggers the tax invoice and clears dunning — atomically from the tenant's point of view. Stale or out-of-order gateway events can never regress state; a reconcile-by-poll backstop (every 6 h) repairs drift, and every repair raises an internal alert — reconciliation is supposed to be boring. — *Split by owner ruling:* the invoice half is T-M12-012's, the dunning-clear half T-M12-011's, and the 6-hour reconcile with its alerts T-M12-007's; each joins this task's one charge transaction when its table or port lands. M12-43's trial-expiry sweep shipped with T-M12-005 and its reconcile cadence is T-M12-007's.
 **DONE WHEN:**
-- Given a successful charge, when it lands, then window + payment + invoice + dunning-clear all follow from that one event, and no out-of-order event can undo it (M12-09).
-- (M12-43 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text above is the binding criterion — the trial-expiry sweep and the 6-hour reconciliation cadence are fixed product timers, carried as product timers and not as calendar language. The sweep's outcome is exercised by T-M12-003's M12-53 line and the cadence's repair duty by M12-09's line above.)
+- Given a successful charge, when it lands, then the window and the payment follow from that one event in one transaction, and no out-of-order event can undo it (M12-09).
 **Settle before the build:**
-- A failed charge writes no `subscription_payment` and no invoice (M12-09, M12-39, M12-44) — pick: the failure writes the `charge failure` state-history row and the day-0 `dunning_event`, both keyed by the gateway attempt reference for idempotency; `subscription_payment` records successful charges only, and the invoice status `failed` is reachable only on an invoice issued ahead of collection — the yearly link/invoice rail of M12-11 (M12-09 names the successful charge as the sole writer of payment and invoice; cost if wrong: a failed attempt has no row of its own and the invoice list never shows a failed cycle, and an attempt record added later is additive).
+- A failed charge writes no `subscription_payment` and no invoice (M12-09, M12-39, M12-44) — pick: the failure writes the `charge failure` state-history row and the day-0 `dunning_event`, both keyed by the gateway attempt reference for idempotency; `subscription_payment` records successful charges only, and the invoice status `failed` is reachable only on an invoice issued ahead of collection — the yearly link/invoice rail of M12-11 (M12-09 names the successful charge as the sole writer of payment and invoice; cost if wrong: a failed attempt has no row of its own and the invoice list never shows a failed cycle, and an attempt record added later is additive). — *Split by owner ruling:* the history row is this task's; the day-0 `dunning_event` and its attempt-reference key are T-M12-011's.
 
 ### T-M12-007 · Provider-neutral billing ports: hosted checkout, mandate rails & plan objects
 
 **Type:** integration · **Tier:** P0
 **Status:** planned
-**PRD rows:** M12-03, M12-10, M12-11, M12-12, M12-13
+**PRD rows:** M12-03, M12-10, M12-11, M12-12, M12-13, M12-09, M12-43
 **Requirements (verbatim):**
 - **M12-03** (P0) — **Billing is provider-neutral; the launch market's gateway is a reference implementation.** Subscription billing, mandates, hosted checkout and webhooks are capabilities behind provider-neutral billing ports; the billing schema is per-currency and provider-neutral, one currency per tenant (`F1-07`/`F1-27` consumed). The v1 reference implementation is Razorpay (`R4`, the IN rail) — named here once, as reference implementation only; another market adds adapters, never product change.
 - **M12-10** (P0) — **Checkout is the gateway's hosted flow; the platform never sees a payment instrument.** Card, mandate and bank details exist only at the gateway (the market's localisation obligations stay the gateway's problem — IN instance per `F1-43`). The product's own screens collect nothing sensitive.
 - **M12-11** (P0) — **The mandate is established at conversion, never at signup, on the market pack's rails.** Which rail collects which cycle is pack data (`F1-40`/`F1-41` for IN: mandate ladder for monthly self-serve; e-NACH/invoice for Enterprise; every yearly total exceeds the mandate cap and is collected as a single payment link/invoice per year, renewal a fresh invoice). Pre-debit notifications before each charge are the gateway's duty; dunning copy may reference them and builds nothing.
 - **M12-12** (P1) — **Every tier exists as two gateway plan objects (monthly + yearly), mirrored 1:1 by per-currency plan-price rows.** Our tables are the source of truth for entitlements; the gateway's for money. A cycle switch (monthly → yearly) follows exactly the tier-upgrade mechanics: immediate entitlements, prorated delta, new subscription at the boundary (M12-48).
 - **M12-13** (P1) — **Pause/resume is not offered.** No pause state exists in the machine; if the gateway ever emits such an event it is logged and alerted, never applied. — *Split with T-M12-005:* the machine has no pause state there; the gateway event is handled here, at the webhook port.
+- **M12-09** (P0) — **A successful charge is the source of truth for entitlement.** It extends the entitled window, writes the payment, triggers the tax invoice and clears dunning — atomically from the tenant's point of view. Stale or out-of-order gateway events can never regress state; a reconcile-by-poll backstop (every 6 h) repairs drift, and every repair raises an internal alert — reconciliation is supposed to be boring. — *Split from T-M12-006 by owner ruling — the reconcile half is this task's:* the webhook and the poll both hand the gateway's charge facts to T-M12-006's one charge path (`ChargeService` in `apps/api/src/modules/billing/billing.public.ts`), never a second writer; a charge on a dead row, which that path records and logs at `warn` without moving it, raises the same alert.
+- **M12-43** (P1) — **The billing timers are fixed product timers:** the trial-expiry sweep flips entitlements to the soft-block set (read + export always work); reconciliation runs its 6-hour cadence. Carried as product timers, not calendar language. — *Split:* the trial-expiry sweep shipped with T-M12-005; the 6-hour cadence is this task's.
 **DONE WHEN:**
+- Given drift between the gateway and our rows, when the 6-hour reconcile runs, then it repairs the drift through T-M12-006's charge path and raises an internal alert for each repair, and a charge on a dead row raises one too; a `ChargeRefused` (another currency, an unknown subscription — money the gateway did collect) is acknowledged to the gateway with no retry and raises the same alert (M12-09, M12-43).
 - Given a gateway pause or resume event, when its webhook lands, then it is logged and an alert is raised, and the subscription's state and history are unchanged (M12-13 — the no-pause-state half is T-M12-005's).
 - Given the module body, when searched for vendor names, then the only occurrence is M12-03's reference-implementation naming (M12-03).
 - Given conversion, when checkout confirms, then the subscription exists at the gateway, the mandate rides the pack's rail, and entitlements are active immediately (M12-54 — dispositioned to T-M12-003; carried here as well because these ports are what it exercises end-to-end, and it is the only PRD acceptance line that touches hosted checkout and the mandate rail).
@@ -199,13 +200,15 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 
 **Type:** engine · **Tier:** P0
 **Status:** planned
-**PRD rows:** M12-39, M12-40, M12-41, M12-42
+**PRD rows:** M12-39, M12-40, M12-41, M12-42, M12-09
 **Requirements (verbatim):**
 - **M12-39** (P0) — **The dunning ladder runs from the first failed charge, one rung per fact:** day 0 → `past_due`, banner + push + message ("payment failed, we'll retry — update your method here") · day 2 reminder · day 4 → metered features pause, and the message states **exactly what paused and what still works** · day 6 final warning with a one-tap pay link · day 7 → `halted`, and the message **confirms read + export + customer links + the billing screens (pay/upgrade/reactivate) still work** *(Final review: "billing screens" restored — `BM-32`'s always-works list is four items)* · post-halt weekly × 4, then monthly, indefinitely — reactivation always one payment away. **Grandfathering honesty (owner ruling 2026-08-04):** for a tenant inside a protection horizon, the ladder's copy from day 0 states plainly that a lapse to `cancelled`/`halted` **forfeits the launch-price guarantee** and reactivation prices at the current book — the no-surprise rule; win-back messages repeat it.
 - **M12-40** (P0) — **Dunning channels are the market pack's stack, and platform→tenant messaging is ours to send.** The IN stack: in-app banner (owner + managers), push, SMS on registered templates (`F1-38`), and a business-messaging utility template where the owner opted in. D32 constrains tenant→customer messaging only — it does not restrict the platform messaging its own tenants. A future market's pack names its own channel stack.
 - **M12-41** (P0) — **All dunning copy is honest about state — no data-deletion threats, ever, because nothing is deleted.** Copy names the state, the consequence that will actually occur, and the resolving action; pre-debit notifications are the gateway's and may be referenced, not imitated. Consequences that **will** occur include the grandfathering forfeiture where the tenant is protected (owner ruling 2026-08-04): dunning and win-back copy names the price-protection loss honestly, and win-back offers never imply the old price survives the lapse.
 - **M12-42** (P1) — **Trial nudges reuse the dunning pipeline:** day 7 ("half way"), day 12, day 14 (expiry) — same channels, same honesty.
+- **M12-09** (P0) — **A successful charge is the source of truth for entitlement.** It extends the entitled window, writes the payment, triggers the tax invoice and clears dunning — atomically from the tenant's point of view. Stale or out-of-order gateway events can never regress state; a reconcile-by-poll backstop (every 6 h) repairs drift, and every repair raises an internal alert — reconciliation is supposed to be boring. — *Split from T-M12-006 by owner ruling — the dunning-clear half is this task's:* each pending rung's clearance is written inside T-M12-006's charge transaction (`charge.admin.repository.ts`), and a failure's day-0 `dunning_event` is keyed by the gateway attempt reference.
 **DONE WHEN:**
+- Given a subscription with pending rungs, when a successful charge lands, then every pending rung is cleared by that payment in the same transaction, and a re-sent failure writes no second day-0 rung (M12-09).
 - Given a first failed charge, when the ladder runs unpaid to day 7, then each rung fires with its stated content, day 4's message names the paused set exactly, and day 7's confirms what still works (M12-39, M12-41).
 - Given all dunning copy in all languages, when audited, then no message threatens deletion or any consequence that will not occur (M12-41).
 - (M12-40 and M12-42 carry no dedicated Given/When/Then lines in the PRD's acceptance blocks; the requirement texts above are the binding criteria — the dunning channel stack is the market pack's, platform→tenant messaging is ours to send and D32 constrains tenant→customer messaging only (M12-40); trial nudges reuse the dunning pipeline at day 7, day 12 and day 14, same channels, same honesty (M12-42). M12-41's audit line above covers the honesty half of both.)
@@ -216,11 +219,13 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 
 **Type:** engine · **Tier:** P0
 **Status:** planned
-**PRD rows:** M12-44, M12-45
+**PRD rows:** M12-44, M12-45, M12-09
 **Requirements (verbatim):**
 - **M12-44** (P0) — **A tax-compliant invoice is generated per billing cycle, per the market's `pack.tax` declaration.** The canonical invoice is scheme-neutral: currency, subtotal, tax breakdown, total, the scheme's registration identifiers, scheme-tagged statutory extras, statuses issued / paid / failed / refunded, PDF attached. The IN instance rides `F1-28`/`F1-29`: our GSTIN and the tenant's (captured at conversion), place-of-supply logic, the SaaS service code at the scheme rate, for all tiers and overage add-ons.
 - **M12-45** (P0) — **The platform is the supplier of record and the invoice says so.** Our registration, our remittance, our liability; the gateway is a gateway, never merchant-of-record. Invoice generation implements `BM-40`'s posture per market.
+- **M12-09** (P0) — **A successful charge is the source of truth for entitlement.** It extends the entitled window, writes the payment, triggers the tax invoice and clears dunning — atomically from the tenant's point of view. Stale or out-of-order gateway events can never regress state; a reconcile-by-poll backstop (every 6 h) repairs drift, and every repair raises an internal alert — reconciliation is supposed to be boring. — *Split from T-M12-006 by owner ruling — the invoice half is this task's:* it is issued inside T-M12-006's charge transaction (`charge.admin.repository.ts`), naming its `subscription_payment` row.
 **DONE WHEN:**
+- Given a successful charge, when it lands, then its invoice issues in the same transaction, and the same charge told twice issues one invoice; every recorded payment issues one, a `dead` charge's (money on a row it does not move) included, so the issue joins before that return (M12-09).
 - Given a paid cycle, when its invoice issues, then it carries the scheme's breakdown per the pack, the supplier-of-record identifiers, and any ledgered overage add-ons (M12-44, M12-45).
 - Given overage accruing, when the next invoice issues, then its add-on lines equal the ledgered overage at the book's published rates (M12-35 — dispositioned to T-M12-004; carried here as well because the add-on lines are this task's invoice output, and T-M12-004 owns the same line's usage-screen half).
 **Settle before the build:**
@@ -267,7 +272,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 | M12-06 | T-M12-005 |
 | M12-07 | T-M12-005 |
 | M12-08 | T-M12-002 |
-| M12-09 | T-M12-006 |
+| M12-09 | T-M12-006, T-M12-007, T-M12-011, T-M12-012 |
 | M12-10 | T-M12-007 |
 | M12-11 | T-M12-007 |
 | M12-12 | T-M12-007 |
@@ -301,7 +306,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 | M12-40 | T-M12-011 |
 | M12-41 | T-M12-011 |
 | M12-42 | T-M12-011 |
-| M12-43 | T-M12-006 |
+| M12-43 | T-M12-005, T-M12-007 |
 | M12-44 | T-M12-012 |
 | M12-45 | T-M12-012 |
 | M12-46 | T-M12-002 |

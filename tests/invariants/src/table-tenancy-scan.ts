@@ -81,6 +81,11 @@ const GLOBAL_UNIQUES: Record<string, string> = {
     'the rate ledger’s insertion order (M01-44), an identity column the database alone numbers: ' +
     'its uniqueness is what settles two entries on one date, and no tenant ever supplies a ' +
     'value, so no two tenants can meet on one (T-M01-027)',
+  subscription_payment_charge_ref_key:
+    'the gateway’s own charge reference, the one idempotency key of a collected charge (M12-09): ' +
+    'the gateway alone mints it, unique across our one platform account, and a webhook names the ' +
+    'charge before any tenant is known — scoped per tenant, one charge could be recorded on two ' +
+    'companies (T-M12-006)',
 };
 
 function assert(cond: unknown, msg: string): asserts cond {

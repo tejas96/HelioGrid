@@ -2193,7 +2193,7 @@ Nothing below is renumbered.*
 | M12-06 | P0 | mixed | SCR-SHELL-06 · +non-UI: two-phase 7-day grace timer; only metered features pause day 4 | T-SHELL-006, T-M12-005 |
 | M12-07 | P0 | policy | policy | T-M12-005 |
 | M12-08 | P0 | mixed | SCR-M12-02 · +non-UI: new gateway subscription created, never resumed; entitlements… | T-M12-002 |
-| M12-09 | P0 | engine | engine | T-M12-006 |
+| M12-09 | P0 | engine | engine | T-M12-006, T-M12-007, T-M12-011, T-M12-012 |
 | M12-10 | P0 | integration | integration | T-M12-007 |
 | M12-11 | P0 | integration | integration | T-M12-007 |
 | M12-12 | P1 | policy | policy | T-M12-007 |
@@ -2227,7 +2227,7 @@ Nothing below is renumbered.*
 | M12-40 | P0 | integration | integration | T-M12-011 |
 | M12-41 | P0 | policy | policy | T-M12-011 |
 | M12-42 | P1 | engine | engine | T-M12-011 |
-| M12-43 | P1 | engine | engine | T-M12-006 |
+| M12-43 | P1 | engine | engine | T-M12-005, T-M12-007 |
 | M12-44 | P0 | engine | engine | T-M12-012 |
 | M12-45 | P0 | policy | policy | T-M12-012 |
 | M12-46 | P0 | mixed | SCR-M12-02 · +non-UI: export ungated in every billing state including halted | T-M12-002 |
