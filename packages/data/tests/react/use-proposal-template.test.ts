@@ -15,7 +15,10 @@ describe('the Proposal template page — its reads and its one save, through the
     expect(view.result.current.standing).toEqual({ kind: 'never-set' });
     expect(view.result.current.changed).toEqual({ template: false, timeline: false });
     expect(view.result.current.bankName).toBe('HDFC Bank');
-    expect(view.result.current.cover).toMatchObject({ companyName: 'Suryodaya Solar Pvt Ltd' });
+    // The page is ready on its own reads; the cover's company facts fill it after.
+    await waitFor(() =>
+      expect(view.result.current.cover).toMatchObject({ companyName: 'Suryodaya Solar Pvt Ltd' }),
+    );
   });
 
   it('only the changed record is sent', async () => {
