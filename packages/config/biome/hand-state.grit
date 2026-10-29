@@ -1,0 +1,8 @@
+// A screen hands a design-system component its state only through readSurface
+// (packages/ui/src/components/UnavailableNote/read-surface.ts), which never draws a failed read
+// without its retry; a state written by hand — a word, a choice, a value held — can. An object
+// (`state={{ … }}`) is another component's own prop, not a read state.
+JsxAttribute() as $attribute where {
+  $attribute <: r"state=(?:[\x22\x27]|\{[^{])[\s\S]*",
+  register_diagnostic(span=$attribute, message="A state written by hand — spread {...readSurface(read)} from @heliogrid/ui instead.")
+}

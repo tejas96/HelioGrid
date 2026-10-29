@@ -41,7 +41,7 @@ describe('the Branding page — its reads and its one save, through the real cli
     origin.saves = [{ status: 500, body: refusal('INTERNAL') }];
     act(() => view.result.current.edit({ kind: 'colour', value: '#B3401F' }));
     act(() => view.result.current.save());
-    await waitFor(() => expect(view.result.current.status).toBe('save-failed'));
+    await waitFor(() => expect(view.result.current.saveFailed).toBe(true));
     expect(view.result.current.saveFailure).not.toBeNull();
     expect(view.result.current.draft?.brandColour).toBe('#B3401F');
     expect(view.result.current.changed).toBe(true);
@@ -52,7 +52,7 @@ describe('the Branding page — its reads and its one save, through the real cli
     origin.saves = ['drop'];
     act(() => view.result.current.edit({ kind: 'colour', value: '#B3401F' }));
     act(() => view.result.current.save());
-    await waitFor(() => expect(view.result.current.status).toBe('save-failed'));
+    await waitFor(() => expect(view.result.current.saveFailed).toBe(true));
     expect(view.result.current.draft?.brandColour).toBe('#B3401F');
   });
 
@@ -146,7 +146,7 @@ describe('the Branding page — its reads and its one save, through the real cli
     const view = await mounted();
     act(() => view.result.current.removeLogo());
     act(() => view.result.current.save());
-    await waitFor(() => expect(view.result.current.status).toBe('save-failed'));
+    await waitFor(() => expect(view.result.current.saveFailed).toBe(true));
     expect(view.result.current.changed).toBe(true);
   });
 });

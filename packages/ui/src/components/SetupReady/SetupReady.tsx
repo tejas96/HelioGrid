@@ -20,18 +20,18 @@ const DOOR_CIRCLE = 40;
  * cannot be read, follows the wordmark at 375 and is centred in the task pane at 1536.
  */
 export function SetupReady({
+  read,
   words,
   demo,
   leaving,
   onStartWithLead,
   onOpenDemo,
-  unreachable,
   retrying,
-  onTryAgain,
 }: SetupReadyProps) {
   const wide = useDesktopShell() === true;
-  const leadAct = useFocusAfterWall(unreachable);
-  if (unreachable) {
+  const leadAct = useFocusAfterWall(read.kind === 'failed');
+  if (read.kind === 'loading' || read.kind === 'empty') return null;
+  if (read.kind === 'failed') {
     return (
       <DoorFrame panes="onboarding" taskMeasure="list">
         <div className="hg-setup-ready-wall">
@@ -40,7 +40,7 @@ export function SetupReady({
             title={words.wall.title}
             description={words.wall.line}
             action={
-              <Button variant="primary" size="lg" loading={retrying} onClick={onTryAgain}>
+              <Button variant="primary" size="lg" loading={retrying} onClick={read.retry}>
                 {words.tryAgain}
               </Button>
             }
@@ -58,7 +58,7 @@ export function SetupReady({
         <div className="hg-setup-ready-title">
           <Text variant="h1">{words.title}</Text>
           <Text variant="body-lg" color="secondary">
-            {words.companyLine}
+            {words.companyLine(read.value)}
           </Text>
         </div>
       }

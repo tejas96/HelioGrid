@@ -6,7 +6,7 @@ import {
   useCatalogOverlays,
   useCatalogScroll,
 } from '@heliogrid/data/react';
-import { catalogFiltersOn, NO_CATALOG_FILTER } from '@heliogrid/domain';
+import { allReads, catalogFiltersOn, NO_CATALOG_FILTER } from '@heliogrid/domain';
 import { catalogActToast, catalogItemAddedToast, catalogItemsViewOf } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
@@ -20,6 +20,8 @@ import { useMemo, useState } from 'react';
 import { AddItemSheet } from './AddItemSheet';
 import { ImportSheet } from './ImportSheet';
 import { ItemsSheets } from './ItemsSheets';
+
+const NO_ITEMS: readonly ResolvedCatalogItemWire[] = [];
 
 /**
  * The Items panel on the phone (`SCR-M01-15`): the resolved catalog as cards that load as the
@@ -57,9 +59,10 @@ export function ItemsPanel({
     setAdded(item);
     toasts.push(catalogItemAddedToast(t, `${item.brand} ${item.model}`));
   };
-  const byId = useMemo(() => new Map(list.items.map((item) => [item.id, item])), [list.items]);
+  const items = list.read.kind === 'ready' ? list.read.value : NO_ITEMS;
+  const byId = useMemo(() => new Map(items.map((item) => [item.id, item])), [items]);
   const input = {
-    items: list.items,
+    items,
     totalCount: list.totalCount,
     wholeCount: facts.allCount,
     preferredFirst: view.sort === 'preferred',
@@ -78,18 +81,18 @@ export function ItemsPanel({
     const item = byId.get(row.id);
     if (item !== undefined) act(item);
   };
-  const loading = list.status === 'pending';
-  const failed = list.items.length === 0 && (list.status === 'error' || facts.surface === 'error');
+  /* The cards draw once the list is in; the page's facts hold them back only when they failed and
+     no card is shown. */
+  const read =
+    facts.read.kind === 'failed' && items.length === 0
+      ? allReads([list.read, facts.read])
+      : list.read;
 
   return (
     <>
       <CatalogItems
         words={shown.words}
-        surface={failed ? 'error' : loading ? 'loading' : 'ready'}
-        onRetry={() => {
-          void list.refetch();
-          facts.retry();
-        }}
+        read={read}
         strip={{
           ...shown.strip,
           action: adding ? null : shown.strip.action,

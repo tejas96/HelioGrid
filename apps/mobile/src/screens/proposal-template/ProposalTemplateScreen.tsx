@@ -38,13 +38,13 @@ export function ProposalTemplateScreen() {
   const { t } = useI18n();
   const page = useProposalTemplate();
   const words = proposalTemplateWords(t);
-  if (page.status === 'unread') {
+  if (page.read.kind === 'failed') {
     return (
       <ShellPage inView="more" drillDown={drillDown}>
         <EmptyState
           title={words.unread}
           action={
-            <Button variant="primary" size="lg" onClick={page.retryRead}>
+            <Button variant="primary" size="lg" onClick={page.read.retry}>
               {words.tryAgain}
             </Button>
           }
@@ -96,7 +96,7 @@ function TemplatePage({
     <TemplateActBar
       words={words}
       saving={page.saving}
-      saveFailed={page.status === 'save-failed'}
+      saveFailed={page.saveFailure !== null}
       onSave={() => {
         // A refused save opens the part whose field says why, so the reason is in view.
         if (page.refusedPart !== null) setPart(page.refusedPart);
@@ -168,7 +168,7 @@ function bodyProps({
 }) {
   return {
     words,
-    loading: page.status === 'loading',
+    read: page.read,
     ...(said.standing === undefined ? {} : { standing: said.standing }),
     document,
     unsaved: page.changed.template,
@@ -178,6 +178,6 @@ function bodyProps({
     bankLine: words.bankFrom(page.bankName),
     onOpenBranding: acts.openBranding,
     onOpenProfile: acts.openProfile,
-    saveFailed: page.status === 'save-failed',
+    saveFailed: page.saveFailure !== null,
   };
 }

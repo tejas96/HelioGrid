@@ -126,7 +126,7 @@ export function Button({
           reason?.ref?.(node);
         }}
         disabled={disabled && reason === undefined}
-        onPress={reason === undefined ? onClick : reason.onPress}
+        onPress={pressOf(reason, loading, onClick)}
         accessibilityState={pillState(loading, open, reason !== undefined)}
         accessibilityLabel={spokenWithReason(name, reason)}
         style={[
@@ -161,6 +161,16 @@ export function Button({
   ) : (
     pill()
   );
+}
+
+/** A reason's bubble takes the press; a working button sends nothing more, its first press still out. */
+function pressOf(
+  reason: ReasonTriggerProps | undefined,
+  loading: boolean,
+  onClick: (() => void) | undefined,
+) {
+  if (reason !== undefined) return reason.onPress;
+  return loading ? undefined : onClick;
 }
 
 /** Busy while working; expanded only when something below it shows or hides; off with a reason. */

@@ -20,10 +20,10 @@ describe('the new price-book version, through the real client', () => {
       rates: [{ name: { en: 'Site survey visit' }, basis: 'per_visit', amount: '1200' }],
     };
     const view = mountedOver(() => ({ book: usePriceBook(), draft: usePriceBookDraft() }));
-    await waitFor(() => expect(view.result.current.book.data?.version?.number).toBe(7));
+    await waitFor(() => expect(view.result.current.book.kind).toBe('ready'));
     act(() => {
-      const active = view.result.current.book.data;
-      if (active) view.result.current.draft.start(active);
+      const { book } = view.result.current;
+      if (book.kind === 'ready') view.result.current.draft.start(book.value);
     });
     return view;
   };

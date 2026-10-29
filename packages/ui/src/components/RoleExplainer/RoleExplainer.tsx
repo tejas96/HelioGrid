@@ -9,8 +9,7 @@ import type { RoleExplainerProps } from './RoleExplainer.types';
  * heading as its identity, and the card over its act. The act follows the card in every state, so
  * a failed read never keeps the person from their home.
  */
-export function RoleExplainer({ words, surface, names, onRetry, onAct }: RoleExplainerProps) {
-  const pending = names === 'pending';
+export function RoleExplainer({ words, read, namesPending: pending, onAct }: RoleExplainerProps) {
   return (
     <DoorFrame
       panes="onboarding"
@@ -28,8 +27,7 @@ export function RoleExplainer({ words, surface, names, onRetry, onAct }: RoleExp
         <RoleCard
           words={pending ? { ...words, credit: null } : words}
           layout="bounded"
-          surface={pending ? 'loading' : surface}
-          onRetry={onRetry}
+          read={pending ? { kind: 'loading' } : read}
         />
         <div className="hg-role-explainer-act">
           <Button variant="primary" size="lg" fullWidth onClick={onAct}>

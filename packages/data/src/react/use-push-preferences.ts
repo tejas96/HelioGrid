@@ -1,23 +1,30 @@
 'use client';
 import type { NotificationPreference } from '@heliogrid/contracts';
-import { type NotificationTypeGroup, type PushSwitch, pushSwitches } from '@heliogrid/domain';
+import {
+  mapRead,
+  type NotificationTypeGroup,
+  type PushSwitch,
+  pushSwitches,
+  type Read,
+} from '@heliogrid/domain';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { useRepositories } from './context';
+import { readOf } from './read';
 import { useSession } from './use-session';
 
 /** The person's push switches on Profile & preferences (`F6-15`), as both platforms render them. */
 export interface PushPreferences {
-  /** The read's state: the page draws its loading or error frame until the rows arrive. */
-  readonly surface: 'loading' | 'error' | 'ready';
-  /** One switch per group shown, a tap still on its way already applied (brief decision 2). */
-  readonly switches: readonly PushSwitch[];
+  /**
+   * One switch per group shown, a tap still on its way already applied (brief decision 2); the
+   * page draws its loading or error frame until the rows arrive.
+   */
+  readonly read: Read<readonly PushSwitch[]>;
   /** The groups whose last write was refused: each shows *Not saved* on its own switch (D219). */
   readonly refused: readonly NotificationTypeGroup[];
   /** A switch was tapped: push for that group flips, applied as it is touched. */
   flip(group: NotificationTypeGroup): void;
-  retry(): void;
 }
 
 /**
@@ -33,7 +40,7 @@ export function usePushPreferences(): PushPreferences {
   const repositories = useRepositories();
   const cache = useQueryClient();
   const key = queryKeys.pushPreferences(tenantId);
-  const read = useQuery({
+  const preferences = useQuery({
     queryKey: key,
     queryFn: ({ signal }) => repositories.notification.preferences(signal),
     enabled: tenantId !== '' && ended === null,
@@ -85,15 +92,14 @@ export function usePushPreferences(): PushPreferences {
     );
   };
 
-  const stored = read.data ?? [];
   return {
-    surface: read.data !== undefined ? 'ready' : read.isError ? 'error' : 'loading',
-    switches: pushSwitches(stored, user?.tenant?.roles ?? []).map((one) => {
-      const on = tapped[one.group];
-      return on === undefined || one.locked ? one : { ...one, on };
-    }),
+    read: mapRead(readOf(preferences), (stored) =>
+      pushSwitches(stored, user?.tenant?.roles ?? []).map((one) => {
+        const on = tapped[one.group];
+        return on === undefined || one.locked ? one : { ...one, on };
+      }),
+    ),
     refused,
     flip,
-    retry: () => void read.refetch(),
   };
 }

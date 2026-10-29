@@ -20,17 +20,17 @@ const DOOR_CIRCLE = 40;
  * line under the wordmark, then the two doors stacked, the spare room below the last one.
  */
 export function SetupReady({
+  read,
   words,
   demo,
   leaving,
   onStartWithLead,
   onOpenDemo,
-  unreachable,
   retrying,
-  onTryAgain,
 }: SetupReadyProps) {
-  const leadAct = useFocusAfterWall(unreachable);
-  if (unreachable) {
+  const leadAct = useFocusAfterWall(read.kind === 'failed');
+  if (read.kind === 'loading' || read.kind === 'empty') return null;
+  if (read.kind === 'failed') {
     return (
       <DoorFrame>
         <EmptyState
@@ -38,7 +38,7 @@ export function SetupReady({
           title={words.wall.title}
           description={words.wall.line}
           action={
-            <Button variant="primary" size="lg" loading={retrying} onClick={onTryAgain}>
+            <Button variant="primary" size="lg" loading={retrying} onClick={read.retry}>
               {words.tryAgain}
             </Button>
           }
@@ -53,7 +53,7 @@ export function SetupReady({
         <View style={styles.title}>
           <Text variant="h2">{words.title}</Text>
           <Text variant="body" color="secondary">
-            {words.companyLine}
+            {words.companyLine(read.value)}
           </Text>
         </View>
       }

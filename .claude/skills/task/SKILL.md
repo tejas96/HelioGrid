@@ -166,7 +166,9 @@ makes it pass. After each round of fixes, run
 last round's log to be read as this one's; the check's typecheck builds the packages the app
 reads — before any re-check; no phone flow runs here (CI runs them on Android); a web
 spec runs only in the gate (*Clean up*), and a red that only the specs show reruns only their
-command. Re-check with a fresh agent given the fixed files and the findings or checks they
+command. A fix in `packages/*` reaches the running web only once built — it reads the packages'
+`dist/` — so `pnpm turbo build --filter='./packages/*' > .qa/build-pkgs.log 2>&1` comes before any
+live re-check. Re-check with a fresh agent given the fixed files and the findings or checks they
 answer; a QA fix that touches money, tenancy or permissions goes back to the reviewer too. After
 *Clean up*, a fix that needs a live re-check runs *Run the app* again; any other is proven by its
 tests and the gate.

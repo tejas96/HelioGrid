@@ -3,6 +3,7 @@ import type {
   PriceBookActiveWire,
   PriceBookPublish,
   PriceBookRateWire,
+  PriceBookVersionHeadWire,
 } from '@heliogrid/contracts';
 import {
   PRICE_BOOK_RATE_BASES,
@@ -13,7 +14,8 @@ import {
   type UiLanguage,
 } from '@heliogrid/domain';
 import { useRef, useState } from 'react';
-import { type PublishPriceBook, usePublishPriceBookVersion } from './use-price-book';
+import type { Action } from './action';
+import { usePublishPriceBookVersion } from './use-price-book';
 
 /** One rate being written: its name per language, how it is charged, and its amount. */
 export interface DraftRate {
@@ -48,7 +50,7 @@ export interface PriceBookDraft {
   readonly incomplete: boolean;
   /** Everything else is ready and only *What changed* is empty — the editor says so. */
   readonly noteMissing: boolean;
-  readonly publishing: PublishPriceBook;
+  readonly publishing: Action<PriceBookPublish, PriceBookVersionHeadWire>;
   start(active: PriceBookActiveWire): void;
   close(): void;
   setMargin(margin: string): void;
@@ -76,8 +78,8 @@ const named = (rate: DraftRate, language: UiLanguage) => (rate.name[language] ??
  * back to it (`F3-10`), and publishes as the whole set — never an edit of the one before.
  */
 export function usePriceBookDraft(): PriceBookDraft {
-  const publishing = usePublishPriceBookVersion();
   const [open, setOpen] = useState(false);
+  const publishing = usePublishPriceBookVersion(() => setOpen(false));
   const [from, setFrom] = useState<number | null>(null);
   const [margin, setMargin] = useState('');
   const [note, setNote] = useState('');
@@ -168,9 +170,9 @@ export function usePriceBookDraft(): PriceBookDraft {
     },
     async publish() {
       if (incomplete) return null;
-      const number = await publishing.publish(body());
-      if (number !== null) setOpen(false);
-      return number;
+      /* The number the server gave the version this publish put in force. */
+      const answer = await publishing.run(body());
+      return answer.kind === 'done' ? answer.output.number : null;
     },
   };
 }

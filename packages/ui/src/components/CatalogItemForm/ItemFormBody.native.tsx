@@ -80,7 +80,8 @@ function TheItemCard({ props }: BodyProps) {
 }
 
 function SpecificationCard({ props }: BodyProps) {
-  const { words, loading } = props;
+  const { words } = props;
+  const loading = props.read.kind === 'loading';
   return (
     <ItemCard
       glyph="bolt"

@@ -4,6 +4,7 @@ import {
   roleKind,
   type TeamAct,
   type TeamRow,
+  type TeamSurface,
   teamRowAct,
 } from '@heliogrid/domain';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
@@ -65,10 +66,9 @@ export function memberListEmptyOf({
   words,
   onClearSearch,
   onShowAll,
-}: Pick<
-  MemberListProps,
-  'surface' | 'words' | 'onClearSearch' | 'onShowAll'
->): MemberListEmpty | null {
+}: Pick<MemberListProps, 'words' | 'onClearSearch' | 'onShowAll'> & {
+  readonly surface: TeamSurface;
+}): MemberListEmpty | null {
   if (surface === 'no-match') {
     return { glyph: 'search', title: words.noMatch, act: words.clearSearch, onAct: onClearSearch };
   }
@@ -105,7 +105,8 @@ export function memberActOf(
     spoken(act: TeamAct, name: string): string;
     onlyOwner: string;
   },
-  sending: string | null,
+  /** This row's write is out. */
+  sending: (rowId: string) => boolean,
 ): Pick<MemberActProps, 'act' | 'label' | 'spokenName' | 'offReason' | 'busy'> | null {
   const offered = teamRowAct(row, roster);
   if (offered === null) return null;
@@ -114,7 +115,7 @@ export function memberActOf(
     label: words.act(offered.act),
     spokenName: words.spoken(offered.act, row.name),
     ...(offered.off ? { offReason: words.onlyOwner } : {}),
-    busy: sending === row.id,
+    busy: sending(row.id),
   };
 }
 

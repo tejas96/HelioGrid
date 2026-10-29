@@ -254,7 +254,7 @@ export async function mounted() {
   const wrapper = ({ children }: { children: ReactNode }) =>
     createElement(DataProvider, { layer, children });
   const view = renderHook(() => useBranding(), { wrapper });
-  await waitFor(() => expect(view.result.current.status).toBe('ready'));
+  await waitFor(() => expect(view.result.current.read.kind).toBe('ready'));
   await waitFor(() => expect(view.result.current.company).not.toBeNull());
   return view;
 }

@@ -34,14 +34,14 @@ const READERS = {
  * grant line and Save's reason from domain, every word in `reader`'s language. The frame reports a
  * save as `data-saved` (the set sent), a close as `data-closed` and the round *Roles reference* as
  * `data-referenced`. `refusal` draws a save that did
- * not land; `state` the skeleton; `removing` the removal's confirm standing over it.
+ * not land; `loading` the skeleton; `removing` the removal's confirm standing over it.
  */
 export function AssignRolesAsHeld({
   reader,
   name = 'Vikram Deshpande',
   held,
   locks = {},
-  state = 'ready',
+  loading = false,
   refusal = null,
   removing = null,
 }: {
@@ -49,7 +49,8 @@ export function AssignRolesAsHeld({
   name?: string;
   held: readonly RolePreset[];
   locks?: Partial<Record<RolePreset, PresetLock>>;
-  state?: 'ready' | 'loading';
+  /** The presets are still being read: the rows' skeleton. */
+  loading?: boolean;
   refusal?: AssignRolesRefusal | null;
   /** The ticks a save would leave, asking first — the removal's confirm over the editor. */
   removing?: readonly RolePreset[] | null;
@@ -90,7 +91,7 @@ export function AssignRolesAsHeld({
           phone: formatPhone(IN_PACK.formats, '+919876543210'),
         }}
         words={words}
-        rows={words.rows}
+        read={loading ? { kind: 'loading' } : { kind: 'ready', value: words.rows }}
         picked={picked}
         onPick={(next) => setPicked(inMatrixOrder(next))}
         grant={{ speakers, parts: grantLineWords(t, firstName, speakers).parts }}
@@ -98,7 +99,6 @@ export function AssignRolesAsHeld({
         saving={false}
         onSave={() => setSaved(picked.join(','))}
         onReference={() => setReferenced(true)}
-        state={state}
         removal={
           removing === null
             ? null

@@ -32,17 +32,24 @@ export function SetupReadyAsHeld({
   return (
     <div lang={reader}>
       <SetupReady
-        words={{ ...words, companyLine: words.companyLine(company) }}
+        read={
+          wall
+            ? {
+                kind: 'failed',
+                failure: 'no_answer',
+                retry: () => {
+                  setPressed('try-again');
+                  setWall(false);
+                },
+              }
+            : { kind: 'ready', value: company }
+        }
+        words={words}
         demo={demo}
         leaving={false}
         onStartWithLead={() => setPressed('lead')}
         onOpenDemo={() => setPressed('demo')}
-        unreachable={wall}
         retrying={false}
-        onTryAgain={() => {
-          setPressed('try-again');
-          setWall(false);
-        }}
       />
       <output data-testid="pressed">{pressed}</output>
     </div>

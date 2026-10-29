@@ -18,6 +18,16 @@ import type {
  * group line's sample, the columns step's two sections. Pure: no markup, no data access.
  */
 
+/** The rows a list holds: none until its read is in. */
+export function rowsOf(list: ImportRowList): readonly CatalogImportRowWire[] {
+  return list.read.kind === 'ready' ? list.read.value : [];
+}
+
+/** The list's read or its next page failed: *Try again* stands where its rows or *Show more* would. */
+export function listFailed(list: ImportRowList): boolean {
+  return list.read.kind === 'failed';
+}
+
 const READY_GROUPS: readonly ImportGroupId[] = ['overrides', 'newItems'];
 
 /**
@@ -91,7 +101,9 @@ export function groupsInScope(
   scope: string | null,
 ) {
   // A group with no row draws no line: *Failed · 0 rows* says nothing the overview does not.
-  const held = groups.filter((group) => group.total > 0 || group.loading || group.failed === true);
+  const held = groups.filter(
+    (group) => group.total > 0 || group.read.kind === 'loading' || listFailed(group),
+  );
   if (scope === null) return held;
   const ids: readonly string[] = scope === 'imported' ? ['applied', 'created'] : [scope];
   return held.filter((group) => ids.includes(group.id));

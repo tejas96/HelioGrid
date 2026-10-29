@@ -7,6 +7,7 @@ import type {
   ExplainerPagerWords,
   FilterPanelWords,
   PanelTechnology,
+  Read,
 } from '@heliogrid/domain';
 
 /**
@@ -18,9 +19,11 @@ import type {
  */
 export interface CatalogItemsProps {
   words: CatalogItemsWords;
-  /** `loading` keeps every fixed word; `error` is the page's load failure, nothing else drawn. */
-  surface: 'loading' | 'error' | 'ready';
-  onRetry: () => void;
+  /**
+   * The list's read — its rows are `rows`. Still out keeps every fixed word; failed is the page's
+   * load failure with *Try again*, nothing else drawn.
+   */
+  read: Read<unknown>;
   strip: CatalogStrip;
   /** The one info line naming whose acts these are; `null` for a person who administers. */
   viewOnly: string | null;

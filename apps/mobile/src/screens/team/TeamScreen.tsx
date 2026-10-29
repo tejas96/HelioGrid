@@ -48,6 +48,7 @@ export function TeamScreen() {
     status: team.status,
   });
   const actWords = teamActWords(t, company);
+  const list = team.read.kind === 'ready' ? team.read.value : null;
   const toasts = useToasts();
   const insets = useSafeAreaInsets();
   const search = useRef<FocusHandle>(null);
@@ -70,15 +71,15 @@ export function TeamScreen() {
     <ShellPage
       inView="more"
       drillDown={drillDown}
-      lead={team.surface === 'teaching' ? undefined : <InviteTeammate invite={invite} />}
+      lead={list?.surface === 'teaching' ? undefined : <InviteTeammate invite={invite} />}
       stickyHead={
-        showsListHead(team.surface) ? (
+        showsListHead(team.read) ? (
           <MemberListHead
             query={team.query}
             onFind={team.find}
             status={team.status}
             onFilter={team.filter}
-            counts={team.load === 'ready' ? team.view.counts : undefined}
+            counts={list?.view.counts}
             words={words}
             searchRef={search}
             chipsRef={allChip}
@@ -87,11 +88,9 @@ export function TeamScreen() {
       }
     >
       <MemberList
-        surface={team.surface}
-        rows={team.view.rows}
+        read={team.read}
         words={words}
         teachingAction={<InviteTeammate invite={invite} first />}
-        onRetry={team.retry}
         onClearSearch={() => {
           team.find('');
           search.current?.focus();
@@ -124,7 +123,7 @@ export function TeamScreen() {
         }}
       />
       <InviteEditor {...invite.editor} />
-      <TeamAssignRoles editor={roles} companyName={company} />
+      <TeamAssignRoles editor={roles} list={team.read} companyName={company} />
       {/* Above the pill, which stands on the device's home-bar inset — the package reads no inset. */}
       <ToastHost
         toasts={toasts.toasts}

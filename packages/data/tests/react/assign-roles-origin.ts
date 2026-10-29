@@ -168,7 +168,7 @@ export async function mounted() {
     },
     { wrapper },
   );
-  await waitFor(() => expect(view.result.current.team.load).toBe('ready'));
+  await waitFor(() => expect(view.result.current.team.read.kind).toBe('ready'));
   return Object.assign(view, { told });
 }
 

@@ -19,16 +19,16 @@ import { VersionEditor } from './CatalogVersionEditor';
  */
 export function CatalogVersion(props: CatalogVersionProps) {
   if (props.mode === 'edit') return <VersionEditor {...props} />;
-  if (props.surface === 'loading') {
+  if (props.read.kind === 'loading') {
     return <LoadingBars label={props.words.loading} bars={['row', 'row', 'row']} />;
   }
-  if (props.surface === 'error') {
+  if (props.read.kind === 'failed') {
     return (
       <EmptyState
         glow={false}
         title={props.words.loadFailed}
         action={
-          <Button variant="secondary" size="lg" onClick={props.onRetry}>
+          <Button variant="secondary" size="lg" onClick={props.read.retry}>
             {props.words.tryAgain}
           </Button>
         }

@@ -17,12 +17,12 @@ import type { PaymentTermsCardView, PaymentTermsListProps } from './PaymentTerms
  * its split, and the closing line. The archived view swaps in the archived cards (m20-n8).
  */
 export function PaymentTermsList(props: PaymentTermsListProps) {
-  const { title, state } = props;
+  const { title, read } = props;
   return (
     <View style={styles.page}>
       <View style={[styles.head, title === undefined ? styles.underBarTitle : styles.titled]}>
         {title === undefined ? null : <Text variant="h2">{title}</Text>}
-        {state === 'ready' && props.savedLine !== undefined ? (
+        {read.kind === 'ready' && props.savedLine !== undefined ? (
           <Text variant="caption" color="secondary">
             {props.savedLine}
           </Text>
@@ -36,10 +36,10 @@ export function PaymentTermsList(props: PaymentTermsListProps) {
 
 function ListBody(props: PaymentTermsListProps) {
   const { words } = props;
-  if (props.state === 'loading') {
+  if (props.read.kind === 'loading') {
     return <LoadingBars label={words.loading} bars={['panel', 'panel', 'panel']} />;
   }
-  if (props.state === 'unread') {
+  if (props.read.kind === 'failed') {
     return (
       <Banner kind="validation" density="functional" title={words.unreadTitle}>
         {words.unreadBody}

@@ -1,3 +1,5 @@
+import type { Read } from '@heliogrid/domain';
+
 /** One grant or limit phrase, keyed by its line in domain's `ROLE_CARD_LINES`. */
 export interface RoleCardLine {
   readonly key: string;
@@ -32,9 +34,6 @@ export interface RoleCardWords {
  */
 export type RoleCardLayout = 'bounded' | 'flowing';
 
-/** The card's reads: the rows wait for the owners read; any read failing is the error card. */
-export type RoleCardState = 'loading' | 'error' | 'ready';
-
 /**
  * The role card (`SCR-M01-10`): the person's presets and who set them, what they can do, what
  * they cannot, and who to ask. While the rows wait, the head draws and the rows are loading lines;
@@ -43,9 +42,8 @@ export type RoleCardState = 'loading' | 'error' | 'ready';
 export interface RoleCardProps {
   readonly words: RoleCardWords;
   readonly layout: RoleCardLayout;
-  readonly surface: RoleCardState;
-  /** *Try again* on the error card. */
-  readonly onRetry: () => void;
+  /** The card's reads: the rows wait while it is out; a failed read is the error card and its *Try again*. */
+  readonly read: Read<unknown>;
 }
 
 /**

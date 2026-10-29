@@ -208,7 +208,8 @@ export type BrandingWords = ReturnType<typeof brandingWords>;
 
 /** What the page holds that chooses its words — `@heliogrid/data`'s `useBranding()` as it answers. */
 export interface BrandingPageFacts {
-  readonly status: 'loading' | 'ready' | 'unread' | 'save-failed';
+  /** The last save did not land. */
+  readonly saveFailed: boolean;
   readonly standing: SettingsStanding | null;
   readonly logo: { readonly refusal: CompanyLogoRefusal | null };
   readonly chosenName: string | null;
@@ -251,7 +252,7 @@ export function brandingPageWords(t: T, page: BrandingPageFacts, formats: Brandi
       ? {}
       : { standing: brandingStandingLine(t, page.standing, formats) }),
     ...(logoRefusal === null ? {} : { logoRefusal }),
-    ...(page.status === 'save-failed' ? { saveFailure: t(failureId ?? INTERNAL_ERROR) } : {}),
+    ...(page.saveFailed ? { saveFailure: t(failureId ?? INTERNAL_ERROR) } : {}),
     fieldErrors: fieldErrors(t, page.draft),
   };
 }

@@ -44,6 +44,8 @@ leaks data, loses money or needs a second release:
 - **Ownership:** schema or API a later module owns (Law 9).
 - **Callers:** a changed export that breaks a caller the grep found.
 - **Already built:** a new part, file or dependency the name search finds in the repo (Law 5).
+- **The design system:** a prop the RFC removes or retypes on a component that has a typing in
+  `packages/theme/src/_generated/contracts` — that is a design-system change, the owner's.
 - **Logic:** a decision whose rule gives the wrong result for a case the walk reached.
 
 **What counts.** A finding names its target, attack or break and the source that proves it: a

@@ -27,7 +27,7 @@ describe('the Payment terms page — its list, its editor and its acts, through 
     termsOrigin.lists = [1, 2, 3].map(() => ({ status: 500, body: refusal('INTERNAL') }));
     const view = await mounted(false);
 
-    await waitFor(() => expect(view.result.current.status).toBe('unread'), { timeout: 5000 });
+    await waitFor(() => expect(view.result.current.read.kind).toBe('failed'), { timeout: 5000 });
   });
 
   it('a save with nothing changed closes and sends nothing', async () => {

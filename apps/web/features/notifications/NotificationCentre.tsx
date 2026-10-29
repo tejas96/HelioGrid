@@ -18,6 +18,7 @@ import {
   NotificationFilterBar,
   NotificationHead,
   NotificationList,
+  readSurface,
   ToastHost,
   useFormat,
   useToasts,
@@ -53,10 +54,9 @@ export function NotificationCentre({ onClose, onGoToLeads }: NotificationCentreP
         density="expressive"
         width={theme.layout['form-max']}
         top="var(--header-h)"
-        state={centre.surface}
+        {...readSurface(centre.read)}
         errorTitle={t(NOTIFICATION_CENTRE.errorTitle)}
         errorMessage={t(NOTIFICATION_CENTRE.errorMessage)}
-        onRetry={centre.retry}
         retryLabel={t(NOTIFICATION_CENTRE.tryAgain)}
         emptyTitle={t(NOTIFICATION_CENTRE.emptyTitle)}
         emptyMessage={t(NOTIFICATION_CENTRE.emptyMessage)}

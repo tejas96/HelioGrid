@@ -2,6 +2,7 @@ import { INVITATION_EXPIRY_DAYS, type InvitationStatus } from '../auth/invitatio
 import { inMatrixOrder, type RolePreset } from '../authz/roles';
 import type { UiLanguage } from '../format/languages';
 import { MS_PER_DAY } from '../format/zone';
+import type { Read } from '../shell/read';
 import type { MembershipStatus } from './membership';
 
 /**
@@ -164,14 +165,17 @@ export function teamRosterView(
   };
 }
 
-/** Where the Team list's reads stand: still out, all answered, or one got no answer. */
-export type TeamLoad = 'loading' | 'failed' | 'ready';
-
 /**
- * What the list area shows: the wait, the failure, the teaching state, no match for the words, a
- * Status chip with nobody under it, or the rows.
+ * What the list area shows once its reads have answered: the teaching state, no match for the
+ * words, a Status chip with nobody under it, or the rows. The wait and the failure are the read's.
  */
-export type TeamSurface = TeamLoad | 'teaching' | 'no-match' | 'empty-chip';
+export type TeamSurface = 'teaching' | 'no-match' | 'empty-chip' | 'rows';
+
+/** The Team list as read: what is in view, and which body draws it. */
+export interface TeamList {
+  readonly view: TeamRosterView;
+  readonly surface: TeamSurface;
+}
 
 /** The Status chips, *All* first, then each status in the list's order. */
 export const TEAM_STATUS_FILTERS: readonly TeamStatusFilter[] = ['all', ...TEAM_ROW_STATUSES];
@@ -187,20 +191,19 @@ export function teamStatusFilterOf(value: string): TeamStatusFilter | null {
  * a Status chip leaves out say the chip is empty, never that nobody matches.
  */
 export function teamSurface(
-  load: TeamLoad,
   view: TeamRosterView,
   query: string,
   status: TeamStatusFilter,
 ): TeamSurface {
-  if (load !== 'ready') return load;
   const searched = query.trim() !== '';
   if (view.onlyViewer && !searched && status === 'all') return 'teaching';
   if (searched && view.counts.all === 0) return 'no-match';
   if (view.rows.length === 0) return 'empty-chip';
-  return 'ready';
+  return 'rows';
 }
 
 /** The search and the Status chips show over a list; the wait shows them too, a failure and the teaching state do not. */
-export function showsListHead(surface: TeamSurface): boolean {
-  return surface !== 'failed' && surface !== 'teaching';
+export function showsListHead(list: Read<TeamList>): boolean {
+  if (list.kind === 'ready') return list.value.surface !== 'teaching';
+  return list.kind !== 'failed';
 }

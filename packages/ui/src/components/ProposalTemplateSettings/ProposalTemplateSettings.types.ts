@@ -1,4 +1,4 @@
-import type { CoverCount, TemplatePart } from '@heliogrid/domain';
+import type { CoverCount, Read, TemplatePart } from '@heliogrid/domain';
 import type { BrandingDocumentFacts } from '../BrandingSettings/BrandingSettings.types';
 import type {
   LanguageContentState,
@@ -179,8 +179,11 @@ export interface TemplateDocument {
 
 export interface ProposalTemplateSettingsProps {
   readonly words: ProposalTemplateSettingsWords;
-  /** The reads are out: the stage's loading form and the editor's bars (m19-n1). */
-  readonly loading: boolean;
+  /**
+   * The page's reads. Until ready, the stage's loading form and the editor's bars (m19-n1); a read
+   * with no answer is the screen's own page, never drawn here.
+   */
+  readonly read: Read<unknown>;
   /** The page's title; a phone whose bar holds the title passes none. */
   readonly title?: string;
   /** *Saved and in force · …*; absent while loading and while never saved. */

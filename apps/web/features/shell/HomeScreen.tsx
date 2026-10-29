@@ -58,7 +58,7 @@ export function HomeScreen() {
           )
         }
       />
-      <HomeBlocks {...homeBlocksWords(t, home)} load={shell.load} onRetry={shell.retry} />
+      <HomeBlocks {...homeBlocksWords(t, home)} read={shell.read} />
       <FirstRunMark
         shell={shell}
         within={page}

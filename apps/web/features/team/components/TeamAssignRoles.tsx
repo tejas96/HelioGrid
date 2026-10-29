@@ -1,5 +1,6 @@
 'use client';
 import { type AssignRolesEditor, type Team, useAssignRoles } from '@heliogrid/data/react';
+import { mapRead } from '@heliogrid/domain';
 import {
   assignRolesShown,
   removeRolesWords,
@@ -52,10 +53,13 @@ export function useTeamRoles(
  */
 export function TeamAssignRoles({
   editor,
+  list,
   companyName,
   onReference,
 }: {
   editor: AssignRolesEditor;
+  /** The Team list's read, which the person's presets come with. */
+  list: Team['read'];
   companyName: string;
   /** The round *Roles reference*: the editor steps aside, keeping its ticks, and the page opens. */
   onReference: () => void;
@@ -75,7 +79,7 @@ export function TeamAssignRoles({
         phone: format.phone(person.phoneE164),
       }}
       words={shown.words}
-      rows={shown.words.rows}
+      read={mapRead(list, () => shown.words.rows)}
       picked={editor.picked}
       onPick={editor.pick}
       grant={shown.grant}

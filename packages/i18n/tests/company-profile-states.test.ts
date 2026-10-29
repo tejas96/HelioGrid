@@ -46,7 +46,7 @@ describe('companyProfileWords, by state', () => {
 
   it('while the record loads the region has a name and the act says why it waits', async () => {
     const { t } = await createTranslator('en');
-    const words = companyProfileWords(t, { ...AT_SIGNUP, status: 'loading' });
+    const words = companyProfileWords(t, { ...AT_SIGNUP, read: 'loading' });
     expect(words.loading).toBe('Loading your company profile');
     expect(words.act).toMatchObject({
       primary: 'Save and continue',
@@ -56,7 +56,7 @@ describe('companyProfileWords, by state', () => {
 
   it('a profile that could not be read says so, with a retry and a way on', async () => {
     const { t } = await createTranslator('en');
-    const words = companyProfileWords(t, { ...AT_SIGNUP, status: 'unread' });
+    const words = companyProfileWords(t, { ...AT_SIGNUP, read: 'failed' });
     expect(words.act).toBeNull();
     expect(words.unread).toEqual({
       title: "We couldn't load your profile",
@@ -69,7 +69,7 @@ describe('companyProfileWords, by state', () => {
 
   it('a failed save is said once at the act, the retry first and the way on second, with no other line', async () => {
     const { t } = await createTranslator('en');
-    const facts = { ...AT_SIGNUP, status: 'save-failed', open: 'declarations' } as const;
+    const facts = { ...AT_SIGNUP, saveFailed: true, open: 'declarations' } as const;
     expect(companyProfileWords(t, facts).act).toEqual({
       primary: 'Try again',
       primarySpoken: 'Try saving your company profile again',
@@ -123,14 +123,18 @@ describe('companyProfileWords, by state', () => {
     expect(words.lede).toBe(LEDE);
   });
 
-  it.each(['loading', 'unread', 'save-failed'] as const)(
+  it.each([
+    ['loading', { read: 'loading' }],
+    ['unread', { read: 'failed' }],
+    ['save-failed', { saveFailed: true }],
+  ] as const)(
     'while the profile is %s nothing is said to be missing, whatever the parts hold',
-    async (status) => {
+    async (_state, state) => {
       const { t } = await createTranslator('en');
       const words = companyProfileWords(t, {
         ...standing('declarations', 'not_declared'),
         arrivedUndeclared: true,
-        status,
+        ...state,
         skipped: true,
         open: 'declarations',
       });
@@ -139,18 +143,18 @@ describe('companyProfileWords, by state', () => {
     },
   );
 
-  it.each(['loading', 'unread'] as const)(
+  it.each(['loading', 'failed'] as const)(
     'while the profile is %s the letterhead shows nothing of it',
-    async (status) => {
+    async (read) => {
       const { t } = await createTranslator('en');
-      const { letterhead } = companyProfileWords(t, { ...AT_SIGNUP, status });
+      const { letterhead } = companyProfileWords(t, { ...AT_SIGNUP, read });
       expect(letterhead).toMatchObject({ name: '', address: '', tax: null, bankLine: null });
     },
   );
 
   it('a failed save keeps the letterhead as the fields hold it', async () => {
     const { t } = await createTranslator('en');
-    const { letterhead } = companyProfileWords(t, { ...AT_SIGNUP, status: 'save-failed' });
+    const { letterhead } = companyProfileWords(t, { ...AT_SIGNUP, saveFailed: true });
     expect(letterhead).toMatchObject({
       name: 'Suryodaya Solar Solutions Pvt Ltd',
       address: 'Pune',

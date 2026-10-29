@@ -1,19 +1,16 @@
 'use client';
-import type { DemoDoor } from '@heliogrid/domain';
+import { type DemoDoor, mapRead, type Read } from '@heliogrid/domain';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
+import { useAction } from './action';
 import { useRepositories } from './context';
+import { failedBefore, readFailureOf, readOf } from './read';
 import { useSession } from './use-session';
-
-/** The company *You're ready* names: still being read, not answered, or its name. */
-export type SetupReadyCompany =
-  | { readonly status: 'pending' | 'failed' }
-  | { readonly status: 'ready'; readonly name: string };
 
 /** *You're ready*, as both screens consume it (Law 11). */
 export interface SetupReady {
-  readonly company: SetupReadyCompany;
+  /** The company's name, read back; its failure is the wall, held up while *Try again* is out. */
+  readonly company: Read<string>;
   /**
    * The demo door. `unavailable` until the demo lead can be read (`T-M01-029` adds the read with
    * M02's lead), when this becomes that read's state.
@@ -21,14 +18,12 @@ export interface SetupReady {
   readonly demo: DemoDoor;
   /** The company is being read again after *Try again*. */
   readonly retrying: boolean;
-  /** *Try again* on the wall: reads the company again. */
-  tryAgain(): void;
   /** Door one's answer is being recorded. */
   readonly leaving: boolean;
   /**
    * Door one: closes setup for good (`ready` completed). Settles once the step is recorded, or put
    * off for the session when it could not be — the person still goes on. A second press while the
-   * first is out waits on it, so one request goes.
+   * first is out sends nothing.
    */
   startWithLead(): Promise<void>;
 }
@@ -50,40 +45,33 @@ export function useSetupReady(): SetupReady {
     // Offline, a held read would stay pending and the screen blank; it fails to the wall instead.
     networkMode: 'always',
   });
+  const retried = useAction(async () => {
+    await company.refetch();
+  });
   /* A read with no answer yet goes back to pending while it is asked again, so once it has failed
      the wall is held up, its *Try again* working, until a read answers — never a blank screen. */
-  const failedBefore = company.data === undefined && company.errorUpdateCount > 0;
-  const retrying = failedBefore && company.isFetching;
-  const [leaving, setLeaving] = useState(false);
-  const out = useRef<Promise<void> | null>(null);
-  const startWithLead = (): Promise<void> => {
-    if (out.current !== null) return out.current;
-    const answering = (async () => {
-      setLeaving(true);
-      try {
-        const progress = await repositories.onboarding.recordStep('ready', 'completed');
-        queryClient.setQueryData(queryKeys.setup.progress(tenantId), progress);
-      } catch {
-        putOffSetup('ready');
-      } finally {
-        out.current = null;
-        setLeaving(false);
+  const read: Read<string> = failedBefore(company)
+    ? {
+        kind: 'failed',
+        failure: readFailureOf(company.error),
+        retry: () => void retried.run(undefined),
       }
-    })();
-    out.current = answering;
-    return answering;
-  };
+    : mapRead(readOf(company), (tenant) => tenant.companyName);
+  const left = useAction(async () => {
+    try {
+      const progress = await repositories.onboarding.recordStep('ready', 'completed');
+      queryClient.setQueryData(queryKeys.setup.progress(tenantId), progress);
+    } catch {
+      putOffSetup('ready');
+    }
+  });
   return {
-    company: companyOf(company.data?.companyName, failedBefore),
+    company: read,
     demo: 'unavailable',
-    retrying,
-    tryAgain: () => void company.refetch(),
-    leaving,
-    startWithLead,
+    retrying: retried.pending,
+    leaving: left.pending,
+    startWithLead: async () => {
+      await left.run(undefined);
+    },
   };
-}
-
-function companyOf(name: string | undefined, failed: boolean): SetupReadyCompany {
-  if (name !== undefined) return { status: 'ready', name };
-  return { status: failed ? 'failed' : 'pending' };
 }

@@ -1,11 +1,7 @@
 import { can } from '../authz/policy';
+import type { Read } from '../shell/read';
 import { type OnboardingStep, resumeStep, type StepStates } from '../tenancy/onboarding-steps';
 import type { SessionUser } from './session';
-
-/** The company's setup progress as a device holds it: still being read, not answered, or read. */
-export type SetupRead =
-  | { readonly status: 'pending' | 'failed' }
-  | { readonly status: 'ready'; readonly steps: StepStates };
 
 /** The setup steps that have a screen. A step joins when its screen lands, never before. */
 const STEPS_WITH_A_SCREEN = [
@@ -34,11 +30,12 @@ export type SetupStepOwed = 'wait' | SetupScreenStep | null;
 export function setupStepOwed(
   user: SessionUser | null,
   putOff: readonly OnboardingStep[],
-  read: SetupRead,
+  progress: Read<StepStates>,
 ): SetupStepOwed {
   if (!managesSetup(user)) return null;
-  if (read.status !== 'ready') return read.status === 'pending' ? 'wait' : null;
-  const asked = resumeStep(read.steps, putOff);
+  if (progress.kind === 'loading') return 'wait';
+  if (progress.kind !== 'ready') return null;
+  const asked = resumeStep(progress.value, putOff);
   return STEPS_WITH_A_SCREEN.find((step) => step === asked) ?? null;
 }
 

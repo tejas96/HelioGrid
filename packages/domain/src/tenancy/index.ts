@@ -113,7 +113,7 @@ export {
 export type {
   RosterInvite,
   RosterMember,
-  TeamLoad,
+  TeamList,
   TeamRosterView,
   TeamRow,
   TeamRowStatus,

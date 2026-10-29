@@ -41,7 +41,7 @@ async function mountTeam() {
     return createElement(DataProvider, { layer, children });
   };
   const view = render(tree(true));
-  await waitFor(() => expect(now().team.load).toBe('ready'));
+  await waitFor(() => expect(now().team.read.kind).toBe('ready'));
   return {
     leave: () => {
       view.rerender(tree(false));
@@ -80,7 +80,7 @@ describe('Assign Roles steps aside for the Roles reference', () => {
 
     act(() => now().editor.close());
     act(() => now().editor.resume());
-    await waitFor(() => expect(now().team.load).toBe('ready'));
+    await waitFor(() => expect(now().team.read.kind).toBe('ready'));
     expect(now().editor.open).toBe(false);
   });
 
@@ -109,7 +109,7 @@ describe('Assign Roles steps aside for the Roles reference', () => {
     origin.readDelayMs = 300;
     await page.come();
     act(() => now().editor.resume());
-    expect(now().team.load).toBe('loading');
+    expect(now().team.read.kind).toBe('loading');
     await waitFor(() => expect(now().editor.open).toBe(true), { timeout: 3000 });
     expect(now().editor.picked).toContain(FINANCE);
   });
@@ -124,7 +124,7 @@ describe('Assign Roles steps aside for the Roles reference', () => {
     await page.come();
     await act(() => now().team.reread());
     act(() => now().editor.resume());
-    await waitFor(() => expect(now().team.load).toBe('ready'));
+    await waitFor(() => expect(now().team.read.kind).toBe('ready'));
     expect(now().editor.open).toBe(false);
   });
 
@@ -134,7 +134,7 @@ describe('Assign Roles steps aside for the Roles reference', () => {
     page.leave();
     await page.come();
     act(() => now().editor.resume());
-    await waitFor(() => expect(now().team.load).toBe('ready'));
+    await waitFor(() => expect(now().team.read.kind).toBe('ready'));
     expect(now().editor.open).toBe(false);
   });
 });

@@ -1,10 +1,11 @@
+import { mapRead } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { cardOf, fixedLineOf, type ImportFormats, productOf } from './CatalogImport.logic';
 import type { CatalogImportProps, ImportRowList } from './CatalogImport.types';
-import { groupsInScope } from './CatalogImport.view';
+import { groupsInScope, listFailed, rowsOf } from './CatalogImport.view';
 import { ImportFixCard, ImportFixedCard } from './ImportFixCard.native';
 import { ImportOutcomeGroup, ImportOutcomeList, MoreRows } from './ImportOutcomeGroup.native';
 import { ImportOverview } from './ImportOverview.native';
@@ -66,7 +67,7 @@ function Lists(props: ImportRowsProps & { phase: Phase }) {
         phase === 'report' && OPEN_GROUPS.includes(group.id) ? (
           <View key={group.id} style={styles.section}>
             <SectionHead label={words.groups[group.id]} aside={words.countRows(group.total)} />
-            <ImportOutcomeList {...props} rows={group.rows} />
+            <ImportOutcomeList {...props} rows={rowsOf(group)} />
             <MoreRows list={group} words={words} />
           </View>
         ) : (
@@ -89,7 +90,7 @@ function Lists(props: ImportRowsProps & { phase: Phase }) {
  */
 function NeedYou(props: ImportRowsProps & { attention: ImportRowList }) {
   const { attention, fixed, words, formats } = props;
-  const asking = attention.rows.filter((row) => !fixed.has(row.rowNumber));
+  const asking = rowsOf(attention).filter((row) => !fixed.has(row.rowNumber));
   // The card an *Undo* brings back takes the focus the *Undo* had.
   const [returning, setReturning] = useState<number | null>(null);
   // The card a fix just settled takes the focus the fix had; cards settled before keep still.
@@ -98,7 +99,7 @@ function NeedYou(props: ImportRowsProps & { attention: ImportRowList }) {
   useEffect(() => {
     seen.current = new Set(fixed.keys());
   });
-  if (asking.length === 0 && fixed.size === 0 && attention.failed !== true) return null;
+  if (asking.length === 0 && fixed.size === 0 && !listFailed(attention)) return null;
   return (
     <View style={styles.section}>
       <SectionHead
@@ -118,7 +119,11 @@ function NeedYou(props: ImportRowsProps & { attention: ImportRowList }) {
           }}
         />
       ))}
-      <Cards {...props} list={{ ...attention, rows: asking }} returning={returning} />
+      <Cards
+        {...props}
+        list={{ ...attention, read: mapRead(attention.read, () => asking) }}
+        returning={returning}
+      />
     </View>
   );
 }
@@ -127,11 +132,11 @@ function NeedYou(props: ImportRowsProps & { attention: ImportRowList }) {
 function Cards(props: ImportRowsProps & { list: ImportRowList; returning?: number | null }) {
   const { list, words } = props;
   // A list whose first page failed offers *Try again*, never an empty step.
-  if (list.rows.length === 0)
-    return list.failed === true ? <MoreRows list={list} words={words} /> : null;
+  const rows = rowsOf(list);
+  if (rows.length === 0) return listFailed(list) ? <MoreRows list={list} words={words} /> : null;
   return (
     <>
-      {list.rows.map((row) => (
+      {rows.map((row) => (
         <ImportFixCard
           key={row.rowNumber}
           card={cardOf(row, props, props.formats)}
@@ -158,7 +163,7 @@ function Found(
   const { found, words, phase } = props;
   const total = found.attention.total + found.ready.total;
   // A search that failed to read says nothing matched only once it has read: it offers *Try again*.
-  const failedList = [found.attention, found.ready].find((list) => list.failed === true);
+  const failedList = [found.attention, found.ready].find(listFailed);
   if (failedList !== undefined) return <MoreRows list={failedList} words={words} />;
   const line = (
     <Text variant="caption" color="secondary" style={styles.note}>
@@ -170,7 +175,7 @@ function Found(
     return (
       <>
         {line}
-        <ImportOutcomeList {...props} rows={[...found.attention.rows, ...found.ready.rows]} />
+        <ImportOutcomeList {...props} rows={[...rowsOf(found.attention), ...rowsOf(found.ready)]} />
       </>
     );
   }
@@ -186,7 +191,7 @@ function Found(
       {found.ready.total === 0 ? null : (
         <View style={styles.section}>
           <SectionHead label={words.readyToImport} aside={words.countRows(found.ready.total)} />
-          <ImportOutcomeList {...props} rows={found.ready.rows} />
+          <ImportOutcomeList {...props} rows={rowsOf(found.ready)} />
           <MoreRows list={found.ready} words={words} />
         </View>
       )}

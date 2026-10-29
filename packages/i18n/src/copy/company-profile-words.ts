@@ -9,6 +9,7 @@ import {
   type CompanyProfileLife,
   type CompanyProfilePart,
   type CompanyProfileStanding,
+  type ReadKind,
   type StandingMark,
   standingMark,
   TENANT_SEGMENTS,
@@ -119,7 +120,7 @@ export interface CompanyProfileWords {
 }
 
 /**
- * `status` — the read is still out, it answered, it failed, or the last save failed. `skipped` —
+ * `read` — the read is still out, it answered, or it failed; `saveFailed` — the last save failed. `skipped` —
  * the step was skipped and the owner is back. `arrivedUndeclared` — the profile was read without
  * the two answers of the step before. `standings` — domain's `companyProfileStanding` for
  * each part. `open` — the part that is open. The three pack facts arrive in the reader's language.
@@ -127,7 +128,8 @@ export interface CompanyProfileWords {
 export interface CompanyProfileWordFacts {
   /** Setup, the corridor's step; settings, the same profile behind `More`, with nowhere onward. */
   readonly life: CompanyProfileLife;
-  readonly status: 'loading' | 'ready' | 'unread' | 'save-failed';
+  readonly read: ReadKind;
+  readonly saveFailed: boolean;
   readonly skipped: boolean;
   readonly arrivedUndeclared: boolean;
   readonly standings: Readonly<Record<CompanyProfilePart, CompanyProfileStanding>>;
@@ -145,7 +147,7 @@ export function companyProfileWords(
   translate: Translator['t'],
   facts: CompanyProfileWordFacts,
 ): CompanyProfileWords {
-  const { status, standings, city, taxIdLabel, taxFormat, bankRoutingLabel } = facts;
+  const { read, standings, city, taxIdLabel, taxFormat, bankRoutingLabel } = facts;
   const fromSignup = translate(COMPANY_PROFILE.fromSignup);
   const checked = translate(COMPANY_PROFILE.formatChecked);
   return {
@@ -199,16 +201,11 @@ export function companyProfileWords(
       sizeHint: translate(COMPANY_PROFILE.sizeHint),
       sizeSource: translate(SETUP_WHAT_YOU_SELL.declaredByYou),
     },
-    letterhead: companyLetterheadWords(
-      translate,
-      status === 'ready' || status === 'save-failed',
-      facts.letterhead,
-      taxIdLabel,
-    ),
+    letterhead: companyLetterheadWords(translate, read === 'ready', facts.letterhead, taxIdLabel),
     logo: facts.logo === null ? null : companyLogoCapture(translate, facts.logo),
-    loading: status === 'loading' ? translate(COMPANY_PROFILE.loading) : null,
-    unread: status === 'unread' ? unreadWords(translate, facts.life) : null,
-    act: status === 'unread' ? null : actWords(translate, facts),
+    loading: read === 'loading' ? translate(COMPANY_PROFILE.loading) : null,
+    unread: read === 'failed' ? unreadWords(translate, facts.life) : null,
+    act: read === 'failed' ? null : actWords(translate, facts),
   };
 }
 
@@ -230,14 +227,14 @@ function actWords(
   translate: Translator['t'],
   facts: CompanyProfileWordFacts,
 ): NonNullable<CompanyProfileWords['act']> {
-  const saveFailed = facts.status === 'save-failed';
+  const { saveFailed } = facts;
   // Settings is in no corridor: after a failed save there is nowhere onward to go without it.
   const onward = saveFailed && facts.life === 'setup';
   const [primary, primarySpoken] = primaryAct(facts);
   return {
     primary: translate(primary),
     primarySpoken: translate(primarySpoken),
-    waiting: facts.status === 'loading' ? translate(COMPANY_PROFILE.stillLoading) : null,
+    waiting: facts.read === 'loading' ? translate(COMPANY_PROFILE.stillLoading) : null,
     secondary: onward ? translate(COMPANY_PROFILE.onward) : null,
     secondarySpoken: onward ? translate(COMPANY_PROFILE.onwardUnsavedSpoken) : null,
     alert: saveFailed ? translate(COMPANY_PROFILE.notSaved) : null,
@@ -250,7 +247,7 @@ function primaryAct(facts: CompanyProfileWordFacts): readonly [MessageRef, Messa
   if (facts.life === 'settings') {
     return [COMPANY_PROFILE.saveChanges, COMPANY_PROFILE.saveChangesSpoken];
   }
-  return facts.status === 'save-failed'
+  return facts.saveFailed
     ? [SIGN_IN.tryAgain, COMPANY_PROFILE.retrySaveSpoken]
     : [COMPANY_PROFILE.save, COMPANY_PROFILE.saveSpoken];
 }
@@ -264,7 +261,7 @@ function primaryAct(facts: CompanyProfileWordFacts): readonly [MessageRef, Messa
  */
 function lede(facts: CompanyProfileWordFacts): MessageRef {
   if (facts.life === 'settings') return COMPANY_PROFILE.settingsLede;
-  if (facts.status !== 'ready') return COMPANY_PROFILE.lede;
+  if (facts.read !== 'ready' || facts.saveFailed) return COMPANY_PROFILE.lede;
   if (facts.arrivedUndeclared && facts.standings.declarations === 'not_declared') {
     return COMPANY_PROFILE.ledeNotSaved;
   }
@@ -273,7 +270,7 @@ function lede(facts: CompanyProfileWordFacts): MessageRef {
 
 /** Only a profile that was read keeps a line; an undeclared value's cost outranks the re-seed scope. */
 function actLine(translate: Translator['t'], facts: CompanyProfileWordFacts): string | null {
-  if (facts.status !== 'ready') return null;
+  if (facts.read !== 'ready' || facts.saveFailed) return null;
   if (facts.standings.declarations === 'not_declared') {
     return translate(COMPANY_PROFILE.marketDefaults);
   }

@@ -39,7 +39,8 @@ export function BrandingSettings(props: BrandingSettingsProps) {
 
 /** The 375 column: every block one under the other, `--sp-4` apart. */
 function NarrowPage(props: BrandingSettingsProps) {
-  const { words, loading, unsaved, act } = props;
+  const { words, read, unsaved, act } = props;
+  const loading = read.kind !== 'ready';
   return (
     <>
       <PageHead {...props} />
@@ -57,7 +58,8 @@ function NarrowPage(props: BrandingSettingsProps) {
 
 /** The 1536 pair: the heading row, a failed save across both columns, the stage and the card. */
 function WidePage(props: BrandingSettingsProps) {
-  const { words, loading, unsaved, act } = props;
+  const { words, read, unsaved, act } = props;
+  const loading = read.kind !== 'ready';
   return (
     <>
       <PageHead {...props} />
@@ -73,8 +75,8 @@ function WidePage(props: BrandingSettingsProps) {
 }
 
 /** The title, when the page draws it, and the standing line, absent while the reads are out. */
-function PageHead({ title, standing, loading }: BrandingSettingsProps) {
-  const standingShown = loading ? undefined : standing;
+function PageHead({ title, standing, read }: BrandingSettingsProps) {
+  const standingShown = read.kind === 'ready' ? standing : undefined;
   if (title === undefined && standingShown === undefined) return null;
   return (
     <div className="hg-branding-head" data-titled={title === undefined ? undefined : 'true'}>
@@ -111,8 +113,9 @@ function SaveFailure({ words, saveFailure, onRetry }: BrandingSettingsProps) {
 
 /** The part's switch, the part and the profile row — or, while the reads are out, their bars. */
 function EditorBody(props: BrandingSettingsProps & { wide: boolean }) {
-  const { words, loading } = props;
-  if (loading) return <LoadingBars label={words.loading} bars={['control', 'panel', 'row']} />;
+  const { words, read } = props;
+  if (read.kind !== 'ready')
+    return <LoadingBars label={words.loading} bars={['control', 'panel', 'row']} />;
   return (
     <>
       <BrandingPartSwitch {...props} />

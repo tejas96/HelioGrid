@@ -43,7 +43,7 @@ export function ImportPanel({ onClose }: { onClose: () => void }) {
       words={words}
       frame={wizard.frame}
       job={wizard.job}
-      opening={wizard.opening}
+      opening={wizard.jobRead?.kind === 'loading'}
       safeTop={0}
       upload={{
         state: wizard.upload.state,
@@ -58,7 +58,7 @@ export function ImportPanel({ onClose }: { onClose: () => void }) {
       onSheet={wizard.chooseSheet}
       onHeaderRow={wizard.chooseHeaderRow}
       kept={{
-        rows: kept.items,
+        rows: kept.read.kind === 'ready' ? kept.read.value : [],
         hasMore: kept.hasNextPage,
         onMore: () => void kept.fetchNextPage(),
       }}
@@ -80,7 +80,7 @@ export function ImportPanel({ onClose }: { onClose: () => void }) {
       onStopWatching={onClose}
       onFixOpenRows={wizard.fixOpenRows}
       notice={notes.notice(
-        wizard.failure ?? fixes.failure ?? (wizard.readFailed ? READ_FAILED : null),
+        wizard.failure ?? fixes.failure ?? (wizard.jobRead?.kind === 'failed' ? READ_FAILED : null),
       )}
     />
   );

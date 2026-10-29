@@ -15,7 +15,7 @@ import type { PaymentTermsCardView, PaymentTermsListProps } from './PaymentTerms
  * The archived view swaps the cards for the archived ones, each with *Restore* (m20-n8).
  */
 export function PaymentTermsList(props: PaymentTermsListProps) {
-  const { state, title } = props;
+  const { read, title } = props;
   return (
     <div
       className="hg-pay"
@@ -28,7 +28,7 @@ export function PaymentTermsList(props: PaymentTermsListProps) {
             {title}
           </Text>
         )}
-        {state === 'ready' && props.savedLine !== undefined ? (
+        {read.kind === 'ready' && props.savedLine !== undefined ? (
           <Text variant="caption" color="secondary" className="hg-pay-pretty">
             {props.savedLine}
           </Text>
@@ -50,10 +50,10 @@ export function PaymentTermsList(props: PaymentTermsListProps) {
 
 function ListBody(props: PaymentTermsListProps) {
   const { words } = props;
-  if (props.state === 'loading') {
+  if (props.read.kind === 'loading') {
     return <LoadingBars label={words.loading} bars={['panel', 'panel', 'panel']} />;
   }
-  if (props.state === 'unread') {
+  if (props.read.kind === 'failed') {
     return (
       <Banner kind="validation" density="functional" title={words.unreadTitle}>
         {words.unreadBody}

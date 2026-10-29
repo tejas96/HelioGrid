@@ -160,6 +160,6 @@ function reportUnread(props: CatalogImportProps): boolean {
   return (
     props.frame === 'report' &&
     groups.length > 0 &&
-    groups.every((group) => group.loading && group.rows.length === 0)
+    groups.every((group) => group.read.kind === 'loading')
   );
 }

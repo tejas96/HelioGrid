@@ -7,7 +7,7 @@ import { IrisTile } from '../IrisTile/IrisTile';
 import { StatusChip } from '../StatusChip';
 import { type ImportFormats, type ImportListRowView, listRowOf } from './CatalogImport.logic';
 import type { CatalogImportWords, ImportGroupId, ImportRowList } from './CatalogImport.types';
-import { groupSampleOf, type ImportSampleItem } from './CatalogImport.view';
+import { groupSampleOf, type ImportSampleItem, rowsOf } from './CatalogImport.view';
 import { ImportGlyph } from './ImportGlyph';
 import './ImportOutcomeGroup.css';
 
@@ -45,7 +45,7 @@ interface ImportOutcomeGroupProps {
 export function ImportOutcomeGroup(props: ImportOutcomeGroupProps) {
   const { group, open, words, wide } = props;
   const tile = GROUP_TILE[group.id] ?? OTHER_TILE;
-  const sample = groupSampleOf(group.rows, words, props.formats, props.phase);
+  const sample = groupSampleOf(rowsOf(group), words, props.formats, props.phase);
   return (
     <div className="hg-import-group">
       <Pressable
@@ -71,7 +71,7 @@ export function ImportOutcomeGroup(props: ImportOutcomeGroupProps) {
       </Pressable>
       {open ? (
         <div className="hg-import-group-panel">
-          <ImportOutcomeList {...props} rows={group.rows} />
+          <ImportOutcomeList {...props} rows={rowsOf(group)} />
           <MoreRows list={group} words={words} />
         </div>
       ) : null}
@@ -109,10 +109,11 @@ function Sample({
 
 /** *Show more*: the next page of an opened list. */
 export function MoreRows({ list, words }: { list: ImportRowList; words: CatalogImportWords }) {
-  if (list.failed === true && list.onRetry !== undefined) {
+  const { read } = list;
+  if (read.kind === 'failed') {
     return (
       <div className="hg-import-more">
-        <Button variant="secondary" size="sm" onClick={list.onRetry}>
+        <Button variant="secondary" size="sm" onClick={read.retry}>
           {words.tryAgain}
         </Button>
       </div>
@@ -121,7 +122,7 @@ export function MoreRows({ list, words }: { list: ImportRowList; words: CatalogI
   if (!list.hasMore) return null;
   return (
     <div className="hg-import-more">
-      <Button variant="ghost" size="sm" loading={list.loading} onClick={list.onMore}>
+      <Button variant="ghost" size="sm" onClick={list.onMore}>
         {words.showMore}
       </Button>
     </div>

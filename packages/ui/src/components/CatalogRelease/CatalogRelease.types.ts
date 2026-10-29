@@ -1,4 +1,4 @@
-import type { ReleaseChangeKind } from '@heliogrid/domain';
+import type { Read, ReleaseChangeKind } from '@heliogrid/domain';
 
 /**
  * **A catalog release's body** (`SCR-M01-15`, `M01-43`): the publish summary — a name for the
@@ -18,8 +18,7 @@ export interface CatalogPublishBody {
   /** What the release will carry; `null` while it is still being read. */
   readonly changes: CatalogReleaseChanges | null;
   /** The preview's read: the dialog waits, or says it failed with *Try again*. */
-  readonly surface: 'loading' | 'error' | 'ready';
-  readonly onRetry: () => void;
+  readonly read: Read<unknown>;
   /** The next page of change cards, while more remain than are shown; `null` when all are. */
   readonly more: { readonly label: string; readonly onMore: () => void } | null;
 }
@@ -34,8 +33,8 @@ export interface CatalogContentsBody {
     readonly inForce: boolean;
   } | null;
   readonly changes: CatalogReleaseChanges | null;
-  readonly surface: 'loading' | 'error' | 'ready';
-  readonly onRetry: () => void;
+  /** The opened release's read: its contents wait, or say they failed with *Try again*. */
+  readonly read: Read<unknown>;
   /** Releases before the open one, newest first. */
   readonly earlier: readonly CatalogEarlierRelease[];
   readonly onOpenEarlier: (id: string) => void;

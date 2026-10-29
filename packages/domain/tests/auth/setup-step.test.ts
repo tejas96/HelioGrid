@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import type { SessionUser } from '../../src/auth/session';
-import { type SetupRead, setupStepOwed } from '../../src/auth/setup-step';
+import { setupStepOwed } from '../../src/auth/setup-step';
+import type { Read } from '../../src/shell/read';
+import type { StepStates } from '../../src/tenancy/onboarding-steps';
 
 const person = {
   id: '8f0c2d1e-0000-4000-8000-0000000000a1',
@@ -18,27 +20,22 @@ const ownerWhoSells: SessionUser = {
 const seller: SessionUser = { ...person, tenant: { id: TENANT_ID, roles: ['sales_executive'] } };
 const withoutCompany: SessionUser = { ...person, tenant: null };
 
-const reading: SetupRead = { status: 'pending' };
-const unanswered: SetupRead = { status: 'failed' };
-const atLanguage: SetupRead = { status: 'ready', steps: {} };
-const atWhatYouSell: SetupRead = { status: 'ready', steps: { language: 'completed' } };
-const atCompanyProfile: SetupRead = {
-  status: 'ready',
-  steps: { language: 'completed', what_you_sell: 'completed' },
+const reading: Read<StepStates> = { kind: 'loading' };
+const unanswered: Read<StepStates> = { kind: 'failed', failure: 'no_connection', retry: () => {} };
+const at = (value: StepStates): Read<StepStates> => ({ kind: 'ready', value });
+const inviteTeamSteps: StepStates = {
+  language: 'completed',
+  what_you_sell: 'completed',
+  business_profile: 'skipped',
 };
-const atInviteTeam: SetupRead = {
-  status: 'ready',
-  steps: { language: 'completed', what_you_sell: 'completed', business_profile: 'skipped' },
-};
-const atReady: SetupRead = {
-  status: 'ready',
-  steps: { ...atInviteTeam.steps, invite_team: 'skipped' },
-};
-const closed: SetupRead = { status: 'ready', steps: { ...atReady.steps, ready: 'completed' } };
-const closedFromTeam: SetupRead = {
-  status: 'ready',
-  steps: { ...atReady.steps, ready: 'skipped' },
-};
+const readySteps: StepStates = { ...inviteTeamSteps, invite_team: 'skipped' };
+const atLanguage = at({});
+const atWhatYouSell = at({ language: 'completed' });
+const atCompanyProfile = at({ language: 'completed', what_you_sell: 'completed' });
+const atInviteTeam = at(inviteTeamSteps);
+const atReady = at(readySteps);
+const closed = at({ ...readySteps, ready: 'completed' });
+const closedFromTeam = at({ ...readySteps, ready: 'skipped' });
 
 describe('setupStepOwed — the setup step a session is asked for (M01-10, F3-03)', () => {
   it.each([

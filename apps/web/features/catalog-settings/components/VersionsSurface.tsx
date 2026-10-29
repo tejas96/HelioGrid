@@ -8,7 +8,6 @@ import {
   EditorSurface,
   IconButton,
   ShellGlyph,
-  surfaceOf,
   useCatalogFormats,
 } from '@heliogrid/ui';
 
@@ -22,8 +21,9 @@ export function VersionsSurface({ open, onClose }: { open: boolean; onClose: () 
   const formats = useCatalogFormats();
   const words = catalogVersionWords(t);
   const browse = usePriceBookBrowse(open, onClose);
-  const read = browse.picked === null ? undefined : browse.one.data;
+  const read = browse.picked !== null && browse.one.kind === 'ready' ? browse.one.value : undefined;
   const listing = read === undefined;
+  const versions = browse.list.read.kind === 'ready' ? browse.list.read.value : [];
 
   return (
     <EditorSurface
@@ -51,9 +51,8 @@ export function VersionsSurface({ open, onClose }: { open: boolean; onClose: () 
         <CatalogVersion
           mode="list"
           words={words}
-          versions={browse.list.items.map((summary) => versionSummaryOf(t, summary, formats))}
-          surface={surfaceOf(browse.list.status)}
-          onRetry={() => void browse.list.refetch()}
+          versions={versions.map((summary) => versionSummaryOf(t, summary, formats))}
+          read={browse.list.read}
           onOpen={browse.pick}
           hasMore={browse.list.hasNextPage}
           onMore={() => void browse.list.fetchNextPage()}
@@ -66,8 +65,7 @@ export function VersionsSurface({ open, onClose }: { open: boolean; onClose: () 
           rateCount={read ? formats.number(read.rates.length) : ''}
           note={read?.note ?? ''}
           rates={versionRatesOf(read?.rates ?? [], locale)}
-          surface={surfaceOf(browse.one.status)}
-          onRetry={() => void browse.one.refetch()}
+          read={browse.one}
         />
       )}
     </EditorSurface>

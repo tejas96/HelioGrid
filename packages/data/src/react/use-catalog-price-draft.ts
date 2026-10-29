@@ -2,7 +2,8 @@
 import type { ResolvedCatalogItemWire } from '@heliogrid/contracts';
 import { percentWireOf } from '@heliogrid/domain';
 import { useState } from 'react';
-import type { CatalogActs } from './use-catalog-acts';
+import { useAction } from './action';
+import type { CatalogActs, CatalogPrice } from './use-catalog-acts';
 
 type Item = ResolvedCatalogItemWire;
 
@@ -16,7 +17,8 @@ export interface CatalogPriceDraft {
   readonly taxPct: string;
   readonly hidden: boolean;
   readonly preferred: boolean;
-  readonly busy: boolean;
+  /** The save is out: the editor's fields and acts wait for its answer. */
+  readonly pending: boolean;
   readonly problem: CatalogPriceProblem | null;
   open(item: Item): void;
   close(): void;
@@ -39,8 +41,18 @@ export function useCatalogPriceDraft(acts: CatalogActs): CatalogPriceDraft {
   const [taxPct, setTaxPct] = useState('');
   const [hidden, setHidden] = useState(false);
   const [preferred, setPreferred] = useState(false);
-  const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<CatalogPriceProblem | null>(null);
+  /* A save that did not land throws its problem, so the editor closes only on a save. */
+  const saving = useAction(
+    async ({ priced, price }: { priced: Item; price: CatalogPrice }) => {
+      const outcome = await acts.savePrice(priced, price);
+      if (outcome !== 'saved') throw new PriceNotSaved(outcome);
+    },
+    {
+      onDone: () => setItem(null),
+      onFailed: (error) => setProblem(error instanceof PriceNotSaved ? error.problem : 'failed'),
+    },
+  );
 
   const edit =
     <V>(set: (value: V) => void) =>
@@ -55,7 +67,7 @@ export function useCatalogPriceDraft(acts: CatalogActs): CatalogPriceDraft {
     taxPct,
     hidden,
     preferred,
-    busy,
+    pending: saving.pending,
     problem,
     open(next) {
       setItem(next);
@@ -70,25 +82,28 @@ export function useCatalogPriceDraft(acts: CatalogActs): CatalogPriceDraft {
     setTaxPct: edit(setTaxPct),
     setHidden: edit(setHidden),
     setPreferred: edit(setPreferred),
-    async save() {
-      if (item === null || busy) return false;
-      setBusy(true);
+    save() {
+      if (item === null) return Promise.resolve(false);
       const platform = item.source === 'platform_item';
-      const outcome = await acts.savePrice(item, {
-        amount: changedAmount(item, amount),
-        ...(platform
-          ? { taxPct: taxPct.trim() === '' ? null : percentWireOf(taxPct), hidden, preferred }
-          : {}),
-      });
-      setBusy(false);
-      if (outcome !== 'saved') {
-        setProblem(outcome);
-        return false;
-      }
-      setItem(null);
-      return true;
+      return saving
+        .run({
+          priced: item,
+          price: {
+            amount: changedAmount(item, amount),
+            ...(platform
+              ? { taxPct: taxPct.trim() === '' ? null : percentWireOf(taxPct), hidden, preferred }
+              : {}),
+          },
+        })
+        .then((answer) => answer.kind === 'done');
     },
   };
+}
+
+class PriceNotSaved extends Error {
+  constructor(readonly problem: CatalogPriceProblem) {
+    super(problem);
+  }
 }
 
 /**

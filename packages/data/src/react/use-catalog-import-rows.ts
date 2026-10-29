@@ -2,10 +2,11 @@
 import type { CatalogImportRowFixWrite, CatalogImportRowWire } from '@heliogrid/contracts';
 import type { CatalogImportCounts } from '@heliogrid/domain';
 import { useQueryClient } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import type { CatalogImportRowsAsk } from '../catalog/import-repository';
 import { ApiError } from '../errors/errors';
+import { useAction } from './action';
 import { useRepositories } from './context';
 import { usePaginatedList } from './use-paginated-list';
 import { useTenantId } from './use-tenant-id';
@@ -48,6 +49,20 @@ export interface FixedRow {
 /** What a fix came back as, for the screen's words. */
 export type FixAnswer = 'fixed' | 'refused' | 'conflict' | 'failed';
 
+interface FixSent {
+  readonly answer: FixAnswer;
+  readonly rows: readonly CatalogImportRowWire[];
+}
+
+/** One fix as sent: the row the request goes to, its body, and who hears its answer. */
+interface FixAsk {
+  readonly jobId: string;
+  readonly rowNumber: number;
+  readonly body: CatalogImportRowFixWrite;
+}
+
+const NOT_SENT: FixSent = { answer: 'failed', rows: [] };
+
 /**
  * The fixes of one import (`T-M01-030e`): each sent once while one for the same row is out, the
  * job's counts and its row lists refreshed from the answer, and the rows this visit settled held
@@ -64,7 +79,6 @@ export function useCatalogImportFixes(
   const tenantId = useTenantId();
   const queryClient = useQueryClient();
   const [fixed, setFixed] = useState<ReadonlyMap<number, FixedRow>>(new Map());
-  const [busy, setBusy] = useState<ReadonlySet<number>>(new Set());
   const [failure, setFailure] = useState<{ readonly conflict: boolean } | null>(null);
   // A card settled for one job's preview is never shown on another job, or after its run.
   // biome-ignore lint/correctness/useExhaustiveDependencies: the job and its phase are the trigger
@@ -76,45 +90,49 @@ export function useCatalogImportFixes(
   useEffect(() => {
     setFailure(null);
   }, [jobId]);
-  const out = useRef(new Set<number>());
-  const mark = () => setBusy(new Set(out.current));
+  /* One fix per row at a time: a second answer on a row whose fix is out sends nothing. */
+  const fixing = useAction(
+    ({ jobId: job, rowNumber, body }: FixAsk) => {
+      setFailure(null);
+      return fixAnswerOf(job, rowNumber, body);
+    },
+    { key: (ask) => String(ask.rowNumber) },
+  );
 
-  const send = async (
+  const fixAnswerOf = async (
+    job: string,
     rowNumber: number,
     body: CatalogImportRowFixWrite,
-  ): Promise<{ readonly answer: FixAnswer; readonly rows: readonly CatalogImportRowWire[] }> => {
-    if (jobId === null || out.current.has(rowNumber)) return { answer: 'failed', rows: [] };
-    out.current.add(rowNumber);
-    mark();
-    setFailure(null);
+  ): Promise<FixSent> => {
     try {
-      const answer = await repositories.catalogImport.fix(jobId, rowNumber, body);
+      const answer = await repositories.catalogImport.fix(job, rowNumber, body);
       onCounts(answer.counts);
       await queryClient.invalidateQueries({
-        queryKey: queryKeys.catalog.importRows(tenantId, jobId),
+        queryKey: queryKeys.catalog.importRows(tenantId, job),
       });
       return { answer: 'fixed', rows: answer.rows };
     } catch (error) {
       if (error instanceof ApiError && error.status === 409) {
-        await queryClient.invalidateQueries({
-          queryKey: queryKeys.catalog.import(tenantId, jobId),
-        });
+        await queryClient.invalidateQueries({ queryKey: queryKeys.catalog.import(tenantId, job) });
         setFailure({ conflict: true });
         return { answer: 'conflict', rows: [] };
       }
       setFailure({ conflict: false });
       const refused = error instanceof ApiError && error.status === 422;
       return { answer: refused ? 'refused' : 'failed', rows: [] };
-    } finally {
-      out.current.delete(rowNumber);
-      mark();
     }
+  };
+
+  const send = async (rowNumber: number, body: CatalogImportRowFixWrite): Promise<FixSent> => {
+    if (jobId === null) return NOT_SENT;
+    const answer = await fixing.run({ jobId, rowNumber, body });
+    return answer.kind === 'done' ? answer.output : NOT_SENT;
   };
 
   return {
     fixed,
-    /** Rows whose fix is out, by the row the request went to. */
-    busy,
+    /** The fix for this row is out, by the row the request went to. */
+    busy: (rowNumber: number) => fixing.pendingFor(String(rowNumber)),
     /** The last fix that did not land: a 409 means the job moved under it. */
     failure,
     /**

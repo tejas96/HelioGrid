@@ -14,9 +14,12 @@ import {
 } from '@heliogrid/domain';
 import { useCallback, useState } from 'react';
 import { answerOf } from '../errors/errors';
+import { useAction } from './action';
 import { useRepositories } from './context';
 import { useSession } from './use-session';
 import type { Team } from './use-team';
+
+type Asking = Extract<TeamConfirmState, { kind: 'asking' }>;
 
 export interface TeamActs {
   readonly confirm: TeamConfirmState;
@@ -24,8 +27,8 @@ export interface TeamActs {
   readonly busy: boolean;
   /** The row whose act opened the last confirm — where focus goes back when it shuts. */
   readonly opener: string | null;
-  /** The row whose *Invite again* is out, so its button shows it is working. */
-  readonly sending: string | null;
+  /** This row's *Invite again* is out, so its button shows it is working. */
+  sending(rowId: string): boolean;
   /** A row's act: *Deactivate* and *Revoke invite* ask first; *Invite again* sends at once. */
   start(row: TeamRow): void;
   /** The confirm's go button. */
@@ -43,7 +46,6 @@ export function useTeamActs(team: Team, onNote: (note: TeamActNote) => void): Te
   const { signOut, rereadUser } = useSession();
   const repositories = useRepositories();
   const [confirm, setConfirm] = useState<TeamConfirmState>({ kind: 'shut' });
-  const [sending, setSending] = useState<string | null>(null);
   const [opener, setOpener] = useState<string | null>(null);
 
   /* Stable: the overlay re-runs its focus effect whenever its close handler changes. */
@@ -86,36 +88,36 @@ export function useTeamActs(team: Team, onNote: (note: TeamActNote) => void): Te
     if (noteLeavesRow(note)) {
       setConfirm({ kind: 'shut' });
       await team.reread();
-    } else {
-      setConfirm((now) => (now.kind === 'asking' ? { ...now, busy: false } : now));
     }
     onNote(note);
   };
 
+  const confirmed = useAction(async ({ act, row }: Asking) =>
+    settle(act, row, await write(act, row)),
+  );
+  const invitedAgain = useAction(
+    async (row: TeamRow) => settle('invite-again', row, await write('invite-again', row)),
+    { key: (row) => row.id },
+  );
+
   return {
     confirm,
-    busy: confirm.kind === 'asking' && confirm.busy,
+    busy: confirm.kind === 'asking' && confirmed.pending,
     opener,
-    sending,
+    sending: invitedAgain.pendingFor,
     start: (row) => {
       const offered = teamRowAct(row, team.roster);
       if (offered === null || offered.off) return;
       if (offered.act !== 'invite-again') {
         setOpener(row.id);
-        setConfirm({ kind: 'asking', act: offered.act, row, busy: false });
+        setConfirm({ kind: 'asking', act: offered.act, row });
         return;
       }
-      if (sending !== null) return;
-      setSending(row.id);
-      void write('invite-again', row)
-        .then((answer) => settle('invite-again', row, answer))
-        .finally(() => setSending(null));
+      /* One *Invite again* at a time, as the list has always sent it. */
+      if (!invitedAgain.isOut()) void invitedAgain.run(row);
     },
     go: () => {
-      if (confirm.kind !== 'asking' || confirm.busy) return;
-      const { act, row } = confirm;
-      setConfirm({ ...confirm, busy: true });
-      void write(act, row).then((answer) => settle(act, row, answer));
+      if (confirm.kind === 'asking') void confirmed.run(confirm);
     },
     shut,
   };

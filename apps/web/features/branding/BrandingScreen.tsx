@@ -60,8 +60,8 @@ function BrandingIn() {
   const title = settingsRowName(t, 'branding');
   const closeLabel = t(SHELL.close);
 
-  if (page.status === 'unread') {
-    return <BrandingUnread title={title} words={words} onTryAgain={page.retryRead} />;
+  if (page.read.kind === 'failed') {
+    return <BrandingUnread title={title} words={words} onTryAgain={page.read.retry} />;
   }
 
   const draft = page.draft;
@@ -75,7 +75,7 @@ function BrandingIn() {
     <div className="hg-shell-page">
       <BrandingSettings
         words={words}
-        loading={page.status === 'loading'}
+        read={page.read}
         title={title}
         {...said}
         preview={preview}

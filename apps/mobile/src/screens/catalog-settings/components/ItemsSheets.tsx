@@ -14,7 +14,6 @@ import {
   catalogEditorSwitches,
   EditorSurface,
   Modal,
-  surfaceOf,
   useCatalogFormats,
 } from '@heliogrid/ui';
 import { ReleasesSheet } from './ReleasesSheet';
@@ -65,7 +64,7 @@ function EditorSheet({ sheets, schemes }: { sheets: CatalogOverlays; schemes: re
           onCancel={draft.close}
           act={t(platform ? CATALOG_EDITOR.saveOverride : CATALOG_EDITOR.savePrice)}
           onAct={() => void draft.save()}
-          busy={draft.busy}
+          busy={draft.pending}
         />
       }
     >
@@ -124,7 +123,10 @@ function PublishSheet({ sheets, release }: { sheets: CatalogOverlays; release: R
   const preview = useReleasePreview(sheets.publishing);
   const shown = catalogPublishView(
     t,
-    { counts: preview.counts, lines: preview.lines.items },
+    {
+      counts: preview.counts,
+      lines: preview.lines.read.kind === 'ready' ? preview.lines.read.value : [],
+    },
     sheets.publish.refusal,
     formats,
   );
@@ -152,7 +154,7 @@ function PublishSheet({ sheets, release }: { sheets: CatalogOverlays; release: R
           onCancel={sheets.closePublish}
           act={t(CATALOG_SETTINGS.publish)}
           onAct={() => void sheets.sendPublish()}
-          busy={sheets.publish.busy}
+          busy={sheets.publish.pending}
           off={sheets.label.trim() === '' || !shown.sendable}
         />
       }
@@ -164,8 +166,7 @@ function PublishSheet({ sheets, release }: { sheets: CatalogOverlays; release: R
         onLabel={sheets.setLabel}
         problem={shown.problem}
         changes={shown.changes}
-        surface={surfaceOf(preview.lines.status)}
-        onRetry={() => void preview.lines.refetch()}
+        read={preview.lines.read}
         more={
           preview.lines.hasNextPage
             ? { label: shown.moreLabel, onMore: () => void preview.lines.fetchNextPage() }

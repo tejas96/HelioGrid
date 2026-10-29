@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import type { Read } from '../../src/shell/read';
 import {
   showsListHead,
+  type TeamList,
+  type TeamSurface,
   teamRoster,
   teamRosterView,
   teamStatusFilterOf,
@@ -27,23 +30,13 @@ describe('teamSurface — which body the list shows', () => {
   );
   const none = teamRosterView(team.rows, 'Joshi', 'all');
   it.each([
-    ['still reading', 'loading', team, '', 'all', 'loading'],
-    ['a read failed', 'failed', team, '', 'all', 'failed'],
-    ['only the reader', 'ready', alone, '', 'all', 'teaching'],
-    ['only the reader, under a chip', 'ready', alone, '', 'active', 'ready'],
-    [
-      'only the reader, searched',
-      'ready',
-      teamRosterView(alone.rows, 'Raj', 'all'),
-      'Raj',
-      'all',
-      'ready',
-    ],
-    ['a search that finds no one', 'ready', none, 'Joshi', 'all', 'no-match'],
-    ['blank words find everyone', 'ready', team, '   ', 'all', 'ready'],
+    ['only the reader', alone, '', 'all', 'teaching'],
+    ['only the reader, under a chip', alone, '', 'active', 'rows'],
+    ['only the reader, searched', teamRosterView(alone.rows, 'Raj', 'all'), 'Raj', 'all', 'rows'],
+    ['a search that finds no one', none, 'Joshi', 'all', 'no-match'],
+    ['blank words find everyone', team, '   ', 'all', 'rows'],
     [
       'a chip with nobody under it',
-      'ready',
       teamRosterView(team.rows, '', 'expired'),
       '',
       'expired',
@@ -51,7 +44,6 @@ describe('teamSurface — which body the list shows', () => {
     ],
     [
       'words that find someone the chip leaves out',
-      'ready',
       teamRosterView(team.rows, 'Amit', 'deactivated'),
       'Amit',
       'deactivated',
@@ -59,23 +51,15 @@ describe('teamSurface — which body the list shows', () => {
     ],
     [
       'words that find no one, under a chip',
-      'ready',
       teamRosterView(team.rows, 'Joshi', 'expired'),
       'Joshi',
       'expired',
       'no-match',
     ],
-    [
-      'a chip with someone under it',
-      'ready',
-      teamRosterView(team.rows, '', 'active'),
-      '',
-      'active',
-      'ready',
-    ],
-    ['a team', 'ready', team, '', 'all', 'ready'],
-  ] as const)('%s → %s', (_, load, view, query, status, expected) => {
-    expect(teamSurface(load, view, query, status)).toBe(expected);
+    ['a chip with someone under it', teamRosterView(team.rows, '', 'active'), '', 'active', 'rows'],
+    ['a team', team, '', 'all', 'rows'],
+  ] as const)('%s → %s', (_, view, query, status, expected) => {
+    expect(teamSurface(view, query, status)).toBe(expected);
   });
 });
 
@@ -90,14 +74,18 @@ describe('the Status chips and the list head', () => {
     expect(teamStatusFilterOf(value)).toBe(filter);
   });
 
+  const listOf = (surface: TeamSurface): Read<TeamList> => ({
+    kind: 'ready',
+    value: { view: teamRosterView([], '', 'all'), surface },
+  });
   it.each([
-    ['loading', true],
-    ['ready', true],
-    ['no-match', true],
-    ['empty-chip', true],
-    ['failed', false],
-    ['teaching', false],
-  ] as const)('the %s body shows the list head: %s', (surface, shown) => {
-    expect(showsListHead(surface)).toBe(shown);
+    ['loading', { kind: 'loading' }, true],
+    ['rows', listOf('rows'), true],
+    ['no-match', listOf('no-match'), true],
+    ['empty-chip', listOf('empty-chip'), true],
+    ['failed', { kind: 'failed', failure: 'refused', retry: (): void => undefined }, false],
+    ['teaching', listOf('teaching'), false],
+  ] as const)('the %s body shows the list head: %s', (_, list: Read<TeamList>, shown) => {
+    expect(showsListHead(list)).toBe(shown);
   });
 });

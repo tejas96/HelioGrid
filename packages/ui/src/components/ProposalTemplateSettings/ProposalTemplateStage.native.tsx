@@ -16,7 +16,7 @@ import type { ProposalTemplateSettingsProps } from './ProposalTemplateSettings.t
 
 type StageProps = Pick<
   ProposalTemplateSettingsProps,
-  'words' | 'loading' | 'part' | 'document' | 'unsaved' | 'onOpenFullSize'
+  'words' | 'read' | 'part' | 'document' | 'unsaved' | 'onOpenFullSize'
 >;
 
 /**
@@ -27,7 +27,7 @@ type StageProps = Pick<
  */
 export function ProposalTemplateStage({
   words,
-  loading,
+  read,
   part,
   document,
   unsaved,
@@ -41,7 +41,7 @@ export function ProposalTemplateStage({
   };
   return (
     <Surface background="canvas-sunken" radius="lg" style={styles.stage}>
-      {loading ? (
+      {read.kind !== 'ready' ? (
         <PreviewFrame {...frame} loading loadingLabel={words.loadingPreview} />
       ) : (
         <PreviewFrame {...frame} note={unsaved ? words.notSaved : undefined}>

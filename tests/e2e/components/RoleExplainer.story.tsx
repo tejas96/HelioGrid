@@ -1,7 +1,14 @@
-import { type RoleCardNames, type RolePreset, roleCard, type UiLanguage } from '@heliogrid/domain';
+import {
+  type ReadKind,
+  type RoleCardNames,
+  type RolePreset,
+  roleCard,
+  type UiLanguage,
+} from '@heliogrid/domain';
 import { createTranslator, roleCardWords } from '@heliogrid/i18n';
-import { type RoleCardState, RoleExplainer } from '@heliogrid/ui';
+import { RoleExplainer } from '@heliogrid/ui';
 import { useState } from 'react';
+import { readIn } from '../support/read';
 
 const READERS = {
   en: await createTranslator('en'),
@@ -24,7 +31,7 @@ export function RoleExplainerAsHeld({
   reader: UiLanguage;
   roles?: readonly RolePreset[];
   names: RoleCardNames;
-  surface?: RoleCardState;
+  surface?: ReadKind;
   pending?: boolean;
 }) {
   const [retried, setRetried] = useState(false);
@@ -35,12 +42,11 @@ export function RoleExplainerAsHeld({
     <div lang={reader} data-retried={retried} data-acted={acted}>
       <RoleExplainer
         words={roleCardWords(t, roleCard(roles), names)}
-        surface={state}
-        names={pending ? 'pending' : 'ready'}
-        onRetry={() => {
+        read={readIn(state, names, () => {
           setRetried(true);
           setState('ready');
-        }}
+        })}
+        namesPending={pending}
         onAct={() => setActed(true)}
       />
     </div>

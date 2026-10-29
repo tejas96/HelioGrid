@@ -37,6 +37,8 @@ export type {
   PushSwitch,
 } from './profile-preferences';
 export { profilePreferencesView, pushSwitches } from './profile-preferences';
+export type { Read, ReadFailure, ReadKind } from './read';
+export { allReads, mapRead } from './read';
 export type {
   SettingsGroup,
   SettingsGroupRows,
@@ -55,7 +57,7 @@ export {
   settingsRowOfSegment,
   settingsRowsFor,
 } from './settings-rows';
-export type { ShellLoad, ShellView } from './shell-view';
+export type { ShellView } from './shell-view';
 export { shellViewFor } from './shell-view';
 export type {
   StandingDestination,

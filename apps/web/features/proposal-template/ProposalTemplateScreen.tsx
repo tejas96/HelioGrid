@@ -49,7 +49,7 @@ function ProposalTemplateIn() {
   const { t } = useI18n();
   const page = useProposalTemplate();
   const words = proposalTemplateWords(t);
-  if (page.status !== 'unread') return <TemplatePage page={page} />;
+  if (page.read.kind !== 'failed') return <TemplatePage page={page} />;
   return (
     <div className="hg-shell-page">
       <Text as="h1" variant="h2">
@@ -59,7 +59,7 @@ function ProposalTemplateIn() {
         kind="validation"
         density="functional"
         title={words.unread}
-        action={<BannerAction onClick={page.retryRead}>{words.tryAgain}</BannerAction>}
+        action={<BannerAction onClick={page.read.retry}>{words.tryAgain}</BannerAction>}
       />
     </div>
   );
@@ -108,7 +108,7 @@ function TemplatePage({ page }: { page: ProposalTemplatePage }) {
     <div className="hg-shell-page">
       <ProposalTemplateSettings
         words={words}
-        loading={page.status === 'loading'}
+        read={page.read}
         title={words.title}
         {...(said.standing === undefined ? {} : { standing: said.standing })}
         part={part}
@@ -135,7 +135,7 @@ function TemplatePage({ page }: { page: ProposalTemplatePage }) {
         onOpenBranding={() => toRow('branding')}
         onOpenProfile={() => toRow('company_profile')}
         onOpenFullSize={() => setFullSizeOpen(true)}
-        saveFailed={page.status === 'save-failed'}
+        saveFailed={page.saveFailure !== null}
         {...(changed
           ? { act: { saving: page.saving, onSave: save, onDiscard: page.discard } }
           : {})}

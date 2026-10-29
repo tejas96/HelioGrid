@@ -1,19 +1,21 @@
 'use client';
-import type { MyMembership } from '@heliogrid/contracts';
+import type { MyMembership, Tenant } from '@heliogrid/contracts';
 import {
+  allReads,
   FIRST_RUN_COACH_MARKS,
   type MarkInView,
   markInView,
+  type Read,
   type RolePreset,
-  type ShellLoad,
   type ShellView,
   shellViewFor,
 } from '@heliogrid/domain';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { queryKeys } from '../cache/keys';
 import { ApiError } from '../errors/errors';
 import { useRepositories } from './context';
+import { readOf } from './read';
 import { companyRead, membershipRead } from './shell-reads';
 import { useSession } from './use-session';
 
@@ -23,10 +25,11 @@ import { useSession } from './use-session';
  * marks), and how many marks are passed. Each platform renders this; neither computes any of it.
  */
 export interface Shell extends ShellView {
-  readonly load: ShellLoad;
+  /** The company and the membership as one read: both shells draw its states, and so do the blocks. */
+  readonly read: Read<readonly [Tenant, MyMembership]>;
   /**
    * The company removed this person while signed in (`S1.wrong.4`): the shell shows that and
-   * nothing else, and reads nothing more — every read would be refused. Checked before `load`,
+   * nothing else, and reads nothing more — every read would be refused. Checked before `read`,
    * since a read already in flight comes back refused.
    */
   readonly accessRemoved: boolean;
@@ -40,13 +43,12 @@ export interface Shell extends ShellView {
   passCoachMark(count: number): void;
   /** The run was dismissed or finished: every mark is passed, for good (`M01-16`). */
   dismissCoachMarks(): void;
-  retry(): void;
 }
 
 /**
  * Mounted only under a session that acts for a company: `landingFor` sends a session with none to the
  * company step (`M01-10`) before any shell mounts. Without a company nothing is read, and
- * `load` stays `loading`.
+ * `read` stays `loading`.
  */
 export function useShell(): Shell {
   const { user, chosenHome, chooseHome, ended } = useSession();
@@ -101,46 +103,16 @@ export function useShell(): Shell {
     () => passCoachMark(FIRST_RUN_COACH_MARKS),
     [passCoachMark],
   );
-  const { refetch: refetchCompany } = company;
-  const { refetch: refetchMembership } = membership;
-  const retry = useCallback(() => {
-    void refetchCompany();
-    void refetchMembership();
-  }, [refetchCompany, refetchMembership]);
-
-  return useMemo(() => {
-    const view = shellViewFor(roles ?? [], chosenHome);
-    return {
-      ...view,
-      load: shellLoad(company.status, membership.status),
-      accessRemoved,
-      companyName: company.data?.companyName ?? null,
-      coachMarksPassed: passed,
-      coachMarkInView: markInView(view.coachMarks, passed),
-      chooseHome,
-      passCoachMark,
-      dismissCoachMarks,
-      retry,
-    };
-  }, [
-    roles,
-    chosenHome,
+  const view = shellViewFor(roles ?? [], chosenHome);
+  return {
+    ...view,
+    read: allReads([readOf(company), readOf(membership)] as const),
     accessRemoved,
-    company.status,
-    company.data,
-    membership.status,
-    passed,
+    companyName: company.data?.companyName ?? null,
+    coachMarksPassed: passed,
+    coachMarkInView: markInView(view.coachMarks, passed),
     chooseHome,
     passCoachMark,
     dismissCoachMarks,
-    retry,
-  ]);
-}
-
-type ReadStatus = 'pending' | 'error' | 'success';
-
-function shellLoad(company: ReadStatus, membership: ReadStatus): ShellLoad {
-  if (company === 'error' || membership === 'error') return 'failed';
-  if (company === 'success' && membership === 'success') return 'ready';
-  return 'loading';
+  };
 }

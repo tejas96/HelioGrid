@@ -70,6 +70,9 @@ export function useSetupInvite(pack: FormatPack): SetupInvite {
   };
   return {
     ...invite,
+    /* The send stays out while its step is recorded; *Send invite* shows working only until it is
+       answered, and the record is `leaving`'s. */
+    sending: invite.sending && !leaving,
     leaving,
     skip: () => leave([['invite_team', 'skipped']]),
     openTeam: async () => {

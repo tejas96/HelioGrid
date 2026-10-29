@@ -26,7 +26,7 @@ export function AssignRoles({
   removal = null,
   person,
   words,
-  rows,
+  read,
   picked,
   onPick,
   grant,
@@ -34,10 +34,10 @@ export function AssignRoles({
   saving,
   onSave,
   onReference,
-  state = 'ready',
   refusal = null,
 }: AssignRolesProps) {
-  const loading = state === 'loading';
+  /* The editor opens only from a list already read, so a read with no rows draws the skeleton. */
+  const rows = read.kind === 'ready' ? read.value : null;
   /* The screen reader's place after the confirm's Cancel: the web's overlay returns it on its own. */
   const save = useRef<FocusHandle>(null);
   return (
@@ -70,7 +70,7 @@ export function AssignRoles({
           </View>
         )}
         footer={
-          loading ? undefined : (
+          rows === null ? undefined : (
             <View style={styles.foot}>
               {refusal === null ? null : (
                 <Banner kind="validation" title={refusal.title ?? undefined}>
@@ -94,7 +94,7 @@ export function AssignRoles({
           )
         }
       >
-        {loading ? (
+        {rows === null ? (
           <View style={styles.body}>
             <LoadingBars label={words.loading} bars={OPTION_BARS} />
           </View>

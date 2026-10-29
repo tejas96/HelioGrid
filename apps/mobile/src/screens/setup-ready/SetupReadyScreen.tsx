@@ -19,16 +19,13 @@ const LEADS_LINK = `${linkingOptions.prefixes[0]}${DOOR_SEGMENT.leads}`;
 export function SetupReadyScreen() {
   const { t } = useI18n();
   const ready = useSetupReady();
-  if (ready.company.status === 'pending') return null;
-  const words = setupReadyWords(t);
+  /* Nothing under the insets either while the company is read. */
+  if (ready.company.kind === 'loading') return null;
   return (
     <InsetDoor>
       <SetupReady
-        words={{
-          ...words,
-          companyLine:
-            ready.company.status === 'ready' ? words.companyLine(ready.company.name) : '',
-        }}
+        read={ready.company}
+        words={setupReadyWords(t)}
         demo={ready.demo}
         leaving={ready.leaving}
         onStartWithLead={async () => {
@@ -36,9 +33,7 @@ export function SetupReadyScreen() {
           void Linking.openURL(LEADS_LINK).catch(() => undefined);
         }}
         onOpenDemo={() => undefined}
-        unreachable={ready.company.status === 'failed'}
         retrying={ready.retrying}
-        onTryAgain={ready.tryAgain}
       />
     </InsetDoor>
   );

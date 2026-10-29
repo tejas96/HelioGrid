@@ -37,9 +37,8 @@ describe('the Proposal template page — its reads and its one save, through the
 
     act(() => view.result.current.edit({ kind: 'section', section: 'performance' }));
     act(() => view.result.current.save());
-    await waitFor(() => expect(view.result.current.status).toBe('save-failed'));
+    await waitFor(() => expect(view.result.current.saveFailure).not.toBeNull());
 
-    expect(view.result.current.saveFailure).not.toBeNull();
     expect(view.result.current.changed.template).toBe(true);
     expect(view.result.current.draft?.template.sectionsIncluded).not.toContain('performance');
   });
@@ -50,7 +49,7 @@ describe('the Proposal template page — its reads and its one save, through the
 
     act(() => view.result.current.edit({ kind: 'section', section: 'performance' }));
     act(() => view.result.current.save());
-    await waitFor(() => expect(view.result.current.status).toBe('save-failed'));
+    await waitFor(() => expect(view.result.current.saveFailure).not.toBeNull());
 
     expect(view.result.current.changed.template).toBe(true);
   });
@@ -76,7 +75,7 @@ describe('the Proposal template page — its reads and its one save, through the
     act(() => view.result.current.edit({ kind: 'section', section: 'components' }));
     act(() => view.result.current.edit({ kind: 'move', from: 1, to: 0 }));
     act(() => view.result.current.save());
-    await waitFor(() => expect(view.result.current.status).toBe('save-failed'));
+    await waitFor(() => expect(view.result.current.saveFailure).not.toBeNull());
     expect(view.result.current.changed).toEqual({ template: false, timeline: true });
 
     act(() => view.result.current.save());
@@ -84,7 +83,7 @@ describe('the Proposal template page — its reads and its one save, through the
 
     expect(templateOrigin.templateBodies).toHaveLength(1);
     expect(templateOrigin.timelineBodies).toHaveLength(2);
-    expect(view.result.current.status).toBe('ready');
+    expect(view.result.current.read.kind).toBe('ready');
   });
 
   it('a draft a field refuses is never sent', async () => {

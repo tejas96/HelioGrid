@@ -1,3 +1,4 @@
+import type { ReadKind } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet } from 'react-native';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
@@ -9,11 +10,11 @@ import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
 import { PRESET_GLYPH } from '../SettingsList/SettingsList.logic';
 import { spokenName } from './RolesReference.logic';
-import type { RolesReferenceCounts, RolesReferencePreset } from './RolesReference.types';
+import type { RolesReferencePreset } from './RolesReference.types';
 
 interface RoleTileProps {
   preset: RolesReferencePreset;
-  counts: RolesReferenceCounts;
+  counts: ReadKind;
   countGap: string;
   open: boolean;
   onOpen: () => void;

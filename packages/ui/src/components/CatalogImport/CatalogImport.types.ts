@@ -12,6 +12,7 @@ import type {
   ComponentKind,
   ImportContinueGate,
   ImportWizardFrame,
+  Read,
 } from '@heliogrid/domain';
 import type { PickedFile } from '../Dropzone/Dropzone.types';
 
@@ -65,8 +66,8 @@ export interface CatalogImportProps {
   onQuery: (query: string) => void;
   /** The rows this visit settled, by the card's row, and their *Undo*. */
   fixed: ReadonlyMap<number, { readonly row: CatalogImportRowWire }>;
-  /** Rows whose fix is out. */
-  busy: ReadonlySet<number>;
+  /** The fix for this row is out. */
+  busy: (rowNumber: number) => boolean;
   /** A card's answer: `target` is the row the request goes to — its own, or a repeat's earlier row. */
   onFix: (
     card: CatalogImportRowWire,
@@ -110,12 +111,9 @@ export interface ImportKept {
 
 /** One list of rows as a hook pages it. */
 export interface ImportRowList {
-  readonly rows: readonly CatalogImportRowWire[];
+  /** The list's read: a failed one offers *Try again* instead of looking empty. */
+  readonly read: Read<readonly CatalogImportRowWire[]>;
   readonly total: number;
-  readonly loading: boolean;
-  /** The read failed: the list offers *Try again* (its `onRetry`) instead of looking empty. */
-  readonly failed?: boolean;
-  readonly onRetry?: () => void;
   readonly hasMore: boolean;
   readonly onMore: () => void;
 }

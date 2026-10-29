@@ -20,13 +20,7 @@ const PANEL_RESERVE = { '--hg-roles-panel': `${ROLES_PANEL_WIDTH}px` } as CSSPro
  * tiles — two across in a narrow room, four in a wide one, three beside the open side panel — and
  * the opened role's details. Read-only: no act here changes a role (`M01-21`).
  */
-export function RolesReference({
-  words,
-  counts,
-  onRetry,
-  title,
-  back = null,
-}: RolesReferenceProps) {
+export function RolesReference({ words, read, title, back = null }: RolesReferenceProps) {
   const [open, setOpen] = useState<RolePreset | null>(null);
   const [last, setLast] = useState<RolePreset | null>(null);
   const [side, setSide] = useState<RolesReferenceSide>('can');
@@ -75,12 +69,12 @@ export function RolesReference({
             {about}
           </div>
         )}
-        {counts === 'failed' ? (
+        {read.kind === 'failed' ? (
           <Banner
             kind="data-integrity"
             density="functional"
             title={words.countsFailed}
-            action={<BannerAction onClick={onRetry}>{words.retry}</BannerAction>}
+            action={<BannerAction onClick={read.retry}>{words.retry}</BannerAction>}
           />
         ) : null}
         <ul aria-label={words.roles} className="hg-roles-reference-tiles">
@@ -88,7 +82,7 @@ export function RolesReference({
             <li key={each.value} className="hg-roles-reference-tile">
               <RoleTile
                 preset={each}
-                counts={counts}
+                counts={read.kind}
                 countGap={words.countGap}
                 open={each.value === open}
                 onOpen={() => {
@@ -104,7 +98,7 @@ export function RolesReference({
       <RoleDetails
         preset={shown}
         open={open !== null}
-        counts={counts}
+        counts={read.kind}
         words={words}
         side={side}
         onSide={setSide}

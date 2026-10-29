@@ -10,10 +10,12 @@ export function ReleasesSheet({ open, onClose }: { open: boolean; onClose: () =>
   const formats = useCatalogFormats();
   const list = useCatalogReleases(open);
   const [picked, setPicked] = useState<string | null>(null);
-  const newestId = list.items[0]?.id ?? null;
+  const listed = list.read.kind === 'ready' ? list.read.value : [];
+  const newestId = listed[0]?.id ?? null;
   const openId = picked ?? newestId;
   const read = useCatalogRelease(open ? openId : null);
-  const head = read.data?.release;
+  const opened = read.kind === 'ready' ? read.value : undefined;
+  const head = opened?.release;
   const shut = () => {
     setPicked(null);
     onClose();
@@ -41,13 +43,12 @@ export function ReleasesSheet({ open, onClose }: { open: boolean; onClose: () =>
               }
         }
         changes={
-          read.data
-            ? catalogReleaseChangesOf(t, read.data.release.counts, read.data.lines.items, formats)
+          opened
+            ? catalogReleaseChangesOf(t, opened.release.counts, opened.lines.items, formats)
             : null
         }
-        surface={read.isError ? 'error' : read.data ? 'ready' : 'loading'}
-        onRetry={() => void read.refetch()}
-        earlier={list.items.flatMap((entry) =>
+        read={read}
+        earlier={listed.flatMap((entry) =>
           entry.id === openId
             ? []
             : [{ id: entry.id, tag: entry.label, when: formats.date(entry.publishedAt) }],

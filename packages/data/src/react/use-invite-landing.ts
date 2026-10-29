@@ -29,7 +29,7 @@ export interface InviteLanding {
 /** A link with no invite behind it, or one the api could not read as a token, is the same dead link. */
 const GONE_CODES: ReadonlySet<string> = new Set(['NOT_FOUND', 'VALIDATION_FAILED']);
 
-async function readOf(
+async function landingRead(
   invitation: InvitationRepository,
   token: string,
   signal: AbortSignal,
@@ -103,7 +103,7 @@ export function useInviteLanding(token: string, onJoined?: () => void): InviteLa
     const aborts = new AbortController();
     switch (pending.kind) {
       case 'read':
-        void readOf(invitation, token, aborts.signal).then((read) => {
+        void landingRead(invitation, token, aborts.signal).then((read) => {
           if (!aborts.signal.aborted) dispatch({ type: 'read-ended', read });
         });
         return () => aborts.abort();

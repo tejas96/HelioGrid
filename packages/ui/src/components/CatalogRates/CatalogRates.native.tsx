@@ -16,22 +16,15 @@ import type { CatalogRate, CatalogRatesProps } from './CatalogRates.types';
  * Catalog settings' Rates panel on the phone: the price book's strip, then its rates grouped by
  * how each is charged — or, before the first version, the teaching with its first act.
  */
-export function CatalogRates({
-  words,
-  surface,
-  onRetry,
-  strip,
-  rates,
-  onAddFirst,
-}: CatalogRatesProps) {
-  const focus = useRetryFocus(surface);
-  if (surface === 'loading') return <LoadingBars label={words.loading} bars={['row', 'panel']} />;
-  if (surface === 'error') {
+export function CatalogRates({ words, read, strip, rates, onAddFirst }: CatalogRatesProps) {
+  const focus = useRetryFocus(read.kind);
+  if (read.kind === 'loading') return <LoadingBars label={words.loading} bars={['row', 'panel']} />;
+  if (read.kind === 'failed') {
     return (
       <EmptyState
         title={words.loadFailed}
         action={
-          <Button variant="secondary" size="lg" onClick={focus.retrying(onRetry)}>
+          <Button variant="secondary" size="lg" onClick={focus.retrying(read.retry)}>
             {words.tryAgain}
           </Button>
         }

@@ -160,9 +160,3 @@ export function catalogRowStatesOf(
   }
   return states;
 }
-
-/** A read's status as a body's surface: still out, failed, or in. */
-export function surfaceOf(status: 'pending' | 'error' | 'success'): 'loading' | 'error' | 'ready' {
-  if (status === 'pending') return 'loading';
-  return status === 'error' ? 'error' : 'ready';
-}

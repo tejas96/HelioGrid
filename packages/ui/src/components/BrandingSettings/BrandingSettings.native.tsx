@@ -22,7 +22,8 @@ import { useFocusAfterGone } from './use-focus-after-gone.native';
  * the page.
  */
 export function BrandingSettings(props: BrandingSettingsProps) {
-  const { words, loading, unsaved, title, standing, saveFailure, onRetry, act } = props;
+  const { words, read, unsaved, title, standing, saveFailure, onRetry, act } = props;
+  const loading = read.kind !== 'ready';
   const editor = useRef<View>(null);
   useFocusAfterGone(editor, {
     act: act !== undefined,

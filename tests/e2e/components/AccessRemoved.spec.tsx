@@ -5,21 +5,12 @@ import { expect, test } from '@playwright/experimental-ct-react';
 const en = await createTranslator('en');
 const words = accessRemovedWords(en.t, 'Suryodaya Solar');
 
-test('signs out once on a double press', async ({ mount }) => {
-  let signOuts = 0;
+test('a sign-out that is out turns the action off, keeping its name', async ({ mount }) => {
   const frame = await mount(
-    <AccessRemoved
-      {...words}
-      onAction={() => {
-        signOuts += 1;
-      }}
-      onGrievance={() => undefined}
-    />,
+    <AccessRemoved {...words} onAction={() => undefined} pending onGrievance={() => undefined} />,
   );
 
-  await frame.getByRole('button', { name: words.actionLabel }).dblclick();
-
-  await expect.poll(() => signOuts).toBe(1);
+  await expect(frame.getByRole('button', { name: words.actionLabel })).toBeDisabled();
   await expect(frame.getByRole('heading', { name: words.title })).toBeVisible();
 });
 
@@ -29,6 +20,7 @@ test('keeps the grievance contact one press away', async ({ mount }) => {
     <AccessRemoved
       {...words}
       onAction={() => undefined}
+      pending={false}
       onGrievance={() => {
         opened += 1;
       }}

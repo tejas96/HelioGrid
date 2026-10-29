@@ -132,3 +132,16 @@ test('a disabled button with a reason stays reachable, says off, and draws no li
   await page.keyboard.press('Tab');
   await expect(button).toBeFocused();
 });
+
+test('a loading button refuses a press', async ({ mount }) => {
+  let presses = 0;
+  const button = await mount(
+    <Button loading onClick={() => (presses += 1)}>
+      {tryAgain}
+    </Button>,
+  );
+  await button.click();
+  await button.click();
+  expect(presses).toBe(0);
+  await expect(button).toHaveAttribute('aria-busy', 'true');
+});

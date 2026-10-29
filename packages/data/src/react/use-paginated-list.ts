@@ -1,7 +1,9 @@
 'use client';
 import type { Paginated } from '@heliogrid/contracts';
+import { mapRead, type Read } from '@heliogrid/domain';
 import { keepPreviousData, type QueryKey, useInfiniteQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
+import { readFailureOf, readOf } from './read';
 
 interface PaginatedListOptions<TItem extends { id: string }> {
   queryKey: QueryKey;
@@ -44,22 +46,28 @@ export function usePaginatedList<TItem extends { id: string }>({
     placeholderData: keepPreviousWhileLoading ? keepPreviousData : undefined,
   });
 
+  /* One array per answer, so a screen that memoises on the rows redraws only when they move. */
   const items = useMemo(
     () => dedupeById(query.data?.pages.flatMap((page) => page.items) ?? []),
     [query.data],
   );
+  /* A next page is a new read, not a re-read of what is shown: when it fails the list says so and
+   *Try again* reads the list again (`F7-23` N10). */
+  const read: Read<readonly TItem[]> = query.isFetchNextPageError
+    ? { kind: 'failed', failure: readFailureOf(query.error), retry: () => void query.refetch() }
+    : mapRead(readOf(query), () => items);
 
   return {
-    items,
+    /** Ready once the first page is in; failed when a later page fails. */
+    read,
+    /** The rows of the pages already in, whatever the next page did. */
+    shown: items,
     totalCount: query.data?.pages.at(-1)?.totalCount ?? 0,
-    status: query.status,
-    error: query.error,
     hasNextPage: query.hasNextPage,
     fetchNextPage: query.fetchNextPage,
     isFetchingNextPage: query.isFetchingNextPage,
-    /** The next page failed while the pages already shown stand — `status` reads `error` then too. */
+    /** The next page failed while the pages already shown stand. */
     isFetchNextPageError: query.isFetchNextPageError,
-    refetch: query.refetch,
   };
 }
 

@@ -20,6 +20,7 @@ import { ValueSource } from '../ValueSource/ValueSource.native';
 import {
   languageOf,
   PROFILE_PREFERENCES_LOADING,
+  pushSwitchesOf,
   pushSwitchWords,
   roleBadges,
   unitOptions,
@@ -34,13 +35,13 @@ import type { ProfilePreferencesProps } from './ProfilePreferences.types';
  * page bar's, not the page's.
  */
 export function ProfilePreferences(props: ProfilePreferencesProps) {
-  const { words, push, onRetry } = props;
+  const { words, read } = props;
   /* *Try again* leaves with its banner; the page that follows takes the screen reader's focus. */
   const [retried, setRetried] = useState(false);
-  if (push.surface === 'loading') {
+  if (read.kind === 'loading') {
     return <LoadingBars label={words.loading} bars={PROFILE_PREFERENCES_LOADING} />;
   }
-  if (push.surface === 'error') {
+  if (read.kind === 'failed') {
     return (
       <Banner
         kind="state"
@@ -50,7 +51,7 @@ export function ProfilePreferences(props: ProfilePreferencesProps) {
           <BannerAction
             onClick={() => {
               setRetried(true);
-              onRetry();
+              read.retry();
             }}
           >
             {words.loadFailed.retry}
@@ -73,7 +74,8 @@ function Page({
   onRole,
   onLanguage,
   onUnits,
-  push,
+  read,
+  refused,
   onPush,
   takeFocus,
 }: ProfilePreferencesProps & { takeFocus: boolean }) {
@@ -163,8 +165,8 @@ function Page({
           />
         </View>
         <View style={styles.switches}>
-          {push.switches.map((one) => {
-            const { label, error } = pushSwitchWords(words, push, one);
+          {pushSwitchesOf(read).map((one) => {
+            const { label, error } = pushSwitchWords(words, refused, one);
             if (!one.locked) {
               return (
                 <Switch

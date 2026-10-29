@@ -24,24 +24,24 @@ import './CatalogRates.css';
  * version it teaches that the first set becomes version 1.
  */
 export function CatalogRates(props: CatalogRatesProps) {
-  const { words, surface } = props;
+  const { words, read } = props;
   const [room, width] = useOwnWidth();
   const wide = width !== null && width >= CATALOG_WIDE_FROM;
-  const focus = useRetryFocus(surface);
+  const focus = useRetryFocus(read.kind);
   return (
     <div className="hg-cat-rates" ref={room} data-wide={wide ? 'true' : undefined}>
-      {surface === 'error' ? (
+      {read.kind === 'failed' ? (
         <EmptyState
           glow={false}
           icon={<ShellGlyph name="alert-circle" size="xl" />}
           title={words.loadFailed}
           action={
-            <Button variant="secondary" size="lg" onClick={focus.retrying(props.onRetry)}>
+            <Button variant="secondary" size="lg" onClick={focus.retrying(read.retry)}>
               {words.tryAgain}
             </Button>
           }
         />
-      ) : surface === 'loading' ? (
+      ) : read.kind === 'loading' ? (
         <LoadingBars label={words.loading} bars={['row', 'row', 'row', 'row']} />
       ) : (
         <RatesReady props={props} wide={wide} focusRef={focus.target} />

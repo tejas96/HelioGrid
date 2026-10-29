@@ -1,8 +1,9 @@
 'use client';
 import type { UiLanguage } from '@heliogrid/contracts';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { queryKeys } from '../cache/keys';
+import { useAction } from './action';
 import { useRepositories } from './context';
 import { useSession } from './use-session';
 
@@ -28,23 +29,20 @@ export function useSetupLanguage(): SetupLanguageStep {
   const repositories = useRepositories();
   const queryClient = useQueryClient();
   const tenantId = user?.tenant?.id ?? '';
-  const save = useMutation({
-    mutationFn: async (language: UiLanguage) =>
-      (await setInterfaceLanguage(language))
-        ? repositories.onboarding.recordStep('language', 'completed')
-        : null,
-    onSuccess: (progress) => {
-      if (progress !== null) queryClient.setQueryData(queryKeys.setup.progress(tenantId), progress);
-    },
+  const save = useAction(async (language: UiLanguage) => {
+    /* A step recorded over a language that was never stored would open the next sign-in in the old one. */
+    if (!(await setInterfaceLanguage(language))) throw new Error('the language was not stored');
+    const progress = await repositories.onboarding.recordStep('language', 'completed');
+    queryClient.setQueryData(queryKeys.setup.progress(tenantId), progress);
   });
-  const { mutate, isPending, isError, data } = save;
+  const { pending, failure, run } = save;
   return useMemo(
     () => ({
-      saving: isPending,
-      failed: isError || data === null,
-      record: mutate,
+      saving: pending,
+      failed: failure !== null,
+      record: (language: UiLanguage) => void run(language),
       putOff: () => putOffSetup('language'),
     }),
-    [isPending, isError, data, mutate, putOffSetup],
+    [pending, failure, run, putOffSetup],
   );
 }

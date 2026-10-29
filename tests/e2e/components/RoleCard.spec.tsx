@@ -85,7 +85,7 @@ test.describe('at 375', () => {
     mount,
     page,
   }) => {
-    const card = await mount(<RoleCardAsHeld reader="en" names={BOARD} surface="error" />);
+    const card = await mount(<RoleCardAsHeld reader="en" names={BOARD} surface="failed" />);
     const sheet = page.getByRole('dialog');
     await expect(sheet).toContainText(SALES.error.title);
     await expect(sheet).toContainText(SALES.error.body);

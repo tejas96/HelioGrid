@@ -33,12 +33,12 @@ const LOADING_ROWS = ['row', 'row', 'row', 'row', 'row', 'row'] as const;
  * absent without the grant, never disabled.
  */
 export function CatalogItems(props: CatalogItemsProps) {
-  const { words, surface } = props;
+  const { words, read } = props;
   const [room, width] = useOwnWidth();
   const wide = width !== null && width >= CATALOG_WIDE_FROM;
-  const focus = useRetryFocus(surface);
+  const focus = useRetryFocus(read.kind);
 
-  if (surface === 'error') {
+  if (read.kind === 'failed') {
     return (
       <div className="hg-cat-items" ref={room}>
         <EmptyState
@@ -47,7 +47,7 @@ export function CatalogItems(props: CatalogItemsProps) {
           title={words.loadFailed}
           description={words.loadFailedBody}
           action={
-            <Button variant="secondary" size="lg" onClick={focus.retrying(props.onRetry)}>
+            <Button variant="secondary" size="lg" onClick={focus.retrying(read.retry)}>
               {words.tryAgain}
             </Button>
           }
@@ -56,7 +56,7 @@ export function CatalogItems(props: CatalogItemsProps) {
     );
   }
 
-  const loading = surface === 'loading';
+  const loading = read.kind === 'loading';
   return (
     <div className="hg-cat-items" ref={room} data-wide={wide ? 'true' : undefined}>
       {loading ? (

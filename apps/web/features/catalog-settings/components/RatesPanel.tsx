@@ -36,7 +36,7 @@ export function RatesPanel({ administers, toasts }: { administers: boolean; toas
   const book = usePriceBook();
   const draft = usePriceBookDraft();
   const [versionsOpen, setVersionsOpen] = useState(false);
-  const active = book.data;
+  const active = book.kind === 'ready' ? book.value : undefined;
   const version = active?.version ?? null;
   const start = () => {
     if (active !== undefined) draft.start(active);
@@ -66,8 +66,7 @@ export function RatesPanel({ administers, toasts }: { administers: boolean; toas
     <>
       <CatalogRates
         words={catalogRatesWords(t)}
-        surface={book.isError ? 'error' : active === undefined ? 'loading' : 'ready'}
-        onRetry={() => void book.refetch()}
+        read={book}
         strip={strip}
         rates={versionRatesOf(active?.rates ?? [], locale)}
         onAddFirst={administers && version === null ? start : null}
@@ -101,7 +100,7 @@ export function RatesPanel({ administers, toasts }: { administers: boolean; toas
                 variant="primary"
                 size="lg"
                 fullWidth
-                loading={draft.publishing.busy}
+                loading={draft.publishing.pending}
                 disabled={draft.incomplete}
                 onClick={() => void save()}
               >
@@ -128,7 +127,7 @@ export function RatesPanel({ administers, toasts }: { administers: boolean; toas
           }))}
           onAddRate={draft.addRate}
           noteHint={draft.noteMissing ? t(PRICE_BOOK.noteNeeded) : null}
-          problem={draft.publishing.failed ? t(PRICE_BOOK.saveFailed) : null}
+          problem={draft.publishing.failure === null ? null : t(PRICE_BOOK.saveFailed)}
         />
       </EditorSurface>
       <RateSheet draft={draft} />

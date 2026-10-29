@@ -1,4 +1,4 @@
-import { useConnection, useSession, useShell } from '@heliogrid/data/react';
+import { useAction, useConnection, useSession, useShell } from '@heliogrid/data/react';
 import {
   accessRemovedWords,
   connectionWords,
@@ -37,7 +37,8 @@ export function ShellScreen() {
   const [grievance, setGrievance] = useState(false);
   const items = usePillItems(shell, actionRef);
   const showGrievance = () => setGrievance(true);
-  const signOut = () => void session.signOut();
+  const leaving = useAction<void, void>(() => session.signOut());
+  const signOut = () => void leaving.run();
   const connection = useConnection();
   const inFront = useIsFocused();
 
@@ -49,6 +50,7 @@ export function ShellScreen() {
         <AccessRemoved
           {...accessRemovedWords(t, shell.companyName)}
           onAction={signOut}
+          pending={leaving.pending}
           onGrievance={showGrievance}
         />
         <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />
@@ -86,7 +88,7 @@ export function ShellScreen() {
             switcherWidth={switcherWidth(width)}
             titleAnchor={titleRef}
           />
-          <HomeBlocks {...homeBlocksWords(t, home)} load={shell.load} onRetry={shell.retry} />
+          <HomeBlocks {...homeBlocksWords(t, home)} read={shell.read} />
         </>
       )}
       {/* A mark points at THIS screen's controls. Under a door a link opened, the home is mounted

@@ -22,11 +22,11 @@ export const MPPT_WINDOW = { min: 0, max: 1000, step: 10 } as const;
 
 /** What the body shows above the item card: the pre-fill's banner, else the spreadsheet tile. */
 export function bodyHeadOf(props: CatalogItemFormProps) {
-  const { words, onSpreadsheet, draft, loading } = props;
+  const { words, onSpreadsheet, draft, read } = props;
   return {
     banner: words.banner,
     spreadsheet: words.banner === null ? onSpreadsheet : null,
-    needs: !loading && draftIsBlank(draft),
+    needs: read.kind !== 'loading' && draftIsBlank(draft),
   };
 }
 

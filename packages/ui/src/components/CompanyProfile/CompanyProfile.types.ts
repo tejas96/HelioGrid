@@ -3,6 +3,7 @@ import type {
   CompanyProfileLife,
   CompanyProfilePart,
   CompanyProfileValues,
+  Read,
   StandingMark,
   TenantSegment,
 } from '@heliogrid/domain';
@@ -158,8 +159,8 @@ export interface CompanyProfileProps {
   saving: boolean;
   /** The primary, whichever word it carries: the save, or its retry. */
   onSave: () => void;
-  /** Reads the profile again, after a read that failed. */
-  onRetryRead: () => void;
+  /** The profile's read; failed, its retry is the unread message's. The words say each state. */
+  read: Read<unknown>;
   /** Leaves the step with nothing saved: after a failed read, or a failed save. */
   onContinueWithout: () => void;
   /** The held logo's picture, where the screen has one to show. */

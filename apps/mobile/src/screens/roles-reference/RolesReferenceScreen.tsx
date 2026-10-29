@@ -30,7 +30,7 @@ export function RolesReferenceScreen({ from }: { from: string | null }) {
       : settings;
   return (
     <ShellPage inView="more" drillDown={drillDown}>
-      <RolesReference words={words} counts={reference.load} onRetry={reference.retry} title="bar" />
+      <RolesReference words={words} read={reference.read} title="bar" />
     </ShellPage>
   );
 }

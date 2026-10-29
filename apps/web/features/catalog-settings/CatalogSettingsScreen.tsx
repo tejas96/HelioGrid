@@ -45,14 +45,14 @@ function CatalogIn() {
     {
       value: 'items',
       label: t(CATALOG_SETTINGS.items),
-      count: facts.surface === 'ready' ? facts.allCount : undefined,
+      count: facts.read.kind === 'ready' ? facts.allCount : undefined,
     },
     { value: 'rates', label: t(CATALOG_SETTINGS.rates) },
   ];
   const choose = (value: string) => setPanel(value === 'rates' ? 'rates' : 'items');
 
   /* A page that did not load is its error alone (s-error-load): nothing to switch between. */
-  const switchable = facts.surface !== 'error';
+  const switchable = facts.read.kind !== 'failed';
   return (
     <div className="hg-shell-page hg-catalog-page" ref={room}>
       <header className="hg-catalog-head">

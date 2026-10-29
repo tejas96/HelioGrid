@@ -22,7 +22,7 @@ export function AssignRoles({
   removal = null,
   person,
   words,
-  rows,
+  read,
   picked,
   onPick,
   grant,
@@ -30,10 +30,10 @@ export function AssignRoles({
   saving,
   onSave,
   onReference,
-  state = 'ready',
   refusal = null,
 }: AssignRolesProps) {
-  const loading = state === 'loading';
+  /* The editor opens only from a list already read, so a read with no rows draws the skeleton. */
+  const rows = read.kind === 'ready' ? read.value : null;
   return (
     <>
       <EditorSurface
@@ -62,7 +62,7 @@ export function AssignRoles({
           </div>
         )}
         footer={
-          loading ? undefined : (
+          rows === null ? undefined : (
             <div className="hg-assign-roles-foot">
               {refusal === null ? null : (
                 <Banner kind="validation" title={refusal.title ?? undefined}>
@@ -85,7 +85,7 @@ export function AssignRoles({
           )
         }
       >
-        {loading ? (
+        {rows === null ? (
           <div className="hg-assign-roles-body">
             <LoadingBars label={words.loading} bars={OPTION_BARS} />
           </div>

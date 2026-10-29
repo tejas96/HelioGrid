@@ -109,7 +109,7 @@ export function CatalogItemFormAsRead({
         refusal={refusal}
         priced={priced}
         onSpreadsheet={setup.spreadsheet === false ? null : act('spreadsheet')}
-        loading={setup.loading === true}
+        read={setup.loading === true ? { kind: 'loading' } : { kind: 'ready', value: null }}
         saving={false}
         returned={setup.returned === true}
         confirmingDiscard={setup.confirmingDiscard === true}

@@ -1,4 +1,4 @@
-import type { ShellLoad } from '@heliogrid/domain';
+import type { Read } from '@heliogrid/domain';
 
 /** One block of the home: the home's own work, or a composed preset's (`M13-10`). */
 export interface HomeBlock {
@@ -14,12 +14,11 @@ export interface HomeBlock {
  */
 export interface HomeBlocksProps {
   blocks: HomeBlock[];
-  /** The shell's own load, passed straight through. */
-  load: ShellLoad;
+  /** The shell's own read, passed straight through; a ready read teaches. */
+  read: Read<unknown>;
   emptyTitle: string;
   emptyMessage: string;
   errorTitle: string;
   errorMessage: string;
   retryLabel: string;
-  onRetry: () => void;
 }
