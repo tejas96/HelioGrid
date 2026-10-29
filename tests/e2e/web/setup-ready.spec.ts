@@ -30,7 +30,7 @@ async function reachReadyStep(page: Page): Promise<string> {
   return company;
 }
 
-test('after the invite step the company is named and exactly two doors are offered; the demo door says it is not ready', async ({
+test('after the invite step the company is named and exactly two doors are offered; the demo door says it is not ready, and its Try again reads the company again', async ({
   page,
 }) => {
   const company = await reachReadyStep(page);
@@ -38,7 +38,13 @@ test('after the invite step the company is named and exactly two doors are offer
   await expect(page.getByText(ready.companyLine(company))).toBeVisible();
   await expect(page.getByRole('heading', { level: 2 })).toHaveText([ready.lead.title]);
   await expect(page.getByText(ready.demo.failed)).toBeVisible();
-  await expect(page.getByRole('button')).toHaveText([ready.lead.act]);
+  await expect(page.getByRole('button')).toHaveText([ready.lead.act, ready.tryAgain]);
+  const reread = page.waitForResponse(
+    (response) => response.request().method() === 'GET' && response.url().endsWith('/tenants/me'),
+  );
+  await page.getByRole('button', { name: ready.tryAgain }).click();
+  expect((await reread).status()).toBe(200);
+  await expect(page.getByText(ready.demo.failed)).toBeVisible();
   await expect(shell(page)).toHaveCount(0);
   await expectNoSidewaysScroll(page);
   await expectNoSeriousViolations(page);
