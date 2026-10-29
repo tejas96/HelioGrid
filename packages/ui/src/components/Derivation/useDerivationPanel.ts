@@ -1,6 +1,6 @@
 import { useContext, useEffect, useId, useState } from 'react';
 import type { DerivationProps } from './Derivation.types';
-import { partsKey } from './Derivation.types';
+import { kindWordsKey, partsKey } from './Derivation.types';
 import { DerivationGroupContext } from './DerivationGroup.context';
 
 interface PanelState {
@@ -21,13 +21,14 @@ export function useDerivationPanel({
   parts,
   label,
   summary,
+  kindWords,
   open,
   defaultOpen = false,
   onToggle,
   id,
 }: Pick<
   DerivationProps,
-  'parts' | 'label' | 'summary' | 'open' | 'defaultOpen' | 'onToggle' | 'id'
+  'parts' | 'label' | 'summary' | 'kindWords' | 'open' | 'defaultOpen' | 'onToggle' | 'id'
 >): PanelState {
   const generatedId = useId();
   const myId = id ?? generatedId;
@@ -37,16 +38,17 @@ export function useDerivationPanel({
   const isOpen = open ?? (group === null ? local : group.isOpen(myId));
   const key = partsKey(parts);
   const labelKey = typeof label === 'string' ? label : '';
+  const wordsKey = kindWordsKey(kindWords);
   const register = group?.register;
   const unregister = group?.unregister;
 
   /* Registered for the print appendix. Serialised deps, so an inline `parts` array cannot loop. */
-  // biome-ignore lint/correctness/useExhaustiveDependencies: `key` and `labelKey` ARE the deps — they are the serialised identities of `parts`, `label` and `summary`, and depending on those values directly re-registers on every render because a caller writes `parts={[…]}` inline.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `key`, `labelKey` and `wordsKey` ARE the deps — they are the serialised identities of `parts`, `label` and `kindWords`, and depending on those values directly re-registers on every render because a caller writes `parts={[…]}` inline.
   useEffect(() => {
     if (register === undefined || unregister === undefined) return;
-    register(myId, { label, parts, summary });
+    register(myId, { label, parts, summary, kindWords });
     return () => unregister(myId);
-  }, [register, unregister, myId, key, labelKey]);
+  }, [register, unregister, myId, key, labelKey, wordsKey]);
 
   const toggle = () => {
     const next = !isOpen;

@@ -89,6 +89,7 @@ function Drop(props: ImportFileStepProps & { again: boolean }) {
   return (
     <div className="hg-import-drop" data-fills={again ? 'false' : 'true'}>
       <Dropzone
+        words={words.dropzone}
         label={again ? words.dropAnother : words.choose}
         hint={again ? words.dropAnotherHint(upload.maxSizeMB) : words.chooseHint(upload.maxSizeMB)}
         accept={upload.accept}
@@ -125,6 +126,8 @@ function ReadFile(props: ImportFileStepProps) {
   const sheetSelect = (
     <Select
       label={words.sheetLabel}
+      placeholder={words.selectPlaceholder}
+      closeLabel={words.closeList}
       value={mapping === null ? undefined : String(mapping.sheet)}
       options={sheets.map((read, index) => ({ value: String(index), label: read.name }))}
       helper={words.sheetHelper(sheets.length)}
@@ -135,6 +138,8 @@ function ReadFile(props: ImportFileStepProps) {
   const headerSelect = (
     <Select
       label={words.headerRowLabel}
+      placeholder={words.selectPlaceholder}
+      closeLabel={words.closeList}
       value={String(headerRow)}
       options={(sheet?.topRows ?? []).map((_, index) => ({
         value: String(index),

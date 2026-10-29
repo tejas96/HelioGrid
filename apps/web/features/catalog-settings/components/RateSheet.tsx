@@ -1,6 +1,6 @@
 'use client';
 import type { PriceBookDraft } from '@heliogrid/data/react';
-import { catalogVersionWords, PRICE_BOOK, rateSheetWords } from '@heliogrid/i18n';
+import { catalogVersionWords, PRICE_BOOK, rateSheetActs, rateSheetWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import { Button, CatalogRateEdit, EditorSurface } from '@heliogrid/ui';
 
@@ -12,6 +12,7 @@ export function RateSheet({ draft }: { draft: PriceBookDraft }) {
   const { t } = useI18n();
   const editing = draft.editing;
   const words = editing === null ? null : rateSheetWords(t, editing.rate, editing.added);
+  const acts = rateSheetActs(t);
   return (
     <EditorSurface
       open={editing !== null}
@@ -25,7 +26,7 @@ export function RateSheet({ draft }: { draft: PriceBookDraft }) {
       footer={
         <div className="hg-catalog-foot">
           <Button variant="secondary" size="lg" fullWidth onClick={draft.cancelEdit}>
-            {words?.cancel ?? ''}
+            {acts.cancel}
           </Button>
           <Button
             variant="primary"
@@ -34,7 +35,7 @@ export function RateSheet({ draft }: { draft: PriceBookDraft }) {
             disabled={editing?.nameless ?? true}
             onClick={draft.doneEdit}
           >
-            {words?.done ?? ''}
+            {acts.done}
           </Button>
         </div>
       }
@@ -45,6 +46,7 @@ export function RateSheet({ draft }: { draft: PriceBookDraft }) {
           onName={draft.setEditName}
           basis={editing.rate.basis}
           basisLabel={words.basis}
+          select={words.select}
           bases={catalogVersionWords(t).bases}
           onBasis={draft.setEditBasis}
           remove={

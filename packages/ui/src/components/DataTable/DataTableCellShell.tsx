@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { isMonoColumn, isStrongColumn } from './DataTableCell.logic';
 import type { DataTableColumn } from './DataTableColumn.types';
 
 /**
@@ -8,9 +9,9 @@ import type { DataTableColumn } from './DataTableColumn.types';
  */
 function columnToneAttrs<Row>(column: DataTableColumn<Row>) {
   return {
-    'data-mono': column.mono === true || column.numeric === true ? 'true' : undefined,
+    'data-mono': isMonoColumn(column) ? 'true' : undefined,
     'data-numeric': column.numeric === true ? 'true' : undefined,
-    'data-strong': column.primary === true || column.strong === true ? 'true' : undefined,
+    'data-strong': isStrongColumn(column) ? 'true' : undefined,
     'data-muted': column.muted === true ? 'true' : undefined,
   };
 }

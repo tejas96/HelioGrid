@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { PendingActionSpec } from '../PendingAction/PendingAction.types';
 
@@ -12,14 +13,14 @@ export interface Finding {
   meaning?: ReactNode;
   status?: FindingStatus;
   /** Overrides the status word on the row. The tone and rank stay the status's. */
-  statusLabel?: string;
+  statusLabel?: TranslatedText;
   /** Which check family it came from — `(a)`–`(f)` on the Generate gate. Quiet row label. */
   family?: ReactNode;
   /** The step that can fix it, for the composed jump label: "Fix in step 4". */
-  step?: string;
+  step?: TranslatedText;
   /** The jump. Lands on the exact step with the failing fields in `error` (`M06-23`). */
   onJump?: () => void;
-  jumpLabel?: string;
+  jumpLabel?: TranslatedText;
   /** The second, inline one-tap fix — `MS6-27`'s "Auto-string now". Omit where there is none. */
   fix?: { label: ReactNode; onFix?: () => void };
   /** A tick that is a server write — the inline fix in flight, rendered by `PendingAction`. */
@@ -28,7 +29,8 @@ export interface Finding {
 
 export interface FindingVerdict {
   status: FindingStatus;
-  label: string;
+  /** The worst status's verdict, in the reader's language — `FindingListWords.verdict`. */
+  label: TranslatedText;
   total: number;
   openCount: number;
   blockingCount: number;
@@ -37,14 +39,42 @@ export interface FindingVerdict {
   passes: boolean;
 }
 
-/** One row of the status table. `tone`/`bg`/`mark` are each platform's own colour vocabulary. */
+/**
+ * One row of the status table. `tone`/`bg`/`mark` are each platform's own colour vocabulary. The
+ * status's words are the caller's — `FindingListWords.status` and `.verdict`.
+ */
 export interface FindingStatusMeta {
   rank: number;
-  label: string;
   tone: string;
   bg: string;
   mark: string;
-  verdict: string;
+}
+
+/**
+ * Every word the list composes itself, in the reader's language — `@heliogrid/i18n`'s
+ * `findingListWords(t)`. The count in each sentence comes from the list (`findingVerdict`).
+ */
+export interface FindingListWords {
+  /** Each status's word on a row and on the verdict pill — *Blocking*, *Needs attention*, *Ready*. */
+  status: Readonly<Record<FindingStatus, TranslatedText>>;
+  /** The worst-of verdict's sentence — *Blocking — this cannot be shared yet*. */
+  verdict: Readonly<Record<FindingStatus, TranslatedText>>;
+  /** The composed heading — *Fix 5 issues to share*; `action` is the caller's `actionLabel`. */
+  heading: (openCount: number, action?: string) => TranslatedText;
+  /** The heading once nothing is open, unless the caller's `passTitle` replaces it. */
+  passTitle: TranslatedText;
+  /** The count line with no findings at all — *No checks ran.* */
+  noChecks: TranslatedText;
+  /** The count line once every check is ready, unless `passMessage` replaces it. */
+  allReady: (total: number) => TranslatedText;
+  /** The count line while work is open — every member of the set is in one of its numbers. */
+  openCount: (counts: Omit<FindingVerdict, 'status' | 'label' | 'passes'>) => TranslatedText;
+  /** The ready fold's control — *Show the 3 ready checks* / *Hide …*. */
+  readyToggle: (count: number, open: boolean) => TranslatedText;
+  /** The jump's words where neither the finding nor the list names its own. */
+  jump: TranslatedText;
+  /** The jump's words for a finding that names its step — *Fix in step 4*. */
+  fixIn: (step: string) => TranslatedText;
 }
 
 /**
@@ -66,8 +96,10 @@ export interface FindingStatusMeta {
  */
 export interface FindingListProps {
   findings: Finding[];
-  /** The gated act, for the composed heading — "Fix 5 issues to **share**". */
-  actionLabel?: string;
+  /** The list's own words — `findingListWords(t)`. */
+  words: FindingListWords;
+  /** The gated act, for the composed heading — "Fix 5 issues to **share**". Without it, *share*. */
+  actionLabel?: TranslatedText;
   /** Replaces the composed heading. **The count still comes from the list.** */
   title?: ReactNode;
   /**
@@ -86,7 +118,9 @@ export interface FindingListProps {
   /** The worst-of verdict pill above the list. */
   verdict?: boolean;
   onJump?: (finding: Finding) => void;
-  jumpLabel?: string;
+  /** Replaces `words.jump` for every finding that names no step and no jump of its own. */
+  jumpLabel?: TranslatedText;
+  /** Replaces `words.passTitle`. */
   passTitle?: ReactNode;
   passMessage?: ReactNode;
   note?: ReactNode;

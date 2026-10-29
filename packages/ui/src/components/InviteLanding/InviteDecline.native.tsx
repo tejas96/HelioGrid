@@ -2,13 +2,13 @@
 import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { type FocusHandle, useFocusAfter } from '../../primitives/FocusAfter';
 import { closeKeyboard } from '../../primitives/Keyboard/use-keyboard.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Banner } from '../Banner/Banner.native';
 import { Button } from '../Button/Button.native';
 import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { STACK_BELOW_LONG_ACT } from '../InviteForm/InviteForm.logic';
-import type { FocusHandle } from '../SearchField/SearchField.types';
 import { SheetActions } from '../Sheet/SheetActions.native';
 import type { InviteDeclineProps } from './InviteLanding.types';
 
@@ -18,8 +18,11 @@ import type { InviteDeclineProps } from './InviteLanding.types';
  * screen. Opening it closes the keyboard, which would cover a sheet rising from the foot; Keep
  * sends the screen reader back to the control, as the web overlay does by itself.
  */
-export function InviteDecline({ words, decline, onPress }: InviteDeclineProps) {
+export function InviteDecline({ words, decline, onPress, focusAfter }: InviteDeclineProps) {
   const control = useRef<FocusHandle>(null);
+  /* A confirmed decline takes the control and the invite away: the screen reader goes to the
+     declined frame's act. */
+  const leaving = useFocusAfter(focusAfter);
   const keep = () => {
     onPress('keep');
     control.current?.focus();
@@ -65,7 +68,7 @@ export function InviteDecline({ words, decline, onPress }: InviteDeclineProps) {
               variant="destructive"
               size="lg"
               loading={decline.sending}
-              onClick={() => onPress('confirm-decline')}
+              onClick={leaving(() => onPress('confirm-decline'))}
             >
               {words.go}
             </Button>

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
@@ -13,7 +14,7 @@ export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
  * a figure is `Provenance`. Neither is ever this.
  */
 export interface TooltipProps {
-  label: string;
+  label: TranslatedText;
   children: ReactNode;
   placement?: TooltipPlacement;
   /** Hover delay in ms. Focus opens immediately after the same delay. */

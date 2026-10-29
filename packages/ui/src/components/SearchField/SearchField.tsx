@@ -2,16 +2,21 @@ import type { CSSProperties } from 'react';
 import { useImperativeHandle, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
+import { closingPress, type FocusHandle } from '../../primitives/FocusAfter';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { FiltersButton } from '../FilterBar';
-import type { FocusHandle, SearchFieldProps } from './SearchField.types';
+import { clearActOf, searchName } from './SearchField.logic';
+import type { SearchFieldProps } from './SearchField.types';
 
 type WebSearchFieldProps = SearchFieldProps & {
   className?: string;
   style?: CSSProperties;
 };
 
-type SearchPillProps = Omit<SearchFieldProps, 'onFilterClick' | 'filterCount' | 'filterLabel'> & {
+type SearchPillProps = Omit<
+  SearchFieldProps,
+  'onFilterClick' | 'filterCount' | 'filterLabel' | 'filterActiveLabel'
+> & {
   className?: string;
   style?: CSSProperties;
 };
@@ -25,11 +30,17 @@ type SearchPillProps = Omit<SearchFieldProps, 'onFilterClick' | 'filterCount' | 
  */
 export function SearchField(props: WebSearchFieldProps) {
   if (props.onFilterClick === undefined) return <SearchPill {...props} />;
-  const { onFilterClick, filterCount, filterLabel, className, style, ...pill } = props;
+  const { onFilterClick, filterCount, filterLabel, filterActiveLabel, className, style, ...pill } =
+    props;
   return (
     <div className={classNames('hg-search-field-row', className)} style={style}>
       <SearchPill {...pill} />
-      <FiltersButton onClick={onFilterClick} count={filterCount} label={filterLabel} />
+      <FiltersButton
+        onClick={onFilterClick}
+        count={filterCount}
+        label={filterLabel}
+        activeLabel={filterActiveLabel}
+      />
     </div>
   );
 }
@@ -37,9 +48,10 @@ export function SearchField(props: WebSearchFieldProps) {
 function SearchPill({
   value,
   onChange,
-  placeholder = 'Search name, phone or city',
+  placeholder,
   density = 'expressive',
   onClear,
+  clearLabel,
   disabled = false,
   ariaLabel,
   ref,
@@ -48,8 +60,9 @@ function SearchPill({
 }: SearchPillProps) {
   const [focus, setFocus] = useState(false);
   const input = useRef<FocusHandle>(null);
+  /* The clear leaves with the value it cleared: focus goes back to the field, to type again. */
+  const clearAct = clearActOf(value, onClear, clearLabel);
   useImperativeHandle(ref, () => ({ focus: () => input.current?.focus() }), []);
-  const hasValue = value !== undefined && value !== '';
   return (
     <div
       className={classNames('hg-search-field', className)}
@@ -80,17 +93,17 @@ function SearchPill({
         value={value}
         disabled={disabled}
         placeholder={placeholder}
-        aria-label={ariaLabel ?? placeholder}
+        aria-label={searchName(ariaLabel, placeholder)}
         onChange={(event) => onChange?.(event.target.value)}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
       />
-      {hasValue && onClear !== undefined ? (
+      {clearAct !== null ? (
         <button
           type="button"
           className="hg-search-field-clear"
-          aria-label="Clear search"
-          onClick={onClear}
+          aria-label={clearAct.label}
+          onClick={closingPress(input)(clearAct.clear)}
         >
           <span className="hg-search-field-clear-pill">
             <svg

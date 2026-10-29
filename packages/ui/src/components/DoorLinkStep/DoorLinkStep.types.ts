@@ -2,6 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { GoogleLinkFrame, LoginPress } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
+import type { PhoneFieldWords } from '../PhoneField/PhoneField.types';
 import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
 
 /**
@@ -22,6 +23,8 @@ export interface DoorLinkStepWords {
   /** The way back to the number step, in the header row. */
   useNumber: { label: TranslatedText; aria: TranslatedText };
   phoneLabel: TranslatedText;
+  /** The number box's spoken name. */
+  phoneField: PhoneFieldWords;
   /** The field's own answer to a number of the wrong length; absent as the step opens. */
   phoneError: TranslatedText | undefined;
   send: { label: TranslatedText; aria: TranslatedText } | null;

@@ -1,9 +1,11 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { Read } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
+import type { AllocationMeterWords } from '../AllocationMeter/AllocationMeter.types';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import type { BrandingDocumentFacts } from '../BrandingSettings/BrandingSettings.types';
 import type { DocumentTranche } from '../DocumentPreview/DocumentPreview.types';
+import type { NumberFieldWords } from '../NumberField/NumberField.types';
 
 /**
  * The Payment terms page body (`SCR-M01-20`): the list of templates as cards that show their
@@ -58,6 +60,8 @@ export interface PaymentTermsSettingsWords {
   readonly done: TranslatedText;
   readonly pickerTitle: TranslatedText;
   archivedCount(count: number): TranslatedText;
+  /** The archive button's drawn count. */
+  archivedShown(count: number): TranslatedText;
   /** *Add a tranche* names the line it adds by its number. */
   newTranche(number: number): TranslatedText;
   /** A card's spoken name: its name as the company wrote it, *{name}, default* on the default. */
@@ -76,6 +80,10 @@ export interface PaymentTermsSettingsWords {
   trancheShare(tranche: string, share: string): TranslatedText;
   /** The letterhead logo's spoken name — *{company} logo*. */
   logoAlt(company: string): TranslatedText;
+  /** The split's meter says these itself (`allocationMeterWords`). */
+  readonly meter: AllocationMeterWords;
+  /** A tranche's share field says these itself (`numberFieldWords`). */
+  readonly numberField: NumberFieldWords;
 }
 
 /** One part of a card's split: the share and the stage it falls due at. */
@@ -192,7 +200,7 @@ export interface PaymentTermsFootProps {
   /** The meter's line — `allocationSentence`. */
   readonly sentence: TranslatedText;
   /** Why *Save terms* is refused — `allocationRefusal`; absent when the split is whole. */
-  readonly refusal?: string;
+  readonly refusal?: TranslatedText;
   readonly saving: boolean;
   readonly saveFailed: boolean;
   /** The api's own words when the save was refused for another reason (a conflict). */

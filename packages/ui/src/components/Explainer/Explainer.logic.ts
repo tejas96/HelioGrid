@@ -1,4 +1,4 @@
-import type { ExplainerView } from '@heliogrid/domain';
+import type { ExplainerPagerWords, ExplainerView } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import { Children, isValidElement } from 'react';
 import type { ExplainerBox, ExplainerPlacement, ExplainerTriggerProps } from './Explainer.types';
@@ -39,6 +39,12 @@ export function boxKey(within: ExplainerBox | undefined): unknown {
   return typeof within === 'function' ? 'function' : within;
 }
 
+/** The node a box names — a ref's current, a function's answer, or itself. A selector is each half's own. */
+export function boxNode(within: Exclude<ExplainerBox, string>): unknown {
+  if (typeof within === 'function') return within();
+  return 'current' in within ? (within as { current: unknown }).current : within;
+}
+
 export function explainerGeometry(density: ExplainerDensity) {
   return GEOMETRY[density];
 }
@@ -61,10 +67,10 @@ export interface PlacedExplainer {
 
 /** The pager as both halves draw it: the domain model plus its words in the reader's language. */
 export interface ExplainerPagerModel extends NonNullable<ExplainerView['pager']> {
-  nextLabel: string;
-  backLabel: string;
+  nextLabel: ExplainerPagerWords['nextLabel'];
+  backLabel: ExplainerPagerWords['backLabel'];
   /** "2 of 3", already in the reader's language. */
-  position: string;
+  position: ReturnType<ExplainerPagerWords['positionLabel']>;
 }
 
 const FLIP: Record<ExplainerPlacement, ExplainerPlacement> = {
@@ -132,6 +138,25 @@ export function placeExplainer(
     top,
     arrow: clamp(centreY - top, ARROW_INSET, bubble.height - ARROW_INSET),
   };
+}
+
+/** Placed at the width it will draw at: never wider than the cap. */
+export function placeCapped(
+  trigger: ExplainerRect,
+  bounds: ExplainerRect,
+  bubble: { width: number; height: number },
+  cap: number,
+  placement: ExplainerPlacement,
+  density: ExplainerDensity,
+): PlacedExplainer {
+  const size = { width: Math.min(bubble.width, cap), height: bubble.height };
+  return placeExplainer(trigger, bounds, size, placement, density);
+}
+
+/** The arrow's 12px square, centred on `placed.arrow` along the edge that faces the trigger. */
+export function arrowOffset(placed: PlacedExplainer): { left: number } | { top: number } {
+  const at = placed.arrow - 6;
+  return placed.side === 'top' || placed.side === 'bottom' ? { left: at } : { top: at };
 }
 
 /** Never below `low`, even when the box is too small for `high` to sit above it. */

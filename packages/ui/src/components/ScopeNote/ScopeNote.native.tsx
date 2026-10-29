@@ -1,17 +1,16 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ScopeNoteProps, ScopeNoteSpec } from './ScopeNote.types';
-import { composeScopeLine, scopeNoteSize } from './scope-note-line';
+import { composeScopeLine, scopeNoteFor, scopeNoteSize } from './scope-note-line';
 
-interface NativeScopeNoteProps extends ScopeNoteProps {
+type NativeScopeNoteProps = ScopeNoteProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 /**
  * A person: whose act this is. Not a lock — the screen is not locked, and the reader is not shut
@@ -40,18 +39,9 @@ function Glyph({ size }: { size: number }) {
  * `role="note"` has no RN equivalent; `accessibilityRole="text"` is the closest honest mapping and
  * the words themselves carry the whole meaning, as on web.
  */
-export function ScopeNote({
-  holder,
-  acts,
-  title,
-  message,
-  action,
-  variant = 'line',
-  align = 'left',
-  size = 13,
-  style,
-}: NativeScopeNoteProps) {
-  const line = composeScopeLine({ holder, acts, title });
+export function ScopeNote(props: NativeScopeNoteProps) {
+  const { message, action, variant = 'line', align = 'left', size = 13, style } = props;
+  const line = composeScopeLine(props);
   if (line === null && message === undefined) {
     return null;
   }
@@ -88,32 +78,12 @@ export function ScopeNote({
   );
 }
 
-/** A plain spec object, as opposed to any of the object shapes ReactNode itself allows. */
-function isScopeNoteSpec(value: ScopeNoteSpec | ReactNode): value is ScopeNoteSpec {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    !isValidElement(value) &&
-    !(Symbol.iterator in value) &&
-    !('then' in value)
-  );
-}
-
 /** Accepts a `scope` host prop — a spec object or a ready node. */
 export function renderScopeNote(
   spec?: ScopeNoteSpec | ReactNode,
-  extra: Partial<ScopeNoteSpec> = {},
+  extra: Pick<ScopeNoteSpec, 'variant' | 'align' | 'size'> = {},
 ): ReactNode {
-  if (spec === undefined || spec === null || spec === false || spec === '') {
-    return null;
-  }
-  if (isValidElement(spec)) {
-    return spec;
-  }
-  if (!isScopeNoteSpec(spec)) {
-    return null;
-  }
-  return <ScopeNote {...spec} {...extra} />;
+  return scopeNoteFor(spec, (plain) => <ScopeNote {...plain} {...extra} />);
 }
 
 /* -0.01em of the caller's size is close enough to -0.13 at both 12 and 13; line heights are the

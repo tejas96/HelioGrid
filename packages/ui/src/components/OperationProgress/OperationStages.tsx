@@ -1,13 +1,8 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { IndeterminateRail } from '../PendingAction/IndeterminateRail';
 import type { OperationStage, OperationStageState } from './OperationProgress.types';
-
-/** Each stage states its state IN WORDS for a screen reader; the glyph is the second channel. */
-const STATE_WORDS: Record<OperationStageState, string> = {
-  done: 'done',
-  active: 'running',
-  waiting: 'not started',
-};
+import { stageStateAt } from './operation-progress-model';
 
 function DoneGlyph() {
   return (
@@ -30,11 +25,18 @@ function DoneGlyph() {
  * MS2-38's three narrated steps, when the caller has all of them: done · running · not yet.
  * Defaults are `active` for the first stage and `waiting` after, exactly as the DS resolves them.
  */
-export function OperationStages({ stages }: { stages: OperationStage[] }) {
+export function OperationStages({
+  stages,
+  stateWords,
+}: {
+  stages: OperationStage[];
+  /** Each stage states its state IN WORDS for a screen reader; the glyph is the second channel. */
+  stateWords: Readonly<Record<OperationStageState, TranslatedText>>;
+}) {
   return (
     <ol className="hg-operation-progress-stages">
       {stages.map((stage, index) => {
-        const state: OperationStageState = stage.state ?? (index === 0 ? 'active' : 'waiting');
+        const state = stageStateAt(stage, index);
         return (
           <li key={stage.label} className="hg-operation-progress-stage" data-state={state}>
             {state === 'done' ? <DoneGlyph /> : null}
@@ -51,7 +53,7 @@ export function OperationStages({ stages }: { stages: OperationStage[] }) {
               </span>
             ) : null}
             <span className="hg-operation-progress-stage-label">{stage.label}</span>
-            <span className="hg-spoken-only">{STATE_WORDS[state]}</span>
+            <span className="hg-spoken-only">{stateWords[state]}</span>
           </li>
         );
       })}

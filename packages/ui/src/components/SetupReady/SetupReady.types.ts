@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { DemoDoor, Read } from '@heliogrid/domain';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 
 /** One door's words: its name, the line under it, and its one act. */
 export interface SetupReadyDoorWords {
@@ -19,6 +20,8 @@ export interface SetupReadyWords {
     badge: TranslatedText;
     /** Laid over the door's loading card. */
     loading: TranslatedText;
+    /** The loading card's own spoken name — *Loading*. */
+    loadingCard: TranslatedText;
     /** The door's error card's title. */
     failed: TranslatedText;
   };
@@ -48,4 +51,15 @@ export interface SetupReadyProps {
   onRetryDemo: () => void;
   /** The wall's *Try again* is out: the company is being read again. */
   retrying: boolean;
+}
+
+/**
+ * The wall's *Try again*: it takes itself away with the wall once the company reads, and focus
+ * lands on door one's act, where the person goes next (`F7-23` N5).
+ */
+export interface SetupWallRetryProps {
+  label: TranslatedText;
+  retrying: boolean;
+  onRetry: () => void;
+  focusAfter: FocusAfter;
 }

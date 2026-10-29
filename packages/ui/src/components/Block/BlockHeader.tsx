@@ -1,15 +1,23 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import { Text } from '../../primitives/Text';
-import type { BlockProps } from './Block.types';
+import { blockHeaderOf, spokenCountOf } from './Block.logic';
+import type { BlockFrameProps } from './Block.types';
 
 export interface BlockHeaderProps
-  extends Pick<BlockProps, 'overline' | 'title' | 'meta' | 'action' | 'badge' | 'countLabel'> {
+  extends Pick<BlockFrameProps, 'overline' | 'title' | 'meta' | 'action' | 'badge' | 'countLabel'> {
   /** The grouped numeral, already clamped and formatted; `null` draws nothing. */
   shownCount: string | null;
 }
 
 /** A TOTAL beside a heading, not an unread badge — grouped, tabular, and never clamped by default. */
-function BlockCount({ shownCount, countLabel }: { shownCount: string; countLabel?: string }) {
+function BlockCount({
+  shownCount,
+  countLabel,
+}: {
+  shownCount: string;
+  countLabel?: TranslatedText;
+}) {
   return (
     <span className="hg-block-count">
       <span aria-hidden="true">{shownCount}</span>
@@ -18,17 +26,13 @@ function BlockCount({ shownCount, countLabel }: { shownCount: string; countLabel
           Through the DS `Text` primitive rather than a bare `<span>` so the name SOURCE is
           declared: a clipped node the parity gate cannot see is a name nobody can audit. */}
       <Text as="span" spokenOnly>
-        {countLabel !== undefined ? `${shownCount} ${countLabel}` : shownCount}
+        {spokenCountOf(shownCount, countLabel)}
       </Text>
     </span>
   );
 }
 
-/**
- * The header row draws for a title, a count OR a badge — the `<h2>` is the optional part. It used
- * to render inside the `title` branch, so an overline-only block (`overline="AGENT CALLS"`,
- * `count={6}` — the `SCR-M07-01` / `M13-10` shape) drew an empty row and dropped the numeral.
- */
+/** The header: overline, the title row (`blockHeaderOf` decides when it draws), meta and action. */
 export function BlockHeader({
   overline,
   title,
@@ -38,10 +42,11 @@ export function BlockHeader({
   countLabel,
   shownCount,
 }: BlockHeaderProps): ReactNode {
-  const titleRow = title !== undefined || shownCount !== null || badge !== undefined;
-  if (overline === undefined && !titleRow && meta === undefined && action === undefined) {
+  const header = blockHeaderOf({ overline, title, meta, action, badge, shownCount });
+  if (header === null) {
     return null;
   }
+  const { titleRow } = header;
   return (
     <header className="hg-block-head">
       <div className="hg-block-head-main">

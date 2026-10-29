@@ -34,8 +34,8 @@ export function SheetActions({
   style,
 }: WebSheetActionsProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [stacked, setStacked] = useState(false);
   const [own, setOwn] = useState<number | null>(null);
+  const stacked = own !== null && own < stackBelow;
 
   useEffect(() => {
     const element = ref.current;
@@ -48,11 +48,10 @@ export function SheetActions({
         return;
       }
       setOwn(entry.contentRect.width);
-      setStacked(entry.contentRect.width < stackBelow);
     });
     observer.observe(element);
     return () => observer.disconnect();
-  }, [stackBelow]);
+  }, []);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: the reference publishes on the ANSWER changing, not on a new callback identity — adding onFormChange here would re-fire on every render of a caller passing an inline arrow.
   useEffect(() => {

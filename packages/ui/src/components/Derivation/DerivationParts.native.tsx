@@ -1,8 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
-import type { DerivationPart } from './Derivation.types';
-import { DERIVATION_KINDS } from './Derivation.types';
+import { derivationPartHeading, derivationPartKey } from './Derivation.logic';
+import type { DerivationKindWords, DerivationPart } from './Derivation.types';
 
 const styles = StyleSheet.create({
   parts: { flexDirection: 'column', gap: 10 },
@@ -22,22 +22,21 @@ const SIZE = {
 /** The parts of one explanation: each kind's heading in the overline role, then its sentences. */
 export function DerivationParts({
   parts,
+  kindWords,
   size = 'sm',
 }: {
   parts: DerivationPart[];
+  kindWords: DerivationKindWords;
   /** `sm` = the cell panel, `md` = a block, `xs` = the compact register. */
   size?: keyof typeof SIZE;
 }) {
   return (
     <View style={styles.parts}>
       {parts.map((part, position) => (
-        <View
-          key={`${part.kind}-${typeof part.text === 'string' ? part.text : position}`}
-          style={styles.part}
-        >
+        <View key={derivationPartKey(part, position)} style={styles.part}>
           {/* The overline role — the one sanctioned appearance below the 12px floor. */}
           <Text variant="overline" color="tertiary">
-            {part.label ?? DERIVATION_KINDS[part.kind].label}
+            {derivationPartHeading(part, kindWords)}
           </Text>
           <Text
             variant={size === 'md' ? 'body' : size === 'sm' ? 'body-sm' : 'caption'}

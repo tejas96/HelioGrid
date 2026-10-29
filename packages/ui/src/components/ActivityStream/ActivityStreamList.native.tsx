@@ -1,10 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import { Fragment } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import type { MarketFormat } from '../../utils/format';
 import { Button } from '../Button/Button.native';
-import { dayKey, groupEntries } from './ActivityStream.kinds';
-import type { ActivityEntry, ActivityStreamProps } from './ActivityStream.types';
+import { streamWindowOf } from './ActivityStream.logic';
+import type { ActivityStreamListProps } from './ActivityStream.types';
 import { StreamEntry } from './ActivityStreamEntry.native';
 
 const type = theme.type.roles;
@@ -37,94 +36,34 @@ const styles = StyleSheet.create({
   more: { flexDirection: 'row', justifyContent: 'center' },
 });
 
-export interface ActivityStreamListProps
-  extends Required<
-      Pick<
-        ActivityStreamProps,
-        | 'kinds'
-        | 'groupBy'
-        | 'step'
-        | 'hasMore'
-        | 'loadingMore'
-        | 'filtered'
-        | 'countLabel'
-        | 'todayLabel'
-        | 'yesterdayLabel'
-        | 'density'
-      >
-    >,
-    Pick<ActivityStreamProps, 'total' | 'onLoadMore' | 'toolbar'> {
-  /** Already sorted; the window is applied here so the count line can state the whole. */
-  sorted: ActivityEntry[];
-  shown: number;
-  reveal: (step: number) => void;
-  format: MarketFormat;
-}
-
 /**
  * The window, the day grouping and the count line. Nothing is virtualised: a windowed list keeps
  * the tree small without lying about how many entries exist, and the count states the whole.
  */
-export function ActivityStreamList({
-  sorted,
-  shown,
-  reveal,
-  format,
-  kinds,
-  groupBy,
-  step,
-  hasMore,
-  loadingMore,
-  filtered,
-  countLabel,
-  todayLabel,
-  yesterdayLabel,
-  density,
-  total,
-  onLoadMore,
-  toolbar,
-}: ActivityStreamListProps) {
-  const visible = sorted.slice(0, shown);
-  const localMore = sorted.length > visible.length;
-  const wholeTotal = typeof total === 'number' ? total : sorted.length;
-  const groups = groupEntries(visible, groupBy);
-  const today = dayKey(new Date());
-  const yesterday = dayKey(new Date(Date.now() - 86400000));
-  const heading = (key: string, date: Date) => {
-    if (key === today) return todayLabel;
-    if (key === yesterday) return yesterdayLabel;
-    return format.date(date);
-  };
-  const grouped = (n: number) => format.number(n, { maximumFractionDigits: 0 });
-  const remaining = Math.min(step, Math.max(0, wholeTotal - visible.length));
-  const countLine =
-    visible.length === wholeTotal
-      ? `${grouped(wholeTotal)} ${countLabel}`
-      : `${grouped(visible.length)} of ${grouped(wholeTotal)} ${countLabel}${
-          filtered ? ' match these filters' : ''
-        }`;
+export function ActivityStreamList(props: ActivityStreamListProps) {
+  const { reveal, format, kinds, step, loadingMore, words, density, onLoadMore, toolbar } = props;
+  const view = streamWindowOf(props);
 
   return (
     <>
-      {toolbar !== undefined || wholeTotal > visible.length || filtered ? (
+      {view.showsToolbar ? (
         <View style={styles.toolbar}>
           {/* The count always states the whole, so a window never reads as the total. */}
-          <Text style={styles.count}>{countLine}</Text>
+          <Text style={styles.count}>{view.countLine}</Text>
           {toolbar}
         </View>
       ) : null}
 
       <View>
-        {groups.map((group) => (
+        {view.groups.map((group) => (
           <Fragment key={group.key}>
-            {groupBy === 'day' && group.key !== 'all' ? (
-              <Text style={styles.day}>{heading(group.key, group.date)}</Text>
-            ) : null}
+            {group.heading === null ? null : <Text style={styles.day}>{group.heading}</Text>}
             {group.items.map((entry, index) => (
               <StreamEntry
                 key={entry.id ?? `${group.key}-${index}`}
                 entry={entry}
                 kinds={kinds}
+                words={words}
                 density={density}
                 format={format}
               />
@@ -133,15 +72,15 @@ export function ActivityStreamList({
         ))}
       </View>
 
-      {localMore || hasMore ? (
+      {view.showsMore ? (
         <View style={styles.more}>
           <Button
             variant="secondary"
             size="md"
             disabled={loadingMore}
-            onClick={() => (localMore ? reveal(step) : onLoadMore?.())}
+            onClick={() => (view.revealsLocally ? reveal(step) : onLoadMore?.())}
           >
-            {loadingMore ? 'Loading…' : `Show ${remaining === 0 ? step : remaining} more`}
+            {view.moreLabel}
           </Button>
         </View>
       ) : null}

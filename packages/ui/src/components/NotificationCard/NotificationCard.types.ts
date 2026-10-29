@@ -151,9 +151,9 @@ export interface NotificationListProps<T> {
  */
 export interface NotificationHeadProps {
   /** "7 unread · 46 in the last 30 days" — a tally of the reader's records, no tier (`F8-01`). */
-  count: string;
+  count: TranslatedText;
   /** "Mark all 7 unread notifications read". Absent while nothing unread is listed (`F4-27`). */
-  markAllName?: string;
+  markAllName?: TranslatedText;
   onMarkAll?: () => void;
   /** Mark all read is on its way; a press now sends nothing. */
   marking?: boolean;

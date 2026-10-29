@@ -1,17 +1,10 @@
 import type { CSSProperties } from 'react';
+import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { ChartFrameBody } from './ChartFrameBody';
 import { ChartProvenance } from './ChartProvenance';
 import type { ChartFrameProps } from './Charts.types';
-import { chartProvenanceFacts } from './chart-provenance';
-import {
-  CHART_EMPTY_TITLE,
-  CHART_ERROR_MESSAGE,
-  CHART_ERROR_TITLE,
-  CHART_INSUFFICIENT_MESSAGE,
-  chartNote,
-} from './chart-state';
+import { chartFrameReading } from './chart-state';
 
 interface WebChartFrameProps extends ChartFrameProps {
   className?: string;
@@ -22,47 +15,30 @@ interface WebChartFrameProps extends ChartFrameProps {
  * Shared chart shell: caption, provenance tier, legend, and the loading / empty / error /
  * not-enough-data states. Wrap a custom plot in this rather than inventing states for it.
  */
-export function ChartFrame({
-  overline,
-  title,
-  value,
-  provenance,
-  standing,
-  source,
-  projection,
-  note,
-  legend,
-  action,
-  read,
-  height = 200,
-  insufficient = false,
-  emptyTitle = CHART_EMPTY_TITLE,
-  emptyMessage,
-  insufficientMessage = CHART_INSUFFICIENT_MESSAGE,
-  errorTitle = CHART_ERROR_TITLE,
-  errorMessage = CHART_ERROR_MESSAGE,
-  retryLabel,
-  children,
-  className,
-  style,
-}: WebChartFrameProps) {
-  const state = surfaceStateOf(read);
-  const onRetry = retryOf(read);
-  /* One provenance line under the headline value — word first, dot second (F8-07). */
-  const facts = chartProvenanceFacts({ provenance, standing, source, projection, note });
-  const stateNote = chartNote({
-    state,
-    insufficient,
-    emptyTitle,
-    emptyMessage,
-    insufficientMessage,
-    errorTitle,
-    errorMessage,
-  });
-  const hasCaption = Boolean(overline) || Boolean(title) || Boolean(value) || Boolean(action);
+export function ChartFrame(props: WebChartFrameProps) {
+  const {
+    overline,
+    title,
+    value,
+    legend,
+    action,
+    height = 200,
+    words,
+    children,
+    className,
+    style,
+  } = props;
+  const { state, onRetry, facts, stateNote, hasCaption, showsLegend } = chartFrameReading(props);
+  /* The frame stays while a retried read reloads, so focus lands on it once *Try again* leaves. */
+  const frame = useRef<HTMLElement>(null);
 
   return (
-    <figure className={classNames('hg-charts-frame', className)} style={style}>
+    <figure
+      ref={frame}
+      tabIndex={-1}
+      className={classNames('hg-charts-frame', 'hg-focus-target', className)}
+      style={style}
+    >
       {hasCaption ? (
         <figcaption className="hg-charts-caption">
           <div className="hg-charts-caption-head">
@@ -79,15 +55,14 @@ export function ChartFrame({
         state={state}
         height={height}
         note={stateNote}
+        words={words}
         onRetry={onRetry}
-        retryLabel={retryLabel}
+        focusAfter={frame}
       >
         {children}
       </ChartFrameBody>
 
-      {legend && stateNote === null && state !== 'loading' ? (
-        <div className="hg-charts-legend-slot">{legend}</div>
-      ) : null}
+      {showsLegend ? <div className="hg-charts-legend-slot">{legend}</div> : null}
     </figure>
   );
 }

@@ -1,6 +1,5 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { FIELD_BOX_EDGE, fieldBox } from '../../primitives/FieldBox/FieldBox.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
@@ -10,11 +9,12 @@ import { renderGap } from '../NamedGap/NamedGap.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import { Select } from '../Select/Select.native';
 import { renderAttribution } from '../ValueSource/ValueSource.native';
-import type { CellParts } from './DataTable.logic';
-import { readField, resolveCell } from './DataTable.logic';
-import type { DataTableProps } from './DataTable.types';
+import { resolveCell } from './DataTable.logic';
+import type { CellEditorProps, CellProps, CellValueProps } from './DataTable.parts.types';
+import { isMonoColumn, isMonoEditor, isStrongColumn, plainFieldOf } from './DataTableCell.logic';
 import { CellLead } from './DataTableCellLead.native';
 import type { DataTableColumn } from './DataTableColumn.types';
+import { useCellDraft } from './use-cell-draft';
 
 const styles = StyleSheet.create({
   stack: { flexDirection: 'column', gap: 6, minWidth: 0 },
@@ -34,32 +34,19 @@ const styles = StyleSheet.create({
 
 /**
  * **The commit path for a cell.** Editable only when the COLUMN says `editable` **and** the table
- * has `onCellCommit` — two hands on the switch. It commits ONCE, on blur or submit, never per
- * keystroke; empty never commits, and the last good value is restored. The table never decides a
- * problem is solved: it commits and re-reads `cellIssue` / `rowIssue` from the caller.
+ * has `onCellCommit` — two hands on the switch. It commits as `useCellDraft` says, on blur or
+ * submit. The table never decides a problem is solved: it commits and re-reads `cellIssue` /
+ * `rowIssue` from the caller.
  *
  * The column header is this cell's name — a cell has no room for a visible label, so the name goes
  * on the control itself.
  */
-function CellEditor<Row>({
-  row,
-  column,
-  issue,
-  onCommit,
-}: {
-  row: Row;
-  column: DataTableColumn<Row>;
-  issue: string | null;
-  onCommit: NonNullable<DataTableProps<Row>['onCellCommit']>;
-}) {
-  const raw = column.editValue !== undefined ? column.editValue(row) : readField(row, column.key);
-  const asText = raw === undefined || raw === null ? '' : String(raw);
-  const [draft, setDraft] = useState(asText);
-  const [focused, setFocused] = useState(false);
-
-  useEffect(() => {
-    if (!focused) setDraft(asText);
-  }, [asText, focused]);
+function CellEditor<Row>({ row, column, issue, onCommit, words }: CellEditorProps<Row>) {
+  const { asText, draft, setDraft, focused, setFocused, commit } = useCellDraft(
+    row,
+    column,
+    onCommit,
+  );
 
   if (column.editor === 'select') {
     /* The third editor, which the phone used to lose entirely — a `select` column fell through to
@@ -73,24 +60,12 @@ function CellEditor<Row>({
         options={column.options ?? []}
         error={issue ?? undefined}
         ariaLabel={column.label}
+        placeholder={words.choosePlaceholder}
+        closeLabel={words.closeList}
         onChange={(value) => onCommit(row, column.key, value)}
       />
     );
   }
-
-  const commit = () => {
-    const trimmed = draft.trim();
-    if (trimmed === '') {
-      setDraft(asText);
-      return;
-    }
-    const value = column.editor === 'number' ? Number.parseFloat(trimmed) : trimmed;
-    if (typeof value === 'number' && Number.isNaN(value)) {
-      setDraft(asText);
-      return;
-    }
-    if (String(value) !== asText) onCommit(row, column.key, value);
-  };
 
   return (
     <TextInput
@@ -107,9 +82,7 @@ function CellEditor<Row>({
       textAlign={column.numeric === true ? 'right' : 'left'}
       style={[
         styles.editor,
-        column.mono === true || column.numeric === true || column.editor === 'number'
-          ? styles.editorMono
-          : null,
+        isMonoEditor(column) ? styles.editorMono : null,
         fieldBox({ focused, tone: issue === null ? 'none' : 'error', density: 'functional' }),
       ]}
     />
@@ -118,21 +91,17 @@ function CellEditor<Row>({
 
 function plainValue<Row>(row: Row, column: DataTableColumn<Row>): ReactNode {
   if (column.render !== undefined) return column.render(row);
-  const raw = readField(row, column.key);
-  if (typeof raw === 'string' || typeof raw === 'number') {
-    return (
-      <Text
-        variant={column.mono === true || column.numeric === true ? 'mono' : 'body-sm'}
-        color={column.muted === true ? 'secondary' : 'primary'}
-        style={
-          column.primary === true || column.strong === true ? { fontWeight: '700' } : undefined
-        }
-      >
-        {String(raw)}
-      </Text>
-    );
-  }
-  return null;
+  const raw = plainFieldOf(row, column);
+  if (raw === null) return null;
+  return (
+    <Text
+      variant={isMonoColumn(column) ? 'mono' : 'body-sm'}
+      color={column.muted === true ? 'secondary' : 'primary'}
+      style={isStrongColumn(column) ? { fontWeight: '700' } : undefined}
+    >
+      {String(raw)}
+    </Text>
+  );
 }
 
 /**
@@ -140,32 +109,22 @@ function plainValue<Row>(row: Row, column: DataTableColumn<Row>): ReactNode {
  * both allow it, the named absence when there is no value, the value otherwise. A gap never
  * suppresses the editor — on an editable column the editor is how the gap gets filled.
  */
-function CellValue<Row>({
-  row,
-  column,
-  parts,
-  onCellCommit,
-}: {
-  row: Row;
-  column: DataTableColumn<Row>;
-  parts: CellParts;
-  onCellCommit: DataTableProps<Row>['onCellCommit'];
-}) {
+function CellValue<Row>({ row, column, parts, onCellCommit, words }: CellValueProps<Row>) {
   if (parts.editable && onCellCommit !== undefined) {
-    return <CellEditor row={row} column={column} issue={parts.issue} onCommit={onCellCommit} />;
+    return (
+      <CellEditor
+        row={row}
+        column={column}
+        issue={parts.issue}
+        onCommit={onCellCommit}
+        words={words}
+      />
+    );
   }
   /* `NamedGap`'s own treatment, already rendered — the ring, the sentence and the act that fills
      it. Tertiary-grey words were the colour of a gap and none of its behaviour. */
   if (parts.hasGap) return parts.gap;
   return plainValue(row, column);
-}
-
-interface CellProps<Row> {
-  row: Row;
-  column: DataTableColumn<Row>;
-  align: 'left' | 'right' | 'center';
-  cellIssue: DataTableProps<Row>['cellIssue'];
-  onCellCommit: DataTableProps<Row>['onCellCommit'];
 }
 
 /**
@@ -176,13 +135,19 @@ interface CellProps<Row> {
  * the attribution and the per-figure standing (there is no figure to qualify) but not the editor:
  * on an editable column the editor is how the gap gets filled.
  */
-function CellBody<Row>({ row, column, align, cellIssue, onCellCommit }: CellProps<Row>) {
+function CellBody<Row>({ row, column, align, cellIssue, onCellCommit, words }: CellProps<Row>) {
   const parts = resolveCell(row, column, cellIssue, onCellCommit, renderGap);
   if (parts.bare) return plainValue(row, column);
 
   return (
     <View style={[styles.stack, align === 'right' ? styles.right : null]}>
-      <CellValue row={row} column={column} parts={parts} onCellCommit={onCellCommit} />
+      <CellValue
+        row={row}
+        column={column}
+        parts={parts}
+        onCellCommit={onCellCommit}
+        words={words}
+      />
       {/* This figure's own standing (`M11-42`), resolved from the caller's spec — handing React a
           spec object as a child throws, which is what a bare `{parts.standing}` did. */}
       {renderProvenance(parts.standing, { size: 12, align })}

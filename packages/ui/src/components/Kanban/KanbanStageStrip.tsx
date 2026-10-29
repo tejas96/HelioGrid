@@ -1,15 +1,17 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { useId } from 'react';
 import { FilterChips } from '../FilterBar';
-import { stageCounts } from './Kanban.logic';
-import type { KanbanColumn } from './Kanban.types';
+import { stageCounts, stageOptionsOf } from './Kanban.logic';
+import type { KanbanColumn, KanbanWords } from './Kanban.types';
 
 export interface KanbanStageStripProps {
   columns: KanbanColumn[];
   /** The stage on screen, or nothing when the board has no columns at all. */
   value: string | undefined;
   /** The overline above the strip. `''` drops the visible line, never the accessible name. */
-  label: string;
+  label: TranslatedText | '';
   onChange: (key: string) => void;
+  words: KanbanWords;
 }
 
 /**
@@ -21,7 +23,13 @@ export interface KanbanStageStripProps {
  * tablist at the overline. A visible label that leaves the strip unnamed for a screen reader is
  * the defect this pairing fixes, on the one form where the filter IS the navigation.
  */
-export function KanbanStageStrip({ columns, value, label, onChange }: KanbanStageStripProps) {
+export function KanbanStageStrip({
+  columns,
+  value,
+  label,
+  onChange,
+  words,
+}: KanbanStageStripProps) {
   const autoId = useId();
   return (
     <>
@@ -31,9 +39,9 @@ export function KanbanStageStrip({ columns, value, label, onChange }: KanbanStag
         </span>
       ) : null}
       <FilterChips
-        options={columns.map((c) => ({ value: c.key, label: c.label }))}
+        options={stageOptionsOf(columns)}
         labelledBy={label ? `${autoId}-stage` : undefined}
-        label={label ? undefined : 'Stage'}
+        label={label ? undefined : words.stage}
         value={value}
         onChange={onChange}
         counts={stageCounts(columns)}

@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { resolveSteps, stepLabel } from './resolve-steps';
+import { progressCounter, stepperPosition } from './Stepper.logic';
 import type { StepperProps } from './Stepper.types';
 import { StepperBars } from './StepperBars';
 import { StepperIndicator } from './StepperIndicator';
@@ -18,6 +19,7 @@ interface WebStepperProps extends StepperProps {
  * in any order unless the flow opts into `reachability="entered"`.
  */
 export function Stepper({
+  words,
   steps = [],
   current = 0,
   variant = 'progress',
@@ -29,11 +31,7 @@ export function Stepper({
   className,
   style,
 }: WebStepperProps) {
-  const total = steps.length;
-  const index = Math.max(0, Math.min(total - 1, current));
-  const percent = total > 1 ? ((index + 1) / total) * 100 : 100;
-  const at = steps[index];
-  const stepName = at === undefined ? '' : stepLabel(at);
+  const { total, index, percent, stepName } = stepperPosition(steps, current);
 
   if (isBarsVariant(variant)) {
     return (
@@ -51,7 +49,7 @@ export function Stepper({
   if (variant === 'rail') {
     const resolved = resolveSteps(steps, current, reachability);
     return (
-      <nav className={className} aria-label={label ?? 'Steps'} style={style}>
+      <nav className={className} aria-label={label ?? words.steps} style={style}>
         {label !== undefined ? <p className="hg-stepper-rail-heading">{label}</p> : null}
         <ol className="hg-stepper-list">
           {resolved.map((step, position) => (
@@ -63,6 +61,7 @@ export function Stepper({
               onStepClick={onStepClick}
               step={step}
               total={total}
+              words={words}
             />
           ))}
         </ol>
@@ -79,6 +78,7 @@ export function Stepper({
         onStepClick={onStepClick}
         resolved={resolveSteps(steps, current, reachability)}
         style={style}
+        words={words}
       />
     );
   }
@@ -87,9 +87,7 @@ export function Stepper({
     return (
       <div className={className} style={style}>
         <div className="hg-stepper-head">
-          <span className="hg-stepper-overline">
-            {label === undefined ? '' : `${label} · `}Step {index + 1} of {total}
-          </span>
+          <span className="hg-stepper-overline">{progressCounter(words, index, total, label)}</span>
           <span className="hg-stepper-step-name">{stepName}</span>
         </div>
         <div
@@ -98,7 +96,7 @@ export function Stepper({
           aria-valuenow={index + 1}
           aria-valuemin={1}
           aria-valuemax={total}
-          aria-label={label ?? 'Progress'}
+          aria-label={label ?? words.progress}
         >
           <div className="hg-stepper-fill" style={{ width: `${percent}%` }} />
         </div>
@@ -112,7 +110,7 @@ export function Stepper({
       <div
         className={classNames('hg-stepper-dots', className)}
         role="group"
-        aria-label={label ?? 'Progress'}
+        aria-label={label ?? words.progress}
         style={style}
       >
         {steps.map((step, position) => (
@@ -139,6 +137,7 @@ export function Stepper({
       onStepClick={onStepClick}
       resolved={resolveSteps(steps, current, reachability)}
       style={style}
+      words={words}
     />
   );
 }

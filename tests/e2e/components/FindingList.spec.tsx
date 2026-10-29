@@ -1,7 +1,7 @@
 import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
-import { FindingList } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour } from '../support/token';
+import { WordedFindingList } from './FindingList.story';
 
 const en = await createTranslator('en');
 const title = en.t(COMPANY_SIGNUP.yourCompany);
@@ -11,7 +11,7 @@ const findings = [
 ];
 
 test('a finding list is a heading on the page — no fill, no shadow', async ({ mount }) => {
-  const list = await mount(<FindingList title={title} findings={findings} />);
+  const list = await mount(<WordedFindingList title={title} findings={findings} />);
 
   await expect(list).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   await expect(list).toHaveCSS('box-shadow', 'none');
@@ -23,7 +23,7 @@ test('a finding is a grey tile with no shadow and its controls are white', async
   page,
 }) => {
   const list = await mount(
-    <FindingList
+    <WordedFindingList
       title={title}
       findings={findings}
       onJump={() => undefined}

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { PendingActionSpec } from '../PendingAction';
 import type { ProvenanceProps, ProvenanceStanding, ProvenanceTierSpec } from '../Provenance';
@@ -6,6 +7,8 @@ import type { SurfaceRead } from '../UnavailableNote';
 
 export interface KanbanCardItem {
   id: string | number;
+  /** The record the card stands for, by its own name — a project, a lead. */
+  // biome-ignore lint/plugin/copy-prop-type: the record's own name — a project or a lead
   title: string;
   /** Second line — city, capacity, due date. */
   meta?: string;
@@ -30,13 +33,29 @@ export interface KanbanCardItem {
 
 export interface KanbanColumn {
   key: string;
-  label: string;
+  /** The stage's name, in the reader's language (`@heliogrid/i18n`'s `stageWords`). */
+  label: TranslatedText;
   /** Drives the header StatusChip. */
   status?: SolarStatus;
   items?: KanbanCardItem[];
   /** WIP limit — header shows n/limit and turns warning when exceeded. */
   limit?: number;
-  emptyLabel?: string;
+  /** What an empty column says. Default: `words.nothingHere`. */
+  emptyLabel?: TranslatedText;
+}
+
+/** The words a board says itself, in the reader's language (`@heliogrid/i18n`'s `kanbanWords`). */
+export interface KanbanWords {
+  /** What a screen reader hears while the board loads. */
+  loading: TranslatedText;
+  /** What a column with no cards says when the column names nothing of its own. */
+  nothingHere: TranslatedText;
+  /** The phone form's stage strip — its overline by default, and its name always. */
+  stage: TranslatedText;
+  /** A card's back button — *Move back a stage*, and the stage it moves to when there is one. */
+  moveBack(stage?: string): TranslatedText;
+  /** A card's on button — *Move on a stage*, and the stage it moves to when there is one. */
+  moveOn(stage?: string): TranslatedText;
 }
 
 /** What `onFormChange` publishes: the board's OWN width, never the viewport. */
@@ -67,15 +86,21 @@ export interface KanbanProps {
    * retry; `unavailable` draws none.
    */
   read: SurfaceRead;
-  emptyTitle?: string;
-  emptyDescription?: string;
+  /** The board's own words — its loading name, its move buttons, its stage strip. */
+  words: KanbanWords;
+  /**
+   * Each state's words are drawn only when given — `@heliogrid/i18n`'s `KANBAN` holds the usual
+   * ones.
+   */
+  emptyTitle?: TranslatedText;
+  emptyDescription?: TranslatedText;
   /** `unavailable`: no such board here at all. Neutral, and no retry. */
-  unavailableTitle?: string;
-  unavailableMessage?: string;
-  errorTitle?: string;
-  errorMessage?: string;
+  unavailableTitle?: TranslatedText;
+  unavailableMessage?: TranslatedText;
+  errorTitle?: TranslatedText;
+  errorMessage?: TranslatedText;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
+  retryLabel?: TranslatedText;
   columnWidth?: number;
   /**
    * Own-width px below which the board becomes **one column with a stage filter** — `M08-10` (P0)
@@ -90,8 +115,8 @@ export interface KanbanProps {
    */
   stackedColumn?: string;
   onStackedColumnChange?: (key: string) => void;
-  /** The overline above the stage strip. Default "Stage"; pass "" to drop it. */
-  stageFilterLabel?: string;
+  /** The overline above the stage strip. Default `words.stage`; pass "" to drop it. */
+  stageFilterLabel?: TranslatedText | '';
   /**
    * **The measurement, published.** Fires whenever the answer changes — the board's own width,
    * never the viewport. A screen arranging content around the board needs to know WHEN the form

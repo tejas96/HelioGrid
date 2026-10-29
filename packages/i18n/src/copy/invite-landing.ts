@@ -15,12 +15,14 @@ import {
   RESEND_SECONDS,
 } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
+import { CARD } from './card';
 import {
   declinedWords,
   type InviteDeclineWords,
   inviteDeclineWords,
   NOT_THROUGH,
 } from './invite-decline';
+import { otpInputWords } from './otp-input';
 import { presetName } from './shell';
 import { SIGN_IN } from './sign-in';
 import { signInWords } from './sign-in-frames';
@@ -64,6 +66,8 @@ export const INVITE_LANDING = {
 /** Every word the landing draws for one frame; `null` where the frame has no such part. */
 export interface InviteLandingWords {
   readonly loading: TranslatedText;
+  /** The invite card's skeleton, spoken inside the loading region. */
+  readonly loadingCard: TranslatedText;
   readonly inviter: { readonly name: string; readonly label: TranslatedText } | null;
   readonly title: TranslatedText | null;
   readonly facts: {
@@ -80,6 +84,8 @@ export interface InviteLandingWords {
   } | null;
   readonly block: { readonly tone: 'danger' | 'warning'; readonly title: TranslatedText } | null;
   readonly codeLabel: TranslatedText;
+  /** The code boxes' spoken names. */
+  readonly otp: ReturnType<typeof otpInputWords>;
   readonly codeHelper: TranslatedText | null;
   readonly codeError: TranslatedText | null;
   readonly primary: TranslatedText | null;
@@ -131,7 +137,9 @@ export function inviteLandingWords(
   const base = {
     ...NONE,
     loading: t(INVITE_LANDING.loading),
+    loadingCard: translate(CARD.loading),
     codeLabel: t(INVITE_LANDING.codeLabel),
+    otp: otpInputWords(translate),
   };
   switch (frame.kind) {
     case 'loading':

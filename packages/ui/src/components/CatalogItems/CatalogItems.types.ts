@@ -2,14 +2,17 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type {
   CatalogFilter,
   CatalogLayer,
+  CatalogPaging,
   CatalogProvenanceLabel,
   CatalogSort,
   ComponentKind,
   ExplainerPagerWords,
-  FilterPanelWords,
   PanelTechnology,
   Read,
 } from '@heliogrid/domain';
+import type { FocusAfter } from '../../primitives/FocusAfter';
+import type { DataTableProps } from '../DataTable/DataTable.types';
+import type { FilterPanelWords } from '../FilterPanel/FilterPanel.types';
 
 /**
  * **Catalog settings' Items panel** (`SCR-M01-15`, `M01-32` to `M01-43`): the release strip, the
@@ -27,9 +30,9 @@ export interface CatalogItemsProps {
   read: Read<unknown>;
   strip: CatalogStrip;
   /** The one info line naming whose acts these are; `null` for a person who administers. */
-  viewOnly: string | null;
+  viewOnly: TranslatedText | null;
   /** The first-day card's sentence; `null` once the tenant has something of its own. */
-  teaching: string | null;
+  teaching: TranslatedText | null;
   query: string;
   onQuery: (query: string) => void;
   filter: CatalogFilter;
@@ -70,12 +73,12 @@ export interface CatalogStrip {
   readonly tag: string | null;
   readonly tagAs: 'mono' | 'chip';
   /** *Live since 12 Aug* · *Margin 18.0% · since 12 Aug* · *No release published yet*. */
-  readonly detail: string;
+  readonly detail: TranslatedText;
   /** *past releases* — opens the list; `null` while there is nothing to list. */
-  readonly link: string | null;
+  readonly link: TranslatedText | null;
   readonly onLink: () => void;
   /** *Publish* · *Start version 8*; `null` without the grant. */
-  readonly action: string | null;
+  readonly action: TranslatedText | null;
   readonly onAction: () => void;
 }
 
@@ -87,11 +90,11 @@ export interface CatalogRow {
   /** *Panel · 545 Wp · Mono PERC*. */
   readonly specLine: TranslatedText;
   readonly layer: CatalogLayer;
-  readonly layerWord: string;
+  readonly layerWord: TranslatedText;
   /** *Your override* · *Your SKU* · *Platform* — the 1536 *Price comes from* column. */
-  readonly priceFrom: string;
+  readonly priceFrom: TranslatedText;
   readonly provenance: CatalogProvenanceLabel;
-  readonly provenanceWord: string;
+  readonly provenanceWord: TranslatedText;
   /** The decimal amount the server resolved; `null` is no price; `undefined` is not the reader's. */
   readonly amount: string | null | undefined;
   /** The schemes the item holds, of the market's declared ones, in the market's order. */
@@ -105,11 +108,11 @@ export interface CatalogRow {
 }
 
 export interface CatalogRowLabels {
-  readonly prefer: string;
+  readonly prefer: TranslatedText;
   /** *Hide … from pickers* or *Show … in pickers*; *Archive …* on an own SKU. */
-  readonly side: string;
+  readonly side: TranslatedText;
   /** The row's whole sentence for a screen reader: *name, ₹14,100* or *name, no price set*. */
-  readonly row: string;
+  readonly row: TranslatedText;
 }
 
 export type CatalogRowStatus =
@@ -123,22 +126,8 @@ export type CatalogRowStatus =
       readonly onDismiss: () => void;
     };
 
-/** A numbered page at 1536 (`page` counted from 0, as `Pagination` counts); a growing list at 375. */
-export type CatalogPaging =
-  | {
-      readonly kind: 'pages';
-      readonly page: number;
-      readonly pageSize: number;
-      readonly rowCount: number;
-      readonly onPage: (page: number) => void;
-    }
-  | {
-      readonly kind: 'more';
-      readonly hasMore: boolean;
-      readonly loadingMore: boolean;
-      readonly onMore: () => void;
-      readonly rowCount: number;
-    };
+/** The list's pager: `packages/domain`'s, which the screen's hook fills. */
+export type { CatalogPaging } from '@heliogrid/domain';
 
 /** Every fixed word of the panel: `@heliogrid/i18n`'s `catalogItemsWords`. */
 export interface CatalogItemsWords {
@@ -162,7 +151,13 @@ export interface CatalogItemsWords {
   readonly marks: TranslatedText;
   readonly search: TranslatedText;
   readonly searchLabel: TranslatedText;
+  /** The search's clear button. */
+  readonly clearSearch: TranslatedText;
   readonly filters: TranslatedText;
+  /** The filter square's name while filters are on: *Filters, 2 active*. */
+  readonly filtersActive: (count: number) => TranslatedText;
+  /** A chosen kind chip's tick. */
+  readonly selectedKind: TranslatedText;
   readonly kindLabel: TranslatedText;
   readonly allKinds: TranslatedText;
   readonly kinds: Readonly<Record<ComponentKind, TranslatedText>>;
@@ -193,7 +188,17 @@ export interface CatalogItemsWords {
   readonly loadMore: TranslatedText;
   readonly filterPanel: FilterPanelWords & CatalogFilterWords;
   readonly explainer: ExplainerPagerWords;
+  readonly table: CatalogTableWords;
 }
+
+/**
+ * What a catalog table draws and speaks of its own, and its blocked states' words:
+ * `@heliogrid/i18n`'s `catalogTableWords`, spread into the `DataTable`.
+ */
+export type CatalogTableWords = Pick<
+  DataTableProps,
+  'words' | 'emptyTitle' | 'errorTitle' | 'unavailableTitle'
+>;
 
 /** The filter panel's dimension names and options for the catalog. */
 export interface CatalogFilterWords {
@@ -210,4 +215,15 @@ export interface CatalogFilterWords {
   readonly preferredOnly: TranslatedText;
   readonly archivedInstead: TranslatedText;
   readonly resultNoun: TranslatedText;
+}
+
+/**
+ * *Show more* under a paged list. It leaves once the last page lands, and focus goes to the list
+ * it grew (`F7-23` N5) — never the page's start.
+ */
+export interface ShowMoreProps {
+  label: TranslatedText;
+  onMore: () => void;
+  /** The list the press grew, which takes focus once the last page has taken this away. */
+  focusAfter: FocusAfter;
 }

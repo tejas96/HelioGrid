@@ -9,6 +9,8 @@ import { Text } from '../../primitives/Text/Text.native';
 import type { TextColor } from '../../primitives/Text/Text.types';
 import { renderActorClass } from '../ActorClass/ActorClass.native';
 import { renderOverride } from '../FieldOverride/FieldOverride.native';
+import type { NextActionInk } from './NextAction.logic';
+import { nextActionInk, nextActionLine } from './NextAction.logic';
 import type { NextActionProps, NextActionTone } from './NextAction.types';
 
 interface NativeNextActionProps extends NextActionProps {
@@ -23,6 +25,13 @@ const DOT: Record<NextActionTone, string> = {
   scheduled: theme.colors.accent,
   snoozed: theme.colors['text-tertiary'],
   done: theme.colors['text-tertiary'],
+};
+
+/* The line's ink by `nextActionInk`, in this platform's text colours. */
+const INK: Record<NextActionInk, TextColor> = {
+  overdue: 'danger',
+  quiet: 'tertiary',
+  normal: 'primary',
 };
 
 /**
@@ -40,8 +49,7 @@ export function NextAction({
   size = 13,
   style,
 }: NativeNextActionProps) {
-  const color: TextColor =
-    tone === 'overdue' ? 'danger' : muted || tone === 'snoozed' ? 'tertiary' : 'primary';
+  const color = INK[nextActionInk(tone, muted)];
   const stacked = Boolean(origin) || Boolean(correction);
   const words: TextStyle = { fontSize: size };
   return (
@@ -49,7 +57,7 @@ export function NextAction({
       <View style={styles.line}>
         <View style={[styles.dot, { backgroundColor: DOT[tone] }]} importantForAccessibility="no" />
         <Text variant="body-sm" color={color} style={words}>
-          {`${label}${meta ? ` · ${meta}` : ''}`}
+          {nextActionLine(label, meta)}
         </Text>
       </View>
       {/* The origin sits under the task, indented to the WORDS rather than to the dot. */}

@@ -4,6 +4,7 @@ import type { TextInput as RNTextInput, StyleProp, ViewStyle } from 'react-nativ
 import { StyleSheet, TextInput, View } from 'react-native';
 import { fieldBox, fieldBoxText } from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { applyOtpEdit, erasedOtp, type OtpEdit, otpDigits, typedOtp } from './OtpInput.logic';
 import type { OtpInputProps } from './OtpInput.types';
 
 interface NativeOtpInputProps extends OtpInputProps {
@@ -58,6 +59,7 @@ export function OtpInput({
   label,
   helper,
   error,
+  words,
   disabled = false,
   readOnly = false,
   busy = false,
@@ -66,46 +68,18 @@ export function OtpInput({
 }: NativeOtpInputProps) {
   const refs = useRef<Array<RNTextInput | null>>([]);
   const [focused, setFocused] = useState(-1);
-  const slots = Array.from({ length }, (_, i) => ({
-    key: `otp-${i}`,
-    index: i,
-    char: value.padEnd(length, ' ').slice(0, length).charAt(i).trim(),
+  const slots = otpDigits(value, length).map((char, index) => ({
+    key: `otp-${index}`,
+    index,
+    char,
   }));
 
-  const set = (next: string) => {
-    const v = next.slice(0, length);
-    onChange?.(v);
-    if (v.length === length) onComplete?.(v);
-  };
+  const focusBox = (index: number) => refs.current[index]?.focus();
+  const apply = (edit: OtpEdit | null) =>
+    applyOtpEdit(edit, length, { onChange, onComplete }, focusBox);
 
-  const onCharChange = (i: number, raw: string) => {
-    const digit = (raw.match(/\d/g) ?? []).join('');
-    if (digit === '') return;
-    if (digit.length > 1) {
-      set((value.slice(0, i) + digit).slice(0, length));
-      refs.current[Math.min(length - 1, i + digit.length)]?.focus();
-      return;
-    }
-    const arr = value.split('');
-    arr[i] = digit;
-    set(arr.join('').slice(0, length));
-    refs.current[Math.min(length - 1, i + 1)]?.focus();
-  };
-
-  const onBackspace = (i: number) => {
-    const arr = value.padEnd(length, ' ').split('');
-    const here = arr[i];
-    if (here !== undefined && here !== ' ') {
-      arr[i] = ' ';
-      set(arr.join('').trimEnd());
-      return;
-    }
-    if (i > 0) {
-      arr[i - 1] = ' ';
-      set(arr.join('').trimEnd());
-      refs.current[i - 1]?.focus();
-    }
-  };
+  const onCharChange = (i: number, raw: string) => apply(typedOtp(value, i, raw, length));
+  const onBackspace = (i: number) => apply(erasedOtp(value, i, length));
 
   return (
     <View style={style}>
@@ -136,7 +110,7 @@ export function OtpInput({
               keyboardType="number-pad"
               textContentType="oneTimeCode"
               autoComplete="sms-otp"
-              accessibilityLabel={`${label ?? 'Verification code'} — digit ${slot.index + 1}`}
+              accessibilityLabel={words.digitOf(label ?? words.code, slot.index + 1)}
               maxLength={length}
               editable={!disabled && !readOnly && !busy}
               accessibilityState={{ disabled, busy }}

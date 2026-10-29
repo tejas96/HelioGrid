@@ -1,17 +1,16 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ScopeNoteProps, ScopeNoteSpec } from './ScopeNote.types';
-import { composeScopeLine, scopeNoteSize } from './scope-note-line';
+import { composeScopeLine, scopeNoteFor, scopeNoteSize } from './scope-note-line';
 
 /** The caller-set type size rides in as a custom property so the rules stay in ScopeNote.css. */
 type NoteVars = CSSProperties & Record<`--${string}`, string>;
 
-interface WebScopeNoteProps extends ScopeNoteProps {
+type WebScopeNoteProps = ScopeNoteProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 /**
  * A person: whose act this is. Not a lock — the screen is not locked, and the reader is not shut
@@ -41,19 +40,9 @@ function Glyph() {
  * (per-surface, and these surfaces are working normally), not an UnavailableNote (that is about
  * content, and here the content is fully present and readable).
  */
-export function ScopeNote({
-  holder,
-  acts,
-  title,
-  message,
-  action,
-  variant = 'line',
-  align = 'left',
-  size = 13,
-  className,
-  style,
-}: WebScopeNoteProps) {
-  const line = composeScopeLine({ holder, acts, title });
+export function ScopeNote(props: WebScopeNoteProps) {
+  const { message, action, variant = 'line', align = 'left', size = 13, className, style } = props;
+  const line = composeScopeLine(props);
   if (line === null && message === undefined) {
     return null;
   }
@@ -78,32 +67,12 @@ export function ScopeNote({
   );
 }
 
-/** A plain spec object, as opposed to any of the object shapes ReactNode itself allows. */
-function isScopeNoteSpec(value: ScopeNoteSpec | ReactNode): value is ScopeNoteSpec {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    !isValidElement(value) &&
-    !(Symbol.iterator in value) &&
-    !('then' in value)
-  );
-}
-
 /** Accepts a `scope` host prop — a spec object or a ready node. */
 export function renderScopeNote(
   spec?: ScopeNoteSpec | ReactNode,
-  extra: Partial<ScopeNoteSpec> = {},
+  extra: Pick<ScopeNoteSpec, 'variant' | 'align' | 'size'> = {},
 ): ReactNode {
-  if (spec === undefined || spec === null || spec === false || spec === '') {
-    return null;
-  }
-  if (isValidElement(spec)) {
-    return spec;
-  }
-  if (!isScopeNoteSpec(spec)) {
-    return null;
-  }
-  return <ScopeNote {...spec} {...extra} />;
+  return scopeNoteFor(spec, (plain) => <ScopeNote {...plain} {...extra} />);
 }
 
 /** The panel's frame, for a wait that stands in for a panel note and must keep its size. */

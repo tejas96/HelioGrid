@@ -1,8 +1,8 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ActorClassName } from '../ActorClass';
-import { ACTOR_CLASSES } from '../ActorClass';
 import type { FilterOption } from '../FilterBar';
 import { kindOf } from './ActivityStream.kinds';
-import type { ActivityEntry, ActivityKindSpec } from './ActivityStream.types';
+import type { ActivityEntry, ActivityKindSpec, ActivityStreamWords } from './ActivityStream.types';
 
 /**
  * The `facet` arm of `FilterPanel`'s `FilterDimension`, structurally identical to it. It is spelled
@@ -11,11 +11,11 @@ import type { ActivityEntry, ActivityKindSpec } from './ActivityStream.types';
  */
 export interface ActivityFacetDimension {
   key: string;
-  label: string;
+  label: TranslatedText;
   kind: 'facet';
   options: FilterOption[];
   counts?: Record<string, number>;
-  hint?: string;
+  hint?: TranslatedText;
 }
 
 /** `{ [dimension key]: string[] | … }` — `FilterPanel`'s `FilterValue`, read structurally. */
@@ -24,8 +24,11 @@ export type ActivityFilterValue = Record<string, unknown>;
 export interface ActivityFilterOptions {
   kinds?: Record<string, ActivityKindSpec>;
   includeActors?: boolean;
-  kindLabel?: string;
-  actorLabel?: string;
+  /** The two dimensions' names — "Kind" and "Who". */
+  kindLabel: TranslatedText;
+  actorLabel: TranslatedText;
+  /** The stream's own words: the kinds' and actor classes' names, and the actor hint. */
+  words: Pick<ActivityStreamWords, 'kind' | 'actor' | 'actorHint'>;
 }
 
 const ACTOR_ORDER: ActorClassName[] = ['person', 'agent', 'system', 'customer'];
@@ -35,10 +38,11 @@ const ACTOR_ORDER: ActorClassName[] = ['person', 'agent', 'system', 'customer'];
  * `facet` kinds, because these are sets and a tablist would lie to a screen reader.
  */
 export function filterDimensions(
-  entries: ActivityEntry[] = [],
-  options: ActivityFilterOptions = {},
+  entries: ActivityEntry[],
+  options: ActivityFilterOptions,
 ): ActivityFacetDimension[] {
   const kinds = options.kinds ?? {};
+  const { words } = options;
   const kindCounts: Record<string, number> = {};
   const actorCounts: Record<string, number> = {};
   for (const entry of entries) {
@@ -48,13 +52,13 @@ export function filterDimensions(
     }
   }
   const kindOptions: FilterOption[] = Object.keys(kindCounts)
-    .map((kind) => ({ value: kind, label: kindOf(kinds, kind).label }))
+    .map((kind) => ({ value: kind, label: kindOf(kinds, kind, words.kind).label }))
     .sort((a, b) => a.label.localeCompare(b.label));
   const dimensions: ActivityFacetDimension[] = [
     {
       key: 'kind',
       kind: 'facet',
-      label: options.kindLabel ?? 'Kind',
+      label: options.kindLabel,
       options: kindOptions,
       counts: kindCounts,
     },
@@ -63,13 +67,13 @@ export function filterDimensions(
     dimensions.push({
       key: 'actorClass',
       kind: 'facet',
-      label: options.actorLabel ?? 'Who',
+      label: options.actorLabel,
       options: ACTOR_ORDER.filter((name) => (actorCounts[name] ?? 0) > 0).map((name) => ({
         value: name,
-        label: ACTOR_CLASSES[name].label,
+        label: words.actor.label[name],
       })),
       counts: actorCounts,
-      hint: 'The agent and the system are different actors, and so is the customer.',
+      hint: words.actorHint,
     });
   }
   return dimensions;

@@ -6,6 +6,7 @@
    `aria-pressed` on the web half, one declaration for both, with the 44px floor coming from the
    primitive rather than a second copy of the number. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { Linking, StyleSheet, View } from 'react-native';
@@ -16,6 +17,7 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { messageGlyphOf } from './SourceDocument.logic';
 
 const styles = StyleSheet.create({
   // Pinned, like the web half: a chrome that gives way to a long file name is a chrome that is cut.
@@ -90,7 +92,7 @@ export function IconBtn({
   disabled,
   pressed,
 }: {
-  label: string;
+  label: TranslatedText;
   glyph: ShellGlyphName;
   onPress: () => void;
   disabled?: boolean;
@@ -132,8 +134,8 @@ export function Message({
   action,
 }: {
   tone?: 'warning';
-  title: string;
-  message?: string;
+  title: TranslatedText;
+  message?: TranslatedText;
   action?: ReactNode;
 }) {
   const warning = tone === 'warning';
@@ -154,7 +156,7 @@ export function Message({
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <ShellGlyphMarks name={warning ? 'alert-circle-up' : 'file-plain'} />
+            <ShellGlyphMarks name={messageGlyphOf(tone)} />
           </Svg>
         </View>
         <Text variant="body-sm" align="center" style={styles.messageTitle}>

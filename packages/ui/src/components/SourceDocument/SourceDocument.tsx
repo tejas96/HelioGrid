@@ -11,14 +11,10 @@
    that means something. */
 
 import type { CSSProperties } from 'react';
+import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { ReadAlongside } from './ReadAlongside';
-import {
-  currentPage,
-  pageAspect,
-  readingHeight,
-  resolveDocumentState,
-} from './SourceDocument.logic';
+import { DOCUMENT_HEIGHT, documentNameOf, documentViewOf } from './SourceDocument.logic';
 import { useDocumentReading } from './SourceDocument.reading';
 import type { SourceDocumentProps } from './SourceDocument.types';
 import { SourceDocumentBody } from './SourceDocumentBody';
@@ -30,48 +26,51 @@ interface WebSourceDocumentProps extends SourceDocumentProps {
 }
 
 export function SourceDocument({
-  name = 'Document',
+  name,
   meta,
   pages = [],
   page,
   onPageChange,
   state = 'auto',
-  height = 480,
+  height = DOCUMENT_HEIGHT,
   fit: fitProp,
   onFitChange,
   originalUrl,
   onOpenOriginal,
-  openLabel = 'Open original',
+  openLabel,
   onRetry,
   retryLabel,
-  unsupportedTitle = 'No preview for this file kind',
-  unsupportedMessage = 'Open the original to read it.',
-  failedTitle = "Couldn't load this document",
-  failedMessage = "The file didn't load. Try again — if it keeps failing, upload it once more.",
-  emptyTitle = 'Nothing to show yet',
-  emptyMessage = 'This file has no readable pages.',
+  unsupportedTitle,
+  unsupportedMessage,
+  failedTitle,
+  failedMessage,
+  emptyTitle,
+  emptyMessage,
   label,
   density = 'expressive',
+  words,
   className,
   style,
 }: WebSourceDocumentProps) {
   const reading = useDocumentReading({ page, onPageChange, fit: fitProp, onFitChange });
+  /* The document's own frame stays while a failed file reloads, so *Try again* hands focus to it. */
+  const frame = useRef<HTMLElement>(null);
 
-  const resolved = resolveDocumentState(state, pages.length);
-  const cur = currentPage(pages, reading.page);
-  const bodyH = readingHeight(height);
+  const view = documentViewOf(pages, reading.page, state, height);
 
   return (
     <section
-      aria-label={label || `${name} — source document`}
-      className={classNames('hg-source-doc', className)}
+      ref={frame}
+      tabIndex={-1}
+      aria-label={documentNameOf(label, name, words)}
+      className={classNames('hg-source-doc', 'hg-focus-target', className)}
       data-density={density}
       style={style}
     >
       <SourceDocumentHeader
         name={name}
         meta={meta}
-        resolved={resolved}
+        resolved={view.resolved}
         pageNumber={reading.page}
         count={pages.length}
         fit={reading.fit}
@@ -80,16 +79,21 @@ export function SourceDocument({
         originalUrl={originalUrl}
         onOpenOriginal={onOpenOriginal}
         openLabel={openLabel}
+        words={words}
       />
-      <div className="hg-source-doc-body" data-fit={reading.fit} style={{ height: bodyH }}>
+      <div
+        className="hg-source-doc-body"
+        data-fit={reading.fit}
+        style={{ height: view.bodyHeight }}
+      >
         <SourceDocumentBody
-          resolved={resolved}
+          resolved={view.resolved}
           name={name}
-          page={cur}
+          page={view.page}
           pageNumber={reading.page}
           count={pages.length}
-          aspect={pageAspect(cur)}
-          bodyHeight={bodyH}
+          aspect={view.aspect}
+          bodyHeight={view.bodyHeight}
           fit={reading.fit}
           originalUrl={originalUrl}
           onOpenOriginal={onOpenOriginal}
@@ -102,11 +106,11 @@ export function SourceDocument({
           failedMessage={failedMessage}
           emptyTitle={emptyTitle}
           emptyMessage={emptyMessage}
+          words={words}
+          focusAfter={frame}
         />
       </div>
-      {cur?.label && resolved === 'ready' ? (
-        <footer className="hg-source-doc-footer">{cur.label}</footer>
-      ) : null}
+      {view.caption ? <footer className="hg-source-doc-footer">{view.caption}</footer> : null}
     </section>
   );
 }

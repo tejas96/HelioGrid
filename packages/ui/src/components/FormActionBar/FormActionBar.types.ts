@@ -1,4 +1,6 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 
 /**
  * Where the bar stands. `sticky` — the phone: a `--surface` band at `--e4` at the bottom of its
@@ -22,11 +24,16 @@ export interface FormActionBarProps {
    */
   consequence?: ReactNode;
   /** The primary's words ("Save branding"). Required. */
-  saveLabel: string;
+  saveLabel: TranslatedText;
   onSave?: () => void;
   /** The way back to what is in force ("Discard changes"). Required. */
-  discardLabel: string;
+  discardLabel: TranslatedText;
   onDiscard?: () => void;
+  /**
+   * Where focus lands once a saved or discarded change has taken the bar away (`F7-23` N5) — the
+   * part being edited, never the page's start. A failed save keeps the bar, and the focus on it.
+   */
+  focusAfter: FocusAfter;
   /** A save is under way: Save shows its spinner and keeps its name; Discard waits. */
   saving?: boolean;
   /** Default `sticky`. */

@@ -34,7 +34,7 @@ export interface SignupFieldState {
   label: TranslatedText;
   placeholder: TranslatedText;
   /** The step's line under the field; absent where the frame carries none. */
-  helper: string | undefined;
+  helper: TranslatedText | undefined;
   /** The field's own answer when Create company is pressed; absent until it refuses. */
   error: TranslatedText | undefined;
 }

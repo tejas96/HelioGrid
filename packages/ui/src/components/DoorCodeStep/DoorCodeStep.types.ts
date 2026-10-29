@@ -3,6 +3,7 @@ import type { LoginFrame, LoginPress } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { DoorTaskMeasure } from '../DoorFrame/DoorFrame.types';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
+import type { OtpInputWords } from '../OtpInput/OtpInput.types';
 import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
 
 /**
@@ -21,6 +22,8 @@ export interface DoorCodeStepWords {
   links: TranslatedText | null;
   block: Pick<TintedBlockProps, 'tone' | 'title'> | null;
   codeLabel: TranslatedText;
+  /** The code boxes' spoken names. */
+  otp: OtpInputWords;
   codeError: TranslatedText | null;
   primary: TranslatedText | null;
   /** The primary's accessible name where it says more than its label. */
@@ -64,5 +67,5 @@ export interface DoorCodeStepProps {
   lead?: ReactNode;
   taskMeasure?: DoorTaskMeasure;
   /** The line under the code field. */
-  helper?: string;
+  helper?: TranslatedText;
 }

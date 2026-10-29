@@ -5,15 +5,16 @@ import { Animated, Easing, StyleSheet, View } from 'react-native';
 import { KeyboardFrame } from '../../primitives/Keyboard/KeyboardFrame.native';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { OverlayBody } from '../Sheet/OverlayBody.native';
+import { isBodyScrolled } from '../Sheet/Sheet.logic';
 import { SheetBackdrop } from '../Sheet/SheetBackdrop.native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { DetailPanelProps } from './DetailPanel.types';
 import { PanelHeader } from './PanelHeader.native';
 import { PanelSkeleton } from './PanelSkeleton.native';
 
-interface NativeDetailPanelProps extends DetailPanelProps {
+type NativeDetailPanelProps = DetailPanelProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 /**
  * Right-edge master-detail drawer (480dp default). Same backdrop law as `Sheet` — fades the layer
@@ -48,10 +49,11 @@ export function DetailPanel({
   dismissible = true,
   modal = true,
   read,
-  errorTitle = "Couldn't load this record",
-  errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
+  loadingLabel,
+  errorTitle,
+  errorMessage,
   retryLabel,
-  emptyTitle = 'Nothing here yet',
+  emptyTitle,
   emptyMessage,
   emptyAction = null,
   unavailableTitle,
@@ -61,6 +63,7 @@ export function DetailPanel({
 }: NativeDetailPanelProps) {
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
+  const panelRef = useRef<View>(null);
   const enter = useRef(new Animated.Value(0)).current;
   const [panelWidth, setPanelWidth] = useState(0);
   const [scrolled, setScrolled] = useState(false);
@@ -110,6 +113,7 @@ export function DetailPanel({
         {modal ? <SheetBackdrop onClick={dismissible ? onClose : undefined} /> : null}
         <Animated.View
           accessibilityViewIsModal={modal}
+          ref={panelRef}
           onLayout={onLayout}
           style={[
             styles.panel,
@@ -141,7 +145,7 @@ export function DetailPanel({
           {/* A panel can hold a form: its focused field, its line and the footer stay above the
               keyboard. */}
           <KeyboardFrame
-            onScrollOffset={(top) => setScrolled(top > 2)}
+            onScrollOffset={(top) => setScrolled(isBodyScrolled(top))}
             style={styles.body}
             foot={footerView}
             contentContainerStyle={{
@@ -158,7 +162,8 @@ export function DetailPanel({
               errorTitle={errorTitle}
               onRetry={onRetry}
               retryLabel={retryLabel}
-              skeleton={<PanelSkeleton />}
+              focusAfter={panelRef}
+              skeleton={<PanelSkeleton label={loadingLabel} />}
               state={state}
               unavailableAction={unavailableAction}
               unavailableMessage={unavailableMessage}

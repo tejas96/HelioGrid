@@ -59,7 +59,7 @@ function TenantMarkGlyph({
   showName: boolean;
 }) {
   if (isLogoUrl(logo)) {
-    return <img className="hg-tenant-mark-logo" src={logo} alt={showName ? '' : `${name} logo`} />;
+    return <img className="hg-tenant-mark-logo" src={logo} alt={showName ? '' : name} />;
   }
   if (logo) {
     return <span className="hg-tenant-mark-node">{logo}</span>;

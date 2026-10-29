@@ -68,8 +68,9 @@ interface NativeDerivationProps extends DerivationProps {
  */
 export function Derivation({
   label,
-  summary = 'How this is worked out',
+  summary,
   parts,
+  kindWords,
   variant = 'cell',
   open,
   defaultOpen = false,
@@ -77,7 +78,16 @@ export function Derivation({
   id,
   style,
 }: NativeDerivationProps) {
-  const panel = useDerivationPanel({ parts, label, summary, open, defaultOpen, onToggle, id });
+  const panel = useDerivationPanel({
+    parts,
+    label,
+    summary,
+    kindWords,
+    open,
+    defaultOpen,
+    onToggle,
+    id,
+  });
   const big = variant === 'block';
 
   return (
@@ -100,7 +110,7 @@ export function Derivation({
               {label}
             </Text>
           ) : null}
-          <DerivationParts parts={parts} size={big ? 'md' : 'sm'} />
+          <DerivationParts parts={parts} kindWords={kindWords} size={big ? 'md' : 'sm'} />
         </View>
       ) : null}
     </View>

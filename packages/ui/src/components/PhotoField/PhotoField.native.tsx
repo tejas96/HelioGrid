@@ -1,14 +1,16 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { closingPress, type FocusHandle } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
-import { initialsOf } from '../Avatar/Avatar.types';
 import { Banner } from '../Banner/Banner.native';
 import { Button } from '../Button/Button.native';
-import type { FocusHandle } from '../SearchField/SearchField.types';
+import type { PhotoRemoval } from './PhotoField.logic';
+import { actLabel, drawsNamelessMark, isDesktopComposition, removalOf } from './PhotoField.logic';
 import type { PhotoFieldProps } from './PhotoField.types';
 
 interface NativePhotoFieldProps extends PhotoFieldProps {
@@ -54,15 +56,14 @@ const styles = StyleSheet.create({
 
 interface ActsProps {
   icon: NonNullable<PhotoFieldProps['actIcon']>;
-  label: string;
+  label: TranslatedText;
   onChoose?: () => void;
   /** Given only when a photo is chosen. */
-  onRemove?: () => void;
-  removeLabel?: string;
+  removal: PhotoRemoval | null;
   inert: boolean;
 }
 
-function Acts({ icon, label, onChoose, onRemove, removeLabel, inert }: ActsProps) {
+function Acts({ icon, label, onChoose, removal, inert }: ActsProps) {
   // *Remove* goes away once pressed: the focus stays in the group, on the act that takes its place.
   const chooseRef = useRef<FocusHandle>(null);
   return (
@@ -79,17 +80,14 @@ function Acts({ icon, label, onChoose, onRemove, removeLabel, inert }: ActsProps
       </Button>
       {/* Removing destroys nothing — the file is still the person's and the initials come back —
           so it needs no confirmation (`N8`). It appears only when there is something to remove. */}
-      {onRemove !== undefined && removeLabel !== undefined ? (
+      {removal !== null ? (
         <Button
           variant="ghost"
           size="md"
-          onClick={() => {
-            onRemove();
-            chooseRef.current?.focus();
-          }}
+          onClick={closingPress(chooseRef)(removal.remove)}
           disabled={inert}
         >
-          {removeLabel}
+          {removal.label}
         </Button>
       ) : null}
     </View>
@@ -126,14 +124,13 @@ export function PhotoField({
   style,
 }: NativePhotoFieldProps) {
   const hasPhoto = src !== undefined;
-  const nameless = initialsOf(name).length === 0;
+  const wide = isDesktopComposition(size);
 
-  const circle =
-    nameless && !hasPhoto ? (
-      <View style={[styles.nameless, { width: size, height: size }]} />
-    ) : (
-      <Avatar src={src} name={name} size={size} />
-    );
+  const circle = drawsNamelessMark(src, name) ? (
+    <View style={[styles.nameless, { width: size, height: size }]} />
+  ) : (
+    <Avatar src={src} name={name} size={size} />
+  );
   const banner =
     error === undefined ? null : (
       <Banner kind="validation" title={errorTitle}>
@@ -143,23 +140,22 @@ export function PhotoField({
   const acts = (
     <Acts
       icon={actIcon}
-      label={hasPhoto && replaceLabel !== undefined ? replaceLabel : chooseLabel}
+      label={actLabel(hasPhoto, chooseLabel, replaceLabel)}
       onChoose={onChoose}
-      onRemove={hasPhoto ? onRemove : undefined}
-      removeLabel={removeLabel}
+      removal={removalOf(hasPhoto, onRemove, removeLabel)}
       inert={disabled || loading}
     />
   );
   const message =
     helper === undefined ? null : (
-      <Text variant="caption" color="secondary" style={size === 120 ? undefined : styles.across}>
+      <Text variant="caption" color="secondary" style={wide ? undefined : styles.across}>
         {helper}
       </Text>
     );
 
   return (
     <View
-      style={[styles.row, size === 120 ? styles.wide : undefined, style]}
+      style={[styles.row, wide ? styles.wide : undefined, style]}
       accessibilityRole="none"
       accessibilityLabel={label}
       // The group is named, and its parts stay individually reachable — `accessible` on a wrapper
@@ -167,7 +163,7 @@ export function PhotoField({
       accessible={false}
     >
       <View style={[styles.mark, loading ? styles.waiting : undefined]}>{circle}</View>
-      {size === 120 ? (
+      {wide ? (
         <View style={styles.column}>
           {banner}
           {acts}

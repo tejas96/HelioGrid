@@ -9,31 +9,12 @@ import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { Calendar } from './Calendar.native';
-import { asRange, asSet, parse } from './calendar-grid';
-import type { CalendarValue, DatePickerProps, MarketFormat } from './DatePicker.types';
+import { closesPicker } from './calendar-selection';
+import type { DatePickerProps } from './DatePicker.types';
+import { triggerText } from './date-text';
 
 interface NativeDatePickerProps extends DatePickerProps {
   style?: StyleProp<ViewStyle>;
-}
-
-function triggerText(
-  mode: DatePickerProps['mode'],
-  value: CalendarValue | undefined,
-  mkt: MarketFormat,
-): string {
-  if (mode === 'range') {
-    const range = asRange(value);
-    if (range.from === null) {
-      return '';
-    }
-    return `${mkt.date(range.from)} – ${range.to === null ? '…' : mkt.date(range.to)}`;
-  }
-  if (mode === 'set') {
-    const set = asSet(value);
-    return set.length === 0 ? '' : `${set.length} date${set.length === 1 ? '' : 's'}`;
-  }
-  const single = parse(typeof value === 'string' ? value : null);
-  return single === null ? '' : mkt.date(single);
 }
 
 const styles = StyleSheet.create({
@@ -63,11 +44,12 @@ const styles = StyleSheet.create({
  * not faked: Escape, and dismiss-on-outside-click. Tapping the trigger again closes it.
  */
 export function DatePicker({
+  words,
   value,
   onChange,
   mode = 'single',
   label,
-  placeholder = 'Select a date',
+  placeholder = words.selectDate,
   min,
   max,
   markers,
@@ -82,7 +64,7 @@ export function DatePicker({
 }: NativeDatePickerProps) {
   const mkt = useFormat();
   const [open, setOpen] = useState(false);
-  const text = triggerText(mode, value, mkt);
+  const text = triggerText(mode, value, mkt, words);
 
   return (
     <View style={[styles.wrap, style]}>
@@ -135,15 +117,13 @@ export function DatePicker({
         /* The web half's popover is `role="dialog" aria-label`, so the native one is a `dialog`
            too: a ROLE, never `accessible` — folding this View would swallow every day cell, the
            month arrows and the footer into one unreachable blob. */
-        <View role="dialog" accessibilityLabel={label ?? 'Choose a date'} style={styles.popover}>
+        <View role="dialog" accessibilityLabel={label ?? words.chooseDate} style={styles.popover}>
           <Calendar
+            words={words}
             value={value}
             onChange={(next) => {
               onChange?.(next);
-              const closes =
-                mode === 'single' ||
-                (mode === 'range' && !Array.isArray(next) && typeof next === 'object' && next.to);
-              if (closes) {
+              if (closesPicker(mode, next)) {
                 setOpen(false);
               }
             }}

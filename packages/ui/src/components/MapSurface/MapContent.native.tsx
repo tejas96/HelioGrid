@@ -13,9 +13,10 @@ import type {
   MapMarker,
   MapPin,
   MapRoutePoint,
+  MapSurfaceWords,
 } from './MapSurface.types';
 import { MapVectors } from './MapVectors.native';
-import type { ResolvedPlacement } from './map-placement';
+import { markerKeyOf, type ResolvedPlacement } from './map-placement';
 
 export interface MapContentProps {
   /** The real map. Omitted, a neutral stand-in is drawn. */
@@ -40,6 +41,7 @@ export interface MapContentProps {
   attributionWords: string | null;
   attribution?: ReactNode;
   overlay?: ReactNode;
+  words: MapSurfaceWords;
 }
 
 const styles = StyleSheet.create({
@@ -88,7 +90,7 @@ export function MapContent(props: MapContentProps) {
       {props.children ?? <View style={styles.grid} />}
       <MapVectors geofences={props.geofences} accuracy={props.accuracy} route={props.route} />
       {props.markers.map((marker, index) => (
-        <MapMarkerDot key={String(marker.id ?? `${marker.x}-${marker.y}-${index}`)} {...marker} />
+        <MapMarkerDot key={markerKeyOf(marker, index)} {...marker} words={props.words} />
       ))}
 
       {place.tapToPlace && props.onTap !== undefined ? <MapPlaceLayer onTap={props.onTap} /> : null}
@@ -100,6 +102,7 @@ export function MapContent(props: MapContentProps) {
           fixed={place.fixedPin && pin.placed !== true}
           draggable={place.dragPin && props.canDragPin}
           onDragTo={props.onPinDrag}
+          words={props.words}
         />
       )}
 
@@ -120,6 +123,7 @@ export function MapContent(props: MapContentProps) {
           showZoomLevel={props.showZoomLevel}
           onStepZoom={props.onStepZoom}
           onRecenter={props.onRecenter}
+          words={props.words}
         />
       ) : null}
 

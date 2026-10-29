@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode, PointerEvent as ReactPointerEvent } from 'react';
 import { StatusChip } from '../StatusChip/StatusChip';
 import { OverlayClose } from './OverlayClose';
@@ -8,11 +9,11 @@ interface SheetHeaderProps {
   leading?: ReactNode;
   /** With a handle above it the header loses its own top padding. */
   handle: boolean;
-  closeLabel: string;
+  closeLabel: TranslatedText;
   onClose?: () => void;
   /** Without a handle the header becomes the drag target, exactly as the reference does. */
   onPointerDown?: (event: ReactPointerEvent<HTMLDivElement>) => void;
-  overline?: string;
+  overline?: TranslatedText;
   /** The scroll shadow — luminance, never a divider line. */
   scrolled: boolean;
   showClose: boolean;

@@ -43,7 +43,7 @@ export function OptionCardGroup(props: NativeOptionCardGroupProps) {
     columns = 1,
     density = 'expressive',
     disabled = false,
-    currentLabel = 'Current plan',
+    currentLabel,
     error,
     style,
   } = props;

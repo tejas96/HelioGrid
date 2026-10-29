@@ -1,12 +1,15 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
+import { rowNoteOf, TABLE_SKELETON_ROWS, tableMessageMarkOf } from './DataTableChrome.logic';
 
 /* DataTable — the loading skeleton, the blocked-state message and the row's own line. Split out
    of DataTableChrome.native.tsx so no file runs past 300 lines. */
@@ -60,8 +63,11 @@ export function TableSkeleton({
   stacked,
   rowH = 64,
   edge = theme.spacing['sp-6'],
+  label,
 }: {
   stacked: boolean;
+  /** The loading table's name, spoken. */
+  label: TranslatedText;
   /** The density's row height — the wide form's rows are the height the real ones will be. */
   rowH?: number;
   edge?: number;
@@ -75,12 +81,12 @@ export function TableSkeleton({
        cell and no row action, so folding it puts no 44dp control out of reach. */
     <View
       accessible
-      accessibilityLabel="Loading records"
+      accessibilityLabel={label}
       accessibilityLiveRegion="polite"
       style={stacked ? styles.skeletonStack : null}
     >
       {stacked ? null : <View style={styles.skeletonHead} />}
-      {['a', 'b', 'c', 'd', 'e'].map((row, index) => (
+      {TABLE_SKELETON_ROWS.map((row, index) => (
         <View
           key={row}
           style={[
@@ -107,13 +113,16 @@ export function TableMessage({
   onRetry,
   retryLabel,
   action,
+  focusAfter,
 }: {
   tone?: 'warning';
   title: ReactNode;
   message?: ReactNode;
   onRetry?: () => void;
-  retryLabel?: string;
+  retryLabel?: TranslatedText;
   action?: ReactNode;
+  /** Where the reader lands once *Try again* has gone with this message. */
+  focusAfter: FocusAfter;
 }) {
   const stroke = tone === 'warning' ? theme.colors['warning-text'] : theme.colors['text-tertiary'];
   return (
@@ -128,7 +137,7 @@ export function TableMessage({
           strokeWidth={1.5}
           strokeLinecap="round"
         >
-          <ShellGlyphMarks name={tone === 'warning' ? 'alert-circle' : 'lines-wide'} />
+          <ShellGlyphMarks name={tableMessageMarkOf(tone)} />
         </Svg>
       </View>
       <Text variant="h4" align="center">
@@ -139,7 +148,7 @@ export function TableMessage({
           {message}
         </Text>
       )}
-      <RetryButton onRetry={onRetry} label={retryLabel} />
+      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
       {action}
     </View>
   );
@@ -150,13 +159,15 @@ export function RowNote({
   issue,
   fixed,
   action,
+  fixedLine,
 }: {
-  issue: string | null;
-  fixed: boolean | string | null;
+  issue: TranslatedText | null;
+  fixed: boolean | TranslatedText | null;
   action: ReactNode;
+  /** A fixed row's line when the caller gave none of its own. */
+  fixedLine: TranslatedText;
 }) {
-  const warn = issue !== null;
-  const text = warn ? issue : typeof fixed === 'string' ? fixed : 'Fixed.';
+  const { warn, text, glyph } = rowNoteOf(issue, fixed, fixedLine);
   const stroke = warn ? theme.colors['warning-text'] : theme.colors['success-text'];
   return (
     <View style={styles.note}>
@@ -170,7 +181,7 @@ export function RowNote({
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <ShellGlyphMarks name={warn ? 'alert-circle' : 'tick'} />
+        <ShellGlyphMarks name={glyph} />
       </Svg>
       <Text variant="body-sm" color={warn ? 'warning' : 'success'} style={styles.noteText}>
         {text}

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { ActorClassSpec } from '../ActorClass';
 import type { FieldOverrideSpec } from '../FieldOverride';
@@ -8,8 +9,8 @@ import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 export type NextActionTone = 'due' | 'overdue' | 'soon' | 'scheduled' | 'snoozed' | 'done';
 
 export interface NextActionProps {
-  label: string;
-  /** Appended after a middot — a date or a countdown. */
+  label: TranslatedText;
+  /** Appended after a middot — a formatted date or countdown, the caller's figure. */
   meta?: string;
   tone?: NextActionTone;
   muted?: boolean;
@@ -80,7 +81,7 @@ export interface RecordCardProps {
   action?: ReactNode;
   onClick?: () => void;
   /** The row target's accessible name. Defaults to `name`. */
-  ariaLabel?: string;
+  ariaLabel?: TranslatedText;
   /**
    * **This record's own standing and tier** — `M11-42` (P0): money the tenant's account confirmed
    * and money a person says arrived are visibly different things, ON EVERY SURFACE, and the ledger

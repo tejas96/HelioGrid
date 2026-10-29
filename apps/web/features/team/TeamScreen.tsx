@@ -1,15 +1,15 @@
 'use client';
-import { useSession, useShell, useTeam, useTeamActs } from '@heliogrid/data/react';
+import { useTeamScreen } from '@heliogrid/data/react';
+import { OPENED_FROM_ASSIGN_ROLES, SETTINGS_SEGMENT, type TeamRow } from '@heliogrid/domain';
 import {
-  mapRead,
-  noteLeavesRow,
-  OPENED_FROM_ASSIGN_ROLES,
-  opensSettingsRow,
-  SETTINGS_SEGMENT,
-  showsListHead,
-  type TeamRow,
-} from '@heliogrid/domain';
-import { settingsRowName, TEAM, teamActWords, teamListWords } from '@heliogrid/i18n';
+  rolesRemovedToast,
+  rolesUndoFailedToast,
+  settingsRowName,
+  TEAM,
+  teamActWords,
+  teamListWords,
+  toastHostWords,
+} from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
   Button,
@@ -31,7 +31,7 @@ import {
 import { notFound, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef } from 'react';
 import { settingsRowPath } from '../settings';
-import { TeamAssignRoles, useTeamRoles } from './components/TeamAssignRoles';
+import { TeamAssignRoles } from './components/TeamAssignRoles';
 import { useTeamInvite } from './components/TeamInvite';
 import { TeamTable } from './components/TeamTable';
 
@@ -41,25 +41,51 @@ import './team.css';
  * The Team page behind `More` on the web (`SCR-M01-12`): every person and open or run-out invite,
  * found by name and narrowed by status. Below the table's width it draws the phone's member cards;
  * at it, the quiet table with the head count. Only a person whose presets open the Team row reaches
- * it (`F7-48`). What is read is `useTeam`'s, what each act does `useTeamActs`', and every word
- * `teamListWords`' and `teamActWords`'; this composes. *Invite teammate* opens Invite Teammate as
- * an editor over the page (`SCR-M01-07`, `T-M01-007`); an active person's row opens Assign Roles
- * (`SCR-M01-13`), `useAssignRoles`' editor.
+ * it (`F7-48`). What it draws is `useTeamScreen`'s, the phone's too, and every word
+ * `teamListWords`' and `teamActWords`'; the web's own parts are the width, the router and focus.
+ * *Invite teammate* opens Invite Teammate as an editor over the page (`SCR-M01-07`, `T-M01-007`);
+ * an active person's row opens Assign Roles (`SCR-M01-13`).
  */
 export function TeamScreen() {
-  const { user } = useSession();
-  if (!opensSettingsRow(user?.tenant?.roles ?? [], 'team')) notFound();
-  return <TeamIn />;
-}
-
-function TeamIn() {
   const { t, locale } = useI18n();
   const { pack } = useFormat();
-  const shell = useShell();
-  const team = useTeam(locale);
+  const toasts = useToasts();
+  const search = useRef<FocusHandle>(null);
+  const allChip = useRef<FocusHandle>(null);
+  /* The act that opened the confirm: a refused form redraws it off, so the overlay's own return of
+     focus finds the old element gone. */
+  const opener = useRef<FocusHandle>(null);
+  /* Each note runs on an answer, after this render: it reads the words drawn below. */
+  const screen = useTeamScreen(locale, pack, {
+    onActNote: (note) => {
+      const toast = actWords.toast(note);
+      if (toast !== null) toasts.push(toast);
+    },
+    onLeftRow: () => search.current?.focus(),
+    onRemoved: (removal, undo) => {
+      const { undoLabel, ...toast } = rolesRemovedToast(t, removal);
+      toasts.push({ ...toast, undo: { label: undoLabel, onUndo: undo, focusAfter: search } });
+    },
+    onUndoFailed: (refusal, removal) => {
+      toasts.push(rolesUndoFailedToast(t, refusal, { ...removal, companyName: company }));
+    },
+  });
   const [room, width] = useOwnWidth<HTMLDivElement>();
+  /* Stable: the overlay re-runs its focus effect whenever its close handler changes. */
+  const { shut } = screen.acts;
+  const leave = useCallback(() => {
+    shut();
+    opener.current?.focus();
+  }, [shut]);
+  const invite = useTeamInvite(screen.invite, toasts.push);
+  const router = useRouter();
+  /* Back from the Roles reference, Assign Roles opens again with the ticks it kept. */
+  const { resume, stepAside } = screen.roles;
+  useEffect(() => resume(), [resume]);
+  if (!screen.allowed) notFound();
+
+  const { team, acts, list, company } = screen;
   const wide = width !== null && width >= DATA_TABLE_STACK_BELOW;
-  const company = shell.companyName ?? '';
   const words = teamListWords(t, {
     pack,
     language: locale,
@@ -68,25 +94,7 @@ function TeamIn() {
     query: team.query,
     status: team.status,
   });
-  const list = team.read.kind === 'ready' ? team.read.value : null;
   const actWords = teamActWords(t, company);
-  const toasts = useToasts();
-  const search = useRef<FocusHandle>(null);
-  const allChip = useRef<FocusHandle>(null);
-  /* The act that opened the confirm: a refused form redraws it off, so the overlay's own return of
-     focus finds the old element gone. */
-  const opener = useRef<FocusHandle>(null);
-  const acts = useTeamActs(team, (note) => {
-    const toast = actWords.toast(note);
-    if (toast !== null) toasts.push(toast);
-    if (noteLeavesRow(note)) search.current?.focus();
-  });
-  /* Stable: the overlay re-runs its focus effect whenever its close handler changes. */
-  const { shut } = acts;
-  const leave = useCallback(() => {
-    shut();
-    opener.current?.focus();
-  }, [shut]);
   /* *Clear search* and *Show all* leave with the empty state they sit in; the keyboard's place goes
      to the search field or the *All* chip. */
   const clearSearch = () => {
@@ -97,15 +105,6 @@ function TeamIn() {
     team.filter('all');
     allChip.current?.focus();
   };
-  const invite = useTeamInvite(() => team.reread(), toasts.push);
-  /* As a row act that leaves the row, an undo gives the keyboard to the search. */
-  const roles = useTeamRoles(team, toasts, company, () => search.current?.focus());
-  /* The sole-owner reason names the company, so no row opens before its name has arrived. */
-  const openOf = shell.companyName === null ? undefined : roles.openerOf;
-  const router = useRouter();
-  /* Back from the Roles reference, Assign Roles opens again with the ticks it kept. */
-  const { resume, stepAside } = roles;
-  useEffect(() => resume(), [resume]);
   const openReference = () => {
     stepAside();
     router.push(`${settingsRowPath(SETTINGS_SEGMENT.roles)}?from=${OPENED_FROM_ASSIGN_ROLES}`);
@@ -149,11 +148,11 @@ function TeamIn() {
   /* One table for the wait and the rows: it draws its own loading. */
   const table = wide ? (
     <TeamTable
-      read={mapRead(team.read, (shown) => shown.view.rows)}
+      read={screen.rows}
       words={words}
       actions={actWords.actions}
       actOf={(row) => actOf(row, 'sm')}
-      openOf={openOf}
+      openOf={screen.openOf}
     />
   ) : undefined;
 
@@ -175,7 +174,7 @@ function TeamIn() {
       {!wide && list?.surface !== 'teaching' ? (
         <div className="hg-team-invite">{inviteAct}</div>
       ) : null}
-      {showsListHead(team.read) ? (
+      {screen.showsHead ? (
         <MemberListHead
           query={team.query}
           onFind={team.find}
@@ -191,11 +190,12 @@ function TeamIn() {
       <MemberList
         read={team.read}
         words={words}
+        focusAfter={search}
         teachingAction={inviteFirstAct}
         onClearSearch={clearSearch}
         onShowAll={showAll}
         actOf={(row) => actOf(row, 'md')}
-        openOf={openOf}
+        openOf={screen.openOf}
         records={table}
         waiting={table}
       />
@@ -206,13 +206,13 @@ function TeamIn() {
         onLeave={leave}
       />
       <InviteEditor {...invite.editor} />
-      <TeamAssignRoles
-        editor={roles}
-        list={team.read}
-        companyName={company}
-        onReference={openReference}
+      <TeamAssignRoles editor={screen.roles} companyName={company} onReference={openReference} />
+      <ToastHost
+        toasts={toasts.toasts}
+        onDismiss={toasts.dismiss}
+        {...toastHostWords(t)}
+        focusAfter={search}
       />
-      <ToastHost toasts={toasts.toasts} onDismiss={toasts.dismiss} />
     </div>
   );
 }

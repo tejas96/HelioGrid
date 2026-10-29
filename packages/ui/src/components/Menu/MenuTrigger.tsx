@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { KeyboardEvent, MouseEvent, ReactElement, Ref } from 'react';
 import { cloneElement } from 'react';
 import { OverflowGlyph } from './MenuGlyphs';
@@ -14,7 +15,7 @@ type TriggerElement = ReactElement<{
 interface MenuTriggerProps {
   disabled: boolean;
   /** The menu's accessible name — also the default trigger's `aria-label`. */
-  label: string;
+  label: TranslatedText;
   onOpen: () => void;
   onToggle: () => void;
   open: boolean;

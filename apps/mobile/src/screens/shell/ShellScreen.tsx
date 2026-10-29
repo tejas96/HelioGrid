@@ -1,6 +1,7 @@
-import { useAction, useConnection, useSession, useShell } from '@heliogrid/data/react';
+import { useShellScreen } from '@heliogrid/data/react';
 import {
   accessRemovedWords,
+  BLOCK,
   connectionWords,
   homeBlocksWords,
   homeHeadWords,
@@ -9,7 +10,7 @@ import {
 import { useTranslate } from '@heliogrid/i18n/react';
 import { AccessRemoved, HomeBlocks, HomeHead, NoConnection, useFormat } from '@heliogrid/ui';
 import { useIsFocused } from '@react-navigation/native';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useWindowDimensions, type View } from 'react-native';
 import { FirstRunMark } from './components/FirstRunMark';
 import { GrievanceNote } from './components/GrievanceNote';
@@ -20,40 +21,36 @@ import { usePillItems } from './use-pill-items';
 
 /**
  * The phone shell (`SCR-SHELL-01`): the person's home inside the top bar and the pill. Every fact
- * is `useShell()`'s — the home, the switcher, the verb, the slots, the marks (Law 11) — and every
- * part is `packages/ui`'s, shared with the web; this composes. A device gone offline sees the one
- * no-connection screen instead of blocks that would wait forever (`F8-36`). A removal is checked
- * before anything loaded, since a read in flight comes back refused once the company has removed
- * the person.
+ * is `useShellScreen()`'s, the web's too — the home, the switcher, the verb, the slots, the marks
+ * (Law 11) — and every part is `packages/ui`'s, shared with the web; this composes. A device gone
+ * offline sees the one no-connection screen instead of blocks that would wait forever (`F8-36`).
+ * A removal is checked before anything loaded, since a read in flight comes back refused once the
+ * company has removed the person.
  */
 export function ShellScreen() {
   const t = useTranslate();
   const format = useFormat();
   const { width } = useWindowDimensions();
-  const session = useSession();
-  const shell = useShell();
+  const screen = useShellScreen();
+  const { shell, grievance, connection } = screen;
   const titleRef = useRef<View>(null);
   const actionRef = useRef<View>(null);
-  const [grievance, setGrievance] = useState(false);
   const items = usePillItems(shell, actionRef);
-  const showGrievance = () => setGrievance(true);
-  const leaving = useAction<void, void>(() => session.signOut());
-  const signOut = () => void leaving.run();
-  const connection = useConnection();
   const inFront = useIsFocused();
+  const note = <GrievanceNote open={grievance.isOpen} onClose={grievance.close} />;
 
   if (!connection.online)
     return <NoConnection {...connectionWords(t)} onRetry={connection.retry} />;
   if (shell.accessRemoved) {
     return (
-      <ShellFrame topBar={<ShellTopBar companyName={shell.companyName} />} items={[]}>
+      <ShellFrame topBar={<ShellTopBar screen={screen} nameOnly />} items={[]}>
         <AccessRemoved
           {...accessRemovedWords(t, shell.companyName)}
-          onAction={signOut}
-          pending={leaving.pending}
-          onGrievance={showGrievance}
+          onAction={screen.signOut}
+          pending={screen.signingOut}
+          onGrievance={grievance.open}
         />
-        <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />
+        {note}
       </ShellFrame>
     );
   }
@@ -61,20 +58,7 @@ export function ShellScreen() {
   const home = shell.home;
   const head = home === null ? null : homeHeadWords(t, home.home, shell.homes);
   return (
-    <ShellFrame
-      topBar={
-        <ShellTopBar
-          companyName={shell.companyName}
-          account={{
-            personName: session.user?.name ?? '',
-            onGrievance: showGrievance,
-            onSignOut: signOut,
-          }}
-        />
-      }
-      items={items}
-      inView="home"
-    >
+    <ShellFrame topBar={<ShellTopBar screen={screen} />} items={items} inView="home">
       {home === null || head === null ? null : (
         <>
           <HomeHead
@@ -88,7 +72,11 @@ export function ShellScreen() {
             switcherWidth={switcherWidth(width)}
             titleAnchor={titleRef}
           />
-          <HomeBlocks {...homeBlocksWords(t, home)} read={shell.read} />
+          <HomeBlocks
+            {...homeBlocksWords(t, home)}
+            read={shell.read}
+            loadingLabel={t(BLOCK.loading)}
+          />
         </>
       )}
       {/* A mark points at THIS screen's controls. Under a door a link opened, the home is mounted
@@ -96,7 +84,7 @@ export function ShellScreen() {
       {inFront ? (
         <FirstRunMark shell={shell} anchors={{ switchHome: titleRef, action: actionRef }} />
       ) : null}
-      <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />
+      {note}
     </ShellFrame>
   );
 }

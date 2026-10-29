@@ -1,9 +1,11 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { Text as RNText, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import type { DayMarker, DayMarkerTone } from './DatePicker.types';
+import type { CalendarCellProps, DayMarker, DayMarkerTone } from './DatePicker.types';
+import { spokenDayOf } from './date-text';
 
 const CELL = 44;
 const GAP = 2;
@@ -73,7 +75,7 @@ export const styles = StyleSheet.create({
 
 interface CalendarNavProps {
   dir: -1 | 1;
-  label: string;
+  label: TranslatedText;
   onPress: () => void;
 }
 
@@ -95,25 +97,6 @@ export function CalendarNav({ dir, label, onPress }: CalendarNavProps) {
       </Svg>
     </Pressable>
   );
-}
-
-interface CalendarCellProps {
-  date: Date;
-  selected: boolean;
-  between: boolean;
-  disabled: boolean;
-  locked: boolean;
-  today: boolean;
-  marker: DayMarker | undefined;
-  spokenDate: string;
-  onPick: (d: Date) => void;
-}
-
-/** The whole fact in the accessible name — a marker's label is read out with its date. */
-function cellName(spokenDate: string, marker: DayMarker | undefined, locked: boolean): string {
-  const markerSuffix = marker === undefined ? '' : `, ${marker.label ?? marker.tone ?? ''}`;
-  const lockedSuffix = locked ? ', supplied by the market pack, cannot be removed' : '';
-  return `${spokenDate}${markerSuffix}${lockedSuffix}`;
 }
 
 interface CellMarkProps {
@@ -159,6 +142,7 @@ export function CalendarCell({
   marker,
   spokenDate,
   onPick,
+  words,
 }: CalendarCellProps) {
   const shell = [
     styles.cell,
@@ -179,7 +163,8 @@ export function CalendarCell({
        the button lives inside it. Same word, correctly nested. */
     <View role="cell">
       <Pressable
-        accessibilityLabel={cellName(spokenDate, marker, locked)}
+        /* The whole fact in the accessible name — a marker's label is read out with its date. */
+        accessibilityLabel={spokenDayOf(words, spokenDate, marker, locked)}
         /* WHICH DATE IS CHOSEN, said rather than tinted (F7-12) — the web's `aria-pressed`. And a
            LOCKED date announces off while staying pressable, so the refusal it hands to `onBlocked`
            is reachable: the web's `aria-disabled={locked}`, which is deliberately not the `disabled`

@@ -11,11 +11,13 @@ import { FilterDimensionControl } from './FilterDimensionControl.native';
 import {
   clearedFilterValue,
   countActiveFilters,
+  dimensionChangeOf,
+  FILTER_PANEL_DEFAULTS,
+  filterFooterOf,
   filterLayout,
   isFilterActive,
-  withDimension,
 } from './FilterPanel.logic';
-import type { FilterDimensionValue, FilterPanelProps, FilterSetProps } from './FilterPanel.types';
+import type { FilterPanelProps, FilterSetProps } from './FilterPanel.types';
 
 interface NativeFilterSetProps extends FilterSetProps {
   style?: StyleProp<ViewStyle>;
@@ -38,8 +40,7 @@ export function FilterSet({
   words,
   style,
 }: NativeFilterSetProps) {
-  const setOne = (key: string, v: FilterDimensionValue) =>
-    onChange?.(withDimension(dimensions, value, key, v));
+  const setOne = dimensionChangeOf(dimensions, value, onChange);
   const { sections, flags } = filterLayout(dimensions, value);
   const parted = (index: number) => (index === 0 ? styles.first : styles.parted);
   return (
@@ -93,29 +94,34 @@ export function FilterPanel({
   showClear = true,
   resultCount,
   resultNoun,
-  panelAbove = 720,
-  width = 460,
+  panelAbove = FILTER_PANEL_DEFAULTS.panelAbove,
+  width = FILTER_PANEL_DEFAULTS.width,
   inset = false,
   modal = true,
-  zIndex = 40,
+  zIndex = FILTER_PANEL_DEFAULTS.zIndex,
   style,
 }: NativeFilterPanelProps) {
-  const n = countActiveFilters(dimensions, value);
-  const clear = () => (onClear ? onClear() : onChange?.(clearedFilterValue(dimensions)));
+  const { nothingOn, clear, doneLabel } = filterFooterOf({
+    dimensions,
+    value,
+    onChange,
+    onClear,
+    resultCount,
+    resultNoun,
+    words,
+  });
   const footer = (
     <View style={styles.footer}>
       {showClear ? (
-        <Pressable onPress={clear} disabled={n === 0} style={styles.footerClear}>
-          <Text variant="body" color={n === 0 ? 'disabled' : 'primary'} style={styles.clearWords}>
+        <Pressable onPress={clear} disabled={nothingOn} style={styles.footerClear}>
+          <Text variant="body" color={nothingOn ? 'disabled' : 'primary'} style={styles.clearWords}>
             {words.clearAll}
           </Text>
         </Pressable>
       ) : null}
       <Pressable onPress={onClose} style={styles.done}>
         <Text variant="body" color="inverse" style={styles.doneWords}>
-          {typeof resultCount === 'number'
-            ? words.showResults(resultCount, resultNoun)
-            : words.done}
+          {doneLabel}
         </Text>
       </Pressable>
     </View>

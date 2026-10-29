@@ -1,4 +1,4 @@
-import { createTranslator, SETUP_LANGUAGE } from '@heliogrid/i18n';
+import { createTranslator, paymentTermsWords, SETUP_LANGUAGE } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { settledBox } from '../support/layout';
 import { resolvedColour, resolvedFont } from '../support/token';
@@ -190,7 +190,7 @@ test('an amount keeps the mono face', async ({ mount, page }) => {
 });
 
 /* The column on `SCR-M01-20` labels its shares once; each row's field is named by `ariaLabel`. */
-const SHARE_NAME = 'Share of Second instalment';
+const SHARE_NAME = paymentTermsWords(en.t).shareOf('Second instalment');
 
 test('an ariaLabel names the field', async ({ mount }) => {
   const unlabelled = await mount(<NamedNumberField ariaLabel={SHARE_NAME} />);

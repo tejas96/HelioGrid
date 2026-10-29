@@ -1,11 +1,15 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { ShimmerBar } from '../Sheet/SheetSkeleton.native';
 import { PANEL_SKELETON_ROWS } from './PanelSkeleton.logic';
 
 interface PanelSkeletonProps {
-  /** The status region's accessible name. The reference hardcodes it; no prop carries it. */
-  label?: string;
+  /**
+   * The status region's accessible name: what is loading, the caller's `loadingLabel`. A read
+   * always brings one; with none there is no read, so nothing loads and nothing is drawn.
+   */
+  label?: TranslatedText;
 }
 
 /**
@@ -14,7 +18,10 @@ interface PanelSkeletonProps {
  * web's `role="status"` has no RN spelling, so this is an accessibility element (folding nothing
  * but shimmer) named by `label` and announced politely.
  */
-export function PanelSkeleton({ label = 'Loading' }: PanelSkeletonProps) {
+export function PanelSkeleton({ label }: PanelSkeletonProps) {
+  if (label === undefined) {
+    return null;
+  }
   return (
     <View
       accessible

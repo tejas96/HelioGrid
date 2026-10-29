@@ -1,11 +1,12 @@
-import type { ReactNode } from 'react';
-import type { ActionReasonSpec } from '../ActionReason';
+import type { TranslatedText } from '@heliogrid/contracts';
+import type { ActionReasonInput } from '../ActionReason';
 
 /** Density mode — expressive is the brand's roomy default, functional the dense working set. */
 export type SelectDensity = 'expressive' | 'functional';
 
 export interface SelectOption {
   value: string;
+  // biome-ignore lint/plugin/copy-prop-type: an option's name — words, or a fact such as a file's sheet
   label: string;
   disabled?: boolean;
   /**
@@ -19,7 +20,7 @@ export interface SelectOption {
    * A plain sentence, a spec, or a ready node — all three go through `renderActionReason`, which
    * is what supplies the barred-circle second channel and the `--text-secondary` words.
    */
-  disabledReason?: ReactNode | ActionReasonSpec;
+  disabledReason?: ActionReasonInput;
 }
 
 export interface SelectProps {
@@ -27,17 +28,23 @@ export interface SelectProps {
   onChange?: (value: string) => void;
   /** Strings or {value,label,disabled} objects. */
   options: (SelectOption | string)[];
-  label?: string;
-  placeholder?: string;
+  label?: TranslatedText;
+  /** The trigger's words while nothing is picked. Required — an empty trigger says nothing. */
+  placeholder: TranslatedText;
   density?: SelectDensity;
   disabled?: boolean;
-  helper?: string;
+  helper?: TranslatedText;
   /** State the problem and the fix. */
-  error?: string;
+  error?: TranslatedText;
   name?: string;
   /**
    * The accessible name where there is **no visible `label`** — a `DataTable` cell editor, whose
    * visible name is the column header. Ignored when `label` is set, so the two cannot disagree.
    */
-  ariaLabel?: string;
+  ariaLabel?: TranslatedText;
+  /**
+   * The phone's name for the scrim behind an open list, which closes it on a tap ("Close the
+   * list"). The web closes on Escape or an outside click and names nothing.
+   */
+  closeLabel: TranslatedText;
 }

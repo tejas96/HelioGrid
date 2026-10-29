@@ -4,13 +4,11 @@ import {
   type CompanySignup,
   failureOf,
   type SignIn,
-  useCompanySignup,
-  useSession,
+  useCompanySignupScreen,
   useSessionPhase,
-  useSignIn,
   useSteerDroppedOnEdit,
 } from '@heliogrid/data/react';
-import { homeOf, type SessionUser, signupView } from '@heliogrid/domain';
+import type { SessionUser } from '@heliogrid/domain';
 import { fieldBinder, useZodForm } from '@heliogrid/forms';
 import {
   COMPANY_SIGNUP,
@@ -49,8 +47,8 @@ import { UnreachableScreen } from './UnreachableScreen';
  * Company signup on the web (`SCR-M01-02` at 1536): the number, the code, then three fields, over
  * the flow `T-M01-036` landed and the door's two-field composition. The open group holds no gate:
  * the screen opens to a new number before any session exists and to a verified number
- * without a company (`M01-10`). Which panel shows is `signupView`'s, over the join steer
- * `useCompanySignup` holds (`M01-09`); this composes, and on the
+ * without a company (`M01-10`). Which panel shows is `useCompanySignupScreen`'s, the phone's too,
+ * over the join steer it holds (`M01-09`); this composes, and on the
  * `done` view sends a person who has a company to the link they opened signed out (`M01-61`), else
  * to their home, once the session phase is signed in (`M01-08`) — at once for an owner who arrives
  * signed in, after the beat for a known number entered here.
@@ -59,68 +57,58 @@ export function CompanySignupScreen() {
   const t = useTranslate();
   const language = <DoorLanguage {...useLanguageChoice()} />;
   const router = useRouter();
-  const session = useSession();
   const phase = useSessionPhase();
   const { pack } = useFormat();
-  const signIn = useSignIn(pack, 'signup');
-  const signup = useCompanySignup();
-  const view = signupView(session, signIn.state.step, signup.steer);
-  const sendHome = view === 'done' && phase === 'signedIn';
+  const { signIn, signup, panel, unreachable } = useCompanySignupScreen(pack);
+  const sendHome = panel.view === 'done' && phase === 'signedIn';
 
   useEffect(() => {
     if (sendHome) router.replace(keptReturnPath() ?? HOME_ROUTE);
   }, [sendHome, router]);
 
   // This route sits outside the gates, so it answers a boot check with no answer itself (`M01-07`).
-  if (session.unreachable) return <UnreachableScreen />;
+  if (unreachable) return <UnreachableScreen />;
 
-  /** The held account's session ends, and the number step comes back with the field cleared. */
-  const leaveForAnotherNumber = () => {
-    void session.leaveKnownAccount();
-    signIn.press('change-number');
-    signIn.typePhone('');
-  };
-
-  if (view === 'known' && session.known !== null) {
+  if (panel.view === 'known') {
     return (
       <SignupKnownNumber
         language={language}
         words={knownNumberWords(t)}
-        phoneE164={session.known.next.phoneE164}
-        onEnter={session.enterKnownAccount}
-        onLeave={leaveForAnotherNumber}
+        phoneE164={panel.phoneE164}
+        onEnter={panel.enter}
+        onLeave={panel.leave}
       />
     );
   }
-  if (view === 'done') {
-    const home = homeOf(session.user);
+  if (panel.view === 'done') {
+    const { home } = panel;
     const destination = home === null ? t(SIGN_IN.companySetup) : homeTitle(t, home);
     return (
       <SuccessDwell title={t(SIGN_IN.youAreIn)} line={t(SIGN_IN.takingYouTo, { destination })} />
     );
   }
-  if (view === 'sent' && session.user !== null && signup.found !== null) {
+  if (panel.view === 'sent') {
     return (
       <SignupRequestSent
         language={language}
-        words={requestSentWords(t, signup.found)}
-        name={signup.typedName ?? session.user.name}
-        phoneE164={session.user.phoneE164}
+        words={requestSentWords(t, panel.found)}
+        name={panel.name}
+        phoneE164={panel.phoneE164}
         onCreateInstead={() => void signup.createAnyway()}
       />
     );
   }
-  if ((view === 'company' || view === 'join') && session.user !== null) {
+  if (panel.view === 'company' || panel.view === 'join') {
     return (
       <SignupDetailsStep
-        user={session.user}
-        restored={session.restored}
-        joining={view === 'join'}
+        user={panel.user}
+        restored={panel.restored}
+        joining={panel.view === 'join'}
         signup={signup}
       />
     );
   }
-  if (view === 'code') {
+  if (panel.view === 'code') {
     return (
       <DoorCodeStep
         language={language}
@@ -158,7 +146,7 @@ function SignupDetailsStep({
 }: {
   user: SessionUser;
   restored: boolean;
-  /** The view is `join` (`signupView`): the steer replaces the primary. */
+  /** The panel is `join`: the steer replaces the primary. */
   joining: boolean;
   signup: CompanySignup;
 }) {

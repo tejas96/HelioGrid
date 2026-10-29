@@ -5,6 +5,8 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Button } from '../Button/Button.native';
+import { moreLabelOf, morePressOf } from './Transcript.logic';
+import type { TranscriptWords } from './Transcript.types';
 
 const styles = StyleSheet.create({
   more: { flexDirection: 'row', marginTop: theme.spacing['sp-3'] },
@@ -16,6 +18,7 @@ interface TranscriptMoreProps {
   loadingMore: boolean;
   onReveal: () => void;
   onLoadMore?: () => void;
+  words: TranscriptWords;
 }
 
 export function TranscriptMore({
@@ -23,6 +26,7 @@ export function TranscriptMore({
   loadingMore,
   onReveal,
   onLoadMore,
+  words,
 }: TranscriptMoreProps) {
   return (
     <View style={styles.more}>
@@ -30,19 +34,9 @@ export function TranscriptMore({
         variant="secondary"
         size="md"
         disabled={loadingMore}
-        onClick={() => {
-          if (remaining > 0) {
-            onReveal();
-          } else {
-            onLoadMore?.();
-          }
-        }}
+        onClick={morePressOf(remaining, onReveal, onLoadMore)}
       >
-        {loadingMore
-          ? 'Loading…'
-          : remaining > 0
-            ? `Show the rest of the call · ${remaining} more`
-            : 'Show more of the call'}
+        {moreLabelOf(words, remaining, loadingMore)}
       </Button>
     </View>
   );

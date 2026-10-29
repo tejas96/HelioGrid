@@ -1,5 +1,6 @@
 'use client';
 import type { ResolvedCatalogItemWire } from '@heliogrid/contracts';
+import type { CatalogRowAct } from '@heliogrid/domain';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
@@ -12,7 +13,8 @@ import { useSession } from './use-session';
 type Item = ResolvedCatalogItemWire;
 
 /** What a row act was: the failed line names it, and *Retry* sends it again. */
-export type CatalogAct = 'price' | 'preferred' | 'hidden' | 'archive' | 'restore';
+/** A row's act in place: `packages/domain`'s vocabulary. */
+export type CatalogAct = CatalogRowAct;
 
 /** A row whose write is out, or came back failed with nothing changed. */
 export type CatalogRowState =

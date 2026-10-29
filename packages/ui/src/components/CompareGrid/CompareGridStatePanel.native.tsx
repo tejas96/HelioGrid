@@ -1,18 +1,6 @@
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
-import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
+import type { CompareGridStatePanelProps } from './CompareGrid.types';
 import { CompareMessage, CompareSkeleton } from './CompareGridStates.native';
-
-export interface CompareGridStatePanelProps {
-  state: SurfaceState;
-  emptyTitle: string;
-  emptyMessage: string;
-  errorTitle: string;
-  errorMessage: string;
-  onRetry?: () => void;
-  retryLabel?: string;
-  unavailableTitle: string;
-  unavailableMessage?: string;
-}
 
 /**
  * **Which surface state the reader is in, and the panel that stands in for the grid.**
@@ -31,8 +19,10 @@ export function CompareGridStatePanel({
   retryLabel,
   unavailableTitle,
   unavailableMessage,
+  words,
+  focusAfter,
 }: CompareGridStatePanelProps) {
-  if (state === 'loading') return <CompareSkeleton />;
+  if (state === 'loading') return <CompareSkeleton label={words.loading} />;
   if (state === 'error') {
     return (
       <CompareMessage
@@ -41,6 +31,7 @@ export function CompareGridStatePanel({
         message={errorMessage}
         onRetry={onRetry}
         retryLabel={retryLabel}
+        focusAfter={focusAfter}
       />
     );
   }
@@ -54,5 +45,5 @@ export function CompareGridStatePanel({
     );
   }
   /* `empty`, and equally `ready` with nothing to line up — the same nothing, so the same words. */
-  return <CompareMessage title={emptyTitle} message={emptyMessage} />;
+  return <CompareMessage title={emptyTitle} message={emptyMessage} focusAfter={focusAfter} />;
 }

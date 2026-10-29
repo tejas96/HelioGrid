@@ -1,4 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import type { LeaveAsk } from '@heliogrid/data/react';
 import type { BrandingWords } from '@heliogrid/i18n';
 import { Button, LeaveConfirm, Modal, ModalActions, Text } from '@heliogrid/ui';
 
@@ -49,16 +50,8 @@ export function RemoveLogoAsk({
   );
 }
 
-/** *Leave without saving?* (s18-w): the shared confirm with Branding's words, the ask `useLeaveAsk` holds. */
-export function BrandingLeaveAsk({
-  words,
-  leave,
-  onDiscard,
-}: {
-  words: BrandingWords;
-  leave: { asking: boolean; stay: () => void; leave: (discard: () => void) => void };
-  onDiscard: () => void;
-}) {
+/** *Leave without saving?* (s18-w): the shared confirm with Branding's words, the ask `packages/data`'s `useLeaveAsk` holds. */
+export function BrandingLeaveAsk({ words, leave }: { words: BrandingWords; leave: LeaveAsk }) {
   return (
     <LeaveConfirm
       open={leave.asking}
@@ -67,7 +60,7 @@ export function BrandingLeaveAsk({
       discard={words.leaveConfirm}
       keep={words.keepEditing}
       onKeep={leave.stay}
-      onLeave={() => leave.leave(onDiscard)}
+      onLeave={leave.leave}
     />
   );
 }

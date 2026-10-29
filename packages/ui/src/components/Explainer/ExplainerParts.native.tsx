@@ -4,7 +4,7 @@ import Svg, { G } from 'react-native-svg';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import type { ExplainerPagerModel, PlacedExplainer } from './Explainer.logic';
+import { arrowOffset, type ExplainerPagerModel, type PlacedExplainer } from './Explainer.logic';
 import type { ExplainerAction } from './Explainer.types';
 
 /** The default "i", drawn from the same geometry as the web half's. */
@@ -29,16 +29,7 @@ export function InfoGlyph({ size, color }: { size: number; color: string }) {
 }
 
 export function ExplainerArrow({ placed }: { placed: PlacedExplainer }) {
-  const vertical = placed.side === 'top' || placed.side === 'bottom';
-  return (
-    <View
-      style={[
-        styles.arrow,
-        vertical ? { left: placed.arrow - 6 } : { top: placed.arrow - 6 },
-        ARROW_SIDE[placed.side],
-      ]}
-    />
-  );
+  return <View style={[styles.arrow, arrowOffset(placed), ARROW_SIDE[placed.side]]} />;
 }
 
 /** The one action. A link has no `<a>` here, so it opens the address — still a 44dp target. */

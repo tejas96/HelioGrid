@@ -1,12 +1,13 @@
 import type { CSSProperties } from 'react';
-import { useId, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { progressPercent, refusalLine, takesImages } from './Dropzone.logic';
 import type { DropzoneProps, PickedFile } from './Dropzone.types';
 import { CameraGlyph, DropzoneSpinner, FileGlyph } from './DropzoneGlyphs';
 import { DropzoneHeld } from './DropzoneHeld';
 import { DropzoneThumbs } from './DropzoneThumbs';
-import { captureLine, sizeErrorMessage } from './dropzone-copy';
-import { HELD_DEFAULTS, heldCountWords, heldTotal } from './dropzone-held';
+import { captureLine } from './dropzone-copy';
+import { HELD_RETRY_TIMEOUT, heldCountWords, heldTotal } from './dropzone-held';
 import { pickedFileOf } from './picked-file';
 
 interface WebDropzoneProps extends DropzoneProps {
@@ -31,7 +32,8 @@ function toPicked(list: FileList): PickedFile[] {
  * drop handlers stay on the label, so the drop target is still one rectangle.
  */
 export function Dropzone({
-  label = 'Add roof photos',
+  words,
+  label,
   hint,
   accept = 'image/*',
   multiple = true,
@@ -46,13 +48,13 @@ export function Dropzone({
   heldOnDevice = false,
   heldCount,
   onRetry,
-  retryLabel = HELD_DEFAULTS.retryLabel,
+  retryLabel = words.tryUploadingNow,
   heldMessage,
   heldNoun,
   heldNounPlural,
-  failedMessage = HELD_DEFAULTS.failedMessage,
-  timeoutMessage = HELD_DEFAULTS.timeoutMessage,
-  retryTimeout = HELD_DEFAULTS.retryTimeout,
+  failedMessage = words.flushFailed,
+  timeoutMessage = words.flushTimedOut,
+  retryTimeout = HELD_RETRY_TIMEOUT,
   density = 'expressive',
   disabled = false,
   className,
@@ -60,16 +62,18 @@ export function Dropzone({
 }: WebDropzoneProps) {
   const autoId = useId();
   const [over, setOver] = useState(false);
+  /* A removed file takes its thumbnail away: focus goes to the surface, the one tab stop. */
+  const surface = useRef<HTMLInputElement>(null);
   const isError = state === 'error';
   const busy = state === 'uploading';
-  const isImage = accept.startsWith('image');
+  const isImage = takesImages(accept);
   const heldId = `${autoId}-held`;
   const errorId = `${autoId}-err`;
-  const countWords = heldCountWords(heldTotal(heldCount, files.length), {
-    accept,
-    heldNoun,
-    heldNounPlural,
-  });
+  const countWords = heldCountWords(
+    heldTotal(heldCount, files.length),
+    { accept, heldNoun, heldNounPlural },
+    words,
+  );
   /* Both notes describe the surface, and the held queue is one of them: the input is the control a
      screen reader lands on, so it is what has to carry "eleven photos are waiting". */
   const notes = [isError ? errorId : null, heldOnDevice ? heldId : null].filter(
@@ -88,7 +92,8 @@ export function Dropzone({
     accept,
     capture,
     maxSizeMB,
-    browsePhrase: 'Drop files here or tap to browse',
+    drop: true,
+    words,
   });
 
   return (
@@ -123,6 +128,7 @@ export function Dropzone({
         <div className="hg-dropzone-label">{label}</div>
         <div className="hg-dropzone-line">{line}</div>
         <input
+          ref={surface}
           className="hg-dropzone-input"
           type="file"
           accept={accept}
@@ -136,16 +142,13 @@ export function Dropzone({
 
       {busy && progress !== null ? (
         <div className="hg-dropzone-track">
-          <div
-            className="hg-dropzone-fill"
-            style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}
-          />
+          <div className="hg-dropzone-fill" style={{ width: `${progressPercent(progress)}%` }} />
         </div>
       ) : null}
 
       {isError ? (
         <p className="hg-dropzone-error" id={errorId} role="alert">
-          {errorMessage ?? sizeErrorMessage(maxSizeMB)}
+          {refusalLine(errorMessage, words, maxSizeMB)}
         </p>
       ) : null}
 
@@ -154,6 +157,7 @@ export function Dropzone({
           busy={busy}
           countWords={countWords}
           failedMessage={failedMessage}
+          held={words.held}
           heldMessage={heldMessage}
           id={heldId}
           onRetry={onRetry}
@@ -163,7 +167,9 @@ export function Dropzone({
         />
       ) : null}
 
-      {files.length > 0 ? <DropzoneThumbs files={files} onRemove={onRemove} /> : null}
+      {files.length > 0 ? (
+        <DropzoneThumbs files={files} onRemove={onRemove} words={words} focusAfter={surface} />
+      ) : null}
     </div>
   );
 }

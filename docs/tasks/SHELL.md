@@ -85,7 +85,7 @@ Task-id prefix: `T-SHELL-`. RFC and part-size rules live in `docs/tasks/README.m
 
 ### T-SHELL-014 · Focus lands where the person goes next when a control removes itself — one helper, a required prop
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped
 **PRD rows:** F7-23 (P0), F7-24 (P0)
 **Design:** none — an engine task; it waits on no drawing and changes built screens.
 **Why:** A screen-reader or keyboard user who presses *Try again*, *Undo*, *Remove* or *Dismiss* is left with focus on nothing, because the shared controls that leave have no way to say where focus goes; six private focus hooks and a dozen hand-written copies each answer it another way, per half.
@@ -104,7 +104,7 @@ Task-id prefix: `T-SHELL-`. RFC and part-size rules live in `docs/tasks/README.m
 
 ### T-SHELL-015 · One view model per screen pair, and a component's logic in its `.logic.ts` — both platforms draw from one assembly
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped
 **PRD rows:** F7-30 (P0), F7-31 (P0)
 **Design:** none — an engine task; it waits on no drawing and changes built screens.
 **Why:** The web and the phone show the same screen differently — a company name read from two places, an act bar one platform never gets — because what both screens draw is assembled again in each screen file, and a component's web and phone halves each compute the same things (129 copies, 3,288 lines). Assembled once, the two cannot drift.
@@ -118,22 +118,11 @@ Task-id prefix: `T-SHELL-`. RFC and part-size rules live in `docs/tasks/README.m
 **DONE WHEN:**
 - **D1** · **Given** any feature in any module, **when** its surfaces are listed, **then** both platforms carry it, the mobile design is the origin rather than the reduction, and the studio is included (`F7-30`, `F7-31`). → proof: every built screen pair draws from one `packages/domain` view model, filled by one `packages/data/src/react/` hook, that holds everything both screens draw — facts, words input, parts, overlay and leave state, the save and where its refusal goes — and each screen file holds markup and its platform adapters only; a dependency-cruiser or Biome rule refuses an assembly builder or local state in an `apps/web/features` or `apps/mobile/src/screens` file, seen red. A `packages/ui` component computes in its `.logic.ts` what both halves need, and `pnpm check:dupes`' web and phone threshold is lowered to what the lift leaves.
 
-#### Parts
-
-The Biome rule lands in part a over the pairs it moves, and each later part adds its pairs to it.
-
-| part | what | AC | depends on | status |
-|---|---|---|---|---|
-| a | The rule that refuses an assembly builder or local state in a screen file, and the view model and its hook for Team, Profile & preferences and Payment terms — web and phone | D1 | — | open |
-| b | The view models of Catalog, Branding and Proposal template — web and phone | D1 | a | open |
-| c | The view models of the shell, sign-in, company sign-up, every onboarding screen (Business profile among them), Notifications, Settings and Roles reference; the rule then covers every file under `apps/web/features` and `apps/mobile/src/screens` | D1 | b | open |
-| d | Each `packages/ui` component pair without a `.logic.ts` computes there what both halves need, and `pnpm check:dupes`' web and phone threshold is lowered to what the lift leaves | D1 | c | open |
-
 ---
 
 ### T-SHELL-016 · No English inside `packages/ui` — every copy prop takes the `TranslatedText` brand
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped
 **PRD rows:** F3-07 (P0)
 **Design:** none — an engine task; it waits on no drawing and changes built screens.
 **Why:** A Hindi or Marathi user hears and reads English where a component carries its own words — about 246 English defaults (`label = 'Sort'`) and 48 literal screen-reader labels — and new components copy the pattern because nothing refuses it. This is `docs/tasks/UI.md`'s English-string mechanism: it closes the rows *Hard-coded accessibility labels*, `Stepper`, `CoachMark`, `StatusChip`, `FieldOverride`, `SourceDocument` · `Dropzone`, `RichText` and `AllocationMeter`.
@@ -145,16 +134,6 @@ The Biome rule lands in part a over the pairs it moves, and each later part adds
 
 **DONE WHEN:**
 - **D1** · Given any product-supplied user-visible string, when the language set is enumerated, then a translation exists for it in every language or `F3-05`'s fallback applies — and no string is designated permanently English-only (`F3-07`). → proof: `TranslatedText` is declared in `packages/contracts`, minted only by `packages/i18n`, and enrolled with its `brand-cast` plugin; every copy prop on a `packages/ui` `.types.ts`, and every `aria-label`, `accessibilityLabel`, `title` and `placeholder` there, takes it with no default; a planted literal, template literal and English default each fail `pnpm turbo typecheck`, and every caller passes catalog words.
-
-#### Parts
-
-A part's components take the brand on every copy prop; a component outside its part keeps `string` until its own part lands. The parts run from the components only screens call to the ones every component calls: `TranslatedText` is a `string`, so a part's words pass into an inner prop that still takes `string`, and no part needs a cast to bridge. Each part adds its folders to the three guards' lists in `biome.json` (the `noJsxLiterals` override and the `copy-literal` and `copy-prop-type` plugins), and a fact its props carry keeps `string` with a `biome-ignore` that names it.
-
-| part | what | AC | depends on | status |
-|---|---|---|---|---|
-| a | `TranslatedText` declared, minted by `packages/i18n` and enrolled with its cast plugin; the translator and the copy functions those components read return it; every component with no design-system typing (the doors, onboarding, settings, catalog and shell parts) takes it | D1 | — | shipped |
-| b | The data, charts, print and brand components take it — the most English defaults | D1 | a | open |
-| c | The feedback, forms, navigation and overlays components and the primitives take it, and deferred rows `D2` and `D92` close | D1 | b | open |
 
 ---
 

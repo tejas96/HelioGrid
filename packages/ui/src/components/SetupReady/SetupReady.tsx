@@ -1,4 +1,6 @@
-import type { ReactNode } from 'react';
+import type { TranslatedText } from '@heliogrid/contracts';
+import { type ReactNode, useRef } from 'react';
+import { type FocusHandle, useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text';
 import type { ShellGlyphName, ShellGlyphProps } from '../AppShell/AppShell.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
@@ -8,8 +10,7 @@ import { Card, IconCircle } from '../Card/Card';
 import { Badge } from '../Chip/Chip';
 import { DoorFrame } from '../DoorFrame/DoorFrame';
 import { EmptyState } from '../EmptyState/EmptyState';
-import { useFocusAfterWall } from './SetupReady.logic';
-import type { SetupReadyDoorWords, SetupReadyProps } from './SetupReady.types';
+import type { SetupReadyDoorWords, SetupReadyProps, SetupWallRetryProps } from './SetupReady.types';
 
 /* The board's `iconCircle`: each door's mark in a 40 circle (`SCR-M01-06`). */
 const DOOR_CIRCLE = 40;
@@ -30,7 +31,7 @@ export function SetupReady({
   retrying,
 }: SetupReadyProps) {
   const wide = useDesktopShell() === true;
-  const leadAct = useFocusAfterWall(read.kind === 'failed');
+  const leadAct = useRef<FocusHandle>(null);
   if (read.kind === 'loading' || read.kind === 'empty') return null;
   if (read.kind === 'failed') {
     return (
@@ -41,9 +42,12 @@ export function SetupReady({
             title={words.wall.title}
             description={words.wall.line}
             action={
-              <Button variant="primary" size="lg" loading={retrying} onClick={read.retry}>
-                {words.tryAgain}
-              </Button>
+              <WallRetry
+                label={words.tryAgain}
+                retrying={retrying}
+                onRetry={read.retry}
+                focusAfter={leadAct}
+              />
             }
           />
         </div>
@@ -116,6 +120,16 @@ export function SetupReady({
   );
 }
 
+/** The wall's *Try again*: once the company reads it leaves with the wall, and focus goes on. */
+function WallRetry({ label, retrying, onRetry, focusAfter }: SetupWallRetryProps) {
+  const leaving = useFocusAfter(focusAfter);
+  return (
+    <Button variant="primary" size="lg" loading={retrying} onClick={leaving(onRetry)}>
+      {label}
+    </Button>
+  );
+}
+
 /** One door: its mark, its name, the line under it, and its one act. */
 function Door({
   glyph,
@@ -171,7 +185,7 @@ function DemoDoorCard({
   door: ReactNode;
   words: SetupReadyProps['words']['demo'];
   onRetry: () => void;
-  retryLabel: string;
+  retryLabel: TranslatedText;
 }) {
   if (demo === 'ready') return <Card>{door}</Card>;
   return (
@@ -181,7 +195,7 @@ function DemoDoorCard({
       </div>
       {demo === 'loading' ? (
         <>
-          <Card read={{ kind: 'loading' }} />
+          <Card read={{ kind: 'loading' }} loadingLabel={words.loadingCard} />
           <Text
             variant="body-sm"
             color="secondary"
@@ -194,8 +208,8 @@ function DemoDoorCard({
       ) : (
         <Card
           read={{ kind: 'failed', retry: onRetry }}
+          loadingLabel={words.loadingCard}
           errorTitle={words.failed}
-          errorMessage=""
           retryLabel={retryLabel}
           className="hg-setup-ready-failed"
         />

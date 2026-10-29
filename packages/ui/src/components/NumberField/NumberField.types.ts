@@ -1,9 +1,36 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { FieldOverrideSpec } from '../FieldOverride/FieldOverride.types';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance/Provenance.types';
 import type { ValueSourceLevel, ValueSourceSpec } from '../ValueSource/ValueSource.types';
 
 export type NumberFieldCommits = 'on-leave' | 'as-typed';
+
+/** What a refusal names: the figure typed, whether it is money, and the bounds it broke. */
+export interface NumberRefusalFacts {
+  readonly figure: string;
+  readonly money: boolean;
+  readonly min?: string;
+  readonly max?: string;
+}
+
+/**
+ * Every word the field says on its own, in the reader's language (`packages/i18n`'s
+ * `numberFieldWords`). Required: the field holds no word of its own. A bound arrives as the field
+ * prints it — the figure and its unit, "0.3 m".
+ */
+export interface NumberFieldWords {
+  /** The − button's name — *Decrease {name}*, or *Decrease value* when the field has no name. */
+  decrease: (name: string | undefined) => TranslatedText;
+  /** The + button's name — *Increase {name}*, or *Increase value*. */
+  increase: (name: string | undefined) => TranslatedText;
+  /** A clamp up to the floor — *Rounded up to the 0.3 m minimum.* */
+  roundedUp: (bound: string) => TranslatedText;
+  /** A clamp down to the ceiling — *Capped at the 50 m maximum.* */
+  capped: (bound: string) => TranslatedText;
+  /** The constraint a refusal states — *12 can't be recorded — the amount has to be 1 or more.* */
+  refused: (facts: NumberRefusalFacts) => TranslatedText;
+}
 
 /**
  * Number entry. Commits once on blur or Enter; empty or invalid never commits (the last good value
@@ -18,6 +45,8 @@ export type NumberFieldCommits = 'on-leave' | 'as-typed';
  * **Money mode is `currency` plus `outOfRange="refuse"`**, and it also drops the steppers.
  */
 export interface NumberFieldProps {
+  /** Every word the field says on its own — see `NumberFieldWords`. */
+  words: NumberFieldWords;
   /**
    * Each new number moves focus into the field — the caller's way to land a person on the first
    * field a refused form names. Leave it unset and the field never takes focus on its own.
@@ -52,7 +81,7 @@ export interface NumberFieldProps {
   step?: number;
   /** Decimal places applied on commit. */
   precision?: number;
-  label?: string;
+  label?: TranslatedText;
   /**
    * The label is spoken and not shown — a row of fields whose column already names them
    * (`SCR-M01-15`'s version rows). The field keeps its accessible name.
@@ -63,13 +92,13 @@ export interface NumberFieldProps {
    * its column once (`SCR-M01-20`: *"Share of Second instalment"*). The stepper buttons take the
    * same name. Ignored when `label` is set.
    */
-  ariaLabel?: string;
+  ariaLabel?: TranslatedText;
   unit?: string;
-  hint?: string;
+  hint?: TranslatedText;
   disabled?: boolean;
   density?: 'expressive' | 'functional';
   /** Overrides the generated "Rounded up to the 0.3 m minimum." correction line. */
-  correctionMessage?: string;
+  correctionMessage?: TranslatedText;
   /**
    * **The caller's validation failure — this field is why the gate refused.** Danger ring, danger
    * words under the field, `aria-invalid`, and it survives focus: the component never sets or clears

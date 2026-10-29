@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import {
   formatMoney,
   IN_FORMATS,
@@ -229,6 +230,6 @@ function previewOf(saved: (typeof IN_USE)[number], draft: Draft, loading: boolea
   return { ...lines, schedule };
 }
 
-function refusalOf(refusal: string | null) {
+function refusalOf(refusal: TranslatedText | null) {
   return refusal === null ? {} : { refusal };
 }

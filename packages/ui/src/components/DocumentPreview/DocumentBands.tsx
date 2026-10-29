@@ -1,3 +1,5 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+import { listOrdinal } from './DocumentPreview.logic';
 import type { ResolvedDocument } from './document-model';
 
 /**
@@ -6,8 +8,8 @@ import type { ResolvedDocument } from './document-model';
  */
 
 /** A band's micro-label — drawn only when the caller has a word for it. */
-export function BandTitle({ title }: { title: string }) {
-  return title === '' ? null : (
+export function BandTitle({ title }: { title: TranslatedText | undefined }) {
+  return title === undefined ? null : (
     <p className="hg-doc-overline" data-spaced="true">
       {title}
     </p>
@@ -32,7 +34,7 @@ export function DocumentItemsBand({ doc }: { doc: ResolvedDocument }) {
         <span className="hg-doc-total-label">{doc.totalLabel}</span>
         <span className="hg-doc-total-value">{doc.totalText}</span>
       </div>
-      {doc.subsidyLine === null ? null : <p className="hg-doc-subsidy">{doc.subsidyLine}</p>}
+      {doc.subsidyNote === undefined ? null : <p className="hg-doc-subsidy">{doc.subsidyNote}</p>}
     </div>
   );
 }
@@ -46,7 +48,7 @@ export function DocumentSectionsBand({ doc }: { doc: ResolvedDocument }) {
       <ol className="hg-doc-section-list">
         {doc.sections.map((section, index) => (
           <li className="hg-doc-section-item" key={section.label}>
-            <span className="hg-doc-section-index">{String(index + 1).padStart(2, '0')}</span>
+            <span className="hg-doc-section-index">{listOrdinal(index)}</span>
             <span className="hg-doc-section-label">{section.label}</span>
             {section.meta === undefined ? null : (
               <span className="hg-doc-section-meta">{section.meta}</span>
@@ -69,7 +71,7 @@ export function DocumentTranchesBand({ doc }: { doc: ResolvedDocument }) {
           {doc.tranches.map((tranche, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: a schedule is positional, and two tranches may share a name
             <tr key={index}>
-              <td className="hg-doc-tranche-index">{String(index + 1).padStart(2, '0')}</td>
+              <td className="hg-doc-tranche-index">{listOrdinal(index)}</td>
               <td className="hg-doc-tranche-cell">
                 <span className="hg-doc-tranche-label">{tranche.label}</span>
                 {tranche.when === undefined ? null : (

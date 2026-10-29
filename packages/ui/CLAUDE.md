@@ -41,6 +41,7 @@ src/components/<Name>/
                       through the index
   <Part>.tsx · <Part>.native.tsx    a sub-part of <Name>, kept beside it
   <Name>.<concern>.ts a pure helper split from .logic.ts (.words.ts, .shapes.ts …)
+  <Name>.parts.types.ts  the inner parts' contracts, only when <Name>.types.ts would pass 300 lines
   use-<thing>.ts      a hook only this component uses
   index.ts            the only thing outside imports
 src/primitives/       the atoms every component is built from
@@ -62,12 +63,19 @@ part there fails it.
   `inline-svg-mark` refuse path data and marks written anywhere else.
 - The `design-system-props` invariant checks only that each design-system prop is declared;
   nothing compares the two halves, so the types file is what you must keep honest.
-- **Components outside `T-SHELL-016`'s parts so far still carry hard-coded English labels**
-  (`docs/tasks/UI.md`, *Hard-coded accessibility labels*) — never copy that pattern. A component a
-  part has reached is held by Biome plugins `copy-prop-type`, `copy-literal` and `noJsxLiterals`.
+- **No English lives here** (`T-SHELL-016`): every copy prop takes `TranslatedText` with no default,
+  and words a component says itself — a counter, an announcement, an error line — arrive as a
+  `<Name>Words` prop built in `packages/i18n/src/copy/`. Biome plugins `copy-prop-type`,
+  `copy-literal` and `noJsxLiterals` hold every folder; a fact keeps `string` with a `biome-ignore`
+  that names it.
+- **A control that removes itself takes a required `focusAfter`** (`primitives/FocusAfter/`) and
+  wraps its press with `useFocusAfter`; a part its component outlives (a mark, a toast, a clear)
+  wraps its closing press with `closingPress`. A component that draws its own retry passes its own
+  frame (`tabIndex={-1}`, class `hg-focus-target`), which stays while it reloads.
 
 ## Traps
 
+- The word guards read types and JSX only, so English a `.ts` helper builds — a counter, a plural, `` `${n} dates` `` — passes them and reaches a Hindi reader → build it in `packages/i18n` and take it as a words function, as `DatePicker`'s `datesChosen` does.
 - On touch a tap on a button never leaves the focused field first, so a field that commits on blur has not reported its edit when a ✕, *Cancel*, Back or *Save* in the same press reads the draft, and the edit is lost with no ask → a field in a form with a way out commits as typed (`NumberField` `commits="as-typed"`, `Input` `onChange`), as `PaymentTermsEditor` does.
 - On Fabric, a `zIndex` that changes with state re-orders the parent's native children, so a sibling holding a focused field is taken out and put back, and Android drops the keyboard → set a `zIndex` once in the base style and toggle only the look.
 - Native clips a `Text`'s ink to its own box, so a line box shorter than the face's own line loses ो ी ं off the top and reads as a spacing bug; the box is raised to the bundled face's declared line, but a parent's `overflow: hidden` on a heading's top edge, or a style that shrinks the box, brings the clip back → leave the raised box alone and give the parent room.

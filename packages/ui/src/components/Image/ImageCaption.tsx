@@ -1,9 +1,10 @@
 import { Fragment } from 'react';
 import type { ImageMetaFacts } from './Image.logic';
 import { imageMetaParts } from './Image.logic';
+import type { ImageProps } from './Image.types';
 
 export interface ImageCaptionProps extends ImageMetaFacts {
-  caption?: string;
+  caption?: ImageProps['caption'];
 }
 
 /**
@@ -21,7 +22,7 @@ export function ImageCaption({ caption, ...facts }: ImageCaptionProps) {
         {parts.map((part, i) => (
           <Fragment key={part.key}>
             <span>{part.text}</span>
-            {i < parts.length - 1 ? <span aria-hidden="true">·</span> : null}
+            {i < parts.length - 1 ? <span aria-hidden="true">{'·'}</span> : null}
           </Fragment>
         ))}
       </div>

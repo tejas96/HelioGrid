@@ -3,11 +3,9 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderOverride } from '../FieldOverride/FieldOverride.native';
-import { useFormat } from '../MarketProvider/market-context';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import { renderAttribution } from '../ValueSource/ValueSource.native';
-import { restingMoney } from './NumberField.logic';
-import { useNumberFieldDraft } from './NumberField.state';
+import { useNumberField } from './NumberField.state';
 import type { NumberFieldProps } from './NumberField.types';
 import { NumberFieldBox } from './NumberFieldBox.native';
 import { NumberFieldMessage } from './NumberFieldMessage.native';
@@ -31,52 +29,27 @@ const styles = StyleSheet.create({
  * commits nothing when the draft is empty or invalid. ArrowUp/ArrowDown likewise: the +/− targets
  * ARE the nudge on touch, and each is a Pressable, so each is 44px.
  */
-export function NumberField({
-  value,
-  onCommit,
-  onClear,
-  focusRequest,
-  min,
-  max,
-  step = 1,
-  precision,
-  label,
-  labelSpokenOnly = false,
-  ariaLabel,
-  unit,
-  hint,
-  disabled = false,
-  density = 'expressive',
-  currency = false,
-  provenance,
-  override,
-  attribution,
-  outOfRange = 'clamp',
-  commits = 'on-leave',
-  refusalMessage,
-  refusalPath,
-  steppers,
-  correctionMessage,
-  error,
-  style,
-}: NativeNumberFieldProps) {
-  const showSteppers = steppers ?? !currency;
-  const format = useFormat();
-  const draft = useNumberFieldDraft({
-    value,
-    onCommit,
-    onClear,
-    min,
-    max,
-    step,
-    precision,
-    currency,
-    ...(currency ? { idle: (figure: number) => restingMoney(format, figure) } : {}),
+export function NumberField(props: NativeNumberFieldProps) {
+  const {
+    words,
+    focusRequest,
+    label,
+    labelSpokenOnly = false,
+    ariaLabel,
     unit,
-    outOfRange,
-    correctionMessage,
-    commits,
-  });
+    hint,
+    disabled = false,
+    density = 'expressive',
+    currency = false,
+    provenance,
+    override,
+    attribution,
+    refusalMessage,
+    refusalPath,
+    error,
+    style,
+  } = props;
+  const { draft, showSteppers, danger } = useNumberField(props);
 
   const refused =
     draft.refusal === null
@@ -84,10 +57,10 @@ export function NumberField({
       : (refusalMessage ?? (
           <Text variant="field-helper" color="danger">
             {draft.refusal}
+            {refusalPath === undefined ? null : ' '}
             {refusalPath}
           </Text>
         ));
-  const danger = draft.refusal !== null || error !== undefined;
 
   return (
     <View style={style}>
@@ -106,6 +79,7 @@ export function NumberField({
         unit={unit}
         currency={currency}
         focusRequest={focusRequest}
+        words={words}
       />
       <NumberFieldSlots
         override={override}

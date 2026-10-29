@@ -2,6 +2,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
+import { isPairRinged } from './TimeField.logic';
 import { TimeField } from './TimeField.native';
 import type { TimeRangeFieldProps } from './TimeField.types';
 import { TimeFieldMessage } from './TimeFieldMessage.native';
@@ -20,6 +21,7 @@ interface NativeTimeRangeFieldProps extends TimeRangeFieldProps {
  * on both halves and the sentence is read in order.
  */
 export function TimeRangeField({
+  words,
   from = '',
   to = '',
   onCommit,
@@ -34,10 +36,18 @@ export function TimeRangeField({
   style,
 }: NativeTimeRangeFieldProps) {
   const format = useFormat();
-  const range = useTimeRange({ format, from, max, min, onCommit, to, windowName });
-  const hasError = error !== undefined && error !== null && error !== false;
-  const ringed = hasError || range.orderError !== null;
-  const half = { density, disabled, max, min, windowName, invalid: ringed, style: styles.half };
+  const range = useTimeRange({ format, from, max, min, onCommit, to, windowName, words });
+  const ringed = isPairRinged(error, range.orderError);
+  const half = {
+    words,
+    density,
+    disabled,
+    max,
+    min,
+    windowName,
+    invalid: ringed,
+    style: styles.half,
+  };
 
   return (
     /* No `accessibilityLabel` here, and deliberately so. The web half is a `<fieldset>` whose name
@@ -54,11 +64,16 @@ export function TimeRangeField({
       <View style={styles.row}>
         <TimeField
           {...half}
-          label="From"
+          label={words.from}
           value={from}
           onCommit={(next) => range.set('from', next)}
         />
-        <TimeField {...half} label="To" value={to} onCommit={(next) => range.set('to', next)} />
+        <TimeField
+          {...half}
+          label={words.to}
+          value={to}
+          onCommit={(next) => range.set('to', next)}
+        />
       </View>
       <TimeFieldMessage
         error={error}

@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { UsageScale } from './usage-meter-model';
+import { usageTrackMarks } from './usage-meter-model';
 
 type TrackVars = CSSProperties & Record<`--${string}`, string>;
 
@@ -11,8 +12,8 @@ interface UsageMeterTrackProps {
   accessibilityLabel: string;
   valueText: string;
   value: number;
-  limit: number;
-  thresholdPercent: number;
+  /** The threshold tick's title — *80% warning threshold*. */
+  thresholdTitle: string;
 }
 
 /**
@@ -26,9 +27,9 @@ export function UsageMeterTrack({
   accessibilityLabel,
   valueText,
   value,
-  limit,
-  thresholdPercent,
+  thresholdTitle,
 }: UsageMeterTrackProps) {
+  const marks = usageTrackMarks(scale);
   const vars: TrackVars = {
     '--hg-usage-meter-track-h': height,
     '--hg-usage-meter-used': `${scale.usedPct}%`,
@@ -41,7 +42,7 @@ export function UsageMeterTrack({
       role="progressbar"
       aria-valuenow={value}
       aria-valuemin={0}
-      aria-valuemax={Math.max(limit, value)}
+      aria-valuemax={scale.scaleMax}
       aria-label={accessibilityLabel}
       aria-valuetext={valueText}
       className="hg-usage-meter-track"
@@ -49,14 +50,10 @@ export function UsageMeterTrack({
     >
       <span className="hg-usage-meter-used" data-fill={scale.fill} />
       {scale.overPct > 0 ? <span className="hg-usage-meter-over" /> : null}
-      {scale.threshold > 0 && scale.threshold < 100 ? (
-        <span
-          aria-hidden="true"
-          title={`${thresholdPercent}% warning threshold`}
-          className="hg-usage-meter-tick"
-        />
+      {marks.drawsTick ? (
+        <span aria-hidden="true" title={thresholdTitle} className="hg-usage-meter-tick" />
       ) : null}
-      {scale.overPct > 0 && scale.limitMark < 100 ? (
+      {marks.drawsBundleMark ? (
         <span aria-hidden="true" className="hg-usage-meter-bundle-mark" />
       ) : null}
     </div>

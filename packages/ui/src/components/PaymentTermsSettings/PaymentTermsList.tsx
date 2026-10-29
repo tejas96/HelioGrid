@@ -1,3 +1,4 @@
+import { type RefObject, useRef } from 'react';
 import { Text } from '../../primitives/Text/Text';
 import { AllocationMeter } from '../AllocationMeter/AllocationMeter';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
@@ -5,7 +6,6 @@ import { Banner } from '../Banner/Banner';
 import { BannerAction } from '../Banner/BannerAction';
 import { Button } from '../Button/Button';
 import { Card } from '../Card/Card';
-import { useRetryFocus } from '../CatalogItems/use-retry-focus';
 import { Badge } from '../Chip/Chip';
 import { IconButton } from '../IconButton/IconButton';
 import { LoadingBars } from '../LoadingBars/LoadingBars';
@@ -18,13 +18,20 @@ import type { PaymentTermsCardView, PaymentTermsListProps } from './PaymentTerms
  */
 export function PaymentTermsList(props: PaymentTermsListProps) {
   const { read, title } = props;
+  /* *Try again* leaves with the failure: focus goes to the head, which stays while the list reloads. */
+  const head = useRef<HTMLDivElement>(null);
   return (
     <div
       className="hg-pay"
       data-columns={props.columns}
       data-paired={props.aside === undefined ? undefined : 'true'}
     >
-      <div className="hg-pay-head" data-titled={title === undefined ? undefined : 'true'}>
+      <div
+        ref={head}
+        tabIndex={-1}
+        className="hg-pay-head hg-focus-target"
+        data-titled={title === undefined ? undefined : 'true'}
+      >
         {title === undefined ? null : (
           <Text as="h1" variant="h2" bold>
             {title}
@@ -37,11 +44,11 @@ export function PaymentTermsList(props: PaymentTermsListProps) {
         ) : null}
       </div>
       {props.aside === undefined ? (
-        <ListBody {...props} />
+        <ListBody {...props} head={head} />
       ) : (
         <div className="hg-pay-pair">
           <div className="hg-pay-main">
-            <ListBody {...props} />
+            <ListBody {...props} head={head} />
           </div>
           {props.aside}
         </div>
@@ -50,9 +57,11 @@ export function PaymentTermsList(props: PaymentTermsListProps) {
   );
 }
 
-function ListBody(props: PaymentTermsListProps) {
+function ListBody({
+  head,
+  ...props
+}: PaymentTermsListProps & { head: RefObject<HTMLElement | null> }) {
   const { words } = props;
-  const focus = useRetryFocus(props.read.kind);
   if (props.read.kind === 'loading') {
     return <LoadingBars label={words.loading} bars={['panel', 'panel', 'panel']} />;
   }
@@ -63,7 +72,9 @@ function ListBody(props: PaymentTermsListProps) {
         density="functional"
         title={words.unreadTitle}
         action={
-          <BannerAction onClick={focus.retrying(props.read.retry)}>{words.tryAgain}</BannerAction>
+          <BannerAction onClick={props.read.retry} focusAfter={head}>
+            {words.tryAgain}
+          </BannerAction>
         }
       />
     );
@@ -80,7 +91,7 @@ function ListBody(props: PaymentTermsListProps) {
         aria-label={props.archived ? words.archivedTitle : words.yourTerms}
       >
         <div className="hg-pay-terms-head">
-          <div ref={focus.target} tabIndex={-1}>
+          <div>
             <Text as="h2" variant="body-sm" bold className="hg-pay-pretty">
               {props.archived ? words.archivedTitle : words.yourTerms}
             </Text>
@@ -94,7 +105,7 @@ function ListBody(props: PaymentTermsListProps) {
               spokenName={words.archivedCount(props.archivedCount)}
               onClick={props.onToggleArchived}
             >
-              {String(props.archivedCount)}
+              {words.archivedShown(props.archivedCount)}
             </Button>
             {props.archived ? null : (
               <IconButton label={words.addTerms} size={36} variant="surface" onClick={props.onAdd}>

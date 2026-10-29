@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { CertificationScheme, ItemDraft, ItemDraftEvent, Read } from '@heliogrid/domain';
+import type { NumberFieldWords } from '../NumberField/NumberField.types';
 
 /**
  * **The add sheet** (`SCR-M01-16`, `M01-36`, `M01-39`): one own item typed into the catalog — what
@@ -130,4 +131,8 @@ export interface CatalogItemFormWords {
     readonly keep: TranslatedText;
     readonly discard: TranslatedText;
   };
+  /** What a select and a figure's field say of their own: *Select an option*, the list's close. */
+  readonly selectPlaceholder: TranslatedText;
+  readonly closeList: TranslatedText;
+  readonly numberField: NumberFieldWords;
 }

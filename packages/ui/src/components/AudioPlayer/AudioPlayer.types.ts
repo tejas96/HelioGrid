@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { SurfaceRead } from '../UnavailableNote';
 
 /**
@@ -26,7 +27,7 @@ export interface AudioPlayerProps {
   src?: string;
   /** Known length in seconds, used until the audio reports its own metadata. */
   duration?: number;
-  title?: string;
+  title?: TranslatedText;
   meta?: string;
   /** "12 Mar 2026, 4:12 pm" — shown as consent provenance (available) or the decline date. */
   consentAt?: string;
@@ -36,18 +37,58 @@ export interface AudioPlayerProps {
   purgedAt?: string;
   /** The rule in words, e.g. "Growth pack · 90-day retention". Names WHY, not just when. */
   retentionBound?: string;
-  /** `error`'s sentence — the fetch failed, which is not the same as there being no recording. */
-  errorMessage?: string;
+  /**
+   * `error`'s sentence — the fetch failed, which is not the same as there being no recording.
+   * Drawn only when given — `@heliogrid/i18n`'s `AUDIO_PLAYER` holds the usual one.
+   */
+  errorMessage?: TranslatedText;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
+  retryLabel?: TranslatedText;
   /**
    * The transcript survives in every state — always give it somewhere to point, and what it points
    * at is `Transcript`, in an `EditorSurface` (`SCR-M07-13` / `SCR-M07-19`).
    */
   onOpenTranscript?: () => void;
-  transcriptLabel?: string;
+  /** The transcript door's words. Default: `words.openTranscript`. */
+  transcriptLabel?: TranslatedText;
   speeds?: number[];
   density?: 'expressive' | 'functional';
+  /** The player's own words — its controls' names, its states' sentences, its footnotes. */
+  words: AudioPlayerWords;
+}
+
+/** One unavailable recording's two lines: what is true, then what is still on the record. */
+export interface AudioAbsenceWords {
+  title: TranslatedText;
+  body: TranslatedText;
+}
+
+/** The words a player says itself, in the reader's language (`@heliogrid/i18n`'s `audioPlayerWords`). */
+export interface AudioPlayerWords {
+  /** What a screen reader hears while the recording loads. */
+  loading: TranslatedText;
+  /** The transcript door, when the caller names it nothing else. */
+  openTranscript: TranslatedText;
+  play: TranslatedText;
+  pause: TranslatedText;
+  /** The ghost skip buttons — 10 seconds back, 30 forward. */
+  back: TranslatedText;
+  forward: TranslatedText;
+  /** The scrubber's name. */
+  seek: TranslatedText;
+  /** The scrubber's spoken value — *1:05 of 4:12*, each time already written. */
+  position(at: string, total: string): TranslatedText;
+  /** The speed pill's name, with the rate it plays at now. */
+  speed(rate: number): TranslatedText;
+  /** An unavailable recording whose reason is not named. */
+  noRecording: AudioAbsenceWords;
+  /** Why there is no recording — two sentences that must never look alike. */
+  reasons: Readonly<Record<AudioUnavailableReason, AudioAbsenceWords>>;
+  /** The footnote's facts, each with its date or time already written. */
+  recordedWithConsent(at: string): TranslatedText;
+  availableUntil(date: string): TranslatedText;
+  deletedOn(date: string): TranslatedText;
+  consentDeclinedOn(date: string): TranslatedText;
 }
 
 /**
@@ -86,27 +127,17 @@ export interface AudioTransportControl {
 /** The glyphs the transport and the two unavailable reasons draw. */
 export type AudioGlyphName = 'play' | 'pause' | 'back' | 'fwd' | 'mic-off' | 'clock' | 'doc';
 
-export interface AudioReasonCopy {
-  glyph: Extract<AudioGlyphName, 'mic-off' | 'clock'>;
-  title: string;
-  body: string;
-}
-
 /**
  * The two REASONS an unavailable recording can be unavailable for. Same state, two sentences —
- * they must never look alike, so each has its own words, glyph and tint.
+ * they must never look alike, so each has its own words (`AudioPlayerWords.reasons`), glyph and
+ * tint.
  */
-export const AUDIO_REASONS: Record<AudioUnavailableReason, AudioReasonCopy> = {
-  'consent-declined': {
-    glyph: 'mic-off',
-    title: 'Not recorded — the customer declined',
-    body: "The call went ahead; only the recording was declined. The transcript and the rep's notes are on this record.",
-  },
-  'purged-retention': {
-    glyph: 'clock',
-    title: 'Recording deleted on schedule',
-    body: 'The recording reached the retention bound and was deleted. The transcript is retained.',
-  },
+export const AUDIO_REASON_GLYPH: Record<
+  AudioUnavailableReason,
+  Extract<AudioGlyphName, 'mic-off' | 'clock'>
+> = {
+  'consent-declined': 'mic-off',
+  'purged-retention': 'clock',
 };
 
 /** m:ss, or h:mm:ss past the hour. `--:--` while there is no honest length to state. */
@@ -130,32 +161,48 @@ export const AUDIO_SEEK_KEYS: Record<string, number> = {
   PageUp: 60,
 };
 
+/** Footnote facts, the absent ones dropped, one line apart by dots. */
+function footnoteOf(parts: Array<string | null | undefined>): string {
+  return parts
+    .filter((part): part is string => part !== null && part !== undefined && part !== '')
+    .join(' · ');
+}
+
 /** The line under a playable recording: on whose authority it exists, and how long it will. */
 export function audioFootnote(
+  words: AudioPlayerWords,
   consentAt: string | undefined,
   retentionUntil: string | undefined,
   retentionBound: string | undefined,
 ): string {
-  return [
-    consentAt !== undefined ? `Recorded with consent · ${consentAt}` : null,
-    retentionUntil !== undefined ? `Available until ${retentionUntil}` : null,
-    retentionBound ?? null,
-  ]
-    .filter((part): part is string => part !== null && part !== '')
-    .join(' · ');
+  return footnoteOf([
+    consentAt !== undefined ? words.recordedWithConsent(consentAt) : null,
+    retentionUntil !== undefined ? words.availableUntil(retentionUntil) : null,
+    retentionBound,
+  ]);
 }
 
 /** The unavailable footnote — the purge date and the rule, or the date consent was declined. */
 export function audioReasonFootnote(
+  words: AudioPlayerWords,
   reason: AudioUnavailableReason,
   values: { purgedAt?: string; retentionBound?: string; consentAt?: string },
 ): string {
-  const parts =
-    reason === 'purged-retention'
-      ? [
-          values.purgedAt !== undefined ? `Deleted ${values.purgedAt}` : null,
-          values.retentionBound ?? null,
-        ]
-      : [values.consentAt !== undefined ? `Consent declined ${values.consentAt}` : null];
-  return parts.filter((part): part is string => part !== null && part !== '').join(' · ');
+  return reason === 'purged-retention'
+    ? footnoteOf([
+        values.purgedAt !== undefined ? words.deletedOn(values.purgedAt) : null,
+        values.retentionBound,
+      ])
+    : footnoteOf([
+        values.consentAt !== undefined ? words.consentDeclinedOn(values.consentAt) : null,
+      ]);
+}
+
+/* The inner parts' contracts (Law 7): both halves of a part implement the one interface. */
+
+export interface AudioUnavailableProps
+  extends Pick<AudioPlayerProps, 'consentAt' | 'purgedAt' | 'retentionBound' | 'onOpenTranscript'> {
+  reason?: AudioUnavailableReason;
+  transcriptLabel: TranslatedText;
+  words: AudioPlayerWords;
 }

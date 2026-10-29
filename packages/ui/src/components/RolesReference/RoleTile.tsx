@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReadKind } from '@heliogrid/domain';
 import { Pressable } from '../../primitives/Pressable/Pressable';
 import { Text } from '../../primitives/Text/Text';
@@ -12,7 +13,7 @@ import type { RolesReferencePreset } from './RolesReference.types';
 interface RoleTileProps {
   preset: RolesReferencePreset;
   counts: ReadKind;
-  countGap: string;
+  countGap: TranslatedText;
   open: boolean;
   onOpen: () => void;
 }

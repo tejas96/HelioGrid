@@ -1,8 +1,8 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
-import type { ActionReasonSpec } from './ActionReason.types';
+import { actionReasonFor, noteLineScale } from './ActionReason.logic';
+import type { ActionReasonInput, ActionReasonSpec } from './ActionReason.types';
 
 interface WebActionReasonProps extends ActionReasonSpec {
   className?: string;
@@ -41,17 +41,17 @@ export function ActionReason({
   if (!reason) {
     return null;
   }
-  const step = Math.max(12, size);
+  const scale = noteLineScale(size);
   return (
     <span
       id={id}
       className={classNames('hg-action-reason', className)}
       data-align={align}
-      data-size={step >= 13 ? '13' : '12'}
+      data-size={scale.large ? '13' : '12'}
       style={style}
     >
       <span className="hg-action-reason-glyph">
-        <BarredCircle size={step + 1} />
+        <BarredCircle size={scale.glyphSize} />
       </span>
       <span className="hg-action-reason-words">{reason}</span>
     </span>
@@ -60,22 +60,10 @@ export function ActionReason({
 
 /** What every `disabledReason` host prop runs through: a string, a spec, or a ready node. */
 export function renderActionReason(
-  spec?: ReactNode | ActionReasonSpec,
+  spec?: ActionReasonInput | null,
   extra: Partial<ActionReasonSpec> = {},
 ): ReactNode {
-  if (!spec) {
-    return null;
-  }
-  if (isValidElement(spec)) {
-    return spec;
-  }
-  if (typeof spec === 'string') {
-    return <ActionReason reason={spec} {...extra} />;
-  }
-  if (typeof spec !== 'object' || !('reason' in spec) || !spec.reason) {
-    return null;
-  }
-  return <ActionReason {...spec} {...extra} />;
+  return actionReasonFor(spec, (plain) => <ActionReason {...plain} {...extra} />);
 }
 
 ActionReason.render = renderActionReason;

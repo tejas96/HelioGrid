@@ -1,4 +1,6 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 
 export type BannerKind =
   | 'state'
@@ -23,13 +25,12 @@ export type BannerTone = 'danger' | 'warning' | 'info' | 'success' | 'accent' | 
 /** The glyph names the kind table picks from. Each is the kind's non-colour channel (F7-12). */
 export type BannerGlyph = 'alert' | 'info' | 'rupee' | 'review' | 'spark';
 
-/** One row of the kind table: tone, precedence rank, ARIA role, glyph and default label. */
+/** One row of the kind table: tone, precedence rank, ARIA role and glyph. */
 export interface BannerKindMeta {
   tone: BannerTone;
   rank: number;
   role: string;
   icon: BannerGlyph;
-  label: string;
 }
 
 /**
@@ -42,16 +43,15 @@ export interface BannerKindMeta {
  * on the customer's own surface, where `MS9-11` bans operator alerts. It still renders and is never
  * dismissible, and it warns in the console.
  */
-export interface BannerProps {
+interface BannerOwnProps {
   /** Picks the tone, glyph, ARIA role and precedence rank. */
   kind?: BannerKind;
   /** Bold first line. Omit for a single-line banner. */
-  title?: string;
+  title?: TranslatedText;
   /** Body copy. Omit for a title-only banner. */
   children?: ReactNode;
   /** Trailing action — use `BannerAction`. */
   action?: ReactNode;
-  onDismiss?: () => void;
   /**
    * Opt-in only. **Ignored for eight kinds** — `validation`, `data-integrity`, `below-cost`, the
    * billing/lifecycle three, `state`, `dunning` and `cap`, `info`, and the superseded `disclaimer`.
@@ -76,6 +76,24 @@ export interface BannerProps {
   onFormChange?: (info: BannerForm) => void;
 }
 
+/** A banner with no way to dismiss it. */
+interface BannerUndismissed {
+  onDismiss?: undefined;
+  dismissLabel?: undefined;
+  focusAfter?: undefined;
+}
+
+/** A banner the person may dismiss, when its kind allows it and `dismissible` asks. */
+interface BannerDismissed {
+  onDismiss: () => void;
+  /** The cross's accessible name — it carries no words, so this is all a screen reader hears. */
+  dismissLabel: TranslatedText;
+  /** Where focus lands once the banner has gone (`F7-23` N5). */
+  focusAfter: FocusAfter;
+}
+
+export type BannerProps = BannerOwnProps & (BannerUndismissed | BannerDismissed);
+
 /** Where the banner put its action, and the own width that decided it. */
 export interface BannerForm {
   actionStacked: boolean;
@@ -93,6 +111,11 @@ export interface BannerForm {
 export interface BannerActionProps {
   children: ReactNode;
   onClick?: () => void;
+  /**
+   * Where focus lands once the action has ended the banner's fact and the banner has gone with it
+   * (`F7-23` N5) — what replaced the banner, else its part's frame or heading.
+   */
+  focusAfter: FocusAfter;
 }
 
 /**
@@ -113,4 +136,6 @@ export interface BannerStackProps {
   /** Caps the **dismissible** banners only. A never-dismissible kind is never capped away. */
   max?: number;
   gap?: number;
+  /** The line under a stack that capped some banners away: "2 more notices on this screen". */
+  moreLabel: (hidden: number) => TranslatedText;
 }

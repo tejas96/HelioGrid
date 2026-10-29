@@ -1,5 +1,4 @@
-import { useSession, useSignIn } from '@heliogrid/data/react';
-import { doorView, googleLinkFrame, homeOf } from '@heliogrid/domain';
+import { useSignInScreen } from '@heliogrid/data/react';
 import {
   doorSwitchWords,
   googleLinkWords,
@@ -27,22 +26,20 @@ import { useHardwareBack } from './hooks/use-hardware-back';
 /**
  * The front door (`SCR-M01-01`): phone, then code, then the success beat — which stays mounted
  * for `DONE_DWELL_MS` because the navigator swaps groups only after the dwell (`phase.tsx`).
- * The flow is `useSignIn`'s and the session's; this composes.
+ * The flow and its panel are `useSignInScreen`'s, the web's too; this composes.
  */
 export function LoginScreen() {
   const t = useTranslate();
   const navigation = useNavigation();
-  const session = useSession();
   const { pack, date } = useFormat();
   const language = <DoorLanguage {...useLanguageChoice()} />;
-  const signIn = useSignIn(pack, 'sign-in', openGoogle);
+  const { signIn, panel } = useSignInScreen(pack, openGoogle);
   const road = {
     question: t(SIGN_IN.newCompany),
     label: t(SIGN_IN.createCompany),
     onPress: () => navigation.navigate('CompanySignup'),
   };
 
-  const view = doorView(session, signIn.state.step);
   const numberStep = () => (
     <InsetDoor>
       <DoorNumberStep
@@ -65,8 +62,8 @@ export function LoginScreen() {
     </InsetDoor>
   );
 
-  if (view === 'switch' && session.switch !== null) {
-    const { heldWork, next } = session.switch;
+  if (panel.view === 'switch') {
+    const { heldWork, next } = panel.pending;
     return (
       <>
         {numberStep()}
@@ -76,19 +73,19 @@ export function LoginScreen() {
             count: heldWork.count,
             date: date(heldWork.capturedAt),
           })}
-          onConfirm={() => void session.completeSwitch()}
+          onConfirm={panel.confirm}
         />
       </>
     );
   }
-  if (view === 'done') {
-    const home = homeOf(session.user);
+  if (panel.view === 'done') {
+    const { home } = panel;
     const destination = home === null ? t(SIGN_IN.companySetup) : homeTitle(t, home);
     return (
       <SuccessDwell title={t(SIGN_IN.youAreIn)} line={t(SIGN_IN.takingYouTo, { destination })} />
     );
   }
-  if (view === 'code') {
+  if (panel.view === 'code') {
     return (
       <InsetDoor>
         <DoorCodeStep
@@ -105,17 +102,12 @@ export function LoginScreen() {
       </InsetDoor>
     );
   }
-  if (view === 'google-link') {
-    const frame = googleLinkFrame(signIn.state);
+  if (panel.view === 'google-link') {
+    const { frame } = panel;
     return (
       <LinkStep
         language={language}
-        words={googleLinkWords(
-          t,
-          frame,
-          signIn.state.google?.email ?? '',
-          signIn.state.phoneProblem,
-        )}
+        words={googleLinkWords(t, frame, panel.email, signIn.state.phoneProblem)}
         frame={frame}
         phone={signIn.state.phone}
         onPhone={signIn.typePhone}

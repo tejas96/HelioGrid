@@ -4,45 +4,18 @@ import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
-import type { ResolvedDocumentState } from './SourceDocument.logic';
-import type { SourceDocumentFit } from './SourceDocument.types';
+import { documentHeaderOf } from './SourceDocument.logic';
+import type { SourceDocumentHeaderProps } from './SourceDocument.types';
 import { Chrome, IconBtn, openOriginalFile } from './SourceDocumentChrome.native';
-
-export interface SourceDocumentHeaderProps {
-  name: string;
-  meta?: string;
-  resolved: ResolvedDocumentState;
-  /** Zero-based; the reader is shown `pageNumber + 1`. */
-  pageNumber: number;
-  count: number;
-  fit: SourceDocumentFit;
-  onPage: (n: number) => void;
-  onFit: (f: SourceDocumentFit) => void;
-  originalUrl?: string;
-  onOpenOriginal?: () => void;
-  openLabel: string;
-}
 
 /**
  * The file's identity and everything you can do to it while it is readable: which page you are on
  * and how it is fitted, plus the route to the real file. The paging controls hold the 44dp floor
  * and the count is announced politely, because moving a page is the reviewer's main act here.
  */
-export function SourceDocumentHeader({
-  name,
-  meta,
-  resolved,
-  pageNumber,
-  count,
-  fit,
-  onPage,
-  onFit,
-  originalUrl,
-  onOpenOriginal,
-  openLabel,
-}: SourceDocumentHeaderProps) {
-  const paged = resolved === 'ready' && count > 0;
-  const canOpen = Boolean(originalUrl || onOpenOriginal);
+export function SourceDocumentHeader(props: SourceDocumentHeaderProps) {
+  const { name, meta, pageNumber, fit, onPage, onFit, originalUrl, onOpenOriginal, words } = props;
+  const header = documentHeaderOf(props);
 
   return (
     <View style={styles.header}>
@@ -56,53 +29,53 @@ export function SourceDocumentHeader({
           </Text>
         ) : null}
       </View>
-      {paged ? (
+      {header.paged ? (
         <Chrome>
           <IconBtn
-            label="Previous page"
+            label={words.previousPage}
             glyph="chevron-left"
-            disabled={pageNumber <= 0}
+            disabled={header.atFirst}
             onPress={() => onPage(pageNumber - 1)}
           />
           {/* The web half's `aria-live="polite"`: Previous/Next changes this number and nothing
               else on screen, so a reader that is not told is a reader that moved a page blind. */}
           <View accessibilityLiveRegion="polite" style={styles.count}>
             <Text variant="caption" color="secondary" style={styles.countWord}>
-              {`${pageNumber + 1} / ${count}`}
+              {header.position}
             </Text>
           </View>
           <IconBtn
-            label="Next page"
+            label={words.nextPage}
             glyph="chevron-right"
-            disabled={pageNumber >= count - 1}
+            disabled={header.atLast}
             onPress={() => onPage(pageNumber + 1)}
           />
         </Chrome>
       ) : null}
-      {paged ? (
+      {header.paged ? (
         <Chrome>
           <IconBtn
-            label="Fit width"
+            label={words.fitWidth}
             pressed={fit === 'width'}
             glyph="fit-width"
             onPress={() => onFit('width')}
           />
           <IconBtn
-            label="Fit whole page"
+            label={words.fitPage}
             pressed={fit === 'page'}
             glyph="fit-page"
             onPress={() => onFit('page')}
           />
         </Chrome>
       ) : null}
-      {canOpen && resolved === 'ready' ? (
+      {header.showsOpen ? (
         <RNPressable
           accessibilityRole="link"
           onPress={openOriginalFile(originalUrl, onOpenOriginal)}
           style={styles.open}
         >
           <Text variant="body-sm" style={styles.openWord}>
-            {openLabel}
+            {props.openLabel}
           </Text>
         </RNPressable>
       ) : null}

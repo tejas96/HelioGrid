@@ -1,5 +1,5 @@
 'use client';
-import { usePriceBook, usePriceBookDraft } from '@heliogrid/data/react';
+import { useCatalogRates } from '@heliogrid/data/react';
 import {
   catalogRatesWords,
   catalogVersionWords,
@@ -19,7 +19,6 @@ import {
   useCatalogFormats,
   type useToasts,
 } from '@heliogrid/ui';
-import { useState } from 'react';
 import { RateSheet } from './RateSheet';
 import { VersionsSurface } from './VersionsSurface';
 
@@ -27,51 +26,43 @@ type Toasts = ReturnType<typeof useToasts>;
 
 /**
  * The Rates panel on the web (`SCR-M01-15`, `M01-48`): the price book's version in force, the
- * versions read-only, and a new version written whole. `usePriceBook` reads, `usePriceBookDraft`
- * writes; this composes.
+ * versions read-only, and a new version written whole. What it draws is `useCatalogRates`'s, the
+ * phone's too.
  */
 export function RatesPanel({ administers, toasts }: { administers: boolean; toasts: Toasts }) {
   const { t, locale } = useI18n();
   const formats = useCatalogFormats();
-  const book = usePriceBook();
-  const draft = usePriceBookDraft();
-  const [versionsOpen, setVersionsOpen] = useState(false);
-  const active = book.kind === 'ready' ? book.value : undefined;
-  const version = active?.version ?? null;
-  const start = () => {
-    if (active !== undefined) draft.start(active);
-  };
+  const rates = useCatalogRates(administers, (number) =>
+    toasts.push({ tone: 'success', title: t(PRICE_BOOK.saved, { number }) }),
+  );
+  const { draft, next, inForce } = rates;
+  const version = inForce?.version ?? null;
   const strip = {
     ...priceBookStripWords(
       t,
-      version === null || active === undefined
+      version === null || inForce === undefined
         ? null
         : {
             number: version.number,
-            margin: formats.margin(active.defaultMarginPct),
+            margin: formats.margin(inForce.defaultMarginPct),
             since: formats.date(version.publishedAt),
           },
       administers,
     ),
-    onLink: () => setVersionsOpen(true),
-    onAction: start,
+    onLink: rates.versions.show,
+    onAction: rates.start,
   };
-  const save = async () => {
-    const number = await draft.publish();
-    if (number !== null) toasts.push({ tone: 'success', title: t(PRICE_BOOK.saved, { number }) });
-  };
-  const next = (draft.from ?? 0) + 1;
 
   return (
     <>
       <CatalogRates
         words={catalogRatesWords(t)}
-        read={book}
+        read={rates.book}
         strip={strip}
-        rates={versionRatesOf(active?.rates ?? [], locale)}
-        onAddFirst={administers && version === null ? start : null}
+        rates={versionRatesOf(inForce?.rates ?? [], locale)}
+        onAddFirst={rates.addFirst}
       />
-      <VersionsSurface open={versionsOpen} onClose={() => setVersionsOpen(false)} />
+      <VersionsSurface browse={rates.versions} />
       <EditorSurface
         open={draft.open}
         onClose={draft.close}
@@ -102,7 +93,7 @@ export function RatesPanel({ administers, toasts }: { administers: boolean; toas
                 fullWidth
                 loading={draft.publishing.pending}
                 disabled={draft.incomplete}
-                onClick={() => void save()}
+                onClick={() => void rates.publish()}
               >
                 {t(PRICE_BOOK.saveAs, { number: next })}
               </Button>

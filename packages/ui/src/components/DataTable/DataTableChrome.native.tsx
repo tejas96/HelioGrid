@@ -9,8 +9,9 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { inkOver } from '../ShareFilter/ShareFilter.inks';
-import { pageWindow } from './DataTable.logic';
-import type { PaginationProps } from './DataTable.types';
+import type { DataTableWords, PaginationProps } from './DataTable.types';
+import type { PageStep } from './DataTableChrome.logic';
+import { pagerOf } from './DataTableChrome.logic';
 
 /** The row just added (`isRowHighlighted`): the violet iris wash over the page, as the web's 8%. */
 export const ROW_HIGHLIGHT = inkOver(
@@ -83,10 +84,12 @@ export function SelectionBar({
   count,
   actions,
   onClear,
+  words,
 }: {
   count: number;
   actions: ReactNode;
   onClear: () => void;
+  words: DataTableWords;
 }) {
   return (
     /* The band is a named region, as it is on the web (`role="region" aria-label`): a bare `View`
@@ -95,10 +98,10 @@ export function SelectionBar({
     <View
       role="region"
       collapsable={false}
-      accessibilityLabel={`${count} selected`}
+      accessibilityLabel={words.selected(count)}
       style={styles.selection}
     >
-      <Pressable accessibilityLabel="Clear selection" onPress={onClear} style={styles.clear}>
+      <Pressable accessibilityLabel={words.clearSelection} onPress={onClear} style={styles.clear}>
         <Svg
           width={16}
           height={16}
@@ -112,7 +115,7 @@ export function SelectionBar({
         </Svg>
       </Pressable>
       <Text variant="body-sm" style={{ fontWeight: '500' }}>
-        {`${count} selected`}
+        {words.selected(count)}
       </Text>
       <View style={styles.actions}>{actions}</View>
     </View>
@@ -120,18 +123,11 @@ export function SelectionBar({
 }
 
 /** The pager: the span shown, then a step back and a step forward, each disabled at its end. */
-export function Pagination({
-  page,
-  pageSize,
-  rowCount,
-  onPageChange,
-  previousLabel,
-  nextLabel,
-  readout,
-}: PaginationProps) {
+export function Pagination(props: PaginationProps) {
+  const { page, onPageChange, readout } = props;
   const { ground } = useGround();
-  const { range, last } = pageWindow(page, pageSize, rowCount);
-  const step = (direction: number, label: string, disabled: boolean) => (
+  const { range, back, on } = pagerOf(props);
+  const step = ({ direction, label, disabled }: PageStep) => (
     <Pressable
       accessibilityLabel={label}
       disabled={disabled}
@@ -160,8 +156,8 @@ export function Pagination({
         {readout(range)}
       </Text>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        {step(-1, previousLabel, page <= 0)}
-        {step(1, nextLabel, page >= last)}
+        {step(back)}
+        {step(on)}
       </View>
     </View>
   );

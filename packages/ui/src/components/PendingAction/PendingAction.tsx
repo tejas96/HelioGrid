@@ -1,18 +1,20 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { isValidElement } from 'react';
+import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { focusAfterFirst, NO_FOCUS_AFTER, useFocusAfter } from '../../primitives/FocusAfter';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { Button } from '../Button/Button';
 import { RetryButton } from '../Button/RetryButton';
 import { IndeterminateRail } from './IndeterminateRail';
+import { pendingLine, readPendingInput } from './PendingAction.logic';
 import type { PendingActionProps, PendingActionSpec } from './PendingAction.types';
 
 type NoteVars = CSSProperties & Record<`--${string}`, string>;
 
-interface WebPendingActionProps extends PendingActionProps {
+type WebPendingActionProps = PendingActionProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 /**
  * An arrow curving back to where it came from: the act was returned. Not error's exclamation
@@ -42,54 +44,57 @@ function ReturnGlyph() {
  *
  * THE ACT KEEPS ITS NAME, which is why `Button loading` is not the answer.
  */
-export function PendingAction({
-  label,
-  state = 'waiting',
-  reason,
-  slowNote,
-  onRetry,
-  retryLabel,
-  onDismiss,
-  dismissLabel = 'Dismiss',
-  size = 12,
-  align = 'left',
-  className,
-  style,
-}: WebPendingActionProps) {
-  const returned = state === 'returned';
-  const retrying = onRetry !== undefined && retryLabel !== undefined;
-  const words = returned ? reason : label;
-  if (words === undefined || words === null || words === false || words === '') {
+export function PendingAction(props: WebPendingActionProps) {
+  const {
+    state = 'waiting',
+    slowNote,
+    onRetry,
+    retryLabel,
+    onDismiss,
+    dismissLabel,
+    focusAfter,
+    align = 'left',
+    className,
+    style,
+  } = props;
+  const frame = useRef<HTMLSpanElement>(null);
+  const leaving = useFocusAfter(focusAfter ?? NO_FOCUS_AFTER);
+  const shown = pendingLine(props);
+  if (shown === null) {
     return null;
   }
-  const fs = Math.max(12, size);
+  const { returned, words, fontSize } = shown;
   const vars: NoteVars = {
-    '--hg-pending-action-size': `${fs}px`,
-    '--hg-pending-action-glyph-size': `${fs + 1}px`,
-    '--hg-pending-action-rail-offset': `${Math.round(fs * 0.62)}px`,
+    '--hg-pending-action-size': `${fontSize}px`,
+    '--hg-pending-action-glyph-size': `${shown.glyphSize}px`,
+    '--hg-pending-action-rail-offset': `${shown.railOffset}px`,
   };
   return (
     <span
+      ref={frame}
+      tabIndex={-1}
       role="status"
       aria-live="polite"
       data-state={state}
       data-align={align}
-      className={classNames('hg-pending-action', className)}
+      className={classNames('hg-pending-action', 'hg-focus-target', className)}
       style={{ ...vars, ...style }}
     >
       {returned ? <ReturnGlyph /> : <IndeterminateRail className="hg-pending-action-rail" />}
       <span className="hg-pending-action-words">
         {words}
         {/* M02-24's budget, said in words rather than by the rail getting slower. */}
-        {!returned && slowNote !== undefined ? (
-          <span className="hg-pending-action-slow">{slowNote}</span>
-        ) : null}
+        {shown.showsSlowNote ? <span className="hg-pending-action-slow">{slowNote}</span> : null}
       </span>
-      {returned && (retrying || onDismiss !== undefined) ? (
+      {shown.offersActs ? (
         <span className="hg-pending-action-actions">
-          <RetryButton onRetry={onRetry} label={retryLabel} />
+          <RetryButton
+            onRetry={onRetry}
+            label={retryLabel}
+            focusAfter={focusAfterFirst(frame, focusAfter ?? NO_FOCUS_AFTER)}
+          />
           {onDismiss !== undefined ? (
-            <Button variant="ghost" size="md" onClick={onDismiss}>
+            <Button variant="ghost" size="md" onClick={leaving(onDismiss)}>
               {dismissLabel}
             </Button>
           ) : null}
@@ -99,36 +104,14 @@ export function PendingAction({
   );
 }
 
-/** A plain spec object, as opposed to any of the object shapes ReactNode itself allows. */
-function isPendingSpec(value: PendingActionSpec | ReactNode): value is PendingActionSpec {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    !isValidElement(value) &&
-    !(Symbol.iterator in value) &&
-    !('then' in value)
-  );
-}
-
 /** What every host's `pending` prop runs through: a string, a spec, or a ready node. */
 export function renderPending(
   spec: PendingActionSpec | ReactNode,
-  extra: Partial<PendingActionProps> = {},
+  extra: Pick<PendingActionProps, 'size' | 'align'> = {},
 ): ReactNode {
-  if (spec === undefined || spec === null || spec === false || spec === '') {
+  const input = readPendingInput(spec);
+  if (input === null) {
     return null;
   }
-  if (isValidElement(spec)) {
-    return spec;
-  }
-  if (typeof spec === 'string') {
-    return <PendingAction label={spec} {...extra} />;
-  }
-  if (!isPendingSpec(spec)) {
-    return null;
-  }
-  if (spec.label === undefined && spec.reason === undefined) {
-    return null;
-  }
-  return <PendingAction {...spec} {...extra} />;
+  return 'node' in input ? input.node : <PendingAction {...input.spec} {...extra} />;
 }

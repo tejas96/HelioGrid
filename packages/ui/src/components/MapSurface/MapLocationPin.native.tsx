@@ -5,8 +5,9 @@ import { PanResponder, StyleSheet, View } from 'react-native';
 import { G, Svg } from 'react-native-svg';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import type { MapPin } from './MapSurface.types';
+import type { MapPin, MapSurfaceWords } from './MapSurface.types';
 import { MAP_PIN_COLOR } from './MapTokens.native';
+import { pinReadingOf } from './map-placement';
 
 interface MapLocationPinProps {
   pin: MapPin;
@@ -16,6 +17,7 @@ interface MapLocationPinProps {
   draggable: boolean;
   /** Page coordinates of the finger; the surface turns them into percentages. */
   onDragTo: (pageX: number, pageY: number) => void;
+  words: Pick<MapSurfaceWords, 'pinPending' | 'pinConfirmed' | 'draggable'>;
 }
 
 const styles = StyleSheet.create({
@@ -41,14 +43,24 @@ const styles = StyleSheet.create({
  * confirmed". Neither reading rests on the colour — the words carry it, and StatusMark adds the
  * non-colour glyph the DS requires of any state.
  */
-export function MapLocationPin({ pin, pinState, fixed, draggable, onDragTo }: MapLocationPinProps) {
-  const confirmed = pinState === 'confirmed';
+export function MapLocationPin({
+  pin,
+  pinState,
+  fixed,
+  draggable,
+  onDragTo,
+  words,
+}: MapLocationPinProps) {
+  const { confirmed, name, spokenName, x, y } = pinReadingOf(
+    pin,
+    pinState,
+    fixed,
+    draggable,
+    words,
+  );
   const colour = MAP_PIN_COLOR[pinState];
-  const words = pin.label ?? (confirmed ? 'Location confirmed' : 'Pin pending');
   const drag = useRef(onDragTo);
   drag.current = onDragTo;
-  const x = fixed ? 50 : (pin.x ?? 50);
-  const y = fixed ? 50 : (pin.y ?? 50);
 
   /* Pointer capture on the web; the responder system here. Same event either way: the finger's
      position becomes a percentage on the surface. */
@@ -70,10 +82,10 @@ export function MapLocationPin({ pin, pinState, fixed, draggable, onDragTo }: Ma
   return (
     <View style={[styles.anchor, { left: `${x}%`, top: `${y}%` }]} pointerEvents="box-none">
       <View style={styles.column} pointerEvents="box-none">
-        <StatusMark style={styles.label} tone={confirmed ? 'success' : 'accent'} label={words} />
+        <StatusMark style={styles.label} tone={confirmed ? 'success' : 'accent'} label={name} />
         <View
           accessibilityRole="image"
-          accessibilityLabel={draggable ? `${words}, draggable` : words}
+          accessibilityLabel={spokenName}
           style={styles.hit}
           pointerEvents={draggable ? 'auto' : 'none'}
           {...(draggable ? responder.panHandlers : {})}

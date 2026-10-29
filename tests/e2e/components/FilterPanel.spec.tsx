@@ -16,7 +16,7 @@ const words = filterPanelWords(en.t);
 /* A screen's dimensions are the screen's own words — catalog data here, as `SCR-M01-15`'s board
    passes them. Only the panel's own words are asserted, and they come from the catalog. */
 const PANELS = 'Panels';
-const PANEL_SPECS = { key: 'kind', value: PANELS, group: 'Panel specs' };
+const PANEL_SPECS = { key: 'kind', value: PANELS, group: en.t('Panel specs') };
 const KINDS = [PANELS, 'Inverters', 'Batteries', 'Micro-inverters', 'Optimisers'];
 const MAKERS = [
   'Adani',
@@ -29,16 +29,22 @@ const MAKERS = [
   'Saatvik',
   'Emmvee',
 ];
-const PREFERRED = 'Preferred items only';
-const ARCHIVED = 'Archived items instead';
+const PREFERRED = en.t('Preferred items only');
+const ARCHIVED = en.t('Archived items instead');
 
 const DIMENSIONS: FilterDimension[] = [
-  { key: 'source', kind: 'facet', label: 'Source', options: ['Platform', 'Your SKUs'] },
-  { key: 'kind', kind: 'facet', label: 'Component kind', noun: 'kinds', options: KINDS },
+  { key: 'source', kind: 'facet', label: en.t('Source'), options: ['Platform', 'Your SKUs'] },
+  {
+    key: 'kind',
+    kind: 'facet',
+    label: en.t('Component kind'),
+    noun: en.t('kinds'),
+    options: KINDS,
+  },
   {
     key: 'wattage',
     kind: 'range',
-    label: 'Wattage',
+    label: en.t('Wattage'),
     min: 0,
     max: 700,
     step: 5,
@@ -48,14 +54,14 @@ const DIMENSIONS: FilterDimension[] = [
   {
     key: 'technology',
     kind: 'one-of',
-    label: 'Technology',
+    label: en.t('Technology'),
     options: ['Any', 'Mono PERC', 'TOPCon', 'Bifacial', 'Poly', 'HJT'],
     allValue: 'Any',
     under: PANEL_SPECS,
   },
-  { key: 'maker', kind: 'facet', label: 'Maker', noun: 'makers', options: MAKERS },
-  { key: 'preferred', kind: 'flag', label: 'Ranking', optionLabel: PREFERRED },
-  { key: 'archived', kind: 'flag', label: 'Archived', optionLabel: ARCHIVED },
+  { key: 'maker', kind: 'facet', label: en.t('Maker'), noun: en.t('makers'), options: MAKERS },
+  { key: 'preferred', kind: 'flag', label: en.t('Ranking'), optionLabel: PREFERRED },
+  { key: 'archived', kind: 'flag', label: en.t('Archived'), optionLabel: ARCHIVED },
 ];
 
 const INITIAL = {
@@ -78,7 +84,9 @@ const sections = (page: Page) => page.getByRole('dialog').locator('.hg-filter-se
 
 test('one column of sections at 375 and 1536', async ({ mount, page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await mount(<HeldFilterPanel dimensions={DIMENSIONS} initial={INITIAL} resultNoun="items" />);
+  await mount(
+    <HeldFilterPanel dimensions={DIMENSIONS} initial={INITIAL} resultNoun={en.t('items')} />,
+  );
   for (const [width, height] of [
     [375, 812],
     [1536, 960],
@@ -108,7 +116,9 @@ test('one column of sections at 375 and 1536', async ({ mount, page }) => {
 });
 
 test('flags are switches in a last Show section', async ({ mount, page }) => {
-  await mount(<HeldFilterPanel dimensions={DIMENSIONS} initial={INITIAL} resultNoun="items" />);
+  await mount(
+    <HeldFilterPanel dimensions={DIMENSIONS} initial={INITIAL} resultNoun={en.t('items')} />,
+  );
   const show = sections(page).last();
   await expect(show.getByRole('heading', { name: words.show, exact: true })).toBeVisible();
   await expect(show.getByRole('switch')).toHaveCount(2);
@@ -121,7 +131,9 @@ test('flags are switches in a last Show section', async ({ mount, page }) => {
 });
 
 test('a long chip list shows six then Show all', async ({ mount, page }) => {
-  await mount(<HeldFilterPanel dimensions={DIMENSIONS} initial={INITIAL} resultNoun="items" />);
+  await mount(
+    <HeldFilterPanel dimensions={DIMENSIONS} initial={INITIAL} resultNoun={en.t('items')} />,
+  );
   const makers = page.getByRole('group', { name: 'Maker' }).getByRole('button');
   /* The first six, and the chosen eighth beyond them. */
   await expect(makers).toHaveCount(7);
@@ -139,7 +151,9 @@ test('a long chip list shows six then Show all', async ({ mount, page }) => {
 });
 
 test('an under dimension folds and clears', async ({ mount, page }) => {
-  await mount(<HeldFilterPanel dimensions={DIMENSIONS} initial={INITIAL} resultNoun="items" />);
+  await mount(
+    <HeldFilterPanel dimensions={DIMENSIONS} initial={INITIAL} resultNoun={en.t('items')} />,
+  );
   const kinds = page.getByRole('group', { name: 'Component kind' });
   const fold = page.getByRole('button', { name: PANEL_SPECS.group });
   await expect(fold).toHaveCount(0);

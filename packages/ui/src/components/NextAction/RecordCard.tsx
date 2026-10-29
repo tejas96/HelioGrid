@@ -6,7 +6,7 @@ import { isPendingInFlight } from '../ListRow/ListRow.pending';
 import { renderPending } from '../PendingAction';
 import { renderProvenance } from '../Provenance';
 import { TileActions } from '../TileActions';
-import { recordInitials } from './NextAction.initials';
+import { faceInitials } from './NextAction.initials';
 import type { RecordCardProps } from './NextAction.types';
 
 /** Per-instance geometry rides in as custom properties; every colour stays in RecordCard.css. */
@@ -54,7 +54,7 @@ function RecordFace({
   }
   return (
     <span className="hg-record-card-avatar" aria-hidden="true">
-      {initials || recordInitials(name)}
+      {faceInitials(initials, name)}
     </span>
   );
 }
@@ -83,7 +83,7 @@ function RecordSlots({
             <Fragment key={`meta-${i}`}>
               {i > 0 ? (
                 <span className="hg-record-card-meta-sep" aria-hidden="true">
-                  ·
+                  {'·'}
                 </span>
               ) : null}
               <span>{m}</span>

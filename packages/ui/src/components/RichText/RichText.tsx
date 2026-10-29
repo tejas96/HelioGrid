@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import type { ToolCommand } from './RichText.commands';
-import { EMPTY_RICH_TEXT, measure, richTextRows } from './RichText.model';
+import { LINK_SCHEME } from './RichText.commands';
+import { EMPTY_RICH_TEXT, isBlank, isOverLength, measure, richTextRows } from './RichText.model';
 import { logoHtml, serialise, toHtml } from './RichText.serialise';
 import type { RichTextProps, RichTextValue } from './RichText.types';
 import { RichTextToolbar } from './RichTextToolbar';
@@ -51,7 +52,7 @@ export function RichText({
   const lastHtml = useRef('');
   const [marks, setMarks] = useState<MarkState>({});
   const [linking, setLinking] = useState(false);
-  const [href, setHref] = useState('https://');
+  const [href, setHref] = useState(LINK_SCHEME);
   const [focus, setFocus] = useState(false);
   const m = measure(value);
   const hasLogo = m.hasLogo;
@@ -123,7 +124,7 @@ export function RichText({
     push();
   };
 
-  const over = maxLength !== undefined && m.chars > maxLength;
+  const over = isOverLength(m, maxLength);
 
   return (
     <div className={classNames('hg-rich-text', className)} style={style}>
@@ -157,7 +158,7 @@ export function RichText({
               value={href}
               onChange={(e) => setHref(e.target.value)}
               aria-label={words.linkAddress}
-              placeholder="https://"
+              placeholder={LINK_SCHEME}
             />
             <button type="button" className="hg-rich-text-apply" onClick={applyLink}>
               {words.addLink}
@@ -165,7 +166,7 @@ export function RichText({
           </div>
         ) : null}
         <div className="hg-rich-text-body">
-          {m.chars === 0 && !hasLogo && placeholder !== undefined ? (
+          {isBlank(m) && placeholder !== undefined ? (
             <span className="hg-rich-text-placeholder" aria-hidden="true">
               {placeholder}
             </span>

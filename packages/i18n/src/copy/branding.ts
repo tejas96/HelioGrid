@@ -20,6 +20,8 @@ import type { MessageRef, Translator } from '../runtime';
 import { type AttemptFailureLike, attemptFailureMessageId, INTERNAL_ERROR } from './api-error';
 import { brandColourFieldWords } from './brand-colour-field';
 import { COMPANY_LOGO } from './company-logo';
+import { dropzoneWords } from './dropzone';
+import { imageWords } from './image';
 import { settingsSavedLine } from './settings';
 
 type T = Translator['t'];
@@ -196,6 +198,8 @@ export function brandingWords(
     keepEditing: t(BRANDING.keepEditing),
     documentTitle: t(BRANDING.proposal),
     colourField: brandColourFieldWords(t),
+    dropzone: dropzoneWords(t),
+    image: imageWords(t),
     linkPreview: {
       ready: t(LINK_PAGE.ready),
       awaiting: t(LINK_PAGE.awaiting),

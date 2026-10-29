@@ -1,16 +1,9 @@
 import type { RefObject } from 'react';
 import { useEffect, useState } from 'react';
+import { LIST_MAX, type ListPlacement, listPlacement } from './Select.logic';
 
-export interface SelectPlacement {
-  /** The listbox rises above the trigger instead of dropping below it. */
-  up: boolean;
-  /** Tallest the listbox may be, in px, inside the space that is actually visible. */
-  max: number;
-}
-
-const REST: SelectPlacement = { up: false, max: 260 };
+const REST: ListPlacement = { up: false, max: LIST_MAX };
 const GAP = 12;
-const MIN_BELOW = 160;
 const CLIPPING = /(auto|scroll|hidden|clip)/;
 
 /**
@@ -22,8 +15,8 @@ const CLIPPING = /(auto|scroll|hidden|clip)/;
 export function useSelectPlacement(
   wrapRef: RefObject<HTMLDivElement | null>,
   open: boolean,
-): SelectPlacement {
-  const [place, setPlace] = useState<SelectPlacement>(REST);
+): ListPlacement {
+  const [place, setPlace] = useState<ListPlacement>(REST);
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -46,8 +39,7 @@ export function useSelectPlacement(
     }
     const below = bottom - rect.bottom - GAP;
     const above = rect.top - top - GAP;
-    const up = below < MIN_BELOW && above > below;
-    setPlace({ up, max: Math.max(120, Math.min(260, up ? above : below)) });
+    setPlace(listPlacement(below, above));
   }, [open, wrapRef]);
 
   return place;

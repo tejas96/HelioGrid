@@ -21,14 +21,13 @@ import {
   FACT_MEASURE,
   FACT_WRAP_LINES,
   FactGroundProvider,
-  factRowsOf,
-  factWantsLead,
-  groupForm,
+  groupedRows,
   isUnderFloor,
+  rowsGroupForm,
   useAnswerReport,
   useFactGround,
 } from './FactRow.logic';
-import type { FactDensity, FactRowsForm, FactRowsProps } from './FactRow.types';
+import type { FactDensity, FactRowsProps } from './FactRow.types';
 
 const R = theme.type.roles;
 
@@ -203,7 +202,7 @@ export function useCharWidth(size: number) {
       onLayout={(event) => setCh(event.nativeEvent.layout.width)}
     >
       <Text variant="body" style={{ fontSize: size }}>
-        0
+        {'0'}
       </Text>
     </View>
   );
@@ -230,16 +229,19 @@ export function FactRows({
   onFormChange,
   style,
 }: NativeFactRowsProps) {
-  const rows = factRowsOf(children).map((row) => row.props);
-  const declared = rows.some((row) => factWantsLead(row, longAt));
-  const hasMark = rows.some((row) => Boolean(row.mark));
+  const { rows, declared, hasMark } = groupedRows(children, longAt);
   const metrics = FACT_METRICS[density];
   const room = useRoomFit(rows.length, contentSignature(rows));
   const floor = isUnderFloor(room.width, leadBelow);
-  const { form, reason } = groupForm({ forced, declared, floor, fits: room.fits });
-  const settled = forced !== 'auto' || declared || floor || room.answered;
-  const answer: FactRowsForm | null =
-    settled && room.width !== null ? { form, width: room.width, hasMark, reason } : null;
+  const { form, reason, answer } = rowsGroupForm({
+    forced,
+    declared,
+    floor,
+    fits: room.fits,
+    answered: room.answered,
+    width: room.width,
+    hasMark,
+  });
   useAnswerReport(answer, `${form}|${hasMark}|${reason}`, onFormChange);
   const { ink } = useFactGround();
   const { labelWidth, reportLabel } = useLabelColumn();

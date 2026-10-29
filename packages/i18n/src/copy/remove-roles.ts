@@ -80,9 +80,9 @@ export function removeRolesWords(
 /** The toast a landed removal raises, and the words of its *Undo*. */
 export interface RolesRemovedToast {
   readonly tone: 'neutral';
-  readonly title: string;
-  readonly description: string;
-  readonly undoLabel: string;
+  readonly title: TranslatedText;
+  readonly description: TranslatedText;
+  readonly undoLabel: TranslatedText;
 }
 
 export function rolesRemovedToast(

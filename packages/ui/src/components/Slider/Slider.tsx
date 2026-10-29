@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
@@ -5,7 +6,7 @@ import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { renderProvenance } from '../Provenance';
 import type { SliderProps } from './Slider.types';
-import { clampToRange, fillPercent, formatValue } from './slider-math';
+import { clampToRange, fillPercent, formatValue, nudged, stepperOff } from './slider-math';
 
 interface WebSliderProps extends SliderProps {
   className?: string;
@@ -15,7 +16,7 @@ interface WebSliderProps extends SliderProps {
 interface StepButtonProps {
   disabled: boolean;
   glyph: ShellGlyphName;
-  label: string;
+  label: TranslatedText;
   onPress: () => void;
 }
 
@@ -60,6 +61,7 @@ export function Slider({
   label,
   unit,
   hint,
+  words,
   format,
   steppers = true,
   disabled = false,
@@ -73,12 +75,11 @@ export function Slider({
   const sid = id ?? autoId;
   const percent = fillPercent(value, min, max);
   const shown = formatValue(value, unit, format);
-  const named = label ?? 'value';
 
   const live = (next: number) => onInput?.(clampToRange(next, min, max, step));
   const commit = (next: number) => onCommit?.(clampToRange(next, min, max, step));
   const nudge = (direction: number) => {
-    const next = clampToRange(value + direction * step, min, max, step);
+    const next = nudged(value, direction, min, max, step);
     live(next);
     commit(next);
   };
@@ -101,9 +102,9 @@ export function Slider({
       <div className="hg-slider-row">
         {steppers ? (
           <StepButton
-            disabled={disabled || value <= min}
+            disabled={stepperOff(-1, value, min, max, disabled)}
             glyph="minus"
-            label={`Decrease ${named}`}
+            label={words.decrease(label)}
             onPress={() => nudge(-1)}
           />
         ) : null}
@@ -135,9 +136,9 @@ export function Slider({
         </div>
         {steppers ? (
           <StepButton
-            disabled={disabled || value >= max}
+            disabled={stepperOff(1, value, min, max, disabled)}
             glyph="plus"
-            label={`Increase ${named}`}
+            label={words.increase(label)}
             onPress={() => nudge(1)}
           />
         ) : null}

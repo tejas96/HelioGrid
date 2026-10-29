@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { Text as RNText, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { useFocusAfter } from '../../primitives/FocusAfter';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -8,11 +9,9 @@ import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { ComplianceFloor } from '../ComplianceFloor/ComplianceFloor.native';
-import type { ComplianceFloorSpec } from '../ComplianceFloor/ComplianceFloor.types';
-import { weekdayOf } from '../DatePicker/calendar-grid';
-import type { MarketFormat } from '../DatePicker/DatePicker.types';
 import { ValueSource } from '../ValueSource/ValueSource.native';
-import type { DateSetEntry } from './DateSet.types';
+import { dateRowReading } from './DateSet.logic';
+import type { DateSetRowProps } from './DateSet.types';
 import { floorFor } from './date-set-floor';
 
 /* A row is one tile (`F7-49`): `tileSurface` draws its grey and its flat rest — the web half's
@@ -48,30 +47,21 @@ const styles = StyleSheet.create({
   delete: { width: 44, height: 44, borderRadius: theme.radius['r-pill'] },
 });
 
-export interface DateSetRowProps {
-  entry: DateSetEntry;
-  mkt: MarketFormat;
-  packName: string;
-  floor: ComplianceFloorSpec | undefined;
-  /** True while this row's removal is the one that was just refused. */
-  blocked: boolean;
-  density: 'expressive' | 'functional';
-  onRemove?: (date: string, spokenName: string) => void;
-}
-
 /** One date. Deletability follows origin: a tenant row has a 44dp delete, a pack row has the floor. */
 export function DateSetRow({
   entry,
   mkt,
   packName,
   floor,
+  words,
+  floorWords,
   blocked,
   density,
   onRemove,
+  focusAfter,
 }: DateSetRowProps) {
-  const d = new Date(`${entry.date}T00:00:00`);
-  const pack = entry.origin === 'pack';
-  const spoken = entry.name ?? mkt.date(d);
+  const row = dateRowReading({ entry, mkt, packName, words, onRemove });
+  const leaving = useFocusAfter(focusAfter);
   return (
     <View
       role="listitem"
@@ -85,26 +75,24 @@ export function DateSetRow({
       <GroundProvider ground="tile">
         <View style={styles.body}>
           <View style={styles.head}>
-            <RNText style={styles.date}>{mkt.date(d)}</RNText>
+            <RNText style={styles.date}>{row.date}</RNText>
             <Text variant="caption" color="tertiary">
-              {weekdayOf(d, mkt.weekdayNames('long'), mkt.firstDayOfWeek)}
+              {row.weekday}
             </Text>
           </View>
           {entry.name === undefined ? null : <RNText style={styles.name}>{entry.name}</RNText>}
           {/* Origin as persistent content — the same which-layer-supplied-this the rates panel
               renders, so it is the same component. Never a tone and never a tooltip (`F8-07`). */}
-          <ValueSource
-            level={pack ? 'inherited' : 'own'}
-            layerName={pack ? packName : 'Added by you'}
-            source={pack ? 'Market holiday' : (entry.addedBy ?? 'Tenant holiday')}
-          />
+          <ValueSource {...row.origin} />
           {/* Deletability follows origin: the floor takes the delete's place. */}
-          {pack ? <ComplianceFloor {...floorFor(entry, packName, floor)} /> : null}
+          {row.pack ? (
+            <ComplianceFloor {...floorFor(entry, packName, floor, words, floorWords)} />
+          ) : null}
         </View>
-        {!pack && onRemove !== undefined ? (
+        {row.remove === null ? null : (
           <Pressable
-            accessibilityLabel={`Remove ${spoken}`}
-            onPress={() => onRemove(entry.date, spoken)}
+            accessibilityLabel={words.remove(row.spoken)}
+            onPress={leaving(row.remove)}
             style={styles.delete}
           >
             <Svg
@@ -120,7 +108,7 @@ export function DateSetRow({
               <ShellGlyphMarks name="trash" />
             </Svg>
           </Pressable>
-        ) : null}
+        )}
       </GroundProvider>
     </View>
   );

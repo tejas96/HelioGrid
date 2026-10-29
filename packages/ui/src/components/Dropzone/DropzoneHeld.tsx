@@ -1,18 +1,21 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import { type HeldRetry, heldFailureWords, heldSentence, useHeldFlush } from './dropzone-held';
 
 interface DropzoneHeldProps {
   /** An upload already in flight takes the retry out of reach — there is nothing to flush yet. */
   busy: boolean;
-  countWords: string | null;
-  failedMessage: string;
+  countWords: TranslatedText | null;
+  failedMessage: TranslatedText;
+  /** The held queue's sentence, unless `heldMessage` replaces it. */
+  held: TranslatedText;
   heldMessage?: ReactNode;
   /** The surface's `aria-describedby` points here, alongside any error. */
   id: string;
   onRetry?: HeldRetry;
-  retryLabel: string;
+  retryLabel: TranslatedText;
   retryTimeout: number;
-  timeoutMessage: string;
+  timeoutMessage: TranslatedText;
 }
 
 /**
@@ -28,6 +31,7 @@ export function DropzoneHeld({
   busy,
   countWords,
   failedMessage,
+  held,
   heldMessage,
   id,
   onRetry,
@@ -42,7 +46,7 @@ export function DropzoneHeld({
     <div className="hg-dropzone-held" id={id} role="status">
       <div className="hg-dropzone-held-words">
         {countWords === null ? null : <p className="hg-dropzone-held-count">{countWords}</p>}
-        <p className="hg-dropzone-held-line">{heldSentence(heldMessage)}</p>
+        <p className="hg-dropzone-held-line">{heldSentence(heldMessage, held)}</p>
         {/* What actually happened last time — NoConnection's rule, and the reason `onRetry` may
             report a failure at all. */}
         {failureWords === null ? null : <p className="hg-dropzone-held-failure">{failureWords}</p>}

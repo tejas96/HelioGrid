@@ -8,20 +8,21 @@ import Svg from 'react-native-svg';
    spellings to the same module, so this is the same import, correctly typed. */
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { Card } from '../Card/Card.native';
 import { renderPending } from '../PendingAction/PendingAction.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
-import { kanbanProvenance, moveTargets } from './Kanban.logic';
-import type { KanbanCardItem, KanbanColumn, KanbanProps } from './Kanban.types';
+import type { MoveStep } from './Kanban.logic';
+import { cardPendingOf, kanbanProvenance, moveStepsOf } from './Kanban.logic';
+import type { KanbanCardItem, KanbanColumn, KanbanProps, KanbanWords } from './Kanban.types';
 
 interface MoveControlsProps {
   columns: KanbanColumn[];
   column: KanbanColumn;
   item: KanbanCardItem;
   onMove: NonNullable<KanbanProps['onMove']>;
+  words: KanbanWords;
 }
 
 /**
@@ -30,12 +31,12 @@ interface MoveControlsProps {
  * move affordance, and on the phone form they were already the only route: the destination column
  * is not on screen.
  */
-function MoveControls({ columns, column, item, onMove }: MoveControlsProps) {
-  const { prev, next } = moveTargets(columns, column);
-  const button = (target: KanbanColumn | undefined, label: string, glyph: ShellGlyphName) => (
+function MoveControls({ columns, column, item, onMove, words }: MoveControlsProps) {
+  const { back, on } = moveStepsOf(columns, column, words);
+  const button = ({ target, label, glyph }: MoveStep) => (
     <Pressable
       disabled={!target}
-      accessibilityLabel={target ? `${label} — move to ${target.label}` : label}
+      accessibilityLabel={label}
       onPress={() => {
         if (target) onMove(item.id, target.key, column.key);
       }}
@@ -57,8 +58,8 @@ function MoveControls({ columns, column, item, onMove }: MoveControlsProps) {
   );
   return (
     <View style={styles.move}>
-      {button(prev, 'Move back a stage', 'chevron-left')}
-      {button(next, 'Move on a stage', 'chevron-right')}
+      {button(back)}
+      {button(on)}
     </View>
   );
 }
@@ -109,6 +110,7 @@ export interface KanbanCardProps {
   onMove?: KanbanProps['onMove'];
   renderCard?: KanbanProps['renderCard'];
   cardPending?: KanbanProps['cardPending'];
+  words: KanbanWords;
 }
 
 /**
@@ -123,13 +125,12 @@ export function KanbanCard({
   onMove,
   renderCard,
   cardPending,
+  words,
 }: KanbanCardProps) {
-  const pending = cardPending ? cardPending(item, column) : null;
   /* `SCR-M08-01`'s move-waiting-server is carried by the visible PendingAction line AND by the
      card's own state, never by the line alone — RN's partner for the web half's `aria-busy` is
-     `accessibilityState.busy` on the same node. `returned` is not busy: the move came back undone
-     and the line is now a reason, not a wait. Set only while busy, as `aria-busy` is. */
-  const busy = pending !== null && pending.state !== 'returned';
+     `accessibilityState.busy` on the same node. Set only while busy, as `aria-busy` is. */
+  const { pending, busy } = cardPendingOf(item, column, cardPending);
   /* AND THE STATE NEEDS A NODE TO SIT ON. A bare `View` is not an accessibility element, so this
      state was announced nowhere and the line WAS carrying it alone — the trap `DataTable`'s
      `SelectionBar` documents. `role` makes the wrapper one without `accessible`, which would fold
@@ -145,7 +146,7 @@ export function KanbanCard({
       {card}
       {pending ? <View style={styles.cardPending}>{renderPending(pending)}</View> : null}
       {onMove ? (
-        <MoveControls columns={columns} column={column} item={item} onMove={onMove} />
+        <MoveControls columns={columns} column={column} item={item} onMove={onMove} words={words} />
       ) : null}
     </View>
   );

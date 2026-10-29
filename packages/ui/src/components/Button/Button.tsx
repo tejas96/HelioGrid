@@ -1,11 +1,11 @@
 import type { CSSProperties } from 'react';
 import { useId, useImperativeHandle, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
+import type { FocusHandle } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text';
 import { ReasonExplainer } from '../ActionReason';
-import { reasonPage } from '../ActionReason/ActionReason.logic';
 import type { ReasonTriggerProps } from '../ActionReason/ActionReason.types';
-import type { FocusHandle } from '../SearchField/SearchField.types';
+import { isStatedOff, toneOf } from './Button.logic';
 import type { ButtonProps } from './Button.types';
 
 interface WebButtonProps extends ButtonProps {
@@ -58,8 +58,8 @@ export function Button({
   );
   /* A spec with no sentence opens nothing and describes nothing, so the pill keeps the native
      `disabled` attribute. */
-  const stated = disabled && reasonPage(disabledReason) !== '';
-  const toned = variant === 'secondary' || variant === 'ghost' ? tone : undefined;
+  const stated = isStatedOff(disabled, disabledReason);
+  const toned = toneOf(variant, tone);
 
   const pill = (reason?: ReasonTriggerProps) => (
     <button

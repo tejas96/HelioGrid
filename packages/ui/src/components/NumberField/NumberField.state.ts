@@ -1,6 +1,13 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { useEffect, useState } from 'react';
-import { commitDraft, displayNumber, nudgeValue } from './NumberField.logic';
-import type { NumberFieldCommits, OutOfRangeMode } from './NumberField.types';
+import { useFormat } from '../MarketProvider/market-context';
+import { commitDraft, displayNumber, nudgeValue, restingMoney } from './NumberField.logic';
+import type {
+  NumberFieldCommits,
+  NumberFieldProps,
+  NumberFieldWords,
+  OutOfRangeMode,
+} from './NumberField.types';
 
 export interface NumberDraftOptions {
   /** None: the field is unset and edits as an empty draft. */
@@ -14,8 +21,9 @@ export interface NumberDraftOptions {
   currency: boolean;
   unit?: string;
   outOfRange: OutOfRangeMode;
-  correctionMessage?: string;
+  correctionMessage?: TranslatedText;
   commits: NumberFieldCommits;
+  words: NumberFieldWords;
   /** How a figure reads while the field is not being edited — a money field, in the market's
    *  money format. Editing always shows the plain figure, which is what is parsed back. */
   idle?: (value: number) => string;
@@ -23,9 +31,9 @@ export interface NumberDraftOptions {
 
 export interface NumberDraftState {
   draft: string;
-  correction: string | null;
-  /** The generated constraint clause — the platform half composes it with `refusalPath`. */
-  refusal: string | null;
+  correction: TranslatedText | null;
+  /** The generated constraint — the platform half composes it with `refusalPath`. */
+  refusal: TranslatedText | null;
   focus: boolean;
   setDraft: (next: string) => void;
   /** Focusing clears a correction and a refusal; it never touches the caller's `error`. */
@@ -52,8 +60,8 @@ export function useNumberFieldDraft(opts: NumberDraftOptions): NumberDraftState 
   const resting = (figure: number | undefined) =>
     figure === undefined || opts.idle === undefined ? displayNumber(figure) : opts.idle(figure);
   const [draft, setDraft] = useState(() => resting(value));
-  const [correction, setCorrection] = useState<string | null>(null);
-  const [refusal, setRefusal] = useState<string | null>(null);
+  const [correction, setCorrection] = useState<TranslatedText | null>(null);
+  const [refusal, setRefusal] = useState<TranslatedText | null>(null);
   const [focus, setFocus] = useState(false);
 
   const restingText = resting(value);
@@ -132,5 +140,57 @@ export function useNumberFieldDraft(opts: NumberDraftOptions): NumberDraftState 
     commit,
     cancel: restore,
     nudge,
+  };
+}
+
+/**
+ * The field as both halves draw it: its draft — a money field rests in the market's money format —
+ * whether it offers steppers, and whether it reads as danger.
+ */
+export function useNumberField(props: NumberFieldProps): {
+  draft: NumberDraftState;
+  showSteppers: boolean;
+  danger: boolean;
+} {
+  const {
+    value,
+    onCommit,
+    onClear,
+    min,
+    max,
+    step = 1,
+    precision,
+    currency = false,
+    unit,
+    outOfRange = 'clamp',
+    correctionMessage,
+    commits = 'on-leave',
+    words,
+    steppers,
+    error,
+  } = props;
+  const format = useFormat();
+  const draft = useNumberFieldDraft({
+    value,
+    onCommit,
+    onClear,
+    min,
+    max,
+    step,
+    precision,
+    currency,
+    ...(currency ? { idle: (figure: number) => restingMoney(format, figure) } : {}),
+    unit,
+    outOfRange,
+    correctionMessage,
+    commits,
+    words,
+  });
+  return {
+    draft,
+    /* A payment is not stepped. An unset `steppers` follows `currency` — the only case where the
+       grammar is knowable from the props the caller already passed. */
+    showSteppers: steppers ?? !currency,
+    danger: draft.refusal !== null || error !== undefined,
   };
 }

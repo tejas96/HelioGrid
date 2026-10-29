@@ -1,12 +1,15 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ResolvedStep } from './resolve-steps';
+import { indicatorFacts } from './Stepper.logic';
+import type { StepperWords } from './Stepper.types';
 
 interface NavButtonProps {
   direction: number;
   disabled: boolean;
-  name: string;
+  name: TranslatedText;
   onPress: () => void;
 }
 
@@ -43,6 +46,7 @@ interface StepperIndicatorProps {
   onStepClick?: (index: number) => void;
   resolved: readonly ResolvedStep[];
   style?: CSSProperties;
+  words: StepperWords;
 }
 
 /**
@@ -57,18 +61,19 @@ export function StepperIndicator({
   onStepClick,
   resolved,
   style,
+  words,
 }: StepperIndicatorProps) {
-  const total = resolved.length;
-  const step = resolved[index];
-  const next = resolved[index + 1];
-  const nextReachable = next?.reachable === true;
-  const errors = resolved.filter((entry) => entry.state === 'errors').length;
+  const { total, name, errors, backOff, nextOff } = indicatorFacts(
+    resolved,
+    index,
+    onStepClick !== undefined,
+  );
   return (
     <div className={classNames('hg-stepper-indicator', className)} style={style}>
       <NavButton
         direction={-1}
-        disabled={index === 0 || onStepClick === undefined}
-        name="Previous step"
+        disabled={backOff}
+        name={words.previousStep}
         onPress={() => onStepClick?.(index - 1)}
       />
       <button
@@ -78,12 +83,10 @@ export function StepperIndicator({
         aria-haspopup="dialog"
         disabled={onOpenStepList === undefined}
       >
-        <span className="hg-stepper-count">
-          {index + 1} / {total}
-        </span>
+        <span className="hg-stepper-count">{`${index + 1} / ${total}`}</span>
         <span className="hg-stepper-dot-sep" aria-hidden="true" />
-        <span className="hg-stepper-current">{step === undefined ? '' : step.label}</span>
-        {errors > 0 ? <span className="hg-stepper-errors">{errors} to fix</span> : null}
+        <span className="hg-stepper-current">{name}</span>
+        {errors > 0 ? <span className="hg-stepper-errors">{words.toFix(errors)}</span> : null}
         <svg
           className="hg-stepper-chevron"
           width="15"
@@ -101,8 +104,8 @@ export function StepperIndicator({
       </button>
       <NavButton
         direction={1}
-        disabled={!nextReachable || onStepClick === undefined}
-        name="Next step"
+        disabled={nextOff}
+        name={words.nextStep}
         onPress={() => onStepClick?.(index + 1)}
       />
     </div>

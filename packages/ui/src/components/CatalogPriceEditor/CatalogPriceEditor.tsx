@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { useId } from 'react';
 import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
@@ -73,6 +74,7 @@ export function CatalogPriceEditor(props: CatalogPriceEditorProps) {
         </Text>
         <NumberField
           label={words.price}
+          words={words.numberField}
           value={figureOf(props.amount)}
           onCommit={(value) => props.onAmount(String(value))}
           commits="as-typed"
@@ -99,6 +101,7 @@ function TaxField(props: CatalogPriceEditorProps & { taxPct: string }) {
     <>
       <NumberField
         label={words.taxRate}
+        words={words.numberField}
         value={figureOf(props.taxPct)}
         onCommit={(value) => props.onTaxPct(String(value))}
         commits="as-typed"
@@ -143,7 +146,7 @@ function PickerSwitches({
 }) {
   const hideId = useId();
   const preferId = useId();
-  const source = (fromOverride: boolean, fieldName: string) => (
+  const source = (fromOverride: boolean, fieldName: TranslatedText) => (
     <ValueSource
       level={fromOverride ? 'own' : 'inherited'}
       layerName={fromOverride ? words.yourOverride : words.defaultSource}

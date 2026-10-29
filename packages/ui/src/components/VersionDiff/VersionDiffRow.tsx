@@ -4,26 +4,20 @@
 
    Each state is a WORD in its own pill (F7-12: never colour alone). */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { NamedGap } from '../NamedGap';
-import type { ProvenanceTierSpec } from '../Provenance';
 import { ProvenanceTier } from '../Provenance';
-import { isTierOnly, resolveDiffRow } from './VersionDiff.resolve';
+import type { DiffRowFrame, DiffSideSpec } from './VersionDiff.resolve';
+import { diffRowBodyOf, resolveDiffRow } from './VersionDiff.resolve';
 import type { DiffRow, DiffState } from './VersionDiff.types';
 
-const STATE_WORD: Record<DiffState, string> = {
-  changed: 'Changed',
-  unchanged: 'Unchanged',
-  added: 'Added',
-  removed: 'Removed',
-};
-
-function StatePill({ state }: { state: DiffState }) {
+function StatePill({ state, word }: { state: DiffState; word: TranslatedText }) {
   return (
     <span className="hg-version-diff-pill" data-state={state}>
       <span aria-hidden="true" className="hg-version-diff-pill-dot" />
-      {STATE_WORD[state]}
+      {word}
     </span>
   );
 }
@@ -38,21 +32,7 @@ function Figure({ value, unit, strong }: { value: ReactNode; unit?: string; stro
 }
 
 /** One side of a pair: the version's own short label, its figure, and the tier THAT version pinned. */
-function Side({
-  stamp,
-  value,
-  unit,
-  tier,
-  strong,
-  gap,
-}: {
-  stamp: string;
-  value?: ReactNode;
-  unit?: string;
-  tier?: ProvenanceTierSpec;
-  strong?: boolean;
-  gap?: string;
-}) {
+function Side({ stamp, value, unit, tier, strong, gap }: DiffSideSpec) {
   return (
     <div className="hg-version-diff-side">
       <span className="hg-version-diff-stamp">{stamp}</span>
@@ -72,23 +52,18 @@ export function VersionDiffRow({
   afterStamp,
   removedLabel,
   addedLabel,
-}: {
-  row: DiffRow;
-  beforeStamp: string;
-  afterStamp: string;
-  removedLabel: string;
-  addedLabel?: ReactNode;
-}) {
+  words,
+}: DiffRowFrame & { row: DiffRow }) {
   const st = resolveDiffRow(row);
-  const tierOnly = isTierOnly(row, st);
+  const body = diffRowBodyOf(row, st, { beforeStamp, afterStamp, removedLabel });
   return (
     <li className="hg-version-diff-row">
       <div className="hg-version-diff-head">
         <span className="hg-version-diff-label">{row.label}</span>
-        <StatePill state={st} />
+        <StatePill state={st} word={words.states[st]} />
       </div>
 
-      {tierOnly ? (
+      {body.kind === 'tier-only' ? (
         /* The value did not move; the TIER did — and on SCR-M06-18 that tier change is the content. */
         <div className="hg-version-diff-tier-only">
           <Figure value={row.after} unit={row.unit} strong />
@@ -113,29 +88,11 @@ export function VersionDiffRow({
         </div>
       ) : null}
 
-      {!tierOnly && st === 'added' ? (
-        <Side stamp={afterStamp} value={row.after} unit={row.unit} tier={row.afterTier} strong />
-      ) : null}
+      {body.kind === 'sides' ? body.sides.map((side) => <Side key={side.side} {...side} />) : null}
 
-      {!tierOnly && st === 'removed' ? (
+      {body.kind === 'moved' ? (
         <>
-          <Side stamp={beforeStamp} value={row.before} unit={row.unit} tier={row.beforeTier} />
-          <Side stamp={afterStamp} gap={row.gapLabel || removedLabel} />
-        </>
-      ) : null}
-
-      {!tierOnly && st === 'unchanged' ? (
-        <Side
-          stamp={`${beforeStamp} · ${afterStamp}`}
-          value={row.after ?? row.before}
-          unit={row.unit}
-          tier={row.afterTier || row.beforeTier}
-        />
-      ) : null}
-
-      {!tierOnly && st === 'changed' ? (
-        <>
-          <Side stamp={beforeStamp} value={row.before} unit={row.unit} tier={row.beforeTier} />
+          <Side {...body.from} />
           <div className="hg-version-diff-moved">
             <svg
               width="14"
@@ -152,13 +109,7 @@ export function VersionDiffRow({
               <ShellGlyphMarks name="arrow-down" />
             </svg>
             <div className="hg-version-diff-moved-side">
-              <Side
-                stamp={afterStamp}
-                value={row.after}
-                unit={row.unit}
-                tier={row.afterTier}
-                strong
-              />
+              <Side {...body.to} />
             </div>
           </div>
         </>

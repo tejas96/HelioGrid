@@ -1,11 +1,12 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
 import { RetryButton } from '../Button/RetryButton.native';
-import type { OperationProgressProps } from './OperationProgress.types';
-import type { CancelCopy } from './operation-progress-model';
+import type { CancelWords, OperationProgressProps } from './OperationProgress.types';
+import { offeredCancel } from './operation-progress-model';
 
 interface OperationActionsProps
   extends Pick<
@@ -13,7 +14,9 @@ interface OperationActionsProps
     'onCancel' | 'cancelLabel' | 'cancelNote' | 'onRetry' | 'retryLabel' | 'destination' | 'state'
   > {
   running: boolean;
-  cancel: CancelCopy | null;
+  cancel: CancelWords | null;
+  /** The progress's own frame, where focus lands once Try again has left. */
+  frame: FocusAfter;
 }
 
 /** A bare string/number takes the row's own type treatment; a node is the caller's drawing. */
@@ -41,19 +44,21 @@ export function OperationActions({
   state,
   onRetry,
   retryLabel,
+  frame,
   destination,
 }: OperationActionsProps) {
+  const offered = offeredCancel(running, cancel, cancelLabel, cancelNote);
   return (
     <View style={styles.actions}>
-      {running && cancel !== null ? (
+      {offered === null ? null : (
         <Button variant="secondary" size="md" onClick={onCancel}>
-          {cancelLabel ?? cancel.label}
+          {offered.label}
         </Button>
+      )}
+      {offered === null ? null : <View style={styles.cancelNote}>{renderNote(offered.note)}</View>}
+      {state === 'failed' ? (
+        <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={frame} />
       ) : null}
-      {running && cancel !== null ? (
-        <View style={styles.cancelNote}>{renderNote(cancelNote ?? cancel.note)}</View>
-      ) : null}
-      {state === 'failed' ? <RetryButton onRetry={onRetry} label={retryLabel} /> : null}
       {destination !== undefined ? <View style={styles.destination}>{destination}</View> : null}
     </View>
   );

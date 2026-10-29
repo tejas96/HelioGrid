@@ -4,10 +4,10 @@ import type { AppHeaderProps } from './AppShell.types';
 import { ShellAction } from './ShellAction';
 import { ShellGlyph } from './ShellGlyph';
 
-interface WebAppHeaderProps extends AppHeaderProps {
+type WebAppHeaderProps = AppHeaderProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 /**
  * The desktop top bar — the header half of `F7-22`'s sidebar-and-header shell. Height is
@@ -28,6 +28,8 @@ export function AppHeader({
   jobs,
   notifications,
   onNotificationsClick,
+  notificationsLabel,
+  notificationsName,
   avatar,
   breadcrumb,
   sticky = true,
@@ -65,9 +67,10 @@ export function AppHeader({
             something happened while you were elsewhere, the tray says something is still
             happening. The shell is the only layer that outlives the screen that started it. */}
         {jobs}
-        {onNotificationsClick !== undefined ? (
+        {onNotificationsClick !== undefined && notificationsLabel !== undefined ? (
           <ShellAction
-            label="Notifications"
+            label={notificationsLabel}
+            name={notificationsName}
             badge={notifications}
             onClick={onNotificationsClick}
             icon={<ShellGlyph name="bell" size="md" />}

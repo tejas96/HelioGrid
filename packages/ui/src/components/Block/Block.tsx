@@ -1,18 +1,19 @@
 import type { CSSProperties } from 'react';
+import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { useFormat } from '../MarketProvider';
 import { renderProvenance } from '../Provenance';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
+import { shownCountOf } from './Block.logic';
 import type { BlockProps } from './Block.types';
-import { blockCount } from './Block.types';
 import { BlockBody } from './BlockBody';
 import { BlockGrid } from './BlockGrid';
 import { BlockHeader } from './BlockHeader';
 
-interface WebBlockProps extends BlockProps {
+type WebBlockProps = BlockProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 /**
  * The section — header, body, footer, and the `read` it shows, a heading on the page (`F7-49`).
@@ -26,13 +27,14 @@ export function Block({
   footer,
   provenance,
   read,
-  emptyMessage = 'Nothing here yet.',
+  loadingLabel,
+  emptyMessage,
   emptyTitle,
   emptyAction,
-  errorTitle = "Couldn't load this",
-  errorMessage = 'Try again. If it keeps failing, tell your admin what you were doing.',
+  errorTitle,
+  errorMessage,
   retryLabel,
-  unavailableTitle = 'Not available',
+  unavailableTitle,
   unavailableMessage,
   badge,
   count,
@@ -45,16 +47,23 @@ export function Block({
 }: WebBlockProps) {
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
+  const frame = useRef<HTMLElement>(null);
   const market = useFormat();
   const prov = renderProvenance(provenance, { size: 12 });
-  const shownCount = blockCount(count, countMax, (n) =>
-    market.number(n, { maximumFractionDigits: 0 }),
-  );
+  const shownCount = shownCountOf(count, countMax, market);
 
   return (
+    /* A block that shows a read is where focus lands once its retry has left; a static block is no
+       stop at all, so it takes no tabindex. */
     <section
+      ref={frame}
       aria-label={title}
-      className={classNames('hg-block', className)}
+      tabIndex={read !== undefined ? -1 : undefined}
+      className={classNames(
+        'hg-block',
+        read !== undefined ? 'hg-focus-target' : undefined,
+        className,
+      )}
       data-density={density}
       style={style}
     >
@@ -69,8 +78,8 @@ export function Block({
       />
 
       <BlockBody
-        title={title}
         state={state}
+        loadingLabel={loadingLabel}
         emptyMessage={emptyMessage}
         emptyTitle={emptyTitle}
         emptyAction={emptyAction}
@@ -78,6 +87,7 @@ export function Block({
         errorMessage={errorMessage}
         onRetry={onRetry}
         retryLabel={retryLabel}
+        focusAfter={frame}
         unavailableTitle={unavailableTitle}
         unavailableMessage={unavailableMessage}
       >

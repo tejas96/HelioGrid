@@ -1,3 +1,5 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+
 /** The anchor's live geometry, in whichever coordinate space the mark is drawn in. */
 export interface CoachMarkRect {
   /** Position inside `within` when there is one, in the viewport otherwise. */
@@ -76,8 +78,8 @@ export function placeCoachMark(
 export interface CoachMarkCounter {
   /** How many marks the run will actually show, capped at MAX_STEPS. */
   steps: number;
-  /** "Step 2 of 3", or nothing when there is only one mark — a counter of one is noise. */
-  counter: string | null;
+  /** The caller's "2 of 3", or nothing when there is only one mark — a counter of one is noise. */
+  counter: TranslatedText | null;
   isLast: boolean;
 }
 
@@ -89,12 +91,64 @@ export function coachMarkCounter(
   total: number | undefined,
   step: number | undefined,
   cap: number,
-  label?: string,
+  label: TranslatedText | undefined,
 ): CoachMarkCounter {
   const steps = total === undefined ? 0 : Math.min(total, cap);
   return {
     steps,
-    counter: steps > 1 && step !== undefined ? (label ?? `Step ${step} of ${steps}`) : null,
+    counter: steps > 1 && step !== undefined && label !== undefined ? label : null,
     isLast: total === undefined || step === steps,
   };
+}
+
+/**
+ * Where the card goes once it has an anchor; an unanchored mark is not placed — it parks. Before
+ * its first measurement the card is assumed to be `COACH_MARK_FALLBACK_HEIGHT` tall.
+ */
+export function placeMeasuredMark(
+  rect: CoachMarkRect | null,
+  cardWidth: number,
+  measuredHeight: number,
+  placement: 'auto' | 'top' | 'bottom',
+  viewport: CoachMarkViewport,
+): PlacedCoachMark | null {
+  if (rect === null) {
+    return null;
+  }
+  const cardHeight = measuredHeight || COACH_MARK_FALLBACK_HEIGHT;
+  return placeCoachMark(rect, cardWidth, cardHeight, placement, viewport);
+}
+
+/** Anchored but unresolvable: the mark draws nothing rather than point at nothing. */
+export function pointsAtNothing(anchor: unknown, rect: CoachMarkRect | null): boolean {
+  return anchor !== undefined && rect === null;
+}
+
+/** The ring's box: the anchor grown by `padding` on every side. */
+export function ringBox(rect: CoachMarkRect, padding: number) {
+  return {
+    top: rect.top - padding,
+    left: rect.left - padding,
+    width: rect.width + padding * 2,
+    height: rect.height + padding * 2,
+  };
+}
+
+/** The card's spoken name: its title, then the run's counter when it has one. */
+export function coachMarkName(title: TranslatedText, counter: TranslatedText | null): string {
+  return counter === null ? title : `${title}. ${counter}`;
+}
+
+/** One dot per mark the run shows, numbered from 1; a lone mark has none. */
+export function counterDots(steps: number): number[] {
+  return steps > 1 ? Array.from({ length: steps }, (_, index) => index + 1) : [];
+}
+
+/** The forward button passes this mark; on the last one it closes the run instead, when it can. */
+export function forwardAct(
+  isLast: boolean,
+  onNext: (() => void) | undefined,
+  onDismiss: (() => void) | undefined,
+): (() => void) | undefined {
+  return isLast ? (onDismiss ?? onNext) : onNext;
 }

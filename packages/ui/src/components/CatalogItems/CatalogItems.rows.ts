@@ -1,4 +1,6 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ComponentKind } from '@heliogrid/domain';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import type { DataTableLeading } from '../DataTable/DataTableColumn.types';
 import type { PendingActionSpec } from '../PendingAction/PendingAction.types';
 import type { CatalogRowStatus } from './CatalogItems.types';
@@ -25,7 +27,8 @@ export const CATALOG_KIND_LEADING: Readonly<Record<ComponentKind, DataTableLeadi
  */
 export function catalogRowPending(
   status: CatalogRowStatus | undefined,
-  words: { readonly tryAgain: string; readonly dismiss: string },
+  words: { readonly tryAgain: TranslatedText; readonly dismiss: TranslatedText },
+  focusAfter: FocusAfter,
 ): PendingActionSpec | null {
   if (status === undefined) return null;
   if (status.state === 'saving') return { state: 'waiting', label: status.label };
@@ -37,5 +40,6 @@ export function catalogRowPending(
     retryLabel: words.tryAgain,
     onDismiss: status.onDismiss,
     dismissLabel: words.dismiss,
+    focusAfter,
   };
 }

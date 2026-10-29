@@ -1,4 +1,6 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { FIRST_RUN_COACH_MARKS } from '@heliogrid/domain';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 
 /** Never more than three marks on one screen (M01-16). The cap is enforced, not advisory. */
 export const MAX_STEPS = FIRST_RUN_COACH_MARKS;
@@ -21,10 +23,11 @@ export interface CoachMarkStep {
    * detail panel). Ref, element or selector; must be positioned.
    */
   within?: CoachMarkAnchor;
-  title: string;
-  body?: string;
+  title: TranslatedText;
+  body?: TranslatedText;
   placement?: 'auto' | 'top' | 'bottom';
-  nextLabel?: string;
+  /** This mark's own forward word. In a sequence, the sequence's *Next* or *Got it* stands in. */
+  nextLabel?: TranslatedText;
 }
 
 /**
@@ -35,22 +38,23 @@ export interface CoachMarkStep {
  * mark anchors to the real control, rings it with the system's own 2px accent ring, and the screen
  * underneath stays fully usable.
  */
-export interface CoachMarkProps extends CoachMarkStep {
+interface CoachMarkFields extends CoachMarkStep {
   open?: boolean;
-  step?: number;
-  total?: number;
-  /**
-   * The counter's words in the reader's language — "1 of 2". Shown only with `step` and a
-   * `total` above one; the English "Step n of m" stands in where a caller passes none.
-   */
-  counterLabel?: string;
   /** Ring inset around the anchor. The ring is the system's 2px accent ring — there is no scrim. */
   padding?: number;
   width?: number;
-  dismissLabel?: string;
+  /** The forward act's words — *Next*, or *Got it* on the last mark. Always drawn. */
+  nextLabel: TranslatedText;
+  /** The dismiss button's spoken name. */
+  dismissLabel: TranslatedText;
   onNext?: () => void;
   /** Dismissing is forever ("shown once") — pair it with `useCoachMarks().dismiss`. */
   onDismiss?: () => void;
+  /**
+   * Where focus lands once the mark has closed — dismissed, or its last forward act (`F7-23` N5):
+   * the control it pointed at, else the screen's heading.
+   */
+  focusAfter: FocusAfter;
   /** Fired when an anchored mark can't find its anchor. A sequence uses this to skip the step. */
   onAnchorMissing?: () => void;
   /**
@@ -62,6 +66,26 @@ export interface CoachMarkProps extends CoachMarkStep {
 }
 
 /**
+ * A counted mark is one of a run: `step` of `total`, and the counter's words in the reader's
+ * language — "1 of 2" — shown with a `total` above one. A lone mark has no counter.
+ */
+export type CoachMarkProps = CoachMarkFields &
+  (
+    | { step?: undefined; total?: undefined; counterLabel?: undefined }
+    | { step: number; total: number; counterLabel: TranslatedText }
+  );
+
+/** A run's own words: the counter, the forward act, the last mark's close and the dismiss. */
+export interface CoachMarkSequenceWords {
+  /** "2 of 3" — numbers only the marks the run will show. */
+  counter: (step: number, total: number) => TranslatedText;
+  next: TranslatedText;
+  /** The last mark's forward act, which closes the run — *Got it*. */
+  done: TranslatedText;
+  dismiss: TranslatedText;
+}
+
+/**
  * An ordered run of at most three marks (search → confirm → next). Steps whose anchor isn't on
  * this screen are resolved out before the run starts, so it opens on the first mark it can anchor
  * and the counter numbers only the marks that will be shown.
@@ -69,10 +93,13 @@ export interface CoachMarkProps extends CoachMarkStep {
 export interface CoachMarkSequenceProps {
   /** Ordered. Sliced to MAX_STEPS — never a carousel, never a modal tour. */
   steps: CoachMarkStep[];
+  words: CoachMarkSequenceWords;
   open?: boolean;
   within?: CoachMarkAnchor;
   onDismiss?: () => void;
   onFinish?: () => void;
+  /** Where focus lands once the run has closed — the last mark's control, else the screen's heading. */
+  focusAfter: FocusAfter;
   autoFocus?: boolean;
 }
 
@@ -93,4 +120,22 @@ export interface CoachMarksOptions {
 /** The one storage key shape. Only ever this component's own key, never anything else's. */
 export function coachMarkKey(id: string): string {
   return `hg.coachmark.${id}`;
+}
+
+/* The inner parts' contracts (Law 7): both halves of a part implement the one interface. */
+
+export interface CoachMarkHeadProps {
+  counter: TranslatedText | null;
+  title: TranslatedText;
+  dismissLabel: TranslatedText;
+  onDismiss?: () => void;
+}
+
+export interface CoachMarkFootProps {
+  steps: number;
+  step?: number;
+  isLast: boolean;
+  nextLabel: TranslatedText;
+  onNext?: () => void;
+  onDismiss?: () => void;
 }

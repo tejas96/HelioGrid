@@ -10,8 +10,9 @@ import { StyleSheet, View } from 'react-native';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { RetryButton } from '../Button/RetryButton.native';
-import type { SurfaceState } from '../UnavailableNote';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
+import { placeholderOf, TRANSCRIPT_SKELETON_BARS } from './Transcript.logic';
+import type { TranscriptPlaceholderProps } from './Transcript.types';
 import { TRANSCRIPT_GAP } from './TranscriptChrome.native';
 
 const styles = StyleSheet.create({
@@ -36,19 +37,6 @@ const styles = StyleSheet.create({
   emptyBody: { marginTop: 6 },
 });
 
-interface TranscriptPlaceholderProps {
-  state: SurfaceState;
-  turnCount: number;
-  density: 'expressive' | 'functional';
-  emptyTitle: string;
-  emptyDescription: string;
-  errorMessage: string;
-  onRetry?: () => void;
-  retryLabel?: string;
-  unavailableTitle: string;
-  unavailableMessage: string;
-}
-
 export function TranscriptPlaceholder({
   state,
   turnCount,
@@ -60,26 +48,30 @@ export function TranscriptPlaceholder({
   retryLabel,
   unavailableTitle,
   unavailableMessage,
+  loadingLabel,
+  focusAfter,
 }: TranscriptPlaceholderProps) {
-  if (state === 'loading') {
+  const kind = placeholderOf(state, turnCount);
+
+  if (kind === 'loading') {
     return (
       /* Web is `role="status"`. RN has none, and `progressbar` on four bubble-shaped bars would
          report a position they do not carry, so this is an accessibility element in its own right
          — the bars are decoration, nothing focusable is folded — announced politely. */
       <View
         accessible
-        accessibilityLabel="Loading the transcript"
+        accessibilityLabel={loadingLabel}
         accessibilityLiveRegion="polite"
         style={{ rowGap: TRANSCRIPT_GAP[density] }}
       >
-        {['a', 'b', 'c', 'd'].map((row, i) => (
-          <View key={row} style={[styles.skeletonBar, { height: i % 2 ? 44 : 62 }]} />
+        {TRANSCRIPT_SKELETON_BARS.map((bar) => (
+          <View key={bar.key} style={[styles.skeletonBar, { height: bar.tall ? 62 : 44 }]} />
         ))}
       </View>
     );
   }
 
-  if (state === 'error') {
+  if (kind === 'error') {
     return (
       <View style={styles.error}>
         <Text variant="body-sm" style={styles.errorBody}>
@@ -87,25 +79,27 @@ export function TranscriptPlaceholder({
         </Text>
         {/* A tinted panel holds its retry as a tile does — see `Ground.css`. */}
         <GroundProvider ground="tile">
-          <RetryButton onRetry={onRetry} label={retryLabel} />
+          <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
         </GroundProvider>
       </View>
     );
   }
 
-  if (state === 'unavailable') {
+  if (kind === 'unavailable') {
     return <UnavailableNote title={unavailableTitle} message={unavailableMessage} />;
   }
 
-  if (turnCount === 0) {
+  if (kind === 'empty') {
     return (
       <View style={styles.empty}>
         <Text variant="body-sm" style={styles.emptyTitle}>
           {emptyTitle}
         </Text>
-        <Text variant="body-sm" color="secondary" style={styles.emptyBody}>
-          {emptyDescription}
-        </Text>
+        {emptyDescription === undefined ? null : (
+          <Text variant="body-sm" color="secondary" style={styles.emptyBody}>
+            {emptyDescription}
+          </Text>
+        )}
       </View>
     );
   }

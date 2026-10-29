@@ -1,6 +1,7 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode, Ref } from 'react';
-import type { ActionReasonSpec } from '../ActionReason/ActionReason.types';
-import type { FocusHandle } from '../SearchField/SearchField.types';
+import type { FocusAfter, FocusHandle } from '../../primitives/FocusAfter';
+import type { ActionReasonSentence } from '../ActionReason/ActionReason.types';
 
 /** primary = near-black (default, the identity marker); never make it coloured. */
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'destructive';
@@ -15,7 +16,7 @@ export interface ButtonProps {
    * with no accessible name, which `F7-26` makes a build failure. An icon-only control is an
    * `IconButton`, whose `label` is required.
    */
-  children: string;
+  children: TranslatedText;
   /** primary = near-black (default, the identity marker); never make it coloured */
   variant?: ButtonVariant;
   size?: ButtonSize;
@@ -32,7 +33,7 @@ export interface ButtonProps {
    * announced. Where the act is *absent* rather than off, render no button and let the surface carry
    * a `ScopeNote`.
    */
-  disabledReason?: ReactNode | ActionReasonSpec;
+  disabledReason?: ActionReasonSentence;
   /** Holds the reason bubble open (`true`) or shut (`false`); unset lets a tap open it. */
   reasonOpen?: boolean;
   /**
@@ -66,8 +67,21 @@ export interface ButtonProps {
    * It starts with the visible words, so speech control can still find the button by what it shows.
    * Web: `aria-label`. Native: `accessibilityLabel`.
    */
-  spokenName?: string;
+  spokenName?: TranslatedText;
   /** A focus handle: web focuses the `<button>`, native moves the screen reader's focus to it. */
   ref?: Ref<FocusHandle>;
   onClick?: () => void;
+}
+
+/**
+ * The one *Try again* every component's failed state draws. It renders only with both the act and
+ * the words; it leaves with the failed state it sits in, so it names where focus lands then — the
+ * part that reloads, which stays (`F7-23` N5).
+ */
+export interface RetryButtonProps {
+  onRetry?: () => void;
+  label?: TranslatedText;
+  focusAfter: FocusAfter;
+  /** Default `md`; a whole panel's failure draws it at `lg`, a quiet card's at `sm`. */
+  size?: ButtonSize;
 }

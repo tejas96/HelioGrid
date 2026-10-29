@@ -1,7 +1,7 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
-import { DataTable } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour } from '../support/token';
+import { WordedDataTable } from './DataTable.story';
 
 /** The quiet head (design-system change 20): labels on the page, the rows in one raised card. */
 const en = await createTranslator('en');
@@ -22,7 +22,7 @@ test('a quiet table — sentence-case labels on the page, the rows in one raised
     { id: 3, name: issue },
   ];
   const table = await mount(
-    <DataTable
+    <WordedDataTable
       read={{ kind: 'ready' }}
       columns={[{ key: 'name', label }]}
       rows={three}
@@ -71,7 +71,7 @@ test('a quiet table keeps its labels and its card while it loads, with three row
   mount,
 }) => {
   const table = await mount(
-    <DataTable
+    <WordedDataTable
       columns={[{ key: 'name', label }]}
       rows={[]}
       read={{ kind: 'loading' }}
@@ -86,7 +86,7 @@ test('a quiet table keeps its labels and its card while it loads, with three row
 
 test('a table without the quiet head draws no card wrapper', async ({ mount }) => {
   const table = await mount(
-    <DataTable
+    <WordedDataTable
       read={{ kind: 'ready' }}
       columns={[{ key: 'name', label }]}
       rows={rows}

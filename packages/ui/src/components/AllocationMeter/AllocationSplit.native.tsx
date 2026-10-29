@@ -1,13 +1,14 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { chartColor } from '../Charts/ChartTokens.native';
-import { formatAllocation, partValue, splitKeyFitsOneRow } from './AllocationMeter.model';
+import { allocationFigure, partValue, splitKeyFitsOneRow } from './AllocationMeter.model';
 import type { AllocationPart } from './AllocationMeter.types';
 
 interface AllocationSplitProps {
-  label?: string;
+  label?: TranslatedText;
   parts: AllocationPart[];
   unit: string;
   density: 'expressive' | 'functional';
@@ -50,7 +51,7 @@ export function AllocationSplit({ parts, unit, density, style }: AllocationSplit
             <View style={styles.shareRow}>
               <View style={[styles.swatch, { backgroundColor: chartColor(index) }]} />
               <Text variant="mono" bold>
-                {`${formatAllocation(partValue(part))}${unit}`}
+                {allocationFigure(partValue(part), unit)}
               </Text>
             </View>
             {part.caption === null || part.caption === undefined ? null : (

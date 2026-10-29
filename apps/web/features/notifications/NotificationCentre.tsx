@@ -1,6 +1,7 @@
 'use client';
 import { useNotificationCentre } from '@heliogrid/data/react';
 import {
+  CARD,
   centreActToast,
   centreFilterWords,
   centreHeadWords,
@@ -9,6 +10,7 @@ import {
   NOTIFICATION_CENTRE,
   SHELL,
   showOlderLabel,
+  toastHostWords,
 } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
@@ -22,6 +24,7 @@ import {
   useFormat,
   useToasts,
 } from '@heliogrid/ui';
+import { useRef } from 'react';
 
 interface NotificationCentreProps {
   onClose: () => void;
@@ -39,6 +42,8 @@ export function NotificationCentre({ onClose, onGoToLeads }: NotificationCentreP
   const format = useFormat();
   const centre = useNotificationCentre(format.pack.timeZone);
   const toasts = useToasts();
+  /* A closed toast hands the keyboard back to the notifications it spoke about. */
+  const list = useRef<HTMLDivElement>(null);
   const say = (toast: ReturnType<typeof centreActToast>) => {
     if (toast !== null) toasts.push(toast);
   };
@@ -54,6 +59,7 @@ export function NotificationCentre({ onClose, onGoToLeads }: NotificationCentreP
         width={theme.layout['form-max']}
         top="var(--header-h)"
         read={centre.read}
+        loadingLabel={t(CARD.loading)}
         errorTitle={t(NOTIFICATION_CENTRE.errorTitle)}
         errorMessage={t(NOTIFICATION_CENTRE.errorMessage)}
         retryLabel={t(NOTIFICATION_CENTRE.tryAgain)}
@@ -78,24 +84,32 @@ export function NotificationCentre({ onClose, onGoToLeads }: NotificationCentreP
           ) : null
         }
       >
-        <NotificationHead
-          {...centreHeadWords(t, centre.head)}
-          onMarkAll={async () => say(centreActToast(t, await centre.markAllRead()))}
-          marking={centre.markingAll}
-        />
-        <NotificationList
-          days={centreListWords(t, centre.view.days, format)}
-          onOpen={async (item) => {
-            if (!(await centre.markRead(item))) say(centreActToast(t, { kind: 'read-failed' }));
-          }}
-          olderLabel={centre.view.olderRemain ? showOlderLabel(t, centre.filtered) : undefined}
-          onShowOlder={centre.showOlder}
-          loadingOlder={centre.loadingOlder}
-          olderFailed={centre.olderFailed ? t(NOTIFICATION_CENTRE.olderFailed) : undefined}
-          horizon={centreHorizonLine(t)}
-        />
+        <div ref={list} tabIndex={-1} className="hg-focus-target">
+          <NotificationHead
+            {...centreHeadWords(t, centre.head)}
+            onMarkAll={async () => say(centreActToast(t, await centre.markAllRead()))}
+            marking={centre.markingAll}
+          />
+          <NotificationList
+            days={centreListWords(t, centre.view.days, format)}
+            onOpen={async (item) => {
+              if (!(await centre.markRead(item))) say(centreActToast(t, { kind: 'read-failed' }));
+            }}
+            olderLabel={centre.view.olderRemain ? showOlderLabel(t, centre.filtered) : undefined}
+            onShowOlder={centre.showOlder}
+            loadingOlder={centre.loadingOlder}
+            olderFailed={centre.olderFailed ? t(NOTIFICATION_CENTRE.olderFailed) : undefined}
+            horizon={centreHorizonLine(t)}
+          />
+        </div>
       </DetailPanel>
-      <ToastHost toasts={toasts.toasts} onDismiss={toasts.dismiss} position="bottom-right" />
+      <ToastHost
+        toasts={toasts.toasts}
+        onDismiss={toasts.dismiss}
+        {...toastHostWords(t)}
+        focusAfter={list}
+        position="bottom-right"
+      />
     </>
   );
 }

@@ -1,24 +1,16 @@
 import type { ReactNode } from 'react';
-import type { MarketFormat } from '../../utils/format';
 import { ActorClass } from '../ActorClass';
 import { renderMarks } from '../ChipGroup';
 import { renderProvenance } from '../Provenance';
 import { ActivityGlyph } from './ActivityGlyph';
-import { asDate, hhmm, isValidDate, kindOf } from './ActivityStream.kinds';
-import type { ActivityEntry, ActivityKindSpec } from './ActivityStream.types';
-
-export interface StreamEntryProps {
-  entry: ActivityEntry;
-  kinds: Record<string, ActivityKindSpec>;
-  density: 'expressive' | 'functional';
-  format: MarketFormat;
-}
+import { kindOf } from './ActivityStream.kinds';
+import { entryClockOf, streamMarkOf } from './ActivityStream.logic';
+import type { StreamEntryProps } from './ActivityStream.types';
 
 /** One entry: the kind's mark, the kind's word, the clock, the summary and the actor class. */
-export function StreamEntry({ entry, kinds, density, format }: StreamEntryProps) {
-  const spec = kindOf(kinds, entry.kind);
-  const date = asDate(entry.at);
-  const valid = isValidDate(date);
+export function StreamEntry({ entry, kinds, words, density, format }: StreamEntryProps) {
+  const spec = kindOf(kinds, entry.kind, words.kind);
+  const clock = entryClockOf(entry, format);
   const summary: ReactNode =
     entry.onOpen !== undefined ? (
       <button type="button" className="hg-stream-summary-button" onClick={entry.onOpen}>
@@ -30,19 +22,24 @@ export function StreamEntry({ entry, kinds, density, format }: StreamEntryProps)
   return (
     <li className="hg-stream-entry">
       <span aria-hidden="true" className="hg-stream-mark" data-tone={spec.tone}>
-        <ActivityGlyph name={spec.glyph} size={density === 'functional' ? 15 : 17} />
+        <ActivityGlyph name={spec.glyph} size={streamMarkOf(density).glyph} />
       </span>
       <div className="hg-stream-body">
         <div className="hg-stream-head">
           {/* The kind is a word on the entry, not a colour on the mark. */}
           <span className="hg-stream-kind">{spec.label}</span>
-          {valid ? <span className="hg-stream-time">{format.time(hhmm(date))}</span> : null}
+          {clock === null ? null : <span className="hg-stream-time">{clock}</span>}
         </div>
         <div className="hg-stream-summary-row">{summary}</div>
         {entry.detail !== undefined ? <p className="hg-stream-detail">{entry.detail}</p> : null}
         {/* THE ACTOR CLASS, always in words — one vocabulary, shared with a task's `origin`. */}
         <div className="hg-stream-actor">
-          <ActorClass actorClass={entry.actorClass} actor={entry.actor} size={12} />
+          <ActorClass
+            actorClass={entry.actorClass}
+            actor={entry.actor}
+            size={12}
+            words={words.actor}
+          />
         </div>
         {entry.marks !== undefined ? (
           <div className="hg-stream-marks">{renderMarks(entry.marks)}</div>

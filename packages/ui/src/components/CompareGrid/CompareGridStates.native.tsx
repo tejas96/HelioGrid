@@ -1,7 +1,9 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
@@ -39,11 +41,11 @@ const styles = StyleSheet.create({
  * counterpart is an accessibility element — the bars are decoration, so `accessible` folds nothing
  * a reader could otherwise reach — announced politely.
  */
-export function CompareSkeleton() {
+export function CompareSkeleton({ label }: { label: TranslatedText }) {
   return (
     <View
       accessible
-      accessibilityLabel="Loading the comparison"
+      accessibilityLabel={label}
       accessibilityLiveRegion="polite"
       style={styles.skeleton}
     >
@@ -65,12 +67,15 @@ export function CompareMessage({
   message,
   onRetry,
   retryLabel,
+  focusAfter,
 }: {
   tone?: 'warning';
   title: ReactNode;
   message?: ReactNode;
   onRetry?: () => void;
-  retryLabel?: string;
+  retryLabel?: TranslatedText;
+  /** Where focus lands once *Try again* has gone with this message. */
+  focusAfter: FocusAfter;
 }) {
   const stroke = tone === 'warning' ? theme.colors['warning-text'] : theme.colors['text-tertiary'];
   return (
@@ -96,7 +101,7 @@ export function CompareMessage({
           {message}
         </Text>
       )}
-      <RetryButton onRetry={onRetry} label={retryLabel} />
+      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
     </View>
   );
 }

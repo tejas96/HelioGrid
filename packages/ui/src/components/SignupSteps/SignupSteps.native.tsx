@@ -10,6 +10,7 @@ export function SignupSteps({ words, current }: SignupStepsProps) {
       <Stepper
         variant="progress"
         label={words.label}
+        words={words.stepper}
         steps={[...words.steps]}
         current={current}
         reachability="entered"

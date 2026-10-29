@@ -1,4 +1,5 @@
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -7,6 +8,7 @@ import { Text } from '../../primitives/Text/Text.native';
 import { ProgressBar } from '../ProgressBar/ProgressBar.native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { buildChecklist, NO_PHASE } from './Checklist.groups';
+import { checklistNameOf, countLineOf, rowKeyOf } from './Checklist.logic';
 import type { ChecklistProps } from './Checklist.types';
 import { ChecklistRow } from './ChecklistRow.native';
 import { ChecklistStateBody } from './ChecklistState.native';
@@ -49,15 +51,16 @@ export function Checklist({
   label,
   progressNote,
   countWords,
-  noun = 'steps',
+  noun,
+  words,
   surface = 'screen',
   read,
-  emptyTitle = 'No steps yet',
-  emptyMessage = 'This checklist is built from the design. Generate one and the steps appear here.',
-  errorTitle = "Couldn't load the checklist",
-  errorMessage = 'Tap Try again — no tick is lost while this fails.',
+  emptyTitle,
+  emptyMessage,
+  errorTitle,
+  errorMessage,
   retryLabel,
-  unavailableTitle = 'No checklist for this job',
+  unavailableTitle,
   unavailableMessage,
   note,
   style,
@@ -65,10 +68,12 @@ export function Checklist({
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
   const model = buildChecklist(items, phases);
+  /* The list's frame outlives its states, so focus lands on it once the retry has left. */
+  const frame = useRef<View>(null);
 
   if (state !== 'ready') {
     return (
-      <View style={[styles.shell, style]}>
+      <View ref={frame} style={[styles.shell, style]}>
         {label === undefined ? null : (
           <Text variant="overline" color="tertiary">
             {label}
@@ -76,12 +81,14 @@ export function Checklist({
         )}
         <ChecklistStateBody
           state={state}
+          loadingLabel={words.loading}
           emptyTitle={emptyTitle}
           emptyMessage={emptyMessage}
           errorTitle={errorTitle}
           errorMessage={errorMessage}
           onRetry={onRetry}
           retryLabel={retryLabel}
+          focusAfter={frame}
           unavailableTitle={unavailableTitle}
           unavailableMessage={unavailableMessage}
         />
@@ -94,9 +101,10 @@ export function Checklist({
        does NOT: every tick row is a 44dp checkbox inside this shell, and folding would put the
        whole list behind one unreachable element. */
     <View
+      ref={frame}
       role="region"
       collapsable={false}
-      accessibilityLabel={typeof label === 'string' ? label : 'Checklist'}
+      accessibilityLabel={checklistNameOf(label, words)}
       style={[styles.shell, style]}
     >
       <View style={styles.head}>
@@ -107,7 +115,7 @@ export function Checklist({
         )}
         {/* The count in words, then its meaning. A percentage alone says how far, never what. */}
         <Text variant="h4" style={countWordsStyle}>
-          {countWords ?? `${model.done} of ${model.list.length} ${noun} done`}
+          {countLineOf(model, countWords, noun, words)}
         </Text>
         <ProgressBar value={model.percent} />
         {progressNote === undefined ? null : (
@@ -125,7 +133,7 @@ export function Checklist({
                 {group.heading}
               </Text>
               <Text variant="caption" color="tertiary">
-                {`${group.doneCount} of ${group.items.length}`}
+                {words.phaseCount(group.doneCount, group.items.length)}
               </Text>
             </View>
           )}
@@ -137,13 +145,13 @@ export function Checklist({
           {/* One `<ul>` per group on the web half, so one `list` per group here. */}
           <View role="list" style={styles.rows}>
             {group.items.map((item) => (
-              /* The counted number is unique across the whole list, so it keys every group. */
               <ChecklistRow
-                key={item.id ?? `${group.key}-${String(model.numberFor(item))}`}
+                key={rowKeyOf(item, group, model)}
                 item={item}
                 number={model.numberFor(item)}
                 onToggle={onToggle}
                 surface={surface}
+                words={words}
               />
             ))}
           </View>

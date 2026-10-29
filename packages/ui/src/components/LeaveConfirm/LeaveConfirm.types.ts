@@ -12,9 +12,9 @@ export interface LeaveConfirmProps {
   /** What is lost by leaving, from `packages/i18n`. */
   body: TranslatedText;
   /** The destructive answer that drops the change and leaves. */
-  discard: string;
+  discard: TranslatedText;
   /** The answer that stays on the page with the change held. */
-  keep: string;
+  keep: TranslatedText;
   onKeep: () => void;
   onLeave: () => void;
 }

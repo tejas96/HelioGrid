@@ -13,66 +13,48 @@
      completion callback as `onFlashEnd`. Without it the accent stayed lit on the last-moved row
      for good, reading as a selection that could not be dismissed. */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { AccessibilityInfo, findNodeHandle, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
-import type { MoveDirection } from './ReorderList.defaults';
-import {
-  atEndSentence,
-  controlsPlacement,
-  defaultKeyOf,
-  defaultLabelOf,
-  deletedSentence,
-  movedSentence,
-} from './ReorderList.defaults';
+import { controlsPlacement, defaultKeyOf } from './ReorderList.defaults';
 import type { FocusableControl } from './ReorderList.focus';
 import { controlId, deleteFocusTarget, moveFocusTarget } from './ReorderList.focus';
 import type { ReorderListProps } from './ReorderList.types';
 import { REORDER_PADS, ReorderRow } from './ReorderRow.native';
+import { useReorderActs } from './use-reorder-acts';
 
 interface NativeReorderListProps<T> extends ReorderListProps<T> {
   style?: StyleProp<ViewStyle>;
 }
-
-type Pending =
-  | { kind: 'move'; key: string | number; dir: MoveDirection }
-  | { kind: 'delete'; index: number };
 
 interface ControlRef {
   node: View | null;
   enabled: boolean;
 }
 
-export function ReorderList<T>({
-  items = [],
-  keyOf = defaultKeyOf,
-  labelOf = defaultLabelOf,
-  renderItem,
-  onMove,
-  onDelete,
-  canDelete,
-  lockOf,
-  minItems = 0,
-  label = 'Ordered list',
-  itemNoun = 'rows',
-  emptyMessage = 'No rows yet.',
-  controls,
-  actionOf,
-  density = 'expressive',
-  style,
-}: NativeReorderListProps<T>) {
+export function ReorderList<T>(props: NativeReorderListProps<T>) {
+  const {
+    items = [],
+    keyOf = defaultKeyOf,
+    labelOf,
+    renderItem,
+    label,
+    emptyMessage,
+    words,
+    controls,
+    actionOf,
+    density = 'expressive',
+    style,
+  } = props;
   const D = REORDER_PADS[density];
   const placement = controlsPlacement(controls, density);
-  const [flash, setFlash] = useState<string | number | null>(null);
+  const { flash, clearFlash, takePending, move, remove, lockFor, deletable } = useReorderActs(
+    props,
+    AccessibilityInfo.announceForAccessibility,
+  );
   const refs = useRef<Record<string, ControlRef>>({});
   const listRef = useRef<View | null>(null);
-  const pending = useRef<Pending | null>(null);
-
-  /* The row drives its own fade and reports the end of it, so this identity must be STABLE: an
-     inline arrow would be a new prop on every render and restart the fade the row is in the
-     middle of, which is the one way this clear could fail to arrive. */
-  const clearFlash = useCallback(() => setFlash(null), []);
 
   /* `keyOf` is read through a ref rather than depended on, because it is only ever needed at the
      moment the effect below runs. Callers pass it inline, so depending on its identity would fire
@@ -83,11 +65,10 @@ export function ReorderList<T>({
   /* Focus is restored AFTER the caller's new order has rendered — `items` is the only honest
      trigger, exactly as on the web half. */
   useEffect(() => {
-    const p = pending.current;
+    const p = takePending();
     if (!p) {
       return;
     }
-    pending.current = null;
     const focusOn = (node: View | null) => {
       const handle = node ? findNodeHandle(node) : null;
       if (handle !== null) {
@@ -112,41 +93,7 @@ export function ReorderList<T>({
             canFocus,
           );
     focusOn(node ?? listRef.current);
-  }, [items]);
-
-  const move = (i: number, dir: MoveDirection) => {
-    const item = items[i];
-    if (item === undefined) {
-      return;
-    }
-    const to = dir === 'up' ? i - 1 : i + 1;
-    const name = labelOf(item, i);
-    if (to < 0 || to >= items.length) {
-      AccessibilityInfo.announceForAccessibility(atEndSentence(name, dir));
-      return;
-    }
-    const key = keyOf(item, i);
-    pending.current = { kind: 'move', key, dir };
-    setFlash(key);
-    AccessibilityInfo.announceForAccessibility(movedSentence(name, to, items.length));
-    onMove?.(key, i, to);
-  };
-
-  const remove = (i: number) => {
-    const item = items[i];
-    if (item === undefined) {
-      return;
-    }
-    const name = labelOf(item, i);
-    const key = keyOf(item, i);
-    pending.current = { kind: 'delete', index: i };
-    AccessibilityInfo.announceForAccessibility(deletedSentence(name, items.length - 1, itemNoun));
-    onDelete?.(key, i);
-  };
-
-  const lockFor = (it: T, i: number) => (lockOf ? lockOf(it, i) : null);
-  const deletable = (it: T, i: number) =>
-    Boolean(onDelete) && items.length > minItems && !lockFor(it, i) && (canDelete?.(it, i) ?? true);
+  }, [items, takePending]);
 
   if (items.length === 0) {
     return (
@@ -179,6 +126,7 @@ export function ReorderList<T>({
             index={i}
             total={items.length}
             name={name}
+            words={words}
             body={renderItem ? renderItem(it, i) : <Text variant="body">{name}</Text>}
             lock={lockFor(it, i)}
             deletable={deletable(it, i)}

@@ -1,4 +1,4 @@
-import type { ProvenanceStanding, ProvenanceTier } from '@heliogrid/contracts';
+import type { ProvenanceStanding, ProvenanceTier, TranslatedText } from '@heliogrid/contracts';
 import type { EnergySource, Freshness } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 /**
@@ -30,19 +30,47 @@ interface ProvenanceProps {
   /** The energy data the figure was computed from (`F8-08`), as `QualifiedAmount` carries it. */
   energySource?: EnergySource | null;
   /** Any word a caller needs beside the tier (`F8-03`). */
-  source?: string;
+  source?: TranslatedText;
   /** The assumptions a multi-year figure rides on (F8-23 / F5-37). */
-  projection?: string;
-  note?: string;
+  projection?: TranslatedText;
+  note?: TranslatedText;
   /** 12 (default) or 13. Never below 12 — the type floor. */
   size?: number;
   align?: 'left' | 'right' | 'center';
   inline?: boolean;
 }
 
+/**
+ * The words a chart says of its own — its loading name, its empty, too-little and failed notes,
+ * its retry, and its plots' names when it has no title — from `packages/i18n`'s `chartWords`. The
+ * frame's own `emptyTitle` … `errorMessage` replace one of them for one chart.
+ */
+export interface ChartWords {
+  /** The loading region's name — "Loading chart". */
+  loading: TranslatedText;
+  emptyTitle: TranslatedText;
+  insufficientTitle: TranslatedText;
+  insufficientMessage: TranslatedText;
+  /** The fourth state's line — "Not available for this scope". */
+  unavailableTitle: TranslatedText;
+  errorTitle: TranslatedText;
+  errorMessage: TranslatedText;
+  /** The failed read's *Try again*. */
+  retry: TranslatedText;
+  /** A funnel's too-little line — it needs two stages, not two periods. */
+  funnelInsufficient: TranslatedText;
+  /** A donut's too-little line — it needs one value to split. */
+  donutInsufficient: TranslatedText;
+  /** A plot's accessible name when its chart has no title. */
+  lineChart: TranslatedText;
+  donutChart: TranslatedText;
+  /** A funnel stage's share of the one before — "62% carried forward". */
+  carriedForward: (percent: number) => TranslatedText;
+}
+
 export interface ChartFrameProps {
-  overline?: string;
-  title?: string;
+  overline?: TranslatedText;
+  title?: TranslatedText;
   /**
    * Headline figure above the plot. **Format it through the market pack**, not with a baked-in
    * rupee string: `const mkt = useFormat()` → `value={mkt.money(12400000)}`. A literal
@@ -57,10 +85,10 @@ export interface ChartFrameProps {
   /** How far the figure can be relied on as final. See `Provenance`. */
   standing?: ProvenanceStanding;
   /** What data it came from — "Real · PVGIS (SARAH3)" (M05-54). Kept separate from the tier. */
-  source?: string;
+  source?: TranslatedText;
   /** Assumptions a multi-year figure rides on (F8-23 / F5-37). */
-  projection?: string;
-  note?: string;
+  projection?: TranslatedText;
+  note?: TranslatedText;
   legend?: ReactNode;
   action?: ReactNode;
   /**
@@ -71,17 +99,19 @@ export interface ChartFrameProps {
   height?: number;
   /** Renders "Not enough data" instead of the plot. Charts set this themselves. */
   insufficient?: boolean;
-  emptyTitle?: string;
-  emptyMessage?: string;
-  insufficientMessage?: string;
-  errorTitle?: string;
-  errorMessage?: string;
-  /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
+  /** Every word the chart says of its own; the five below replace one for this chart. */
+  words: ChartWords;
+  emptyTitle?: TranslatedText;
+  /** Drawn under the empty title only when given — `words` holds no empty message. */
+  emptyMessage?: TranslatedText;
+  insufficientMessage?: TranslatedText;
+  errorTitle?: TranslatedText;
+  errorMessage?: TranslatedText;
   children?: ReactNode;
 }
 
 export interface ChartDatum {
+  // biome-ignore lint/plugin/copy-prop-type: a category of the data — a stage the pack names, a period the format prints
   label: string;
   value: number;
   color?: string;
@@ -133,7 +163,7 @@ export interface DonutChartProps extends Omit<ChartFrameProps, 'children' | 'ins
   thickness?: number;
   /** Override for the pack's `number` — see `BarChartProps.format`. */
   format?: (n: number) => string;
-  centerLabel?: string;
+  centerLabel?: TranslatedText;
   /**
    * The centred total. Format it through the pack — `mkt.compactMoney(12400000)`, not "₹1.24 Cr".
    */
@@ -157,6 +187,7 @@ export interface FunnelChartProps extends Omit<ChartFrameProps, 'children' | 'in
 }
 
 export interface ChartLegendItem {
+  // biome-ignore lint/plugin/copy-prop-type: a series or category of the data, as the caller's data names it
   label: string;
   value?: ReactNode;
   color?: string;

@@ -1,6 +1,6 @@
 import type { RolePreset } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellAction } from '../AppShell/ShellAction.native';
@@ -21,6 +21,8 @@ export function RolesReference({ words, read, title, back = null }: RolesReferen
   const [open, setOpen] = useState<RolePreset | null>(null);
   const [last, setLast] = useState<RolePreset | null>(null);
   const [side, setSide] = useState<RolesReferenceSide>('can');
+  /* *Try again* leaves with its banner: the screen reader goes to the role tiles, which stay. */
+  const tiles = useRef<View>(null);
   const shown = words.presets.find((each) => each.value === last) ?? null;
   const about = (
     <Explainer
@@ -72,10 +74,19 @@ export function RolesReference({ words, read, title, back = null }: RolesReferen
           kind="data-integrity"
           density="functional"
           title={words.countsFailed}
-          action={<BannerAction onClick={read.retry}>{words.retry}</BannerAction>}
+          action={
+            <BannerAction onClick={read.retry} focusAfter={tiles}>
+              {words.retry}
+            </BannerAction>
+          }
         />
       ) : null}
-      <View accessibilityRole="list" accessibilityLabel={words.roles} style={styles.tiles}>
+      <View
+        ref={tiles}
+        accessibilityRole="list"
+        accessibilityLabel={words.roles}
+        style={styles.tiles}
+      >
         {rows.map((pair) => (
           <View key={pair.map((each) => each.value).join()} style={styles.pair}>
             {pair.map((each) => (

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { type StyleProp, View, type ViewStyle } from 'react-native';
 import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
@@ -9,8 +10,8 @@ import { cellGround, compareStyles } from './CompareGridStyles.native';
 interface OptionHeadProps<Opt extends CompareOption> {
   option: Opt;
   selected: boolean;
-  selectedLabel: string;
-  currentLabel: string;
+  selectedLabel: TranslatedText;
+  currentLabel: TranslatedText;
   box: StyleProp<ViewStyle>;
 }
 
@@ -62,7 +63,7 @@ export function CompareOptionHead<Opt extends CompareOption>({
 }
 
 /** A control part: the opposite of what holds it (`F7-15`), flat. */
-function SelectedPill({ label }: { label: string }) {
+function SelectedPill({ label }: { label: TranslatedText }) {
   const { controlFill } = useGround();
   return (
     <View style={[compareStyles.pill, { backgroundColor: controlFill }]}>

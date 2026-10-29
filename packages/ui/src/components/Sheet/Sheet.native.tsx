@@ -1,23 +1,25 @@
 import { theme } from '@heliogrid/theme';
-import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, BackHandler, PanResponder, StyleSheet, View } from 'react-native';
 import { KeyboardFrame } from '../../primitives/Keyboard/KeyboardFrame.native';
 import { Portal, usePortalBottomInset } from '../../primitives/Portal/Portal.native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { OverlayBody } from './OverlayBody.native';
+import { isBodyScrolled } from './Sheet.logic';
 import type { SheetDensity, SheetProps, SheetSize } from './Sheet.types';
 import { SheetBackdrop } from './SheetBackdrop.native';
 import { SheetHandle } from './SheetHandle.native';
 import { SheetHeader } from './SheetHeader.native';
+import { SheetMeta } from './SheetMeta.native';
 import { SheetSkeleton } from './SheetSkeleton.native';
 import { percentOf, SHEET_HEIGHT, useKeyboardLift } from './use-keyboard-lift.native';
 import { useSheetEntry } from './use-sheet-entry.native';
 
-interface NativeSheetProps extends SheetProps {
+type NativeSheetProps = SheetProps & {
   style?: StyleProp<ViewStyle>;
   bodyStyle?: StyleProp<ViewStyle>;
-}
+};
 
 /** Past this many dp of downward drag the sheet closes instead of springing back. */
 const DRAG_DISMISS = 96;
@@ -60,10 +62,11 @@ export function Sheet({
   modal = true,
   footer = null,
   read,
-  errorTitle = "Couldn't load this",
-  errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
+  loadingLabel,
+  errorTitle,
+  errorMessage,
   retryLabel,
-  emptyTitle = 'Nothing here yet',
+  emptyTitle,
   emptyMessage,
   emptyAction = null,
   unavailableTitle,
@@ -75,6 +78,7 @@ export function Sheet({
 }: NativeSheetProps) {
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
+  const panelRef = useRef<View>(null);
   const offset = useRef(new Animated.Value(0)).current;
   const scrollTop = useRef(0);
   const [panelHeight, setPanelHeight] = useState(0);
@@ -150,7 +154,8 @@ export function Sheet({
       errorTitle={errorTitle}
       onRetry={onRetry}
       retryLabel={retryLabel}
-      skeleton={<SheetSkeleton density={density} />}
+      focusAfter={panelRef}
+      skeleton={<SheetSkeleton density={density} label={loadingLabel} />}
       state={state}
       unavailableAction={unavailableAction}
       unavailableMessage={unavailableMessage}
@@ -178,6 +183,7 @@ export function Sheet({
              body and a footer was announced as ONE interruption. `accessibilityViewIsModal` is what
              actually carries the modality. */
           accessibilityViewIsModal={modal}
+          ref={panelRef}
           onLayout={onLayout}
           style={[
             styles.panel,
@@ -219,7 +225,7 @@ export function Sheet({
               style={BODY_FLEX[size]}
               onScrollOffset={(top) => {
                 scrollTop.current = top;
-                setScrolled(top > 2);
+                setScrolled(isBodyScrolled(top));
               }}
               contentContainerStyle={bodyPad}
               foot={footerView}
@@ -236,16 +242,6 @@ export function Sheet({
         </Animated.View>
       </View>
     </Portal>
-  );
-}
-
-/** The row between the header and the body, drawn only when the caller gave one. */
-function SheetMeta({ meta, density }: { meta: ReactNode; density: SheetDensity }) {
-  if (meta === undefined || meta === null) return null;
-  return (
-    <View style={density === 'expressive' ? styles.metaExpressive : styles.metaFunctional}>
-      {meta}
-    </View>
   );
 }
 
@@ -284,8 +280,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-4'],
     paddingBottom: theme.spacing['sp-4'],
   },
-  metaExpressive: { paddingHorizontal: theme.spacing['sp-5'] },
-  metaFunctional: { paddingHorizontal: theme.spacing['sp-4'] },
   bodyNoTop: { paddingTop: 0 },
   bodyWithFooter: { paddingBottom: theme.spacing['sp-2'] },
   unavailable: {

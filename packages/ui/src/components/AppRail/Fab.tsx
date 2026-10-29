@@ -11,7 +11,7 @@ interface WebFabProps extends FabProps {
 }
 
 /** Raised near-black action button. Springs on press; 56px so gloves can hit it. */
-export function Fab({ label = 'Add', icon, onClick, size = 56, className, style }: WebFabProps) {
+export function Fab({ label, icon, onClick, size = 56, className, style }: WebFabProps) {
   const fabStyle: StyleVars = { '--hg-fab-size': `${size}px`, ...style };
   return (
     <button

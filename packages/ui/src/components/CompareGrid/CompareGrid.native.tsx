@@ -5,7 +5,7 @@ import { Animated, type ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
-import { visibleRange } from './CompareGrid.logic';
+import { axisOverflows, COMPARE_GRID_DEFAULTS, drawsGrid, visibleRange } from './CompareGrid.logic';
 import type { CompareGridProps, CompareOption } from './CompareGrid.types';
 import { CompareGridFooter } from './CompareGridFooter.native';
 import { CompareGridStatePanel } from './CompareGridStatePanel.native';
@@ -41,28 +41,31 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
   options,
   selectedKey,
   onSelect,
-  selectLabel = 'Choose',
-  selectedLabel = 'Selected',
-  currentLabel = 'Current',
+  selectLabel,
+  selectedLabel,
+  currentLabel,
   caption,
   provenance,
   note,
-  columnWidth = 196,
-  labelWidth = 128,
+  columnWidth = COMPARE_GRID_DEFAULTS.columnWidth,
+  labelWidth = COMPARE_GRID_DEFAULTS.labelWidth,
   read,
-  emptyTitle = 'Nothing to compare yet',
-  emptyMessage = 'Generate at least two variants and they line up here side by side.',
-  errorTitle = "Couldn't load the comparison",
-  errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
+  emptyTitle,
+  emptyMessage,
+  errorTitle,
+  errorMessage,
   retryLabel,
-  unavailableTitle = 'Not comparable here',
+  unavailableTitle,
   unavailableMessage,
-  density = 'expressive',
+  density = COMPARE_GRID_DEFAULTS.density,
+  words,
   style,
 }: NativeCompareGridProps<Opt>) {
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
   const scroller = useRef<ScrollView>(null);
+  /* The grid's own frame stays while a failed read reloads, so *Try again* hands the reader to it. */
+  const frame = useRef<View>(null);
   const offset = useRef(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const [viewport, setViewport] = useState(0);
@@ -89,7 +92,7 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
   };
 
   const contentWidth = labelWidth + columnWidth * options.length;
-  const scrollable = viewport > 0 && contentWidth - viewport > 4;
+  const scrollable = viewport > 0 && axisOverflows(contentWidth, viewport);
 
   const nudge = (direction: number) => {
     const next = Math.max(
@@ -100,24 +103,21 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
   };
 
   const shell = [styles.shell, style];
-  /* An empty caption names nothing, so it draws no overline. */
   const captionNode =
-    caption === undefined || caption === '' ? null : (
+    caption !== undefined && caption !== '' ? (
       <View style={styles.caption}>
         <Text variant="overline" color="tertiary">
           {caption}
         </Text>
       </View>
-    );
+    ) : null;
   /* One provenance statement for the whole comparison. A SPEC, not a node: `renderProvenance`
      owns the tier's word and mark, and returns null when the spec would say nothing. */
   const provenanceFoot = renderProvenance(provenance, { size: 12 });
 
-  /* No grid to draw — because a state blocks it, or because there is nothing to line up. What
-     stands in its place is the state panel's decision, not this shell's. */
-  if (state !== 'ready' || options.length === 0 || attributes.length === 0) {
+  if (!drawsGrid(state, options.length, attributes.length)) {
     return (
-      <View style={shell}>
+      <View ref={frame} style={shell}>
         {captionNode}
         <CompareGridStatePanel
           state={state}
@@ -129,13 +129,15 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
           retryLabel={retryLabel}
           unavailableTitle={unavailableTitle}
           unavailableMessage={unavailableMessage}
+          words={words}
+          focusAfter={frame}
         />
       </View>
     );
   }
 
   return (
-    <View style={shell}>
+    <View ref={frame} style={shell}>
       {captionNode}
       <Animated.ScrollView
         ref={scroller}
@@ -144,7 +146,7 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
         scrollEventThrottle={16}
         snapToInterval={columnWidth}
         decelerationRate="fast"
-        accessibilityLabel={`Compare ${options.length} options`}
+        accessibilityLabel={words.compare(options.length)}
         onLayout={onLayout}
         onScroll={onScroll}
       >
@@ -160,6 +162,7 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
           columnWidth={columnWidth}
           labelWidth={labelWidth}
           scrollX={scrollX}
+          words={words}
         />
       </Animated.ScrollView>
 
@@ -170,6 +173,7 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
         count={options.length}
         note={note}
         onStep={nudge}
+        words={words}
       />
 
       {provenanceFoot === null ? null : <View style={styles.provenanceFoot}>{provenanceFoot}</View>}

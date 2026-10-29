@@ -37,7 +37,7 @@ describe('companyProfileStepWords — the setup step’s words', () => {
   it('a market with no registration type has no format line', async () => {
     const { t } = await createTranslator('en');
     const words = companyProfileStepWords(t, 'en', { ...STEP, taxFormat: null }, LABELS);
-    expect(words.tax.format).toBe('');
+    expect(words.tax.format).toBeNull();
   });
 
   it('never reads as a step skipped, and carries the two labels', async () => {

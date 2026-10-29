@@ -4,9 +4,9 @@ import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.nati
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { renderProvenance } from '../Provenance/Provenance.native';
-import type { DataTableProps, DataTableTotalRow } from './DataTable.types';
+import type { DataTableProps, DataTableTotalRow, DataTableWords } from './DataTable.types';
 import type { DataTableColumn } from './DataTableColumn.types';
-import { buildTotal } from './DataTableTotal.logic';
+import { buildTotal, totalFiguresOf } from './DataTableTotal.logic';
 
 const styles = StyleSheet.create({
   block: {
@@ -39,6 +39,7 @@ interface TotalProps<Row> {
   page: DataTableProps<Row>['page'];
   pageSize: number;
   renderedRows: number;
+  words: DataTableWords;
 }
 
 /**
@@ -57,14 +58,12 @@ export function TotalBlock<Row>({
   page,
   pageSize,
   renderedRows,
+  words,
 }: TotalProps<Row>) {
   /* The market pack's money, read here and threaded into the model — every figure this row states
      is the same figure, formatted the same way, as the lines above it (`F1` / `F3-20`). */
-  const model = buildTotal(totalRow, rowCount, page, pageSize, renderedRows, useFormat());
-  /* The same columns the wide row states, with the column's own label — nothing here invents a
-     second vocabulary for the same total. */
-  const stated = columns.filter((column) => totalRow.values?.[column.key] !== undefined);
-  const main = stated[stated.length - 1];
+  const model = buildTotal(totalRow, rowCount, page, pageSize, renderedRows, useFormat(), words);
+  const { main, others } = totalFiguresOf(totalRow, columns);
 
   return (
     <View style={[tileSurface, styles.block]}>
@@ -84,7 +83,7 @@ export function TotalBlock<Row>({
             {model.scope}
           </Text>
         )}
-        {stated.slice(0, -1).map((column) => (
+        {others.map((column) => (
           <View key={column.key} style={styles.pair}>
             <Text variant="caption" color="tertiary">
               {column.label}

@@ -1,3 +1,5 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+
 /**
  * Breadcrumb — the shared prop contract.
  *
@@ -18,11 +20,14 @@
  */
 export interface BreadcrumbItem {
   key?: string;
+  // biome-ignore lint/plugin/copy-prop-type: a page's name or a record's — a person's, a site's
   label: string;
   onClick?: () => void;
 }
 
 export interface BreadcrumbProps {
+  /** The trail's landmark name — "Breadcrumb" — in the reader's language. */
+  label: TranslatedText;
   items: BreadcrumbItem[];
   /** Longer trails collapse in the middle; root and current page always stay. */
   maxItems?: number;

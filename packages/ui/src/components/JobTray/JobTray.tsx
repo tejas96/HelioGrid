@@ -1,42 +1,37 @@
 import type { CSSProperties } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { closingPress } from '../../primitives/FocusAfter';
 import { Pressable } from '../../primitives/Pressable';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { OperationProgress } from '../OperationProgress';
 import { IndeterminateRail } from '../PendingAction';
-import { isRunning, summariseJobs } from './JobTray.summary';
+import { offersClear, summariseJobs } from './JobTray.summary';
 import type { JobTrayProps } from './JobTray.types';
+import { useTrayOpen } from './use-tray-open';
 
-interface WebJobTrayProps extends JobTrayProps {
+type WebJobTrayProps = JobTrayProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 /** Work you walked away from, and the one place it lives. Renders nothing with no jobs. */
 export function JobTray({
   jobs = [],
   open,
   onOpenChange,
-  label = 'Background work',
+  label,
+  words,
   onClear,
-  clearLabel = 'Clear finished',
+  clearLabel,
   align = 'right',
   className,
   style,
 }: WebJobTrayProps) {
-  const [innerOpen, setInnerOpen] = useState(false);
-  const isOpen = open ?? innerOpen;
+  const [isOpen, setOpen] = useTrayOpen(open, onOpenChange);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const setOpen = useCallback(
-    (next: boolean) => {
-      if (open === undefined) {
-        setInnerOpen(next);
-      }
-      onOpenChange?.(next);
-    },
-    [open, onOpenChange],
-  );
+  /* Clearing takes the clear away with the jobs it cleared: focus goes back to the trigger. */
+  const trigger = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!isOpen) {
@@ -64,8 +59,7 @@ export function JobTray({
   if (jobs.length === 0) {
     return null;
   }
-  const summary = summariseJobs(jobs);
-  const finished = jobs.some((job) => !isRunning(job));
+  const summary = summariseJobs(jobs, words);
 
   return (
     <div ref={wrapRef} className={classNames('hg-job-tray', className)} style={style}>
@@ -73,11 +67,12 @@ export function JobTray({
           is a plain button that restates the 44px floor in CSS rather than dropping the state a
           screen reader needs. */}
       <button
+        ref={trigger}
         type="button"
         className="hg-job-tray-trigger"
         aria-haspopup="dialog"
         aria-expanded={isOpen}
-        aria-label={`${label}, ${summary.words}`}
+        aria-label={words.trigger(label, summary.words)}
         data-open={isOpen ? 'true' : undefined}
         data-tone={summary.tone}
         onClick={() => setOpen(!isOpen)}
@@ -106,8 +101,8 @@ export function JobTray({
         <div role="dialog" aria-label={label} className="hg-job-tray-panel" data-align={align}>
           <div className="hg-job-tray-panel-head">
             <span className="hg-job-tray-panel-label">{label}</span>
-            {onClear !== undefined && finished ? (
-              <Pressable className="hg-job-tray-clear" onPress={onClear}>
+            {offersClear(jobs, onClear, clearLabel) ? (
+              <Pressable className="hg-job-tray-clear" onPress={closingPress(trigger)(onClear)}>
                 {clearLabel}
               </Pressable>
             ) : null}

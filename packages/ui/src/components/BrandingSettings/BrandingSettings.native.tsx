@@ -1,3 +1,5 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+import { BRANDING_PARTS } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -12,7 +14,6 @@ import { SegmentedControl } from '../SegmentedControl/SegmentedControl.native';
 import { BrandingPart } from './BrandingParts.native';
 import type { BrandingSettingsProps, BrandingPart as Part } from './BrandingSettings.types';
 import { BrandingStage } from './BrandingStage.native';
-import { useFocusAfterGone } from './use-focus-after-gone.native';
 
 /**
  * Branding in the phone's one column (`SCR-M01-18` at 375), inside the shell's scrolling page:
@@ -24,12 +25,9 @@ import { useFocusAfterGone } from './use-focus-after-gone.native';
 export function BrandingSettings(props: BrandingSettingsProps) {
   const { words, read, unsaved, title, standing, saveFailure, onRetry, act } = props;
   const loading = read.kind !== 'ready';
+  /* A saved or discarded change and a retried save take their control away: the screen reader
+     goes on to the editor — the part's switch and the part, where the person goes next. */
   const editor = useRef<View>(null);
-  useFocusAfterGone(editor, {
-    act: act !== undefined,
-    failure: saveFailure !== undefined,
-    logo: props.document.logoSrc !== undefined,
-  });
   return (
     <View style={styles.page}>
       {title === undefined && standing === undefined ? null : (
@@ -51,7 +49,11 @@ export function BrandingSettings(props: BrandingSettingsProps) {
           kind="validation"
           title={words.saveFailed}
           density="functional"
-          action={<BannerAction onClick={onRetry}>{words.retry}</BannerAction>}
+          action={
+            <BannerAction onClick={onRetry} focusAfter={editor}>
+              {words.retry}
+            </BannerAction>
+          }
         >
           {saveFailure}
         </Banner>
@@ -79,6 +81,7 @@ export function BrandingSettings(props: BrandingSettingsProps) {
           onSave={act.onSave}
           discardLabel={words.discard}
           onDiscard={act.onDiscard}
+          focusAfter={editor}
           saving={act.saving}
         />
       )}
@@ -86,12 +89,12 @@ export function BrandingSettings(props: BrandingSettingsProps) {
   );
 }
 
-const PARTS: readonly Part[] = ['logo', 'colour', 'letterhead'];
+const PARTS: readonly Part[] = BRANDING_PARTS;
 
 /** The editor: the part switch across the column, the part, then the business profile's row. */
 function Editor(props: BrandingSettingsProps) {
   const { words, part, onPart, onOpenProfile } = props;
-  const label: Record<Part, string> = {
+  const label: Record<Part, TranslatedText> = {
     logo: words.logo,
     colour: words.colour,
     letterhead: words.letterhead,

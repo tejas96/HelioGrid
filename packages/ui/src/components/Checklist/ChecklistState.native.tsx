@@ -5,19 +5,7 @@ import { Text } from '../../primitives/Text/Text.native';
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
-import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
-import type { ChecklistProps } from './Checklist.types';
-
-type StateProps = { state: SurfaceState; onRetry?: () => void } & Pick<
-  ChecklistProps,
-  | 'emptyTitle'
-  | 'emptyMessage'
-  | 'errorTitle'
-  | 'errorMessage'
-  | 'retryLabel'
-  | 'unavailableTitle'
-  | 'unavailableMessage'
->;
+import type { ChecklistStateProps } from './Checklist.types';
 
 const styles = StyleSheet.create({
   note: { flexDirection: 'column', gap: theme.spacing['sp-2'], alignItems: 'flex-start' },
@@ -39,15 +27,17 @@ const styles = StyleSheet.create({
  */
 export function ChecklistStateBody({
   state,
+  loadingLabel,
   emptyTitle,
   emptyMessage,
   errorTitle,
   errorMessage,
   onRetry,
   retryLabel,
+  focusAfter,
   unavailableTitle,
   unavailableMessage,
-}: StateProps) {
+}: ChecklistStateProps) {
   if (state === 'loading') {
     return (
       /* Web is `role="status"`; RN has no `status`, and `progressbar` on a held block would
@@ -55,7 +45,7 @@ export function ChecklistStateBody({
          the empty block an element so its name is announced, politely, and folds nothing. */
       <View
         accessible
-        accessibilityLabel="Loading checklist"
+        accessibilityLabel={loadingLabel}
         accessibilityLiveRegion="polite"
         style={styles.skeleton}
       />
@@ -63,7 +53,9 @@ export function ChecklistStateBody({
   }
 
   if (state === 'unavailable') {
-    return <UnavailableNote title={unavailableTitle} message={unavailableMessage} />;
+    return unavailableTitle === undefined ? null : (
+      <UnavailableNote title={unavailableTitle} message={unavailableMessage} />
+    );
   }
 
   if (state === 'empty') {
@@ -87,7 +79,7 @@ export function ChecklistStateBody({
       <Text variant="body-sm" color="warning">
         {errorMessage}
       </Text>
-      <RetryButton onRetry={onRetry} label={retryLabel} />
+      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
     </View>
   );
 }

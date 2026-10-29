@@ -1,13 +1,15 @@
 import type { CSSProperties } from 'react';
-import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
+import { useOwnWidth } from '../../primitives/use-own-width';
+import { useStackedForm } from '../DataTable/use-stacked-form';
+import { retryOf } from '../UnavailableNote/UnavailableNote.read';
 import { useKanbanDrag } from './Kanban.drag';
-import { activeColumnKey, kanbanTotal, resolveBoardState } from './Kanban.logic';
+import { boardStateOf, KANBAN_DEFAULTS } from './Kanban.logic';
 import type { KanbanProps } from './Kanban.types';
 import { KanbanColumnBlock } from './KanbanColumn';
 import { KanbanStageStrip } from './KanbanStageStrip';
 import { BoardStateView } from './KanbanStates';
+import { useStagePick } from './use-stage-pick';
 
 /** Per-instance geometry rides in as custom properties; every colour stays in Kanban.css. */
 type StyleVars = CSSProperties & Record<string, string | number | undefined>;
@@ -35,78 +37,55 @@ export function Kanban({
   renderCard,
   cardPending,
   read,
-  emptyTitle = 'No jobs in this pipeline',
+  words,
+  emptyTitle,
   emptyDescription,
-  errorTitle = "Couldn't load the board",
-  errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
+  errorTitle,
+  errorMessage,
   retryLabel,
-  unavailableTitle = 'No pipeline here',
+  unavailableTitle,
   unavailableMessage,
-  columnWidth = 260,
-  stackBelow = 720,
+  columnWidth = KANBAN_DEFAULTS.columnWidth,
+  stackBelow = KANBAN_DEFAULTS.stackBelow,
   stackedColumn,
   onStackedColumnChange,
-  stageFilterLabel = 'Stage',
+  stageFilterLabel = words.stage,
   onFormChange,
   className,
   style,
 }: WebKanbanProps) {
-  const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [own, setOwn] = useState<number | null>(null);
-  const [pickInner, setPickInner] = useState<string | null>(null);
+  /* The board's own frame: its width is measured here, and focus lands on it once a retry has
+     left, since it outlives every state. */
+  const [ref, own] = useOwnWidth();
   const { dragging, over, handlers } = useKanbanDrag(onMove);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || typeof ResizeObserver === 'undefined') return;
-    const ro = new ResizeObserver((entries) => {
-      const first = entries[0];
-      if (first) setOwn(first.contentRect.width);
-    });
-    ro.observe(el);
-    setOwn(el.getBoundingClientRect().width);
-    return () => ro.disconnect();
-  }, []);
-
-  const stacked = own !== null && own < stackBelow;
-
-  /* The breakpoint is the component's, so the answer is the component's to publish. The callback
-     rides in a ref so a caller's inline arrow cannot turn "when the answer changed" into "every
-     render". */
-  const formCb = useRef(onFormChange);
-  useEffect(() => {
-    formCb.current = onFormChange;
-  }, [onFormChange]);
-  useEffect(() => {
-    if (own !== null) formCb.current?.({ stacked, width: own });
-  }, [stacked, own]);
-
-  const picked = stackedColumn !== undefined ? stackedColumn : pickInner;
-  const activeKey = activeColumnKey(columns, picked);
-  const setPick = (k: string) => {
-    if (stackedColumn === undefined) setPickInner(k);
-    onStackedColumnChange?.(k);
-  };
+  const stacked = useStackedForm(own, stackBelow, onFormChange);
+  const { active, setPick } = useStagePick(columns, stackedColumn, onStackedColumnChange);
 
   const vars: StyleVars = { '--hg-kanban-column-w': `${columnWidth}px`, ...style };
 
-  const resolved = resolveBoardState(state, kanbanTotal(columns));
+  const resolved = boardStateOf(read, columns);
   if (resolved !== 'ready') {
     return (
       <div
         ref={ref}
-        className={resolved === 'loading' ? classNames('hg-kanban-loading', className) : className}
+        tabIndex={-1}
+        className={classNames(
+          resolved === 'loading' ? 'hg-kanban-loading' : undefined,
+          'hg-focus-target',
+          className,
+        )}
         style={vars}
       >
         <BoardStateView
           state={resolved}
           stacked={stacked}
+          loadingLabel={words.loading}
           errorTitle={errorTitle}
           errorMessage={errorMessage}
           onRetry={onRetry}
           retryLabel={retryLabel}
+          focusAfter={ref}
           unavailableTitle={unavailableTitle}
           unavailableMessage={unavailableMessage}
           emptyTitle={emptyTitle}
@@ -125,15 +104,16 @@ export function Kanban({
     onMove,
     renderCard,
     cardPending,
+    words,
   };
 
   /* THE PHONE FORM: one column, chosen by a stage strip that carries each stage's count. */
   if (stacked) {
-    const active = columns.find((c) => c.key === activeKey) ?? columns[0];
     return (
       <div
         ref={ref}
-        className={classNames('hg-kanban', className)}
+        tabIndex={-1}
+        className={classNames('hg-kanban', 'hg-focus-target', className)}
         data-stacked="true"
         style={vars}
       >
@@ -142,6 +122,7 @@ export function Kanban({
           value={active?.key}
           label={stageFilterLabel}
           onChange={setPick}
+          words={words}
         />
         {active ? (
           <KanbanColumnBlock
@@ -156,7 +137,12 @@ export function Kanban({
   }
 
   return (
-    <div ref={ref} className={classNames('hg-kanban', className)} style={vars}>
+    <div
+      ref={ref}
+      tabIndex={-1}
+      className={classNames('hg-kanban', 'hg-focus-target', className)}
+      style={vars}
+    >
       {columns.map((c) => (
         <KanbanColumnBlock {...columnProps} column={c} over={over === c.key} key={c.key} />
       ))}

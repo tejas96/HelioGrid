@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import type { ShellActionProps } from './AppShell.types';
-import { badgeName, showsBadge } from './AppShell.types';
+import { showsBadge } from './AppShell.types';
 import { CountBadge } from './CountBadge.native';
 
 interface NativeShellActionProps extends ShellActionProps {
@@ -27,9 +27,7 @@ export function ShellAction({
   round = false,
   style,
 }: NativeShellActionProps) {
-  /* A zero badge keeps the plain name here (the source's `badge ?` test) while it still reaches
-     CountBadge, which renders nothing at zero. */
-  const name = wholeName ?? (badge === 0 ? label : badgeName(label, badge));
+  const name = wholeName ?? label;
   const { controlFill } = useGround();
   return (
     <Pressable
@@ -45,7 +43,7 @@ export function ShellAction({
       {icon}
       {showsBadge(badge) ? (
         <View style={styles.badge}>
-          <CountBadge count={badge} label={label.toLowerCase()} />
+          <CountBadge count={badge} />
         </View>
       ) : null}
     </Pressable>

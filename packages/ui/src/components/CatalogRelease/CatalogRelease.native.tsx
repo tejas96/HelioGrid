@@ -1,12 +1,15 @@
 import { RELEASE_CHANGE_KINDS } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
-import { Button } from '../Button/Button.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import { IconCircle } from '../Card/Card.native';
+import { ShowMore } from '../CatalogItems/ShowMore.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
 import { Input } from '../Input/Input.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
@@ -37,8 +40,12 @@ export function CatalogRelease(props: CatalogReleaseProps) {
 
 function Publish(props: CatalogPublishBody) {
   const { words, label, onLabel, problem, changes, more } = props;
+  /* After *Try again* the screen reader lands on the body, which stays while it reloads; after
+   *Show more*, on the changes it grew. */
+  const body = useRef<View>(null);
+  const grown = useRef<View>(null);
   return (
-    <View style={styles.body}>
+    <View ref={body} style={styles.body}>
       <Input
         label={words.releaseName}
         value={label}
@@ -46,11 +53,11 @@ function Publish(props: CatalogPublishBody) {
         density="functional"
         {...(problem === null ? {} : { error: problem })}
       />
-      {waitOrFail(props) ??
+      {waitOrFail(props, body) ??
         (changes === null ? null : (
           <>
             <CountTiles changes={changes} />
-            <View style={styles.cards}>
+            <View ref={grown} style={styles.cards}>
               {changes.items.map((item) => (
                 <ChangeCard key={item.id} item={item} words={words} />
               ))}
@@ -58,9 +65,7 @@ function Publish(props: CatalogPublishBody) {
           </>
         ))}
       {more === null ? null : (
-        <Button variant="ghost" size="sm" onClick={more.onMore}>
-          {more.label}
-        </Button>
+        <ShowMore label={more.label} onMore={more.onMore} focusAfter={grown} />
       )}
     </View>
   );
@@ -69,10 +74,18 @@ function Publish(props: CatalogPublishBody) {
 function Contents(props: CatalogContentsBody) {
   const { words, release, changes } = props;
   const format = useFormat();
-  const waiting = waitOrFail(props);
-  if (waiting !== null) return waiting;
+  /* *Try again* leaves with the failure: the screen reader goes to the body, which stays. */
+  const body = useRef<View>(null);
+  const waiting = waitOrFail(props, body);
+  if (waiting !== null) {
+    return (
+      <View ref={body} style={styles.body}>
+        {waiting}
+      </View>
+    );
+  }
   return (
-    <View style={styles.body}>
+    <View ref={body} style={styles.body}>
       {release === null ? null : (
         <View style={[release.inForce ? styles.inForce : tileSurface, styles.releaseCard]}>
           <GroundProvider ground="tile">
@@ -256,8 +269,11 @@ const styles = StyleSheet.create({
   },
 });
 
-/** A body's read still out, or failed with *Try again*; `null` once it is in. */
-function waitOrFail(props: CatalogPublishBody | CatalogContentsBody) {
+/**
+ * A body's read still out, or failed with *Try again*; `null` once it is in. *Try again* leaves
+ * with the failure, and the screen reader goes to `body`, which stays.
+ */
+function waitOrFail(props: CatalogPublishBody | CatalogContentsBody, body: FocusAfter) {
   const { words, read } = props;
   if (read.kind === 'loading') {
     return <LoadingBars label={words.loading} bars={['panel', 'row']} />;
@@ -268,9 +284,7 @@ function waitOrFail(props: CatalogPublishBody | CatalogContentsBody) {
         glow={false}
         title={words.loadFailed}
         action={
-          <Button variant="secondary" size="sm" onClick={read.retry}>
-            {words.tryAgain}
-          </Button>
+          <RetryButton size="sm" onRetry={read.retry} label={words.tryAgain} focusAfter={body} />
         }
       />
     );

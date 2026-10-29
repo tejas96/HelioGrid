@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { LayoutChangeEvent, View, ViewStyle } from 'react-native';
 import { Dimensions } from 'react-native';
 import type { UseEditorFormOptions } from './EditorSurface.types';
+import { isPanel, PANEL_ABOVE } from './editor-form-props';
 
 export interface EditorFormAnswer {
   ref: React.RefObject<View | null>;
@@ -61,7 +62,7 @@ export const PROBE_STYLE: ViewStyle = {
  * measurement.
  */
 export function useEditorForm({
-  panelAbove = 720,
+  panelAbove = PANEL_ABOVE,
   inset = false,
 }: UseEditorFormOptions = {}): EditorFormAnswer {
   const ref = useRef<View>(null);
@@ -69,7 +70,7 @@ export function useEditorForm({
   return {
     ref,
     layerWidth: width,
-    panel: width === null ? null : width >= panelAbove,
+    panel: isPanel(width, panelAbove),
     probeStyle: PROBE_STYLE,
     onLayout,
   };

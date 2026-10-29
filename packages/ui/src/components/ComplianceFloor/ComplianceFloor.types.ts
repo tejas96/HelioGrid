@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 /**
@@ -25,6 +26,22 @@ import type { ReactNode } from 'react';
  * touches anything. `refusal` is `floor-blocked-save`: warning tint, the floor named, and the one
  * move that saves the rest of the work. Words take `--warning-text`, never the mark token.
  */
+/** The act a floor forbids, as a past participle — the sentence's verb, never typed in English. */
+export type ComplianceFloorAct = 'removed' | 'widened' | 'switched off' | 'shortened';
+
+/**
+ * The floor's sentences in the reader's language. One wording wherever the owner meets the floor:
+ * the refusal says what the row already said.
+ */
+export interface ComplianceFloorWords {
+  /** `line`'s first sentence — "Required by law — cannot be removed". */
+  readonly cannot: (act: ComplianceFloorAct) => TranslatedText;
+  /** `refusal`'s first sentence — "Not saved — “Diwali” cannot be widened"; no subject says "this". */
+  readonly notSaved: (act: ComplianceFloorAct, subject?: string) => TranslatedText;
+  /** `refusal`'s second sentence when the caller wrote none — the floor named, then the way on. */
+  readonly putBack: (named: string) => TranslatedText;
+}
+
 export interface ComplianceFloorSpec {
   /** The floor's own name — "Statutory opt-out", "Market calling window". Named, never "policy". */
   floor?: string;
@@ -33,11 +50,13 @@ export interface ComplianceFloorSpec {
   /** What the row or date is, for the refusal's first sentence — "Asks to stop", "Diwali". */
   subject?: string;
   /** The act as a past participle: `removed` (default), `widened`, `switched off`, `shortened`. */
-  act?: string;
+  act?: ComplianceFloorAct;
   /** Replaces the composed first sentence outright. */
-  title?: string;
+  title?: TranslatedText;
   /** A second sentence. In `refusal`, name the one move that saves the rest of the work. */
-  message?: string;
+  message?: TranslatedText;
+  /** The sentences the floor composes when `title` and `message` are not given. */
+  words: ComplianceFloorWords;
   /** `line` — permanent, on the row it is about. `refusal` — the save that did not happen. */
   variant?: 'line' | 'refusal';
   /** One forward act. Never a retry of the refused act. */

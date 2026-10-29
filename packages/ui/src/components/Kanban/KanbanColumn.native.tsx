@@ -6,8 +6,8 @@ import { StyleSheet, View } from 'react-native';
    spellings to the same module, so this is the same import, correctly typed. */
 import { Text } from '../../primitives/Text/Text.native';
 import { StatusChip } from '../StatusChip/StatusChip.native';
-import { columnCountLabel } from './Kanban.logic';
-import type { KanbanColumn, KanbanProps } from './Kanban.types';
+import { columnViewOf } from './Kanban.logic';
+import type { KanbanColumn, KanbanProps, KanbanWords } from './Kanban.types';
 import { KanbanCard } from './KanbanCard.native';
 
 export interface KanbanColumnBlockProps {
@@ -18,6 +18,7 @@ export interface KanbanColumnBlockProps {
   onMove?: KanbanProps['onMove'];
   renderCard?: KanbanProps['renderCard'];
   cardPending?: KanbanProps['cardPending'];
+  words: KanbanWords;
 }
 
 /** One sunken column: a StatusChip header, its count (or n/limit), and its floating cards. */
@@ -29,9 +30,9 @@ export function KanbanColumnBlock({
   onMove,
   renderCard,
   cardPending,
+  words,
 }: KanbanColumnBlockProps) {
-  const items = column.items ?? [];
-  const overLimit = column.limit !== undefined && items.length > column.limit;
+  const { items, count, overLimit, emptyLine } = columnViewOf(column, words);
   return (
     <View style={[styles.column, { width }]}>
       <View style={styles.head}>
@@ -45,13 +46,13 @@ export function KanbanColumnBlock({
         {/* The phone form makes this column the primary reading of the count, so it is
             load-bearing and takes text-secondary, never tertiary (N4). */}
         <Text variant="caption" color={overLimit ? 'warning' : 'secondary'}>
-          {columnCountLabel(items.length, column.limit)}
+          {count}
         </Text>
       </View>
       <View style={styles.body}>
         {items.length === 0 ? (
           <Text variant="caption" color="secondary" align="center" style={styles.empty}>
-            {column.emptyLabel || 'Nothing here'}
+            {emptyLine}
           </Text>
         ) : (
           items.map((it) => (
@@ -64,6 +65,7 @@ export function KanbanColumnBlock({
               onMove={onMove}
               renderCard={renderCard}
               cardPending={cardPending}
+              words={words}
             />
           ))
         )}

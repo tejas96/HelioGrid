@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
+import { useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -10,7 +11,13 @@ import { OperationMessage } from './OperationMessage.native';
 import type { OperationProgressProps } from './OperationProgress.types';
 import { OperationRing } from './OperationRing.native';
 import { OperationStages } from './OperationStages.native';
-import { countWords, resolveCancel, resolvePercent, stepWords } from './operation-progress-model';
+import {
+  countWords,
+  offersOperationActs,
+  resolveCancel,
+  resolvePercent,
+  stepWords,
+} from './operation-progress-model';
 
 interface NativeOperationProgressProps extends OperationProgressProps {
   style?: StyleProp<ViewStyle>;
@@ -37,6 +44,7 @@ function renderNode(node: ReactNode, style: TextStyle, variant: 'body' | 'body-s
  */
 export function OperationProgress({
   label,
+  words,
   value = null,
   count = null,
   unit,
@@ -59,25 +67,25 @@ export function OperationProgress({
   countCaption,
   style,
 }: NativeOperationProgressProps) {
+  /* The frame stays while a retry reloads the work, so the reader lands on it once Try again leaves. */
+  const frame = useRef<View>(null);
   const running = state === 'running';
   const pct = resolvePercent(state, value);
-  const cancel = resolveCancel(onCancel, cancelEffect);
+  const cancel = resolveCancel(onCancel, cancelEffect, words);
   const { number } = useFormat();
-  const counted = countWords(count, unit, number);
-  const step = stepWords(stageIndex, stageTotal);
-  const showActions =
-    cancel !== null ||
-    destination !== undefined ||
-    (state === 'failed' && onRetry !== undefined && retryLabel !== undefined);
+  const counted = countWords(count, unit, number, words);
+  const step = stepWords(stageIndex, stageTotal, words);
+  const showActions = offersOperationActs({ cancel, destination, state, onRetry, retryLabel });
 
   if (size === 'ring') {
     return <OperationRing label={label} count={count} countCaption={countCaption} style={style} />;
   }
 
   return (
-    <View style={[styles.shell, style]}>
+    <View ref={frame} style={[styles.shell, style]}>
       <OperationHead
         label={label}
+        inProgress={words.inProgress(label)}
         pct={pct}
         running={running}
         gradient={gradient}
@@ -87,7 +95,9 @@ export function OperationProgress({
         size={size}
       />
 
-      {stages !== undefined && stages.length > 0 ? <OperationStages stages={stages} /> : null}
+      {stages !== undefined && stages.length > 0 ? (
+        <OperationStages stages={stages} words={words} />
+      ) : null}
 
       {/* M02-21's promise, said where the person is: you may leave. */}
       {running && leaveNote !== undefined ? renderNode(leaveNote, tertiary, 'caption') : null}
@@ -106,6 +116,7 @@ export function OperationProgress({
           state={state}
           onRetry={onRetry}
           retryLabel={retryLabel}
+          frame={frame}
           destination={destination}
         />
       ) : null}

@@ -12,6 +12,12 @@ export interface MenuRowShape {
    * refuses it. An item off with no reason keeps the native `disabled` attribute.
    */
   stated: boolean;
+  /**
+   * Off with NO reason — the only row that leaves the walk, out of the tab order and not
+   * pressable. One with a stated reason keeps its place, or the sentence explaining it is announced
+   * to nobody.
+   */
+  inert: boolean;
   /** Whether the switcher's tick column and checked state apply to this row. */
   checked: boolean;
 }
@@ -19,10 +25,12 @@ export interface MenuRowShape {
 /** One place that reads a `MenuItem`'s flags, so the two platform rows cannot answer them twice. */
 export function menuRowShape(item: MenuItem, radio: boolean): MenuRowShape {
   const disabled = item.disabled === true;
+  const stated = disabled && hasReason(item);
   return {
     disabled,
     destructive: item.destructive === true,
-    stated: disabled && hasReason(item),
+    stated,
+    inert: disabled && !stated,
     checked: radio && item.selected === true,
   };
 }

@@ -1,5 +1,6 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
-import type { DocumentAudience, PageGeometry } from './PagedDocument.types';
+import type { DocumentAudience, PagedDocumentWords, PageGeometry } from './PagedDocument.types';
 import { FLOW_GAP, FOOT_H, HEAD_H } from './page-geometry';
 
 interface DocumentSheetProps {
@@ -7,11 +8,12 @@ interface DocumentSheetProps {
   /** 0-based. The sheet prints `index + 1`. */
   index: number;
   count: number;
-  label: string;
+  label: TranslatedText;
   head: ReactNode;
   audience: DocumentAudience;
   footNote: ReactNode;
-  footText: string;
+  footText: TranslatedText;
+  words: Pick<PagedDocumentWords, 'sheetName' | 'internalCopy'>;
   children: ReactNode;
 }
 
@@ -30,13 +32,14 @@ export function DocumentSheet({
   audience,
   footNote,
   footText,
+  words,
   children,
 }: DocumentSheetProps) {
   return (
     <section
       className="hg-sheet hg-paged-document-sheet"
       data-screen-label={`Sheet ${index + 1}`}
-      aria-label={`${label} · sheet ${index + 1} of ${count}`}
+      aria-label={words.sheetName(label, index + 1, count)}
       style={{
         width: geometry.width,
         height: geometry.height,
@@ -46,7 +49,7 @@ export function DocumentSheet({
       <div className="hg-paged-document-head" style={{ height: HEAD_H }}>
         <span className="hg-paged-document-head-title">{head}</span>
         {audience === 'internal' && (
-          <span className="hg-paged-document-head-internal">Internal copy</span>
+          <span className="hg-paged-document-head-internal">{words.internalCopy}</span>
         )}
       </div>
       <div className="hg-paged-document-flow" style={{ gap: FLOW_GAP }}>

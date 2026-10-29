@@ -1,10 +1,10 @@
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
-import { AUDIO_GLYPH } from './AudioGlyph.logic';
+import { AUDIO_GLYPH, isFilledGlyph } from './AudioGlyph.logic';
 import type { AudioGlyphName } from './AudioPlayer.types';
 
 /** The transport and reason glyphs. Play and pause are filled; the rest are stroked. */
 export function AudioGlyph({ name, size = 20 }: { name: AudioGlyphName; size?: number }) {
-  if (name === 'play' || name === 'pause') {
+  if (isFilledGlyph(name)) {
     return (
       <svg
         width={size}

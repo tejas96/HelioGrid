@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { Button } from '../Button/Button';
 import { RetryButton } from '../Button/RetryButton';
-import type { OperationProgressProps } from './OperationProgress.types';
-import type { CancelCopy } from './operation-progress-model';
+import type { CancelWords, OperationProgressProps } from './OperationProgress.types';
+import { offeredCancel } from './operation-progress-model';
 
 interface OperationActionsProps
   extends Pick<
@@ -10,7 +11,9 @@ interface OperationActionsProps
     'onCancel' | 'cancelLabel' | 'cancelNote' | 'onRetry' | 'retryLabel' | 'destination' | 'state'
   > {
   running: boolean;
-  cancel: CancelCopy | null;
+  cancel: CancelWords | null;
+  /** The progress's own frame, where focus lands once Try again has left. */
+  frame: FocusAfter;
 }
 
 /**
@@ -29,19 +32,23 @@ export function OperationActions({
   state,
   onRetry,
   retryLabel,
+  frame,
   destination,
 }: OperationActionsProps): ReactNode {
+  const offered = offeredCancel(running, cancel, cancelLabel, cancelNote);
   return (
     <div className="hg-operation-progress-actions">
-      {running && cancel !== null ? (
+      {offered === null ? null : (
         <Button variant="secondary" size="md" onClick={onCancel}>
-          {cancelLabel ?? cancel.label}
+          {offered.label}
         </Button>
+      )}
+      {offered === null ? null : (
+        <span className="hg-operation-progress-cancel-note">{offered.note}</span>
+      )}
+      {state === 'failed' ? (
+        <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={frame} />
       ) : null}
-      {running && cancel !== null ? (
-        <span className="hg-operation-progress-cancel-note">{cancelNote ?? cancel.note}</span>
-      ) : null}
-      {state === 'failed' ? <RetryButton onRetry={onRetry} label={retryLabel} /> : null}
       {destination !== undefined ? (
         <span className="hg-operation-progress-destination">{destination}</span>
       ) : null}

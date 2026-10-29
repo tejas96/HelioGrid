@@ -59,10 +59,12 @@ export function CatalogItemsControls(props: ControlProps) {
             value={props.query}
             onChange={props.onQuery}
             onClear={() => props.onQuery('')}
+            clearLabel={words.clearSearch}
           />
         </span>
         <FiltersButton
           label={words.filters}
+          activeLabel={words.filtersActive}
           count={catalogFiltersOn(filter)}
           onClick={() => setFiltering(true)}
         />
@@ -121,6 +123,7 @@ export function CatalogItemsControls(props: ControlProps) {
         <FacetChips
           label={words.kindLabel}
           scroll
+          selectedLabel={words.selectedKind}
           values={[...filter.kinds]}
           onChange={(values) => onFilter(withKinds(filter, values.filter(isKind)))}
           options={COMPONENT_KINDS.map((kind) => ({ value: kind, label: words.kinds[kind] }))}

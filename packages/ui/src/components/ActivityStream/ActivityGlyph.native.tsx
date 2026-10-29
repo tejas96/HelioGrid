@@ -2,7 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { View } from 'react-native';
 import Svg from 'react-native-svg';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import { ACTIVITY_GLYPH, FALLBACK_GLYPH } from './ActivityGlyph.logic';
+import { activityGlyphOf, agentObjectSize } from './ActivityGlyph.logic';
 
 /**
  * A kind's glyph. `agent` is the one brand object rather than an outlined icon; RN cannot paint
@@ -18,12 +18,13 @@ export function ActivityGlyph({
   color: string;
 }) {
   if (name === 'agent') {
+    const object = agentObjectSize(size);
     return (
       <View
         style={{
-          width: size - 2,
-          height: size - 2,
-          borderRadius: (size - 2) / 2,
+          width: object,
+          height: object,
+          borderRadius: object / 2,
           backgroundColor: theme.colors['iris-violet'],
         }}
       />
@@ -40,7 +41,7 @@ export function ActivityGlyph({
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <ShellGlyphMarks name={ACTIVITY_GLYPH[name] ?? FALLBACK_GLYPH} />
+      <ShellGlyphMarks name={activityGlyphOf(name)} />
     </Svg>
   );
 }

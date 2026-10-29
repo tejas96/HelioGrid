@@ -80,7 +80,8 @@ export function catalogFilterDimensions(
       key: KEY.scheme,
       kind: 'facet',
       label: f.scheme,
-      options: schemes.map((scheme) => ({ value: scheme, label: scheme })),
+      /* A scheme's name is the market pack's own — *ALMM*, *DCR* — its own words in every language. */
+      options: [...schemes],
     });
   }
   dimensions.push(

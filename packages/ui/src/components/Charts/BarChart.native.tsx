@@ -5,9 +5,10 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { ChartFrame } from './ChartFrame.native';
+import { barPercent, barScale } from './Charts.logic';
 import type { BarChartProps } from './Charts.types';
 import { CHART_GRIDLINE, chartColor } from './ChartTokens.native';
-import { chartTicks } from './chart-palette';
+import { datumReading } from './chart-series';
 
 interface NativeBarChartProps extends BarChartProps {
   style?: StyleProp<ViewStyle>;
@@ -82,14 +83,7 @@ export function BarChart({
   const onLayout = (e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width);
   const mkt = useFormat();
   const fmt = format ?? mkt.number;
-  /* Honesty is a product law: below `minPoints` real values the frame says so instead of
-     drawing a confident-looking bar. A value that is not a real number is not a real value. */
-  const real = data.filter((d) => typeof d.value === 'number' && !Number.isNaN(d.value));
-  const insufficient = real.length < minPoints;
-  const max = Math.max(1, ...data.map((d) => d.value || 0));
-  const ticks = chartTicks(max, gridlines);
-  const rawGap = width / (data.length * 6);
-  const gap = Math.max(4, Math.min(16, Number.isFinite(rawGap) && rawGap !== 0 ? rawGap : 8));
+  const { insufficient, max, ticks, gap } = barScale(data, minPoints, gridlines, width);
 
   return (
     <View onLayout={onLayout}>
@@ -106,7 +100,7 @@ export function BarChart({
                     style={[
                       styles.fill,
                       {
-                        width: `${((d.value || 0) / max) * 100}%`,
+                        width: `${barPercent(d, max)}%`,
                         backgroundColor: d.color ?? color ?? chartColor(i),
                       },
                     ]}
@@ -132,14 +126,14 @@ export function BarChart({
                 <View
                   key={d.label}
                   accessible
-                  accessibilityLabel={`${d.label}: ${fmt(d.value)}`}
+                  accessibilityLabel={datumReading(d.label, fmt(d.value))}
                   style={styles.column}
                 >
                   <View
                     style={[
                       styles.bar,
                       {
-                        height: `${((d.value || 0) / max) * 100}%`,
+                        height: `${barPercent(d, max)}%`,
                         backgroundColor: d.color ?? color ?? chartColor(i),
                       },
                     ]}

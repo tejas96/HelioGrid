@@ -9,11 +9,11 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextColor } from '../../primitives/Text/Text.types';
 import {
-  FRESHNESS_MARK,
-  freshnessWarning,
   isProvenanceEmpty,
+  type ProvenanceLinePart,
+  provenanceLineParts,
+  provenanceSpecOf,
   provenanceStep,
-  STANDING_MARK,
   TIER_MARK,
   tierOf,
 } from './Provenance.tiers';
@@ -130,6 +130,36 @@ export function ProvenanceTier({
   );
 }
 
+/** Standing and freshness tint their words; the tier keeps the quiet ink; prose has no dot. */
+function LinePart({
+  part,
+  ink,
+  step,
+}: {
+  part: ProvenanceLinePart;
+  ink: TextColor;
+  step: 12 | 13;
+}) {
+  const words = (
+    <Text
+      variant="caption"
+      color={part.ink === null ? ink : (WORD_COLOR[part.ink] ?? ink)}
+      style={SIZE[step]}
+    >
+      {part.words}
+    </Text>
+  );
+  if (part.mark === null) {
+    return words;
+  }
+  return (
+    <View style={styles.part}>
+      <Dot token={part.mark} />
+      {words}
+    </View>
+  );
+}
+
 export function Provenance({
   tier,
   standing,
@@ -144,75 +174,12 @@ export function Provenance({
   emphasis = 'quiet',
   style,
 }: NativeProvenanceProps) {
-  const words = useProvenanceWords();
-  const t = tierOf(tier);
   const step = provenanceStep(size);
   const ink = WORDS[emphasis];
-  const parts: { id: string; node: ReactNode }[] = [];
-
-  /* Standing leads: "this is not final" outranks "this is how it was worked out". */
-  if (standing) {
-    const st = STANDING_MARK[standing];
-    parts.push({
-      id: 'standing',
-      node: (
-        <View style={styles.part}>
-          <Dot token={st.mark} />
-          <Text variant="caption" color={WORD_COLOR[st.color] ?? ink} style={SIZE[step]}>
-            {words.standing(standing)}
-          </Text>
-        </View>
-      ),
-    });
-  }
-  const warning = freshnessWarning(freshness);
-  if (warning) {
-    parts.push({
-      id: 'freshness',
-      node: (
-        <View style={styles.part}>
-          <Dot token={FRESHNESS_MARK.mark} />
-          <Text
-            variant="caption"
-            color={WORD_COLOR[FRESHNESS_MARK.color] ?? ink}
-            style={SIZE[step]}
-          >
-            {words.freshness(warning)}
-          </Text>
-        </View>
-      ),
-    });
-  }
-  if (t) {
-    parts.push({
-      id: 'tier',
-      node: (
-        <View style={styles.part}>
-          <Dot token={TIER_MARK[t]} />
-          <Text variant="caption" color={ink} style={SIZE[step]}>
-            {words.tier(t)}
-          </Text>
-        </View>
-      ),
-    });
-  }
-  for (const [id, prose] of [
-    ['energySource', energySource ? words.energySource(energySource) : undefined],
-    ['source', source],
-    ['projection', projection],
-    ['note', note],
-  ] as const) {
-    if (prose) {
-      parts.push({
-        id,
-        node: (
-          <Text variant="caption" color={ink} style={SIZE[step]}>
-            {prose}
-          </Text>
-        ),
-      });
-    }
-  }
+  const parts = provenanceLineParts(
+    { tier, standing, freshness, energySource, source, projection, note },
+    useProvenanceWords(),
+  );
   if (parts.length === 0) {
     return null;
   }
@@ -237,11 +204,11 @@ export function Provenance({
                 color="tertiary"
                 style={[SIZE[step], { color: theme.colors['mark-subtle'] }]}
               >
-                ·
+                {'·'}
               </Text>
             </View>
           ) : null}
-          {part.node}
+          <LinePart part={part} ink={ink} step={step} />
         </View>
       ))}
     </View>
@@ -259,12 +226,6 @@ export function renderProvenance(
   spec?: ProvenanceProps | ProvenanceTierSpec | null,
   extra: Partial<ProvenanceProps> = {},
 ): ReactNode {
-  if (!spec) {
-    return null;
-  }
-  /* A bare tier goes through the same emptiness guard as a spec: `renderProvenance("unmarked")`
-     must hand back null, or every host draws its slot around the deliberate absence. */
-  const props: ProvenanceProps = typeof spec === 'string' ? { tier: spec } : spec;
-  const merged = { ...props, ...extra };
-  return isProvenanceEmpty(merged) ? null : <Provenance {...merged} />;
+  const merged = provenanceSpecOf(spec, extra);
+  return merged === null ? null : <Provenance {...merged} />;
 }

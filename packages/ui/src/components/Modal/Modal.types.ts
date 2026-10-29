@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { OverlayCloseWords } from '../Sheet/OverlayClose.types';
 
@@ -12,10 +13,11 @@ export type ModalTone = 'neutral' | 'danger' | 'warning' | 'success';
 export interface ModalProps extends OverlayCloseWords {
   open?: boolean;
   onClose?: () => void;
+  // biome-ignore lint/plugin/copy-prop-type: a heading may be the record's own name, a fact
   title?: string;
   /** One or two sentences. For errors, state the problem and the fix. */
-  description?: string;
-  overline?: string;
+  description?: TranslatedText;
+  overline?: TranslatedText;
   children?: ReactNode;
   /** sm 400 · md 520 · lg 720 (capped at 100%). */
   size?: ModalSize;

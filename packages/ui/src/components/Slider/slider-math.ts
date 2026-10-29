@@ -30,3 +30,25 @@ export function formatValue(
   }
   return unit === undefined ? String(value) : `${value} ${unit}`;
 }
+
+/** One step from `value` in `direction` (−1 or +1), snapped and held inside the range. */
+export function nudged(
+  value: number,
+  direction: number,
+  min: number,
+  max: number,
+  step: number,
+): number {
+  return clampToRange(value + direction * step, min, max, step);
+}
+
+/** A stepper is off when the slider is, or when the value already sits at its end of the range. */
+export function stepperOff(
+  direction: -1 | 1,
+  value: number,
+  min: number,
+  max: number,
+  disabled: boolean,
+): boolean {
+  return disabled || (direction < 0 ? value <= min : value >= max);
+}

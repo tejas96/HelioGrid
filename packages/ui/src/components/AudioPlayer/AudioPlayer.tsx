@@ -1,6 +1,8 @@
 import type { CSSProperties } from 'react';
+import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
+import { AUDIO_PLAYER_DEFAULTS } from './AudioPlayer.logic';
 import type { AudioPlayerProps } from './AudioPlayer.types';
 import { AudioPlayerReady } from './AudioPlayerReady';
 import { AudioError, AudioUnavailable } from './AudioStates';
@@ -19,25 +21,28 @@ export function AudioPlayer({
   read,
   reason,
   src,
-  duration = 0,
+  duration = AUDIO_PLAYER_DEFAULTS.duration,
   title,
   meta,
   consentAt,
   retentionUntil,
   purgedAt,
   retentionBound,
-  errorMessage = "Couldn't load this recording. Tap Try again — the transcript is on this record either way.",
+  errorMessage,
   retryLabel,
   onOpenTranscript,
-  transcriptLabel = 'Open transcript',
-  speeds = [1, 1.25, 1.5, 2],
-  density = 'expressive',
+  words,
+  transcriptLabel = words.openTranscript,
+  speeds = AUDIO_PLAYER_DEFAULTS.speeds,
+  density = AUDIO_PLAYER_DEFAULTS.density,
   className,
   style,
 }: WebAudioPlayerProps) {
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
-  const shell = classNames('hg-audio', className);
+  /* The player's frame outlives its states, so focus lands on it once the retry has left. */
+  const frame = useRef<HTMLDivElement>(null);
+  const shell = classNames('hg-audio', 'hg-focus-target', className);
   const header =
     title !== undefined || meta !== undefined ? (
       <div>
@@ -48,21 +53,22 @@ export function AudioPlayer({
 
   if (state === 'loading') {
     return (
-      <div className={shell} data-density={density} style={style}>
+      <div ref={frame} tabIndex={-1} className={shell} data-density={density} style={style}>
         {header}
-        <div role="status" aria-label="Loading the recording" className="hg-audio-skeleton" />
+        <div role="status" aria-label={words.loading} className="hg-audio-skeleton" />
       </div>
     );
   }
 
   if (state === 'error') {
     return (
-      <div className={shell} data-density={density} style={style}>
+      <div ref={frame} tabIndex={-1} className={shell} data-density={density} style={style}>
         {header}
         <AudioError
           errorMessage={errorMessage}
           onRetry={onRetry}
           retryLabel={retryLabel}
+          focusAfter={frame}
           onOpenTranscript={onOpenTranscript}
           transcriptLabel={transcriptLabel}
         />
@@ -72,7 +78,7 @@ export function AudioPlayer({
 
   if (state === 'unavailable') {
     return (
-      <div className={shell} data-density={density} style={style}>
+      <div ref={frame} tabIndex={-1} className={shell} data-density={density} style={style}>
         {header}
         <AudioUnavailable
           reason={reason}
@@ -81,13 +87,14 @@ export function AudioPlayer({
           retentionBound={retentionBound}
           onOpenTranscript={onOpenTranscript}
           transcriptLabel={transcriptLabel}
+          words={words}
         />
       </div>
     );
   }
 
   return (
-    <div className={shell} data-density={density} style={style}>
+    <div ref={frame} tabIndex={-1} className={shell} data-density={density} style={style}>
       <AudioPlayerReady
         src={src}
         duration={duration}
@@ -98,6 +105,7 @@ export function AudioPlayer({
         speeds={speeds}
         transcriptLabel={transcriptLabel}
         header={header}
+        words={words}
       />
     </div>
   );

@@ -1,7 +1,7 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
-import { Kanban } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour } from '../support/token';
+import { WordedKanban } from './Kanban.story';
 
 const en = await createTranslator('en');
 const tryAgain = en.t(SIGN_IN.tryAgain);
@@ -12,7 +12,7 @@ test("an errored board's message is a grey tile with no shadow and its controls 
 }) => {
   let retries = 0;
   const board = await mount(
-    <Kanban
+    <WordedKanban
       columns={[]}
       read={{ kind: 'failed', retry: () => (retries += 1) }}
       errorTitle={tryAgain}

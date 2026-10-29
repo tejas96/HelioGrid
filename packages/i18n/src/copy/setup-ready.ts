@@ -4,6 +4,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
  * company read back, the two doors, and the wall when the company cannot be read — authored once for both platforms (Law 11).
  */
 import type { Translator } from '../runtime';
+import { CARD } from './card';
 import { SIGN_IN } from './sign-in';
 
 export const SETUP_READY = {
@@ -36,6 +37,8 @@ export interface SetupReadyWords {
   readonly demo: SetupReadyDoorWords & {
     readonly badge: TranslatedText;
     readonly loading: TranslatedText;
+    /** The loading card's own spoken name. */
+    readonly loadingCard: TranslatedText;
     readonly failed: TranslatedText;
   };
   /** The company could not be read: the wall, and a line so a fetch failure never reads as a lost signup. */
@@ -58,6 +61,7 @@ export function setupReadyWords(translate: Translator['t']): SetupReadyWords {
       line: translate(SETUP_READY.demoLine),
       act: translate(SETUP_READY.demoAct),
       loading: translate(SETUP_READY.demoLoading),
+      loadingCard: translate(CARD.loading),
       failed: translate(SETUP_READY.demoFailed),
     },
     wall: { title: translate(SETUP_READY.wallTitle), line: translate(SETUP_READY.wallLine) },

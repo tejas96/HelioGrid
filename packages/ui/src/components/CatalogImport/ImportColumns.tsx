@@ -93,6 +93,7 @@ function MappingRow({
         <Select
           value={view.field ?? (left ? LEAVE_OUT : undefined)}
           placeholder={words.chooseField}
+          closeLabel={words.closeList}
           ariaLabel={words.importColumnAs(view.header)}
           options={[
             { value: LEAVE_OUT, label: words.leaveColumnOut },

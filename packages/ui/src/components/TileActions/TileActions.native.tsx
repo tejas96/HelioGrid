@@ -5,6 +5,7 @@ import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextColor } from '../../primitives/Text/Text.types';
+import { tileActionState, tileActionWord } from './TileActions.logic';
 import type { TileActionProps, TileActionsProps } from './TileActions.types';
 
 interface NativeTileActionProps extends TileActionProps {
@@ -45,7 +46,7 @@ export function TileAction({
       onPress={onClick}
       disabled={disabled}
       accessibilityLabel={spokenLabel}
-      accessibilityState={on === undefined ? undefined : { selected: on }}
+      accessibilityState={tileActionState(on)}
       style={[styles.target, style]}
     >
       <View
@@ -61,7 +62,7 @@ export function TileAction({
           </View>
         ) : null}
         <Text variant="body-sm" color={words} style={styles.words}>
-          {on && onLabel ? onLabel : label}
+          {tileActionWord({ label, onLabel, on })}
         </Text>
       </View>
     </Pressable>

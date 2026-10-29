@@ -85,6 +85,7 @@ function RowLine<Row>({
           issue={state.issue}
           fixed={state.fixed}
           action={table.rowIssueAction?.(row) ?? null}
+          fixedLine={table.words.fixed}
         />
       ) : null}
     </View>
@@ -127,7 +128,7 @@ function RowCells<Row>({
         <View style={[{ width: spec.selW }, gutter]}>
           <Checkbox
             checked={state.isSelected}
-            ariaLabel={`Select row ${String(state.key)}`}
+            ariaLabel={table.words.selectRow(String(state.key))}
             onChange={() => onToggleRow(state.key)}
             style={tickPullback}
           />
@@ -149,6 +150,7 @@ function RowCells<Row>({
               align={alignOf(column)}
               cellIssue={table.cellIssue}
               onCellCommit={table.onCellCommit}
+              words={table.words}
             />
             {/* The record's own standing, under the record's own name. */}
             {standingHere ? <View style={styles.standing}>{standing}</View> : null}

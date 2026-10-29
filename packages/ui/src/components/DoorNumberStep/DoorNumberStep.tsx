@@ -41,6 +41,7 @@ export function DoorNumberStep({
           <div className="hg-door-number-form">
             <PhoneField
               label={words.phoneLabel}
+              words={words.phoneField}
               value={phone}
               onChange={onPhone}
               readOnly={busy}

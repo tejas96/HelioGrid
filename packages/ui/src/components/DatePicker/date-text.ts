@@ -1,7 +1,15 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { MarketFormat } from '../../utils/format';
 import { IN_FORMAT } from '../../utils/format';
-import { parse } from './calendar-grid';
-import type { ISODate } from './DatePicker.types';
+import { asRange, asSet, parse } from './calendar-grid';
+import type {
+  CalendarValue,
+  CalendarWords,
+  DatePickerProps,
+  DatePickerWords,
+  DayMarker,
+  ISODate,
+} from './DatePicker.types';
 
 /**
  * A date as text, for a call site that is NOT inside a component — a static label, a log line.
@@ -18,3 +26,35 @@ export function formatDate(value: ISODate | Date, format?: MarketFormat): string
 
 /** The namespace form the design system declares — `Dates.format("2026-03-12")`. */
 export const Dates: { format: typeof formatDate } = { format: formatDate };
+
+/** What the picker's trigger shows: the active market's date, never a hand-spelled order. */
+export function triggerText(
+  mode: DatePickerProps['mode'],
+  value: CalendarValue | undefined,
+  mkt: MarketFormat,
+  words: Pick<DatePickerWords, 'datesChosen'>,
+): string {
+  if (mode === 'range') {
+    const range = asRange(value);
+    if (range.from === null) {
+      return '';
+    }
+    return `${mkt.date(range.from)} – ${range.to === null ? '…' : mkt.date(range.to)}`;
+  }
+  if (mode === 'set') {
+    const set = asSet(value);
+    return set.length === 0 ? '' : words.datesChosen(set.length);
+  }
+  const single = parse(typeof value === 'string' ? value : null);
+  return single === null ? '' : mkt.date(single);
+}
+
+/** A day's whole fact as one accessible name — a marker's label is read out with its date. */
+export function spokenDayOf(
+  words: Pick<CalendarWords, 'day'>,
+  spokenDate: string,
+  marker: DayMarker | undefined,
+  locked: boolean,
+): TranslatedText {
+  return words.day({ date: spokenDate, marker: marker?.label ?? null, locked });
+}

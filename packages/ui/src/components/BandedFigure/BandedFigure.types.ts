@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { MarketFormat } from '../../utils/format';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
@@ -13,7 +14,7 @@ export interface BandToneStyle {
 
 export interface BandSpec {
   /** **The band's name — the carrier.** "Good", "Fair", "Poor", "Healthy", "Passing", "Fault". */
-  label: string;
+  label: TranslatedText;
   tone?: BandTone;
   /**
    * **What to do about it, where the band is a fault** — `M05-64`'s *"shorten the string"*. It lives
@@ -27,13 +28,13 @@ export interface BandSpec {
 }
 
 export interface BandedFigureProps {
-  label: string;
+  label: TranslatedText;
   value: string | number;
   unit?: string;
   /** Ordered threshold table — the component names the band. First match wins. */
   bands?: BandSpec[];
-  /** A resolved band, when the caller has already decided. Wins over `bands`. */
-  band?: BandSpec | string;
+  /** A resolved band, when the caller has already decided — a spec, or its word. Wins over `bands`. */
+  band?: BandSpec | TranslatedText;
   /** Overrides the band's own remedy. */
   remedy?: ReactNode;
   /** The rule the figure is read against — "Maximum system voltage · 1000 V · IEC 62548". */
@@ -47,7 +48,7 @@ export interface BandedFigureProps {
   note?: ReactNode;
   compact?: boolean;
   money?: boolean;
-  ariaLabel?: string;
+  ariaLabel?: TranslatedText;
   children?: ReactNode;
 }
 
@@ -58,7 +59,7 @@ export interface BandedFigureProps {
 export function resolveBand(
   value: number | string,
   bands?: BandSpec[],
-  explicit?: BandSpec | string,
+  explicit?: BandSpec | TranslatedText,
 ): BandSpec | null {
   if (explicit !== undefined) {
     if (typeof explicit === 'string') return { label: explicit, tone: 'neutral' };

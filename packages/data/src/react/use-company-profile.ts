@@ -17,6 +17,7 @@ import {
   companyProfileValuesAtRead,
   companyProfileView,
   mapRead,
+  opensSettingsRow,
   type Read,
   registrationsChanged,
   type TaxPack,
@@ -38,6 +39,11 @@ import { useSession } from './use-session';
 /** The company profile in one of its lives, as both screens consume it (Law 11). */
 export interface CompanyProfileStep extends CompanyProfileView {
   readonly life: CompanyProfileLife;
+  /**
+   * This person may open the profile in this life: setup is mounted by its own gate, and settings
+   * opens only to presets that open its row (`F7-48`); a screen answers false as not found.
+   */
+  readonly allowed: boolean;
   /** The profile as stored and the tax rules it is checked by; `failed` when a read got no answer. */
   readonly read: Read<ProfileRead>;
   /** The last save did not land. */
@@ -215,6 +221,7 @@ export function useCompanyProfile(
     change(({ values, open }) => ({ values: next(values), open }));
   return {
     life,
+    allowed: life === 'setup' || opensSettingsRow(user?.tenant?.roles ?? [], 'company_profile'),
     read,
     saveFailed: save.failure !== null,
     values: held?.values ?? COMPANY_PROFILE_UNREAD.values,

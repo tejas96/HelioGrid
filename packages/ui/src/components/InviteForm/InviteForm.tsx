@@ -54,6 +54,7 @@ export function InviteForm({
             <PhoneField
               ref={phoneRef}
               label={words.phone}
+              words={words.phoneField}
               helper={wide || onTeam ? undefined : words.phoneHelper}
               value={field.value}
               onChange={field.onChange}

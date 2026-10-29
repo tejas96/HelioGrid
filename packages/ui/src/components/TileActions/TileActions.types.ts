@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 /**
@@ -11,14 +12,14 @@ export interface TileActionProps {
   /** 16px glyph before the word. Hidden from the screen reader: the word names the act. */
   icon?: ReactNode;
   /** The word — always present. "Prefer", "Hide", "Archive". */
-  label: string;
+  label: TranslatedText;
   /** Word shown while on — "Preferred". Falls back to `label`. */
-  onLabel?: string;
+  onLabel?: TranslatedText;
   /**
    * The act's whole name for a screen reader where the word alone repeats down a list —
    * *Prefer Adani Solar AS-7-545*. Without it the shown word is the name.
    */
-  spokenLabel?: string;
+  spokenLabel?: TranslatedText;
   /** Pass to make it a toggle: on = near-black pill, inverse words, announced as pressed. */
   on?: boolean;
   onClick?: () => void;

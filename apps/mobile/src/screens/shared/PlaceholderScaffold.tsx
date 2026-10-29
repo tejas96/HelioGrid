@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { EmptyState } from '@heliogrid/ui';
 import { View } from 'react-native';
 import { styles } from './styles';
@@ -5,14 +6,17 @@ import { styles } from './styles';
 /**
  * Shared scaffold — keeps the navigator non-empty while real screens are built.
  * Replaced screen-by-screen with the designed implementation.
- * Temporary copy exemption: the i18n track wraps this when the real screens are designed.
  */
-export function PlaceholderScaffold({ name }: { name: string }) {
+export function PlaceholderScaffold({
+  title,
+  description,
+}: {
+  title: TranslatedText;
+  description: TranslatedText;
+}) {
   return (
     <View style={styles.root}>
-      <EmptyState title={name} description={PLACEHOLDER_NOTE} />
+      <EmptyState title={title} description={description} />
     </View>
   );
 }
-
-const PLACEHOLDER_NOTE = 'Placeholder route. The screen is not built yet.';

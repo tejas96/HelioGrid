@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 /** `[lo, hi]` — the whole value, in one tuple. */
 export type RangeValue = [number, number];
 
@@ -26,18 +27,33 @@ export interface RangeFieldProps {
   max?: number;
   /** Default 1. */
   step?: number;
-  label?: string;
+  /** The field's name — drawn over the track and named in each thumb's accessible name. */
+  label?: TranslatedText;
   unit?: string;
-  hint?: string;
+  hint?: TranslatedText;
   /** What is wrong with the pair, in words: drawn under the field in the danger ink, announced, and in place of the hint. */
-  error?: string;
+  error?: TranslatedText;
   /** Formats the readout and the accessible value text — `v => money(v)`, `v => v + " W"`. */
   format?: (value: number) => string;
   /** The two typed boxes under the track. Keep them: a gloved thumb drags, a keyboard types. */
   boxes?: boolean;
-  /** Default `['From', 'To']`. */
-  boxLabels?: [string, string];
+  /** The two ends' names — *From*, *To* — on the boxes and in each thumb's accessible name. */
+  boxLabels: [TranslatedText, TranslatedText];
   disabled?: boolean;
-  /** What the readout says when the pair still covers the whole span. Default "Any". */
-  anyLabel?: string;
+  /** What the readout says when the pair still covers the whole span — *Any*. Without it, nothing. */
+  anyLabel?: TranslatedText;
+}
+
+/* The inner parts' contracts (Law 7): both halves of a part implement the one interface. */
+
+export interface RangeEndBoxProps {
+  label: TranslatedText;
+  value: number;
+  /** This end's own window — the other end is the bound it may not cross. */
+  min: number;
+  max: number;
+  step: number;
+  unit?: string;
+  disabled?: boolean;
+  onCommit: (value: number) => void;
 }

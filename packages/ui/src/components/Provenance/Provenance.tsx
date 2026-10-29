@@ -15,11 +15,11 @@ import type { CSSProperties, ReactNode } from 'react';
 import { Fragment } from 'react';
 import { classNames } from '../../primitives/class-names';
 import {
-  FRESHNESS_MARK,
-  freshnessWarning,
   isProvenanceEmpty,
+  type ProvenanceLinePart,
+  provenanceLineParts,
+  provenanceSpecOf,
   provenanceStep,
-  STANDING_MARK,
   TIER_MARK,
   tierOf,
 } from './Provenance.tiers';
@@ -72,6 +72,27 @@ export function ProvenanceTier({
   );
 }
 
+/** Standing and freshness tint their words; the tier keeps the quiet ink; prose has no dot. */
+function LinePart({ part }: { part: ProvenanceLinePart }) {
+  if (part.mark === null) {
+    return <span>{part.words}</span>;
+  }
+  if (part.ink === null) {
+    return (
+      <span className="hg-provenance-part">
+        <Dot token={part.mark} />
+        {part.words}
+      </span>
+    );
+  }
+  return (
+    <span className="hg-provenance-standing" data-token={part.ink}>
+      <Dot token={part.mark} />
+      {part.words}
+    </span>
+  );
+}
+
 export function Provenance({
   tier,
   standing,
@@ -87,56 +108,10 @@ export function Provenance({
   className,
   style,
 }: WebProvenanceProps) {
-  const words = useProvenanceWords();
-  const t = tierOf(tier);
-  const parts: { id: string; node: ReactNode }[] = [];
-
-  /* Standing leads: "this is not final" outranks "this is how it was worked out". */
-  if (standing) {
-    const st = STANDING_MARK[standing];
-    parts.push({
-      id: 'standing',
-      node: (
-        <span className="hg-provenance-standing" data-token={st.color}>
-          <Dot token={st.mark} />
-          {words.standing(standing)}
-        </span>
-      ),
-    });
-  }
-  const warning = freshnessWarning(freshness);
-  if (warning) {
-    parts.push({
-      id: 'freshness',
-      node: (
-        <span className="hg-provenance-standing" data-token={FRESHNESS_MARK.color}>
-          <Dot token={FRESHNESS_MARK.mark} />
-          {words.freshness(warning)}
-        </span>
-      ),
-    });
-  }
-  if (t) {
-    parts.push({
-      id: 'tier',
-      node: (
-        <span className="hg-provenance-part">
-          <Dot token={TIER_MARK[t]} />
-          {words.tier(t)}
-        </span>
-      ),
-    });
-  }
-  for (const [id, prose] of [
-    ['energySource', energySource ? words.energySource(energySource) : undefined],
-    ['source', source],
-    ['projection', projection],
-    ['note', note],
-  ] as const) {
-    if (prose) {
-      parts.push({ id, node: <span>{prose}</span> });
-    }
-  }
+  const parts = provenanceLineParts(
+    { tier, standing, freshness, energySource, source, projection, note },
+    useProvenanceWords(),
+  );
   if (parts.length === 0) {
     return null;
   }
@@ -154,10 +129,10 @@ export function Provenance({
         <Fragment key={part.id}>
           {i > 0 ? (
             <span aria-hidden="true" className="hg-provenance-sep">
-              ·
+              {'·'}
             </span>
           ) : null}
-          {part.node}
+          <LinePart part={part} />
         </Fragment>
       ))}
     </span>
@@ -175,12 +150,6 @@ export function renderProvenance(
   spec?: ProvenanceProps | ProvenanceTierSpec | null,
   extra: Partial<ProvenanceProps> = {},
 ): ReactNode {
-  if (!spec) {
-    return null;
-  }
-  /* A bare tier goes through the same emptiness guard as a spec: `renderProvenance("unmarked")`
-     must hand back null, or every host draws its slot around the deliberate absence. */
-  const props: ProvenanceProps = typeof spec === 'string' ? { tier: spec } : spec;
-  const merged = { ...props, ...extra };
-  return isProvenanceEmpty(merged) ? null : <Provenance {...merged} />;
+  const merged = provenanceSpecOf(spec, extra);
+  return merged === null ? null : <Provenance {...merged} />;
 }

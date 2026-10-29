@@ -1,5 +1,6 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -8,14 +9,15 @@ import { Text } from '../../primitives/Text/Text.native';
 import { ComplianceFloor } from '../ComplianceFloor/ComplianceFloor.native';
 import { Calendar } from '../DatePicker/Calendar.native';
 import { parse } from '../DatePicker/calendar-grid';
-import type { CalendarValue, DayMarker, ISODate } from '../DatePicker/DatePicker.types';
+import type { CalendarValue, ISODate } from '../DatePicker/DatePicker.types';
 import { useFormat } from '../MarketProvider/market-context';
+import { dateSetView } from './DateSet.logic';
 import type { DateSetProps } from './DateSet.types';
 import { DateSetList } from './DateSetList.native';
-import { floorFor, refusalMessage } from './date-set-floor';
+import { floorFor } from './date-set-floor';
+import { useDateSetRoom } from './use-date-set-room';
 
 /** Own-width, never viewport (law 4). onLayout is RN's ResizeObserver. */
-const BREAK = 640;
 
 interface NativeDateSetProps extends DateSetProps {
   style?: StyleProp<ViewStyle>;
@@ -43,12 +45,15 @@ export function DateSet({
   entries = [],
   onAdd,
   onRemove,
-  packName = 'Market pack',
+  packName,
   floor,
-  label = 'Holiday calendar',
-  listLabel = 'Holidays this year',
-  addLabel = 'Tap a date to add a holiday',
-  emptyMessage = 'No holidays yet. Tap a date to add one.',
+  label,
+  listLabel,
+  addLabel,
+  emptyMessage,
+  words,
+  floorWords,
+  calendarWords,
   min,
   max,
   month,
@@ -58,32 +63,14 @@ export function DateSet({
   style,
 }: NativeDateSetProps) {
   const mkt = useFormat();
-  const [wide, setWide] = useState(true);
-  const [own, setOwn] = useState<number | null>(null);
+  const { wide, measure } = useDateSetRoom(onFormChange);
   const [blocked, setBlocked] = useState<ISODate | null>(null);
 
-  useEffect(() => {
-    if (own !== null) {
-      onFormChange?.({ stacked: !wide, width: own });
-    }
-  }, [wide, own, onFormChange]);
+  const onLayout = (event: LayoutChangeEvent) => measure(event.nativeEvent.layout.width);
 
-  const onLayout = (event: LayoutChangeEvent) => {
-    const width = event.nativeEvent.layout.width;
-    setOwn(width);
-    setWide(width >= BREAK);
-  };
-
-  const sorted = useMemo(() => [...entries].sort((a, b) => (a.date < b.date ? -1 : 1)), [entries]);
-  const dates = sorted.map((e) => e.date);
-  const locked = sorted.filter((e) => e.origin === 'pack').map((e) => e.date);
-  const byDate = useMemo(() => new Map(sorted.map((e) => [e.date, e])), [sorted]);
-  const markers = useMemo<Record<string, DayMarker>>(
-    () =>
-      Object.fromEntries(
-        sorted.map((e) => [e.date, { tone: 'holiday' as const, label: e.name ?? 'Holiday' }]),
-      ),
-    [sorted],
+  const { sorted, dates, locked, byDate, markers } = useMemo(
+    () => dateSetView(entries, words.holiday),
+    [entries, words.holiday],
   );
 
   const onBlocked = (key: ISODate) => setBlocked(key);
@@ -92,7 +79,7 @@ export function DateSet({
      node, so the same sentence is spoken directly — one announcement per act, the same channel
      ReorderList already uses. The REFUSAL is not announced here: it becomes visible content
      under the grid, inside a polite live region, which is stronger than a passing sentence. */
-  const say = (sentence: string) => AccessibilityInfo.announceForAccessibility(sentence);
+  const say = (sentence: TranslatedText) => AccessibilityInfo.announceForAccessibility(sentence);
   const spokenDate = (key: ISODate) => mkt.date(parse(key) ?? key);
 
   const toggle = (next: CalendarValue) => {
@@ -102,7 +89,7 @@ export function DateSet({
     const first = added[0];
     if (first !== undefined && onAdd !== undefined) {
       setBlocked(null);
-      say(`${spokenDate(first)} added.`);
+      say(words.added(spokenDate(first)));
       onAdd(first);
       return;
     }
@@ -114,7 +101,7 @@ export function DateSet({
       onBlocked(gone);
       return;
     }
-    say(`${spokenDate(gone)} removed.`);
+    say(words.removed(spokenDate(gone)));
     onRemove(gone);
   };
 
@@ -134,6 +121,7 @@ export function DateSet({
       <View style={[styles.layout, wide ? styles.layoutWide : null]}>
         <View style={[styles.grid, wide ? styles.gridWide : null]}>
           <Calendar
+            words={calendarWords}
             mode="set"
             value={dates}
             onChange={toggle}
@@ -155,8 +143,8 @@ export function DateSet({
             <View accessibilityLiveRegion="polite" style={styles.refusal}>
               <ComplianceFloor
                 variant="refusal"
-                {...floorFor(blockedEntry, packName, floor)}
-                message={refusalMessage(packName)}
+                {...floorFor(blockedEntry, packName, floor, words, floorWords)}
+                message={words.refusal(packName)}
               />
             </View>
           )}
@@ -167,6 +155,8 @@ export function DateSet({
             mkt={mkt}
             packName={packName}
             floor={floor}
+            words={words}
+            floorWords={floorWords}
             listLabel={listLabel}
             emptyMessage={emptyMessage}
             blocked={blocked}
@@ -175,7 +165,7 @@ export function DateSet({
               onRemove === undefined
                 ? undefined
                 : (date, spokenName) => {
-                    say(`${spokenName} removed.`);
+                    say(words.removed(spokenName));
                     onRemove(date);
                   }
             }

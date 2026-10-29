@@ -8,14 +8,13 @@ import {
   FACT_LONG_AT,
   FACT_MEASURE,
   FactGroundProvider,
-  factRowsOf,
-  factWantsLead,
-  groupForm,
+  groupedRows,
   isUnderFloor,
+  rowsGroupForm,
   useAnswerReport,
   useFactGround,
 } from './FactRow.logic';
-import type { FactRowsForm, FactRowsProps } from './FactRow.types';
+import type { FactRowsProps } from './FactRow.types';
 
 interface WebFactRowsProps extends FactRowsProps {
   className?: string;
@@ -43,9 +42,7 @@ export function FactRows({
 }: WebFactRowsProps) {
   const ref = useRef<HTMLDListElement>(null);
   const { width, gen } = useBoxProbe(ref);
-  const rows = factRowsOf(children).map((row) => row.props);
-  const declared = rows.some((row) => factWantsLead(row, longAt));
-  const hasMark = rows.some((row) => Boolean(row.mark));
+  const { rows, declared, hasMark } = groupedRows(children, longAt);
   const floor = isUnderFloor(width, leadBelow);
   /* Measured only while the group draws as a pair: in `lead` no value has a column to overflow. */
   const { fits, answered } = useFits(
@@ -53,10 +50,15 @@ export function FactRows({
     forced === 'auto' && !declared && !floor,
     `${gen}|${contentSignature(rows)}`,
   );
-  const { form, reason } = groupForm({ forced, declared, floor, fits });
-  const settled = forced !== 'auto' || declared || floor || answered;
-  const answer: FactRowsForm | null =
-    settled && width !== null ? { form, width, hasMark, reason } : null;
+  const { form, reason, answer } = rowsGroupForm({
+    forced,
+    declared,
+    floor,
+    fits,
+    answered,
+    width,
+    hasMark,
+  });
   useAnswerReport(answer, `${form}|${hasMark}|${reason}`, onFormChange);
   const { ink } = useFactGround();
   const vars: FactVars = { '--hg-fact-measure': String(measure) };

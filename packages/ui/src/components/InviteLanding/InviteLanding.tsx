@@ -1,5 +1,6 @@
 import { OTP_LENGTH } from '@heliogrid/domain';
-import type { ReactNode, RefObject } from 'react';
+import { type ReactNode, useRef } from 'react';
+import { type FocusAfter, type FocusHandle, useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { useDesktopShell } from '../AppShell/use-desktop-shell';
@@ -9,19 +10,21 @@ import { Card } from '../Card/Card';
 import { DoorFrame } from '../DoorFrame/DoorFrame';
 import { EmptyState } from '../EmptyState/EmptyState';
 import { OtpInput } from '../OtpInput/OtpInput';
-import type { FocusHandle } from '../SearchField/SearchField.types';
 import { TintedBlock } from '../TintedBlock/TintedBlock';
 import { DeclineConfirm, DeclineControl } from './InviteDecline';
 import { InviteFactsBlock, InviterRow } from './InviteFacts';
-import { useFocusOnNewFrame } from './InviteLanding.logic';
 import type {
   InviteDeclineProps,
   InviteLandingProps,
   InviteLandingWords,
 } from './InviteLanding.types';
 
-/** The new frame's act, which takes the focus when a press took the old one away. */
-type ActRef = { actRef?: RefObject<FocusHandle | null> };
+/**
+ * The frame's act, which takes the focus when a press took the old frame's control away — the ask,
+ * a confirmed decline. The read that opens the page moves nothing, and the live invite never takes
+ * the focus here: its code takes it at 1536 (ruling 12).
+ */
+type ActRef = { actRef: FocusAfter };
 
 /**
  * The landing in the onboarding frame: at 375 one column — who invited, the heading, the invite
@@ -31,7 +34,7 @@ type ActRef = { actRef?: RefObject<FocusHandle | null> };
  */
 export function InviteLanding(props: InviteLandingProps) {
   const { language, words, frame } = props;
-  const actRef = useFocusOnNewFrame(frame.kind);
+  const actRef = useRef<FocusHandle>(null);
   const wide = useDesktopShell() === true;
   const shell = (identity: ReactNode, task: ReactNode) => (
     <DoorFrame panes="onboarding" taskMeasure="field" trailing={language} identity={identity}>
@@ -42,7 +45,7 @@ export function InviteLanding(props: InviteLandingProps) {
   );
   switch (frame.kind) {
     case 'loading':
-      return shell(undefined, <LandingSkeleton spoken={words.loading} />);
+      return shell(undefined, <LandingSkeleton words={words} />);
     case 'empty':
     case 'reinvite-requested':
     case 'declined':
@@ -61,7 +64,7 @@ export function InviteLanding(props: InviteLandingProps) {
       );
     case 'expired':
     case 'landing': {
-      const decline = declineOf(props);
+      const decline = declineOf(props, actRef);
       return shell(
         <LandingHead {...props} wide={wide} />,
         <>
@@ -74,9 +77,12 @@ export function InviteLanding(props: InviteLandingProps) {
 }
 
 /** The decline's part, on a live invite only. */
-function declineOf({ words, frame, onPress }: InviteLandingProps): InviteDeclineProps | null {
+function declineOf(
+  { words, frame, onPress }: InviteLandingProps,
+  focusAfter: FocusAfter,
+): InviteDeclineProps | null {
   if (words.decline === null || frame.decline === null) return null;
-  return { words: words.decline, decline: frame.decline, onPress };
+  return { words: words.decline, decline: frame.decline, onPress, focusAfter };
 }
 
 /** The context: who invited, the heading, and — at 375 — the banner above the invite card. */
@@ -119,6 +125,7 @@ function LandingTask(
           <OtpInput
             length={OTP_LENGTH}
             label={words.codeLabel}
+            words={words.otp}
             value={code}
             onChange={onCode}
             disabled={field === 'closed'}
@@ -185,6 +192,7 @@ function ResendSlot({ words, onPress }: Pick<InviteLandingProps, 'words' | 'onPr
 /** The frame's one act: Join, Try again, the ask, or the door control a code refusal offers. */
 function PrimaryAct({ words, frame, onPress, actRef }: InviteLandingProps & ActRef) {
   const { primary } = frame;
+  const leaving = useFocusAfter(actRef);
   if (primary === null || words.primary === null) return null;
   return (
     <Button
@@ -194,7 +202,7 @@ function PrimaryAct({ words, frame, onPress, actRef }: InviteLandingProps & ActR
       fullWidth
       loading={frame.busy}
       disabled={primary.label === 'join' && frame.joinHeld}
-      onClick={() => onPress(primary.press)}
+      onClick={leaving(() => onPress(primary.press))}
     >
       {words.primary}
     </Button>
@@ -233,9 +241,14 @@ function LandingPlace({ words, frame, onSignIn, actRef }: InviteLandingProps & A
 }
 
 /** The read in flight: the inviter row, the heading and the invite card at their real heights; no act. */
-function LandingSkeleton({ spoken }: { spoken: string }) {
+function LandingSkeleton({ words }: { words: InviteLandingWords }) {
   return (
-    <div className="hg-invite-landing-skeleton" role="status" aria-busy="true" aria-label={spoken}>
+    <div
+      className="hg-invite-landing-skeleton"
+      role="status"
+      aria-busy="true"
+      aria-label={words.loading}
+    >
       <div className="hg-invite-landing-skeleton-row" aria-hidden="true">
         <span className="hg-invite-landing-bar" data-shape="disc" />
         <div className="hg-invite-landing-skeleton-lines">
@@ -249,6 +262,7 @@ function LandingSkeleton({ spoken }: { spoken: string }) {
       </div>
       <Card
         read={{ kind: 'loading' }}
+        loadingLabel={words.loadingCard}
         density="expressive"
         className="hg-invite-landing-skeleton-card"
       />

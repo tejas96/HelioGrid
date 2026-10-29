@@ -5,11 +5,23 @@
    `done`, a filled dot for `current`, a bang for `blocked`, a cross for `failed` — and `upcoming`
    is an empty disc, which is its own shape. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
+import { messageGlyphOf, nodeGlyphSize } from './Timeline.logic';
 import type { TimelineStatus } from './Timeline.types';
+
+/**
+ * The caller's class and style, on whichever state draws the root of a timeline that shows no
+ * read. A timeline that shows a read wraps its states in one frame, which carries them instead.
+ */
+export interface TimelineRoot {
+  className?: string;
+  style?: CSSProperties;
+}
 
 /** The node. `size` is the DS's own node ladder (28 page / 20 compact); it lives in Timeline.css. */
 export function TimelineNode({
@@ -19,7 +31,7 @@ export function TimelineNode({
   status?: TimelineStatus;
   compact: boolean;
 }) {
-  const inner = compact ? 11 : 15;
+  const inner = nodeGlyphSize(compact);
   return (
     <span aria-hidden="true" className="hg-timeline-node" data-status={status}>
       {status === 'done' ? (
@@ -70,19 +82,13 @@ export function TimelineNode({
   );
 }
 
-export function TimelineSkeleton({
-  className,
-  style,
-}: {
-  className?: string;
-  style?: CSSProperties;
-}) {
+export function TimelineSkeleton({ label, root }: { label?: TranslatedText; root: TimelineRoot }) {
   return (
     <div
       role="status"
-      aria-label="Loading activity"
-      className={classNames('hg-timeline-skeleton', className)}
-      style={style}
+      aria-label={label}
+      className={classNames('hg-timeline-skeleton', root.className)}
+      style={root.style}
     >
       {['a', 'b', 'c', 'd'].map((row) => (
         <div key={row} className="hg-timeline-skeleton-row">
@@ -103,19 +109,19 @@ export function TimelineMessage({
   message,
   onRetry,
   retryLabel,
-  className,
-  style,
+  focusAfter,
+  root,
 }: {
   tone?: 'warning';
-  title: string;
-  message?: string;
+  title?: TranslatedText;
+  message?: TranslatedText;
   onRetry?: () => void;
-  retryLabel?: string;
-  className?: string;
-  style?: CSSProperties;
+  retryLabel?: TranslatedText;
+  focusAfter: FocusAfter;
+  root: TimelineRoot;
 }) {
   return (
-    <div className={classNames('hg-timeline-message', className)} style={style}>
+    <div className={classNames('hg-timeline-message', root.className)} style={root.style}>
       <span className="hg-timeline-message-mark" data-tone={tone ?? 'neutral'}>
         <svg
           width="22"
@@ -128,12 +134,12 @@ export function TimelineMessage({
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          <ShellGlyphMarks name={tone === 'warning' ? 'alert-circle' : 'clock-tall'} />
+          <ShellGlyphMarks name={messageGlyphOf(tone)} />
         </svg>
       </span>
-      <div className="hg-timeline-message-title">{title}</div>
+      {title ? <div className="hg-timeline-message-title">{title}</div> : null}
       {message ? <div className="hg-timeline-message-body">{message}</div> : null}
-      <RetryButton onRetry={onRetry} label={retryLabel} />
+      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
     </div>
   );
 }

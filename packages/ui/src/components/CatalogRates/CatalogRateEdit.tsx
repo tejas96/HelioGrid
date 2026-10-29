@@ -25,6 +25,7 @@ export function CatalogRateEdit(props: CatalogRateEditProps) {
         </span>
       ))}
       <Select
+        {...props.select}
         label={props.basisLabel}
         value={props.basis}
         onChange={(value) => {

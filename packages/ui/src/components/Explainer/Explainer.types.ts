@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ExplainerPaging } from '@heliogrid/domain';
 import type { ReactElement, ReactNode } from 'react';
 
@@ -5,7 +6,7 @@ import type { ReactElement, ReactNode } from 'react';
  * One page: a sentence, or one node holding one to three short sentences. Never an array — an
  * array is PAGES, and a bare `ReactNode` would let four of them in as "one page" (`F7-46`).
  */
-export type ExplainerPage = string | ReactElement;
+export type ExplainerPage = TranslatedText | ReactElement;
 
 export type ExplainerPlacement = 'top' | 'bottom' | 'left' | 'right';
 
@@ -49,14 +50,14 @@ export interface ExplainerTriggerProps {
 
 /** A button. Never a second action. */
 export interface ExplainerButtonAction {
-  label: string;
+  label: TranslatedText;
   onPress: () => void;
   href?: undefined;
 }
 
 /** A link: it goes somewhere, so it renders as a link, not a pill. */
 export interface ExplainerLinkAction {
-  label: string;
+  label: TranslatedText;
   href: string;
   onPress?: undefined;
 }
@@ -66,9 +67,9 @@ export type ExplainerAction = ExplainerButtonAction | ExplainerLinkAction;
 
 export interface ExplainerBaseProps {
   /** The trigger's accessible name — "About shading loss". The caller's words; there is no fallback. */
-  label: string;
+  label: TranslatedText;
   /** One short line. */
-  title?: string;
+  title?: TranslatedText;
   /** Preferred side. Flips to the opposite side when that side has no room. Default `bottom`. */
   placement?: ExplainerPlacement;
   /** ONE action, on the last page of a paged ask. Never two. */

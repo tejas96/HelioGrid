@@ -1,31 +1,11 @@
 import { theme } from '@heliogrid/theme';
-import { useEffect, useRef, useState } from 'react';
-import { AccessibilityInfo, Animated, Easing, StyleSheet, View } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { useReducedMotion } from '../../primitives/use-reduced-motion';
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
 import { BrandGradientFill } from '../ProgressBar/BrandGradientFill.native';
 
 const SIZE = 132;
-
-/** `prefers-reduced-motion` for RN — the same query the web half reads from CSS. */
-function useReduceMotion() {
-  const [reduce, setReduce] = useState(false);
-  useEffect(() => {
-    let alive = true;
-    AccessibilityInfo.isReduceMotionEnabled()
-      .then((enabled) => {
-        if (alive) {
-          setReduce(enabled);
-        }
-      })
-      .catch(() => undefined);
-    const sub = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduce);
-    return () => {
-      alive = false;
-      sub.remove();
-    };
-  }, []);
-  return reduce;
-}
 
 /** An alternating 0 → 1 → 0 loop, which is CSS `infinite alternate`. */
 function useAlternatingLoop(active: boolean, halfDuration: number) {
@@ -64,7 +44,7 @@ function useAlternatingLoop(active: boolean, halfDuration: number) {
  * reduce-motion, which is the same promise the web half makes through the media query.
  */
 export function SunCloudMark({ animate = true }: { animate?: boolean }) {
-  const reduce = useReduceMotion();
+  const reduce = useReducedMotion();
   const moving = animate && !reduce;
   const drift = useAlternatingLoop(moving, 9000);
   const breathe = useAlternatingLoop(moving, 4000);

@@ -1,12 +1,11 @@
-import {
-  type CompanyProfileLife,
-  type CompanyProfilePart,
-  type CompanyProfileView,
-  inLanguage,
-  type ReadKind,
-  type UiLanguage,
+import type {
+  CompanyProfileLife,
+  CompanyProfilePart,
+  CompanyProfileView,
+  ReadKind,
+  UiLanguage,
 } from '@heliogrid/domain';
-import type { Translator } from '../runtime';
+import { packWords, type Translator } from '../runtime';
 import type { CompanyLogoCaptureFacts } from './company-logo';
 import { type CompanyProfileWords, companyProfileWords } from './company-profile-words';
 
@@ -43,8 +42,8 @@ export function companyProfileStepWords(
     open: step.open,
     city: step.values.city,
     taxIdLabel: labels.taxIdLabel,
-    taxFormat: step.taxFormat === null ? '' : inLanguage(step.taxFormat, reader),
-    bankRoutingLabel: labels.bankRoutingLabel,
+    taxFormat: step.taxFormat === null ? null : packWords(step.taxFormat, reader),
+    bankRoutingLabel: packWords({ en: labels.bankRoutingLabel }, reader),
     letterhead: step.letterhead,
     logo: step.logo,
   });

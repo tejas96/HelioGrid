@@ -1,7 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { rowKeyOf } from './DataTable.logic';
-import type { DataTableProps, DataTableSort } from './DataTable.types';
+import { rowKeysOf } from './DataTable.logic';
+import type { GridProps } from './DataTable.parts.types';
+import type { DataTableProps } from './DataTable.types';
 import { DataTableRows } from './DataTableRows.native';
 import { TotalBlock } from './DataTableTotal.native';
 
@@ -13,25 +14,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export interface GridProps<Row> {
-  /** The rows in the order they render — sorting has already happened. */
-  rows: Row[];
-  rowKey: NonNullable<DataTableProps<Row>['rowKey']>;
-  selectable: boolean;
-  selected: (string | number)[];
-  onToggleRow: (key: string | number) => void;
-  onToggleAll: (keys: (string | number)[]) => void;
-  allSelected: boolean;
-  sortable: boolean;
-  sort: DataTableSort | null | undefined;
-  onSort: (next: DataTableSort) => void;
-  /**
-   * **The caption's words** (`F7-27`). RN has no `aria-labelledby`, so the caption cannot be
-   * pointed at by id — the equivalent is carrying its text as the grid's own accessible name.
-   */
-  labelledBy?: string;
-  table: DataTableProps<Row>;
-  pageSize: number;
+interface NativeGridProps<Row> extends GridProps<Row> {
   density: NonNullable<DataTableProps<Row>['density']>;
 }
 
@@ -55,7 +38,7 @@ export function DataTableGrid<Row>({
   table,
   pageSize,
   density,
-}: GridProps<Row>) {
+}: NativeGridProps<Row>) {
   const { columns, totalRow } = table;
 
   return (
@@ -73,7 +56,7 @@ export function DataTableGrid<Row>({
           selectable={selectable}
           selected={selected}
           onToggleRow={onToggleRow}
-          onToggleAll={() => onToggleAll(rows.map((row, index) => rowKeyOf(rowKey, row, index)))}
+          onToggleAll={() => onToggleAll(rowKeysOf(rows, rowKey))}
           allSelected={allSelected}
           sortable={sortable}
           sort={sort}
@@ -91,6 +74,7 @@ export function DataTableGrid<Row>({
             page={table.page}
             pageSize={pageSize}
             renderedRows={table.rows.length}
+            words={table.words}
           />
         </View>
       )}

@@ -45,6 +45,7 @@ export function DoorCodeStep({
           <OtpInput
             length={OTP_LENGTH}
             label={words.codeLabel}
+            words={words.otp}
             value={code}
             onChange={onCode}
             disabled={frame.code === 'closed'}

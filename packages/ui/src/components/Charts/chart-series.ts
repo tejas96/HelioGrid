@@ -50,3 +50,35 @@ export function lineGeometry(
 export function longestSeries(sets: LineSeries[]): number {
   return Math.max(0, ...sets.map((s) => s.points.length));
 }
+
+/** A bar's reading — its category and its formatted value, the two facts it plots. */
+export function datumReading(label: string, value: string): string {
+  return `${label}: ${value}`;
+}
+
+/** One series as drawn: its key, its polyline, its area (a lone series only) and its end dot. */
+export interface LineSetDrawing {
+  key: string;
+  points: string;
+  area: string | null;
+  end: { x: number; y: number } | null;
+}
+
+export function lineSetDrawing(
+  set: LineSeries,
+  index: number,
+  geo: LineGeometry,
+  withArea: boolean,
+): LineSetDrawing {
+  const count = set.points.length;
+  const points = set.points.map((p, i) => `${geo.x(i, count)},${geo.y(p.y)}`).join(' ');
+  const last = set.points[count - 1];
+  return {
+    key: set.name === undefined || set.name === '' ? `series-${index}` : set.name,
+    points,
+    area: withArea
+      ? `${geo.pad},${geo.height} ${points} ${geo.width - geo.pad},${geo.height}`
+      : null,
+    end: last === undefined ? null : { x: geo.x(count - 1, count), y: geo.y(last.y) },
+  };
+}

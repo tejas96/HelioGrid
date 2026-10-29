@@ -15,7 +15,7 @@ interface NativeFabProps extends FabProps {
  * Pressable primitive, which owns the pressed treatment for the whole system — so the scale is
  * the primitive's, not this component's.
  */
-export function Fab({ label = 'Add', icon, onClick, size = 56, style }: NativeFabProps) {
+export function Fab({ label, icon, onClick, size = 56, style }: NativeFabProps) {
   return (
     <Pressable
       accessibilityLabel={label}

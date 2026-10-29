@@ -34,7 +34,7 @@ export function ChartProvenance({ facts }: ChartProvenanceProps) {
         <View key={part.id} style={styles.part}>
           {index > 0 ? (
             <Text variant="caption" color="tertiary">
-              ·
+              {'·'}
             </Text>
           ) : null}
           {part.dot === undefined ? null : (

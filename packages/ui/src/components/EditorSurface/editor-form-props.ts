@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { SheetSize } from '../Sheet/Sheet.types';
 import type {
@@ -6,12 +7,13 @@ import type {
   EditorSurfaceDensity,
   EditorSurfaceProps,
 } from './EditorSurface.types';
+import { type EditorStateProps, editorStateProps } from './editor-state-props';
 
 /** The default `panelAbove`: at or above this many px of LAYER width the editor is a side panel. */
 export const PANEL_ABOVE = 720;
 
 export interface EditorFormChrome {
-  closeLabel: string;
+  closeLabel: TranslatedText;
   density: EditorSurfaceDensity;
   showClose: boolean;
 }
@@ -87,4 +89,53 @@ export function resolveForForm(
   }
   const context: EditorFormContext = { panel, layerWidth };
   return children(context);
+}
+
+/** What every form says and how it closes — the same defaults whichever form renders. */
+function sharedFormProps(props: EditorSurfaceProps) {
+  return {
+    dismissible: props.dismissible ?? true,
+    footer: props.footer,
+    onClose: props.onClose,
+    open: true,
+    overline: props.overline,
+    title: props.title,
+    zIndex: props.zIndex ?? 40,
+  };
+}
+
+/** The head and its states, which a sheet and a panel take alike and a decision's modal never does. */
+function headFormProps(props: EditorSurfaceProps, meta: ReactNode) {
+  return {
+    ...sharedFormProps(props),
+    leading: props.leading ?? null,
+    meta,
+    modal: props.modal ?? true,
+    status: props.status,
+    subtitle: props.subtitle,
+    subtitleFace: props.subtitleFace,
+  };
+}
+
+/** The decision's `Modal`: its subtitle is spoken as the modal's description. */
+export function modalFormProps(props: EditorSurfaceProps) {
+  return { ...modalChrome(props), ...sharedFormProps(props), description: props.subtitle };
+}
+
+/** The edge `DetailPanel` — `meta` is the row already resolved for the panel form. */
+export function panelFormProps(props: EditorSurfaceProps, meta: ReactNode) {
+  const stateProps: EditorStateProps = editorStateProps(props);
+  return {
+    ...stateProps,
+    ...panelChrome(props),
+    ...headFormProps(props, meta),
+    side: props.side ?? 'right',
+    width: props.width ?? 480,
+  };
+}
+
+/** The bottom `Sheet` — `meta` is the row already resolved for the sheet form. */
+export function sheetFormProps(props: EditorSurfaceProps, meta: ReactNode) {
+  const stateProps: EditorStateProps = editorStateProps(props);
+  return { ...stateProps, ...sheetChrome(props), ...headFormProps(props, meta) };
 }

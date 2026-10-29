@@ -58,6 +58,16 @@ export function measure(value?: RichTextValue): RichTextMetrics {
   return { chars, words, blocks: blocks.length, headings, listItems, hasLogo };
 }
 
+/** Past the caller's limit, the count turns to danger. No limit, never over. */
+export function isOverLength(metrics: RichTextMetrics, maxLength: number | undefined): boolean {
+  return maxLength !== undefined && metrics.chars > maxLength;
+}
+
+/** The placeholder shows only in an editor with no words and no logo. */
+export function isBlank(metrics: RichTextMetrics): boolean {
+  return metrics.chars === 0 && !metrics.hasLogo;
+}
+
 /**
  * **The value as flow rows** — one row per paragraph, heading-with-its-block, or list ITEM.
  *

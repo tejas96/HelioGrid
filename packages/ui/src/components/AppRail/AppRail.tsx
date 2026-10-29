@@ -1,7 +1,8 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { badgeName, showsBadge } from '../AppShell/AppShell.types';
+import { showsBadge } from '../AppShell/AppShell.types';
 import { CountBadge } from '../AppShell/CountBadge';
+import { spokenItemName } from './AppRail.logic';
 import type { AppRailProps, RailItem } from './AppRail.types';
 
 type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
@@ -66,7 +67,7 @@ function RailButton({ item, active, onClick }: RailButtonProps) {
   return (
     <button
       type="button"
-      aria-label={item.name ?? badgeName(item.label, item.badge)}
+      aria-label={spokenItemName(item)}
       aria-current={active ? 'page' : undefined}
       aria-expanded={item.open}
       onClick={onClick}
@@ -77,7 +78,7 @@ function RailButton({ item, active, onClick }: RailButtonProps) {
       {/* F6-17: the badge counts unread from the record. A number, not a dot — see CountBadge. */}
       {showsBadge(item.badge) ? (
         <span className="hg-app-rail-badge">
-          <CountBadge count={item.badge} label={item.label.toLowerCase()} />
+          <CountBadge count={item.badge} />
         </span>
       ) : null}
     </button>

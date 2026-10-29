@@ -1,6 +1,8 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type {
   AllocationEnforcement,
   AllocationMeterProps,
+  AllocationMeterWords,
   AllocationPart,
   AllocationSpan,
   AllocationState,
@@ -9,6 +11,11 @@ import type {
 /** Two decimals, no trailing zeroes. 99.99 stays 99.99; 30 stays "30". */
 export function formatAllocation(value: number): string {
   return String(Math.round(value * 100) / 100);
+}
+
+/** A figure as the meter prints it, with its unit — "62%". */
+export function allocationFigure(value: number, unit: string): string {
+  return `${formatAllocation(value)}${unit}`;
 }
 
 export interface AllocationModel {
@@ -25,10 +32,6 @@ export interface AllocationModel {
   spans: AllocationSpan[];
   /** The target line's position along the track, as a percentage. */
   tickAt: number;
-  /** The generated remainder sentence. `null` when there is no resolved figure. */
-  remainder: string | null;
-  /** The generated enforcement sentence. `null` when nothing is blocked. */
-  enforcement: string | null;
 }
 
 function partValue(part: AllocationPart): number {
@@ -90,35 +93,71 @@ function deriveState(off: number | null, tolerance: number): AllocationState {
 
 /** THE REMAINDER IS IN WORDS, NOT A GAP IN A BAR — M06-13 quotes the sentence. */
 function remainderSentence(
-  state: AllocationState,
-  off: number | null,
+  model: AllocationModel,
+  words: AllocationMeterWords,
   unit: string,
-): string | null {
-  if (off === null) {
+): TranslatedText | null {
+  if (model.off === null) {
     return null;
   }
-  if (state === 'met') {
-    return 'Fully allocated.';
+  if (model.state === 'met') {
+    return words.met;
   }
-  return state === 'over'
-    ? `${formatAllocation(off)}${unit} over-allocated.`
-    : `${formatAllocation(-off)}${unit} unallocated.`;
+  return model.state === 'over'
+    ? words.over(allocationFigure(model.off, unit))
+    : words.under(allocationFigure(-model.off, unit));
 }
 
 /** The block is a SENTENCE, never a silent refusal. `none` blocks nothing and says nothing. */
 function enforcementSentence(
+  model: AllocationModel,
+  words: AllocationMeterWords,
   enforcement: AllocationEnforcement,
-  state: AllocationState,
-  resolved: boolean,
-  target: number,
-  unit: string,
-): string | null {
-  if (enforcement === 'none' || state === 'met' || !resolved) {
+  target: string,
+): TranslatedText | null {
+  if (enforcement === 'none' || model.state === 'met' || !model.resolved) {
     return null;
   }
-  return enforcement === 'immediate'
-    ? `This has to reach ${formatAllocation(target)}${unit} before it can be saved.`
-    : `Generate is blocked until the allocation reaches ${formatAllocation(target)}${unit}.`;
+  return enforcement === 'immediate' ? words.blocksSave(target) : words.blocksGenerate(target);
+}
+
+/** What the meter says: the remainder, the rule's bite, and the whole figure for a screen reader. */
+export interface AllocationSentences {
+  /** The line under the bar — the caller's, else the remainder, else the unresolved words. */
+  remainder: TranslatedText;
+  /** The rule's bite, or `null` when nothing is blocked. */
+  enforcement: TranslatedText | null;
+  /** "62% of 100% — 38% unallocated.", or `undefined` with no resolved figure. */
+  figure: TranslatedText | undefined;
+}
+
+/** Every sentence the meter draws or speaks, in the reader's language, from the one model. */
+export function allocationSentences(
+  model: AllocationModel,
+  words: AllocationMeterWords,
+  {
+    target = 100,
+    unit = '%',
+    enforcement = 'at-generate',
+    remainderWords,
+    enforcementNote,
+    unresolvedNote,
+  }: AllocationMeterProps,
+): AllocationSentences {
+  const goal = allocationFigure(target, unit);
+  const remainder =
+    remainderWords ?? remainderSentence(model, words, unit) ?? unresolvedNote ?? words.unresolved;
+  return {
+    remainder,
+    enforcement:
+      enforcementNote === undefined
+        ? enforcementSentence(model, words, enforcement, goal)
+        : enforcementNote,
+    figure:
+      model.sum === null
+        ? undefined
+        : words.figure(allocationFigure(model.sum, unit), goal, remainder),
+  };
 }
 
 /** The no-parts case: the caller summed for us, so the bar is one span and maybe an excess. */
@@ -143,9 +182,7 @@ export function allocationModel({
   parts = [],
   allocated,
   target = 100,
-  unit = '%',
   tolerance = 0.05,
-  enforcement = 'at-generate',
   state,
 }: AllocationMeterProps): AllocationModel {
   const list = parts.filter((part) => Number.isFinite(partValue(part)));
@@ -168,12 +205,25 @@ export function allocationModel({
     scale,
     spans,
     tickAt: (target / scale) * 100,
-    remainder: remainderSentence(current, off, unit),
-    enforcement: enforcementSentence(enforcement, current, resolved, target, unit),
   };
 }
 
 export { partValue };
+
+/** The state the words and their mark draw: a meter with no resolved figure reads as under. */
+export function drawnState(model: AllocationModel): AllocationState {
+  return model.resolved ? model.state : 'under';
+}
+
+/** The meter's top for a screen reader — the target, or the sum once it passes it. */
+export function meterTop(target: number, sum: number): number {
+  return Math.max(target, sum);
+}
+
+/** A legend entry's key: its label and its share, since two parts may share a label. */
+export function legendKey(part: AllocationPart): string {
+  return `${part.label ?? ''}-${partValue(part)}`;
+}
 
 /**
  * Up to four parts keep ONE key row, so template cards side by side stay one height; five or more

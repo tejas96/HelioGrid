@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { createTranslator, SETUP_LANGUAGE } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour, resolvedFont } from '../support/token';
@@ -13,7 +14,10 @@ const en = await createTranslator('en');
 /* Any words: the spec reads the faces, not the words. A unit is a quantity's symbol, never
    translated, so it is written as the product writes it. */
 const LABEL = en.t(SETUP_LANGUAGE.group);
-const BOX_LABELS: [string, string] = [en.t(SETUP_LANGUAGE.title), en.t(SETUP_LANGUAGE.askTitle)];
+const BOX_LABELS: [TranslatedText, TranslatedText] = [
+  en.t(SETUP_LANGUAGE.title),
+  en.t(SETUP_LANGUAGE.askTitle),
+];
 const UNIT = 'W';
 
 test('the end boxes take the sans face', async ({ mount, page }) => {

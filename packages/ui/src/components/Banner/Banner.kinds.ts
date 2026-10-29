@@ -1,44 +1,40 @@
 import type { BannerKind, BannerKindMeta } from './Banner.types';
 
-/** The kind table: tone, precedence rank, ARIA role and default label per kind. */
+/** The kind table: tone, precedence rank, ARIA role and glyph per kind. */
 export const BANNER_KINDS: Record<BannerKind, BannerKindMeta> = {
   validation: {
     tone: 'danger',
     rank: 5,
     role: 'alert',
     icon: 'alert',
-    label: 'Fix before you continue',
   },
-  state: { tone: 'warning', rank: 10, role: 'status', icon: 'alert', label: 'State' },
+  state: { tone: 'warning', rank: 10, role: 'status', icon: 'alert' },
   'review-needed': {
     tone: 'warning',
     rank: 12,
     role: 'status',
     icon: 'review',
-    label: 'Needs review',
   },
-  dunning: { tone: 'danger', rank: 15, role: 'status', icon: 'rupee', label: 'Payment overdue' },
-  cap: { tone: 'warning', rank: 20, role: 'status', icon: 'alert', label: 'Limit reached' },
+  dunning: { tone: 'danger', rank: 15, role: 'status', icon: 'rupee' },
+  cap: { tone: 'warning', rank: 20, role: 'status', icon: 'alert' },
   'data-integrity': {
     tone: 'danger',
     rank: 25,
     role: 'status',
     icon: 'alert',
-    label: 'Data problem',
   },
-  bundle: { tone: 'info', rank: 30, role: 'status', icon: 'info', label: 'Bundle' },
+  bundle: { tone: 'info', rank: 30, role: 'status', icon: 'info' },
   'orphan-override': {
     tone: 'warning',
     rank: 35,
     role: 'status',
     icon: 'review',
-    label: 'Overridden',
   },
-  'below-cost': { tone: 'danger', rank: 50, role: 'status', icon: 'rupee', label: 'Below cost' },
-  preliminary: { tone: 'info', rank: 55, role: 'status', icon: 'info', label: 'Preliminary' },
-  suggestion: { tone: 'accent', rank: 70, role: 'status', icon: 'spark', label: 'Suggestion' },
-  info: { tone: 'info', rank: 60, role: 'status', icon: 'info', label: 'Information' },
-  disclaimer: { tone: 'neutral', rank: 80, role: 'status', icon: 'info', label: 'Note' },
+  'below-cost': { tone: 'danger', rank: 50, role: 'status', icon: 'rupee' },
+  preliminary: { tone: 'info', rank: 55, role: 'status', icon: 'info' },
+  suggestion: { tone: 'accent', rank: 70, role: 'status', icon: 'spark' },
+  info: { tone: 'info', rank: 60, role: 'status', icon: 'info' },
+  disclaimer: { tone: 'neutral', rank: 80, role: 'status', icon: 'info' },
 };
 
 /**

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { FilterOption } from '../FilterBar/FilterBar.types';
 import { optionLabel, optionValue } from '../FilterBar/FilterBar.types';
 import { rangeIsAny, rangeReadout } from '../RangeField/RangeField.logic';
@@ -7,6 +8,8 @@ import type {
   FilterDimension,
   FilterDimensionUnder,
   FilterDimensionValue,
+  FilterFold,
+  FilterPanelWords,
   FilterSetWords,
   FilterValue,
   FlagDimension,
@@ -107,13 +110,6 @@ export function withDimension(
   return out;
 }
 
-/** The dimensions folded under one value of a section's dimension, as one `Accordion` line. */
-export interface FilterFold {
-  key: string;
-  title: string;
-  dimensions: FilterDimension[];
-}
-
 /** One section of the body: a dimension and the folds that show under it now. */
 export interface FilterSection {
   dim: FilterDimension;
@@ -208,7 +204,7 @@ export function dimensionSummary(
         hi: range[1],
         min: dim.min,
         max: dim.max,
-        anyLabel: dim.anyLabel ?? '',
+        anyLabel: dim.anyLabel,
         unit: dim.unit,
         format: dim.format,
       });
@@ -223,7 +219,59 @@ export function foldSummary(
   fold: FilterFold,
   value: FilterValue,
   words: FilterSetWords,
-): string | undefined {
+): TranslatedText | undefined {
   const on = countActiveFilters(fold.dimensions, value);
   return on === 0 ? undefined : words.groupOn(on);
+}
+
+/**
+ * `FilterPanel`'s measures when the caller names none: a side panel from 720 of the layer's own
+ * width, 460 wide, over the page at 40.
+ */
+export const FILTER_PANEL_DEFAULTS = { panelAbove: 720, width: 460, zIndex: 40 } as const;
+
+/**
+ * One dimension's change as the whole value the caller is handed — every folded dimension whose
+ * value is no longer chosen cleared in the same write.
+ */
+export function dimensionChangeOf(
+  dimensions: FilterDimension[],
+  value: FilterValue,
+  onChange: ((value: FilterValue) => void) | undefined,
+): (key: string, next: FilterDimensionValue) => void {
+  return (key, next) => onChange?.(withDimension(dimensions, value, key, next));
+}
+
+export interface FilterFooter {
+  /** *Clear all* has nothing to clear, so it is disabled. */
+  nothingOn: boolean;
+  /** The caller's own clear when it has one, else every dimension written back to "off". */
+  clear: () => void;
+  /** A LABELLED DISMISS — "Show 24 results" — never an apply; plain *Done* without a count. */
+  doneLabel: TranslatedText;
+}
+
+export function filterFooterOf({
+  dimensions,
+  value,
+  onChange,
+  onClear,
+  resultCount,
+  resultNoun,
+  words,
+}: {
+  dimensions: FilterDimension[];
+  value: FilterValue;
+  onChange: ((value: FilterValue) => void) | undefined;
+  onClear: (() => void) | undefined;
+  resultCount: number | undefined;
+  resultNoun: TranslatedText | undefined;
+  words: FilterPanelWords;
+}): FilterFooter {
+  return {
+    nothingOn: countActiveFilters(dimensions, value) === 0,
+    clear: () => (onClear ? onClear() : onChange?.(clearedFilterValue(dimensions))),
+    doneLabel:
+      typeof resultCount === 'number' ? words.showResults(resultCount, resultNoun) : words.done,
+  };
 }

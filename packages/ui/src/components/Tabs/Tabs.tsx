@@ -1,10 +1,9 @@
 import type { CSSProperties } from 'react';
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { clampCount } from '../../utils/count';
 import { renderActionReason } from '../ActionReason';
 import { renderMarks } from '../ChipGroup';
-import { hasReason, normalise, TAB_COUNT_MAX } from './Tabs.options';
+import { hasReason, reasonedTabs, tabCountText } from './Tabs.options';
 import type { TabsProps } from './Tabs.types';
 
 type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
@@ -29,13 +28,12 @@ interface WebTabsProps extends TabsProps {
  * except the keyboard user who most needs it. Without a reason the native attribute stays.
  */
 export function Tabs({ tabs, value, onChange, className, style }: WebTabsProps) {
-  const items = useMemo(() => normalise(tabs), [tabs]);
   const refs = useRef<Record<string, HTMLButtonElement | null>>({});
   const autoId = useId();
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
 
   useEffect(() => {
-    const active = items.find((item) => item.value === value);
+    const active = tabs.find((item) => item.value === value);
     const element = active === undefined ? null : (refs.current[active.value] ?? null);
     if (element === null) {
       return;
@@ -45,9 +43,9 @@ export function Tabs({ tabs, value, onChange, className, style }: WebTabsProps) 
     setIndicator((previous) =>
       previous.left === left && previous.width === width ? previous : { left, width },
     );
-  }, [items, value]);
+  }, [tabs, value]);
 
-  const reasoned = items.filter((tab) => tab.disabled === true && hasReason(tab));
+  const reasoned = reasonedTabs(tabs);
   const wrapped = reasoned.length > 0;
   const stripStyle: StyleVars = {
     '--hg-tabs-indicator-left': `${indicator.left}px`,
@@ -65,7 +63,7 @@ export function Tabs({ tabs, value, onChange, className, style }: WebTabsProps) 
       className={classNames('hg-tabs-strip', wrapped ? undefined : className)}
       style={stripStyle}
     >
-      {items.map((tab) => {
+      {tabs.map((tab) => {
         const active = tab.value === value;
         const off = tab.disabled === true;
         const reasonId = off && hasReason(tab) ? `${autoId}-r-${tab.value}` : undefined;
@@ -94,7 +92,7 @@ export function Tabs({ tabs, value, onChange, className, style }: WebTabsProps) 
           >
             {tab.label}
             {tab.count !== undefined ? (
-              <span className="hg-tabs-count">{clampCount(tab.count, TAB_COUNT_MAX)}</span>
+              <span className="hg-tabs-count">{tabCountText(tab.count)}</span>
             ) : null}
             {renderMarks(tab.marks)}
           </button>

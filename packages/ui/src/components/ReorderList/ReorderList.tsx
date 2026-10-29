@@ -13,54 +13,41 @@
 import type { CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
-import type { MoveDirection } from './ReorderList.defaults';
-import {
-  atEndSentence,
-  controlsPlacement,
-  defaultKeyOf,
-  defaultLabelOf,
-  deletedSentence,
-  movedSentence,
-} from './ReorderList.defaults';
+import { controlsPlacement, defaultKeyOf } from './ReorderList.defaults';
 import type { FocusableControl } from './ReorderList.focus';
 import { controlId, deleteFocusTarget, moveFocusTarget } from './ReorderList.focus';
 import type { ReorderListProps } from './ReorderList.types';
 import { ReorderRow } from './ReorderRow';
+import { useReorderActs } from './use-reorder-acts';
 
 interface WebReorderListProps<T> extends ReorderListProps<T> {
   className?: string;
   style?: CSSProperties;
 }
 
-type Pending =
-  | { kind: 'move'; key: string | number; dir: MoveDirection }
-  | { kind: 'delete'; index: number };
-
-export function ReorderList<T>({
-  items = [],
-  keyOf = defaultKeyOf,
-  labelOf = defaultLabelOf,
-  renderItem,
-  onMove,
-  onDelete,
-  canDelete,
-  lockOf,
-  minItems = 0,
-  label = 'Ordered list',
-  itemNoun = 'rows',
-  emptyMessage = 'No rows yet.',
-  controls,
-  actionOf,
-  density = 'expressive',
-  className,
-  style,
-}: WebReorderListProps<T>) {
+export function ReorderList<T>(props: WebReorderListProps<T>) {
+  const {
+    items = [],
+    keyOf = defaultKeyOf,
+    labelOf,
+    renderItem,
+    label,
+    emptyMessage,
+    words,
+    controls,
+    actionOf,
+    density = 'expressive',
+    className,
+    style,
+  } = props;
   const placement = controlsPlacement(controls, density);
   const [say, setSay] = useState('');
-  const [flash, setFlash] = useState<string | number | null>(null);
+  const { flash, clearFlash, takePending, move, remove, lockFor, deletable } = useReorderActs(
+    props,
+    setSay,
+  );
   const btns = useRef<Record<string, HTMLButtonElement | null>>({});
   const listRef = useRef<HTMLElement | null>(null);
-  const pending = useRef<Pending | null>(null);
 
   /* `keyOf` is read through a ref rather than depended on, because it is only ever needed at the
      moment the effect below runs. Callers pass it inline, so depending on its identity would fire
@@ -71,11 +58,10 @@ export function ReorderList<T>({
   /* Focus is restored AFTER the caller's new order has rendered, because the button that must hold
      focus is the one that moved. `items` is the only honest trigger. */
   useEffect(() => {
-    const p = pending.current;
+    const p = takePending();
     if (!p) {
       return;
     }
-    pending.current = null;
     /* A control the end of the list has aria-disabled has something to SAY; it does not receive
        focus. That is why this reads the attribute rather than the native `disabled`. */
     const canFocus: FocusableControl<HTMLButtonElement> = (id) => {
@@ -100,41 +86,7 @@ export function ReorderList<T>({
     } else {
       listRef.current?.focus();
     }
-  }, [items]);
-
-  const move = (i: number, dir: MoveDirection) => {
-    const item = items[i];
-    if (item === undefined) {
-      return;
-    }
-    const to = dir === 'up' ? i - 1 : i + 1;
-    const name = labelOf(item, i);
-    if (to < 0 || to >= items.length) {
-      setSay(atEndSentence(name, dir));
-      return;
-    }
-    const key = keyOf(item, i);
-    pending.current = { kind: 'move', key, dir };
-    setFlash(key);
-    setSay(movedSentence(name, to, items.length));
-    onMove?.(key, i, to);
-  };
-
-  const remove = (i: number) => {
-    const item = items[i];
-    if (item === undefined) {
-      return;
-    }
-    const name = labelOf(item, i);
-    const key = keyOf(item, i);
-    pending.current = { kind: 'delete', index: i };
-    setSay(deletedSentence(name, items.length - 1, itemNoun));
-    onDelete?.(key, i);
-  };
-
-  const lockFor = (it: T, i: number) => (lockOf ? lockOf(it, i) : null);
-  const deletable = (it: T, i: number) =>
-    Boolean(onDelete) && items.length > minItems && !lockFor(it, i) && (canDelete?.(it, i) ?? true);
+  }, [items, takePending]);
 
   return (
     <div className={classNames('hg-reorder-list', className)} style={style}>
@@ -173,6 +125,7 @@ export function ReorderList<T>({
                 index={i}
                 total={items.length}
                 name={name}
+                words={words}
                 body={renderItem ? renderItem(it, i) : name}
                 lock={lockFor(it, i)}
                 deletable={deletable(it, i)}
@@ -180,7 +133,7 @@ export function ReorderList<T>({
                 action={placement === 'foot' && actionOf ? actionOf(it, i) : null}
                 density={density}
                 flashing={flash === key}
-                onFlashEnd={() => setFlash(null)}
+                onFlashEnd={clearFlash}
                 onMove={(dir) => move(i, dir)}
                 onDelete={() => remove(i)}
                 registerControl={(suffix, el) => {

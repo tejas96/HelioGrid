@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 /** "YYYY-MM-DD". */
@@ -18,8 +19,42 @@ export type DayMarkerTone = 'present' | 'absent' | 'leave' | 'holiday' | 'schedu
 export interface DayMarker {
   /** Muted semantic dot under the date. */
   tone?: DayMarkerTone;
-  /** Read out by screen readers and used as the tooltip. */
-  label?: string;
+  /** Read out with the date by screen readers — the dot's only words, so every marker has them. */
+  // biome-ignore lint/plugin/copy-prop-type: the day's own name — a holiday as its pack or the company names it
+  label: string;
+}
+
+/** A day's accessible name: its date as the market writes it, its marker's words, and its lock. */
+export interface CalendarDayFacts {
+  readonly date: string;
+  readonly marker: string | null;
+  readonly locked: boolean;
+}
+
+/**
+ * Every word the calendar says on its own, in the reader's language (`packages/i18n`'s
+ * `calendarWords`). Required: the calendar holds no word of its own.
+ */
+export interface CalendarWords {
+  /** The month arrows — *Previous month*, *Next month*. */
+  previousMonth: TranslatedText;
+  nextMonth: TranslatedText;
+  /** The grid's name while it loads — *Loading*. */
+  loading: TranslatedText;
+  /** The grid's line for an empty month when the caller words none — *No records for this month.* */
+  noRecords: TranslatedText;
+  /** A day's accessible name — *12 Mar 2026, Holi, supplied by the market pack, cannot be removed*. */
+  day: (facts: CalendarDayFacts) => TranslatedText;
+}
+
+/** The picker's words: the calendar's, and the field's own two. */
+export interface DatePickerWords extends CalendarWords {
+  /** The field while no date is chosen — *Select a date*. */
+  selectDate: TranslatedText;
+  /** The popover's name when the field has no `label` — *Choose a date*. */
+  chooseDate: TranslatedText;
+  /** The field of a set of dates — *3 dates*. */
+  datesChosen(count: number): TranslatedText;
 }
 
 /** A calendar's own three, **not** `SurfaceState`: this is a control, not a surface. */
@@ -38,6 +73,8 @@ export type CalendarDensity = 'expressive' | 'functional';
 export type { MarketFormat } from '../../utils/format';
 
 export interface CalendarProps {
+  /** Every word the calendar says on its own — see `CalendarWords`. */
+  words: CalendarWords;
   /** `single` — one ISO date. `range` — a span. `set` — **an array of unrelated dates**. */
   value?: CalendarValue;
   onChange?: (value: CalendarValue) => void;
@@ -74,15 +111,37 @@ export interface CalendarProps {
   onBlocked?: (date: ISODate) => void;
   density?: CalendarDensity;
   state?: CalendarState;
-  emptyMessage?: string;
+  /** Overrides `words.noRecords`. */
+  emptyMessage?: TranslatedText;
   footer?: ReactNode;
 }
 
 export interface DatePickerProps
-  extends Omit<CalendarProps, 'state' | 'emptyMessage' | 'footer' | 'month' | 'onMonthChange'> {
-  label?: string;
-  placeholder?: string;
+  extends Omit<
+    CalendarProps,
+    'words' | 'state' | 'emptyMessage' | 'footer' | 'month' | 'onMonthChange'
+  > {
+  /** Every word the picker says on its own — see `DatePickerWords`. */
+  words: DatePickerWords;
+  label?: TranslatedText;
+  /** Overrides `words.selectDate`. */
+  placeholder?: TranslatedText;
   disabled?: boolean;
-  helper?: string;
-  error?: string;
+  helper?: TranslatedText;
+  error?: TranslatedText;
+}
+
+/* The inner parts' contracts (Law 7): both halves of a part implement the one interface. */
+
+export interface CalendarCellProps {
+  date: Date;
+  selected: boolean;
+  between: boolean;
+  disabled: boolean;
+  locked: boolean;
+  today: boolean;
+  marker: DayMarker | undefined;
+  spokenDate: string;
+  onPick: (d: Date) => void;
+  words: Pick<CalendarWords, 'day'>;
 }

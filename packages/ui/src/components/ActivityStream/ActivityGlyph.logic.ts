@@ -36,3 +36,13 @@ export const ACTIVITY_GLYPH: Record<string, ShellGlyphName> = {
   'check-check': 'check-check',
   'user-plus': 'user-plus',
 };
+
+/** The outline a kind draws: its own, else the fallback. */
+export function activityGlyphOf(name: string): ShellGlyphName {
+  return ACTIVITY_GLYPH[name] ?? FALLBACK_GLYPH;
+}
+
+/** The brand object sits a step inside the glyph's box, so it reads as the same size as an outline. */
+export function agentObjectSize(size: number): number {
+  return size - 2;
+}

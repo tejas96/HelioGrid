@@ -1,4 +1,5 @@
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { FIELD_BOX_EDGE } from '../../primitives/FieldBox/FieldBox.native';
@@ -10,9 +11,9 @@ import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read
 import type { CardProps, IconCircleProps } from './Card.types';
 import { CardBody } from './CardBody.native';
 
-interface NativeCardProps extends CardProps {
+type NativeCardProps = CardProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 interface NativeIconCircleProps extends IconCircleProps {
   style?: StyleProp<ViewStyle>;
@@ -72,24 +73,28 @@ export function Card({
   surface = 'tile',
   label,
   read,
+  loadingLabel,
+  focusAfter,
   emptyTitle,
-  emptyMessage = 'Nothing here yet.',
+  emptyMessage,
   emptyAction,
-  errorTitle = "Couldn't load this",
-  errorMessage = 'Try again. If it keeps failing, tell your admin what you were doing.',
+  errorTitle,
+  errorMessage,
   retryLabel,
-  unavailableTitle = 'Not available here',
+  unavailableTitle,
   unavailableMessage,
   onClick,
   style,
 }: NativeCardProps) {
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
+  const ref = useRef<View>(null);
   const raised = surface === 'raised';
   const body = (
     <GroundProvider ground={raised ? 'page' : 'tile'}>
       <CardBody
         state={state}
+        loadingLabel={loadingLabel}
         emptyTitle={emptyTitle}
         emptyMessage={emptyMessage}
         emptyAction={emptyAction}
@@ -97,6 +102,7 @@ export function Card({
         errorMessage={errorMessage}
         onRetry={onRetry}
         retryLabel={retryLabel}
+        focusAfter={focusAfter ?? ref}
         unavailableTitle={unavailableTitle}
         unavailableMessage={unavailableMessage}
       >
@@ -121,6 +127,7 @@ export function Card({
   if (onClick !== undefined || interactive) {
     return (
       <Pressable
+        hostRef={ref}
         style={[styles.pressableReset, frame]}
         onPress={onClick}
         accessibilityRole="button"
@@ -131,7 +138,11 @@ export function Card({
       </Pressable>
     );
   }
-  return <View style={frame}>{body}</View>;
+  return (
+    <View ref={ref} style={frame}>
+      {body}
+    </View>
+  );
 }
 
 /** A `#rrggbb` theme value as its three channels, or `undefined` for anything else. */

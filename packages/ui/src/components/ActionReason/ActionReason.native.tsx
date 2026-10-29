@@ -1,12 +1,12 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import type { ActionReasonSpec } from './ActionReason.types';
+import { actionReasonFor, noteLineScale } from './ActionReason.logic';
+import type { ActionReasonInput, ActionReasonSpec } from './ActionReason.types';
 
 interface NativeActionReasonProps extends ActionReasonSpec {
   style?: StyleProp<ViewStyle>;
@@ -46,15 +46,15 @@ export function ActionReason({
   if (!reason) {
     return null;
   }
-  const step = Math.max(12, size);
-  const words: TextStyle = { lineHeight: step * 1.45 };
+  const scale = noteLineScale(size);
+  const words: TextStyle = { lineHeight: scale.fontSize * 1.45 };
   return (
     <View style={[styles.root, { justifyContent: ALIGN[align] }, style]}>
       <View style={styles.glyph}>
-        <BarredCircle size={step + 1} />
+        <BarredCircle size={scale.glyphSize} />
       </View>
       <Text
-        variant={step >= 13 ? 'body-sm' : 'caption'}
+        variant={scale.large ? 'body-sm' : 'caption'}
         color="secondary"
         align={align === 'left' ? 'start' : align === 'right' ? 'end' : 'center'}
         style={words}
@@ -67,22 +67,10 @@ export function ActionReason({
 
 /** What every `disabledReason` host prop runs through: a string, a spec, or a ready node. */
 export function renderActionReason(
-  spec?: ReactNode | ActionReasonSpec,
+  spec?: ActionReasonInput | null,
   extra: Partial<ActionReasonSpec> = {},
 ): ReactNode {
-  if (!spec) {
-    return null;
-  }
-  if (isValidElement(spec)) {
-    return spec;
-  }
-  if (typeof spec === 'string') {
-    return <ActionReason reason={spec} {...extra} />;
-  }
-  if (typeof spec !== 'object' || !('reason' in spec) || !spec.reason) {
-    return null;
-  }
-  return <ActionReason {...spec} {...extra} />;
+  return actionReasonFor(spec, (plain) => <ActionReason {...plain} {...extra} />);
 }
 
 ActionReason.render = renderActionReason;

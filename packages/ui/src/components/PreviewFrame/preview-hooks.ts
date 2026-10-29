@@ -1,29 +1,5 @@
 import type { RefObject } from 'react';
-import { useEffect, useRef, useState } from 'react';
-
-/**
- * The frame measures its OWN width, never the viewport: a preview inside a settings column is
- * narrow on a wide screen, and a media query cannot see that.
- */
-export function useOwnWidth<T extends HTMLElement>(): [RefObject<T | null>, number | null] {
-  const ref = useRef<T | null>(null);
-  const [width, setWidth] = useState<number | null>(null);
-  useEffect(() => {
-    const element = ref.current;
-    if (element === null) {
-      return;
-    }
-    const read = () => setWidth(element.getBoundingClientRect().width);
-    read();
-    if (typeof ResizeObserver === 'undefined') {
-      return;
-    }
-    const observer = new ResizeObserver(read);
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-  return [ref, width];
-}
+import { useEffect } from 'react';
 
 const FOCUSABLE =
   'a[href],button,input,select,textarea,summary,iframe,[contenteditable],[tabindex]:not([tabindex="-1"])';

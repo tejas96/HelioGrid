@@ -1,7 +1,8 @@
 import type { CSSProperties } from 'react';
 import { useFormat } from '../MarketProvider/market-context';
 import { ChartFrame } from './ChartFrame';
-import type { ChartDatum, FunnelChartProps } from './Charts.types';
+import { type FunnelStageDrawing, funnelScale, funnelStage } from './Charts.logic';
+import type { ChartDatum, ChartWords, FunnelChartProps } from './Charts.types';
 import { chartSlot } from './chart-palette';
 
 interface WebFunnelChartProps extends FunnelChartProps {
@@ -9,29 +10,25 @@ interface WebFunnelChartProps extends FunnelChartProps {
   style?: CSSProperties;
 }
 
-const INSUFFICIENT = 'A funnel needs at least two stages with recorded values.';
-
 interface FunnelStageProps {
   stage: ChartDatum;
   index: number;
-  top: number;
-  /** The stage above, or null at the mouth of the funnel. */
-  previous: number | null;
+  drawn: FunnelStageDrawing;
   format: (n: number) => string;
   lowConversionBelow: number;
+  carriedForward: ChartWords['carriedForward'];
 }
 
 /** One stage bar, plus the percentage carried forward from the stage above it. */
 function FunnelStage({
   stage,
   index,
-  top,
-  previous,
+  drawn,
   format,
   lowConversionBelow,
+  carriedForward,
 }: FunnelStageProps) {
-  const conversion =
-    previous === null || previous === 0 ? null : Math.round(((stage.value || 0) / previous) * 100);
+  const { conversion } = drawn;
   return (
     <div>
       <div className="hg-charts-funnel-row">
@@ -41,8 +38,8 @@ function FunnelStage({
             className="hg-charts-funnel-fill hg-charts-slot"
             data-slot={stage.color === undefined ? chartSlot(index) : undefined}
             style={{
-              width: `${Math.max(2, ((stage.value || 0) / top) * 100)}%`,
-              opacity: 1 - index * 0.13,
+              width: `${drawn.widthPercent}%`,
+              opacity: drawn.opacity,
               ...(stage.color === undefined ? {} : { background: stage.color }),
             }}
           />
@@ -52,7 +49,7 @@ function FunnelStage({
       {conversion === null ? null : (
         <div className="hg-charts-funnel-conversion">
           <span data-low={conversion < lowConversionBelow ? 'true' : undefined}>
-            {conversion}% carried forward
+            {carriedForward(conversion)}
           </span>
         </div>
       )}
@@ -70,15 +67,14 @@ export function FunnelChart({
 }: WebFunnelChartProps) {
   const mkt = useFormat();
   const fmt = format ?? mkt.number;
-  const insufficient = stages.length < minPoints;
-  const top = Math.max(1, ...stages.map((s) => s.value || 0));
+  const { insufficient, top, height } = funnelScale(stages, minPoints);
 
   return (
     <ChartFrame
       {...frame}
-      height={Math.max(160, stages.length * 56)}
+      height={height}
       insufficient={insufficient}
-      insufficientMessage={frame.insufficientMessage ?? INSUFFICIENT}
+      insufficientMessage={frame.insufficientMessage ?? frame.words.funnelInsufficient}
     >
       <div className="hg-charts-funnel">
         {stages.map((stage, i) => (
@@ -86,10 +82,10 @@ export function FunnelChart({
             key={stage.label}
             stage={stage}
             index={i}
-            top={top}
-            previous={i > 0 ? (stages[i - 1]?.value ?? 0) : null}
+            drawn={funnelStage(stages, i, top)}
             format={fmt}
             lowConversionBelow={lowConversionBelow}
+            carriedForward={frame.words.carriedForward}
           />
         ))}
       </div>

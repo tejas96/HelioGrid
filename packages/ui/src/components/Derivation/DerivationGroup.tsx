@@ -20,7 +20,7 @@ export function DerivationGroup({
   children,
   mode = 'single',
   printAs = 'appendix',
-  appendixTitle = 'How these figures are worked out',
+  appendixTitle,
   className,
   style,
 }: WebDerivationGroupProps) {
@@ -40,7 +40,7 @@ export function DerivationGroup({
                 {entry.label === undefined ? null : (
                   <span className="hg-derivation-appendix-label">{entry.label}</span>
                 )}
-                <DerivationParts parts={entry.parts} size="xs" />
+                <DerivationParts parts={entry.parts} kindWords={entry.kindWords} size="xs" />
               </li>
             ))}
           </ol>

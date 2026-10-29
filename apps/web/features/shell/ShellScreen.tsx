@@ -1,12 +1,5 @@
 'use client';
-import {
-  useAction,
-  useConnection,
-  useSession,
-  useShell,
-  useUnreadCount,
-} from '@heliogrid/data/react';
-import { offersDoor } from '@heliogrid/domain';
+import { useShellScreen } from '@heliogrid/data/react';
 import {
   accessRemovedWords,
   accountMenuWords,
@@ -26,7 +19,7 @@ import {
   ShellGlyph,
 } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
-import { type ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
 import { LeaveGuardProvider, useGuardedMove } from '../../lib/leave-guard';
 import { NotificationCentre } from '../notifications';
 import { GrievanceNote } from './components/GrievanceNote';
@@ -39,10 +32,10 @@ import './shell.css';
  * The web shell (`SCR-SHELL-01`, `F7-22`'s sidebar and header) around every inside page, at every
  * width: the rail with the person's destinations, the bell and the account at its foot, and the
  * header with the company and the search. The bell opens the notification centre beside the page
- * (`SCR-SHELL-03`). Every fact is `useShell()`'s and every part is `packages/ui`'s; this
- * composes. A removal (`S1.wrong.4`) replaces the rail and the page with Frame 8, on whichever
- * route is open — every read is refused there. A device gone offline sees the one no-connection
- * screen instead of blocks that would wait forever (`F8-36`).
+ * (`SCR-SHELL-03`). Every fact is `useShellScreen()`'s, the phone's too, and every part is
+ * `packages/ui`'s; this composes and routes. A removal (`S1.wrong.4`) replaces the rail and the
+ * page with Frame 8, on whichever route is open — every read is refused there. A device gone
+ * offline sees the one no-connection screen instead of blocks that would wait forever (`F8-36`).
  */
 export function ShellScreen({ children }: { children: ReactNode }) {
   return (
@@ -54,27 +47,21 @@ export function ShellScreen({ children }: { children: ReactNode }) {
 
 function ShellIn({ children }: { children: ReactNode }) {
   const t = useTranslate();
-  const session = useSession();
-  const shell = useShell();
+  const screen = useShellScreen();
+  const { shell, centre, grievance, connection, unread } = screen;
   const router = useRouter();
-  const unread = useUnreadCount();
-  const [grievance, setGrievance] = useState(false);
-  const [centreOpen, setCentreOpen] = useState(false);
   const guarded = useGuardedMove();
   /* Leaving the page the centre stands beside closes it — an item's subject, or a rail press. A
      page holding a change asks first (`useLeaveGuard`). */
   const goTo = (path: string) =>
     guarded(() => {
-      setCentreOpen(false);
+      centre.close();
       router.push(path);
     });
   const rail = useRailItems(shell, goTo);
-  const showGrievance = () => setGrievance(true);
   // A page holding a change asks first, as every in-app move does (D1 A).
-  const leaving = useAction<void, void>(() => session.signOut());
-  const signOut = () => guarded(() => void leaving.run());
-  const note = <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />;
-  const connection = useConnection();
+  const signOut = () => guarded(screen.signOut);
+  const note = <GrievanceNote open={grievance.isOpen} onClose={grievance.close} />;
 
   if (!connection.online)
     return <NoConnection {...connectionWords(t)} onRetry={connection.retry} />;
@@ -84,28 +71,26 @@ function ShellIn({ children }: { children: ReactNode }) {
         <AccessRemoved
           {...accessRemovedWords(t, shell.companyName)}
           onAction={signOut}
-          pending={leaving.pending}
-          onGrievance={showGrievance}
+          pending={screen.signingOut}
+          onGrievance={grievance.open}
         />
         {note}
       </AppShell>
     );
   }
 
-  const personName = session.user?.name ?? '';
   const bell: RailItem = {
     key: 'notifications',
     label: t(SHELL.notifications),
     name: t(NOTIFICATION_CENTRE.bellName, { count: unread ?? 0 }),
     icon: <ShellGlyph name="bell" size="md" />,
     badge: unread ?? undefined,
-    open: centreOpen,
-    onClick: () => setCentreOpen((open) => !open),
+    open: centre.isOpen,
+    onClick: centre.toggle,
   };
-  const offersLeads = offersDoor(shell, 'leads');
   return (
     <AppShell
-      className={centreOpen ? 'hg-shell hg-shell-centre-open' : 'hg-shell'}
+      className={centre.isOpen ? 'hg-shell hg-shell-centre-open' : 'hg-shell'}
       rail={
         <AppRail
           label={t(SHELL.mainNavigation)}
@@ -116,10 +101,10 @@ function ShellIn({ children }: { children: ReactNode }) {
           footer={[bell]}
           avatar={
             <AccountMenu
-              {...accountMenuWords(t, personName)}
-              name={personName}
+              {...accountMenuWords(t, screen.personName)}
+              name={screen.personName}
               align="start"
-              onGrievance={showGrievance}
+              onGrievance={grievance.open}
               onSignOut={signOut}
             />
           }
@@ -128,15 +113,19 @@ function ShellIn({ children }: { children: ReactNode }) {
       header={
         <ShellHeader
           companyName={shell.companyName}
-          onSearch={() => guarded(() => router.push(DOOR_PATH.search))}
+          search={{
+            query: screen.searchQuery,
+            onQuery: screen.typeSearch,
+            onOpen: () => guarded(() => router.push(DOOR_PATH.search)),
+          }}
         />
       }
     >
       {children}
-      {centreOpen ? (
+      {centre.isOpen ? (
         <NotificationCentre
-          onClose={() => setCentreOpen(false)}
-          onGoToLeads={offersLeads ? () => goTo(DOOR_PATH.leads) : undefined}
+          onClose={centre.close}
+          onGoToLeads={screen.offersLeads ? () => goTo(DOOR_PATH.leads) : undefined}
         />
       ) : null}
       {note}

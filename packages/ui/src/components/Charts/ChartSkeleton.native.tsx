@@ -1,10 +1,11 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import { AccessibilityInfo, Animated, Easing, StyleSheet } from 'react-native';
 
 interface ChartSkeletonProps {
   height: number;
-  label: string;
+  label: TranslatedText;
 }
 
 const styles = StyleSheet.create({

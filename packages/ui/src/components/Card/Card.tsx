@@ -1,14 +1,15 @@
 import type { CSSProperties } from 'react';
+import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { pressOnEnterOrSpace } from '../../primitives/press-keys';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { CardProps, IconCircleProps } from './Card.types';
 import { CardBody } from './CardBody';
 
-interface WebCardProps extends CardProps {
+type WebCardProps = CardProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 interface WebIconCircleProps extends IconCircleProps {
   className?: string;
@@ -29,13 +30,15 @@ export function Card({
   surface = 'tile',
   label,
   read,
+  loadingLabel,
+  focusAfter,
   emptyTitle,
-  emptyMessage = 'Nothing here yet.',
+  emptyMessage,
   emptyAction,
-  errorTitle = "Couldn't load this",
-  errorMessage = 'Try again. If it keeps failing, tell your admin what you were doing.',
+  errorTitle,
+  errorMessage,
   retryLabel,
-  unavailableTitle = 'Not available here',
+  unavailableTitle,
   unavailableMessage,
   onClick,
   className,
@@ -43,9 +46,11 @@ export function Card({
 }: WebCardProps) {
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
+  const ref = useRef<HTMLDivElement>(null);
   const body = (
     <CardBody
       state={state}
+      loadingLabel={loadingLabel}
       emptyTitle={emptyTitle}
       emptyMessage={emptyMessage}
       emptyAction={emptyAction}
@@ -53,6 +58,7 @@ export function Card({
       errorMessage={errorMessage}
       onRetry={onRetry}
       retryLabel={retryLabel}
+      focusAfter={focusAfter ?? ref}
       unavailableTitle={unavailableTitle}
       unavailableMessage={unavailableMessage}
     >
@@ -60,8 +66,11 @@ export function Card({
     </CardBody>
   );
 
+  /* A card that shows a read is where focus lands once its retry has left; a static card is no
+     stop at all, so it takes no tabindex. */
   const frame = {
-    className: classNames('hg-card', className),
+    ref,
+    className: classNames('hg-card', read !== undefined ? 'hg-focus-target' : undefined, className),
     'data-density': density,
     'data-surface': surface === 'raised' ? 'raised' : undefined,
     'data-interactive': interactive ? 'true' : undefined,
@@ -89,7 +98,11 @@ export function Card({
       </div>
     );
   }
-  return <div {...frame}>{body}</div>;
+  return (
+    <div {...frame} tabIndex={read !== undefined ? -1 : undefined}>
+      {body}
+    </div>
+  );
 }
 
 /** Signature circular icon container — a soft 6% tint of a semantic/brand colour. */

@@ -5,6 +5,7 @@ import type { CSSProperties, KeyboardEvent } from 'react';
 import { useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
+import { applyOtpEdit, erasedOtp, type OtpEdit, otpDigits, typedOtp } from './OtpInput.logic';
 import type { OtpInputProps } from './OtpInput.types';
 
 interface WebOtpInputProps extends OtpInputProps {
@@ -25,6 +26,7 @@ export function OtpInput({
   label,
   helper,
   error,
+  words,
   disabled = false,
   readOnly = false,
   busy = false,
@@ -37,46 +39,22 @@ export function OtpInput({
      decides the ring the same way for every field. */
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const autoId = useId();
-  const slots = Array.from({ length }, (_, i) => ({
-    key: `${autoId}-${i}`,
-    index: i,
-    char: value.padEnd(length, ' ').slice(0, length).charAt(i).trim(),
+  const slots = otpDigits(value, length).map((char, index) => ({
+    key: `${autoId}-${index}`,
+    index,
+    char,
   }));
 
-  const set = (next: string) => {
-    const v = next.slice(0, length);
-    onChange?.(v);
-    if (v.length === length) onComplete?.(v);
-  };
+  const focusBox = (index: number) => refs.current[index]?.focus();
+  const apply = (edit: OtpEdit | null) =>
+    applyOtpEdit(edit, length, { onChange, onComplete }, focusBox);
 
-  const onCharChange = (i: number, raw: string) => {
-    const digit = (raw.match(/\d/g) ?? []).join('');
-    if (digit === '') return;
-    /* A paste (or an SMS autofill) arrives in one box and fills the rest from there. */
-    if (digit.length > 1) {
-      set((value.slice(0, i) + digit).slice(0, length));
-      refs.current[Math.min(length - 1, i + digit.length)]?.focus();
-      return;
-    }
-    const arr = value.split('');
-    arr[i] = digit;
-    set(arr.join('').slice(0, length));
-    refs.current[Math.min(length - 1, i + 1)]?.focus();
-  };
+  const onCharChange = (i: number, raw: string) => apply(typedOtp(value, i, raw, length));
 
   const onKey = (i: number, e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Backspace') {
       e.preventDefault();
-      const arr = value.padEnd(length, ' ').split('');
-      const here = arr[i];
-      if (here !== undefined && here !== ' ') {
-        arr[i] = ' ';
-        set(arr.join('').trimEnd());
-      } else if (i > 0) {
-        arr[i - 1] = ' ';
-        set(arr.join('').trimEnd());
-        refs.current[i - 1]?.focus();
-      }
+      apply(erasedOtp(value, i, length));
     } else if (e.key === 'ArrowLeft' && i > 0) refs.current[i - 1]?.focus();
     else if (e.key === 'ArrowRight' && i < length - 1) refs.current[i + 1]?.focus();
   };
@@ -90,7 +68,7 @@ export function OtpInput({
       <div
         className="hg-otp-boxes"
         role="group"
-        aria-label={label ?? 'Verification code'}
+        aria-label={label ?? words.code}
         aria-busy={busy ? true : undefined}
       >
         {slots.map((slot) => (
@@ -102,7 +80,7 @@ export function OtpInput({
               className="hg-otp-box"
               inputMode="numeric"
               autoComplete="one-time-code"
-              aria-label={`Digit ${slot.index + 1}`}
+              aria-label={words.digit(slot.index + 1)}
               aria-invalid={error !== undefined ? true : undefined}
               {...fieldBox({
                 focused: focusedIndex === slot.index,

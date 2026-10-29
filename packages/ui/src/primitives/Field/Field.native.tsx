@@ -44,7 +44,7 @@ export function Field({ children, label, hint, error, required = false, style }:
     <View style={[container, style]}>
       <RNText style={labelStyle}>
         {label}
-        {required ? <RNText style={requiredStyle}> *</RNText> : null}
+        {required ? <RNText style={requiredStyle}>{' *'}</RNText> : null}
       </RNText>
       {children}
       {hint !== undefined && error === undefined ? <RNText style={hintStyle}>{hint}</RNText> : null}

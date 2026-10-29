@@ -40,6 +40,7 @@ function Picker({ props }: { props: ImportFileStepProps }) {
     <>
       <Dropzone
         style={styles.fill}
+        words={words.dropzone}
         label={words.choose}
         hint={words.chooseHint(upload.maxSizeMB)}
         accept={upload.accept}
@@ -135,6 +136,8 @@ function FileRead(props: ImportFileStepProps) {
         <>
           <Select
             label={words.sheetLabel}
+            placeholder={words.selectPlaceholder}
+            closeLabel={words.closeList}
             value={String(mapping.sheet)}
             options={sheets.map((read, index) => ({ value: String(index), label: read.name }))}
             helper={words.sheetHelper(sheets.length)}
@@ -144,6 +147,8 @@ function FileRead(props: ImportFileStepProps) {
           <View style={styles.header}>
             <Select
               label={words.headerRowLabel}
+              placeholder={words.selectPlaceholder}
+              closeLabel={words.closeList}
               value={String(mapping.headerRow)}
               options={(sheet?.topRows ?? []).map((_, index) => ({
                 value: String(index),

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { RichText, type RichTextTemplate, type RichTextValue } from '@heliogrid/ui';
 import { useState } from 'react';
 import { RICH_TEXT_ENGLISH, RICH_TEXT_MARKED } from '../support/rich-text-words';
@@ -16,8 +17,8 @@ export function WordedRichText({
   templates,
 }: {
   marked?: boolean;
-  label?: string;
-  placeholder?: string;
+  label?: TranslatedText;
+  placeholder?: TranslatedText;
   maxLength?: number;
   disabled?: boolean;
   templates?: RichTextTemplate[];

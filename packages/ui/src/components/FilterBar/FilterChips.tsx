@@ -1,6 +1,7 @@
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
 import { useImperativeHandle, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { chosenChipIndex } from './FilterBar.logic';
 import type { FilterChipsProps } from './FilterBar.types';
 import { optionIcon, optionLabel, optionValue } from './FilterBar.types';
 
@@ -53,10 +54,7 @@ export function FilterChips({
   style,
 }: WebFilterChipsProps) {
   const refs = useRef<(Focusable | null)[]>([]);
-  const selectedIndex = Math.max(
-    0,
-    options.findIndex((option) => optionValue(option) === value),
-  );
+  const selectedIndex = chosenChipIndex(options, value);
   /* Read when the focus lands, not when it was asked for: a caller asks in the same turn it chooses
      the chip, before this renders it chosen. */
   const chosen = useRef(selectedIndex);

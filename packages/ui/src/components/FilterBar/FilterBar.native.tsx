@@ -7,6 +7,7 @@ import { Icon } from '../../primitives/Icon/Icon.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { FacetChips } from './FacetChips.native';
+import { filtersButtonName } from './FilterBar.logic';
 import type { FiltersButtonProps, ScopeToggleProps, SortPillsProps } from './FilterBar.types';
 import { optionLabel, optionValue, PILL_HEIGHT } from './FilterBar.types';
 import { FilterChips } from './FilterChips.native';
@@ -89,13 +90,7 @@ export function ScopeToggle({ options, value, onChange, style }: NativeScopeTogg
 }
 
 /** "Sort" label + inline pills. Active = accent fill. */
-export function SortPills({
-  options,
-  value,
-  onChange,
-  label = 'Sort',
-  style,
-}: NativeSortPillsProps) {
+export function SortPills({ options, value, onChange, label, style }: NativeSortPillsProps) {
   return (
     <View style={[styles.row, style]}>
       <Text variant="caption" color="tertiary" style={styles.sortLabel}>
@@ -137,14 +132,15 @@ const SQUARE_INK = theme.colors['text-inverse'];
 export function FiltersButton({
   onClick,
   count = 0,
-  label = 'Filters',
+  label,
+  activeLabel,
   style,
 }: NativeFiltersButtonProps) {
   const { ground } = useGround();
   return (
     <RNPressable
       accessibilityRole="button"
-      accessibilityLabel={count > 0 ? `${label}, ${count} active` : label}
+      accessibilityLabel={filtersButtonName({ count, label, activeLabel })}
       onPress={onClick}
       style={({ pressed }) => [styles.square, pressed ? styles.squarePressed : undefined, style]}
     >

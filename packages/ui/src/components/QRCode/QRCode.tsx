@@ -12,31 +12,13 @@
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { encodeQR } from '../../utils/qr-encode';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { darkModules, drawableCode, quietZonedSide, wordsWidth } from './QRCode.logic';
 import type { QRCodeProps } from './QRCode.types';
 
 interface WebQRCodeProps extends QRCodeProps {
   className?: string;
   style?: CSSProperties;
-}
-
-/* The dark modules as flat records. Their coordinates ARE their identity — a QR module has no
-   other one — so the key is the coordinate rather than a position in a map callback. */
-function darkModules(matrix: boolean[][], quietZone: number) {
-  const out: { id: string; x: number; y: number }[] = [];
-  for (let r = 0; r < matrix.length; r++) {
-    const row = matrix[r];
-    if (!row) {
-      continue;
-    }
-    for (let c = 0; c < row.length; c++) {
-      if (row[c]) {
-        out.push({ id: `${r}-${c}`, x: c + quietZone, y: r + quietZone });
-      }
-    }
-  }
-  return out;
 }
 
 /** The link text — the fallback path, and what a customer reads out over a phone call. */
@@ -55,20 +37,14 @@ export function QRCode({
   caption,
   quietZone = 4,
   showValue = true,
-  errorTitle = 'QR code unavailable',
+  errorTitle,
   errorMessage,
   className,
   style,
 }: WebQRCodeProps) {
-  const result = useMemo(() => {
-    try {
-      return encodeQR(value);
-    } catch {
-      return null;
-    }
-  }, [value]);
+  const result = useMemo(() => drawableCode(value), [value]);
 
-  if (!value || !result) {
+  if (result === null) {
     return (
       // biome-ignore lint/a11y/useSemanticElements: role="group" pairs with <fieldset>, which is a form grouping; this is a failed-code panel, not a form.
       <div
@@ -94,19 +70,16 @@ export function QRCode({
           </svg>
           <span className="hg-qrcode-failed-title">{errorTitle}</span>
         </div>
-        <p className="hg-qrcode-note" style={{ maxWidth: size + 80 }}>
-          {errorMessage ||
-            (value
-              ? 'This link is too long to encode. Use the link below instead.'
-              : 'No link to encode yet.')}
+        <p className="hg-qrcode-note" style={{ maxWidth: wordsWidth(size) }}>
+          {errorMessage}
         </p>
-        {value && showValue ? <LinkText value={value} width={size + 80} /> : null}
+        {value && showValue ? <LinkText value={value} width={wordsWidth(size)} /> : null}
       </div>
     );
   }
 
   const { matrix, size: n } = result;
-  const total = n + quietZone * 2;
+  const total = quietZonedSide(n, quietZone);
 
   return (
     <div className={classNames('hg-qrcode', className)} style={style}>
@@ -115,7 +88,7 @@ export function QRCode({
         height={size}
         viewBox={`0 0 ${total} ${total}`}
         role="img"
-        aria-label={label || `QR code for ${value}`}
+        aria-label={label}
         shapeRendering="crispEdges"
         className="hg-qrcode-svg"
       >
@@ -125,7 +98,7 @@ export function QRCode({
         ))}
       </svg>
       {caption ? <p className="hg-qrcode-caption">{caption}</p> : null}
-      {showValue ? <LinkText value={value} width={size + 80} /> : null}
+      {showValue ? <LinkText value={value} width={wordsWidth(size)} /> : null}
     </div>
   );
 }

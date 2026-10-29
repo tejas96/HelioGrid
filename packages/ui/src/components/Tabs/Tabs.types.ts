@@ -1,8 +1,10 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { ActionReasonInput } from '../ActionReason/ActionReason.types';
 
 export interface Tab {
   value: string;
-  label: string;
+  label: TranslatedText;
   /** A numeral in a neutral pill — the `CountBadge` idiom without the unread red. "99+" above 99. */
   count?: number;
   /** Anything that is not a count — a needs-attention `Badge`. Nodes, through `MarkRow`. */
@@ -20,11 +22,12 @@ export interface Tab {
    * sentence would exist for everyone except the keyboard user who most needs it. Without a reason
    * the native attribute stays, because there is nothing to go and hear.
    */
-  disabledReason?: ReactNode | { reason: ReactNode };
+  disabledReason?: ActionReasonInput;
 }
 
 export interface TabsProps {
-  tabs: (Tab | string)[];
+  /** A tab's label is words, so a bare value string is never its name. */
+  tabs: Tab[];
   value: string;
   onChange?: (value: string) => void;
 }

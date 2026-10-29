@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { stepLabel } from './resolve-steps';
@@ -6,7 +7,7 @@ import type { BarsVariant } from './stepper-bars';
 import './StepperBars.css';
 
 interface BarsProps {
-  steps: (StepperStep | string)[];
+  steps: (StepperStep | TranslatedText)[];
   index: number;
   className?: string;
   style?: CSSProperties;
@@ -27,7 +28,7 @@ function PlainBars({ steps, index, className, style }: BarsProps) {
 }
 
 interface NumberedBarsProps extends BarsProps {
-  label?: string;
+  label?: TranslatedText;
 }
 
 /**

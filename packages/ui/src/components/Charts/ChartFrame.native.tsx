@@ -1,19 +1,12 @@
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
-import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { ChartFrameBody } from './ChartFrameBody.native';
 import { ChartProvenance } from './ChartProvenance.native';
 import type { ChartFrameProps } from './Charts.types';
-import { chartProvenanceFacts } from './chart-provenance';
-import {
-  CHART_EMPTY_TITLE,
-  CHART_ERROR_MESSAGE,
-  CHART_ERROR_TITLE,
-  CHART_INSUFFICIENT_MESSAGE,
-  chartNote,
-} from './chart-state';
+import { chartFrameReading } from './chart-state';
 
 interface NativeChartFrameProps extends ChartFrameProps {
   style?: StyleProp<ViewStyle>;
@@ -42,46 +35,14 @@ const styles = StyleSheet.create({
  * Shared chart shell: caption, provenance tier, legend, and the loading / empty / error /
  * not-enough-data states. Wrap a custom plot in this rather than inventing states for it.
  */
-export function ChartFrame({
-  overline,
-  title,
-  value,
-  provenance,
-  standing,
-  source,
-  projection,
-  note,
-  legend,
-  action,
-  read,
-  height = 200,
-  insufficient = false,
-  emptyTitle = CHART_EMPTY_TITLE,
-  emptyMessage,
-  insufficientMessage = CHART_INSUFFICIENT_MESSAGE,
-  errorTitle = CHART_ERROR_TITLE,
-  errorMessage = CHART_ERROR_MESSAGE,
-  retryLabel,
-  children,
-  style,
-}: NativeChartFrameProps) {
-  const state = surfaceStateOf(read);
-  const onRetry = retryOf(read);
-  /* One provenance line under the headline value — word first, dot second (F8-07). */
-  const facts = chartProvenanceFacts({ provenance, standing, source, projection, note });
-  const stateNote = chartNote({
-    state,
-    insufficient,
-    emptyTitle,
-    emptyMessage,
-    insufficientMessage,
-    errorTitle,
-    errorMessage,
-  });
-  const hasCaption = Boolean(overline) || Boolean(title) || Boolean(value) || Boolean(action);
+export function ChartFrame(props: NativeChartFrameProps) {
+  const { overline, title, value, legend, action, height = 200, words, children, style } = props;
+  const { state, onRetry, facts, stateNote, hasCaption, showsLegend } = chartFrameReading(props);
+  /* The frame stays while a retried read reloads, so the reader lands on it once *Try again* leaves. */
+  const frame = useRef<View>(null);
 
   return (
-    <View style={style}>
+    <View ref={frame} style={style}>
       {hasCaption ? (
         <View style={styles.caption}>
           <View style={styles.head}>
@@ -105,15 +66,14 @@ export function ChartFrame({
         state={state}
         height={height}
         note={stateNote}
+        words={words}
         onRetry={onRetry}
-        retryLabel={retryLabel}
+        focusAfter={frame}
       >
         {children}
       </ChartFrameBody>
 
-      {legend && stateNote === null && state !== 'loading' ? (
-        <View style={styles.legend}>{legend}</View>
-      ) : null}
+      {showsLegend ? <View style={styles.legend}>{legend}</View> : null}
     </View>
   );
 }

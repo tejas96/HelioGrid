@@ -1,10 +1,11 @@
+import { useRef } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { Pressable } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
-import { Button } from '../Button';
+import { RetryButton } from '../Button/RetryButton';
 import { Card, IconCircle } from '../Card';
-import { useMoreFocus } from '../CatalogItems/use-more-focus';
-import { useRetryFocus } from '../CatalogItems/use-retry-focus';
+import { ShowMore } from '../CatalogItems/ShowMore';
 import { EmptyState } from '../EmptyState';
 import { Input } from '../Input';
 import { LoadingBars } from '../LoadingBars';
@@ -31,10 +32,12 @@ export function CatalogRelease(props: CatalogReleaseProps) {
 
 function PublishBody(props: CatalogPublishBody) {
   const { words, label, onLabel, problem, changes, more } = props;
-  const focus = useMoreFocus<HTMLDivElement>(more !== null);
-  const retry = useRetryFocus(props.read.kind);
+  /* After *Try again* focus lands on the body, which stays while it reloads; after *Show more*, on
+     the changes it grew. */
+  const body = useRef<HTMLDivElement>(null);
+  const grown = useRef<HTMLDivElement>(null);
   return (
-    <div ref={retry.target} tabIndex={-1} className="hg-cat-release">
+    <div ref={body} tabIndex={-1} className="hg-cat-release hg-focus-target">
       <Input
         label={words.releaseName}
         value={label}
@@ -42,28 +45,33 @@ function PublishBody(props: CatalogPublishBody) {
         density="functional"
         error={problem ?? undefined}
       />
-      {waitOrFail(props, retry.retrying) ??
+      {waitOrFail(props, body) ??
         (changes === null ? null : (
-          <div ref={focus.target} tabIndex={-1} className="hg-cat-release">
+          <div ref={grown} tabIndex={-1} className="hg-cat-release hg-focus-target">
             <Changes changes={changes} words={words} grouped={false} />
           </div>
         ))}
       {more === null ? null : (
-        <Button variant="ghost" size="sm" onClick={focus.pressing(more.onMore)}>
-          {more.label}
-        </Button>
+        <ShowMore label={more.label} onMore={more.onMore} focusAfter={grown} />
       )}
     </div>
   );
 }
 
 function ContentsBody(props: CatalogContentsBody) {
-  const { words, release, changes } = props;
-  const retry = useRetryFocus(props.read.kind);
-  const waiting = waitOrFail(props, retry.retrying);
-  if (waiting !== null) return waiting;
+  /* *Try again* leaves with the failure: focus goes to the body, which stays while it reloads. */
+  const body = useRef<HTMLDivElement>(null);
   return (
-    <div ref={retry.target} tabIndex={-1} className="hg-cat-release">
+    <div ref={body} tabIndex={-1} className="hg-cat-release hg-focus-target">
+      {waitOrFail(props, body) ?? <Contents {...props} />}
+    </div>
+  );
+}
+
+function Contents(props: CatalogContentsBody) {
+  const { words, release, changes } = props;
+  return (
+    <>
       {release === null ? null : (
         <Card density="functional">
           <div className="hg-cat-release-head">
@@ -117,7 +125,7 @@ function ContentsBody(props: CatalogContentsBody) {
           </ul>
         </section>
       )}
-    </div>
+    </>
   );
 }
 
@@ -210,13 +218,10 @@ function ChangeCard({ item, words }: { item: CatalogReleaseItem; words: CatalogR
 }
 
 /**
- * A body's read still out, or failed with *Try again*; `null` once it is in. `retrying` moves the
- * reader's focus to the body that comes back.
+ * A body's read still out, or failed with *Try again*; `null` once it is in. *Try again* leaves
+ * with the failure, and focus goes to `body`, which stays.
  */
-function waitOrFail(
-  props: CatalogPublishBody | CatalogContentsBody,
-  retrying: (retry: () => void) => () => void,
-) {
+function waitOrFail(props: CatalogPublishBody | CatalogContentsBody, body: FocusAfter) {
   const { words, read } = props;
   if (read.kind === 'loading') {
     return <LoadingBars label={words.loading} bars={['panel', 'row', 'row']} />;
@@ -227,9 +232,7 @@ function waitOrFail(
         glow={false}
         title={words.loadFailed}
         action={
-          <Button variant="secondary" size="lg" onClick={retrying(read.retry)}>
-            {words.tryAgain}
-          </Button>
+          <RetryButton size="lg" onRetry={read.retry} label={words.tryAgain} focusAfter={body} />
         }
       />
     );

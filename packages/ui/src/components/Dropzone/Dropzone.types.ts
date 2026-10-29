@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { NoConnectionProps } from '../NoConnection/NoConnection.types';
 
@@ -29,9 +30,57 @@ export interface PickedFile {
   source: unknown;
 }
 
+/** What the line under the label names: whether the surface takes a drop, what it takes, its ceiling. */
+export interface DropzoneBrowseFacts {
+  /** A drop target — the web; a phone has none and only browses. */
+  readonly drop: boolean;
+  readonly kind: 'image' | 'pdf';
+  readonly maxSizeMB: number;
+}
+
+/** How many are waiting, in the default noun for what the surface takes. */
+export interface DropzoneHeldFacts {
+  readonly count: number;
+  readonly kind: 'photo' | 'file';
+}
+
+/**
+ * Every word the capture area draws or speaks on its own, in the reader's language
+ * (`packages/i18n`'s `dropzoneWords`). Required: the area holds no word of its own.
+ */
+export interface DropzoneWords {
+  /** The line under the label while a file uploads — *Uploading…*. */
+  uploading: TranslatedText;
+  /** The line under a camera capture's label — *Tap to capture or upload*. */
+  captureOrUpload: TranslatedText;
+  /** The line under the label otherwise — *Drop files here or tap to browse · JPG or PNG up to 10 MB*. */
+  browse: (facts: DropzoneBrowseFacts) => TranslatedText;
+  /** A refused file when the caller words none: the problem and the fix — *That file is over 10 MB. …* */
+  tooLarge: (maxSizeMB: number) => TranslatedText;
+  /** A thumbnail's name when its file has none — *Uploaded photo*. */
+  uploadedPhoto: TranslatedText;
+  /** A thumbnail's remove control — *Remove {name}*, or *Remove photo* when the file has no name. */
+  remove: (name: string | undefined) => TranslatedText;
+  /** The held queue's sentence — *Saved on this phone. They upload once there's a connection …* */
+  held: TranslatedText;
+  /** The held count in the default noun — *3 photos waiting*. */
+  heldCount: (facts: DropzoneHeldFacts) => TranslatedText;
+  /** The held count in the caller's `heldNoun` — *3 documents waiting*. */
+  heldCountOf: (count: number, noun: string) => TranslatedText;
+  /** The retry — *Try uploading now*. */
+  tryUploadingNow: TranslatedText;
+  /** A flush that reported failure — *Still nothing to upload over — they stay on this phone.* */
+  flushFailed: TranslatedText;
+  /** A flush that never answered — *That's taking too long to answer — they stay on this phone.* */
+  flushTimedOut: TranslatedText;
+}
+
 export interface DropzoneProps {
-  label?: string;
-  hint?: string;
+  /** Every word the area says on its own — see `DropzoneWords`. */
+  words: DropzoneWords;
+  /** The act, always drawn — *Add roof photos*. */
+  label: TranslatedText;
+  hint?: TranslatedText;
   accept?: string;
   multiple?: boolean;
   /** "environment" opens the rear camera on Android — use for roof photos. */
@@ -41,8 +90,8 @@ export interface DropzoneProps {
   onRemove?: (file: DropzoneFile, index: number) => void;
   maxSizeMB?: number;
   state?: 'idle' | 'uploading' | 'error';
-  /** State the problem and the fix. */
-  errorMessage?: string;
+  /** State the problem and the fix. Without it, `words.tooLarge`. */
+  errorMessage?: TranslatedText;
   /** 0–100 for the whole batch. */
   progress?: number | null;
   /**
@@ -77,11 +126,12 @@ export interface DropzoneProps {
    * come to disagree about what a flush is allowed to answer.
    */
   onRetry?: NoConnectionProps['onRetry'];
-  retryLabel?: string;
-  /** The words when a flush reports failure. */
-  failedMessage?: string;
-  /** The words when a flush never answers within `retryTimeout`. */
-  timeoutMessage?: string;
+  /** Overrides `words.tryUploadingNow`. */
+  retryLabel?: TranslatedText;
+  /** The words when a flush reports failure. Overrides `words.flushFailed`. */
+  failedMessage?: TranslatedText;
+  /** The words when a flush never answers within `retryTimeout`. Overrides `words.flushTimedOut`. */
+  timeoutMessage?: TranslatedText;
   /** Milliseconds before a non-answering flush is called one. Default 10000. */
   retryTimeout?: number;
   /**
@@ -91,10 +141,10 @@ export interface DropzoneProps {
    * `heldMessage` was the only fix.
    */
   heldMessage?: ReactNode;
-  /** What is waiting, singular — "photo" (default for an image `accept`), "document", "file". */
-  heldNoun?: string;
-  /** Its plural, when adding "s" is wrong. */
-  heldNounPlural?: string;
+  /** What is waiting, singular — "document". Without it, photos for an image `accept`, else files. */
+  heldNoun?: TranslatedText;
+  /** Its plural. Without it the singular names any count. */
+  heldNounPlural?: TranslatedText;
   /**
    * **Native only, and the one prop this port adds.** React Native has no file input, and a picker
    * needs a native module `@heliogrid/ui` must not depend on. The native half calls this when the

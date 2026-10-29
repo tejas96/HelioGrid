@@ -1,5 +1,4 @@
 'use client';
-import { settingsRowOfSegment } from '@heliogrid/domain';
 import { SettingsList } from '@heliogrid/ui';
 import { useSelectedLayoutSegment } from 'next/navigation';
 import type { ReactNode } from 'react';
@@ -14,7 +13,7 @@ import './settings.css';
  * alone, as the phone's do.
  */
 export function SettingsLayout({ children }: { children: ReactNode }) {
-  const { list, person, open, first } = useSettingsList();
+  const { list, person, open, first, openedRow } = useSettingsList();
   const segment = useSelectedLayoutSegment();
   if (segment === null || first === null) return children;
   return (
@@ -26,7 +25,7 @@ export function SettingsLayout({ children }: { children: ReactNode }) {
           person={person}
           groups={list.groups}
           onOpen={open}
-          current={settingsRowOfSegment(segment) ?? undefined}
+          current={openedRow(segment) ?? undefined}
         />
       </div>
       <div className="hg-settings-page-content">{children}</div>

@@ -5,8 +5,8 @@ import { theme } from '@heliogrid/theme';
 import { Fragment } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
-import { clock, isCurrentTurn } from './Transcript.language';
-import type { TranscriptTurn } from './Transcript.types';
+import { turnEntriesOf } from './Transcript.logic';
+import type { TranscriptTurnListProps } from './Transcript.types';
 import { GlobeGlyph, TRANSCRIPT_GAP } from './TranscriptChrome.native';
 import { TranscriptTurnRow } from './TranscriptTurnRow.native';
 
@@ -20,18 +20,6 @@ const styles = StyleSheet.create({
   switchWord: { fontWeight: '500' },
 });
 
-interface TranscriptTurnListProps {
-  /** The turns currently on screen — the window, not the whole call. */
-  turns: TranscriptTurn[];
-  /** Turn index → the language it switched to. */
-  marks: Record<number, string>;
-  currentAt?: number;
-  agentName?: string;
-  customerName?: string;
-  onSeek?: (seconds: number) => void;
-  density: 'expressive' | 'functional';
-}
-
 export function TranscriptTurnList({
   turns,
   marks,
@@ -40,33 +28,31 @@ export function TranscriptTurnList({
   customerName,
   onSeek,
   density,
+  words,
 }: TranscriptTurnListProps) {
   return (
     <View style={{ rowGap: TRANSCRIPT_GAP[density] }}>
-      {turns.map((t, i) => {
-        const switched = marks[i];
-        const key = t.id ?? `${i}-${t.party}`;
-        return (
-          <Fragment key={key}>
-            {switched ? (
-              <View style={styles.switchRow}>
-                <GlobeGlyph size={13} />
-                <Text variant="caption" color="secondary" style={styles.switchWord}>
-                  {`Switched to ${switched}${t.at !== undefined ? ` · ${clock(t.at)}` : ''}`}
-                </Text>
-              </View>
-            ) : null}
-            <TranscriptTurnRow
-              turn={t}
-              current={isCurrentTurn(turns, i, currentAt)}
-              agentName={agentName}
-              customerName={customerName}
-              onSeek={onSeek}
-              density={density}
-            />
-          </Fragment>
-        );
-      })}
+      {turnEntriesOf(turns, marks, currentAt, words).map(({ key, turn, current, switchLine }) => (
+        <Fragment key={key}>
+          {switchLine === null ? null : (
+            <View style={styles.switchRow}>
+              <GlobeGlyph size={13} />
+              <Text variant="caption" color="secondary" style={styles.switchWord}>
+                {switchLine}
+              </Text>
+            </View>
+          )}
+          <TranscriptTurnRow
+            turn={turn}
+            current={current}
+            agentName={agentName}
+            customerName={customerName}
+            onSeek={onSeek}
+            density={density}
+            words={words}
+          />
+        </Fragment>
+      ))}
     </View>
   );
 }

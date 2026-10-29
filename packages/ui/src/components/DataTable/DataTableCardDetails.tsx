@@ -2,6 +2,7 @@ import type { ProvenanceProps } from '../Provenance';
 import { alignOf } from './DataTable.logic';
 import type { DataTableProps } from './DataTable.types';
 import { DataTableCell } from './DataTableCell';
+import { isMonoColumn } from './DataTableCell.logic';
 import type { DataTableColumn } from './DataTableColumn.types';
 import { ColumnTier } from './DataTableProvenance';
 import { isTappable } from './DataTableStacked.logic';
@@ -29,7 +30,7 @@ function CardPair<Row>({
         <ColumnTier column={column} tableSpec={tableSpec} />
       </dt>
       <dd
-        data-mono={column.mono === true || column.numeric === true ? 'true' : undefined}
+        data-mono={isMonoColumn(column) ? 'true' : undefined}
         data-numeric={column.numeric === true ? 'true' : undefined}
         data-editable={
           column.editable === true && table.onCellCommit !== undefined ? 'true' : undefined
@@ -42,6 +43,7 @@ function CardPair<Row>({
           align={alignOf(column)}
           cellIssue={table.cellIssue}
           onCellCommit={table.onCellCommit}
+          words={table.words}
         />
       </dd>
     </div>

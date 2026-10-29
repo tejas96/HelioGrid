@@ -1,3 +1,5 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+import { normaliseHexColour } from '@heliogrid/domain';
 import type { ReadableInk, TextOnFill, WordOnPaper } from '../../utils/color-contrast';
 import {
   asWordOnPaper,
@@ -7,6 +9,7 @@ import {
   TEXT_CONTRAST_FLOOR,
 } from '../../utils/color-contrast';
 import type {
+  BrandColorFieldProps,
   BrandColorFieldWords,
   BrandFullVerdictWords,
   BrandShortVerdictWords,
@@ -109,7 +112,12 @@ export function fullVerdicts(
 /** A caller's override, else the words' own — no English default exists anywhere. */
 export function fieldWordsOf(
   words: BrandColorFieldWords,
-  overrides: { label?: string; helper?: string; specimenLabel?: string; specimenWord?: string },
+  overrides: {
+    label?: TranslatedText;
+    helper?: TranslatedText | '';
+    specimenLabel?: TranslatedText;
+    specimenWord?: TranslatedText;
+  },
 ) {
   return {
     label: overrides.label ?? words.label,
@@ -117,4 +125,38 @@ export function fieldWordsOf(
     specimenLabel: overrides.specimenLabel ?? words.specimenLabel,
     specimenWord: overrides.specimenWord ?? words.specimenWord,
   };
+}
+
+/** The field's colour read once: the value as a hex, and what it can carry — null while invalid. */
+export function readFieldColour(
+  value: string | undefined,
+  showSuggestion: boolean,
+): { hex: string | null; reading: BrandColourReading | null } {
+  const hex = normaliseHexColour(value);
+  return { hex, reading: hex === null ? null : readBrandColour(hex, showSuggestion) };
+}
+
+/**
+ * The field's two acts: a picked or typed colour is reported only once it is a valid hex, and
+ * taking the offered ink sets the reading's fix.
+ */
+export function brandColourActs(
+  reading: BrandColourReading | null,
+  onChange: BrandColorFieldProps['onChange'],
+): { set: (next: string) => void; takeInk: () => void } {
+  const set = (next: string) => {
+    const normalised = normaliseHexColour(next);
+    if (normalised !== null) {
+      onChange?.(normalised);
+    }
+  };
+  const takeInk = () => {
+    if (reading !== null && reading.fix !== null) set(reading.fix.hex);
+  };
+  return { set, takeInk };
+}
+
+/** A swatch is the chosen one when it names the same colour as the field's value. */
+export function isChosenSwatch(preset: string, hex: string | null): boolean {
+  return normaliseHexColour(preset) === hex;
 }

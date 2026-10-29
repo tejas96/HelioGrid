@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { MouseEvent, ReactNode } from 'react';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
@@ -7,7 +8,7 @@ import type { RichTextTemplate, RichTextWords } from './RichText.types';
 
 interface ToolButtonProps {
   active?: boolean;
-  label: string;
+  label: TranslatedText;
   glyph?: ShellGlyphName;
   onMouseDown: (e: MouseEvent<HTMLButtonElement>) => void;
   children?: ReactNode;
@@ -61,7 +62,7 @@ interface RichTextToolbarProps {
   hasLogo: boolean;
   linking: boolean;
   templates?: RichTextTemplate[];
-  saveTemplateLabel: string | undefined;
+  saveTemplateLabel: TranslatedText | undefined;
   onRun: (e: MouseEvent<HTMLButtonElement>, c: ToolCommand) => void;
   onToggleLink: () => void;
   onToggleLogo: () => void;

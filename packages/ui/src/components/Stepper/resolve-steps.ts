@@ -1,4 +1,5 @@
-import type { StepperStep, StepReachability, StepState } from './Stepper.types';
+import type { TranslatedText } from '@heliogrid/contracts';
+import type { StepperStep, StepperWords, StepReachability, StepState } from './Stepper.types';
 
 export interface ResolvedStep extends StepperStep {
   state: StepState;
@@ -13,16 +14,8 @@ const ENTERED: Record<StepState, boolean> = {
   'not-started': false,
 };
 
-/** State is never carried by colour alone (F7-12) — each state has a glyph AND a word. */
-export const STATE_WORD: Record<StepState, string> = {
-  done: 'Done',
-  'in-progress': 'In progress',
-  errors: 'Needs fixing',
-  'not-started': 'Not started',
-};
-
 /** A bare string step is its own label. */
-export function stepLabel(step: StepperStep | string): string {
+export function stepLabel(step: StepperStep | TranslatedText): TranslatedText {
   return typeof step === 'string' ? step : step.label;
 }
 
@@ -54,7 +47,7 @@ function deriveReachable(
 
 /** Fills in each step's state from `current`, and marks which are reachable under `reachability`. */
 export function resolveSteps(
-  steps: readonly (StepperStep | string)[] = [],
+  steps: readonly (StepperStep | TranslatedText)[] = [],
   current = 0,
   reachability: StepReachability = 'free',
 ): ResolvedStep[] {
@@ -65,10 +58,36 @@ export function resolveSteps(
   });
 }
 
-/** "3 to fix" on an errored step that counts them; otherwise the state's own word. */
-export function stateWord(step: ResolvedStep): string {
-  if (step.state === 'errors' && step.errorCount !== undefined && step.errorCount > 0) {
-    return `${step.errorCount} to fix`;
-  }
-  return STATE_WORD[step.state];
+/**
+ * State is never carried by colour alone (F7-12) — each state has a glyph AND a word: "3 to fix" on
+ * an errored step that counts them, otherwise the state's own word.
+ */
+export function stateWord(step: ResolvedStep, words: StepperWords): TranslatedText {
+  return words.state(stateFactsOf(step));
+}
+
+/** The state an optional step reads — "Done · optional". */
+export function rowStateWord(step: ResolvedStep, words: StepperWords): TranslatedText {
+  return step.optional === true ? words.stateOptional(stateFactsOf(step)) : stateWord(step, words);
+}
+
+/** A step's whole accessible name — "Step 2 of 5, Roof, in progress". */
+export function spokenStep(
+  step: ResolvedStep,
+  position: number,
+  total: number,
+  words: StepperWords,
+): TranslatedText {
+  return words.spokenStep({
+    ...stateFactsOf(step),
+    current: position + 1,
+    total,
+    name: step.label,
+  });
+}
+
+function stateFactsOf(step: ResolvedStep) {
+  return step.errorCount === undefined
+    ? { state: step.state }
+    : { state: step.state, errorCount: step.errorCount };
 }

@@ -25,7 +25,8 @@ const READERS = {
 /**
  * Profile & preferences as a screen holds it, inside the page's padding: the view and the words from the person, the reader
  * and the India pack; a tap moves the person's choice here, in the browser, and the frame reports
- * it as `data-language`, `data-units` and `data-muted`, *Try again* as `data-retried` and *Edit name*
+ * it as `data-language`, `data-units` and `data-muted`, *Try again* as `data-retried` — the read
+ * then out again, as a retried query is — and *Edit name*
  * as `data-edit-opened` and *Your role* as `data-role-opened`. The push
  * rows are what the api answers these presets: the groups shown, Billing locked for the Owner.
  */
@@ -100,7 +101,9 @@ export function ProfilePreferencesAsHeld({
         onRole={() => setRoleOpened((count) => count + 1)}
         onLanguage={setLanguage}
         onUnits={setUnits}
-        read={readIn(push, pushSwitches(answered, roles), () => setRetried(true))}
+        read={readIn(retried ? 'loading' : push, pushSwitches(answered, roles), () =>
+          setRetried(true),
+        )}
         refused={refusedGroups}
         onPush={(group) =>
           setMuted((held) =>

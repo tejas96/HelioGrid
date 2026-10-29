@@ -1,19 +1,21 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import { isValidElement } from 'react';
+import { useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { focusAfterFirst, NO_FOCUS_AFTER, useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { Button } from '../Button/Button.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { IndeterminateRail } from './IndeterminateRail.native';
+import { pendingLine, readPendingInput } from './PendingAction.logic';
 import type { PendingActionProps, PendingActionSpec } from './PendingAction.types';
 
-interface NativePendingActionProps extends PendingActionProps {
+type NativePendingActionProps = PendingActionProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 /**
  * An arrow curving back to where it came from: the act was returned. Not error's exclamation
@@ -49,55 +51,58 @@ function renderWords(words: ReactNode, style: TextStyle) {
  * the row: no opacity, no row tint, no disabling, no `aria-invalid`. A second act can start while
  * the first is in flight; hosts mark the row busy and leave it operable.
  */
-export function PendingAction({
-  label,
-  state = 'waiting',
-  reason,
-  slowNote,
-  onRetry,
-  retryLabel,
-  onDismiss,
-  dismissLabel = 'Dismiss',
-  size = 12,
-  align = 'left',
-  style,
-}: NativePendingActionProps) {
-  const returned = state === 'returned';
-  const retrying = onRetry !== undefined && retryLabel !== undefined;
-  const words = returned ? reason : label;
-  if (words === undefined || words === null || words === false || words === '') {
+export function PendingAction(props: NativePendingActionProps) {
+  const {
+    slowNote,
+    onRetry,
+    retryLabel,
+    onDismiss,
+    dismissLabel,
+    focusAfter,
+    align = 'left',
+    style,
+  } = props;
+  const frame = useRef<View>(null);
+  const leaving = useFocusAfter(focusAfter ?? NO_FOCUS_AFTER);
+  const shown = pendingLine(props);
+  if (shown === null) {
     return null;
   }
-  const fs = Math.max(12, size);
+  const { returned, words, fontSize } = shown;
   const line: TextStyle = {
-    fontSize: fs,
-    lineHeight: Math.round(fs * 1.45),
+    fontSize,
+    lineHeight: Math.round(fontSize * 1.45),
     color: returned ? theme.colors['warning-text'] : theme.colors['text-secondary'],
   };
   return (
     <View
+      ref={frame}
       accessibilityLiveRegion="polite"
       style={[styles.row, align === 'right' ? styles.right : styles.left, style]}
     >
       {returned ? (
         <View style={styles.glyph}>
-          <ReturnGlyph size={fs + 1} />
+          <ReturnGlyph size={shown.glyphSize} />
         </View>
       ) : (
-        <IndeterminateRail style={{ marginTop: Math.round(fs * 0.62) }} />
+        <IndeterminateRail style={{ marginTop: shown.railOffset }} />
       )}
       <View style={styles.words}>
         {renderWords(words, line)}
         {/* M02-24's budget, said in words rather than by the rail getting slower. */}
-        {!returned && slowNote !== undefined
+        {shown.showsSlowNote
           ? renderWords(slowNote, { ...line, color: theme.colors['text-tertiary'] })
           : null}
       </View>
-      {returned && (retrying || onDismiss !== undefined) ? (
+      {shown.offersActs ? (
         <View style={styles.actions}>
-          <RetryButton onRetry={onRetry} label={retryLabel} />
+          <RetryButton
+            onRetry={onRetry}
+            label={retryLabel}
+            focusAfter={focusAfterFirst(frame, focusAfter ?? NO_FOCUS_AFTER)}
+          />
           {onDismiss !== undefined ? (
-            <Button variant="ghost" size="md" onClick={onDismiss}>
+            <Button variant="ghost" size="md" onClick={leaving(onDismiss)}>
               {dismissLabel}
             </Button>
           ) : null}
@@ -107,38 +112,16 @@ export function PendingAction({
   );
 }
 
-/** A plain spec object, as opposed to any of the object shapes ReactNode itself allows. */
-function isPendingSpec(value: PendingActionSpec | ReactNode): value is PendingActionSpec {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    !isValidElement(value) &&
-    !(Symbol.iterator in value) &&
-    !('then' in value)
-  );
-}
-
 /** What every host's `pending` prop runs through: a string, a spec, or a ready node. */
 export function renderPending(
   spec: PendingActionSpec | ReactNode,
-  extra: Partial<PendingActionProps> = {},
+  extra: Pick<PendingActionProps, 'size' | 'align'> = {},
 ): ReactNode {
-  if (spec === undefined || spec === null || spec === false || spec === '') {
+  const input = readPendingInput(spec);
+  if (input === null) {
     return null;
   }
-  if (isValidElement(spec)) {
-    return spec;
-  }
-  if (typeof spec === 'string') {
-    return <PendingAction label={spec} {...extra} />;
-  }
-  if (!isPendingSpec(spec)) {
-    return null;
-  }
-  if (spec.label === undefined && spec.reason === undefined) {
-    return null;
-  }
-  return <PendingAction {...spec} {...extra} />;
+  return 'node' in input ? input.node : <PendingAction {...input.spec} {...extra} />;
 }
 
 const styles = StyleSheet.create({

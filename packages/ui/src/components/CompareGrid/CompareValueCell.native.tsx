@@ -1,12 +1,11 @@
-import type { ReactNode } from 'react';
+import type { TranslatedText } from '@heliogrid/contracts';
 import { type StyleProp, View, type ViewStyle } from 'react-native';
 import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
-import type { MarketFormat } from '../../utils/format';
 import { useFormat } from '../MarketProvider/market-context';
 import { NamedGap } from '../NamedGap/NamedGap.native';
-import { formatNumber, gapOf, isAbsent, rawValue } from './CompareGrid.logic';
-import type { CompareAttribute, CompareOption } from './CompareGrid.types';
+import { gapOf, isAbsent, isMonoCell, rawValue, valueWordsOf } from './CompareGrid.logic';
+import type { CompareAttribute, CompareGridWords, CompareOption } from './CompareGrid.types';
 import {
   cellGround,
   compareStyles,
@@ -15,22 +14,12 @@ import {
 } from './CompareGridStyles.native';
 
 /** The best value in a row is marked with a WORD — a mark never relies on colour alone. */
-function Best() {
+function Best({ word }: { word: TranslatedText }) {
   return (
-    <Text variant="overline" color="success">
-      {'  Best'}
+    <Text variant="overline" color="success" style={compareStyles.best}>
+      {word}
     </Text>
   );
-}
-
-/** The words of a cell that HAS a value: the pack's formatting of a figure, or the caller's node. */
-function valueWords<Opt extends CompareOption>(
-  attribute: CompareAttribute<Opt>,
-  raw: ReactNode | number | undefined,
-  format: MarketFormat,
-): ReactNode {
-  if (typeof raw === 'number') return formatNumber(attribute, raw, format);
-  return raw;
 }
 
 interface ValueCellProps<Opt extends CompareOption> {
@@ -40,6 +29,7 @@ interface ValueCellProps<Opt extends CompareOption> {
   zebra: boolean;
   best: boolean;
   box: StyleProp<ViewStyle>;
+  words: CompareGridWords;
 }
 
 /**
@@ -54,15 +44,14 @@ export function CompareValueCell<Opt extends CompareOption>({
   zebra,
   best,
   box,
+  words,
 }: ValueCellProps<Opt>) {
   /* The market's own words for a figure — a money row's currency comes from here, never from a
      symbol this component invented. */
   const format = useFormat();
   const raw = rawValue(attribute, option);
-  /* AN UNFLAGGED NUMBER IS STILL A FIGURE. The third clause is what keeps this half agreeing with
-     the web half: a value that arrives as a number is monospaced whether or not the row said so. */
-  const mono = attribute.mono === true || attribute.numeric === true || typeof raw === 'number';
-  const gap = gapOf(attribute);
+  const mono = isMonoCell(attribute, raw);
+  const gap = gapOf(attribute, words.notStated);
   const { ground } = useGround();
   const row = (
     <View style={compareStyles.valueRow}>
@@ -76,10 +65,10 @@ export function CompareValueCell<Opt extends CompareOption>({
           variant={mono ? 'mono' : 'body-sm'}
           style={attribute.strong === true ? strongFigureStyle : figureStyle}
         >
-          {valueWords(attribute, raw, format)}
+          {valueWordsOf(attribute, raw, format)}
         </Text>
       )}
-      {best ? <Best /> : null}
+      {best ? <Best word={words.best} /> : null}
     </View>
   );
   return (

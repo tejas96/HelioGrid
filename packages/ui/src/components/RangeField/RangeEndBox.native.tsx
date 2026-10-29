@@ -1,21 +1,9 @@
 import { theme } from '@heliogrid/theme';
-import { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { FIELD_BOX_EDGE, fieldBox, fieldBoxText } from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { commitEnd } from './RangeField.logic';
-
-export interface RangeEndBoxProps {
-  label: string;
-  value: number;
-  /** This end's own window — the other end is the bound it may not cross. */
-  min: number;
-  max: number;
-  step: number;
-  unit?: string;
-  disabled?: boolean;
-  onCommit: (value: number) => void;
-}
+import type { RangeEndBoxProps } from './RangeField.types';
+import { useEndDraft } from './use-end-draft';
 
 const styles = StyleSheet.create({
   end: { flexGrow: 1, flexShrink: 1, flexBasis: 96, minWidth: 96, gap: theme.spacing['sp-1'] },
@@ -59,22 +47,13 @@ export function RangeEndBox({
   disabled = false,
   onCommit,
 }: RangeEndBoxProps) {
-  const [draft, setDraft] = useState(String(value));
-  const [focus, setFocus] = useState(false);
-
-  useEffect(() => {
-    if (!focus) setDraft(String(value));
-  }, [value, focus]);
-
-  const commit = () => {
-    const next = commitEnd(draft, min, max, step);
-    if (next === null) {
-      setDraft(String(value));
-      return;
-    }
-    setDraft(String(next));
-    if (next !== value) onCommit(next);
-  };
+  const { draft, setDraft, focus, setFocus, commit } = useEndDraft({
+    value,
+    min,
+    max,
+    step,
+    onCommit,
+  });
 
   return (
     <View style={styles.end}>

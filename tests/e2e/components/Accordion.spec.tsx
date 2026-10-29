@@ -189,7 +189,9 @@ test.describe('at 375, in Hindi', () => {
     mount,
     page,
   }) => {
-    const longTitle = companyFieldRefusal(hi.t, 'ownerName', { type: 'too_small' }) ?? '';
+    const longTitle =
+      companyFieldRefusal(hi.t, 'ownerName', { type: 'too_small' }) ??
+      hi.t(COMPANY_SIGNUP.yourCompany);
     const longStanding = hi.t(SIGN_IN.wrongTitle);
     const accordion = await mount(
       <Accordion

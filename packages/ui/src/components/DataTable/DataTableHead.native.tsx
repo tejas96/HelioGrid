@@ -9,8 +9,15 @@ import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { Checkbox } from '../Checkbox/Checkbox.native';
 import type { ProvenanceProps } from '../Provenance/Provenance.types';
 import type { ColumnSortState } from './DataTable.logic';
-import { alignOf, DENSITY, QUIET_HEAD, quietSpec, sortStateOf } from './DataTable.logic';
-import type { DataTableProps, DataTableSort } from './DataTable.types';
+import {
+  alignOf,
+  densitySpecOf,
+  QUIET_HEAD,
+  selectAllLabelOf,
+  sortGlyphOf,
+  sortStateOf,
+} from './DataTable.logic';
+import type { DataTableProps, DataTableSort, DataTableWords } from './DataTable.types';
 import { alignStyle, cellBox } from './DataTableCellShell.native';
 import { tickPullback } from './DataTableChrome.native';
 import type { DataTableColumn } from './DataTableColumn.types';
@@ -34,7 +41,7 @@ function SortGlyph({ dir, active }: { dir: DataTableSort['dir'] | null; active: 
       strokeLinejoin="round"
       opacity={active ? 1 : 0.35}
     >
-      <ShellGlyphMarks name={dir === 'desc' ? 'caret-down' : 'caret-up'} />
+      <ShellGlyphMarks name={sortGlyphOf(dir)} />
     </Svg>
   );
 }
@@ -45,14 +52,14 @@ function SortGlyph({ dir, active }: { dir: DataTableSort['dir'] | null; active: 
  * is sorted, and which way. Left to the glyph it would be direction by path and opacity — state by
  * shape and colour alone, which is `F7-12`.
  */
-function sortedName(label: string, state: ColumnSortState): string {
-  if (!state.active) return `${label}, not sorted`;
-  return state.dir === 'desc' ? `${label}, sorted descending` : `${label}, sorted ascending`;
+function sortedName(label: string, state: ColumnSortState, words: DataTableWords) {
+  if (!state.active) return words.notSorted(label);
+  return state.dir === 'desc' ? words.sortedDescending(label) : words.sortedAscending(label);
 }
 
 /** What pressing it does next — the same flip `state.next` carries. */
-function sortHint(state: ColumnSortState): string {
-  return state.next.dir === 'desc' ? 'Sorts descending' : 'Sorts ascending';
+function sortHint(state: ColumnSortState, words: DataTableWords) {
+  return state.next.dir === 'desc' ? words.sortsDescending : words.sortsAscending;
 }
 
 /**
@@ -66,6 +73,7 @@ function HeadCell<Row>({
   onSort,
   tableSpec,
   quiet,
+  words,
 }: {
   column: DataTableColumn<Row>;
   state: ColumnSortState;
@@ -73,6 +81,7 @@ function HeadCell<Row>({
   quiet: boolean;
   onSort: (next: DataTableSort) => void;
   tableSpec: ProvenanceProps | null;
+  words: DataTableWords;
 }) {
   const inner = (
     <View style={styles.headCell}>
@@ -91,8 +100,8 @@ function HeadCell<Row>({
       {state.canSort ? (
         <RNPressable
           accessibilityRole="button"
-          accessibilityLabel={sortedName(column.label, state)}
-          accessibilityHint={sortHint(state)}
+          accessibilityLabel={sortedName(column.label, state, words)}
+          accessibilityHint={sortHint(state, words)}
           onPress={() => onSort(state.next)}
         >
           {inner}
@@ -120,6 +129,7 @@ export function DataTableHead<Row>({
   density,
   quiet = false,
   tableSpec,
+  words,
 }: {
   columns: DataTableProps<Row>['columns'];
   selectable: boolean;
@@ -134,8 +144,9 @@ export function DataTableHead<Row>({
   quiet?: boolean;
   /** The table-wide statement a column's tier is measured against, resolved once by the grid. */
   tableSpec: ProvenanceProps | null;
+  words: DataTableWords;
 }) {
-  const spec = quiet ? quietSpec(DENSITY[density]) : DENSITY[density];
+  const spec = densitySpecOf(density, quiet);
   const gutter = { paddingHorizontal: spec.gutter };
   const { ground } = useGround();
 
@@ -152,7 +163,7 @@ export function DataTableHead<Row>({
         <View style={[{ width: spec.selW }, gutter]}>
           <Checkbox
             checked={allSelected}
-            ariaLabel={allSelected ? 'Clear selection' : 'Select every row'}
+            ariaLabel={selectAllLabelOf(allSelected, words)}
             onChange={onToggleAll}
             style={tickPullback}
           />
@@ -167,6 +178,7 @@ export function DataTableHead<Row>({
           onSort={onSort}
           tableSpec={tableSpec}
           quiet={quiet}
+          words={words}
         />
       ))}
       {hasActions ? <View style={[{ width: spec.actW }, gutter]} /> : null}

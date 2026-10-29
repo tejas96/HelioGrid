@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { hasErrorLine } from './Switch.logic';
 import type { SwitchProps } from './Switch.types';
 
 interface WebSwitchProps extends SwitchProps {
@@ -38,7 +39,7 @@ export function Switch({
   const errId = `${sid}-err`;
   const titleId = `${sid}-title`;
   const descId = `${sid}-desc`;
-  const hasError = error !== undefined && error !== null && error !== false;
+  const hasError = hasErrorLine(error);
   const described = description !== undefined;
   const namedByTitle = described && label !== undefined && ariaLabel === undefined;
   const describedBy = [described ? descId : null, hasError ? errId : null]

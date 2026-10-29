@@ -1,4 +1,6 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import { hasCallerError } from './TimeField.logic';
 
 interface TimeFieldMessageProps {
   /** Id the box's `aria-describedby` points at. It rides BOTH danger sentences: a range's two
@@ -6,8 +8,8 @@ interface TimeFieldMessageProps {
    *  nothing is "invalid" with no why. */
   errorId: string;
   error?: ReactNode;
-  helper?: string;
-  refused: string | null;
+  helper?: TranslatedText;
+  refused: TranslatedText | null;
 }
 
 /**
@@ -25,7 +27,7 @@ export function TimeFieldMessage({ errorId, error, helper, refused }: TimeFieldM
       </p>
     );
   }
-  if (error !== undefined && error !== null && error !== false) {
+  if (hasCallerError(error)) {
     return (
       <p className="hg-time-field-message" data-danger="true" id={errorId}>
         {error}

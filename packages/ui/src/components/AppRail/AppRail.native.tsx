@@ -3,8 +3,9 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
-import { badgeName, showsBadge } from '../AppShell/AppShell.types';
+import { showsBadge } from '../AppShell/AppShell.types';
 import { CountBadge } from '../AppShell/CountBadge.native';
+import { spokenItemName } from './AppRail.logic';
 import type { AppRailProps, RailItem } from './AppRail.types';
 
 interface NativeAppRailProps extends AppRailProps {
@@ -67,7 +68,7 @@ interface RailButtonProps {
 function RailButton({ item, active, onPress }: RailButtonProps) {
   return (
     <Pressable
-      accessibilityLabel={item.name ?? badgeName(item.label, item.badge)}
+      accessibilityLabel={spokenItemName(item)}
       accessibilityState={item.open === undefined ? undefined : { expanded: item.open }}
       onPress={onPress}
       style={[styles.button, active || item.open === true ? styles.buttonActive : undefined]}
@@ -76,7 +77,7 @@ function RailButton({ item, active, onPress }: RailButtonProps) {
       {/* F6-17: the badge counts unread from the record. A number, not a dot. */}
       {showsBadge(item.badge) ? (
         <View style={styles.badge}>
-          <CountBadge count={item.badge} label={item.label.toLowerCase()} />
+          <CountBadge count={item.badge} />
         </View>
       ) : null}
     </Pressable>

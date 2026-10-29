@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
@@ -5,8 +6,7 @@ import type { StyleProp, TextStyle } from 'react-native';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
-import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
-import type { CardProps } from './Card.types';
+import type { CardBodyProps } from './Card.types';
 
 const styles = StyleSheet.create({
   loading: { gap: 10 },
@@ -52,8 +52,8 @@ export function CardMessage({
   action,
 }: {
   tone?: 'warning';
-  title?: string;
-  message?: string;
+  title?: TranslatedText;
+  message?: TranslatedText;
   action?: ReactNode;
 }) {
   const text: StyleProp<TextStyle> = [
@@ -88,6 +88,7 @@ export function CardMessage({
 export function CardBody({
   children,
   state,
+  loadingLabel,
   emptyTitle,
   emptyMessage,
   emptyAction,
@@ -95,20 +96,10 @@ export function CardBody({
   errorMessage,
   onRetry,
   retryLabel,
+  focusAfter,
   unavailableTitle,
   unavailableMessage,
-}: { state: SurfaceState; onRetry?: () => void } & Required<
-  Pick<CardProps, 'emptyMessage' | 'errorTitle' | 'errorMessage'>
-> &
-  Pick<
-    CardProps,
-    | 'children'
-    | 'emptyTitle'
-    | 'emptyAction'
-    | 'retryLabel'
-    | 'unavailableTitle'
-    | 'unavailableMessage'
-  >) {
+}: CardBodyProps) {
   if (state === 'loading') {
     return (
       /* Web says `role="status"` — "something is loading here". RN has no `status` role, and
@@ -117,7 +108,7 @@ export function CardBody({
          the polite live region is what carries web's status fact. */
       <View
         accessible
-        accessibilityLabel="Loading"
+        accessibilityLabel={loadingLabel}
         accessibilityLiveRegion="polite"
         style={styles.loading}
       >
@@ -133,13 +124,16 @@ export function CardBody({
         tone="warning"
         title={errorTitle}
         message={errorMessage}
-        action={<RetryButton onRetry={onRetry} label={retryLabel} />}
+        action={<RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />}
       />
     );
   }
   if (state === 'unavailable') {
-    /* No retry, no warning tint — the absence is stated, not styled as a fault. */
-    return <UnavailableNote title={unavailableTitle} message={unavailableMessage} />;
+    /* No retry, no warning tint — the absence is stated, not styled as a fault. Its words are the
+       caller's, so an absence it does not name draws nothing. */
+    return unavailableTitle === undefined ? null : (
+      <UnavailableNote title={unavailableTitle} message={unavailableMessage} />
+    );
   }
   if (state === 'empty') {
     return <CardMessage title={emptyTitle} message={emptyMessage} action={emptyAction} />;

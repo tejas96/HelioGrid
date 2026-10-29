@@ -3,7 +3,8 @@ import { classNames } from '../../primitives/class-names';
 import { useFormat } from '../MarketProvider/market-context';
 import { DocumentItemsBand, DocumentSectionsBand, DocumentTranchesBand } from './DocumentBands';
 import { DocumentBandHeader, DocumentCover, DocumentFooter } from './DocumentHeader';
-import type { DocumentPart, DocumentPreviewProps } from './DocumentPreview.types';
+import { shownBands } from './DocumentPreview.logic';
+import type { DocumentPreviewProps } from './DocumentPreview.types';
 import { DOCUMENT_DESIGN_WIDTH } from './DocumentPreview.types';
 import { DocumentTermsBand } from './DocumentTerms';
 import { bandFails, resolveDocument } from './document-model';
@@ -60,7 +61,7 @@ function sheetVars(
  * operator application is never restyled.
  *
  * FRAMING IS NOT ITS JOB. `width` still works standalone, but the scaling, cropping, caption and
- * non-interactive guarantee of a preview belong to `PreviewFrame`. Pass `caption=""` inside one.
+ * non-interactive guarantee of a preview belong to `PreviewFrame`. Pass no `caption` inside one.
  *
  * It shares the contrast maths with `CustomerSurface`, so the two never disagree about which
  * text colour the header takes — and when a colour can't carry text it previews the honest
@@ -68,7 +69,8 @@ function sheetVars(
  */
 export function DocumentPreview({ className, style, ...props }: WebDocumentPreviewProps) {
   const doc = resolveDocument(props, useFormat());
-  const has = (part: DocumentPart) => doc.parts.includes(part);
+  const bands = shownBands(doc);
+  const captionNote = doc.bandOk ? undefined : doc.bandFailsNote;
   const [sheetRef, contentHeight] = useSheetHeight(doc.sheetHeight === undefined);
 
   return (
@@ -79,12 +81,12 @@ export function DocumentPreview({ className, style, ...props }: WebDocumentPrevi
       <div className="hg-doc-window">
         <div ref={sheetRef} className="hg-doc-sheet">
           <DocumentBandHeader doc={doc} />
-          {has('cover') ? <DocumentCover doc={doc} /> : null}
+          {bands.cover ? <DocumentCover doc={doc} /> : null}
           <div className="hg-doc-body">
-            {has('items') && doc.lineItems.length > 0 ? <DocumentItemsBand doc={doc} /> : null}
-            {has('sections') ? <DocumentSectionsBand doc={doc} /> : null}
-            {has('tranches') ? <DocumentTranchesBand doc={doc} /> : null}
-            {has('terms') ? (
+            {bands.items ? <DocumentItemsBand doc={doc} /> : null}
+            {bands.sections ? <DocumentSectionsBand doc={doc} /> : null}
+            {bands.tranches ? <DocumentTranchesBand doc={doc} /> : null}
+            {bands.terms ? (
               <DocumentTermsBand
                 title={doc.termsTitle}
                 value={props.terms}
@@ -97,11 +99,11 @@ export function DocumentPreview({ className, style, ...props }: WebDocumentPrevi
           <DocumentFooter doc={doc} />
         </div>
       </div>
-      {doc.caption === '' ? null : (
+      {doc.caption === undefined ? null : (
         <figcaption className="hg-doc-caption">
           {doc.caption}
-          {doc.bandOk || doc.bandFailsNote === '' ? null : (
-            <span className="hg-doc-caption-note">{doc.bandFailsNote}</span>
+          {captionNote === undefined ? null : (
+            <span className="hg-doc-caption-note">{captionNote}</span>
           )}
         </figcaption>
       )}

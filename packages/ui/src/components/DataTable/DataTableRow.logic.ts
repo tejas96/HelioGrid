@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { PendingActionSpec } from '../PendingAction';
 import { isLiveCell, rowKeyOf } from './DataTable.logic';
 import type { DataTableProps, DataTableProvenanceSpec } from './DataTable.types';
@@ -16,9 +17,9 @@ export interface RowState {
   key: string | number;
   isSelected: boolean;
   /** The sentence saying what is wrong with this row, or null. */
-  issue: string | null;
+  issue: TranslatedText | null;
   /** The caller's acceptance of the fix — `true`, its own words, or null. */
-  fixed: boolean | string | null;
+  fixed: boolean | TranslatedText | null;
   /** True when the row carries either the issue tint or the resolved tint. */
   flagged: boolean;
   /**

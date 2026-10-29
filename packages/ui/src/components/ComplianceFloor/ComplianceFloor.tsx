@@ -1,9 +1,10 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { noteLineScale } from '../ActionReason/ActionReason.logic';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { complianceFloorFor } from './ComplianceFloor.logic';
 import type { ComplianceFloorSpec } from './ComplianceFloor.types';
-import { complianceFloorWords } from './ComplianceFloor.words';
+import { complianceFloorSentences } from './ComplianceFloor.words';
 
 interface WebComplianceFloorProps extends ComplianceFloorSpec {
   className?: string;
@@ -34,8 +35,8 @@ function ShieldGlyph({ size }: { size: number }) {
 /** A floor named on the row it protects, or the save it refused. */
 export function ComplianceFloor(props: WebComplianceFloorProps) {
   const { action, variant = 'line', size = 12, message, className, style } = props;
-  const { head, named, body } = complianceFloorWords(props);
-  const step = Math.max(12, size);
+  const { head, named, body } = complianceFloorSentences(props);
+  const scale = noteLineScale(size);
 
   if (variant === 'refusal') {
     return (
@@ -60,11 +61,11 @@ export function ComplianceFloor(props: WebComplianceFloorProps) {
     <div
       role="note"
       className={classNames('hg-compliance-floor', className)}
-      data-size={step >= 13 ? '13' : '12'}
+      data-size={scale.large ? '13' : '12'}
       style={style}
     >
       <span className="hg-compliance-floor-glyph">
-        <ShieldGlyph size={step + 1} />
+        <ShieldGlyph size={scale.glyphSize} />
       </span>
       <span className="hg-compliance-floor-words">
         <span className="hg-compliance-floor-head">{head}</span>
@@ -77,25 +78,11 @@ export function ComplianceFloor(props: WebComplianceFloorProps) {
   );
 }
 
-function isFloorSpec(value: object): value is ComplianceFloorSpec {
-  return !(Symbol.iterator in value);
-}
-
-/** What every `lock` / `floor` host prop runs through: a spec object, or a ready node. */
 export function renderComplianceFloor(
   spec?: ComplianceFloorSpec | ReactNode,
   extra: Partial<ComplianceFloorSpec> = {},
 ): ReactNode {
-  if (!spec) {
-    return null;
-  }
-  if (isValidElement(spec)) {
-    return spec;
-  }
-  if (typeof spec !== 'object' || !isFloorSpec(spec)) {
-    return null;
-  }
-  return <ComplianceFloor {...spec} {...extra} />;
+  return complianceFloorFor(spec, (plain) => <ComplianceFloor {...plain} {...extra} />);
 }
 
 ComplianceFloor.render = renderComplianceFloor;

@@ -5,12 +5,14 @@ import {
   withKinds,
 } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { Banner } from '../Banner/Banner.native';
 import { Block } from '../Block/Block.native';
 import { Button } from '../Button/Button.native';
+import { RetryButton } from '../Button/RetryButton.native';
 import { Badge, Chip } from '../Chip/Chip.native';
 import { ChipGroup } from '../ChipGroup/ChipGroup.native';
 import { DataTable } from '../DataTable/DataTable.native';
@@ -28,8 +30,7 @@ import { catalogRowPending } from './CatalogItems.rows';
 import type { CatalogItemsProps, CatalogPaging, CatalogRow } from './CatalogItems.types';
 import { ListEntries } from './CatalogItemsFoot.native';
 import { CatalogRowActs } from './CatalogRowActs';
-import { CatalogStripBar } from './CatalogStrip';
-import { useRetryFocus } from './use-retry-focus';
+import { CatalogStripBar } from './CatalogStrip.native';
 
 /** The placeholder cards while the list loads — the board's six. */
 const LOADING_ROWS = ['panel', 'panel', 'panel', 'panel', 'panel', 'panel'] as const;
@@ -43,30 +44,33 @@ export function CatalogItems(props: CatalogItemsProps) {
   const { words, read, strip, query, onQuery, filter, onFilter, schemes } = props;
   const [filtersOpen, setFiltersOpen] = useState(false);
   const dimensions = useMemo(() => catalogFilterDimensions(words, schemes), [words, schemes]);
-  const focus = useRetryFocus(read.kind);
+  /* *Try again* leaves with the failure: the screen reader goes to the panel, which stays while it
+     reloads. A dismissed row's line hands it to the strip's title, which stays. */
+  const panel = useRef<View>(null);
+  const stripTitle = useRef<View>(null);
 
   if (read.kind === 'failed') {
     return (
-      <EmptyState
-        title={words.loadFailed}
-        description={words.loadFailedBody}
-        action={
-          <Button variant="secondary" size="lg" onClick={focus.retrying(read.retry)}>
-            {words.tryAgain}
-          </Button>
-        }
-      />
+      <View ref={panel} style={styles.panel}>
+        <EmptyState
+          title={words.loadFailed}
+          description={words.loadFailedBody}
+          action={
+            <RetryButton size="lg" onRetry={read.retry} label={words.tryAgain} focusAfter={panel} />
+          }
+        />
+      </View>
     );
   }
 
   const loading = read.kind === 'loading';
   const kindOptions = COMPONENT_KINDS.map((kind) => ({ value: kind, label: words.kinds[kind] }));
   return (
-    <View style={styles.panel}>
+    <View ref={panel} style={styles.panel}>
       {loading ? (
         <LoadingBars label={words.loadingRelease} bars={['row']} />
       ) : (
-        <CatalogStripBar strip={strip} focusRef={focus.target} />
+        <CatalogStripBar strip={strip} focusRef={stripTitle} />
       )}
       {loading || props.viewOnly === null ? null : (
         <Banner kind="info" density="functional" title={props.viewOnly} />
@@ -76,6 +80,7 @@ export function CatalogItems(props: CatalogItemsProps) {
           overline={words.makeItYours}
           density="functional"
           read={{ kind: 'empty' }}
+          loadingLabel={words.loadingList}
           emptyMessage={props.teaching}
         />
       )}
@@ -88,6 +93,7 @@ export function CatalogItems(props: CatalogItemsProps) {
         onFilterClick={() => setFiltersOpen(true)}
         filterCount={catalogFiltersOn(filter)}
         filterLabel={words.filters}
+        filterActiveLabel={words.filtersActive}
       />
       {loading ? (
         <LoadingBars label={words.loadingKinds} bars={['row']} />
@@ -97,10 +103,11 @@ export function CatalogItems(props: CatalogItemsProps) {
           scroll
           options={kindOptions}
           values={[...filter.kinds]}
+          selectedLabel={words.selectedKind}
           onChange={(kinds) => onFilter(withKinds(filter, kinds as ComponentKind[]))}
         />
       )}
-      {loading ? <LoadingList props={props} /> : <ItemList props={props} />}
+      {loading ? <LoadingList props={props} /> : <ItemList props={props} focusAfter={stripTitle} />}
       <FilterPanel
         open={filtersOpen}
         onClose={() => setFiltersOpen(false)}
@@ -129,10 +136,11 @@ function LoadingList({ props }: { props: CatalogItemsProps }) {
 }
 
 /** The resolved list as cards, its foot caption and the way to more rows. */
-function ItemList({ props }: { props: CatalogItemsProps }) {
+function ItemList({ props, focusAfter }: { props: CatalogItemsProps; focusAfter: FocusAfter }) {
   const { words, administers, rowStates } = props;
   const columns = useItemColumns(props);
   const table = {
+    ...words.table,
     read: props.read,
     columns,
     rows: [...props.rows],
@@ -144,7 +152,7 @@ function ItemList({ props }: { props: CatalogItemsProps }) {
     rowLabel: (row: CatalogRow) => row.labels.row,
     isRowMuted: (row: CatalogRow) => row.archived,
     isRowHighlighted: (row: CatalogRow) => row.id === props.addedId,
-    rowPending: (row: CatalogRow) => catalogRowPending(rowStates[row.id], words),
+    rowPending: (row: CatalogRow) => catalogRowPending(rowStates[row.id], words, focusAfter),
     onRowClick: administers ? props.onOpen : undefined,
   };
   return (

@@ -3,19 +3,12 @@ import { useId, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import { renderAttribution } from '../ValueSource';
+import { countLevel, countText, ringTone } from './Textarea.logic';
 import type { TextareaProps } from './Textarea.types';
 
 interface WebTextareaProps extends TextareaProps {
   className?: string;
   style?: CSSProperties;
-}
-
-/** 'near' at 90% of the limit, 'full' at it — the counter warns before it blocks. */
-function countLevel(length: number, maxLength: number): 'full' | 'near' | 'ok' {
-  if (length >= maxLength) {
-    return 'full';
-  }
-  return length > maxLength * 0.9 ? 'near' : 'ok';
 }
 
 /**
@@ -44,7 +37,6 @@ export function Textarea({
   const autoId = useId();
   const [focused, setFocused] = useState(false);
   const length = (value ?? '').length;
-  const hasCounter = maxLength !== undefined;
   const level = maxLength === undefined ? 'ok' : countLevel(length, maxLength);
   /* A spec, a level string or a ready node — `ValueSource`'s own resolver decides. The field's
      name rides along, so `inherited`'s override action says which field it would override. */
@@ -60,7 +52,7 @@ export function Textarea({
       <textarea
         className="hg-textarea-input"
         data-density={density}
-        {...fieldBox({ focused, tone: error === undefined ? 'none' : 'error', disabled, density })}
+        {...fieldBox({ focused, tone: ringTone(error), disabled, density })}
         id={autoId}
         name={name}
         value={value}
@@ -76,14 +68,14 @@ export function Textarea({
       {attributionNode === null ? null : (
         <div className="hg-textarea-attribution">{attributionNode}</div>
       )}
-      {helper !== undefined || error !== undefined || hasCounter ? (
+      {helper !== undefined || error !== undefined || maxLength !== undefined ? (
         <div className="hg-textarea-foot">
           <span className="hg-textarea-message" data-error={error !== undefined}>
             {error ?? helper}
           </span>
           {maxLength !== undefined ? (
             <span className="hg-textarea-count" data-level={level}>
-              {length}/{maxLength}
+              {countText(length, maxLength)}
             </span>
           ) : null}
         </div>

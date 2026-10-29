@@ -4,11 +4,12 @@ import type { LayoutChangeEvent, View } from 'react-native';
 import { Dimensions } from 'react-native';
 import {
   boxKey,
+  boxNode,
   type ExplainerDensity,
   type ExplainerRect,
   explainerCap,
   type PlacedExplainer,
-  placeExplainer,
+  placeCapped,
 } from './Explainer.logic';
 import type { ExplainerBox, ExplainerPlacement } from './Explainer.types';
 
@@ -22,12 +23,7 @@ interface Measurable {
  */
 function measurableOf(box: ExplainerBox | undefined): Measurable | null {
   if (box === undefined || typeof box === 'string') return null;
-  const node: unknown =
-    typeof box === 'function'
-      ? box()
-      : 'current' in box
-        ? (box as { current: unknown }).current
-        : box;
+  const node = boxNode(box);
   return typeof node === 'object' && node !== null && 'measureInWindow' in node
     ? (node as Measurable)
     : null;
@@ -95,13 +91,7 @@ export function useExplainerPlace({
   const placed: PlacedExplainer | null =
     anchor === null || size === null || cap === null
       ? null
-      : placeExplainer(
-          anchor.from,
-          anchor.bounds,
-          { width: Math.min(size.width, cap), height: size.height },
-          placement,
-          density,
-        );
+      : placeCapped(anchor.from, anchor.bounds, size, cap, placement, density);
 
   const onLayout = (event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;

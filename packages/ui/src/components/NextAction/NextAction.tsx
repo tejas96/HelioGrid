@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { renderActorClass } from '../ActorClass';
 import { renderOverride } from '../FieldOverride';
+import { nextActionInk, nextActionLine } from './NextAction.logic';
 import type { NextActionProps } from './NextAction.types';
 
 /** Per-instance geometry rides in as custom properties; every colour stays in NextAction.css. */
@@ -32,7 +33,7 @@ export function NextAction({
   className,
   style,
 }: WebNextActionProps) {
-  const text = tone === 'overdue' ? 'overdue' : muted || tone === 'snoozed' ? 'quiet' : 'normal';
+  const text = nextActionInk(tone, muted);
   const stacked = Boolean(origin) || Boolean(correction);
   const vars: StyleVars = { '--hg-next-action-size': `${size}px`, ...style };
   return (
@@ -45,7 +46,7 @@ export function NextAction({
     >
       <span className="hg-next-action-line">
         <span className="hg-next-action-dot" aria-hidden="true" />
-        <span className="hg-next-action-words">{`${label}${meta ? ` · ${meta}` : ''}`}</span>
+        <span className="hg-next-action-words">{nextActionLine(label, meta)}</span>
       </span>
       {origin ? (
         <span className="hg-next-action-origin">

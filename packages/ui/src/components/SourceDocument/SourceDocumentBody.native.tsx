@@ -5,32 +5,9 @@ import { StyleSheet, View } from 'react-native';
 import { Button } from '../Button/Button.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { ImageFrame } from '../Image/Image.native';
-import type { ResolvedDocumentState } from './SourceDocument.logic';
-import type { SourceDocumentFit, SourceDocumentPage } from './SourceDocument.types';
+import { documentBodyOf, opensOriginal } from './SourceDocument.logic';
+import type { SourceDocumentBodyProps } from './SourceDocument.types';
 import { Message, openOriginalFile } from './SourceDocumentChrome.native';
-
-export interface SourceDocumentBodyProps {
-  resolved: ResolvedDocumentState;
-  name: string;
-  page: SourceDocumentPage | null;
-  /** Zero-based; the reader is shown `pageNumber + 1`. */
-  pageNumber: number;
-  count: number;
-  aspect: number;
-  bodyHeight: number;
-  fit: SourceDocumentFit;
-  originalUrl?: string;
-  onOpenOriginal?: () => void;
-  openLabel: string;
-  onRetry?: () => void;
-  retryLabel?: string;
-  unsupportedTitle: string;
-  unsupportedMessage: string;
-  failedTitle: string;
-  failedMessage: string;
-  emptyTitle: string;
-  emptyMessage: string;
-}
 
 /**
  * The reading area itself — the page, or the words that say why there isn't one. None of the four
@@ -40,66 +17,40 @@ export interface SourceDocumentBodyProps {
  * The shimmer keyframe has no RN equivalent, so `loading` holds the page's footprint in
  * canvas-sunken. The footprint is the point: nothing reflows when the file lands.
  */
-export function SourceDocumentBody({
-  resolved,
-  name,
-  page,
-  pageNumber,
-  count,
-  aspect,
-  bodyHeight,
-  fit,
-  originalUrl,
-  onOpenOriginal,
-  openLabel,
-  onRetry,
-  retryLabel,
-  unsupportedTitle,
-  unsupportedMessage,
-  failedTitle,
-  failedMessage,
-  emptyTitle,
-  emptyMessage,
-}: SourceDocumentBodyProps) {
-  const canOpen = Boolean(originalUrl || onOpenOriginal);
-  const retrying = onRetry !== undefined && retryLabel !== undefined;
-  const openAction = canOpen ? (
+export function SourceDocumentBody(props: SourceDocumentBodyProps) {
+  const { originalUrl, onOpenOriginal, onRetry, retryLabel, focusAfter } = props;
+  const view = documentBodyOf(props);
+  const openAction = opensOriginal(originalUrl, onOpenOriginal) ? (
     <Button variant="secondary" size="md" onClick={openOriginalFile(originalUrl, onOpenOriginal)}>
-      {openLabel}
+      {props.openLabel}
     </Button>
   ) : null;
 
-  if (resolved === 'loading') {
+  if (view.kind === 'loading') {
     return (
       /* Web says `role="status"`; RN has no `status`, and a held footprint has no page position
          for `progressbar` to report. `accessible` makes the empty block an element so its name is
          announced, and the polite region states the same fact web's status region states. */
       <View
         accessible
-        accessibilityLabel={`Loading ${name}`}
+        accessibilityLabel={view.label}
         accessibilityLiveRegion="polite"
-        style={[
-          styles.shimmer,
-          { width: Math.round((bodyHeight - 24) * aspect), height: bodyHeight - 24 },
-        ]}
+        style={[styles.shimmer, view.footprint]}
       />
     );
   }
-  if (resolved === 'unsupported') {
-    return <Message title={unsupportedTitle} message={unsupportedMessage} action={openAction} />;
-  }
-  if (resolved === 'failed') {
+  if (view.kind === 'failed') {
     /* The state that most needs the source is the one that used to withhold it: retry first
        (the likelier fix), the original beside it. */
     return (
       <Message
         tone="warning"
-        title={failedTitle}
-        message={failedMessage}
+        title={view.title}
+        message={view.message}
         action={
-          retrying || canOpen ? (
+          view.hasActions ? (
             <>
-              <RetryButton onRetry={onRetry} label={retryLabel} />
+              <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
               {openAction}
             </>
           ) : null
@@ -107,21 +58,22 @@ export function SourceDocumentBody({
       />
     );
   }
-  if (resolved === 'empty' || page === null) {
-    return <Message title={emptyTitle} message={emptyMessage} action={openAction} />;
+  if (view.kind !== 'page') {
+    return <Message title={view.title} message={view.message} action={openAction} />;
   }
   return (
     <ImageFrame
-      src={page.url}
-      alt={page.label || `${name}, page ${pageNumber + 1} of ${count}`}
-      ratio={`${aspect}`}
-      width={fit === 'page' ? Math.round((bodyHeight - 24) * aspect) : '100%'}
+      src={view.page.url}
+      alt={view.alt}
+      ratio={view.ratio}
+      width={view.width}
       fit="contain"
       radius={10}
       density="functional"
       missingReason="unavailable"
       onRetry={onRetry}
       retryLabel={retryLabel}
+      words={props.words.image}
     />
   );
 }

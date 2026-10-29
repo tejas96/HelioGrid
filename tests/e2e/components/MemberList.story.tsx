@@ -122,6 +122,7 @@ export function TeamListStory({
           : {})}
         read={read}
         words={words}
+        focusAfter={{ current: null }}
         onClearSearch={onClearSearch}
         onShowAll={onShowAll}
         openOf={

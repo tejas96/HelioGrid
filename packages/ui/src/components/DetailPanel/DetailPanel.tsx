@@ -2,7 +2,9 @@ import type { CSSProperties, UIEvent } from 'react';
 import { useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { OverlayBody } from '../Sheet/OverlayBody';
+import { isBodyScrolled } from '../Sheet/Sheet.logic';
 import { SheetBackdrop } from '../Sheet/SheetBackdrop';
+import { readFrameClass } from '../Sheet/sheet-attrs';
 import { useOverlayDismiss } from '../Sheet/use-overlay-dismiss';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { DetailPanelProps } from './DetailPanel.types';
@@ -12,10 +14,10 @@ import { PanelSkeleton } from './PanelSkeleton';
 /** The live numbers — z-index, the panel's width and its top — ride in as custom properties. */
 type PanelVars = CSSProperties & Record<`--${string}`, string>;
 
-interface WebDetailPanelProps extends DetailPanelProps {
+type WebDetailPanelProps = DetailPanelProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 /**
  * Right-edge master-detail drawer (480px default). Same backdrop law as `Sheet` — blurs the layer
@@ -54,10 +56,11 @@ export function DetailPanel({
   dismissible = true,
   modal = true,
   read,
-  errorTitle = "Couldn't load this record",
-  errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
+  loadingLabel,
+  errorTitle,
+  errorMessage,
   retryLabel,
-  emptyTitle = 'Nothing here yet',
+  emptyTitle,
   emptyMessage,
   emptyAction = null,
   unavailableTitle,
@@ -94,7 +97,7 @@ export function DetailPanel({
       <div
         aria-labelledby={title === undefined ? undefined : titleId}
         aria-modal={modal ? 'true' : undefined}
-        className={classNames('hg-detail-panel', className)}
+        className={classNames('hg-detail-panel', readFrameClass(read), className)}
         data-density={density}
         data-inset={inset ? 'true' : 'false'}
         data-side={side}
@@ -123,7 +126,7 @@ export function DetailPanel({
           className="hg-detail-panel-body"
           data-footer={footer === null ? 'false' : 'true'}
           onScroll={(event: UIEvent<HTMLDivElement>) =>
-            setScrolled(event.currentTarget.scrollTop > 2)
+            setScrolled(isBodyScrolled(event.currentTarget.scrollTop))
           }
         >
           <OverlayBody
@@ -134,7 +137,8 @@ export function DetailPanel({
             errorTitle={errorTitle}
             onRetry={onRetry}
             retryLabel={retryLabel}
-            skeleton={<PanelSkeleton />}
+            focusAfter={panelRef}
+            skeleton={<PanelSkeleton label={loadingLabel} />}
             state={state}
             unavailableAction={unavailableAction}
             unavailableClassName="hg-detail-panel-unavailable"

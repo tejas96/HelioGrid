@@ -1,7 +1,7 @@
 import type { KeyboardEvent, Ref } from 'react';
 import { LanguageStateGlyph } from './LanguageStateGlyph';
 import type { AgentLanguage, LanguageSwitcherWords } from './LanguageSwitcher.types';
-import { spokenName, stateOf } from './language-state';
+import { fractionOf, spokenName, stateOf } from './language-state';
 
 export interface LanguagePillProps {
   lang: AgentLanguage;
@@ -37,8 +37,7 @@ export function LanguagePill({
   onPress,
 }: LanguagePillProps) {
   const state = stateOf(lang, total);
-  const fraction =
-    showCounts && total !== null && lang.written !== undefined ? `${lang.written}/${total}` : null;
+  const fraction = fractionOf(lang, total, showCounts);
   return (
     <button
       ref={pillRef}

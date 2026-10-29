@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
@@ -11,6 +12,7 @@ import { Text } from '../../primitives/Text/Text.native';
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { renderActionReason } from '../ActionReason/ActionReason.native';
 import { CheckboxTick } from '../Checkbox/CheckboxTick.native';
+import { currentWord, optionRole } from './OptionCardGroup.logic';
 import type { OptionCardGroupMode, OptionCardItem } from './OptionCardGroup.types';
 
 interface OptionCardProps {
@@ -20,7 +22,7 @@ interface OptionCardProps {
   off: boolean;
   density: 'expressive' | 'functional';
   onSelect: () => void;
-  currentLabel: string;
+  currentLabel: TranslatedText | undefined;
 }
 
 /**
@@ -172,6 +174,7 @@ export function OptionCard({
      same way: there is a reason exactly when one rendered. */
   const inert = off && reason === null;
   const ink = off ? 'disabled' : 'primary';
+  const current = currentWord(option, currentLabel);
   /* ARIA gives a radio `aria-checked`, never `aria-selected`, and RN's partner is
      `accessibilityState.checked` — so this card declares `checked` and no `selected`, exactly as
      the web half does. Bound through its own name because the parity gate reads the state literal
@@ -189,7 +192,7 @@ export function OptionCard({
          title, the current pill, the price, the description and the reason. An explicit label
          here would REPLACE all of that with the title — which is how the sentence below came to
          be announced to nobody. The children are text, so the card is never left unnamed. */
-      accessibilityRole={mode === 'multiple' ? 'checkbox' : 'radio'}
+      accessibilityRole={optionRole(mode)}
       accessibilityState={{ checked, disabled: off }}
       style={cardStyle(density, selected, off)}
     >
@@ -210,13 +213,9 @@ export function OptionCard({
                 {option.title}
               </Text>
               {/* A word in its own neutral pill — never the accent, which selection owns. */}
-              {option.current === true ? (
-                <StatusMark
-                  tone="neutral"
-                  mark={false}
-                  label={option.currentLabel ?? currentLabel}
-                />
-              ) : null}
+              {current === undefined ? null : (
+                <StatusMark tone="neutral" mark={false} label={current} />
+              )}
               {option.marks}
             </View>
             {option.price !== undefined ? (

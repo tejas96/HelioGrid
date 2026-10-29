@@ -25,6 +25,7 @@ const barsIn = (words: Words, saving: boolean) => (
       saveLabel={words.t(COMPANY_PROFILE.saveChanges)}
       discardLabel={words.t(PRICE_BOOK.cancel)}
       saving={saving}
+      focusAfter={{ current: null }}
     />
     {/* The settings editor card the footer is the foot of: its padding is the one the bar reaches through. */}
     <div style={{ padding: 'var(--sp-5)' }}>
@@ -35,6 +36,7 @@ const barsIn = (words: Words, saving: boolean) => (
         saveLabel={words.t(COMPANY_PROFILE.saveChanges)}
         discardLabel={words.t(PRICE_BOOK.cancel)}
         saving={saving}
+        focusAfter={{ current: null }}
       />
     </div>
   </div>

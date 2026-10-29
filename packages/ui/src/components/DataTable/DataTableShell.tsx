@@ -1,7 +1,10 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { UnavailableNote } from '../UnavailableNote';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
-import type { DataTableProps } from './DataTable.types';
+import type { DataTableProps, DataTableWords } from './DataTable.types';
 import { TableMessage, TableSkeleton } from './DataTableChrome';
+import { captionTextOf } from './DataTableChrome.logic';
 import { QuietSkeleton } from './DataTableQuiet';
 
 /**
@@ -14,18 +17,19 @@ export function TableCaption({
   continued,
   id,
   spokenOnly = false,
+  words,
 }: {
-  caption: string | undefined;
+  caption: TranslatedText | undefined;
   continued: boolean;
   id: string;
   /** A quiet table's caption names it for a screen reader only (`F7-27` still holds). */
   spokenOnly?: boolean;
+  words: DataTableWords;
 }) {
   if (caption === undefined) return null;
   return (
     <div className={spokenOnly ? 'hg-spoken-only' : 'hg-dt-caption'} id={id}>
-      {caption}
-      {continued ? ' (continued)' : ''}
+      {captionTextOf(caption, continued, words)}
     </div>
   );
 }
@@ -40,21 +44,25 @@ export function TableStates<Row>({
   table,
   stacked,
   quiet,
+  focusAfter,
 }: {
   table: DataTableProps<Row>;
   stacked: boolean;
   quiet: boolean;
+  /** The table's frame, which stays while a failed read reloads. */
+  focusAfter: FocusAfter;
 }) {
   const {
     read,
-    emptyTitle = 'Nothing here yet',
+    emptyTitle,
     emptyDescription,
     emptyAction,
-    errorTitle = "Couldn't load these records",
-    errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
+    errorTitle,
+    errorMessage,
     retryLabel,
-    unavailableTitle = 'Not available here',
+    unavailableTitle,
     unavailableMessage,
+    words,
   } = table;
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
@@ -62,7 +70,9 @@ export function TableStates<Row>({
   return (
     <>
       {state === 'loading' && quiet ? <QuietSkeleton table={table} /> : null}
-      {state === 'loading' && !quiet ? <TableSkeleton stacked={stacked} /> : null}
+      {state === 'loading' && !quiet ? (
+        <TableSkeleton stacked={stacked} label={words.loading} />
+      ) : null}
       {state === 'error' ? (
         <TableMessage
           tone="warning"
@@ -70,13 +80,19 @@ export function TableStates<Row>({
           message={errorMessage}
           onRetry={onRetry}
           retryLabel={retryLabel}
+          focusAfter={focusAfter}
         />
       ) : null}
       {state === 'unavailable' ? (
         <UnavailableNote variant="region" title={unavailableTitle} message={unavailableMessage} />
       ) : null}
       {state !== 'loading' && state !== 'error' && state !== 'unavailable' ? (
-        <TableMessage title={emptyTitle} message={emptyDescription} action={emptyAction} />
+        <TableMessage
+          title={emptyTitle}
+          message={emptyDescription}
+          action={emptyAction}
+          focusAfter={focusAfter}
+        />
       ) : null}
     </>
   );

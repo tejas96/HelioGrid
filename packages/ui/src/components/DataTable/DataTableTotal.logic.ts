@@ -1,7 +1,8 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { minorUnits } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { MarketFormat } from '../../utils/format';
-import type { DataTableTotalRow } from './DataTable.types';
+import type { DataTableTotalRow, DataTableWords } from './DataTable.types';
 import type { DataTableColumn } from './DataTableColumn.types';
 
 /* THE TOTAL ROW'S MODEL, IN ONE PLACE, RENDERED THREE TIMES — the `<tfoot>`, the phone's block and
@@ -15,8 +16,8 @@ export interface TotalModel {
   scope: ReactNode;
   valueFor: (column: DataTableColumn<unknown>) => ReactNode;
   /** The disagreement sentence — a defect, not a display difference. */
-  defectNote: string | null;
-  agreeNote: string | null;
+  defectNote: TranslatedText | null;
+  agreeNote: TranslatedText | null;
 }
 
 /**
@@ -29,10 +30,11 @@ function totalScope(
   page: number | undefined,
   pageSize: number,
   renderedRows: number,
+  words: DataTableWords,
 ): ReactNode {
   const total = rowCount ?? renderedRows;
   const paged = typeof page === 'number' && total > pageSize;
-  return totalRow.scope ?? (paged ? `all ${total} lines` : null);
+  return totalRow.scope ?? (paged ? words.allLines(total) : null);
 }
 
 /**
@@ -51,6 +53,7 @@ function totalScope(
 function reconcileNotes(
   totalRow: DataTableTotalRow,
   format: MarketFormat,
+  words: DataTableWords,
 ): Pick<TotalModel, 'defectNote' | 'agreeNote'> {
   const reconcile = totalRow.reconcile;
   if (reconcile === undefined) {
@@ -58,13 +61,14 @@ function reconcileNotes(
   }
   const { delta, agrees } = reconcile;
   if (agrees) {
-    return { defectNote: null, agreeNote: `Reconciles with ${reconcile.label.toLowerCase()}.` };
+    return { defectNote: null, agreeNote: words.reconciles(reconcile.label) };
   }
-  const gap = `${format.amount(minorUnits(Math.abs(delta)))} apart`;
   return {
-    defectNote: `${reconcile.label} is ${format.amount(
-      reconcile.amount,
-    )} — ${gap}. A disagreement is a defect, not a display difference.`,
+    defectNote: words.disagrees(
+      reconcile.label,
+      format.amount(reconcile.amount),
+      format.amount(minorUnits(Math.abs(delta))),
+    ),
     agreeNote: null,
   };
 }
@@ -85,9 +89,10 @@ export function buildTotal(
   pageSize: number,
   renderedRows: number,
   format: MarketFormat,
+  words: DataTableWords,
 ): TotalModel {
   return {
-    scope: totalScope(totalRow, rowCount, page, pageSize, renderedRows),
+    scope: totalScope(totalRow, rowCount, page, pageSize, renderedRows, words),
     valueFor: (column) => {
       if (totalRow.reconcile?.column === column.key) {
         return format.amount(totalRow.reconcile.target);
@@ -95,6 +100,19 @@ export function buildTotal(
       const value = totalRow.values?.[column.key];
       return typeof value === 'number' ? format.money(value) : value;
     },
-    ...reconcileNotes(totalRow, format),
+    ...reconcileNotes(totalRow, format, words),
   };
+}
+
+/**
+ * **The figures the total states**, in the columns the row states them — with the column's own
+ * label, so nothing invents a second vocabulary for the same total. The last is the headline; the
+ * rest are listed under it.
+ */
+export function totalFiguresOf<Row>(
+  totalRow: DataTableTotalRow,
+  columns: DataTableColumn<Row>[],
+): { main: DataTableColumn<Row> | undefined; others: DataTableColumn<Row>[] } {
+  const stated = columns.filter((column) => totalRow.values?.[column.key] !== undefined);
+  return { main: stated[stated.length - 1], others: stated.slice(0, -1) };
 }

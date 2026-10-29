@@ -1,6 +1,6 @@
-import { Button } from '../Button';
-import { useMoreFocus } from '../CatalogItems/use-more-focus';
-import { useRetryFocus } from '../CatalogItems/use-retry-focus';
+import { type RefObject, useRef } from 'react';
+import { RetryButton } from '../Button/RetryButton';
+import { ShowMore } from '../CatalogItems/ShowMore';
 import { DataTable } from '../DataTable';
 import { EmptyState } from '../EmptyState';
 import { ATTRIBUTION_STACK_BELOW, attributionColumns } from './CatalogRates.attribution';
@@ -11,10 +11,28 @@ import type { CatalogAttributionProps, CatalogAttributionRow } from './CatalogRa
  * field beside the layer that supplied it. The web draws it in its 375 layout only.
  */
 export function CatalogAttribution(props: CatalogAttributionProps) {
-  const { words, rows, onMore } = props;
-  const focus = useMoreFocus<HTMLElement>(onMore !== null);
-  const { read } = props;
-  const retry = useRetryFocus(read.kind);
+  /* After *Try again* focus lands on the whole table, which stays while it reloads; after *Show
+     more*, on the list it grew. */
+  const frame = useRef<HTMLDivElement>(null);
+  const list = useRef<HTMLElement>(null);
+  return (
+    <div ref={frame} tabIndex={-1} className="hg-cat-attrib-retry hg-focus-target">
+      <AttributionBody {...props} frame={frame} list={list} />
+    </div>
+  );
+}
+
+function AttributionBody({
+  words,
+  rows,
+  onMore,
+  read,
+  frame,
+  list,
+}: CatalogAttributionProps & {
+  frame: RefObject<HTMLDivElement | null>;
+  list: RefObject<HTMLElement | null>;
+}) {
   if (read.kind === 'loading') return null;
   if (read.kind === 'failed') {
     return (
@@ -22,32 +40,24 @@ export function CatalogAttribution(props: CatalogAttributionProps) {
         glow={false}
         title={words.loadFailed}
         action={
-          <Button variant="secondary" size="sm" onClick={retry.retrying(read.retry)}>
-            {words.tryAgain}
-          </Button>
+          <RetryButton size="sm" onRetry={read.retry} label={words.tryAgain} focusAfter={frame} />
         }
       />
     );
   }
   return (
-    /* After *Try again* focus lands on the whole table; after *Show more*, on the list it grew. */
-    <div ref={retry.target} tabIndex={-1} className="hg-cat-attrib-retry">
-      <section ref={focus.target} tabIndex={-1} className="hg-cat-attrib">
-        <DataTable<CatalogAttributionRow>
-          read={read}
-          columns={attributionColumns(words)}
-          rows={[...rows]}
-          rowKey="id"
-          stackBelow={ATTRIBUTION_STACK_BELOW}
-          density="compact"
-          caption={words.caption}
-        />
-        {onMore === null ? null : (
-          <Button variant="ghost" size="sm" onClick={focus.pressing(onMore)}>
-            {words.more}
-          </Button>
-        )}
-      </section>
-    </div>
+    <section ref={list} tabIndex={-1} className="hg-cat-attrib hg-focus-target">
+      <DataTable<CatalogAttributionRow>
+        {...words.table}
+        read={read}
+        columns={attributionColumns(words)}
+        rows={[...rows]}
+        rowKey="id"
+        stackBelow={ATTRIBUTION_STACK_BELOW}
+        density="compact"
+        caption={words.caption}
+      />
+      {onMore === null ? null : <ShowMore label={words.more} onMore={onMore} focusAfter={list} />}
+    </section>
   );
 }

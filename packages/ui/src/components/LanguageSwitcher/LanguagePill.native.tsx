@@ -5,7 +5,7 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { LanguageStateGlyph } from './LanguageStateGlyph.native';
 import type { AgentLanguage, LanguageSwitcherWords } from './LanguageSwitcher.types';
-import { spokenName, stateOf } from './language-state';
+import { fractionOf, spokenName, stateOf } from './language-state';
 
 const PILL = 34;
 
@@ -57,8 +57,7 @@ export function LanguagePill({
 }: LanguagePillProps) {
   /* The opposite of what holds it (`F7-15`): the well on the page, white inside a tile. */
   const { controlFill } = useGround();
-  const fraction =
-    showCounts && total !== null && lang.written !== undefined ? `${lang.written}/${total}` : null;
+  const fraction = fractionOf(lang, total, showCounts);
   return (
     <Pressable
       accessibilityLabel={spokenName(lang, total, words, nouns, fraction !== null)}

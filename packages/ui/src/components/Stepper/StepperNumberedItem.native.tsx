@@ -4,7 +4,9 @@ import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ResolvedStep } from './resolve-steps';
-import { stateWord } from './resolve-steps';
+import { spokenStep, stateWord } from './resolve-steps';
+import { numberedNote } from './Stepper.logic';
+import type { StepperWords } from './Stepper.types';
 import { StepperMarker } from './StepperMarker.native';
 
 interface StepperNumberedItemProps {
@@ -16,6 +18,7 @@ interface StepperNumberedItemProps {
   step: ResolvedStep;
   tight: boolean;
   total: number;
+  words: StepperWords;
 }
 
 /** One marker, its name, and the connector line that runs to the next step. */
@@ -28,8 +31,10 @@ export function StepperNumberedItem({
   step,
   tight,
   total,
+  words,
 }: StepperNumberedItemProps) {
-  const word = stateWord(step);
+  const word = stateWord(step, words);
+  const note = numberedNote(step);
   /* The line is the control fill, the opposite of what holds it (`F7-15`). */
   const { controlFill } = useGround();
   return (
@@ -37,7 +42,7 @@ export function StepperNumberedItem({
       {/* 44dp target around the 28dp marker, the extra taken back as negative margin so the rail's
           geometry is unchanged. */}
       <Pressable
-        accessibilityLabel={`Step ${index + 1} of ${total}, ${step.label}, ${word.toLowerCase()}`}
+        accessibilityLabel={spokenStep(step, index, total, words)}
         disabled={onPress === undefined}
         onPress={onPress}
         style={styles.node}
@@ -54,14 +59,14 @@ export function StepperNumberedItem({
           >
             {step.label}
           </Text>
-          {step.state === 'errors' ? (
+          {note === 'errors' ? (
             <Text variant="caption" color="danger">
               {word}
             </Text>
           ) : null}
-          {step.optional === true && step.state !== 'errors' ? (
+          {note === 'optional' ? (
             <Text variant="caption" color="tertiary">
-              Optional
+              {words.optional}
             </Text>
           ) : null}
         </View>

@@ -1,71 +1,78 @@
-import { useInvite } from '@heliogrid/data/react';
+import type { TranslatedText } from '@heliogrid/contracts';
+import type { TeamInviteEditor } from '@heliogrid/data/react';
 import {
   Button,
   closeKeyboard,
   type FocusHandle,
   type InviteEditorProps,
   ShellGlyph,
-  useFormat,
 } from '@heliogrid/ui';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { type RefObject, useEffect, useRef } from 'react';
 import { useInviteForm } from './use-invite-form';
 
+/** *Invite teammate* and the teaching state's *Invite your first teammate*, and the way back to them. */
+export interface InviteActs {
+  readonly act: RefObject<FocusHandle | null>;
+  /**
+   * The teaching state's *Invite your first teammate* has its own handle: after a first invite the
+   * list redraws and the lead *Invite teammate* is the one to wait for.
+   */
+  readonly first: RefObject<FocusHandle | null>;
+  /** Invite Teammate shut: the screen reader's place goes back to the act that opened it. */
+  giveBack(): void;
+}
+
 /**
- * Invite Teammate in Team's life: the sheet's open fact over the shared form (`useInviteForm`). A
- * sent invite closes the sheet and reads the list again; a 403 shuts it and reads the team again
- * (AC-19).
+ * The native sheet returns no focus: the screen reader's place goes back to *Invite teammate*. The
+ * sheet's field lets go first (`closeKeyboard` blurs it): on Android a focused field that unmounts
+ * hands the keyboard's focus to the page's next field, Team's search.
+ */
+export function useInviteActs(): InviteActs {
+  const act = useRef<FocusHandle>(null);
+  const first = useRef<FocusHandle>(null);
+  return {
+    act,
+    first,
+    giveBack: () => {
+      closeKeyboard();
+      (act.current ?? first.current)?.focus();
+    },
+  };
+}
+
+/**
+ * Invite Teammate in Team's life: `useTeamScreen`'s open fact and send under the shared form
+ * (`useInviteForm`). A sent invite closes the sheet and reads the list again; a 403 shuts it and
+ * reads the team again (AC-19).
  */
 export function useTeamInvite(
-  reread: () => Promise<unknown>,
-  push: (toast: { tone: 'danger'; title: string }) => void,
+  invite: TeamInviteEditor,
+  acts: InviteActs,
+  push: (toast: { tone: 'danger'; title: TranslatedText }) => void,
 ) {
-  const { pack } = useFormat();
-  const [isOpen, setOpen] = useState(false);
-  /* The native sheet returns no focus: the screen reader's place goes back to *Invite teammate*.
-     The sheet's field lets go first (`closeKeyboard` blurs it): on Android a focused field that
-     unmounts hands the keyboard's focus to the page's next field, Team's search. Stable, as the
-     sheet's close handler. */
-  const act = useRef<FocusHandle>(null);
-  /* The teaching state's *Invite your first teammate* has its own handle: after a first invite the
-     list redraws and the lead *Invite teammate* is the one to wait for. */
-  const first = useRef<FocusHandle>(null);
-  const close = useCallback(() => {
-    closeKeyboard();
-    setOpen(false);
-    (act.current ?? first.current)?.focus();
-  }, []);
   /* The first invite ends the teaching state, and with it the act that opened the editor: once the
      list draws *Invite teammate* again, the focus goes there. Checked after each render, since the
      list's read settles before the screen draws it. */
-  const [refocus, setRefocus] = useState(false);
   useEffect(() => {
-    if (!refocus || act.current === null) return;
-    act.current.focus();
-    setRefocus(false);
+    if (!invite.refocus || acts.act.current === null) return;
+    acts.act.current.focus();
+    invite.refocused();
   });
-  const invite = useInvite(pack, async () => {
-    close();
-    await reread();
-    setRefocus(true);
-  });
-  const { words, fields, reset } = useInviteForm(invite, push, async () => {
-    close();
-    await reread();
-  });
+  const { words, fields, reset } = useInviteForm(invite.send, push, invite.forbidden);
   const editor: InviteEditorProps = {
     ...fields,
-    open: isOpen,
-    onClose: close,
+    open: invite.isOpen,
+    onClose: invite.close,
     words,
   };
   return {
     words,
-    act,
-    first,
+    act: acts.act,
+    first: acts.first,
     editor,
     open: () => {
       reset();
-      setOpen(true);
+      invite.open();
     },
   };
 }

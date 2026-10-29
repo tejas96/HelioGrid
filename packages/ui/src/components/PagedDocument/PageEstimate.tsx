@@ -14,6 +14,7 @@ interface WebPageEstimateProps extends PageEstimateProps {
  * because a counted page is not an estimate.
  */
 export function PageEstimate({
+  words,
   metrics,
   measured,
   max,
@@ -25,20 +26,21 @@ export function PageEstimate({
   const n = measured !== undefined ? measured : e.pages;
   if (!n) return null;
   const overBy = max !== undefined && n > max ? n - max : null;
-  const word = `${n} page${n === 1 ? '' : 's'}`;
+  const { paper, points, column, linesPerPage } = e.basis;
   return (
     <span
       className={classNames('hg-page-estimate', className)}
       data-over={overBy !== null ? 'true' : undefined}
       style={style}
     >
-      <span>{measured !== undefined ? word : `≈ ${word}`}</span>
-      {overBy !== null && (
+      <span>{measured !== undefined ? words.pages(n) : words.aboutPages(n)}</span>
+      {overBy !== null && max !== undefined && (
         <span>
-          · {overBy} over the {max}-page limit
+          {'· '}
+          {words.overLimit(overBy, max)}
         </span>
       )}
-      <span className="hg-spoken-only">{e.basis}</span>
+      <span className="hg-spoken-only">{words.basis(paper, points, column, linesPerPage)}</span>
     </span>
   );
 }

@@ -17,6 +17,8 @@ export interface HomeBlocksProps {
   blocks: HomeBlock[];
   /** The shell's own read, passed straight through; a ready read teaches. */
   read: Read<unknown>;
+  /** Each block's wait, spoken while the read is out — *Loading*. */
+  loadingLabel: TranslatedText;
   emptyTitle: TranslatedText;
   emptyMessage: TranslatedText;
   errorTitle: TranslatedText;

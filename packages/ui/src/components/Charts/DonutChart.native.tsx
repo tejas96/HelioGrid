@@ -6,14 +6,13 @@ import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { ChartFrame } from './ChartFrame.native';
 import { ChartLegend } from './ChartLegend.native';
+import { chartLegendItems, donutCentre, donutDrawing } from './Charts.logic';
 import type { DonutChartProps } from './Charts.types';
 import { chartColor } from './ChartTokens.native';
 
 interface NativeDonutChartProps extends DonutChartProps {
   style?: StyleProp<ViewStyle>;
 }
-
-const INSUFFICIENT = 'Nothing to split yet — this needs at least one recorded value.';
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-6'], flexWrap: 'wrap' },
@@ -48,19 +47,20 @@ export function DonutChart({
 }: NativeDonutChartProps) {
   const mkt = useFormat();
   const fmt = format ?? mkt.number;
-  const total = data.reduce((n, d) => n + (d.value || 0), 0);
-  const insufficient = data.filter((d) => d.value > 0).length < minPoints || total <= 0;
-  const radius = (size - thickness) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const label = frame.title ?? 'Donut chart';
-  let offset = 0;
+  const { total, insufficient, radius, circumference, segments } = donutDrawing(
+    data,
+    size,
+    thickness,
+    minPoints,
+  );
+  const label = frame.title ?? frame.words.donutChart;
 
   return (
     <ChartFrame
       {...frame}
       height={size}
       insufficient={insufficient}
-      insufficientMessage={frame.insufficientMessage ?? INSUFFICIENT}
+      insufficientMessage={frame.insufficientMessage ?? frame.words.donutInsufficient}
     >
       <View style={styles.row}>
         <View style={{ width: size, height: size }}>
@@ -74,30 +74,25 @@ export function DonutChart({
                 stroke={theme.colors['canvas-sunken']}
                 strokeWidth={thickness}
               />
-              {data.map((d, i) => {
-                const fraction = (d.value || 0) / (total || 1);
-                const segment = (
-                  <Circle
-                    key={d.label}
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    fill="none"
-                    stroke={d.color ?? chartColor(i)}
-                    strokeWidth={thickness}
-                    strokeDasharray={[fraction * circumference, circumference]}
-                    strokeDashoffset={-offset}
-                    strokeLinecap="butt"
-                  />
-                );
-                offset += fraction * circumference;
-                return segment;
-              })}
+              {segments.map((segment) => (
+                <Circle
+                  key={segment.datum.label}
+                  cx={size / 2}
+                  cy={size / 2}
+                  r={radius}
+                  fill="none"
+                  stroke={segment.datum.color ?? chartColor(segment.index)}
+                  strokeWidth={thickness}
+                  strokeDasharray={[segment.length, circumference]}
+                  strokeDashoffset={-segment.offset}
+                  strokeLinecap="butt"
+                />
+              ))}
             </G>
           </Svg>
           <View style={styles.center} pointerEvents="none">
             <Text align="center" style={styles.total}>
-              {centerValue === undefined || centerValue === null ? fmt(total) : centerValue}
+              {donutCentre(centerValue, total, fmt)}
             </Text>
             {centerLabel ? (
               <Text variant="caption" color="tertiary" align="center">
@@ -106,10 +101,7 @@ export function DonutChart({
             ) : null}
           </View>
         </View>
-        <ChartLegend
-          style={styles.legend}
-          items={data.map((d) => ({ label: d.label, color: d.color, value: fmt(d.value) }))}
-        />
+        <ChartLegend style={styles.legend} items={chartLegendItems(data, fmt)} />
       </View>
     </ChartFrame>
   );

@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ExplainerPagerWords } from '@heliogrid/domain';
+import type { NumberFieldWords } from '../NumberField/NumberField.types';
 
 /**
  * **The price editor's body** (`SCR-M01-15`, `M01-37`): one item's price, a platform item's tax
@@ -23,7 +24,7 @@ export interface CatalogPriceEditorProps {
   /** A platform item's picker switches; `null` on an own SKU (its preference is a row act). */
   switches: CatalogEditorSwitches | null;
   /** The save's refusal or failure, in words; `null` while there is none. */
-  problem: string | null;
+  problem: TranslatedText | null;
 }
 
 export interface CatalogEditedItem {
@@ -63,4 +64,6 @@ export interface CatalogPriceEditorWords {
   readonly inPickers: TranslatedText;
   readonly hideFromPickers: TranslatedText;
   readonly preferredInPickers: TranslatedText;
+  /** What the price and tax fields say of their own. */
+  readonly numberField: NumberFieldWords;
 }

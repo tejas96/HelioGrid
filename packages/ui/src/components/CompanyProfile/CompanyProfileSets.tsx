@@ -71,6 +71,7 @@ export function ProfileSet({
       {part === 'identity' && words.logo !== null ? (
         <LogoCapture
           logo={words.logo}
+          words={words.dropzone}
           picture={logoPicture}
           disabled={saving}
           onChoose={onChooseLogo}
@@ -108,11 +109,13 @@ export function ProfileSet({
  */
 function LogoCapture({
   logo,
+  words,
   picture,
   disabled,
   onChoose,
 }: {
   logo: NonNullable<SetProps['words']['logo']>;
+  words: SetProps['words']['dropzone'];
   picture: string | null;
   disabled: boolean;
   onChoose: SetProps['onChooseLogo'];
@@ -121,6 +124,7 @@ function LogoCapture({
   return (
     <Dropzone
       {...logoCapture(logo, picture, !finger)}
+      words={words}
       disabled={disabled}
       onFiles={([chosen]) => {
         if (chosen !== undefined) onChoose?.(chosen);

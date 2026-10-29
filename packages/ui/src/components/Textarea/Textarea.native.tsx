@@ -10,6 +10,8 @@ import {
 } from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderAttribution } from '../ValueSource/ValueSource.native';
+import type { CountLevel } from './Textarea.logic';
+import { countLevel, countText, ringTone } from './Textarea.logic';
 import type { TextareaProps } from './Textarea.types';
 
 interface NativeTextareaProps extends TextareaProps {
@@ -19,13 +21,12 @@ interface NativeTextareaProps extends TextareaProps {
 const R = theme.type.roles;
 const PAD_Y = theme.spacing['sp-3'];
 
-/** 'near' at 90% of the limit, 'full' at it — the counter warns before it blocks. */
-function countColor(length: number, maxLength: number): 'danger' | 'tertiary' | 'warning' {
-  if (length >= maxLength) {
-    return 'danger';
-  }
-  return length > maxLength * 0.9 ? 'warning' : 'tertiary';
-}
+/** The counter's ink at each level — it warns before it blocks. */
+const COUNT_COLOR: Record<CountLevel, 'danger' | 'tertiary' | 'warning'> = {
+  full: 'danger',
+  near: 'warning',
+  ok: 'tertiary',
+};
 
 /**
  * Multi-line field: a well (`FieldBox`), whose ring sits on its own edge on the phone. Its padding
@@ -47,7 +48,6 @@ export function Textarea({
 }: NativeTextareaProps) {
   const [focus, setFocus] = useState(false);
   const length = (value ?? '').length;
-  const hasCounter = maxLength !== undefined;
   /* A spec, a level string or a ready node — `ValueSource`'s own resolver decides. The field's
      name rides along, so `inherited`'s override action says which field it would override. */
   const attributionNode = renderAttribution(attribution, { fieldName: label });
@@ -64,12 +64,7 @@ export function Textarea({
           styles.input,
           { minHeight: Math.max(88, rows * R.body.lineHeight + PAD_Y * 2) },
           density === 'functional' ? styles.inputFunctional : undefined,
-          fieldBox({
-            focused: focus,
-            tone: error === undefined ? 'none' : 'error',
-            disabled,
-            density,
-          }),
+          fieldBox({ focused: focus, tone: ringTone(error), disabled, density }),
           fieldBoxText(disabled),
         ]}
         value={value}
@@ -85,14 +80,18 @@ export function Textarea({
         onBlur={() => setFocus(false)}
       />
       {attributionNode === null ? null : <View style={styles.attribution}>{attributionNode}</View>}
-      {helper !== undefined || error !== undefined || hasCounter ? (
+      {helper !== undefined || error !== undefined || maxLength !== undefined ? (
         <View style={styles.foot}>
           <Text variant="field-helper" color={error !== undefined ? 'danger' : 'secondary'}>
             {error ?? helper ?? ''}
           </Text>
           {maxLength !== undefined ? (
-            <Text variant="field-helper" color={countColor(length, maxLength)} style={styles.count}>
-              {`${length}/${maxLength}`}
+            <Text
+              variant="field-helper"
+              color={COUNT_COLOR[countLevel(length, maxLength)]}
+              style={styles.count}
+            >
+              {countText(length, maxLength)}
             </Text>
           ) : null}
         </View>

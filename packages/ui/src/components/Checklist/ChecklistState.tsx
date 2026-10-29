@@ -1,18 +1,6 @@
 import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
-import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
-import type { ChecklistProps } from './Checklist.types';
-
-type StateProps = { state: SurfaceState; onRetry?: () => void } & Pick<
-  ChecklistProps,
-  | 'emptyTitle'
-  | 'emptyMessage'
-  | 'errorTitle'
-  | 'errorMessage'
-  | 'retryLabel'
-  | 'unavailableTitle'
-  | 'unavailableMessage'
->;
+import type { ChecklistStateProps } from './Checklist.types';
 
 /**
  * The four non-ready states.
@@ -22,21 +10,25 @@ type StateProps = { state: SurfaceState; onRetry?: () => void } & Pick<
  */
 export function ChecklistStateBody({
   state,
+  loadingLabel,
   emptyTitle,
   emptyMessage,
   errorTitle,
   errorMessage,
   onRetry,
   retryLabel,
+  focusAfter,
   unavailableTitle,
   unavailableMessage,
-}: StateProps) {
+}: ChecklistStateProps) {
   if (state === 'loading') {
-    return <div className="hg-checklist-skeleton" role="status" aria-label="Loading checklist" />;
+    return <div className="hg-checklist-skeleton" role="status" aria-label={loadingLabel} />;
   }
 
   if (state === 'unavailable') {
-    return <UnavailableNote title={unavailableTitle} message={unavailableMessage} />;
+    return unavailableTitle === undefined ? null : (
+      <UnavailableNote title={unavailableTitle} message={unavailableMessage} />
+    );
   }
 
   if (state === 'empty') {
@@ -52,7 +44,7 @@ export function ChecklistStateBody({
     <div className="hg-checklist-note">
       <p className="hg-checklist-state-title">{errorTitle}</p>
       <p className="hg-checklist-detail hg-checklist-detail--warning">{errorMessage}</p>
-      <RetryButton onRetry={onRetry} label={retryLabel} />
+      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
     </div>
   );
 }

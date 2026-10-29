@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { TextStyle } from 'react-native';
@@ -10,9 +11,9 @@ import { StatusChip } from '../StatusChip/StatusChip.native';
 interface PanelHeaderProps {
   /** Leading node, usually an IconCircle or Avatar. */
   leading?: ReactNode;
-  closeLabel: string;
+  closeLabel: TranslatedText;
   onClose?: () => void;
-  overline?: string;
+  overline?: TranslatedText;
   /** The panel's density padding, resolved by the caller. */
   pad: number;
   /** The scroll shadow — luminance, never a divider line. */

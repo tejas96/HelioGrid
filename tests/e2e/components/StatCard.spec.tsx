@@ -1,7 +1,8 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
-import { Button, StatCard } from '@heliogrid/ui';
+import { Button } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour } from '../support/token';
+import { WordedStatCard } from './StatCard.story';
 
 const en = await createTranslator('en');
 const tryAgain = en.t(SIGN_IN.tryAgain);
@@ -9,7 +10,7 @@ const tryAgain = en.t(SIGN_IN.tryAgain);
 test('an errored stat card is a tile and draws its retry white', async ({ mount, page }) => {
   let retries = 0;
   const card = await mount(
-    <StatCard
+    <WordedStatCard
       label={tryAgain}
       value={0}
       read={{ kind: 'failed', retry: () => (retries += 1) }}
@@ -30,11 +31,11 @@ test('a stat card is a grey tile with no shadow and its controls are white', asy
   page,
 }) => {
   const card = await mount(
-    <StatCard read={{ kind: 'ready' }} label={tryAgain} value={12}>
+    <WordedStatCard read={{ kind: 'ready' }} label={tryAgain} value={12}>
       <Button variant="secondary" size="sm">
         {tryAgain}
       </Button>
-    </StatCard>,
+    </WordedStatCard>,
   );
 
   await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
@@ -50,7 +51,7 @@ test('a tappable stat card is a grey tile, ringed under the pointer and never li
   page,
 }) => {
   const card = await mount(
-    <StatCard
+    <WordedStatCard
       read={{ kind: 'ready' }}
       label={tryAgain}
       value={12}

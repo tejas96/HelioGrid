@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { fieldBoxPlaceholder } from '../../primitives/FieldBox/FieldBox.native';
@@ -40,9 +41,9 @@ export interface RichTextBlocksProps {
   value: RichTextValue;
   disabled: boolean;
   /** Shown only while the body is empty, the same rule the web half's overlay follows. */
-  placeholder?: string;
+  placeholder?: TranslatedText;
   showPlaceholder: boolean;
-  label?: string;
+  label?: TranslatedText;
   onCaret: (at: RichTextAt) => void;
   onBlur: () => void;
   onText: (at: RichTextAt, text: string) => void;

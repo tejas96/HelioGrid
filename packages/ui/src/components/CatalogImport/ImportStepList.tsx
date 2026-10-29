@@ -43,6 +43,7 @@ export function ImportStepList({ open, words, step, onClose, onBack }: ImportSte
           current={step}
           reachability="entered"
           label={words.stepsLabel}
+          words={words.stepper}
           onStepClick={choose}
         />
         <Text variant="caption" color="secondary" align="center">

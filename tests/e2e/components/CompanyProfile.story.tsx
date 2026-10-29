@@ -8,11 +8,10 @@ import {
   companyLogoRefusal,
   companyProfileStanding,
   IN_PACK,
-  inLanguage,
   type Read,
   type UiLanguage,
 } from '@heliogrid/domain';
-import { companyProfileWords, createTranslator, provenanceWords } from '@heliogrid/i18n';
+import { companyProfileWords, createTranslator, packWords, provenanceWords } from '@heliogrid/i18n';
 import {
   CompanyProfile,
   type CompanyProfileField,
@@ -150,8 +149,8 @@ export function CompanyProfileAsHeld({
             open,
             city: values.city,
             taxIdLabel: IN_PACK.formats.taxIdLabel,
-            taxFormat: REGISTRATION === undefined ? '' : inLanguage(REGISTRATION.format, reader),
-            bankRoutingLabel: IN_PACK.formats.bankRoutingLabel,
+            taxFormat: REGISTRATION === undefined ? null : packWords(REGISTRATION.format, reader),
+            bankRoutingLabel: packWords({ en: IN_PACK.formats.bankRoutingLabel }, reader),
             letterhead: companyLetterhead(facts, IN_PACK.tax),
             logo:
               logo === 'off'

@@ -1,5 +1,5 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
-import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
@@ -8,13 +8,23 @@ import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { AllocationLegend } from './AllocationLegend.native';
 import type { AllocationModel } from './AllocationMeter.model';
-import { allocationModel, formatAllocation } from './AllocationMeter.model';
-import type { AllocationMeterProps, AllocationState } from './AllocationMeter.types';
+import {
+  allocationFigure,
+  allocationModel,
+  allocationSentences,
+  drawnState,
+  meterTop,
+} from './AllocationMeter.model';
+import type {
+  AllocationMeterProps,
+  AllocationMeterWords,
+  AllocationState,
+} from './AllocationMeter.types';
 import { AllocationSplit } from './AllocationSplit.native';
 
-interface NativeAllocationMeterProps extends AllocationMeterProps {
+type NativeAllocationMeterProps = AllocationMeterProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 const WORD_COLOUR: Record<AllocationState, string> = {
   under: theme.colors['text-secondary'],
@@ -58,11 +68,13 @@ function Head({
   sum,
   target,
   unit,
+  words,
 }: {
-  label?: string;
+  label?: TranslatedText;
   sum: number | null;
   target: number;
   unit: string;
+  words: AllocationMeterWords;
 }) {
   return (
     <View style={styles.head}>
@@ -71,9 +83,9 @@ function Head({
       </Text>
       {sum === null ? null : (
         <Text variant="mono" style={styles.figure}>
-          {`${formatAllocation(sum)}${unit} `}
+          {`${allocationFigure(sum, unit)} `}
           <Text variant="mono" color="tertiary">
-            {`of ${formatAllocation(target)}${unit}`}
+            {words.ofTarget(allocationFigure(target, unit))}
           </Text>
         </Text>
       )}
@@ -94,10 +106,10 @@ function Track({
   valueText,
 }: {
   model: AllocationModel;
-  name: string;
+  name: TranslatedText;
   target: number;
   density: 'expressive' | 'functional';
-  valueText?: string;
+  valueText?: TranslatedText;
 }) {
   const { ground } = useGround();
   return (
@@ -111,7 +123,7 @@ function Track({
       accessibilityValue={
         model.sum === null
           ? undefined
-          : { min: 0, max: Math.max(target, model.sum), now: model.sum, text: valueText }
+          : { min: 0, max: meterTop(target, model.sum), now: model.sum, text: valueText }
       }
       style={[styles.track, density === 'functional' ? styles.trackFn : styles.trackEx]}
     >
@@ -138,7 +150,7 @@ function Track({
 }
 
 /** Names each segment beside the bar. Off by default: at 375px the bar and the words come first. */
-function Note({ words }: { words: ReactNode }) {
+function Note({ words }: { words: TranslatedText | null | undefined }) {
   return words === null || words === undefined ? null : (
     <Text variant="caption" color="tertiary">
       {words}
@@ -153,17 +165,13 @@ export function AllocationMeter(props: NativeAllocationMeterProps) {
     target = 100,
     unit = '%',
     targetLabel,
-    remainderWords,
-    enforcementNote,
-    unresolvedNote = 'Nothing allocated yet.',
     note,
     showLegend = false,
     density = 'expressive',
-    variant = 'meter',
     style,
   } = props;
   const model = allocationModel(props);
-  if (variant === 'split') {
+  if (props.variant === 'split') {
     return (
       <AllocationSplit
         label={label}
@@ -174,34 +182,32 @@ export function AllocationMeter(props: NativeAllocationMeterProps) {
       />
     );
   }
-  const words = remainderWords ?? model.remainder ?? unresolvedNote;
-  const state = model.resolved ? model.state : 'under';
-  const name = label === undefined ? 'Allocation' : `${label} allocation`;
-  /* The whole sentence the web half puts in `aria-valuetext` — the figure, the target AND the
-     remainder. The port was passing the remainder alone, so "62% of 100%" was announced by
-     nothing. */
-  const valueText =
-    model.sum === null
-      ? undefined
-      : `${formatAllocation(model.sum)}${unit} of ${formatAllocation(target)}${unit} — ${
-          typeof words === 'string' ? words : ''
-        }`;
+  /* The figure is the whole sentence the web half puts in `aria-valuetext` — the figure, the
+     target AND the remainder, so "62% of 100%" is announced, not the remainder alone. */
+  const said = allocationSentences(model, props.words, props);
+  const state = drawnState(model);
 
   return (
     <View style={[styles.root, style]}>
-      <Head label={label} sum={model.sum} target={target} unit={unit} />
+      <Head label={label} sum={model.sum} target={target} unit={unit} words={props.words} />
       <Note words={targetLabel} />
-      <Track model={model} name={name} target={target} density={density} valueText={valueText} />
+      <Track
+        model={model}
+        name={props.words.name(label)}
+        target={target}
+        density={density}
+        valueText={said.figure}
+      />
       <View style={styles.wordsRow}>
         <Mark state={state} />
         <Text variant="caption" style={[styles.words, { color: WORD_COLOUR[state] }]}>
-          {words}
+          {said.remainder}
         </Text>
       </View>
       {showLegend && model.parts.length > 0 ? (
         <AllocationLegend parts={model.parts} unit={unit} />
       ) : null}
-      <Note words={enforcementNote ?? model.enforcement} />
+      <Note words={said.enforcement} />
       <Note words={note} />
     </View>
   );

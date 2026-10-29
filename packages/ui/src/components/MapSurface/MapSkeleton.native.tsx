@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import { AccessibilityInfo, Animated, Easing, StyleSheet } from 'react-native';
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
  * `AccessibilityInfo` and simply never starts the loop — the block stays, so the surface never
  * reads as "no sites".
  */
-export function MapSkeleton() {
+export function MapSkeleton({ label }: { label: TranslatedText }) {
   const pulse = useRef(new Animated.Value(0));
 
   useEffect(() => {
@@ -54,7 +55,7 @@ export function MapSkeleton() {
        (`accessible`, folding nothing but the block itself) named by its label, announced politely. */
     <Animated.View
       accessible
-      accessibilityLabel="Loading map"
+      accessibilityLabel={label}
       accessibilityLiveRegion="polite"
       style={[styles.block, { opacity }]}
     />

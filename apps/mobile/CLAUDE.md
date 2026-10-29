@@ -11,15 +11,16 @@ A module's screen lands in `src/screens/` and replaces its shell placeholder in
 
 ```
 src/screens/<name>/       same shape as web's feature, in RN's location
-  <Name>Screen.tsx        composes; holds only visual state
+  <Name>Screen.tsx        composes what its pair's `packages/data` hook assembles; holds no state
+                          (Biome plugin `screen-assembly`)
   components/<Part>.tsx   one file per component or coherent group
   hooks/use-<thing>.ts    the platform adapter only — keyboard, focus, clipboard, navigation
   styles.ts               screen-level layout; component geometry stays with its component
   types.ts                when two files here share a type
 src/screens/shared/       the door's inset wrapper two screens share, the hand-off out of a step after a
-                          join (`use-go-inside.ts`), the leave ask Branding and Proposal template share
-                          (`use-leave-ask.ts`), and the boot screen's placeholder scaffold; a part the
-                          web also draws is `packages/ui`'s (`screen-parts.md`)
+                          join (`use-go-inside.ts`) and the boot screen's placeholder scaffold; a part
+                          the web also draws is `packages/ui`'s (`screen-parts.md`), and a leave ask is
+                          `packages/data`'s `useLeaveAsk`, fed by `usePreventRemove`
 src/navigation/           React Navigation static config
 src/auth/ · src/push/ · src/files/   native adapters, one per capability; push isolates
                           Firebase/Notifee, files the system's photo and document pickers

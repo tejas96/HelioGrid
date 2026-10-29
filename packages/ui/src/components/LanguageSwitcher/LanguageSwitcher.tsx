@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { LanguagePill } from './LanguagePill';
 import type { LanguageSwitcherProps } from './LanguageSwitcher.types';
-import { selectedSentence, summaryLine, totalOf } from './language-state';
+import { switcherReading } from './language-state';
 
 interface WebLanguageSwitcherProps extends LanguageSwitcherProps {
   className?: string;
@@ -39,14 +39,15 @@ export function LanguageSwitcher({
   style,
 }: WebLanguageSwitcherProps) {
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
-  const primary = languages.find((l) => l.primary === true) ?? languages[0];
-  const idx = Math.max(
-    0,
-    languages.findIndex((l) => l.code === value),
-  );
-  const total = totalOf(languages, sections);
-  const fallbackName = primary?.label ?? '';
-  const headline = summary ?? summaryLine(languages, total, words, { sectionNoun, languageNoun });
+  const { selectedIndex, total, nouns, headline, sentence } = switcherReading({
+    words,
+    languages,
+    value,
+    sections,
+    sectionNoun,
+    languageNoun,
+    summary,
+  });
 
   const onKey = (i: number, event: KeyboardEvent<HTMLButtonElement>) => {
     const go = (n: number) => {
@@ -93,9 +94,9 @@ export function LanguageSwitcher({
             active={lang.code === value}
             total={total}
             words={words}
-            nouns={{ sectionNoun, languageNoun, fallbackName }}
+            nouns={nouns}
             showCounts={showCounts}
-            tabIndex={i === idx ? 0 : -1}
+            tabIndex={i === selectedIndex ? 0 : -1}
             pillRef={(el) => {
               refs.current[i] = el;
             }}
@@ -106,11 +107,7 @@ export function LanguageSwitcher({
       </div>
 
       <p className="hg-language-switcher-sentence" aria-live="polite">
-        {selectedSentence(languages[idx], total, words, {
-          sectionNoun,
-          languageNoun,
-          fallbackName,
-        })}
+        {sentence}
       </p>
     </div>
   );

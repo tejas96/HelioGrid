@@ -1,10 +1,20 @@
-import { accountMenuWords, createTranslator, firstRunMarkWords, SHELL } from '@heliogrid/i18n';
+import {
+  accountMenuWords,
+  createTranslator,
+  firstRunMarkLabels,
+  firstRunMarkWords,
+} from '@heliogrid/i18n';
 import { AccountMenu, CoachMark } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 
 const en = await createTranslator('en');
 const menu = accountMenuWords(en.t, 'Amit Rane');
 const mark = firstRunMarkWords(en.t, 'centre-action', 'sales_executive', 'add_lead');
+/* `firstRunMarkWords` hands its words back typed as plain strings; they are the catalog's English,
+   so the English translator gives the same words back typed as words. */
+const title = en.t(mark?.title ?? '');
+const body = en.t(mark?.body ?? '');
+const labels = firstRunMarkLabels(en.t, { step: 1, total: 1 });
 
 test('an Escape that closes a menu leaves the mark open; the next one passes it', async ({
   mount,
@@ -22,12 +32,14 @@ test('an Escape that closes a menu leaves the mark open; the next one passes it'
       />
       <CoachMark
         open
-        title={mark?.title ?? ''}
-        body={mark?.body}
-        dismissLabel={en.t(SHELL.gotIt)}
+        title={title}
+        body={body}
+        nextLabel={labels.nextLabel}
+        dismissLabel={labels.dismissLabel}
         onDismiss={() => {
           dismissals += 1;
         }}
+        focusAfter={{ current: null }}
         autoFocus={false}
       />
     </div>,

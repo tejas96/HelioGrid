@@ -4,7 +4,7 @@ import { ProgressBar } from '../ProgressBar/ProgressBar';
 import { OperationNarration } from './OperationNarration';
 
 interface OperationHeadProps {
-  label: ReactNode;
+  label: string;
   /** The clamped percentage, or null when the operation is indeterminate or finished. */
   pct: number | null;
   running: boolean;
@@ -41,11 +41,7 @@ export function OperationHead({
 
       {running && pct !== null ? <ProgressBar value={pct} gradient={gradient} /> : null}
       {running && pct === null ? (
-        <span
-          role="progressbar"
-          aria-label={typeof label === 'string' ? label : 'In progress'}
-          className="hg-operation-progress-indeterminate"
-        >
+        <span role="progressbar" aria-label={label} className="hg-operation-progress-indeterminate">
           <IndeterminateRail
             width="100%"
             thickness={6}

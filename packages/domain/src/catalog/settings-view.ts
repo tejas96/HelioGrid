@@ -176,3 +176,49 @@ function movesBetween(before: ReleaseSide, after: ReleaseSide): ReleaseFieldChan
   }
   return moved;
 }
+
+/** The acts a row of the list takes in place (`s-error-edit`): each has a pending and a failed line. */
+export type CatalogRowAct = 'price' | 'preferred' | 'hidden' | 'archive' | 'restore';
+
+/** A numbered page at 1536 (`page` counted from 0, as `Pagination` counts); a growing list at 375. */
+export type CatalogPaging =
+  | {
+      readonly kind: 'pages';
+      readonly page: number;
+      readonly pageSize: number;
+      readonly rowCount: number;
+      readonly onPage: (page: number) => void;
+    }
+  | {
+      readonly kind: 'more';
+      readonly hasMore: boolean;
+      readonly loadingMore: boolean;
+      readonly onMore: () => void;
+      readonly rowCount: number;
+    };
+
+/**
+ * What the Items panel lists, as the screen's hook hands it to the panel's words: the one shape
+ * `packages/data` fills and `packages/i18n` reads (`catalogItemsViewOf`). `Item` is the wire's
+ * resolved item, which domain does not name.
+ */
+export interface CatalogItemsListed<Item> {
+  readonly items: readonly Item[];
+  readonly totalCount: number;
+  /** Every item, hidden ones included, whatever the search and filters: the summary's "of N". */
+  readonly wholeCount: number;
+  readonly preferredFirst: boolean;
+  readonly schemes: readonly string[];
+  readonly administers: boolean;
+  readonly owners: readonly string[];
+  readonly release: { readonly label: string; readonly publishedAt: string } | null;
+  readonly teaches: boolean;
+  readonly archivedCount: number;
+  readonly archivedFilter: boolean;
+  /** A search or a filter narrows the list. */
+  readonly narrowed: boolean;
+  /** Each row whose act is out or failed, by item id. */
+  readonly acts: Readonly<
+    Record<string, { readonly state: 'saving' | 'failed'; readonly act: CatalogRowAct }>
+  >;
+}

@@ -70,6 +70,7 @@ function RowLine<Row>({
             issue={state.issue}
             fixed={state.fixed}
             action={table.rowIssueAction?.(row) ?? null}
+            fixedLine={table.words.fixed}
           />
         ) : null}
       </td>
@@ -141,7 +142,7 @@ export function DataTableBodyRow<Row>({
             <Checkbox
               className="hg-dt-tick"
               checked={state.isSelected}
-              ariaLabel={`Select row ${String(state.key)}`}
+              ariaLabel={table.words.selectRow(String(state.key))}
               onChange={() => onToggleRow(state.key)}
             />
           </td>
@@ -166,7 +167,7 @@ export function DataTableBodyRow<Row>({
                 <button
                   type="button"
                   className="hg-dt-row-open hg-spoken-only"
-                  aria-label={rowNameOf(row, column, table.rowLabel)}
+                  aria-label={rowNameOf(row, column, table.rowLabel, table.words.openRecord)}
                   onClick={(event) => {
                     event.stopPropagation();
                     open();
@@ -179,6 +180,7 @@ export function DataTableBodyRow<Row>({
                 align={alignOf(column)}
                 cellIssue={table.cellIssue}
                 onCellCommit={table.onCellCommit}
+                words={table.words}
               />
               {/* The record's own standing goes under the record's own name — the primary
                   cell, the one cell every row has and the one a reader is already on. */}

@@ -6,7 +6,8 @@ import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import { positionReadout } from './CompareGrid.logic';
+import { axisFootOf } from './CompareGrid.logic';
+import type { CompareGridFooterProps } from './CompareGrid.types';
 
 const styles = StyleSheet.create({
   foot: {
@@ -49,15 +50,6 @@ function Chevron({ back, disabled }: { back?: boolean; disabled: boolean }) {
   );
 }
 
-export interface CompareGridFooterProps {
-  scrollable: boolean;
-  first: number;
-  last: number;
-  count: number;
-  note?: string;
-  onStep: (direction: number) => void;
-}
-
 /**
  * **Where the reader is on the option axis, and how they move along it without a swipe.**
  *
@@ -65,37 +57,31 @@ export interface CompareGridFooterProps {
  * both appear only while the axis actually overflows, and the footer stays for a caller's `note`
  * alone.
  */
-export function CompareGridFooter({
-  scrollable,
-  first,
-  last,
-  count,
-  note,
-  onStep,
-}: CompareGridFooterProps) {
-  if (!scrollable && !note) return null;
+export function CompareGridFooter({ onStep, words, ...position }: CompareGridFooterProps) {
+  const foot = axisFootOf(position, words);
+  if (foot === null) return null;
   return (
     <View style={styles.foot}>
       <Text variant="caption" color="tertiary">
-        {positionReadout({ scrollable, first, last, count, note })}
+        {foot.readout}
       </Text>
-      {scrollable ? (
+      {position.scrollable ? (
         <View style={styles.steps}>
           <Pressable
-            accessibilityLabel="Previous option"
-            disabled={first <= 1}
+            accessibilityLabel={words.previousOption}
+            disabled={foot.atFirst}
             onPress={() => onStep(-1)}
             style={styles.step}
           >
-            <Chevron back disabled={first <= 1} />
+            <Chevron back disabled={foot.atFirst} />
           </Pressable>
           <Pressable
-            accessibilityLabel="Next option"
-            disabled={last >= count}
+            accessibilityLabel={words.nextOption}
+            disabled={foot.atLast}
             onPress={() => onStep(1)}
             style={styles.step}
           >
-            <Chevron disabled={last >= count} />
+            <Chevron disabled={foot.atLast} />
           </Pressable>
         </View>
       ) : null}

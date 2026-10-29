@@ -11,15 +11,20 @@ import type { ComplianceFloorSpec } from '../ComplianceFloor';
 import { renderComplianceFloor } from '../ComplianceFloor';
 import { ReorderControl } from './ReorderControls';
 import type { MoveDirection } from './ReorderList.defaults';
-import { deleteLabel, moveLabel } from './ReorderList.defaults';
+import { moveLabel } from './ReorderList.defaults';
 import type { ControlSuffix } from './ReorderList.focus';
-import type { ReorderListControls, ReorderListDensity } from './ReorderList.types';
+import type {
+  ReorderListControls,
+  ReorderListDensity,
+  ReorderListWords,
+} from './ReorderList.types';
 
 interface ReorderRowProps {
   index: number;
   total: number;
   /** The row's name — said in every button label. */
   name: string;
+  words: ReorderListWords;
   /** The caller's fields, or the row's name when it renders none. */
   body: ReactNode;
   /** A row protected by law renders its floor here and has no delete button. */
@@ -40,6 +45,7 @@ export function ReorderRow({
   index,
   total,
   name,
+  words,
   body,
   lock,
   deletable,
@@ -69,13 +75,13 @@ export function ReorderRow({
       {/* The position is a fact the sighted reader gets from the order and a screen-reader
           user does not, so it is stated once per row rather than only on move. */}
       <span className="hg-reorder-position" data-stack={stacked}>
-        {index + 1}
-        {/* NAME_FROM_CONTENT (check h): "1" alone is not the fact, "1 of 5" is — and the
-            denominator is CONTENT here where the native half carries the whole sentence in
+        <span aria-hidden="true">{index + 1}</span>
+        {/* NAME_FROM_CONTENT (check h): "1" alone is not the fact, "1 of 5" is — so the drawn digit
+            is hidden and the whole of it is CONTENT, where the native half carries it in
             `accessibilityLabel`. Through the DS `Text` primitive so the name source is declared
             rather than buried in a clipped `<span>` the parity gate cannot read. */}
         <Text as="span" spokenOnly>
-          {` of ${total}`}
+          {words.position(index + 1, total)}
         </Text>
       </span>
       <div className="hg-reorder-body">
@@ -93,7 +99,7 @@ export function ReorderRow({
           buttonRef={(el) => {
             registerControl('up', el);
           }}
-          label={moveLabel(name, 'up', index, total)}
+          label={moveLabel(words, name, 'up', index, total)}
         />
         <ReorderControl
           kind="down"
@@ -102,7 +108,7 @@ export function ReorderRow({
           buttonRef={(el) => {
             registerControl('down', el);
           }}
-          label={moveLabel(name, 'down', index, total)}
+          label={moveLabel(words, name, 'down', index, total)}
         />
         {deletable ? (
           <ReorderControl
@@ -112,7 +118,7 @@ export function ReorderRow({
             buttonRef={(el) => {
               registerControl('delete', el);
             }}
-            label={deleteLabel(name, index, total)}
+            label={words.deleteRow(name, index + 1, total)}
           />
         ) : null}
       </div>

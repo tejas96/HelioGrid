@@ -5,13 +5,8 @@ import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import type { FieldOverrideSpec } from './FieldOverride.types';
-
-/** The marker is a WORD, never a colour or a dot alone. Both words are the DS's own. */
-const MARK_WORD: Record<'overridden' | 'stale', string> = {
-  overridden: 'Edited',
-  stale: 'Design moved on',
-};
+import { resetName, resetWords, takeName } from './FieldOverride.names';
+import type { FieldOverrideSpec, FieldOverrideWords } from './FieldOverride.types';
 
 const MARK_TONE: Record<'overridden' | 'stale', { color: string; background: string }> = {
   overridden: { color: theme.colors['neutral-text'], background: theme.colors['neutral-bg'] },
@@ -66,7 +61,8 @@ export function FieldOverride({
   fieldName,
   onReset,
   onTake,
-  autoLabel = 'was',
+  autoLabel,
+  words,
   size = 12,
   style,
 }: NativeFieldOverrideProps) {
@@ -78,10 +74,11 @@ export function FieldOverride({
 
   return (
     <View style={[styles.row, style]}>
+      {/* The marker is a WORD, never a colour or a dot alone. */}
       <View style={[styles.mark, { backgroundColor: tone.background }]}>
         <View style={[styles.dot, { backgroundColor: tone.color }]} />
         <Text variant={variant} style={[medium, { color: tone.color }]}>
-          {MARK_WORD[key]}
+          {stale ? words.designMovedOn : words.edited}
         </Text>
       </View>
 
@@ -92,7 +89,8 @@ export function FieldOverride({
           autoValue={autoValue}
           autoSource={autoSource}
           newValue={newValue}
-          autoLabel={autoLabel}
+          autoLabel={autoLabel ?? words.was}
+          words={words}
         />
       </View>
 
@@ -101,10 +99,10 @@ export function FieldOverride({
           <Pressable
             style={styles.button}
             onPress={onTake}
-            accessibilityLabel={takeLabel(fieldName, newValue)}
+            accessibilityLabel={takeName(words, fieldName, newValue)}
           >
             <Text variant="body-sm" style={strongWords}>
-              Take the new value
+              {words.take}
             </Text>
           </Pressable>
         ) : null}
@@ -112,10 +110,10 @@ export function FieldOverride({
           <Pressable
             style={styles.button}
             onPress={onReset}
-            accessibilityLabel={resetLabel(stale, fieldName, autoValue)}
+            accessibilityLabel={resetName(words, stale, fieldName, autoValue)}
           >
             <Text variant="body-sm" style={linkWords}>
-              {stale ? 'Keep mine' : resetWords(autoValue)}
+              {resetWords(words, stale, autoValue)}
             </Text>
           </Pressable>
         )}
@@ -135,28 +133,32 @@ function Superseded({
   autoSource,
   newValue,
   autoLabel,
+  words,
 }: Pick<FieldOverrideSpec, 'autoValue' | 'autoSource' | 'newValue'> & {
   stale: boolean;
   variant: 'body-sm' | 'caption';
   autoLabel: string;
+  words: FieldOverrideWords;
 }) {
   const source =
     autoSource === undefined ? null : (
       <Text variant={variant} color="tertiary">
-        {stale ? ` · from ${autoSource}` : ` · ${autoSource}`}
+        {' · '}
+        {stale ? words.from(autoSource) : autoSource}
       </Text>
     );
 
   if (stale) {
     return (
       <Text variant={variant} color="secondary">
-        {'yours '}
+        {words.yours}{' '}
         <Text variant={variant} style={figure}>
           {autoValue}
         </Text>
         {newValue === undefined || newValue === null ? null : (
           <Text variant={variant} color="secondary">
-            {' · design now '}
+            {' · '}
+            {words.designNow}{' '}
             <Text variant={variant} style={figure}>
               {newValue}
             </Text>
@@ -177,30 +179,6 @@ function Superseded({
       {source}
     </Text>
   );
-}
-
-function takeLabel(fieldName: string | undefined, newValue: ReactNode): string | undefined {
-  return fieldName === undefined
-    ? undefined
-    : `Take the new value for ${fieldName}: ${String(newValue ?? '')}`;
-}
-
-function resetWords(autoValue: ReactNode): string {
-  return autoValue === undefined || autoValue === null
-    ? 'Reset to auto'
-    : `Reset to ${String(autoValue)}`;
-}
-
-function resetLabel(
-  stale: boolean,
-  fieldName: string | undefined,
-  autoValue: ReactNode,
-): string | undefined {
-  if (fieldName === undefined) return undefined;
-  if (stale) return `Keep mine — ${fieldName} stays ${String(autoValue ?? '')}`;
-  return autoValue === undefined || autoValue === null
-    ? `Reset to auto — ${fieldName}`
-    : `Reset to ${String(autoValue)} — ${fieldName}`;
 }
 
 /** Renders a spec object, a ready node, or nothing — what every host prop runs through. */

@@ -9,7 +9,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { StatusMark } from '../../primitives/StatusMark';
-import { resolveStatusChip, STATUS_CHIP_STATUSES } from './StatusChip.registry';
+import { STATUS_CHIP_STATUSES, statusChipTone } from './StatusChip.registry';
 import type { StatusChipProps } from './StatusChip.types';
 
 interface WebStatusChipProps extends StatusChipProps {
@@ -27,11 +27,10 @@ export function StatusChip({
   className,
   style,
 }: WebStatusChipProps) {
-  const resolved = resolveStatusChip(status, tone, label);
   return (
     <StatusMark
-      tone={resolved.tone}
-      label={resolved.words}
+      tone={statusChipTone(status, tone)}
+      label={label}
       mark={dot}
       className={classNames('hg-status-chip', `hg-status-chip-${density}`, className)}
       style={style}

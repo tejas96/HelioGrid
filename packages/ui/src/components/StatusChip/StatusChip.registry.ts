@@ -8,12 +8,15 @@
 
    IT IS OPEN NOW, on both axes and separately:
      · `status` may be any string. The 17 canonical values keep their tones; anything else is a
-       label the caller owns.
+       status the caller gives its tone.
      · `tone` is its own prop, so a caller supplies the MEANING of a word the registry has never
        heard of — "awaiting-confirmation" is a warning, "received" is a success.
 
    The silent fallback is gone. An unknown status with no tone renders in the neutral tone under its
    own words, not under someone else's colour.
+
+   THE WORDS ARE THE CALLER'S. The registry holds tones only: a chip's word arrives as `label`, in
+   the reader's language, so no status renders English on a Hindi or Marathi row.
 
    F7-12 holds throughout: this chip is always label-plus-mark, never a colour on its own — which is
    why both halves render it through the StatusMark primitive rather than re-answering it. */
@@ -21,52 +24,33 @@
 import type { StatusTone } from '../../primitives/StatusMark';
 import type { SolarStatus } from './StatusChip.types';
 
-interface StatusEntry {
-  tone: StatusTone;
-  label: string;
-}
-
 /* The canonical pipeline vocabulary. A registry, not a boundary: `tone` reaches past it. */
-const STATUS: Record<SolarStatus, StatusEntry> = {
-  lead: { tone: 'neutral', label: 'Lead' },
-  'survey-scheduled': { tone: 'info', label: 'Survey scheduled' },
-  'design-in-progress': { tone: 'warning', label: 'Design in progress' },
-  approved: { tone: 'accent', label: 'Approved' },
-  installing: { tone: 'info', label: 'Installing' },
-  commissioned: { tone: 'success', label: 'Commissioned' },
-  'on-hold': { tone: 'danger', label: 'On hold' },
+const STATUS_TONE: Record<SolarStatus, StatusTone> = {
+  lead: 'neutral',
+  'survey-scheduled': 'info',
+  'design-in-progress': 'warning',
+  approved: 'accent',
+  installing: 'info',
+  commissioned: 'success',
+  'on-hold': 'danger',
 
   /* V2 sales stages — the leads pipeline. Same semantic palette, no new colours. */
-  'new-lead': { tone: 'neutral', label: 'New lead' },
-  contacted: { tone: 'accent', label: 'Contacted' },
-  qualified: { tone: 'info', label: 'Qualified' },
-  'site-visit': { tone: 'info', label: 'Site visit' },
-  designing: { tone: 'accent', label: 'Designing' },
-  'proposal-sent': { tone: 'warning', label: 'Proposal sent' },
-  negotiating: { tone: 'warning', label: 'Negotiating' },
-  won: { tone: 'success', label: 'Won' },
-  lost: { tone: 'danger', label: 'Lost' },
-  snoozed: { tone: 'neutral', label: 'Snoozed' },
+  'new-lead': 'neutral',
+  contacted: 'accent',
+  qualified: 'info',
+  'site-visit': 'info',
+  designing: 'accent',
+  'proposal-sent': 'warning',
+  negotiating: 'warning',
+  won: 'success',
+  lost: 'danger',
+  snoozed: 'neutral',
 };
 
 /** The canonical pipeline statuses, for a caller that wants to render the set. */
-export const STATUS_CHIP_STATUSES = Object.keys(STATUS) as SolarStatus[];
+export const STATUS_CHIP_STATUSES = Object.keys(STATUS_TONE) as SolarStatus[];
 
-function titleCase(s: string): string {
-  return String(s)
-    .replace(/[-_]/g, ' ')
-    .replace(/^\w/, (c) => c.toUpperCase());
-}
-
-/** The tone and the words for one chip. A caller's `tone` and `label` always win. */
-export function resolveStatusChip(
-  status: string,
-  tone?: StatusTone,
-  label?: string,
-): { tone: StatusTone; words: string } {
-  const known = STATUS[status as SolarStatus];
-  return {
-    tone: tone ?? known?.tone ?? 'neutral',
-    words: label || known?.label || titleCase(status),
-  };
+/** The chip's tone. A caller's `tone` always wins; an unknown status is neutral. */
+export function statusChipTone(status: string, tone?: StatusTone): StatusTone {
+  return tone ?? STATUS_TONE[status as SolarStatus] ?? 'neutral';
 }

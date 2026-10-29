@@ -1,3 +1,4 @@
+import { alignOf } from './DataTable.logic';
 import type { DataTableProps } from './DataTable.types';
 import { ColumnName } from './DataTableHead';
 
@@ -23,7 +24,7 @@ export function QuietSkeleton<Row>({ table }: { table: DataTableProps<Row> }) {
                 className="hg-dt-th"
                 data-first={index === 0 ? 'true' : undefined}
                 data-last={index === last && rowActions === undefined ? 'true' : undefined}
-                data-align={column.align ?? (column.numeric ? 'right' : 'left')}
+                data-align={alignOf(column)}
                 style={column.width === undefined ? undefined : { width: column.width }}
               >
                 <span className="hg-dt-th-inner">

@@ -1,9 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import { Image, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { closingPress, type FocusAfter } from '../../primitives/FocusAfter';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import type { DropzoneFile } from './Dropzone.types';
+import { isStillUploading, progressPercent, thumbName } from './Dropzone.logic';
+import type { DropzoneFile, DropzoneWords } from './Dropzone.types';
 import { FileGlyph } from './DropzoneGlyphs.native';
 
 const THUMB = 84;
@@ -65,10 +67,13 @@ const styles = StyleSheet.create({
 interface DropzoneThumbsProps {
   files: DropzoneFile[];
   onRemove?: (file: DropzoneFile, index: number) => void;
+  words: Pick<DropzoneWords, 'uploadedPhoto' | 'remove'>;
+  /** Where focus lands once a removed file has taken its thumbnail away — the capture surface. */
+  focusAfter: FocusAfter;
 }
 
 /** The captured files, and a 44dp remove target around a 28dp circle. */
-export function DropzoneThumbs({ files, onRemove }: DropzoneThumbsProps) {
+export function DropzoneThumbs({ files, onRemove, words, focusAfter }: DropzoneThumbsProps) {
   return (
     <View style={styles.grid}>
       {files.map((file, index) => (
@@ -79,23 +84,21 @@ export function DropzoneThumbs({ files, onRemove }: DropzoneThumbsProps) {
             </View>
           ) : (
             <Image
-              accessibilityLabel={file.name ?? 'Uploaded photo'}
+              accessibilityLabel={thumbName(file, words)}
               source={{ uri: file.url }}
               style={styles.image}
               resizeMode="cover"
             />
           )}
-          {file.progress !== undefined && file.progress < 100 ? (
+          {isStillUploading(file) ? (
             <View style={styles.track}>
-              <View
-                style={[styles.fill, { width: `${Math.max(0, Math.min(100, file.progress))}%` }]}
-              />
+              <View style={[styles.fill, { width: `${progressPercent(file.progress)}%` }]} />
             </View>
           ) : null}
           {onRemove === undefined ? null : (
             <Pressable
-              accessibilityLabel={`Remove ${file.name ?? 'photo'}`}
-              onPress={() => onRemove(file, index)}
+              accessibilityLabel={words.remove(file.name)}
+              onPress={closingPress(focusAfter)(() => onRemove(file, index))}
               style={styles.remove}
             >
               <View style={styles.removeCircle}>

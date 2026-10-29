@@ -1,9 +1,12 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { MouseEvent as ReactMouseEvent, ReactNode } from 'react';
 
 interface MapPlaceLayerProps {
   onTap: (event: ReactMouseEvent<HTMLElement>) => void;
   /** A keyboard activation reports no coordinates, so it places the pin at the centre. */
   onKeyboardPlace: () => void;
+  /** The layer's name, which says both ways in — tapping the map, and Enter for the centre. */
+  name: TranslatedText;
 }
 
 /**
@@ -16,12 +19,12 @@ interface MapPlaceLayerProps {
  * an activatable element, and this way the layer is reachable and announced. A keyboard
  * activation carries `detail === 0` and no coordinates, so it places at the centre.
  */
-export function MapPlaceLayer({ onTap, onKeyboardPlace }: MapPlaceLayerProps) {
+export function MapPlaceLayer({ onTap, onKeyboardPlace, name }: MapPlaceLayerProps) {
   return (
     <button
       type="button"
       className="hg-map-surface-place"
-      aria-label="Place the pin — tap the map, or press Enter to place it at the centre"
+      aria-label={name}
       onClick={(event) => {
         if (event.detail === 0) {
           onKeyboardPlace();

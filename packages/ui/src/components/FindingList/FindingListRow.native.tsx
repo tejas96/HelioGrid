@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
@@ -9,9 +10,9 @@ import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { Button } from '../Button/Button.native';
 import { renderPending } from '../PendingAction/PendingAction.native';
-import type { Finding, FindingStatus } from './FindingList.types';
-import { FINDING_LABEL, statusOf } from './FindingList.verdict';
-import { FINDING_MARK_GLYPH } from './FindingListRow.logic';
+import type { Finding, FindingListWords, FindingStatus } from './FindingList.types';
+import { jumpWords, statusOf } from './FindingList.verdict';
+import { FINDING_MARK_GLYPH, findingJump, findingStatusLabel } from './FindingListRow.logic';
 
 /** The three statuses in the StatusMark vocabulary. Ready is a pass, not an absence. */
 export const FINDING_TONE: Record<FindingStatus, StatusTone> = {
@@ -50,8 +51,9 @@ function Mark({ status }: { status: FindingStatus }) {
 
 interface FindingListRowProps {
   finding: Finding;
+  words: FindingListWords;
   onJump?: (finding: Finding) => void;
-  jumpLabel: string;
+  jumpLabel?: TranslatedText;
 }
 
 /**
@@ -59,11 +61,10 @@ interface FindingListRowProps {
  * finding is one tile (`F7-49`) — the web half's `.hg-finding-row` on `Ground.css`'s tiles list —
  * so its controls turn white.
  */
-export function FindingListRow({ finding, onJump, jumpLabel }: FindingListRowProps) {
+export function FindingListRow({ finding, words, onJump, jumpLabel }: FindingListRowProps) {
   const status = statusOf(finding);
-  const jump = finding.onJump ?? (onJump === undefined ? undefined : () => onJump(finding));
-  const jumpWords =
-    finding.jumpLabel ?? (finding.step === undefined ? jumpLabel : `Fix in ${finding.step}`);
+  const jump = findingJump(finding, onJump);
+  const jumpName = jumpWords(finding, words, jumpLabel);
   const pending = renderPending(finding.pending, { size: 12 });
   return (
     <View style={[tileSurface, styles.row]}>
@@ -76,7 +77,7 @@ export function FindingListRow({ finding, onJump, jumpLabel }: FindingListRowPro
             </Text>
             <StatusMark
               tone={FINDING_TONE[status]}
-              label={finding.statusLabel ?? FINDING_LABEL[status]}
+              label={findingStatusLabel(finding, status, words)}
               mark={false}
             />
           </View>
@@ -114,7 +115,7 @@ export function FindingListRow({ finding, onJump, jumpLabel }: FindingListRowPro
                     </Svg>
                   }
                 >
-                  {jumpWords}
+                  {jumpName}
                 </Button>
               )}
               {/* MS6-27's "Auto-string now". Optional by design: most findings have no such act. */}

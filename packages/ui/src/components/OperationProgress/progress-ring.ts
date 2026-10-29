@@ -55,3 +55,8 @@ export function ringDrawing({ box, radius, stroke }: RingGeometry, share: number
 export function doneShare(done: number, total: number): number {
   return total > 0 ? done / total : 0;
 }
+
+/** How much of the ring a count has filled; no count fills none. */
+export function countShare(count: { done: number; total: number } | null): number {
+  return count === null ? 0 : doneShare(count.done, count.total);
+}

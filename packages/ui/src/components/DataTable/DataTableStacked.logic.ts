@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { isLiveCell, readField } from './DataTable.logic';
 import type { DataTableProps } from './DataTable.types';
 import type { DataTableColumn } from './DataTableColumn.types';
@@ -35,6 +36,18 @@ export function resolveStackedColumns<Row>(columns: DataTableColumn<Row>[]): Sta
         column.hideStacked !== true,
     ),
   };
+}
+
+/**
+ * **The card's slots, or null when the table has no column to title a card with** — resolved once
+ * for the whole list.
+ */
+export function stackedSlotsOf<Row>(
+  columns: DataTableColumn<Row>[],
+): (StackedColumns<Row> & { primary: DataTableColumn<Row> }) | null {
+  const slots = resolveStackedColumns(columns);
+  const { primary } = slots;
+  return primary === undefined ? null : { ...slots, primary };
 }
 
 /**
@@ -77,8 +90,9 @@ export function rowNameOf<Row>(
   row: Row,
   primary: DataTableColumn<Row>,
   rowLabel: DataTableProps<Row>['rowLabel'],
+  openRecord: TranslatedText,
 ): string {
   if (rowLabel !== undefined) return rowLabel(row);
   const raw = readField(row, primary.key);
-  return typeof raw === 'string' || typeof raw === 'number' ? String(raw) : 'Open record';
+  return typeof raw === 'string' || typeof raw === 'number' ? String(raw) : openRecord;
 }

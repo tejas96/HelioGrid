@@ -6,12 +6,17 @@
    attribution ever has. It goes through the Pressable primitive, which owns the 44px target. */
 
 import type { CSSProperties, ReactNode } from 'react';
-import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Icon } from '../../primitives/Icon';
 import { Pressable } from '../../primitives/Pressable';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
-import { resolveValueSourceLevel, valueSourceStep } from './ValueSource.levels';
+import {
+  attributionFor,
+  overrideActOf,
+  resolveValueSourceLevel,
+  VALUE_SOURCE_GLYPH,
+  valueSourceStep,
+} from './ValueSource.levels';
 import type { ValueSourceLevel, ValueSourceSpec } from './ValueSource.types';
 
 interface WebValueSourceProps extends ValueSourceSpec {
@@ -31,7 +36,7 @@ function Glyph({ name }: { name: 'own' | 'inherited' }) {
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <ShellGlyphMarks name={name === 'inherited' ? 'layers' : 'layer'} />
+        <ShellGlyphMarks name={VALUE_SOURCE_GLYPH[name]} />
       </svg>
     </Icon>
   );
@@ -43,7 +48,7 @@ export function ValueSource({
   source,
   fieldName,
   onOverride,
-  overrideLabel = 'Override for this tenant',
+  overrideLabel,
   size = 12,
   className,
   style,
@@ -52,8 +57,8 @@ export function ValueSource({
   if (!entry) {
     return null;
   }
-  const word = layerName || entry.word;
   const inherited = level === 'inherited';
+  const act = overrideActOf({ level, onOverride, overrideLabel, fieldName });
   return (
     <div
       className={classNames('hg-value-source', className)}
@@ -63,40 +68,32 @@ export function ValueSource({
     >
       <span className="hg-value-source-layer">
         <Glyph name={entry.glyph} />
-        <span className="hg-value-source-word">{word}</span>
+        <span className="hg-value-source-word">{layerName}</span>
       </span>
       {source ? <span className="hg-value-source-from">{source}</span> : null}
-      {inherited && onOverride ? (
+      {act === null ? null : (
         <Pressable
           className="hg-value-source-action"
-          onPress={onOverride}
-          accessibilityLabel={fieldName ? `${overrideLabel}: ${fieldName}` : undefined}
+          onPress={act.onOverride}
+          accessibilityLabel={act.spokenName}
         >
-          {overrideLabel}
+          {act.label}
         </Pressable>
-      ) : null}
+      )}
     </div>
   );
 }
 
-/** Accepts an `attribution` host prop — a spec object, a bare level string, or a ready node. */
+/**
+ * Accepts an `attribution` host prop — a spec object, a bare level string, or a ready node. A bare
+ * level names no layer, and a layer's word is the caller's, so it draws nothing: the words come in
+ * a spec.
+ */
 export function renderAttribution(
   spec?: ValueSourceSpec | ValueSourceLevel | ReactNode,
   extra: Partial<ValueSourceSpec> = {},
 ): ReactNode {
-  if (!spec) {
-    return null;
-  }
-  if (isValidElement(spec)) {
-    return spec;
-  }
-  if (typeof spec === 'string') {
-    return <ValueSource level={spec as ValueSourceLevel} {...extra} />;
-  }
-  if (typeof spec !== 'object') {
-    return null;
-  }
-  return <ValueSource {...(spec as ValueSourceSpec)} {...extra} />;
+  return attributionFor(spec, (plain) => <ValueSource {...plain} {...extra} />);
 }
 
 ValueSource.render = renderAttribution;

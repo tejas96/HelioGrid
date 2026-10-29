@@ -1,6 +1,6 @@
 import { theme } from '@heliogrid/theme';
-import { type ReactNode, useEffect, useRef } from 'react';
-import { AccessibilityInfo, findNodeHandle, ScrollView, StyleSheet, View } from 'react-native';
+import { type ReactNode, useRef } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -14,30 +14,19 @@ import type { RoleCardLine, RoleCardProps, RoleCardWords } from './RoleCard.type
  * The role card on the phone: its head, then its rows, or their loading lines. Bounded, the rows
  * scroll under the head; flowing, the surface around the card scrolls. React Native has no
  * `status` role: the waiting rows are one element whose name speaks, politely, while busy.
- * *Try again* leaves with the error card, so once the card is back the reader's focus goes to the
- * presets' name, which stays.
+ * *Try again* leaves with the error card, so the reader's focus goes to the presets' name, which
+ * the card draws while it reloads.
  */
 export function RoleCard({ words, layout, read }: RoleCardProps) {
   const presets = useRef<View>(null);
-  const retried = useRef(false);
-  useEffect(() => {
-    if (!retried.current || read.kind === 'failed') return;
-    retried.current = false;
-    const tag = findNodeHandle(presets.current);
-    if (tag !== null) AccessibilityInfo.setAccessibilityFocus(tag);
-  }, [read.kind]);
   const bounded = layout === 'bounded';
   if (read.kind === 'failed') {
     return (
       <Card
         style={bounded ? styles.bounded : undefined}
-        read={{
-          ...read,
-          retry: () => {
-            retried.current = true;
-            read.retry();
-          },
-        }}
+        read={read}
+        loadingLabel={words.loading}
+        focusAfter={presets}
         errorTitle={words.error.title}
         errorMessage={words.error.body}
         retryLabel={words.error.retry}

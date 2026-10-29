@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { Children, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
@@ -159,7 +160,7 @@ export function PreviewFrame({
  * `role="status"` has no RN spelling. It exists only for the wait: busy props set on the window
  * itself outlive the wait on Android, which keeps a prop that leaves the props.
  */
-function Wait({ label }: { label: string | undefined }) {
+function Wait({ label }: { label: TranslatedText | undefined }) {
   return (
     <View
       accessible
@@ -182,7 +183,7 @@ function FrameCaption({
   caption: NativePreviewFrameProps['caption'];
   note: NativePreviewFrameProps['note'];
   cropped: boolean;
-  croppedLabel: string | undefined;
+  croppedLabel: TranslatedText | undefined;
   action: NativePreviewFrameProps['action'];
 }) {
   const croppedShown = cropped && croppedLabel !== undefined;

@@ -31,6 +31,7 @@ import {
 import type { MessageRef, Translator } from '../runtime';
 import { COMPANY_SIGNUP } from './company-signup';
 import { type ExplainerWords, explainerPagerWords } from './explainer';
+import { otpInputWords } from './otp-input';
 import { SIGN_IN } from './sign-in';
 
 const SECONDS_PER_MINUTE = 60;
@@ -194,6 +195,8 @@ export interface SignInWords {
   readonly explainer: (ExplainerWords & ExplainerPagerWords) | null;
   /** The code field's label: it names how many digits a code has. */
   readonly codeLabel: TranslatedText;
+  /** The code boxes' spoken names. */
+  readonly otp: ReturnType<typeof otpInputWords>;
   readonly codeError: TranslatedText | null;
   readonly primary: TranslatedText | null;
   /** The primary's accessible name where it says more than its label; `null` where the label is enough. */
@@ -236,6 +239,7 @@ export function signInWords(
     block: block === null ? null : { tone: block.tone, title: t(block.title) },
     explainer: explainer === null ? null : { ...explainer, ...explainerPagerWords(translate) },
     codeLabel: t(SIGN_IN.codeLabel),
+    otp: otpInputWords(translate),
     codeError: frame.codeError === null ? null : t(CODE_ERROR[frame.codeError]),
     primary: frame.primary === null ? null : t(primaryOf(frame.primary.label, labels)),
     primaryAria: primaryAriaOf(frame, t),

@@ -37,7 +37,7 @@ function Glyph({ size }: { size: number }) {
  * tone and NO RETRY, EVER.
  */
 function UnavailableNoteBase({
-  title = 'Not available here',
+  title,
   message,
   detail,
   icon,

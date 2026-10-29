@@ -1,13 +1,14 @@
 'use client';
-import { type Read, roleKind, type TeamRow } from '@heliogrid/domain';
-import { TEAM, type TeamListWords } from '@heliogrid/i18n';
+import type { TranslatedText } from '@heliogrid/contracts';
+import type { Read, TeamRow } from '@heliogrid/domain';
+import { DATA_TABLE, dataTableWords, TEAM, type TeamListWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import {
   Badge,
   DataTable,
   type DataTableColumn,
   MemberPerson,
-  ROLE_KIND_TONE,
+  memberCardOf,
   TEAM_STATUS_TONE,
 } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
@@ -17,7 +18,7 @@ interface TeamTableProps {
   read: Read<readonly TeamRow[]>;
   words: TeamListWords;
   /** The act column's name, for a screen reader only. */
-  actions: string;
+  actions: TranslatedText;
   /** A row's act, small and right-aligned, or nothing for a row with none. */
   actOf: (row: TeamRow) => ReactNode;
   /** A row's open — Assign Roles for an active person; undefined for a row that opens nothing. */
@@ -26,8 +27,9 @@ interface TeamTableProps {
 
 /**
  * The team at the table's width (`SCR-M01-12`, `d-default`): Person (the face, the name, *You* and
- * the status), Roles and Last active, in the owner's 2.2 : 2.4 : 1.2, on `DataTable`'s quiet head
- * (design-system change 20), and each row's act in a column of its own.
+ * the status), Roles (each in its kind's tone, as the member card draws them) and Last active, in
+ * the owner's 2.2 : 2.4 : 1.2, on `DataTable`'s quiet head (design-system change 20), and each
+ * row's act in a column of its own.
  */
 export function TeamTable({ read, words, actions, actOf, openOf }: TeamTableProps) {
   const t = useTranslate();
@@ -53,9 +55,9 @@ export function TeamTable({ read, words, actions, actOf, openOf }: TeamTableProp
       wrap: true,
       render: (row) => (
         <div className="hg-team-roles">
-          {row.roles.map((preset) => (
-            <Badge key={preset} tone={ROLE_KIND_TONE[roleKind(preset)]} density="functional">
-              {words.role(preset)}
+          {memberCardOf(row, words.row(row), words.role, words.you).roles.map((role) => (
+            <Badge key={role.label} tone={role.tone} density="functional">
+              {role.label}
             </Badge>
           ))}
         </div>
@@ -86,6 +88,10 @@ export function TeamTable({ read, words, actions, actOf, openOf }: TeamTableProp
           })}
       actionsLabel={actions}
       read={read}
+      words={dataTableWords(t)}
+      emptyTitle={t(DATA_TABLE.emptyTitle)}
+      errorTitle={t(DATA_TABLE.errorTitle)}
+      unavailableTitle={t(DATA_TABLE.unavailableTitle)}
       stackBelow={0}
     />
   );

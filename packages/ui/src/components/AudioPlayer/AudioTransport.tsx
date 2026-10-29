@@ -1,6 +1,9 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react';
 import { Button } from '../Button/Button';
 import { AudioGlyph } from './AudioGlyph';
+import { positionTextOf, progressOf, skipOf, speedPillOf } from './AudioPlayer.logic';
+import type { AudioPlayerWords } from './AudioPlayer.types';
 import { AUDIO_SEEK_KEYS, formatClock } from './AudioPlayer.types';
 
 export function RoundButton({
@@ -9,7 +12,7 @@ export function RoundButton({
   kind,
   children,
 }: {
-  label: string;
+  label: TranslatedText;
   onPress: () => void;
   kind: 'primary' | 'ghost';
   children: ReactNode;
@@ -27,17 +30,22 @@ export function RoundButton({
   );
 }
 
-/** ±10s back and +30s forward — a full sales call on a 375px phone is ~3 seconds per pixel. */
-export function SkipButton({ back, onSeek }: { back: boolean; onSeek: (delta: number) => void }) {
+/** A ghost skip: back or forward by `skipOf`'s step. */
+export function SkipButton({
+  back,
+  onSeek,
+  words,
+}: {
+  back: boolean;
+  onSeek: (delta: number) => void;
+  words: AudioPlayerWords;
+}) {
+  const skip = skipOf(back, words);
   return (
-    <RoundButton
-      kind="ghost"
-      label={back ? 'Back 10 seconds' : 'Forward 30 seconds'}
-      onPress={() => onSeek(back ? -10 : 30)}
-    >
+    <RoundButton kind="ghost" label={skip.label} onPress={() => onSeek(skip.delta)}>
       <span className="hg-audio-skip">
-        <AudioGlyph name={back ? 'back' : 'fwd'} size={15} />
-        <span className="hg-audio-skip-count">{back ? 10 : 30}</span>
+        <AudioGlyph name={skip.glyph} size={15} />
+        <span className="hg-audio-skip-count">{skip.count}</span>
       </span>
     </RoundButton>
   );
@@ -56,12 +64,14 @@ export function Scrubber({
   at,
   total,
   onSeek,
+  words,
 }: {
   at: number;
   total: number;
   onSeek: (seconds: number) => void;
+  words: AudioPlayerWords;
 }) {
-  const pct = total > 0 ? (at / total) * 100 : 0;
+  const pct = progressOf(at, total) * 100;
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     const jump = AUDIO_SEEK_KEYS[event.key];
     if (jump !== undefined) {
@@ -95,8 +105,8 @@ export function Scrubber({
         step={1}
         value={at}
         disabled={total <= 0}
-        aria-label="Seek within the recording"
-        aria-valuetext={`${formatClock(at)} of ${formatClock(total)}`}
+        aria-label={words.seek}
+        aria-valuetext={positionTextOf(at, total, words)}
         onChange={(event) => onSeek(Number(event.target.value))}
         onKeyDown={onKeyDown}
       />
@@ -109,31 +119,32 @@ export function SpeedButton({
   rate,
   speeds,
   onChange,
+  words,
 }: {
   rate: number;
   speeds: number[];
   onChange: (rate: number) => void;
+  words: AudioPlayerWords;
 }) {
+  const pill = speedPillOf(rate, speeds, words);
   const next = () => {
-    const index = speeds.indexOf(rate);
-    const value = speeds[(index + 1) % speeds.length];
-    if (value !== undefined) onChange(value);
+    if (pill.next !== undefined) onChange(pill.next);
   };
   return (
     <button
       type="button"
       className="hg-audio-speed"
-      data-changed={rate === 1 ? undefined : 'true'}
-      aria-label={`Playback speed ${rate}×. Tap to change.`}
+      data-changed={pill.changed ? 'true' : undefined}
+      aria-label={pill.label}
       onClick={next}
     >
-      {`${rate}×`}
+      {pill.mark}
     </button>
   );
 }
 
 /** The door to the transcript. It is offered in EVERY state, including error. */
-export function TranscriptDoor({ label, onPress }: { label: string; onPress: () => void }) {
+export function TranscriptDoor({ label, onPress }: { label: TranslatedText; onPress: () => void }) {
   return (
     <Button
       variant="secondary"

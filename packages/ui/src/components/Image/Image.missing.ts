@@ -10,11 +10,10 @@ export const IMAGE_GLYPH: Record<ImageGlyphName, ShellGlyphName> = {
   eye: 'eye-wide',
 };
 
+/** How one kind of missing looks; its words are `ImageWords.missing`. */
 export interface ImageMissingSpec {
   tone: 'neutral' | 'warning';
   icon: ImageGlyphName;
-  label: string;
-  detail: string;
 }
 
 /**
@@ -23,22 +22,12 @@ export interface ImageMissingSpec {
  * - `not-captured` — nobody took this photo. Neutral, permanent, no retry.
  * - `unavailable` — the fetch failed. Warning tint, offers a retry.
  *
- * One declaration for both platforms, so a missing frame says the same words on a phone as on a
+ * One declaration for both platforms, so a missing frame looks the same on a phone as on a
  * printed proposal.
  */
 export const IMAGE_MISSING: Record<ImageMissingReason, ImageMissingSpec> = {
-  'not-captured': {
-    tone: 'neutral',
-    icon: 'no-image',
-    label: 'Not captured',
-    detail: 'No photo was taken here.',
-  },
-  unavailable: {
-    tone: 'warning',
-    icon: 'no-cloud',
-    label: 'Image unavailable',
-    detail: "This image didn't load. Try again.",
-  },
+  'not-captured': { tone: 'neutral', icon: 'no-image' },
+  unavailable: { tone: 'warning', icon: 'no-cloud' },
 };
 
 /** The named footprints. Anything else is passed through as a CSS aspect-ratio verbatim. */

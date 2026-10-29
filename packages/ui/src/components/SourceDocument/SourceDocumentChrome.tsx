@@ -6,11 +6,13 @@
    `accessibilityState.selected` on the native half, one declaration for both, with the 44×44 floor
    and the focus ring coming from `hg-pressable` rather than a second copy of the numbers. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import { Pressable } from '../../primitives/Pressable';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { Button } from '../Button/Button';
+import { messageGlyphOf } from './SourceDocument.logic';
 
 export function Chrome({ children }: { children: ReactNode }) {
   return <span className="hg-source-doc-chrome">{children}</span>;
@@ -23,7 +25,7 @@ export function IconBtn({
   disabled,
   pressed,
 }: {
-  label: string;
+  label: TranslatedText;
   glyph: ShellGlyphName;
   onClick: () => void;
   disabled?: boolean;
@@ -64,7 +66,7 @@ export function OpenOriginal({
   onClick,
   href,
 }: {
-  children: string;
+  children: TranslatedText;
   onClick?: () => void;
   href?: string;
 }) {
@@ -97,8 +99,8 @@ export function Message({
   action,
 }: {
   tone?: 'warning';
-  title: string;
-  message?: string;
+  title: TranslatedText;
+  message?: TranslatedText;
   action?: ReactNode;
 }) {
   return (
@@ -115,7 +117,7 @@ export function Message({
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          <ShellGlyphMarks name={tone === 'warning' ? 'alert-circle-up' : 'file-plain'} />
+          <ShellGlyphMarks name={messageGlyphOf(tone)} />
         </svg>
       </span>
       <span className="hg-source-doc-message-title">{title}</span>

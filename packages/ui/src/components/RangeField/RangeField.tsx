@@ -3,11 +3,13 @@ import { classNames } from '../../primitives/class-names';
 import { RangeEndBox } from './RangeEndBox';
 import {
   formatEnd,
-  orderPair,
+  pinnedPair,
   rangeIsAny,
   rangeReadout,
+  reportRange,
   resolveRange,
   roundToStep,
+  thumbName,
 } from './RangeField.logic';
 import type { RangeFieldProps, RangeValue } from './RangeField.types';
 
@@ -37,9 +39,9 @@ export function RangeField({
   error,
   format,
   boxes = true,
-  boxLabels = ['From', 'To'],
+  boxLabels,
   disabled = false,
-  anyLabel = 'Any',
+  anyLabel,
   className,
   style,
 }: WebRangeFieldProps) {
@@ -50,14 +52,11 @@ export function RangeField({
   const isAny = rangeIsAny([lo, hi], min, max);
   const shown = rangeReadout({ lo, hi, min, max, anyLabel, unit, format });
 
-  const set = (next: RangeValue, live: boolean) => {
-    const pair = orderPair(next);
-    if (live) onInput?.(pair);
-    else onCommit?.(pair);
-  };
-  /* Pinned, never swapped: the handle you are holding stays the handle you are holding. */
-  const dragLo = (v: number, live: boolean) => set([Math.min(roundToStep(v, step), hi), hi], live);
-  const dragHi = (v: number, live: boolean) => set([lo, Math.max(roundToStep(v, step), lo)], live);
+  const set = (next: RangeValue, live: boolean) => reportRange(next, live, { onInput, onCommit });
+  const dragLo = (v: number, live: boolean) =>
+    set(pinnedPair('lo', roundToStep(v, step), [lo, hi]), live);
+  const dragHi = (v: number, live: boolean) =>
+    set(pinnedPair('hi', roundToStep(v, step), [lo, hi]), live);
 
   return (
     <div className={classNames('hg-range', className)} style={style}>
@@ -85,7 +84,7 @@ export function RangeField({
           step={step}
           value={lo}
           disabled={disabled}
-          aria-label={`${label ?? 'Range'} — ${boxLabels[0]}`}
+          aria-label={thumbName(label, boxLabels[0])}
           aria-valuetext={formatEnd(lo, format, unit)}
           onChange={(e) => dragLo(Number(e.target.value), true)}
           onPointerUp={(e) => dragLo(Number(e.currentTarget.value), false)}
@@ -100,7 +99,7 @@ export function RangeField({
           step={step}
           value={hi}
           disabled={disabled}
-          aria-label={`${label ?? 'Range'} — ${boxLabels[1]}`}
+          aria-label={thumbName(label, boxLabels[1])}
           aria-valuetext={formatEnd(hi, format, unit)}
           onChange={(e) => dragHi(Number(e.target.value), true)}
           onPointerUp={(e) => dragHi(Number(e.currentTarget.value), false)}
@@ -121,7 +120,7 @@ export function RangeField({
             onCommit={(v) => set([v, hi], false)}
           />
           <span className="hg-range-dash" aria-hidden="true">
-            –
+            {'–'}
           </span>
           <RangeEndBox
             label={boxLabels[1]}

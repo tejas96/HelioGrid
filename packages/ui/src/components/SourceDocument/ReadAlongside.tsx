@@ -9,10 +9,11 @@
        source is the reference and a reference under 40 fields is one nobody scrolls back to. */
 
 import type { CSSProperties } from 'react';
-import { cloneElement, isValidElement, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
-import type { ReadAlongsideProps, SourceDocumentProps } from './SourceDocument.types';
+import { ALONGSIDE_DEFAULTS, documentAtHeight, sitsAlongside } from './SourceDocument.logic';
+import type { ReadAlongsideProps } from './SourceDocument.types';
 
 interface WebReadAlongsideProps extends ReadAlongsideProps {
   className?: string;
@@ -22,13 +23,13 @@ interface WebReadAlongsideProps extends ReadAlongsideProps {
 export function ReadAlongside({
   document: doc,
   children,
-  breakpoint = 720,
-  documentWidth = '42%',
-  stackedHeight = 300,
-  expandedHeight = 560,
-  expandLabel = 'Expand document',
-  collapseLabel = 'Collapse document',
-  gap = 20,
+  breakpoint = ALONGSIDE_DEFAULTS.breakpoint,
+  documentWidth = ALONGSIDE_DEFAULTS.documentWidth,
+  stackedHeight = ALONGSIDE_DEFAULTS.stackedHeight,
+  expandedHeight = ALONGSIDE_DEFAULTS.expandedHeight,
+  expandLabel,
+  collapseLabel,
+  gap = ALONGSIDE_DEFAULTS.gap,
   label,
   className,
   style,
@@ -53,11 +54,8 @@ export function ReadAlongside({
     return () => ro.disconnect();
   }, []);
 
-  const side = width === null || width >= breakpoint;
-  const sized =
-    isValidElement<SourceDocumentProps>(doc) && !side
-      ? cloneElement(doc, { height: big ? expandedHeight : stackedHeight })
-      : doc;
+  const side = sitsAlongside(width, breakpoint);
+  const sized = documentAtHeight(doc, { side, expanded: big, stackedHeight, expandedHeight });
 
   return (
     // biome-ignore lint/a11y/useSemanticElements: role="group" pairs with <fieldset>, a form grouping; this is a two-column reading arrangement, not a form.

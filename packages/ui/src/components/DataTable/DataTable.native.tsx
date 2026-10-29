@@ -1,21 +1,23 @@
 import { theme } from '@heliogrid/theme';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import { surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import {
+  DATA_TABLE_DEFAULTS,
   DATA_TABLE_STACK_BELOW,
   showsMessage,
   sortRows,
-  TABLE_PAGER_WORDS,
 } from './DataTable.logic';
 import type { DataTableProps } from './DataTable.types';
+import { captionTextOf } from './DataTableChrome.logic';
 import { Pagination, SelectionBar } from './DataTableChrome.native';
 import { DataTableGrid } from './DataTableGrid.native';
 import { TableCaption, TableStates } from './DataTableShell.native';
 import { DataTableStacked } from './DataTableStacked.native';
+import { useStackedForm } from './use-stacked-form';
 import { useTableSelection, useTableSort } from './use-table-state';
 
 /* The table is a heading on the page (`F7-49`): no fill, no shadow, no radius — its rows hold
@@ -49,7 +51,7 @@ export function DataTable<Row = Record<string, unknown>>(props: NativeDataTableP
   const {
     columns,
     rows,
-    rowKey = 'id',
+    rowKey = DATA_TABLE_DEFAULTS.rowKey,
     selectable = false,
     selected,
     onSelectionChange,
@@ -65,15 +67,18 @@ export function DataTable<Row = Record<string, unknown>>(props: NativeDataTableP
     stackBelow = DATA_TABLE_STACK_BELOW,
     onFormChange,
     page,
-    pageSize = 10,
+    pageSize = DATA_TABLE_DEFAULTS.pageSize,
     rowCount,
     onPageChange,
-    density = 'comfortable',
+    density = DATA_TABLE_DEFAULTS.density,
+    words,
     style,
   } = props;
   const state = surfaceStateOf(read);
 
   const [ownWidth, setOwnWidth] = useState<number | null>(null);
+  /* The table's own frame stays while a failed read reloads, so *Try again* hands the reader to it. */
+  const frame = useRef<View>(null);
   const { selection, setSelection, toggleRow, toggleAll, allSelected } = useTableSelection(
     selected,
     onSelectionChange,
@@ -82,19 +87,8 @@ export function DataTable<Row = Record<string, unknown>>(props: NativeDataTableP
   const { sort: activeSort, setSort } = useTableSort(sort, onSortChange);
 
   /* The table measures ITS OWN width — no layout in this system is tuned to a viewport. */
-  const stacked = ownWidth !== null && ownWidth < stackBelow;
+  const stacked = useStackedForm(ownWidth, stackBelow, onFormChange);
   const onLayout = (event: LayoutChangeEvent) => setOwnWidth(event.nativeEvent.layout.width);
-
-  /* The breakpoint is the table's, so the answer is the table's to publish. The callback rides in
-     a ref so a caller's inline arrow cannot turn "whenever the answer changes" into "every render"
-     — and a caller that sets state in it into a loop. `Kanban` publishes its own the same way. */
-  const formCb = useRef(onFormChange);
-  useEffect(() => {
-    formCb.current = onFormChange;
-  }, [onFormChange]);
-  useEffect(() => {
-    if (ownWidth !== null) formCb.current?.({ stacked, width: ownWidth });
-  }, [stacked, ownWidth]);
 
   const sorted = useMemo(() => sortRows(rows, columns, activeSort), [rows, columns, activeSort]);
 
@@ -103,23 +97,24 @@ export function DataTable<Row = Record<string, unknown>>(props: NativeDataTableP
   const tableProvenance = renderProvenance(provenance, { size: 12 });
   /* F7-27's link, in the shape RN has one: there is no `aria-labelledby`, so both forms carry the
      caption's WORDS as their own accessible name rather than pointing at the node that holds them. */
-  const labelledBy =
-    caption === undefined ? undefined : `${caption}${continued ? ' (continued)' : ''}`;
+  const labelledBy = captionTextOf(caption, continued, words);
   /* A quiet table's caption names it for a screen reader only: the grid already carries its words. */
   const quiet = props.head === 'quiet' && !stacked;
-  const captionNode = quiet ? null : <TableCaption caption={caption} continued={continued} />;
+  const captionNode = quiet ? null : (
+    <TableCaption caption={caption} continued={continued} words={words} />
+  );
 
   if (showsMessage(state, rows.length)) {
     return (
-      <View onLayout={onLayout} style={[styles.shell, style]}>
+      <View ref={frame} onLayout={onLayout} style={[styles.shell, style]}>
         {captionNode}
-        <TableStates table={props} stacked={stacked} density={density} />
+        <TableStates table={props} stacked={stacked} density={density} focusAfter={frame} />
       </View>
     );
   }
 
   return (
-    <View onLayout={onLayout} style={[styles.shell, style]}>
+    <View ref={frame} onLayout={onLayout} style={[styles.shell, style]}>
       {captionNode}
 
       {selectable && selection.length > 0 ? (
@@ -127,6 +122,7 @@ export function DataTable<Row = Record<string, unknown>>(props: NativeDataTableP
           count={selection.length}
           actions={bulkActions}
           onClear={() => setSelection([])}
+          words={words}
         />
       ) : null}
 
@@ -177,7 +173,9 @@ export function DataTable<Row = Record<string, unknown>>(props: NativeDataTableP
           pageSize={pageSize}
           rowCount={rowCount ?? rows.length}
           onPageChange={onPageChange}
-          {...TABLE_PAGER_WORDS}
+          previousLabel={words.previousPage}
+          nextLabel={words.nextPage}
+          readout={words.pageRange}
         />
       ) : null}
     </View>

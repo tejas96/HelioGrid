@@ -1,5 +1,8 @@
+import type { TranslatedText } from '@heliogrid/contracts';
+import { toastHostWords } from '@heliogrid/i18n';
+import { useI18n } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
-import { ToastHost, type ToastItem } from '@heliogrid/ui';
+import { type FocusAfter, ToastHost, type ToastItem } from '@heliogrid/ui';
 import { useMemo } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { underPill } from '../../shell/styles';
@@ -13,11 +16,15 @@ import { underPill } from '../../shell/styles';
 export function TermsActToast({
   failure,
   onDismiss,
+  focusAfter,
 }: {
   /** The refused act's words; `null` while nothing is refused. */
-  failure: string | null;
+  failure: TranslatedText | null;
   onDismiss: () => void;
+  /** Where the screen reader goes once the toast is closed — the list the act was refused on. */
+  focusAfter: FocusAfter;
 }) {
+  const { t } = useI18n();
   const insets = useSafeAreaInsets();
   const toasts = useMemo<ToastItem[]>(
     () => (failure === null ? [] : [{ id: 'act', tone: 'danger', title: failure }]),
@@ -27,6 +34,8 @@ export function TermsActToast({
     <ToastHost
       toasts={toasts}
       onDismiss={onDismiss}
+      {...toastHostWords(t)}
+      focusAfter={focusAfter}
       offset={underPill(insets.bottom) + theme.spacing['sp-6']}
     />
   );

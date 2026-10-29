@@ -1,6 +1,5 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Text`,
@@ -8,7 +7,8 @@ import { StyleSheet, View } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextVariant } from '../../primitives/Text/Text.types';
-import type { NamedGapScale, NamedGapSpec } from './NamedGap.types';
+import { fillActOf, namedGapFor } from './NamedGap.logic';
+import type { NamedGapInput, NamedGapScale, NamedGapSpec } from './NamedGap.types';
 
 interface NativeNamedGapProps extends NamedGapSpec {
   style?: StyleProp<ViewStyle>;
@@ -42,11 +42,12 @@ export function NamedGap({
   scale = 'field',
   align = 'left',
   onFill,
-  fillLabel = 'Add',
+  fillLabel,
   fieldName,
   style,
 }: NativeNamedGapProps) {
   if (!gap) return null;
+  const act = fillActOf({ onFill, fillLabel, fieldName });
   const ring = RING[scale];
   return (
     <View
@@ -60,36 +61,22 @@ export function NamedGap({
       <Text variant={WORDS[scale]} color="secondary" style={styles.words}>
         {gap}
       </Text>
-      {onFill ? (
-        <Pressable
-          onPress={onFill}
-          accessibilityLabel={fieldName ? `${fillLabel}: ${fieldName}` : undefined}
-          style={styles.fill}
-        >
+      {act === null ? null : (
+        <Pressable onPress={act.onFill} accessibilityLabel={act.spokenName} style={styles.fill}>
           <Text variant="body-sm" color="accent" style={styles.fillWords}>
-            {fillLabel}
+            {act.label}
           </Text>
         </Pressable>
-      ) : null}
+      )}
     </View>
   );
 }
 
-function isGapSpec(value: object): value is NamedGapSpec {
-  return 'gap' in value;
-}
-
-/** What every `gap` host prop runs through: a sentence, a spec, or a ready node. */
 export function renderGap(
-  spec?: ReactNode | NamedGapSpec,
+  spec?: NamedGapInput | null,
   extra: Partial<NamedGapSpec> = {},
 ): ReactNode {
-  if (!spec) return null;
-  if (isValidElement(spec)) return spec;
-  if (typeof spec === 'string') return <NamedGap gap={spec} {...extra} />;
-  if (typeof spec !== 'object' || !isGapSpec(spec)) return null;
-  if (!spec.gap) return null;
-  return <NamedGap {...spec} {...extra} />;
+  return namedGapFor(spec, (plain) => <NamedGap {...plain} {...extra} />);
 }
 
 NamedGap.render = renderGap;

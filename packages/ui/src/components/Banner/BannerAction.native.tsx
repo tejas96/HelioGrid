@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useFocusAfter } from '../../primitives/FocusAfter';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -18,11 +19,12 @@ interface NativeBannerActionProps extends BannerActionProps {
  * the 44px floor; the pill inside it stays 32, which keeps a banner's density unchanged. The
  * negative margin is the 6px per side the target borrows back.
  */
-export function BannerAction({ children, onClick, style }: NativeBannerActionProps) {
+export function BannerAction({ children, onClick, focusAfter, style }: NativeBannerActionProps) {
   /* The opposite of what holds it (`F7-15`): the banner's tint is a tile ground, so white. */
   const { controlFill } = useGround();
+  const leaving = useFocusAfter(focusAfter);
   return (
-    <Pressable onPress={onClick} style={styles.target}>
+    <Pressable onPress={onClick === undefined ? undefined : leaving(onClick)} style={styles.target}>
       <View style={[styles.pill, { backgroundColor: controlFill }, style]}>
         <Text variant="body-sm" style={styles.words}>
           {children}

@@ -40,7 +40,7 @@ export function ItemsSheets({
       <EditorSheet sheets={sheets} schemes={schemes} />
       <ArchiveAsk sheets={sheets} />
       <PublishSheet sheets={sheets} release={release} />
-      <ReleasesSheet open={sheets.releasesOpen} onClose={sheets.closeReleases} />
+      <ReleasesSheet releases={sheets.releases} />
     </>
   );
 }

@@ -38,48 +38,6 @@ export const SAMPLE_IDENTITY: DocumentIdentity = {
   docNumber: 'PRO-2026-0418',
   docDate: '2026-08-16',
 };
-/* The specimen's own words. A real cover prints only the words its caller passes, so none of
-   these can reach a tenant's document untranslated. */
-export interface DocumentWords {
-  logoLabel: string;
-  docTitle: string;
-  subsidyLabel: string;
-  sectionsTitle: string;
-  tranchesTitle: string;
-  termsTitle: string;
-  caption: string;
-  preparedForLabel: string;
-  totalLabel: string;
-  bandFailsNote: string;
-  termsEmptyText: string | undefined;
-}
-export const SAMPLE_WORDS: DocumentWords = {
-  logoLabel: 'tenant logo',
-  docTitle: 'Solar proposal',
-  subsidyLabel: 'PM Surya Ghar subsidy',
-  sectionsTitle: 'What this proposal covers',
-  tranchesTitle: 'Payment schedule',
-  termsTitle: 'Terms & conditions',
-  caption: 'Preview · customer proposal',
-  preparedForLabel: 'Prepared for',
-  totalLabel: 'Total',
-  bandFailsNote:
-    "This colour can't carry header text, so the document keeps a white header and uses it as a rule.",
-  termsEmptyText: 'No terms are attached to this template yet.',
-};
-export const NO_WORDS: DocumentWords = {
-  logoLabel: '',
-  docTitle: '',
-  subsidyLabel: '',
-  sectionsTitle: '',
-  tranchesTitle: '',
-  termsTitle: '',
-  caption: '',
-  preparedForLabel: '',
-  totalLabel: '',
-  bandFailsNote: '',
-  termsEmptyText: undefined,
-};
 
 export const NO_MONEY: DocumentFigures = { lineItems: [], total: '' };
 

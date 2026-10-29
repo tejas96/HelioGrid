@@ -1,7 +1,7 @@
 import { StatusChip } from '../StatusChip';
 import type { KanbanDragHandlers, KanbanDragState } from './Kanban.drag';
-import { columnCountLabel } from './Kanban.logic';
-import type { KanbanColumn, KanbanProps } from './Kanban.types';
+import { columnViewOf } from './Kanban.logic';
+import type { KanbanColumn, KanbanProps, KanbanWords } from './Kanban.types';
 import { KanbanCard } from './KanbanCard';
 
 export interface KanbanColumnBlockProps {
@@ -15,6 +15,7 @@ export interface KanbanColumnBlockProps {
   onMove?: KanbanProps['onMove'];
   renderCard?: KanbanProps['renderCard'];
   cardPending?: KanbanProps['cardPending'];
+  words: KanbanWords;
 }
 
 /** One sunken column: a StatusChip header, its count (or n/limit), and its floating cards. */
@@ -29,9 +30,9 @@ export function KanbanColumnBlock({
   onMove,
   renderCard,
   cardPending,
+  words,
 }: KanbanColumnBlockProps) {
-  const items = column.items ?? [];
-  const overLimit = column.limit !== undefined && items.length > column.limit;
+  const { items, count, overLimit, emptyLine } = columnViewOf(column, words);
   return (
     /* The drop target is the column surface itself. The keyboard and touch route is MoveControls
        on every card — always visible, never hover-only, and 44x44. */
@@ -62,12 +63,12 @@ export function KanbanColumnBlock({
             form makes this column the primary reading of that pair — so words on the sunken track
             take --text-secondary. */}
         <span className="hg-kanban-column-count" data-over-limit={overLimit ? 'true' : undefined}>
-          {columnCountLabel(items.length, column.limit)}
+          {count}
         </span>
       </header>
       <div className="hg-kanban-column-body">
         {items.length === 0 ? (
-          <p className="hg-kanban-column-empty">{column.emptyLabel || 'Nothing here'}</p>
+          <p className="hg-kanban-column-empty">{emptyLine}</p>
         ) : (
           items.map((it) => (
             <KanbanCard
@@ -81,6 +82,7 @@ export function KanbanColumnBlock({
               onMove={onMove}
               renderCard={renderCard}
               cardPending={cardPending}
+              words={words}
             />
           ))
         )}

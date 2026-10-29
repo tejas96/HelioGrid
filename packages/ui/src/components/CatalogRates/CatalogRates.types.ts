@@ -1,6 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { PriceBookRateBasis, Read, UiLanguage } from '@heliogrid/domain';
-import type { CatalogStrip } from '../CatalogItems/CatalogItems.types';
+import type { CatalogStrip, CatalogTableWords } from '../CatalogItems/CatalogItems.types';
+import type { NumberFieldWords } from '../NumberField/NumberField.types';
 
 /**
  * **Catalog settings' Rates panel** (`SCR-M01-15`, `M01-48`): the price book's version in force —
@@ -30,6 +31,8 @@ export interface CatalogRate {
 export interface CatalogRatesWords {
   readonly bases: Readonly<Record<PriceBookRateBasis, TranslatedText>>;
   readonly searchRates: TranslatedText;
+  /** The search's clear button. */
+  readonly clearSearch: TranslatedText;
   readonly chargedLabel: TranslatedText;
   readonly allBases: TranslatedText;
   readonly rate: TranslatedText;
@@ -43,6 +46,7 @@ export interface CatalogRatesWords {
   readonly loadFailed: TranslatedText;
   readonly tryAgain: TranslatedText;
   readonly loading: TranslatedText;
+  readonly table: CatalogTableWords;
 }
 
 /**
@@ -103,7 +107,7 @@ export interface CatalogVersionEdit {
   readonly onAddRate: () => void;
   /** Under *What changed* when it alone holds the version back; `null` otherwise. */
   readonly noteHint: TranslatedText | null;
-  readonly problem: string | null;
+  readonly problem: TranslatedText | null;
 }
 
 /**
@@ -120,7 +124,7 @@ export interface CatalogVersionRow {
   readonly onAmount: (amount: string) => void;
   /** The version in force's amount when this one differs; drawn struck with *Changed*. */
   readonly was: string | null;
-  readonly labels: { readonly amount: string };
+  readonly labels: { readonly amount: TranslatedText };
 }
 
 /**
@@ -141,7 +145,9 @@ export interface CatalogRateEditProps {
   readonly onName: (language: UiLanguage, name: string) => void;
   readonly basis: PriceBookRateBasis;
   readonly basisLabel: TranslatedText;
-  readonly bases: Readonly<Record<PriceBookRateBasis, string>>;
+  readonly bases: Readonly<Record<PriceBookRateBasis, TranslatedText>>;
+  /** The basis list's own words: its trigger while nothing is picked, the phone's close. */
+  readonly select: { readonly placeholder: TranslatedText; readonly closeLabel: TranslatedText };
   readonly onBasis: (basis: PriceBookRateBasis) => void;
   /** `null` for a rate not yet in the list. */
   readonly remove: { readonly label: TranslatedText; readonly onRemove: () => void } | null;
@@ -164,6 +170,8 @@ export interface CatalogVersionWords {
   readonly loadFailed: TranslatedText;
   readonly tryAgain: TranslatedText;
   readonly loading: TranslatedText;
+  /** What the margin and an amount field say of their own. */
+  readonly numberField: NumberFieldWords;
 }
 
 /**
@@ -204,6 +212,7 @@ export interface CatalogAttributionWords {
   readonly more: TranslatedText;
   readonly loadFailed: TranslatedText;
   readonly tryAgain: TranslatedText;
+  readonly table: CatalogTableWords;
 }
 
 /** *Why a price is what it is*: the changed items as cards, and the way to more of them. */

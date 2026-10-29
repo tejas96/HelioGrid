@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import type { FocusHandle } from '../../primitives/FocusAfter';
 import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellAction } from '../AppShell/ShellAction.native';
@@ -11,7 +12,6 @@ import { InfoGlyph } from '../Explainer/ExplainerParts.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { TeamConfirm } from '../MemberCard/TeamConfirm.native';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup.native';
-import type { FocusHandle } from '../SearchField/SearchField.types';
 import { ASSIGN_ROLES_PANEL_WIDTH, OPTION_BARS } from './AssignRoles.logic';
 import type { AssignRolesProps } from './AssignRoles.types';
 import { GrantCard } from './GrantCard.native';
@@ -50,12 +50,13 @@ export function AssignRoles({
         overline={words.overline}
         title={person.name}
         status={person.status}
-        subtitle={person.phone}
         subtitleFace="mono"
         showClose
         density="functional"
         width={ASSIGN_ROLES_PANEL_WIDTH}
-        sheetProps={{ size: 'full' }}
+        // The phone is a fact: each form's own subtitle takes one; the editor's is a modal's words.
+        sheetProps={{ size: 'full', subtitle: person.phone }}
+        panelProps={{ subtitle: person.phone }}
         meta={({ panel }) => (
           <View style={[styles.heading, panel ? styles.headingInPanel : undefined]}>
             <Text variant="overline" color="tertiary">

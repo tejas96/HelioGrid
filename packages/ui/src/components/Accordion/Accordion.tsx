@@ -4,8 +4,9 @@ import { classNames } from '../../primitives/class-names';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { renderMarks } from '../ChipGroup';
 import { renderProvenance } from '../Provenance';
+import { standingWordAt } from './Accordion.logic';
 import type { AccordionItem, AccordionProps } from './Accordion.types';
-import { accordionStateWord, markedState, standingPlace } from './Accordion.types';
+import { markedState } from './Accordion.types';
 import { useAccordion } from './useAccordion';
 
 interface WebAccordionProps extends AccordionProps {
@@ -35,8 +36,8 @@ function Chevron({ open }: { open: boolean }) {
 
 /** Where the section stands, beside its title: a word, and a dot before it for a marked state. */
 function Standing({ item }: { item: AccordionItem }) {
-  const word = accordionStateWord(item);
-  if (word === undefined || standingPlace(item) !== 'title') return null;
+  const word = standingWordAt(item, 'title');
+  if (word === undefined) return null;
   return (
     <span className="hg-accordion-standing">
       {markedState(item) !== undefined ? (
@@ -48,10 +49,10 @@ function Standing({ item }: { item: AccordionItem }) {
 }
 
 function HeaderFacts({ item }: { item: AccordionItem }) {
-  const word = accordionStateWord(item);
+  const word = standingWordAt(item, 'end');
   return (
     <>
-      {word !== undefined && standingPlace(item) === 'end' ? (
+      {word !== undefined ? (
         <span className="hg-accordion-state">
           <span aria-hidden="true" className="hg-accordion-dot" />
           {word}
@@ -107,13 +108,7 @@ export function Accordion({
       {items.map((item, index) => {
         const isOpen = openList.includes(item.key);
         return (
-          <section
-            className="hg-accordion-item"
-            data-state={
-              item.state !== undefined && item.state !== 'default' ? item.state : undefined
-            }
-            key={item.key}
-          >
+          <section className="hg-accordion-item" data-state={markedState(item)} key={item.key}>
             <div className="hg-accordion-head">
               <h3 className="hg-accordion-heading">
                 <button

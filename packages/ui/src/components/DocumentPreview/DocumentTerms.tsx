@@ -1,14 +1,15 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { RichTextView } from '../RichText/RichTextView';
 import { BandTitle } from './DocumentBands';
 import type { DocumentRichTextValue } from './DocumentPreview.types';
 import { TERMS_FONT_SIZE } from './DocumentTerms.logic';
 
 interface DocumentTermsBandProps {
-  title: string;
+  title: TranslatedText | undefined;
   value: DocumentRichTextValue | undefined;
   logoSrc: string | undefined;
-  logoLabel: string;
-  emptyText: string | undefined;
+  logoLabel: TranslatedText;
+  emptyText: TranslatedText | undefined;
 }
 
 /**

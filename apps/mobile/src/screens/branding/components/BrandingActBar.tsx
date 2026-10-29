@@ -1,5 +1,5 @@
 import type { BrandingWords } from '@heliogrid/i18n';
-import { Button, EmptyState, FormActionBar } from '@heliogrid/ui';
+import { Button, EmptyState, type FocusAfter, FormActionBar } from '@heliogrid/ui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 /**
@@ -11,11 +11,13 @@ export function BrandingActBar({
   saving,
   onSave,
   onDiscard,
+  focusAfter,
 }: {
   words: BrandingWords;
   saving: boolean;
   onSave: () => void;
   onDiscard: () => void;
+  focusAfter: FocusAfter;
 }) {
   const insets = useSafeAreaInsets();
   return (
@@ -27,6 +29,7 @@ export function BrandingActBar({
       onSave={onSave}
       discardLabel={words.discard}
       onDiscard={onDiscard}
+      focusAfter={focusAfter}
       saving={saving}
       bottomInset={insets.bottom}
     />

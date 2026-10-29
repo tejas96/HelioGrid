@@ -1,6 +1,7 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { MarketFormat } from '../../utils/format';
 import { IN_FORMAT } from '../../utils/format';
-import type { TimePreset, TimeString } from './TimeField.types';
+import type { TimeFieldWords, TimePreset, TimeString } from './TimeField.types';
 
 const RE24 = /^([01]?\d|2[0-3])[:.\s]?([0-5]\d)$/;
 const RE12 = /^(1[0-2]|0?[1-9])[:.\s]?([0-5]\d)\s*([ap])\.?m?\.?$/i;
@@ -51,6 +52,11 @@ export function normaliseTime(input: string): TimeString | null {
   return minutes === null ? null : formatTime(minutes);
 }
 
+/** Two spellings of one time — "5:00 PM" and "17:00" are the same. */
+export function isSameTime(a: string, b: string): boolean {
+  return normaliseTime(a) === normaliseTime(b);
+}
+
 /**
  * What the user reads. THE VALUE IS 24-HOUR; THE DISPLAY IS THE MARKET'S (F1 / F3-20). "HH:MM" is
  * the storage and prop spelling everywhere — one canonical form means no AM/PM ambiguity in the
@@ -75,40 +81,28 @@ export function showTime(value: TimeString, format: MarketFormat = IN_FORMAT): s
  * to type "h:mm AM", because "HH:MM" is not the spelling it is being shown.
  */
 export function timeShape(
-  placeholder: string | undefined,
+  placeholder: TranslatedText | undefined,
+  words: Pick<TimeFieldWords, 'shape12' | 'shape24'>,
   format: MarketFormat = IN_FORMAT,
-): string {
-  return placeholder ?? (format.pack.clock === '12h' ? 'h:mm AM' : 'HH:MM');
+): TranslatedText {
+  return placeholder ?? (format.pack.clock === '12h' ? words.shape12 : words.shape24);
+}
+
+/** A preset as drawn: its value, and its words — the caller's, or the time in the market's spelling. */
+export interface ShownPreset {
+  value: TimeString;
+  shown: string;
 }
 
 /** A bare string preset is labelled with the time itself, in the market's spelling. */
 export function resolvePreset(
   preset: TimeString | TimePreset,
   format: MarketFormat = IN_FORMAT,
-): TimePreset {
+): ShownPreset {
   if (typeof preset === 'string') {
-    return { value: preset, label: showTime(preset, format) };
+    return { value: preset, shown: showTime(preset, format) };
   }
-  return preset;
-}
-
-/** "between 09:00 and 19:00" — the permitted hours, in words, for the refusal. */
-export function windowWords(
-  minMinutes: number | null,
-  maxMinutes: number | null,
-  format: MarketFormat = IN_FORMAT,
-): string {
-  const show = (minutes: number) => showTime(formatTime(minutes), format);
-  if (minMinutes !== null && maxMinutes !== null) {
-    return `between ${show(minMinutes)} and ${show(maxMinutes)}`;
-  }
-  if (minMinutes !== null) {
-    return `no earlier than ${show(minMinutes)}`;
-  }
-  if (maxMinutes !== null) {
-    return `no later than ${show(maxMinutes)}`;
-  }
-  return '';
+  return { value: preset.value, shown: preset.label };
 }
 
 /** Outside the permitted window — refused, never clamped. */
@@ -128,24 +122,28 @@ export function outsideWindow(
  */
 export function refusalFor(
   minutes: number,
-  minMinutes: number | null,
-  maxMinutes: number | null,
-  windowName: string | undefined,
+  window: { minMinutes: number | null; maxMinutes: number | null; name: string | undefined },
+  words: Pick<TimeFieldWords, 'outside'>,
   format: MarketFormat = IN_FORMAT,
-): string {
-  const named = windowName ?? 'permitted';
-  const words = windowWords(minMinutes, maxMinutes, format);
-  const at = showTime(formatTime(minutes), format);
-  return `${at} is outside the ${named} window — calls are allowed ${words}.`;
+): TranslatedText {
+  const show = (bound: number | null) =>
+    bound === null ? null : showTime(formatTime(bound), format);
+  return words.outside({
+    time: showTime(formatTime(minutes), format),
+    from: show(window.minMinutes),
+    to: show(window.maxMinutes),
+    ...(window.name === undefined ? {} : { window: window.name }),
+  });
 }
 
 /** The unparseable refusal — it keeps what was typed visible and states the shape. */
 export function shapeRefusalFor(
   raw: string,
-  placeholder: string,
+  shape: TranslatedText,
+  words: Pick<TimeFieldWords, 'notATime'>,
   format: MarketFormat = IN_FORMAT,
-): string {
-  return `"${raw}" isn't a time. Enter it as ${placeholder}, like ${showTime('17:00', format)}.`;
+): TranslatedText {
+  return words.notATime({ typed: raw, shape, example: showTime('17:00', format) });
 }
 
 /** Time helpers reachable from the window namespace: `Times.format(1020)`. */

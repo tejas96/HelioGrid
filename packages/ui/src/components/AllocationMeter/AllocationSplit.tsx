@@ -1,11 +1,12 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { chartSlot } from '../Charts/chart-palette';
-import { formatAllocation, partValue, splitKeyFitsOneRow } from './AllocationMeter.model';
+import { allocationFigure, partValue, splitKeyFitsOneRow } from './AllocationMeter.model';
 import type { AllocationPart } from './AllocationMeter.types';
 
 interface AllocationSplitProps {
-  label?: string;
+  label?: TranslatedText;
   parts: AllocationPart[];
   unit: string;
   density: 'expressive' | 'functional';
@@ -57,7 +58,7 @@ export function AllocationSplit({
                 data-slot={chartSlot(index)}
               />
               <span className="hg-allocation-split-share">
-                {`${formatAllocation(partValue(part))}${unit}`}
+                {allocationFigure(partValue(part), unit)}
               </span>
             </span>
             {part.caption === null || part.caption === undefined ? null : (

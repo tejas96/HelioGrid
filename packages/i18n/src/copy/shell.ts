@@ -58,6 +58,9 @@ export const SHELL = {
   },
   signInWithAnother: /*i18n*/ { id: 'Sign in with another account' },
   comingLater: /*i18n*/ { id: 'This screen arrives in a later update.' },
+  /** The phone's boot placeholder, while the session resolves, until the Boot screen is designed. */
+  boot: /*i18n*/ { id: 'Boot' },
+  bootPlaceholder: /*i18n*/ { id: 'Placeholder route. The screen is not built yet.' },
   notFound: /*i18n*/ { id: 'This page does not exist' },
   goToSignIn: /*i18n*/ { id: 'Go to sign in' },
   goToHome: /*i18n*/ { id: 'Go to home' },
@@ -173,7 +176,7 @@ export function firstRunMarkWords(
   mark: FirstRunMark,
   home: RolePreset,
   verb: CentreVerb | null,
-): { title: string; body: string } | null {
+): { title: TranslatedText; body: TranslatedText } | null {
   if (mark === 'switch-home') {
     const preset = presetName(translate, home);
     return { title: translate(SWITCH_MARK.title), body: translate(SWITCH_MARK.body, { preset }) };

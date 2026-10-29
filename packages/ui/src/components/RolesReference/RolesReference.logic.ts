@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReadKind } from '@heliogrid/domain';
 import type { RolesReferencePreset, RolesReferenceSide } from './RolesReference.types';
 
@@ -25,7 +26,7 @@ export function linesOn(preset: RolesReferencePreset, side: RolesReferenceSide) 
 export function spokenName(
   preset: RolesReferencePreset,
   counts: ReadKind,
-  countGap: string,
+  countGap: TranslatedText,
 ): string {
   if (counts === 'loading') return `${preset.name}, ${preset.loadingCount}`;
   return `${preset.name}, ${counts === 'failed' || preset.count === null ? countGap : preset.count}`;

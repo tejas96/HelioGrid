@@ -1,8 +1,16 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
-import { pageWindow } from './DataTable.logic';
-import type { PaginationProps } from './DataTable.types';
+import type { DataTableWords, PaginationProps } from './DataTable.types';
+import type { PageStep } from './DataTableChrome.logic';
+import {
+  pagerOf,
+  rowNoteOf,
+  TABLE_SKELETON_ROWS,
+  tableMessageMarkOf,
+} from './DataTableChrome.logic';
 
 /* THE TICK IS THE SYSTEM `Checkbox` (see `DataTableHead`, `DataTableBodyRow`, `DataTableCard`).
    A private `SelectBox` lived here behind the note "until the forms Checkbox folder lands"; the
@@ -19,16 +27,18 @@ export function SelectionBar({
   count,
   actions,
   onClear,
+  words,
 }: {
   count: number;
   actions: ReactNode;
   onClear: () => void;
+  words: DataTableWords;
 }) {
   return (
-    <section className="hg-dt-selection" aria-label={`${count} selected`}>
+    <section className="hg-dt-selection" aria-label={words.selected(count)}>
       <button
         type="button"
-        aria-label="Clear selection"
+        aria-label={words.clearSelection}
         className="hg-dt-selection-clear"
         onClick={onClear}
       >
@@ -43,24 +53,17 @@ export function SelectionBar({
           <ShellGlyphMarks name="close" />
         </svg>
       </button>
-      <span className="hg-dt-selection-count">{count} selected</span>
+      <span className="hg-dt-selection-count">{words.selected(count)}</span>
       <span className="hg-dt-selection-actions">{actions}</span>
     </section>
   );
 }
 
 /** The pager: the span shown, then a step back and a step forward, each disabled at its end. */
-export function Pagination({
-  page,
-  pageSize,
-  rowCount,
-  onPageChange,
-  previousLabel,
-  nextLabel,
-  readout,
-}: PaginationProps) {
-  const { range, last } = pageWindow(page, pageSize, rowCount);
-  const step = (direction: number, label: string, disabled: boolean) => (
+export function Pagination(props: PaginationProps) {
+  const { page, onPageChange, readout } = props;
+  const { range, back, on } = pagerOf(props);
+  const step = ({ direction, label, disabled }: PageStep) => (
     <button
       type="button"
       className="hg-dt-page"
@@ -86,23 +89,23 @@ export function Pagination({
     <div className="hg-dt-pagination">
       <span className="hg-dt-pagination-readout">{readout(range)}</span>
       <span className="hg-dt-pagination-steps">
-        {step(-1, previousLabel, page <= 0)}
-        {step(1, nextLabel, page >= last)}
+        {step(back)}
+        {step(on)}
       </span>
     </div>
   );
 }
 
-export function TableSkeleton({ stacked }: { stacked: boolean }) {
+export function TableSkeleton({ stacked, label }: { stacked: boolean; label: TranslatedText }) {
   return (
     <div
       className="hg-dt-skeleton"
       role="status"
-      aria-label="Loading records"
+      aria-label={label}
       data-stacked={stacked ? 'true' : undefined}
     >
       {!stacked ? <div className="hg-dt-skeleton-head" /> : null}
-      {['a', 'b', 'c', 'd', 'e'].map((row) => (
+      {TABLE_SKELETON_ROWS.map((row) => (
         <div className="hg-dt-skeleton-row" key={row}>
           <span className="hg-dt-shimmer" data-w="lead" />
           <span className="hg-dt-shimmer" data-w="mid" />
@@ -122,13 +125,16 @@ export function TableMessage({
   onRetry,
   retryLabel,
   action,
+  focusAfter,
 }: {
   tone?: 'warning';
   title: ReactNode;
   message?: ReactNode;
   onRetry?: () => void;
-  retryLabel?: string;
+  retryLabel?: TranslatedText;
   action?: ReactNode;
+  /** Where focus lands once *Try again* has gone with this message. */
+  focusAfter: FocusAfter;
 }) {
   return (
     <div className="hg-dt-message">
@@ -142,12 +148,12 @@ export function TableMessage({
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          <ShellGlyphMarks name={tone === 'warning' ? 'alert-circle' : 'lines-wide'} />
+          <ShellGlyphMarks name={tableMessageMarkOf(tone)} />
         </svg>
       </span>
       <div className="hg-dt-message-title">{title}</div>
       {message === undefined ? null : <div className="hg-dt-message-body">{message}</div>}
-      <RetryButton onRetry={onRetry} label={retryLabel} />
+      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
       {action === undefined ? null : <div className="hg-dt-message-action">{action}</div>}
     </div>
   );
@@ -158,13 +164,15 @@ export function RowNote({
   issue,
   fixed,
   action,
+  fixedLine,
 }: {
-  issue: string | null;
-  fixed: boolean | string | null;
+  issue: TranslatedText | null;
+  fixed: boolean | TranslatedText | null;
   action: ReactNode;
+  /** A fixed row's line when the caller gave none of its own. */
+  fixedLine: TranslatedText;
 }) {
-  const warn = issue !== null;
-  const text = warn ? issue : typeof fixed === 'string' ? fixed : 'Fixed.';
+  const { warn, text, glyph } = rowNoteOf(issue, fixed, fixedLine);
   return (
     <div className="hg-dt-row-note" data-tone={warn ? 'warning' : 'success'}>
       <span className="hg-dt-row-note-mark" aria-hidden="true">
@@ -177,7 +185,7 @@ export function RowNote({
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <ShellGlyphMarks name={warn ? 'alert-circle' : 'tick'} />
+          <ShellGlyphMarks name={glyph} />
         </svg>
       </span>
       <span className="hg-dt-row-note-text">{text}</span>

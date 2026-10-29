@@ -6,17 +6,31 @@
    them. An unresolved line is the other reason, and it is not a zero. Either way the sentence names
    the gap rather than leaving a reader to spot it. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import { minorUnits } from '@heliogrid/domain';
 import type { MarketFormat } from '../../utils/format';
-import type { ResolvedMoney } from './MoneySummary.types';
+import type { MoneySummaryWords, ResolvedMoney } from './MoneySummary.types';
 
-export function noPriceSentence(money: ResolvedMoney, mkt: MarketFormat): string {
+export function noPriceSentence(
+  money: ResolvedMoney,
+  mkt: MarketFormat,
+  words: MoneySummaryWords,
+): TranslatedText {
   const rec = money.reconciliation;
   if (rec !== null && !rec.agrees) {
-    const gap = mkt.amount(minorUnits(Math.abs(rec.delta)));
-    return `${rec.label} totals ${mkt.amount(rec.amount)} and ${rec.againstLabel} is ${mkt.amount(rec.target)} — ${gap} apart. A disagreement is a defect, so no price is shown until the two reconcile.`;
+    return words.disagrees({
+      label: rec.label,
+      amount: mkt.amount(rec.amount),
+      againstLabel: rec.againstLabel,
+      target: mkt.amount(rec.target),
+      gap: mkt.amount(minorUnits(Math.abs(rec.delta))),
+    });
   }
-  const count =
-    money.unresolved.length === 1 ? 'One line has' : `${money.unresolved.length} lines have`;
-  return `${count} no resolved amount yet, so the payable is not shown. Nothing here is an estimate standing in for a figure.`;
+  return words.unresolved(money.unresolved.length);
+}
+
+/** No price prints when the reconciliation failed or a line has not resolved. */
+export function isPriceWithheld(money: ResolvedMoney): boolean {
+  const defect = money.reconciliation !== null && !money.reconciliation.agrees;
+  return defect || money.unresolved.length > 0;
 }

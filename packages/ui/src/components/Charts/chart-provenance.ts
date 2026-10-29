@@ -1,4 +1,4 @@
-import type { ProvenanceStanding, ProvenanceTier } from '@heliogrid/contracts';
+import type { ProvenanceStanding, ProvenanceTier, TranslatedText } from '@heliogrid/contracts';
 import type { EnergySource, Freshness } from '@heliogrid/domain';
 import {
   FRESHNESS_MARK,
@@ -31,9 +31,12 @@ export interface ProvenanceDot {
   colorKey: ProvenanceColorKey;
 }
 
+/** One word of the line: a tier's, standing's or source's as `Provenance`'s words give it, or the caller's own. */
+type ProvenanceWord = ReturnType<ProvenanceWords['tier']> | TranslatedText;
+
 export interface ProvenancePart {
   id: string;
-  label: string;
+  label: ProvenanceWord;
   dot?: ProvenanceDot;
   /** Standing and freshness take their own word colour; every other part inherits `--text-tertiary`. */
   colorKey?: ProvenanceColorKey;
@@ -46,9 +49,9 @@ export interface ProvenanceFacts {
   standing?: ProvenanceStanding;
   freshness?: Freshness | null;
   energySource?: EnergySource | null;
-  source?: string;
-  projection?: string;
-  note?: string;
+  source?: TranslatedText;
+  projection?: TranslatedText;
+  note?: TranslatedText;
 }
 
 type FrameProvenanceInput = Pick<

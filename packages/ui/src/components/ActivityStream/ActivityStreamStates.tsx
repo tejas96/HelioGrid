@@ -1,6 +1,9 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties, ReactNode } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
+import { STREAM_SKELETON } from './ActivityStream.logic';
 
 /** A shimmer bar; width and height are per-line measurements, not scale steps. */
 export function StreamShimmer({ width, height }: { width: string; height: number }) {
@@ -12,16 +15,16 @@ export function StreamShimmer({ width, height }: { width: string; height: number
 }
 
 /** Four entry-shaped rows: the stream keeps its shape while its content is coming. */
-export function StreamSkeleton() {
+export function StreamSkeleton({ label }: { label: TranslatedText }) {
   return (
-    <div role="status" aria-label="Loading activity" className="hg-stream-skeleton">
-      {['a', 'b', 'c', 'd'].map((row) => (
+    <div role="status" aria-label={label} className="hg-stream-skeleton">
+      {STREAM_SKELETON.rows.map((row) => (
         <div key={row} className="hg-stream-skeleton-row">
           <span className="hg-stream-skeleton-mark" />
           <div className="hg-stream-skeleton-lines">
-            <StreamShimmer width="34%" height={11} />
-            <StreamShimmer width="76%" height={14} />
-            <StreamShimmer width="28%" height={11} />
+            {STREAM_SKELETON.lines.map((line) => (
+              <StreamShimmer key={line.key} width={line.width} height={line.height} />
+            ))}
           </div>
         </div>
       ))}
@@ -60,13 +63,16 @@ export function StreamMessage({
   action,
   onRetry,
   retryLabel,
+  focusAfter,
 }: {
   tone?: 'warning';
-  title: string;
-  message?: string;
+  title: TranslatedText;
+  message?: TranslatedText;
   action?: ReactNode;
   onRetry?: () => void;
-  retryLabel?: string;
+  retryLabel?: TranslatedText;
+  /** Where focus lands once *Try again* has gone with this message. */
+  focusAfter: FocusAfter;
 }) {
   return (
     <div className="hg-stream-message">
@@ -75,7 +81,7 @@ export function StreamMessage({
       </span>
       <div className="hg-stream-message-title">{title}</div>
       {message !== undefined ? <div className="hg-stream-message-text">{message}</div> : null}
-      <RetryButton onRetry={onRetry} label={retryLabel} />
+      <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />
       {action !== undefined && action !== null ? (
         <div className="hg-stream-message-extra">{action}</div>
       ) : null}

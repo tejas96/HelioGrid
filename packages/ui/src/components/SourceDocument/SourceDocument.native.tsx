@@ -8,18 +8,14 @@
      --canvas-sunken. The footprint is the point: nothing reflows when the file lands. */
 
 import { theme } from '@heliogrid/theme';
+import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { ScrollView, StyleSheet, View } from 'react-native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Text } from '../../primitives/Text/Text.native';
 import { ReadAlongside } from './ReadAlongside.native';
-import {
-  currentPage,
-  pageAspect,
-  readingHeight,
-  resolveDocumentState,
-} from './SourceDocument.logic';
+import { DOCUMENT_HEIGHT, documentNameOf, documentViewOf } from './SourceDocument.logic';
 import { useDocumentReading } from './SourceDocument.reading';
 import type { SourceDocumentProps } from './SourceDocument.types';
 import { SourceDocumentBody } from './SourceDocumentBody.native';
@@ -30,35 +26,37 @@ interface NativeSourceDocumentProps extends SourceDocumentProps {
 }
 
 export function SourceDocument({
-  name = 'Document',
+  name,
   meta,
   pages = [],
   page,
   onPageChange,
   state = 'auto',
-  height = 480,
+  height = DOCUMENT_HEIGHT,
   fit: fitProp,
   onFitChange,
   originalUrl,
   onOpenOriginal,
-  openLabel = 'Open original',
+  openLabel,
   onRetry,
   retryLabel,
-  unsupportedTitle = 'No preview for this file kind',
-  unsupportedMessage = 'Open the original to read it.',
-  failedTitle = "Couldn't load this document",
-  failedMessage = "The file didn't load. Try again — if it keeps failing, upload it once more.",
-  emptyTitle = 'Nothing to show yet',
-  emptyMessage = 'This file has no readable pages.',
+  unsupportedTitle,
+  unsupportedMessage,
+  failedTitle,
+  failedMessage,
+  emptyTitle,
+  emptyMessage,
   label,
   density = 'expressive',
+  words,
   style,
 }: NativeSourceDocumentProps) {
   const reading = useDocumentReading({ page, onPageChange, fit: fitProp, onFitChange });
+  /* The document's own frame stays while a failed file reloads, so *Try again* hands the reader
+     to it. */
+  const frame = useRef<View>(null);
 
-  const resolved = resolveDocumentState(state, pages.length);
-  const cur = currentPage(pages, reading.page);
-  const bodyH = readingHeight(height);
+  const view = documentViewOf(pages, reading.page, state, height);
 
   return (
     /* The web half is a `<section aria-label>` — a NAMED REGION — so the native half takes the
@@ -69,15 +67,16 @@ export function SourceDocument({
        said as what it is ("contract.pdf — source document"), which is the whole point of naming
        a region on a screen that also shows a form. */
     <View
+      ref={frame}
       role="region"
       collapsable={false}
-      accessibilityLabel={label || `${name} — source document`}
+      accessibilityLabel={documentNameOf(label, name, words)}
       style={[styles.root, style]}
     >
       <SourceDocumentHeader
         name={name}
         meta={meta}
-        resolved={resolved}
+        resolved={view.resolved}
         pageNumber={reading.page}
         count={pages.length}
         fit={reading.fit}
@@ -86,12 +85,13 @@ export function SourceDocument({
         originalUrl={originalUrl}
         onOpenOriginal={onOpenOriginal}
         openLabel={openLabel}
+        words={words}
       />
       <ScrollView
         style={[
           styles.body,
           density === 'functional' ? styles.bodyFunctional : null,
-          { height: bodyH },
+          { height: view.bodyHeight },
         ]}
         contentContainerStyle={[
           styles.bodyContent,
@@ -99,13 +99,13 @@ export function SourceDocument({
         ]}
       >
         <SourceDocumentBody
-          resolved={resolved}
+          resolved={view.resolved}
           name={name}
-          page={cur}
+          page={view.page}
           pageNumber={reading.page}
           count={pages.length}
-          aspect={pageAspect(cur)}
-          bodyHeight={bodyH}
+          aspect={view.aspect}
+          bodyHeight={view.bodyHeight}
           fit={reading.fit}
           originalUrl={originalUrl}
           onOpenOriginal={onOpenOriginal}
@@ -118,12 +118,14 @@ export function SourceDocument({
           failedMessage={failedMessage}
           emptyTitle={emptyTitle}
           emptyMessage={emptyMessage}
+          words={words}
+          focusAfter={frame}
         />
       </ScrollView>
-      {cur?.label && resolved === 'ready' ? (
+      {view.caption ? (
         <View style={styles.footer}>
           <Text variant="caption" color="tertiary">
-            {cur.label}
+            {view.caption}
           </Text>
         </View>
       ) : null}

@@ -1,4 +1,5 @@
-import { useSession, useShell } from '@heliogrid/data/react';
+import type { TranslatedText } from '@heliogrid/contracts';
+import { useShellScreen } from '@heliogrid/data/react';
 import { SHELL } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { MobileTopBar, ShellAction, ShellGlyph } from '@heliogrid/ui';
@@ -13,8 +14,8 @@ import { ShellTopBar } from './ShellTopBar';
 
 /** A page opened from a list: its title, and its way back with the name the control speaks. */
 interface DrillDown {
-  title: string;
-  back: string;
+  title: TranslatedText;
+  back: TranslatedText;
   onBack: () => void;
 }
 
@@ -48,26 +49,18 @@ export function ShellPage({
   children: ReactNode;
 }) {
   const t = useTranslate();
-  const session = useSession();
-  const shell = useShell();
+  const screen = useShellScreen();
   const actionRef = useRef<View>(null);
   const navigation = useNavigation();
-  const [grievance, setGrievance] = useState(false);
+  // biome-ignore lint/plugin/screen-assembly: the native scroll view's offset, told as it scrolls; only the phone's drill-down bar lifts on it
   const [scrolled, setScrolled] = useState(false);
-  const items = usePillItems(shell, actionRef);
+  const items = usePillItems(screen.shell, actionRef);
   const lit = inView !== undefined && items.some((item) => item.key === inView);
   return (
     <ShellFrame
       topBar={
         drillDown === undefined ? (
-          <ShellTopBar
-            companyName={shell.companyName}
-            account={{
-              personName: session.user?.name ?? '',
-              onGrievance: () => setGrievance(true),
-              onSignOut: () => void session.signOut(),
-            }}
-          />
+          <ShellTopBar screen={screen} />
         ) : (
           <MobileTopBar
             searchLabel={t(SHELL.search)}
@@ -95,7 +88,7 @@ export function ShellPage({
       foot={foot}
     >
       {children}
-      <GrievanceNote open={grievance} onClose={() => setGrievance(false)} />
+      <GrievanceNote open={screen.grievance.isOpen} onClose={screen.grievance.close} />
     </ShellFrame>
   );
 }

@@ -1,10 +1,13 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { DENSITY } from './DataTable.logic';
-import type { DataTableProps } from './DataTable.types';
+import type { DataTableProps, DataTableWords } from './DataTable.types';
+import { captionTextOf } from './DataTableChrome.logic';
 import { TableMessage, TableSkeleton } from './DataTableFeedback.native';
 
 const styles = StyleSheet.create({
@@ -18,15 +21,17 @@ const styles = StyleSheet.create({
 export function TableCaption({
   caption,
   continued,
+  words,
 }: {
-  caption: string | undefined;
+  caption: TranslatedText | undefined;
   continued: boolean;
+  words: DataTableWords;
 }) {
   if (caption === undefined) return null;
   return (
     <View style={styles.caption}>
       <Text variant="overline" color="tertiary">
-        {`${caption}${continued ? ' (continued)' : ''}`}
+        {captionTextOf(caption, continued, words)}
       </Text>
     </View>
   );
@@ -45,22 +50,26 @@ export function TableStates<Row>({
   table,
   stacked,
   density,
+  focusAfter,
 }: {
   table: DataTableProps<Row>;
   stacked: boolean;
   density: NonNullable<DataTableProps<Row>['density']>;
+  /** The table's frame, which stays while a failed read reloads. */
+  focusAfter: FocusAfter;
 }) {
   const spec = DENSITY[density];
   const {
     read,
-    emptyTitle = 'Nothing here yet',
+    emptyTitle,
     emptyDescription,
     emptyAction,
-    errorTitle = "Couldn't load these records",
-    errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
+    errorTitle,
+    errorMessage,
     retryLabel,
-    unavailableTitle = 'Not available here',
+    unavailableTitle,
     unavailableMessage,
+    words,
   } = table;
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
@@ -68,7 +77,7 @@ export function TableStates<Row>({
   return (
     <>
       {state === 'loading' ? (
-        <TableSkeleton stacked={stacked} rowH={spec.rowH} edge={spec.edge} />
+        <TableSkeleton stacked={stacked} rowH={spec.rowH} edge={spec.edge} label={words.loading} />
       ) : null}
       {state === 'error' ? (
         <TableMessage
@@ -77,13 +86,19 @@ export function TableStates<Row>({
           message={errorMessage}
           onRetry={onRetry}
           retryLabel={retryLabel}
+          focusAfter={focusAfter}
         />
       ) : null}
       {state === 'unavailable' ? (
         <UnavailableNote variant="region" title={unavailableTitle} message={unavailableMessage} />
       ) : null}
       {state !== 'loading' && state !== 'error' && state !== 'unavailable' ? (
-        <TableMessage title={emptyTitle} message={emptyDescription} action={emptyAction} />
+        <TableMessage
+          title={emptyTitle}
+          message={emptyDescription}
+          action={emptyAction}
+          focusAfter={focusAfter}
+        />
       ) : null}
     </>
   );

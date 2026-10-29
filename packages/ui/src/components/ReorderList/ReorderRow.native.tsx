@@ -13,9 +13,13 @@ import type { ComplianceFloorSpec } from '../ComplianceFloor';
 import { renderComplianceFloor } from '../ComplianceFloor/ComplianceFloor.native';
 import { ReorderControl } from './ReorderControls.native';
 import type { MoveDirection } from './ReorderList.defaults';
-import { deleteLabel, moveLabel, positionLabel } from './ReorderList.defaults';
+import { moveLabel } from './ReorderList.defaults';
 import type { ControlSuffix } from './ReorderList.focus';
-import type { ReorderListControls, ReorderListDensity } from './ReorderList.types';
+import type {
+  ReorderListControls,
+  ReorderListDensity,
+  ReorderListWords,
+} from './ReorderList.types';
 
 const styles = StyleSheet.create({
   row: {
@@ -53,6 +57,7 @@ interface ReorderRowProps {
   total: number;
   /** The row's name — said in every button label. */
   name: string;
+  words: ReorderListWords;
   /** The caller's fields, or the row's name when it renders none. */
   body: ReactNode;
   /** A row protected by law renders its floor here and has no delete button. */
@@ -107,6 +112,7 @@ export function ReorderRow({
   index,
   total,
   name,
+  words,
   body,
   lock,
   deletable,
@@ -132,7 +138,7 @@ export function ReorderRow({
     <>
       <View
         accessible
-        accessibilityLabel={positionLabel(index, total)}
+        accessibilityLabel={words.position(index + 1, total)}
         style={[styles.position, stack ? styles.positionStack : null]}
       >
         <Text variant="caption" color="tertiary" style={styles.positionDigit}>
@@ -160,14 +166,14 @@ export function ReorderRow({
         disabled={index === 0}
         onPress={() => onMove('up')}
         controlRef={(node) => registerControl('up', node, index !== 0)}
-        label={moveLabel(name, 'up', index, total)}
+        label={moveLabel(words, name, 'up', index, total)}
       />
       <ReorderControl
         kind="down"
         disabled={index === total - 1}
         onPress={() => onMove('down')}
         controlRef={(node) => registerControl('down', node, index !== total - 1)}
-        label={moveLabel(name, 'down', index, total)}
+        label={moveLabel(words, name, 'down', index, total)}
       />
       {deletable ? (
         <ReorderControl
@@ -175,7 +181,7 @@ export function ReorderRow({
           tone="danger"
           onPress={onDelete}
           controlRef={(node) => registerControl('delete', node, true)}
-          label={deleteLabel(name, index, total)}
+          label={words.deleteRow(name, index + 1, total)}
         />
       ) : null}
     </View>

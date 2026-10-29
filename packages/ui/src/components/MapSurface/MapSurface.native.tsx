@@ -2,18 +2,11 @@ import { theme } from '@heliogrid/theme';
 import { useCallback, useRef, useState } from 'react';
 import type { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { MapContent } from './MapContent.native';
 import { MapStateLayer } from './MapStates.native';
 import type { MapSurfaceProps } from './MapSurface.types';
-import {
-  imageryWords,
-  isBlockedState,
-  normalisePlacement,
-  resolvePinState,
-  toPercent,
-} from './map-placement';
-import { useMapZoom } from './use-map-zoom';
+import { toPercent } from './map-placement';
+import { useMapView } from './use-map-view';
 
 interface NativeMapSurfaceProps extends MapSurfaceProps {
   style?: StyleProp<ViewStyle>;
@@ -43,43 +36,12 @@ const styles = StyleSheet.create({
  * React Native is always a coarse pointer, so `placement.input: "auto"` resolves to the touch
  * reading here — and the split is additive, so the fixed pin and its pill stay.
  */
-export function MapSurface({
-  children,
-  height = 320,
-  radius,
-  markers = [],
-  route = null,
-  geofences = [],
-  accuracy = null,
-  read,
-  emptyTitle = 'No sites to show',
-  emptyMessage = 'Assign a job to a technician and their route appears here.',
-  unavailableTitle = 'No map imagery for this area',
-  unavailableMessage = 'This location has no tiles from our provider. The address and the recorded coordinates are still exact.',
-  errorTitle = "Couldn't load the map",
-  errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  retryLabel,
-  controls = true,
-  onZoomIn,
-  onZoomOut,
-  onRecenter,
-  pin = null,
-  placement = null,
-  onPlace,
-  onPinMove,
-  zoom,
-  minZoom = 1,
-  maxZoom = 22,
-  onZoomChange,
-  firstPinZoom = 20,
-  showZoomLevel = true,
-  imagery = null,
-  overlay = null,
-  attribution,
-  style,
-}: NativeMapSurfaceProps) {
-  const state = surfaceStateOf(read);
-  const onRetry = retryOf(read);
+export function MapSurface(props: NativeMapSurfaceProps) {
+  const { style } = props;
+  const { map, state, onRetry, blocked, place, pinState, stepZoom, attributionWords } = useMapView(
+    props,
+    true,
+  );
   const rootRef = useRef<View>(null);
   const frame = useRef<Frame>({ pageX: 0, pageY: 0, width: 0, height: 0 });
   const [, setMeasured] = useState(0);
@@ -91,43 +53,23 @@ export function MapSurface({
     });
   }, []);
 
-  const place = normalisePlacement(placement, {
-    coarse: true,
-    canPlace: onPlace !== undefined,
-    canDragPin: onPinMove !== undefined,
-  });
-  const blocked = isBlockedState(state);
-  const pinState = resolvePinState(pin);
-  const stepZoom = useMapZoom({
-    zoom,
-    minZoom,
-    maxZoom,
-    firstPinZoom,
-    hasPin: pin !== null,
-    onZoomChange,
-    onZoomIn,
-    onZoomOut,
-  });
-
   /* A tap on the placement layer reports coordinates relative to that layer, so it needs no
      page origin; a pin drag reports page coordinates, which the measured frame converts. */
   const onTap = (event: GestureResponderEvent) => {
     const { locationX, locationY } = event.nativeEvent;
-    onPlace?.({
+    map.onPlace?.({
       x: toPercent(locationX, frame.current.width),
       y: toPercent(locationY, frame.current.height),
       source: 'tap',
     });
   };
   const onPinDrag = (pageX: number, pageY: number) => {
-    onPinMove?.({
+    map.onPinMove?.({
       x: toPercent(pageX - frame.current.pageX, frame.current.width),
       y: toPercent(pageY - frame.current.pageY, frame.current.height),
       source: 'pin-drag',
     });
   };
-
-  const attributionText = imagery === null ? null : imageryWords(imagery);
 
   return (
     <View
@@ -135,47 +77,52 @@ export function MapSurface({
       onLayout={measure}
       style={[
         styles.root,
-        { height, borderRadius: typeof radius === 'number' ? radius : theme.radius['r-lg'] },
+        {
+          height: map.height,
+          borderRadius: typeof map.radius === 'number' ? map.radius : theme.radius['r-lg'],
+        },
         style,
       ]}
     >
       {blocked ? null : (
         <MapContent
-          markers={markers}
-          route={route}
-          geofences={geofences}
-          accuracy={accuracy}
+          markers={map.markers}
+          route={map.route}
+          geofences={map.geofences}
+          accuracy={map.accuracy}
           place={place}
-          pin={pin}
+          pin={map.pin}
           pinState={pinState}
-          onTap={onPlace === undefined ? undefined : onTap}
+          onTap={map.onPlace === undefined ? undefined : onTap}
           onPinDrag={onPinDrag}
-          canDragPin={onPinMove !== undefined}
-          controls={controls}
-          zoom={zoom}
-          minZoom={minZoom}
-          maxZoom={maxZoom}
-          showZoomLevel={showZoomLevel}
+          canDragPin={map.onPinMove !== undefined}
+          controls={map.controls}
+          zoom={map.zoom}
+          minZoom={map.minZoom}
+          maxZoom={map.maxZoom}
+          showZoomLevel={map.showZoomLevel}
           onStepZoom={stepZoom}
-          onRecenter={onRecenter}
-          attributionWords={attributionText}
-          attribution={attribution}
-          overlay={overlay}
+          onRecenter={map.onRecenter}
+          attributionWords={attributionWords}
+          attribution={map.attribution}
+          overlay={map.overlay}
+          words={map.words}
         >
-          {children}
+          {map.children}
         </MapContent>
       )}
 
       <MapStateLayer
         state={state}
-        emptyTitle={emptyTitle}
-        emptyMessage={emptyMessage}
-        unavailableTitle={unavailableTitle}
-        unavailableMessage={unavailableMessage}
-        errorTitle={errorTitle}
-        errorMessage={errorMessage}
+        emptyTitle={map.emptyTitle}
+        emptyMessage={map.emptyMessage}
+        unavailableTitle={map.unavailableTitle}
+        unavailableMessage={map.unavailableMessage}
+        errorTitle={map.errorTitle}
+        errorMessage={map.errorMessage}
+        words={map.words}
         onRetry={onRetry}
-        retryLabel={retryLabel}
+        focusAfter={rootRef}
       />
     </View>
   );

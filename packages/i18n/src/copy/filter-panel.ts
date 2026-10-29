@@ -16,10 +16,13 @@ export const FILTER_PANEL = {
   done: /*i18n*/ { id: 'Done' },
   showResults: /*i18n*/ { id: 'Show {count} {noun}' },
   showResultsPlain: /*i18n*/ { id: '{count, plural, one {Show # result} other {Show # results}}' },
+  selectedTick: /*i18n*/ { id: 'Selected' },
+  rangeFrom: /*i18n*/ { id: 'From' },
+  rangeTo: /*i18n*/ { id: 'To' },
 } as const;
 
 /** The filter body's words in the reader's language — handed whole to `words`; `translate` is the mount's `t`. */
-export function filterPanelWords(translate: Translator['t']): FilterPanelWords {
+export function filterPanelWords(translate: Translator['t']) {
   return {
     title: translate(FILTER_PANEL.title),
     show: translate(FILTER_PANEL.show),
@@ -35,5 +38,7 @@ export function filterPanelWords(translate: Translator['t']): FilterPanelWords {
       noun === undefined
         ? translate(FILTER_PANEL.showResultsPlain, { count })
         : translate(FILTER_PANEL.showResults, { count, noun }),
-  };
+    selectedTick: translate(FILTER_PANEL.selectedTick),
+    rangeEnds: [translate(FILTER_PANEL.rangeFrom), translate(FILTER_PANEL.rangeTo)],
+  } satisfies FilterPanelWords & { selectedTick: string; rangeEnds: [string, string] };
 }

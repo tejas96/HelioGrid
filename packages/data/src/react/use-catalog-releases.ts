@@ -35,6 +35,37 @@ export function useCatalogRelease(id: string | null) {
 }
 
 /**
+ * Browsing the releases (`SCR-M01-15`): whether the view is open, the releases newest first, and
+ * the one opened as its before-and-after — the newest until an earlier one is chosen. Closing
+ * forgets which.
+ */
+export function useCatalogReleasesBrowse() {
+  const [open, setOpen] = useState(false);
+  const list = useCatalogReleases(open);
+  const [chosen, setChosen] = useState<string | null>(null);
+  const listed = list.read.kind === 'ready' ? list.read.value : [];
+  const newestId = listed[0]?.id ?? null;
+  const openedId = chosen ?? newestId;
+  const opened = useCatalogRelease(open ? openedId : null);
+  return {
+    open,
+    totalCount: list.totalCount,
+    listed,
+    newestId,
+    openedId,
+    opened,
+    show: () => setOpen(true),
+    choose: setChosen,
+    close() {
+      setChosen(null);
+      setOpen(false);
+    },
+  };
+}
+
+export type CatalogReleasesBrowse = ReturnType<typeof useCatalogReleasesBrowse>;
+
+/**
  * What a publish now would carry, read while the dialog is open (`SCR-M01-15` s-publish): its
  * counts over the whole changed set, and its lines a page at a time. Read afresh on every open —
  * nothing held from a closed dialog is shown — and refreshed by every act under the catalog prefix.

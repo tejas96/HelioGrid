@@ -1,9 +1,10 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { InputProps } from './Input.types';
 
 /** The one line under a field, and what it is. */
 export interface InputNote {
   kind: 'error' | 'success' | 'helper';
-  text: string;
+  text: TranslatedText;
 }
 
 /**
@@ -22,6 +23,11 @@ export function inputNote({
   return null;
 }
 
-function hasWords(text: string | undefined): text is string {
+/** The well's verdict ring: only an error line rings the field; success is words, never a ring. */
+export function ringTone(note: InputNote | null): 'error' | 'none' {
+  return note?.kind === 'error' ? 'error' : 'none';
+}
+
+function hasWords(text: TranslatedText | undefined): text is TranslatedText {
   return text !== undefined && text.trim() !== '';
 }

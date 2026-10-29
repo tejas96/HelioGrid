@@ -85,7 +85,7 @@ function refusalMessage(missed: CompanyLogoRefusal['missed']): MessageRef {
 /** The capture area as the company profile draws it: what it is called and the line under it. */
 export interface CompanyLogoCapture {
   /** The act while no logo is held, then the held logo. */
-  readonly name: string;
+  readonly name: TranslatedText;
   /** Where a finger chooses: how, then the limits. The limits alone once a logo is held. */
   readonly hint: TranslatedText;
   /** The same where a pointer can also drop a file. */

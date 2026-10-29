@@ -5,7 +5,12 @@ import { clampCount } from '../../utils/count';
 import { renderActionReason } from '../ActionReason';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { renderMarks } from '../ChipGroup';
-import { hasReason, normalise } from './SegmentedControl.options';
+import {
+  hasReason,
+  isFieldControl,
+  reasonedOptions,
+  selectedIndex,
+} from './SegmentedControl.options';
 import type { SegmentedControlProps, SegmentedOption } from './SegmentedControl.types';
 
 type StyleVars = CSSProperties & Record<`--${string}`, string | number>;
@@ -16,12 +21,12 @@ interface WebSegmentedControlProps extends SegmentedControlProps {
 }
 
 /** Arrow keys skip the natively-disabled segments — those are not focusable to land on. */
-function reachableIndex(items: SegmentedOption[], from: number, to: number): number {
-  const count = items.length;
+function reachableIndex(options: SegmentedOption[], from: number, to: number): number {
+  const count = options.length;
   const step = to > from ? 1 : -1;
   let index = ((to % count) + count) % count;
   for (let guard = 0; guard < count; guard += 1) {
-    const candidate = items[index];
+    const candidate = options[index];
     if (candidate === undefined || candidate.disabled !== true || hasReason(candidate)) {
       break;
     }
@@ -52,15 +57,11 @@ export function SegmentedControl({
   className,
   style,
 }: WebSegmentedControlProps) {
-  const items = normalise(options);
-  const index = Math.max(
-    0,
-    items.findIndex((option) => option.value === value),
-  );
+  const index = selectedIndex(options, value);
   const autoId = useId();
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
-  const reasoned = items.filter((option) => option.disabled === true && hasReason(option));
-  const isField = label !== undefined || ariaLabel !== undefined || error !== undefined;
+  const reasoned = reasonedOptions(options);
+  const isField = isFieldControl({ label, ariaLabel, error });
   const wrapped = isField || reasoned.length > 0;
 
   const onKeyDown = (from: number) => (event: KeyboardEvent<HTMLButtonElement>) => {
@@ -70,9 +71,9 @@ export function SegmentedControl({
       return;
     }
     event.preventDefault();
-    const target = reachableIndex(items, from, forward ? from + 1 : from - 1);
+    const target = reachableIndex(options, from, forward ? from + 1 : from - 1);
     refs.current[target]?.focus();
-    const option = items[target];
+    const option = options[target];
     if (option !== undefined && option.disabled !== true) {
       onChange?.(option.value);
     }
@@ -80,7 +81,7 @@ export function SegmentedControl({
 
   const pillStyle: StyleVars = {
     '--hg-segmented-control-index': index,
-    '--hg-segmented-control-count': items.length,
+    '--hg-segmented-control-count': options.length,
     ...(wrapped ? undefined : style),
   };
 
@@ -97,7 +98,7 @@ export function SegmentedControl({
       style={pillStyle}
     >
       <span className="hg-segmented-control-indicator" />
-      {items.map((option, position) => (
+      {options.map((option, position) => (
         <Segment
           key={option.value}
           option={option}

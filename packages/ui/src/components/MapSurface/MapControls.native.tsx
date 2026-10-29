@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
@@ -6,6 +7,8 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { zoomStepsOf } from './MapSurface.logic';
+import type { MapControlsProps } from './MapSurface.types';
 
 const styles = StyleSheet.create({
   controls: {
@@ -36,7 +39,7 @@ const styles = StyleSheet.create({
 });
 
 interface CtrlProps {
-  label: string;
+  label: TranslatedText;
   onPress: () => void;
   glyph: ShellGlyphName;
   disabled?: boolean;
@@ -64,15 +67,6 @@ function Ctrl({ label, onPress, glyph, disabled = false }: CtrlProps) {
   );
 }
 
-interface MapControlsProps {
-  zoom?: number;
-  minZoom: number;
-  maxZoom: number;
-  showZoomLevel: boolean;
-  onStepZoom: (delta: number) => void;
-  onRecenter?: (info: { zoom?: number }) => void;
-}
-
 /**
  * The 44px controls. The level is legible on the surface — "Zoom 20" is a fact a surveyor
  * checks, not chrome — and re-centre hands the current level back rather than changing it.
@@ -84,37 +78,31 @@ export function MapControls({
   showZoomLevel,
   onStepZoom,
   onRecenter,
+  words,
 }: MapControlsProps) {
   return (
     <View style={styles.controls}>
       <View style={styles.group}>
-        <Ctrl
-          label={zoom === undefined ? 'Zoom in' : `Zoom in — level ${zoom}`}
-          onPress={() => onStepZoom(1)}
-          disabled={zoom !== undefined && zoom >= maxZoom}
-          glyph="plus"
-        />
-        <Ctrl
-          label={zoom === undefined ? 'Zoom out' : `Zoom out — level ${zoom}`}
-          onPress={() => onStepZoom(-1)}
-          disabled={zoom !== undefined && zoom <= minZoom}
-          glyph="minus"
-        />
+        {zoomStepsOf(zoom, minZoom, maxZoom, words).map((step) => (
+          <Ctrl
+            key={step.glyph}
+            label={step.label}
+            onPress={() => onStepZoom(step.delta)}
+            disabled={step.disabled}
+            glyph={step.glyph}
+          />
+        ))}
       </View>
       {showZoomLevel && zoom !== undefined ? (
         <View style={styles.level}>
           <Text variant="mono" color="secondary" style={styles.levelText}>
-            {`Zoom ${zoom}`}
+            {words.zoomLevel(zoom)}
           </Text>
         </View>
       ) : null}
       {onRecenter === undefined ? null : (
         <View style={styles.group}>
-          <Ctrl
-            label="Recentre — keeps this zoom"
-            onPress={() => onRecenter({ zoom })}
-            glyph="recentre"
-          />
+          <Ctrl label={words.recentre} onPress={() => onRecenter({ zoom })} glyph="recentre" />
         </View>
       )}
     </View>

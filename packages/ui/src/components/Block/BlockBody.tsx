@@ -1,7 +1,7 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import { RetryButton } from '../Button/RetryButton';
-import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
-import type { BlockProps } from './Block.types';
+import type { BlockBodyProps } from './Block.types';
 
 function Shimmer({ width }: { width: '72' | '94' | '58' }) {
   return <span className="hg-block-shimmer" data-w={width} />;
@@ -14,8 +14,8 @@ export function BlockMessage({
   action,
 }: {
   tone?: 'warning';
-  title?: string;
-  message?: string;
+  title?: TranslatedText;
+  message?: TranslatedText;
   action?: ReactNode;
 }) {
   return (
@@ -34,19 +34,11 @@ export function BlockMessage({
   );
 }
 
-export type BlockBodyProps = { state: SurfaceState; onRetry?: () => void } & Required<
-  Pick<BlockProps, 'emptyMessage' | 'errorTitle' | 'errorMessage' | 'unavailableTitle'>
-> &
-  Pick<
-    BlockProps,
-    'children' | 'title' | 'emptyTitle' | 'emptyAction' | 'retryLabel' | 'unavailableMessage'
-  >;
-
 /** The body is the only part that moves between states; the header and the frame stay put. */
 export function BlockBody({
   children,
-  title,
   state,
+  loadingLabel,
   emptyMessage,
   emptyTitle,
   emptyAction,
@@ -54,16 +46,13 @@ export function BlockBody({
   errorMessage,
   onRetry,
   retryLabel,
+  focusAfter,
   unavailableTitle,
   unavailableMessage,
 }: BlockBodyProps) {
   if (state === 'loading') {
     return (
-      <div
-        className="hg-block-loading"
-        role="status"
-        aria-label={title !== undefined ? `Loading ${title}` : 'Loading'}
-      >
+      <div className="hg-block-loading" role="status" aria-label={loadingLabel}>
         <Shimmer width="72" />
         <Shimmer width="94" />
         <Shimmer width="58" />
@@ -76,7 +65,7 @@ export function BlockBody({
         tone="warning"
         title={errorTitle}
         message={errorMessage}
-        action={<RetryButton onRetry={onRetry} label={retryLabel} />}
+        action={<RetryButton onRetry={onRetry} label={retryLabel} focusAfter={focusAfter} />}
       />
     );
   }

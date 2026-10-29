@@ -4,9 +4,10 @@ import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { useFormat } from '../MarketProvider/market-context';
+import { hasCallerError, isInDanger } from './TimeField.logic';
 import type { TimeFieldProps } from './TimeField.types';
 import { TimeFieldMessage } from './TimeFieldMessage';
-import { normaliseTime, resolvePreset, timeShape } from './time-parse';
+import { isSameTime, resolvePreset, timeShape } from './time-parse';
 import { useTimeEntry } from './use-time-entry';
 
 interface WebTimeFieldProps extends TimeFieldProps {
@@ -28,6 +29,7 @@ interface WebTimeFieldProps extends TimeFieldProps {
  * `max` stay canonical "HH:MM". Both spellings parse on entry regardless of the pack.
  */
 export function TimeField({
+  words,
   value = '',
   onCommit,
   label,
@@ -48,22 +50,23 @@ export function TimeField({
   style,
 }: WebTimeFieldProps) {
   const format = useFormat();
-  const shape = timeShape(placeholder, format);
+  const shape = timeShape(placeholder, words, format);
   const entry = useTimeEntry({
     format,
     max,
     min,
     onCommit,
-    placeholder: shape,
+    shape,
     refusalMessage,
     value,
     windowName,
+    words,
   });
   const autoId = useId();
   const fieldId = id ?? autoId;
   const errorId = `${fieldId}-err`;
-  const hasError = error !== undefined && error !== null && error !== false;
-  const danger = entry.refused !== null || hasError || invalid;
+  const hasError = hasCallerError(error);
+  const danger = isInDanger(entry.refused, error, invalid);
   /* Own sentence if there is one; otherwise the one the parent drew for the pair. A ring with
      aria-invalid and no description is "invalid" with no why. */
   let describes: string | undefined;
@@ -135,11 +138,11 @@ export function TimeField({
                 key={preset.value}
                 className="hg-time-field-preset"
                 type="button"
-                data-active={normaliseTime(preset.value) === normaliseTime(value)}
+                data-active={isSameTime(preset.value, value)}
                 disabled={disabled}
                 onClick={() => entry.pick(preset.value)}
               >
-                {preset.label}
+                {preset.shown}
               </button>
             );
           })}

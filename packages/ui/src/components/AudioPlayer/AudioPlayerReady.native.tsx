@@ -1,9 +1,15 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { AudioGlyph } from './AudioGlyph.native';
-import type { AudioPlayerProps, AudioTransportControl } from './AudioPlayer.types';
+import { clampPosition, playToggleOf } from './AudioPlayer.logic';
+import type {
+  AudioPlayerProps,
+  AudioPlayerWords,
+  AudioTransportControl,
+} from './AudioPlayer.types';
 import { audioFootnote } from './AudioPlayer.types';
 import {
   RoundButton,
@@ -47,8 +53,9 @@ export interface AudioPlayerReadyProps
     AudioTransportControl {
   duration: number;
   speeds: number[];
-  transcriptLabel: string;
+  transcriptLabel: TranslatedText;
   header: ReactNode;
+  words: AudioPlayerWords;
 }
 
 /**
@@ -75,6 +82,7 @@ export function AudioPlayerReady({
   speeds,
   transcriptLabel,
   header,
+  words,
   playing = false,
   position = 0,
   rate = 1,
@@ -82,10 +90,11 @@ export function AudioPlayerReady({
   onSeek,
   onRateChange,
 }: AudioPlayerReadyProps) {
-  const at = Math.min(duration, Math.max(0, position));
-  const seek = (seconds: number) => onSeek?.(Math.min(duration, Math.max(0, seconds)));
+  const at = clampPosition(position, duration);
+  const seek = (seconds: number) => onSeek?.(clampPosition(seconds, duration));
+  const play = playToggleOf(playing, words);
   const canSeek = onSeek !== undefined;
-  const footnote = audioFootnote(consentAt, retentionUntil, retentionBound);
+  const footnote = audioFootnote(words, consentAt, retentionUntil, retentionBound);
 
   /* Said once per mount, not per render: a ready player with no control surface wired is a
      screen that forgot to hand this half its decoder, and the transport is inert by design. */
@@ -104,30 +113,32 @@ export function AudioPlayerReady({
       <View
         style={[styles.transport, density === 'functional' ? styles.transportFunctional : null]}
       >
-        <SkipButton back disabled={!canSeek} onSeek={(delta) => seek(at + delta)} />
+        <SkipButton back disabled={!canSeek} onSeek={(delta) => seek(at + delta)} words={words} />
         <RoundButton
           kind="primary"
           disabled={onPlayingChange === undefined}
-          label={playing ? 'Pause recording' : 'Play recording'}
+          label={play.label}
           onPress={() => onPlayingChange?.(!playing)}
         >
-          <AudioGlyph
-            name={playing ? 'pause' : 'play'}
-            size={22}
-            color={theme.colors['text-inverse']}
-          />
+          <AudioGlyph name={play.glyph} size={22} color={theme.colors['text-inverse']} />
         </RoundButton>
-        <SkipButton back={false} disabled={!canSeek} onSeek={(delta) => seek(at + delta)} />
+        <SkipButton
+          back={false}
+          disabled={!canSeek}
+          onSeek={(delta) => seek(at + delta)}
+          words={words}
+        />
       </View>
       <View style={styles.line}>
         <TimeLabel seconds={at} />
-        <Scrubber at={at} total={duration} disabled={!canSeek} onSeek={seek} />
+        <Scrubber at={at} total={duration} disabled={!canSeek} onSeek={seek} words={words} />
         <TimeLabel seconds={duration} dim />
         <SpeedButton
           rate={rate}
           speeds={speeds}
           disabled={onRateChange === undefined}
           onChange={(next) => onRateChange?.(next)}
+          words={words}
         />
       </View>
       {footnote !== '' || onOpenTranscript !== undefined ? (

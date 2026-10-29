@@ -3,12 +3,13 @@ import type { RefObject } from 'react';
 import { useLayoutEffect, useState } from 'react';
 import {
   boxKey,
+  boxNode,
   type ExplainerDensity,
   type ExplainerRect,
   explainerCap,
   isScrolledAway,
   type PlacedExplainer,
-  placeExplainer,
+  placeCapped,
 } from './Explainer.logic';
 import type { ExplainerBox, ExplainerPlacement } from './Explainer.types';
 
@@ -34,12 +35,7 @@ interface PlaceInput {
 function resolveBox(within: ExplainerBox | undefined): HTMLElement | null {
   if (within === undefined) return null;
   if (typeof within === 'string') return document.querySelector<HTMLElement>(within);
-  const node =
-    typeof within === 'function'
-      ? within()
-      : 'current' in within
-        ? (within as { current: unknown }).current
-        : within;
+  const node = boxNode(within);
   return node instanceof HTMLElement ? node : null;
 }
 
@@ -76,8 +72,8 @@ export function useExplainerPlace(input: PlaceInput): PlacedBubble | null {
         return;
       }
       const cap = explainerCap(bounds, density, maxWidth);
-      const size = { width: Math.min(card.offsetWidth, cap), height: card.offsetHeight };
-      const spot = placeExplainer(from, bounds, size, placement, density);
+      const size = { width: card.offsetWidth, height: card.offsetHeight };
+      const spot = placeCapped(from, bounds, size, cap, placement, density);
       const origin = shell.getBoundingClientRect();
       setPlaced({ ...spot, left: spot.left - origin.left, top: spot.top - origin.top, cap });
     };

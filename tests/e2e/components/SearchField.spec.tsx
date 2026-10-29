@@ -1,7 +1,9 @@
 import { IN_FORMATS } from '@heliogrid/domain';
 import {
   createTranslator,
+  filterBarWords,
   NOTIFICATION_CENTRE,
+  SEARCH_FIELD,
   SHELL,
   TYPE_GROUP_NAME,
   teamListWords,
@@ -11,7 +13,7 @@ import { expect, test } from '@playwright/experimental-ct-react';
 import { settledBox } from '../support/layout';
 import { resolvedColour } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
-import { FocusHandlesStory } from './SearchField.story';
+import { FilterSquareStory, FocusHandlesStory } from './SearchField.story';
 
 /**
  * The open page's list head (the design system's `SearchField` and `FilterChips`): the grey search
@@ -21,6 +23,8 @@ import { FocusHandlesStory } from './SearchField.story';
 const en = await createTranslator('en');
 const search = en.t(SHELL.search);
 const filters = en.t(NOTIFICATION_CENTRE.filterBar);
+const clear = en.t(SEARCH_FIELD.clear);
+const bar = filterBarWords(en.t);
 const sales = en.t(TYPE_GROUP_NAME.sales);
 const delivery = en.t(TYPE_GROUP_NAME.delivery);
 
@@ -31,7 +35,13 @@ test('the expressive pill is 50 tall at --r-pill on --fill, its clear button whi
   page,
 }) => {
   const field = await mount(
-    <SearchField ariaLabel={search} placeholder={search} value="Kulkarni" onClear={() => {}} />,
+    <SearchField
+      ariaLabel={search}
+      placeholder={search}
+      value="Kulkarni"
+      onClear={() => {}}
+      clearLabel={clear}
+    />,
   );
   const box = await settledBox(field);
   expect(box?.height).toBe(50);
@@ -49,7 +59,13 @@ test('with a value, only the field’s own clear button shows — never the brow
   mount,
 }) => {
   const field = await mount(
-    <SearchField ariaLabel={search} placeholder={search} value="Kulkarni" onClear={() => {}} />,
+    <SearchField
+      ariaLabel={search}
+      placeholder={search}
+      value="Kulkarni"
+      onClear={() => {}}
+      clearLabel={clear}
+    />,
   );
   // Chrome reports no computed style for the cancel button, so the rule that hides it is read.
   const hidesBrowserCancel = await field.evaluate(() =>
@@ -70,16 +86,8 @@ test('with onFilterClick the 50 square rides beside the pill, near-black, named 
   mount,
   page,
 }) => {
-  const row = await mount(
-    <SearchField
-      ariaLabel={search}
-      placeholder={search}
-      onFilterClick={() => {}}
-      filterCount={3}
-      filterLabel={filters}
-    />,
-  );
-  const square = row.getByRole('button', { name: `${filters}, 3 active` });
+  const row = await mount(<FilterSquareStory label={search} count={3} />);
+  const square = row.getByRole('button', { name: bar.filtersActive(3) });
   const box = await settledBox(square);
   expect(box?.width).toBe(50);
   expect(box?.height).toBe(50);
@@ -164,6 +172,7 @@ test('a chosen facet is near-black with its tick; the others stay on the control
         { value: 'delivery', label: delivery },
       ]}
       values={['sales']}
+      selectedLabel={bar.selected}
     />,
   );
   const chosen = facets.getByRole('button', { name: sales });

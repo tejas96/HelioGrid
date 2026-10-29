@@ -15,6 +15,7 @@
    raw <button> for a ref, a roving `tabIndex` or a key handler the primitive does not take. The
    44×44 floor is kept in ReorderList.css instead. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { Ref } from 'react';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { ReorderGlyph } from './ReorderList.defaults';
@@ -29,7 +30,7 @@ export function ReorderControl({
   buttonRef,
 }: {
   kind: ReorderGlyph;
-  label: string;
+  label: TranslatedText;
   disabled?: boolean;
   onClick: () => void;
   tone?: 'neutral' | 'danger';

@@ -1,25 +1,15 @@
 import type { CSSProperties } from 'react';
-import { useEffect, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { useFormat } from '../MarketProvider/market-context';
 import { CalendarCell, CalendarNav, CalendarSkeleton } from './CalendarChrome';
-import { iso, monthCells, monthStart, parse } from './calendar-grid';
-import { inRange, isDisabledDate, isSelected, nextValue } from './calendar-selection';
+import { iso, monthGridOf } from './calendar-grid';
+import { dayPicker, dayStateOf } from './calendar-selection';
 import type { CalendarProps } from './DatePicker.types';
+import { useCalendarMonth } from './use-calendar-month';
 
 interface WebCalendarProps extends CalendarProps {
   className?: string;
   style?: CSSProperties;
-}
-
-function initialView(value: CalendarProps['value']): Date {
-  if (Array.isArray(value)) {
-    return monthStart(parse(value[0]) ?? new Date());
-  }
-  if (value !== undefined && typeof value === 'object') {
-    return monthStart(parse(value.from) ?? new Date());
-  }
-  return monthStart(parse(typeof value === 'string' ? value : null) ?? new Date());
 }
 
 /**
@@ -28,6 +18,7 @@ function initialView(value: CalendarProps['value']): Date {
  * not squeezing air out of a target.
  */
 export function Calendar({
+  words,
   value,
   onChange,
   mode = 'single',
@@ -47,57 +38,18 @@ export function Calendar({
   style,
 }: WebCalendarProps) {
   const mkt = useFormat();
-  const [innerMonth, setInnerMonth] = useState(() => initialView(value));
-  const controlled = parse(month);
-  const view = controlled === null ? innerMonth : monthStart(controlled);
+  const { view, pinned, stepMonth } = useCalendarMonth({ value, month, onMonthChange });
+  const rules = { mode, value, min, max, disabledDates, lockedDates };
 
-  /* A `month` WITH NO `onMonthChange` IS A PINNED VIEW, AND A PINNED VIEW DRAWS NO MONTH ARROWS:
-     `view` reads `month` while `setView` writes `innerMonth`, so the two 44px arrows would move
-     nothing. Either own the month or don't pass it. */
-  const pinned = month !== undefined && onMonthChange === undefined;
-  useEffect(() => {
-    if (pinned) {
-      console.warn(
-        'Calendar: `month` was passed without `onMonthChange`, so the view is pinned and the month arrows are not drawn. Hold the month in state and pass both, or pass neither.',
-      );
-    }
-  }, [pinned]);
+  const { cells, narrowDays, longDays, todayIso } = monthGridOf(view, mkt);
 
-  const setView = (d: Date) => {
-    if (onMonthChange === undefined) {
-      setInnerMonth(d);
-      return;
-    }
-    onMonthChange(iso(d));
-  };
-
-  const cells = monthCells(view, mkt.firstDayOfWeek);
-  const narrowDays = mkt.weekdayNames('narrow');
-  const longDays = mkt.weekdayNames('long');
-  const todayIso = iso(new Date());
-
-  const pick = (d: Date) => {
-    if (isDisabledDate(d, min, max, disabledDates)) {
-      return;
-    }
-    if (mode === 'set' && lockedDates.includes(iso(d))) {
-      /* A locked date is aria-disabled and focusable, so this is reachable: the attempt is handed to
-         the caller, which names the floor. Silently doing nothing would be the tooltip's failure. */
-      onBlocked?.(iso(d));
-      return;
-    }
-    onChange?.(nextValue(mode, value, d));
-  };
+  const pick = dayPicker(rules, onChange, onBlocked);
 
   return (
     <div className={classNames('hg-calendar', className)} data-density={density} style={style}>
       <div className="hg-calendar-head">
         {pinned ? null : (
-          <CalendarNav
-            dir={-1}
-            label="Previous month"
-            onClick={() => setView(new Date(view.getFullYear(), view.getMonth() - 1, 1))}
-          />
+          <CalendarNav dir={-1} label={words.previousMonth} onClick={() => stepMonth(-1)} />
         )}
         <div
           className="hg-calendar-title"
@@ -107,18 +59,14 @@ export function Calendar({
           {mkt.monthYear(view)}
         </div>
         {pinned ? null : (
-          <CalendarNav
-            dir={1}
-            label="Next month"
-            onClick={() => setView(new Date(view.getFullYear(), view.getMonth() + 1, 1))}
-          />
+          <CalendarNav dir={1} label={words.nextMonth} onClick={() => stepMonth(1)} />
         )}
       </div>
 
       {state === 'loading' ? (
-        <CalendarSkeleton />
+        <CalendarSkeleton label={words.loading} />
       ) : state === 'empty' ? (
-        <p className="hg-calendar-empty">{emptyMessage ?? 'No records for this month.'}</p>
+        <p className="hg-calendar-empty">{emptyMessage ?? words.noRecords}</p>
       ) : (
         <>
           {/* The grid roles ride on divs, not table elements: the month is laid out with CSS grid
@@ -150,14 +98,11 @@ export function Calendar({
                 <CalendarCell
                   key={iso(d)}
                   date={d}
-                  selected={isSelected(mode, value, d)}
-                  between={inRange(mode, value, d)}
-                  disabled={isDisabledDate(d, min, max, disabledDates)}
-                  locked={mode === 'set' && lockedDates.includes(iso(d))}
-                  today={iso(d) === todayIso}
+                  {...dayStateOf(rules, d, todayIso)}
                   marker={markers[iso(d)]}
                   spokenDate={mkt.date(d)}
                   onPick={pick}
+                  words={words}
                 />
               ),
             )}

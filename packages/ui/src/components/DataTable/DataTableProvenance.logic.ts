@@ -1,6 +1,7 @@
 import { freshnessWarning, tierOf } from '../Provenance/Provenance.tiers';
 import type { ProvenanceProps } from '../Provenance/Provenance.types';
 import type { DataTableProvenanceSpec } from './DataTable.types';
+import type { DataTableColumn } from './DataTableColumn.types';
 
 /* THE TIER IS A WORD IN THE HEADER, not a dot with a tooltip (F8-07). A column repeats it only
    when it differs from the table-wide statement — the one compression that is legitimate, because
@@ -59,4 +60,17 @@ export function columnTierMode(
     return 'none';
   }
   return detailed ? 'inline' : 'tier';
+}
+
+/**
+ * **What a column's header states**: its whole statement inline, or its tier alone — or null, when
+ * it has none or its tier is the table-wide statement's.
+ */
+export function columnTierOf<Row>(
+  column: DataTableColumn<Row>,
+  tableSpec: ProvenanceProps | null,
+): { mode: 'inline' | 'tier'; spec: ProvenanceProps } | null {
+  const spec = asProvenanceSpec(column.provenance);
+  const mode = columnTierMode(spec, tableSpec);
+  return spec === null || mode === 'none' ? null : { mode, spec };
 }

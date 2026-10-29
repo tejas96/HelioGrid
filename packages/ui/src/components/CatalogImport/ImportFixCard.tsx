@@ -118,6 +118,7 @@ function PriceFix({ card, words, leaveOut }: FixProps) {
       <div className="hg-import-fix-price">
         <NumberField
           label={words.yourPrice}
+          words={words.numberField}
           value={price}
           currency
           steppers={false}
@@ -160,6 +161,7 @@ function KindFix({ card, words, leaveOut }: FixProps) {
         <Select
           ariaLabel={pick ? words.whichProduct : words.kindLabel}
           placeholder={pick ? words.chooseProduct : words.chooseKind}
+          closeLabel={words.closeList}
           options={[...card.options]}
           density="functional"
           disabled={card.busy}

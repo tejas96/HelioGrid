@@ -1,4 +1,4 @@
-import { DENSITY, quietSpec, rowKeyOf } from './DataTable.logic';
+import { densitySpecOf, rowKeyOf } from './DataTable.logic';
 import type { DataTableProps, DataTableSort } from './DataTable.types';
 import { DataTableBodyRow } from './DataTableBodyRow.native';
 import { DataTableHead } from './DataTableHead.native';
@@ -46,7 +46,7 @@ export function DataTableRows<Row>({
 }: NativeRowsProps<Row>) {
   const { columns } = table;
   const quiet = table.head === 'quiet';
-  const spec = quiet ? quietSpec(DENSITY[density]) : DENSITY[density];
+  const spec = densitySpecOf(density, quiet);
   const provenanceColumn = provenanceColumnOf(columns);
   /* Resolved once for the whole header: the statement each column's tier is measured against. */
   const tableSpec = asProvenanceSpec(table.provenance);
@@ -69,6 +69,7 @@ export function DataTableRows<Row>({
         density={density}
         quiet={quiet}
         tableSpec={tableSpec}
+        words={table.words}
       />
       <QuietCard quiet={quiet}>
         {rows.map((row, index) => (

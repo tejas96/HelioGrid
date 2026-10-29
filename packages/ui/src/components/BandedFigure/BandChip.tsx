@@ -1,6 +1,7 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties, ReactNode } from 'react';
-import { isValidElement } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { bandChipBox, bandChipFace, bandChipFor } from './BandedFigure.logic';
 import type { BandSpec, BandTone, BandToneStyle } from './BandedFigure.types';
 
 /**
@@ -17,43 +18,58 @@ export const BAND_TONES: Record<BandTone, BandToneStyle> = {
 };
 
 interface WebBandChipProps {
-  band?: BandSpec | string;
+  band?: BandSpec | TranslatedText;
   size?: number;
+  className?: string;
+  style?: CSSProperties;
+}
+
+interface ChipFaceProps {
+  words: ReactNode;
+  tone: BandTone;
+  size: number;
   className?: string;
   style?: CSSProperties;
 }
 
 /** The verdict pill: word, mark, tint — in that order of importance. Shared with `StatCard.band`. */
 export function BandChip({ band, size = 13, className, style }: WebBandChipProps) {
-  const spec = typeof band === 'string' ? { label: band, tone: 'neutral' as const } : band;
-  if (spec === undefined || spec.label === '') return null;
+  const face = bandChipFace(band);
+  if (face === null) return null;
+  return (
+    <ChipFace words={face.words} tone={face.tone} size={size} className={className} style={style} />
+  );
+}
+
+/** The pill itself, around words already in the reader's language — a band's, or a host's. */
+function ChipFace({ words, tone, size, className, style }: ChipFaceProps) {
+  const box = bandChipBox(size);
   const vars = {
     '--hg-band-chip-fs': `${size}px`,
-    '--hg-band-chip-h': `${size + 13}px`,
-    '--hg-band-chip-px': `${Math.round(size * 0.8)}px`,
+    '--hg-band-chip-h': `${box.height}px`,
+    '--hg-band-chip-px': `${box.paddingX}px`,
   } as CSSProperties;
   return (
     <span
       className={classNames('hg-band-chip', className)}
-      data-tone={spec.tone ?? 'neutral'}
+      data-tone={tone}
       style={{ ...vars, ...style }}
     >
       <span aria-hidden="true" className="hg-band-chip-dot" />
-      {spec.label}
+      {words}
     </span>
   );
 }
 
-/** What a host's `band` prop runs through: a spec, a bare word, or a ready node. */
+/**
+ * What a host's `band` prop runs through: a spec, a bare word, or a ready node. A bare word is the
+ * host's words, typed by the host's own contract, drawn in the neutral pill.
+ */
 export function renderBand(
-  spec?: BandSpec | string | ReactNode,
+  spec?: BandSpec | TranslatedText | ReactNode,
   extra?: { size?: number },
 ): ReactNode {
-  if (spec === undefined || spec === null || spec === false) return null;
-  if (isValidElement(spec)) return spec;
-  if (typeof spec === 'string') return <BandChip band={{ label: spec }} {...extra} />;
-  if (typeof spec === 'object' && 'label' in spec) {
-    return <BandChip band={spec as BandSpec} {...extra} />;
-  }
-  return null;
+  return bandChipFor(spec, (face) => (
+    <ChipFace words={face.words} tone={face.tone} size={extra?.size ?? 13} />
+  ));
 }

@@ -11,13 +11,15 @@ import {
   ShellGlyph,
   Text,
 } from '@heliogrid/ui';
-import { useState } from 'react';
 
 interface ShellHeaderProps {
   /** The company's name, or none while it loads or after it failed — the bar then shows none. */
   companyName: string | null;
-  /** Opens the search door. Absent on Frame 8, whose bar keeps the product mark and the name. */
-  onSearch?: () => void;
+  /**
+   * The search: what is typed (`useShellScreen`'s) and the move to the search door. Absent on
+   * Frame 8, whose bar keeps the product mark and the name.
+   */
+  search?: { query: string; onQuery: (query: string) => void; onOpen: () => void };
 }
 
 /**
@@ -26,9 +28,8 @@ interface ShellHeaderProps {
  * rail. The search is a field from `--bp-desktop` up and a button below it, where the rail and the
  * name leave no room for a field; Enter or the button opens the search door.
  */
-export function ShellHeader({ companyName, onSearch }: ShellHeaderProps) {
+export function ShellHeader({ companyName, search }: ShellHeaderProps) {
   const t = useTranslate();
-  const [query, setQuery] = useState('');
   const tenant =
     companyName === null ? undefined : (
       <Text variant="body-sm" bold oneLine className="hg-shell-company">
@@ -36,7 +37,7 @@ export function ShellHeader({ companyName, onSearch }: ShellHeaderProps) {
       </Text>
     );
 
-  if (onSearch === undefined) {
+  if (search === undefined) {
     return (
       <AppHeader
         brand={<LogoTile size={theme.spacing['sp-8']} radius={theme.radius['r-sm']} />}
@@ -53,15 +54,15 @@ export function ShellHeader({ companyName, onSearch }: ShellHeaderProps) {
             className="hg-shell-search-field"
             onSubmit={(event) => {
               event.preventDefault();
-              onSearch();
+              search.onOpen();
             }}
           >
             <SearchField
               density="functional"
               placeholder={t(SHELL.searchPlaceholder)}
               ariaLabel={t(SHELL.search)}
-              value={query}
-              onChange={setQuery}
+              value={search.query}
+              onChange={search.onQuery}
             />
           </form>
           <span className="hg-shell-search-button">
@@ -69,7 +70,7 @@ export function ShellHeader({ companyName, onSearch }: ShellHeaderProps) {
               label={t(SHELL.search)}
               variant="ghost"
               size={MIN_TOUCH_TARGET}
-              onClick={onSearch}
+              onClick={search.onOpen}
             >
               <ShellGlyph name="search" size="md" />
             </IconButton>

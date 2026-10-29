@@ -10,7 +10,11 @@ import type {
   Paper,
 } from './PagedDocument.types';
 
-/** 96dpi paper, matching @heliogrid/theme/print.css. Both orientations are derived. */
+/**
+ * 96dpi paper, matching @heliogrid/theme/print.css. Both orientations are derived. A paper's label
+ * is its standard name and size, as the standard writes it in every language.
+ */
+// biome-ignore lint/plugin/copy-prop-type: the paper's standard name and size, as the standard writes it
 export const PAGE_GEOMETRY: Record<Paper, { w: number; h: number; label: string }> = {
   a4: { w: 794, h: 1123, label: 'A4 · 210 × 297 mm' },
   letter: { w: 816, h: 1056, label: 'Letter · 8.5 × 11 in' },
@@ -61,7 +65,7 @@ export function pageGeometry({
  *   chars a line  = floor(content width / (font size × MEAN_ADVANCE_EM))
  *   lines needed  = max(chars ÷ chars-a-line, one line per block and per list item)
  *                   + a block gap per block + extra leading per heading + a logo's own footprint
- * `basis` returns those numbers in words, so a reader can check the estimate instead of trusting it.
+ * `basis` returns the numbers it rests on, so a reader can check the estimate instead of trusting it.
  */
 export function estimatePages(
   metrics?: RichTextMetrics,
@@ -90,6 +94,11 @@ export function estimatePages(
     linesPerPage,
     charsPerLine: cpl,
     geometry: g,
-    basis: `${g.label} · ${Math.round(fs / 1.3333)}pt · ${Math.round(width)}px column · ${linesPerPage} lines a page`,
+    basis: {
+      paper: g.label,
+      points: Math.round(fs / 1.3333),
+      column: Math.round(width),
+      linesPerPage,
+    },
   };
 }

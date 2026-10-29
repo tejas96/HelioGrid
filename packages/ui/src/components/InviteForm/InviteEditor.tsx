@@ -1,9 +1,9 @@
 import { numberOnTeam, sendsNothing } from '@heliogrid/domain';
 import { useEffect, useRef } from 'react';
+import type { FocusHandle } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text';
 import { Button } from '../Button/Button';
 import { EditorSurface } from '../EditorSurface/EditorSurface';
-import type { FocusHandle } from '../SearchField/SearchField.types';
 import { SheetActions } from '../Sheet/SheetActions';
 import { InviteForm } from './InviteForm';
 import { STACK_BELOW_LONG_ACT } from './InviteForm.logic';

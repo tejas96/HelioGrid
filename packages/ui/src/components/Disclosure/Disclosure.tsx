@@ -1,15 +1,14 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { isValidElement, useContext, useEffect, useId } from 'react';
+import { useContext, useEffect, useId } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { PrintScopeContext } from '../../utils/print-scope';
-import { DISCLOSURE_ORDER } from './Disclosure.lines';
-import type {
-  DisclosureInput,
-  DisclosureKind,
-  DisclosureProps,
-  DisclosureSetProps,
-  DisclosureSpec,
-} from './Disclosure.types';
+import {
+  disclosureFor,
+  disclosureKey,
+  hasDisclosureLine,
+  orderedDisclosures,
+} from './Disclosure.logic';
+import type { DisclosureInput, DisclosureProps, DisclosureSetProps } from './Disclosure.types';
 import { useDisclosureText } from './Disclosure.words';
 
 /* The .d.ts types `as` as `keyof JSX.IntrinsicElements`; the whole intrinsic union is not
@@ -67,8 +66,7 @@ export function Disclosure({
 
   const { lead, line } = useDisclosureText(kind, text);
 
-  if (line === undefined) {
-    console.warn('Disclosure: kind="custom" needs `text`. Nothing rendered.');
+  if (!hasDisclosureLine(line)) {
     return null;
   }
 
@@ -93,14 +91,6 @@ export function Disclosure({
   );
 }
 
-function toSpec(item: DisclosureKind | DisclosureSpec): DisclosureSpec {
-  return typeof item === 'string' ? { kind: item } : item;
-}
-
-function specKey(spec: DisclosureSpec): string {
-  return `${spec.kind}|${spec.text ?? ''}|${spec.detail ?? ''}`;
-}
-
 /** Every true line, always, in document order. No `mode`, no `max`, no way to hide a member. */
 export function DisclosureSet({
   items = [],
@@ -109,18 +99,7 @@ export function DisclosureSet({
   className,
   style,
 }: WebDisclosureSetProps) {
-  const seen = new Set<DisclosureKind>();
-  const resolved = items
-    .filter((item): item is DisclosureKind | DisclosureSpec => Boolean(item))
-    .map(toSpec)
-    .filter((spec) => {
-      if (spec.kind === 'custom' || !seen.has(spec.kind)) {
-        seen.add(spec.kind);
-        return true;
-      }
-      return false;
-    })
-    .sort((a, b) => DISCLOSURE_ORDER.indexOf(a.kind) - DISCLOSURE_ORDER.indexOf(b.kind));
+  const resolved = orderedDisclosures(items);
   if (resolved.length === 0) {
     return null;
   }
@@ -131,18 +110,10 @@ export function DisclosureSet({
       style={gap === undefined ? style : { gap: `${gap}px`, ...style }}
     >
       {resolved.map((spec) => (
-        <Disclosure key={specKey(spec)} surface={surface} {...spec} />
+        <Disclosure key={disclosureKey(spec)} surface={surface} {...spec} />
       ))}
     </div>
   );
-}
-
-function isDisclosureSpec(value: object): value is DisclosureSpec {
-  return 'kind' in value;
-}
-
-function asKind(value: string): DisclosureKind | undefined {
-  return DISCLOSURE_ORDER.find((kind) => kind === value);
 }
 
 /** What every `disclosure` / `disclaimer` host prop runs through: a kind, a spec, or a node. */
@@ -150,24 +121,7 @@ export function renderDisclosure(
   spec: DisclosureInput,
   extra: Partial<DisclosureProps> = {},
 ): ReactNode {
-  if (!spec) {
-    return null;
-  }
-  if (isValidElement(spec)) {
-    return spec;
-  }
-  if (typeof spec === 'string') {
-    const kind = asKind(spec);
-    if (kind === undefined) {
-      console.warn(`Disclosure: "${spec}" is not a disclosure kind. Nothing rendered.`);
-      return null;
-    }
-    return <Disclosure kind={kind} {...extra} />;
-  }
-  if (typeof spec !== 'object' || !isDisclosureSpec(spec)) {
-    return null;
-  }
-  return <Disclosure {...spec} {...extra} />;
+  return disclosureFor(spec, (plain) => <Disclosure {...plain} {...extra} />);
 }
 
 Disclosure.Set = DisclosureSet;

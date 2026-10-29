@@ -93,6 +93,7 @@ export function TemplateTimelinePart({
         keyOf={(phase) => phase.key}
         labelOf={(phase) => phase.title}
         label={words.projectPhases}
+        words={words.reorderList}
         itemNoun={words.phasesNoun}
         density="functional"
         controls="foot"

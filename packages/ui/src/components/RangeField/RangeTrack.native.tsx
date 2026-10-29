@@ -1,8 +1,9 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, View } from 'react-native';
 import { useGround } from '../../primitives/Ground/Ground.native';
-import { formatEnd, roundToStep } from './RangeField.logic';
+import { formatEnd, roundToStep, thumbName } from './RangeField.logic';
 
 export interface RangeTrackProps {
   lo: number;
@@ -11,9 +12,9 @@ export interface RangeTrackProps {
   max: number;
   step: number;
   disabled: boolean;
-  label?: string;
+  label?: TranslatedText;
   /** The two ends' own words — the field's box labels — so each thumb is named in the person's language. */
-  endLabels: readonly [string, string];
+  endLabels: readonly [TranslatedText, TranslatedText];
   unit?: string;
   format?: (value: number) => string;
   /** `live` true while the finger is down, false on release — the same split as the web half. */
@@ -115,8 +116,8 @@ export function RangeTrack({
   };
 
   const thumbs = [
-    { key: 'lo' as const, value: lo, name: `${label ?? 'Range'} — ${endLabels[0]}` },
-    { key: 'hi' as const, value: hi, name: `${label ?? 'Range'} — ${endLabels[1]}` },
+    { key: 'lo' as const, value: lo, name: thumbName(label, endLabels[0]) },
+    { key: 'hi' as const, value: hi, name: thumbName(label, endLabels[1]) },
   ];
 
   return (

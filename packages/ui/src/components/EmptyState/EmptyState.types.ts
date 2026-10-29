@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 
 /**
@@ -9,9 +10,9 @@ import type { ReactNode } from 'react';
 export interface EmptyStateProps {
   /** line-drawing icon or large glyph */
   icon?: ReactNode;
-  title: string;
+  title: TranslatedText;
   /** centred, text-secondary, max ~2 lines */
-  description?: string;
+  description?: TranslatedText;
   /** primary pill button */
   action?: ReactNode;
   /** soft brand glow bloom behind the icon (default on) */

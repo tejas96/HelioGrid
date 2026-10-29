@@ -1,4 +1,6 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
+import type { RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 import type { DimensionValue, TextStyle } from 'react-native';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
@@ -6,6 +8,7 @@ import { Text } from '../../primitives/Text/Text.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import type { UsageMeterProps } from './UsageMeter.types';
+import { usageLoadingLine } from './usage-meter-model';
 
 /**
  * A shimmer in the figure's OWN footprint — never a numeral, never a dash dressed as a value.
@@ -55,6 +58,9 @@ export function Shimmer({
   );
 }
 
+/** The meter's frame — where the reader lands after a retry, whichever state it reloads into. */
+type Frame = RefObject<View | null>;
+
 const label: TextStyle = {
   fontSize: 14,
   fontWeight: '500',
@@ -62,7 +68,7 @@ const label: TextStyle = {
   color: theme.colors['text-primary'],
 };
 
-function Head({ label: words, period }: { label: string; period?: string }) {
+function Head({ label: words, period }: { label: TranslatedText; period?: string }) {
   return (
     <View style={styles.head}>
       <Text style={label}>{words}</Text>
@@ -77,23 +83,25 @@ function Head({ label: words, period }: { label: string; period?: string }) {
 
 /** RULE 3 — AN ERROR SHOWS NO NUMBERS. Not the last good figure, not an approximation. */
 export function UsageMeterError({
+  frame,
   label: words,
   period,
   errorMessage,
   onRetry,
   retryLabel,
 }: Pick<UsageMeterProps, 'label' | 'period' | 'onRetry' | 'retryLabel'> & {
-  errorMessage: string;
+  frame: Frame;
+  errorMessage: TranslatedText;
 }) {
   return (
-    <View style={styles.shell}>
+    <View ref={frame} style={styles.shell}>
       <Head label={words} period={period} />
       <Text variant="caption" color="warning" style={styles.emphasis}>
         {errorMessage}
       </Text>
       {onRetry !== undefined && retryLabel !== undefined ? (
         <View style={styles.retry}>
-          <RetryButton onRetry={onRetry} label={retryLabel} />
+          <RetryButton onRetry={onRetry} label={retryLabel} focusAfter={frame} />
         </View>
       ) : null}
     </View>
@@ -102,15 +110,17 @@ export function UsageMeterError({
 
 /** This meter does not apply to this plan: no bar, no figure, NO RETRY. */
 export function UsageMeterUnavailable({
+  frame,
   label: words,
   period,
   unavailableTitle,
   unavailableMessage,
 }: Pick<UsageMeterProps, 'label' | 'period' | 'unavailableMessage'> & {
-  unavailableTitle: string;
+  frame: Frame;
+  unavailableTitle: TranslatedText;
 }) {
   return (
-    <View style={styles.shell}>
+    <View ref={frame} style={styles.shell}>
       <Text style={label}>{words}</Text>
       <UnavailableNote title={unavailableTitle} message={unavailableMessage} detail={period} />
     </View>
@@ -119,19 +129,24 @@ export function UsageMeterUnavailable({
 
 /** RULE 1 — NO FIGURE WITHOUT A RESOLVED VALUE. No numeral, no zero, no progressbar role. */
 export function UsageMeterLoading({
+  frame,
   label: words,
   period,
   loadingNote,
   trackHeight,
-}: Pick<UsageMeterProps, 'label' | 'period'> & { loadingNote: string; trackHeight: number }) {
-  const line = [loadingNote, period].filter((part) => part !== undefined).join(' · ');
+}: Pick<UsageMeterProps, 'label' | 'period'> & {
+  frame: Frame;
+  loadingNote: TranslatedText;
+  trackHeight: number;
+}) {
+  const line = usageLoadingLine(loadingNote, period);
   /* `accessibilityLiveRegion="polite"` is RN's `role="status"`, and it is what web's section
      carries. The label that sat beside it was announced by nothing, and it was a SHORTER retelling
      of the two Texts below — the meter's name, then "Not resolved yet — this period's rollup is
      still being read. · This month". Giving the view a role to make the label speak would fold
      those children away and announce less, so the redundant label goes and the children stay. */
   return (
-    <View accessibilityLiveRegion="polite" style={styles.shell}>
+    <View ref={frame} accessibilityLiveRegion="polite" style={styles.shell}>
       <View style={styles.head}>
         <Text style={label}>{words}</Text>
         <Shimmer width={92} height={13} radius={theme.radius['rf-md']} />

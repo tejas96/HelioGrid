@@ -1,10 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { rowKeyOf } from './DataTable.logic';
-import type { DataTableProps } from './DataTable.types';
+import type { StackedProps } from './DataTable.parts.types';
 import { DataTableCard } from './DataTableCard.native';
 import { asProvenanceSpec } from './DataTableProvenance.logic';
-import { resolveStackedColumns } from './DataTableStacked.logic';
+import { stackedSlotsOf } from './DataTableStacked.logic';
 import { TotalBlock } from './DataTableTotal.native';
 
 const styles = StyleSheet.create({
@@ -15,22 +15,6 @@ const styles = StyleSheet.create({
     paddingBottom: theme.spacing['sp-4'],
   },
 });
-
-export interface StackedProps<Row> {
-  rows: Row[];
-  rowKey: NonNullable<DataTableProps<Row>['rowKey']>;
-  selectable: boolean;
-  selected: (string | number)[];
-  onToggleRow: (key: string | number) => void;
-  /**
-   * **The caption's words** (`F7-27`). RN has no `aria-labelledby`, so the caption cannot be
-   * pointed at by id — the equivalent is carrying its text as the list's own accessible name, and
-   * without it the list announces as an unnamed collection of rows.
-   */
-  labelledBy?: string;
-  table: DataTableProps<Row>;
-  pageSize: number;
-}
 
 /**
  * The phone answer: one card per record. The list owns only what every card shares — which column
@@ -48,12 +32,11 @@ export function DataTableStacked<Row>({
   pageSize,
 }: StackedProps<Row>) {
   const { columns } = table;
-  const slots = resolveStackedColumns(columns);
-  const primary = slots.primary;
+  const slots = stackedSlotsOf(columns);
   /* Resolved once for the whole list: the statement each column's tier is measured against. */
   const tableSpec = asProvenanceSpec(table.provenance);
 
-  if (primary === undefined) return null;
+  if (slots === null) return null;
 
   return (
     <>
@@ -67,7 +50,7 @@ export function DataTableStacked<Row>({
             selectable={selectable}
             selected={selected}
             onToggleRow={onToggleRow}
-            slots={{ ...slots, primary }}
+            slots={slots}
             table={table}
             tableSpec={tableSpec}
           />
@@ -83,6 +66,7 @@ export function DataTableStacked<Row>({
             page={table.page}
             pageSize={pageSize}
             renderedRows={rows.length}
+            words={table.words}
           />
         </View>
       )}

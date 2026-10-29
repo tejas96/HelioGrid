@@ -1,7 +1,9 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import type { NumberOptions } from '../../utils/format';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
-import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';
+import type { SurfaceRead, SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 
 /**
  * **What a `provenance` prop accepts**, here as everywhere: the full spec object or a bare tier.
@@ -12,9 +14,9 @@ export type CompareProvenanceSpec = ProvenanceProps | ProvenanceTierSpec;
 
 export interface CompareOption {
   key: string;
-  /** The column heading — "Variant B", "Growth plan". */
+  /** The column heading — "Variant B", "Growth plan": the option's own name. */
   name: string;
-  subtitle?: string;
+  subtitle?: TranslatedText;
   /**
    * **The option in force.** Not the same fact as selected — you choose the one you are moving
    * *to* — so it is a word in its own pill.
@@ -29,8 +31,8 @@ export interface CompareOption {
 export interface CompareAttribute<Opt extends CompareOption = CompareOption> {
   key: string;
   /** The row label, pinned at the left edge. This is the thing the reader holds still. */
-  label: string;
-  /** Second line under the label — "years", "kWp", "₹ per kWh". */
+  label: TranslatedText;
+  /** Second line under the label — "years", "kWp", "₹ per kWh": the market pack's unit. */
   unit?: string;
   /** Reads the value off an option when it isn't in `option.values`. */
   value?: (option: Opt) => ReactNode | number;
@@ -52,11 +54,33 @@ export interface CompareAttribute<Opt extends CompareOption = CompareOption> {
   provenance?: CompareProvenanceSpec;
   /**
    * **What this row's absence is called**, when an option has no value for it — "Not included",
-   * "Not measured on this variant". Rendered by `NamedGap` in the cell; the fallback is "Not
-   * stated", a statement about the *data* that invents nothing about the option. Never an em-dash,
-   * which says *nothing here* and leaves the reader guessing which kind of nothing.
+   * "Not measured on this variant". Rendered by `NamedGap` in the cell; the fallback is the words'
+   * `notStated`, a statement about the *data* that invents nothing about the option. Never an
+   * em-dash, which says *nothing here* and leaves the reader guessing which kind of nothing.
    */
-  gapLabel?: string;
+  gapLabel?: TranslatedText;
+}
+
+/** `@heliogrid/i18n`'s `compareGridWords`: the words the grid draws and speaks of its own. */
+export interface CompareGridWords {
+  /** A row's best value is marked with this word, never colour alone. */
+  readonly best: TranslatedText;
+  /** The pinned column's heading, spoken only. */
+  readonly attribute: TranslatedText;
+  /** The choice row's heading, spoken only. */
+  readonly chooseOption: TranslatedText;
+  /** A row's named gap when the row names none. */
+  readonly notStated: TranslatedText;
+  /** The loading form's name. */
+  readonly loading: TranslatedText;
+  /** The option axis's name — "Compare 3 options". */
+  readonly compare: (count: number) => TranslatedText;
+  /** Where the reader is on an axis that overflows — `where` is "2" or "2–3"; the caller's note. */
+  readonly position: (where: string, count: number, note?: string) => TranslatedText;
+  readonly previousOption: TranslatedText;
+  readonly nextOption: TranslatedText;
+  /** The phone's choice, named with its option — "Choose: Variant B". */
+  readonly optionNamed: (word: string, option: string) => TranslatedText;
 }
 
 export interface CompareGridProps<Opt extends CompareOption = CompareOption> {
@@ -66,15 +90,16 @@ export interface CompareGridProps<Opt extends CompareOption = CompareOption> {
   options: Opt[];
   selectedKey?: string;
   onSelect?: (key: string) => void;
-  selectLabel?: string;
-  selectedLabel?: string;
-  currentLabel?: string;
+  /** The choice's words, and the pills for the selected option and the option in force. */
+  selectLabel: TranslatedText;
+  selectedLabel: TranslatedText;
+  currentLabel: TranslatedText;
   /** Overline above the grid, and the accessible name of the matrix. */
-  caption?: string;
+  caption?: TranslatedText;
   /** One provenance statement for the whole comparison, in the footer. */
   provenance?: CompareProvenanceSpec;
   /** A quiet footer line beside the position readout. */
-  note?: string;
+  note?: TranslatedText;
   /**
    * Option column width. Default 196.
    *
@@ -93,13 +118,45 @@ export interface CompareGridProps<Opt extends CompareOption = CompareOption> {
    * retry; `unavailable` draws none.
    */
   read: SurfaceRead;
-  emptyTitle?: string;
-  emptyMessage?: string;
-  errorTitle?: string;
-  errorMessage?: string;
+  emptyTitle: TranslatedText;
+  emptyMessage?: TranslatedText;
+  errorTitle: TranslatedText;
+  errorMessage?: TranslatedText;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
-  unavailableTitle?: string;
-  unavailableMessage?: string;
+  retryLabel?: TranslatedText;
+  unavailableTitle: TranslatedText;
+  unavailableMessage?: TranslatedText;
   density?: 'expressive' | 'functional';
+  words: CompareGridWords;
+}
+
+/* The inner parts' contracts (Law 7): both halves of a part implement the one interface. */
+
+/** Where the reader is on the option axis: the whole columns on screen, of how many. */
+export interface AxisPosition {
+  scrollable: boolean;
+  first: number;
+  last: number;
+  count: number;
+  note?: TranslatedText;
+}
+
+export interface CompareGridFooterProps extends AxisPosition {
+  onStep: (direction: number) => void;
+  words: CompareGridWords;
+}
+
+export interface CompareGridStatePanelProps {
+  state: SurfaceState;
+  emptyTitle: TranslatedText;
+  emptyMessage?: TranslatedText;
+  errorTitle: TranslatedText;
+  errorMessage?: TranslatedText;
+  onRetry?: () => void;
+  retryLabel?: TranslatedText;
+  unavailableTitle: TranslatedText;
+  unavailableMessage?: TranslatedText;
+  words: CompareGridWords;
+  /** The grid's frame, which stays while a failed read reloads. */
+  focusAfter: FocusAfter;
 }

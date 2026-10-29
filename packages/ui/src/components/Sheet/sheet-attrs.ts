@@ -1,3 +1,4 @@
+import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';
 import type { SheetDensity, SheetSize } from './Sheet.types';
 
 /** A flag reaches the stylesheet as a STRING — `[data-x="true"]` is what Sheet.css matches on. */
@@ -61,4 +62,12 @@ export function sheetBodyAttrs(
     'data-header': hasHeader ? 'true' : 'false',
     'data-held': scrolls ? 'false' : 'true',
   };
+}
+
+/**
+ * An overlay that shows a read is where focus lands once its *Try again* has gone, so it shows the
+ * ring a control does; one of static content takes focus only as it opens, and shows none.
+ */
+export function readFrameClass(read: SurfaceRead | undefined): string | undefined {
+  return read === undefined ? undefined : 'hg-focus-target';
 }

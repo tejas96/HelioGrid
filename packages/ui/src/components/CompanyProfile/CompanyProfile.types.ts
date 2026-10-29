@@ -8,7 +8,8 @@ import type {
   StandingMark,
   TenantSegment,
 } from '@heliogrid/domain';
-import type { PickedFile } from '../Dropzone/Dropzone.types';
+import type { DropzoneWords, PickedFile } from '../Dropzone/Dropzone.types';
+import type { NumberFieldWords } from '../NumberField/NumberField.types';
 
 /** One part of the profile as its header says it: its title, where it stands, and how that is marked. */
 export interface CompanyProfilePartWords {
@@ -43,11 +44,9 @@ export interface CompanyProfileWords {
     /** The market pack's name for its registration, marked optional. */
     readonly label: TranslatedText;
     /** The market's format in one line: the field's help, until `error` says it instead. */
-    // biome-ignore lint/plugin/copy-prop-type: the market pack's example of the tax id's format
-    readonly format: string;
+    readonly format: TranslatedText | null;
     /** The format again, as the field's error, while what is typed does not read as one. */
-    // biome-ignore lint/plugin/copy-prop-type: the market pack's example of the tax id's format
-    readonly error: string | null;
+    readonly error: TranslatedText | null;
     /** What was checked and what was not — printed whole under the field. */
     readonly checked: TranslatedText;
   };
@@ -58,8 +57,7 @@ export interface CompanyProfileWords {
     readonly accountNumber: TranslatedText;
     readonly accountNumberExample: TranslatedText;
     /** The market pack's name for its bank-routing identifier. */
-    // biome-ignore lint/plugin/copy-prop-type: the market pack's name for the bank's routing code
-    readonly routing: string;
+    readonly routing: TranslatedText;
     readonly routingExample: TranslatedText;
     /** What was checked and what was not — printed whole under the routing field. */
     readonly checked: TranslatedText;
@@ -79,6 +77,8 @@ export interface CompanyProfileWords {
     readonly sizeHint: TranslatedText;
     /** Where the size comes from — beside its tier. */
     readonly sizeSource: TranslatedText;
+    /** The size field says these itself (`numberFieldWords`). */
+    readonly numberField: NumberFieldWords;
   };
   /**
    * The letterhead the profile builds, previewed beside the list on a wide screen. It shows only
@@ -103,17 +103,18 @@ export interface CompanyProfileWords {
   };
   /**
    * The logo's capture area, above the company name; `null` draws none. `name` is the act, or the
-   * held logo once `held`. `hint` stands under it where a finger chooses and `hintPointer` where a
-   * pointer can also drop a file; `refusal` is what the image last chosen missed.
+   * held logo's name once `held`. `hint` stands under it where a finger chooses and `hintPointer`
+   * where a pointer can also drop a file; `refusal` is what the image last chosen missed.
    */
   readonly logo: {
-    // biome-ignore lint/plugin/copy-prop-type: the act's word, or the held logo's file name
-    readonly name: string;
+    readonly name: TranslatedText;
     readonly hint: TranslatedText;
     readonly hintPointer: TranslatedText;
     readonly refusal: TranslatedText | null;
     readonly held: boolean;
   } | null;
+  /** The logo's capture area says these itself (`dropzoneWords`). */
+  readonly dropzone: DropzoneWords;
   readonly loading: TranslatedText | null;
   readonly unread: {
     readonly title: TranslatedText;

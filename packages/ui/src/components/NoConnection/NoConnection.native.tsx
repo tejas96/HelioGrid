@@ -24,12 +24,13 @@ interface NativeNoConnectionProps extends NoConnectionProps {
  * instead: the same promise for the reader this screen is written for.
  */
 export function NoConnection({
-  title = "You're not connected",
-  message = 'HelioGrid needs a connection to load this. Check your mobile data or Wi-Fi, then try again.',
+  title,
+  message,
   onRetry,
   retryLabel,
-  failedMessage = 'Still no connection.',
-  timeoutMessage = "That's taking too long to answer.",
+  failedMessage,
+  timeoutMessage,
+  lastTriedSentence,
   retryTimeout = 10000,
   status,
   children,
@@ -51,7 +52,7 @@ export function NoConnection({
     }
   }, [autoFocusRetry]);
 
-  const sentence = failureSentence(failure, failedMessage, timeoutMessage);
+  const sentence = failureSentence(failure, { failedMessage, timeoutMessage, lastTriedSentence });
 
   return (
     /* THE TITLE IS ALREADY SPOKEN, SO IT IS NOT SAID TWICE. The web half names the screen with

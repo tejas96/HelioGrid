@@ -15,6 +15,7 @@ import { renderGap } from '../NamedGap/NamedGap.native';
 import { renderPending } from '../PendingAction/PendingAction.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
 import { renderAttribution } from '../ValueSource/ValueSource.native';
+import { leadingCircleSize } from './ListRow.logic';
 import { isPendingInFlight } from './ListRow.pending';
 import type { ListRowProps } from './ListRow.types';
 
@@ -74,7 +75,7 @@ export function ListRow({
     <>
       {avatar ||
         (icon ? (
-          <IconCircle color={iconColor} size={isExpr ? 40 : 32}>
+          <IconCircle color={iconColor} size={leadingCircleSize(density)}>
             {icon}
           </IconCircle>
         ) : null)}

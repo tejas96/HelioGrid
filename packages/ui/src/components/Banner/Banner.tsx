@@ -1,22 +1,25 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { NO_FOCUS_AFTER, useFocusAfter } from '../../primitives/FocusAfter';
 import { Pressable } from '../../primitives/Pressable';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
-import { bannerKind, isNeverDismissible } from './Banner.kinds';
+import { bannerKind } from './Banner.kinds';
 import {
   ACTION_BELOW,
   actionStacks,
   BANNER_GLYPH,
+  bannerDismissal,
   useDisclaimerWarning,
   useFormReport,
 } from './Banner.logic';
 import type { BannerGlyph, BannerProps } from './Banner.types';
 
-interface WebBannerProps extends BannerProps {
+type WebBannerProps = BannerProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 function Glyph({ name, size }: { name: BannerGlyph; size: number }) {
   return (
@@ -43,7 +46,7 @@ function Content({
   children,
   actionBelowBody,
 }: {
-  title?: string;
+  title?: TranslatedText;
   children?: ReactNode;
   actionBelowBody?: ReactNode;
 }) {
@@ -69,6 +72,8 @@ export function Banner({
   children,
   action,
   onDismiss,
+  dismissLabel,
+  focusAfter,
   dismissible,
   tone,
   variant = 'block',
@@ -80,7 +85,8 @@ export function Banner({
   style,
 }: WebBannerProps) {
   const meta = bannerKind(kind);
-  const canDismiss = (dismissible ?? false) && !isNeverDismissible(kind) && onDismiss !== undefined;
+  const dismissal = bannerDismissal({ dismissible, kind, onDismiss, dismissLabel });
+  const leaving = useFocusAfter(focusAfter ?? NO_FOCUS_AFTER);
   const width = useOwnWidth(variant === 'block');
   const stacked = actionStacks(action !== undefined, width.value, actionBelow);
   useFormReport(stacked, width.value, onFormChange);
@@ -117,8 +123,12 @@ export function Banner({
       {action === undefined || stacked ? null : (
         <div className="hg-banner-action-slot">{action}</div>
       )}
-      {canDismiss ? (
-        <Pressable className="hg-banner-dismiss" accessibilityLabel="Dismiss" onPress={onDismiss}>
+      {dismissal === null ? null : (
+        <Pressable
+          className="hg-banner-dismiss"
+          accessibilityLabel={dismissal.label}
+          onPress={leaving(dismissal.onDismiss)}
+        >
           <svg
             width="15"
             height="15"
@@ -132,7 +142,7 @@ export function Banner({
             <ShellGlyphMarks name="close" />
           </svg>
         </Pressable>
-      ) : null}
+      )}
     </div>
   );
 }

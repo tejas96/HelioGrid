@@ -1,6 +1,6 @@
 import { theme } from '@heliogrid/theme';
-import { useEffect, useRef } from 'react';
-import { AccessibilityInfo, findNodeHandle, StyleSheet, View } from 'react-native';
+import { useRef } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
 import { PendingAction } from '../PendingAction/PendingAction.native';
@@ -13,7 +13,9 @@ import type { CatalogItemFormProps } from './CatalogItemForm.types';
  */
 export function ItemFormFoot({ props }: { props: CatalogItemFormProps }) {
   const { words } = props;
-  const primary = usePrimaryAfterReturn(props.returned);
+  /* *Try again* and *Dismiss* leave with the returned line they sit in: the screen reader lands on
+     the primary, never at the sheet's start. */
+  const primary = useRef<View>(null);
   return (
     <View style={styles.foot}>
       {props.returned ? (
@@ -25,6 +27,7 @@ export function ItemFormFoot({ props }: { props: CatalogItemFormProps }) {
           retryLabel={words.tryAgain}
           onDismiss={props.onDismissReturned}
           dismissLabel={words.dismiss}
+          focusAfter={primary}
           style={styles.returned}
         />
       ) : (
@@ -48,23 +51,6 @@ export function ItemFormFoot({ props }: { props: CatalogItemFormProps }) {
       </View>
     </View>
   );
-}
-
-/**
- * *Try again* and *Dismiss* leave with the returned line they sit in, so once it goes the screen
- * reader lands on the primary — never at the sheet's start.
- */
-function usePrimaryAfterReturn(returned: boolean) {
-  const primary = useRef<View>(null);
-  const was = useRef(returned);
-  useEffect(() => {
-    if (was.current && !returned) {
-      const node = findNodeHandle(primary.current);
-      if (node !== null) AccessibilityInfo.setAccessibilityFocus(node);
-    }
-    was.current = returned;
-  }, [returned]);
-  return primary;
 }
 
 const styles = StyleSheet.create({

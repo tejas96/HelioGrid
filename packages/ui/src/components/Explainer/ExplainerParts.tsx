@@ -1,6 +1,6 @@
 import { Pressable } from '../../primitives/Pressable/Pressable';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
-import type { ExplainerPagerModel, PlacedExplainer } from './Explainer.logic';
+import { arrowOffset, type ExplainerPagerModel, type PlacedExplainer } from './Explainer.logic';
 import type { ExplainerAction } from './Explainer.types';
 
 /** The default "i" — `currentColor`, so the trigger owns its colour and its accessible name. */
@@ -26,13 +26,12 @@ export function InfoGlyph({ size }: { size: number }) {
 }
 
 export function ExplainerArrow({ placed }: { placed: PlacedExplainer }) {
-  const along = placed.side === 'top' || placed.side === 'bottom' ? 'left' : 'top';
   return (
     <span
       aria-hidden="true"
       className="hg-explainer-arrow"
       data-side={placed.side}
-      style={{ [along]: placed.arrow - 6 }}
+      style={arrowOffset(placed)}
     />
   );
 }

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { COMPANY_PROFILE } from '../src/copy/company-profile';
 import { companyProfileWords } from '../src/copy/company-profile-words';
-import { createTranslator } from '../src/runtime';
+import { createTranslator, packWords } from '../src/runtime';
 import { AT_SIGNUP, standing } from './company-profile-facts';
 
 const LEDE = 'On every proposal, invoice and customer link · asked for once';
@@ -13,8 +13,8 @@ describe('companyProfileWords, by state', () => {
     const words = companyProfileWords(t, {
       ...standing('tax', 'check_format'),
       taxIdLabel: 'VAT no.',
-      taxFormat: '9 digits · like 123456789',
-      bankRoutingLabel: 'Sort code',
+      taxFormat: packWords({ en: '9 digits · like 123456789' }, 'en'),
+      bankRoutingLabel: packWords({ en: 'Sort code' }, 'en'),
     });
     expect(words.tax).toMatchObject({
       label: 'VAT no. (optional)',

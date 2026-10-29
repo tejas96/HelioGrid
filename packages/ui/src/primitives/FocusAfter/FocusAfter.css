@@ -1,0 +1,10 @@
+/* A part that takes focus after a control leaves (`tabIndex={-1}`) shows the same ring a control
+   does, so the keyboard user sees where they landed (`F7-24`). */
+.hg-focus-target:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-focus-target:focus:not(:focus-visible) {
+  outline: none;
+}

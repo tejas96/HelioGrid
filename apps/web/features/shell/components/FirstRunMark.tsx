@@ -30,14 +30,17 @@ export function FirstRunMark({ shell, within, anchors }: FirstRunMarkProps) {
   if (inView === null || home === undefined) return null;
   const words = firstRunMarkWords(t, inView.mark, home, shell.centreVerb);
   if (words === null) return null;
+  /* The control the mark names takes the focus once the run has closed. */
+  const anchor = inView.mark === 'switch-home' ? anchors.switchHome : anchors.action;
   return (
     <CoachMark
       {...firstRunMarkProps(
         inView,
         { ...words, ...firstRunMarkLabels(t, inView) },
         { onPass: shell.passCoachMark, onDismiss: shell.dismissCoachMarks },
+        anchor,
       )}
-      anchor={inView.mark === 'switch-home' ? anchors.switchHome : anchors.action}
+      anchor={anchor}
       within={within}
       placement="bottom"
     />

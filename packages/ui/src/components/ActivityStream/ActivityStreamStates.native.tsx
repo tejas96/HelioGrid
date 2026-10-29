@@ -1,9 +1,11 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import Svg from 'react-native-svg';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { STREAM_SKELETON } from './ActivityStream.logic';
 
 const type = theme.type.roles;
 
@@ -76,21 +78,21 @@ export function StreamShimmer({ width, height }: { width: `${number}%`; height: 
  * feed cannot report, so the node is an accessibility element instead — the rows are shimmer, so
  * nothing focusable is folded — and it announces politely.
  */
-export function StreamSkeleton() {
+export function StreamSkeleton({ label }: { label: TranslatedText }) {
   return (
     <View
       accessible
-      accessibilityLabel="Loading activity"
+      accessibilityLabel={label}
       accessibilityLiveRegion="polite"
       style={styles.skeleton}
     >
-      {['a', 'b', 'c', 'd'].map((row) => (
+      {STREAM_SKELETON.rows.map((row) => (
         <View key={row} style={styles.skeletonRow}>
           <View style={styles.skeletonMark} />
           <View style={styles.skeletonLines}>
-            <StreamShimmer width="34%" height={11} />
-            <StreamShimmer width="76%" height={14} />
-            <StreamShimmer width="28%" height={11} />
+            {STREAM_SKELETON.lines.map((line) => (
+              <StreamShimmer key={line.key} width={line.width} height={line.height} />
+            ))}
           </View>
         </View>
       ))}
@@ -127,8 +129,8 @@ export function StreamMessage({
   retry,
 }: {
   tone?: 'warning';
-  title: string;
-  message?: string;
+  title: TranslatedText;
+  message?: TranslatedText;
   action?: ReactNode;
   retry?: ReactNode;
 }) {

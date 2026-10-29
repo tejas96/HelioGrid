@@ -80,7 +80,6 @@ export type {
   BlockTone,
   CodeError,
   CodeField,
-  DoorRoad,
   FootLine,
   FrameControl,
   FrameExplainer,

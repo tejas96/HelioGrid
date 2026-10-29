@@ -1,8 +1,9 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
+import { bandChipBox, bandChipFace, bandChipFor } from './BandedFigure.logic';
 import type { BandSpec, BandTone, BandToneStyle } from './BandedFigure.types';
 
 /**
@@ -35,8 +36,15 @@ export const BAND_TONES: Record<BandTone, BandToneStyle> = {
 };
 
 interface NativeBandChipProps {
-  band?: BandSpec | string;
+  band?: BandSpec | TranslatedText;
   size?: number;
+  style?: StyleProp<ViewStyle>;
+}
+
+interface ChipFaceProps {
+  words: ReactNode;
+  tone: BandTone;
+  size: number;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -58,33 +66,38 @@ const styles = StyleSheet.create({
 
 /** The verdict pill: word, mark, tint — in that order of importance. Shared with `StatCard.band`. */
 export function BandChip({ band, size = 13, style }: NativeBandChipProps) {
-  const spec = typeof band === 'string' ? { label: band, tone: 'neutral' as const } : band;
-  if (spec === undefined || spec.label === '') return null;
-  const tone = BAND_TONES[spec.tone ?? 'neutral'];
+  const face = bandChipFace(band);
+  if (face === null) return null;
+  return <ChipFace words={face.words} tone={face.tone} size={size} style={style} />;
+}
+
+/** The pill itself, around words already in the reader's language — a band's, or a host's. */
+function ChipFace({ words, tone: name, size, style }: ChipFaceProps) {
+  const tone = BAND_TONES[name];
+  const box = bandChipBox(size);
   const shape: ViewStyle = {
-    minHeight: size + 13,
-    paddingHorizontal: Math.round(size * 0.8),
+    minHeight: box.height,
+    paddingHorizontal: box.paddingX,
     backgroundColor: tone.bg,
   };
   const type: TextStyle = { fontSize: size, color: tone.fg };
   return (
     <View style={[styles.chip, shape, style]}>
       <View style={[styles.dot, { backgroundColor: tone.mark }]} />
-      <Text style={[styles.label, type]}>{spec.label}</Text>
+      <Text style={[styles.label, type]}>{words}</Text>
     </View>
   );
 }
 
-/** What a host's `band` prop runs through: a spec, a bare word, or a ready node. */
+/**
+ * What a host's `band` prop runs through: a spec, a bare word, or a ready node. A bare word is the
+ * host's words, typed by the host's own contract, drawn in the neutral pill.
+ */
 export function renderBand(
-  spec?: BandSpec | string | ReactNode,
+  spec?: BandSpec | TranslatedText | ReactNode,
   extra?: { size?: number },
 ): ReactNode {
-  if (spec === undefined || spec === null || spec === false) return null;
-  if (isValidElement(spec)) return spec;
-  if (typeof spec === 'string') return <BandChip band={{ label: spec }} {...extra} />;
-  if (typeof spec === 'object' && 'label' in spec) {
-    return <BandChip band={spec as BandSpec} {...extra} />;
-  }
-  return null;
+  return bandChipFor(spec, (face) => (
+    <ChipFace words={face.words} tone={face.tone} size={extra?.size ?? 13} />
+  ));
 }

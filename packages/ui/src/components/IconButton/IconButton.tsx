@@ -2,8 +2,8 @@ import type { CSSProperties } from 'react';
 import { useId } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { ReasonExplainer } from '../ActionReason';
-import { reasonPage } from '../ActionReason/ActionReason.logic';
 import type { ReasonTriggerProps } from '../ActionReason/ActionReason.types';
+import { isStatedOff } from '../Button/Button.logic';
 import type { IconButtonProps } from './IconButton.types';
 
 interface WebIconButtonProps extends IconButtonProps {
@@ -33,7 +33,7 @@ export function IconButton({
   style,
 }: WebIconButtonProps) {
   const reasonId = useId();
-  const stated = disabled && reasonPage(disabledReason) !== '';
+  const stated = isStatedOff(disabled, disabledReason);
 
   const circle = (reason?: ReasonTriggerProps) => (
     <button

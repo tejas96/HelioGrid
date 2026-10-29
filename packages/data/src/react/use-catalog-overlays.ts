@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import type { CatalogActs } from './use-catalog-acts';
 import { useCatalogPriceDraft } from './use-catalog-price-draft';
-import { usePublishRelease } from './use-catalog-releases';
+import { useCatalogReleasesBrowse, usePublishRelease } from './use-catalog-releases';
 import { useSession } from './use-session';
 
 type Item = ResolvedCatalogItemWire;
@@ -23,7 +23,7 @@ export function useCatalogOverlays(acts: CatalogActs) {
   const [archiving, setArchiving] = useState<{ item: Item; drafts: number } | null>(null);
   const [publishing, setPublishing] = useState(false);
   const [label, setLabel] = useState('');
-  const [releasesOpen, setReleasesOpen] = useState(false);
+  const releases = useCatalogReleasesBrowse();
   return {
     acts,
     draft,
@@ -31,7 +31,7 @@ export function useCatalogOverlays(acts: CatalogActs) {
     archiving,
     publishing,
     label,
-    releasesOpen,
+    releases,
     openEditor: draft.open,
     /** Archive asks first only when drafts still name the item (`§M01.4`); else it goes at once. */
     async askArchive(item: Item) {
@@ -56,8 +56,7 @@ export function useCatalogOverlays(acts: CatalogActs) {
       setLabel(next);
       publish.clear();
     },
-    openReleases: () => setReleasesOpen(true),
-    closeReleases: () => setReleasesOpen(false),
+    openReleases: releases.show,
     /** Publishes under the typed name; the dialog closes once the release is in force. */
     async sendPublish() {
       if (await publish.publish(label.trim())) setPublishing(false);

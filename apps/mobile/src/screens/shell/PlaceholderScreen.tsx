@@ -1,5 +1,5 @@
 import { useShell } from '@heliogrid/data/react';
-import { offersDoor, type ShellDoor } from '@heliogrid/domain';
+import type { ShellDoor } from '@heliogrid/domain';
 import { doorTitle, SHELL } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { EmptyState } from '@heliogrid/ui';
@@ -34,7 +34,7 @@ export function PlaceholderScreen() {
   const door = DOOR[route.name as DoorRoute];
   return (
     <ShellPage inView={door}>
-      {offersDoor(shell, door) ? (
+      {shell.doors.includes(door) ? (
         <EmptyState title={doorTitle(t, door)} description={t(SHELL.comingLater)} />
       ) : (
         <ShellNotFoundState />

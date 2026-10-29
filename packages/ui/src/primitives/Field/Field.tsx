@@ -27,7 +27,7 @@ export function Field({
         {label}
         {required ? (
           <span className="hg-field-required" aria-hidden="true">
-            *
+            {'*'}
           </span>
         ) : null}
       </label>

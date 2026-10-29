@@ -1,10 +1,11 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CSSProperties, ReactNode } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { BandChip } from './BandChip';
 import type { BandSpec } from './BandedFigure.types';
 
 export interface BandedLineProps {
-  label: string;
+  label: TranslatedText;
   shown: string;
   unit?: string;
   band: BandSpec | null;

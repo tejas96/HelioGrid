@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { Button, Text } from '@heliogrid/ui';
 import { View } from 'react-native';
 import { styles } from '../styles';
@@ -16,10 +17,10 @@ export function SheetFoot({
   off = false,
   destructive = false,
 }: {
-  line?: string | null;
-  cancel: string;
+  line?: TranslatedText | null;
+  cancel: TranslatedText;
   onCancel: () => void;
-  act: string;
+  act: TranslatedText;
   onAct: () => void;
   busy?: boolean;
   off?: boolean;

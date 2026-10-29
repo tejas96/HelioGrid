@@ -1,19 +1,29 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { TranslatedText } from '@heliogrid/contracts';
+import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { AllocationModel } from './AllocationMeter.model';
-import { allocationModel, formatAllocation, partValue } from './AllocationMeter.model';
+import {
+  allocationFigure,
+  allocationModel,
+  allocationSentences,
+  drawnState,
+  legendKey,
+  meterTop,
+  partValue,
+} from './AllocationMeter.model';
 import type {
   AllocationMeterProps,
+  AllocationMeterWords,
   AllocationPart,
   AllocationState,
 } from './AllocationMeter.types';
 import { AllocationSplit } from './AllocationSplit';
 
-interface WebAllocationMeterProps extends AllocationMeterProps {
+type WebAllocationMeterProps = AllocationMeterProps & {
   className?: string;
   style?: CSSProperties;
-}
+};
 
 /* The state's second channel: a tick for met, a plus for over, a hollow ring for under. The OVER
    mark takes --warning-text — plain --warning measures 2.17:1 on white and could not be seen. */
@@ -46,20 +56,22 @@ function Head({
   sum,
   target,
   unit,
+  words,
 }: {
-  label?: string;
+  label?: TranslatedText;
   sum: number | null;
   target: number;
   unit: string;
+  words: AllocationMeterWords;
 }) {
   return (
     <div className="hg-allocation-head">
       <span className="hg-allocation-label">{label}</span>
       {sum === null ? null : (
         <span className="hg-allocation-figure">
-          {`${formatAllocation(sum)}${unit} `}
+          {`${allocationFigure(sum, unit)} `}
           <span className="hg-allocation-denominator">
-            {`of ${formatAllocation(target)}${unit}`}
+            {words.ofTarget(allocationFigure(target, unit))}
           </span>
         </span>
       )}
@@ -89,7 +101,7 @@ function Track({
           role: 'meter',
           'aria-valuenow': model.sum,
           'aria-valuemin': 0,
-          'aria-valuemax': Math.max(target, model.sum),
+          'aria-valuemax': meterTop(target, model.sum),
           'aria-valuetext': valueText,
         };
   return (
@@ -120,11 +132,11 @@ function Legend({ parts, unit }: { parts: AllocationPart[]; unit: string }) {
   return (
     <ul className="hg-allocation-legend">
       {parts.map((part) => (
-        <li key={`${part.label ?? ''}-${partValue(part)}`}>
+        <li key={legendKey(part)}>
           <span aria-hidden="true" className="hg-allocation-swatch" />
           {part.label}
           <span className="hg-allocation-legend-value">
-            {`${formatAllocation(partValue(part))}${unit}`}
+            {allocationFigure(partValue(part), unit)}
           </span>
         </li>
       ))}
@@ -132,7 +144,7 @@ function Legend({ parts, unit }: { parts: AllocationPart[]; unit: string }) {
   );
 }
 
-function Note({ words }: { words: ReactNode }) {
+function Note({ words }: { words: TranslatedText | null | undefined }) {
   return words === null || words === undefined ? null : (
     <p className="hg-allocation-note">{words}</p>
   );
@@ -145,18 +157,14 @@ export function AllocationMeter(props: WebAllocationMeterProps) {
     target = 100,
     unit = '%',
     targetLabel,
-    remainderWords,
-    enforcementNote,
-    unresolvedNote = 'Nothing allocated yet.',
     note,
     showLegend = false,
     density = 'expressive',
-    variant = 'meter',
     className,
     style,
   } = props;
   const model = allocationModel(props);
-  if (variant === 'split') {
+  if (props.variant === 'split') {
     return (
       <AllocationSplit
         label={label}
@@ -168,28 +176,24 @@ export function AllocationMeter(props: WebAllocationMeterProps) {
       />
     );
   }
-  const words = remainderWords ?? model.remainder ?? unresolvedNote;
-  const state = model.resolved ? model.state : 'under';
-  const valueText =
-    model.sum === null
-      ? undefined
-      : `${formatAllocation(model.sum)}${unit} of ${formatAllocation(target)}${unit} — ${typeof words === 'string' ? words : ''}`;
+  const said = allocationSentences(model, props.words, props);
+  const state = drawnState(model);
 
   return (
     <section
       className={classNames('hg-allocation-meter', className)}
-      aria-label={label === undefined ? 'Allocation' : `${label} allocation`}
+      aria-label={props.words.name(label)}
       style={style}
     >
-      <Head label={label} sum={model.sum} target={target} unit={unit} />
+      <Head label={label} sum={model.sum} target={target} unit={unit} words={props.words} />
       <Note words={targetLabel} />
-      <Track model={model} target={target} density={density} valueText={valueText} />
+      <Track model={model} target={target} density={density} valueText={said.figure} />
       <p className="hg-allocation-words" data-state={state}>
         <Mark state={state} />
-        <span>{words}</span>
+        <span>{said.remainder}</span>
       </p>
       {showLegend && model.parts.length > 0 ? <Legend parts={model.parts} unit={unit} /> : null}
-      <Note words={enforcementNote ?? model.enforcement} />
+      <Note words={said.enforcement} />
       <Note words={note} />
     </section>
   );

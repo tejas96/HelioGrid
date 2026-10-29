@@ -3,30 +3,33 @@
    display only: nothing is pressable but the error state's retry (a `Button`). With it, the chain
    is a radio group (`TimelinePick.native.tsx`). */
 
+import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { View } from 'react-native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
+import { lastLitIndex, stepKeyOf } from './Timeline.logic';
 import type { TimelineProps } from './Timeline.types';
 import { NODE_SIZE, TimelineMessage, TimelineSkeleton } from './TimelineParts.native';
 import { TimelinePick } from './TimelinePick.native';
 import { TimelineStep } from './TimelineStep.native';
 
-interface NativeTimelineProps extends TimelineProps {
+type NativeTimelineProps = TimelineProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export function Timeline({
   items = [],
   variant = 'page',
   density = 'expressive',
   read,
-  emptyTitle = 'No activity yet',
-  emptyDescription = 'Steps appear here as the job moves.',
-  errorTitle = "Couldn't load the activity",
-  errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
+  loadingLabel,
+  emptyTitle,
+  emptyDescription,
+  errorTitle,
+  errorMessage,
   retryLabel,
-  unavailableTitle = 'No sequence here',
+  unavailableTitle,
   unavailableMessage,
   value,
   onChange,
@@ -35,51 +38,58 @@ export function Timeline({
 }: NativeTimelineProps) {
   const state = surfaceStateOf(read);
   const onRetry = retryOf(read);
+  /* Every state's root is this one View — the same element at the same place, so it outlives a
+     retry and the list that replaces the skeleton: focus lands here once the retry has left. */
+  const frame = useRef<View>(null);
   if (state === 'loading') {
     return (
-      <View style={style}>
-        <TimelineSkeleton />
+      <View ref={frame} style={style}>
+        <TimelineSkeleton label={loadingLabel} />
       </View>
     );
   }
   if (state === 'error') {
     return (
-      <View style={style}>
+      <View ref={frame} style={style}>
         <TimelineMessage
           tone="warning"
           title={errorTitle}
           message={errorMessage}
           onRetry={onRetry}
           retryLabel={retryLabel}
+          focusAfter={frame}
         />
       </View>
     );
   }
   if (state === 'unavailable') {
     return (
-      <View style={style}>
-        <UnavailableNote variant="region" title={unavailableTitle} message={unavailableMessage} />
+      <View ref={frame} style={style}>
+        {unavailableTitle !== undefined ? (
+          <UnavailableNote variant="region" title={unavailableTitle} message={unavailableMessage} />
+        ) : null}
       </View>
     );
   }
   if (state === 'empty' || items.length === 0) {
     return (
-      <View style={style}>
-        <TimelineMessage title={emptyTitle} message={emptyDescription} />
+      <View ref={frame} style={style}>
+        <TimelineMessage title={emptyTitle} message={emptyDescription} focusAfter={frame} />
       </View>
     );
   }
 
   if (onChange) {
     return (
-      <TimelinePick
-        items={items}
-        value={value}
-        onChange={onChange}
-        label={label}
-        density={density}
-        style={style}
-      />
+      <View ref={frame} style={style}>
+        <TimelinePick
+          items={items}
+          value={value}
+          onChange={onChange}
+          label={label}
+          density={density}
+        />
+      </View>
     );
   }
 
@@ -87,16 +97,13 @@ export function Timeline({
   const node = compact ? NODE_SIZE.compact : NODE_SIZE.page;
   const gap = compact ? 10 : 0;
   const pad = compact ? 0 : density === 'functional' ? 18 : 26;
-  const lastLit = items.reduce(
-    (acc, it, i) => (it.status === 'done' || it.status === 'current' ? i : acc),
-    -1,
-  );
+  const lastLit = lastLitIndex(items);
 
   return (
-    <View accessibilityRole="list" style={[{ rowGap: gap }, style]}>
+    <View ref={frame} accessibilityRole="list" style={[{ rowGap: gap }, style]}>
       {items.map((it, i) => (
         <TimelineStep
-          key={it.id ?? `${i}-${it.label}`}
+          key={stepKeyOf(it, i)}
           item={it}
           compact={compact}
           node={node}

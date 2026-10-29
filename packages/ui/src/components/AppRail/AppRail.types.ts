@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
@@ -5,7 +6,7 @@ import type { CoachMarkAnchor } from '../CoachMark/CoachMark.types';
 
 export interface RailItem {
   key: string;
-  label: string;
+  label: TranslatedText;
   icon: ReactNode;
   /**
    * Filled variant, shown only while this item is active — the one place this system mixes
@@ -20,9 +21,10 @@ export interface RailItem {
   badge?: number | boolean;
   /**
    * The whole name a screen reader hears, its count included, in the reader's language — the
-   * bell's "Notifications, 3 unread". Absent, the label and the count are joined.
+   * bell's "Notifications, 3 unread". Absent, the item is named by `label` alone, so a badged
+   * item passes it.
    */
-  name?: string;
+  name?: TranslatedText;
   /** A footer item whose overlay is open — the bell while its centre shows: drawn active. */
   open?: boolean;
   onClick?: () => void;
@@ -36,7 +38,7 @@ export interface RailItem {
 
 export interface AppRailProps {
   /** The navigation landmark's name, in the reader's language. */
-  label: string;
+  label: TranslatedText;
   items: RailItem[];
   value?: string;
   onChange?: (key: string) => void;
@@ -80,7 +82,8 @@ export interface BottomNavProps {
 }
 
 export interface FabProps {
-  label?: string;
+  /** The button's name — the verb it performs, "Add". It carries no words, so this is all it says. */
+  label: TranslatedText;
   icon?: ReactNode;
   onClick?: () => void;
   size?: number;

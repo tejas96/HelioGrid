@@ -1,19 +1,17 @@
 /* Transcript's turn (native) — the speaker in ActorClass's own words and glyph, the offset as a
    real 44px seek control when the recording is still playable, and the words themselves. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ACTOR_CLASSES } from '../ActorClass';
 import { ActorGlyph } from '../ActorClass/ActorClass.native';
 import { renderMarks } from '../ChipGroup/ChipGroup.native';
 import { clock } from './Transcript.language';
-import type { TranscriptParty, TranscriptTurn } from './Transcript.types';
-import { PARTY_CLASS } from './TranscriptTurnRow.logic';
-
-const PARTY_WORD: Record<TranscriptParty, string> = { agent: 'Agent', customer: 'Customer' };
+import type { TranscriptTurnRowProps, TranscriptWords } from './Transcript.types';
+import { PARTY_CLASS, speakerOf } from './TranscriptTurnRow.logic';
 
 const styles = StyleSheet.create({
   turn: { flexDirection: 'row', gap: 10, alignItems: 'flex-start', minWidth: 0 },
@@ -37,6 +35,7 @@ const PAD = { expressive: 14, functional: 11 };
 
 function Offset({
   at,
+  playFrom,
   onSeek,
   current,
   title,
@@ -44,7 +43,8 @@ function Offset({
   at?: number;
   onSeek?: (seconds: number) => void;
   current: boolean;
-  title: string;
+  title: TranslatedText;
+  playFrom: TranscriptWords['playFrom'];
 }) {
   const label = clock(at);
   if (label === null || at === undefined) {
@@ -65,7 +65,7 @@ function Offset({
   return (
     <Pressable
       onPress={() => onSeek(at)}
-      accessibilityLabel={`Play the call from ${label}, ${title}`}
+      accessibilityLabel={playFrom(label, title)}
       style={styles.seek}
     >
       {face}
@@ -80,21 +80,18 @@ export function TranscriptTurnRow({
   customerName,
   onSeek,
   density,
-}: {
-  turn: TranscriptTurn;
-  current: boolean;
-  agentName?: string;
-  customerName?: string;
-  onSeek?: (seconds: number) => void;
-  density: 'expressive' | 'functional';
-}) {
-  const party: TranscriptParty = turn.party === 'customer' ? 'customer' : 'agent';
-  const isAgent = party === 'agent';
-  const name = isAgent ? agentName : customerName;
-  const descriptor = ACTOR_CLASSES[PARTY_CLASS[party]];
+  words,
+}: TranscriptTurnRowProps) {
+  const { party, label } = speakerOf(turn, agentName, customerName, words);
   return (
     <View style={styles.turn}>
-      <Offset at={turn.at} onSeek={onSeek} current={current} title={`${PARTY_WORD[party]} turn`} />
+      <Offset
+        at={turn.at}
+        onSeek={onSeek}
+        current={current}
+        title={words.turn[party]}
+        playFrom={words.playFrom}
+      />
       <View
         style={[
           tileSurface,
@@ -110,10 +107,10 @@ export function TranscriptTurnRow({
             <ActorGlyph
               actorClass={PARTY_CLASS[party]}
               size={13}
-              color={isAgent ? theme.colors.info : theme.colors.accent}
+              color={party === 'agent' ? theme.colors.info : theme.colors.accent}
             />
             <Text variant="caption" color="secondary" style={styles.speakerWord}>
-              {name ? `${name} · ${PARTY_WORD[party].toLowerCase()}` : descriptor.word()}
+              {label}
             </Text>
           </View>
           <Text variant={density === 'expressive' ? 'body' : 'body-sm'} style={styles.words}>

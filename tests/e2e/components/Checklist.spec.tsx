@@ -1,7 +1,7 @@
 import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
-import { Checklist } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { resolvedColour } from '../support/token';
+import { WordedChecklist } from './Checklist.story';
 
 const en = await createTranslator('en');
 const label = en.t(COMPANY_SIGNUP.yourCompany);
@@ -9,7 +9,9 @@ const item = { id: 'name', title: en.t(COMPANY_SIGNUP.companyName) };
 const items = [item];
 
 test('a checklist is a heading on the page — no fill, no shadow', async ({ mount }) => {
-  const checklist = await mount(<Checklist read={{ kind: 'ready' }} label={label} items={items} />);
+  const checklist = await mount(
+    <WordedChecklist read={{ kind: 'ready' }} label={label} items={items} />,
+  );
 
   await expect(checklist).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   await expect(checklist).toHaveCSS('box-shadow', 'none');
@@ -20,7 +22,9 @@ test('a checklist row is a grey tile with no shadow and its controls are white',
   mount,
   page,
 }) => {
-  const checklist = await mount(<Checklist read={{ kind: 'ready' }} label={label} items={items} />);
+  const checklist = await mount(
+    <WordedChecklist read={{ kind: 'ready' }} label={label} items={items} />,
+  );
   const row = checklist.getByRole('listitem');
 
   await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
@@ -33,7 +37,7 @@ test('a checklist row is a grey tile with no shadow and its controls are white',
 
 test("a done row's tick is white on the success fill", async ({ mount, page }) => {
   const checklist = await mount(
-    <Checklist read={{ kind: 'ready' }} label={label} items={[{ ...item, done: true }]} />,
+    <WordedChecklist read={{ kind: 'ready' }} label={label} items={[{ ...item, done: true }]} />,
   );
   const box = checklist.locator('.hg-checklist-box');
 

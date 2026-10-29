@@ -5,6 +5,7 @@ import {
   COMPANY_PROFILE_STANDING_WORD,
   companyProfileWords,
   createTranslator,
+  packWords,
   SETUP_WHAT_YOU_SELL,
   tierLabel,
 } from '@heliogrid/i18n';
@@ -68,8 +69,8 @@ const KINDS = companyProfileWords(en.t, {
   open: 'declarations',
   city: '',
   taxIdLabel: '',
-  taxFormat: '',
-  bankRoutingLabel: '',
+  taxFormat: null,
+  bankRoutingLabel: packWords({ en: 'IFSC' }, 'en'),
   letterhead: { companyName: '', addressLine: '', registration: null, bank: null },
   logo: null,
 }).declarations.options;

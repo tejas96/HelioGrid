@@ -1,17 +1,20 @@
 /* The header of one transcript (web) — its name, the call's identity line, THE ONE LANGUAGE LABEL,
    why the words are here without the audio, and the count line. */
 
+import type { TranslatedText } from '@heliogrid/contracts';
 import { NamedGap } from '../NamedGap';
 import { GlobeGlyph } from './TranscriptChrome';
 
 interface TranscriptHeaderProps {
-  title: string;
-  meta?: string;
+  title: TranslatedText;
+  meta?: TranslatedText;
   /** The whole language fact in one sentence, or `null` when it was never recorded. */
-  sentence: string | null;
-  retainedNote?: string;
+  sentence: TranslatedText | null;
+  retainedNote?: TranslatedText;
   /** "12 turns · Suryodaya agent and Anil Kulkarni", only once the turns are actually here. */
-  count: string | null;
+  count: TranslatedText | null;
+  /** The named gap when the language was never recorded. */
+  notRecorded: TranslatedText;
 }
 
 export function TranscriptHeader({
@@ -20,6 +23,7 @@ export function TranscriptHeader({
   sentence,
   retainedNote,
   count,
+  notRecorded,
 }: TranscriptHeaderProps) {
   return (
     <div className="hg-transcript-header">
@@ -34,7 +38,7 @@ export function TranscriptHeader({
           {sentence}
         </p>
       ) : (
-        <NamedGap gap="Language not recorded" scale="field" />
+        <NamedGap gap={notRecorded} scale="field" />
       )}
       {retainedNote ? <p className="hg-transcript-retained">{retainedNote}</p> : null}
       {count ? <p className="hg-transcript-count">{count}</p> : null}

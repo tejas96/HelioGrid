@@ -1,20 +1,22 @@
 import { theme } from '@heliogrid/theme';
-import { useCallback, useState } from 'react';
+import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, ScrollView, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { closingPress } from '../../primitives/FocusAfter';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { OperationProgress } from '../OperationProgress/OperationProgress.native';
 import { IndeterminateRail } from '../PendingAction/IndeterminateRail.native';
-import { isRunning, summariseJobs } from './JobTray.summary';
+import { offersClear, summariseJobs } from './JobTray.summary';
 import type { JobTrayProps } from './JobTray.types';
+import { useTrayOpen } from './use-tray-open';
 
-interface NativeJobTrayProps extends JobTrayProps {
+type NativeJobTrayProps = JobTrayProps & {
   style?: StyleProp<ViewStyle>;
-}
+};
 
 const TONE_COLOUR = {
   warning: theme.colors['warning-text'],
@@ -33,29 +35,21 @@ export function JobTray({
   jobs = [],
   open,
   onOpenChange,
-  label = 'Background work',
+  label,
+  words,
   onClear,
-  clearLabel = 'Clear finished',
+  clearLabel,
   align = 'right',
   style,
 }: NativeJobTrayProps) {
-  const [innerOpen, setInnerOpen] = useState(false);
-  const isOpen = open ?? innerOpen;
-  const setOpen = useCallback(
-    (next: boolean) => {
-      if (open === undefined) {
-        setInnerOpen(next);
-      }
-      onOpenChange?.(next);
-    },
-    [open, onOpenChange],
-  );
+  const [isOpen, setOpen] = useTrayOpen(open, onOpenChange);
+  /* Clearing takes the clear away with the jobs it cleared: the screen reader goes to the trigger. */
+  const trigger = useRef<View>(null);
 
   if (jobs.length === 0) {
     return null;
   }
-  const summary = summariseJobs(jobs);
-  const finished = jobs.some((job) => !isRunning(job));
+  const summary = summariseJobs(jobs, words);
   const tone =
     summary.tone === undefined ? theme.colors['text-secondary'] : TONE_COLOUR[summary.tone];
 
@@ -66,9 +60,10 @@ export function JobTray({
           that cannot say whether the tray is open is the one control here a reader must not have
           to guess at. (`aria-haspopup` has no RN counterpart; the role and the state carry it.) */}
       <RNPressable
+        ref={trigger}
         accessibilityRole="button"
         accessibilityState={{ expanded: isOpen }}
-        accessibilityLabel={`${label}, ${summary.words}`}
+        accessibilityLabel={words.trigger(label, summary.words)}
         onPress={() => setOpen(!isOpen)}
         style={[styles.trigger, isOpen ? styles.triggerOpen : null]}
       >
@@ -110,8 +105,8 @@ export function JobTray({
             <Text variant="overline" color="tertiary">
               {label}
             </Text>
-            {onClear !== undefined && finished ? (
-              <Pressable onPress={onClear} style={styles.clear}>
+            {offersClear(jobs, onClear, clearLabel) ? (
+              <Pressable onPress={closingPress(trigger)(onClear)} style={styles.clear}>
                 <Text variant="caption" color="secondary" style={styles.clearWords}>
                   {clearLabel}
                 </Text>

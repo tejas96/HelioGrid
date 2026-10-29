@@ -1,11 +1,12 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { renderMarks } from '../ChipGroup/ChipGroup';
 import type { CompareOption } from './CompareGrid.types';
 
 interface OptionHeadProps<Opt extends CompareOption> {
   option: Opt;
   selected: boolean;
-  selectedLabel: string;
-  currentLabel: string;
+  selectedLabel: TranslatedText;
+  currentLabel: TranslatedText;
 }
 
 /**

@@ -2,10 +2,9 @@
    itself is `groupDiffRows`; a row's four states are `VersionDiffRow`. */
 
 import { theme } from '@heliogrid/theme';
-import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
-import type { DiffGroup } from './VersionDiff.resolve';
+import type { DiffGroup, DiffRowFrame } from './VersionDiff.resolve';
 import { VersionDiffRow } from './VersionDiffRow.native';
 
 const styles = StyleSheet.create({
@@ -13,19 +12,7 @@ const styles = StyleSheet.create({
   groupName: { marginTop: 6 },
 });
 
-export function VersionDiffGroup({
-  group,
-  beforeStamp,
-  afterStamp,
-  removedLabel,
-  addedLabel,
-}: {
-  group: DiffGroup;
-  beforeStamp: string;
-  afterStamp: string;
-  removedLabel: string;
-  addedLabel?: ReactNode;
-}) {
+export function VersionDiffGroup({ group, ...frame }: DiffRowFrame & { group: DiffGroup }) {
   return (
     <View style={styles.group}>
       {group.name ? (
@@ -34,14 +21,7 @@ export function VersionDiffGroup({
         </Text>
       ) : null}
       {group.rows.map((entry) => (
-        <VersionDiffRow
-          key={entry.id}
-          row={entry.row}
-          beforeStamp={beforeStamp}
-          afterStamp={afterStamp}
-          removedLabel={removedLabel}
-          addedLabel={addedLabel}
-        />
+        <VersionDiffRow key={entry.id} row={entry.row} {...frame} />
       ))}
     </View>
   );

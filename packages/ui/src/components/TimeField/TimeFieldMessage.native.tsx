@@ -1,11 +1,13 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { hasCallerError } from './TimeField.logic';
 
 interface NativeTimeFieldMessageProps {
   error?: ReactNode;
-  helper?: string;
-  refused: string | null;
+  helper?: TranslatedText;
+  refused: TranslatedText | null;
 }
 
 /**
@@ -25,7 +27,7 @@ export function TimeFieldMessage({ error, helper, refused }: NativeTimeFieldMess
       </View>
     );
   }
-  if (error !== undefined && error !== null && error !== false) {
+  if (hasCallerError(error)) {
     return (
       <Text variant="field-helper" color="danger">
         {error}

@@ -9,6 +9,7 @@ import {
   catalogPriceFrom,
 } from './catalog-settings';
 import type { CatalogFormats } from './catalog-views';
+import { catalogTableWords } from './catalog-words';
 
 type T = Translator['t'];
 
@@ -46,6 +47,7 @@ export function catalogAttributionWords(
     more: t(CATALOG_SETTINGS.loadMore),
     loadFailed: t(CATALOG_SETTINGS.loadFailed),
     tryAgain: t(CATALOG_SETTINGS.tryAgain),
+    table: catalogTableWords(t),
   };
 }
 

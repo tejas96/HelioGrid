@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { compliantShades, type MinorUnits, normaliseHexColour } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
@@ -5,14 +6,7 @@ import { isValidElement } from 'react';
 import { asWordOnPaper, bestTextOn, NEAR_BLACK, WHITE } from '../../utils/color-contrast';
 import type { MarketFormat } from '../../utils/format';
 import { IN_FORMAT } from '../../utils/format';
-import {
-  NO_IDENTITY,
-  NO_MONEY,
-  NO_WORDS,
-  SAMPLE_IDENTITY,
-  SAMPLE_MONEY,
-  SAMPLE_WORDS,
-} from './DocumentPreview.sample';
+import { NO_IDENTITY, NO_MONEY, SAMPLE_IDENTITY, SAMPLE_MONEY } from './DocumentPreview.sample';
 import type {
   DocumentFigures,
   DocumentLetterhead,
@@ -21,7 +15,6 @@ import type {
   DocumentPreviewProps,
   DocumentSection,
   DocumentSectionInput,
-  DocumentSubsidy,
 } from './DocumentPreview.types';
 import { A4_RATIO, DOCUMENT_DESIGN_WIDTH } from './DocumentPreview.types';
 
@@ -35,27 +28,38 @@ export interface ResolvedDocument {
   address: string;
   phone: string;
   taxId: string;
+  // biome-ignore lint/plugin/copy-prop-type: the market pack's name for the tax number
   taxLabel: string;
   logoSrc: string | undefined;
-  logoLabel: string;
+  logoLabel: TranslatedText;
   customerName: string;
   customerMeta: string;
-  docTitle: string;
+  docTitle: TranslatedText | undefined;
   docNumber: string;
   docDateText: string;
   parts: DocumentPart[];
-  lineItems: { description: string; amountText: string }[];
+  lineItems: {
+    // biome-ignore lint/plugin/copy-prop-type: a line of the figures, as the server's lines name it
+    description: string;
+    amountText: string;
+  }[];
   totalText: string;
-  preparedForLabel: string;
-  totalLabel: string;
-  bandFailsNote: string;
-  termsEmptyText: string | undefined;
-  subsidyLine: string | null;
+  preparedForLabel: TranslatedText | undefined;
+  totalLabel: TranslatedText | undefined;
+  bandFailsNote: TranslatedText | undefined;
+  termsEmptyText: TranslatedText | undefined;
+  subsidyNote: TranslatedText | undefined;
   sections: DocumentSection[];
-  sectionsTitle: string;
-  tranches: { label: string; when?: string; share?: string; amountText: string }[];
-  tranchesTitle: string;
-  termsTitle: string;
+  sectionsTitle: TranslatedText | undefined;
+  tranches: {
+    // biome-ignore lint/plugin/copy-prop-type: the tranche's name, as the company named it
+    label: string;
+    when?: string;
+    share?: string;
+    amountText: string;
+  }[];
+  tranchesTitle: TranslatedText | undefined;
+  termsTitle: TranslatedText | undefined;
   /** The letterhead as a spec object, when the caller passed one rather than a node. */
   letterhead: DocumentLetterhead | null;
   /** The letterhead as a ready node, when the caller owns the markup. */
@@ -73,7 +77,7 @@ export interface ResolvedDocument {
   scale: number;
   /** The sheet's design-space height, or undefined when `fit="content"`. */
   sheetHeight: number | undefined;
-  caption: string;
+  caption: TranslatedText | undefined;
 }
 
 function normaliseSections(sections: DocumentSectionInput[]): DocumentSection[] {
@@ -97,29 +101,9 @@ function letterheadSpec(value: DocumentLetterhead | ReactNode): DocumentLetterhe
  * The caller's figures, or — when it passed none — the whole sample, never a part of it. A real
  * cover with no figures draws no money band.
  */
-function moneyOf(
-  money: DocumentMoney,
-  sample: boolean,
-): DocumentFigures & Partial<DocumentSubsidy> {
+function moneyOf(money: DocumentMoney, sample: boolean): DocumentFigures {
   if (money.lineItems !== undefined) return money;
   return sample ? SAMPLE_MONEY : NO_MONEY;
-}
-
-/* The composed sentence is the specimen's English; a real cover prints only its caller's note. */
-function subsidySentence(
-  subsidyNote: string | undefined,
-  money: Partial<DocumentSubsidy>,
-  sample: boolean,
-  subsidyLabel: string,
-  format: MarketFormat['amount'],
-): string | null {
-  if (subsidyNote !== undefined) {
-    return subsidyNote;
-  }
-  if (!sample || money.subsidyAmount === undefined || money.payable === undefined) {
-    return null;
-  }
-  return `Less ${subsidyLabel} ${format(money.subsidyAmount)} · payable ${format(money.payable)}`;
 }
 
 /**
@@ -137,12 +121,11 @@ export function resolveDocument(
 ): ResolvedDocument {
   const isSample = props.sample ?? true;
   const sample = isSample && props.lineItems === undefined ? SAMPLE_IDENTITY : NO_IDENTITY;
-  const words = isSample ? SAMPLE_WORDS : NO_WORDS;
   const {
     brandColor = FALLBACK_BRAND,
     companyName = sample.companyName,
     logoSrc,
-    logoLabel = words.logoLabel,
+    logoLabel,
     taxId = sample.taxId,
     taxIdLabel,
     address = sample.address,
@@ -150,24 +133,23 @@ export function resolveDocument(
     letterhead,
     customerName = sample.customerName,
     customerMeta = sample.customerMeta,
-    docTitle = words.docTitle,
+    docTitle,
     docNumber = sample.docNumber,
     docDate = sample.docDate,
     parts = ['cover', 'items'],
-    subsidyLabel = words.subsidyLabel,
     subsidyNote,
     sections = [],
-    sectionsTitle = words.sectionsTitle,
+    sectionsTitle,
     tranches = [],
-    tranchesTitle = words.tranchesTitle,
-    termsTitle = words.termsTitle,
+    tranchesTitle,
+    termsTitle,
     fit = 'a4',
     width = 420,
-    caption = words.caption,
-    preparedForLabel = words.preparedForLabel,
-    totalLabel = words.totalLabel,
-    bandFailsNote = words.bandFailsNote,
-    termsEmptyText = words.termsEmptyText,
+    caption,
+    preparedForLabel,
+    totalLabel,
+    bandFailsNote,
+    termsEmptyText,
   } = props;
 
   /* A line amount may legitimately be a WORD — "Included", "At cost" — so the string spelling
@@ -207,7 +189,7 @@ export function resolveDocument(
     totalLabel,
     bandFailsNote,
     termsEmptyText,
-    subsidyLine: subsidySentence(subsidyNote, money, isSample, subsidyLabel, format.amount),
+    subsidyNote,
     sections: normaliseSections(sections),
     sectionsTitle,
     tranches: tranches.map((tranche) => ({

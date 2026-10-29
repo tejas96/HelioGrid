@@ -1,5 +1,5 @@
-import { useSession } from '@heliogrid/data/react';
-import { opensSettingsRow, type SettingsRow, settingsRowOfSegment } from '@heliogrid/domain';
+import { useSettingsScreen } from '@heliogrid/data/react';
+import type { SettingsRow } from '@heliogrid/domain';
 import { SHELL } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { EmptyState } from '@heliogrid/ui';
@@ -41,10 +41,8 @@ const BUILT_ROW: Partial<Record<SettingsRow, ComponentType<{ from: string | null
  * the page does not exist (`F7-48`), as the web's does.
  */
 export function SettingsRowScreen({ route }: Props) {
-  const { user } = useSession();
-  const row = settingsRowOfSegment(route.params.segment);
-  const opens = row !== null && opensSettingsRow(user?.tenant?.roles ?? [], row);
-  if (row === null || !opens) {
+  const row = useSettingsScreen().openedRow(route.params.segment);
+  if (row === null) {
     return (
       <ShellPage inView="more">
         <ShellNotFoundState />

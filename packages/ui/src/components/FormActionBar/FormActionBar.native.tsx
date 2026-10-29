@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
 import type { FormActionBarProps } from './FormActionBar.types';
@@ -26,6 +27,7 @@ export function FormActionBar({
   onSave,
   discardLabel,
   onDiscard,
+  focusAfter,
   saving = false,
   placement = 'sticky',
   align = 'start',
@@ -33,6 +35,7 @@ export function FormActionBar({
   style,
 }: NativeFormActionBarProps) {
   const centred = align === 'center';
+  const leaving = useFocusAfter(focusAfter);
   return (
     <View
       style={[
@@ -49,10 +52,20 @@ export function FormActionBar({
         </Text>
       )}
       <View style={[styles.acts, centred ? styles.actsCentred : undefined]}>
-        <Button variant="primary" size="md" loading={saving} onClick={onSave}>
+        <Button
+          variant="primary"
+          size="md"
+          loading={saving}
+          onClick={onSave === undefined ? undefined : leaving(onSave)}
+        >
           {saveLabel}
         </Button>
-        <Button variant="ghost" size="md" disabled={saving} onClick={onDiscard}>
+        <Button
+          variant="ghost"
+          size="md"
+          disabled={saving}
+          onClick={onDiscard === undefined ? undefined : leaving(onDiscard)}
+        >
           {discardLabel}
         </Button>
       </View>

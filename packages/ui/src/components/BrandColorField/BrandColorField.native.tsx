@@ -1,4 +1,3 @@
-import { normaliseHexColour } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
@@ -9,9 +8,11 @@ import { Input } from '../Input/Input.native';
 import { ProvenanceTier } from '../Provenance/Provenance.native';
 import type { BrandColorFieldProps } from './BrandColorField.types';
 import {
+  brandColourActs,
   fieldWordsOf,
   fullVerdicts,
-  readBrandColour,
+  isChosenSwatch,
+  readFieldColour,
   shortVerdict,
   specimenWordColour,
 } from './BrandColorField.verdicts';
@@ -47,19 +48,8 @@ export function BrandColorField({
   style,
 }: NativeBrandColorFieldProps) {
   const shown = fieldWordsOf(words, { label, helper, specimenLabel, specimenWord });
-  const hex = normaliseHexColour(value);
-  const reading = hex === null ? null : readBrandColour(hex, showSuggestion);
-
-  const set = (next: string) => {
-    const normalised = normaliseHexColour(next);
-    if (normalised !== null) {
-      onChange?.(normalised);
-    }
-  };
-
-  const takeInk = () => {
-    if (reading !== null && reading.fix !== null) set(reading.fix.hex);
-  };
+  const { hex, reading } = readFieldColour(value, showSuggestion);
+  const { set, takeInk } = brandColourActs(reading, onChange);
 
   return (
     <View style={[styles.column, style]}>
@@ -73,7 +63,7 @@ export function BrandColorField({
           style={styles.swatches}
         >
           {presets.map((preset) => {
-            const chosen = normaliseHexColour(preset) === hex;
+            const chosen = isChosenSwatch(preset, hex);
             return (
               <Pressable
                 key={preset}

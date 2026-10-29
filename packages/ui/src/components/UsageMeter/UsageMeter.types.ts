@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { ProvenanceStanding, ProvenanceTierSpec } from '../Provenance/Provenance.types';
 import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 
@@ -28,9 +29,49 @@ export type UsageState =
   | 'ready'
   | Extract<SurfaceState, 'loading' | 'error' | 'unavailable'>;
 
+/**
+ * Every word the meter composes itself, in the reader's language — `@heliogrid/i18n`'s
+ * `usageMeterWords(t)`. The figures in them arrive formatted by the market's pack, and `bundle` is
+ * the caller's `bundleName` where there is one.
+ */
+export interface UsageMeterWords {
+  /** The unmetered line, unless `noLimitNote` replaces it. */
+  noLimit: TranslatedText;
+  /** The unresolved line beside the period, unless `loadingNote` replaces it. */
+  loading: TranslatedText;
+  /** `error`'s sentence, unless `errorMessage` replaces it. It never quotes a figure. */
+  error: TranslatedText;
+  /** `unavailable`'s title, unless `unavailableTitle` replaces it. */
+  unavailable: TranslatedText;
+  /** After the strong figure — *of 200 sends*. */
+  ofLimit: (limit: string, unit?: string) => TranslatedText;
+  /** The track's name with its period — *Proposal sends, 1–31 Aug 2026*. */
+  named: (label: string, period: string) => TranslatedText;
+  /** The track's spoken value — *142 of 200 sends*, with *, 12 beyond the bundle* past the limit. */
+  valueText: (value: string, limit: string, unit?: string, overage?: string) => TranslatedText;
+  /** A meter still being read, named — *Proposal sends, 1–31 Aug 2026, not resolved yet*. */
+  unresolvedName: (label: string, period?: string) => TranslatedText;
+  /** The threshold tick's title — *80% warning threshold*. */
+  threshold: (percent: number) => TranslatedText;
+  /** `creations-paused` with a limit — the cap was reached and the grace period has ended. */
+  paused: TranslatedText;
+  /** `creations-paused` with no limit — new creations are blocked on this plan. */
+  pausedOnPlan: TranslatedText;
+  /** `cap-reached-grace` — with the days of grace left where they are known. */
+  capReached: (graceDaysLeft?: number) => TranslatedText;
+  /** `overage-accruing` — how far beyond the bundle, billed as overage. */
+  overage: (overage: string, unit?: string, bundle?: string) => TranslatedText;
+  /** `tracked-seats-accruing` — how far beyond the bundle, billed per seat. */
+  trackedSeats: (overage: string, bundle?: string) => TranslatedText;
+  /** At or past the threshold while `ok` — *82% of the bundle used.* */
+  nearing: (percent: number, bundle?: string) => TranslatedText;
+}
+
 export interface UsageMeterProps {
   /** What is metered — "Proposal sends", "AI designs", "Tracked seats". */
-  label: string;
+  label: TranslatedText;
+  /** The meter's own words — `usageMeterWords(t)`. */
+  words: UsageMeterWords;
   /**
    * Consumption so far. May exceed `limit`: overage accrues visibly (`M12-35`).
    *
@@ -46,7 +87,8 @@ export interface UsageMeterProps {
    * threshold tick and the percentage all derive from a rate, so none is drawn without one.
    */
   limit?: number | null;
-  unit?: string;
+  /** What is counted — *sends*, *seats*. */
+  unit?: TranslatedText;
   /** The billing period these numbers belong to — "1–31 Aug 2026". BM-27 requires it. */
   period?: string;
   /**
@@ -58,26 +100,29 @@ export interface UsageMeterProps {
   /** How far the figure can be relied on as final. See `Provenance`. */
   standing?: ProvenanceStanding;
   /** The bundle this consumption is shown against — "Growth bundle" (BM-27). */
-  bundleName?: string;
+  bundleName?: TranslatedText;
   /** Default `"ok"` (`"ready"` is accepted as its synonym). See `UsageState` for the precedence. */
   state?: UsageState;
   /** Warning threshold, drawn as a tick on the track. Default 80 (BM-34). */
   thresholdPercent?: number;
   /** Days left in the 7-day grace window. Used by `cap-reached-grace` (M12-30). */
   graceDaysLeft?: number;
-  note?: string;
-  /** The unmetered line's words. Say the commercial rule if you know it — "Billed per send". */
-  noLimitNote?: string;
-  /** The unresolved line's words, shown beside the period while `loading`. */
-  loadingNote?: string;
-  /** `error`'s sentence. It never quotes a figure, not even the last good one. */
-  errorMessage?: string;
+  note?: TranslatedText;
+  /** Replaces `words.noLimit`. Say the commercial rule if you know it — "Billed per send". */
+  noLimitNote?: TranslatedText;
+  /** Replaces `words.loading`, shown beside the period while `loading`. */
+  loadingNote?: TranslatedText;
+  /** Replaces `words.error`. It never quotes a figure, not even the last good one. */
+  errorMessage?: TranslatedText;
   /** Draws the retry under `error`. No other state offers one. */
   onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
-  retryLabel?: string;
-  /** `unavailable`: this meter does not apply to this plan. No bar, no figure, no retry. */
-  unavailableTitle?: string;
-  unavailableMessage?: string;
+  retryLabel?: TranslatedText;
+  /**
+   * `unavailable`: this meter does not apply to this plan. No bar, no figure, no retry. Replaces
+   * `words.unavailable`.
+   */
+  unavailableTitle?: TranslatedText;
+  unavailableMessage?: TranslatedText;
   density?: 'expressive' | 'functional';
 }

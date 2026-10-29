@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import type { OperationState } from './OperationProgress.types';
+import { messageGlyph } from './operation-progress-model';
 
 function MessageGlyph({ state }: { state: OperationState }) {
   return (
@@ -13,9 +14,7 @@ function MessageGlyph({ state }: { state: OperationState }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <ShellGlyphMarks
-        name={state === 'failed' ? 'alert-circle' : state === 'cancelled' ? 'minus-circle' : 'tick'}
-      />
+      <ShellGlyphMarks name={messageGlyph(state)} />
     </svg>
   );
 }

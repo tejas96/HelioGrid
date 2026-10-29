@@ -6,6 +6,7 @@ export const NO_PHASE = '__none';
 export interface ChecklistGroup {
   key: string;
   /** The heading's words — the phase's own `label`, or the raw key when no `phases` was given. */
+  // biome-ignore lint/plugin/copy-prop-type: a phase's own name — the market pack's word, or its key
   heading: string;
   note: ChecklistPhase['note'];
   items: ChecklistItem[];

@@ -1,3 +1,4 @@
+import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
@@ -73,7 +74,7 @@ function RemedyGlyph({ color }: { color: string }) {
 }
 
 export interface BandedCardProps {
-  label: string;
+  label: TranslatedText;
   shown: string;
   unit?: string;
   band: BandSpec | null;
