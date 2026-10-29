@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { DENSITY } from './DataTable.logic';
 import type { DataTableProps } from './DataTable.types';
 import { TableMessage, TableSkeleton } from './DataTableFeedback.native';
@@ -51,17 +52,18 @@ export function TableStates<Row>({
 }) {
   const spec = DENSITY[density];
   const {
-    state = 'ready',
+    read,
     emptyTitle = 'Nothing here yet',
     emptyDescription,
     emptyAction,
     errorTitle = "Couldn't load these records",
     errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-    onRetry,
     retryLabel,
     unavailableTitle = 'Not available here',
     unavailableMessage,
   } = table;
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
 
   return (
     <>

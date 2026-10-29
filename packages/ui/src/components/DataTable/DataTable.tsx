@@ -3,6 +3,7 @@ import { useEffect, useId, useMemo, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { useOwnWidth } from '../../primitives/use-own-width';
 import { renderProvenance } from '../Provenance';
+import { surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import {
   DATA_TABLE_STACK_BELOW,
   showsMessage,
@@ -52,7 +53,7 @@ export function DataTable<Row = Record<string, unknown>>(props: WebDataTableProp
     onSortChange,
     provenance,
     summary,
-    state = 'ready',
+    read,
     caption,
     continued = false,
     stackBelow = DATA_TABLE_STACK_BELOW,
@@ -66,6 +67,7 @@ export function DataTable<Row = Record<string, unknown>>(props: WebDataTableProp
     className,
     style,
   } = props;
+  const state = surfaceStateOf(read);
 
   const [ref, ownWidth] = useOwnWidth();
   const captionId = useId();

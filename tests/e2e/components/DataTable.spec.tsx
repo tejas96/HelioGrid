@@ -15,7 +15,12 @@ const STACKED = Number.MAX_SAFE_INTEGER;
 
 test('a table is a heading on the page — no fill, no shadow', async ({ mount }) => {
   const table = await mount(
-    <DataTable columns={[{ key: 'name', label }]} rows={rows} stackBelow={WIDE} />,
+    <DataTable
+      read={{ kind: 'ready' }}
+      columns={[{ key: 'name', label }]}
+      rows={rows}
+      stackBelow={WIDE}
+    />,
   );
 
   await expect(table).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
@@ -29,6 +34,7 @@ test('a table row is on the page and its cell editor is a field on the fill', as
 }) => {
   const table = await mount(
     <DataTable
+      read={{ kind: 'ready' }}
       columns={[{ key: 'name', label, editable: true }]}
       rows={rows}
       onCellCommit={() => undefined}
@@ -47,7 +53,12 @@ test('a table row is on the page and its cell editor is a field on the fill', as
 test('the sticky head paints the ground that holds it', async ({ mount, page }) => {
   const card = await mount(
     <Card>
-      <DataTable columns={[{ key: 'name', label }]} rows={rows} stackBelow={WIDE} />
+      <DataTable
+        read={{ kind: 'ready' }}
+        columns={[{ key: 'name', label }]}
+        rows={rows}
+        stackBelow={WIDE}
+      />
     </Card>,
   );
   const head = card.getByRole('columnheader', { name: label });
@@ -62,8 +73,15 @@ test('a stacked record is a tile, and one holding an editor lies on the page', a
 }) => {
   await mount(
     <>
-      <DataTable columns={[{ key: 'name', label }]} rows={rows} selectable stackBelow={STACKED} />
       <DataTable
+        read={{ kind: 'ready' }}
+        columns={[{ key: 'name', label }]}
+        rows={rows}
+        selectable
+        stackBelow={STACKED}
+      />
+      <DataTable
+        read={{ kind: 'ready' }}
         columns={[{ key: 'name', label, editable: true }]}
         rows={rows}
         onCellCommit={() => undefined}
@@ -98,6 +116,7 @@ test('a record whose only editor is in its detail list lies on the page', async 
 }) => {
   const table = await mount(
     <DataTable
+      read={{ kind: 'ready' }}
       columns={[
         { key: 'name', label, primary: true },
         { key: 'note', label: issue, editable: true },
@@ -121,6 +140,7 @@ test('a column marked editable with nothing to commit to leaves the record a til
 }) => {
   const table = await mount(
     <DataTable
+      read={{ kind: 'ready' }}
       columns={[{ key: 'name', label, editable: true }]}
       rows={rows}
       stackBelow={STACKED}
@@ -156,6 +176,7 @@ test('a flagged record holding an editor keeps its tint, and its controls are wh
 test('a stacked total is a grey tile with no shadow', async ({ mount, page }) => {
   const table = await mount(
     <DataTable
+      read={{ kind: 'ready' }}
       columns={[{ key: 'name', label }]}
       rows={rows}
       totalRow={{ label: value }}
@@ -175,84 +196,6 @@ test('a flagged stacked record keeps its warning fill', async ({ mount, page }) 
     'background-color',
     await resolvedColour(page, '--warning-bg'),
   );
-});
-
-test('a quiet table — sentence-case labels on the page, the rows in one raised card with hairlines (design-system change 20)', async ({
-  mount,
-  page,
-}) => {
-  const three = [
-    { id: 1, name: value },
-    { id: 2, name: label },
-    { id: 3, name: issue },
-  ];
-  const table = await mount(
-    <DataTable
-      columns={[{ key: 'name', label }]}
-      rows={three}
-      caption={value}
-      head="quiet"
-      stackBelow={WIDE}
-    />,
-  );
-  const head = table.getByRole('columnheader', { name: label });
-  const rowsShown = table.locator('.hg-dt-row');
-  const card = table.locator('.hg-dt-quiet');
-
-  // The words themselves, not only their cell: the label is a Text inside the header cell.
-  const words = head.getByText(label, { exact: true });
-  await expect(words).toHaveCSS('text-transform', 'none');
-  await expect(words).toHaveCSS('font-size', '12px');
-  await expect(words).toHaveCSS('letter-spacing', 'normal');
-  await expect(words).toHaveCSS('color', await resolvedColour(page, '--text-secondary'));
-  // The caption still names the table, for a screen reader only (F7-27).
-  await expect(table.getByRole('table', { name: value })).toBeVisible();
-  await expect(table.getByText(value, { exact: true }).first()).toHaveClass(/hg-spoken-only/);
-  await expect(rowsShown).toHaveCount(3);
-  for (const index of [0, 1, 2]) {
-    await expect(rowsShown.nth(index)).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
-  }
-  await expect(rowsShown.nth(0)).toHaveCSS('border-top-width', '0px');
-  await expect(rowsShown.nth(1)).toHaveCSS(
-    'border-top-color',
-    await resolvedColour(page, '--line-soft'),
-  );
-  await expect(rowsShown.nth(1).locator('td').first()).toHaveCSS('height', '82px');
-  const cardLook = await card.evaluate((node) => {
-    const style = getComputedStyle(node, '::before');
-    return {
-      background: style.backgroundColor,
-      shadow: style.boxShadow,
-      radius: style.borderRadius,
-    };
-  });
-  expect(cardLook.background).toBe(await resolvedColour(page, '--surface'));
-  expect(cardLook.shadow).not.toBe('none');
-  expect(cardLook.radius).toBe('16px');
-});
-
-test('a quiet table keeps its labels and its card while it loads, with three rows', async ({
-  mount,
-}) => {
-  const table = await mount(
-    <DataTable
-      columns={[{ key: 'name', label }]}
-      rows={[]}
-      state="loading"
-      head="quiet"
-      stackBelow={WIDE}
-    />,
-  );
-  await expect(table.locator('.hg-dt-quiet')).toHaveAttribute('aria-busy', 'true');
-  await expect(table.getByText(label)).toBeVisible();
-  await expect(table.locator('.hg-dt-row')).toHaveCount(3);
-});
-
-test('a table without the quiet head draws no card wrapper', async ({ mount }) => {
-  const table = await mount(
-    <DataTable columns={[{ key: 'name', label }]} rows={rows} stackBelow={WIDE} />,
-  );
-  await expect(table.locator('.hg-dt-quiet')).toHaveCount(0);
 });
 
 test.describe('rowOpens: only the rows it allows open (D242)', () => {

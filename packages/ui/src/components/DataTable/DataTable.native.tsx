@@ -4,6 +4,7 @@ import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderProvenance } from '../Provenance/Provenance.native';
+import { surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import {
   DATA_TABLE_STACK_BELOW,
   showsMessage,
@@ -58,7 +59,7 @@ export function DataTable<Row = Record<string, unknown>>(props: NativeDataTableP
     onSortChange,
     provenance,
     summary,
-    state = 'ready',
+    read,
     caption,
     continued = false,
     stackBelow = DATA_TABLE_STACK_BELOW,
@@ -70,6 +71,7 @@ export function DataTable<Row = Record<string, unknown>>(props: NativeDataTableP
     density = 'comfortable',
     style,
   } = props;
+  const state = surfaceStateOf(read);
 
   const [ownWidth, setOwnWidth] = useState<number | null>(null);
   const { selection, setSelection, toggleRow, toggleAll, allSelected } = useTableSelection(

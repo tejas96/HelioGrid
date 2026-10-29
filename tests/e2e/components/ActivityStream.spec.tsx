@@ -10,6 +10,7 @@ test('the sticky day heading paints the ground that holds it', async ({ mount, p
   const card = await mount(
     <Card>
       <ActivityStream
+        read={{ kind: 'ready' }}
         entries={[{ id: 1, kind: 'note', at: Date.now(), actorClass: 'person', summary: tryAgain }]}
         todayLabel={tryAgain}
         groupBy="day"

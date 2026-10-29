@@ -2,6 +2,7 @@ import type { CSSProperties, KeyboardEvent } from 'react';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { renderProvenance } from '../Provenance';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { visibleRange } from './CompareGrid.logic';
 import type { CompareGridProps, CompareOption } from './CompareGrid.types';
 import { CompareGridFooter } from './CompareGridFooter';
@@ -48,12 +49,11 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
   note,
   columnWidth = 196,
   labelWidth = 128,
-  state = 'ready',
+  read,
   emptyTitle = 'Nothing to compare yet',
   emptyMessage = 'Generate at least two variants and they line up here side by side.',
   errorTitle = "Couldn't load the comparison",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   unavailableTitle = 'Not comparable here',
   unavailableMessage,
@@ -61,6 +61,8 @@ export function CompareGrid<Opt extends CompareOption = CompareOption>({
   className,
   style,
 }: WebCompareGridProps<Opt>) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const scroller = useRef<HTMLFieldSetElement>(null);
   const [position, setPosition] = useState({ scrollable: false, first: 1, last: 1 });
   const captionId = useId();

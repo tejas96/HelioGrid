@@ -5,20 +5,19 @@ import { Text } from '../../primitives/Text/Text.native';
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
+import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 import type { ChecklistProps } from './Checklist.types';
 
-type StateProps = Required<Pick<ChecklistProps, 'state'>> &
-  Pick<
-    ChecklistProps,
-    | 'emptyTitle'
-    | 'emptyMessage'
-    | 'errorTitle'
-    | 'errorMessage'
-    | 'onRetry'
-    | 'retryLabel'
-    | 'unavailableTitle'
-    | 'unavailableMessage'
-  >;
+type StateProps = { state: SurfaceState; onRetry?: () => void } & Pick<
+  ChecklistProps,
+  | 'emptyTitle'
+  | 'emptyMessage'
+  | 'errorTitle'
+  | 'errorMessage'
+  | 'retryLabel'
+  | 'unavailableTitle'
+  | 'unavailableMessage'
+>;
 
 const styles = StyleSheet.create({
   note: { flexDirection: 'column', gap: theme.spacing['sp-2'], alignItems: 'flex-start' },

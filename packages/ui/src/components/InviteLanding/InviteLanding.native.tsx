@@ -238,7 +238,7 @@ function LandingSkeleton({ spoken }: { spoken: string }) {
         <View style={[styles.bar, styles.titleBar, styles.titleStart]} />
         <View style={[styles.bar, styles.titleBar, styles.titleEnd]} />
       </View>
-      <Card state="loading" density="expressive" style={styles.skeletonCard} />
+      <Card read={{ kind: 'loading' }} density="expressive" style={styles.skeletonCard} />
     </View>
   );
 }

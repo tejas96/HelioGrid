@@ -1,7 +1,7 @@
 import React from "react";
 import { SolarStatus } from "./StatusChip";
 import { PendingActionSpec } from "../feedback/PendingAction";
-import { SurfaceState } from "../feedback/UnavailableNote";
+import { SurfaceRead } from "../feedback/UnavailableNote";
 import { ProvenanceProps, ProvenanceTierSpec, ProvenanceStanding } from "./Provenance";
 
 export interface KanbanCardItem {
@@ -58,7 +58,11 @@ export interface KanbanProps {
    * was optimistically applied (`F8-36`).
    */
   cardPending?: (item: KanbanCardItem, column: KanbanColumn) => PendingActionSpec | null;
-  state?: SurfaceState;
+  /**
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
+   */
+  read: SurfaceRead;
   emptyTitle?: string;
   emptyDescription?: string;
   /** `unavailable`: no such board here at all. Neutral, and no retry — see `UnavailableNote`. */
@@ -66,7 +70,6 @@ export interface KanbanProps {
   unavailableMessage?: string;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   columnWidth?: number;
   /**
    * Own-width px below which the board becomes **one column with a stage filter** — `M08-10` (P0) /

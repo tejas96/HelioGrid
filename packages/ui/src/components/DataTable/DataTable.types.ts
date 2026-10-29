@@ -2,7 +2,7 @@ import type { PayableReconciliation } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { PendingActionSpec } from '../PendingAction';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
-import type { SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead } from '../UnavailableNote';
 import type { DataTableColumn, DataTableLeading } from './DataTableColumn.types';
 
 export type { DataTableColumn, DataTableLeading };
@@ -132,13 +132,16 @@ interface DataTableBaseProps<Row> {
   rowIssueAction?: (row: Row) => ReactNode;
   /** The line above the rows — `M01-41`'s "N rows · M match · K new · E need attention". */
   summary?: ReactNode;
-  state?: SurfaceState;
+  /**
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
+   */
+  read: SurfaceRead;
   emptyTitle?: string;
   emptyDescription?: string;
   emptyAction?: ReactNode;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   /** `unavailable`: these records were never going to be here. Neutral, and no retry. */

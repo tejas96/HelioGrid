@@ -1,5 +1,4 @@
 import type { BlockProps } from '../Block/Block.types';
-import { readSurface } from '../UnavailableNote/read-surface';
 import type { HomeBlock, HomeBlocksProps } from './HomeBlocks.types';
 
 /** One block's props, the same on both halves: its preset's overline and the region's one state. */
@@ -8,7 +7,7 @@ export function homeBlockProps(region: HomeBlocksProps, block: HomeBlock): Block
   const read = region.read.kind === 'ready' ? { kind: 'empty' as const } : region.read;
   return {
     overline: block.overline,
-    ...readSurface(read),
+    read,
     emptyTitle: region.emptyTitle,
     emptyMessage: region.emptyMessage,
     errorTitle: region.errorTitle,

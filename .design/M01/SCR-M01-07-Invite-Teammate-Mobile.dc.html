@@ -119,7 +119,7 @@ a:hover{color:var(--link-hover)}
           <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneField" label="Their phone number" helper="HelioGrid sends the message to this number — it does not come from your phone." hint-size="100%,100px"></x-import>
           <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
             <div style="display:flex;align-items:center;gap:var(--sp-1)"><h2 style="margin:0;font-size:var(--fs-h3);line-height:var(--lh-h3);letter-spacing:var(--tr-h3);font-weight:var(--fw-bold);color:var(--text-primary)">What can they do?</h2><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Explainer" dc-props="{{ rolesAsk.m_error }}" hint-size="44px,44px"></x-import></div>
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="error" error-title="We couldn't load the roles" error-message="Try again, or skip for now." on-retry="{{ noop }}" hint-size="100%,160px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" read="{{ readFailed }}" error-title="We couldn't load the roles" error-message="Try again, or skip for now." hint-size="100%,160px"></x-import>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:var(--sp-3);padding-top:var(--sp-5)">
@@ -489,6 +489,7 @@ class Component extends DCLogic {
     ];
 
     return Object.assign(base, {
+      readFailed: { kind: "failed", retry: noop },
       findEmpty: { placeholder: "Find in this list", ariaLabel: "Find in this list", value: "", onChange: noop },
       chipsAll: { label: "Status", value: "all", onChange: noop, scroll: true, options: STATUS_OPTIONS,
         counts: { all: 11, invited: 1, expired: 1, active: 8, deactivated: 1 } },

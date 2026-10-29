@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode, UIEvent } from 'react';
 import { useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { OverlayBody } from './OverlayBody';
 import type { SheetProps } from './Sheet.types';
 import { SheetBackdrop } from './SheetBackdrop';
@@ -55,10 +56,9 @@ export function Sheet({
   bodyScrolls = true,
   modal = true,
   footer = null,
-  state = 'ready',
+  read,
   errorTitle = "Couldn't load this",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   emptyTitle = 'Nothing here yet',
   emptyMessage,
@@ -73,6 +73,8 @@ export function Sheet({
   style,
   bodyStyle,
 }: WebSheetProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const panelRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);

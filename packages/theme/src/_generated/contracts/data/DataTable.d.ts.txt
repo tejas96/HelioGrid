@@ -4,7 +4,7 @@ import { FieldOverrideSpec } from "./FieldOverride";
 import { ValueSourceSpec } from "./ValueSource";
 import { NamedGapSpec } from "./NamedGap";
 import { PendingActionSpec } from "../feedback/PendingAction";
-import { SurfaceState } from "../feedback/UnavailableNote";
+import { SurfaceRead, SurfaceState } from "../feedback/UnavailableNote";
 import { MoneyReconcileSpec } from "./MoneySummary";
 
 export interface DataTableTotalRow {
@@ -198,13 +198,16 @@ export interface DataTableProps<Row = any> {
   rowIssueAction?: (row: Row) => React.ReactNode;
   /** The line above the rows — `M01-41`'s "N rows · M match · K new · E rows need attention". Caller's words. */
   summary?: React.ReactNode;
-  state?: SurfaceState;
+  /**
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
+   */
+  read: SurfaceRead;
   emptyTitle?: string;
   emptyDescription?: string;
   emptyAction?: React.ReactNode;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** `unavailable`: these records were never going to be here. Neutral, and no retry. */
   unavailableTitle?: string;
   unavailableMessage?: string;

@@ -4,6 +4,7 @@ import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, BackHandler, PanResponder, StyleSheet, View } from 'react-native';
 import { KeyboardFrame } from '../../primitives/Keyboard/KeyboardFrame.native';
 import { Portal, usePortalBottomInset } from '../../primitives/Portal/Portal.native';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { OverlayBody } from './OverlayBody.native';
 import type { SheetDensity, SheetProps, SheetSize } from './Sheet.types';
 import { SheetBackdrop } from './SheetBackdrop.native';
@@ -58,10 +59,9 @@ export function Sheet({
   dragToDismiss = true,
   modal = true,
   footer = null,
-  state = 'ready',
+  read,
   errorTitle = "Couldn't load this",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   emptyTitle = 'Nothing here yet',
   emptyMessage,
@@ -73,6 +73,8 @@ export function Sheet({
   bodyStyle,
   bodyScrolls = true,
 }: NativeSheetProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const offset = useRef(new Animated.Value(0)).current;
   const scrollTop = useRef(0);
   const [panelHeight, setPanelHeight] = useState(0);

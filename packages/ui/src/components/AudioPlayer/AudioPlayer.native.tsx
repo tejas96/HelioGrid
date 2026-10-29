@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { AudioPlayerProps, AudioTransportControl } from './AudioPlayer.types';
 import { AudioPlayerReady } from './AudioPlayerReady.native';
 import { AudioError, AudioLoading, AudioUnavailable } from './AudioStates.native';
@@ -43,7 +44,7 @@ const styles = StyleSheet.create({
  * rendered disabled, so nothing here draws an affordance it cannot honour.
  */
 export function AudioPlayer({
-  state = 'ready',
+  read,
   reason,
   duration = 0,
   title,
@@ -53,7 +54,6 @@ export function AudioPlayer({
   purgedAt,
   retentionBound,
   errorMessage = "Couldn't load this recording. Tap Try again — the transcript is on this record either way.",
-  onRetry,
   retryLabel,
   onOpenTranscript,
   transcriptLabel = 'Open transcript',
@@ -67,6 +67,8 @@ export function AudioPlayer({
   onRateChange,
   style,
 }: NativeAudioPlayerProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const shell: StyleProp<ViewStyle> = [
     styles.shell,
     density === 'functional' ? styles.shellFunctional : null,

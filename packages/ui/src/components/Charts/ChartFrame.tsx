@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { ChartFrameBody } from './ChartFrameBody';
 import { ChartProvenance } from './ChartProvenance';
 import type { ChartFrameProps } from './Charts.types';
@@ -32,7 +33,7 @@ export function ChartFrame({
   note,
   legend,
   action,
-  state = 'ready',
+  read,
   height = 200,
   insufficient = false,
   emptyTitle = CHART_EMPTY_TITLE,
@@ -40,12 +41,13 @@ export function ChartFrame({
   insufficientMessage = CHART_INSUFFICIENT_MESSAGE,
   errorTitle = CHART_ERROR_TITLE,
   errorMessage = CHART_ERROR_MESSAGE,
-  onRetry,
   retryLabel,
   children,
   className,
   style,
 }: WebChartFrameProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   /* One provenance line under the headline value — word first, dot second (F8-07). */
   const facts = chartProvenanceFacts({ provenance, standing, source, projection, note });
   const stateNote = chartNote({

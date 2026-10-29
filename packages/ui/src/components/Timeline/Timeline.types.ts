@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead } from '../UnavailableNote';
 
 /** Done = filled success tick, current = accent dot in a soft ring, upcoming = an empty disc. */
 export type TimelineStatus = 'done' | 'current' | 'upcoming' | 'blocked' | 'failed';
@@ -37,12 +37,15 @@ export interface TimelineProps {
   /** page = full-page sequence with a continuous rail; compact = the four-row sheet form. */
   variant?: TimelineVariant;
   density?: TimelineDensity;
-  state?: SurfaceState;
+  /**
+   * The read this list shows. Pass none when it holds static content: it draws `ready`. `failed`
+   * draws the error with its retry; `unavailable` draws none.
+   */
+  read?: SurfaceRead;
   emptyTitle?: string;
   emptyDescription?: string;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   /** `unavailable`: there is no sequence here to draw. Neutral, and no retry. */

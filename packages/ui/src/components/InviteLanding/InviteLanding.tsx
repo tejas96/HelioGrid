@@ -247,7 +247,11 @@ function LandingSkeleton({ spoken }: { spoken: string }) {
         <span className="hg-invite-landing-bar" data-shape="title" />
         <span className="hg-invite-landing-bar" data-shape="title-end" />
       </div>
-      <Card state="loading" density="expressive" className="hg-invite-landing-skeleton-card" />
+      <Card
+        read={{ kind: 'loading' }}
+        density="expressive"
+        className="hg-invite-landing-skeleton-card"
+      />
     </div>
   );
 }

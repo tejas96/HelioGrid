@@ -5,6 +5,7 @@ import type { StyleProp, TextStyle } from 'react-native';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
+import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 import type { CardProps } from './Card.types';
 
 const styles = StyleSheet.create({
@@ -96,13 +97,14 @@ export function CardBody({
   retryLabel,
   unavailableTitle,
   unavailableMessage,
-}: Required<Pick<CardProps, 'state' | 'emptyMessage' | 'errorTitle' | 'errorMessage'>> &
+}: { state: SurfaceState; onRetry?: () => void } & Required<
+  Pick<CardProps, 'emptyMessage' | 'errorTitle' | 'errorMessage'>
+> &
   Pick<
     CardProps,
     | 'children'
     | 'emptyTitle'
     | 'emptyAction'
-    | 'onRetry'
     | 'retryLabel'
     | 'unavailableTitle'
     | 'unavailableMessage'

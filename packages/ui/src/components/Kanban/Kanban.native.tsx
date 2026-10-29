@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project —
    and a web half's DOM types then fail to compile under the native lib. Metro resolves both
@@ -33,12 +34,11 @@ export function Kanban({
   onMove,
   renderCard,
   cardPending,
-  state = 'ready',
+  read,
   emptyTitle = 'No jobs in this pipeline',
   emptyDescription,
   errorTitle = "Couldn't load the board",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   unavailableTitle = 'No pipeline here',
   unavailableMessage,
@@ -50,6 +50,8 @@ export function Kanban({
   onFormChange,
   style,
 }: NativeKanbanProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const [own, setOwn] = useState<number | null>(null);
   const [pickInner, setPickInner] = useState<string | null>(null);
   const onLayout = (e: LayoutChangeEvent) => setOwn(e.nativeEvent.layout.width);

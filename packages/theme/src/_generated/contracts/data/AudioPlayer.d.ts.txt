@@ -1,5 +1,5 @@
 import React from "react";
-import { SurfaceState } from "../feedback/UnavailableNote";
+import { SurfaceRead } from "../feedback/UnavailableNote";
 
 /**
  * **Why there is no recording.** Same state (`unavailable`), two sentences that must never look
@@ -17,11 +17,14 @@ export interface AudioPlayerProps {
    * the fourth state, parallel to `MapSurface`'s `tiles-unavailable`. Now: `ready` plays,
    * `unavailable` + `reason` states why there is no audio, and `loading` / `error` cover the fetch.
    * Neither unavailable reason is an error and neither shows a disabled play button.
+   *
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
    */
-  state?: SurfaceState;
-  /** Required when `state="unavailable"`. Without it the player states the absence generically. */
+  read: SurfaceRead;
+  /** Required when the read is `unavailable`. Without it the player states the absence generically. */
   reason?: AudioUnavailableReason;
-  /** Required for state="ready". */
+  /** Required when the read is `ready`. */
   src?: string;
   /** Known length in seconds, used until the audio reports its own metadata. */
   duration?: number;
@@ -37,7 +40,6 @@ export interface AudioPlayerProps {
   retentionBound?: string;
   /** `error`'s sentence — the fetch failed, which is not the same as there being no recording. */
   errorMessage?: string;
-  onRetry?: () => void;
   /** The transcript survives in every state — always give it somewhere to point, and what it points
       at is `Transcript`, in an `EditorSurface` (`SCR-M07-13` / `SCR-M07-19`). */
   onOpenTranscript?: () => void;

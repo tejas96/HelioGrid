@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import type { FieldOverrideSpec } from '../FieldOverride/FieldOverride.types';
 import type { NamedGapSpec } from '../NamedGap';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
+import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 import type { ValueSourceSpec } from '../ValueSource';
 import type { DataTableProps, DataTableSort, PageRange, PaginationProps } from './DataTable.types';
 import type { DataTableColumn } from './DataTableColumn.types';
@@ -169,10 +170,7 @@ export function sortStateOf<Row>(
  * table with nothing in it — one predicate, so a state can never be handled on one platform and
  * fall through to an empty grid on the other.
  */
-export function showsMessage(
-  state: NonNullable<DataTableProps['state']>,
-  renderedRows: number,
-): boolean {
+export function showsMessage(state: SurfaceState, renderedRows: number): boolean {
   return state !== 'ready' || renderedRows === 0;
 }
 

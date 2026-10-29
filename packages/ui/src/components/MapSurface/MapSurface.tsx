@@ -1,6 +1,7 @@
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { MapContent } from './MapContent';
 import { MapStateLayer } from './MapStates';
 import type { MapPlaceEvent, MapSurfaceProps } from './MapSurface.types';
@@ -32,14 +33,13 @@ export function MapSurface({
   route = null,
   geofences = [],
   accuracy = null,
-  state = 'ready',
+  read,
   emptyTitle = 'No sites to show',
   emptyMessage = 'Assign a job to a technician and their route appears here.',
   unavailableTitle = 'No map imagery for this area',
   unavailableMessage = 'This location has no tiles from our provider. The address and the recorded coordinates are still exact.',
   errorTitle = "Couldn't load the map",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   controls = true,
   onZoomIn,
@@ -61,6 +61,8 @@ export function MapSurface({
   className,
   style,
 }: WebMapSurfaceProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const rootRef = useRef<HTMLDivElement>(null);
   const coarse = useCoarsePointer();
   const place = normalisePlacement(placement, {

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { RetryButton } from '../Button/RetryButton';
+import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 import type { BlockProps } from './Block.types';
 
 function Shimmer({ width }: { width: '72' | '94' | '58' }) {
@@ -33,18 +34,12 @@ export function BlockMessage({
   );
 }
 
-export type BlockBodyProps = Required<
-  Pick<BlockProps, 'state' | 'emptyMessage' | 'errorTitle' | 'errorMessage' | 'unavailableTitle'>
+export type BlockBodyProps = { state: SurfaceState; onRetry?: () => void } & Required<
+  Pick<BlockProps, 'emptyMessage' | 'errorTitle' | 'errorMessage' | 'unavailableTitle'>
 > &
   Pick<
     BlockProps,
-    | 'children'
-    | 'title'
-    | 'emptyTitle'
-    | 'emptyAction'
-    | 'onRetry'
-    | 'retryLabel'
-    | 'unavailableMessage'
+    'children' | 'title' | 'emptyTitle' | 'emptyAction' | 'retryLabel' | 'unavailableMessage'
   >;
 
 /** The body is the only part that moves between states; the header and the frame stay put. */

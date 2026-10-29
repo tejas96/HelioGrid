@@ -1,3 +1,4 @@
+import type { Read } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 
 /**
@@ -16,6 +17,17 @@ import type { ReactNode } from 'react';
  * Every surface in the system takes this union, so nobody spells the fourth state privately again.
  */
 export type SurfaceState = 'ready' | 'loading' | 'empty' | 'error' | 'unavailable';
+
+/**
+ * **A read, as a surface takes it** — the one prop in place of a state and a separate retry. A
+ * failed read carries its retry, so a surface cannot say *something went wrong* without *try
+ * again*; `unavailable` carries none, so it can never offer one. It is a `Read<T>` with only what a
+ * surface draws: a screen passes its read straight in, and its value and failure stay the screen's.
+ */
+export type SurfaceRead =
+  | Pick<Exclude<Read<unknown>, { kind: 'failed' }>, 'kind'>
+  | Pick<Extract<Read<unknown>, { kind: 'failed' }>, 'kind' | 'retry'>
+  | { readonly kind: 'unavailable' };
 
 /** `["ready","loading","empty","error","unavailable"]`. */
 export const SURFACE_STATES: SurfaceState[] = ['ready', 'loading', 'empty', 'error', 'unavailable'];

@@ -26,6 +26,7 @@ export function SetupReady({
   leaving,
   onStartWithLead,
   onOpenDemo,
+  onRetryDemo,
   retrying,
 }: SetupReadyProps) {
   const leadAct = useFocusAfterWall(read.kind === 'failed');
@@ -102,6 +103,8 @@ export function SetupReady({
             />
           }
           words={words.demo}
+          onRetry={onRetryDemo}
+          retryLabel={words.tryAgain}
         />
       </View>
     </DoorFrame>
@@ -147,16 +150,20 @@ function Door({
 /**
  * Door two. While the demo is not ready the ready door still lays out, unseen and out of reach, and
  * the card's loading or error form is drawn over it, so door two keeps the ready door's size in
- * every language. No retry until the demo can be read (`T-M01-029`).
+ * every language. Its *Try again* reads the screen again until the demo can be read (`T-M01-029`).
  */
 function DemoDoorCard({
   demo,
   door,
   words,
+  onRetry,
+  retryLabel,
 }: {
   demo: SetupReadyProps['demo'];
   door: ReactNode;
   words: SetupReadyProps['words']['demo'];
+  onRetry: () => void;
+  retryLabel: string;
 }) {
   if (demo === 'ready') return <Card>{door}</Card>;
   return (
@@ -171,7 +178,7 @@ function DemoDoorCard({
       </View>
       {demo === 'loading' ? (
         <>
-          <Card state="loading" style={styles.over} />
+          <Card read={{ kind: 'loading' }} style={styles.over} />
           <View style={styles.loadingLine}>
             <Text variant="body-sm" color="secondary" align="center">
               {words.loading}
@@ -180,9 +187,10 @@ function DemoDoorCard({
         </>
       ) : (
         <Card
-          state="error"
+          read={{ kind: 'failed', retry: onRetry }}
           errorTitle={words.failed}
           errorMessage=""
+          retryLabel={retryLabel}
           style={[styles.over, styles.failed]}
         />
       )}

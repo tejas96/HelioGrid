@@ -30,6 +30,7 @@ export function CatalogAttribution(props: CatalogAttributionProps) {
   return (
     <View style={styles.table}>
       <DataTable<CatalogAttributionRow>
+        read={read}
         columns={attributionColumns(words)}
         rows={[...rows]}
         rowKey="id"

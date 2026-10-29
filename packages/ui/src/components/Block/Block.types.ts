@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { clampCount } from '../../utils/count';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
-import type { SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead, SurfaceState } from '../UnavailableNote';
 
 /**
  * **An alias, not a second union.** A block is a surface, so its states are the system's five
@@ -34,7 +34,7 @@ export interface BlockProps {
    *
    * A **total**, not an unread badge: grouped by the market pack (`1,240`, not `99+`) and **not**
    * `CountBadge`, whose accessible name says "unread" and whose tone is danger. Nothing is drawn at
-   * zero — a block with none of something uses `state="empty"`, a sentence rather than a 0.
+   * zero — a block with none of something passes an `empty` read, a sentence rather than a 0.
    */
   count?: number;
   /** Clamp the numeral: `countMax={99}` renders "99+". Unset by default, because clamping a total lies. */
@@ -50,14 +50,17 @@ export interface BlockProps {
   footer?: ReactNode;
   /** Provenance for the block's figures, rendered in the footer. */
   provenance?: ProvenanceProps | ProvenanceTierSpec;
-  state?: BlockState;
+  /**
+   * The read this frame shows. Pass none when it holds static content: it draws `ready`. `failed`
+   * draws the error with its retry; `unavailable` draws none.
+   */
+  read?: SurfaceRead;
   /** The empty sentence. Say what is true — "No blockers — nothing is waiting on anyone". */
   emptyMessage?: string;
   emptyTitle?: string;
   emptyAction?: ReactNode;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   unavailableTitle?: string;

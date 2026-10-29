@@ -13,7 +13,7 @@ export function AudioError({
   onOpenTranscript,
   transcriptLabel,
 }: Required<Pick<AudioPlayerProps, 'errorMessage' | 'transcriptLabel'>> &
-  Pick<AudioPlayerProps, 'onRetry' | 'retryLabel' | 'onOpenTranscript'>) {
+  Pick<AudioPlayerProps, 'retryLabel' | 'onOpenTranscript'> & { onRetry?: () => void }) {
   return (
     <div className="hg-audio-panel" data-tone="error">
       <p className="hg-audio-panel-error-text">{errorMessage}</p>

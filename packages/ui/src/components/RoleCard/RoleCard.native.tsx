@@ -8,7 +8,6 @@ import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Card, IconCircle } from '../Card/Card.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { ScopeNote, scopeNotePanelFrame } from '../ScopeNote/ScopeNote.native';
-import { readSurface } from '../UnavailableNote/read-surface';
 import type { RoleCardLine, RoleCardProps, RoleCardWords } from './RoleCard.types';
 
 /**
@@ -32,14 +31,16 @@ export function RoleCard({ words, layout, read }: RoleCardProps) {
     return (
       <Card
         style={bounded ? styles.bounded : undefined}
-        {...readSurface(read)}
+        read={{
+          ...read,
+          retry: () => {
+            retried.current = true;
+            read.retry();
+          },
+        }}
         errorTitle={words.error.title}
         errorMessage={words.error.body}
         retryLabel={words.error.retry}
-        onRetry={() => {
-          retried.current = true;
-          read.retry();
-        }}
       />
     );
   }

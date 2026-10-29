@@ -6,6 +6,7 @@ import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Pressable`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { CardProps, IconCircleProps } from './Card.types';
 import { CardBody } from './CardBody.native';
 
@@ -70,19 +71,20 @@ export function Card({
   selected = false,
   surface = 'tile',
   label,
-  state = 'ready',
+  read,
   emptyTitle,
   emptyMessage = 'Nothing here yet.',
   emptyAction,
   errorTitle = "Couldn't load this",
   errorMessage = 'Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   unavailableTitle = 'Not available here',
   unavailableMessage,
   onClick,
   style,
 }: NativeCardProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const raised = surface === 'raised';
   const body = (
     <GroundProvider ground={raised ? 'page' : 'tile'}>

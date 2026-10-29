@@ -1,19 +1,18 @@
 import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
+import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 import type { ChecklistProps } from './Checklist.types';
 
-type StateProps = Required<Pick<ChecklistProps, 'state'>> &
-  Pick<
-    ChecklistProps,
-    | 'emptyTitle'
-    | 'emptyMessage'
-    | 'errorTitle'
-    | 'errorMessage'
-    | 'onRetry'
-    | 'retryLabel'
-    | 'unavailableTitle'
-    | 'unavailableMessage'
-  >;
+type StateProps = { state: SurfaceState; onRetry?: () => void } & Pick<
+  ChecklistProps,
+  | 'emptyTitle'
+  | 'emptyMessage'
+  | 'errorTitle'
+  | 'errorMessage'
+  | 'retryLabel'
+  | 'unavailableTitle'
+  | 'unavailableMessage'
+>;
 
 /**
  * The four non-ready states.

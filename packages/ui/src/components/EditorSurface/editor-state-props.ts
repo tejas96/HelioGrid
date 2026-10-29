@@ -1,13 +1,12 @@
 import type { ReactNode } from 'react';
-import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
+import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';
 import type { EditorSurfaceProps } from './EditorSurface.types';
 
 /** The five-state block every form of the editor takes, unchanged, straight through. */
 export interface EditorStateProps {
-  state?: SurfaceState;
+  read?: SurfaceRead;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   retryLabel?: string;
   emptyTitle?: string;
   emptyMessage?: string;
@@ -26,10 +25,9 @@ export interface EditorStateProps {
  */
 export function editorStateProps(props: EditorSurfaceProps): EditorStateProps {
   return {
-    state: props.state,
+    read: props.read,
     errorTitle: props.errorTitle,
     errorMessage: props.errorMessage,
-    onRetry: props.onRetry,
     retryLabel: props.retryLabel,
     emptyTitle: props.emptyTitle,
     emptyMessage: props.emptyMessage,

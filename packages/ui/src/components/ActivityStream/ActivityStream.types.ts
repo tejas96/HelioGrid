@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { ActorClassName } from '../ActorClass';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
-import type { SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead } from '../UnavailableNote';
 
 /**
  * WHO DID IT, AS A CLASS RATHER THAN A NAME — and the vocabulary lives in `ActorClass`, because
@@ -91,14 +91,17 @@ export interface ActivityStreamProps {
   /** Copy, not market-pack data: the day headings for today and yesterday. */
   todayLabel?: string;
   yesterdayLabel?: string;
-  state?: SurfaceState;
+  /**
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
+   */
+  read: SurfaceRead;
   emptyTitle?: string;
   emptyDescription?: string;
   filteredEmptyTitle?: string;
   filteredEmptyDescription?: string;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   unavailableTitle?: string;

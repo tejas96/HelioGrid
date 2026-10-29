@@ -13,7 +13,7 @@ test("an errored document's card on a grey desk is white paper and its retry is 
 }) => {
   const desk = await mount(
     <Surface background="canvas">
-      <PagedDocument state="error" onRetry={() => undefined} retryLabel={tryAgain} />
+      <PagedDocument read={{ kind: 'failed', retry: () => undefined }} retryLabel={tryAgain} />
     </Surface>,
   );
   const retry = desk.getByRole('button', { name: tryAgain });

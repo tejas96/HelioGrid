@@ -33,6 +33,7 @@ export function SetupReadyScreen() {
           void Linking.openURL(LEADS_LINK).catch(() => undefined);
         }}
         onOpenDemo={() => undefined}
+        onRetryDemo={ready.retryDemo}
         retrying={ready.retrying}
       />
     </InsetDoor>

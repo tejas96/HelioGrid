@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { RetryButton } from '../Button/RetryButton';
 import { UnavailableNote } from '../UnavailableNote';
+import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 import type { CardProps } from './Card.types';
 
 function Shimmer({ width }: { width: '70' | '92' | '54' }) {
@@ -50,13 +51,14 @@ export function CardBody({
   retryLabel,
   unavailableTitle,
   unavailableMessage,
-}: Required<Pick<CardProps, 'state' | 'emptyMessage' | 'errorTitle' | 'errorMessage'>> &
+}: { state: SurfaceState; onRetry?: () => void } & Required<
+  Pick<CardProps, 'emptyMessage' | 'errorTitle' | 'errorMessage'>
+> &
   Pick<
     CardProps,
     | 'children'
     | 'emptyTitle'
     | 'emptyAction'
-    | 'onRetry'
     | 'retryLabel'
     | 'unavailableTitle'
     | 'unavailableMessage'

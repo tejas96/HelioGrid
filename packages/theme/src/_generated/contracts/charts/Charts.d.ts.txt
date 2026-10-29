@@ -1,7 +1,7 @@
 import React from "react";
 
 import { ProvenanceProps, ProvenanceTierSpec, ProvenanceStanding } from "../data/Provenance";
-import { SurfaceState } from "../feedback/UnavailableNote";
+import { SurfaceRead } from "../feedback/UnavailableNote";
 
 export interface ChartFrameProps {
   overline?: string;
@@ -26,7 +26,11 @@ export interface ChartFrameProps {
   note?: string;
   legend?: React.ReactNode;
   action?: React.ReactNode;
-  state?: SurfaceState;
+  /**
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
+   */
+  read: SurfaceRead;
   height?: number;
   /** Renders "Not enough data" instead of the plot. Charts set this themselves. */
   insufficient?: boolean;
@@ -35,7 +39,6 @@ export interface ChartFrameProps {
   insufficientMessage?: string;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   children?: React.ReactNode;
   style?: React.CSSProperties;
 }

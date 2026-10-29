@@ -18,6 +18,20 @@ import React from "react";
  */
 export type SurfaceState = "ready" | "loading" | "empty" | "error" | "unavailable";
 
+/**
+ * **A read, as a surface takes it** — one prop in place of a state and a separate retry. The retry
+ * lives inside `failed`, so a surface can never say *something went wrong* without *try again*;
+ * `unavailable` carries none, so it can never offer one. A screen passes its read straight in: a
+ * `ready` read may carry its value, which the surface ignores — the content comes as children or
+ * rows.
+ */
+export type SurfaceRead =
+  | { readonly kind: "loading" }
+  | { readonly kind: "empty" }
+  | { readonly kind: "failed"; readonly retry: () => void }
+  | { readonly kind: "unavailable" }
+  | { readonly kind: "ready" };
+
 export interface UnavailableNoteProps {
   /** The sentence's subject — "No tile coverage here", "This market declares no schemes". */
   title?: string;
@@ -67,3 +81,8 @@ export namespace UnavailableNote {
 export const SURFACE_STATES: SurfaceState[];
 /** True for every state whose surface must not draw content — or a number. */
 export function isBlockedState(state?: SurfaceState | string): boolean;
+
+/** The state a read draws: `failed` draws `error`, and no read draws `ready`. */
+export function surfaceStateOf(read?: SurfaceRead): SurfaceState;
+/** The retry a read carries. Only a failed read has one. */
+export function retryOf(read?: SurfaceRead): (() => void) | undefined;

@@ -1,5 +1,5 @@
 import React from "react";
-import { SurfaceState } from "../feedback/UnavailableNote";
+import { SurfaceRead } from "../feedback/UnavailableNote";
 
 export interface MapMarker {
   id?: string | number;
@@ -79,15 +79,17 @@ export interface MapSurfaceProps {
    * failed (warning tone, a retry, because trying again may work); **`unavailable`** means there is
    * no imagery for this area from this provider (neutral, and **no retry** — retrying cannot conjure
    * coverage). Neither ever leaves blank space that reads as "no sites".
+   *
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
    */
-  state?: SurfaceState;
+  read: SurfaceRead;
   emptyTitle?: string;
   emptyMessage?: string;
   unavailableTitle?: string;
   unavailableMessage?: string;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   controls?: boolean;
   /** Fallbacks, used only when `zoom` is not supplied. Prefer the level. */
   onZoomIn?: () => void;

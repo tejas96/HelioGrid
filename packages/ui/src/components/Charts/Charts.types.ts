@@ -7,7 +7,7 @@ import type { ReactNode } from 'react';
  * as the design system's own Charts typings import it from `../feedback/UnavailableNote`, and as
  * sixteen sibling folders here already do.
  */
-import type { SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead } from '../UnavailableNote';
 
 /**
  * A tier: one of `contracts`' four (`F8-02`), or `'unmarked'` — which renders nothing and records
@@ -63,7 +63,11 @@ export interface ChartFrameProps {
   note?: string;
   legend?: ReactNode;
   action?: ReactNode;
-  state?: SurfaceState;
+  /**
+   * **Required:** what this draws always comes from a read. `failed` draws the error with its
+   * retry; `unavailable` draws none.
+   */
+  read: SurfaceRead;
   height?: number;
   /** Renders "Not enough data" instead of the plot. Charts set this themselves. */
   insufficient?: boolean;
@@ -72,7 +76,6 @@ export interface ChartFrameProps {
   insufficientMessage?: string;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   children?: ReactNode;

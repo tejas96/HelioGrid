@@ -1,9 +1,9 @@
 import { UnavailableNote } from '../UnavailableNote';
-import type { CompareGridProps } from './CompareGrid.types';
+import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 import { CompareMessage, CompareSkeleton } from './CompareGridStates';
 
 export interface CompareGridStatePanelProps {
-  state: NonNullable<CompareGridProps['state']>;
+  state: SurfaceState;
   emptyTitle: string;
   emptyMessage: string;
   errorTitle: string;

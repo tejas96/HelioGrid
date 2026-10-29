@@ -120,13 +120,15 @@ test.describe('at 375', () => {
     await expect(root.getByTestId('pressed')).toHaveText('lead');
   });
 
-  test('with no demo door two states what happened, its title alone, and offers no retry', async ({
+  test('with no demo door two states what happened, its title alone, and offers Try again', async ({
     mount,
   }) => {
     const root = await mount(<SetupReadyAsHeld reader="en" demo="unavailable" company={COMPANY} />);
     await expect(root.locator('.hg-card-message-text')).toHaveText(en.demo.failed);
-    await expect(root.getByRole('button')).toHaveCount(1);
+    await expect(root.getByRole('button')).toHaveCount(2);
     await expect(root.getByRole('button', { name: en.lead.act })).toBeEnabled();
+    await root.getByRole('button', { name: en.tryAgain }).click();
+    await expect(root.getByTestId('pressed')).toHaveText('retry-demo');
   });
 });
 

@@ -3,6 +3,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { useFormat } from '../MarketProvider';
 import { renderProvenance } from '../Provenance';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { BlockProps } from './Block.types';
 import { blockCount } from './Block.types';
 import { BlockGrid } from './BlockGrid.native';
@@ -34,9 +35,9 @@ const styles = StyleSheet.create({
 });
 
 /**
- * The section — header, body, footer, and a `state`, a heading on the page (`F7-49`): no fill, no
- * shadow, and no ground of its own, so its controls read whatever holds it. The header stays put
- * through them all.
+ * The section — header, body, footer, and the `read` it shows, a heading on the page (`F7-49`):
+ * no fill, no shadow, and no ground of its own, so its controls read whatever holds it. The header
+ * stays put through them all.
  */
 export function Block({
   overline,
@@ -45,13 +46,12 @@ export function Block({
   action,
   footer,
   provenance,
-  state = 'ready',
+  read,
   emptyMessage = 'Nothing here yet.',
   emptyTitle,
   emptyAction,
   errorTitle = "Couldn't load this",
   errorMessage = 'Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   unavailableTitle = 'Not available',
   unavailableMessage,
@@ -63,6 +63,8 @@ export function Block({
   children,
   style,
 }: NativeBlockProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const market = useFormat();
   const prov = renderProvenance(provenance, { size: 12 });
   const shownCount = blockCount(count, countMax, (n) =>

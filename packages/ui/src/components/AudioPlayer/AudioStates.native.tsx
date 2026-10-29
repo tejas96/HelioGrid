@@ -89,7 +89,7 @@ export function AudioError({
   onOpenTranscript,
   transcriptLabel,
 }: Required<Pick<AudioPlayerProps, 'errorMessage' | 'transcriptLabel'>> &
-  Pick<AudioPlayerProps, 'onRetry' | 'retryLabel' | 'onOpenTranscript'>) {
+  Pick<AudioPlayerProps, 'retryLabel' | 'onOpenTranscript'> & { onRetry?: () => void }) {
   return (
     <View style={[styles.panel, styles.panelError]}>
       <Text style={styles.errorText}>{errorMessage}</Text>

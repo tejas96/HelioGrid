@@ -9,7 +9,7 @@ const item = { id: 'name', title: en.t(COMPANY_SIGNUP.companyName) };
 const items = [item];
 
 test('a checklist is a heading on the page — no fill, no shadow', async ({ mount }) => {
-  const checklist = await mount(<Checklist label={label} items={items} />);
+  const checklist = await mount(<Checklist read={{ kind: 'ready' }} label={label} items={items} />);
 
   await expect(checklist).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   await expect(checklist).toHaveCSS('box-shadow', 'none');
@@ -20,7 +20,7 @@ test('a checklist row is a grey tile with no shadow and its controls are white',
   mount,
   page,
 }) => {
-  const checklist = await mount(<Checklist label={label} items={items} />);
+  const checklist = await mount(<Checklist read={{ kind: 'ready' }} label={label} items={items} />);
   const row = checklist.getByRole('listitem');
 
   await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
@@ -32,7 +32,9 @@ test('a checklist row is a grey tile with no shadow and its controls are white',
 });
 
 test("a done row's tick is white on the success fill", async ({ mount, page }) => {
-  const checklist = await mount(<Checklist label={label} items={[{ ...item, done: true }]} />);
+  const checklist = await mount(
+    <Checklist read={{ kind: 'ready' }} label={label} items={[{ ...item, done: true }]} />,
+  );
   const box = checklist.locator('.hg-checklist-box');
 
   await expect(box).toHaveCSS('background-color', await resolvedColour(page, '--success'));

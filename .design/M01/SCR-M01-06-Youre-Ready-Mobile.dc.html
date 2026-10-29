@@ -108,7 +108,7 @@ a:hover{color:var(--link-hover)}
           </x-import>
 
           <div style="position:relative">
-            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="loading" style="{{ doorSize }}" hint-size="100%,191px"></x-import>
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" read="{{ readLoading }}" style="{{ doorSize }}" hint-size="100%,191px"></x-import>
             <span style="position:absolute;left:var(--tile-pad);right:var(--tile-pad);bottom:var(--tile-pad);min-height:var(--sp-12);display:flex;align-items:center;justify-content:center;text-align:center;font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-secondary);text-wrap:pretty">Getting the demo ready.</span>
           </div>
 
@@ -156,7 +156,7 @@ a:hover{color:var(--link-hover)}
             </div>
           </x-import>
 
-          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" state="error" error-title="We couldn't get the demo project ready" error-message="" on-retry="{{ retryDemo }}" style="{{ doorSizeCentred }}" hint-size="100%,191px"></x-import>
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Card" read="{{ readDemoFailed }}" error-title="We couldn't get the demo project ready" error-message="" style="{{ doorSizeCentred }}" hint-size="100%,191px"></x-import>
 
         </div>
         </div>
@@ -169,7 +169,7 @@ a:hover{color:var(--link-hover)}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1660,"height":904}}'>
 class Component extends DCLogic {
-  /* retryDemo is a no-op: Card draws its own retry only when it is given onRetry. */
+  /* retryDemo is a no-op: a failed read carries its retry, and Card draws it. */
   renderVals() {
     const NS = window.HelioGridDesignSystem_c8aa43;
     const h = React.createElement;
@@ -184,7 +184,7 @@ class Component extends DCLogic {
        door's line, and the large button. */
     const doorSize = { minHeight: "calc(var(--tile-pad) * 2 + var(--sp-10) + var(--sp-4) * 2 + var(--fs-body-sm) * var(--lh-body-sm) * 2 + var(--sp-12))" };
     const doorSizeCentred = Object.assign({ boxSizing: "border-box", display: "flex", flexDirection: "column", justifyContent: "center" }, doorSize);
-    return { phoneChrome: { style: { background: "transparent" } }, on: true, wmMobile: 24, iconCircle: 40, retryDemo: () => {}, errorIcon, errorAction, doorSize: Object.assign({ boxSizing: "border-box" }, doorSize), doorSizeCentred };
+    return { phoneChrome: { style: { background: "transparent" } }, on: true, wmMobile: 24, iconCircle: 40, retryDemo: () => {}, readLoading: { kind: "loading" }, readDemoFailed: { kind: "failed", retry: () => {} }, errorIcon, errorAction, doorSize: Object.assign({ boxSizing: "border-box" }, doorSize), doorSizeCentred };
   }
 }
 </script>

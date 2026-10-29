@@ -15,6 +15,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { countLine, deriveSwitches, languageSentence, switchPoints } from './Transcript.language';
 import type { TranscriptProps } from './Transcript.types';
 import { TranscriptHeader } from './TranscriptHeader';
@@ -44,11 +45,10 @@ export function Transcript({
   onLoadMore,
   loadingMore = false,
   total,
-  state = 'ready',
+  read,
   emptyTitle = 'No transcript for this call',
   emptyDescription = "The call connected but nothing was transcribed. The recording and the rep's notes are on this record.",
   errorMessage = "Couldn't load the transcript. Nothing has been lost — try again.",
-  onRetry,
   retryLabel,
   unavailableTitle = 'No transcript on this call',
   unavailableMessage = 'This call was not transcribed. The recording is the only record of it.',
@@ -56,6 +56,8 @@ export function Transcript({
   className,
   style,
 }: WebTranscriptProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const [shown, setShown] = useState(visibleCount);
   useEffect(() => setShown(visibleCount), [visibleCount]);
 

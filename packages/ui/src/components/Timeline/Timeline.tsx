@@ -10,6 +10,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { UnavailableNote } from '../UnavailableNote';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import type { TimelineProps } from './Timeline.types';
 import { TimelineMessage, TimelineSkeleton } from './TimelineParts';
 import { TimelinePick } from './TimelinePick';
@@ -24,12 +25,11 @@ export function Timeline({
   items = [],
   variant = 'page',
   density = 'expressive',
-  state = 'ready',
+  read,
   emptyTitle = 'No activity yet',
   emptyDescription = 'Steps appear here as the job moves.',
   errorTitle = "Couldn't load the activity",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   unavailableTitle = 'No sequence here',
   unavailableMessage,
@@ -39,6 +39,8 @@ export function Timeline({
   className,
   style,
 }: WebTimelineProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   if (state === 'loading') {
     return <TimelineSkeleton className={className} style={style} />;
   }

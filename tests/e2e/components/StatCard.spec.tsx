@@ -12,8 +12,7 @@ test('an errored stat card is a tile and draws its retry white', async ({ mount,
     <StatCard
       label={tryAgain}
       value={0}
-      state="error"
-      onRetry={() => (retries += 1)}
+      read={{ kind: 'failed', retry: () => (retries += 1) }}
       retryLabel={tryAgain}
     />,
   );
@@ -31,7 +30,7 @@ test('a stat card is a grey tile with no shadow and its controls are white', asy
   page,
 }) => {
   const card = await mount(
-    <StatCard label={tryAgain} value={12}>
+    <StatCard read={{ kind: 'ready' }} label={tryAgain} value={12}>
       <Button variant="secondary" size="sm">
         {tryAgain}
       </Button>
@@ -51,7 +50,13 @@ test('a tappable stat card is a grey tile, ringed under the pointer and never li
   page,
 }) => {
   const card = await mount(
-    <StatCard label={tryAgain} value={12} onClick={() => undefined} ariaLabel={tryAgain} />,
+    <StatCard
+      read={{ kind: 'ready' }}
+      label={tryAgain}
+      value={12}
+      onClick={() => undefined}
+      ariaLabel={tryAgain}
+    />,
   );
 
   await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--fill'));

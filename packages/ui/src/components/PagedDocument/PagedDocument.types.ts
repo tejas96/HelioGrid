@@ -9,7 +9,7 @@
 import type { ReactNode } from 'react';
 import type { DisclosureKind, DisclosureSpec } from '../Disclosure';
 import type { RichTextMetrics } from '../RichText/RichText.types';
-import type { SurfaceState } from '../UnavailableNote';
+import type { SurfaceRead } from '../UnavailableNote';
 
 export type Paper = 'a4' | 'letter';
 export type PageOrientation = 'portrait' | 'landscape';
@@ -192,10 +192,10 @@ export interface PagedDocumentProps<Row = unknown> {
    * the way a caller reads the page count without running a second layout pass.
    */
   onCut?: (info: PagedDocumentCut) => void;
-  state?: SurfaceState;
+  /** Required: what this draws always comes from a read, and a failed read carries its retry. */
+  read: SurfaceRead;
   errorTitle?: string;
   errorMessage?: string;
-  onRetry?: () => void;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
   retryLabel?: string;
   unavailableTitle?: string;

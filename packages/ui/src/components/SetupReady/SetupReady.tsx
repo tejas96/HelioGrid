@@ -26,6 +26,7 @@ export function SetupReady({
   leaving,
   onStartWithLead,
   onOpenDemo,
+  onRetryDemo,
   retrying,
 }: SetupReadyProps) {
   const wide = useDesktopShell() === true;
@@ -107,6 +108,8 @@ export function SetupReady({
             />
           }
           words={words.demo}
+          onRetry={onRetryDemo}
+          retryLabel={words.tryAgain}
         />
       </div>
     </DoorFrame>
@@ -152,18 +155,23 @@ function Door({
 
 /**
  * Door two. While the demo is not ready the ready door still lays out, unseen and out of reach, and
- * the card's loading form — its line where the act will appear — or its error form with the title
- * alone is drawn over it: door two keeps the ready door's size in every language, so the heading and
- * door one never move as it resolves. No retry until the demo can be read (`T-M01-029`).
+ * the card's loading form — its line where the act will appear — or its error form, the title and
+ * *Try again*, is drawn over it: door two keeps the ready door's size in every language, so the
+ * heading and door one never move as it resolves. Until the demo can be read (`T-M01-029`), *Try
+ * again* reads the screen again.
  */
 function DemoDoorCard({
   demo,
   door,
   words,
+  onRetry,
+  retryLabel,
 }: {
   demo: SetupReadyProps['demo'];
   door: ReactNode;
   words: SetupReadyProps['words']['demo'];
+  onRetry: () => void;
+  retryLabel: string;
 }) {
   if (demo === 'ready') return <Card>{door}</Card>;
   return (
@@ -173,7 +181,7 @@ function DemoDoorCard({
       </div>
       {demo === 'loading' ? (
         <>
-          <Card state="loading" />
+          <Card read={{ kind: 'loading' }} />
           <Text
             variant="body-sm"
             color="secondary"
@@ -185,9 +193,10 @@ function DemoDoorCard({
         </>
       ) : (
         <Card
-          state="error"
+          read={{ kind: 'failed', retry: onRetry }}
           errorTitle={words.failed}
           errorMessage=""
+          retryLabel={retryLabel}
           className="hg-setup-ready-failed"
         />
       )}

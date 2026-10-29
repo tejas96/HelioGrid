@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { useKanbanDrag } from './Kanban.drag';
 import { activeColumnKey, kanbanTotal, resolveBoardState } from './Kanban.logic';
 import type { KanbanProps } from './Kanban.types';
@@ -33,12 +34,11 @@ export function Kanban({
   onMove,
   renderCard,
   cardPending,
-  state = 'ready',
+  read,
   emptyTitle = 'No jobs in this pipeline',
   emptyDescription,
   errorTitle = "Couldn't load the board",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   unavailableTitle = 'No pipeline here',
   unavailableMessage,
@@ -51,6 +51,8 @@ export function Kanban({
   className,
   style,
 }: WebKanbanProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const ref = useRef<HTMLDivElement | null>(null);
   const [own, setOwn] = useState<number | null>(null);
   const [pickInner, setPickInner] = useState<string | null>(null);

@@ -3,6 +3,7 @@ import { classNames } from '../../primitives/class-names';
 import { Button } from '../Button/Button';
 import { useFormat } from '../MarketProvider';
 import { UnavailableNote } from '../UnavailableNote';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { applyFilter, filterDimensions } from './ActivityStream.filter';
 import { ACTIVITY_KINDS, sortEntries } from './ActivityStream.kinds';
 import type { ActivityStreamProps } from './ActivityStream.types';
@@ -37,14 +38,13 @@ export function ActivityStream({
   countLabel = 'entries',
   todayLabel = 'Today',
   yesterdayLabel = 'Yesterday',
-  state = 'ready',
+  read,
   emptyTitle = 'No activity yet',
   emptyDescription = 'Notes, calls, stage changes and payments all land here as they happen.',
   filteredEmptyTitle = 'Nothing matches these filters',
   filteredEmptyDescription = 'There is activity on this record — none of it is of the kinds you have picked.',
   errorTitle = "Couldn't load the activity",
   errorMessage = 'Tap Try again. If it keeps failing, tell your admin what you were doing.',
-  onRetry,
   retryLabel,
   unavailableTitle = 'No activity is kept here',
   unavailableMessage,
@@ -52,6 +52,8 @@ export function ActivityStream({
   className,
   style,
 }: WebActivityStreamProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const format = useFormat();
   const { shown, reveal } = useActivityWindow(entries.length, visibleCount);
 

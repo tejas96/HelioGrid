@@ -1,3 +1,4 @@
+import type { SurfaceState } from '../UnavailableNote';
 import type { MapImagerySpec, MapPlacementSpec, MapSurfaceProps } from './MapSurface.types';
 
 /**
@@ -74,7 +75,7 @@ export function toPercent(offset: number, extent: number): number {
 }
 
 /** A state whose surface must not draw content. */
-export function isBlockedState(state: MapSurfaceProps['state']): boolean {
+export function isBlockedState(state: SurfaceState): boolean {
   return state === 'loading' || state === 'empty' || state === 'error' || state === 'unavailable';
 }
 

@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { ProgressBar } from '../ProgressBar';
+import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { buildChecklist, NO_PHASE } from './Checklist.groups';
 import type { ChecklistProps } from './Checklist.types';
 import { ChecklistRow } from './ChecklistRow';
@@ -34,12 +35,11 @@ export function Checklist({
   countWords,
   noun = 'steps',
   surface = 'screen',
-  state = 'ready',
+  read,
   emptyTitle = 'No steps yet',
   emptyMessage = 'This checklist is built from the design. Generate one and the steps appear here.',
   errorTitle = "Couldn't load the checklist",
   errorMessage = 'Tap Try again — no tick is lost while this fails.',
-  onRetry,
   retryLabel,
   unavailableTitle = 'No checklist for this job',
   unavailableMessage,
@@ -47,6 +47,8 @@ export function Checklist({
   className,
   style,
 }: WebChecklistProps) {
+  const state = surfaceStateOf(read);
+  const onRetry = retryOf(read);
   const model = buildChecklist(items, phases);
 
   if (state !== 'ready') {
