@@ -20,7 +20,8 @@ paths:
   character (a no-break space, a zero-width space) is written as a `\u` escape.
 - **A money, tenancy or permission rule, and a check a change adds or alters, is proven red once.**
   Break the rule its test names — never a neighbour or its input data — see the test fail BY NAME,
-  then restore it. A crash or a compile error is not red. A test of a race FORCES its overlap — it holds
+  then restore it. A lint rule or type is planted in every written form the bad line can take
+  (with type arguments, through a member or an alias), not only the plain one. A crash or a compile error is not red. A test of a race FORCES its overlap — it holds
   a lock both sides need until both are seen waiting (`apps/api/tests/support/held-lock.ts`) —
   because two requests merely fired together mostly run one after the other.
 - **Coverage is 100%** on the paths `vitest.config.mts`'s `thresholds` names; elsewhere read

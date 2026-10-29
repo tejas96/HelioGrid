@@ -112,9 +112,9 @@ only through the `clean-dev-ports` launch configuration, never by port or proces
 - `.claude/rules/` — a law that spans packages; a one-package rule goes in that package's
   `CLAUDE.md`.
 - `.qa/` (git-ignored) — one task's `*.log` files (the dev servers' and each check's), the api
-  check's `*.cookies` and live QA's `*.png`, deleted once its QA is done and again once its PR is ready; `pr-body.md`, the PR's draft; and
-  `env.local.dev`, the owner's `.env.local` while `/task` points it at the test database — never
-  deleted.
+  check's `*.cookies` and live QA's `*.png`, deleted once its QA is done; `pr-body.md`, the PR's
+  draft; and `env.local.dev`, the owner's `.env.local` while `/task` points it at the test database —
+  never deleted. Once the PR is ready, everything but `env.local.dev` is deleted.
 - `.design/<module>/` — the locked boards, a read-only copy written only by `design-track.md`.
 - The module canvases — not in the repo; the design's source of truth, listed in
   `docs/start-here.md`.
