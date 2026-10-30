@@ -109,6 +109,12 @@ const GROUP_SENTENCE: Record<NotificationType, MessageRef> = {
   reinvite_requested: /*i18n*/ {
     id: '{count, plural, one {# ask for a new invite} other {# asks for a new invite}}',
   },
+  dunning_notice: /*i18n*/ {
+    id: '{count, plural, one {# payment reminder} other {# payment reminders}}',
+  },
+  trial_nudge: /*i18n*/ {
+    id: '{count, plural, one {# trial reminder} other {# trial reminders}}',
+  },
   system: /*i18n*/ {
     id: '{count, plural, one {# product update} other {# product updates}}',
   },

@@ -7,6 +7,7 @@ import {
   catalogRateEntry,
   catalogRelease,
   catalogReleaseLine,
+  dunningEvent,
   entitlement,
   entitlementOverride,
   onboardingProgress,
@@ -62,11 +63,12 @@ export const TENANT_CATALOG_TABLES = [
 ] as const;
 
 /**
- * A company's billing rows: the payments, the checkouts, the overrides and the history before the
- * subscription each names; its limits after it, since another suite's timers repair a live
+ * A company's billing rows: its notices before the payments that cleared them; the payments, the
+ * checkouts, the overrides and the history before the subscription each names; its limits after it, since another suite's timers repair a live
  * company's limits until it is gone; then its usage ledger and storage gauge.
  */
 export const TENANT_BILLING_TABLES = [
+  dunningEvent,
   entitlementOverride,
   subscriptionPayment,
   billingCheckout,

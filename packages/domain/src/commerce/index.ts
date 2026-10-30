@@ -23,6 +23,23 @@
  * consumer reads the shape, never the exception behind it.
  */
 
+export type {
+  BillingNotice,
+  LadderStart,
+  NoticeClock,
+  NoticeDecision,
+  NoticeLadder,
+  ScheduledNotice,
+} from './billing-notices';
+export {
+  BILLING_NOTICES,
+  disclosesForfeiture,
+  ladderBeginsAt,
+  ladderOf,
+  ladderStartOf,
+  nextNotice,
+  TRIAL_NUDGE_LEAD_DAYS,
+} from './billing-notices';
 export type { CapReading, CapStep } from './caps';
 export { CAP_GRACE_DAYS, CAP_WARNING_PERCENT, capStepOf, capWarningReached } from './caps';
 export type { ChargeFailed, ChargeStanding, ChargeSucceeded, SuccessEffect } from './charges';
@@ -84,7 +101,11 @@ export {
   TRIAL_EXTENSION_DAYS,
   withCredits,
 } from './entitlements';
-export { appliesImmediately, forfeitsPriceProtection } from './grandfathering';
+export {
+  appliesImmediately,
+  forfeitsPriceProtection,
+  protectionEndsAt,
+} from './grandfathering';
 export type { DueTimedCause, SubscriptionCause, SubscriptionClock } from './lifecycle';
 export {
   billingPhaseAt,

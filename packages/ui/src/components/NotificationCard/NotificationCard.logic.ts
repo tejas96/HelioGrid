@@ -18,6 +18,9 @@ const GLYPH_BY_TYPE: Record<Exclude<NotificationType, 'system'>, string> = {
   join_requested: 'users',
   invite_declined: 'user',
   reinvite_requested: 'undo',
+  /* Billing's notices wear the billing group's own mark (`M12-39`, `M12-42`). */
+  dunning_notice: 'bill',
+  trial_nudge: 'bill',
 };
 
 /** The bell for a type this build does not know yet — never an empty circle. */

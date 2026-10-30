@@ -85,11 +85,12 @@ describe('typeGroupOf — every type reaches a group, and none falls through (F6
    * `recipients` and `channels` already stand — a registration read off `F6.3`'s matrix and held
    * by review. Said here rather than left to look covered.
    */
-  it('reaches every group the matrix raises today, and leaves billing to the slice that raises it', () => {
+  it('reaches every group the matrix raises, billing through its notices', () => {
     /* Mapping EVERY registered type is the totality check too: a type with no group would answer
        undefined and show up in this set. */
     const reached = new Set(NOTIFICATION_TYPES.map(typeGroupOf));
-    expect([...reached].sort()).toEqual(['delivery', 'payments', 'sales', 'team']);
-    expect(reached.has('billing')).toBe(false);
+    expect([...reached].sort()).toEqual(['billing', 'delivery', 'payments', 'sales', 'team']);
+    expect(typeGroupOf('dunning_notice')).toBe('billing');
+    expect(typeGroupOf('trial_nudge')).toBe('billing');
   });
 });
