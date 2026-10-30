@@ -16,6 +16,8 @@ import { PinoLogger } from 'nestjs-pino';
  *   so the mandate's live status at the gateway is read before a new one is set up.
  * - `billing_pause_event` — the gateway paused or resumed a subscription; the product offers no
  *   pause, so it is never applied.
+ * - `billing_invoice_mismatch` — a payment's invoice states a total the gateway did not collect:
+ *   its plan object and its price row drifted. The invoice stands; the team looks.
  */
 const alertMessages = {
   billing_repair: 'the reconcile recorded a charge the gateway message never delivered',
@@ -24,6 +26,7 @@ const alertMessages = {
   billing_cancelled_mandate:
     'a company converted on a mandate a new pick was cancelling; check at the gateway whether it still renews',
   billing_pause_event: 'the gateway paused or resumed a subscription; not applied',
+  billing_invoice_mismatch: 'a payment was invoiced at a total the gateway did not collect',
 } as const;
 
 export type BillingAlert = keyof typeof alertMessages;

@@ -54,7 +54,7 @@ export const planPrice = pgTable(
     currencyCode: text('currency_code').notNull(),
     /** The book's price, ex-tax (`BM-40`). */
     listMinor: bigint('list_minor', { mode: 'number' }).notNull(),
-    /** What the gateway collects: the list price and the platform sale's tax (`F1-28`). */
+    /** What the gateway collects: the list price, plus the platform sale's tax once registered (`F1-29`). */
     collectedMinor: bigint('collected_minor', { mode: 'number' }).notNull(),
     gatewayPlanRef: text('gateway_plan_ref').notNull(),
     createdAt: instant('created_at').notNull(),

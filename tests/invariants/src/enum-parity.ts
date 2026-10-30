@@ -20,6 +20,8 @@ import {
   entitlementSourceSchema,
   fileContentTypeSchema,
   invitationStatusSchema,
+  invoiceKindSchema,
+  invoiceStatusSchema,
   loginProviderSchema,
   measurementSystemSchema,
   membershipStatusSchema,
@@ -92,6 +94,8 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
     options: entitlementOverrideKindSchema.options,
     contract: 'entitlementOverrideKindSchema',
   },
+  invoice_kind: { options: invoiceKindSchema.options, contract: 'invoiceKindSchema' },
+  invoice_status: { options: invoiceStatusSchema.options, contract: 'invoiceStatusSchema' },
   usage_meter: {
     options: usageRecordWorkflow.input.shape.meter.options,
     contract: 'usageRecordWorkflow.input.meter',

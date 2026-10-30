@@ -153,6 +153,11 @@ The screen answers three questions at a glance: "what am I on, what am I using (
 
 Drawn at 375 only (at 1536 the phone's answer holds at width; the cancel sheet becomes a centred dialog — `EditorSurface` `desktop="modal"`, the contract's cancel-confirm case (owner ruling 2026-10-29)): `loading`, `empty`, `error`, `trialing`, `halted`, `halted-reactivate`, `expired`, `cancelled-running-to-period-end`, `cancelled`, `cancel-reason-dialog`, `refund-window-visible`, `scheduled-downgrade-pending`, `enterprise-contact-us`, `non-owner-read-only`.
 
+## Redesign owed
+
+- Every money line is drawn with `+ 18% GST` (the reactivation `₹4,718.82`, `Next bill` `₹2,358.82`, the invoices region's `18% GST` source line), but the platform collects and invoices no GST until it registers (`F1-29`, owner ruling 2026-10-30): at the board's next redraw each draws both postures — the list price alone while unregistered, the price + GST after.
+- The sample invoice number `HG-INV-2026-0902` is a form the platform never issues: numbers are `<fiscal year>/<sequence>` (`2026-27/000001`, `T-M12-012a`).
+
 ## Data volume
 
 Design at a mature tenant: an invoice list with PDFs spanning 24+ monthly cycles (every one exportable in every state, M12-46); a dunning history that can be long — the ladder runs day 0/2/4/6/7 then post-halt weekly × 4 then monthly, indefinitely (M12-39 context); an append-only subscription history of every state entered, when and why (§M12.2 behavior detail); plus the current plan's full set of published caps/bundles (the book's ~dozen values).

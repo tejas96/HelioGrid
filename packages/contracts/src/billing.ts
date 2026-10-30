@@ -6,6 +6,8 @@ import {
   ENTITLEMENT_LIMIT_KINDS,
   ENTITLEMENT_OVERRIDE_KINDS,
   ENTITLEMENT_SOURCES,
+  INVOICE_KINDS,
+  INVOICE_STATUSES,
   SUBSCRIPTION_CAUSES,
   TIERS,
 } from '@heliogrid/domain';
@@ -47,6 +49,12 @@ export const entitlementLimitKindSchema = z.enum(ENTITLEMENT_LIMIT_KINDS);
 
 /** Support's two audited acts on a company's limits and trial (`M12-19`, `M12-52`). */
 export const entitlementOverrideKindSchema = z.enum(ENTITLEMENT_OVERRIDE_KINDS);
+
+/** What a platform invoice is for (`M12-44`, `M12-48`). */
+export const invoiceKindSchema = z.enum(INVOICE_KINDS);
+
+/** Where a platform invoice stands (`M12-44`). */
+export const invoiceStatusSchema = z.enum(INVOICE_STATUSES);
 
 /**
  * Why a checkout could not open. `CHECKOUT_NOT_POSSIBLE`: the company is not on a trial — paying

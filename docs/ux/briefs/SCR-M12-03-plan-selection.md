@@ -144,6 +144,11 @@ Preview mechanics (`docs/prd/modules/M12-platform-billing.md` §M12.8 behavior d
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `error`, `trial-expiry-entry`, `post-lapse-reprice-at-current-book`, `downgrade-blocked-preview`, `preview-recomputed-changed`, `checkout-handoff`, `checkout-failed-honest`, `yearly-selected`, `cycle-switch-review`, `downgrade-nothing-over`, `trial-expiry-review`, `compare-included`, `compare-extra-charges`.
 
+## Redesign owed
+
+- GST is drawn as a fact everywhere — the review's `GST 18%` row, `Prices exclude GST`, every Price row's `/ mo + GST` (rule 5) and every amount with GST added (each tier's month and Growth's year) — but the platform collects no GST until it registers (`F1-29`, owner ruling 2026-10-30): at the board's next redraw each draws both postures — the list price alone, with no GST row, while unregistered; the price + GST after.
+- The shared sample story's `₹4,718.82` follows `SCR-M12-02`'s redraw.
+
 ## Data volume
 
 Design at the full four-tier, two-cycle choice (the book's published caps/bundles per tier — BM-41 context: ~a dozen values per tier), plus a downgrade preview built from real usage: multiple designs over the target kW ceiling listed as staying readable/exportable, a proposal count standing against caps of 30/300/1,500 per month, and every bundle that shrinks (detections, voice, storage, seats, sends). The blocked-list must stay honest and legible when several items block at once.

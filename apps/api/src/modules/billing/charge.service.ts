@@ -7,6 +7,7 @@ import {
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
+import { MarketPackService } from '../market/market.public';
 import { ChargeAdminRepository, type Conversion } from './charge.admin.repository';
 import { EntitlementService } from './entitlement.service';
 import { BillingAlerts } from './internal/billing-alerts';
@@ -22,8 +23,9 @@ export class ChargeRefused extends Error {
  * reconcile poll alike, so a payment has one writer. A successful charge records its payment and
  * grows the window in one transaction; no late, repeated or older fact moves a subscription back.
  * The charge that pays for a trial's checkout also makes that checkout's plan the row's own, in
- * the same transaction (`M12-54`), and rewrites the company's limits there too (`M12-16`). What
- * each fact does is domain's (`commerce/charges.ts`).
+ * the same transaction (`M12-54`), and rewrites the company's limits there too (`M12-16`). Every
+ * recorded payment issues its invoice there as well (`M12-44`). What each fact does is domain's
+ * (`commerce/charges.ts`).
  */
 @Injectable()
 export class ChargeService {
@@ -32,6 +34,7 @@ export class ChargeService {
     @Inject(ChargeAdminRepository) private readonly charges: ChargeAdminRepository,
     @Inject(BillingAlerts) private readonly alerts: BillingAlerts,
     @Inject(EntitlementService) private readonly entitlements: EntitlementService,
+    @Inject(MarketPackService) private readonly markets: MarketPackService,
     @Inject(PinoLogger) private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(ChargeService.name);
@@ -107,7 +110,8 @@ export class ChargeService {
   /**
    * `recorded`: the payment is new and the subscription took it. `duplicate`: the charge was told
    * before, so nothing is written. `dead`: the payment is recorded on a row no charge moves, and
-   * an alert is raised — money landed where no charge moves.
+   * an alert is raised — money landed where no charge moves. Either recorded kind issued its
+   * invoice; one whose total is not what the gateway collected is alerted, never refused.
    */
   async recordSuccess(
     charge: ChargeSucceeded,
@@ -117,14 +121,17 @@ export class ChargeService {
     if (charge.amount <= 0) {
       throw new ChargeRefused(`a charge collects an amount above zero, not ${charge.amount}`);
     }
-    // The book is read before the transaction opens, so the limits rewrite inside it (`M12-16`).
+    // The pack is read before the transaction opens, so the limits rewrite (`M12-16`) and the
+    // invoice issues (`M12-44`) inside it.
     const marketCode = await this.charges.marketOf(charge.subscriptionId);
     if (marketCode === null) throw new ChargeRefused(`no subscription ${charge.subscriptionId}`);
+    const pack = await this.markets.currentPackOf(marketCode);
     const result = await this.charges.recordSuccess(
       charge,
       now,
       (standing) => successEffect(standing, charge),
-      await this.entitlements.limitsIn(marketCode),
+      this.entitlements.bookLimitsOf(pack),
+      pack,
       conversion,
     );
     switch (result.kind) {
@@ -135,14 +142,33 @@ export class ChargeService {
           `a charge in ${charge.currencyCode} on a company billed in ${result.companyCurrency}`,
         );
       case 'dead':
+        this.alertIfInvoiceDiffers(charge, result.invoiced);
         this.alerts.raise('billing_dead_charge', {
           subscriptionId: charge.subscriptionId,
           chargeRef: charge.chargeRef,
         });
         return result.kind;
-      default:
+      case 'recorded':
+        this.alertIfInvoiceDiffers(charge, result.invoiced);
+        return result.kind;
+      case 'duplicate':
         return result.kind;
     }
+  }
+
+  /**
+   * The invoice states the plan's price; the gateway collected what its plan object or page asked.
+   * They part only when the two drifted — a mandate made before the platform registered, say — so
+   * the invoice stands and the team looks.
+   */
+  private alertIfInvoiceDiffers(charge: ChargeSucceeded, invoiced: number): void {
+    if (invoiced === charge.amount) return;
+    this.alerts.raise('billing_invoice_mismatch', {
+      subscriptionId: charge.subscriptionId,
+      chargeRef: charge.chargeRef,
+      collected: charge.amount,
+      invoiced,
+    });
   }
 
   /** A failed charge on a gateway ref; `unknown` when nothing is collected on it. */

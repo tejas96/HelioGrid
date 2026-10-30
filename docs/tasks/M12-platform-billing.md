@@ -237,6 +237,15 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 - Given overage accruing, when the next invoice issues, then its add-on lines equal the ledgered overage at the book's published rates (M12-35 — dispositioned to T-M12-004; carried here as well because the add-on lines are this task's invoice output, and T-M12-004 owns the same line's usage-screen half).
 **Settle before the build:**
 - An upgrade's proration is one document kind (M12-48, §M12.7) — ruled: a `subscription_invoice` with `kind` = one-time proration, whose `invoice_line` rows are the proration lines; the next cycle invoice carries the plan line at the new tier and no proration line (M12-48's row and its acceptance line say a one-time prorated invoice, and §M12.7's "proration lines" are that invoice's line items; one document kind keeps the invoice list, PDF, tax lines and export uniform).
+- The platform has no GST registration yet (`F1-29`, owner ruling 2026-10-30) — ruled: the platform's own registration is a value in `pack.tax`, in force from the pack revision that publishes it. With none, the gateway collects the book's ex-tax price and the invoice is a plain invoice with no tax lines; from its date, every invoice carries the scheme's breakdown and the gateway collects the book price + the scheme's tax, which the customer pays. `platformSaleTotal` (`packages/domain/src/tax/platform-sale.ts`) adds the tax today unconditionally, so this task makes it read the registration. Nothing before the date is reissued.
+
+#### Parts
+| part | ships | acceptance lines | status |
+|---|---|---|---|
+| a | the invoice record: the tables, its number, the issue inside the charge transaction, the plan line, the scheme's breakdown by the company's place, both registrations; the platform's registration in `pack.tax`, read by `platformSaleTotal` | D1, D2 (its overage half is part b's) | shipped |
+| b | overage add-ons: the ledgered overage past the allowance at the book's published rates, added at the gateway before the next charge so it collects them, and carried as add-on lines on that charge's invoice | D2 (overage half), D3 | open |
+| c | yearly renewal: each year's fresh payment link raised with its `issued` invoice, its charge landing with `paysThrough` = the paid-period end + one cycle, the invoice turning `paid` (the task's *Contract* line) | the *Contract* line | open |
+| d | the invoice PDF (M12-44 "PDF attached"), with the supplier's legal name and address | M12-44 (PDF) | open |
 
 ### T-M12-013 · Grandfathered price-row selection
 

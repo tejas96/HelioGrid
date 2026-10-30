@@ -205,12 +205,18 @@ describe.skipIf(skip)('entitlements are recomputed in the act that changes them 
     const brokenBook = () => {
       throw new Error('the book could not give the limits');
     };
+    const ref = `sub_rolled_back_${tenantId}`;
+    await aCheckout(tenantId, subscriptionId, 'growth', ref);
+    const repository = new ChargeAdminRepository(pools.admin.db);
+    const on = await repository.collectedOn(ref);
     await expect(
-      new ChargeAdminRepository(pools.admin.db).recordSuccess(
+      repository.recordSuccess(
         charge,
         CONVERTED_AT,
         (standing) => successEffect(standing, charge),
         brokenBook,
+        IN_PACK,
+        on?.kind === 'collecting' ? on.conversion : null,
       ),
     ).rejects.toThrow('the book could not give the limits');
     const payments = await pools.admin.db

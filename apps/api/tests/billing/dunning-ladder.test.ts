@@ -22,7 +22,7 @@ import {
   SIGNED_UP_LONG_AGO,
   toldTo,
 } from './notice-bench';
-import { chargeServiceOf } from './support';
+import { aPlan, chargeServiceOf } from './support';
 
 /**
  * The dunning ladder, against a migrated database (`M12-09`, `M12-39`, `M12-41`): each rung told
@@ -255,6 +255,7 @@ describe.skipIf(skip)('the dunning ladder (M12-09, M12-39, M12-41)', () => {
         stateEnteredAt: new Date(day(PAST_DUE_GRACE_DAYS + 1)),
         paidPeriodEnd: new Date(day(PAST_DUE_GRACE_DAYS + 1)),
         createdAt: new Date(day(PAST_DUE_GRACE_DAYS + 1)),
+        ...(await aPlan(pools.admin.db)),
       })
       .returning({ id: subscription.id });
     if (renewed === undefined) throw new Error('the new row was not seeded');

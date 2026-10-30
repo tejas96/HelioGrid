@@ -20,6 +20,12 @@ export const APPEND_ONLY_LEDGERS: Record<string, string> = {
     'every state a subscription entered, when and why; only the admin path writes it (M12-04, T-M12-005)',
   subscription_payment:
     'every charge the gateway collected, the entitlement truth; only the admin path writes it (M12-09, T-M12-006)',
+  invoice_line:
+    'one line of an issued platform invoice, frozen with it; only the admin path writes it ' +
+    '(M12-44, T-M12-012a)',
+  invoice_line_tax:
+    'one tax component of an issued invoice line, frozen with it; only the admin path writes it ' +
+    '(M12-44, T-M12-012a)',
   entitlement_override:
     'support’s audited acts on a company’s limits and trial, never an edit; only the admin path ' +
     'writes it (M12-19, M12-52, T-M12-008)',

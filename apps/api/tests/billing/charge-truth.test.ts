@@ -20,7 +20,7 @@ import {
 } from '../support/fixture';
 import { holdLock } from '../support/held-lock';
 import { publishIndiaPack } from '../support/market';
-import { chargeServiceOf } from './support';
+import { aPlan, chargeServiceOf } from './support';
 
 /**
  * Charge truth, against a migrated database (`M12-09`): a successful charge records its payment
@@ -84,6 +84,7 @@ describe.skipIf(skip)('charge truth (M12-09)', () => {
         trialEndsAt: new Date(TRIAL_END_FAR_AWAY),
         paidPeriodEnd: paidPeriodEnd === null ? null : new Date(paidPeriodEnd),
         createdAt: new Date(enteredAt),
+        ...(await aPlan(pools.admin.db)),
       })
       .returning({ id: subscription.id });
     if (held === undefined) throw new Error('the subscription was not seeded');

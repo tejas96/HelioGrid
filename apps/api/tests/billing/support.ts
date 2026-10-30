@@ -1,5 +1,6 @@
+import { randomUUID } from 'node:crypto';
 import type { GatewayEvent } from '@heliogrid/contracts';
-import { type Db, subscription } from '@heliogrid/db';
+import { type Db, planPrice, subscription } from '@heliogrid/db';
 import {
   type BillingCycle,
   IN_PACK,
@@ -80,11 +81,42 @@ export class RecordedAlerts extends BillingAlerts {
   }
 }
 
-/** What the IN gateway collects for a tier on a cycle, tax included — from the book, never typed. */
-export function collectedFor(tier: Tier, cycle: BillingCycle): MinorUnits {
+/**
+ * The plan columns of a converted subscription, on a price row of its own. The row sits in a market
+ * no pack publishes, so no suite ever reads it as the current price; the IN book gives its amounts.
+ */
+export async function aPlan(
+  db: Db,
+  tier: Tier = 'growth',
+  cycle: BillingCycle = 'monthly',
+): Promise<{ tier: Tier; cycle: BillingCycle; planPriceId: string; gatewayRef: string }> {
+  const [row] = await db
+    .insert(planPrice)
+    .values({
+      marketCode: 'ZZ',
+      packVersion: `test-${randomUUID()}`,
+      tier,
+      cycle,
+      currencyCode: 'INR',
+      listMinor: listedOf(tier, cycle),
+      collectedMinor: collectedFor(tier, cycle),
+      gatewayPlanRef: `plan_${randomUUID()}`,
+      createdAt: new Date(),
+    })
+    .returning({ id: planPrice.id });
+  if (row === undefined) throw new Error('the plan price was not written');
+  return { tier, cycle, planPriceId: row.id, gatewayRef: `sub_${randomUUID()}` };
+}
+
+function listedOf(tier: Tier, cycle: BillingCycle): MinorUnits {
   const list = listedPrice(IN_PACK.priceBook, tier, cycle);
   if (list === null) throw new Error(`the IN book sells no ${tier} ${cycle}`);
-  return platformSaleTotal(IN_PACK, list);
+  return list;
+}
+
+/** What the IN gateway collects for a tier on a cycle — from the book and the pack, never typed. */
+export function collectedFor(tier: Tier, cycle: BillingCycle): MinorUnits {
+  return platformSaleTotal(IN_PACK, listedOf(tier, cycle));
 }
 
 /**
@@ -119,6 +151,7 @@ export function chargeServiceOf(
     new ChargeAdminRepository(pools.admin.db),
     alerts,
     entitlementServiceOf(pools),
+    marketsOf(pools),
     silentLogger(),
   );
 }

@@ -15,26 +15,19 @@ import {
   type ChargeStanding,
   type ChargeSucceeded,
   type CollectionKind,
-  LIVE_BILLING_STATES,
+  type MarketPack,
+  type MinorUnits,
   type SuccessEffect,
   type Tier,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq, inArray, isNull, ne } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
 import { clearOpenNotices } from './billing-notice.admin.repository';
+import { type LockedSubscription, lockSubscription } from './charge-standing.admin.repository';
 import { type LimitsFor, recomputeEntitlements } from './entitlement.admin.repository';
+import { issueInvoice } from './invoice.admin.repository';
 
-/** A subscription as a charge reads it, locked for the rest of its transaction. */
-interface LockedSubscription extends ChargeStanding {
-  readonly id: string;
-  readonly tenantId: string;
-  readonly currencyCode: string;
-  /** What the row pays for: `null` until a charge converts it. */
-  readonly tier: Tier | null;
-}
-
-/** The plan a trial chose at checkout, which the charge that pays for it makes the row's own. */
 export interface Conversion {
   readonly checkoutId: string;
   readonly planPriceId: string;
@@ -62,9 +55,10 @@ export type CollectedOn =
     }
   | { readonly kind: 'stray'; readonly subscriptionId: string };
 
-/** What one charge came to. */
+/** What one charge came to; a recorded payment names the total its invoice issued for. */
 export type SuccessRecorded =
-  | { readonly kind: 'recorded' | 'duplicate' | 'dead' }
+  | { readonly kind: 'recorded' | 'dead'; readonly invoiced: MinorUnits }
+  | { readonly kind: 'duplicate' }
   | { readonly kind: 'unknown subscription' }
   | { readonly kind: 'another currency'; readonly companyCurrency: string };
 
@@ -74,8 +68,8 @@ export type SuccessRecorded =
  * timers' conditional move each find it where the one before left it. What a charge does is
  * domain's; the caller hands it in as `decide`.
  *
- * The entitlement recompute (`M12-16`) and the dunning clear (`M12-39`) ride `recordSuccess`'s
- * transaction; the invoice (T-M12-012) joins it.
+ * The invoice (`M12-44`), the entitlement recompute (`M12-16`) and the dunning clear (`M12-39`)
+ * ride `recordSuccess`'s transaction: every recorded payment issues its invoice, a dead one's too.
  */
 @Injectable()
 export class ChargeAdminRepository {
@@ -144,6 +138,7 @@ export class ChargeAdminRepository {
     recordedAt: number,
     decide: (standing: ChargeStanding) => SuccessEffect,
     limitsFor: LimitsFor,
+    pack: MarketPack,
     conversion: Conversion | null = null,
   ): Promise<SuccessRecorded> {
     return this.db.transaction(async (tx) => {
@@ -167,10 +162,22 @@ export class ChargeAdminRepository {
         .onConflictDoNothing({ target: subscriptionPayment.gatewayChargeRef })
         .returning({ id: subscriptionPayment.id });
       if (!paid) return { kind: 'duplicate' };
+      // The invoice takes its market's series row: taken last, so every other charge in the market
+      // waits on it for as short a time as the transaction allows.
+      const issue = () =>
+        issueInvoice(tx, {
+          tenantId: held.tenantId,
+          subscriptionId: held.id,
+          paymentId: paid.id,
+          planPriceId: conversion?.planPriceId ?? held.planPriceId,
+          paysThrough: charge.paysThrough,
+          issuedAt: recordedAt,
+          pack,
+        });
       // The page was paid, whatever the charge does to the row: it can take no second payment.
       if (conversion !== null) await closeCheckout(tx, conversion.checkoutId, recordedAt);
       const effect = decide(held);
-      if (effect.outcome === 'dead') return { kind: 'dead' };
+      if (effect.outcome === 'dead') return { kind: 'dead', invoiced: await issue() };
       await applySuccess(tx, held, effect, charge.occurredAt, conversion);
       // Only a charge that moves the row ends its unpaid spell; a late one leaves the ladder running.
       if (effect.moveTo !== null) await clearOpenNotices(tx, held.tenantId, paid.id, recordedAt);
@@ -180,7 +187,7 @@ export class ChargeAdminRepository {
         base: limitsFor(conversion?.tier ?? held.tier),
         now: recordedAt,
       });
-      return { kind: 'recorded' };
+      return { kind: 'recorded', invoiced: await issue() };
     });
   }
 
@@ -237,60 +244,6 @@ async function closeCheckout(tx: DbTransaction, checkoutId: string, at: number):
     .update(billingCheckout)
     .set({ closedAt: new Date(at) })
     .where(and(eq(billingCheckout.id, checkoutId), isNull(billingCheckout.closedAt)));
-}
-
-async function lockSubscription(
-  tx: DbTransaction,
-  subscriptionId: string,
-): Promise<LockedSubscription | null> {
-  const [row] = await tx
-    .select({
-      id: subscription.id,
-      tenantId: subscription.tenantId,
-      state: subscription.state,
-      stateEnteredAt: subscription.stateEnteredAt,
-      paidPeriodEnd: subscription.paidPeriodEnd,
-      tier: subscription.tier,
-      currencyCode: tenant.currencyCode,
-    })
-    .from(subscription)
-    .innerJoin(tenant, eq(tenant.id, subscription.tenantId))
-    .where(eq(subscription.id, subscriptionId))
-    .for('update', { of: subscription });
-  if (row === undefined) return null;
-  const [newer] = await tx
-    .select({ id: subscription.id })
-    .from(subscription)
-    .where(
-      and(
-        eq(subscription.tenantId, row.tenantId),
-        ne(subscription.id, row.id),
-        inArray(subscription.state, [...LIVE_BILLING_STATES]),
-      ),
-    )
-    .limit(1);
-  const [latest] = await tx
-    .select({ occurredAt: subscriptionPayment.occurredAt })
-    .from(subscriptionPayment)
-    .where(
-      and(
-        eq(subscriptionPayment.tenantId, row.tenantId),
-        eq(subscriptionPayment.subscriptionId, row.id),
-      ),
-    )
-    .orderBy(desc(subscriptionPayment.occurredAt))
-    .limit(1);
-  return {
-    id: row.id,
-    tenantId: row.tenantId,
-    state: row.state,
-    stateEnteredAt: row.stateEnteredAt.getTime(),
-    paidPeriodEnd: row.paidPeriodEnd?.getTime() ?? null,
-    lastChargedAt: latest?.occurredAt.getTime() ?? null,
-    replaced: newer !== undefined,
-    currencyCode: row.currencyCode,
-    tier: row.tier,
-  };
 }
 
 async function recordState(
