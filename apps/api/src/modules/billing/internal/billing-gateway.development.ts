@@ -1,7 +1,9 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import {
+  type AddedToNextCharge,
   type BillingGateway,
   currencyCodeSchema,
+  type GatewayAddOnRequest,
   type GatewayCharge,
   type GatewayCheckoutRequest,
   type GatewayEvent,
@@ -64,6 +66,7 @@ const developmentEventSchema = z.discriminatedUnion('kind', [
 export class DevelopmentBillingGateway implements BillingGateway {
   readonly provider = 'development';
   private readonly collected = new Map<string, GatewayCharge[]>();
+  private readonly addOns = new Map<string, GatewayAddOnRequest[]>();
 
   constructor(private readonly logger: PinoLogger) {
     this.logger.setContext(DevelopmentBillingGateway.name);
@@ -86,6 +89,21 @@ export class DevelopmentBillingGateway implements BillingGateway {
       'development gateway: hosted checkout opened',
     );
     return { gatewayRef, hostedUrl: `https://development-checkout.invalid/${gatewayRef}` };
+  }
+
+  async addToNextCharge(request: GatewayAddOnRequest): Promise<AddedToNextCharge> {
+    const gatewayAddOnRef = `dev_addon_${request.addOnId}`;
+    this.addOns.set(request.gatewayRef, [...(this.addOns.get(request.gatewayRef) ?? []), request]);
+    this.logger.info(
+      { ...request, gatewayAddOnRef },
+      'development gateway: add-on on the next debit',
+    );
+    return { kind: 'added', gatewayAddOnRef };
+  }
+
+  /** The add-ons put on a mandate's next debit. Development and tests only. */
+  addedTo(gatewayRef: string): readonly GatewayAddOnRequest[] {
+    return this.addOns.get(gatewayRef) ?? [];
   }
 
   async closeCheckout(collection: CollectionKind, gatewayRef: string): Promise<void> {

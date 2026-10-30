@@ -17,7 +17,15 @@ import { PinoLogger } from 'nestjs-pino';
  * - `billing_pause_event` — the gateway paused or resumed a subscription; the product offers no
  *   pause, so it is never applied.
  * - `billing_invoice_mismatch` — a payment's invoice states a total the gateway did not collect:
- *   its plan object and its price row drifted. The invoice stands; the team looks.
+ *   its plan object and its price row drifted, or an add-on missed the debit it was added to.
+ *   The invoice stands; the team looks.
+ * - `billing_overage_over_cap` — an overage add-on so large that, with the plan, no one debit of
+ *   the company's mandate can carry it. It is never added; the team collects it.
+ * - `billing_overage_unsure` — the gateway did not answer an add-on, so it may or may not be on
+ *   the mandate's next debit. It is never sent again; the team reads the subscription's add-ons
+ *   at the gateway and sets the row by hand.
+ * - `billing_overage_refused` — the gateway refused an add-on again after an earlier refusal or
+ *   wait: the mandate may be ended at the gateway. It stays `pending` and is tried again.
  */
 const alertMessages = {
   billing_repair: 'the reconcile recorded a charge the gateway message never delivered',
@@ -27,6 +35,12 @@ const alertMessages = {
     'a company converted on a mandate a new pick was cancelling; check at the gateway whether it still renews',
   billing_pause_event: 'the gateway paused or resumed a subscription; not applied',
   billing_invoice_mismatch: 'a payment was invoiced at a total the gateway did not collect',
+  billing_overage_over_cap:
+    'an overage add-on no single mandate debit can carry; collect it by hand',
+  billing_overage_unsure:
+    'the gateway did not answer an overage add-on; check at the gateway whether it is on the next debit',
+  billing_overage_refused:
+    'the gateway refused an overage add-on again; check the mandate at the gateway',
 } as const;
 
 export type BillingAlert = keyof typeof alertMessages;

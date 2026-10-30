@@ -4,6 +4,7 @@ import { TEMPORAL_WORKER_REGISTRATIONS } from './common/temporal/temporal.tokens
 import { TemporalWorkerHost } from './common/temporal/temporal.worker';
 import {
   billingNoticesWorkerRegistration,
+  billingOverageWorkerRegistration,
   billingReconcileWorkerRegistration,
   billingWorkerRegistration,
 } from './modules/billing/billing.public';
@@ -45,6 +46,7 @@ import { usageWorkerRegistration } from './modules/usage/usage.public';
         billingWorkerRegistration,
         billingReconcileWorkerRegistration,
         billingNoticesWorkerRegistration,
+        billingOverageWorkerRegistration,
         usageWorkerRegistration,
       ],
     },

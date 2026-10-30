@@ -10,6 +10,7 @@ import {
 import { type MarketPack, type MinorUnits, minorUnits } from '@heliogrid/domain';
 import { fiscalYearOf, invoiceNumber, platformInvoice } from '@heliogrid/domain/server';
 import { and, eq, sql } from 'drizzle-orm';
+import { type CollectedAddOn, markInvoiced } from './overage-invoicing.admin.repository';
 
 /** The payment an invoice is issued for, inside its charge's transaction. */
 export interface InvoiceFor {
@@ -22,12 +23,14 @@ export interface InvoiceFor {
   readonly issuedAt: number;
   /** The company's market pack, current when the charge landed. */
   readonly pack: MarketPack;
+  /** The overage add-ons the debit collected (`M12-35`), listed after the plan line. */
+  readonly addOns: readonly CollectedAddOn[];
 }
 
 /**
  * Issues the cycle invoice for one recorded payment (`M12-09`, `M12-44`), in the transaction that
  * recorded it: a payment and its invoice commit together or not at all. The plan line is the
- * plan the payment buys; the company's registration is read here and copied on, so a later edit
+ * plan the payment buys, and each overage add-on the debit collected is a line after it; the company's registration is read here and copied on, so a later edit
  * changes no invoice issued. Answers the invoice's total, which the caller sets beside the charge.
  */
 export async function issueInvoice(tx: DbTransaction, payment: InvoiceFor): Promise<MinorUnits> {
@@ -43,7 +46,7 @@ export async function issueInvoice(tx: DbTransaction, payment: InvoiceFor): Prom
   const { pack } = payment;
   const invoice = platformInvoice(
     pack,
-    [minorUnits(plan.listMinor)],
+    [minorUnits(plan.listMinor), ...payment.addOns.map((addOn) => addOn.amount)],
     await companyRegistration(tx, payment.tenantId, pack),
   );
   const [fiscalYear, sequence] = await nextInSeries(tx, pack, payment.issuedAt);
@@ -78,7 +81,7 @@ export async function issueInvoice(tx: DbTransaction, payment: InvoiceFor): Prom
         tenantId: payment.tenantId,
         invoiceId: issued.id,
         position,
-        planPriceId: plan.id,
+        ...lineSells(plan.id, payment.addOns, position),
         taxableMinor: line.taxableAmount,
         rateBasisPoints: line.rateBasisPoints,
       })
@@ -94,7 +97,20 @@ export async function issueInvoice(tx: DbTransaction, payment: InvoiceFor): Prom
       })),
     );
   }
+  await markInvoiced(
+    tx,
+    payment.addOns.map((addOn) => addOn.id),
+    issued.id,
+  );
   return invoice.totalAmount;
+}
+
+/** What the line at `position` sells: the plan first, then each add-on in order. */
+function lineSells(planPriceId: string, addOns: readonly CollectedAddOn[], position: number) {
+  if (position === 0) return { planPriceId, overageAddOnId: null };
+  const addOn = addOns[position - 1];
+  if (addOn === undefined) throw new Error(`no add-on for invoice line ${position}`);
+  return { planPriceId: null, overageAddOnId: addOn.id };
 }
 
 /** The company's registration of the type its market asks for; `null` when it gave none. */

@@ -8,6 +8,7 @@ import {
   ENTITLEMENT_SOURCES,
   INVOICE_KINDS,
   INVOICE_STATUSES,
+  OVERAGE_ADDON_STATUSES,
   SUBSCRIPTION_CAUSES,
   TIERS,
 } from '@heliogrid/domain';
@@ -55,6 +56,9 @@ export const invoiceKindSchema = z.enum(INVOICE_KINDS);
 
 /** Where a platform invoice stands (`M12-44`). */
 export const invoiceStatusSchema = z.enum(INVOICE_STATUSES);
+
+/** An overage add-on's life (`M12-35`); the pgEnum `overage_addon_status` mirrors it. */
+export const overageAddOnStatusSchema = z.enum(OVERAGE_ADDON_STATUSES);
 
 /**
  * Why a checkout could not open. `CHECKOUT_NOT_POSSIBLE`: the company is not on a trial — paying

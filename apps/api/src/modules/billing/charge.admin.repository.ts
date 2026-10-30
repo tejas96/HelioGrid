@@ -27,6 +27,7 @@ import { clearOpenNotices } from './billing-notice.admin.repository';
 import { type LockedSubscription, lockSubscription } from './charge-standing.admin.repository';
 import { type LimitsFor, recomputeEntitlements } from './entitlement.admin.repository';
 import { issueInvoice } from './invoice.admin.repository';
+import { addOnsCollectedBy } from './overage-invoicing.admin.repository';
 
 export interface Conversion {
   readonly checkoutId: string;
@@ -68,7 +69,7 @@ export type SuccessRecorded =
  * timers' conditional move each find it where the one before left it. What a charge does is
  * domain's; the caller hands it in as `decide`.
  *
- * The invoice (`M12-44`), the entitlement recompute (`M12-16`) and the dunning clear (`M12-39`)
+ * The invoice (`M12-44`) with the overage add-ons the debit collected (`M12-35`), the entitlement recompute (`M12-16`) and the dunning clear (`M12-39`)
  * ride `recordSuccess`'s transaction: every recorded payment issues its invoice, a dead one's too.
  */
 @Injectable()
@@ -164,7 +165,8 @@ export class ChargeAdminRepository {
       if (!paid) return { kind: 'duplicate' };
       // The invoice takes its market's series row: taken last, so every other charge in the market
       // waits on it for as short a time as the transaction allows.
-      const issue = () =>
+      const collectedOn = conversion?.gatewayRef ?? held.gatewayRef;
+      const issue = async () =>
         issueInvoice(tx, {
           tenantId: held.tenantId,
           subscriptionId: held.id,
@@ -173,6 +175,15 @@ export class ChargeAdminRepository {
           paysThrough: charge.paysThrough,
           issuedAt: recordedAt,
           pack,
+          addOns:
+            collectedOn === null
+              ? []
+              : await addOnsCollectedBy(tx, {
+                  tenantId: held.tenantId,
+                  subscriptionId: held.id,
+                  gatewayRef: collectedOn,
+                  occurredAt: charge.occurredAt,
+                }),
         });
       // The page was paid, whatever the charge does to the row: it can take no second payment.
       if (conversion !== null) await closeCheckout(tx, conversion.checkoutId, recordedAt);

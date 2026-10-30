@@ -22,6 +22,8 @@ import { GatewayEventsService } from './gateway-events.service';
 import { BillingAlerts } from './internal/billing-alerts';
 import { DevelopmentBillingGateway } from './internal/billing-gateway.development';
 import { RazorpayBillingGateway } from './internal/billing-gateway.razorpay';
+import { OverageAdminRepository } from './overage.admin.repository';
+import { OverageService } from './overage.service';
 import { PlanPriceAdminRepository } from './plan-price.admin.repository';
 import { PlanPriceService } from './plan-price.service';
 import { ReconcileAdminRepository } from './reconcile.admin.repository';
@@ -92,6 +94,8 @@ const billingGatewayProvider: Provider = {
     PlanPriceAdminRepository,
     ReconcileService,
     ReconcileAdminRepository,
+    OverageService,
+    OverageAdminRepository,
     UsageActivityRegistration,
     UsageService,
     UsageRepository,

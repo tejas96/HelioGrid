@@ -1,5 +1,6 @@
 import type {
   BillingNoticesActivities,
+  BillingOverageActivities,
   BillingReconcileActivities,
   BillingReconcileResult,
   BillingTimersActivities,
@@ -59,4 +60,16 @@ const { tellDueNotices } = proxyActivities<BillingNoticesActivities>({
 /** The notices due on every dunning ladder and trial (`M12-39`, `M12-42`). */
 export async function billingNotices(): Promise<{ told: number }> {
   return tellDueNotices();
+}
+
+const { addDueOverage } = proxyActivities<BillingOverageActivities>({
+  // A run reckons and adds a bounded batch, each add at most ten seconds at the gateway.
+  startToCloseTimeout: '10 minutes',
+  // Bounded: the next scheduled run tries again an hour later, and a row is never added twice.
+  retry: { maximumAttempts: 3 },
+});
+
+/** The overage of every closed mandate period, reckoned and added to its next debit (`M12-35`). */
+export async function billingOverage(): Promise<{ reckoned: number; added: number }> {
+  return addDueOverage();
 }

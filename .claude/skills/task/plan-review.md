@@ -49,6 +49,8 @@ leaks data, loses money or needs a second release:
 - **The design system:** a prop the RFC removes or retypes on a component that has a typing in
   `packages/theme/src/_generated/contracts` — that is a design-system change, the owner's.
 - **Logic:** a decision whose rule gives the wrong result for a case the walk reached.
+- **Dates:** an example that names a date or a debit, walked on the calendar — a charge for a
+  period paid in advance can ride only a debit after the one that closes it.
 
 **What counts.** A finding names its target, attack or break and the source that proves it: a
 `DONE WHEN` id, a frame, a PRD row, a law or a `file:line`. No source, no finding. A taste, a
