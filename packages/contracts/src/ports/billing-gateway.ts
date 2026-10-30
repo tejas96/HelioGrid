@@ -74,6 +74,12 @@ export interface BillingGateway {
   readonly provider: string;
   /** Creates the plan object and answers its gateway ref. */
   createPlan(request: GatewayPlanRequest): Promise<string>;
+  /**
+   * Whether this gateway, on these keys, holds the plan object. `false` for a ref another gateway
+   * or another account made — a test-mode plan once live keys are bound — so the publish makes a
+   * new one. Throws when the gateway cannot tell.
+   */
+  hasPlan(gatewayPlanRef: string): Promise<boolean>;
   /** Opens the hosted page. Throws when the gateway does not answer; nothing is then opened. */
   openCheckout(request: GatewayCheckoutRequest): Promise<OpenedCheckout>;
   /**

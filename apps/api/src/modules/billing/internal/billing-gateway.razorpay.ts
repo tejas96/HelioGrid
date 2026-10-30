@@ -10,10 +10,11 @@ import type {
 import { type CollectionKind, minorUnits } from '@heliogrid/domain';
 import { PinoLogger } from 'nestjs-pino';
 import { z } from 'zod';
+import { messageOf, millis, seconds } from './gateway-message.razorpay';
 
 /**
- * Razorpay — the IN reference implementation of the billing port (`M12-03`, `F1-43`), and the one
- * file in the billing module that names a vendor. A monthly tier is a Razorpay subscription on its
+ * Razorpay — the IN reference implementation of the billing port (`M12-03`, `F1-43`). It and its
+ * message reader (`gateway-message.razorpay.ts`) are the only billing files that name a vendor. A monthly tier is a Razorpay subscription on its
  * plan object, whose hosted link establishes the mandate; a yearly one is a payment link
  * (`F1-40`). Every call is the REST API with the key pair; every message is verified against the
  * webhook secret before a byte of it is read.
@@ -33,25 +34,24 @@ export interface RazorpayKeys {
   readonly webhookSecret: string;
 }
 
-const MS_PER_SECOND = 1000;
-const seconds = (value: number): number => Math.floor(value / MS_PER_SECOND);
-const millis = (value: number): number => value * MS_PER_SECOND;
+const BAD_REQUEST = 400;
+const NOT_FOUND = 404;
+/** Razorpay's answers to a plan id it does not hold: 400 for a well-formed id, 404 for any other. */
+const UNKNOWN_ID_STATUSES: readonly number[] = [BAD_REQUEST, NOT_FOUND];
+
+/** A call the gateway answered with a non-2xx status. */
+class GatewayRefusal extends Error {
+  constructor(
+    readonly status: number,
+    method: string,
+    path: string,
+  ) {
+    super(`the gateway answered ${status} to ${method} ${path}`);
+  }
+}
 
 const opened = z.object({ id: z.string(), short_url: z.string().url() });
 const plan = z.object({ id: z.string() });
-const paymentEntity = z.object({
-  id: z.string(),
-  amount: z.number().int(),
-  currency: z.string(),
-  created_at: z.number().int(),
-});
-const webhook = z.object({
-  event: z.string(),
-  created_at: z.number().int(),
-  payload: z.record(z.object({ entity: z.record(z.unknown()) })),
-});
-const subscriptionEntity = z.object({ id: z.string(), current_end: z.number().int().nullable() });
-const paymentLinkEntity = z.object({ id: z.string() });
 const invoices = z.object({
   items: z.array(
     z.object({
@@ -107,6 +107,18 @@ export class RazorpayBillingGateway implements BillingGateway {
     return made.id;
   }
 
+  async hasPlan(gatewayPlanRef: string): Promise<boolean> {
+    try {
+      await this.call('GET', `/plans/${encodeURIComponent(gatewayPlanRef)}`, plan);
+      return true;
+    } catch (refused) {
+      if (refused instanceof GatewayRefusal && UNKNOWN_ID_STATUSES.includes(refused.status)) {
+        return false;
+      }
+      throw refused;
+    }
+  }
+
   async openCheckout(request: GatewayCheckoutRequest): Promise<OpenedCheckout> {
     const notes = { checkout_id: request.checkoutId };
     const expireBy = seconds(request.expiresAt);
@@ -150,16 +162,7 @@ export class RazorpayBillingGateway implements BillingGateway {
     const signature = headers['x-razorpay-signature'];
     if (signature === undefined || !this.signatureHolds(rawBody, signature)) return null;
     const eventRef = headers['x-razorpay-event-id'] ?? signature;
-    const parsed = webhook.safeParse(parseJson(rawBody));
-    if (!parsed.success) return { eventRef, kind: 'other', type: 'unreadable' };
-    const { event, payload, created_at } = parsed.data;
-    try {
-      return eventOf(eventRef, event, payload, created_at);
-    } catch {
-      // A known event in a shape this adapter cannot read: never applied by guess. The reconcile
-      // finds its charge from the gateway's own record.
-      return { eventRef, kind: 'other', type: `unreadable ${event}` };
-    }
+    return messageOf(eventRef, rawBody);
   }
 
   async chargesOn(collection: CollectionKind, gatewayRef: string): Promise<GatewayCharge[]> {
@@ -228,73 +231,8 @@ export class RazorpayBillingGateway implements BillingGateway {
         { method, path: path.split('?')[0], status: response.status },
         'gateway refused a call',
       );
-      throw new Error(`the gateway answered ${response.status} to ${method} ${path.split('?')[0]}`);
+      throw new GatewayRefusal(response.status, method, path.split('?')[0] ?? path);
     }
     return answer.parse(await response.json());
-  }
-}
-
-/** One verified message, as the port's event. Throws when a known event's shape cannot be read. */
-function eventOf(
-  eventRef: string,
-  event: string,
-  payload: z.infer<typeof webhook>['payload'],
-  createdAt: number,
-): GatewayEvent {
-  switch (event) {
-    case 'subscription.charged': {
-      const subscription = subscriptionEntity.parse(payload.subscription?.entity);
-      const payment = paymentEntity.parse(payload.payment?.entity);
-      return {
-        eventRef,
-        kind: 'charged',
-        charge: chargeOf(subscription.id, payment, subscription.current_end),
-      };
-    }
-    case 'payment_link.paid': {
-      const link = paymentLinkEntity.parse(payload.payment_link?.entity);
-      const payment = paymentEntity.parse(payload.payment?.entity);
-      return { eventRef, kind: 'charged', charge: chargeOf(link.id, payment, null) };
-    }
-    case 'subscription.pending': {
-      const subscription = subscriptionEntity.parse(payload.subscription?.entity);
-      return {
-        eventRef,
-        kind: 'charge_failed',
-        gatewayRef: subscription.id,
-        occurredAt: millis(createdAt),
-      };
-    }
-    case 'subscription.paused':
-    case 'subscription.resumed': {
-      const subscription = subscriptionEntity.parse(payload.subscription?.entity);
-      const kind = event === 'subscription.paused' ? 'paused' : 'resumed';
-      return { eventRef, kind, gatewayRef: subscription.id };
-    }
-    default:
-      return { eventRef, kind: 'other', type: event };
-  }
-}
-
-function chargeOf(
-  gatewayRef: string,
-  payment: z.infer<typeof paymentEntity>,
-  periodEnd: number | null,
-): GatewayCharge {
-  return {
-    gatewayRef,
-    chargeRef: payment.id,
-    occurredAt: millis(payment.created_at),
-    paysThrough: periodEnd === null ? null : millis(periodEnd),
-    amount: minorUnits(payment.amount),
-    currencyCode: payment.currency,
-  };
-}
-
-function parseJson(rawBody: Uint8Array): unknown {
-  try {
-    return JSON.parse(Buffer.from(rawBody).toString('utf8'));
-  } catch {
-    return null;
   }
 }
