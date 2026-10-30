@@ -28,5 +28,7 @@ export const SUBJECT_KINDS = [
   'catalog',
   /** Support's audited grant on a company's limits or trial (`M12-19`). */
   'entitlement_override',
+  /** One fired notice of the dunning ladder or a trial nudge (`M12-39`, `M12-42`). */
+  'dunning_event',
 ] as const;
 export type SubjectKind = (typeof SUBJECT_KINDS)[number];

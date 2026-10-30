@@ -22,6 +22,7 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 import { and, desc, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
+import { clearOpenNotices } from './billing-notice.admin.repository';
 import { type LimitsFor, recomputeEntitlements } from './entitlement.admin.repository';
 
 /** A subscription as a charge reads it, locked for the rest of its transaction. */
@@ -73,8 +74,8 @@ export type SuccessRecorded =
  * timers' conditional move each find it where the one before left it. What a charge does is
  * domain's; the caller hands it in as `decide`.
  *
- * The entitlement recompute (`M12-16`) rides `recordSuccess`'s transaction; the invoice
- * (T-M12-012) and the dunning clear (T-M12-011) join it.
+ * The entitlement recompute (`M12-16`) and the dunning clear (`M12-39`) ride `recordSuccess`'s
+ * transaction; the invoice (T-M12-012) joins it.
  */
 @Injectable()
 export class ChargeAdminRepository {
@@ -171,6 +172,8 @@ export class ChargeAdminRepository {
       const effect = decide(held);
       if (effect.outcome === 'dead') return { kind: 'dead' };
       await applySuccess(tx, held, effect, charge.occurredAt, conversion);
+      // Only a charge that moves the row ends its unpaid spell; a late one leaves the ladder running.
+      if (effect.moveTo !== null) await clearOpenNotices(tx, held.tenantId, paid.id, recordedAt);
       await recomputeEntitlements(tx, {
         tenantId: held.tenantId,
         subscriptionId: held.id,

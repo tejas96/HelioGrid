@@ -2,6 +2,7 @@ import {
   auditActorKindSchema,
   auditEventTypeSchema,
   billingCycleSchema,
+  billingNoticeSchema,
   billingStateSchema,
   catalogAvailabilitySchema,
   catalogImportConflictAnswerSchema,
@@ -78,6 +79,7 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   tier: { options: tierSchema.options, contract: 'tierSchema' },
   billing_cycle: { options: billingCycleSchema.options, contract: 'billingCycleSchema' },
   collection_kind: { options: collectionKindSchema.options, contract: 'collectionKindSchema' },
+  billing_notice: { options: billingNoticeSchema.options, contract: 'billingNoticeSchema' },
   entitlement_source: {
     options: entitlementSourceSchema.options,
     contract: 'entitlementSourceSchema',

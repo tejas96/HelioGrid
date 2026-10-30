@@ -1,5 +1,6 @@
 import {
   BILLING_CYCLES,
+  BILLING_NOTICES,
   BILLING_STATES,
   COLLECTION_KINDS,
   ENTITLEMENT_LIMIT_KINDS,
@@ -31,6 +32,9 @@ export const tierSchema = z.enum(TIERS);
 
 /** Monthly or yearly (`BM-13`). */
 export const billingCycleSchema = z.enum(BILLING_CYCLES);
+
+/** A notice of the dunning ladder or a trial nudge (`M12-39`, `M12-42`). */
+export const billingNoticeSchema = z.enum(BILLING_NOTICES);
 
 /** How a checkout collects: a standing mandate, or one payment link (`M12-11`). */
 export const collectionKindSchema = z.enum(COLLECTION_KINDS);

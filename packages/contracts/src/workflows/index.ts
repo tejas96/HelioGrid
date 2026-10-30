@@ -10,6 +10,8 @@
  * former sibling. Do not add one back.
  */
 
+export type { BillingNoticesActivities } from './billing-notices';
+export { BILLING_NOTICES_SCHEDULE_ID, billingNoticesWorkflow } from './billing-notices';
 export type {
   BillingReconcileActivities,
   BillingReconcileResult,

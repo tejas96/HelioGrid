@@ -30,6 +30,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 - Given a tenant in each of the six states, when the Owner opens billing, then every M12-55 surface renders and pay/upgrade/reactivate is actionable (M12-55).
 - (M12-50 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text in the brief is the binding criterion — cancellation is owner-initiated, runs to the paid period end, and the reason is captured as product signal, never as a gate.)
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+**From T-M12-011:** the screen's `Payment reminders` list reads `dunning_event` (each notice, when it fired, and the payment that cleared it), and both apps route a notification whose subject kind is `dunning_event` — a dunning or trial notice — to this screen.
 
 ### T-M12-003 · Plan Selection & Conversion
 
@@ -203,7 +204,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 ### T-M12-011 · Dunning ladder & trial nudges
 
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped
 **PRD rows:** M12-39, M12-40, M12-41, M12-42, M12-09
 **Requirements (verbatim):**
 - **M12-39** (P0) — **The dunning ladder runs from the first failed charge, one rung per fact:** day 0 → `past_due`, banner + push + message ("payment failed, we'll retry — update your method here") · day 2 reminder · day 4 → metered features pause, and the message states **exactly what paused and what still works** · day 6 final warning with a one-tap pay link · day 7 → `halted`, and the message **confirms read + export + customer links + the billing screens (pay/upgrade/reactivate) still work** *(Final review: "billing screens" restored — `BM-32`'s always-works list is four items)* · post-halt weekly × 4, then monthly, indefinitely — reactivation always one payment away. **Grandfathering honesty (owner ruling 2026-08-04):** for a tenant inside a protection horizon, the ladder's copy from day 0 states plainly that a lapse to `cancelled`/`halted` **forfeits the launch-price guarantee** and reactivation prices at the current book — the no-surprise rule; win-back messages repeat it.
@@ -249,6 +250,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 - Given a protected tenant who lapses to `cancelled` or `halted`, when they reactivate at any later date, then they bill against the current list book — protection forfeited on lapse — and the dunning/cancellation copy they saw stated the forfeiture before it happened (M12-57, M12-39, M12-41; owner ruling 2026-08-04).
 **Settle before the build:**
 - `price_protection` is a tenant-level fact pinning the market book VERSION current at signup, not individual `plan_price` rows, and no pin junction exists (M12-57, BM-42) — ruled: row selection at billing time resolves tier × cycle × currency inside the pinned book version, so a protected upgrade or cycle switch bills the new tier's row from that same version, and forfeiture is recorded on the same row with its lapse cause (BM-42 protects "the pricing they signed up on" — a book, not one row — and T-FCORE-015 runs the horizon from signup, before any row is billed; a pinned version answers every later row selection without a junction, and book rows are immutable and retained indefinitely under M12-12 and M12-57).
+- **From T-M12-011:** the dunning sweep decides a company is protected from `tenant.created_at` + the book's `priceProtectionMonths` (`protectionEndsAt`, `commerce/grandfathering.ts`); this task points that read at the stored `price_protection` row, so a forfeited company's notices stop warning of a loss already taken.
 
 ## Laws (enforced through screens and review, no standalone build)
 

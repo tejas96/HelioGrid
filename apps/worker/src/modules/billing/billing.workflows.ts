@@ -1,4 +1,5 @@
 import type {
+  BillingNoticesActivities,
   BillingReconcileActivities,
   BillingReconcileResult,
   BillingTimersActivities,
@@ -46,4 +47,16 @@ export async function billingReconcile(): Promise<BillingReconcileResult> {
     after = page.after;
   } while (after !== null);
   return { checked, repaired };
+}
+
+const { tellDueNotices } = proxyActivities<BillingNoticesActivities>({
+  // A run tells at most a bounded batch, each by SMS after its commit; past this it is stuck.
+  startToCloseTimeout: '2 minutes',
+  // Bounded: the next scheduled run tries again a minute later, and a notice told is never told twice.
+  retry: { maximumAttempts: 3 },
+});
+
+/** The notices due on every dunning ladder and trial (`M12-39`, `M12-42`). */
+export async function billingNotices(): Promise<{ told: number }> {
+  return tellDueNotices();
 }

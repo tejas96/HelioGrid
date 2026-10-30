@@ -1,3 +1,4 @@
+import { localDate, MS_PER_DAY } from '../format/zone';
 import type { BillingState } from './states';
 import type { TierCapacity, TierLimit } from './tiers';
 
@@ -91,4 +92,18 @@ function isAtLeast(candidate: TierLimit, floor: TierLimit): boolean {
   if (candidate === 'unlimited') return true;
   if (floor === 'unlimited') return false;
   return candidate >= floor;
+}
+
+/**
+ * `BM-42` — the moment a protection horizon of `months` that began at `signedUpAt` ends. Calendar
+ * months on the UTC calendar, a day that a shorter month lacks falling to that month's last day:
+ * the horizon is months long by law, and a day of zone error on a 24-month horizon only moves
+ * which side of a lapsed horizon a notice's warning lands.
+ */
+export function protectionEndsAt(signedUpAt: number, months: number): number {
+  const [year = 0, month = 1, day = 1] = localDate(signedUpAt, 'UTC').split('-').map(Number);
+  const timeOfDay = signedUpAt - Date.UTC(year, month - 1, day);
+  const target = month - 1 + months;
+  const daysInTarget = (Date.UTC(year, target + 1, 1) - Date.UTC(year, target, 1)) / MS_PER_DAY;
+  return Date.UTC(year, target, Math.min(day, daysInTarget)) + timeOfDay;
 }
