@@ -4,7 +4,13 @@ import {
   trancheTemplate,
   trancheTemplateLine,
 } from '@heliogrid/db';
-import { allocationVerdict, basisPoints, ONBOARDING_STEPS } from '@heliogrid/domain';
+import {
+  allocationVerdict,
+  basisPoints,
+  bookEntitlements,
+  IN_PACK,
+  ONBOARDING_STEPS,
+} from '@heliogrid/domain';
 import { asc, eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { seedTenantSettings } from '../../src/modules/settings/settings.admin.repository';
@@ -50,6 +56,7 @@ describe.skipIf(skip)(
         currencyCode: 'INR',
         defaultLanguage: 'en',
         timezone: 'Asia/Kolkata',
+        trialLimits: bookEntitlements(IN_PACK.priceBook, null),
         ownerUserId: founder.userId,
         ownerName: founder.name,
         now: Date.now(),

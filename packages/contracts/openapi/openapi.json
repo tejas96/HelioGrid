@@ -75,7 +75,9 @@
                               "catalog.override_cleared",
                               "catalog.rate_recorded",
                               "catalog.release_published",
-                              "price_book.version_published"
+                              "price_book.version_published",
+                              "billing.goodwill_credit_issued",
+                              "billing.trial_extended"
                             ]
                           },
                           "actorKind": {
@@ -112,7 +114,8 @@
                               "catalog_item",
                               "catalog_release",
                               "price_book_version",
-                              "catalog"
+                              "catalog",
+                              "entitlement_override"
                             ]
                           },
                           "subjectRef": {
@@ -26330,7 +26333,8 @@
                               "catalog_item",
                               "catalog_release",
                               "price_book_version",
-                              "catalog"
+                              "catalog",
+                              "entitlement_override"
                             ]
                           },
                           "subjectRef": {
@@ -28424,7 +28428,8 @@
                         "catalog_item",
                         "catalog_release",
                         "price_book_version",
-                        "catalog"
+                        "catalog",
+                        "entitlement_override"
                       ]
                     },
                     "subjectRef": {

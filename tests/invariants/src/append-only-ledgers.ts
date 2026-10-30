@@ -20,6 +20,9 @@ export const APPEND_ONLY_LEDGERS: Record<string, string> = {
     'every state a subscription entered, when and why; only the admin path writes it (M12-04, T-M12-005)',
   subscription_payment:
     'every charge the gateway collected, the entitlement truth; only the admin path writes it (M12-09, T-M12-006)',
+  entitlement_override:
+    'support’s audited acts on a company’s limits and trial, never an edit; only the admin path ' +
+    'writes it (M12-19, M12-52, T-M12-008)',
   orchestration_outbox:
     'a handoff to Temporal, written in its change’s transaction; only the dispatcher marks it, on ' +
     'the admin path (infra/temporal/README.md §5, T-M01-030)',

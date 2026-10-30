@@ -62,6 +62,27 @@ export type {
   TrancheTemplateInForce,
 } from './effective-settings';
 export { absentFacts, resolveEffectiveSettings, SETTING_SOURCES } from './effective-settings';
+export type {
+  Entitlement,
+  EntitlementCredit,
+  EntitlementKey,
+  EntitlementLimitKind,
+  EntitlementOverrideKind,
+  EntitlementSource,
+} from './entitlements';
+export {
+  bookEntitlements,
+  creditRefusal,
+  ENTITLEMENT_KEYS,
+  ENTITLEMENT_LIMIT_KINDS,
+  ENTITLEMENT_OVERRIDE_KINDS,
+  ENTITLEMENT_SOURCES,
+  extendedTrialEndsAt,
+  limitOf,
+  storedLimit,
+  TRIAL_EXTENSION_DAYS,
+  withCredits,
+} from './entitlements';
 export { appliesImmediately, forfeitsPriceProtection } from './grandfathering';
 export type { DueTimedCause, SubscriptionCause, SubscriptionClock } from './lifecycle';
 export {

@@ -1,20 +1,26 @@
 import { dueTimedCause, MS_PER_DAY, nextState, PAST_DUE_GRACE_DAYS } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { BillingAdminRepository, type TimedSubscription } from './billing.admin.repository';
+import { EntitlementService } from './entitlement.service';
 
 /** At most this many rows of each kind per run, so one run stays inside its step's timeout. */
 const TIMER_BATCH = 100;
 
 /**
  * The billing timers (`M12-04`, `M12-06`, `M12-52`): every run moves each subscription the clock
- * has made due, and starts the trial of a new company an older api signed up without one. Which
- * move is due, and to where, is domain's; this only reads, asks and writes.
+ * has made due, starts the trial of a new company an older api signed up without one, and writes
+ * the limits of a live company that lacks them (`M12-16`). Which move is due, and to where, is
+ * domain's; this only reads, asks and writes.
  */
 @Injectable()
 export class BillingService {
-  // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
-  constructor(@Inject(BillingAdminRepository) private readonly billing: BillingAdminRepository) {}
+  // Explicit tokens: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
+  constructor(
+    @Inject(BillingAdminRepository) private readonly billing: BillingAdminRepository,
+    @Inject(EntitlementService) private readonly entitlements: EntitlementService,
+  ) {}
 
+  /** The result is the workflow's contract: a running worker reads exactly these two counts. */
   async advanceDue(now: number): Promise<{ moved: number; trialsStarted: number }> {
     const due = [
       ...(await this.billing.trialsEndedBy(now, TIMER_BATCH)),
@@ -26,13 +32,15 @@ export class BillingService {
     }
     let trialsStarted = 0;
     // A release rolls in minutes; a day back covers it with room to spare.
-    for (const tenantId of await this.billing.companiesWithoutSubscription(
+    for (const { tenantId, marketCode } of await this.billing.companiesWithoutSubscription(
       now - MS_PER_DAY,
       now,
       TIMER_BATCH,
     )) {
-      if (await this.billing.startTrialFor(tenantId, now)) trialsStarted += 1;
+      const trialLimits = (await this.entitlements.limitsIn(marketCode))(null);
+      if (await this.billing.startTrialFor(tenantId, now, trialLimits)) trialsStarted += 1;
     }
+    await this.entitlements.repair(now);
     return { moved, trialsStarted };
   }
 

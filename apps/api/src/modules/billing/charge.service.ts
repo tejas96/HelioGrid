@@ -8,6 +8,7 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 import { ChargeAdminRepository, type Conversion } from './charge.admin.repository';
+import { EntitlementService } from './entitlement.service';
 import { BillingAlerts } from './internal/billing-alerts';
 import { cycleEnd } from './internal/cycle-end';
 
@@ -21,7 +22,8 @@ export class ChargeRefused extends Error {
  * reconcile poll alike, so a payment has one writer. A successful charge records its payment and
  * grows the window in one transaction; no late, repeated or older fact moves a subscription back.
  * The charge that pays for a trial's checkout also makes that checkout's plan the row's own, in
- * the same transaction (`M12-54`). What each fact does is domain's (`commerce/charges.ts`).
+ * the same transaction (`M12-54`), and rewrites the company's limits there too (`M12-16`). What
+ * each fact does is domain's (`commerce/charges.ts`).
  */
 @Injectable()
 export class ChargeService {
@@ -29,6 +31,7 @@ export class ChargeService {
   constructor(
     @Inject(ChargeAdminRepository) private readonly charges: ChargeAdminRepository,
     @Inject(BillingAlerts) private readonly alerts: BillingAlerts,
+    @Inject(EntitlementService) private readonly entitlements: EntitlementService,
     @Inject(PinoLogger) private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(ChargeService.name);
@@ -114,10 +117,14 @@ export class ChargeService {
     if (charge.amount <= 0) {
       throw new ChargeRefused(`a charge collects an amount above zero, not ${charge.amount}`);
     }
+    // The book is read before the transaction opens, so the limits rewrite inside it (`M12-16`).
+    const marketCode = await this.charges.marketOf(charge.subscriptionId);
+    if (marketCode === null) throw new ChargeRefused(`no subscription ${charge.subscriptionId}`);
     const result = await this.charges.recordSuccess(
       charge,
       now,
       (standing) => successEffect(standing, charge),
+      await this.entitlements.limitsIn(marketCode),
       conversion,
     );
     switch (result.kind) {

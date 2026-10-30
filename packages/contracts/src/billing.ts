@@ -2,6 +2,9 @@ import {
   BILLING_CYCLES,
   BILLING_STATES,
   COLLECTION_KINDS,
+  ENTITLEMENT_LIMIT_KINDS,
+  ENTITLEMENT_OVERRIDE_KINDS,
+  ENTITLEMENT_SOURCES,
   SUBSCRIPTION_CAUSES,
   TIERS,
 } from '@heliogrid/domain';
@@ -31,6 +34,15 @@ export const billingCycleSchema = z.enum(BILLING_CYCLES);
 
 /** How a checkout collects: a standing mandate, or one payment link (`M12-11`). */
 export const collectionKindSchema = z.enum(COLLECTION_KINDS);
+
+/** Where a company's limit comes from: plan, trial, or a support grant (`M12-16`). */
+export const entitlementSourceSchema = z.enum(ENTITLEMENT_SOURCES);
+
+/** A limit's case: a number, no ceiling, or negotiated (`BM-12`, `BM-15`). */
+export const entitlementLimitKindSchema = z.enum(ENTITLEMENT_LIMIT_KINDS);
+
+/** Support's two audited acts on a company's limits and trial (`M12-19`, `M12-52`). */
+export const entitlementOverrideKindSchema = z.enum(ENTITLEMENT_OVERRIDE_KINDS);
 
 /**
  * Why a checkout could not open. `CHECKOUT_NOT_POSSIBLE`: the company is not on a trial — paying

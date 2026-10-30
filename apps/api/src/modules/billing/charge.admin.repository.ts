@@ -22,12 +22,15 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 import { and, desc, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
+import { type LimitsFor, recomputeEntitlements } from './entitlement.admin.repository';
 
 /** A subscription as a charge reads it, locked for the rest of its transaction. */
 interface LockedSubscription extends ChargeStanding {
   readonly id: string;
   readonly tenantId: string;
   readonly currencyCode: string;
+  /** What the row pays for: `null` until a charge converts it. */
+  readonly tier: Tier | null;
 }
 
 /** The plan a trial chose at checkout, which the charge that pays for it makes the row's own. */
@@ -70,7 +73,8 @@ export type SuccessRecorded =
  * timers' conditional move each find it where the one before left it. What a charge does is
  * domain's; the caller hands it in as `decide`.
  *
- * The invoice (T-M12-012) and the dunning clear (T-M12-011) join `recordSuccess`'s transaction.
+ * The entitlement recompute (`M12-16`) rides `recordSuccess`'s transaction; the invoice
+ * (T-M12-012) and the dunning clear (T-M12-011) join it.
  */
 @Injectable()
 export class ChargeAdminRepository {
@@ -123,10 +127,22 @@ export class ChargeAdminRepository {
     };
   }
 
+  /** The market whose book a subscription's limits come from; `null` for no such subscription. */
+  async marketOf(subscriptionId: string): Promise<string | null> {
+    const [row] = await this.db
+      .select({ marketCode: tenant.marketCode })
+      .from(subscription)
+      .innerJoin(tenant, eq(tenant.id, subscription.tenantId))
+      .where(eq(subscription.id, subscriptionId))
+      .limit(1);
+    return row?.marketCode ?? null;
+  }
+
   async recordSuccess(
     charge: ChargeSucceeded,
     recordedAt: number,
     decide: (standing: ChargeStanding) => SuccessEffect,
+    limitsFor: LimitsFor,
     conversion: Conversion | null = null,
   ): Promise<SuccessRecorded> {
     return this.db.transaction(async (tx) => {
@@ -155,6 +171,12 @@ export class ChargeAdminRepository {
       const effect = decide(held);
       if (effect.outcome === 'dead') return { kind: 'dead' };
       await applySuccess(tx, held, effect, charge.occurredAt, conversion);
+      await recomputeEntitlements(tx, {
+        tenantId: held.tenantId,
+        subscriptionId: held.id,
+        base: limitsFor(conversion?.tier ?? held.tier),
+        now: recordedAt,
+      });
       return { kind: 'recorded' };
     });
   }
@@ -225,6 +247,7 @@ async function lockSubscription(
       state: subscription.state,
       stateEnteredAt: subscription.stateEnteredAt,
       paidPeriodEnd: subscription.paidPeriodEnd,
+      tier: subscription.tier,
       currencyCode: tenant.currencyCode,
     })
     .from(subscription)
@@ -263,6 +286,7 @@ async function lockSubscription(
     lastChargedAt: latest?.occurredAt.getTime() ?? null,
     replaced: newer !== undefined,
     currencyCode: row.currencyCode,
+    tier: row.tier,
   };
 }
 

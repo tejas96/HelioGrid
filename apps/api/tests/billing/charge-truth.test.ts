@@ -19,6 +19,7 @@ import {
   unseed,
 } from '../support/fixture';
 import { holdLock } from '../support/held-lock';
+import { publishIndiaPack } from '../support/market';
 import { chargeServiceOf } from './support';
 
 /**
@@ -50,9 +51,10 @@ describe.skipIf(skip)('charge truth (M12-09)', () => {
   let charges: ChargeService;
   let companies: Company[] = [];
 
-  beforeAll(() => {
+  beforeAll(async () => {
     pools = openPools();
-    charges = chargeServiceOf(pools.admin.db);
+    await publishIndiaPack(pools);
+    charges = chargeServiceOf(pools);
   });
 
   afterEach(async () => {

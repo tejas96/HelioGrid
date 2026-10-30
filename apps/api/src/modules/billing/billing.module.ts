@@ -11,6 +11,10 @@ import { ChargeAdminRepository } from './charge.admin.repository';
 import { ChargeService } from './charge.service';
 import { CheckoutAdminRepository } from './checkout.admin.repository';
 import { CheckoutService } from './checkout.service';
+import { EntitlementAdminRepository } from './entitlement.admin.repository';
+import { EntitlementRepository } from './entitlement.repository';
+import { EntitlementService } from './entitlement.service';
+import { EntitlementOverrideAdminRepository } from './entitlement-override.admin.repository';
 import { GatewayEventAdminRepository } from './gateway-event.admin.repository';
 import { GatewayEventsService } from './gateway-events.service';
 import { BillingAlerts } from './internal/billing-alerts';
@@ -53,8 +57,9 @@ const billingGatewayProvider: Provider = {
 };
 
 /**
- * Platform billing (`M12`): the subscription lifecycle and its timers, charge truth, the hosted
- * checkout a trial converts through, the gateway's signed messages and the 6-hour reconcile.
+ * Platform billing (`M12`): the subscription lifecycle and its timers, charge truth, entitlements,
+ * the hosted checkout a trial converts through, the gateway's signed messages and the 6-hour
+ * reconcile.
  */
 @Module({
   imports: [MarketModule],
@@ -69,6 +74,10 @@ const billingGatewayProvider: Provider = {
     ChargeAdminRepository,
     CheckoutService,
     CheckoutAdminRepository,
+    EntitlementService,
+    EntitlementRepository,
+    EntitlementAdminRepository,
+    EntitlementOverrideAdminRepository,
     GatewayEventsService,
     GatewayEventAdminRepository,
     PlanPriceService,
@@ -76,6 +85,6 @@ const billingGatewayProvider: Provider = {
     ReconcileService,
     ReconcileAdminRepository,
   ],
-  exports: [BillingService, ChargeService, PlanPriceService],
+  exports: [BillingService, ChargeService, EntitlementService, PlanPriceService],
 })
 export class BillingModule {}
