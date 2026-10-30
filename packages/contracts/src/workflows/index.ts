@@ -12,6 +12,8 @@
 
 export type { BillingNoticesActivities } from './billing-notices';
 export { BILLING_NOTICES_SCHEDULE_ID, billingNoticesWorkflow } from './billing-notices';
+export type { BillingOverageActivities } from './billing-overage';
+export { BILLING_OVERAGE_SCHEDULE_ID, billingOverageWorkflow } from './billing-overage';
 export type {
   BillingReconcileActivities,
   BillingReconcileResult,

@@ -53,7 +53,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **Type:** screen · **Tier:** P0
 **Status:** designed
 **PRD rows:** M12-34 (P0), M12-35 (P0), M12-36 (P1)
-**Usage ledger (T-M12-010):** every figure reads `UsageService.billedRollupOf` (billed meters only, so no internal cost reaches the screen — M12-32) and storage reads `UsageService.latestStorageGauge`; voice is rolled up in seconds and shown in minutes, turned once on the total.
+**Usage ledger (T-M12-010):** every figure reads `UsageService.billedRollupOf` (billed meters only, so no internal cost reaches the screen — M12-32) and storage reads `UsageService.latestStorageGauge`; voice is rolled up in seconds and shown in minutes, turned once on the total by `billedQuantityOf` (`packages/domain`), the function the invoice's add-ons bill by (T-M12-012b).
 **Billing gate (T-M12-009):** the 80% pre-warning is `capStepOf`'s `warning` step (`packages/domain`), the render half of `T-M12-009`'s D3 — shown before any gate fires (M12-30, M12-34).
 **DESIGN:** SCR-M12-04 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-04-usage-screen.md`; they are the specification. (The brief also carries M12-30's cap-ladder row, dispositioned under T-M12-009 — the ladder is gate machinery; this screen is where its 80% pre-warning must appear.)
@@ -243,8 +243,8 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 | part | ships | acceptance lines | status |
 |---|---|---|---|
 | a | the invoice record: the tables, its number, the issue inside the charge transaction, the plan line, the scheme's breakdown by the company's place, both registrations; the platform's registration in `pack.tax`, read by `platformSaleTotal` | D1, D2 (its overage half is part b's) | shipped |
-| b | overage add-ons: the ledgered overage past the allowance at the book's published rates, added at the gateway before the next charge so it collects them, and carried as add-on lines on that charge's invoice | D2 (overage half), D3 | open |
-| c | yearly renewal: each year's fresh payment link raised with its `issued` invoice, its charge landing with `paysThrough` = the paid-period end + one cycle, the invoice turning `paid` (the task's *Contract* line) | the *Contract* line | open |
+| b | overage add-ons: the ledgered overage past the allowance at the book's published rates, added at the gateway before the next charge so it collects them, and carried as add-on lines on that charge's invoice | D2 (overage half), D3 | shipped |
+| c | yearly renewal: each year's fresh payment link raised with its `issued` invoice, its charge landing with `paysThrough` = the paid-period end + one cycle, the invoice turning `paid` (the task's *Contract* line); the closed year's overage, reckoned by part b's `overageAddOns`, rides that link as add-on lines, with every add-on still `pending` on the subscription (part b reckons and adds on mandates only) | the *Contract* line | open |
 | d | the invoice PDF (M12-44 "PDF attached"), with the supplier's legal name and address | M12-44 (PDF) | open |
 
 ### T-M12-013 · Grandfathered price-row selection

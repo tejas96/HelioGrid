@@ -214,9 +214,15 @@ export const subscriptionPayment = pgTable(
     /** When the gateway collected it — the order charges are judged in. */
     occurredAt: instant('occurred_at').notNull(),
     recordedAt: instant('recorded_at').notNull(),
+    /** When the overage of the period it pays for was reckoned (`M12-35`); `null` until then. */
+    overageReckonedAt: instant('overage_reckoned_at'),
   },
   (table) => [
     uniqueIndex('subscription_payment_charge_ref_key').on(table.gatewayChargeRef),
+    /** The overage sweep's queue: periods not yet reckoned, by when they closed. */
+    index('subscription_payment_overage_due_idx')
+      .on(table.paysThrough)
+      .where(sql`${table.overageReckonedAt} is null`),
     /** The latest charge of a subscription, and the billing screen's list. */
     index('subscription_payment_tenant_subscription_idx').on(
       table.tenantId,

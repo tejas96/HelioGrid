@@ -46,6 +46,26 @@ export interface OpenedCheckout {
   readonly hostedUrl: string;
 }
 
+/**
+ * One overage add-on to put on a mandate's next debit (`M12-35`): the gateway adds it to the debit
+ * it raises next on that subscription, and to that debit alone.
+ */
+export interface GatewayAddOnRequest {
+  /** The mandate it rides. */
+  readonly gatewayRef: string;
+  /** The meter it bills, as the gateway's own line names it. A value, never copy. */
+  readonly meter: string;
+  readonly amount: MinorUnits;
+  readonly currencyCode: string;
+  /** Our add-on's id, carried in the gateway's notes. */
+  readonly addOnId: string;
+}
+
+/** The gateway's answer to an add-on: on the next debit with its ref, or refused. */
+export type AddedToNextCharge =
+  | { readonly kind: 'added'; readonly gatewayAddOnRef: string }
+  | { readonly kind: 'refused' };
+
 /** A charge the gateway collected, as its message or its poll reports it. */
 export interface GatewayCharge {
   /** The subscription or payment link it was collected on. */
@@ -83,6 +103,12 @@ export interface BillingGateway {
   hasPlan(gatewayPlanRef: string): Promise<boolean>;
   /** Opens the hosted page. Throws when the gateway does not answer; nothing is then opened. */
   openCheckout(request: GatewayCheckoutRequest): Promise<OpenedCheckout>;
+  /**
+   * Adds an overage add-on to a mandate's next debit. `refused`: the gateway answered no, so
+   * nothing was added. Throws when the gateway did not answer — a timeout or a dropped line — and
+   * the add-on then MAY be on the debit: the caller never sends it blind again.
+   */
+  addToNextCharge(request: GatewayAddOnRequest): Promise<AddedToNextCharge>;
   /**
    * Closes a hosted page so it can take no more money. Safe to send again: a page the gateway
    * already cancelled, expired or saw paid counts as closed. Throws only when the page may still

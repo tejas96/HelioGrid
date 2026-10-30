@@ -28,6 +28,7 @@ import {
   notificationTypeGroupSchema,
   notificationTypeSchema,
   otpChannelSchema,
+  overageAddOnStatusSchema,
   platformKindSchema,
   priceBookRateBasisSchema,
   pushPlatformSchema,
@@ -96,6 +97,10 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   },
   invoice_kind: { options: invoiceKindSchema.options, contract: 'invoiceKindSchema' },
   invoice_status: { options: invoiceStatusSchema.options, contract: 'invoiceStatusSchema' },
+  overage_addon_status: {
+    options: overageAddOnStatusSchema.options,
+    contract: 'overageAddOnStatusSchema',
+  },
   usage_meter: {
     options: usageRecordWorkflow.input.shape.meter.options,
     contract: 'usageRecordWorkflow.input.meter',

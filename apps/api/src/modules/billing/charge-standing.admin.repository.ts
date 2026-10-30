@@ -10,6 +10,8 @@ export interface LockedSubscription extends ChargeStanding {
   /** What the row pays for: `null` until a charge converts it. */
   readonly tier: Tier | null;
   readonly planPriceId: string | null;
+  /** The mandate or payment link it is collected on: `null` until a charge converts it. */
+  readonly gatewayRef: string | null;
 }
 
 /**
@@ -30,6 +32,7 @@ export async function lockSubscription(
       paidPeriodEnd: subscription.paidPeriodEnd,
       tier: subscription.tier,
       planPriceId: subscription.planPriceId,
+      gatewayRef: subscription.gatewayRef,
       currencyCode: tenant.currencyCode,
     })
     .from(subscription)
@@ -70,5 +73,6 @@ export async function lockSubscription(
     currencyCode: row.currencyCode,
     tier: row.tier,
     planPriceId: row.planPriceId,
+    gatewayRef: row.gatewayRef,
   };
 }

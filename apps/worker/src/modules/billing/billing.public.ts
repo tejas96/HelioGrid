@@ -1,5 +1,6 @@
 import {
   billingNoticesWorkflow,
+  billingOverageWorkflow,
   billingReconcileWorkflow,
   billingTimersWorkflow,
 } from '@heliogrid/contracts/workflows';
@@ -11,14 +12,16 @@ import * as billingWorkflows from './billing.workflows';
 billingWorkflows satisfies Record<
   | typeof billingTimersWorkflow.name
   | typeof billingReconcileWorkflow.name
-  | typeof billingNoticesWorkflow.name,
+  | typeof billingNoticesWorkflow.name
+  | typeof billingOverageWorkflow.name,
   unknown
 >;
 // And the bundle's one entry re-exports them: an area left out there starts, then fails every task.
 bundledWorkflows satisfies Record<
   | typeof billingTimersWorkflow.name
   | typeof billingReconcileWorkflow.name
-  | typeof billingNoticesWorkflow.name,
+  | typeof billingNoticesWorkflow.name
+  | typeof billingOverageWorkflow.name,
   unknown
 >;
 
@@ -38,4 +41,9 @@ export const billingReconcileWorkerRegistration: TemporalWorkerRegistration = {
 /** The notices' own queue: each run waits on SMS sends, never in the timers' way. */
 export const billingNoticesWorkerRegistration: TemporalWorkerRegistration = {
   taskQueue: billingNoticesWorkflow.taskQueue,
+};
+
+/** The overage sweep's own queue: each run waits on the gateway, never in the timers' way. */
+export const billingOverageWorkerRegistration: TemporalWorkerRegistration = {
+  taskQueue: billingOverageWorkflow.taskQueue,
 };

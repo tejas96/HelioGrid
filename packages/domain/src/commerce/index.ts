@@ -123,6 +123,15 @@ export {
 } from './lifecycle';
 export type { Meter } from './meters';
 export { METERS } from './meters';
+export type { AddOnVerdict, OverageAddOn, OverageAddOnStatus } from './overage';
+export {
+  ADD_ON_LEAD_DAYS,
+  billedQuantityOf,
+  OVERAGE_ADDON_STATUSES,
+  OVERAGE_REACH_DAYS,
+  OVERAGE_SETTLE_DAYS,
+  UnbillableMeter,
+} from './overage';
 export type { PauseNotice, ResolvingAct } from './pause-notice';
 export { pauseNoticeOf, RESOLVING_ACTS } from './pause-notice';
 export type { ProposalCover, ProposalSection } from './proposal-template-defaults';

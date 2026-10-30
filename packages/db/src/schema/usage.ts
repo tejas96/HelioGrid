@@ -21,7 +21,8 @@ import { tenant } from './tenant';
 /** Hand-mirrors domain's tuple (invariant `enum-parity`). */
 export const usageMeter = pgEnum('usage_meter', LEDGER_METERS);
 
-const BILLED_METERS = sql.raw(BILLED_LEDGER_METERS.map((meter) => `'${meter}'`).join(', '));
+/** The billed meters as a SQL list, for a CHECK that a row names one. */
+export const BILLED_METERS = sql.raw(BILLED_LEDGER_METERS.map((meter) => `'${meter}'`).join(', '));
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
 

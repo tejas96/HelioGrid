@@ -1,6 +1,8 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import type {
+  AddedToNextCharge,
   BillingGateway,
+  GatewayAddOnRequest,
   GatewayCharge,
   GatewayCheckoutRequest,
   GatewayEvent,
@@ -36,6 +38,8 @@ export interface RazorpayKeys {
 
 const BAD_REQUEST = 400;
 const NOT_FOUND = 404;
+/** The first status that says the gateway failed, rather than refused the request. */
+const SERVER_ERROR = 500;
 /** Razorpay's answers to a plan id it does not hold: 400 for a well-formed id, 404 for any other. */
 const UNKNOWN_ID_STATUSES: readonly number[] = [BAD_REQUEST, NOT_FOUND];
 
@@ -52,6 +56,7 @@ class GatewayRefusal extends Error {
 
 const opened = z.object({ id: z.string(), short_url: z.string().url() });
 const plan = z.object({ id: z.string() });
+const addOn = z.object({ id: z.string() });
 const invoices = z.object({
   items: z.array(
     z.object({
@@ -139,6 +144,28 @@ export class RazorpayBillingGateway implements BillingGateway {
             notes,
           });
     return { gatewayRef: made.id, hostedUrl: made.short_url };
+  }
+
+  async addToNextCharge(request: GatewayAddOnRequest): Promise<AddedToNextCharge> {
+    const path = `/subscriptions/${encodeURIComponent(request.gatewayRef)}/addons`;
+    try {
+      const made = await this.call('POST', path, addOn, {
+        item: {
+          name: `${request.meter} overage`,
+          amount: request.amount,
+          currency: request.currencyCode,
+        },
+        quantity: 1,
+        notes: { addon_id: request.addOnId },
+      });
+      return { kind: 'added', gatewayAddOnRef: made.id };
+    } catch (failed) {
+      // A 4xx says the request was refused and added nothing; a 5xx, a timeout or an unreadable
+      // answer may have added it.
+      if (failed instanceof GatewayRefusal && failed.status < SERVER_ERROR)
+        return { kind: 'refused' };
+      throw failed;
+    }
   }
 
   async closeCheckout(collection: CollectionKind, gatewayRef: string): Promise<void> {
