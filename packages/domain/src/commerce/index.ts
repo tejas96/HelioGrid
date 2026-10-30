@@ -23,7 +23,8 @@
  * consumer reads the shape, never the exception behind it.
  */
 
-export { CAP_GRACE_DAYS, CAP_WARNING_PERCENT, capWarningReached } from './caps';
+export type { CapReading, CapStep } from './caps';
+export { CAP_GRACE_DAYS, CAP_WARNING_PERCENT, capStepOf, capWarningReached } from './caps';
 export type { ChargeFailed, ChargeStanding, ChargeSucceeded, SuccessEffect } from './charges';
 export { failureMoves, successEffect } from './charges';
 export type {
@@ -93,11 +94,14 @@ export {
   METERED_PAUSE_DAY,
   nextState,
   PAST_DUE_GRACE_DAYS,
+  pastDueHaltsAt,
   SUBSCRIPTION_CAUSES,
   trialEndsAtFor,
 } from './lifecycle';
 export type { Meter } from './meters';
 export { METERS } from './meters';
+export type { PauseNotice, ResolvingAct } from './pause-notice';
+export { pauseNoticeOf, RESOLVING_ACTS } from './pause-notice';
 export type { ProposalCover, ProposalSection } from './proposal-template-defaults';
 export {
   DEFAULT_SECTIONS_INCLUDED,

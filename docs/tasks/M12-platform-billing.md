@@ -52,6 +52,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **Type:** screen · **Tier:** P0
 **Status:** designed
 **PRD rows:** M12-34 (P0), M12-35 (P0), M12-36 (P1)
+**Billing gate (T-M12-009):** the 80% pre-warning is `capStepOf`'s `warning` step (`packages/domain`), the render half of `T-M12-009`'s D3 — shown before any gate fires (M12-30, M12-34).
 **DESIGN:** SCR-M12-04 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-04-usage-screen.md`; they are the specification. (The brief also carries M12-30's cap-ladder row, dispositioned under T-M12-009 — the ladder is gate machinery; this screen is where its 80% pre-warning must appear.)
 **DONE WHEN:**
@@ -141,7 +142,7 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 ### T-M12-009 · Soft-block enforcement gates & cap ladder
 
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped
 **PRD rows:** M12-21, M12-22, M12-23, M12-27, M12-30, M12-31
 **Requirements (verbatim):**
 - **M12-21** (P0) — **Every UI mutation is gated by the billing-state matrix; denial is typed and honest.** A blocked mutation returns a typed entitlement-blocked error; the UI renders the state banner and a "Reactivate" (or upgrade) path. This module implements `BM-35`'s matrix as the gate on every mutation and **may add enforcement detail but may never move a ✓ to a block** — the matrix is 04's law.
@@ -182,6 +183,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **PRD rows:** M12-18, M12-32, M12-33, M12-37
+**Billing gate (T-M12-009):** the storage ceiling gate is this task's, beside the nightly gauge it reads: `file.declare` (row `new_file_upload`) refuses a new upload only above the `storage_gb` limit × 1.1 of the latest snapshot, by throwing `EntitlementBlockedException` (`apps/api/src/common/errors/entitlement-blocked.ts`) with `reason: 'cap'`, key `storage_gb` and `resetsAt: null` (M12-23, BM-20).
 **Requirements (verbatim):**
 - **M12-18** (P0) — **Entitlement checks run before the action; metering never blocks the action.** Billable usage (voice, detections) checks entitlements first; the metering write itself never fails or delays the request it records. Non-billable metrics are still metered for quotas and cost visibility.
 - **M12-32** (P0) — **The ledger is the bill.** Usage metering is an append-only ledger and no other counter exists: every event carries provenance (the call, the detection, the send, the document) and an idempotency key, so a retried job or duplicate webhook can never double-meter; rollups are always reproducible from the ledger — the same discipline as the money path. Internal cost estimates are never customer-facing.

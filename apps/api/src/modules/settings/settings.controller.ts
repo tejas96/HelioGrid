@@ -4,6 +4,7 @@ import { Controller, Inject, Req } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
+import { RouteBillingMap } from '../../common/auth/route-billing';
 import { actOf, sessionOf, tenantIdOf } from '../../common/auth/session-context';
 import { SettingsBrandingService } from './settings.branding.service';
 import { SettingsService } from './settings.service';
@@ -23,6 +24,21 @@ export class SettingsController {
   @TsRestHandler(tenantSettingsContract)
   // The resolved read is every member's: the builder and the documents read it under any
   // preset. Every write, and the settings screens' own reads, are the owner's (`F2.M01`).
+  @RouteBillingMap(tenantSettingsContract, {
+    saveBusinessProfile: 'ungated',
+    saveTaxRegistrations: 'ungated',
+    saveQuietHours: 'ungated',
+    saveBranding: 'ungated',
+    saveProposalTemplate: 'ungated',
+    saveTimelineTemplate: 'ungated',
+    createTrancheTemplate: 'ungated',
+    saveTrancheTemplate: 'ungated',
+    archiveTrancheTemplate: 'ungated',
+    restoreTrancheTemplate: 'ungated',
+    makeDefaultTrancheTemplate: 'ungated',
+    previewTrancheSchedule: 'ungated',
+    saveHolidays: 'ungated',
+  })
   @RouteAccessMap(tenantSettingsContract, {
     effective: 'member',
     businessProfile: MANAGE,

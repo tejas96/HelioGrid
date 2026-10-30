@@ -146,6 +146,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-28 (P0), M07-30 (P0), M07-35 (P0), M07-36 (P0), M07-37 (P0)
+**Billing gate (T-M12-009):** queue insert names `voice_agent` in its `RouteBillingMap` (paused from `past_due` day 4), and both insert and the pre-dial check refuse past the `voice_minutes` allowance read from `T-M12-010`'s rollup, by throwing `EntitlementBlockedException`; a blocked entry is marked and the owner notified (M07-37, M12-23).
 **DESIGN:** SCR-M07-12 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-12-agent-call-queue.md`; they are the specification.
 **DONE WHEN:**

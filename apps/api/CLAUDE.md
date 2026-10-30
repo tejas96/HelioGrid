@@ -8,8 +8,8 @@ logic: controller → service → repository. Never a hand-rolled `@Get`/`@Post`
 ```
 src/app.ts · main.ts   createApp() is the ONE boot path; main.ts listens, a test listens on port 0
 src/config/env.ts      the app's typed env
-src/common/            plumbing 2+ modules need: auth/ (guard, route-access map, cookies, session),
-                       db/ (the pools), temporal/, filters/, errors/, request-id.ts, logging.ts,
+src/common/            plumbing 2+ modules need: auth/ (guard, route-access and route-billing maps,
+                       cookies, session), db/ (the pools), temporal/, filters/, errors/, request-id.ts, logging.ts,
                        creation-key.ts, client-version.ts
 src/modules/<m>/       <m>.module|public|controller|service|repository.ts · internal/
 src/scripts/<verb>-<noun>.ts   boots the app context, calls the service of each thing it does, holds no logic, exits
@@ -61,6 +61,9 @@ curl localhost:8084/health                               # liveness · /health/r
   missed.
 - Read the session with `sessionOf(req)`; route access is the controller's `RouteAccessMap` entry
   (`public`, `session-cookie`, `session`, `member` or `{ capability }`).
+- **A mutating route names its billing-matrix row** in the controller's `RouteBillingMap`
+  (`common/auth/route-billing.ts`): a `BillingCapability`, or `ungated` when it is in none of the
+  matrix's paused rows. A paused act is refused only by throwing `EntitlementBlockedException`.
 - In development the sign-in code and the invite link are written to the api log
   (`Message for +91…`). The invite's text leaves from the worker's `inviteMessage` run after the
   send commits, so its line appears only while the `worker` launch configuration and Temporal run.

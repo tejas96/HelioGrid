@@ -3,6 +3,7 @@ import { Controller, Inject, Req } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
+import { RouteBillingMap } from '../../common/auth/route-billing';
 import { actOf, rolesOf, tenantIdOf } from '../../common/auth/session-context';
 import { FileService } from './file.service';
 
@@ -14,6 +15,7 @@ export class FileController {
   @TsRestHandler(fileContract)
   // `member` at the door: who may store or read a file is its subject kind's rule (`FILE_SUBJECT_RULES`),
   // known only once the body or the row is read, so the service decides it — proven by its tests.
+  @RouteBillingMap(fileContract, { declare: 'new_file_upload', complete: 'ungated' })
   @RouteAccessMap(fileContract, {
     declare: 'member',
     complete: 'member',

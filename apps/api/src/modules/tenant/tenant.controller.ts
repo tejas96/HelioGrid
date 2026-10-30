@@ -4,6 +4,7 @@ import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
 import { responseOf, setTokenCookie } from '../../common/auth/cookies';
+import { RouteBillingMap } from '../../common/auth/route-billing';
 import { actOf, sessionIdOf, sessionOf, tenantIdOf } from '../../common/auth/session-context';
 import { JoinRequestService } from './tenant.join-request.service';
 import { TenantService } from './tenant.service';
@@ -17,6 +18,13 @@ export class TenantController {
   ) {}
 
   @TsRestHandler(tenantContract)
+  @RouteBillingMap(tenantContract, {
+    create: 'ungated',
+    updateMyMembership: 'ungated',
+    assignRoles: 'ungated',
+    deactivateMember: 'ungated',
+    joinRequest: 'ungated',
+  })
   @RouteAccessMap(tenantContract, {
     create: 'session',
     me: 'member',

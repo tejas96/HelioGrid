@@ -66,7 +66,7 @@ function copiesSharedRefusal(route: AppRoute, status: keyof typeof sharedRefusal
   const code = envelope.shape.error?.shape?.code;
   const codes =
     code instanceof z.ZodLiteral ? [code.value] : code instanceof z.ZodEnum ? code.options : null;
-  const shared = sharedRefusals[status].shape.error.shape.code.value;
+  const shared = SHARED_REFUSALS.find((refusal) => refusal.status === status)?.code;
   return codes !== null && codes.length === 1 && codes[0] === shared;
 }
 

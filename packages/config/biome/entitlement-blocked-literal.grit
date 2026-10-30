@@ -1,0 +1,10 @@
+// A paused mutation is refused only through EntitlementBlockedException
+// (apps/api/src/common/errors/entitlement-blocked.ts), so no second enforcement point exists (M12-23).
+or {
+  JsStringLiteralExpression(),
+  JsTemplateExpression(),
+  TsStringLiteralType()
+} as $code where {
+  $code <: r"[\x22\x27\x60]ENTITLEMENT_BLOCKED[\x22\x27\x60]",
+  register_diagnostic(span=$code, message="ENTITLEMENT_BLOCKED is written outside the billing gate — throw EntitlementBlockedException from apps/api/src/common/errors/entitlement-blocked.ts, the one way a paused mutation is refused (M12-23).")
+}

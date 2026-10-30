@@ -3,6 +3,7 @@ import { Controller, Inject, Req } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
+import { RouteBillingMap } from '../../common/auth/route-billing';
 import { rolesOf, sessionOf, tenantIdOf } from '../../common/auth/session-context';
 import { ContractException } from '../../common/errors/contract-exception';
 import { NotificationDevicesService } from './notification.devices.service';
@@ -22,6 +23,13 @@ export class NotificationController {
   @TsRestHandler(notificationContract)
   // `member`, not a capability: these are the reader's OWN records, and `F6-09` puts the inbox,
   // the badge and the history in the always-on set — no matrix cell gates a person's own post.
+  @RouteBillingMap(notificationContract, {
+    registerDevice: 'ungated',
+    forgetDevice: 'ungated',
+    setPreference: 'ungated',
+    markAllRead: 'ungated',
+    markRead: 'ungated',
+  })
   @RouteAccessMap(notificationContract, {
     inbox: 'member',
     unreadCount: 'member',

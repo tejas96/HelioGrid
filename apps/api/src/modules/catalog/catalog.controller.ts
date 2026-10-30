@@ -3,6 +3,7 @@ import { Controller, Inject, Req } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
+import { RouteBillingMap } from '../../common/auth/route-billing';
 import { actOf, rolesOf, tenantIdOf } from '../../common/auth/session-context';
 import { CatalogService } from './catalog.service';
 
@@ -18,6 +19,15 @@ export class CatalogController {
   // Adding an own SKU is `add_own_catalog_items` OR the outright manage grant, so its door is
   // `member` and the service decides; every other write, and the price history, is the manage
   // grant's — Finance's limited cell passes this door and the service refuses its writes.
+  @RouteBillingMap(catalogContract, {
+    createItem: 'ungated',
+    saveItem: 'ungated',
+    archiveItem: 'ungated',
+    unarchiveItem: 'ungated',
+    saveOverride: 'ungated',
+    clearOverride: 'ungated',
+    recordRate: 'ungated',
+  })
   @RouteAccessMap(catalogContract, {
     items: 'member',
     item: 'member',

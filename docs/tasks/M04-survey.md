@@ -112,6 +112,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M04-03 (P0), M04-42 (P0), M04-43 (P0), M04-44 (P0), M04-45 (P0), M04-47 (P0), M04-54 (P0)
+**Billing gate (T-M12-009):** starting a visit names `create_edit_records` in its `RouteBillingMap`, and the capture writes of a visit already started name `ungated` — reachable only through a visit started before any halt — so a visit under way at a halt completes and only a NEW visit pauses at `halted` (M12-27, owner ruling 2026-08-04).
 **DESIGN:** SCR-M04-07 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-07-guided-capture.md`; they are the specification.
 **DONE WHEN:**
@@ -205,6 +206,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **PRD rows:** M04-17, M04-18, M04-19, M04-20
+**Billing gate (T-M12-009):** detection names `ai_roof_detections` in its `RouteBillingMap` and is refused when paused or past the `ai_roof_detections` allowance, by throwing `EntitlementBlockedException`, with the manual outline offered; manual outlining is never gated (M04-23, M12-23).
 **Requirements (verbatim):**
 
 - **M04-17** (P0) — **An empty result beats an invented roof.** The detector is instructed not to guess, and returning nothing is a correct and expected outcome that leads straight to manual outlining. No surface in this module fills a missing detection with a plausible shape, a default rectangle or an average pitch.
@@ -315,6 +317,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **PRD rows:** M04-55, M04-56, F4-21
+**Billing gate (T-M12-009):** the upload of a photograph already captured names `pending_field_photo_upload` in its `RouteBillingMap` — a row no phase pauses — never `new_file_upload` (M12-26, BM-36).
 **Requirements (verbatim):**
 
 - **M04-55** (P0) — **Capture is unconditional; upload is deliberate — and this is the product's one and only device-held queue.** A photograph is written to the device the moment it is taken, with no delay, and uploads when the connection returns — resumably, defaulting to Wi-Fi-or-charging, with a per-batch "upload now" available. A photograph is never blocked, never degraded to fit a network, and never lost because an upload failed. The queue is **one queue, one direction, no conflicts and no merge**, it holds photographs and nothing else, and its status is shown **on the capture screen (`SCR-M04-07`) and nowhere else** — no global indicator, no separate centre, no per-record marker anywhere else in the product. The device storage cap and its eviction order are this row's: acknowledged originals are evicted first and an unacknowledged original is never evicted.

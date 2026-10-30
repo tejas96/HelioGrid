@@ -20,6 +20,7 @@ catalog freshness checks with the oasdiff breaking-change judge, the unit tests 
 | Tenant identity never crosses the wire: no `tenantId` in a contract's body, query or path | invariant `tenant-id-on-the-wire` |
 | Another tenant's row reads 404, never 403, and every tenant read carries its tenant filter | review |
 | Every route declares the access it needs, and a route with no entry is denied | typecheck (`RouteAccessMap` in `apps/api/src/common/auth/access.ts`) · `SessionGuard` bound as `APP_GUARD` (`apps/api/src/app.module.ts`) |
+| Every mutation names its billing-matrix row, no read can, and a paused row is refused only by the one gate with the typed denial (`M12-21`, `M12-23`) | typecheck (`RouteBillingMap` in `apps/api/src/common/auth/route-billing.ts`) · `BillingStateGuard` bound as the second `APP_GUARD` (`apps/api/src/app.module.ts`) · `apps/api/tests/billing/route-billing.test.ts` · Biome plugin `entitlement-blocked-literal` |
 | Every web page sits in one session group — `(door)`, `(open)` or `(inside)` — whose layout is its gate | dependency-cruiser `web-page-sits-in-a-session-group` |
 | A permission decision is taken in `packages/domain`: no role name is written outside domain and contracts | Biome plugin `role-literal` · every role against each changed route: review |
 | The permission model equals `F2`: both matrices cell for cell, `F2-01`'s twelve presets in order, OR across held roles and widest-wins per domain (`F2-11`, `F2-13`–`F2-15`) | invariant `matrix-mirrors-f2` · unit test `packages/domain/tests/authz/resolution.test.ts` |

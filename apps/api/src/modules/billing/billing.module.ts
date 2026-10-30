@@ -7,6 +7,8 @@ import { BillingActivityRegistration } from './billing.activities';
 import { BillingAdminRepository } from './billing.admin.repository';
 import { BillingController } from './billing.controller';
 import { BillingService } from './billing.service';
+import { BillingStateGuard } from './billing-state.guard';
+import { BillingStateRepository } from './billing-state.repository';
 import { ChargeAdminRepository } from './charge.admin.repository';
 import { ChargeService } from './charge.service';
 import { CheckoutAdminRepository } from './checkout.admin.repository';
@@ -58,7 +60,7 @@ const billingGatewayProvider: Provider = {
 
 /**
  * Platform billing (`M12`): the subscription lifecycle and its timers, charge truth, entitlements,
- * the hosted checkout a trial converts through, the gateway's signed messages and the 6-hour
+ * the billing-state gate on every mutation, the hosted checkout a trial converts through, the gateway's signed messages and the 6-hour
  * reconcile.
  */
 @Module({
@@ -70,6 +72,8 @@ const billingGatewayProvider: Provider = {
     BillingService,
     BillingAdminRepository,
     BillingActivityRegistration,
+    BillingStateGuard,
+    BillingStateRepository,
     ChargeService,
     ChargeAdminRepository,
     CheckoutService,
@@ -85,6 +89,6 @@ const billingGatewayProvider: Provider = {
     ReconcileService,
     ReconcileAdminRepository,
   ],
-  exports: [BillingService, ChargeService, EntitlementService, PlanPriceService],
+  exports: [BillingService, BillingStateGuard, ChargeService, EntitlementService, PlanPriceService],
 })
 export class BillingModule {}

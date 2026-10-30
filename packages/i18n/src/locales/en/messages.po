@@ -9146,6 +9146,11 @@ msgid "This is a material estimate and a visual model, not a structural check. A
 msgstr "This is a material estimate and a visual model, not a structural check. An engineer must verify the structure."
 
 #. js-lingui-explicit-id
+#: src/copy/api-error.ts:31
+msgid "This is paused for your company. Reading and export still work."
+msgstr "This is paused for your company. Reading and export still work."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:69
 msgid "This is version {current}. HelioGrid now needs version {required} or later."
 msgstr "This is version {current}. HelioGrid now needs version {required} or later."
@@ -10527,11 +10532,6 @@ msgstr "Your company profile"
 #: src/copy/company-profile.ts:32
 msgid "Your current account"
 msgstr "Your current account"
-
-#. js-lingui-explicit-id
-#: src/copy/api-error.ts:31
-msgid "Your current plan doesn't include this."
-msgstr "Your current plan doesn't include this."
 
 #. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:46

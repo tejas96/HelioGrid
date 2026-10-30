@@ -3,6 +3,7 @@ import { Controller, Inject, Req } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
+import { RouteBillingMap } from '../../common/auth/route-billing';
 import { actOf, sessionOf, tenantIdOf } from '../../common/auth/session-context';
 import { UserService } from './user.service';
 
@@ -12,6 +13,7 @@ export class UserController {
   constructor(@Inject(UserService) private readonly users: UserService) {}
 
   @TsRestHandler(userContract)
+  @RouteBillingMap(userContract, { updateMe: 'ungated', setMyPhoto: 'ungated' })
   @RouteAccessMap(userContract, { updateMe: 'session', getMyPhoto: 'member', setMyPhoto: 'member' })
   handler(@Req() req: Request) {
     return tsRestHandler(userContract, {
