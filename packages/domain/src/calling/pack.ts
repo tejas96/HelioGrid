@@ -1,4 +1,5 @@
 import type { PackLabel } from '../format/languages';
+import { type BillingNoticeTexts, IN_BILLING_NOTICE_TEXTS } from './billing-notice-texts';
 import { type ClockTime, clockTime } from './clock-time';
 
 /**
@@ -162,6 +163,12 @@ export interface MessagingRuleset {
    * `PLATFORM_MESSAGE_KINDS` demands its text here before anything compiles.
    */
   readonly templates: Readonly<Record<PlatformMessageKind, PackLabel>>;
+  /**
+   * `M12-40` — the market's out-of-app stack for billing notices: the SMS text of each notice
+   * whose template is registered. Optional, so a pack stored before the ladder existed still reads,
+   * and a market with none sends its notices in the app and by push alone.
+   */
+  readonly billingNotices?: BillingNoticeTexts;
 }
 
 export interface CallingRulesPack {
@@ -231,5 +238,6 @@ export const IN_CALLING_RULES: CallingRulesPack = {
         mr: 'HelioGrid: {inviter} यांनी तुम्हाला {company} मध्ये सामील होण्यासाठी आमंत्रित केले आहे. स्वीकारण्यासाठी उघडा: {link}',
       },
     },
+    billingNotices: IN_BILLING_NOTICE_TEXTS,
   },
 };

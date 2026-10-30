@@ -21,6 +21,7 @@ export * from './copy/assign-roles';
 export * from './copy/audio-player';
 export { shownInNote } from './copy/authored-content';
 export * from './copy/banner';
+export { billingCapabilityName, billingNoticeWords } from './copy/billing-notices';
 export * from './copy/block';
 export type { BrandColourFieldWords } from './copy/brand-colour-field';
 export { brandColourFieldWords } from './copy/brand-colour-field';

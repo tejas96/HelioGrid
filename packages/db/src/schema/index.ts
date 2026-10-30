@@ -3,6 +3,7 @@ import * as billing from './billing';
 import * as catalogImport from './catalog-import';
 import * as catalogPlatform from './catalog-platform';
 import * as catalogTenant from './catalog-tenant';
+import * as dunning from './dunning';
 import * as entitlement from './entitlement';
 import * as file from './file';
 import * as identity from './identity';
@@ -41,6 +42,7 @@ export const schema = {
   ...billing,
   ...entitlement,
   ...usage,
+  ...dunning,
 };
 
 export * from './audit';
@@ -48,6 +50,7 @@ export * from './billing';
 export * from './catalog-import';
 export * from './catalog-platform';
 export * from './catalog-tenant';
+export * from './dunning';
 export * from './entitlement';
 export * from './file';
 export * from './identity';

@@ -20,6 +20,8 @@ export const NOTIFICATION_TYPES = [
   'join_requested',
   'invite_declined',
   'reinvite_requested',
+  'dunning_notice',
+  'trial_nudge',
   'system',
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
@@ -111,6 +113,8 @@ export const NOTIFICATION_SOURCES = [
   'payments',
   /** The company's own team — who joins it. Never the platform: product news is apart (`F6.4`). */
   'team',
+  /** The company's own subscription with the platform — what it owes and how its trial runs (`M12`). */
+  'billing',
   'platform',
 ] as const;
 export type NotificationSource = (typeof NOTIFICATION_SOURCES)[number];

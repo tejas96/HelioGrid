@@ -1,3 +1,5 @@
+import type { BillingNotice } from '../commerce/billing-notices';
+import type { PackLabel } from '../format/languages';
 import { packLabel, type UiLanguage } from '../format/languages';
 import type { CallingRulesPack, PlatformMessageKind } from './pack';
 
@@ -16,12 +18,38 @@ export function platformMessage(
   language: UiLanguage,
   variables: Readonly<Record<string, string>>,
 ): string {
-  return packLabel(rules.messaging.templates[kind], language).replace(
-    SLOT,
-    (slot, name: string) => {
-      const value = variables[name];
-      if (value === undefined) throw new RangeError(`the ${kind} template needs ${slot}`);
-      return value;
-    },
-  );
+  return filled(rules.messaging.templates[kind], kind, language, variables);
+}
+
+/**
+ * A billing notice's SMS in the reader's language (`M12-40`), the protected company's text when
+ * `whileProtected`, slots filled as `platformMessage` fills them. `null` when the market's pack
+ * carries no registered text for the notice: its SMS does not go (`F1-38`).
+ */
+export function billingNoticeMessage(
+  rules: CallingRulesPack,
+  notice: BillingNotice,
+  whileProtected: boolean,
+  language: UiLanguage,
+  variables: Readonly<Record<string, string>>,
+): string | null {
+  const registered = rules.messaging.billingNotices?.[notice];
+  if (registered === undefined) return null;
+  const template = whileProtected
+    ? (registered.whileProtected ?? registered.text)
+    : registered.text;
+  return filled(template, notice, language, variables);
+}
+
+function filled(
+  template: PackLabel,
+  name: string,
+  language: UiLanguage,
+  variables: Readonly<Record<string, string>>,
+): string {
+  return packLabel(template, language).replace(SLOT, (slot, key: string) => {
+    const value = variables[key];
+    if (value === undefined) throw new RangeError(`the ${name} template needs ${slot}`);
+    return value;
+  });
 }

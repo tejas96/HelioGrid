@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { BillingNotice } from '../commerce/billing-notices';
 import { minted, packClockTime, packLabel, packWhole } from '../market/stored-values';
 import { clockTimeHhmm } from './clock-time';
 import {
@@ -20,6 +21,9 @@ const window = minted(
   z.object({ opens: packClockTime, closes: packClockTime }),
   ({ opens, closes }) => callingWindow(clockTimeHhmm(opens), clockTimeHhmm(closes)),
 );
+
+/** One notice's SMS text, and the second text a protected company reads (`M12-40`, `M12-41`). */
+const billingNoticeText = z.object({ text: packLabel, whileProtected: packLabel.nullable() });
 
 const voice = z.discriminatedUnion('declared', [
   z.object({ declared: z.literal(false) }),
@@ -58,5 +62,18 @@ export const CALLING_RULES_PACK_SCHEMA: z.ZodType<CallingRulesPack, z.ZodTypeDef
         sign_in_code: packLabel,
         team_invite: packLabel,
       } satisfies Record<PlatformMessageKind, z.ZodTypeAny>),
+      billingNotices: z
+        .object({
+          payment_failed: billingNoticeText.optional(),
+          payment_reminder: billingNoticeText.optional(),
+          metered_paused: billingNoticeText.optional(),
+          final_warning: billingNoticeText.optional(),
+          halted: billingNoticeText.optional(),
+          win_back: billingNoticeText.optional(),
+          trial_half_way: billingNoticeText.optional(),
+          trial_ending: billingNoticeText.optional(),
+          trial_ended: billingNoticeText.optional(),
+        } satisfies Record<BillingNotice, z.ZodTypeAny>)
+        .optional(),
     }),
   });

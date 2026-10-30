@@ -5,6 +5,8 @@
  *
  * The compliance gate itself is `M07`'s and is not here. This package supplies what it enforces.
  */
+export type { BillingNoticeText, BillingNoticeTexts } from './billing-notice-texts';
+export { IN_BILLING_NOTICE_TEXTS } from './billing-notice-texts';
 export type { ClockTime } from './clock-time';
 export { CLOCK_TIME_PATTERN, clockTime, clockTimeHhmm, clockTimeOfMinutes } from './clock-time';
 export type {
@@ -31,7 +33,7 @@ export {
   TRAFFIC_CLASSES,
   tenantDefault,
 } from './pack';
-export { platformMessage } from './platform-message';
+export { billingNoticeMessage, platformMessage } from './platform-message';
 export { isCallerLineAllowed } from './routing';
 export { isOutboundVoiceAvailable } from './voice';
 export type { LawfulSendTime } from './window';

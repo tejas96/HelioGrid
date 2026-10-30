@@ -23,6 +23,7 @@ export const TASK_QUEUES = [
   'heliogrid-team',
   'heliogrid-billing',
   'heliogrid-billing-reconcile',
+  'heliogrid-billing-notices',
   'heliogrid-usage',
 ] as const;
 export type TaskQueue = (typeof TASK_QUEUES)[number];
