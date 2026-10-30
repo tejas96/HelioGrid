@@ -24,6 +24,8 @@
  */
 
 export { CAP_GRACE_DAYS, CAP_WARNING_PERCENT, capWarningReached } from './caps';
+export type { ChargeFailed, ChargeStanding, ChargeSucceeded, SuccessEffect } from './charges';
+export { failureMoves, successEffect } from './charges';
 export type {
   AbsorbedCost,
   FreeUpstream,
@@ -126,7 +128,7 @@ export {
   STATE_CAPABILITY_MATRIX,
 } from './soft-block';
 export type { BillingState } from './states';
-export { BILLING_STATES } from './states';
+export { BILLING_STATES, LIVE_BILLING_STATES } from './states';
 export type { CountedCreation, Tier, TierCapacity, TierLimit } from './tiers';
 export { COUNTED_CREATIONS, TIERS, tierBand } from './tiers';
 export type { TimelinePhase } from './timeline-template-defaults';

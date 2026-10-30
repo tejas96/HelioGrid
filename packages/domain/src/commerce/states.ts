@@ -24,3 +24,13 @@ export const BILLING_STATES = [
 ] as const;
 
 export type BillingState = (typeof BILLING_STATES)[number];
+
+/**
+ * `M12-04` — the states a company may hold at most one row in: the rest are final for their row,
+ * which reactivation replaces with a new one (`M12-08`). The database's one-live key mirrors this.
+ */
+export const LIVE_BILLING_STATES = [
+  'trialing',
+  'active',
+  'past_due',
+] as const satisfies readonly BillingState[];
