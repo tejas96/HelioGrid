@@ -27,7 +27,8 @@ machinery is in-house (docs/16, ADR-0013).
   `subscription.resumed` (alerted, never applied — M12-13). Every other event is acknowledged and
   logged. Transport dedupe on `x-razorpay-event-id` is `billing_gateway_event` (migration 0036).
 - **Plan objects**: NOT made by hand. `pnpm --filter @heliogrid/api pack:publish` creates one per
-  sold tier × cycle at the tax-included amount and mirrors each in `plan_price` (M12-12); run it
+  sold tier × cycle at the amount the gateway collects — the list price, plus GST once the platform
+  is registered (`F1-29`) — and mirrors each in `plan_price` (M12-12); run it
   once the keys are in `.env.local`. A row whose plan this account does not hold (made by the
   development gateway, or on test keys before live ones) gets a new plan object in place.
 - **Subscriptions settings**: UPI AutoPay primary + card e-mandate fallback; no gateway trial —

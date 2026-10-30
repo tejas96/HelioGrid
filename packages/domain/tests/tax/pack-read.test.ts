@@ -7,6 +7,17 @@ describe('taxPackOf — pack.tax as a device reads it off the wire', () => {
     expect(taxPackOf(JSON.parse(JSON.stringify(IN_TAX)))).toEqual(IN_TAX);
   });
 
+  it('a pack stored before the place rule and the platform registration reads them as absent', () => {
+    const { platformRegistration: _, ...older } = IN_TAX;
+    const stored = {
+      ...older,
+      registrationTypes: IN_TAX.registrationTypes.map(({ placeAt: __, ...type }) => type),
+    };
+    const read = taxPackOf(JSON.parse(JSON.stringify(stored)));
+    expect(read?.platformRegistration).toBeNull();
+    expect(read?.registrationTypes.map((type) => type.placeAt)).toEqual([null]);
+  });
+
   it.each([
     ['a key that never travelled', undefined],
     ['null', null],

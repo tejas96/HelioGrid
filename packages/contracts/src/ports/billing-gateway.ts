@@ -13,7 +13,8 @@ import type {
  * a field. The platform never sees a payment instrument (`M12-10`): nothing here carries one.
  *
  * Every moment is the gateway's, in epoch milliseconds. Every amount is whole minor units of the
- * company's one currency, tax included — what the gateway collects.
+ * company's one currency — what the gateway collects: the list price, plus the scheme's tax once
+ * the platform is registered (`F1-29`).
  */
 
 /** One plan object at the gateway: a tier on a cycle at one amount (`M12-12`). */

@@ -1,3 +1,4 @@
+import type { TaxRegistration } from '../commerce/effective-settings';
 import type { PackLabel } from '../format/languages';
 import type { TaxPack } from './pack';
 
@@ -27,4 +28,17 @@ export function checkTaxRegistration(
     return { ok: false, reason: 'malformed', format: declared.format };
   }
   return { ok: true };
+}
+
+/**
+ * The place a registration names, read where its type says (`F1-29`): a GSTIN's state code. `null`
+ * for a type the scheme never declared, or one whose value names no place.
+ */
+export function placeOfRegistration(pack: TaxPack, registration: TaxRegistration): string | null {
+  const declared = pack.registrationTypes.find(
+    (type) => type.type === registration.registrationType,
+  );
+  if (declared?.placeAt == null) return null;
+  const { start, length } = declared.placeAt;
+  return registration.value.slice(start, start + length);
 }

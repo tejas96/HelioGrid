@@ -15,6 +15,7 @@ export { activeStatutoryExtras } from './extras';
 export type {
   PlaceOfSupplyRule,
   PlatformSaleTax,
+  RegistrationPlace,
   StatutoryExtra,
   TaxComponentShare,
   TaxPack,
@@ -23,4 +24,9 @@ export type {
 } from './pack';
 export { IN_TAX, TAX_STRATEGIES } from './pack';
 export { taxPackOf } from './pack-schema';
-export { checkTaxRegistration, type TaxRegistrationCheck } from './registration';
+export type { PlatformInvoice, PlatformInvoiceLine } from './platform-invoice';
+export {
+  checkTaxRegistration,
+  placeOfRegistration,
+  type TaxRegistrationCheck,
+} from './registration';

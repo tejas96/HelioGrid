@@ -25,7 +25,7 @@ import {
 } from '../support/fixture';
 import { type HeldLock, holdLock } from '../support/held-lock';
 import { marketsOf } from '../support/market';
-import { silentLogger } from './support';
+import { aPlan, silentLogger } from './support';
 
 type Pools = ReturnType<typeof openPools>;
 
@@ -131,6 +131,8 @@ export class NoticeCompanies {
         trialEndsAt: held.trialEndsAt === undefined ? null : new Date(held.trialEndsAt),
         paidPeriodEnd: held.state === 'trialing' ? null : new Date(held.enteredAt),
         createdAt: new Date(held.enteredAt),
+        // A paying row was converted onto a plan, and a charge on it issues an invoice for it.
+        ...(held.state === 'trialing' ? {} : await aPlan(db)),
       })
       .returning({ id: subscription.id });
     if (row === undefined) throw new Error('the subscription was not seeded');

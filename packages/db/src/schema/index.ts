@@ -8,6 +8,7 @@ import * as entitlement from './entitlement';
 import * as file from './file';
 import * as identity from './identity';
 import * as invitation from './invitation';
+import * as invoice from './invoice';
 import * as market from './market';
 import * as memberPhoto from './member-photo';
 import * as notification from './notification';
@@ -43,6 +44,7 @@ export const schema = {
   ...entitlement,
   ...usage,
   ...dunning,
+  ...invoice,
 };
 
 export * from './audit';
@@ -55,6 +57,7 @@ export * from './entitlement';
 export * from './file';
 export * from './identity';
 export * from './invitation';
+export * from './invoice';
 export * from './market';
 export * from './member-photo';
 export * from './notification';

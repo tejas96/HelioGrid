@@ -10,7 +10,7 @@ export interface PlanPriceRow {
   readonly tier: Tier;
   readonly cycle: BillingCycle;
   readonly currencyCode: string;
-  /** What the gateway collects, tax included. */
+  /** What the gateway collects: the list price, plus the scheme's tax once the platform is registered (`F1-29`). */
   readonly collectedMinor: MinorUnits;
   readonly gatewayPlanRef: string;
 }

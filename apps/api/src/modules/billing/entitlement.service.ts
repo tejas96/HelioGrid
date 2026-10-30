@@ -4,6 +4,7 @@ import {
   type Entitlement,
   type EntitlementKey,
   limitOf,
+  type MarketPack,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
@@ -59,7 +60,11 @@ export class EntitlementService {
 
   /** The book's limits in a market, read once, for a transaction that is about to open. */
   async limitsIn(marketCode: string): Promise<LimitsFor> {
-    const { priceBook } = await this.markets.currentPackOf(marketCode);
+    return this.bookLimitsOf(await this.markets.currentPackOf(marketCode));
+  }
+
+  /** The book's limits in a pack the caller already read. */
+  bookLimitsOf({ priceBook }: MarketPack): LimitsFor {
     return (tier) => bookEntitlements(priceBook, tier);
   }
 

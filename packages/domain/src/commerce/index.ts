@@ -106,6 +106,8 @@ export {
   forfeitsPriceProtection,
   protectionEndsAt,
 } from './grandfathering';
+export type { InvoiceKind, InvoiceStatus } from './invoices';
+export { INVOICE_KINDS, INVOICE_STATUSES } from './invoices';
 export type { DueTimedCause, SubscriptionCause, SubscriptionClock } from './lifecycle';
 export {
   billingPhaseAt,

@@ -121,6 +121,10 @@ Owner ruling 2026-10-29: a board draws the nearest real component, never a look-
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `error`, `monthly-yearly-toggle`.
 
+## Redesign owed
+
+- `Prices exclude GST` is drawn as a fact at all times, but the platform collects no GST until it registers (`F1-29`, owner ruling 2026-10-30): at the board's next redraw the line reads off the platform's registration — shown once it is registered, absent before.
+
 ## Data volume
 
 Design at the full IN book grid (`docs/prd/04-business-model.md` BM-41): 4 tiers × 2 cycles, each tier carrying on the order of a dozen published values — monthly and yearly price, single-design kW ceiling, proposals/month, active projects, users (unlimited), AI-detection bundle + overage rate, voice minutes (PAYG rate or bundle), storage, included tracked seats + per-seat rate, marketing-send bundles + per-channel overage rates, trial caps, service terms (Tier-keyed screen copy, never a book value — BM-14, BM-41) — plus competitor benchmark rows per tier. The comparison must stay legible at that density on a phone.
