@@ -35,7 +35,9 @@ const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'd
  * Our rows are the truth for entitlements and the gateway's for money. The publish command writes a
  * row when the latest one for its market × tier × cycle × currency collects a different amount, so
  * an unchanged price keeps its plan object across pack revisions; `pack_version` is the revision
- * that first sold it (`F1-11`). Rows are never updated or deleted — a sent price stands (`M12-57`).
+ * that first sold it (`F1-11`). A row's amounts never change and no row is deleted — a sent price
+ * stands (`M12-57`). Only `gateway_plan_ref` is ever rewritten, when the bound gateway does not hold
+ * that plan object (`plan-price.service.ts`): such a ref can open no page.
  *
  * Global: no company owns a price. `app_user` holds no grant; the admin path alone reads and writes.
  */

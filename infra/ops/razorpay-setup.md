@@ -1,8 +1,8 @@
 # Razorpay — account setup & test-mode integration prep
 
-**State (2026-07-26):** no account exists. **Account creation is the owner's step** (an
-agent must not create accounts or handle passwords). Everything below is staged so the
-integration proceeds the same day the account exists. Architecture is NOT blocked: the
+**State:** the account exists in test mode, its test keys are in `.env.local`, and the
+test-mode checks below pass on the real gateway. Live keys wait on KYC. **Account steps are the
+owner's** (an agent must not create accounts or handle passwords). Architecture is NOT blocked: the
 billing module builds against test keys + the webhook contract, and the entitlement
 machinery is in-house (docs/16, ADR-0013).
 
@@ -28,13 +28,15 @@ machinery is in-house (docs/16, ADR-0013).
   logged. Transport dedupe on `x-razorpay-event-id` is `billing_gateway_event` (migration 0036).
 - **Plan objects**: NOT made by hand. `pnpm --filter @heliogrid/api pack:publish` creates one per
   sold tier × cycle at the tax-included amount and mirrors each in `plan_price` (M12-12); run it
-  once the keys are in `.env.local`.
+  once the keys are in `.env.local`. A row whose plan this account does not hold (made by the
+  development gateway, or on test keys before live ones) gets a new plan object in place.
 - **Subscriptions settings**: UPI AutoPay primary + card e-mandate fallback; no gateway trial —
   the 14-day trial is the product's own and the mandate is made at conversion (M12-11, M12-14);
   pre-debit notifications = Razorpay-managed.
-- **First test-mode check**: cancel a monthly subscription nobody has authorised yet (status
-  `created`, `cancel_at_cycle_end: 0`). The api counts on Razorpay accepting it; if Razorpay
-  refuses, a new plan pick answers 502 until the trial ends (`apps/api/src/modules/billing/checkout.service.ts`, `closeUnpaid`).
+- **First test-mode check** (passes): Razorpay cancels a monthly subscription nobody has
+  authorised yet (status `created`, `cancel_at_cycle_end: 0`), so a new plan pick closes the old
+  page (`apps/api/src/modules/billing/checkout.service.ts`, `closeUnpaid`). A test card paid on
+  the hosted page is found by the reconcile and turns the company `active`.
 - **Invoices**: GST settings with our GSTIN/SAC once KYC provides them (supplier of
   record = us; IRN e-invoicing validation is ours).
 - **Security**: dashboard 2FA, restricted team access, webhook secret rotation note.

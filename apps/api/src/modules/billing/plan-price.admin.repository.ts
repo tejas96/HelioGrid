@@ -55,6 +55,14 @@ export class PlanPriceAdminRepository {
     return row === undefined ? null : { ...row, collectedMinor: minorUnits(row.collectedMinor) };
   }
 
+  /**
+   * Points a row at a new plan object. Only for a ref the bound gateway does not hold: such a ref
+   * can open no page, and a checkout reads its row's tier and cycle, never the ref it opened with.
+   */
+  async replaceGatewayPlan(id: string, gatewayPlanRef: string): Promise<void> {
+    await this.db.update(planPrice).set({ gatewayPlanRef }).where(eq(planPrice.id, id));
+  }
+
   /** `false` when this pack version already wrote the row: a second publish writes nothing. */
   async insert(
     row: PlanPriceKey & {

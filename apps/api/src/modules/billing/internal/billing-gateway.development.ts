@@ -27,6 +27,9 @@ export function developmentSignature(rawBody: string | Uint8Array): string {
   return createHmac('sha256', DEVELOPMENT_WEBHOOK_SECRET).update(rawBody).digest('hex');
 }
 
+/** Every plan ref this adapter makes starts so; any other was made by a real gateway. */
+const PLAN_PREFIX = 'dev_plan_';
+
 const amountSchema = z.number().int().nonnegative();
 const chargeSchema = z.object({
   gatewayRef: z.string().min(1),
@@ -67,9 +70,13 @@ export class DevelopmentBillingGateway implements BillingGateway {
   }
 
   async createPlan(request: GatewayPlanRequest): Promise<string> {
-    const ref = `dev_plan_${request.tier}_${request.cycle}_${request.amount}`;
+    const ref = `${PLAN_PREFIX}${request.tier}_${request.cycle}_${request.amount}`;
     this.logger.info({ ...request, ref }, 'development gateway: plan object');
     return ref;
+  }
+
+  async hasPlan(gatewayPlanRef: string): Promise<boolean> {
+    return gatewayPlanRef.startsWith(PLAN_PREFIX);
   }
 
   async openCheckout(request: GatewayCheckoutRequest): Promise<OpenedCheckout> {
