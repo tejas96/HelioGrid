@@ -28,3 +28,4 @@ export { tenMonthYearly } from './pricing/book';
 export { clearsCogsFloor, metersBelowCogsFloor } from './pricing/cogs';
 export { subsidyAmount } from './subsidy/amount';
 export { taxBreakdown } from './tax/breakdown';
+export { platformSaleTotal } from './tax/platform-sale';

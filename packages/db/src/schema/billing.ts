@@ -1,4 +1,10 @@
-import { BILLING_STATES, SUBSCRIPTION_CAUSES } from '@heliogrid/domain';
+import {
+  BILLING_CYCLES,
+  BILLING_STATES,
+  COLLECTION_KINDS,
+  SUBSCRIPTION_CAUSES,
+  TIERS,
+} from '@heliogrid/domain';
 import { sql } from 'drizzle-orm';
 import {
   bigint,
@@ -6,6 +12,7 @@ import {
   index,
   pgEnum,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uniqueIndex,
@@ -17,8 +24,57 @@ import { tenant } from './tenant';
 /** pgEnums hand-mirror domain's tuples (invariant `enum-parity` proves each pair equal). */
 export const billingState = pgEnum('billing_state', BILLING_STATES);
 export const subscriptionCause = pgEnum('subscription_cause', SUBSCRIPTION_CAUSES);
+export const tier = pgEnum('tier', TIERS);
+export const billingCycle = pgEnum('billing_cycle', BILLING_CYCLES);
+export const collectionKind = pgEnum('collection_kind', COLLECTION_KINDS);
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
+
+/**
+ * One tier on one cycle as the gateway sells it (`M12-12`): the mirror of one gateway plan object.
+ * Our rows are the truth for entitlements and the gateway's for money. The publish command writes a
+ * row when the latest one for its market × tier × cycle × currency collects a different amount, so
+ * an unchanged price keeps its plan object across pack revisions; `pack_version` is the revision
+ * that first sold it (`F1-11`). Rows are never updated or deleted — a sent price stands (`M12-57`).
+ *
+ * Global: no company owns a price. `app_user` holds no grant; the admin path alone reads and writes.
+ */
+export const planPrice = pgTable(
+  'plan_price',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .$defaultFn(() => uuidv7()),
+    marketCode: text('market_code').notNull(),
+    packVersion: text('pack_version').notNull(),
+    tier: tier('tier').notNull(),
+    cycle: billingCycle('cycle').notNull(),
+    currencyCode: text('currency_code').notNull(),
+    /** The book's price, ex-tax (`BM-40`). */
+    listMinor: bigint('list_minor', { mode: 'number' }).notNull(),
+    /** What the gateway collects: the list price and the platform sale's tax (`F1-28`). */
+    collectedMinor: bigint('collected_minor', { mode: 'number' }).notNull(),
+    gatewayPlanRef: text('gateway_plan_ref').notNull(),
+    createdAt: instant('created_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('plan_price_version_key').on(
+      table.marketCode,
+      table.tier,
+      table.cycle,
+      table.currencyCode,
+      table.packVersion,
+    ),
+    /** The current row of a market × tier × cycle × currency: the latest written. */
+    index('plan_price_current_idx').on(
+      table.marketCode,
+      table.tier,
+      table.cycle,
+      table.currencyCode,
+      table.createdAt,
+    ),
+  ],
+);
 
 /**
  * A company's subscription — the one lifecycle machine (`M12-04`). The edges and the timers are
@@ -49,6 +105,15 @@ export const subscription = pgTable(
     /** The end of the paid period, from conversion onward (`M12-05`, `M12-50`). */
     paidPeriodEnd: instant('paid_period_end'),
     createdAt: instant('created_at').notNull(),
+    /**
+     * What the company pays for, set by the charge that converted it (`M12-54`). All four are null
+     * on a trial that has not paid, and all four are set together after.
+     */
+    tier: tier('tier'),
+    cycle: billingCycle('cycle'),
+    planPriceId: uuid('plan_price_id').references(() => planPrice.id),
+    /** The gateway's subscription or payment link this row is collected on. */
+    gatewayRef: text('gateway_ref'),
   },
   (table) => [
     /** `M12-04` — at most one live subscription per company. */
@@ -63,6 +128,20 @@ export const subscription = pgTable(
     index('subscription_grace_due_idx')
       .on(table.stateEnteredAt)
       .where(sql`${table.state} = 'past_due'`),
+    /** The reconcile's reads: live rows collected at the gateway by their ref, and recent halts. */
+    index('subscription_reconcile_live_idx')
+      .on(table.gatewayRef)
+      .where(sql`${table.gatewayRef} is not null and ${table.state} in ('active', 'past_due')`),
+    index('subscription_reconcile_halted_idx')
+      .on(table.stateEnteredAt)
+      .where(sql`${table.gatewayRef} is not null and ${table.state} = 'halted'`),
+    uniqueIndex('subscription_gateway_ref_key')
+      .on(table.gatewayRef)
+      .where(sql`${table.gatewayRef} is not null`),
+    check(
+      'subscription_plan_whole',
+      sql`(${table.tier} is null) = (${table.cycle} is null) and (${table.tier} is null) = (${table.planPriceId} is null) and (${table.tier} is null) = (${table.gatewayRef} is null)`,
+    ),
     /** A trial without an end would never expire. */
     check(
       'subscription_trial_has_end',
@@ -143,4 +222,74 @@ export const subscriptionPayment = pgTable(
       table.occurredAt,
     ),
   ],
+);
+
+/**
+ * A hosted checkout a trial opened (`M12-54`): which plan it buys, on which rail, and the gateway's
+ * page. The gateway's message names its `gateway_ref`, so the charge it collected finds the plan
+ * the company chose. Open until a charge converts the subscription or a new pick replaces it; one
+ * open checkout per subscription, so two pages can never both collect.
+ *
+ * Tenant-scoped, all four; `app_user` holds SELECT alone — the gateway's messages cross tenants,
+ * so the admin path writes it.
+ */
+export const billingCheckout = pgTable(
+  'billing_checkout',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .$defaultFn(() => uuidv7()),
+    tenantId: uuid('tenant_id')
+      .notNull()
+      .references(() => tenant.id),
+    subscriptionId: uuid('subscription_id')
+      .notNull()
+      .references(() => subscription.id),
+    planPriceId: uuid('plan_price_id')
+      .notNull()
+      .references(() => planPrice.id),
+    collection: collectionKind('collection').notNull(),
+    gatewayRef: text('gateway_ref').notNull(),
+    hostedUrl: text('hosted_url').notNull(),
+    /** The hosted page takes no money after this: the trial's end. */
+    expiresAt: instant('expires_at').notNull(),
+    openedAt: instant('opened_at').notNull(),
+    /**
+     * Set before the gateway is asked to cancel the page. From then the page is never handed out
+     * again, even when the cancel's answer was lost and the row is still open.
+     */
+    cancelRequestedAt: instant('cancel_requested_at'),
+    closedAt: instant('closed_at'),
+  },
+  (table) => [
+    uniqueIndex('billing_checkout_gateway_ref_key').on(table.gatewayRef),
+    index('billing_checkout_tenant_subscription_idx').on(
+      table.tenantId,
+      table.subscriptionId,
+      table.openedAt,
+    ),
+    /** The reconcile's read of the pages still able to take money, by when they stop. */
+    index('billing_checkout_open_idx').on(table.expiresAt).where(sql`${table.closedAt} is null`),
+    uniqueIndex('billing_checkout_one_open')
+      .on(table.tenantId, table.subscriptionId)
+      .where(sql`${table.closedAt} is null`),
+  ],
+);
+
+/**
+ * Every gateway message the api acted on, by the provider's own event id: the transport dedupe
+ * (`forward-compat.md`, webhooks), so a message sent again does nothing and alerts nothing twice.
+ * A row is written only once its effect is done; the effects are idempotent on their own keys
+ * besides, so a message acted on twice still moves nothing twice.
+ *
+ * Global: a message names no company until it is read. `app_user` holds no grant.
+ */
+export const billingGatewayEvent = pgTable(
+  'billing_gateway_event',
+  {
+    provider: text('provider').notNull(),
+    eventRef: text('event_ref').notNull(),
+    receivedAt: instant('received_at').notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.provider, table.eventRef] })],
 );

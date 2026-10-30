@@ -10,6 +10,12 @@
  * former sibling. Do not add one back.
  */
 
+export type {
+  BillingReconcileActivities,
+  BillingReconcileResult,
+  ReconcilePageResult,
+} from './billing-reconcile';
+export { BILLING_RECONCILE_SCHEDULE_ID, billingReconcileWorkflow } from './billing-reconcile';
 export type { BillingTimersActivities } from './billing-timers';
 export { BILLING_TIMERS_SCHEDULE_ID, billingTimersWorkflow } from './billing-timers';
 export type {

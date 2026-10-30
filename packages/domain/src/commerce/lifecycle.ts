@@ -35,11 +35,12 @@ export const METERED_PAUSE_DAY = 4;
 export const ENTITLEMENT_BUFFER_DAYS = 3;
 
 /**
- * `M12-04` — every edge of the machine. `expired` and `cancelled` have none: each is left only by
- * reactivation, which starts a NEW subscription (`M12-08`). `halted` has one, `paid`, and
- * `charges.ts` admits it only for a charge that happened inside the grace the timer halted it at
- * the end of; every other halt, too, is left only by reactivation. No state and no cause is a
- * pause (`M12-13`).
+ * `M12-04` — every edge of the machine. `cancelled` has none: it is left only by reactivation,
+ * which starts a NEW subscription (`M12-08`). `halted` and `expired` have one each, `paid`, and
+ * `charges.ts` admits it only for a charge that happened BEFORE the timer moved the row — inside
+ * the grace for a halt, inside the trial for an expiry — because such a charge proves the company
+ * was never unpaid (`M12-05`). Every other halt or expiry, too, is left only by reactivation. No
+ * state and no cause is a pause (`M12-13`).
  *
  * Exhaustive over the states, so a seventh state fails to compile until its edges are written.
  */
@@ -50,7 +51,7 @@ const EDGES: Readonly<
   active: { charge_failed: 'past_due', cancelled: 'cancelled' },
   past_due: { paid: 'active', grace_expired: 'halted' },
   halted: { paid: 'active' },
-  expired: {},
+  expired: { paid: 'active' },
   cancelled: {},
 };
 

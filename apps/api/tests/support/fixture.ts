@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import {
   auditLogEntry,
   authIdentity,
+  billingCheckout,
   createDb,
   type Db,
   file,
@@ -248,8 +249,9 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
     return;
   }
   await db.delete(auditLogEntry).where(inArray(auditLogEntry.tenantId, companies));
-  // The payments and the history first: each row names its subscription.
+  // The payments, the checkouts and the history first: each row names its subscription.
   await db.delete(subscriptionPayment).where(inArray(subscriptionPayment.tenantId, companies));
+  await db.delete(billingCheckout).where(inArray(billingCheckout.tenantId, companies));
   await db
     .delete(subscriptionStateHistory)
     .where(inArray(subscriptionStateHistory.tenantId, companies));

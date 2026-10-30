@@ -74,6 +74,14 @@ export interface InvoiceRoute {
 
 export type CollectionRoute = MandateRoute | InvoiceRoute;
 
+/** The two ways a period is collected, as a tuple a stored checkout row is checked against. */
+export const COLLECTION_KINDS = [
+  'mandate',
+  'invoice',
+] as const satisfies readonly CollectionRoute['collection'][];
+
+export type CollectionKind = (typeof COLLECTION_KINDS)[number];
+
 /**
  * One way a tenant's own customer pays that tenant (`F1-18`b). The market's own value, an open
  * set like the mandate types (`F1-09`); the name a user READS is `pack.formats`' label (`F1-22`),

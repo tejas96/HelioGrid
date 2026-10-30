@@ -119,6 +119,38 @@ describe('successEffect — a successful charge is entitlement truth (M12-09)', 
       }),
     ).toEqual({ outcome: 'dead' });
   });
+
+  it.each([
+    {
+      name: 'a moment before the expiry',
+      occurredAt: ENTERED - ONE_MS,
+      replaced: false,
+      live: true,
+    },
+    { name: 'at the expiry', occurredAt: ENTERED, replaced: false, live: false },
+    { name: 'after the expiry', occurredAt: ENTERED + ONE_MS, replaced: false, live: false },
+    {
+      name: 'before the expiry, reactivated since',
+      occurredAt: ENTERED - ONE_MS,
+      replaced: true,
+      live: false,
+    },
+  ])(
+    'a trial paid $name: active again only when paid while still a trial',
+    ({ occurredAt, replaced, live }) => {
+      const paysThrough = PERIOD_END + MS_PER_DAY;
+      expect(
+        successEffect(standing({ state: 'expired', paidPeriodEnd: null, replaced }), {
+          occurredAt,
+          paysThrough,
+        }),
+      ).toEqual(
+        live
+          ? { outcome: 'live', paidPeriodEnd: paysThrough, moveTo: 'active' }
+          : { outcome: 'dead' },
+      );
+    },
+  );
 });
 
 describe('failureMoves — a failed charge never undoes a later payment (M12-09)', () => {

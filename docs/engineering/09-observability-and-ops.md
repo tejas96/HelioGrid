@@ -80,6 +80,7 @@ Postgres nodes run `postgres_exporter` as a sidecar process in the postgres-flex
 | **Restore-drill staleness** | `heliogrid_ops_restore_drill_age_days` >35 | an untested backup is a rumour |
 | Queue depth | `waiting` >500 for 10 min on any queue; `failed` >25/h; pdf queue >50 | jobs are user-visible (PDFs, shading, agent calls) |
 | Webhook failures | Razorpay/Exotel webhook processing failures >5/15 min | money + calls |
+| Billing alert | any api log line with `alert` = `billing_repair`, `billing_dead_charge`, `billing_charge_refused`, `billing_cancelled_mandate` or `billing_pause_event` (`apps/api/src/modules/billing/internal/billing-alerts.ts`) | money the reconcile repaired or no subscription could take; reconciliation is supposed to be boring (M12-09, M12-13) |
 | **Call error rate** | voice call setup+media errors >5 % over 15 min | tenant-facing, compliance-adjacent |
 | OTP delivery | failure rate >10 % over 30 min | the front door for every login |
 | ComplianceGate fail-closed | promotional dialing paused on stale DND scrub | revenue-affecting, must be seen |
