@@ -14,6 +14,9 @@ import {
   catalogProvenanceSchema,
   collectionKindSchema,
   componentKindSchema,
+  entitlementLimitKindSchema,
+  entitlementOverrideKindSchema,
+  entitlementSourceSchema,
   fileContentTypeSchema,
   invitationStatusSchema,
   loginProviderSchema,
@@ -74,6 +77,18 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   tier: { options: tierSchema.options, contract: 'tierSchema' },
   billing_cycle: { options: billingCycleSchema.options, contract: 'billingCycleSchema' },
   collection_kind: { options: collectionKindSchema.options, contract: 'collectionKindSchema' },
+  entitlement_source: {
+    options: entitlementSourceSchema.options,
+    contract: 'entitlementSourceSchema',
+  },
+  entitlement_limit_kind: {
+    options: entitlementLimitKindSchema.options,
+    contract: 'entitlementLimitKindSchema',
+  },
+  entitlement_override_kind: {
+    options: entitlementOverrideKindSchema.options,
+    contract: 'entitlementOverrideKindSchema',
+  },
   push_platform: {
     options: pushPlatformSchema.options,
     contract: 'pushPlatformSchema',

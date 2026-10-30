@@ -1,5 +1,4 @@
 import type { GatewayEvent } from '@heliogrid/contracts';
-import type { Db as AdminDb } from '@heliogrid/db';
 import { type Db, subscription } from '@heliogrid/db';
 import {
   type BillingCycle,
@@ -14,6 +13,10 @@ import { platformSaleTotal } from '@heliogrid/domain/server';
 import { PinoLogger } from 'nestjs-pino';
 import { ChargeAdminRepository } from '../../src/modules/billing/charge.admin.repository';
 import { ChargeService } from '../../src/modules/billing/charge.service';
+import { EntitlementAdminRepository } from '../../src/modules/billing/entitlement.admin.repository';
+import { EntitlementRepository } from '../../src/modules/billing/entitlement.repository';
+import { EntitlementService } from '../../src/modules/billing/entitlement.service';
+import { EntitlementOverrideAdminRepository } from '../../src/modules/billing/entitlement-override.admin.repository';
 import {
   type AlertFacts,
   type BillingAlert,
@@ -24,6 +27,10 @@ import {
   DevelopmentBillingGateway,
   developmentSignature,
 } from '../../src/modules/billing/internal/billing-gateway.development';
+import type { openPools } from '../support/fixture';
+import { marketsOf } from '../support/market';
+
+type Pools = ReturnType<typeof openPools>;
 
 /** A logger that writes nothing, for the services a suite composes by hand. */
 export const silentLogger = (): PinoLogger => new PinoLogger({ pinoHttp: { level: 'silent' } });
@@ -77,10 +84,29 @@ export function collectedFor(tier: Tier, cycle: BillingCycle): MinorUnits {
   return platformSaleTotal(IN_PACK, list);
 }
 
+/**
+ * Entitlements as `billing.module.ts` composes them, over the real repositories on both pools. The
+ * book is read from the published pack, so a suite publishes it first (`publishIndiaPack`).
+ */
+export function entitlementServiceOf(pools: Pools): EntitlementService {
+  return new EntitlementService(
+    new EntitlementRepository(pools.tenants),
+    new EntitlementAdminRepository(pools.admin.db),
+    new EntitlementOverrideAdminRepository(pools.admin.db),
+    marketsOf(pools),
+    silentLogger(),
+  );
+}
+
 /** The charge path as `billing.module.ts` composes it, over the real admin repository. */
 export function chargeServiceOf(
-  db: AdminDb,
+  pools: Pools,
   alerts: BillingAlerts = new BillingAlerts(silentLogger()),
 ): ChargeService {
-  return new ChargeService(new ChargeAdminRepository(db), alerts, silentLogger());
+  return new ChargeService(
+    new ChargeAdminRepository(pools.admin.db),
+    alerts,
+    entitlementServiceOf(pools),
+    silentLogger(),
+  );
 }

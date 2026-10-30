@@ -24,6 +24,7 @@ lines splits by subarea in the same folder: `settings.templates.service.ts`.
 ```
 pnpm --filter @heliogrid/api dev | build | typecheck     # dev = tsx watch, API_PORT 8084
 pnpm --filter @heliogrid/api pack:publish                # the typed pack as its market's next revision, then the India platform catalog
+pnpm --filter @heliogrid/api billing:override --tenant <id> --staff <user id> --reason "<why>" (--credit <key>=<n> | --extend-trial)   # support's audited override (M12-19, M12-52)
 curl localhost:8084/health                               # liveness · /health/ready = readiness
 ```
 

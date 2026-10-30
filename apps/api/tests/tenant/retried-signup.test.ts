@@ -6,6 +6,7 @@ import {
   tenantContract,
 } from '@heliogrid/contracts';
 import { tenant } from '@heliogrid/db';
+import { bookEntitlements, IN_PACK } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
 import { eq, sql } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -106,6 +107,7 @@ describe.skipIf(skip)('a retried company signup, over HTTP (F4-07)', () => {
       currencyCode: 'INR',
       defaultLanguage: 'en',
       timezone: 'Asia/Kolkata',
+      trialLimits: bookEntitlements(IN_PACK.priceBook, null),
       ownerUserId: userId,
       now: Date.now(),
       key: creationKeyOf({ [IDEMPOTENCY_KEY_HEADER]: key }, userId, tenantContract.create, body),

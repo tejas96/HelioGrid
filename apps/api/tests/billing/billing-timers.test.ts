@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { subscription, subscriptionStateHistory, tenant } from '@heliogrid/db';
 import { MS_PER_DAY, PAST_DUE_GRACE_DAYS, TRIAL_DAYS } from '@heliogrid/domain';
-import { asc, eq, inArray } from 'drizzle-orm';
+import { asc, eq, inArray, sql } from 'drizzle-orm';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { BillingAdminRepository } from '../../src/modules/billing/billing.admin.repository';
 import { BillingService } from '../../src/modules/billing/billing.service';
@@ -13,6 +13,8 @@ import {
   skipWithoutDatabase,
   unseed,
 } from '../support/fixture';
+import { publishIndiaPack } from '../support/market';
+import { entitlementServiceOf } from './support';
 
 /**
  * The billing timers, against a migrated database (`M12-04`, `M12-06`, `M12-07`, `M12-52`).
@@ -39,10 +41,11 @@ describe.skipIf(skip)('the billing timers (M12-04, M12-06, M12-52)', () => {
   let repository: BillingAdminRepository;
   let companies: Company[] = [];
 
-  beforeAll(() => {
+  beforeAll(async () => {
     pools = openPools();
+    await publishIndiaPack(pools);
     repository = new BillingAdminRepository(pools.admin.db);
-    timers = new BillingService(repository);
+    timers = new BillingService(repository, entitlementServiceOf(pools));
   });
 
   afterEach(async () => {
@@ -112,6 +115,32 @@ describe.skipIf(skip)('the billing timers (M12-04, M12-06, M12-52)', () => {
     expect(await historyOf(tenantId)).toEqual([
       { state: 'halted', cause: 'grace_expired', enteredAt: daySeven },
     ]);
+  });
+
+  it('moves rows whose moments carry microseconds, as migration 0034 wrote them', async () => {
+    const pastDue = await aCompanyHolding(LONG_AGO, {
+      state: 'past_due',
+      enteredAt: LONG_AGO,
+      trialEndsAt: LONG_AGO,
+    });
+    const trial = await aCompanyHolding(LONG_AGO, {
+      state: 'trialing',
+      enteredAt: LONG_AGO - TRIAL_DAYS * MS_PER_DAY,
+      trialEndsAt: LONG_AGO,
+    });
+    // `now()` keeps microseconds; a JS Date read back holds only the milliseconds.
+    await pools.admin.db
+      .update(subscription)
+      .set({
+        stateEnteredAt: sql`${subscription.stateEnteredAt} + interval '123 microseconds'`,
+        trialEndsAt: sql`${subscription.trialEndsAt} + interval '456 microseconds'`,
+      })
+      .where(inArray(subscription.tenantId, [pastDue, trial]));
+
+    await timers.advanceDue(LONG_AGO + (PAST_DUE_GRACE_DAYS + DAYS_LATE) * MS_PER_DAY);
+
+    expect(await statesOf(pastDue)).toEqual(['halted']);
+    expect(await statesOf(trial)).toEqual(['expired']);
   });
 
   it('leaves alone a past-due company whose grace started again since it was read', async () => {

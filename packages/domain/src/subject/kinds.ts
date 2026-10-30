@@ -26,5 +26,7 @@ export const SUBJECT_KINDS = [
   'price_book_version',
   /** A company's catalog as a whole — what a supplier's price list is stored against (`M01-41`). */
   'catalog',
+  /** Support's audited grant on a company's limits or trial (`M12-19`). */
+  'entitlement_override',
 ] as const;
 export type SubjectKind = (typeof SUBJECT_KINDS)[number];

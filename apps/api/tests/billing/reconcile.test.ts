@@ -16,6 +16,7 @@ import {
   skipWithoutDatabase,
   unseed,
 } from '../support/fixture';
+import { publishIndiaPack } from '../support/market';
 import {
   aDevelopmentGateway,
   aTrial,
@@ -107,7 +108,8 @@ describe.skipIf(skip)('the 6-hour reconcile (M12-09, M12-43)', () => {
     const logger = silentLogger();
     gateway = aDevelopmentGateway();
     alerts = new RecordedAlerts(logger);
-    charges = chargeServiceOf(pools.admin.db, alerts);
+    await publishIndiaPack(pools);
+    charges = chargeServiceOf(pools, alerts);
     reconcile = new ReconcileService(
       new ReconcileAdminRepository(pools.admin.db),
       gateway,

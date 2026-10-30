@@ -7,13 +7,16 @@ import {
 } from '@heliogrid/db';
 import {
   type BillingState,
+  type Entitlement,
   type SubscriptionCause,
   type SubscriptionClock,
   trialEndsAtFor,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, asc, eq, gte, isNull, lte, sql } from 'drizzle-orm';
+import { and, asc, eq, gte, isNull, lte, type SQL, sql } from 'drizzle-orm';
+import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 import { ADMIN_DB } from '../../common/db/admin.token';
+import { recomputeEntitlements } from './entitlement.admin.repository';
 
 /** One subscription as the timers read it: who owns it, and what the clock needs. */
 export interface TimedSubscription extends SubscriptionClock {
@@ -31,7 +34,7 @@ export interface SubscriptionMove {
 
 /**
  * `M12-14`, `M12-52` — a company's trial, started in the transaction that creates it, so no
- * company is ever seen without a subscription. No payment instrument and no gateway object: the
+ * company is ever seen without a subscription, nor without the trial's limits (`M12-16`). No payment instrument and no gateway object: the
  * trial lives in the product alone until conversion.
  *
  * A company that already holds a live subscription keeps it: the one-live key turns a second start
@@ -39,7 +42,12 @@ export interface SubscriptionMove {
  */
 export async function startTrial(
   tx: DbTransaction,
-  input: { readonly tenantId: string; readonly now: number },
+  input: {
+    readonly tenantId: string;
+    readonly now: number;
+    /** The book's trial limits in the company's market. */
+    readonly limits: readonly Entitlement[];
+  },
 ): Promise<boolean> {
   const startedAt = new Date(input.now);
   const [started] = await tx
@@ -63,6 +71,12 @@ export async function startTrial(
     state: 'trialing',
     cause: 'trial_started',
     enteredAt: startedAt,
+  });
+  await recomputeEntitlements(tx, {
+    tenantId: input.tenantId,
+    subscriptionId: started.id,
+    base: input.limits,
+    now: input.now,
   });
   return true;
 }
@@ -105,7 +119,7 @@ export class BillingAdminRepository {
 
   /**
    * Moves one subscription, and records it, only if it still stands where it was read — the same
-   * state, entered at the same moment: a retried step or two overlapping runs move a row once, and
+   * state, entered at the same moment, with the same trial end: a retried step or two overlapping runs move a row once, and
    * a row that left and came back to the state since the read (paid, then failed again) is left to
    * its new deadline.
    */
@@ -119,7 +133,11 @@ export class BillingAdminRepository {
           and(
             eq(subscription.id, row.id),
             eq(subscription.state, move.from),
-            eq(subscription.stateEnteredAt, new Date(row.stateEnteredAt)),
+            sameMoment(subscription.stateEnteredAt, row.stateEnteredAt),
+            // A trial support extended since the read keeps its new end (`M12-52`).
+            row.trialEndsAt === null
+              ? isNull(subscription.trialEndsAt)
+              : sameMoment(subscription.trialEndsAt, row.trialEndsAt),
           ),
         )
         .returning({ id: subscription.id });
@@ -143,9 +161,9 @@ export class BillingAdminRepository {
     createdSince: number,
     now: number,
     limit: number,
-  ): Promise<string[]> {
-    const rows = await this.db
-      .select({ id: tenant.id })
+  ): Promise<{ tenantId: string; marketCode: string }[]> {
+    return this.db
+      .select({ tenantId: tenant.id, marketCode: tenant.marketCode })
       .from(tenant)
       .leftJoin(subscription, eq(subscription.tenantId, tenant.id))
       .where(
@@ -157,12 +175,24 @@ export class BillingAdminRepository {
       )
       .orderBy(asc(tenant.createdAt), asc(tenant.id))
       .limit(limit);
-    return rows.map((row) => row.id);
   }
 
-  async startTrialFor(tenantId: string, now: number): Promise<boolean> {
-    return this.db.transaction((tx) => startTrial(tx, { tenantId, now }));
+  async startTrialFor(
+    tenantId: string,
+    now: number,
+    limits: readonly Entitlement[],
+  ): Promise<boolean> {
+    return this.db.transaction((tx) => startTrial(tx, { tenantId, now, limits }));
   }
+}
+
+/**
+ * A stored moment equal to one read back. Compared to the millisecond: a JS Date holds no more,
+ * and a row written by SQL's `now()` (migration 0034's trials) carries microseconds, so an exact
+ * match would never move it.
+ */
+function sameMoment(column: AnyPgColumn, at: number): SQL {
+  return sql`date_trunc('milliseconds', ${column}) = ${new Date(at).toISOString()}::timestamptz`;
 }
 
 function timedColumns() {

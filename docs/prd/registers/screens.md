@@ -2202,7 +2202,7 @@ Nothing below is renumbered.*
 | M12-15 | P0 | policy | policy | LAW |
 | M12-16 | P0 | engine | engine | T-M12-008 |
 | M12-17 | P0 | policy | policy | T-M12-008 |
-| M12-18 | P0 | engine | engine | T-M12-008 |
+| M12-18 | P0 | engine | engine | T-M12-010 |
 | M12-19 | P1 | policy | policy | T-M12-008 |
 | M12-20 | P0 | policy | policy | LAW |
 | M12-21 | P0 | mixed | SCR-SHELL-06 · +non-UI: BM-35 matrix gates every mutation; typed entitlement-blocked error | T-SHELL-006, T-M12-009 |
@@ -2211,7 +2211,7 @@ Nothing below is renumbered.*
 | M12-24 | P0 | policy | policy | LAW |
 | M12-25 | P0 | policy | policy | LAW |
 | M12-26 | P0 | policy | policy | LAW |
-| M12-27 | P0 | policy | policy | T-M12-008 |
+| M12-27 | P0 | policy | policy | T-M12-009 |
 | M12-28 | P0 | policy | policy | LAW |
 | M12-29 | P0 | policy | policy | LAW |
 | M12-30 | P0 | mixed | SCR-M12-04, SCR-SHELL-06 · +non-UI: 80%/100%/7-day-grace cap ladder; counts reset on billing anchor, no… | T-SHELL-006, T-M12-009 |
