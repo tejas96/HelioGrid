@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { capWarningReached } from '../../src/commerce/caps';
+import { capStepOf, capWarningReached } from '../../src/commerce/caps';
 
 describe('capWarningReached — the first notice is never the block (BM-27, BM-34)', () => {
   it.each([
@@ -34,5 +34,60 @@ describe('capWarningReached — the first notice is never the block (BM-27, BM-3
     { used: 1, warned: true, why: 'no headroom to spend — the first unit is already overage' },
   ])('a pay-as-you-go bundle of zero at $used used — $why (BM-41)', ({ used, warned }) => {
     expect(capWarningReached(used, 0)).toBe(warned);
+  });
+});
+
+describe('capStepOf — the ladder from warning to grace to pause (M12-30, BM-34)', () => {
+  const DAY = 86_400_000;
+  const fullSince = 1_000 * DAY;
+  const cycleEndsAt = fullSince + 20 * DAY;
+
+  it.each([1, 2, 3, 5, 10, 15, 50, 100, 1_000])(
+    'the 80% warning comes before the grace and the pause, for every limit — %i',
+    (limit) => {
+      const steps = Array.from(
+        { length: limit + 1 },
+        (_, used) => capStepOf({ used, limit, fullSince, cycleEndsAt, now: fullSince }).step,
+      );
+      const firstWarning = steps.indexOf('warning');
+      expect(steps.indexOf('grace')).toBe(limit);
+      /* Below 5 no whole count sits between 80% and full, so the grace banner is the first notice. */
+      if (limit >= 5) expect(firstWarning).toBeGreaterThan(-1);
+      if (firstWarning !== -1) expect(firstWarning).toBeLessThan(limit);
+      expect(steps).not.toContain('paused');
+    },
+  );
+
+  it.each([
+    { now: fullSince, step: 'grace', why: 'the moment it fills, the grace begins' },
+    { now: fullSince + 7 * DAY - 1, step: 'grace', why: 'an instant before 7 days, still grace' },
+    { now: fullSince + 7 * DAY, step: 'paused', why: 'at 7 days, new creations pause' },
+    { now: fullSince + 19 * DAY, step: 'paused', why: 'and stay paused until the cycle resets' },
+  ])(
+    'a full cap pauses new creations only after 7 days of grace, until the cycle resets — $why',
+    ({ now, step }) => {
+      const reading = capStepOf({ used: 10, limit: 10, fullSince, cycleEndsAt, now });
+      expect(reading.step).toBe(step);
+      if (reading.step === 'grace') expect(reading.pausesAt).toBe(fullSince + 7 * DAY);
+      if (reading.step === 'paused') expect(reading.resetsAt).toBe(cycleEndsAt);
+    },
+  );
+
+  it('a count seen reaching its limit just now starts its grace now', () => {
+    expect(
+      capStepOf({ used: 10, limit: 10, fullSince: null, cycleEndsAt, now: fullSince }),
+    ).toEqual({ step: 'grace', pausesAt: fullSince + 7 * DAY });
+  });
+
+  it.each(['unlimited', 'custom'] as const)('a %s limit is never on the ladder', (limit) => {
+    const reading = capStepOf({ used: 1_000_000, limit, fullSince, cycleEndsAt, now: cycleEndsAt });
+    expect(reading.step).toBe('clear');
+  });
+
+  it.each([
+    { used: 0, step: 'clear' },
+    { used: 1, step: 'grace' },
+  ])('a bundle of zero with $used used is $step (BM-41)', ({ used, step }) => {
+    expect(capStepOf({ used, limit: 0, fullSince, cycleEndsAt, now: fullSince }).step).toBe(step);
   });
 });

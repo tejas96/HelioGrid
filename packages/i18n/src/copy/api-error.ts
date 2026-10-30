@@ -29,7 +29,7 @@ const COPY: Record<BaseErrorCode, { id: string }> = {
   NO_CREDENTIAL: /*i18n*/ { id: "You're signed out. Sign in to continue." },
   FORBIDDEN: /*i18n*/ { id: "You don't have access to do that." },
   ENTITLEMENT_BLOCKED: /*i18n*/ {
-    id: "Your current plan doesn't include this.",
+    id: 'This is paused for your company. Reading and export still work.',
   },
   NOT_FOUND: /*i18n*/ { id: "That record isn't available." },
   CONFLICT: /*i18n*/ {

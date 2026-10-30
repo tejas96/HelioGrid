@@ -3,6 +3,7 @@ import { Controller, HttpStatus, Inject, Req } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
+import { RouteBillingMap } from '../../common/auth/route-billing';
 import { tenantIdOf } from '../../common/auth/session-context';
 import { ContractException } from '../../common/errors/contract-exception';
 import { CheckoutService } from './checkout.service';
@@ -19,6 +20,7 @@ export class BillingController {
   @TsRestHandler(billingContract)
   // Every billing act is the EPC Owner's (`M12-56`). The gateway's message carries no session:
   // its signature is its authentication, checked before a byte of it is read.
+  @RouteBillingMap(billingContract, { checkout: 'billing_screens', gatewayEvents: 'ungated' })
   @RouteAccessMap(billingContract, {
     checkout: { capability: 'billing.manage_billing' },
     gatewayEvents: 'public',

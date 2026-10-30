@@ -1,4 +1,9 @@
-import { type ErrorDetail, genericErrorCodeByStatus, httpStatusFor } from '@heliogrid/contracts';
+import {
+  type EntitlementBlocked,
+  type ErrorDetail,
+  genericErrorCodeByStatus,
+  httpStatusFor,
+} from '@heliogrid/contracts';
 import {
   type ArgumentsHost,
   Catch,
@@ -13,6 +18,7 @@ import {
 import type { Request, Response } from 'express';
 import { PinoLogger } from 'nestjs-pino';
 import { ContractException } from '../errors/contract-exception';
+import { EntitlementBlockedException } from '../errors/entitlement-blocked';
 import { REQUEST_ID_HEADER, resolveRequestId, safeRequestId } from '../request-id';
 import { routeNotDeclaring } from './declared-statuses';
 
@@ -23,6 +29,7 @@ interface Envelope {
   code: string;
   message: string;
   details?: ErrorDetail[];
+  blocked?: EntitlementBlocked;
 }
 
 /**
@@ -96,6 +103,14 @@ function envelopeFor(exception: unknown): Envelope {
   if (!(exception instanceof HttpException)) return OPAQUE_INTERNAL;
 
   const status = exception.getStatus();
+  if (exception instanceof EntitlementBlockedException) {
+    return {
+      status,
+      code: exception.code,
+      message: exception.message,
+      blocked: exception.blocked,
+    };
+  }
   if (exception instanceof ContractException) {
     // The route's contract declares this exact literal — never overwrite it with the generic
     // base code for the status (e.g. ALREADY_ONBOARDED must not become CONFLICT).
@@ -157,7 +172,7 @@ export class EnvelopeExceptionFilter implements ExceptionFilter {
     // ts-rest checks only what a handler RETURNS, so a thrown status meets its contract here or
     // nowhere.
     const undeclaredOn = routeNotDeclaring(req, thrown.status);
-    const { status, code, message, details } =
+    const { status, code, message, details, blocked } =
       undeclaredOn === undefined ? thrown : OPAQUE_INTERNAL;
     if (status >= SERVER_ERROR_STATUS) {
       // The client sees opaque INTERNAL; the log keeps the truth, under the same request id.
@@ -168,6 +183,6 @@ export class EnvelopeExceptionFilter implements ExceptionFilter {
         'Request failed internally',
       );
     }
-    res.status(status).json({ error: { code, message, details, requestId } });
+    res.status(status).json({ error: { code, message, details, requestId, blocked } });
   }
 }

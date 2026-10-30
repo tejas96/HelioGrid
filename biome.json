@@ -300,6 +300,14 @@
       "includes": ["**/apps/web/features/**/*.{ts,tsx}", "**/apps/mobile/src/screens/**/*.{ts,tsx}"]
     },
     {
+      "path": "./packages/config/biome/entitlement-blocked-literal.grit",
+      "includes": [
+        "**/apps/api/src/**/*.ts",
+        "**/apps/worker/src/**/*.ts",
+        "!**/apps/api/src/common/errors/entitlement-blocked.ts"
+      ]
+    },
+    {
       "path": "./packages/config/biome/role-literal.grit",
       "includes": [
         "**/apps/**/*.{ts,tsx}",

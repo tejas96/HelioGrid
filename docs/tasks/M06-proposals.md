@@ -522,6 +522,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 **Type:** policy · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-26
+**Billing gate (T-M12-009):** proposal create names `sell_and_deliver` in its `RouteBillingMap`; its count cap reads `capStepOf` (`packages/domain`) over this cycle's proposals, `fullSince` being the created time of the cycle's limit-th proposal, and refuses only at `paused`, by throwing `EntitlementBlockedException` with `reason: 'cap'`, key `proposals_per_cycle` and the cycle's end as `resetsAt` (M12-23, M12-30).
 
 **Requirements (verbatim):**
 

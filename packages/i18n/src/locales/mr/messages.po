@@ -9146,6 +9146,11 @@ msgid "This is a material estimate and a visual model, not a structural check. A
 msgstr "हा साहित्याचा अंदाज आणि एक दृश्य मॉडेल आहे, संरचनात्मक तपासणी नाही. संरचनेची पडताळणी अभियंत्याने करणे आवश्यक आहे."
 
 #. js-lingui-explicit-id
+#: src/copy/api-error.ts:31
+msgid "This is paused for your company. Reading and export still work."
+msgstr "हे तुमच्या कंपनीसाठी थांबवले आहे. पाहणे आणि एक्सपोर्ट अजूनही चालू आहेत."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:69
 msgid "This is version {current}. HelioGrid now needs version {required} or later."
 msgstr "हे व्हर्जन {current} आहे. HelioGrid ला आता व्हर्जन {required} किंवा त्यानंतरचे हवे आहे."
@@ -10527,11 +10532,6 @@ msgstr "तुमची कंपनी प्रोफाइल"
 #: src/copy/company-profile.ts:32
 msgid "Your current account"
 msgstr "तुमचे चालू खाते"
-
-#. js-lingui-explicit-id
-#: src/copy/api-error.ts:31
-msgid "Your current plan doesn't include this."
-msgstr "तुमच्या सध्याच्या प्लॅनमध्ये हे समाविष्ट नाही."
 
 #. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:46

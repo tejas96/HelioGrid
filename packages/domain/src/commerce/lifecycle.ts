@@ -80,6 +80,11 @@ export function entitledUntil(paidPeriodEnd: number): number {
   return paidPeriodEnd + ENTITLEMENT_BUFFER_DAYS * MS_PER_DAY;
 }
 
+/** `M12-06` — when a company that entered `past_due` at this moment is halted, unpaid. */
+export function pastDueHaltsAt(enteredPastDueAt: number): number {
+  return enteredPastDueAt + PAST_DUE_GRACE_DAYS * MS_PER_DAY;
+}
+
 /** A timed transition the clock owes: its cause, and the moment it fell due. */
 export interface DueTimedCause {
   readonly cause: 'trial_expired' | 'grace_expired';
@@ -96,7 +101,7 @@ export function dueTimedCause(subscription: SubscriptionClock, now: number): Due
     return now >= dueAt ? { cause: 'trial_expired', dueAt } : null;
   }
   if (subscription.state === 'past_due') {
-    const dueAt = subscription.stateEnteredAt + PAST_DUE_GRACE_DAYS * MS_PER_DAY;
+    const dueAt = pastDueHaltsAt(subscription.stateEnteredAt);
     return now >= dueAt ? { cause: 'grace_expired', dueAt } : null;
   }
   return null;

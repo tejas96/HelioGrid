@@ -3,6 +3,7 @@ import { Controller, Inject, Req } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
+import { RouteBillingMap } from '../../common/auth/route-billing';
 import { actOf, rolesOf, tenantIdOf } from '../../common/auth/session-context';
 import { CatalogImportService } from './catalog.import.service';
 import { CatalogImportPreviewService } from './catalog.import-preview.service';
@@ -23,6 +24,12 @@ export class CatalogImportController {
   @TsRestHandler(catalogImportContract)
   // Every door is the manage grant's; Finance's limited cell passes it and the service refuses it,
   // since an import writes prices (`T-M01-030c` decision 9).
+  @RouteBillingMap(catalogImportContract, {
+    start: 'ungated',
+    map: 'ungated',
+    fix: 'ungated',
+    run: 'ungated',
+  })
   @RouteAccessMap(catalogImportContract, {
     start: MANAGE,
     imports: MANAGE,

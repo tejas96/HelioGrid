@@ -49,7 +49,11 @@ describe('the words for a failed attempt', () => {
 
   it.each([
     /* The server described the refusal: its code's words, never a transport failure's. */
-    ['ENTITLEMENT_BLOCKED', null, "Your current plan doesn't include this."],
+    [
+      'ENTITLEMENT_BLOCKED',
+      null,
+      'This is paused for your company. Reading and export still work.',
+    ],
     /* A server code spelled like a failure is still the server's, and has no words here. */
     ['no_answer', null, undefined],
     /* A failure the client saw is worded as that failure, whatever code rode along. */

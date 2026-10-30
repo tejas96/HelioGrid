@@ -239,6 +239,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 **Type:** engine · **Tier:** P1
 **Status:** planned
 **PRD rows:** M08-07
+**Billing gate (T-M12-009):** mark-won → project create names `sell_and_deliver` in its `RouteBillingMap` and is refused at the `active_projects` limit as M12-23's row says — the upgrade prompt — by throwing `EntitlementBlockedException` with `reason: 'cap'`, key `active_projects` and `resetsAt: null`; work on an existing project is never gated (M08-07).
 
 **Requirements (verbatim):**
 
