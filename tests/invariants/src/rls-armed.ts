@@ -177,7 +177,7 @@ export async function assertRlsArmed(sql: postgres.Sql, tables: string[]) {
  * Partition CHILDREN inherit columns from their parent — they do NOT inherit RLS.
  *
  * Postgres evaluates a direct child query against the CHILD's own settings, and every
- * audit_log_* / usage_events_* child here has relrowsecurity=false and zero policies. That is
+ * audit_log_* child here has relrowsecurity=false and zero policies. That is
  * safe ONLY while app_user holds no grant on any child, and nothing enforced that: a
  * retention or rollover migration doing `grant select on audit_log_2027_07 to app_user` is a
  * complete, silent tenancy bypass. So assert the grant is absent rather than assuming the

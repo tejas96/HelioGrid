@@ -156,6 +156,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-10, M09-11, M09-15, M09-65
+**Metering (T-M12-010, V2):** each toggle-off meters the seat's on-time with `meterUsage` as `tracked_field_seats`, `quantity` in seat-seconds, keyed by the toggle event; the month-fraction arithmetic over the rolled-up total is this task's (M12-33). The meter stays unsellable while its book rate is `draft` (BM-26).
 **Requirements (verbatim):**
 
 - **M09-10** (P0) — **Tracking is off for every employee until it is deliberately turned on.** A new employee, an invited employee and an employee whose role changes all start untracked. There is no default-on state, no tenant-wide "track everyone" setting that pre-answers the per-employee decision, and no automatic enablement derived from a preset, a team or a job type.

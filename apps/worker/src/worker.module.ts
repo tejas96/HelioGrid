@@ -10,6 +10,7 @@ import { catalogWorkerRegistration } from './modules/catalog/catalog.public';
 import { outboxWorkerRegistration } from './modules/outbox/outbox.public';
 import { platformWorkerRegistration } from './modules/platform/platform.public';
 import { teamWorkerRegistration } from './modules/team/team.public';
+import { usageWorkerRegistration } from './modules/usage/usage.public';
 
 /**
  * Orchestration wiring — TEMPORAL (ADR-0025).
@@ -42,6 +43,7 @@ import { teamWorkerRegistration } from './modules/team/team.public';
         teamWorkerRegistration,
         billingWorkerRegistration,
         billingReconcileWorkerRegistration,
+        usageWorkerRegistration,
       ],
     },
     TemporalWorkerHost,

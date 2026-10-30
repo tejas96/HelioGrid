@@ -23,6 +23,11 @@ export const APPEND_ONLY_LEDGERS: Record<string, string> = {
   entitlement_override:
     'support’s audited acts on a company’s limits and trial, never an edit; only the admin path ' +
     'writes it (M12-19, M12-52, T-M12-008)',
+  usage_event:
+    'one metered unit of work, the only usage counter there is; only the outbox step writes it, on ' +
+    'the admin path (M12-32, T-M12-010)',
+  storage_gauge_snapshot:
+    'a company’s stored bytes, read once a night; only the nightly step writes it (M12-33, T-M12-010)',
   orchestration_outbox:
     'a handoff to Temporal, written in its change’s transaction; only the dispatcher marks it, on ' +
     'the admin path (infra/temporal/README.md §5, T-M01-030)',

@@ -2,6 +2,7 @@ import { OBJECT_STORE } from '@heliogrid/contracts';
 import { Module, type Provider } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 import { ENV } from '../../config/env';
+import { BillingModule } from '../billing/billing.public';
 import { FileController } from './file.controller';
 import { FileRepository } from './file.repository';
 import { FileService } from './file.service';
@@ -15,6 +16,8 @@ const objectStoreProvider: Provider = {
 };
 
 @Module({
+  // Billing holds the storage gauge the upload gate reads.
+  imports: [BillingModule],
   controllers: [FileController],
   providers: [FileService, FileRepository, objectStoreProvider],
   // A module that works on a stored file reaches it through the service, never the store.

@@ -26,6 +26,10 @@ import { PlanPriceAdminRepository } from './plan-price.admin.repository';
 import { PlanPriceService } from './plan-price.service';
 import { ReconcileAdminRepository } from './reconcile.admin.repository';
 import { ReconcileService } from './reconcile.service';
+import { UsageActivityRegistration } from './usage.activities';
+import { UsageAdminRepository } from './usage.admin.repository';
+import { UsageRepository } from './usage.repository';
+import { UsageService } from './usage.service';
 
 /**
  * The gateway billing reaches (`M12-03`). The keys bind the market's reference adapter; absent,
@@ -60,8 +64,8 @@ const billingGatewayProvider: Provider = {
 
 /**
  * Platform billing (`M12`): the subscription lifecycle and its timers, charge truth, entitlements,
- * the billing-state gate on every mutation, the hosted checkout a trial converts through, the gateway's signed messages and the 6-hour
- * reconcile.
+ * the billing-state gate on every mutation, the hosted checkout a trial converts through, the gateway's signed messages, the 6-hour
+ * reconcile, and the usage ledger with its nightly storage gauge.
  */
 @Module({
   imports: [MarketModule],
@@ -88,7 +92,18 @@ const billingGatewayProvider: Provider = {
     PlanPriceAdminRepository,
     ReconcileService,
     ReconcileAdminRepository,
+    UsageActivityRegistration,
+    UsageService,
+    UsageRepository,
+    UsageAdminRepository,
   ],
-  exports: [BillingService, BillingStateGuard, ChargeService, EntitlementService, PlanPriceService],
+  exports: [
+    BillingService,
+    BillingStateGuard,
+    ChargeService,
+    EntitlementService,
+    PlanPriceService,
+    UsageService,
+  ],
 })
 export class BillingModule {}

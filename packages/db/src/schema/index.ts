@@ -15,6 +15,7 @@ import * as priceBook from './price-book';
 import * as settings from './settings';
 import * as subject from './subject';
 import * as tenant from './tenant';
+import * as usage from './usage';
 
 /**
  * Every table the migrations built, as one object: what `createDb` describes to Drizzle and what
@@ -39,6 +40,7 @@ export const schema = {
   ...outbox,
   ...billing,
   ...entitlement,
+  ...usage,
 };
 
 export * from './audit';
@@ -58,3 +60,4 @@ export * from './price-book';
 export * from './settings';
 export * from './subject';
 export * from './tenant';
+export * from './usage';

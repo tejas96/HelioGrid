@@ -308,6 +308,19 @@
       ]
     },
     {
+      "path": "./packages/config/biome/usage-ledger-reader.grit",
+      "includes": [
+        "**/apps/*/src/**/*.{ts,tsx}",
+        "**/apps/web/app/**/*.{ts,tsx}",
+        "**/apps/web/features/**/*.{ts,tsx}",
+        "**/apps/web/lib/**/*.{ts,tsx}",
+        "**/packages/*/src/**/*.{ts,tsx}",
+        "!**/packages/db/**",
+        "!**/apps/api/src/modules/billing/usage.repository.ts",
+        "!**/apps/api/src/modules/billing/usage.admin.repository.ts"
+      ]
+    },
+    {
       "path": "./packages/config/biome/role-literal.grit",
       "includes": [
         "**/apps/**/*.{ts,tsx}",

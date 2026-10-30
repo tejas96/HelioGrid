@@ -53,24 +53,17 @@ into pure domain functions.
    caller (BullMQ backoff for jobs, user-visible retry for interactive calls).
 4. **Circuit breaker**: after 5 consecutive adapter failures, open for 60 s (return
    `unavailable` immediately), then half-open. Implemented once in the adapters package.
-5. **Per-tenant metering hook**: every adapter is wrapped at binding time:
-
-   ```ts
-   withMetering(adapter, {
-     port: 'RoofDetectPort', op: 'detect',
-     units: (r) => (r.status === 'ok' ? 1 : 0),
-     metric: 'ai_detections',          // usage_events.metric
-     billable: true,                   // billable metrics check entitlements BEFORE the call
-   });
-   ```
-
-   Emits an append-only `usage_events` row (`tenant_id, metric, quantity, unit, provider_ref,
-   cost_estimate_minor, occurred_at`) via a fire-and-forget BullMQ enqueue — metering never
-   blocks or fails the request. Billable metrics (`voice_minutes`, `ai_detections`, `otp_sms`
-   (fair-use, NOT billed v1), `storage_gb`) run the entitlement soft-block check first
-   before the call. Non-billable observability metrics (`solar_data_fetch`,
-   `map_tile_fetch`, `dem_tile_fetch`, `push_sent`, `document_rendered`) are metered anyway
-   for quotas, fairness and COGS dashboards.
+5. **Per-tenant metering**: the producer that calls a metered adapter meters its unit with
+   `meterUsage(tx, unit)` (`apps/api/src/modules/billing/usage-meter.repository.ts`) inside its own
+   transaction. That writes one outbox event; the `usageRecord` workflow then writes the
+   append-only `usage_event` row (`tenant_id, meter, quantity, billable, subject_kind,
+   subject_ref, idempotency_key, period_key, occurred_at`), retried until it lands — metering
+   never blocks or fails the request (`M12-18`). The meters are domain's `LEDGER_METERS`: the
+   billed `voice_minutes`, `ai_roof_detections`, `marketing_sends`, `tracked_field_seats` (a
+   billed meter checks its entitlement BEFORE the call), and the cost lines `otp_delivery`,
+   `field_location_ingestion`, `solar_imagery`, `ai_extraction`, `speech`, which never bill and
+   feed the per-tenant quotas (`M12-37`). Storage is not a ledger row: it is the nightly
+   `storage_gauge_snapshot`.
 
 ## Port census
 

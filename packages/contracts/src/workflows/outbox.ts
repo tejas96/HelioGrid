@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { catalogImportWorkflow } from './catalog-import';
 import { inviteMessageWorkflow } from './invite-message';
 import { defineWorkflow, type WorkflowDefinition, type WorkflowResult } from './registry';
+import { usageRecordWorkflow } from './usage-ledger';
 
 /**
  * The outbox sweep — the second of the two dispatch paths (`infra/temporal/README.md` §5). A
@@ -47,6 +48,7 @@ export interface OutboxActivities {
 const OUTBOX_WORKFLOWS: readonly WorkflowDefinition[] = [
   catalogImportWorkflow,
   inviteMessageWorkflow,
+  usageRecordWorkflow,
 ];
 
 export const OUTBOX_WORKFLOW_NAMES: readonly string[] = OUTBOX_WORKFLOWS.map(

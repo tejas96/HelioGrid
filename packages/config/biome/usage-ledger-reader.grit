@@ -1,0 +1,16 @@
+// The usage ledger and the storage gauge are read and written only by the billing module's
+// usage*.repository.ts files, so the usage screen, every gate, the invoice and the quotas can only
+// read one rollup of one ledger (M12-32, M12-34). Every other file asks UsageService.
+or {
+  JsNamedImportSpecifier(),
+  JsShorthandNamedImportSpecifier(),
+  JsStaticMemberExpression(),
+  JsComputedMemberExpression(),
+  JsObjectBindingPatternShorthandProperty(),
+  JsObjectBindingPatternProperty(),
+  JsStringLiteralExpression(),
+  JsTemplateExpression()
+} as $read where {
+  $read <: r"(?s).*\b(?:usageEvent|storageGaugeSnapshot|usage_event|storage_gauge_snapshot)\b.*",
+  register_diagnostic(span=$read, message="The usage ledger is read only through apps/api/src/modules/billing/usage*.repository.ts — call UsageService, so every reader gets the same rollup (M12-32, M12-34).")
+}

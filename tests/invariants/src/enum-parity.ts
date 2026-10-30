@@ -36,6 +36,7 @@ import {
   tierSchema,
   uiLanguageSchema,
 } from '@heliogrid/contracts';
+import { usageRecordWorkflow } from '@heliogrid/contracts/workflows';
 import postgres from 'postgres';
 
 /**
@@ -88,6 +89,10 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   entitlement_override_kind: {
     options: entitlementOverrideKindSchema.options,
     contract: 'entitlementOverrideKindSchema',
+  },
+  usage_meter: {
+    options: usageRecordWorkflow.input.shape.meter.options,
+    contract: 'usageRecordWorkflow.input.meter',
   },
   push_platform: {
     options: pushPlatformSchema.options,

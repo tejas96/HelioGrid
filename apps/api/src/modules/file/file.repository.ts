@@ -83,6 +83,14 @@ export class FileRepository {
     });
   }
 
+  /** Whether a declaration with this key was already made — a retry, which no gate refuses (`F4-07`). */
+  async declaredWithKey(tenantId: string, key: CreationKey): Promise<boolean> {
+    const earlier = await this.db.withTenantTransaction(tenantId, (tx) =>
+      madeWithKey(tx, tenantId, key),
+    );
+    return earlier !== null;
+  }
+
   async find(tenantId: string, id: string): Promise<FileRow | null> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
       const [row] = await tx

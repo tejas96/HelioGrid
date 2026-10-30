@@ -27,6 +27,9 @@ import {
   DevelopmentBillingGateway,
   developmentSignature,
 } from '../../src/modules/billing/internal/billing-gateway.development';
+import { UsageAdminRepository } from '../../src/modules/billing/usage.admin.repository';
+import { UsageRepository } from '../../src/modules/billing/usage.repository';
+import { UsageService } from '../../src/modules/billing/usage.service';
 import type { openPools } from '../support/fixture';
 import { marketsOf } from '../support/market';
 
@@ -95,6 +98,15 @@ export function entitlementServiceOf(pools: Pools): EntitlementService {
     new EntitlementOverrideAdminRepository(pools.admin.db),
     marketsOf(pools),
     silentLogger(),
+  );
+}
+
+/** The usage ledger as `billing.module.ts` composes it, over the real repositories on both pools. */
+export function usageServiceOf(pools: Pools): UsageService {
+  return new UsageService(
+    new UsageRepository(pools.tenants),
+    new UsageAdminRepository(pools.admin.db),
+    entitlementServiceOf(pools),
   );
 }
 

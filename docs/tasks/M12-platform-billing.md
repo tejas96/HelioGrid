@@ -52,6 +52,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **Type:** screen · **Tier:** P0
 **Status:** designed
 **PRD rows:** M12-34 (P0), M12-35 (P0), M12-36 (P1)
+**Usage ledger (T-M12-010):** every figure reads `UsageService.billedRollupOf` (billed meters only, so no internal cost reaches the screen — M12-32) and storage reads `UsageService.latestStorageGauge`; voice is rolled up in seconds and shown in minutes, turned once on the total.
 **Billing gate (T-M12-009):** the 80% pre-warning is `capStepOf`'s `warning` step (`packages/domain`), the render half of `T-M12-009`'s D3 — shown before any gate fires (M12-30, M12-34).
 **DESIGN:** SCR-M12-04 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-04-usage-screen.md`; they are the specification. (The brief also carries M12-30's cap-ladder row, dispositioned under T-M12-009 — the ladder is gate machinery; this screen is where its 80% pre-warning must appear.)
@@ -181,7 +182,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 ### T-M12-010 · Usage metering ledger & rollups
 
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped
 **PRD rows:** M12-18, M12-32, M12-33, M12-37
 **Billing gate (T-M12-009):** the storage ceiling gate is this task's, beside the nightly gauge it reads: `file.declare` (row `new_file_upload`) refuses a new upload only above the `storage_gb` limit × 1.1 of the latest snapshot, by throwing `EntitlementBlockedException` (`apps/api/src/common/errors/entitlement-blocked.ts`) with `reason: 'cap'`, key `storage_gb` and `resetsAt: null` (M12-23, BM-20).
 **Requirements (verbatim):**
@@ -223,6 +224,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **PRD rows:** M12-44, M12-45, M12-09
+**Usage ledger (T-M12-010):** this task derives the tenant's cycle window (`[from, to)` on its billing anchor) that `UsageService.billedRollupOf` takes; the same window serves the usage screen (T-M12-004) and the gates. Overage lines are the billed rollup past the allowance at the book's published rate, voice seconds turned into minutes once on the total (M12-35).
 **Contract:** a yearly company's renewal is a fresh payment link each year (M12-11, `F1-40`): this task raises it with each cycle's invoice through T-M12-007's `BillingGateway.openCheckout` on the pack's invoice route, and its charge lands on the converted row through `ChargeService.recordCollected` carrying `paysThrough` = the current paid-period end + one cycle — never the payment moment + one cycle, which would take back the days a company paid early for (M12-09) — and with no conversion. A cycle's amount is its `plan_price` row's `collected_minor`, which `platformSaleTotal` worked out at the supplier's place; the invoice splits the same total by the recipient's place.
 **Requirements (verbatim):**
 - **M12-44** (P0) — **A tax-compliant invoice is generated per billing cycle, per the market's `pack.tax` declaration.** The canonical invoice is scheme-neutral: currency, subtotal, tax breakdown, total, the scheme's registration identifiers, scheme-tagged statutory extras, statuses issued / paid / failed / refunded, PDF attached. The IN instance rides `F1-28`/`F1-29`: our GSTIN and the tenant's (captured at conversion), place-of-supply logic, the SaaS service code at the scheme rate, for all tiers and overage add-ons.
