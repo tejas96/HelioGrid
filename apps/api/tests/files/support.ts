@@ -12,6 +12,7 @@ import { CreationReplies } from '../../src/common/creation-key';
 import { FileRepository } from '../../src/modules/file/file.repository';
 import { FileService } from '../../src/modules/file/file.service';
 import { MemoryObjectStore, sha256Of } from '../../src/modules/file/internal/object-store.memory';
+import { usageServiceOf } from '../billing/support';
 import type { openPools } from '../support/fixture';
 
 type Pools = ReturnType<typeof openPools>;
@@ -83,6 +84,7 @@ export function fileServiceOf(
     new FileRepository(pools.tenants),
     wrap(store),
     new CreationReplies(logger),
+    usageServiceOf(pools),
     logger,
   );
   return { service, store, logged };

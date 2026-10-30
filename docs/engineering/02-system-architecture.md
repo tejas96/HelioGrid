@@ -279,7 +279,7 @@ all IST, so the times below read as IST. Platform-internal sweeps stay fixed-clo
 | `notification-horizon-purge` | notifications | daily, set by its task | delete notification-centre rows older than its horizon (`F6-19`) |
 | `razorpay-reconcile` | webhooks | every 6 h | poll subscription state vs local; heal missed webhooks |
 | `trial-expiry-sweep` | webhooks | daily 00:30 | expire trials, flip entitlements to soft-block (read+export always work) |
-| `usage-rollup` | webhooks | hourly | roll `usage_events` into period aggregates for metering |
+| `storage-gauge` | usage | daily | weigh each company's stored files into `storage_gauge_snapshot` (usage rollups are derived queries over `usage_event`, never a job) |
 
 Infra-level cron (pgBackRest WAL archiving, nightly `pg_dump` to the `heliogrid-backups` bucket, `pg/` prefix) is NOT
 orchestrated — it runs beside Postgres and is specified in `09-observability-and-ops.md`.

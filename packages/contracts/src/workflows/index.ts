@@ -45,3 +45,16 @@ export type {
   WorkflowResult,
 } from './registry';
 export { defineWorkflow, TASK_QUEUES } from './registry';
+export type {
+  StorageGaugeActivities,
+  StorageGaugePage,
+  StorageGaugePageResult,
+  UsageRecordActivities,
+  UsageRecordStepInput,
+  UsageRecordStepResult,
+} from './usage-ledger';
+export {
+  STORAGE_GAUGE_SCHEDULE_ID,
+  storageGaugeWorkflow,
+  usageRecordWorkflow,
+} from './usage-ledger';

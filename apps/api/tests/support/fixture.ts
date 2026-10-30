@@ -2,11 +2,8 @@ import { randomUUID } from 'node:crypto';
 import {
   auditLogEntry,
   authIdentity,
-  billingCheckout,
   createDb,
   type Db,
-  entitlement,
-  entitlementOverride,
   file,
   invitation,
   invitationRole,
@@ -20,9 +17,6 @@ import {
   otpChallenge,
   pushDevice,
   session,
-  subscription,
-  subscriptionPayment,
-  subscriptionStateHistory,
   tenant,
   tenantMembership,
   tenantPool,
@@ -34,7 +28,11 @@ import { type Challenge, seedChallenges } from './challenges';
 import { type Device, seedDevices } from './devices';
 import { seedLinkedLogins } from './logins';
 import { adminUrl, databaseUrl } from './preconditions';
-import { TENANT_CATALOG_TABLES, TENANT_SETTING_TABLES } from './tenant-tables';
+import {
+  TENANT_BILLING_TABLES,
+  TENANT_CATALOG_TABLES,
+  TENANT_SETTING_TABLES,
+} from './tenant-tables';
 
 export { aChallenge, type Challenge } from './challenges';
 export { aDevice, type Device } from './devices';
@@ -251,16 +249,9 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
     return;
   }
   await db.delete(auditLogEntry).where(inArray(auditLogEntry.tenantId, companies));
-  // The payments, the checkouts, the overrides and the history first: each names its subscription.
-  await db.delete(entitlementOverride).where(inArray(entitlementOverride.tenantId, companies));
-  await db.delete(subscriptionPayment).where(inArray(subscriptionPayment.tenantId, companies));
-  await db.delete(billingCheckout).where(inArray(billingCheckout.tenantId, companies));
-  await db
-    .delete(subscriptionStateHistory)
-    .where(inArray(subscriptionStateHistory.tenantId, companies));
-  await db.delete(subscription).where(inArray(subscription.tenantId, companies));
-  // After the subscription: another suite's timers repair a live company's limits until it is gone.
-  await db.delete(entitlement).where(inArray(entitlement.tenantId, companies));
+  for (const billingTable of TENANT_BILLING_TABLES) {
+    await db.delete(billingTable).where(inArray(billingTable.tenantId, companies));
+  }
   for (const catalogTable of TENANT_CATALOG_TABLES) {
     await db.delete(catalogTable).where(inArray(catalogTable.tenantId, companies));
   }

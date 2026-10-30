@@ -194,3 +194,13 @@ export {
   trancheWriteOf,
 } from './tranche-template-page';
 export { isNonPaying, TRIAL_DAYS } from './trial';
+export type { BilledLedgerMeter, CostLine, LedgerMeter } from './usage';
+export {
+  BILLED_LEDGER_METERS,
+  COST_LINES,
+  isBilledMeter,
+  LEDGER_METERS,
+  METER_UNITS,
+  storageRefuses,
+  usagePeriodKey,
+} from './usage';

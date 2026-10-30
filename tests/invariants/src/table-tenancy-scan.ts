@@ -161,7 +161,7 @@ export async function runTableTenancyScan(adminUrl: string) {
   try {
     // Base tables and partitioned parents only. Partition CHILDREN are excluded via
     // pg_inherits: they inherit the parent's columns and policies, so scanning them would
-    // double-report audit_log_* and usage_events_*.
+    // double-report audit_log_*.
     const tables = (
       await sql<{ table_name: string }[]>`
         select c.relname as table_name
