@@ -1,6 +1,7 @@
 import {
   auditActorKindSchema,
   auditEventTypeSchema,
+  billingCycleSchema,
   billingStateSchema,
   catalogAvailabilitySchema,
   catalogImportConflictAnswerSchema,
@@ -11,6 +12,7 @@ import {
   catalogImportStateSchema,
   catalogImportUnreadableReasonSchema,
   catalogProvenanceSchema,
+  collectionKindSchema,
   componentKindSchema,
   fileContentTypeSchema,
   invitationStatusSchema,
@@ -28,6 +30,7 @@ import {
   subjectKindSchema,
   subscriptionCauseSchema,
   tenantSegmentSchema,
+  tierSchema,
   uiLanguageSchema,
 } from '@heliogrid/contracts';
 import postgres from 'postgres';
@@ -68,6 +71,9 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
     options: subscriptionCauseSchema.options,
     contract: 'subscriptionCauseSchema',
   },
+  tier: { options: tierSchema.options, contract: 'tierSchema' },
+  billing_cycle: { options: billingCycleSchema.options, contract: 'billingCycleSchema' },
+  collection_kind: { options: collectionKindSchema.options, contract: 'collectionKindSchema' },
   push_platform: {
     options: pushPlatformSchema.options,
     contract: 'pushPlatformSchema',

@@ -94,6 +94,16 @@ const apiEnvObject = z.object({
     .default('true')
     .transform((value) => value === 'true'),
   /**
+   * The platform's billing gateway (`M12-03`): the key pair the api calls it with and the secret
+   * its signed messages carry. Named for the capability, never the vendor, so a second market's
+   * gateway is these values and an adapter. All three or none: absent binds the development
+   * adapter, so a machine and CI with no gateway account still run the whole path; production
+   * refuses to boot without them (the billing module owns that refusal).
+   */
+  BILLING_GATEWAY_KEY_ID: z.string().min(1).optional(),
+  BILLING_GATEWAY_KEY_SECRET: z.string().min(1).optional(),
+  BILLING_GATEWAY_WEBHOOK_SECRET: z.string().min(1).optional(),
+  /**
    * The development numbers whose sign-in code is the one fixed code, so a local sign-in and a QA
    * run never read a log or wait out a cap (`M01-04`'s caps and `M01-05`'s single use still hold
    * for every other number). Both or neither, and refused outright in production: the boot stops,
@@ -138,6 +148,19 @@ export const apiEnvSchema = apiEnvObject.superRefine((env, ctx) => {
       path: ['OBJECT_STORE_PROVIDER'],
       message:
         'The OBJECT_STORE_ provider, endpoint, region, bucket and both keys are set together, or not at all.',
+    });
+  }
+  const gateway = [
+    env.BILLING_GATEWAY_KEY_ID,
+    env.BILLING_GATEWAY_KEY_SECRET,
+    env.BILLING_GATEWAY_WEBHOOK_SECRET,
+  ].filter((v) => v !== undefined).length;
+  if (gateway > 0 && gateway < 3) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['BILLING_GATEWAY_KEY_ID'],
+      message:
+        'The BILLING_GATEWAY_ key id, key secret and webhook secret are set together, or not at all.',
     });
   }
   if (env.INVITE_LINK_SECRET === env.AUTH_TOKEN_SECRET) {

@@ -8,10 +8,8 @@ import {
   PAST_DUE_GRACE_DAYS,
 } from '@heliogrid/domain';
 import { asc, eq, sql } from 'drizzle-orm';
-import { PinoLogger } from 'nestjs-pino';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
-import { ChargeAdminRepository } from '../../src/modules/billing/charge.admin.repository';
-import { ChargeRefused, ChargeService } from '../../src/modules/billing/charge.service';
+import { ChargeRefused, type ChargeService } from '../../src/modules/billing/charge.service';
 import {
   aCompany,
   type Company,
@@ -21,6 +19,7 @@ import {
   unseed,
 } from '../support/fixture';
 import { holdLock } from '../support/held-lock';
+import { chargeServiceOf } from './support';
 
 /**
  * Charge truth, against a migrated database (`M12-09`): a successful charge records its payment
@@ -53,10 +52,7 @@ describe.skipIf(skip)('charge truth (M12-09)', () => {
 
   beforeAll(() => {
     pools = openPools();
-    charges = new ChargeService(
-      new ChargeAdminRepository(pools.admin.db),
-      new PinoLogger({ pinoHttp: { level: 'silent' } }),
-    );
+    charges = chargeServiceOf(pools.admin.db);
   });
 
   afterEach(async () => {

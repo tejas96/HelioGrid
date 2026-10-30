@@ -1,5 +1,5 @@
 import type { Capability } from '@heliogrid/domain';
-import { SetMetadata } from '@nestjs/common';
+import { type HttpStatus, SetMetadata } from '@nestjs/common';
 import type { AppRouter } from '@ts-rest/core';
 import type { Request } from 'express';
 
@@ -22,6 +22,20 @@ export const ROUTE_ACCESS = Symbol('heliogrid.RouteAccess');
 
 type RouteName<R extends AppRouter> = Extract<keyof R, string>;
 
+/**
+ * A route the guard may refuse answers 401, and a status its contract does not declare leaves as
+ * an opaque 500 (`common/filters/declared-statuses.ts`). So only a route whose contract declares
+ * 401 may take an access the guard checks; any other is `public`. A widened `responses` names no
+ * status for sure, so it counts as one with no 401.
+ */
+type AccessAllowed<Route> = Route extends { readonly responses: infer Answers }
+  ? number extends keyof Answers
+    ? 'public'
+    : HttpStatus.UNAUTHORIZED extends keyof Answers
+      ? RouteAccess
+      : 'public'
+  : never;
+
 /** `METHOD /path` as express reports the matched route back; the key the guard looks up. */
 export function routeKey(method: string, path: string): string {
   return `${method.toUpperCase()} ${path}`;
@@ -34,7 +48,7 @@ export function routeKey(method: string, path: string): string {
  */
 export function RouteAccessMap<R extends AppRouter>(
   router: R,
-  access: Readonly<Record<RouteName<R>, RouteAccess>>,
+  access: { readonly [Name in RouteName<R>]: AccessAllowed<R[Name]> },
 ): MethodDecorator {
   const byKey = new Map<string, RouteAccess>();
   for (const name of Object.keys(access) as RouteName<R>[]) {

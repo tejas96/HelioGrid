@@ -1,21 +1,26 @@
 import {
+  billingCheckout,
   type Db,
   type DbTransaction,
+  planPrice,
   subscription,
   subscriptionPayment,
   subscriptionStateHistory,
   tenant,
 } from '@heliogrid/db';
 import {
+  type BillingCycle,
   type BillingState,
   type ChargeFailed,
   type ChargeStanding,
   type ChargeSucceeded,
+  type CollectionKind,
   LIVE_BILLING_STATES,
   type SuccessEffect,
+  type Tier,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq, inArray, ne } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNull, ne } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
 
 /** A subscription as a charge reads it, locked for the rest of its transaction. */
@@ -24,6 +29,34 @@ interface LockedSubscription extends ChargeStanding {
   readonly tenantId: string;
   readonly currencyCode: string;
 }
+
+/** The plan a trial chose at checkout, which the charge that pays for it makes the row's own. */
+export interface Conversion {
+  readonly checkoutId: string;
+  readonly planPriceId: string;
+  readonly tier: Tier;
+  readonly cycle: BillingCycle;
+  readonly gatewayRef: string;
+  readonly collection: CollectionKind;
+  /** A new pick asked the gateway to cancel this page before its charge landed. */
+  readonly cancelRequested: boolean;
+}
+
+/**
+ * Which subscription a gateway subscription or payment link collects for. `stray`: a checkout page
+ * that can convert nothing — a new pick closed it, or its row already converted on another page —
+ * so money on it is no subscription's to take.
+ */
+export type CollectedOn =
+  | {
+      readonly kind: 'collecting';
+      readonly subscriptionId: string;
+      /** The cycle it is paid on, for a charge the gateway names no period end for. */
+      readonly cycle: BillingCycle | null;
+      /** Set while the charge is the one that converts a trial: its checkout is still open. */
+      readonly conversion: Conversion | null;
+    }
+  | { readonly kind: 'stray'; readonly subscriptionId: string };
 
 /** What one charge came to. */
 export type SuccessRecorded =
@@ -44,10 +77,57 @@ export class ChargeAdminRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(@Inject(ADMIN_DB) private readonly db: Db) {}
 
+  /**
+   * The subscription a gateway ref collects for: the row already converted on it, else the open
+   * checkout that opened it on a row not yet converted. `null` when nothing knows the ref.
+   */
+  async collectedOn(gatewayRef: string): Promise<CollectedOn | null> {
+    const [converted] = await this.db
+      .select({ id: subscription.id, cycle: subscription.cycle })
+      .from(subscription)
+      .where(eq(subscription.gatewayRef, gatewayRef))
+      .limit(1);
+    if (converted !== undefined) {
+      return {
+        kind: 'collecting',
+        subscriptionId: converted.id,
+        cycle: converted.cycle,
+        conversion: null,
+      };
+    }
+    const [opened] = await this.db
+      .select({
+        checkoutId: billingCheckout.id,
+        subscriptionId: billingCheckout.subscriptionId,
+        planPriceId: billingCheckout.planPriceId,
+        tier: planPrice.tier,
+        cycle: planPrice.cycle,
+        collection: billingCheckout.collection,
+        cancelRequestedAt: billingCheckout.cancelRequestedAt,
+        closedAt: billingCheckout.closedAt,
+        convertedOn: subscription.gatewayRef,
+      })
+      .from(billingCheckout)
+      .innerJoin(planPrice, eq(planPrice.id, billingCheckout.planPriceId))
+      .innerJoin(subscription, eq(subscription.id, billingCheckout.subscriptionId))
+      .where(eq(billingCheckout.gatewayRef, gatewayRef))
+      .limit(1);
+    if (opened === undefined) return null;
+    const { subscriptionId, closedAt, convertedOn, cancelRequestedAt, ...chosen } = opened;
+    if (closedAt !== null || convertedOn !== null) return { kind: 'stray', subscriptionId };
+    return {
+      kind: 'collecting',
+      subscriptionId,
+      cycle: chosen.cycle,
+      conversion: { ...chosen, gatewayRef, cancelRequested: cancelRequestedAt !== null },
+    };
+  }
+
   async recordSuccess(
     charge: ChargeSucceeded,
     recordedAt: number,
     decide: (standing: ChargeStanding) => SuccessEffect,
+    conversion: Conversion | null = null,
   ): Promise<SuccessRecorded> {
     return this.db.transaction(async (tx) => {
       const held = await lockSubscription(tx, charge.subscriptionId);
@@ -70,20 +150,11 @@ export class ChargeAdminRepository {
         .onConflictDoNothing({ target: subscriptionPayment.gatewayChargeRef })
         .returning({ id: subscriptionPayment.id });
       if (!paid) return { kind: 'duplicate' };
+      // The page was paid, whatever the charge does to the row: it can take no second payment.
+      if (conversion !== null) await closeCheckout(tx, conversion.checkoutId, recordedAt);
       const effect = decide(held);
       if (effect.outcome === 'dead') return { kind: 'dead' };
-      await tx
-        .update(subscription)
-        .set({
-          paidPeriodEnd: new Date(effect.paidPeriodEnd),
-          ...(effect.moveTo === null
-            ? {}
-            : { state: effect.moveTo, stateEnteredAt: new Date(charge.occurredAt) }),
-        })
-        .where(eq(subscription.id, held.id));
-      if (effect.moveTo !== null) {
-        await recordState(tx, held, effect.moveTo, 'paid', charge.occurredAt);
-      }
+      await applySuccess(tx, held, effect, charge.occurredAt, conversion);
       return { kind: 'recorded' };
     });
   }
@@ -106,6 +177,41 @@ export class ChargeAdminRepository {
       return true;
     });
   }
+}
+
+/** A live charge's effect: the window, the state move and, on conversion, the plan. */
+async function applySuccess(
+  tx: DbTransaction,
+  held: LockedSubscription,
+  effect: Extract<SuccessEffect, { outcome: 'live' }>,
+  occurredAt: number,
+  conversion: Conversion | null,
+): Promise<void> {
+  await tx
+    .update(subscription)
+    .set({
+      paidPeriodEnd: new Date(effect.paidPeriodEnd),
+      ...(effect.moveTo === null
+        ? {}
+        : { state: effect.moveTo, stateEnteredAt: new Date(occurredAt) }),
+      ...(conversion === null
+        ? {}
+        : {
+            tier: conversion.tier,
+            cycle: conversion.cycle,
+            planPriceId: conversion.planPriceId,
+            gatewayRef: conversion.gatewayRef,
+          }),
+    })
+    .where(eq(subscription.id, held.id));
+  if (effect.moveTo !== null) await recordState(tx, held, effect.moveTo, 'paid', occurredAt);
+}
+
+async function closeCheckout(tx: DbTransaction, checkoutId: string, at: number): Promise<void> {
+  await tx
+    .update(billingCheckout)
+    .set({ closedAt: new Date(at) })
+    .where(and(eq(billingCheckout.id, checkoutId), isNull(billingCheckout.closedAt)));
 }
 
 async function lockSubscription(

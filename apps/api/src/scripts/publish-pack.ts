@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { IN_PACK } from '@heliogrid/domain';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
+import { PlanPriceService } from '../modules/billing/billing.public';
 import {
   CatalogPlatformService,
   IN_PLATFORM_ITEMS,
@@ -15,7 +16,8 @@ import { redactCredentials } from './redact-credentials';
  * next revision (`F1-11`): revision 1 on an empty market, the next number when the literal
  * differs from the stored row, nothing when it does not. A rate change is this command, not a
  * deploy. Then the India platform catalog (`T-M01-027`), idempotently: an item is written where
- * new or changed and left alone otherwise. It boots the application context the API itself runs,
+ * new or changed and left alone otherwise. Then the plan prices and their gateway plan objects
+ * (`M12-12`): one per sold tier and cycle whose collected amount changed, none on a repeat run. It boots the application context the API itself runs,
  * so both writes take the admin path through their own modules and no second wiring exists.
  */
 function describe({ current, written }: PublishOutcome): string {
@@ -57,6 +59,10 @@ async function main(): Promise<void> {
     console.log(describe(outcome));
     const book = await app.get(CatalogPlatformService).publish(IN_PLATFORM_ITEMS, now.getTime());
     console.log(describeCatalog(book));
+    // The stored pack, so each plan price pins the revision it was first sold in (`M12-12`).
+    const stored = await app.get(MarketPackService).currentPackOf(IN_PACK.market);
+    const prices = await app.get(PlanPriceService).sync(stored, now.getTime());
+    console.log(`IN plan prices: ${prices.written} written`);
   } finally {
     await app.close();
   }

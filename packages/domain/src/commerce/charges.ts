@@ -78,6 +78,13 @@ export function successEffect(
   ) {
     return { outcome: 'live', paidPeriodEnd, moveTo: nextState('halted', 'paid') };
   }
+  if (
+    standing.state === 'expired' &&
+    !standing.replaced &&
+    charge.occurredAt < standing.stateEnteredAt
+  ) {
+    return { outcome: 'live', paidPeriodEnd, moveTo: nextState('expired', 'paid') };
+  }
   return { outcome: 'dead' };
 }
 
@@ -98,6 +105,11 @@ export function failureMoves(
 }
 
 /**
+ * An expired trial is taken back to `active` only by a charge made while it was still a trial: the
+ * hosted page was paid on day 14 and its message landed after the expiry timer ran (`M12-05`,
+ * `M12-54`). The timer records the expiry at the trial's end, so "before" is before that moment.
+ * A company that has since reactivated holds the one live row, so the old row stays expired.
+ *
  * The timer halts a row at its failure + the grace (`M12-06`). A charge that happened inside that
  * grace — its message landing after the halt — proves the company was never that long unpaid, and
  * our plumbing never blocks a company (`M12-05`). A company that has since reactivated holds a

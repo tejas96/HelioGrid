@@ -21,7 +21,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **Status:** designed
 **PRD rows:** M12-08 (P0), M12-46 (P0), M12-47 (P0), M12-50 (P0), M12-55 (P0)
 **DESIGN:** SCR-M12-02 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
-**Contract:** declares the company's billing standing read — its state and phase from `T-M12-005`'s `subscription` row and `billingPhaseAt`, and any state history in `id` order, never `entered_at` (a halt undone by a charge inside its grace records an earlier `entered_at`, T-M12-006); reactivation first locks the company's latest subscription row `FOR UPDATE` — the lock T-M12-006's charge path takes — and starts the new row only while that row is still not live, so a late charge and a reactivation run one after the other — as the first screen that shows it; `T-SHELL-006` reads the same route.
+**Contract:** declares the company's billing standing read — its state and phase from `T-M12-005`'s `subscription` row and `billingPhaseAt`, and any state history in `id` order, never `entered_at` (a halt undone by a charge inside its grace records an earlier `entered_at`, T-M12-006); reactivation first locks the company's latest subscription row `FOR UPDATE` — the lock T-M12-006's charge path takes — and starts the new row only while that row is still not live, so a late charge and a reactivation run one after the other — as the first screen that shows it; `T-SHELL-006` reads the same route. Reactivation (M12-08) reuses T-M12-007's hosted checkout — `POST /billing/checkout`, `CheckoutService` and the `BillingGateway` port — which opens only from `trialing`: this task extends it to a dead row, whose paying charge starts the NEW subscription row with the checkout's plan, never a resumed one.
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-02-billing-home.md`; they are the specification. (M12-55 is a shared row: its plan-selection half lands on SCR-M12-03 / T-M12-003; the row is dispositioned here.)
 **DONE WHEN:**
 - Given a tenant halted for a year, when the owner pays, then a new gateway subscription exists, entitlements are live immediately, and every record is as they left it (M12-08).
@@ -37,6 +37,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **Status:** designed
 **PRD rows:** M12-48 (P0), M12-49 (P0), M12-53 (P0), M12-54 (P0)
 **DESIGN:** SCR-M12-03 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
+**Contract:** conversion's hosted checkout is T-M12-007's `POST /billing/checkout` (tier + cycle → the gateway's page, `CHECKOUT_NOT_POSSIBLE` · `TIER_NOT_SOLD` · `GATEWAY_UNAVAILABLE`); the screen renders those codes' copy, which lands with it. An upgrade or cycle switch (M12-48, M12-12) reuses the same `plan_price` rows and `BillingGateway` port for its prorated delta and its new subscription at the boundary.
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-03-plan-selection.md`; they are the specification. (The brief also carries the shared row M12-55 — its plan-selection half — dispositioned under T-M12-002. The trial countdown chip of M12-53 is SCR-SHELL-06's surface, `docs/tasks/SHELL.md`.)
 **DONE WHEN:**
 - Given an upgrade, when it confirms, then entitlements are live immediately and a one-time prorated invoice exists (M12-48).
@@ -103,7 +104,7 @@ The machine's user-visible face is the state banner (SCR-SHELL-06, `docs/tasks/S
 ### T-M12-007 · Provider-neutral billing ports: hosted checkout, mandate rails & plan objects
 
 **Type:** integration · **Tier:** P0
-**Status:** planned
+**Status:** shipped
 **PRD rows:** M12-03, M12-10, M12-11, M12-12, M12-13, M12-09, M12-43
 **Requirements (verbatim):**
 - **M12-03** (P0) — **Billing is provider-neutral; the launch market's gateway is a reference implementation.** Subscription billing, mandates, hosted checkout and webhooks are capabilities behind provider-neutral billing ports; the billing schema is per-currency and provider-neutral, one currency per tenant (`F1-07`/`F1-27` consumed). The v1 reference implementation is Razorpay (`R4`, the IN rail) — named here once, as reference implementation only; another market adds adapters, never product change.
@@ -220,6 +221,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **PRD rows:** M12-44, M12-45, M12-09
+**Contract:** a yearly company's renewal is a fresh payment link each year (M12-11, `F1-40`): this task raises it with each cycle's invoice through T-M12-007's `BillingGateway.openCheckout` on the pack's invoice route, and its charge lands on the converted row through `ChargeService.recordCollected` carrying `paysThrough` = the current paid-period end + one cycle — never the payment moment + one cycle, which would take back the days a company paid early for (M12-09) — and with no conversion. A cycle's amount is its `plan_price` row's `collected_minor`, which `platformSaleTotal` worked out at the supplier's place; the invoice splits the same total by the recipient's place.
 **Requirements (verbatim):**
 - **M12-44** (P0) — **A tax-compliant invoice is generated per billing cycle, per the market's `pack.tax` declaration.** The canonical invoice is scheme-neutral: currency, subtotal, tax breakdown, total, the scheme's registration identifiers, scheme-tagged statutory extras, statuses issued / paid / failed / refunded, PDF attached. The IN instance rides `F1-28`/`F1-29`: our GSTIN and the tenant's (captured at conversion), place-of-supply logic, the SaaS service code at the scheme rate, for all tiers and overage add-ons.
 - **M12-45** (P0) — **The platform is the supplier of record and the invoice says so.** Our registration, our remittance, our liability; the gateway is a gateway, never merchant-of-record. Invoice generation implements `BM-40`'s posture per market.

@@ -40,15 +40,13 @@ describe('nextState — the one machine (M12-04, M12-07, M12-08)', () => {
       'past_due -paid-> active',
       'past_due -grace_expired-> halted',
       'halted -paid-> active',
+      'expired -paid-> active',
     ]);
   });
 
-  it.each(['expired', 'cancelled'] as const)(
-    '%s is left only by reactivation, which makes a new subscription',
-    (state) => {
-      for (const cause of SUBSCRIPTION_CAUSES) expect(nextState(state, cause)).toBeNull();
-    },
-  );
+  it('cancelled is left only by reactivation, which makes a new subscription', () => {
+    for (const cause of SUBSCRIPTION_CAUSES) expect(nextState('cancelled', cause)).toBeNull();
+  });
 
   it('knows no pause', () => {
     expect(

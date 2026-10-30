@@ -1,9 +1,9 @@
 import 'reflect-metadata';
-import { httpStatusFor } from '@heliogrid/contracts';
+import { billingContract, httpStatusFor } from '@heliogrid/contracts';
 import type { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import type { NextFunction, Request, Response } from 'express';
-import { json, urlencoded } from 'express';
+import { json, raw, urlencoded } from 'express';
 import { Logger, PinoLogger } from 'nestjs-pino';
 import { AppModule } from './app.module';
 import { readMinimumClientVersion, refuseClientsBelow } from './common/client-version';
@@ -51,6 +51,10 @@ export async function createApp(): Promise<INestApplication> {
   // Before the body parsers: a too-old phone is answered before its body is judged (F4-36).
   const minimumClientVersion = readMinimumClientVersion(ENV);
   if (minimumClientVersion !== null) app.use(refuseClientsBelow(minimumClientVersion, edgeLogger));
+  // The gateway signs its message's exact bytes, so that one route keeps them raw; a parsed and
+  // re-serialised body would never verify (`forward-compat.md`, webhooks). Every other route
+  // keeps the parsed body, because the raw parser marks the body read and `json` then skips it.
+  app.use(billingContract.gatewayEvents.path, raw({ type: () => true, limit: BODY_LIMIT_BYTES }));
   app.use(json({ limit: BODY_LIMIT_BYTES }));
   app.use(urlencoded({ extended: true, limit: BODY_LIMIT_BYTES }));
   app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {

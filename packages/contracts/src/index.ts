@@ -1,6 +1,7 @@
 import { initContract } from '@ts-rest/core';
 import { auditContract } from './audit';
 import { authContract } from './auth';
+import { billingContract } from './billing';
 import { catalogContract } from './catalog';
 import { catalogImportContract } from './catalog-import';
 import { catalogReleasesContract } from './catalog-releases';
@@ -53,6 +54,7 @@ export * from './notification';
 // The setup corridor (`T-M01-026`): resume, and the one prompt-point per skipped fact.
 export * from './onboarding';
 // The platform message rail (the code and the invite), the session projection and its port.
+export * from './ports/billing-gateway';
 export * from './ports/identity-provider';
 export * from './ports/message-delivery';
 export * from './ports/object-store';
@@ -83,6 +85,7 @@ export const apiContract = c.router(
   {
     audit: auditContract,
     auth: authContract,
+    billing: billingContract,
     catalog: catalogContract,
     catalogImport: catalogImportContract,
     catalogReleases: catalogReleasesContract,
