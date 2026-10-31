@@ -9,6 +9,10 @@ import {
   billingWorkerRegistration,
 } from './modules/billing/billing.public';
 import { catalogWorkerRegistration } from './modules/catalog/catalog.public';
+import {
+  documentRenderWorkerRegistration,
+  invoiceDocumentWorkerRegistration,
+} from './modules/documents/documents.public';
 import { outboxWorkerRegistration } from './modules/outbox/outbox.public';
 import { platformWorkerRegistration } from './modules/platform/platform.public';
 import { teamWorkerRegistration } from './modules/team/team.public';
@@ -47,6 +51,8 @@ import { usageWorkerRegistration } from './modules/usage/usage.public';
         billingReconcileWorkerRegistration,
         billingNoticesWorkerRegistration,
         billingOverageWorkerRegistration,
+        invoiceDocumentWorkerRegistration,
+        documentRenderWorkerRegistration,
         usageWorkerRegistration,
       ],
     },

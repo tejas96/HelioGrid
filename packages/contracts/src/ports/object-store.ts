@@ -54,6 +54,21 @@ export interface ObjectStore {
   readFirstBytes(key: string, count: number): Promise<Uint8Array>;
   /** Every byte stored under the key. Throws on an outage, and when nothing is stored there. */
   read(key: string): Promise<Uint8Array>;
+  /**
+   * Stores bytes the platform made itself — a rendered document, never a client's upload. Sent
+   * with their SHA-256, so the store refuses bytes that changed on the way; a second put under
+   * the same key replaces the first. Throws on an outage or a refusal.
+   */
+  put(request: PutObjectRequest): Promise<void>;
+}
+
+export interface PutObjectRequest {
+  /** The object key, built from server ids only. */
+  readonly key: string;
+  readonly bytes: Uint8Array;
+  readonly contentType: FileContentType;
+  /** Base64 SHA-256 of `bytes`. */
+  readonly checksumSha256: string;
 }
 
 /** A `symbol` on purpose: a string DI token collides silently across modules. */

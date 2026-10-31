@@ -40,6 +40,7 @@ const forgetsChecksums = (store: ObjectStore): ObjectStore => ({
   },
   readFirstBytes: (key, count) => store.readFirstBytes(key, count),
   read: (key) => store.read(key),
+  put: (request) => store.put(request),
 });
 
 const skip = skipWithoutDatabase(

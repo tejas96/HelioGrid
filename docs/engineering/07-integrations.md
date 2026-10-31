@@ -395,25 +395,31 @@ work regardless of billing state** (product law).
 ## 10. DocumentRenderPort — Playwright now, Typst swap
 
 ```ts
-interface DocumentRenderPort {
-  render(kind: 'proposal' | 'quote' | 'sld' | 'work_order',
-         payload: RenderPayload, locale: Locale): Promise<PortResult<{ tigrisKey: string; pages: number }>>;
+// packages/contracts/src/workflows/invoice-document.ts — a step on the `heliogrid-documents` queue
+interface DocumentRenderActivities {
+  renderPdf(input: { html: string }): Promise<{ pdfBase64: string }>;
 }
 ```
 
-**v1: `PlaywrightPdfAdapter`** in `apps/worker` — headless Chromium is the only renderer
-that shapes Devanagari correctly (HarfBuzz); react-pdf is disqualified on broken
-conjuncts/matras ([react-pdf #454](https://github.com/diegomura/react-pdf/issues/454)). Noto Sans Devanagari
-bundled in the worker image; pooled browser, page-per-render; concurrency 2 per machine;
-budget 300–500 MB RAM per render (worker sizing in `09-observability-and-ops.md`). Output
-goes straight to Tigris; the API hands out presigned GETs.
+A document is its page: the api writes the whole HTML page in the reader's language (the worker
+may not import `i18n`), the renderer prints it as it is, and the api step that asked stores the PDF
+in the files table and points its record at it. The first caller is the invoice PDF
+(`invoiceDocument`, T-M12-012d).
 
-**Later adapter:** `TypstAdapter` (rustybuzz shaping, far lower memory) if Chromium RAM cost
-bites — the port returns a stored object either way, so the swap is invisible.
+**v1: Playwright Chromium** in `apps/worker` (`modules/documents/`) — headless Chromium is the only
+renderer that shapes Devanagari correctly (HarfBuzz); react-pdf is disqualified on broken
+conjuncts/matras ([react-pdf #454](https://github.com/diegomura/react-pdf/issues/454)). Noto Sans,
+Noto Sans Devanagari and Noto Sans Mono in the worker image; one browser per process, a fresh
+context per render, no network; concurrency 2 per machine; budget 300–500 MB RAM per render
+(worker sizing in `09-observability-and-ops.md`).
 
-**Failure/degradation:** render timeout 60 s → retry once on a fresh browser → job fails
-with user notification. The customer link always renders the proposal as web — PDF is an
-artifact, never the only path to the number.
+**Later adapter:** Typst (rustybuzz shaping, far lower memory) if Chromium RAM cost bites — the
+step takes a page and returns a PDF either way, so the swap is invisible to its callers.
+
+**Failure/degradation:** a render that fails is retried by Temporal with backoff up to ten minutes
+until it lands; the record it belongs to is already committed, so a failure only delays the PDF.
+The customer link always renders the proposal as web — PDF is an artifact, never the only path to
+the number.
 
 **Metering:** `document_rendered`, non-billable; drives worker capacity planning.
 

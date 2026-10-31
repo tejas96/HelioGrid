@@ -34,6 +34,15 @@ export type {
   InviteMessageStepResult,
 } from './invite-message';
 export { inviteMessageWorkflow } from './invite-message';
+export type {
+  DocumentRenderActivities,
+  InvoiceDocumentActivities,
+  InvoiceDocumentPage,
+  InvoiceDocumentStepInput,
+  InvoiceDocumentStepResult,
+  RenderedDocument,
+} from './invoice-document';
+export { DOCUMENT_RENDER_QUEUE, invoiceDocumentWorkflow } from './invoice-document';
 export type { OutboxActivities } from './outbox';
 export {
   OUTBOX_SWEEP_SCHEDULE_ID,

@@ -199,6 +199,12 @@ jobs:
           bin="$(find "$tool" -type f -name oasdiff | head -1)"
           [ -n "$bin" ] || { echo "::error::no oasdiff binary in the release archive"; exit 1; }
           dirname "$bin" >> "$GITHUB_PATH"
+      - name: Install Chromium and the document faces (the worker's renderer test)
+        # The worker's unit test prints Hindi through the renderer and looks for the Devanagari
+        # face in the PDF, as the worker image carries it (apps/worker/Dockerfile).
+        run: |
+          pnpm --filter @heliogrid/worker exec playwright install --with-deps chromium
+          sudo apt-get install -y --no-install-recommends fonts-noto-core fonts-noto-mono
       - name: Quality gate
         # pnpm check:all = build → lint (Biome and its plugins, dependency-cruiser, sherif, turbo
         # boundaries) → typecheck → check:dupes → check:openapi (spec freshness, then no breaking

@@ -10,6 +10,7 @@ import { AuditModule } from './modules/audit/audit.public';
 import { AuthModule } from './modules/auth/auth.public';
 import { BillingModule, BillingStateGuard } from './modules/billing/billing.public';
 import { BillingNoticeModule } from './modules/billing/billing-notice.public';
+import { InvoiceDocumentModule } from './modules/billing/invoice-document.public';
 import { CatalogModule } from './modules/catalog/catalog.public';
 import { FileModule } from './modules/file/file.public';
 import { HealthModule } from './modules/health/health.public';
@@ -42,6 +43,7 @@ import { UserModule } from './modules/user/user.public';
     AuditModule,
     BillingModule,
     BillingNoticeModule,
+    InvoiceDocumentModule,
     TenantModule,
     UserModule,
     InvitationModule,

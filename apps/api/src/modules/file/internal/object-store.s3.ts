@@ -10,6 +10,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import type {
   DownloadLinkRequest,
   ObjectStore,
+  PutObjectRequest,
   SignedUpload,
   StoredObject,
   UploadLinkRequest,
@@ -128,6 +129,20 @@ export class S3ObjectStore implements ObjectStore {
     const stored = await this.client.send(new GetObjectCommand({ Bucket: this.bucket, Key: key }));
     if (stored.Body === undefined) throw new Error(`the store answered no body for ${key}`);
     return stored.Body.transformToByteArray();
+  }
+
+  async put(request: PutObjectRequest): Promise<void> {
+    await this.client.send(
+      new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: request.key,
+        Body: request.bytes,
+        ContentType: request.contentType,
+        ContentLength: request.bytes.length,
+        ChecksumAlgorithm: 'SHA256',
+        ChecksumSHA256: request.checksumSha256,
+      }),
+    );
   }
 }
 

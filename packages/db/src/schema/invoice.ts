@@ -16,6 +16,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { uuidv7 } from '../uuid';
 import { planPrice, subscription, subscriptionPayment } from './billing';
+import { file } from './file';
 import { tenant } from './tenant';
 import { BILLED_METERS, usageMeter } from './usage';
 
@@ -33,7 +34,7 @@ const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'd
  *
  * Most issue `paid`, naming the payment that landed. A renewal's issues first, with the payment
  * link that collects it (`M12-11`), and names its payment once the link is paid; only `status`
- * and `payment_id` ever change.
+ * and `payment_id` ever change, and `pdf_file_id` once, from null.
  *
  * Tenant-scoped, all four; `app_user` holds SELECT alone — the charge crosses tenants, so the
  * admin path writes it.
@@ -74,6 +75,8 @@ export const subscriptionInvoice = pgTable(
     hostedUrl: text('hosted_url'),
     /** When a renewal still unpaid is a failed charge (`M12-05`). */
     dueAt: instant('due_at'),
+    /** Its PDF, made once after it issues and never again; null until then (`M12-44`). */
+    pdfFileId: uuid('pdf_file_id').references(() => file.id),
   },
   (table) => [
     uniqueIndex('subscription_invoice_payment_key').on(table.tenantId, table.paymentId),

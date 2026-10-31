@@ -22,6 +22,12 @@ export interface TemporalWorkerRegistration {
    * narrower shape here only produced an unsound `as` at the one call site.
    */
   readonly activities?: object;
+  /**
+   * How many of this queue's steps one process runs at once; absent, the SDK's default. Set it
+   * where a step is heavy — a render holds a Chromium page of hundreds of MB — so a burst queues
+   * at Temporal instead of running the process out of memory.
+   */
+  readonly maxConcurrentActivities?: number;
 }
 
 export const TEMPORAL_WORKER_REGISTRATIONS = Symbol.for('heliogrid.TemporalWorkerRegistrations');

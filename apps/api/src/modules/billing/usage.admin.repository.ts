@@ -56,8 +56,9 @@ export class UsageAdminRepository {
   }
 
   /**
-   * Weighs the named companies in one statement: each one's confirmed files summed on
-   * `file_tenant_subject_idx`, 0 for a company with none. A second run on the same `snapshotDate`
+   * Weighs the named companies in one statement: each one's confirmed uploads summed on
+   * `file_tenant_subject_idx`, 0 for a company with none. A document the platform made — an
+   * invoice's PDF, no uploader — weighs nothing: a company is never billed for our own invoices. A second run on the same `snapshotDate`
    * writes nothing.
    */
   async weigh(ids: readonly string[], snapshotDate: string, takenAt: Date): Promise<void> {
@@ -70,7 +71,10 @@ export class UsageAdminRepository {
         takenAt: sql<Date>`${takenAt.toISOString()}::timestamptz`.as('taken_at'),
       })
       .from(tenant)
-      .leftJoin(file, and(eq(file.tenantId, tenant.id), isNotNull(file.uploadedAt)))
+      .leftJoin(
+        file,
+        and(eq(file.tenantId, tenant.id), isNotNull(file.uploadedAt), isNotNull(file.uploadedBy)),
+      )
       .where(inArray(tenant.id, [...ids]))
       .groupBy(tenant.id);
     await this.db.insert(storageGaugeSnapshot).select(weights).onConflictDoNothing();

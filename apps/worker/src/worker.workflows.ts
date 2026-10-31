@@ -5,6 +5,7 @@
  */
 export * from './modules/billing/billing.workflows';
 export * from './modules/catalog/catalog.workflows';
+export * from './modules/documents/documents.workflows';
 export * from './modules/outbox/outbox.workflows';
 export * from './modules/platform/platform.workflows';
 export * from './modules/team/team.workflows';

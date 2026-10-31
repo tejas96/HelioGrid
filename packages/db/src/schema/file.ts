@@ -63,9 +63,8 @@ export const file = pgTable(
     byteSize: bigint('byte_size', { mode: 'number' }).notNull(),
     /** Base64 SHA-256 the store was told to hold the upload to. */
     checksumSha256: text('checksum_sha256').notNull(),
-    uploadedBy: uuid('uploaded_by')
-      .notNull()
-      .references(() => userAccount.id),
+    /** Null for a file the platform made itself — an invoice's PDF — which no user flow serves. */
+    uploadedBy: uuid('uploaded_by').references(() => userAccount.id),
     declaredAt: instant('declared_at').notNull(),
     /** Null until the stored bytes were confirmed; set once, from null, and never back. */
     uploadedAt: instant('uploaded_at'),
