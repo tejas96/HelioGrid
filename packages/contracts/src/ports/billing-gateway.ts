@@ -25,7 +25,10 @@ export interface GatewayPlanRequest {
   readonly amount: MinorUnits;
 }
 
-/** A hosted checkout to open for a company converting (`M12-54`). */
+/**
+ * A hosted page to open: a company converting (`M12-54`), or a renewal on a payment link
+ * (`M12-11`).
+ */
 export interface GatewayCheckoutRequest {
   /** How the pack's ladder collects this tier on this cycle (`M12-11`). */
   readonly route: CollectionRoute;
@@ -33,9 +36,9 @@ export interface GatewayCheckoutRequest {
   readonly gatewayPlanRef: string;
   readonly amount: MinorUnits;
   readonly currencyCode: string;
-  /** Our checkout's id, carried by the gateway on every message about it. */
-  readonly checkoutId: string;
-  /** The hosted page stops taking money at this moment: the trial's end. */
+  /** Our checkout's or renewal invoice's id, carried by the gateway on every message about it. */
+  readonly reference: string;
+  /** The hosted page stops taking money at this moment: the trial's end, or a renewal's halt. */
   readonly expiresAt: number;
 }
 

@@ -63,9 +63,9 @@ const PICK_A_PLAN: Words = {
 export const IN_BILLING_NOTICE_TEXTS: BillingNoticeTexts = {
   payment_failed: told(
     {
-      en: "HelioGrid: the payment for {company}'s plan failed. We will try again.",
-      hi: 'HelioGrid: {company} के प्लान का भुगतान विफल हो गया। हम फिर से कोशिश करेंगे।',
-      mr: 'HelioGrid: {company} च्या प्लॅनचे पेमेंट अयशस्वी झाले. आम्ही पुन्हा प्रयत्न करू.',
+      en: "HelioGrid: the payment for {company}'s plan failed.",
+      hi: 'HelioGrid: {company} के प्लान का भुगतान विफल हो गया।',
+      mr: 'HelioGrid: {company} च्या प्लॅनचे पेमेंट अयशस्वी झाले.',
     },
     PAY_OR_UPDATE,
     FORFEITS,

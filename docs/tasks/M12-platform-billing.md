@@ -30,6 +30,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 - Given a tenant in each of the six states, when the Owner opens billing, then every M12-55 surface renders and pay/upgrade/reactivate is actionable (M12-55).
 - (M12-50 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text in the brief is the binding criterion — cancellation is owner-initiated, runs to the paid period end, and the reason is captured as product signal, never as a gate.)
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+**From T-M12-012c:** a company a payment link collects renews on a fresh link raised with its `issued` invoice (`subscription_invoice.hosted_url`, its `due_at`); the screen shows that open invoice with its pay action, the link itself, until it is `paid` — nothing else shows the owner the link.
 **From T-M12-011:** the screen's `Payment reminders` list reads `dunning_event` (each notice, when it fired, and the payment that cleared it), and both apps route a notification whose subject kind is `dunning_event` — a dunning or trial notice — to this screen.
 
 ### T-M12-003 · Plan Selection & Conversion
@@ -244,7 +245,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 |---|---|---|---|
 | a | the invoice record: the tables, its number, the issue inside the charge transaction, the plan line, the scheme's breakdown by the company's place, both registrations; the platform's registration in `pack.tax`, read by `platformSaleTotal` | D1, D2 (its overage half is part b's) | shipped |
 | b | overage add-ons: the ledgered overage past the allowance at the book's published rates, added at the gateway before the next charge so it collects them, and carried as add-on lines on that charge's invoice | D2 (overage half), D3 | shipped |
-| c | yearly renewal: each year's fresh payment link raised with its `issued` invoice, its charge landing with `paysThrough` = the paid-period end + one cycle, the invoice turning `paid` (the task's *Contract* line); the closed year's overage, reckoned by part b's `overageAddOns`, rides that link as add-on lines, with every add-on still `pending` on the subscription (part b reckons and adds on mandates only) | the *Contract* line | open |
+| c | yearly renewal: each year's fresh payment link raised with its `issued` invoice, its charge landing with `paysThrough` = the paid-period end + one cycle, the invoice turning `paid` (the task's *Contract* line); the closed year's overage, reckoned by part b's `overageAddOns`, rides that link as add-on lines, with every add-on still `pending` on the subscription (part b reckons and adds on mandates only) | the *Contract* line | shipped |
 | d | the invoice PDF (M12-44 "PDF attached"), with the supplier's legal name and address | M12-44 (PDF) | open |
 
 ### T-M12-013 · Grandfathered price-row selection

@@ -28,6 +28,8 @@ import { PlanPriceAdminRepository } from './plan-price.admin.repository';
 import { PlanPriceService } from './plan-price.service';
 import { ReconcileAdminRepository } from './reconcile.admin.repository';
 import { ReconcileService } from './reconcile.service';
+import { RenewalAdminRepository } from './renewal.admin.repository';
+import { RenewalService } from './renewal.service';
 import { UsageActivityRegistration } from './usage.activities';
 import { UsageAdminRepository } from './usage.admin.repository';
 import { UsageRepository } from './usage.repository';
@@ -67,7 +69,8 @@ const billingGatewayProvider: Provider = {
 /**
  * Platform billing (`M12`): the subscription lifecycle and its timers, charge truth, entitlements,
  * the billing-state gate on every mutation, the hosted checkout a trial converts through, the gateway's signed messages, the 6-hour
- * reconcile, and the usage ledger with its nightly storage gauge.
+ * reconcile, the yearly renewal on a fresh payment link, and the usage ledger with its nightly
+ * storage gauge.
  */
 @Module({
   imports: [MarketModule],
@@ -78,6 +81,8 @@ const billingGatewayProvider: Provider = {
     BillingService,
     BillingAdminRepository,
     BillingActivityRegistration,
+    RenewalService,
+    RenewalAdminRepository,
     BillingStateGuard,
     BillingStateRepository,
     ChargeService,

@@ -26,6 +26,11 @@ import { PinoLogger } from 'nestjs-pino';
  *   at the gateway and sets the row by hand.
  * - `billing_overage_refused` — the gateway refused an add-on again after an earlier refusal or
  *   wait: the mandate may be ended at the gateway. It stays `pending` and is tried again.
+ * - `billing_renewal_link_open` — a renewal link opened whose invoice could not be issued, and the
+ *   gateway did not confirm it closed: money paid on it lands on no invoice. The team closes it.
+ * - `billing_renewal_not_raised` — a company a payment link collects reached its renewal's due
+ *   moment with no link raised, so it was made `past_due` without one. The team reads why the
+ *   link did not go out (the gateway refused it, or the pack moved the tier off the link rail).
  */
 const alertMessages = {
   billing_repair: 'the reconcile recorded a charge the gateway message never delivered',
@@ -41,6 +46,10 @@ const alertMessages = {
     'the gateway did not answer an overage add-on; check at the gateway whether it is on the next debit',
   billing_overage_refused:
     'the gateway refused an overage add-on again; check the mandate at the gateway',
+  billing_renewal_link_open:
+    'a renewal link opened with no invoice and may still take money; close it at the gateway',
+  billing_renewal_not_raised:
+    'a company reached its renewal due moment with no renewal link raised; it is now past due',
 } as const;
 
 export type BillingAlert = keyof typeof alertMessages;

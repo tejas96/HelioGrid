@@ -69,7 +69,10 @@ const { addDueOverage } = proxyActivities<BillingOverageActivities>({
   retry: { maximumAttempts: 3 },
 });
 
-/** The overage of every closed mandate period, reckoned and added to its next debit (`M12-35`). */
-export async function billingOverage(): Promise<{ reckoned: number; added: number }> {
+/**
+ * The overage of every closed period, reckoned and added to its mandate's next debit (`M12-35`),
+ * and each closed payment-link period's renewal link raised (`M12-11`).
+ */
+export async function billingOverage(): ReturnType<BillingOverageActivities['addDueOverage']> {
   return addDueOverage();
 }

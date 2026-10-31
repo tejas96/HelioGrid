@@ -2,13 +2,14 @@ import { dueTimedCause, MS_PER_DAY, nextState, PAST_DUE_GRACE_DAYS } from '@heli
 import { Inject, Injectable } from '@nestjs/common';
 import { BillingAdminRepository, type TimedSubscription } from './billing.admin.repository';
 import { EntitlementService } from './entitlement.service';
+import { RenewalService } from './renewal.service';
 
 /** At most this many rows of each kind per run, so one run stays inside its step's timeout. */
 const TIMER_BATCH = 100;
 
 /**
  * The billing timers (`M12-04`, `M12-06`, `M12-52`): every run moves each subscription the clock
- * has made due, starts the trial of a new company an older api signed up without one, and writes
+ * has made due — a renewal link unpaid at its due moment included (`M12-05`) — starts the trial of a new company an older api signed up without one, and writes
  * the limits of a live company that lacks them (`M12-16`). Which move is due, and to where, is
  * domain's; this only reads, asks and writes.
  */
@@ -18,6 +19,7 @@ export class BillingService {
   constructor(
     @Inject(BillingAdminRepository) private readonly billing: BillingAdminRepository,
     @Inject(EntitlementService) private readonly entitlements: EntitlementService,
+    @Inject(RenewalService) private readonly renewals: RenewalService,
   ) {}
 
   /** The result is the workflow's contract: a running worker reads exactly these two counts. */
@@ -30,6 +32,8 @@ export class BillingService {
     for (const row of due) {
       if (await this.moveIfDue(row, now)) moved += 1;
     }
+    // A renewal link unpaid at its due moment is a failed charge (`M12-05`).
+    moved += await this.renewals.failUnpaid(now);
     let trialsStarted = 0;
     // A release rolls in minutes; a day back covers it with room to spare.
     for (const { tenantId, marketCode } of await this.billing.companiesWithoutSubscription(

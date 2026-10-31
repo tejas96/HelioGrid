@@ -8,7 +8,8 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 import { MarketPackService } from '../market/market.public';
-import { ChargeAdminRepository, type Conversion } from './charge.admin.repository';
+import { ChargeAdminRepository } from './charge.admin.repository';
+import type { Conversion, Renewal } from './collected-on.admin.repository';
 import { EntitlementService } from './entitlement.service';
 import { BillingAlerts } from './internal/billing-alerts';
 import { cycleEnd } from './internal/cycle-end';
@@ -63,8 +64,12 @@ export class ChargeService {
       return 'refused';
     }
     const cycle = on.conversion?.cycle ?? on.cycle;
+    // A renewal buys one cycle from the end of the period before it, never from the payment, so a
+    // company that pays early loses no day (`M12-09`).
     const paysThrough =
-      charge.paysThrough ?? (cycle === null ? null : cycleEnd(charge.occurredAt, cycle));
+      on.renewal?.paysThrough ??
+      charge.paysThrough ??
+      (cycle === null ? null : cycleEnd(charge.occurredAt, cycle));
     // A converted row always carries its cycle (`subscription_plan_whole`): this is a broken row.
     if (paysThrough === null) throw new Error(`no period to pay for on ${charge.gatewayRef}`);
     try {
@@ -79,6 +84,7 @@ export class ChargeService {
         },
         now,
         on.conversion,
+        on.renewal,
       );
       if (recorded === 'recorded') this.alertIfMandateCancelled(on.conversion, on.subscriptionId);
       return recorded;
@@ -117,6 +123,7 @@ export class ChargeService {
     charge: ChargeSucceeded,
     now: number,
     conversion: Conversion | null = null,
+    renewal: Renewal | null = null,
   ): Promise<'recorded' | 'duplicate' | 'dead'> {
     if (charge.amount <= 0) {
       throw new ChargeRefused(`a charge collects an amount above zero, not ${charge.amount}`);
@@ -133,6 +140,7 @@ export class ChargeService {
       this.entitlements.bookLimitsOf(pack),
       pack,
       conversion,
+      renewal,
     );
     switch (result.kind) {
       case 'unknown subscription':
@@ -182,6 +190,23 @@ export class ChargeService {
       return 'unknown';
     }
     return this.recordFailure({ subscriptionId: on.subscriptionId, occurredAt });
+  }
+
+  /**
+   * A renewal link unpaid at its due moment (`M12-05`): its invoice fails and the row moves as a
+   * failed charge moves it. `moved`: the row is now past due. `stale`: the invoice failed and the
+   * row stays where it was. `settled`: the invoice was paid or failed already.
+   */
+  async recordRenewalUnpaid(renewal: {
+    invoiceId: string;
+    subscriptionId: string;
+    dueAt: number;
+  }): Promise<'moved' | 'stale' | 'settled'> {
+    const moved = await this.charges.recordRenewalUnpaid(renewal, (standing) =>
+      failureMoves(standing, { occurredAt: renewal.dueAt }),
+    );
+    if (moved === null) return 'settled';
+    return moved ? 'moved' : 'stale';
   }
 
   /** `moved`: the failure made an active subscription past due. `stale`: it changed nothing. */

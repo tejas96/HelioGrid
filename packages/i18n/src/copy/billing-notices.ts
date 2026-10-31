@@ -57,7 +57,7 @@ const PICK_A_PLAN = /*i18n*/ { id: 'Pick a plan in Billing to keep creating.' };
 const NOTICES = {
   payment_failed: {
     title: /*i18n*/ { id: 'Payment failed' },
-    facts: /*i18n*/ { id: 'We could not collect your plan payment. We will try again.' },
+    facts: /*i18n*/ { id: 'We could not collect your plan payment.' },
     way: PAY_OR_UPDATE,
   },
   payment_reminder: {

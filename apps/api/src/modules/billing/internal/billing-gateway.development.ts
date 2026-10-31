@@ -83,9 +83,9 @@ export class DevelopmentBillingGateway implements BillingGateway {
   }
 
   async openCheckout(request: GatewayCheckoutRequest): Promise<OpenedCheckout> {
-    const gatewayRef = `dev_${request.route.collection}_${request.checkoutId}`;
+    const gatewayRef = `dev_${request.route.collection}_${request.reference}`;
     this.logger.info(
-      { checkoutId: request.checkoutId, collection: request.route.collection, gatewayRef },
+      { reference: request.reference, collection: request.route.collection, gatewayRef },
       'development gateway: hosted checkout opened',
     );
     return { gatewayRef, hostedUrl: `https://development-checkout.invalid/${gatewayRef}` };

@@ -8,80 +8,125 @@ import {
   taxRegistration,
 } from '@heliogrid/db';
 import { type MarketPack, type MinorUnits, minorUnits } from '@heliogrid/domain';
-import { fiscalYearOf, invoiceNumber, platformInvoice } from '@heliogrid/domain/server';
-import { and, eq, sql } from 'drizzle-orm';
-import { type CollectedAddOn, markInvoiced } from './overage-invoicing.admin.repository';
+import {
+  fiscalYearOf,
+  invoiceNumber,
+  platformInvoice,
+  platformSaleTotal,
+  sumMinorUnits,
+} from '@heliogrid/domain/server';
+import { and, eq, inArray, sql } from 'drizzle-orm';
+import {
+  type CollectedAddOn,
+  markInvoiced,
+  markOnLink,
+} from './overage-invoicing.admin.repository';
 
-/** The payment an invoice is issued for, inside its charge's transaction. */
+/** What settles an invoice: the payment that landed, or the renewal link that will collect it. */
+export type SettledBy =
+  | { readonly kind: 'payment'; readonly paymentId: string }
+  | {
+      readonly kind: 'link';
+      readonly invoiceId: string;
+      readonly gatewayRef: string;
+      readonly hostedUrl: string;
+      readonly dueAt: number;
+    };
+
+/** The invoice to work out and issue, inside its charge's or its renewal's transaction. */
 export interface InvoiceFor {
   readonly tenantId: string;
   readonly subscriptionId: string;
-  readonly paymentId: string;
-  /** The plan the payment buys: the conversion's, else the subscription's own. */
+  /** The plan the period buys: the conversion's, else the subscription's own. */
   readonly planPriceId: string | null;
   readonly paysThrough: number;
   readonly issuedAt: number;
-  /** The company's market pack, current when the charge landed. */
+  /** The company's market pack, current when the charge landed or the link was raised. */
   readonly pack: MarketPack;
-  /** The overage add-ons the debit collected (`M12-35`), listed after the plan line. */
+  /** The overage add-ons it bills (`M12-35`), listed after the plan line. */
   readonly addOns: readonly CollectedAddOn[];
 }
 
+/** A reader on either pool: the renewal works its total out before its transaction opens. */
+type Reader = Pick<DbTransaction, 'select'>;
+
 /**
- * Issues the cycle invoice for one recorded payment (`M12-09`, `M12-44`), in the transaction that
- * recorded it: a payment and its invoice commit together or not at all. The plan line is the
- * plan the payment buys, and each overage add-on the debit collected is a line after it; the company's registration is read here and copied on, so a later edit
- * changes no invoice issued. Answers the invoice's total, which the caller sets beside the charge.
+ * The invoice's lines, registrations and total as the pack works them out now (`M12-44`). The
+ * renewal reads it first for the link's amount, then issues it, so the gateway collects exactly
+ * what the invoice says.
  */
-export async function issueInvoice(tx: DbTransaction, payment: InvoiceFor): Promise<MinorUnits> {
-  if (payment.planPriceId === null) {
-    throw new Error(`payment ${payment.paymentId} buys no plan, so no invoice can be issued`);
+export async function workOutInvoice(db: Reader, invoice: InvoiceFor) {
+  if (invoice.planPriceId === null) {
+    throw new Error(`an invoice on ${invoice.subscriptionId} buys no plan, so none can be issued`);
   }
-  const [plan] = await tx
+  const [plan] = await db
     .select({ id: planPrice.id, listMinor: planPrice.listMinor })
     .from(planPrice)
-    .where(eq(planPrice.id, payment.planPriceId))
+    .where(eq(planPrice.id, invoice.planPriceId))
     .limit(1);
-  if (plan === undefined) throw new Error(`no plan price ${payment.planPriceId}`);
-  const { pack } = payment;
-  const invoice = platformInvoice(
-    pack,
-    [minorUnits(plan.listMinor), ...payment.addOns.map((addOn) => addOn.amount)],
-    await companyRegistration(tx, payment.tenantId, pack),
+  if (plan === undefined) throw new Error(`no plan price ${invoice.planPriceId}`);
+  const worked = platformInvoice(
+    invoice.pack,
+    [minorUnits(plan.listMinor), ...invoice.addOns.map((addOn) => addOn.amount)],
+    await companyRegistration(db, invoice.tenantId, invoice.pack),
   );
-  const [fiscalYear, sequence] = await nextInSeries(tx, pack, payment.issuedAt);
+  return { planPriceId: plan.id, ...worked };
+}
+
+/**
+ * Issues one cycle invoice (`M12-09`, `M12-44`) in the caller's transaction: settled by a recorded
+ * payment, it issues `paid` beside it, so the two commit together or not at all; raised with a
+ * renewal link, it issues `issued`, holding the link. The plan line is the plan the period buys,
+ * and each overage add-on is a line after it; the company's registration is read here and copied
+ * on, so a later edit changes no invoice issued. Answers the invoice's total.
+ */
+export async function issueInvoice(
+  tx: DbTransaction,
+  invoice: InvoiceFor,
+  settledBy: SettledBy,
+): Promise<MinorUnits> {
+  const { pack } = invoice;
+  const worked = await workOutInvoice(tx, invoice);
+  const [fiscalYear, sequence] = await nextInSeries(tx, pack, invoice.issuedAt);
   const number = invoiceNumber(fiscalYear, sequence);
   const [issued] = await tx
     .insert(subscriptionInvoice)
     .values({
-      tenantId: payment.tenantId,
-      subscriptionId: payment.subscriptionId,
-      paymentId: payment.paymentId,
+      tenantId: invoice.tenantId,
+      subscriptionId: invoice.subscriptionId,
       marketCode: pack.market,
       number,
       kind: 'cycle',
-      status: 'paid',
-      currencyCode: invoice.currency,
-      paysThrough: new Date(payment.paysThrough),
-      issuedAt: new Date(payment.issuedAt),
-      supplierRegistrationType: invoice.supplierRegistration?.registrationType ?? null,
-      supplierRegistration: invoice.supplierRegistration?.value ?? null,
-      recipientRegistrationType: invoice.recipientRegistration?.registrationType ?? null,
-      recipientRegistration: invoice.recipientRegistration?.value ?? null,
-      supplierPlace: invoice.supplierPlace,
-      recipientPlace: invoice.recipientPlace,
-      serviceCode: invoice.serviceCode,
+      currencyCode: worked.currency,
+      paysThrough: new Date(invoice.paysThrough),
+      issuedAt: new Date(invoice.issuedAt),
+      supplierRegistrationType: worked.supplierRegistration?.registrationType ?? null,
+      supplierRegistration: worked.supplierRegistration?.value ?? null,
+      recipientRegistrationType: worked.recipientRegistration?.registrationType ?? null,
+      recipientRegistration: worked.recipientRegistration?.value ?? null,
+      supplierPlace: worked.supplierPlace,
+      recipientPlace: worked.recipientPlace,
+      serviceCode: worked.serviceCode,
+      ...(settledBy.kind === 'payment'
+        ? { status: 'paid' as const, paymentId: settledBy.paymentId }
+        : {
+            id: settledBy.invoiceId,
+            status: 'issued' as const,
+            gatewayRef: settledBy.gatewayRef,
+            hostedUrl: settledBy.hostedUrl,
+            dueAt: new Date(settledBy.dueAt),
+          }),
     })
     .returning({ id: subscriptionInvoice.id });
-  if (issued === undefined) throw new Error(`invoice for payment ${payment.paymentId} not written`);
-  for (const [position, line] of invoice.lines.entries()) {
+  if (issued === undefined) throw new Error(`invoice ${number} not written`);
+  for (const [position, line] of worked.lines.entries()) {
     const [written] = await tx
       .insert(invoiceLine)
       .values({
-        tenantId: payment.tenantId,
+        tenantId: invoice.tenantId,
         invoiceId: issued.id,
         position,
-        ...lineSells(plan.id, payment.addOns, position),
+        ...lineSells(worked.planPriceId, invoice.addOns, position),
         taxableMinor: line.taxableAmount,
         rateBasisPoints: line.rateBasisPoints,
       })
@@ -90,19 +135,59 @@ export async function issueInvoice(tx: DbTransaction, payment: InvoiceFor): Prom
     if (line.components.length === 0) continue;
     await tx.insert(invoiceLineTax).values(
       line.components.map((component) => ({
-        tenantId: payment.tenantId,
+        tenantId: invoice.tenantId,
         lineId: written.id,
         code: component.code,
         amountMinor: component.amount,
       })),
     );
   }
-  await markInvoiced(
-    tx,
-    payment.addOns.map((addOn) => addOn.id),
-    issued.id,
-  );
-  return invoice.totalAmount;
+  if (settledBy.kind === 'payment') {
+    await markInvoiced(tx, invoice.addOns, issued.id);
+  } else {
+    await markOnLink(tx, invoice.addOns, issued.id, {
+      gatewayRef: settledBy.gatewayRef,
+      at: invoice.issuedAt,
+      collectedOf: (amount) => platformSaleTotal(pack, amount),
+    });
+  }
+  return worked.totalAmount;
+}
+
+/**
+ * A renewal link's payment: its invoice, `issued` or `failed`, turns `paid` naming the payment.
+ * Answers the invoice's total; `null` when it is no longer payable — a second payment on a link
+ * already paid, which the caller invoices on its own.
+ */
+export async function payRenewalInvoice(
+  tx: DbTransaction,
+  invoiceId: string,
+  paymentId: string,
+): Promise<MinorUnits | null> {
+  const [paid] = await tx
+    .update(subscriptionInvoice)
+    .set({ status: 'paid', paymentId })
+    .where(
+      and(
+        eq(subscriptionInvoice.id, invoiceId),
+        inArray(subscriptionInvoice.status, ['issued', 'failed']),
+      ),
+    )
+    .returning({ id: subscriptionInvoice.id });
+  if (paid === undefined) return null;
+  const taxable = sql<number>`coalesce(sum(${invoiceLine.taxableMinor}), 0)`.mapWith(Number);
+  const [lines] = await tx
+    .select({ taxable })
+    .from(invoiceLine)
+    .where(eq(invoiceLine.invoiceId, invoiceId));
+  const [taxes] = await tx
+    .select({
+      tax: sql<number>`coalesce(sum(${invoiceLineTax.amountMinor}), 0)`.mapWith(Number),
+    })
+    .from(invoiceLineTax)
+    .innerJoin(invoiceLine, eq(invoiceLine.id, invoiceLineTax.lineId))
+    .where(eq(invoiceLine.invoiceId, invoiceId));
+  return sumMinorUnits([minorUnits(lines?.taxable ?? 0), minorUnits(taxes?.tax ?? 0)]);
 }
 
 /** What the line at `position` sells: the plan first, then each add-on in order. */
@@ -114,10 +199,10 @@ function lineSells(planPriceId: string, addOns: readonly CollectedAddOn[], posit
 }
 
 /** The company's registration of the type its market asks for; `null` when it gave none. */
-async function companyRegistration(tx: DbTransaction, tenantId: string, pack: MarketPack) {
+async function companyRegistration(db: Reader, tenantId: string, pack: MarketPack) {
   const [asked] = pack.tax.registrationTypes;
   if (asked === undefined) return null;
-  const [held] = await tx
+  const [held] = await db
     .select({ registrationType: taxRegistration.registrationType, value: taxRegistration.value })
     .from(taxRegistration)
     .where(

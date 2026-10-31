@@ -125,7 +125,7 @@ export class RazorpayBillingGateway implements BillingGateway {
   }
 
   async openCheckout(request: GatewayCheckoutRequest): Promise<OpenedCheckout> {
-    const notes = { checkout_id: request.checkoutId };
+    const notes = { reference: request.reference };
     const expireBy = seconds(request.expiresAt);
     const made =
       request.route.collection === 'mandate'
@@ -139,7 +139,7 @@ export class RazorpayBillingGateway implements BillingGateway {
         : await this.call('POST', '/payment_links', opened, {
             amount: request.amount,
             currency: request.currencyCode,
-            reference_id: request.checkoutId,
+            reference_id: request.reference,
             expire_by: expireBy,
             notes,
           });

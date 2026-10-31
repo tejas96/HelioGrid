@@ -14,7 +14,8 @@ import {
   unseed,
 } from '../support/fixture';
 import { publishIndiaPack } from '../support/market';
-import { entitlementServiceOf } from './support';
+import { renewalServiceOf } from './renewal-bench';
+import { aDevelopmentGateway, entitlementServiceOf, RecordedAlerts, silentLogger } from './support';
 
 /**
  * The billing timers, against a migrated database (`M12-04`, `M12-06`, `M12-07`, `M12-52`).
@@ -45,7 +46,11 @@ describe.skipIf(skip)('the billing timers (M12-04, M12-06, M12-52)', () => {
     pools = openPools();
     await publishIndiaPack(pools);
     repository = new BillingAdminRepository(pools.admin.db);
-    timers = new BillingService(repository, entitlementServiceOf(pools));
+    timers = new BillingService(
+      repository,
+      entitlementServiceOf(pools),
+      renewalServiceOf(pools, aDevelopmentGateway(), new RecordedAlerts(silentLogger())),
+    );
   });
 
   afterEach(async () => {
