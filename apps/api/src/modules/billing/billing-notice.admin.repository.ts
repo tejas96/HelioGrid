@@ -31,7 +31,6 @@ import type { NoticeCandidate } from './billing-notice-candidates.admin.reposito
 export interface NoticeStanding {
   readonly clock: NoticeClock;
   readonly lastToldDueAt: number | null;
-  readonly signedUpAt: number;
 }
 
 /** What one look decided, worked out by the caller from the standing. */
@@ -40,7 +39,6 @@ export type NoticeVerdict =
       readonly kind: 'tell';
       readonly notice: BillingNotice;
       readonly dueAt: number;
-      readonly whileProtected: boolean;
       readonly lookAgainAt: number | null;
     }
   | { readonly kind: 'look again'; readonly at: number | null };
@@ -49,7 +47,6 @@ export type NoticeVerdict =
 export interface ToldNotice {
   readonly eventId: string;
   readonly notice: BillingNotice;
-  readonly whileProtected: boolean;
   readonly companyName: string;
   readonly notificationIds: readonly string[];
   readonly owners: readonly { readonly phoneE164: string; readonly language: UiLanguage }[];
@@ -73,10 +70,7 @@ export class BillingNoticeAdminRepository {
     candidate: NoticeCandidate,
     now: number,
     decide: (standing: NoticeStanding) => NoticeVerdict,
-    wordsOf: (
-      notice: BillingNotice,
-      whileProtected: boolean,
-    ) => (language: UiLanguage) => NoticeWords,
+    wordsOf: (notice: BillingNotice) => (language: UiLanguage) => NoticeWords,
     quietHours: TenantQuietHours,
   ): Promise<ToldNotice | null> {
     return this.db.transaction(async (tx) => {
@@ -95,7 +89,6 @@ export class BillingNoticeAdminRepository {
           notice: verdict.notice,
           dueAt: new Date(verdict.dueAt),
           firedAt: new Date(now),
-          forfeitureDisclosed: verdict.whileProtected,
           nextDueAt: null,
         })
         .onConflictDoNothing()
@@ -118,13 +111,12 @@ export class BillingNoticeAdminRepository {
         tx,
         owners,
         notice,
-        wordsOf(verdict.notice, verdict.whileProtected),
+        wordsOf(verdict.notice),
         quietHours,
       );
       return {
         eventId: told.id,
         notice: verdict.notice,
-        whileProtected: verdict.whileProtected,
         companyName: await companyNameOf(tx, candidate.tenantId),
         notificationIds,
         owners: await phonesOf(tx, owners),
@@ -176,10 +168,8 @@ async function standingOf(
       stateEnteredAt: subscription.stateEnteredAt,
       trialEndsAt: subscription.trialEndsAt,
       paidPeriodEnd: subscription.paidPeriodEnd,
-      signedUpAt: tenant.createdAt,
     })
     .from(subscription)
-    .innerJoin(tenant, eq(tenant.id, subscription.tenantId))
     .where(eq(subscription.id, subscriptionId))
     .for('update', { of: subscription });
   if (row === undefined) return null;
@@ -203,7 +193,7 @@ async function standingOf(
     replaced: newer !== undefined,
   };
   const start = ladderStartOf(clock);
-  if (start === null) return { clock, lastToldDueAt: null, signedUpAt: row.signedUpAt.getTime() };
+  if (start === null) return { clock, lastToldDueAt: null };
   const [last] = await tx
     .select({ dueAt: max(dunningEvent.dueAt) })
     .from(dunningEvent)
@@ -214,11 +204,7 @@ async function standingOf(
         gte(dunningEvent.dueAt, new Date(ladderBeginsAt(start))),
       ),
     );
-  return {
-    clock,
-    lastToldDueAt: last?.dueAt?.getTime() ?? null,
-    signedUpAt: row.signedUpAt.getTime(),
-  };
+  return { clock, lastToldDueAt: last?.dueAt?.getTime() ?? null };
 }
 
 /** Moves the ladder's next look, or ends it with `null`. */

@@ -29,7 +29,7 @@ import {
   type Renewal,
 } from './collected-on.admin.repository';
 import { type LimitsFor, recomputeEntitlements } from './entitlement.admin.repository';
-import { issueInvoice, payRenewalInvoice } from './invoice.admin.repository';
+import { issueInvoice, payRenewalInvoice, planBilledBy } from './invoice.admin.repository';
 import { addOnsCollectedBy } from './overage-invoicing.admin.repository';
 
 /** What one charge came to; a recorded payment names the total its invoice issued for. */
@@ -130,7 +130,8 @@ export class ChargeAdminRepository {
       if (conversion !== null) await closeCheckout(tx, conversion.checkoutId, recordedAt);
       const effect = decide(held);
       if (effect.outcome === 'dead') return { kind: 'dead', invoiced: await issue() };
-      await applySuccess(tx, held, effect, charge.occurredAt, conversion);
+      const plan = await planPaidFor(tx, held.tenantId, conversion, renewal);
+      await applySuccess(tx, held, effect, charge.occurredAt, conversion, plan);
       // Only a charge that moves the row ends its unpaid spell; a late one leaves the ladder running.
       if (effect.moveTo !== null) await clearOpenNotices(tx, held.tenantId, paid.id, recordedAt);
       await recomputeEntitlements(tx, {
@@ -202,13 +203,28 @@ async function moveOnFailure(
   return true;
 }
 
-/** A live charge's effect: the window, the state move and, on conversion, the plan. */
+/**
+ * The plan row a live charge puts the row on: the converted plan, or the row a paid renewal's
+ * invoice billed — today's book (`M12-57`). `null` leaves the row's plan as it is.
+ */
+async function planPaidFor(
+  tx: DbTransaction,
+  tenantId: string,
+  conversion: Conversion | null,
+  renewal: Renewal | null,
+): Promise<string | null> {
+  if (conversion !== null) return conversion.planPriceId;
+  return renewal === null ? null : planBilledBy(tx, tenantId, renewal.invoiceId);
+}
+
+/** A live charge's effect: the window, the state move, the plan it paid and, on conversion, the rest. */
 async function applySuccess(
   tx: DbTransaction,
   held: LockedSubscription,
   effect: Extract<SuccessEffect, { outcome: 'live' }>,
   occurredAt: number,
   conversion: Conversion | null,
+  plan: string | null,
 ): Promise<void> {
   await tx
     .update(subscription)
@@ -217,14 +233,10 @@ async function applySuccess(
       ...(effect.moveTo === null
         ? {}
         : { state: effect.moveTo, stateEnteredAt: new Date(occurredAt) }),
+      ...(plan === null ? {} : { planPriceId: plan }),
       ...(conversion === null
         ? {}
-        : {
-            tier: conversion.tier,
-            cycle: conversion.cycle,
-            planPriceId: conversion.planPriceId,
-            gatewayRef: conversion.gatewayRef,
-          }),
+        : { tier: conversion.tier, cycle: conversion.cycle, gatewayRef: conversion.gatewayRef }),
     })
     .where(eq(subscription.id, held.id));
   if (effect.moveTo !== null) await recordState(tx, held, effect.moveTo, 'paid', occurredAt);

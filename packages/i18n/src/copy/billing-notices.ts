@@ -3,7 +3,6 @@ import {
   type BillingCapability,
   type BillingNotice,
   type BillingPhase,
-  disclosesForfeiture,
   pauseNoticeOf,
 } from '@heliogrid/domain';
 /**
@@ -106,14 +105,6 @@ const NOTICES = {
   },
 } satisfies Record<BillingNotice, NoticeCopy>;
 
-/** `M12-41` — a company inside its price-protection horizon, before the lapse and at it. */
-const FORFEITS = /*i18n*/ {
-  id: 'If the plan halts, your launch price ends and a restart bills at today’s prices.',
-};
-const FORFEITED = /*i18n*/ {
-  id: 'Your launch price has ended; reactivating bills at today’s prices.',
-};
-
 /** The billing phase whose matrix column a notice's lists are read from; `null` for one with none. */
 const LISTED_PHASE: Record<BillingNotice, BillingPhase | null> = {
   payment_failed: null,
@@ -142,26 +133,16 @@ function listed(
   return { paused: names(paused), working: names(stillWorks) };
 }
 
-/**
- * One notice's words. `whileProtected` adds what a halt costs a company inside its protection
- * horizon — that it will end the launch price, or at the halt that it has (`M12-39`, `M12-41`).
- */
+/** One notice's words: its facts, then the one way out (`M12-39`, `M12-41`). */
 export function billingNoticeWords(
   translate: Translator['t'],
   notice: BillingNotice,
-  whileProtected: boolean,
 ): { title: TranslatedText; body: TranslatedText } {
   const copy: NoticeCopy = NOTICES[notice];
-  const forfeiture =
-    whileProtected && disclosesForfeiture(notice)
-      ? [translate(notice === 'halted' ? FORFEITED : FORFEITS)]
-      : [];
   return {
     title: translate(copy.title),
     body: assembled(
-      [translate(copy.facts, listed(translate, notice)), ...forfeiture, translate(copy.way)].join(
-        ' ',
-      ),
+      [translate(copy.facts, listed(translate, notice)), translate(copy.way)].join(' '),
     ),
   };
 }

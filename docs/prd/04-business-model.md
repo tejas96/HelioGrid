@@ -19,7 +19,7 @@ Forward: `modules/M12-platform-billing.md` (mechanics), `modules/M13-dashboards-
 
 This document is the commercial law of HelioGrid: who pays, the packaging convictions, the tier
 architecture, the canonical meter set and its COGS policy, the trial, the soft-block law with its
-state capability matrix, the market price-book architecture, grandfathering, and the go-to-market
+state capability matrix, the market price-book architecture, repricing, and the go-to-market
 principles carried at product level. Three vocabularies defined here are suite-wide interfaces:
 the **four tier names** (Starter · Growth · Pro · Enterprise), the **five-meter list** (voice
 minutes · AI roof detections · storage · marketing sends · tracked field seats), and the
@@ -90,7 +90,7 @@ binding pricing principles are all carried, three of them amended by locked V2 d
 | 4 — Tiers gate capacity, never features; entitlements are the only gating; soft-block | Carried as BM-05 (+ `OV-27`/`OV-28`); soft-block law at §04.5 |
 | 5 — Metered things carry bundles + overage ≥40% above worst-case unit COGS | Carried as BM-17, **extended by design spec §8/DD7** to all five meters, including the two V2 meters |
 | 6 — Prices ex-tax; we are supplier of record | Carried as BM-40, generalized: the tax posture is each market's `pack.tax` declaration (F1-13); IN instance is ex-GST with the platform as supplier of record (F1-29) |
-| 7 — Grandfather generously | Carried as BM-42 (§04.7) |
+| 7 — Grandfather generously | **Replaced by owner ruling 2026-10-31:** BM-42 (§04.7) reprices every company at its next paid period; no company keeps a signed-up price |
 | 8 — A price for every EPC | Carried as BM-08 |
 | 9 — Creation caps per tier: visible, generous, soft-blocked | Carried as BM-07 + BM-34; counts are book data (BM-41) |
 
@@ -444,36 +444,28 @@ rules); no tenant surface exists. Repricing an existing book interacts with §04
 ₹ with lakh/crore grouping, F1-46 via F3); tier names stay product vocabulary (§04.2).
 **Analytics events:** none of its own — book reads are not a user action stream.
 
-### 04.7 — Grandfathering
+### 04.7 — Repricing
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| BM-42 | **Grandfather generously.** Repricing is a trust event — in a WhatsApp-connected market, a badly handled price change travels faster than any marketing — so existing tenants are protected by law, not by goodwill: a tenant keeps the pricing they signed up on for a **guaranteed protection horizon recorded in their market's book**; **IN book: early tenants keep launch pricing for 24 months minimum**. Repricing never applies mid-cycle, never applies retroactively, and reaches a protected tenant only after their horizon lapses — with the honest-copy discipline (`F8-34`) applying to every repricing communication. Caps and bundle *growth* (giving tenants more) may apply immediately; taking anything away rides the same horizon. **Forfeiture on lapse (owner ruling 2026-08-04):** the protection horizon is forfeited by a lapse — a tenant who goes `cancelled` or `halted` ends their launch-price guarantee, and reactivation (whether inside or after the original horizon) prices at the **current list book**. Cancellation, dunning and win-back copy must state this plainly before the lapse happens (the no-surprise rule, `F8-34`); mechanics at `M12-57`. *(Owner ruled against the standing recommendation — deliberate.)* | `SRC` — `DOC01.grandfather` (docs/01 pricing principle 7: "Early tenants keep launch pricing for 24 months minimum; repricing is a trust event"); forfeiture-on-lapse per owner ruling 2026-08-04 | P0 |
+| BM-42 | **Reprice at the next paid period, never inside one (owner ruling 2026-10-31, replacing "grandfather generously" and its 2026-08-04 forfeiture ruling).** A new book reaches every company at its next paid period: a renewal, a reactivation, an upgrade and a new purchase bill the current book. No company keeps a signed-up price. A period already paid is never repriced — never mid-cycle, never retroactively. Caps and bundle *growth* (giving companies more) may apply at once; taking anything away waits for the company's next paid period. The honest-copy discipline (`F8-34`) applies to every repricing communication; mechanics at `M12-57`. | `SRC` — `DOC01.grandfather` (docs/01 pricing principle 7), replaced by owner ruling 2026-10-31 | P0 |
 
-**Behavior detail.** Grandfathering is stated as book data plus product law so it globalizes
-cleanly: every market's book records its horizon (the IN book's is source-derived), and the law
-that a horizon exists — and that repricing is never silent, never mid-cycle, never retroactive —
-is market-neutral. Mechanics (which plan-price row an old tenant bills against, how a lapsed
-horizon migrates) are `modules/M12`'s.
+**Behavior detail.** Repricing is market-neutral law: a new book revision reaches each company at
+its own next paid period, so no company pays a new price for time it already paid for. Mechanics
+(which plan-price row a renewal bills, how a mandate moves to a new amount) are `modules/M12`'s.
 
 **Permissions.** Repricing decisions are owner/platform-level; no tenant surface.
 
 **Edge cases & what-goes-wrong.**
 
-- *A protected tenant upgrades tiers* → they move to the new tier under their protection terms;
-  an upgrade is never used as a lever to strip grandfathered pricing (the trust event law).
-- *A tenant churns (`cancelled`/`halted`) and reactivates — inside or after the horizon* →
-  reactivation prices at the current book; protection forfeits on lapse and never survives a
-  lapsed subscription (owner ruling 2026-08-04; mechanics M12, `M12-57`).
+- *A company paid a year in advance and the book reprices mid-year* → its year runs at the price
+  it paid; the renewal after it bills the new book (`M12-57`).
+- *A company upgrades, reactivates or buys after a reprice* → it pays the current book.
 
 **Acceptance criteria.**
 
-- Given a tenant inside their protection horizon, when the market book is repriced, then their
-  bill is unchanged until the horizon lapses, and they were told honestly what changes and when
-  (BM-42).
-- Given a protected tenant who cancels or is halted, when they reactivate — even inside the
-  original horizon — then they bill against the current list book, and the cancellation/dunning
-  copy they saw before the lapse stated the forfeiture plainly (BM-42, owner ruling 2026-08-04;
+- Given a book that repriced, when a company's next paid period is billed, then it bills the
+  current book, and no period already paid is billed again (BM-42, owner ruling 2026-10-31;
   `M12-57`).
 
 **Localization notes.** Repricing communications in every launch language. **Analytics events:**
@@ -518,14 +510,14 @@ BM-47 metric; event taxonomy is M13's).
 
 | Consumer | What it takes from here |
 |---|---|
-| `modules/M12-platform-billing.md` | The tier names (BM-11) and every price/cap/bundle number (BM-41) its entitlements enforce; the meter list (BM-16) its usage ledger meters; the billing-state names (BM-33) its lifecycle machine implements; the soft-block law + matrix (BM-32–BM-36) as its non-negotiable floor; cap law incl. 80% pre-warning (BM-34); trial law (BM-28–BM-31); grandfathering law (BM-42); supplier-of-record posture (BM-40) |
+| `modules/M12-platform-billing.md` | The tier names (BM-11) and every price/cap/bundle number (BM-41) its entitlements enforce; the meter list (BM-16) its usage ledger meters; the billing-state names (BM-33) its lifecycle machine implements; the soft-block law + matrix (BM-32–BM-36) as its non-negotiable floor; cap law incl. 80% pre-warning (BM-34); trial law (BM-28–BM-31); repricing at the next paid period (BM-42); supplier-of-record posture (BM-40) |
 | `modules/M13-dashboards-and-reporting.md` | Tier names and billing-state names as reporting vocabulary (BM-11, BM-33); the meter list for usage reporting (BM-16); the trial-to-paid conversion metric (BM-47) |
 | `modules/M03-marketing.md` | The marketing-sends meter definition and channel boundary (BM-21); the absorbed/metered split it must respect |
 | `modules/M09-field-workforce.md` | The tracked-seat add-on boundary — included capabilities (BM-23) vs the tracked-seat bundle scope, the owner toggle, and the billing unit (BM-22) |
 | `modules/M07-sales-execution.md`, `modules/M04-survey.md` | Voice-minute and detection meter definitions (BM-18, BM-19); the manual-path guarantee (BM-19) |
 | `modules/M11-payments-and-collections.md` | The two-money-systems separation (BM-02) — the platform side ends here |
 | `modules/M01-onboarding-and-tenant-config.md` | Trial-start law (BM-28: no payment instrument at signup); the demo-led first session BM-43 leans on |
-| `foundations/F1-global-market-framework.md` | The IN book contents its `F1-60`/`F1-61` identification points at (BM-41 — the reciprocal of F1's hook); the benchmark and grandfather values as book data |
+| `foundations/F1-global-market-framework.md` | The IN book contents its `F1-60`/`F1-61` identification points at (BM-41 — the reciprocal of F1's hook); the benchmark values as book data |
 | `foundations/F5-customer-link.md` | The always-on customer-link row of the matrix (BM-32/BM-35) |
 | `01-product-overview.md` | The commercial law behind `OV-20`, `OV-26`–`OV-30` (this document is where those principles' numbers and matrices live) |
 

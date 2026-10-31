@@ -17,12 +17,17 @@ import {
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, asc, eq, isNotNull, lte, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/pg-core';
 import { ADMIN_DB } from '../../common/db/admin.token';
 import { lockSubscription } from './charge-standing.admin.repository';
 import { type InvoiceFor, issueInvoice, workOutInvoice } from './invoice.admin.repository';
 import { addOnsForLink } from './overage-invoicing.admin.repository';
+import { currentPlanPrice } from './plan-price.admin.repository';
 
-/** A live row a payment link collects, whose paid period has closed with no renewal raised. */
+/**
+ * A live row a payment link collects, whose paid period has closed with no renewal raised. Its
+ * plan is the CURRENT row of the plan it holds: the next period bills today's book (`M12-57`).
+ */
 export interface RenewalDue {
   readonly tenantId: string;
   readonly subscriptionId: string;
@@ -87,6 +92,8 @@ export class RenewalAdminRepository {
    * the link went out waits for the next one.
    */
   async due(now: number, limit: number, after: RenewalCursor | null): Promise<RenewalDue[]> {
+    const held = alias(planPrice, 'held_price');
+    const current = currentPlanPrice(this.db, held).as('current_price');
     const rows = await this.db
       .select({
         tenantId: subscription.tenantId,
@@ -95,13 +102,14 @@ export class RenewalAdminRepository {
         currencyCode: tenant.currencyCode,
         tier: subscription.tier,
         cycle: subscription.cycle,
-        planPriceId: planPrice.id,
-        gatewayPlanRef: planPrice.gatewayPlanRef,
+        planPriceId: current.id,
+        gatewayPlanRef: current.gatewayPlanRef,
         paidPeriodEnd: subscription.paidPeriodEnd,
       })
       .from(subscription)
       .innerJoin(tenant, eq(tenant.id, subscription.tenantId))
-      .innerJoin(planPrice, eq(planPrice.id, subscription.planPriceId))
+      .innerJoin(held, eq(held.id, subscription.planPriceId))
+      .innerJoinLateral(current, sql`true`)
       .innerJoin(billingCheckout, eq(billingCheckout.gatewayRef, subscription.gatewayRef))
       .where(
         and(

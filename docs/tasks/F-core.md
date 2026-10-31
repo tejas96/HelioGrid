@@ -273,6 +273,7 @@ COSTS and what is never charged for at all, and never what counts one.
 **Type:** policy · **Tier:** P0
 **Status:** shipped (#36)
 **PRD rows:** BM-42
+**Replaced:** by owner ruling 2026-10-31 — no company keeps a signed-up price; `BM-42` now reprices every company at its next paid period, built by `T-M12-013`.
 
 **DONE WHEN:**
 

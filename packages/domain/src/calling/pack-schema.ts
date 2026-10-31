@@ -22,8 +22,11 @@ const window = minted(
   ({ opens, closes }) => callingWindow(clockTimeHhmm(opens), clockTimeHhmm(closes)),
 );
 
-/** One notice's SMS text, and the second text a protected company reads (`M12-40`, `M12-41`). */
-const billingNoticeText = z.object({ text: packLabel, whileProtected: packLabel.nullable() });
+/** One notice's SMS text (`M12-40`); `whileProtected` stays an unread `null` until `D396` drops it. */
+const billingNoticeText = z.object({
+  text: packLabel,
+  whileProtected: packLabel.nullable().optional(),
+});
 
 const voice = z.discriminatedUnion('declared', [
   z.object({ declared: z.literal(false) }),

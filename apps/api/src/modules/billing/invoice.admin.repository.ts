@@ -199,6 +199,25 @@ export async function payRenewalInvoice(
   return sumMinorUnits([minorUnits(lines?.taxable ?? 0), minorUnits(taxes?.tax ?? 0)]);
 }
 
+/** The plan row an invoice bills: its first line's. `null` for an invoice with no plan line. */
+export async function planBilledBy(
+  tx: DbTransaction,
+  tenantId: string,
+  invoiceId: string,
+): Promise<string | null> {
+  const [line] = await tx
+    .select({ planPriceId: invoiceLine.planPriceId })
+    .from(invoiceLine)
+    .where(
+      and(
+        eq(invoiceLine.tenantId, tenantId),
+        eq(invoiceLine.invoiceId, invoiceId),
+        eq(invoiceLine.position, 0),
+      ),
+    );
+  return line?.planPriceId ?? null;
+}
+
 /** What the line at `position` sells: the plan first, then each add-on in order. */
 function lineSells(planPriceId: string, addOns: readonly CollectedAddOn[], position: number) {
   if (position === 0) return { planPriceId, overageAddOnId: null };

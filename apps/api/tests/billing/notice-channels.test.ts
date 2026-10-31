@@ -16,7 +16,6 @@ import {
   noticeServiceOf,
   notificationsOf,
   RecordedCarrier,
-  SIGNED_UP_PROTECTED,
   toldTo,
 } from './notice-bench';
 
@@ -99,11 +98,7 @@ describe.skipIf(skip)('the billing notices’ channels and the trial nudges (M12
   });
 
   it("a notice reaches each owner in the app, by push and by the pack's text", async () => {
-    const held = await companies.holding(
-      { state: 'past_due', enteredAt: FAILED },
-      SIGNED_UP_PROTECTED,
-      ['en', 'hi'],
-    );
+    const held = await companies.holding({ state: 'past_due', enteredAt: FAILED }, ['en', 'hi']);
     const [english, hindi] = held.owners;
     if (english === undefined || hindi === undefined) throw new Error('two owners were seeded');
     await pools.admin.db.insert(pushDevice).values({
@@ -130,7 +125,7 @@ describe.skipIf(skip)('the billing notices’ channels and the trial nudges (M12
     expect(carrier.sent).toHaveLength(2);
     expect(carrier.sent.every((one) => one.channel === 'sms')).toBe(true);
     expect(textTo(english.phoneE164)?.message).toMatch(
-      /^HelioGrid: the payment for .*'s plan failed\. If the plan halts, your launch price ends .* Pay or update your payment method: .*\/more\/billing$/,
+      /^HelioGrid: the payment for .*'s plan failed\. .*Pay or update your payment method: .*\/more\/billing$/,
     );
     expect(textTo(hindi.phoneE164)?.message).toContain('के प्लान का भुगतान विफल हो गया');
   });

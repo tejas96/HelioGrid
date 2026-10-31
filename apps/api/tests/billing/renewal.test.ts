@@ -1,6 +1,6 @@
 import { overageAddOn, subscriptionPayment, subscriptionStateHistory } from '@heliogrid/db';
-import { MS_PER_DAY, minorUnits, PAST_DUE_GRACE_DAYS } from '@heliogrid/domain';
-import { sumMinorUnits } from '@heliogrid/domain/server';
+import { IN_PACK, MS_PER_DAY, minorUnits, PAST_DUE_GRACE_DAYS } from '@heliogrid/domain';
+import { platformSaleTotal, sumMinorUnits } from '@heliogrid/domain/server';
 import { and, asc, eq } from 'drizzle-orm';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { type Company, openPools, skipWithoutDatabase, unseed } from '../support/fixture';
@@ -8,6 +8,7 @@ import { publishIndiaPack } from '../support/market';
 import { invoicesOf, linesOf } from './invoice-bench';
 import { overageSweep } from './overage-bench';
 import {
+  aReprice,
   aYearlyCompany,
   detections,
   fromTheBook,
@@ -36,7 +37,8 @@ import { chargeServiceOf, RecordedAlerts, silentLogger } from './support';
 const SUITE_YEAR = 2001;
 const { convertedAt, yearEnds, nextYearEnds, sweptAt, dueAt, midJune, midJuly } =
   renewalTimeline(SUITE_YEAR);
-const { starterYearly, starterDetectionBundle, detectionRate } = fromTheBook;
+const { starterYearly, starterDetectionBundle, detectionRate, proYearly, repricedProYearly } =
+  fromTheBook;
 /** June runs 5 past the monthly bundle; July stays 10 under it. Measured as one year, 25 would bill. */
 const JUNE_PAST_BUNDLE = 5;
 const JULY_UNDER_BUNDLE = 10;
@@ -153,6 +155,30 @@ describe.skipIf(skip)('yearly renewal on a fresh payment link (M12-11, M12-09)',
     const invoices = await invoicesOf(pools.admin.db, company.subscriptionId);
     expect(invoices).toHaveLength(2);
     expect(await renewalsOf(company)).toMatchObject([{ status: 'paid', paymentId: payment?.id }]);
+    expect(alerts.raised).toEqual([]);
+  });
+
+  it('a renewal after a reprice bills the current price, leaves the paid year alone, and paying it moves the company onto that row', async () => {
+    const company = await aYearlyCompany(pools, companies, 'pro', convertedAt);
+    const repriced = await aReprice(pools, company, repricedProYearly);
+    await swept(sweptAt);
+    const [conversion, renewal, ...more] = await invoicesOf(pools.admin.db, company.subscriptionId);
+    expect(more).toEqual([]);
+    const taxableOf = async (id = '') =>
+      (await linesOf(pools.admin.db, id)).map((line) => line.taxableMinor);
+    expect(await taxableOf(renewal?.id)).toEqual([repricedProYearly]);
+    expect(await taxableOf(conversion?.id)).toEqual([proYearly]);
+    const total = platformSaleTotal(IN_PACK, repricedProYearly);
+    expect(gateway.opened[0]?.request.amount).toBe(total);
+    expect(await rowOf(pools, company)).toMatchObject({ planPriceId: company.planPriceId });
+
+    const paidAt = sweptAt + MS_PER_DAY;
+    const charge = linkCharge(gateway, paidAt, total);
+    expect(await chargeServiceOf(pools, alerts).recordCollected(charge, paidAt)).toBe('recorded');
+    expect(await rowOf(pools, company)).toMatchObject({
+      paidPeriodEnd: new Date(nextYearEnds),
+      planPriceId: repriced,
+    });
     expect(alerts.raised).toEqual([]);
   });
 

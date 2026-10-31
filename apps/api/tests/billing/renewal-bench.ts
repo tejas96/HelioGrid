@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { GatewayCheckoutRequest, OpenedCheckout } from '@heliogrid/contracts';
-import { billingCheckout, subscription } from '@heliogrid/db';
+import { billingCheckout, planPrice, subscription } from '@heliogrid/db';
 import type { BillingCycle, Tier } from '@heliogrid/domain';
 import {
   ENTITLEMENT_BUFFER_DAYS,
@@ -8,7 +8,9 @@ import {
   listedPrice,
   type MinorUnits,
   MS_PER_DAY,
+  minorUnits,
 } from '@heliogrid/domain';
+import { platformSaleTotal } from '@heliogrid/domain/server';
 import { eq } from 'drizzle-orm';
 import type { BillingAlerts } from '../../src/modules/billing/internal/billing-alerts';
 import { DevelopmentBillingGateway } from '../../src/modules/billing/internal/billing-gateway.development';
@@ -157,6 +159,7 @@ export async function rowOf(pools: Pools, company: YearlyCompany) {
       state: subscription.state,
       stateEnteredAt: subscription.stateEnteredAt,
       paidPeriodEnd: subscription.paidPeriodEnd,
+      planPriceId: subscription.planPriceId,
     })
     .from(subscription)
     .where(eq(subscription.id, company.subscriptionId));
@@ -189,12 +192,59 @@ if (typeof bundle !== 'number') throw new Error('Starter carries a detection bun
 const starterYearly = listedPrice(IN_PACK.priceBook, 'starter', 'yearly');
 if (starterYearly === null) throw new Error('the IN book sells Starter yearly');
 
+/** Pro yearly, which no other suite seeds, so a reprice of it reaches only that suite's rows. */
+const proYearly = listedPrice(IN_PACK.priceBook, 'pro', 'yearly');
+if (proYearly === null) throw new Error('the IN book sells Pro yearly');
+const REPRICE_RISE_MINOR = 2_500_000;
+
 /** The book's figures the suites bill by: never typed, always read. */
 export const fromTheBook = {
   detectionRate: detection.rate,
   starterDetectionBundle: bundle,
   starterYearly,
+  proYearly,
+  /** Pro yearly after a reprice the company did not sign up on. */
+  repricedProYearly: minorUnits(proYearly + REPRICE_RISE_MINOR),
 };
+
+/**
+ * A reprice of the company's plan: a newer row of the same market × tier × cycle × currency at
+ * `listMinor`, as `pack:publish` writes one. Written after the company converted, so it is the
+ * current row. Answers its id.
+ */
+export async function aReprice(
+  pools: Pools,
+  company: YearlyCompany,
+  listMinor: MinorUnits,
+): Promise<string> {
+  const [held] = await pools.admin.db
+    .select({
+      marketCode: planPrice.marketCode,
+      tier: planPrice.tier,
+      cycle: planPrice.cycle,
+      currencyCode: planPrice.currencyCode,
+      createdAt: planPrice.createdAt,
+    })
+    .from(planPrice)
+    .where(eq(planPrice.id, company.planPriceId));
+  if (held === undefined) throw new Error('the company bills no plan price');
+  const [row] = await pools.admin.db
+    .insert(planPrice)
+    .values({
+      marketCode: held.marketCode,
+      packVersion: `test-${randomUUID()}`,
+      tier: held.tier,
+      cycle: held.cycle,
+      currencyCode: held.currencyCode,
+      listMinor,
+      collectedMinor: platformSaleTotal(IN_PACK, listMinor),
+      gatewayPlanRef: `plan_${randomUUID()}`,
+      createdAt: new Date(held.createdAt.getTime() + 1),
+    })
+    .returning({ id: planPrice.id });
+  if (row === undefined) throw new Error('the reprice was not written');
+  return row.id;
+}
 
 /** Billable detections of the company, ledgered at `at`. */
 export async function detections(

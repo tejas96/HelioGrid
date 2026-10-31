@@ -2223,7 +2223,7 @@ Nothing below is renumbered.*
 | M12-36 | P1 | screen | SCR-M12-04 | T-M12-004 |
 | M12-37 | P1 | engine | engine | T-M12-010 |
 | M12-38 | P0 | policy | policy | LAW |
-| M12-39 | P0 | mixed | SCR-SHELL-06 · +non-UI: day 0/2/4/6/7 rung timers, post-halt weekly then monthly; forfeiture… | T-SHELL-006, T-M12-011 |
+| M12-39 | P0 | mixed | SCR-SHELL-06 · +non-UI: day 0/2/4/6/7 rung timers, post-halt weekly then monthly | T-SHELL-006, T-M12-011 |
 | M12-40 | P0 | integration | integration | T-M12-011 |
 | M12-41 | P0 | policy | policy | T-M12-011 |
 | M12-42 | P1 | engine | engine | T-M12-011 |

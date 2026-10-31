@@ -3,13 +3,16 @@ import type { PackLabel } from '../format/languages';
 
 /**
  * One billing notice as the platform texts it to an owner's phone (`M12-40`, `F1-38`): a
- * registered template, per language, with `{company}` and `{link}` slots. `whileProtected` is the
- * second template a company inside its price-protection horizon reads (`M12-41`), `null` for a
- * notice that discloses no forfeiture (`disclosesForfeiture`).
+ * registered template, per language, with `{company}` and `{link}` slots.
  */
 export interface BillingNoticeText {
   readonly text: PackLabel;
-  readonly whileProtected: PackLabel | null;
+  /**
+   * Read by nothing: no company keeps a launch price (`BM-42`). The India literal still carries
+   * it, as `null`, because an api of the release before requires the key in every pack it parses
+   * (`D396`).
+   */
+  readonly whileProtected?: PackLabel | null;
 }
 
 /**
@@ -19,28 +22,21 @@ export interface BillingNoticeText {
  */
 export type BillingNoticeTexts = Readonly<Partial<Record<BillingNotice, BillingNoticeText>>>;
 
-const FORFEITS = {
-  en: " If the plan halts, your launch price ends and a restart bills at today's prices.",
-  hi: ' अगर प्लान रुक गया, तो आपकी लॉन्च कीमत खत्म हो जाएगी और दोबारा शुरू करने पर आज की कीमत लगेगी।',
-  mr: ' प्लॅन थांबल्यास तुमची लॉन्च किंमत संपेल आणि पुन्हा सुरू केल्यावर आजची किंमत लागेल.',
-} as const;
-
-const FORFEITED = {
-  en: " Your launch price has ended; reactivating bills at today's prices.",
-  hi: ' आपकी लॉन्च कीमत खत्म हो गई है; दोबारा शुरू करने पर आज की कीमत लगेगी।',
-  mr: ' तुमची लॉन्च किंमत संपली आहे; पुन्हा सुरू केल्यावर आजची किंमत लागेल.',
-} as const;
-
 type Words = { readonly en: string; readonly hi: string; readonly mr: string };
 
-/** A notice's facts, then — for a protected company — the forfeiture, then the one way out. */
-function told(facts: Words, way: Words, forfeiture: Words | null): BillingNoticeText {
-  const join = (extra: Words | null): PackLabel => ({
-    en: `${facts.en}${extra?.en ?? ''} ${way.en}`,
-    hi: `${facts.hi}${extra?.hi ?? ''} ${way.hi}`,
-    mr: `${facts.mr}${extra?.mr ?? ''} ${way.mr}`,
-  });
-  return { text: join(null), whileProtected: forfeiture === null ? null : join(forfeiture) };
+/**
+ * A notice's facts, then the one way out. `whileProtected` is `null` on every notice: an api of the
+ * release before texts it to a company it thinks protected, so it must add nothing (`D396`).
+ */
+function told(facts: Words, way: Words): BillingNoticeText {
+  return {
+    text: {
+      en: `${facts.en} ${way.en}`,
+      hi: `${facts.hi} ${way.hi}`,
+      mr: `${facts.mr} ${way.mr}`,
+    },
+    whileProtected: null,
+  };
 }
 
 const PAY_OR_UPDATE: Words = {
@@ -68,7 +64,6 @@ export const IN_BILLING_NOTICE_TEXTS: BillingNoticeTexts = {
       mr: 'HelioGrid: {company} च्या प्लॅनचे पेमेंट अयशस्वी झाले.',
     },
     PAY_OR_UPDATE,
-    FORFEITS,
   ),
   payment_reminder: told(
     {
@@ -77,7 +72,6 @@ export const IN_BILLING_NOTICE_TEXTS: BillingNoticeTexts = {
       mr: 'HelioGrid: {company} च्या प्लॅनचे पेमेंट अजून बाकी आहे. सध्या सर्व काही चालू आहे.',
     },
     PAY_OR_UPDATE,
-    FORFEITS,
   ),
   metered_paused: told(
     {
@@ -86,7 +80,6 @@ export const IN_BILLING_NOTICE_TEXTS: BillingNoticeTexts = {
       mr: 'HelioGrid: {company} च्या प्लॅनचे पेमेंट झालेले नाही, म्हणून व्हॉइस एजंट, AI रूफ डिटेक्शन आणि टीम आमंत्रणे थांबवली आहेत. बाकी सर्व काही चालू आहे.',
     },
     PAY_OR_UPDATE,
-    FORFEITS,
   ),
   final_warning: told(
     {
@@ -95,7 +88,6 @@ export const IN_BILLING_NOTICE_TEXTS: BillingNoticeTexts = {
       mr: 'HelioGrid: पेमेंट न झाल्यास {company} चा प्लॅन एका दिवसात थांबेल. तुमचा डेटा सुरक्षित राहील आणि वाचता येईल.',
     },
     { en: 'Pay now: {link}', hi: 'अभी भुगतान करें: {link}', mr: 'आता पेमेंट करा: {link}' },
-    FORFEITS,
   ),
   halted: told(
     {
@@ -108,7 +100,6 @@ export const IN_BILLING_NOTICE_TEXTS: BillingNoticeTexts = {
       hi: 'एक भुगतान से दोबारा शुरू करें: {link}',
       mr: 'एका पेमेंटने पुन्हा सुरू करा: {link}',
     },
-    FORFEITED,
   ),
   win_back: told(
     {
@@ -121,7 +112,6 @@ export const IN_BILLING_NOTICE_TEXTS: BillingNoticeTexts = {
       hi: 'कभी भी एक भुगतान से, आज की कीमत पर, दोबारा शुरू करें: {link}',
       mr: 'कधीही एका पेमेंटने, आजच्या किमतीवर, पुन्हा सुरू करा: {link}',
     },
-    null,
   ),
   trial_half_way: told(
     {
@@ -130,7 +120,6 @@ export const IN_BILLING_NOTICE_TEXTS: BillingNoticeTexts = {
       mr: 'HelioGrid: {company} च्या फ्री ट्रायलचे 7 दिवस बाकी आहेत.',
     },
     PICK_A_PLAN,
-    null,
   ),
   trial_ending: told(
     {
@@ -139,7 +128,6 @@ export const IN_BILLING_NOTICE_TEXTS: BillingNoticeTexts = {
       mr: 'HelioGrid: {company} ची फ्री ट्रायल 2 दिवसांत संपेल.',
     },
     PICK_A_PLAN,
-    null,
   ),
   trial_ended: told(
     {
@@ -148,6 +136,5 @@ export const IN_BILLING_NOTICE_TEXTS: BillingNoticeTexts = {
       mr: 'HelioGrid: {company} ची फ्री ट्रायल संपली आहे. तुमचा डेटा सुरक्षित आहे आणि वाचता येतो.',
     },
     PICK_A_PLAN,
-    null,
   ),
 };

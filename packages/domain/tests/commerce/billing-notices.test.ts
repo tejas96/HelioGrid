@@ -3,13 +3,7 @@ import { IN_BILLING_NOTICE_TEXTS } from '../../src/calling/billing-notice-texts'
 import { IN_CALLING_RULES } from '../../src/calling/pack';
 import { CALLING_RULES_PACK_SCHEMA } from '../../src/calling/pack-schema';
 import { billingNoticeMessage } from '../../src/calling/platform-message';
-import {
-  BILLING_NOTICES,
-  disclosesForfeiture,
-  type NoticeClock,
-  nextNotice,
-} from '../../src/commerce/billing-notices';
-import { protectionEndsAt } from '../../src/commerce/grandfathering';
+import { BILLING_NOTICES, type NoticeClock, nextNotice } from '../../src/commerce/billing-notices';
 import { pauseNoticeOf } from '../../src/commerce/pause-notice';
 import { MS_PER_DAY } from '../../src/format/zone';
 
@@ -136,13 +130,6 @@ describe('nextNotice — the trial nudges (M12-42)', () => {
   });
 });
 
-describe('protectionEndsAt — the horizon in calendar months (BM-42)', () => {
-  it('lands on the same day, or the shorter month’s last', () => {
-    expect(protectionEndsAt(Date.UTC(2026, 0, 15, 8), 24)).toBe(Date.UTC(2028, 0, 15, 8));
-    expect(protectionEndsAt(Date.UTC(2026, 0, 31), 1)).toBe(Date.UTC(2026, 1, 28));
-  });
-});
-
 describe('the pack’s SMS texts (M12-40, M12-41)', () => {
   it("the day-4 pack text was written for the matrix's paused set", () => {
     expect(pauseNoticeOf('past_due_metered_paused').paused).toEqual([
@@ -155,29 +142,26 @@ describe('the pack’s SMS texts (M12-40, M12-41)', () => {
     );
   });
 
-  it('carries every notice in every language, a protected text exactly where one is owed', () => {
+  it('carries every notice in every language, and no text speaks of a launch price', () => {
     for (const notice of BILLING_NOTICES) {
-      const registered = IN_BILLING_NOTICE_TEXTS[notice];
-      expect(registered, notice).toBeDefined();
-      for (const label of [registered?.text, registered?.whileProtected ?? registered?.text]) {
-        expect(Object.keys(label ?? {}).sort(), notice).toEqual(['en', 'hi', 'mr']);
-      }
-      expect(registered?.whileProtected !== null, notice).toBe(disclosesForfeiture(notice));
+      const text = IN_BILLING_NOTICE_TEXTS[notice]?.text;
+      expect(Object.keys(text ?? {}).sort(), notice).toEqual(['en', 'hi', 'mr']);
+      expect(text?.en, notice).not.toMatch(/launch price/i);
+      // An api of the release before still texts this one; it must say nothing either (`D396`).
+      expect(IN_BILLING_NOTICE_TEXTS[notice]?.whileProtected, notice).toBeNull();
     }
   });
 
   it('fills the company and the link, and sends nothing a pack has not registered', () => {
     const variables = { company: 'Surya Solar', link: 'https://app.example/more/billing' };
-    expect(
-      billingNoticeMessage(IN_CALLING_RULES, 'halted', true, 'en', variables),
-    ).toMatchInlineSnapshot(
-      `"HelioGrid: Surya Solar's plan is halted because it is unpaid. Reading, exports, customer links and billing still work. Your launch price has ended; reactivating bills at today's prices. Reactivate with one payment: https://app.example/more/billing"`,
+    expect(billingNoticeMessage(IN_CALLING_RULES, 'halted', 'en', variables)).toMatchInlineSnapshot(
+      `"HelioGrid: Surya Solar's plan is halted because it is unpaid. Reading, exports, customer links and billing still work. Reactivate with one payment: https://app.example/more/billing"`,
     );
     const unregistered = {
       ...IN_CALLING_RULES,
       messaging: { ...IN_CALLING_RULES.messaging, billingNotices: {} },
     };
-    expect(billingNoticeMessage(unregistered, 'halted', false, 'en', variables)).toBeNull();
+    expect(billingNoticeMessage(unregistered, 'halted', 'en', variables)).toBeNull();
   });
 
   it('reads a stored pack that predates the texts', () => {
