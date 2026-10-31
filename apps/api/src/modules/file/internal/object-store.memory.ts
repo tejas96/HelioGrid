@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import type {
   DownloadLinkRequest,
   ObjectStore,
+  PutObjectRequest,
   SignedUpload,
   StoredObject,
   UploadLinkRequest,
@@ -59,6 +60,14 @@ export class MemoryObjectStore implements ObjectStore {
     const bytes = this.objects.get(key);
     if (bytes === undefined) throw new Error(`nothing is stored under ${key}`);
     return bytes.slice();
+  }
+
+  async put(request: PutObjectRequest): Promise<void> {
+    this.answer();
+    if (sha256Of(request.bytes) !== request.checksumSha256) {
+      throw new Error(`the store refused ${request.key}: its checksum does not match`);
+    }
+    this.objects.set(request.key, request.bytes.slice());
   }
 
   /** The client's PUT through a signed link. False where a real store would refuse the bytes. */

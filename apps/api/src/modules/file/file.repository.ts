@@ -6,7 +6,7 @@ import type { Act } from '../../common/auth/session-context';
 import { type CreationKey, type Keyed, replayOf } from '../../common/creation-key';
 import { lockCreationKey } from '../../common/db/creation-key-lock';
 import { TENANT_DB } from '../../common/db/tenant.token';
-import { objectKeyOf } from './internal/object-key';
+import { documentKeyOf, objectKeyOf } from './internal/object-key';
 
 export interface FileRow {
   readonly id: string;
@@ -17,7 +17,8 @@ export interface FileRow {
   readonly contentType: FileContentType;
   readonly byteSize: number;
   readonly checksumSha256: string;
-  readonly uploadedBy: string;
+  /** Null for a document the platform made itself. */
+  readonly uploadedBy: string | null;
   readonly uploadedAt: Date | null;
 }
 
@@ -83,6 +84,14 @@ export class FileRepository {
     });
   }
 
+  /** Whether a declaration with this key was already made — a retry, which no gate refuses (`F4-07`). */
+  async declaredWithKey(tenantId: string, key: CreationKey): Promise<boolean> {
+    const earlier = await this.db.withTenantTransaction(tenantId, (tx) =>
+      madeWithKey(tx, tenantId, key),
+    );
+    return earlier !== null;
+  }
+
   async find(tenantId: string, id: string): Promise<FileRow | null> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
       const [row] = await tx
@@ -91,6 +100,66 @@ export class FileRepository {
         .where(and(eq(file.tenantId, tenantId), eq(file.id, id)))
         .limit(1);
       return row ?? null;
+    });
+  }
+
+  /** The row of the document kept for this record, if any: its id, else `null`. */
+  async documentOf(
+    tenantId: string,
+    provider: StorageProvider,
+    subjectKind: SubjectKind,
+    subjectRef: string,
+  ): Promise<string | null> {
+    const externalId = documentKeyOf(tenantId, subjectKind, subjectRef);
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const [kept] = await tx
+        .select({ id: file.id })
+        .from(file)
+        .where(
+          and(
+            eq(file.tenantId, tenantId),
+            eq(file.provider, provider),
+            eq(file.externalId, externalId),
+          ),
+        )
+        .limit(1);
+      return kept?.id ?? null;
+    });
+  }
+
+  /**
+   * The row of a document the platform made and already stored: no uploader, confirmed as it is
+   * written. Its key is its record's, so a step run again finds the row the first run wrote.
+   */
+  async keepDocument(tenantId: string, toKeep: DocumentToKeep, now: number): Promise<string> {
+    const externalId = documentKeyOf(tenantId, toKeep.subjectKind, toKeep.subjectRef);
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const [kept] = await tx
+        .insert(file)
+        .values({
+          tenantId,
+          ...toKeep,
+          externalId,
+          uploadedBy: null,
+          declaredAt: new Date(now),
+          uploadedAt: new Date(now),
+        })
+        .onConflictDoNothing({ target: [file.tenantId, file.provider, file.externalId] })
+        .returning({ id: file.id });
+      if (kept) return kept.id;
+      const [earlier] = await tx
+        .select({ id: file.id })
+        .from(file)
+        .where(
+          and(
+            eq(file.tenantId, tenantId),
+            eq(file.provider, toKeep.provider),
+            eq(file.externalId, externalId),
+          ),
+        )
+        .limit(1);
+      if (!earlier) throw new Error(`no file row kept for ${externalId}`);
+      return earlier.id;
     });
   }
 
@@ -115,6 +184,16 @@ export class FileRepository {
       return already;
     });
   }
+}
+
+/** A document the platform made, kept under its record's one key. */
+export interface DocumentToKeep {
+  readonly subjectKind: SubjectKind;
+  readonly subjectRef: string;
+  readonly provider: StorageProvider;
+  readonly contentType: FileContentType;
+  readonly byteSize: number;
+  readonly checksumSha256: string;
 }
 
 async function madeWithKey(

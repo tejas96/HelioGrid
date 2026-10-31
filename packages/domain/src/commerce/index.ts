@@ -23,7 +23,26 @@
  * consumer reads the shape, never the exception behind it.
  */
 
-export { CAP_GRACE_DAYS, CAP_WARNING_PERCENT, capWarningReached } from './caps';
+export type {
+  BillingNotice,
+  LadderStart,
+  NoticeClock,
+  NoticeDecision,
+  NoticeLadder,
+  ScheduledNotice,
+} from './billing-notices';
+export {
+  BILLING_NOTICES,
+  ladderBeginsAt,
+  ladderOf,
+  ladderStartOf,
+  nextNotice,
+  TRIAL_NUDGE_LEAD_DAYS,
+} from './billing-notices';
+export type { CapReading, CapStep } from './caps';
+export { CAP_GRACE_DAYS, CAP_WARNING_PERCENT, capStepOf, capWarningReached } from './caps';
+export type { ChargeFailed, ChargeStanding, ChargeSucceeded, SuccessEffect } from './charges';
+export { failureMoves, successEffect } from './charges';
 export type {
   AbsorbedCost,
   FreeUpstream,
@@ -60,9 +79,55 @@ export type {
   TrancheTemplateInForce,
 } from './effective-settings';
 export { absentFacts, resolveEffectiveSettings, SETTING_SOURCES } from './effective-settings';
-export { appliesImmediately, forfeitsPriceProtection } from './grandfathering';
+export type {
+  Entitlement,
+  EntitlementCredit,
+  EntitlementKey,
+  EntitlementLimitKind,
+  EntitlementOverrideKind,
+  EntitlementSource,
+} from './entitlements';
+export {
+  bookEntitlements,
+  creditRefusal,
+  ENTITLEMENT_KEYS,
+  ENTITLEMENT_LIMIT_KINDS,
+  ENTITLEMENT_OVERRIDE_KINDS,
+  ENTITLEMENT_SOURCES,
+  extendedTrialEndsAt,
+  limitOf,
+  storedLimit,
+  TRIAL_EXTENSION_DAYS,
+  withCredits,
+} from './entitlements';
+export type { InvoiceKind, InvoiceStatus } from './invoices';
+export { INVOICE_KINDS, INVOICE_STATUSES } from './invoices';
+export type { DueTimedCause, SubscriptionCause, SubscriptionClock } from './lifecycle';
+export {
+  billingPhaseAt,
+  dueTimedCause,
+  ENTITLEMENT_BUFFER_DAYS,
+  entitledUntil,
+  METERED_PAUSE_DAY,
+  nextState,
+  PAST_DUE_GRACE_DAYS,
+  pastDueHaltsAt,
+  SUBSCRIPTION_CAUSES,
+  trialEndsAtFor,
+} from './lifecycle';
 export type { Meter } from './meters';
 export { METERS } from './meters';
+export type { AddOnVerdict, OverageAddOn, OverageAddOnStatus } from './overage';
+export {
+  ADD_ON_LEAD_DAYS,
+  billedQuantityOf,
+  OVERAGE_ADDON_STATUSES,
+  OVERAGE_REACH_DAYS,
+  OVERAGE_SETTLE_DAYS,
+  UnbillableMeter,
+} from './overage';
+export type { PauseNotice, ResolvingAct } from './pause-notice';
+export { pauseNoticeOf, RESOLVING_ACTS } from './pause-notice';
 export type { ProposalCover, ProposalSection } from './proposal-template-defaults';
 export {
   DEFAULT_SECTIONS_INCLUDED,
@@ -103,6 +168,7 @@ export {
   templateWritesOf,
   termsRefusal,
 } from './proposal-template-page';
+export { appliesImmediately } from './repricing';
 export type { RichTextBlock, RichTextSpan, RichTextValue } from './rich-text';
 export { richTextParagraphs } from './rich-text';
 export type { BillingCapability, BillingPhase, CapabilityStanding } from './soft-block';
@@ -114,7 +180,7 @@ export {
   STATE_CAPABILITY_MATRIX,
 } from './soft-block';
 export type { BillingState } from './states';
-export { BILLING_STATES } from './states';
+export { BILLING_STATES, LIVE_BILLING_STATES } from './states';
 export type { CountedCreation, Tier, TierCapacity, TierLimit } from './tiers';
 export { COUNTED_CREATIONS, TIERS, tierBand } from './tiers';
 export type { TimelinePhase } from './timeline-template-defaults';
@@ -155,3 +221,13 @@ export {
   trancheWriteOf,
 } from './tranche-template-page';
 export { isNonPaying, TRIAL_DAYS } from './trial';
+export type { BilledLedgerMeter, CostLine, LedgerMeter } from './usage';
+export {
+  BILLED_LEDGER_METERS,
+  COST_LINES,
+  isBilledMeter,
+  LEDGER_METERS,
+  METER_UNITS,
+  storageRefuses,
+  usagePeriodKey,
+} from './usage';

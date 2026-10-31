@@ -2,10 +2,21 @@ import { Module } from '@nestjs/common';
 import { LoggerModule } from 'nestjs-pino';
 import { TEMPORAL_WORKER_REGISTRATIONS } from './common/temporal/temporal.tokens';
 import { TemporalWorkerHost } from './common/temporal/temporal.worker';
+import {
+  billingNoticesWorkerRegistration,
+  billingOverageWorkerRegistration,
+  billingReconcileWorkerRegistration,
+  billingWorkerRegistration,
+} from './modules/billing/billing.public';
 import { catalogWorkerRegistration } from './modules/catalog/catalog.public';
+import {
+  documentRenderWorkerRegistration,
+  invoiceDocumentWorkerRegistration,
+} from './modules/documents/documents.public';
 import { outboxWorkerRegistration } from './modules/outbox/outbox.public';
 import { platformWorkerRegistration } from './modules/platform/platform.public';
 import { teamWorkerRegistration } from './modules/team/team.public';
+import { usageWorkerRegistration } from './modules/usage/usage.public';
 
 /**
  * Orchestration wiring — TEMPORAL (ADR-0025).
@@ -36,6 +47,13 @@ import { teamWorkerRegistration } from './modules/team/team.public';
         outboxWorkerRegistration,
         catalogWorkerRegistration,
         teamWorkerRegistration,
+        billingWorkerRegistration,
+        billingReconcileWorkerRegistration,
+        billingNoticesWorkerRegistration,
+        billingOverageWorkerRegistration,
+        invoiceDocumentWorkerRegistration,
+        documentRenderWorkerRegistration,
+        usageWorkerRegistration,
       ],
     },
     TemporalWorkerHost,

@@ -17,6 +17,8 @@ export const TWO_TYPES: TaxPack = {
       pattern: '^[0-9]{4}$',
       capturedAt: 'conversion',
       format: { en: '4 digits' },
+      placeAt: null,
+      name: null,
     },
   ],
 };

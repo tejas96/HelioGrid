@@ -2193,16 +2193,16 @@ Nothing below is renumbered.*
 | M12-06 | P0 | mixed | SCR-SHELL-06 · +non-UI: two-phase 7-day grace timer; only metered features pause day 4 | T-SHELL-006, T-M12-005 |
 | M12-07 | P0 | policy | policy | T-M12-005 |
 | M12-08 | P0 | mixed | SCR-M12-02 · +non-UI: new gateway subscription created, never resumed; entitlements… | T-M12-002 |
-| M12-09 | P0 | engine | engine | T-M12-006 |
+| M12-09 | P0 | engine | engine | T-M12-006, T-M12-007, T-M12-011, T-M12-012 |
 | M12-10 | P0 | integration | integration | T-M12-007 |
 | M12-11 | P0 | integration | integration | T-M12-007 |
 | M12-12 | P1 | policy | policy | T-M12-007 |
-| M12-13 | P1 | policy | policy | T-M12-005 |
+| M12-13 | P1 | policy | policy | T-M12-005, T-M12-007 |
 | M12-14 | P0 | policy | policy | T-M12-005 |
 | M12-15 | P0 | policy | policy | LAW |
 | M12-16 | P0 | engine | engine | T-M12-008 |
 | M12-17 | P0 | policy | policy | T-M12-008 |
-| M12-18 | P0 | engine | engine | T-M12-008 |
+| M12-18 | P0 | engine | engine | T-M12-010 |
 | M12-19 | P1 | policy | policy | T-M12-008 |
 | M12-20 | P0 | policy | policy | LAW |
 | M12-21 | P0 | mixed | SCR-SHELL-06 · +non-UI: BM-35 matrix gates every mutation; typed entitlement-blocked error | T-SHELL-006, T-M12-009 |
@@ -2211,7 +2211,7 @@ Nothing below is renumbered.*
 | M12-24 | P0 | policy | policy | LAW |
 | M12-25 | P0 | policy | policy | LAW |
 | M12-26 | P0 | policy | policy | LAW |
-| M12-27 | P0 | policy | policy | T-M12-008 |
+| M12-27 | P0 | policy | policy | T-M12-009 |
 | M12-28 | P0 | policy | policy | LAW |
 | M12-29 | P0 | policy | policy | LAW |
 | M12-30 | P0 | mixed | SCR-M12-04, SCR-SHELL-06 · +non-UI: 80%/100%/7-day-grace cap ladder; counts reset on billing anchor, no… | T-SHELL-006, T-M12-009 |
@@ -2223,11 +2223,11 @@ Nothing below is renumbered.*
 | M12-36 | P1 | screen | SCR-M12-04 | T-M12-004 |
 | M12-37 | P1 | engine | engine | T-M12-010 |
 | M12-38 | P0 | policy | policy | LAW |
-| M12-39 | P0 | mixed | SCR-SHELL-06 · +non-UI: day 0/2/4/6/7 rung timers, post-halt weekly then monthly; forfeiture… | T-SHELL-006, T-M12-011 |
+| M12-39 | P0 | mixed | SCR-SHELL-06 · +non-UI: day 0/2/4/6/7 rung timers, post-halt weekly then monthly | T-SHELL-006, T-M12-011 |
 | M12-40 | P0 | integration | integration | T-M12-011 |
 | M12-41 | P0 | policy | policy | T-M12-011 |
 | M12-42 | P1 | engine | engine | T-M12-011 |
-| M12-43 | P1 | engine | engine | T-M12-006 |
+| M12-43 | P1 | engine | engine | T-M12-005, T-M12-007 |
 | M12-44 | P0 | engine | engine | T-M12-012 |
 | M12-45 | P0 | policy | policy | T-M12-012 |
 | M12-46 | P0 | mixed | SCR-M12-02 · +non-UI: export ungated in every billing state including halted | T-M12-002 |

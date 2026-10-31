@@ -3,6 +3,7 @@ import { Controller, Inject, Req } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
+import { RouteBillingMap } from '../../common/auth/route-billing';
 import { tenantIdOf } from '../../common/auth/session-context';
 import { SettingsOnboardingService } from './settings.onboarding.service';
 
@@ -18,6 +19,7 @@ export class SettingsOnboardingController {
   @TsRestHandler(onboardingContract)
   // The corridor is the owner's (`F2.M01`): the steps are theirs to answer, and a prompt-point
   // asks for a setting only they may give.
+  @RouteBillingMap(onboardingContract, { recordStep: 'ungated', promptPoint: 'ungated' })
   @RouteAccessMap(onboardingContract, { progress: MANAGE, recordStep: MANAGE, promptPoint: MANAGE })
   handler(@Req() req: Request) {
     return tsRestHandler(onboardingContract, {

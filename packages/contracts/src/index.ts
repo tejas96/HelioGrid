@@ -1,6 +1,7 @@
 import { initContract } from '@ts-rest/core';
 import { auditContract } from './audit';
 import { authContract } from './auth';
+import { billingContract } from './billing';
 import { catalogContract } from './catalog';
 import { catalogImportContract } from './catalog-import';
 import { catalogReleasesContract } from './catalog-releases';
@@ -20,6 +21,7 @@ import { userContract } from './user';
 export * from './audit';
 // The front door (`T-M01-025`): a phone and a code, the session, the token life.
 export * from './auth';
+export * from './billing';
 // The company's identity facts (`T-M01-026`): the profile and its tax registrations.
 export * from './business-profile';
 // The catalog (`T-M01-027`): its closed sets, the resolved read and the tenant's writes.
@@ -52,6 +54,7 @@ export * from './notification';
 // The setup corridor (`T-M01-026`): resume, and the one prompt-point per skipped fact.
 export * from './onboarding';
 // The platform message rail (the code and the invite), the session projection and its port.
+export * from './ports/billing-gateway';
 export * from './ports/identity-provider';
 export * from './ports/message-delivery';
 export * from './ports/object-store';
@@ -82,6 +85,7 @@ export const apiContract = c.router(
   {
     audit: auditContract,
     auth: authContract,
+    billing: billingContract,
     catalog: catalogContract,
     catalogImport: catalogImportContract,
     catalogReleases: catalogReleasesContract,

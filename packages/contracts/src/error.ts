@@ -1,3 +1,4 @@
+import { BILLING_CAPABILITIES, BILLING_PHASES, ENTITLEMENT_KEYS } from '@heliogrid/domain';
 import { z } from 'zod';
 import { extensibleEnum } from './common';
 
@@ -86,14 +87,68 @@ export type ErrorEnvelope = z.infer<typeof genericErrorSchema>;
 export const openErrorEnvelopeSchema = errorEnvelope(z.string());
 
 /**
+ * What a refused mutation was refused for (`M12-21`, `M12-31`): the matrix row it belongs to, and
+ * either the billing phase that pauses it — with the moment a `past_due` company halts, the one
+ * dated fact that phase owns — or the full cap and the moment its cycle resets, if one does. What paused and
+ * what still works are NOT carried: a reader derives both from the phase with `pauseNoticeOf`, so
+ * the words cannot drift from the gate.
+ */
+export const entitlementBlockedSchema = z.discriminatedUnion('reason', [
+  z.object({
+    reason: z.literal('billing_state'),
+    capability: z.enum(BILLING_CAPABILITIES),
+    phase: z.enum(BILLING_PHASES),
+    haltsAt: z.string().datetime().nullable(),
+  }),
+  z.object({
+    reason: z.literal('cap'),
+    capability: z.enum(BILLING_CAPABILITIES),
+    key: z.enum(ENTITLEMENT_KEYS),
+    /** `null` for a ceiling no cycle resets — design kW, storage — which only an upgrade lifts. */
+    resetsAt: z.string().datetime().nullable(),
+  }),
+]);
+export type EntitlementBlocked = z.infer<typeof entitlementBlockedSchema>;
+
+/** The refusal of a paused mutation: 403 `ENTITLEMENT_BLOCKED`, carrying what blocked it. */
+export const entitlementBlockedEnvelope = z.object({
+  error: z.object({
+    code: z.literal('ENTITLEMENT_BLOCKED'),
+    message: z.string(),
+    requestId: z.string(),
+    blocked: entitlementBlockedSchema,
+  }),
+});
+
+/**
+ * The 403 every route answers: the guard's `FORBIDDEN`, or the billing gate's typed refusal. A
+ * route whose own 403 replaces the shared one names this too when its matrix row can pause.
+ */
+const forbiddenEnvelope = errorEnvelope(baseError('FORBIDDEN'));
+
+/**
+ * An interface, not an inferred type, because every route carries this 403: written out in full on
+ * each of them, the root router's type grows past what the compiler will serialize.
+ */
+export interface ForbiddenOrBlockedEnvelope
+  extends z.ZodUnion<[typeof forbiddenEnvelope, typeof entitlementBlockedEnvelope]> {}
+
+export const forbiddenOrBlockedEnvelope: ForbiddenOrBlockedEnvelope = z.union([
+  forbiddenEnvelope,
+  entitlementBlockedEnvelope,
+]);
+
+/**
  * What the api's shared edges send on every route, whatever the route declares itself: the request
- * check's 400, the guard's 403 and the opaque 500. Mounted once, as `commonResponses` on the root
+ * check's 400, the guards' 403 (`FORBIDDEN`, or the billing gate's `ENTITLEMENT_BLOCKED`) and the
+ * opaque 500. Mounted once, as `commonResponses` on the root
  * contract, so the spec and the typed client carry them on every operation; a route's own entry for
- * the same status wins, so a 403 it declares must still name `FORBIDDEN` for the guard's refusal.
+ * the same status wins, so a 403 it declares must still name `FORBIDDEN` for the guard's refusal,
+ * and the blocked envelope too when its billing row can pause.
  */
 export const sharedRefusals = {
   400: errorEnvelope(baseError('VALIDATION_FAILED')),
-  403: errorEnvelope(baseError('FORBIDDEN')),
+  403: forbiddenOrBlockedEnvelope,
   500: errorEnvelope(baseError('INTERNAL')),
 } as const;
 

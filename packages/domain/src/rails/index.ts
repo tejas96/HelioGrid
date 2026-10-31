@@ -10,6 +10,7 @@ export { collectionRoute, fitsPerDebitCap, mandateType } from './ladder';
 export { availablePaymentModes, paymentMode } from './modes';
 export type {
   BillingCycle,
+  CollectionKind,
   CollectionRoute,
   InvoiceRoute,
   LocalisationConstraint,
@@ -21,4 +22,10 @@ export type {
   RailCapability,
   TierBand,
 } from './pack';
-export { BILLING_CYCLES, IN_PAYMENT_RAILS, RAIL_CAPABILITIES, TIER_BANDS } from './pack';
+export {
+  BILLING_CYCLES,
+  COLLECTION_KINDS,
+  IN_PAYMENT_RAILS,
+  RAIL_CAPABILITIES,
+  TIER_BANDS,
+} from './pack';

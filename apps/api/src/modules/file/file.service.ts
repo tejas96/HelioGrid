@@ -35,6 +35,7 @@ import { PinoLogger } from 'nestjs-pino';
 import type { Act } from '../../common/auth/session-context';
 import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException } from '../../common/errors/contract-exception';
+import { UsageService } from '../billing/billing.public';
 import { FileRepository, type FileRow } from './file.repository';
 import { SUBJECT_LOOKUPS } from './internal/subject-lookup';
 
@@ -53,6 +54,7 @@ export class FileService {
     @Inject(FileRepository) private readonly files: FileRepository,
     @Inject(OBJECT_STORE) private readonly store: ObjectStore,
     @Inject(CreationReplies) private readonly replies: CreationReplies,
+    @Inject(UsageService) private readonly usage: UsageService,
     @Inject(PinoLogger) private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(FileService.name);
@@ -75,6 +77,10 @@ export class FileService {
     }
     const route = fileContract.declare;
     const key = creationKeyOf(headers, act.actorUserId, route, body);
+    // Issuing a NEW upload is storage's one gate (`M12-23`); a retry answers what it made first.
+    if (key === null || !(await this.files.declaredWithKey(tenantId, key))) {
+      await this.usage.refuseUploadOverStorage(tenantId);
+    }
     const declared = await this.files.declare(
       tenantId,
       { ...body, provider: this.store.provider },
@@ -127,7 +133,8 @@ export class FileService {
     now: number,
   ): Promise<FileDownload> {
     const row = await this.files.find(tenantId, id);
-    if (row === null) throw new NotFoundException();
+    // A document the platform made is served by its own record's route, never this one.
+    if (row === null || !isFileSubjectKind(row.subjectKind)) throw new NotFoundException();
     if (!mayReadFile(roles, ruleOf(row.subjectKind))) {
       throw new ForbiddenException('You may not read this file.');
     }

@@ -212,7 +212,7 @@ a gap.* Every row here cites `M12` for its mechanics, and those citations land o
 `T-M12-010` (`M12-33`) authors the per-meter rules — one ledger event per completed call, a
 detection billing only when a result was returned, storage as a nightly gauge, tracked-seat-months
 from the owner's toggles, per-channel send events — and (`M12-37`) the per-tenant quotas behind
-`BM-25`; `T-M12-009` authors storage enforcement on new uploads. So this task authors what a unit
+`BM-25`; `T-M12-010` authors storage enforcement on new uploads, beside the gauge it reads. So this task authors what a unit
 COSTS and what is never charged for at all, and never what counts one.
 **PRD rows:** BM-17, BM-18, BM-19, BM-20, BM-21, BM-22, BM-23, BM-24, BM-25
 
@@ -273,6 +273,7 @@ COSTS and what is never charged for at all, and never what counts one.
 **Type:** policy · **Tier:** P0
 **Status:** shipped (#36)
 **PRD rows:** BM-42
+**Replaced:** by owner ruling 2026-10-31 — no company keeps a signed-up price; `BM-42` now reprices every company at its next paid period, built by `T-M12-013`.
 
 **DONE WHEN:**
 

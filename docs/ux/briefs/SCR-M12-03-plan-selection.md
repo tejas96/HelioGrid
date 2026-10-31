@@ -93,7 +93,7 @@ most as ONE flowing line — `Limits — 500 kW · 300 proposals a month · 100 
 1. **The cycle-switch review** (`Growth · monthly to yearly`) is drawn with the upgrade's money block (owner ruling 2026-10-29; `M12-12`: a cycle switch follows the upgrade's mechanics). What changes: `Cycle · Monthly → Yearly`, `Price · ₹3,999 a month → ₹39,990 a year`, `Unchanged · Every limit`. Today: the part-cycle line, its GST and `Total today · ₹0`, with its `Derivation` showing the working — 16 days left at yearly's ₹109.56 a day against monthly's ₹133.30 a day leaves nothing to pay, and the product makes no mid-cycle refund. Then `Yearly starts · 1 Oct 2026` and `From then, a year · ₹47,188.20`. Act `Switch to yearly`, line `Paid on your provider's own page when it starts.`
 2. **A downgrade with nothing over the limits** holds ONE row, `Over Starter's limits · Nothing`, where the blocking block would stand.
 3. **A trial tenant's cards carry no relation chip** (`Your plan`, `Upgrade`, `Downgrade`); checkout-failed is drawn on a trialing tenant, whose `Your plan` stays the unchanged trial.
-4. **After a lapse** the region reads `Halted` and `Halted since`, with `SCR-SHELL-06`'s halted strip without its act; prices after a lapse add `Today's prices — your launch price ended with the lapse.`
+4. **After a lapse** the region reads `Halted` and `Halted since`, with `SCR-SHELL-06`'s halted strip without its act. Its prices are today's book, as every company's are, so no line speaks of a launch price (`M12-57`, owner ruling 2026-10-31).
 5. **Only a region that prints a price carries the source line**; the Price row reads `₹3,999 / mo + GST`.
 6. **Comparison sets:** `Included` — AI detections · Voice minutes · Storage; `Extra charges` — AI detections `₹10 each` · Voice minutes `₹6 / min`. A non-Owner sees `Limits` and `Included` only.
 7. **Layout.** The default frame is an active Growth tenant with nothing picked, and no strip. The plans region is flat; the cards are the surfaces. The one ask sits in `Your plan`'s header; at 1536 `Your plan` is three cells in one row, the relation chip sits under the card title, and Enterprise is a fourth-column `Card` with `Talk to sales` inside it. The review panel is non-modal under the header. Proration is days left over days in the cycle (16 of 30).
@@ -129,7 +129,7 @@ Preview mechanics (`docs/prd/modules/M12-platform-billing.md` §M12.8 behavior d
 - **empty** — no state where plan choices are absent (plan selection is available in every billing state, M12-55); if a market book has no sellable value for a slot it cannot be sold (M12 §M12.5 edge case; `BM-41`'s slots) — decided here: there is no empty state; such a plan keeps its place, its price is a named gap, and its act is absent.
 - **error** — preview computation or book load failed; honest failure, no confirm without a preview (the preview is the consent surface, M12-49).
 - **trial-expiry-entry** — arrived from expiry: the plan-pick moment; read + export still work behind it; expiry must convert, never destroy (M12-53). `SCR-SHELL-06`'s strip shows without its act, because its act leads here; the same holds after a lapse.
-- **post-lapse-reprice-at-current-book** — arrived after a lapse, the guaranteed way back from `halted`/`expired`/`cancelled` (M12-55): for a tenant who was inside a protection horizon, the lapse has ended the price protection, so the prices on this screen are the **current list book's rows**, never the signed-up rows (M12-57 mechanics; the forfeiture disclosure their dunning copy already carried from day 0, M12-39 — SCR-SHELL-06). The screen names the current book's price as the price; nothing here implies the old price survives the lapse, and no win-back framing on this surface may suggest otherwise (M12-41 context). For an unprotected tenant this is the ordinary plan pick and no repricing statement applies.
+- **post-lapse-reprice-at-current-book** — arrived after a lapse, the guaranteed way back from `halted`/`expired`/`cancelled` (M12-55): the prices are the current list book's rows, as for every company — no company keeps a signed-up price (M12-57, owner ruling 2026-10-31). Nothing on this screen speaks of a launch price, an old price or its loss.
 - **upgrade-prorated-preview** — upgrade path: entitlements immediate, prorated delta for the remaining cycle billed as a one-time invoice, plan swaps at the boundary; cycle switches follow the same mechanics (M12-48).
 - **downgrade-blocked-preview** — usage exceeds the target tier's ceilings: the screen shows exactly what will be blocked before confirming; over-ceiling designs remain readable and exportable forever (M12-49). A `Today · Nothing to pay` row follows `This cycle · No refund`.
 - **preview-recomputed-changed** — "the preview re-computes at confirmation time and again at the boundary; the tenant is told if the picture changed" (§M12.8 edge case, M12-49's honesty).
@@ -144,6 +144,12 @@ Preview mechanics (`docs/prd/modules/M12-platform-billing.md` §M12.8 behavior d
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `error`, `trial-expiry-entry`, `post-lapse-reprice-at-current-book`, `downgrade-blocked-preview`, `preview-recomputed-changed`, `checkout-handoff`, `checkout-failed-honest`, `yearly-selected`, `cycle-switch-review`, `downgrade-nothing-over`, `trial-expiry-review`, `compare-included`, `compare-extra-charges`.
 
+## Redesign owed
+
+- GST is drawn as a fact everywhere — the review's `GST 18%` row, `Prices exclude GST`, every Price row's `/ mo + GST` (rule 5) and every amount with GST added (each tier's month and Growth's year) — but the platform collects no GST until it registers (`F1-29`, owner ruling 2026-10-30): at the board's next redraw each draws both postures — the list price alone, with no GST row, while unregistered; the price + GST after.
+- The shared sample story's `₹4,718.82` follows `SCR-M12-02`'s redraw.
+- `post-lapse-reprice-at-current-book` draws the note `Today's prices — your launch price ended with the lapse.`, but no company keeps a launch price (`M12-57`, `BM-42`, owner ruling 2026-10-31): the board's next redraw drops that note and keeps the frame's prices.
+
 ## Data volume
 
 Design at the full four-tier, two-cycle choice (the book's published caps/bundles per tier — BM-41 context: ~a dozen values per tier), plus a downgrade preview built from real usage: multiple designs over the target kW ceiling listed as staying readable/exportable, a proposal count standing against caps of 30/300/1,500 per month, and every bundle that shrinks (detections, voice, storage, seats, sends). The blocked-list must stay honest and legible when several items block at once.
@@ -152,5 +158,5 @@ Design at the full four-tier, two-cycle choice (the book's published caps/bundle
 
 No figure on these screens carries a provenance tier label (owner ruling 2026-10-29, for billing only). Billing screens use plain "actual usage" language — the word "measured" never appears (owner ruling carried in M12-34).
 
-- Each region that prints a price names the list in one source line; after a lapse that line says which list the prices come from (M12-57, M12-39).
+- Each region that prints a price names the list in one source line: today's book, for every company (M12-57).
 - What is paid today shows its working in its `Derivation` (M12-48).

@@ -4,6 +4,7 @@ import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
 import { responseOf, setTokenCookie } from '../../common/auth/cookies';
+import { RouteBillingMap } from '../../common/auth/route-billing';
 import { actOf, sessionIdOf, sessionOf, tenantIdOf } from '../../common/auth/session-context';
 import { InvitationAnswersService } from './invitation.answers.service';
 import { InvitationService } from './invitation.service';
@@ -19,6 +20,13 @@ export class InvitationController {
   @TsRestHandler(invitationContract)
   // The tenant side is the team administrator's (`M01.2` permissions); the landing side is the
   // invited person's, who holds no session until they verify — the link's secret is the key.
+  @RouteBillingMap(invitationContract, {
+    create: 'team_invites',
+    revoke: 'ungated',
+    accept: 'ungated',
+    decline: 'ungated',
+    requestReinvite: 'ungated',
+  })
   @RouteAccessMap(invitationContract, {
     create: { capability: 'onboarding.manage_team' },
     list: { capability: 'onboarding.manage_team' },

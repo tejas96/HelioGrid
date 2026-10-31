@@ -3,6 +3,7 @@ import { Controller, Inject, Req } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
+import { RouteBillingMap } from '../../common/auth/route-billing';
 import { actOf, rolesOf, tenantIdOf } from '../../common/auth/session-context';
 import { CatalogReleasesService } from './catalog.releases.service';
 
@@ -16,6 +17,7 @@ export class CatalogReleasesController {
   @TsRestHandler(catalogReleasesContract)
   // Every door is the manage grant's (§M01.4): Finance's limited cell passes it to read the
   // prices a line carries, and the service refuses its publish (c6).
+  @RouteBillingMap(catalogReleasesContract, { publish: 'ungated' })
   @RouteAccessMap(catalogReleasesContract, {
     releases: MANAGE,
     release: MANAGE,

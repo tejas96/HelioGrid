@@ -18,6 +18,7 @@ import {
   setSessionCookie,
   setTokenCookie,
 } from '../../common/auth/cookies';
+import { RouteBillingMap } from '../../common/auth/route-billing';
 import { sessionIdOf, sessionOf } from '../../common/auth/session-context';
 import { ContractException } from '../../common/errors/contract-exception';
 import { AuthService } from './auth.service';
@@ -43,6 +44,14 @@ export class AuthController {
   ) {}
 
   @TsRestHandler(authContract)
+  @RouteBillingMap(authContract, {
+    requestOtp: 'ungated',
+    verifyOtp: 'ungated',
+    signInWithProvider: 'ungated',
+    refresh: 'ungated',
+    signOut: 'ungated',
+    signOutEverywhere: 'ungated',
+  })
   @RouteAccessMap(authContract, {
     requestOtp: 'public',
     verifyOtp: 'public',

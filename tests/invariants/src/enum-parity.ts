@@ -1,6 +1,9 @@
 import {
   auditActorKindSchema,
   auditEventTypeSchema,
+  billingCycleSchema,
+  billingNoticeSchema,
+  billingStateSchema,
   catalogAvailabilitySchema,
   catalogImportConflictAnswerSchema,
   catalogImportEntryPointSchema,
@@ -10,24 +13,34 @@ import {
   catalogImportStateSchema,
   catalogImportUnreadableReasonSchema,
   catalogProvenanceSchema,
+  collectionKindSchema,
   componentKindSchema,
+  entitlementLimitKindSchema,
+  entitlementOverrideKindSchema,
+  entitlementSourceSchema,
   fileContentTypeSchema,
   invitationStatusSchema,
+  invoiceKindSchema,
+  invoiceStatusSchema,
   loginProviderSchema,
   measurementSystemSchema,
   membershipStatusSchema,
   notificationTypeGroupSchema,
   notificationTypeSchema,
   otpChannelSchema,
+  overageAddOnStatusSchema,
   platformKindSchema,
   priceBookRateBasisSchema,
   pushPlatformSchema,
   releaseChangeKindSchema,
   rolePresetSchema,
   subjectKindSchema,
+  subscriptionCauseSchema,
   tenantSegmentSchema,
+  tierSchema,
   uiLanguageSchema,
 } from '@heliogrid/contracts';
+import { usageRecordWorkflow } from '@heliogrid/contracts/workflows';
 import postgres from 'postgres';
 
 /**
@@ -61,6 +74,37 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   audit_event_type: { options: auditEventTypeSchema.options, contract: 'auditEventTypeSchema' },
   audit_actor_kind: { options: auditActorKindSchema.options, contract: 'auditActorKindSchema' },
   subject_kind: { options: subjectKindSchema.options, contract: 'subjectKindSchema' },
+  billing_state: { options: billingStateSchema.options, contract: 'billingStateSchema' },
+  subscription_cause: {
+    options: subscriptionCauseSchema.options,
+    contract: 'subscriptionCauseSchema',
+  },
+  tier: { options: tierSchema.options, contract: 'tierSchema' },
+  billing_cycle: { options: billingCycleSchema.options, contract: 'billingCycleSchema' },
+  collection_kind: { options: collectionKindSchema.options, contract: 'collectionKindSchema' },
+  billing_notice: { options: billingNoticeSchema.options, contract: 'billingNoticeSchema' },
+  entitlement_source: {
+    options: entitlementSourceSchema.options,
+    contract: 'entitlementSourceSchema',
+  },
+  entitlement_limit_kind: {
+    options: entitlementLimitKindSchema.options,
+    contract: 'entitlementLimitKindSchema',
+  },
+  entitlement_override_kind: {
+    options: entitlementOverrideKindSchema.options,
+    contract: 'entitlementOverrideKindSchema',
+  },
+  invoice_kind: { options: invoiceKindSchema.options, contract: 'invoiceKindSchema' },
+  invoice_status: { options: invoiceStatusSchema.options, contract: 'invoiceStatusSchema' },
+  overage_addon_status: {
+    options: overageAddOnStatusSchema.options,
+    contract: 'overageAddOnStatusSchema',
+  },
+  usage_meter: {
+    options: usageRecordWorkflow.input.shape.meter.options,
+    contract: 'usageRecordWorkflow.input.meter',
+  },
   push_platform: {
     options: pushPlatformSchema.options,
     contract: 'pushPlatformSchema',

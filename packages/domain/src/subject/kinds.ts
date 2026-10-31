@@ -26,5 +26,11 @@ export const SUBJECT_KINDS = [
   'price_book_version',
   /** A company's catalog as a whole — what a supplier's price list is stored against (`M01-41`). */
   'catalog',
+  /** Support's audited grant on a company's limits or trial (`M12-19`). */
+  'entitlement_override',
+  /** One fired notice of the dunning ladder or a trial nudge (`M12-39`, `M12-42`). */
+  'dunning_event',
+  /** One platform invoice — what its PDF's file row is stored against (`M12-44`). */
+  'subscription_invoice',
 ] as const;
 export type SubjectKind = (typeof SUBJECT_KINDS)[number];

@@ -47,7 +47,7 @@ enforced here).
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | M12-01 | **Two money systems that never mix — this module is the platform side.** (1) Platform SaaS billing: the tenant pays us, on our merchant account, under this module. (2) Tenant customer-collections: the customer pays the EPC via the tenant's own gateway account, under `modules/M11`. The platform never touches tenant funds; no surface here shows a collections figure, no total mixes the two, and the vocabularies stay disjoint — *subscription, plan, invoice* here; *collections, tranches, receipts* there (`M11-02`'s reciprocal). | `SRC` — `DOC16.two-money-systems` (docs/16 §0; the collections half is `modules/M11`'s per Task 19); `BM-02` consumed | P0 |
-| M12-02 | **Every number this module enforces is `04-business-model.md`'s.** Tier names (`BM-11`), prices/caps/bundles (`BM-41` for the launch book), the meter list (`BM-16`–`BM-22`), the billing-state vocabulary (`BM-33`), the soft-block law and matrix (`BM-32`–`BM-36`), cap law with the 80% pre-warning (`BM-34`), trial law (`BM-28`–`BM-31`), grandfathering (`BM-42`) and the supplier-of-record posture (`BM-40`) are defined there once. This module adds transitions, timers, gates, screens and records — never a second definition of any fact. | `SRC` — `DOC16.pricing-single-source` (docs/16 §0: "one definition per fact"); `BM-09` consumed | P0 |
+| M12-02 | **Every number this module enforces is `04-business-model.md`'s.** Tier names (`BM-11`), prices/caps/bundles (`BM-41` for the launch book), the meter list (`BM-16`–`BM-22`), the billing-state vocabulary (`BM-33`), the soft-block law and matrix (`BM-32`–`BM-36`), cap law with the 80% pre-warning (`BM-34`), trial law (`BM-28`–`BM-31`), repricing (`BM-42`) and the supplier-of-record posture (`BM-40`) are defined there once. This module adds transitions, timers, gates, screens and records — never a second definition of any fact. | `SRC` — `DOC16.pricing-single-source` (docs/16 §0: "one definition per fact"); `BM-09` consumed | P0 |
 | M12-03 | **Billing is provider-neutral; the launch market's gateway is a reference implementation.** Subscription billing, mandates, hosted checkout and webhooks are capabilities behind provider-neutral billing ports; the billing schema is per-currency and provider-neutral, one currency per tenant (`F1-07`/`F1-27` consumed). The v1 reference implementation is Razorpay (`R4`, the IN rail) — named here once, as reference implementation only; another market adds adapters, never product change. | `SRC` — `R4` (docs/15 §1 — the M12 half; IN rail facts `F1-40`, Task 6); `DOC16.plan-objects` (provider-neutral note); vendor rule per Global Constraint §6 | P0 |
 
 **Behavior detail.** The separation is structural, not stylistic: M11's screens never render a
@@ -294,9 +294,9 @@ warning shown (meter) · overage accrual started.
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M12-39 | **The dunning ladder runs from the first failed charge, one rung per fact:** day 0 → `past_due`, banner + push + message ("payment failed, we'll retry — update your method here") · day 2 reminder · day 4 → metered features pause, and the message states **exactly what paused and what still works** · day 6 final warning with a one-tap pay link · day 7 → `halted`, and the message **confirms read + export + customer links + the billing screens (pay/upgrade/reactivate) still work** *(Final review: "billing screens" restored — `BM-32`'s always-works list is four items)* · post-halt weekly × 4, then monthly, indefinitely — reactivation always one payment away. **Grandfathering honesty (owner ruling 2026-08-04):** for a tenant inside a protection horizon, the ladder's copy from day 0 states plainly that a lapse to `cancelled`/`halted` **forfeits the launch-price guarantee** and reactivation prices at the current book — the no-surprise rule; win-back messages repeat it. | `SRC` — `DOC16.dunning-ladder` (docs/16 §7); forfeiture disclosure per owner ruling 2026-08-04 | P0 |
+| M12-39 | **The dunning ladder runs from the first failed charge, one rung per fact:** day 0 → `past_due`, banner + push + message ("payment failed, we'll retry — update your method here") · day 2 reminder · day 4 → metered features pause, and the message states **exactly what paused and what still works** · day 6 final warning with a one-tap pay link · day 7 → `halted`, and the message **confirms read + export + customer links + the billing screens (pay/upgrade/reactivate) still work** *(Final review: "billing screens" restored — `BM-32`'s always-works list is four items)* · post-halt weekly × 4, then monthly, indefinitely — reactivation always one payment away. *(Owner ruling 2026-10-31: no launch-price guarantee exists — BM-42 — so no rung discloses a forfeiture.)* | `SRC` — `DOC16.dunning-ladder` (docs/16 §7) | P0 |
 | M12-40 | **Dunning channels are the market pack's stack, and platform→tenant messaging is ours to send.** The IN stack: in-app banner (owner + managers), push, SMS on registered templates (`F1-38`), and a business-messaging utility template where the owner opted in. D32 constrains tenant→customer messaging only — it does not restrict the platform messaging its own tenants. A future market's pack names its own channel stack. | `SRC` — `DOC16.dunning-channels` (docs/16 §7; IN channel facts ride `F1-38`) | P0 |
-| M12-41 | **All dunning copy is honest about state — no data-deletion threats, ever, because nothing is deleted.** Copy names the state, the consequence that will actually occur, and the resolving action; pre-debit notifications are the gateway's and may be referenced, not imitated. Consequences that **will** occur include the grandfathering forfeiture where the tenant is protected (owner ruling 2026-08-04): dunning and win-back copy names the price-protection loss honestly, and win-back offers never imply the old price survives the lapse. | `SRC` — `DOC16.dunning-honesty` (docs/16 §7 — the copy/ladder half; the honesty law `F8-34`, Task 7); forfeiture honesty per owner ruling 2026-08-04 | P0 |
+| M12-41 | **All dunning copy is honest about state — no data-deletion threats, ever, because nothing is deleted.** Copy names the state, the consequence that will actually occur, and the resolving action; pre-debit notifications are the gateway's and may be referenced, not imitated. Win-back offers name today's prices (owner ruling 2026-10-31: no company keeps a signed-up price — BM-42). | `SRC` — `DOC16.dunning-honesty` (docs/16 §7 — the copy/ladder half; the honesty law `F8-34`, Task 7) | P0 |
 | M12-42 | **Trial nudges reuse the dunning pipeline:** day 7 ("half way"), day 12, day 14 (expiry) — same channels, same honesty. | `SRC` — `DOC16.trial-nudges` (docs/16 §7) | P1 |
 | M12-43 | **The billing timers are fixed product timers:** the trial-expiry sweep flips entitlements to the soft-block set (read + export always work); reconciliation runs its 6-hour cadence. Carried as product timers, not calendar language. | `SRC` — `DOC02.trigger-schedule` (docs/engineering/02 — the M12 half per Task 17's routing note) | P1 |
 
@@ -332,8 +332,8 @@ dunning cleared (at which rung) · trial nudge fired.
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M12-44 | **A tax-compliant invoice is generated per billing cycle, per the market's `pack.tax` declaration.** The canonical invoice is scheme-neutral: currency, subtotal, tax breakdown, total, the scheme's registration identifiers, scheme-tagged statutory extras, statuses issued / paid / failed / refunded, PDF attached. The IN instance rides `F1-28`/`F1-29`: our GSTIN and the tenant's (captured at conversion), place-of-supply logic, the SaaS service code at the scheme rate, for all tiers and overage add-ons. | `SRC` — `DOC16.gst-invoice` (docs/16 §9 — the invoice-mechanics half; the IN tax-scheme half is `F1-28`/`F1-29`, Task 6); `DOC04.invoices` (docs/04) | P0 |
-| M12-45 | **The platform is the supplier of record and the invoice says so.** Our registration, our remittance, our liability; the gateway is a gateway, never merchant-of-record. Invoice generation implements `BM-40`'s posture per market. | `SRC` — `DOC01.supplier-of-record` (docs/01 — the invoice-generation half; posture `BM-40`) | P0 |
+| M12-44 | **A tax-compliant invoice is generated per billing cycle, per the market's `pack.tax` declaration.** The canonical invoice is scheme-neutral: currency, subtotal, tax breakdown, total, the scheme's registration identifiers, scheme-tagged statutory extras, statuses issued / paid / failed / refunded, PDF attached. The IN instance rides `F1-28`/`F1-29`: our GSTIN and the tenant's (captured at conversion), place-of-supply logic, the SaaS service code at the scheme rate, for all tiers and overage add-ons. Before the platform's registration date the invoice is a plain invoice with no tax lines and no supplier registration (`F1-29`, owner ruling 2026-10-30). | `SRC` — `DOC16.gst-invoice` (docs/16 §9 — the invoice-mechanics half; the IN tax-scheme half is `F1-28`/`F1-29`, Task 6); `DOC04.invoices` (docs/04) | P0 |
+| M12-45 | **The platform is the supplier of record and the invoice says so.** Our registration, our remittance, our liability; the gateway is a gateway, never merchant-of-record. Invoice generation implements `BM-40`'s posture per market. Before it registers, the platform is still the seller, with no registration to print (`F1-29`, owner ruling 2026-10-30). | `SRC` — `DOC01.supplier-of-record` (docs/01 — the invoice-generation half; posture `BM-40`) | P0 |
 | M12-46 | **Invoices are exportable by the tenant in every billing state** — the read + export law applied to the bill itself. | `SRC` — `DOC16.invoices-exportable` (docs/16 §9) | P0 |
 
 **Behavior detail.** Invoices list: the plan line for the cycle, proration lines from upgrades
@@ -438,13 +438,13 @@ audit log. Trial nudges are §M12.6's (M12-42).
 **Analytics events:** trial started · nudge fired · extension granted · converted (tier,
 cycle) · expired.
 
-### M12.10 — Billing screens, reactivation surface & grandfathering mechanics
+### M12.10 — Billing screens, reactivation surface & repricing mechanics
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | M12-55 | **The billing screens are real, complete, and available in every state:** current plan and cycle with the book's published caps/bundles; plan selection; mandate/payment-method setup and update; invoice list with PDFs; the usage screen (§M12.5); dunning state and history; cancel; reactivate. In `halted`/`expired`/`cancelled` these screens are the guaranteed way back (`BM-32`'s fourth always-on row, enforced here). | `SRC` — `UXG-13` (ux-gap register — the real billing suite; the D26-era mock is superseded); `DOC16.softblock.always-on` (billing-screens row) | P0 |
 | M12-56 | **Managing billing is EPC Owner-only; seeing state is everyone's.** Every billing act rides `F2.M12.manage-billing` (v1 matrix, restored capability). The state banner renders for all employees without amounts; the dunning banner's named audience is owner + managers (M12-40); no employee surface shows a price, invoice or usage figure — those are the Owner's screens. | `SRC` — `DOC08.matrix.manage-billing` via `F2.M12.manage-billing` (consumed); `DOC16.dunning-channels` (banner audience) | P0 |
-| M12-57 | **Grandfathering mechanics:** a protected tenant bills against the plan-price rows they signed up on until their market book's protection horizon lapses; repricing never applies mid-cycle or retroactively; an upgrade moves them to the new tier under their protection terms; once the horizon lapses, repricing reaches them at the next cycle. **Forfeiture on lapse (owner ruling 2026-08-04):** a lapse — `cancelled` or `halted` — **ends the price protection**; reactivation, whether inside or after the original horizon, bills against the **current list book's rows**, never the signed-up rows. Cancellation, dunning and win-back copy states the forfeiture plainly before the lapse (M12-39/M12-41's honesty duty; `BM-42` carries the law). The row-selection arithmetic is this module's. | `SRC` — `DOC01.grandfather` via `BM-42` (consumed — the mechanics half routed here by Task 11's behavior note); forfeiture-on-lapse per owner ruling 2026-08-04, replacing the interim no-forfeiture reading | P1 |
+| M12-57 | **A new price book reaches every company at its next paid period (owner ruling 2026-10-31, replacing grandfathering).** A renewal, a reactivation, an upgrade and a new purchase bill the current book's `plan_price` row; a period already paid is never repriced, mid-cycle or retroactively. A monthly mandate collects the amount it was approved for, so it moves to a new price only through a new mandate the company approves. | `SRC` — `DOC01.grandfather` via `BM-42`, replaced by owner ruling 2026-10-31 | P1 |
 | M12-58 | **Billing is audit-covered:** plan changes, subscription transitions, entitlement overrides, mandate changes and every reactivation write audit entries per `F2-22`'s covered-events list. | `SRC` — `DOC08.audit-coverage` via `F2-22` (consumed) | P0 |
 
 **Behavior detail.** The billing home answers three questions at a glance: what am I on, what
@@ -457,8 +457,8 @@ no self-serve surface invents Enterprise mechanics.
 
 - *Owner deactivated mid-dunning* (the guard rails prevent losing the last Owner) → F2-19
   guarantees an Owner always exists to reach these screens.
-- *A protected tenant's horizon lapses mid-cycle* → the new price applies from the next
-  cycle, never mid-cycle (M12-57).
+- *The book reprices mid-cycle* → the new price applies from the company's next paid period,
+  never mid-cycle (M12-57).
 - *Billing screen opened by a non-Owner* → the state is visible, the acts are not; the screen
   says whose act it is (M12-56).
 
@@ -467,12 +467,9 @@ no self-serve surface invents Enterprise mechanics.
 - Given a tenant in each of the six states, when the Owner opens billing, then every M12-55
   surface renders and pay/upgrade/reactivate is actionable (M12-55).
 - Given any billing act, when it commits, then an audit entry exists (M12-58).
-- Given a grandfathered tenant, when the book reprices, then their bill is unchanged until
-  their horizon lapses and never changes mid-cycle (M12-57).
-- Given a protected tenant who lapses to `cancelled` or `halted`, when they reactivate at any
-  later date, then they bill against the current list book — protection forfeited on lapse —
-  and the dunning/cancellation copy they saw stated the forfeiture before it happened
-  (M12-57, M12-39, M12-41; owner ruling 2026-08-04).
+- Given a book that repriced, when a yearly company's renewal is raised, then it bills the
+  current book's price and the year it already paid is left alone (M12-57; owner ruling
+  2026-10-31).
 
 **Localization notes.** All billing screens in every launch language; invoices per pack
 formats. **Analytics events:** billing screen opened (state) · payment method updated ·
@@ -484,7 +481,7 @@ reactivation from state (which).
 
 | From | What it expects |
 |---|---|
-| `04-business-model.md` | Every number and law listed at M12-02 — tier names, book values, meters, state names, the soft-block matrix as the non-negotiable floor, cap law with the 80% pre-warning, trial law, grandfathering, supplier-of-record posture. |
+| `04-business-model.md` | Every number and law listed at M12-02 — tier names, book values, meters, state names, the soft-block matrix as the non-negotiable floor, cap law with the 80% pre-warning, trial law, repricing at the next paid period, supplier-of-record posture. |
 | `foundations/F1-global-market-framework.md` | `pack.tax` (`F1-13`, `F1-28`–`F1-30`), the mandate rails (`F1-40`/`F1-41`), messaging compliance for dunning channels (`F1-38`), one currency per tenant (`F1-07`/`F1-27`), residency facts (`F1-43`). |
 | `foundations/F2-roles-and-permissions.md` | `F2.M12.manage-billing` (Owner-only) and the audit obligations (`F2-22`). |
 | `foundations/F4-data-integrity.md` | `F4-21` — nothing a field user captured is ever unrecoverable, whose photo carve-out this module's gates must honour (M12-24, M12-26); `F4-27` — a warning never disables a primary action. |

@@ -40,13 +40,18 @@ leaks data, loses money or needs a second release:
 - **Tenancy and access:** a route with no access entry; another tenant's row answered with
   anything but 404.
 - **Old readers:** a stored or sent shape (column, enum value, response, workflow message, cached
-  payload) that an old reader cannot read, or old data the new code cannot.
+  payload) that an old reader cannot read, or still reads and acts on by the rule this change
+  removes, or old data the new code cannot.
 - **Ownership:** schema or API a later module owns (Law 9).
 - **Callers:** a changed export that breaks a caller the grep found.
+- **Hand-offs:** a duty the RFC gives another task that the other task's section and the row map do
+  not name — the RFC is cut at ship, and the duty with it.
 - **Already built:** a new part, file or dependency the name search finds in the repo (Law 5).
 - **The design system:** a prop the RFC removes or retypes on a component that has a typing in
   `packages/theme/src/_generated/contracts` — that is a design-system change, the owner's.
 - **Logic:** a decision whose rule gives the wrong result for a case the walk reached.
+- **Dates:** an example that names a date or a debit, walked on the calendar — a charge for a
+  period paid in advance can ride only a debit after the one that closes it.
 
 **What counts.** A finding names its target, attack or break and the source that proves it: a
 `DONE WHEN` id, a frame, a PRD row, a law or a `file:line`. No source, no finding. A taste, a

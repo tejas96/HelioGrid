@@ -116,6 +116,24 @@ export const NOTIFICATION_REGISTRY: Record<NotificationType, NotificationRegistr
     channels: ['in_app', 'push'],
     urgency: 'standard',
   },
+  /**
+   * A notice of the dunning ladder (`M12-39`); its subject is the `dunning_event` it fans out from.
+   * Its out-of-app SMS leg is the market pack's (`M12-40`, `F6-11`'s one exception), never a
+   * channel here.
+   */
+  dunning_notice: {
+    raisedBy: 'billing',
+    recipients: ['epc_owner'],
+    channels: ['in_app', 'push'],
+    urgency: 'standard',
+  },
+  /** A trial nudge (`M12-42`): the dunning pipeline, the same channels and the same subject. */
+  trial_nudge: {
+    raisedBy: 'billing',
+    recipients: ['epc_owner'],
+    channels: ['in_app', 'push'],
+    urgency: 'standard',
+  },
   /** An announcement from the platform; its subject is the company it is addressed to. */
   system: {
     raisedBy: 'platform',
@@ -141,6 +159,7 @@ const GROUP_BY_SOURCE: Record<NotificationSource, NotificationTypeGroup> = {
   design: 'delivery',
   payments: 'payments',
   team: 'team',
+  billing: 'billing',
   platform: 'team',
 };
 

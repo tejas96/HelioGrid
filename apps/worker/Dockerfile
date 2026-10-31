@@ -1,6 +1,6 @@
-# ADR-0018: worker image additionally carries Chromium + Noto fonts for Playwright PDF
-# rendering with correct Devanagari shaping — added when the DocumentRenderPort lands
-# (Track B). Base stays node:22-slim + pnpm deploy pruning.
+# ADR-0018: the image carries Chromium + Noto fonts for Playwright PDF rendering with correct
+# Devanagari shaping (`03-tech-stack.md` §16) — the renderer on the `heliogrid-documents` queue.
+# Base stays node:22-slim + pnpm deploy pruning.
 #
 # ADR-0025: this image runs the TEMPORAL worker. It carries the pre-built workflow bundle and
 # no bundler — see the assertion below for why that is the point rather than an omission.
@@ -28,10 +28,19 @@ RUN pnpm --filter @heliogrid/worker --prod --legacy deploy /out
 # `docker pull node:22-slim` and the digest it resolves to, deliberately.
 FROM node:22-slim@sha256:83f487e0a63425e5b4d146fb5e5be574bcbe1b7b843d3ebafdd95eaf7767a7e5
 ENV NODE_ENV=production
+# Outside any home directory: the browser is installed as root and run as `node`.
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 WORKDIR /app
 COPY --from=build /out .
 # Carries dist/workflow-bundle.js with it — the artifact the runtime loads by path.
 COPY --from=build /repo/apps/worker/dist ./dist
+# The Chromium build the pinned `playwright` drives, with the system libraries it needs, and the
+# faces every document prints in: Latin and Devanagari (fonts-noto-core) and mono (F7-09). A
+# document whose face is missing prints empty boxes, never an error.
+RUN node node_modules/playwright/cli.js install --with-deps chromium \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends fonts-noto-core fonts-noto-mono \
+    && rm -rf /var/lib/apt/lists/*
 
 # The base image carries an unprivileged `node` (uid 1000). Everything above ran as root and the
 # copies are owned by root, which is what we want: the runtime may READ its own code and write

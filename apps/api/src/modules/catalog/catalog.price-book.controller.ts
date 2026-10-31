@@ -3,6 +3,7 @@ import { Controller, Inject, Req } from '@nestjs/common';
 import { TsRestHandler, tsRestHandler } from '@ts-rest/nest';
 import type { Request } from 'express';
 import { RouteAccessMap } from '../../common/auth/access';
+import { RouteBillingMap } from '../../common/auth/route-billing';
 import { actOf, rolesOf, tenantIdOf } from '../../common/auth/session-context';
 import { CatalogPriceBookService } from './catalog.price-book.service';
 import { MANAGE_CATALOG } from './internal/write-checks';
@@ -17,6 +18,7 @@ export class CatalogPriceBookController {
   @TsRestHandler(priceBookContract)
   // Every door is the manage grant's (§M01.5): a rate and a margin are money, so Finance's limited
   // cell passes it to read, and the service refuses its publish.
+  @RouteBillingMap(priceBookContract, { publish: 'ungated' })
   @RouteAccessMap(priceBookContract, {
     active: MANAGE,
     versions: MANAGE,

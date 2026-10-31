@@ -28,7 +28,11 @@ import { type Challenge, seedChallenges } from './challenges';
 import { type Device, seedDevices } from './devices';
 import { seedLinkedLogins } from './logins';
 import { adminUrl, databaseUrl } from './preconditions';
-import { TENANT_CATALOG_TABLES, TENANT_SETTING_TABLES } from './tenant-tables';
+import {
+  TENANT_BILLING_TABLES,
+  TENANT_CATALOG_TABLES,
+  TENANT_SETTING_TABLES,
+} from './tenant-tables';
 
 export { aChallenge, type Challenge } from './challenges';
 export { aDevice, type Device } from './devices';
@@ -245,6 +249,9 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
     return;
   }
   await db.delete(auditLogEntry).where(inArray(auditLogEntry.tenantId, companies));
+  for (const billingTable of TENANT_BILLING_TABLES) {
+    await db.delete(billingTable).where(inArray(billingTable.tenantId, companies));
+  }
   for (const catalogTable of TENANT_CATALOG_TABLES) {
     await db.delete(catalogTable).where(inArray(catalogTable.tenantId, companies));
   }

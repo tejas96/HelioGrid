@@ -53,24 +53,17 @@ into pure domain functions.
    caller (BullMQ backoff for jobs, user-visible retry for interactive calls).
 4. **Circuit breaker**: after 5 consecutive adapter failures, open for 60 s (return
    `unavailable` immediately), then half-open. Implemented once in the adapters package.
-5. **Per-tenant metering hook**: every adapter is wrapped at binding time:
-
-   ```ts
-   withMetering(adapter, {
-     port: 'RoofDetectPort', op: 'detect',
-     units: (r) => (r.status === 'ok' ? 1 : 0),
-     metric: 'ai_detections',          // usage_events.metric
-     billable: true,                   // billable metrics check entitlements BEFORE the call
-   });
-   ```
-
-   Emits an append-only `usage_events` row (`tenant_id, metric, quantity, unit, provider_ref,
-   cost_estimate_minor, occurred_at`) via a fire-and-forget BullMQ enqueue — metering never
-   blocks or fails the request. Billable metrics (`voice_minutes`, `ai_detections`, `otp_sms`
-   (fair-use, NOT billed v1), `storage_gb`) run the entitlement soft-block check first
-   before the call. Non-billable observability metrics (`solar_data_fetch`,
-   `map_tile_fetch`, `dem_tile_fetch`, `push_sent`, `document_rendered`) are metered anyway
-   for quotas, fairness and COGS dashboards.
+5. **Per-tenant metering**: the producer that calls a metered adapter meters its unit with
+   `meterUsage(tx, unit)` (`apps/api/src/modules/billing/usage-meter.repository.ts`) inside its own
+   transaction. That writes one outbox event; the `usageRecord` workflow then writes the
+   append-only `usage_event` row (`tenant_id, meter, quantity, billable, subject_kind,
+   subject_ref, idempotency_key, period_key, occurred_at`), retried until it lands — metering
+   never blocks or fails the request (`M12-18`). The meters are domain's `LEDGER_METERS`: the
+   billed `voice_minutes`, `ai_roof_detections`, `marketing_sends`, `tracked_field_seats` (a
+   billed meter checks its entitlement BEFORE the call), and the cost lines `otp_delivery`,
+   `field_location_ingestion`, `solar_imagery`, `ai_extraction`, `speech`, which never bill and
+   feed the per-tenant quotas (`M12-37`). Storage is not a ledger row: it is the nightly
+   `storage_gauge_snapshot`.
 
 ## Port census
 
@@ -402,25 +395,31 @@ work regardless of billing state** (product law).
 ## 10. DocumentRenderPort — Playwright now, Typst swap
 
 ```ts
-interface DocumentRenderPort {
-  render(kind: 'proposal' | 'quote' | 'sld' | 'work_order',
-         payload: RenderPayload, locale: Locale): Promise<PortResult<{ tigrisKey: string; pages: number }>>;
+// packages/contracts/src/workflows/invoice-document.ts — a step on the `heliogrid-documents` queue
+interface DocumentRenderActivities {
+  renderPdf(input: { html: string }): Promise<{ pdfBase64: string }>;
 }
 ```
 
-**v1: `PlaywrightPdfAdapter`** in `apps/worker` — headless Chromium is the only renderer
-that shapes Devanagari correctly (HarfBuzz); react-pdf is disqualified on broken
-conjuncts/matras ([react-pdf #454](https://github.com/diegomura/react-pdf/issues/454)). Noto Sans Devanagari
-bundled in the worker image; pooled browser, page-per-render; concurrency 2 per machine;
-budget 300–500 MB RAM per render (worker sizing in `09-observability-and-ops.md`). Output
-goes straight to Tigris; the API hands out presigned GETs.
+A document is its page: the api writes the whole HTML page in the reader's language (the worker
+may not import `i18n`), the renderer prints it as it is, and the api step that asked stores the PDF
+in the files table and points its record at it. The first caller is the invoice PDF
+(`invoiceDocument`, T-M12-012d).
 
-**Later adapter:** `TypstAdapter` (rustybuzz shaping, far lower memory) if Chromium RAM cost
-bites — the port returns a stored object either way, so the swap is invisible.
+**v1: Playwright Chromium** in `apps/worker` (`modules/documents/`) — headless Chromium is the only
+renderer that shapes Devanagari correctly (HarfBuzz); react-pdf is disqualified on broken
+conjuncts/matras ([react-pdf #454](https://github.com/diegomura/react-pdf/issues/454)). Noto Sans,
+Noto Sans Devanagari and Noto Sans Mono in the worker image; one browser per process, a fresh
+context per render, no network; concurrency 2 per machine; budget 300–500 MB RAM per render
+(worker sizing in `09-observability-and-ops.md`).
 
-**Failure/degradation:** render timeout 60 s → retry once on a fresh browser → job fails
-with user notification. The customer link always renders the proposal as web — PDF is an
-artifact, never the only path to the number.
+**Later adapter:** Typst (rustybuzz shaping, far lower memory) if Chromium RAM cost bites — the
+step takes a page and returns a PDF either way, so the swap is invisible to its callers.
+
+**Failure/degradation:** a render that fails is retried by Temporal with backoff up to ten minutes
+until it lands; the record it belongs to is already committed, so a failure only delays the PDF.
+The customer link always renders the proposal as web — PDF is an artifact, never the only path to
+the number.
 
 **Metering:** `document_rendered`, non-billable; drives worker capacity planning.
 

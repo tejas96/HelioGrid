@@ -10,6 +10,18 @@
  * former sibling. Do not add one back.
  */
 
+export type { BillingNoticesActivities } from './billing-notices';
+export { BILLING_NOTICES_SCHEDULE_ID, billingNoticesWorkflow } from './billing-notices';
+export type { BillingOverageActivities } from './billing-overage';
+export { BILLING_OVERAGE_SCHEDULE_ID, billingOverageWorkflow } from './billing-overage';
+export type {
+  BillingReconcileActivities,
+  BillingReconcileResult,
+  ReconcilePageResult,
+} from './billing-reconcile';
+export { BILLING_RECONCILE_SCHEDULE_ID, billingReconcileWorkflow } from './billing-reconcile';
+export type { BillingTimersActivities } from './billing-timers';
+export { BILLING_TIMERS_SCHEDULE_ID, billingTimersWorkflow } from './billing-timers';
 export type {
   CatalogImportActivities,
   CatalogImportStepInput,
@@ -22,6 +34,15 @@ export type {
   InviteMessageStepResult,
 } from './invite-message';
 export { inviteMessageWorkflow } from './invite-message';
+export type {
+  DocumentRenderActivities,
+  InvoiceDocumentActivities,
+  InvoiceDocumentPage,
+  InvoiceDocumentStepInput,
+  InvoiceDocumentStepResult,
+  RenderedDocument,
+} from './invoice-document';
+export { DOCUMENT_RENDER_QUEUE, invoiceDocumentWorkflow } from './invoice-document';
 export type { OutboxActivities } from './outbox';
 export {
   OUTBOX_SWEEP_SCHEDULE_ID,
@@ -37,3 +58,16 @@ export type {
   WorkflowResult,
 } from './registry';
 export { defineWorkflow, TASK_QUEUES } from './registry';
+export type {
+  StorageGaugeActivities,
+  StorageGaugePage,
+  StorageGaugePageResult,
+  UsageRecordActivities,
+  UsageRecordStepInput,
+  UsageRecordStepResult,
+} from './usage-ledger';
+export {
+  STORAGE_GAUGE_SCHEDULE_ID,
+  storageGaugeWorkflow,
+  usageRecordWorkflow,
+} from './usage-ledger';

@@ -146,6 +146,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-28 (P0), M07-30 (P0), M07-35 (P0), M07-36 (P0), M07-37 (P0)
+**Billing gate (T-M12-009):** queue insert names `voice_agent` in its `RouteBillingMap` (paused from `past_due` day 4), and both insert and the pre-dial check refuse past the `voice_minutes` allowance read from `T-M12-010`'s rollup, by throwing `EntitlementBlockedException`; a blocked entry is marked and the owner notified (M07-37, M12-23).
 **DESIGN:** SCR-M07-12 → PENDING
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-12-agent-call-queue.md`; they are the specification.
 **DONE WHEN:**
@@ -339,6 +340,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** engine · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-39, M07-40
+**Metering (T-M12-010):** every completed call is metered once with `meterUsage` as `voice_minutes`, `billable: true`, `quantity` in seconds, keyed by the call's id, in the same transaction that writes the call record (M12-33: every call ledgered); the speech upstream's seconds are the cost line `speech`, with its per-tenant quota over `UsageService.costRollupOf` (M12-37). The allowance checks at queue insert and pre-dial read `UsageService.billedRollupOf`.
 **Requirements (verbatim):**
 - **M07-39** (P0) — **Call failure is honest: the call record is always written.** A mid-call media drop attempts one apology line, else hangs up with outcome recorded as dropped; a provider outage pauses outbound and lets inbound fall to voicemail; speech/understanding stalls follow a defined ladder ending in hand-to-human or voicemail per tenant config — never dead air, never a silent no-op.
 - **M07-40** (P0) — **A wrong or reassigned number is flagged and the number marked unverified** — no further automated attempts until a person confirms it.

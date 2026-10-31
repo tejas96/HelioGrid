@@ -12,7 +12,12 @@ import {
   type TenantOwners,
   tenantContract,
 } from '@heliogrid/contracts';
-import { marketOfPhone, ROLE_CARD_OWNERS_SHOWN, UI_SOURCE_LOCALE } from '@heliogrid/domain';
+import {
+  bookEntitlements,
+  marketOfPhone,
+  ROLE_CARD_OWNERS_SHOWN,
+  UI_SOURCE_LOCALE,
+} from '@heliogrid/domain';
 import {
   ConflictException,
   HttpStatus,
@@ -73,6 +78,7 @@ export class TenantService {
       currencyCode: pack.formats.currency,
       defaultLanguage: UI_SOURCE_LOCALE,
       timezone: pack.formats.timeZone,
+      trialLimits: bookEntitlements(pack.priceBook, null),
       ownerUserId: session.actor.userId,
       ownerName: body.ownerName,
       now,

@@ -72,6 +72,11 @@ rows); `**Deleted:** D…, D…` — the deferred rows this task closes — or `
 the plan, never the research, and never copied from an earlier RFC or PR. Then review it once, as
 `plan-review.md` says.
 
+Then stop for the owner's yes. Show them the PR body's *User impact* (what a user gets, with one
+example) and *Flow* (a mermaid diagram of the parts the change touches and how data moves between
+them), as `.github/pull_request_template.md` shapes them, and one line per decision. Build starts
+only on their yes. A change they ask for goes into the RFC first, and they see it again.
+
 ## Build
 
 Rebuild `heliogrid_test` once, so no other branch's migration is left in it (`pnpm infra:up`
@@ -94,6 +99,16 @@ migration, `<prefix> pnpm db:migrate > .qa/migrate.log 2>&1`; an `apps/api/tests
 `<prefix> pnpm exec vitest run <file> > .qa/<name>.log 2>&1`. Delete the deferred rows the plan
 lists. Then `<prefix> pnpm check > .qa/check.log 2>&1` — it runs the unit and api tests related to
 the change — then *Review*.
+
+**Helpers, only when the build truly splits:** three or more parts that touch different files and
+need no result of each other; otherwise this session builds it. Split by the slice that changes
+together — a part with everything that calls it — never by layer, so no second round fixes callers. This session
+runs the one typecheck and lint, and hands each helper only its own files and its own error lines;
+a helper re-reads no rule file and re-runs no whole-package check. A helper whose brief names the
+exact files, the change pattern or error list, and how done is checked runs on Sonnet (`model:
+"sonnet"`); a design choice, a new shared helper or rule, or a reading of the task stays on Opus.
+A helper never edits `docs/` or `.claude/`; after each round this session reads `git diff -- docs
+.claude` before going on.
 
 ## Review
 
@@ -206,7 +221,11 @@ Every commit, a merge too, goes as `CLAUDE.md` §4 says. Stage with `git add -A`
 exactly the files the owner was shown — every step joined by `&&`, so a failed add never commits
 what was staged before it. When the branch is behind, merge
 `origin/main` first (never rebase). A conflict is resolved to keep both sides' intent; one that
-cannot keep both stops the task with its files named. If the merge brought a migration, renumber
+cannot keep both stops the task with its files named. A branch built on another task's branch
+whose PR was squash-merged: when the squash's tree equals that branch's commit
+(`git diff <commit> <squash>` is empty), every conflict keeps this branch's side, and the merged tree
+must equal `HEAD^{tree}` (`git write-tree`): a file git merges without a conflict can still bring
+back what this branch removed. If the merge brought a migration, renumber
 this task's after it (`packages/db/CLAUDE.md`) and rebuild `heliogrid_test` (*Build*). After a
 merge, run the gate again.
 
@@ -218,8 +237,8 @@ with its message passed again, never `.git/COMMIT_EDITMSG`, which still holds th
 commit's.
 
 Push `feat/<id>` and open the PR as a draft: `.qa/pr-body.md` completed in the shape of
-`.github/pull_request_template.md`. Wait for CI
-with `gh pr checks <n> --watch` run in the background, which wakes the session when CI ends. Mark
+`.github/pull_request_template.md`. Wait for CI with the app's PR monitor where the session has
+one (it wakes the session; never poll), else `gh pr checks <n> --watch` run in the background. Mark
 the PR ready (`gh pr ready`) when every job of the head's latest run is `success`, or `skipped`
 while `changes` passed, and — when `android` ran and the repository variable `PHONE_E2E` is not
 `off` — its step `Phone flows (tests/e2e/mobile) on the emulator` ran; then write the `## Cost`
@@ -227,5 +246,6 @@ line from
 `python3 -I ~/.claude/projects/-Volumes-works-space-heliogrid/harness-meter.py <id>`. A red job:
 `gh run view <run> --log-failed > .qa/ci.log`, fix, commit, push, and wait for CI again. Once the
 PR is ready, the task's files are waste:
-`find .qa -maxdepth 1 \( -name '*.log' -o -name '*.cookies' -o -name '*.png' -o -name pr-body.md \) -delete`. Say the PR's link and
+`find .qa -mindepth 1 -maxdepth 1 ! -name env.local.dev -exec rm -rf {} +` — every draft, list and
+log, so no stale file meets the next task. Say the PR's link and
 `owner merges #<n>`; the session ends there.

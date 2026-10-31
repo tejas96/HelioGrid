@@ -1,3 +1,4 @@
+import { MS_PER_DAY } from '../format/zone';
 import type { TierLimit } from './tiers';
 
 /**
@@ -46,4 +47,36 @@ export function capWarningReached(used: number, limit: TierLimit): boolean {
   if (limit === 'unlimited' || limit === 'custom') return false;
   if (limit === 0) return used > 0;
   return used * 100 >= limit * CAP_WARNING_PERCENT;
+}
+
+/**
+ * `M12-30` — where one capped count stands on the ladder: quiet, warned at 80%, in its 7-day grace
+ * from the moment it reached 100%, or paused for new creations until the cycle resets (or an
+ * upgrade raises the limit). Reading, editing what exists and exporting are never on this ladder.
+ */
+export type CapStep =
+  | { readonly step: 'clear' }
+  | { readonly step: 'warning' }
+  | { readonly step: 'grace'; readonly pausesAt: number }
+  | { readonly step: 'paused'; readonly resetsAt: number };
+
+export interface CapReading {
+  readonly used: number;
+  readonly limit: TierLimit;
+  /**
+   * When the count reached its limit this cycle, read by the caller from its own rows — so the
+   * grace has no timer and no stored counter that could drift from the count (`M12-32`). `null`
+   * when the caller has just seen it reach the limit: the grace starts now.
+   */
+  readonly fullSince: number | null;
+  readonly cycleEndsAt: number;
+  readonly now: number;
+}
+
+export function capStepOf({ used, limit, fullSince, cycleEndsAt, now }: CapReading): CapStep {
+  if (limit === 'unlimited' || limit === 'custom') return { step: 'clear' };
+  const full = limit === 0 ? used > 0 : used >= limit;
+  if (!full) return capWarningReached(used, limit) ? { step: 'warning' } : { step: 'clear' };
+  const pausesAt = (fullSince ?? now) + CAP_GRACE_DAYS * MS_PER_DAY;
+  return now < pausesAt ? { step: 'grace', pausesAt } : { step: 'paused', resetsAt: cycleEndsAt };
 }

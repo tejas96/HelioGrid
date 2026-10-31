@@ -1,3 +1,4 @@
+import type { TaxRegistration } from '../commerce/effective-settings';
 import type { PackLabel } from '../format/languages';
 import { type BasisPoints, basisPoints } from '../money/basis-points';
 import { type MinorUnits, minorUnits } from '../money/minor-units';
@@ -56,6 +57,33 @@ export interface TaxRegistrationType {
    * (`F1-22`); the example inside it is the scheme's own shape and stays untranslated.
    */
   readonly format: PackLabel;
+  /**
+   * Where the holder's place sits in a well-formed value — what the place-of-supply split reads
+   * (`F1-29`). `null`: a value names no place, so every holder sits at the supplier's.
+   */
+  readonly placeAt: RegistrationPlace | null;
+  /**
+   * What the scheme calls the registration — `GSTIN` — printed beside its value on an invoice.
+   * `null` on a pack stored before it existed; the invoice then says "Tax registration".
+   */
+  readonly name: PackLabel | null;
+}
+
+/**
+ * The platform as the supplier of record names itself on its invoices (`M12-45`): its legal name
+ * and its address, exactly as registered. One string each, never translated — a legal name is the
+ * one the registry holds.
+ */
+export interface PlatformSupplier {
+  readonly legalName: string;
+  /** Lines joined by `\n`, as printed. */
+  readonly address: string;
+}
+
+/** A run of characters inside a registration value: `start` from zero, `length` characters. */
+export interface RegistrationPlace {
+  readonly start: number;
+  readonly length: number;
 }
 
 /** How the platform's own subscription sale is taxed in this market (`F1-13`, `BM-40`). */
@@ -89,6 +117,14 @@ export interface TaxPack {
    * (`F1-13`, `BM-40`).
    */
   readonly platformIsSupplierOfRecord: boolean;
+  /**
+   * The platform's own registration here, in force from the pack revision that publishes it;
+   * `null` while it holds none. With none it collects no tax and its invoices are plain
+   * (`F1-29`, owner ruling 2026-10-30).
+   */
+  readonly platformRegistration: TaxRegistration | null;
+  /** Who the platform is on its invoices; `null` on a pack stored before it existed. */
+  readonly platformSupplier: PlatformSupplier | null;
   readonly statutoryExtras: readonly StatutoryExtra[];
   /** The month the statutory financial year opens: a threshold is validated at each close (`F1-30`). */
   readonly fiscalYearStartMonth: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
@@ -122,6 +158,10 @@ export const IN_TAX: TaxPack = {
         hi: '15 अक्षर · जैसे 27ABCDE1234F1Z5',
         mr: '15 अक्षरे · जसे 27ABCDE1234F1Z5',
       },
+      /** `F1-29` — the state code is the GSTIN's first two characters. */
+      placeAt: { start: 0, length: 2 },
+      /** `F1-28` — the scheme's own name for it, the same in every language. */
+      name: { en: 'GSTIN' },
     },
   ],
   /**
@@ -139,6 +179,14 @@ export const IN_TAX: TaxPack = {
   platformSale: { serviceCode: '998434', rateBasisPoints: basisPoints(1800) },
   /** `F1-29` — our GSTIN, our remittance, our liability; the gateway is a gateway. */
   platformIsSupplierOfRecord: true,
+  /** `F1-29` — no GSTIN yet: the platform registers once its turnover needs it. */
+  platformRegistration: null,
+  /** `M12-45` — the platform's legal name and address as registered (owner, 2026-10-31). */
+  platformSupplier: {
+    legalName: 'Tejas Patil',
+    address:
+      'Swapnanagari, Government Colony\nSangli, Vishrambag\nSangli Miraj Kupwad, Maharashtra 416415',
+  },
   statutoryExtras: [
     /** `F1-30` — e-invoicing (IRN) binds once turnover exceeds ₹5 crore: 5,00,00,000.00 in paise. */
     { key: 'e_invoicing', activatesWhenTurnoverExceeds: minorUnits(50_000_000_000) },

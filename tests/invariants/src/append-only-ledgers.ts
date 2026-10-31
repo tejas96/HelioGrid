@@ -16,6 +16,24 @@ export const APPEND_ONLY_LEDGERS: Record<string, string> = {
   price_book_version:
     'one immutable set of non-catalog rates, pinned by designs and sent proposals (M01-48, M01-49)',
   price_book_rate: 'one rate of a price-book version, immutable with it (M01-48, T-M01-031)',
+  subscription_state_history:
+    'every state a subscription entered, when and why; only the admin path writes it (M12-04, T-M12-005)',
+  subscription_payment:
+    'every charge the gateway collected, the entitlement truth; only the admin path writes it (M12-09, T-M12-006)',
+  invoice_line:
+    'one line of an issued platform invoice, frozen with it; only the admin path writes it ' +
+    '(M12-44, T-M12-012a)',
+  invoice_line_tax:
+    'one tax component of an issued invoice line, frozen with it; only the admin path writes it ' +
+    '(M12-44, T-M12-012a)',
+  entitlement_override:
+    'support’s audited acts on a company’s limits and trial, never an edit; only the admin path ' +
+    'writes it (M12-19, M12-52, T-M12-008)',
+  usage_event:
+    'one metered unit of work, the only usage counter there is; only the outbox step writes it, on ' +
+    'the admin path (M12-32, T-M12-010)',
+  storage_gauge_snapshot:
+    'a company’s stored bytes, read once a night; only the nightly step writes it (M12-33, T-M12-010)',
   orchestration_outbox:
     'a handoff to Temporal, written in its change’s transaction; only the dispatcher marks it, on ' +
     'the admin path (infra/temporal/README.md §5, T-M01-030)',

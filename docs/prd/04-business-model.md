@@ -19,7 +19,7 @@ Forward: `modules/M12-platform-billing.md` (mechanics), `modules/M13-dashboards-
 
 This document is the commercial law of HelioGrid: who pays, the packaging convictions, the tier
 architecture, the canonical meter set and its COGS policy, the trial, the soft-block law with its
-state capability matrix, the market price-book architecture, grandfathering, and the go-to-market
+state capability matrix, the market price-book architecture, repricing, and the go-to-market
 principles carried at product level. Three vocabularies defined here are suite-wide interfaces:
 the **four tier names** (Starter · Growth · Pro · Enterprise), the **five-meter list** (voice
 minutes · AI roof detections · storage · marketing sends · tracked field seats), and the
@@ -90,7 +90,7 @@ binding pricing principles are all carried, three of them amended by locked V2 d
 | 4 — Tiers gate capacity, never features; entitlements are the only gating; soft-block | Carried as BM-05 (+ `OV-27`/`OV-28`); soft-block law at §04.5 |
 | 5 — Metered things carry bundles + overage ≥40% above worst-case unit COGS | Carried as BM-17, **extended by design spec §8/DD7** to all five meters, including the two V2 meters |
 | 6 — Prices ex-tax; we are supplier of record | Carried as BM-40, generalized: the tax posture is each market's `pack.tax` declaration (F1-13); IN instance is ex-GST with the platform as supplier of record (F1-29) |
-| 7 — Grandfather generously | Carried as BM-42 (§04.7) |
+| 7 — Grandfather generously | **Replaced by owner ruling 2026-10-31:** BM-42 (§04.7) reprices every company at its next paid period; no company keeps a signed-up price |
 | 8 — A price for every EPC | Carried as BM-08 |
 | 9 — Creation caps per tier: visible, generous, soft-blocked | Carried as BM-07 + BM-34; counts are book data (BM-41) |
 
@@ -391,7 +391,7 @@ BM-33 vocabulary); grace phase transition; blocked-mutation shown; reactivation 
 | BM-37 | **Every market has its own price book; a market without one has no prices and cannot sell.** The book law is F1's (F1-25: per-tier prices per cycle in the market's currency, bundle sizes, overage rates, metered add-on prices, benchmarks — owner/market decisions, absent until made; F1-26: no FX-converted pricing, ever, in any form). This document consumes that law and owns the **contents** of the first book (BM-41). Framework rules in this document never carry a currency; book instances always do. | `BRIEF` — design spec §2 DD6, consumed as published requirements `F1-25`/`F1-26` (no source key re-disposed) | P0 |
 | BM-38 | **Launching a market is adding price rows, never changing the product.** Plan prices are per-currency rows against the same four-tier structure with provider-neutral gateway references; a new market's book lands as new rows — zero product change, consistent with one currency per tenant (F1-07, F1-27). | `SRC` — `DOC04.plan-prices-per-currency` (docs/04: "v1 rows are INR-only — a new market adds rows, zero schema change"; the architecture statement lands here per F1-27's pointer) | P0 |
 | BM-39 | **The benchmark law.** Every book records the market benchmarks it was set against, and prices **under the market's incumbents at equivalent capacity, always** — margin comes from COGS discipline (BM-17), never from list price. Benchmarks are book data with provenance (which competitor page, which date, which currency); a book whose benchmarks are stale is re-validated, not trusted. | `SRC` — `DOC01.price-under-incumbents` (docs/01 pricing principle 1 — stated against the IN incumbents; generalized per DD6, the IN instance is BM-41's) | P0 |
-| BM-40 | **Tax posture rides the market's tax scheme.** All book prices are exclusive of the market's tax scheme (F1-13); for platform subscription sales the platform's supplier-of-record posture is a per-market declaration in `pack.tax`. **IN instance:** prices ex-GST; the platform is the supplier of record — our registration, our remittance, our liability; the gateway is a gateway, never merchant-of-record (F1-29; invoice mechanics M12). **Foreign-subscriber posture (owner ruling 2026-08-04):** India-first commercially; the first foreign subscribers are billed by the Indian entity as zero-rated **export of services** (international gateway mode, USD/AED settlement); a merchant-of-record or foreign-entity structure is revisited only at real foreign revenue — that revenue is the revisit trigger, and each non-IN market's own launch gate (`F1-05`) still applies. | `SRC` — `DOC01.supplier-of-record` (docs/01, shared — posture lands here, invoicing mechanics `modules/M12`); `DOC16.gst-supplier-of-record` (docs/16, shared — the business-model posture half; the IN tax-scheme half is `F1-29`, Task 6); export-of-services path per owner ruling 2026-08-04 | P0 |
+| BM-40 | **Tax posture rides the market's tax scheme.** All book prices are exclusive of the market's tax scheme (F1-13); for platform subscription sales the platform's supplier-of-record posture is a per-market declaration in `pack.tax`. **IN instance:** prices ex-GST; the platform is the supplier of record — our registration, our remittance, our liability; the gateway is a gateway, never merchant-of-record (F1-29; invoice mechanics M12). **Foreign-subscriber posture (owner ruling 2026-08-04):** India-first commercially; the first foreign subscribers are billed by the Indian entity as zero-rated **export of services** (international gateway mode, USD/AED settlement); a merchant-of-record or foreign-entity structure is revisited only at real foreign revenue — that revenue is the revisit trigger, and each non-IN market's own launch gate (`F1-05`) still applies. Until the platform registers, it collects no tax and issues plain invoices (`F1-29`, owner ruling 2026-10-30). | `SRC` — `DOC01.supplier-of-record` (docs/01, shared — posture lands here, invoicing mechanics `modules/M12`); `DOC16.gst-supplier-of-record` (docs/16, shared — the business-model posture half; the IN tax-scheme half is `F1-29`, Task 6); export-of-services path per owner ruling 2026-08-04 | P0 |
 | BM-41 | **The India book — the source-derived first instance (IN book; every number below is IN-market data, not the generic model).** Identified by `F1-60`/`F1-61`; canonical here. **Tier prices (INR, ex-GST):** Starter **₹1,999/mo · ₹19,990/yr** — Growth **₹3,999/mo · ₹39,990/yr** — Pro **₹9,999/mo · ₹99,999/yr** — Enterprise **custom, anchored ₹24,999+/mo**, annual contract (owner-set anchors ~₹2k/~₹4k/~₹10k). **Capacity + counts:** single-design ceiling 50 kW / 500 kW / 5 MW / 100 MW (utility: blocks/zones, trackers, terrain); proposals 30 / 300 / 1,500 / unlimited per month; active projects 10 / unlimited / unlimited / unlimited; users unlimited on all four. **Bundles + overage:** AI detections 30 / 100 / 400 / custom per month, then ₹10 each; voice minutes PAYG ₹6/min on Starter and Growth, 400 min/mo bundled then ₹6/min on Pro, custom bundles + BYO number on Enterprise; storage 10 / 50 / 250 GB / custom. **Trial caps:** 25 detections · 15 voice minutes · 5 GB; **proposals are not capped in the trial** (owner ruling 2026-10-08 — a proposal costs the platform little and is the trial's moment of value). **Service terms are pricing-page copy, not book data (owner ruling 2026-09-07):** the IN positioning — support in-app / in-app + WhatsApp / priority + onboarding call / named contact — is rendered by the pricing page as Tier-keyed screen copy per BM-14; the book carries none of it and no entitlement, invoice or gate reads it, and a second market whose terms differ carries them as pack labels (`F1-22`), never in a locale-keyed catalog. Enterprise adds the BM-15 commercial arrangements. **Benchmarks (recorded per BM-39):** Reslink India INR page (owner-supplied, authoritative — Basic ₹60,000/yr at 50 kW · Pro ₹85,000/yr at 500 kW, 1,000 proposals · Premium ₹1,20,000/yr at 5 MW · Enterprise custom) and ARKA per-org pricing; priced under both at every rung — Starter-yearly 67% under Basic, Growth-yearly 53% under Pro, Pro-yearly 17% under Premium with a voice bundle no competitor has, and Pro's 1,500 proposals/mo beat the benchmark's 1,000. **Collection routes:** per the IN mandate ladder, F1-40 (monthly self-serve under the per-debit cap rides UPI AutoPay; Enterprise e-NACH/invoice; every yearly total exceeds the cap and is a single payment link/invoice per year). **V2 add-on prices (owner ruling 2026-08-04 — base tiers confirmed unchanged; every add-on number below is DRAFT pending rate-card verification per BM-17/BM-26):** tracked seat **≈₹99/seat/mo** beyond the tier's included allowance; **included tracked seats: Starter 0 · Growth 3 · Pro 10 · Enterprise custom**; marketing-send bundles **Starter 500 · Growth 2,000 · Pro 10,000 sends/mo**, overage **≈ WhatsApp ₹1.5 · SMS ₹0.35 · email ₹0.10 per send**. A draft add-on rate is not sellable until the owner verifies the channel/seat rate cards against worst-case unit COGS (the ≥40% floor, BM-17) — verification is the revisit trigger. | `SRC` — `DOC01.tier-table`, `DOC01.billing-cadence` (anchors), `DOC01.reslink-calibration` (benchmark + axis), `DOC01.trial` (caps) (docs/01); routes per `F1-40`; add-on draft values + included-seat ladder per owner ruling 2026-08-04, recorded at `F1-61` | P0 |
 
 **Behavior detail.** The architecture/instance discipline here is what makes "global from the
@@ -444,36 +444,28 @@ rules); no tenant surface exists. Repricing an existing book interacts with §04
 ₹ with lakh/crore grouping, F1-46 via F3); tier names stay product vocabulary (§04.2).
 **Analytics events:** none of its own — book reads are not a user action stream.
 
-### 04.7 — Grandfathering
+### 04.7 — Repricing
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| BM-42 | **Grandfather generously.** Repricing is a trust event — in a WhatsApp-connected market, a badly handled price change travels faster than any marketing — so existing tenants are protected by law, not by goodwill: a tenant keeps the pricing they signed up on for a **guaranteed protection horizon recorded in their market's book**; **IN book: early tenants keep launch pricing for 24 months minimum**. Repricing never applies mid-cycle, never applies retroactively, and reaches a protected tenant only after their horizon lapses — with the honest-copy discipline (`F8-34`) applying to every repricing communication. Caps and bundle *growth* (giving tenants more) may apply immediately; taking anything away rides the same horizon. **Forfeiture on lapse (owner ruling 2026-08-04):** the protection horizon is forfeited by a lapse — a tenant who goes `cancelled` or `halted` ends their launch-price guarantee, and reactivation (whether inside or after the original horizon) prices at the **current list book**. Cancellation, dunning and win-back copy must state this plainly before the lapse happens (the no-surprise rule, `F8-34`); mechanics at `M12-57`. *(Owner ruled against the standing recommendation — deliberate.)* | `SRC` — `DOC01.grandfather` (docs/01 pricing principle 7: "Early tenants keep launch pricing for 24 months minimum; repricing is a trust event"); forfeiture-on-lapse per owner ruling 2026-08-04 | P0 |
+| BM-42 | **Reprice at the next paid period, never inside one (owner ruling 2026-10-31, replacing "grandfather generously" and its 2026-08-04 forfeiture ruling).** A new book reaches every company at its next paid period: a renewal, a reactivation, an upgrade and a new purchase bill the current book. No company keeps a signed-up price. A period already paid is never repriced — never mid-cycle, never retroactively. Caps and bundle *growth* (giving companies more) may apply at once; taking anything away waits for the company's next paid period. The honest-copy discipline (`F8-34`) applies to every repricing communication; mechanics at `M12-57`. | `SRC` — `DOC01.grandfather` (docs/01 pricing principle 7), replaced by owner ruling 2026-10-31 | P0 |
 
-**Behavior detail.** Grandfathering is stated as book data plus product law so it globalizes
-cleanly: every market's book records its horizon (the IN book's is source-derived), and the law
-that a horizon exists — and that repricing is never silent, never mid-cycle, never retroactive —
-is market-neutral. Mechanics (which plan-price row an old tenant bills against, how a lapsed
-horizon migrates) are `modules/M12`'s.
+**Behavior detail.** Repricing is market-neutral law: a new book revision reaches each company at
+its own next paid period, so no company pays a new price for time it already paid for. Mechanics
+(which plan-price row a renewal bills, how a mandate moves to a new amount) are `modules/M12`'s.
 
 **Permissions.** Repricing decisions are owner/platform-level; no tenant surface.
 
 **Edge cases & what-goes-wrong.**
 
-- *A protected tenant upgrades tiers* → they move to the new tier under their protection terms;
-  an upgrade is never used as a lever to strip grandfathered pricing (the trust event law).
-- *A tenant churns (`cancelled`/`halted`) and reactivates — inside or after the horizon* →
-  reactivation prices at the current book; protection forfeits on lapse and never survives a
-  lapsed subscription (owner ruling 2026-08-04; mechanics M12, `M12-57`).
+- *A company paid a year in advance and the book reprices mid-year* → its year runs at the price
+  it paid; the renewal after it bills the new book (`M12-57`).
+- *A company upgrades, reactivates or buys after a reprice* → it pays the current book.
 
 **Acceptance criteria.**
 
-- Given a tenant inside their protection horizon, when the market book is repriced, then their
-  bill is unchanged until the horizon lapses, and they were told honestly what changes and when
-  (BM-42).
-- Given a protected tenant who cancels or is halted, when they reactivate — even inside the
-  original horizon — then they bill against the current list book, and the cancellation/dunning
-  copy they saw before the lapse stated the forfeiture plainly (BM-42, owner ruling 2026-08-04;
+- Given a book that repriced, when a company's next paid period is billed, then it bills the
+  current book, and no period already paid is billed again (BM-42, owner ruling 2026-10-31;
   `M12-57`).
 
 **Localization notes.** Repricing communications in every launch language. **Analytics events:**
@@ -518,14 +510,14 @@ BM-47 metric; event taxonomy is M13's).
 
 | Consumer | What it takes from here |
 |---|---|
-| `modules/M12-platform-billing.md` | The tier names (BM-11) and every price/cap/bundle number (BM-41) its entitlements enforce; the meter list (BM-16) its usage ledger meters; the billing-state names (BM-33) its lifecycle machine implements; the soft-block law + matrix (BM-32–BM-36) as its non-negotiable floor; cap law incl. 80% pre-warning (BM-34); trial law (BM-28–BM-31); grandfathering law (BM-42); supplier-of-record posture (BM-40) |
+| `modules/M12-platform-billing.md` | The tier names (BM-11) and every price/cap/bundle number (BM-41) its entitlements enforce; the meter list (BM-16) its usage ledger meters; the billing-state names (BM-33) its lifecycle machine implements; the soft-block law + matrix (BM-32–BM-36) as its non-negotiable floor; cap law incl. 80% pre-warning (BM-34); trial law (BM-28–BM-31); repricing at the next paid period (BM-42); supplier-of-record posture (BM-40) |
 | `modules/M13-dashboards-and-reporting.md` | Tier names and billing-state names as reporting vocabulary (BM-11, BM-33); the meter list for usage reporting (BM-16); the trial-to-paid conversion metric (BM-47) |
 | `modules/M03-marketing.md` | The marketing-sends meter definition and channel boundary (BM-21); the absorbed/metered split it must respect |
 | `modules/M09-field-workforce.md` | The tracked-seat add-on boundary — included capabilities (BM-23) vs the tracked-seat bundle scope, the owner toggle, and the billing unit (BM-22) |
 | `modules/M07-sales-execution.md`, `modules/M04-survey.md` | Voice-minute and detection meter definitions (BM-18, BM-19); the manual-path guarantee (BM-19) |
 | `modules/M11-payments-and-collections.md` | The two-money-systems separation (BM-02) — the platform side ends here |
 | `modules/M01-onboarding-and-tenant-config.md` | Trial-start law (BM-28: no payment instrument at signup); the demo-led first session BM-43 leans on |
-| `foundations/F1-global-market-framework.md` | The IN book contents its `F1-60`/`F1-61` identification points at (BM-41 — the reciprocal of F1's hook); the benchmark and grandfather values as book data |
+| `foundations/F1-global-market-framework.md` | The IN book contents its `F1-60`/`F1-61` identification points at (BM-41 — the reciprocal of F1's hook); the benchmark values as book data |
 | `foundations/F5-customer-link.md` | The always-on customer-link row of the matrix (BM-32/BM-35) |
 | `01-product-overview.md` | The commercial law behind `OV-20`, `OV-26`–`OV-30` (this document is where those principles' numbers and matrices live) |
 

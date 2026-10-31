@@ -1,5 +1,4 @@
-import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   compactQualified,
@@ -14,6 +13,7 @@ import {
   qualifiers,
   qualifyMoney,
 } from '@heliogrid/domain';
+import { gitFiles } from './repo-files';
 import { REPO_ROOT } from './repo-root';
 
 /**
@@ -177,20 +177,15 @@ const INTL_CONSTRUCTOR = /new\s+Intl\.(?:NumberFormat|DateTimeFormat)\s*\(/;
 const COMMENT_LINE = /^\s*(?:\/\/|\/\*|\*)/;
 
 function secondImplementations(): string[] {
-  const tracked = execFileSync('git', ['ls-files', 'packages', 'apps'], {
-    cwd: REPO_ROOT,
-    encoding: 'utf8',
-  })
-    .split('\n')
-    .filter((path) => /\.(?:ts|tsx|mts|cts)$/.test(path) && !path.startsWith(FORMAT_SLICE));
+  /* `gitFiles` lists new, uncommitted files too: a second implementation is caught before its
+     commit, not first in CI. */
+  const sources = gitFiles(REPO_ROOT, ['packages', 'apps']).filter(
+    (path) => /\.(?:ts|tsx|mts|cts)$/.test(path) && !path.startsWith(FORMAT_SLICE),
+  );
 
   const found: string[] = [];
-  for (const path of tracked) {
-    /* `git ls-files` reports a file deleted in the working tree but not yet staged. A file that
-       is not there cannot hold a second implementation. */
-    const full = join(REPO_ROOT, path);
-    if (!existsSync(full)) continue;
-    const lines = readFileSync(full, 'utf8').split('\n');
+  for (const path of sources) {
+    const lines = readFileSync(join(REPO_ROOT, path), 'utf8').split('\n');
     lines.forEach((line, index) => {
       if (COMMENT_LINE.test(line) || !INTL_CONSTRUCTOR.test(line)) return;
       found.push(`${path}:${index + 1}`);

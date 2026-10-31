@@ -38,6 +38,17 @@ const GLOBAL_TABLES: Record<string, string> = {
     'the handsets a person is pushed on \u2014 unreachable, the admin path alone. A phone belongs to a ' +
     'PERSON, not a company: tenant-scoping it would give someone in two companies two rows for ' +
     'one handset and two pushes for one notification (T-FPLAT-067)',
+  plan_price:
+    'one tier on one cycle as the gateway sells it (M12-12) — unreachable: no company owns a ' +
+    'price; the publish command writes it and the checkout and charge paths read it, all on the ' +
+    'admin path (T-M12-007)',
+  billing_gateway_event:
+    'the transport dedupe of the gateway\u2019s signed messages — unreachable: a message names no ' +
+    'company until it is read, so the webhook writes it on the admin path (T-M12-007)',
+  invoice_sequence:
+    'the last number of each market\u2019s invoice series in each fiscal year (M12-44) — ' +
+    'unreachable: the series is the platform\u2019s across every company, taken in the charge ' +
+    'transaction on the admin path (T-M12-012a)',
   schema_migrations: 'the migration ledger; server-internal, sha256-locked by the runner',
 };
 
@@ -81,6 +92,26 @@ const GLOBAL_UNIQUES: Record<string, string> = {
     'the rate ledger’s insertion order (M01-44), an identity column the database alone numbers: ' +
     'its uniqueness is what settles two entries on one date, and no tenant ever supplies a ' +
     'value, so no two tenants can meet on one (T-M01-027)',
+  subscription_payment_charge_ref_key:
+    'the gateway’s own charge reference, the one idempotency key of a collected charge (M12-09): ' +
+    'the gateway alone mints it, unique across our one platform account, and a webhook names the ' +
+    'charge before any tenant is known — scoped per tenant, one charge could be recorded on two ' +
+    'companies (T-M12-006)',
+  billing_checkout_gateway_ref_key:
+    'the gateway\u2019s own subscription or payment-link id for a hosted checkout (M12-54): the ' +
+    'gateway alone mints it, and its message names it before any tenant is known (T-M12-007)',
+  subscription_invoice_number_key:
+    'the platform\u2019s invoice number within a market (M12-44): one consecutive series across ' +
+    'every company per fiscal year, as the tax scheme asks — scoped per tenant, two companies ' +
+    'could hold one number (T-M12-012a)',
+  subscription_gateway_ref_key:
+    'the gateway\u2019s own subscription or payment-link id a converted subscription is collected ' +
+    'on (M12-09): the gateway alone mints it, and the reconcile and the webhook find the row by it ' +
+    'before any tenant is known (T-M12-007)',
+  subscription_invoice_gateway_ref_key:
+    'the gateway\u2019s own payment-link id a renewal invoice is collected on (M12-11): the gateway ' +
+    'alone mints it, and the webhook and the reconcile find the invoice by it before any tenant is ' +
+    'known (T-M12-012c)',
 };
 
 function assert(cond: unknown, msg: string): asserts cond {
@@ -142,7 +173,7 @@ export async function runTableTenancyScan(adminUrl: string) {
   try {
     // Base tables and partitioned parents only. Partition CHILDREN are excluded via
     // pg_inherits: they inherit the parent's columns and policies, so scanning them would
-    // double-report audit_log_* and usage_events_*.
+    // double-report audit_log_*.
     const tables = (
       await sql<{ table_name: string }[]>`
         select c.relname as table_name

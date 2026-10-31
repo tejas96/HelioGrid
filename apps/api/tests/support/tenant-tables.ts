@@ -1,4 +1,5 @@
 import {
+  billingCheckout,
   brandingSettings,
   businessProfile,
   catalogImportJob,
@@ -6,10 +7,21 @@ import {
   catalogRateEntry,
   catalogRelease,
   catalogReleaseLine,
+  dunningEvent,
+  entitlement,
+  entitlementOverride,
+  invoiceLine,
+  invoiceLineTax,
   onboardingProgress,
+  overageAddOn,
   priceBookRate,
   priceBookVersion,
   proposalTemplateSettings,
+  storageGaugeSnapshot,
+  subscription,
+  subscriptionInvoice,
+  subscriptionPayment,
+  subscriptionStateHistory,
   taxRegistration,
   tenantCatalogItem,
   tenantCatalogOverride,
@@ -17,6 +29,7 @@ import {
   timelineTemplate,
   trancheTemplate,
   trancheTemplateLine,
+  usageEvent,
 } from '@heliogrid/db';
 
 /**
@@ -51,4 +64,26 @@ export const TENANT_CATALOG_TABLES = [
   catalogRateEntry,
   tenantCatalogOverride,
   tenantCatalogItem,
+] as const;
+
+/**
+ * A company's billing rows: its notices before the payments that cleared them; its invoices, lines
+ * last-in first-out, before the payments they name; the payments, the
+ * checkouts, the overrides and the history before the subscription each names; its limits after it, since another suite's timers repair a live
+ * company's limits until it is gone; then its usage ledger and storage gauge.
+ */
+export const TENANT_BILLING_TABLES = [
+  dunningEvent,
+  entitlementOverride,
+  invoiceLineTax,
+  invoiceLine,
+  overageAddOn,
+  subscriptionInvoice,
+  subscriptionPayment,
+  billingCheckout,
+  subscriptionStateHistory,
+  subscription,
+  entitlement,
+  usageEvent,
+  storageGaugeSnapshot,
 ] as const;

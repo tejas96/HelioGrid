@@ -152,4 +152,4 @@ export {
   type StageLabel,
   stageLabel,
 } from './vocabulary';
-export { localDate, localMinutes, nextLocalTime } from './zone';
+export { localDate, localMinutes, MS_PER_DAY, nextLocalTime } from './zone';

@@ -1,10 +1,14 @@
 import * as audit from './audit';
+import * as billing from './billing';
 import * as catalogImport from './catalog-import';
 import * as catalogPlatform from './catalog-platform';
 import * as catalogTenant from './catalog-tenant';
+import * as dunning from './dunning';
+import * as entitlement from './entitlement';
 import * as file from './file';
 import * as identity from './identity';
 import * as invitation from './invitation';
+import * as invoice from './invoice';
 import * as market from './market';
 import * as memberPhoto from './member-photo';
 import * as notification from './notification';
@@ -13,6 +17,7 @@ import * as priceBook from './price-book';
 import * as settings from './settings';
 import * as subject from './subject';
 import * as tenant from './tenant';
+import * as usage from './usage';
 
 /**
  * Every table the migrations built, as one object: what `createDb` describes to Drizzle and what
@@ -35,15 +40,24 @@ export const schema = {
   ...catalogImport,
   ...priceBook,
   ...outbox,
+  ...billing,
+  ...entitlement,
+  ...usage,
+  ...dunning,
+  ...invoice,
 };
 
 export * from './audit';
+export * from './billing';
 export * from './catalog-import';
 export * from './catalog-platform';
 export * from './catalog-tenant';
+export * from './dunning';
+export * from './entitlement';
 export * from './file';
 export * from './identity';
 export * from './invitation';
+export * from './invoice';
 export * from './market';
 export * from './member-photo';
 export * from './notification';
@@ -52,3 +66,4 @@ export * from './price-book';
 export * from './settings';
 export * from './subject';
 export * from './tenant';
+export * from './usage';

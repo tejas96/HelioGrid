@@ -326,7 +326,7 @@ work regardless of billing state"), which is what `M12-24` and `M12-26` are alre
 | `M12-22` — the always-on set is unconditional | `T-M12-009` (`docs/tasks/M12-platform-billing.md`) |
 | `M12-24` — the never-gated list is law | LAW |
 | `M12-26` — a captured photograph always uploads | LAW |
-| `M12-27` — new field capture is never cut off before `halted` | `T-M12-008` (`docs/tasks/M12-platform-billing.md`) |
+| `M12-27` — new field capture is never cut off before `halted` | `T-M12-009` (`docs/tasks/M12-platform-billing.md`) |
 
 ---
 
