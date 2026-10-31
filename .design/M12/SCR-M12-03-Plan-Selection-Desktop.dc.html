@@ -41,7 +41,7 @@ a:hover{color:var(--link-hover)}
             <sc-if value="{{ f.sideNav }}" hint-placeholder-val="{{ true }}">
             <nav aria-label="Settings" style="margin-top:var(--sp-6);flex:0 0 248px;width:248px;display:flex;flex-direction:column;gap:var(--sp-1);padding-top:var(--sp-1)">
               <span style="display:block;padding:0 var(--sp-3) var(--sp-2);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">Settings</span>
-              <sc-for list="{{ settings }}" as="s" hint-placeholder-count="6">
+              <sc-for list="{{ f.settings }}" as="s" hint-placeholder-count="6">
                 <sc-if value="{{ s.heading }}" hint-placeholder-val="{{ false }}">
                   <span style="display:block;padding:0 var(--sp-3) var(--sp-2);margin-top:var(--sp-3);font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ s.heading }}</span>
                 </sc-if>
@@ -132,7 +132,6 @@ a:hover{color:var(--link-hover)}
               <sc-if value="{{ f.picking }}" hint-placeholder-val="{{ true }}">
                 <div style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1) var(--sp-3);padding:0 var(--sp-1)">
                   <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ bookSource }}" hint-size="auto,18px"></x-import>
-                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ gstNote }}" hint-size="auto,18px"></x-import>
                 </div>
               </sc-if>
             </div>
@@ -168,7 +167,9 @@ a:hover{color:var(--link-hover)}
                       </x-import>
                     </sc-if>
                     <sc-if value="{{ sec.money }}" hint-placeholder-val="{{ false }}">
-                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MoneySummary" dc-props="{{ sec.money }}" hint-size="100%,170px"></x-import>
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MarketProvider" dc-props="{{ paiseMarket }}" hint-size="100%,170px">
+                        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MoneySummary" dc-props="{{ sec.money }}" hint-size="100%,170px"></x-import>
+                      </x-import>
                     </sc-if>
                     <sc-if value="{{ sec.deriv }}" hint-placeholder-val="{{ false }}">
                       <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Derivation" dc-props="{{ sec.deriv }}" hint-size="100%,44px"></x-import>
@@ -194,23 +195,20 @@ a:hover{color:var(--link-hover)}
 const TODAY = "2026-09-15";
 const NEXT_BILL = "2026-10-01";
 
-const GST = 0.18;
-const GST_PCT = "18%";
 const BOOK_LIST = "India price list · 1 Apr 2026";
 const DAYS_IN_CYCLE = 30;
 const DAYS_LEFT = 16;
 
 const BOOK = {
-  starter: { name: "Starter", mo: 1999, design: "50 kW", proposals: 30, detections: 30, projects: 10 },
-  growth: { name: "Growth", mo: 3999, design: "500 kW", proposals: 300, detections: 100, projects: null },
-  pro: { name: "Pro", mo: 9999, design: "5 MW", proposals: 1500, detections: 400, projects: null },
-  enterprise: { name: "Enterprise", mo: 24999, design: "100 MW", proposals: null, detections: "Custom", projects: null },
+  starter: { name: "Starter", mo: 1999, design: "50 kW", proposals: 30, projects: 10 },
+  growth: { name: "Growth", mo: 3999, design: "500 kW", proposals: 300, projects: null },
+  pro: { name: "Pro", mo: 9999, design: "5 MW", proposals: 1500, projects: null },
+  enterprise: { name: "Enterprise", mo: 24999, design: "100 MW", proposals: null, projects: null },
 };
 
 const PRORATA = (BOOK.pro.mo - BOOK.growth.mo) * DAYS_LEFT / DAYS_IN_CYCLE;
-const GST_TODAY = PRORATA * GST;
-const TOTAL_TODAY = PRORATA + GST_TODAY;
-const PRO_MONTH_WITH_GST = BOOK.pro.mo * (1 + GST);
+/* The platform is not GST-registered: every figure is the list price alone (F1-29). */
+const TOTAL_TODAY = PRORATA;
 
 class Component extends DCLogic {
   constructor(props) {
@@ -280,7 +278,7 @@ class Component extends DCLogic {
   }
 
   /* The plan card shared with SCR-M12-01 and the 375 board: the headline price in mono with tabular
-     figures and its period beside it, then the limits as ONE flowing line. */
+     figures and its period beside it, then the two limits as ONE flowing line. */
   cardBody(NS, F, tier) {
     const t = BOOK[tier];
     const ent = tier === "enterprise";
@@ -292,7 +290,6 @@ class Component extends DCLogic {
       React.createElement(NS.FactRow, { label: "Limits", values: [
         t.design,
         (t.proposals === null ? "Unlimited" : F.number(t.proposals)) + " proposals a month",
-        (typeof t.detections === "number" ? F.number(t.detections) : t.detections) + " detections a month",
       ] }));
     return React.createElement("span", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-3)" } }, figure, limits);
   }
@@ -319,7 +316,7 @@ class Component extends DCLogic {
   }
 
   /* The full four-plan matrix, one region, the same set selector — never four tables stacked. */
-  compare(F, width) {
+  compare(F, width, owner) {
     const val = (t) => ({
       design: BOOK[t].design,
       proposals: BOOK[t].proposals ? F.number(BOOK[t].proposals) + " / mo" : "Unlimited",
@@ -342,7 +339,7 @@ class Component extends DCLogic {
         { key: "projects", label: "Active projects" },
         { key: "users", label: "Users" },
       ],
-      provenance: { source: BOOK_LIST },
+      provenance: owner === false ? null : { source: BOOK_LIST },
     };
   }
 
@@ -372,14 +369,13 @@ class Component extends DCLogic {
 
   /* The review panel: the same groups, rows and words as the 375 sheet. */
   panelSections(F) {
-    const m = (n) => this.money(F.money(n));
+    const m = (n) => this.money(F.money(n, { fractionDigits: 2 }));
     return [
       {
         key: "changes", overline: "What changes", group: { label: "What changes", density: "expressive", form: "lead" },
         rows: [
           { key: "d", label: "Biggest design", value: "500 kW → 5 MW" },
           { key: "p", label: "Proposals", value: "300 → 1,500 a month" },
-          { key: "a", label: "AI detections", value: "100 → 400 a month" },
           { key: "s", label: "Storage", value: "50 GB → 250 GB" },
           { key: "v", label: "Voice minutes", value: "Per minute → 400 a month" },
           { key: "u", label: "Unchanged", value: "Active projects · Users" },
@@ -392,7 +388,6 @@ class Component extends DCLogic {
           overline: "What you pay today", surface: "screen", density: "expressive", payableLabel: "Total today",
           lines: [
             { key: "delta", label: "Part of this cycle · " + DAYS_LEFT + " of " + DAYS_IN_CYCLE + " days", amount: PRORATA },
-            { key: "gst", label: "GST " + GST_PCT, amount: GST_TODAY },
           ],
           provenance: { tier: "unmarked", source: BOOK_LIST },
         },
@@ -400,8 +395,7 @@ class Component extends DCLogic {
           open: false, summary: "How the part-cycle amount is worked out", label: "Part of this cycle",
           parts: [
             { kind: "formula", label: "Days", text: DAYS_LEFT + " of this cycle's " + DAYS_IN_CYCLE + " days remain on " + F.date(TODAY) + "." },
-            { kind: "formula", label: "Difference", text: React.createElement("span", null, m(BOOK.pro.mo - BOOK.growth.mo), " a month between Growth's ", m(BOOK.growth.mo), " and Pro's ", m(BOOK.pro.mo), ", before GST.") },
-            { kind: "note", label: "Tax", text: React.createElement("span", null, "GST " + GST_PCT + " on the ", m(PRORATA), " part-cycle charge.") },
+            { kind: "formula", label: "Difference", text: React.createElement("span", null, m(BOOK.pro.mo - BOOK.growth.mo), " a month between Growth's ", m(BOOK.growth.mo), " and Pro's ", m(BOOK.pro.mo), ".") },
           ],
         },
       },
@@ -409,7 +403,7 @@ class Component extends DCLogic {
         key: "when", overline: "When it starts", group: { label: "When it starts", density: "expressive", form: "lead" },
         rows: [
           { key: "s", label: "Plan swaps", value: F.date(NEXT_BILL) },
-          { key: "m", label: "From then, a month", value: this.rightMoney(F.money(PRO_MONTH_WITH_GST, { fractionDigits: 2 })), prov: { tier: "unmarked", note: "with GST", size: 12, align: "right" } },
+          { key: "m", label: "From then, a month", value: this.rightMoney(F.money(BOOK.pro.mo, { fractionDigits: 2 })) },
         ],
       },
     ];
@@ -427,7 +421,7 @@ class Component extends DCLogic {
       panelProps: { style: { transform: "translateX(0)", animation: "none" } },
       footer: React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-2)" } },
         React.createElement(NS.SheetActions, { key: "row" },
-          React.createElement(NS.Button, { onClick: this.noop, fullWidth: true }, React.createElement("span", null, "Pay ", this.money(F.money(TOTAL_TODAY))))),
+          React.createElement(NS.Button, { onClick: this.noop, fullWidth: true }, React.createElement("span", null, "Pay ", this.money(F.money(TOTAL_TODAY, { fractionDigits: 2 }))))),
         React.createElement("span", {
           key: "line",
           style: { fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)", textAlign: "center", textWrap: "pretty" },
@@ -441,11 +435,11 @@ class Component extends DCLogic {
     const owner = this.rail(NS, "Mahesh Bhosale", "projects");
     const priced = [
       { key: "plan", label: "Plan", value: "Growth" },
-      { key: "price", label: "Price", value: this.money(F.money(BOOK.growth.mo) + " / mo + GST") },
+      { key: "price", label: "Price", value: this.money(F.money(BOOK.growth.mo) + " / mo") },
       { key: "bill", label: "Next bill", value: F.date(NEXT_BILL) },
     ];
     const base = (o) => Object.assign({
-      offset: "0px", padRight: SHUT_PAD, rail: owner, sideNav: true, picked: false, picking: true, readOnly: false,
+      offset: "0px", padRight: SHUT_PAD, rail: owner, sideNav: true, settings: this.settingsList(), picked: false, picking: true, readOnly: false,
       planBlock: this.planBlock(NS, true), planRows: priced,
       plans: this.plans(NS, F, null), act: this.act(false),
       compare: this.compare(F, 1060), compareShow: this.compareShow(true),
@@ -458,6 +452,9 @@ class Component extends DCLogic {
       base({ id: "m12-03-d4", label: "1536 · not the Owner · read only", screenLabel: "Plan selection — non-Owner, read only (1536)",
         rail: this.rail(NS, "Priya Sharma", "proposals"), picking: false, readOnly: true,
         planBlock: this.planBlock(NS, false), planRows: [priced[0], priced[2]],
+        /* A Sales Executive's list holds one row, so she gets no side list (SCR-SHELL-01, F7-48);
+           the content takes the freed 248 px column and its gap. */
+        sideNav: false, compare: this.compare(F, 1340, false),
         compareShow: this.compareShow(false) }),
     ];
   }
@@ -475,9 +472,11 @@ class Component extends DCLogic {
 
     this._vals = {
       noop: this.noop,
+      /* F1-07: a payment prints to the paisa, so the review's money block reads the pack's minor unit. */
+      paiseMarket: { format: NS.MarketProvider.createFormat({ currencyFractionDigits: 2 }) },
       frames: this.frames(NS, F),
       header: this.header(NS),
-      crumbs: this.crumbs(NS), settings: this.settingsList(),
+      crumbs: this.crumbs(NS),
       cycleSelector: {
         label: "Billing cycle", value: "monthly", onChange: this.noop,
         options: [{ value: "monthly", label: "Monthly" }, { value: "yearly", label: "Yearly" }],
@@ -492,7 +491,6 @@ class Component extends DCLogic {
       ],
       scopeNote: { holder: "Mahesh Bhosale (owner)", acts: ["change this plan"], variant: "line", size: 13 },
       bookSource: { source: BOOK_LIST, size: 12 },
-      gstNote: { note: "Prices exclude GST", size: 12 },
       compareBlock: { density: "functional", flat: true, style: { padding: 0 }, title: "Compare all plans" },
       panel: this.panel(NS, F),
       panelSections: this.panelSections(F),

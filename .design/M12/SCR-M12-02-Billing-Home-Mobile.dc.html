@@ -32,7 +32,7 @@ a:hover{color:var(--link-hover)}
 </helmet>
 
 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MarketProvider" dc-props="{{ market }}" hint-size="100%,100%">
-<div data-board-root="m12-02-mobile" style="box-sizing:border-box;width:1740px;height:7130px;overflow:hidden;padding:var(--sp-12);display:flex;flex-wrap:wrap;align-content:flex-start;align-items:flex-start;gap:var(--sp-16) var(--sp-12);background:var(--canvas)">
+<div data-board-root="m12-02-mobile" style="box-sizing:border-box;width:1740px;height:6228px;overflow:hidden;padding:var(--sp-12);display:flex;flex-wrap:wrap;align-content:flex-start;align-items:flex-start;gap:var(--sp-16) var(--sp-12);background:var(--canvas)">
   <sc-for list="{{ frames }}" as="f" hint-placeholder-count="4">
     <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
       <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ f.label }}</span>
@@ -88,6 +88,9 @@ a:hover{color:var(--link-hover)}
                         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ r.label }}" value="{{ r.value }}" provenance="{{ r.prov }}" hint-size="100%,24px"></x-import>
                       </sc-for>
                     </x-import>
+                  </sc-if>
+                  <sc-if value="{{ f.plan.deriv }}" hint-placeholder-val="{{ false }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Derivation" dc-props="{{ f.plan.deriv }}" hint-size="100%,44px"></x-import>
                   </sc-if>
                   <sc-for list="{{ f.plan.routes }}" as="rt" hint-placeholder-count="1">
                     <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ rt }}" hint-size="100%,52px"></x-import>
@@ -166,10 +169,12 @@ a:hover{color:var(--link-hover)}
 </div>
 </x-import>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1740,"height":7130}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1740,"height":6228}}'>
 /* Every date is pinned and every control is a no-op. Product facts are the brief's rows: BM-11's
    names, BM-41's prices, caps and bundles, M12-52's 14-day trial, M12-06's two-phase grace, M12-47's
-   7-day refund window, F1-28's 18% GST. Sample content is the billing screens' one story. */
+   7-day refund window. F1-29: the platform is not GST-registered, so every frame bills the list
+   price alone; only the gst-registered frame adds F1-28's 18% GST. Sample content is the billing
+   screens' one story; invoice numbers take the issued form, <fiscal year>/<sequence> (T-M12-012a). */
 const NEXT_BILL = "2026-10-01";
 const FAILED_ON = "2026-09-11";
 const GRACE_ENDS = "2026-09-18";
@@ -177,18 +182,22 @@ const EARLY_FAILED_ON = "2026-09-13";
 const EARLY_PAUSE = "2026-09-17";
 const EARLY_GRACE_ENDS = "2026-09-20";
 const BOOK_LIST = "India price list · 1 Apr 2026";
-const GROWTH = { name: "Growth", mo: 3999, design: "500 kW", proposals: 300, detections: 100, storage: "50 GB", voiceRate: 6, detRate: 10 };
+const GROWTH = { name: "Growth", mo: 3999, yr: 39990, design: "500 kW", proposals: 300, storage: "50 GB", voiceRate: 6 };
 const ENTERPRISE_MO = 24999;
-const GST = 0.18;
-const CYCLE_WITH_GST = GROWTH.mo * (1 + GST);
-const ENTERPRISE_WITH_GST = ENTERPRISE_MO * (1 + GST);
-const INVOICE = "HG-INV-2026-0902";
+const GST_RATE = 0.18;
+const INVOICE = "2026-27/000902";
+/* The yearly company's renewal, collected by a payment link (T-M12-012c). */
+const RENEWAL_INVOICE = "2026-27/000911";
+const RENEWAL_DUE = "2026-10-01";
+/* Frames 1–19 sit on this board; 20–24 continue on SCR-M12-02-Billing-Home-Mobile-2 (8000 px cap). */
+const BOARD_FRAMES = [0, 20];
 /* SCR-SHELL-06's dead-state rows, word for word: BM-32's always-works set is four items. */
 const DEAD_PAUSED = "Creating or editing leads, tasks, activities, surveys and designs · generating or sending proposals · marking won or lost · project updates · new uploads · voice calls · AI detections · teammate invites";
 const DEAD_WORKS = "Reading · Export · Customer links · Billing — pay, upgrade, reactivate";
 
 class Component extends DCLogic {
   state = { ds: null };
+  gst = false;
   noop = () => {};
 
   componentDidMount() {
@@ -221,7 +230,13 @@ class Component extends DCLogic {
     return React.createElement("span", { style: Object.assign({ display: "block", textAlign: "right" }, mono ? { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } : {}) }, node);
   }
   chip(word, tone) { return React.createElement(this.NS.StatusChip, { status: word.toLowerCase().replace(/\s+/g, "-"), label: word, tone: tone, density: "expressive" }); }
+  /* An invoice or payment amount prints to the paisa (F1-07); a list price stays whole. */
   money(n) { return this.F.money(n, { fractionDigits: 2 }); }
+  /* What a list price bills: the price alone until the platform is GST-registered (F1-29). */
+  billed(price) { return this.gst ? price * (1 + GST_RATE) : price; }
+  /* A list price's working: the price, then its GST and the total only once registered. */
+  working(price) { return this.gst ? [this.mono(this.money(price)), " + 18% GST = ", this.mono(this.money(this.billed(price)))] : [this.mono(this.money(price))]; }
+  invoiceSource(source) { return this.gst ? source + " · 18% GST" : source; }
   pair(label) { return { label: label, density: "expressive", form: "pair", style: { gridTemplateColumns: "120px minmax(0,1fr)", maxWidth: "100%" } }; }
   derived() { return { tier: "unmarked", align: "right" }; }
 
@@ -242,14 +257,19 @@ class Component extends DCLogic {
     ]);
   }
 
-  /* ---- SCR-M12-04's Needs you row: the name with its chip under it, the figure on the right edge. ---- */
-  needRow(key, name, chipWord, tone, value, prov) {
+  /* ---- SCR-M12-04's Needs you row: a ListRow — the name, its chip as marks, the figure in mono on
+     the right edge, and its one line as the subtitle, wrapped whole. A row without a chip takes the
+     same form, so the region keeps one structure and one value edge. ---- */
+  needRow(key, name, chipWord, tone, value, line) {
     const h = React.createElement;
-    const label = chipWord
-      ? h("span", { style: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--sp-2)", minWidth: 0 } }, [h("span", { key: "n" }, name), h("span", { key: "c" }, this.chip(chipWord, tone))])
-      : name;
-    return { key: key, node: h(this.NS.FactRows, { label: name, density: "expressive", form: "pair", style: { gridTemplateColumns: "minmax(0,1fr) max-content", maxWidth: "100%" } },
-      h(this.NS.FactRow, { label: label, value: value ? this.right(value, /[₹]/.test(value)) : undefined, provenance: prov || undefined })) };
+    const ink = tone === "danger" ? "var(--danger-text)" : tone === "info" ? "var(--info-text)" : "var(--warning-text)";
+    return { key: key, node: h(this.NS.ListRow, {
+      key: key, title: name, density: "expressive",
+      marks: chipWord ? this.chip(chipWord, tone) : undefined,
+      trailing: value ? h("span", { style: { display: "block", textAlign: "right", fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" } }, value) : null,
+      subtitle: line ? h("span", { style: { display: "block", whiteSpace: "normal", textWrap: "pretty", fontWeight: "var(--fw-medium)", color: ink } }, line) : null,
+      style: { padding: 0, minHeight: 0, background: "transparent", boxShadow: "none", alignItems: "flex-start" },
+    }) };
   }
   /* What the strip does not carry, in the strip's own row form: the data is intact. */
   dataKeptRow() {
@@ -270,7 +290,7 @@ class Component extends DCLogic {
   /* The amount's working, under the figure: the invoice, the price, the tax, the day it was tried. */
   dunDeriv(failedOn) {
     return { summary: "How it is worked out", label: "The amount", parts: [
-      { kind: "formula", label: "Amount", text: ["Invoice ", this.mono(INVOICE), " — Growth for the cycle from 1 Sept: ", this.mono(this.F.money(GROWTH.mo)), " + 18% GST = ", this.mono(this.money(CYCLE_WITH_GST)), "."] },
+      { kind: "formula", label: "Amount", text: ["Invoice ", this.mono(INVOICE), " — Growth for the cycle from 1 Sept: "].concat(this.working(GROWTH.mo), ["."]) },
       { kind: "note", label: "Charged", text: "Attempted on " + this.F.date(failedOn) + ", which is day 0 of the 7-day grace." },
     ] };
   }
@@ -281,7 +301,7 @@ class Component extends DCLogic {
     return {
       block: Object.assign({ density: "expressive", title: "Your plan", badge: this.chip(chipWord, tone) }, t.source ? { provenance: { source: t.source } } : {}),
       group: this.pair("Your plan"), rows: rows, hasRows: rows.length > 0,
-      routes: t.routes || [], acc: t.acc === undefined ? null : t.acc,
+      routes: t.routes || [], acc: t.acc === undefined ? null : t.acc, deriv: t.deriv || null,
     };
   }
   row(label, value, mono, prov) { return { key: label, label: label, value: this.right(value, mono), prov: prov || null }; }
@@ -304,34 +324,46 @@ class Component extends DCLogic {
     if (t.trial) return [this.row("Plan", "Trial"), this.row("Days left", t.daysLeft), this.row("Ends", this.F.date(t.ends))];
     if (t.lapsed) return [plan, this.row(t.lapsedLabel, this.F.date(t.lapsed))];
     if (t.runsUntil) return [plan, price, this.row("Runs until", this.F.date(t.runsUntil))];
-    return [plan, price, this.nextBill("Next bill", t.next || NEXT_BILL, t.nextAmount || CYCLE_WITH_GST)];
+    return [plan, price, this.nextBill("Next bill", t.next || NEXT_BILL, t.nextAmount || this.billed(GROWTH.mo))];
   }
   /* A row inside a region sits on the region's own edges, so its trailing figure ends on the right edge. */
   flush() { return { paddingLeft: 0, paddingRight: 0 }; }
   /* The price is money, so it is mono; the cycle and the tax ride it in the sans face. */
-  priceRow(amount) { return this.row("Price", [this.mono(this.F.money(amount)), " / mo + GST"]); }
+  priceRow(amount) { return this.row("Price", [this.mono(this.F.money(amount)), this.gst ? " / mo + GST" : " / mo"]); }
   changeRoute() { return { title: "Change plan", trailing: this.glyph("chevron-right"), onClick: this.noop, density: "functional", style: this.flush() }; }
   includesAcc(open, trial) {
     const h = React.createElement; const NS = this.NS; const F = this.F;
     const r = (l, v, mono) => h(NS.FactRow, { key: l, label: l, value: this.right(v, mono) });
     const content = h(NS.FactRows, this.pair("What my plan includes"), trial ? [
-      r("Biggest design", "100 MW"), r("Proposals", "Not capped"), r("AI detections", "25"), r("Voice minutes", "15"),
+      r("Biggest design", "100 MW"), r("Proposals", "Not capped"), r("Voice minutes", "15"),
       r("Storage", "5 GB"), r("Active projects", "Not capped"), r("Users", "Unlimited"),
     ] : [
-      r("Biggest design", GROWTH.design), r("Proposals a month", F.number(GROWTH.proposals)), r("AI detections a month", F.number(GROWTH.detections)),
-      r("Extra detections", F.money(GROWTH.detRate) + " each", true), r("Voice minutes", F.money(GROWTH.voiceRate) + " / min", true),
+      r("Biggest design", GROWTH.design), r("Proposals a month", F.number(GROWTH.proposals)),
+      r("Voice minutes", F.money(GROWTH.voiceRate) + " / min", true),
       r("Storage", GROWTH.storage), r("Active projects", "Unlimited"), r("Users", "Unlimited"),
     ]);
     return { density: "functional", value: open ? "includes" : null, onChange: this.noop, items: [{ key: "includes", title: "What my plan includes", content: content }] };
   }
   standardPlan(chipWord, tone, o) {
     const t = o || {};
-    return this.planBlock(chipWord, tone, this.planRows(t), { source: BOOK_LIST, routes: [this.changeRoute()], acc: this.includesAcc(!!t.open, !!t.trial) });
+    return this.planBlock(chipWord, tone, this.planRows(t), { source: BOOK_LIST, routes: [this.changeRoute()], acc: this.includesAcc(!!t.open, !!t.trial), deriv: t.deriv });
+  }
+  /* Once registered, the next bill is computed (price + GST), so its working sits under the rows. */
+  nextBillDeriv() {
+    return { summary: "How it is worked out", label: "Next bill", defaultOpen: true, parts: [
+      { kind: "formula", label: "Amount", text: ["Growth, monthly: "].concat(this.working(GROWTH.mo), [", from the " + BOOK_LIST + "."]) },
+    ] };
+  }
+  /* A frame drawn as the platform bills once GST-registered (F1-29); every other frame bills the list price alone. */
+  registered(build) {
+    this.gst = true;
+    try { return this.frame(build()); } finally { this.gst = false; }
   }
 
   /* ---- SCR-M12-04's meter row ---- */
-  meter(label, value, limit) {
+  meter(label, value, limit, unit) {
     const m = { label: label, value: value, limit: limit, density: "expressive" };
+    if (unit) m.unit = unit;
     if (limit === null) m.noLimitNote = null;
     return m;
   }
@@ -365,13 +397,14 @@ class Component extends DCLogic {
   }
 
   /* ---- invoices: date and state on the left; the PDF, then the amount on the right edge ---- */
-  invoiceRow(amount, date, state, tone, number, what) {
+  /* pdfPending: the invoice's PDF is not made yet, so the row has no PDF act (T-M12-012d). */
+  invoiceRow(amount, date, state, tone, number, what, pdfPending) {
     const h = React.createElement;
     return {
       title: this.F.date(date) + (what ? " · " + what : ""),
       marks: this.chip(state, tone),
       trailing: h("span", { style: { display: "inline-flex", alignItems: "center", gap: "var(--sp-2)" } }, [
-        h(this.NS.IconButton, { key: "pdf", label: "Invoice " + number + " as PDF", onClick: this.noop, variant: "ghost" }, this.glyph("document", "md")),
+        pdfPending ? null : h(this.NS.IconButton, { key: "pdf", label: "Invoice " + number + " as PDF", onClick: this.noop, variant: "ghost" }, this.glyph("document", "md")),
         h("span", { key: "a", style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", color: "var(--text-primary)" } }, this.money(amount)),
       ]),
       onClick: this.noop, density: "expressive", style: this.flush(),
@@ -380,15 +413,15 @@ class Component extends DCLogic {
   invoicesBlock(o) {
     const t = o || {};
     const rows = t.rows || [
-      this.invoiceRow(CYCLE_WITH_GST, "2026-09-01", t.latestState || "Paid", t.latestTone || "success", INVOICE),
-      this.invoiceRow(CYCLE_WITH_GST, "2026-08-01", "Paid", "success", "HG-INV-2026-0874"),
-      this.invoiceRow(CYCLE_WITH_GST, "2026-07-01", "Paid", "success", "HG-INV-2026-0851"),
+      this.invoiceRow(this.billed(GROWTH.mo), "2026-09-01", t.latestState || "Paid", t.latestTone || "success", INVOICE, null, !t.latestState),
+      this.invoiceRow(this.billed(GROWTH.mo), "2026-08-01", "Paid", "success", "2026-27/000874"),
+      this.invoiceRow(this.billed(GROWTH.mo), "2026-07-01", "Paid", "success", "2026-27/000851"),
     ];
     if (t.state === "empty") {
       return { block: { density: "expressive", title: "Invoices", read: { kind: "empty" }, emptyTitle: "No invoices yet", emptyMessage: t.emptyMessage }, rows: [], foot: null };
     }
     return {
-      block: { density: "expressive", title: "Invoices", provenance: { tier: "unmarked", source: t.source || (BOOK_LIST + " · 18% GST") } },
+      block: { density: "expressive", title: "Invoices", provenance: { tier: "unmarked", source: this.invoiceSource(t.source || BOOK_LIST) } },
       rows: rows,
       foot: { title: t.all || "All 24 invoices", trailing: this.glyph("chevron-right"), onClick: this.noop, density: "functional", style: this.flush() },
     };
@@ -434,7 +467,7 @@ class Component extends DCLogic {
       strip: o.strip || null, errorBlock: o.errorBlock || null,
       needs: o.needs === undefined ? null : o.needs,
       plan: o.plan === undefined ? this.standardPlan("Active", "success") : o.plan,
-      usage: o.usage === undefined ? this.usageBlock([this.meter("AI detections", 61, GROWTH.detections), this.meter("Proposals", 187, GROWTH.proposals)]) : o.usage,
+      usage: o.usage === undefined ? this.usageBlock([this.meter("Storage", 34, 50, "GB"), this.meter("Proposals", 187, GROWTH.proposals)]) : o.usage,
       method: o.method === undefined ? this.methodBlock() : o.method,
       invoices: o.invoices === undefined ? this.invoicesBlock() : o.invoices,
       history: o.history === undefined ? this.historyRows() : o.history,
@@ -445,14 +478,14 @@ class Component extends DCLogic {
 
   pastDueNeeds() {
     return this.needsBlock("Needs you", [
-      this.needRow("due", "Payment failed", "Past due", "danger", this.money(CYCLE_WITH_GST), this.derived()),
+      this.needRow("due", "Payment failed", "Past due", "danger", this.money(this.billed(GROWTH.mo))),
       this.needRow("until", "Grace ends", null, null, this.F.date(GRACE_ENDS)),
     ], "Pay", { line: "Paid on your provider's own page.", deriv: this.dunDeriv(FAILED_ON) });
   }
   wayBack(chipWord, deriv) {
     return this.needsBlock("The way back", [
       this.needRow("state", "Account", chipWord, "danger", null),
-      this.needRow("owed", "To reactivate", null, null, this.money(CYCLE_WITH_GST), this.derived()),
+      this.needRow("owed", "To reactivate", null, null, this.money(this.billed(GROWTH.mo))),
       this.dataKeptRow(),
     ], "Reactivate", { line: "One payment. Everything returns the moment the payment confirms.", deriv: deriv });
   }
@@ -481,14 +514,16 @@ class Component extends DCLogic {
       title: "Cancel subscription", subtitle: "Why are you leaving? Optional.", footer: footer }, body: body };
   }
   invoiceList() {
-    /* 24 monthly cycles, Sept 2026 back to Oct 2024; the newest is the failed charge. */
-    const seq = ["2026-0902", "2026-0874", "2026-0851", "2026-0822", "2026-0790", "2026-0761", "2026-0733", "2026-0702", "2026-0671",
-      "2025-1188", "2025-1094", "2025-1003", "2025-0921", "2025-0846", "2025-0770", "2025-0698", "2025-0627", "2025-0559", "2025-0490", "2025-0431", "2025-0372",
-      "2024-0988", "2024-0905", "2024-0822"];
+    /* 24 monthly cycles, Sept 2026 back to Oct 2024; the newest is the failed charge. The sequence
+       runs up through each fiscal year (1 Apr to 31 Mar) and starts again at the next. */
+    const seq = ["2026-27/000902", "2026-27/000874", "2026-27/000851", "2026-27/000822", "2026-27/000790", "2026-27/000761",
+      "2025-26/001430", "2025-26/001352", "2025-26/001271", "2025-26/001188", "2025-26/001094", "2025-26/001003", "2025-26/000921",
+      "2025-26/000846", "2025-26/000770", "2025-26/000698", "2025-26/000627", "2025-26/000559",
+      "2024-25/001226", "2024-25/001147", "2024-25/001069", "2024-25/000988", "2024-25/000905", "2024-25/000822"];
     return seq.map((s, i) => {
       const d = new Date(Date.UTC(2026, 8 - i, 1));
       const failed = i === 0;
-      return { key: s, iso: d.toISOString().slice(0, 10), number: "HG-INV-" + s, amount: CYCLE_WITH_GST, state: failed ? "Failed" : "Paid", tone: failed ? "danger" : "success" };
+      return { key: s, iso: d.toISOString().slice(0, 10), number: s, amount: this.billed(GROWTH.mo), state: failed ? "Failed" : "Paid", tone: failed ? "danger" : "success" };
     });
   }
   listHead(query, counts) {
@@ -507,7 +542,7 @@ class Component extends DCLogic {
       ? h(NS.Block, { flat: true, density: "expressive", style: { padding: 0 }, read: { kind: "empty" }, emptyTitle: "No invoice matches 2023", emptyMessage: "Your invoices start in Oct 2024.", emptyAction: h(NS.Button, { variant: "secondary", size: "md", onClick: this.noop }, "Clear search") })
       : h("div", { style: { display: "flex", flexDirection: "column", gap: "var(--tile-gap)" } },
           list.map((r) => h(NS.ListRow, Object.assign({ key: r.key }, this.invoiceRow(r.amount, r.iso, r.state, r.tone, r.number))))
-            .concat([h(NS.Provenance, { key: "prov", tier: "unmarked", source: BOOK_LIST + " · 18% GST", size: 12 })]));
+            .concat([h(NS.Provenance, { key: "prov", tier: "unmarked", source: this.invoiceSource(BOOK_LIST), size: 12 })]));
     return { sheet: { open: true, onClose: this.noop, inset: true, size: "full", density: "expressive", zIndex: 60, showClose: true,
       title: "All invoices", sheetProps: { meta: head } }, body: body };
   }
@@ -528,6 +563,8 @@ class Component extends DCLogic {
       it("d4", "Voice, AI detections and invites paused", "2026-09-15", "Day 4"),
       it("d2", "Reminder", "2026-09-13", "Day 2"),
       it("d0", "Payment failed", FAILED_ON, "Day 0"),
+      Object.assign(it("j-paid", "Payment received", "2026-06-04", "June run · cleared"), { content: this.mono(this.money(GROWTH.mo)) }),
+      it("j-d0", "Payment failed", "2026-06-02", "June run · day 0"),
     ];
   }
   historyItems() {
@@ -535,6 +572,8 @@ class Component extends DCLogic {
     const it = (label, date, why, status) => ({ id: label + date, label: label, meta: F.date(date), description: why, status: status || "done" });
     return [
       it("Past due", FAILED_ON, "UPI AutoPay charge for Sept failed", "current"),
+      it("Active", "2026-06-04", "June payment received", "done"),
+      it("Past due", "2026-06-02", "UPI AutoPay charge for June failed", "done"),
       it("Active", "2024-10-01", "Trial converted to Growth, monthly", "done"),
       it("Trial", "2024-09-17", "Signed up · 14 days", "done"),
     ];
@@ -573,7 +612,7 @@ class Component extends DCLogic {
         method: null, invoices: { block: { density: "expressive", title: "Invoices", read: { kind: "loading" } }, rows: [], foot: null }, history: null, cancel: null }),
       f({ key: "empty", label: "5 · Empty · day one of a trial", screenLabel: "Billing — fresh trial, no invoices (375)", offset: "-398px",
         plan: this.planBlock("Trial", "info", this.planRows({ trial: true, daysLeft: "14 of 14", ends: "2026-09-29" }), { routes: [this.changeRoute()], acc: this.includesAcc(false) }),
-        usage: this.usageBlock([this.meter("AI detections", 0, 25), this.meter("Voice minutes", 0, 15)]),
+        usage: this.usageBlock([this.meter("Voice minutes", 0, 15), this.meter("Storage", 0, 5, "GB")]),
         method: this.trialMethod(),
         invoices: this.invoicesBlock({ state: "empty", emptyMessage: "The first one arrives when your trial converts to a plan." }),
         history: null, cancel: null }),
@@ -582,7 +621,7 @@ class Component extends DCLogic {
         plan: null, usage: null, method: null, invoices: null, history: null, cancel: null }),
       f({ key: "trialing", label: "7 · Trialing · with the countdown", screenLabel: "Billing — trialing (375)",
         plan: this.planBlock("Trial", "info", this.planRows({ trial: true, daysLeft: "9 of 14", ends: "2026-09-24" }), { routes: [this.changeRoute()], acc: this.includesAcc(false) }),
-        usage: this.usageBlock([this.meter("AI detections", 11, 25), this.meter("Voice minutes", 4, 15)]),
+        usage: this.usageBlock([this.meter("Voice minutes", 4, 15), this.meter("Storage", 2, 5, "GB")]),
         method: this.trialMethod(),
         invoices: this.invoicesBlock({ state: "empty", emptyMessage: "The first one arrives when your trial converts to a plan." }),
         history: null, cancel: null }),
@@ -592,7 +631,7 @@ class Component extends DCLogic {
           ["until", "Voice, AI detections and invites pause", F.date(EARLY_PAUSE)],
         ]),
         needs: this.needsBlock("Needs you", [
-          this.needRow("due", "Payment failed", "Past due", "danger", this.money(CYCLE_WITH_GST), this.derived()),
+          this.needRow("due", "Payment failed", "Past due", "danger", this.money(this.billed(GROWTH.mo))),
           this.needRow("until", "Grace ends", null, null, F.date(EARLY_GRACE_ENDS)),
         ], "Pay", { line: "Paid on your provider's own page.", deriv: this.dunDeriv(EARLY_FAILED_ON) }),
         plan: this.standardPlan("Past due", "danger"),
@@ -604,7 +643,7 @@ class Component extends DCLogic {
         strip: this.deadStrip("Your trial ended on 14 Sept 2026"),
         needs: this.needsBlock("The way back", [this.needRow("state", "Account", "Trial ended", "danger", null), this.dataKeptRow()], "Pick a plan", { line: "Everything returns the moment the first payment confirms." }),
         plan: this.planBlock("Trial ended", "danger", [this.row("Plan", "Trial"), this.row("Ended", F.date("2026-09-14"))], { routes: [this.changeRoute()], acc: this.includesAcc(false) }),
-        usage: this.usageBlock([this.meter("AI detections", 22, 25), this.meter("Voice minutes", 9, 15)]),
+        usage: this.usageBlock([this.meter("Voice minutes", 9, 15), this.meter("Storage", 3, 5, "GB")]),
         method: this.trialMethod(),
         invoices: this.invoicesBlock({ state: "empty", emptyMessage: "The first one arrives when you choose a plan." }),
         history: null, cancel: null }),
@@ -614,28 +653,28 @@ class Component extends DCLogic {
         method: this.methodBlock({ ended: true }), cancel: null }),
       f({ key: "cancelled", label: "13 · Cancelled · after period end", screenLabel: "Billing — cancelled, after period end (375)", offset: "-113px",
         strip: this.deadStrip("Subscription ended · reactivate to continue"),
-        needs: this.wayBack("Cancelled", { summary: "How it is worked out", label: "The amount", parts: [{ kind: "formula", label: "Amount", text: ["One cycle of Growth, monthly: ", this.mono(F.money(GROWTH.mo)), " + 18% GST = ", this.mono(this.money(CYCLE_WITH_GST)), ", from the " + BOOK_LIST + "."] }] }),
+        needs: this.wayBack("Cancelled", { summary: "How it is worked out", label: "The amount", parts: [{ kind: "formula", label: "Amount", text: ["One cycle of Growth, monthly: "].concat(this.working(GROWTH.mo), [", from the " + BOOK_LIST + "."]) }] }),
         plan: this.planBlock("Cancelled", "danger", this.planRows({ lapsed: NEXT_BILL, lapsedLabel: "Ended" }), { routes: [this.changeRoute()], acc: this.includesAcc(false) }),
         method: this.methodBlock({ ended: true }), cancel: null }),
       f({ key: "cancel-sheet", label: "14 · Cancel · the reason sheet", screenLabel: "Billing — cancel reason (375)", sheet: cancel.sheet, sheetBody: cancel.body }),
       f({ key: "refund", label: "15 · Refund window · first paid cycle", screenLabel: "Billing — refund window (375)",
         needs: this.needsBlock("Needs you", [this.needRow("refund", "Refund available", "First cycle", "info", null), this.needRow("until", "Until", null, null, F.date("2026-09-18"))], "Ask for a refund", { line: "The full first payment goes back to where it came from." }),
         plan: this.standardPlan("Active", "success", { next: "2026-10-12" }),
-        invoices: this.invoicesBlock({ rows: [this.invoiceRow(CYCLE_WITH_GST, "2026-09-12", "Paid", "success", INVOICE)], all: "All invoices" }),
+        invoices: this.invoicesBlock({ rows: [this.invoiceRow(this.billed(GROWTH.mo), "2026-09-12", "Paid", "success", INVOICE)], all: "All invoices" }),
         history: null }),
       f({ key: "downgrade", label: "16 · Scheduled downgrade · pending", screenLabel: "Billing — downgrade pending (375)",
-        plan: this.standardPlan("Active", "success", { nextAmount: 1999 * (1 + GST) }),
+        plan: this.standardPlan("Active", "success", { nextAmount: this.billed(1999) }),
         needs: this.needsBlock("Needs you", [this.needRow("dg", "Moving to Starter", "Scheduled", "info", null), this.needRow("on", "On", null, null, F.date(NEXT_BILL))], "Keep Growth instead", { line: "Nothing changes until " + F.date(NEXT_BILL) + "." }) }),
       f({ key: "enterprise", label: "17 · Enterprise · contact us", screenLabel: "Billing — Enterprise (375)",
         plan: this.planBlock("Active", "success", [
           this.row("Plan", "Enterprise"),
           this.priceRow(ENTERPRISE_MO),
           this.row("Contract", "To " + F.date("2027-03-31")),
-          this.nextBill("Next invoice", NEXT_BILL, ENTERPRISE_WITH_GST),
+          this.nextBill("Next invoice", NEXT_BILL, this.billed(ENTERPRISE_MO)),
         ], { source: "Your contract", routes: [{ title: "Talk to us", subtitle: "Your named contact", trailing: this.glyph("chevron-right"), onClick: this.noop, density: "functional", style: this.flush() }] }),
-        usage: this.usageBlock([this.meter("AI detections", 1240, null), this.meter("Proposals", 2310, null)], "Your contract"),
+        usage: this.usageBlock([this.meter("Proposals", 2310, null), this.meter("Voice minutes", 3120, null)], "Your contract"),
         method: this.methodBlock({ value: "e-NACH · monthly", noAct: true }),
-        invoices: this.invoicesBlock({ source: "Your contract · 18% GST", rows: ["2026-09-01", "2026-08-01", "2026-07-01"].map((d, i) => this.invoiceRow(ENTERPRISE_WITH_GST, d, "Paid", "success", "HG-INV-2026-09" + (60 - i * 30))) }),
+        invoices: this.invoicesBlock({ source: "Your contract", rows: [["2026-09-01", "2026-27/000897"], ["2026-08-01", "2026-27/000869"], ["2026-07-01", "2026-27/000846"]].map((r) => this.invoiceRow(this.billed(ENTERPRISE_MO), r[0], "Paid", "success", r[1])) }),
         cancel: null }),
       f({ key: "non-owner", manager: true, label: "18 · Not the Owner · a Sales Manager", screenLabel: "Billing — non-owner, read only (375)",
         strip: this.dayFourStrip(),
@@ -644,8 +683,28 @@ class Component extends DCLogic {
         usage: null, method: null, invoices: null, history: null, cancel: null }),
       f(Object.assign({ key: "invoices-all", label: "19 · All 24 invoices · full length", screenLabel: "Billing — all 24 invoices (375)", height: 2490, sheet: allInv.sheet, sheetBody: allInv.body }, pastDue)),
       f(Object.assign({ key: "invoices-none", label: "20 · All invoices · no match", screenLabel: "Billing — all invoices, no match (375)", sheet: noInv.sheet, sheetBody: noInv.body }, pastDue)),
-      f(Object.assign({}, halted, { key: "reminders", label: "21 · Payment reminders · full length", screenLabel: "Billing — payment reminders (375)", height: 1180, sheet: reminders.sheet, sheetBody: reminders.body })),
+      f(Object.assign({}, halted, { key: "reminders", label: "21 · Payment reminders · full length", screenLabel: "Billing — payment reminders (375)", height: 1720, sheet: reminders.sheet, sheetBody: reminders.body })),
       f(Object.assign({ key: "history", label: "22 · Plan history", screenLabel: "Billing — plan history (375)", sheet: history.sheet, sheetBody: history.body }, pastDue)),
+      this.registered(() => ({ key: "gst-registered", label: "23 · Active · once GST-registered · the whole page", screenLabel: "Billing — active, GST-registered (375)", height: 1800,
+        plan: this.standardPlan("Active", "success", { deriv: this.nextBillDeriv() }) })),
+      f({ key: "payment-link-renewal", label: "24 · Yearly · renewal by payment link", screenLabel: "Billing — yearly renewal, payment link (375)",
+        needs: this.needsBlock("Needs you", [
+          this.needRow("renewal", "Renewal invoice", "Issued", "info", this.money(GROWTH.yr)),
+          this.needRow("due", "Due", null, null, F.date(RENEWAL_DUE)),
+        ], "Pay", { line: "Paid on your provider's own page.", deriv: { summary: "How it is worked out", label: "The amount", parts: [
+          { kind: "formula", label: "Amount", text: ["Invoice ", this.mono(RENEWAL_INVOICE), " — Growth for the year from 1 Oct: "].concat(this.working(GROWTH.yr), ["."]) },
+        ] } }),
+        plan: this.planBlock("Active", "success", [
+          this.row("Plan", GROWTH.name),
+          this.row("Price", [this.mono(F.money(GROWTH.yr)), " / yr"]),
+          this.row("Renews", F.date(RENEWAL_DUE)),
+        ], { source: BOOK_LIST, routes: [this.changeRoute()], acc: this.includesAcc(false) }),
+        method: this.methodBlock({ value: "Payment link · yearly", noAct: true }),
+        invoices: this.invoicesBlock({ all: "All 3 invoices", rows: [
+          this.invoiceRow(this.billed(GROWTH.yr), "2026-09-10", "Issued", "info", RENEWAL_INVOICE, "yearly", true),
+          this.invoiceRow(this.billed(GROWTH.yr), "2025-10-01", "Paid", "success", "2025-26/001041", "yearly"),
+          this.invoiceRow(this.billed(GROWTH.yr), "2024-10-01", "Paid", "success", "2024-25/000839", "yearly"),
+        ] }) }),
     ];
   }
 
@@ -658,7 +717,7 @@ class Component extends DCLogic {
     this._vals = {
       market: NS.MarketProvider && NS.IN_PACK ? { pack: NS.IN_PACK } : {},
       phoneChrome: { style: { background: "transparent" } },
-      frames: this.frameSpecs(),
+      frames: this.frameSpecs().slice(BOARD_FRAMES[0], BOARD_FRAMES[1]),
     };
     return this._vals;
   }

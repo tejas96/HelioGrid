@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Billing · 375 · 2</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/fonts.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/colors.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/typography.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/spacing.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/radius.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/elevation.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/motion.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/keyframes.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/base.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/print.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/tokens/field-mode.css">
+<link rel="stylesheet" href="ds/heliogriddesignsystem_c8aa43/styles.css">
+<script src="ds/heliogriddesignsystem_c8aa43/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;background:var(--canvas);font-family:var(--font-sans);color:var(--text-primary);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-hover)}
+/* Several open overlays on one board can freeze the spring entry at frame 0 in a throttled frame. */
+[role="dialog"]{animation:none !important;transform:none !important}
+</style>
+</helmet>
+
+<x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MarketProvider" dc-props="{{ market }}" hint-size="100%,100%">
+<div data-board-root="m12-02-mobile-2" style="box-sizing:border-box;width:1740px;height:2828px;overflow:hidden;padding:var(--sp-12);display:flex;flex-wrap:wrap;align-content:flex-start;align-items:flex-start;gap:var(--sp-16) var(--sp-12);background:var(--canvas)">
+  <sc-for list="{{ frames }}" as="f" hint-placeholder-count="4">
+    <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
+      <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ f.label }}</span>
+      <div data-screen-label="{{ f.screenLabel }}" data-frame="{{ f.id }}" style="position:relative;flex:0 0 auto;width:375px;height:{{ f.height }};overflow:hidden;display:flex;flex-direction:column;background:var(--canvas);border-radius:var(--r-2xl);box-shadow:var(--e5);box-sizing:border-box;padding-top:var(--safe-top);padding-bottom:calc(var(--safe-bottom) + var(--bottomnav-h))">
+        <div style="position:absolute;inset:0;pointer-events:none;z-index:1000"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.PhoneScreen" dc-props="{{ phoneChrome }}" hint-size="100%,100%"></x-import></div>
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MobileTopBar" dc-props="{{ f.topBar }}" hint-size="100%,64px"></x-import>
+
+        <sc-if value="{{ f.strip }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:0 0 auto;padding:var(--sp-3) var(--screen-pad-mobile) 0;background:var(--canvas)">
+            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BannerStack" mode="single" hint-size="100%,150px">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Banner" kind="{{ f.strip.kind }}" title="{{ f.strip.title }}" hint-size="100%,150px">
+                <div style="margin-top:var(--sp-2)">{{ f.strip.body }}</div>
+              </x-import>
+            </x-import>
+          </div>
+        </sc-if>
+
+        <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column">
+          <div style="display:flex;flex-direction:column;gap:var(--sp-5);padding:var(--sp-5) var(--screen-pad-mobile) var(--sp-8);margin-top:{{ f.offset }}">
+
+            <sc-if value="{{ f.errorBlock }}" hint-placeholder-val="{{ false }}">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.errorBlock }}" hint-size="100%,160px"></x-import>
+            </sc-if>
+
+            <sc-if value="{{ f.needs }}" hint-placeholder-val="{{ true }}">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.needs.block }}" hint-size="100%,260px">
+                <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+                  <sc-for list="{{ f.needs.rows }}" as="nr" hint-placeholder-count="2">{{ nr.node }}</sc-for>
+                  <sc-if value="{{ f.needs.deriv }}" hint-placeholder-val="{{ false }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Derivation" dc-props="{{ f.needs.deriv }}" hint-size="100%,44px"></x-import>
+                  </sc-if>
+                  <sc-if value="{{ f.needs.act }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:var(--sp-2);background:var(--surface-form);border-radius:var(--r-lg);padding:var(--sp-3)">
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ f.needs.act }}" hint-size="100%,48px">{{ f.needs.actLabel }}</x-import>
+                      <sc-if value="{{ f.needs.actLine }}" hint-placeholder-val="{{ true }}">
+                        <span style="text-align:center;text-wrap:pretty;font-size:var(--fs-caption);line-height:var(--lh-caption);color:var(--text-secondary)">{{ f.needs.actLine }}</span>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ f.needs.scope }}" hint-placeholder-val="{{ false }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ScopeNote" dc-props="{{ f.needs.scope }}" hint-size="100%,40px"></x-import>
+                  </sc-if>
+                </div>
+              </x-import>
+            </sc-if>
+
+            <sc-if value="{{ f.plan }}" hint-placeholder-val="{{ true }}">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.plan.block }}" hint-size="100%,220px">
+                <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+                  <sc-if value="{{ f.plan.hasRows }}" hint-placeholder-val="{{ true }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ f.plan.group }}" hint-size="100%,120px">
+                      <sc-for list="{{ f.plan.rows }}" as="r" hint-placeholder-count="3">
+                        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ r.label }}" value="{{ r.value }}" provenance="{{ r.prov }}" hint-size="100%,24px"></x-import>
+                      </sc-for>
+                    </x-import>
+                  </sc-if>
+                  <sc-if value="{{ f.plan.deriv }}" hint-placeholder-val="{{ false }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Derivation" dc-props="{{ f.plan.deriv }}" hint-size="100%,44px"></x-import>
+                  </sc-if>
+                  <sc-for list="{{ f.plan.routes }}" as="rt" hint-placeholder-count="1">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ rt }}" hint-size="100%,52px"></x-import>
+                  </sc-for>
+                  <sc-if value="{{ f.plan.acc }}" hint-placeholder-val="{{ true }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Accordion" dc-props="{{ f.plan.acc }}" hint-size="100%,52px"></x-import>
+                  </sc-if>
+                </div>
+              </x-import>
+            </sc-if>
+
+            <sc-if value="{{ f.usage }}" hint-placeholder-val="{{ true }}">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.usage.block }}" hint-size="100%,220px">
+                <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
+                  <sc-for list="{{ f.usage.meters }}" as="m" hint-placeholder-count="2">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.UsageMeter" dc-props="{{ m }}" hint-size="100%,64px"></x-import>
+                  </sc-for>
+                  <sc-if value="{{ f.usage.route }}" hint-placeholder-val="{{ true }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ f.usage.route }}" hint-size="100%,52px"></x-import>
+                  </sc-if>
+                </div>
+              </x-import>
+            </sc-if>
+
+            <sc-if value="{{ f.method }}" hint-placeholder-val="{{ true }}">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.method.block }}" hint-size="100%,120px">
+                <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ f.method.group }}" hint-size="100%,40px">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ f.method.label }}" value="{{ f.method.value }}" gap="{{ f.method.gap }}" hint-size="100%,24px"></x-import>
+                  </x-import>
+                  <sc-if value="{{ f.method.act }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex"><x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ f.method.act }}" hint-size="auto,44px">{{ f.method.actLabel }}</x-import></div>
+                  </sc-if>
+                </div>
+              </x-import>
+            </sc-if>
+
+            <sc-if value="{{ f.invoices }}" hint-placeholder-val="{{ true }}">
+              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.invoices.block }}" hint-size="100%,300px">
+                <div style="display:flex;flex-direction:column;gap:var(--tile-gap)">
+                  <sc-for list="{{ f.invoices.rows }}" as="iv" hint-placeholder-count="3">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ iv }}" hint-size="100%,64px"></x-import>
+                  </sc-for>
+                  <sc-if value="{{ f.invoices.foot }}" hint-placeholder-val="{{ true }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ f.invoices.foot }}" hint-size="100%,52px"></x-import>
+                  </sc-if>
+                </div>
+              </x-import>
+            </sc-if>
+
+            <sc-if value="{{ f.history }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:var(--tile-gap)">
+                <sc-for list="{{ f.history }}" as="hr" hint-placeholder-count="2">
+                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ hr }}" hint-size="100%,64px"></x-import>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ f.cancel }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;justify-content:flex-start">
+                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Button" dc-props="{{ f.cancel }}" hint-size="auto,44px">Cancel subscription</x-import>
+              </div>
+            </sc-if>
+
+          </div>
+        </div>
+
+        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.BottomNav" dc-props="{{ f.nav }}" hint-size="100%,66px"></x-import>
+
+        <sc-if value="{{ f.sheet }}" hint-placeholder-val="{{ false }}">
+          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.EditorSurface" dc-props="{{ f.sheet }}" hint-size="100%,520px">{{ f.sheetBody }}</x-import>
+        </sc-if>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1740,"height":2828}}'>
+/* Every date is pinned and every control is a no-op. Product facts are the brief's rows: BM-11's
+   names, BM-41's prices, caps and bundles, M12-52's 14-day trial, M12-06's two-phase grace, M12-47's
+   7-day refund window. F1-29: the platform is not GST-registered, so every frame bills the list
+   price alone; only the gst-registered frame adds F1-28's 18% GST. Sample content is the billing
+   screens' one story; invoice numbers take the issued form, <fiscal year>/<sequence> (T-M12-012a). */
+const NEXT_BILL = "2026-10-01";
+const FAILED_ON = "2026-09-11";
+const GRACE_ENDS = "2026-09-18";
+const EARLY_FAILED_ON = "2026-09-13";
+const EARLY_PAUSE = "2026-09-17";
+const EARLY_GRACE_ENDS = "2026-09-20";
+const BOOK_LIST = "India price list · 1 Apr 2026";
+const GROWTH = { name: "Growth", mo: 3999, yr: 39990, design: "500 kW", proposals: 300, storage: "50 GB", voiceRate: 6 };
+const ENTERPRISE_MO = 24999;
+const GST_RATE = 0.18;
+const INVOICE = "2026-27/000902";
+/* The yearly company's renewal, collected by a payment link (T-M12-012c). */
+const RENEWAL_INVOICE = "2026-27/000911";
+const RENEWAL_DUE = "2026-10-01";
+/* Frames 20–24 sit on this board; 1–19 are on SCR-M12-02-Billing-Home-Mobile (8000 px cap). */
+const BOARD_FRAMES = [20, 25];
+/* SCR-SHELL-06's dead-state rows, word for word: BM-32's always-works set is four items. */
+const DEAD_PAUSED = "Creating or editing leads, tasks, activities, surveys and designs · generating or sending proposals · marking won or lost · project updates · new uploads · voice calls · AI detections · teammate invites";
+const DEAD_WORKS = "Reading · Export · Customer links · Billing — pay, upgrade, reactivate";
+
+class Component extends DCLogic {
+  state = { ds: null };
+  gst = false;
+  noop = () => {};
+
+  componentDidMount() {
+    const ready = () => (typeof window === "undefined" ? null : window.HelioGridDesignSystem_c8aa43);
+    if (ready()) { this.setState({ ds: ready() }); return; }
+    this._poll = setInterval(() => { const ds = ready(); if (ds) { clearInterval(this._poll); this.setState({ ds }); } }, 60);
+  }
+  componentWillUnmount() { clearInterval(this._poll); }
+
+  /* ---- marks and figures ---- */
+  glyph(name, size, tone, style) { return React.createElement(this.NS.ShellGlyph, { name: name, size: size || "md", tone: tone || "secondary", style: style }); }
+  /* A state mark the shell glyph set has no shape for — pause, tick, clock, rupee — sized through Icon. */
+  stateMark(kind) {
+    const h = React.createElement;
+    const P = (d) => h("path", { key: d, d: d });
+    const shapes = {
+      paused: [P("M10 5.5v13M14 5.5v13")],
+      works: [P("m4.5 12.5 5 5 10-11")],
+      until: [h("circle", { key: "c", cx: 12, cy: 12, r: 8.5 }), P("M12 7.5V12l3 2")],
+      amount: [P("M7 5h10M7 9h10M15 5c0 4-3.5 4-8 4l8 10")],
+    };
+    const tone = { paused: "var(--warning-text)", works: "var(--success-text)", until: "var(--text-secondary)", amount: "var(--text-secondary)" };
+    if (kind === "intact") return this.glyph("shield", "sm", "secondary", { color: "var(--success-text)" });
+    return h(this.NS.Icon, { size: "sm", style: { color: tone[kind] } },
+      h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" }, shapes[kind]));
+  }
+  mono(text) { return React.createElement("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, text); }
+  /* Every value ends on the region's right edge (brief decision 3); money in mono. */
+  right(node, mono) {
+    return React.createElement("span", { style: Object.assign({ display: "block", textAlign: "right" }, mono ? { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } : {}) }, node);
+  }
+  chip(word, tone) { return React.createElement(this.NS.StatusChip, { status: word.toLowerCase().replace(/\s+/g, "-"), label: word, tone: tone, density: "expressive" }); }
+  /* An invoice or payment amount prints to the paisa (F1-07); a list price stays whole. */
+  money(n) { return this.F.money(n, { fractionDigits: 2 }); }
+  /* What a list price bills: the price alone until the platform is GST-registered (F1-29). */
+  billed(price) { return this.gst ? price * (1 + GST_RATE) : price; }
+  /* A list price's working: the price, then its GST and the total only once registered. */
+  working(price) { return this.gst ? [this.mono(this.money(price)), " + 18% GST = ", this.mono(this.money(this.billed(price)))] : [this.mono(this.money(price))]; }
+  invoiceSource(source) { return this.gst ? source + " · 18% GST" : source; }
+  pair(label) { return { label: label, density: "expressive", form: "pair", style: { gridTemplateColumns: "120px minmax(0,1fr)", maxWidth: "100%" } }; }
+  derived() { return { tier: "unmarked", align: "right" }; }
+
+  /* ---- SCR-SHELL-06's strip, reused: a title, then fact rows of one family (mark · word · value). ---- */
+  strip(kind, title, rows) {
+    const h = React.createElement;
+    return {
+      kind: kind, title: title,
+      body: h(this.NS.FactRows, { label: title, density: "expressive", form: "lead" },
+        rows.map((r) => h(this.NS.FactRow, { key: r[1], mark: this.stateMark(r[0]), label: r[1], value: r[2], provenance: r[3] || undefined }))),
+    };
+  }
+  dayFourStrip() {
+    return this.strip("dunning", "Payment failed · day 4 of the 7-day grace", [
+      ["paused", "Paused", "Voice calls · AI detections · teammate invites"],
+      ["works", "Still works", "Leads · surveys · designs · proposals · projects"],
+      ["until", "Until", this.F.date(GRACE_ENDS)],
+    ]);
+  }
+
+  /* ---- SCR-M12-04's Needs you row: a ListRow — the name, its chip as marks, the figure in mono on
+     the right edge, and its one line as the subtitle, wrapped whole. A row without a chip takes the
+     same form, so the region keeps one structure and one value edge. ---- */
+  needRow(key, name, chipWord, tone, value, line) {
+    const h = React.createElement;
+    const ink = tone === "danger" ? "var(--danger-text)" : tone === "info" ? "var(--info-text)" : "var(--warning-text)";
+    return { key: key, node: h(this.NS.ListRow, {
+      key: key, title: name, density: "expressive",
+      marks: chipWord ? this.chip(chipWord, tone) : undefined,
+      trailing: value ? h("span", { style: { display: "block", textAlign: "right", fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" } }, value) : null,
+      subtitle: line ? h("span", { style: { display: "block", whiteSpace: "normal", textWrap: "pretty", fontWeight: "var(--fw-medium)", color: ink } }, line) : null,
+      style: { padding: 0, minHeight: 0, background: "transparent", boxShadow: "none", alignItems: "flex-start" },
+    }) };
+  }
+  /* What the strip does not carry, in the strip's own row form: the data is intact. */
+  dataKeptRow() {
+    const h = React.createElement;
+    return { key: "intact", node: h(this.NS.FactRows, { label: "Your data", density: "expressive", form: "lead" },
+      h(this.NS.FactRow, { label: "Your data", value: "Every lead, design, proposal and project — kept", mark: this.stateMark("intact") })) };
+  }
+  needsBlock(title, rows, act, o) {
+    const t = o || {};
+    return {
+      block: Object.assign({ density: "expressive", title: title }, t.badge ? { badge: this.chip(t.badge, t.tone || "danger") } : {}),
+      rows: rows,
+      act: act ? { variant: "primary", size: "lg", fullWidth: true, onClick: this.noop } : null,
+      actLabel: act || "", actLine: t.line || null,
+      deriv: t.deriv || null, scope: t.scope || null,
+    };
+  }
+  /* The amount's working, under the figure: the invoice, the price, the tax, the day it was tried. */
+  dunDeriv(failedOn) {
+    return { summary: "How it is worked out", label: "The amount", parts: [
+      { kind: "formula", label: "Amount", text: ["Invoice ", this.mono(INVOICE), " — Growth for the cycle from 1 Sept: "].concat(this.working(GROWTH.mo), ["."]) },
+      { kind: "note", label: "Charged", text: "Attempted on " + this.F.date(failedOn) + ", which is day 0 of the 7-day grace." },
+    ] };
+  }
+
+  /* ---- SCR-M12-03's Your plan block: three pairs and the state as its one chip. ---- */
+  planBlock(chipWord, tone, rows, o) {
+    const t = o || {};
+    return {
+      block: Object.assign({ density: "expressive", title: "Your plan", badge: this.chip(chipWord, tone) }, t.source ? { provenance: { source: t.source } } : {}),
+      group: this.pair("Your plan"), rows: rows, hasRows: rows.length > 0,
+      routes: t.routes || [], acc: t.acc === undefined ? null : t.acc, deriv: t.deriv || null,
+    };
+  }
+  row(label, value, mono, prov) { return { key: label, label: label, value: this.right(value, mono), prov: prov || null }; }
+  /* The date carries no tier; the amount under it carries its derived mark beside it (F8-01). Two
+     lines by intent: one line does not fit the value column beside the 120px label track. */
+  nextBill(label, date, amount) {
+    const h = React.createElement;
+    return { key: label, label: label, prov: null, value: h("span", { style: { display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "var(--sp-0-5)" } }, [
+      h("span", { key: "d" }, this.F.date(date)),
+      h("span", { key: "a", style: { display: "inline-flex", alignItems: "baseline", gap: "var(--sp-2)" } }, [
+        h(this.NS.Provenance, { key: "p", tier: "unmarked", inline: true, size: 12 }),
+        h("span", { key: "m", style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, this.money(amount)),
+      ]),
+    ]) };
+  }
+  planRows(o) {
+    const t = o || {};
+    const plan = this.row("Plan", t.plan || GROWTH.name);
+    const price = this.priceRow(GROWTH.mo);
+    if (t.trial) return [this.row("Plan", "Trial"), this.row("Days left", t.daysLeft), this.row("Ends", this.F.date(t.ends))];
+    if (t.lapsed) return [plan, this.row(t.lapsedLabel, this.F.date(t.lapsed))];
+    if (t.runsUntil) return [plan, price, this.row("Runs until", this.F.date(t.runsUntil))];
+    return [plan, price, this.nextBill("Next bill", t.next || NEXT_BILL, t.nextAmount || this.billed(GROWTH.mo))];
+  }
+  /* A row inside a region sits on the region's own edges, so its trailing figure ends on the right edge. */
+  flush() { return { paddingLeft: 0, paddingRight: 0 }; }
+  /* The price is money, so it is mono; the cycle and the tax ride it in the sans face. */
+  priceRow(amount) { return this.row("Price", [this.mono(this.F.money(amount)), this.gst ? " / mo + GST" : " / mo"]); }
+  changeRoute() { return { title: "Change plan", trailing: this.glyph("chevron-right"), onClick: this.noop, density: "functional", style: this.flush() }; }
+  includesAcc(open, trial) {
+    const h = React.createElement; const NS = this.NS; const F = this.F;
+    const r = (l, v, mono) => h(NS.FactRow, { key: l, label: l, value: this.right(v, mono) });
+    const content = h(NS.FactRows, this.pair("What my plan includes"), trial ? [
+      r("Biggest design", "100 MW"), r("Proposals", "Not capped"), r("Voice minutes", "15"),
+      r("Storage", "5 GB"), r("Active projects", "Not capped"), r("Users", "Unlimited"),
+    ] : [
+      r("Biggest design", GROWTH.design), r("Proposals a month", F.number(GROWTH.proposals)),
+      r("Voice minutes", F.money(GROWTH.voiceRate) + " / min", true),
+      r("Storage", GROWTH.storage), r("Active projects", "Unlimited"), r("Users", "Unlimited"),
+    ]);
+    return { density: "functional", value: open ? "includes" : null, onChange: this.noop, items: [{ key: "includes", title: "What my plan includes", content: content }] };
+  }
+  standardPlan(chipWord, tone, o) {
+    const t = o || {};
+    return this.planBlock(chipWord, tone, this.planRows(t), { source: BOOK_LIST, routes: [this.changeRoute()], acc: this.includesAcc(!!t.open, !!t.trial), deriv: t.deriv });
+  }
+  /* Once registered, the next bill is computed (price + GST), so its working sits under the rows. */
+  nextBillDeriv() {
+    return { summary: "How it is worked out", label: "Next bill", defaultOpen: true, parts: [
+      { kind: "formula", label: "Amount", text: ["Growth, monthly: "].concat(this.working(GROWTH.mo), [", from the " + BOOK_LIST + "."]) },
+    ] };
+  }
+  /* A frame drawn as the platform bills once GST-registered (F1-29); every other frame bills the list price alone. */
+  registered(build) {
+    this.gst = true;
+    try { return this.frame(build()); } finally { this.gst = false; }
+  }
+
+  /* ---- SCR-M12-04's meter row ---- */
+  meter(label, value, limit, unit) {
+    const m = { label: label, value: value, limit: limit, density: "expressive" };
+    if (unit) m.unit = unit;
+    if (limit === null) m.noLimitNote = null;
+    return m;
+  }
+  usageBlock(meters, limitsSource) {
+    const h = React.createElement; const NS = this.NS;
+    const foot = h("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-0-5)" } }, [
+      h(NS.Provenance, { key: "u", source: "Actual usage", size: 12 }),
+      h(NS.Provenance, { key: "p", source: "Limits and rates · " + (limitsSource || BOOK_LIST), size: 12 }),
+    ]);
+    return {
+      block: { density: "expressive", title: "Usage this cycle", footer: foot },
+      meters: meters,
+      route: { title: "All usage", trailing: this.glyph("chevron-right"), onClick: this.noop, density: "functional", style: this.flush() },
+    };
+  }
+
+  /* ---- the payment method as the gateway names it, never an instrument detail ---- */
+  methodBlock(o) {
+    const t = o || {};
+    const h = React.createElement;
+    return {
+      block: { density: "expressive", title: "Payment method", badge: t.gap ? undefined : this.chip(t.ended ? "Ended" : "Active", t.ended ? "neutral" : "success"),
+        action: h(this.NS.Explainer, { label: "About your payment method", title: "Where your payment details live", placement: "bottom", inset: true, pages: "Your payment provider keeps your UPI and bank details. HelioGrid never sees or stores them." }) },
+      group: t.gap ? { label: "Payment method", density: "expressive", form: "lead" } : this.pair("Payment method"),
+      label: "Method",
+      value: t.gap ? null : this.right(t.value || "UPI AutoPay"),
+      gap: t.gap ? { gap: t.gap, scale: "field" } : null,
+      act: (t.noAct || t.ended) ? null : { variant: "secondary", size: "md", onClick: this.noop },
+      actLabel: "Update",
+    };
+  }
+
+  /* ---- invoices: date and state on the left; the PDF, then the amount on the right edge ---- */
+  /* pdfPending: the invoice's PDF is not made yet, so the row has no PDF act (T-M12-012d). */
+  invoiceRow(amount, date, state, tone, number, what, pdfPending) {
+    const h = React.createElement;
+    return {
+      title: this.F.date(date) + (what ? " · " + what : ""),
+      marks: this.chip(state, tone),
+      trailing: h("span", { style: { display: "inline-flex", alignItems: "center", gap: "var(--sp-2)" } }, [
+        pdfPending ? null : h(this.NS.IconButton, { key: "pdf", label: "Invoice " + number + " as PDF", onClick: this.noop, variant: "ghost" }, this.glyph("document", "md")),
+        h("span", { key: "a", style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", color: "var(--text-primary)" } }, this.money(amount)),
+      ]),
+      onClick: this.noop, density: "expressive", style: this.flush(),
+    };
+  }
+  invoicesBlock(o) {
+    const t = o || {};
+    const rows = t.rows || [
+      this.invoiceRow(this.billed(GROWTH.mo), "2026-09-01", t.latestState || "Paid", t.latestTone || "success", INVOICE, null, !t.latestState),
+      this.invoiceRow(this.billed(GROWTH.mo), "2026-08-01", "Paid", "success", "2026-27/000874"),
+      this.invoiceRow(this.billed(GROWTH.mo), "2026-07-01", "Paid", "success", "2026-27/000851"),
+    ];
+    if (t.state === "empty") {
+      return { block: { density: "expressive", title: "Invoices", read: { kind: "empty" }, emptyTitle: "No invoices yet", emptyMessage: t.emptyMessage }, rows: [], foot: null };
+    }
+    return {
+      block: { density: "expressive", title: "Invoices", provenance: { tier: "unmarked", source: this.invoiceSource(t.source || BOOK_LIST) } },
+      rows: rows,
+      foot: { title: t.all || "All 24 invoices", trailing: this.glyph("chevron-right"), onClick: this.noop, density: "functional", style: this.flush() },
+    };
+  }
+  historyRows() {
+    const rest = { background: "var(--fill)", boxShadow: "none", borderRadius: "var(--r-tile)" };
+    return [
+      { key: "d", title: "Payment reminders", subtitle: "Every reminder sent, and when", trailing: this.glyph("chevron-right"), onClick: this.noop, density: "expressive", style: rest },
+      { key: "h", title: "Plan history", subtitle: "Every state, when, and why", trailing: this.glyph("chevron-right"), onClick: this.noop, density: "expressive", style: rest },
+    ];
+  }
+
+  /* ---- the shell: a page opened from the settings list ---- */
+  topBar() {
+    return {
+      title: "Billing", sticky: false,
+      leading: React.createElement(this.NS.ShellAction, { round: true, label: "Back to settings", onClick: this.noop, icon: this.glyph("chevron-left", "md", "primary") }),
+      searchLabel: "Search", onSearchClick: this.noop, notificationsLabel: "Notifications",
+    };
+  }
+  /* The EPC Owner's footer (and, on frame 18, the same bar for a Sales Manager). The verb rides the fab item. */
+  nav(manager) {
+    const D = this.NS.DESTINATION_GLYPH;
+    const g = (name, filled, tone) => React.createElement(this.NS.ShellGlyph, { name: name, size: "lg", filled: !!filled, tone: tone });
+    return {
+      value: "more", onChange: this.noop,
+      items: [
+        { key: "home", label: "Home", icon: g(D.home), activeIcon: g(D.home, true, "inverse") },
+        { key: "leads", label: "Leads", icon: g(D.leads), activeIcon: g(D.leads, true, "inverse") },
+        { key: "add", fab: true, label: "Add lead", icon: g("plus-circle"), onClick: this.noop },
+        (manager ? { key: "proposals", label: "Proposals", icon: g(D.proposals), activeIcon: g(D.proposals, true, "inverse") } : { key: "projects", label: "Projects", icon: g(D.projects), activeIcon: g(D.projects, true, "inverse") }),
+        { key: "more", label: "More", icon: g(D.more), activeIcon: g(D.more, true, "inverse") },
+      ],
+    };
+  }
+
+  /* ---- one frame; a state supplies only what it changes ---- */
+  frame(o) {
+    return {
+      key: o.key, id: "m12-02-" + o.key, label: o.label, screenLabel: o.screenLabel,
+      height: (o.height || 812) + "px", offset: o.offset || "0px",
+      topBar: this.topBar(), nav: this.nav(o.manager),
+      strip: o.strip || null, errorBlock: o.errorBlock || null,
+      needs: o.needs === undefined ? null : o.needs,
+      plan: o.plan === undefined ? this.standardPlan("Active", "success") : o.plan,
+      usage: o.usage === undefined ? this.usageBlock([this.meter("Storage", 34, 50, "GB"), this.meter("Proposals", 187, GROWTH.proposals)]) : o.usage,
+      method: o.method === undefined ? this.methodBlock() : o.method,
+      invoices: o.invoices === undefined ? this.invoicesBlock() : o.invoices,
+      history: o.history === undefined ? this.historyRows() : o.history,
+      cancel: o.cancel === undefined ? { variant: "ghost", size: "md", tone: "danger", onClick: this.noop } : o.cancel,
+      sheet: o.sheet || null, sheetBody: o.sheetBody || null,
+    };
+  }
+
+  pastDueNeeds() {
+    return this.needsBlock("Needs you", [
+      this.needRow("due", "Payment failed", "Past due", "danger", this.money(this.billed(GROWTH.mo))),
+      this.needRow("until", "Grace ends", null, null, this.F.date(GRACE_ENDS)),
+    ], "Pay", { line: "Paid on your provider's own page.", deriv: this.dunDeriv(FAILED_ON) });
+  }
+  wayBack(chipWord, deriv) {
+    return this.needsBlock("The way back", [
+      this.needRow("state", "Account", chipWord, "danger", null),
+      this.needRow("owed", "To reactivate", null, null, this.money(this.billed(GROWTH.mo))),
+      this.dataKeptRow(),
+    ], "Reactivate", { line: "One payment. Everything returns the moment the payment confirms.", deriv: deriv });
+  }
+  deadStrip(title) {
+    return this.strip("dunning", title, [["paused", "Paused", DEAD_PAUSED], ["works", "Still works", DEAD_WORKS]]);
+  }
+  trialMethod() { return this.methodBlock({ gap: "Set up when you choose a plan", noAct: true }); }
+
+  /* ---- the sheets ---- */
+  cancelSheet() {
+    const h = React.createElement; const NS = this.NS;
+    const footer = h(NS.SheetActions, {}, [
+      h(NS.Button, { key: "skip", variant: "ghost", onClick: this.noop }, "Skip"),
+      h(NS.Button, { key: "go", variant: "destructive", onClick: this.noop }, "Cancel subscription"),
+    ]);
+    const body = h("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-4)" } }, [
+      h(NS.FactRows, Object.assign({ key: "rows" }, this.pair("Cancelling")), [
+        h(NS.FactRow, { key: "r", label: "Runs until", value: this.right(this.F.date(NEXT_BILL)) }),
+        h(NS.FactRow, { key: "d", label: "Your data", value: this.right("Kept") }),
+      ]),
+      h("div", { key: "reasons", role: "radiogroup", "aria-label": "Why are you leaving", style: { display: "flex", flexDirection: "column", gap: "var(--sp-2)" } },
+        ["Too expensive", "Missing something I need", "Moving to another tool", "Business is pausing", "Something else"].map((r) =>
+          h(NS.Radio, { key: r, name: "reason", value: r, label: r, checked: false, onChange: this.noop }))),
+    ]);
+    return { sheet: { open: true, onClose: this.noop, desktop: "modal", inset: true, size: "auto", density: "expressive", zIndex: 60, showClose: true,
+      title: "Cancel subscription", subtitle: "Why are you leaving? Optional.", footer: footer }, body: body };
+  }
+  invoiceList() {
+    /* 24 monthly cycles, Sept 2026 back to Oct 2024; the newest is the failed charge. The sequence
+       runs up through each fiscal year (1 Apr to 31 Mar) and starts again at the next. */
+    const seq = ["2026-27/000902", "2026-27/000874", "2026-27/000851", "2026-27/000822", "2026-27/000790", "2026-27/000761",
+      "2025-26/001430", "2025-26/001352", "2025-26/001271", "2025-26/001188", "2025-26/001094", "2025-26/001003", "2025-26/000921",
+      "2025-26/000846", "2025-26/000770", "2025-26/000698", "2025-26/000627", "2025-26/000559",
+      "2024-25/001226", "2024-25/001147", "2024-25/001069", "2024-25/000988", "2024-25/000905", "2024-25/000822"];
+    return seq.map((s, i) => {
+      const d = new Date(Date.UTC(2026, 8 - i, 1));
+      const failed = i === 0;
+      return { key: s, iso: d.toISOString().slice(0, 10), number: s, amount: this.billed(GROWTH.mo), state: failed ? "Failed" : "Paid", tone: failed ? "danger" : "success" };
+    });
+  }
+  listHead(query, counts) {
+    const h = React.createElement; const NS = this.NS;
+    return h("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-3)" } }, [
+      h(NS.SearchField, { key: "find", ariaLabel: "Find in this list", placeholder: "Find in this list", value: query || "", onChange: this.noop, onClear: query ? this.noop : undefined, density: "expressive" }),
+      h(NS.FilterChips, { key: "chips", label: "Invoice state", value: "all", onChange: this.noop, scroll: true,
+        options: [{ value: "all", label: "All" }, { value: "paid", label: "Paid" }, { value: "failed", label: "Failed" }], counts: counts }),
+    ]);
+  }
+  invoicesSheet(noMatch) {
+    const h = React.createElement; const NS = this.NS;
+    const list = this.invoiceList();
+    const head = noMatch ? this.listHead("2023", { all: 0, paid: 0, failed: 0 }) : this.listHead("", { all: 24, paid: 23, failed: 1 });
+    const body = noMatch
+      ? h(NS.Block, { flat: true, density: "expressive", style: { padding: 0 }, read: { kind: "empty" }, emptyTitle: "No invoice matches 2023", emptyMessage: "Your invoices start in Oct 2024.", emptyAction: h(NS.Button, { variant: "secondary", size: "md", onClick: this.noop }, "Clear search") })
+      : h("div", { style: { display: "flex", flexDirection: "column", gap: "var(--tile-gap)" } },
+          list.map((r) => h(NS.ListRow, Object.assign({ key: r.key }, this.invoiceRow(r.amount, r.iso, r.state, r.tone, r.number))))
+            .concat([h(NS.Provenance, { key: "prov", tier: "unmarked", source: this.invoiceSource(BOOK_LIST), size: 12 })]));
+    return { sheet: { open: true, onClose: this.noop, inset: true, size: "full", density: "expressive", zIndex: 60, showClose: true,
+      title: "All invoices", sheetProps: { meta: head } }, body: body };
+  }
+  remindersItems() {
+    const F = this.F;
+    const it = (id, label, date, desc, status) => ({ id: id, label: label, meta: F.date(date), description: desc, status: status || "done" });
+    return [
+      it("m4", "Monthly reminder", "2027-02-16", "Month 4 · next", "upcoming"),
+      it("m3", "Monthly reminder", "2027-01-16", "Month 3", "current"),
+      it("m2", "Monthly reminder", "2026-12-16", "Month 2"),
+      it("m1", "Monthly reminder", "2026-11-16", "Month 1"),
+      it("w4", "Weekly reminder", "2026-10-16", "Week 4 of 4"),
+      it("w3", "Weekly reminder", "2026-10-09", "Week 3 of 4"),
+      it("w2", "Weekly reminder", "2026-10-02", "Week 2 of 4"),
+      it("w1", "Weekly reminder", "2026-09-25", "Week 1 of 4"),
+      it("d7", "Account halted", "2026-09-18", "Day 7"),
+      it("d6", "Final warning, with a pay link", "2026-09-17", "Day 6"),
+      it("d4", "Voice, AI detections and invites paused", "2026-09-15", "Day 4"),
+      it("d2", "Reminder", "2026-09-13", "Day 2"),
+      it("d0", "Payment failed", FAILED_ON, "Day 0"),
+      Object.assign(it("j-paid", "Payment received", "2026-06-04", "June run · cleared"), { content: this.mono(this.money(GROWTH.mo)) }),
+      it("j-d0", "Payment failed", "2026-06-02", "June run · day 0"),
+    ];
+  }
+  historyItems() {
+    const F = this.F;
+    const it = (label, date, why, status) => ({ id: label + date, label: label, meta: F.date(date), description: why, status: status || "done" });
+    return [
+      it("Past due", FAILED_ON, "UPI AutoPay charge for Sept failed", "current"),
+      it("Active", "2026-06-04", "June payment received", "done"),
+      it("Past due", "2026-06-02", "UPI AutoPay charge for June failed", "done"),
+      it("Active", "2024-10-01", "Trial converted to Growth, monthly", "done"),
+      it("Trial", "2024-09-17", "Signed up · 14 days", "done"),
+    ];
+  }
+  timelineSheet(title, items, size) {
+    const h = React.createElement;
+    return { sheet: { open: true, onClose: this.noop, inset: true, size: size || "full", density: "expressive", zIndex: 60, showClose: true, title: title },
+      body: h(this.NS.Timeline, { density: "expressive", variant: "compact", items: items }) };
+  }
+
+  frameSpecs() {
+    const f = (o) => this.frame(o);
+    const F = this.F;
+    const cancel = this.cancelSheet();
+    const allInv = this.invoicesSheet(false);
+    const noInv = this.invoicesSheet(true);
+    const reminders = this.timelineSheet("Payment reminders", this.remindersItems());
+    const history = this.timelineSheet("Plan history", this.historyItems(), "auto");
+    const pastDue = { strip: this.dayFourStrip(), needs: this.pastDueNeeds(), plan: this.standardPlan("Past due", "danger"), invoices: this.invoicesBlock({ latestState: "Failed", latestTone: "danger" }) };
+    const halted = {
+      strip: this.deadStrip("Account halted · the grace window closed"),
+      needs: this.wayBack("Halted", this.dunDeriv(FAILED_ON)),
+      plan: this.planBlock("Halted", "danger", this.planRows({ lapsed: GRACE_ENDS, lapsedLabel: "Halted since" }), { routes: [this.changeRoute()], acc: this.includesAcc(false) }),
+      method: this.methodBlock({ ended: true }),
+      invoices: this.invoicesBlock({ latestState: "Failed", latestTone: "danger" }),
+      cancel: null,
+    };
+    return [
+      f({ key: "active", label: "1 · Active · nothing needs the Owner", screenLabel: "Billing — active (375)" }),
+      f({ key: "active-foot", label: "2 · Active · the foot", screenLabel: "Billing — active, the foot (375)", offset: "-984px" }),
+      f({ key: "includes", label: "3 · What my plan includes, opened in place", screenLabel: "Billing — plan includes (375)", offset: "-150px",
+        plan: this.standardPlan("Active", "success", { open: true }) }),
+      f({ key: "loading", label: "4 · Loading", screenLabel: "Billing — loading (375)",
+        plan: { block: { density: "expressive", title: "Your plan", read: { kind: "loading" } }, group: {}, rows: [], hasRows: false, routes: [], acc: null },
+        usage: { block: { density: "expressive", title: "Usage this cycle", read: { kind: "loading" } }, meters: [], route: null },
+        method: null, invoices: { block: { density: "expressive", title: "Invoices", read: { kind: "loading" } }, rows: [], foot: null }, history: null, cancel: null }),
+      f({ key: "empty", label: "5 · Empty · day one of a trial", screenLabel: "Billing — fresh trial, no invoices (375)", offset: "-398px",
+        plan: this.planBlock("Trial", "info", this.planRows({ trial: true, daysLeft: "14 of 14", ends: "2026-09-29" }), { routes: [this.changeRoute()], acc: this.includesAcc(false) }),
+        usage: this.usageBlock([this.meter("Voice minutes", 0, 15), this.meter("Storage", 0, 5, "GB")]),
+        method: this.trialMethod(),
+        invoices: this.invoicesBlock({ state: "empty", emptyMessage: "The first one arrives when your trial converts to a plan." }),
+        history: null, cancel: null }),
+      f({ key: "error", label: "6 · Error · billing data failed", screenLabel: "Billing — failed to load (375)",
+        errorBlock: { density: "expressive", read: { kind: "failed", retry: this.noop }, errorTitle: "Couldn't load your billing", errorMessage: "Try again. If it keeps failing, you can still pay from the link in your last reminder." },
+        plan: null, usage: null, method: null, invoices: null, history: null, cancel: null }),
+      f({ key: "trialing", label: "7 · Trialing · with the countdown", screenLabel: "Billing — trialing (375)",
+        plan: this.planBlock("Trial", "info", this.planRows({ trial: true, daysLeft: "9 of 14", ends: "2026-09-24" }), { routes: [this.changeRoute()], acc: this.includesAcc(false) }),
+        usage: this.usageBlock([this.meter("Voice minutes", 4, 15), this.meter("Storage", 2, 5, "GB")]),
+        method: this.trialMethod(),
+        invoices: this.invoicesBlock({ state: "empty", emptyMessage: "The first one arrives when your trial converts to a plan." }),
+        history: null, cancel: null }),
+      f({ key: "grace-early", label: "7a · past_due · day 2 · nothing paused", screenLabel: "Billing — past due, day 2 (375)",
+        strip: this.strip("dunning", "Payment failed · day 2 of 7 · a retry is coming", [
+          ["works", "Still works", "Everything — voice, AI detections and invites included"],
+          ["until", "Voice, AI detections and invites pause", F.date(EARLY_PAUSE)],
+        ]),
+        needs: this.needsBlock("Needs you", [
+          this.needRow("due", "Payment failed", "Past due", "danger", this.money(this.billed(GROWTH.mo))),
+          this.needRow("until", "Grace ends", null, null, F.date(EARLY_GRACE_ENDS)),
+        ], "Pay", { line: "Paid on your provider's own page.", deriv: this.dunDeriv(EARLY_FAILED_ON) }),
+        plan: this.standardPlan("Past due", "danger"),
+        invoices: this.invoicesBlock({ latestState: "Failed", latestTone: "danger" }) }),
+      f(Object.assign({ key: "grace", label: "8 · past_due · day 4 of the grace", screenLabel: "Billing — past due, day 4 (375)" }, pastDue)),
+      f(Object.assign({ key: "grace-foot", label: "9 · past_due · the records", screenLabel: "Billing — past due, records (375)", offset: "-1078px" }, pastDue)),
+      f(Object.assign({ key: "halted", label: "10 · Halted · the way back", screenLabel: "Billing — halted (375)", offset: "-113px" }, halted)),
+      f({ key: "expired", label: "11 · Expired · the trial ended", screenLabel: "Billing — trial expired (375)",
+        strip: this.deadStrip("Your trial ended on 14 Sept 2026"),
+        needs: this.needsBlock("The way back", [this.needRow("state", "Account", "Trial ended", "danger", null), this.dataKeptRow()], "Pick a plan", { line: "Everything returns the moment the first payment confirms." }),
+        plan: this.planBlock("Trial ended", "danger", [this.row("Plan", "Trial"), this.row("Ended", F.date("2026-09-14"))], { routes: [this.changeRoute()], acc: this.includesAcc(false) }),
+        usage: this.usageBlock([this.meter("Voice minutes", 9, 15), this.meter("Storage", 3, 5, "GB")]),
+        method: this.trialMethod(),
+        invoices: this.invoicesBlock({ state: "empty", emptyMessage: "The first one arrives when you choose a plan." }),
+        history: null, cancel: null }),
+      f({ key: "cancelled-running", label: "12 · Cancelled · running to period end", screenLabel: "Billing — cancelled, running (375)",
+        needs: this.needsBlock("Needs you", [this.needRow("state", "Subscription", "Cancelled", "warning", null), this.needRow("until", "Runs until", null, null, F.date(NEXT_BILL))], "Reactivate", { line: "Your plan carries on past " + F.date(NEXT_BILL) + " as if nothing changed." }),
+        plan: this.planBlock("Cancelled", "warning", this.planRows({ runsUntil: NEXT_BILL }), { source: BOOK_LIST, routes: [this.changeRoute()], acc: this.includesAcc(false) }),
+        method: this.methodBlock({ ended: true }), cancel: null }),
+      f({ key: "cancelled", label: "13 · Cancelled · after period end", screenLabel: "Billing — cancelled, after period end (375)", offset: "-113px",
+        strip: this.deadStrip("Subscription ended · reactivate to continue"),
+        needs: this.wayBack("Cancelled", { summary: "How it is worked out", label: "The amount", parts: [{ kind: "formula", label: "Amount", text: ["One cycle of Growth, monthly: "].concat(this.working(GROWTH.mo), [", from the " + BOOK_LIST + "."]) }] }),
+        plan: this.planBlock("Cancelled", "danger", this.planRows({ lapsed: NEXT_BILL, lapsedLabel: "Ended" }), { routes: [this.changeRoute()], acc: this.includesAcc(false) }),
+        method: this.methodBlock({ ended: true }), cancel: null }),
+      f({ key: "cancel-sheet", label: "14 · Cancel · the reason sheet", screenLabel: "Billing — cancel reason (375)", sheet: cancel.sheet, sheetBody: cancel.body }),
+      f({ key: "refund", label: "15 · Refund window · first paid cycle", screenLabel: "Billing — refund window (375)",
+        needs: this.needsBlock("Needs you", [this.needRow("refund", "Refund available", "First cycle", "info", null), this.needRow("until", "Until", null, null, F.date("2026-09-18"))], "Ask for a refund", { line: "The full first payment goes back to where it came from." }),
+        plan: this.standardPlan("Active", "success", { next: "2026-10-12" }),
+        invoices: this.invoicesBlock({ rows: [this.invoiceRow(this.billed(GROWTH.mo), "2026-09-12", "Paid", "success", INVOICE)], all: "All invoices" }),
+        history: null }),
+      f({ key: "downgrade", label: "16 · Scheduled downgrade · pending", screenLabel: "Billing — downgrade pending (375)",
+        plan: this.standardPlan("Active", "success", { nextAmount: this.billed(1999) }),
+        needs: this.needsBlock("Needs you", [this.needRow("dg", "Moving to Starter", "Scheduled", "info", null), this.needRow("on", "On", null, null, F.date(NEXT_BILL))], "Keep Growth instead", { line: "Nothing changes until " + F.date(NEXT_BILL) + "." }) }),
+      f({ key: "enterprise", label: "17 · Enterprise · contact us", screenLabel: "Billing — Enterprise (375)",
+        plan: this.planBlock("Active", "success", [
+          this.row("Plan", "Enterprise"),
+          this.priceRow(ENTERPRISE_MO),
+          this.row("Contract", "To " + F.date("2027-03-31")),
+          this.nextBill("Next invoice", NEXT_BILL, this.billed(ENTERPRISE_MO)),
+        ], { source: "Your contract", routes: [{ title: "Talk to us", subtitle: "Your named contact", trailing: this.glyph("chevron-right"), onClick: this.noop, density: "functional", style: this.flush() }] }),
+        usage: this.usageBlock([this.meter("Proposals", 2310, null), this.meter("Voice minutes", 3120, null)], "Your contract"),
+        method: this.methodBlock({ value: "e-NACH · monthly", noAct: true }),
+        invoices: this.invoicesBlock({ source: "Your contract", rows: [["2026-09-01", "2026-27/000897"], ["2026-08-01", "2026-27/000869"], ["2026-07-01", "2026-27/000846"]].map((r) => this.invoiceRow(this.billed(ENTERPRISE_MO), r[0], "Paid", "success", r[1])) }),
+        cancel: null }),
+      f({ key: "non-owner", manager: true, label: "18 · Not the Owner · a Sales Manager", screenLabel: "Billing — non-owner, read only (375)",
+        strip: this.dayFourStrip(),
+        needs: this.needsBlock("Needs the owner", [this.needRow("due", "Payment failed", "Past due", "danger", null), this.needRow("until", "Grace ends", null, null, F.date(GRACE_ENDS))], null, { scope: { holder: "Mahesh Bhosale (owner)", acts: ["pay this invoice"], variant: "line", size: 13 } }),
+        plan: this.planBlock("Past due", "danger", [this.row("Plan", GROWTH.name), this.row("Next bill", F.date(NEXT_BILL))], {}),
+        usage: null, method: null, invoices: null, history: null, cancel: null }),
+      f(Object.assign({ key: "invoices-all", label: "19 · All 24 invoices · full length", screenLabel: "Billing — all 24 invoices (375)", height: 2490, sheet: allInv.sheet, sheetBody: allInv.body }, pastDue)),
+      f(Object.assign({ key: "invoices-none", label: "20 · All invoices · no match", screenLabel: "Billing — all invoices, no match (375)", sheet: noInv.sheet, sheetBody: noInv.body }, pastDue)),
+      f(Object.assign({}, halted, { key: "reminders", label: "21 · Payment reminders · full length", screenLabel: "Billing — payment reminders (375)", height: 1720, sheet: reminders.sheet, sheetBody: reminders.body })),
+      f(Object.assign({ key: "history", label: "22 · Plan history", screenLabel: "Billing — plan history (375)", sheet: history.sheet, sheetBody: history.body }, pastDue)),
+      this.registered(() => ({ key: "gst-registered", label: "23 · Active · once GST-registered · the whole page", screenLabel: "Billing — active, GST-registered (375)", height: 1800,
+        plan: this.standardPlan("Active", "success", { deriv: this.nextBillDeriv() }) })),
+      f({ key: "payment-link-renewal", label: "24 · Yearly · renewal by payment link", screenLabel: "Billing — yearly renewal, payment link (375)",
+        needs: this.needsBlock("Needs you", [
+          this.needRow("renewal", "Renewal invoice", "Issued", "info", this.money(GROWTH.yr)),
+          this.needRow("due", "Due", null, null, F.date(RENEWAL_DUE)),
+        ], "Pay", { line: "Paid on your provider's own page.", deriv: { summary: "How it is worked out", label: "The amount", parts: [
+          { kind: "formula", label: "Amount", text: ["Invoice ", this.mono(RENEWAL_INVOICE), " — Growth for the year from 1 Oct: "].concat(this.working(GROWTH.yr), ["."]) },
+        ] } }),
+        plan: this.planBlock("Active", "success", [
+          this.row("Plan", GROWTH.name),
+          this.row("Price", [this.mono(F.money(GROWTH.yr)), " / yr"]),
+          this.row("Renews", F.date(RENEWAL_DUE)),
+        ], { source: BOOK_LIST, routes: [this.changeRoute()], acc: this.includesAcc(false) }),
+        method: this.methodBlock({ value: "Payment link · yearly", noAct: true }),
+        invoices: this.invoicesBlock({ all: "All 3 invoices", rows: [
+          this.invoiceRow(this.billed(GROWTH.yr), "2026-09-10", "Issued", "info", RENEWAL_INVOICE, "yearly", true),
+          this.invoiceRow(this.billed(GROWTH.yr), "2025-10-01", "Paid", "success", "2025-26/001041", "yearly"),
+          this.invoiceRow(this.billed(GROWTH.yr), "2024-10-01", "Paid", "success", "2024-25/000839", "yearly"),
+        ] }) }),
+    ];
+  }
+
+  renderVals() {
+    const NS = this.state.ds;
+    if (!NS) return { market: {}, frames: [], phoneChrome: {} };
+    if (this._vals) return this._vals;
+    this.NS = NS;
+    this.F = NS.IN_FORMAT;
+    this._vals = {
+      market: NS.MarketProvider && NS.IN_PACK ? { pack: NS.IN_PACK } : {},
+      phoneChrome: { style: { background: "transparent" } },
+      frames: this.frameSpecs().slice(BOARD_FRAMES[0], BOARD_FRAMES[1]),
+    };
+    return this._vals;
+  }
+}
+</script>
+</body>
+</html>

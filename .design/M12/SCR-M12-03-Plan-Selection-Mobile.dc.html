@@ -29,8 +29,8 @@ a:hover{color:var(--link-hover)}
 </style>
 </helmet>
 
-<div style="box-sizing:border-box;width:1740px;height:5453px;overflow:hidden;padding:var(--sp-12);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-content:start;gap:var(--sp-16) var(--sp-12);background:var(--canvas)">
-  <sc-for list="{{ frames }}" as="f" hint-placeholder-count="23">
+<div style="box-sizing:border-box;width:1740px;height:6356px;overflow:hidden;padding:var(--sp-12);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-content:start;gap:var(--sp-16) var(--sp-12);background:var(--canvas)">
+  <sc-for list="{{ frames }}" as="f" hint-placeholder-count="26">
     <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
       <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;white-space:nowrap;color:var(--text-secondary)">{{ f.label }}</span>
 
@@ -130,7 +130,9 @@ a:hover{color:var(--link-hover)}
               <sc-if value="{{ f.showBook }}" hint-placeholder-val="{{ true }}">
                 <div style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1) var(--sp-3);padding:0 var(--sp-1)">
                   <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ bookSource }}" hint-size="auto,18px"></x-import>
-                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ f.bookNote }}" hint-size="auto,18px"></x-import>
+                  <sc-if value="{{ f.bookNote }}" hint-placeholder-val="{{ false }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ f.bookNote }}" hint-size="auto,18px"></x-import>
+                  </sc-if>
                 </div>
               </sc-if>
             </div>
@@ -189,8 +191,16 @@ a:hover{color:var(--link-hover)}
                   <sc-if value="{{ sec.route }}" hint-placeholder-val="{{ false }}">
                     <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ sec.route }}" hint-size="100%,64px"></x-import>
                   </sc-if>
+                  <sc-if value="{{ sec.loading }}" hint-placeholder-val="{{ false }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.LoadingBars" dc-props="{{ sec.loading }}" hint-size="100%,260px"></x-import>
+                  </sc-if>
+                  <sc-if value="{{ sec.failed }}" hint-placeholder-val="{{ false }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ sec.failed }}" hint-size="100%,200px"></x-import>
+                  </sc-if>
                   <sc-if value="{{ sec.money }}" hint-placeholder-val="{{ false }}">
-                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MoneySummary" dc-props="{{ sec.money }}" hint-size="100%,170px"></x-import>
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MarketProvider" dc-props="{{ paiseMarket }}" hint-size="100%,170px">
+                      <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.MoneySummary" dc-props="{{ sec.money }}" hint-size="100%,170px"></x-import>
+                    </x-import>
                   </sc-if>
                   <sc-if value="{{ sec.deriv }}" hint-placeholder-val="{{ false }}">
                     <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Derivation" dc-props="{{ sec.deriv }}" hint-size="100%,44px"></x-import>
@@ -209,10 +219,11 @@ a:hover{color:var(--link-hover)}
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1740,"height":5453}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1740,"height":6356}}'>
 /* Every date is pinned so the board never moves: today is 15 Sept 2026, the cycle in force runs
    1–30 Sept, and the next bill is 1 Oct 2026. Every plan name, price, cap and bundle is BM-11 /
-   BM-41 / M12-52, the tax F1-28's 18% GST. */
+   BM-41 / M12-52. The platform is not GST-registered, so every frame draws the list price alone;
+   F1-28's 18% GST is drawn only on the gst-registered frame (F1-29). */
 const TODAY = "2026-09-15";
 const NEXT_BILL = "2026-10-01";
 const TRIAL_ENDED = "2026-09-14";
@@ -226,21 +237,19 @@ const DAYS_IN_CYCLE = 30;
 const DAYS_LEFT = 16;
 
 const BOOK = {
-  starter: { name: "Starter", mo: 1999, yr: 19990, design: "50 kW", proposals: 30, detections: 30, projects: 10, storage: "10 GB" },
-  growth: { name: "Growth", mo: 3999, yr: 39990, design: "500 kW", proposals: 300, detections: 100, projects: null, storage: "50 GB" },
-  pro: { name: "Pro", mo: 9999, yr: 99999, design: "5 MW", proposals: 1500, detections: 400, projects: null, storage: "250 GB" },
-  enterprise: { name: "Enterprise", mo: 24999, yr: null, design: "100 MW", proposals: null, detections: "Custom", projects: null, storage: "Custom" },
+  starter: { name: "Starter", mo: 1999, yr: 19990, design: "50 kW", proposals: 30, projects: 10, storage: "10 GB" },
+  growth: { name: "Growth", mo: 3999, yr: 39990, design: "500 kW", proposals: 300, projects: null, storage: "50 GB" },
+  pro: { name: "Pro", mo: 9999, yr: 99999, design: "5 MW", proposals: 1500, projects: null, storage: "250 GB" },
+  enterprise: { name: "Enterprise", mo: 24999, yr: null, design: "100 MW", proposals: null, projects: null, storage: "Custom" },
 };
 
 /* M12-48's arithmetic, computed from the book's own rows so no figure can drift from another. */
 const PRORATA = (BOOK.pro.mo - BOOK.growth.mo) * DAYS_LEFT / DAYS_IN_CYCLE;
+const TOTAL_TODAY = PRORATA;
+/* Only the gst-registered frame: the platform once it is GST-registered. */
 const GST_TODAY = PRORATA * GST;
-const TOTAL_TODAY = PRORATA + GST_TODAY;
+const TOTAL_TODAY_WITH_GST = PRORATA + GST_TODAY;
 const PRO_MONTH_WITH_GST = BOOK.pro.mo * (1 + GST);
-const STARTER_MONTH_WITH_GST = BOOK.starter.mo * (1 + GST);
-const GROWTH_MONTH_GST = BOOK.growth.mo * GST;
-const GROWTH_MONTH_WITH_GST = BOOK.growth.mo * (1 + GST);
-const GROWTH_YEAR_WITH_GST = BOOK.growth.yr * (1 + GST);
 
 class Component extends DCLogic {
   constructor(props) {
@@ -321,7 +330,7 @@ class Component extends DCLogic {
   }
 
   /* The plan card shared with SCR-M12-01: the name, the price as the card's headline figure in mono
-     with tabular figures and its period beside it, then the three limits that differ most as ONE
+     with tabular figures and its period beside it, then the two limits that differ most as ONE
      flowing line. */
   cardBody(NS, F, tier, cycle) {
     const t = BOOK[tier];
@@ -335,7 +344,6 @@ class Component extends DCLogic {
       React.createElement(NS.FactRow, { label: "Limits", values: [
         t.design,
         (t.proposals === null ? "Unlimited" : F.number(t.proposals)) + " proposals a month",
-        (typeof t.detections === "number" ? F.number(t.detections) : t.detections) + " detections a month",
       ] }));
     return React.createElement("span", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-3)" } }, figure, limits);
   }
@@ -405,21 +413,19 @@ class Component extends DCLogic {
       included: {
         caption: "Growth against Pro · included",
         attributes: [
-          { key: "detections", label: "AI detections" },
           { key: "voice", label: "Voice minutes" },
           { key: "storage", label: "Storage" },
         ],
-        growth: { detections: F.number(BOOK.growth.detections) + " / mo", voice: "Per minute", storage: BOOK.growth.storage },
-        pro: { detections: F.number(BOOK.pro.detections) + " / mo", voice: "400 / mo", storage: BOOK.pro.storage },
+        growth: { voice: "Per minute", storage: BOOK.growth.storage },
+        pro: { voice: "400 / mo", storage: BOOK.pro.storage },
       },
       overage: {
         caption: "Growth against Pro · extra charges",
         attributes: [
-          { key: "detections", label: "AI detections", mono: true, numeric: true },
           { key: "voice", label: "Voice minutes", mono: true, numeric: true },
         ],
-        growth: { detections: F.money(10) + " each", voice: F.money(6) + " / min" },
-        pro: { detections: F.money(10) + " each", voice: F.money(6) + " / min" },
+        growth: { voice: F.money(6) + " / min" },
+        pro: { voice: F.money(6) + " / min" },
       },
     };
     const s = sets[set];
@@ -468,7 +474,7 @@ class Component extends DCLogic {
   sheetFooter(NS, label, line, loading) {
     return React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: "var(--sp-2)" } },
       React.createElement(NS.SheetActions, { key: "row" },
-        React.createElement(NS.Button, { onClick: this.noop, fullWidth: true, disabled: !!loading }, loading ? "Opening your provider's page" : label)),
+        React.createElement(NS.Button, { onClick: this.noop, fullWidth: true, disabled: !!loading }, label)),
       line ? React.createElement("span", {
         key: "line",
         style: { fontSize: "var(--fs-caption)", lineHeight: "var(--lh-caption)", color: "var(--text-secondary)", textAlign: "center", textWrap: "pretty" },
@@ -499,28 +505,33 @@ class Component extends DCLogic {
   }
 
   /* MS10-19: how the part-cycle figure was worked out is the disclosure under it, on the screen. */
-  prorataDeriv(F) {
-    const m = (n) => this.money(F.money(n));
+  prorataDeriv(F, gst) {
+    const m = (n) => this.money(F.money(n, { fractionDigits: 2 }));
+    const parts = [
+      { kind: "formula", label: "Days", text: DAYS_LEFT + " of this cycle's " + DAYS_IN_CYCLE + " days remain on " + F.date(TODAY) + "." },
+      { kind: "formula", label: "Difference", text: React.createElement("span", null, m(BOOK.pro.mo - BOOK.growth.mo), " a month between Growth's ", m(BOOK.growth.mo), " and Pro's ", m(BOOK.pro.mo), gst ? ", before GST." : ".") },
+    ];
+    if (gst) parts.push({ kind: "note", label: "Tax", text: React.createElement("span", null, "GST " + GST_PCT + " on the ", m(PRORATA), " part-cycle charge.") });
     return {
       open: false,
       summary: "How the part-cycle amount is worked out",
       label: "Part of this cycle",
-      parts: [
-        { kind: "formula", label: "Days", text: DAYS_LEFT + " of this cycle's " + DAYS_IN_CYCLE + " days remain on " + F.date(TODAY) + "." },
-        { kind: "formula", label: "Difference", text: React.createElement("span", null, m(BOOK.pro.mo - BOOK.growth.mo), " a month between Growth's ", m(BOOK.growth.mo), " and Pro's ", m(BOOK.pro.mo), ", before GST.") },
-        { kind: "note", label: "Tax", text: React.createElement("span", null, "GST " + GST_PCT + " on the ", m(PRORATA), " part-cycle charge.") },
-      ],
+      parts: parts,
     };
   }
 
-  upgradeSections(F) {
+  upgradeSections(F, gst) {
+    const today = [{ key: "delta", label: "Part of this cycle · " + DAYS_LEFT + " of " + DAYS_IN_CYCLE + " days", amount: PRORATA }];
+    if (gst) today.push({ key: "gst", label: "GST " + GST_PCT, amount: GST_TODAY });
+    const monthAfter = gst
+      ? { key: "m", label: "From then, a month", value: this.rightMoney(F.money(PRO_MONTH_WITH_GST, { fractionDigits: 2 })), prov: { tier: "unmarked", note: "with GST", size: 12, align: "right" } }
+      : { key: "m", label: "From then, a month", value: this.rightMoney(F.money(BOOK.pro.mo, { fractionDigits: 2 })) };
     return [
       {
         key: "changes", overline: "What changes", group: this.group("What changes"),
         rows: [
           { key: "d", label: "Biggest design", value: "500 kW → 5 MW" },
           { key: "p", label: "Proposals", value: "300 → 1,500 a month" },
-          { key: "a", label: "AI detections", value: "100 → 400 a month" },
           { key: "s", label: "Storage", value: "50 GB → 250 GB" },
           { key: "v", label: "Voice minutes", value: "Per minute → 400 a month" },
           { key: "u", label: "Unchanged", value: "Active projects · Users" },
@@ -529,17 +540,14 @@ class Component extends DCLogic {
       },
       {
         key: "pay",
-        money: this.moneyToday([
-          { key: "delta", label: "Part of this cycle · " + DAYS_LEFT + " of " + DAYS_IN_CYCLE + " days", amount: PRORATA },
-          { key: "gst", label: "GST " + GST_PCT, amount: GST_TODAY },
-        ]),
-        deriv: this.prorataDeriv(F),
+        money: this.moneyToday(today),
+        deriv: this.prorataDeriv(F, gst),
       },
       {
         key: "when", overline: "When it starts", group: this.group("When it starts"),
         rows: [
           { key: "s", label: "Plan swaps", value: F.date(NEXT_BILL) },
-          { key: "m", label: "From then, a month", value: this.rightMoney(F.money(PRO_MONTH_WITH_GST, { fractionDigits: 2 })), prov: { tier: "unmarked", note: "with GST", size: 12, align: "right" } },
+          monthAfter,
         ],
       },
     ];
@@ -554,7 +562,6 @@ class Component extends DCLogic {
         rows: [
           { key: "d", label: "Biggest design", value: "100 MW → 500 kW" },
           { key: "p", label: "Proposals", value: "Not capped → 300 a month" },
-          { key: "a", label: "AI detections", value: "25 → 100 a month" },
           { key: "v", label: "Voice minutes", value: "15 → Per minute" },
           { key: "s", label: "Storage", value: "5 GB → 50 GB" },
         ],
@@ -564,7 +571,6 @@ class Component extends DCLogic {
         key: "pay",
         money: this.moneyToday([
           { key: "month", label: "Growth · first month", amount: BOOK.growth.mo },
-          { key: "gst", label: "GST " + GST_PCT, amount: GROWTH_MONTH_GST },
         ]),
       },
       {
@@ -572,10 +578,25 @@ class Component extends DCLogic {
         rows: [
           { key: "c", label: "Paid cycle starts", value: F.date(TODAY) },
           { key: "n", label: "Next bill", value: F.date(TRIAL_NEXT_BILL) },
-          { key: "m", label: "From then, a month", value: this.rightMoney(F.money(GROWTH_MONTH_WITH_GST, { fractionDigits: 2 })), prov: { tier: "unmarked", note: "with GST", size: 12, align: "right" } },
+          { key: "m", label: "From then, a month", value: this.rightMoney(F.money(BOOK.growth.mo, { fractionDigits: 2 })) },
         ],
       },
     ];
+  }
+
+  /* MS10-19: the cycle switch's part-cycle working. Per-day rates print to the paisa as they are. */
+  cycleDeriv(F) {
+    const m = (n) => this.money(F.money(n, { fractionDigits: 2 }));
+    return {
+      open: false,
+      summary: "How the part-cycle amount is worked out",
+      label: "Part of this cycle",
+      parts: [
+        { kind: "formula", label: "Days", text: DAYS_LEFT + " of this cycle's " + DAYS_IN_CYCLE + " days remain on " + F.date(TODAY) + "." },
+        { kind: "formula", label: "Rates", text: React.createElement("span", null, "Yearly's ", m(BOOK.growth.yr / 365), " a day against monthly's ", m(BOOK.growth.mo / DAYS_IN_CYCLE), " a day leaves nothing to pay.") },
+        { kind: "note", label: "Refund", text: "No refund is made mid-cycle." },
+      ],
+    };
   }
 
   /* M12-12 / M12-48: a cycle switch follows the upgrade mechanics; the yearly price is the book's
@@ -592,17 +613,17 @@ class Component extends DCLogic {
         prov: { source: BOOK_LIST, size: 12 },
       },
       {
-        key: "pay", overline: "What you pay today", group: this.group("What you pay today"),
-        rows: [
-          { key: "part", label: "Part of this cycle · 16 of 30 days", value: this.rightMoney(F.money(0)) },
-          { key: "tot", label: "Total today", value: this.rightMoney(F.money(0)), prov: { tier: "unmarked", note: "yearly costs less a day than monthly", size: 12, align: "right" } },
-        ],
+        key: "pay",
+        money: this.moneyToday([
+          { key: "part", label: "Part of this cycle · " + DAYS_LEFT + " of " + DAYS_IN_CYCLE + " days", amount: 0 },
+        ]),
+        deriv: this.cycleDeriv(F),
       },
       {
         key: "when", overline: "When it starts", group: this.group("When it starts"),
         rows: [
           { key: "s", label: "Yearly starts", value: F.date(NEXT_BILL) },
-          { key: "y", label: "From then, a year", value: this.rightMoney(F.money(GROWTH_YEAR_WITH_GST, { fractionDigits: 2 })), prov: { tier: "unmarked", note: "with GST", size: 12, align: "right" } },
+          { key: "y", label: "From then, a year", value: this.rightMoney(F.money(BOOK.growth.yr, { fractionDigits: 2 })) },
         ],
       },
     ];
@@ -621,7 +642,6 @@ class Component extends DCLogic {
           { key: "d", label: "Designs over 50 kW", value: "7 — stay readable and exportable" },
           { key: "p", label: "Proposals this month", value: recomputed ? "44 of 30" : "41 of 30", prov: mark },
           { key: "a", label: "Active projects", value: "12 of 10" },
-          { key: "i", label: "AI detections", value: "100 → 30 a month" },
           { key: "s", label: "Storage", value: "50 → 10 GB" },
         ],
         route: { title: "See the 7 designs over 50 kW", density: "expressive", trailing: this.chevronRight, onClick: this.noop, style: this.rowAtRest() },
@@ -641,7 +661,6 @@ class Component extends DCLogic {
           { key: "d", label: "Biggest design", value: "500 kW → 50 kW" },
           { key: "p", label: "Proposals", value: "300 → 30 a month" },
           { key: "j", label: "Active projects", value: "Unlimited → 10" },
-          { key: "a", label: "AI detections", value: "100 → 30 a month" },
           { key: "s", label: "Storage", value: "50 GB → 10 GB" },
           { key: "u", label: "Unchanged", value: "Voice minutes · Users" },
         ],
@@ -651,6 +670,19 @@ class Component extends DCLogic {
     ];
   }
 
+  /* M12-49: no preview stands yet — computing, or its read failed — so nothing can be confirmed. */
+  downgradePendingSections(F, failed) {
+    const preview = failed
+      ? { key: "preview", failed: {
+          density: "expressive", read: { kind: "failed", retry: this.noop },
+          title: "What a downgrade to Starter blocks",
+          errorTitle: "Couldn't work out what a downgrade blocks",
+          errorMessage: "Your usage didn't load — try again.",
+        } }
+      : { key: "preview", loading: { label: "Working out what a downgrade to Starter blocks", bars: ["panel", "row"] } };
+    return [preview, this.downgradeWhen(F)];
+  }
+
   downgradeWhen(F) {
     return {
       key: "when", overline: "When it starts", group: this.group("When it starts"),
@@ -658,16 +690,18 @@ class Component extends DCLogic {
         { key: "f", label: "From", value: F.date(NEXT_BILL) },
         { key: "c", label: "This cycle", value: "No refund" },
         { key: "t", label: "Today", value: "Nothing to pay" },
-        { key: "m", label: "From then, a month", value: this.rightMoney(F.money(STARTER_MONTH_WITH_GST, { fractionDigits: 2 })), prov: { tier: "unmarked", note: "with GST", size: 12, align: "right" } },
+        { key: "m", label: "From then, a month", value: this.rightMoney(F.money(BOOK.starter.mo, { fractionDigits: 2 })) },
       ],
     };
   }
 
   frames(NS, F) {
     const P = (label, value, prov) => ({ key: label, label: label, value: value, prov: prov || null });
-    const priceRow = P("Price", this.money(F.money(BOOK.growth.mo) + " / mo + GST"));
+    const priceRow = P("Price", this.money(F.money(BOOK.growth.mo) + " / mo"));
+    const gstPriceRow = P("Price", this.money(F.money(BOOK.growth.mo) + " / mo + GST"));
     const billRow = P("Next bill", F.date(NEXT_BILL));
     const activeBlock = this.planBlock(NS, "Active", "success", [P("Plan", "Growth"), priceRow, billRow], { priced: true });
+    const gstActiveBlock = this.planBlock(NS, "Active", "success", [P("Plan", "Growth"), gstPriceRow, billRow], { priced: true });
     const trialEndedBlock = this.planBlock(NS, "Trial ended", "warning", [P("Plan", "14-day trial"), P("Trial ended", F.date(TRIAL_ENDED))], { noAsk: true });
     const trialBlock = this.planBlock(NS, "Trial", "info", [P("Plan", "14-day trial"), P("Days left", "9 of 14"), P("Ends", F.date("2026-09-24"))]);
     const haltedBlock = this.planBlock(NS, "Halted", "danger", [P("Plan", "Growth"), P("Halted since", F.date(HALTED_SINCE))], { noAsk: true });
@@ -693,7 +727,7 @@ class Component extends DCLogic {
       strip: null, stripLine: null, planBlock: activeBlock,
       plans: "cards", showCycle: true, cycle: this.cycle("monthly"), planCards: this.planCards(NS, F, {}),
       act: "off", showEnterprise: true, enterprise: this.enterprise(NS, F),
-      showBook: true, bookNote: { note: "Prices exclude GST", size: 12 },
+      showBook: true, bookNote: null,
       compare: true, compareRow: compareRow(false, true), compareOpen: false,
       compareShow: this.compareShow("limits", true), compareGrid: null,
       sheet: null, sheetSections: null, sheetBanner: null,
@@ -729,16 +763,16 @@ class Component extends DCLogic {
         strip: trialStrip, planBlock: trialEndedBlock, planCards: this.planCards(NS, F, { relations: false }) }),
       base({ id: "m12-03-s4r", label: "State 4 · trial expiry · the review", screenLabel: "Plan selection — trial expiry conversion review (375)", offset: "-372px",
         strip: trialStrip, planBlock: trialEndedBlock, planCards: this.planCards(NS, F, { relations: false, value: "growth" }), act: "live",
-        sheet: this.reviewSheet("Review", "Trial to Growth · monthly", this.sheetFooter(NS, this.payLabel(F.money(GROWTH_MONTH_WITH_GST, { fractionDigits: 2 })), LINE)),
+        sheet: this.reviewSheet("Review", "Trial to Growth · monthly", this.sheetFooter(NS, this.payLabel(F.money(BOOK.growth.mo, { fractionDigits: 2 })), LINE)),
         sheetSections: this.trialSections(F) }),
       base({ id: "m12-03-s5", label: "State 5 · returning after a lapse", screenLabel: "Plan selection — post-lapse repricing (375)",
-        strip: haltedStrip, planBlock: haltedBlock, bookNote: { note: "Today's prices — your launch price ended with the lapse.", size: 12 } }),
+        strip: haltedStrip, planBlock: haltedBlock }),
       base({ id: "m12-03-s5b", label: "State 5 · after a lapse · the act", screenLabel: "Plan selection — post-lapse repricing · the act (375)", offset: "-372px",
-        strip: haltedStrip, planBlock: haltedBlock, bookNote: { note: "Today's prices — your launch price ended with the lapse.", size: 12 } }),
+        strip: haltedStrip, planBlock: haltedBlock }),
       base({ id: "m12-03-s6", label: "State 6 · upgrade, the review sheet", screenLabel: "Plan selection — upgrade preview (375)", offset: "-330px",
         planCards: this.planCards(NS, F, { value: "pro" }), act: "live",
-        sheet: this.reviewSheet("Review", "Growth to Pro · monthly", this.sheetFooter(NS, this.payLabel(F.money(TOTAL_TODAY)), LINE)),
-        sheetSections: this.upgradeSections(F) }),
+        sheet: this.reviewSheet("Review", "Growth to Pro · monthly", this.sheetFooter(NS, this.payLabel(F.money(TOTAL_TODAY, { fractionDigits: 2 })), LINE)),
+        sheetSections: this.upgradeSections(F, false) }),
       base({ id: "m12-03-s7", label: "State 7 · downgrade, what it blocks", screenLabel: "Plan selection — downgrade preview (375)", offset: "-330px",
         planCards: this.planCards(NS, F, { value: "starter" }), act: "live",
         sheet: this.reviewSheet("Review", "Growth to Starter · monthly", this.sheetFooter(NS, "Schedule the downgrade", null)),
@@ -754,8 +788,8 @@ class Component extends DCLogic {
         sheetSections: this.downgradeSections(F, true) }),
       base({ id: "m12-03-s9", label: "State 9 · handing over to payment", screenLabel: "Plan selection — checkout handoff (375)", offset: "-330px",
         planCards: this.planCards(NS, F, { value: "pro" }), act: "live",
-        sheet: this.reviewSheet("Review", "Growth to Pro · monthly", this.sheetFooter(NS, this.payLabel(F.money(TOTAL_TODAY)), LINE, true)),
-        sheetSections: this.upgradeSections(F) }),
+        sheet: this.reviewSheet("Review", "Growth to Pro · monthly", this.sheetFooter(NS, this.payLabel(F.money(TOTAL_TODAY, { fractionDigits: 2 })), LINE, true)),
+        sheetSections: this.upgradeSections(F, false) }),
       base({ id: "m12-03-s10", label: "State 10 · not the Owner · read only", screenLabel: "Plan selection — non-Owner, read only (375)",
         nav: this.navSales(NS),
         planBlock: this.planBlock(NS, "Active", "success", [P("Plan", "Growth"), billRow], { noAsk: true }),
@@ -767,6 +801,19 @@ class Component extends DCLogic {
       base({ id: "m12-03-s11b", label: "State 11 · checkout failed · the act", screenLabel: "Plan selection — checkout failed · the act (375)", offset: "-372px",
         strip: failedStrip, stripLine: "You can also pay with another card.", planBlock: trialBlock,
         planCards: this.planCards(NS, F, { relations: false }) }),
+      base({ id: "m12-03-s12", label: "State 12 · upgrade, once GST-registered", screenLabel: "Plan selection — upgrade preview, GST-registered (375)", offset: "-330px",
+        planBlock: gstActiveBlock, bookNote: { note: "Prices exclude GST", size: 12 },
+        planCards: this.planCards(NS, F, { value: "pro" }), act: "live",
+        sheet: this.reviewSheet("Review", "Growth to Pro · monthly", this.sheetFooter(NS, this.payLabel(F.money(TOTAL_TODAY_WITH_GST, { fractionDigits: 2 })), LINE)),
+        sheetSections: this.upgradeSections(F, true) }),
+      base({ id: "m12-03-s13", label: "State 13 · downgrade, the preview computing", screenLabel: "Plan selection — downgrade review, preview loading (375)", offset: "-330px",
+        planCards: this.planCards(NS, F, { value: "starter" }), act: "live",
+        sheet: this.reviewSheet("Review", "Growth to Starter · monthly", null),
+        sheetSections: this.downgradePendingSections(F, false) }),
+      base({ id: "m12-03-s14", label: "State 14 · downgrade, the preview failed", screenLabel: "Plan selection — downgrade review, preview failed (375)", offset: "-330px",
+        planCards: this.planCards(NS, F, { value: "starter" }), act: "live",
+        sheet: this.reviewSheet("Review", "Growth to Starter · monthly", null),
+        sheetSections: this.downgradePendingSections(F, true) }),
     ];
 
     return list.map((f) => Object.assign({}, f, {
@@ -800,6 +847,8 @@ class Component extends DCLogic {
 
     this._vals = {
       noop: this.noop,
+      /* F1-07: a payment prints to the paisa, so the review's money block reads the pack's minor unit. */
+      paiseMarket: { format: NS.MarketProvider.createFormat({ currencyFractionDigits: 2 }) },
       phoneChrome: { style: { background: "transparent" } },
       frames: this.frames(NS, F),
 
