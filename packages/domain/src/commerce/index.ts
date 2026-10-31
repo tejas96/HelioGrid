@@ -33,7 +33,6 @@ export type {
 } from './billing-notices';
 export {
   BILLING_NOTICES,
-  disclosesForfeiture,
   ladderBeginsAt,
   ladderOf,
   ladderStartOf,
@@ -101,11 +100,6 @@ export {
   TRIAL_EXTENSION_DAYS,
   withCredits,
 } from './entitlements';
-export {
-  appliesImmediately,
-  forfeitsPriceProtection,
-  protectionEndsAt,
-} from './grandfathering';
 export type { InvoiceKind, InvoiceStatus } from './invoices';
 export { INVOICE_KINDS, INVOICE_STATUSES } from './invoices';
 export type { DueTimedCause, SubscriptionCause, SubscriptionClock } from './lifecycle';
@@ -174,6 +168,7 @@ export {
   templateWritesOf,
   termsRefusal,
 } from './proposal-template-page';
+export { appliesImmediately } from './repricing';
 export type { RichTextBlock, RichTextSpan, RichTextValue } from './rich-text';
 export { richTextParagraphs } from './rich-text';
 export type { BillingCapability, BillingPhase, CapabilityStanding } from './soft-block';

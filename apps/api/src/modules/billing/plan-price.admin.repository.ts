@@ -1,7 +1,7 @@
 import { type Db, planPrice } from '@heliogrid/db';
 import { type BillingCycle, type MinorUnits, minorUnits, type Tier } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq } from 'drizzle-orm';
+import { and, desc, eq, type SQLWrapper } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
 
 /** One plan price: a tier on a cycle as the gateway sells it (`M12-12`). */
@@ -31,27 +31,39 @@ const columns = {
   gatewayPlanRef: planPrice.gatewayPlanRef,
 };
 
+/** A key as values, or as the columns of a row the query already holds. */
+type KeyOf<T> = { readonly [K in keyof T]: T[K] | SQLWrapper };
+
+/**
+ * The current row of a market × tier × cycle × currency — the latest written — on
+ * `plan_price_current_idx`. Every sale reads it: a new checkout, a reactivation, an upgrade and a
+ * renewal bill today's book, never a row a company bought earlier (`M12-57`).
+ */
+export function currentPlanPrice(db: Db, key: KeyOf<PlanPriceKey>) {
+  return db
+    .select(columns)
+    .from(planPrice)
+    .where(
+      and(
+        eq(planPrice.marketCode, key.marketCode),
+        eq(planPrice.tier, key.tier),
+        eq(planPrice.cycle, key.cycle),
+        eq(planPrice.currencyCode, key.currencyCode),
+      ),
+    )
+    .orderBy(desc(planPrice.createdAt))
+    .limit(1);
+}
+
 /** The plan prices: global rows no company owns, so the admin path reads and writes them. */
 @Injectable()
 export class PlanPriceAdminRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(@Inject(ADMIN_DB) private readonly db: Db) {}
 
-  /** The latest row of this market × tier × cycle × currency: the one a new checkout sells. */
+  /** The current row of this market × tier × cycle × currency (`currentPlanPrice`). */
   async current(key: PlanPriceKey): Promise<PlanPriceRow | null> {
-    const [row] = await this.db
-      .select(columns)
-      .from(planPrice)
-      .where(
-        and(
-          eq(planPrice.marketCode, key.marketCode),
-          eq(planPrice.tier, key.tier),
-          eq(planPrice.cycle, key.cycle),
-          eq(planPrice.currencyCode, key.currencyCode),
-        ),
-      )
-      .orderBy(desc(planPrice.createdAt))
-      .limit(1);
+    const [row] = await currentPlanPrice(this.db, key);
     return row === undefined ? null : { ...row, collectedMinor: minorUnits(row.collectedMinor) };
   }
 

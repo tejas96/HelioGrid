@@ -26,7 +26,7 @@ Fifteen domains, four ownership boundaries. The entity list groups them into twe
 |---|---|---|---|---|
 | 1 | Identity & tenancy | §2.1 | Global phone-keyed accounts, tenants, memberships, preset roles, invites, sessions, OTP | platform + tenant |
 | 2 | Market framework | §2.2 | Versioned market packs — one payload of the eight keys (tax, subsidy, calling rules, payment rails, certification schemes, formats with the display labels and the utility directory, data rights, price book), DND scrub, demo content | market-pack |
-| 3 | Platform billing & entitlements | §2.3 | Plans, plan prices mirrored from the pack's price book, subscription lifecycle, usage meters, entitlements, invoices, dunning, grandfathering | platform + tenant |
+| 3 | Platform billing & entitlements | §2.3 | Plans, plan prices mirrored from the pack's price book, subscription lifecycle, usage meters, entitlements, invoices, dunning, repricing | platform + tenant |
 | 4 | Tenant configuration | §2.4 | Business profile, tax registrations, branding, templates, integrations, onboarding resume state | tenant |
 | 5 | Catalog & rates | §2.4 | Pack BOM rates and the steel-profile catalog — the platform catalog, tenant SKUs, overrides, rate history and price book moved to `docs/tasks/M01-onboarding.md` | platform + market-pack |
 | 6 | CRM & marketing | §2.5 | Customers, contacts, leads, timeline, consent ledger, campaigns, capture, referrals | tenant |
@@ -80,7 +80,7 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | Entity | V | Block | Purpose | Owner | Key fields | Lifecycle | PRD refs |
 |---|---|---|---|---|---|---|---|
 | plan | V1 | 2 | Tier definition as stored entitlement source; entitlement truth lives in platform tables, money truth at the gateway | platform | tier_name (Starter/Growth/Pro/Enterprise); trial_days; included_bundles per meter (voice, detections, OTP fair-use, storage, V2 slots); capacity_ceilings (design-kW, proposals/month, Starter active projects); gateway_plan_refs (exactly two: monthly + yearly) | — | M12-02, M12-12, M12-17, BM-11 |
-| plan_price | V1 | 2 | Per-currency tier × cycle price row mirrored 1:1 to a gateway plan object; the row a subscription bills against  | market-pack | tier; cycle (monthly/yearly); currency; amount_ex_tax; market_key; pack_version pin (the market_pack_version whose priceBook it mirrors); gateway_plan_object_ref | — (immutable book rows; retained indefinitely for grandfathering) | M12-03, M12-12, M12-57, BM-38, F1-27 |
+| plan_price | V1 | 2 | Per-currency tier × cycle price row mirrored 1:1 to a gateway plan object; the row a subscription bills against  | market-pack | tier; cycle (monthly/yearly); currency; amount_ex_tax; market_key; pack_version pin (the market_pack_version whose priceBook it mirrors); gateway_plan_object_ref | — (immutable book rows; retained indefinitely: invoices name the row they billed) | M12-03, M12-12, M12-57, BM-38, F1-27 |
 | subscription | V1 | 2 | The tenant's single billing-lifecycle machine: tier, cycle, six-state relationship with the platform; runtime gating source with entitlements. *Built by `T-M12-005` (migration 0034) with `state`, `state_entered_at`, `trial_ends_at`, `paid_period_end` and `created_at`; tier, cycle, the billed `plan_price`, the gateway reference, the billing anchor, the cancellation reason and the pending plan change land with the tasks that write them. `entitled_until` is not stored: it is `entitledUntil(paid_period_end)` in domain, a derived value. One live row per tenant is a partial unique key over `trialing`, `active`, `past_due`.*  | tenant | state (six BM-33 names); tier; cycle; billed plan_price ref; gateway_subscription_ref (conversion onward); paid_period_start/end; entitled_until (period end + 3-day buffer); billing_anchor; trial_start/expiry; cancellation_reason; pending_plan_change (target tier/cycle, applied at the next cycle boundary — M12-48/49/54) | trialing → active → past_due (grace d0–3/d4–7) → halted; active → cancelled (runs to period end); trialing → expired; reactivation = new row | M12-04..08, M12-14, M12-50, M12-52, M12-54, BM-33 |
 | subscription_state_history | V1 | 2 | Append-only record of every subscription state entered — when, why, tenant- or time-caused; readable on billing screen. *Built by `T-M12-005` (migration 0034). `actor_class` is not stored: tenant- or time-caused follows from the cause.* | tenant | state_entered; entered_at; cause (pay/cancel/reactivate/charge failure/timer/trial expiry); actor_class (tenant-caused vs time-caused) | append-only | M12-04, M12 §M12.2 |
 | payment_mandate | V1 | 2 | The tenant's live gateway payment authorization — reference only; instrument data exists solely at the gateway | tenant | gateway_mandate_ref (no instrument data); rail (pack F1-40/41 ladder); live_status (one live at a time); established_at (conversion, never signup) | established → live → superseded/ended | M12-08, M12-10, M12-11, M12-55, M12-58 |
@@ -93,9 +93,7 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | subscription_payment | V1 | 2 | The recorded platform charge — a successful charge is entitlement truth: extends window, triggers invoice, clears dunning, atomically  | tenant | amount_minor; currency_code; gateway_charge_ref (unique — the one idempotency key: a duplicate charge is a no-op); pays_through; occurred_at (gateway time — out-of-order events are judged by it, never by arrival); recorded_at; overage_reckoned_at (`T-M12-012b`: set once the overage of the period it pays for is reckoned) | — (append) | M12-09, M12-32, M12-35, M12-48 |
 | overage_addon | V1 | 2 | One meter's overage in one closed paid period, billed as an add-on on a later mandate debit *Built by `T-M12-012b` (migration 0041): reckoned from the usage ledger past the company's allowance at the book's published rate, one row per subscription × meter × period start, so a period bills once; added to the mandate at the gateway, then listed on the invoice of the debit that collected it.* | tenant | payment_id (the period's payment); meter; window_from/window_to; used; allowance; quantity; unit_rate_minor; amount_minor (ex-tax); gateway_ref, gateway_amount_minor, added_at (set when claimed), gateway_addon_ref (set when the gateway answers); tried_at (a run left it pending: the queue's turn); invoice_id | pending → adding → added → invoiced; adding → pending (refused); pending → over_cap; added → pending (a new mandate) | M12-35 |
 | credit_note | V1 | 2 | Market scheme's credit-note artefact auto-issued against the first-cycle invoice on 7-day money-back refund; refund-to-source | tenant | scheme_artefact_type (pack.tax; IN: GST credit note); amount; currency; invoice ref; refund_to_source_ref; issued_at | — (issued, immutable) | M12-47 |
-| dunning_event | V1 | 2 | A told notice of the dunning ladder or a trial nudge, one row per notice per moment it fell due; the subject its owners' notifications name, the SMS leg leaving after its commit, and what a payment clears. *Built by `T-M12-011` (migration 0039): its own record, not a view over F6's notification log; trial nudges parent on the subscription row.* | tenant | notice (billing_notice: payment_failed d0 / payment_reminder d2 / metered_paused d4 / final_warning d6 / halted d7 / win_back weekly ×4 then every 30 days / trial_half_way, trial_ending, trial_ended); due_at; fired_at; forfeiture_disclosed (protected tenants, from day 0); next_due_at (the sweep's next look); cleared_at / cleared_by_payment | told → cleared-by-payment | M12-39, M12-40, M12-42, M12-55 |
-| price_protection | V1 | 2 | The tenant's grandfathering fact: signed-up book/rows billed against, protection horizon, and permanent forfeiture on lapse *(grandfathering stored on tenant or subscription — M12-57)*  | tenant | signed-up pack version (its priceBook) / plan_price rows pinned; protection_horizon (from pack.priceBook); status (protected / forfeited-on-lapse / horizon-lapsed); forfeited_at; lapse_cause (cancelled / halted) | protected → forfeited-on-lapse \| horizon-lapsed (recorded, never deleted) | M12-57, M12-39, BM-42 |
-| price_protection_pin | V1 | 2 | Junction: one plan_price row a price_protection pins as its signed-up (or protected-upgrade) billing row *(which plan_price rows a protected upgrade pins is undecided — M12-57)*  | tenant | price_protection ref; plan_price ref; pin_kind (signed_up \| protected_upgrade) | — | M12-57, BM-42 |
+| dunning_event | V1 | 2 | A told notice of the dunning ladder or a trial nudge, one row per notice per moment it fell due; the subject its owners' notifications name, the SMS leg leaving after its commit, and what a payment clears. *Built by `T-M12-011` (migration 0039): its own record, not a view over F6's notification log; trial nudges parent on the subscription row.* | tenant | notice (billing_notice: payment_failed d0 / payment_reminder d2 / metered_paused d4 / final_warning d6 / halted d7 / win_back weekly ×4 then every 30 days / trial_half_way, trial_ending, trial_ended); due_at; fired_at; forfeiture_disclosed (always false since owner ruling 2026-10-31; dropped by a later release, deferred.md); next_due_at (the sweep's next look); cleared_at / cleared_by_payment | told → cleared-by-payment | M12-39, M12-40, M12-42, M12-55 |
 
 ### 2.4 Tenant configuration, catalog & rates
 
@@ -277,8 +275,8 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 |---|---|---|---|---|---|---|
 | tenant | holds | subscription | 1:N | yes | Never deleted — every state retains all data indefinitely; reactivation creates a NEW row, so history accumulates | M12-04, M12-07, M12-08, BM-32 |
 | subscription | logs transitions as | subscription_state_history | 1:N | yes | Append-only; never deleted | M12-04, M12 §M12.2 |
-| plan | is priced per currency and cycle by | plan_price | 1:N | yes | PRD silent; grandfathering requires signed-up rows to stay resolvable indefinitely | M12-03, M12-12, M12-57 |
-| market_pack_version | publishes its priceBook rows as (pack.priceBook) | plan_price | 1:N | yes | The book rides the pack version; repricing never retroactive; old rows persist for protected tenants | BM-38, BM-41, BM-42, F1-27 |
+| plan | is priced per currency and cycle by | plan_price | 1:N | yes | PRD silent; old rows stay resolvable for the invoices that billed them | M12-03, M12-12, M12-57 |
+| market_pack_version | publishes its priceBook rows as (pack.priceBook) | plan_price | 1:N | yes | The book rides the pack version; repricing reaches a company at its next paid period, never retroactively | BM-38, BM-41, BM-42, F1-27 |
 | plan_price | bills | subscription | 1:N | no (trialing has no billed row until conversion) | PRD silent | M12-12, M12-52, M12-57 |
 | tenant | carries current effective limits as | entitlement | 1:N | yes | Recomputed in place; PRD silent on deletion | M12-16 |
 | tenant | receives audited grants as | entitlement_override | 1:N | yes | PRD silent; audit coverage implies retention | M12-19, M12-52, M12-58 |
@@ -292,8 +290,6 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 | tenant | authorizes platform charging via | payment_mandate | 1:N | yes | PRD silent; only gateway references exist locally | M12-08, M12-10, M12-11 |
 | market_pack | supplies collection rails for | payment_mandate | 1:N | yes | PRD silent | M12-11, F1-40, F1-41 |
 | subscription | escalates non-payment / trial nudges through | dunning_event | 1:N | yes | History retained and readable on the billing screen | M12-39, M12-42, M12-55 |
-| tenant | may be grandfathered under | price_protection | 1:1 | yes | Forfeiture is recorded, never deleted (reactivation must know protection ended) | M12-57, BM-42 |
-| price_protection | price_protection_pin (pins signed-up rows) | plan_price | N:M | yes | Pinned rows must stay resolvable; PRD silent on mechanics | M12-57, BM-42 |
 | market_pack | parameterizes tax scheme of | subscription_invoice | 1:N | yes | Pack updates never change already-issued invoices | M12-44, M12-45, M12 §M12.7 |
 
 ### 3.4 Tenant configuration, catalog & rates
@@ -701,15 +697,6 @@ erDiagram
     datetime cleared_at
     boolean forfeiture_disclosed
   }
-  PRICE_PROTECTION {
-    string id PK
-    string tenant_id FK
-    string signed_up_book
-    string protection_horizon
-    string status
-    datetime forfeited_at
-    string lapse_cause
-  }
 
   TENANT ||--o{ SUBSCRIPTION : "holds"
   SUBSCRIPTION ||--o{ SUBSCRIPTION_STATE_HISTORY : "logs transitions as"
@@ -728,14 +715,6 @@ erDiagram
   TENANT ||--o{ PAYMENT_MANDATE : "authorizes charging via"
   MARKET_PACK ||--o{ PAYMENT_MANDATE : "supplies rails for"
   SUBSCRIPTION ||--o{ DUNNING_EVENT : "escalates non-payment through"
-  TENANT ||--o| PRICE_PROTECTION : "may be grandfathered under"
-  PRICE_PROTECTION_PIN {
-    string price_protection_id FK
-    string plan_price_id FK
-    string pin_kind
-  }
-  PRICE_PROTECTION ||--|{ PRICE_PROTECTION_PIN : "pins rows via"
-  PLAN_PRICE ||--o{ PRICE_PROTECTION_PIN : "is pinned by"
   MARKET_PACK ||--o{ SUBSCRIPTION_INVOICE : "parameterizes tax scheme of"
 ```
 
@@ -1944,12 +1923,12 @@ erDiagram
 - Usage screen, gate enforcement and invoice overage lines must read the same rollup of the same ledger; overage add-on lines equal ledgered units × the book's published per-unit rate — a discrepancy is a defect by definition. (M12-34, M12-35, F8-33)
 - Issued invoices are immutable: PDF attached at issue, never regenerated; pack tax updates never change issued invoices; platform is supplier of record with its registration identifiers on every invoice. (M12-44, M12-45)
 - Refunds: 7-day money-back on the first paid cycle only, refund-to-source, exactly one credit note auto-issued against that cycle invoice; renewal cycles have no refund path; an unconverted trial refunds nothing. (M12-47, M12-51)
-- Grandfathering: a protected tenant bills its signed-up plan_price rows until the book's horizon lapses; a lapse to cancelled/halted forfeits protection permanently — reactivation bills the current list book; repricing never mid-cycle or retroactive. (M12-57, BM-42)
+- Repricing: a new book reaches every company at its next paid period — a renewal, a reactivation, an upgrade and a new purchase bill the current book's plan_price row; repricing never mid-cycle or retroactive; no company keeps a signed-up price (owner ruling 2026-10-31). (M12-57, BM-42)
 - Trial is modelled in-app only: 14 days, no gateway subscription, mandate or plan_price link until conversion; trial remainder never extends the first paid period. (M12-52, M12-54)
 - Meters are a closed set; detections bill only when a result returned (failures ledgered unbilled); OTP tracked not billed v1; storage is a nightly gauge snapshot, never a counter; tracked-seat-months derive from M09 toggle history with month-fraction arithmetic. (M12-33, BM-16..BM-22)
 - Caps are plain counts over the tenant's cycle window, reset on the billing anchor; 80% pre-warning must precede any gate; 100% starts 7-day grace, then only NEW creations pause. (M12-30, BM-34)
 - Metering writes never fail or delay the request they record; gaps repaired by reconciliation (6-hour gateway poll), never user-facing. (M12-18, M12-43, M12-09)
-- Dunning ladder runs per subscription from the first failed charge (day 0/2/4/6/7, post-halt weekly ×4 then monthly indefinitely); trial nudges (day 7/12/14) reuse the same pipeline; a successful payment clears all pending rungs; protected tenants get forfeiture disclosure from day 0. (M12-39, M12-42)
+- Dunning ladder runs per subscription from the first failed charge (day 0/2/4/6/7, post-halt weekly ×4 then monthly indefinitely); trial nudges (day 7/12/14) reuse the same pipeline; a successful payment clears all pending rungs. (M12-39, M12-42)
 - Cancellation captures a reason as product signal, never a gate; service runs to paid period end; all data retained; reactivation always offered. (M12-50)
 - Every billing act requires F2.M12.manage-billing (Owner only); employees see billing state but never amounts, prices, invoices or usage figures; no billing state, surface or dunning message ever reaches a customer link. (M12-56, M12-29)
 - Billing schema is per-currency and provider-neutral behind billing ports; one market and one currency per tenant; no FX-derived pricing; a market without an authored book cannot sell. (M12-03, F1-07, F1-26, BM-37)
@@ -2385,7 +2364,7 @@ Logical level only — access paths the PRD itself evidences. Every tenant-owned
 | subscription_state_history | subscription + entered_at | Subscription history readable on the billing screen | M12-04, M12-55 |
 | subscription_invoice | subscription/tenant + cycle_covered | Invoice list with PDFs on the billing screen; export in every billing state | M12-55, M12-46 |
 | storage_gauge_snapshot | tenant + snapshot_date (latest) | Storage gate at upload issuance reads gauge vs ceiling × 1.1; usage screen | M12-23, M12-33 |
-| plan_price | market + tier + cycle + currency; pack_version_pin | Price resolution only from the tenant market's book; grandfather row selection (signed-up rows vs current list book) at billing time | F1-27, M12-12, M12-57 |
+| plan_price | market + tier + cycle + currency; pack_version_pin | Price resolution only from the tenant market's book; every billing reads the current book's row | F1-27, M12-12, M12-57 |
 
 ### 6.4 Tenant configuration, catalog & rates
 
@@ -2602,7 +2581,7 @@ Grain: one row per PRD feature area (not per requirement ID). Covered? = yes / p
 | M12 | Cancellation & reactivation (M12-50, M12-08) | subscription.cancellation_reason, subscription_state_history, new payment_mandate | yes |
 | M12 §M12.9 | Trial lifecycle & extension (M12-52, M12-54, M12-14) | subscription trial fields, entitlement (source=trial), entitlement_override (trialing representation open) | partial |
 | M12 §M12.10 | Billing screens & Owner-only permission (M12-55, M12-56) | read composition of subscription, invoices, dunning_event, usage_event; F2 capability data | yes |
-| M12 | Grandfathering (M12-57) | price_protection + price_protection_pin ↔ plan_price | yes (storage level — tenant vs subscription — open at §8) |
+| M12 | Repricing (M12-57) | plan_price (the current row of market × tier × cycle × currency) | yes |
 | M12 | Billing audit coverage (M12-58) | audit_log_entry [platform-services] | yes |
 | 04-business-model | Subscription structure, unlimited seats, org-level billing (BM-01..06, OV-29, OV-42) | subscription, plan; no seat entity by design | yes |
 | 04-business-model | Two money systems never mix (BM-02) | disjoint billing vs payments domains; no shared entity | yes |
@@ -2610,7 +2589,7 @@ Grain: one row per PRD feature area (not per requirement ID). Covered? = yes / p
 | 04-business-model | Meter set, per-meter rules, COGS/absorbed-cost law, transparency (BM-16..27) | usage_event, storage_gauge_snapshot, market_pack_version.pack.priceBook bundles/overages; absorbed non-tracked location ingestion & internal cost lines have no entity | partial |
 | 04-business-model | Trial (BM-28..30) | subscription trial fields, entitlement (source=trial) | yes |
 | 04-business-model | Soft-block & cap law (BM-07, BM-32..36) | subscription.state, entitlement, usage_event rollups; matrix is engine behaviour | yes |
-| 04-business-model | Grandfathering & protection horizon (BM-42) | price_protection + price_protection_pin; market_pack_version.pack.priceBook.priceProtectionMonths | yes |
+| 04-business-model | Repricing at the next paid period (BM-42) | plan_price | yes |
 | 04-business-model | Trial-to-paid launch metric (BM-47) | derivable from subscription_state_history (trialing→active); event taxonomy lands in M13 | yes |
 
 ### 7.4 Tenant configuration, catalog & rates

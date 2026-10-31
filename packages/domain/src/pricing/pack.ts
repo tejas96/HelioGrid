@@ -186,13 +186,8 @@ export interface PriceBookPack {
   /** `BM-39` — what this book was priced against, with provenance. Never empty in a sold market. */
   readonly benchmarks: readonly Benchmark[];
   /**
-   * `BM-42` — months a tenant keeps the pricing they signed up on. Repricing is a trust event, so
-   * the guarantee is book data and law rather than goodwill: every market records its own horizon
-   * and the LAW that one exists is market-neutral.
-   *
-   * MONTHS, and no date. The horizon runs from a tenant's own signup, which this package does not
-   * hold — `M12` turns the number into a lapse moment on the tenant's clock (`F1-10`), the same
-   * seam that keeps `TRIAL_DAYS` in days.
+   * Read by nothing: no company keeps a signed-up price (`BM-42`). A book still carries it because
+   * an api of the release before requires it in every pack it parses (`D396`).
    */
-  readonly priceProtectionMonths: number;
+  readonly priceProtectionMonths?: number;
 }

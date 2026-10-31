@@ -40,7 +40,8 @@ leaks data, loses money or needs a second release:
 - **Tenancy and access:** a route with no access entry; another tenant's row answered with
   anything but 404.
 - **Old readers:** a stored or sent shape (column, enum value, response, workflow message, cached
-  payload) that an old reader cannot read, or old data the new code cannot.
+  payload) that an old reader cannot read, or still reads and acts on by the rule this change
+  removes, or old data the new code cannot.
 - **Ownership:** schema or API a later module owns (Law 9).
 - **Callers:** a changed export that breaks a caller the grep found.
 - **Hand-offs:** a duty the RFC gives another task that the other task's section and the row map do

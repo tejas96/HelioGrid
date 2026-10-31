@@ -28,33 +28,23 @@ interface NoticeRule {
   readonly ladder: NoticeLadder;
   /** The state the subscription must hold for the notice to be true when it is told. */
   readonly holdsIn: BillingState;
-  /**
-   * Whether a company inside its price-protection horizon is told, in this notice, that a halt
-   * ends its launch price (`M12-39`, `M12-41`, `BM-42`). The win-back says reactivation bills at
-   * today's prices, which is true for every company, so it needs no second text.
-   */
-  readonly disclosesForfeiture: boolean;
 }
 
-/** An exhaustive `Record`, so a tenth notice names its ladder, its state and its disclosure. */
+/** An exhaustive `Record`, so a tenth notice names its ladder and its state. */
 const RULES: Record<BillingNotice, NoticeRule> = {
-  payment_failed: { ladder: 'dunning', holdsIn: 'past_due', disclosesForfeiture: true },
-  payment_reminder: { ladder: 'dunning', holdsIn: 'past_due', disclosesForfeiture: true },
-  metered_paused: { ladder: 'dunning', holdsIn: 'past_due', disclosesForfeiture: true },
-  final_warning: { ladder: 'dunning', holdsIn: 'past_due', disclosesForfeiture: true },
-  halted: { ladder: 'dunning', holdsIn: 'halted', disclosesForfeiture: true },
-  win_back: { ladder: 'dunning', holdsIn: 'halted', disclosesForfeiture: false },
-  trial_half_way: { ladder: 'trial', holdsIn: 'trialing', disclosesForfeiture: false },
-  trial_ending: { ladder: 'trial', holdsIn: 'trialing', disclosesForfeiture: false },
-  trial_ended: { ladder: 'trial', holdsIn: 'expired', disclosesForfeiture: false },
+  payment_failed: { ladder: 'dunning', holdsIn: 'past_due' },
+  payment_reminder: { ladder: 'dunning', holdsIn: 'past_due' },
+  metered_paused: { ladder: 'dunning', holdsIn: 'past_due' },
+  final_warning: { ladder: 'dunning', holdsIn: 'past_due' },
+  halted: { ladder: 'dunning', holdsIn: 'halted' },
+  win_back: { ladder: 'dunning', holdsIn: 'halted' },
+  trial_half_way: { ladder: 'trial', holdsIn: 'trialing' },
+  trial_ending: { ladder: 'trial', holdsIn: 'trialing' },
+  trial_ended: { ladder: 'trial', holdsIn: 'expired' },
 };
 
 export function ladderOf(notice: BillingNotice): NoticeLadder {
   return RULES[notice].ladder;
-}
-
-export function disclosesForfeiture(notice: BillingNotice): boolean {
-  return RULES[notice].disclosesForfeiture;
 }
 
 /** `M12-39` — the ladder's fixed rungs, in whole days from the first failed charge. */

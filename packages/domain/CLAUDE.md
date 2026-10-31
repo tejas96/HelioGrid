@@ -29,8 +29,8 @@
   its folder beside `format/`, its property on `MarketPack` and India's values on `IN_PACK`, and
   imports `MarketCode` from `market/code` by path, never the market index.
 - `commerce/` holds packaging every market prices against — never a market fact — so it is not a
-  `MarketPack` key. A repricing reaches a price-protected tenant at once only when it takes nothing
-  away (`BM-42`); otherwise it waits until the protection ends.
+  `MarketPack` key. A capacity change reaches a company at once only when it takes nothing away
+  (`BM-42`); otherwise it waits for the company's next paid period.
 - This package has no clock, so a billing fact is authored in its own unit, never as an instant:
   the trial is in DAYS, and the soft-block matrix is keyed by PHASE. Turning one into a moment
   needs the tenant's clock (`F1-10`), held by `M12`.

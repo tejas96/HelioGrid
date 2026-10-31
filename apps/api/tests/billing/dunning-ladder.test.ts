@@ -19,7 +19,6 @@ import {
   noticeServiceOf,
   notificationsOf,
   RecordedCarrier,
-  SIGNED_UP_LONG_AGO,
   toldTo,
 } from './notice-bench';
 import { aPlan, chargeServiceOf } from './support';
@@ -101,13 +100,11 @@ describe.skipIf(skip)('the dunning ladder (M12-09, M12-39, M12-41)', () => {
       'Your plan is unpaid. Paused until you pay: the voice agent, AI roof detection and team invites. ' +
         'Still working: reading and search, exports, customer links, billing, creating and editing records, ' +
         'editing designs, selling and delivery, new file uploads and uploading field photos already taken. ' +
-        'If the plan halts, your launch price ends and a restart bills at today’s prices. ' +
         'Pay in Billing to turn them back on.',
     );
     expect(words[4]?.body).toBe(
       'Your plan is halted because it is unpaid. Still working: reading and search, exports, customer ' +
-        'links, billing and uploading field photos already taken. Your launch price has ended; ' +
-        'reactivating bills at today’s prices. Reactivate with one payment in Billing.',
+        'links, billing and uploading field photos already taken. Reactivate with one payment in Billing.',
     );
     // Then weekly: the first win-back a week after the halt, and nothing between.
     const firstWinBack = PAST_DUE_GRACE_DAYS + WEEK_DAYS;
@@ -116,16 +113,28 @@ describe.skipIf(skip)('the dunning ladder (M12-09, M12-39, M12-41)', () => {
     expect((await toldTo(pools, held.subscriptionId)).at(-1)?.notice).toBe('win_back');
   });
 
-  it('tells a company past its protection horizon of no loss it no longer risks', async () => {
-    const held = await companies.holding(
-      { state: 'past_due', enteredAt: FAILED },
-      SIGNED_UP_LONG_AGO,
-    );
-    await notices.tellDue(FAILED + aMinute);
-    const [told] = await toldTo(pools, held.subscriptionId);
-    expect(told?.forfeitureDisclosed).toBe(false);
-    const [words] = await notificationsOf(pools, held.tenantId);
-    expect(words?.body).not.toContain('launch price');
+  it('no dunning notice speaks of a launch price', async () => {
+    const carrier = new RecordedCarrier();
+    const texting = noticeServiceOf(pools, carrier);
+    const held = await companies.holding({ state: 'past_due', enteredAt: FAILED });
+    for (let n = 0; n <= PAST_DUE_GRACE_DAYS; n += 1) {
+      if (n === PAST_DUE_GRACE_DAYS) await moveTo(pools, held.subscriptionId, 'halted', day(n));
+      await texting.tellDue(day(n) + aMinute);
+    }
+    const told = await toldTo(pools, held.subscriptionId);
+    expect(told.map((row) => row.notice)).toEqual([
+      'payment_failed',
+      'payment_reminder',
+      'metered_paused',
+      'final_warning',
+      'halted',
+    ]);
+    expect(told.every((row) => !row.forfeitureDisclosed)).toBe(true);
+    const words = await notificationsOf(pools, held.tenantId);
+    expect(words).toHaveLength(told.length);
+    for (const { title, body } of words) expect(`${title} ${body}`).not.toMatch(/launch price/i);
+    expect(carrier.sent).toHaveLength(told.length);
+    for (const { message } of carrier.sent) expect(message).not.toMatch(/launch price/i);
   });
 
   it('a failure sent again leaves one payment-failed notice', async () => {

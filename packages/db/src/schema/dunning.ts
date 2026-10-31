@@ -35,8 +35,11 @@ export const dunningEvent = pgTable(
     /** The ladder's moment for this notice; it may be told later, never earlier. */
     dueAt: instant('due_at').notNull(),
     firedAt: instant('fired_at').notNull(),
-    /** It told a company inside its price-protection horizon what a halt costs it (`M12-41`). */
-    forfeitureDisclosed: boolean('forfeiture_disclosed').notNull(),
+    /**
+     * Always `false`: no company keeps a launch price (`BM-42`). Kept, with
+     * its default, only while an api of the release before still writes it (`D396` drops it).
+     */
+    forfeitureDisclosed: boolean('forfeiture_disclosed').notNull().default(false),
     /** When the sweep looks at this ladder again; `null` once the next notice took it over, or it ended. */
     nextDueAt: instant('next_due_at'),
     clearedAt: instant('cleared_at'),

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { MessageDelivery, MessageDeliveryRequest } from '@heliogrid/contracts';
-import { dunningEvent, notification, subscription, tenant, userAccount } from '@heliogrid/db';
+import { dunningEvent, notification, subscription, userAccount } from '@heliogrid/db';
 import { FOUNDER_ROLE, MS_PER_DAY } from '@heliogrid/domain';
 import { asc, eq, sql } from 'drizzle-orm';
 import { BillingNoticeAdminRepository } from '../../src/modules/billing/billing-notice.admin.repository';
@@ -38,10 +38,6 @@ type Pools = ReturnType<typeof openPools>;
 
 /** 11:30 in Kolkata, outside every quiet window the market defaults to. */
 export const FAILED = Date.parse('2001-03-03T06:00:00Z');
-/** Inside the India book's 24-month horizon at `FAILED`. */
-export const SIGNED_UP_PROTECTED = Date.parse('2000-06-01T00:00:00Z');
-/** Past it. */
-export const SIGNED_UP_LONG_AGO = Date.parse('1996-01-01T00:00:00Z');
 /** A sweep a minute after a moment; a minute is the sweep's own cadence. */
 export const aMinute = 60_000;
 export const day = (n: number) => FAILED + n * MS_PER_DAY;
@@ -97,10 +93,9 @@ export class NoticeCompanies {
     this.memberships = [];
   }
 
-  /** A company signed up at `signedUpAt`, with one EPC Owner per language, holding one subscription. */
+  /** A company with one EPC Owner per language, holding one subscription. */
   async holding(
     held: { state: 'active' | 'past_due' | 'trialing'; enteredAt: number; trialEndsAt?: number },
-    signedUpAt = SIGNED_UP_PROTECTED,
     owners: readonly ('en' | 'hi')[] = ['en'],
   ) {
     const db = this.pools.admin.db;
@@ -118,10 +113,6 @@ export class NoticeCompanies {
         .set({ interfaceLanguage: language })
         .where(eq(userAccount.id, person.userId));
     }
-    await db
-      .update(tenant)
-      .set({ createdAt: new Date(signedUpAt) })
-      .where(eq(tenant.id, company.tenantId));
     const [row] = await db
       .insert(subscription)
       .values({

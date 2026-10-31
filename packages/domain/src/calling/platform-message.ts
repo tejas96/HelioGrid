@@ -22,23 +22,19 @@ export function platformMessage(
 }
 
 /**
- * A billing notice's SMS in the reader's language (`M12-40`), the protected company's text when
- * `whileProtected`, slots filled as `platformMessage` fills them. `null` when the market's pack
- * carries no registered text for the notice: its SMS does not go (`F1-38`).
+ * A billing notice's SMS in the reader's language (`M12-40`), slots filled as `platformMessage`
+ * fills them. `null` when the market's pack carries no registered text for the notice: its SMS
+ * does not go (`F1-38`).
  */
 export function billingNoticeMessage(
   rules: CallingRulesPack,
   notice: BillingNotice,
-  whileProtected: boolean,
   language: UiLanguage,
   variables: Readonly<Record<string, string>>,
 ): string | null {
   const registered = rules.messaging.billingNotices?.[notice];
   if (registered === undefined) return null;
-  const template = whileProtected
-    ? (registered.whileProtected ?? registered.text)
-    : registered.text;
-  return filled(template, notice, language, variables);
+  return filled(registered.text, notice, language, variables);
 }
 
 function filled(

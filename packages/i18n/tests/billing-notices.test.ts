@@ -1,7 +1,6 @@
 import {
   BILLING_NOTICES,
   type BillingCapability,
-  disclosesForfeiture,
   IN_BILLING_NOTICE_TEXTS,
   pauseNoticeOf,
   UI_LANGUAGES,
@@ -21,7 +20,7 @@ const THREATS: Record<UiLanguage, RegExp> = {
   mr: /हटव|पुस|डिलीट|नष्ट|गमाव/,
 };
 
-/** The sentence that names the launch-price loss, as each language writes it. */
+/** A launch price, as each language writes it: no company keeps one (`BM-42`), so no notice names it. */
 const LAUNCH_PRICE: Record<UiLanguage, string> = {
   en: 'launch price',
   hi: 'लॉन्च कीमत',
@@ -34,12 +33,12 @@ describe('billingNoticeWords (M12-39, M12-41)', () => {
       const { t } = await createTranslator(language);
       const names = (capabilities: readonly BillingCapability[]) =>
         capabilities.map((capability) => billingCapabilityName(t, capability));
-      const dayFour = billingNoticeWords(t, 'metered_paused', false).body;
+      const dayFour = billingNoticeWords(t, 'metered_paused').body;
       const { paused, stillWorks } = pauseNoticeOf('past_due_metered_paused');
       for (const name of [...names(paused), ...names(stillWorks)]) {
         expect(dayFour, `${language}: ${name}`).toContain(name);
       }
-      const halt = billingNoticeWords(t, 'halted', false).body;
+      const halt = billingNoticeWords(t, 'halted').body;
       for (const name of names(pauseNoticeOf('halted').stillWorks)) {
         expect(halt, `${language}: ${name}`).toContain(name);
       }
@@ -49,23 +48,17 @@ describe('billingNoticeWords (M12-39, M12-41)', () => {
     }
   });
 
-  it('no billing notice in any language threatens deletion', async () => {
+  it('no billing notice in any language threatens deletion or speaks of a launch price', async () => {
     for (const language of UI_LANGUAGES) {
       const { t } = await createTranslator(language);
       for (const notice of BILLING_NOTICES) {
-        for (const whileProtected of [false, true]) {
-          const { title, body } = billingNoticeWords(t, notice, whileProtected);
-          const where = `${language} ${notice} protected=${whileProtected}`;
-          expect(`${title} ${body}`, where).not.toMatch(THREATS[language]);
-          expect(body.includes(LAUNCH_PRICE[language]), where).toBe(
-            whileProtected && disclosesForfeiture(notice),
-          );
-        }
-        const texts = IN_BILLING_NOTICE_TEXTS[notice];
-        for (const label of [texts?.text, texts?.whileProtected]) {
-          const sms = label?.[language] ?? '';
-          expect(sms, `${language} ${notice} sms`).not.toMatch(THREATS[language]);
-        }
+        const { title, body } = billingNoticeWords(t, notice);
+        const where = `${language} ${notice}`;
+        expect(`${title} ${body}`, where).not.toMatch(THREATS[language]);
+        expect(`${title} ${body}`, where).not.toContain(LAUNCH_PRICE[language]);
+        const sms = IN_BILLING_NOTICE_TEXTS[notice]?.text[language] ?? '';
+        expect(sms, `${language} ${notice} sms`).not.toMatch(THREATS[language]);
+        expect(sms, `${language} ${notice} sms`).not.toContain(LAUNCH_PRICE[language]);
       }
     }
   });

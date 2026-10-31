@@ -95,5 +95,5 @@ export const PRICE_BOOK_PACK_SCHEMA: z.ZodType<PriceBookPack, z.ZodTypeDef, unkn
       ),
     }),
   ),
-  priceProtectionMonths: packWhole,
+  priceProtectionMonths: packWhole.optional(),
 });

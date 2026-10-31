@@ -3,10 +3,8 @@ import {
   BILLING_NOTICES,
   type BillingNotice,
   billingNoticeMessage,
-  disclosesForfeiture,
   type MarketPack,
   nextNotice,
-  protectionEndsAt,
   pushDueAt,
   SETTINGS_SEGMENT,
   type UiLanguage,
@@ -37,10 +35,7 @@ import {
 /** At most this many ladders per run, so one run stays inside its step's timeout. */
 const NOTICE_BATCH = 100;
 
-type WordsOf = (
-  notice: BillingNotice,
-  whileProtected: boolean,
-) => (language: UiLanguage) => NoticeWords;
+type WordsOf = (notice: BillingNotice) => (language: UiLanguage) => NoticeWords;
 
 /**
  * The billing notices (`M12-39`–`M12-42`): every run tells each ladder the notice that has fallen
@@ -92,7 +87,7 @@ export class BillingNoticeService {
     const told = await this.notices.look(
       candidate,
       now,
-      (standing) => verdictOf(standing, now, quietHours, pack),
+      (standing) => verdictOf(standing, now, quietHours),
       wordsOf,
       quietHours,
     );
@@ -105,13 +100,10 @@ export class BillingNoticeService {
   private async text(told: ToldNotice, pack: MarketPack): Promise<void> {
     const link = `${ENV.WEB_ORIGIN}/more/${SETTINGS_SEGMENT.billing}`;
     for (const owner of told.owners) {
-      const message = billingNoticeMessage(
-        pack.callingRules,
-        told.notice,
-        told.whileProtected,
-        owner.language,
-        { company: told.companyName, link },
-      );
+      const message = billingNoticeMessage(pack.callingRules, told.notice, owner.language, {
+        company: told.companyName,
+        link,
+      });
       if (message === null) return;
       try {
         await this.delivery.send({ phoneE164: owner.phoneE164, channel: 'sms', message });
@@ -126,47 +118,29 @@ export class BillingNoticeService {
   }
 }
 
-/**
- * The domain's notice, held to the quiet window, with the forfeiture a protected company is told
- * (`M12-41`): protection runs `priceProtectionMonths` from signup (`BM-42`).
- */
+/** The domain's notice, held to the quiet window. */
 function verdictOf(
   standing: NoticeStanding,
   now: number,
   quietHours: TenantQuietHours,
-  pack: MarketPack,
 ): NoticeVerdict {
   const { tell, lookAgainAt } = nextNotice(standing.clock, standing.lastToldDueAt, now);
   if (tell === null) return { kind: 'look again', at: lookAgainAt };
   const tellable = pushDueAt('standard', now, quietHours.window, quietHours.timezone);
   if (tellable > now) return { kind: 'look again', at: tellable };
-  const protectedUntil = protectionEndsAt(
-    standing.signedUpAt,
-    pack.priceBook.priceProtectionMonths,
-  );
-  return {
-    kind: 'tell',
-    notice: tell.notice,
-    dueAt: tell.dueAt,
-    whileProtected: disclosesForfeiture(tell.notice) && now < protectedUntil,
-    lookAgainAt,
-  };
+  return { kind: 'tell', notice: tell.notice, dueAt: tell.dueAt, lookAgainAt };
 }
 
 /** Every notice's words in every language, rendered before any transaction holds a lock. */
 async function everyNoticeWords(): Promise<WordsOf> {
   const rendered = await Promise.all(
-    BILLING_NOTICES.flatMap((notice) =>
-      [false, true].map(async (whileProtected) => ({
-        key: `${notice}:${whileProtected}`,
-        wordsIn: await renderedInEveryLanguage((t) =>
-          billingNoticeWords(t, notice, whileProtected),
-        ),
-      })),
-    ),
+    BILLING_NOTICES.map(async (notice) => ({
+      notice,
+      wordsIn: await renderedInEveryLanguage((t) => billingNoticeWords(t, notice)),
+    })),
   );
-  return (notice, whileProtected) => {
-    const found = rendered.find((one) => one.key === `${notice}:${whileProtected}`);
+  return (notice) => {
+    const found = rendered.find((one) => one.notice === notice);
     if (found === undefined) throw new Error(`no words for the ${notice} notice`);
     return found.wordsIn;
   };
