@@ -4,7 +4,7 @@
 #
 # ADR-0025: this image runs the TEMPORAL worker. It carries the pre-built workflow bundle and
 # no bundler — see the assertion below for why that is the point rather than an omission.
-FROM node:22-slim@sha256:83f487e0a63425e5b4d146fb5e5be574bcbe1b7b843d3ebafdd95eaf7767a7e5 AS build
+FROM node:26-slim@sha256:36793bcbb160a6a16cede1e62b93f84e26b78a972a8a4c0b879c1c12f22761ec AS build
 RUN corepack enable
 WORKDIR /repo
 COPY . .
@@ -26,7 +26,7 @@ RUN pnpm --filter @heliogrid/worker --prod --legacy deploy /out
 # The base is pinned BY DIGEST, as infra/compose.yaml pins postgres: `22-slim` is a moving
 # pointer, and an image nobody can re-fetch cannot be the one that was proven. Move it with
 # `docker pull node:22-slim` and the digest it resolves to, deliberately.
-FROM node:22-slim@sha256:83f487e0a63425e5b4d146fb5e5be574bcbe1b7b843d3ebafdd95eaf7767a7e5
+FROM node:26-slim@sha256:36793bcbb160a6a16cede1e62b93f84e26b78a972a8a4c0b879c1c12f22761ec
 ENV NODE_ENV=production
 # Outside any home directory: the browser is installed as root and run as `node`.
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
