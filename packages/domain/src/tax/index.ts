@@ -12,9 +12,11 @@ export type {
   TaxedLine,
 } from './breakdown';
 export { activeStatutoryExtras } from './extras';
+export type { InvoiceTotals, StoredInvoiceLine } from './invoice-totals';
 export type {
   PlaceOfSupplyRule,
   PlatformSaleTax,
+  PlatformSupplier,
   RegistrationPlace,
   StatutoryExtra,
   TaxComponentShare,

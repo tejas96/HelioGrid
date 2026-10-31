@@ -883,6 +883,11 @@ msgid "{message} Last tried at {time}."
 msgstr "{message} शेवटचा प्रयत्न: {time}."
 
 #. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:28
+msgid "{meter}: {quantity} beyond the bundle at {rate} each"
+msgstr "{meter}: बंडलपेक्षा {quantity} जास्त, {rate} प्रति एकक"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:19
 msgid "{n}-digit code"
 msgstr "{n} अंकी कोड"
@@ -1271,6 +1276,16 @@ msgstr "{total} पैकी {step}"
 #: src/copy/allocation.ts:26
 msgid "{sum} of {target} — {remainder}"
 msgstr "{target} पैकी {sum} — {remainder}"
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:30
+msgid "{supplier} is the supplier of record for this sale. The payment gateway only collects the payment."
+msgstr "या विक्रीचा नोंदीतील पुरवठादार {supplier} आहे. पेमेंट गेटवे फक्त पेमेंट घेतो."
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:27
+msgid "{tier} plan, {cycle}"
+msgstr "{tier} प्लॅन, {cycle}"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:62
@@ -1873,6 +1888,11 @@ msgid "AI roof detection"
 msgstr "AI रूफ डिटेक्शन"
 
 #. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:44
+msgid "AI roof detections"
+msgstr "AI छत ओळख"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:31
 #: src/copy/price-book.ts:34
 #: src/copy/role-matrix.ts:100
@@ -1916,6 +1936,7 @@ msgid "Always sent, and it cannot be muted: billing events are audit-relevant fo
 msgstr "नेहमी पाठवले जाते, आणि ते बंद करता येत नाही: बिलिंगच्या घटना मालकाच्या खात्याच्या ऑडिटसाठी महत्त्वाच्या आहेत."
 
 #. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:24
 #: src/copy/price-book.ts:37
 msgid "Amount"
 msgstr "रक्कम"
@@ -2255,6 +2276,21 @@ msgstr "बायफेशियलिटी"
 #: src/copy/catalog-import-fields.ts:25
 msgid "Bifaciality (%)"
 msgstr "बायफेशियलिटी (%)"
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:37
+msgid "billed monthly"
+msgstr "मासिक बिल"
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:17
+msgid "Billed to"
+msgstr "बिल प्राप्तकर्ता"
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:38
+msgid "billed yearly"
+msgstr "वार्षिक बिल"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:27
@@ -3161,6 +3197,11 @@ msgid "data rights"
 msgstr "डेटा हक्क"
 
 #. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:14
+msgid "Date of issue"
+msgstr "जारी केल्याची तारीख"
+
+#. js-lingui-explicit-id
 #: src/copy/team.ts:49
 msgid "Day {day} of {days}"
 msgstr "{days} पैकी दिवस {day}"
@@ -3303,6 +3344,11 @@ msgstr "खोली (mm)"
 #: src/copy/provenance.ts:14
 msgid "Derived"
 msgstr "गणनेतून काढलेले"
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:22
+msgid "Description"
+msgstr "वर्णन"
 
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:51
@@ -4486,6 +4532,16 @@ msgid "Inviting {first} again sends a new link."
 msgstr "{first} यांना पुन्हा आमंत्रित केल्यास नवीन लिंक जाईल."
 
 #. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:12
+msgid "Invoice"
+msgstr "इनव्हॉइस"
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:13
+msgid "Invoice number"
+msgstr "इनव्हॉइस क्रमांक"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item-fields.ts:17
 msgid "Isc"
 msgstr "Isc"
@@ -5076,6 +5132,11 @@ msgstr "बाजारभाव"
 #: src/copy/shell.ts:80
 msgid "Marketing"
 msgstr "मार्केटिंग"
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:45
+msgid "Marketing sends"
+msgstr "मार्केटिंग संदेश"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:57
@@ -5722,6 +5783,11 @@ msgstr "दाखवण्यासाठी कोणतीही साइट 
 #: src/copy/checklist.ts:20
 msgid "No steps yet"
 msgstr "अजून कोणतेही टप्पे नाहीत"
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:29
+msgid "No tax is charged on this invoice."
+msgstr "या इनव्हॉइसवर कोणताही कर आकारलेला नाही."
 
 #. js-lingui-explicit-id
 #: src/copy/brand-colour-field.ts:30
@@ -6450,6 +6516,11 @@ msgid "Owner Dashboard"
 msgstr "ओनर डॅशबोर्ड"
 
 #. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:15
+msgid "Paid period ends"
+msgstr "भरलेला कालावधी संपतो"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:129
 msgid "Panel"
 msgstr "पॅनेल"
@@ -6690,6 +6761,11 @@ msgstr "ब्रँड, मॉडेल आणि किंमत प्रत�
 #: src/copy/catalog-import.ts:135
 msgid "Place each field on one column only."
 msgstr "प्रत्येक फील्ड फक्त एकाच कॉलमवर ठेवा."
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:20
+msgid "Place of supply"
+msgstr "पुरवठ्याचे ठिकाण"
 
 #. js-lingui-explicit-id
 #: src/copy/map-surface.ts:26
@@ -7950,6 +8026,11 @@ msgid "Sent proposals keep their branding."
 msgstr "पाठवलेले प्रस्ताव आपले ब्रँडिंग ठेवतात."
 
 #. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:21
+msgid "Service code"
+msgstr "सेवा कोड"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:73
 msgid "Set by Catalog settings."
 msgstr "कॅटलॉग सेटिंग्जने ठरवले."
@@ -8480,6 +8561,16 @@ msgid "subsidy rules"
 msgstr "अनुदान नियम"
 
 #. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:25
+msgid "Subtotal"
+msgstr "उप-एकूण"
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:16
+msgid "Supplier"
+msgstr "पुरवठादार"
+
+#. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:50
 msgid "survey"
 msgstr "सर्व्हे"
@@ -8600,7 +8691,13 @@ msgid "Task"
 msgstr "काम"
 
 #. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:11
+msgid "Tax invoice"
+msgstr "कर इनव्हॉइस"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:21
+#: src/copy/invoice-document.ts:23
 msgid "Tax rate"
 msgstr "कर दर"
 
@@ -8611,6 +8708,7 @@ msgstr "कर दर"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:71
+#: src/copy/invoice-document.ts:19
 msgid "Tax registration"
 msgstr "कर नोंदणी"
 
@@ -9452,9 +9550,19 @@ msgid "TOPCon"
 msgstr "TOPCon"
 
 #. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:26
+msgid "Total"
+msgstr "एकूण"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:106
 msgid "Total capacity installed"
 msgstr "एकूण बसवलेली क्षमता"
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:46
+msgid "Tracked field seats"
+msgstr "ट्रॅक केलेल्या फील्ड सीट्स"
 
 #. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:98
@@ -9885,6 +9993,11 @@ msgstr "Voc"
 #: src/copy/catalog-add-item-fields.ts:19
 msgid "Voc temp. coefficient"
 msgstr "Voc तापमान गुणांक"
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:43
+msgid "Voice minutes"
+msgstr "व्हॉइस मिनिटे"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import-fields.ts:20

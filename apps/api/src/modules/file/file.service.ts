@@ -133,7 +133,8 @@ export class FileService {
     now: number,
   ): Promise<FileDownload> {
     const row = await this.files.find(tenantId, id);
-    if (row === null) throw new NotFoundException();
+    // A document the platform made is served by its own record's route, never this one.
+    if (row === null || !isFileSubjectKind(row.subjectKind)) throw new NotFoundException();
     if (!mayReadFile(roles, ruleOf(row.subjectKind))) {
       throw new ForbiddenException('You may not read this file.');
     }

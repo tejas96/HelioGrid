@@ -31,6 +31,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 - (M12-50 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text in the brief is the binding criterion — cancellation is owner-initiated, runs to the paid period end, and the reason is captured as product signal, never as a gate.)
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 **From T-M12-012c:** a company a payment link collects renews on a fresh link raised with its `issued` invoice (`subscription_invoice.hosted_url`, its `due_at`); the screen shows that open invoice with its pay action, the link itself, until it is `paid` — nothing else shows the owner the link.
+**From T-M12-012d:** each invoice's PDF is the `file` row `subscription_invoice.pdf_file_id` names (uploader null: the platform made it); the screen signs its download through the billing route, never the user file flow, and offers no PDF action while `pdf_file_id` is still null.
 **From T-M12-011:** the screen's `Payment reminders` list reads `dunning_event` (each notice, when it fired, and the payment that cleared it), and both apps route a notification whose subject kind is `dunning_event` — a dunning or trial notice — to this screen.
 
 ### T-M12-003 · Plan Selection & Conversion
@@ -224,7 +225,7 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 ### T-M12-012 · Subscription invoicing
 
 **Type:** engine · **Tier:** P0
-**Status:** planned
+**Status:** shipped
 **PRD rows:** M12-44, M12-45, M12-09
 **Usage ledger (T-M12-010):** this task derives the tenant's cycle window (`[from, to)` on its billing anchor) that `UsageService.billedRollupOf` takes; the same window serves the usage screen (T-M12-004) and the gates. Overage lines are the billed rollup past the allowance at the book's published rate, voice seconds turned into minutes once on the total (M12-35).
 **Contract:** a yearly company's renewal is a fresh payment link each year (M12-11, `F1-40`): this task raises it with each cycle's invoice through T-M12-007's `BillingGateway.openCheckout` on the pack's invoice route, and its charge lands on the converted row through `ChargeService.recordCollected` carrying `paysThrough` = the current paid-period end + one cycle — never the payment moment + one cycle, which would take back the days a company paid early for (M12-09) — and with no conversion. A cycle's amount is its `plan_price` row's `collected_minor`, which `platformSaleTotal` worked out at the supplier's place; the invoice splits the same total by the recipient's place.
@@ -239,14 +240,6 @@ The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief
 **Settle before the build:**
 - An upgrade's proration is one document kind (M12-48, §M12.7) — ruled: a `subscription_invoice` with `kind` = one-time proration, whose `invoice_line` rows are the proration lines; the next cycle invoice carries the plan line at the new tier and no proration line (M12-48's row and its acceptance line say a one-time prorated invoice, and §M12.7's "proration lines" are that invoice's line items; one document kind keeps the invoice list, PDF, tax lines and export uniform).
 - The platform has no GST registration yet (`F1-29`, owner ruling 2026-10-30) — ruled: the platform's own registration is a value in `pack.tax`, in force from the pack revision that publishes it. With none, the gateway collects the book's ex-tax price and the invoice is a plain invoice with no tax lines; from its date, every invoice carries the scheme's breakdown and the gateway collects the book price + the scheme's tax, which the customer pays. `platformSaleTotal` (`packages/domain/src/tax/platform-sale.ts`) adds the tax today unconditionally, so this task makes it read the registration. Nothing before the date is reissued.
-
-#### Parts
-| part | ships | acceptance lines | status |
-|---|---|---|---|
-| a | the invoice record: the tables, its number, the issue inside the charge transaction, the plan line, the scheme's breakdown by the company's place, both registrations; the platform's registration in `pack.tax`, read by `platformSaleTotal` | D1, D2 (its overage half is part b's) | shipped |
-| b | overage add-ons: the ledgered overage past the allowance at the book's published rates, added at the gateway before the next charge so it collects them, and carried as add-on lines on that charge's invoice | D2 (overage half), D3 | shipped |
-| c | yearly renewal: each year's fresh payment link raised with its `issued` invoice, its charge landing with `paysThrough` = the paid-period end + one cycle, the invoice turning `paid` (the task's *Contract* line); the closed year's overage, reckoned by part b's `overageAddOns`, rides that link as add-on lines, with every add-on still `pending` on the subscription (part b reckons and adds on mandates only) | the *Contract* line | shipped |
-| d | the invoice PDF (M12-44 "PDF attached"), with the supplier's legal name and address | M12-44 (PDF) | open |
 
 ### T-M12-013 · Grandfathered price-row selection
 

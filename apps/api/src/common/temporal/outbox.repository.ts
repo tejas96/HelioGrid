@@ -1,5 +1,5 @@
 import type { WorkflowDefinition, WorkflowInput } from '@heliogrid/contracts/workflows';
-import { orchestrationOutbox, type TenantScopedDb } from '@heliogrid/db';
+import { type DbTransaction, orchestrationOutbox } from '@heliogrid/db';
 import { sql } from 'drizzle-orm';
 
 /**
@@ -10,9 +10,12 @@ import { sql } from 'drizzle-orm';
  * The input is parsed against its workflow's contract here, where the caller still has a stack,
  * not at dispatch a minute later. Its `eventId` is the row's id and the stem of the workflow id.
  * The caller then hands that id to `OutboxDispatcher.dispatchNow` after its commit.
+ *
+ * Either pool's transaction: a tenant one, or the admin path's — a charge crosses tenants — whose
+ * event this check still holds to the tenant it names.
  */
 export async function recordOutboxEvent<D extends WorkflowDefinition>(
-  tx: TenantScopedDb,
+  tx: DbTransaction,
   tenantId: string,
   definition: D,
   input: WorkflowInput<D> & { readonly eventId: string },

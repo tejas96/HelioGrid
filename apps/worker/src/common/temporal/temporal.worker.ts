@@ -44,6 +44,9 @@ export class TemporalWorkerHost implements OnModuleInit, OnApplicationShutdown {
         taskQueue: registration.taskQueue,
         workflowBundle: { codePath },
         activities: registration.activities,
+        ...(registration.maxConcurrentActivities === undefined
+          ? {}
+          : { maxConcurrentActivityTaskExecutions: registration.maxConcurrentActivities }),
         // Identifies the BUILD holding this queue. "Which build is stuck on this queue" is the
         // first question during a bad deploy, and a default identity cannot answer it.
         identity: `heliogrid-worker@${ENV.NODE_ENV}`,

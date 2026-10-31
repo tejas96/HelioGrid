@@ -116,7 +116,8 @@
                               "price_book_version",
                               "catalog",
                               "entitlement_override",
-                              "dunning_event"
+                              "dunning_event",
+                              "subscription_invoice"
                             ]
                           },
                           "subjectRef": {
@@ -15586,7 +15587,8 @@
                             "image/png",
                             "image/jpeg",
                             "text/csv",
-                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            "application/pdf"
                           ]
                         },
                         "byteSize": {
@@ -16923,7 +16925,8 @@
                             "image/png",
                             "image/jpeg",
                             "text/csv",
-                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            "application/pdf"
                           ]
                         },
                         "byteSize": {
@@ -17737,7 +17740,8 @@
                             "image/png",
                             "image/jpeg",
                             "text/csv",
-                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            "application/pdf"
                           ]
                         },
                         "byteSize": {
@@ -21061,7 +21065,8 @@
                             "image/png",
                             "image/jpeg",
                             "text/csv",
-                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            "application/pdf"
                           ]
                         },
                         "byteSize": {
@@ -25794,7 +25799,8 @@
                       "image/png",
                       "image/jpeg",
                       "text/csv",
-                      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                      "application/pdf"
                     ]
                   },
                   "byteSize": {
@@ -25852,7 +25858,8 @@
                             "image/png",
                             "image/jpeg",
                             "text/csv",
-                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            "application/pdf"
                           ]
                         },
                         "byteSize": {
@@ -26459,7 +26466,8 @@
                         "image/png",
                         "image/jpeg",
                         "text/csv",
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "application/pdf"
                       ]
                     },
                     "byteSize": {
@@ -32718,7 +32726,8 @@
                               "price_book_version",
                               "catalog",
                               "entitlement_override",
-                              "dunning_event"
+                              "dunning_event",
+                              "subscription_invoice"
                             ]
                           },
                           "subjectRef": {
@@ -35831,7 +35840,8 @@
                         "price_book_version",
                         "catalog",
                         "entitlement_override",
-                        "dunning_event"
+                        "dunning_event",
+                        "subscription_invoice"
                       ]
                     },
                     "subjectRef": {

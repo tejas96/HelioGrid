@@ -20,5 +20,7 @@ export const FILE_CONTENT_TYPES = [
   'image/jpeg',
   'text/csv',
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  /** A document the platform renders — an invoice's PDF (`M12-44`); no upload rule takes it. */
+  'application/pdf',
 ] as const;
 export type FileContentType = (typeof FILE_CONTENT_TYPES)[number];

@@ -1,3 +1,4 @@
+import { invoiceDocumentWorkflow } from '@heliogrid/contracts/workflows';
 import {
   type DbTransaction,
   invoiceLine,
@@ -6,6 +7,7 @@ import {
   planPrice,
   subscriptionInvoice,
   taxRegistration,
+  uuidv7,
 } from '@heliogrid/db';
 import { type MarketPack, type MinorUnits, minorUnits } from '@heliogrid/domain';
 import {
@@ -16,6 +18,7 @@ import {
   sumMinorUnits,
 } from '@heliogrid/domain/server';
 import { and, eq, inArray, sql } from 'drizzle-orm';
+import { recordOutboxEvent } from '../../common/temporal/outbox.repository';
 import {
   type CollectedAddOn,
   markInvoiced,
@@ -142,6 +145,12 @@ export async function issueInvoice(
       })),
     );
   }
+  // Its PDF is made after this commits, never inside it; the outbox sweep starts the run (`M12-44`).
+  await recordOutboxEvent(tx, invoice.tenantId, invoiceDocumentWorkflow, {
+    eventId: uuidv7(),
+    tenantId: invoice.tenantId,
+    invoiceId: issued.id,
+  });
   if (settledBy.kind === 'payment') {
     await markInvoiced(tx, invoice.addOns, issued.id);
   } else {

@@ -30,5 +30,7 @@ export const SUBJECT_KINDS = [
   'entitlement_override',
   /** One fired notice of the dunning ladder or a trial nudge (`M12-39`, `M12-42`). */
   'dunning_event',
+  /** One platform invoice — what its PDF's file row is stored against (`M12-44`). */
+  'subscription_invoice',
 ] as const;
 export type SubjectKind = (typeof SUBJECT_KINDS)[number];

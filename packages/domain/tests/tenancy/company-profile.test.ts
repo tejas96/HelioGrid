@@ -23,6 +23,7 @@ const TWO_TYPES: TaxPack = {
       capturedAt: 'conversion',
       format: { en: '4 digits' },
       placeAt: null,
+      name: null,
     },
   ],
 };

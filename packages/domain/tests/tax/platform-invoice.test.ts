@@ -83,6 +83,7 @@ describe('platformInvoice — one platform invoice’s money and parties (M12-44
         registrationTypes: REGISTERED.tax.registrationTypes.map((type) => ({
           ...type,
           placeAt: null,
+          name: null,
         })),
       },
     };
