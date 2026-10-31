@@ -88,9 +88,7 @@ a:hover{color:var(--link-hover)}
                     <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.needsMain }}" hint-size="100%,180px">
                       <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
                         <sc-for list="{{ f.needsRows }}" as="nr" hint-placeholder-count="1">
-                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ nr.group }}" hint-size="100%,40px">
-                            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ nr.label }}" value="{{ nr.value }}" hint-size="100%,40px"></x-import>
-                          </x-import>
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ nr.row }}" hint-size="100%,64px"></x-import>
                         </sc-for>
                       </div>
                     </x-import>
@@ -109,12 +107,7 @@ a:hover{color:var(--link-hover)}
                     <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.needs }}" hint-size="100%,220px">
                       <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
                         <sc-for list="{{ f.needsRows }}" as="nr" hint-placeholder-count="1">
-                          <div style="display:flex;flex-direction:column;gap:var(--sp-2);min-width:0">
-                            <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ nr.group }}" hint-size="100%,40px">
-                              <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ nr.label }}" value="{{ nr.value }}" hint-size="100%,40px"></x-import>
-                            </x-import>
-                            <span style="display:block;font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-medium);color:{{ nr.lineInk }};text-wrap:pretty">{{ nr.line }}</span>
-                          </div>
+                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ nr.row }}" hint-size="100%,76px"></x-import>
                         </sc-for>
                       </div>
                     </x-import>
@@ -181,12 +174,14 @@ const GAUGE_TIME = "02:00";
 const BOOK_LIST = "India price list · 1 Apr 2026";
 const CYCLE = "1–30 Sept 2026";
 
-/* BM-41's Growth row, word for word: caps, bundles, rates, and the drafted V2 allowances. */
-const GROWTH = { proposals: 300, detections: 100, detectionRate: 10, voiceRate: 6, storageGB: 50, design: "500 kW", seats: 3, sends: 2000 };
+/* BM-41's Growth row, word for word: caps, bundles, rates, and the drafted V2 allowances.
+   AI roof detections are on no price list (BM-19), so this screen, which shows billed meters
+   only, draws no detections row. */
+const GROWTH = { proposals: 300, voiceRate: 6, storageGB: 50, design: "500 kW", seats: 3, sends: 2000 };
 
 /* Sample usage — the counts are ours to choose; every denominator and rate above is the book's. */
-const USED = { proposals: 187, projects: 12, detections: 52, voiceMin: 143, storageGB: 18.4, otp: 1204, seats: 2, seatMonths: 1.0, whatsapp: 214, sms: 38 };
-const ZERO = { proposals: 0, projects: 0, detections: 0, voiceMin: 0, storageGB: 0, otp: 0, seats: 0, seatMonths: 0, whatsapp: 0, sms: 0 };
+const USED = { proposals: 187, projects: 12, voiceMin: 143, storageGB: 18.4, otp: 1204, seats: 2, seatMonths: 1.0, whatsapp: 214, sms: 38 };
+const ZERO = { proposals: 0, projects: 0, voiceMin: 0, storageGB: 0, otp: 0, seats: 0, seatMonths: 0, whatsapp: 0, sms: 0 };
 
 const SITES = [
   ["Patil residence", "Nashik"], ["Deshmukh bungalow", "Pune"], ["Shree Ganesh Traders", "Aurangabad"],
@@ -196,6 +191,9 @@ const SITES = [
   ["Navjeevan Hospital", "Ahmednagar"], ["Shinde residence", "Latur"],
 ];
 const PEOPLE = ["Rohan Deshmukh", "Priya Sharma", "Anil Kadam", "Sneha Patil"];
+/* The default cycle's 52 calls; their minutes add up to USED.voiceMin, 143. */
+const CALLS = 52;
+const callMinutes = (i) => [3, 2, 4, 1, 3, 2, 5, 2, 3, 2][(i * 7) % 10] + (i % 18 === 0 ? 1 : 0);
 
 class Component extends DCLogic {
   constructor(props) {
@@ -240,6 +238,9 @@ class Component extends DCLogic {
   mono(text) {
     return React.createElement("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, text);
   }
+
+  /* An amount that bills prints to the paisa (F1-07); a rate stays whole. */
+  amount(F, n) { return F.money(n, { fractionDigits: 2 }); }
 
   fig(text) {
     return React.createElement("span", {
@@ -338,12 +339,11 @@ class Component extends DCLogic {
     ];
 
     const incRows = [
-      { id: "detections", meter: "AI detections", used: F.number(u.detections), included: F.number(GROWTH.detections) + " a month", rate: this.rate(F.money(GROWTH.detectionRate), " each beyond " + F.number(GROWTH.detections)), charges: F.money(0) },
-      { id: "voice", meter: "Voice minutes", used: F.number(u.voiceMin) + " min", included: "Pay as you go", rate: this.rate(F.money(GROWTH.voiceRate), " a minute"), charges: F.money(u.voiceMin * GROWTH.voiceRate) },
+      { id: "voice", meter: "Voice minutes", used: F.number(u.voiceMin) + " min", included: "Pay as you go", rate: this.rate(F.money(GROWTH.voiceRate), " a minute"), charges: this.amount(F, u.voiceMin * GROWTH.voiceRate) },
       { id: "storage", meter: "Storage", used: F.number(u.storageGB) + " GB", asOf: "As of " + F.date(GAUGE_AT) + ", " + GAUGE_TIME, included: F.number(GROWTH.storageGB) + " GB", rate: "", charges: "" },
       { id: "otp", meter: "OTP codes", chip: "Not billed", used: F.number(u.otp), included: "Tracked only", rate: "", charges: "" },
       { id: "seats", meter: "Tracked seats", used: F.number(u.seats) + " seats", included: F.number(GROWTH.seats) + " seats", gap: "Not published yet" },
-      { id: "seatmonths", meter: "Seat-months", used: F.number(u.seatMonths) },
+      { id: "seatmonths", meter: "Seat-months", used: F.number(u.seatMonths, { minimumFractionDigits: 1 }) },
       { id: "sends", meter: "Marketing sends", used: F.number(u.whatsapp + u.sms) + " sends", included: F.number(GROWTH.sends) + " sends", gap: "Not published yet" },
       { id: "whatsapp", meter: "WhatsApp sends", used: F.number(u.whatsapp) },
       { id: "sms", meter: "SMS sends", used: F.number(u.sms) },
@@ -361,9 +361,8 @@ class Component extends DCLogic {
             { key: "allowed", label: "Allowed", align: "right", width: 190 },
           ],
           rows: limitRows,
-          rowActions: (r) => (r.noCount ? null
-            : o.signal === r.id ? [this.rowPlans(NS), this.rowLedger(NS, r.limit)]
-            : this.rowLedger(NS, r.limit)),
+          /* A capped count and a ceiling have no ledger (brief decision 6); the signal row takes Bigger plans. */
+          rowActions: (r) => (o.signal === r.id ? this.rowPlans(NS) : null),
         },
       },
       {
@@ -397,7 +396,7 @@ class Component extends DCLogic {
           ],
           rows: incRows,
           rowLabel: (r) => r.meter,
-          rowActions: (r) => (r.id === "seatmonths" ? null : this.rowLedger(NS, r.meter)),
+          rowActions: (r) => (r.id === "seatmonths" || r.id === "storage" ? null : this.rowLedger(NS, r.meter)),
         },
       },
     ];
@@ -409,25 +408,26 @@ class Component extends DCLogic {
 
   needRow(NS, key, name, chipWord, tone, value, line) {
     const ink = tone === "danger" ? "var(--danger-text)" : tone === "info" ? "var(--info-text)" : "var(--warning-text)";
+    /* ListRow's subtitle is one ellipsised line; the span lets the one line wrap whole. */
     return {
       key: key,
-      label: React.createElement("span", { style: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--sp-2)", minWidth: 0 } }, [
-        React.createElement("span", { key: "n" }, name),
-        React.createElement(NS.StatusChip, { key: "c", status: chipWord.toLowerCase().replace(/\s+/g, "-"), label: chipWord, tone: tone, density: "expressive" }),
-      ]),
-      value: value ? this.fig(value) : null,
-      line: line || null, lineInk: ink,
-      group: { label: name, density: "expressive", leadBelow: 200, style: { gridTemplateColumns: "minmax(0,1fr) max-content", maxWidth: "100%" } },
+      row: {
+        title: name, density: "expressive",
+        marks: React.createElement(NS.StatusChip, { status: chipWord.toLowerCase().replace(/\s+/g, "-"), label: chipWord, tone: tone, density: "expressive" }),
+        trailing: value ? this.fig(value) : null,
+        subtitle: line ? React.createElement("span", { style: { display: "block", whiteSpace: "normal", textWrap: "pretty", fontWeight: "var(--fw-medium)", color: ink } }, line) : null,
+        style: { padding: 0, minHeight: 0, background: "transparent", boxShadow: "none", alignItems: "flex-start" },
+      },
     };
   }
 
   /* SCR-SHELL-06's cap strip, reused exactly: title, its rows, and Upgrade plan. */
-  capStrip(NS, title, rows, tone) {
+  capStrip(NS, title, rows, tone, act) {
     const h = React.createElement;
     return {
       kind: "cap", tone: tone, title: title,
       children: h(NS.FactRows, null, rows.map((r) => h(NS.FactRow, { key: r[0], label: r[1], value: r[2] }))),
-      action: h(NS.BannerAction, { onClick: this.noop }, "Upgrade plan"),
+      action: act || h(NS.BannerAction, { onClick: this.noop }, "Upgrade plan"),
     };
   }
 
@@ -440,13 +440,14 @@ class Component extends DCLogic {
   cycleCardSpec(NS, word, tone) {
     return {
       density: "expressive", title: "This cycle",
-      badge: React.createElement(NS.StatusChip, this.stChip(word || "Within plan", tone || "success")),
+      badge: React.createElement(NS.StatusChip, this.stChip(word || "Past what's included", tone || "info")),
     };
   }
 
+  /* The ledger behind one number — every voice call of the cycle. */
   ledgerRows(F) {
     const rows = [];
-    const n = USED.detections;
+    const n = CALLS;
     for (let i = 0; i < n; i++) {
       const day = 15 - Math.floor((i * 15) / n);
       const first = Math.ceil((15 - day) * n / 15);
@@ -461,7 +462,7 @@ class Component extends DCLogic {
         key: "ev" + i,
         title: site[0] + " · " + site[1],
         subtitle: F.date(iso) + ", " + hh + ":" + mm + " · " + who,
-        trailing: this.mono("1"),
+        trailing: this.mono(callMinutes(i) + " min"),
         density: "functional",
         style: { background: "var(--fill)", boxShadow: "none", borderRadius: "var(--r-tile)" },
       });
@@ -474,7 +475,7 @@ class Component extends DCLogic {
     const base = {
       open: true, onClose: this.noop, desktop: "panel", inset: true, side: "right", width: 504,
       density: "expressive", zIndex: 60, showClose: true,
-      title: "AI detections",
+      title: "Voice minutes",
       panelAbove: 0,
       panelProps: { style: { transform: "translateX(0)", animation: "none" } },
     };
@@ -483,17 +484,17 @@ class Component extends DCLogic {
       errorTitle: "Couldn't read these events",
     });
     if (kind === "empty") return Object.assign(base, {
-      subtitle: CYCLE + " · 0 of " + F.number(GROWTH.detections), read: { kind: "empty" },
-      emptyTitle: "No detections this cycle", emptyMessage: "Each detection you run is listed here.",
+      subtitle: CYCLE + " · 0 min", read: { kind: "empty" },
+      emptyTitle: "No calls this cycle", emptyMessage: "Each call the voice agent makes is listed here.",
     });
     return Object.assign(base, {
-      subtitle: CYCLE + " · " + F.number(USED.detections) + " of " + F.number(GROWTH.detections), read: { kind: "ready" },
+      subtitle: CYCLE + " · " + F.number(USED.voiceMin) + " min", read: { kind: "ready" },
     });
   }
 
   frameSpecs(NS, F) {
     const owner = this.railSpec(NS);
-    const soFar = this.fig(F.money(USED.voiceMin * GROWTH.voiceRate));
+    const soFar = this.fig(this.amount(F, USED.voiceMin * GROWTH.voiceRate));
     const base = (o) => Object.assign({
       rail: owner, panel: null, panelRows: null, banner: null, strip: null, scope: null, needs: null, needsMain: null, needsRows: null,
       cols: "minmax(0, 1fr) 300px", side: true, tablesAlign: "flex-start",
@@ -503,7 +504,7 @@ class Component extends DCLogic {
     const all = [
       base({ key: "d1", id: "m12-04-d1", label: "1536 · default", screenLabel: "Usage — default (1536)" }),
       base({
-        key: "d2", id: "m12-04-d2", label: "1536 · AI detections events", screenLabel: "Usage — AI detections events (1536)",
+        key: "d2", id: "m12-04-d2", label: "1536 · voice minutes events", screenLabel: "Usage — voice minutes events (1536)",
         panel: this.deskPanelSpec(F, "ready"), panelRows: this.ledgerRows(F),
       }),
       base({
@@ -513,6 +514,7 @@ class Component extends DCLogic {
       base({
         key: "d2e", id: "m12-04-d2e", label: "1536 · events, none this cycle", screenLabel: "Usage — events, none this cycle (1536)",
         panel: this.deskPanelSpec(F, "empty"), tables: this.deskTables(NS, F, { used: ZERO }), extraValue: null,
+        cycleCard: this.cycleCardSpec(NS, "Within plan", "success"),
       }),
       base({
         key: "d3", id: "m12-04-d3", label: "1536 · default, foot", screenLabel: "Usage — default, foot (1536)",
@@ -536,6 +538,12 @@ class Component extends DCLogic {
       base({
         key: "d6", id: "m12-04-d6", label: "1536 · not the Owner", screenLabel: "Usage — not the Owner, read only (1536)",
         rail: this.railSpec(NS, "Priya Sharma"), tables: [], cols: "minmax(0, 1fr)", side: false,
+        /* SCR-SHELL-06's not-the-Owner form: the rows stay, ScopeNote takes the act's place, no amount. */
+        strip: this.capStrip(NS, "Proposals · 300 of 300 used · new proposals paused", [
+          ["paused", "Paused", "New proposals"],
+          ["works", "Still works", "Editing, duplicating and sharing existing proposals · reading · export · every other feature"],
+          ["reset", "Cycle resets", "1 Oct 2026"]], "danger",
+          React.createElement(NS.ScopeNote, { holder: "Mahesh Bhosale (owner)", acts: ["upgrade the plan"], variant: "line", size: 13 })),
         scope: { holder: "Mahesh Bhosale (owner)", title: "Only Mahesh Bhosale (owner) can see this cycle's usage.", variant: "panel" },
         needsMain: { density: "expressive", title: "Needs you" },
         needsRows: [this.needRow(NS, "prop", "Proposals this month", "Paused", "danger", null, null)],

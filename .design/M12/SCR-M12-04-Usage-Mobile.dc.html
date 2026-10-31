@@ -64,17 +64,7 @@ a:hover{color:var(--link-hover)}
               <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Block" dc-props="{{ f.needs }}" hint-size="100%,220px">
                 <div style="display:flex;flex-direction:column;gap:var(--sp-5)">
                   <sc-for list="{{ f.needsRows }}" as="nr" hint-placeholder-count="1">
-                    <div style="display:flex;flex-direction:column;gap:var(--sp-2);min-width:0">
-                      <div style="display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:var(--sp-2);align-items:start">
-                        <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRows" dc-props="{{ nr.group }}" hint-size="100%,40px">
-                          <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.FactRow" label="{{ nr.label }}" value="{{ nr.value }}" hint-size="100%,40px"></x-import>
-                        </x-import>
-                        <span aria-hidden="true"></span>
-                      </div>
-                      <sc-if value="{{ nr.line }}" hint-placeholder-val="{{ false }}">
-                        <span style="display:block;font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-medium);color:{{ nr.lineInk }};text-wrap:pretty">{{ nr.line }}</span>
-                      </sc-if>
-                    </div>
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.ListRow" dc-props="{{ nr.row }}" hint-size="100%,76px"></x-import>
                   </sc-for>
                 </div>
               </x-import>
@@ -157,14 +147,18 @@ const CYCLE = "1–30 Sept 2026";
 const TRIAL_LINE = "14-day trial · 5–18 Sept 2026";
 const TRIAL_END = "18 Sept 2026";
 
-/* BM-41's Growth row, word for word: caps, bundles, rates, and the drafted V2 allowances. */
-const GROWTH = { proposals: 300, detections: 100, detectionRate: 10, voiceRate: 6, storageGB: 50, design: "500 kW", seats: 3, sends: 2000 };
+/* BM-41's Growth row, word for word: caps, bundles, rates, and the drafted V2 allowances.
+   Voice is pay as you go on Growth: no bundle. AI roof detections are on no price list (BM-19),
+   so this screen, which shows billed meters only, draws no detections row. */
+const GROWTH = { plan: "Growth", bigger: "Pro · Enterprise", proposals: 300, voiceBundle: null, voiceRate: 6, storageGB: 50, design: "500 kW", seats: 3, sends: 2000 };
+/* BM-41's Pro row: the only self-serve plan with a voice bundle, so the 80% and overage frames use it. */
+const PRO = { plan: "Pro", bigger: "Enterprise", proposals: 1500, voiceBundle: 400, voiceRate: 6, storageGB: 250, design: "5 MW", seats: 10, sends: 10000 };
 /* BM-41's trial caps. Proposals are not capped on the trial. */
-const TRIAL = { detections: 25, voiceCap: 15, storageGB: 5 };
+const TRIAL = { voiceCap: 15, storageGB: 5 };
 
 /* Sample usage — the counts are ours to choose; every denominator and rate above is the book's. */
-const USED = { proposals: 187, projects: 12, detections: 52, voiceMin: 143, storageGB: 18.4, otp: 1204, seats: 2, seatMonths: 1.0, whatsapp: 214, sms: 38 };
-const ZERO = { proposals: 0, projects: 0, detections: 0, voiceMin: 0, storageGB: 0, otp: 0, seats: 0, seatMonths: 0, whatsapp: 0, sms: 0 };
+const USED = { proposals: 187, projects: 12, voiceMin: 143, storageGB: 18.4, otp: 1204, seats: 2, seatMonths: 1.0, whatsapp: 214, sms: 38 };
+const ZERO = { proposals: 0, projects: 0, voiceMin: 0, storageGB: 0, otp: 0, seats: 0, seatMonths: 0, whatsapp: 0, sms: 0 };
 
 const SITES = [
   ["Patil residence", "Nashik"], ["Deshmukh bungalow", "Pune"], ["Shree Ganesh Traders", "Aurangabad"],
@@ -174,11 +168,14 @@ const SITES = [
   ["Navjeevan Hospital", "Ahmednagar"], ["Shinde residence", "Latur"],
 ];
 const PEOPLE = ["Rohan Deshmukh", "Priya Sharma", "Anil Kadam", "Sneha Patil"];
+/* The default cycle's 52 calls; their minutes add up to USED.voiceMin, 143. */
+const CALLS = 52;
+const callMinutes = (i) => [3, 2, 4, 1, 3, 2, 5, 2, 3, 2][(i * 7) % 10] + (i % 18 === 0 ? 1 : 0);
 
 const W = {
   limits: "Limits", included: "Included each month",
   proposals: "Proposals this month", projects: "Active projects", design: "Biggest design",
-  detections: "AI detections", voice: "Voice minutes", storage: "Storage", otp: "OTP codes",
+  voice: "Voice minutes", storage: "Storage", otp: "OTP codes",
   seats: "Tracked seats", seatMonths: "Seat-months", sends: "Marketing sends",
   whatsapp: "WhatsApp", sms: "SMS", rate: "Rate", charges: "Charges", notBilled: "Not billed",
   notPublished: "Not published yet", soFar: "So far",
@@ -277,6 +274,9 @@ class Component extends DCLogic {
     return React.createElement("span", { style: { fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums" } }, text);
   }
 
+  /* An amount that bills prints to the paisa (F1-07); a rate stays whole. */
+  amount(F, n) { return F.money(n, { fractionDigits: 2 }); }
+
   /* A figure in a fact row: mono, tabular, on the row's right edge — the meter figure's own edge. */
   fig(text) {
     return React.createElement("span", {
@@ -317,13 +317,13 @@ class Component extends DCLogic {
   }
 
   /* The way to a bigger plan is SCR-M12-03, and only that. A trial holds no plan to grow from. */
-  plansRow(trial) {
+  plansRow(trial, plan) {
     const I = this.icons();
     return Object.assign({
       icon: this.glyph(I.layers, 22), iconColor: "var(--text-secondary)",
       trailing: this.glyph(I.chevRight, 20), onClick: this.noop, density: "expressive",
       style: { background: "var(--fill)", boxShadow: "none", borderRadius: "var(--r-tile)" },
-    }, trial ? { title: "Pick a plan" } : { title: "Bigger plans", subtitle: "Pro · Enterprise" });
+    }, trial ? { title: "Pick a plan" } : { title: "Bigger plans", subtitle: (plan || GROWTH).bigger });
   }
 
   /* THE REGIONS, FOR EVERY STATE. The counts, the caps in force, each meter's billing state and
@@ -332,22 +332,26 @@ class Component extends DCLogic {
     o = o || {};
     const u = Object.assign({}, USED, o.used || {});
     const trial = !!o.trial;
-    const c = Object.assign({}, GROWTH, trial ? TRIAL : {});
+    const c = Object.assign({}, o.plan || GROWTH, trial ? TRIAL : {});
     const st = o.state || {};
     const load = o.mode === "loading";
     const R = (k, m, f, l, p) => this.row(k, m, f, l, p);
     const right = { align: "right", size: 12 };
     const gap = { gap: W.notPublished, align: "right" };
-    const voiceSoFar = trial ? 0 : u.voiceMin * c.voiceRate;
-    const detOver = trial ? 0 : Math.max(0, u.detections - c.detections);
-    const extraTotal = voiceSoFar + detOver * c.detectionRate;
-    const noLimit = trial ? "No limit on the trial" : "No limit on Growth";
+    /* Voice bills every minute on pay as you go, and only the minutes past a bundle. */
+    const voiceBilled = trial ? 0 : Math.max(0, u.voiceMin - (c.voiceBundle || 0));
+    const voiceSoFar = voiceBilled * c.voiceRate;
+    const extraTotal = voiceSoFar;
+    const noLimit = trial ? "No limit on the trial" : "No limit on " + c.plan;
 
     /* A meter that has not resolved draws no numeral and no track, and no note. */
     const M = (key, spec) => {
       const m = Object.assign({ density: "expressive" }, spec);
+      /* A count with no allowance prints no sentence of its own (brief decision 16). */
+      if (m.limit == null && m.noLimitNote == null) m.noLimitNote = "";
       if (load) {
-        delete m.value; delete m.note; delete m.noLimitNote;
+        delete m.value; delete m.note;
+        m.noLimitNote = "";
         m.state = "loading"; m.loadingNote = "";
         return m;
       }
@@ -360,18 +364,18 @@ class Component extends DCLogic {
     /* A rollup's figure waits with the rollup; a list fact (a rate, a chip) does not. */
     const resolved = (fact) => (load ? null : fact);
     const soFar = (key, amount) => (amount > 0
-      ? resolved({ key: key, label: W.soFar, value: this.fig(F.money(amount)), prov: Object.assign({ tier: "unmarked" }, right) })
+      ? resolved({ key: key, label: W.soFar, value: this.fig(this.amount(F, amount)), prov: Object.assign({ tier: "unmarked" }, right) })
       : null);
-    const signal = (key) => (o.signal === key ? this.plansRow(false) : null);
+    const signal = (key) => (o.signal === key ? this.plansRow(false, o.plan) : null);
 
     const limits = {
       key: "limits",
       block: { density: "expressive", title: W.limits, footer: load ? null : this.footLabels(NS) },
       rows: [
         trial
-          ? R("proposals", M("proposals", { label: W.proposals, value: u.proposals, limit: null, noLimitNote: noLimit }), null, this.ledgerBtn(W.proposals))
-          : R("proposals", M("proposals", { label: W.proposals, value: u.proposals, limit: c.proposals }), null, this.ledgerBtn(W.proposals), signal("proposals")),
-        R("projects", M("projects", { label: W.projects, value: u.projects, limit: null, noLimitNote: noLimit }), null, this.ledgerBtn(W.projects)),
+          ? R("proposals", M("proposals", { label: W.proposals, value: u.proposals, limit: null, noLimitNote: noLimit }))
+          : R("proposals", M("proposals", { label: W.proposals, value: u.proposals, limit: c.proposals }), null, null, signal("proposals")),
+        R("projects", M("projects", { label: W.projects, value: u.projects, limit: null, noLimitNote: noLimit })),
         /* A ceiling is not a count: no meter, the same row. The trial's ceiling is the top plan's (owner ruling). */
         R("design", null, [{ key: "d", label: W.design, value: this.fig(trial ? "100 MW" : c.design) }]),
       ],
@@ -381,20 +385,18 @@ class Component extends DCLogic {
       key: "included",
       block: { density: "expressive", title: W.included, footer: load ? null : this.footLabels(NS) },
       rows: [
-        R("detections", M("detections", Object.assign(
-          { label: W.detections, value: u.detections, limit: c.detections },
-          trial ? {} : { note: F.money(c.detectionRate) + " each beyond " + F.number(c.detections) })),
-          [soFar("s", detOver * c.detectionRate)].filter(Boolean), this.ledgerBtn(W.detections)),
         trial
           ? R("voice", M("voice", { label: W.voice, value: u.voiceMin, unit: "min", limit: c.voiceCap }), null, this.ledgerBtn(W.voice))
-          : R("voice", M("voice", { label: W.voice, value: u.voiceMin, unit: "min", limit: null, note: F.money(c.voiceRate) + " a minute" }),
-              [soFar("s", voiceSoFar)].filter(Boolean), this.ledgerBtn(W.voice)),
-        R("storage", M("storage", { label: W.storage, value: u.storageGB, limit: c.storageGB, unit: "GB", period: "As of " + F.date(GAUGE_AT) + ", " + GAUGE_TIME }), null, this.ledgerBtn(W.storage)),
+          : R("voice", M("voice", {
+              label: W.voice, value: u.voiceMin, unit: "min", limit: c.voiceBundle,
+              note: F.money(c.voiceRate) + " a minute" + (c.voiceBundle ? " beyond " + F.number(c.voiceBundle) : ""),
+            }), [soFar("s", voiceSoFar)].filter(Boolean), this.ledgerBtn(W.voice)),
+        R("storage", M("storage", { label: W.storage, value: u.storageGB, limit: c.storageGB, unit: "GB", period: "As of " + F.date(GAUGE_AT) + ", " + GAUGE_TIME })),
         R("otp", M("otp", { label: W.otp, value: u.otp, limit: null }), [
           { key: "c", label: W.charges, value: React.createElement(NS.StatusChip, { status: "not-billed", label: W.notBilled, tone: "neutral", density: "expressive" }) },
         ], this.ledgerBtn(W.otp)),
         R("seats", M("seats", { label: W.seats, value: u.seats, unit: "seats", limit: trial ? null : c.seats }), [
-          resolved({ key: "m", label: W.seatMonths, value: this.fig(F.number(u.seatMonths)) }),
+          resolved({ key: "m", label: W.seatMonths, value: this.fig(F.number(u.seatMonths, { minimumFractionDigits: 1 })) }),
           trial ? null : { key: "r", label: W.rate, gap: gap },
         ].filter(Boolean), this.ledgerBtn(W.seats)),
         R("sends", M("sends", { label: W.sends, value: u.whatsapp + u.sms, unit: "sends", limit: trial ? null : c.sends }), [
@@ -404,7 +406,7 @@ class Component extends DCLogic {
         ].filter(Boolean), this.ledgerBtn(W.sends)),
         /* ONE total row ends the region — only when something accrues, never on a trial. */
         !load && !trial && extraTotal > 0 ? R("extra", null, [
-          { key: "t", label: W.extra, value: this.fig(F.money(extraTotal)), prov: Object.assign({ tier: "unmarked" }, right) },
+          { key: "t", label: W.extra, value: this.fig(this.amount(F, extraTotal)), prov: Object.assign({ tier: "unmarked" }, right) },
           { key: "b", label: W.billsOn, value: this.fig(F.date(RESET)) },
         ]) : null,
       ].filter(Boolean),
@@ -413,10 +415,10 @@ class Component extends DCLogic {
     return [limits, included];
   }
 
-  /* The ledger behind one number — every detection event of the cycle. */
+  /* The ledger behind one number — every voice call of the cycle; the minutes sum to USED.voiceMin. */
   ledgerRows(F) {
     const rows = [];
-    const n = USED.detections;
+    const n = CALLS;
     for (let i = 0; i < n; i++) {
       const day = 15 - Math.floor((i * 15) / n);
       const first = Math.ceil((15 - day) * n / 15);
@@ -431,7 +433,7 @@ class Component extends DCLogic {
         key: "ev" + i,
         title: site[0] + " · " + site[1],
         subtitle: F.date(iso) + ", " + hh + ":" + mm + " · " + who,
-        trailing: this.mono("1"),
+        trailing: this.mono(callMinutes(i) + " min"),
         density: "functional",
         style: { background: "var(--fill)", boxShadow: "none", borderRadius: "var(--r-tile)" },
       });
@@ -444,7 +446,7 @@ class Component extends DCLogic {
     const base = {
       open: true, onClose: this.noop, desktop: "panel", inset: true, size: "full",
       density: "expressive", zIndex: 60, showClose: true,
-      title: "AI detections",
+      title: W.voice,
       sheetProps: { style: { transform: "translateY(0)", animation: "none" } },
     };
     if (kind === "failed") return Object.assign(base, {
@@ -452,11 +454,11 @@ class Component extends DCLogic {
       errorTitle: "Couldn't read these events",
     });
     if (kind === "empty") return Object.assign(base, {
-      subtitle: CYCLE + " · 0 of " + F.number(GROWTH.detections), read: { kind: "empty" },
-      emptyTitle: "No detections this cycle", emptyMessage: "Each detection you run is listed here.",
+      subtitle: CYCLE + " · 0 min", read: { kind: "empty" },
+      emptyTitle: "No calls this cycle", emptyMessage: "Each call the voice agent makes is listed here.",
     });
     return Object.assign(base, {
-      subtitle: CYCLE + " · " + F.number(USED.detections) + " of " + F.number(GROWTH.detections), read: { kind: "ready" },
+      subtitle: CYCLE + " · " + F.number(USED.voiceMin) + " min", read: { kind: "ready" },
     });
   }
 
@@ -467,15 +469,16 @@ class Component extends DCLogic {
   /* A Needs you row: the meter's name with its own chip, used of included, and ONE line. */
   needRow(NS, key, name, chipWord, tone, value, line) {
     const ink = tone === "danger" ? "var(--danger-text)" : tone === "info" ? "var(--info-text)" : "var(--warning-text)";
+    /* ListRow's subtitle is one ellipsised line; the span lets the one line wrap whole. */
     return {
       key: key,
-      label: React.createElement("span", { style: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--sp-2)", minWidth: 0 } }, [
-        React.createElement("span", { key: "n" }, name),
-        React.createElement(NS.StatusChip, { key: "c", status: chipWord.toLowerCase().replace(/\s+/g, "-"), label: chipWord, tone: tone, density: "expressive" }),
-      ]),
-      value: value ? this.fig(value) : null,
-      line: line ? this.line(line) : null, lineInk: ink,
-      group: { label: name, density: "expressive", leadBelow: 200, style: { gridTemplateColumns: "minmax(0,1fr) max-content", maxWidth: "100%" } },
+      row: {
+        title: name, density: "expressive",
+        marks: React.createElement(NS.StatusChip, { status: chipWord.toLowerCase().replace(/\s+/g, "-"), label: chipWord, tone: tone, density: "expressive" }),
+        trailing: value ? this.fig(value) : null,
+        subtitle: line ? React.createElement("span", { style: { display: "block", whiteSpace: "normal", textWrap: "pretty", fontWeight: "var(--fw-medium)", color: ink } }, this.line(line)) : null,
+        style: { padding: 0, minHeight: 0, background: "transparent", boxShadow: "none", alignItems: "flex-start" },
+      },
     };
   }
 
@@ -484,12 +487,32 @@ class Component extends DCLogic {
   }
 
   /* SCR-SHELL-06's cap strip, reused exactly: title, its rows, and Upgrade plan. */
-  capStrip(NS, title, rows, tone) {
+  capStrip(NS, title, rows, tone, act) {
     const h = React.createElement;
     return {
       kind: "cap", tone: tone, title: title,
       children: h(NS.FactRows, null, rows.map((r) => h(NS.FactRow, { key: r[0], label: r[1], value: r[2] }))),
-      action: h(NS.BannerAction, { onClick: this.noop }, "Upgrade plan"),
+      action: act || h(NS.BannerAction, { onClick: this.noop }, "Upgrade plan"),
+    };
+  }
+
+  /* SCR-SHELL-06's not-the-Owner form: the rows stay, ScopeNote takes the act's place, no amount. */
+  ownerOnlyAct(NS) {
+    return React.createElement(NS.ScopeNote, { holder: "Mahesh Bhosale (owner)", acts: ["upgrade the plan"], variant: "line", size: 13 });
+  }
+
+  /* SCR-SHELL-06's trial countdown from D-7, reused exactly: the days left, the end date, Pick a plan. */
+  trialStrip(NS, F) {
+    const h = React.createElement;
+    const clock = h("svg", {
+      width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "var(--text-secondary)",
+      strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", style: { flexShrink: 0 },
+    }, [h("circle", { key: "c", cx: 12, cy: 12, r: 8.5 }), h("path", { key: "p", d: "M12 7.5V12l3 2" })]);
+    return {
+      kind: "state", title: "3 days left in your trial",
+      children: h(NS.FactRows, { label: "Billing state", density: "expressive" },
+        [h(NS.FactRow, { key: "end", density: "expressive", label: "Trial ends", value: F.date("2026-09-18"), mark: clock })]),
+      action: h(NS.BannerAction, { onClick: this.noop }, "Pick a plan"),
     };
   }
 
@@ -504,12 +527,13 @@ class Component extends DCLogic {
 
   frameSpecs(NS, F) {
     const base = (o) => Object.assign({
-      align: "flex-start", offset: "0px", under: "0px", chip: this.stChip("Within plan", "success"), banner: null, strip: null,
+      align: "flex-start", offset: "0px", under: "0px", chip: this.stChip("Past what's included", "info"), banner: null, strip: null,
       teaching: null, teachingBody: null, needs: null, needsRows: null, scope: null,
       sheet: null, sheetRows: null, plansRow: this.plansRow(false), cycleLine: CYCLE + " · resets " + F.date(RESET),
       regions: this.regions(NS, F),
     }, o);
     const empty = () => ({
+      chip: this.stChip("Within plan", "success"),
       teaching: { density: "expressive", title: "Nothing used yet" },
       teachingBody: "Nothing has been used this cycle. Your caps and what's included are below, ready when you start.",
       regions: this.regions(NS, F, { used: ZERO }),
@@ -519,7 +543,7 @@ class Component extends DCLogic {
       base({ key: "a", id: "m12-04-a", label: "375 · default, top", screenLabel: "Usage — default, top (375)" }),
       base({ key: "b", id: "m12-04-b", align: "flex-end", label: "375 · default, foot", screenLabel: "Usage — default, foot (375)" }),
       base({
-        key: "c", id: "m12-04-c", offset: "-330px", label: "375 · AI detections events", screenLabel: "Usage — AI detections events (375)",
+        key: "c", id: "m12-04-c", offset: "-330px", label: "375 · voice minutes events", screenLabel: "Usage — voice minutes events (375)",
         sheet: this.ledgerSheet(F, "ready"), sheetRows: this.ledgerRows(F),
       }),
       base({
@@ -545,28 +569,31 @@ class Component extends DCLogic {
         chip: this.stChip("Nearing a limit", "warning"),
         needs: this.needsCard(),
         needsRows: [
-          this.needRow(NS, "det", "AI detections", "80% used", "warning", "80 of 100", ["Beyond 100, ", { m: F.money(GROWTH.detectionRate) }, " each — no pause, it bills."]),
-          this.needRow(NS, "sto", "Storage", "82% used", "warning", "41 of 50 GB", ["At 50 GB, a 7-day grace, then uploads pause."]),
+          this.needRow(NS, "voice", "Voice minutes", "80% used", "warning", "320 of 400 min", ["Beyond 400, ", { m: F.money(PRO.voiceRate) }, " a minute — no pause, it bills."]),
+          this.needRow(NS, "sto", "Storage", "82% used", "warning", "205 of 250 GB", ["At 250 GB, a 7-day grace, then uploads pause."]),
         ],
-        regions: this.regions(NS, F, { used: { detections: 80, storageGB: 41 } }),
+        plansRow: this.plansRow(false, PRO),
+        regions: this.regions(NS, F, { plan: PRO, used: { voiceMin: 320, storageGB: 205 } }),
       }),
       base({
         key: "s5", id: "m12-04-s5", offset: "-300px", label: "375 · overage accruing", screenLabel: "Usage — overage accruing (375)",
         chip: this.stChip("Past what's included", "info"),
-        regions: this.regions(NS, F, { used: { detections: 118 } }),
+        plansRow: this.plansRow(false, PRO),
+        regions: this.regions(NS, F, { plan: PRO, used: { voiceMin: 460 }, state: { voice: "overage-accruing" } }),
       }),
       base({ key: "s6", id: "m12-04-s6", align: "flex-end", label: "375 · V2 meter, no rate", screenLabel: "Usage — V2 meter, no rate (375)" }),
       base({ key: "s7", id: "m12-04-s7", align: "flex-end", under: "-140px", label: "375 · tracked seats accruing", screenLabel: "Usage — tracked seats accruing (375)" }),
       base({
         key: "s8", id: "m12-04-s8", label: "375 · trialing", screenLabel: "Usage — trialing (375)",
         chip: this.stChip("On trial", "info"), cycleLine: TRIAL_LINE, plansRow: this.plansRow(true),
+        strip: this.trialStrip(NS, F),
         needs: this.needsCard(),
         needsRows: [
           this.needRow(NS, "voice", "Voice minutes", "Paused", "danger", "15 of 15 min", ["Paused until " + TRIAL_END + " or an upgrade · call from your own phone."]),
         ],
         regions: this.regions(NS, F, {
           trial: true,
-          used: { detections: 9, voiceMin: 15, storageGB: 1.2, proposals: 14, projects: 2, otp: 46, seats: 3, seatMonths: 0.4, whatsapp: 11, sms: 2 },
+          used: { voiceMin: 15, storageGB: 1.2, proposals: 14, projects: 2, otp: 46, seats: 3, seatMonths: 0.4, whatsapp: 11, sms: 2 },
           state: { voice: "creations-paused" },
         }),
       }),
@@ -598,6 +625,10 @@ class Component extends DCLogic {
       }),
       base({
         key: "s11", id: "m12-04-s11", label: "375 · not the Owner", screenLabel: "Usage — not the Owner, read only (375)",
+        strip: this.capStrip(NS, "Proposals · 300 of 300 used · new proposals paused", [
+          ["paused", "Paused", "New proposals"],
+          ["works", "Still works", "Editing, duplicating and sharing existing proposals · reading · export · every other feature"],
+          ["reset", "Cycle resets", "1 Oct 2026"]], "danger", this.ownerOnlyAct(NS)),
         chip: this.stChip("Paused", "danger"),
         needs: this.needsCard(),
         needsRows: [this.needRow(NS, "prop", "Proposals this month", "Paused", "danger", null, null)],

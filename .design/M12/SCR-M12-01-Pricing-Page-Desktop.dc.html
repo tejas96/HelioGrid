@@ -97,7 +97,6 @@ a:hover{color:var(--link-hover)}
 
               <div style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1) var(--sp-3);padding:0 var(--sp-1)">
                 <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ bookLabel }}" hint-size="auto,18px"></x-import>
-                <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ gstNote }}" hint-size="auto,18px"></x-import>
               </div>
             </div>
 
@@ -148,17 +147,17 @@ const BENCH_LIST = "Reslink India price page · 12 Mar 2026";
 
 const BOOK = {
   starter: { name: "Starter", mo: 1999, design: "50 kW", proposals: 30, projects: 10,
-    detections: 30, detRate: 10, voice: null, voiceRate: 6, storage: "10 GB", support: "supStarter" },
+    voice: null, voiceRate: 6, storage: "10 GB", support: "supStarter" },
   growth: { name: "Growth", mo: 3999, design: "500 kW", proposals: 300, projects: null,
-    detections: 100, detRate: 10, voice: null, voiceRate: 6, storage: "50 GB", support: "supGrowth" },
+    voice: null, voiceRate: 6, storage: "50 GB", support: "supGrowth" },
   pro: { name: "Pro", mo: 9999, design: "5 MW", proposals: 1500, projects: null,
-    detections: 400, detRate: 10, voice: 400, voiceRate: 6, storage: "250 GB", support: "supPro" },
+    voice: 400, voiceRate: 6, storage: "250 GB", support: "supPro" },
   enterprise: { name: "Enterprise", mo: 24999, design: "100 MW", proposals: null, projects: null,
-    detections: "custom", detRate: "custom", voice: "custom", voiceRate: "custom", storage: "custom",
+    voice: "custom", voiceRate: "custom", storage: "custom",
     support: "supEnterprise" },
 };
 const ORDER = ["starter", "growth", "pro", "enterprise"];
-const TRIAL = { design: "100 MW", proposals: "Not capped", detections: "25", voice: "15", storage: "5 GB" };
+const TRIAL = { design: "100 MW", proposals: "Not capped", voice: "15", storage: "5 GB" };
 const BENCH = [
   { key: "r1", rung: "50 kW", ours: "Starter", ourYr: 19990, theirs: "Reslink Basic", theirYr: 60000 },
   { key: "r2", rung: "500 kW", ours: "Growth", ourYr: 39990, theirs: "Reslink Pro", theirYr: 85000 },
@@ -173,10 +172,10 @@ const T = {
   includes: "What every plan includes",
   cycle: "Billing cycle", monthly: "Monthly", yearly: "Yearly", yearlyDeal: "12 months for the price of 10",
   design: "Biggest design", support: "Support",
-  limitsLead: "Limits", proposalsWord: "proposals a month", detectionsWord: "detections a month",
-  detShort: "AI detections", propShort: "Proposals", voice: "Voice minutes", storage: "Storage",
+  limitsLead: "Limits", proposalsWord: "proposals a month",
+  propShort: "Proposals", voice: "Voice minutes", storage: "Storage",
   projects: "Active projects", users: "Users", unlimited: "Unlimited",
-  annual: "Annual contract", talk: "Talk to sales", gst: "Prices exclude GST",
+  annual: "Annual contract", talk: "Talk to sales",
   show: "Show", setLimits: "Limits", setIncluded: "Included", setCharges: "Extra charges",
   comparedWith: "Compared with", allPlans: "All four plans", duringTrial: "During the trial",
   perMo: " / mo", perYr: " / yr", from: "From", perMoWord: "a month",
@@ -184,7 +183,7 @@ const T = {
   pos_growth: "For 15 or more installs a month, or your first business sites.",
   pos_pro: "For business sites, with voice minutes included.",
   pos_enterprise: "For the largest designs and utility work.",
-  each: "each", min: "min", custom: "Custom", none: "None", notPublished: "Not published yet",
+  min: "min", custom: "Custom", none: "None", notPublished: "Not published yet",
   supStarter: "In the app", supGrowth: "App and WhatsApp", supPro: "Priority, and an onboarding call", supEnterprise: "A named contact",
 };
 
@@ -247,8 +246,6 @@ class Component extends DCLogic {
       proposals: b.proposals === null ? T.unlimited : F.number(b.proposals) + T.perMo,
       projects: b.projects === null ? T.unlimited : F.number(b.projects),
       users: T.unlimited,
-      detections: custom(b.detections) ? T.custom : F.number(b.detections) + T.perMo,
-      detRate: custom(b.detRate) ? T.custom : F.money(b.detRate) + " " + T.each,
       voice: b.voice === null ? T.none : (custom(b.voice) ? T.custom : F.number(b.voice) + T.perMo),
       voiceRate: custom(b.voiceRate) ? T.custom : F.money(b.voiceRate) + " / " + T.min,
       storage: custom(b.storage) ? T.custom : b.storage,
@@ -259,7 +256,6 @@ class Component extends DCLogic {
     const b = BOOK[key];
     const ent = key === "enterprise";
     const proposals = b.proposals === null ? T.unlimited : F.number(b.proposals);
-    const detections = b.detections === "custom" ? T.custom : F.number(b.detections);
     return {
       key: key,
       name: b.name,
@@ -270,7 +266,7 @@ class Component extends DCLogic {
       positioning: T["pos_" + key],
       group: { label: b.name, density: "expressive", form: "lead" },
       rows: [
-        { key: "limits", label: T.limitsLead, values: [b.design, proposals + " " + T.proposalsWord, detections + " " + T.detectionsWord] },
+        { key: "limits", label: T.limitsLead, values: [b.design, proposals + " " + T.proposalsWord] },
         { key: "support", label: T.support, values: [T[b.support]] },
       ],
       act: ent ? { variant: "secondary", size: "md", fullWidth: true, onClick: this.noop } : null,
@@ -280,15 +276,13 @@ class Component extends DCLogic {
   attributes(set) {
     if (set === "included") {
       return [
-        { key: "detections", label: T.detShort },
         { key: "voice", label: T.voice },
         { key: "storage", label: T.storage },
       ];
     }
     if (set === "overage") {
       return [
-        { key: "detRate", label: T.detShort, numeric: true, gapLabel: T.notPublished },
-        { key: "voiceRate", label: T.voice, numeric: true },
+        { key: "voiceRate", label: T.voice, numeric: true, gapLabel: T.notPublished },
       ];
     }
     return [
@@ -301,8 +295,8 @@ class Component extends DCLogic {
 
   optionValues(F, key, set) {
     const v = this.values(F, key);
-    if (set === "included") return { detections: v.detections, voice: v.voice, storage: v.storage };
-    if (set === "overage") return { detRate: v.detRate, voiceRate: v.voiceRate };
+    if (set === "included") return { voice: v.voice, storage: v.storage };
+    if (set === "overage") return { voiceRate: v.voiceRate };
     return { design: v.design, proposals: v.proposals, projects: v.projects, users: v.users };
   }
 
@@ -360,7 +354,6 @@ class Component extends DCLogic {
       noop: this.noop, t: T, wmDesktop: 30,
       bookLabel: { tier: "unmarked", source: BOOK_LIST, size: 12 },
       benchLabel: { tier: "unmarked", source: BENCH_LIST, size: 12 },
-      gstNote: { note: T.gst, size: 12 },
       includesRow: this.openRow("grid", T.includes, false),
       dealGroup: { density: "expressive", form: "lead" },
       benchGroup: { label: T.comparedWith, density: "expressive", form: "pair", measure: MEASURE },
@@ -369,7 +362,6 @@ class Component extends DCLogic {
       trialRows: [
         { key: "design", label: T.design, value: TRIAL.design },
         { key: "proposals", label: T.propShort, value: TRIAL.proposals },
-        { key: "det", label: T.detShort, value: TRIAL.detections },
         { key: "voice", label: T.voice, value: TRIAL.voice },
         { key: "storage", label: T.storage, value: TRIAL.storage },
       ],

@@ -30,7 +30,7 @@ a:hover{color:var(--link-hover)}
 </helmet>
 
 <div style="box-sizing:border-box;width:1740px;height:3646px;overflow:hidden;padding:var(--sp-12);display:flex;flex-wrap:wrap;align-content:flex-start;gap:var(--sp-16) var(--sp-12);background:var(--canvas)">
-  <sc-for list="{{ frames }}" as="f" hint-placeholder-count="13">
+  <sc-for list="{{ frames }}" as="f" hint-placeholder-count="14">
     <div style="display:flex;flex-direction:column;gap:var(--sp-3);width:375px">
       <span style="font-size:var(--fs-overline);line-height:var(--lh-caption);font-weight:var(--fw-bold);letter-spacing:var(--tr-overline);text-transform:uppercase;color:var(--text-secondary)">{{ f.label }}</span>
 
@@ -107,7 +107,9 @@ a:hover{color:var(--link-hover)}
               <sc-if value="{{ f.bookFoot }}" hint-placeholder-val="{{ true }}">
                 <div style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-1) var(--sp-3);padding:0 var(--sp-1)">
                   <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ f.bookLabel }}" hint-size="auto,18px"></x-import>
-                  <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ gstNote }}" hint-size="auto,18px"></x-import>
+                  <sc-if value="{{ f.gst }}" hint-placeholder-val="{{ false }}">
+                    <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ gstNote }}" hint-size="auto,18px"></x-import>
+                  </sc-if>
                 </div>
               </sc-if>
             </div>
@@ -192,17 +194,17 @@ const BENCH_LIST = "Reslink India price page · 12 Mar 2026";
 
 const BOOK = {
   starter: { name: "Starter", mo: 1999, yr: 19990, design: "50 kW", proposals: 30, projects: 10,
-    detections: 30, detRate: 10, voice: null, voiceRate: 6, storage: "10 GB", support: "supStarter" },
+    voice: null, voiceRate: 6, storage: "10 GB", support: "supStarter" },
   growth: { name: "Growth", mo: 3999, yr: 39990, design: "500 kW", proposals: 300, projects: null,
-    detections: 100, detRate: 10, voice: null, voiceRate: 6, storage: "50 GB", support: "supGrowth" },
+    voice: null, voiceRate: 6, storage: "50 GB", support: "supGrowth" },
   pro: { name: "Pro", mo: 9999, yr: 99999, design: "5 MW", proposals: 1500, projects: null,
-    detections: 400, detRate: 10, voice: 400, voiceRate: 6, storage: "250 GB", support: "supPro" },
+    voice: 400, voiceRate: 6, storage: "250 GB", support: "supPro" },
   enterprise: { name: "Enterprise", mo: 24999, yr: null, design: "100 MW", proposals: null, projects: null,
-    detections: "custom", detRate: "custom", voice: "custom", voiceRate: "custom", storage: "custom",
+    voice: "custom", voiceRate: "custom", storage: "custom",
     support: "supEnterprise" },
 };
 const ORDER = ["starter", "growth", "pro", "enterprise"];
-const TRIAL = { design: "100 MW", proposals: "Not capped", detections: "25", voice: "15", storage: "5 GB" };
+const TRIAL = { design: "100 MW", proposals: "Not capped", voice: "15", storage: "5 GB" };
 const BENCH = [
   { key: "r1", rung: "50 kW", ours: "Starter", ourYr: 19990, theirs: "Reslink Basic", theirYr: 60000 },
   { key: "r2", rung: "500 kW", ours: "Growth", ourYr: 39990, theirs: "Reslink Pro", theirYr: 85000 },
@@ -220,9 +222,9 @@ const T = {
   studioItems: ["Shadow analysis", "All obstruction types", "Tin-shed and metal roof", "Ground mount", "Structures",
     "SLD, AC/DC and earthing layouts", "Industrial drawing sheets", "PV and energy reports", "DXF, SVG and PDF export"],
   cycle: "Billing cycle", monthly: "Monthly", yearly: "Yearly", yearlyDeal: "12 months for the price of 10",
-  design: "Biggest design", proposals: "Proposals a month", detections: "AI detections a month", support: "Support",
-  limitsLead: "Limits", proposalsWord: "proposals a month", detectionsWord: "detections a month",
-  detShort: "AI detections", propShort: "Proposals", extraDet: "Extra detections", extraVoice: "Extra voice",
+  design: "Biggest design", proposals: "Proposals a month", voiceMonth: "Voice minutes a month", support: "Support",
+  limitsLead: "Limits", proposalsWord: "proposals a month",
+  propShort: "Proposals", extraVoice: "Extra voice",
   voice: "Voice minutes", storage: "Storage", projects: "Active projects", users: "Users", unlimited: "Unlimited",
   allLimits: "All limits", annual: "Annual contract", talk: "Talk to sales",
   gst: "Prices exclude GST",
@@ -237,7 +239,7 @@ const T = {
   pos_growth: "For 15 or more installs a month, or your first business sites.",
   pos_pro: "For business sites, with voice minutes included.",
   pos_enterprise: "For the largest designs and utility work.",
-  each: "each", min: "min", aMonth: "a month", custom: "Custom", none: "None", notPublished: "Not published yet",
+  min: "min", custom: "Custom", none: "None", notPublished: "Not published yet",
   supStarter: "In the app", supGrowth: "App and WhatsApp", supPro: "Priority, and an onboarding call", supEnterprise: "A named contact",
 };
 
@@ -301,9 +303,7 @@ class Component extends DCLogic {
       proposals: b.proposals === null ? T.unlimited : F.number(b.proposals),
       projects: b.projects === null ? T.unlimited : F.number(b.projects),
       users: T.unlimited,
-      detections: custom(b.detections) ? T.custom : F.number(b.detections),
-      detRate: custom(b.detRate) ? T.custom : this.money(F.money(b.detRate) + " " + T.each),
-      voice: b.voice === null ? T.none : (custom(b.voice) ? T.custom : F.number(b.voice) + " " + T.aMonth),
+      voice: b.voice === null ? T.none : (custom(b.voice) ? T.custom : F.number(b.voice)),
       voiceRate: custom(b.voiceRate) ? T.custom : this.money(F.money(b.voiceRate) + " / " + T.min),
       storage: custom(b.storage) ? T.custom : b.storage,
       support: T[b.support],
@@ -316,9 +316,7 @@ class Component extends DCLogic {
     const custom = (x) => x === "custom";
     return Object.assign({}, v, {
       proposals: b.proposals === null ? T.unlimited : F.number(b.proposals) + T.perMo,
-      detections: custom(b.detections) ? T.custom : F.number(b.detections) + T.perMo,
       voice: b.voice === null ? T.none : (custom(b.voice) ? T.custom : F.number(b.voice) + T.perMo),
-      detRate: custom(b.detRate) ? T.custom : F.money(b.detRate) + " " + T.each,
       voiceRate: custom(b.voiceRate) ? T.custom : F.money(b.voiceRate) + " / " + T.min,
     });
   }
@@ -327,7 +325,7 @@ class Component extends DCLogic {
     const v = this.V(F, key);
     return [
       { key: "limits", label: T.limitsLead,
-        values: [v.design, v.proposals + " " + T.proposalsWord, v.detections + " " + T.detectionsWord] },
+        values: [v.design, v.proposals + " " + T.proposalsWord] },
       { key: "support", label: T.support, values: [v.support] },
     ];
   }
@@ -339,17 +337,15 @@ class Component extends DCLogic {
       { key: "proposals", label: T.proposals, value: v.proposals },
       { key: "projects", label: T.projects, value: v.projects },
       { key: "users", label: T.users, value: v.users },
-      { key: "detections", label: T.detections, value: v.detections },
-      { key: "extraDet", label: T.extraDet, value: v.detRate },
-      { key: "voice", label: T.voice, value: v.voice },
+      { key: "voice", label: T.voiceMonth, value: v.voice },
       { key: "extraVoice", label: T.extraVoice, value: v.voiceRate },
       { key: "storage", label: T.storage, value: v.storage },
       { key: "support", label: T.support, value: v.support },
     ];
     /* A rate the book marks draft is never a figure on a public page: its row names the gap. */
     if (draft) {
-      const i = rows.findIndex((r) => r.key === "extraDet");
-      rows[i] = { key: "extraDet", label: T.extraDet, value: null, gap: { gap: T.notPublished, scale: "field" } };
+      const i = rows.findIndex((r) => r.key === "extraVoice");
+      rows[i] = { key: "extraVoice", label: T.extraVoice, value: null, gap: { gap: T.notPublished, scale: "field" } };
     }
     return rows;
   }
@@ -384,15 +380,13 @@ class Component extends DCLogic {
   attributes(set) {
     if (set === "included") {
       return [
-        { key: "detections", label: T.detShort },
         { key: "voice", label: T.voice },
         { key: "storage", label: T.storage },
       ];
     }
     if (set === "overage") {
       return [
-        { key: "detRate", label: T.detShort, numeric: true, gapLabel: T.notPublished },
-        { key: "voiceRate", label: T.voice, numeric: true },
+        { key: "voiceRate", label: T.voice, numeric: true, gapLabel: T.notPublished },
       ];
     }
     return [
@@ -405,8 +399,8 @@ class Component extends DCLogic {
 
   optionValues(F, key, set) {
     const v = this.Vt(F, key);
-    if (set === "included") return { detections: v.detections, voice: v.voice, storage: v.storage };
-    if (set === "overage") return { detRate: v.detRate, voiceRate: v.voiceRate };
+    if (set === "included") return { voice: v.voice, storage: v.storage };
+    if (set === "overage") return { voiceRate: v.voiceRate };
     return { design: v.design, proposals: v.proposals, projects: v.projects, users: v.users };
   }
 
@@ -469,6 +463,7 @@ class Component extends DCLogic {
       cards: priced ? this.cards(F, cycle, { open: o.openLimits, draft: o.draft }) : null,
       plansBlock: o.plansBlock || null,
       bookFoot: priced,
+      gst: !!o.gst,
       bookLabel: { tier: "unmarked", source: o.draft ? "Sample market price list · draft rate" : BOOK_LIST, size: 12 },
       compareRow: priced ? this.openRow("scales", T.compare, !!o.compareOpen) : null,
       compareOpen: !!o.compareOpen,
@@ -490,13 +485,13 @@ class Component extends DCLogic {
     const f = (o) => this.frame(F, o);
     return [
       f({ key: "top", id: "m12-01-top", label: "1 · The page at rest · 375", screenLabel: "Pricing page — at rest (375)" }),
-      f({ key: "foot", id: "m12-01-foot", offset: "-1264px", label: "2 · The same page at its foot · 375", screenLabel: "Pricing page — the foot (375)" }),
+      f({ key: "foot", id: "m12-01-foot", offset: "-1198px", label: "2 · The same page at its foot · 375", screenLabel: "Pricing page — the foot (375)" }),
       f({ key: "includes", id: "m12-01-includes", includesOpen: true, label: "3 · What every plan includes, opened in place · 375", screenLabel: "Pricing page — what every plan includes (375)" }),
-      f({ key: "limits", id: "m12-01-limits", openLimits: "growth", offset: "-623px", label: "4 · All limits, opened on one plan · 375", screenLabel: "Pricing page — all limits, Growth (375)" }),
-      f({ key: "compare", id: "m12-01-compare", compareOpen: true, offset: "-1841px", label: "5 · Compare two plans, opened in place · 375", screenLabel: "Pricing page — compare two plans (375)" }),
-      f({ key: "charges", id: "m12-01-charges", compareOpen: true, set: "overage", offset: "-1841px", label: "6 · The same comparison, showing extra charges · 375", screenLabel: "Pricing page — extra charges (375)" }),
-      f({ key: "included", id: "m12-01-included", compareOpen: true, set: "included", offset: "-1841px", label: "7 · The same comparison, showing what is included · 375", screenLabel: "Pricing page — included (375)" }),
-      f({ key: "trial", id: "m12-01-trial", trialOpen: true, offset: "-2110px", label: "8 · During the trial, opened in place · 375", screenLabel: "Pricing page — during the trial (375)" }),
+      f({ key: "limits", id: "m12-01-limits", openLimits: "growth", offset: "-601px", label: "4 · All limits, opened on one plan · 375", screenLabel: "Pricing page — all limits, Growth (375)" }),
+      f({ key: "compare", id: "m12-01-compare", compareOpen: true, offset: "-1776px", label: "5 · Compare two plans, opened in place · 375", screenLabel: "Pricing page — compare two plans (375)" }),
+      f({ key: "charges", id: "m12-01-charges", compareOpen: true, set: "overage", offset: "-1776px", label: "6 · The same comparison, showing extra charges · 375", screenLabel: "Pricing page — extra charges (375)" }),
+      f({ key: "included", id: "m12-01-included", compareOpen: true, set: "included", offset: "-1776px", label: "7 · The same comparison, showing what is included · 375", screenLabel: "Pricing page — included (375)" }),
+      f({ key: "trial", id: "m12-01-trial", trialOpen: true, offset: "-2045px", label: "8 · During the trial, opened in place · 375", screenLabel: "Pricing page — during the trial (375)" }),
       f({ key: "yearly", id: "m12-01-yearly", cycle: "yearly", label: "9 · Yearly · 375", screenLabel: "Pricing page — yearly (375)" }),
       f({ key: "loading", id: "m12-01-loading", label: "10 · Loading · 375", screenLabel: "Pricing page — loading (375)",
         plansBlock: read({ kind: "loading" }) }),
@@ -504,7 +499,8 @@ class Component extends DCLogic {
         plansBlock: Object.assign(read({ kind: "empty" }), { emptyTitle: T.emptyTitle, emptyMessage: "", emptyAction: talkBtn }) }),
       f({ key: "error", id: "m12-01-error", label: "12 · The price list failed · 375", screenLabel: "Pricing page — price list failed (375)",
         plansBlock: Object.assign(read({ kind: "failed", retry: this.noop }), { errorTitle: T.errorTitle, errorMessage: T.errorMsg }) }),
-      f({ key: "draft", id: "m12-01-draft", openLimits: "growth", draft: true, offset: "-623px", label: "13 · A sample market, a rate not published yet · 375", screenLabel: "Pricing page — a sample market with a draft rate (375)" }),
+      f({ key: "draft", id: "m12-01-draft", openLimits: "growth", draft: true, offset: "-601px", label: "13 · A sample market, a rate not published yet · 375", screenLabel: "Pricing page — a sample market with a draft rate (375)" }),
+      f({ key: "gst-registered", id: "m12-01-gst-registered", gst: true, offset: "-1198px", label: "14 · Once the platform is GST-registered · 375", screenLabel: "Pricing page — once GST-registered (375)" }),
     ];
   }
 
@@ -527,7 +523,6 @@ class Component extends DCLogic {
       trialRows: [
         { key: "design", label: T.design, value: TRIAL.design },
         { key: "proposals", label: T.propShort, value: TRIAL.proposals },
-        { key: "det", label: T.detShort, value: TRIAL.detections },
         { key: "voice", label: T.voice, value: TRIAL.voice },
         { key: "storage", label: T.storage, value: TRIAL.storage },
       ],
