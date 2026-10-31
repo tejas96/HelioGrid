@@ -1,4 +1,4 @@
-import { billingCheckout, type Db, subscription } from '@heliogrid/db';
+import { billingCheckout, type Db, subscription, subscriptionInvoice } from '@heliogrid/db';
 import { type CollectionKind, MS_PER_DAY, PAST_DUE_GRACE_DAYS } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, asc, eq, gt, inArray, isNotNull, isNull, type SQL } from 'drizzle-orm';
@@ -11,11 +11,12 @@ export interface CollectedRef {
 }
 
 /**
- * The three sets a charge can still land on, read in this order: live converted rows, halts still
- * inside their grace (a charge made before the halt undoes it, `charges.ts`), and pages still able
- * to take money. Each is read on its own partial index, in the ref's order.
+ * The four sets a charge can still land on, read in this order: live converted rows, halts still
+ * inside their grace (a charge made before the halt undoes it, `charges.ts`), pages still able
+ * to take money, and renewal links still able to (`M12-11`). Each is read on its own partial
+ * index, in the ref's order. A new set goes last: an older api handed its cursor ends that run.
  */
-const SETS = ['live', 'halted', 'open'] as const;
+const SETS = ['live', 'halted', 'open', 'renewal'] as const;
 type CollectedSet = (typeof SETS)[number];
 
 /** Where a run stands: the set it is reading, and the last ref read in it. */
@@ -53,6 +54,7 @@ export class ReconcileAdminRepository {
   }
 
   private read(cursor: ReconcileCursor, size: number, now: number): Promise<CollectedRef[]> {
+    if (cursor.set === 'renewal') return this.renewalLinks(cursor.after, size, now);
     if (cursor.set === 'open') {
       return this.db
         .select({ gatewayRef: billingCheckout.gatewayRef, collection: billingCheckout.collection })
@@ -88,10 +90,46 @@ export class ReconcileAdminRepository {
       .orderBy(asc(subscription.gatewayRef))
       .limit(size);
   }
+
+  /**
+   * Renewal links not yet paid whose due moment is inside the last grace, on
+   * `subscription_invoice_open_link_idx`: a bounded few, sorted by ref for the cursor.
+   */
+  private async renewalLinks(
+    afterRef: string | null,
+    size: number,
+    now: number,
+  ): Promise<CollectedRef[]> {
+    const rows = await this.db
+      .select({ gatewayRef: subscriptionInvoice.gatewayRef })
+      .from(subscriptionInvoice)
+      .where(
+        and(
+          inArray(subscriptionInvoice.status, ['issued', 'failed']),
+          gt(subscriptionInvoice.dueAt, new Date(now - RENEWAL_POLLED_FOR_MS)),
+          ...after(subscriptionInvoice.gatewayRef, afterRef),
+        ),
+      )
+      .orderBy(asc(subscriptionInvoice.gatewayRef))
+      .limit(size);
+    // An unpaid renewal always holds its link (`subscription_invoice_link_whole`).
+    return rows.flatMap(({ gatewayRef }) =>
+      gatewayRef === null ? [] : [{ gatewayRef, collection: 'invoice' as const }],
+    );
+  }
 }
 
+/**
+ * A renewal link takes money until its row halts: its due moment + the grace. Its message may
+ * land a day after, as a checkout page's may.
+ */
+const RENEWAL_POLLED_FOR_MS = PAST_DUE_GRACE_DAYS * MS_PER_DAY + CHECKOUT_POLLED_FOR_MS;
+
 function after(
-  column: typeof billingCheckout.gatewayRef | typeof subscription.gatewayRef,
+  column:
+    | typeof billingCheckout.gatewayRef
+    | typeof subscription.gatewayRef
+    | typeof subscriptionInvoice.gatewayRef,
   ref: string | null,
 ): SQL[] {
   return ref === null ? [] : [gt(column, ref)];

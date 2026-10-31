@@ -26,14 +26,23 @@ import { and, asc, eq, gt, inArray, isNull, lte, sql } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
 import { atNoGateway } from './overage-invoicing.admin.repository';
 
-/** One closed mandate period waiting to be reckoned: the payment that paid for it, and its span. */
+/** One closed period waiting to be reckoned: the payment that paid for it, and its span. */
 export interface PeriodDue {
   readonly paymentId: string;
   readonly tenantId: string;
   readonly subscriptionId: string;
   readonly marketCode: string;
+  /** The cycle it was paid on: a yearly period is reckoned month by month (`BM-41`). */
+  readonly cycle: BillingCycle | null;
   readonly from: Date;
   readonly to: Date;
+}
+
+/** One stretch of a period, and the add-ons its use past the allowance comes to. */
+export interface WindowAddOns {
+  readonly from: Date;
+  readonly to: Date;
+  readonly addOns: readonly OverageAddOn[];
 }
 
 /** One reckoned add-on waiting for its mandate, with what the cap is judged by. */
@@ -56,7 +65,8 @@ export interface AddOnWaiting {
 /**
  * The overage sweep's reads and writes (`M12-35`), across every company, so on the admin pool. A
  * period is the stretch between two distinct `pays_through` ends of one subscription; a mandate
- * period is one whose subscription's checkout opened a mandate.
+ * period is one whose subscription's checkout opened a mandate, and a link period one a payment
+ * link collects (`M12-11`), whose add-ons ride the renewal link.
  */
 @Injectable()
 export class OverageAdminRepository {
@@ -64,7 +74,7 @@ export class OverageAdminRepository {
   constructor(@Inject(ADMIN_DB) private readonly db: Db) {}
 
   /**
-   * Mandate periods closed and settled, still in reach, not yet reckoned — oldest first, on
+   * Periods closed and settled, still in reach, not yet reckoned — oldest first, on
    * `subscription_payment_overage_due_idx`. A period starts at the latest earlier end, or at its
    * payment for the subscription's first.
    */
@@ -82,6 +92,7 @@ export class OverageAdminRepository {
         tenantId: subscriptionPayment.tenantId,
         subscriptionId: subscriptionPayment.subscriptionId,
         marketCode: tenant.marketCode,
+        cycle: subscription.cycle,
         occurredAt: subscriptionPayment.occurredAt,
         to: subscriptionPayment.paysThrough,
         earlier,
@@ -95,7 +106,6 @@ export class OverageAdminRepository {
           isNull(subscriptionPayment.overageReckonedAt),
           lte(subscriptionPayment.paysThrough, new Date(now - OVERAGE_SETTLE_DAYS * MS_PER_DAY)),
           gt(subscriptionPayment.paysThrough, new Date(now - OVERAGE_REACH_DAYS * MS_PER_DAY)),
-          eq(billingCheckout.collection, 'mandate'),
         ),
       )
       .orderBy(asc(subscriptionPayment.paysThrough), asc(subscriptionPayment.id))
@@ -107,11 +117,15 @@ export class OverageAdminRepository {
   }
 
   /**
-   * Marks the period reckoned and writes its add-ons, in one transaction. A period another run
-   * reckoned first writes nothing; an add-on for a period already billed (a second payment for
-   * the same span) is dropped by `overage_addon_period_key`. Answers the add-ons written.
+   * Marks the period reckoned and writes each window's add-ons, in one transaction. A period
+   * another run reckoned first writes nothing; an add-on for a window already billed (a second
+   * payment for the same span) is dropped by `overage_addon_period_key`. Answers the add-ons
+   * written.
    */
-  async reckon(period: PeriodDue, addOns: readonly OverageAddOn[], at: number): Promise<number> {
+  async reckon(period: PeriodDue, windows: readonly WindowAddOns[], at: number): Promise<number> {
+    const addOns = windows.flatMap((window) =>
+      window.addOns.map((addOn) => ({ ...addOn, windowFrom: window.from, windowTo: window.to })),
+    );
     return this.db.transaction(async (tx) => {
       const [marked] = await tx
         .update(subscriptionPayment)
@@ -132,8 +146,8 @@ export class OverageAdminRepository {
             subscriptionId: period.subscriptionId,
             paymentId: period.paymentId,
             meter: addOn.meter,
-            windowFrom: period.from,
-            windowTo: period.to,
+            windowFrom: addOn.windowFrom,
+            windowTo: addOn.windowTo,
             used: addOn.used,
             allowance: addOn.allowance,
             quantity: addOn.quantity,
@@ -152,7 +166,7 @@ export class OverageAdminRepository {
   /**
    * Add-ons an `active` mandate can take now: its next debit is at least `leadMs` away, so the
    * gateway has them before it raises it. A subscription now collected by payment link holds its
-   * add-ons for that link (part c). Rows never tried come first, then the longest untried: a row
+   * add-ons for its renewal link (`renewal.service.ts`). Rows never tried come first, then the longest untried: a row
    * that keeps waiting or being refused never holds the batch from another company's. Oldest first, on `overage_addon_pending_idx`; within a
    * period in the ledger's meter order, so the cap is judged the same way every run.
    */

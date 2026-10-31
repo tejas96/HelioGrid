@@ -2,59 +2,35 @@ import {
   billingCheckout,
   type Db,
   type DbTransaction,
-  planPrice,
   subscription,
+  subscriptionInvoice,
   subscriptionPayment,
   subscriptionStateHistory,
   tenant,
 } from '@heliogrid/db';
 import {
-  type BillingCycle,
   type BillingState,
   type ChargeFailed,
   type ChargeStanding,
   type ChargeSucceeded,
-  type CollectionKind,
   type MarketPack,
   type MinorUnits,
   type SuccessEffect,
-  type Tier,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, isNull } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
 import { clearOpenNotices } from './billing-notice.admin.repository';
 import { type LockedSubscription, lockSubscription } from './charge-standing.admin.repository';
+import {
+  type CollectedOn,
+  type Conversion,
+  collectedOn,
+  type Renewal,
+} from './collected-on.admin.repository';
 import { type LimitsFor, recomputeEntitlements } from './entitlement.admin.repository';
-import { issueInvoice } from './invoice.admin.repository';
+import { issueInvoice, payRenewalInvoice } from './invoice.admin.repository';
 import { addOnsCollectedBy } from './overage-invoicing.admin.repository';
-
-export interface Conversion {
-  readonly checkoutId: string;
-  readonly planPriceId: string;
-  readonly tier: Tier;
-  readonly cycle: BillingCycle;
-  readonly gatewayRef: string;
-  readonly collection: CollectionKind;
-  /** A new pick asked the gateway to cancel this page before its charge landed. */
-  readonly cancelRequested: boolean;
-}
-
-/**
- * Which subscription a gateway subscription or payment link collects for. `stray`: a checkout page
- * that can convert nothing — a new pick closed it, or its row already converted on another page —
- * so money on it is no subscription's to take.
- */
-export type CollectedOn =
-  | {
-      readonly kind: 'collecting';
-      readonly subscriptionId: string;
-      /** The cycle it is paid on, for a charge the gateway names no period end for. */
-      readonly cycle: BillingCycle | null;
-      /** Set while the charge is the one that converts a trial: its checkout is still open. */
-      readonly conversion: Conversion | null;
-    }
-  | { readonly kind: 'stray'; readonly subscriptionId: string };
 
 /** What one charge came to; a recorded payment names the total its invoice issued for. */
 export type SuccessRecorded =
@@ -77,50 +53,9 @@ export class ChargeAdminRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(@Inject(ADMIN_DB) private readonly db: Db) {}
 
-  /**
-   * The subscription a gateway ref collects for: the row already converted on it, else the open
-   * checkout that opened it on a row not yet converted. `null` when nothing knows the ref.
-   */
-  async collectedOn(gatewayRef: string): Promise<CollectedOn | null> {
-    const [converted] = await this.db
-      .select({ id: subscription.id, cycle: subscription.cycle })
-      .from(subscription)
-      .where(eq(subscription.gatewayRef, gatewayRef))
-      .limit(1);
-    if (converted !== undefined) {
-      return {
-        kind: 'collecting',
-        subscriptionId: converted.id,
-        cycle: converted.cycle,
-        conversion: null,
-      };
-    }
-    const [opened] = await this.db
-      .select({
-        checkoutId: billingCheckout.id,
-        subscriptionId: billingCheckout.subscriptionId,
-        planPriceId: billingCheckout.planPriceId,
-        tier: planPrice.tier,
-        cycle: planPrice.cycle,
-        collection: billingCheckout.collection,
-        cancelRequestedAt: billingCheckout.cancelRequestedAt,
-        closedAt: billingCheckout.closedAt,
-        convertedOn: subscription.gatewayRef,
-      })
-      .from(billingCheckout)
-      .innerJoin(planPrice, eq(planPrice.id, billingCheckout.planPriceId))
-      .innerJoin(subscription, eq(subscription.id, billingCheckout.subscriptionId))
-      .where(eq(billingCheckout.gatewayRef, gatewayRef))
-      .limit(1);
-    if (opened === undefined) return null;
-    const { subscriptionId, closedAt, convertedOn, cancelRequestedAt, ...chosen } = opened;
-    if (closedAt !== null || convertedOn !== null) return { kind: 'stray', subscriptionId };
-    return {
-      kind: 'collecting',
-      subscriptionId,
-      cycle: chosen.cycle,
-      conversion: { ...chosen, gatewayRef, cancelRequested: cancelRequestedAt !== null },
-    };
+  /** The subscription a gateway ref collects for (`collected-on.admin.repository.ts`). */
+  collectedOn(gatewayRef: string): Promise<CollectedOn | null> {
+    return collectedOn(this.db, gatewayRef);
   }
 
   /** The market whose book a subscription's limits come from; `null` for no such subscription. */
@@ -141,6 +76,7 @@ export class ChargeAdminRepository {
     limitsFor: LimitsFor,
     pack: MarketPack,
     conversion: Conversion | null = null,
+    renewal: Renewal | null = null,
   ): Promise<SuccessRecorded> {
     return this.db.transaction(async (tx) => {
       const held = await lockSubscription(tx, charge.subscriptionId);
@@ -165,26 +101,31 @@ export class ChargeAdminRepository {
       if (!paid) return { kind: 'duplicate' };
       // The invoice takes its market's series row: taken last, so every other charge in the market
       // waits on it for as short a time as the transaction allows.
+      // A renewal link's payment pays the invoice raised with it; its add-ons are already on it.
       const collectedOn = conversion?.gatewayRef ?? held.gatewayRef;
       const issue = async () =>
-        issueInvoice(tx, {
-          tenantId: held.tenantId,
-          subscriptionId: held.id,
-          paymentId: paid.id,
-          planPriceId: conversion?.planPriceId ?? held.planPriceId,
-          paysThrough: charge.paysThrough,
-          issuedAt: recordedAt,
-          pack,
-          addOns:
-            collectedOn === null
-              ? []
-              : await addOnsCollectedBy(tx, {
-                  tenantId: held.tenantId,
-                  subscriptionId: held.id,
-                  gatewayRef: collectedOn,
-                  occurredAt: charge.occurredAt,
-                }),
-        });
+        (renewal === null ? null : await payRenewalInvoice(tx, renewal.invoiceId, paid.id)) ??
+        issueInvoice(
+          tx,
+          {
+            tenantId: held.tenantId,
+            subscriptionId: held.id,
+            planPriceId: conversion?.planPriceId ?? held.planPriceId,
+            paysThrough: charge.paysThrough,
+            issuedAt: recordedAt,
+            pack,
+            addOns:
+              collectedOn === null || renewal !== null
+                ? []
+                : await addOnsCollectedBy(tx, {
+                    tenantId: held.tenantId,
+                    subscriptionId: held.id,
+                    gatewayRef: collectedOn,
+                    occurredAt: charge.occurredAt,
+                  }),
+          },
+          { kind: 'payment', paymentId: paid.id },
+        );
       // The page was paid, whatever the charge does to the row: it can take no second payment.
       if (conversion !== null) await closeCheckout(tx, conversion.checkoutId, recordedAt);
       const effect = decide(held);
@@ -202,6 +143,35 @@ export class ChargeAdminRepository {
     });
   }
 
+  /**
+   * A renewal still unpaid at its due moment is the failed charge (`M12-05`): its invoice turns
+   * `failed`, and the row moves as a failure moves it, at that moment, in one transaction. The
+   * row's lock comes first, so a payment landing at the same moment either paid the invoice
+   * already — nothing changes — or waits and then pays the `failed` one. `null`: no longer
+   * `issued`.
+   */
+  async recordRenewalUnpaid(
+    renewal: { invoiceId: string; subscriptionId: string; dueAt: number },
+    decide: (standing: ChargeStanding) => BillingState | null,
+  ): Promise<boolean | null> {
+    return this.db.transaction(async (tx) => {
+      const held = await lockSubscription(tx, renewal.subscriptionId);
+      if (held === null) return null;
+      const [failed] = await tx
+        .update(subscriptionInvoice)
+        .set({ status: 'failed' })
+        .where(
+          and(
+            eq(subscriptionInvoice.id, renewal.invoiceId),
+            eq(subscriptionInvoice.status, 'issued'),
+          ),
+        )
+        .returning({ id: subscriptionInvoice.id });
+      if (failed === undefined) return null;
+      return moveOnFailure(tx, held, decide, renewal.dueAt);
+    });
+  }
+
   /** `null` when the subscription does not exist; else whether the failure moved it. */
   async recordFailure(
     failure: ChargeFailed,
@@ -210,16 +180,26 @@ export class ChargeAdminRepository {
     return this.db.transaction(async (tx) => {
       const held = await lockSubscription(tx, failure.subscriptionId);
       if (held === null) return null;
-      const to = decide(held);
-      if (to === null) return false;
-      await tx
-        .update(subscription)
-        .set({ state: to, stateEnteredAt: new Date(failure.occurredAt) })
-        .where(eq(subscription.id, held.id));
-      await recordState(tx, held, to, 'charge_failed', failure.occurredAt);
-      return true;
+      return moveOnFailure(tx, held, decide, failure.occurredAt);
     });
   }
+}
+
+/** Moves a held row as a failed charge at `occurredAt` moves it; whether it moved. */
+async function moveOnFailure(
+  tx: DbTransaction,
+  held: LockedSubscription,
+  decide: (standing: ChargeStanding) => BillingState | null,
+  occurredAt: number,
+): Promise<boolean> {
+  const to = decide(held);
+  if (to === null) return false;
+  await tx
+    .update(subscription)
+    .set({ state: to, stateEnteredAt: new Date(occurredAt) })
+    .where(eq(subscription.id, held.id));
+  await recordState(tx, held, to, 'charge_failed', occurredAt);
+  return true;
 }
 
 /** A live charge's effect: the window, the state move and, on conversion, the plan. */

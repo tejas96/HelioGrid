@@ -75,7 +75,7 @@ export class CheckoutService {
         gatewayPlanRef: price.gatewayPlanRef,
         amount: price.collectedMinor,
         currencyCode: price.currencyCode,
-        checkoutId: id,
+        reference: id,
         expiresAt,
       }),
     );

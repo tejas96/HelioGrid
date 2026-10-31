@@ -17,10 +17,12 @@ import { PinoLogger } from 'nestjs-pino';
 import { MarketPackService } from '../market/market.public';
 import { EntitlementService } from './entitlement.service';
 import { BillingAlerts } from './internal/billing-alerts';
+import { monthlyWindowsOf } from './internal/renewal-moments';
 import {
   type AddOnWaiting,
   OverageAdminRepository,
   type PeriodDue,
+  type WindowAddOns,
 } from './overage.admin.repository';
 import { UsageService } from './usage.service';
 
@@ -34,9 +36,9 @@ const BATCH = 100;
 const ADD_BATCH = 25;
 
 /**
- * The overage sweep (`M12-35`): each closed, settled mandate period's use past the company's
- * allowance, reckoned once at the book's published rates, then added to the mandate's next debit
- * so the gateway collects it. Which meters bill and how is domain's (`commerce/overage.ts`).
+ * The overage sweep (`M12-35`): each closed, settled period's use past the company's allowance,
+ * reckoned once at the book's published rates, then added to the mandate's next debit so the
+ * gateway collects it — or, on a payment link, carried by the renewal link (`renewal.service.ts`). Which meters bill and how is domain's (`commerce/overage.ts`).
  */
 @Injectable()
 export class OverageService {
@@ -75,7 +77,8 @@ export class OverageService {
 
   /**
    * One period's add-ons, against the company's allowance as it stands now (support credit
-   * included). A pack the book cannot bill by is logged and passed over, so it never holds back
+   * included). The book's bundles are per month (`BM-41`), so a yearly period is reckoned in its
+   * calendar months, each against the monthly allowance. A pack the book cannot bill by is logged and passed over, so it never holds back
    * the rest of the batch; the period stays unreckoned until it falls out of reach.
    */
   private async reckon(period: PeriodDue, pack: MarketPack, now: number): Promise<number> {
@@ -85,13 +88,14 @@ export class OverageService {
       const limit = limits?.get(meter)?.limit;
       if (limit !== undefined) allowances.set(meter, limit);
     }
-    const used = await this.usage.billedRollupOf(period.tenantId, BILLED_LEDGER_METERS, period);
+    const windows = period.cycle === 'yearly' ? monthlyWindowsOf(period) : [period];
     try {
-      return await this.overage.reckon(
-        period,
-        overageAddOns(pack.priceBook, allowances, used),
-        now,
-      );
+      const reckoned: WindowAddOns[] = [];
+      for (const window of windows) {
+        const used = await this.usage.billedRollupOf(period.tenantId, BILLED_LEDGER_METERS, window);
+        reckoned.push({ ...window, addOns: overageAddOns(pack.priceBook, allowances, used) });
+      }
+      return await this.overage.reckon(period, reckoned, now);
     } catch (unbillable) {
       if (!(unbillable instanceof UnbillableMeter)) throw unbillable;
       this.logger.error(

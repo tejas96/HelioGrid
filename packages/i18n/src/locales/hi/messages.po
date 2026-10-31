@@ -9953,8 +9953,8 @@ msgstr "हम प्रारूप को आपके बाज़ार क�
 
 #. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:60
-msgid "We could not collect your plan payment. We will try again."
-msgstr "हम आपके प्लान का भुगतान नहीं ले सके। हम फिर से कोशिश करेंगे।"
+msgid "We could not collect your plan payment."
+msgstr "हम आपके प्लान का भुगतान नहीं ले सके।"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:54

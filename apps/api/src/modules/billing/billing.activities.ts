@@ -14,6 +14,7 @@ import { TemporalActivityHost } from '../../common/temporal/temporal.activity-ho
 import { BillingService } from './billing.service';
 import { OverageService } from './overage.service';
 import { ReconcileService } from './reconcile.service';
+import { RenewalService } from './renewal.service';
 
 /** How often the timers run: the longest a due state waits to be recorded. */
 const TIMERS_EVERY = '1 minute';
@@ -29,7 +30,8 @@ const OVERAGE_EVERY = '1 hour';
  * tables. The worker's `billingTimers` workflow calls the timers' step through the `billing-timers`
  * schedule, and its `billingReconcile` workflow the reconcile's, page by page, through
  * `billing-reconcile` — on its own queue, so a slow gateway never holds back the timers — and
- * its `billingOverage` workflow the overage sweep's, through `billing-overage`, on its own queue too.
+ * its `billingOverage` workflow the overage sweep's and the renewals', through `billing-overage`,
+ * on its own queue too.
  */
 @Injectable()
 export class BillingActivityRegistration implements OnModuleInit {
@@ -39,6 +41,7 @@ export class BillingActivityRegistration implements OnModuleInit {
     @Inject(BillingService) private readonly billing: BillingService,
     @Inject(ReconcileService) private readonly reconcile: ReconcileService,
     @Inject(OverageService) private readonly overage: OverageService,
+    @Inject(RenewalService) private readonly renewals: RenewalService,
   ) {}
 
   onModuleInit(): void {
@@ -69,7 +72,12 @@ export class BillingActivityRegistration implements OnModuleInit {
       },
     });
     const overage: BillingOverageActivities = {
-      addDueOverage: () => this.overage.addDue(Date.now()),
+      // The renewals come last, so a link carries the overage the same run reckoned.
+      addDueOverage: async () => {
+        const now = Date.now();
+        const overage = await this.overage.addDue(now);
+        return { ...overage, raised: await this.renewals.raiseDue(now) };
+      },
     };
     this.host.register({
       taskQueue: billingOverageWorkflow.taskQueue,

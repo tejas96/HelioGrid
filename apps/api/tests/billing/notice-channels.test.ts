@@ -130,7 +130,7 @@ describe.skipIf(skip)('the billing notices’ channels and the trial nudges (M12
     expect(carrier.sent).toHaveLength(2);
     expect(carrier.sent.every((one) => one.channel === 'sms')).toBe(true);
     expect(textTo(english.phoneE164)?.message).toMatch(
-      /^HelioGrid: the payment for .*'s plan failed\. We will try again\. If the plan halts, your launch price ends .* Pay or update your payment method: .*\/more\/billing$/,
+      /^HelioGrid: the payment for .*'s plan failed\. If the plan halts, your launch price ends .* Pay or update your payment method: .*\/more\/billing$/,
     );
     expect(textTo(hindi.phoneE164)?.message).toContain('के प्लान का भुगतान विफल हो गया');
   });

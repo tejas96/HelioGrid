@@ -137,6 +137,10 @@ export const subscription = pgTable(
     index('subscription_reconcile_halted_idx')
       .on(table.stateEnteredAt)
       .where(sql`${table.gatewayRef} is not null and ${table.state} = 'halted'`),
+    /** The renewal sweep's queue: live rows whose paid period has ended (`M12-11`). */
+    index('subscription_renewal_due_idx')
+      .on(table.paidPeriodEnd)
+      .where(sql`${table.gatewayRef} is not null and ${table.state} = 'active'`),
     uniqueIndex('subscription_gateway_ref_key')
       .on(table.gatewayRef)
       .where(sql`${table.gatewayRef} is not null`),

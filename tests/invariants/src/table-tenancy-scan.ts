@@ -108,6 +108,10 @@ const GLOBAL_UNIQUES: Record<string, string> = {
     'the gateway\u2019s own subscription or payment-link id a converted subscription is collected ' +
     'on (M12-09): the gateway alone mints it, and the reconcile and the webhook find the row by it ' +
     'before any tenant is known (T-M12-007)',
+  subscription_invoice_gateway_ref_key:
+    'the gateway\u2019s own payment-link id a renewal invoice is collected on (M12-11): the gateway ' +
+    'alone mints it, and the webhook and the reconcile find the invoice by it before any tenant is ' +
+    'known (T-M12-012c)',
 };
 
 function assert(cond: unknown, msg: string): asserts cond {
