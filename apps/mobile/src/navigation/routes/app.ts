@@ -1,4 +1,5 @@
 import { DOOR_SEGMENT } from '@heliogrid/domain';
+import { BillingPlansScreen } from '../../screens/billing';
 import { CompanyProfileScreen } from '../../screens/company-profile';
 import { CompanySignupScreen } from '../../screens/company-signup';
 import { FirstRunProfileScreen } from '../../screens/first-run-profile';
@@ -65,6 +66,12 @@ export const appScreens = {
     screen: SettingsRowScreen,
     if: useHasHome,
     linking: `${DOOR_SEGMENT.more}/:segment`,
+  },
+  /** The plans billing's `Change plan` opens (`SCR-M12-03`): the *coming later* page until it lands. */
+  BillingPlans: {
+    screen: BillingPlansScreen,
+    if: useHasHome,
+    linking: `${DOOR_SEGMENT.more}/billing/plans`,
   },
   QuickAddLead: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.add_lead },
   StartSurvey: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.start_survey },

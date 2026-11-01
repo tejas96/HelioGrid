@@ -7,8 +7,16 @@ import { BillingActivityRegistration } from './billing.activities';
 import { BillingAdminRepository } from './billing.admin.repository';
 import { BillingController } from './billing.controller';
 import { BillingService } from './billing.service';
+import { BillingActsService } from './billing-acts.service';
+import { BillingHomeController } from './billing-home.controller';
+import { BillingHomeRepository } from './billing-home.repository';
+import { BillingHomeService } from './billing-home.service';
+import { BillingHomeUsageService } from './billing-home.usage.service';
+import { BillingRecordsRepository } from './billing-records.repository';
+import { BillingRecordsService } from './billing-records.service';
 import { BillingStateGuard } from './billing-state.guard';
 import { BillingStateRepository } from './billing-state.repository';
+import { CancellationAdminRepository } from './cancellation.admin.repository';
 import { ChargeAdminRepository } from './charge.admin.repository';
 import { ChargeService } from './charge.service';
 import { CheckoutAdminRepository } from './checkout.admin.repository';
@@ -30,6 +38,7 @@ import { PricingController } from './pricing.controller';
 import { PricingService } from './pricing.service';
 import { ReconcileAdminRepository } from './reconcile.admin.repository';
 import { ReconcileService } from './reconcile.service';
+import { RefundAdminRepository } from './refund.admin.repository';
 import { RenewalAdminRepository } from './renewal.admin.repository';
 import { RenewalService } from './renewal.service';
 import { UsageActivityRegistration } from './usage.activities';
@@ -70,16 +79,25 @@ const billingGatewayProvider: Provider = {
 
 /**
  * Platform billing (`M12`): the subscription lifecycle and its timers, charge truth, entitlements,
- * the billing-state gate on every mutation, the hosted checkout a trial converts through, the gateway's signed messages, the 6-hour
+ * the billing-state gate on every mutation, the hosted checkout a trial converts and a dead row
+ * reactivates through, the Owner's billing home, cancel and refund, the gateway's signed messages, the 6-hour
  * reconcile, the yearly renewal on a fresh payment link, and the usage ledger with its nightly
  * storage gauge.
  */
 @Module({
   imports: [MarketModule],
-  controllers: [BillingController, PricingController],
+  controllers: [BillingController, BillingHomeController, PricingController],
   providers: [
     billingGatewayProvider,
+    BillingActsService,
     BillingAlerts,
+    BillingHomeService,
+    BillingHomeRepository,
+    BillingHomeUsageService,
+    BillingRecordsRepository,
+    BillingRecordsService,
+    CancellationAdminRepository,
+    RefundAdminRepository,
     BillingService,
     PricingService,
     BillingAdminRepository,

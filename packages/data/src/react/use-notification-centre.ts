@@ -8,6 +8,7 @@ import {
   type NotificationReadFilter,
   type NotificationTypeGroup,
   type Read,
+  subjectAddressOf,
 } from '@heliogrid/domain';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -81,6 +82,8 @@ export interface NotificationCentre {
   showOlder(): void;
   /** Up only, and once (`F6-07`). Answers false when the read was refused, so the screen says so. */
   markRead(notification: Notification): Promise<boolean>;
+  /** Where the notification's subject opens (`F6-02`); `null` for a kind with no screen yet. */
+  addressOf(notification: Notification): string | null;
   /**
    * Marks read what the list showed under its own filter (`F6-07`): through the newest `emittedAt`
    * shown, so an item that lands after the render stays unread.
@@ -150,6 +153,7 @@ export function useNotificationCentre(timeZone: string): NotificationCentre {
     setOpenGroup: (group) =>
       setChosenGroups(NOTIFICATION_TYPE_GROUPS.filter((known) => known === group)),
     showOlder: () => void list.fetchNextPage(),
+    addressOf: (notification) => subjectAddressOf(notification.subjectKind),
     markRead: async (notification) => {
       if (notification.readAt !== null) return true;
       return readOne.mutateAsync(notification.id).then(

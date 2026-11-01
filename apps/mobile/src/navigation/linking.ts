@@ -1,3 +1,7 @@
+import { subjectAddressOf } from '@heliogrid/domain';
+import { Linking } from 'react-native';
+import { onPushOpened, type PushSubject, pushThatOpenedTheApp } from '../push/messaging';
+
 /**
  * Container-level deep linking.
  *
@@ -10,11 +14,31 @@
  * every leaf screen, which means renaming a route silently changes a public URL. Deep-link
  * paths are a contract with whatever sent the link; each one is declared on purpose.
  *
- * NOTE for the Track C notifications slice: a Notifee/FCM notification tap does NOT arrive as
- * a URL — it hands back a data payload. A `linking:` entry alone will not route it. The seam
- * is here: `getInitialURL` and `subscribe` are accepted alongside `prefixes`, so the payload
- * can be translated into a URL and reuse this same route table. Small, but not free.
+ * A tapped push does NOT arrive as a URL — it hands back a data payload. `getInitialURL` and
+ * `subscribe` turn its subject into the address its screen has (`subjectAddressOf`), so a push
+ * reuses this same route table (`F6-02`).
  */
+const PREFIX = 'heliogrid://';
+
+function linkOf(subject: PushSubject | null): string | null {
+  const address = subjectAddressOf(subject?.subjectKind);
+  return address === null ? null : `${PREFIX}${address}`;
+}
+
 export const linkingOptions = {
-  prefixes: ['heliogrid://'],
+  prefixes: [PREFIX],
+  async getInitialURL(): Promise<string | null> {
+    return (await Linking.getInitialURL()) ?? linkOf(await pushThatOpenedTheApp());
+  },
+  subscribe(listener: (url: string) => void): () => void {
+    const links = Linking.addEventListener('url', ({ url }) => listener(url));
+    const pushes = onPushOpened((subject) => {
+      const url = linkOf(subject);
+      if (url !== null) listener(url);
+    });
+    return () => {
+      links.remove();
+      pushes();
+    };
+  },
 };

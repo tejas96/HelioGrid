@@ -2,6 +2,7 @@ import {
   BILLING_CYCLES,
   BILLING_NOTICES,
   BILLING_STATES,
+  CANCELLATION_REASONS,
   COLLECTION_KINDS,
   ENTITLEMENT_LIMIT_KINDS,
   ENTITLEMENT_OVERRIDE_KINDS,
@@ -57,12 +58,15 @@ export const invoiceKindSchema = z.enum(INVOICE_KINDS);
 /** Where a platform invoice stands (`M12-44`). */
 export const invoiceStatusSchema = z.enum(INVOICE_STATUSES);
 
+/** Why an Owner cancelled (`M12-50`); the pgEnum `cancellation_reason` mirrors it. */
+export const cancellationReasonSchema = z.enum(CANCELLATION_REASONS);
+
 /** An overage add-on's life (`M12-35`); the pgEnum `overage_addon_status` mirrors it. */
 export const overageAddOnStatusSchema = z.enum(OVERAGE_ADDON_STATUSES);
 
 /**
- * Why a checkout could not open. `CHECKOUT_NOT_POSSIBLE`: the company is not on a trial — paying
- * from a lapsed state is reactivation (`M12-08`, T-M12-002). `TIER_NOT_SOLD`: the market's book
+ * Why a checkout could not open. `CHECKOUT_NOT_POSSIBLE`: the company's row is live past its trial
+ * (`active`, `past_due`) — a trial converts and a dead row reactivates (`M12-08`). `TIER_NOT_SOLD`: the market's book
  * sells no price for that tier on that cycle (Enterprise is sold, never bought — `BM-15`).
  * `GATEWAY_UNAVAILABLE`: the gateway did not answer; nothing was opened, and the same call may be
  * sent again.
@@ -72,6 +76,27 @@ export const checkoutErrorCodes = [
   'TIER_NOT_SOLD',
   'GATEWAY_UNAVAILABLE',
 ] as const;
+
+/**
+ * Why a cancel or a refund did not happen. `CANCEL_NOT_POSSIBLE`: the row is not `active` — it is
+ * a trial, already cancelled, or owed a payment (`M12-50`). `REFUND_NOT_POSSIBLE`: the company's
+ * first paid cycle is past its window, or the row is no longer `active` (`M12-47`).
+ */
+export const billingActErrorCodes = [
+  'CANCEL_NOT_POSSIBLE',
+  'REFUND_NOT_POSSIBLE',
+  'GATEWAY_UNAVAILABLE',
+] as const;
+export const billingActErrorCodeSchema = z.enum(billingActErrorCodes);
+
+export const cancelRequestSchema = z.object({ reason: cancellationReasonSchema.nullable() });
+export type CancelRequest = z.infer<typeof cancelRequestSchema>;
+
+/** Service runs until the paid period ends (`M12-50`). */
+export const cancelledSchema = z.object({ runsUntil: z.string().datetime() });
+
+/** The refund went to its source; the credit note names it (`M12-47`). */
+export const refundedSchema = z.object({ creditNoteNumber: z.string() });
 export const checkoutErrorCodeSchema = z.enum(checkoutErrorCodes);
 export type CheckoutErrorCode = z.infer<typeof checkoutErrorCodeSchema>;
 
@@ -89,7 +114,10 @@ export type CheckoutOpened = z.infer<typeof checkoutOpenedSchema>;
  * Platform billing (`M12`). `checkout` converts a trial (`M12-54`): it opens the gateway's hosted
  * page on the rail the market's ladder names (`M12-11`), and the company turns `active` when the
  * gateway's message says it paid. It is idempotent by its own rule, so it takes no retry key: the
- * same pick sent again answers the page already open, and a new pick closes that page first. `gatewayEvents` is that message's door: the gateway signs it,
+ * same pick sent again answers the page already open, and a new pick closes that page first; from
+ * a dead row it opens a new subscription's page (`M12-08`). `cancel` runs the row to its paid
+ * period end (`M12-50`) and `refund` pays the first cycle back (`M12-47`): each locks the row, so a
+ * second press moves nothing. `gatewayEvents` is that message's door: the gateway signs it,
  * so the signature is its only authentication, and every message the api handled, refused or has
  * seen before answers 200 so the gateway stops sending it.
  */
@@ -104,6 +132,28 @@ export const billingContract = c.router({
       409: errorEnvelope(checkoutErrorCodeSchema.extract(['CHECKOUT_NOT_POSSIBLE'])),
       422: errorEnvelope(checkoutErrorCodeSchema.extract(['TIER_NOT_SOLD'])),
       502: errorEnvelope(checkoutErrorCodeSchema.extract(['GATEWAY_UNAVAILABLE'])),
+    },
+  },
+  cancel: {
+    method: 'POST',
+    path: '/billing/cancel',
+    body: cancelRequestSchema,
+    responses: {
+      200: cancelledSchema,
+      401: unauthenticatedEnvelope,
+      409: errorEnvelope(billingActErrorCodeSchema.extract(['CANCEL_NOT_POSSIBLE'])),
+      502: errorEnvelope(billingActErrorCodeSchema.extract(['GATEWAY_UNAVAILABLE'])),
+    },
+  },
+  refund: {
+    method: 'POST',
+    path: '/billing/refund',
+    body: z.object({}).strict(),
+    responses: {
+      200: refundedSchema,
+      401: unauthenticatedEnvelope,
+      409: errorEnvelope(billingActErrorCodeSchema.extract(['REFUND_NOT_POSSIBLE'])),
+      502: errorEnvelope(billingActErrorCodeSchema.extract(['GATEWAY_UNAVAILABLE'])),
     },
   },
   gatewayEvents: {

@@ -10,6 +10,12 @@ export const INVOICE_DOCUMENT = {
   /** A registered supplier's invoice carries the scheme's tax; an unregistered one's is plain (`F1-29`). */
   taxInvoice: /*i18n*/ { id: 'Tax invoice' },
   plainInvoice: /*i18n*/ { id: 'Invoice' },
+  /** A refund's credit note (`M12-47`): taxed or plain as its invoice was. */
+  taxCreditNote: /*i18n*/ { id: 'Tax credit note' },
+  plainCreditNote: /*i18n*/ { id: 'Credit note' },
+  /** The invoice a credit note pays back. */
+  againstInvoice: /*i18n*/ { id: 'Against invoice' },
+  creditNoteNumber: /*i18n*/ { id: 'Credit note number' },
   number: /*i18n*/ { id: 'Invoice number' },
   issuedOn: /*i18n*/ { id: 'Date of issue' },
   paysThrough: /*i18n*/ { id: 'Paid period ends' },

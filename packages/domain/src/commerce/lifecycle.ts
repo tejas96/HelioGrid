@@ -21,6 +21,7 @@ export const SUBSCRIPTION_CAUSES = [
   'cancelled',
   'trial_expired',
   'grace_expired',
+  'refunded',
 ] as const;
 
 export type SubscriptionCause = (typeof SUBSCRIPTION_CAUSES)[number];
@@ -35,7 +36,9 @@ export const METERED_PAUSE_DAY = 4;
 export const ENTITLEMENT_BUFFER_DAYS = 3;
 
 /**
- * `M12-04` — every edge of the machine. `cancelled` has none: it is left only by reactivation,
+ * `M12-04` — every edge of the machine. A refund (`M12-47`) cancels too, ending the paid period at
+ * its own moment — from `active`, or from `past_due` when a charge failed while the refund was out;
+ * a row already `cancelled` stays so, its period ended at the refund. `cancelled` has none: it is left only by reactivation,
  * which starts a NEW subscription (`M12-08`). `halted` and `expired` have one each, `paid`, and
  * `charges.ts` admits it only for a charge that happened BEFORE the timer moved the row — inside
  * the grace for a halt, inside the trial for an expiry — because such a charge proves the company
@@ -48,8 +51,8 @@ const EDGES: Readonly<
   Record<BillingState, Readonly<Partial<Record<SubscriptionCause, BillingState>>>>
 > = {
   trialing: { paid: 'active', trial_expired: 'expired' },
-  active: { charge_failed: 'past_due', cancelled: 'cancelled' },
-  past_due: { paid: 'active', grace_expired: 'halted' },
+  active: { charge_failed: 'past_due', cancelled: 'cancelled', refunded: 'cancelled' },
+  past_due: { paid: 'active', grace_expired: 'halted', refunded: 'cancelled' },
   halted: { paid: 'active' },
   expired: { paid: 'active' },
   cancelled: {},

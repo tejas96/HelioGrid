@@ -14,6 +14,7 @@ const TONE: Record<NonNullable<ShellGlyphProps['tone']>, string> = {
   info: theme.colors.info,
   danger: theme.colors['danger-text'],
   success: theme.colors['success-text'],
+  warning: theme.colors['warning-text'],
 };
 
 /**

@@ -1,8 +1,10 @@
 import notifee, { AndroidImportance, AuthorizationStatus } from '@notifee/react-native';
 import {
+  getInitialNotification,
   getMessaging,
   getToken,
   onMessage,
+  onNotificationOpenedApp,
   registerDeviceForRemoteMessages,
 } from '@react-native-firebase/messaging';
 import { Platform } from 'react-native';
@@ -88,11 +90,11 @@ export async function showInForeground(title: string, body: string): Promise<voi
 }
 
 /**
- * Every arrival, foreground and tapped, with the deep link the payload carries.
+ * Every arrival while the app is in front, with the deep link the payload carries.
  *
  * `subjectKind` and `subjectRef` are what the server puts in `data` — a notification is a
- * pointer to a real record and never a dead announcement (`F6-02`). Routing on them belongs to
- * the navigator and lands with the first screen that has a subject to route to.
+ * pointer to a real record and never a dead announcement (`F6-02`). A tap routes through the
+ * navigator's linking (`onPushOpened`, `navigation/linking.ts`).
  */
 export function onPushArrived(
   handle: (arrival: {
@@ -130,4 +132,40 @@ function subscribe(
     });
   });
   return unsubscribe;
+}
+
+/** The subject a tapped push points at (`F6-02`): its kind, and the record's id. */
+export interface PushSubject {
+  readonly subjectKind?: string;
+  readonly subjectRef?: string;
+}
+
+/**
+ * A push the person TAPPED while the app was in the background, or the one that started it. Each
+ * answers the subject it carries, so the navigator opens its screen; no messaging answers nothing.
+ */
+export function onPushOpened(handle: (subject: PushSubject) => void): () => void {
+  try {
+    return onNotificationOpenedApp(getMessaging(), (remote) => handle(subjectOf(remote.data)));
+  } catch {
+    return () => {};
+  }
+}
+
+export async function pushThatOpenedTheApp(): Promise<PushSubject | null> {
+  try {
+    const remote = await getInitialNotification(getMessaging());
+    return remote === null ? null : subjectOf(remote.data);
+  } catch {
+    return null;
+  }
+}
+
+function subjectOf(data: Record<string, unknown> | undefined): PushSubject {
+  const kind = data?.subjectKind;
+  const ref = data?.subjectRef;
+  return {
+    ...(typeof kind === 'string' ? { subjectKind: kind } : {}),
+    ...(typeof ref === 'string' ? { subjectRef: ref } : {}),
+  };
 }

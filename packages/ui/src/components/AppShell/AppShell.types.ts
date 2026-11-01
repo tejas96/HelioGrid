@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
+import type { FocusHandle } from '../../primitives/FocusAfter/FocusAfter.types';
 import type { ShellGlyphName } from './ShellGlyph.shapes';
 
 /**
@@ -131,6 +132,11 @@ export interface MobileTopBarProps {
    * than cuts, so a longer language keeps every word.
    */
   title?: TranslatedText;
+  /**
+   * The title's focus handle — where a page lands the keyboard (web) or the screen reader (phone)
+   * once a control that left with its press (`Try again`) is gone. Only with `title`.
+   */
+  titleRef?: Ref<FocusHandle>;
   /** Extra round `ShellAction`s. */
   actions?: ReactNode;
   /**
@@ -161,9 +167,10 @@ export interface ShellGlyphProps {
    * `secondary` at rest, `inverse` on the near-black pill, `primary` on a state's mark and in a
    * round shell button, `accent` in a settings row's icon circle (`SCR-SHELL-01`, *More*), `danger`
    * on a `Button` whose `tone` is `danger`, so the glyph matches its words, `info` in an info icon
-   * circle (`SCR-M01-06`'s demo door), `success` on a granted line (`SCR-M01-10`'s role card).
+   * circle (`SCR-M01-06`'s demo door), `success` on a granted line (`SCR-M01-10`'s role card),
+   * `warning` on the billing strip's `Paused` mark (`SCR-M12-02`).
    */
-  tone?: 'primary' | 'secondary' | 'inverse' | 'accent' | 'info' | 'danger' | 'success';
+  tone?: 'primary' | 'secondary' | 'inverse' | 'accent' | 'info' | 'danger' | 'success' | 'warning';
 }
 
 export interface AppShellProps {

@@ -1,7 +1,9 @@
 import { theme } from '@heliogrid/theme';
+import { useImperativeHandle, useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { useGround } from '../../primitives/Ground/Ground.native';
+import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { LogoTile } from '../Wordmark/Wordmark.native';
 import type { MobileTopBarProps } from './AppShell.types';
@@ -35,18 +37,23 @@ export function MobileTopBar({
   avatar,
   leading,
   title,
+  titleRef,
   actions,
   scrolled = false,
   style,
 }: NativeMobileTopBarProps) {
   const { ground } = useGround();
+  const titleView = useRef<View>(null);
+  useImperativeHandle(titleRef, () => ({
+    focus: () => focusScreenReaderOn(() => titleView.current),
+  }));
   return (
     <View
       style={[styles.bar, { backgroundColor: ground }, scrolled ? styles.lifted : undefined, style]}
     >
       {leading}
       {title !== undefined ? (
-        <View style={styles.title} accessibilityRole="header">
+        <View ref={titleView} style={styles.title} accessible accessibilityRole="header">
           <Text variant="h3" bold>
             {title}
           </Text>

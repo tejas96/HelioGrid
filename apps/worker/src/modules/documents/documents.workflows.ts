@@ -1,4 +1,7 @@
 import type {
+  CreditNoteDocumentActivities,
+  CreditNoteDocumentStepResult,
+  creditNoteDocumentWorkflow,
   DOCUMENT_RENDER_QUEUE,
   DocumentRenderActivities,
   InvoiceDocumentActivities,
@@ -22,6 +25,12 @@ const { invoiceDocumentPage, attachInvoicePdf } = proxyActivities<InvoiceDocumen
   retry: { initialInterval: '10 seconds', maximumInterval: '10 minutes' },
 });
 
+const { creditNotePage, attachCreditNotePdf } = proxyActivities<CreditNoteDocumentActivities>({
+  startToCloseTimeout: '1 minute',
+  // As the invoice's: the refund is committed, so an outage only delays the PDF.
+  retry: { initialInterval: '10 seconds', maximumInterval: '10 minutes' },
+});
+
 /** The literal the contract names; a renamed queue fails to compile here. */
 const RENDER_QUEUE: typeof DOCUMENT_RENDER_QUEUE = 'heliogrid-documents';
 
@@ -41,4 +50,15 @@ export async function invoiceDocument(
   if (page === null) return { attached: false };
   const { pdfBase64 } = await renderPdf({ html: page.html });
   return attachInvoicePdf({ ...invoice, pdfBase64 });
+}
+
+/** A credit note's PDF (`M12-47`): its page, the render, the attach — as an invoice's. */
+export async function creditNoteDocument(
+  input: WorkflowInput<typeof creditNoteDocumentWorkflow>,
+): Promise<CreditNoteDocumentStepResult> {
+  const note = { tenantId: input.tenantId, creditNoteId: input.creditNoteId };
+  const page = await creditNotePage(note);
+  if (page === null) return { attached: false };
+  const { pdfBase64 } = await renderPdf({ html: page.html });
+  return attachCreditNotePdf({ ...note, pdfBase64 });
 }

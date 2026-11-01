@@ -1,4 +1,5 @@
 import {
+  type CreditNoteDocumentActivities,
   type InvoiceDocumentActivities,
   invoiceDocumentWorkflow,
 } from '@heliogrid/contracts/workflows';
@@ -19,9 +20,12 @@ export class InvoiceDocumentActivityRegistration implements OnModuleInit {
   ) {}
 
   onModuleInit(): void {
-    const activities: InvoiceDocumentActivities = {
+    // One queue hosts both documents' steps (`creditNoteDocumentWorkflow` shares it).
+    const activities: InvoiceDocumentActivities & CreditNoteDocumentActivities = {
       invoiceDocumentPage: (input) => this.documents.page(input),
       attachInvoicePdf: (input) => this.documents.attach(input, Date.now()),
+      creditNotePage: (input) => this.documents.creditNotePage(input),
+      attachCreditNotePdf: (input) => this.documents.attachCreditNote(input, Date.now()),
     };
     this.host.register({ taskQueue: invoiceDocumentWorkflow.taskQueue, activities });
   }

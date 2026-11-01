@@ -2,9 +2,9 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { useShellScreen } from '@heliogrid/data/react';
 import { SHELL } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { MobileTopBar, ShellAction, ShellGlyph } from '@heliogrid/ui';
+import { type FocusHandle, MobileTopBar, ShellAction, ShellGlyph } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
 import { useRef, useState } from 'react';
 import type { View } from 'react-native';
 import { usePillItems } from '../use-pill-items';
@@ -17,6 +17,8 @@ interface DrillDown {
   title: TranslatedText;
   back: TranslatedText;
   onBack: () => void;
+  /** The title's focus handle: where the page lands the screen reader after its `Try again`. */
+  titleRef?: Ref<FocusHandle>;
 }
 
 /**
@@ -66,6 +68,7 @@ export function ShellPage({
             searchLabel={t(SHELL.search)}
             notificationsLabel={t(SHELL.notifications)}
             title={drillDown.title}
+            titleRef={drillDown.titleRef}
             scrolled={scrolled}
             onSearchClick={() => navigation.navigate('Search')}
             leading={

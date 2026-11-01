@@ -728,6 +728,11 @@ msgid "{from}–{to} of {count}"
 msgstr "{count} पैकी {from}–{to}"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:44
+msgid "{from}–{to} of {total}"
+msgstr "{total} पैकी {from}–{to}"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:73
 msgid "{group} · {count}"
 msgstr "{group} · {count}"
@@ -878,6 +883,11 @@ msgid "{left, plural, one {# try left} other {# tries left}} on this code."
 msgstr "या कोडवर {left, plural, one {# प्रयत्न शिल्लक आहे} other {# प्रयत्न शिल्लक आहेत}}."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:64
+msgid "{left} of {total}"
+msgstr "{total} पैकी {left}"
+
+#. js-lingui-explicit-id
 #: src/copy/list-join.ts:13
 msgid "{list} and {last}"
 msgstr "{list} आणि {last}"
@@ -893,6 +903,7 @@ msgid "{list} removed from {name}"
 msgstr "{name} यांच्याकडून काढले: {list}"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:111
 #: src/copy/pricing.ts:106
 msgid "{market} price list · {date}"
 msgstr "{market} किंमत यादी · {date}"
@@ -923,7 +934,7 @@ msgid "{message} Last tried at {time}."
 msgstr "{message} शेवटचा प्रयत्न: {time}."
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:28
+#: src/copy/invoice-document.ts:34
 msgid "{meter}: {quantity} beyond the bundle at {rate} each"
 msgstr "{meter}: बंडलपेक्षा {quantity} जास्त, {rate} प्रति एकक"
 
@@ -1213,6 +1224,11 @@ msgid "{plan} · {against}"
 msgstr "{plan} · {against}"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:106
+msgid "{plan}, {cycle}"
+msgstr "{plan}, {cycle}"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:39
 msgid "{preset} home · {highest} is your highest preset"
 msgstr "{preset} होम · {highest} हा तुमचा सर्वात वरचा प्रीसेट आहे"
@@ -1228,9 +1244,34 @@ msgid "{preset} home · your only preset"
 msgstr "{preset} होम · तुमचा एकमेव प्रीसेट"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:70
+msgid "{price} / mo"
+msgstr "{price} / महिना"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:72
+msgid "{price} / mo + {tax}"
+msgstr "{price} / महिना + {tax}"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:71
+msgid "{price} / yr"
+msgstr "{price} / वर्ष"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:73
+msgid "{price} / yr + {tax}"
+msgstr "{price} / वर्ष + {tax}"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:47
 msgid "{printing} of {of} optional sections print"
 msgstr "{of} पैकी {printing} पर्यायी विभाग छापले जातात"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:74
+msgid "{rate} / min"
+msgstr "{rate} / मिनिट"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:64
@@ -1313,6 +1354,11 @@ msgid "{side}: {note}"
 msgstr "{side}: {note}"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:112
+msgid "{source} · {rate}% {tax}"
+msgstr "{source} · {rate}% {tax}"
+
+#. js-lingui-explicit-id
 #: src/copy/stepper.ts:19
 msgid "{state} · optional"
 msgstr "{state} · पर्यायी"
@@ -1328,12 +1374,12 @@ msgid "{sum} of {target} — {remainder}"
 msgstr "{target} पैकी {sum} — {remainder}"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:30
+#: src/copy/invoice-document.ts:36
 msgid "{supplier} is the supplier of record for this sale. The payment gateway only collects the payment."
 msgstr "या विक्रीचा नोंदीतील पुरवठादार {supplier} आहे. पेमेंट गेटवे फक्त पेमेंट घेतो."
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:27
+#: src/copy/invoice-document.ts:33
 msgid "{tier} plan, {cycle}"
 msgstr "{tier} प्लॅन, {cycle}"
 
@@ -1501,6 +1547,11 @@ msgstr "10 महिन्यांच्या किमतीत 12 महि�
 #: src/copy/billing-notices.ts:91
 msgid "7 days left in your trial"
 msgstr "तुमच्या ट्रायलचे 7 दिवस बाकी"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:92
+msgid "A charge failed"
+msgstr "एक पेमेंट अयशस्वी झाले"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:155
@@ -1720,6 +1771,11 @@ msgid "About your name and photo"
 msgstr "तुमचे नाव आणि फोटो याबद्दल"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:31
+msgid "About your payment method"
+msgstr "तुमच्या पेमेंट पद्धतीबद्दल"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import-fields.ts:28
 msgid "AC output (kW)"
 msgstr "AC आउटपुट (kW)"
@@ -1735,9 +1791,15 @@ msgid "Accept proposal"
 msgstr "प्रस्ताव स्वीकारा"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:88
 #: src/copy/shell.ts:27
 msgid "Account"
 msgstr "खाते"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:55
+msgid "Account halted · the grace window closed"
+msgstr "खाते थांबवले · सवलतीचा कालावधी संपला"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:30
@@ -1761,6 +1823,7 @@ msgid "Actions"
 msgstr "कृती"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:127
 #: src/copy/team.ts:36
 msgid "Active"
 msgstr "सक्रिय"
@@ -1779,6 +1842,11 @@ msgstr "सक्रिय · शेवटचे आज दिसले"
 #: src/copy/pricing.ts:74
 msgid "Active projects"
 msgstr "चालू प्रोजेक्ट्स"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:109
+msgid "Actual usage"
+msgstr "प्रत्यक्ष वापर"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:93
@@ -1963,6 +2031,11 @@ msgid "Against"
 msgstr "तुलनेत"
 
 #. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:17
+msgid "Against invoice"
+msgstr "इनव्हॉइसच्या विरुद्ध"
+
+#. js-lingui-explicit-id
 #: src/copy/settings.ts:47
 msgid "Agent & voice"
 msgstr "एजंट आणि आवाज"
@@ -1978,6 +2051,7 @@ msgid "Agent turn"
 msgstr "एजंटची पाळी"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:35
 #: src/copy/catalog-settings.ts:31
 #: src/copy/price-book.ts:34
 #: src/copy/role-matrix.ts:97
@@ -1989,6 +2063,16 @@ msgstr "सर्व"
 #: src/copy/role-matrix.ts:112
 msgid "All (money scope)"
 msgstr "सर्व (पैशांपुरते)"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:104
+msgid "All {count} invoices"
+msgstr "सर्व {count} इनव्हॉइस"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:103
+msgid "All invoices"
+msgstr "सर्व इनव्हॉइस"
 
 #. js-lingui-explicit-id
 #: src/copy/pricing.ts:36
@@ -2009,6 +2093,11 @@ msgstr "सर्व प्रकारचे अडथळे"
 #: src/copy/role-presets.ts:61
 msgid "All projects, the catalog and price book"
 msgstr "सर्व प्रोजेक्ट, कॅटलॉग आणि प्राइस बुक"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:27
+msgid "All usage"
+msgstr "संपूर्ण वापर"
 
 #. js-lingui-explicit-id
 #: src/copy/allocation.ts:14
@@ -2036,7 +2125,8 @@ msgid "Always sent, and it cannot be muted: billing events are audit-relevant fo
 msgstr "नेहमी पाठवले जाते, आणि ते बंद करता येत नाही: बिलिंगच्या घटना मालकाच्या खात्याच्या ऑडिटसाठी महत्त्वाच्या आहेत."
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:24
+#: src/copy/billing-home.ts:57
+#: src/copy/invoice-document.ts:30
 #: src/copy/price-book.ts:37
 msgid "Amount"
 msgstr "रक्कम"
@@ -2208,6 +2298,12 @@ msgid "Ask a question"
 msgstr "प्रश्न विचारा"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:86
+#: src/copy/billing-records.ts:63
+msgid "Ask for a refund"
+msgstr "परतावा मागा"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:33
 msgid "Ask them when you need one."
 msgstr "गरज असेल तेव्हा त्यांना विचारा."
@@ -2274,6 +2370,11 @@ msgid "Automatic · {name}"
 msgstr "स्वयंचलित · {name}"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:37
+msgid "AutoPay"
+msgstr "AutoPay"
+
+#. js-lingui-explicit-id
 #: src/copy/audio-player.ts:33
 msgid "Available until {date}"
 msgstr "{date} पर्यंत उपलब्ध"
@@ -2303,6 +2404,11 @@ msgstr "{name} कडे परत"
 #: src/copy/roles-reference.ts:42
 msgid "Back to assign roles"
 msgstr "भूमिका देण्याकडे परत"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:121
+msgid "Back to billing"
+msgstr "बिलिंगकडे परत"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:17
@@ -2393,17 +2499,17 @@ msgid "Biggest design"
 msgstr "सर्वात मोठे डिझाइन"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:37
+#: src/copy/invoice-document.ts:43
 msgid "billed monthly"
 msgstr "मासिक बिल"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:17
+#: src/copy/invoice-document.ts:23
 msgid "Billed to"
 msgstr "बिल प्राप्तकर्ता"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:38
+#: src/copy/invoice-document.ts:44
 msgid "billed yearly"
 msgstr "वार्षिक बिल"
 
@@ -2505,6 +2611,11 @@ msgid "Bulleted list"
 msgstr "बुलेट यादी"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:84
+msgid "Business is pausing"
+msgstr "व्यवसाय थांबत आहे"
+
+#. js-lingui-explicit-id
 #: src/copy/settings.ts:42
 msgid "Business profile"
 msgstr "व्यवसाय प्रोफाइल"
@@ -2591,6 +2702,27 @@ msgstr "रद्द करा"
 #: src/copy/invite.ts:62
 msgid "Cancel it on Team"
 msgstr "ते टीमवर रद्द करा"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:49
+#: src/copy/billing-records.ts:58
+msgid "Cancel subscription"
+msgstr "सदस्यता रद्द करा"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:131
+msgid "Cancelled"
+msgstr "रद्द"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:93
+msgid "Cancelled by the owner"
+msgstr "मालकाने रद्द केले"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:69
+msgid "Cancelled. Your plan runs until {date}."
+msgstr "रद्द झाले. तुमचा प्लॅन {date} पर्यंत चालेल."
 
 #. js-lingui-explicit-id
 #: src/copy/usage-meter.ts:30
@@ -2695,11 +2827,17 @@ msgid "Change number"
 msgstr "नंबर बदला"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:42
+msgid "Change plan"
+msgstr "प्लॅन बदला"
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:65
 msgid "Change the price list"
 msgstr "किंमत यादी बदला"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:100
 #: src/copy/catalog-editor.ts:82
 #: src/copy/price-book.ts:75
 msgid "Changed"
@@ -2711,6 +2849,7 @@ msgid "Changed your mind, or it is not the same company?"
 msgstr "विचार बदलला, किंवा ही तीच कंपनी नाही?"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:58
 #: src/copy/price-book.ts:36
 msgid "Charged"
 msgstr "आकारणी"
@@ -2846,6 +2985,7 @@ msgid "Clear it and this item has no price."
 msgstr "हे रिकामे केले तर या आयटमला किंमत राहणार नाही."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:43
 #: src/copy/team.ts:19
 msgid "Clear search"
 msgstr "शोध साफ करा"
@@ -3144,6 +3284,11 @@ msgid "Couldn't load this recording. Try again — the transcript is on this rec
 msgstr "हे रेकॉर्डिंग लोड होऊ शकले नाही. पुन्हा प्रयत्न करा — ट्रान्सक्रिप्ट कसेही या रेकॉर्डवर आहे."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:51
+msgid "Couldn’t load your billing"
+msgstr "तुमचे बिलिंग लोड झाले नाही"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:53
 msgid "Couldn’t load your notifications"
 msgstr "तुमच्या सूचना लोड होऊ शकल्या नाहीत"
@@ -3276,6 +3421,17 @@ msgid "Creating your company"
 msgstr "तुमची कंपनी तयार होत आहे"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:40
+#: src/copy/invoice-document.ts:15
+msgid "Credit note"
+msgstr "क्रेडिट नोट"
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:18
+msgid "Credit note number"
+msgstr "क्रेडिट नोट क्रमांक"
+
+#. js-lingui-explicit-id
 #: src/copy/pricing.ts:33
 msgid "CRM"
 msgstr "CRM"
@@ -3347,7 +3503,12 @@ msgid "data rights"
 msgstr "डेटा हक्क"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:14
+#: src/copy/billing-home.ts:115
+msgid "Date"
+msgstr "तारीख"
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:20
 msgid "Date of issue"
 msgstr "जारी केल्याची तारीख"
 
@@ -3355,6 +3516,11 @@ msgstr "जारी केल्याची तारीख"
 #: src/copy/team.ts:49
 msgid "Day {day} of {days}"
 msgstr "{days} पैकी दिवस {day}"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:63
+msgid "Days left"
+msgstr "उरलेले दिवस"
 
 #. js-lingui-explicit-id
 #: src/copy/team-acts.ts:14
@@ -3496,7 +3662,7 @@ msgid "Derived"
 msgstr "गणनेतून काढलेले"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:22
+#: src/copy/invoice-document.ts:28
 msgid "Description"
 msgstr "वर्णन"
 
@@ -3669,6 +3835,11 @@ msgid "Drop files here or tap to browse · PDF up to {size} MB"
 msgstr "फाइल इथे सोडा किंवा निवडण्यासाठी टॅप करा · PDF, {size} MB पर्यंत"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:82
+msgid "Due"
+msgstr "देय"
+
+#. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:88
 msgid "Due at {stage}"
 msgstr "{stage} वेळी देय"
@@ -3771,6 +3942,16 @@ msgid "Employee records, documents, attendance and leave"
 msgstr "कर्मचारी नोंदी, कागदपत्रे, हजेरी आणि रजा"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:66
+msgid "Ended"
+msgstr "संपले"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:65
+msgid "Ends"
+msgstr "संपेल"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:151
 #: src/copy/proposal-template.ts:156
 msgid "English, Hindi and Marathi"
@@ -3827,6 +4008,11 @@ msgid "Every feature is in every plan — others hold features back for higher p
 msgstr "प्रत्येक प्लॅनमध्ये प्रत्येक फीचर आहे — इतर फीचर वरच्या प्लॅनसाठी राखून ठेवतात."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:99
+msgid "Every lead, design, proposal and project — kept"
+msgstr "प्रत्येक लीड, डिझाइन, प्रस्ताव आणि प्रोजेक्ट — सुरक्षित"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:130
 msgid "Every panel, inverter and part, by make."
 msgstr "प्रत्येक पॅनल, इन्व्हर्टर आणि भाग, ब्रँडसह."
@@ -3837,9 +4023,19 @@ msgid "Every plan"
 msgstr "प्रत्येक प्लॅन"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:46
+msgid "Every reminder sent, and when"
+msgstr "पाठवलेले प्रत्येक स्मरणपत्र, आणि केव्हा"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:146
 msgid "every section prints"
 msgstr "प्रत्येक विभाग छापला जातो"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:48
+msgid "Every state, when, and why"
+msgstr "प्रत्येक स्थिती, केव्हा आणि का"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:22
@@ -3850,6 +4046,16 @@ msgstr "{company} मधील सर्वजण"
 #: src/copy/team.ts:23
 msgid "Everyone at {company} matching {query}"
 msgstr "{company} मधील {query} शी जुळणारे सर्वजण"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:51
+msgid "Everything"
+msgstr "सर्व काही"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:96
+msgid "Everything returns the moment the first payment confirms."
+msgstr "पहिले पेमेंट निश्चित होताच सर्व काही परत येते."
 
 #. js-lingui-explicit-id
 #: src/copy/role-presets.ts:51
@@ -3922,6 +4128,7 @@ msgid "Factories, warehouses and offices — bigger rooftops, sold to a business
 msgstr "कारखाने, गोदामे आणि कार्यालये — मोठी छते, व्यवसायाला विकलेली."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:37
 #: src/copy/catalog-import.ts:119
 #: src/copy/catalog-import.ts:127
 msgid "Failed"
@@ -3989,6 +4196,7 @@ msgid "Financials"
 msgstr "आर्थिक तपशील"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:33
 #: src/copy/catalog-import.ts:78
 #: src/copy/team.ts:11
 msgid "Find in this list"
@@ -4003,6 +4211,11 @@ msgstr "नंतर पूर्ण करा"
 #: src/copy/setup-what-you-sell.ts:44
 msgid "Finish later takes you to your company profile, the next step. You can finish both answers there."
 msgstr "नंतर पूर्ण करा तुम्हाला पुढच्या पायरीवर, कंपनी प्रोफाइलमध्ये नेते. दोन्ही उत्तरे तिथे पूर्ण करता येतात."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:84
+msgid "First cycle"
+msgstr "पहिले चक्र"
 
 #. js-lingui-explicit-id
 #: src/copy/source-document.ts:29
@@ -4028,6 +4241,11 @@ msgstr "{count, plural, one {# ओळ} other {# ओळी}} दुरुस्�
 #: src/copy/data-table.ts:28
 msgid "Fixed."
 msgstr "दुरुस्त झाले."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:116
+msgid "For"
+msgstr "कशासाठी"
 
 #. js-lingui-explicit-id
 #: src/copy/pricing.ts:19
@@ -4114,6 +4332,11 @@ msgstr "तुमच्या साइनअपमधून"
 #: src/copy/allocation.ts:11
 msgid "Fully allocated."
 msgstr "पूर्ण वाटले."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:114
+msgid "GB"
+msgstr "GB"
 
 #. js-lingui-explicit-id
 #: src/copy/compare-grid.ts:15
@@ -4228,6 +4451,11 @@ msgid "Got it"
 msgstr "ठीक आहे"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:78
+msgid "Grace ends"
+msgstr "सवलत संपते"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:29
 msgid "Grievance officer"
 msgstr "तक्रार अधिकारी"
@@ -4241,6 +4469,16 @@ msgstr "ग्राउंड माउंट"
 #: src/copy/time-field.ts:12
 msgid "h:mm AM"
 msgstr "h:mm AM"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:129
+msgid "Halted"
+msgstr "थांबवलेले"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:67
+msgid "Halted since"
+msgstr "केव्हापासून थांबवलेले"
 
 #. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:51
@@ -4757,9 +4995,24 @@ msgid "Invoice"
 msgstr "इनव्हॉइस"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:13
+#: src/copy/billing-home.ts:105
+msgid "Invoice {number} as PDF"
+msgstr "इनव्हॉइस {number} PDF मध्ये"
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:19
 msgid "Invoice number"
 msgstr "इनव्हॉइस क्रमांक"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:34
+msgid "Invoice state"
+msgstr "इनव्हॉइसची स्थिती"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:40
+msgid "Invoices"
+msgstr "इनव्हॉइस"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item-fields.ts:17
@@ -4767,6 +5020,7 @@ msgid "Isc"
 msgstr "Isc"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:38
 #: src/copy/paged-document.ts:27
 msgid "Issued"
 msgstr "जारी केले"
@@ -4857,6 +5111,11 @@ msgid "Keep mine — {field} stays {value}"
 msgstr "माझे ठेवा — {field} {value} च राहील"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:68
+msgid "Keep my plan"
+msgstr "माझा प्लॅन ठेवा"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:86
 msgid "Keep the catalog’s spec, set the price"
 msgstr "कॅटलॉगचे स्पेसिफिकेशन ठेवा, किंमत ठरवा"
@@ -4865,6 +5124,11 @@ msgstr "कॅटलॉगचे स्पेसिफिकेशन ठेव�
 #: src/copy/invite-decline.ts:18
 msgid "Keep the invite"
 msgstr "आमंत्रण ठेवा"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:62
+msgid "Kept"
+msgstr "सुरक्षित"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:107
@@ -5033,6 +5297,11 @@ msgstr "LFP"
 #: src/copy/pricing.ts:98
 msgid "Limits"
 msgstr "मर्यादा"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:110
+msgid "Limits and rates · {source}"
+msgstr "मर्यादा आणि दर · {source}"
 
 #. js-lingui-explicit-id
 #: src/copy/charts.ts:24
@@ -5212,6 +5481,11 @@ msgid "Loading what your role can and cannot do"
 msgstr "तुमची भूमिका काय करू शकते आणि काय नाही, लोड होत आहे"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:50
+msgid "Loading your billing"
+msgstr "तुमचे बिलिंग लोड होत आहे"
+
+#. js-lingui-explicit-id
 #: src/copy/branding.ts:56
 msgid "Loading your branding"
 msgstr "तुमचे ब्रँडिंग लोड होत आहे"
@@ -5365,7 +5639,7 @@ msgid "Marketing"
 msgstr "मार्केटिंग"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:44
+#: src/copy/invoice-document.ts:50
 msgid "Marketing sends"
 msgstr "मार्केटिंग संदेश"
 
@@ -5420,6 +5694,11 @@ msgid "Meter fitted"
 msgstr "मीटर बसवला"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:29
+msgid "Method"
+msgstr "पद्धत"
+
+#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:33
 msgid "Metres"
 msgstr "मीटर"
@@ -5438,6 +5717,11 @@ msgstr "मायक्रो-इन्व्हर्टर"
 #: src/copy/role-matrix.ts:87
 msgid "Mint, label and re-mint a customer link for a named contact"
 msgstr "एखाद्या संपर्कासाठी ग्राहक लिंक तयार करा, नाव द्या आणि पुन्हा तयार करा"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:82
+msgid "Missing something I need"
+msgstr "मला हवे ते नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:36
@@ -5469,6 +5753,11 @@ msgstr "रकमेचा सारांश"
 #: src/copy/catalog-settings.ts:145
 msgid "Mono PERC"
 msgstr "Mono PERC"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:107
+msgid "monthly"
+msgstr "मासिक"
 
 #. js-lingui-explicit-id
 #: src/copy/pricing.ts:63
@@ -5529,6 +5818,11 @@ msgstr "एक टप्पा पुढे न्या"
 #: src/copy/kanban.ts:16
 msgid "Move on a stage — move to {stage}"
 msgstr "एक टप्पा पुढे न्या — {stage} मध्ये न्या"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:83
+msgid "Moving to another tool"
+msgstr "दुसऱ्या टूलवर जात आहोत"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import-fields.ts:30
@@ -5699,6 +5993,16 @@ msgid "Needs fixing"
 msgstr "दुरुस्त करायचे आहे"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:24
+msgid "Needs the owner"
+msgstr "मालकाची गरज आहे"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:22
+msgid "Needs you"
+msgstr "तुमची गरज आहे"
+
+#. js-lingui-explicit-id
 #: src/copy/image.ts:16
 msgid "Never measured from"
 msgstr "यावरून कधीही मोजमाप घेतले जात नाही"
@@ -5764,10 +6068,16 @@ msgid "New rate"
 msgstr "नवीन दर"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:48
 #: src/copy/explainer.ts:7
 #: src/copy/shell.ts:52
 msgid "Next"
 msgstr "पुढे"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:59
+msgid "Next bill"
+msgstr "पुढील बिल"
 
 #. js-lingui-explicit-id
 #: src/copy/date-picker.ts:12
@@ -5879,6 +6189,16 @@ msgstr "या कालावधीचा अजून कोणताही �
 #: src/copy/date-set.ts:14
 msgid "No holidays yet. Tap a date to add one."
 msgstr "अजून सुट्ट्या नाहीत. जोडण्यासाठी एखादी तारीख टॅप करा."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:41
+msgid "No invoice matches {query}"
+msgstr "{query} शी जुळणारे इनव्हॉइस नाही"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:100
+msgid "No invoices yet"
+msgstr "अजून इनव्हॉइस नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/kanban.ts:17
@@ -6026,7 +6346,7 @@ msgid "No steps yet"
 msgstr "अजून कोणतेही टप्पे नाहीत"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:29
+#: src/copy/invoice-document.ts:35
 msgid "No tax is charged on this invoice."
 msgstr "या इनव्हॉइसवर कोणताही कर आकारलेला नाही."
 
@@ -6117,6 +6437,7 @@ msgid "Not available here"
 msgstr "इथे उपलब्ध नाही"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:75
 #: src/copy/pricing.ts:83
 msgid "Not capped"
 msgstr "मर्यादा नाही"
@@ -6376,6 +6697,7 @@ msgid "Nothing here"
 msgstr "इथे काहीही नाही"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:46
 #: src/copy/data-table.ts:13
 msgid "Nothing here yet"
 msgstr "इथे अजून काहीही नाही"
@@ -6503,12 +6825,12 @@ msgstr "क्रमांकित यादी"
 #. js-lingui-explicit-id
 #: src/copy/usage-meter.ts:18
 msgid "of {limit}"
-msgstr "{limit} पैकी"
+msgstr "/ {limit}"
 
 #. js-lingui-explicit-id
 #: src/copy/usage-meter.ts:19
 msgid "of {limit} {unit}"
-msgstr "{limit} {unit} पैकी"
+msgstr "/ {limit} {unit}"
 
 #. js-lingui-explicit-id
 #: src/copy/allocation.ts:25
@@ -6554,6 +6876,11 @@ msgstr "एक मोबाइल नंबर म्हणजे एक HelioGr
 #: src/copy/company-signup.ts:63
 msgid "One number, one account"
 msgstr "एक नंबर, एक खाते"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:92
+msgid "One payment. Everything returns the moment the payment confirms."
+msgstr "एक पेमेंट. पेमेंट निश्चित होताच सर्व काही परत येते."
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:51
@@ -6764,7 +7091,17 @@ msgid "Owner Dashboard"
 msgstr "ओनर डॅशबोर्ड"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:15
+#: src/copy/billing-records.ts:36
+msgid "Paid"
+msgstr "भरले"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:79
+msgid "Paid on your provider’s own page."
+msgstr "तुमच्या प्रदात्याच्या स्वतःच्या पेजवर पेमेंट होते."
+
+#. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:21
 msgid "Paid period ends"
 msgstr "भरलेला कालावधी संपतो"
 
@@ -6794,6 +7131,11 @@ msgid "parts"
 msgstr "भाग"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:77
+msgid "Past due"
+msgstr "थकीत"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:22
 msgid "past releases"
 msgstr "मागील रिलीज"
@@ -6807,6 +7149,11 @@ msgstr "मागील व्हर्जन"
 #: src/copy/audio-player.ts:14
 msgid "Pause recording"
 msgstr "रेकॉर्डिंग थांबवा"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:49
+msgid "Paused"
+msgstr "थांबवले"
 
 #. js-lingui-explicit-id
 #: src/copy/usage-meter.ts:29
@@ -6824,6 +7171,11 @@ msgid "Paused for"
 msgstr "या नंबरसाठी थांबवले"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:80
+msgid "Pay"
+msgstr "पेमेंट करा"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:71
 msgid "Pay in Billing to turn them back on."
 msgstr "ही पुन्हा चालू करण्यासाठी बिलिंगमध्ये पेमेंट करा."
@@ -6832,6 +7184,11 @@ msgstr "ही पुन्हा चालू करण्यासाठी �
 #: src/copy/billing-notices.ts:78
 msgid "Pay now in Billing."
 msgstr "आता बिलिंगमध्ये पेमेंट करा."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:119
+msgid "pay or manage billing"
+msgstr "पेमेंट किंवा बिलिंग सांभाळू"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:52
@@ -6849,14 +7206,50 @@ msgid "Payment"
 msgstr "पेमेंट"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:76
 #: src/copy/billing-notices.ts:57
 msgid "Payment failed"
 msgstr "पेमेंट अयशस्वी झाले"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:54
+msgid "Payment failed · day {day} of 7 · a retry is coming"
+msgstr "पेमेंट अयशस्वी · 7 पैकी दिवस {day} · पुन्हा प्रयत्न होईल"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:53
+msgid "Payment failed · day {day} of the 7-day grace"
+msgstr "पेमेंट अयशस्वी · 7 दिवसांच्या सवलतीचा दिवस {day}"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:38
+msgid "Payment link"
+msgstr "पेमेंट लिंक"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:39
+msgid "Payment link · {cycle}"
+msgstr "पेमेंट लिंक · {cycle}"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:28
+msgid "Payment method"
+msgstr "पेमेंट पद्धत"
+
+#. js-lingui-explicit-id
 #: src/copy/freshness.ts:35
 msgid "payment methods"
 msgstr "पेमेंट पद्धती"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:47
+msgid "Payment received"
+msgstr "पेमेंट मिळाले"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:45
+msgid "Payment reminders"
+msgstr "पेमेंट स्मरणपत्रे"
 
 #. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:49
@@ -6888,6 +7281,11 @@ msgstr "पेमेंट"
 #: src/copy/role-presets.ts:60
 msgid "Payments, receipts and project money"
 msgstr "पेमेंट, पावत्या आणि प्रोजेक्टचे पैसे"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:118
+msgid "PDF"
+msgstr "PDF"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import-fields.ts:15
@@ -6961,6 +7359,11 @@ msgid "Phone, email or website"
 msgstr "फोन, ईमेल किंवा वेबसाइट"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:95
+msgid "Pick a plan"
+msgstr "प्लॅन निवडा"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:53
 msgid "Pick a plan in Billing to keep creating."
 msgstr "नवीन काम चालू ठेवण्यासाठी बिलिंगमध्ये प्लॅन निवडा."
@@ -7011,7 +7414,7 @@ msgid "Place each field on one column only."
 msgstr "प्रत्येक फील्ड फक्त एकाच कॉलमवर ठेवा."
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:20
+#: src/copy/invoice-document.ts:26
 msgid "Place of supply"
 msgstr "पुरवठ्याचे ठिकाण"
 
@@ -7026,9 +7429,15 @@ msgid "Placeholder route. The screen is not built yet."
 msgstr "प्लेसहोल्डर मार्ग. ही स्क्रीन अजून तयार झालेली नाही."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:60
 #: src/copy/pricing.ts:95
 msgid "Plan"
 msgstr "प्लॅन"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:47
+msgid "Plan history"
+msgstr "प्लॅनचा इतिहास"
 
 #. js-lingui-explicit-id
 #: src/copy/pricing.ts:66
@@ -7180,6 +7589,7 @@ msgid "Previous step"
 msgstr "मागची पायरी"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:61
 #: src/copy/catalog-add-item.ts:34
 #: src/copy/catalog-editor.ts:19
 #: src/copy/catalog-settings.ts:168
@@ -7458,6 +7868,11 @@ msgid "Rates in force"
 msgstr "लागू दर"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:91
+msgid "Reactivate"
+msgstr "पुन्हा सुरू करा"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:88
 msgid "Reactivate any time with one payment, at today’s prices, in Billing."
 msgstr "बिलिंगमध्ये कधीही एका पेमेंटने, आजच्या किमतीवर, पुन्हा सुरू करा."
@@ -7578,6 +7993,36 @@ msgid "Reference only"
 msgstr "फक्त संदर्भासाठी"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:65
+msgid "Refund"
+msgstr "परतावा"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:67
+msgid "Refund and end my plan"
+msgstr "परतावा द्या आणि माझा प्लॅन बंद करा"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:83
+msgid "Refund available"
+msgstr "परतावा उपलब्ध"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:39
+msgid "Refunded"
+msgstr "परत केले"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:96
+msgid "Refunded in the first cycle"
+msgstr "पहिल्या चक्रात परत केले"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:70
+msgid "Refunded. Credit note {number} is in your invoices."
+msgstr "परत केले. क्रेडिट नोट {number} तुमच्या इनव्हॉइसमध्ये आहे."
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:20
 msgid "Release"
 msgstr "रिलीज"
@@ -7657,6 +8102,16 @@ msgstr "तुमचा लोगो काढायचा?"
 #: src/copy/version-diff.ts:18
 msgid "Removed"
 msgstr "काढले"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:81
+msgid "Renewal invoice"
+msgstr "नूतनीकरण इनव्हॉइस"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:69
+msgid "Renews"
+msgstr "नूतनीकरण"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:34
@@ -7950,6 +8405,11 @@ msgstr "संपूर्ण व्यवसाय"
 #: src/copy/operation-progress.ts:18
 msgid "running"
 msgstr "चालू आहे"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:68
+msgid "Runs until"
+msgstr "केव्हापर्यंत चालेल"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:68
@@ -8306,7 +8766,7 @@ msgid "Sent proposals keep their branding."
 msgstr "पाठवलेले प्रस्ताव आपले ब्रँडिंग ठेवतात."
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:21
+#: src/copy/invoice-document.ts:27
 msgid "Service code"
 msgstr "सेवा कोड"
 
@@ -8334,6 +8794,11 @@ msgstr "किंमत ठरवा"
 #: src/copy/role-card.ts:66
 msgid "Set up the calling agent"
 msgstr "कॉलिंग एजंट सेट करा"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:36
+msgid "Set up when you choose a plan"
+msgstr "प्लॅन निवडल्यावर सेट होईल"
 
 #. js-lingui-explicit-id
 #: src/copy/settings.ts:20
@@ -8433,6 +8898,7 @@ msgid "Show fewer {noun}"
 msgstr "कमी {noun} दाखवा"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:45
 #: src/copy/catalog-import.ts:49
 msgid "Show more"
 msgstr "आणखी दाखवा"
@@ -8554,6 +9020,11 @@ msgid "Sign-off"
 msgstr "मंजुरी"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:90
+msgid "Signed up · 14-day trial"
+msgstr "साइन अप · 14 दिवसांची ट्रायल"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:72
 msgid "Signing in as {name} discards {count} photographs"
 msgstr "{name} म्हणून साइन इन केल्यास {count} फोटो नष्ट होतील"
@@ -8577,6 +9048,11 @@ msgstr "सिंगल फेज"
 #: src/copy/proposal-template.ts:126
 msgid "Size, type and price of your system."
 msgstr "तुमच्या सिस्टमचा आकार, प्रकार आणि किंमत."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:61
+msgid "Skip"
+msgstr "वगळा"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:49
@@ -8648,6 +9124,11 @@ msgstr "या नवीन प्रॉडक्टसाठी लागणा
 #: src/copy/api-error.ts:35
 msgid "Someone changed this while you were editing. Refresh and retry."
 msgstr "तुम्ही संपादित करत असताना कोणीतरी हे बदलले. रिफ्रेश करून पुन्हा प्रयत्न करा."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:85
+msgid "Something else"
+msgstr "दुसरे काही"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:56
@@ -8741,6 +9222,11 @@ msgid "Starts from version {number}"
 msgstr "व्हर्जन {number} पासून सुरू"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:117
+msgid "State"
+msgstr "स्थिती"
+
+#. js-lingui-explicit-id
 #: src/copy/team.ts:12
 msgid "Status"
 msgstr "स्थिती"
@@ -8816,6 +9302,11 @@ msgid "Still nothing to upload over — they stay on this phone."
 msgstr "अपलोड करण्यासाठी अजूनही कनेक्शन नाही — ते याच फोनवर राहतील."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:50
+msgid "Still works"
+msgstr "अजूनही चालते"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:47
 msgid "Stop preferring {name}"
 msgstr "{name} पसंतीतून काढा"
@@ -8858,6 +9349,16 @@ msgid "Structures"
 msgstr "स्ट्रक्चर"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:89
+msgid "Subscription"
+msgstr "सदस्यता"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:57
+msgid "Subscription ended · reactivate to continue"
+msgstr "सदस्यता संपली · सुरू ठेवण्यासाठी पुन्हा सुरू करा"
+
+#. js-lingui-explicit-id
 #: src/copy/project-stages.ts:44
 msgid "Subsidy claim filed"
 msgstr "अनुदान दावा दाखल"
@@ -8868,12 +9369,12 @@ msgid "subsidy rules"
 msgstr "अनुदान नियम"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:25
+#: src/copy/invoice-document.ts:31
 msgid "Subtotal"
 msgstr "उप-एकूण"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:16
+#: src/copy/invoice-document.ts:22
 msgid "Supplier"
 msgstr "पुरवठादार"
 
@@ -8973,6 +9474,11 @@ msgid "Talk to sales"
 msgstr "सेल्सशी बोला"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:43
+msgid "Talk to us"
+msgstr "आमच्याशी बोला"
+
+#. js-lingui-explicit-id
 #: src/copy/date-set.ts:13
 msgid "Tap a date to add a holiday"
 msgstr "सुट्टी जोडण्यासाठी एखादी तारीख टॅप करा"
@@ -9008,13 +9514,18 @@ msgid "Task"
 msgstr "काम"
 
 #. js-lingui-explicit-id
+#: src/copy/invoice-document.ts:14
+msgid "Tax credit note"
+msgstr "कर क्रेडिट नोट"
+
+#. js-lingui-explicit-id
 #: src/copy/invoice-document.ts:11
 msgid "Tax invoice"
 msgstr "कर इनव्हॉइस"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:21
-#: src/copy/invoice-document.ts:23
+#: src/copy/invoice-document.ts:29
 msgid "Tax rate"
 msgstr "कर दर"
 
@@ -9025,7 +9536,7 @@ msgstr "कर दर"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:71
-#: src/copy/invoice-document.ts:19
+#: src/copy/invoice-document.ts:25
 msgid "Tax registration"
 msgstr "कर नोंदणी"
 
@@ -9113,6 +9624,11 @@ msgstr "तो कोड संपला आहे"
 #: src/copy/catalog-import-notes.ts:12
 msgid "That did not go through"
 msgstr "हे झाले नाही"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:76
+msgid "That did not go through. Try again."
+msgstr "हे झाले नाही. पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:97
@@ -9220,6 +9736,11 @@ msgid "The agent called and the customer responded within {days, plural, one {{d
 msgstr "एजंटने कॉल केला आणि ग्राहकाने {days, plural, one {{days} दिवसात} other {{days} दिवसांत}} प्रतिसाद दिला. हा प्रतिसाद कॉलमुळेच आला हे आम्ही सिद्ध करू शकत नाही."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:56
+msgid "The amount"
+msgstr "रक्कम"
+
+#. js-lingui-explicit-id
 #: src/copy/transcript.ts:14
 msgid "The call connected but nothing was transcribed. The recording and the rep's notes are on this record."
 msgstr "कॉल जोडला गेला, पण काहीही ट्रान्सक्राइब झाले नाही. रेकॉर्डिंग आणि प्रतिनिधीच्या नोंदी या रेकॉर्डवर आहेत."
@@ -9301,9 +9822,29 @@ msgid "The file is still being read."
 msgstr "फाइल अजून वाचली जात आहे."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:102
+msgid "The first one arrives when you choose a plan."
+msgstr "प्लॅन निवडल्यावर पहिले इनव्हॉइस येईल."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:101
+msgid "The first one arrives when your trial converts to a plan."
+msgstr "ट्रायल प्लॅनमध्ये बदलल्यावर पहिले इनव्हॉइस येईल."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:87
+msgid "The full first payment goes back to where it came from."
+msgstr "पहिले संपूर्ण पेमेंट जिथून आले तिथेच परत जाते."
+
+#. js-lingui-explicit-id
 #: src/copy/pricing.ts:58
 msgid "The full studio"
 msgstr "संपूर्ण स्टुडिओ"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:95
+msgid "The grace window closed"
+msgstr "सवलतीचा कालावधी संपला"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:105
@@ -9379,6 +9920,16 @@ msgstr "नवीन दर"
 #: src/copy/catalog-add-item.ts:49
 msgid "The panel saves without them. Without the Pmax temp. coefficient, string sizing marks its window estimated. Without bifaciality, the panel's back counts as producing nothing."
 msgstr "पॅनेल यांच्याशिवायही सेव्ह होते. Pmax तापमान गुणांकाशिवाय स्ट्रिंग साइझिंग त्याची विंडो अंदाजित दाखवते. बायफेशियलिटीशिवाय पॅनेलची मागची बाजू काहीही निर्माण करत नाही असे धरले जाते."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:71
+msgid "The payment service did not answer. Nothing was changed. Try again."
+msgstr "पेमेंट सेवेने उत्तर दिले नाही. काहीही बदलले नाही. पुन्हा प्रयत्न करा."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:77
+msgid "The PDF could not open. Try again."
+msgstr "PDF उघडले नाही. पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:30
@@ -9471,6 +10022,11 @@ msgid "The recording reached the retention bound and was deleted. The transcript
 msgstr "रेकॉर्डिंग जतन करण्याच्या मर्यादेपर्यंत पोहोचले आणि हटवले गेले. ट्रान्सक्रिप्ट जतन आहे."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:75
+msgid "The refund window has closed. Reload to see your plan."
+msgstr "परताव्याचा कालावधी संपला. तुमचा प्लॅन पाहण्यासाठी पुन्हा लोड करा."
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:59
 msgid "The release wasn't published. Nothing changed — try again."
 msgstr "रिलीज प्रकाशित झाली नाही. काहीही बदलले नाही — पुन्हा प्रयत्न करा."
@@ -9536,6 +10092,11 @@ msgid "The tranches must add up to exactly 100%. Place the remainder before savi
 msgstr "हप्त्यांची बेरीज नेमकी 100% असली पाहिजे. सेव्ह करण्यापूर्वी उरलेली रक्कम ठेवा."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:94
+msgid "The trial ended"
+msgstr "ट्रायल संपली"
+
+#. js-lingui-explicit-id
 #: src/copy/price-book.ts:84
 msgid "The version wasn't saved. Nothing changed — try again."
 msgstr "व्हर्जन सेव्ह झाले नाही. काहीही बदलले नाही — पुन्हा प्रयत्न करा."
@@ -9544,6 +10105,11 @@ msgstr "व्हर्जन सेव्ह झाले नाही. का�
 #: src/copy/billing-notices.ts:32
 msgid "the voice agent"
 msgstr "व्हॉइस एजंट"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:23
+msgid "The way back"
+msgstr "परत येण्याचा मार्ग"
 
 #. js-lingui-explicit-id
 #: src/copy/time-field.ts:14
@@ -9751,6 +10317,11 @@ msgid "This person is the only EPC Owner. A company always keeps at least one EP
 msgstr "ही व्यक्ती कंपनीची एकमेव EPC Owner आहे. कंपनीत नेहमी किमान एक EPC Owner आणि टीम सांभाळू शकणारी एक व्यक्ती असणे आवश्यक आहे."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:74
+msgid "This plan can no longer be cancelled. Reload to see why."
+msgstr "हा प्लॅन आता रद्द होऊ शकत नाही. कारण पाहण्यासाठी पुन्हा लोड करा."
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import-rows.ts:109
 msgid "This product changed in your catalog after the preview, so the row was not written."
 msgstr "प्रिव्ह्यूनंतर तुमच्या कॅटलॉगमध्ये हे प्रॉडक्ट बदलले, म्हणून ही ओळ जतन झाली नाही."
@@ -9857,7 +10428,13 @@ msgid "To join another company, ask its owner to invite you."
 msgstr "दुसऱ्या कंपनीत सामील होण्यासाठी, तिच्या मालकाला तुम्हाला आमंत्रित करायला सांगा."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:90
+msgid "To reactivate"
+msgstr "पुन्हा सुरू करण्यासाठी"
+
+#. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:15
+#: src/copy/billing-records.ts:66
 msgid "Today"
 msgstr "आज"
 
@@ -9872,6 +10449,11 @@ msgid "Today, {time}"
 msgstr "आज, {time}"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-records.ts:81
+msgid "Too expensive"
+msgstr "खूप महाग"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:42
 msgid "Too many attempts. Wait a moment and retry."
 msgstr "खूप प्रयत्न झाले. थोडा वेळ थांबून पुन्हा प्रयत्न करा."
@@ -9882,7 +10464,7 @@ msgid "TOPCon"
 msgstr "TOPCon"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:26
+#: src/copy/invoice-document.ts:32
 msgid "Total"
 msgstr "एकूण"
 
@@ -9892,7 +10474,7 @@ msgid "Total capacity installed"
 msgstr "एकूण बसवलेली क्षमता"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:45
+#: src/copy/invoice-document.ts:51
 msgid "Tracked field seats"
 msgstr "ट्रॅक केलेल्या फील्ड सीट्स"
 
@@ -9912,6 +10494,22 @@ msgid "Transcript"
 msgstr "ट्रान्सक्रिप्ट"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:62
+msgid "Trial"
+msgstr "ट्रायल"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:130
+msgid "Trial ended"
+msgstr "ट्रायल संपली"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:42
+msgid "Try a part of the invoice number."
+msgstr "इनव्हॉइस नंबरचा एखादा भाग वापरून पाहा."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:55
 #: src/copy/branding.ts:58
 #: src/copy/catalog-add-item.ts:77
 #: src/copy/catalog-editor.ts:76
@@ -9961,6 +10559,11 @@ msgstr "पुन्हा प्रयत्न करा, किंवा त�
 #: src/copy/shell.ts:45
 msgid "Try again. If it keeps failing, tell your admin what you were doing."
 msgstr "पुन्हा प्रयत्न करा. वारंवार अयशस्वी होत असल्यास, तुम्ही काय करत होता ते तुमच्या अ‍ॅडमिनला सांगा."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:52
+msgid "Try again. If it keeps failing, you can still pay from the link in your last reminder."
+msgstr "पुन्हा प्रयत्न करा. वारंवार अयशस्वी झाल्यास, तुमच्या शेवटच्या स्मरणपत्रातील लिंकवरून पेमेंट करू शकता."
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:54
@@ -10046,6 +10649,12 @@ msgid "Unread. {title}. {body}. {time}."
 msgstr "न वाचलेले. {title}. {body}. {time}."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:85
+#: src/copy/billing-records.ts:52
+msgid "Until"
+msgstr "पर्यंत"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:48
 msgid "Until you finish, proposals start without your answers."
 msgstr "पूर्ण करेपर्यंत प्रस्ताव तुमच्या उत्तरांशिवाय सुरू होतात."
@@ -10074,6 +10683,11 @@ msgstr "कमाल {count} ओळी"
 #: src/copy/catalog-add-item-fields.ts:55
 msgid "Up to 120 characters."
 msgstr "जास्तीत जास्त 120 अक्षरे."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:30
+msgid "Update"
+msgstr "अपडेट करा"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:68
@@ -10150,6 +10764,11 @@ msgstr "वापरण्यायोग्य ऊर्जा (kWh)"
 #: src/copy/settings.ts:50
 msgid "Usage"
 msgstr "वापर"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:26
+msgid "Usage this cycle"
+msgstr "या चक्रातील वापर"
 
 #. js-lingui-explicit-id
 #: src/copy/brand-colour-field.ts:27
@@ -10338,7 +10957,7 @@ msgid "Voc temp. coefficient"
 msgstr "Voc तापमान गुणांक"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:43
+#: src/copy/invoice-document.ts:49
 #: src/copy/pricing.ts:77
 msgid "Voice minutes"
 msgstr "व्हॉइस मिनिटे"
@@ -10590,6 +11209,11 @@ msgid "What it is"
 msgstr "हे काय आहे"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:41
+msgid "What my plan includes"
+msgstr "माझ्या प्लॅनमध्ये काय आहे"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:109
 msgid "What one battery costs you, before tax."
 msgstr "एका बॅटरीची तुमची किंमत, करापूर्वी."
@@ -10771,6 +11395,11 @@ msgid "Where you're based."
 msgstr "तुम्ही कुठे आहात."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:32
+msgid "Where your payment details live"
+msgstr "तुमचे पेमेंट तपशील कुठे राहतात"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:89
 msgid "Which product is it?"
 msgstr "हे कोणते प्रॉडक्ट आहे?"
@@ -10809,6 +11438,16 @@ msgstr "तुम्ही कोणाला विकता"
 #: src/copy/catalog-attribution.ts:17
 msgid "Why a price is what it is — the {count} of {total} items you have changed"
 msgstr "किंमत अशी का आहे — {total} पैकी तुम्ही बदललेले {count} आयटम"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:60
+msgid "Why are you leaving"
+msgstr "तुम्ही का जात आहात"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:59
+msgid "Why are you leaving? Optional."
+msgstr "तुम्ही का जात आहात? ऐच्छिक."
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:44
@@ -10874,6 +11513,11 @@ msgstr "{of, plural, one {# {languageNoun}} other {# {languageNoun}}} पैक�
 #: src/copy/language-switcher.ts:13
 msgid "Written in {written} of {of, plural, one {# {languageNoun}} other {# {languageNoun}s}} · {each} {sectionNoun} each"
 msgstr "{of, plural, one {# {languageNoun}} other {# {languageNoun}}} पैकी {written} मध्ये लिहिले · प्रत्येकी {each} {sectionNoun}"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:108
+msgid "yearly"
+msgstr "वार्षिक"
 
 #. js-lingui-explicit-id
 #: src/copy/pricing.ts:64
@@ -11141,6 +11785,11 @@ msgid "Your company profile"
 msgstr "तुमची कंपनी प्रोफाइल"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:113
+msgid "Your contract"
+msgstr "तुमचा करार"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:32
 msgid "Your current account"
 msgstr "तुमचे चालू खाते"
@@ -11155,6 +11804,11 @@ msgstr "सेव्ह केल्यावर तुमचा ग्राह
 #: src/copy/role-card.ts:90
 msgid "Your dashboard is one switch away."
 msgstr "तुमचा डॅशबोर्ड फक्त एका स्विचवर आहे."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:98
+msgid "Your data"
+msgstr "तुमचा डेटा"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:86
@@ -11329,6 +11983,11 @@ msgid "Your name is still arriving."
 msgstr "तुमचे नाव अजून येत आहे."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:44
+msgid "Your named contact"
+msgstr "तुमचा ठरलेला संपर्क"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:27
 msgid "Your number"
 msgstr "तुमचा नंबर"
@@ -11351,6 +12010,11 @@ msgid "Your own"
 msgstr "तुमचे स्वतःचे"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:33
+msgid "Your payment provider keeps your UPI and bank details. HelioGrid never sees or stores them."
+msgstr "तुमचे UPI आणि बँक तपशील तुमचा पेमेंट प्रदाता ठेवतो. HelioGrid ते कधीही पाहत किंवा साठवत नाही."
+
+#. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:25
 msgid "Your payment terms"
 msgstr "तुमच्या पेमेंट अटी"
@@ -11364,6 +12028,21 @@ msgstr "तुमचे लोकांचे व्ह्यू फक्त �
 #: src/copy/name-and-photo-editor.ts:19
 msgid "Your photo was not removed"
 msgstr "तुमचा फोटो काढला गेला नाही"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:25
+msgid "Your plan"
+msgstr "तुमचा प्लॅन"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:97
+msgid "Your plan carries on past {date} as if nothing changed."
+msgstr "तुमचा प्लॅन {date} नंतरही जणू काही बदलले नाही तसा चालू राहील."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:64
+msgid "Your plan ends today, and the payment goes back to its source."
+msgstr "तुमचा प्लॅन आज संपेल, आणि पेमेंट त्याच्या स्रोताकडे परत जाईल."
 
 #. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:74
@@ -11487,6 +12166,11 @@ msgstr "तुमची टीम"
 #: src/copy/proposal-template.ts:87
 msgid "Your template didn't save"
 msgstr "तुमचा टेम्पलेट जतन झाला नाही"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:56
+msgid "Your trial ended on {date}"
+msgstr "तुमची ट्रायल {date} रोजी संपली"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:96

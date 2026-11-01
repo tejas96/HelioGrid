@@ -1,6 +1,11 @@
 import { createHash } from 'node:crypto';
-import { type FileContentType, OBJECT_STORE, type ObjectStore } from '@heliogrid/contracts';
-import type { SubjectKind } from '@heliogrid/domain';
+import {
+  type FileContentType,
+  type FileDownload,
+  OBJECT_STORE,
+  type ObjectStore,
+} from '@heliogrid/contracts';
+import { FILE_DOWNLOAD_LINK_SECONDS, type SubjectKind } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { FileRepository } from './file.repository';
 import { documentKeyOf } from './internal/object-key';
@@ -63,4 +68,29 @@ export class FileDocumentService {
       made.now,
     );
   }
+
+  /**
+   * A short-lived link to a document the platform made for this company — an invoice's or a credit
+   * note's PDF, which its own record's route asks for (`M12-46`); `null` when the company holds no
+   * such file.
+   */
+  async signedDownload(
+    tenantId: string,
+    fileId: string,
+    now: number,
+  ): Promise<FileDownload | null> {
+    const row = await this.files.find(tenantId, fileId);
+    if (row === null) return null;
+    const url = await this.store.signDownload({
+      key: row.externalId,
+      contentType: row.contentType,
+      expiresInSeconds: FILE_DOWNLOAD_LINK_SECONDS,
+    });
+    return {
+      url,
+      expiresAt: new Date(now + FILE_DOWNLOAD_LINK_SECONDS * MS_PER_SECOND).toISOString(),
+    };
+  }
 }
+
+const MS_PER_SECOND = 1_000;

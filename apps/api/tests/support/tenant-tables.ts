@@ -7,6 +7,7 @@ import {
   catalogRateEntry,
   catalogRelease,
   catalogReleaseLine,
+  creditNote,
   dunningEvent,
   entitlement,
   entitlementOverride,
@@ -67,7 +68,8 @@ export const TENANT_CATALOG_TABLES = [
 ] as const;
 
 /**
- * A company's billing rows: its notices before the payments that cleared them; its invoices, lines
+ * A company's billing rows: its notices before the payments that cleared them; its credit notes
+ * before the invoices they stand against; its invoices, lines
  * last-in first-out, before the payments they name; the payments, the
  * checkouts, the overrides and the history before the subscription each names; its limits after it, since another suite's timers repair a live
  * company's limits until it is gone; then its usage ledger and storage gauge.
@@ -75,6 +77,7 @@ export const TENANT_CATALOG_TABLES = [
 export const TENANT_BILLING_TABLES = [
   dunningEvent,
   entitlementOverride,
+  creditNote,
   invoiceLineTax,
   invoiceLine,
   overageAddOn,

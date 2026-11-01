@@ -1,6 +1,7 @@
 import {
   BILLING_CYCLES,
   BILLING_STATES,
+  CANCELLATION_REASONS,
   COLLECTION_KINDS,
   SUBSCRIPTION_CAUSES,
   TIERS,
@@ -19,6 +20,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { uuidv7 } from '../uuid';
+import { userAccount } from './identity';
 import { tenant } from './tenant';
 
 /** pgEnums hand-mirror domain's tuples (invariant `enum-parity` proves each pair equal). */
@@ -27,6 +29,7 @@ export const subscriptionCause = pgEnum('subscription_cause', SUBSCRIPTION_CAUSE
 export const tier = pgEnum('tier', TIERS);
 export const billingCycle = pgEnum('billing_cycle', BILLING_CYCLES);
 export const collectionKind = pgEnum('collection_kind', COLLECTION_KINDS);
+export const cancellationReason = pgEnum('cancellation_reason', CANCELLATION_REASONS);
 
 const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
 
@@ -116,6 +119,8 @@ export const subscription = pgTable(
     planPriceId: uuid('plan_price_id').references(() => planPrice.id),
     /** The gateway's subscription or payment link this row is collected on. */
     gatewayRef: text('gateway_ref'),
+    /** Why the Owner cancelled (`M12-50`): signal, never a gate — null when they skipped it. */
+    cancellationReason: cancellationReason('cancellation_reason'),
   },
   (table) => [
     /** `M12-04` — at most one live subscription per company. */
@@ -237,7 +242,7 @@ export const subscriptionPayment = pgTable(
 );
 
 /**
- * A hosted checkout a trial opened (`M12-54`): which plan it buys, on which rail, and the gateway's
+ * A hosted checkout a trial or a dead row opened (`M12-54`, `M12-08`): which plan it buys, on which rail, and the gateway's
  * page. The gateway's message names its `gateway_ref`, so the charge it collected finds the plan
  * the company chose. Open until a charge converts the subscription or a new pick replaces it; one
  * open checkout per subscription, so two pages can never both collect.
@@ -263,8 +268,13 @@ export const billingCheckout = pgTable(
     collection: collectionKind('collection').notNull(),
     gatewayRef: text('gateway_ref').notNull(),
     hostedUrl: text('hosted_url').notNull(),
-    /** The hosted page takes no money after this: the trial's end. */
+    /** The hosted page takes no money after this: the trial's end, or a reactivation's window. */
     expiresAt: instant('expires_at').notNull(),
+    /**
+     * When the paid period it collects begins, for a page a cancelled row still running opened: its
+     * period end, so no day is paid twice (`M12-08`). Null: the period begins at the charge.
+     */
+    startsAt: instant('starts_at'),
     openedAt: instant('opened_at').notNull(),
     /**
      * Set before the gateway is asked to cancel the page. From then the page is never handed out
@@ -272,6 +282,8 @@ export const billingCheckout = pgTable(
      */
     cancelRequestedAt: instant('cancel_requested_at'),
     closedAt: instant('closed_at'),
+    /** The Owner who opened it: the reactivation its charge makes is their act (`M12-58`). */
+    openedBy: uuid('opened_by').references(() => userAccount.id),
   },
   (table) => [
     uniqueIndex('billing_checkout_gateway_ref_key').on(table.gatewayRef),

@@ -1,5 +1,5 @@
 import { theme } from '@heliogrid/theme';
-import type { CSSProperties } from 'react';
+import { type CSSProperties, useImperativeHandle, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Text } from '../../primitives/Text/Text';
 import { LogoTile } from '../Wordmark/Wordmark';
@@ -30,6 +30,7 @@ export function MobileTopBar({
   avatar,
   leading,
   title,
+  titleRef,
   actions,
   safeTop = false,
   sticky = true,
@@ -37,6 +38,8 @@ export function MobileTopBar({
   className,
   style,
 }: WebMobileTopBarProps) {
+  const titleFrame = useRef<HTMLDivElement>(null);
+  useImperativeHandle(titleRef, () => ({ focus: (options) => titleFrame.current?.focus(options) }));
   return (
     <header
       className={classNames('hg-app-shell-topbar', className)}
@@ -47,9 +50,11 @@ export function MobileTopBar({
     >
       {leading}
       {title !== undefined ? (
-        <Text as="h1" variant="h3" bold className="hg-app-shell-topbar-title">
-          {title}
-        </Text>
+        <div ref={titleFrame} tabIndex={-1} className="hg-app-shell-topbar-title hg-focus-target">
+          <Text as="h1" variant="h3" bold>
+            {title}
+          </Text>
+        </div>
       ) : (
         <div className="hg-app-shell-topbar-identity">
           <span className="hg-app-shell-header-slot">

@@ -49,6 +49,10 @@ const GLOBAL_TABLES: Record<string, string> = {
     'the last number of each market\u2019s invoice series in each fiscal year (M12-44) — ' +
     'unreachable: the series is the platform\u2019s across every company, taken in the charge ' +
     'transaction on the admin path (T-M12-012a)',
+  credit_note_sequence:
+    'the last number of each market\u2019s credit-note series in each fiscal year (M12-47) — ' +
+    'unreachable: the series is the platform\u2019s across every company, taken in the refund ' +
+    'transaction on the admin path (T-M12-002)',
   schema_migrations: 'the migration ledger; server-internal, sha256-locked by the runner',
 };
 
@@ -100,6 +104,10 @@ const GLOBAL_UNIQUES: Record<string, string> = {
   billing_checkout_gateway_ref_key:
     'the gateway\u2019s own subscription or payment-link id for a hosted checkout (M12-54): the ' +
     'gateway alone mints it, and its message names it before any tenant is known (T-M12-007)',
+  credit_note_number_key:
+    'the platform\u2019s credit-note number within a market (M12-47): one consecutive series ' +
+    'across every company per fiscal year, as the tax scheme asks — scoped per tenant, two ' +
+    'companies could hold one number (T-M12-002)',
   subscription_invoice_number_key:
     'the platform\u2019s invoice number within a market (M12-44): one consecutive series across ' +
     'every company per fiscal year, as the tax scheme asks — scoped per tenant, two companies ' +

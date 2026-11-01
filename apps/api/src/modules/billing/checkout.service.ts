@@ -4,7 +4,12 @@ import {
   type CheckoutOpened,
   type CheckoutRequest,
 } from '@heliogrid/contracts';
-import { listedPrice, tierBand } from '@heliogrid/domain';
+import {
+  type BillingState,
+  listedPrice,
+  reactivationPageExpiresAt,
+  tierBand,
+} from '@heliogrid/domain';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 import { ContractException } from '../../common/errors/contract-exception';
@@ -18,10 +23,11 @@ import {
 import { PlanPriceAdminRepository } from './plan-price.admin.repository';
 
 /**
- * Conversion's first half (`M12-54`): a trial picks a tier and a cycle, and the gateway's hosted
- * page opens on the rail the market's ladder names for it (`M12-11`). The company stays `trialing`
- * with everything it had until the gateway says the page was paid; the charge path then makes the
- * plan the row's own. One open page per subscription, so two can never both collect.
+ * Conversion's and reactivation's first half (`M12-54`, `M12-08`): a trial, or a dead row, picks a
+ * tier and a cycle, and the gateway's hosted page opens on the rail the market's ladder names for
+ * it (`M12-11`). A trial stays `trialing` with everything it had until the gateway says the page
+ * was paid; the charge path then makes the plan the row's own — or, on a dead row, starts a new
+ * row with it. One open page per subscription, so two can never both collect.
  */
 @Injectable()
 export class CheckoutService {
@@ -37,9 +43,15 @@ export class CheckoutService {
     this.logger.setContext(CheckoutService.name);
   }
 
-  async open(tenantId: string, request: CheckoutRequest, now: number): Promise<CheckoutOpened> {
-    const standing = trialing(await this.checkouts.standingOf(tenantId), now);
-    const pack = await this.markets.currentPackOf(standing.marketCode);
+  async open(
+    tenantId: string,
+    request: CheckoutRequest,
+    act: { readonly actorUserId: string; readonly now: number },
+  ): Promise<CheckoutOpened> {
+    const { now } = act;
+    const standing = await this.checkouts.standingOf(tenantId);
+    const window = pageWindowOf(standing, now);
+    const pack = await this.markets.currentPackOf(window.standing.marketCode);
     if (listedPrice(pack.priceBook, request.tier, request.cycle) === null) {
       throw new ContractException(
         'TIER_NOT_SOLD',
@@ -48,27 +60,29 @@ export class CheckoutService {
       );
     }
     const price = await this.prices.current({
-      marketCode: standing.marketCode,
+      marketCode: window.standing.marketCode,
       tier: request.tier,
       cycle: request.cycle,
-      currencyCode: standing.currencyCode,
+      currencyCode: window.standing.currencyCode,
     });
     // The book sells it, so the publish command wrote its plan price: a missing row is a broken
     // deployment, said loudly and never guessed around.
     if (price === null) {
       throw new Error(
-        `no plan price for ${request.tier} ${request.cycle} in ${standing.marketCode}`,
+        `no plan price for ${request.tier} ${request.cycle} in ${window.standing.marketCode}`,
       );
     }
-    const open = await this.checkouts.openOf(tenantId, standing.subscriptionId);
-    if (open?.planPriceId === price.id && !open.cancelRequested) {
+    const { subscriptionId } = window.standing;
+    const open = await this.checkouts.openOf(tenantId, subscriptionId);
+    // A page past its expiry takes no money — a trial's page left unpaid when the trial ended —
+    // so it is closed like any other and a new one opens.
+    if (open?.planPriceId === price.id && !open.cancelRequested && open.expiresAt > now) {
       return { checkoutUrl: open.hostedUrl };
     }
     if (open !== null) await this.closeUnpaid(tenantId, open, now);
     const route = pack.paymentRails.ladder[tierBand(request.tier)][request.cycle];
     const id = this.checkouts.newId();
-    // The trial's end: no page opened in the trial takes money after it (`M12-54`).
-    const expiresAt = standing.trialEndsAt ?? now;
+    const { expiresAt, startsAt } = window;
     const opened = await this.atGateway(() =>
       this.gateway.openCheckout({
         route,
@@ -76,25 +90,28 @@ export class CheckoutService {
         amount: price.collectedMinor,
         currencyCode: price.currencyCode,
         reference: id,
-        expiresAt,
+        expiresAt: window.gatewayExpiresAt,
+        startsAt,
       }),
     );
     const kept = await this.checkouts.insert({
       id,
       tenantId,
-      subscriptionId: standing.subscriptionId,
+      subscriptionId,
       planPriceId: price.id,
       collection: route.collection,
       gatewayRef: opened.gatewayRef,
       hostedUrl: opened.hostedUrl,
       expiresAt,
+      startsAt,
       openedAt: now,
+      openedBy: act.actorUserId,
     });
     if (!kept) {
       // Another request opened its page at the same moment: this one must take no money. The
       // same pick then answers that page, as a repeat does; a different one is refused.
       await this.atGateway(() => this.gateway.closeCheckout(route.collection, opened.gatewayRef));
-      const winner = await this.checkouts.openOf(tenantId, standing.subscriptionId);
+      const winner = await this.checkouts.openOf(tenantId, subscriptionId);
       if (winner?.planPriceId === price.id) return { checkoutUrl: winner.hostedUrl };
       throw notPossible('Another checkout opened at the same moment. Try again.');
     }
@@ -150,13 +167,51 @@ export class CheckoutService {
   }
 }
 
-/** Conversion starts from a running trial; paying from a lapsed state is reactivation (`M12-08`). */
-function trialing(standing: CheckoutStanding | null, now: number): CheckoutStanding {
-  if (standing?.state !== 'trialing' || (standing.trialEndsAt ?? now) <= now) {
-    throw notPossible('Only a company on its trial can start a plan here.');
-  }
-  return standing;
+/** When a page may take money, and where the period it buys begins. */
+interface PageWindow {
+  readonly standing: CheckoutStanding;
+  /** Until when the page is ours to hand out again. */
+  readonly expiresAt: number;
+  /** Until when the gateway takes an approval on it. */
+  readonly gatewayExpiresAt: number;
+  readonly startsAt: number | null;
 }
+
+/**
+ * A running trial converts: its page takes no money after the trial ends (`M12-54`). A dead row
+ * reactivates (`M12-08`): its page stays open for a day — but a cancelled row still running opens
+ * one that stays open until its period ends, where its new period begins, so no day is paid twice.
+ * A live row past its trial has nothing to buy here.
+ */
+function pageWindowOf(standing: CheckoutStanding | null, now: number): PageWindow {
+  if (standing?.state === 'trialing' && (standing.trialEndsAt ?? now) > now) {
+    const trialEnd = standing.trialEndsAt ?? now;
+    return { standing, expiresAt: trialEnd, gatewayExpiresAt: trialEnd, startsAt: null };
+  }
+  if (standing !== null && DEAD.has(standing.state)) {
+    const running = standing.state === 'cancelled' && (standing.paidPeriodEnd ?? now) > now;
+    // A running row's page stays open until its period ends, where its first debit waits: closed
+    // for age before then, a second press would cancel the mandate the Owner already approved.
+    // The gateway stops taking an approval at the period end; here the page is kept a day past it,
+    // until its first debit's charge lands, so a press in that gap answers the same page.
+    return running && standing.paidPeriodEnd !== null
+      ? {
+          standing,
+          expiresAt: reactivationPageExpiresAt(standing.paidPeriodEnd),
+          gatewayExpiresAt: standing.paidPeriodEnd,
+          startsAt: standing.paidPeriodEnd,
+        }
+      : {
+          standing,
+          expiresAt: reactivationPageExpiresAt(now),
+          gatewayExpiresAt: reactivationPageExpiresAt(now),
+          startsAt: null,
+        };
+  }
+  throw notPossible('This company already holds a plan. Change it from the plan screen.');
+}
+
+const DEAD: ReadonlySet<BillingState> = new Set(['halted', 'expired', 'cancelled']);
 
 function notPossible(message: string): ContractException {
   return new ContractException('CHECKOUT_NOT_POSSIBLE', message, HttpStatus.CONFLICT);

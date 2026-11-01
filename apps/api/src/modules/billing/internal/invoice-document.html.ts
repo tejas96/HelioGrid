@@ -15,7 +15,11 @@ import {
   TIER_LABEL,
   type Translator,
 } from '@heliogrid/i18n';
-import type { DocumentLine, InvoiceForDocument } from '../invoice-document.admin.repository';
+import type {
+  CreditNoteFacts,
+  DocumentLine,
+  InvoiceForDocument,
+} from '../invoice-document.admin.repository';
 
 /**
  * The invoice's page (`M12-44`, `M12-45`): one whole HTML document the renderer prints as it is.
@@ -23,11 +27,15 @@ import type { DocumentLine, InvoiceForDocument } from '../invoice-document.admin
  * Plain black on white: no board draws a document yet, and this app imports no `theme`.
  *
  * Every value is escaped: a company's name or address is text its owner typed.
+ *
+ * A credit note (`M12-47`) prints its invoice's lines under its own title, number and day, and
+ * names the invoice it pays back.
  */
 export function invoiceDocumentHtml(
   invoice: InvoiceForDocument,
   pack: MarketPack,
   { t, locale }: Translator,
+  note: CreditNoteFacts | null = null,
 ): string {
   const supplier = pack.tax.platformSupplier;
   if (supplier === null) {
@@ -47,6 +55,20 @@ export function invoiceDocumentHtml(
     held === null ? '' : `<p>${text(registrationName(held.type))}: ${mono(held.value)}</p>`;
   const taxed = invoice.supplierRegistration !== null;
   const totals = invoiceTotals(invoice.lines);
+  const title =
+    note === null
+      ? taxed
+        ? INVOICE_DOCUMENT.taxInvoice
+        : INVOICE_DOCUMENT.plainInvoice
+      : taxed
+        ? INVOICE_DOCUMENT.taxCreditNote
+        : INVOICE_DOCUMENT.plainCreditNote;
+  const number = note?.number ?? invoice.number;
+  const issuedAt = note?.issuedAt ?? invoice.issuedAt;
+  const against =
+    note === null
+      ? ''
+      : `<p>${text(t(INVOICE_DOCUMENT.againstInvoice))}: ${mono(invoice.number)}</p>`;
 
   const lineRows = invoice.lines
     .map(
@@ -68,7 +90,7 @@ export function invoiceDocumentHtml(
 <html lang="${text(locale)}">
 <head>
 <meta charset="utf-8">
-<title>${text(invoice.number)}</title>
+<title>${text(number)}</title>
 <style>
   @page { size: A4; margin: 18mm 16mm; }
   body { font-family: 'Noto Sans', 'Noto Sans Devanagari', sans-serif; font-size: 10pt; color: #000; margin: 0; }
@@ -87,10 +109,11 @@ export function invoiceDocumentHtml(
 </style>
 </head>
 <body>
-  <h1>${text(t(taxed ? INVOICE_DOCUMENT.taxInvoice : INVOICE_DOCUMENT.plainInvoice))}</h1>
+  <h1>${text(t(title))}</h1>
   <div class="facts">
-    <p>${text(t(INVOICE_DOCUMENT.number))}: ${mono(invoice.number)}</p>
-    <p>${text(t(INVOICE_DOCUMENT.issuedOn))}: ${text(formatDate(formats, invoice.issuedAt, locale))}</p>
+    <p>${text(t(note === null ? INVOICE_DOCUMENT.number : INVOICE_DOCUMENT.creditNoteNumber))}: ${mono(number)}</p>
+    <p>${text(t(INVOICE_DOCUMENT.issuedOn))}: ${text(formatDate(formats, issuedAt, locale))}</p>
+    ${against}
     <p>${text(t(INVOICE_DOCUMENT.paysThrough))}: ${text(formatDate(formats, invoice.paysThrough, locale))}</p>
   </div>
   <div class="parties">

@@ -1,0 +1,222 @@
+/* BillingHome — the billing page's body (`SCR-M12-02`) and its record lists and asks. Every
+   amount and meter figure ends on the region's right edge (brief decision 3); every figure is mono
+   with tabular digits (`F7-09`). The 120px label track the plan, the includes, the method and the
+   asks share is the board's (`pair` form, decision 3): 96 + 24 on the spacing scale. */
+
+.hg-billing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+
+/* ── the arrangement: one column at 375; 5fr / 7fr at width ─────────────── */
+
+.hg-billing-body[data-layout="column"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* The two sides dissolve, so the column reads the columns' parts top to bottom. */
+.hg-billing-body[data-layout="column"] > .hg-billing-side {
+  display: contents;
+}
+
+.hg-billing-body[data-layout="columns"] {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--sp-6);
+  align-items: start;
+}
+
+.hg-billing-body[data-layout="columns"] > .hg-billing-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  min-width: 0;
+}
+
+/* ── shared pieces ──────────────────────────────────────────────────────── */
+
+.hg-billing-stack {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-billing-stack[data-gap="3"] {
+  gap: var(--sp-3);
+}
+
+.hg-billing-stack[data-gap="4"] {
+  gap: var(--sp-4);
+}
+
+.hg-billing-stack[data-gap="5"] {
+  gap: var(--sp-5);
+}
+
+.hg-billing-stack[data-gap="tile"] {
+  gap: var(--tile-gap);
+}
+
+.hg-billing-start {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.hg-billing-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-billing-figure {
+  display: block;
+  flex-shrink: 0;
+  text-align: right;
+  white-space: nowrap;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.hg-billing-strip-rows {
+  margin-top: var(--sp-2);
+}
+
+/* ── Needs you ──────────────────────────────────────────────────────────── */
+
+/* `SCR-M12-04`'s row sits on the region's own edges, the figure on its right edge. */
+.hg-list-row.hg-billing-need-row {
+  align-items: flex-start;
+  min-height: 0;
+  padding: 0;
+}
+
+.hg-billing-need-line {
+  display: block;
+  white-space: normal;
+  text-wrap: pretty;
+  font-weight: var(--fw-medium);
+  color: var(--warning-text);
+}
+
+.hg-billing-need-line[data-tone="danger"] {
+  color: var(--danger-text);
+}
+
+.hg-billing-need-line[data-tone="info"] {
+  color: var(--info-text);
+}
+
+/* The region's one act: its button and the line under it, on the form surface. */
+.hg-billing-act {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border-radius: var(--r-lg);
+  background: var(--surface-form);
+}
+
+.hg-billing-act-line {
+  text-align: center;
+  text-wrap: pretty;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+/* ── the pairs on the 120px track ───────────────────────────────────────── */
+
+.hg-fact-rows.hg-billing-pairs[data-fact-group-form="pair"] {
+  grid-template-columns: calc(var(--sp-24) + var(--sp-6)) minmax(0, 1fr);
+  padding-inline-end: 0;
+}
+
+.hg-billing-pairs .hg-fact-row[data-fact-form="pair"] {
+  grid-template-columns: calc(var(--sp-24) + var(--sp-6)) minmax(0, 1fr);
+}
+
+@supports (grid-template-columns: subgrid) {
+  .hg-billing-pairs > .hg-fact-row[data-fact-form="pair"] {
+    grid-template-columns: subgrid;
+  }
+}
+
+.hg-billing-fact-value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-0-5);
+  text-align: right;
+}
+
+/* ── rows on the region's edges, and the two record tiles ───────────────── */
+
+.hg-list-row.hg-billing-flush {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.hg-list-row.hg-billing-record {
+  border-radius: var(--r-tile);
+}
+
+.hg-billing-sources {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-billing-invoice-end {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-billing-amount {
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+/* ── the record lists and the asks ──────────────────────────────────────── */
+
+.hg-billing-list-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-billing-list-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-3);
+}
+
+.hg-billing-range {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+.hg-billing-ask {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-billing-reasons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-billing-failure {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--danger-text);
+}

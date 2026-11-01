@@ -1,4 +1,7 @@
 import type {
+  CreditNoteDocumentPage,
+  CreditNoteDocumentStepInput,
+  CreditNoteDocumentStepResult,
   InvoiceDocumentPage,
   InvoiceDocumentStepInput,
   InvoiceDocumentStepResult,
@@ -42,10 +45,7 @@ export class InvoiceDocumentService {
     { tenantId, invoiceId, pdfBase64 }: InvoiceDocumentStepInput & { readonly pdfBase64: string },
     now: number,
   ): Promise<InvoiceDocumentStepResult> {
-    const bytes = new Uint8Array(Buffer.from(pdfBase64, 'base64'));
-    if (bytes.length === 0 || bytes.length > MAX_PDF_BYTES) {
-      throw new Error(`invoice ${invoiceId}'s PDF is ${bytes.length} bytes: not a document`);
-    }
+    const bytes = pdfBytesOf(pdfBase64, invoiceId);
     const fileId = await this.documents.keep({
       tenantId,
       subjectKind: 'subscription_invoice',
@@ -56,4 +56,46 @@ export class InvoiceDocumentService {
     });
     return { attached: await this.invoices.attachPdf(tenantId, invoiceId, fileId) };
   }
+
+  /** A credit note's page (`M12-47`): its invoice's lines under the note's title; `null` once made. */
+  async creditNotePage({
+    tenantId,
+    creditNoteId,
+  }: CreditNoteDocumentStepInput): Promise<CreditNoteDocumentPage> {
+    const found = await this.invoices.creditNoteForDocument(tenantId, creditNoteId);
+    if (found === null) return null;
+    const pack = await this.packs.currentPackOf(found.invoice.marketCode);
+    const translator = await createTranslator(found.invoice.company.language);
+    return { html: invoiceDocumentHtml(found.invoice, pack, translator, found.note) };
+  }
+
+  /** Keeps the credit note's PDF and points the note at it, once. */
+  async attachCreditNote(
+    {
+      tenantId,
+      creditNoteId,
+      pdfBase64,
+    }: CreditNoteDocumentStepInput & { readonly pdfBase64: string },
+    now: number,
+  ): Promise<CreditNoteDocumentStepResult> {
+    const bytes = pdfBytesOf(pdfBase64, creditNoteId);
+    const fileId = await this.documents.keep({
+      tenantId,
+      subjectKind: 'credit_note',
+      subjectRef: creditNoteId,
+      contentType: 'application/pdf',
+      bytes,
+      now,
+    });
+    return { attached: await this.invoices.attachCreditNotePdf(tenantId, creditNoteId, fileId) };
+  }
+}
+
+/** The rendered bytes, refused when they cannot be a document. */
+function pdfBytesOf(pdfBase64: string, documentId: string): Uint8Array {
+  const bytes = new Uint8Array(Buffer.from(pdfBase64, 'base64'));
+  if (bytes.length === 0 || bytes.length > MAX_PDF_BYTES) {
+    throw new Error(`document ${documentId}'s PDF is ${bytes.length} bytes: not a document`);
+  }
+  return bytes;
 }

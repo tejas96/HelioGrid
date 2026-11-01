@@ -31,6 +31,7 @@ import {
 import { type LimitsFor, recomputeEntitlements } from './entitlement.admin.repository';
 import { issueInvoice, payRenewalInvoice, planBilledBy } from './invoice.admin.repository';
 import { addOnsCollectedBy } from './overage-invoicing.admin.repository';
+import { startReactivated } from './reactivation.admin.repository';
 
 /** What one charge came to; a recorded payment names the total its invoice issued for. */
 export type SuccessRecorded =
@@ -56,6 +57,17 @@ export class ChargeAdminRepository {
   /** The subscription a gateway ref collects for (`collected-on.admin.repository.ts`). */
   collectedOn(gatewayRef: string): Promise<CollectedOn | null> {
     return collectedOn(this.db, gatewayRef);
+  }
+
+  /** The mandate a subscription was collected on; `null` for a payment link, a trial or none. */
+  async mandateOf(subscriptionId: string): Promise<string | null> {
+    const [row] = await this.db
+      .select({ gatewayRef: billingCheckout.gatewayRef })
+      .from(subscription)
+      .innerJoin(billingCheckout, eq(billingCheckout.gatewayRef, subscription.gatewayRef))
+      .where(and(eq(subscription.id, subscriptionId), eq(billingCheckout.collection, 'mandate')))
+      .limit(1);
+    return row?.gatewayRef ?? null;
   }
 
   /** The market whose book a subscription's limits come from; `null` for no such subscription. */
@@ -84,6 +96,16 @@ export class ChargeAdminRepository {
       if (held.currencyCode !== charge.currencyCode) {
         return { kind: 'another currency', companyCurrency: held.currencyCode };
       }
+      const effect = decide(held);
+      if (effect.outcome === 'reactivate') {
+        return startReactivated(tx, held, charge, {
+          recordedAt,
+          conversion,
+          effect,
+          pack,
+          limitsFor,
+        });
+      }
       const [paid] = await tx
         .insert(subscriptionPayment)
         .values({
@@ -99,37 +121,17 @@ export class ChargeAdminRepository {
         .onConflictDoNothing({ target: subscriptionPayment.gatewayChargeRef })
         .returning({ id: subscriptionPayment.id });
       if (!paid) return { kind: 'duplicate' };
-      // The invoice takes its market's series row: taken last, so every other charge in the market
-      // waits on it for as short a time as the transaction allows.
-      // A renewal link's payment pays the invoice raised with it; its add-ons are already on it.
-      const collectedOn = conversion?.gatewayRef ?? held.gatewayRef;
-      const issue = async () =>
-        (renewal === null ? null : await payRenewalInvoice(tx, renewal.invoiceId, paid.id)) ??
-        issueInvoice(
-          tx,
-          {
-            tenantId: held.tenantId,
-            subscriptionId: held.id,
-            planPriceId: conversion?.planPriceId ?? held.planPriceId,
-            paysThrough: charge.paysThrough,
-            issuedAt: recordedAt,
-            pack,
-            addOns:
-              collectedOn === null || renewal !== null
-                ? []
-                : await addOnsCollectedBy(tx, {
-                    tenantId: held.tenantId,
-                    subscriptionId: held.id,
-                    gatewayRef: collectedOn,
-                    occurredAt: charge.occurredAt,
-                  }),
-          },
-          { kind: 'payment', paymentId: paid.id },
-        );
+      const issue = () =>
+        invoicePayment(tx, held, charge, {
+          paymentId: paid.id,
+          recordedAt,
+          pack,
+          conversion,
+          renewal,
+        });
       // The page was paid, whatever the charge does to the row: it can take no second payment.
       if (conversion !== null) await closeCheckout(tx, conversion.checkoutId, recordedAt);
-      const effect = decide(held);
-      if (effect.outcome === 'dead') return { kind: 'dead', invoiced: await issue() };
+      if (effect.outcome !== 'live') return { kind: 'dead', invoiced: await issue() };
       const plan = await planPaidFor(tx, held.tenantId, conversion, renewal);
       await applySuccess(tx, held, effect, charge.occurredAt, conversion, plan);
       // Only a charge that moves the row ends its unpaid spell; a late one leaves the ladder running.
@@ -184,6 +186,52 @@ export class ChargeAdminRepository {
       return moveOnFailure(tx, held, decide, failure.occurredAt);
     });
   }
+}
+
+/**
+ * The payment's invoice. The invoice takes its market's series row: taken last, so every other
+ * charge in the market waits on it for as short a time as the transaction allows. A renewal link's
+ * payment pays the invoice raised with it; its add-ons are already on it.
+ */
+async function invoicePayment(
+  tx: DbTransaction,
+  held: LockedSubscription,
+  charge: ChargeSucceeded,
+  on: {
+    readonly paymentId: string;
+    readonly recordedAt: number;
+    readonly pack: MarketPack;
+    readonly conversion: Conversion | null;
+    readonly renewal: Renewal | null;
+  },
+): Promise<MinorUnits> {
+  const { conversion, renewal } = on;
+  const paidRenewal =
+    renewal === null ? null : await payRenewalInvoice(tx, renewal.invoiceId, on.paymentId);
+  if (paidRenewal !== null) return paidRenewal;
+  const collectedOn = conversion?.gatewayRef ?? held.gatewayRef;
+  const addOns =
+    collectedOn === null || renewal !== null
+      ? []
+      : await addOnsCollectedBy(tx, {
+          tenantId: held.tenantId,
+          subscriptionId: held.id,
+          gatewayRef: collectedOn,
+          occurredAt: charge.occurredAt,
+        });
+  return issueInvoice(
+    tx,
+    {
+      tenantId: held.tenantId,
+      subscriptionId: held.id,
+      planPriceId: conversion?.planPriceId ?? held.planPriceId,
+      paysThrough: charge.paysThrough,
+      issuedAt: on.recordedAt,
+      pack: on.pack,
+      addOns,
+    },
+    { kind: 'payment', paymentId: on.paymentId },
+  );
 }
 
 /** Moves a held row as a failed charge at `occurredAt` moves it; whether it moved. */

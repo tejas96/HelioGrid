@@ -81,6 +81,20 @@ export const queryKeys = {
   market: {
     pack: (marketCode: string) => ['market', marketCode, 'pack'] as const,
   },
+  /**
+   * A company's billing (`SCR-M12-02`). One prefix, so an act that moves the subscription
+   * invalidates the standing, the home and every record at once.
+   */
+  billing: {
+    all: (tenantId: string) => ['billing', tenantId] as const,
+    standing: (tenantId: string) => ['billing', tenantId, 'standing'] as const,
+    home: (tenantId: string) => ['billing', tenantId, 'home'] as const,
+    documents: (tenantId: string, q: string, status: string, page: number) =>
+      ['billing', tenantId, 'documents', q, status, page] as const,
+    reminders: (tenantId: string, page: number) =>
+      ['billing', tenantId, 'reminders', page] as const,
+    history: (tenantId: string, page: number) => ['billing', tenantId, 'history', page] as const,
+  },
   /** A market's public price list: no company's fact in it, so keyed by market alone. */
   pricing: {
     current: (marketCode: string) => ['pricing', marketCode] as const,

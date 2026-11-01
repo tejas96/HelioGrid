@@ -99,6 +99,20 @@ describe('the invoice page', () => {
     expect(html).toContain(`Place of supply: <span class="mono">${MAHARASHTRA}</span>`);
   });
 
+  it('prints a credit note under its own title, number and day, against its invoice', async () => {
+    const note = { number: '1979-80/CN-000007', issuedAt: new Date('1979-06-05T06:01:00Z') };
+    const plain = { ...INVOICE, supplierRegistration: null };
+    const html = invoiceDocumentHtml(plain, IN_PACK, await createTranslator('en'), note);
+
+    expect(html).toContain('<h1>Credit note</h1>');
+    expect(html).toContain(`<title>${note.number}</title>`);
+    expect(html).toContain(`<span class="mono">${note.number}</span>`);
+    expect(html).toContain(`Against invoice: <span class="mono">${INVOICE.number}</span>`);
+    expect(html).toContain('5 Jun 1979');
+    expect(html).not.toContain('3 Jun 1979');
+    expect(html).toContain(money(TOTAL));
+  });
+
   it('refuses to print for a pack that names no supplier', async () => {
     const unnamed = { ...IN_PACK, tax: { ...IN_PACK.tax, platformSupplier: null } };
     const translator = await createTranslator('en');

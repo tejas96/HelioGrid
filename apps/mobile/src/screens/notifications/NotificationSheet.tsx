@@ -23,7 +23,8 @@ import {
   useToasts,
 } from '@heliogrid/ui';
 import { useRef } from 'react';
-import { View } from 'react-native';
+import { Linking, View } from 'react-native';
+import { linkingOptions } from '../../navigation/linking';
 
 interface NotificationSheetProps {
   onClose: () => void;
@@ -91,6 +92,13 @@ export function NotificationSheet({ onClose, onGoToLeads }: NotificationSheetPro
             days={centreListWords(t, centre.view.days, format)}
             onOpen={async (item) => {
               if (!(await centre.markRead(item))) say(centreActToast(t, { kind: 'read-failed' }));
+              // A notification points at its record (`F6-02`): open it where it has a screen.
+              const address = centre.addressOf(item);
+              if (address === null) return;
+              onClose();
+              void Linking.openURL(`${linkingOptions.prefixes[0]}${address}`).catch(
+                () => undefined,
+              );
             }}
             olderLabel={centre.view.olderRemain ? showOlderLabel(t, centre.filtered) : undefined}
             onShowOlder={centre.showOlder}

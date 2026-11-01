@@ -73,7 +73,7 @@ export function usagePeriodKey(occurredAtUtc: string): string {
 }
 
 /** One GB, as the book sells storage: 10⁹ bytes. */
-const BYTES_PER_GB = 1_000_000_000;
+export const BYTES_PER_GB = 1_000_000_000;
 
 /**
  * The storage gate (`M12-23`, `BM-20`): a new upload is refused only when the latest nightly gauge

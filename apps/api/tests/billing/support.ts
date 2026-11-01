@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import type { GatewayEvent } from '@heliogrid/contracts';
+import type { BillingGateway, GatewayEvent } from '@heliogrid/contracts';
 import { type Db, entitlement, planPrice, subscription } from '@heliogrid/db';
 import {
   type BillingCycle,
@@ -147,12 +147,14 @@ export function usageServiceOf(pools: Pools): UsageService {
 export function chargeServiceOf(
   pools: Pools,
   alerts: BillingAlerts = new BillingAlerts(silentLogger()),
+  gateway: BillingGateway = aDevelopmentGateway(),
 ): ChargeService {
   return new ChargeService(
     new ChargeAdminRepository(pools.admin.db),
     alerts,
     entitlementServiceOf(pools),
     marketsOf(pools),
+    gateway,
     silentLogger(),
   );
 }

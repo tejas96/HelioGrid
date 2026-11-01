@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { catalogImportWorkflow } from './catalog-import';
+import { creditNoteDocumentWorkflow } from './credit-note-document';
 import { inviteMessageWorkflow } from './invite-message';
 import { invoiceDocumentWorkflow } from './invoice-document';
 import { defineWorkflow, type WorkflowDefinition, type WorkflowResult } from './registry';
@@ -48,6 +49,7 @@ export interface OutboxActivities {
  */
 const OUTBOX_WORKFLOWS: readonly WorkflowDefinition[] = [
   catalogImportWorkflow,
+  creditNoteDocumentWorkflow,
   inviteMessageWorkflow,
   invoiceDocumentWorkflow,
   usageRecordWorkflow,

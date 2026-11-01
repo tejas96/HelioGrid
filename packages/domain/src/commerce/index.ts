@@ -23,6 +23,8 @@
  * consumer reads the shape, never the exception behind it.
  */
 
+export type { BillingNeed, BillingNeedsFacts } from './billing-needs';
+export { billingNeedOf } from './billing-needs';
 export type {
   BillingNotice,
   LadderStart,
@@ -38,7 +40,19 @@ export {
   ladderStartOf,
   nextNotice,
   TRIAL_NUDGE_LEAD_DAYS,
+  upcomingNotice,
 } from './billing-notices';
+export type { BillingStandingFacts, StandingRow } from './billing-standing';
+export { billingStandingOf } from './billing-standing';
+export type { CancellationReason, CreditNoteArtefact } from './cancellation';
+export {
+  CANCELLATION_REASONS,
+  creditNoteArtefactOf,
+  REACTIVATION_PAGE_HOURS,
+  REFUND_WINDOW_DAYS,
+  reactivationPageExpiresAt,
+  refundWindowClosesAt,
+} from './cancellation';
 export type { CapReading, CapStep } from './caps';
 export { CAP_GRACE_DAYS, CAP_WARNING_PERCENT, capStepOf, capWarningReached } from './caps';
 export type { ChargeFailed, ChargeStanding, ChargeSucceeded, SuccessEffect } from './charges';
@@ -224,6 +238,7 @@ export { isNonPaying, TRIAL_DAYS } from './trial';
 export type { BilledLedgerMeter, CostLine, LedgerMeter } from './usage';
 export {
   BILLED_LEDGER_METERS,
+  BYTES_PER_GB,
   COST_LINES,
   isBilledMeter,
   LEDGER_METERS,

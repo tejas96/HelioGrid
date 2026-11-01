@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { skipWithoutDatabase } from '../support/fixture';
 import { ConversionHarness } from './conversion-harness';
-import { collectedFor } from './support';
+import { aPlan, collectedFor } from './support';
 
 /**
  * Conversion over HTTP (`M12-54`, `M12-10`, `M12-11`): a trial opens the gateway's hosted page on
@@ -121,11 +121,17 @@ describe.skipIf(skip)('conversion through hosted checkout (M12-54)', () => {
     expect((await harness.checkoutsOf(owner.subscriptionId)).all).toEqual([]);
   });
 
+  // A dead row reactivates through the same route (`reactivation.test.ts`); a live one past its
+  // trial already holds a plan.
   it('refuses a company that is not on its trial with CHECKOUT_NOT_POSSIBLE', async () => {
-    const owner = await harness.anOwnerOnATrial('Lapsed EPC');
+    const owner = await harness.anOwnerOnATrial('Paid Up EPC');
     await harness.pools.admin.db
       .update(subscription)
-      .set({ state: 'expired' })
+      .set({
+        state: 'active',
+        paidPeriodEnd: new Date(harness.trialEndsAt),
+        ...(await aPlan(harness.pools.admin.db)),
+      })
       .where(eq(subscription.id, owner.subscriptionId));
     const reply = await harness.checkout(owner, { tier: 'growth', cycle: 'monthly' });
     expect(reply.status).toBe(HttpStatus.CONFLICT);

@@ -179,7 +179,8 @@ export function roleCardWords(
   };
 }
 
-function ownersHolder(
+/** The owners as a holder's name — `Mahesh Bhosale (owner)` — for `ScopeNote` and the role card. */
+export function ownersHolder(
   translate: Translator['t'],
   owners: NonNullable<RoleCardNames['owners']>,
 ): TranslatedText | null {

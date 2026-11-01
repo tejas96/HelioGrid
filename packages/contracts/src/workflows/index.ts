@@ -29,6 +29,13 @@ export type {
 } from './catalog-import';
 export { CATALOG_IMPORT_PHASES, catalogImportWorkflow } from './catalog-import';
 export type {
+  CreditNoteDocumentActivities,
+  CreditNoteDocumentPage,
+  CreditNoteDocumentStepInput,
+  CreditNoteDocumentStepResult,
+} from './credit-note-document';
+export { creditNoteDocumentWorkflow } from './credit-note-document';
+export type {
   InviteMessageActivities,
   InviteMessageStepInput,
   InviteMessageStepResult,
