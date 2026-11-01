@@ -33,3 +33,23 @@ test('a pinned cell paints the ground that holds it', async ({ mount, page }) =>
   await expect(pinned).toHaveCSS('position', 'sticky');
   await expect(pinned).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
 });
+
+test('a numeric row ends its figures on one right edge; a word row stays left (F7-09)', async ({
+  mount,
+}) => {
+  const figures = [
+    { key: 'contact', label },
+    { key: 'rate', label: en.t(SIGN_IN.sendCode), numeric: true },
+  ];
+  const priced = options.map((option, index) => ({
+    ...option,
+    values: { ...option.values, rate: index === 0 ? 6 : 600 },
+  }));
+  const grid = await mount(
+    <WordedCompareGrid read={{ kind: 'ready' }} attributes={figures} options={priced} />,
+  );
+
+  const rows = grid.getByRole('row');
+  await expect(rows.nth(2).getByRole('cell').first()).toHaveCSS('text-align', 'right');
+  await expect(rows.nth(1).getByRole('cell').first()).toHaveCSS('text-align', 'start');
+});

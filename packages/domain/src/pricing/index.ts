@@ -25,3 +25,14 @@ export type {
   UnitRate,
   WorstCaseCogs,
 } from './pack';
+export { againstOptionsOf, type PlanPair, planPairOf } from './plan-pair';
+export type {
+  PublicBenchmarkSource,
+  PublicComparison,
+  PublicPlan,
+  PublicPrice,
+  PublicPricing,
+  PublicRate,
+  PublicTrial,
+} from './public-pricing';
+export { publicPricing } from './public-pricing';

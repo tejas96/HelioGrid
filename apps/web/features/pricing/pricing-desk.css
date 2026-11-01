@@ -1,0 +1,82 @@
+/* SCR-M12-01 at the desk: the four plans side by side, the matrix beside `Compared with`, the
+   trial act in the header (decisions 3, 10, 11). */
+
+@media (min-width: 968px) {
+  .hg-pricing-phone-only,
+  .hg-pricing-card__all-limits {
+    display: none;
+  }
+
+  .hg-pricing-desk-only {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hg-pricing-header__row {
+    align-items: flex-start;
+    gap: var(--sp-6);
+    padding: var(--sp-5) var(--screen-pad-desktop);
+  }
+
+  .hg-pricing-header__acts {
+    align-items: flex-start;
+    gap: var(--sp-2);
+  }
+
+  .hg-pricing-header__trial {
+    display: block;
+  }
+
+  .hg-pricing-body {
+    padding: var(--sp-6) var(--screen-pad-desktop) var(--sp-10);
+  }
+
+  .hg-pricing-intro {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: var(--tile-gap);
+    row-gap: var(--sp-4);
+  }
+
+  .hg-pricing-intro__words {
+    grid-column: 1 / -1;
+  }
+
+  .hg-pricing-intro__includes {
+    grid-column: span 2;
+  }
+
+  .hg-pricing-title {
+    font-size: var(--fs-h1);
+    line-height: var(--lh-h1);
+    letter-spacing: var(--tr-h1);
+  }
+
+  .hg-pricing-claim {
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body-lg);
+  }
+
+  .hg-pricing-cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--tile-gap);
+    align-items: stretch;
+  }
+
+  .hg-pricing-foot {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--section-gap);
+    align-items: start;
+  }
+
+  .hg-pricing-foot__compare {
+    grid-column: 1 / span 8;
+  }
+
+  .hg-pricing-foot__side {
+    grid-column: 9 / span 4;
+    gap: var(--sp-3);
+  }
+}

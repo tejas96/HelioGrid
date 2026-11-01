@@ -225,6 +225,8 @@ export const IN_PRICE_BOOK: PriceBookPack = {
     storageGb: 5,
   },
   benchmarks: [RESLINK, ARKA],
+  /* `BM-15` — where Enterprise's conversation opens: the owner's address (T-M12-001's header). */
+  salesContact: 'tejas96patil@gmail.com',
   /* Unread; kept for the api of the release before, which requires it (`D396`). */
   priceProtectionMonths: 24,
 };

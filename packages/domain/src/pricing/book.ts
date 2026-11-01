@@ -1,5 +1,5 @@
 import type { Meter } from '../commerce/meters';
-import type { Tier, TierCapacity } from '../commerce/tiers';
+import { TIERS, type Tier, type TierCapacity, type TierLimit } from '../commerce/tiers';
 import { amountForQuantity, type MinorUnits } from '../money/minor-units';
 import type { BillingCycle } from '../rails/pack';
 import type { PriceBookPack, TierBookRow } from './pack';
@@ -50,9 +50,9 @@ export function isSellable(book: PriceBookPack, meter: Meter): boolean {
  * product. `BM-31` settles the tension out loud — the caps bound the platform's spend, and
  * capability is never withdrawn to bound it.
  *
- * `unlimited` on the ceiling and on both counts is that law written down. It is not the top tier's
- * number copied: a trial is not a rung, and pinning it to Enterprise would silently re-cap the
- * trial the day Enterprise's own ceiling moved.
+ * The design ceiling is the highest sold tier's, read from the book on every call, so it moves
+ * with that tier: the pricing page publishes it, and a published cap the gate does not hold would
+ * be a surprise (`BM-07`; owner ruling 2026-10-29). `unlimited` on both counts is the law above.
  *
  * Returns a `TierCapacity` so an entitlement check reads ONE shape whether the tenant is trialing
  * or paying (`M12`), and so a third counted creation must be given a trial answer here before
@@ -60,11 +60,26 @@ export function isSellable(book: PriceBookPack, meter: Meter): boolean {
  */
 export function trialCapacity(book: PriceBookPack): TierCapacity {
   return {
-    designCeilingKw: 'unlimited',
+    designCeilingKw: topSoldCeiling(book),
     creationsPerCycle: { proposals: 'unlimited', active_projects: 'unlimited' },
     meterBundles: book.trialCaps.meterBundles,
     storageGb: book.trialCaps.storageGb,
   };
+}
+
+/**
+ * The design ceiling of the highest tier this book sells. A negotiated (`custom`) ceiling is no
+ * trial's — a trial has no contract — so the next tier down answers; with none, `unlimited`.
+ */
+function topSoldCeiling(book: PriceBookPack): TierLimit {
+  const ceilings = [...TIERS]
+    .reverse()
+    .flatMap((tier) => {
+      const row = book.tiers[tier];
+      return row === null ? [] : [row.capacity.designCeilingKw];
+    })
+    .filter((ceiling) => ceiling !== 'custom');
+  return ceilings[0] ?? 'unlimited';
 }
 
 /**

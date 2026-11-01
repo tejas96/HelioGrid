@@ -73,6 +73,15 @@ export class MarketPackService {
     );
   }
 
+  /** A market's current pack and the instant it was published, or `null` when none is published. */
+  async currentPublished(
+    marketCode: string,
+  ): Promise<{ readonly pack: MarketPack; readonly publishedAt: string } | null> {
+    const envelope = await this.packs.currentEnvelope(marketCode);
+    if (envelope === null) return null;
+    return { pack: this.stored(envelope), publishedAt: envelope.publishedAt };
+  }
+
   /** The tenant-facing read: the envelope and the tenant-readable keys, never the book (`F1-25`). */
   async current(marketCode: string): Promise<MarketPackRead | null> {
     const envelope = await this.packs.currentEnvelope(marketCode);

@@ -94,4 +94,5 @@ export const PRICE_BOOK_PACK_SCHEMA: z.ZodType<PriceBookPack, z.ZodTypeDef, unkn
     }),
   ),
   priceProtectionMonths: packWhole.optional(),
+  salesContact: z.string().email().optional(),
 });

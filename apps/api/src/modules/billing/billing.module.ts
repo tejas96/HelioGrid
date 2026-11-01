@@ -26,6 +26,8 @@ import { OverageAdminRepository } from './overage.admin.repository';
 import { OverageService } from './overage.service';
 import { PlanPriceAdminRepository } from './plan-price.admin.repository';
 import { PlanPriceService } from './plan-price.service';
+import { PricingController } from './pricing.controller';
+import { PricingService } from './pricing.service';
 import { ReconcileAdminRepository } from './reconcile.admin.repository';
 import { ReconcileService } from './reconcile.service';
 import { RenewalAdminRepository } from './renewal.admin.repository';
@@ -74,11 +76,12 @@ const billingGatewayProvider: Provider = {
  */
 @Module({
   imports: [MarketModule],
-  controllers: [BillingController],
+  controllers: [BillingController, PricingController],
   providers: [
     billingGatewayProvider,
     BillingAlerts,
     BillingService,
+    PricingService,
     BillingAdminRepository,
     BillingActivityRegistration,
     RenewalService,

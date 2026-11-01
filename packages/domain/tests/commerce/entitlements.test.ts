@@ -49,7 +49,7 @@ describe('bookEntitlements — the limits the book gives (M12-16, M12-17, BM-28)
     const trial = bookEntitlements(IN_PRICE_BOOK, null);
     const caps = trialCapacity(IN_PRICE_BOOK);
     expect(trial.every((entitlement) => entitlement.source === 'trial')).toBe(true);
-    expect(limitIn(trial, 'design_ceiling_kw')).toBe('unlimited');
+    expect(limitIn(trial, 'design_ceiling_kw')).toBe(caps.designCeilingKw);
     expect(limitIn(trial, 'storage_gb')).toBe(caps.storageGb);
     expect(limitIn(trial, 'voice_minutes')).toBe(caps.meterBundles.voice_minutes);
     for (const tier of TIERS) {

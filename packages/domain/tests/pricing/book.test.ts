@@ -147,9 +147,9 @@ describe('the book is the pack’s price-book key (F1-02, F1-25)', () => {
 });
 
 describe('trialCapacity — the whole product, bounded only by the book (BM-28, BM-31)', () => {
-  it('withholds no capability: no design ceiling and no creation count', () => {
+  it('withholds no capability: the top tier’s ceiling and no creation count', () => {
     const trial = trialCapacity(IN_PRICE_BOOK);
-    expect(trial.designCeilingKw).toBe('unlimited');
+    expect(trial.designCeilingKw).toBe(100_000);
     expect(trial.creationsPerCycle).toEqual({
       proposals: 'unlimited',
       active_projects: 'unlimited',
@@ -166,11 +166,27 @@ describe('trialCapacity — the whole product, bounded only by the book (BM-28, 
     expect(trial.storageGb).toBe(5);
   });
 
-  it('outreaches every tier it is meant to let a buyer evaluate (BM-28)', () => {
-    expect(trialCapacity(IN_PRICE_BOOK).designCeilingKw).not.toBe(
-      tierRow(IN_PRICE_BOOK, 'enterprise')?.capacity.designCeilingKw,
-    );
-  });
+  it.each([
+    { sold: 'every tier', drop: [] as Tier[], ceiling: 100_000 },
+    { sold: 'no enterprise', drop: ['enterprise'] as Tier[], ceiling: 5_000 },
+    { sold: 'starter only', drop: ['growth', 'pro', 'enterprise'] as Tier[], ceiling: 50 },
+    { sold: 'no tier', drop: [...TIERS], ceiling: 'unlimited' },
+    { sold: 'a negotiated top ceiling', drop: [] as Tier[], ceiling: 5_000, customTop: true },
+  ])(
+    'reaches the highest sold tier’s ceiling — $sold (BM-28, BM-07)',
+    ({ drop, ceiling, customTop }) => {
+      const tiers = { ...IN_PRICE_BOOK.tiers };
+      for (const tier of drop) tiers[tier] = null;
+      const enterprise = tiers.enterprise;
+      if (customTop === true && enterprise !== null) {
+        tiers.enterprise = {
+          ...enterprise,
+          capacity: { ...enterprise.capacity, designCeilingKw: 'custom' },
+        };
+      }
+      expect(trialCapacity({ ...IN_PRICE_BOOK, tiers }).designCeilingKw).toBe(ceiling);
+    },
+  );
 
   it('re-reads the book rather than carrying a cap of its own', () => {
     const generousBook = {

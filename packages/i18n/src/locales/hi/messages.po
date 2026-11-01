@@ -43,6 +43,16 @@ msgid "{alt} — {missing}"
 msgstr "{alt} — {missing}"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:109
+msgid "{amount} {unit}"
+msgstr "{amount} {unit}"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:110
+msgid "{amount} GB"
+msgstr "{amount} GB"
+
+#. js-lingui-explicit-id
 #: src/copy/allocation.ts:28
 msgid "{amount} over-allocated."
 msgstr "{amount} ज़्यादा बाँटा गया।"
@@ -133,6 +143,16 @@ msgstr "{company} में एक EPC Owner रहना ज़रूरी ह
 #: src/copy/first-run-profile.ts:25
 msgid "{company} sees this name beside everything you do."
 msgstr "{company} आपके हर काम के साथ यही नाम देखती है।"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:112
+msgid "{competitor} {rung}"
+msgstr "{competitor} {rung}"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:107
+msgid "{competitor} price page · {date}"
+msgstr "{competitor} मूल्य पेज · {date}"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:15
@@ -396,6 +416,11 @@ msgid "{count, plural, one {Show the # ready check} other {Show the # ready chec
 msgstr "{count, plural, one {# तैयार जाँच दिखाएँ} other {# तैयार जाँचें दिखाएँ}}"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:101
+msgid "{count, select, 2 {Both plans} 3 {All three plans} 4 {All four plans} other {All plans}}"
+msgstr "{count, select, 2 {दोनों प्लान} 3 {तीनों प्लान} 4 {चारों प्लान} other {सभी प्लान}}"
+
+#. js-lingui-explicit-id
 #: src/copy/price-book.ts:39
 msgid "{count}"
 msgstr "{count}"
@@ -434,6 +459,11 @@ msgstr "{count} MPPT"
 #: src/copy/filter-panel.ts:14
 msgid "{count} on"
 msgstr "{count} चालू"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:68
+msgid "{count} proposals a month"
+msgstr "हर महीने {count} प्रस्ताव"
 
 #. js-lingui-explicit-id
 #: src/copy/version-diff.ts:24
@@ -510,6 +540,11 @@ msgstr "{date}, {time}"
 #: src/copy/date-picker.ts:16
 msgid "{date}, supplied by the market pack, cannot be removed"
 msgstr "{date}, मार्केट पैक से आई है, हटाई नहीं जा सकती"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:61
+msgid "{days} days, no card needed."
+msgstr "{days} दिन, कोई कार्ड नहीं चाहिए।"
 
 #. js-lingui-explicit-id
 #: src/copy/paged-document.ts:14
@@ -858,6 +893,11 @@ msgid "{list} removed from {name}"
 msgstr "{name} से हटाया गया: {list}"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:106
+msgid "{market} price list · {date}"
+msgstr "{market} मूल्य सूची · {date}"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:21
 msgid "{match} match"
 msgstr "{match} मिलीं"
@@ -901,6 +941,11 @@ msgstr "{name} — खाता, शिकायत संपर्क और �
 #: src/copy/source-document.ts:25
 msgid "{name} — source document"
 msgstr "{name} — मूल दस्तावेज़"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:111
+msgid "{name} · {capacity}"
+msgstr "{name} · {capacity}"
 
 #. js-lingui-explicit-id
 #: src/copy/actor-class.ts:26
@@ -1163,6 +1208,11 @@ msgid "{pin}, draggable"
 msgstr "{pin}, खींचा जा सकता है"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:113
+msgid "{plan} · {against}"
+msgstr "{plan} · {against}"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:39
 msgid "{preset} home · {highest} is your highest preset"
 msgstr "{preset} होम · {highest} आपका सबसे ऊँचा प्रीसेट है"
@@ -1373,6 +1423,21 @@ msgid "{unread} unread · {total} in the last {days} days"
 msgstr "{unread} अपठित · पिछले {days} दिनों में {total}"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:93
+msgid "{value} / min"
+msgstr "{value} / मिनट"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:91
+msgid "{value} / mo"
+msgstr "{value} / महीना"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:92
+msgid "{value} / yr"
+msgstr "{value} / साल"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import-rows.ts:123
 msgid "{value} chosen — ready to import."
 msgstr "{value} चुना गया — इम्पोर्ट के लिए तैयार।"
@@ -1428,6 +1493,11 @@ msgid "1 panel"
 msgstr "1 पैनल"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:65
+msgid "12 months for the price of 10"
+msgstr "10 महीने की कीमत में 12 महीने"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:91
 msgid "7 days left in your trial"
 msgstr "आपके ट्रायल में 7 दिन बाकी"
@@ -1463,6 +1533,11 @@ msgid "A market holiday"
 msgstr "बाज़ार की छुट्टी"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:89
+msgid "a month"
+msgstr "प्रति माह"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-ready.ts:14
 msgid "A name and a phone number is enough to begin."
 msgstr "शुरू करने के लिए एक नाम और फ़ोन नंबर काफ़ी है।"
@@ -1471,6 +1546,11 @@ msgstr "शुरू करने के लिए एक नाम और फ�
 #: src/copy/invite.ts:75
 msgid "A name can have up to {max} characters."
 msgstr "नाम में ज़्यादा से ज़्यादा {max} अक्षर हो सकते हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:28
+msgid "A named contact"
+msgstr "एक तय संपर्क व्यक्ति"
 
 #. js-lingui-explicit-id
 #: src/copy/actor-class.ts:10
@@ -1562,6 +1642,11 @@ msgstr "एक तैयार रूफ़टॉप प्रोजेक्ट
 #: src/copy/company-signup.ts:74
 msgid "A workspace already exists for {company} in {city}"
 msgstr "{city} में {company} का वर्कस्पेस पहले से है"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:90
+msgid "a year"
+msgstr "प्रति वर्ष"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:59
@@ -1689,6 +1774,11 @@ msgstr "सक्रिय · आख़िरी बार {date} को दे�
 #: src/copy/team.ts:53
 msgid "Active · last seen today"
 msgstr "सक्रिय · आख़िरी बार आज देखा गया"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:74
+msgid "Active projects"
+msgstr "चालू प्रोजेक्ट्स"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:93
@@ -1868,6 +1958,11 @@ msgid "After you send"
 msgstr "भेजने के बाद"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:96
+msgid "Against"
+msgstr "तुलना में"
+
+#. js-lingui-explicit-id
 #: src/copy/settings.ts:47
 msgid "Agent & voice"
 msgstr "एजेंट और आवाज़"
@@ -1894,6 +1989,21 @@ msgstr "सभी"
 #: src/copy/role-matrix.ts:112
 msgid "All (money scope)"
 msgstr "सभी (पैसों तक)"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:36
+msgid "All languages"
+msgstr "सभी भाषाएँ"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:70
+msgid "All limits"
+msgstr "सभी सीमाएँ"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:41
+msgid "All obstruction types"
+msgstr "सभी तरह की रुकावटें"
 
 #. js-lingui-explicit-id
 #: src/copy/role-presets.ts:61
@@ -1952,6 +2062,11 @@ msgid "Anjali Kulkarni"
 msgstr "अंजली कुलकर्णी"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:85
+msgid "Annual contract"
+msgstr "सालाना अनुबंध"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:82
 msgid "Answered"
 msgstr "उत्तर दिया गया"
@@ -1971,6 +2086,11 @@ msgstr "कोई भी"
 #: src/copy/notifications.ts:49
 msgid "Anything that needs you, or changes on work you hold, lands here — newest first, with the one thing you can do about it."
 msgstr "जिस काम में आपकी ज़रूरत है, या आपके काम में जो बदलता है, वह यहाँ आता है — सबसे नया पहले, और साथ में वह एक काम जो आप कर सकते हैं।"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:26
+msgid "App and WhatsApp"
+msgstr "ऐप और WhatsApp"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:84
@@ -2268,6 +2388,11 @@ msgid "Bifaciality (%)"
 msgstr "बाइफ़ेशियलिटी (%)"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:71
+msgid "Biggest design"
+msgstr "सबसे बड़ा डिज़ाइन"
+
+#. js-lingui-explicit-id
 #: src/copy/invoice-document.ts:37
 msgid "billed monthly"
 msgstr "मासिक बिल"
@@ -2292,6 +2417,11 @@ msgstr "बिलिंग"
 #: src/copy/settings.ts:49
 msgid "Billing"
 msgstr "बिलिंग"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:62
+msgid "Billing cycle"
+msgstr "बिलिंग चक्र"
 
 #. js-lingui-explicit-id
 #: src/copy/finding-list.ts:9
@@ -2802,6 +2932,16 @@ msgid "company setup"
 msgstr "कंपनी सेटअप"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:94
+msgid "Compare two plans"
+msgstr "दो प्लान की तुलना करें"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:104
+msgid "Compared with"
+msgstr "इनसे तुलना"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:36
 msgid "Compliance"
 msgstr "अनुपालन"
@@ -2962,6 +3102,11 @@ msgstr "तुलना लोड नहीं हो सकी"
 #: src/copy/map-surface.ts:19
 msgid "Couldn't load the map"
 msgstr "नक्शा लोड नहीं हो सका"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:116
+msgid "Couldn’t load the prices"
+msgstr "कीमतें लोड नहीं हो सकीं"
 
 #. js-lingui-explicit-id
 #: src/copy/transcript.ts:17
@@ -3131,6 +3276,11 @@ msgid "Creating your company"
 msgstr "आपकी कंपनी बन रही है"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:33
+msgid "CRM"
+msgstr "CRM"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:30
 msgid "CSV or Excel file"
 msgstr "CSV या Excel फ़ाइल"
@@ -3151,6 +3301,11 @@ msgid "Current plan"
 msgstr "मौजूदा प्लान"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:81
+msgid "Custom"
+msgstr "कस्टम"
+
+#. js-lingui-explicit-id
 #: src/copy/settings.ts:34
 msgid "Customer calls"
 msgstr "ग्राहक कॉल"
@@ -3158,6 +3313,11 @@ msgstr "ग्राहक कॉल"
 #. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:25
 msgid "customer links"
+msgstr "ग्राहक लिंक"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:35
+msgid "Customer links"
 msgstr "ग्राहक लिंक"
 
 #. js-lingui-explicit-id
@@ -3519,6 +3679,16 @@ msgid "Dunning"
 msgstr "भुगतान का तकाज़ा"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:105
+msgid "During the trial"
+msgstr "ट्रायल के दौरान"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:48
+msgid "DXF, SVG and PDF export"
+msgstr "DXF, SVG और PDF एक्सपोर्ट"
+
+#. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:48
 msgid "Each amount"
 msgstr "हर राशि"
@@ -3652,9 +3822,19 @@ msgid "Every change is recorded under your name — roles before and after."
 msgstr "हर बदलाव आपके नाम से दर्ज होता है — पहले और बाद की भूमिकाएँ।"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:53
+msgid "Every feature is in every plan — others hold features back for higher plans."
+msgstr "हर प्लान में हर फ़ीचर है — दूसरे फ़ीचर ऊँचे प्लान के लिए रोक लेते हैं।"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:130
 msgid "Every panel, inverter and part, by make."
 msgstr "हर पैनल, इन्वर्टर और पुर्ज़ा, ब्रांड के साथ।"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:57
+msgid "Every plan"
+msgstr "हर प्लान"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:146
@@ -3720,6 +3900,16 @@ msgstr "{date} को समाप्त होगा"
 #: src/copy/billing-notices.ts:24
 msgid "exports"
 msgstr "एक्सपोर्ट"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:100
+msgid "Extra charges"
+msgstr "अतिरिक्त शुल्क"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:78
+msgid "Extra voice"
+msgstr "अतिरिक्त वॉइस"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:90
@@ -3840,9 +4030,29 @@ msgid "Fixed."
 msgstr "ठीक हो गया।"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:19
+msgid "For 15 or more installs a month, or your first business sites."
+msgstr "महीने में 15 या ज़्यादा इंस्टॉल, या आपकी पहली व्यावसायिक साइटों के लिए।"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:18
+msgid "For a home-rooftop team of 1 to 5 people."
+msgstr "1 से 5 लोगों की घरेलू छत टीम के लिए।"
+
+#. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:60
 msgid "For an account you already have with another company."
 msgstr "किसी दूसरी कंपनी के साथ आपके मौजूदा खाते के लिए।"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:20
+msgid "For business sites, with voice minutes included."
+msgstr "व्यावसायिक साइटों के लिए, वॉइस मिनट शामिल।"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:21
+msgid "For the largest designs and utility work."
+msgstr "सबसे बड़े डिज़ाइन और यूटिलिटी काम के लिए।"
 
 #. js-lingui-explicit-id
 #: src/copy/rich-text.ts:9
@@ -3859,6 +4069,11 @@ msgstr "30 सेकंड आगे"
 #: src/copy/range-field.ts:9
 msgid "From"
 msgstr "से"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:88
+msgid "From {price}"
+msgstr "{price} से"
 
 #. js-lingui-explicit-id
 #: src/copy/field-override.ts:15
@@ -4016,6 +4231,11 @@ msgstr "ठीक है"
 #: src/copy/shell.ts:29
 msgid "Grievance officer"
 msgstr "शिकायत अधिकारी"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:43
+msgid "Ground mount"
+msgstr "ग्राउंड माउंट"
 
 #. js-lingui-explicit-id
 #: src/copy/time-field.ts:12
@@ -4400,6 +4620,16 @@ msgid "In search and pickers"
 msgstr "खोज और चयन सूचियों में"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:25
+msgid "In the app"
+msgstr "ऐप में"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:99
+msgid "Included"
+msgstr "शामिल"
+
+#. js-lingui-explicit-id
 #: src/copy/number-field.ts:11
 #: src/copy/slider.ts:9
 msgid "Increase {name}"
@@ -4420,6 +4650,11 @@ msgstr "सांकेतिक"
 #: src/copy/document-basis.ts:11
 msgid "Indicative proposal. Generation and savings are estimated from system size and location. A site survey and shadow analysis will confirm the final figures."
 msgstr "सांकेतिक प्रस्ताव। उत्पादन और बचत का अनुमान सिस्टम के आकार और स्थान से लगाया गया है। साइट सर्वे और छाया विश्लेषण से अंतिम आंकड़ों की पुष्टि होगी।"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:46
+msgid "Industrial drawing sheets"
+msgstr "औद्योगिक ड्रॉइंग शीट"
 
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:54
@@ -4794,6 +5029,12 @@ msgid "LFP"
 msgstr "LFP"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:67
+#: src/copy/pricing.ts:98
+msgid "Limits"
+msgstr "सीमाएँ"
+
+#. js-lingui-explicit-id
 #: src/copy/charts.ts:24
 msgid "Line chart"
 msgstr "लाइन चार्ट"
@@ -4939,6 +5180,11 @@ msgstr "आमंत्रण लोड हो रहा है"
 #: src/copy/price-book.ts:148
 msgid "Loading the price book"
 msgstr "प्राइस बुक लोड हो रही है"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:114
+msgid "Loading the prices"
+msgstr "कीमतें लोड हो रही हैं"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:55
@@ -5223,6 +5469,11 @@ msgstr "रकम का सारांश"
 #: src/copy/catalog-settings.ts:145
 msgid "Mono PERC"
 msgstr "Mono PERC"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:63
+msgid "Monthly"
+msgstr "मासिक"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:98
@@ -5710,6 +5961,11 @@ msgid "No price yet; a catalog manager adds it later."
 msgstr "अभी कोई कीमत नहीं; कैटलॉग मैनेजर बाद में जोड़ेंगे।"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:115
+msgid "No prices published for this market yet"
+msgstr "इस बाज़ार के लिए अभी कोई कीमत प्रकाशित नहीं हुई"
+
+#. js-lingui-explicit-id
 #: src/copy/paged-document.ts:23
 msgid "No project name yet"
 msgstr "अभी तक कोई प्रोजेक्ट नाम नहीं"
@@ -5811,6 +6067,7 @@ msgstr "नॉमिनल वोल्टेज (V)"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:68
+#: src/copy/pricing.ts:82
 msgid "None"
 msgstr "कोई नहीं"
 
@@ -5858,6 +6115,11 @@ msgstr "इस दायरे के लिए उपलब्ध नहीं"
 #: src/copy/notifications.ts:56
 msgid "Not available here"
 msgstr "यहाँ उपलब्ध नहीं"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:83
+msgid "Not capped"
+msgstr "कोई सीमा नहीं"
 
 #. js-lingui-explicit-id
 #: src/copy/image.ts:9
@@ -5925,6 +6187,7 @@ msgid "Not metered on this plan"
 msgstr "इस प्लान में मापा नहीं जाता"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:84
 #: src/copy/shell.ts:31
 msgid "Not published yet"
 msgstr "अभी प्रकाशित नहीं"
@@ -6763,6 +7026,21 @@ msgid "Placeholder route. The screen is not built yet."
 msgstr "प्लेसहोल्डर रूट। यह स्क्रीन अभी बनी नहीं है।"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:95
+msgid "Plan"
+msgstr "प्लान"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:66
+msgid "Plans"
+msgstr "प्लान"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:52
+msgid "Plans and prices"
+msgstr "प्लान और कीमतें"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:110
 #: src/copy/catalog-settings.ts:117
 #: src/copy/catalog-words.ts:47
@@ -6954,6 +7232,11 @@ msgid "Prices applied"
 msgstr "लागू की गई कीमतें"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:108
+msgid "Prices exclude {scheme}"
+msgstr "कीमतों में {scheme} शामिल नहीं"
+
+#. js-lingui-explicit-id
 #: src/copy/language-switcher.ts:9
 msgid "primary"
 msgstr "मुख्य"
@@ -6962,6 +7245,11 @@ msgstr "मुख्य"
 #: src/copy/brand-colour-field.ts:14
 msgid "Primary brand colour"
 msgstr "मुख्य ब्रांड रंग"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:27
+msgid "Priority, and an onboarding call"
+msgstr "प्राथमिकता, और एक ऑनबोर्डिंग कॉल"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:117
@@ -7025,6 +7313,7 @@ msgid "Project visibility scope"
 msgstr "प्रोजेक्ट कितने दिखते हैं"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:34
 #: src/copy/shell.ts:95
 msgid "Projects"
 msgstr "प्रोजेक्ट्स"
@@ -7052,9 +7341,15 @@ msgid "Proposal template"
 msgstr "प्रस्ताव टेम्पलेट"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:73
 #: src/copy/shell.ts:94
 msgid "Proposals"
 msgstr "प्रस्ताव"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:72
+msgid "Proposals a month"
+msgstr "हर महीने प्रस्ताव"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:75
@@ -7090,6 +7385,11 @@ msgstr "पुणे"
 #: src/copy/profile-preferences.ts:39
 msgid "Push notifications"
 msgstr "पुश सूचनाएँ"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:47
+msgid "PV and energy reports"
+msgstr "PV और ऊर्जा रिपोर्ट"
 
 #. js-lingui-explicit-id
 #: src/copy/qr-code.ts:8
@@ -8051,6 +8351,11 @@ msgid "Several products we carry matched this row. Nothing was created."
 msgstr "हमारे कई प्रोडक्ट इस पंक्ति से मेल खाए। कुछ नहीं बनाया गया।"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:40
+msgid "Shadow analysis"
+msgstr "छाया विश्लेषण"
+
+#. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:52
 msgid "Share"
 msgstr "हिस्सा"
@@ -8077,6 +8382,7 @@ msgstr "शॉर्ट-सर्किट करंट (A)"
 
 #. js-lingui-explicit-id
 #: src/copy/filter-panel.ts:10
+#: src/copy/pricing.ts:97
 #: src/copy/roles-reference.ts:36
 msgid "Show"
 msgstr "दिखाएँ"
@@ -8197,6 +8503,7 @@ msgid "Shown to customers on every document"
 msgstr "हर दस्तावेज़ पर ग्राहकों को दिखता है"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:59
 #: src/copy/sign-in.ts:9
 msgid "Sign in"
 msgstr "साइन इन करें"
@@ -8280,6 +8587,11 @@ msgstr "अभी छोड़ें"
 #: src/copy/company-profile.ts:15
 msgid "Skipped during setup · your first proposal needs it"
 msgstr "सेटअप में छोड़ा गया · आपके पहले प्रस्ताव को इसकी ज़रूरत होगी"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:45
+msgid "SLD, AC/DC and earthing layouts"
+msgstr "SLD, AC/DC और अर्थिंग लेआउट"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:112
@@ -8404,6 +8716,11 @@ msgid "Start a survey from your home"
 msgstr "अपने होम से सर्वे शुरू करें"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:60
+msgid "Start free trial"
+msgstr "मुफ़्त ट्रायल शुरू करें"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:110
 msgid "Start survey"
 msgstr "सर्वे शुरू करें"
@@ -8515,6 +8832,11 @@ msgid "Stops the work — nothing further is computed."
 msgstr "काम रोक देता है — आगे कुछ भी गणना नहीं होगी।"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:79
+msgid "Storage"
+msgstr "स्टोरेज"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:18
 msgid "Street address"
 msgstr "सड़क का पता"
@@ -8529,6 +8851,11 @@ msgstr "स्ट्रिंग"
 #: src/copy/catalog-import-fields.ts:34
 msgid "Strings per MPPT"
 msgstr "प्रति MPPT स्ट्रिंग"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:44
+msgid "Structures"
+msgstr "स्ट्रक्चर"
 
 #. js-lingui-explicit-id
 #: src/copy/project-stages.ts:44
@@ -8549,6 +8876,11 @@ msgstr "उप-योग"
 #: src/copy/invoice-document.ts:16
 msgid "Supplier"
 msgstr "आपूर्तिकर्ता"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:69
+msgid "Support"
+msgstr "सहायता"
 
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:50
@@ -8634,6 +8966,11 @@ msgstr "{date} को लिए गए और अपलोड नहीं ह�
 #: src/copy/sign-in.ts:70
 msgid "Taking you to {destination}"
 msgstr "आपको {destination} पर ले जा रहे हैं"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:86
+msgid "Talk to sales"
+msgstr "सेल्स से बात करें"
 
 #. js-lingui-explicit-id
 #: src/copy/date-set.ts:13
@@ -8964,6 +9301,11 @@ msgid "The file is still being read."
 msgstr "फ़ाइल अभी पढ़ी जा रही है।"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:58
+msgid "The full studio"
+msgstr "पूरा स्टूडियो"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:105
 msgid "The import keeps running. Its report waits in Import a file."
 msgstr "इम्पोर्ट चलता रहेगा। इसकी रिपोर्ट फ़ाइल इम्पोर्ट में मिलेगी।"
@@ -9077,6 +9419,11 @@ msgstr "कीमत खाली है — यह आपको कितने
 #: src/copy/catalog-import-rows.ts:67
 msgid "The price is empty — what does one {unit} cost you?"
 msgstr "कीमत खाली है — एक {unit} आपको कितने में पड़ता है?"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:117
+msgid "The price list didn’t answer."
+msgstr "मूल्य सूची से जवाब नहीं मिला।"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import-rows.ts:82
@@ -9494,6 +9841,11 @@ msgid "Timeline"
 msgstr "टाइमलाइन"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:42
+msgid "Tin-shed and metal roof"
+msgstr "टिन-शेड और धातु की छत"
+
+#. js-lingui-explicit-id
 #: src/copy/filter-panel.ts:21
 #: src/copy/range-field.ts:10
 msgid "To"
@@ -9567,6 +9919,7 @@ msgstr "ट्रांसक्रिप्ट"
 #: src/copy/catalog-settings.ts:92
 #: src/copy/payment-terms.ts:38
 #: src/copy/price-book.ts:86
+#: src/copy/pricing.ts:118
 #: src/copy/proposal-template.ts:82
 #: src/copy/role-card.ts:39
 #: src/copy/roles-reference.ts:34
@@ -9671,6 +10024,11 @@ msgstr "पहले जैसा करें"
 #: src/copy/catalog-import.ts:98
 msgid "Undo overrides and new SKUs in Catalog settings."
 msgstr "ओवरराइड और नए SKU कैटलॉग सेटिंग्स में पहले जैसे करें।"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:80
+msgid "Unlimited"
+msgstr "असीमित"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:26
@@ -9850,6 +10208,11 @@ msgid "Used on the proposal PDF and the customer link page. The HelioGrid app it
 msgstr "प्रस्ताव की PDF और ग्राहक के लिंक पेज पर इस्तेमाल होता है। HelioGrid ऐप का रूप कभी नहीं बदलता।"
 
 #. js-lingui-explicit-id
+#: src/copy/pricing.ts:75
+msgid "Users"
+msgstr "उपयोगकर्ता"
+
+#. js-lingui-explicit-id
 #: src/copy/project-stages.ts:36
 msgid "Utility clears the plant"
 msgstr "यूटिलिटी प्लांट को मंज़ूरी देती है"
@@ -9976,8 +10339,14 @@ msgstr "Voc तापमान गुणांक"
 
 #. js-lingui-explicit-id
 #: src/copy/invoice-document.ts:43
+#: src/copy/pricing.ts:77
 msgid "Voice minutes"
 msgstr "वॉइस मिनट"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:76
+msgid "Voice minutes a month"
+msgstr "हर महीने वॉइस मिनट"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import-fields.ts:20
@@ -10203,6 +10572,11 @@ msgstr "क्या बदला और क्यों"
 #: src/copy/setup-what-you-sell.ts:20
 msgid "What do you sell?"
 msgstr "आप क्या बेचते हैं?"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:56
+msgid "What every plan includes"
+msgstr "हर प्लान में क्या शामिल है"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:59
@@ -10500,6 +10874,11 @@ msgstr "{of, plural, one {# {languageNoun}} other {# {languageNoun}}} में 
 #: src/copy/language-switcher.ts:13
 msgid "Written in {written} of {of, plural, one {# {languageNoun}} other {# {languageNoun}s}} · {each} {sectionNoun} each"
 msgstr "{of, plural, one {# {languageNoun}} other {# {languageNoun}}} में से {written} में लिखा · हर एक में {each} {sectionNoun}"
+
+#. js-lingui-explicit-id
+#: src/copy/pricing.ts:64
+msgid "Yearly"
+msgstr "सालाना"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:128

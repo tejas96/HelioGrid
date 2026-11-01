@@ -114,6 +114,15 @@ export {
 } from './use-price-book';
 export type { DraftRate, PriceBookDraft } from './use-price-book-draft';
 export { usePriceBookDraft } from './use-price-book-draft';
+export { usePricing } from './use-pricing';
+export type {
+  DesignPower,
+  PricingComparison,
+  PricingPlan,
+  PricingSet,
+  PricingView,
+} from './use-pricing-page';
+export { PRICING_SETS, usePricingPage } from './use-pricing-page';
 export type { ProfileRoleCard, ProfileScreen } from './use-profile-screen';
 export { useProfileScreen } from './use-profile-screen';
 export type { ProposalTemplatePage } from './use-proposal-template';

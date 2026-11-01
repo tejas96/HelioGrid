@@ -91,6 +91,8 @@ type ReviewedComputesNothing =
   /* read a figure out of a pack as written */
   | 'tierRow'
   | 'listedPrice'
+  /* the public price list: the book's figures as written, the draft ones withheld (`SCR-M12-01`) */
+  | 'publicPricing'
   | 'mandateType'
   | 'activeStatutoryExtras'
   /* return a whole pack as written */

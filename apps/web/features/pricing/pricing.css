@@ -1,0 +1,249 @@
+/* SCR-M12-01 — the public pricing page. Phone first; the desk layout from 968px, the width the
+   shell turns at. Every value is a token. */
+
+.hg-pricing {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--canvas);
+  color: var(--text-primary);
+}
+
+.hg-pricing-header {
+  background: var(--surface-form);
+}
+
+.hg-pricing-header__row {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--screen-pad-mobile);
+}
+
+.hg-pricing-header__mark {
+  flex-shrink: 0;
+}
+
+.hg-pricing-header__acts {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.hg-pricing-header__trial {
+  display: none;
+}
+
+.hg-pricing-body {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  padding: var(--sp-6) var(--screen-pad-mobile) var(--sp-8);
+}
+
+.hg-pricing-intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-pricing-intro__words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-pricing-title {
+  margin: 0;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  letter-spacing: var(--tr-h2);
+  font-weight: var(--fw-bold);
+}
+
+.hg-pricing-claim {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-pricing-includes,
+.hg-pricing-compare,
+.hg-pricing-compare__body,
+.hg-pricing-plans,
+.hg-pricing-matrix {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-pricing-chips {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+
+.hg-pricing-chips__label {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-pricing-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-pricing-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-pricing-card__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-pricing-card__name {
+  font-size: var(--fs-h4);
+  line-height: var(--lh-h4);
+  letter-spacing: var(--tr-h4);
+  font-weight: var(--fw-bold);
+}
+
+.hg-pricing-card__price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.hg-pricing-card__figure {
+  font-family: var(--font-mono);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--tr-h1);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-pricing-quiet,
+.hg-pricing-card__positioning {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.hg-pricing-card__foot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-3);
+}
+
+.hg-pricing-card__foot > :last-child {
+  align-self: stretch;
+}
+
+.hg-pricing-figure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-pricing-sources {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: 0 var(--sp-1);
+}
+
+.hg-pricing-sources--row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-3);
+}
+
+.hg-pricing-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+.hg-pricing-foot__compare,
+.hg-pricing-foot__side,
+.hg-pricing-compared,
+.hg-pricing-trial {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-pricing-foot__side {
+  gap: var(--sp-6);
+}
+
+.hg-pricing-overline {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-pricing-trial__caps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-pricing-trial-act {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-pricing-trial-act__line {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.hg-pricing-pinned {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  padding: var(--sp-4) var(--screen-pad-mobile) var(--sp-5);
+  background: var(--surface-form);
+  box-shadow: var(--e4);
+}
+
+.hg-pricing-pinned .hg-pricing-trial-act {
+  align-items: stretch;
+}
+
+.hg-pricing-desk-only {
+  display: none;
+}

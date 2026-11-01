@@ -54,7 +54,12 @@ export function CompareValueCell<Opt extends CompareOption>({
   const gap = gapOf(attribute, words.notStated);
   const { ground } = useGround();
   const row = (
-    <View style={compareStyles.valueRow}>
+    <View
+      style={[
+        compareStyles.valueRow,
+        attribute.numeric === true ? compareStyles.valueRowNumeric : undefined,
+      ]}
+    >
       {/* AN ABSENT VALUE IS A NAMED GAP, NOT AN EM-DASH — `NamedGap` is the system's one
             renderer of that sentence, and it is a View, so it stands beside the words rather
             than inside them. */}

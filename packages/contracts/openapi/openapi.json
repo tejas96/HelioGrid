@@ -39958,6 +39958,875 @@
         }
       }
     },
+    "/pricing/{marketCode}": {
+      "get": {
+        "summary": "The public price list of one market: plans, limits, trial caps and benchmarks",
+        "tags": [
+          "pricing"
+        ],
+        "parameters": [
+          {
+            "name": "marketCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "market": {
+                      "type": "string",
+                      "pattern": "^[A-Z]{2}$"
+                    },
+                    "publishedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "currencyCode": {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 3
+                    },
+                    "plans": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "tier": {
+                            "type": "string",
+                            "enum": [
+                              "starter",
+                              "growth",
+                              "pro",
+                              "enterprise"
+                            ]
+                          },
+                          "price": {
+                            "discriminator": {
+                              "propertyName": "kind"
+                            },
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                      "listed"
+                                    ]
+                                  },
+                                  "perCycle": {
+                                    "type": "object",
+                                    "properties": {
+                                      "monthly": {
+                                        "type": "string",
+                                        "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                                      },
+                                      "yearly": {
+                                        "type": "string",
+                                        "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                                      }
+                                    },
+                                    "required": [
+                                      "monthly",
+                                      "yearly"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "required": [
+                                  "kind",
+                                  "perCycle"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                      "anchored"
+                                    ]
+                                  },
+                                  "from": {
+                                    "type": "string",
+                                    "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                                  },
+                                  "per": {
+                                    "type": "string",
+                                    "enum": [
+                                      "monthly",
+                                      "yearly"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "kind",
+                                  "from",
+                                  "per"
+                                ]
+                              }
+                            ]
+                          },
+                          "designCeilingKw": {
+                            "oneOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "unlimited"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "custom"
+                                ]
+                              }
+                            ]
+                          },
+                          "proposalsPerMonth": {
+                            "oneOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "unlimited"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "custom"
+                                ]
+                              }
+                            ]
+                          },
+                          "activeProjects": {
+                            "oneOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "unlimited"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "custom"
+                                ]
+                              }
+                            ]
+                          },
+                          "voiceMinutesIncluded": {
+                            "oneOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "unlimited"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "custom"
+                                ]
+                              }
+                            ]
+                          },
+                          "voiceMinuteRate": {
+                            "discriminator": {
+                              "propertyName": "kind"
+                            },
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                      "published"
+                                    ]
+                                  },
+                                  "rate": {
+                                    "type": "string",
+                                    "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                                  }
+                                },
+                                "required": [
+                                  "kind",
+                                  "rate"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                      "unpublished"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "kind"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                      "custom"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "kind"
+                                ]
+                              }
+                            ]
+                          },
+                          "storageGb": {
+                            "oneOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "unlimited"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "custom"
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "tier",
+                          "price",
+                          "designCeilingKw",
+                          "proposalsPerMonth",
+                          "activeProjects",
+                          "voiceMinutesIncluded",
+                          "voiceMinuteRate",
+                          "storageGb"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "minItems": 1
+                    },
+                    "trial": {
+                      "type": "object",
+                      "properties": {
+                        "days": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": 0
+                        },
+                        "designCeilingKw": {
+                          "oneOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "unlimited"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "custom"
+                              ]
+                            }
+                          ]
+                        },
+                        "proposalsPerMonth": {
+                          "oneOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "unlimited"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "custom"
+                              ]
+                            }
+                          ]
+                        },
+                        "voiceMinutes": {
+                          "oneOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "unlimited"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "custom"
+                              ]
+                            }
+                          ]
+                        },
+                        "storageGb": {
+                          "oneOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "unlimited"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "custom"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "days",
+                        "designCeilingKw",
+                        "proposalsPerMonth",
+                        "voiceMinutes",
+                        "storageGb"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "comparisons": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "tier": {
+                            "type": "string",
+                            "enum": [
+                              "starter",
+                              "growth",
+                              "pro",
+                              "enterprise"
+                            ]
+                          },
+                          "designCeilingKw": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "exclusiveMinimum": 0
+                          },
+                          "cycle": {
+                            "type": "string",
+                            "enum": [
+                              "monthly",
+                              "yearly"
+                            ]
+                          },
+                          "ours": {
+                            "type": "string",
+                            "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                          },
+                          "competitor": {
+                            "type": "string"
+                          },
+                          "rung": {
+                            "type": "string"
+                          },
+                          "theirs": {
+                            "type": "string",
+                            "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                          }
+                        },
+                        "required": [
+                          "tier",
+                          "designCeilingKw",
+                          "cycle",
+                          "ours",
+                          "competitor",
+                          "rung",
+                          "theirs"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "benchmarkSources": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "competitor": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string"
+                          },
+                          "readOn": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "competitor",
+                          "source",
+                          "readOn"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "taxScheme": {
+                      "type": "string"
+                    },
+                    "taxExcluded": {
+                      "type": "boolean"
+                    },
+                    "salesContact": {
+                      "type": "string",
+                      "format": "email",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "market",
+                    "publishedAt",
+                    "currencyCode",
+                    "plans",
+                    "trial",
+                    "comparisons",
+                    "benchmarkSources",
+                    "taxScheme",
+                    "taxExcluded",
+                    "salesContact"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_FAILED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "FORBIDDEN"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "details": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string"
+                                  },
+                                  "issue": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "issue"
+                                ]
+                              }
+                            },
+                            "requestId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "ENTITLEMENT_BLOCKED"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "requestId": {
+                              "type": "string"
+                            },
+                            "blocked": {
+                              "discriminator": {
+                                "propertyName": "reason"
+                              },
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "billing_state"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "phase": {
+                                      "type": "string",
+                                      "enum": [
+                                        "trialing",
+                                        "active",
+                                        "past_due_full_function",
+                                        "past_due_metered_paused",
+                                        "halted",
+                                        "expired",
+                                        "cancelled_post_period"
+                                      ]
+                                    },
+                                    "haltsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "phase",
+                                    "haltsAt"
+                                  ]
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "cap"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "key": {
+                                      "type": "string",
+                                      "enum": [
+                                        "design_ceiling_kw",
+                                        "proposals_per_cycle",
+                                        "active_projects",
+                                        "voice_minutes",
+                                        "marketing_sends",
+                                        "tracked_field_seats",
+                                        "storage_gb",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "resetsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "key",
+                                    "resetsAt"
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId",
+                            "blocked"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "NOT_FOUND"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INTERNAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/tenants": {
       "post": {
         "summary": "Company signup — the tenant, the owner membership and the owner role in one transaction; the same retry key answers with the same company",
