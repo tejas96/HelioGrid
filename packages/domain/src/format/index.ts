@@ -97,6 +97,7 @@ export {
   type PhoneOptions,
   phoneDigitsMismatch,
 } from './phone';
+export { type PowerUnit, type ScaledPower, scaledPower } from './power';
 export {
   PROJECTION_ASSUMPTIONS,
   type ProjectionAssumption,

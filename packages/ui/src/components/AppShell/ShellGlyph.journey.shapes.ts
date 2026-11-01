@@ -29,4 +29,11 @@ export const JOURNEY_GLYPHS = {
     path('M17.7 6.3l1.4-1.4'),
   ],
   key: [path('M15 7a4 4 0 1 0-3.9 5L4 19v2h3v-2h2v-2h2l1.1-1.1A4 4 0 0 0 15 7z')],
+  /** A balance: the pricing page's `Compare two plans` (`SCR-M12-01`). */
+  scales: [
+    path('M12 4.5v15'),
+    path('M6.5 8h11'),
+    path('m4 14 2.5-6L9 14a2.5 2.5 0 0 1-5 0'),
+    path('m15 14 2.5-6 2.5 6a2.5 2.5 0 0 1-5 0'),
+  ],
 } as const;

@@ -81,6 +81,10 @@ export const queryKeys = {
   market: {
     pack: (marketCode: string) => ['market', marketCode, 'pack'] as const,
   },
+  /** A market's public price list: no company's fact in it, so keyed by market alone. */
+  pricing: {
+    current: (marketCode: string) => ['pricing', marketCode] as const,
+  },
   /**
    * The reader's notifications in one company. The list and the bell's count share the prefix, so
    * a read invalidates both at once and the badge never disagrees with the list (`F6-17`).

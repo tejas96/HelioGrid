@@ -37,6 +37,8 @@ export const compareStyles = StyleSheet.create({
   /* Its fill is the control fill from `useGround()`, set where it is drawn. */
   chooseSelected: { borderWidth: 2, borderColor: theme.colors.accent },
   valueRow: { flexDirection: 'row', alignItems: 'baseline', flexWrap: 'wrap' },
+  /* A numeric row's figures end on one right edge, as the web half's `data-numeric` cell does. */
+  valueRowNumeric: { justifyContent: 'flex-end' },
   /* The web half's `.hg-compare-best` margin: the word stands off the figure by layout, never by
      spaces typed into it. */
   best: { marginLeft: 6 },

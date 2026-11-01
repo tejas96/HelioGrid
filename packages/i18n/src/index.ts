@@ -156,6 +156,14 @@ export {
 export * from './copy/pending-action';
 export * from './copy/phone-field';
 export * from './copy/price-book';
+export {
+  PLAN_INCLUDES,
+  PLAN_POSITIONING,
+  PLAN_SUPPORT,
+  PRICING,
+  planName,
+  STUDIO_INCLUDES,
+} from './copy/pricing';
 export type {
   ProfilePreferencesWordFacts,
   ProfilePreferencesWords,

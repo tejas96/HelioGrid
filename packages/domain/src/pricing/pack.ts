@@ -186,6 +186,11 @@ export interface PriceBookPack {
   /** `BM-39` — what this book was priced against, with provenance. Never empty in a sold market. */
   readonly benchmarks: readonly Benchmark[];
   /**
+   * `BM-15` — the address a sales-assisted rung's conversation opens at. Optional, so a row
+   * published before it parses; absent, the pricing page offers no sales act.
+   */
+  readonly salesContact?: string;
+  /**
    * Read by nothing: no company keeps a signed-up price (`BM-42`). A book still carries it because
    * an api of the release before requires it in every pack it parses (`D396`).
    */

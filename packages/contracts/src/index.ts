@@ -13,6 +13,7 @@ import { marketPackContract } from './market';
 import { notificationContract } from './notification';
 import { onboardingContract } from './onboarding';
 import { priceBookContract } from './price-book';
+import { pricingContract } from './pricing';
 import { tenantContract } from './tenant';
 import { tenantSettingsContract } from './tenant-settings';
 import { userContract } from './user';
@@ -62,6 +63,7 @@ export * from './ports/push';
 export * from './ports/session';
 // The price book: versioned non-catalog rates (`T-M01-031`).
 export * from './price-book';
+export * from './pricing';
 export * from './session';
 // The tenant (`T-M01-025`): signup, the tenant facts, the roster, the request-to-join steer.
 export * from './tenant';
@@ -96,6 +98,7 @@ export const apiContract = c.router(
     notification: notificationContract,
     onboarding: onboardingContract,
     priceBook: priceBookContract,
+    pricing: pricingContract,
     tenant: tenantContract,
     tenantSettings: tenantSettingsContract,
     user: userContract,

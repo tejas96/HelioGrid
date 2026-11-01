@@ -16,6 +16,7 @@ import {
 } from './notification/repository';
 import { createOnboardingRepository, type OnboardingRepository } from './onboarding/repository';
 import { createPriceBookRepository, type PriceBookRepository } from './price-book/repository';
+import { createPricingRepository, type PricingRepository } from './pricing/repository';
 import { createSettingsRepository, type SettingsRepository } from './settings/repository';
 import { createTenantRepository, type TenantRepository } from './tenant/repository';
 import type { TokenStorage } from './transport/storage';
@@ -41,6 +42,7 @@ export interface Repositories {
   market: MarketRepository;
   onboarding: OnboardingRepository;
   priceBook: PriceBookRepository;
+  pricing: PricingRepository;
   settings: SettingsRepository;
   tenant: TenantRepository;
   user: UserRepository;
@@ -98,6 +100,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
     market: createMarketRepository(api),
     onboarding: createOnboardingRepository(api),
     priceBook: createPriceBookRepository(api),
+    pricing: createPricingRepository(api),
     settings: createSettingsRepository(api),
     tenant: createTenantRepository(api),
     user: createUserRepository(api),

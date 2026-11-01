@@ -5,22 +5,16 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-001 · Pricing Page
 
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped
 **PRD rows:** BM-05 (P0), BM-07 (P0) (from `docs/prd/04-business-model.md`; dispositioned under that bucket — listed here as this screen's specification rows)
 **DESIGN:** SCR-M12-01 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
+**Sales contact (owner):** `Talk to sales` opens `tejas96patil@gmail.com`, the India book's `salesContact`.
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-01-pricing-page.md`; they are the specification.
 **DONE WHEN:**
 - Given any tier and any module, when a tenant on that tier opens that module, then no capability is absent that a higher tier has (BM-05) — only ceilings, counts and bundle sizes differ.
 - Given any cap in any tier, when the pricing page and the usage screen render, then the cap is published and visible on both, and reaching it produces §04.5's soft-block with an upgrade path — never a feature withdrawal and never a surprise (BM-07).
 - Given the per-tier service terms (support in-app / in-app + WhatsApp / priority + onboarding call / named contact), when the pricing page renders them, then they are Tier-keyed screen copy from this screen under the i18n convention, read from no book field, and no entitlement, invoice or gate reads them (BM-14, BM-41; owner ruling 2026-09-07).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-#### Parts
-
-| part | what | AC | depends on | status |
-|---|---|---|---|---|
-| a | Automatic roof detection leaves the product (owner ruling 2026-11-01): the spec, briefs and tasks strike it; no meter, pause, permission, SMS or price line for it; every roof is outlined by hand; an api of the release before still reads the new pack | — (`D397`) | — | shipped |
-| b | The public price list read and the Pricing Page at 375 and 1536, every state its boards draw | AC-1 … AC-4 | part a | open |
 
 ### T-M12-002 · Billing Home
 

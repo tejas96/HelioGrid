@@ -192,6 +192,12 @@ tr[data-zebra="true"] > .hg-compare-pin {
   color: var(--text-primary);
 }
 
+/* A numeric row's figures end on one right edge, so a column of them reads digit under digit
+   (`F7-09`); its named gap already sits there (`gapOf`). */
+.hg-compare-cell[data-numeric="true"] {
+  text-align: right;
+}
+
 .hg-compare[data-density="functional"] .hg-compare-cell {
   font-size: var(--fs-body-sm);
 }
