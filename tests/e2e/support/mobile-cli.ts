@@ -1,5 +1,7 @@
 import { OTP_LENGTH } from '@heliogrid/domain';
 import {
+  BILLING_HOME,
+  BILLING_STATE_WORD,
   backToSettings,
   COMPANY_PROFILE,
   COMPANY_SIGNUP,
@@ -7,6 +9,7 @@ import {
   destinationLabel,
   INVITE_LANDING,
   inviteWords,
+  PRICING,
   paymentTermsWords,
   SETUP_LANGUAGE,
   SETUP_READY,
@@ -70,6 +73,16 @@ if (command === 'words') {
     SETTINGS_TITLE: settingsWords(t.t).title,
     BACK_TO_SETTINGS: backToSettings(t.t),
     YOUR_PAYMENT_TERMS: paymentTermsWords(t.t).yourTerms,
+    YOUR_PLAN: BILLING_HOME.yourPlan,
+    TRIAL: BILLING_STATE_WORD.trialing,
+    CHANGE_PLAN: BILLING_HOME.changePlan,
+    USAGE_THIS_CYCLE: BILLING_HOME.usageThisCycle,
+    PAYMENT_METHOD: BILLING_HOME.paymentMethod,
+    METHOD_LATER: BILLING_HOME.methodLater,
+    NO_INVOICES_YET: BILLING_HOME.noInvoicesYet,
+    CANCEL_SUBSCRIPTION: BILLING_HOME.cancelSubscription,
+    PLANS: PRICING.plans,
+    BACK_TO_BILLING: BILLING_HOME.backToBilling,
     ...settingsRows(t),
   };
   for (const [key, message] of Object.entries(words)) {
@@ -139,6 +152,7 @@ function settingsRows(t: Awaited<ReturnType<typeof createTranslator>>): Record<s
     'proposal_templates',
     'payment_terms',
     'catalog',
+    'billing',
   ] as const;
   return Object.fromEntries(
     rows.map((row) => [`ROW_${row.toUpperCase()}`, settingsRowName(t.t, row)]),

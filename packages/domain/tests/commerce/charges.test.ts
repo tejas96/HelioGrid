@@ -153,6 +153,57 @@ describe('successEffect — a successful charge is entitlement truth (M12-09)', 
   );
 });
 
+describe('successEffect — a charge on a page a dead row opened is reactivation (M12-08)', () => {
+  const paysThrough = PERIOD_END + 30 * MS_PER_DAY;
+  const after = ENTERED + ONE_MS;
+
+  it.each([
+    { state: 'halted', occurredAt: after, replaced: false, outcome: 'reactivate' },
+    { state: 'expired', occurredAt: after, replaced: false, outcome: 'reactivate' },
+    { state: 'cancelled', occurredAt: after, replaced: false, outcome: 'reactivate' },
+    { state: 'halted', occurredAt: after, replaced: true, outcome: 'dead' },
+    { state: 'expired', occurredAt: after, replaced: true, outcome: 'dead' },
+    { state: 'cancelled', occurredAt: after, replaced: true, outcome: 'dead' },
+    // Paid on its own page while still a trial: the old row comes back, nothing new starts.
+    { state: 'expired', occurredAt: ENTERED - ONE_MS, replaced: false, outcome: 'live' },
+    // Paid inside the grace: the halt is undone on the row itself.
+    { state: 'halted', occurredAt: ENTERED - ONE_MS, replaced: false, outcome: 'live' },
+  ] as const)(
+    'a $state row paid on its page (replaced: $replaced) → $outcome',
+    ({ state, occurredAt, replaced, outcome }) => {
+      const effect = successEffect(
+        standing({ state, replaced }),
+        { occurredAt, paysThrough },
+        true,
+      );
+      expect(effect.outcome).toBe(outcome);
+      if (effect.outcome === 'reactivate') {
+        // The new row's window is the charge's own, never the dead row's.
+        expect(effect).toEqual({ outcome: 'reactivate', paidPeriodEnd: paysThrough });
+      }
+    },
+  );
+
+  it.each(['trialing', 'active', 'past_due'] as const)(
+    'a live %s row ignores the page flag',
+    (state) => {
+      const charge = { occurredAt: after, paysThrough };
+      expect(successEffect(standing({ state }), charge, true)).toEqual(
+        successEffect(standing({ state }), charge, false),
+      );
+    },
+  );
+
+  it.each(['halted', 'expired', 'cancelled'] as const)(
+    'a %s row charged on its own mandate, not a page, stays dead',
+    (state) => {
+      expect(successEffect(standing({ state }), { occurredAt: after, paysThrough })).toEqual({
+        outcome: 'dead',
+      });
+    },
+  );
+});
+
 describe('failureMoves — a failed charge never undoes a later payment (M12-09)', () => {
   it('a newer failure moves an active company to past due', () => {
     expect(failureMoves(standing({}), { occurredAt: ENTERED + ONE_MS })).toBe('past_due');

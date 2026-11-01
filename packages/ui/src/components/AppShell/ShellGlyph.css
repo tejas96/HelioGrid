@@ -27,3 +27,7 @@
 .hg-shell-glyph[data-tone="success"] {
   color: var(--success-text);
 }
+
+.hg-shell-glyph[data-tone="warning"] {
+  color: var(--warning-text);
+}

@@ -8,6 +8,7 @@ import {
   type GatewayCheckoutRequest,
   type GatewayEvent,
   type GatewayPlanRequest,
+  type GatewayRefundRequest,
   type OpenedCheckout,
 } from '@heliogrid/contracts';
 import { type CollectionKind, minorUnits } from '@heliogrid/domain';
@@ -67,6 +68,9 @@ export class DevelopmentBillingGateway implements BillingGateway {
   readonly provider = 'development';
   private readonly collected = new Map<string, GatewayCharge[]>();
   private readonly addOns = new Map<string, GatewayAddOnRequest[]>();
+  private readonly endingAtCycleEnd = new Set<string>();
+  private readonly refunds = new Map<string, GatewayRefundRequest>();
+  private readonly closed = new Set<string>();
 
   constructor(private readonly logger: PinoLogger) {
     this.logger.setContext(DevelopmentBillingGateway.name);
@@ -107,7 +111,35 @@ export class DevelopmentBillingGateway implements BillingGateway {
   }
 
   async closeCheckout(collection: CollectionKind, gatewayRef: string): Promise<void> {
+    this.closed.add(gatewayRef);
     this.logger.info({ collection, gatewayRef }, 'development gateway: hosted checkout closed');
+  }
+
+  /** Whether a hosted checkout or mandate was closed at this gateway. Development and tests only. */
+  wasClosed(gatewayRef: string): boolean {
+    return this.closed.has(gatewayRef);
+  }
+
+  async cancelAtCycleEnd(gatewayRef: string): Promise<void> {
+    this.endingAtCycleEnd.add(gatewayRef);
+    this.logger.info({ gatewayRef }, 'development gateway: mandate ends at its cycle end');
+  }
+
+  /** Whether a mandate was told to end at its cycle end. Development and tests only. */
+  endsAtCycleEnd(gatewayRef: string): boolean {
+    return this.endingAtCycleEnd.has(gatewayRef);
+  }
+
+  async refund(request: GatewayRefundRequest): Promise<string> {
+    const refundRef = `dev_refund_${request.chargeRef}`;
+    this.refunds.set(request.chargeRef, request);
+    this.logger.info({ ...request, refundRef }, 'development gateway: refunded to source');
+    return refundRef;
+  }
+
+  /** The refund paid on a charge, if any. Development and tests only. */
+  refundOf(chargeRef: string): GatewayRefundRequest | undefined {
+    return this.refunds.get(chargeRef);
   }
 
   readEvent(rawBody: Uint8Array, headers: Readonly<Record<string, string>>): GatewayEvent | null {

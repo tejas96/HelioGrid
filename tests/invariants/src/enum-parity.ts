@@ -4,6 +4,7 @@ import {
   billingCycleSchema,
   billingNoticeSchema,
   billingStateSchema,
+  cancellationReasonSchema,
   catalogAvailabilitySchema,
   catalogImportConflictAnswerSchema,
   catalogImportEntryPointSchema,
@@ -83,6 +84,10 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
   tier: { options: tierSchema.options, contract: 'tierSchema' },
   billing_cycle: { options: billingCycleSchema.options, contract: 'billingCycleSchema' },
   collection_kind: { options: collectionKindSchema.options, contract: 'collectionKindSchema' },
+  cancellation_reason: {
+    options: cancellationReasonSchema.options,
+    contract: 'cancellationReasonSchema',
+  },
   billing_notice: { options: billingNoticeSchema.options, contract: 'billingNoticeSchema' },
   entitlement_source: {
     options: entitlementSourceSchema.options,

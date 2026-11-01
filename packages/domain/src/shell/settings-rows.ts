@@ -42,7 +42,8 @@ const SETTINGS_ROW_RULE: Record<SettingsRow, { group: SettingsGroup; opens: Capa
   catalog: { group: 'catalog', opens: 'onboarding.manage_catalog' },
   agent: { group: 'agent', opens: 'onboarding.configure_agent' },
   collections: { group: 'money', opens: 'payments.connect_gateway' },
-  billing: { group: 'money', opens: 'billing.manage_billing' },
+  // Seeing the billing state is everyone's; its money and acts are the Owner's (`M12-56`).
+  billing: { group: 'money', opens: null },
   usage: { group: 'money', opens: 'billing.view_usage_and_invoices' },
 };
 

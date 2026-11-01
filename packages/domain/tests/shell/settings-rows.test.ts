@@ -27,9 +27,12 @@ describe('settingsRowsFor — the rows a person’s presets open (F7-48, the F2 
       ],
     },
     {
-      who: 'a Field Technician — their own settings alone',
+      who: 'a Field Technician — their own settings, and the billing state everyone sees',
       held: ['field_technician'],
-      groups: [{ group: 'you', rows: ['profile'] }],
+      groups: [
+        { group: 'you', rows: ['profile'] },
+        { group: 'money', rows: ['billing'] },
+      ],
     },
     {
       who: 'Finance — the catalog by its limited grant, never Collections or Usage',
@@ -37,6 +40,7 @@ describe('settingsRowsFor — the rows a person’s presets open (F7-48, the F2 
       groups: [
         { group: 'you', rows: ['profile'] },
         { group: 'catalog', rows: ['catalog'] },
+        { group: 'money', rows: ['billing'] },
       ],
     },
     {
@@ -45,6 +49,7 @@ describe('settingsRowsFor — the rows a person’s presets open (F7-48, the F2 
       groups: [
         { group: 'you', rows: ['profile'] },
         { group: 'catalog', rows: ['catalog'] },
+        { group: 'money', rows: ['billing'] },
       ],
     },
     {
@@ -53,22 +58,26 @@ describe('settingsRowsFor — the rows a person’s presets open (F7-48, the F2 
       groups: [
         { group: 'you', rows: ['profile'] },
         { group: 'catalog', rows: ['catalog'] },
+        { group: 'money', rows: ['billing'] },
       ],
     },
     {
       who: 'a person holding no preset — the row everyone has',
       held: [],
-      groups: [{ group: 'you', rows: ['profile'] }],
+      groups: [
+        { group: 'you', rows: ['profile'] },
+        { group: 'money', rows: ['billing'] },
+      ],
     },
   ] as const)('$who', ({ held, groups }) => {
     expect(settingsRowsFor(held)).toEqual(groups);
   });
 
-  it('never hands Finance the owner’s money rows', () => {
+  it('hands Finance the billing state alone, never the owner’s money rows (M12-56)', () => {
     const rows = settingsRowsFor(['finance']).flatMap((group) => group.rows);
     expect(rows).not.toContain('usage');
     expect(rows).not.toContain('collections');
-    expect(rows).not.toContain('billing');
+    expect(rows).toContain('billing');
   });
 });
 
@@ -79,6 +88,12 @@ describe('opensSettingsRow — one row, asked by name (the refusal a row’s add
     ['a person holding no preset opens their own settings', [], 'profile', true],
     ['a Field Technician never opens Team', ['field_technician'], 'team', false],
     ['an EPC Owner opens Collections', ['epc_owner'], 'collections', true],
+    [
+      'a Field Technician opens Billing to see its state (M12-56)',
+      ['field_technician'],
+      'billing',
+      true,
+    ],
   ] as const)('%s', (_, held, row, opens) => {
     expect(opensSettingsRow(held, row)).toBe(opens);
   });
@@ -120,11 +135,11 @@ describe('firstSettingsPageBeside — the page More opens at the desktop width, 
       page: 'profile',
     },
     {
-      who: 'a Field Technician — one row: no side list, the list page stays',
+      who: 'a Field Technician — two rows: the first, Profile & preferences',
       held: ['field_technician'],
-      page: null,
+      page: 'profile',
     },
-    { who: 'no preset — one row: the list page stays', held: [], page: null },
+    { who: 'no preset — two rows: the first, Profile & preferences', held: [], page: 'profile' },
   ] as const)('$who', ({ held, page }) => {
     expect(firstSettingsPageBeside(held)).toBe(page);
   });

@@ -121,6 +121,7 @@ export class RenewalService {
         currencyCode: due.currencyCode,
         reference: invoiceId,
         expiresAt: renewalLinkExpiresAt(due.paidPeriodEnd),
+        startsAt: null,
       });
     } catch (error) {
       this.logger.warn(

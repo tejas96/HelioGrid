@@ -1,5 +1,6 @@
 import {
   businessProfile,
+  creditNote,
   type Db,
   invoiceLine,
   invoiceLineTax,
@@ -62,6 +63,12 @@ export interface InvoiceForDocument {
   readonly lines: readonly DocumentLine[];
 }
 
+/** What a credit note adds to its invoice's page: its own number and the day it issued. */
+export interface CreditNoteFacts {
+  readonly number: string;
+  readonly issuedAt: Date;
+}
+
 /**
  * The invoice PDF's two reads and its one write, across companies: the step runs from a workflow,
  * never a request, so it holds no tenant session. Every read still names the invoice's tenant.
@@ -72,9 +79,62 @@ export class InvoiceDocumentAdminRepository {
   constructor(@Inject(ADMIN_DB) private readonly db: Db) {}
 
   /** The invoice to print; `null` when it already has its PDF, or no such invoice exists. */
-  async invoiceForDocument(
+  invoiceForDocument(tenantId: string, invoiceId: string): Promise<InvoiceForDocument | null> {
+    return this.documentOf(tenantId, invoiceId, { withoutPdf: true });
+  }
+
+  /**
+   * A credit note to print (`M12-47`): its invoice as stored, with the note's own number and day;
+   * `null` when the note already has its PDF, or no such note exists.
+   */
+  async creditNoteForDocument(
+    tenantId: string,
+    creditNoteId: string,
+  ): Promise<{ readonly invoice: InvoiceForDocument; readonly note: CreditNoteFacts } | null> {
+    const [note] = await this.db
+      .select({
+        invoiceId: creditNote.invoiceId,
+        number: creditNote.number,
+        issuedAt: creditNote.issuedAt,
+      })
+      .from(creditNote)
+      .where(
+        and(
+          eq(creditNote.tenantId, tenantId),
+          eq(creditNote.id, creditNoteId),
+          isNull(creditNote.pdfFileId),
+        ),
+      )
+      .limit(1);
+    if (note === undefined) return null;
+    const invoice = await this.documentOf(tenantId, note.invoiceId, { withoutPdf: false });
+    return invoice === null ? null : { invoice, note };
+  }
+
+  /** Points the credit note at its PDF, once: `false` when an earlier run already had. */
+  async attachCreditNotePdf(
+    tenantId: string,
+    creditNoteId: string,
+    fileId: string,
+  ): Promise<boolean> {
+    const attached = await this.db
+      .update(creditNote)
+      .set({ pdfFileId: fileId })
+      .where(
+        and(
+          eq(creditNote.tenantId, tenantId),
+          eq(creditNote.id, creditNoteId),
+          isNull(creditNote.pdfFileId),
+        ),
+      )
+      .returning({ id: creditNote.id });
+    return attached.length > 0;
+  }
+
+  private async documentOf(
     tenantId: string,
     invoiceId: string,
+    { withoutPdf }: { readonly withoutPdf: boolean },
   ): Promise<InvoiceForDocument | null> {
     const [invoice] = await this.db
       .select({
@@ -102,7 +162,7 @@ export class InvoiceDocumentAdminRepository {
         and(
           eq(subscriptionInvoice.tenantId, tenantId),
           eq(subscriptionInvoice.id, invoiceId),
-          isNull(subscriptionInvoice.pdfFileId),
+          withoutPdf ? isNull(subscriptionInvoice.pdfFileId) : undefined,
         ),
       )
       .limit(1);

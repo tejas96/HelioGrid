@@ -30,3 +30,11 @@ export function fiscalYearOf(
 export function invoiceNumber(fiscalYear: string, sequence: number): string {
   return `${fiscalYear}/${String(sequence).padStart(SEQUENCE_DIGITS, '0')}`;
 }
+
+/**
+ * A credit note's number (`M12-47`): its own consecutive series per fiscal year, marked `CN` so it
+ * never reads as an invoice's (`CN-2026-27/000001`).
+ */
+export function creditNoteNumber(fiscalYear: string, sequence: number): string {
+  return `CN-${invoiceNumber(fiscalYear, sequence)}`;
+}

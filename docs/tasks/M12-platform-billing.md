@@ -19,7 +19,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-002 · Billing Home
 
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped
 **PRD rows:** M12-08 (P0), M12-46 (P0), M12-47 (P0), M12-50 (P0), M12-55 (P0)
 **DESIGN:** SCR-M12-02 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
 **Contract:** declares the company's billing standing read — its state and phase from `T-M12-005`'s `subscription` row and `billingPhaseAt`, and any state history in `id` order, never `entered_at` (a halt undone by a charge inside its grace records an earlier `entered_at`, T-M12-006); reactivation first locks the company's latest subscription row `FOR UPDATE` — the lock T-M12-006's charge path takes — and starts the new row only while that row is still not live, so a late charge and a reactivation run one after the other — as the first screen that shows it; `T-SHELL-006` reads the same route. Reactivation (M12-08) reuses T-M12-007's hosted checkout — `POST /billing/checkout`, `CheckoutService` and the `BillingGateway` port — which opens only from `trialing`: this task extends it to a dead row, whose paying charge starts the NEW subscription row with the checkout's plan, never a resumed one.
@@ -28,7 +28,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 - Given a tenant halted for a year, when the owner pays, then a new gateway subscription exists, entitlements are live immediately, and every record is as they left it (M12-08).
 - Given a tenant in `halted`, when they export invoices, then it works (M12-46).
 - Given a first paid cycle within 7 days, when the owner requests a refund, then it goes to source with the scheme's credit note against the cycle invoice; given any renewal cycle, then no refund path exists and cancellation-to-period-end is offered (M12-47).
-- Given a tenant in each of the six states, when the Owner opens billing, then every M12-55 surface renders and pay/upgrade/reactivate is actionable (M12-55).
+- Given a tenant in each of the six states, when the Owner opens billing, then every M12-55 surface renders and pay/reactivate is actionable; upgrade and the trial's plan pick lead to SCR-M12-03, proven with `T-M12-003` (M12-55).
 - (M12-50 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text in the brief is the binding criterion — cancellation is owner-initiated, runs to the paid period end, and the reason is captured as product signal, never as a gate.)
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 **From T-M12-012c:** a company a payment link collects renews on a fresh link raised with its `issued` invoice (`subscription_invoice.hosted_url`, its `due_at`); the screen shows that open invoice with its pay action, the link itself, until it is `paid` — nothing else shows the owner the link.
@@ -42,6 +42,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **PRD rows:** M12-48 (P0), M12-49 (P0), M12-53 (P0), M12-54 (P0)
 **DESIGN:** SCR-M12-03 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
 **Contract:** conversion's hosted checkout is T-M12-007's `POST /billing/checkout` (tier + cycle → the gateway's page, `CHECKOUT_NOT_POSSIBLE` · `TIER_NOT_SOLD` · `GATEWAY_UNAVAILABLE`); the screen renders those codes' copy, which lands with it. An upgrade or cycle switch (M12-48, M12-12) reuses the same `plan_price` rows and `BillingGateway` port for its prorated delta and its new subscription at the boundary.
+**From T-M12-002:** this screen lives at `/more/billing/plans` (the phone's plans placeholder too), which T-M12-002 opens with the *coming later* page from Billing's `Change plan` and the expired trial's `Pick a plan`; this task fills it. From an expired trial its pick opens `POST /billing/checkout`, which since T-M12-002 opens a reactivation page from any dead row (`M12-08`). A confirmed downgrade adds its scheduled change to `GET /billing/home` (`billingHomeSchema`, a new nullable field — old clients ignore it) and Billing draws SCR-M12-02 frame 16 with it: `Moving to Starter · Scheduled`, `On <date>`, the act `Keep Growth instead`, and `Next bill` as the new plan's (decision 17). T-M12-002's DONE WHEN on *pay/upgrade/reactivate* leaves the upgrade's proof here.
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-03-plan-selection.md`; they are the specification. (The brief also carries the shared row M12-55 — its plan-selection half — dispositioned under T-M12-002. The trial countdown chip of M12-53 is SCR-SHELL-06's surface, `docs/tasks/SHELL.md`.)
 **DONE WHEN:**
 - Given an upgrade, when it confirms, then entitlements are live immediately and a one-time prorated invoice exists (M12-48).

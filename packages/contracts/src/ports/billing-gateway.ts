@@ -40,6 +40,19 @@ export interface GatewayCheckoutRequest {
   readonly reference: string;
   /** The hosted page stops taking money at this moment: the trial's end, or a renewal's halt. */
   readonly expiresAt: number;
+  /**
+   * A mandate's first debit waits until this moment: a cancelled row still running reactivates
+   * from its period end, so no day is paid twice (`M12-08`). `null`: the first debit is now.
+   */
+  readonly startsAt: number | null;
+}
+
+/** A charge to pay back to the source it came from (`M12-47`). */
+export interface GatewayRefundRequest {
+  readonly chargeRef: string;
+  readonly amount: MinorUnits;
+  /** Our invoice's id, carried in the gateway's notes. */
+  readonly reference: string;
 }
 
 export interface OpenedCheckout {
@@ -118,6 +131,18 @@ export interface BillingGateway {
    * take money.
    */
   closeCheckout(collection: CollectionKind, gatewayRef: string): Promise<void>;
+  /**
+   * Stops a mandate after the debit that ends its current cycle: no further debit is raised
+   * (`M12-50`). Safe to send again: a mandate already ending or ended counts as done. Throws when
+   * the gateway did not answer and the mandate may still renew.
+   */
+  cancelAtCycleEnd(gatewayRef: string): Promise<void>;
+  /**
+   * Pays a charge back in full to its source and answers the refund's ref. A charge already paid
+   * back answers that refund's ref, so a retry after a lost answer refunds nothing twice. Throws
+   * when the gateway did not answer, or refused for any other reason.
+   */
+  refund(request: GatewayRefundRequest): Promise<string>;
   /**
    * The message, when its signature holds; `null` when it does not. `headers` are the request's,
    * lower-cased, so each adapter reads its own signature header.

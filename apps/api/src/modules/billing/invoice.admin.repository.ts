@@ -184,6 +184,11 @@ export async function payRenewalInvoice(
     )
     .returning({ id: subscriptionInvoice.id });
   if (paid === undefined) return null;
+  return invoiceTotalOf(tx, invoiceId);
+}
+
+/** An invoice's total: the sum of its lines and their taxes, as it issued (`M12-44`). */
+export async function invoiceTotalOf(tx: DbTransaction, invoiceId: string): Promise<MinorUnits> {
   const taxable = sql<number>`coalesce(sum(${invoiceLine.taxableMinor}), 0)`.mapWith(Number);
   const [lines] = await tx
     .select({ taxable })

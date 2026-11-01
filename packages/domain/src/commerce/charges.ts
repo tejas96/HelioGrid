@@ -43,8 +43,9 @@ export interface ChargeStanding {
 
 /**
  * What a successful charge does. `live`: the window becomes `paidPeriodEnd` and, when `moveTo` is
- * set, the subscription enters that state at the charge's moment. `dead`: the payment is recorded
- * and nothing else moves — the row is left only by reactivation, a new row (`M12-08`).
+ * set, the subscription enters that state at the charge's moment. `reactivate`: a NEW `active` row
+ * starts, paid through `paidPeriodEnd`, and the dead one stays as it is (`M12-08`). `dead`: the
+ * payment is recorded and nothing else moves — the row is left only by reactivation.
  */
 export type SuccessEffect =
   | {
@@ -52,6 +53,7 @@ export type SuccessEffect =
       readonly paidPeriodEnd: number;
       readonly moveTo: BillingState | null;
     }
+  | { readonly outcome: 'reactivate'; readonly paidPeriodEnd: number }
   | { readonly outcome: 'dead' };
 
 const LIVE_STATES: ReadonlySet<BillingState> = new Set(LIVE_BILLING_STATES);
@@ -60,10 +62,13 @@ const LIVE_STATES: ReadonlySet<BillingState> = new Set(LIVE_BILLING_STATES);
  * `M12-09` — the window only grows, and the state moves along the machine's `paid` edge only for
  * a charge at or after the moment the current state was entered: an older charge is older news
  * than the state, so it adds its payment and window and moves nothing. On a tie the charge wins.
+ * `onOpenedPage`: the charge was collected on a hosted page the row opened after it died — never
+ * its own mandate, nor a trial's page paid after the trial ended.
  */
 export function successEffect(
   standing: ChargeStanding,
   charge: Pick<ChargeSucceeded, 'occurredAt' | 'paysThrough'>,
+  onOpenedPage = false,
 ): SuccessEffect {
   const paidPeriodEnd = Math.max(standing.paidPeriodEnd ?? charge.paysThrough, charge.paysThrough);
   if (LIVE_STATES.has(standing.state)) {
@@ -84,6 +89,11 @@ export function successEffect(
     charge.occurredAt < standing.stateEnteredAt
   ) {
     return { outcome: 'live', paidPeriodEnd, moveTo: nextState('expired', 'paid') };
+  }
+  // A hosted page a dead row opened is reactivation (`M12-08`). One company holds one live row:
+  // a charge after another row went live records its payment on the dead row and starts nothing.
+  if (onOpenedPage && !standing.replaced) {
+    return { outcome: 'reactivate', paidPeriodEnd: charge.paysThrough };
   }
   return { outcome: 'dead' };
 }

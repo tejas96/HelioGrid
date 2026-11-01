@@ -38,6 +38,9 @@ export const AUDIT_EVENT_TYPES = [
   'price_book.version_published',
   'billing.goodwill_credit_issued',
   'billing.trial_extended',
+  'billing.subscription_cancelled',
+  'billing.refund_issued',
+  'billing.reactivated',
 ] as const;
 export type AuditEventType = (typeof AUDIT_EVENT_TYPES)[number];
 

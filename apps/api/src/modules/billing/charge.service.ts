@@ -1,4 +1,4 @@
-import type { GatewayCharge } from '@heliogrid/contracts';
+import { BILLING_GATEWAY, type BillingGateway, type GatewayCharge } from '@heliogrid/contracts';
 import {
   type ChargeFailed,
   type ChargeSucceeded,
@@ -36,6 +36,7 @@ export class ChargeService {
     @Inject(BillingAlerts) private readonly alerts: BillingAlerts,
     @Inject(EntitlementService) private readonly entitlements: EntitlementService,
     @Inject(MarketPackService) private readonly markets: MarketPackService,
+    @Inject(BILLING_GATEWAY) private readonly gateway: BillingGateway,
     @Inject(PinoLogger) private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(ChargeService.name);
@@ -69,7 +70,7 @@ export class ChargeService {
     const paysThrough =
       on.renewal?.paysThrough ??
       charge.paysThrough ??
-      (cycle === null ? null : cycleEnd(charge.occurredAt, cycle));
+      (cycle === null ? null : cycleEnd(on.conversion?.startsAt ?? charge.occurredAt, cycle));
     // A converted row always carries its cycle (`subscription_plan_whole`): this is a broken row.
     if (paysThrough === null) throw new Error(`no period to pay for on ${charge.gatewayRef}`);
     try {
@@ -86,7 +87,7 @@ export class ChargeService {
         on.conversion,
         on.renewal,
       );
-      if (recorded === 'recorded') this.alertIfMandateCancelled(on.conversion, on.subscriptionId);
+      if (recorded === 'recorded') await this.afterConversion(on.conversion, on.subscriptionId);
       return recorded;
     } catch (error) {
       if (!(error instanceof ChargeRefused)) throw error;
@@ -96,6 +97,33 @@ export class ChargeService {
         chargeRef: charge.chargeRef,
       });
       return 'refused';
+    }
+  }
+
+  /** What a recorded charge on a hosted page still owes the gateway's side. */
+  private async afterConversion(
+    conversion: Conversion | null,
+    subscriptionId: string,
+  ): Promise<void> {
+    this.alertIfMandateCancelled(conversion, subscriptionId);
+    if (conversion?.reactivates === true) await this.closeOldMandate(subscriptionId);
+  }
+
+  /**
+   * A reactivated company holds one live mandate (`M12-08`): the dead row's own is cancelled now,
+   * so a retry at the gateway can never collect on it. A gateway that does not confirm it is
+   * alerted; the new row is already live either way.
+   */
+  private async closeOldMandate(deadSubscriptionId: string): Promise<void> {
+    const mandate = await this.charges.mandateOf(deadSubscriptionId);
+    if (mandate === null) return;
+    try {
+      await this.gateway.closeCheckout('mandate', mandate);
+    } catch {
+      this.alerts.raise('billing_old_mandate_open', {
+        subscriptionId: deadSubscriptionId,
+        gatewayRef: mandate,
+      });
     }
   }
 
@@ -136,7 +164,7 @@ export class ChargeService {
     const result = await this.charges.recordSuccess(
       charge,
       now,
-      (standing) => successEffect(standing, charge),
+      (standing) => successEffect(standing, charge, conversion?.reactivates ?? false),
       this.entitlements.bookLimitsOf(pack),
       pack,
       conversion,

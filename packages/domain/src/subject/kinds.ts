@@ -32,5 +32,9 @@ export const SUBJECT_KINDS = [
   'dunning_event',
   /** One platform invoice — what its PDF's file row is stored against (`M12-44`). */
   'subscription_invoice',
+  /** A company's subscription row — what a cancel and a reactivation name (`M12-58`). */
+  'subscription',
+  /** One credit note against a refunded invoice — its PDF's file row too (`M12-47`). */
+  'credit_note',
 ] as const;
 export type SubjectKind = (typeof SUBJECT_KINDS)[number];

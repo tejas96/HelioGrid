@@ -25,6 +25,7 @@ export { channelsOwed, mayMute, pushGroupsShownTo, pushMuted } from './mutes';
 export { marketQuietHours, pushDueAt, type QuietWindow } from './quiet-hours';
 export type { NotificationRegistration } from './registry';
 export { NOTIFICATION_REGISTRY, typeGroupOf } from './registry';
+export { subjectAddressOf } from './subject-address';
 export type {
   NotificationChannel,
   NotificationReadFilter,

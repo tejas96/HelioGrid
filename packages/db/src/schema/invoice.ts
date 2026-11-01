@@ -38,8 +38,9 @@ const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'd
  * (none on a plain invoice, `F1-29`) and the company's, with the place each names.
  *
  * Most issue `paid`, naming the payment that landed. A renewal's issues first, with the payment
- * link that collects it (`M12-11`), and names its payment once the link is paid; only `status`
- * and `payment_id` ever change, and `pdf_file_id` once, from null.
+ * link that collects it (`M12-11`), and names its payment once the link is paid. A refunded
+ * first cycle turns `refunded` and keeps its payment (`M12-47`). Only `status` and `payment_id`
+ * ever change, and `pdf_file_id` once, from null.
  *
  * Tenant-scoped, all four; `app_user` holds SELECT alone — the charge crosses tenants, so the
  * admin path writes it.
@@ -108,9 +109,10 @@ export const subscriptionInvoice = pgTable(
     index('subscription_invoice_open_link_idx')
       .on(table.dueAt)
       .where(sql`${table.status} in ('issued', 'failed')`),
+    /** A paid invoice names its payment, and a refunded one keeps it (`M12-47`). */
     check(
       'subscription_invoice_paid_by_payment',
-      sql`(${table.paymentId} is not null) = (${table.status} = 'paid')`,
+      sql`(${table.paymentId} is not null) = (${table.status} not in ('issued', 'failed'))`,
     ),
     check(
       'subscription_invoice_link_whole',
@@ -190,6 +192,61 @@ export const invoiceLineTax = pgTable(
  */
 export const invoiceSequence = pgTable(
   'invoice_sequence',
+  {
+    marketCode: text('market_code').notNull(),
+    fiscalYear: text('fiscal_year').notNull(),
+    lastNumber: integer('last_number').notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.marketCode, table.fiscalYear] })],
+);
+
+/**
+ * The scheme's credit note against a refunded first-cycle invoice (`M12-47`): one per invoice,
+ * frozen when it issues. Its amount is the invoice's total, its number its own series'
+ * (`credit_note_sequence`), its artefact the scheme's name for it as the pack gave it then.
+ *
+ * Tenant-scoped, all four; `app_user` holds SELECT alone — the refund's admin path writes it.
+ * Append-only but `pdf_file_id`, set once from null.
+ */
+export const creditNote = pgTable(
+  'credit_note',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .$defaultFn(() => uuidv7()),
+    tenantId: uuid('tenant_id')
+      .notNull()
+      .references(() => tenant.id),
+    invoiceId: uuid('invoice_id')
+      .notNull()
+      .references(() => subscriptionInvoice.id),
+    marketCode: text('market_code').notNull(),
+    number: text('number').notNull(),
+    /** The scheme's artefact (`plain_credit_note`, `tax_credit_note`) as the pack named it. */
+    artefact: text('artefact').notNull(),
+    amountMinor: bigint('amount_minor', { mode: 'number' }).notNull(),
+    currencyCode: text('currency_code').notNull(),
+    /** The gateway's refund that sent the money back to its source. */
+    gatewayRefundRef: text('gateway_refund_ref').notNull(),
+    issuedAt: instant('issued_at').notNull(),
+    pdfFileId: uuid('pdf_file_id').references(() => file.id),
+  },
+  (table) => [
+    uniqueIndex('credit_note_invoice_key').on(table.tenantId, table.invoiceId),
+    uniqueIndex('credit_note_number_key').on(table.marketCode, table.number),
+    index('credit_note_tenant_issued_idx').on(table.tenantId, table.issuedAt),
+  ],
+);
+
+/**
+ * The last number of each market's credit-note series in each fiscal year, taken in the refund's
+ * transaction as `invoice_sequence` is. Its own table: a series column on `invoice_sequence` would
+ * leave the release before's upsert with no key to meet.
+ *
+ * Global: the series is the platform's. `app_user` holds no grant.
+ */
+export const creditNoteSequence = pgTable(
+  'credit_note_sequence',
   {
     marketCode: text('market_code').notNull(),
     fiscalYear: text('fiscal_year').notNull(),

@@ -85,6 +85,8 @@
 .hg-option-card:not([data-off="true"]),
 .hg-transcript-bubble,
 .hg-dt-total-block,
+/* The billing home's two record rows (`SCR-M12-02`, `Payment reminders` and `Plan history`). */
+.hg-list-row.hg-billing-record,
 .hg-dt-card:not([data-editable="true"]) {
   background: var(--fill);
   box-shadow: none;

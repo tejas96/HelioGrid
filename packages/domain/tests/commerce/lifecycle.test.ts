@@ -37,8 +37,10 @@ describe('nextState — the one machine (M12-04, M12-07, M12-08)', () => {
       'trialing -trial_expired-> expired',
       'active -charge_failed-> past_due',
       'active -cancelled-> cancelled',
+      'active -refunded-> cancelled',
       'past_due -paid-> active',
       'past_due -grace_expired-> halted',
+      'past_due -refunded-> cancelled',
       'halted -paid-> active',
       'expired -paid-> active',
     ]);

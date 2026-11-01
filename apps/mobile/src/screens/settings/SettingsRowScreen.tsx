@@ -1,10 +1,8 @@
 import { useSettingsScreen } from '@heliogrid/data/react';
 import type { SettingsRow } from '@heliogrid/domain';
-import { SHELL } from '@heliogrid/i18n';
-import { useTranslate } from '@heliogrid/i18n/react';
-import { EmptyState } from '@heliogrid/ui';
 import type { StaticScreenProps } from '@react-navigation/native';
 import type { ComponentType } from 'react';
+import { BillingScreen } from '../billing';
 import { BrandingSettingsScreen } from '../branding';
 import { CatalogSettingsScreen } from '../catalog-settings';
 import { CompanyProfileSettingsScreen } from '../company-profile';
@@ -15,6 +13,7 @@ import { RolesReferenceScreen } from '../roles-reference';
 import { ShellNotFoundState } from '../shell/components/ShellNotFoundState';
 import { ShellPage } from '../shell/components/ShellPage';
 import { TeamScreen } from '../team';
+import { ComingLaterPage } from './components/ComingLaterPage';
 import { useSettingsDrillDown } from './hooks/use-settings-drill-down';
 
 /** `from` names the page that opened this one, when its way back returns there (`?from=` in a link). */
@@ -30,6 +29,7 @@ const BUILT_ROW: Partial<Record<SettingsRow, ComponentType<{ from: string | null
   branding: BrandingSettingsScreen,
   proposal_templates: ProposalTemplateScreen,
   payment_terms: PaymentTermsScreen,
+  billing: BillingScreen,
 };
 
 /**
@@ -59,11 +59,5 @@ export function SettingsRowScreen({ route }: Props) {
 
 /** A row whose screen has not landed: the bar names the page, so the body says only that it is coming. */
 function ComingLater({ row }: { row: SettingsRow }) {
-  const t = useTranslate();
-  const drillDown = useSettingsDrillDown(row);
-  return (
-    <ShellPage inView="more" drillDown={drillDown}>
-      <EmptyState title={t(SHELL.comingLater)} />
-    </ShellPage>
-  );
+  return <ComingLaterPage drillDown={useSettingsDrillDown(row)} />;
 }

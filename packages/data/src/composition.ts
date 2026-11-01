@@ -1,5 +1,6 @@
 import { type AuditRepository, createAuditRepository } from './audit/repository';
 import { type AuthRepository, createAuthRepository } from './auth/repository';
+import { type BillingRepository, createBillingRepository } from './billing/repository';
 import {
   type CatalogImportRepository,
   createCatalogImportRepository,
@@ -43,6 +44,7 @@ export interface Repositories {
   onboarding: OnboardingRepository;
   priceBook: PriceBookRepository;
   pricing: PricingRepository;
+  billing: BillingRepository;
   settings: SettingsRepository;
   tenant: TenantRepository;
   user: UserRepository;
@@ -101,6 +103,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
     onboarding: createOnboardingRepository(api),
     priceBook: createPriceBookRepository(api),
     pricing: createPricingRepository(api),
+    billing: createBillingRepository(api),
     settings: createSettingsRepository(api),
     tenant: createTenantRepository(api),
     user: createUserRepository(api),

@@ -1,3 +1,4 @@
+import type { PackLabel } from '../format/languages';
 import type { MinorUnits } from '../money/minor-units';
 import { minorUnits } from '../money/minor-units';
 
@@ -50,6 +51,11 @@ export interface MandateType {
   readonly type: string;
   /** The largest single debit this rail carries. `null` where the rail caps nothing. */
   readonly perDebitCap: MinorUnits | null;
+  /**
+   * What an Owner reads for the rail their mandate rides — `UPI AutoPay` (`M12-55`, `F1-22`).
+   * Absent on a pack revision published before it, which a reader shows by its collection alone.
+   */
+  readonly label?: PackLabel;
 }
 
 /**
@@ -169,9 +175,9 @@ export const IN_PAYMENT_RAILS: PaymentRailsPack = {
    * row asks for.
    */
   mandateTypes: [
-    { type: 'upi_autopay', perDebitCap: UPI_AUTOPAY_PER_DEBIT_CAP },
+    { type: 'upi_autopay', perDebitCap: UPI_AUTOPAY_PER_DEBIT_CAP, label: { en: 'UPI AutoPay' } },
     /** `F1-40` — the fallback carries no cap of its own; the card's own limit is the issuer's. */
-    { type: 'card_emandate', perDebitCap: null },
+    { type: 'card_emandate', perDebitCap: null, label: { en: 'Card e-mandate' } },
   ],
   ladder: {
     self_serve: {

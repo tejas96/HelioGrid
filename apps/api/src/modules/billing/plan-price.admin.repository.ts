@@ -1,7 +1,7 @@
 import { type Db, planPrice } from '@heliogrid/db';
 import { type BillingCycle, type MinorUnits, minorUnits, type Tier } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq, type SQLWrapper } from 'drizzle-orm';
+import { and, desc, eq, inArray, type SQLWrapper } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
 
 /** One plan price: a tier on a cycle as the gateway sells it (`M12-12`). */
@@ -10,6 +10,8 @@ export interface PlanPriceRow {
   readonly tier: Tier;
   readonly cycle: BillingCycle;
   readonly currencyCode: string;
+  /** The book's price, ex-tax (`BM-40`): what a sale's working starts from. */
+  readonly listMinor: MinorUnits;
   /** What the gateway collects: the list price, plus the scheme's tax once the platform is registered (`F1-29`). */
   readonly collectedMinor: MinorUnits;
   readonly gatewayPlanRef: string;
@@ -27,6 +29,7 @@ const columns = {
   tier: planPrice.tier,
   cycle: planPrice.cycle,
   currencyCode: planPrice.currencyCode,
+  listMinor: planPrice.listMinor,
   collectedMinor: planPrice.collectedMinor,
   gatewayPlanRef: planPrice.gatewayPlanRef,
 };
@@ -64,7 +67,17 @@ export class PlanPriceAdminRepository {
   /** The current row of this market × tier × cycle × currency (`currentPlanPrice`). */
   async current(key: PlanPriceKey): Promise<PlanPriceRow | null> {
     const [row] = await currentPlanPrice(this.db, key);
-    return row === undefined ? null : { ...row, collectedMinor: minorUnits(row.collectedMinor) };
+    return row === undefined ? null : priceRowOf(row);
+  }
+
+  /** The rows these ids name, by id: the plans a company's subscriptions and invoices bought. */
+  async byIds(ids: readonly string[]): Promise<ReadonlyMap<string, PlanPriceRow>> {
+    if (ids.length === 0) return new Map();
+    const rows = await this.db
+      .select(columns)
+      .from(planPrice)
+      .where(inArray(planPrice.id, [...new Set(ids)]));
+    return new Map(rows.map((row) => [row.id, priceRowOf(row)]));
   }
 
   /**
@@ -92,4 +105,12 @@ export class PlanPriceAdminRepository {
       .returning({ id: planPrice.id });
     return written.length > 0;
   }
+}
+
+function priceRowOf(row: Awaited<ReturnType<typeof currentPlanPrice>>[number]): PlanPriceRow {
+  return {
+    ...row,
+    listMinor: minorUnits(row.listMinor),
+    collectedMinor: minorUnits(row.collectedMinor),
+  };
 }

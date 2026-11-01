@@ -31,6 +31,11 @@ import { PinoLogger } from 'nestjs-pino';
  * - `billing_renewal_not_raised` — a company a payment link collects reached its renewal's due
  *   moment with no link raised, so it was made `past_due` without one. The team reads why the
  *   link did not go out (the gateway refused it, or the pack moved the tier off the link rail).
+ * - `billing_stray_cancel_schedule` — an Owner's cancel told the mandate to end at its cycle, but
+ *   the row moved first (a charge failed), so nothing was cancelled here. The team removes the
+ *   schedule at the gateway, or the company's next renewal is never collected.
+ * - `billing_old_mandate_open` — a company reactivated on a new mandate, and the gateway did not
+ *   confirm the old one closed: it may still collect. The team cancels it at the gateway.
  */
 const alertMessages = {
   billing_repair: 'the reconcile recorded a charge the gateway message never delivered',
@@ -50,6 +55,10 @@ const alertMessages = {
     'a renewal link opened with no invoice and may still take money; close it at the gateway',
   billing_renewal_not_raised:
     'a company reached its renewal due moment with no renewal link raised; it is now past due',
+  billing_stray_cancel_schedule:
+    'a mandate was told to end at its cycle but the cancel did not land; remove the schedule at the gateway',
+  billing_old_mandate_open:
+    'a reactivated company’s old mandate did not confirm closed; cancel it at the gateway',
 } as const;
 
 export type BillingAlert = keyof typeof alertMessages;

@@ -17,6 +17,22 @@ export type { AddCatalogItemOptions } from './use-add-catalog-item';
 export { useAddCatalogItem } from './use-add-catalog-item';
 export type { AssignRolesEditor, RolesRemoval, RolesRemovalNotes } from './use-assign-roles';
 export { useAssignRoles } from './use-assign-roles';
+export type {
+  BillingActFailure,
+  BillingActing,
+  BillingDone,
+  BillingFacts,
+  BillingHomeAdapter,
+  BillingHomeScreen,
+  BillingSheet,
+} from './use-billing-home';
+export { useBillingHomeScreen } from './use-billing-home';
+export type { BillingDocumentsList, BillingList, DocumentChip } from './use-billing-records';
+export {
+  useBillingDocuments,
+  useBillingHistory,
+  useBillingReminders,
+} from './use-billing-records';
 export type { BrandingPage } from './use-branding';
 export { useBranding } from './use-branding';
 export type { BrandingScreen } from './use-branding-screen';

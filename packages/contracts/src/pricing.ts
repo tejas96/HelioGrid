@@ -8,7 +8,7 @@ import { marketCodeSchema } from './market';
 const c = initContract();
 
 /** A ceiling, count or bundle: a number, no ceiling, or negotiated (`BM-12`, `BM-15`). */
-const limitSchema = z.union([
+export const limitSchema = z.union([
   z.number().int().nonnegative(),
   z.literal('unlimited'),
   z.literal('custom'),

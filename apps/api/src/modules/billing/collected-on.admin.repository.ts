@@ -5,7 +5,12 @@ import {
   subscription,
   subscriptionInvoice,
 } from '@heliogrid/db';
-import type { BillingCycle, CollectionKind, Tier } from '@heliogrid/domain';
+import {
+  type BillingCycle,
+  type CollectionKind,
+  LIVE_BILLING_STATES,
+  type Tier,
+} from '@heliogrid/domain';
 import { eq } from 'drizzle-orm';
 
 /**
@@ -22,6 +27,15 @@ export interface Conversion {
   readonly collection: CollectionKind;
   /** A new pick asked the gateway to cancel this page before its charge landed. */
   readonly cancelRequested: boolean;
+  /** Where the period it buys begins, when not at the charge: a running cancelled row's end. */
+  readonly startsAt: number | null;
+  /** The Owner who opened it; null on a page opened before it was recorded. */
+  readonly openedBy: string | null;
+  /**
+   * The page was opened after its row died, so its charge starts a new row (`M12-08`). A trial's
+   * own page paid after the trial ended is not one: that charge is dead, and alerted.
+   */
+  readonly reactivates: boolean;
 }
 
 /** A renewal payment link (`M12-11`): the invoice it collects and the period end it buys. */
@@ -32,8 +46,9 @@ export interface Renewal {
 
 /**
  * Which subscription a gateway subscription or payment link collects for. `stray`: a checkout page
- * that can convert nothing — a new pick closed it, or its row already converted on another page —
- * so money on it is no subscription's to take.
+ * that can convert nothing — a new pick closed it, or its live row already converted on another
+ * page — so money on it is no subscription's to take. A page a dead row opened is reactivation,
+ * though the row still names its old mandate (`M12-08`).
  */
 export type CollectedOn =
   | {
@@ -53,6 +68,8 @@ export type CollectedOn =
  * renewal invoice whose link it is, else the open checkout that opened it on a row not yet
  * converted. `null` when nothing knows the ref.
  */
+const LIVE: ReadonlySet<string> = new Set(LIVE_BILLING_STATES);
+
 export async function collectedOn(db: Db, gatewayRef: string): Promise<CollectedOn | null> {
   const [converted] = await db
     .select({ id: subscription.id, cycle: subscription.cycle })
@@ -98,7 +115,12 @@ export async function collectedOn(db: Db, gatewayRef: string): Promise<Collected
       collection: billingCheckout.collection,
       cancelRequestedAt: billingCheckout.cancelRequestedAt,
       closedAt: billingCheckout.closedAt,
+      startsAt: billingCheckout.startsAt,
+      openedBy: billingCheckout.openedBy,
       convertedOn: subscription.gatewayRef,
+      state: subscription.state,
+      stateEnteredAt: subscription.stateEnteredAt,
+      openedAt: billingCheckout.openedAt,
     })
     .from(billingCheckout)
     .innerJoin(planPrice, eq(planPrice.id, billingCheckout.planPriceId))
@@ -106,13 +128,30 @@ export async function collectedOn(db: Db, gatewayRef: string): Promise<Collected
     .where(eq(billingCheckout.gatewayRef, gatewayRef))
     .limit(1);
   if (opened === undefined) return null;
-  const { subscriptionId, closedAt, convertedOn, cancelRequestedAt, ...chosen } = opened;
-  if (closedAt !== null || convertedOn !== null) return { kind: 'stray', subscriptionId };
+  const {
+    subscriptionId,
+    closedAt,
+    convertedOn,
+    cancelRequestedAt,
+    startsAt,
+    state,
+    stateEnteredAt,
+    openedAt,
+    ...chosen
+  } = opened;
+  const liveAndConverted = convertedOn !== null && LIVE.has(state);
+  if (closedAt !== null || liveAndConverted) return { kind: 'stray', subscriptionId };
   return {
     kind: 'collecting',
     subscriptionId,
     cycle: chosen.cycle,
-    conversion: { ...chosen, gatewayRef, cancelRequested: cancelRequestedAt !== null },
+    conversion: {
+      ...chosen,
+      gatewayRef,
+      cancelRequested: cancelRequestedAt !== null,
+      startsAt: startsAt?.getTime() ?? null,
+      reactivates: !LIVE.has(state) && openedAt >= stateEnteredAt,
+    },
     renewal: null,
   };
 }

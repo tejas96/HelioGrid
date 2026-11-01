@@ -1,0 +1,38 @@
+# Billing: the owner's page on a fresh trial (`SCR-M12-02` frame 7), opened from settings — the
+# plan with its state, the usage, the payment method set up later, no invoice yet and no cancel —
+# then `Change plan` to the plans page (`SCR-M12-03`, coming later) and back to settings.
+appId: com.heliogrid.app
+---
+- runFlow:
+    file: steps/open-setting.yaml
+    env:
+      ROW: ${ROW_BILLING}
+- extendedWaitUntil:
+    visible: ${YOUR_PLAN}
+    timeout: 15000
+- assertVisible: ${TRIAL}
+- assertVisible: ${CHANGE_PLAN}
+- scrollUntilVisible:
+    element: ${USAGE_THIS_CYCLE}
+- scrollUntilVisible:
+    element: ${METHOD_LATER}
+- assertVisible: ${PAYMENT_METHOD}
+- scrollUntilVisible:
+    element: ${NO_INVOICES_YET}
+# A trial is not cancelled from here: it simply ends (`M12-50`, cancel is an active plan's).
+- assertNotVisible: ${CANCEL_SUBSCRIPTION}
+- scrollUntilVisible:
+    element: ${CHANGE_PLAN}
+    direction: UP
+    centerElement: true
+- tapOn: ${CHANGE_PLAN}
+- extendedWaitUntil:
+    visible: ${BACK_TO_BILLING}
+    timeout: 15000
+- assertVisible: ${PLANS}
+- assertVisible: ${PLACEHOLDER}
+- tapOn: ${BACK_TO_BILLING}
+- extendedWaitUntil:
+    visible: ${YOUR_PLAN}
+    timeout: 15000
+- tapOn: ${BACK_TO_SETTINGS}

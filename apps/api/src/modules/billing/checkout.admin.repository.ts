@@ -1,14 +1,15 @@
 import { billingCheckout, type Db, subscription, tenant, uuidv7 } from '@heliogrid/db';
-import { type BillingState, type CollectionKind, LIVE_BILLING_STATES } from '@heliogrid/domain';
+import type { BillingState, CollectionKind } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, eq, inArray, isNull } from 'drizzle-orm';
+import { and, desc, eq, isNull } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
 
-/** A company's live subscription, with what a checkout needs to know about the company. */
+/** A company's latest subscription, with what a checkout needs to know about the company. */
 export interface CheckoutStanding {
   readonly subscriptionId: string;
   readonly state: BillingState;
   readonly trialEndsAt: number | null;
+  readonly paidPeriodEnd: number | null;
   readonly marketCode: string;
   readonly currencyCode: string;
 }
@@ -20,6 +21,8 @@ export interface OpenCheckout {
   readonly collection: CollectionKind;
   readonly gatewayRef: string;
   readonly hostedUrl: string;
+  /** The page stops taking money then: a trial's page outlives its trial unpaid. */
+  readonly expiresAt: number;
   /** The gateway was asked to cancel it: its page is never handed out again. */
   readonly cancelRequested: boolean;
 }
@@ -39,27 +42,31 @@ export class CheckoutAdminRepository {
     return uuidv7();
   }
 
-  /** The company's one live subscription (`M12-04`), or `null` when it holds none. */
+  /**
+   * The company's latest subscription — its one live row, else the dead row reactivation starts
+   * from (`M12-04`, `M12-08`) — or `null` when it holds none.
+   */
   async standingOf(tenantId: string): Promise<CheckoutStanding | null> {
     const [row] = await this.db
       .select({
         subscriptionId: subscription.id,
         state: subscription.state,
         trialEndsAt: subscription.trialEndsAt,
+        paidPeriodEnd: subscription.paidPeriodEnd,
         marketCode: tenant.marketCode,
         currencyCode: tenant.currencyCode,
       })
       .from(subscription)
       .innerJoin(tenant, eq(tenant.id, subscription.tenantId))
-      .where(
-        and(
-          eq(subscription.tenantId, tenantId),
-          inArray(subscription.state, [...LIVE_BILLING_STATES]),
-        ),
-      )
+      .where(eq(subscription.tenantId, tenantId))
+      .orderBy(desc(subscription.createdAt), desc(subscription.id))
       .limit(1);
     if (row === undefined) return null;
-    return { ...row, trialEndsAt: row.trialEndsAt?.getTime() ?? null };
+    return {
+      ...row,
+      trialEndsAt: row.trialEndsAt?.getTime() ?? null,
+      paidPeriodEnd: row.paidPeriodEnd?.getTime() ?? null,
+    };
   }
 
   async openOf(tenantId: string, subscriptionId: string): Promise<OpenCheckout | null> {
@@ -70,6 +77,7 @@ export class CheckoutAdminRepository {
         collection: billingCheckout.collection,
         gatewayRef: billingCheckout.gatewayRef,
         hostedUrl: billingCheckout.hostedUrl,
+        expiresAt: billingCheckout.expiresAt,
         cancelRequestedAt: billingCheckout.cancelRequestedAt,
       })
       .from(billingCheckout)
@@ -82,8 +90,8 @@ export class CheckoutAdminRepository {
       )
       .limit(1);
     if (row === undefined) return null;
-    const { cancelRequestedAt, ...open } = row;
-    return { ...open, cancelRequested: cancelRequestedAt !== null };
+    const { cancelRequestedAt, expiresAt, ...open } = row;
+    return { ...open, expiresAt: expiresAt.getTime(), cancelRequested: cancelRequestedAt !== null };
   }
 
   /** Written before the gateway is asked to cancel, so a lost answer never hands the page out. */
@@ -126,13 +134,16 @@ export class CheckoutAdminRepository {
     readonly gatewayRef: string;
     readonly hostedUrl: string;
     readonly expiresAt: number;
+    readonly startsAt: number | null;
     readonly openedAt: number;
+    readonly openedBy: string;
   }): Promise<boolean> {
     const written = await this.db
       .insert(billingCheckout)
       .values({
         ...row,
         expiresAt: new Date(row.expiresAt),
+        startsAt: row.startsAt === null ? null : new Date(row.startsAt),
         openedAt: new Date(row.openedAt),
       })
       .onConflictDoNothing()

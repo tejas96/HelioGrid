@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { packAmount } from '../market/stored-values';
+import { packAmount, packLabel } from '../market/stored-values';
 import type { BillingCycle, PaymentRailsPack, RailCapability, TierBand } from './pack';
 
 const route = z.discriminatedUnion('collection', [
@@ -19,7 +19,13 @@ const adapters = z.array(z.string());
 /** `pack.payment-rails` as a row stores it, validated whole and re-minted (`T-FCORE-017`). */
 export const PAYMENT_RAILS_PACK_SCHEMA: z.ZodType<PaymentRailsPack, z.ZodTypeDef, unknown> =
   z.object({
-    mandateTypes: z.array(z.object({ type: z.string(), perDebitCap: packAmount.nullable() })),
+    mandateTypes: z.array(
+      z.object({
+        type: z.string(),
+        perDebitCap: packAmount.nullable(),
+        label: packLabel.optional(),
+      }),
+    ),
     ladder: z.object({ self_serve: cycles, enterprise: cycles } satisfies Record<
       TierBand,
       z.ZodTypeAny

@@ -37,6 +37,7 @@ export {
   energySourceOf,
   inLadderOrder,
 } from './energy-source';
+export { FIGURE_SLOT } from './figure-slot';
 export {
   type CurrentInputs,
   type Freshness,

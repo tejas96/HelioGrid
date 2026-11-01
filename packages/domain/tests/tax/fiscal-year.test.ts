@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fiscalYearOf, invoiceNumber } from '../../src/tax/fiscal-year';
+import { creditNoteNumber, fiscalYearOf, invoiceNumber } from '../../src/tax/fiscal-year';
 
 const KOLKATA = 'Asia/Kolkata';
 
@@ -26,5 +26,15 @@ describe('fiscalYearOf and invoiceNumber — a platform invoice’s number (M12-
     { sequence: 1_000_000, number: '2026-27/1000000' },
   ])('number $sequence of the year reads $number', ({ sequence, number }) => {
     expect(invoiceNumber('2026-27', sequence)).toBe(number);
+  });
+});
+
+describe('creditNoteNumber — a credit note’s own series, never read as an invoice’s (M12-47)', () => {
+  it.each([
+    [1, 'CN-2026-27/000001'],
+    [42, 'CN-2026-27/000042'],
+    [999_999, 'CN-2026-27/999999'],
+  ])('sequence %i reads %s', (sequence, number) => {
+    expect(creditNoteNumber('2026-27', sequence)).toBe(number);
   });
 });

@@ -155,6 +155,15 @@ function latestDue(
   }
 }
 
+/**
+ * The notice the ladder tells next after `now`, as the billing home shows it upcoming; `null` on no
+ * ladder, or past a trial's last notice.
+ */
+export function upcomingNotice(clock: NoticeClock, now: number): ScheduledNotice | null {
+  const start = ladderStartOf(clock);
+  return start === null ? null : latestDue(start, now).after;
+}
+
 /** What the sweep does for one subscription at `now`. */
 export interface NoticeDecision {
   /** The notice to tell now, or `null`. */

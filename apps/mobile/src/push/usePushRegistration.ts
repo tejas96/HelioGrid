@@ -59,8 +59,8 @@ export function usePushRegistration(): void {
   useEffect(
     () =>
       onPushArrived(() => {
-        /* Arrivals are displayed by `messaging.ts`; routing to the subject lands with the first
-           screen that has one to route to (`F6-02`). */
+        /* Arrivals are displayed by `messaging.ts`; a TAP routes to its subject through the
+           navigator's linking (`navigation/linking.ts`, `F6-02`). */
       }),
     [],
   );

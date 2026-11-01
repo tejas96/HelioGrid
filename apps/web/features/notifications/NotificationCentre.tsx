@@ -24,6 +24,7 @@ import {
   useFormat,
   useToasts,
 } from '@heliogrid/ui';
+import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 
 interface NotificationCentreProps {
@@ -42,6 +43,7 @@ export function NotificationCentre({ onClose, onGoToLeads }: NotificationCentreP
   const format = useFormat();
   const centre = useNotificationCentre(format.pack.timeZone);
   const toasts = useToasts();
+  const router = useRouter();
   /* A closed toast hands the keyboard back to the notifications it spoke about. */
   const list = useRef<HTMLDivElement>(null);
   const say = (toast: ReturnType<typeof centreActToast>) => {
@@ -94,6 +96,11 @@ export function NotificationCentre({ onClose, onGoToLeads }: NotificationCentreP
             days={centreListWords(t, centre.view.days, format)}
             onOpen={async (item) => {
               if (!(await centre.markRead(item))) say(centreActToast(t, { kind: 'read-failed' }));
+              // A notification points at its record (`F6-02`): open it where it has a screen.
+              const address = centre.addressOf(item);
+              if (address === null) return;
+              onClose();
+              router.push(`/${address}`);
             }}
             olderLabel={centre.view.olderRemain ? showOlderLabel(t, centre.filtered) : undefined}
             onShowOlder={centre.showOlder}
