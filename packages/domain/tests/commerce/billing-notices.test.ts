@@ -134,11 +134,10 @@ describe('the pack’s SMS texts (M12-40, M12-41)', () => {
   it("the day-4 pack text was written for the matrix's paused set", () => {
     expect(pauseNoticeOf('past_due_metered_paused').paused).toEqual([
       'voice_agent',
-      'ai_roof_detections',
       'team_invites',
     ]);
     expect(IN_BILLING_NOTICE_TEXTS.metered_paused?.text.en).toContain(
-      'voice agent, AI roof detection and team invites are paused',
+      'voice agent and team invites are paused',
     );
   });
 

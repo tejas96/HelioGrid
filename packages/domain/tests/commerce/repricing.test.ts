@@ -8,7 +8,6 @@ const CURRENT: TierCapacity = {
   creationsPerCycle: { proposals: 300, active_projects: 'unlimited' },
   meterBundles: {
     voice_minutes: 0,
-    ai_roof_detections: 100,
     marketing_sends: 2_000,
     tracked_field_seats: 3,
   },
@@ -17,9 +16,9 @@ const CURRENT: TierCapacity = {
 
 const withStorage = (storageGb: TierLimit): TierCapacity => ({ ...CURRENT, storageGb });
 
-const withDetections = (ai_roof_detections: TierLimit): TierCapacity => ({
+const withSends = (marketing_sends: TierLimit): TierCapacity => ({
   ...CURRENT,
-  meterBundles: { ...CURRENT.meterBundles, ai_roof_detections },
+  meterBundles: { ...CURRENT.meterBundles, marketing_sends },
 });
 
 const withProposals = (proposals: TierLimit): TierCapacity => ({
@@ -34,7 +33,7 @@ describe('appliesImmediately — growth reaches a company at once (BM-42)', () =
 
   it.each([
     { label: 'more storage', after: withStorage(100) },
-    { label: 'more detections', after: withDetections(200) },
+    { label: 'more sends', after: withSends(2_001) },
     { label: 'more proposals', after: withProposals(400) },
     { label: 'a storage ceiling removed', after: withStorage('unlimited') },
     { label: 'a proposal count removed', after: withProposals('unlimited') },
@@ -44,7 +43,7 @@ describe('appliesImmediately — growth reaches a company at once (BM-42)', () =
 
   it.each([
     { label: 'one GB less storage', after: withStorage(49) },
-    { label: 'one detection less', after: withDetections(99) },
+    { label: 'one send less', after: withSends(1_999) },
     { label: 'one proposal less', after: withProposals(299) },
     { label: 'a design ceiling lowered', after: { ...CURRENT, designCeilingKw: 499 } },
   ])('waits for the horizon on $label — a tenant does not lose a field quietly', ({ after }) => {
@@ -60,7 +59,7 @@ describe('appliesImmediately — growth reaches a company at once (BM-42)', () =
     const mixed: TierCapacity = {
       ...CURRENT,
       storageGb: 5_000,
-      meterBundles: { ...CURRENT.meterBundles, ai_roof_detections: 99 },
+      meterBundles: { ...CURRENT.meterBundles, marketing_sends: 1_999 },
     };
     expect(appliesImmediately(CURRENT, mixed)).toBe(false);
   });

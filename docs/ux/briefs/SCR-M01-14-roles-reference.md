@@ -71,3 +71,5 @@ Design at F2's full preset set: twelve presets, each with a description, its mat
 ---
 
 *Amended 2026-08-07 by owner decision: the offline/sync capability was removed from the product. This screen previously carried an `Offline` state rendering the teammate list from read-only cache (`F4-08`). It is deleted.*
+
+*Amended 2026-11-01 by owner ruling: the product has no automatic roof detection. The board's row "Run in-canvas AI roof detection on the studio canvas" no longer exists; the screen renders the capability list from the permission model, which holds no such row.*

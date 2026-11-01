@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { BillingGateway } from '@heliogrid/contracts';
-import { billingCheckout, overageAddOn, subscription } from '@heliogrid/db';
+import { billingCheckout, overageAddOn, subscription, subscriptionPayment } from '@heliogrid/db';
 import {
   type BilledLedgerMeter,
   type ChargeSucceeded,
@@ -9,7 +9,7 @@ import {
   OVERAGE_SETTLE_DAYS,
   type Tier,
 } from '@heliogrid/domain';
-import { asc, eq } from 'drizzle-orm';
+import { asc, desc, eq } from 'drizzle-orm';
 import type { BillingAlerts } from '../../src/modules/billing/internal/billing-alerts';
 import { OverageAdminRepository } from '../../src/modules/billing/overage.admin.repository';
 import { OverageService } from '../../src/modules/billing/overage.service';
@@ -178,6 +178,51 @@ export function addOnsOf(pools: Pools, mandate: Mandate) {
     .from(overageAddOn)
     .where(eq(overageAddOn.subscriptionId, mandate.subscriptionId))
     .orderBy(asc(overageAddOn.windowFrom), asc(overageAddOn.meter));
+}
+
+/**
+ * An add-on of an earlier window, already on the mandate's next debit (`added`) or waiting for it
+ * (`pending`): voice is the one meter a book sells per unit, so one period never brings two
+ * add-ons, and a second for the same debit is seeded here. An added one counts against the debit's
+ * cap as any added add-on does.
+ */
+export async function anEarlierAddOn(
+  pools: Pools,
+  mandate: Mandate,
+  window: { readonly from: number; readonly to: number },
+  amount: MinorUnits,
+  status: 'added' | 'pending',
+): Promise<void> {
+  const [payment] = await pools.admin.db
+    .select({ id: subscriptionPayment.id })
+    .from(subscriptionPayment)
+    .where(eq(subscriptionPayment.subscriptionId, mandate.subscriptionId))
+    .orderBy(desc(subscriptionPayment.id))
+    .limit(1);
+  if (payment === undefined) throw new Error('the mandate has no debit recorded');
+  await pools.admin.db.insert(overageAddOn).values({
+    tenantId: mandate.tenantId,
+    subscriptionId: mandate.subscriptionId,
+    paymentId: payment.id,
+    meter: 'voice_minutes',
+    windowFrom: new Date(window.from),
+    windowTo: new Date(window.to),
+    used: 1,
+    allowance: 0,
+    quantity: 1,
+    unitRateMinor: amount,
+    amountMinor: amount,
+    status,
+    reckonedAt: new Date(window.to),
+    ...(status === 'added'
+      ? {
+          gatewayRef: mandate.gatewayRef,
+          gatewayAddOnRef: `addon_${randomUUID()}`,
+          gatewayAmountMinor: amount,
+          addedAt: new Date(window.to),
+        }
+      : {}),
+  });
 }
 
 /** The overage sweep as `billing.module.ts` composes it, on the gateway and alerts given. */

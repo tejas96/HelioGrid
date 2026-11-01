@@ -1,6 +1,6 @@
 import type { AddedToNextCharge, GatewayAddOnRequest } from '@heliogrid/contracts';
 import { billingCheckout, subscription } from '@heliogrid/db';
-import { ADD_ON_LEAD_DAYS, IN_PACK, MS_PER_DAY } from '@heliogrid/domain';
+import { ADD_ON_LEAD_DAYS, IN_PACK, MS_PER_DAY, minorUnits } from '@heliogrid/domain';
 import { eq, sql } from 'drizzle-orm';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { DevelopmentBillingGateway } from '../../src/modules/billing/internal/billing-gateway.development';
@@ -8,7 +8,15 @@ import { OverageAdminRepository } from '../../src/modules/billing/overage.admin.
 import { type Company, openPools, skipWithoutDatabase, unseed } from '../support/fixture';
 import { holdLock } from '../support/held-lock';
 import { publishIndiaPack } from '../support/market';
-import { addOnsOf, aMandate, type Mandate, overageSweep, timeline, use } from './overage-bench';
+import {
+  addOnsOf,
+  aMandate,
+  anEarlierAddOn,
+  type Mandate,
+  overageSweep,
+  timeline,
+  use,
+} from './overage-bench';
 import { RecordedAlerts, silentLogger } from './support';
 
 /**
@@ -20,7 +28,8 @@ import { RecordedAlerts, silentLogger } from './support';
 /** A year no other suite charges in, so the periods the sweep finds are this suite's. */
 const SUITE_YEAR = 1975;
 const PERIODS = timeline(SUITE_YEAR);
-const { MID_MAY, MAY_SETTLED } = PERIODS;
+const { MAY, MID_MAY, MAY_SETTLED } = PERIODS;
+const APRIL = Date.parse(`${SUITE_YEAR}-04-01T00:00:00Z`);
 
 const skip = skipWithoutDatabase(
   'OVERAGE GATEWAY PROOF',
@@ -28,11 +37,12 @@ const skip = skipWithoutDatabase(
 );
 
 const SECONDS_PER_MINUTE = 60;
-const STARTER_DETECTIONS =
-  IN_PACK.priceBook.tiers.starter?.capacity.meterBundles.ai_roof_detections;
-/** Starter's ₹1,999 plan with 2,000 minutes (₹12,000) fits the ₹15,000 UPI cap; 200 detections more do not. */
-const MINUTES_THAT_FIT = 2_000;
-const DETECTIONS_THAT_WAIT = 200;
+const voice = IN_PACK.priceBook.overage.voice_minutes;
+if (voice.kind !== 'per_unit') throw new Error('the IN book bills voice per minute');
+/** Starter's ₹1,999 plan with April's ₹12,000 add-on fits the ₹15,000 UPI cap; May's 200 minutes more do not. */
+const APRIL_MINUTES = 2_000;
+const APRIL_ADD_ON = minorUnits(APRIL_MINUTES * voice.rate);
+const MINUTES_THAT_WAIT = 200;
 /** One minute past a bundle of 0: ₹6, an add-on that fits any debit. */
 const ONE_MINUTE = SECONDS_PER_MINUTE;
 
@@ -102,11 +112,10 @@ describe.skipIf(skip)('overage add-ons at the gateway (M12-35)', () => {
   });
 
   it('a row that waited or was refused goes behind every row not yet tried, and a refusal that repeats is alerted', async () => {
-    // Waited: the voice add-on is added, and the detections wait beside it under the cap.
+    // Waited: April's add-on is on the debit, and May's waits beside it under the cap.
     const waits = await aMandate(pools, companies, 'starter', PERIODS);
-    await use(pools, waits, 'voice_minutes', MINUTES_THAT_FIT * SECONDS_PER_MINUTE, MID_MAY);
-    const detections = Number(STARTER_DETECTIONS) + DETECTIONS_THAT_WAIT;
-    await use(pools, waits, 'ai_roof_detections', detections, MID_MAY);
+    await anEarlierAddOn(pools, waits, { from: APRIL, to: MAY }, APRIL_ADD_ON, 'added');
+    await use(pools, waits, 'voice_minutes', MINUTES_THAT_WAIT * SECONDS_PER_MINUTE, MID_MAY);
     const adding = new ScriptedGateway(async () => ({ kind: 'added', gatewayAddOnRef: 'unused' }));
     await overageSweep(pools, adding, new RecordedAlerts(silentLogger())).addDue(MAY_SETTLED);
     expect((await addOnsOf(pools, waits)).map(({ status }) => status)).toEqual([
@@ -138,9 +147,8 @@ describe.skipIf(skip)('overage add-ons at the gateway (M12-35)', () => {
 
   it('two runs adding to one mandate at once never both fit under its cap', async () => {
     const mandate = await aMandate(pools, companies, 'starter', PERIODS);
-    await use(pools, mandate, 'voice_minutes', MINUTES_THAT_FIT * SECONDS_PER_MINUTE, MID_MAY);
-    const detections = Number(STARTER_DETECTIONS) + DETECTIONS_THAT_WAIT;
-    await use(pools, mandate, 'ai_roof_detections', detections, MID_MAY);
+    await anEarlierAddOn(pools, mandate, { from: APRIL, to: MAY }, APRIL_ADD_ON, 'pending');
+    await use(pools, mandate, 'voice_minutes', MINUTES_THAT_WAIT * SECONDS_PER_MINUTE, MID_MAY);
     // Reckoned while past due, so neither add-on is added yet.
     await stateOf(mandate, 'past_due');
     const gateway = new ScriptedGateway(async () => ({ kind: 'added', gatewayAddOnRef: 'unused' }));
@@ -162,7 +170,7 @@ describe.skipIf(skip)('overage add-ons at the gateway (M12-35)', () => {
 
     expect((await addOnsOf(pools, mandate)).map(({ meter, status }) => [meter, status])).toEqual([
       ['voice_minutes', 'added'],
-      ['ai_roof_detections', 'pending'],
+      ['voice_minutes', 'pending'],
     ]);
     expect(gateway.sent).toBe(1);
   });

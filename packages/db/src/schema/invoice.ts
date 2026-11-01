@@ -1,4 +1,9 @@
-import { INVOICE_KINDS, INVOICE_STATUSES, OVERAGE_ADDON_STATUSES } from '@heliogrid/domain';
+import {
+  INVOICE_KINDS,
+  INVOICE_STATUSES,
+  type LedgerMeter,
+  OVERAGE_ADDON_STATUSES,
+} from '@heliogrid/domain';
 import { sql } from 'drizzle-orm';
 import {
   bigint,
@@ -222,7 +227,8 @@ export const overageAddOn = pgTable(
     paymentId: uuid('payment_id')
       .notNull()
       .references(() => subscriptionPayment.id),
-    meter: usageMeter('meter').notNull(),
+    // A retired value stays in the enum for the release before; nothing writes it (`D398`).
+    meter: usageMeter('meter').notNull().$type<LedgerMeter>(),
     windowFrom: instant('window_from').notNull(),
     windowTo: instant('window_to').notNull(),
     /** Billed units used, the allowance they ran past, and the units billed — all billed units. */

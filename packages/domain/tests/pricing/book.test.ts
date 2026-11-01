@@ -11,6 +11,8 @@ import {
   trialCapacity,
 } from '../../src/pricing/book';
 import { IN_PRICE_BOOK } from '../../src/pricing/india';
+import { PRICE_BOOK_PACK_SCHEMA } from '../../src/pricing/pack-schema';
+import { withReleaseBeforeDetections } from '../../src/pricing/release-before';
 import type { BillingCycle } from '../../src/rails/pack';
 
 /** The rung's listed price. A `null` here is an authoring error in the book, never a case. */
@@ -64,12 +66,9 @@ describe('the yearly cycle is sized at pay-ten-get-twelve, and the book row wins
 });
 
 describe('isSellable — a draft rate is never launch-final (BM-26)', () => {
-  it.each(['voice_minutes', 'ai_roof_detections'] as const)(
-    'sells %s: its rate is verified',
-    (meter) => {
-      expect(isSellable(IN_PRICE_BOOK, meter)).toBe(true);
-    },
-  );
+  it.each(['voice_minutes'] as const)('sells %s: its rate is verified', (meter) => {
+    expect(isSellable(IN_PRICE_BOOK, meter)).toBe(true);
+  });
 
   it.each(['marketing_sends', 'tracked_field_seats'] as const)(
     'refuses %s: draft pending the rate card',
@@ -123,13 +122,25 @@ describe('the benchmark law — under the incumbents at equivalent capacity, alw
   });
 });
 
+describe('the meter set (BM-16)', () => {
+  it('the meters are four, and no book prices a roof detection (BM-16)', () => {
+    expect([...METERS].sort()).toEqual(
+      ['marketing_sends', 'storage', 'tracked_field_seats', 'voice_minutes'].sort(),
+    );
+    // A stored revision written for the release before still carries detection entries; the book
+    // read back from it prices none.
+    const read = PRICE_BOOK_PACK_SCHEMA.parse(withReleaseBeforeDetections(IN_PRICE_BOOK));
+    expect(JSON.stringify(read)).not.toContain('ai_roof_detections');
+    expect(read).toEqual(PRICE_BOOK_PACK_SCHEMA.parse(IN_PRICE_BOOK));
+  });
+});
+
 describe('the book is the pack’s price-book key (F1-02, F1-25)', () => {
   it('is reached through the pack, never as a module constant', () => {
     expect(IN_PACK.priceBook).toBe(IN_PRICE_BOOK);
   });
 
   it('caps the trial only on what costs real money (BM-28)', () => {
-    expect(IN_PRICE_BOOK.trialCaps.meterBundles.ai_roof_detections).toBe(25);
     expect(IN_PRICE_BOOK.trialCaps.meterBundles.voice_minutes).toBe(15);
     expect(IN_PRICE_BOOK.trialCaps.storageGb).toBe(5);
   });
@@ -149,7 +160,6 @@ describe('trialCapacity — the whole product, bounded only by the book (BM-28, 
     const trial = trialCapacity(IN_PRICE_BOOK);
     expect(trial.meterBundles).toEqual({
       voice_minutes: 15,
-      ai_roof_detections: 25,
       marketing_sends: 0,
       tracked_field_seats: 0,
     });

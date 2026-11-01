@@ -90,7 +90,7 @@ Consumes: MS1 canvas (MS1-28..30) + calibration; MS2's shared factory + platform
 
 ## 5. Non-goals
 
-Roof editing on this step (MS3-02) · exact keep-out geometry in the ring preview (layout owns truth, MS3-04) · auto-classification of AI-detected lumps (user classifies, MS2-41) · shipping the windmill 3D model (procedural stands in until an asset exists).
+Roof editing on this step (MS3-02) · exact keep-out geometry in the ring preview (layout owns truth, MS3-04) · shipping the windmill 3D model (procedural stands in until an asset exists).
 
 ## 6. Open items
 

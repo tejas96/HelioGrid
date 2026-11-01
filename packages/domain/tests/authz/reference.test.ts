@@ -18,6 +18,11 @@ const line = (preset: (typeof ROLE_PRESETS)[number], row: string) => {
 };
 
 describe('REFERENCE_ROWS', () => {
+  it('names no roof detection capability', () => {
+    // The product has no automatic roof detection (owner ruling 2026-11-01): no role may be granted it.
+    expect(REFERENCE_ROWS.filter((row) => /detect/i.test(row))).toEqual([]);
+  });
+
   it('every matrix row once, in F2 order', () => {
     const rows = [...Object.keys(CAPABILITY_MATRIX), ...Object.keys(VISIBILITY_MATRIX)];
     expect([...REFERENCE_ROWS].sort()).toEqual(rows.sort());

@@ -301,7 +301,7 @@ Inventory (all via `fly secrets set`, staged per app; setting triggers a rolling
 | `DATABASE_URL`, `REDIS_URL` | on incident / topology change | flip during escape hatch too |
 | Razorpay key/secret + webhook secret | quarterly | **dual-accept**: verify webhooks against old+new for 48 h |
 | Exotel, Sarvam, MSG91 keys | quarterly | breaker + `unconfigured` envelope make a bad rotation loud, not silent |
-| Google Maps/Solar, Gemini keys | quarterly | Maps JS key is referrer-locked, not secret-rotated |
+| Google Maps keys | quarterly | Maps JS key is referrer-locked, not secret-rotated |
 | Tigris access keys | quarterly | rotate backup-bucket creds FIRST and run `pgbackrest check` before rotating the rest |
 | Customer-link HMAC key | yearly, dual-accept | old links must survive the window |
 
@@ -330,7 +330,7 @@ probe alert (§3) and a settings nag, never silent failure.
 
 - **Tigris**: no egress fees; track GB/month growth (survey photos dominate) and the
   backup bucket separately.
-- **Per-tenant COGS**: the `usage_events` ledger (voice legs, AI detections, OTP, storage)
+- **Per-tenant COGS**: the `usage_events` ledger (voice legs, OTP, storage)
   rolls up into the Cost & usage dashboard next to plan revenue — the margin check that
   keeps pricing honest .
 - Monthly ops review (30 min, calendared): Fly invoice vs sizing table, Upstash headroom,

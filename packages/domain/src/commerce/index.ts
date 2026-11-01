@@ -228,6 +228,7 @@ export {
   isBilledMeter,
   LEDGER_METERS,
   METER_UNITS,
+  RETIRED_LEDGER_METERS,
   storageRefuses,
   usagePeriodKey,
 } from './usage';

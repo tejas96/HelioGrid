@@ -1,3 +1,4 @@
+import { withReleaseBeforeDetections } from '../pricing/release-before';
 import { PACK_KEYS, type PackKey, TENANT_READABLE_KEYS, type TenantReadableKey } from './keys';
 import type { MarketPack } from './pack';
 
@@ -15,6 +16,7 @@ export function payloadOf(pack: MarketPack): PackPayload {
   for (const key of PACK_KEYS) {
     if (authored.has(key)) payload[key] = authored.get(key);
   }
+  payload.priceBook = withReleaseBeforeDetections(pack.priceBook);
   return payload;
 }
 

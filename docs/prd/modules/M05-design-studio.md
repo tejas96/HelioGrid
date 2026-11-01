@@ -50,8 +50,7 @@ no build ordering appears in this document at all.
 
 **Explicitly not this module:** the proposal builder and its documents
 (`modules/M06-proposals.md` — this module hands it numbers, captures and honesty labels); the
-catalog the picker browses (`modules/M01`, §M01.4); survey capture and AI-detection artifact
-production (`modules/M04` — this module consumes the validated artifact); the tenant-side money
+catalog the picker browses (`modules/M01`, §M01.4); survey capture (`modules/M04` — this module receives the survey and its outlined roof); the tenant-side money
 path beyond the BOM's totals (`modules/M11`); the customer-facing link that shows the one
 recommended design (`foundations/F5`); platform entitlement gate mechanics (`modules/M12`);
 execution of the installation plan (`modules/M08` — the plan is a studio exit that M08 owns).
@@ -225,7 +224,7 @@ Census section: 10.2 `SC.10-2.01`–`SC.10-2.20`.
 | M05-15 | **The setup form carries the census field set, market-neutrally keyed.** Project name; customer name and phone; country/market and region; **utility** (the market pack's own label — sets the default tariff from pack data); site type Residential/Commercial; connection Single/Three phase; sanctioned load (kW); electricity tariff per kWh (auto-filled from the utility default, editable); average monthly bill (feeds the Step-4 size suggestion); company logo upload (max 2 MB, PNG/JPG — tenant branding per `M01`'s rules); ground-mount / open-access as a normal option. Currency and tariff data come from the tenant's market pack; no market's names appear in this module's body. | `SRC` — `SC.10-2.02`–`SC.10-2.14`; `F1-01`/`F1-19`-family pack keys (utility naming per `R2` amendment carried at F1; the IN pack's labels and tariff table are F1's data); segment flag per `D1` (census note) | P0 |
 | M05-16 | **Location: search with autocomplete or exact coordinates, then a touch-honest pin on the satellite canvas.** Pin placement is redesigned for touch (the v1 fixed-pin/drag-map-underneath pattern is the named failure); the designer still lands on the exact roof, with zoom. The imagery tile the design is traced on is **pinned at capture: it never changes underneath the design.** Tile fetch failure still opens the studio — blank canvas plus manual calibration (§M05.4) — it never blocks. | `SRC` — `SC.10-2.15`, `SC.10-2.16`; `DOC07.map-tile-pinned` (studio-canvas half: "the tile a design was traced on never changes under it"; "Never blocks" — the survey-side pin is `M04-10`/`M04-11`) | P0 |
 | M05-17 | **Confirming the location produces the Solar Data card, and its figures obey the energy source-of-record ladder.** The card shows irradiance (kWh/m²/day), peak sun hours and a source label. The market's **energy source of record** supplies the figures where available — v1 reference implementation: PVGIS with its documented database ladder (SARAH3 → ERA5) — labelled per `F8-08`'s fixed copy; the built-in latitude-fit fallback is always labelled "±10%". The source is never switched silently (`F8-09`, cited). | `SRC` — `SC.10-2.17`; `R5` (M05 half — the source-of-record ruling and its database ladder: "PVGIS is the energy source of record (SARAH3 → ERA5 ladder)"; labels are `F8-08`/`F8-09`'s, metering `modules/M12`'s); vendor-as-reference-implementation per `F1-43`'s pattern | P0 |
-| M05-18 | **Site Intelligence is an asynchronous enhancement with four honest states — loading / unavailable / unreachable / ok — and never a dependency.** In its "ok" state it shows max panels (~kWp), roof area, sunshine h/yr, roof faces, imagery date and quality (HIGH/MED/BASE). Every path it serves works without it; its absence is stated, not styled as an error. | `SRC` — `SC.10-2.18`, `SC.10-2.19`; `R5` ("Google Solar is an enhancement — never a dependency", carried vendor-neutrally: building-insights-class site intelligence, v1 reference implementation per `M04-09`'s pattern) | P0 |
+| M05-18 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection and no Google roof data: every roof is outlined by hand.** It read: *Site Intelligence is an asynchronous enhancement with four honest states — loading / unavailable / unreachable / ok — and never a dependency.* | `SRC` — `SC.10-2.18`, `SC.10-2.19`; `R5` ("Google Solar is an enhancement — never a dependency", carried vendor-neutrally: building-insights-class site intelligence, v1 reference implementation per `M04-09`'s pattern) | — |
 | M05-19 | **Relocating the pin more than 25 m wipes the whole design — kept as a guard, made a clear, undoable confirmation.** The confirmation states exactly what will be lost (roofs, obstructions, panels — everything traced against the old tile); it is never a silent reset, and it is undoable. | `SRC` — `SC.10-2.20` (verbatim guard; "clear undoable confirmation, not a silent reset") | P0 |
 | M05-20 | **The sanctioned-load soft cap warns and never blocks.** Auto-design and manual design may exceed the sanctioned load captured by the survey (`M04-45`); doing so raises a warning naming the actual limit — *"this is a real approval blocker"* — because exceeding it jeopardises the market's approval process (the rule content is pack data). The design remains editable and savable; the warning travels to readiness (§M05.9) and the market compliance checklist (§M05.11). **Where it renders and what it compares:** where the design's capacity is set — the Step-4 capacity and inverter sections (`M05-39`/`M05-40`) and the Step-6 status pill (`M05-50`) — comparing the inverter AC kW × count against the sanctioned load stated in kW (DC kWp only as a provisional cue before an inverter is chosen, its unit stated); informational and never blocking; silent when the sanctioned load is blank or 0 or the site is open-access. The limit is the sanctioned load itself — no per-utility multiplier exists in V1 — and the copy says "verify with the DISCOM", never a hard ceiling; it travels unchanged to readiness (`M05-58`) and the BOM compliance checklist (`M05-74`) (owner ruling 2026-09-07). | `SRC` — `DOC04.sanctioned-load` (M05 half — the soft cap read; capture is `M04-45`); `DOC05.auto-design-soft-cap` ("design can exceed it, with warning"); `S5.wrong.3` (verbatim) | P0 |
 | M05-21 | **A design cannot start from nothing and pretends nothing: an incomplete survey blocks design start with the exact missing items and who to ask.** The block screen lists each missing prerequisite by name, its owner (who to ask), and the fastest route to resolve — never a bare "survey incomplete". *(Amended by owner ruling 2026-08-16: **the prerequisite set is what the release actually offers, not a fixed list.** The V1 scope lock defers all ten `M04` survey screens to V2, so in V1 there is no survey to be complete or incomplete and this row must not gate design start on one — it would make the entire studio unreachable. What the row still binds, unchanged, is the **honesty of the block**: where a prerequisite the release does offer is genuinely missing, the screen names it, names its owner and names the fastest route, never a bare refusal. In V1 that set is the site-type and connection fields the studio collects for itself in Step 1; from V2 it is the submitted survey again. **The accepted consequence, stated plainly:** a V1 design starts from less site data than this module was written to assume, and the studio's own roof drawing carries what the survey would have supplied.)* | `SRC` — `S5.wrong.1` ("show exactly what is missing and who to ask") | P0 |
@@ -245,8 +244,6 @@ card's label upgrades from the fallback to the source-of-record label when the f
 **Edge cases & what-goes-wrong.**
 - Survey incomplete → design cannot start; exact missing items and who to ask (M05-21,
   `S5.wrong.1`).
-- Site Intelligence unavailable/unreachable → honest state, no dependency, everything else
-  proceeds (M05-18).
 - Tile fetch fails → blank canvas + manual calibration; never blocks (M05-16).
 - Pin relocated >25 m → wipe guard confirmation, undoable (M05-19).
 - Sanctioned load exceeded → warning with the actual limit; never a block (M05-20).
@@ -266,8 +263,6 @@ card's label upgrades from the fallback to the source-of-record label when the f
   captured limit and the design remains editable (M05-20).
 - Given a tile fetch failure, when the studio opens, then the canvas opens blank with manual
   calibration offered, and nothing blocks (M05-16).
-- Given Site Intelligence in any of its four states, when the card renders, then the state is
-  named honestly and no design step depends on the result (M05-18).
 - Given an incomplete survey, when design start is attempted, then the block screen lists each
   missing item by name and who to ask (M05-21).
 
@@ -284,47 +279,36 @@ Census section: 10.3 `SC.10-3.01`–`SC.10-3.42`.
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M05-22 | **The mode toolbar carries the census tool set:** Select · Draw roof · Detect roofs (AI) · Ortho-snap toggle · Show all measurements · Measure distance · View in 3D · Undo · Redo. Tools are modes (touch-first), each with a visible active state. | `SRC` — `SC.10-3.01`–`SC.10-3.09` | P0 |
-| M05-23 | **AI roof detection enters the canvas only through the validated artifact, appears as ghosts, and stamps provenance.** The detection capability (roof-data pipeline: outline, pitch, azimuth, eave height, obstructions, per-shape confidence; photo-fallback returning shapes only) is consumed as `modules/M04`'s validated artifact (`M04-65`) — the studio never reads a raw detector. Results render as **ghosts** distinct from committed geometry: tap to include/exclude, align nudge, "add selected" commits as one undo step, imagery quality/date shown, dropped shapes warned with reasons. Applying stamps each entity's provenance (manual / AI-detected + confidence) so the UI can say "N AI-detected entities — dimensions are detector estimates". | `SRC` — `SC.10-3.10`–`SC.10-3.12`; `DOC05.ai-doorway` (M05 half — applying the artifact and stamping entity provenance; artifact production/validation is `M04-24`/`M04-65`); `UXG-23` (ghost review contract, verbatim); `CG-matrix.4` (studio half — the in-canvas detection surface; the survey-side review is `M04-15`/`M04-16`); `R5` (enhancement-only; fallback shapes-only) | P0 |
+| M05-22 | **The mode toolbar carries the census tool set:** Select · Draw roof · Ortho-snap toggle · Show all measurements · Measure distance · View in 3D · Undo · Redo. Tools are modes (touch-first), each with a visible active state. | `SRC` — `SC.10-3.01`–`SC.10-3.09` | P0 |
+| M05-23 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *AI roof detection enters the canvas only through the validated artifact, appears as ghosts, and stamps provenance.* | `SRC` — `SC.10-3.10`–`SC.10-3.12`; `DOC05.ai-doorway` (M05 half — applying the artifact and stamping entity provenance; artifact production/validation is `M04-24`/`M04-65`); `UXG-23` (ghost review contract, verbatim); `CG-matrix.4` (studio half — the in-canvas detection surface; the survey-side review is `M04-15`/`M04-16`); `R5` (enhancement-only; fallback shapes-only) | — |
 | M05-24 | **Drawing and editing are the census's touch CAD, whole:** tap-corner drawing with live edge labels; CAD snapping (angle-relative, object-snap, guide rays, right-angle marks, visible snap on/off); close-shape confirm; undo/last-point-remove; too-close points rejected with a plain message; tap-select with big handles — move/insert/delete vertex, move roof, rotate with 15° snap; tap an edge length to type exact metres; per-roof actions (roof type, height & parapet, exact vertex X/Y, duplicate); a roof list chip per roof (select · lock · delete, with area). | `SRC` — `SC.10-3.13`–`SC.10-3.29` | P0 |
-| M05-25 | **Roof type and geometry sheets carry the census option sets:** RCC flat · Metal shed · Tile · Ground array, plus Pitched gable (2 faces) / Pitched hip (4 faces) with ridge direction where the footprint allows; disabled options explain why. Height & parapet: height-from-ground; detected pitch/azimuth suggestion banner (apply/dismiss — suggestion only); pitch; "slopes toward" picker with compass and "south is best" tip (directional tips render per site hemisphere/market); edge setback (uniform + per-edge); parapet-wall chain (direction, height, width, auto-skip shared walls, per-side tap). | `SRC` — `SC.10-3.30`–`SC.10-3.38`; `R5` (suggestion never a dependency) | P0 |
+| M05-25 | **Roof type and geometry sheets carry the census option sets:** RCC flat · Metal shed · Tile · Ground array, plus Pitched gable (2 faces) / Pitched hip (4 faces) with ridge direction where the footprint allows; disabled options explain why. Height & parapet: height-from-ground; pitch; "slopes toward" picker with compass and "south is best" tip (directional tips render per site hemisphere/market); edge setback (uniform + per-edge); parapet-wall chain (direction, height, width, auto-skip shared walls, per-side tap). | `SRC` — `SC.10-3.30`–`SC.10-3.38`; `R5` (suggestion never a dependency) | P0 |
 | M05-26 | **Calibration: measure two points, enter actual metres, and the studio applies a scale correction (plus an expert north offset), rescaling all geometry.** This is also the no-tile fallback path (M05-16): a design is traceable and correctable without imagery. | `SRC` — `SC.10-3.39`; `DOC07.map-tile-pinned` (fallback: "manual calibration (known-distance rescale)") | P0 |
 | M05-27 | **The dependent-items guard: a geometry change that orphans downstream items offers "keep current / keep for review / remove invalid" — never a silent cascade.** | `SRC` — `SC.10-3.40` | P0 |
-| M05-28 | **Every roof carries provenance (manual / AI-detected + confidence) within the four-tier vocabulary, and pinch-zoom + two-finger pan are added to the canvas.** The pinch/pan addition is the census's own recorded port-time addition, not an existing behaviour. | `SRC` — `SC.10-3.41` (tiers per `F8-02`, cited — no fifth tier), `SC.10-3.42` | P0 |
+| M05-28 | **Every roof carries its provenance within the four-tier vocabulary, and pinch-zoom + two-finger pan are added to the canvas.** The pinch/pan addition is the census's own recorded port-time addition, not an existing behaviour. | `SRC` — `SC.10-3.41` (tiers per `F8-02`, cited — no fifth tier), `SC.10-3.42` | P0 |
 | M05-29 | **The survey's photographs ride alongside the canvas as the designer's reference — and are never measured from.** Roof, obstruction and surroundings photos from the survey (on site, customer-sent or uploaded) are viewable while tracing and placing; every dimension is still entered by a person. | `SRC` — `S5.rule.photos` (verbatim; `D35`); `M04-54` (tags/pins consumed) | P0 |
 
 **Behavior detail.** Drawing rejects degenerate input with plain messages rather than silently
-"fixing" it (M05-24). The detected-pitch banner (M05-25) is dismissible and inert until applied.
-Locking a roof (roof list chip) freezes its geometry against accidental edits. The guard flow of
+"fixing" it (M05-24). Locking a roof (roof list chip) freezes its geometry against accidental edits. The guard flow of
 M05-27 lists the orphaned items by name (panels, obstruction placements, strings) with the three
 choices; "keep for review" marks them for the validation surface (§M05.7). All canvas
 interactions follow the one gesture vocabulary (`F7-29`, cited).
 
-**Permissions.** `F2.M05.create-edit-designs`. Running in-canvas AI detection additionally
-requires `F2.M05.run-roof-detection` (it consumes the metered detection capability; manual
-tracing is never metered — the meter and allowance mechanics are `BM-19`/`modules/M12`'s).
+**Permissions.** `F2.M05.create-edit-designs`. Tracing a roof is never metered.
 
 **Edge cases & what-goes-wrong.**
-- Detection unavailable or allowance denied → manual tracing always available, never metered;
-  the denial is honest (`M04-21` pattern; gate mechanics M12).
-- Detection wrong → ghosts are rejectable per shape; nothing applies silently (M05-23).
-- Dropped shapes → warned with reasons, not silently absent (M05-23).
 - Too-close points → rejected with a plain message (M05-24).
 - Geometry edit orphans downstream work → three-way guard (M05-27).
 - No imagery tile → blank canvas + calibration; never blocks (M05-16/M05-26).
 
 **Acceptance criteria.**
-- Given a detection result, when it renders, then ghosts are visually distinct, each carries
-  confidence, include/exclude is per shape, and "add selected" is one undo step (M05-23).
-- Given an accepted ghost, when it commits, then the roof's provenance reads AI-detected with
-  its confidence, within the four tiers (M05-23, M05-28).
 - Given a drawn roof, when an edge label is tapped, then exact metres can be typed and the
   geometry updates (M05-24).
 - Given two measured points and an entered distance, when calibration applies, then all
   geometry rescales and the correction is recorded (M05-26).
 - Given a vertex edit that orphans panels, when it is confirmed, then the keep/review/remove
   choice is offered and honoured (M05-27).
-- Given the roof step, when the toolbar renders, then all nine census tools are present as
+- Given the roof step, when the toolbar renders, then all eight census tools are present as
   modes with a visible active state (M05-22).
 - Given a footprint that cannot take a pitched roof type, when the roof-type sheet renders,
   then the disabled option explains why (M05-25).
@@ -334,8 +318,7 @@ tracing is never metered — the meter and allowance mechanics are `BM-19`/`modu
 **Localization notes.** Tool names, sheet options, guard copy localized; measurements per the
 global units toggle; compass directions localized.
 
-**Analytics events.** `studio.roof_drawn`, `studio.ai_detect_run` (path), `studio.ghost_review`
-(accepted/rejected counts), `studio.calibration_applied`, `studio.dependent_guard_shown`
+**Analytics events.** `studio.roof_drawn`, `studio.calibration_applied`, `studio.dependent_guard_shown`
 (choice).
 
 ### §M05.5 — Step 3 · Obstructions
@@ -910,8 +893,7 @@ labels script-correct per `F3`.
 ## 4. Cross-module contracts
 
 **This module consumes:**
-- `modules/M04-survey.md` — the submitted-survey hand-off (`M04-63`/`M04-64`); the validated
-  AI-detection artifact (`M04-65`); the pinned imagery tile (`M04-10`/`M04-11`); sanctioned
+- `modules/M04-survey.md` — the submitted-survey hand-off (`M04-63`/`M04-64`); the pinned imagery tile (`M04-10`/`M04-11`); sanctioned
   load (`M04-45`); photographs as reference (`M04-54`). The survey-supersession ruling governs the
   reconciliation join (M05-13).
 - `modules/M01-onboarding-and-tenant-config.md` — the resolved two-tier catalog and its
@@ -923,7 +905,7 @@ labels script-correct per `F3`.
   subsidy scheme, certification schemes (`F1-19`/`F1-44`), engineering-standards labels
   (`F1-20`/`F1-45`), units/formats; pack versioning as a staleness input (`F1-11`).
 - `foundations/F2` — `F2.M05.create-edit-designs`, `F2.M05.approve-designs` (+ author rule
-  `F2-04`), `F2.M05.run-roof-detection`; design visibility via lead visibility.
+  `F2-04`); design visibility via lead visibility.
 - `foundations/F4` — the single-editor version-check law (`F4-15`).
 - `foundations/F7` — parity/touch/DoD laws (`F7-29`/`F7-30`/`F7-32`/`F7-43`/`F7-44`);
   progressive disclosure (`F7-34`); data-colour ramp.
@@ -948,8 +930,7 @@ labels script-correct per `F3`.
 - To `modules/M11` — BOM totals as the money path's input, same arithmetic (M05-70).
 - To `modules/M13` — the sign-off queue as the reviewer's home redirect (M05-83); design
   analytics events.
-- To `modules/M12` — the entitlement checkpoints at save/create and Generate only (M05-12);
-  detection metering consumption points (M05-23).
+- To `modules/M12` — the entitlement checkpoints at save/create and Generate only (M05-12).
 
 ## 5. Non-goals
 
@@ -1062,8 +1043,8 @@ Total: **401 entries** — the count itself is a conformance check.
 | `SC.10-2.15` | Location: search address (autocomplete) OR enter coordinates. | §M05.3 | — |
 | `SC.10-2.16` | Location: satellite map — redesign pin placement (code has a FIXED pin + drag-map-underneath, confu… | §M05.3 | — |
 | `SC.10-2.17` | "Confirm location" → Solar Data card (irradiance kWh/m²/day, peak sun hours, source label → becomes… | §M05.3 | note |
-| `SC.10-2.18` | Site Intelligence (Google Solar Building Insights): async, four states loading / unavailable / unre… | §M05.3 | note |
-| `SC.10-2.19` | Site Intelligence "ok" shows: max panels (~kWp), roof area, sunshine h/yr, roof faces, imagery date… | §M05.3 | — |
+| `SC.10-2.18` | Site Intelligence (Google Solar Building Insights): async, four states loading / unavailable / unre… **STRUCK 2026-11-01 by owner ruling: no Google roof data — this card does not survive the port.** | §M05.3 | note |
+| `SC.10-2.19` | Site Intelligence "ok" shows: max panels (~kWp), roof area, sunshine h/yr, roof faces, imagery date… **STRUCK 2026-11-01 by owner ruling: no Google roof data — this card does not survive the port.** | §M05.3 | — |
 | `SC.10-2.20` | Guard: relocating the pin >25 m WIPES the whole design (roofs, panels, etc.) — keep the guard, make… | §M05.3 | — |
 
 ### A.10-3 — 10.3 Step 2 · Roof setup (touch-first CAD) (42 entries)
@@ -1072,16 +1053,16 @@ Total: **401 entries** — the count itself is a conformance check.
 |---|---|---|---|
 | `SC.10-3.01` | Mode toolbar tool: Select. | §M05.4 | — |
 | `SC.10-3.02` | Mode toolbar tool: Draw roof. | §M05.4 | — |
-| `SC.10-3.03` | Mode toolbar tool: Detect roofs (AI). | §M05.4 | — |
+| `SC.10-3.03` | Mode toolbar tool: Detect roofs (AI). **STRUCK 2026-11-01 by owner ruling: no automatic roof detection — this tool does not survive the port.** | §M05.4 | — |
 | `SC.10-3.04` | Mode toolbar tool: Ortho-snap toggle. | §M05.4 | — |
 | `SC.10-3.05` | Mode toolbar tool: Show all measurements. | §M05.4 | — |
 | `SC.10-3.06` | Mode toolbar tool: Measure distance. | §M05.4 | — |
 | `SC.10-3.07` | Mode toolbar tool: View in 3D. | §M05.4 | — |
 | `SC.10-3.08` | Mode toolbar tool: Undo. | §M05.4 | — |
 | `SC.10-3.09` | Mode toolbar tool: Redo. | §M05.4 | — |
-| `SC.10-3.10` | AI Detect geometric pipeline: Google dataLayers → outline, pitch, azimuth, eave height, obstruction… | §M05.4 | note |
-| `SC.10-3.11` | AI Detect fallback: Gemini photo fallback (shapes only, no height/pitch). | §M05.4 | note |
-| `SC.10-3.12` | AI Detect results appear as ghosts to accept/reject: tap ghost include/exclude, align nudge, "add s… | §M05.4 | — |
+| `SC.10-3.10` | AI Detect geometric pipeline: Google dataLayers → outline, pitch, azimuth, eave height, obstruction… **STRUCK 2026-11-01 by owner ruling: no automatic roof detection — this tool does not survive the port.** | §M05.4 | note |
+| `SC.10-3.11` | AI Detect fallback: Gemini photo fallback (shapes only, no height/pitch). **STRUCK 2026-11-01 by owner ruling: no automatic roof detection — this tool does not survive the port.** | §M05.4 | note |
+| `SC.10-3.12` | AI Detect results appear as ghosts to accept/reject: tap ghost include/exclude, align nudge, "add s… **STRUCK 2026-11-01 by owner ruling: no automatic roof detection — this tool does not survive the port.** | §M05.4 | — |
 | `SC.10-3.13` | Roof list: one chip per roof (select · lock · delete, with area). | §M05.4 | — |
 | `SC.10-3.14` | Drawing (touch): choose Draw → tap corners; live edge-length labels. | §M05.4 | — |
 | `SC.10-3.15` | CAD snapping: angle-relative, object-snap to other roofs, alignment guide rays, right-angle marks,… | §M05.4 | — |
@@ -1103,14 +1084,14 @@ Total: **401 entries** — the count itself is a conformance check.
 | `SC.10-3.31` | Roof type sheet: where the footprint allows, Pitched gable (2 faces) or Pitched hip (4 faces) with… | §M05.4 | — |
 | `SC.10-3.32` | Roof type sheet: disabled options explain why. | §M05.4 | — |
 | `SC.10-3.33` | Height & parapet sheet: height-from-ground. | §M05.4 | — |
-| `SC.10-3.34` | Height & parapet sheet: "Google detected N° facing DIR — apply/dismiss" pitch/azimuth suggestion ba… | §M05.4 | note |
+| `SC.10-3.34` | Height & parapet sheet: "Google detected N° facing DIR — apply/dismiss" pitch/azimuth suggestion ba… **Its detected-pitch banner is STRUCK 2026-11-01 by owner ruling (no automatic roof detection); the sheet survives.** | §M05.4 | note |
 | `SC.10-3.35` | Height & parapet sheet: pitch. | §M05.4 | — |
 | `SC.10-3.36` | Height & parapet sheet: "slopes toward" picker (tap low edge, compass read-out, "south is best" tip… | §M05.4 | — |
 | `SC.10-3.37` | Height & parapet sheet: edge setback (uniform + per-edge). | §M05.4 | — |
 | `SC.10-3.38` | Height & parapet sheet: parapet-wall toggle → direction, height, width, auto-skip shared walls, per… | §M05.4 | — |
 | `SC.10-3.39` | Calibration: measure two points → enter actual metres → applies scale correction (+ expert north of… | §M05.4 | — |
 | `SC.10-3.40` | Dependent-items guard: a geometry change orphaning downstream items → "keep current / keep for revi… | §M05.4 | — |
-| `SC.10-3.41` | Carries roof provenance (manual / AI-detected + confidence). | §M05.4 | note |
+| `SC.10-3.41` | Carries roof provenance (manual / AI-detected + confidence). **The AI-detected value is STRUCK 2026-11-01 by owner ruling; provenance survives, manual only.** | §M05.4 | note |
 | `SC.10-3.42` | Add pinch-zoom + two-finger pan (missing in code). | §M05.4 | note |
 
 ### A.10-4 — 10.4 Step 3 · Obstructions (42 entries)

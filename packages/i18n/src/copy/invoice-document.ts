@@ -41,7 +41,6 @@ export const INVOICE_CYCLE: Record<BillingCycle, MessageRef> = {
 /** What an overage line bills, by its meter (`BM-16`). */
 export const INVOICE_METER: Record<BilledLedgerMeter, MessageRef> = {
   voice_minutes: /*i18n*/ { id: 'Voice minutes' },
-  ai_roof_detections: /*i18n*/ { id: 'AI roof detections' },
   marketing_sends: /*i18n*/ { id: 'Marketing sends' },
   tracked_field_seats: /*i18n*/ { id: 'Tracked field seats' },
 };

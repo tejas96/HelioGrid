@@ -3,6 +3,7 @@ import { CALLING_RULES_PACK_SCHEMA } from '../calling/pack-schema';
 import { CERTIFICATION_SCHEMES_PACK_SCHEMA } from '../certification/pack-schema';
 import { FORMAT_PACK_SCHEMA } from '../format/pack-schema';
 import { PRICE_BOOK_PACK_SCHEMA } from '../pricing/pack-schema';
+import { isReleaseBeforeEntry } from '../pricing/release-before';
 import { PAYMENT_RAILS_PACK_SCHEMA } from '../rails/pack-schema';
 import { SUBSIDY_PACK_SCHEMA } from '../subsidy/pack-schema';
 import { TAX_PACK_SCHEMA } from '../tax/pack-schema';
@@ -118,11 +119,11 @@ function droppedKeys(stored: unknown, kept: unknown, path: readonly string[]): P
     );
   }
   if (!isRecord(stored) || !isRecord(kept)) return [];
-  return Object.entries(stored).flatMap(([name, value]) =>
-    Object.hasOwn(kept, name)
-      ? droppedKeys(value, kept[name], [...path, name])
-      : [issueAt([...path, name], 'not declared by this code — dropped')],
-  );
+  return Object.entries(stored).flatMap(([name, value]) => {
+    if (Object.hasOwn(kept, name)) return droppedKeys(value, kept[name], [...path, name]);
+    if (isReleaseBeforeEntry([...path, name])) return [];
+    return [issueAt([...path, name], 'not declared by this code — dropped')];
+  });
 }
 
 function issueAt(path: readonly string[], found: string): PackIssue {

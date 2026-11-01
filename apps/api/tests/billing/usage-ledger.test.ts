@@ -83,9 +83,8 @@ describe.skipIf(skip)('the usage ledger is the one counter (M12-18, M12-32)', ()
     const events = [
       call,
       anEvent(tenantId, { meter: 'voice_minutes', quantity: SECOND_CALL }),
-      anEvent(tenantId, { meter: 'ai_roof_detections', quantity: 1 }),
-      // A detection that returned nothing: ledgered for cost, never billed (M12-33).
-      anEvent(tenantId, { meter: 'ai_roof_detections', quantity: 1, billable: false }),
+      // A call on a billed meter that bills nothing: ledgered, and in no billed figure (M12-34).
+      anEvent(tenantId, { meter: 'voice_minutes', quantity: FIRST_CALL, billable: false }),
       // A cost line that claims to bill is written as unbilled (M12-37).
       anEvent(tenantId, { meter: 'ai_extraction', quantity: 3 }),
       // Outside the window: it is in the ledger and in no figure for this window.
@@ -105,12 +104,11 @@ describe.skipIf(skip)('the usage ledger is the one counter (M12-18, M12-32)', ()
 
     const billed = await usage.billedRollupOf(
       tenantId,
-      ['voice_minutes', 'ai_roof_detections', 'marketing_sends'],
+      ['voice_minutes', 'marketing_sends'],
       WINDOW,
     );
     expect(Object.fromEntries(billed)).toEqual({
       voice_minutes: FIRST_CALL + SECOND_CALL,
-      ai_roof_detections: 1,
       marketing_sends: 0,
     });
     const cost = await usage.costRollupOf(tenantId, ['ai_extraction', 'otp_delivery'], WINDOW);

@@ -10,7 +10,6 @@ const limit = z.union([packCount, z.literal('unlimited'), z.literal('custom')]);
 /** Every meter but storage, which is a standing allowance rather than a per-cycle bundle. */
 const meterBundles = z.object({
   voice_minutes: limit,
-  ai_roof_detections: limit,
   marketing_sends: limit,
   tracked_field_seats: limit,
 } satisfies Record<Exclude<Meter, 'storage'>, z.ZodTypeAny>);
@@ -73,7 +72,6 @@ export const PRICE_BOOK_PACK_SCHEMA: z.ZodType<PriceBookPack, z.ZodTypeDef, unkn
   } satisfies Record<Tier, z.ZodTypeAny>),
   overage: z.object({
     voice_minutes: overage,
-    ai_roof_detections: overage,
     storage: overage,
     marketing_sends: overage,
     tracked_field_seats: overage,

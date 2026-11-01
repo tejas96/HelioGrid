@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { subscription } from '@heliogrid/db';
-import { IN_PACK, type MinorUnits, MS_PER_DAY, minorUnits, successEffect } from '@heliogrid/domain';
+import { IN_PACK, MS_PER_DAY, minorUnits, successEffect } from '@heliogrid/domain';
 import { platformSaleTotal, sumMinorUnits } from '@heliogrid/domain/server';
 import { eq } from 'drizzle-orm';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
@@ -14,6 +14,7 @@ import {
   aDebit,
   addOnsOf,
   aMandate,
+  anEarlierAddOn,
   debit,
   type Mandate,
   overageSweep,
@@ -32,6 +33,7 @@ import { aDevelopmentGateway, entitlementServiceOf, RecordedAlerts, silentLogger
 const SUITE_YEAR = 1974;
 const PERIODS = timeline(SUITE_YEAR);
 const { MAY, JUNE, JULY, AUGUST, MID_MAY, MID_JUNE, MAY_SETTLED } = PERIODS;
+const APRIL = Date.parse(`${SUITE_YEAR}-04-01T00:00:00Z`);
 
 const skip = skipWithoutDatabase(
   'OVERAGE ADD-ON PROOF',
@@ -39,30 +41,25 @@ const skip = skipWithoutDatabase(
 );
 
 const SECONDS_PER_MINUTE = 60;
-const rateOf = (meter: 'voice_minutes' | 'ai_roof_detections'): MinorUnits => {
-  const overage = IN_PACK.priceBook.overage[meter];
-  if (overage.kind !== 'per_unit') throw new Error(`the IN book bills ${meter} per unit`);
-  return overage.rate;
-};
-const STARTER_DETECTIONS =
-  IN_PACK.priceBook.tiers.starter?.capacity.meterBundles.ai_roof_detections;
-if (typeof STARTER_DETECTIONS !== 'number') throw new Error('Starter carries a detection bundle');
+const voice = IN_PACK.priceBook.overage.voice_minutes;
+if (voice.kind !== 'per_unit') throw new Error('the IN book bills voice per minute');
+const VOICE_RATE = voice.rate;
 
 /** May on Starter (voice bundle 0): 130 whole minutes and 59 seconds of a minute not finished. */
 const MAY_MINUTES = 130;
 const UNFINISHED_SECONDS = 59;
-const DETECTIONS_PAST_BUNDLE = 2;
 /** A call in June: June's period's, never May's. */
 const JUNE_CALL_SECONDS = 600;
-const VOICE_MAY = minorUnits(MAY_MINUTES * rateOf('voice_minutes'));
-const DETECTIONS_MAY = minorUnits(DETECTIONS_PAST_BUNDLE * rateOf('ai_roof_detections'));
+const VOICE_MAY = minorUnits(MAY_MINUTES * VOICE_RATE);
 
 /**
- * Against UPI AutoPay's ₹15,000 debit cap with Starter's ₹1,999 plan: 2,000 minutes (₹12,000) fit,
- * 200 more detections (₹2,000) then do not fit beside them, and 2,200 minutes (₹13,200) fit no debit.
+ * Against UPI AutoPay's ₹15,000 debit cap with Starter's ₹1,999 plan: an April add-on of ₹12,000
+ * already on the debit leaves no room for May's 200 minutes (₹1,200), which fit alone; 2,200
+ * minutes (₹13,200) fit no debit.
  */
-const MINUTES_THAT_FIT = 2_000;
-const DETECTIONS_THAT_WAIT = 200;
+const MINUTES_ALREADY_ADDED = 2_000;
+const ALREADY_ADDED = minorUnits(MINUTES_ALREADY_ADDED * VOICE_RATE);
+const MINUTES_THAT_WAIT = 200;
 const MINUTES_THAT_NEVER_FIT = 2_200;
 
 const OURS = { registrationType: 'IN_GST', value: '27AAACH7409R1ZV' };
@@ -99,8 +96,6 @@ describe.skipIf(skip)('overage add-ons (M12-35)', () => {
     const mandate = await aMandate(pools, companies, 'starter', PERIODS);
     const voiceSeconds = MAY_MINUTES * SECONDS_PER_MINUTE + UNFINISHED_SECONDS;
     await use(pools, mandate, 'voice_minutes', voiceSeconds, MID_MAY);
-    const detections = Number(STARTER_DETECTIONS) + DETECTIONS_PAST_BUNDLE;
-    await use(pools, mandate, 'ai_roof_detections', detections, MID_MAY);
     await use(pools, mandate, 'voice_minutes', JUNE_CALL_SECONDS, MID_JUNE);
     return mandate;
   }
@@ -108,7 +103,7 @@ describe.skipIf(skip)('overage add-ons (M12-35)', () => {
   it("a closed period's add-on equals its ledgered overage past the company's allowance at the book's published rate", async () => {
     const mandate = await aStarterMayOverBundle();
 
-    expect(await sweep.addDue(MAY_SETTLED)).toEqual({ reckoned: 2, added: 2 });
+    expect(await sweep.addDue(MAY_SETTLED)).toEqual({ reckoned: 1, added: 1 });
 
     const added = {
       windowFrom: new Date(MAY),
@@ -124,24 +119,14 @@ describe.skipIf(skip)('overage add-ons (M12-35)', () => {
         used: MAY_MINUTES,
         allowance: 0,
         quantity: MAY_MINUTES,
-        unitRateMinor: rateOf('voice_minutes'),
+        unitRateMinor: VOICE_RATE,
         amountMinor: VOICE_MAY,
-      },
-      {
-        ...added,
-        meter: 'ai_roof_detections',
-        used: Number(STARTER_DETECTIONS) + DETECTIONS_PAST_BUNDLE,
-        allowance: STARTER_DETECTIONS,
-        quantity: DETECTIONS_PAST_BUNDLE,
-        unitRateMinor: rateOf('ai_roof_detections'),
-        amountMinor: DETECTIONS_MAY,
       },
     ]);
     // The unregistered platform's gateway collects the ex-tax amount (F1-29).
     const atGateway = gateway.addedTo(mandate.gatewayRef);
     expect(atGateway.map(({ meter, amount }) => [meter, amount])).toEqual([
       ['voice_minutes', VOICE_MAY],
-      ['ai_roof_detections', DETECTIONS_MAY],
     ]);
   });
 
@@ -150,14 +135,14 @@ describe.skipIf(skip)('overage add-ons (M12-35)', () => {
     await sweep.addDue(MAY_SETTLED);
 
     expect(await sweep.addDue(MAY_SETTLED + MS_PER_DAY)).toEqual({ reckoned: 0, added: 0 });
-    expect(gateway.addedTo(mandate.gatewayRef)).toHaveLength(2);
-    expect(await addOnsOf(pools, mandate)).toHaveLength(2);
+    expect(gateway.addedTo(mandate.gatewayRef)).toHaveLength(1);
+    expect(await addOnsOf(pools, mandate)).toHaveLength(1);
   });
 
-  it('a debit after an added overage issues one invoice with the plan line and one add-on line per meter, taxed by place once the platform is registered', async () => {
+  it('a debit after an added overage issues one invoice with the plan line and its add-on line, taxed by place once the platform is registered', async () => {
     const plain = await aStarterMayOverBundle();
     await sweep.addDue(MAY_SETTLED);
-    const julyTotal = sumMinorUnits([plain.planAmount, VOICE_MAY, DETECTIONS_MAY]);
+    const julyTotal = sumMinorUnits([plain.planAmount, VOICE_MAY]);
 
     expect(await debit(pools, plain, JULY, AUGUST, julyTotal)).toBe('recorded');
 
@@ -165,16 +150,12 @@ describe.skipIf(skip)('overage add-ons (M12-35)', () => {
     expect(await linesOf(pools.admin.db, julyInvoice?.id ?? '')).toEqual([
       { position: 0, taxableMinor: plain.planAmount, rateBasisPoints: null, taxes: [] },
       { position: 1, taxableMinor: VOICE_MAY, rateBasisPoints: null, taxes: [] },
-      { position: 2, taxableMinor: DETECTIONS_MAY, rateBasisPoints: null, taxes: [] },
     ]);
     const invoiced = (await addOnsOf(pools, plain)).map(({ status, invoiceId }) => [
       status,
       invoiceId,
     ]);
-    expect(invoiced).toEqual([
-      ['invoiced', julyInvoice?.id],
-      ['invoiced', julyInvoice?.id],
-    ]);
+    expect(invoiced).toEqual([['invoiced', julyInvoice?.id]]);
 
     // Registered: the same lines carry the scheme's split at the supplier's place, since the
     // company gave no registration of its own (F1-29).
@@ -194,7 +175,6 @@ describe.skipIf(skip)('overage add-ons (M12-35)', () => {
     expect(lines.map((line) => [line.taxableMinor, line.rateBasisPoints])).toEqual([
       [taxed.planAmount, rate],
       [VOICE_MAY, rate],
-      [DETECTIONS_MAY, rate],
     ]);
     for (const line of lines) {
       expect(line.taxes.map((tax) => tax.code)).toEqual(['CGST', 'SGST']);
@@ -206,9 +186,8 @@ describe.skipIf(skip)('overage add-ons (M12-35)', () => {
 
   it('an add-on that does not fit under the mandate cap waits, and one that never fits is marked over cap', async () => {
     const waits = await aMandate(pools, companies, 'starter', PERIODS);
-    await use(pools, waits, 'voice_minutes', MINUTES_THAT_FIT * SECONDS_PER_MINUTE, MID_MAY);
-    const detections = Number(STARTER_DETECTIONS) + DETECTIONS_THAT_WAIT;
-    await use(pools, waits, 'ai_roof_detections', detections, MID_MAY);
+    await anEarlierAddOn(pools, waits, { from: APRIL, to: MAY }, ALREADY_ADDED, 'added');
+    await use(pools, waits, 'voice_minutes', MINUTES_THAT_WAIT * SECONDS_PER_MINUTE, MID_MAY);
     const never = await aMandate(pools, companies, 'starter', PERIODS);
     const neverSeconds = MINUTES_THAT_NEVER_FIT * SECONDS_PER_MINUTE;
     await use(pools, never, 'voice_minutes', neverSeconds, MID_MAY);
@@ -217,7 +196,7 @@ describe.skipIf(skip)('overage add-ons (M12-35)', () => {
 
     expect((await addOnsOf(pools, waits)).map(({ meter, status }) => [meter, status])).toEqual([
       ['voice_minutes', 'added'],
-      ['ai_roof_detections', 'pending'],
+      ['voice_minutes', 'pending'],
     ]);
     expect((await addOnsOf(pools, never)).map(({ status }) => status)).toEqual(['over_cap']);
     expect(gateway.addedTo(never.gatewayRef)).toEqual([]);
@@ -241,9 +220,6 @@ describe.skipIf(skip)('overage add-ons (M12-35)', () => {
       status,
       gatewayRef,
     ]);
-    expect(back).toEqual([
-      ['pending', null],
-      ['pending', null],
-    ]);
+    expect(back).toEqual([['pending', null]]);
   });
 });

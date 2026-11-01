@@ -58,7 +58,6 @@ describe('the grace window — core selling runs it out, metered features do not
 
   it.each([
     { capability: 'voice_agent', earlyStanding: 'within_allowance' },
-    { capability: 'ai_roof_detections', earlyStanding: 'within_allowance' },
     { capability: 'team_invites', earlyStanding: 'available' },
   ] as const)(
     '$capability works to day 3 and pauses from day 4 — it costs per use',
@@ -85,10 +84,10 @@ describe('the grace window — core selling runs it out, metered features do not
 });
 
 describe('the metered cells are the only ones bounded by an allowance (BM-35)', () => {
-  it('marks voice and detections within_allowance, and nothing else', () => {
+  it('marks voice alone within_allowance', () => {
     const bounded = BILLING_CAPABILITIES.filter((capability) =>
       BILLING_PHASES.some((phase) => capabilityStanding(capability, phase) === 'within_allowance'),
     );
-    expect(bounded).toEqual(['voice_agent', 'ai_roof_detections']);
+    expect(bounded).toEqual(['voice_agent']);
   });
 });

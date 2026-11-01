@@ -75,15 +75,15 @@ Acceptance: Given lat 999 typed, When Locate is tapped, Then the corrective erro
 
 Acceptance: Given a design exists, When the pin moves 100 m and Confirm is tapped, Then the dialog lists the wipe with counts and Cancel preserves all (MS1-20); Given a re-confirm at 8 m, Then nothing is wiped or prompted (MS1-19); Given a pending pin with the SDK loaded, When Confirm is tapped, Then the live map centre is stored with the built-in irradiance provenance until real data arrives (MS1-18); Given Change Location then no further confirm, Then the design, pin and fetched data all persist (MS1-21).
 
-### MS1.6 — Solar data & Site Intelligence (honesty surfaces)
+### MS1.6 — Solar data (honesty surfaces)
 
 | ID | Requirement | Tag | Tier |
 |---|---|---|---|
-| MS1-22 | Post-confirm fetches are decoupled and never block or clobber: weather (PVGIS-class source of record) upgrades irradiance/PSH with "Real irradiance — {source}" provenance; building-insights results discard if the pin moved (~0.11 m guard) or un-confirmed; each write preserves the other's data (`CODE.step1-setup.39/40/42`). | `SRC-CODE` .39/.40/.42 | P0 |
-| MS1-23 | Site Intelligence card: loading, no-coverage and unreachable states in plain language ("manual design mode"); ok state shows provider badge, imagery-quality badge with tooltip, stats grid (max panels + ~kWp, roof area honoring the m/ft preference, sunshine h/yr, roof-face count — each hidden when absent), and the honest footer (imagery date or "date unknown" + "independent cross-check — Google's panel model may differ") (`CODE.step1-setup.44–.48`). | `SRC-CODE` .44–.48 | P0 |
-| MS1-24 | Solar-data client behaviors as shipped: proxy-only access (key server-side), 10 s client timeout over the proxy's 8 s, typed never-throw results so the UI always explains the situation, non-2xx surfaced, coordinate-keyed memo (ok/unavailable cached as location facts; errors NOT cached — retryable), usable-segment filtering with no zero-filling and rounding rules per the mapping contract (`CODE.step1-setup.49–.55`). Detection metering rides BM-16/BM-19 (cited, not restated). | `SRC-CODE` .49–.55 | P0 |
+| MS1-22 | The post-confirm weather fetch never blocks or clobbers: the PVGIS-class source of record upgrades irradiance/PSH with "Real irradiance — {source}" provenance, and a result for a moved (~0.11 m guard) or un-confirmed pin is discarded (`CODE.step1-setup.39/40/42`). | `SRC-CODE` .39/.40/.42 | P0 |
+| MS1-23 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection and no Google roof data: every roof is outlined by hand.** It read: *Site Intelligence card…* | `SRC-CODE` .44–.48 | — |
+| MS1-24 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection and no Google roof data: every roof is outlined by hand.** It read: *Solar-data client behaviors as shipped…* | `SRC-CODE` .49–.55 | — |
 
-Acceptance: Given PVGIS answers after Solar, When both land, Then neither overwrite loses the other's fields and provenance reads the real source (MS1-22); Given no coverage, Then the card says so plainly and design continues manual (MS1-23); Given the same pin re-confirmed, Then no re-billed insights call occurs (MS1-24).
+Acceptance: Given PVGIS answers, When it lands, Then provenance reads the real source and a moved pin's result is discarded (MS1-22).
 
 ### MS1.7 — Calibration & scale foundations (engine here; sheet UI in MS2)
 
@@ -99,16 +99,16 @@ Acceptance: Given a second calibration, Then factors multiply (MS1-25); Given a 
 
 | ID | Requirement | Tag | Tier |
 |---|---|---|---|
-| MS1-28 | Canvas frame: fixed logical viewport over the calibrated static tile; centre-origin metre coordinates; single shared zoom constant across 2D canvas, 3D ground and AI-detect tile math so every surface agrees on m/px (`CODE.step1-setup.98–.100`). | `SRC-CODE` .98–.100 | P0 |
+| MS1-28 | Canvas frame: fixed logical viewport over the calibrated static tile; centre-origin metre coordinates; single shared zoom constant across 2D canvas and 3D ground so every surface agrees on m/px (`CODE.step1-setup.98–.100`). | `SRC-CODE` .98–.100 | P0 |
 | MS1-29 | Zoom/pan/click contract: wheel ×1.12 cursor-anchored, buttons ×1.25, clamps 0.55–5.0 with live % readout and Fit view; middle-drag always pans; ≥3 px = drag; clicks never fire from pans; tools capture gestures exclusively (`CODE.step1-setup.101–.107`). Pinch-zoom/two-finger pan on touch: census SC.10-3.42 records the gap — RULED at the canvas-owning sittings (MS2/MS6), not here. | `SRC-CODE` .101–.107 | P0 |
 | MS1-30 | Presentation & trust chrome: imagery brightness/dim modes, honest pixelation above zoom 2.2, scale bar computed from the SAME px/m as hit-testing (can never disagree with geometry), north badge pointing TRUE north per calibration, role/aria labels on canvas and zoom cluster (`CODE.step1-setup.110–.114`, F7 a11y floor). | `SRC-CODE` .110–.114 | P0 |
 | MS1-31 | Analysis-worker resilience contract (powers shading/health everywhere): one long-lived worker; id-keyed replies so superseded results NEVER apply to moved-past geometry; explicit supersession errors; crash → inline compute with IDENTICAL engine (slower-but-fresh, never silently stale — F8 spirit); SSR/no-Worker environments compute inline bit-identical (`CODE.step1-setup.90–.97`). | `SRC-CODE` .90–.97 | P0 |
 
-Acceptance: Given a pan gesture, Then no click fires (MS1-29); Given a worker crash mid-shading, Then results keep flowing inline and nothing stale renders (MS1-31); Given zoom 3×, Then pixels render honestly pixelated and the scale bar matches hit-test geometry exactly (MS1-30); Given the 2D canvas, 3D ground and AI-detect tile math, Then all three use the same zoom constant and agree on metres-per-pixel (MS1-28).
+Acceptance: Given a pan gesture, Then no click fires (MS1-29); Given a worker crash mid-shading, Then results keep flowing inline and nothing stale renders (MS1-31); Given zoom 3×, Then pixels render honestly pixelated and the scale bar matches hit-test geometry exactly (MS1-30); Given the 2D canvas and 3D ground, Then both use the same zoom constant and agree on metres-per-pixel (MS1-28).
 
 ## 4. Cross-module contracts
 
-Consumes: M02 lead fields + M04 survey handoff (MS1-01); M01 tenant branding (MS1-11); F1 pack data — region/utility/tariff/phone/currency (MS1-03, MS1-02); BM-16/19 detection metering (MS1-24). Provides: confirmed location + irradiance provenance to MS2–MS9; calibration + canvas contract (MS1-25–31) to MS2/MS3/MS6; bill value to MS4's size suggestion. Engineering internals dispositioned as consumed-by-behavior, not independent requirements: geometry math helpers (`CODE.step1-setup.68–.74/.78–.85/.88/.89`) live under MS1-25–31's behaviors and MS2's drawing rules; setback-inset robustness semantics (`.75–.77`) surface as MS2 drawing law (cited forward); roof-polygon validation messages (`.86`) surface in MS2's drawing UI (rule source recorded here). The `dominantEdgeAngle` comment/formula nit (`.87`) is an engineering note (behavior self-consistent — no product requirement).
+Consumes: M02 lead fields + M04 survey handoff (MS1-01); M01 tenant branding (MS1-11); F1 pack data — region/utility/tariff/phone/currency (MS1-03, MS1-02). Provides: confirmed location + irradiance provenance to MS2–MS9; calibration + canvas contract (MS1-25–31) to MS2/MS3/MS6; bill value to MS4's size suggestion. Engineering internals dispositioned as consumed-by-behavior, not independent requirements: geometry math helpers (`CODE.step1-setup.68–.74/.78–.85/.88/.89`) live under MS1-25–31's behaviors and MS2's drawing rules; setback-inset robustness semantics (`.75–.77`) surface as MS2 drawing law (cited forward); roof-polygon validation messages (`.86`) surface in MS2's drawing UI (rule source recorded here). The `dominantEdgeAngle` comment/formula nit (`.87`) is an engineering note (behavior self-consistent — no product requirement).
 
 ## 5. Non-goals
 

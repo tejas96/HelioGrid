@@ -419,7 +419,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - the ported POC tests for this area pass unchanged in the new project.
 
 **Settle before the build:**
-- `weather_dataset` ownership — ruled: it hangs on the design, not on a site or lead record; it is fetched at the design's location confirm (MS7-27) and guarded by the design's own pin stamp (MS7-18), so the design is the only record that can say whether it is stale, each variant of a lead holds its own row, and the billed fetch is already deduplicated by the coordinate-keyed `solar_data_cache` (MS1-24, MS2-44) so nothing is paid twice (a shared site row would hand the studio a parent that no V1 writer authors).
+- `weather_dataset` ownership — ruled: it hangs on the design, not on a site or lead record; it is fetched at the design's location confirm (MS7-27) and guarded by the design's own pin stamp (MS7-18), so the design is the only record that can say whether it is stale, each variant of a lead holds its own row, and the energy fetch is already deduplicated by the coordinate-keyed `solar_data_cache` (MS1-22) so nothing is fetched twice (a shared site row would hand the studio a parent that no V1 writer authors).
 
 ---
 

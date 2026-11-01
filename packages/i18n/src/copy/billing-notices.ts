@@ -30,7 +30,6 @@ const CAPABILITY_NAMES = {
   new_file_upload: /*i18n*/ { id: 'new file uploads' },
   pending_field_photo_upload: /*i18n*/ { id: 'uploading field photos already taken' },
   voice_agent: /*i18n*/ { id: 'the voice agent' },
-  ai_roof_detections: /*i18n*/ { id: 'AI roof detection' },
   team_invites: /*i18n*/ { id: 'team invites' },
 } satisfies Record<BillingCapability, MessageRef>;
 

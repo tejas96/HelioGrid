@@ -15,7 +15,6 @@ import type { TierLimit } from './tiers';
  */
 export const BILLED_LEDGER_METERS = [
   'voice_minutes',
-  'ai_roof_detections',
   'marketing_sends',
   'tracked_field_seats',
 ] as const satisfies readonly Exclude<Meter, typeof STANDING_METER>[];
@@ -30,6 +29,13 @@ export const COST_LINES = [...ABSORBED_COSTS, ...PROXIED_UPSTREAMS] as const;
 export type CostLine = AbsorbedCost | ProxiedUpstream;
 
 export const LEDGER_METERS = [...BILLED_LEDGER_METERS, ...COST_LINES] as const;
+
+/**
+ * A meter the product no longer has, still a value of the stored `usage_meter` enum: the api of the
+ * release before names it in its rollup query, and Postgres refuses a query with a value the enum
+ * lacks. Nothing writes it. Dropped from the enum once this release is the one before (`D398`).
+ */
+export const RETIRED_LEDGER_METERS = ['ai_roof_detections'] as const;
 export type LedgerMeter = BilledLedgerMeter | CostLine;
 
 /**
@@ -39,7 +45,6 @@ export type LedgerMeter = BilledLedgerMeter | CostLine;
  */
 export const METER_UNITS = {
   voice_minutes: 'second',
-  ai_roof_detections: 'detection',
   marketing_sends: 'send',
   tracked_field_seats: 'seat_second',
   otp_delivery: 'message',

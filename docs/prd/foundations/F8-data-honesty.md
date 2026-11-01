@@ -101,9 +101,8 @@ Two consequences follow that surfaces frequently get wrong. First, a number is n
 being displayed next to stronger numbers — `F8-04` forces the aggregate down to its weakest
 input, not the reverse. Second, precision is not provenance: a value rendered to two decimals is
 no more `measured` than the same value rounded, and a heuristic that returns a confident-looking
-figure is still `estimated`. Where a surface additionally carries a numeric confidence — AI roof
-detection records per-shape confidence, and manual-vs-AI roof provenance rides the geometry —
-that confidence sits *beside* the tier and never replaces it.
+figure is still `estimated`. Where a surface additionally carries a numeric confidence, that confidence sits *beside* the
+tier and never replaces it.
 
 **Permissions** (`foundations/F2-roles-and-permissions.md`). F8 grants nothing and gates nothing.
 No matrix row exists, or may be added, for editing, suppressing or overriding a provenance tier,
@@ -576,7 +575,7 @@ none restates the rule in different words, and none narrows it.
 
 | Consumer | What it must conform to |
 |---|---|
-| `modules/M04-survey.md` | Tier assignment at capture — remote = `derived`, physical = `measured` (`F8-02`); the imagery-basis document line (`F8-22`); AI-detected geometry carries its provenance and confidence beside the tier (`F8-01`, `F8-07`); structural observations are observations, never verdicts (`F8-25`) |
+| `modules/M04-survey.md` | Tier assignment at capture — remote = `derived`, physical = `measured` (`F8-02`); the imagery-basis document line (`F8-22`); structural observations are observations, never verdicts (`F8-25`) |
 | `modules/M05-design-studio.md` | Per-line BOM confidence reads the four tiers and no fifth (`F8-02`, `F8-03`); block aggregates inherit the weakest tier (`F8-04`); energy source labels (`F8-08`–`F8-10`); model limits printed (`F8-11`); provisional-during-recompute and issue blocking (`F8-17`); stale captures and sheets (`F8-19`); the never-computed law, sign-off record and travelling disclaimer (`F8-25`–`F8-28`) |
 | `modules/M06-proposals.md` | Path A/B tiering (`F8-21`); the verbatim indicative line on the document and its customer rendering (`F8-20`); pinned versions on generated documents and the never-mutate rule for sent ones (`F8-14`, `F8-15`); stale pricing says so and offers regeneration (`F8-18`); projections labelled with assumptions (`F8-23`); one figure across screen, document and link (`F8-24`) |
 | `modules/M07-sales-execution.md` | The correlation caption on agent impact, on-screen not in a tooltip (`F8-30`, `F8-31`); honest degradation of automated steps with the record showing what did not happen (`F8-35`); figures the agent speaks obey the same tiers and disclosures as written ones (`F8-24`, `F8-06`) |

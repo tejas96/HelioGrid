@@ -97,7 +97,7 @@ describe.skipIf(skip)('the dunning ladder (M12-09, M12-39, M12-41)', () => {
       'Your plan is halted',
     ]);
     expect(words[2]?.body).toBe(
-      'Your plan is unpaid. Paused until you pay: the voice agent, AI roof detection and team invites. ' +
+      'Your plan is unpaid. Paused until you pay: the voice agent and team invites. ' +
         'Still working: reading and search, exports, customer links, billing, creating and editing records, ' +
         'editing designs, selling and delivery, new file uploads and uploading field photos already taken. ' +
         'Pay in Billing to turn them back on.',

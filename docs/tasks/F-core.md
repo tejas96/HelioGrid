@@ -333,7 +333,7 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 - **BM-03** (P0) — **Billing is in the product from the first release. Trial-only; no free tier, ever.** The v1 deferral (D38) is superseded by owner override (2026-07-24): payments, subscriptions, billing, entitlements and usage metering are core scope. A time-boxed trial exists (§04.4); a perpetually free tier does not.
   *Enforced by:* T-FCORE-013 (the trial as the only non-paying state) plus `docs/tasks/M12-platform-billing.md`'s lifecycle; review rejects any perpetual non-paying state.
 - **BM-04** (P0) — **Seats are never the meter.** There is no seat-count anywhere in the price of the product (sole exception: BM-22, a cost-carrying capability add-on, not a licence). Rationale is the moat: whole-company adoption is what makes the single travelling record work, and pricing by headcount punishes exactly that behaviour in a market where EPCs employ many low-cost designers and field reps.
-  *Enforced by:* T-FCORE-011's closed five-meter set (tracked field seats the sole seat-counting line) and T-FCORE-012's meter vocabulary; review rejects a second seat meter.
+  *Enforced by:* T-FCORE-011's closed meter list (BM-16) (tracked field seats the sole seat-counting line) and T-FCORE-012's meter vocabulary; review rejects a second seat meter.
 - **BM-05** (P0) — **Every module is in every tier. Tiers gate capacity ceilings + usage counts + metered bundles — never features** (owner-confirmed). Every feature is in every tier: CRM and projects, the full studio (shadow analysis, all obstruction types, tin-shed/metal-roof, ground mount, structures, SLD + AC/DC and earthing layouts, industrial drawing sheets, PV/energy reports, DXF/SVG/PDF export), customer links, all languages — and the V2 additions (marketing, field workforce, HR) enter under the same law. Competitors ransom capabilities into higher tiers; the pricing page says so.
   *Enforced by:* `docs/ux/briefs/SCR-M12-01-pricing-page.md` (the tier comparison states it) and `docs/tasks/M12-platform-billing.md`'s entitlements, which key only to capacity, counts and bundles; review rejects a tier-conditional capability in any module task.
 - **BM-06** (P0) — **Unlimited users on every tier.** Adding a person to the tenant never changes the bill (sole exception: turning tracking ON for that person, BM-22).
@@ -651,7 +651,6 @@ Each persona-definition row is realized by that persona's F2 section and its own
 | BM-16 | T-FCORE-012 |
 | BM-17 | T-FCORE-011 |
 | BM-18 | T-FCORE-011 |
-| BM-19 | T-FCORE-011 |
 | BM-20 | T-FCORE-011 |
 | BM-21 | T-FCORE-011 |
 | BM-22 | T-FCORE-011 |

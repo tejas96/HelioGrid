@@ -52,7 +52,7 @@ const PICK_A_PLAN: Words = {
 };
 
 /**
- * India's texts. The day-4 text names the voice agent, AI roof detection and team invites: the
+ * India's texts. The day-4 text names the voice agent and team invites: the
  * set the matrix pauses at `past_due_metered_paused`, pinned by a test, so a matrix change fails
  * until this text is revised and registered again.
  */
@@ -75,9 +75,9 @@ export const IN_BILLING_NOTICE_TEXTS: BillingNoticeTexts = {
   ),
   metered_paused: told(
     {
-      en: "HelioGrid: {company}'s plan is unpaid, so the voice agent, AI roof detection and team invites are paused. Everything else still works.",
-      hi: 'HelioGrid: {company} के प्लान का भुगतान नहीं हुआ है, इसलिए वॉइस एजेंट, AI रूफ डिटेक्शन और टीम आमंत्रण रुके हुए हैं। बाकी सब कुछ चल रहा है।',
-      mr: 'HelioGrid: {company} च्या प्लॅनचे पेमेंट झालेले नाही, म्हणून व्हॉइस एजंट, AI रूफ डिटेक्शन आणि टीम आमंत्रणे थांबवली आहेत. बाकी सर्व काही चालू आहे.',
+      en: "HelioGrid: {company}'s plan is unpaid, so the voice agent and team invites are paused. Everything else still works.",
+      hi: 'HelioGrid: {company} के प्लान का भुगतान नहीं हुआ है, इसलिए वॉइस एजेंट और टीम आमंत्रण रुके हुए हैं। बाकी सब कुछ चल रहा है।',
+      mr: 'HelioGrid: {company} च्या प्लॅनचे पेमेंट झालेले नाही, म्हणून व्हॉइस एजंट आणि टीम आमंत्रणे थांबवली आहेत. बाकी सर्व काही चालू आहे.',
     },
     PAY_OR_UPDATE,
   ),

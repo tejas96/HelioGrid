@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { GatewayEvent } from '@heliogrid/contracts';
-import { type Db, planPrice, subscription } from '@heliogrid/db';
+import { type Db, entitlement, planPrice, subscription } from '@heliogrid/db';
 import {
   type BillingCycle,
   IN_PACK,
@@ -11,6 +11,7 @@ import {
   TRIAL_DAYS,
 } from '@heliogrid/domain';
 import { platformSaleTotal } from '@heliogrid/domain/server';
+import { and, eq } from 'drizzle-orm';
 import { PinoLogger } from 'nestjs-pino';
 import { ChargeAdminRepository } from '../../src/modules/billing/charge.admin.repository';
 import { ChargeService } from '../../src/modules/billing/charge.service';
@@ -155,3 +156,35 @@ export function chargeServiceOf(
     silentLogger(),
   );
 }
+
+/**
+ * A voice allowance of `minutes` a month on the company's stored limits, as a support credit would
+ * leave it (`M12-19`): Starter bundles none, and the reckoning reads the stored limits.
+ */
+export async function aVoiceAllowance(pools: Pools, tenantId: string, minutes: number) {
+  await pools.admin.db
+    .update(entitlement)
+    .set({ limitKind: 'count', limitValue: minutes })
+    .where(
+      and(eq(entitlement.tenantId, tenantId), eq(entitlement.entitlementKey, 'voice_minutes')),
+    );
+}
+
+/** Billable voice minutes of the company, ledgered in seconds at `at`. */
+export async function voiceMinutes(pools: Pools, tenantId: string, minutes: number, at: number) {
+  await usageServiceOf(pools).record(
+    {
+      tenantId,
+      meter: 'voice_minutes',
+      quantity: minutes * SECONDS_PER_MINUTE,
+      billable: true,
+      subjectKind: 'tenant',
+      subjectRef: tenantId,
+      idempotencyKey: randomUUID(),
+      occurredAt: new Date(at).toISOString(),
+    },
+    at,
+  );
+}
+
+const SECONDS_PER_MINUTE = 60;

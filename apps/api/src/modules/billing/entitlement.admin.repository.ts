@@ -16,7 +16,7 @@ import {
   withCredits,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, asc, eq, inArray, sql } from 'drizzle-orm';
+import { and, asc, eq, inArray, notInArray, sql } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
 
 /** The book's limits for a tier, or for the trial (`null`), in the company's market. */
@@ -24,8 +24,10 @@ export type LimitsFor = (tier: Tier | null) => Entitlement[];
 
 /**
  * `M12-16` — a company's limits rewritten on the caller's transaction: the book's limits for its
- * tier, with every goodwill credit issued on this subscription added (`M12-19`). The caller holds
- * the subscription row, so two recomputes never interleave.
+ * tier, with every goodwill credit issued on this subscription added (`M12-19`). A trial row the book
+ * no longer issues is deleted, so a converted company holds none for the repair to pick again on
+ * every run; any other unknown key is left, since a newer release may have written it during a
+ * roll. The caller holds the subscription row, so two recomputes never interleave.
  */
 export async function recomputeEntitlements(
   tx: DbTransaction,
@@ -79,6 +81,16 @@ export async function recomputeEntitlements(
         recomputedAt: sql`excluded.recomputed_at`,
       },
     });
+  await tx.delete(entitlement).where(
+    and(
+      eq(entitlement.tenantId, input.tenantId),
+      eq(entitlement.source, 'trial'),
+      notInArray(
+        entitlement.entitlementKey,
+        limits.map((one) => one.key),
+      ),
+    ),
+  );
 }
 
 /**

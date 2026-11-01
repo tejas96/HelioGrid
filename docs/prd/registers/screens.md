@@ -33,7 +33,7 @@ A screen splitting or merging during design updates THIS register first (see `do
 
 | Screens | Requirement rows | P0 | P1 | P2 | screen | mixed | engine | policy | integration | context |
 |---|---|---|---|---|---|---|---|---|---|---|
-| **150** | **1658** | 1504 | 137 | 17 | 393 | 389 | 147 | 652 | 22 | 55 |
+| **150** | **1633** | 1480 | 136 | 17 | 388 | 382 | 137 | 651 | 20 | 55 |
 
 *Recomputed 2026-08-15, **corrected the same day**, then **recomputed again the same day** for the
 three restored rows (was `150 · 1656 · 1502 · 137 · 17 · 393 · 387 · 147 · 652 · 22 · 55`
@@ -63,6 +63,7 @@ The 43 rows struck in §3 below — `F7-36` and 42 ids deleted from their docume
 dispositioned but are not live requirements and are not counted here. Tier columns come from the
 live rows' own tier cells; type columns from §3's Type column; both sum to 1,659.*
 *Owner ruling 2026-10-25 deleted `M01-40` (datasheet-PDF extraction, P0 `mixed`): **1659 → 1658**, **P0 1505 → 1504**, **mixed 390 → 389**, and §3's struck total is 45.*
+*Owner ruling 2026-11-01 deleted automatic roof detection — 25 rows (24 P0, 1 P1; 10 `engine`, 7 `mixed`, 5 `screen`, 2 `integration`, 1 `policy`): **1658 → 1633**, **P0 1504 → 1480**, **P1 137 → 136**, **screen 393 → 388**, **mixed 389 → 382**, **engine 147 → 137**, **integration 22 → 20**, **policy 652 → 651**, and §3's struck total is 70.*
 
 ## 2. Screen index
 
@@ -223,7 +224,7 @@ holds the link once the screen is drawn, and `PENDING` until then.
 |---|---|---|---|---|---|---|
 | SCR-M04-01 | **Survey Mode Chooser** | P0 | 1 | `docs/ux/briefs/SCR-M04-01-survey-mode-chooser.md` | V2 | — |
 | SCR-M04-02 | **Remote Survey — Address Entry** | P0 | 3 | `docs/ux/briefs/SCR-M04-02-remote-address-entry.md` | V2 | — |
-| SCR-M04-03 | **Remote Roof Review** | P0 | 9 | `docs/ux/briefs/SCR-M04-03-remote-roof-review.md` | V2 | — |
+| SCR-M04-03 | **Remote Roof Review** | P0 | 4 | `docs/ux/briefs/SCR-M04-03-remote-roof-review.md` | V2 | — |
 | SCR-M04-04 | **Coverage Failure** | P0 | 1 | `docs/ux/briefs/SCR-M04-04-coverage-failure.md` | V2 | — |
 | SCR-M04-05 | **Gaps to Fill** | P0 | 4 | `docs/ux/briefs/SCR-M04-05-gaps-to-fill.md` | V2 | — |
 | SCR-M04-06 | **My Visits Today** | P0 | 5 | `docs/ux/briefs/SCR-M04-06-my-visits-today.md` | V2 | `02-personas:shell-todays-site-visits`; `M13-dashboards-and-reporting:todays-visits` |
@@ -244,8 +245,8 @@ a design must never render an internal id as the step indicator.
 | SCR-MS-01 | **Design List** | P0 | 8 | `docs/ux/briefs/SCR-MS-01-design-list.md` | V1 | `11-shell-and-platform:design-list` |
 | SCR-MS-02 | **Design Queue (Designer Home)** | P0 | 3 | `docs/ux/briefs/SCR-MS-02-design-queue.md` | V1 | `02-personas:shell-designs-awaiting-work` |
 | SCR-MS-03 | **Studio Shell (Wizard Frame)** | P0 | 18 | `docs/ux/briefs/SCR-MS-03-studio-shell.md` | V1 | `11-shell-and-platform:studio-wizard-frame` |
-| SCR-MS-04 | **Studio Step 1 — Site Setup** | P0 | 28 | `docs/ux/briefs/SCR-MS-04-step1-site-setup.md` | V1 | `M05-design-studio:step1-site-setup` |
-| SCR-MS-05 | **Studio Step 2 — Roof** | P0 | 41 | `docs/ux/briefs/SCR-MS-05-step2-roof.md` | V1 | `M05-design-studio:step2-roof-drawing` |
+| SCR-MS-04 | **Studio Step 1 — Site Setup** | P0 | 26 | `docs/ux/briefs/SCR-MS-04-step1-site-setup.md` | V1 | `M05-design-studio:step1-site-setup` |
+| SCR-MS-05 | **Studio Step 2 — Roof** | P0 | 36 | `docs/ux/briefs/SCR-MS-05-step2-roof.md` | V1 | `M05-design-studio:step2-roof-drawing` |
 | SCR-MS-06 | **Studio Step 3 — Obstructions** | P0 | 35 | `docs/ux/briefs/SCR-MS-06-step3-obstructions.md` | V1 | `M05-design-studio:step3-obstructions` |
 | SCR-MS-07 | **Studio Step 4 — Components** | P0 | 33 | `docs/ux/briefs/SCR-MS-07-step4-components.md` | V1 | `M05-design-studio:step4-components` |
 | SCR-MS-08 | **Studio Step 6 — Layout Editor** | P0 | 37 | `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` | V1 | `M05-design-studio:step5-6-panel-layout` |
@@ -391,7 +392,7 @@ task id(s) in `docs/tasks/` (backfilled by the generator once tasks exist).
 
 **Struck rows.** A requirement deleted from the PRD is **marked, never removed** — this register's
 value is that every row is accounted for exactly once, forever, so a row for something that no
-longer exists still has to be findable. The convention, applied to all 45 struck rows (`M01-40` struck 2026-10-25 by owner ruling) (18 marked in
+longer exists still has to be findable. The convention, applied to all 70 struck rows (`M01-40` struck 2026-10-25 and 25 roof-detection rows struck 2026-11-01, by owner rulings) (18 marked in
 the 2026-08-07 sweep, 25 restored 2026-08-15 under `foundations/F4-data-integrity.md` after they had
 been dropped from this register outright, and `F7-16` struck in place 2026-09-28): the id in
 `~~strikethrough~~`, Tier `—`, Type `**excluded**`, the Where cell replaced by a dated note saying
@@ -513,7 +514,7 @@ question that records it and does **not** invent a replacement.
 | BM-16 | P0 | policy | policy | T-FCORE-012 |
 | BM-17 | P0 | policy | policy | T-FCORE-011 |
 | BM-18 | P0 | policy | policy | T-FCORE-011 |
-| BM-19 | P0 | policy | policy | T-FCORE-011 |
+| ~~BM-19~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
 | BM-20 | P0 | policy | policy | T-FCORE-011 |
 | BM-21 | P0 | policy | policy | T-FCORE-011 |
 | BM-22 | P0 | policy | policy | T-FCORE-011 |
@@ -1156,7 +1157,7 @@ Nothing below is renumbered.*
 | Row | Tier | Type | Where | Task |
 |---|---|---|---|---|
 | M04-01 | P0 | policy | policy | T-M04-015 |
-| M04-02 | P0 | mixed | SCR-M04-02, SCR-M04-03 · +non-UI: imagery fetch + roof detection pipeline; every figure stamped derived | T-M04-011 |
+| M04-02 | P0 | mixed | SCR-M04-02, SCR-M04-03 · +non-UI: imagery fetch; the roof outlined by hand; every figure stamped derived | T-M04-011 |
 | M04-03 | P0 | screen | SCR-M04-07 | T-M04-007 |
 | M04-04 | P0 | policy | policy | LAW |
 | M04-05 | P0 | mixed | SCR-M04-01 · +non-UI: five mode-choice rules; guidance stated, never enforced as lock | T-M04-001 |
@@ -1168,17 +1169,17 @@ Nothing below is renumbered.*
 | M04-11 | P0 | mixed | SCR-M04-03 · +non-UI: imagery failure never blocks the survey | T-M04-003 |
 | M04-12 | P0 | mixed | SCR-M04-02 · +non-UI: pin correction propagates to the site record | T-M04-002 |
 | M04-13 | P0 | screen | SCR-M04-03 | T-M04-003 |
-| M04-14 | P0 | screen | SCR-M04-03 | T-M04-003 |
-| M04-15 | P0 | mixed | SCR-M04-03 · +non-UI: never applied silently; corrector set = anyone who runs remote survey | T-M04-003 |
-| M04-16 | P0 | screen | SCR-M04-03 | T-M04-003 |
-| M04-17 | P0 | engine | engine | T-M04-012 |
-| M04-18 | P0 | engine | engine | T-M04-012 |
-| M04-19 | P0 | engine | engine | T-M04-012 |
-| M04-20 | P1 | engine | engine | T-M04-012 |
-| M04-21 | P0 | mixed | SCR-M04-03 · +non-UI: unavailable capability hides its entry points entirely | T-M04-003 |
+| ~~M04-14~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~M04-15~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~M04-16~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~M04-17~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~M04-18~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~M04-19~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~M04-20~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~M04-21~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
 | M04-22 | P0 | mixed | SCR-M04-03 · +non-UI: manual path never metered, always sufficient | T-M04-003 |
-| M04-23 | P0 | mixed | SCR-M04-03 · +non-UI: allowance checked before the call; empty result never bills | T-M04-003 |
-| M04-24 | P0 | engine | engine | T-M04-013 |
+| ~~M04-23~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~M04-24~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
 | M04-25 | P0 | policy | policy | LAW |
 | M04-26 | P0 | screen | SCR-M04-04 | T-M04-004 |
 | M04-27 | P0 | policy | policy | LAW |
@@ -1219,7 +1220,7 @@ Nothing below is renumbered.*
 | M04-62 | P0 | policy | policy | T-M04-015 |
 | M04-63 | P0 | screen | SCR-M04-10 | T-M04-010 |
 | M04-64 | P0 | screen | SCR-M04-10 | T-M04-010 |
-| M04-65 | P0 | engine | engine | T-M04-013 |
+| ~~M04-65~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
 | M04-66 | P0 | policy | policy | LAW |
 
 ### docs/prd/modules/M05-design-studio.md
@@ -1243,12 +1244,12 @@ Nothing below is renumbered.*
 | M05-15 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | M05-16 | P0 | mixed | SCR-MS-04 · +non-UI: imagery tile pinned at capture, never changes underneath; failure… | T-MS-101 |
 | M05-17 | P0 | mixed | SCR-MS-04 · +non-UI: energy source-of-record ladder (PVGIS SARAH3→ERA5); ±10% fallback… | T-MS-101 |
-| M05-18 | P0 | mixed | SCR-MS-04 · +non-UI: async building-insights-class provider; enhancement, never a… | T-MS-101 |
+| ~~M05-18~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
 | M05-19 | P0 | mixed | SCR-MS-04 · +non-UI: relocation >25m wipes all traced geometry; undoable | T-MS-101 |
 | M05-20 | P0 | mixed | SCR-MS-04, SCR-MS-07, SCR-MS-08 · +non-UI: soft cap never blocks; inverter AC kW × count vs sanctioned kW; warning travels to readiness and compliance… | T-MS-101, T-MS-201 |
 | M05-21 | P0 | screen | SCR-MS-01 | T-MS-363 |
 | M05-22 | P0 | screen | SCR-MS-05 | T-MS-102 |
-| M05-23 | P0 | mixed | SCR-MS-05 · +non-UI: consumes validated M04 artifact only, never raw detector; provenance… | T-MS-102 |
+| ~~M05-23~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
 | M05-24 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | M05-25 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | M05-26 | P0 | mixed | SCR-MS-05 · +non-UI: scale correction plus expert north offset rescales all geometry | T-MS-102 |
@@ -1348,8 +1349,8 @@ Nothing below is renumbered.*
 | MS1-20 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-21 | P0 | screen | SCR-MS-04 | T-MS-101 |
 | MS1-22 | P0 | mixed | SCR-MS-04 · +non-UI: decoupled post-confirm fetches; pin-move discard guard; writes never… | T-MS-101 |
-| MS1-23 | P0 | screen | SCR-MS-04 | T-MS-101 |
-| MS1-24 | P0 | integration | integration | T-MS-106 |
+| ~~MS1-23~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~MS1-24~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
 | MS1-25 | P0 | engine | engine | T-MS-105 |
 | MS1-26 | P0 | engine | engine | T-MS-105 |
 | MS1-27 | P0 | engine | engine | T-MS-105 |
@@ -1389,7 +1390,7 @@ Nothing below is renumbered.*
 | MS2-25 | P0 | engine | engine | T-MS-108 |
 | MS2-26 | P0 | engine | engine | T-MS-108 |
 | MS2-27 | P0 | mixed | SCR-MS-05 · +non-UI: face-group propagation keeps ridge level: pitch/eave shared, azimuth… | T-MS-102 |
-| MS2-28 | P0 | screen | SCR-MS-05 | T-MS-102 |
+| ~~MS2-28~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
 | MS2-29 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | MS2-30 | P0 | engine | engine | T-MS-109 |
 | MS2-31 | P0 | screen | SCR-MS-05 | T-MS-102 |
@@ -1398,14 +1399,14 @@ Nothing below is renumbered.*
 | MS2-34 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | MS2-35 | P0 | screen | SCR-MS-05 | T-MS-102 |
 | MS2-36 | P0 | mixed | SCR-MS-05 · +non-UI: dependent detection on every geometry change; typed changes blocked… | T-MS-102 |
-| MS2-37 | P0 | mixed | SCR-MS-05 · +non-UI: strictly sequential detection ladder; cross-check floors disagreeing… | T-MS-102 |
-| MS2-38 | P0 | mixed | SCR-MS-05 · +non-UI: photo entry gated on live platform capability; per-detection metering  | T-MS-102 |
-| MS2-39 | P0 | screen | SCR-MS-05 | T-MS-102 |
-| MS2-40 | P0 | engine | engine | T-MS-110 |
-| MS2-41 | P0 | engine | engine | T-MS-110 |
-| MS2-42 | P0 | engine | engine | T-MS-111 |
-| MS2-43 | P0 | engine | engine | T-MS-110 |
-| MS2-44 | P0 | integration | integration | T-MS-112 |
+| ~~MS2-37~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~MS2-38~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~MS2-39~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~MS2-40~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~MS2-41~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~MS2-42~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~MS2-43~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
+| ~~MS2-44~~ | — | **excluded** | *Row struck in place 2026-11-01 by owner ruling: the product has no automatic roof detection — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`).* | — |
 
 ### docs/prd/modules/M05-studio/03-step3-obstructions.md
 

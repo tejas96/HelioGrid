@@ -93,17 +93,24 @@ export const openErrorEnvelopeSchema = errorEnvelope(z.string());
  * what still works are NOT carried: a reader derives both from the phase with `pauseNoticeOf`, so
  * the words cannot drift from the gate.
  */
+/**
+ * Values no api sends any more, kept on the wire. The breaking-change judge (oasdiff 1.31) cannot
+ * match the union's unnamed members, so a value taken out of one reads as a NEW member on every
+ * route that declares the 403, and a reader loses nothing by accepting a value it never gets.
+ */
+const RETIRED_ON_THE_WIRE = ['ai_roof_detections'] as const;
+
 export const entitlementBlockedSchema = z.discriminatedUnion('reason', [
   z.object({
     reason: z.literal('billing_state'),
-    capability: z.enum(BILLING_CAPABILITIES),
+    capability: z.enum([...BILLING_CAPABILITIES, ...RETIRED_ON_THE_WIRE]),
     phase: z.enum(BILLING_PHASES),
     haltsAt: z.string().datetime().nullable(),
   }),
   z.object({
     reason: z.literal('cap'),
-    capability: z.enum(BILLING_CAPABILITIES),
-    key: z.enum(ENTITLEMENT_KEYS),
+    capability: z.enum([...BILLING_CAPABILITIES, ...RETIRED_ON_THE_WIRE]),
+    key: z.enum([...ENTITLEMENT_KEYS, ...RETIRED_ON_THE_WIRE]),
     /** `null` for a ceiling no cycle resets — design kW, storage — which only an upgrade lifts. */
     resetsAt: z.string().datetime().nullable(),
   }),
