@@ -1428,7 +1428,7 @@ msgid "1 panel"
 msgstr "1 पैनल"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:92
+#: src/copy/billing-notices.ts:91
 msgid "7 days left in your trial"
 msgstr "आपके ट्रायल में 7 दिन बाकी"
 
@@ -1883,25 +1883,15 @@ msgid "Agent turn"
 msgstr "एजेंट की बारी"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:33
-msgid "AI roof detection"
-msgstr "AI रूफ डिटेक्शन"
-
-#. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:44
-msgid "AI roof detections"
-msgstr "AI छत पहचान"
-
-#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:31
 #: src/copy/price-book.ts:34
-#: src/copy/role-matrix.ts:100
+#: src/copy/role-matrix.ts:97
 #: src/copy/team.ts:13
 msgid "All"
 msgstr "सभी"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:115
+#: src/copy/role-matrix.ts:112
 msgid "All (money scope)"
 msgstr "सभी (पैसों तक)"
 
@@ -2003,7 +1993,7 @@ msgid "Approve leave"
 msgstr "छुट्टी मंज़ूर करें"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:77
+#: src/copy/role-matrix.ts:74
 msgid "Approve or decline a leave request"
 msgstr "छुट्टी का अनुरोध मंज़ूर या अस्वीकार करें"
 
@@ -2124,12 +2114,12 @@ msgid "Assign roles"
 msgstr "भूमिकाएँ दें"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:103
+#: src/copy/role-matrix.ts:100
 msgid "Assigned"
 msgstr "सौंपे गए"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:114
+#: src/copy/role-matrix.ts:111
 msgid "Assigned job only"
 msgstr "सिर्फ़ सौंपा गया काम"
 
@@ -2596,7 +2586,7 @@ msgid "Charged"
 msgstr "शुल्क आधार"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:63
+#: src/copy/role-matrix.ts:60
 msgid "Check in and out of a site, and log a visit and its outcome"
 msgstr "साइट पर चेक-इन और चेक-आउट करें, और विज़िट व उसका नतीजा दर्ज करें"
 
@@ -2852,7 +2842,7 @@ msgid "Connect, reconnect and disconnect a channel identity"
 msgstr "चैनल पहचान जोड़ें, फिर से जोड़ें और हटाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:80
+#: src/copy/role-matrix.ts:77
 msgid "Connect, rotate and disconnect the company’s own collections account"
 msgstr "कंपनी का अपना कलेक्शन खाता जोड़ें, बदलें और हटाएँ"
 
@@ -2918,7 +2908,7 @@ msgid "Continuous power (kW)"
 msgstr "लगातार पावर (kW)"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:119
+#: src/copy/role-matrix.ts:116
 msgid "Coordinator"
 msgstr "कोऑर्डिनेटर"
 
@@ -3081,7 +3071,7 @@ msgid "Create and edit designs"
 msgstr "डिज़ाइन बनाएँ और बदलें"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:51
+#: src/copy/role-matrix.ts:48
 msgid "Create and edit proposals"
 msgstr "प्रस्ताव बनाएँ और बदलें"
 
@@ -3290,7 +3280,7 @@ msgid "Default margin"
 msgstr "डिफ़ॉल्ट मार्जिन"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:69
+#: src/copy/role-matrix.ts:66
 msgid "Define a site’s geofence and adjust its radius"
 msgstr "साइट की जियोफ़ेंस तय करें और उसका दायरा बदलें"
 
@@ -3758,7 +3748,7 @@ msgid "Field Technician"
 msgstr "फ़ील्ड तकनीशियन"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:62
+#: src/copy/role-matrix.ts:59
 msgid "Field-work visibility scope"
 msgstr "फ़ील्ड का काम कितना दिखता है"
 
@@ -4033,7 +4023,7 @@ msgid "h:mm AM"
 msgstr "h:mm AM"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:54
+#: src/copy/role-matrix.ts:51
 msgid "Hand a lead to the voice agent on demand"
 msgstr "ज़रूरत पर लीड वॉइस एजेंट को सौंपें"
 
@@ -4299,7 +4289,7 @@ msgid "If it keeps failing, tell your company admin."
 msgstr "अगर यह बार-बार विफल हो, तो अपनी कंपनी के एडमिन को बताएँ।"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:76
+#: src/copy/billing-notices.ts:75
 msgid "If the payment stays unpaid, your plan halts within a day. Your data stays safe and readable."
 msgstr "भुगतान न होने पर आपका प्लान एक दिन के भीतर रुक जाएगा। आपका डेटा सुरक्षित रहेगा और पढ़ा जा सकेगा।"
 
@@ -5078,7 +5068,7 @@ msgid "Manage team and roles"
 msgstr "टीम और भूमिकाएँ संभालें"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:85
+#: src/copy/role-matrix.ts:82
 msgid "Manage the company’s platform billing"
 msgstr "कंपनी की प्लेटफ़ॉर्म बिलिंग संभालें"
 
@@ -5094,12 +5084,12 @@ msgstr "मार्जिन {margin} · {date} से"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:52
-#: src/copy/role-matrix.ts:57
+#: src/copy/role-matrix.ts:54
 msgid "Mark a lead won or lost"
 msgstr "लीड को जीता या हारा चिह्नित करें"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:66
+#: src/copy/role-matrix.ts:63
 msgid "Mark one’s own day start and day end"
 msgstr "अपने दिन की शुरुआत और अंत दर्ज करें"
 
@@ -5129,7 +5119,7 @@ msgid "Marketing"
 msgstr "मार्केटिंग"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:45
+#: src/copy/invoice-document.ts:44
 msgid "Marketing sends"
 msgstr "मार्केटिंग संदेश"
 
@@ -5199,7 +5189,7 @@ msgid "Micro-inverters"
 msgstr "माइक्रो-इन्वर्टर"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:90
+#: src/copy/role-matrix.ts:87
 msgid "Mint, label and re-mint a customer link for a named contact"
 msgstr "किसी संपर्क के लिए ग्राहक लिंक बनाएँ, नाम दें और फिर से बनाएँ"
 
@@ -6369,7 +6359,7 @@ msgid "Open the original to read it."
 msgstr "पढ़ने के लिए मूल फ़ाइल खोलें।"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:86
+#: src/copy/role-matrix.ts:83
 msgid "Open the usage screen and the subscription invoice list"
 msgstr "उपयोग स्क्रीन और सब्सक्रिप्शन बिलों की सूची खोलें"
 
@@ -6460,47 +6450,47 @@ msgid "oversee sales"
 msgstr "बिक्री की देखरेख"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:102
+#: src/copy/role-matrix.ts:99
 msgid "Own"
 msgstr "अपने"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:113
+#: src/copy/role-matrix.ts:110
 msgid "Own (read-only)"
 msgstr "अपने (सिर्फ़ पढ़ना)"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:112
+#: src/copy/role-matrix.ts:109
 msgid "Own captures until triage"
 msgstr "अपनी लाई लीड, छँटाई तक"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:107
+#: src/copy/role-matrix.ts:104
 msgid "Own projects"
 msgstr "अपने प्रोजेक्ट"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:110
+#: src/copy/role-matrix.ts:107
 msgid "Own projects’ deals (read)"
 msgstr "अपने प्रोजेक्ट की डील (पढ़ना)"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:108
+#: src/copy/role-matrix.ts:105
 msgid "Own projects’ field work"
 msgstr "अपने प्रोजेक्ट का फ़ील्ड काम"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:109
+#: src/copy/role-matrix.ts:106
 msgid "Own projects’ field workers"
 msgstr "अपने प्रोजेक्ट के फ़ील्ड कर्मचारी"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:105
+#: src/copy/role-matrix.ts:102
 msgid "Own queued"
 msgstr "अपनी कतार वाली"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:106
+#: src/copy/role-matrix.ts:103
 msgid "Own visits"
 msgstr "अपनी विज़िट"
 
@@ -6571,17 +6561,17 @@ msgid "Paused for"
 msgstr "इस नंबर के लिए रुका"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:72
+#: src/copy/billing-notices.ts:71
 msgid "Pay in Billing to turn them back on."
 msgstr "इन्हें फिर से चालू करने के लिए बिलिंग में भुगतान करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:79
+#: src/copy/billing-notices.ts:78
 msgid "Pay now in Billing."
 msgstr "अभी बिलिंग में भुगतान करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:53
+#: src/copy/billing-notices.ts:52
 msgid "Pay or update your payment method in Billing."
 msgstr "बिलिंग में भुगतान करें या भुगतान का तरीका बदलें।"
 
@@ -6596,7 +6586,7 @@ msgid "Payment"
 msgstr "भुगतान"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:58
+#: src/copy/billing-notices.ts:57
 msgid "Payment failed"
 msgstr "भुगतान विफल हुआ"
 
@@ -6611,7 +6601,7 @@ msgid "Payment schedule"
 msgstr "भुगतान अनुसूची"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:63
+#: src/copy/billing-notices.ts:62
 msgid "Payment still due"
 msgstr "भुगतान अभी बाकी है"
 
@@ -6708,12 +6698,12 @@ msgid "Phone, email or website"
 msgstr "फ़ोन, ईमेल या वेबसाइट"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:54
+#: src/copy/billing-notices.ts:53
 msgid "Pick a plan in Billing to keep creating."
 msgstr "नया काम जारी रखने के लिए बिलिंग में प्लान चुनें।"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:94
+#: src/copy/billing-notices.ts:93
 msgid "Pick a plan in Billing to keep going."
 msgstr "आगे जारी रखने के लिए बिलिंग में प्लान चुनें।"
 
@@ -6820,12 +6810,12 @@ msgid "Poly"
 msgstr "पॉली"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:104
+#: src/copy/role-matrix.ts:101
 msgid "Portfolio"
 msgstr "पोर्टफ़ोलियो"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:111
+#: src/copy/role-matrix.ts:108
 msgid "Portfolio deals (read)"
 msgstr "पोर्टफ़ोलियो की डील (पढ़ना)"
 
@@ -7030,7 +7020,7 @@ msgid "Project timeline"
 msgstr "प्रोजेक्ट टाइमलाइन"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:61
+#: src/copy/role-matrix.ts:58
 msgid "Project visibility scope"
 msgstr "प्रोजेक्ट कितने दिखते हैं"
 
@@ -7168,27 +7158,27 @@ msgid "Rates in force"
 msgstr "लागू दरें"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:89
+#: src/copy/billing-notices.ts:88
 msgid "Reactivate any time with one payment, at today’s prices, in Billing."
 msgstr "बिलिंग में कभी भी एक भुगतान से, आज की कीमत पर, दोबारा शुरू करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:84
+#: src/copy/billing-notices.ts:83
 msgid "Reactivate with one payment in Billing."
 msgstr "बिलिंग में एक भुगतान से दोबारा शुरू करें।"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:116
+#: src/copy/role-matrix.ts:113
 msgid "Read (results)"
 msgstr "पढ़ना (नतीजे)"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:73
+#: src/copy/role-matrix.ts:70
 msgid "Read and edit employee records; upload and manage employee documents"
 msgstr "कर्मचारी रिकॉर्ड पढ़ें और बदलें; कर्मचारी दस्तावेज़ अपलोड करें और संभालें"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:67
+#: src/copy/role-matrix.ts:64
 msgid "Read others’ attendance records"
 msgstr "दूसरों की हाज़िरी पढ़ें"
 
@@ -7258,7 +7248,7 @@ msgid "Record payments"
 msgstr "भुगतान दर्ज करें"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:79
+#: src/copy/role-matrix.ts:76
 msgid "Record payments against tranches"
 msgstr "किस्तों पर भुगतान दर्ज करें"
 
@@ -7334,7 +7324,7 @@ msgid "Remove logo"
 msgstr "लोगो हटाएँ"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:56
+#: src/copy/role-matrix.ts:53
 msgid "Remove or cancel queued agent calls"
 msgstr "कतार में लगी एजेंट कॉल हटाएँ या रद्द करें"
 
@@ -7401,7 +7391,7 @@ msgid "Representative data"
 msgstr "नमूना डेटा"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:76
+#: src/copy/role-matrix.ts:73
 msgid "Request one’s own leave"
 msgstr "अपनी छुट्टी माँगें"
 
@@ -7518,7 +7508,7 @@ msgid "Revoke {name}’s invite?"
 msgstr "{name} का आमंत्रण वापस लें?"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:93
+#: src/copy/role-matrix.ts:90
 msgid "Revoke a customer link, including regenerate-with-revoke"
 msgstr "ग्राहक लिंक रद्द करें, नया बनाकर रद्द करना भी"
 
@@ -7630,11 +7620,6 @@ msgstr "पंक्ति {row} में लिखा है"
 #: src/copy/role-matrix.ts:41
 msgid "Run a remote survey"
 msgstr "रिमोट सर्वे करें"
-
-#. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:48
-msgid "Run in-canvas AI roof detection on the studio canvas"
-msgstr "स्टूडियो कैनवस पर AI से छत पहचानें"
 
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:58
@@ -7853,17 +7838,17 @@ msgid "See a finished job"
 msgstr "एक पूरा काम देखें"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:53
+#: src/copy/role-matrix.ts:50
 msgid "See agent performance"
 msgstr "एजेंट का प्रदर्शन देखें"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:70
+#: src/copy/role-matrix.ts:67
 msgid "See another person’s live position, route timeline, movement history and day playback"
 msgstr "किसी और की लाइव जगह, रास्ते की टाइमलाइन, आने-जाने का इतिहास और दिन का रीप्ले देखें"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:89
+#: src/copy/role-matrix.ts:86
 msgid "See company reports"
 msgstr "कंपनी रिपोर्ट देखें"
 
@@ -7878,7 +7863,7 @@ msgid "See reports beyond your own"
 msgstr "अपने से आगे की रिपोर्ट देखें"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:55
+#: src/copy/role-matrix.ts:52
 msgid "See the agent call queue"
 msgstr "एजेंट कॉल की कतार देखें"
 
@@ -7976,7 +7961,7 @@ msgstr "फिर से भेजें"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:51
-#: src/copy/role-matrix.ts:52
+#: src/copy/role-matrix.ts:49
 msgid "Send proposals to customers"
 msgstr "ग्राहकों को प्रस्ताव भेजें"
 
@@ -7986,7 +7971,7 @@ msgid "Send the code by SMS and link this Google login"
 msgstr "SMS से कोड भेजें और यह Google लॉगिन जोड़ें"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:83
+#: src/copy/role-matrix.ts:80
 msgid "Send the plain payment-request message"
 msgstr "सादा भुगतान-अनुरोध संदेश भेजें"
 
@@ -8036,7 +8021,7 @@ msgid "Set by the component picker."
 msgstr "कंपोनेंट पिकर से तय।"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:78
+#: src/copy/role-matrix.ts:75
 msgid "Set or change an employee’s manager mapping"
 msgstr "कर्मचारी का मैनेजर तय करें या बदलें"
 
@@ -8318,7 +8303,7 @@ msgid "Solar system"
 msgstr "सोलर सिस्टम"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:68
+#: src/copy/billing-notices.ts:67
 msgid "Some features are paused"
 msgstr "कुछ सुविधाएँ रुकी हुई हैं"
 
@@ -8709,18 +8694,18 @@ msgstr "कर पंजीकरण"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:71
-#: src/copy/role-matrix.ts:101
+#: src/copy/role-matrix.ts:98
 #: src/copy/settings.ts:40
 msgid "Team"
 msgstr "टीम"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:34
+#: src/copy/billing-notices.ts:33
 msgid "team invites"
 msgstr "टीम आमंत्रण"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:118
+#: src/copy/role-matrix.ts:115
 msgid "Team-scoped"
 msgstr "टीम तक"
 
@@ -9555,7 +9540,7 @@ msgid "Total capacity installed"
 msgstr "कुल स्थापित क्षमता"
 
 #. js-lingui-explicit-id
-#: src/copy/invoice-document.ts:46
+#: src/copy/invoice-document.ts:45
 msgid "Tracked field seats"
 msgstr "ट्रैक की गई फ़ील्ड सीटें"
 
@@ -9645,7 +9630,7 @@ msgid "Turn a group off to stop its push. Every notification still arrives in He
 msgstr "किसी समूह का पुश रोकने के लिए उसे बंद करें। हर सूचना फिर भी HelioGrid में आती है — सूचनाएँ में उसका रिकॉर्ड हर हाल में रहता है।"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:68
+#: src/copy/role-matrix.ts:65
 msgid "Turn per-employee field tracking on or off"
 msgstr "हर कर्मचारी की फ़ील्ड ट्रैकिंग चालू या बंद करें"
 
@@ -9749,7 +9734,7 @@ msgstr "App Store पर अपडेट करें"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:58
-#: src/copy/role-matrix.ts:58
+#: src/copy/role-matrix.ts:55
 msgid "Update project stages"
 msgstr "प्रोजेक्ट के चरण अपडेट करें"
 
@@ -9764,7 +9749,7 @@ msgid "Upload and check project documents"
 msgstr "प्रोजेक्ट दस्तावेज़ अपलोड करें और जाँचें"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:59
+#: src/copy/role-matrix.ts:56
 msgid "Upload and verify project documents"
 msgstr "प्रोजेक्ट दस्तावेज़ अपलोड करें और जाँचें"
 
@@ -9970,7 +9955,7 @@ msgid "View only — an owner or Operations edits."
 msgstr "सिर्फ़ देखने के लिए — मालिक या ऑपरेशंस बदलाव करते हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:117
+#: src/copy/role-matrix.ts:114
 msgid "View prices & margins"
 msgstr "कीमतें और मार्जिन देखें"
 
@@ -10010,7 +9995,7 @@ msgid "Waive a payment stage"
 msgstr "भुगतान का एक चरण माफ़ करें"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:84
+#: src/copy/role-matrix.ts:81
 msgid "Waive a tranche"
 msgstr "किस्त माफ़ करें"
 
@@ -10060,7 +10045,7 @@ msgid "We check the format against your market's rules — never with the issuin
 msgstr "हम प्रारूप को आपके बाज़ार के नियमों से जाँचते हैं — जारी करने वाले प्राधिकरण से कभी नहीं।"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:59
+#: src/copy/billing-notices.ts:58
 msgid "We could not collect your plan payment."
 msgstr "हम आपके प्लान का भुगतान नहीं ले सके।"
 
@@ -10482,7 +10467,7 @@ msgid "Work assigned to you shows here. Ask your manager for your first one."
 msgstr "आपको सौंपा गया काम यहाँ दिखता है। अपना पहला काम अपने मैनेजर से माँगें।"
 
 #. js-lingui-explicit-id
-#: src/copy/role-matrix.ts:60
+#: src/copy/role-matrix.ts:57
 msgid "Work the installation checklist"
 msgstr "इंस्टॉलेशन चेकलिस्ट पूरी करें"
 
@@ -10793,12 +10778,12 @@ msgid "Your dashboard is one switch away."
 msgstr "आपका डैशबोर्ड बस एक स्विच दूर है।"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:87
+#: src/copy/billing-notices.ts:86
 msgid "Your data is safe"
 msgstr "आपका डेटा सुरक्षित है"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:88
+#: src/copy/billing-notices.ts:87
 msgid "Your data is safe and readable."
 msgstr "आपका डेटा सुरक्षित है और पढ़ा जा सकता है।"
 
@@ -10849,17 +10834,17 @@ msgid "Your first release. Every new proposal will use it."
 msgstr "आपकी पहली रिलीज़। हर नया प्रस्ताव इसी का उपयोग करेगा।"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:98
+#: src/copy/billing-notices.ts:97
 msgid "Your free trial ends in 2 days."
 msgstr "आपका फ्री ट्रायल 2 दिन में खत्म होगा।"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:93
+#: src/copy/billing-notices.ts:92
 msgid "Your free trial has 7 days left."
 msgstr "आपके फ्री ट्रायल में 7 दिन बाकी हैं।"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:103
+#: src/copy/billing-notices.ts:102
 msgid "Your free trial has ended. Still working: {working}."
 msgstr "आपका फ्री ट्रायल खत्म हो गया है। अब भी चल रहा है: {working}।"
 
@@ -11002,27 +10987,27 @@ msgid "Your photo was not removed"
 msgstr "आपकी फ़ोटो हटाई नहीं गई"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:75
+#: src/copy/billing-notices.ts:74
 msgid "Your plan halts within a day"
 msgstr "आपका प्लान एक दिन के भीतर रुक जाएगा"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:82
+#: src/copy/billing-notices.ts:81
 msgid "Your plan is halted"
 msgstr "आपका प्लान रुक गया है"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:83
+#: src/copy/billing-notices.ts:82
 msgid "Your plan is halted because it is unpaid. Still working: {working}."
 msgstr "भुगतान न होने से आपका प्लान रुक गया है। अब भी चल रहा है: {working}।"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:69
+#: src/copy/billing-notices.ts:68
 msgid "Your plan is unpaid. Paused until you pay: {paused}. Still working: {working}."
 msgstr "आपके प्लान का भुगतान नहीं हुआ है। भुगतान होने तक रुका हुआ: {paused}। अब भी चल रहा है: {working}।"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:64
+#: src/copy/billing-notices.ts:63
 msgid "Your plan payment is still due. Everything works for now."
 msgstr "आपके प्लान का भुगतान अभी बाकी है। अभी सब कुछ चल रहा है।"
 
@@ -11125,12 +11110,12 @@ msgid "Your template didn't save"
 msgstr "आपका टेम्पलेट सहेजा नहीं गया"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:97
+#: src/copy/billing-notices.ts:96
 msgid "Your trial ends in 2 days"
 msgstr "आपका ट्रायल 2 दिन में खत्म होगा"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-notices.ts:102
+#: src/copy/billing-notices.ts:101
 msgid "Your trial has ended"
 msgstr "आपका ट्रायल खत्म हो गया है"
 

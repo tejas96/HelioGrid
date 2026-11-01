@@ -41,6 +41,7 @@ import {
   uiLanguageSchema,
 } from '@heliogrid/contracts';
 import { usageRecordWorkflow } from '@heliogrid/contracts/workflows';
+import { RETIRED_LEDGER_METERS } from '@heliogrid/domain';
 import postgres from 'postgres';
 
 /**
@@ -102,8 +103,9 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
     contract: 'overageAddOnStatusSchema',
   },
   usage_meter: {
-    options: usageRecordWorkflow.input.shape.meter.options,
-    contract: 'usageRecordWorkflow.input.meter',
+    // The stored enum keeps a retired meter no message carries (`RETIRED_LEDGER_METERS`, D398).
+    options: [...usageRecordWorkflow.input.shape.meter.options, ...RETIRED_LEDGER_METERS],
+    contract: 'usageRecordWorkflow.input.meter + RETIRED_LEDGER_METERS',
   },
   push_platform: {
     options: pushPlatformSchema.options,

@@ -59,7 +59,7 @@ into pure domain functions.
    append-only `usage_event` row (`tenant_id, meter, quantity, billable, subject_kind,
    subject_ref, idempotency_key, period_key, occurred_at`), retried until it lands — metering
    never blocks or fails the request (`M12-18`). The meters are domain's `LEDGER_METERS`: the
-   billed `voice_minutes`, `ai_roof_detections`, `marketing_sends`, `tracked_field_seats` (a
+   billed `voice_minutes`, `marketing_sends`, `tracked_field_seats` (a
    billed meter checks its entitlement BEFORE the call), and the cost lines `otp_delivery`,
    `field_location_ingestion`, `solar_imagery`, `ai_extraction`, `speech`, which never bill and
    feed the per-tenant quotas (`M12-37`). Storage is not a ledger row: it is the nightly
@@ -70,8 +70,6 @@ into pure domain functions.
 | Port | v1 adapter | Later adapters | Billable meter |
 |---|---|---|---|
 | SolarDataPort | PVGIS (SARAH3→ERA5) | NSRDB, Solcast | no (quota only) |
-| BuildingInsightsPort | Google Solar | — (enhancement only) | no (quota only) |
-| RoofDetectPort | DSM plane-fit → Gemini fallback | fine-tuned vision model | **ai_detections** |
 | TelephonyProvider | Exotel | Bolna (Plan B), LiveKit SIP (v2) | **voice_minutes** |
 | SpeechProvider / LanguageModel | Sarvam | AI4Bharat self-host, Chirp (global) | rolled into voice_minutes |
 | ComplianceGate | ours — **non-swappable** | never | no |
@@ -113,72 +111,15 @@ provenance chain (`CLAUDE.md` money rules).
 **Metering:** `solar_data_fetch`, non-billable; per-tenant daily quota (default 500) as a
 courtesy limit on a free EU service — we are a good citizen or we lose the source of record.
 
-## 2. BuildingInsightsPort — enhancement, never dependency
+## 2. BuildingInsightsPort — removed
 
-```ts
-interface BuildingInsightsPort {
-  findClosest(pin: LatLng): Promise<PortResult<SolarInsights>>;
-  getDataLayers(pin: LatLng, radiusM: number): Promise<PortResult<DataLayerRefs>>; // DSM+RGB+mask ONLY
-  relayGeoTiff(ref: GeoTiffRef): Promise<PortResult<ReadableStream>>;              // SSRF-guarded
-}
-```
+No roof-data port exists: the product has no automatic roof detection and reads no Google roof
+data (owner ruling 2026-11-01). Every roof is outlined by hand on the MapsPort tile (§13).
 
-**v1: `GoogleSolarAdapter`.** `buildingInsights:findClosest` (requiredQuality=BASE, 8 s
-timeout, 404 → `unavailable`, cached 24 h) and `dataLayers:get` (view=IMAGERY_LAYERS,
-requiredQuality=LOW, radius clamped 10–100 m). **Flux/irradiance layers are never requested.**
+## 3. RoofDetectPort — removed
 
-**GeoTIFF relay:** Google's raster URLs are key-authenticated and expire in ~1 h, so the API
-exposes `/v1/solar/geotiff?src=…` which streams bytes with the key appended server-side.
-**SSRF guard is load-bearing:** the only relayable prefix is
-`https://solar.googleapis.com/v1/geoTiff:get` — exact-prefix match, no redirects followed,
-upstream 404 → 410 (client treats as expired-retryable). This guard ports verbatim from the
-POC and is listed in `08-security-and-tenancy.md`.
-
-**Failure/degradation:** any status other than `ok` simply means the studio starts from
-manual tracing + MapsPort tiles. No feature depends on Google Solar existing — India
-coverage is patchy and that is fine.
-
-**Metering:** `solar_data_fetch`, non-billable, per-tenant daily quota (Google bills us per
-call; quota protects margin). Platform key only in v1; per-tenant BYO keys are a later
-adapter option the table structure already allows.
-
-## 3. RoofDetectPort — DSM primary, Gemini fallback
-
-```ts
-interface RoofDetectPort {
-  detect(req: {
-    pin: LatLng; radiusM: number;
-    tile: StoredTileRef;          // the EXACT satellite tile the canvas shows (1:1 px mapping)
-    calibration: { spanM: number };
-  }): Promise<PortResult<RoofArtifact>>;   // versioned artifact — the ONLY AI→Project doorway
-}
-```
-
-**v1: `CompositeRoofDetectAdapter`** — try DSM, fall back to Gemini:
-
-1. **DSM path (primary):** `BuildingInsightsPort.getDataLayers` → geotiff decode → plane
-   fit → vectorise. Runs in `apps/worker` (BullMQ job, CPU-bound), not the request thread.
-   Provenance `source:'dataLayers'`.
-2. **Gemini path (fallback, or DSM `unavailable`):** `generateContent` on
-   `GEMINI_MODEL ?? 'gemini-2.5-flash'` with the POC's binding rules, all non-negotiable:
-   `temperature: 0`, `responseMimeType:'application/json'` + enforced `responseSchema`,
-   **versioned prompt** (`GEMINI_PROMPT_VERSION='roof-detect-v1'`, recorded as provenance),
-   no-guessing instructions (empty result beats invented roof), 25 s timeout, 4 MB image
-   cap. Server fetches the same stored tile the canvas rendered — guaranteed 1:1 pixel
-   mapping. `crossCheckWithGeometry` floors confidence ≤0.25 where a detected roof overlaps
-   the aerial building mask <20%. Provenance `source:'gemini'`.
-
-**Both paths exit through `validateArtifact`** (version → pin → geometry → bounds →
-confidence, per-entity drop-with-reason). No AI output enters a `Project` any other way;
-`applyArtifact` stamps `EntityProvenance` so the UI can say "N AI-detected entities —
-dimensions are detector estimates".
-
-**Failure/degradation:** both paths fail → `unavailable`; the user traces manually. Missing
-Gemini key → `unconfigured` (graceful, feature hidden). Never a hard error in the studio.
-
-**Metering:** `ai_detections`, **billable**, 1 unit per successful detect (either path —
-the tenant buys the outcome, not the vendor). Entitlement check before dispatch; bundled
-detections per plan, metered beyond.
+No detection port exists, for the same ruling. The section numbers stay so every citation of a
+later section still resolves.
 
 ## 4. Telephony — a capability-negotiated port FAMILY (ADR-0019)
 
@@ -477,7 +418,7 @@ interface MapsPort {
 
 **v1: `GoogleMapsAdapter`.** Static satellite tiles are fetched **server-side once per site
 capture and stored in Tigris** (`StoredTileRef` = Tigris key + metres-per-pixel + fetch
-date). This gives: stable 1:1 pixel mapping for RoofDetectPort, reproducible provenance
+date). This gives: one stable coordinate frame to trace on, reproducible provenance
 (the tile a design was traced on never changes under it), and one billing event instead of
 per-render fetches. Interactive map picking uses Maps JS with the public key.
 

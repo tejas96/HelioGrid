@@ -13,8 +13,7 @@ emphasis but adds no requirement here) · Depends on:
 
 This module is where a roof stops being an address and becomes something a person can design on.
 It owns **two survey modes** and everything each one produces: the **remote survey** — an address,
-satellite imagery, an automatically detected roof with confidence on every detection, reviewed and
-corrected by a person — and the **physical survey** — a guided on-site capture that hands the
+satellite imagery and a roof the operator outlines by hand on it — and the **physical survey** — a guided on-site capture that hands the
 designer what only a visit can establish.
 
 The module's governing decision is carried whole from the source: *"Survey has two modes"* — remote
@@ -33,15 +32,13 @@ imagery**; physical data is **measured on site**. Every figure this module produ
 distinction into the design, the proposal and the customer link through `foundations/F8`'s
 provenance system, and a proposal built on a remote survey *"is legitimate and sellable — it just
 must not claim to be a site survey"* (`S4.rule.honesty`). Two behaviours follow from it directly:
-what remote **cannot** tell you is stated on screen rather than left to be discovered, and a
-detected roof is **never applied silently** — accept, adjust or reject, with the detector's
-confidence visible.
+what remote **cannot** tell you is stated on screen rather than left to be discovered, and every
+figure carries the tier it earned.
 
 *Section removed 2026-08-07 by owner decision: the offline/sync capability was deleted.*
 
 The module owns, as feature areas: the two modes and the mode decision · Mode A's address entry,
-imagery and pinned tile · AI roof detection with confidence, the editable overlay and the doorway
-into a design · coverage failure and its honest fallback · the "what remote cannot tell you" gaps
+imagery and pinned tile · the roof outlined by hand · coverage failure and its honest fallback · the "what remote cannot tell you" gaps
 list · the derived-vs-measured honesty consequence · Mode B's visits home · guided
 capture and the five capture groups · review and submit · photographs as reference and never
 measurement · visits, survey versions and the survey record · and the survey → design hand-off.
@@ -51,9 +48,9 @@ measurement · visits, survey versions and the survey record · and the survey �
 - It does **not** measure anything from a photograph. No LiDAR, no automatic roof measurement from
   photographs, no augmented-reality height estimation — **every dimension and every height is
   entered or estimated by a person** (`D35`, `S4.notv1.1`, §5).
-- It does **not** own the design. A detected roof, a captured dimension and a photograph are
+- It does **not** own the design. An outlined roof, a captured dimension and a photograph are
   *inputs*; the canvas, the geometry kernel, the layout and the electrical model are
-  `modules/M05-design-studio.md`'s. This module hands over a validated artifact and stops.
+  `modules/M05-design-studio.md`'s. This module hands over the survey and stops.
 - It does **not** own the energy figure. The irradiance source of record, its database ladder and
   its fallback are `foundations/F8`'s labelling law (`F8-08`–`F8-10`) and `modules/M05`'s
   computation. No coverage failure in this module ever degrades an energy figure, because energy
@@ -73,11 +70,10 @@ measurement · visits, survey versions and the survey record · and the survey �
   build sequencing (design spec §14/DD4). Where source rows name a mechanism, this document
   carries the product law and drops the mechanism.
 
-**Vendors appear here only as capability requirements.** Satellite imagery, building-insights roof
-data and vision-model roof detection are **vendor-neutral capability ports**; the v1 services
-behind them are **reference implementations**, named once for grounding and never as dependencies
-(`F1-04`, `F1-43`'s pattern). The binding requirement in every case is the *capability plus its
-honesty and fallback obligations*, and every one of them has a manual path that costs nothing and
+**Vendors appear here only as capability requirements.** Satellite imagery is a **vendor-neutral
+capability port**; the v1 service behind it is a **reference implementation**, named once for grounding and never as dependencies
+(`F1-04`, `F1-43`'s pattern). The binding requirement is the *capability plus its honesty and fallback
+obligations*, and it has a manual path that costs nothing and
 always works.
 
 ## 2. Personas & surfaces
@@ -108,7 +104,7 @@ always works.
 **Surfaces.** Web and mobile carry every capability equally (`F7-30`); the emphasis differs sharply
 and deliberately.
 
-- **Mode A is web-emphasis, mobile-complete.** The map, the detection overlay and the vertex-level
+- **Mode A is web-emphasis, mobile-complete.** The map and the vertex-level
   adjustment want a large viewport and a pointer; the flow works whole at the mobile breakpoint
   because the rep who needs it most is often standing outside a customer's house.
 - **Mode B is mobile-only in practice and mobile-first by design.** The visits home, the guided
@@ -129,10 +125,10 @@ on the capture screen (`SCR-M04-07`) and nowhere else.*
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | M04-01 | **The survey has exactly two modes — remote and physical — and both produce the same kind of record.** A survey is one object with one identity per site whichever mode produced it: same groups, same photograph attachments, same hand-off to the designer, same versioning. The modes differ in **how the facts were obtained**, and that difference is carried as provenance (M04-34), never as two incompatible records or two parallel screens. | `SRC` — `D30` ("Survey has two modes: REMOTE … and PHYSICAL (on site)"); `S4.rule.two-modes` | P0 |
-| M04-02 | **Mode A — remote: an address becomes a designable roof, from a desk, in minutes, with no travel and nobody's time booked.** The operator supplies an address; the product fetches satellite imagery and available building-insights roof data, detects the roof outline, its obstructions and its pitch and azimuth, and returns an editable result. The source's claim is the requirement: *"The app can survey a roof without anyone going there"* — enough to **design and quote**. Every figure it produces is **derived from imagery** (M04-34). | `SRC` — `S4.rule.two-modes` (quoted: "a designable roof, from a desk, in minutes"; "Remote: minutes, no travel, enough to DESIGN and QUOTE, data DERIVED from imagery"); `D30` · imagery/roof-data are vendor-neutral capabilities (M04-09) | P0 |
+| M04-02 | **Mode A — remote: an address becomes a designable roof, from a desk, in minutes, with no travel and nobody's time booked.** The operator supplies an address; the product fetches satellite imagery, and the operator outlines the roof, its obstructions and its pitch and azimuth on it by hand. The source's claim is the requirement: *"The app can survey a roof without anyone going there"* — enough to **design and quote**. Every figure it produces is **derived from imagery** (M04-34). | `SRC` — `S4.rule.two-modes` (quoted: "a designable roof, from a desk, in minutes"; "Remote: minutes, no travel, enough to DESIGN and QUOTE, data DERIVED from imagery"); `D30` · imagery/roof-data are vendor-neutral capabilities (M04-09) | P0 |
 | M04-03 | **Mode B — physical: hours, travel, the customer at home, and reality confirmed before anything is installed.** An on-site visit captures what a person can see and reach: the roof from each corner, the meter and the main panel, what casts shade, how material gets up, and what the structure looks like. Its data is **measured on site** (M04-34) and it is what the product means by a confirmed site. | `SRC` — `S4.rule.two-modes` (quoted: "Physical: hours, travel, needs customer home, confirms reality before installing, data MEASURED on site") | P0 |
 | M04-04 | **The site visit is verification before installation, not a prerequisite for quoting.** For residential work the sequence is **remote survey → design → proposal → physical visit once the customer is interested**. No design, proposal or price in this product may be gated on a physical visit having happened; the visit is required before installation (M04-05) and is a normal, expected step *after* interest, not a queue in front of the first quote. | `SRC` — `D30` ("the physical visit becomes verification before installation rather than a prerequisite for quoting"; docs/15: HONORED — remote-first residential); `S4.rule.two-modes` | P0 |
-| M04-05 | **Which mode, when — five rules, carried whole, surfaced as guidance rather than enforced as a lock.** (1) **Residential, simple roof** → remote is the default first pass; physical after interest. (2) **Commercial & industrial, large or complex** → start remote, and physical **always before quoting**. (3) **No roof-data coverage for the address** → remote is not possible; physical is required (§M04.4). (4) **Roof recently modified** → remote is unreliable; physical is required. (5) **Before installation** → remote is *"never enough"*; physical always. The product states the applicable rule where the mode is chosen and where a proposal is built on a remote-only survey; it does not silently pick for the operator. | `SRC` — `S4.rule.mode-choice` (all five, verbatim); segment from the lead (`M02-05`); post-`R5` reading of rule 3 recorded at M04-25 | P0 |
+| M04-05 | **Which mode, when — five rules, carried whole, surfaced as guidance rather than enforced as a lock.** (1) **Residential, simple roof** → remote is the default first pass; physical after interest. (2) **Commercial & industrial, large or complex** → start remote, and physical **always before quoting**. (3) **No imagery coverage for the address** → remote is not possible; physical is required (§M04.4). (4) **Roof recently modified** → remote is unreliable; physical is required. (5) **Before installation** → remote is *"never enough"*; physical always. The product states the applicable rule where the mode is chosen and where a proposal is built on a remote-only survey; it does not silently pick for the operator. | `SRC` — `S4.rule.mode-choice` (all five, verbatim); segment from the lead (`M02-05`); post-`R5` reading of rule 3 recorded at M04-25 | P0 |
 | M04-06 | **Surveying is a capability, not a gatekeeper, and there is one capture flow for everyone who holds it.** A survey is a task assignable to anyone holding the capability — a dedicated Survey Engineer or a Sales Executive standing on the roof — and both use the identical flow, with no reduced or "lite" variant for the non-specialist. The persona describes whose job it usually is, never who is permitted to do it. | `SRC` — `D15` ("Survey is a task assignable to anyone with the capability — rep or dedicated surveyor. One capture flow for both"; docs/15: HONORED); `PS-14`; grant at `F2.M04.capture-surveys` | P0 |
 | M04-07 | **The remote path is measured against a speed budget: a remote survey reaches a sendable proposal in under ten minutes.** The budget is a product requirement carried from the source, not an aspiration, and this module owns its first and largest segment — address in to reviewed roof out. Every Mode A screen is designed against it: no blocking spinner walls, no step that waits on a human decision the product could have pre-filled, no re-entry of anything the lead already holds. | `SRC` — `F7-37` (Principle 8, the second binding speed budget, consumed as a published requirement); `S4.rule.two-modes` ("a competitive weapon, not a shortcut"); `C1` (cited — speed of first callback decides who wins, `foundations/F5`) | P0 |
 
@@ -152,8 +148,7 @@ common case in the source's own sequence is a remote survey followed later by a 
 is a new version of the same site's survey (M04-57), not a correction of the first.
 
 Permissions: `F2.M04.capture-surveys` for capture in either mode (EPC Owner · Sales Manager · Sales
-Executive · Survey Engineer); `F2.M04.run-remote-survey` for the remote run specifically, because
-it consumes a metered capability (M04-23); `F2.M04.schedule-survey-visits` for booking, reassigning
+Executive · Survey Engineer); `F2.M04.run-remote-survey` for the remote run specifically; `F2.M04.schedule-survey-visits` for booking, reassigning
 and cancelling. Survey visibility follows the lead or site the survey belongs to
 (`F2.M02.lead-visibility`, `F2-12`–`F2-14`); this module creates no separate visibility domain.
 
@@ -181,7 +176,7 @@ and cancelling. Survey visibility follows the lead or site the survey belongs to
   survey, then the "physical always before quoting" rule is stated on that screen (M04-05).
 - Given a user holding `F2.M04.capture-surveys` and no survey-specialist role, when they open a
   survey, then they get the identical capture flow a Survey Engineer gets (M04-06).
-- Given an address with roof data available, when the remote survey completes, then a designable
+- Given an address with imagery available, when the remote survey completes, then a designable
   roof — outline, obstructions, pitch and area — exists with nobody having visited the site, and
   every figure it produced carries `derived` (M04-02).
 - Given a completed physical survey, when it is read, then it carries the on-site facts a remote
@@ -203,12 +198,12 @@ remote-survey-to-proposal-sent (`F7-37`, cross-module).
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M04-08 | **Mode A starts at an address: search it, or drop a pin — and the building is shown highlighted on a satellite preview before anything is detected.** The operator confirms *that building*, visually, as the first act of the survey. Nothing is fetched, detected or metered until the building is confirmed. | `SRC` — `S4.screen.1` ("Address entry: search or drop a pin. Satellite preview with the building highlighted") | P0 |
-| M04-09 | **Satellite imagery and building-insights roof data are vendor-neutral capability requirements, and they are an enhancement — never a dependency.** The product requires *a* capability that returns imagery for a location and *a* capability that returns roof data where it exists; the v1 services behind them are reference implementations (Google Solar Building Insights and elevation/DSM data). The binding law is the source's: *"No feature depends on [the roof-data provider] existing"*, and any failure *"simply means the studio starts from manual tracing"*. | `SRC` — `DOC07.google-enhancement-only` (docs/engineering/07, quoted verbatim: "enhancement, never dependency"; "coverage is patchy and that is fine"); `R5` *(shared — the imagery/detection half; the energy source-of-record ladder is `modules/M05`'s and the labelling law `foundations/F8`'s)* · vendor-neutrality per `F1-04`, reference-implementation pattern per `F1-43` | P0 |
-| M04-10 | **The imagery tile is fetched once per site capture and pinned: the tile a roof was traced on never changes under it.** The stored tile is what detection runs against and what the operator and, later, the designer see — one image, one coordinate mapping, for the life of that survey version. A newer tile becoming available does not silently replace it; it is offered as a new capture. | `SRC` — `DOC07.map-tile-pinned` (docs/engineering/07, quoted: "the tile a design was traced on never changes under it"; stable 1:1 mapping, reproducible provenance) *(shared — the studio canvas that renders the same pinned tile is `modules/M05`'s)* | P0 |
+| M04-08 | **Mode A starts at an address: search it, or drop a pin — and the building is shown highlighted on a satellite preview before anything is fetched.** The operator confirms *that building*, visually, as the first act of the survey. Nothing is fetched until the building is confirmed. | `SRC` — `S4.screen.1` ("Address entry: search or drop a pin. Satellite preview with the building highlighted") | P0 |
+| M04-09 | **Satellite imagery is a vendor-neutral capability requirement, and it is an enhancement — never a dependency.** The product requires *a* capability that returns imagery for a location; the v1 service behind it is a reference implementation. No roof-data or detection capability exists (owner ruling 2026-11-01). Any imagery failure *"simply means the studio starts from manual tracing"*. | `SRC` — `DOC07.google-enhancement-only` (docs/engineering/07, quoted verbatim: "enhancement, never dependency"; "coverage is patchy and that is fine"); `R5` *(shared — the imagery/detection half; the energy source-of-record ladder is `modules/M05`'s and the labelling law `foundations/F8`'s)* · vendor-neutrality per `F1-04`, reference-implementation pattern per `F1-43` | P0 |
+| M04-10 | **The imagery tile is fetched once per site capture and pinned: the tile a roof was traced on never changes under it.** The stored tile is what the operator traces on and what the designer later sees — one image, one coordinate mapping, for the life of that survey version. A newer tile becoming available does not silently replace it; it is offered as a new capture. | `SRC` — `DOC07.map-tile-pinned` (docs/engineering/07, quoted: "the tile a design was traced on never changes under it"; stable 1:1 mapping, reproducible provenance) *(shared — the studio canvas that renders the same pinned tile is `modules/M05`'s)* | P0 |
 | M04-11 | **Imagery failure never blocks a survey: the flow continues on a blank canvas with manual outlining and known-distance calibration.** Where no tile can be fetched at all, the operator can still outline the roof by hand and establish scale from a known distance, and the survey proceeds. *"Never blocks."* | `SRC` — `DOC07.map-tile-pinned` ("Tile fetch failure → studio still opens with blank canvas + manual calibration (known-distance rescale); 'Never blocks'"); refusal wording per `F8-36` | P0 |
-| M04-12 | **When the address resolves to the wrong building, the operator re-points it before anything is detected — and correcting the address corrects the site record.** The confirmation step of M04-08 exists for exactly this failure. A pin moved to the correct building updates the survey's location and the site record it belongs to, so the mistake is not re-made on the next visit or the next design. | `SRC` — `S4.wrong.1` ("Address resolves to the wrong building"); `S4.wrong.11` (correction updates the site record — the on-site half is M04-59) | P0 |
-| M04-13 | **Imagery age is a stated fact on the review screen, not a discovery made later.** The capture date of the tile is shown beside the detected roof, and the operator is asked the one question the imagery cannot answer — *has this roof changed since?* A "yes" marks the remote result **unreliable** (mode rule 4, M04-05), records that mark on the survey so the designer sees it, and offers to book a physical visit. | `SRC` — `S4.wrong.3` ("Imagery is years out of date and the roof has changed"); `S4.rule.mode-choice` (rule 4: "Roof recently modified → remote unreliable, physical required"); staleness is stated per `F8-13`, `F8-19` (consumed) | P0 |
+| M04-12 | **When the address resolves to the wrong building, the operator re-points it before anything is fetched — and correcting the address corrects the site record.** The confirmation step of M04-08 exists for exactly this failure. A pin moved to the correct building updates the survey's location and the site record it belongs to, so the mistake is not re-made on the next visit or the next design. | `SRC` — `S4.wrong.1` ("Address resolves to the wrong building"); `S4.wrong.11` (correction updates the site record — the on-site half is M04-59) | P0 |
+| M04-13 | **Imagery age is a stated fact on the review screen, not a discovery made later.** The capture date of the tile is shown beside the outlined roof, and the operator is asked the one question the imagery cannot answer — *has this roof changed since?* A "yes" marks the remote result **unreliable** (mode rule 4, M04-05), records that mark on the survey so the designer sees it, and offers to book a physical visit. | `SRC` — `S4.wrong.3` ("Imagery is years out of date and the roof has changed"); `S4.rule.mode-choice` (rule 4: "Roof recently modified → remote unreliable, physical required"); staleness is stated per `F8-13`, `F8-19` (consumed) | P0 |
 
 **Behavior detail.** Address entry accepts a typed search and a dropped pin, and it pre-fills from
 the lead's address where one exists so the rep is confirming rather than retyping (`M04-07`'s
@@ -217,11 +212,11 @@ recognise their own roof; if several buildings sit at one address — a common c
 neighbourhoods and on commercial plots — the operator picks one, and that pick is part of the
 survey record.
 
-Where the external intelligence after confirmation cannot be reached, the manual path is offered in
+Where the imagery after confirmation cannot be reached, the blank-canvas path is offered in
 the same breath, because the manual path costs nothing and always works (M04-22).
 
-The pinned tile of `M04-10` is what makes every later claim reproducible: the detection's
-confidence, the operator's adjustments, the designer's layout and any subsequent dispute all refer
+The pinned tile of `M04-10` is what makes every later claim reproducible: the operator's
+outline, the designer's layout and any subsequent dispute all refer
 to one image. Where the operator wants newer imagery, they start a new survey version (M04-57)
 rather than mutating the current one — the earlier version keeps its tile and its result, because
 the earlier version is evidence of what was decided from.
@@ -231,7 +226,7 @@ own edit grant in `modules/M02` (`F2.M02.add-edit-leads`) where the address live
 
 **Edge cases & what-goes-wrong.**
 
-- *Wrong building* (`S4.wrong.1`) → re-point before detection; the site record updates (M04-12).
+- *Wrong building* (`S4.wrong.1`) → re-point before the tile is fetched; the site record updates (M04-12).
 - *Imagery years out of date and the roof has changed* (`S4.wrong.3`) → age shown, changed-roof
   question asked, result marked unreliable, physical visit offered (M04-13).
 - *No tile at all* → blank canvas, manual outline, known-distance calibration; never a dead end
@@ -251,7 +246,7 @@ own edit grant in `modules/M02` (`F2.M02.add-edit-leads`) where the address live
 - Given a fetched tile, when the review screen renders, then the tile's capture date is shown and
   the changed-roof question is asked; and given a "yes", then the survey is marked remote-unreliable
   and a physical visit is offered (M04-13).
-- Given the imagery or roof-data capability is unavailable, unconfigured or silent for this address,
+- Given the imagery capability is unavailable, unconfigured or silent for this address,
   when the survey continues, then every remaining step still completes through the manual path and
   no capability of this module has been removed from the flow (M04-09).
 
@@ -262,113 +257,62 @@ never translated (`F3-08`). **Analytics events:** address resolved (method: sear
 building confirmed · multiple buildings disambiguated · tile fetched / tile fetch failed · manual
 calibration used · imagery age shown (age band) · roof-changed answered.
 
-### M04.3 — AI roof detection: confidence, the editable overlay and the doorway
+### M04.3 — The roof, outlined by hand
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M04-14 | **Detection reports honest progress and fails gracefully.** The waiting state names what is actually happening, in the source's own words — *"fetching imagery · detecting roof · estimating shading"* — rather than an unqualified spinner, and each step can fail on its own without taking the survey down with it. A failed step says which step failed and what remains available. | `SRC` — `S4.screen.2` ("Detecting: honest progress — 'fetching imagery · detecting roof · estimating shading'. Fails gracefully"), quoted verbatim; honest-failure law `F8-36`, `F7-43` (loading and error states) | P0 |
-| M04-15 | **A detected roof is never applied silently. The result is an editable overlay and the operator must accept, adjust or reject it.** The outline, the obstructions, the pitch and the area arrive as a proposal from a detector, drawn over the pinned tile, and nothing enters the survey until a person acts on it. **A detected roof that is obviously wrong must always be correctable** — every vertex, every obstruction, every value the detector produced is editable, and rejecting the whole result is a first-class choice that leaves the manual outline available. **The corrector set is final (owner ruling 2026-08-04): anyone who can run the remote survey — rep, surveyor or designer — accepts, adjusts or rejects**, with studio re-verification and provenance labels as the safety net; the homeowner's route is the link's question affordance (`F5-56`), never an edit. | `SRC` — `S4.screen.3` ("the detected roof as an editable overlay — outline, obstructions, pitch, area. **Accept / adjust / reject — never applied silently**"); `S4.wrong.5` ("the customer must always be able to correct it" — confirmed as the operator per owner ruling 2026-08-04) | P0 |
-| M04-16 | **Confidence is shown per detection, beside the thing it qualifies.** Not one score for the survey: the outline, each obstruction and each derived value carry the detector's confidence where they are read, as persistent visible content — never a hover, never colour alone (`F8-07`). A detection whose confidence cannot be established is not presented as a detection. | `SRC` — `S4.screen.3` ("Confidence shown per detection"); `DOC04.survey-provenance` ("remote detection artefacts carry per-detection confidence + source … and prompt version"); rendering law `F8-01`, `F8-07` (consumed) | P0 |
-| M04-17 | **An empty result beats an invented roof.** The detector is instructed not to guess, and returning nothing is a correct and expected outcome that leads straight to manual outlining. No surface in this module fills a missing detection with a plausible shape, a default rectangle or an average pitch. | `SRC` — `DOC07.roof-detect-honesty` (docs/engineering/07, quoted verbatim: "no-guessing instructions (empty result beats invented roof)"); `F8-01` (a number whose tier cannot be established is not rendered as a number) | P0 |
-| M04-18 | **There are two detection paths and both are held to the same honesty rules: elevation-model plane fitting where elevation data exists, and a vision-model fallback that returns shapes only.** The fallback exists because elevation coverage is thinner than imagery coverage; it produces geometry and nothing else — it never returns a figure the product would present as a measurement. **Every detection records its own provenance: which path produced it, against which pinned tile, and at which detector version.** Both paths are required to be **deterministic and schema-constrained** — a detector returning free-form output, or a different answer each time for the same tile, does not satisfy this requirement — and **both exit through the same artifact validation** (M04-24). | `SRC` — `DOC07.roof-detect-honesty` (docs/engineering/07: "DSM plane-fit primary, vision-model fallback"; deterministic, schema-enforced output, "versioned prompt recorded as provenance"; "both paths exit through artifact validation"); `R5` (the roof-detect photo fallback returns "shapes only") *(shared — the imagery/detection half)*; `DOC04.survey-provenance` ("per-detection confidence + source … + prompt version") · the model, its parameters and the prompt store are implementation (design spec §14/DD4) | P0 |
-| M04-19 | **Detection runs against the exact tile the operator is looking at, pixel for pixel.** The overlay a person accepts or adjusts is registered 1:1 with the stored tile of `M04-10` — there is no second image, no re-projection between detecting and reviewing, and no coordinate drift between what was detected and what is drawn. | `SRC` — `DOC07.roof-detect-honesty` ("detection runs against the exact stored tile the canvas shows (1:1 pixel mapping)") | P0 |
-| M04-20 | **Where a detected roof barely overlaps the building the operator confirmed, its confidence is floored.** A geometry cross-check compares the detected outline against the confirmed building footprint; a poor overlap lowers the confidence shown rather than being silently accepted, so the review screen tells the operator that this one needs looking at. | `SRC` — `DOC07.roof-detect-honesty` ("geometry cross-check floors confidence where a detected roof barely overlaps the building mask") | P1 |
-| M04-21 | **Detection failure is never a hard error, and an unavailable detection capability is hidden gracefully rather than shown broken.** If detection fails, the operator traces the roof manually and the survey continues. If the capability is not configured or not available at all, its entry points are simply not offered — no dead button, no error the operator cannot act on. *"Never a hard error."* | `SRC` — `DOC07.roof-detect-honesty` ("Detection failure → user traces manually; missing key → feature hidden gracefully; 'Never a hard error in the studio'"); `F8-36` | P0 |
-| M04-22 | **Manual outlining is always available, always sufficient, and never metered.** Every remote survey can be completed entirely by hand — outline, obstructions, pitch, area — with no detection at all. This is the guarantee that makes every other rule in this section safe: a tenant with no coverage, no allowance or no trust in the detector can still produce a designable roof. | `SRC` — `BM-19` (consumed: "Manual outlining is always available and never metered — a tenant out of bundle can always keep working by hand"); `DOC16.gate.ai-detection` (cited — `modules/M12`: "on deny, detection is blocked but MANUAL outline is always available (it costs nothing)"); `DOC07.google-enhancement-only` | P0 |
-| M04-23 | **AI roof detection is a metered capability: allowance is checked before the call, a denial blocks only the detection, and a detection that returns no result never bills.** The meter, its bundles, its overage and the tier entitlements are `04-business-model.md`'s (`BM-16`, `BM-19`) and `modules/M12-platform-billing.md`'s enforcement — this module states no rate, bundle size or price. What it owns is the behaviour at the boundary: the check happens **before** the detector is called, a denial is an honest message naming the allowance and pointing at the manual path, and a run that returns nothing is not counted. | `SRC` — `BM-16` (the five-meter closed list, consumed), `BM-19` (per detection that returns a result; failures never bill); `DOC16.gate.ai-detection` (cited — the server-side check is `modules/M12`'s) *(shared — the M04 half: the survey-side behaviour at the gate)*; honest state copy per `F8-34` | P0 |
-| M04-24 | **A detection enters a design only through a validated artifact, and applying it stamps what came from a detector.** The reviewed result is handed to `modules/M05-design-studio.md` as a validated artifact — version, tile pin, geometry, bounds and confidence — with any entity that fails validation **dropped with a stated reason** rather than passed through degraded. Applying it stamps entity provenance so the design can say, in the source's words, *"N AI-detected entities — dimensions are detector estimates."* | `SRC` — `DOC05.ai-doorway` (docs/05, quoted; the same doorway rule is restated in docs/engineering/07 §3) *(shared — this module produces and validates the artifact; the stamping inside the design and the studio's own detection entry point are `modules/M05`'s)`; `F8-01`/`F8-02` (consumed) | P0 |
+| M04-14 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *Detection reports honest progress and fails gracefully.* | `SRC` — `S4.screen.2` ("Detecting: honest progress — 'fetching imagery · detecting roof · estimating shading'. Fails gracefully"), quoted verbatim; honest-failure law `F8-36`, `F7-43` (loading and error states) | — |
+| M04-15 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *A detected roof is never applied silently. The result is an editable overlay and the operator must accept, adjust or reject it.* | `SRC` — `S4.screen.3` ("the detected roof as an editable overlay — outline, obstructions, pitch, area. **Accept / adjust / reject — never applied silently**"); `S4.wrong.5` ("the customer must always be able to correct it" — confirmed as the operator per owner ruling 2026-08-04) | — |
+| M04-16 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *Confidence is shown per detection, beside the thing it qualifies.* | `SRC` — `S4.screen.3` ("Confidence shown per detection"); `DOC04.survey-provenance` ("remote detection artefacts carry per-detection confidence + source … and prompt version"); rendering law `F8-01`, `F8-07` (consumed) | — |
+| M04-17 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *An empty result beats an invented roof.* | `SRC` — `DOC07.roof-detect-honesty` (docs/engineering/07, quoted verbatim: "no-guessing instructions (empty result beats invented roof)"); `F8-01` (a number whose tier cannot be established is not rendered as a number) | — |
+| M04-18 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *There are two detection paths and both are held to the same honesty rules: elevation-model plane fitting where elevation data exists, and a vision-model fallback that returns shapes only.* | `SRC` — `DOC07.roof-detect-honesty` (docs/engineering/07: "DSM plane-fit primary, vision-model fallback"; deterministic, schema-enforced output, "versioned prompt recorded as provenance"; "both paths exit through artifact validation"); `R5` (the roof-detect photo fallback returns "shapes only") *(shared — the imagery/detection half)*; `DOC04.survey-provenance` ("per-detection confidence + source … + prompt version") · the model, its parameters and the prompt store are implementation (design spec §14/DD4) | — |
+| M04-19 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *Detection runs against the exact tile the operator is looking at, pixel for pixel.* | `SRC` — `DOC07.roof-detect-honesty` ("detection runs against the exact stored tile the canvas shows (1:1 pixel mapping)") | — |
+| M04-20 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *Where a detected roof barely overlaps the building the operator confirmed, its confidence is floored.* | `SRC` — `DOC07.roof-detect-honesty` ("geometry cross-check floors confidence where a detected roof barely overlaps the building mask") | — |
+| M04-21 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *Detection failure is never a hard error, and an unavailable detection capability is hidden gracefully rather than shown broken.* | `SRC` — `DOC07.roof-detect-honesty` ("Detection failure → user traces manually; missing key → feature hidden gracefully; 'Never a hard error in the studio'"); `F8-36` | — |
+| M04-22 | **Every roof is outlined by hand, and outlining is never metered.** The operator traces the outline, the obstructions, the pitch and the area on the pinned tile of `M04-10`, or on a blank canvas when no tile could be fetched (`M04-11`); the product detects nothing (owner ruling 2026-11-01). Every remote survey is completed this way, and no allowance, tier or billing state bounds it. | `SRC` — owner ruling 2026-11-01 (no automatic roof detection: every roof is outlined by hand); `DOC16.gate.ai-detection` (cited for its manual half only: "MANUAL outline is always available (it costs nothing)") | P0 |
+| M04-23 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *AI roof detection is a metered capability: allowance is checked before the call, a denial blocks only the detection, and a detection that returns no result never bills.* | `SRC` — `BM-16` (the closed meter list, consumed), `BM-19` (per detection that returns a result; failures never bill); `DOC16.gate.ai-detection` (cited — the server-side check is `modules/M12`'s) *(shared — the M04 half: the survey-side behaviour at the gate)*; honest state copy per `F8-34` | — |
+| M04-24 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *A detection enters a design only through a validated artifact, and applying it stamps what came from a detector.* | `SRC` — `DOC05.ai-doorway` (docs/05, quoted; the same doorway rule is restated in docs/engineering/07 §3) *(shared — this module produces and validates the artifact; the stamping inside the design and the studio's own detection entry point are `modules/M05`'s)`; `F8-01`/`F8-02` (consumed) | — |
 
-**Behavior detail.** The review screen is Mode A's decision point and it is built to be argued
-with. The overlay sits on the pinned tile at full opacity for the outline and reduced for fill, so
-the imagery underneath stays readable; obstructions are individually selectable; pitch, azimuth and
-area render as values with their confidence beside them. **Adjust** is direct manipulation —
-vertices drag, obstructions move and resize, a value can be typed over — and every operator edit
-**re-tiers that value**, shown at the moment of the change (`F8-05`), to the tier F8 assigns it:
-a redrawn outline keeps its `derived`/`estimated` tag, and a typed figure outside the
-physical-survey flow is `assumed` (`F8-21`). **Reject** discards the detection whole and
-leaves the operator on the manual outline with nothing lost.
+**Behavior detail.** The operator draws on the pinned tile: vertices place and drag, obstructions
+are added and resized, and pitch, azimuth and area are typed or estimated. Every figure carries the
+tier F8 assigns it (`F8-21`): an outline traced on imagery is `derived`, and a typed figure outside
+the physical-survey flow is `assumed`.
 
-The confidence display of `M04-16` is not decoration: it is what tells a rep which of tomorrow's
-five remote surveys deserves a phone call to the customer. Low confidence never blocks acceptance —
-the operator is the judge — but a low-confidence detection accepted unchanged is recorded as such,
-and the designer sees it (§M04.12).
-
-The detector's own honesty rules (`M04-17`–`M04-20`) exist because a roof detector's failure mode
-is confident invention. Determinism and a constrained output shape are what make a result
-reviewable; the no-guessing instruction is what makes "no roof found" an acceptable answer; the
-geometry cross-check is what stops a detection of the *neighbour's* roof from arriving at full
-confidence. None of the three is a model choice — they are product requirements the capability port
-must satisfy, whichever service is behind it (`M04-09`).
-
-Shading estimated from above is **partial by construction** and is treated as such: a tall
-neighbouring building, a wall or a tree that the imagery does not resolve is not a detector defect,
-it is one of the things remote surveys cannot see, and it is stated on screen as a gap (`M04-30`)
-rather than left to surprise the designer.
+Shading read from above is **partial by construction**: a tall neighbouring building, a wall or a
+tree the imagery does not resolve is one of the things remote surveys cannot see, and it is stated
+on screen as a gap (`M04-30`) rather than left to surprise the designer.
 
 Permissions: `F2.M04.run-remote-survey` (EPC Owner · Sales Manager · Sales Executive · Survey
-Engineer). The studio's own in-canvas detection entry point rides `modules/M05`'s rows, not this
-one.
+Engineer).
 
 **Edge cases & what-goes-wrong.**
 
-- *Roof detected but obviously wrong* (`S4.wrong.5`) → accept / adjust / reject, every element
-  editable, rejection always available (M04-15). The corrector is anyone who can run the remote
-  survey — rep, surveyor or designer (owner ruling 2026-08-04).
-- *A tall neighbouring building is missed* (`S4.wrong.4`) → shading from above is partial by
+- *An outline drawn wrong* (`S4.wrong.5`) → every vertex and value stays editable until the survey
+  is submitted. The corrector is anyone who can run the remote survey — rep, surveyor or designer
+  (owner ruling 2026-08-04).
+- *A tall neighbouring building is not visible* (`S4.wrong.4`) → shading from above is partial by
   construction; the unseen obstruction is a named gap on the gaps list (M04-30) and the designer is
-  told the shading input is `derived` and incomplete, not that it is complete.
-- *Detection returns nothing* → the correct outcome; manual outlining continues (M04-17, M04-22).
-- *Detection returns a roof overlapping the confirmed building barely* → confidence floored and the
-  item flagged for review (M04-20).
-- *Allowance exhausted* → detection is refused with the allowance named and the manual path offered
-  in the same message; nothing about the survey is blocked (M04-22, M04-23).
-- *Detection capability unavailable or unconfigured* → its entry points are not offered at all
-  (M04-21).
+  told the shading input is `derived` and incomplete.
 
 **Acceptance criteria.**
 
-- Given a confirmed building, when detection runs, then the progress state names the step in
-  progress and a failure of any step leaves the survey usable (M04-14).
-- Given a returned detection, when the review screen renders, then nothing has been written to the
-  survey, every element is editable, and accept / adjust / reject are all available (M04-15).
-- Given a returned detection, when it renders, then each detected element shows its own confidence
-  as persistent visible content, not on hover and not by colour alone (M04-16).
-- Given imagery from which no roof can be determined, when detection completes, then no roof is
-  produced and the manual outline is offered (M04-17).
-- Given an accepted detection, when the survey is read later, then the capability, the pinned tile
-  and the detector version that produced it are recorded against it (M04-18).
-- Given a detection whose outline barely overlaps the confirmed building, when it renders, then its
-  confidence is floored and it is flagged for review (M04-20).
-- Given a detection result, when the overlay is drawn on the pinned tile, then it registers pixel
-  for pixel against that tile, and an adjustment made on the overlay lands at the same place when
-  the survey is reopened or opened by the designer (M04-19).
-- Given detection fails, when the operator continues, then no error blocks the survey and manual
-  tracing is available; and given the detection capability is not available at all, then its entry
-  points are not offered rather than shown broken (M04-21).
-- Given an exhausted detection allowance, when detection is attempted, then it is refused with the
-  reason named, the manual outline is offered, and no detection is billed (M04-22, M04-23).
-- Given a detection that returned no result, when the usage record is read, then no detection was
-  counted (M04-23).
-- Given a reviewed detection handed to a design, when it is applied, then only validated entities
-  arrive, every dropped entity carries a stated reason, and the applied entities are stamped as
-  detector-derived (M04-24).
+- Given a confirmed building, when the operator outlines the roof on the pinned tile, then the
+  survey can be completed with no automatic step, and nothing is metered for it (M04-22).
 
-**Localization notes.** The three progress phrases, the confidence label, every refusal and the
-accept/adjust/reject verbs are translated per `F3-01`/`F3-06`; the provenance tier tokens are the
-fixed English tokens of `F8-02` with translated display (`F3` vocabulary rule); areas and dimensions
-render on the reader's unit preference (`F3-23`). Buttons are verbs (`F7-42`). **Analytics events:**
-detection requested · detection returned (element count, confidence band) · detection empty ·
-detection failed (step) · overlay accepted / adjusted (elements changed) / rejected · manual outline
-started · confidence floored by cross-check · detection denied by allowance.
+**Localization notes.** Drawing hints and every refusal are translated per `F3-01`/`F3-06`; the
+provenance tier tokens are the fixed English tokens of `F8-02` with translated display; areas and
+dimensions render on the reader's unit preference (`F3-23`). Buttons are verbs (`F7-42`).
+**Analytics events:** manual outline started · manual outline completed (vertex and obstruction
+count).
 
 ### M04.4 — Coverage failure and the honest fallback
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M04-25 | **Roof-data coverage is a fact about a location, never a promise the product makes.** Detailed roof data exists for some addresses and not others, and the gaps are real and unevenly distributed within any one market. The product never states or implies coverage it has not established for the address in front of it, never presents a national or market-level coverage claim, and never treats a coverage gap as an error the operator caused. Where coverage is absent, mode rule 3 applies: remote is not possible for that address and physical is required (M04-05). | `SRC` — `R5` (the ruling's stated reason, restated market-neutrally: real roof-data coverage gaps in the launch market make any dependency on that data "a product-breaking bet"; the market fact itself lives in `foundations/F1`) *(shared — the imagery/coverage half; the energy source-of-record half is `modules/M05`'s)*; `DOC07.google-enhancement-only` ("coverage is patchy and that is fine"); `S4.rule.mode-choice` (rule 3) · honest-state law `F8-34` | P0 |
-| M04-26 | **Coverage failure has its own screen, and it is not a dead end.** The message is plain and blames nothing: *"No detailed roof data available for this address."* Two ways forward are offered on that screen — **outline the roof manually** (which costs nothing and always works, M04-22) or **book a physical survey** (M04-57's visit). The survey continues from either. | `SRC` — `S4.screen.4` (quoted verbatim, including *"Not a dead end."*); `S4.wrong.2` (no roof-data coverage for the address — the source records that these gaps are real across parts of the launch market) | P0 |
-| M04-27 | **A coverage failure never degrades an energy figure.** Energy output has never depended on the roof-data capability: its source of record, its database ladder and its labelled fallback are `foundations/F8`'s (`F8-08`–`F8-10`) and are computed independently of whether roof data existed for this address. A survey that fell back to a manual outline still yields a fully labelled energy figure, and no screen in this module implies otherwise. | `SRC` — `R5` (post-overlay reading: "energy figures never depended on [the roof-data provider] — [source-of-record] ladder + built-in latitude-fit fallback"); `S4.rule.mode-choice` note; `F8-08`–`F8-10` consumed as published requirements | P0 |
-| M04-28 | **Every remote-survey fallback is recorded on the survey and travels to the designer.** Which path produced this roof — detected and accepted, detected and adjusted, or outlined by hand after a coverage or detection failure — is part of the survey record, visible on the survey and in the hand-off, because it is the single most useful thing the designer can know about how much to trust the outline. | `SRC` — `DOC04.survey-provenance` (per-field provenance; detection artefacts carry source); `F8-01`/`F8-05` (consumed — provenance travels and a tier change is shown) | P0 |
+| M04-25 | **Imagery coverage is a fact about a location, never a promise the product makes.** Usable satellite imagery exists for some addresses and not others, and the gaps are real and unevenly distributed within any one market. The product never states or implies coverage it has not established for the address in front of it, never presents a national or market-level coverage claim, and never treats a coverage gap as an error the operator caused. Where coverage is absent, mode rule 3 applies: remote is not possible for that address and physical is required (M04-05). | `SRC` — `R5` (the ruling's stated reason, restated market-neutrally: real roof-data coverage gaps in the launch market make any dependency on that data "a product-breaking bet"; the market fact itself lives in `foundations/F1`) *(shared — the imagery/coverage half; the energy source-of-record half is `modules/M05`'s)*; `DOC07.google-enhancement-only` ("coverage is patchy and that is fine"); `S4.rule.mode-choice` (rule 3) · honest-state law `F8-34` | P0 |
+| M04-26 | **Coverage failure has its own screen, and it is not a dead end.** The message is plain and blames nothing: *"No satellite imagery available for this address."* Two ways forward are offered on that screen — **outline the roof on a blank canvas** (known-distance calibration, M04-11; it costs nothing and always works, M04-22) or **book a physical survey** (M04-57's visit). The survey continues from either. | `SRC` — `S4.screen.4` (quoted verbatim, including *"Not a dead end."*); `S4.wrong.2` (no roof-data coverage for the address — the source records that these gaps are real across parts of the launch market) | P0 |
+| M04-27 | **A coverage failure never degrades an energy figure.** Energy output has never depended on the imagery capability: its source of record, its database ladder and its labelled fallback are `foundations/F8`'s (`F8-08`–`F8-10`) and are computed independently of whether imagery existed for this address. A survey that fell back to a manual outline still yields a fully labelled energy figure, and no screen in this module implies otherwise. | `SRC` — `R5` (post-overlay reading: "energy figures never depended on [the roof-data provider] — [source-of-record] ladder + built-in latitude-fit fallback"); `S4.rule.mode-choice` note; `F8-08`–`F8-10` consumed as published requirements | P0 |
+| M04-28 | **Every remote-survey fallback is recorded on the survey and travels to the designer.** Which basis this roof was outlined on — the pinned imagery tile, or a blank canvas after a coverage failure — is part of the survey record, visible on the survey and in the hand-off, because it is the single most useful thing the designer can know about how much to trust the outline. | `SRC` — `DOC04.survey-provenance` (per-field provenance; detection artefacts carry source); `F8-01`/`F8-05` (consumed — provenance travels and a tier change is shown) | P0 |
 
 **Behavior detail.** The coverage-failure screen is written as information, not as an apology or an
 error. It states what is not available for this address, offers the two ways forward with equal
@@ -377,8 +321,8 @@ because it keeps the ten-minute path (`M04-07`) alive. Where the lead is commerc
 it recommends booking the visit first, because rule 2 requires the visit before quoting anyway
 (`M04-05`).
 
-The reason this failure is designed rather than handled is `R5`'s: the roof-data capability's
-coverage is genuinely patchy in the launch market, and a product that treats a coverage gap as an
+The reason this failure is designed rather than handled is `R5`'s: imagery coverage is
+genuinely patchy in the launch market, and a product that treats a coverage gap as an
 exception would break for a large share of real addresses. The suite's position is stated once and
 holds everywhere: the capability is an **enhancement, never a dependency** (`M04-09`), and every
 path it serves has a manual equivalent that costs nothing.
@@ -390,24 +334,21 @@ book-a-visit route offered on the same screen.
 
 - *No coverage for the address* (`S4.wrong.2`) → the coverage-failure screen with both routes; not
   a dead end (M04-26).
-- *Coverage exists but is thin — imagery only, no roof data* → detection proceeds from imagery under
-  §M04.3's honesty rules and its confidence carries the difference (M04-16).
 - *Coverage failure on a commercial & industrial lead* → the visit is recommended, and rule 2 is
   stated (M04-05).
-- *Operator retries the same address hoping for a different answer* → the retry is allowed and, if
-  it calls the detector, is metered like any other run (M04-23); nothing about the address is
-  recorded as permanently uncovered.
+- *Operator retries the same address hoping for a different answer* → the retry is allowed and costs
+  nothing; nothing about the address is recorded as permanently uncovered.
 
 **Acceptance criteria.**
 
-- Given an address with no detailed roof data, when the survey reaches detection, then the
+- Given an address with no usable imagery, when the tile fetch completes, then the
   coverage-failure message renders verbatim and both the manual-outline and book-a-visit routes are
   offered (M04-26).
 - Given a survey completed by manual outline after a coverage failure, when its energy figure is
   produced, then the figure carries its own source label per `F8-08` and is not marked down,
   blocked or qualified by the coverage failure (M04-27).
-- Given any completed remote survey, when the designer opens it, then the path that produced the
-  roof — detected, adjusted or hand-outlined — is stated (M04-28).
+- Given any completed remote survey, when the designer opens it, then the basis the roof was
+  outlined on — imagery or a blank canvas — is stated (M04-28).
 - Given any surface in this module, when it mentions coverage, then it states only what is true for
   the address at hand and makes no market-level coverage claim (M04-25).
 
@@ -421,7 +362,7 @@ after coverage failure · survey completed by fallback path (which path).
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | M04-29 | **What a remote survey cannot determine is stated on screen, as a required part of the flow.** Not a help article, not a footnote at proposal time: the remote survey ends on a **"Gaps to fill"** screen listing what it could not establish. The list exists because the honest limits of a remote survey are exactly the facts a rep needs before they promise anything to a customer. | `SRC` — `S4.rule.remote-cannot` ("worth stating on screen"); `S4.screen.5` ("Gaps to fill: what remote could not determine … each with 'ask the customer' or 'capture on site'") | P0 |
-| M04-30 | **The list is the source's five, carried whole:** (1) **the meter, the sanctioned load, the main panel and whether it has room**; (2) **roof condition, age, waterproofing, structural doubts**; (3) **access — stairs, lift, crane, lane width for a truck**; (4) **shading from anything not visible from above** — *"a neighbour's wall, a tree at ground level"*; (5) **whether the customer actually owns that roof**. No remote survey is complete without this list being presented, and no item may be dropped from it because a detector produced *something* nearby. | `SRC` — `S4.rule.remote-cannot` (all five, verbatim); `S4.wrong.4` (item 4 is the failure "a tall neighbouring building is missed" stated as a standing limit rather than a bug) | P0 |
+| M04-30 | **The list is the source's five, carried whole:** (1) **the meter, the sanctioned load, the main panel and whether it has room**; (2) **roof condition, age, waterproofing, structural doubts**; (3) **access — stairs, lift, crane, lane width for a truck**; (4) **shading from anything not visible from above** — *"a neighbour's wall, a tree at ground level"*; (5) **whether the customer actually owns that roof**. No remote survey is complete without this list being presented, and no item may be dropped from it. | `SRC` — `S4.rule.remote-cannot` (all five, verbatim); `S4.wrong.4` (item 4 is the failure "a tall neighbouring building is missed" stated as a standing limit rather than a bug) | P0 |
 | M04-31 | **Every gap is a first-class record with exactly four resolutions: ask the customer · capture on site · resolved · waived.** A gap is not a checkbox and not a note — it has a state, an owner and a history. Resolving one records what was established and by whom; waiving one records who waived it and why. Open gaps are visible on the survey, on the lead and in the hand-off to the designer until they are closed. | `SRC` — `DOC04.survey-gaps` (docs/04, verbatim: "each gap resolves as ask_customer / capture_on_site / resolved / waived") · audit obligation per `F2-22` | P0 |
 | M04-32 | **Booking a physical visit pulls the open capture-on-site gaps into that visit's guided flow.** The gaps a remote survey could not close become the visit's agenda: the guided capture opens with those steps present and marked as the reason the visit exists, so the surveyor cannot arrive without knowing what the desk could not answer. | `SRC` — `DOC04.survey-gaps` (verbatim: "Physical-visit booking pulls the open capture_on_site set into the guided flow"); `DOC04.visits` (booking a visit for open on-site gaps schedules here) | P0 |
 | M04-33 | **A proposal built while gaps are open says so where the gaps matter, and never presents a remote survey as a complete site picture.** The open-gap count travels with the survey into the design and the proposal; the document's own honesty line is `F8-22`'s and is not duplicated or softened here. Nothing in this module blocks a proposal because gaps are open — the source's whole point is that remote data is sellable — but nothing in it lets the gaps disappear either. | `SRC` — `S4.rule.honesty` ("legitimate and sellable — it just must not claim to be a site survey") *(shared — the document line and its rendering are `foundations/F8`'s `F8-22`; the proposal surface is `modules/M06`'s)*; `S4.screen.5` | P0 |
@@ -453,8 +394,8 @@ for the capture-on-site route.
 
 **Edge cases & what-goes-wrong.**
 
-- *A tall neighbouring building is missed by the detector* (`S4.wrong.4`) → gap 4 is on the list by
-  construction, in every remote survey, whether or not the detector saw anything (M04-30).
+- *A tall neighbouring building is not visible from above* (`S4.wrong.4`) → gap 4 is on the list by
+  construction, in every remote survey (M04-30).
 - *The rep wants to skip the gaps screen* → it is part of the flow, not a modal to dismiss; gaps may
   all be waived with reasons, but they are shown (M04-29, M04-31).
 - *A gap is waived and later proves to matter* → the waiver, its author and its reason are on the
@@ -467,7 +408,7 @@ for the capture-on-site route.
 
 **Acceptance criteria.**
 
-- Given a completed remote detection, when the flow continues, then the gaps screen renders with all
+- Given a completed remote outline, when the flow continues, then the gaps screen renders with all
   five items present (M04-29, M04-30).
 - Given any gap, when it is acted on, then it takes exactly one of the four resolutions and its
   resolution, actor and reason (where waived) are recorded (M04-31).
@@ -844,9 +785,9 @@ corrected on site.
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M04-63 | **A submitted survey hands the designer a complete, named brief — not a folder.** The hand-off carries, as one readable thing: the **five capture groups** with every value and its provenance (`M04-35`); every **photograph** with its tag, source and pin (`M04-54`); the **flagged and skipped** items stated as named absences (`M04-51`); the **open gaps** with their states (`M04-31`); the **access constraints** (`M04-44`); the **sanctioned load** (`M04-45`); the **structural observations** as observations (`F8-25`); and, for a remote survey, the **pinned tile**, the **reviewed roof** and the **per-detection confidence and provenance** (`M04-10`, `M04-16`, `M04-18`). | `SRC` — `S4.screen.9` ("Submit hands off to the designer"); `S4.rule.capture` (the groups); `DOC04.photos-reference` ("travel to the designer attached to the survey"); `DOC04.survey-gaps`; `DOC04.survey-provenance` | P0 |
-| M04-64 | **The designer receives what the survey knows and what it does not — with equal prominence.** A missing meter photograph, a waived gap, a skipped step, a low-confidence detection accepted unchanged and an inaccessible roof are all first-class content of the hand-off, not omissions the designer must notice. The absence of a fact is a fact. | `SRC` — `S4.wrong.12` ("if submitted anyway, the designer sees the gap explicitly"); `S4.wrong.10` ("designer sees it before designing"); `S4.rec.1` (the second-trip logic, applied to the receiving end); `F8-01` (a number whose tier cannot be established is not rendered as a number) | P0 |
-| M04-65 | **Detected geometry crosses into a design only as a validated artifact, and never as raw detector output.** The doorway of `M04-24` is the only route: version → pinned tile → geometry → bounds → confidence, per-entity, with anything failing validation dropped and its reason stated. `modules/M05-design-studio.md` receives that artifact; it does not read a detector. | `SRC` — `DOC05.ai-doorway` (docs/05; restated in docs/engineering/07 §3) *(shared — the artifact's production and validation are this module's; its application and entity stamping inside a design are `modules/M05`'s)* | P0 |
+| M04-63 | **A submitted survey hands the designer a complete, named brief — not a folder.** The hand-off carries, as one readable thing: the **five capture groups** with every value and its provenance (`M04-35`); every **photograph** with its tag, source and pin (`M04-54`); the **flagged and skipped** items stated as named absences (`M04-51`); the **open gaps** with their states (`M04-31`); the **access constraints** (`M04-44`); the **sanctioned load** (`M04-45`); the **structural observations** as observations (`F8-25`); and, for a remote survey, the **pinned tile**, the **outlined roof** and its **basis** (`M04-10`, `M04-28`). | `SRC` — `S4.screen.9` ("Submit hands off to the designer"); `S4.rule.capture` (the groups); `DOC04.photos-reference` ("travel to the designer attached to the survey"); `DOC04.survey-gaps`; `DOC04.survey-provenance` | P0 |
+| M04-64 | **The designer receives what the survey knows and what it does not — with equal prominence.** A missing meter photograph, a waived gap, a skipped step, and an inaccessible roof are all first-class content of the hand-off, not omissions the designer must notice. The absence of a fact is a fact. | `SRC` — `S4.wrong.12` ("if submitted anyway, the designer sees the gap explicitly"); `S4.wrong.10` ("designer sees it before designing"); `S4.rec.1` (the second-trip logic, applied to the receiving end); `F8-01` (a number whose tier cannot be established is not rendered as a number) | P0 |
+| M04-65 | **STRUCK 2026-11-01 by owner ruling — the product has no automatic roof detection: every roof is outlined by hand.** It read: *Detected geometry crosses into a design only as a validated artifact, and never as raw detector output.* | `SRC` — `DOC05.ai-doorway` (docs/05; restated in docs/engineering/07 §3) *(shared — the artifact's production and validation are this module's; its application and entity stamping inside a design are `modules/M05`'s)* | — |
 | M04-66 | **A new survey version does not silently rewrite an existing design or a sent document.** When a revisit supersedes the version a design was built from, the design's own freshness comparison surfaces the difference (`F8-13`, `F8-14`) and the provenance change is shown before anything commits (`M04-37`); figures inside an already-sent document never move (`F8-15`). What this module guarantees is that the newer facts are available and visibly newer — not that they are applied behind someone's back. The design-side reconciliation is **ruled (owner ruling 2026-08-04)**: the design is marked "survey updated — review needed" with the designer notified, draft proposals on it are blocked from sending until review, and sent proposals stay pinned (`M05-13`). | `SRC` — `DOC04.survey-versioned` (superseded state); `F8-13`, `F8-14`, `F8-15`, `F8-05` (consumed as published requirements) · reconciliation per owner ruling 2026-08-04 | P0 |
 
 **Behavior detail.** The hand-off is a screen, not a payload: the designer opens the survey and
@@ -855,10 +796,8 @@ is what shades it, here is where the meter is and what it says, here is how mate
 here is what I could not check, here is what I was unsure about. Everything in `M04-63` is on that
 screen in that order, with the photographs inline against the group they belong to.
 
-The remote survey's hand-off adds the pinned tile and the reviewed roof, and it is explicit about
-how the roof came to be: detected and accepted, detected and adjusted, or drawn by hand
-(`M04-28`). A designer treating a hand-drawn outline the same as a high-confidence detection is
-making a mistake the product could have prevented by saying which one it was.
+The remote survey's hand-off adds the pinned tile and the outlined roof, and it says which basis
+the roof was outlined on — the imagery tile or a blank canvas (`M04-28`).
 
 Permissions: reading a submitted survey follows the lead or site's visibility (`M04-61`); the
 Design Engineer's assigned scope is what puts a submitted survey in front of them.
@@ -873,17 +812,13 @@ Design Engineer's assigned scope is what puts a submitted survey in front of the
   newer; nothing is rewritten under the designer (M04-66) and the ruled reconciliation applies —
   review-needed marker, designer notified, drafts blocked from sending, sent pinned (owner
   ruling 2026-08-04).
-- *A detection artifact fails validation entirely* → nothing crosses; the designer starts from the
-  pinned tile and traces manually (M04-65, M04-11).
 
 **Acceptance criteria.**
 
 - Given a submitted survey, when the designer opens it, then every item of `M04-63`'s list is
   present and attributable (M04-63).
-- Given a survey with missing, waived or low-confidence content, when the designer opens it, then
+- Given a survey with missing or waived content, when the designer opens it, then
   each is stated as prominently as the captured content (M04-64).
-- Given a reviewed detection, when a design is started from it, then only validated entities cross
-  and every dropped entity carries a stated reason (M04-65).
 - Given a design built from survey version 1, when version 2 is submitted, then nothing in the
   existing design or in any sent document changes automatically and the difference is surfaced
   (M04-66).
@@ -906,10 +841,8 @@ against an in-progress design.
   read by `modules/M09-field-workforce.md` for the field-side view of the same day.
 - **The survey → design hand-off** (§M04.12) — the captured groups, photographs, flagged absences,
   open gaps, access constraints, sanctioned load, structural observations and, for remote surveys,
-  the pinned tile and reviewed roof with per-detection confidence.
-- **The validated detection artifact** (`M04-24`, `M04-65`) — the only route by which detected
-  geometry enters a design.
-- **The pinned imagery tile** (`M04-10`) — the single image a survey, a detection and a design all
+  the pinned tile and the outlined roof with its basis.
+- **The pinned imagery tile** (`M04-10`) — the single image a survey and a design both
   refer to.
 - **The sanctioned load** (`M04-45`) — the site figure `modules/M05`'s overrun warning reads.
 - **Survey provenance** (`M04-34`, `M04-35`) — remote = `derived`, physical = `measured`, per field,
@@ -928,12 +861,10 @@ against an in-progress design.
 | `foundations/F4-data-integrity.md` | The survey versioning policy and its version-kept notice (`F4-14`, `F4-25`), forward-only visit status (`F4-17`), capture-time semantics (`F4-19`), submission idempotency (`F4-07`), the never-unrecoverable guarantee (`F4-21`) and the never-blocking rule (`F4-27`) — referenced, never restated |
 | `foundations/F6-notifications-and-search.md` | The notification types this module raises (survey submitted / ready for design; visit rescheduled) |
 | `foundations/F7-design-language.md` | The mobile shell and its role-adaptive centre action (`F7-22`), the sheet grammar (`F7-21`), the speed budget (`F7-37`), the voice rules (`F7-42`) and the per-screen Definition of Done (`F7-43`) |
-| `foundations/F8-data-honesty.md` | The four provenance tiers (`F8-02`, `F8-03`), per-detection confidence rendering (`F8-01`, `F8-07`), the shown tier change (`F8-05`), the imagery-basis document line (`F8-22`), the never-computed structural law (`F8-25`), honest failure (`F8-36`) and honest state copy (`F8-34`) |
-| `04-business-model.md` | The AI-detection meter's definition and the manual-path guarantee (`BM-16`, `BM-19`); no rate, bundle size or price appears in this module |
+| `foundations/F8-data-honesty.md` | The four provenance tiers (`F8-02`, `F8-03`), the shown tier change (`F8-05`), the imagery-basis document line (`F8-22`), the never-computed structural law (`F8-25`), honest failure (`F8-36`) and honest state copy (`F8-34`) |
 | `modules/M01-onboarding-and-tenant-config.md` | The site record's fields and the tenant's declared segment; the demo project whose survey is pre-populated per market pack (`M01-27`) |
 | `modules/M02-crm-and-leads.md` | The lead and its address, the booking act that creates a visit (`M02-46`), the transactional send rule — connected-channel automatic with copy-paste fallback by owner ruling 2026-08-04 (`M02-47`, `M02-48`), the qualification answer that pre-resolves the roof-ownership gap (`M02-39`) and the single activity timeline this module writes into (`M02-35`) |
-| `modules/M05-design-studio.md` | Application and entity stamping of the detection artifact; the canvas that renders the same pinned tile; the sanctioned-load soft cap; the design-freshness comparison when a survey version supersedes another |
-| `modules/M12-platform-billing.md` | The server-side detection allowance check and the usage ledger behind `M04-23` |
+| `modules/M05-design-studio.md` | The canvas that renders the same pinned tile; the sanctioned-load soft cap; the design-freshness comparison when a survey version supersedes another |
 | `modules/M13-dashboards-and-reporting.md` | The Survey Engineer's role home into which `M04-38`'s visits list composes |
 
 ## 5. Non-goals
@@ -954,12 +885,12 @@ against an in-progress design.
 - **No computed structural verdict, at any scale** (`F8-25`). Structural capture is observations
   plus photographs — *"observations only, never a verdict"* (`S4.rule.capture`). No score, no
   adequacy flag, no "safe / unsafe" control exists anywhere in this module.
-- **No silent application of a detection** (`S4.screen.3`). Accept, adjust or reject; there is no
-  configuration, tier, role or tenant setting that turns auto-apply on.
-- **No dependency on any one imagery or roof-data provider** (`R5`, `DOC07.google-enhancement-only`).
+- **No automatic roof detection** (owner ruling 2026-11-01). No AI model and no roof-data feed
+  produces a roof; the operator outlines every one.
+- **No dependency on any one imagery provider** (`R5`, `DOC07.google-enhancement-only`).
   Every path a provider serves has a manual equivalent that costs nothing and always works
   (`M04-22`). No feature is designed such that a provider's absence removes it.
-- **No metered manual work** (`BM-19`). Outlining by hand is never counted, never gated and never
+- **No metered manual work** (`M04-22`). Outlining by hand is never counted, never gated and never
   degraded, at any tier or entitlement state.
 - **No device-held queue but the photograph queue** (`M04-55`). The app requires a live connection;
   photographs captured in the field are the one exception, held on the device and uploaded when the

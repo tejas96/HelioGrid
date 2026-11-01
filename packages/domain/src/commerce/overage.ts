@@ -44,7 +44,6 @@ export const ADD_ON_LEAD_DAYS = 2;
  */
 const LEDGER_UNITS_PER_BILLED_UNIT: Record<BilledLedgerMeter, number | null> = {
   voice_minutes: 60,
-  ai_roof_detections: 1,
   marketing_sends: null,
   tracked_field_seats: null,
 };

@@ -1,5 +1,5 @@
 /**
- * The canonical meter set — five meters, a closed list (`BM-16`). These are the only usage lines a
+ * The canonical meter set — four meters, a closed list (`BM-16`). These are the only usage lines a
  * tenant can ever be billed for, and the list is closed so that "what can this cost me?" has one
  * answer a salesperson can say out loud.
  *
@@ -22,7 +22,6 @@
  */
 export const METERS = [
   'voice_minutes',
-  'ai_roof_detections',
   'storage',
   'marketing_sends',
   'tracked_field_seats',

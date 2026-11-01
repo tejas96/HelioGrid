@@ -9,7 +9,6 @@ import type { PriceBookPack } from '../../src/pricing/pack';
 import { IN_PAYMENT_RAILS } from '../../src/rails/pack';
 
 const VOICE_RATE = 600; // ₹6 a minute (BM-41)
-const DETECTION_RATE = 1_000; // ₹10 a detection (BM-41)
 
 function voiceAddOns(allowance: TierLimit | undefined, seconds: number) {
   const allowances = new Map<BilledLedgerMeter, TierLimit>();
@@ -65,22 +64,22 @@ describe('overage add-ons (M12-35)', () => {
       new Map<BilledLedgerMeter, TierLimit>([
         ['tracked_field_seats', 0],
         ['marketing_sends', 0],
-        ['ai_roof_detections', 30],
+        ['voice_minutes', 400],
       ]),
       new Map<BilledLedgerMeter, number>([
         ['tracked_field_seats', 9_000_000],
         ['marketing_sends', 500],
-        ['ai_roof_detections', 32],
+        ['voice_minutes', 402 * 60],
       ]),
     );
     expect(lines).toEqual([
       {
-        meter: 'ai_roof_detections',
-        used: 32,
-        allowance: 30,
+        meter: 'voice_minutes',
+        used: 402,
+        allowance: 400,
         quantity: 2,
-        rate: minorUnits(DETECTION_RATE),
-        amount: minorUnits(2 * DETECTION_RATE),
+        rate: minorUnits(VOICE_RATE),
+        amount: minorUnits(2 * VOICE_RATE),
       },
     ]);
   });

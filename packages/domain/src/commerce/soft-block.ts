@@ -57,7 +57,6 @@ export const BILLING_CAPABILITIES = [
   'new_file_upload',
   'pending_field_photo_upload',
   'voice_agent',
-  'ai_roof_detections',
   'team_invites',
 ] as const;
 
@@ -190,16 +189,7 @@ export const STATE_CAPABILITY_MATRIX: Readonly<
     expired: PAUSED,
     cancelled_post_period: PAUSED,
   },
-  /* "AI roof detections" — manual outlining is never metered and never pauses (`BM-19`). */
-  ai_roof_detections: {
-    trialing: WITHIN_ALLOWANCE,
-    active: WITHIN_ALLOWANCE,
-    past_due_full_function: WITHIN_ALLOWANCE,
-    past_due_metered_paused: PAUSED,
-    halted: PAUSED,
-    expired: PAUSED,
-    cancelled_post_period: PAUSED,
-  },
+
   /* "Team invites (OTP spend)" — absorbed cost, but real spend, so it pauses with the metered. */
   team_invites: {
     trialing: AVAILABLE,

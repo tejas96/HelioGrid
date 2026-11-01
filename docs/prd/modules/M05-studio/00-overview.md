@@ -21,7 +21,7 @@ requirement carries Given/When/Then acceptance criteria.
 | # | Document | Covers | Keys | Rulings |
 |---|---|---|---|---|
 | 01 | `01-step1-site-setup.md` | Address/map/imagery, location confirm, solar data, calibration engine, the shared canvas contract | 115 | 10 |
-| 02 | `02-step2-roof.md` | Roof drawing & snapping, conversion engines (gable/hip/skeleton/wavefront), setbacks & parapets, measure/calibrate, AI detection pipeline | 183 | 7 |
+| 02 | `02-step2-roof.md` | Roof drawing & snapping, conversion engines (gable/hip/skeleton/wavefront), setbacks & parapets, measure/calibrate | 183 | 7 |
 | 03 | `03-step3-obstructions.md` | 11 obstruction types, capability/bridging system, platform conversion, 3D representation & shadow parity | 54 | 5 |
 | 04 | `04-step4-components.md` | Panel/capacity/inverter/battery selection, the resolved catalog, the 11-column compare engine | 92 | 5 |
 | 05 | `05-step6-editor.md` | Layout & auto-design, tools, table settings, the 3D scene with sun simulation, the parametric structure model, Design Health | 215 | 5 |

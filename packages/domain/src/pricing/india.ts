@@ -63,7 +63,6 @@ const STARTER: TierBookRow = {
        and an overage rate, not a missing row. Tracked seats likewise start at 0. */
     meterBundles: {
       voice_minutes: 0,
-      ai_roof_detections: 30,
       marketing_sends: 500,
       tracked_field_seats: 0,
     },
@@ -78,7 +77,6 @@ const GROWTH: TierBookRow = {
     creationsPerCycle: { proposals: 300, active_projects: 'unlimited' },
     meterBundles: {
       voice_minutes: 0,
-      ai_roof_detections: 100,
       marketing_sends: 2_000,
       tracked_field_seats: 3,
     },
@@ -95,7 +93,6 @@ const PRO: TierBookRow = {
     /* `BM-41`, `BM-14` — the 400-minute voice bundle no competitor offers at any price. */
     meterBundles: {
       voice_minutes: 400,
-      ai_roof_detections: 400,
       marketing_sends: 10_000,
       tracked_field_seats: 10,
     },
@@ -112,7 +109,6 @@ const ENTERPRISE: TierBookRow = {
     creationsPerCycle: { proposals: 'unlimited', active_projects: 'unlimited' },
     meterBundles: {
       voice_minutes: 'custom',
-      ai_roof_detections: 'custom',
       marketing_sends: 'custom',
       tracked_field_seats: 'custom',
     },
@@ -177,13 +173,6 @@ export const IN_PRICE_BOOK: PriceBookPack = {
       worstCaseCogs: rateImpliedCeiling(minorUnits(428)),
       draft: false,
     },
-    /* `BM-41` — ₹10 a detection past the bundle. A detection that returned nothing bills nothing (`BM-19`). */
-    ai_roof_detections: {
-      kind: 'per_unit',
-      rate: minorUnits(1_000),
-      worstCaseCogs: rateImpliedCeiling(minorUnits(714)),
-      draft: false,
-    },
     storage: { kind: 'ceiling' },
     /*
      * `BM-41` — the owner's DRAFT per-channel rates. They stay draft, and the meter stays
@@ -230,7 +219,6 @@ export const IN_PRICE_BOOK: PriceBookPack = {
   trialCaps: {
     meterBundles: {
       voice_minutes: 15,
-      ai_roof_detections: 25,
       marketing_sends: 0,
       tracked_field_seats: 0,
     },

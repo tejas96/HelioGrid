@@ -250,4 +250,39 @@ describe.skipIf(skip)('entitlements are recomputed in the act that changes them 
       asRead(bookEntitlements(IN_PACK.priceBook, 'growth')),
     );
   });
+  it('a recompute deletes a limit the book no longer issues', async () => {
+    // A company the release before converted: its trial-era roof-detection limit is still stored.
+    const { tenantId, subscriptionId } = await aTrialCompany('retired');
+    const ref = `sub_retired_${tenantId}`;
+    await aCheckout(tenantId, subscriptionId, 'growth', ref);
+    await charges.recordCollected(aCharge(ref, `pay_${ref}`, NOW), CONVERTED_AT);
+    await pools.admin.db.insert(entitlement).values({
+      tenantId,
+      entitlementKey: 'ai_roof_detections',
+      limitKind: 'count',
+      limitValue: 25,
+      source: 'trial',
+      recomputedAt: new Date(NOW),
+    });
+    const storedKeys = async () =>
+      (
+        await pools.admin.db
+          .select({ key: entitlement.entitlementKey })
+          .from(entitlement)
+          .where(eq(entitlement.tenantId, tenantId))
+      )
+        .map((row) => row.key)
+        .sort();
+
+    await entitlements.repair(REPAIRED_AT);
+
+    expect(await storedKeys()).toEqual(
+      bookEntitlements(IN_PACK.priceBook, 'growth')
+        .map((one) => one.key)
+        .sort(),
+    );
+    // Nothing is left for the repair to pick again: a second run leaves the rows as they were.
+    await entitlements.repair(REPAIRED_AT + MS_PER_DAY);
+    expect(await recomputedAt(tenantId)).toEqual([REPAIRED_AT]);
+  });
 });

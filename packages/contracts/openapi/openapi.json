@@ -411,8 +411,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -462,8 +462,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -473,10 +473,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -793,8 +793,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -844,8 +844,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -855,10 +855,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -1493,8 +1493,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -1544,8 +1544,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -1555,10 +1555,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -2167,8 +2167,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -2218,8 +2218,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -2229,10 +2229,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -2814,8 +2814,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -2865,8 +2865,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -2876,10 +2876,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -3204,8 +3204,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -3255,8 +3255,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -3266,10 +3266,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -3594,8 +3594,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -3645,8 +3645,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -3656,10 +3656,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -4111,8 +4111,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -4162,8 +4162,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -4173,10 +4173,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -4548,8 +4548,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -4599,8 +4599,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -4610,10 +4610,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -5129,8 +5129,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -5180,8 +5180,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -5191,10 +5191,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -6152,8 +6152,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -6203,8 +6203,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -6214,10 +6214,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -7397,8 +7397,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -7448,8 +7448,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -7459,10 +7459,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -8317,8 +8317,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -8368,8 +8368,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -8379,10 +8379,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -9602,8 +9602,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -9653,8 +9653,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -9664,10 +9664,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -10631,8 +10631,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -10682,8 +10682,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -10693,10 +10693,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -11605,8 +11605,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -11656,8 +11656,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -11667,10 +11667,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -12626,8 +12626,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -12677,8 +12677,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -12688,10 +12688,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -13654,8 +13654,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -13705,8 +13705,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -13716,10 +13716,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -14660,8 +14660,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -14711,8 +14711,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -14722,10 +14722,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -15236,8 +15236,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -15287,8 +15287,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -15298,10 +15298,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -16021,8 +16021,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -16072,8 +16072,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -16083,10 +16083,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -16668,8 +16668,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -16719,8 +16719,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -16730,10 +16730,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -17359,8 +17359,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -17410,8 +17410,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -17421,10 +17421,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -18174,8 +18174,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -18225,8 +18225,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -18236,10 +18236,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -19434,8 +19434,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -19485,8 +19485,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -19496,10 +19496,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -20643,8 +20643,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -20694,8 +20694,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -20705,10 +20705,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -21499,8 +21499,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -21550,8 +21550,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -21561,10 +21561,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -22082,8 +22082,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -22133,8 +22133,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -22144,10 +22144,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -22546,8 +22546,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -22597,8 +22597,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -22608,10 +22608,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -24111,8 +24111,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -24162,8 +24162,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -24173,10 +24173,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -25589,8 +25589,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -25640,8 +25640,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -25651,10 +25651,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -26138,8 +26138,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -26189,8 +26189,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -26200,10 +26200,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -26708,8 +26708,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -26759,8 +26759,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -26770,10 +26770,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -27349,8 +27349,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -27400,8 +27400,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -27411,10 +27411,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -27819,8 +27819,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -27870,8 +27870,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -27881,10 +27881,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -28183,8 +28183,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -28234,8 +28234,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -28245,10 +28245,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -28759,8 +28759,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -28810,8 +28810,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -28821,10 +28821,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -29439,8 +29439,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -29490,8 +29490,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -29501,10 +29501,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -29914,8 +29914,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -29965,8 +29965,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -29976,10 +29976,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -30422,8 +30422,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -30473,8 +30473,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -30484,10 +30484,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -30986,8 +30986,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -31037,8 +31037,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -31048,10 +31048,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -31441,8 +31441,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -31492,8 +31492,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -31503,10 +31503,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -31895,8 +31895,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -31946,8 +31946,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -31957,10 +31957,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -32401,8 +32401,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -32452,8 +32452,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -32463,10 +32463,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -33005,8 +33005,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -33056,8 +33056,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -33067,10 +33067,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -33411,8 +33411,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -33462,8 +33462,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -33473,10 +33473,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -33848,8 +33848,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -33899,8 +33899,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -33910,10 +33910,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -34277,8 +34277,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -34328,8 +34328,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -34339,10 +34339,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -34708,8 +34708,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -34759,8 +34759,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -34770,10 +34770,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -35163,8 +35163,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -35214,8 +35214,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -35225,10 +35225,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -35593,8 +35593,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -35644,8 +35644,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -35655,10 +35655,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -36108,8 +36108,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -36159,8 +36159,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -36170,10 +36170,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -36611,8 +36611,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -36662,8 +36662,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -36673,10 +36673,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -37097,8 +37097,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -37148,8 +37148,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -37159,10 +37159,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -37583,8 +37583,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -37634,8 +37634,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -37645,10 +37645,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -38148,8 +38148,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -38199,8 +38199,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -38210,10 +38210,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -38636,8 +38636,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -38687,8 +38687,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -38698,10 +38698,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -39159,8 +39159,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -39210,8 +39210,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -39221,10 +39221,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -39734,8 +39734,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -39785,8 +39785,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -39796,10 +39796,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -40329,8 +40329,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -40380,8 +40380,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -40391,10 +40391,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -40844,8 +40844,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -40895,8 +40895,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -40906,10 +40906,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -41319,8 +41319,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -41370,8 +41370,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -41381,10 +41381,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -41799,8 +41799,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -41850,8 +41850,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -41861,10 +41861,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -42331,8 +42331,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -42382,8 +42382,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -42393,10 +42393,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -42823,8 +42823,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -42874,8 +42874,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -42885,10 +42885,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -43380,8 +43380,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -43431,8 +43431,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -43442,10 +43442,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -44012,8 +44012,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -44063,8 +44063,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -44074,10 +44074,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -44627,8 +44627,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -44678,8 +44678,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -44689,10 +44689,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -45072,8 +45072,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -45123,8 +45123,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -45134,10 +45134,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -46531,8 +46531,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -46582,8 +46582,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -46593,10 +46593,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -47048,8 +47048,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -47099,8 +47099,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -47110,10 +47110,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -47692,8 +47692,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -47743,8 +47743,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -47754,10 +47754,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -48115,8 +48115,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -48166,8 +48166,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -48177,10 +48177,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -48573,8 +48573,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -48624,8 +48624,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -48635,10 +48635,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -49055,8 +49055,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -49106,8 +49106,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -49117,10 +49117,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -49504,8 +49504,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -49555,8 +49555,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -49566,10 +49566,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -50063,8 +50063,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -50114,8 +50114,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -50125,10 +50125,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -50738,8 +50738,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -50789,8 +50789,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -50800,10 +50800,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -51512,8 +51512,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -51563,8 +51563,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -51574,10 +51574,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -52640,8 +52640,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -52691,8 +52691,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -52702,10 +52702,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -53137,8 +53137,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -53188,8 +53188,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -53199,10 +53199,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -53711,8 +53711,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -53762,8 +53762,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -53773,10 +53773,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -54256,8 +54256,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -54307,8 +54307,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -54318,10 +54318,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -54864,8 +54864,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -54915,8 +54915,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -54926,10 +54926,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -55531,8 +55531,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -55582,8 +55582,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -55593,10 +55593,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -56208,8 +56208,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -56259,8 +56259,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -56270,10 +56270,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -56830,8 +56830,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -56881,8 +56881,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -56892,10 +56892,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -57397,8 +57397,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -57448,8 +57448,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -57459,10 +57459,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -57958,8 +57958,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -58009,8 +58009,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -58020,10 +58020,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -58436,8 +58436,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -58487,8 +58487,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -58498,10 +58498,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -58894,8 +58894,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -58945,8 +58945,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -58956,10 +58956,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -59358,8 +59358,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -59409,8 +59409,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -59420,10 +59420,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -59765,8 +59765,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -59816,8 +59816,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -59827,10 +59827,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {
@@ -60190,8 +60190,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "phase": {
@@ -60241,8 +60241,8 @@
                                         "new_file_upload",
                                         "pending_field_photo_upload",
                                         "voice_agent",
-                                        "ai_roof_detections",
-                                        "team_invites"
+                                        "team_invites",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "key": {
@@ -60252,10 +60252,10 @@
                                         "proposals_per_cycle",
                                         "active_projects",
                                         "voice_minutes",
-                                        "ai_roof_detections",
                                         "marketing_sends",
                                         "tracked_field_seats",
-                                        "storage_gb"
+                                        "storage_gb",
+                                        "ai_roof_detections"
                                       ]
                                     },
                                     "resetsAt": {

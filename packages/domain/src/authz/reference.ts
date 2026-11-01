@@ -35,7 +35,6 @@ export const REFERENCE_ROWS = [
   'survey.resolve_survey_gaps',
   'studio.create_edit_designs',
   'studio.approve_designs',
-  'studio.run_roof_detection',
   'proposals.create_edit_proposals',
   'proposals.send_proposals',
   'sales.agent_performance',

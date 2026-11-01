@@ -42,22 +42,4 @@ export const STUDIO_ROWS = {
       marketing: DENIED,
     },
   },
-  // Run in-canvas AI roof detection on the studio canvas (manual tracing inside `create-edit-designs` is never met
-  'studio.run_roof_detection': {
-    rowKey: 'F2.M05.run-roof-detection',
-    grants: {
-      epc_owner: GRANTED,
-      sales_manager: DENIED,
-      sales_executive: DENIED,
-      survey_engineer: DENIED,
-      design_engineer: GRANTED,
-      project_manager: DENIED,
-      field_technician: DENIED,
-      installation_team_member: DENIED,
-      hr_admin: DENIED,
-      finance: DENIED,
-      operations: DENIED,
-      marketing: DENIED,
-    },
-  },
 } as const satisfies Record<string, CapabilityRow>;

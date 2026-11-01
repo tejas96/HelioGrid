@@ -15,7 +15,6 @@ const HALTED_PAUSES: BillingCapability[] = [
   'sell_and_deliver',
   'new_file_upload',
   'voice_agent',
-  'ai_roof_detections',
   'team_invites',
 ];
 
@@ -26,7 +25,7 @@ describe('pauseNoticeOf — what paused, what still works, and the one act (M12-
     { phase: 'past_due_full_function', paused: [], act: 'pay' },
     {
       phase: 'past_due_metered_paused',
-      paused: ['voice_agent', 'ai_roof_detections', 'team_invites'],
+      paused: ['voice_agent', 'team_invites'],
       act: 'pay',
     },
     { phase: 'halted', paused: HALTED_PAUSES, act: 'reactivate' },

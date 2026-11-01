@@ -43,7 +43,6 @@ describe('metersBelowCogsFloor — which rows a book got wrong (BM-17, BM-41)', 
 
   it.each([
     { meter: 'voice_minutes', rate: 600 },
-    { meter: 'ai_roof_detections', rate: 1_000 },
     { meter: 'tracked_field_seats', rate: 9_900 },
   ] as const)('names $meter when its rate drops a paisa below the floor', ({ meter, rate }) => {
     const underpriced: MeterOverage = {

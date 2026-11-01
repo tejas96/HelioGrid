@@ -22,20 +22,20 @@
 - **Pre-fill from survey (Phase 5):** address/location/site details carried over, editable.
 - **Fields:** project name; customer name; customer phone; Country (India); State; DISCOM (sets default tariff); Site type Residential/Commercial; Connection Single/Three phase; Sanctioned load (kW); Electricity tariff ₹/kWh (auto-filled, editable); Average monthly bill ₹ (feeds Step-4 size suggestion); Company logo upload (max 5 MB, PNG/JPG); Ground-mount / open-access project (normal option, no PRO/tier gate D38; if not functional mark "coming soon" not "upgrade").
 - **Location:** search address (autocomplete) OR enter coordinates; satellite map (redesign pin placement — code has a FIXED pin + drag-map-underneath, confusing on touch; still land on exact roof; keep zoom); "Confirm location" → **Solar Data card** (irradiance kWh/m²/day, peak sun hours, source label → becomes PVGIS-measured once fetched).
-- **Site Intelligence (Google Solar Building Insights):** async, four states loading/unavailable/unreachable/ok; ok shows max panels (~kWp), roof area, sunshine h/yr, roof faces, imagery date + quality (HIGH/MED/BASE).
+- **Site Intelligence (Google Solar Building Insights)** — *STRUCK 2026-11-01 by owner ruling (no Google roof data):* async, four states loading/unavailable/unreachable/ok; ok shows max panels (~kWp), roof area, sunshine h/yr, roof faces, imagery date + quality (HIGH/MED/BASE).
 - **Guard:** relocating pin **>25 m WIPES the whole design** (roofs, panels, etc.) — keep guard, make it a clear undoable confirmation not a silent reset.
 
 ### 10.3 Step 2 · Roof setup (touch-first CAD)
-- **Mode toolbar:** Select · Draw roof · Detect roofs (AI) · Ortho-snap toggle · Show all measurements · Measure distance · View in 3D · Undo · Redo.
-- **AI Detect:** geometric pipeline (Google dataLayers → outline, pitch, azimuth, eave height, obstructions, per-shape confidence) then Gemini photo fallback (shapes only, no height/pitch); results as **ghosts** to accept/reject (tap ghost include/exclude, align nudge, "add selected", imagery quality/date, dropped-shape warnings).
+- **Mode toolbar:** Select · Draw roof · Ortho-snap toggle · Show all measurements · Measure distance · View in 3D · Undo · Redo.
+- **AI Detect** — *STRUCK 2026-11-01 by owner ruling (no automatic roof detection):* geometric pipeline (Google dataLayers → outline, pitch, azimuth, eave height, obstructions, per-shape confidence) then Gemini photo fallback (shapes only, no height/pitch); results as **ghosts** to accept/reject (tap ghost include/exclude, align nudge, "add selected", imagery quality/date, dropped-shape warnings).
 - **Roof list:** one chip per roof (select · lock · delete, with area).
 - **Drawing (touch):** choose Draw → tap corners; live edge-length labels; CAD snapping (angle-relative, object-snap to other roofs, alignment guide rays, right-angle marks) with visible snap on/off; tap near first point to close; "complete shape?" confirm; undo/last-point-remove; rejects too-close points with a plain message.
 - **Editing a roof (tap-select → big handles):** move vertex · insert vertex on edge · delete vertex · move whole roof · rotate whole roof (snap-to-15° control) · tap edge length to type exact metres. Per-roof action set: roof type · height & parapet · exact vertex coordinates (X/Y) · duplicate.
 - **Roof type sheet:** RCC flat · Metal shed · Tile · Ground array; where footprint allows Pitched gable (2 faces) or Pitched hip (4 faces) with ridge direction; disabled options explain why.
-- **Height & parapet sheet:** height-from-ground; "Google detected N° facing DIR — apply/dismiss" pitch/azimuth suggestion banner; pitch; "slopes toward" picker (tap low edge, compass read-out, "south is best" tip); edge setback (uniform + per-edge); parapet-wall toggle → direction, height, width, auto-skip shared walls, per-side "tap a side to add/remove its wall."
+- **Height & parapet sheet:** height-from-ground; pitch; "slopes toward" picker (tap low edge, compass read-out, "south is best" tip); edge setback (uniform + per-edge); parapet-wall toggle → direction, height, width, auto-skip shared walls, per-side "tap a side to add/remove its wall."
 - **Calibration:** measure two points → enter actual metres → applies scale correction (+ expert north offset); rescales all geometry.
 - **Dependent-items guard:** geometry change orphaning downstream items → "keep current / keep for review / remove invalid."
-- Carries roof provenance (manual / AI-detected + confidence). Add pinch-zoom + two-finger pan (missing in code).
+- Carries roof provenance (manual). Add pinch-zoom + two-finger pan (missing in code).
 
 ### 10.4 Step 3 · Obstructions
 - **Always on screen:** satellite canvas with Step-2 roofs as READ-ONLY backdrop (fill + red-dashed setback inset); every obstruction to scale with a small **ID chip** (type code + number, e.g. WT1, TR2; constant screen size at any zoom); a red-dashed **setback ring** per blocking object; north indicator; graphic scale bar; zoom in/out + live zoom % + fit view; pan/zoom free except while placing/mid-drag; undo/redo (one gesture = one step); units (m/ft).

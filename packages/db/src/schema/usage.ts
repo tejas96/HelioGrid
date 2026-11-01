@@ -1,4 +1,9 @@
-import { BILLED_LEDGER_METERS, LEDGER_METERS } from '@heliogrid/domain';
+import {
+  BILLED_LEDGER_METERS,
+  LEDGER_METERS,
+  type LedgerMeter,
+  RETIRED_LEDGER_METERS,
+} from '@heliogrid/domain';
 import { sql } from 'drizzle-orm';
 import {
   bigint,
@@ -18,8 +23,8 @@ import { uuidv7 } from '../uuid';
 import { subjectKind } from './subject';
 import { tenant } from './tenant';
 
-/** Hand-mirrors domain's tuple (invariant `enum-parity`). */
-export const usageMeter = pgEnum('usage_meter', LEDGER_METERS);
+/** Hand-mirrors domain's tuple and its retired values (invariant `enum-parity`). */
+export const usageMeter = pgEnum('usage_meter', [...LEDGER_METERS, ...RETIRED_LEDGER_METERS]);
 
 /** The billed meters as a SQL list, for a CHECK that a row names one. */
 export const BILLED_METERS = sql.raw(BILLED_LEDGER_METERS.map((meter) => `'${meter}'`).join(', '));
@@ -46,7 +51,8 @@ export const usageEvent = pgTable(
     tenantId: uuid('tenant_id')
       .notNull()
       .references(() => tenant.id),
-    meter: usageMeter('meter').notNull(),
+    // A retired value stays in the enum for the release before; nothing writes it (`D398`).
+    meter: usageMeter('meter').notNull().$type<LedgerMeter>(),
     quantity: bigint('quantity', { mode: 'number' }).notNull(),
     billable: boolean('billable').notNull(),
     /** What the unit came from — the call, the detection, the send (`F2-22`'s one pointer). */

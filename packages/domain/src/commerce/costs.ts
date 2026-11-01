@@ -31,9 +31,9 @@ export const ABSORBED_COSTS = ABSORBED_COST_NAMES satisfies readonly Exclude<
 export type AbsorbedCost = (typeof ABSORBED_COSTS)[number];
 
 /**
- * `BM-19`, `BM-23` — capabilities that carry no meter and no tier gate, for every employee on
- * every tier. Manual roof outlining is the always-available alternative when a detection bundle
- * runs out, so a tenant out of bundle can keep working by hand (`BM-19`); site check-in/out and
+ * `M04-22`, `BM-23` — capabilities that carry no meter and no tier gate, for every employee on
+ * every tier. Manual roof outlining is how every roof is made and is never metered (`M04-22`); site
+ * check-in/out and
  * visit logging are the core visit workflow and never need a tracked seat (`BM-23`).
  *
  * Declared rather than left implicit, because "no meter happens to name it" and "the product

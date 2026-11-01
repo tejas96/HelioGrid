@@ -15,7 +15,6 @@ export const ENTITLEMENT_KEYS = [
   'proposals_per_cycle',
   'active_projects',
   'voice_minutes',
-  'ai_roof_detections',
   'marketing_sends',
   'tracked_field_seats',
   'storage_gb',
@@ -62,7 +61,6 @@ type PerCycleMeter = Exclude<Meter, typeof STANDING_METER>;
 /** Each per-cycle meter's key. A `Record`, so a sixth meter fails to compile here. */
 const METER_KEY: Record<PerCycleMeter, EntitlementKey> = {
   voice_minutes: 'voice_minutes',
-  ai_roof_detections: 'ai_roof_detections',
   marketing_sends: 'marketing_sends',
   tracked_field_seats: 'tracked_field_seats',
 };

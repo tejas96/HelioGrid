@@ -26,7 +26,7 @@ file's slice exactly once.
 
 **Type:** screen · **Tier:** P0
 **Status:** designed
-**PRD rows:** M05-14 (P0), M05-15 (P0), M05-16 (P0), M05-17 (P0), M05-18 (P0), M05-19 (P0), M05-20 (P0), MS1-01 (P0), MS1-02 (P0), MS1-03 (P0), MS1-04 (P0), MS1-05 (P0), MS1-06 (P0), MS1-08 (P1), MS1-09 (P0), MS1-10 (P0), MS1-11 (P0), MS1-12 (P0), MS1-13 (P0), MS1-14 (P0), MS1-15 (P0), MS1-16 (P0), MS1-17 (P0), MS1-18 (P0), MS1-20 (P0), MS1-21 (P0), MS1-22 (P0), MS1-23 (P0)
+**PRD rows:** M05-14 (P0), M05-15 (P0), M05-16 (P0), M05-17 (P0), M05-19 (P0), M05-20 (P0), MS1-01 (P0), MS1-02 (P0), MS1-03 (P0), MS1-04 (P0), MS1-05 (P0), MS1-06 (P0), MS1-08 (P1), MS1-09 (P0), MS1-10 (P0), MS1-11 (P0), MS1-12 (P0), MS1-13 (P0), MS1-14 (P0), MS1-15 (P0), MS1-16 (P0), MS1-17 (P0), MS1-18 (P0), MS1-20 (P0), MS1-21 (P0), MS1-22 (P0)
 **DESIGN:** SCR-MS-04 → ported from the POC
 **Owed by `T-FPLAT-027`:** the first energy figure is built here, so its builder lands in `packages/domain/src/format/qualified.ts` with `energySource` REQUIRED and its unit ladder (kWh, and MWh or GWh at scale, `M05-94`); the adapter maps PVGIS's `PVGIS-SARAH3` / `PVGIS-ERA5` to `ENERGY_DATABASES`, `EnergySource`'s wire schema derives in `contracts` with the card's route, and the card emits `F8` §F8.2's events — energy figure rendered by source, fallback window entered and exited.
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step1Setup.tsx` · `3d_design_studio/src/features/solar-studio/lib/maps.ts` · `3d_design_studio/src/features/solar-studio/lib/geo.ts` · `3d_design_studio/src/features/solar-studio/lib/solarApi.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/maps.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/geo.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/solarApi.test.ts`
@@ -43,14 +43,13 @@ file's slice exactly once.
 - Given a pin move >25 m, when confirmed, then the design resets with an undo available; when cancelled, nothing changes (M05-19).
 - Given the sanctioned-load input, when it is lowered below what the design's inverters already deliver (AC kW × count), then the warning names the captured limit in kW and the design remains editable; the design-time warning is T-MS-201's (M05-20).
 - Given a tile fetch failure, when the studio opens, then the canvas opens blank with manual calibration offered, and nothing blocks (M05-16).
-- Given Site Intelligence in any of its four states, when the card renders, then the state is named honestly and no design step depends on the result (M05-18).
 - Given a lead with a completed survey, When the designer opens a new design, Then Step 1 shows customer info + CONFIRMED surveyed location with provenance hints and every field editable (MS1-01); Given an IN tenant, When Step 1 renders, Then region/utility/tariff content equals the IN pack's shipped lists (MS1-03/04); Given a typed tariff edit, When auto-fill would re-derive, Then the manual value wins (MS1-05); Given first use, When Step 1 opens, Then the walkthrough offers and never returns after dismissal (MS1-08).
 - Given an invalid phone for the market, When entered, Then an inline corrective error shows and other fields stay usable (MS1-02); Given no region chosen, Then the utility select is disabled with state-aware placeholder, and choosing a region enables it (MS1-04); Given a blank bill field, Then null (not 0) is stored and Step 4's suggestion treats it as absent (MS1-06).
 - Given any plan tier, When Step 1 renders, Then Ground Mount is enabled and functional (MS1-09); Given a site-type switch with no manual tariff edit, Then the tariff re-derives for the new type, and sanctioned load blank round-trips as 0 (MS1-10).
 - Given tenant branding exists, When a design is created, Then its proposal logo is the tenant's with zero designer action (MS1-11); Given a 12 MB file, When picked as override, Then a clear size error and no write (MS1-12).
 - Given lat 999 typed, When Locate is tapped, Then the corrective error names the bad value and nothing breaks (MS1-14); Given a Wi-Fi blip broke Maps load, When Retry is tapped after recovery, Then address search works without reload (MS1-17); Given a phone, When the user taps the map, Then the pin moves there (MS1-16); Given a switch from Search to Coordinates, Then the autocomplete listener detaches and neither method leaks into the other (MS1-13); Given the SDK failed with a pin pending, Then the overlay explains it and Confirm still works from typed coordinates (MS1-15).
 - Given a design exists, When the pin moves 100 m and Confirm is tapped, Then the dialog lists the wipe with counts and Cancel preserves all (MS1-20); Given a pending pin with the SDK loaded, When Confirm is tapped, Then the live map centre is stored with the built-in irradiance provenance until real data arrives (MS1-18); Given Change Location then no further confirm, Then the design, pin and fetched data all persist (MS1-21).
-- Given PVGIS answers after Solar, When both land, Then neither overwrite loses the other's fields and provenance reads the real source (MS1-22); Given no coverage, Then the card says so plainly and design continues manual (MS1-23).
+- Given PVGIS answers, When it lands, Then provenance reads the real source and a moved pin's result is discarded (MS1-22).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 - the ported POC tests for this area pass unchanged in the new project.
 
@@ -64,18 +63,15 @@ file's slice exactly once.
 
 **Type:** screen · **Tier:** P0
 **Status:** designed
-**PRD rows:** M05-22 (P0), M05-23 (P0), M05-24 (P0), M05-25 (P0), M05-26 (P0), M05-27 (P0), M05-28 (P0), M05-29 (P0), MS1-29 (P0), MS1-30 (P0), MS2-01 (P0), MS2-02 (P0), MS2-03 (P0), MS2-04 (P0), MS2-05 (P0), MS2-06 (P0), MS2-07 (P0), MS2-08 (P0), MS2-09 (P0), MS2-10 (P1), MS2-11 (P0), MS2-12 (P0), MS2-14 (P0), MS2-15 (P0), MS2-16 (P0), MS2-17 (P0), MS2-18 (P0), MS2-19 (P0), MS2-21 (P0), MS2-23 (P0), MS2-27 (P0), MS2-28 (P0), MS2-29 (P0), MS2-31 (P0), MS2-32 (P0), MS2-34 (P0), MS2-35 (P0), MS2-36 (P0), MS2-37 (P0), MS2-38 (P0), MS2-39 (P0)
+**PRD rows:** M05-22 (P0), M05-24 (P0), M05-25 (P0), M05-26 (P0), M05-27 (P0), M05-28 (P0), M05-29 (P0), MS1-29 (P0), MS1-30 (P0), MS2-01 (P0), MS2-02 (P0), MS2-03 (P0), MS2-04 (P0), MS2-05 (P0), MS2-06 (P0), MS2-07 (P0), MS2-08 (P0), MS2-09 (P0), MS2-10 (P1), MS2-11 (P0), MS2-12 (P0), MS2-14 (P0), MS2-15 (P0), MS2-16 (P0), MS2-17 (P0), MS2-18 (P0), MS2-19 (P0), MS2-21 (P0), MS2-23 (P0), MS2-27 (P0), MS2-29 (P0), MS2-31 (P0), MS2-32 (P0), MS2-34 (P0), MS2-35 (P0), MS2-36 (P0)
 **DESIGN:** SCR-MS-05 → ported from the POC
-**PORT:** `3d_design_studio/src/features/solar-studio/screens/Step2Roof.tsx` · `3d_design_studio/src/features/solar-studio/components/EdgeLabels.tsx` · `3d_design_studio/src/features/solar-studio/components/MeasureTool.tsx` · `3d_design_studio/src/features/solar-studio/lib/roof-factory.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-colors.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-face-group.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/detect-client.ts` · `3d_design_studio/src/features/solar-studio/components/SatCanvas.tsx` (sitting 1 — the shared canvas this step consumes) · tests `3d_design_studio/src/features/solar-studio/components/__tests__/drawing.dom.test.tsx`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-face-group.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-edge-cases.test.ts`
+**PORT:** `3d_design_studio/src/features/solar-studio/screens/Step2Roof.tsx` · `3d_design_studio/src/features/solar-studio/components/EdgeLabels.tsx` · `3d_design_studio/src/features/solar-studio/components/MeasureTool.tsx` · `3d_design_studio/src/features/solar-studio/lib/roof-factory.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-colors.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-face-group.ts` · `3d_design_studio/src/features/solar-studio/components/SatCanvas.tsx` (sitting 1 — the shared canvas this step consumes) · tests `3d_design_studio/src/features/solar-studio/components/__tests__/drawing.dom.test.tsx`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-face-group.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-edge-cases.test.ts`
 **DEFECTS:**
 - `CODE.step2-roof-drawing.87` — pinch-zoom/two-finger pan absent (ruling S2-1: touch pack added → MS2-03).
-- `CODE.step2-roof-ai.72` — cross-check tested but unreachable (ladder exclusivity) (ruling S2-3: second-opinion button wires it → MS2-37). The assertions this un-gating must satisfy already exist in `3d_design_studio/src/features/solar-studio/lib/__tests__/gemini-client.test.ts`, ported by T-MS-111; the second-opinion wiring is closed against that suite, not against nothing.
 
 **Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-05-step2-roof.md`; they are the specification. Every row of this task is present in that brief; no row is quoted here.
 
 **DONE WHEN:**
-- Given a detection result, when it renders, then ghosts are visually distinct, each carries confidence, include/exclude is per shape, and "add selected" is one undo step (M05-23).
-- Given an accepted ghost, when it commits, then the roof's provenance reads AI-detected with its confidence, within the four tiers (M05-23, M05-28).
 - Given a drawn roof, when an edge label is tapped, then exact metres can be typed and the geometry updates (M05-24).
 - Given two measured points and an entered distance, when calibration applies, then all geometry rescales and the correction is recorded (M05-26).
 - Given a vertex edit that orphans panels, when it is confirmed, then the keep/review/remove choice is offered and honoured (M05-27).
@@ -84,25 +80,23 @@ file's slice exactly once.
 - Given survey photographs, when tracing, then they are viewable beside the canvas and no dimension is ever derived from them (M05-29).
 - Given a pan gesture, Then no click fires (MS1-29).
 - Given zoom 3×, Then pixels render honestly pixelated and the scale bar matches hit-test geometry exactly (MS1-30).
-- Given the step opens, Then every tool is a visible, labeled, stateful rail button — Select/Draw/Detect/Ortho/Measurements/Measure/3D/Undo/Redo — with mode-aware undo semantics (MS2-01); and every shortcut (V/D/O/Esc/Enter/Del/⌘Z/⌘⇧Z) works but is suppressed while typing or in sheets (MS2-02).
+- Given the step opens, Then every tool is a visible, labeled, stateful rail button — Select/Draw/Ortho/Measurements/Measure/3D/Undo/Redo — with mode-aware undo semantics (MS2-01); and every shortcut (V/D/O/Esc/Enter/Del/⌘Z/⌘⇧Z) works but is suppressed while typing or in sheets (MS2-02).
 - Given a phone, When the user pinches/two-finger drags, Then the canvas zooms around the fingers and pans; and the rotate-snap toggle is tappable (MS2-03).
-- Given an empty step, Then the hint offers tracing AND auto-detect (MS2-04). Given a trace click <0.15 m from the last point, Then it is rejected with the plain hint (MS2-05).
+- Given an empty step, Then the hint offers tracing (MS2-04). Given a trace click <0.15 m from the last point, Then it is rejected with the plain hint (MS2-05).
 - Given ortho on, Then relative-angle guides snap within ±7.5° and object snap beats them on exact coincidence (MS2-06). Given a click near the first point with ≥3 corners, Then the Complete Shape dialog offers keep/complete (MS2-07).
 - Given any finish path (manual or AI), Then the ONE canonical validator gates it with plain reasons (MS2-08). Given a roof drawn inside another, Then it mumty-stacks at +2.2 m (MS2-09); and factory defaults apply from the single factory (MS2-09). Given drawing mode, Then pan is disabled and the status bar narrates (MS2-10).
 - Given deletions created a name gap, When a roof is added, Then it takes the next FREE name (MS2-11). Given a locked roof and a reload, Then the lock persists and edits still refuse (MS2-12). Given stacked roofs, Then tap selects the highest container (MS2-14).
 - Given a vertex drag to an invalid shape, Then release reverts silently with one undo entry total (MS2-15). Given rotate with snap on, Then 15° steps apply from the visible toggle (MS2-16). Given feet display, When an edge label is tapped, Then the input reads and accepts feet (MS2-17). Given typed coordinates commit, Then the guard checks dependents (MS2-18). Given a duplicated gable face, When the original's pitch changes, Then the copy NEVER moves (MS2-19).
 - Given a pitched face, Then Ground Array is disabled with the inline reason (MS2-21). Given an asymmetric footprint, Then Gable refuses with the measured step and points to Hip (MS2-23).
-- Given a face-group pitch edit, Then the ridge stays level and the slider reaches 60° (MS2-27). Given a matching suggestion, Then the banner hides; Apply is never automatic (MS2-28). Given a southern-hemisphere site, Then the direction tip says north-facing (MS2-29).
+- Given a face-group pitch edit, Then the ridge stays level and the slider reaches 60° (MS2-27). Given a southern-hemisphere site, Then the direction tip says north-facing (MS2-29).
 - Given per-edge setbacks exist, Then the badge shows and reset returns to uniform (MS2-31). Given parapet width 0 typed, Then the clamp refuses it (MS2-32).
 - Given two measure clicks, Then the pill offers Calibrate (MS2-34). Given k outside ±50%, Then Apply stays disabled with the reason (MS2-35).
 - Given a roof edit strands panels, Then the three-action dialog appears and nothing cascades silently (MS2-36).
-- Given aerial found 1 roof of 3 visible, When "Also try photo analysis" is tapped, Then photo ghosts join review and mask-disagreeing ones are floored with a warning (MS2-37). Given photo capability absent platform-side, Then no photo entry renders anywhere (MS2-38); and detection narrates three steps (MS2-38). Given ghosts, Then nothing enters the project before "Add selected", which is one undo step (MS2-39).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 - the ported POC tests for this area pass unchanged in the new project.
 
 **Settle before the build:**
 - "Keep items for review" — ruled: stores nothing of its own; the stranded panels, placements and strings stay in their layer chunk unchanged and their invalidity is re-derived on every geometry change and on open, surfacing on T-MS-272's live validation (MS2-36 already re-detects dependents on every change, M05-10 forbids a stored flag where a comparison exists, and a holding table would be a second copy of the same objects).
-- Detection runs per design — ruled: every run is one append-only `roof_detection` row kept whatever its disposition, rejected and superseded runs are retained and never re-shown, and no current-run pointer exists because accepted geometry enters the design only through the artifact (MS2-40) carrying its own provenance (MS2-43) (the row is the ai_detection meter's provenance_ref, so BM-19's billing evidence can never be deleted; a same-day retry on the same pin is served from MS2-44's day cache and lands as a row with billed false).
 
 ---
 
@@ -153,11 +147,11 @@ file's slice exactly once.
 **DEFECTS:** none registered against MS1-28 or MS1-31 in `docs/prd/modules/M05-studio/defect-register.md`.
 
 **Requirements (verbatim):**
-- **MS1-28** (P0) — Canvas frame: fixed logical viewport over the calibrated static tile; centre-origin metre coordinates; single shared zoom constant across 2D canvas, 3D ground and AI-detect tile math so every surface agrees on m/px (`CODE.step1-setup.98–.100`).
+- **MS1-28** (P0) — Canvas frame: fixed logical viewport over the calibrated static tile; centre-origin metre coordinates; single shared zoom constant across 2D canvas and 3D ground so every surface agrees on m/px (`CODE.step1-setup.98–.100`).
 - **MS1-31** (P0) — Analysis-worker resilience contract (powers shading/health everywhere): one long-lived worker; id-keyed replies so superseded results NEVER apply to moved-past geometry; explicit supersession errors; crash → inline compute with IDENTICAL engine (slower-but-fresh, never silently stale — F8 spirit); SSR/no-Worker environments compute inline bit-identical (`CODE.step1-setup.90–.97`).
 
 **DONE WHEN:**
-- Given the 2D canvas, 3D ground and AI-detect tile math, Then all three use the same zoom constant and agree on metres-per-pixel (MS1-28).
+- Given the 2D canvas and 3D ground, Then both use the same zoom constant and agree on metres-per-pixel (MS1-28).
 - Given a worker crash mid-shading, Then results keep flowing inline and nothing stale renders (MS1-31).
 - the ported POC tests for this area pass unchanged in the new project.
 
@@ -182,22 +176,12 @@ file's slice exactly once.
 
 ---
 
-### T-MS-106 · Solar-data & site-intelligence client
+### T-MS-106 · STRUCK 2026-11-01 — the solar-data and site-intelligence client
+**Type:** — · **Tier:** —
+**Status:** struck
+**PRD rows:** none — every row this task carried (MS1-24) was struck 2026-11-01.
 
-**Type:** integration · **Tier:** P0
-**Status:** planned
-**PRD rows:** MS1-24
-**PORT:** `3d_design_studio/src/features/solar-studio/lib/solarApi.ts` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/solarApi.test.ts`
-**DEFECTS:** none registered against MS1-24 in `docs/prd/modules/M05-studio/defect-register.md`.
-
-**Requirements (verbatim):**
-- **MS1-24** (P0) — Solar-data client behaviors as shipped: proxy-only access (key server-side), 10 s client timeout over the proxy's 8 s, typed never-throw results so the UI always explains the situation, non-2xx surfaced, coordinate-keyed memo (ok/unavailable cached as location facts; errors NOT cached — retryable), usable-segment filtering with no zero-filling and rounding rules per the mapping contract (`CODE.step1-setup.49–.55`). Detection metering rides BM-16/BM-19 (cited, not restated).
-
-**DONE WHEN:**
-- Given the same pin re-confirmed, Then no re-billed insights call occurs (MS1-24).
-- the ported POC tests for this area pass unchanged in the new project.
-
----
+**Struck in place by owner ruling 2026-11-01**, which removed automatic roof detection from the product — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`). Nothing is built here. **The task id is struck in place and not renumbered**, so every later id keeps its number.
 
 ### T-MS-107 · Polygon-write normalization & roof cascade-delete
 
@@ -230,13 +214,13 @@ file's slice exactly once.
 - **MS2-22** (P0) — Ground Array conversion: height 0, pitch 0, 1.5 m boundary setback, parapet off, "Array Area A/B/…" naming, poses remapped — one undo step; flat-terrain-only stated, never approximated (`.49/.95`).
 - **MS2-24** (P0) — Hip (rectangles): OBB frame, ridge auto-swings to the long axis, ≥95% rectangularity gate, squares collapse to pyramids; convex fallback = straight-skeleton (one face per wall, kink-tolerant pre-clean, 3% tiling gate); reflex (L/T/U/plus) = wavefront simulation with spike-collapse and a 1% tiling gate that refuses honestly ("inside corners are only partly supported…") — never hangs (bounded events) (`.53/.58–.62`).
 - **MS2-25** (P0) — Conversions CARRY THE COVERING (metal shed stays on clamps; tile stays on hooks — the BOM never silently re-prices) and cascade-delete the original + dependents in one undo step, linking faces by face group (`.55/.52`).
-- **MS2-26** (P0) — Conversion pitch precedence: valid Google-detected pitch → roof's own → 20° default; out-of-range detections fall back, never error (`.54`).
+- **MS2-26** (P0) — Conversion pitch precedence: the roof's own → 20° default (`.54`; the detected-pitch rung is struck, owner ruling 2026-11-01).
 
 **DONE WHEN:**
 - Given ground conversion, Then naming/setback/pose rules apply in one step (MS2-22).
 - Given a plus-shaped footprint, Then wavefront faces tile exactly or the whole roof refuses honestly (MS2-24).
 - Given a metal-shed gable conversion, Then clamps carry — never hooks (MS2-25).
-- Given a 70° detected pitch, Then precedence falls back rather than erroring (MS2-26).
+- Given a roof with no pitch of its own, Then conversion uses 20° (MS2-26).
 - the ported POC tests for this area pass unchanged in the new project.
 
 **Settle before the build:**
@@ -263,64 +247,26 @@ file's slice exactly once.
 
 ---
 
-### T-MS-110 · AI-detection artifact doorway, geometric pipeline & accepted-entity factory
+### T-MS-110 · STRUCK 2026-11-01 — the detection artifact doorway, geometric pipeline and accepted-entity factory
+**Type:** — · **Tier:** —
+**Status:** struck
+**PRD rows:** none — every row this task carried (MS2-40, MS2-41, MS2-43) was struck 2026-11-01.
 
-**Type:** port · **Tier:** P0
-**Status:** planned
-**PRD rows:** MS2-40, MS2-41, MS2-43
-**PORT:** `3d_design_studio/src/features/solar-studio/lib/roof-ai/artifact.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/pipeline.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/vectorize.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/plane-fit.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/geotiff-decode.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/detect.worker.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-factory.ts` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/roof-artifact.test.ts`
-**DEFECTS:** none registered against MS2-40, MS2-41 or MS2-43 in `docs/prd/modules/M05-studio/defect-register.md`.
+**Struck in place by owner ruling 2026-11-01**, which removed automatic roof detection from the product — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`). Nothing is built here. **The task id is struck in place and not renumbered**, so every later id keeps its number.
 
-**Requirements (verbatim):**
-- **MS2-40** (P0) — The artifact doorway is the ONLY path in: versioned, pin-guarded (~110 m), 150 m site extent, value gates (heights (0,60), pitch [0,60], azimuth [0,360), confidence clamped), per-entity drops with reasons (one bad shape never kills the batch), same sanitizer as manual drawing, whole-artifact rejections for wrong version/source/pin (`ai.9/.43–.51`).
-- **MS2-41** (P0) — Geometric pipeline honesty constants (product-level): ≥20 m² components; 8-roof cap with warning; DSM height-coherent sub-building splitting; gated orthogonalization (never mangles non-rectilinear roofs); plane-fit with edge-ramp exclusion; pitch <3° reported flat; confidence = f(fit quality), footprint-only 0.4; obstructions = residual lumps typed 'other' for the USER to classify, top 5, fixed 0.5 confidence; RMSE >0.3 m adds "review by hand" warning; grid-mismatch and ground-estimate failures degrade with stated warnings; deterministic (same input → identical output) (`ai.24–.42`).
-- **MS2-43** (P0) — Accepted entities: SAME factory as manual (naming continues, defaults apply), mumty parenting on accept, obstructions parent to the roof under them, provenance {source, confidence} stamped into the record (`ai.56–.59`, SC.10-3.41).
+### T-MS-111 · STRUCK 2026-11-01 — photo-analysis detection
+**Type:** — · **Tier:** —
+**Status:** struck
+**PRD rows:** none — every row this task carried (MS2-42) was struck 2026-11-01.
 
-**DONE WHEN:**
-- Given an artifact from a moved pin, Then the whole artifact rejects; a self-intersecting shape drops alone with a reason (MS2-40).
-- Given a flat roof with smoothed DSM edges, Then edge-ramp exclusion prevents fake pitch (MS2-41).
-- Given accept, Then factory naming continues and provenance stamps persist (MS2-43).
-- the ported POC tests for this area pass unchanged in the new project.
+**Struck in place by owner ruling 2026-11-01**, which removed automatic roof detection from the product — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`). Nothing is built here. **The task id is struck in place and not renumbered**, so every later id keeps its number.
 
-**Settle before the build:**
-- `detection_artifact` cardinality — ruled: one artifact seeds exactly one design, the design whose pin it is guarded against (MS2-40); a variant takes its geometry by duplication (MS11-25), never by re-seeding, and whether one survey version's tile may span several designs is M04's question, settled with T-M04-013 when that module lands (V1 has no survey).
+### T-MS-112 · STRUCK 2026-11-01 — the detection server relay, raster cache and projector alignment gate
+**Type:** — · **Tier:** —
+**Status:** struck
+**PRD rows:** none — every row this task carried (MS2-44) was struck 2026-11-01.
 
----
-
-### T-MS-111 · Photo-analysis structured-extraction contract
-
-**Type:** port · **Tier:** P0
-**Status:** planned
-**PRD rows:** MS2-42
-**PORT:** `3d_design_studio/src/features/solar-studio/lib/roof-ai/gemini-client.ts` · `3d_design_studio/src/app/api/gemini/route.ts` · test `3d_design_studio/src/features/solar-studio/lib/__tests__/gemini-client.test.ts` (sitting 6 in `docs/prd/modules/M05-studio/poc-file-claims.md`, corrected to sitting 2 in the retired traceability register — the file's only regression net; it also holds the `crossCheckWithGeometry` assertions that T-MS-102's `CODE.step2-roof-ai.72` ruling un-gates, so it ports here and is read from there)
-**DEFECTS:**
-- `CODE.step2-roof-ai.62` — photo-mode endpoint has no in-app caller (ruling S2-2: wired at P1, survey/drone photos → MS2-42).
-
-**Requirements (verbatim):**
-- **MS2-42** (P0) — Photo-analysis honesty: structured-only output (schema-enforced, temperature 0), precision-beats-recall prompt (never guess occluded edges; empty is valid), heights/pitch NEVER from imagery (nulls → manual defaults; type presets for objects), mandatory verify-on-site warning, model+prompt version recorded as provenance (`ai.60–.71`); wired for satellite AND uploaded survey/drone photos at P1 (S2-2).
-
-**DONE WHEN:**
-- Given any photo-AI result, Then heights are defaults, the verify warning shows, and provenance carries model+version+imagery date (MS2-42).
-- the ported POC tests for this area pass unchanged in the new project.
-
----
-
-### T-MS-112 · Detection server relay, raster cache & projector alignment gate
-
-**Type:** integration · **Tier:** P0
-**Status:** planned
-**PRD rows:** MS2-44
-**PORT:** `3d_design_studio/src/app/api/solar/building-insights/route.ts` · `3d_design_studio/src/app/api/solar/data-layers/route.ts` · `3d_design_studio/src/app/api/solar/geotiff/route.ts` · `3d_design_studio/src/app/api/solar/key.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/utm.ts` · `3d_design_studio/src/features/solar-studio/lib/roof-ai/detect-client.ts`
-**DEFECTS:** none registered against MS2-44 in `docs/prd/modules/M05-studio/defect-register.md`.
-
-**Requirements (verbatim):**
-- **MS2-44** (P0) — Server-side product guarantees: keys never reach the browser (relay + SSRF guard), expired-raster retry semantics, day-cached rasters/insights (same pin never re-bills), envelope always explains (no naked failures), UTM-only rasters with mm-accurate inverse and a ≤0.5 m/50 m alignment gate against the app's own projector (`ai.6–.23/.73–.76`).
-
-**DONE WHEN:**
-- Given a re-detect on the same pin same day, Then cached rasters/insights serve without re-billing (MS2-44).
-- the ported POC tests for this area pass unchanged in the new project.
-
----
+**Struck in place by owner ruling 2026-11-01**, which removed automatic roof detection from the product — no AI model and no Google roof data; every roof is outlined by hand (`M04-22`). Nothing is built here. **The task id is struck in place and not renumbered**, so every later id keeps its number.
 
 ### T-MS-113 · Obstruction factory & per-type capability presets
 
@@ -646,12 +592,10 @@ named beside it carries the same behavior in detail and its screen brief is wher
 | M05-15 | T-MS-101 |
 | M05-16 | T-MS-101 |
 | M05-17 | T-MS-101 |
-| M05-18 | T-MS-101 |
 | M05-19 | T-MS-101 |
 | M05-20 | T-MS-101 (the input and the re-edit case); T-MS-201 (the design-time warning on capacity and inverter) |
 | M05-21 | realized-by: T-MS-363 — `docs/ux/briefs/SCR-MS-01-design-list.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
 | M05-22 | T-MS-102 |
-| M05-23 | T-MS-102 |
 | M05-24 | T-MS-102 |
 | M05-25 | T-MS-102 |
 | M05-26 | T-MS-102 |
@@ -746,8 +690,6 @@ named beside it carries the same behavior in detail and its screen brief is wher
 | MS1-20 | T-MS-101 |
 | MS1-21 | T-MS-101 |
 | MS1-22 | T-MS-101 |
-| MS1-23 | T-MS-101 |
-| MS1-24 | T-MS-106 |
 | MS1-25 | T-MS-105 |
 | MS1-26 | T-MS-105 |
 | MS1-27 | T-MS-105 |
@@ -782,7 +724,6 @@ named beside it carries the same behavior in detail and its screen brief is wher
 | MS2-25 | T-MS-108 |
 | MS2-26 | T-MS-108 |
 | MS2-27 | T-MS-102 |
-| MS2-28 | T-MS-102 |
 | MS2-29 | T-MS-102 |
 | MS2-30 | T-MS-109 |
 | MS2-31 | T-MS-102 |
@@ -791,14 +732,6 @@ named beside it carries the same behavior in detail and its screen brief is wher
 | MS2-34 | T-MS-102 |
 | MS2-35 | T-MS-102 |
 | MS2-36 | T-MS-102 |
-| MS2-37 | T-MS-102 |
-| MS2-38 | T-MS-102 |
-| MS2-39 | T-MS-102 |
-| MS2-40 | T-MS-110 |
-| MS2-41 | T-MS-110 |
-| MS2-42 | T-MS-111 |
-| MS2-43 | T-MS-110 |
-| MS2-44 | T-MS-112 |
 | MS3-01 | T-MS-103 |
 | MS3-02 | T-MS-103 |
 | MS3-03 | T-MS-103 |

@@ -24,7 +24,7 @@ export const SURVEY_ROWS = {
       marketing: DENIED,
     },
   },
-  // Run a remote survey (address → imagery → AI roof detection); manual outlining is inside this grant and is neve
+  // Run a remote survey (address → imagery → the roof outlined by hand); outlining is never metered
   'survey.run_remote_survey': {
     rowKey: 'F2.M04.run-remote-survey',
     grants: {

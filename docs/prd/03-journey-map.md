@@ -212,8 +212,8 @@ up escalates to the owner rather than ageing silently in a queue.
 ### Stage 4 — Site survey
 
 This is the stage the product turned into a competitive weapon. A roof can be surveyed **without
-anybody going there**: an address, satellite imagery, an automatically detected outline with
-obstructions and pitch, reviewed and corrected by a person — a designable roof, from a desk, in
+anybody going there**: an address, satellite imagery, and an outline with obstructions and pitch
+drawn on it by a person — a designable roof, from a desk, in
 minutes. The alternative mode is the traditional one: hours, travel, the customer at home, a
 person on the roof photographing the meter and the main panel and the neighbour's water tank.
 Both produce the same kind of record. The consequence is a change in the order of the whole
@@ -230,10 +230,8 @@ not claim to be a site survey.
 - **Key personas:** **Survey Engineer** (the physical mode is their day), **Sales Executive** (the
   remote mode is often theirs, standing in front of the customer), **Design Engineer** (the
   consumer of everything captured); **Field Technician** joins this stage in V2 (§4).
-- **The P0 heart:** a detected roof is **never applied silently** — the result is an editable
-  overlay the operator must accept, adjust or reject, with the detector's confidence shown beside
-  each thing it qualifies (`M04-15`, `M04-16`), and no imagery failure ever blocks the survey
-  (`M04-11`).
+- **The P0 heart:** every roof is outlined by hand on the pinned tile (`M04-22`), and no imagery
+  failure ever blocks the survey (`M04-11`).
 
 ### Stage 5 — Design
 

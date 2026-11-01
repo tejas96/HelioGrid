@@ -15,6 +15,13 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 - Given the per-tier service terms (support in-app / in-app + WhatsApp / priority + onboarding call / named contact), when the pricing page renders them, then they are Tier-keyed screen copy from this screen under the i18n convention, read from no book field, and no entitlement, invoice or gate reads them (BM-14, BM-41; owner ruling 2026-09-07).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
+#### Parts
+
+| part | what | AC | depends on | status |
+|---|---|---|---|---|
+| a | Automatic roof detection leaves the product (owner ruling 2026-11-01): the spec, briefs and tasks strike it; no meter, pause, permission, SMS or price line for it; every roof is outlined by hand; an api of the release before still reads the new pack | — (`D397`) | — | shipped |
+| b | The public price list read and the Pricing Page at 375 and 1536, every state its boards draw | AC-1 … AC-4 | part a | open |
+
 ### T-M12-002 · Billing Home
 
 **Type:** screen · **Tier:** P0

@@ -44,8 +44,6 @@ graph TB
 
   subgraph ext [External services]
     PVGIS[PVGIS v5.3]
-    GS[Google Solar API]
-    GEM[Gemini]
     EXO[Exotel — Exophone / AgentStream / IVR]
     SAR[Sarvam AI — Saarika STT / Bulbul TTS / LLM]
     RZP[Razorpay — Subscriptions, Payment Links, webhooks]
@@ -64,8 +62,6 @@ graph TB
   WORKER --> PG
   WORKER --> TG
   WORKER --> PVGIS
-  WORKER --> GS
-  WORKER --> GEM
   WORKER --> PUSHN
   VOICE <-->|bidirectional WS| EXO
   VOICE <--> SAR

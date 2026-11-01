@@ -45,9 +45,6 @@ export const REFERENCE_ROW: Record<ReferenceRow, { id: string }> = {
   'survey.resolve_survey_gaps': /*i18n*/ { id: 'Resolve or waive a remote-survey gap' },
   'studio.create_edit_designs': /*i18n*/ { id: 'Create and edit designs' },
   'studio.approve_designs': /*i18n*/ { id: 'Approve designs' },
-  'studio.run_roof_detection': /*i18n*/ {
-    id: 'Run in-canvas AI roof detection on the studio canvas',
-  },
   'proposals.create_edit_proposals': /*i18n*/ { id: 'Create and edit proposals' },
   'proposals.send_proposals': /*i18n*/ { id: 'Send proposals to customers' },
   'sales.agent_performance': /*i18n*/ { id: 'See agent performance' },

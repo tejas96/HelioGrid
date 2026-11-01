@@ -63,9 +63,7 @@ describe('bookEntitlements — the limits the book gives (M12-16, M12-17, BM-28)
       expect(limitIn(paid, 'design_ceiling_kw')).toBe(row.capacity.designCeilingKw);
       expect(limitIn(paid, 'proposals_per_cycle')).toBe(row.capacity.creationsPerCycle.proposals);
       expect(limitIn(paid, 'active_projects')).toBe(row.capacity.creationsPerCycle.active_projects);
-      expect(limitIn(paid, 'ai_roof_detections')).toBe(
-        row.capacity.meterBundles.ai_roof_detections,
-      );
+      expect(limitIn(paid, 'voice_minutes')).toBe(row.capacity.meterBundles.voice_minutes);
       expect(limitIn(paid, 'storage_gb')).toBe(row.capacity.storageGb);
     }
   });

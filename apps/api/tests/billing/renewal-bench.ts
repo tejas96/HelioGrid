@@ -23,7 +23,7 @@ import { aCompany, type Company, type openPools, seed } from '../support/fixture
 import { marketsOf } from '../support/market';
 import { invoicesOf } from './invoice-bench';
 import { overageSweep } from './overage-bench';
-import { aPlan, chargeServiceOf, collectedFor, silentLogger, usageServiceOf } from './support';
+import { aPlan, chargeServiceOf, collectedFor, silentLogger } from './support';
 
 /**
  * What the renewal suite builds: a company converted onto a yearly plan by payment link, its first
@@ -185,10 +185,8 @@ export function renewalTimeline(year: number) {
   };
 }
 
-const detection = IN_PACK.priceBook.overage.ai_roof_detections;
-if (detection.kind !== 'per_unit') throw new Error('the IN book bills detections per unit');
-const bundle = IN_PACK.priceBook.tiers.starter?.capacity.meterBundles.ai_roof_detections;
-if (typeof bundle !== 'number') throw new Error('Starter carries a detection bundle');
+const voice = IN_PACK.priceBook.overage.voice_minutes;
+if (voice.kind !== 'per_unit') throw new Error('the IN book bills voice per minute');
 const starterYearly = listedPrice(IN_PACK.priceBook, 'starter', 'yearly');
 if (starterYearly === null) throw new Error('the IN book sells Starter yearly');
 
@@ -199,8 +197,7 @@ const REPRICE_RISE_MINOR = 2_500_000;
 
 /** The book's figures the suites bill by: never typed, always read. */
 export const fromTheBook = {
-  detectionRate: detection.rate,
-  starterDetectionBundle: bundle,
+  voiceRate: voice.rate,
   starterYearly,
   proYearly,
   /** Pro yearly after a reprice the company did not sign up on. */
@@ -244,28 +241,6 @@ export async function aReprice(
     .returning({ id: planPrice.id });
   if (row === undefined) throw new Error('the reprice was not written');
   return row.id;
-}
-
-/** Billable detections of the company, ledgered at `at`. */
-export async function detections(
-  pools: Pools,
-  company: YearlyCompany,
-  quantity: number,
-  at: number,
-): Promise<void> {
-  await usageServiceOf(pools).record(
-    {
-      tenantId: company.tenantId,
-      meter: 'ai_roof_detections',
-      quantity,
-      billable: true,
-      subjectKind: 'tenant',
-      subjectRef: company.tenantId,
-      idempotencyKey: randomUUID(),
-      occurredAt: new Date(at).toISOString(),
-    },
-    at,
-  );
 }
 
 /** The company's invoices for the period ending `paysThrough`: its renewal. */

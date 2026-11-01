@@ -10,7 +10,6 @@ import { overageSweep } from './overage-bench';
 import {
   aReprice,
   aYearlyCompany,
-  detections,
   fromTheBook,
   LinkRecordingGateway,
   linkCharge,
@@ -23,7 +22,13 @@ import {
   sweep,
   type YearlyCompany,
 } from './renewal-bench';
-import { chargeServiceOf, RecordedAlerts, silentLogger } from './support';
+import {
+  aVoiceAllowance,
+  chargeServiceOf,
+  RecordedAlerts,
+  silentLogger,
+  voiceMinutes,
+} from './support';
 
 /**
  * The yearly renewal, against a migrated database (`M12-11`, `M12-09`, `M12-44`, `M12-05`): a
@@ -37,12 +42,12 @@ import { chargeServiceOf, RecordedAlerts, silentLogger } from './support';
 const SUITE_YEAR = 2001;
 const { convertedAt, yearEnds, nextYearEnds, sweptAt, dueAt, midJune, midJuly } =
   renewalTimeline(SUITE_YEAR);
-const { starterYearly, starterDetectionBundle, detectionRate, proYearly, repricedProYearly } =
-  fromTheBook;
-/** June runs 5 past the monthly bundle; July stays 10 under it. Measured as one year, 25 would bill. */
+const { starterYearly, voiceRate, proYearly, repricedProYearly } = fromTheBook;
+/** A 20-minute monthly allowance: June runs 5 past it, July 10 under. As one window, 15 would bill. */
+const VOICE_ALLOWANCE = 20;
 const JUNE_PAST_BUNDLE = 5;
 const JULY_UNDER_BUNDLE = 10;
-const JUNE_OVERAGE = minorUnits(JUNE_PAST_BUNDLE * detectionRate);
+const JUNE_OVERAGE = minorUnits(JUNE_PAST_BUNDLE * voiceRate);
 /** The raise's batch (`renewal.service.ts`): more link-less rows than one page holds. */
 const RAISE_BATCH = 25;
 /** A monthly link row converted this many days earlier ends its period first: ahead in the queue. */
@@ -85,8 +90,9 @@ describe.skipIf(skip)('yearly renewal on a fresh payment link (M12-11, M12-09)',
 
   it("a closed yearly period raises one link with an issued invoice for the plan and the year's overage, once", async () => {
     const company = await aYearlyCompany(pools, companies, 'starter', convertedAt);
-    await detections(pools, company, starterDetectionBundle + JUNE_PAST_BUNDLE, midJune);
-    await detections(pools, company, starterDetectionBundle - JULY_UNDER_BUNDLE, midJuly);
+    await aVoiceAllowance(pools, company.tenantId, VOICE_ALLOWANCE);
+    await voiceMinutes(pools, company.tenantId, VOICE_ALLOWANCE + JUNE_PAST_BUNDLE, midJune);
+    await voiceMinutes(pools, company.tenantId, VOICE_ALLOWANCE - JULY_UNDER_BUNDLE, midJuly);
 
     expect(await swept(yearEnds)).toBe(0);
     expect(await swept(sweptAt)).toBe(1);
@@ -256,7 +262,8 @@ describe.skipIf(skip)('yearly renewal on a fresh payment link (M12-11, M12-09)',
 
   it('a renewal raised before its overage is reckoned goes out on time, and the late add-ons wait for the next link', async () => {
     const company = await aYearlyCompany(pools, companies, 'starter', convertedAt);
-    await detections(pools, company, starterDetectionBundle + JUNE_PAST_BUNDLE, midJune);
+    await aVoiceAllowance(pools, company.tenantId, VOICE_ALLOWANCE);
+    await voiceMinutes(pools, company.tenantId, VOICE_ALLOWANCE + JUNE_PAST_BUNDLE, midJune);
     const renewals = renewalServiceOf(pools, gateway, alerts);
 
     await renewals.failUnpaid(sweptAt);
