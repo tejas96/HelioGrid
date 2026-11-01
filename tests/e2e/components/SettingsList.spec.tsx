@@ -67,13 +67,20 @@ test.describe('at 375', () => {
     await page.screenshot({ path: `${PICTURES}/more-owner-375.png`, fullPage: true });
   });
 
-  test('a field technician meets one group and one row', async ({ mount, page }) => {
+  test('a field technician meets their own row and the billing state everyone sees', async ({
+    mount,
+    page,
+  }) => {
     const list = await mount(<SettingsListAsHeld reader="en" held={['field_technician']} />);
-    await expect(list.getByRole('button')).toHaveCount(1);
+    await expect(list.getByRole('button')).toHaveCount(2);
     await expect(list.locator('.hg-settings-person')).toContainText(PERSON);
-    await expect(list.locator('.hg-settings-row-name')).toHaveText([WORDS.rows.profile]);
-    await expect(list.locator('.hg-block')).toHaveCount(0);
-    await expect(list.getByText(WORDS.groups.money, { exact: true })).toHaveCount(0);
+    await expect(list.locator('.hg-settings-row-name')).toHaveText([
+      WORDS.rows.profile,
+      WORDS.rows.billing,
+    ]);
+    // Seeing the billing state is everyone's (`M12-56`); the Owner's other money rows are not.
+    await expect(list.getByText(WORDS.groups.money, { exact: true })).toHaveCount(1);
+    await expect(list.getByText(WORDS.rows.usage, { exact: true })).toHaveCount(0);
     await page.screenshot({ path: `${PICTURES}/more-technician-375.png`, fullPage: true });
   });
 

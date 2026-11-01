@@ -17,8 +17,10 @@ appId: com.heliogrid.app
 - scrollUntilVisible:
     element: ${METHOD_LATER}
 - assertVisible: ${PAYMENT_METHOD}
+# The empty block draws its title and its line as one text, so the title leads it.
 - scrollUntilVisible:
-    element: ${NO_INVOICES_YET}
+    element:
+      text: "${NO_INVOICES_YET}.*"
 # A trial is not cancelled from here: it simply ends (`M12-50`, cancel is an active plan's).
 - assertNotVisible: ${CANCEL_SUBSCRIPTION}
 - scrollUntilVisible:
