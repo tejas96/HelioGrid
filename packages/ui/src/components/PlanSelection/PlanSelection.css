@@ -1,0 +1,193 @@
+/* The plans (`SCR-M12-03`). One column at 375 in the order of attention; at 1536 `Your plan` is
+   three cells in a row, the four plans stand side by side at one height (decisions 1, 7). The
+   review's amounts end on one right edge (decision 6); every figure is mono (`F7-09`). */
+
+.hg-plans {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+
+.hg-plans[data-layout="columns"] {
+  gap: var(--sp-6);
+}
+
+.hg-plans-line {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-primary);
+}
+
+.hg-plans-held-cells {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-6);
+}
+
+.hg-plans-region {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+
+.hg-plans-region[data-gap="4"] {
+  gap: var(--sp-4);
+}
+
+.hg-plans[data-layout="columns"] .hg-plans-region {
+  gap: var(--sp-4);
+}
+
+.hg-plans-chips {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-plans-chips-label {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+
+.hg-plans-cards[data-layout="columns"] {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--tile-gap);
+  align-items: stretch;
+}
+
+.hg-plans-cards[data-layout="columns"] > .hg-plans-cards-bought {
+  grid-column: span 3;
+  min-width: 0;
+}
+
+.hg-plans-enterprise {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: var(--sp-2);
+}
+
+.hg-plans-enterprise > .hg-card {
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.hg-plans-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-plans-card-chip {
+  display: flex;
+}
+
+.hg-plans-card-name {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-h4);
+  color: var(--text-primary);
+}
+
+.hg-plans-act {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: var(--sp-4);
+  border-radius: var(--r-lg);
+  background: var(--surface-form);
+}
+
+.hg-plans[data-layout="columns"] .hg-plans-act {
+  align-items: flex-start;
+}
+
+.hg-list-row.hg-plans-rest {
+  border-radius: var(--r-tile);
+}
+
+.hg-plans-sources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-3);
+  padding: 0 var(--sp-1);
+}
+
+.hg-plans-readonly {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tile-gap);
+  align-self: stretch;
+}
+
+.hg-plans-readonly[data-layout="columns"] {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.hg-plans-readonly-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.hg-plans-readonly-card[data-layout="columns"] {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--sp-2);
+}
+
+/* ── the review ─────────────────────────────────────────────────────────── */
+
+.hg-plans-review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.hg-plans-review-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-plans-review-overline {
+  font-size: var(--fs-overline);
+  line-height: var(--lh-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-plans-review-value[data-amount="true"] {
+  display: block;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.hg-plans-review-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-plans-review-line {
+  text-align: center;
+  text-wrap: pretty;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}

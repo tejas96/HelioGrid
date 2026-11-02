@@ -157,6 +157,9 @@ export {
 } from './copy/payment-terms';
 export * from './copy/pending-action';
 export * from './copy/phone-field';
+export * from './copy/plan-selection';
+export * from './copy/plan-selection-words';
+export * from './copy/plan-words';
 export * from './copy/price-book';
 export {
   PLAN_INCLUDES,

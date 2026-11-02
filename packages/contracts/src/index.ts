@@ -3,6 +3,7 @@ import { auditContract } from './audit';
 import { authContract } from './auth';
 import { billingContract } from './billing';
 import { billingDocumentContract, billingHomeContract } from './billing-home';
+import { billingPlanChangeContract } from './billing-plan-change';
 import { catalogContract } from './catalog';
 import { catalogImportContract } from './catalog-import';
 import { catalogReleasesContract } from './catalog-releases';
@@ -25,6 +26,7 @@ export * from './audit';
 export * from './auth';
 export * from './billing';
 export * from './billing-home';
+export * from './billing-plan-change';
 // The company's identity facts (`T-M01-026`): the profile and its tax registrations.
 export * from './business-profile';
 // The catalog (`T-M01-027`): its closed sets, the resolved read and the tenant's writes.
@@ -92,6 +94,7 @@ export const apiContract = c.router(
     billing: billingContract,
     billingDocument: billingDocumentContract,
     billingHome: billingHomeContract,
+    billingPlanChange: billingPlanChangeContract,
     catalog: catalogContract,
     catalogImport: catalogImportContract,
     catalogReleases: catalogReleasesContract,

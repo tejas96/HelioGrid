@@ -9,6 +9,8 @@ import {
   type BillingCycle,
   type CollectionKind,
   LIVE_BILLING_STATES,
+  type MinorUnits,
+  minorUnits,
   type Tier,
 } from '@heliogrid/domain';
 import { eq } from 'drizzle-orm';
@@ -38,15 +40,35 @@ export interface Conversion {
   readonly reactivates: boolean;
 }
 
+/**
+ * An upgrade's part-cycle page (`M12-48`), open on the live row it moves: its charge moves the row
+ * to the plan it pays toward and keeps the paid period's end.
+ */
+export interface PlanChangePaid {
+  readonly checkoutId: string;
+  readonly planPriceId: string;
+  readonly tier: Tier;
+  readonly cycle: BillingCycle;
+  /** The charge for the days left, ex-tax: the proration invoice's one line. */
+  readonly chargeMinor: MinorUnits;
+  /** The plan and the paid period's end the charge was priced on: a row that moved is refused. */
+  readonly fromPlanPriceId: string;
+  readonly pricedThrough: number;
+  /** The Owner who opened it: the change is their act (`M12-56`). */
+  readonly openedBy: string | null;
+}
+
 /** A renewal payment link (`M12-11`): the invoice it collects and the period end it buys. */
 export interface Renewal {
   readonly invoiceId: string;
   readonly paysThrough: number;
+  /** The link or mandate the renewal was raised on. */
+  readonly gatewayRef: string;
 }
 
 /**
- * Which subscription a gateway subscription or payment link collects for. `stray`: a checkout page
- * that can convert nothing — a new pick closed it, or its live row already converted on another
+ * Which subscription a gateway subscription or payment link collects for. `plan_change`: an
+ * upgrade's part-cycle page on its live row. `stray`: a checkout page that can convert nothing — a new pick closed it, or its live row already converted on another
  * page — so money on it is no subscription's to take. A page a dead row opened is reactivation,
  * though the row still names its old mandate (`M12-08`).
  */
@@ -61,6 +83,7 @@ export type CollectedOn =
       /** Set when the ref is a renewal link: the period it buys is its invoice's. */
       readonly renewal: Renewal | null;
     }
+  | { readonly kind: 'plan_change'; readonly subscriptionId: string; readonly page: PlanChangePaid }
   | { readonly kind: 'stray'; readonly subscriptionId: string };
 
 /**
@@ -102,7 +125,11 @@ export async function collectedOn(db: Db, gatewayRef: string): Promise<Collected
       subscriptionId: renewing.subscriptionId,
       cycle: renewing.cycle,
       conversion: null,
-      renewal: { invoiceId: renewing.invoiceId, paysThrough: renewing.paysThrough.getTime() },
+      renewal: {
+        invoiceId: renewing.invoiceId,
+        paysThrough: renewing.paysThrough.getTime(),
+        gatewayRef,
+      },
     };
   }
   const [opened] = await db
@@ -121,6 +148,10 @@ export async function collectedOn(db: Db, gatewayRef: string): Promise<Collected
       state: subscription.state,
       stateEnteredAt: subscription.stateEnteredAt,
       openedAt: billingCheckout.openedAt,
+      purpose: billingCheckout.purpose,
+      chargeMinor: billingCheckout.chargeMinor,
+      fromPlanPriceId: billingCheckout.fromPlanPriceId,
+      expiresAt: billingCheckout.expiresAt,
     })
     .from(billingCheckout)
     .innerJoin(planPrice, eq(planPrice.id, billingCheckout.planPriceId))
@@ -137,9 +168,40 @@ export async function collectedOn(db: Db, gatewayRef: string): Promise<Collected
     state,
     stateEnteredAt,
     openedAt,
+    purpose,
+    chargeMinor,
+    fromPlanPriceId,
+    expiresAt,
     ...chosen
   } = opened;
   const liveAndConverted = convertedOn !== null && LIVE.has(state);
+  // An upgrade's page pays only while its row is still the live one it was opened on.
+  if (purpose === 'plan_change') {
+    if (
+      closedAt !== null ||
+      !liveAndConverted ||
+      chargeMinor === null ||
+      fromPlanPriceId === null
+    ) {
+      return { kind: 'stray', subscriptionId };
+    }
+    const { checkoutId, planPriceId, tier, cycle, openedBy } = chosen;
+    return {
+      kind: 'plan_change',
+      subscriptionId,
+      page: {
+        checkoutId,
+        planPriceId,
+        tier,
+        cycle,
+        openedBy,
+        chargeMinor: minorUnits(chargeMinor),
+        fromPlanPriceId,
+        // An upgrade's page stops taking money at the paid period's end it was priced on.
+        pricedThrough: expiresAt.getTime(),
+      },
+    };
+  }
   if (closedAt !== null || liveAndConverted) return { kind: 'stray', subscriptionId };
   return {
     kind: 'collecting',

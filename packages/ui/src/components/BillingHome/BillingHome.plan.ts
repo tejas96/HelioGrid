@@ -106,15 +106,17 @@ function planRowsOf(input: BillingInput, home: BillingHome): BillingFact[] {
         ];
       }
       const next = home.plan.nextBill;
+      /* A scheduled change bills its new plan from the next bill on (frame 16, decision 12). */
+      const nextSale = home.scheduledChange?.afterwards ?? next?.sale;
       const nextRow: BillingFact[] =
-        next === null
+        next === null || nextSale === undefined
           ? []
           : [
               {
                 key: 'next',
                 label: words.nextBill,
                 value: plain(format.date(next.at)),
-                under: figure(format.money(next.sale.total, { fractionDigits: 2 })),
+                under: figure(format.money(nextSale.total, { fractionDigits: 2 })),
               },
             ];
       return [planRow, ...priceRowOf(input, home), ...nextRow];

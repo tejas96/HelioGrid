@@ -66,6 +66,7 @@ export async function startReactivated(
       cycle: conversion.cycle,
       planPriceId: conversion.planPriceId,
       gatewayRef: conversion.gatewayRef,
+      collection: conversion.collection,
     })
     .returning({ id: subscription.id });
   if (started === undefined) throw new Error('the reactivated subscription was not written');

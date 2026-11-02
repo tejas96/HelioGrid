@@ -127,31 +127,6 @@
   font-weight: var(--fw-bold);
 }
 
-.hg-pricing-card__price {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: var(--sp-2);
-}
-
-.hg-pricing-card__figure {
-  font-family: var(--font-mono);
-  font-size: var(--fs-h1);
-  line-height: var(--lh-h1);
-  letter-spacing: var(--tr-h1);
-  font-weight: var(--fw-bold);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.hg-pricing-quiet,
-.hg-pricing-card__positioning {
-  font-size: var(--fs-body-sm);
-  line-height: var(--lh-body-sm);
-  color: var(--text-secondary);
-  text-wrap: pretty;
-}
-
 .hg-pricing-card__foot {
   margin-top: auto;
   display: flex;

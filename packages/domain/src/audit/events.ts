@@ -41,6 +41,9 @@ export const AUDIT_EVENT_TYPES = [
   'billing.subscription_cancelled',
   'billing.refund_issued',
   'billing.reactivated',
+  'billing.plan_changed',
+  'billing.plan_change_scheduled',
+  'billing.plan_change_withdrawn',
 ] as const;
 export type AuditEventType = (typeof AUDIT_EVENT_TYPES)[number];
 

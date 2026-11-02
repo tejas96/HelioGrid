@@ -94,7 +94,15 @@ export const queryKeys = {
     reminders: (tenantId: string, page: number) =>
       ['billing', tenantId, 'reminders', page] as const,
     history: (tenantId: string, page: number) => ['billing', tenantId, 'history', page] as const,
+    /** One pick's review (`SCR-M12-03`): under the prefix, so a landed act reads it again. */
+    planChangePreview: (tenantId: string, tier: string, cycle: string) =>
+      ['billing', tenantId, 'plan-change-preview', tier, cycle] as const,
   },
+  /**
+   * Where Billing lands focus when another screen hands the person to it — `needs` after a
+   * scheduled downgrade (`SCR-M12-03`). Outside the billing prefix: no read refetches it.
+   */
+  billingArrival: (tenantId: string) => ['billing-arrival', tenantId] as const,
   /** A market's public price list: no company's fact in it, so keyed by market alone. */
   pricing: {
     current: (marketCode: string) => ['pricing', marketCode] as const,

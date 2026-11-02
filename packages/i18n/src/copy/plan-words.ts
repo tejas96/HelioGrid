@@ -1,28 +1,44 @@
-import type { TranslatedText } from '@heliogrid/contracts';
-import type { DesignPower, PricingPlan } from '@heliogrid/data/react';
-import type { BillingCycle, TierLimit } from '@heliogrid/domain';
-import { PRICING } from '@heliogrid/i18n';
-import type { useTranslate } from '@heliogrid/i18n/react';
-import type { MarketFormat } from '@heliogrid/ui';
+import type { PublicPricingRead, TranslatedText } from '@heliogrid/contracts';
+import {
+  type BillingCycle,
+  FIGURE_SLOT,
+  type ScaledPower,
+  type TierLimit,
+} from '@heliogrid/domain';
+import type { Translator } from '../runtime';
+import { PRICING } from './pricing';
 
 /**
- * A plan's figures in the reader's words. Every value is the book's, through the api; this only
- * says it — a count in the market's grouping, a power in its unit, a negotiated limit as `Custom`.
+ * A plan's figures in the reader's words, as the pricing page (`SCR-M12-01`) and the plans screen
+ * (`SCR-M12-03`) both print them. Every value is the book's, through the api; this only says it —
+ * a count in the market's grouping, a power in its unit, a negotiated limit as `Custom`.
  */
-export type Translate = ReturnType<typeof useTranslate>;
+
+type T = Translator['t'];
+
+/** The market format's two calls these words need — `@heliogrid/ui`'s `MarketFormat` has them. */
+export interface PlanFormat {
+  number(value: number): string;
+  money(value: string): string;
+}
+
+/** A design ceiling as printed: a power in its unit, no ceiling, or negotiated. */
+export type PlanPower = ScaledPower | 'unlimited' | 'custom';
+
+export type BookPlan = PublicPricingRead['plans'][number];
 
 export interface PlanWords {
   limit(limit: TierLimit): string;
-  power(power: DesignPower): string;
+  power(power: PlanPower): string;
   storage(limit: TierLimit): string;
   /** A bundle of 0 is a real zero — the plan prices voice per minute — so it reads `None`. */
   voiceIncluded(limit: TierLimit): string;
   /** `null` is the named gap: the book has not published this rate (`BM-26`). */
-  voiceRate(plan: PricingPlan): TranslatedText | null;
+  voiceRate(plan: Pick<BookPlan, 'voiceMinuteRate'>): TranslatedText | null;
   money(value: string): string;
 }
 
-export function planWords(t: Translate, format: MarketFormat): PlanWords {
+export function planWords(t: T, format: PlanFormat): PlanWords {
   const limit = (value: TierLimit): string => {
     if (value === 'unlimited') return t(PRICING.unlimited);
     if (value === 'custom') return t(PRICING.custom);
@@ -60,18 +76,15 @@ export interface PlanFigure {
   readonly period: TranslatedText;
 }
 
-/** A U+0000 stands in for the figure, so the words around it are the translation's own. */
-const FIGURE_SLOT = '\u0000';
-
 function around(sentence: string): { lead: string | null; trail: string | null } {
   const [before = '', after = ''] = sentence.split(FIGURE_SLOT);
   return { lead: before.trim() || null, trail: after.trim() || null };
 }
 
 export function planFigure(
-  plan: PricingPlan,
+  plan: Pick<BookPlan, 'price'>,
   cycle: BillingCycle,
-  t: Translate,
+  t: T,
   words: PlanWords,
 ): PlanFigure {
   const { price } = plan;
@@ -87,5 +100,22 @@ export function planFigure(
     trail: null,
     figure: words.money(price.perCycle[cycle]),
     period: t(cycle === 'yearly' ? PRICING.aYear : PRICING.aMonth),
+  };
+}
+
+/** `Limits — 500 kW · 300 proposals a month`: the card's ONE flowing line (`SCR-M12-01` redesign). */
+export function planLimitsLine(
+  plan: Pick<BookPlan, 'proposalsPerMonth'>,
+  power: PlanPower,
+  t: T,
+  words: PlanWords,
+): { key: string; label: TranslatedText; values: string[] } {
+  return {
+    key: 'limits',
+    label: t(PRICING.limits),
+    values: [
+      words.power(power),
+      t(PRICING.proposalsAMonth, { count: words.limit(plan.proposalsPerMonth) }),
+    ],
   };
 }

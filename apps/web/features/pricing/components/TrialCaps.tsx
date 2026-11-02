@@ -1,9 +1,8 @@
 import type { DesignPower } from '@heliogrid/data/react';
 import type { TierLimit } from '@heliogrid/domain';
-import { PRICING } from '@heliogrid/i18n';
+import { PRICING, planWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { FactRow, FactRows, Provenance, useFormat } from '@heliogrid/ui';
-import { planWords } from '../plan-words';
 import { OpenRow } from './OpenRow';
 
 interface TrialCapsProps {

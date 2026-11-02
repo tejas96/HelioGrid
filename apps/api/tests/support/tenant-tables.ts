@@ -22,6 +22,7 @@ import {
   subscription,
   subscriptionInvoice,
   subscriptionPayment,
+  subscriptionPlanChange,
   subscriptionStateHistory,
   taxRegistration,
   tenantCatalogItem,
@@ -71,7 +72,7 @@ export const TENANT_CATALOG_TABLES = [
  * A company's billing rows: its notices before the payments that cleared them; its credit notes
  * before the invoices they stand against; its invoices, lines
  * last-in first-out, before the payments they name; the payments, the
- * checkouts, the overrides and the history before the subscription each names; its limits after it, since another suite's timers repair a live
+ * checkouts, the scheduled plan changes, the overrides and the history before the subscription each names; its limits after it, since another suite's timers repair a live
  * company's limits until it is gone; then its usage ledger and storage gauge.
  */
 export const TENANT_BILLING_TABLES = [
@@ -84,6 +85,7 @@ export const TENANT_BILLING_TABLES = [
   subscriptionInvoice,
   subscriptionPayment,
   billingCheckout,
+  subscriptionPlanChange,
   subscriptionStateHistory,
   subscription,
   entitlement,

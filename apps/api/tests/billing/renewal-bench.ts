@@ -19,6 +19,7 @@ import { ReconcileAdminRepository } from '../../src/modules/billing/reconcile.ad
 import { ReconcileService } from '../../src/modules/billing/reconcile.service';
 import { RenewalAdminRepository } from '../../src/modules/billing/renewal.admin.repository';
 import { RenewalService } from '../../src/modules/billing/renewal.service';
+import { RenewalAdoptionAdminRepository } from '../../src/modules/billing/renewal-adoption.admin.repository';
 import { aCompany, type Company, type openPools, seed } from '../support/fixture';
 import { marketsOf } from '../support/market';
 import { invoicesOf } from './invoice-bench';
@@ -86,6 +87,7 @@ export async function aYearlyCompany(
       stateEnteredAt: new Date(convertedAt),
       paidPeriodEnd: new Date(convertedAt),
       createdAt: new Date(convertedAt),
+      collection: 'invoice',
       ...plan,
     })
     .returning({ id: subscription.id });
@@ -129,6 +131,7 @@ export function renewalServiceOf(
 ): RenewalService {
   return new RenewalService(
     new RenewalAdminRepository(pools.admin.db),
+    new RenewalAdoptionAdminRepository(pools.admin.db),
     marketsOf(pools),
     gateway,
     chargeServiceOf(pools, alerts),

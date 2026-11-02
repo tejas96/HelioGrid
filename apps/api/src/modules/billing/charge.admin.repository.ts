@@ -5,7 +5,6 @@ import {
   subscription,
   subscriptionInvoice,
   subscriptionPayment,
-  subscriptionStateHistory,
   tenant,
 } from '@heliogrid/db';
 import {
@@ -18,9 +17,15 @@ import {
   type SuccessEffect,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
 import { clearOpenNotices } from './billing-notice.admin.repository';
+import {
+  applySuccess,
+  closeCheckout,
+  moveOnFailure,
+  planPaidFor,
+} from './charge-moves.admin.repository';
 import { type LockedSubscription, lockSubscription } from './charge-standing.admin.repository';
 import {
   type CollectedOn,
@@ -29,7 +34,7 @@ import {
   type Renewal,
 } from './collected-on.admin.repository';
 import { type LimitsFor, recomputeEntitlements } from './entitlement.admin.repository';
-import { issueInvoice, payRenewalInvoice, planBilledBy } from './invoice.admin.repository';
+import { issueInvoice, payRenewalInvoice } from './invoice.admin.repository';
 import { addOnsCollectedBy } from './overage-invoicing.admin.repository';
 import { startReactivated } from './reactivation.admin.repository';
 
@@ -133,7 +138,14 @@ export class ChargeAdminRepository {
       if (conversion !== null) await closeCheckout(tx, conversion.checkoutId, recordedAt);
       if (effect.outcome !== 'live') return { kind: 'dead', invoiced: await issue() };
       const plan = await planPaidFor(tx, held.tenantId, conversion, renewal);
-      await applySuccess(tx, held, effect, charge.occurredAt, conversion, plan);
+      await applySuccess(tx, held, effect, {
+        occurredAt: charge.occurredAt,
+        recordedAt,
+        conversion,
+        renewal,
+        plan,
+        pack,
+      });
       // Only a charge that moves the row ends its unpaid spell; a late one leaves the ladder running.
       if (effect.moveTo !== null) await clearOpenNotices(tx, held.tenantId, paid.id, recordedAt);
       await recomputeEntitlements(tx, {
@@ -232,83 +244,4 @@ async function invoicePayment(
     },
     { kind: 'payment', paymentId: on.paymentId },
   );
-}
-
-/** Moves a held row as a failed charge at `occurredAt` moves it; whether it moved. */
-async function moveOnFailure(
-  tx: DbTransaction,
-  held: LockedSubscription,
-  decide: (standing: ChargeStanding) => BillingState | null,
-  occurredAt: number,
-): Promise<boolean> {
-  const to = decide(held);
-  if (to === null) return false;
-  await tx
-    .update(subscription)
-    .set({ state: to, stateEnteredAt: new Date(occurredAt) })
-    .where(eq(subscription.id, held.id));
-  await recordState(tx, held, to, 'charge_failed', occurredAt);
-  return true;
-}
-
-/**
- * The plan row a live charge puts the row on: the converted plan, or the row a paid renewal's
- * invoice billed — today's book (`M12-57`). `null` leaves the row's plan as it is.
- */
-async function planPaidFor(
-  tx: DbTransaction,
-  tenantId: string,
-  conversion: Conversion | null,
-  renewal: Renewal | null,
-): Promise<string | null> {
-  if (conversion !== null) return conversion.planPriceId;
-  return renewal === null ? null : planBilledBy(tx, tenantId, renewal.invoiceId);
-}
-
-/** A live charge's effect: the window, the state move, the plan it paid and, on conversion, the rest. */
-async function applySuccess(
-  tx: DbTransaction,
-  held: LockedSubscription,
-  effect: Extract<SuccessEffect, { outcome: 'live' }>,
-  occurredAt: number,
-  conversion: Conversion | null,
-  plan: string | null,
-): Promise<void> {
-  await tx
-    .update(subscription)
-    .set({
-      paidPeriodEnd: new Date(effect.paidPeriodEnd),
-      ...(effect.moveTo === null
-        ? {}
-        : { state: effect.moveTo, stateEnteredAt: new Date(occurredAt) }),
-      ...(plan === null ? {} : { planPriceId: plan }),
-      ...(conversion === null
-        ? {}
-        : { tier: conversion.tier, cycle: conversion.cycle, gatewayRef: conversion.gatewayRef }),
-    })
-    .where(eq(subscription.id, held.id));
-  if (effect.moveTo !== null) await recordState(tx, held, effect.moveTo, 'paid', occurredAt);
-}
-
-async function closeCheckout(tx: DbTransaction, checkoutId: string, at: number): Promise<void> {
-  await tx
-    .update(billingCheckout)
-    .set({ closedAt: new Date(at) })
-    .where(and(eq(billingCheckout.id, checkoutId), isNull(billingCheckout.closedAt)));
-}
-
-async function recordState(
-  tx: DbTransaction,
-  held: LockedSubscription,
-  state: BillingState,
-  cause: 'paid' | 'charge_failed',
-  enteredAt: number,
-): Promise<void> {
-  await tx.insert(subscriptionStateHistory).values({
-    tenantId: held.tenantId,
-    subscriptionId: held.id,
-    state,
-    cause,
-    enteredAt: new Date(enteredAt),
-  });
 }

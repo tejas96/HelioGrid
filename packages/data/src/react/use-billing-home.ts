@@ -34,7 +34,9 @@ export type BillingActFailure =
 /** What a landed act says once: the toast's facts. */
 export type BillingDone =
   | { readonly kind: 'cancelled'; readonly runsUntil: string }
-  | { readonly kind: 'refunded'; readonly creditNoteNumber: string };
+  | { readonly kind: 'refunded'; readonly creditNoteNumber: string }
+  /** `Keep <plan> instead`: the scheduled change is withdrawn and the plan stays. */
+  | { readonly kind: 'kept' };
 
 /** The page's facts: the Owner's whole home, or a member's standing and whose act it is. */
 export type BillingFacts =
@@ -70,7 +72,10 @@ export interface BillingHomeScreen {
   readonly reason: CancellationReason | null;
   /** The invoice whose PDF link is being signed: its act shows pending. */
   readonly pendingPdf: string | null;
-  /** The need's one act: pay, the renewal's link, the refund's ask, reactivation, or the plans. */
+  /**
+   * The need's one act: pay, the renewal's link, the refund's ask, reactivation, the plans, or
+   * keeping the plan a scheduled change was moving from.
+   */
   needAct(): void;
   updateMethod(): void;
   /** `Your plan`'s route: Enterprise writes to its contact (`Talk to us`), every plan else picks. */
@@ -83,6 +88,12 @@ export interface BillingHomeScreen {
   refund(): void;
   /** The toast was read: it goes. */
   clearDone(): void;
+  /**
+   * Where focus lands on arrival, when another screen handed the person here — `needs` after the
+   * plans scheduled a downgrade (`SCR-M12-03`); `null` once landed.
+   */
+  readonly arrival: 'needs' | null;
+  clearArrival(): void;
   /** A failure the person has read — a toast closed — goes. */
   clearFailure(): void;
 }
@@ -104,6 +115,12 @@ export function useBillingHomeScreen(adapter: BillingHomeAdapter): BillingHomeSc
     enabled: tenantId !== '' && !owner,
   });
   const owners = useQuery(ownersRead(repositories, tenantId, tenantId !== '' && !owner));
+  const arrival = useQuery<'needs' | null>({
+    queryKey: queryKeys.billingArrival(tenantId),
+    queryFn: () => null,
+    enabled: false,
+    staleTime: Number.POSITIVE_INFINITY,
+  });
   const [acting, setActing] = useState<BillingActing | null>(null);
   const [failure, setFailure] = useState<BillingHomeScreen['failure']>(null);
   const [done, setDone] = useState<BillingDone | null>(null);
@@ -157,6 +174,14 @@ export function useBillingHomeScreen(adapter: BillingHomeAdapter): BillingHomeSc
     pendingPdf,
     needAct() {
       if (ownerHome === null) return;
+      if (need === 'scheduled_change') {
+        void act('need', async () => {
+          await repositories.billing.planChangeWithdraw();
+          setDone({ kind: 'kept' });
+          await refreshed();
+        });
+        return;
+      }
       runNeedAct(need, ownerHome, {
         adapter,
         askRefund: () => setSheet('refund'),
@@ -211,6 +236,8 @@ export function useBillingHomeScreen(adapter: BillingHomeAdapter): BillingHomeSc
       });
     },
     clearDone: () => setDone(null),
+    arrival: arrival.data ?? null,
+    clearArrival: () => queryClient.setQueryData(queryKeys.billingArrival(tenantId), null),
     clearFailure: () => setFailure(null),
   };
 }

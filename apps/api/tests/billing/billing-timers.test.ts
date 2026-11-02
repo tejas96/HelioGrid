@@ -14,6 +14,7 @@ import {
   unseed,
 } from '../support/fixture';
 import { publishIndiaPack } from '../support/market';
+import { planChangeBoundaryOf } from './plan-change-bench';
 import { renewalServiceOf } from './renewal-bench';
 import { aDevelopmentGateway, entitlementServiceOf, RecordedAlerts, silentLogger } from './support';
 
@@ -50,6 +51,7 @@ describe.skipIf(skip)('the billing timers (M12-04, M12-06, M12-52)', () => {
       repository,
       entitlementServiceOf(pools),
       renewalServiceOf(pools, aDevelopmentGateway(), new RecordedAlerts(silentLogger())),
+      planChangeBoundaryOf(pools),
     );
   });
 

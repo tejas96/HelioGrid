@@ -3,12 +3,13 @@ import {
   subscription,
   subscriptionInvoice,
   subscriptionPayment,
+  subscriptionPlanChange,
   type TenantPool,
   tenant,
 } from '@heliogrid/db';
-import type { StandingRow } from '@heliogrid/domain';
+import type { ScheduledPlanChange, StandingRow } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq, isNotNull, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, isNotNull, sql } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
 
 /** The company's newest subscription row, with what the home reads beside its clock. */
@@ -81,7 +82,7 @@ export class BillingHomeRepository {
 
   /**
    * When the row's latest paid period began: the end of the period paid before it, else the
-   * moment its first charge landed — as the overage reckoning reads a period. `null` before any.
+   * moment the charge that first paid toward it landed — as the overage reckoning reads a period. `null` before any.
    */
   async paidPeriodStart(tenantId: string, subscriptionId: string): Promise<number | null> {
     const earlier = sql<Date | null>`(
@@ -101,11 +102,46 @@ export class BillingHomeRepository {
             eq(subscriptionPayment.subscriptionId, subscriptionId),
           ),
         )
-        .orderBy(desc(subscriptionPayment.occurredAt), desc(subscriptionPayment.id))
+        // The period's own payment, never an upgrade's part-cycle charge inside it (`M12-48`),
+        // which pays through the same end: the latest end, and the first payment toward it.
+        .orderBy(
+          desc(subscriptionPayment.paysThrough),
+          asc(subscriptionPayment.occurredAt),
+          asc(subscriptionPayment.id),
+        )
         .limit(1),
     );
     if (latest === undefined) return null;
     return (latest.earlier ?? latest.occurredAt).getTime();
+  }
+
+  /** The row's change waiting for its paid period's end (`M12-49`), if any. */
+  async scheduledChange(
+    tenantId: string,
+    subscriptionId: string,
+  ): Promise<{
+    readonly kind: ScheduledPlanChange;
+    readonly toPlanPriceId: string;
+    readonly effectiveAt: number;
+  } | null> {
+    const [change] = await this.db.withTenantTransaction(tenantId, (tx) =>
+      tx
+        .select({
+          kind: subscriptionPlanChange.kind,
+          toPlanPriceId: subscriptionPlanChange.toPlanPriceId,
+          effectiveAt: subscriptionPlanChange.effectiveAt,
+        })
+        .from(subscriptionPlanChange)
+        .where(
+          and(
+            eq(subscriptionPlanChange.tenantId, tenantId),
+            eq(subscriptionPlanChange.subscriptionId, subscriptionId),
+            eq(subscriptionPlanChange.status, 'scheduled'),
+          ),
+        )
+        .limit(1),
+    );
+    return change === undefined ? null : { ...change, effectiveAt: change.effectiveAt.getTime() };
   }
 
   /** The gateway's own page for a mandate: the checkout that opened it (`M12-10`). */

@@ -80,7 +80,10 @@
                               "billing.trial_extended",
                               "billing.subscription_cancelled",
                               "billing.refund_issued",
-                              "billing.reactivated"
+                              "billing.reactivated",
+                              "billing.plan_changed",
+                              "billing.plan_change_scheduled",
+                              "billing.plan_change_withdrawn"
                             ]
                           },
                           "actorKind": {
@@ -8055,6 +8058,77 @@
                       "type": "string",
                       "format": "email",
                       "nullable": true
+                    },
+                    "scheduledChange": {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "downgrade",
+                            "cycle_switch"
+                          ]
+                        },
+                        "tier": {
+                          "type": "string",
+                          "enum": [
+                            "starter",
+                            "growth",
+                            "pro",
+                            "enterprise"
+                          ]
+                        },
+                        "cycle": {
+                          "type": "string",
+                          "enum": [
+                            "monthly",
+                            "yearly"
+                          ]
+                        },
+                        "effectiveAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "afterwards": {
+                          "type": "object",
+                          "properties": {
+                            "list": {
+                              "type": "string",
+                              "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                            },
+                            "taxRateBasisPoints": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "nullable": true
+                            },
+                            "tax": {
+                              "type": "string",
+                              "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$",
+                              "nullable": true
+                            },
+                            "total": {
+                              "type": "string",
+                              "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                            }
+                          },
+                          "required": [
+                            "list",
+                            "taxRateBasisPoints",
+                            "tax",
+                            "total"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "tier",
+                        "cycle",
+                        "effectiveAt",
+                        "afterwards"
+                      ],
+                      "additionalProperties": false,
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -8072,7 +8146,8 @@
                     "reactivation",
                     "invoices",
                     "cancellable",
-                    "salesContact"
+                    "salesContact",
+                    "scheduledChange"
                   ],
                   "additionalProperties": false
                 }
@@ -9651,6 +9726,2137 @@
                     "items",
                     "totalCount"
                   ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_FAILED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "FORBIDDEN"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "details": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string"
+                                  },
+                                  "issue": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "issue"
+                                ]
+                              }
+                            },
+                            "requestId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "ENTITLEMENT_BLOCKED"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "requestId": {
+                              "type": "string"
+                            },
+                            "blocked": {
+                              "discriminator": {
+                                "propertyName": "reason"
+                              },
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "billing_state"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "phase": {
+                                      "type": "string",
+                                      "enum": [
+                                        "trialing",
+                                        "active",
+                                        "past_due_full_function",
+                                        "past_due_metered_paused",
+                                        "halted",
+                                        "expired",
+                                        "cancelled_post_period"
+                                      ]
+                                    },
+                                    "haltsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "phase",
+                                    "haltsAt"
+                                  ]
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "cap"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "key": {
+                                      "type": "string",
+                                      "enum": [
+                                        "design_ceiling_kw",
+                                        "proposals_per_cycle",
+                                        "active_projects",
+                                        "voice_minutes",
+                                        "marketing_sends",
+                                        "tracked_field_seats",
+                                        "storage_gb",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "resetsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "key",
+                                    "resetsAt"
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId",
+                            "blocked"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INTERNAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billing/plan-change/preview": {
+      "get": {
+        "summary": "What a plan pick changes, costs today and blocks",
+        "tags": [
+          "billingPlanChange"
+        ],
+        "parameters": [
+          {
+            "name": "tier",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "starter",
+                "growth",
+                "pro",
+                "enterprise"
+              ]
+            }
+          },
+          {
+            "name": "cycle",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "monthly",
+                "yearly"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "x-extensible-enum": [
+                        "upgrade",
+                        "downgrade",
+                        "cycle_switch",
+                        "conversion"
+                      ]
+                    },
+                    "from": {
+                      "type": "object",
+                      "properties": {
+                        "tier": {
+                          "type": "string",
+                          "enum": [
+                            "starter",
+                            "growth",
+                            "pro",
+                            "enterprise"
+                          ]
+                        },
+                        "cycle": {
+                          "type": "string",
+                          "enum": [
+                            "monthly",
+                            "yearly"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "tier",
+                        "cycle"
+                      ],
+                      "additionalProperties": false,
+                      "nullable": true
+                    },
+                    "to": {
+                      "type": "object",
+                      "properties": {
+                        "tier": {
+                          "type": "string",
+                          "enum": [
+                            "starter",
+                            "growth",
+                            "pro",
+                            "enterprise"
+                          ]
+                        },
+                        "cycle": {
+                          "type": "string",
+                          "enum": [
+                            "monthly",
+                            "yearly"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "tier",
+                        "cycle"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "currencyCode": {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 3
+                    },
+                    "taxScheme": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "priceListPublishedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "includes": {
+                      "type": "object",
+                      "properties": {
+                        "from": {
+                          "type": "object",
+                          "properties": {
+                            "designCeilingKw": {
+                              "oneOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "unlimited"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "custom"
+                                  ]
+                                }
+                              ]
+                            },
+                            "proposalsPerMonth": {
+                              "oneOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "unlimited"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "custom"
+                                  ]
+                                }
+                              ]
+                            },
+                            "activeProjects": {
+                              "oneOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "unlimited"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "custom"
+                                  ]
+                                }
+                              ]
+                            },
+                            "voiceMinutesIncluded": {
+                              "oneOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "unlimited"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "custom"
+                                  ]
+                                }
+                              ]
+                            },
+                            "voiceMinuteRate": {
+                              "type": "string",
+                              "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$",
+                              "nullable": true
+                            },
+                            "storageGb": {
+                              "oneOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "unlimited"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "custom"
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "designCeilingKw",
+                            "proposalsPerMonth",
+                            "activeProjects",
+                            "voiceMinutesIncluded",
+                            "voiceMinuteRate",
+                            "storageGb"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "to": {
+                          "type": "object",
+                          "properties": {
+                            "designCeilingKw": {
+                              "oneOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "unlimited"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "custom"
+                                  ]
+                                }
+                              ]
+                            },
+                            "proposalsPerMonth": {
+                              "oneOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "unlimited"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "custom"
+                                  ]
+                                }
+                              ]
+                            },
+                            "activeProjects": {
+                              "oneOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "unlimited"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "custom"
+                                  ]
+                                }
+                              ]
+                            },
+                            "voiceMinutesIncluded": {
+                              "oneOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "unlimited"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "custom"
+                                  ]
+                                }
+                              ]
+                            },
+                            "voiceMinuteRate": {
+                              "type": "string",
+                              "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$",
+                              "nullable": true
+                            },
+                            "storageGb": {
+                              "oneOf": [
+                                {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "unlimited"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "custom"
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "designCeilingKw",
+                            "proposalsPerMonth",
+                            "activeProjects",
+                            "voiceMinutesIncluded",
+                            "voiceMinuteRate",
+                            "storageGb"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "from",
+                        "to"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "today": {
+                      "type": "object",
+                      "properties": {
+                        "sale": {
+                          "type": "object",
+                          "properties": {
+                            "list": {
+                              "type": "string",
+                              "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                            },
+                            "taxRateBasisPoints": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "nullable": true
+                            },
+                            "tax": {
+                              "type": "string",
+                              "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$",
+                              "nullable": true
+                            },
+                            "total": {
+                              "type": "string",
+                              "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                            }
+                          },
+                          "required": [
+                            "list",
+                            "taxRateBasisPoints",
+                            "tax",
+                            "total"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "partCycle": {
+                          "type": "object",
+                          "properties": {
+                            "daysLeft": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "daysInCycle": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "exclusiveMinimum": 0
+                            },
+                            "fromPrice": {
+                              "type": "string",
+                              "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                            },
+                            "toPrice": {
+                              "type": "string",
+                              "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                            },
+                            "toCycleDays": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "exclusiveMinimum": 0
+                            },
+                            "difference": {
+                              "type": "string",
+                              "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$",
+                              "nullable": true
+                            },
+                            "fromDayRate": {
+                              "type": "string",
+                              "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                            },
+                            "toDayRate": {
+                              "type": "string",
+                              "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                            }
+                          },
+                          "required": [
+                            "daysLeft",
+                            "daysInCycle",
+                            "fromPrice",
+                            "toPrice",
+                            "toCycleDays",
+                            "difference",
+                            "fromDayRate",
+                            "toDayRate"
+                          ],
+                          "additionalProperties": false,
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "sale",
+                        "partCycle"
+                      ],
+                      "additionalProperties": false,
+                      "nullable": true
+                    },
+                    "startsAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "nextBillAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "afterwards": {
+                      "type": "object",
+                      "properties": {
+                        "list": {
+                          "type": "string",
+                          "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                        },
+                        "taxRateBasisPoints": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "nullable": true
+                        },
+                        "tax": {
+                          "type": "string",
+                          "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$",
+                          "nullable": true
+                        },
+                        "total": {
+                          "type": "string",
+                          "pattern": "^-?\\d{1,12}(\\.\\d{1,3})?$"
+                        }
+                      },
+                      "required": [
+                        "list",
+                        "taxRateBasisPoints",
+                        "tax",
+                        "total"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "blocks": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "block": {
+                            "type": "string",
+                            "x-extensible-enum": [
+                              "storage"
+                            ]
+                          },
+                          "used": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "limit": {
+                            "oneOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "unlimited"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "custom"
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "block",
+                          "used",
+                          "limit"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "nullable": true
+                    },
+                    "digest": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "from",
+                    "to",
+                    "currencyCode",
+                    "taxScheme",
+                    "priceListPublishedAt",
+                    "includes",
+                    "today",
+                    "startsAt",
+                    "nextBillAt",
+                    "afterwards",
+                    "blocks",
+                    "digest"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_FAILED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "FORBIDDEN"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "details": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string"
+                                  },
+                                  "issue": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "issue"
+                                ]
+                              }
+                            },
+                            "requestId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "ENTITLEMENT_BLOCKED"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "requestId": {
+                              "type": "string"
+                            },
+                            "blocked": {
+                              "discriminator": {
+                                "propertyName": "reason"
+                              },
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "billing_state"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "phase": {
+                                      "type": "string",
+                                      "enum": [
+                                        "trialing",
+                                        "active",
+                                        "past_due_full_function",
+                                        "past_due_metered_paused",
+                                        "halted",
+                                        "expired",
+                                        "cancelled_post_period"
+                                      ]
+                                    },
+                                    "haltsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "phase",
+                                    "haltsAt"
+                                  ]
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "cap"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "key": {
+                                      "type": "string",
+                                      "enum": [
+                                        "design_ceiling_kw",
+                                        "proposals_per_cycle",
+                                        "active_projects",
+                                        "voice_minutes",
+                                        "marketing_sends",
+                                        "tracked_field_seats",
+                                        "storage_gb",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "resetsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "key",
+                                    "resetsAt"
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId",
+                            "blocked"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "409",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "PLAN_CHANGE_NOT_POSSIBLE"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "TIER_NOT_SOLD"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INTERNAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billing/plan-change": {
+      "post": {
+        "tags": [
+          "billingPlanChange"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tier": {
+                    "type": "string",
+                    "enum": [
+                      "starter",
+                      "growth",
+                      "pro",
+                      "enterprise"
+                    ]
+                  },
+                  "cycle": {
+                    "type": "string",
+                    "enum": [
+                      "monthly",
+                      "yearly"
+                    ]
+                  },
+                  "previewDigest": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                },
+                "required": [
+                  "tier",
+                  "cycle",
+                  "previewDigest"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "discriminator": {
+                    "propertyName": "outcome"
+                  },
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "outcome": {
+                          "type": "string",
+                          "enum": [
+                            "page"
+                          ]
+                        },
+                        "checkoutUrl": {
+                          "type": "string",
+                          "format": "uri"
+                        }
+                      },
+                      "required": [
+                        "outcome",
+                        "checkoutUrl"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "outcome": {
+                          "type": "string",
+                          "enum": [
+                            "applied"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "outcome"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "outcome": {
+                          "type": "string",
+                          "enum": [
+                            "scheduled"
+                          ]
+                        },
+                        "effectiveAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "outcome",
+                        "effectiveAt"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_FAILED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "x-extensible-enum": [
+                            "UNAUTHENTICATED",
+                            "NO_CREDENTIAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "FORBIDDEN"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "details": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string"
+                                  },
+                                  "issue": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "issue"
+                                ]
+                              }
+                            },
+                            "requestId": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string",
+                              "enum": [
+                                "ENTITLEMENT_BLOCKED"
+                              ]
+                            },
+                            "message": {
+                              "type": "string"
+                            },
+                            "requestId": {
+                              "type": "string"
+                            },
+                            "blocked": {
+                              "discriminator": {
+                                "propertyName": "reason"
+                              },
+                              "oneOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "billing_state"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "phase": {
+                                      "type": "string",
+                                      "enum": [
+                                        "trialing",
+                                        "active",
+                                        "past_due_full_function",
+                                        "past_due_metered_paused",
+                                        "halted",
+                                        "expired",
+                                        "cancelled_post_period"
+                                      ]
+                                    },
+                                    "haltsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "phase",
+                                    "haltsAt"
+                                  ]
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "reason": {
+                                      "type": "string",
+                                      "enum": [
+                                        "cap"
+                                      ]
+                                    },
+                                    "capability": {
+                                      "type": "string",
+                                      "enum": [
+                                        "read_and_search",
+                                        "export",
+                                        "customer_links",
+                                        "billing_screens",
+                                        "create_edit_records",
+                                        "studio_design_edit",
+                                        "sell_and_deliver",
+                                        "new_file_upload",
+                                        "pending_field_photo_upload",
+                                        "voice_agent",
+                                        "team_invites",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "key": {
+                                      "type": "string",
+                                      "enum": [
+                                        "design_ceiling_kw",
+                                        "proposals_per_cycle",
+                                        "active_projects",
+                                        "voice_minutes",
+                                        "marketing_sends",
+                                        "tracked_field_seats",
+                                        "storage_gb",
+                                        "ai_roof_detections"
+                                      ]
+                                    },
+                                    "resetsAt": {
+                                      "type": "string",
+                                      "format": "date-time",
+                                      "nullable": true
+                                    }
+                                  },
+                                  "required": [
+                                    "reason",
+                                    "capability",
+                                    "key",
+                                    "resetsAt"
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message",
+                            "requestId",
+                            "blocked"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "409",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "PLAN_CHANGE_NOT_POSSIBLE",
+                            "PLAN_CHANGE_PREVIEW_CHANGED"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "422",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "TIER_NOT_SOLD"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "426": {
+            "description": "426",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientUpgradeRequired"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "500",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "INTERNAL"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "502",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "GATEWAY_UNAVAILABLE"
+                          ]
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "path": {
+                                "type": "string"
+                              },
+                              "issue": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "path",
+                              "issue"
+                            ]
+                          }
+                        },
+                        "requestId": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message",
+                        "requestId"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billing/plan-change/withdraw": {
+      "post": {
+        "tags": [
+          "billingPlanChange"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "withdrawn": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "withdrawn"
+                  ],
+                  "additionalProperties": false
                 }
               }
             }

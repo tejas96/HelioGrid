@@ -36,6 +36,9 @@ import { PinoLogger } from 'nestjs-pino';
  *   schedule at the gateway, or the company's next renewal is never collected.
  * - `billing_old_mandate_open` — a company reactivated on a new mandate, and the gateway did not
  *   confirm the old one closed: it may still collect. The team cancels it at the gateway.
+ * - `billing_plan_mandate_open` — an upgrade was paid, and the gateway did not confirm the old
+ *   plan's mandate ends at its cycle: it may debit the old amount again. The team cancels it at
+ *   the gateway at its cycle's end.
  */
 const alertMessages = {
   billing_repair: 'the reconcile recorded a charge the gateway message never delivered',
@@ -59,6 +62,8 @@ const alertMessages = {
     'a mandate was told to end at its cycle but the cancel did not land; remove the schedule at the gateway',
   billing_old_mandate_open:
     'a reactivated company’s old mandate did not confirm closed; cancel it at the gateway',
+  billing_plan_mandate_open:
+    'an upgraded company’s old mandate did not confirm it ends at its cycle; cancel it at the gateway',
 } as const;
 
 export type BillingAlert = keyof typeof alertMessages;

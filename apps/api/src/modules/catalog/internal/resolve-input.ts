@@ -2,10 +2,11 @@ import {
   type CalendarDate,
   type CatalogRateEntry,
   catalogSpecSchema,
+  minorUnitsOfDecimal,
   percentToBasisPoints,
   type ResolvedCatalogItem,
 } from '@heliogrid/domain';
-import { minorUnitsOfDecimal, resolveCatalogItem } from '@heliogrid/domain/server';
+import { resolveCatalogItem } from '@heliogrid/domain/server';
 import type { SliceRow } from '../catalog.slice.repository';
 
 /** The tenant facts one resolve reads: its day, its market's badged schemes, its currency's digits. */

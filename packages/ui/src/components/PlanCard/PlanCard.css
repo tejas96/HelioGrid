@@ -1,0 +1,38 @@
+/* The plan card's body (`SCR-M12-01`, `SCR-M12-03`): the figure is mono with tabular figures at
+   the h1 size (`F7-09`), one token apart from its period. */
+
+.hg-plan-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-plan-card[data-form="head"] {
+  gap: var(--sp-2);
+}
+
+.hg-plan-card-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.hg-plan-card-figure {
+  font-family: var(--font-mono);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--tr-h1);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.hg-plan-card-quiet {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}

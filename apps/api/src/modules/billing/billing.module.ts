@@ -32,6 +32,13 @@ import { DevelopmentBillingGateway } from './internal/billing-gateway.developmen
 import { RazorpayBillingGateway } from './internal/billing-gateway.razorpay';
 import { OverageAdminRepository } from './overage.admin.repository';
 import { OverageService } from './overage.service';
+import { PlanChangeAdminRepository } from './plan-change.admin.repository';
+import { PlanChangeBoundaryAdminRepository } from './plan-change.boundary.admin.repository';
+import { PlanChangeBoundaryService } from './plan-change.boundary.service';
+import { PlanChangeController } from './plan-change.controller';
+import { PlanChangePaidAdminRepository } from './plan-change.paid.admin.repository';
+import { PlanChangePreviewService } from './plan-change.preview.service';
+import { PlanChangeService } from './plan-change.service';
 import { PlanPriceAdminRepository } from './plan-price.admin.repository';
 import { PlanPriceService } from './plan-price.service';
 import { PricingController } from './pricing.controller';
@@ -41,6 +48,7 @@ import { ReconcileService } from './reconcile.service';
 import { RefundAdminRepository } from './refund.admin.repository';
 import { RenewalAdminRepository } from './renewal.admin.repository';
 import { RenewalService } from './renewal.service';
+import { RenewalAdoptionAdminRepository } from './renewal-adoption.admin.repository';
 import { UsageActivityRegistration } from './usage.activities';
 import { UsageAdminRepository } from './usage.admin.repository';
 import { UsageRepository } from './usage.repository';
@@ -81,12 +89,12 @@ const billingGatewayProvider: Provider = {
  * Platform billing (`M12`): the subscription lifecycle and its timers, charge truth, entitlements,
  * the billing-state gate on every mutation, the hosted checkout a trial converts and a dead row
  * reactivates through, the Owner's billing home, cancel and refund, the gateway's signed messages, the 6-hour
- * reconcile, the yearly renewal on a fresh payment link, and the usage ledger with its nightly
- * storage gauge.
+ * reconcile, the yearly renewal on a fresh payment link, the plan screen's upgrade, downgrade
+ * and cycle switch, and the usage ledger with its nightly storage gauge.
  */
 @Module({
   imports: [MarketModule],
-  controllers: [BillingController, BillingHomeController, PricingController],
+  controllers: [BillingController, BillingHomeController, PlanChangeController, PricingController],
   providers: [
     billingGatewayProvider,
     BillingActsService,
@@ -104,6 +112,7 @@ const billingGatewayProvider: Provider = {
     BillingActivityRegistration,
     RenewalService,
     RenewalAdminRepository,
+    RenewalAdoptionAdminRepository,
     BillingStateGuard,
     BillingStateRepository,
     ChargeService,
@@ -116,6 +125,12 @@ const billingGatewayProvider: Provider = {
     EntitlementOverrideAdminRepository,
     GatewayEventsService,
     GatewayEventAdminRepository,
+    PlanChangeService,
+    PlanChangePreviewService,
+    PlanChangeAdminRepository,
+    PlanChangePaidAdminRepository,
+    PlanChangeBoundaryService,
+    PlanChangeBoundaryAdminRepository,
     PlanPriceService,
     PlanPriceAdminRepository,
     ReconcileService,

@@ -1,5 +1,4 @@
 import {
-  billingCheckout,
   type Db,
   planPrice,
   subscription,
@@ -16,17 +15,18 @@ import {
   type Tier,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, asc, eq, isNotNull, lte, sql } from 'drizzle-orm';
+import { and, asc, eq, isNotNull, lte, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { ADMIN_DB } from '../../common/db/admin.token';
-import { lockSubscription } from './charge-standing.admin.repository';
+import { lockSubscription, subscriptionRail } from './charge-standing.admin.repository';
 import { type InvoiceFor, issueInvoice, workOutInvoice } from './invoice.admin.repository';
 import { addOnsForLink } from './overage-invoicing.admin.repository';
 import { currentPlanPrice } from './plan-price.admin.repository';
 
 /**
- * A live row a payment link collects, whose paid period has closed with no renewal raised. Its
- * plan is the CURRENT row of the plan it holds: the next period bills today's book (`M12-57`).
+ * A live row a payment link collects, or one whose mandate a plan change ended, whose paid period
+ * has closed with no renewal raised. Its plan is the CURRENT row of the plan it holds: the next
+ * period bills today's book (`M12-57`).
  */
 export interface RenewalDue {
   readonly tenantId: string;
@@ -38,6 +38,8 @@ export interface RenewalDue {
   readonly planPriceId: string;
   readonly gatewayPlanRef: string;
   readonly paidPeriodEnd: number;
+  /** No mandate collects it: its next period renews through a fresh hosted page on its rail. */
+  readonly mandateEnded: boolean;
 }
 
 /** Where a raise run stands in the queue: the last row it read. */
@@ -105,12 +107,12 @@ export class RenewalAdminRepository {
         planPriceId: current.id,
         gatewayPlanRef: current.gatewayPlanRef,
         paidPeriodEnd: subscription.paidPeriodEnd,
+        mandateEndingAt: subscription.mandateEndingAt,
       })
       .from(subscription)
       .innerJoin(tenant, eq(tenant.id, subscription.tenantId))
       .innerJoin(held, eq(held.id, subscription.planPriceId))
       .innerJoinLateral(current, sql`true`)
-      .innerJoin(billingCheckout, eq(billingCheckout.gatewayRef, subscription.gatewayRef))
       .where(
         and(
           awaitingRenewal(new Date(now - OVERAGE_SETTLE_DAYS * MS_PER_DAY)),
@@ -121,11 +123,19 @@ export class RenewalAdminRepository {
       )
       .orderBy(asc(subscription.paidPeriodEnd), asc(subscription.id))
       .limit(limit);
-    return rows.flatMap(({ tier, cycle, paidPeriodEnd, ...row }) =>
+    return rows.flatMap(({ tier, cycle, paidPeriodEnd, mandateEndingAt, ...row }) =>
       // A converted row always carries all three (`subscription_plan_whole`).
       tier === null || cycle === null || paidPeriodEnd === null
         ? []
-        : [{ ...row, tier, cycle, paidPeriodEnd: paidPeriodEnd.getTime() }],
+        : [
+            {
+              ...row,
+              tier,
+              cycle,
+              paidPeriodEnd: paidPeriodEnd.getTime(),
+              mandateEnded: mandateEndingAt !== null,
+            },
+          ],
     );
   }
 
@@ -139,7 +149,6 @@ export class RenewalAdminRepository {
     const rows = await this.db
       .select({ subscriptionId: subscription.id, paidPeriodEnd: subscription.paidPeriodEnd })
       .from(subscription)
-      .innerJoin(billingCheckout, eq(billingCheckout.gatewayRef, subscription.gatewayRef))
       .where(awaitingRenewal(new Date(now - ENTITLEMENT_BUFFER_DAYS * MS_PER_DAY)))
       .orderBy(asc(subscription.paidPeriodEnd), asc(subscription.id))
       .limit(limit);
@@ -150,12 +159,18 @@ export class RenewalAdminRepository {
 
   /**
    * The renewal invoice as it would issue now — the plan and every add-on the link takes — and
-   * its total, the amount the link is opened for. Commits only the move of add-ons still on a
-   * cancelled mandate back to `pending`.
+   * its total, the amount the page is opened for. A fresh mandate's page takes the plan alone: its
+   * first debit is the plan amount, so the add-ons stay `pending` for the overage sweep to put on
+   * that mandate's next debit once it collects (`M12-35`). Commits only the move of add-ons still
+   * on a cancelled mandate back to `pending`.
    */
-  async draft(invoice: Omit<InvoiceFor, 'addOns'>): Promise<RenewalDraft> {
+  async draft(
+    invoice: Omit<InvoiceFor, 'addOns'>,
+    on: { readonly carriesAddOns: boolean },
+  ): Promise<RenewalDraft> {
     return this.db.transaction(async (tx) => {
-      const whole = { ...invoice, addOns: await addOnsForLink(tx, invoice) };
+      const pending = await addOnsForLink(tx, invoice);
+      const whole = { ...invoice, addOns: on.carriesAddOns ? pending : [] };
       const worked = await workOutInvoice(tx, whole);
       return { invoice: whole, total: worked.totalAmount };
     });
@@ -217,15 +232,16 @@ export class RenewalAdminRepository {
 }
 
 /**
- * A live row a payment link collects (its converting checkout's rail), its paid period ended by
- * `endedBy`, and no renewal raised for the period after it. The caller joins `billing_checkout`.
+ * A live row a payment link collects (its plan's rail, `subscriptionRail`), or one whose
+ * mandate a plan change ended, its paid period ended by `endedBy`, and no renewal raised for the
+ * period after it.
  */
 function awaitingRenewal(endedBy: Date) {
   return and(
     isNotNull(subscription.gatewayRef),
     eq(subscription.state, 'active'),
     lte(subscription.paidPeriodEnd, endedBy),
-    eq(billingCheckout.collection, 'invoice'),
+    or(sql`${subscriptionRail} = 'invoice'`, isNotNull(subscription.mandateEndingAt)),
     sql`not exists (
       select 1 from ${subscriptionInvoice}
       where ${subscriptionInvoice.tenantId} = ${subscription.tenantId}

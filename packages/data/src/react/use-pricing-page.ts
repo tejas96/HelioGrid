@@ -18,6 +18,12 @@ export type DesignPower = ScaledPower | 'unlimited' | 'custom';
 export const PRICING_SETS = ['limits', 'included', 'charges'] as const;
 export type PricingSet = (typeof PRICING_SETS)[number];
 
+/** The pair a comparison opens on when no plan is the reader's own (`SCR-M12-01` decision 11). */
+export const PAIR_START: { readonly plan: Tier; readonly against: Tier } = {
+  plan: 'growth',
+  against: 'pro',
+};
+
 type WirePlan = PublicPricingRead['plans'][number];
 export interface PricingPlan extends WirePlan {
   readonly designPower: DesignPower;
@@ -71,10 +77,7 @@ export function usePricingPage(marketCode: string) {
   const [includesOpen, setIncludesOpen] = useState(false);
   const [compareOpen, setCompareOpen] = useState(false);
   const [trialOpen, setTrialOpen] = useState(false);
-  const [chosen, setChosen] = useState<{ plan: Tier; against: Tier }>({
-    plan: 'growth',
-    against: 'pro',
-  });
+  const [chosen, setChosen] = useState<{ plan: Tier; against: Tier }>(PAIR_START);
   const [set, setSet] = useState<PricingSet>('limits');
 
   const view = read.kind === 'ready' && read.value !== null ? viewOf(read.value) : null;

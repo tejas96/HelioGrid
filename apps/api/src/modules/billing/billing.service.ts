@@ -2,6 +2,7 @@ import { dueTimedCause, MS_PER_DAY, nextState, PAST_DUE_GRACE_DAYS } from '@heli
 import { Inject, Injectable } from '@nestjs/common';
 import { BillingAdminRepository, type TimedSubscription } from './billing.admin.repository';
 import { EntitlementService } from './entitlement.service';
+import { PlanChangeBoundaryService } from './plan-change.boundary.service';
 import { RenewalService } from './renewal.service';
 
 /** At most this many rows of each kind per run, so one run stays inside its step's timeout. */
@@ -20,6 +21,7 @@ export class BillingService {
     @Inject(BillingAdminRepository) private readonly billing: BillingAdminRepository,
     @Inject(EntitlementService) private readonly entitlements: EntitlementService,
     @Inject(RenewalService) private readonly renewals: RenewalService,
+    @Inject(PlanChangeBoundaryService) private readonly planChanges: PlanChangeBoundaryService,
   ) {}
 
   /** The result is the workflow's contract: a running worker reads exactly these two counts. */
@@ -28,6 +30,9 @@ export class BillingService {
       ...(await this.billing.trialsEndedBy(now, TIMER_BATCH)),
       ...(await this.billing.pastDueSince(now - PAST_DUE_GRACE_DAYS * MS_PER_DAY, TIMER_BATCH)),
     ];
+    // A scheduled change moves its row's plan at the paid period's end, before its renewal is
+    // raised, so the next period bills the new plan (`M12-49`).
+    await this.planChanges.applyDue(now);
     let moved = 0;
     for (const row of due) {
       if (await this.moveIfDue(row, now)) moved += 1;

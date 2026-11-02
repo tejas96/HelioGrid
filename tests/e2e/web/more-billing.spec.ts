@@ -5,11 +5,13 @@ import {
   billingScopeWords,
   billingViewWords,
   createTranslator,
+  PRICING,
   SHELL,
   settingsRowName,
 } from '@heliogrid/i18n';
 import { expect, type Locator, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
+import { at, GROWTH, GROWTH_SHOWN, paidHome } from '../support/billing-home';
 import { createCompany, OWNER_NAME } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
 import { freshMobile } from '../support/phone';
@@ -25,51 +27,6 @@ import { passTheOwnersMark } from '../support/shell';
 const en = await createTranslator('en');
 const VIEW = billingViewWords(en.t);
 const TITLE = settingsRowName(en.t, 'billing');
-const DAY = 86_400_000;
-/* Growth, monthly, from the India price list (`BM-41`); the platform bills no GST yet (`F1-29`). */
-const GROWTH = { list: '3999.00', taxRateBasisPoints: null, tax: null, total: '3999.00' };
-const GROWTH_SHOWN = '3,999.00';
-
-const at = (offsetDays: number) => new Date(Date.now() + offsetDays * DAY).toISOString();
-
-/** A paid company's home: Growth, monthly, a live mandate, one paid invoice. */
-function paidHome(home: BillingHome): BillingHome {
-  return {
-    ...home,
-    standing: {
-      ...home.standing,
-      state: 'active',
-      phase: 'active',
-      tier: 'growth',
-      cycle: 'monthly',
-      collection: 'mandate',
-      trialEndsAt: null,
-      pausesAt: null,
-      graceEndsAt: null,
-      paidPeriodEnd: at(20),
-    },
-    plan: { listPrice: GROWTH.list, nextBill: { at: at(20), sale: GROWTH } },
-    method: { standing: 'live', label: null, manageUrl: 'https://gateway.test/mandate' },
-    invoices: {
-      latest: [
-        {
-          id: '00000000-0000-4000-8000-000000000001',
-          document: 'invoice',
-          number: '2026-27/000902',
-          status: 'paid',
-          issuedAt: at(-10),
-          tier: 'growth',
-          cycle: 'monthly',
-          total: GROWTH.total,
-          hasPdf: false,
-        },
-      ],
-      totalCount: 1,
-    },
-    cancellable: true,
-  };
-}
-
 /** The company's own home, read back in `state` — the trial is the company's real one. */
 function homeIn(state: BillingState, home: BillingHome, payUrl: string): BillingHome {
   if (state === 'trialing') return home;
@@ -135,6 +92,8 @@ function actOf(home: BillingHome): string | null {
       return VIEW.reactivate;
     case 'pick_plan':
       return VIEW.pickPlan;
+    case 'scheduled_change':
+      return VIEW.scheduledChange.keepInstead('growth');
     case 'none':
       return null;
   }
@@ -220,7 +179,45 @@ test('the owner sees every billing surface and its act in each of the six states
   await openBilling(page);
   await page.getByRole('button', { name: VIEW.changePlan }).click();
   await expect(page).toHaveURL(/\/more\/billing\/plans$/);
-  await expect(page.getByText(en.t(SHELL.comingLater))).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: en.t(PRICING.plans) })).toBeVisible();
+});
+
+/**
+ * Frame 16: a downgrade waiting for the paid period's end is the need — `Moving to Starter`, its
+ * date and `Keep Growth instead`, which withdraws it and leaves the plan as it was (`M12-49`).
+ */
+test('a scheduled downgrade is kept away with one press, and nothing else changes', async ({
+  page,
+}) => {
+  await createCompany(page, en, freshMobile());
+  await passTheOwnersMark(page, en);
+  let scheduled = true;
+  await page.route('**/billing/home', async (route) => {
+    const response = await route.fetch();
+    const paid = paidHome((await response.json()) as BillingHome);
+    const scheduledChange = scheduled
+      ? {
+          kind: 'downgrade' as const,
+          tier: 'starter' as const,
+          cycle: 'monthly' as const,
+          effectiveAt: at(20),
+          afterwards: { list: '1999.00', taxRateBasisPoints: null, tax: null, total: '1999.00' },
+        }
+      : null;
+    await route.fulfill({ response, json: { ...paid, scheduledChange } });
+  });
+  await page.route('**/billing/plan-change/withdraw', async (route) => {
+    scheduled = false;
+    await route.fulfill({ json: { withdrawn: true } });
+  });
+  await openBilling(page);
+  const needs = page.getByRole('region', { name: VIEW.needsYou });
+  await expect(needs).toContainText(VIEW.scheduledChange.movingTo('starter'));
+  await expect(needs).toContainText(VIEW.scheduledChange.scheduled);
+  const keep = page.getByRole('button', { name: VIEW.scheduledChange.keepInstead('growth') });
+  await keep.click();
+  await expect(page.getByRole('region', { name: VIEW.needsYou })).toHaveCount(0);
+  await expect(page.getByRole('region', { name: VIEW.yourPlan })).toBeVisible();
 });
 
 /**

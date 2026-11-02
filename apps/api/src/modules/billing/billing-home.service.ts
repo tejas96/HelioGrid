@@ -12,18 +12,18 @@ import {
   billingStandingOf,
   type MarketPack,
   type MinorUnits,
-  publicPricing,
   refundWindowClosesAt,
-  tierBand,
-  trialCapacity,
 } from '@heliogrid/domain';
+import { sumMinorUnits } from '@heliogrid/domain/server';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { MarketPackService } from '../market/market.public';
 import { BillingHomeRepository, type HomeRow } from './billing-home.repository';
 import { BillingHomeUsageService } from './billing-home.usage.service';
 import { BillingRecordsRepository } from './billing-records.repository';
 import { BillingRecordsService } from './billing-records.service';
+import { methodOf } from './internal/billing-method';
 import { decimalOf, type SaleWire, saleOfInvoice, saleOfList } from './internal/billing-sale';
+import { planIncludesOf } from './internal/plan-includes';
 import { PlanPriceAdminRepository } from './plan-price.admin.repository';
 import { RefundAdminRepository } from './refund.admin.repository';
 
@@ -59,6 +59,8 @@ export class BillingHomeService {
       row.planPriceId === null
         ? null
         : (await this.prices.byIds([row.planPriceId])).get(row.planPriceId);
+    const scheduledChange =
+      state === 'active' ? await this.scheduledChangeOf(tenantId, row, pack) : null;
     const manageUrl =
       facts.collection === 'mandate' && row.gatewayRef !== null
         ? await this.rows.mandatePage(tenantId, row.gatewayRef)
@@ -70,7 +72,11 @@ export class BillingHomeService {
       priceListPublishedAt: publishedAt,
       plan: {
         listPrice: own === undefined || own === null ? null : decimalOf(pack, own.listMinor),
-        nextBill: await this.nextBillOf(pack, facts, own ?? null),
+        // A scheduled change bills its new plan from the paid period's end (`M12-49`).
+        nextBill:
+          scheduledChange === null
+            ? await this.nextBillOf(pack, facts, own ?? null)
+            : { at: scheduledChange.effectiveAt, sale: scheduledChange.afterwards },
       },
       includes,
       usage: await this.meters.nearestLimits(tenantId, row, includes, now),
@@ -96,6 +102,32 @@ export class BillingHomeService {
       invoices: await this.latestInvoices(tenantId),
       cancellable: state === 'active',
       salesContact: pack.priceBook.salesContact ?? null,
+      scheduledChange,
+    };
+  }
+
+  /** The change waiting for the paid period's end, billed at today's book for its plan (`M12-57`). */
+  private async scheduledChangeOf(
+    tenantId: string,
+    row: HomeRow,
+    pack: MarketPack,
+  ): Promise<BillingHome['scheduledChange']> {
+    const change = await this.rows.scheduledChange(tenantId, row.id);
+    if (change === null) return null;
+    const confirmed = (await this.prices.byIds([change.toPlanPriceId])).get(change.toPlanPriceId);
+    if (confirmed === undefined) return null;
+    const today = await this.prices.current({
+      marketCode: pack.market,
+      tier: confirmed.tier,
+      cycle: confirmed.cycle,
+      currencyCode: pack.formats.currency,
+    });
+    return {
+      kind: change.kind,
+      tier: confirmed.tier,
+      cycle: confirmed.cycle,
+      effectiveAt: iso(change.effectiveAt) ?? '',
+      afterwards: saleOfList(pack, (today ?? confirmed).listMinor),
     };
   }
 
@@ -209,9 +241,11 @@ export class BillingHomeService {
     const first = await this.refunds.firstPaymentOf(tenantId);
     if (first === null || first.subscriptionId !== row.id || first.state !== 'active') return null;
     const closesAt = refundWindowClosesAt(first.paidAt, first.timeZone);
-    return now < closesAt
-      ? { closesAt: iso(closesAt) ?? '', amount: decimalOf(pack, first.amount) }
-      : null;
+    if (now >= closesAt) return null;
+    // What the refund pays back: the first cycle and every upgrade paid inside it.
+    const prorations = await this.refunds.prorationsOf(tenantId, first);
+    const amount = sumMinorUnits([first.amount, ...prorations.map((each) => each.amount)]);
+    return { closesAt: iso(closesAt) ?? '', amount: decimalOf(pack, amount) };
   }
 
   private async latestInvoices(tenantId: string): Promise<BillingHome['invoices']> {
@@ -236,71 +270,12 @@ function standingWire(facts: BillingStandingFacts): BillingStanding {
 }
 
 /**
- * A paid row's method — a mandate or a payment link (frame 24: `Payment link · yearly`) — is live
- * while it collects and ended once the row is dead (decision 6a); a trial has none.
- */
-function methodStanding(facts: BillingStandingFacts): BillingHome['method']['standing'] {
-  if (facts.collection === null) return 'none';
-  return facts.state === 'active' || facts.state === 'past_due' ? 'live' : 'ended';
-}
-
-/** The method row: its standing, the rail's name, and the mandate's own page while it collects. */
-function methodOf(
-  pack: MarketPack,
-  facts: BillingStandingFacts,
-  manageUrl: string | null,
-): BillingHome['method'] {
-  const standing = methodStanding(facts);
-  return {
-    standing,
-    label: methodLabel(pack, facts),
-    // Only a mandate has a page of its own (`manageUrl` is read for none else).
-    manageUrl: standing === 'live' ? manageUrl : null,
-  };
-}
-
-/** The rail a mandate rides, as the pack names it; `null` on a link or a pack without labels. */
-function methodLabel(
-  pack: MarketPack,
-  facts: BillingStandingFacts,
-): BillingHome['method']['label'] {
-  if (facts.tier === null || facts.cycle === null) return null;
-  const route = pack.paymentRails.ladder[tierBand(facts.tier)][facts.cycle];
-  if (route.collection !== 'mandate') return null;
-  return pack.paymentRails.mandateTypes.find((type) => type.type === route.primary)?.label ?? null;
-}
-
-/**
  * The row's plan as the pricing page prints it, or the trial's caps on a trial, an expired trial
  * or a row with no plan (`M12-55`, `M12-52`).
  */
 export function includesOf(pack: MarketPack, facts: BillingStandingFacts): BillingHome['includes'] {
-  const pricing = publicPricing(pack);
-  const plan =
-    facts.state === 'trialing' || facts.state === 'expired'
-      ? undefined
-      : pricing?.plans.find((candidate) => candidate.tier === facts.tier);
-  if (plan !== undefined) {
-    return {
-      designCeilingKw: plan.designCeilingKw,
-      proposalsPerMonth: plan.proposalsPerMonth,
-      activeProjects: plan.activeProjects,
-      voiceMinutesIncluded: plan.voiceMinutesIncluded,
-      voiceMinuteRate:
-        plan.voiceMinuteRate.kind === 'published'
-          ? decimalOf(pack, plan.voiceMinuteRate.rate)
-          : null,
-      storageGb: plan.storageGb,
-    };
-  }
-  const trial = trialCapacity(pack.priceBook);
-  return {
-    designCeilingKw: trial.designCeilingKw,
-    proposalsPerMonth: trial.creationsPerCycle.proposals,
-    activeProjects: trial.creationsPerCycle.active_projects,
-    voiceMinutesIncluded: trial.meterBundles.voice_minutes,
-    // A trial pays nothing, so no rate stands beside its cap (`M12-52`).
-    voiceMinuteRate: null,
-    storageGb: trial.storageGb,
-  };
+  return planIncludesOf(
+    pack,
+    facts.state === 'trialing' || facts.state === 'expired' ? null : facts.tier,
+  );
 }

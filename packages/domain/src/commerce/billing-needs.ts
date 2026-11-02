@@ -16,11 +16,14 @@ export interface BillingNeedsFacts {
   readonly renewal: object | null;
   readonly refund: object | null;
   readonly reactivation: object | null;
+  readonly scheduledChange: object | null;
 }
 
 /**
  * - `pay`: a charge failed and the grace runs (`M12-06`) — *Pay*.
  * - `renewal`: a yearly renewal's invoice is open (`T-M12-012c`) — *Pay* on its link.
+ * - `scheduled_change`: a downgrade or a cycle switch waits for the paid period's end (`M12-49`,
+ *   `M12-12`) — *Keep <plan> instead*.
  * - `refund`: the first paid cycle's window is open (`M12-47`) — *Ask for a refund*.
  * - `way_back`: halted, or cancelled past its period — *Reactivate* for one payment (`M12-08`).
  * - `pick_plan`: a trial that ended — *Pick a plan*; no mandate ever existed, so no amount.
@@ -30,6 +33,7 @@ export type BillingNeed =
   | 'none'
   | 'pay'
   | 'renewal'
+  | 'scheduled_change'
   | 'refund'
   | 'way_back'
   | 'pick_plan'
@@ -37,7 +41,8 @@ export type BillingNeed =
 
 /**
  * The one need in force at `now`. A state that owes a payment or is dead outranks a live row's
- * window: the way back, then the failed charge, then the open renewal, then the refund.
+ * window: the way back, then the failed charge, then the open renewal, then a scheduled change,
+ * then the refund.
  */
 export function billingNeedOf(facts: BillingNeedsFacts, now: number): BillingNeed {
   const { state, paidPeriodEnd } = facts.standing;
@@ -56,7 +61,13 @@ export function billingNeedOf(facts: BillingNeedsFacts, now: number): BillingNee
       return facts.reactivation === null ? 'none' : 'way_back';
     }
     case 'active':
-      if (facts.renewal !== null) return 'renewal';
-      return facts.refund === null ? 'none' : 'refund';
+      return activeNeedOf(facts);
   }
+}
+
+/** A live paid row's need: the open renewal, then a scheduled change, then the refund window. */
+function activeNeedOf(facts: BillingNeedsFacts): BillingNeed {
+  if (facts.renewal !== null) return 'renewal';
+  if (facts.scheduledChange !== null) return 'scheduled_change';
+  return facts.refund === null ? 'none' : 'refund';
 }

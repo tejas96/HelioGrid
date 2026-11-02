@@ -20,7 +20,6 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { uuidv7 } from '../uuid';
-import { userAccount } from './identity';
 import { tenant } from './tenant';
 
 /** pgEnums hand-mirror domain's tuples (invariant `enum-parity` proves each pair equal). */
@@ -121,6 +120,18 @@ export const subscription = pgTable(
     gatewayRef: text('gateway_ref'),
     /** Why the Owner cancelled (`M12-50`): signal, never a gate — null when they skipped it. */
     cancellationReason: cancellationReason('cancellation_reason'),
+    /**
+     * How the plan is collected — a standing mandate or one payment link per period (`M12-11`):
+     * set with the plan, so a renewal reads the rail of the plan it renews, never the first
+     * checkout's. Null on a trial that has not paid.
+     */
+    collection: collectionKind('collection'),
+    /**
+     * When the gateway was asked to stop this row's mandate at its cycle's end because the plan
+     * changed (`M12-57`): its next period then renews through a fresh hosted page. Null while the
+     * mandate collects.
+     */
+    mandateEndingAt: instant('mandate_ending_at'),
   },
   (table) => [
     /** `M12-04` — at most one live subscription per company. */
@@ -146,6 +157,10 @@ export const subscription = pgTable(
     index('subscription_renewal_due_idx')
       .on(table.paidPeriodEnd)
       .where(sql`${table.gatewayRef} is not null and ${table.state} = 'active'`),
+    /** The renewal sweep's read of rows whose mandate a plan change stopped (`M12-57`). */
+    index('subscription_mandate_ending_idx')
+      .on(table.mandateEndingAt)
+      .where(sql`${table.mandateEndingAt} is not null and ${table.state} = 'active'`),
     uniqueIndex('subscription_gateway_ref_key')
       .on(table.gatewayRef)
       .where(sql`${table.gatewayRef} is not null`),
@@ -238,65 +253,6 @@ export const subscriptionPayment = pgTable(
       table.subscriptionId,
       table.occurredAt,
     ),
-  ],
-);
-
-/**
- * A hosted checkout a trial or a dead row opened (`M12-54`, `M12-08`): which plan it buys, on which rail, and the gateway's
- * page. The gateway's message names its `gateway_ref`, so the charge it collected finds the plan
- * the company chose. Open until a charge converts the subscription or a new pick replaces it; one
- * open checkout per subscription, so two pages can never both collect.
- *
- * Tenant-scoped, all four; `app_user` holds SELECT alone — the gateway's messages cross tenants,
- * so the admin path writes it.
- */
-export const billingCheckout = pgTable(
-  'billing_checkout',
-  {
-    id: uuid('id')
-      .primaryKey()
-      .$defaultFn(() => uuidv7()),
-    tenantId: uuid('tenant_id')
-      .notNull()
-      .references(() => tenant.id),
-    subscriptionId: uuid('subscription_id')
-      .notNull()
-      .references(() => subscription.id),
-    planPriceId: uuid('plan_price_id')
-      .notNull()
-      .references(() => planPrice.id),
-    collection: collectionKind('collection').notNull(),
-    gatewayRef: text('gateway_ref').notNull(),
-    hostedUrl: text('hosted_url').notNull(),
-    /** The hosted page takes no money after this: the trial's end, or a reactivation's window. */
-    expiresAt: instant('expires_at').notNull(),
-    /**
-     * When the paid period it collects begins, for a page a cancelled row still running opened: its
-     * period end, so no day is paid twice (`M12-08`). Null: the period begins at the charge.
-     */
-    startsAt: instant('starts_at'),
-    openedAt: instant('opened_at').notNull(),
-    /**
-     * Set before the gateway is asked to cancel the page. From then the page is never handed out
-     * again, even when the cancel's answer was lost and the row is still open.
-     */
-    cancelRequestedAt: instant('cancel_requested_at'),
-    closedAt: instant('closed_at'),
-    /** The Owner who opened it: the reactivation its charge makes is their act (`M12-58`). */
-    openedBy: uuid('opened_by').references(() => userAccount.id),
-  },
-  (table) => [
-    uniqueIndex('billing_checkout_gateway_ref_key').on(table.gatewayRef),
-    index('billing_checkout_tenant_subscription_idx').on(
-      table.tenantId,
-      table.subscriptionId,
-      table.openedAt,
-    ),
-    /** The reconcile's read of the pages still able to take money, by when they stop. */
-    index('billing_checkout_open_idx').on(table.expiresAt).where(sql`${table.closedAt} is null`),
-    uniqueIndex('billing_checkout_one_open')
-      .on(table.tenantId, table.subscriptionId)
-      .where(sql`${table.closedAt} is null`),
   ],
 );
 

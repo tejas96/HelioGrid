@@ -3,6 +3,7 @@ import * as billing from './billing';
 import * as catalogImport from './catalog-import';
 import * as catalogPlatform from './catalog-platform';
 import * as catalogTenant from './catalog-tenant';
+import * as checkout from './checkout';
 import * as dunning from './dunning';
 import * as entitlement from './entitlement';
 import * as file from './file';
@@ -13,6 +14,7 @@ import * as market from './market';
 import * as memberPhoto from './member-photo';
 import * as notification from './notification';
 import * as outbox from './outbox';
+import * as planChange from './plan-change';
 import * as priceBook from './price-book';
 import * as settings from './settings';
 import * as subject from './subject';
@@ -41,6 +43,8 @@ export const schema = {
   ...priceBook,
   ...outbox,
   ...billing,
+  ...checkout,
+  ...planChange,
   ...entitlement,
   ...usage,
   ...dunning,
@@ -52,6 +56,7 @@ export * from './billing';
 export * from './catalog-import';
 export * from './catalog-platform';
 export * from './catalog-tenant';
+export * from './checkout';
 export * from './dunning';
 export * from './entitlement';
 export * from './file';
@@ -62,6 +67,7 @@ export * from './market';
 export * from './member-photo';
 export * from './notification';
 export * from './outbox';
+export * from './plan-change';
 export * from './price-book';
 export * from './settings';
 export * from './subject';

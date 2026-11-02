@@ -45,12 +45,28 @@ export interface FirstPayment {
   readonly paidAt: number;
   readonly invoiceId: string;
   readonly timeZone: string;
+  /** The end of the cycle it paid for: an upgrade's charge inside that cycle pays through it too. */
+  readonly paysThrough: number;
+}
+
+/** A charge a refund pays back, and the invoice its credit note stands against. */
+export interface RefundedCharge {
+  readonly chargeRef: string;
+  readonly amount: MinorUnits;
+  readonly invoiceId: string;
+}
+
+/** A proration paid back at the gateway, and the refund's ref there. */
+export interface ProrationRefund {
+  readonly invoiceId: string;
+  readonly gatewayRefundRef: string;
 }
 
 /** What a refund came to: its credit note, and the outbox event that makes the note's PDF. */
 export interface Refunded {
   readonly creditNoteNumber: string;
-  readonly eventId: string | null;
+  /** One per credit note issued now; empty on a retry that found them issued. */
+  readonly eventIds: readonly string[];
 }
 
 /**
@@ -77,6 +93,7 @@ export class RefundAdminRepository {
         paidAt: subscriptionPayment.occurredAt,
         invoiceId: subscriptionInvoice.id,
         timeZone: tenant.timezone,
+        paysThrough: subscriptionPayment.paysThrough,
       })
       .from(subscriptionPayment)
       .innerJoin(subscription, eq(subscription.id, subscriptionPayment.subscriptionId))
@@ -92,7 +109,43 @@ export class RefundAdminRepository {
       .orderBy(asc(subscriptionPayment.occurredAt), asc(subscriptionPayment.id))
       .limit(1);
     if (row === undefined) return null;
-    return { ...row, amount: minorUnits(row.amount), paidAt: row.paidAt.getTime() };
+    return {
+      ...row,
+      amount: minorUnits(row.amount),
+      paidAt: row.paidAt.getTime(),
+      paysThrough: row.paysThrough.getTime(),
+    };
+  }
+
+  /**
+   * The upgrades' part-cycle charges paid inside the first cycle (`M12-48`): the first cycle's
+   * refund pays them back too (`M12-47`). Each pays through the cycle's own end.
+   */
+  async prorationsOf(tenantId: string, paid: FirstPayment): Promise<RefundedCharge[]> {
+    const rows = await this.db
+      .select({
+        chargeRef: subscriptionPayment.gatewayChargeRef,
+        amount: subscriptionPayment.amountMinor,
+        invoiceId: subscriptionInvoice.id,
+      })
+      .from(subscriptionPayment)
+      .innerJoin(
+        subscriptionInvoice,
+        and(
+          eq(subscriptionInvoice.tenantId, subscriptionPayment.tenantId),
+          eq(subscriptionInvoice.paymentId, subscriptionPayment.id),
+        ),
+      )
+      .where(
+        and(
+          eq(subscriptionPayment.tenantId, tenantId),
+          eq(subscriptionPayment.subscriptionId, paid.subscriptionId),
+          eq(subscriptionPayment.paysThrough, new Date(paid.paysThrough)),
+          eq(subscriptionInvoice.kind, 'proration'),
+        ),
+      )
+      .orderBy(asc(subscriptionPayment.occurredAt), asc(subscriptionPayment.id));
+    return rows.map((row) => ({ ...row, amount: minorUnits(row.amount) }));
   }
 
   /**
@@ -107,7 +160,11 @@ export class RefundAdminRepository {
   async record(
     tenantId: string,
     paid: FirstPayment,
-    refund: { readonly gatewayRefundRef: string; readonly pack: MarketPack },
+    refund: {
+      readonly gatewayRefundRef: string;
+      readonly pack: MarketPack;
+      readonly prorations: readonly ProrationRefund[];
+    },
     act: OwnerAct,
   ): Promise<Refunded | null> {
     return this.db.transaction(async (tx) => {
@@ -117,7 +174,7 @@ export class RefundAdminRepository {
         .where(and(eq(subscription.tenantId, tenantId), eq(subscription.id, paid.subscriptionId)))
         .for('update');
       const issued = await creditNoteOf(tx, tenantId, paid.invoiceId);
-      if (issued !== null) return { creditNoteNumber: issued, eventId: null };
+      if (issued !== null) return { creditNoteNumber: issued, eventIds: [] };
       if (held === undefined || !REFUNDABLE_AFTER.has(held.state)) return null;
       const at = new Date(act.now);
       await tx
@@ -131,36 +188,61 @@ export class RefundAdminRepository {
         cause: 'refunded',
         enteredAt: at,
       });
-      await tx
-        .update(subscriptionInvoice)
-        .set({ status: 'refunded' })
-        .where(
-          and(
-            eq(subscriptionInvoice.tenantId, tenantId),
-            eq(subscriptionInvoice.id, paid.invoiceId),
-          ),
+      const first = await refundInvoice(tx, tenantId, paid.invoiceId, refund, act);
+      const eventIds = [first.eventId];
+      // Every note rides this transaction, so a retry finds all of them issued or none.
+      for (const proration of refund.prorations) {
+        const noted = await refundInvoice(
+          tx,
+          tenantId,
+          proration.invoiceId,
+          {
+            gatewayRefundRef: proration.gatewayRefundRef,
+            pack: refund.pack,
+          },
+          act,
         );
-      const note = await issueCreditNote(tx, tenantId, paid.invoiceId, refund, act.now);
-      const eventId = uuidv7();
-      await recordOutboxEvent(tx, tenantId, creditNoteDocumentWorkflow, {
-        eventId,
-        tenantId,
-        creditNoteId: note.id,
-      });
-      await recordAuditEntry(tx, {
-        tenantId,
-        eventType: 'billing.refund_issued',
-        actorKind: 'tenant_user',
-        actorRef: act.actorUserId,
-        occurredAt: at,
-        blocked: false,
-        subjectKind: 'credit_note',
-        subjectRef: note.id,
-        changePayload: null,
-      });
-      return { creditNoteNumber: note.number, eventId };
+        eventIds.push(noted.eventId);
+      }
+      return { creditNoteNumber: first.number, eventIds };
     });
   }
+}
+
+/**
+ * One invoice paid back: `refunded`, its credit note issued, the note's PDF event and the audit
+ * entry, on the caller's transaction.
+ */
+async function refundInvoice(
+  tx: DbTransaction,
+  tenantId: string,
+  invoiceId: string,
+  refund: { readonly gatewayRefundRef: string; readonly pack: MarketPack },
+  act: OwnerAct,
+): Promise<{ readonly number: string; readonly eventId: string }> {
+  await tx
+    .update(subscriptionInvoice)
+    .set({ status: 'refunded' })
+    .where(and(eq(subscriptionInvoice.tenantId, tenantId), eq(subscriptionInvoice.id, invoiceId)));
+  const note = await issueCreditNote(tx, tenantId, invoiceId, refund, act.now);
+  const eventId = uuidv7();
+  await recordOutboxEvent(tx, tenantId, creditNoteDocumentWorkflow, {
+    eventId,
+    tenantId,
+    creditNoteId: note.id,
+  });
+  await recordAuditEntry(tx, {
+    tenantId,
+    eventType: 'billing.refund_issued',
+    actorKind: 'tenant_user',
+    actorRef: act.actorUserId,
+    occurredAt: new Date(act.now),
+    blocked: false,
+    subjectKind: 'credit_note',
+    subjectRef: note.id,
+    changePayload: null,
+  });
+  return { number: note.number, eventId };
 }
 
 /** The number of the credit note already issued against an invoice; `null` when there is none. */

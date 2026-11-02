@@ -15,6 +15,7 @@ function facts(
     renewal: more.renewal ?? null,
     refund: more.refund ?? null,
     reactivation: more.reactivation ?? null,
+    scheduledChange: more.scheduledChange ?? null,
   };
 }
 
@@ -30,6 +31,21 @@ describe('billingNeedOf — the one thing Needs you holds, and its one act (SCR-
     [
       'an open renewal outranks the refund window',
       facts('active', { renewal: SOME, refund: SOME }),
+      'renewal',
+    ],
+    [
+      'a scheduled downgrade offers to keep the plan',
+      facts('active', { scheduledChange: SOME }),
+      'scheduled_change',
+    ],
+    [
+      'a scheduled change outranks the refund window',
+      facts('active', { scheduledChange: SOME, refund: SOME }),
+      'scheduled_change',
+    ],
+    [
+      'an open renewal outranks a scheduled change',
+      facts('active', { renewal: SOME, scheduledChange: SOME }),
       'renewal',
     ],
     ['a failed charge asks to pay', facts('past_due', { due: SOME }), 'pay'],
