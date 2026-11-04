@@ -384,7 +384,7 @@ The two preset-shaped rules, `epc_owner` and `capability_holders`, resolve again
 could be written today; they wait here so that resolution is authored ONCE, against all four
 rules, rather than half now and half beside the first record (Law 11).
 
-**Depends on:** `T-MS-117` for the M05 done-when line, recorded in `docs/build-order.md` as a proof that waits on block 7; the block-3 slice that lands the lead record — its subject kind, its owner and its assignee — which that block's task names at its start; `T-FPLAT-017` (shipped, #100) carries the registry and the four recipient rules; `T-FPLAT-002` (shipped, #43) carries the F2 resolution this reads.
+**Depends on:** the block-3 slice that lands the lead record — its subject kind, its owner and its assignee — which that block's task names at its start; `T-FPLAT-017` (shipped, #100) carries the registry and the four recipient rules; `T-FPLAT-002` (shipped, #43) carries the F2 resolution this reads.
 **Block:** 3, by owner ruling at its own `/start` — built before `T-M02-011` notifies a lead's new owner, so resolution is written once.
 
 **Requirements (verbatim):**
@@ -394,10 +394,9 @@ rules, rather than half now and half beside the first record (Law 11).
 
 **DONE WHEN:**
 
-- Given every module's §4 contract (M01–M13, F5), when its named events are checked against the matrix, then each appears with recipients and channels, and the matrix contains no event no module raises (F6-10).
+- Given each module whose §4 contract is in the tree when this builds, when its named events are checked against the matrix, then each appears with recipients and channels (F6-10). The walk over every module (M01–M13, F5), and the check that the matrix holds no event no module raises, is `T-FPLAT-074`'s; the M05 rows' line is `T-MS-117`'s — option A, taken 2026-11-04 when the owner asked for `T-SHELL-006`'s gate to be fixed: only those blocks can walk them.
 - Given any notification, when its content is compared against the recipient's scope, then it discloses nothing beyond what the recipient may read (F6-16).
 - Given a recipient who has lost the subject's visibility, when they open the notification, then they get the honest landing rather than the record (F6-16).
-- Given the matrix's M05 rows, when they are inspected, then `design_survey_superseded` stands beside `signoff_requested` and `design_returned` with recipient "the design's author (own)" and push marked, sourced to M05-13 (owner ruling 2026-08-04); and given the supersession emitter (`docs/tasks/MS-studio-a.md` T-MS-117), then delivery resolves that author through F2 scope and the record lands with the standard class (F6-10, F6-13, F6-16).
 
 ---
 
@@ -599,6 +598,7 @@ parsing in `packages/theme`, and the switch on the drawn `SCR-M01-11`. `docs/tas
 **Split from `T-FPLAT-073` at its `/start` (owner pick):** the projection's words are the drawn document's (`SCR-M06-17`), `PENDING` when `T-FPLAT-073` started, so this waits in block 8, where that screen is drawn. The drawing is checked first, before the build.
 **Owed by `T-FPLAT-029` (`F8-23`):** the label prints a figure's `projection` — the word that calls it a projection and each assumption `statedAssumptions(projection)` from `@heliogrid/domain` lists, in that order and never its own, money through the money formatter, EN/HI/MR, the words taken from the drawn document (`SCR-M06-17`) — beside the tier, never hover-only (`F8-07`). The label's `projection` prop, a free string today, takes `ProjectionAssumptions`. Proven by a label render that prints a projection's word and its horizon.
 **Owed by `T-FPLAT-072` and `T-FPLAT-073` (the design system's half):** in the design system artifact, `components/data/Provenance.d.ts` declares the port's `energySource`, `freshness` and typed `projection`, and `Provenance.jsx` renders the tier closed to the four and `unmarked` and no `withLabel={false}`; `components/feedback/Disclosure` stops owning its English and `DISCLOSURE_TEXT` — its words are `i18n`'s, as the port's are since `T-FPLAT-073`; both contracts are re-pulled verbatim. The boards drawn on free words (`SCR-M01-15`, `SCR-M01-16`, `SCR-M01-17`, `SCR-M12-02`, `SCR-M12-04`, `SCR-SHELL-06`) are redrawn through the Design track to print them as `source`. The indicative lead clause ("Indicative — Indicative proposal. …") says one word twice; the drawn document decides the lead.
+**Owed by `T-FPLAT-066` (`F6-10`; option A, taken 2026-11-04 when the owner asked for `T-SHELL-006`'s gate to be fixed):** given every module's §4 contract (M01–M13, F5), when its named events are checked against the matrix, then each appears with recipients and channels, and the matrix contains no event no module raises — only the last V1 block can walk every module.
 **Depends on:** T-FPLAT-073
 The rest of the ticket is written at the task's start.
 ---
