@@ -3,6 +3,7 @@ import {
   BILLING_HOME,
   BILLING_STATE_WORD,
   backToSettings,
+  billingStripWords,
   COMPANY_PROFILE,
   COMPANY_SIGNUP,
   createTranslator,
@@ -93,6 +94,8 @@ if (command === 'words') {
     PLAN_PRO: tierName('pro'),
     CLOSE: SHELL.close,
     ...usageWords(t),
+    /** `SCR-SHELL-06`: a fresh trial's quiet count, the day it starts. */
+    TRIAL_CHIP: billingStripWords(t.t).trialDaysLeft(14),
     ...settingsRows(t),
   };
   for (const [key, message] of Object.entries(words)) {

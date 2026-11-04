@@ -400,6 +400,15 @@ jobs:
       postgres: *suite-postgres
     env: *suite-api-env
     steps:
+      - name: Free the runner's disk for the native build
+        # The debug APK's native merge, the NDK, the Gradle caches and the emulator image together
+        # outgrow the runner's free disk on some runs ("No space left on device" in
+        # :app:mergeDebugNativeLibs, PR #395). These toolkits come with the image and no step of
+        # this job uses them; the Android SDK, Java and Node stay.
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/local/share/boost /usr/share/swift /opt/hostedtoolcache/CodeQL
+          df -h /
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4

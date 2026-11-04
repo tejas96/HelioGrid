@@ -5,7 +5,7 @@ import type { FocusHandle } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text';
 import { ReasonExplainer } from '../ActionReason';
 import type { ReasonTriggerProps } from '../ActionReason/ActionReason.types';
-import { isStatedOff, toneOf } from './Button.logic';
+import { isStatedOff, labelRunsOf, toneOf } from './Button.logic';
 import type { ButtonProps } from './Button.types';
 
 interface WebButtonProps extends ButtonProps {
@@ -30,6 +30,7 @@ interface WebButtonProps extends ButtonProps {
  */
 export function Button({
   children,
+  figures,
   variant = 'primary',
   size = 'lg',
   disabled = false,
@@ -80,7 +81,7 @@ export function Button({
       aria-describedby={reason?.describedBy}
       aria-expanded={expanded ?? reason?.expanded}
       aria-busy={loading ? true : undefined}
-      aria-label={spokenName}
+      aria-label={spokenName ?? figures?.spoken}
       onClick={() => {
         if (reason !== undefined) {
           reason.onPress();
@@ -99,13 +100,13 @@ export function Button({
         <>
           <span className="hg-button-spinner" aria-hidden="true" />
           <Text as="span" spokenOnly>
-            {children}
+            {spokenName ?? figures?.spoken ?? children}
           </Text>
         </>
       ) : (
         <>
           {icon}
-          {children}
+          <Label label={children} figures={figures?.values} />
           {iconRight}
         </>
       )}
@@ -119,5 +120,20 @@ export function Button({
     <ReasonExplainer spec={disabledReason} id={reasonId} open={reasonOpen} block={fullWidth}>
       {pill}
     </ReasonExplainer>
+  );
+}
+
+/** The words, or the words with each figure in mono; the button's name carries the whole line. */
+function Label({ label, figures }: { label: string; figures: readonly string[] | undefined }) {
+  if (figures === undefined) return label;
+  return (
+    <span aria-hidden="true">
+      {labelRunsOf(label, figures).map((run, index) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: runs are positional slices of one label
+        <span key={index} className={run.mono ? 'hg-button-figure' : undefined}>
+          {run.text}
+        </span>
+      ))}
+    </span>
   );
 }

@@ -4,6 +4,7 @@ import { packWords, type Translator } from '../runtime';
 import { bannerWords } from './banner';
 import { BILLING_HOME, BILLING_STATE_WORD, billingViewWords } from './billing-home';
 import { BILLING_RECORDS, billingActFailureWords, billingRecordWords } from './billing-records';
+import { billingStripWords } from './billing-strip';
 import { COMPARE_GRID, compareGridWords } from './compare-grid';
 import { derivationWords } from './derivation';
 import { moneySummaryWords } from './money-summary';
@@ -134,7 +135,7 @@ export function planSelectionWords(t: T, reader: UiLanguage, format: PlanFormat)
   return {
     ...fixed,
     view: billingViewWords(t),
-    strip: billingRecordWords(t),
+    strip: { ...billingRecordWords(t), ...billingStripWords(t) },
     moneySummary: moneySummaryWords(t),
     compareGrid: compareGridWords(t),
     derivationKinds: derivationWords(t).kinds,

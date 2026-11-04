@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { BillingValueText } from '../BillingStrip/BillingValue.native';
 import { Button } from '../Button/Button.native';
 import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { FactRow } from '../FactRow/FactRow.native';
@@ -8,7 +9,6 @@ import { FactRows } from '../FactRow/FactRows.native';
 import { SheetActions } from '../Sheet/SheetActions.native';
 import type { BillingRefundAskProps } from './BillingHome.parts.types';
 import { plain } from './BillingHome.values';
-import { BillingValueText } from './BillingValue.native';
 
 /**
  * The refund's one ask on the phone (D9, `F8-34`): composed as the cancel sheet is — what goes

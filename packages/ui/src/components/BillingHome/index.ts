@@ -26,10 +26,8 @@ export {
   type BillingSheetsWords,
   billingSheetsViewOf,
 } from './BillingHome.sheets';
-export { stripOf } from './BillingHome.strip';
 export * from './BillingHome.types';
-export { figure, figured, plain } from './BillingHome.values';
-export type { BillingStripWords, BillingViewWords } from './BillingHome.words';
+export type { BillingPageStripWords, BillingViewWords } from './BillingHome.words';
 export { BillingInvoiceList } from './BillingInvoiceList';
 export { BillingRefundAsk } from './BillingRefundAsk';
 export { BillingSheets } from './BillingSheets';

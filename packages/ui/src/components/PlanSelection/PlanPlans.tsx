@@ -1,6 +1,6 @@
 import type { BillingCycle, Tier } from '@heliogrid/domain';
 import { ShellGlyph } from '../AppShell';
-import { BillingValueText } from '../BillingHome/BillingValue';
+import { BillingValueText } from '../BillingStrip/BillingValue';
 import { Block } from '../Block';
 import { Button } from '../Button';
 import { Card } from '../Card';

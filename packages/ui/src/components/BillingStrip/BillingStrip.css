@@ -1,0 +1,48 @@
+/* SCR-SHELL-06's strip and the billing values every billing screen draws. */
+
+.hg-billing-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-billing-strip:focus,
+.hg-billing-strip-measure:focus {
+  outline: none;
+}
+
+/* The shell's slot in the content column, pinned above the scroll. The board caps it at 1080px, a
+   width the design system holds no token for yet (D406), so it takes the content's. */
+.hg-billing-strip-slot {
+  flex-shrink: 0;
+  padding: var(--sp-3) var(--screen-pad-mobile);
+  background: var(--hg-ground);
+}
+
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
+@media (min-width: 968px) {
+  .hg-billing-strip-slot {
+    padding: var(--sp-5) var(--screen-pad-desktop) var(--sp-3);
+  }
+}
+
+.hg-billing-strip-measure {
+  max-width: var(--content-max);
+}
+
+.hg-billing-strip-rows {
+  margin-top: var(--sp-2);
+}
+
+/* The countdown chip sits at its own width, never stretched across the slot. */
+.hg-billing-strip-pill {
+  display: flex;
+  align-items: center;
+}
+
+.hg-billing-strip-failure {
+  display: block;
+  margin-top: var(--sp-2);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--danger-text);
+}

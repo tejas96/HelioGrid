@@ -2,6 +2,7 @@ import { CANCELLATION_REASONS } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { BillingValueText } from '../BillingStrip/BillingValue.native';
 import { Button } from '../Button/Button.native';
 import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { FactRow } from '../FactRow/FactRow.native';
@@ -10,7 +11,6 @@ import { Radio } from '../Radio/Radio.native';
 import { SheetActions } from '../Sheet/SheetActions.native';
 import type { BillingCancelAskProps } from './BillingHome.parts.types';
 import { plain } from './BillingHome.values';
-import { BillingValueText } from './BillingValue.native';
 
 /**
  * The cancel ask on the phone (`M12-50`, frame 14): a sheet with what runs on and what is kept,

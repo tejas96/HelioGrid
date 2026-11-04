@@ -7,7 +7,7 @@ import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { Text } from '../../primitives/Text/Text.native';
 import { figure } from '../BillingHome/BillingHome.values';
 import { BillingStatusChip } from '../BillingHome/BillingNeeds.native';
-import { BillingValueText, valueRuns } from '../BillingHome/BillingValue.native';
+import { BillingValueText, valueRuns } from '../BillingStrip/BillingValue.native';
 import { Block } from '../Block/Block.native';
 import { ListRow } from '../ListRow/ListRow.native';
 import { ScopeNote } from '../ScopeNote/ScopeNote.native';

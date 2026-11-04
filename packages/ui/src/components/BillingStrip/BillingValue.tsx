@@ -1,4 +1,4 @@
-import type { BillingValue } from './BillingHome.types';
+import type { BillingValue } from './BillingStrip.types';
 
 /**
  * A `BillingValue` as text: each figure run in the mono face with tabular figures (`F7-09`), the

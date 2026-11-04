@@ -1,30 +1,27 @@
 import type { TenantOwners, TranslatedText, UiLanguage } from '@heliogrid/contracts';
 import {
   BILLING_NOTICES,
-  type BillingCapability,
   type BillingNotice,
-  type BillingPhase,
   type CancellationReason,
   type PackLabel,
-  pauseNoticeOf,
   type SubscriptionCause,
 } from '@heliogrid/domain';
 import { type MessageRef, packWords, type Translator } from '../runtime';
-import { assembled } from './assembled';
 import {
   BILLING_HOME,
   billingHomeWords,
   billingScopeWords,
   billingViewWords,
 } from './billing-home';
-import { billingCapabilityName, billingNoticeWords } from './billing-notices';
+import { billingNoticeWords } from './billing-notices';
+import { billingStripWords } from './billing-strip';
 import { SHELL } from './shell';
 
 /**
  * Billing's records, its strip and its two asks (`SCR-M12-02` decisions 12–15, D9): the invoice
  * list's search and chips, each state history's reason, the reminders, the cancel sheet with its
- * reasons, the refund's one ask, and what each act says when it lands or fails. The strip's lists
- * are read off the soft-block matrix (`pauseNoticeOf`), never typed here (amended brief).
+ * reasons, the refund's one ask, and what each act says when it lands or fails. The strip's words
+ * are `billing-strip.ts`'s.
  */
 
 type T = Translator['t'];
@@ -46,15 +43,6 @@ export const BILLING_RECORDS = {
   nothingYet: /*i18n*/ { id: 'Nothing here yet' },
   paymentReceived: /*i18n*/ { id: 'Payment received' },
   next: /*i18n*/ { id: 'Next' },
-  paused: /*i18n*/ { id: 'Paused' },
-  stillWorks: /*i18n*/ { id: 'Still works' },
-  everything: /*i18n*/ { id: 'Everything' },
-  until: /*i18n*/ { id: 'Until' },
-  graceDay: /*i18n*/ { id: 'Payment failed · day {day} of the 7-day grace' },
-  graceEarly: /*i18n*/ { id: 'Payment failed · day {day} of 7 · a retry is coming' },
-  haltedTitle: /*i18n*/ { id: 'Account halted · the grace window closed' },
-  trialEndedOn: /*i18n*/ { id: 'Your trial ended on {date}' },
-  subscriptionEnded: /*i18n*/ { id: 'Subscription ended · reactivate to continue' },
   cancelTitle: /*i18n*/ { id: 'Cancel subscription' },
   cancelSubtitle: /*i18n*/ { id: 'Why are you leaving? Optional.' },
   whyLeaving: /*i18n*/ { id: 'Why are you leaving' },
@@ -110,20 +98,8 @@ export function billingRecordWords(t: T) {
     noMatch: (query: string) => t(BILLING_RECORDS.noMatch, { query }),
     range: (from: string, to: string, total: string) =>
       t(BILLING_RECORDS.range, { from, to, total }),
-    graceDay: (day: number, early: boolean) =>
-      t(early ? BILLING_RECORDS.graceEarly : BILLING_RECORDS.graceDay, { day }),
-    trialEndedOn: (date: string) => t(BILLING_RECORDS.trialEndedOn, { date }),
     cancelledToast: (date: string) => t(BILLING_RECORDS.cancelledToast, { date }),
     refundedToast: (number: string) => t(BILLING_RECORDS.refundedToast, { number }),
-    /** The matrix's lists for a phase, each joined with ` · ` as the strip's rows show them. */
-    matrix: (phase: BillingPhase) => {
-      const { paused, stillWorks } = pauseNoticeOf(phase);
-      const list = (capabilities: readonly BillingCapability[]) =>
-        assembled(
-          capabilities.map((capability) => billingCapabilityName(t, capability)).join(' · '),
-        );
-      return { paused: list(paused), stillWorks: list(stillWorks) };
-    },
   };
 }
 export type BillingRecordWords = ReturnType<typeof billingRecordWords>;
@@ -228,7 +204,7 @@ export function billingPageWords(t: T, reader: UiLanguage) {
   return {
     home: billingHomeWords(t),
     view: billingViewWords(t),
-    strip: billingRecordWords(t),
+    strip: { ...billingRecordWords(t), ...billingStripWords(t) },
     packText: (label: PackLabel) => packWords(label, reader),
     scope: (owners: TenantOwners | null) => billingScopeWords(t, owners),
     failure: (why: string) => billingActFailureWords(t, why),

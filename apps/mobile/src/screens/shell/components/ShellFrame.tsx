@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles, underPill } from '../styles';
+import { ShellBillingStrip } from './ShellBillingStrip';
 
 export interface ShellFrameProps {
   topBar: ReactNode;
@@ -55,6 +56,8 @@ export function ShellFrame({
   return (
     <SafeAreaView style={styles.page} edges={['top']}>
       {topBar}
+      {/* SCR-SHELL-06: pinned under the bar, outside the scroll; Frame 8 (no pill) reads nothing. */}
+      {items.length > 0 ? <ShellBillingStrip /> : null}
       {/* A page with fields keeps the field typed in, its line and the act bar above the keyboard,
           and a tap on a control while it is up is not swallowed. */}
       <KeyboardFrame

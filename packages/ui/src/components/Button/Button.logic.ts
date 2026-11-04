@@ -1,4 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import { FIGURE_SLOT } from '@heliogrid/domain';
 import { reasonPage } from '../ActionReason/ActionReason.logic';
 import type { ActionReasonSentence } from '../ActionReason/ActionReason.types';
 import type { ButtonTone, ButtonVariant } from './Button.types';
@@ -41,4 +42,22 @@ export function retryOf(
     return null;
   }
   return { retry: onRetry, label };
+}
+
+/** One stretch of a label: words, or a figure drawn in mono. */
+export interface LabelRun {
+  readonly text: string;
+  readonly mono: boolean;
+}
+
+/** The label's runs, each `FIGURE_SLOT` filled with its figure in the order the words hold them. */
+export function labelRunsOf(label: string, figures: readonly string[]): readonly LabelRun[] {
+  const pieces = label.split(FIGURE_SLOT);
+  return pieces.flatMap((words, index) => {
+    const filled = index < pieces.length - 1 ? figures[index] : undefined;
+    return [
+      ...(words === '' ? [] : [{ text: words, mono: false }]),
+      ...(filled === undefined ? [] : [{ text: filled, mono: true }]),
+    ];
+  });
 }

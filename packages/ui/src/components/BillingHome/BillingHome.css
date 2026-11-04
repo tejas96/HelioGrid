@@ -66,11 +66,6 @@
   justify-content: flex-start;
 }
 
-.hg-billing-mono {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-}
-
 .hg-billing-figure {
   display: block;
   flex-shrink: 0;
@@ -78,10 +73,6 @@
   white-space: nowrap;
   font-weight: var(--fw-medium);
   color: var(--text-primary);
-}
-
-.hg-billing-strip-rows {
-  margin-top: var(--sp-2);
 }
 
 /* ── Needs you ──────────────────────────────────────────────────────────── */

@@ -53,6 +53,11 @@ msgid "{amount} GB"
 msgstr "{amount} GB"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:59
+msgid "{amount} on invoice {number}"
+msgstr "{amount} on invoice {number}"
+
+#. js-lingui-explicit-id
 #: src/copy/allocation.ts:28
 msgid "{amount} over-allocated."
 msgstr "{amount} over-allocated."
@@ -583,6 +588,11 @@ msgid "{date}, supplied by the market pack, cannot be removed"
 msgstr "{date}, supplied by the market pack, cannot be removed"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:38
+msgid "{days, plural, one {# day left in your trial} other {# days left in your trial}}"
+msgstr "{days, plural, one {# day left in your trial} other {# days left in your trial}}"
+
+#. js-lingui-explicit-id
 #: src/copy/pricing.ts:61
 msgid "{days} days, no card needed."
 msgstr "{days} days, no card needed."
@@ -819,7 +829,7 @@ msgid "{from}–{to} of {count}"
 msgstr "{from}–{to} of {count}"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:44
+#: src/copy/billing-records.ts:41
 msgid "{from}–{to} of {total}"
 msgstr "{from}–{to} of {total}"
 
@@ -1033,6 +1043,26 @@ msgstr "{message} Last tried at {time}."
 #: src/copy/usage-page.ts:100
 msgid "{meter} — events this cycle"
 msgstr "{meter} — events this cycle"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:64
+msgid "{meter} · {usage} · {paused} paused"
+msgstr "{meter} · {usage} · {paused} paused"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:63
+msgid "{meter} · {usage} · 7-day grace running"
+msgstr "{meter} · {usage} · 7-day grace running"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:65
+msgid "{meter} · at its limit"
+msgstr "{meter} · at its limit"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:74
+msgid "{meter} limit reached"
+msgstr "{meter} limit reached"
 
 #. js-lingui-explicit-id
 #: src/copy/invoice-document.ts:34
@@ -1651,6 +1681,32 @@ msgid "{used} of {limit} {unit}"
 msgstr "{used} of {limit} {unit}"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:111
+#: src/copy/billing-strip.ts:112
+msgid "{used} of {limit} active"
+msgstr "{used} of {limit} active"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:120
+#: src/copy/billing-strip.ts:121
+msgid "{used} of {limit} minutes used"
+msgstr "{used} of {limit} minutes used"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:103
+#: src/copy/billing-strip.ts:129
+#: src/copy/billing-strip.ts:130
+#: src/copy/billing-strip.ts:141
+#: src/copy/billing-strip.ts:142
+msgid "{used} of {limit} used"
+msgstr "{used} of {limit} used"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:102
+msgid "{used} of {limit} used this month"
+msgstr "{used} of {limit} used this month"
+
+#. js-lingui-explicit-id
 #: src/copy/pricing.ts:93
 msgid "{value} / min"
 msgstr "{value} / min"
@@ -1731,7 +1787,7 @@ msgid "7 days left in your trial"
 msgstr "7 days left in your trial"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:92
+#: src/copy/billing-records.ts:80
 msgid "A charge failed"
 msgstr "A charge failed"
 
@@ -1984,9 +2040,19 @@ msgid "Account"
 msgstr "Account"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:55
+#: src/copy/billing-strip.ts:72
+msgid "Account halted"
+msgstr "Account halted"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:32
 msgid "Account halted · the grace window closed"
 msgstr "Account halted · the grace window closed"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:46
+msgid "Account halts"
+msgstr "Account halts"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:30
@@ -2026,6 +2092,7 @@ msgid "Active · last seen today"
 msgstr "Active · last seen today"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:106
 #: src/copy/pricing.ts:74
 msgid "Active projects"
 msgstr "Active projects"
@@ -2238,7 +2305,7 @@ msgid "Agent turn"
 msgstr "Agent turn"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:35
+#: src/copy/billing-records.ts:32
 #: src/copy/catalog-settings.ts:31
 #: src/copy/price-book.ts:34
 #: src/copy/role-matrix.ts:97
@@ -2322,6 +2389,11 @@ msgstr "Always sent, and it cannot be muted: billing events are audit-relevant f
 #: src/copy/price-book.ts:37
 msgid "Amount"
 msgstr "Amount"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:44
+msgid "Amount due"
+msgstr "Amount due"
 
 #. js-lingui-explicit-id
 #: src/copy/price-book.ts:67
@@ -2496,7 +2568,7 @@ msgstr "Ask a question"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:87
-#: src/copy/billing-records.ts:63
+#: src/copy/billing-records.ts:51
 msgid "Ask for a refund"
 msgstr "Ask for a refund"
 
@@ -2757,6 +2829,16 @@ msgid "Billing cycle"
 msgstr "Billing cycle"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:150
+msgid "Billing is paused"
+msgstr "Billing is paused"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:76
+msgid "Billing state"
+msgstr "Billing state"
+
+#. js-lingui-explicit-id
 #: src/copy/usage-page.ts:94
 msgid "Bills on"
 msgstr "Bills on"
@@ -2843,7 +2925,7 @@ msgid "Bulleted list"
 msgstr "Bulleted list"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:84
+#: src/copy/billing-records.ts:72
 msgid "Business is pausing"
 msgstr "Business is pausing"
 
@@ -2938,7 +3020,7 @@ msgstr "Cancel it on Team"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:50
-#: src/copy/billing-records.ts:58
+#: src/copy/billing-records.ts:46
 msgid "Cancel subscription"
 msgstr "Cancel subscription"
 
@@ -2948,12 +3030,12 @@ msgid "Cancelled"
 msgstr "Cancelled"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:93
+#: src/copy/billing-records.ts:81
 msgid "Cancelled by the owner"
 msgstr "Cancelled by the owner"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:69
+#: src/copy/billing-records.ts:57
 msgid "Cancelled. Your plan runs until {date}."
 msgstr "Cancelled. Your plan runs until {date}."
 
@@ -3075,7 +3157,7 @@ msgid "change this plan"
 msgstr "change this plan"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:100
+#: src/copy/billing-records.ts:88
 #: src/copy/catalog-editor.ts:82
 #: src/copy/price-book.ts:75
 msgid "Changed"
@@ -3243,7 +3325,7 @@ msgid "Clear it and this item has no price."
 msgstr "Clear it and this item has no price."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:43
+#: src/copy/billing-records.ts:40
 #: src/copy/team.ts:19
 msgid "Clear search"
 msgstr "Clear search"
@@ -3603,6 +3685,11 @@ msgid "Couldn't read this period's usage. Nothing is shown until it resolves, be
 msgstr "Couldn't read this period's usage. Nothing is shown until it resolves, because this screen only ever shows the billed figures."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:36
+msgid "Couldn't read your billing state"
+msgstr "Couldn't read your billing state"
+
+#. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:114
 msgid "Couldn’t work out what a downgrade blocks"
 msgstr "Couldn’t work out what a downgrade blocks"
@@ -3616,6 +3703,11 @@ msgstr "Couldn’t work out what this change costs"
 #: src/copy/roles-reference.ts:32
 msgid "Count unavailable"
 msgstr "Count unavailable"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:60
+msgid "Counted from the charge that failed on {date}, which is day 0 of the 7-day grace."
+msgstr "Counted from the charge that failed on {date}, which is day 0 of the 7-day grace."
 
 #. js-lingui-explicit-id
 #: src/copy/roles-reference.ts:26
@@ -3710,12 +3802,17 @@ msgid "creating and editing records"
 msgstr "creating and editing records"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:151
+msgid "Creating and editing records is paused"
+msgstr "Creating and editing records is paused"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:50
 msgid "Creating your company"
 msgstr "Creating your company"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:40
+#: src/copy/billing-records.ts:37
 #: src/copy/invoice-document.ts:15
 msgid "Credit note"
 msgstr "Credit note"
@@ -3771,6 +3868,11 @@ msgid "Customer links"
 msgstr "Customer links"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:149
+msgid "Customer links are paused"
+msgstr "Customer links are paused"
+
+#. js-lingui-explicit-id
 #: src/copy/project-stages.ts:16
 msgid "Customer signs"
 msgstr "Customer signs"
@@ -3793,6 +3895,11 @@ msgid "Cycle life"
 msgstr "Cycle life"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:47
+msgid "Cycle resets"
+msgstr "Cycle resets"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item-fields.ts:45
 msgid "cycles"
 msgstr "cycles"
@@ -3811,6 +3918,11 @@ msgstr "Date"
 #: src/copy/invoice-document.ts:20
 msgid "Date of issue"
 msgstr "Date of issue"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:56
+msgid "Day {day} counted from the charge that failed on {date}, which is day 0 of the 7-day grace."
+msgstr "Day {day} counted from the charge that failed on {date}, which is day 0 of the 7-day grace."
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:49
@@ -4242,6 +4354,26 @@ msgid "editing designs"
 msgstr "editing designs"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:152
+msgid "Editing designs is paused"
+msgstr "Editing designs is paused"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:109
+msgid "editing existing projects"
+msgstr "editing existing projects"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:139
+msgid "editing what exists"
+msgstr "editing what exists"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:100
+msgid "editing, duplicating and sharing existing proposals"
+msgstr "editing, duplicating and sharing existing proposals"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:37
 msgid "Effective price"
 msgstr "Effective price"
@@ -4368,6 +4500,11 @@ msgid "Every meter on the trial · {cycle}"
 msgstr "Every meter on the trial · {cycle}"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:67
+msgid "every other feature"
+msgstr "every other feature"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:130
 msgid "Every panel, inverter and part, by make."
 msgstr "Every panel, inverter and part, by make."
@@ -4403,9 +4540,9 @@ msgid "Everyone at {company} matching {query}"
 msgstr "Everyone at {company} matching {query}"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:51
-msgid "Everything"
-msgstr "Everything"
+#: src/copy/billing-strip.ts:43
+msgid "Everything — voice calls and invites included"
+msgstr "Everything — voice calls and invites included"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:97
@@ -4458,6 +4595,16 @@ msgid "Expires {date}"
 msgstr "Expires {date}"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:69
+msgid "export"
+msgstr "export"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:148
+msgid "Export is paused"
+msgstr "Export is paused"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:24
 msgid "exports"
 msgstr "exports"
@@ -4483,7 +4630,7 @@ msgid "Factories, warehouses and offices — bigger rooftops, sold to a business
 msgstr "Factories, warehouses and offices — bigger rooftops, sold to a business."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:37
+#: src/copy/billing-records.ts:34
 #: src/copy/catalog-import.ts:119
 #: src/copy/catalog-import.ts:127
 msgid "Failed"
@@ -4551,7 +4698,7 @@ msgid "Financials"
 msgstr "Financials"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:33
+#: src/copy/billing-records.ts:30
 #: src/copy/catalog-import.ts:78
 #: src/copy/team.ts:11
 msgid "Find in this list"
@@ -4825,6 +4972,16 @@ msgstr "Google sign-in did not finish"
 #: src/copy/shell.ts:49
 msgid "Got it"
 msgstr "Got it"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:55
+msgid "Grace day"
+msgstr "Grace day"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:54
+msgid "Grace day and amount"
+msgstr "Grace day and amount"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:79
@@ -5381,6 +5538,11 @@ msgid "Inviting {first} again sends a new link."
 msgstr "Inviting {first} again sends a new link."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:157
+msgid "Inviting a teammate is paused"
+msgstr "Inviting a teammate is paused"
+
+#. js-lingui-explicit-id
 #: src/copy/invoice-document.ts:12
 msgid "Invoice"
 msgstr "Invoice"
@@ -5396,7 +5558,7 @@ msgid "Invoice number"
 msgstr "Invoice number"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:34
+#: src/copy/billing-records.ts:31
 msgid "Invoice state"
 msgstr "Invoice state"
 
@@ -5411,7 +5573,7 @@ msgid "Isc"
 msgstr "Isc"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:38
+#: src/copy/billing-records.ts:35
 #: src/copy/paged-document.ts:27
 msgid "Issued"
 msgstr "Issued"
@@ -5507,7 +5669,7 @@ msgid "Keep mine — {field} stays {value}"
 msgstr "Keep mine — {field} stays {value}"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:68
+#: src/copy/billing-records.ts:56
 msgid "Keep my plan"
 msgstr "Keep my plan"
 
@@ -5522,7 +5684,7 @@ msgid "Keep the invite"
 msgstr "Keep the invite"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:62
+#: src/copy/billing-records.ts:50
 msgid "Kept"
 msgstr "Kept"
 
@@ -5694,6 +5856,11 @@ msgid "Limit"
 msgstr "Limit"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:66
+msgid "limit reached"
+msgstr "limit reached"
+
+#. js-lingui-explicit-id
 #: src/copy/pricing.ts:67
 #: src/copy/pricing.ts:98
 msgid "Limits"
@@ -5753,6 +5920,11 @@ msgstr "Link page"
 #: src/copy/sign-in.ts:103
 msgid "Links {email}"
 msgstr "Links {email}"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:118
+msgid "listening to past calls"
+msgstr "listening to past calls"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:21
@@ -5915,6 +6087,11 @@ msgstr "Loading what your role can and cannot do"
 #: src/copy/billing-home.ts:51
 msgid "Loading your billing"
 msgstr "Loading your billing"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:35
+msgid "Loading your billing state"
+msgstr "Loading your billing state"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:56
@@ -6160,7 +6337,7 @@ msgid "Mint, label and re-mint a customer link for a named contact"
 msgstr "Mint, label and re-mint a customer link for a named contact"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:82
+#: src/copy/billing-records.ts:70
 msgid "Missing something I need"
 msgstr "Missing something I need"
 
@@ -6281,7 +6458,7 @@ msgid "Moving to {plan}"
 msgstr "Moving to {plan}"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:83
+#: src/copy/billing-records.ts:71
 msgid "Moving to another tool"
 msgstr "Moving to another tool"
 
@@ -6499,6 +6676,26 @@ msgid "new file uploads"
 msgstr "new file uploads"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:154
+msgid "New file uploads are paused"
+msgstr "New file uploads are paused"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:138
+msgid "new items of this kind"
+msgstr "new items of this kind"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:137
+msgid "New items of this kind"
+msgstr "New items of this kind"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:140
+msgid "New items of this kind pause"
+msgstr "New items of this kind pause"
+
+#. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:43
 msgid "New payment terms"
 msgstr "New payment terms"
@@ -6524,9 +6721,39 @@ msgid "New products"
 msgstr "New products"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:108
+msgid "new projects"
+msgstr "new projects"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:107
+msgid "New projects"
+msgstr "New projects"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:110
+msgid "New projects pause"
+msgstr "New projects pause"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:99
+msgid "new proposals"
+msgstr "new proposals"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:98
+msgid "New proposals"
+msgstr "New proposals"
+
+#. js-lingui-explicit-id
 #: src/copy/branding.ts:66
 msgid "New proposals and link pages will show your company name in its place. You can add a logo again here at any time."
 msgstr "New proposals and link pages will show your company name in its place. You can add a logo again here at any time."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:101
+msgid "New proposals pause"
+msgstr "New proposals pause"
 
 #. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:75
@@ -6544,12 +6771,37 @@ msgid "New rate"
 msgstr "New rate"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:126
+msgid "new uploads"
+msgstr "new uploads"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:125
+msgid "New uploads"
+msgstr "New uploads"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:128
+msgid "New uploads pause"
+msgstr "New uploads pause"
+
+#. js-lingui-explicit-id
 #: src/copy/usage-page.ts:80
 msgid "New uploads paused · remove files or pick a bigger plan · reading and export never stop."
 msgstr "New uploads paused · remove files or pick a bigger plan · reading and export never stop."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:48
+#: src/copy/billing-strip.ts:117
+msgid "new voice calls"
+msgstr "new voice calls"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:116
+msgid "New voice calls"
+msgstr "New voice calls"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:45
 #: src/copy/explainer.ts:7
 #: src/copy/shell.ts:52
 msgid "Next"
@@ -6682,7 +6934,7 @@ msgid "No holidays yet. Tap a date to add one."
 msgstr "No holidays yet. Tap a date to add one."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:41
+#: src/copy/billing-records.ts:38
 msgid "No invoice matches {query}"
 msgstr "No invoice matches {query}"
 
@@ -7233,7 +7485,7 @@ msgid "Nothing here"
 msgstr "Nothing here"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:46
+#: src/copy/billing-records.ts:43
 #: src/copy/data-table.ts:13
 msgid "Nothing here yet"
 msgstr "Nothing here yet"
@@ -7525,6 +7777,11 @@ msgid "Open-circuit voltage (V)"
 msgstr "Open-circuit voltage (V)"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:127
+msgid "opening and downloading existing files"
+msgstr "opening and downloading existing files"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:84
 msgid "Opening Google sign-in"
 msgstr "Opening Google sign-in"
@@ -7662,7 +7919,7 @@ msgid "Owner Dashboard"
 msgstr "Owner Dashboard"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:36
+#: src/copy/billing-records.ts:33
 msgid "Paid"
 msgstr "Paid"
 
@@ -7757,7 +8014,7 @@ msgid "Pause recording"
 msgstr "Pause recording"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:49
+#: src/copy/billing-strip.ts:27
 #: src/copy/usage-page.ts:29
 msgid "Paused"
 msgstr "Paused"
@@ -7796,6 +8053,16 @@ msgstr "Pay"
 #: src/copy/plan-selection.ts:119
 msgid "Pay {amount}"
 msgstr "Pay {amount}"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:49
+msgid "Pay {amount} now"
+msgstr "Pay {amount} now"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:50
+msgid "Pay {amount} with {method}"
+msgstr "Pay {amount} with {method}"
 
 #. js-lingui-explicit-id
 #: src/copy/usage-page.ts:34
@@ -7839,12 +8106,17 @@ msgid "Payment failed"
 msgstr "Payment failed"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:54
+#: src/copy/billing-strip.ts:31
 msgid "Payment failed · day {day} of 7 · a retry is coming"
 msgstr "Payment failed · day {day} of 7 · a retry is coming"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:53
+#: src/copy/billing-strip.ts:42
+msgid "Payment failed · day {day} of 7 · final warning"
+msgstr "Payment failed · day {day} of 7 · final warning"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:30
 msgid "Payment failed · day {day} of the 7-day grace"
 msgstr "Payment failed · day {day} of the 7-day grace"
 
@@ -7869,7 +8141,12 @@ msgid "payment methods"
 msgstr "payment methods"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:47
+#: src/copy/billing-strip.ts:70
+msgid "Payment overdue"
+msgstr "Payment overdue"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-records.ts:44
 msgid "Payment received"
 msgstr "Payment received"
 
@@ -7992,6 +8269,7 @@ msgstr "Phone, email or website"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:96
+#: src/copy/billing-strip.ts:52
 #: src/copy/usage-page.ts:39
 msgid "Pick a plan"
 msgstr "Pick a plan"
@@ -8399,6 +8677,7 @@ msgid "Proposal template"
 msgstr "Proposal template"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:97
 #: src/copy/pricing.ts:73
 #: src/copy/shell.ts:94
 msgid "Proposals"
@@ -8538,6 +8817,11 @@ msgid "Reactivate with one payment in Billing."
 msgstr "Reactivate with one payment in Billing."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:51
+msgid "Reactivate with one payment of {amount}"
+msgstr "Reactivate with one payment of {amount}"
+
+#. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:113
 msgid "Read (results)"
 msgstr "Read (results)"
@@ -8558,6 +8842,11 @@ msgid "Read-only"
 msgstr "Read-only"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:68
+msgid "reading"
+msgstr "reading"
+
+#. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:17
 msgid "Reading and exporting"
 msgstr "Reading and exporting"
@@ -8571,6 +8860,11 @@ msgstr "Reading and exporting your work never stop, whatever happens to a paymen
 #: src/copy/billing-notices.ts:23
 msgid "reading and search"
 msgstr "reading and search"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:147
+msgid "Reading is paused"
+msgstr "Reading is paused"
 
 #. js-lingui-explicit-id
 #: src/copy/project-stages.ts:48
@@ -8658,13 +8952,13 @@ msgid "Reference only"
 msgstr "Reference only"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:65
+#: src/copy/billing-records.ts:53
 #: src/copy/plan-selection.ts:88
 msgid "Refund"
 msgstr "Refund"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:67
+#: src/copy/billing-records.ts:55
 msgid "Refund and end my plan"
 msgstr "Refund and end my plan"
 
@@ -8674,17 +8968,17 @@ msgid "Refund available"
 msgstr "Refund available"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:39
+#: src/copy/billing-records.ts:36
 msgid "Refunded"
 msgstr "Refunded"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:96
+#: src/copy/billing-records.ts:84
 msgid "Refunded in the first cycle"
 msgstr "Refunded in the first cycle"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:70
+#: src/copy/billing-records.ts:58
 msgid "Refunded. Credit note {number} is in your invoices."
 msgstr "Refunded. Credit note {number} is in your invoices."
 
@@ -9391,6 +9685,11 @@ msgid "selling and delivery"
 msgstr "selling and delivery"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:153
+msgid "Selling and delivery are paused"
+msgstr "Selling and delivery are paused"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:29
 msgid "Send a new code"
 msgstr "Send a new code"
@@ -9589,7 +9888,7 @@ msgid "Show fewer {noun}"
 msgstr "Show fewer {noun}"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:45
+#: src/copy/billing-records.ts:42
 #: src/copy/catalog-import.ts:49
 #: src/copy/usage-page.ts:98
 msgid "Show more"
@@ -9717,7 +10016,7 @@ msgid "Sign-off"
 msgstr "Sign-off"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:90
+#: src/copy/billing-records.ts:78
 msgid "Signed up · 14-day trial"
 msgstr "Signed up · 14-day trial"
 
@@ -9747,7 +10046,7 @@ msgid "Size, type and price of your system."
 msgstr "Size, type and price of your system."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:61
+#: src/copy/billing-records.ts:49
 msgid "Skip"
 msgstr "Skip"
 
@@ -9828,7 +10127,7 @@ msgid "Someone changed this while you were editing. Refresh and retry."
 msgstr "Someone changed this while you were editing. Refresh and retry."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:85
+#: src/copy/billing-records.ts:73
 msgid "Something else"
 msgstr "Something else"
 
@@ -10004,7 +10303,7 @@ msgid "Still nothing to upload over — they stay on this phone."
 msgstr "Still nothing to upload over — they stay on this phone."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:50
+#: src/copy/billing-strip.ts:28
 msgid "Still works"
 msgstr "Still works"
 
@@ -10025,6 +10324,7 @@ msgid "Stops the work — nothing further is computed."
 msgstr "Stops the work — nothing further is computed."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:124
 #: src/copy/pricing.ts:79
 msgid "Storage"
 msgstr "Storage"
@@ -10056,7 +10356,12 @@ msgid "Subscription"
 msgstr "Subscription"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:57
+#: src/copy/billing-strip.ts:73
+msgid "Subscription ended"
+msgstr "Subscription ended"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:34
 msgid "Subscription ended · reactivate to continue"
 msgstr "Subscription ended · reactivate to continue"
 
@@ -10343,7 +10648,7 @@ msgid "That did not go through"
 msgstr "That did not go through"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:76
+#: src/copy/billing-records.ts:64
 msgid "That did not go through. Try again."
 msgstr "That did not go through. Try again."
 
@@ -10559,7 +10864,7 @@ msgid "The full studio"
 msgstr "The full studio"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:95
+#: src/copy/billing-records.ts:83
 msgid "The grace window closed"
 msgstr "The grace window closed"
 
@@ -10639,12 +10944,12 @@ msgid "The panel saves without them. Without the Pmax temp. coefficient, string 
 msgstr "The panel saves without them. Without the Pmax temp. coefficient, string sizing marks its window estimated. Without bifaciality, the panel's back counts as producing nothing."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:71
+#: src/copy/billing-records.ts:59
 msgid "The payment service did not answer. Nothing was changed. Try again."
 msgstr "The payment service did not answer. Nothing was changed. Try again."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:77
+#: src/copy/billing-records.ts:65
 msgid "The PDF could not open. Try again."
 msgstr "The PDF could not open. Try again."
 
@@ -10744,7 +11049,7 @@ msgid "The recording reached the retention bound and was deleted. The transcript
 msgstr "The recording reached the retention bound and was deleted. The transcript is retained."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:75
+#: src/copy/billing-records.ts:63
 msgid "The refund window has closed. Reload to see your plan."
 msgstr "The refund window has closed. Reload to see your plan."
 
@@ -10814,7 +11119,7 @@ msgid "The tranches must add up to exactly 100%. Place the remainder before savi
 msgstr "The tranches must add up to exactly 100%. Place the remainder before saving."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:94
+#: src/copy/billing-records.ts:82
 msgid "The trial ended"
 msgstr "The trial ended"
 
@@ -10995,6 +11300,11 @@ msgid "This is a material estimate and a visual model, not a structural check. A
 msgstr "This is a material estimate and a visual model, not a structural check. An engineer must verify the structure."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:161
+msgid "This is paused"
+msgstr "This is paused"
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:31
 msgid "This is paused for your company. Reading and export still work."
 msgstr "This is paused for your company. Reading and export still work."
@@ -11008,6 +11318,11 @@ msgstr "This is the plan you’re on. Pick another plan or cycle."
 #: src/copy/shell.ts:69
 msgid "This is version {current}. HelioGrid now needs version {required} or later."
 msgstr "This is version {current}. HelioGrid now needs version {required} or later."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:136
+msgid "This limit"
+msgstr "This limit"
 
 #. js-lingui-explicit-id
 #: src/copy/qr-code.ts:10
@@ -11050,7 +11365,7 @@ msgid "This person is the only EPC Owner. A company always keeps at least one EP
 msgstr "This person is the only EPC Owner. A company always keeps at least one EPC Owner and one person who can manage the team."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:74
+#: src/copy/billing-records.ts:62
 msgid "This plan can no longer be cancelled. Reload to see why."
 msgstr "This plan can no longer be cancelled. Reload to see why."
 
@@ -11172,7 +11487,7 @@ msgstr "To reactivate"
 
 #. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:15
-#: src/copy/billing-records.ts:66
+#: src/copy/billing-records.ts:54
 msgid "Today"
 msgstr "Today"
 
@@ -11187,7 +11502,7 @@ msgid "Today, {time}"
 msgstr "Today, {time}"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:81
+#: src/copy/billing-records.ts:69
 msgid "Too expensive"
 msgstr "Too expensive"
 
@@ -11248,8 +11563,14 @@ msgstr "Trial"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:131
+#: src/copy/billing-strip.ts:71
 msgid "Trial ended"
 msgstr "Trial ended"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:41
+msgid "Trial ends"
+msgstr "Trial ends"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:50
@@ -11257,12 +11578,13 @@ msgid "Trial to {to} · {cycle}"
 msgstr "Trial to {to} · {cycle}"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:42
+#: src/copy/billing-records.ts:39
 msgid "Try a part of the invoice number."
 msgstr "Try a part of the invoice number."
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:56
+#: src/copy/billing-strip.ts:37
 #: src/copy/branding.ts:58
 #: src/copy/catalog-add-item.ts:77
 #: src/copy/catalog-editor.ts:76
@@ -11409,7 +11731,7 @@ msgstr "Unread. {title}. {body}. {time}."
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:86
-#: src/copy/billing-records.ts:52
+#: src/copy/billing-strip.ts:29
 msgid "Until"
 msgstr "Until"
 
@@ -11470,9 +11792,19 @@ msgid "Update project stages"
 msgstr "Update project stages"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:48
+msgid "Update your payment method"
+msgstr "Update your payment method"
+
+#. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:25
 msgid "Upgrade"
 msgstr "Upgrade"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:53
+msgid "Upgrade plan"
+msgstr "Upgrade plan"
 
 #. js-lingui-explicit-id
 #: src/copy/version-diff.ts:37
@@ -11503,6 +11835,11 @@ msgstr "Uploaded photo"
 #: src/copy/billing-notices.ts:31
 msgid "uploading field photos already taken"
 msgstr "uploading field photos already taken"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:155
+msgid "Uploading field photos is paused"
+msgstr "Uploading field photos is paused"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:75
@@ -11726,6 +12063,22 @@ msgid "Voc temp. coefficient"
 msgstr "Voc temp. coefficient"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:45
+msgid "Voice calls and invites pause"
+msgstr "Voice calls and invites pause"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:156
+msgid "Voice calls are paused"
+msgstr "Voice calls are paused"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:119
+msgid "Voice calls pause"
+msgstr "Voice calls pause"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:115
 #: src/copy/invoice-document.ts:49
 #: src/copy/pricing.ts:77
 msgid "Voice minutes"
@@ -11982,6 +12335,11 @@ msgid "What happens in this phase"
 msgstr "What happens in this phase"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-strip.ts:75
+msgid "What is paused and what still works"
+msgstr "What is paused and what still works"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:36
 #: src/copy/catalog-settings.ts:35
 msgid "What it is"
@@ -12229,12 +12587,12 @@ msgid "Why a price is what it is — the {count} of {total} items you have chang
 msgstr "Why a price is what it is — the {count} of {total} items you have changed"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:60
+#: src/copy/billing-records.ts:48
 msgid "Why are you leaving"
 msgstr "Why are you leaving"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:59
+#: src/copy/billing-records.ts:47
 msgid "Why are you leaving? Optional."
 msgstr "Why are you leaving? Optional."
 
@@ -12879,7 +13237,7 @@ msgid "Your plan carries on past {date} as if nothing changed."
 msgstr "Your plan carries on past {date} as if nothing changed."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:64
+#: src/copy/billing-records.ts:52
 msgid "Your plan ends today, and the payment goes back to its source."
 msgstr "Your plan ends today, and the payment goes back to its source."
 
@@ -13012,7 +13370,7 @@ msgid "Your template didn't save"
 msgstr "Your template didn't save"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-records.ts:56
+#: src/copy/billing-strip.ts:33
 msgid "Your trial ended on {date}"
 msgstr "Your trial ended on {date}"
 

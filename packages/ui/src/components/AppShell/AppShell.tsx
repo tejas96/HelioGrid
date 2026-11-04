@@ -8,12 +8,13 @@ interface WebAppShellProps extends AppShellProps {
 }
 
 /** Rail on the left, header on top, scrolling content below — the whole desktop shell. */
-export function AppShell({ rail, header, children, className, style }: WebAppShellProps) {
+export function AppShell({ rail, header, strip, children, className, style }: WebAppShellProps) {
   return (
     <div className={classNames('hg-app-shell', className)} style={style}>
       {rail}
       <div className="hg-app-shell-column">
         {header}
+        {strip}
         <main className="hg-app-shell-main">{children}</main>
       </div>
     </div>

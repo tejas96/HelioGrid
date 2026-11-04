@@ -7,7 +7,7 @@ import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { figure, plain } from '../BillingHome/BillingHome.values';
 import { BillingStatusChip } from '../BillingHome/BillingNeeds.native';
-import { BillingValueText } from '../BillingHome/BillingValue.native';
+import { BillingValueText } from '../BillingStrip/BillingValue.native';
 import { Block } from '../Block/Block.native';
 import { FactRow } from '../FactRow/FactRow.native';
 import { FactRows } from '../FactRow/FactRows.native';

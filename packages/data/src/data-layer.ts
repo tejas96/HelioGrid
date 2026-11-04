@@ -1,5 +1,6 @@
 import type { StorePlatform } from '@heliogrid/domain';
 import { createRepositoryRegistry, type Repositories } from './composition';
+import { type BlockedStore, createBlockedStore } from './session/blocked';
 import { type HeldWork, NO_HELD_WORK } from './session/held-work';
 import { createSessionStore } from './session/store';
 import type { SessionStore } from './session/types';
@@ -31,6 +32,8 @@ export interface DataLayer {
   session: SessionStore;
   /** Whether the api has turned this build away as too old (`F4-36`); never, on the web. */
   upgrade: UpgradeStore;
+  /** The latest save the billing gate refused, for the app's one denial (`M12-21`). */
+  blocked: BlockedStore;
 }
 
 /**
@@ -58,6 +61,7 @@ export function createDataLayer(config: DataLayerConfig): DataLayer {
   const upgrade = config.storage
     ? createUpgradeStore({ appVersion: config.appVersion, storePlatform: config.storePlatform })
     : NEVER_REFUSED;
+  const blocked = createBlockedStore();
   const repositories = config.storage
     ? createRepositoryRegistry({
         baseUrl,
@@ -67,8 +71,15 @@ export function createDataLayer(config: DataLayerConfig): DataLayer {
         appVersion: config.appVersion,
         session: signals,
         upgrade: upgrade.signals,
+        blocked: blocked.signals,
       })
-    : createRepositoryRegistry({ baseUrl, mode: 'browser', session: signals, language });
+    : createRepositoryRegistry({
+        baseUrl,
+        mode: 'browser',
+        session: signals,
+        language,
+        blocked: blocked.signals,
+      });
   session = createSessionStore({
     auth: repositories.auth,
     user: repositories.user,
@@ -77,5 +88,5 @@ export function createDataLayer(config: DataLayerConfig): DataLayer {
     platform: storage ? 'mobile' : 'web',
     heldWork: heldWork ?? NO_HELD_WORK,
   });
-  return { repositories, session, upgrade };
+  return { repositories, session, upgrade, blocked };
 }

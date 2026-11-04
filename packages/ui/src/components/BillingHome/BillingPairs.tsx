@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import { BillingValueText } from '../BillingStrip/BillingValue';
 import { FactRow, FactRows } from '../FactRow';
 import type { BillingFact } from './BillingHome.types';
-import { BillingValueText } from './BillingValue';
 
 /** A fact's value on the region's right edge (decision 3); `Next bill`'s amount under its date. */
 function FactValue({ fact }: { fact: BillingFact }) {

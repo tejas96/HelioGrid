@@ -11,6 +11,18 @@ import { BYTES_PER_GB, storageRefuses } from './usage';
 export const USAGE_STEPS = ['clear', 'warning', 'at_cap', 'grace', 'paused', 'overage'] as const;
 export type UsageStepName = (typeof USAGE_STEPS)[number];
 
+/**
+ * The steps where a meter stands at its cap (`M12-30`), most severe first: the ones a member may
+ * see by name (`M12-56`), the shell's strip draws, and the usage screen offers bigger plans on.
+ * `warning` is the usage screen's alone, and `overage` a bundle's.
+ */
+export const CAP_HELD_STEPS = [
+  'paused',
+  'grace',
+  'at_cap',
+] as const satisfies readonly UsageStepName[];
+export type CapHeldStep = (typeof CAP_HELD_STEPS)[number];
+
 export interface UsageStep {
   readonly step: UsageStepName;
   /** `grace`: the moment new creations of the type pause. */

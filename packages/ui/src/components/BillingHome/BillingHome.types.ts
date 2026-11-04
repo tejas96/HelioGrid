@@ -2,8 +2,13 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { Ref } from 'react';
 import type { FocusAfter } from '../../primitives/FocusAfter/FocusAfter.types';
 import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
+import type {
+  BillingStripView,
+  BillingValue,
+  BillingWorkingPart,
+} from '../BillingStrip/BillingStrip.types';
 import type { DataTableWords } from '../DataTable/DataTable.types';
-import type { DerivationKind, DerivationKindWords } from '../Derivation/Derivation.types';
+import type { DerivationKindWords } from '../Derivation/Derivation.types';
 import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';
 import type { UsageMeterWords } from '../UsageMeter/UsageMeter.types';
 
@@ -14,18 +19,7 @@ import type { UsageMeterWords } from '../UsageMeter/UsageMeter.types';
  * refund asks, and every read and act. Every figure arrives formatted; nothing here computes money.
  */
 
-/**
- * A value as runs of words and figures: a figure — money, an invoice number — is drawn in mono
- * where the translation placed it (`F7-09`); a plain value is one run of words.
- */
-export type BillingValue = readonly { readonly text: string; readonly mono: boolean }[];
-
-/** One part of `How it is worked out`. */
-export interface BillingWorkingPart {
-  readonly kind: DerivationKind;
-  readonly label: TranslatedText;
-  readonly value: BillingValue;
-}
+export type { BillingValue, BillingWorkingPart };
 
 /** A word and its tone, drawn as a `StatusChip`. */
 export interface BillingChip {
@@ -40,18 +34,6 @@ export interface BillingFact {
   readonly value: BillingValue;
   /** A second line under the value — `Next bill`'s amount under its date (decision 9). */
   readonly under: BillingValue | null;
-}
-
-/** `SCR-SHELL-06`'s strip as this page draws it: no act and no amount row (brief, owner ruling). */
-export interface BillingStripView {
-  readonly kind: 'dunning' | 'state';
-  readonly title: TranslatedText;
-  readonly rows: readonly {
-    readonly key: string;
-    readonly mark: 'paused' | 'works' | 'until';
-    readonly label: TranslatedText;
-    readonly value: BillingValue;
-  }[];
 }
 
 /** One row of `Needs you`: SCR-M12-04's row — the name, its chip, the figure, the line under it. */

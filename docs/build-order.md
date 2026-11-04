@@ -107,7 +107,7 @@ that block lands, the junk lead above all, so in block 1 it could not finish.
 "the record's owner", "the assignee" — into people, and in block 0 no record has an owner: the only
 subject kinds are users, invitations and tenant settings. It builds once the lead record lands, before
 `T-M02-011` notifies a lead's new owner, so the resolution is written once and every later module
-reuses it. Two of its proofs still wait on later blocks and are recorded below.
+reuses it. Its two proofs that need later blocks moved to the tasks that build what they need (option A, taken 2026-11-04 when the owner asked for `T-SHELL-006`'s gate to be fixed): the M05 rows' line to `T-MS-117`, the every-module walk of `F6-10` to `T-FPLAT-074`.
 
 **The projection label builds in block 8, not block 0.** `T-FPLAT-074` prints a projection's word
 and its assumptions in the words the drawn proposal document (`SCR-M06-17`) gives, and that screen is
@@ -193,7 +193,6 @@ task that builds what it needs. A record here keeps the order honest; it does no
 
 | task | block | waits on | block | the proof step that needs it |
 |---|---|---|---|---|
-| `T-FPLAT-066` | 3 | `T-MS-117` | 7 | the design's author gets `design_survey_superseded`, resolved through F2 scope — and, with no single task to name, the `F6-10` check of the matrix against every module's §4 contract, which only the last V1 block can walk |
 
 ---
 

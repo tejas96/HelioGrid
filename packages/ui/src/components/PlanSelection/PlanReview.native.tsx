@@ -3,7 +3,7 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Banner } from '../Banner/Banner.native';
-import { BillingValueText, workingParts } from '../BillingHome/BillingValue.native';
+import { BillingValueText, workingParts } from '../BillingStrip/BillingValue.native';
 import { Block } from '../Block/Block.native';
 import { Button } from '../Button/Button.native';
 import { Derivation } from '../Derivation/Derivation.native';

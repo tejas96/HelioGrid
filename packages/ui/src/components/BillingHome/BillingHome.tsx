@@ -2,13 +2,14 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { type ReactNode, type RefObject, useRef } from 'react';
 import { landFocusOn } from '../../primitives/FocusAfter';
 import { ShellGlyph } from '../AppShell';
+import { BillingStrip } from '../BillingStrip';
 import { Block } from '../Block';
 import { Button } from '../Button';
 import { ListRow } from '../ListRow';
 import { bodyActingOf, retryLandingOn } from './BillingHome.logic';
 import type { BillingBodyActing, BillingHomeProps } from './BillingHome.types';
 import { BillingInvoiceRows, BillingInvoiceTable } from './BillingInvoiceRows';
-import { BillingNeeds, BillingStrip } from './BillingNeeds';
+import { BillingNeeds } from './BillingNeeds';
 import { BillingMethod, BillingPlan, BillingUsage } from './BillingPlan';
 import { useNeedsFocus } from './use-needs-focus';
 
@@ -47,7 +48,14 @@ export function BillingHome(props: BillingHomeProps) {
   return (
     <div className="hg-billing">
       {strip === null || read.kind === 'loading' ? null : (
-        <BillingStrip strip={strip} moreLabel={words.bannerMore} />
+        <BillingStrip
+          strip={strip}
+          words={{
+            howWorkedOut: words.howWorkedOut,
+            derivationKinds: words.derivationKinds,
+            moreLabel: words.bannerMore,
+          }}
+        />
       )}
       <div className="hg-billing-body" data-layout={layout}>
         <div className="hg-billing-side">{left}</div>

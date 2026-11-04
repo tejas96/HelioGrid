@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { ApiError } from '../errors/errors';
 
 const ONE_LOCK = '';
 
@@ -62,7 +63,8 @@ export function useAction<Input, Output>(
       await now.onDone?.(output, input);
       return { kind: 'done', output };
     } catch (error) {
-      setFailure(error);
+      // The billing gate's refusal is told once, by the app's denial (`M12-21`): no second line.
+      if (!billingRefused(error)) setFailure(error);
       now.onFailed?.(error, input);
       return { kind: 'failed', error };
     } finally {
@@ -87,4 +89,9 @@ export function useAction<Input, Output>(
     }),
     [out, failure, run, isOut, clear],
   );
+}
+
+/** A save the billing gate refused: the denial the transport opened is its message. */
+function billingRefused(error: unknown): boolean {
+  return error instanceof ApiError && error.code === 'ENTITLEMENT_BLOCKED';
 }

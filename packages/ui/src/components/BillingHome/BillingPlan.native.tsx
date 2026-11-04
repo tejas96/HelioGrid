@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Accordion } from '../Accordion/Accordion.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
+import { BillingValueText, workingParts } from '../BillingStrip/BillingValue.native';
 import { Block } from '../Block/Block.native';
 import { Button } from '../Button/Button.native';
 import { Derivation } from '../Derivation/Derivation.native';
@@ -22,7 +23,6 @@ import type {
 } from './BillingHome.types';
 import { plain } from './BillingHome.values';
 import { BillingStatusChip } from './BillingNeeds.native';
-import { BillingValueText, workingParts } from './BillingValue.native';
 
 type Words = BillingHomeProps['words'];
 

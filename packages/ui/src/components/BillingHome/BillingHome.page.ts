@@ -8,7 +8,7 @@ import type { BillingNeed, CancellationReason, PackLabel, Read } from '@heliogri
 import type { MarketFormat } from '../../utils/format';
 import { type BillingHomeView, billingHomeViewOf } from './BillingHome.logic';
 import type { BillingHomeActs, BillingHomeProps, BillingHomeWords } from './BillingHome.types';
-import type { BillingInput, BillingStripWords, BillingViewWords } from './BillingHome.words';
+import type { BillingInput, BillingPageStripWords, BillingViewWords } from './BillingHome.words';
 
 /** The page's facts: the Owner's whole home, or a member's standing and whose act it is. */
 export type BillingPageFacts =
@@ -49,7 +49,7 @@ export interface BillingScreenState {
 export interface BillingPageWords {
   readonly home: BillingHomeWords;
   readonly view: BillingViewWords;
-  readonly strip: BillingStripWords;
+  readonly strip: BillingPageStripWords;
   /** A pack's own label in the reader's language — the market's name, the mandate's rail. */
   packText(label: PackLabel): TranslatedText;
   /** Whose act billing is, for a person who is not the Owner (`M12-56`). */

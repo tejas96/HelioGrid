@@ -34,6 +34,12 @@ export {
   useBillingReminders,
 } from './use-billing-records';
 export {
+  type BillingStripAdapter,
+  type BillingStripReadFacts,
+  type BillingStripScreen,
+  useBillingStrip,
+} from './use-billing-strip';
+export {
   type UsageFacts,
   type UsageScreen,
   type UsageScreenAdapter,

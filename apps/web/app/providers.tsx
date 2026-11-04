@@ -13,6 +13,7 @@ import {
 import { LanguageFollowsUser, type LocaleChange, useI18n } from '@heliogrid/i18n/react';
 import { MarketProvider, PortalHost, ProvenanceWordsProvider } from '@heliogrid/ui';
 import { type ReactNode, useCallback, useState } from 'react';
+import { BillingDenialHost } from '../features/billing';
 import { API_URL } from '../lib/env';
 
 /**
@@ -55,7 +56,10 @@ export function Providers({ children }: { children: ReactNode }) {
         {/* The launch market until a tenant's pack is read — the door runs before any tenant exists
             — and the ONE portal host every menu, sheet and modal escapes its screen through. */}
         <ReaderMarket>
-          <PortalHost>{children}</PortalHost>
+          <PortalHost>
+            {children}
+            <BillingDenialHost />
+          </PortalHost>
         </ReaderMarket>
       </SessionLanguage>
     </DataProvider>

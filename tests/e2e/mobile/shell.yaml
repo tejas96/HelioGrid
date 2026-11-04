@@ -1,8 +1,12 @@
-# The shell: a member with a company is inside, and the pill's More opens the settings list
-# (`SCR-SHELL-01`).
+# The shell: a member with a company is inside, a fresh trial's day count under the bar
+# (`SCR-SHELL-06`), and the pill's More opens the settings list (`SCR-SHELL-01`).
 appId: com.heliogrid.app
 ---
 - extendedWaitUntil:
     visible: ${MORE}
     timeout: 30000
+# A fresh trial's strip is the quiet day count under the bar, with no act (`SCR-SHELL-06`).
+- extendedWaitUntil:
+    visible: ${TRIAL_CHIP}
+    timeout: 15000
 - tapOn: ${MORE}

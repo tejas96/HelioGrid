@@ -26,6 +26,7 @@ import { createSettingsRepository, type SettingsRepository } from './settings/re
 import { createTenantRepository, type TenantRepository } from './tenant/repository';
 import type { TokenStorage } from './transport/storage';
 import {
+  type BlockedSignals,
   createTransport,
   type ReaderLanguage,
   type RequestHeaders,
@@ -56,7 +57,7 @@ export interface Repositories {
 }
 
 type RepositoryRegistryConfig = { baseUrl: string } & (
-  | { mode: 'browser'; session: SessionSignals; language: ReaderLanguage }
+  | { mode: 'browser'; session: SessionSignals; language: ReaderLanguage; blocked: BlockedSignals }
   | {
       mode: 'mobile';
       storage: TokenStorage;
@@ -64,6 +65,7 @@ type RepositoryRegistryConfig = { baseUrl: string } & (
       appVersion: string;
       session: SessionSignals;
       upgrade: UpgradeSignals;
+      blocked: BlockedSignals;
     }
   | { mode: 'server'; headers: RequestHeaders }
 );
@@ -85,6 +87,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
           baseUrl: config.baseUrl,
           session: config.session,
           upgrade: config.upgrade,
+          blocked: config.blocked,
         })
       : config.mode === 'server'
         ? createTransport({ mode: 'server', headers: config.headers })
@@ -93,6 +96,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
             baseUrl: config.baseUrl,
             session: config.session,
             language: config.language,
+            blocked: config.blocked,
           });
   const api = createApiClient(config.baseUrl, transport);
   return {

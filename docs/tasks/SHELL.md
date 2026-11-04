@@ -278,7 +278,7 @@ Domain types it reads, adds none: the search-alias law and the plain ranking are
 
 ### T-SHELL-006 · Billing State Banner & Denial Sheets
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped
 **Why:** An owner whose card failed keeps selling for seven days and is told on every screen exactly what paused and the one tap that fixes it; without it a blocked save is a silent failure and the team assumes the product is broken.
 **PRD rows:** M12-06, M12-21, M12-30, M12-31, M12-39, M12-53
 **BRIEF:** docs/ux/briefs/SCR-SHELL-06-billing-state-banner.md
