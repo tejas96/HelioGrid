@@ -53,9 +53,6 @@ a:hover{color:var(--link-hover)}
                     <sc-if value="{{ s.hasFacts }}" hint-placeholder-val="{{ true }}">
                       <div style="margin-top:var(--sp-2)">{{ s.facts }}</div>
                     </sc-if>
-                    <sc-if value="{{ s.disclosure }}" hint-placeholder-val="{{ false }}">
-                      <div style="margin-top:var(--sp-2);font-size:var(--fs-body-sm);line-height:var(--lh-body-sm);color:var(--text-primary)">{{ s.disclosure }}</div>
-                    </sc-if>
                     <sc-if value="{{ s.hasTier }}" hint-placeholder-val="{{ true }}">
                       <div style="display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:var(--sp-3)">
                         <x-import component-from-global-scope="HelioGridDesignSystem_c8aa43.Provenance" dc-props="{{ s.prov }}" hint-size="76px,17px"></x-import>
@@ -89,11 +86,12 @@ a:hover{color:var(--link-hover)}
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1632,"height":5292}}'>
 /* A drawn spec, not a prototype: one situation per frame, fixed data, nothing behind a click.
    Every date is pinned so the board does not move. The failed charge is the Growth month —
-   BM-41 ₹3,999 + 18% GST — the figure and invoice SCR-M12-02 prints. */
+   BM-41 ₹3,999, with no GST until the platform registers (F1-29) — the figure and invoice
+   SCR-M12-02 prints. */
 const FAILED_ON = "2026-09-11";
 const GRACE_ENDS = "2026-09-18";
-const AMOUNT = 3999 * 1.18;
-const INVOICE = "HG-INV-2026-0902";
+const AMOUNT = 3999;
+const INVOICE = "2026-27/000902";
 
 class Component extends DCLogic {
   constructor(props) {
@@ -155,7 +153,7 @@ class Component extends DCLogic {
   }
 
   /* One inline run, never three flex items: BannerAction's pill is inline-flex, and a flex
-     container drops the spaces at the edges of each text item ("Pay₹4,718.82now"). */
+     container drops the spaces at the edges of each text item ("Pay₹3,999.00now"). */
   withAmount(before, money, after) {
     return React.createElement("span", null, before, this.mono(money), after);
   }
@@ -170,8 +168,8 @@ class Component extends DCLogic {
     });
   }
 
-  invoiceNote() {
-    return React.createElement("span", null, "The Growth month, ", this.mono("₹3,999"), " + 18% GST, on invoice ", this.mono(INVOICE), ".");
+  invoiceNote(F) {
+    return React.createElement("span", null, "The Growth month, ", this.mono(F.money(AMOUNT, { fractionDigits: 2 })), ", on invoice ", this.mono(INVOICE), ".");
   }
 
   /* The default frame's disclosure. */
@@ -181,7 +179,7 @@ class Component extends DCLogic {
       label: "Grace day and amount",
       parts: [
         { kind: "formula", label: "Grace day", text: "Day 4 counted from the charge that failed on " + F.date(FAILED_ON) + ", which is day 0 of the 7-day grace." },
-        { kind: "note", label: "Amount", text: this.invoiceNote() },
+        { kind: "note", label: "Amount", text: this.invoiceNote(F) },
       ],
     };
   }
@@ -212,20 +210,20 @@ class Component extends DCLogic {
       summary: "How it is worked out", label: "The strip's figures",
       parts: [
         { kind: "formula", label: "Grace day", text: "Counted from the charge that failed on " + F.date(failed) + ", which is day 0 of the 7-day grace." },
-        { kind: "note", label: "Amount", text: this.invoiceNote() },
+        { kind: "note", label: "Amount", text: this.invoiceNote(F) },
       ],
     });
     const derivedMark = { tier: "unmarked", style: { color: "var(--text-secondary)", whiteSpace: "nowrap" } };
 
     /* M12-06: what pauses on day 4, and what core selling keeps. */
-    const meteredPaused = L("Paused", ["Voice calls", "AI detections", "teammate invites"], pause);
+    const meteredPaused = L("Paused", ["Voice calls", "teammate invites"], pause);
     const coreWorks = L("Still works", ["Leads", "surveys", "designs", "proposals", "projects"], tick);
     /* M12-22's gated set at halted and expired (M12-07). Engineer sign-off on submitted designs and
        the upload of photos already taken are never gated (M12-24, M12-26), so no item may name them. */
     const gatedPaused = L("Paused", [
       "Creating or editing leads, tasks, activities, surveys and designs",
       "generating or sending proposals", "marking won or lost", "project updates",
-      "new uploads", "voice calls", "AI detections", "teammate invites",
+      "new uploads", "voice calls", "teammate invites",
     ], pause);
     /* BM-32's always-works set: four items, drawn as four. */
     const alwaysWorks = L("Still works", ["Reading", "Export", "Customer links", "Billing — pay, upgrade, reactivate"], tick);
@@ -266,9 +264,9 @@ class Component extends DCLogic {
         id: "s-day2", label: "State 7 · past_due day 0–3 · banner, full function", kind: "dunning",
         title: "Payment failed · day 2 of 7 · a retry is coming",
         rows: [
-          { label: "Still works", value: "Everything — voice, AI detections and invites included", mark: tick },
+          { label: "Still works", value: "Everything — voice calls and invites included", mark: tick },
           R("Amount due", this.mono(money), rupee),
-          R("Voice, AI detections and invites pause", F.date("2026-09-17")),
+          R("Voice calls and invites pause", F.date("2026-09-17")),
         ],
         act: act("Update your payment method"), prov: derivedMark, deriv: dunDeriv("2026-09-13"),
       },
@@ -289,13 +287,6 @@ class Component extends DCLogic {
         rows: [gatedPaused, alwaysWorks],
         act: act(this.withAmount("Reactivate with one payment of ", money, "")),
         prov: derivedMark, deriv: dunDeriv("2026-09-08"),
-      },
-      {
-        id: "s-protected", label: "State 11 · protected tenant · the forfeiture disclosure", kind: "dunning",
-        title: "Payment failed · day 4 of the 7-day grace",
-        rows: day4Rows,
-        disclosure: "If this account lapses to cancelled or halted, the launch-price guarantee is forfeited and reactivation costs today's prices.",
-        act: act(payNow), prov: derivedMark, deriv: dunDeriv(FAILED_ON),
       },
       {
         id: "s-cap100", label: "State 13 · cap at 100% · the 7-day grace running", kind: "cap",
@@ -337,7 +328,7 @@ class Component extends DCLogic {
     return list.map((o) => {
       const s = Object.assign({
         isFrame: true, isSpecimen: false, isStrip: true, isPill: false, isSkeleton: false,
-        kind: undefined, tone: undefined, title: "", rows: [], disclosure: null,
+        kind: undefined, tone: undefined, title: "", rows: [],
         prov: null, deriv: null, act: null, sheet: null, sheetRows: null, who: null,
         screenLabel: o.label + " (375)",
       }, o);
