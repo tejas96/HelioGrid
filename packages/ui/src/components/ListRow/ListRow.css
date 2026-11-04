@@ -69,6 +69,25 @@
   text-overflow: ellipsis;
 }
 
+/* A line that must never sit behind a tap wraps whole; a state's line carries its ink. */
+.hg-list-row-subtitle[data-wrap="whole"] {
+  white-space: normal;
+  overflow: visible;
+  text-wrap: pretty;
+}
+.hg-list-row-subtitle[data-tone] {
+  font-weight: var(--fw-medium);
+}
+.hg-list-row-subtitle[data-tone="warning"] {
+  color: var(--warning-text);
+}
+.hg-list-row-subtitle[data-tone="danger"] {
+  color: var(--danger-text);
+}
+.hg-list-row-subtitle[data-tone="info"] {
+  color: var(--info-text);
+}
+
 /* AN ABSENT SUBTITLE IS A NAMED GAP, NOT A BLANK LINE — and it REPLACES the subtitle rather than
    joining it: there is one value, and it is absent. */
 .hg-list-row-gap {

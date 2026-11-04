@@ -2,8 +2,7 @@ import type { BillingHome } from '@heliogrid/contracts';
 import { BYTES_PER_GB, billedQuantityOf, type TierLimit } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { BillingHomeRepository, type HomeRow } from './billing-home.repository';
-import { monthlyWindowsOf } from './internal/renewal-moments';
-import type { UsageWindow } from './usage.repository';
+import { usageCycleOf } from './internal/usage-window';
 import { UsageService } from './usage.service';
 
 type Meter = BillingHome['usage'][number];
@@ -30,7 +29,8 @@ export class BillingHomeUsageService {
     includes: BillingHome['includes'],
     now: number,
   ): Promise<Meter[]> {
-    const window = await this.windowOf(tenantId, row, now);
+    const { from } = await usageCycleOf(this.rows, tenantId, row, now);
+    const window = { from, to: new Date(now) };
     const voice = await this.usage.billedRollupOf(tenantId, ['voice_minutes'], window);
     const gauge = await this.usage.latestStorageGauge(tenantId);
     const storageCap = capOf(includes.storageGb);
@@ -47,20 +47,6 @@ export class BillingHomeUsageService {
       },
     ];
     return meters.sort((a, b) => shareOf(b) - shareOf(a)).slice(0, METERS_SHOWN);
-  }
-
-  /**
-   * This cycle so far: the trial's days on a row that never paid; else the current paid period,
-   * cut to its calendar month on a yearly cycle, since the book's bundles are per month (`BM-41`).
-   */
-  private async windowOf(tenantId: string, row: HomeRow, now: number): Promise<UsageWindow> {
-    const to = new Date(now);
-    const start = await this.rows.paidPeriodStart(tenantId, row.id);
-    if (start === null || row.paidPeriodEnd === null) return { from: new Date(row.createdAt), to };
-    if (row.cycle !== 'yearly') return { from: new Date(start), to };
-    const months = monthlyWindowsOf({ from: new Date(start), to: new Date(row.paidPeriodEnd) });
-    const current = months.findLast((month) => month.from.getTime() <= now);
-    return { from: current?.from ?? new Date(start), to };
   }
 }
 

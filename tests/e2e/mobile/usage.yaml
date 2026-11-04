@@ -1,0 +1,53 @@
+# Usage: the owner's page on a fresh trial (`SCR-M12-04`), opened from Billing's `All usage` — the
+# two cards, the voice and OTP meters with OTP's `Not billed` chip — then the voice meter's events
+# as a sheet, which on a fresh company holds no call, and closes; then back to Billing and to
+# settings.
+appId: com.heliogrid.app
+---
+- runFlow:
+    file: steps/open-setting.yaml
+    env:
+      ROW: ${ROW_BILLING}
+- extendedWaitUntil:
+    visible: ${YOUR_PLAN}
+    timeout: 15000
+- scrollUntilVisible:
+    element: ${ALL_USAGE}
+    centerElement: true
+- tapOn: ${ALL_USAGE}
+- extendedWaitUntil:
+    visible: ${BACK_TO_BILLING}
+    timeout: 15000
+- extendedWaitUntil:
+    visible: ${USAGE_LIMITS}
+    timeout: 15000
+- scrollUntilVisible:
+    element: ${USAGE_INCLUDED}
+- scrollUntilVisible:
+    element: ${VOICE_MINUTES}
+    centerElement: true
+- scrollUntilVisible:
+    element: ${OTP_CODES}
+    centerElement: true
+- assertVisible: ${NOT_BILLED}
+# The chevron is the meter's one way to its events, named for it (decision 13).
+- scrollUntilVisible:
+    element: ${VOICE_EVENTS}
+    direction: UP
+    centerElement: true
+- tapOn: ${VOICE_EVENTS}
+# The empty state draws its title and its line as one text, so the title leads it.
+- extendedWaitUntil:
+    visible:
+      text: "${NO_CALLS}.*"
+    timeout: 15000
+- tapOn: ${USAGE_CLOSE}
+- extendedWaitUntil:
+    notVisible:
+      text: "${NO_CALLS}.*"
+    timeout: 15000
+- tapOn: ${BACK_TO_BILLING}
+- extendedWaitUntil:
+    visible: ${YOUR_PLAN}
+    timeout: 15000
+- tapOn: ${BACK_TO_SETTINGS}

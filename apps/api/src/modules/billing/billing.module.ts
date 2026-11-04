@@ -16,6 +16,8 @@ import { BillingRecordsRepository } from './billing-records.repository';
 import { BillingRecordsService } from './billing-records.service';
 import { BillingStateGuard } from './billing-state.guard';
 import { BillingStateRepository } from './billing-state.repository';
+import { BillingUsageController } from './billing-usage.controller';
+import { BillingUsageService } from './billing-usage.service';
 import { CancellationAdminRepository } from './cancellation.admin.repository';
 import { ChargeAdminRepository } from './charge.admin.repository';
 import { ChargeService } from './charge.service';
@@ -30,6 +32,8 @@ import { GatewayEventsService } from './gateway-events.service';
 import { BillingAlerts } from './internal/billing-alerts';
 import { DevelopmentBillingGateway } from './internal/billing-gateway.development';
 import { RazorpayBillingGateway } from './internal/billing-gateway.razorpay';
+import { OtpUsageRepository } from './otp-usage.repository';
+import { OtpUsageService } from './otp-usage.service';
 import { OverageAdminRepository } from './overage.admin.repository';
 import { OverageService } from './overage.service';
 import { PlanChangeAdminRepository } from './plan-change.admin.repository';
@@ -94,7 +98,13 @@ const billingGatewayProvider: Provider = {
  */
 @Module({
   imports: [MarketModule],
-  controllers: [BillingController, BillingHomeController, PlanChangeController, PricingController],
+  controllers: [
+    BillingController,
+    BillingHomeController,
+    BillingUsageController,
+    PlanChangeController,
+    PricingController,
+  ],
   providers: [
     billingGatewayProvider,
     BillingActsService,
@@ -102,6 +112,9 @@ const billingGatewayProvider: Provider = {
     BillingHomeService,
     BillingHomeRepository,
     BillingHomeUsageService,
+    BillingUsageService,
+    OtpUsageRepository,
+    OtpUsageService,
     BillingRecordsRepository,
     BillingRecordsService,
     CancellationAdminRepository,
@@ -147,6 +160,7 @@ const billingGatewayProvider: Provider = {
     BillingStateGuard,
     ChargeService,
     EntitlementService,
+    OtpUsageService,
     PlanPriceService,
     UsageService,
   ],

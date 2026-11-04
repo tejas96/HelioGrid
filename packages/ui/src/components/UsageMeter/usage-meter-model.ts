@@ -166,8 +166,31 @@ export function usageTrackHeight(density: NonNullable<UsageMeterProps['density']
   return density === 'functional' ? 8 : 10;
 }
 
+/**
+ * The two sentences a meter falls back to when its caller says none: the caller's own first, then
+ * the default unless the caller turned defaults off (`defaultNotes`).
+ */
+export function usageNotesOf(
+  words: UsageMeterWords,
+  notes: {
+    readonly defaultNotes: boolean;
+    readonly noLimitNote: TranslatedText | undefined;
+    readonly loadingNote: TranslatedText | undefined;
+  },
+): { noLimitNote: TranslatedText | undefined; loadingNote: TranslatedText | undefined } {
+  const fallback = <T>(own: T | undefined, standard: T) =>
+    own ?? (notes.defaultNotes ? standard : undefined);
+  return {
+    noLimitNote: fallback(notes.noLimitNote, words.noLimit),
+    loadingNote: fallback(notes.loadingNote, words.loading),
+  };
+}
+
 /** The wait's one line: what is loading, then the period it is for. */
-export function usageLoadingLine(loadingNote: TranslatedText, period: string | undefined): string {
+export function usageLoadingLine(
+  loadingNote: TranslatedText | undefined,
+  period: string | undefined,
+): string {
   return [loadingNote, period].filter((part) => part !== undefined).join(' · ');
 }
 

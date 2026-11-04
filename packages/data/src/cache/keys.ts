@@ -94,6 +94,11 @@ export const queryKeys = {
     reminders: (tenantId: string, page: number) =>
       ['billing', tenantId, 'reminders', page] as const,
     history: (tenantId: string, page: number) => ['billing', tenantId, 'history', page] as const,
+    /** This cycle's usage (`SCR-M12-04`), the member's signals, and one meter's events. */
+    usage: (tenantId: string) => ['billing', tenantId, 'usage'] as const,
+    usageSignals: (tenantId: string) => ['billing', tenantId, 'usage-signals'] as const,
+    usageEvents: (tenantId: string, meter: string) =>
+      ['billing', tenantId, 'usage-events', meter] as const,
     /** One pick's review (`SCR-M12-03`): under the prefix, so a landed act reads it again. */
     planChangePreview: (tenantId: string, tier: string, cycle: string) =>
       ['billing', tenantId, 'plan-change-preview', tier, cycle] as const,

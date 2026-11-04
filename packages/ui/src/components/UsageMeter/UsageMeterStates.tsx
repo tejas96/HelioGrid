@@ -97,7 +97,7 @@ export function UsageMeterLoading({
   trackHeight,
 }: Pick<UsageMeterProps, 'label' | 'period'> & {
   frame: Frame;
-  loadingNote: TranslatedText;
+  loadingNote: TranslatedText | undefined;
   /** The meter named as still being read — `words.unresolvedName`. */
   spokenName: TranslatedText;
   trackHeight: string;
@@ -116,7 +116,7 @@ export function UsageMeterLoading({
         <Shimmer width="92px" height="13px" radius="var(--rf-md)" />
       </div>
       <Shimmer width="100%" height={trackHeight} radius="var(--r-pill)" />
-      <p className="hg-usage-meter-note">{words}</p>
+      {words === '' ? null : <p className="hg-usage-meter-note">{words}</p>}
     </section>
   );
 }

@@ -18,6 +18,7 @@ import {
 import { HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { hashSecret, randomSecret } from '../../common/auth/secrets';
 import { ContractException } from '../../common/errors/contract-exception';
+import { OtpUsageService } from '../billing/billing.public';
 import { MarketPackService } from '../market/market.public';
 import { type AccountRow, AuthAdminRepository } from './internal/auth.admin.repository';
 import {
@@ -32,6 +33,12 @@ import { TokenService } from './internal/token.service';
 export type Refreshed =
   | { readonly verdict: 'renew'; readonly token: string; readonly expiresAt: number }
   | { readonly verdict: Exclude<RefreshVerdict, 'renew'> };
+
+/** The code a sign-in spent: its challenge, and whether a message carried it. */
+interface SpentCode {
+  readonly challengeId: string;
+  readonly sent: boolean;
+}
 
 /** What opening a session hands the controller: the projection, and the two credentials to set. */
 export interface OpenedSession {
@@ -55,6 +62,7 @@ export class AuthService {
     @Inject(MarketPackService) private readonly markets: MarketPackService,
     @Inject(LoginBindingAdminRepository) private readonly binding: LoginBindingAdminRepository,
     @Inject(IDENTITY_PROVIDERS) private readonly providers: IdentityProviders,
+    @Inject(OtpUsageService) private readonly otpUsage: OtpUsageService,
   ) {}
 
   /**
@@ -71,12 +79,12 @@ export class AuthService {
     handedOverFrom: string | undefined,
     now: number,
   ): Promise<OpenedSession> {
-    const { phoneE164 } = await this.otp.verify(challengeId, code, now);
+    const { phoneE164, sent } = await this.otp.verify(challengeId, code, now);
     if (handedOverFrom !== undefined) await this.endHandedOverSession(handedOverFrom, now);
     const account =
       (await this.store.accountByPhone(phoneE164)) ??
       (await this.createAccount(phoneE164, language, now));
-    return this.openSession(account, platform, now);
+    return this.openSession(account, platform, now, { challengeId, sent });
   }
 
   /**
@@ -103,12 +111,12 @@ export class AuthService {
     });
     if (road === 'not-linked') throw loginRefusal('LOGIN_NOT_LINKED');
     if (road === 'linked-elsewhere') throw loginRefusal('LOGIN_LINKED_ELSEWHERE');
-    const account =
+    const { account, code } =
       road === 'session' && linked !== null
-        ? linked
+        ? { account: linked, code: null }
         : await this.bind(login, input.link, language, now);
     if (handedOverFrom !== undefined) await this.endHandedOverSession(handedOverFrom, now);
-    return this.openSession(account, input.platform, now);
+    return this.openSession(account, input.platform, now, code);
   }
 
   /**
@@ -187,9 +195,9 @@ export class AuthService {
     link: ProviderSignIn['link'],
     language: UiLanguage,
     now: number,
-  ): Promise<AccountRow> {
+  ): Promise<{ account: AccountRow; code: SpentCode }> {
     if (link === undefined) throw loginRefusal('LOGIN_NOT_LINKED');
-    const { phoneE164 } = await this.otp.check(link.challengeId, link.code, now);
+    const { phoneE164, sent } = await this.otp.check(link.challengeId, link.code, now);
     const account =
       (await this.store.accountByPhone(phoneE164)) ??
       (await this.createAccount(phoneE164, language, now));
@@ -197,7 +205,7 @@ export class AuthService {
     if (outcome === 'code-spent') codeAlreadyUsed();
     if (outcome === 'phone-taken') throw loginRefusal('LOGIN_PHONE_TAKEN');
     if (outcome === 'linked-elsewhere') throw loginRefusal('LOGIN_LINKED_ELSEWHERE');
-    return account;
+    return { account, code: { challengeId: link.challengeId, sent } };
   }
 
   /** A stale or unknown cookie ends nothing: the device simply carried no live session. */
@@ -220,10 +228,15 @@ export class AuthService {
     });
   }
 
+  /**
+   * A session for the account, in its latest company. A sent code that signed the person in to a
+   * company is that company's OTP usage (`M12-33`), metered once the session stands.
+   */
   private async openSession(
     account: AccountRow,
     platform: PlatformKind,
     now: number,
+    code: SpentCode | null,
   ): Promise<OpenedSession> {
     const membership = await this.store.latestActiveMembership(account.id);
     const secret = randomSecret();
@@ -237,6 +250,14 @@ export class AuthService {
       now,
     });
     const token = await this.tokens.mint(claimsOf(account.id, row.id, membership), now);
+    if (code?.sent && membership !== null) {
+      await this.otpUsage.meterSignIn({
+        tenantId: membership.tenantId,
+        userAccountId: account.id,
+        challengeId: code.challengeId,
+        now,
+      });
+    }
     return {
       projection: projectionOf(account, membership, row),
       session: { secret, expiresAt: row.expiresAt.getTime() },

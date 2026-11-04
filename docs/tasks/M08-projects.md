@@ -241,6 +241,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 **PRD rows:** M08-07
 **Billing gate (T-M12-009):** mark-won → project create names `sell_and_deliver` in its `RouteBillingMap` and is refused at the `active_projects` limit as M12-23's row says — the upgrade prompt — by throwing `EntitlementBlockedException` with `reason: 'cap'`, key `active_projects` and `resetsAt: null`; work on an existing project is never gated (M08-07).
 **Downgrade preview (T-M12-003):** the active projects against the lower plan's `active_projects` join `PLAN_CHANGE_BLOCKS` (`packages/domain` `commerce/plan-change.ts`) as `active_projects`, counted in the api's `plan-change.preview.service.ts` and in its digest (`SCR-M12-03` frame s7: `Active projects · 12 of 10`).
+**Usage screen (T-M12-004):** the count of active projects replaces `NOT_COUNTED_YET` for `activeProjects` in the api's `billing-usage.service.ts`, so `SCR-M12-04`'s `Active projects` reads the gate's own count (M12-34).
 
 **Requirements (verbatim):**
 

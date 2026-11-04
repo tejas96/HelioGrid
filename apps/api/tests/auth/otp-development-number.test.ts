@@ -80,7 +80,7 @@ describe('the development numbers (DEV_OTP_PHONES) — a fixed code, no delivery
       expect(challenge.resendAvailableAt).toBe(new Date(now).toISOString());
       await expect(
         otp.verify(challenge.challengeId, DEV_CODE, now + A_SECOND_LATER),
-      ).resolves.toEqual({ phoneE164: phone });
+      ).resolves.toEqual({ phoneE164: phone, sent: false });
     },
   );
 

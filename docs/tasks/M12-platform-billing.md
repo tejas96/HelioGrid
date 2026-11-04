@@ -55,7 +55,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-004 · Usage
 
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped
 **PRD rows:** M12-34 (P0), M12-35 (P0), M12-36 (P1)
 **Usage ledger (T-M12-010):** every figure reads `UsageService.billedRollupOf` (billed meters only, so no internal cost reaches the screen — M12-32) and storage reads `UsageService.latestStorageGauge`; voice is rolled up in seconds and shown in minutes, turned once on the total by `billedQuantityOf` (`packages/domain`), the function the invoice's add-ons bill by (T-M12-012b).
 **Design run (owner rulings 2026-10-31):** `OTP codes` shows its count, `Not billed`: it reads the `otp_delivery` cost line's count, never its cost, since `billedRollupOf` leaves cost lines out. The voice ledger's panel joins each event's subject — the call — for its site and its caller; the ledger itself stays ids and counts.

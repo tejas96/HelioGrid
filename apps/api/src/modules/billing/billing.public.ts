@@ -10,6 +10,7 @@ export { BillingService } from './billing.service';
 export { BillingStateGuard } from './billing-state.guard';
 export { ChargeRefused, ChargeService } from './charge.service';
 export { EntitlementService } from './entitlement.service';
+export { OtpUsageService } from './otp-usage.service';
 export { PlanPriceService } from './plan-price.service';
 export { UsageService } from './usage.service';
 export { type MeteredUnit, meterUsage } from './usage-meter.repository';

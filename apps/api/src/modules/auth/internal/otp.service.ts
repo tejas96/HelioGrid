@@ -25,6 +25,12 @@ const DECIMAL_DIGITS = 10;
  * market's template and the delivery port, verified once, and every refusal is the named state
  * the screen renders. The caps, the lock and the outcome of an attempt are domain decisions.
  */
+/** A code that verified: its phone, and whether a message carried it — a development number's is never sent. */
+export interface CheckedCode {
+  readonly phoneE164: string;
+  readonly sent: boolean;
+}
+
 @Injectable()
 export class OtpService {
   // Explicit tokens: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
@@ -80,13 +86,13 @@ export class OtpService {
   }
 
   /** The phone a code verified for, or a named refusal. The code is spent once it verifies. */
-  async verify(challengeId: string, code: string, now: number): Promise<{ phoneE164: string }> {
-    const { phoneE164 } = await this.check(challengeId, code, now);
+  async verify(challengeId: string, code: string, now: number): Promise<CheckedCode> {
+    const checked = await this.check(challengeId, code, now);
     const claimed = await this.codes.claimVerified(challengeId, now);
     if (!claimed) {
       throw codeAlreadyUsed();
     }
-    return { phoneE164 };
+    return checked;
   }
 
   /** The phone a code request was made for, before any code is checked. */
@@ -101,7 +107,7 @@ export class OtpService {
    * the expiry — but the code is NOT spent: the caller spends it with the act it proves, so a
    * refused act leaves the code usable (the Google bind, `M01-02`).
    */
-  async check(challengeId: string, code: string, now: number): Promise<{ phoneE164: string }> {
+  async check(challengeId: string, code: string, now: number): Promise<CheckedCode> {
     const challenge = await this.codes.challengeById(challengeId);
     if (!challenge) throw new NotFoundException('No such code request.');
     const history = await this.history(challenge.phoneE164, now);
@@ -129,7 +135,10 @@ export class OtpService {
     if (decision.kind === 'spent') {
       throw codeAlreadyUsed();
     }
-    return { phoneE164: challenge.phoneE164 };
+    return {
+      phoneE164: challenge.phoneE164,
+      sent: developmentCode(challenge.phoneE164) === null,
+    };
   }
 
   private async history(phoneE164: string, now: number): Promise<OtpHistory> {

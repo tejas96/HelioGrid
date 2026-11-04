@@ -51,4 +51,5 @@ flow proposal-template.yaml
 flow payment-terms.yaml
 flow catalog-settings.yaml
 flow billing.yaml
+flow usage.yaml
 echo "mobile suite PASS on $device"

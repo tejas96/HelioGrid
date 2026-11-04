@@ -32,6 +32,8 @@ export function ListRow({
   avatar,
   title,
   subtitle,
+  subtitleWrap = false,
+  subtitleTone,
   gap,
   marks,
   provenance,
@@ -74,7 +76,13 @@ export function ListRow({
         {gapNode ? (
           <div className="hg-list-row-gap">{gapNode}</div>
         ) : subtitle ? (
-          <div className="hg-list-row-subtitle">{subtitle}</div>
+          <div
+            className="hg-list-row-subtitle"
+            data-wrap={subtitleWrap ? 'whole' : undefined}
+            data-tone={subtitleTone}
+          >
+            {subtitle}
+          </div>
         ) : null}
         {marks ? <div className="hg-list-row-marks">{renderMarks(marks)}</div> : null}
         {attr ? <div className="hg-list-row-attribution">{attr}</div> : null}
