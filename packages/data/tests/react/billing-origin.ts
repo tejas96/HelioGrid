@@ -3,6 +3,7 @@ import type {
   BillingDocumentRow,
   BillingHome,
   BillingStanding,
+  PlanChangePreview,
   SessionProjection,
 } from '@heliogrid/contracts';
 import { ROLE_PRESETS, type RolePreset } from '@heliogrid/domain';
@@ -13,6 +14,10 @@ import { createDataLayer } from '../../src/data-layer';
 import { DataProvider } from '../../src/react/provider';
 import { type BillingHomeAdapter, useBillingHomeScreen } from '../../src/react/use-billing-home';
 import { useBillingDocuments, useBillingReminders } from '../../src/react/use-billing-records';
+import {
+  type PlanSelectionAdapter,
+  usePlanSelectionScreen,
+} from '../../src/react/use-plan-selection';
 import { useSession } from '../../src/react/use-session';
 import {
   CHECKOUT_URL,
@@ -23,6 +28,7 @@ import {
   SIGNED_URL,
 } from './billing-home-fixtures';
 import { listeningOrigin, refusal, send, writeBodyOf } from './origin-wire';
+import { BOOK, PAGE_URL, TENANT_READ, upgradeOf } from './plan-selection-fixtures';
 
 export { refusal } from './origin-wire';
 
@@ -56,7 +62,15 @@ interface Origin {
   roles: RolePreset[];
   home: BillingHome;
   /** The next answers to each act; an exhausted list answers 200. */
-  acts: { checkout: Answer[]; cancel: Answer[]; refund: Answer[] };
+  acts: {
+    checkout: Answer[];
+    cancel: Answer[];
+    refund: Answer[];
+    change: Answer[];
+    withdraw: Answer[];
+  };
+  /** The preview each read answers, in order; the last stands once the list is spent. */
+  previews: PlanChangePreview[];
   /** The next answers to a document's download link; an exhausted list signs it. */
   downloads: Answer[];
   documents: BillingDocumentRow[];
@@ -68,7 +82,8 @@ interface Origin {
 export const origin: Origin = {
   roles: [OWNER_ROLE],
   home: homeOf('active'),
-  acts: { checkout: [], cancel: [], refund: [] },
+  acts: { checkout: [], cancel: [], refund: [], change: [], withdraw: [] },
+  previews: [upgradeOf()],
   downloads: [],
   documents: [],
   reminders: [],
@@ -129,6 +144,12 @@ function answerRead(req: IncomingMessage, res: ServerResponse) {
   if (path === '/billing/standing') return send(res, req, 200, standingOf());
   if (path === '/tenants/me/owners')
     return send(res, req, 200, { owners: [{ name: 'Rajesh Sharma' }], more: 0 });
+  if (path === '/tenants/me') return send(res, req, 200, TENANT_READ);
+  if (path === '/pricing/IN') return send(res, req, 200, BOOK);
+  if (path === '/billing/plan-change/preview') {
+    const preview = origin.previews.length > 1 ? origin.previews.shift() : origin.previews[0];
+    return send(res, req, 200, preview);
+  }
   answerRecords(req, res, request);
 }
 
@@ -137,6 +158,8 @@ function answerPost(req: IncomingMessage, res: ServerResponse, request: Request)
     '/billing/checkout': [origin.acts.checkout, { checkoutUrl: CHECKOUT_URL }],
     '/billing/cancel': [origin.acts.cancel, { runsUntil: RUNS_UNTIL }],
     '/billing/refund': [origin.acts.refund, { creditNoteNumber: CREDIT_NOTE }],
+    '/billing/plan-change': [origin.acts.change, { outcome: 'page', checkoutUrl: PAGE_URL }],
+    '/billing/plan-change/withdraw': [origin.acts.withdraw, { withdrawn: true }],
   };
   const act = acts[request.path];
   if (act) return void answerAct(req, res, act[0], act[1], request);
@@ -175,7 +198,8 @@ afterEach(() => {
   Object.assign(origin, {
     roles: [OWNER_ROLE],
     home: homeOf('active'),
-    acts: { checkout: [], cancel: [], refund: [] },
+    acts: { checkout: [], cancel: [], refund: [], change: [], withdraw: [] },
+    previews: [upgradeOf()],
     downloads: [],
     documents: [],
     reminders: [],
@@ -233,4 +257,27 @@ export async function mountedRecords(open: boolean) {
   );
   await waitFor(() => expect(view.result.current.session.user?.tenant?.id).toBe(TENANT));
   return view;
+}
+
+/** The plans' ways out, recording what they were asked. */
+export function recordingPlansAdapter() {
+  const told = { opened: [] as string[], billing: 0 };
+  const adapter: PlanSelectionAdapter = {
+    openExternal: (url) => told.opened.push(url),
+    toBilling: () => {
+      told.billing += 1;
+    },
+  };
+  return { adapter, told };
+}
+
+/** The plans screen, mounted in the real provider over the origin, once both reads answered. */
+export async function mountedPlans() {
+  const { adapter, told } = recordingPlansAdapter();
+  const view = renderHook(() => usePlanSelectionScreen(adapter), { wrapper: wrapperOf() });
+  await waitFor(() => {
+    expect(view.result.current.plan.kind).toBe('ready');
+    expect(view.result.current.book.kind).toBe('ready');
+  });
+  return Object.assign(view, { told });
 }

@@ -6,7 +6,10 @@ import {
 } from '@heliogrid/contracts';
 import {
   type BillingState,
+  type CheckoutPurpose,
+  type CollectionRoute,
   listedPrice,
+  type MinorUnits,
   reactivationPageExpiresAt,
   tierBand,
 } from '@heliogrid/domain';
@@ -20,6 +23,7 @@ import {
   type CheckoutStanding,
   type OpenCheckout,
 } from './checkout.admin.repository';
+import { atGateway } from './internal/at-gateway';
 import { PlanPriceAdminRepository } from './plan-price.admin.repository';
 
 /**
@@ -72,50 +76,114 @@ export class CheckoutService {
         `no plan price for ${request.tier} ${request.cycle} in ${window.standing.marketCode}`,
       );
     }
-    const { subscriptionId } = window.standing;
-    const open = await this.checkouts.openOf(tenantId, subscriptionId);
-    // A page past its expiry takes no money — a trial's page left unpaid when the trial ended —
-    // so it is closed like any other and a new one opens.
-    if (open?.planPriceId === price.id && !open.cancelRequested && open.expiresAt > now) {
-      return { checkoutUrl: open.hostedUrl };
-    }
-    if (open !== null) await this.closeUnpaid(tenantId, open, now);
     const route = pack.paymentRails.ladder[tierBand(request.tier)][request.cycle];
-    const id = this.checkouts.newId();
-    const { expiresAt, startsAt } = window;
-    const opened = await this.atGateway(() =>
-      this.gateway.openCheckout({
+    const checkoutUrl = await this.openPage(
+      tenantId,
+      window.standing.subscriptionId,
+      {
+        planPriceId: price.id,
         route,
         gatewayPlanRef: price.gatewayPlanRef,
         amount: price.collectedMinor,
         currencyCode: price.currencyCode,
+        expiresAt: window.expiresAt,
+        gatewayExpiresAt: window.gatewayExpiresAt,
+        startsAt: window.startsAt,
+        purpose: 'conversion',
+        chargeMinor: null,
+        fromPlanPriceId: null,
+      },
+      act,
+      notPossible,
+    );
+    return { checkoutUrl };
+  }
+
+  /**
+   * The subscription's one open hosted page for this pick: the same page again while it can take
+   * money, else the unpaid one closed and a new one opened. A conversion and an upgrade's
+   * part-cycle charge (`M12-48`) share it, so one subscription never holds two pages that collect.
+   * `refused` names the caller's own conflict code.
+   */
+  async openPage(
+    tenantId: string,
+    subscriptionId: string,
+    page: HostedPage,
+    act: { readonly actorUserId: string; readonly now: number },
+    refused: (message: string) => ContractException,
+  ): Promise<string> {
+    const { now } = act;
+    const open = await this.checkouts.openOf(tenantId, subscriptionId);
+    // A page past its expiry takes no money — a trial's page left unpaid when the trial ended —
+    // so it is closed like any other and a new one opens. An upgrade's charge shrinks day by day,
+    // so yesterday's page for the same plan is closed too.
+    if (
+      open?.planPriceId === page.planPriceId &&
+      open.purpose === page.purpose &&
+      open.chargeMinor === page.chargeMinor &&
+      open.fromPlanPriceId === page.fromPlanPriceId &&
+      !open.cancelRequested &&
+      open.expiresAt > now
+    ) {
+      return open.hostedUrl;
+    }
+    if (open !== null) await this.closeUnpaid(tenantId, open, now, refused);
+    const { route } = page;
+    const id = this.checkouts.newId();
+    const opened = await this.atGateway(() =>
+      this.gateway.openCheckout({
+        route,
+        gatewayPlanRef: page.gatewayPlanRef,
+        amount: page.amount,
+        currencyCode: page.currencyCode,
         reference: id,
-        expiresAt: window.gatewayExpiresAt,
-        startsAt,
+        expiresAt: page.gatewayExpiresAt,
+        startsAt: page.startsAt,
       }),
     );
     const kept = await this.checkouts.insert({
       id,
       tenantId,
       subscriptionId,
-      planPriceId: price.id,
+      planPriceId: page.planPriceId,
       collection: route.collection,
       gatewayRef: opened.gatewayRef,
       hostedUrl: opened.hostedUrl,
-      expiresAt,
-      startsAt,
+      expiresAt: page.expiresAt,
+      startsAt: page.startsAt,
       openedAt: now,
       openedBy: act.actorUserId,
+      purpose: page.purpose,
+      chargeMinor: page.chargeMinor,
+      fromPlanPriceId: page.fromPlanPriceId,
     });
     if (!kept) {
       // Another request opened its page at the same moment: this one must take no money. The
       // same pick then answers that page, as a repeat does; a different one is refused.
       await this.atGateway(() => this.gateway.closeCheckout(route.collection, opened.gatewayRef));
       const winner = await this.checkouts.openOf(tenantId, subscriptionId);
-      if (winner?.planPriceId === price.id) return { checkoutUrl: winner.hostedUrl };
-      throw notPossible('Another checkout opened at the same moment. Try again.');
+      if (winner?.planPriceId === page.planPriceId && winner.purpose === page.purpose) {
+        return winner.hostedUrl;
+      }
+      throw refused('Another checkout opened at the same moment. Try again.');
     }
-    return { checkoutUrl: opened.hostedUrl };
+    return opened.hostedUrl;
+  }
+
+  /**
+   * Closes an upgrade's page still open on the row (`M12-48`), so a plan change that does not pay
+   * on it leaves no page pricing a plan the row is leaving. Money already taken on it goes through
+   * the charge path first, and the change is refused, as a new pick is.
+   */
+  async closePlanChangePage(
+    tenantId: string,
+    subscriptionId: string,
+    now: number,
+    refused: (message: string) => ContractException,
+  ): Promise<void> {
+    const open = await this.checkouts.openOf(tenantId, subscriptionId);
+    if (open?.purpose !== 'plan_change') return;
+    await this.closeUnpaid(tenantId, open, now, refused);
   }
 
   /**
@@ -126,13 +194,18 @@ export class CheckoutService {
    * payment made in between still converts; a row a charge closed first refuses the pick. The
    * cancel is safe to send again (the port's promise), so a lost answer is fixed by a retry.
    */
-  private async closeUnpaid(tenantId: string, open: OpenCheckout, now: number): Promise<void> {
-    await this.refuseIfPaid(open, now);
+  private async closeUnpaid(
+    tenantId: string,
+    open: OpenCheckout,
+    now: number,
+    refused: (message: string) => ContractException,
+  ): Promise<void> {
+    await this.refuseIfPaid(open, now, refused);
     await this.checkouts.cancelRequested(tenantId, open.id, now);
     await this.atGateway(() => this.gateway.closeCheckout(open.collection, open.gatewayRef));
-    await this.refuseIfPaid(open, now);
+    await this.refuseIfPaid(open, now, refused);
     if (!(await this.checkouts.close(tenantId, open.id, now))) {
-      throw notPossible('Your payment on the plan you picked is being confirmed.');
+      throw refused(PAYMENT_BEING_CONFIRMED);
     }
   }
 
@@ -141,7 +214,11 @@ export class CheckoutService {
    * took refuses the new pick: a charge it refused (alerted there) belongs to no plan, and leaves
    * the page to be closed, so the company is never stuck on it.
    */
-  private async refuseIfPaid(open: OpenCheckout, now: number): Promise<void> {
+  private async refuseIfPaid(
+    open: OpenCheckout,
+    now: number,
+    refused: (message: string) => ContractException,
+  ): Promise<void> {
     const collected = await this.atGateway(() =>
       this.gateway.chargesOn(open.collection, open.gatewayRef),
     );
@@ -149,22 +226,32 @@ export class CheckoutService {
     for (const charge of collected) {
       if ((await this.charges.recordCollected(charge, now)) !== 'refused') taken = true;
     }
-    if (taken) throw notPossible('Your payment on the plan you picked is being confirmed.');
+    if (taken) throw refused(PAYMENT_BEING_CONFIRMED);
   }
 
-  /** A gateway that does not answer is a 502 with nothing changed; the same call may be sent again. */
-  private async atGateway<T>(call: () => Promise<T>): Promise<T> {
-    try {
-      return await call();
-    } catch (error) {
-      this.logger.warn({ err: error }, 'the billing gateway did not answer');
-      throw new ContractException(
-        'GATEWAY_UNAVAILABLE',
-        'The payment service did not answer. Nothing was charged. Try again.',
-        HttpStatus.BAD_GATEWAY,
-      );
-    }
+  private atGateway<T>(call: () => Promise<T>): Promise<T> {
+    return atGateway(this.logger, call);
   }
+}
+
+/** One hosted page to open: the plan it pays toward, its rail, its amount and its window. */
+export interface HostedPage {
+  readonly planPriceId: string;
+  readonly route: CollectionRoute;
+  readonly gatewayPlanRef: string;
+  /** What the gateway collects on it, tax included once registered (`F1-29`). */
+  readonly amount: MinorUnits;
+  readonly currencyCode: string;
+  /** Until when the page is ours to hand out again. */
+  readonly expiresAt: number;
+  /** Until when the gateway takes an approval on it. */
+  readonly gatewayExpiresAt: number;
+  readonly startsAt: number | null;
+  readonly purpose: CheckoutPurpose;
+  /** An upgrade's part-cycle charge, ex-tax; `null` on a conversion. */
+  readonly chargeMinor: MinorUnits | null;
+  /** The plan an upgrade's charge was priced from; `null` on a conversion. */
+  readonly fromPlanPriceId: string | null;
 }
 
 /** When a page may take money, and where the period it buys begins. */
@@ -210,6 +297,8 @@ function pageWindowOf(standing: CheckoutStanding | null, now: number): PageWindo
   }
   throw notPossible('This company already holds a plan. Change it from the plan screen.');
 }
+
+const PAYMENT_BEING_CONFIRMED = 'Your payment on the plan you picked is being confirmed.';
 
 const DEAD: ReadonlySet<BillingState> = new Set(['halted', 'expired', 'cancelled']);
 

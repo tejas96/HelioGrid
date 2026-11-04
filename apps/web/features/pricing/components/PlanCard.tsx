@@ -1,9 +1,24 @@
 import type { PricingPlan } from '@heliogrid/data/react';
 import type { BillingCycle } from '@heliogrid/domain';
-import { PLAN_POSITIONING, PLAN_SUPPORT, PRICING, planName } from '@heliogrid/i18n';
+import {
+  PLAN_POSITIONING,
+  PLAN_SUPPORT,
+  PRICING,
+  planFigure,
+  planLimitsLine,
+  planName,
+  planWords,
+} from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { Button, Card, Chip, FactRow, FactRows, useFormat } from '@heliogrid/ui';
-import { planFigure, planWords } from '../plan-words';
+import {
+  Button,
+  Card,
+  Chip,
+  FactRow,
+  FactRows,
+  PlanCard as PlanCardBody,
+  useFormat,
+} from '@heliogrid/ui';
 import { OpenRow } from './OpenRow';
 
 interface PlanCardProps {
@@ -30,15 +45,14 @@ export function PlanCard({ plan, cycle, open, onToggle, onTalkToSales }: PlanCar
       <div className="hg-pricing-card">
         <div className="hg-pricing-card__head">
           <span className="hg-pricing-card__name">{name}</span>
-          <div className="hg-pricing-card__price">
-            {figure.lead === null ? null : <span className="hg-pricing-quiet">{figure.lead}</span>}
-            <span className="hg-pricing-card__figure">{figure.figure}</span>
-            {figure.trail === null ? null : (
-              <span className="hg-pricing-quiet">{figure.trail}</span>
-            )}
-            <span className="hg-pricing-quiet">{figure.period}</span>
-          </div>
-          <span className="hg-pricing-card__positioning">{t(PLAN_POSITIONING[plan.tier])}</span>
+          <PlanCardBody
+            form="head"
+            name={name}
+            figure={figure}
+            gap={null}
+            note={t(PLAN_POSITIONING[plan.tier])}
+            lines={[]}
+          />
         </div>
         {open ? (
           <FactRows label={name} density="expressive" form="pair" measure={40}>
@@ -71,10 +85,7 @@ export function PlanCard({ plan, cycle, open, onToggle, onTalkToSales }: PlanCar
           <FactRows label={name} density="expressive" form="lead">
             <FactRow
               label={t(PRICING.limits)}
-              values={[
-                words.power(plan.designPower),
-                t(PRICING.proposalsAMonth, { count: words.limit(plan.proposalsPerMonth) }),
-              ]}
+              values={[...planLimitsLine(plan, plan.designPower, t, words).values]}
             />
             <FactRow label={t(PRICING.support)} values={[support]} />
           </FactRows>

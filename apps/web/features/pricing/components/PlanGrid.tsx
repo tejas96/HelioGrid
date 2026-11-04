@@ -1,10 +1,9 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { PricingPlan, PricingSet } from '@heliogrid/data/react';
-import { COMPARE_GRID, compareGridWords } from '@heliogrid/i18n';
+import { COMPARE_GRID, compareGridWords, planWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { CompareGrid, useFormat } from '@heliogrid/ui';
 import { compareAttributes, compareOption } from '../compare-values';
-import { planWords } from '../plan-words';
 
 interface PlanGridProps {
   plans: readonly PricingPlan[];

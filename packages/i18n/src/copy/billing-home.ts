@@ -5,6 +5,7 @@ import { bannerWords } from './banner';
 import { DATA_TABLE, dataTableWords } from './data-table';
 import { derivationWords } from './derivation';
 import { TIER_LABEL } from './invoice-document';
+import { scheduledChangeWords } from './plan-selection';
 import { PRICING } from './pricing';
 import { ownersHolder } from './role-card';
 import { scopeNoteWords } from './scope-note';
@@ -238,6 +239,7 @@ export function billingViewWords(t: T) {
       t(BILLING_HOME.withTax, { source, rate, tax }),
     power: (amount: string, unit: string) => t(PRICING.power, { amount, unit }),
     linkCycle: (cycle: BillingCycle) => t(BILLING_HOME.linkCycle, { cycle: cycleWord(cycle) }),
+    scheduledChange: scheduledChangeWords(t),
     limits: {
       biggestDesign: t(PRICING.biggestDesign),
       proposalsMonth: t(PRICING.proposalsMonth),

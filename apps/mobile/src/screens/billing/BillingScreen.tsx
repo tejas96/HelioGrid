@@ -52,10 +52,19 @@ export function BillingScreen() {
   /* A closed toast hands the screen reader back to the page it spoke about. */
   const content = useRef<View>(null);
 
-  /* A landed cancel or refund closed its ask and changed the page: the reader goes to its needs. */
+  /* A landed cancel or refund changed the page: the reader goes to its needs; a kept plan, to the plan. */
   useEffect(() => {
-    if (screen.done !== null) body.current?.focusNeeds();
+    if (screen.done?.kind === 'kept') body.current?.focusPlan();
+    else if (screen.done !== null) body.current?.focusNeeds();
   }, [screen.done]);
+
+  /* Arrived from the plans with a downgrade scheduled: the screen reader lands on `Needs you` (frame 16). */
+  const { arrival, clearArrival } = screen;
+  useEffect(() => {
+    if (arrival !== 'needs') return;
+    body.current?.focusNeeds();
+    clearArrival();
+  }, [arrival, clearArrival]);
 
   return (
     <ShellPage inView="more" drillDown={{ ...drillDown, titleRef: heading }}>

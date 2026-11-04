@@ -9,6 +9,10 @@ import type {
   CheckoutRequest,
   FileDownload,
   PaginationQuery,
+  PlanChangeOutcome,
+  PlanChangePreview,
+  PlanChangeRequest,
+  PlanPick,
 } from '@heliogrid/contracts';
 import type { ApiClient } from '../client/client';
 import { normalizeClientError, toApiError } from '../errors/errors';
@@ -34,6 +38,12 @@ export interface BillingRepository {
   cancel(request: CancelRequest): Promise<string>;
   /** Answers the credit note's number. */
   refund(): Promise<string>;
+  /** One pick's review (`SCR-M12-03`): what it changes, costs today and blocks. */
+  planChangePreview(pick: PlanPick, signal?: AbortSignal): Promise<PlanChangePreview>;
+  /** A live paid row's change, confirmed on the preview whose digest it carries. */
+  planChange(request: PlanChangeRequest): Promise<PlanChangeOutcome>;
+  /** Keeps the plan a scheduled change was moving from; answers whether one was withdrawn. */
+  planChangeWithdraw(): Promise<boolean>;
 }
 
 /** The types are INFERRED from the contract, never a hand-written copy of the response. */
@@ -119,6 +129,33 @@ export function createBillingRepository(api: ApiClient): BillingRepository {
         const res = await api.billing.refund({ body: {} });
         if (res.status !== 200) throw toApiError(res);
         return res.body.creditNoteNumber;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async planChangePreview(pick, signal) {
+      try {
+        const res = await api.billingPlanChange.preview({ query: pick, fetchOptions: { signal } });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async planChange(request) {
+      try {
+        const res = await api.billingPlanChange.change({ body: request });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body;
+      } catch (error) {
+        throw normalizeClientError(error);
+      }
+    },
+    async planChangeWithdraw() {
+      try {
+        const res = await api.billingPlanChange.withdraw({ body: {} });
+        if (res.status !== 200) throw toApiError(res);
+        return res.body.withdrawn;
       } catch (error) {
         throw normalizeClientError(error);
       }

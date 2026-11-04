@@ -108,6 +108,8 @@ export * from './components/PaymentTermsSettings';
 export * from './components/PendingAction';
 export * from './components/PhoneField';
 export * from './components/PhotoField';
+export * from './components/PlanCard';
+export * from './components/PlanSelection';
 export * from './components/PreviewFrame';
 export * from './components/ProfilePreferences';
 export * from './components/ProgressBar';

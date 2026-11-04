@@ -29,6 +29,7 @@ import {
   DevelopmentBillingGateway,
   developmentSignature,
 } from '../../src/modules/billing/internal/billing-gateway.development';
+import { PlanChangePaidAdminRepository } from '../../src/modules/billing/plan-change.paid.admin.repository';
 import { UsageAdminRepository } from '../../src/modules/billing/usage.admin.repository';
 import { UsageRepository } from '../../src/modules/billing/usage.repository';
 import { UsageService } from '../../src/modules/billing/usage.service';
@@ -155,6 +156,7 @@ export function chargeServiceOf(
     entitlementServiceOf(pools),
     marketsOf(pools),
     gateway,
+    new PlanChangePaidAdminRepository(pools.admin.db),
     silentLogger(),
   );
 }

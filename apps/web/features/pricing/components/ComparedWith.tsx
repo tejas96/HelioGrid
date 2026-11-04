@@ -1,8 +1,7 @@
 import type { PricingComparison } from '@heliogrid/data/react';
-import { PRICING, planName } from '@heliogrid/i18n';
+import { PRICING, planName, planWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { FactRow, FactRows, Provenance, useFormat } from '@heliogrid/ui';
-import { planWords } from '../plan-words';
 
 interface ComparedWithProps {
   comparisons: readonly PricingComparison[];

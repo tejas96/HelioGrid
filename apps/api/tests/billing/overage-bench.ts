@@ -82,6 +82,7 @@ export async function aMandate(
       stateEnteredAt: new Date(MAY),
       paidPeriodEnd: new Date(MAY),
       createdAt: new Date(MAY),
+      collection: 'mandate',
       ...plan,
     })
     .returning({ id: subscription.id });

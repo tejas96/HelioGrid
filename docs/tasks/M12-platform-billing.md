@@ -38,7 +38,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 ### T-M12-003 · Plan Selection & Conversion
 
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** shipped
 **PRD rows:** M12-48 (P0), M12-49 (P0), M12-53 (P0), M12-54 (P0)
 **DESIGN:** SCR-M12-03 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
 **Contract:** conversion's hosted checkout is T-M12-007's `POST /billing/checkout` (tier + cycle → the gateway's page, `CHECKOUT_NOT_POSSIBLE` · `TIER_NOT_SOLD` · `GATEWAY_UNAVAILABLE`); the screen renders those codes' copy, which lands with it. An upgrade or cycle switch (M12-48, M12-12) reuses the same `plan_price` rows and `BillingGateway` port for its prorated delta and its new subscription at the boundary.

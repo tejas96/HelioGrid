@@ -142,6 +142,23 @@ export {
 } from './overage';
 export type { PauseNotice, ResolvingAct } from './pause-notice';
 export { pauseNoticeOf, RESOLVING_ACTS } from './pause-notice';
+export type {
+  CheckoutPurpose,
+  HeldPlan,
+  PlanChangeBlock,
+  PlanChangeKind,
+  PlanChangeStatus,
+  ScheduledPlanChange,
+} from './plan-change';
+export {
+  CHECKOUT_PURPOSES,
+  PLAN_CHANGE_BLOCKS,
+  PLAN_CHANGE_KINDS,
+  PLAN_CHANGE_STATUSES,
+  planChangeKindOf,
+  SCHEDULED_PLAN_CHANGES,
+  tierStepOf,
+} from './plan-change';
 export type { ProposalCover, ProposalSection } from './proposal-template-defaults';
 export {
   DEFAULT_SECTIONS_INCLUDED,

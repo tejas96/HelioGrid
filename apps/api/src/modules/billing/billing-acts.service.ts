@@ -14,7 +14,7 @@ import { OutboxDispatcher } from '../../common/temporal/outbox.dispatcher';
 import { MarketPackService } from '../market/market.public';
 import { CancellationAdminRepository, type OwnerAct } from './cancellation.admin.repository';
 import { BillingAlerts } from './internal/billing-alerts';
-import { RefundAdminRepository } from './refund.admin.repository';
+import { type ProrationRefund, RefundAdminRepository } from './refund.admin.repository';
 
 /**
  * The Owner's two ways out (`M12-50`, `M12-47`). The gateway is asked first and the database moves
@@ -74,7 +74,8 @@ export class BillingActsService {
   /**
    * `M12-47` — the first paid cycle, inside its window, goes back to its source in full: the
    * gateway pays it back, the mandate stops now, then the row ends today with the invoice's credit
-   * note. A renewal cycle never refunds: only the company's first payment is ever looked at.
+   * note. An upgrade's part-cycle charge paid inside that cycle goes back with it, under its own
+   * credit note. A renewal cycle never refunds: only the company's first payment is ever looked at.
    */
   async refund(tenantId: string, act: OwnerAct): Promise<{ creditNoteNumber: string }> {
     const paid = await this.refunds.firstPaymentOf(tenantId);
@@ -89,13 +90,30 @@ export class BillingActsService {
         reference: paid.invoiceId,
       }),
     );
+    // An upgrade paid inside the first cycle is paid back with it, each to its own source.
+    const prorations: ProrationRefund[] = [];
+    for (const proration of await this.refunds.prorationsOf(tenantId, paid)) {
+      const ref = await this.atGateway(() =>
+        this.gateway.refund({
+          chargeRef: proration.chargeRef,
+          amount: proration.amount,
+          reference: proration.invoiceId,
+        }),
+      );
+      prorations.push({ invoiceId: proration.invoiceId, gatewayRefundRef: ref });
+    }
     const { gatewayRef } = paid;
     if (collectionOf(pack, paid.tier, paid.cycle) === 'mandate' && gatewayRef !== null) {
       await this.atGateway(() => this.gateway.closeCheckout('mandate', gatewayRef));
     }
-    const refunded = await this.refunds.record(tenantId, paid, { gatewayRefundRef, pack }, act);
+    const refunded = await this.refunds.record(
+      tenantId,
+      paid,
+      { gatewayRefundRef, pack, prorations },
+      act,
+    );
     if (refunded === null) throw refundNotPossible();
-    if (refunded.eventId !== null) await this.outbox.dispatchNow(refunded.eventId);
+    for (const eventId of refunded.eventIds) await this.outbox.dispatchNow(eventId);
     return { creditNoteNumber: refunded.creditNoteNumber };
   }
 

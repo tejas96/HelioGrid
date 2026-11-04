@@ -65,6 +65,7 @@ export function homeOf(state: BillingHome['standing']['state'], over: Partial<Bi
     invoices: { latest: [], totalCount: 0 },
     cancellable: false,
     salesContact: null,
+    scheduledChange: null,
     ...over,
   } as BillingHome;
 }

@@ -42,8 +42,9 @@ import {
   uiLanguageSchema,
 } from '@heliogrid/contracts';
 import { usageRecordWorkflow } from '@heliogrid/contracts/workflows';
-import { RETIRED_LEDGER_METERS } from '@heliogrid/domain';
+import { RETIRED_LEDGER_METERS, SCHEDULED_PLAN_CHANGES } from '@heliogrid/domain';
 import postgres from 'postgres';
+import { NO_CONTRACT_YET } from './enum-parity-unmapped';
 
 /**
  * Enum parity invariant — closes the highest-risk drift in the repo.
@@ -102,6 +103,11 @@ const MAPPED: Record<string, { options: readonly string[]; contract: string }> =
     contract: 'entitlementOverrideKindSchema',
   },
   invoice_kind: { options: invoiceKindSchema.options, contract: 'invoiceKindSchema' },
+  scheduled_plan_change: {
+    // The billing home carries it as `extensibleEnum(SCHEDULED_PLAN_CHANGES)`, which has no options.
+    options: SCHEDULED_PLAN_CHANGES,
+    contract: 'billingHomeSchema.scheduledChange.kind (SCHEDULED_PLAN_CHANGES)',
+  },
   invoice_status: { options: invoiceStatusSchema.options, contract: 'invoiceStatusSchema' },
   overage_addon_status: {
     options: overageAddOnStatusSchema.options,
@@ -193,24 +199,6 @@ function checkedValues(definition: string): string[] {
     value.replace(/''/g, "'"),
   );
 }
-
-/**
- * pg enums that intentionally have NO contract counterpart yet, each with the reason.
- * A new pg enum that is neither mapped nor listed here FAILS — which forces a conscious
- * decision ("does this cross the wire?") instead of a silent omission.
- */
-const NO_CONTRACT_YET: Record<string, string> = {
-  storage_provider: "where a file's bytes live is server-internal; it never crosses the wire",
-  usage_metric:
-    'billing module not started (full metric enum seeded per the forward-compat register)',
-  audit_actor_type: 'audit log is server-internal; never crosses the wire',
-  phone_provider: 'telephony module not started (ADR-0019 seams only)',
-  phone_number_type: 'telephony module not started',
-  cli_series: 'telephony module not started',
-  number_status: 'telephony module not started',
-  phone_purpose: 'telephony module not started',
-  mutation_result: 'offline sync module not started (Track E)',
-};
 
 /**
  * Deliberately one-directional. A contract enum with no pg counterpart is NOT a failure:

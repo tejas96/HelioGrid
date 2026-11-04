@@ -9,6 +9,7 @@ import {
   destinationLabel,
   INVITE_LANDING,
   inviteWords,
+  PLAN_SELECTION,
   PRICING,
   paymentTermsWords,
   SETUP_LANGUAGE,
@@ -20,6 +21,7 @@ import {
   settingsWords,
   setupInviteWords,
   setupWhatYouSellWords,
+  tierName,
 } from '@heliogrid/i18n';
 import { API, codeSentTo } from './api-log.ts';
 import { freshMobile } from './phone.ts';
@@ -83,6 +85,11 @@ if (command === 'words') {
     CANCEL_SUBSCRIPTION: BILLING_HOME.cancelSubscription,
     PLANS: PRICING.plans,
     BACK_TO_BILLING: BILLING_HOME.backToBilling,
+    CHOOSE_A_PLAN: PLAN_SELECTION.choosePlan,
+    REVIEW_CHANGE: PLAN_SELECTION.reviewChange,
+    WHAT_CHANGES: PLAN_SELECTION.whatChanges,
+    PLAN_PRO: tierName('pro'),
+    CLOSE: SHELL.close,
     ...settingsRows(t),
   };
   for (const [key, message] of Object.entries(words)) {

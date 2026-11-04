@@ -128,6 +128,8 @@
 @import "./components/OtpInput/OtpInput.css";
 @import "./components/PhoneField/PhoneField.css";
 @import "./components/PhotoField/PhotoField.css";
+@import "./components/PlanCard/PlanCard.css";
+@import "./components/PlanSelection/PlanSelection.css";
 @import "./components/PagedDocument/PagedDocument.css";
 @import "./components/PagedDocument/TitleBlock.css";
 @import "./components/PendingAction/IndeterminateRail.css";

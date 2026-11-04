@@ -23,8 +23,12 @@ import { useNeedsFocus } from './use-needs-focus';
 export function BillingHome(props: BillingHomeProps) {
   const { words, read } = props;
   const needsFrame = useRef<View>(null);
-  useNeedsFocus(props.ref, read.kind === 'ready' && props.needs !== null, () =>
-    landFocusOn(needsFrame),
+  const planFrame = useRef<View>(null);
+  useNeedsFocus(
+    props.ref,
+    read.kind === 'ready' && props.needs !== null,
+    () => landFocusOn(needsFrame),
+    () => landFocusOn(planFrame),
   );
   if (read.kind === 'failed') {
     return (
@@ -41,7 +45,7 @@ export function BillingHome(props: BillingHomeProps) {
     );
   }
   if (read.kind === 'loading') return <BillingLoading {...props} />;
-  return <BillingReady {...props} needsFrame={needsFrame} />;
+  return <BillingReady {...props} needsFrame={needsFrame} planFrame={planFrame} />;
 }
 
 /** Frame 4: each region's heading over its own loading, so nothing jumps when it arrives. */
@@ -63,8 +67,12 @@ function BillingLoading({ words }: BillingHomeProps) {
 
 function BillingReady({
   needsFrame,
+  planFrame,
   ...props
-}: BillingHomeProps & { needsFrame: RefObject<View | null> }) {
+}: BillingHomeProps & {
+  needsFrame: RefObject<View | null>;
+  planFrame: RefObject<View | null>;
+}) {
   const { words, acts } = props;
   const pending = bodyActingOf(props);
   /* While an act's answer is out, or a PDF signs, every other way on waits (`F7-23` N5). */
@@ -88,7 +96,10 @@ function BillingReady({
         </View>
       )}
       {props.plan === null ? null : (
-        <BillingPlan plan={props.plan} words={words} onRoute={when(acts.onRoute)} />
+        /* `Keep <plan> instead` hands the screen reader here once its need has gone. */
+        <View ref={planFrame}>
+          <BillingPlan plan={props.plan} words={words} onRoute={when(acts.onRoute)} />
+        </View>
       )}
       {props.usage === null ? null : (
         <BillingUsage usage={props.usage} words={words} onAllUsage={when(acts.onAllUsage)} />

@@ -2,6 +2,7 @@ import {
   BILLING_NOTICES,
   BILLING_PHASES,
   INVOICE_STATUSES,
+  SCHEDULED_PLAN_CHANGES,
   SUBSCRIPTION_CAUSES,
 } from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
@@ -57,7 +58,7 @@ export type BillingStanding = z.infer<typeof billingStandingSchema>;
  * What a list price bills: the price alone while the platform is not registered for the scheme's
  * tax (`F1-29`), else its tax and the total beside it — the working `How it is worked out` shows.
  */
-const saleSchema = z
+export const saleSchema = z
   .object({
     list: amountSchema,
     taxRateBasisPoints: z.number().int().nonnegative().nullable(),
@@ -67,7 +68,7 @@ const saleSchema = z
   .strict();
 
 /** A plan's published limits, or the trial's caps, as the pricing page prints them (`M12-55`). */
-const includesSchema = z
+export const includesSchema = z
   .object({
     designCeilingKw: limitSchema,
     proposalsPerMonth: limitSchema,
@@ -168,6 +169,20 @@ export const billingHomeSchema = z
       .strict(),
     cancellable: z.boolean(),
     salesContact: z.string().email().nullable(),
+    /**
+     * A downgrade or a cycle switch waiting for the paid period's end (`M12-49`, `M12-12`): the
+     * plan it moves to, when, and what it bills from then. Old clients never read it.
+     */
+    scheduledChange: z
+      .object({
+        kind: extensibleEnum(SCHEDULED_PLAN_CHANGES),
+        tier: tierSchema,
+        cycle: billingCycleSchema,
+        effectiveAt: instant,
+        afterwards: saleSchema,
+      })
+      .strict()
+      .nullable(),
   })
   .strict();
 export type BillingHome = z.infer<typeof billingHomeSchema>;

@@ -71,10 +71,19 @@ export function BillingScreen() {
     history: useBillingHistory(screen.sheet === 'history'),
   };
 
-  /* A landed cancel or refund closed its ask and changed the page: the keyboard goes to its needs. */
+  /* A landed cancel or refund changed the page: the keyboard goes to its needs; a kept plan, to the plan. */
   useEffect(() => {
-    if (screen.done !== null) body.current?.focusNeeds();
+    if (screen.done?.kind === 'kept') body.current?.focusPlan();
+    else if (screen.done !== null) body.current?.focusNeeds();
   }, [screen.done]);
+
+  /* Arrived from the plans with a downgrade scheduled: the keyboard lands on `Needs you` (frame 16). */
+  const { arrival, clearArrival } = screen;
+  useEffect(() => {
+    if (arrival !== 'needs') return;
+    body.current?.focusNeeds();
+    clearArrival();
+  }, [arrival, clearArrival]);
 
   return (
     /* A closed toast hands the keyboard back to the page it spoke about. */

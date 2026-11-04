@@ -21,8 +21,12 @@ import { useNeedsFocus } from './use-needs-focus';
 export function BillingHome(props: BillingHomeProps) {
   const { words, read, layout, strip } = props;
   const needsFrame = useRef<HTMLDivElement>(null);
-  useNeedsFocus(props.ref, read.kind === 'ready' && props.needs !== null, () =>
-    requestAnimationFrame(() => needsFrame.current?.focus()),
+  const planFrame = useRef<HTMLDivElement>(null);
+  useNeedsFocus(
+    props.ref,
+    read.kind === 'ready' && props.needs !== null,
+    () => requestAnimationFrame(() => needsFrame.current?.focus()),
+    () => requestAnimationFrame(() => planFrame.current?.focus()),
   );
   if (read.kind === 'failed') {
     return (
@@ -39,7 +43,7 @@ export function BillingHome(props: BillingHomeProps) {
     );
   }
   const { left, right } =
-    read.kind === 'loading' ? loadingParts(props) : readyParts(props, needsFrame);
+    read.kind === 'loading' ? loadingParts(props) : readyParts(props, needsFrame, planFrame);
   return (
     <div className="hg-billing">
       {strip === null || read.kind === 'loading' ? null : (
@@ -73,6 +77,7 @@ function loadingParts({ words }: BillingHomeProps): { left: ReactNode; right: Re
 function readyParts(
   props: BillingHomeProps,
   needsFrame: RefObject<HTMLDivElement | null>,
+  planFrame: RefObject<HTMLDivElement | null>,
 ): { left: ReactNode; right: ReactNode } {
   const { words, needs, plan, usage, method, records, cancellable, needFailure, acts } = props;
   const pending = bodyActingOf(props);
@@ -94,7 +99,10 @@ function readyParts(
         </div>
       )}
       {plan === null ? null : (
-        <BillingPlan plan={plan} words={words} onRoute={when(acts.onRoute)} />
+        /* `Keep <plan> instead` hands the keyboard here once its need has gone. */
+        <div ref={planFrame} tabIndex={-1} className="hg-focus-target">
+          <BillingPlan plan={plan} words={words} onRoute={when(acts.onRoute)} />
+        </div>
       )}
       {usage === null ? null : (
         <BillingUsage usage={usage} words={words} onAllUsage={when(acts.onAllUsage)} />

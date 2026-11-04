@@ -56,7 +56,7 @@ pnpm --filter @heliogrid/i18n extract | build | typecheck   # extract sweeps web
   fixes its words in that reader's language when the api writes it (`createTranslator`).
 - **A word that sits beside a value is one message with the value in it** (`From {price}`), never
   a word in its own element before or after: Hindi and Marathi put `से`, `पासून` after the figure.
-  A value styled apart is placed where the translation's `{slot}` falls (`apps/web/features/pricing/plan-words.ts`).
+  A value styled apart is placed where the translation's `{slot}` falls (`src/copy/plan-words.ts`).
 
 ## Adding a language
 

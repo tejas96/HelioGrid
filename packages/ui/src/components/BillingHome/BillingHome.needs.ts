@@ -97,6 +97,8 @@ export function needsOf(input: BillingInput, home: BillingHome): BillingNeedsVie
         dataKept: kept,
         act: { label: words.pickPlan, line: words.pickPlanLine },
       };
+    case 'scheduled_change':
+      return scheduledOf(input, home);
     case 'way_back': {
       const back = home.reactivation;
       return {
@@ -114,6 +116,37 @@ export function needsOf(input: BillingInput, home: BillingHome): BillingNeedsVie
       };
     }
   }
+}
+
+/**
+ * Frame 16: the plan a downgrade or a cycle switch moves to and when, and `Keep <plan> instead`
+ * (`M12-49`, `M12-12`). Nothing changes until then, so nothing here is an amount.
+ */
+function scheduledOf(input: BillingInput, home: BillingHome): BillingNeedsView | null {
+  const change = home.scheduledChange;
+  const held = home.standing.tier;
+  if (change === null || held === null) return null;
+  const { words, format } = input;
+  const said = words.scheduledChange;
+  const on = format.date(change.effectiveAt);
+  return {
+    badge: null,
+    dataKept: null,
+    working: null,
+    scope: null,
+    title: words.needsYou,
+    rows: [
+      chipRow(
+        'change',
+        change.kind === 'cycle_switch'
+          ? said.movingToCycle(change.cycle)
+          : said.movingTo(change.tier),
+        { word: said.scheduled, tone: 'info' },
+      ),
+      dateRow('on', said.on, on),
+    ],
+    act: { label: said.keepInstead(held), line: said.nothingUntil(on) },
+  };
 }
 
 /** The amount's working: what it is for, then the price with its tax once registered (`F1-29`). */

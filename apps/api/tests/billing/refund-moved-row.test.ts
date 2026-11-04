@@ -51,7 +51,7 @@ describe.skipIf(skip)('a refund recorded on a row that moved meanwhile (M12-47)'
     const recorded = await repository.record(
       tenantId,
       first,
-      { gatewayRefundRef: `dev_refund_${paid.chargeRef}`, pack },
+      { gatewayRefundRef: `dev_refund_${paid.chargeRef}`, pack, prorations: [] },
       { actorUserId: paid.ownerUserId, now },
     );
     return { paid, recorded, now };

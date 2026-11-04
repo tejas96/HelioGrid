@@ -12,6 +12,7 @@ import {
   type RenewalCursor,
   type RenewalDue,
 } from './renewal.admin.repository';
+import { RenewalAdoptionAdminRepository } from './renewal-adoption.admin.repository';
 
 /**
  * Renewals raised per run. Each opens one link, at most the gateway's 10 s call timeout, so a full
@@ -33,6 +34,8 @@ export class RenewalService {
   // Explicit tokens: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(
     @Inject(RenewalAdminRepository) private readonly renewals: RenewalAdminRepository,
+    @Inject(RenewalAdoptionAdminRepository)
+    private readonly adoptions: RenewalAdoptionAdminRepository,
     @Inject(MarketPackService) private readonly markets: MarketPackService,
     @Inject(BILLING_GATEWAY) private readonly gateway: BillingGateway,
     @Inject(ChargeService) private readonly charges: ChargeService,
@@ -49,6 +52,15 @@ export class RenewalService {
    */
   async raiseDue(now: number): Promise<number> {
     const packs = new Map<string, MarketPack>();
+    const packOf = async (marketCode: string) => {
+      const pack = packs.get(marketCode) ?? (await this.markets.currentPackOf(marketCode));
+      packs.set(marketCode, pack);
+      return pack;
+    };
+    // A paid fresh page is the row's own before anything is raised: never a second beside it.
+    for (const page of await this.adoptions.unadopted(RAISE_BATCH)) {
+      await this.adoptions.adopt(page, await packOf(page.marketCode), now);
+    }
     let raised = 0;
     let calls = 0;
     let after: RenewalCursor | null = null;
@@ -56,9 +68,7 @@ export class RenewalService {
       const page = await this.renewals.due(now, RAISE_BATCH, after);
       for (const due of page) {
         if (calls >= RAISE_BATCH) break;
-        const pack =
-          packs.get(due.marketCode) ?? (await this.markets.currentPackOf(due.marketCode));
-        packs.set(due.marketCode, pack);
+        const pack = await packOf(due.marketCode);
         const outcome = await this.raise(due, pack, now);
         if (outcome !== 'not by link') calls += 1;
         if (outcome === 'raised') raised += 1;
@@ -102,16 +112,21 @@ export class RenewalService {
   ): Promise<'raised' | 'not raised' | 'not by link'> {
     const route = collectionRoute(pack.paymentRails, tierBand(due.tier), due.cycle);
     // The pack moved this tier onto a mandate since conversion: that rail's re-pick is the owner's.
-    if (route.collection !== 'invoice') return 'not by link';
+    // A row whose mandate a plan change ended renews on a new mandate the Owner approves on the
+    // page, never a second live one (`M12-57`).
+    if (route.collection !== 'invoice' && !due.mandateEnded) return 'not by link';
     const invoiceId = this.renewals.newId();
-    const draft = await this.renewals.draft({
-      tenantId: due.tenantId,
-      subscriptionId: due.subscriptionId,
-      planPriceId: due.planPriceId,
-      paysThrough: cycleEnd(due.paidPeriodEnd, due.cycle),
-      issuedAt: now,
-      pack,
-    });
+    const draft = await this.renewals.draft(
+      {
+        tenantId: due.tenantId,
+        subscriptionId: due.subscriptionId,
+        planPriceId: due.planPriceId,
+        paysThrough: cycleEnd(due.paidPeriodEnd, due.cycle),
+        issuedAt: now,
+        pack,
+      },
+      { carriesAddOns: route.collection === 'invoice' },
+    );
     let opened: Awaited<ReturnType<BillingGateway['openCheckout']>>;
     try {
       opened = await this.gateway.openCheckout({

@@ -22,7 +22,7 @@ const MONEY_SUMMARY = {
 } as const;
 
 /** The two figures a failed reconciliation names — the server's names, the pack's formatting. */
-interface MoneyDisagreement {
+export interface MoneyDisagreement {
   readonly label: string;
   readonly amount: string;
   readonly againstLabel: string;

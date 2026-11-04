@@ -120,6 +120,13 @@ export type { PaymentTermsScreen } from './use-payment-terms-screen';
 export { usePaymentTermsScreen } from './use-payment-terms-screen';
 export type { PhaseEditor, PhaseOpen } from './use-phase-editor';
 export { usePhaseEditor } from './use-phase-editor';
+export type {
+  PlanActFailure,
+  PlanActFailureAt,
+  PlanSelectionAdapter,
+  PlanSelectionScreen,
+} from './use-plan-selection';
+export { usePlanSelectionScreen } from './use-plan-selection';
 export type { PriceBookBrowse } from './use-price-book';
 export {
   usePriceBook,

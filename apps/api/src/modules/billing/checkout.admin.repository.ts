@@ -1,5 +1,11 @@
 import { billingCheckout, type Db, subscription, tenant, uuidv7 } from '@heliogrid/db';
-import type { BillingState, CollectionKind } from '@heliogrid/domain';
+import {
+  type BillingState,
+  type CheckoutPurpose,
+  type CollectionKind,
+  type MinorUnits,
+  minorUnits,
+} from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, desc, eq, isNull } from 'drizzle-orm';
 import { ADMIN_DB } from '../../common/db/admin.token';
@@ -25,6 +31,11 @@ export interface OpenCheckout {
   readonly expiresAt: number;
   /** The gateway was asked to cancel it: its page is never handed out again. */
   readonly cancelRequested: boolean;
+  readonly purpose: CheckoutPurpose;
+  /** An upgrade's part-cycle charge, ex-tax; `null` on a conversion's page. */
+  readonly chargeMinor: MinorUnits | null;
+  /** The plan an upgrade's charge was priced from; `null` on a conversion's page. */
+  readonly fromPlanPriceId: string | null;
 }
 
 /**
@@ -79,6 +90,9 @@ export class CheckoutAdminRepository {
         hostedUrl: billingCheckout.hostedUrl,
         expiresAt: billingCheckout.expiresAt,
         cancelRequestedAt: billingCheckout.cancelRequestedAt,
+        purpose: billingCheckout.purpose,
+        chargeMinor: billingCheckout.chargeMinor,
+        fromPlanPriceId: billingCheckout.fromPlanPriceId,
       })
       .from(billingCheckout)
       .where(
@@ -90,8 +104,13 @@ export class CheckoutAdminRepository {
       )
       .limit(1);
     if (row === undefined) return null;
-    const { cancelRequestedAt, expiresAt, ...open } = row;
-    return { ...open, expiresAt: expiresAt.getTime(), cancelRequested: cancelRequestedAt !== null };
+    const { cancelRequestedAt, expiresAt, chargeMinor, ...open } = row;
+    return {
+      ...open,
+      expiresAt: expiresAt.getTime(),
+      cancelRequested: cancelRequestedAt !== null,
+      chargeMinor: chargeMinor === null ? null : minorUnits(chargeMinor),
+    };
   }
 
   /** Written before the gateway is asked to cancel, so a lost answer never hands the page out. */
@@ -137,6 +156,9 @@ export class CheckoutAdminRepository {
     readonly startsAt: number | null;
     readonly openedAt: number;
     readonly openedBy: string;
+    readonly purpose: CheckoutPurpose;
+    readonly chargeMinor: MinorUnits | null;
+    readonly fromPlanPriceId: string | null;
   }): Promise<boolean> {
     const written = await this.db
       .insert(billingCheckout)

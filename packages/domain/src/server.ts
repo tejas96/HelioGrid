@@ -21,10 +21,10 @@ export { applyRate } from './money/basis-points';
 export { reconcileMinorUnits, resolvePayable } from './money/equation';
 export {
   amountForQuantity,
-  minorUnitsOfDecimal,
   minorUnitsToDecimal,
   sumMinorUnits,
 } from './money/minor-units';
+export { dayRate, partCycleCharge } from './money/part-cycle';
 export { tenMonthYearly } from './pricing/book';
 export { clearsCogsFloor, metersBelowCogsFloor } from './pricing/cogs';
 export { subsidyAmount } from './subsidy/amount';

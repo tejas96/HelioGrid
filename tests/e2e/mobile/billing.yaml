@@ -1,6 +1,7 @@
 # Billing: the owner's page on a fresh trial (`SCR-M12-02` frame 7), opened from settings — the
 # plan with its state, the usage, the payment method set up later, no invoice yet and no cancel —
-# then `Change plan` to the plans page (`SCR-M12-03`, coming later) and back to settings.
+# then `Change plan` to the plans (`SCR-M12-03`): a plan picked opens its review as a sheet, which
+# closes; then back to Billing and to settings.
 appId: com.heliogrid.app
 ---
 - runFlow:
@@ -32,7 +33,24 @@ appId: com.heliogrid.app
     visible: ${BACK_TO_BILLING}
     timeout: 15000
 - assertVisible: ${PLANS}
-- assertVisible: ${PLACEHOLDER}
+- extendedWaitUntil:
+    visible: ${CHOOSE_A_PLAN}
+    timeout: 15000
+# A trial's cards carry no relation chip; the card's name leads it (decision 3). The word
+# boundary keeps the bottom bar's `Projects` tab from matching `Pro`.
+- tapOn:
+    text: "${PLAN_PRO}\\b.*"
+- scrollUntilVisible:
+    element: ${REVIEW_CHANGE}
+    centerElement: true
+- tapOn: ${REVIEW_CHANGE}
+- extendedWaitUntil:
+    visible: ${WHAT_CHANGES}
+    timeout: 15000
+- tapOn: ${CLOSE}
+- extendedWaitUntil:
+    notVisible: ${WHAT_CHANGES}
+    timeout: 15000
 - tapOn: ${BACK_TO_BILLING}
 - extendedWaitUntil:
     visible: ${YOUR_PLAN}

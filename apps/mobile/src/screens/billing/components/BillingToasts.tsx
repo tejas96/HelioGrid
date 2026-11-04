@@ -27,7 +27,8 @@ export function BillingToasts({
   const { push } = toasts;
   const { done, failure, clearDone, clearFailure } = screen;
   useEffect(() => {
-    if (done === null) return;
+    /* A kept plan says nothing: its need swapping away is what changed (frame 16). */
+    if (done === null || done.kind === 'kept') return;
     const words = billingRecordWords(t);
     push({
       tone: 'success',

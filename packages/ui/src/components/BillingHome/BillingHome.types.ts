@@ -207,6 +207,8 @@ export interface BillingHomeFocus {
    * after the act, so a region not drawn yet takes focus as soon as it is.
    */
   focusNeeds(): void;
+  /** `Your plan`'s heading: `Keep <plan> instead` swapped its need away (frame 16). */
+  focusPlan(): void;
 }
 
 export interface BillingHomeProps {

@@ -523,6 +523,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 **Status:** planned
 **PRD rows:** M06-26
 **Billing gate (T-M12-009):** proposal create names `sell_and_deliver` in its `RouteBillingMap`; its count cap reads `capStepOf` (`packages/domain`) over this cycle's proposals, `fullSince` being the created time of the cycle's limit-th proposal, and refuses only at `paused`, by throwing `EntitlementBlockedException` with `reason: 'cap'`, key `proposals_per_cycle` and the cycle's end as `resetsAt` (M12-23, M12-30).
+**Downgrade preview (T-M12-003):** this cycle's proposals against the lower plan's `proposals_per_cycle` join `PLAN_CHANGE_BLOCKS` (`packages/domain` `commerce/plan-change.ts`) as `proposals_this_cycle`, counted in the api's `plan-change.preview.service.ts` and in its digest (`SCR-M12-03` frame s7: `Proposals this month · 41 of 30`).
 
 **Requirements (verbatim):**
 

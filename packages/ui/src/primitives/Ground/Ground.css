@@ -87,6 +87,8 @@
 .hg-dt-total-block,
 /* The billing home's two record rows (`SCR-M12-02`, `Payment reminders` and `Plan history`). */
 .hg-list-row.hg-billing-record,
+/* The plans' Enterprise and `Compare all plans` rows, at rest (`SCR-M12-03`). */
+.hg-list-row.hg-plans-rest,
 .hg-dt-card:not([data-editable="true"]) {
   background: var(--fill);
   box-shadow: none;

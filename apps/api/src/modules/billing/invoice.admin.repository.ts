@@ -48,6 +48,11 @@ export interface InvoiceFor {
   readonly pack: MarketPack;
   /** The overage add-ons it bills (`M12-35`), listed after the plan line. */
   readonly addOns: readonly CollectedAddOn[];
+  /**
+   * An upgrade's part-cycle charge (`M12-48`): the plan line bills it in place of the plan's list
+   * price, and the invoice issues as the one-time `proration` kind.
+   */
+  readonly proration?: MinorUnits;
 }
 
 /** A reader on either pool: the renewal works its total out before its transaction opens. */
@@ -70,7 +75,10 @@ export async function workOutInvoice(db: Reader, invoice: InvoiceFor) {
   if (plan === undefined) throw new Error(`no plan price ${invoice.planPriceId}`);
   const worked = platformInvoice(
     invoice.pack,
-    [minorUnits(plan.listMinor), ...invoice.addOns.map((addOn) => addOn.amount)],
+    [
+      invoice.proration ?? minorUnits(plan.listMinor),
+      ...invoice.addOns.map((addOn) => addOn.amount),
+    ],
     await companyRegistration(db, invoice.tenantId, invoice.pack),
   );
   return { planPriceId: plan.id, ...worked };
@@ -99,7 +107,7 @@ export async function issueInvoice(
       subscriptionId: invoice.subscriptionId,
       marketCode: pack.market,
       number,
-      kind: 'cycle',
+      kind: invoice.proration === undefined ? ('cycle' as const) : ('proration' as const),
       currencyCode: worked.currency,
       paysThrough: new Date(invoice.paysThrough),
       issuedAt: new Date(invoice.issuedAt),

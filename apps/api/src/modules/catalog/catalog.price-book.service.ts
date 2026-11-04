@@ -11,8 +11,12 @@ import {
   priceBookContract,
   type RoleSet,
 } from '@heliogrid/contracts';
-import { basisPointsToPercent, PLATFORM_DEFAULT_MARGIN } from '@heliogrid/domain';
-import { minorUnitsOfDecimal, minorUnitsToDecimal } from '@heliogrid/domain/server';
+import {
+  basisPointsToPercent,
+  minorUnitsOfDecimal,
+  PLATFORM_DEFAULT_MARGIN,
+} from '@heliogrid/domain';
+import { minorUnitsToDecimal } from '@heliogrid/domain/server';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
 import { CreationReplies, creationKeyOf } from '../../common/creation-key';

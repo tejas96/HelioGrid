@@ -1,7 +1,9 @@
 import type { PricingPlan, PricingSet } from '@heliogrid/data/react';
-import { PRICING, planName } from '@heliogrid/i18n';
+import { type PlanWords, PRICING, planName } from '@heliogrid/i18n';
+import type { useTranslate } from '@heliogrid/i18n/react';
 import type { CompareAttribute, CompareOption } from '@heliogrid/ui';
-import type { PlanWords, Translate } from './plan-words';
+
+type Translate = ReturnType<typeof useTranslate>;
 
 /**
  * The comparison's rows for one set — `SCR-M12-03`'s set words, `Limits` · `Included` ·

@@ -88,6 +88,8 @@ function functionsWithin(value: unknown, seen = new Set<unknown>()): Set<unknown
 type ReviewedComputesNothing =
   /* mints the brand over a value the wire or a pack already holds */
   | 'minorUnits'
+  /* reads the wire's decimal text as the minor units it already holds, refusing a fraction, never rounding */
+  | 'minorUnitsOfDecimal'
   /* read a figure out of a pack as written */
   | 'tierRow'
   | 'listedPrice'

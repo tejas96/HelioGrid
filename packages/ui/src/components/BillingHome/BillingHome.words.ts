@@ -89,6 +89,15 @@ export interface BillingViewWords {
   power(amount: string, unit: string): TranslatedText;
   /** `Payment link · yearly`. */
   linkCycle(cycle: BillingCycle): TranslatedText;
+  /** A downgrade or cycle switch waiting for the paid period's end (frame 16). */
+  readonly scheduledChange: {
+    movingTo(tier: Tier): TranslatedText;
+    movingToCycle(cycle: BillingCycle): TranslatedText;
+    readonly scheduled: TranslatedText;
+    readonly on: TranslatedText;
+    keepInstead(tier: Tier): TranslatedText;
+    nothingUntil(date: string): TranslatedText;
+  };
 }
 
 /** The record words the view and the strip use. */
