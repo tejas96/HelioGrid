@@ -120,13 +120,6 @@ Owner ruling 2026-10-29: a board draws the nearest real component, never a look-
 
 Drawn at 375 only (at 1536 the phone's answer holds at width): `loading`, `empty`, `error`, `trial-countdown-d7-prominent`, `trial-expired-soft-block` (its denial is `typed-denial-with-reactivate-route`'s centred modal), `past-due-day0-3-banner`, `day6-final-warning-one-tap-pay`, `cap-100-grace`, `cap-post-grace-paused`.
 
-## Redesign owed
-
-- Every frame that names AI detections — the day-4 `Paused` list, `Still works` on days 0–3, the dated pause row and the halted list — names voice calls and teammate invites only: the product has no automatic roof detection (owner ruling 2026-11-01).
-
-- `s-protected` draws a protected tenant's day-4 strip with the forfeiture disclosure, but no company keeps a launch price (`BM-42`, `M12-39`, owner ruling 2026-10-31): the board's next redraw drops that frame, and no strip carries a disclosure line.
-- The failed charge's `Amount` is drawn as ₹4,718.82 on invoice `HG-INV-2026-0902`, but the platform collects no GST until it registers (`F1-29`, owner ruling 2026-10-30) and issues numbers as `<fiscal year>/<sequence>` (`T-M12-012a`): the board's next redraw follows `SCR-M12-02` — ₹3,999.00 on invoice `2026-27/000902`.
-
 ## Data volume
 
 One banner at a time: gates compose with one rule — the broadest true fact speaks (state before cap, cap before bundle), so a user never gets two banners for one act (M12 §M12.4 behavior detail). The ladder is five rungs plus post-halt weekly × 4 then monthly (M12-39); the cap ladder is 80% → 100% → 7-day grace → pause (M12-30). Design the denial sheet's "what still works" list at the always-works set's real length — four items at `halted` (M12-39).
