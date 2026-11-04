@@ -36,9 +36,10 @@ appId: com.heliogrid.app
 - extendedWaitUntil:
     visible: ${CHOOSE_A_PLAN}
     timeout: 15000
-# A trial's cards carry no relation chip; the card's name leads it (decision 3).
+# A trial's cards carry no relation chip; the card's name leads it (decision 3). The word
+# boundary keeps the bottom bar's `Projects` tab from matching `Pro`.
 - tapOn:
-    text: "${PLAN_PRO}.*"
+    text: "${PLAN_PRO}\\b.*"
 - scrollUntilVisible:
     element: ${REVIEW_CHANGE}
     centerElement: true
