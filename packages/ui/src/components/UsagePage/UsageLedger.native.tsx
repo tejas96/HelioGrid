@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { figure } from '../BillingHome/BillingHome.values';
-import { BillingValueText } from '../BillingHome/BillingValue.native';
+import { BillingValueText } from '../BillingStrip/BillingValue.native';
 import { Button } from '../Button/Button.native';
 import { EditorSurface } from '../EditorSurface/EditorSurface.native';
 import { ListRow } from '../ListRow/ListRow.native';

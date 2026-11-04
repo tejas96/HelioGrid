@@ -2,13 +2,12 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { BillingCycle, MinorUnits, Tier } from '@heliogrid/domain';
 import type { Ref } from 'react';
 import type { FocusAfter } from '../../primitives/FocusAfter/FocusAfter.types';
+import type { BillingChip, BillingFact } from '../BillingHome/BillingHome.types';
 import type {
-  BillingChip,
-  BillingFact,
   BillingStripView,
   BillingValue,
   BillingWorkingPart,
-} from '../BillingHome/BillingHome.types';
+} from '../BillingStrip/BillingStrip.types';
 import type { CompareAttribute, CompareOption } from '../CompareGrid';
 import type { PlanCardFigure, PlanCardLine } from '../PlanCard/PlanCard.types';
 import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';

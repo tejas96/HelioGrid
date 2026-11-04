@@ -3,7 +3,7 @@ import type { Tier } from '@heliogrid/domain';
 import {
   BILLING_HOME,
   BILLING_STATE_WORD,
-  billingRecordWords,
+  billingStripWords,
   createTranslator,
   PLAN_SELECTION,
   PRICING,
@@ -159,7 +159,7 @@ test('an expired trial picks its plan here while its work still reads and export
   });
   await openPlans(page);
   /* The strip says what still works — reading and export — with no act: its act led here. */
-  await expect(page.getByText(billingRecordWords(en.t).stillWorks).first()).toBeVisible();
+  await expect(page.getByText(billingStripWords(en.t).stillWorks).first()).toBeVisible();
   const held = page.getByRole('region', { name: en.t(BILLING_HOME.yourPlan) });
   await expect(held).toContainText(en.t(BILLING_STATE_WORD.expired));
   await plan(page, 'growth').click();

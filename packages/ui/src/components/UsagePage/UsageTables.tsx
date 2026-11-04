@@ -1,7 +1,7 @@
 import type { TranslatedText, UsageEventMeter } from '@heliogrid/contracts';
 import { ShellGlyph } from '../AppShell';
 import { BillingChipMark } from '../BillingHome/BillingNeeds';
-import { BillingValueText } from '../BillingHome/BillingValue';
+import { BillingValueText } from '../BillingStrip/BillingValue';
 import { Block } from '../Block';
 import { Button } from '../Button';
 import { DataTable, type DataTableColumn } from '../DataTable';

@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
-import { BillingValueText } from '../BillingHome/BillingValue.native';
+import { BillingValueText } from '../BillingStrip/BillingValue.native';
 import { Block } from '../Block/Block.native';
 import { Button } from '../Button/Button.native';
 import { Card } from '../Card/Card.native';

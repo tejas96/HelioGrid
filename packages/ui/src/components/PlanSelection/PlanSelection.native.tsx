@@ -6,7 +6,7 @@ import { Text } from '../../primitives/Text/Text.native';
 import { Banner } from '../Banner/Banner.native';
 import { BannerAction } from '../Banner/BannerAction.native';
 import { BannerStack } from '../Banner/BannerStack.native';
-import { BillingStrip } from '../BillingHome/BillingNeeds.native';
+import { BillingStrip } from '../BillingStrip/BillingStrip.native';
 import { PlanComparison } from './PlanComparison.native';
 import { PlanHeld } from './PlanHeld.native';
 import { PlanPlans } from './PlanPlans.native';
@@ -24,7 +24,14 @@ export function PlanSelection(props: PlanSelectionProps) {
   return (
     <View style={styles.page}>
       {view.strip === null ? null : (
-        <BillingStrip strip={view.strip} moreLabel={words.bannerMore} />
+        <BillingStrip
+          strip={view.strip}
+          words={{
+            howWorkedOut: words.howWorkedOut,
+            derivationKinds: words.derivationKinds,
+            moreLabel: words.bannerMore,
+          }}
+        />
       )}
       {view.failure === null ? null : (
         <BannerStack mode="single" moreLabel={words.bannerMore}>

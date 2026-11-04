@@ -35,6 +35,7 @@ export type {
 } from './billing-notices';
 export {
   BILLING_NOTICES,
+  FINAL_WARNING_DAY,
   ladderBeginsAt,
   ladderOf,
   ladderStartOf,
@@ -44,6 +45,19 @@ export {
 } from './billing-notices';
 export type { BillingStandingFacts, StandingRow } from './billing-standing';
 export { billingStandingOf } from './billing-standing';
+export type {
+  BillingStripAudience,
+  BillingStripFact,
+  BillingStripGo,
+  BillingStripInput,
+  DunningRung,
+  StripSignal,
+} from './billing-strip';
+export {
+  billingStripAudienceOf,
+  billingStripFactOf,
+  TRIAL_CHIP_PROMINENT_DAYS,
+} from './billing-strip';
 export type { CancellationReason, CreditNoteArtefact } from './cancellation';
 export {
   CANCELLATION_REASONS,
@@ -265,9 +279,10 @@ export {
   storageRefuses,
   usagePeriodKey,
 } from './usage';
-export type { UsageStep, UsageStepName } from './usage-steps';
+export type { CapHeldStep, UsageStep, UsageStepName } from './usage-steps';
 export {
   bundleUsageStep,
+  CAP_HELD_STEPS,
   cappedUsageStep,
   overageBillsOn,
   storageUsageStep,

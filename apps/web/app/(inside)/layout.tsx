@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { SessionGate } from '../../features/auth';
+import { ShellBillingStrip } from '../../features/billing';
 import {
   CompanyProfileScreen,
   SetupInviteTeamScreen,
@@ -26,7 +27,7 @@ export default function InsideLayout({ children }: { children: ReactNode }) {
         'ready-step': <SetupReadyScreen />,
       }}
     >
-      <ShellScreen>{children}</ShellScreen>
+      <ShellScreen strip={<ShellBillingStrip />}>{children}</ShellScreen>
     </SessionGate>
   );
 }

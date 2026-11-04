@@ -1,6 +1,7 @@
 import type { BillingUsage } from '@heliogrid/contracts';
 import {
   BYTES_PER_GB,
+  CAP_HELD_STEPS,
   FIGURE_SLOT,
   MS_PER_DAY,
   scaledPower,
@@ -17,7 +18,7 @@ type Counted = BillingUsage['proposals'];
 /** The steps `Needs you` holds (decision 3): a bundle's overage never enters it (decision 16). */
 const NEEDS = new Set<string>(['warning', 'at_cap', 'grace', 'paused']);
 /** The steps that also offer `Bigger plans` on the meter itself (decision 12). */
-const SIGNAL = new Set<string>(['at_cap', 'grace', 'paused']);
+const SIGNAL = new Set<string>(CAP_HELD_STEPS);
 
 export const inNeeds = (step: Step) => NEEDS.has(step.step);
 export const isSignal = (step: Step) => SIGNAL.has(step.step);

@@ -1,6 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { Banner } from '../Banner';
-import { BillingValueText } from '../BillingHome/BillingValue';
+import { BillingValueText } from '../BillingStrip/BillingValue';
 import { Block } from '../Block';
 import { Button } from '../Button';
 import { Derivation } from '../Derivation';

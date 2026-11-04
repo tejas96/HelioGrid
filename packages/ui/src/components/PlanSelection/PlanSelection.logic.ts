@@ -1,7 +1,7 @@
 import type { BillingHome, BillingStanding, PublicPricingRead } from '@heliogrid/contracts';
 import { billingNeedOf, type Read } from '@heliogrid/domain';
-import { stripOf } from '../BillingHome/BillingHome.strip';
 import type { BillingInput } from '../BillingHome/BillingHome.words';
+import { pageStripOf } from '../BillingStrip/BillingStrip.logic';
 import { compareOf } from './PlanSelection.compare';
 import { heldOf, pickOf, readOnlyOf } from './PlanSelection.plans';
 import { reviewOf } from './PlanSelection.review';
@@ -61,7 +61,7 @@ function viewOf(
   const { facts, home, standing, book } = read;
   const ready = book !== null && facts !== null;
   return {
-    strip: standing === null ? null : stripOf(standing, words.strip, format, now),
+    strip: standing === null ? null : pageStripOf(standing, { words: words.strip, format, now }),
     failure:
       state.failure?.where === 'page'
         ? { title: words.failedPayment, line: words.failedPaymentLine }

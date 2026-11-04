@@ -132,6 +132,8 @@
   margin: -6px 0;
   padding: 0 var(--sp-0-5);
   flex-shrink: 0;
+  /* On its own line a long label (Hindi, or an amount in it) wraps inside the banner, never past it. */
+  max-width: 100%;
   /* The rectangle is invisible on purpose: field mode's blanket control rule would otherwise ring
      44px of empty air. The visible edge belongs to the pill. */
   box-shadow: none;
@@ -141,15 +143,17 @@
 .hg-banner-action-pill {
   display: inline-flex;
   align-items: center;
-  height: 32px;
-  padding: 0 var(--sp-3);
+  min-height: 32px;
+  padding: var(--sp-1) var(--sp-3);
+  box-sizing: border-box;
   border-radius: var(--r-pill);
   /* The opposite of what holds it (F7-15): the banner's tint is a tile ground, so white. */
   background: var(--hg-control-fill);
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-medium);
   color: var(--text-primary);
-  white-space: nowrap;
+  /* Words wrap: a translated label clips if it may not (`.claude/rules/ui-adherence.md`). */
+  white-space: normal;
 }
 
 /* ── BannerStack ────────────────────────────────────────────────────────────── */

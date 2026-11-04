@@ -1,5 +1,5 @@
 import { MS_PER_DAY } from '../format/zone';
-import { PAST_DUE_GRACE_DAYS, type SubscriptionClock } from './lifecycle';
+import { METERED_PAUSE_DAY, PAST_DUE_GRACE_DAYS, type SubscriptionClock } from './lifecycle';
 import type { BillingState } from './states';
 
 /**
@@ -47,12 +47,15 @@ export function ladderOf(notice: BillingNotice): NoticeLadder {
   return RULES[notice].ladder;
 }
 
+/** `M12-39` — the final warning and its one-tap pay link come on this day of the grace. */
+export const FINAL_WARNING_DAY = 6;
+
 /** `M12-39` — the ladder's fixed rungs, in whole days from the first failed charge. */
 const DUNNING_RUNGS: readonly { readonly notice: BillingNotice; readonly day: number }[] = [
   { notice: 'payment_failed', day: 0 },
   { notice: 'payment_reminder', day: 2 },
-  { notice: 'metered_paused', day: 4 },
-  { notice: 'final_warning', day: 6 },
+  { notice: 'metered_paused', day: METERED_PAUSE_DAY },
+  { notice: 'final_warning', day: FINAL_WARNING_DAY },
   { notice: 'halted', day: PAST_DUE_GRACE_DAYS },
 ];
 

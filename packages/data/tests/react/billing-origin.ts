@@ -3,6 +3,7 @@ import type {
   BillingDocumentRow,
   BillingHome,
   BillingStanding,
+  BillingUsageSignals,
   PlanChangePreview,
   SessionProjection,
 } from '@heliogrid/contracts';
@@ -75,6 +76,8 @@ interface Origin {
   downloads: Answer[];
   documents: BillingDocumentRow[];
   reminders: { id: string; notice: string; firedAt: string; clearedAt: null; paidAt: null }[];
+  /** Which meters stand at their cap, as any member reads them. */
+  signals: BillingUsageSignals['signals'];
   /** Every request but the session's and the preflight's, in order. */
   requests: Request[];
 }
@@ -87,6 +90,7 @@ export const origin: Origin = {
   downloads: [],
   documents: [],
   reminders: [],
+  signals: [],
   requests: [],
 };
 
@@ -142,6 +146,7 @@ function answerRead(req: IncomingMessage, res: ServerResponse) {
   origin.requests.push(request);
   if (path === '/billing/home') return send(res, req, 200, origin.home);
   if (path === '/billing/standing') return send(res, req, 200, standingOf());
+  if (path === '/billing/usage/signals') return send(res, req, 200, { signals: origin.signals });
   if (path === '/tenants/me/owners')
     return send(res, req, 200, { owners: [{ name: 'Rajesh Sharma' }], more: 0 });
   if (path === '/tenants/me') return send(res, req, 200, TENANT_READ);
@@ -203,11 +208,12 @@ afterEach(() => {
     downloads: [],
     documents: [],
     reminders: [],
+    signals: [],
     requests: [],
   });
 });
 
-const wrapperOf = () => {
+export const wrapperOf = () => {
   const layer = createDataLayer({ baseUrl: listening.url(), language: () => 'en' });
   return ({ children }: { children: ReactNode }) =>
     createElement(DataProvider, { layer, children });

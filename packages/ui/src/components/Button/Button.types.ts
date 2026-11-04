@@ -3,6 +3,12 @@ import type { ReactNode, Ref } from 'react';
 import type { FocusAfter, FocusHandle } from '../../primitives/FocusAfter';
 import type { ActionReasonSentence } from '../ActionReason/ActionReason.types';
 
+/** A label's figures, and the whole line as a screen reader hears it. */
+export interface ButtonFigures {
+  readonly values: readonly string[];
+  readonly spoken: TranslatedText;
+}
+
 /** primary = near-black (default, the identity marker); never make it coloured. */
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'destructive';
 
@@ -17,6 +23,12 @@ export interface ButtonProps {
    * `IconButton`, whose `label` is required.
    */
   children: TranslatedText;
+  /**
+   * The figures the words hold as `FIGURE_SLOT`s — an amount in *Pay ₹3,999.00 now* — each drawn
+   * in mono where the translation placed it (`F7-09`). The drawn runs are hidden from a screen
+   * reader, so the line it hears, figures in place, comes with them.
+   */
+  figures?: ButtonFigures;
   /** primary = near-black (default, the identity marker); never make it coloured */
   variant?: ButtonVariant;
   size?: ButtonSize;

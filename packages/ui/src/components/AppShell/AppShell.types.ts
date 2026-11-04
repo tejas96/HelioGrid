@@ -178,6 +178,11 @@ export interface AppShellProps {
   rail?: ReactNode;
   /** `<AppHeader />`. */
   header?: ReactNode;
+  /**
+   * `SCR-SHELL-06`'s billing strip: pinned between the header and the scrolling content, never in
+   * the header (decision 12) and never scrolled away. The slot part draws its own room.
+   */
+  strip?: ReactNode;
   children?: ReactNode;
 }
 

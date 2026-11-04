@@ -8,6 +8,7 @@ import {
   type BillingStandingFacts,
   billedQuantityOf,
   bundleUsageStep,
+  CAP_HELD_STEPS,
   cappedUsageStep,
   type EntitlementKey,
   type MarketPack,
@@ -42,7 +43,7 @@ const SECONDS_PER_MINUTE = 60;
 const NOT_COUNTED_YET = 0;
 
 /** The steps a person who is not the Owner may see, by name only (`M12-56`). */
-const SIGNALLED: ReadonlySet<string> = new Set<UsageStep['step']>(['at_cap', 'grace', 'paused']);
+const SIGNALLED: ReadonlySet<string> = new Set(CAP_HELD_STEPS);
 
 /**
  * The usage screen (`SCR-M12-04`): this cycle's rollups against the company's limits, read by the

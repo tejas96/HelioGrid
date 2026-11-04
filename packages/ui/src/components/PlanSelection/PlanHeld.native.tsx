@@ -1,7 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { BillingStatusChip } from '../BillingHome/BillingNeeds.native';
-import { BillingValueText } from '../BillingHome/BillingValue.native';
+import { BillingValueText } from '../BillingStrip/BillingValue.native';
 import { Block } from '../Block/Block.native';
 import { Explainer } from '../Explainer/Explainer.native';
 import { FactRow } from '../FactRow/FactRow.native';

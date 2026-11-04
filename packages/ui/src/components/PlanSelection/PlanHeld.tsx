@@ -1,6 +1,6 @@
 import { BillingChipMark } from '../BillingHome/BillingNeeds';
 import { BillingPairs } from '../BillingHome/BillingPairs';
-import { BillingValueText } from '../BillingHome/BillingValue';
+import { BillingValueText } from '../BillingStrip/BillingValue';
 import { Block } from '../Block';
 import { Explainer } from '../Explainer';
 import { FactRow } from '../FactRow';

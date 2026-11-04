@@ -24,6 +24,7 @@ export * from './copy/banner';
 export * from './copy/billing-home';
 export { billingCapabilityName, billingNoticeWords } from './copy/billing-notices';
 export * from './copy/billing-records';
+export * from './copy/billing-strip';
 export * from './copy/block';
 export type { BrandColourFieldWords } from './copy/brand-colour-field';
 export { brandColourFieldWords } from './copy/brand-colour-field';

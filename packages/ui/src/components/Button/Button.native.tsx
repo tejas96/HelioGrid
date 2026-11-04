@@ -1,14 +1,14 @@
 import { theme } from '@heliogrid/theme';
 import { useId, useImperativeHandle, useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
-import { ActivityIndicator, StyleSheet, type View } from 'react-native';
+import { ActivityIndicator, Text as RNText, StyleSheet, type View } from 'react-native';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ReasonTriggerProps } from '../ActionReason/ActionReason.types';
 import { ReasonExplainer } from '../ActionReason/ReasonExplainer.native';
-import { isStatedOff, toneOf } from './Button.logic';
+import { isStatedOff, labelRunsOf, toneOf } from './Button.logic';
 import type { ButtonProps, ButtonSize, ButtonTone, ButtonVariant } from './Button.types';
 
 interface NativeButtonProps extends ButtonProps {
@@ -54,6 +54,8 @@ const LABEL_SIZE: Record<ButtonSize, TextStyle> = {
 };
 
 const styles = StyleSheet.create({
+  /* `F7-09`: a figure in the label changes only its face; size and colour stay the label's. */
+  figure: { fontFamily: theme.type.families.mono, fontVariant: ['tabular-nums'] },
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -84,6 +86,7 @@ const styles = StyleSheet.create({
  */
 export function Button({
   children,
+  figures,
   variant = 'primary',
   size = 'lg',
   disabled = false,
@@ -115,7 +118,7 @@ export function Button({
     : restColor;
   /* Named by its words even while the spinner stands in for them, so a button that is working
      keeps its name (`F7-26`). */
-  const name = spokenName ?? children;
+  const name = spokenName ?? figures?.spoken ?? children;
 
   const pill = (reason?: ReasonTriggerProps) => {
     const open = expanded ?? reason?.expanded;
@@ -146,7 +149,9 @@ export function Button({
         ) : (
           <>
             {icon}
-            <Text style={[styles.label, LABEL_SIZE[size], { color: labelColor }]}>{children}</Text>
+            <Text style={[styles.label, LABEL_SIZE[size], { color: labelColor }]}>
+              {labelOf(children, figures?.values)}
+            </Text>
             {iconRight}
           </>
         )}
@@ -185,4 +190,19 @@ function pillState(loading: boolean, open: boolean | undefined, reasoned: boolea
 /* There is no off-screen text node to describe the pill by, so it speaks the sentence after its name. */
 function spokenWithReason(name: string, reason?: ReasonTriggerProps): string {
   return reason?.spokenReason === undefined ? name : `${name}, ${reason.spokenReason}`;
+}
+
+/** The words, or the words with each figure in mono; the button's name carries the whole line. */
+function labelOf(label: string, figures: readonly string[] | undefined) {
+  if (figures === undefined) return label;
+  return labelRunsOf(label, figures).map((run, index) =>
+    run.mono ? (
+      // biome-ignore lint/suspicious/noArrayIndexKey: runs are positional slices of one label
+      <RNText key={index} style={styles.figure}>
+        {run.text}
+      </RNText>
+    ) : (
+      run.text
+    ),
+  );
 }

@@ -1,6 +1,6 @@
 import type { PublicPricingRead, TenantOwners, TranslatedText } from '@heliogrid/contracts';
 import type { BillingCycle, PackLabel, ScaledPower, Tier, TierLimit } from '@heliogrid/domain';
-import type { BillingStripWords, BillingViewWords } from '../BillingHome/BillingHome.words';
+import type { BillingPageStripWords, BillingViewWords } from '../BillingHome/BillingHome.words';
 import type { CompareGridWords } from '../CompareGrid';
 import type { DerivationKindWords } from '../Derivation/Derivation.types';
 import type { MoneySummaryWords } from '../MoneySummary/MoneySummary.types';
@@ -31,7 +31,7 @@ export interface PlanBookWords {
  */
 export interface PlanSelectionWords {
   readonly view: BillingViewWords;
-  readonly strip: BillingStripWords;
+  readonly strip: BillingPageStripWords;
   readonly moneySummary: MoneySummaryWords;
   readonly compareGrid: CompareGridWords;
   readonly compareSelect: TranslatedText;

@@ -1,6 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { ShellGlyph } from '../AppShell';
-import { Banner, BannerStack } from '../Banner';
+import { BillingValueText } from '../BillingStrip/BillingValue';
 import { Block } from '../Block';
 import { Button } from '../Button';
 import { Derivation } from '../Derivation';
@@ -13,46 +13,10 @@ import type {
   BillingChip,
   BillingHomeWords,
   BillingNeedsView,
-  BillingStripView,
   BillingWorkingPart,
 } from './BillingHome.types';
-import { BillingValueText } from './BillingValue';
 
 /** Each strip row's mark — the word beside it carries the fact, the mark only repeats it. */
-const STRIP_MARK = {
-  paused: <ShellGlyph name="pause" size="sm" tone="warning" />,
-  works: <ShellGlyph name="tick" size="sm" tone="success" />,
-  until: <ShellGlyph name="clock" size="sm" tone="secondary" />,
-} as const;
-
-/** `SCR-SHELL-06`'s strip as this page draws it: no act and no amount row (frames 7a, 8, 10, 11, 13). */
-export function BillingStrip({
-  strip,
-  moreLabel,
-}: {
-  strip: BillingStripView;
-  moreLabel: (hidden: number) => TranslatedText;
-}) {
-  return (
-    <BannerStack mode="single" moreLabel={moreLabel}>
-      <Banner kind={strip.kind} title={strip.title}>
-        <div className="hg-billing-strip-rows">
-          <FactRows label={strip.title} density="expressive" form="lead">
-            {strip.rows.map((row) => (
-              <FactRow
-                key={row.key}
-                mark={STRIP_MARK[row.mark]}
-                label={row.label}
-                value={<BillingValueText value={row.value} />}
-              />
-            ))}
-          </FactRows>
-        </div>
-      </Banner>
-    </BannerStack>
-  );
-}
-
 export function BillingChipMark({ chip }: { chip: BillingChip }) {
   return <StatusChip label={chip.word} tone={chip.tone} density="expressive" />;
 }

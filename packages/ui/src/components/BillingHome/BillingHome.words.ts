@@ -1,12 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type {
-  BillingCycle,
-  BillingNeed,
-  BillingPhase,
-  BillingState,
-  Tier,
-} from '@heliogrid/domain';
+import type { BillingCycle, BillingNeed, BillingState, Tier } from '@heliogrid/domain';
 import type { MarketFormat } from '../../utils/format';
+import type { BillingStripWords } from '../BillingStrip/BillingStrip.types';
 
 /**
  * The words the view is built from — `@heliogrid/i18n`'s `billingViewWords` and
@@ -100,32 +95,20 @@ export interface BillingViewWords {
   };
 }
 
-/** The record words the view and the strip use. */
-export interface BillingStripWords {
-  readonly paused: TranslatedText;
-  readonly stillWorks: TranslatedText;
-  readonly everything: TranslatedText;
-  readonly until: TranslatedText;
-  readonly haltedTitle: TranslatedText;
-  readonly subscriptionEnded: TranslatedText;
+/** The strip's words, and the record chips' words the invoice rows use. */
+export interface BillingPageStripWords extends BillingStripWords {
   readonly paid: TranslatedText;
   readonly failed: TranslatedText;
   readonly issued: TranslatedText;
   readonly refunded: TranslatedText;
   readonly creditNote: TranslatedText;
-  graceDay(day: number, early: boolean): TranslatedText;
-  trialEndedOn(date: string): TranslatedText;
-  matrix(phase: BillingPhase): {
-    readonly paused: TranslatedText;
-    readonly stillWorks: TranslatedText;
-  };
 }
 
 /** What every builder reads. */
 export interface BillingInput {
   readonly need: BillingNeed;
   readonly words: BillingViewWords;
-  readonly stripWords: BillingStripWords;
+  readonly stripWords: BillingPageStripWords;
   readonly format: MarketFormat;
   /** The market's name in the reader's language — the price list's source line. */
   readonly marketName: string;

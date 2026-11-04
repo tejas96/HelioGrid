@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { ApiError } from '../../src/errors/errors';
 import { useAction } from '../../src/react/action';
 
 /** A send held open until the test lets it answer, so two runs truly overlap. */
@@ -85,5 +86,20 @@ describe('useAction', () => {
     expect((view.result.current.failure as Error).message).toBe('refused');
     act(() => view.result.current.clear());
     expect(view.result.current.failure).toBeNull();
+  });
+  it('useAction: a save the billing gate refused leaves no failure line, the denial says it', async () => {
+    const refused = new ApiError(403, 'paused', { code: 'ENTITLEMENT_BLOCKED', requestId: 'r' });
+    const other = new ApiError(403, 'forbidden', { code: 'FORBIDDEN', requestId: 'r' });
+    const view = renderHook(() => useAction((error: ApiError) => Promise.reject(error)));
+    let answer: unknown = null;
+    await act(async () => {
+      answer = await view.result.current.run(refused);
+    });
+    expect(answer).toEqual({ kind: 'failed', error: refused });
+    expect(view.result.current.failure).toBeNull();
+    await act(async () => {
+      await view.result.current.run(other);
+    });
+    expect(view.result.current.failure).toBe(other);
   });
 });

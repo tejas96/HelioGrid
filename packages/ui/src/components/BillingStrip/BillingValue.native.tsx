@@ -4,7 +4,7 @@ import { Text as RNText, StyleSheet } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextColor, TextVariant } from '../../primitives/Text/Text.types';
 import type { DerivationPart } from '../Derivation/Derivation.types';
-import type { BillingValue, BillingWorkingPart } from './BillingHome.types';
+import type { BillingValue, BillingWorkingPart } from './BillingStrip.types';
 
 /**
  * A value's runs as a line's children: a figure's run changes the face to mono with tabular

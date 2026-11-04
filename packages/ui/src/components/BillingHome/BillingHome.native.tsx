@@ -4,13 +4,14 @@ import { StyleSheet, View } from 'react-native';
 import { landFocusOn } from '../../primitives/FocusAfter';
 import { tileSurface } from '../../primitives/Ground/Ground.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
+import { BillingStrip } from '../BillingStrip/BillingStrip.native';
 import { Block } from '../Block/Block.native';
 import { Button } from '../Button/Button.native';
 import { ListRow } from '../ListRow/ListRow.native';
 import { bodyActingOf, retryLandingOn } from './BillingHome.logic';
 import type { BillingHomeProps } from './BillingHome.types';
 import { BillingInvoices } from './BillingInvoiceRows.native';
-import { BillingNeeds, BillingStrip } from './BillingNeeds.native';
+import { BillingNeeds } from './BillingNeeds.native';
 import { BillingMethod, BillingPlan, BillingUsage } from './BillingPlan.native';
 import { useNeedsFocus } from './use-needs-focus';
 
@@ -81,7 +82,14 @@ function BillingReady({
   return (
     <View style={styles.page}>
       {props.strip === null ? null : (
-        <BillingStrip strip={props.strip} moreLabel={words.bannerMore} />
+        <BillingStrip
+          strip={props.strip}
+          words={{
+            howWorkedOut: words.howWorkedOut,
+            derivationKinds: words.derivationKinds,
+            moreLabel: words.bannerMore,
+          }}
+        />
       )}
       {props.needs === null ? null : (
         /* A landed cancel or refund hands the screen reader here (`BillingHomeFocus`). */

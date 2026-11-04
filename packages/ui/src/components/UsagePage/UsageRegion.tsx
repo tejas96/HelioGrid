@@ -2,7 +2,7 @@ import type { TranslatedText, UsageEventMeter } from '@heliogrid/contracts';
 import { ShellGlyph } from '../AppShell';
 import type { BillingValue } from '../BillingHome/BillingHome.types';
 import { BillingChipMark } from '../BillingHome/BillingNeeds';
-import { BillingValueText } from '../BillingHome/BillingValue';
+import { BillingValueText } from '../BillingStrip/BillingValue';
 import { Block } from '../Block';
 import { FactRow, FactRows } from '../FactRow';
 import { IconButton } from '../IconButton';

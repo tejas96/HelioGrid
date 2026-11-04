@@ -169,3 +169,9 @@
   display: inline-block;
   animation: hg-spin 0.7s linear infinite;
 }
+
+/* `F7-09`: a figure inside the words keeps the label's size and colour, in the mono face. */
+.hg-button-figure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}

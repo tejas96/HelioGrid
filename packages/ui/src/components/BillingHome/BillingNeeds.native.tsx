@@ -4,8 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextColor } from '../../primitives/Text/Text.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
-import { Banner } from '../Banner/Banner.native';
-import { BannerStack } from '../Banner/BannerStack.native';
+import { BillingValueText, workingParts } from '../BillingStrip/BillingValue.native';
 import { Block } from '../Block/Block.native';
 import { Button } from '../Button/Button.native';
 import { Derivation } from '../Derivation/Derivation.native';
@@ -20,47 +19,11 @@ import type {
   BillingHomeProps,
   BillingNeedRow,
   BillingNeedsView,
-  BillingStripView,
 } from './BillingHome.types';
-import { BillingValueText, workingParts } from './BillingValue.native';
 
 /** A state's word as a chip: the word and its tone's mark (`F7-12`). */
 export function BillingStatusChip({ chip }: { chip: BillingChip }) {
   return <StatusChip label={chip.word} tone={chip.tone} density="expressive" />;
-}
-
-const STRIP_MARK = {
-  paused: <ShellGlyph name="pause" size="sm" tone="warning" />,
-  works: <ShellGlyph name="tick" size="sm" tone="success" />,
-  until: <ShellGlyph name="clock" size="sm" tone="secondary" />,
-} as const;
-
-/** `SCR-SHELL-06`'s strip as this page draws it: a title, then rows of one family, no act. */
-export function BillingStrip({
-  strip,
-  moreLabel,
-}: {
-  strip: BillingStripView;
-  moreLabel: (hidden: number) => TranslatedText;
-}) {
-  return (
-    <BannerStack mode="single" moreLabel={moreLabel}>
-      <Banner kind={strip.kind} title={strip.title}>
-        <View style={styles.stripBody}>
-          <FactRows label={strip.title} density="expressive" form="lead">
-            {strip.rows.map((row) => (
-              <FactRow
-                key={row.key}
-                mark={STRIP_MARK[row.mark]}
-                label={row.label}
-                value={<BillingValueText value={row.value} align="start" />}
-              />
-            ))}
-          </FactRows>
-        </View>
-      </Banner>
-    </BannerStack>
-  );
 }
 
 /** The line under a row takes its chip's ink; a row with no chip has no line. */
@@ -171,7 +134,6 @@ export function BillingNeeds({
 }
 
 const styles = StyleSheet.create({
-  stripBody: { marginTop: theme.spacing['sp-2'] },
   needs: { gap: theme.spacing['sp-4'] },
   /** The row sits on the region's own edges, so its figure ends on the region's right edge. */
   needRow: {

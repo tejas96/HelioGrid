@@ -5,10 +5,10 @@ import type {
   TranslatedText,
 } from '@heliogrid/contracts';
 import { BYTES_PER_GB } from '@heliogrid/domain';
+import { pageStripOf } from '../BillingStrip/BillingStrip.logic';
 import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';
 import { needsOf } from './BillingHome.needs';
 import { planChipOf, planOf, priceListOf } from './BillingHome.plan';
-import { stripOf } from './BillingHome.strip';
 import type {
   BillingBodyActing,
   BillingChip,
@@ -20,7 +20,7 @@ import type {
   BillingUsageView,
 } from './BillingHome.types';
 import { dateRow, fact } from './BillingHome.values';
-import type { BillingInput, BillingStripWords } from './BillingHome.words';
+import type { BillingInput, BillingPageStripWords } from './BillingHome.words';
 
 export type { BillingInput } from './BillingHome.words';
 
@@ -64,7 +64,11 @@ export function billingHomeViewOf(
   if (facts.kind === 'member') return memberViewOf(input, facts.standing, facts.scope);
   const { home } = facts;
   return {
-    strip: stripOf(home.standing, input.stripWords, input.format, input.now),
+    strip: pageStripOf(home.standing, {
+      words: input.stripWords,
+      format: input.format,
+      now: input.now,
+    }),
     needs: needsOf(input, home),
     plan: planOf(input, home),
     usage: usageOf(input, home),
@@ -110,7 +114,7 @@ function memberViewOf(
       : null;
   const next = standing.state === 'trialing' ? null : standing.paidPeriodEnd;
   return {
-    strip: stripOf(standing, input.stripWords, format, input.now),
+    strip: pageStripOf(standing, { words: input.stripWords, format, now: input.now }),
     needs,
     plan: {
       chip: planChipOf(words, standing, input.now),
@@ -239,7 +243,7 @@ function invoiceSourceOf(input: BillingInput, home: BillingHome): TranslatedText
 
 /** An invoice's state, or a credit note's own word; a state this release does not know is neutral. */
 export function documentChipOf(
-  words: BillingStripWords,
+  words: BillingPageStripWords,
   document: 'invoice' | 'credit_note',
   status: string | null,
 ): BillingChip {

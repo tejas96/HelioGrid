@@ -12,13 +12,14 @@ interface NativeAppShellProps extends AppShellProps {
  * equivalent here — scrolling belongs to the screen's own ScrollView or list, so this is a plain
  * flex region and never a second scroll container.
  */
-export function AppShell({ rail, header, children, style }: NativeAppShellProps) {
+export function AppShell({ rail, header, strip, children, style }: NativeAppShellProps) {
   const { ground } = useGround();
   return (
     <View style={[styles.shell, { backgroundColor: ground }, style]}>
       {rail}
       <View style={styles.column}>
         {header}
+        {strip}
         <View style={styles.main}>{children}</View>
       </View>
     </View>

@@ -1,8 +1,9 @@
 import { useUpdateRequired } from '@heliogrid/data/react';
 import { usePushRegistration } from '../push/usePushRegistration';
-import { UpdateRequired } from '../screens/shell';
+import { BillingDenialHost, UpdateRequired } from '../screens/shell';
 import { linkingOptions } from './linking';
 import { NavigationPhaseProvider } from './phase';
+import { navigationRef } from './ref';
 import { Navigation, reportUnhandledAction } from './root';
 
 /**
@@ -25,7 +26,12 @@ export function AppNavigation() {
   if (refusal !== null) return <UpdateRequired refusal={refusal} />;
   return (
     <NavigationPhaseProvider>
-      <Navigation linking={linkingOptions} onUnhandledAction={reportUnhandledAction} />
+      <Navigation
+        ref={navigationRef}
+        linking={linkingOptions}
+        onUnhandledAction={reportUnhandledAction}
+      />
+      <BillingDenialHost />
     </NavigationPhaseProvider>
   );
 }

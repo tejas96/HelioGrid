@@ -39,13 +39,17 @@ const styles = StyleSheet.create({
     marginVertical: -6,
     paddingHorizontal: theme.spacing['sp-0-5'],
     flexShrink: 0,
+    // On its own line a long label (Hindi, or an amount in it) wraps inside the banner.
+    maxWidth: '100%',
     backgroundColor: 'transparent',
   },
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 32,
+    minHeight: 32,
     paddingHorizontal: theme.spacing['sp-3'],
+    paddingVertical: theme.spacing['sp-1'],
+    flexShrink: 1,
     borderRadius: theme.radius['r-pill'],
   },
   words: {

@@ -37,15 +37,16 @@ import './shell.css';
  * page with Frame 8, on whichever route is open — every read is refused there. A device gone
  * offline sees the one no-connection screen instead of blocks that would wait forever (`F8-36`).
  */
-export function ShellScreen({ children }: { children: ReactNode }) {
+export function ShellScreen({ children, strip }: { children: ReactNode; strip?: ReactNode }) {
   return (
     <LeaveGuardProvider>
-      <ShellIn>{children}</ShellIn>
+      <ShellIn strip={strip}>{children}</ShellIn>
     </LeaveGuardProvider>
   );
 }
 
-function ShellIn({ children }: { children: ReactNode }) {
+/** `strip`: the billing strip (`SCR-SHELL-06`), pinned between the header and the page. */
+function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }) {
   const t = useTranslate();
   const screen = useShellScreen();
   const { shell, centre, grievance, connection, unread } = screen;
@@ -91,6 +92,7 @@ function ShellIn({ children }: { children: ReactNode }) {
   return (
     <AppShell
       className={centre.isOpen ? 'hg-shell hg-shell-centre-open' : 'hg-shell'}
+      strip={strip}
       rail={
         <AppRail
           label={t(SHELL.mainNavigation)}

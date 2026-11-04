@@ -1,7 +1,7 @@
 import { useImperativeHandle, useRef } from 'react';
 import { landFocusOn } from '../../primitives/FocusAfter';
 import { Banner, BannerAction, BannerStack } from '../Banner';
-import { BillingStrip } from '../BillingHome/BillingNeeds';
+import { BillingStrip } from '../BillingStrip';
 import { PlanComparison } from './PlanComparison';
 import { PlanHeld } from './PlanHeld';
 import { PlanPlans } from './PlanPlans';
@@ -20,7 +20,14 @@ export function PlanSelection(props: PlanSelectionProps) {
   return (
     <div className="hg-plans" data-layout={layout}>
       {view.strip === null ? null : (
-        <BillingStrip strip={view.strip} moreLabel={words.bannerMore} />
+        <BillingStrip
+          strip={view.strip}
+          words={{
+            howWorkedOut: words.howWorkedOut,
+            derivationKinds: words.derivationKinds,
+            moreLabel: words.bannerMore,
+          }}
+        />
       )}
       {view.failure === null ? null : (
         <BannerStack mode="single" moreLabel={words.bannerMore}>
