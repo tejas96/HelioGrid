@@ -15,7 +15,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { EntitlementBlockedException } from '../../common/errors/entitlement-blocked';
 import { EntitlementService } from './entitlement.service';
 import { UsageAdminRepository } from './usage.admin.repository';
-import { type StorageGauge, UsageRepository, type UsageWindow } from './usage.repository';
+import {
+  type LedgerEventRow,
+  type StorageGauge,
+  UsageRepository,
+  type UsageWindow,
+} from './usage.repository';
 
 /** Companies weighed per gauge step: one page stays well inside its step's timeout. */
 const GAUGE_PAGE = 200;
@@ -66,6 +71,29 @@ export class UsageService {
     window: UsageWindow,
   ): Promise<ReadonlyMap<CostLine, number>> {
     return this.sumsOf(tenantId, lines, window, 'total');
+  }
+
+  /**
+   * When a meter's total in the window first reached `units` ledger units — a full cap's
+   * `fullSince` — or `null` while it has not.
+   */
+  fullSinceOf(
+    tenantId: string,
+    meter: LedgerMeter,
+    window: UsageWindow,
+    units: number,
+  ): Promise<Date | null> {
+    return this.scoped.crossedAt(tenantId, meter, window, units);
+  }
+
+  /** One page of a meter's ledger rows in the window, newest first (`M12-36`'s ledger detail). */
+  eventsOf(
+    tenantId: string,
+    meter: LedgerMeter,
+    window: UsageWindow,
+    page: { readonly limit: number; readonly offset: number },
+  ): Promise<{ rows: LedgerEventRow[]; totalCount: number }> {
+    return this.scoped.eventsOf(tenantId, meter, window, page);
   }
 
   /** The latest nightly weight of a company's files; `null` before its first night. */

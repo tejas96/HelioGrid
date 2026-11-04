@@ -1,7 +1,13 @@
-import { storageGaugeSnapshot, type TenantPool, usageEvent } from '@heliogrid/db';
-import type { LedgerMeter } from '@heliogrid/domain';
+import {
+  storageGaugeSnapshot,
+  type TenantPool,
+  tenantMembership,
+  usageEvent,
+  userAccount,
+} from '@heliogrid/db';
+import { isBilledMeter, type LedgerMeter } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq, gte, inArray, lt, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, inArray, lt, sql } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
 
 /** A half-open window of instants, `[from, to)`. */
@@ -15,6 +21,15 @@ export interface MeterSum {
   readonly meter: LedgerMeter;
   readonly total: number;
   readonly billed: number;
+}
+
+/** One ledger row as the usage screen's events panel lists it. */
+export interface LedgerEventRow {
+  readonly id: string;
+  readonly occurredAt: Date;
+  readonly quantity: number;
+  /** The name of the person a `user_account` subject points at, in this company; else null. */
+  readonly person: string | null;
 }
 
 /** The latest nightly weight of a company's stored files. */
@@ -52,16 +67,83 @@ export class UsageRepository {
             ),
         })
         .from(usageEvent)
-        .where(
-          and(
-            eq(usageEvent.tenantId, tenantId),
-            inArray(usageEvent.meter, [...meters]),
-            gte(usageEvent.occurredAt, window.from),
-            lt(usageEvent.occurredAt, window.to),
-          ),
-        )
+        .where(this.inWindow(tenantId, meters, window))
         .groupBy(usageEvent.meter),
     );
+  }
+
+  /**
+   * The moment a meter's running total in the window first reached `threshold` units — when a
+   * capped count became full (`capStepOf`'s `fullSince`) — or `null` while it has not. The running
+   * sum walks `usage_event_tenant_meter_occurred_idx` in order and stops at the first row that
+   * reaches it.
+   */
+  async crossedAt(
+    tenantId: string,
+    meter: LedgerMeter,
+    window: UsageWindow,
+    threshold: number,
+  ): Promise<Date | null> {
+    const running = sql<number>`sum(${usageEvent.quantity}) over (order by ${usageEvent.occurredAt}, ${usageEvent.id})`;
+    const [row] = await this.db.withTenantTransaction(tenantId, (tx) => {
+      const totals = tx
+        .select({ occurredAt: usageEvent.occurredAt, total: running.as('total') })
+        .from(usageEvent)
+        // Billable rows only: the cap counts what bills, as `sumsOf`'s billed total does.
+        .where(and(this.inWindow(tenantId, [meter], window), eq(usageEvent.billable, true)))
+        .as('totals');
+      return tx
+        .select({ occurredAt: totals.occurredAt })
+        .from(totals)
+        .where(gte(totals.total, threshold))
+        .orderBy(asc(totals.occurredAt))
+        .limit(1);
+    });
+    return row?.occurredAt ?? null;
+  }
+
+  /**
+   * One page of a meter's events in the window, newest first, the id a unique tiebreak; the count
+   * runs over the same where. A `user_account` subject is named by the person's own name.
+   */
+  async eventsOf(
+    tenantId: string,
+    meter: LedgerMeter,
+    window: UsageWindow,
+    page: { readonly limit: number; readonly offset: number },
+  ): Promise<{ rows: LedgerEventRow[]; totalCount: number }> {
+    // A billed meter lists the rows its figure adds up; a cost line's rows never bill.
+    const where = isBilledMeter(meter)
+      ? and(this.inWindow(tenantId, [meter], window), eq(usageEvent.billable, true))
+      : this.inWindow(tenantId, [meter], window);
+    return this.db.withTenantTransaction(tenantId, async (tx) => {
+      const rows = await tx
+        .select({
+          id: usageEvent.id,
+          occurredAt: usageEvent.occurredAt,
+          quantity: usageEvent.quantity,
+          person: userAccount.name,
+        })
+        .from(usageEvent)
+        .leftJoin(
+          tenantMembership,
+          and(
+            eq(usageEvent.subjectKind, 'user_account'),
+            eq(tenantMembership.tenantId, usageEvent.tenantId),
+            eq(tenantMembership.userAccountId, usageEvent.subjectRef),
+          ),
+        )
+        .leftJoin(userAccount, eq(userAccount.id, tenantMembership.userAccountId))
+        .where(where)
+        .orderBy(desc(usageEvent.occurredAt), desc(usageEvent.id))
+        .limit(page.limit)
+        .offset(page.offset);
+      const [count] = await tx
+        .select({ totalCount: sql<number>`count(*)`.mapWith(Number) })
+        .from(usageEvent)
+        .where(where);
+      return { rows, totalCount: count?.totalCount ?? 0 };
+    });
   }
 
   /** The newest snapshot, by the primary key's order; `null` before the first night. */
@@ -78,5 +160,15 @@ export class UsageRepository {
         .limit(1),
     );
     return row ?? null;
+  }
+
+  /** A company's rows of these meters in a half-open window — the index's own columns. */
+  private inWindow(tenantId: string, meters: readonly LedgerMeter[], window: UsageWindow) {
+    return and(
+      eq(usageEvent.tenantId, tenantId),
+      inArray(usageEvent.meter, [...meters]),
+      gte(usageEvent.occurredAt, window.from),
+      lt(usageEvent.occurredAt, window.to),
+    );
   }
 }

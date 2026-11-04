@@ -55,6 +55,7 @@ export function ListRow({
   avatar,
   title,
   subtitle,
+  subtitleTone,
   gap,
   marks,
   provenance,
@@ -86,7 +87,11 @@ export function ListRow({
         {gapNode ? (
           <View style={styles.gap}>{gapNode}</View>
         ) : subtitle ? (
-          <Text variant="body-sm" color="secondary">
+          <Text
+            variant="body-sm"
+            color="secondary"
+            style={subtitleTone === undefined ? undefined : toned[subtitleTone]}
+          >
             {subtitle}
           </Text>
         ) : null}
@@ -141,4 +146,11 @@ const styles = StyleSheet.create({
   gap: { marginTop: 1 },
   marks: { marginTop: theme.spacing['sp-1'] },
   line: { marginTop: theme.spacing['sp-0-5'] },
+});
+
+/** A state's line: its ink, at the medium weight the web half gives it. */
+const toned = StyleSheet.create({
+  warning: { color: theme.colors['warning-text'], fontWeight: '500' },
+  danger: { color: theme.colors['danger-text'], fontWeight: '500' },
+  info: { color: theme.colors['info-text'], fontWeight: '500' },
 });

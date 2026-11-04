@@ -6,7 +6,12 @@ import { Provenance } from '../Provenance/Provenance';
 import type { UsageMeterProps } from './UsageMeter.types';
 import { UsageMeterMetered } from './UsageMeterMetered';
 import { UsageMeterError, UsageMeterLoading, UsageMeterUnavailable } from './UsageMeterStates';
-import { unmeteredStatusLine, usageMeterShape, usageTrackHeight } from './usage-meter-model';
+import {
+  unmeteredStatusLine,
+  usageMeterShape,
+  usageNotesOf,
+  usageTrackHeight,
+} from './usage-meter-model';
 
 interface WebUsageMeterProps extends UsageMeterProps {
   className?: string;
@@ -41,8 +46,10 @@ export function UsageMeter({
   thresholdPercent = 80,
   graceDaysLeft,
   note,
-  noLimitNote = words.noLimit,
-  loadingNote = words.loading,
+  statusLine: saysStatus = true,
+  defaultNotes = true,
+  noLimitNote: ownNoLimitNote,
+  loadingNote: ownLoadingNote,
   errorMessage = words.error,
   onRetry,
   retryLabel,
@@ -58,6 +65,11 @@ export function UsageMeter({
   const format = useFormat().number;
   const trackHeight = `${usageTrackHeight(density)}px`;
   const shape = usageMeterShape(state, value, limit);
+  const { noLimitNote, loadingNote } = usageNotesOf(words, {
+    defaultNotes,
+    noLimitNote: ownNoLimitNote,
+    loadingNote: ownLoadingNote,
+  });
 
   if (shape.draws === 'error') {
     return (
@@ -104,7 +116,7 @@ export function UsageMeter({
   );
 
   if (shape.draws === 'unmetered') {
-    const line = unmeteredStatusLine(shape.billing, graceDaysLeft, words);
+    const line = saysStatus ? unmeteredStatusLine(shape.billing, graceDaysLeft, words) : null;
     return (
       <section
         ref={frame}
@@ -120,7 +132,7 @@ export function UsageMeter({
           </span>
         </div>
         {prov}
-        <p className="hg-usage-meter-note">{noLimitNote}</p>
+        {noLimitNote !== undefined ? <p className="hg-usage-meter-note">{noLimitNote}</p> : null}
         {line !== null ? (
           <p className="hg-usage-meter-status" data-tone={line.tone}>
             {line.words}
@@ -144,6 +156,7 @@ export function UsageMeter({
       billing={shape.billing}
       thresholdPercent={thresholdPercent}
       graceDaysLeft={graceDaysLeft}
+      statusLine={saysStatus}
       note={note}
       trackHeight={trackHeight}
       format={format}

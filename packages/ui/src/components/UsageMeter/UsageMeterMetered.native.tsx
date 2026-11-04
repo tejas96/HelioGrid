@@ -14,6 +14,8 @@ const LINE_TONE: Record<UsageLineTone, string> = {
 };
 
 export interface UsageMeterMeteredProps extends UsageMeterMeteredFacts {
+  /** Whether the meter says its status sentence; off where the screen says it already. */
+  statusLine: boolean;
   frame: RefObject<View | null>;
   trackHeight: number;
   provenance: ReactNode;
@@ -36,6 +38,7 @@ export function UsageMeterMetered({
   billing,
   thresholdPercent,
   graceDaysLeft,
+  statusLine: saysStatus,
   note,
   trackHeight,
   format,
@@ -80,7 +83,7 @@ export function UsageMeterMetered({
       {/* Period, tier and bundle are the three things BM-27 requires beside the number. */}
       {provenance}
 
-      {line !== null ? (
+      {saysStatus && line !== null ? (
         <Text variant="caption" style={[statusLine, { color: LINE_TONE[line.tone] }]}>
           {line.words}
         </Text>

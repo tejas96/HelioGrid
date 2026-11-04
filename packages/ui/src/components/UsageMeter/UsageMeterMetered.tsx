@@ -4,6 +4,8 @@ import { UsageMeterTrack } from './UsageMeterTrack';
 import { meteredReading, type UsageMeterMeteredFacts } from './usage-meter-model';
 
 export interface UsageMeterMeteredProps extends UsageMeterMeteredFacts {
+  /** Whether the meter says its status sentence; off where the screen says it already. */
+  statusLine: boolean;
   frame: RefObject<HTMLElement | null>;
   trackHeight: string;
   provenance: ReactNode;
@@ -27,6 +29,7 @@ export function UsageMeterMetered({
   billing,
   thresholdPercent,
   graceDaysLeft,
+  statusLine,
   note,
   trackHeight,
   format,
@@ -76,7 +79,7 @@ export function UsageMeterMetered({
           render as one persistent line rather than three loose spans. */}
       {provenance}
 
-      {line !== null ? (
+      {statusLine && line !== null ? (
         <p className="hg-usage-meter-status" data-tone={line.tone}>
           {line.words}
         </p>

@@ -14,6 +14,13 @@ export interface ListRowProps {
   title: ReactNode;
   subtitle?: ReactNode;
   /**
+   * The subtitle wraps whole instead of cutting to one line — for a line that must never sit
+   * behind a tap: what paused and until when (`SCR-M12-04`'s `Needs you`). Default `false`.
+   */
+  subtitleWrap?: boolean;
+  /** The subtitle's ink when it carries a state — the meter's warning, pause or overage. */
+  subtitleTone?: 'warning' | 'danger' | 'info';
+  /**
    * **The subtitle's value is absent, and this names what is missing** — "no city yet" (`M02-03`).
    * Rendered by `NamedGap` in the subtitle's place, and it **replaces** the subtitle rather than
    * joining it: there is one value, and it is absent. Never a blank line, never a dash.

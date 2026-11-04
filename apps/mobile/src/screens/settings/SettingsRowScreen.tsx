@@ -13,6 +13,7 @@ import { RolesReferenceScreen } from '../roles-reference';
 import { ShellNotFoundState } from '../shell/components/ShellNotFoundState';
 import { ShellPage } from '../shell/components/ShellPage';
 import { TeamScreen } from '../team';
+import { UsageScreen } from '../usage';
 import { ComingLaterPage } from './components/ComingLaterPage';
 import { useSettingsDrillDown } from './hooks/use-settings-drill-down';
 
@@ -30,6 +31,7 @@ const BUILT_ROW: Partial<Record<SettingsRow, ComponentType<{ from: string | null
   proposal_templates: ProposalTemplateScreen,
   payment_terms: PaymentTermsScreen,
   billing: BillingScreen,
+  usage: UsageScreen,
 };
 
 /**

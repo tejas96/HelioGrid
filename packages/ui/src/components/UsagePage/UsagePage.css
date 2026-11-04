@@ -1,0 +1,217 @@
+/* UsagePage — the usage screen's body (`SCR-M12-04`). At 375 one column of cards whose rows read
+   label left, figure right, on ONE edge (brief decision 1); at width the tables lane and the 300px
+   standing column (decision 14), the column holding still while the tables scroll past it. Every
+   figure is mono with tabular digits (`F7-09`). */
+
+.hg-usage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+
+.hg-usage-stack {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-usage-stack[data-gap="3"] {
+  gap: var(--sp-3);
+}
+
+.hg-usage-stack[data-gap="4"] {
+  gap: var(--sp-4);
+}
+
+.hg-usage-stack[data-gap="5"] {
+  gap: var(--sp-5);
+}
+
+.hg-usage-stack[data-gap="6"] {
+  gap: var(--sp-6);
+}
+
+.hg-usage-stack[data-gap="tile"] {
+  gap: var(--tile-gap);
+}
+
+.hg-usage-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A figure on its row's right edge: one token, never wrapped. */
+.hg-usage-figure {
+  display: block;
+  flex-shrink: 0;
+  text-align: right;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 375: the cycle line and its one chip ───────────────────────────────── */
+
+.hg-usage-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2) var(--sp-3);
+  min-height: calc(var(--sp-10) + var(--sp-1));
+  padding: 0 var(--sp-1);
+}
+
+.hg-usage-cycle {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.hg-usage-teaching {
+  display: block;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  text-wrap: pretty;
+  color: var(--text-secondary);
+}
+
+/* ── a card's rows: the meter, its facts and its way on; the ledger in its own 44px track ──── */
+
+/* The second track is the 44px target the ledger opener stands in, on every row, so every figure
+   ends on the one edge whether its row has events or not. */
+.hg-usage-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) calc(var(--sp-10) + var(--sp-1));
+  gap: var(--sp-2);
+  align-items: start;
+}
+
+.hg-usage-row-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+/* The opener sits on the meter's label line, its circle's edge on the card's. */
+.hg-icon-button.hg-usage-ledger {
+  flex-shrink: 0;
+  margin-top: calc(var(--sp-3) * -1);
+  margin-right: calc(var(--sp-2) * -1);
+}
+
+/* One row form inside a card: label left, the figure on the meter's own right edge. */
+.hg-fact-rows.hg-usage-facts[data-fact-group-form="pair"],
+.hg-usage-facts .hg-fact-row[data-fact-form="pair"] {
+  grid-template-columns: minmax(0, 1fr) max-content;
+  max-width: 100%;
+}
+
+@supports (grid-template-columns: subgrid) {
+  .hg-usage-facts > .hg-fact-row[data-fact-form="pair"] {
+    grid-template-columns: subgrid;
+  }
+}
+
+.hg-usage-facts .hg-fact-value {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.hg-usage-sources {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+/* ── Needs you: the row on the region's own edges ───────────────────────── */
+
+.hg-list-row.hg-usage-need-row {
+  align-items: flex-start;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.hg-list-row.hg-usage-need-row .hg-usage-figure {
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+/* `Bigger plans` and a ledger event are tiles (`Ground.css` paints them); they keep the tile's radius. */
+.hg-list-row.hg-usage-tile {
+  border-radius: var(--r-tile);
+}
+
+.hg-usage-scope {
+  display: flex;
+  padding: 0 var(--sp-1);
+}
+
+/* ── 1536: the tables lane and the standing column ──────────────────────── */
+
+.hg-usage-lanes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-6);
+  align-items: start;
+}
+
+/* The standing column is the board's 300px: three 96px steps and one 12px step. */
+.hg-usage-lanes[data-lanes="two"] {
+  grid-template-columns: minmax(0, 1fr) calc(var(--sp-24) * 3 + var(--sp-3));
+}
+
+.hg-usage-lane {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+
+/* It holds still while the tables scroll past it; the ledger panel docks over it. */
+.hg-usage-side {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+/* The meter's name and its chip, wrapping as one cell. */
+.hg-usage-meter-cell {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+}
+
+/* ── the ledger: its overline and source line, then the events ──────────── */
+
+.hg-usage-ledger-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-1);
+}
+
+.hg-usage-overline {
+  font-size: var(--fs-overline);
+  line-height: var(--lh-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tr-overline);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.hg-usage-start {
+  display: flex;
+  justify-content: flex-start;
+}

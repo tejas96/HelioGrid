@@ -22,6 +22,8 @@ import {
   setupInviteWords,
   setupWhatYouSellWords,
   tierName,
+  usagePageWords,
+  usageViewWords,
 } from '@heliogrid/i18n';
 import { API, codeSentTo } from './api-log.ts';
 import { freshMobile } from './phone.ts';
@@ -90,6 +92,7 @@ if (command === 'words') {
     WHAT_CHANGES: PLAN_SELECTION.whatChanges,
     PLAN_PRO: tierName('pro'),
     CLOSE: SHELL.close,
+    ...usageWords(t),
     ...settingsRows(t),
   };
   for (const [key, message] of Object.entries(words)) {
@@ -147,6 +150,23 @@ function firstSegment(t: Awaited<ReturnType<typeof createTranslator>>): string {
   const first = words.options[0];
   if (first === undefined) throw new Error('What do you sell? offers no answer');
   return first.title;
+}
+
+/** The usage screen's words (`SCR-M12-04`): its cards, the meters a fresh trial shows and a ledger's. */
+function usageWords(t: Awaited<ReturnType<typeof createTranslator>>): Record<string, string> {
+  const view = usageViewWords(t.t, 'en');
+  const page = usagePageWords(t.t);
+  return {
+    ALL_USAGE: t.t(BILLING_HOME.allUsage),
+    USAGE_LIMITS: view.limits,
+    USAGE_INCLUDED: view.included,
+    VOICE_MINUTES: view.view.limits.voiceMinutes,
+    OTP_CODES: view.otpCodes,
+    NOT_BILLED: view.notBilled,
+    VOICE_EVENTS: page.eventsOf(view.view.limits.voiceMinutes),
+    NO_CALLS: view.noCalls.title,
+    USAGE_CLOSE: page.close,
+  };
 }
 
 /** Each settings row's name, `ROW_<row>`, as the settings list and the row's own header show it. */

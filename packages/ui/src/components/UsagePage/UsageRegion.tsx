@@ -1,0 +1,225 @@
+import type { TranslatedText, UsageEventMeter } from '@heliogrid/contracts';
+import { ShellGlyph } from '../AppShell';
+import type { BillingValue } from '../BillingHome/BillingHome.types';
+import { BillingChipMark } from '../BillingHome/BillingNeeds';
+import { BillingValueText } from '../BillingHome/BillingValue';
+import { Block } from '../Block';
+import { FactRow, FactRows } from '../FactRow';
+import { IconButton } from '../IconButton';
+import { ListRow } from '../ListRow';
+import { Provenance } from '../Provenance';
+import { UsageMeter } from '../UsageMeter';
+import type {
+  UsageFactView,
+  UsageNeedRow,
+  UsagePageView,
+  UsagePageWords,
+  UsageRegionView,
+  UsageRowView,
+} from './UsagePage.types';
+
+/** A figure on its row's right edge, mono where the view marked it (`F7-09`). */
+export function UsageFigure({ value }: { value: BillingValue }) {
+  return (
+    <span className="hg-usage-figure">
+      <BillingValueText value={value} />
+    </span>
+  );
+}
+
+/** A plain figure — a date, a count — on its row's right edge. */
+export function UsagePlainFigure({ text }: { text: string }) {
+  return <span className="hg-usage-figure">{text}</span>;
+}
+
+/** The two quiet source lines at a card's foot (decision 5); none while the figures wait. */
+export function UsageSources({ sources }: { sources: readonly TranslatedText[] | null }) {
+  if (sources === null) return null;
+  return (
+    <span className="hg-usage-sources">
+      {sources.map((source) => (
+        <Provenance key={source} source={source} size={12} />
+      ))}
+    </span>
+  );
+}
+
+/** `Needs you` (decision 3): a row per meter — its name, its own chip, used of included, ONE line. */
+export function UsageNeeds({
+  title,
+  rows,
+}: {
+  title: TranslatedText;
+  rows: readonly UsageNeedRow[];
+}) {
+  return (
+    <Block title={title} density="expressive">
+      <div className="hg-usage-stack" data-gap="5">
+        {rows.map((row) => (
+          <ListRow
+            key={row.key}
+            className="hg-usage-need-row"
+            density="expressive"
+            title={row.title}
+            marks={<BillingChipMark chip={row.chip} />}
+            trailing={row.figure === null ? undefined : <UsagePlainFigure text={row.figure} />}
+            subtitle={row.line === null ? undefined : <BillingValueText value={row.line} />}
+            subtitleWrap
+            subtitleTone={row.tone}
+          />
+        ))}
+      </div>
+    </Block>
+  );
+}
+
+/** `Bigger plans` / `Pick a plan` — the one way to a bigger plan (decision 8). */
+export function UsagePlansRow({
+  plans,
+  onPlans,
+}: {
+  plans: NonNullable<UsagePageView['plans']>;
+  onPlans: () => void;
+}) {
+  return (
+    <ListRow
+      className="hg-usage-tile"
+      density="expressive"
+      icon={<ShellGlyph name="layers" size="md" tone="secondary" />}
+      title={plans.title}
+      subtitle={plans.subtitle ?? undefined}
+      trailing={<ShellGlyph name="chevron-right" size="md" />}
+      onClick={onPlans}
+    />
+  );
+}
+
+/** A card's facts in the one row form: label left, figure on the meter's right edge. */
+function UsageFacts({ label, facts }: { label: TranslatedText; facts: readonly UsageFactView[] }) {
+  return (
+    <FactRows className="hg-usage-facts" label={label} density="expressive" form="pair">
+      {facts.map((fact) => (
+        <FactRow
+          key={fact.key}
+          label={fact.label}
+          value={
+            fact.value !== null ? (
+              <UsageFigure value={fact.value} />
+            ) : fact.chip !== null ? (
+              <BillingChipMark chip={fact.chip} />
+            ) : undefined
+          }
+        />
+      ))}
+    </FactRows>
+  );
+}
+
+interface RowActs {
+  readonly onLedger: (meter: UsageEventMeter) => void;
+  readonly onPlans: () => void;
+}
+
+/** One row of a card: its meter, its facts, `Bigger plans` at its cap, and its ledger opener. */
+function UsageRow({
+  row,
+  words,
+  plans,
+  acts,
+}: {
+  row: UsageRowView;
+  words: UsagePageWords;
+  plans: UsagePageView['plans'];
+  acts: RowActs;
+}) {
+  const { meter, ledger } = row;
+  return (
+    <div className="hg-usage-row">
+      <div className="hg-usage-row-body">
+        {meter === null ? null : (
+          <UsageMeter
+            density="expressive"
+            label={row.label}
+            words={words.usageMeter}
+            value={meter.value}
+            limit={meter.limit}
+            unit={meter.unit ?? undefined}
+            period={meter.period ?? undefined}
+            state={meter.state}
+            graceDaysLeft={meter.graceDaysLeft ?? undefined}
+            note={meter.note ?? undefined}
+            noLimitNote={meter.noLimitNote ?? undefined}
+            statusLine={meter.statusLine}
+            defaultNotes={false}
+          />
+        )}
+        {row.facts.length === 0 ? null : <UsageFacts label={row.label} facts={row.facts} />}
+        {row.plans && plans !== null ? (
+          <UsagePlansRow plans={plans} onPlans={acts.onPlans} />
+        ) : null}
+      </div>
+      {ledger === null ? null : (
+        <IconButton
+          className="hg-usage-ledger"
+          label={words.eventsOf(row.label)}
+          variant="ghost"
+          size={44}
+          onClick={() => acts.onLedger(ledger)}
+        >
+          <ShellGlyph name="chevron-right" size="md" />
+        </IconButton>
+      )}
+    </div>
+  );
+}
+
+/**
+ * A card at 375 (decision 1): `Limits` or `Included each month`, its rows on ONE edge, the extra
+ * charges' total row closing `Included each month` (decision 4), and the two source lines.
+ */
+export function UsageRegion({
+  region,
+  extra,
+  words,
+  plans,
+  acts,
+}: {
+  region: UsageRegionView;
+  /** The total row this card ends in; only `Included each month` carries one. */
+  extra: UsagePageView['extra'];
+  words: UsagePageWords;
+  plans: UsagePageView['plans'];
+  acts: RowActs;
+}) {
+  return (
+    <Block
+      title={region.title}
+      density="expressive"
+      footer={region.sources === null ? undefined : <UsageSources sources={region.sources} />}
+    >
+      <div className="hg-usage-stack" data-gap="6">
+        {region.rows.map((row) => (
+          <UsageRow key={row.key} row={row} words={words} plans={plans} acts={acts} />
+        ))}
+        {extra === null ? null : (
+          <div className="hg-usage-row">
+            <div className="hg-usage-row-body">
+              <FactRows
+                className="hg-usage-facts"
+                label={words.extraCharges}
+                density="expressive"
+                form="pair"
+              >
+                <FactRow
+                  label={words.extraCharges}
+                  value={<UsagePlainFigure text={extra.total} />}
+                />
+                <FactRow label={words.billsOn} value={<UsagePlainFigure text={extra.billsOn} />} />
+              </FactRows>
+            </div>
+          </div>
+        )}
+      </div>
+    </Block>
+  );
+}

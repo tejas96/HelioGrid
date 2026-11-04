@@ -62,6 +62,9 @@ export function todaysSale(tier: Tier, cycle: BillingCycle) {
 export interface HomeCompany {
   readonly tenantId: string;
   readonly subscriptionId: string;
+  /** The Owner's account, and the name their membership shows. */
+  readonly ownerUserId: string;
+  readonly ownerName: string;
   readonly owner: () => Promise<Record<string, string>>;
   readonly member: () => Promise<Record<string, string>>;
 }
@@ -117,6 +120,8 @@ export class HomeBench {
     return {
       tenantId: company.tenantId,
       subscriptionId,
+      ownerUserId: ownerPerson.userId,
+      ownerName: ownerPerson.name,
       owner: () => bearerFor(this.http, owner, devices[0]),
       member: () => bearerFor(this.http, member, devices[1]),
     };

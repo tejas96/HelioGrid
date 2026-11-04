@@ -108,6 +108,18 @@ export interface UsageMeterProps {
   /** Days left in the 7-day grace window. Used by `cap-reached-grace` (M12-30). */
   graceDaysLeft?: number;
   note?: TranslatedText;
+  /**
+   * Whether the meter says its own status sentence — *82% of the bundle used.* Default `true`. A
+   * screen that already says it elsewhere turns it off, so no meter says it twice (`SCR-M12-04`,
+   * `Needs you`).
+   */
+  statusLine?: boolean;
+  /**
+   * Whether the meter falls back to its default sentences — `words.noLimit` for a count with no
+   * allowance, `words.loading` while unresolved — when the caller passes none. Default `true`;
+   * `false` draws no sentence at all where the screen has none to say (`SCR-M12-04` decision 16).
+   */
+  defaultNotes?: boolean;
   /** Replaces `words.noLimit`. Say the commercial rule if you know it — "Billed per send". */
   noLimitNote?: TranslatedText;
   /** Replaces `words.loading`, shown beside the period while `loading`. */

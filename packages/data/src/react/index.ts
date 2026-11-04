@@ -33,6 +33,12 @@ export {
   useBillingHistory,
   useBillingReminders,
 } from './use-billing-records';
+export {
+  type UsageFacts,
+  type UsageScreen,
+  type UsageScreenAdapter,
+  useUsageScreen,
+} from './use-billing-usage';
 export type { BrandingPage } from './use-branding';
 export { useBranding } from './use-branding';
 export type { BrandingScreen } from './use-branding-screen';

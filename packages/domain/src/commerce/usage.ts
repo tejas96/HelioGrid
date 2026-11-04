@@ -83,5 +83,13 @@ export const BYTES_PER_GB = 1_000_000_000;
  */
 export function storageRefuses(gaugeBytes: number, limitGb: TierLimit): boolean {
   if (typeof limitGb !== 'number') return false;
-  return gaugeBytes * 10 > limitGb * 11 * BYTES_PER_GB;
+  return gaugeBytes * 10 > limitGb * STORAGE_ROOM_TENTHS * BYTES_PER_GB;
+}
+
+/** The ceiling and its tenth of room, in tenths of the ceiling: past it, uploads pause. */
+const STORAGE_ROOM_TENTHS = 11;
+
+/** The size past which the storage gate refuses a new upload, in GB — the usage screen says it. */
+export function storagePausesAboveGb(limitGb: number): number {
+  return (limitGb * STORAGE_ROOM_TENTHS) / 10;
 }

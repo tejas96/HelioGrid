@@ -261,6 +261,15 @@ export {
   LEDGER_METERS,
   METER_UNITS,
   RETIRED_LEDGER_METERS,
+  storagePausesAboveGb,
   storageRefuses,
   usagePeriodKey,
 } from './usage';
+export type { UsageStep, UsageStepName } from './usage-steps';
+export {
+  bundleUsageStep,
+  cappedUsageStep,
+  overageBillsOn,
+  storageUsageStep,
+  USAGE_STEPS,
+} from './usage-steps';

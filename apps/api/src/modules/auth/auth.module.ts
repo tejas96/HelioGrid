@@ -7,6 +7,7 @@ import {
 import { Module } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 import { ENV } from '../../config/env';
+import { BillingModule } from '../billing/billing.public';
 import { MarketModule } from '../market/market.public';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -27,7 +28,7 @@ import { TokenService } from './internal/token.service';
  * module sends through the same rail — and `IDENTITY_PROVIDERS`, each sign-in provider's token check and client ids (`M01-02`).
  */
 @Module({
-  imports: [MarketModule],
+  imports: [MarketModule, BillingModule],
   controllers: [AuthController],
   providers: [
     AuthService,

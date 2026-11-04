@@ -451,6 +451,11 @@ msgid "{count} {noun} waiting"
 msgstr "{count} {noun} थांबले आहेत"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:57
+msgid "{count} a month"
+msgstr "दरमहा {count}"
+
+#. js-lingui-explicit-id
 #: src/copy/version-diff.ts:23
 msgid "{count} added"
 msgstr "{count} जोडले"
@@ -461,9 +466,19 @@ msgid "{count} changed"
 msgstr "{count} बदलले"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:61
+msgid "{count} GB"
+msgstr "{count} GB"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:42
 msgid "{count} marked read"
 msgstr "{count} वाचलेल्या म्हणून खूण केल्या"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:60
+msgid "{count} min"
+msgstr "{count} min"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:174
@@ -522,6 +537,16 @@ msgid "{current} of {total}, {name}, {errors} to fix"
 msgstr "{total} पैकी {current}, {name}, {errors} दुरुस्त करायचे"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:84
+msgid "{cycle} · {count, plural, one {# code} other {# codes}}"
+msgstr "{cycle} · {count, plural, one {# कोड} other {# कोड}}"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:83
+msgid "{cycle} · {minutes} min"
+msgstr "{cycle} · {minutes} min"
+
+#. js-lingui-explicit-id
 #: src/copy/price-book.ts:51
 msgid "{date} · {name}"
 msgstr "{date} · {name}"
@@ -548,6 +573,7 @@ msgstr "{date}, {marker}, मार्केट पॅकमधून आले�
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:57
+#: src/copy/usage-page.ts:86
 msgid "{date}, {time}"
 msgstr "{date}, {time}"
 
@@ -565,6 +591,11 @@ msgstr "{days} दिवस, कार्ड लागत नाही."
 #: src/copy/plan-selection.ts:85
 msgid "{days}-day trial"
 msgstr "{days}-दिवसांचे ट्रायल"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:53
+msgid "{days}-day trial · {range}"
+msgstr "{days}-दिवसांचे ट्रायल · {range}"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:66
@@ -751,6 +782,11 @@ msgstr "{flow} · {total} पैकी पायरी {current}"
 #: src/copy/catalog-import.ts:79
 msgid "{found} of {rows} rows match “{query}”"
 msgstr "{rows} पैकी {found} ओळी “{query}” शी जुळतात"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:50
+msgid "{from} – {to}"
+msgstr "{from} – {to}"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:97
@@ -994,9 +1030,19 @@ msgid "{message} Last tried at {time}."
 msgstr "{message} शेवटचा प्रयत्न: {time}."
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:100
+msgid "{meter} — events this cycle"
+msgstr "{meter} — या चक्रातील घटना"
+
+#. js-lingui-explicit-id
 #: src/copy/invoice-document.ts:34
 msgid "{meter}: {quantity} beyond the bundle at {rate} each"
 msgstr "{meter}: बंडलपेक्षा {quantity} जास्त, {rate} प्रति एकक"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:85
+msgid "{minutes} min {seconds} s"
+msgstr "{minutes} min {seconds} s"
 
 #. js-lingui-explicit-id
 #: src/copy/sign-in.ts:19
@@ -1259,6 +1305,11 @@ msgid "{percent}% of the bundle used."
 msgstr "बंडलचा {percent}% वापरला."
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:54
+msgid "{percent}% used"
+msgstr "{percent}% वापर झाला"
+
+#. js-lingui-explicit-id
 #: src/copy/usage-meter.ts:27
 msgid "{percent}% warning threshold"
 msgstr "{percent}% इशारा मर्यादा"
@@ -1319,6 +1370,11 @@ msgid "{plan}, {cycle}"
 msgstr "{plan}, {cycle}"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:51
+msgid "{plans}"
+msgstr "{plans}"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:39
 msgid "{preset} home · {highest} is your highest preset"
 msgstr "{preset} होम · {highest} हा तुमचा सर्वात वरचा प्रीसेट आहे"
@@ -1359,9 +1415,24 @@ msgid "{printing} of {of} optional sections print"
 msgstr "{of} पैकी {printing} पर्यायी विभाग छापले जातात"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:52
+msgid "{range} · resets {date}"
+msgstr "{range} · {date} रोजी रीसेट"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-home.ts:75
 msgid "{rate} / min"
 msgstr "{rate} / मिनिट"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:58
+msgid "{rate} a minute"
+msgstr "{rate} प्रति मिनिट"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:59
+msgid "{rate} a minute beyond {bundle}"
+msgstr "{bundle} नंतर {rate} प्रति मिनिट"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:64
@@ -1570,8 +1641,14 @@ msgstr "{unread} न वाचलेल्या · मागील {days} द�
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:107
+#: src/copy/usage-page.ts:55
 msgid "{used} of {limit}"
 msgstr "{limit} पैकी {used}"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:56
+msgid "{used} of {limit} {unit}"
+msgstr "{limit} {unit} पैकी {used}"
 
 #. js-lingui-explicit-id
 #: src/copy/pricing.ts:93
@@ -2220,6 +2297,11 @@ msgid "Allocation"
 msgstr "वाटप"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:103
+msgid "Allowed"
+msgstr "अनुमत"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:24
 msgid "Already on HelioGrid?"
 msgstr "आधीच HelioGrid वर आहात?"
@@ -2392,6 +2474,11 @@ msgid "As of {date}"
 msgstr "{date} पर्यंत"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:63
+msgid "As of {date}, {time}"
+msgstr "{date}, {time} ची स्थिती"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:40
 #: src/copy/catalog-add-item.ts:41
 msgid "As printed"
@@ -2458,6 +2545,26 @@ msgstr "सोपवलेले काम"
 #: src/copy/provenance.ts:16
 msgid "Assumed"
 msgstr "गृहीत धरलेले"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:28
+msgid "At a limit"
+msgstr "मर्यादेवर"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:30
+msgid "At the cap"
+msgstr "मर्यादेवर"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:71
+msgid "At the cap, a 7-day grace, then calls pause."
+msgstr "मर्यादेवर, 7 दिवस सवलत, मग कॉल थांबतील."
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:70
+msgid "At the cap, a 7-day grace, then new ones pause."
+msgstr "मर्यादेवर, 7 दिवस सवलत, मग नवीन तयार करणे थांबेल."
 
 #. js-lingui-explicit-id
 #: src/copy/compare-grid.ts:25
@@ -2589,6 +2696,11 @@ msgid "better"
 msgstr "चांगले"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:69
+msgid "Beyond {bundle}, {rate} a minute — no pause, it bills."
+msgstr "{bundle} नंतर {rate} प्रति मिनिट — थांबत नाही, बिल लागते."
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:147
 msgid "Bifacial"
 msgstr "बायफेशियल"
@@ -2602,6 +2714,11 @@ msgstr "बायफेशियलिटी"
 #: src/copy/catalog-import-fields.ts:25
 msgid "Bifaciality (%)"
 msgstr "बायफेशियलिटी (%)"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:38
+msgid "Bigger plans"
+msgstr "मोठे प्लॅन"
 
 #. js-lingui-explicit-id
 #: src/copy/pricing.ts:71
@@ -2638,6 +2755,11 @@ msgstr "बिलिंग"
 #: src/copy/pricing.ts:62
 msgid "Billing cycle"
 msgstr "बिलिंग चक्र"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:94
+msgid "Bills on"
+msgstr "बिल लागण्याची तारीख"
 
 #. js-lingui-explicit-id
 #: src/copy/finding-list.ts:9
@@ -2742,6 +2864,7 @@ msgstr "गणना पद्धत"
 
 #. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:49
+#: src/copy/usage-page.ts:44
 msgid "Call"
 msgstr "कॉल"
 
@@ -2975,6 +3098,16 @@ msgid "Charged"
 msgstr "आकारणी"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:32
+msgid "Charges"
+msgstr "शुल्क"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:107
+msgid "Charges so far"
+msgstr "आतापर्यंतचे शुल्क"
+
+#. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:60
 msgid "Check in and out of a site, and log a visit and its outcome"
 msgstr "साइटवर चेक-इन आणि चेक-आउट करा, आणि भेट व तिचा निकाल नोंदवा"
@@ -3127,6 +3260,7 @@ msgstr "निवड काढा"
 #: src/copy/price-book.ts:82
 #: src/copy/roles-reference.ts:41
 #: src/copy/shell.ts:51
+#: src/copy/usage-page.ts:99
 msgid "Close"
 msgstr "बंद करा"
 
@@ -3449,6 +3583,16 @@ msgid "Couldn’t mark them read"
 msgstr "या वाचलेल्या म्हणून खूण करता आल्या नाहीत"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:96
+msgid "Couldn’t read these events"
+msgstr "या घटना वाचता आल्या नाहीत"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:88
+msgid "Couldn’t read this cycle’s usage"
+msgstr "या चक्राचा वापर वाचता आला नाही"
+
+#. js-lingui-explicit-id
 #: src/copy/stat-card.ts:21
 msgid "Couldn't read this figure. Try again — nothing here is a stale number."
 msgstr "हा आकडा वाचता आला नाही. पुन्हा प्रयत्न करा — इथे कोणताही जुना आकडा दाखवलेला नाही."
@@ -3638,6 +3782,7 @@ msgstr "ग्राहकाची पाळी"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:96
+#: src/copy/usage-page.ts:91
 msgid "Cycle"
 msgstr "चक्र"
 
@@ -4035,9 +4180,19 @@ msgid "Each amount"
 msgstr "प्रत्येक रक्कम"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:47
+msgid "Each call the voice agent makes is listed here."
+msgstr "व्हॉइस एजंटने केलेली प्रत्येक कॉल इथे दिसते."
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:73
 msgid "Each invite counts for 24 hours from when it was sent."
 msgstr "प्रत्येक आमंत्रण पाठवल्यापासून 24 तास मोजले जाते."
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:49
+msgid "Each sign-in code sent for your company is listed here."
+msgstr "तुमच्या कंपनीसाठी पाठवलेला प्रत्येक साइन-इन कोड इथे दिसतो."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:66
@@ -4168,6 +4323,21 @@ msgid "Estimated"
 msgstr "अंदाजित"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:95
+msgid "Events this cycle"
+msgstr "या चक्रातील घटना"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:64
+msgid "Every cap and ceiling on {plan} · {cycle}"
+msgstr "{plan} मधील प्रत्येक मर्यादा · {cycle}"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:66
+msgid "Every cap and ceiling on the trial · {cycle}"
+msgstr "ट्रायलमधील प्रत्येक मर्यादा · {cycle}"
+
+#. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:28
 msgid "Every change is recorded under your name — roles before and after."
 msgstr "प्रत्येक बदल तुमच्या नावाने नोंदवला जातो — आधीच्या आणि नंतरच्या भूमिका."
@@ -4186,6 +4356,16 @@ msgstr "प्रत्येक लीड, डिझाइन, प्रस्�
 #: src/copy/plan-selection.ts:102
 msgid "Every limit"
 msgstr "प्रत्येक मर्यादा"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:65
+msgid "Every meter on {plan} · {cycle}"
+msgstr "{plan} मधील प्रत्येक मीटर · {cycle}"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:67
+msgid "Every meter on the trial · {cycle}"
+msgstr "ट्रायलमधील प्रत्येक मीटर · {cycle}"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:130
@@ -4652,6 +4832,11 @@ msgid "Grace ends"
 msgstr "सवलत संपते"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:72
+msgid "Grace ends {date} · reading, editing and export never stop."
+msgstr "सवलत {date} रोजी संपते · पाहणे, बदलणे आणि एक्सपोर्ट कधी थांबत नाही."
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:29
 msgid "Grievance officer"
 msgstr "तक्रार अधिकारी"
@@ -5067,6 +5252,11 @@ msgstr "ॲपमध्ये"
 #: src/copy/pricing.ts:99
 msgid "Included"
 msgstr "समाविष्ट"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:20
+msgid "Included each month"
+msgstr "दरमहा समाविष्ट"
 
 #. js-lingui-explicit-id
 #: src/copy/number-field.ts:11
@@ -5499,10 +5689,20 @@ msgid "LFP"
 msgstr "LFP"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:101
+msgid "Limit"
+msgstr "मर्यादा"
+
+#. js-lingui-explicit-id
 #: src/copy/pricing.ts:67
 #: src/copy/pricing.ts:98
 msgid "Limits"
 msgstr "मर्यादा"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:62
+msgid "Limits and rates · {list}"
+msgstr "मर्यादा आणि दर · {list}"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:111
@@ -5695,6 +5895,16 @@ msgstr "रेकॉर्डिंग लोड होत आहे"
 #: src/copy/transcript.ts:25
 msgid "Loading the transcript"
 msgstr "ट्रान्सक्रिप्ट लोड होत आहे"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:97
+msgid "Loading these events"
+msgstr "या घटना लोड होत आहेत"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:87
+msgid "Loading this cycle’s usage"
+msgstr "या चक्राचा वापर लोड होत आहे"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:28
@@ -5910,6 +6120,11 @@ msgid "Merge two customer records onto a survivor"
 msgstr "दोन ग्राहक नोंदी एकात विलीन करा"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:104
+msgid "Meter"
+msgstr "मीटर"
+
+#. js-lingui-explicit-id
 #: src/copy/project-stages.ts:32
 msgid "Meter fitted"
 msgstr "मीटर बसवला"
@@ -5933,6 +6148,11 @@ msgstr "मायक्रो-इन्व्हर्टर"
 #: src/copy/catalog-settings.ts:140
 msgid "Micro-inverters"
 msgstr "मायक्रो-इन्व्हर्टर"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:23
+msgid "min"
+msgstr "min"
 
 #. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:87
@@ -6213,6 +6433,11 @@ msgid "Near-black text reads on it. Headings use a darker shade; this colour sta
 msgstr "यावर गडद काळे लिखाण वाचता येते. शीर्षके गडद छटा घेतात; हा रंग भरणी आणि रेषांसाठी राहतो."
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:25
+msgid "Nearing a limit"
+msgstr "मर्यादेजवळ"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:80
 #: src/copy/catalog-import.ts:114
 msgid "Need you"
@@ -6319,6 +6544,11 @@ msgid "New rate"
 msgstr "नवीन दर"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:80
+msgid "New uploads paused · remove files or pick a bigger plan · reading and export never stop."
+msgstr "नवीन अपलोड थांबले · फाइल काढा किंवा मोठा प्लॅन निवडा · पाहणे आणि एक्सपोर्ट कधी थांबत नाही."
+
+#. js-lingui-explicit-id
 #: src/copy/billing-records.ts:48
 #: src/copy/explainer.ts:7
 #: src/copy/shell.ts:52
@@ -6397,6 +6627,11 @@ msgid "No bundle on this plan to measure against — this is a count, not a rate
 msgstr "या प्लॅनमध्ये मोजण्यासाठी कोणताही बंडल नाही — ही गणना आहे, दर नाही."
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:46
+msgid "No calls this cycle"
+msgstr "या चक्रात एकही कॉल नाही"
+
+#. js-lingui-explicit-id
 #: src/copy/stat-card.ts:16
 msgid "No change {delta}"
 msgstr "बदल नाही {delta}"
@@ -6410,6 +6645,11 @@ msgstr "या कामासाठी कोणतीही चेकलिस
 #: src/copy/finding-list.ts:20
 msgid "No checks ran."
 msgstr "एकही तपासणी झाली नाही."
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:48
+msgid "No codes this cycle"
+msgstr "या चक्रात एकही कोड नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:72
@@ -6455,6 +6695,16 @@ msgstr "अजून इनव्हॉइस नाही"
 #: src/copy/kanban.ts:17
 msgid "No jobs in this pipeline"
 msgstr "या पाइपलाइनमध्ये कोणतेही काम नाही"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:37
+msgid "No limit on {plan}"
+msgstr "{plan} मध्ये मर्यादा नाही"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:36
+msgid "No limit on the trial"
+msgstr "ट्रायलमध्ये मर्यादा नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/qr-code.ts:11
@@ -6701,6 +6951,11 @@ msgstr "या व्याप्तीसाठी उपलब्ध नाह
 #: src/copy/notifications.ts:56
 msgid "Not available here"
 msgstr "इथे उपलब्ध नाही"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:33
+msgid "Not billed"
+msgstr "बिल लागत नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:76
@@ -6953,6 +7208,11 @@ msgid "Nothing has been created."
 msgstr "काहीही तयार झालेले नाही."
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:41
+msgid "Nothing has been used this cycle. Your caps and what’s included are below, ready when you start."
+msgstr "या चक्रात अजून काहीही वापरले नाही. तुमच्या मर्यादा आणि काय समाविष्ट आहे ते खाली आहे — सुरू करताच तयार."
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:89
 msgid "Nothing has changed — your items, your overrides and the price book are exactly as you left them, and nothing has been published or archived."
 msgstr "काहीही बदलले नाही — तुमचे आयटम, तुमचे ओव्हरराइड आणि प्राइस बुक तुम्ही सोडले होते तसेच आहेत, आणि काहीही प्रकाशित किंवा आर्काइव्ह झालेले नाही."
@@ -7037,6 +7297,11 @@ msgstr "अजून विभागण्यासारखे काही न
 #: src/copy/notifications.ts:19
 msgid "Nothing unread · {total} in the last {days} days"
 msgstr "काहीही न वाचलेले नाही · मागील {days} दिवसांत {total}"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:40
+msgid "Nothing used yet"
+msgstr "अजून काहीही वापरले नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:53
@@ -7144,6 +7409,11 @@ msgid "On the proposal"
 msgstr "प्रस्तावावर"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:27
+msgid "On trial"
+msgstr "ट्रायलवर"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:34
 msgid "On your invoices · never used to move your money"
 msgstr "तुमच्या बिलांवर · तुमच्या पैशांच्या व्यवहारासाठी कधीच नाही"
@@ -7192,6 +7462,11 @@ msgstr "यावर फक्त {holder} कृती करू शकता�
 #: src/copy/role-card.ts:32
 msgid "Only {holder} can add a teammate."
 msgstr "फक्त {holder} नवीन सहकारी जोडू शकतात."
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:68
+msgid "Only {holder} can see this cycle’s usage."
+msgstr "या चक्राचा वापर फक्त {holder} पाहू शकतात."
 
 #. js-lingui-explicit-id
 #: src/copy/team-acts.ts:21
@@ -7304,6 +7579,11 @@ msgstr "पर्यायी मूल्ये"
 #: src/copy/sign-in.ts:79
 msgid "or"
 msgstr "किंवा"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:22
+msgid "OTP codes"
+msgstr "OTP कोड"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:48
@@ -7447,6 +7727,11 @@ msgid "parts"
 msgstr "भाग"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:79
+msgid "Past {ceiling}, new uploads pause · files you have stay."
+msgstr "{ceiling} नंतर नवीन अपलोड थांबतात · तुमच्या फाइल राहतात."
+
+#. js-lingui-explicit-id
 #: src/copy/billing-home.ts:78
 msgid "Past due"
 msgstr "थकीत"
@@ -7462,12 +7747,18 @@ msgid "past versions"
 msgstr "मागील व्हर्जन"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:26
+msgid "Past what’s included"
+msgstr "समाविष्टपेक्षा जास्त"
+
+#. js-lingui-explicit-id
 #: src/copy/audio-player.ts:14
 msgid "Pause recording"
 msgstr "रेकॉर्डिंग थांबवा"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:49
+#: src/copy/usage-page.ts:29
 msgid "Paused"
 msgstr "थांबवले"
 
@@ -7487,6 +7778,16 @@ msgid "Paused for"
 msgstr "या नंबरसाठी थांबवले"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:76
+msgid "Paused until {date} or an upgrade · call from your own phone."
+msgstr "{date} पर्यंत किंवा अपग्रेडपर्यंत थांबले · तुमच्या फोनवरून कॉल करा."
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:73
+msgid "Paused until {date} or an upgrade · reading, editing and export never stop."
+msgstr "{date} पर्यंत किंवा अपग्रेडपर्यंत थांबले · पाहणे, बदलणे आणि एक्सपोर्ट कधी थांबत नाही."
+
+#. js-lingui-explicit-id
 #: src/copy/billing-home.ts:81
 msgid "Pay"
 msgstr "पेमेंट करा"
@@ -7495,6 +7796,11 @@ msgstr "पेमेंट करा"
 #: src/copy/plan-selection.ts:119
 msgid "Pay {amount}"
 msgstr "{amount} चे पेमेंट करा"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:34
+msgid "Pay as you go"
+msgstr "जितका वापर, तितके पैसे"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-notices.ts:71
@@ -7686,6 +7992,7 @@ msgstr "फोन, ईमेल किंवा वेबसाइट"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:96
+#: src/copy/usage-page.ts:39
 msgid "Pick a plan"
 msgstr "प्लॅन निवडा"
 
@@ -8113,6 +8420,11 @@ msgid "Proposals price only hardware until you add rates. Your first set becomes
 msgstr "तुम्ही दर जोडेपर्यंत प्रस्तावांमध्ये फक्त हार्डवेअरची किंमत लागते. तुमचा पहिला संच व्हर्जन 1 होईल."
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:21
+msgid "Proposals this month"
+msgstr "या महिन्याचे प्रस्ताव"
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:25
 msgid "Provisional"
 msgstr "तात्पुरते"
@@ -8159,6 +8471,7 @@ msgstr "राजेश कुलकर्णी"
 
 #. js-lingui-explicit-id
 #: src/copy/price-book.ts:35
+#: src/copy/usage-page.ts:106
 msgid "Rate"
 msgstr "दर"
 
@@ -8567,6 +8880,11 @@ msgstr "स्वयंचलितवर परत करा"
 #: src/copy/field-override.ts:22
 msgid "Reset to auto — {field}"
 msgstr "स्वयंचलितवर परत करा — {field}"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:92
+msgid "Resets"
+msgstr "रीसेट"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:56
@@ -9273,6 +9591,7 @@ msgstr "कमी {noun} दाखवा"
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:45
 #: src/copy/catalog-import.ts:49
+#: src/copy/usage-page.ts:98
 msgid "Show more"
 msgstr "आणखी दाखवा"
 
@@ -9388,6 +9707,11 @@ msgid "Sign out"
 msgstr "साइन आउट करा"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:45
+msgid "Sign-in code"
+msgstr "साइन-इन कोड"
+
+#. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:57
 msgid "Sign-off"
 msgstr "मंजुरी"
@@ -9451,6 +9775,11 @@ msgstr "SMS कोड {lockMinutes} मिनिटांसाठी थां�
 #: src/copy/sign-in.ts:65
 msgid "SMS codes paused for {lockMinutes} minutes"
 msgstr "SMS कोड {lockMinutes} मिनिटांसाठी थांबवले"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:31
+msgid "So far"
+msgstr "आतापर्यंत"
 
 #. js-lingui-explicit-id
 #: src/copy/brand-colour-field.ts:22
@@ -10596,6 +10925,7 @@ msgstr "ही कंपनी कदाचित आधीच इथे आह�
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:109
+#: src/copy/usage-page.ts:90
 msgid "This cycle"
 msgstr "हे चक्र"
 
@@ -10892,6 +11222,11 @@ msgid "Tracked field seats"
 msgstr "ट्रॅक केलेल्या फील्ड सीट्स"
 
 #. js-lingui-explicit-id
+#: src/copy/usage-page.ts:35
+msgid "Tracked only"
+msgstr "फक्त मोजणी"
+
+#. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:98
 msgid "Tranche {number}"
 msgstr "हप्ता {number}"
@@ -10947,6 +11282,11 @@ msgstr "पुन्हा प्रयत्न करा"
 #: src/copy/checklist.ts:25
 msgid "Try again — no tick is lost while this fails."
 msgstr "पुन्हा प्रयत्न करा — हे अयशस्वी होत असतानाही कोणतीही टिक हरवत नाही."
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:89
+msgid "Try again — this screen only ever shows the billed figures."
+msgstr "पुन्हा प्रयत्न करा — ही स्क्रीन फक्त बिलात लागलेले आकडे दाखवते."
 
 #. js-lingui-explicit-id
 #: src/copy/first-run-profile.ts:48
@@ -11249,6 +11589,11 @@ msgstr "या ओळीची किंमत वापरा"
 #: src/copy/brand-colour-field.ts:15
 msgid "Used on the proposal PDF and the customer link page. The HelioGrid app itself is never restyled."
 msgstr "प्रस्तावाच्या PDF वर आणि ग्राहकाच्या लिंक पेजवर वापरला जातो. HelioGrid अ‍ॅपचे रूप कधीच बदलत नाही."
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:102
+msgid "Used this cycle"
+msgstr "या चक्रात वापर"
 
 #. js-lingui-explicit-id
 #: src/copy/pricing.ts:75
@@ -11917,6 +12262,11 @@ msgstr "रुंदी (mm)"
 #: src/copy/plan-selection.ts:61
 msgid "with {tax}"
 msgstr "{tax} सह"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:24
+msgid "Within plan"
+msgstr "प्लॅनमध्ये"
 
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:53

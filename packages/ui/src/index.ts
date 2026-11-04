@@ -160,6 +160,7 @@ export * from './components/Tooltip';
 export * from './components/Transcript';
 export * from './components/UnavailableNote';
 export * from './components/UsageMeter';
+export * from './components/UsagePage';
 export * from './components/ValueSource';
 export * from './components/VersionDiff';
 export * from './components/Wordmark';

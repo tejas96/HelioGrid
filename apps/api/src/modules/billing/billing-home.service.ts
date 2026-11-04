@@ -47,12 +47,12 @@ export class BillingHomeService {
   ) {}
 
   async standing(tenantId: string, now: number): Promise<BillingStanding> {
-    const { facts } = await this.standingOf(tenantId, now);
+    const { facts } = await this.readStanding(tenantId, now);
     return standingWire(facts);
   }
 
   async home(tenantId: string, now: number): Promise<BillingHome> {
-    const { row, facts, pack, publishedAt } = await this.standingOf(tenantId, now);
+    const { row, facts, pack, publishedAt } = await this.readStanding(tenantId, now);
     const { state } = facts;
     const includes = includesOf(pack, facts);
     const own =
@@ -143,7 +143,8 @@ export class BillingHomeService {
     return this.lists.history(tenantId, query);
   }
 
-  private async standingOf(tenantId: string, now: number) {
+  /** The company's newest row, its market's published pack, and where it stands now. */
+  async readStanding(tenantId: string, now: number) {
     const row = await this.rows.latestRow(tenantId);
     if (row === null) throw new NotFoundException();
     const published = await this.packs.currentPublished(row.marketCode);
@@ -254,7 +255,7 @@ export class BillingHomeService {
   }
 }
 
-function standingWire(facts: BillingStandingFacts): BillingStanding {
+export function standingWire(facts: BillingStandingFacts): BillingStanding {
   return {
     state: facts.state,
     phase: facts.phase,

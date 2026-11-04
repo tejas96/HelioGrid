@@ -136,7 +136,7 @@ export function UsageMeterLoading({
   trackHeight,
 }: Pick<UsageMeterProps, 'label' | 'period'> & {
   frame: Frame;
-  loadingNote: TranslatedText;
+  loadingNote: TranslatedText | undefined;
   trackHeight: number;
 }) {
   const line = usageLoadingLine(loadingNote, period);
@@ -152,9 +152,11 @@ export function UsageMeterLoading({
         <Shimmer width={92} height={13} radius={theme.radius['rf-md']} />
       </View>
       <Shimmer width="100%" height={trackHeight} radius={theme.radius['r-pill']} />
-      <Text variant="caption" color="tertiary">
-        {line}
-      </Text>
+      {line === '' ? null : (
+        <Text variant="caption" color="tertiary">
+          {line}
+        </Text>
+      )}
     </View>
   );
 }
