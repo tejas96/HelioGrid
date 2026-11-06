@@ -3,23 +3,18 @@ import type { ReactNode } from 'react';
 import type { ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import { inkOver } from '../ShareFilter/ShareFilter.inks';
 import type { DataTableWords, PaginationProps } from './DataTable.types';
 import type { PageStep } from './DataTableChrome.logic';
 import { pagerOf } from './DataTableChrome.logic';
 
-/** The row just added (`isRowHighlighted`): the violet iris wash over the page, as the web's 8%. */
-export const ROW_HIGHLIGHT = inkOver(
-  theme.colors['iris-violet'],
-  // biome-ignore lint/plugin/raw-white: iris — the wash is the hue over the page's own white
-  theme.colors.surface,
-  0.08,
-);
+/** The row just added (`isRowHighlighted`): the accent's tint. */
+export const ROW_HIGHLIGHT = colors['accent-subtle'];
 
 /* THE TICK IS THE SYSTEM `Checkbox` (see `DataTableHead`, `DataTableBodyRow`, `DataTableCard`).
    A private `SelectBox` lived here — its own 20px box, its own `rf-xs` radius, its own 1.5px
@@ -35,7 +30,7 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 10,
     paddingHorizontal: theme.spacing['sp-5'],
-    backgroundColor: theme.colors['accent-subtle'],
+    backgroundColor: colors['accent-subtle'],
     minHeight: 60,
   },
   clear: {
@@ -107,7 +102,7 @@ export function SelectionBar({
           height={16}
           viewBox="0 0 24 24"
           fill="none"
-          stroke={theme.colors['text-secondary']}
+          stroke={colors['text-secondary']}
           strokeWidth={1.5}
           strokeLinecap="round"
         >
@@ -140,7 +135,7 @@ export function Pagination(props: PaginationProps) {
           height={18}
           viewBox="0 0 24 24"
           fill="none"
-          stroke={disabled ? theme.colors['text-disabled'] : theme.colors['text-primary']}
+          stroke={disabled ? colors['text-disabled'] : colors['text-primary']}
           strokeWidth={1.5}
           strokeLinecap="round"
           strokeLinejoin="round"

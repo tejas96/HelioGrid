@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { useState } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -22,12 +23,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['neutral-bg'],
+    backgroundColor: colors['neutral-bg'],
   },
 });
 
 /* --fw-medium, the DS chip weight, which the type scale's roles do not carry. */
-const medium: TextStyle = { fontWeight: '500', color: theme.colors['neutral-text'] };
+const medium: TextStyle = { fontWeight: '500', color: colors['neutral-text'] };
 
 function Count({ density, children }: { density: ChipGroupDensity; children: ReactNode }) {
   return (

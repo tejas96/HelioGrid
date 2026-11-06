@@ -37,7 +37,8 @@
 @import "./components/AudioPlayer/AudioPlayer.css";
 @import "./components/AudioPlayer/AudioTransport.css";
 @import "./components/Avatar/Avatar.css";
-@import "./components/IrisTile/IrisTile.css";
+@import "./components/HeroPanel/HeroPanel.css";
+@import "./components/HueTile/HueTile.css";
 @import "./components/BandedFigure/BandedFigure.css";
 @import "./components/Banner/Banner.css";
 @import "./components/BrandBloom/BrandBloom.css";
@@ -109,7 +110,9 @@
 @import "./components/ListRow/ListRow.css";
 @import "./components/MemberCard/MemberCard.css";
 @import "./components/NameAndPhotoEditor/NameAndPhotoEditor.css";
+@import "./components/LargeTitle/LargeTitle.css";
 @import "./components/LoadingBars/LoadingBars.css";
+@import "./components/LottieMoment/LottieMoment.css";
 @import "./components/MapSurface/MapControls.css";
 @import "./components/MapSurface/MapFrame.css";
 @import "./components/MapSurface/MapMarkers.css";

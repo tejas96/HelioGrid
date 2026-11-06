@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ViewStyle } from 'react-native';
 import { StyleSheet } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { OverlayCloseOffset, OverlayCloseProps } from './OverlayClose.types';
@@ -19,7 +20,7 @@ export function OverlayClose({ onClick, offset = 'sheet', label }: OverlayCloseP
         height={20}
         viewBox="0 0 24 24"
         fill="none"
-        stroke={theme.colors['text-secondary']}
+        stroke={colors['text-secondary']}
         strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"

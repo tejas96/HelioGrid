@@ -71,7 +71,7 @@ function TheItemCard({ props, wide }: BodyProps) {
   const leading = CATALOG_KIND_LEADING[props.draft.kind];
   const fields = itemFieldsOf(props);
   return (
-    <ItemCard glyph={leading.glyph} iris={leading.iris} title={props.words.theItem} wide={wide}>
+    <ItemCard glyph={leading.glyph} hue={leading.hue} title={props.words.theItem} wide={wide}>
       {wide ? (
         <div className="hg-item-grid" data-columns={3}>
           <Select {...fields.kind} />
@@ -97,7 +97,7 @@ function SpecificationCard({ props, wide }: BodyProps) {
   return (
     <ItemCard
       glyph="bolt"
-      iris="blue"
+      hue="teal"
       title={words.specification}
       wide={wide}
       trailing={
@@ -152,7 +152,7 @@ function CertificationAndPrice({ props, wide }: BodyProps) {
 
 function CertificationCard({ props, wide }: BodyProps) {
   return (
-    <ItemCard glyph="shield-check" iris="magenta" title={props.words.certification} wide={wide}>
+    <ItemCard glyph="shield-check" hue="plum" title={props.words.certification} wide={wide}>
       {schemeRowsOf(props).map((row) => (
         <SchemeSwitchRow key={row.scheme} {...row} onChange={props.onChange} />
       ))}
@@ -164,7 +164,7 @@ function CertificationCard({ props, wide }: BodyProps) {
 function PriceCard({ props, wide }: BodyProps) {
   const { priceNote } = props.words;
   return (
-    <ItemCard glyph="rupee" iris="violet" title={props.words.price} wide={wide}>
+    <ItemCard glyph="rupee" hue="ocean" title={props.words.price} wide={wide}>
       <NumberField {...priceFieldOf(props)} />
       {priceNote === null ? null : <p className="hg-item-card-note">{priceNote}</p>}
     </ItemCard>

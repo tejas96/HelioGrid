@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Text as RNText, View } from 'react-native';
+import { colors } from '../Color/colors';
 import { roleOf } from '../Text/Text.logic';
 import type { FieldProps } from './Field.types';
 
@@ -15,23 +16,23 @@ const labelStyle: TextStyle = {
   fontFamily: sans,
   fontWeight: '500',
   ...roleOf('field-label'),
-  color: theme.colors['text-secondary'],
+  color: colors['text-secondary'],
 };
 
 const requiredStyle: TextStyle = {
-  color: theme.colors['danger-text'],
+  color: colors['danger-text'],
 };
 
 const hintStyle: TextStyle = {
   fontFamily: sans,
   ...roleOf('field-helper'),
-  color: theme.colors['text-tertiary'],
+  color: colors['text-tertiary'],
 };
 
 const errorStyle: TextStyle = {
   fontFamily: sans,
   ...roleOf('field-helper'),
-  color: theme.colors['danger-text'],
+  color: colors['danger-text'],
 };
 
 interface NativeFieldProps extends FieldProps {

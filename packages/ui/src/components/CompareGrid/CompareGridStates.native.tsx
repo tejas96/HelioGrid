@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
@@ -13,7 +14,7 @@ const styles = StyleSheet.create({
   bar: {
     height: theme.spacing['sp-3'],
     borderRadius: theme.radius['rf-md'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   lead: { width: '60%', height: theme.spacing['sp-4'] },
   message: {
@@ -29,9 +30,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: theme.spacing['sp-1'],
-    backgroundColor: theme.colors['neutral-bg'],
+    backgroundColor: colors['neutral-bg'],
   },
-  markWarning: { backgroundColor: theme.colors['warning-bg'] },
+  markWarning: { backgroundColor: colors['warning-bg'] },
   body: { maxWidth: 340 },
 });
 
@@ -77,7 +78,7 @@ export function CompareMessage({
   /** Where focus lands once *Try again* has gone with this message. */
   focusAfter: FocusAfter;
 }) {
-  const stroke = tone === 'warning' ? theme.colors['warning-text'] : theme.colors['text-tertiary'];
+  const stroke = tone === 'warning' ? colors['warning-text'] : colors['text-tertiary'];
   return (
     <View style={styles.message}>
       <View style={[styles.mark, tone === 'warning' ? styles.markWarning : null]}>

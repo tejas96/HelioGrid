@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { Banner } from '../Banner/Banner.native';
 import { Button } from '../Button/Button.native';
@@ -209,7 +210,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-1'],
     paddingHorizontal: theme.spacing['sp-2'],
     borderRadius: theme.radius['r-xs'],
-    backgroundColor: theme.colors.fill,
+    backgroundColor: colors.fill,
   },
   /* The caption's size in the figures' face; the mono role's own line box stays, so no mark of a
      Devanagari header is clipped. */

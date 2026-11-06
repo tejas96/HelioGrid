@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, type TextStyle, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-3'],
     paddingVertical: theme.spacing['sp-1'] + theme.spacing['sp-0-5'],
     borderTopWidth: 1,
-    borderTopColor: theme.colors['line-soft'],
+    borderTopColor: colors['line-soft'],
   },
   floor: { minHeight: theme.spacing['sp-12'] },
   sectionWords: { flexGrow: 1, flexShrink: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },

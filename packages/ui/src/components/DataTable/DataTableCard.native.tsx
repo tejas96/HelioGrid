@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
@@ -26,9 +27,9 @@ const styles = StyleSheet.create({
   /* The card's inset rides on the node BELOW the ground, so a clickable card's target covers the
      whole card and not just its content box — the web half's target is `inset: 0`. */
   pad: { padding: theme.spacing['sp-4'] },
-  issue: { backgroundColor: theme.colors['warning-bg'] },
-  fixed: { backgroundColor: theme.colors['success-bg'] },
-  selected: { backgroundColor: theme.colors['accent-subtle'] },
+  issue: { backgroundColor: colors['warning-bg'] },
+  fixed: { backgroundColor: colors['success-bg'] },
+  selected: { backgroundColor: colors['accent-subtle'] },
   muted: { opacity: 0.55 },
   highlighted: { backgroundColor: ROW_HIGHLIGHT },
   body: {

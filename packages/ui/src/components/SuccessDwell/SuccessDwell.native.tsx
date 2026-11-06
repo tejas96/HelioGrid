@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
@@ -22,7 +23,7 @@ export function SuccessDwell({ title, line, style }: NativeSuccessDwellProps) {
           <Svg
             viewBox="0 0 24 24"
             fill="none"
-            stroke={theme.colors['success-text']}
+            stroke={colors['success-text']}
             strokeWidth={1.5}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -47,13 +48,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: theme.spacing['sp-6'],
-    backgroundColor: theme.colors.canvas,
+    backgroundColor: colors.canvas,
   },
   mark: {
     width: theme.spacing['sp-20'],
     height: theme.spacing['sp-20'],
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['success-bg'],
+    backgroundColor: colors['success-bg'],
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { NO_FOCUS_AFTER, useFocusAfter } from '../../primitives/FocusAfter';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -26,21 +28,21 @@ type NativeBannerProps = BannerProps & {
 };
 
 interface TonePair {
-  text: string;
-  bg: string;
+  text: ThemeColor;
+  bg: ThemeColor;
 }
 
 /* Every tone is a -text token on its -bg partner: the tint is the mark, the words are the message. */
 const TONES: Record<BannerTone, TonePair> = {
-  danger: { text: theme.colors['danger-text'], bg: theme.colors['danger-bg'] },
-  warning: { text: theme.colors['warning-text'], bg: theme.colors['warning-bg'] },
-  info: { text: theme.colors['info-text'], bg: theme.colors['info-bg'] },
-  success: { text: theme.colors['success-text'], bg: theme.colors['success-bg'] },
-  accent: { text: theme.colors.accent, bg: theme.colors['accent-subtle'] },
-  neutral: { text: theme.colors['text-secondary'], bg: theme.colors['neutral-bg'] },
+  danger: { text: colors['danger-text'], bg: colors['danger-bg'] },
+  warning: { text: colors['warning-text'], bg: colors['warning-bg'] },
+  info: { text: colors['info-text'], bg: colors['info-bg'] },
+  success: { text: colors['success-text'], bg: colors['success-bg'] },
+  accent: { text: colors.accent, bg: colors['accent-subtle'] },
+  neutral: { text: colors['text-secondary'], bg: colors['neutral-bg'] },
 };
 
-function Glyph({ name, size, color }: { name: BannerGlyph; size: number; color: string }) {
+function Glyph({ name, size, color }: { name: BannerGlyph; size: number; color: ThemeColor }) {
   return (
     <Svg
       width={size}
@@ -68,7 +70,7 @@ function Body({
 }: {
   title?: TranslatedText;
   children: ReactNode;
-  tone: string;
+  tone: ThemeColor;
 }) {
   if (title === undefined) {
     return (
@@ -92,7 +94,7 @@ function Content({
   actionBelowBody,
 }: {
   title?: TranslatedText;
-  tone: string;
+  tone: ThemeColor;
   children?: ReactNode;
   actionBelowBody?: ReactNode;
 }) {
@@ -120,7 +122,7 @@ function Dismiss({
   label,
   onDismiss,
 }: {
-  tone: string;
+  tone: ThemeColor;
   label: TranslatedText;
   onDismiss: () => void;
 }) {

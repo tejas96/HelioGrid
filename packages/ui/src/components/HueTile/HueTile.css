@@ -1,0 +1,23 @@
+/* HueTile — a glyph on its category hue. The wash and ink are `Avatar.css`'s `hg-hue` rule; the side is
+   the board's for the part that holds it, and the corner the system's small radius. */
+.hg-hue-tile {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--hg-hue-tile);
+  height: var(--hg-hue-tile);
+  border-radius: var(--r-sm);
+}
+.hg-hue-tile[data-size="32"] {
+  --hg-hue-tile: 32px;
+}
+.hg-hue-tile[data-size="34"] {
+  --hg-hue-tile: 34px;
+}
+.hg-hue-tile[data-size="36"] {
+  --hg-hue-tile: 36px;
+}
+.hg-hue-tile[data-size="40"] {
+  --hg-hue-tile: 40px;
+}

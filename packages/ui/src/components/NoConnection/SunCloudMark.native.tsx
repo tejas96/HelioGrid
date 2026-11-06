@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useReducedMotion } from '../../primitives/use-reduced-motion';
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
 import { BrandGradientFill } from '../ProgressBar/BrandGradientFill.native';
@@ -85,7 +86,7 @@ export function SunCloudMark({ animate = true }: { animate?: boolean }) {
 const part = {
   position: 'absolute',
   // biome-ignore lint/plugin/raw-white: illustration — a drawn mark
-  backgroundColor: theme.colors.surface,
+  backgroundColor: colors.surface,
   borderRadius: theme.radius['r-pill'],
 } as const;
 

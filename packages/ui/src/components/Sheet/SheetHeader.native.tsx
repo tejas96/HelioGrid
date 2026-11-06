@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { StatusChip } from '../StatusChip/StatusChip.native';
 import { OverlayClose } from './OverlayClose.native';
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-3'],
     paddingBottom: theme.spacing['sp-3'],
     // biome-ignore lint/plugin/raw-white: panel — a sheet, a modal, a detail panel: a page ground over the page
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     zIndex: 1,
   },
   /* 10 has no spacing token — it is the reference's own functional top padding. */

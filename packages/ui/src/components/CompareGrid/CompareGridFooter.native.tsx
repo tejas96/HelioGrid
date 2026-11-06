@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
 });
 
 function Chevron({ back, disabled }: { back?: boolean; disabled: boolean }) {
-  const stroke = disabled ? theme.colors['text-disabled'] : theme.colors['text-primary'];
+  const stroke = disabled ? colors['text-disabled'] : colors['text-primary'];
   return (
     <View style={back === true ? { transform: [{ rotate: '180deg' }] } : undefined}>
       <Icon size="lg" color={stroke}>

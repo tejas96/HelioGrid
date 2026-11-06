@@ -5,7 +5,7 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { useFormat } from '../MarketProvider';
-import { COUNT_PRESSED_SHARE, HUE_INK, inkOver } from './ShareFilter.inks';
+import { HUE_INK, HUE_WASH } from './ShareFilter.inks';
 import { drawnSegments, isThinSegment, totalOf } from './ShareFilter.logic';
 import type { ShareFilterItem, ShareFilterProps } from './ShareFilter.types';
 
@@ -32,7 +32,7 @@ function rowsOf(items: readonly ShareFilterItem[]): ShareFilterItem[][] {
  */
 export function ShareBar({ label, barLabel, items, pressed, onPress }: ShareBarProps) {
   const { number } = useFormat();
-  const { ground, controlFill } = useGround();
+  const { controlFill } = useGround();
   const total = totalOf(items);
   return (
     <View role="group" accessibilityLabel={label} style={styles.shell}>
@@ -69,7 +69,7 @@ export function ShareBar({ label, barLabel, items, pressed, onPress }: ShareBarP
                   { backgroundColor: controlFill },
                   on
                     ? {
-                        backgroundColor: inkOver(hue, ground, COUNT_PRESSED_SHARE),
+                        backgroundColor: HUE_WASH[item.hue],
                         borderColor: hue,
                       }
                     : undefined,

@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { ThemeColor } from '../../primitives/Color/colors';
 import type { MarketFormat } from '../../utils/format';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 
@@ -7,9 +8,9 @@ export type BandTone = 'success' | 'warning' | 'danger' | 'info' | 'neutral';
 
 /** The three values a tone resolves to. Web fills them with tokens, native with theme colours. */
 export interface BandToneStyle {
-  fg: string;
-  bg: string;
-  mark: string;
+  fg: ThemeColor;
+  bg: ThemeColor;
+  mark: ThemeColor;
 }
 
 export interface BandSpec {

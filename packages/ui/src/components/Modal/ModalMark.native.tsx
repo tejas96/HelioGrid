@@ -2,21 +2,23 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { drawsModalMark, MODAL_TONE_GLYPH } from './Modal.logic';
 import type { ModalTone } from './Modal.types';
 
 interface TonePaint {
-  bg: string;
-  fg: string;
+  bg: ThemeColor;
+  fg: ThemeColor;
 }
 
 /** The semantic `-text` on `-bg` partner pairs — the same ones StatusMark resolves. */
 const TONE: Record<ModalTone, TonePaint> = {
-  neutral: { bg: theme.colors['neutral-bg'], fg: theme.colors['text-secondary'] },
-  danger: { bg: theme.colors['danger-bg'], fg: theme.colors['danger-text'] },
-  warning: { bg: theme.colors['warning-bg'], fg: theme.colors['warning-text'] },
-  success: { bg: theme.colors['success-bg'], fg: theme.colors['success-text'] },
+  neutral: { bg: colors['neutral-bg'], fg: colors['text-secondary'] },
+  danger: { bg: colors['danger-bg'], fg: colors['danger-text'] },
+  warning: { bg: colors['warning-bg'], fg: colors['warning-text'] },
+  success: { bg: colors['success-bg'], fg: colors['success-text'] },
 };
 
 interface ModalMarkProps {

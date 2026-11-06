@@ -15,9 +15,10 @@ interface NativeMobileTopBarProps extends MobileTopBarProps {
 }
 
 /**
- * The phone header — the product tile and the company's name as words on the left; the round
+ * The phone header — the product mark and the company's name as words on the left; the round
  * search, the bell and the avatar on the right; or, on a page opened from a list, its way back and
- * its title alone.
+ * icons only: the page draws its own large title (`LargeTitle`), and the bar names it small only
+ * once it has scrolled away.
  *
  * The name keeps its drawn size at every system text size: the bar is a fixed band, and a grown
  * name only loses more of itself to the ellipsis. `sticky` and `safeTop` are accepted and
@@ -53,16 +54,17 @@ export function MobileTopBar({
     >
       {leading}
       {title !== undefined ? (
-        <View ref={titleView} style={styles.title} accessible accessibilityRole="header">
-          <Text variant="h3" bold>
-            {title}
-          </Text>
+        /* The page's large title names it while in view; once scrolled away, the bar names it. */
+        <View ref={titleView} style={styles.title} accessible={scrolled}>
+          {scrolled ? (
+            <Text variant="h4" bold oneLine>
+              {title}
+            </Text>
+          ) : null}
         </View>
       ) : (
         <View style={styles.identity}>
-          <View style={styles.slot}>
-            {brand ?? <LogoTile size={theme.spacing['sp-8']} radius={theme.radius['r-sm']} />}
-          </View>
+          <View style={styles.slot}>{brand ?? <LogoTile size={theme.spacing['sp-8']} />}</View>
           {company !== undefined ? (
             <View style={styles.company}>
               <Text variant="body" bold oneLine fixedSize>

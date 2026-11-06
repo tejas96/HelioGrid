@@ -1,7 +1,7 @@
-import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { narrationShape } from './operation-progress-model';
 
@@ -54,7 +54,7 @@ export function OperationNarration({ step, stage, counted }: OperationNarrationP
   );
 }
 
-const secondary: TextStyle = { color: theme.colors['text-secondary'] };
+const secondary: TextStyle = { color: colors['text-secondary'] };
 
 const styles = StyleSheet.create({
   narration: {

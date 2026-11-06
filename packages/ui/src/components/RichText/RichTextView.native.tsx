@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Image, Text as RNText, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { foldRows, isListBlock, keyed } from './RichText.model';
 import type { RichTextRow, RichTextSpan, RichTextViewProps } from './RichText.types';
 import { headingAbove, richTextViewMeasures } from './RichTextView.logic';
@@ -16,12 +17,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: theme.radius['rf-sm'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
-  logoLabel: { fontFamily: theme.type.families.mono, color: theme.colors['text-secondary'] },
+  logoLabel: { fontFamily: theme.type.families.mono, color: colors['text-secondary'] },
   listRow: { flexDirection: 'row' },
   bullet: { fontFamily: theme.type.families.sans },
-  link: { color: theme.colors.link, textDecorationLine: 'underline' },
+  link: { color: colors.accent, textDecorationLine: 'underline' },
 });
 
 function renderSpans(spans: RichTextSpan[], prefix: string, base: TextStyle): ReactNode[] {
@@ -60,15 +61,15 @@ export function RichTextView({
   style,
 }: NativeRichTextViewProps) {
   const blocks = value?.blocks ?? [];
-  const ink = color ?? theme.colors['text-primary'];
-  const sub = muted ?? theme.colors['text-secondary'];
+  const ink = color ?? colors['text-primary'];
+  const sub = muted ?? colors['text-secondary'];
   const lineHeight = Math.round(fontSize * 1.6);
   const { gap, headingSize, headingBelow, logoHeight, logoWidth, logoLabelSize } =
     richTextViewMeasures(fontSize);
 
   if (blocks.length === 0) {
     return emptyText === undefined ? null : (
-      <RNText style={{ fontSize, color: theme.colors['text-tertiary'] }}>{emptyText}</RNText>
+      <RNText style={{ fontSize, color: colors['text-tertiary'] }}>{emptyText}</RNText>
     );
   }
 

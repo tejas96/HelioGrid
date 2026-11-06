@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import { Children, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { useLoadingPulse } from '../LoadingBars/use-loading-pulse.native';
 import type {
@@ -24,18 +25,18 @@ interface NativePreviewFrameGroupProps extends PreviewFrameGroupProps {
 const SURFACE: Record<PreviewSurface, ViewStyle> = {
   sheet: {
     // biome-ignore lint/plugin/raw-white: full-screen-ground — a screen that is its own page
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     borderRadius: theme.radius['r-lg'],
     ...theme.elevation.e3,
   },
   page: {
-    backgroundColor: theme.colors.canvas,
+    backgroundColor: colors.canvas,
     borderRadius: theme.radius['r-lg'],
     ...theme.elevation.e2,
   },
   band: {
     // biome-ignore lint/plugin/raw-white: full-screen-ground — a screen that is its own page
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     borderRadius: theme.radius['r-md'],
     ...theme.elevation.e1,
   },
@@ -52,9 +53,9 @@ const styles = StyleSheet.create({
   },
   words: { flexShrink: 1, minWidth: 0 },
   action: { flexShrink: 0 },
-  note: { color: theme.colors['warning-text'] },
+  note: { color: colors['warning-text'] },
   /* The web half's sweep is --canvas-sunken under --fill; the phone pulses the sunken ground. */
-  loading: { backgroundColor: theme.colors['canvas-sunken'], shadowOpacity: 0, elevation: 0 },
+  loading: { backgroundColor: colors['canvas-sunken'], shadowOpacity: 0, elevation: 0 },
   hidden: { opacity: 0 },
 });
 

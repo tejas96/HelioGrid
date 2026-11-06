@@ -1,6 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project —
    and a web half's DOM types then fail to compile under the native lib. Metro resolves both
@@ -18,13 +20,13 @@ interface NativeNextActionProps extends NextActionProps {
 }
 
 /* EVERY WARNING MARK TAKES warning-text: `warning` itself clears no contrast floor anywhere. */
-const DOT: Record<NextActionTone, string> = {
-  due: theme.colors['success-text'],
-  overdue: theme.colors['danger-text'],
-  soon: theme.colors['warning-text'],
-  scheduled: theme.colors.accent,
-  snoozed: theme.colors['text-tertiary'],
-  done: theme.colors['text-tertiary'],
+const DOT: Record<NextActionTone, ThemeColor> = {
+  due: colors['success-text'],
+  overdue: colors['danger-text'],
+  soon: colors['warning-text'],
+  scheduled: colors.accent,
+  snoozed: colors['text-tertiary'],
+  done: colors['text-tertiary'],
 };
 
 /* The line's ink by `nextActionInk`, in this platform's text colours. */

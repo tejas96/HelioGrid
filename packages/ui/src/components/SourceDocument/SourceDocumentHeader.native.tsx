@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
@@ -102,5 +103,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 10,
   },
-  openWord: { fontWeight: '500', color: theme.colors.accent },
+  openWord: { fontWeight: '500', color: colors.accent },
 });

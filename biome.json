@@ -12,14 +12,13 @@
       "!**/.next",
       "!**/node_modules",
       "!packages/contracts/openapi",
-      "!packages/theme/src/_generated",
       "!packages/i18n/src/locales/**/messages.ts",
       "!apps/mobile/ios",
       "!apps/mobile/android",
       "!apps/mobile/vendor",
       "!**/*.pbxproj",
       "!graphify-out",
-      "!.design"
+      "!packages/ui/src/components/LottieMoment/moments"
     ]
   },
   "formatter": {
@@ -136,7 +135,8 @@
         "!**/.next/**",
         "!**/ios/**",
         "!**/android/**",
-        "!**/_generated/**"
+        "!**/packages/theme/src/tokens/**",
+        "!**/packages/theme/src/emit-css.ts"
       ]
     },
     {
@@ -152,8 +152,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -170,8 +169,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -182,8 +180,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -195,8 +192,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -209,8 +205,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -223,8 +218,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -238,8 +232,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -331,8 +324,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -347,8 +339,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -363,8 +354,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -378,8 +368,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -395,55 +384,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
-      ]
-    },
-    {
-      "path": "./packages/config/biome/light-only.grit",
-      "includes": [
-        "**/apps/mobile/src/**/*.{ts,tsx,mts}",
-        "**/apps/mobile/App.tsx",
-        "**/apps/web/app/**/*.{ts,tsx,mts}",
-        "**/apps/web/features/**/*.{ts,tsx,mts}",
-        "**/apps/web/lib/**/*.{ts,tsx,mts}",
-        "**/packages/theme/src/**/*.{ts,tsx,mts}",
-        "**/packages/ui/src/**/*.{ts,tsx,mts}",
-        "!**/node_modules/**",
-        "!**/dist/**",
-        "!**/.next/**",
-        "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
-      ]
-    },
-    {
-      "path": "./packages/config/biome/light-only-css.grit",
-      "includes": [
-        "**/apps/mobile/src/**/*.{css}",
-        "**/apps/web/app/**/*.{css}",
-        "**/apps/web/features/**/*.{css}",
-        "**/apps/web/lib/**/*.{css}",
-        "**/packages/theme/src/**/*.{css}",
-        "**/packages/ui/src/**/*.{css}",
-        "!**/node_modules/**",
-        "!**/dist/**",
-        "!**/.next/**",
-        "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
-      ]
-    },
-    {
-      "path": "./packages/config/biome/light-only-theme-css.grit",
-      "includes": [
-        "**/packages/theme/src/**/*.css",
-        "!**/node_modules/**",
-        "!**/dist/**",
-        "!**/.next/**",
-        "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -463,8 +404,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -481,8 +421,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -500,8 +439,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -519,7 +457,8 @@
         "!**/.next/**",
         "!**/ios/**",
         "!**/android/**",
-        "!**/_generated/**"
+        "!**/packages/theme/src/tokens/**",
+        "!**/packages/theme/src/emit-css.ts"
       ]
     },
     {
@@ -535,8 +474,7 @@
         "!**/dist/**",
         "!**/.next/**",
         "!**/ios/**",
-        "!**/android/**",
-        "!**/_generated/**"
+        "!**/android/**"
       ]
     },
     {
@@ -561,6 +499,7 @@
         "!**/packages/ui/src/components/MapSurface/MapVectors.tsx",
         "!**/packages/ui/src/components/MapSurface/MapVectors.native.tsx",
         "!**/packages/ui/src/components/Wordmark/Wordmark.native.tsx",
+        "!**/packages/ui/src/components/HeroPanel/HeroPanel.native.tsx",
         "!**/packages/ui/src/components/BrandBloom/BrandBloom.native.tsx",
         "!**/packages/ui/src/components/ProgressBar/BrandGradientFill.native.tsx",
         "!**/packages/ui/src/components/SettingsList/SettingsList.native.tsx"

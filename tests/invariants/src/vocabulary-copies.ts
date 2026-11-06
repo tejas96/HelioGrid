@@ -31,7 +31,7 @@ function scannedFiles(repo: string): string[] {
     (file) =>
       /\.tsx?$/.test(file) &&
       !file.endsWith('.d.ts') &&
-      !['/tests/', '/_generated/', '/dist/', '/node_modules/'].some((part) => file.includes(part)),
+      !['/tests/', '/dist/', '/node_modules/'].some((part) => file.includes(part)),
   );
 }
 

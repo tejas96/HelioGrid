@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -129,7 +130,7 @@ export function Glyph({ type, unread }: { type: string; unread: boolean }) {
       style={[styles.glyphSlot, styles.glyph, { backgroundColor: controlFill }]}
       importantForAccessibility="no-hide-descendants"
     >
-      <ActivityGlyph name={notificationGlyph(type)} size={20} color={theme.colors.accent} />
+      <ActivityGlyph name={notificationGlyph(type)} size={20} color={colors.accent} />
       {unread ? <View style={[styles.dot, { borderColor: ground }]} /> : null}
     </View>
   );
@@ -219,7 +220,7 @@ export const styles = StyleSheet.create({
     height: 10,
     borderRadius: theme.radius['r-pill'],
     borderWidth: 2,
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   words: {
     flex: 1,

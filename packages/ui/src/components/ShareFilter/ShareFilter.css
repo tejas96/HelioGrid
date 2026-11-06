@@ -1,28 +1,32 @@
 /* ShareFilter — how a whole splits, and the filter onto each part (SCR-M01-17's overview).
    A part's hue is `--hg-share-hue`, set by its `hg-share-hue-*` class; a ring's arc reads it as
-   `--hg-ring-ink`. A wash mixes the hue over `--hg-ground`, what holds the filter. The 64px dial,
+   `--hg-ring-ink`. A pressed part takes its hue's tint, `--hg-share-wash`. The 64px dial,
    the 10px dot and segment floor and the 12px bar are the board's own dimensions.
 
-   `ShareFilter.inks.ts` works the same mixes out for the phone: a share changed here is changed
-   there in the same commit. Toggles are `Pressable`s, whose reset loads later, so each look here is
+   The phone takes each hue's tint token for the same washes (`ShareFilter.inks.ts`). Toggles are `Pressable`s, whose reset loads later, so each look here is
    keyed on `.hg-pressable` plus its own class. Nothing animates but the press. */
 
-.hg-share-hue-blue {
-  --hg-share-hue: var(--iris-blue);
+.hg-share-hue-teal {
+  --hg-share-hue: var(--hue-teal);
+  --hg-share-wash: var(--hue-teal-bg);
 }
-.hg-share-hue-violet {
-  --hg-share-hue: var(--iris-violet);
+.hg-share-hue-ocean {
+  --hg-share-hue: var(--hue-ocean);
+  --hg-share-wash: var(--hue-ocean-bg);
 }
 /* A warning part is a mark that carries information, so it takes the warning ink that holds 3:1
    (`packages/theme/src/contrast.ts`), not the bare `--warning` the board draws. */
 .hg-share-hue-warning {
   --hg-share-hue: var(--warning-text);
+  --hg-share-wash: var(--warning-bg);
 }
 .hg-share-hue-success {
   --hg-share-hue: var(--success);
+  --hg-share-wash: var(--success-bg);
 }
 .hg-share-hue-danger {
   --hg-share-hue: var(--danger);
+  --hg-share-wash: var(--danger-bg);
 }
 
 /* A <fieldset> is the group; its own border, margin and padding are the browser's, not ours. */
@@ -57,7 +61,7 @@
   background: transparent;
 }
 .hg-pressable.hg-share-filter-ring[aria-pressed="true"] {
-  background: color-mix(in srgb, var(--hg-share-hue) 12%, var(--hg-ground));
+  background: var(--hg-share-wash);
 }
 .hg-share-filter-dial {
   position: relative;
@@ -84,7 +88,7 @@
 }
 .hg-share-filter-ring-label[data-asks="true"] {
   font-weight: var(--fw-bold);
-  color: color-mix(in srgb, var(--warning-text) 72%, var(--text-primary));
+  color: var(--warning-text);
 }
 
 /* ── bar ─────────────────────────────────────────────────────────────────── */
@@ -118,7 +122,7 @@
   text-align: left;
 }
 .hg-pressable.hg-share-filter-count[aria-pressed="true"] {
-  background: color-mix(in srgb, var(--hg-share-hue) 14%, var(--hg-ground));
+  background: var(--hg-share-wash);
   box-shadow: inset 0 0 0 1.5px var(--hg-share-hue);
 }
 .hg-share-filter-dot {

@@ -8,6 +8,7 @@
 
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -99,9 +100,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-md'],
   },
-  stepChecked: { backgroundColor: theme.colors['accent-subtle'] },
+  stepChecked: { backgroundColor: colors['accent-subtle'] },
   railCell: { width: NODE, alignItems: 'center', flexShrink: 0 },
-  rail: { width: 2, flexShrink: 0, backgroundColor: theme.colors['line-soft'] },
+  rail: { width: 2, flexShrink: 0, backgroundColor: colors['line-soft'] },
   railAfter: { flex: 1 },
   railBlank: { backgroundColor: 'transparent' },
   node: {
@@ -111,10 +112,10 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
-  nodeWarning: { backgroundColor: theme.colors['warning-bg'] },
-  nodeChecked: { backgroundColor: theme.colors.accent },
+  nodeWarning: { backgroundColor: colors['warning-bg'] },
+  nodeChecked: { backgroundColor: colors.accent },
   body: { flex: 1, minWidth: 0, rowGap: 1 },
   head: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6 },
   label: { fontWeight: '500' },
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
-    borderColor: theme.colors['mark-subtle'],
+    borderColor: colors['mark-subtle'],
   },
-  checkChecked: { backgroundColor: theme.colors.accent, borderWidth: 0 },
+  checkChecked: { backgroundColor: colors.accent, borderWidth: 0 },
 });

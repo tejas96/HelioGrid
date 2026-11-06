@@ -3,8 +3,8 @@
 The compose-don't-invent and no-raw-values laws are `.claude/rules/ui-adherence.md`, which loads
 with this folder.
 
-**Before changing a component, read its rows in `docs/tasks/UI.md`.** A row is deleted once its
-repo side and its design-system side (`design-track.md`, *Changing the design system*) have landed.
+Every component draws the approved language (`CLAUDE.md` §10) from the typed tokens in
+`packages/theme/src/tokens/`, in light, dark and field mode.
 
 ## What lives here / what must never live here
 
@@ -61,8 +61,7 @@ part there fails it.
   the size ladder; a component that keeps its own box puts `<ShellGlyphMarks name="…" />` inside
   its `<svg>` and sets the size, stroke and colour there. Biome's `inline-glyph` and
   `inline-svg-mark` refuse path data and marks written anywhere else.
-- The `design-system-props` invariant checks only that each design-system prop is declared;
-  nothing compares the two halves, so the types file is what you must keep honest.
+- Nothing compares the two halves' behaviour, so the types file is what you must keep honest.
 - **No English lives here** (`T-SHELL-016`): every copy prop takes `TranslatedText` with no default,
   and words a component says itself — a counter, an announcement, an error line — arrive as a
   `<Name>Words` prop built in `packages/i18n/src/copy/`. Biome plugins `copy-prop-type`,
@@ -82,5 +81,5 @@ part there fails it.
 - React Native's `flattenStyle` copies EVERY key of every style object, `undefined` values included, so a later `{ x: maybeUndefined }` ERASES the `x` a variant beneath it set — on the phone only, since the web half does the opposite → append the object conditionally (`cond ? { x } : undefined`), never a key whose value may be undefined.
 - A web layout sized from the window (`vw`, `@media` widths) assumes it owns the page, but inside the shell a side list or a panel takes part of it, so a two-column component squeezes a column to nothing at mid widths → size it from its own room (`container` + `cqw`, `@container`), as `CompanyProfile`'s settings life does.
 - A brand-hue wash with its ink (an iris tile, badge or face) mixed by hand is a colour pair `ui-colour-pairs` cannot measure, so the full gate fails late → take the shared iris rule: `hg-iris` with `data-iris` on the web (`Avatar.css`), `irisTintOf` on native.
-- A locked board passes `inset` to `Sheet` and `EditorSurface` because it draws them inside a device frame, so an app part copied from the board's props measures against the nearest positioned ancestor and, inside a scrolled page at 375, opens off-screen → an app sheet never takes `inset` (`Explainer`'s `inset` is a different prop, a hit-box margin).
+- `Sheet` and `EditorSurface` take `inset` only for a part drawn inside a device frame; in an app it measures against the nearest positioned ancestor and, inside a scrolled page at 375, opens off-screen → an app sheet never takes `inset` (`Explainer`'s `inset` is a different prop, a hit-box margin).
 - On iOS a modal `Sheet`, `Modal` or `DetailPanel` panel (`accessibilityViewIsModal`) hides every other portal layer from a screen reader, so a list, menu or bubble opened over it is drawn and tappable but cannot be read → a portal layer a person must use over a modal is `accessibilityViewIsModal` itself while open (`Select.native.tsx`, `Menu.native.tsx`).

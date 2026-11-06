@@ -5,6 +5,7 @@
 
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
@@ -16,10 +17,10 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['rf-md'],
     /* Drawn in --surface, as `Card`'s: a grey bar on the grey tile would not show. */
     // biome-ignore lint/plugin/raw-white: shimmer — a loading bar's shimmer
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
   },
   error: { marginTop: 10, alignItems: 'flex-start', gap: theme.spacing['sp-2'] },
-  errorBody: { color: theme.colors['warning-text'] },
+  errorBody: { color: colors['warning-text'] },
   block: { marginTop: 10 },
 });
 

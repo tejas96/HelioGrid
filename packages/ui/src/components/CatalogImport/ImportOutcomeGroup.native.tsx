@@ -2,11 +2,12 @@ import type { CatalogImportRowWire } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { Fragment } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Button } from '../Button/Button.native';
-import { IrisTile } from '../IrisTile/IrisTile.native';
+import { HueTile } from '../HueTile/HueTile.native';
 import { StatusChip } from '../StatusChip/StatusChip.native';
 import { type ImportFormats, type ImportListRowView, listRowOf } from './CatalogImport.logic';
 import { CARD_RADIUS, raisedCard, rowDivider } from './CatalogImport.surfaces.native';
@@ -17,14 +18,13 @@ import { ImportGlyph } from './ImportGlyph.native';
 type Phase = 'preview' | 'report';
 
 /** A folded group's tile: its glyph and its iris hue — written prices blue, new products violet. */
-const GROUP_TILE: Partial<
-  Record<ImportGroupId, { glyph: ShellGlyphName; hue: 'blue' | 'violet' }>
-> = {
-  overrides: { glyph: 'pencil', hue: 'blue' },
-  applied: { glyph: 'pencil', hue: 'blue' },
-  newItems: { glyph: 'plus', hue: 'violet' },
-  created: { glyph: 'plus', hue: 'violet' },
-};
+const GROUP_TILE: Partial<Record<ImportGroupId, { glyph: ShellGlyphName; hue: 'teal' | 'ocean' }>> =
+  {
+    overrides: { glyph: 'pencil', hue: 'teal' },
+    applied: { glyph: 'pencil', hue: 'teal' },
+    newItems: { glyph: 'plus', hue: 'ocean' },
+    created: { glyph: 'plus', hue: 'ocean' },
+  };
 
 interface ImportOutcomeGroupProps {
   group: ImportRowList & { readonly id: ImportGroupId };
@@ -42,7 +42,7 @@ interface ImportOutcomeGroupProps {
  */
 export function ImportOutcomeGroup(props: ImportOutcomeGroupProps) {
   const { group, open, words } = props;
-  const tile = GROUP_TILE[group.id] ?? { glyph: 'lines', hue: 'blue' };
+  const tile = GROUP_TILE[group.id] ?? { glyph: 'lines', hue: 'teal' };
   const sample = groupSampleOf(rowsOf(group), words, props.formats, props.phase);
   return (
     <View style={styles.group}>
@@ -51,7 +51,7 @@ export function ImportOutcomeGroup(props: ImportOutcomeGroupProps) {
         onPress={props.onToggle}
         style={styles.line}
       >
-        <IrisTile glyph={tile.glyph} iris={tile.hue} size={36} stroke={1.7} />
+        <HueTile glyph={tile.glyph} hue={tile.hue} size={36} stroke={1.7} />
         <View style={styles.words}>
           <Text variant="body-sm" bold>
             {words.groupTitle(words.groups[group.id], group.total)}
@@ -62,7 +62,7 @@ export function ImportOutcomeGroup(props: ImportOutcomeGroupProps) {
           name={open ? 'chevron-up' : 'chevron'}
           size="sm"
           stroke={1.7}
-          color={theme.colors['text-secondary']}
+          color={colors['text-secondary']}
         />
       </Pressable>
       {open ? (

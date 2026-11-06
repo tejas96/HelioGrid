@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { IndeterminateRail } from '../PendingAction/IndeterminateRail.native';
@@ -14,7 +15,7 @@ function DoneGlyph() {
       height={13}
       viewBox="0 0 24 24"
       fill="none"
-      stroke={theme.colors['success-text']}
+      stroke={colors['success-text']}
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
     height: 7,
     borderRadius: theme.radius['r-pill'],
     borderWidth: 1.5,
-    borderColor: theme.colors['mark-subtle'],
+    borderColor: colors['mark-subtle'],
   },
   label: { minWidth: 0, flexShrink: 1 },
 });

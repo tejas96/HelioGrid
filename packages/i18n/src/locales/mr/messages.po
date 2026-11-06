@@ -2447,6 +2447,11 @@ msgid "App and WhatsApp"
 msgstr "ॲप आणि WhatsApp"
 
 #. js-lingui-explicit-id
+#: src/copy/appearance.ts:7
+msgid "Appearance"
+msgstr "स्वरूप"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:84
 msgid "Applies to every new proposal, Quick ones included."
 msgstr "प्रत्येक नव्या प्रस्तावाला लागू, Quick प्रस्तावांनाही."
@@ -3905,6 +3910,11 @@ msgid "cycles"
 msgstr "सायकल"
 
 #. js-lingui-explicit-id
+#: src/copy/appearance.ts:12
+msgid "Dark"
+msgstr "डार्क"
+
+#. js-lingui-explicit-id
 #: src/copy/freshness.ts:38
 msgid "data rights"
 msgstr "डेटा हक्क"
@@ -4128,6 +4138,11 @@ msgstr "{label} शी जोडलेली डिझाइन कालबा�
 #: src/copy/role-presets.ts:55
 msgid "Designs, proposals and design sign-off"
 msgstr "डिझाइन, प्रस्ताव आणि डिझाइनची मंजुरी"
+
+#. js-lingui-explicit-id
+#: src/copy/appearance.ts:10
+msgid "Device"
+msgstr "डिव्हाइस"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:65
@@ -5699,6 +5714,11 @@ msgid "Kept for proposals already sent. Restore one to use it again."
 msgstr "आधी पाठवलेल्या प्रस्तावांसाठी ठेवल्या. पुन्हा वापरण्यासाठी परत आणा."
 
 #. js-lingui-explicit-id
+#: src/copy/appearance.ts:9
+msgid "Kept on this device"
+msgstr "याच डिव्हाइसवर राहते"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:47
 msgid "Kept reports"
 msgstr "जतन केलेले रिपोर्ट"
@@ -5849,6 +5869,11 @@ msgstr "लेटरहेड"
 #: src/copy/catalog-settings.ts:153
 msgid "LFP"
 msgstr "LFP"
+
+#. js-lingui-explicit-id
+#: src/copy/appearance.ts:11
+msgid "Light"
+msgstr "लाइट"
 
 #. js-lingui-explicit-id
 #: src/copy/usage-page.ts:101
@@ -11192,6 +11217,11 @@ msgstr "स्वतःचे स्टॉप, चेक-इन, टाइमल
 #: src/copy/invite.ts:32
 msgid "Their phone number"
 msgstr "त्यांचा फोन नंबर"
+
+#. js-lingui-explicit-id
+#: src/copy/appearance.ts:8
+msgid "Theme"
+msgstr "थीम"
 
 #. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:22

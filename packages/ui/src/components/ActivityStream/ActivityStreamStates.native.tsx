@@ -4,20 +4,22 @@ import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { STREAM_SKELETON } from './ActivityStream.logic';
 
 const type = theme.type.roles;
 
 const styles = StyleSheet.create({
-  shimmer: { borderRadius: theme.radius['rf-md'], backgroundColor: theme.colors['canvas-sunken'] },
+  shimmer: { borderRadius: theme.radius['rf-md'], backgroundColor: colors['canvas-sunken'] },
   skeleton: { gap: theme.spacing['sp-5'] },
   skeletonRow: { flexDirection: 'row', columnGap: theme.spacing['sp-3'] },
   skeletonMark: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   skeletonLines: { flex: 1, gap: theme.spacing['sp-2'] },
   message: {
@@ -33,16 +35,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 4,
-    backgroundColor: theme.colors['neutral-bg'],
+    backgroundColor: colors['neutral-bg'],
   },
-  messageMarkWarning: { backgroundColor: theme.colors['warning-bg'] },
+  messageMarkWarning: { backgroundColor: colors['warning-bg'] },
   title: {
     fontFamily: theme.type.families.sans,
     fontSize: 16,
     fontWeight: '700',
     letterSpacing: -0.16,
     textAlign: 'center',
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   text: {
     fontFamily: theme.type.families.sans,
@@ -50,7 +52,7 @@ const styles = StyleSheet.create({
     lineHeight: 19.5,
     textAlign: 'center',
     maxWidth: 320,
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
   extra: { marginTop: 10 },
 });
@@ -100,7 +102,7 @@ export function StreamSkeleton({ label }: { label: TranslatedText }) {
   );
 }
 
-function MessageGlyph({ warning, color }: { warning: boolean; color: string }) {
+function MessageGlyph({ warning, color }: { warning: boolean; color: ThemeColor }) {
   return (
     <Svg
       width={22}
@@ -140,7 +142,7 @@ export function StreamMessage({
       <View style={[styles.messageMark, warning ? styles.messageMarkWarning : null]}>
         <MessageGlyph
           warning={warning}
-          color={warning ? theme.colors['warning-text'] : theme.colors['text-tertiary']}
+          color={warning ? colors['warning-text'] : colors['text-tertiary']}
         />
       </View>
       <Text style={styles.title}>{title}</Text>

@@ -9,6 +9,8 @@ import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-2'],
   },
   word: { fontWeight: '500' },
-  actionWord: { fontWeight: '500', color: theme.colors.accent },
+  actionWord: { fontWeight: '500', color: colors.accent },
 });
 
 const SIZE: Record<12 | 13, TextStyle> = {
@@ -57,7 +59,7 @@ interface NativeValueSourceProps extends ValueSourceSpec {
   style?: StyleProp<ViewStyle>;
 }
 
-function Glyph({ name, color }: { name: 'own' | 'inherited'; color: string }) {
+function Glyph({ name, color }: { name: 'own' | 'inherited'; color: ThemeColor }) {
   return (
     <Icon size="xs" color={color}>
       <Svg
@@ -90,7 +92,7 @@ export function ValueSource({
   }
   const act = overrideActOf({ level, onOverride, overrideLabel, fieldName });
   const step = valueSourceStep(size);
-  const glyphColor = theme.colors['text-secondary'];
+  const glyphColor = colors['text-secondary'];
   return (
     <View style={[styles.row, style]}>
       <View style={styles.layer}>

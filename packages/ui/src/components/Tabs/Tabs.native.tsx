@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
@@ -128,19 +129,19 @@ export function Tabs({ tabs, value, onChange, style }: NativeTabsProps) {
    so the label is information. Off-ness rides the absent indicator and the reason instead. */
 function labelStyle(active: boolean, off: boolean): TextStyle {
   if (off) {
-    return { color: theme.colors['text-tertiary'] };
+    return { color: colors['text-tertiary'] };
   }
   return active
-    ? { color: theme.colors['text-primary'], fontWeight: '500' }
-    : { color: theme.colors['text-secondary'] };
+    ? { color: colors['text-primary'], fontWeight: '500' }
+    : { color: colors['text-secondary'] };
 }
 
 function countStyle(active: boolean, off: boolean): TextStyle {
   const base: TextStyle = { fontWeight: '500', fontVariant: ['tabular-nums'] };
   if (off || !active) {
-    return { ...base, color: theme.colors['neutral-text'] };
+    return { ...base, color: colors['neutral-text'] };
   }
-  return { ...base, color: theme.colors.accent };
+  return { ...base, color: colors.accent };
 }
 
 const styles = StyleSheet.create({
@@ -163,17 +164,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
   },
   countActive: {
-    backgroundColor: theme.colors['accent-subtle'],
+    backgroundColor: colors['accent-subtle'],
   },
   countRest: {
-    backgroundColor: theme.colors['neutral-bg'],
+    backgroundColor: colors['neutral-bg'],
   },
   indicator: {
     position: 'absolute',
     bottom: 0,
     height: 2,
     borderRadius: 2,
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   reasons: {
     gap: theme.spacing['sp-1'],

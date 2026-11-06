@@ -2,6 +2,8 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { type ReactNode, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { type FocusHandle, useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ShellGlyphName, ShellGlyphProps } from '../AppShell/AppShell.types';
@@ -67,7 +69,7 @@ export function SetupReady({
         <Card>
           <Door
             glyph="person-plus"
-            circle={theme.colors.accent}
+            circle={colors.accent}
             tone="accent"
             words={words.lead}
             act={
@@ -89,7 +91,7 @@ export function SetupReady({
           door={
             <Door
               glyph="house-door"
-              circle={theme.colors.info}
+              circle={colors.info}
               tone="info"
               words={words.demo}
               badge={words.demo.badge}
@@ -134,7 +136,7 @@ function Door({
   act,
 }: {
   glyph: ShellGlyphName;
-  circle: string;
+  circle: ThemeColor;
   tone: NonNullable<ShellGlyphProps['tone']>;
   words: SetupReadyDoorWords;
   badge?: string;

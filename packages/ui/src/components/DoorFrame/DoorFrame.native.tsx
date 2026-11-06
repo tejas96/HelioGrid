@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { useContext } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { KeyboardFrame } from '../../primitives/Keyboard/KeyboardFrame.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project.
@@ -81,7 +82,7 @@ export function DoorFrame({
 const styles = StyleSheet.create({
   // The page is `surface` (`F7-15`, `F7-49`): the fields on it are wells, darker than it.
   // biome-ignore lint/plugin/raw-white: full-screen-ground — a screen that is its own page
-  root: { flex: 1, backgroundColor: theme.colors.surface },
+  root: { flex: 1, backgroundColor: colors.surface },
   /** The layers over the bloom paint nothing, so the wash shows through the column. */
   fill: { flex: 1 },
   scroll: { flexGrow: 1 },

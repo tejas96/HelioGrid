@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { IrisHue } from '../Avatar/Avatar.types';
+import type { CategoryHue } from '../Avatar/Avatar.types';
 
 /** The six chip/badge tones — each resolves to a semantic `-text` token (and a `-bg` for Badge). */
 export type ChipTone = 'neutral' | 'success' | 'warning' | 'danger' | 'info' | 'accent';
@@ -8,7 +8,7 @@ export type ChipTone = 'neutral' | 'success' | 'warning' | 'danger' | 'info' | '
  * A Badge's tones: the six, and the three brand iris tones, which label a KIND (a role, a
  * category), never a state — a state is success / warning / danger / info (design-system change 7).
  */
-export type BadgeTone = ChipTone | IrisHue;
+export type BadgeTone = ChipTone | CategoryHue;
 
 /** Expressive = the brand's 28px pill; functional = the dense 24px working set. */
 export type ChipDensity = 'expressive' | 'functional';

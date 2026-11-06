@@ -2,6 +2,8 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -144,10 +146,10 @@ const medium: TextStyle = { fontWeight: `${theme.type.weights.medium}` };
  * The knob is the opposite of its track: white on the accent, the ground on the control fill, and
  * `--text-disabled` on the disabled fill, where the ground would hide which way it is set.
  */
-function knobColor(on: boolean, disabled: boolean, ground: string): string {
-  if (disabled) return theme.colors['text-disabled'];
+function knobColor(on: boolean, disabled: boolean, ground: ThemeColor): ThemeColor {
+  if (disabled) return colors['text-disabled'];
   // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-  return on ? theme.colors.surface : ground;
+  return on ? colors.surface : ground;
 }
 
 const styles = StyleSheet.create({
@@ -188,11 +190,11 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
   },
   trackOn: {
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   trackError: {
     borderWidth: 1.5,
-    borderColor: theme.colors.danger,
+    borderColor: colors.danger,
   },
   thumb: {
     position: 'absolute',

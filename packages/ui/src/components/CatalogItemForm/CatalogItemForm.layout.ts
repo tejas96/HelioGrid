@@ -38,9 +38,10 @@ const WINDOW: SpecCell = { path: 'mppt.window', as: 'window' };
 const WARRANTY = { wide: 2, narrow: 1, cells: [n('warrantyYears')] } as const;
 
 /**
- * Each kind's spec block as its locked board lays it out (`.design/M01/SCR-M01-16-*`): the panel,
- * inverter and battery as drawn; the micro-inverter and the optimiser, which no frame draws,
- * composed from the inverter's parts — one rated figure, then the warranty under *Optional*.
+ * Each kind's spec block as the Add catalog item screen (`SCR-M01-16`) lays it out: the panel,
+ * inverter and battery each their own; the micro-inverter and the optimiser, which have no layout of
+ * their own, composed from the inverter's parts — one rated figure, then the warranty under
+ * *Optional*.
  */
 export const SPEC_LAYOUT: Readonly<Record<ComponentKind, SpecLayout>> = {
   panel: {

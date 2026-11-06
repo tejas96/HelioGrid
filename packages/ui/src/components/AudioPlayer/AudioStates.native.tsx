@@ -1,6 +1,8 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, Text, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { RetryButton } from '../Button/RetryButton.native';
@@ -16,9 +18,9 @@ import { TranscriptDoor } from './AudioTransport.native';
 
 const type = theme.type.roles;
 
-const REASON_TINT: Record<AudioUnavailableReason, { bg: string; fg: string }> = {
-  'consent-declined': { bg: theme.colors['neutral-bg'], fg: theme.colors['text-secondary'] },
-  'purged-retention': { bg: theme.colors['info-bg'], fg: theme.colors.info },
+const REASON_TINT: Record<AudioUnavailableReason, { bg: ThemeColor; fg: ThemeColor }> = {
+  'consent-declined': { bg: colors['neutral-bg'], fg: colors['text-secondary'] },
+  'purged-retention': { bg: colors['info-bg'], fg: colors.info },
 };
 
 const styles = StyleSheet.create({
@@ -33,13 +35,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
     gap: theme.spacing['sp-2'],
-    backgroundColor: theme.colors['warning-bg'],
+    backgroundColor: colors['warning-bg'],
   },
   errorText: {
     fontFamily: theme.type.families.sans,
     fontSize: type['body-sm'].fontSize,
     lineHeight: type['body-sm'].lineHeight,
-    color: theme.colors['warning-text'],
+    color: colors['warning-text'],
   },
   actions: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   body: { flex: 1, minWidth: 0 },
@@ -48,26 +50,26 @@ const styles = StyleSheet.create({
     fontSize: type['body-sm'].fontSize,
     fontWeight: '700',
     letterSpacing: -0.13,
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   text: {
     marginTop: 3,
     fontFamily: theme.type.families.sans,
     fontSize: type['body-sm'].fontSize,
     lineHeight: type['body-sm'].lineHeight,
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
   note: {
     marginTop: 6,
     fontFamily: theme.type.families.sans,
     fontSize: type.caption.fontSize,
-    color: theme.colors['text-tertiary'],
+    color: colors['text-tertiary'],
   },
   door: { flexDirection: 'row', marginTop: theme.spacing['sp-3'] },
   skeleton: {
     height: 96,
     borderRadius: theme.radius['r-sm'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
 });
 

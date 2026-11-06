@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { ThemeColor } from '../../primitives/Color/colors';
 import type { PendingActionSpec } from '../PendingAction/PendingAction.types';
 
 /** Three statuses, `M05-58`'s vocabulary: ready · needs attention · blocking. */
@@ -45,9 +46,9 @@ export interface FindingVerdict {
  */
 export interface FindingStatusMeta {
   rank: number;
-  tone: string;
-  bg: string;
-  mark: string;
+  tone: ThemeColor;
+  bg: ThemeColor;
+  mark: ThemeColor;
 }
 
 /**

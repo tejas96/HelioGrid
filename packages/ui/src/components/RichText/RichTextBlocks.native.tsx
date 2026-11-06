@@ -1,6 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { fieldBoxPlaceholder } from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { RichTextAt } from './RichText.edit';
@@ -12,7 +13,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.roles.body.fontSize,
     lineHeight: Math.round(theme.type.roles.body.fontSize * 1.6),
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
     padding: 0,
   },
   heading: { fontWeight: '700', fontSize: theme.type.roles.body.fontSize + 1 },
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: theme.radius['rf-lg'],
-    backgroundColor: theme.colors['neutral-bg'],
+    backgroundColor: colors['neutral-bg'],
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 24,
     borderRadius: theme.radius['rf-xs'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
 });
 

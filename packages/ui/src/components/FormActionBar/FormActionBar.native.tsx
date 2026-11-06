@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
   bar: {
     gap: theme.spacing['sp-2'],
     // biome-ignore lint/plugin/raw-white: panel — a sheet, a modal, a detail panel: a page ground over the page
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
   },
   sticky: {
     paddingTop: theme.spacing['sp-4'],
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
     marginBottom: -theme.spacing['sp-5'],
     padding: theme.spacing['sp-4'],
     borderTopWidth: 1,
-    borderTopColor: theme.colors['line-soft'],
+    borderTopColor: colors['line-soft'],
     borderBottomLeftRadius: theme.radius['r-tile'],
     borderBottomRightRadius: theme.radius['r-tile'],
   },

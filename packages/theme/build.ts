@@ -1,247 +1,137 @@
 /**
- * packages/theme generator — docs/engineering/17 §2/§6, the canonical mechanism.
- *
- * Parses src/_generated/tokens/*.css (written by ds:pull from the live design system, the
- * artifact packages/theme/README.md names) and emits:
- *   dist/tokens.css           fonts (url-rewritten) + token files in the DS's order + base
- *   dist/base.css             the DS global stylesheet (styles.css with its imports inlined)
- *   dist/print.css            the print surface — verbatim; @page presence is asserted
- *   dist/theme.ts             RN theme object (compiled to .js/.d.ts by tsc -p tsconfig.emit.json)
- *   dist/index.ts             package entry re-exporting the theme (compiled the same way)
- *   dist/tokens.json          flat --name → resolved value map of every custom property
- *   dist/contrast.pairs.json  computed WCAG ratios — build FAILS below floor
- *   dist/fonts/*              the vendored woff2 every @font-face in fonts.css names
- *
- * NEVER hand-transcribe values. NEVER read manifest.json for values (the v1 manifest
- * snapshotted 1ms reduced-motion overrides as canonical — the drift this generator prevents).
+ * packages/theme build — the typed tokens in `src/tokens/` are the one source. It emits:
+ *   dist/tokens.css             the faces, every token in light, dark and field, reduced motion,
+ *                               the keyframes and field mode's rules
+ *   dist/base.css · print.css   the element base and the print surface
+ *   dist/theme.js + .d.ts       the phone's theme object, and the tokens and contrast pairs as code
+ *   dist/android-res/           the palette as Android colour resources, light and night, which
+ *                               the phone's Android build reads as a resource folder
+ *   dist/tokens.json            the flat `--name` → light value map
+ *   dist/contrast.pairs.json    every declared pair measured in every mode
+ *   dist/fonts/*                the bundled web faces
+ * The build refuses a pair under its floor and a face that would synthesize a weight.
  */
-import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { basename, dirname, join } from 'node:path';
+import { copyFileSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { computePairs } from './src/contrast';
+import { measurePairs } from './src/contrast';
+import { lightTokenMap, renderTokensCss } from './src/emit-css';
 import { buildThemeObject, renderThemeTs } from './src/emit-theme';
 import { assertWeightsShipped, readBundledFaces } from './src/font-metrics';
-import { parseCssFile, resolveValue, type TokenDecl } from './src/parse';
+import { COLOR_TOKENS, DARK, FIELD_PALETTE, LIGHT, type ThemePalette } from './src/tokens/colors';
+import { BUNDLED_FACES, DISPLAY_WEIGHTS, FONT_STACKS, WEIGHTS } from './src/tokens/typography';
 
 const pkgDir = dirname(fileURLToPath(import.meta.url));
-const genDir = join(pkgDir, 'src', '_generated');
-const tokensDir = join(genDir, 'tokens');
+const srcDir = join(pkgDir, 'src');
 const distDir = join(pkgDir, 'dist');
+const fontsDir = join(pkgDir, 'assets', 'fonts');
+const css = (name: string) => readFileSync(join(srcDir, 'css', name), 'utf8');
 
-/** The 11 pulled files — refuse to emit if the pull is incomplete. */
-const ALL_FILES = [
-  'base.css',
-  'colors.css',
-  'elevation.css',
-  'field-mode.css',
-  'fonts.css',
-  'keyframes.css',
-  'motion.css',
-  'print.css',
-  'radius.css',
-  'spacing.css',
-  'typography.css',
-] as const;
+const MODES = { light: LIGHT, dark: DARK, field: FIELD_PALETTE } as const;
 
-/** Files carrying top-level :root custom properties. */
-const DECL_FILES = [
-  'colors.css',
-  'typography.css',
-  'spacing.css',
-  'radius.css',
-  'elevation.css',
-  'motion.css',
-  'print.css',
-] as const;
-
-/** dist/tokens.css concatenation order — the DS's own order, base last. */
-const CONCAT_ORDER = [
-  'colors.css',
-  'typography.css',
-  'spacing.css',
-  'radius.css',
-  'elevation.css',
-  'motion.css',
-  'keyframes.css',
-  'field-mode.css',
-] as const;
-
-const rewriteFontUrls = (css: string): string => css.replaceAll('../assets/fonts/', './fonts/');
-
-/** Every quoted family in a stack, in the stack's own order — "Geist","Noto …" → the priority. */
-function stackFamilies(stack: string): string[] {
-  return [...stack.matchAll(/"([^"]+)"/g)].map((m) => m[1] as string);
+function measureEveryMode() {
+  const measured = Object.entries(MODES).map(([mode, palette]) => ({
+    mode,
+    pairs: measurePairs(palette),
+  }));
+  const failing = measured.flatMap((m) =>
+    m.pairs
+      .filter((p) => !p.passes)
+      .map((p) => `${m.mode}: ${p.fg} on ${p.bg} = ${p.ratio}:1 < ${p.floor}`),
+  );
+  if (failing.length > 0)
+    throw new Error(`contrast below floor — build refused\n${failing.join('\n')}`);
+  return measured;
 }
 
-/** One [family, bundled file] per @font-face block, so neither name is typed twice. */
-function bundledFaceFiles(fontFaces: string[]): [string, string][] {
-  return fontFaces.map((face) => {
-    const family = face.match(/font-family:\s*"([^"]+)"/)?.[1];
-    const file = face.match(/url\("\.\.\/assets\/fonts\/([^"]+)"\)/)?.[1];
-    if (family === undefined || file === undefined) {
-      throw new Error(
-        `an @font-face block names no family or no bundled url: ${face.slice(0, 80)}`,
-      );
-    }
-    return [family, join(pkgDir, 'assets', 'fonts', file)];
-  });
-}
-
-/** family → its bundled file, for the coverage the face's character map answers. */
-function bundledFileByFamily(fontFaces: string[]): Map<string, string> {
-  return new Map(bundledFaceFiles(fontFaces));
-}
-
-function loadGenerated() {
-  const rawByFile = new Map<string, string>();
-  for (const f of ALL_FILES) rawByFile.set(f, readFileSync(join(tokensDir, f), 'utf8'));
-
-  const declsByFile = new Map<string, TokenDecl[]>();
-  const rootDecls: TokenDecl[] = [];
-  const reducedMotion: TokenDecl[] = [];
-  for (const file of DECL_FILES) {
-    const parsed = parseCssFile(rawByFile.get(file) as string, file);
-    declsByFile.set(file, parsed.root);
-    rootDecls.push(...parsed.root);
-    reducedMotion.push(...parsed.reducedMotion);
-  }
-  const fieldMode = parseCssFile(rawByFile.get('field-mode.css') as string, 'field-mode.css');
-  const fontFaces = parseCssFile(rawByFile.get('fonts.css') as string, 'fonts.css').fontFaces;
-  if (fontFaces.length === 0) throw new Error('fonts.css yielded no @font-face blocks');
-  return { rawByFile, declsByFile, rootDecls, reducedMotion, fieldMode, fontFaces };
-}
-
-function buildBaseMap(rootDecls: TokenDecl[]): Map<string, string> {
-  const baseMap = new Map<string, string>();
-  for (const d of rootDecls) {
-    if (baseMap.has(d.name)) throw new Error(`duplicate token --${d.name} (${d.sourceFile})`);
-    baseMap.set(d.name, d.value);
-  }
-  return baseMap;
-}
-
-/** Resolve one field-mode scope against base + its own declarations (--field-edge is scoped). */
-function resolveScope(base: Map<string, string>, decls: TokenDecl[]): Record<string, string> {
-  const scopeMap = new Map(base);
-  for (const d of decls) scopeMap.set(d.name, d.value);
-  const out: Record<string, string> = {};
-  for (const d of decls) out[d.name] = resolveValue(d.value, scopeMap);
-  return out;
-}
-
-/** The WCAG gate — computed, never eyeballed; fail below floor (ported from v1). */
-function assertContrastFloor(resolved: Map<string, string>) {
-  const pairs = computePairs(resolved);
-  const failing = pairs.filter((p) => !p.passes);
-  if (failing.length > 0) {
-    for (const p of failing) {
-      console.error(
-        `CONTRAST FAIL ${p.fg}(${p.fgValue}) on ${p.bg}(${p.bgValue}) = ${p.ratio}:1 < floor ${p.floor} [${p.role}]`,
-      );
-    }
-    throw new Error(`${failing.length} contrast pair(s) below floor — build refused`);
-  }
-  return pairs;
-}
-
-/** Every file the @font-face blocks name — so a new face is a pull and a file, never a code edit. */
-function copyFonts(fontFaces: string[]) {
+function copyFonts() {
   mkdirSync(join(distDir, 'fonts'), { recursive: true });
-  for (const [, src] of bundledFaceFiles(fontFaces)) {
-    const magic = readFileSync(src).subarray(0, 4).toString('latin1');
-    if (magic !== 'wOF2') throw new Error(`${basename(src)} is not a woff2 file (magic: ${magic})`);
-    copyFileSync(src, join(distDir, 'fonts', basename(src)));
+  for (const face of BUNDLED_FACES) {
+    for (const w of face.web) copyFileSync(join(fontsDir, w.file), join(distDir, 'fonts', w.file));
+  }
+  for (const f of readdirSync(fontsDir).filter((n) => n.startsWith('OFL'))) {
+    copyFileSync(join(fontsDir, f), join(distDir, 'fonts', f));
   }
 }
 
-/** dist/base.css — the DS global stylesheet: styles.css with each @import inlined verbatim. */
-function flattenStylesCss(rawByFile: Map<string, string>): string {
-  const manifest = readFileSync(join(genDir, 'styles.css'), 'utf8');
-  return manifest.replaceAll(/@import\s+"tokens\/([^"]+)";/g, (whole, file: string) => {
-    const body = rawByFile.get(file);
-    if (body === undefined) throw new Error(`styles.css imports unknown file: ${whole}`);
-    return `/* ── tokens/${file} ── */\n${rewriteFontUrls(body)}`;
-  });
+function scriptStack(stack: readonly string[], sanctioned: readonly number[]) {
+  const files = new Map(
+    BUNDLED_FACES.map((f) => [f.family as string, f.web.map((w) => join(fontsDir, w.file))]),
+  );
+  const faces = readBundledFaces(stack, files);
+  assertWeightsShipped(faces, sanctioned);
+  return faces;
+}
+
+/** `#RRGGBB` stays; `rgba(r,g,b,a)` becomes Android's `#AARRGGBB`. */
+function androidColor(value: string): string {
+  if (value.startsWith('#')) return value.toUpperCase();
+  const m = value.match(/rgba\((\d+),(\d+),(\d+),([\d.]+)\)/);
+  if (!m) throw new Error(`not a colour Android reads: ${value}`);
+  const hex = (n: number) => n.toString(16).padStart(2, '0');
+  const [r, g, b, a] = [Number(m[1]), Number(m[2]), Number(m[3]), Number(m[4])];
+  return `#${hex(Math.round(a * 255))}${hex(r)}${hex(g)}${hex(b)}`.toUpperCase();
+}
+
+function androidColors(palette: ThemePalette): string {
+  const rows = COLOR_TOKENS.map(
+    (t) => `    <color name="hg_${t.replaceAll('-', '_')}">${androidColor(palette[t])}</color>`,
+  );
+  return `<?xml version="1.0" encoding="utf-8"?>\n<!-- GENERATED by packages/theme/build.ts — DO NOT EDIT. -->\n<resources>\n${rows.join('\n')}\n</resources>\n`;
+}
+
+function copyTokenSources() {
+  mkdirSync(join(distDir, 'tokens'), { recursive: true });
+  for (const f of readdirSync(join(srcDir, 'tokens'))) {
+    copyFileSync(join(srcDir, 'tokens', f), join(distDir, 'tokens', f));
+  }
+  copyFileSync(join(srcDir, 'contrast.ts'), join(distDir, 'contrast.ts'));
 }
 
 function main() {
-  const { rawByFile, declsByFile, rootDecls, reducedMotion, fieldMode, fontFaces } =
-    loadGenerated();
-  const baseMap = buildBaseMap(rootDecls);
-  const resolved = new Map<string, string>();
-  for (const [name, value] of baseMap) resolved.set(name, resolveValue(value, baseMap));
+  rmSync(distDir, { recursive: true, force: true });
+  mkdirSync(distDir, { recursive: true });
+  const measured = measureEveryMode();
+  copyFonts();
 
-  const pairs = assertContrastFloor(resolved);
-  copyFonts(fontFaces);
-
-  /* F3-13/F3-14/F3-17 — the faces answer for themselves: what each covers, the order the stack
-     puts them in, the room its ink needs, and whether a sanctioned weight would be synthesized. */
-  const scriptStack = readBundledFaces(
-    stackFamilies(resolved.get('font-sans') as string),
-    bundledFileByFamily(fontFaces),
-  );
-  assertWeightsShipped(
-    scriptStack,
-    rootDecls.filter((d) => d.name.startsWith('fw-')).map((d) => Number(resolved.get(d.name))),
-  );
-
-  const genHeader = (what: string): string =>
-    `/* GENERATED by packages/theme/build.ts from src/_generated (ds:pull) — DO NOT EDIT. ${what} */\n`;
-
-  // dist/tokens.css — faces first (URLs rewritten to travel with dist/fonts), DS order, base last
-  const concat = CONCAT_ORDER.map((f) => rawByFile.get(f) as string).join('\n');
   writeFileSync(
     join(distDir, 'tokens.css'),
-    `${genHeader('Web custom properties.')}${fontFaces.map(rewriteFontUrls).join('\n')}\n${concat}\n${rawByFile.get('base.css') as string}`,
+    renderTokensCss(css('keyframes.css'), css('field-rules.css')),
   );
-
-  // dist/base.css — the DS global stylesheet, flattened
-  writeFileSync(
-    join(distDir, 'base.css'),
-    `${genHeader('The DS global stylesheet (styles.css, imports inlined).')}${flattenStylesCss(rawByFile)}`,
-  );
-
-  // dist/print.css — verbatim; the DS print surface must define the page box (design gap 32:
-  // "one sheet, one page must hold on paper"). If a re-pull ever drops @page, add it back here.
-  const printCss = rawByFile.get('print.css') as string;
-  const withPage = /@page[\s{]/.test(printCss)
-    ? printCss
-    : `${printCss}\n/* Added by build.ts — design gap 32: one sheet, one page must hold on paper. */\n@page{size:A4 portrait;margin:12.7mm}\n`;
-  writeFileSync(join(distDir, 'print.css'), withPage);
-
-  // dist/tokens.json — flat --name → resolved value map of every custom property
-  const flat: Record<string, string> = {
-    $source: 'src/_generated/tokens/*.css (ds:pull)',
-    $generator: 'packages/theme/build.ts',
-  };
-  for (const d of rootDecls) flat[`--${d.name}`] = resolved.get(d.name) as string;
-  writeFileSync(join(distDir, 'tokens.json'), `${JSON.stringify(flat, null, 2)}\n`);
-
-  // dist/contrast.pairs.json — the computed gate evidence
+  writeFileSync(join(distDir, 'base.css'), css('base.css'));
+  writeFileSync(join(distDir, 'print.css'), css('print.css'));
+  writeFileSync(join(distDir, 'tokens.json'), `${JSON.stringify(lightTokenMap(), null, 2)}\n`);
   writeFileSync(
     join(distDir, 'contrast.pairs.json'),
-    `${JSON.stringify({ $note: 'Computed by build.ts; restricted roles annotated.', pairs }, null, 2)}\n`,
+    `${JSON.stringify({ $note: 'Measured by build.ts in every mode.', modes: measured, pairs: measured[0]?.pairs }, null, 2)}\n`,
   );
 
-  // dist/theme.ts + dist/index.ts — compiled to .js/.d.ts by tsc -p tsconfig.emit.json
+  for (const [folder, palette] of [
+    ['values', LIGHT],
+    ['values-night', DARK],
+  ] as const) {
+    mkdirSync(join(distDir, 'android-res', folder), { recursive: true });
+    writeFileSync(join(distDir, 'android-res', folder, 'hg_colors.xml'), androidColors(palette));
+  }
+
   const theme = buildThemeObject({
-    resolved,
-    declsByFile,
-    reducedMotion,
-    scriptStack,
-    fieldMode: {
-      on: resolveScope(baseMap, fieldMode.fieldModeOn),
-      off: resolveScope(baseMap, fieldMode.fieldModeOff),
-    },
+    sans: scriptStack(FONT_STACKS.sans, Object.values(WEIGHTS)),
+    display: scriptStack(FONT_STACKS.display, DISPLAY_WEIGHTS),
   });
-  writeFileSync(join(distDir, 'theme.ts'), renderThemeTs(theme));
+  copyTokenSources();
+  writeFileSync(join(distDir, 'theme.ts'), renderThemeTs(theme, ''));
   writeFileSync(
     join(distDir, 'index.ts'),
-    `${genHeader('Package entry.')}export { theme, type Theme } from './theme';\n`,
+    [
+      '/** GENERATED by packages/theme/build.ts — DO NOT EDIT. The package entry. */',
+      "export { theme, type Theme } from './theme';",
+      "export * from './tokens/index';",
+      "export { contrastRatio, DECLARED_PAIRS, type DeclaredPair, measurePairs, type MeasuredPair } from './contrast';",
+      '',
+    ].join('\n'),
   );
-
   console.log(
-    `theme build OK — ${rootDecls.length} tokens, ${fieldMode.fieldModeOn.length} field-mode overrides, ${pairs.length} contrast pairs green`,
+    `theme build OK — ${COLOR_TOKENS.length} colours × 3 modes, ${measured[0]?.pairs.length} pairs green in each`,
   );
 }
 

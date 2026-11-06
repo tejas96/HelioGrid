@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { FactRow } from '../FactRow/FactRow.native';
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
   /** The editor over its refusal. */
   terms: { gap: theme.spacing['sp-1'] },
   /** The soft rule over the two rows. */
-  hairline: { height: 1, backgroundColor: theme.colors['line-soft'] },
+  hairline: { height: 1, backgroundColor: colors['line-soft'] },
   /** The rows flush with the column's edges. */
   flushRow: { paddingLeft: 0, paddingRight: 0 },
 });

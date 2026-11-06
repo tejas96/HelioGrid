@@ -21,18 +21,17 @@ import { theme } from '@heliogrid/theme';
  * The TENANT colour never enters the operator app's styling; it is only ever measured and drawn
  * inside a document preview. The three fixed colours it is measured AGAINST are ours, so they are
  * read from `@heliogrid/theme` rather than re-declared here — two spellings of white is exactly
- * how a measured floor stops matching what ships. Each takes the token for its ROLE: `WHITE` and
- * `NEAR_BLACK` are the document's two inks, `PAPER` is the sheet they sit on. (`--action-primary`
- * carries the same `#0A0A0B`, but that is the button-fill role, not an ink.)
+ * how a measured floor stops matching what ships. Each takes the LIGHT token for its ROLE — a
+ * document is paper, whatever scheme the app is in: `WHITE` and `NEAR_BLACK` are the document's
+ * two inks, `PAPER` is the sheet they sit on.
  */
 
 /** White ink — one of the two colours that may ride on a brand fill. */
-export const WHITE: string = theme.colors['text-inverse'];
+export const WHITE: string = theme.palettes.light['text-inverse'];
 /** Near-black ink — the other. */
-export const NEAR_BLACK: string = theme.colors['text-primary'];
+export const NEAR_BLACK: string = theme.palettes.light['text-primary'];
 /** The document's paper, which a brand colour has to carry a word on. */
-// biome-ignore lint/plugin/raw-white: measure — a contrast measurement against the paper
-export const PAPER: string = theme.colors.surface;
+export const PAPER: string = theme.palettes.light.surface;
 /* Both floors keep domain's names: one fact, one name, so a sentence in a component and the
    walk that answers it cannot be read as two different numbers. */
 export { MARK_CONTRAST_FLOOR, TEXT_CONTRAST_FLOOR };

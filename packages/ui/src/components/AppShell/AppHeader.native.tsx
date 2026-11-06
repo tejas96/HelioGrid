@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { AppHeaderProps } from './AppShell.types';
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
   rule: {
     width: 1,
     height: theme.spacing['sp-6'],
-    backgroundColor: theme.colors.hairline,
+    backgroundColor: colors.hairline,
   },
   titles: {
     justifyContent: 'center',

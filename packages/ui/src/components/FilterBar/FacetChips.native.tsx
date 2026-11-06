@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
 });
 
 /** The tick is the second, non-colour channel — a set has to be readable without hue. */
-function Tick({ color }: { color: string }) {
+function Tick({ color }: { color: ThemeColor }) {
   return (
     <Icon size="sm" color={color}>
       <Svg

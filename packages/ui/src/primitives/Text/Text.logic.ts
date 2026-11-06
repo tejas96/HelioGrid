@@ -13,20 +13,32 @@ import type { TextVariant } from './Text.types';
  * number of its own.
  */
 
-const STACK: ScriptStack = theme.type.scriptStack;
+const SANS: ScriptStack = theme.type.scriptStack;
+const DISPLAY: ScriptStack = theme.type.displayScriptStack;
 
+/* A face's floor is its own share of a line: the first face of each stack defines the scale. */
 const LINE_FLOOR_EM = new Map<string, number>(
-  theme.type.scriptStack.map((face) => [face.family, face.lineFloorEm]),
+  [...theme.type.scriptStack, ...theme.type.displayScriptStack].map((face) => [
+    face.family,
+    face.lineFloorEm,
+  ]),
 );
+
+const DISPLAY_VARIANTS: ReadonlySet<TextVariant> = new Set(['hero', 'figure', 'display', 'h1']);
+
+/** A title or a hero figure: set in the display face, Newsreader, whose stack has its own runs. */
+export function isDisplay(variant: TextVariant): boolean {
+  return DISPLAY_VARIANTS.has(variant);
+}
 
 /** Mono is set in the mono family, which the sans stack does not name, so no run splits. */
 export function isMono(variant: TextVariant): boolean {
   return variant === 'mono';
 }
 
-/** The runs of one string: which bundled family draws each stretch of it. */
-export function runsOfString(text: string): readonly ScriptRun[] {
-  return splitScriptRuns(text, STACK);
+/** The runs of one string: which bundled family draws each stretch of it in this variant. */
+export function runsOfString(text: string, variant: TextVariant = 'body'): readonly ScriptRun[] {
+  return splitScriptRuns(text, isDisplay(variant) ? DISPLAY : SANS);
 }
 
 /** The words a node carries directly; an element child renders its own text and its own box. */
@@ -61,7 +73,7 @@ export function scriptFloorFor(variant: TextVariant, children: ReactNode): numbe
   const floorEm = isMono(variant)
     ? 0
     : stringsIn(children)
-        .flatMap((text) => runsOfString(text))
+        .flatMap((text) => runsOfString(text, variant))
         .reduce((tallest, run) => Math.max(tallest, LINE_FLOOR_EM.get(run.family) ?? 0), 0);
   return Math.ceil(floorEm * roleOf(variant).fontSize);
 }
@@ -96,6 +108,7 @@ export function roleOf(variant: TextVariant): { fontSize: number; lineHeight?: n
   if (variant === 'field-label' || variant === 'field-value' || variant === 'field-helper') {
     return FIELD_ROLES[variant];
   }
+  if (variant === 'hero') return theme.type.roles['hero-phone'];
   if (variant === 'overline' || variant === 'mono') {
     const { fontSize } = theme.type.roles[variant === 'mono' ? 'body-sm' : 'overline'];
     return { fontSize, lineHeight: onBodyLeading(fontSize) };

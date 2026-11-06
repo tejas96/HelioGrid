@@ -4,6 +4,8 @@ import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { ACTOR_GLYPH } from './ActorClass.logic';
 import type {
@@ -18,19 +20,18 @@ interface NativeActorClassProps extends ActorClassProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const TONES: Record<ActorTone, string> = {
-  neutral: theme.colors['text-secondary'],
-  accent: theme.colors.accent,
-  info: theme.colors.info,
+const TONES: Record<ActorTone, ThemeColor> = {
+  neutral: colors['text-secondary'],
+  accent: colors.accent,
+  info: colors.info,
 };
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: 6, minWidth: 0 },
   mark: { alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   words: { flexShrink: 1, fontFamily: theme.type.families.sans, fontWeight: '400' },
-  /* RN cannot paint --gradient-brand without a gradient dependency; the agent object takes the
-     gradient's leading stop (--iris-violet) so it still reads as the brand object, not an icon. */
-  agent: { backgroundColor: theme.colors['iris-violet'] },
+  /* The agent object takes the brand's middle stop so it reads as the brand object, not an icon. */
+  agent: { backgroundColor: colors['brand-teal'] },
 });
 
 /** The class's glyph. The agent's is a brand object, not an outlined icon (ICONOGRAPHY). */
@@ -41,7 +42,7 @@ export function ActorGlyph({
 }: {
   actorClass?: ActorClassName;
   size?: number;
-  color?: string;
+  color?: ThemeColor;
 }) {
   const descriptor = ACTOR_CLASSES[actorClass];
   const ink = color ?? TONES[descriptor.tone];
@@ -81,7 +82,7 @@ export function ActorClass({
   rule,
   words,
   size = 12,
-  color = theme.colors['text-secondary'],
+  color = colors['text-secondary'],
   style,
 }: NativeActorClassProps) {
   const descriptor = ACTOR_CLASSES[actorClass];

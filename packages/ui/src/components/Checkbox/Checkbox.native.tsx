@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  boxChecked: { backgroundColor: theme.colors.accent },
+  boxChecked: { backgroundColor: colors.accent },
 });
 
 /**
@@ -52,7 +53,7 @@ export function Checkbox({
   ariaLabel,
   style,
 }: NativeCheckboxProps) {
-  const tick = disabled ? theme.colors['text-disabled'] : theme.colors['text-inverse'];
+  const tick = disabled ? colors['text-disabled'] : colors['text-inverse'];
   /* The opposite of what holds it (`F7-15`): the well on the page, white inside a tile. */
   const { controlFill, controlFillDisabled } = useGround();
   return (

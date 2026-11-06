@@ -2,7 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { ItemDraft, ItemDraftEvent, SchemeDraft } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
-import type { IrisHue } from '../Avatar/Avatar.types';
+import type { CategoryHue } from '../Avatar/Avatar.types';
 import type { CatalogItemFormProps, CatalogItemFormWords } from './CatalogItemForm.types';
 
 /**
@@ -18,7 +18,7 @@ export interface FieldFocus {
 
 export interface ItemCardProps {
   glyph: ShellGlyphName;
-  iris: IrisHue;
+  hue: CategoryHue;
   title: TranslatedText;
   /** Beside the title, at its end: the specification's *Your own*. */
   trailing?: ReactNode;

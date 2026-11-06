@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
-import type { IrisHue } from '../Avatar/Avatar.types';
+import type { CategoryHue } from '../Avatar/Avatar.types';
 import type { FieldOverrideSpec } from '../FieldOverride/FieldOverride.types';
 import type { NamedGapInput } from '../NamedGap';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
@@ -14,7 +14,7 @@ import type { ValueSourceSpec } from '../ValueSource';
  */
 export interface DataTableLeading {
   glyph: ShellGlyphName;
-  iris: IrisHue;
+  hue: CategoryHue;
 }
 
 export interface DataTableColumn<Row = Record<string, unknown>> {

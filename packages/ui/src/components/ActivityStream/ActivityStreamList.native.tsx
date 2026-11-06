@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { Fragment } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Button } from '../Button/Button.native';
 import { streamWindowOf } from './ActivityStream.logic';
 import type { ActivityStreamListProps } from './ActivityStream.types';
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
   count: {
     fontFamily: theme.type.families.sans,
     fontSize: type.caption.fontSize,
-    color: theme.colors['text-tertiary'],
+    color: colors['text-tertiary'],
   },
   /* The web half sticks the day heading; RN has no sticky outside a list host, so the heading
      scrolls with its group and the screen's own list owns any stickiness. */
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: type.overline.letterSpacing,
     textTransform: 'uppercase',
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
   more: { flexDirection: 'row', justifyContent: 'center' },
 });

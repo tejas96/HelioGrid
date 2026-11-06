@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useCallback, useRef, useState } from 'react';
 import type { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { MapContent } from './MapContent.native';
 import { MapStateLayer } from './MapStates.native';
 import type { MapSurfaceProps } from './MapSurface.types';
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
   root: {
     position: 'relative',
     overflow: 'hidden',
-    backgroundColor: theme.colors['surface-alt'],
+    backgroundColor: colors['surface-alt'],
     ...theme.elevation.e2,
   },
 });

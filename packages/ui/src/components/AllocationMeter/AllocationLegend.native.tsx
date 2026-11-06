@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { allocationFigure, legendKey, partValue } from './AllocationMeter.model';
 import type { AllocationPart } from './AllocationMeter.types';
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     width: theme.spacing['sp-2'],
     height: theme.spacing['sp-2'],
     borderRadius: 2,
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
     flexShrink: 0,
   },
 });

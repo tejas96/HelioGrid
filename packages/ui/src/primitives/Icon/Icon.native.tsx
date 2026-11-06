@@ -2,6 +2,7 @@ import { cloneElement, isValidElement } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { View } from 'react-native';
 import type { SvgProps } from 'react-native-svg';
+import type { ThemeColor } from '../Color/colors';
 import type { IconProps } from './Icon.types';
 import { ICON_SIZE } from './Icon.types';
 
@@ -10,7 +11,7 @@ interface NativeIconProps extends IconProps {
    * Colour for the glyph — RN has no currentColor, so the composer passes a theme value
    * down. Never a raw colour at a call site.
    */
-  color?: string;
+  color?: ThemeColor;
   style?: StyleProp<ViewStyle>;
 }
 

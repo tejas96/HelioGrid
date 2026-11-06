@@ -1,11 +1,32 @@
 /**
- * Emit dist/theme.ts — the RN theme object with the SAME token names as web (px → dp).
- * Purely derived from the parsed src/_generated values; nothing here is hand-transcribed.
- * Follows the v1 emitter: px strings become numbers where RN wants numbers, box-shadows
- * become RN-shaped approximations, unitless line-heights multiply out against font size.
+ * The phone's theme object, from the typed tokens: the same names as the web, px as dp. Colours are
+ * NOT here as one set: a phone half reads `colors` from `packages/ui`'s `Color` primitive, whose
+ * values the system resolves per scheme, and `palettes` serves the arithmetic that needs a hex.
  */
+
 import type { BundledFace } from './font-metrics';
-import { type ParsedShadow, parseShadow, pxToNumber, type TokenDecl } from './parse';
+import { BRAND, BRAND_GRADIENT_STOPS } from './tokens/brand';
+import { DARK, FIELD_PALETTE, LIGHT } from './tokens/colors';
+import {
+  ELEVATION_DARK,
+  ELEVATION_LIGHT,
+  type ElevationLevel,
+  LAYOUT,
+  PRINT,
+  RADIUS,
+  type Shadow,
+  SPACING,
+} from './tokens/layout';
+import {
+  DURATION,
+  EASING,
+  PRESS,
+  REDUCED_DURATION,
+  SKELETON_DELAY_MS,
+  SPRING,
+  STAGGER,
+} from './tokens/motion';
+import { DISPLAY_WEIGHTS, FIELD_TYPE, FONT_STACKS, TYPE_ROLES, WEIGHTS } from './tokens/typography';
 
 interface RnShadow {
   shadowColor: string;
@@ -15,216 +36,91 @@ interface RnShadow {
   elevation: number;
 }
 
-function rnShadow(s: ParsedShadow | null, level: number): RnShadow | null {
-  if (!s) return null;
+/** React Native draws one shadow: the deepest layer, which carries the lift. */
+function rnShadow(layers: readonly Shadow[], level: number): RnShadow {
+  const deepest = layers.reduce((a, b) => (b.blur > a.blur ? b : a));
+  const hex = `#${deepest.rgb.map((c) => c.toString(16).padStart(2, '0')).join('')}`;
   return {
-    shadowColor: s.color,
-    shadowOffset: { width: s.offsetX, height: s.offsetY },
-    shadowRadius: s.blurRadius,
-    shadowOpacity: s.opacity,
+    shadowColor: hex.toUpperCase(),
+    shadowOffset: { width: deepest.x, height: Math.max(1, Math.round(deepest.y / 2)) },
+    shadowRadius: Math.round(deepest.blur / 3),
+    shadowOpacity: deepest.opacity,
     elevation: level,
   };
 }
 
-const TYPE_ROLES = [
-  'display',
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'body-lg',
-  'body',
-  'body-sm',
-  'caption',
-  'overline',
-  'button',
-  'table',
-] as const;
-
-/** The three sizes every field shares — its label, its value, its helper or error line. */
-const FIELD_TYPE_PARTS = ['label', 'value', 'helper'] as const;
-
-function fieldType(resolved: Map<string, string>): Record<string, number> {
-  const sizes: Record<string, number> = {};
-  for (const part of FIELD_TYPE_PARTS) {
-    const size = pxToNumber(resolved.get(`fs-field-${part}`) ?? '');
-    if (size === undefined) throw new Error(`--fs-field-${part} is missing or not px`);
-    sizes[part] = size;
-  }
-  return sizes;
-}
-
-function typeRole(resolved: Map<string, string>, role: string) {
-  const fs = resolved.get(`fs-${role}`);
-  if (!fs) throw new Error(`missing --fs-${role}`);
-  const fontSize = pxToNumber(fs);
-  if (fontSize === undefined) throw new Error(`--fs-${role} is not px: ${fs}`);
-  const lhRaw = resolved.get(`lh-${role}`);
-  let lineHeight: number | undefined;
-  if (lhRaw !== undefined) {
-    const px = pxToNumber(lhRaw);
-    lineHeight = px !== undefined ? px : Math.round(Number(lhRaw) * fontSize * 10) / 10;
-  }
-  const trRaw = resolved.get(`tr-${role}`);
-  let letterSpacing: number | undefined;
-  if (trRaw !== undefined) {
-    const em = Number(trRaw.replace('em', ''));
-    letterSpacing = Math.round(em * fontSize * 100) / 100;
-  }
-  return { fontSize, lineHeight, letterSpacing };
-}
-
-function cubicBezier(v: string): [number, number, number, number] {
-  const m = v.match(/cubic-bezier\(([^)]+)\)/);
-  if (!m) throw new Error(`not a cubic-bezier: ${v}`);
-  const parts = (m[1] as string).split(',').map((n) => Number(n.trim()));
-  return [parts[0] as number, parts[1] as number, parts[2] as number, parts[3] as number];
-}
-
-function pickPx(resolved: Map<string, string>, names: string[]): Record<string, number> {
-  const out: Record<string, number> = {};
-  for (const n of names) {
-    const v = resolved.get(n);
-    if (v === undefined) throw new Error(`missing --${n}`);
-    const px = pxToNumber(v);
-    if (px === undefined) throw new Error(`--${n} is not px: ${v}`);
-    out[n] = px;
-  }
-  return out;
-}
-
-function ms(resolved: Map<string, string>, name: string): number {
-  const v = resolved.get(name);
-  if (!v) throw new Error(`missing --${name}`);
-  return Number(v.replace('ms', ''));
-}
-
-/** First quoted family in a font stack — "Geist","Inter",… → Geist. */
-function primaryFamily(stack: string): string {
-  const m = stack.match(/^"([^"]+)"/);
-  if (!m) throw new Error(`font stack names no primary family: ${stack}`);
-  return m[1] as string;
-}
-
-interface ThemeInputs {
-  resolved: Map<string, string>;
-  declsByFile: Map<string, TokenDecl[]>;
-  reducedMotion: TokenDecl[];
-  fieldMode: { on: Record<string, string>; off: Record<string, string> };
-  scriptStack: BundledFace[];
-}
-
-function namesFrom(declsByFile: Map<string, TokenDecl[]>, file: string): string[] {
-  const decls = declsByFile.get(file);
-  if (!decls || decls.length === 0) throw new Error(`no :root declarations parsed from ${file}`);
-  return decls.map((d) => d.name);
-}
-
-export function buildThemeObject(input: ThemeInputs) {
-  const { resolved, declsByFile, reducedMotion, fieldMode, scriptStack } = input;
-
-  const colors: Record<string, string> = {};
-  for (const n of namesFrom(declsByFile, 'colors.css')) colors[n] = resolved.get(n) as string;
-
-  const spacingSource = namesFrom(declsByFile, 'spacing.css');
-  const spacingNames = spacingSource.filter((n) => n.startsWith('sp-'));
-  const layoutNames = spacingSource.filter((n) => !n.startsWith('sp-'));
-
-  const radiusNames = namesFrom(declsByFile, 'radius.css').filter((n) => n !== 'r-feature-tile');
-  const featureTile = (resolved.get('r-feature-tile') as string)
-    .split(/\s+/)
-    .map((p) => pxToNumber(p) ?? 0);
-
-  const elevation: Record<string, RnShadow | null> = {};
-  for (let i = 0; i <= 5; i++) {
-    elevation[`e${i}`] = rnShadow(parseShadow(resolved.get(`e${i}`) as string), i);
-  }
-
-  const typography: Record<string, ReturnType<typeof typeRole>> = {};
-  for (const role of TYPE_ROLES) typography[role] = typeRole(resolved, role);
-
-  const weights: Record<string, number> = {};
-  for (const n of namesFrom(declsByFile, 'typography.css')) {
-    if (n.startsWith('fw-')) weights[n.slice(3)] = Number(resolved.get(n));
-  }
-
-  const reducedDurations: Record<string, number> = {};
-  for (const d of reducedMotion) {
-    if (d.name.startsWith('dur-'))
-      reducedDurations[d.name.slice(4)] = Number(d.value.replace('ms', ''));
-  }
-
+function rnElevation(levels: Readonly<Record<ElevationLevel, readonly Shadow[]>>) {
   return {
-    colors,
-    type: {
-      families: {
-        sans: primaryFamily(resolved.get('font-sans') as string),
-        mono: primaryFamily(resolved.get('font-mono') as string),
-      },
-      stacks: {
-        sans: resolved.get('font-sans') as string,
-        mono: resolved.get('font-mono') as string,
-      },
-      /**
-       * The sans stack as DATA (`F3-13`): which bundled family draws which codepoints, in the
-       * stack's priority order, and the ink each one's own share needs. A browser reaches this
-       * answer per character on its own; React Native carries one family per `Text` and reaches
-       * it from here, so the two platforms resolve one line the same way (Law 7).
-       *
-       * Mono is absent deliberately — the figures and identifiers it sets are the
-       * never-translated set (`F3-08`), which is Latin in every language.
-       */
-      scriptStack,
-      weights,
-      roles: typography,
-      field: fieldType(resolved),
-    },
-    spacing: pickPx(resolved, spacingNames),
-    layout: pickPx(resolved, layoutNames),
-    radius: {
-      ...pickPx(resolved, radiusNames),
-      'r-feature-tile': {
-        topLeft: featureTile[0] as number,
-        topRight: featureTile[1] as number,
-        bottomRight: featureTile[2] as number,
-        bottomLeft: featureTile[3] as number,
-      },
-    },
-    elevation,
-    motion: {
-      durations: {
-        micro: ms(resolved, 'dur-micro'),
-        standard: ms(resolved, 'dur-standard'),
-        emphasised: ms(resolved, 'dur-emphasised'),
-        ambient: ms(resolved, 'dur-ambient'),
-      },
-      easings: {
-        standard: cubicBezier(resolved.get('ease-standard') as string),
-        enter: cubicBezier(resolved.get('ease-enter') as string),
-        exit: cubicBezier(resolved.get('ease-exit') as string),
-        spring: cubicBezier(resolved.get('ease-spring') as string),
-      },
-      /** prefers-reduced-motion values, for RN's AccessibilityInfo.isReduceMotionEnabled. */
-      reducedMotionDurations: reducedDurations,
-    },
-    /**
-     * F7-16 field mode as data: the exact override sets from field-mode.css, var()s resolved
-     * within their own scope. RN implements the mode by swapping these over the base theme;
-     * multi-part box-shadows stay strings — RN approximates them per component.
-     */
-    fieldMode,
+    e0: null,
+    e1: rnShadow(levels.e1, 1),
+    e2: rnShadow(levels.e2, 2),
+    e3: rnShadow(levels.e3, 3),
+    e4: rnShadow(levels.e4, 4),
+    e5: rnShadow(levels.e5, 5),
   };
 }
 
-export function renderThemeTs(theme: unknown): string {
+function roles() {
+  return Object.fromEntries(
+    Object.entries(TYPE_ROLES).map(([role, r]) => [
+      role,
+      {
+        fontSize: r.size,
+        lineHeight: r.lineHeight,
+        letterSpacing: Math.round(r.tracking * r.size * 100) / 100,
+      },
+    ]),
+  );
+}
+
+export function buildThemeObject(scriptStacks: { sans: BundledFace[]; display: BundledFace[] }) {
+  return {
+    palettes: { light: LIGHT, dark: DARK, field: FIELD_PALETTE },
+    brand: { ...BRAND, gradient: BRAND_GRADIENT_STOPS },
+    type: {
+      families: {
+        display: FONT_STACKS.display[0],
+        sans: FONT_STACKS.sans[0],
+        mono: FONT_STACKS.mono[0],
+      },
+      /**
+       * Each stack as DATA: which bundled family draws which codepoints, in the stack's order, and
+       * the ink its own share needs. A browser reaches this per character; React Native carries one
+       * family per `Text` and reaches it from here, so both platforms resolve one line the same way.
+       * Mono has none: the figures and identifiers it sets are Latin in every language.
+       */
+      scriptStack: scriptStacks.sans,
+      displayScriptStack: scriptStacks.display,
+      weights: WEIGHTS,
+      displayWeights: DISPLAY_WEIGHTS,
+      roles: roles(),
+      field: FIELD_TYPE,
+    },
+    spacing: SPACING,
+    layout: LAYOUT,
+    radius: RADIUS,
+    print: PRINT,
+    elevation: rnElevation(ELEVATION_LIGHT),
+    elevationDark: rnElevation(ELEVATION_DARK),
+    motion: {
+      durations: DURATION,
+      easings: EASING,
+      springs: SPRING,
+      stagger: STAGGER,
+      press: PRESS,
+      skeletonDelayMs: SKELETON_DELAY_MS,
+      /** prefers-reduced-motion values, for the phone's reduced-motion setting. */
+      reducedMotionDurations: REDUCED_DURATION,
+    },
+  };
+}
+
+export function renderThemeTs(theme: unknown, extra: string): string {
   return [
-    '/**',
-    ' * GENERATED by packages/theme/build.ts from src/_generated/tokens/*.css — DO NOT EDIT.',
-    ' * Same token names as web, px → dp.',
-    ' */',
+    '/** GENERATED by packages/theme/build.ts from src/tokens — DO NOT EDIT. Web names, px as dp. */',
     `export const theme = ${JSON.stringify(theme, null, 2)} as const;`,
     '',
     'export type Theme = typeof theme;',
-    '',
+    extra,
   ].join('\n');
 }

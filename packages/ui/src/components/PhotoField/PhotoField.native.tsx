@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { closingPress, type FocusHandle } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
      "no name yet", and `F7-19` forbids inventing an image to fill it. */
   nameless: {
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   acts: {
     flexDirection: 'row',

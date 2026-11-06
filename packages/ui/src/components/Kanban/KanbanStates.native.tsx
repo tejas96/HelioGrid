@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Text`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
 import type { FocusAfter } from '../../primitives/FocusAfter';
@@ -81,7 +82,7 @@ export function BoardMessage({
   focusAfter,
 }: BoardMessageProps) {
   const warning = tone === 'warning';
-  const ink = warning ? theme.colors['warning-text'] : theme.colors['text-tertiary'];
+  const ink = warning ? colors['warning-text'] : colors['text-tertiary'];
   return (
     <View style={[tileSurface, styles.message]}>
       {/* The message is a tile: what it holds reads the tile's ground. */}
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-card-functional'],
     padding: 10,
   },
-  bar: { backgroundColor: theme.colors.canvas, borderRadius: theme.radius['rf-lg'] },
+  bar: { backgroundColor: colors.canvas, borderRadius: theme.radius['rf-lg'] },
   headBar: {
     height: theme.spacing['sp-5'],
     width: '50%',
@@ -212,9 +213,9 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors['neutral-bg'],
+    backgroundColor: colors['neutral-bg'],
     marginBottom: theme.spacing['sp-1'],
   },
-  markWarning: { backgroundColor: theme.colors['warning-bg'] },
+  markWarning: { backgroundColor: colors['warning-bg'] },
   messageText: { maxWidth: 320 },
 });

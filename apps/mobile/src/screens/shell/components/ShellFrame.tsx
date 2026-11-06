@@ -1,9 +1,13 @@
+import { theme } from '@heliogrid/theme';
 import { BottomNav, type BottomNavItem, KeyboardFrame, useKeyboardUp } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles, underPill } from '../styles';
 import { ShellBillingStrip } from './ShellBillingStrip';
+
+/** Past the large title, the bar takes the page's name over (`LargeTitle`). */
+const LARGE_TITLE_HEIGHT = theme.type.roles.display.lineHeight;
 
 export interface ShellFrameProps {
   topBar: ReactNode;
@@ -66,7 +70,7 @@ export function ShellFrame({
         footBandUnderKeyboard={insets.bottom}
         /* The held head is the first child, or the second under a lead that scrolls away. */
         heldChild={stickyHead === undefined ? undefined : lead === undefined ? 0 : 1}
-        onScrollOffset={(offset) => onScrolledChange?.(offset > 0)}
+        onScrollOffset={(offset) => onScrolledChange?.(offset > LARGE_TITLE_HEIGHT)}
         contentContainerStyle={[
           styles.scroll,
           // With no pill the page is Frame 8, centred in the whole region: the home's top gap

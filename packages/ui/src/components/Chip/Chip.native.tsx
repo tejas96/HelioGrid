@@ -1,11 +1,13 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { irisTintOf, isIrisHue } from '../Avatar/Avatar.logic';
+import { hueTintOf, isCategoryHue } from '../Avatar/Avatar.logic';
 import type { BadgeProps, BadgeTone, ChipDensity, ChipProps, ChipTone } from './Chip.types';
 
 /* The DS pill heights, the dot and the pill's inner gap — none of the three is on the 4px scale,
@@ -15,25 +17,25 @@ const DOT = 6;
 const GAP = 6;
 
 /** The dot's colour is the tone's `-text` partner — the only semantic colour that sets marks. */
-const DOT_COLOR: Record<ChipTone, string> = {
-  neutral: theme.colors['neutral-text'],
-  success: theme.colors['success-text'],
-  warning: theme.colors['warning-text'],
-  danger: theme.colors['danger-text'],
-  info: theme.colors['info-text'],
-  accent: theme.colors.accent,
+const DOT_COLOR: Record<ChipTone, ThemeColor> = {
+  neutral: colors['neutral-text'],
+  success: colors['success-text'],
+  warning: colors['warning-text'],
+  danger: colors['danger-text'],
+  info: colors['info-text'],
+  accent: colors.accent,
 };
 
 /* [0] sets the WORDS, so it is the -text partner. --accent stays plain: it measures 4.65:1 on
    --accent-subtle and clears the floor unaided. Neutral has no tint to carry it — `neutral-bg` on
    a tile is ~1.01:1 — so it has no background here and takes the control fill. */
-const BADGE: Record<ChipTone, { color: string; background?: string }> = {
-  neutral: { color: theme.colors['neutral-text'] },
-  success: { color: theme.colors['success-text'], background: theme.colors['success-bg'] },
-  warning: { color: theme.colors['warning-text'], background: theme.colors['warning-bg'] },
-  danger: { color: theme.colors['danger-text'], background: theme.colors['danger-bg'] },
-  info: { color: theme.colors['info-text'], background: theme.colors['info-bg'] },
-  accent: { color: theme.colors.accent, background: theme.colors['accent-subtle'] },
+const BADGE: Record<ChipTone, { color: ThemeColor; background?: ThemeColor }> = {
+  neutral: { color: colors['neutral-text'] },
+  success: { color: colors['success-text'], background: colors['success-bg'] },
+  warning: { color: colors['warning-text'], background: colors['warning-bg'] },
+  danger: { color: colors['danger-text'], background: colors['danger-bg'] },
+  info: { color: colors['info-text'], background: colors['info-bg'] },
+  accent: { color: colors.accent, background: colors['accent-subtle'] },
 };
 
 const styles = StyleSheet.create({
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-pill'],
   },
-  chipActive: { backgroundColor: theme.colors['action-primary'] },
+  chipActive: { backgroundColor: colors['action-primary'] },
   dot: { width: DOT, height: DOT, borderRadius: theme.radius['r-pill'] },
   target: { flexShrink: 0 },
 });
@@ -55,7 +57,7 @@ const styles = StyleSheet.create({
 const medium: TextStyle = { fontWeight: '500' };
 /* The design system's iris weight. The theme holds no 600 weight token, so it is written as
    the number. */
-const irisWeight: TextStyle = { fontWeight: '600' };
+const hueWeight: TextStyle = { fontWeight: '600' };
 
 /**
  * A label's drawn height is a floor, so at a larger text size its words grow the pill instead of
@@ -110,7 +112,7 @@ export function Chip({
           style={[
             styles.dot,
             // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-            { backgroundColor: active ? theme.colors['text-inverse'] : DOT_COLOR[tone] },
+            { backgroundColor: active ? colors['text-inverse'] : DOT_COLOR[tone] },
           ]}
         />
       ) : null}
@@ -138,15 +140,15 @@ export function Chip({
 }
 
 /** A tone's words and wash: an iris tone mixes its hue, every other tone reads `BADGE`. */
-function badgePair(tone: BadgeTone): { color: string; background?: string } {
-  if (!isIrisHue(tone)) return BADGE[tone];
-  const tint = irisTintOf(tone);
+function badgePair(tone: BadgeTone): { color: ThemeColor; background?: ThemeColor } {
+  if (!isCategoryHue(tone)) return BADGE[tone];
+  const tint = hueTintOf(tone);
   return { color: tint.fg, background: tint.bg };
 }
 
 /**
  * Tinted semantic badge — semantic bg + `-text` partner. Never interactive; always a View. An iris
- * tone takes Avatar's iris rule (`irisTintOf`), so a role and a face share one mix.
+ * tone takes Avatar's iris rule (`hueTintOf`), so a role and a face share one mix.
  */
 export function Badge({
   children,
@@ -160,7 +162,7 @@ export function Badge({
     <View style={[pillStyle(density, { backgroundColor: pair.background ?? controlFill }), style]}>
       <Text
         variant={density === 'expressive' ? 'body-sm' : 'caption'}
-        style={[isIrisHue(tone) ? irisWeight : medium, { color: pair.color }]}
+        style={[isCategoryHue(tone) ? hueWeight : medium, { color: pair.color }]}
       >
         {children}
       </Text>

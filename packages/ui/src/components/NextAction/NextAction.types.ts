@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { ThemeColor } from '../../primitives/Color/colors';
 import type { ActorClassSpec } from '../ActorClass';
 import type { FieldOverrideSpec } from '../FieldOverride';
 import type { PendingActionSpec } from '../PendingAction';
@@ -45,7 +46,7 @@ export interface RecordCardProps {
   /** Defaults to the initials of `name`. */
   initials?: string;
   /** Colour of the initials circle tint — a DS colour token reference, never a raw colour. */
-  avatarTone?: string;
+  avatarTone?: ThemeColor;
   /** A face in place of the initials circle — usually an `Avatar`, with its `mark` (`SCR-M01-12`). */
   avatar?: ReactNode;
   /** Beside the name, wrapping with it — usually a `Badge` ("You"). Never a control. */

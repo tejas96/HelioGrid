@@ -11,6 +11,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useDiffView } from './use-diff-view';
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-md'],
-    backgroundColor: theme.colors['surface-alt'],
+    backgroundColor: colors['surface-alt'],
   },
   toggleRow: { flexDirection: 'row' },
   /* The floor and the centring are the primitive's; only the bleed either side is this row's. */
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     marginHorizontal: -14,
   },
-  toggleWord: { fontWeight: '500', color: theme.colors.accent },
+  toggleWord: { fontWeight: '500', color: colors.accent },
 });
 
 interface NativeVersionDiffProps extends VersionDiffProps {

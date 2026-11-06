@@ -12,7 +12,7 @@ import { gitFiles, lineAt, newlinesOf } from './repo-files';
  * parent sets is NOT read — no static read knows where it lands — and neither are borders and
  * shadows. Ground's custom properties stand for every value `Ground.css` gives them. A value that
  * is not one colour token is a finding unless `NOT_ONE_COLOUR` names it with its reason. A native
- * colour is read only as `theme.colors…` inside an innermost object literal; a lookup, a variable
+ * colour is read only as `colors…` (the `Color` primitive) inside an innermost object literal; a lookup, a variable
  * or a shorthand is not read.
  */
 const UI_SOURCE = 'packages/ui/src';
@@ -36,10 +36,6 @@ const NOT_ONE_COLOUR = new Map([
     "Card's icon circle: a tone the caller picks over a wash of itself — not held, review",
   ],
   [
-    'hg-iris',
-    "only the `.hg-iris[data-iris]` wash and words mix — Avatar.logic's irisTintOf mixes the same two, and Badge.spec.tsx holds each hue's words at 4.5:1 or more",
-  ],
-  [
     'hg-record-avatar-tone',
     "a record's avatar: a tone the caller picks over a wash of itself — not held, review",
   ],
@@ -55,7 +51,7 @@ const CSS_DECLARATION = /([\w-]+)\s*:\s*([^;]+)/g;
 const CSS_TOKEN = /^var\(--([\w-]+)\)$/;
 const OBJECT_BODY = /\{([^{}]*)\}/g;
 const NATIVE_PROPERTY = /\b(color|fill|stroke|backgroundColor|background)\s*:\s*([^,\n]+)/g;
-const NATIVE_TOKEN = /theme\.colors(?:\.([\w]+)|\[\s*['"]([\w-]+)['"]\s*\])/g;
+const NATIVE_TOKEN = /\bcolors(?:\.([\w]+)|\[\s*['"]([\w-]+)['"]\s*\])/g;
 
 interface Setting {
   property: string;
@@ -136,7 +132,7 @@ function cssRules(text: string, used: Set<string>): Setting[][] {
   });
 }
 
-/** Each innermost object literal's settings that name `theme.colors`; any other value is not read. */
+/** Each innermost object literal's settings that name `colors`; any other value is not read. */
 function nativeObjects(text: string, used: Set<string>): Setting[][] {
   return [...text.matchAll(OBJECT_BODY)].map((object) => {
     const bodyAt = (object.index ?? 0) + 1;

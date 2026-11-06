@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { Text as RNText, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { useFocusAfter } from '../../primitives/FocusAfter';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-md'],
   },
   rowFunctional: { borderRadius: theme.radius['r-card-functional'] },
-  rowBlocked: { backgroundColor: theme.colors['warning-bg'] },
+  rowBlocked: { backgroundColor: colors['warning-bg'] },
   body: { flex: 1, minWidth: 0, gap: theme.spacing['sp-1'] },
   head: {
     flexDirection: 'row',
@@ -36,13 +37,13 @@ const styles = StyleSheet.create({
   date: {
     fontFamily: theme.type.families.mono,
     fontSize: theme.type.roles['body-sm'].fontSize,
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   name: {
     fontFamily: theme.type.families.sans,
     fontSize: 14,
     fontWeight: '500',
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   delete: { width: 44, height: 44, borderRadius: theme.radius['r-pill'] },
 });
@@ -100,7 +101,7 @@ export function DateSetRow({
               height={18}
               viewBox="0 0 24 24"
               fill="none"
-              stroke={theme.colors['text-secondary']}
+              stroke={colors['text-secondary']}
               strokeWidth={1.5}
               strokeLinecap="round"
               strokeLinejoin="round"

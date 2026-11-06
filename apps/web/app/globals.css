@@ -1,29 +1,8 @@
 @import "tailwindcss";
 
 /*
- * v1 is light-only (F7-04). A browser that darkens pages by itself — Chrome's auto-dark, Samsung
- * Internet — leaves a page alone only when it declares `only light`.
- */
-:root {
-  color-scheme: only light;
-}
-
-/*
- * The page is --surface (F7-15, F7-49): fields and tiles are the darker wells on it. The design
- * system's base still paints body --canvas until its half lands (docs/tasks/UI.md), so the root
- * is painted here, where an overscroll bounce shows it.
- */
-html,
-body {
-  /* biome-ignore lint/plugin/raw-white-css: page-ground — an app's page or door: the page is white */
-  background: var(--surface);
-}
-
-/*
- * Token custom properties (--sp-*, --fs-*, --color-*, etc.) are NOT defined here.
- * They are imported in layout.tsx in load-bearing order:
+ * Every visual value comes from @heliogrid/theme, imported in layout.tsx in load-bearing order:
  *   @heliogrid/theme/tokens.css → @heliogrid/theme/base.css → @heliogrid/ui/styles.css → globals.css
- *
- * Do not add raw values here — every visual value comes from @heliogrid/theme.
- * A future @theme inline mapping is regenerated from tokens.css via ds:pull, never hand-transcribed.
+ * The page's ground, its glow, light and dark are the theme's (`base.css`, `tokens.css`).
+ * Nothing is written here.
  */

@@ -1,4 +1,5 @@
 import { theme } from '@heliogrid/theme';
+import { colors } from '@heliogrid/ui';
 import { StyleSheet } from 'react-native';
 
 /**
@@ -15,12 +16,11 @@ export const switcherWidth = (windowWidth: number) =>
   windowWidth - 2 * theme.layout['screen-pad-mobile'];
 
 export const styles = StyleSheet.create({
-  // The page is `surface` (`F7-49`); the status band and the bar paint it too, so nothing that
+  // The page is the canvas; the status band and the bar paint it too, so nothing that
   // scrolls shows under the camera or the status bar (`F7-50`).
   page: {
     flex: 1,
-    // biome-ignore lint/plugin/raw-white: page-ground — an app's page or door: the page is white
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.canvas,
   },
   // Grows to the page, so Frame 8 centres in it (`D77`); the home's rows still start at the top.
   scroll: {
@@ -39,8 +39,7 @@ export const styles = StyleSheet.create({
   stickyHead: {
     paddingTop: theme.spacing['sp-2'],
     paddingBottom: theme.spacing['sp-4'],
-    // biome-ignore lint/plugin/raw-white: page-ground — the held head paints the white page the list scrolls under
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.canvas,
   },
   stickyHeadParts: { gap: theme.layout['tile-gap'] },
   /* What scrolls away above the held head (`SCR-M01-12` m-default): `sp-2` under the bar, as the

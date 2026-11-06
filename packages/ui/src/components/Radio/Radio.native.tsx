@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
   /* RN has no inset box-shadow: the checked 2px accent ring is a border of the same weight. */
   boxChecked: {
     borderWidth: 2,
-    borderColor: theme.colors.accent,
+    borderColor: colors.accent,
   },
   boxDisabled: {
     borderWidth: 0,
@@ -40,10 +41,10 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   dotDisabled: {
-    backgroundColor: theme.colors['text-disabled'],
+    backgroundColor: colors['text-disabled'],
   },
 });
 

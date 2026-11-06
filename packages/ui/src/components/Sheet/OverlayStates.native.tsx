@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
@@ -52,7 +53,7 @@ export function OverlayError({
           height={22}
           viewBox="0 0 24 24"
           fill="none"
-          stroke={theme.colors['warning-text']}
+          stroke={colors['warning-text']}
           strokeWidth={1.5}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors['warning-bg'],
+    backgroundColor: colors['warning-bg'],
     marginBottom: theme.spacing['sp-1'],
   },
 });

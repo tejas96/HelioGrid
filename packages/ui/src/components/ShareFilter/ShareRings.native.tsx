@@ -1,12 +1,11 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider';
 import { ProgressRing } from '../OperationProgress/ProgressRing.native';
 import { SHARE_RING } from '../OperationProgress/progress-ring';
-import { HUE_INK, inkOver, RING_PRESSED_SHARE, WARNING_WORDS } from './ShareFilter.inks';
+import { HUE_INK, HUE_WASH, WARNING_WORDS } from './ShareFilter.inks';
 import { arcShare, totalOf } from './ShareFilter.logic';
 import type { ShareFilterProps } from './ShareFilter.types';
 
@@ -19,7 +18,6 @@ type ShareRingsProps = Pick<ShareFilterProps, 'label' | 'items' | 'pressed' | 'o
  */
 export function ShareRings({ label, items, pressed, onPress }: ShareRingsProps) {
   const { number } = useFormat();
-  const { ground } = useGround();
   const total = totalOf(items);
   return (
     <View role="group" accessibilityLabel={label} style={styles.row}>
@@ -32,10 +30,7 @@ export function ShareRings({ label, items, pressed, onPress }: ShareRingsProps) 
             accessibilityLabel={item.accessibleLabel}
             accessibilityState={{ selected: on }}
             onPress={() => onPress(item.id)}
-            style={[
-              styles.ring,
-              on ? { backgroundColor: inkOver(hue, ground, RING_PRESSED_SHARE) } : undefined,
-            ]}
+            style={[styles.ring, on ? { backgroundColor: HUE_WASH[item.hue] } : undefined]}
           >
             <View style={styles.dial}>
               <ProgressRing geometry={SHARE_RING} share={arcShare(item.count, total)} ink={hue} />

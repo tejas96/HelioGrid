@@ -2,6 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { stepLabel } from './resolve-steps';
 import type { StepperStep } from './Stepper.types';
@@ -97,10 +98,10 @@ const styles = StyleSheet.create({
   bar: {
     height: theme.spacing['sp-1'],
     borderRadius: theme.spacing['sp-0-5'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   barFilled: {
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   numbered: {
     flexDirection: 'row',

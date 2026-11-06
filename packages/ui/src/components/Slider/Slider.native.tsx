@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -41,7 +42,7 @@ function StepButton({ disabled, glyph, label, onPress }: StepButtonProps) {
         height={16}
         viewBox="0 0 24 24"
         fill="none"
-        stroke={disabled ? theme.colors['text-disabled'] : theme.colors['text-primary']}
+        stroke={disabled ? colors['text-disabled'] : colors['text-primary']}
         strokeWidth={2}
         strokeLinecap="round"
       >

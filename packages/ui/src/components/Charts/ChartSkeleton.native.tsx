@@ -2,6 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import { AccessibilityInfo, Animated, Easing, StyleSheet } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 
 interface ChartSkeletonProps {
   height: number;
@@ -11,7 +12,7 @@ interface ChartSkeletonProps {
 const styles = StyleSheet.create({
   block: {
     borderRadius: theme.radius['r-md'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
 });
 

@@ -1,5 +1,5 @@
-import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Button } from '../Button/Button.native';
@@ -79,5 +79,5 @@ export function SourceDocumentBody(props: SourceDocumentBodyProps) {
 }
 
 const styles = StyleSheet.create({
-  shimmer: { borderRadius: 10, backgroundColor: theme.colors['canvas-sunken'] },
+  shimmer: { borderRadius: 10, backgroundColor: colors['canvas-sunken'] },
 });

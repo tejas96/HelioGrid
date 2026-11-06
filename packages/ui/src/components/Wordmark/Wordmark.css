@@ -7,7 +7,7 @@
 .hg-wordmark {
   display: inline-block;
   font-family: var(--font-sans);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semibold);
   font-size: var(--hg-wordmark-size);
   letter-spacing: var(--tr-display);
   line-height: 1;
@@ -34,11 +34,16 @@
   width: var(--hg-logo-tile-size);
   height: var(--hg-logo-tile-size);
   border-radius: var(--hg-logo-tile-radius);
-  background: var(--gradient-brand);
-  box-shadow: var(--e2);
-  font-family: var(--font-sans);
-  font-weight: var(--fw-bold);
-  font-size: var(--hg-logo-tile-type);
-  letter-spacing: var(--tr-display);
+  background: linear-gradient(160deg, var(--brand-green), var(--brand-teal) 50%, var(--brand-blue));
   color: var(--text-inverse);
+}
+.hg-logo-tile-sun {
+  width: 56%;
+  height: 56%;
+}
+
+.hg-product-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
 }

@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import { IrisTile } from '../IrisTile/IrisTile';
+import { HueTile } from '../HueTile/HueTile';
 import './ItemCard.css';
 import type { ItemCardProps, WideProps } from './CatalogItemForm.parts.types';
 
@@ -9,7 +9,7 @@ import type { ItemCardProps, WideProps } from './CatalogItemForm.parts.types';
  */
 export function ItemCard({
   glyph,
-  iris,
+  hue,
   title,
   trailing,
   wide,
@@ -19,7 +19,7 @@ export function ItemCard({
   return (
     <section className="hg-item-card" data-wide={wide} aria-labelledby={titleId}>
       <div className="hg-item-card-head">
-        <IrisTile glyph={glyph} iris={iris} size={32} stroke={1.6} />
+        <HueTile glyph={glyph} hue={hue} size={32} stroke={1.6} />
         <h3 className="hg-item-card-title" id={titleId}>
           {title}
         </h3>

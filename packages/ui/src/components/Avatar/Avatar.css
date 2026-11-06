@@ -1,4 +1,4 @@
-/* Avatar — perfect circle, initials on a brand iris tint when there is no image.
+/* Avatar — perfect circle, initials on a category tint when there is no image.
    The diameter and the initials size arrive as custom properties because they are a numeric
    prop, not a token step; every colour and radius below is a token. */
 
@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: center;
   background: var(--accent-subtle);
-  color: var(--accent);
+  color: var(--accent-text);
   font-family: var(--font-sans);
   font-size: var(--hg-avatar-fs);
   font-weight: var(--fw-medium);
@@ -20,31 +20,27 @@
 
 /* A thing, not a person (`glyph`): no name to fall back to and no tint. */
 .hg-avatar--glyph {
-  /* biome-ignore lint/plugin/raw-white-css: illustration — a thing's disc is white on every ground, as the design system draws it */
+  /* biome-ignore lint/plugin/raw-white-css: illustration — a thing's disc is the card's own colour on every ground */
   background: var(--surface);
   color: var(--accent);
 }
 
-/* THE BRAND IRIS (design-system change 7) — a person's initials, and a Badge's kind tone, which
-   takes this class too. The wash is the hue at 14% on white and the words the hue mixed 70% with
-   black, so every hue clears 4.5:1. The phone computes the same two mixes in Avatar.logic.ts
-   (IRIS_WASH_SHARE, IRIS_WORDS_SHARE): a share changed there is changed here in the same commit. */
-.hg-iris[data-iris="violet"] {
-  --hg-iris: var(--iris-violet);
+/* THE CATEGORY HUES — a person's initials, and a Badge's kind tone, which takes this class too.
+   Each hue is a token pair, its wash and its words, measured in light and dark. */
+.hg-hue[data-hue="ocean"] {
+  background: var(--hue-ocean-bg);
+  color: var(--hue-ocean-text);
 }
-.hg-iris[data-iris="blue"] {
-  --hg-iris: var(--iris-blue);
+.hg-hue[data-hue="teal"] {
+  background: var(--hue-teal-bg);
+  color: var(--hue-teal-text);
 }
-.hg-iris[data-iris="magenta"] {
-  --hg-iris: var(--iris-magenta);
+.hg-hue[data-hue="plum"] {
+  background: var(--hue-plum-bg);
+  color: var(--hue-plum-text);
 }
-.hg-iris[data-iris] {
-  /* biome-ignore lint/plugin/raw-white-css: iris — the rule's wash is the hue over white, the page's own white */
-  background: color-mix(in srgb, var(--hg-iris) 14%, var(--surface));
-  color: color-mix(in srgb, var(--hg-iris) 70%, black);
-  /* The design system's iris weight, and the black the words deepen to: the theme holds neither a
-     600 weight nor a black token, so both are written as they are (D284). */
-  font-weight: 600;
+.hg-hue[data-hue] {
+  font-weight: var(--fw-semibold);
 }
 
 /* A person's standing at the disc's foot (`mark`): an 11px dot in an 18px ring of the page, 2px

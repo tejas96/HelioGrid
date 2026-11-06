@@ -2447,6 +2447,11 @@ msgid "App and WhatsApp"
 msgstr "App and WhatsApp"
 
 #. js-lingui-explicit-id
+#: src/copy/appearance.ts:7
+msgid "Appearance"
+msgstr "Appearance"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:84
 msgid "Applies to every new proposal, Quick ones included."
 msgstr "Applies to every new proposal, Quick ones included."
@@ -3905,6 +3910,11 @@ msgid "cycles"
 msgstr "cycles"
 
 #. js-lingui-explicit-id
+#: src/copy/appearance.ts:12
+msgid "Dark"
+msgstr "Dark"
+
+#. js-lingui-explicit-id
 #: src/copy/freshness.ts:38
 msgid "data rights"
 msgstr "data rights"
@@ -4128,6 +4138,11 @@ msgstr "Designs pinned to {label} will show as out of date. Their count is not a
 #: src/copy/role-presets.ts:55
 msgid "Designs, proposals and design sign-off"
 msgstr "Designs, proposals and design sign-off"
+
+#. js-lingui-explicit-id
+#: src/copy/appearance.ts:10
+msgid "Device"
+msgstr "Device"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:65
@@ -5699,6 +5714,11 @@ msgid "Kept for proposals already sent. Restore one to use it again."
 msgstr "Kept for proposals already sent. Restore one to use it again."
 
 #. js-lingui-explicit-id
+#: src/copy/appearance.ts:9
+msgid "Kept on this device"
+msgstr "Kept on this device"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:47
 msgid "Kept reports"
 msgstr "Kept reports"
@@ -5849,6 +5869,11 @@ msgstr "Letterhead"
 #: src/copy/catalog-settings.ts:153
 msgid "LFP"
 msgstr "LFP"
+
+#. js-lingui-explicit-id
+#: src/copy/appearance.ts:11
+msgid "Light"
+msgstr "Light"
 
 #. js-lingui-explicit-id
 #: src/copy/usage-page.ts:101
@@ -11192,6 +11217,11 @@ msgstr "Their own stops, check-ins, timeline and attendance"
 #: src/copy/invite.ts:32
 msgid "Their phone number"
 msgstr "Their phone number"
+
+#. js-lingui-explicit-id
+#: src/copy/appearance.ts:8
+msgid "Theme"
+msgstr "Theme"
 
 #. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:22

@@ -34,9 +34,9 @@ function BrandRing({ children }: { children: React.ReactNode }) {
       <Svg width={outer} height={outer} style={StyleSheet.absoluteFill}>
         <Defs>
           <LinearGradient id={id} x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor={theme.colors['iris-violet']} />
-            <Stop offset="0.45" stopColor={theme.colors['iris-blue']} />
-            <Stop offset="1" stopColor={theme.colors['iris-magenta']} />
+            {theme.brand.gradient.map((stop) => (
+              <Stop key={stop.offset} offset={stop.offset} stopColor={stop.color} />
+            ))}
           </LinearGradient>
         </Defs>
         <Circle

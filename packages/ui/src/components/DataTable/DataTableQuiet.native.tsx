@@ -1,12 +1,13 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 
 const styles = StyleSheet.create({
   /* The card a quiet table's rows stand in, raised over the page (design-system change 20). */
   card: {
     // biome-ignore lint/plugin/raw-white: the card the quiet rows stand in, raised over the page
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     borderRadius: theme.radius['r-md'],
     ...theme.elevation.e2,
   },

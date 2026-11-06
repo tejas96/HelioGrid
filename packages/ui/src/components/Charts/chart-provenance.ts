@@ -19,7 +19,7 @@ import type { ChartFrameProps } from './Charts.types';
  *
  * The marks are `components/Provenance`'s and the words are the consumer's (`ProvenanceWords`), so
  * a chart and a label cannot disagree about a tier. This module resolves the spec to token NAMES
- * only; each platform half turns a name into `var(--name)` or `theme.colors[name]`.
+ * only; each platform half turns a name into `var(--name)` or `colors[name]`.
  */
 
 /** Every token name the provenance line reaches for — exactly the marks `Provenance` uses. */

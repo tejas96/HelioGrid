@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { landFocusOn } from '../../primitives/FocusAfter';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -23,7 +24,7 @@ function DismissGlyph() {
       height={15}
       viewBox="0 0 24 24"
       fill="none"
-      stroke={theme.colors['text-tertiary']}
+      stroke={colors['text-tertiary']}
       strokeWidth={2}
       strokeLinecap="round"
     >

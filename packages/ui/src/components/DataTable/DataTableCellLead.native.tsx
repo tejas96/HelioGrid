@@ -2,7 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
-import { IrisTile } from '../IrisTile/IrisTile.native';
+import { HueTile } from '../HueTile/HueTile.native';
 import { cellLeadOf } from './DataTableCell.logic';
 import type { DataTableColumn } from './DataTableColumn.types';
 
@@ -43,7 +43,7 @@ export function CellLead<Row>({
   return (
     <View style={styles.lead}>
       {leading === null ? null : (
-        <IrisTile glyph={leading.glyph} iris={leading.iris} size={34} stroke={1.5} />
+        <HueTile glyph={leading.glyph} hue={leading.hue} size={34} stroke={1.5} />
       )}
       <View style={styles.text}>
         {children}

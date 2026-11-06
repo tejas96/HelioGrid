@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { RefObject } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -101,8 +102,8 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-md'],
   },
   dot: { width: DOT, height: DOT, borderRadius: theme.radius['r-pill'] },
-  dotLive: { backgroundColor: theme.colors.success },
-  dotNone: { backgroundColor: theme.colors['mark-subtle'] },
+  dotLive: { backgroundColor: colors.success },
+  dotNone: { backgroundColor: colors['mark-subtle'] },
   /* The whole text block is the way into the past list; the press keeps the 44 floor. */
   press: { flex: 1, minWidth: 0, alignItems: 'stretch', justifyContent: 'center' },
   words: { flex: 1, minWidth: 0, justifyContent: 'center' },

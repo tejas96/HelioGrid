@@ -35,6 +35,8 @@ class MainApplication : Application(), ReactApplication {
     ReactFontManager.getInstance().addCustomFont(this, "Geist", R.font.geist)
     ReactFontManager.getInstance().addCustomFont(this, "Geist Mono", R.font.geistmono)
     ReactFontManager.getInstance().addCustomFont(this, "Noto Sans Devanagari", R.font.notosansdevanagari)
+    ReactFontManager.getInstance().addCustomFont(this, "Newsreader", R.font.newsreader)
+    ReactFontManager.getInstance().addCustomFont(this, "Noto Serif Devanagari", R.font.notoserifdevanagari)
     loadReactNative(this)
   }
 }

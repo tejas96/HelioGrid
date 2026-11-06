@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE, fieldBox, fieldWords } from '../../primitives/FieldBox/FieldBox.native';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -99,7 +100,7 @@ function SelectTrigger({
         height={18}
         viewBox="0 0 24 24"
         fill="none"
-        stroke={theme.colors['text-tertiary']}
+        stroke={colors['text-tertiary']}
         strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -244,7 +245,7 @@ const styles = StyleSheet.create({
   list: {
     position: 'absolute',
     // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     borderRadius: theme.radius['r-md'],
     ...theme.elevation.e4,
   },

@@ -13,13 +13,9 @@ interface WebAppRailProps extends AppRailProps {
 }
 
 /**
- * The 72px desktop icon rail: the product mark at the top, primary destinations, then utilities
- * and the account avatar pinned to the bottom. The active item is an accent-subtle rounded tile
- * — never a border, never a left accent bar.
- *
- * THE WIDTH DEFAULTS FROM THE TOKEN, the way `AppHeader` reads `--header-h`. `--rail-w` was
- * renamed from a 260px sidebar and then read by nothing, which is the same defect the rename was
- * about; a raw number still overrides it for a caller that needs one.
+ * The desktop sidebar: the brand and the company at the top, the search, the person's
+ * destinations with their names, then the utilities and the account at the foot. The item in view
+ * is a solid ink pill; the sidebar sits on the page's own glow, with no edge of its own.
  */
 export function AppRail({
   label,
@@ -28,8 +24,10 @@ export function AppRail({
   onChange,
   footer = [],
   avatar,
-  width = 'var(--rail-w, 72px)',
+  width = 'var(--sidebar-w)',
   brand,
+  caption,
+  search,
   className,
   style,
 }: WebAppRailProps) {
@@ -39,15 +37,21 @@ export function AppRail({
   };
   return (
     <nav aria-label={label} className={classNames('hg-app-rail', className)} style={railStyle}>
-      <div className="hg-app-rail-brand">{brand}</div>
-      {items.map((item) => (
-        <RailButton
-          key={item.key}
-          item={item}
-          active={item.key === value}
-          onClick={() => onChange?.(item.key)}
-        />
-      ))}
+      <div className="hg-app-rail-brand">
+        {brand}
+        {caption === undefined ? null : <div className="hg-app-rail-caption">{caption}</div>}
+      </div>
+      {search === undefined ? null : <div className="hg-app-rail-search">{search}</div>}
+      <div className="hg-app-rail-items">
+        {items.map((item) => (
+          <RailButton
+            key={item.key}
+            item={item}
+            active={item.key === value}
+            onClick={() => onChange?.(item.key)}
+          />
+        ))}
+      </div>
       <div className="hg-app-rail-spacer" />
       {footer.map((item) => (
         <RailButton key={item.key} item={item} active={false} onClick={item.onClick} />
@@ -64,17 +68,21 @@ interface RailButtonProps {
 }
 
 function RailButton({ item, active, onClick }: RailButtonProps) {
+  const on = active || item.open === true;
   return (
     <button
       type="button"
-      aria-label={spokenItemName(item)}
+      aria-label={item.name === undefined ? undefined : spokenItemName(item)}
       aria-current={active ? 'page' : undefined}
       aria-expanded={item.open}
       onClick={onClick}
       className="hg-app-rail-button"
-      data-active={active || item.open === true ? 'true' : undefined}
+      data-active={on ? 'true' : undefined}
     >
-      {item.icon}
+      <span className="hg-app-rail-icon" aria-hidden="true">
+        {on && item.activeIcon !== undefined ? item.activeIcon : item.icon}
+      </span>
+      <span className="hg-app-rail-label">{item.label}</span>
       {/* F6-17: the badge counts unread from the record. A number, not a dot — see CountBadge. */}
       {showsBadge(item.badge) ? (
         <span className="hg-app-rail-badge">

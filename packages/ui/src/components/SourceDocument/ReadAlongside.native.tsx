@@ -8,6 +8,7 @@ import { theme } from '@heliogrid/theme';
 import { useState } from 'react';
 import type { DimensionValue, LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
 import { ALONGSIDE_DEFAULTS, documentAtHeight, sitsAlongside } from './SourceDocument.logic';
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing['sp-1'],
     paddingHorizontal: 10,
   },
-  toggleWord: { fontWeight: '500', color: theme.colors.accent },
+  toggleWord: { fontWeight: '500', color: colors.accent },
 });
 
 interface NativeReadAlongsideProps extends ReadAlongsideProps {

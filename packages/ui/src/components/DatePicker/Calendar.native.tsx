@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { CalendarCell, CalendarNav, GRID_WIDTH, styles } from './CalendarChrome.native';
@@ -16,7 +17,7 @@ interface NativeCalendarProps extends CalendarProps {
 const local = StyleSheet.create({
   frame: {
     // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     borderRadius: theme.radius['r-lg'],
     padding: theme.spacing['sp-4'],
   },
@@ -28,7 +29,7 @@ const local = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: theme.radius['r-sm'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
 });
 

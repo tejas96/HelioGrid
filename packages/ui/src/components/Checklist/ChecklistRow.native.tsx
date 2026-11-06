@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -49,8 +50,8 @@ const styles = StyleSheet.create({
   },
   /* RN has no inset shadow, so the resting box's `inset 0 0 0 1.5px --mark-subtle` ring is a
      real border of the same weight and colour. */
-  boxResting: { borderWidth: 1.5, borderColor: theme.colors['mark-subtle'] },
-  boxDone: { backgroundColor: theme.colors.success },
+  boxResting: { borderWidth: 1.5, borderColor: colors['mark-subtle'] },
+  boxDone: { backgroundColor: colors.success },
   boxWaiting: { opacity: 0.55 },
   body: { flex: 1, minWidth: 0, flexDirection: 'column', gap: 5 },
   titleRow: { flexDirection: 'row', gap: theme.spacing['sp-2'], alignItems: 'baseline' },
@@ -86,7 +87,7 @@ function TickBox({
           viewBox="0 0 24 24"
           fill="none"
           // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-          stroke={theme.colors['text-inverse']}
+          stroke={colors['text-inverse']}
           strokeWidth={4.4}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -143,11 +144,11 @@ function Body({
           <Text variant="body-sm" color="accent" style={{ fontWeight: '500' }}>
             {item.evidence.label ?? words.evidence}
           </Text>
-          <Icon size="sm" color={theme.colors.accent}>
+          <Icon size="sm" color={colors.accent}>
             <Svg
               viewBox="0 0 24 24"
               fill="none"
-              stroke={theme.colors.accent}
+              stroke={colors.accent}
               strokeWidth={1.8}
               strokeLinecap="round"
               strokeLinejoin="round"

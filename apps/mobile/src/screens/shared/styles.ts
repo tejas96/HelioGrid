@@ -1,4 +1,4 @@
-import { theme } from '@heliogrid/theme';
+import { colors } from '@heliogrid/ui';
 import { StyleSheet } from 'react-native';
 
 /** Shared scaffold layout — full-screen centred container. */
@@ -7,8 +7,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    // The page is `surface` (`F7-15`, `F7-49`).
-    // biome-ignore lint/plugin/raw-white: page-ground — an app's page or door: the page is white
-    backgroundColor: theme.colors.surface,
+    // The page is the canvas, under the glow.
+    backgroundColor: colors.canvas,
   },
 });

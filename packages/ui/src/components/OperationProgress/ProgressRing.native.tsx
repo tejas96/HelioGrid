@@ -1,5 +1,6 @@
-import { theme } from '@heliogrid/theme';
 import { G, Svg } from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RING_ORIGIN, type RingGeometry, ringDrawing } from './progress-ring';
 
@@ -8,7 +9,7 @@ interface ProgressRingProps {
   /** 0–1 of the ring the arc covers; 0 draws the track alone. */
   share: number;
   /** The arc's ink, a resolved theme value — react-native-svg has no custom properties. */
-  ink: string;
+  ink: ThemeColor;
 }
 
 /**
@@ -27,7 +28,7 @@ export function ProgressRing({ geometry, share, ink }: ProgressRingProps) {
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
     >
-      <G stroke={theme.colors['canvas-sunken']}>
+      <G stroke={colors['canvas-sunken']}>
         <ShellGlyphMarks name="ring" />
       </G>
       {share > 0 ? (

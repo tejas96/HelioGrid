@@ -2,6 +2,8 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -23,9 +25,9 @@ interface ChartFrameBodyProps {
   children?: ReactNode;
 }
 
-const MARK: Record<ChartNoteTone, { bg: string; fg: string }> = {
-  warning: { bg: theme.colors['warning-bg'], fg: theme.colors['warning-text'] },
-  neutral: { bg: theme.colors['neutral-bg'], fg: theme.colors['text-tertiary'] },
+const MARK: Record<ChartNoteTone, { bg: ThemeColor; fg: ThemeColor }> = {
+  warning: { bg: colors['warning-bg'], fg: colors['warning-text'] },
+  neutral: { bg: colors['neutral-bg'], fg: colors['text-tertiary'] },
 };
 
 const styles = StyleSheet.create({
@@ -35,7 +37,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-2'],
     padding: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-md'],
-    backgroundColor: theme.colors['surface-alt'],
+    backgroundColor: colors['surface-alt'],
   },
   mark: {
     width: theme.spacing['sp-10'],
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: theme.radius['r-md'],
-    backgroundColor: theme.colors['surface-alt'],
+    backgroundColor: colors['surface-alt'],
   },
   /* The region note's own padding is a full surface's (sp-12 / sp-6); inside a 200dp plot plate
      that is taller than the plate. sp-4 is the DS's own override here. */

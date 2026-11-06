@@ -32,10 +32,12 @@
   align-items: center;
   gap: var(--sp-4);
   box-sizing: border-box;
-  min-height: var(--header-h, 64px);
-  padding: 0 var(--sp-6);
-  background: var(--hg-ground);
-  box-shadow: var(--e1);
+  min-height: var(--topbar-h-mobile);
+  padding: 0 var(--screen-pad-mobile-fn);
+  /* A frosted band of the page: what scrolls under it softens instead of colliding. */
+  background: color-mix(in srgb, var(--canvas) 86%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  backdrop-filter: saturate(1.4) blur(14px);
   font-family: var(--font-sans);
 }
 

@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE, fieldBox } from '../../primitives/FieldBox/FieldBox.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'] - FIELD_BOX_EDGE,
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.roles.body.fontSize,
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   editorMono: { fontFamily: theme.type.families.mono },
 });

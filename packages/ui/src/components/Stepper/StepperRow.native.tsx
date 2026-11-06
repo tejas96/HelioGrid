@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -73,7 +74,7 @@ export function StepperRow({
             height={16}
             viewBox="0 0 24 24"
             fill="none"
-            stroke={theme.colors['text-tertiary']}
+            stroke={colors['text-tertiary']}
             strokeWidth={1.5}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -106,7 +107,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   connectorDone: {
-    backgroundColor: theme.colors.success,
+    backgroundColor: colors.success,
     opacity: 0.35,
   },
   row: {
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-md'],
   },
   rowActive: {
-    backgroundColor: theme.colors['accent-subtle'],
+    backgroundColor: colors['accent-subtle'],
   },
   body: {
     flex: 1,

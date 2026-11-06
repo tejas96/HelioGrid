@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Animated, Easing, ScrollView, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useReducedMotion } from '../../primitives/use-reduced-motion';
@@ -183,7 +184,7 @@ const styles = StyleSheet.create({
     width: '100%',
     maxHeight: '88%',
     // biome-ignore lint/plugin/raw-white: panel — a sheet, a modal, a detail panel: a page ground over the page
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e5,
   },
   panelExpressive: { borderRadius: theme.radius['r-xl'] },

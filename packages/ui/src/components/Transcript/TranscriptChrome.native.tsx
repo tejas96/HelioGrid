@@ -4,6 +4,7 @@
 
 import { theme } from '@heliogrid/theme';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 
 /** The rhythm between turns — and between the skeleton bars that hold their footprint. */
@@ -17,7 +18,7 @@ export function GlobeGlyph({ size = 14 }: { size?: number }) {
       height={size}
       viewBox="0 0 24 24"
       fill="none"
-      stroke={theme.colors['text-tertiary']}
+      stroke={colors['text-tertiary']}
       strokeWidth={1.5}
       strokeLinecap="round"
       strokeLinejoin="round"

@@ -11,6 +11,7 @@ import { useMemo } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { darkModules, drawableCode, quietZonedSide, wordsWidth } from './QRCode.logic';
@@ -19,13 +20,13 @@ import type { QRCodeProps } from './QRCode.types';
 const styles = StyleSheet.create({
   root: { alignItems: 'center', gap: theme.spacing['sp-2'] },
   // biome-ignore lint/plugin/raw-white: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen
-  code: { backgroundColor: theme.colors.surface, borderRadius: theme.radius['r-sm'] },
+  code: { backgroundColor: colors.surface, borderRadius: theme.radius['r-sm'] },
   failed: {
     alignItems: 'center',
     justifyContent: 'center',
     gap: theme.spacing['sp-2'],
     padding: theme.spacing['sp-4'],
-    backgroundColor: theme.colors['warning-bg'],
+    backgroundColor: colors['warning-bg'],
     borderRadius: theme.radius['r-md'],
   },
   failedTitle: { fontWeight: '700' },
@@ -84,7 +85,7 @@ export function QRCode({
             height={24}
             viewBox="0 0 24 24"
             fill="none"
-            stroke={theme.colors['warning-text']}
+            stroke={colors['warning-text']}
             strokeWidth={1.5}
             strokeLinecap="round"
           >
@@ -119,8 +120,8 @@ export function QRCode({
         style={styles.code}
       >
         {/* biome-ignore lint/plugin/raw-white: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen */}
-        <Rect width={total} height={total} fill={theme.colors.surface} />
-        <Path d={modulePath(matrix, quietZone)} fill={theme.colors['text-primary']} />
+        <Rect width={total} height={total} fill={colors.surface} />
+        <Path d={modulePath(matrix, quietZone)} fill={colors['text-primary']} />
       </Svg>
       {caption ? (
         <Text variant="caption" color="tertiary" style={styles.centred}>

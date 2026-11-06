@@ -11,6 +11,7 @@ import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Text } from '../../primitives/Text/Text.native';
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
   /* A viewer, not a record: a heading on the page (`F7-49`), with no fill or shadow of its own.
      Its reading area is the sunken desk the document lies on, and carries the density's radius. */
   root: { minWidth: 0, overflow: 'hidden' },
-  body: { backgroundColor: theme.colors['canvas-sunken'], borderRadius: theme.radius['r-md'] },
+  body: { backgroundColor: colors['canvas-sunken'], borderRadius: theme.radius['r-md'] },
   bodyFunctional: { borderRadius: theme.radius['r-card-functional'] },
   bodyContent: {
     padding: theme.spacing['sp-3'],

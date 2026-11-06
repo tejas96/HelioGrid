@@ -11,6 +11,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { Linking, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: theme.radius['r-pill'],
   },
-  iconBtnPressed: { backgroundColor: theme.colors['accent-subtle'] },
+  iconBtnPressed: { backgroundColor: colors['accent-subtle'] },
   message: {
     position: 'absolute',
     top: 0,
@@ -46,9 +47,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: theme.spacing['sp-2'],
     padding: theme.spacing['sp-6'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
-  messageWarning: { backgroundColor: theme.colors['warning-bg'] },
+  messageWarning: { backgroundColor: colors['warning-bg'] },
   mark: {
     width: 44,
     height: 44,
@@ -99,10 +100,10 @@ export function IconBtn({
   pressed?: boolean;
 }) {
   const colour = disabled
-    ? theme.colors['text-disabled']
+    ? colors['text-disabled']
     : pressed
-      ? theme.colors.accent
-      : theme.colors['text-secondary'];
+      ? colors.accent
+      : colors['text-secondary'];
   return (
     <Pressable
       accessibilityLabel={label}
@@ -139,7 +140,7 @@ export function Message({
   action?: ReactNode;
 }) {
   const warning = tone === 'warning';
-  const mark = warning ? theme.colors['warning-text'] : theme.colors['text-tertiary'];
+  const mark = warning ? colors['warning-text'] : colors['text-tertiary'];
   return (
     <View style={[styles.message, warning ? styles.messageWarning : null]}>
       {/* The panel is --canvas-sunken or a tint, the well's own grey or near it: a control on it

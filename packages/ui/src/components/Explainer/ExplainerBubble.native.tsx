@@ -4,6 +4,7 @@ import type { RefObject } from 'react';
 import { useRef } from 'react';
 import type { LayoutChangeEvent } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import {
   type ExplainerDensity,
@@ -114,14 +115,14 @@ const styles = StyleSheet.create({
     padding: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-lg'],
     // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e5,
   },
   bubbleFunctional: { minWidth: 192, padding: 14, borderRadius: theme.radius['rf-lg'] },
   /* Measured before it is placed, so the first frame never shows it in the wrong spot. */
   unplaced: { opacity: 0, left: 0, top: 0 },
-  title: { fontSize: 15, fontWeight: '700', color: theme.colors['text-primary'] },
-  titleFunctional: { fontSize: 14, fontWeight: '700', color: theme.colors['text-primary'] },
+  title: { fontSize: 15, fontWeight: '700', color: colors['text-primary'] },
+  titleFunctional: { fontSize: 14, fontWeight: '700', color: colors['text-primary'] },
   bodyAfterTitle: { marginTop: 6 },
   body: { lineHeight: 21 },
   action: { marginTop: 14, flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing['sp-2'] },

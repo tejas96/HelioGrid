@@ -1,15 +1,30 @@
-# @heliogrid/theme — every visual value, generated from the live design system
+# @heliogrid/theme — every visual value, typed once
 
-The no-raw-values law is `.claude/rules/ui-adherence.md`, which loads with this folder. What each
-file is and what the build emits: `packages/theme/README.md`.
+The no-raw-values law is `.claude/rules/ui-adherence.md`, which loads with this folder; the look
+it serves is `CLAUDE.md` §10.
 
-- NEVER a hand-written token. Every value arrives from the design system — a missing value is
-  missing there, so fix it there, not here.
+- **`src/tokens/` is the one source.** Colours (`colors.ts`: light, dark, and field mode as a light
+  variant), type, spacing, radius, elevation and motion are typed TypeScript. A colour name is
+  declared once in `COLOR_TOKENS`, and each palette is a `Record` over it, so a palette missing one
+  does not compile.
+- **A new colour pair is declared in `src/contrast.ts`** with its floor; `tests/contrast.test.ts`
+  measures every pair in light, dark and field mode.
 - NEVER component code (that is `@heliogrid/ui`) or anything product-specific.
-- Consumers read `dist/`: after editing `src/` or `_generated/`, run
-  `pnpm --filter @heliogrid/theme build`.
+- Consumers read `dist/`: after editing `src/`, run `pnpm --filter @heliogrid/theme build`.
+
+## What the build emits
+
+`dist/tokens.css` (the faces, every token in light, dark and field, reduced motion, the
+keyframes), `dist/base.css` and `dist/print.css` (from `src/css/`), the phone's `theme` object and
+the tokens as code (`dist/index.js`), `dist/android-res/` (the palette as Android `values` and
+`values-night`, which the phone's `build.gradle` adds as a resource folder) and `dist/fonts/`.
 
 ## Traps
 
-- There is no `pnpm ds:pull`: read the design system artifact's files with the Artifact tool in a session (`read` with `paths`, under `project/`), save each file byte for byte under the name
-  `packages/theme/README.md` maps it to, and commit exactly that.
+- A colour on the phone is a system colour (iOS dynamic, Android resource), not a hex: arithmetic
+  on one fails at run time → a style reads `colors` from `packages/ui`'s `Color` primitive, and
+  arithmetic reads `theme.palettes` (`usePalette` for the scheme on screen).
+- The iOS launch screen cannot read the theme → its `SplashCanvas` colour set is held equal to
+  `--canvas` by `tests/platform-colours.test.ts`.
+- A web font file in `assets/fonts` that is not named in `BUNDLED_FACES` is never shipped, and a
+  family whose file reads another name fails the build.

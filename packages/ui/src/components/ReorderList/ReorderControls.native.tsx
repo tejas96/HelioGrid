@@ -14,6 +14,7 @@ import type { Ref } from 'react';
 import type { PressableStateCallbackType, View } from 'react-native';
 import { Pressable as RNPressable, StyleSheet } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ReorderGlyph } from './ReorderList.defaults';
@@ -28,14 +29,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: theme.radius['r-pill'],
   },
-  pressedNeutral: { backgroundColor: theme.colors['neutral-bg'] },
-  pressedDanger: { backgroundColor: theme.colors['danger-bg'] },
+  pressedNeutral: { backgroundColor: colors['neutral-bg'] },
+  pressedDanger: { backgroundColor: colors['danger-bg'] },
 });
 
 const COLOR = {
-  neutral: theme.colors['text-secondary'],
-  danger: theme.colors['danger-text'],
-  disabled: theme.colors['text-disabled'],
+  neutral: colors['text-secondary'],
+  danger: colors['danger-text'],
+  disabled: colors['text-disabled'],
 };
 
 export function ReorderControl({

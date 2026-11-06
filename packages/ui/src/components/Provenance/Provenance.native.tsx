@@ -6,6 +6,8 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextColor } from '../../primitives/Text/Text.types';
 import {
@@ -29,21 +31,21 @@ import { useProvenanceWords } from './Provenance.words';
 
 /* Mark tokens → theme colours. --warning is not a mark in this system (it clears 3:1 on no
    background), so a warning mark lands on --warning-text, exactly as the web half maps it. */
-const MARK: Record<ProvenanceMarkToken, string> = {
-  success: theme.colors.success,
-  'success-text': theme.colors['success-text'],
-  info: theme.colors.info,
-  'info-text': theme.colors['info-text'],
-  warning: theme.colors['warning-text'],
-  'warning-text': theme.colors['warning-text'],
-  danger: theme.colors.danger,
-  'danger-text': theme.colors['danger-text'],
-  neutral: theme.colors.neutral,
-  'neutral-text': theme.colors['neutral-text'],
-  accent: theme.colors.accent,
-  'text-tertiary': theme.colors['text-tertiary'],
-  'text-secondary': theme.colors['text-secondary'],
-  'mark-subtle': theme.colors['mark-subtle'],
+const MARK: Record<ProvenanceMarkToken, ThemeColor> = {
+  success: colors.success,
+  'success-text': colors['success-text'],
+  info: colors.info,
+  'info-text': colors['info-text'],
+  warning: colors['warning-text'],
+  'warning-text': colors['warning-text'],
+  danger: colors.danger,
+  'danger-text': colors['danger-text'],
+  neutral: colors.neutral,
+  'neutral-text': colors['neutral-text'],
+  accent: colors.accent,
+  'text-tertiary': colors['text-tertiary'],
+  'text-secondary': colors['text-secondary'],
+  'mark-subtle': colors['mark-subtle'],
 };
 
 /** The standing's own word colour, expressed in the Text primitive's role vocabulary. */
@@ -202,7 +204,7 @@ export function Provenance({
               <Text
                 variant="caption"
                 color="tertiary"
-                style={[SIZE[step], { color: theme.colors['mark-subtle'] }]}
+                style={[SIZE[step], { color: colors['mark-subtle'] }]}
               >
                 {'·'}
               </Text>

@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Input } from '../Input/Input.native';
 import { Switch } from '../Switch/Switch.native';
@@ -61,8 +62,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: theme.radius['r-md'],
   },
-  on: { backgroundColor: theme.colors['success-bg'] },
-  off: { borderWidth: 1, borderColor: theme.colors['line-soft'] },
+  on: { backgroundColor: colors['success-bg'] },
+  off: { borderWidth: 1, borderColor: colors['line-soft'] },
   withReference: { paddingBottom: 14 },
   switch: { width: '100%', flexDirection: 'row-reverse', justifyContent: 'space-between' },
 });

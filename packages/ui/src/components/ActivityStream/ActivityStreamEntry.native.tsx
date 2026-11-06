@@ -1,6 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { ActorClass } from '../ActorClass';
 import { renderMarks } from '../ChipGroup';
@@ -13,13 +15,13 @@ import type { ActivityTone, StreamEntryProps } from './ActivityStream.types';
 const type = theme.type.roles;
 
 /** Both channels are certified pairs: the mark takes the tone's -bg, the glyph the tone's -text. */
-const TONES: Record<ActivityTone, { bg: string; fg: string }> = {
-  neutral: { bg: theme.colors['neutral-bg'], fg: theme.colors['neutral-text'] },
-  accent: { bg: theme.colors['accent-subtle'], fg: theme.colors.accent },
-  success: { bg: theme.colors['success-bg'], fg: theme.colors['success-text'] },
-  warning: { bg: theme.colors['warning-bg'], fg: theme.colors['warning-text'] },
-  danger: { bg: theme.colors['danger-bg'], fg: theme.colors['danger-text'] },
-  info: { bg: theme.colors['info-bg'], fg: theme.colors['info-text'] },
+const TONES: Record<ActivityTone, { bg: ThemeColor; fg: ThemeColor }> = {
+  neutral: { bg: colors['neutral-bg'], fg: colors['neutral-text'] },
+  accent: { bg: colors['accent-subtle'], fg: colors.accent },
+  success: { bg: colors['success-bg'], fg: colors['success-text'] },
+  warning: { bg: colors['warning-bg'], fg: colors['warning-text'] },
+  danger: { bg: colors['danger-bg'], fg: colors['danger-text'] },
+  info: { bg: colors['info-bg'], fg: colors['info-text'] },
 };
 
 const styles = StyleSheet.create({
@@ -36,15 +38,15 @@ const styles = StyleSheet.create({
     fontFamily: theme.type.families.sans,
     fontSize: type.caption.fontSize,
     fontWeight: '500',
-    color: theme.colors['text-tertiary'],
+    color: colors['text-tertiary'],
   },
   time: {
     fontFamily: theme.type.families.mono,
     fontSize: type.caption.fontSize,
-    color: theme.colors['text-tertiary'],
+    color: colors['text-tertiary'],
   },
   summaryRow: { marginTop: 2 },
-  summary: { fontFamily: theme.type.families.sans, color: theme.colors['text-primary'] },
+  summary: { fontFamily: theme.type.families.sans, color: colors['text-primary'] },
   /* Pressable centres its children; a summary is a full-width line of text. */
   summaryTarget: { alignItems: 'flex-start', justifyContent: 'center', width: '100%' },
   detail: {
@@ -52,7 +54,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.type.families.sans,
     fontSize: type['body-sm'].fontSize,
     lineHeight: 20.2,
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
   actor: { marginTop: 6 },
   marks: { marginTop: theme.spacing['sp-2'] },

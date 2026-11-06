@@ -3,6 +3,8 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
@@ -26,10 +28,10 @@ type NativeAllocationMeterProps = AllocationMeterProps & {
   style?: StyleProp<ViewStyle>;
 };
 
-const WORD_COLOUR: Record<AllocationState, string> = {
-  under: theme.colors['text-secondary'],
-  met: theme.colors['success-text'],
-  over: theme.colors['warning-text'],
+const WORD_COLOUR: Record<AllocationState, ThemeColor> = {
+  under: colors['text-secondary'],
+  met: colors['success-text'],
+  over: colors['warning-text'],
 };
 
 /* The state's second channel. The OVER mark takes --warning-text — plain --warning measures
@@ -43,7 +45,7 @@ function Mark({ state }: { state: AllocationState }) {
     <View
       style={[
         styles.markFilled,
-        { backgroundColor: met ? theme.colors.success : theme.colors['warning-text'] },
+        { backgroundColor: met ? colors.success : colors['warning-text'] },
       ]}
     >
       <Svg
@@ -52,7 +54,7 @@ function Mark({ state }: { state: AllocationState }) {
         viewBox="0 0 24 24"
         fill="none"
         // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-        stroke={theme.colors['text-inverse']}
+        stroke={colors['text-inverse']}
         strokeWidth={met ? 4.8 : 3}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -228,12 +230,12 @@ const styles = StyleSheet.create({
   },
   figure: {
     fontWeight: '700',
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   track: {
     position: 'relative',
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
     flexDirection: 'row',
     gap: 2,
     overflow: 'hidden',
@@ -247,10 +249,10 @@ const styles = StyleSheet.create({
   span: {
     minWidth: 3,
     height: '100%',
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   spanOver: {
-    backgroundColor: theme.colors['warning-text'],
+    backgroundColor: colors['warning-text'],
   },
   tick: {
     position: 'absolute',
@@ -274,7 +276,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     borderRadius: theme.radius['r-pill'],
     borderWidth: 1.5,
-    borderColor: theme.colors['mark-subtle'],
+    borderColor: colors['mark-subtle'],
   },
   markFilled: {
     width: 14,

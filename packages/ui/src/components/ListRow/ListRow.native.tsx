@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { Text } from '../../primitives/Text/Text.native';
@@ -51,7 +52,7 @@ interface NativeListRowProps extends ListRowProps {
  */
 export function ListRow({
   icon,
-  iconColor = theme.colors.accent,
+  iconColor = colors.accent,
   avatar,
   title,
   subtitle,
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
 
 /** A state's line: its ink, at the medium weight the web half gives it. */
 const toned = StyleSheet.create({
-  warning: { color: theme.colors['warning-text'], fontWeight: '500' },
-  danger: { color: theme.colors['danger-text'], fontWeight: '500' },
-  info: { color: theme.colors['info-text'], fontWeight: '500' },
+  warning: { color: colors['warning-text'], fontWeight: '500' },
+  danger: { color: colors['danger-text'], fontWeight: '500' },
+  info: { color: colors['info-text'], fontWeight: '500' },
 });

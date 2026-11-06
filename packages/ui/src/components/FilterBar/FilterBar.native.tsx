@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -31,9 +32,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: theme.radius['r-field'],
-    backgroundColor: theme.colors['action-primary'],
+    backgroundColor: colors['action-primary'],
   },
-  squarePressed: { backgroundColor: theme.colors['action-primary-pressed'] },
+  squarePressed: { backgroundColor: colors['action-primary-pressed'] },
   badge: {
     position: 'absolute',
     top: BADGE_OFFSET - BADGE_RING,
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: BADGE_RING,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   badgeWords: { fontVariant: ['tabular-nums'] },
 });
@@ -120,7 +121,7 @@ export function SortPills({ options, value, onChange, label, style }: NativeSort
 }
 
 /** The sliders' ink: white on the near-black square. */
-const SQUARE_INK = theme.colors['text-inverse'];
+const SQUARE_INK = colors['text-inverse'];
 
 /**
  * The filter square that opens the filter body — `FilterPanel`, **at every width**, beside the

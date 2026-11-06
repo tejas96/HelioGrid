@@ -1,6 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import { AccessibilityInfo, Animated, Easing, StyleSheet, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { MapMarker } from './MapSurface.types';
@@ -21,7 +23,7 @@ const styles = StyleSheet.create({
     height: 14,
     borderRadius: 7,
     // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     borderWidth: 2.5,
     ...theme.elevation.e2,
   },
@@ -31,7 +33,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-2'],
     borderRadius: theme.radius['r-pill'],
     // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e2,
   },
   chipText: { fontWeight: '500' },
@@ -39,7 +41,7 @@ const styles = StyleSheet.create({
 
 /* The web half runs `hg-map-pulse` from the stylesheet, which the reduced-motion query drops.
    RN has no media query, so the same ruling is read from AccessibilityInfo. */
-function Pulse({ color }: { color: string }) {
+function Pulse({ color }: { color: ThemeColor }) {
   const value = useRef(new Animated.Value(0));
 
   useEffect(() => {
@@ -111,7 +113,7 @@ export function MapMarkerDot({
               styles.dot,
               live ? styles.dotLive : undefined,
               // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
-              { borderColor: theme.colors.surface },
+              { borderColor: colors.surface },
               live ? { backgroundColor: colour } : { borderColor: colour },
             ]}
           />

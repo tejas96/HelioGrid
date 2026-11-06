@@ -1,8 +1,9 @@
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 
 /** The tick a checked box draws, in the ink it is given — `Checkbox`'s, and a multi-select card's. */
-export function CheckboxTick({ ink }: { ink: string }) {
+export function CheckboxTick({ ink }: { ink: ThemeColor }) {
   return (
     <Svg
       width={12}

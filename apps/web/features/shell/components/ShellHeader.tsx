@@ -7,28 +7,29 @@ import {
   IconButton,
   LogoTile,
   MIN_TOUCH_TARGET,
-  SearchField,
+  type RailItem,
   ShellGlyph,
   Text,
 } from '@heliogrid/ui';
+import type { ReactNode } from 'react';
 
 interface ShellHeaderProps {
   /** The company's name, or none while it loads or after it failed — the bar then shows none. */
   companyName: string | null;
-  /**
-   * The search: what is typed (`useShellScreen`'s) and the move to the search door. Absent on
-   * Frame 8, whose bar keeps the product mark and the name.
-   */
-  search?: { query: string; onQuery: (query: string) => void; onOpen: () => void };
+  /** The move to the search door; absent on Frame 8, which has no search. */
+  onSearch?: () => void;
+  /** The bell, the sidebar's own item: below the desktop width the bar carries it. */
+  bell?: RailItem;
+  /** The account menu, the sidebar's foot: below the desktop width the bar carries it. */
+  account?: ReactNode;
 }
 
 /**
- * The web header (`SCR-SHELL-01`): the company's name as words (`F7-07`) and the one search
- * (`F6-20`). The rail draws the product mark, so the bar does not — except on Frame 8, which has no
- * rail. The search is a field from `--bp-desktop` up and a button below it, where the rail and the
- * name leave no room for a field; Enter or the button opens the search door.
+ * The web's top bar below the desktop width, where the sidebar gives way to the bottom pill: the
+ * product mark and the company's name, then the search, the bell and the account as icons. From
+ * the desktop width up the sidebar holds all four and this bar is not drawn (`shell.css`).
  */
-export function ShellHeader({ companyName, search }: ShellHeaderProps) {
+export function ShellHeader({ companyName, onSearch, bell, account }: ShellHeaderProps) {
   const t = useTranslate();
   const tenant =
     companyName === null ? undefined : (
@@ -36,47 +37,30 @@ export function ShellHeader({ companyName, search }: ShellHeaderProps) {
         {companyName}
       </Text>
     );
-
-  if (search === undefined) {
-    return (
-      <AppHeader
-        brand={<LogoTile size={theme.spacing['sp-8']} radius={theme.radius['r-sm']} />}
-        tenant={tenant}
-      />
-    );
-  }
+  const own = {
+    brand: <LogoTile size={theme.spacing['sp-8']} />,
+    tenant,
+    avatar: account,
+    actions:
+      onSearch === undefined ? undefined : (
+        <IconButton
+          label={t(SHELL.search)}
+          variant="ghost"
+          size={MIN_TOUCH_TARGET}
+          onClick={onSearch}
+        >
+          <ShellGlyph name="search" size="md" />
+        </IconButton>
+      ),
+  };
+  if (bell?.onClick === undefined) return <AppHeader {...own} />;
   return (
     <AppHeader
-      tenant={tenant}
-      search={
-        <>
-          <form
-            className="hg-shell-search-field"
-            onSubmit={(event) => {
-              event.preventDefault();
-              search.onOpen();
-            }}
-          >
-            <SearchField
-              density="functional"
-              placeholder={t(SHELL.searchPlaceholder)}
-              ariaLabel={t(SHELL.search)}
-              value={search.query}
-              onChange={search.onQuery}
-            />
-          </form>
-          <span className="hg-shell-search-button">
-            <IconButton
-              label={t(SHELL.search)}
-              variant="ghost"
-              size={MIN_TOUCH_TARGET}
-              onClick={search.onOpen}
-            >
-              <ShellGlyph name="search" size="md" />
-            </IconButton>
-          </span>
-        </>
-      }
+      {...own}
+      onNotificationsClick={bell.onClick}
+      notificationsLabel={bell.label}
+      notificationsName={bell.name}
+      notifications={bell.badge}
     />
   );
 }

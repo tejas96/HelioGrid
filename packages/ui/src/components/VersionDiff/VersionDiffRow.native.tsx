@@ -6,6 +6,8 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
@@ -14,11 +16,11 @@ import type { DiffRowFrame, DiffSideSpec } from './VersionDiff.resolve';
 import { diffRowBodyOf, resolveDiffRow } from './VersionDiff.resolve';
 import type { DiffRow, DiffState } from './VersionDiff.types';
 
-const STATE_TONE: Record<DiffState, { bg: string; fg: string }> = {
-  changed: { bg: theme.colors['info-bg'], fg: theme.colors['info-text'] },
-  unchanged: { bg: theme.colors['neutral-bg'], fg: theme.colors['neutral-text'] },
-  added: { bg: theme.colors['success-bg'], fg: theme.colors['success-text'] },
-  removed: { bg: theme.colors['warning-bg'], fg: theme.colors['warning-text'] },
+const STATE_TONE: Record<DiffState, { bg: ThemeColor; fg: ThemeColor }> = {
+  changed: { bg: colors['info-bg'], fg: colors['info-text'] },
+  unchanged: { bg: colors['neutral-bg'], fg: colors['neutral-text'] },
+  added: { bg: colors['success-bg'], fg: colors['success-text'] },
+  removed: { bg: colors['warning-bg'], fg: colors['warning-text'] },
 };
 
 const styles = StyleSheet.create({
@@ -26,7 +28,7 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingVertical: theme.spacing['sp-3'],
     borderTopWidth: 1,
-    borderTopColor: theme.colors['canvas-sunken'],
+    borderTopColor: colors['canvas-sunken'],
   },
   head: {
     flexDirection: 'row',
@@ -130,7 +132,7 @@ function Arrow({ down }: { down?: boolean }) {
         height={14}
         viewBox="0 0 24 24"
         fill="none"
-        stroke={theme.colors['text-tertiary']}
+        stroke={colors['text-tertiary']}
         strokeWidth={1.8}
         strokeLinecap="round"
         strokeLinejoin="round"

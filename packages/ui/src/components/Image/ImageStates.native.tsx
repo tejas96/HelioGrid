@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { Image as RNImage, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Text`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
@@ -19,7 +20,7 @@ import { Glyph, Skeleton } from './ImageMarks.native';
 export function ImageMissing({ onRetry, retryLabel, focusAfter, ...missing }: ImageMissingProps) {
   const face = missingFaceOf(missing);
   const warning = face.tone === 'warning';
-  const ink = warning ? theme.colors['warning-text'] : theme.colors['text-secondary'];
+  const ink = warning ? colors['warning-text'] : colors['text-secondary'];
   const labelVariant = face.compact ? 'caption' : 'body-sm';
   const labelColor = warning ? 'primary' : 'secondary';
   return (
@@ -105,9 +106,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: theme.spacing['sp-2'],
     padding: theme.spacing['sp-3'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
-  missingWarning: { backgroundColor: theme.colors['warning-bg'] },
+  missingWarning: { backgroundColor: colors['warning-bg'] },
   /* Same gap as the panel, so nesting the mark inside it changes nothing a sighted reader sees. */
   missingMark: { alignItems: 'center', gap: theme.spacing['sp-2'] },
   missingLabel: { fontWeight: '700', letterSpacing: -0.13 },

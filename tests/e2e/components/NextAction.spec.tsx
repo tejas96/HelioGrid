@@ -14,9 +14,9 @@ const PERSON = 'Anjali Kulkarni';
 
 /** Three roles, one of each kind, in their kind's iris tone — the longest presets wrap first. */
 const ROLES = [
-  ['sales_manager', 'violet'],
-  ['survey_engineer', 'blue'],
-  ['installation_team_member', 'magenta'],
+  ['sales_manager', 'ocean'],
+  ['survey_engineer', 'teal'],
+  ['installation_team_member', 'plum'],
 ] as const;
 
 async function box(locator: Locator) {
@@ -135,7 +135,7 @@ test.describe('at 375', () => {
 
       /* The face takes an iris hue from the name, and its standing mark sits 2 out at its foot. */
       const disc = card.locator('.hg-avatar');
-      await expect(disc).toHaveAttribute('data-iris', /^(violet|blue|magenta)$/);
+      await expect(disc).toHaveAttribute('data-hue', /^(violet|blue|magenta)$/);
       const ring = card.locator('.hg-avatar-mark');
       await expect(ring).toHaveAttribute('aria-hidden', 'true');
       await expect(ring).toHaveCSS('background-color', await resolvedColour(page, '--canvas'));

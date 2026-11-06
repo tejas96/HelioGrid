@@ -2,7 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { useShellScreen } from '@heliogrid/data/react';
 import { SHELL } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { type FocusHandle, MobileTopBar, ShellAction, ShellGlyph } from '@heliogrid/ui';
+import { type FocusHandle, LargeTitle, MobileTopBar, ShellAction, ShellGlyph } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
 import type { ReactNode, Ref } from 'react';
 import { useRef, useState } from 'react';
@@ -25,9 +25,9 @@ interface DrillDown {
  * A page inside the shell that is not the home: the shell's top bar with the account's acts, the
  * pill with `inView` lit when the pill names it, and the grievance note — written once for every
  * such screen (`PlaceholderScreen`, the settings list and its rows). A page opened from a list
- * (`drillDown`) has a bar of its own instead: its round way back, its title and the one search
- * (`SCR-M01-05`, `m-settings`; `SCR-SHELL-01` decision 8), lifting once content scrolls under it;
- * the pill stays (`F7-22`).
+ * (`drillDown`) has a bar of its own instead: its round way back and the one search, icons only,
+ * and the page opens on its large title, which the bar takes over small once it scrolls away; the
+ * pill stays.
  */
 export function ShellPage({
   inView,
@@ -68,7 +68,6 @@ export function ShellPage({
             searchLabel={t(SHELL.search)}
             notificationsLabel={t(SHELL.notifications)}
             title={drillDown.title}
-            titleRef={drillDown.titleRef}
             scrolled={scrolled}
             onSearchClick={() => navigation.navigate('Search')}
             leading={
@@ -86,7 +85,16 @@ export function ShellPage({
       inView={lit ? inView : undefined}
       onScrolledChange={drillDown === undefined ? undefined : setScrolled}
       stickyHead={stickyHead}
-      lead={lead}
+      lead={
+        drillDown === undefined ? (
+          lead
+        ) : (
+          <>
+            <LargeTitle title={drillDown.title} titleRef={drillDown.titleRef} />
+            {lead}
+          </>
+        )
+      }
       pad={pad}
       foot={foot}
     >

@@ -7,6 +7,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { usePalette } from '../../primitives/Color/use-palette';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ComplianceFloorSpec } from '../ComplianceFloor';
@@ -84,6 +85,7 @@ interface ReorderRowProps {
    good, reading as a selection that cannot be dismissed. Colour cannot ride the native driver, so
    this one animation runs on the JS driver. */
 function useFlashFade(flashing: boolean, onFlashEnd: () => void) {
+  const palette = usePalette();
   const value = useRef(new Animated.Value(flashing ? 1 : 0)).current;
   useEffect(() => {
     const fade = Animated.timing(value, {
@@ -103,8 +105,9 @@ function useFlashFade(flashing: boolean, onFlashEnd: () => void) {
   }, [flashing, value, onFlashEnd]);
   return value.interpolate({
     inputRange: [0, 1],
-    /* From the tile's own grey, so a change to `tileSurface` moves the row at rest with it. */
-    outputRange: [tileSurface.backgroundColor, theme.colors['accent-subtle']],
+    /* From the tile's own fill to the accent tint, as hex in the scheme on screen: a colour
+       fade interpolates channels, which a system colour does not expose. */
+    outputRange: [palette.fill, palette['accent-subtle']],
   });
 }
 

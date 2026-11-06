@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { UnavailableNoteProps } from './UnavailableNote.types';
@@ -22,7 +23,7 @@ function Glyph({ size }: { size: number }) {
       height={size}
       viewBox="0 0 24 24"
       fill="none"
-      stroke={theme.colors['text-tertiary']}
+      stroke={colors['text-tertiary']}
       strokeWidth={1.5}
       strokeLinecap="round"
     >
@@ -109,7 +110,7 @@ export const UnavailableNote = Object.assign(UnavailableNoteBase, {
 
 /* 16px sits between --fs-body (15) and --fs-h4 (17) and has no token; -0.01em of it in points. */
 const regionTitle: TextStyle = { fontSize: 16, fontWeight: '700', letterSpacing: -0.16 };
-const subject: TextStyle = { fontWeight: '700', color: theme.colors['text-primary'] };
+const subject: TextStyle = { fontWeight: '700', color: colors['text-primary'] };
 
 const styles = StyleSheet.create({
   mark: {
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexShrink: 0,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['neutral-bg'],
+    backgroundColor: colors['neutral-bg'],
   },
   markNote: { width: 24, height: 24, marginTop: 1 },
   markRegion: { width: 48, height: 48, marginBottom: theme.spacing['sp-1'] },

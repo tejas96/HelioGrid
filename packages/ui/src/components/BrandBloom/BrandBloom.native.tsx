@@ -3,6 +3,7 @@ import { useId } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { BLOOM_GEOMETRY, type BrandBloomProps } from './BrandBloom.types';
 
 interface NativeBrandBloomProps extends BrandBloomProps {
@@ -11,7 +12,7 @@ interface NativeBrandBloomProps extends BrandBloomProps {
 
 /**
  * `--glow-brand` for React Native. The token is a CSS radial-gradient RN cannot paint, so its
- * three stops — --iris-violet at 22%, --iris-blue at 14%, a transparent edge at 72% — are drawn
+ * three stops — --hue-ocean at 22%, --hue-teal at 14%, a transparent edge at 72% — are drawn
  * as a real SVG radial gradient from the same tokens. One definition: every bloom on the phone
  * comes through here, never a flat disc that approximates it.
  */
@@ -89,10 +90,10 @@ export function BrandBloom({ placement, size, style }: NativeBrandBloomProps) {
             r={shape.reach}
             gradientUnits={shape.units}
           >
-            <Stop offset="0" stopColor={theme.colors['iris-violet']} stopOpacity={0.22} />
-            <Stop offset="0.4" stopColor={theme.colors['iris-blue']} stopOpacity={0.14} />
+            <Stop offset="0" stopColor={theme.brand.teal} stopOpacity={0.22} />
+            <Stop offset="0.4" stopColor={theme.brand.green} stopOpacity={0.14} />
             {/* biome-ignore lint/plugin/raw-white: illustration — a drawn mark */}
-            <Stop offset="0.72" stopColor={theme.colors.surface} stopOpacity={0} />
+            <Stop offset="0.72" stopColor={colors.surface} stopOpacity={0} />
           </RadialGradient>
         </Defs>
         {/* An ellipse, as the artboards draw it: a box would end in a straight edge. */}

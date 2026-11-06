@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { type ReactNode, useRef } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -181,6 +182,6 @@ const styles = StyleSheet.create({
   lines: { gap: theme.spacing['sp-3'] },
   line: { flexDirection: 'row', alignItems: 'flex-start', gap: theme.spacing['sp-3'] },
   phrase: { flexShrink: 1 },
-  note: { marginTop: theme.spacing['sp-2'], backgroundColor: theme.colors['info-bg'] },
+  note: { marginTop: theme.spacing['sp-2'], backgroundColor: colors['info-bg'] },
   noteLines: { flex: 1, minWidth: 0 },
 });

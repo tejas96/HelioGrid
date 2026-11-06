@@ -1,20 +1,21 @@
-import { theme } from '@heliogrid/theme';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import type { ShellGlyphProps } from './AppShell.types';
 import { glyphMarks, glyphStroke } from './ShellGlyph.logic';
 import { ShellGlyphMarks } from './ShellGlyphMarks.native';
 
 /* react-native-svg has no currentColor, so the tone resolves to its token here. */
-const TONE: Record<NonNullable<ShellGlyphProps['tone']>, string> = {
-  primary: theme.colors['text-primary'],
-  secondary: theme.colors['text-secondary'],
-  inverse: theme.colors['text-inverse'],
-  accent: theme.colors.accent,
-  info: theme.colors.info,
-  danger: theme.colors['danger-text'],
-  success: theme.colors['success-text'],
-  warning: theme.colors['warning-text'],
+const TONE: Record<NonNullable<ShellGlyphProps['tone']>, ThemeColor> = {
+  primary: colors['text-primary'],
+  secondary: colors['text-secondary'],
+  inverse: colors['text-inverse'],
+  accent: colors.accent,
+  info: colors.info,
+  danger: colors['danger-text'],
+  success: colors['success-text'],
+  warning: colors['warning-text'],
 };
 
 /**

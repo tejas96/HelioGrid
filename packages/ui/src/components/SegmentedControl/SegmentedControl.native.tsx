@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
@@ -170,7 +171,7 @@ function OffGlyph() {
       height={13}
       viewBox="0 0 24 24"
       fill="none"
-      stroke={theme.colors['text-secondary']}
+      stroke={colors['text-secondary']}
       strokeWidth={1.8}
       strokeLinecap="round"
     >
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
   },
   trackError: {
     borderWidth: 1.5,
-    borderColor: theme.colors.danger,
+    borderColor: colors.danger,
     padding: PAD - 1.5,
   },
   indicator: {

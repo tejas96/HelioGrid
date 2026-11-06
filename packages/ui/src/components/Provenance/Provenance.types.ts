@@ -7,7 +7,7 @@ import type { EnergySource, Freshness, FreshnessWarning } from '@heliogrid/domai
 
 /**
  * A mark colour, named as a DS colour token rather than as a CSS colour string — the web half
- * resolves it to `var(--<token>)`, the native half to `theme.colors[<token>]`. One vocabulary,
+ * resolves it to `var(--<token>)`, the native half to `colors[<token>]`. One vocabulary,
  * both platforms, and no raw colour can enter through a caller's tier.
  */
 export type ProvenanceMarkToken =

@@ -9,6 +9,7 @@ import type {
   ViewStyle,
 } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Button } from '../Button/Button.native';
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
   primary: {
     width: 56,
     height: 56,
-    backgroundColor: theme.colors['action-primary'],
+    backgroundColor: colors['action-primary'],
   },
   skip: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   skipCount: {
@@ -37,16 +38,16 @@ const styles = StyleSheet.create({
     fontSize: type.caption.fontSize,
     fontWeight: '700',
     letterSpacing: -0.24,
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
   time: {
     flexShrink: 0,
     fontFamily: theme.type.families.mono,
     fontSize: type.caption.fontSize,
     fontWeight: '500',
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
-  timeDim: { color: theme.colors['text-tertiary'] },
+  timeDim: { color: colors['text-tertiary'] },
   scrub: { flex: 1, minWidth: 0, height: 44, justifyContent: 'center' },
   rail: {
     position: 'absolute',
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     top: 20,
     height: 4,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   fill: { position: 'absolute', left: 0, top: 20, height: 4, borderRadius: theme.radius['r-pill'] },
   thumb: {
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
     marginLeft: -9,
     borderRadius: 9,
     borderWidth: 1.5,
-    borderColor: theme.colors.accent,
+    borderColor: colors.accent,
     ...theme.elevation.e3,
   },
   speed: {
@@ -76,14 +77,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-pill'],
   },
-  speedChanged: { backgroundColor: theme.colors['accent-subtle'] },
+  speedChanged: { backgroundColor: colors['accent-subtle'] },
   speedText: {
     fontFamily: theme.type.families.mono,
     fontSize: type['body-sm'].fontSize,
     fontWeight: '700',
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
-  speedTextChanged: { color: theme.colors.accent },
+  speedTextChanged: { color: colors.accent },
 });
 
 export function RoundButton({
@@ -136,7 +137,7 @@ export function SkipButton({
       onPress={() => onSeek(skip.delta)}
     >
       <View style={styles.skip}>
-        <AudioGlyph name={skip.glyph} size={15} color={theme.colors['text-secondary']} />
+        <AudioGlyph name={skip.glyph} size={15} color={colors['text-secondary']} />
         <Text style={styles.skipCount}>{skip.count}</Text>
       </View>
     </RoundButton>
@@ -186,7 +187,7 @@ export function Scrubber({
   const { ground } = useGround();
   const fill: ViewStyle = {
     width: ratio * width,
-    backgroundColor: live ? theme.colors.accent : theme.colors['text-disabled'],
+    backgroundColor: live ? colors.accent : colors['text-disabled'],
   };
   return (
     <View
@@ -257,7 +258,7 @@ export function TranscriptDoor({ label, onPress }: { label: TranslatedText; onPr
     <Button
       variant="secondary"
       size="md"
-      icon={<AudioGlyph name="doc" size={16} color={theme.colors['text-primary']} />}
+      icon={<AudioGlyph name="doc" size={16} color={colors['text-primary']} />}
       onClick={onPress}
     >
       {label}

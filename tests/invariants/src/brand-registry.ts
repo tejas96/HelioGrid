@@ -37,7 +37,7 @@ function sourceFiles(repo: string): string[] {
     },
   )
     .split('\n')
-    .filter((f) => f.endsWith('.ts') && !f.includes('/dist/') && !f.includes('/_generated/'))
+    .filter((f) => f.endsWith('.ts') && !f.includes('/dist/'))
     .filter((f) => existsSync(join(repo, f)));
 }
 

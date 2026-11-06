@@ -3,7 +3,7 @@ language css
 // A screen stylesheet writes no size: a non-zero px, rem, em or pt length. 0, %, vw and vh pass,
 // and comments are never read. A px value equal to a breakpoint passes inside an @media query. The
 // one breakpoint today is --bp-desktop: 968px, read from
-// packages/theme/src/_generated/tokens/spacing.css (Grit cannot read a file); a new --bp-* token
+// packages/theme/src/tokens/layout.ts (Grit cannot read a file); a new --bp-* token
 // there is added beside 968 below.
 or {
   CssRegularDimension() as $size where {

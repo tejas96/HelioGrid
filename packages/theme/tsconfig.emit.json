@@ -1,9 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  /* Deliberately extends NOTHING. It compiles the GENERATED `dist/*.ts` that build.ts
-     wrote, not this package's src, so the workspace base — which targets src, forbids
-     emit and sets paths this tree does not have — would fight it. The four options below
-     are the whole contract: CommonJS output beside the .d.ts, from dist, into dist. */
+  /* Deliberately extends NOTHING. It compiles the TypeScript that build.ts wrote into dist (the
+     theme object, and the token sources it copies there), not this package's src, so the
+     workspace base — which targets src, forbids emit and sets paths this tree does not have —
+     would fight it. CommonJS output beside the .d.ts, from dist, into dist. */
 
   "compilerOptions": {
     "target": "ES2020",
@@ -14,6 +14,6 @@
     "skipLibCheck": true,
     "strict": true
   },
-  "include": ["dist/theme.ts", "dist/index.ts"],
-  "exclude": []
+  "include": ["dist/**/*.ts"],
+  "exclude": ["dist/**/*.d.ts"]
 }

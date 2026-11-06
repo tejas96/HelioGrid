@@ -2,17 +2,18 @@ import { theme } from '@heliogrid/theme';
 import { Defs, LinearGradient, Stop } from 'react-native-svg';
 
 /**
- * `--gradient-brand` for React Native: the token's three stops at its 135° diagonal (x1,y1 →
- * x2,y2 across the object box), declared once so a tile, a progress fill and the wordmark's
- * "Grid" never carry a second copy. Render inside an `<Svg>`, then fill with `url(#id)`.
+ * `--gradient-brand` for React Native: the logo's green → teal → blue, left to right, declared
+ * once so a hero's top line, a progress fill and the brand mark never carry a second copy;
+ * `diagonal` runs it top to bottom across a mark, as the logo does. Render inside an `<Svg>`, then
+ * fill with `url(#id)`.
  */
-export function BrandGradientDefs({ id }: { id: string }) {
+export function BrandGradientDefs({ id, diagonal = false }: { id: string; diagonal?: boolean }) {
   return (
     <Defs>
-      <LinearGradient id={id} x1="0" y1="0" x2="1" y2="1">
-        <Stop offset="0" stopColor={theme.colors['iris-violet']} />
-        <Stop offset="0.45" stopColor={theme.colors['iris-blue']} />
-        <Stop offset="1" stopColor={theme.colors['iris-magenta']} />
+      <LinearGradient id={id} x1="0" y1="0" x2={diagonal ? '0.35' : '1'} y2={diagonal ? '1' : '0'}>
+        {theme.brand.gradient.map((stop) => (
+          <Stop key={stop.offset} offset={stop.offset} stopColor={stop.color} />
+        ))}
       </LinearGradient>
     </Defs>
   );

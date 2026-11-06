@@ -5,6 +5,8 @@ import type { TextProps, TextVariant } from './Text.types';
 type TextElement = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'code' | 'div';
 
 const DEFAULT_ELEMENT: Record<TextVariant, TextElement> = {
+  hero: 'p',
+  figure: 'p',
   display: 'h1',
   h1: 'h1',
   h2: 'h2',

@@ -2,6 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { formatEnd, roundToStep, thumbName } from './RangeField.logic';
 
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
     right: 0,
     height: 6,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   fill: { position: 'absolute', height: 6, borderRadius: theme.radius['r-pill'] },
   thumb: {
@@ -43,10 +44,10 @@ const styles = StyleSheet.create({
     height: THUMB,
     borderRadius: theme.radius['r-pill'],
     borderWidth: 1.5,
-    borderColor: theme.colors.accent,
+    borderColor: colors.accent,
     ...theme.elevation.e3,
   },
-  thumbDisabled: { borderColor: theme.colors['text-disabled'], shadowOpacity: 0, elevation: 0 },
+  thumbDisabled: { borderColor: colors['text-disabled'], shadowOpacity: 0, elevation: 0 },
 });
 
 /**
@@ -133,7 +134,7 @@ export function RangeTrack({
           {
             left: pos(lo) + THUMB / 2,
             width: Math.max(0, pos(hi) - pos(lo)),
-            backgroundColor: disabled ? theme.colors['text-disabled'] : theme.colors.accent,
+            backgroundColor: disabled ? colors['text-disabled'] : colors.accent,
           },
         ]}
       />

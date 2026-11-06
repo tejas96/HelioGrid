@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { Text as RNText, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -20,18 +21,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
     borderRadius: theme.radius['r-pill'],
   },
-  pillActive: { backgroundColor: theme.colors.accent },
+  pillActive: { backgroundColor: colors.accent },
   label: {
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.roles['body-sm'].fontSize,
     fontWeight: '500',
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
-  onAccent: { color: theme.colors['text-inverse'] },
+  onAccent: { color: colors['text-inverse'] },
   fraction: {
     fontFamily: theme.type.families.mono,
     fontSize: theme.type.roles.caption.fontSize,
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
 });
 

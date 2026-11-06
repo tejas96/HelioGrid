@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { RefObject } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { showsBadge } from '../AppShell/AppShell.types';
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-2'],
     borderRadius: theme.radius['r-pill'],
     // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e4,
   },
   floating: {
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
   },
   inView: {
     paddingHorizontal: theme.spacing['sp-4'],
-    backgroundColor: theme.colors['action-primary'],
+    backgroundColor: colors['action-primary'],
   },
   icon: {
     position: 'relative',

@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import { AccessibilityInfo, Platform, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { AvatarGroup } from '../Avatar/Avatar.native';
@@ -22,7 +23,7 @@ export function GrantCard({ grant, label }: { grant: AssignRolesGrant; label: st
             }))}
             size={GRANT_DISC_SIZE}
             max={GRANT_DISCS_SHOWN}
-            ring={theme.colors['accent-subtle']}
+            ring={colors['accent-subtle']}
           />
         </View>
       )}
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-3'],
     paddingVertical: theme.spacing['sp-3'],
     paddingHorizontal: theme.spacing['sp-4'],
-    backgroundColor: theme.colors['accent-subtle'],
+    backgroundColor: colors['accent-subtle'],
     borderRadius: theme.radius['r-tile'],
   },
   words: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },

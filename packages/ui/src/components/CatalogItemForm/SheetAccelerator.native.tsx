@@ -4,7 +4,7 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { raisedCard } from '../CatalogImport/CatalogImport.surfaces.native';
-import { IrisTile } from '../IrisTile/IrisTile.native';
+import { HueTile } from '../HueTile/HueTile.native';
 import type { SheetAcceleratorProps } from './CatalogItemForm.parts.types';
 
 /**
@@ -14,7 +14,7 @@ import type { SheetAcceleratorProps } from './CatalogItemForm.parts.types';
 export function SheetAccelerator({ title, sub, disabled, onPress }: SheetAcceleratorProps) {
   return (
     <Pressable disabled={disabled} onPress={onPress} style={styles.tile}>
-      <IrisTile glyph="spreadsheet" iris="blue" size={40} stroke={1.6} />
+      <HueTile glyph="spreadsheet" hue="teal" size={40} stroke={1.6} />
       <View style={styles.words}>
         <Text variant="body-sm" bold>
           {title}

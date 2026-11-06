@@ -8,6 +8,7 @@
  * them (`docs/engineering/architecture.md` §2 — `ui` may import `domain`).
  */
 
+export { APPEARANCES, type Appearance, appearanceOf } from './appearance';
 export { type ChecklistRow, checklistForDeal, IN_DOCUMENT_CHECKLIST } from './checklist';
 export {
   formatClockAt,

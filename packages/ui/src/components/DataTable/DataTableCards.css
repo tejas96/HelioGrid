@@ -15,8 +15,7 @@
 /* The row or card just added (`isRowHighlighted`), for every form of the table; each rule loads
    before selection and the issue tint, which win. */
 .hg-dt {
-  /* biome-ignore lint/plugin/raw-white-css: iris — the wash is the hue over the page's own white */
-  --hg-dt-highlight: color-mix(in srgb, var(--iris-violet) 8%, var(--surface));
+  --hg-dt-highlight: var(--accent-subtle);
 }
 
 .hg-dt-cards {
@@ -37,7 +36,7 @@
   border-radius: var(--r-md);
 }
 
-/* The card just added: the same violet iris wash, before selection. */
+/* The card just added: the same accent tint, before selection. */
 .hg-dt-card[data-highlighted="true"] {
   background: var(--hg-dt-highlight);
 }

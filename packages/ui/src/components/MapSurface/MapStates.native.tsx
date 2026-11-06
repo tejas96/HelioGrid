@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: theme.spacing['sp-2'],
     padding: theme.spacing['sp-6'],
-    backgroundColor: theme.colors['surface-alt'],
+    backgroundColor: colors['surface-alt'],
   },
   mark: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
   message: { maxWidth: 320 },
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     left: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors['surface-alt'],
+    backgroundColor: colors['surface-alt'],
   },
 });
 
@@ -77,14 +78,11 @@ export function MapNote({ kind, title, message, onRetry, retry }: MapNoteProps) 
         style={[
           styles.mark,
           {
-            backgroundColor: empty ? theme.colors['neutral-bg'] : theme.colors['warning-bg'],
+            backgroundColor: empty ? colors['neutral-bg'] : colors['warning-bg'],
           },
         ]}
       >
-        <Icon
-          size="lg"
-          color={empty ? theme.colors['text-tertiary'] : theme.colors['warning-text']}
-        >
+        <Icon size="lg" color={empty ? colors['text-tertiary'] : colors['warning-text']}>
           {empty ? EMPTY : ALERT}
         </Icon>
       </View>

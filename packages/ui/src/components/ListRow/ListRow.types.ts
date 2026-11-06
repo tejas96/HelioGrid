@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { ThemeColor } from '../../primitives/Color/colors';
 import type { NamedGapInput } from '../NamedGap';
 import type { PendingActionSpec } from '../PendingAction';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
@@ -8,7 +9,7 @@ export interface ListRowProps {
   /** icon node rendered inside a circular IconCircle */
   icon?: ReactNode;
   /** A DS colour token reference — the web half takes `var(--…)`, the native half a theme value. */
-  iconColor?: string;
+  iconColor?: ThemeColor;
   /** use instead of icon for an avatar leading element */
   avatar?: ReactNode;
   title: ReactNode;

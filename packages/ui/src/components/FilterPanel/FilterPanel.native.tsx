@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Text`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
   section: { paddingVertical: theme.spacing['sp-5'], minWidth: 0 },
   first: { paddingTop: 0 },
   /* A hairline between sections, never a box around one — a section is a heading, not a tile. */
-  parted: { borderTopWidth: 1, borderTopColor: theme.colors['line-soft'] },
+  parted: { borderTopWidth: 1, borderTopColor: colors['line-soft'] },
   flags: { flexDirection: 'column', gap: theme.spacing['sp-3'] },
   clearWords: { fontWeight: '500' },
   footer: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     minHeight: 48,
     paddingHorizontal: theme.spacing['sp-5'],
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['action-primary'],
+    backgroundColor: colors['action-primary'],
   },
   doneWords: { fontWeight: '500', letterSpacing: -0.15 },
 });

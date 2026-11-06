@@ -4,6 +4,7 @@ import type { RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 import type { DimensionValue, TextStyle } from 'react-native';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
@@ -51,7 +52,7 @@ export function Shimmer({
   return (
     <Animated.View
       style={[
-        { width, height, borderRadius: radius, backgroundColor: theme.colors['canvas-sunken'] },
+        { width, height, borderRadius: radius, backgroundColor: colors['canvas-sunken'] },
         { opacity },
       ]}
     />
@@ -65,7 +66,7 @@ const label: TextStyle = {
   fontSize: 14,
   fontWeight: '500',
   letterSpacing: -0.14,
-  color: theme.colors['text-primary'],
+  color: colors['text-primary'],
 };
 
 function Head({ label: words, period }: { label: TranslatedText; period?: string }) {

@@ -70,6 +70,10 @@
 		<string>NotoSansDevanagari-Medium.ttf</string>
 		<string>NotoSansDevanagari-SemiBold.ttf</string>
 		<string>NotoSansDevanagari-Bold.ttf</string>
+		<string>Newsreader-Regular.ttf</string>
+		<string>Newsreader-Medium.ttf</string>
+		<string>NotoSerifDevanagari-Regular.ttf</string>
+		<string>NotoSerifDevanagari-Medium.ttf</string>
 	</array>
 	<!-- Lets a data-only push wake the app so a notification can be shown (F6-13). Inert until
 	     there is a paid Apple membership and a device; a simulator obtains no APNs token. -->
@@ -94,8 +98,6 @@
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
-	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

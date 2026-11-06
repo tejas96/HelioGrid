@@ -1,6 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import { theme } from '@heliogrid/theme';
 import { type StyleProp, View, type ViewStyle } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderMarks } from '../ChipGroup/ChipGroup.native';
@@ -43,8 +43,8 @@ export function CompareOptionHead<Opt extends CompareOption>({
         )}
         <View style={compareStyles.pills}>
           {option.current === true ? (
-            <View style={[compareStyles.pill, { backgroundColor: theme.colors['neutral-bg'] }]}>
-              <Text variant="caption" style={{ color: theme.colors['neutral-text'] }}>
+            <View style={[compareStyles.pill, { backgroundColor: colors['neutral-bg'] }]}>
+              <Text variant="caption" style={{ color: colors['neutral-text'] }}>
                 {currentLabel}
               </Text>
             </View>

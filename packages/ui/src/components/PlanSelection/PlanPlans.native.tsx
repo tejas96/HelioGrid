@@ -1,6 +1,7 @@
 import type { BillingCycle, Tier } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -209,7 +210,7 @@ const styles = StyleSheet.create({
   chips: { gap: theme.spacing['sp-2'], alignItems: 'flex-start' },
   chipsLabel: { fontWeight: '500' },
   act: {
-    backgroundColor: theme.colors['surface-form'],
+    backgroundColor: colors['surface-form'],
     borderRadius: theme.radius['r-lg'],
     padding: theme.spacing['sp-4'],
   },

@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { ThemeColor } from '../../primitives/Color/colors';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 
 export type PendingActionState = 'waiting' | 'returned';
@@ -100,5 +101,5 @@ export type PendingActionProps = PendingActionSpec;
 export interface IndeterminateRailProps {
   width?: number | string;
   thickness?: number;
-  tone?: string;
+  tone?: ThemeColor;
 }

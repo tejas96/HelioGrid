@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderActionReason } from '../ActionReason/ActionReason.native';
@@ -102,7 +103,7 @@ function OptionRow({ active, onPress, option, selected }: OptionRowProps) {
               height={16}
               viewBox="0 0 24 24"
               fill="none"
-              stroke={theme.colors.accent}
+              stroke={colors.accent}
               strokeWidth={2}
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-2'],
   },
   optionActive: {
-    backgroundColor: theme.colors['neutral-bg'],
+    backgroundColor: colors['neutral-bg'],
   },
   line: {
     flexDirection: 'row',

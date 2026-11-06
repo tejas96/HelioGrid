@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
     marginRight: theme.spacing['sp-2'],
   },
   lineDone: {
-    backgroundColor: theme.colors.success,
+    backgroundColor: colors.success,
     opacity: 0.35,
   },
 });

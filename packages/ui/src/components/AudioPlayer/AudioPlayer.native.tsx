@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { AUDIO_PLAYER_DEFAULTS } from './AudioPlayer.logic';
 import type { AudioPlayerProps, AudioTransportControl } from './AudioPlayer.types';
@@ -20,13 +21,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     letterSpacing: -0.14,
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   meta: {
     marginTop: 2,
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.roles.caption.fontSize,
-    color: theme.colors['text-tertiary'],
+    color: colors['text-tertiary'],
   },
 });
 

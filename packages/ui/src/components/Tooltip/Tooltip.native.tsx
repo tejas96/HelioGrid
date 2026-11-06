@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TooltipPlacement, TooltipProps } from './Tooltip.types';
 import { useDelayedOpen } from './use-delayed-open';
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: theme.radius['r-xs'],
-    backgroundColor: theme.colors['text-primary'],
+    backgroundColor: colors['text-primary'],
     ...theme.elevation.e3,
   },
 });

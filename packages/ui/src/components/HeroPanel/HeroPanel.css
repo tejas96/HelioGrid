@@ -1,0 +1,90 @@
+/* HeroPanel — solar glass. The light is the theme's `--panel-glow` (light and dark); the cell grid
+   shows only where the light falls, masked away to the left; the top line is the logo gradient. */
+.hg-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  box-sizing: border-box;
+  padding: var(--sp-5);
+  border-radius: var(--r-card-expressive);
+  background: var(--panel-glow);
+  color: var(--on-panel);
+  box-shadow:
+    0 0 0 1px var(--line-soft),
+    var(--e2);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) both;
+}
+
+.hg-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--panel-line) 1.5px, transparent 1.5px),
+    linear-gradient(90deg, var(--panel-line) 1.5px, transparent 1.5px),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--panel-line) 55%, transparent) 1px,
+      transparent 1px
+    );
+  background-size:
+    44px 44px,
+    44px 44px,
+    11px 44px;
+  background-position: -1px -1px;
+  /* A mask reads only alpha: the grid shows where the light falls, fading out to the left. */
+  --hg-hero-light: radial-gradient(
+    85% 115% at 88% 0%,
+    var(--text-primary) 0%,
+    color-mix(in srgb, var(--text-primary) 55%, transparent) 38%,
+    transparent 72%
+  );
+  -webkit-mask-image: var(--hg-hero-light);
+  mask-image: var(--hg-hero-light);
+}
+
+.hg-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--gradient-brand);
+}
+
+.hg-hero-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-hero-label {
+  color: var(--on-panel-muted);
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  letter-spacing: var(--tr-overline);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+}
+
+.hg-hero :focus-visible {
+  outline-color: var(--on-panel);
+}
+
+@media (min-width: 968px) {
+  .hg-hero {
+    padding: var(--sp-6) var(--sp-8) var(--sp-8);
+    gap: var(--sp-5);
+  }
+  .hg-hero::before {
+    background-size:
+      56px 56px,
+      56px 56px,
+      14px 56px;
+  }
+}

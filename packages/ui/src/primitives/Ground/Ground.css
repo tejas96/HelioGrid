@@ -1,6 +1,6 @@
 /* Ground — what holds a control, and the fill a control takes on it (F7-15, F7-49). A control is
-   the opposite of what holds it: the open page's grey `--fill` on the white page, white inside the
-   grey tile.
+   the opposite of what holds it: the card colour on the grey page, the grey `--fill` inside a
+   white card or tile.
    Two custom properties, inherited through the DOM, so a control reads its fill from whatever
    holds it and is never told.
 
@@ -21,7 +21,6 @@
    controls white on white. */
 
 /* The page — and a sheet, a modal, a menu over it: white, so a control takes the fill. */
-:root,
 .hg-surface[data-background="surface"],
 .hg-surface[data-background="surface-alt"],
 .hg-sheet,
@@ -92,11 +91,14 @@
 /* The usage screen's `Bigger plans` row and its ledger events (`SCR-M12-04`). */
 .hg-list-row.hg-usage-tile,
 .hg-dt-card:not([data-editable="true"]) {
-  background: var(--fill);
-  box-shadow: none;
-  --hg-ground: var(--fill);
-  /* biome-ignore lint/plugin/raw-white-css: ground — the ground itself, and Surface, which sets it */
-  --hg-control-fill: var(--surface);
+  /* biome-ignore lint/plugin/raw-white-css: ground — a tile is the white card on the page */
+  background: var(--surface);
+  box-shadow:
+    0 0 0 1px var(--line-soft),
+    var(--e1);
+  /* biome-ignore lint/plugin/raw-white-css: ground — a tile is the white card on the page */
+  --hg-ground: var(--surface);
+  --hg-control-fill: var(--fill);
 }
 
 /* The tile grounds that are not tiles: each draws its own fill. */
@@ -135,13 +137,16 @@
    pill's clear button: the well is `FieldBox`'s, and a control in it turns white, as in a tile. */
 .hg-rich-text-frame,
 .hg-search-field {
-  --hg-ground: var(--fill);
-  /* biome-ignore lint/plugin/raw-white-css: ground — the ground itself, and Surface, which sets it */
-  --hg-control-fill: var(--surface);
+  --hg-ground: var(--surface-form);
+  --hg-control-fill: var(--fill);
 }
 
-/* SUNK, as the design system's disabled button is: --canvas-sunken, one step below the white page
-   and below the tile's --fill alike. --surface-form is white on the open page and would hide it. */
+/* The page: the canvas, under its glow. A control set straight on it is the white card colour, as
+   the sidebar's search and a top bar's round buttons are. A disabled control is sunk, one step
+   below every ground. */
 :root {
+  --hg-ground: var(--canvas);
+  /* biome-ignore lint/plugin/raw-white-css: ground — a control on the page is the card colour */
+  --hg-control-fill: var(--surface);
   --hg-control-fill-disabled: var(--canvas-sunken);
 }

@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { progressPercent, refusalLine, takesImages } from './Dropzone.logic';
@@ -22,9 +23,9 @@ const styles = StyleSheet.create({
   surface: {
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: theme.colors['text-disabled'],
+    borderColor: colors['text-disabled'],
     borderRadius: theme.radius['r-md'],
-    backgroundColor: theme.colors['surface-alt'],
+    backgroundColor: colors['surface-alt'],
     padding: theme.spacing['sp-8'],
     alignItems: 'center',
     gap: theme.spacing['sp-2'],
@@ -36,20 +37,20 @@ const styles = StyleSheet.create({
     padding: theme.spacing['sp-5'],
   },
   surfaceError: {
-    borderColor: theme.colors.danger,
-    backgroundColor: theme.colors['danger-bg'],
+    borderColor: colors.danger,
+    backgroundColor: colors['danger-bg'],
   },
   track: {
     marginTop: theme.spacing['sp-2'],
     height: 6,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
     overflow: 'hidden',
   },
   fill: {
     height: '100%',
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   error: { marginTop: theme.spacing['sp-2'], marginHorizontal: theme.spacing['sp-0-5'] },
 });

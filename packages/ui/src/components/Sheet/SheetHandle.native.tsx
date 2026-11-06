@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { PanResponderInstance } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 
 interface SheetHandleProps {
   /** With a header below it the handle takes the roomier bottom padding. */
@@ -40,6 +41,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
 });

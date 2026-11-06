@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ActivityGlyph } from '../ActivityStream/ActivityGlyph.native';
 import { IconButton } from '../IconButton/IconButton.native';
@@ -26,7 +27,7 @@ export function NotificationHead({
           variant="surface"
           onClick={marking ? undefined : onMarkAll}
         >
-          <ActivityGlyph name="check-check" size={20} color={theme.colors['text-primary']} />
+          <ActivityGlyph name="check-check" size={20} color={colors['text-primary']} />
         </IconButton>
       )}
     </View>

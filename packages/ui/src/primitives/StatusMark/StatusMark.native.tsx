@@ -1,23 +1,25 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Text as RNText, View } from 'react-native';
+import type { ThemeColor } from '../Color/colors';
+import { colors } from '../Color/colors';
 import type { StatusMarkProps, StatusTone } from './StatusMark.types';
 import { STATUS_GLYPH } from './StatusMark.types';
 
 interface TonePair {
-  text: string;
-  bg: string;
+  text: ThemeColor;
+  bg: ThemeColor;
 }
 
 /* The semantic -text/-bg partner pairs. Warning marks take warning-text because --warning
    itself clears no contrast floor (packages/theme colors). */
 const TONE: Record<StatusTone, TonePair> = {
-  neutral: { text: theme.colors['neutral-text'], bg: theme.colors['neutral-bg'] },
-  info: { text: theme.colors['info-text'], bg: theme.colors['info-bg'] },
-  success: { text: theme.colors['success-text'], bg: theme.colors['success-bg'] },
-  warning: { text: theme.colors['warning-text'], bg: theme.colors['warning-bg'] },
-  danger: { text: theme.colors['danger-text'], bg: theme.colors['danger-bg'] },
-  accent: { text: theme.colors.accent, bg: theme.colors['accent-subtle'] },
+  neutral: { text: colors['neutral-text'], bg: colors['neutral-bg'] },
+  info: { text: colors['info-text'], bg: colors['info-bg'] },
+  success: { text: colors['success-text'], bg: colors['success-bg'] },
+  warning: { text: colors['warning-text'], bg: colors['warning-bg'] },
+  danger: { text: colors['danger-text'], bg: colors['danger-bg'] },
+  accent: { text: colors.accent, bg: colors['accent-subtle'] },
 };
 
 const container: ViewStyle = {

@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -84,6 +85,6 @@ const styles = StyleSheet.create({
   rule: {
     height: StyleSheet.hairlineWidth,
     marginHorizontal: -theme.spacing['sp-5'],
-    backgroundColor: theme.colors['line-soft'],
+    backgroundColor: colors['line-soft'],
   },
 });

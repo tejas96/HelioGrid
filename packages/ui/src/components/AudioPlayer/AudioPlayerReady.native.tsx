@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { AudioGlyph } from './AudioGlyph.native';
 import { clampPosition, playToggleOf } from './AudioPlayer.logic';
 import type {
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
   footnote: {
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.roles.caption.fontSize,
-    color: theme.colors['text-tertiary'],
+    color: colors['text-tertiary'],
     flexShrink: 1,
   },
 });
@@ -120,7 +121,7 @@ export function AudioPlayerReady({
           label={play.label}
           onPress={() => onPlayingChange?.(!playing)}
         >
-          <AudioGlyph name={play.glyph} size={22} color={theme.colors['text-inverse']} />
+          <AudioGlyph name={play.glyph} size={22} color={colors['text-inverse']} />
         </RoundButton>
         <SkipButton
           back={false}

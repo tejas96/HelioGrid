@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 import type { StyleProp, TextStyle } from 'react-native';
 import { Animated, StyleSheet, Text, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { RetryButton } from '../Button/RetryButton.native';
 import type { BlockBodyProps } from './Block.types';
 
@@ -13,7 +14,7 @@ const styles = StyleSheet.create({
   shimmer: {
     height: 12,
     borderRadius: theme.radius['rf-md'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   message: {
     alignItems: 'flex-start',
@@ -25,10 +26,10 @@ const styles = StyleSheet.create({
     fontFamily: theme.type.families.sans,
     fontSize: type['body-sm'].fontSize,
     lineHeight: type['body-sm'].lineHeight,
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
-  warning: { color: theme.colors['warning-text'] },
-  title: { fontWeight: '700', color: theme.colors['text-primary'] },
+  warning: { color: colors['warning-text'] },
+  title: { fontWeight: '700', color: colors['text-primary'] },
   loading: { gap: 10 },
 });
 

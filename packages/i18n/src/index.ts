@@ -17,6 +17,7 @@ export * from './copy/actor-class';
 export { allocationMeterWords, allocationRefusal, allocationSentence } from './copy/allocation';
 export type { ApiErrorLike, AttemptFailureLike } from './copy/api-error';
 export { apiErrorMessageId, apiErrorRef, attemptFailureMessageId } from './copy/api-error';
+export { APPEARANCE, type AppearanceWordSet, appearanceWords } from './copy/appearance';
 export * from './copy/assign-roles';
 export * from './copy/audio-player';
 export { shownInNote } from './copy/authored-content';

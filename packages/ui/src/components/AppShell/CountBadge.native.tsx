@@ -1,6 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { CountBadgeProps, CountBadgeTone } from './AppShell.types';
@@ -11,9 +13,9 @@ interface NativeCountBadgeProps extends CountBadgeProps {
 }
 
 interface TonePair {
-  bg: string;
-  fg: string;
-  mark: string;
+  bg: ThemeColor;
+  fg: ThemeColor;
+  mark: ThemeColor;
 }
 
 /* The numeral is WORDS, so the fill is the -bg tint and the digits the -text partner. The DOT is
@@ -21,30 +23,30 @@ interface TonePair {
    anywhere in this system, so the warning dot takes --warning-text. */
 const TONES: Record<CountBadgeTone, TonePair> = {
   danger: {
-    bg: theme.colors['danger-bg'],
-    fg: theme.colors['danger-text'],
-    mark: theme.colors.danger,
+    bg: colors['danger-bg'],
+    fg: colors['danger-text'],
+    mark: colors.danger,
   },
   warning: {
-    bg: theme.colors['warning-bg'],
-    fg: theme.colors['warning-text'],
-    mark: theme.colors['warning-text'],
+    bg: colors['warning-bg'],
+    fg: colors['warning-text'],
+    mark: colors['warning-text'],
   },
   success: {
-    bg: theme.colors['success-bg'],
-    fg: theme.colors['success-text'],
-    mark: theme.colors.success,
+    bg: colors['success-bg'],
+    fg: colors['success-text'],
+    mark: colors.success,
   },
-  info: { bg: theme.colors['info-bg'], fg: theme.colors['info-text'], mark: theme.colors.info },
+  info: { bg: colors['info-bg'], fg: colors['info-text'], mark: colors.info },
   neutral: {
-    bg: theme.colors['neutral-bg'],
-    fg: theme.colors['neutral-text'],
-    mark: theme.colors.neutral,
+    bg: colors['neutral-bg'],
+    fg: colors['neutral-text'],
+    mark: colors.neutral,
   },
   accent: {
-    bg: theme.colors['accent-subtle'],
-    fg: theme.colors.accent,
-    mark: theme.colors.accent,
+    bg: colors['accent-subtle'],
+    fg: colors.accent,
+    mark: colors.accent,
   },
 };
 

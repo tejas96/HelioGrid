@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
      back out of the padding so a pick never grows the card and the list below never jumps. */
   cardSelected: {
     borderWidth: RING,
-    borderColor: theme.colors.accent,
+    borderColor: colors.accent,
     padding: theme.spacing['sp-4'] - RING,
   },
   cardSelectedFunctional: { padding: FUNCTIONAL_PAD - RING },
@@ -67,9 +68,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
-    borderColor: theme.colors['text-disabled'],
+    borderColor: colors['text-disabled'],
   },
-  dotSelected: { backgroundColor: theme.colors.accent, borderWidth: 0 },
+  dotSelected: { backgroundColor: colors.accent, borderWidth: 0 },
   /* A multiple group's mark is the checkbox's square (`Checkbox.native.tsx`). */
   dotSquare: { borderRadius: theme.radius['rf-sm'] },
   dotFill: { width: 7, height: 7, borderRadius: theme.radius['r-pill'] },
@@ -131,7 +132,7 @@ function Dot({
   if (selected && mode === 'multiple') {
     return (
       <View style={[styles.dot, styles.dotSelected, shape]}>
-        <CheckboxTick ink={theme.colors['text-inverse']} />
+        <CheckboxTick ink={colors['text-inverse']} />
       </View>
     );
   }
@@ -140,7 +141,7 @@ function Dot({
       <View style={[styles.dot, styles.dotSelected]}>
         {/* White on the accent — a mark on the accent, the same on every ground. */}
         {/* biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill */}
-        <View style={[styles.dotFill, { backgroundColor: theme.colors['text-inverse'] }]} />
+        <View style={[styles.dotFill, { backgroundColor: colors['text-inverse'] }]} />
       </View>
     );
   }

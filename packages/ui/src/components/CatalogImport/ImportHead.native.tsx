@@ -1,6 +1,7 @@
 import type { ImportWizardFrame } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
@@ -31,7 +32,7 @@ export function ImportHead({ words, frame, step, onClose, onBack, onSteps }: Imp
     <View style={styles.head}>
       <View style={styles.row}>
         <IconButton label={words.close} size={40} variant="surface" onClick={onClose}>
-          <ImportGlyph name="close" size="sm" stroke={2} color={theme.colors['text-primary']} />
+          <ImportGlyph name="close" size="sm" stroke={2} color={colors['text-primary']} />
         </IconButton>
         <Pressable
           accessibilityLabel={words.locationLabel(step)}
@@ -45,12 +46,7 @@ export function ImportHead({ words, frame, step, onClose, onBack, onSteps }: Imp
             <Text variant="caption" color="secondary">
               {words.location(step)}
             </Text>
-            <ImportGlyph
-              name="chevron"
-              size="xs"
-              stroke={2}
-              color={theme.colors['text-secondary']}
-            />
+            <ImportGlyph name="chevron" size="xs" stroke={2} color={colors['text-secondary']} />
           </View>
         </Pressable>
         {BACK_FRAMES.includes(frame) ? (

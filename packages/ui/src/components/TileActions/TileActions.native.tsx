@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -53,7 +54,7 @@ export function TileAction({
         style={[
           styles.pill,
           hasIcon ? styles.pillWithIcon : null,
-          { backgroundColor: on ? theme.colors['action-primary'] : controlFill },
+          { backgroundColor: on ? colors['action-primary'] : controlFill },
         ]}
       >
         {hasIcon ? (
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
   rule: {
     paddingTop: theme.spacing['sp-1'],
     borderTopWidth: 1,
-    borderTopColor: theme.colors['line-tile'],
+    borderTopColor: colors['line-tile'],
   },
   target: { flexShrink: 0, borderRadius: theme.radius['r-pill'] },
   pill: {
