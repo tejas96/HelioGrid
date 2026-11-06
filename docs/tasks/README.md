@@ -71,18 +71,17 @@ task keeps only its header lines, and git holds its history. A split task's `###
    instructions. Anything else —
    old research docs, the v1 repo — is a defect in the task. A task never cites an open-question
    id: a PRD row carries its own ruling, and git carries the history.
-3. **`DESIGN: PENDING` blocks the task at its turn**, and so does a board not yet locked
-   (`/task`, *Pick*). A backend task
-   waits for the drawings of the screens it serves. A screen's UI is not "done" until it matches
-   its board.
+3. **`DESIGN: PENDING` blocks the task at its turn** (`/task`, *Pick*). A backend task
+   waits for the drawings of the screens it serves. A screen's UI is not "done" until it follows
+   the sample the owner picked (`CLAUDE.md` §3).
 4. **Studio tasks are ports, not rewrites** (ruling S12-1): engineering core moves as-is with
    its tests; the UI is rebuilt from the POC and improved on the way, with no board;
    the defect register is the change list.
 5. A task is complete when every DONE WHEN line passes and — for screen tasks — the **three**
-   base states (loading, empty, error) plus brief-listed states exist at both 375px and 1536px
+   base states (loading, empty, error) plus the states its plan lists exist at both 375px and 1536px
    with full parity. This rule is the completion bar every screen task is measured against.
 6. **Every row id shows its tier where it appears.** A verbatim row quote carries it after the
-   id — `**M02-02** (P0) — …`; a task that defers its quoting to the brief carries it on the
+   id — `**M02-02** (P0) — …`; a task that does not quote its rows carries it on the
    `PRD rows:` line instead — `M02-01 (P0), M02-25 (P1)`. A task's own `Tier:` is the highest
    tier among its rows, so a P0 task may still contain P1/P2 rows: those are the cuttable ones,
    and they must be visible as such without opening the register.
