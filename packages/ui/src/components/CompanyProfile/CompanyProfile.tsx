@@ -115,7 +115,7 @@ function SettingsColumn(props: CompanyProfileProps) {
     <div className="hg-company-profile-page">
       <div className="hg-company-profile-head">
         {titleInBar ? null : (
-          <Text as="h1" variant="h2">
+          <Text as="h1" variant="display">
             {words.title}
           </Text>
         )}

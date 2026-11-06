@@ -14,6 +14,7 @@ import { assembled } from './assembled';
 /** Catalog settings' Items panel (`SCR-M01-15`), chosen once for both apps (Law 11). */
 export const CATALOG_SETTINGS = {
   title: /*i18n*/ { id: 'Catalog' },
+  purpose: /*i18n*/ { id: 'Every item and price your proposals start from.' },
   backToSettings: /*i18n*/ { id: 'Back to settings' },
   items: /*i18n*/ { id: 'Items' },
   rates: /*i18n*/ { id: 'Rates' },

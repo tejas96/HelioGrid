@@ -43,7 +43,7 @@ export function UsageScreen() {
   const usage = read.kind === 'ready' && read.value.kind === 'owner' ? read.value.usage : null;
   return (
     <div ref={room} className="hg-shell-page">
-      <Text as="h1" variant="h2">
+      <Text as="h1" variant="display">
         {settingsRowName(t, 'usage')}
       </Text>
       <UsagePage

@@ -13,6 +13,8 @@ import { Card, IconCircle } from '../Card/Card.native';
 import { Badge } from '../Chip/Chip.native';
 import { DoorFrame } from '../DoorFrame/DoorFrame.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
+import { HeroPanel } from '../HeroPanel/HeroPanel.native';
+import { LottieMoment } from '../LottieMoment/LottieMoment.native';
 import type { SetupReadyDoorWords, SetupReadyProps, SetupWallRetryProps } from './SetupReady.types';
 
 /* The board's `iconCircle`: each door's mark in a 40 circle (`SCR-M01-06`). */
@@ -57,12 +59,15 @@ export function SetupReady({
     <DoorFrame
       column="deep"
       identity={
-        <View style={styles.title}>
-          <Text variant="h2">{words.title}</Text>
-          <Text variant="body" color="secondary">
-            {words.companyLine(read.value)}
-          </Text>
-        </View>
+        <HeroPanel name={words.title}>
+          <LottieMoment name="celebrate" size={72} />
+          <View style={styles.title}>
+            <Text variant="display">{words.title}</Text>
+            <Text variant="body" color="secondary">
+              {words.companyLine(read.value)}
+            </Text>
+          </View>
+        </HeroPanel>
       }
     >
       <View style={styles.doors}>

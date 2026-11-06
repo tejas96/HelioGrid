@@ -160,7 +160,7 @@ export function TeamScreen() {
     <div className="hg-shell-page" ref={room}>
       <header className="hg-team-head">
         <div className="hg-team-title">
-          <Text as="h1" variant="h2">
+          <Text as="h1" variant="display">
             {settingsRowName(t, 'team')}
           </Text>
           {wide && list !== null ? (

@@ -165,12 +165,12 @@ msgid "{count, plural, =0 {Notifications} one {Notifications, # unread} other {N
 msgstr "{count, plural, =0 {सूचना} one {सूचना, # न वाचलेली} other {सूचना, # न वाचलेल्या}}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:66
+#: src/copy/catalog-settings.ts:67
 msgid "{count, plural, one {# archived item} other {# archived items}} · absent from every picker until restored"
 msgstr "{count, plural, one {# आर्काइव्ह केलेला आयटम} other {# आर्काइव्ह केलेले आयटम}} · परत आणेपर्यंत कोणत्याही निवड यादीत नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:73
+#: src/copy/catalog-settings.ts:74
 msgid "{count, plural, one {# archived item} other {# archived items}} · in the Archived filter"
 msgstr "{count, plural, one {# आर्काइव्ह केलेला आयटम} other {# आर्काइव्ह केलेले आयटम}} · 'आर्काइव्ह केलेले' फिल्टरमध्ये"
 
@@ -225,12 +225,12 @@ msgid "{count, plural, one {# invite declined} other {# invites declined}}"
 msgstr "{count, plural, one {# आमंत्रण नाकारले} other {# आमंत्रणे नाकारली}}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:61
+#: src/copy/catalog-settings.ts:62
 msgid "{count, plural, one {# item} other {# items}} · every kind"
 msgstr "{count, plural, one {# आयटम} other {# आयटम}} · प्रत्येक प्रकार"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:57
+#: src/copy/catalog-settings.ts:58
 msgid "{count, plural, one {# item} other {# items}} · every kind · preferred first"
 msgstr "{count, plural, one {# आयटम} other {# आयटम}} · सर्व प्रकार · पसंतीचे आधी"
 
@@ -275,7 +275,7 @@ msgid "{count, plural, one {# person} other {# people}}"
 msgstr "{count, plural, one {# व्यक्ती} other {# व्यक्ती}}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:175
+#: src/copy/catalog-settings.ts:176
 #: src/copy/proposal-template.ts:135
 msgid "{count, plural, one {# phase} other {# phases}}"
 msgstr "{count, plural, one {# फेज} other {# फेज}}"
@@ -286,7 +286,7 @@ msgid "{count, plural, one {# photo waiting} other {# photos waiting}}"
 msgstr "{count, plural, one {# फोटो थांबला आहे} other {# फोटो थांबले आहेत}}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:63
+#: src/copy/catalog-settings.ts:64
 msgid "{count, plural, one {# platform item} other {# platform items}} · nothing of your own yet"
 msgstr "{count, plural, one {# प्लॅटफॉर्म आयटम} other {# प्लॅटफॉर्म आयटम}} · अजून तुमचे स्वतःचे काही नाही"
 
@@ -486,7 +486,7 @@ msgid "{count} min"
 msgstr "{count} min"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:174
+#: src/copy/catalog-settings.ts:175
 msgid "{count} MPPT"
 msgstr "{count} MPPT"
 
@@ -754,7 +754,7 @@ msgid "{first} loses access to {company}. Everything {first} did stays in {first
 msgstr "{first} यांचा {company} मधील प्रवेश बंद होईल. {first} यांनी केलेले सर्व काम {first} यांच्याच नावावर राहील."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:53
+#: src/copy/catalog-settings.ts:54
 msgid "{first} or {second}"
 msgstr "{first} किंवा {second}"
 
@@ -824,7 +824,7 @@ msgid "{from} to {to} · {cycle}"
 msgstr "{from} ते {to} · {cycle}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:76
+#: src/copy/catalog-settings.ts:77
 msgid "{from}–{to} of {count}"
 msgstr "{count} पैकी {from}–{to}"
 
@@ -1200,7 +1200,7 @@ msgid "{name} would hold no presets."
 msgstr "{name} यांच्याकडे एकही प्रीसेट राहणार नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:56
+#: src/copy/catalog-settings.ts:57
 msgid "{name}, {price}"
 msgstr "{name}, {price}"
 
@@ -1220,7 +1220,7 @@ msgid "{name}, live"
 msgstr "{name}, लाइव्ह"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:55
+#: src/copy/catalog-settings.ts:56
 msgid "{name}, no price set"
 msgstr "{name}, किंमत ठरवलेली नाही"
 
@@ -1520,12 +1520,12 @@ msgid "{share}% unallocated."
 msgstr "{share}% वाटायचे बाकी."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:62
+#: src/copy/catalog-settings.ts:63
 msgid "{shown} of {count} items match"
 msgstr "{count} पैकी {shown} आयटम जुळतात"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:60
+#: src/copy/catalog-settings.ts:61
 msgid "{shown} of {count} items match · preferred first"
 msgstr "{count} पैकी {shown} आयटम जुळतात · पसंतीचे आधी"
 
@@ -1772,7 +1772,7 @@ msgid "{word}: {option}"
 msgstr "{word}: {option}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:176
+#: src/copy/catalog-settings.ts:177
 msgid "1 panel"
 msgstr "1 पॅनेल"
 
@@ -2070,7 +2070,7 @@ msgid "Achievements"
 msgstr "कामगिरी"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:95
+#: src/copy/catalog-settings.ts:96
 #: src/copy/team-acts.ts:20
 msgid "Actions"
 msgstr "कृती"
@@ -2148,7 +2148,7 @@ msgid "Add an inverter"
 msgstr "इन्व्हर्टर जोडा"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:26
+#: src/copy/catalog-settings.ts:27
 msgid "Add an item"
 msgstr "आयटम जोडा"
 
@@ -2306,7 +2306,7 @@ msgstr "एजंटची पाळी"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:32
-#: src/copy/catalog-settings.ts:31
+#: src/copy/catalog-settings.ts:32
 #: src/copy/price-book.ts:34
 #: src/copy/role-matrix.ts:97
 #: src/copy/team.ts:13
@@ -2482,14 +2482,14 @@ msgid "Approve spend-adjacent campaign settings"
 msgstr "खर्चाशी संबंधित कॅम्पेन सेटिंग मंजूर करा"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:44
+#: src/copy/catalog-settings.ts:45
 #: src/copy/catalog-views.ts:141
 #: src/copy/payment-terms.ts:58
 msgid "Archive"
 msgstr "आर्काइव्ह करा"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:50
+#: src/copy/catalog-settings.ts:51
 msgid "Archive {name}"
 msgstr "{name} आर्काइव्ह करा"
 
@@ -2705,7 +2705,7 @@ msgid "Back to billing"
 msgstr "बिलिंगकडे परत"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:17
+#: src/copy/catalog-settings.ts:18
 #: src/copy/settings.ts:22
 msgid "Back to settings"
 msgstr "सेटिंग्जकडे परत"
@@ -2743,12 +2743,12 @@ msgid "Bank name"
 msgstr "बँकेचे नाव"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:139
+#: src/copy/catalog-settings.ts:140
 msgid "Batteries"
 msgstr "बॅटरी"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:131
+#: src/copy/catalog-settings.ts:132
 msgid "Battery"
 msgstr "बॅटरी"
 
@@ -2778,7 +2778,7 @@ msgid "Beyond {bundle}, {rate} a minute — no pause, it bills."
 msgstr "{bundle} नंतर {rate} प्रति मिनिट — थांबत नाही, बिल लागते."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:147
+#: src/copy/catalog-settings.ts:148
 msgid "Bifacial"
 msgstr "बायफेशियल"
 
@@ -3081,22 +3081,22 @@ msgid "Catalog"
 msgstr "कॅटलॉग"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:69
+#: src/copy/catalog-settings.ts:70
 msgid "Catalog — archived hidden"
 msgstr "कॅटलॉग — आर्काइव्ह केलेले लपवलेले"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:71
+#: src/copy/catalog-settings.ts:72
 msgid "Catalog — archived only"
 msgstr "कॅटलॉग — फक्त आर्काइव्ह केलेले"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:72
+#: src/copy/catalog-settings.ts:73
 msgid "Catalog — filtered"
 msgstr "कॅटलॉग — फिल्टर केलेले"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:70
+#: src/copy/catalog-settings.ts:71
 msgid "Catalog — the platform market slice"
 msgstr "कॅटलॉग — बाजारातील प्लॅटफॉर्म आयटम"
 
@@ -3352,7 +3352,7 @@ msgid "Close"
 msgstr "बंद करा"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:94
+#: src/copy/catalog-settings.ts:95
 msgid "Close filters"
 msgstr "फिल्टर बंद करा"
 
@@ -3438,12 +3438,12 @@ msgid "Compared with"
 msgstr "यांच्याशी तुलना"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:36
+#: src/copy/catalog-settings.ts:37
 msgid "Compliance"
 msgstr "अनुपालन"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:30
+#: src/copy/catalog-settings.ts:31
 msgid "Component kind"
 msgstr "कंपोनंटचा प्रकार"
 
@@ -4199,7 +4199,7 @@ msgstr "हे पॅनेल टाकून द्यायचे?"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:78
-#: src/copy/catalog-settings.ts:93
+#: src/copy/catalog-settings.ts:94
 #: src/copy/coach-mark.ts:10
 msgid "Dismiss"
 msgstr "काढून टाका"
@@ -4389,7 +4389,7 @@ msgid "editing, duplicating and sharing existing proposals"
 msgstr "असलेले प्रस्ताव बदलणे, कॉपी करणे आणि शेअर करणे"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:37
+#: src/copy/catalog-settings.ts:38
 msgid "Effective price"
 msgstr "लागू किंमत"
 
@@ -4493,6 +4493,11 @@ msgstr "प्रत्येक बदल तुमच्या नावान
 #: src/copy/pricing.ts:53
 msgid "Every feature is in every plan — others hold features back for higher plans."
 msgstr "प्रत्येक प्लॅनमध्ये प्रत्येक फीचर आहे — इतर फीचर वरच्या प्लॅनसाठी राखून ठेवतात."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-settings.ts:17
+msgid "Every item and price your proposals start from."
+msgstr "तुमच्या प्रस्तावांची सुरुवात इथल्या प्रत्येक वस्तू आणि किमतीपासून होते."
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:100
@@ -4687,7 +4692,7 @@ msgid "Filter notifications"
 msgstr "सूचना गाळा"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:29
+#: src/copy/catalog-settings.ts:30
 #: src/copy/filter-panel.ts:9
 msgid "Filters"
 msgstr "फिल्टर"
@@ -5160,22 +5165,22 @@ msgstr "HH:MM"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:72
-#: src/copy/catalog-settings.ts:42
+#: src/copy/catalog-settings.ts:43
 msgid "Hidden"
 msgstr "लपवलेले"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:51
+#: src/copy/catalog-settings.ts:52
 msgid "Hidden from pickers"
 msgstr "निवड यादींतून लपवलेले"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:43
+#: src/copy/catalog-settings.ts:44
 msgid "Hide"
 msgstr "लपवा"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:48
+#: src/copy/catalog-settings.ts:49
 msgid "Hide {name} from pickers"
 msgstr "{name} निवड यादींतून लपवा"
 
@@ -5200,7 +5205,7 @@ msgid "Highest DC voltage (V)"
 msgstr "कमाल DC व्होल्टेज (V)"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:149
+#: src/copy/catalog-settings.ts:150
 msgid "HJT"
 msgstr "HJT"
 
@@ -5340,7 +5345,7 @@ msgid "Import {count, plural, one {# row} other {# rows}}"
 msgstr "{count, plural, one {# ओळ} other {# ओळी}} इम्पोर्ट करा"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:25
+#: src/copy/catalog-settings.ts:26
 msgid "Import a file"
 msgstr "फाइल इम्पोर्ट"
 
@@ -5493,12 +5498,12 @@ msgid "Internal note"
 msgstr "अंतर्गत नोंद"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:130
+#: src/copy/catalog-settings.ts:131
 msgid "Inverter"
 msgstr "इन्व्हर्टर"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:138
+#: src/copy/catalog-settings.ts:139
 msgid "Inverters"
 msgstr "इन्व्हर्टर"
 
@@ -5624,7 +5629,7 @@ msgid "Italic"
 msgstr "तिरपे"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:34
+#: src/copy/catalog-settings.ts:35
 msgid "Item"
 msgstr "आयटम"
 
@@ -5634,12 +5639,12 @@ msgid "items"
 msgstr "आयटम"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:18
+#: src/copy/catalog-settings.ts:19
 msgid "Items"
 msgstr "आयटम"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:106
+#: src/copy/catalog-settings.ts:107
 msgid "Its price is unchanged."
 msgstr "त्याची किंमत बदललेली नाही."
 
@@ -5783,7 +5788,7 @@ msgid "Last set by {name}"
 msgstr "{name} यांनी शेवटची ठरवली"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:54
+#: src/copy/catalog-settings.ts:55
 msgid "Layer, spec data and compliance"
 msgstr "लेयर, स्पेसिफिकेशन डेटा आणि अनुपालन"
 
@@ -5798,12 +5803,12 @@ msgid "Lead visibility scope"
 msgstr "लीड किती दिसतात"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:155
+#: src/copy/catalog-settings.ts:156
 msgid "lead-acid"
 msgstr "लेड-ॲसिड"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:162
+#: src/copy/catalog-settings.ts:163
 msgid "Lead-acid"
 msgstr "लेड-अ‍ॅसिड"
 
@@ -5866,7 +5871,7 @@ msgid "Letterhead"
 msgstr "लेटरहेड"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:153
+#: src/copy/catalog-settings.ts:154
 msgid "LFP"
 msgstr "LFP"
 
@@ -5952,7 +5957,7 @@ msgid "listening to past calls"
 msgstr "जुने कॉल ऐकणे"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:21
+#: src/copy/catalog-settings.ts:22
 msgid "Live since {date}"
 msgstr "{date} पासून लाइव्ह"
 
@@ -6034,12 +6039,12 @@ msgid "Loading the {kind} specification"
 msgstr "{kind} चे तपशील लोड होत आहेत"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:87
+#: src/copy/catalog-settings.ts:88
 msgid "Loading the catalog"
 msgstr "कॅटलॉग लोड होत आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:85
+#: src/copy/catalog-settings.ts:86
 msgid "Loading the catalog release"
 msgstr "कॅटलॉग रिलीज लोड होत आहे"
 
@@ -6049,7 +6054,7 @@ msgid "Loading the comparison"
 msgstr "तुलना लोड होत आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:86
+#: src/copy/catalog-settings.ts:87
 msgid "Loading the component kinds"
 msgstr "कंपोनंटचे प्रकार लोड होत आहेत"
 
@@ -6201,7 +6206,7 @@ msgid "Main"
 msgstr "मुख्य"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:79
+#: src/copy/catalog-settings.ts:80
 msgid "Make it yours"
 msgstr "हे तुमचे बनवा"
 
@@ -6342,12 +6347,12 @@ msgid "Metres"
 msgstr "मीटर"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:132
+#: src/copy/catalog-settings.ts:133
 msgid "Micro-inverter"
 msgstr "मायक्रो-इन्व्हर्टर"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:140
+#: src/copy/catalog-settings.ts:141
 msgid "Micro-inverters"
 msgstr "मायक्रो-इन्व्हर्टर"
 
@@ -6393,7 +6398,7 @@ msgid "Money summary"
 msgstr "रकमेचा सारांश"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:145
+#: src/copy/catalog-settings.ts:146
 msgid "Mono PERC"
 msgstr "Mono PERC"
 
@@ -6579,7 +6584,7 @@ msgid "My Visits Today"
 msgstr "आजच्या माझ्या भेटी"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:167
+#: src/copy/catalog-settings.ts:168
 #: src/copy/payment-terms.ts:51
 msgid "Name"
 msgstr "नाव"
@@ -6848,7 +6853,7 @@ msgid "Next option"
 msgstr "पुढील पर्याय"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:78
+#: src/copy/catalog-settings.ts:79
 msgid "Next page"
 msgstr "पुढचे पान"
 
@@ -6868,7 +6873,7 @@ msgid "Next: see what happens to each row."
 msgstr "पुढे: प्रत्येक ओळीचे काय होईल ते पाहा."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:154
+#: src/copy/catalog-settings.ts:155
 msgid "NMC"
 msgstr "NMC"
 
@@ -6883,7 +6888,7 @@ msgid "No {language} name yet — English shows in its place."
 msgstr "अजून {language} नाव नाही — त्याऐवजी इंग्रजी दिसेल."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:52
+#: src/copy/catalog-settings.ts:53
 msgid "No {schemes} flag recorded"
 msgstr "{schemes} ची नोंद नाही"
 
@@ -7054,7 +7059,7 @@ msgid "No price in your market"
 msgstr "तुमच्या बाजारात किंमत नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:39
+#: src/copy/catalog-settings.ts:40
 msgid "No price set"
 msgstr "किंमत ठरवलेली नाही"
 
@@ -7109,7 +7114,7 @@ msgid "No refund is made mid-cycle."
 msgstr "चक्राच्या मध्ये रिफंड होत नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:23
+#: src/copy/catalog-settings.ts:24
 msgid "No release published yet"
 msgstr "अजून कोणतीही रिलीज प्रकाशित नाही"
 
@@ -7490,7 +7495,7 @@ msgid "Nothing has been used this cycle. Your caps and what’s included are bel
 msgstr "या चक्रात अजून काहीही वापरले नाही. तुमच्या मर्यादा आणि काय समाविष्ट आहे ते खाली आहे — सुरू करताच तयार."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:89
+#: src/copy/catalog-settings.ts:90
 msgid "Nothing has changed — your items, your overrides and the price book are exactly as you left them, and nothing has been published or archived."
 msgstr "काहीही बदलले नाही — तुमचे आयटम, तुमचे ओव्हरराइड आणि प्राइस बुक तुम्ही सोडले होते तसेच आहेत, आणि काहीही प्रकाशित किंवा आर्काइव्ह झालेले नाही."
 
@@ -7827,12 +7832,12 @@ msgid "Operations Home"
 msgstr "ऑपरेशन्स होम"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:133
+#: src/copy/catalog-settings.ts:134
 msgid "Optimiser"
 msgstr "ऑप्टिमायझर"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:141
+#: src/copy/catalog-settings.ts:142
 msgid "Optimisers"
 msgstr "ऑप्टिमायझर"
 
@@ -7883,7 +7888,7 @@ msgid "Over {plan}’s limits"
 msgstr "{plan} च्या मर्यादेपेक्षा जास्त"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:112
+#: src/copy/catalog-settings.ts:113
 msgid "Overridden"
 msgstr "ओव्हरराइड केलेले"
 
@@ -7974,7 +7979,7 @@ msgid "Paid period ends"
 msgstr "भरलेला कालावधी संपतो"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:129
+#: src/copy/catalog-settings.ts:130
 msgid "Panel"
 msgstr "पॅनेल"
 
@@ -7984,7 +7989,7 @@ msgid "Panel specs"
 msgstr "पॅनेल स्पेसिफिकेशन"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:137
+#: src/copy/catalog-settings.ts:138
 msgid "Panels"
 msgstr "पॅनेल"
 
@@ -8019,7 +8024,7 @@ msgid "Past due"
 msgstr "थकीत"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:22
+#: src/copy/catalog-settings.ts:23
 msgid "past releases"
 msgstr "मागील रिलीज"
 
@@ -8396,8 +8401,8 @@ msgid "Plans and prices"
 msgstr "प्लॅन आणि किमती"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:110
-#: src/copy/catalog-settings.ts:117
+#: src/copy/catalog-settings.ts:111
+#: src/copy/catalog-settings.ts:118
 #: src/copy/catalog-words.ts:47
 msgid "Platform"
 msgstr "प्लॅटफॉर्म"
@@ -8438,7 +8443,7 @@ msgid "PNG or JPG, up to {maxMegabytes} MB, at least {minWidth} px wide"
 msgstr "PNG किंवा JPG, कमाल {maxMegabytes} MB, किमान {minWidth} px रुंद"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:148
+#: src/copy/catalog-settings.ts:149
 msgid "Poly"
 msgstr "पॉली"
 
@@ -8463,23 +8468,23 @@ msgid "Power temperature coefficient (%/°C)"
 msgstr "पॉवर तापमान गुणांक (%/°C)"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:41
+#: src/copy/catalog-settings.ts:42
 msgid "Prefer"
 msgstr "पसंतीचे करा"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:46
+#: src/copy/catalog-settings.ts:47
 msgid "Prefer {name}"
 msgstr "{name} पसंतीचे करा"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:74
-#: src/copy/catalog-settings.ts:40
+#: src/copy/catalog-settings.ts:41
 msgid "Preferred"
 msgstr "पसंतीचे"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:166
+#: src/copy/catalog-settings.ts:167
 msgid "Preferred first"
 msgstr "पसंतीचे आधी"
 
@@ -8525,7 +8530,7 @@ msgid "Previous option"
 msgstr "मागील पर्याय"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:77
+#: src/copy/catalog-settings.ts:78
 msgid "Previous page"
 msgstr "मागचे पान"
 
@@ -8538,7 +8543,7 @@ msgstr "मागची पायरी"
 #: src/copy/billing-home.ts:62
 #: src/copy/catalog-add-item.ts:34
 #: src/copy/catalog-editor.ts:19
-#: src/copy/catalog-settings.ts:168
+#: src/copy/catalog-settings.ts:169
 msgid "Price"
 msgstr "किंमत"
 
@@ -8553,7 +8558,7 @@ msgid "Price book"
 msgstr "प्राइस बुक"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:38
+#: src/copy/catalog-settings.ts:39
 msgid "Price comes from"
 msgstr "किंमत कुठून"
 
@@ -8734,7 +8739,7 @@ msgid "Provisional"
 msgstr "तात्पुरते"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:24
+#: src/copy/catalog-settings.ts:25
 msgid "Publish"
 msgstr "प्रकाशित करा"
 
@@ -8815,7 +8820,7 @@ msgid "Rated power"
 msgstr "रेटेड पॉवर"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:19
+#: src/copy/catalog-settings.ts:20
 #: src/copy/plan-selection.ts:72
 #: src/copy/price-book.ts:56
 msgid "Rates"
@@ -8927,7 +8932,7 @@ msgid "Recalculating"
 msgstr "पुन्हा गणना होत आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:169
+#: src/copy/catalog-settings.ts:170
 msgid "Recently changed"
 msgstr "अलीकडे बदललेले"
 
@@ -9008,7 +9013,7 @@ msgid "Refunded. Credit note {number} is in your invoices."
 msgstr "परत केले. क्रेडिट नोट {number} तुमच्या इनव्हॉइसमध्ये आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:20
+#: src/copy/catalog-settings.ts:21
 msgid "Release"
 msgstr "रिलीज"
 
@@ -9126,7 +9131,7 @@ msgid "Reported"
 msgstr "कळवलेले"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:125
+#: src/copy/catalog-settings.ts:126
 msgid "Representative data"
 msgstr "नमुना डेटा"
 
@@ -9216,7 +9221,7 @@ msgid "Resolve or waive a remote-survey gap"
 msgstr "रिमोट सर्व्हेमधील कमतरता पूर्ण करा किंवा सोडा"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:45
+#: src/copy/catalog-settings.ts:46
 #: src/copy/catalog-views.ts:142
 #: src/copy/payment-terms.ts:34
 msgid "Restore"
@@ -9578,7 +9583,7 @@ msgid "Search"
 msgstr "शोधा"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:27
+#: src/copy/catalog-settings.ts:28
 msgid "Search brand, model or SKU"
 msgstr "ब्रँड, मॉडेल किंवा SKU शोधा"
 
@@ -9588,7 +9593,7 @@ msgid "Search rates"
 msgstr "दर शोधा"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:28
+#: src/copy/catalog-settings.ts:29
 msgid "Search the catalog"
 msgstr "कॅटलॉगमध्ये शोधा"
 
@@ -9883,7 +9888,7 @@ msgid "Show {hidden} more {noun} ({total} in total)"
 msgstr "आणखी {hidden} {noun} दाखवा (एकूण {total})"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:49
+#: src/copy/catalog-settings.ts:50
 msgid "Show {name} in pickers"
 msgstr "{name} निवड यादींमध्ये दाखवा"
 
@@ -9925,7 +9930,7 @@ msgid "Show more changes"
 msgstr "आणखी बदल दाखवा"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:96
+#: src/copy/catalog-settings.ts:97
 msgid "Show more items"
 msgstr "आणखी आयटम दाखवा"
 
@@ -10177,13 +10182,13 @@ msgid "Something went wrong on our side. Try again."
 msgstr "आमच्याकडून काहीतरी चूक झाली. पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:32
+#: src/copy/catalog-settings.ts:33
 #: src/copy/filter-bar.ts:10
 msgid "Sort"
 msgstr "क्रम"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:33
+#: src/copy/catalog-settings.ts:34
 msgid "Sort: {order}"
 msgstr "क्रम: {order}"
 
@@ -10333,7 +10338,7 @@ msgid "Still works"
 msgstr "अजूनही चालते"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:47
+#: src/copy/catalog-settings.ts:48
 msgid "Stop preferring {name}"
 msgstr "{name} पसंतीतून काढा"
 
@@ -10360,7 +10365,7 @@ msgid "Street address"
 msgstr "रस्त्याचा पत्ता"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:173
+#: src/copy/catalog-settings.ts:174
 msgid "string"
 msgstr "स्ट्रिंग"
 
@@ -10678,7 +10683,7 @@ msgid "That did not go through. Try again."
 msgstr "हे झाले नाही. पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:97
+#: src/copy/catalog-settings.ts:98
 msgid "That didn't save — the catalog service didn't answer. {still}"
 msgstr "हे सेव्ह झाले नाही — कॅटलॉग सेवेने उत्तर दिले नाही. {still}"
 
@@ -10808,7 +10813,7 @@ msgid "The call went ahead; only the recording was declined. The transcript and 
 msgstr "कॉल झाला; फक्त रेकॉर्डिंगला नकार दिला. ट्रान्सक्रिप्ट आणि प्रतिनिधीच्या नोंदी या रेकॉर्डवर आहेत."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:88
+#: src/copy/catalog-settings.ts:89
 msgid "The catalog didn't load"
 msgstr "कॅटलॉग लोड झाला नाही"
 
@@ -10929,32 +10934,32 @@ msgid "The item"
 msgstr "आयटम"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:105
+#: src/copy/catalog-settings.ts:106
 msgid "The item is still archived."
 msgstr "आयटम अजूनही आर्काइव्हमध्ये आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:101
+#: src/copy/catalog-settings.ts:102
 msgid "The item is still hidden from pickers."
 msgstr "आयटम अजूनही निवड यादींतून लपवलेला आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:100
+#: src/copy/catalog-settings.ts:101
 msgid "The item is still in every picker."
 msgstr "आयटम अजूनही प्रत्येक निवड यादीत आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:104
+#: src/copy/catalog-settings.ts:105
 msgid "The item is still in the list."
 msgstr "आयटम अजूनही यादीत आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:103
+#: src/copy/catalog-settings.ts:104
 msgid "The item is still not preferred."
 msgstr "आयटम अजूनही पसंतीचा नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:102
+#: src/copy/catalog-settings.ts:103
 msgid "The item is still preferred."
 msgstr "आयटम अजूनही पसंतीचा आहे."
 
@@ -11542,7 +11547,7 @@ msgid "Too many attempts. Wait a moment and retry."
 msgstr "खूप प्रयत्न झाले. थोडा वेळ थांबून पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:146
+#: src/copy/catalog-settings.ts:147
 msgid "TOPCon"
 msgstr "TOPCon"
 
@@ -11619,7 +11624,7 @@ msgstr "इनव्हॉइस नंबरचा एखादा भाग �
 #: src/copy/catalog-add-item.ts:77
 #: src/copy/catalog-editor.ts:76
 #: src/copy/catalog-import.ts:50
-#: src/copy/catalog-settings.ts:92
+#: src/copy/catalog-settings.ts:93
 #: src/copy/payment-terms.ts:38
 #: src/copy/price-book.ts:86
 #: src/copy/pricing.ts:118
@@ -12008,7 +12013,7 @@ msgid "Verified"
 msgstr "तपासलेला"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:123
+#: src/copy/catalog-settings.ts:124
 msgid "Verified datasheet"
 msgstr "तपासलेली डेटाशीट"
 
@@ -12063,12 +12068,12 @@ msgid "Versions"
 msgstr "व्हर्जन"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:83
+#: src/copy/catalog-settings.ts:84
 msgid "View only — {owners} or Operations edit."
 msgstr "फक्त पाहण्यासाठी — {owners} किंवा ऑपरेशन्स बदल करतात."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:84
+#: src/copy/catalog-settings.ts:85
 msgid "View only — an owner or Operations edits."
 msgstr "फक्त पाहण्यासाठी — मालक किंवा ऑपरेशन्स बदल करतात."
 
@@ -12371,7 +12376,7 @@ msgstr "काय थांबवले आहे आणि काय अजू�
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:36
-#: src/copy/catalog-settings.ts:35
+#: src/copy/catalog-settings.ts:36
 msgid "What it is"
 msgstr "हे काय आहे"
 
@@ -12940,7 +12945,7 @@ msgid "Your catalog could not be reached, so the row was not written."
 msgstr "तुमच्या कॅटलॉगपर्यंत पोहोचता आले नाही, म्हणून ओळ जतन झाली नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-settings.ts:80
+#: src/copy/catalog-settings.ts:81
 msgid "Your catalog starts with {count} platform items and no prices. Add your own SKUs, or set a platform item's price from the item."
 msgstr "तुमचा कॅटलॉग {count} प्लॅटफॉर्म आयटमनी सुरू होतो, किंमतींशिवाय. तुमचे स्वतःचे SKU जोडा, किंवा प्लॅटफॉर्म आयटमची किंमत त्या आयटममधूनच ठरवा."
 
@@ -13216,13 +13221,13 @@ msgstr "तुमचे ऑपरेशन्स व्ह्यू फक्त
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:24
-#: src/copy/catalog-settings.ts:119
+#: src/copy/catalog-settings.ts:120
 msgid "Your override"
 msgstr "तुमचा ओव्हरराइड"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:35
-#: src/copy/catalog-settings.ts:124
+#: src/copy/catalog-settings.ts:125
 msgid "Your own"
 msgstr "तुमचे स्वतःचे"
 
@@ -13379,8 +13384,8 @@ msgstr "{company} मधील तुमच्या भूमिका"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:10
-#: src/copy/catalog-settings.ts:111
-#: src/copy/catalog-settings.ts:118
+#: src/copy/catalog-settings.ts:112
+#: src/copy/catalog-settings.ts:119
 msgid "Your SKU"
 msgstr "तुमचा SKU"
 

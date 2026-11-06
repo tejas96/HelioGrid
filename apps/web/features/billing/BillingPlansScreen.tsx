@@ -47,7 +47,7 @@ export function BillingPlansScreen() {
       data-review={open && wide ? 'open' : undefined}
     >
       <div ref={heading} tabIndex={-1} className="hg-focus-target">
-        <Text as="h1" variant="h2">
+        <Text as="h1" variant="display">
           {t(PRICING.plans)}
         </Text>
       </div>

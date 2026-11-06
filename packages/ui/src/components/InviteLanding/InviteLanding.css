@@ -16,11 +16,6 @@
   flex: 1;
 }
 
-/* The frame leaves `sp-4` under its identity; the board's stack keeps `sp-5` down to the code. */
-.hg-door[data-panes="onboarding"] .hg-door-identity:has(.hg-invite-landing-head) {
-  padding-bottom: var(--sp-5);
-}
-
 .hg-invite-landing-inviter {
   display: flex;
   align-items: center;
@@ -53,13 +48,6 @@
 /* The live resend sits in the stack's own gap (m-wrong-code); only the waiting one is set apart. */
 .hg-invite-landing-resend[data-live] {
   padding-top: 0;
-}
-
-/* A state with no invite to name draws no identity, so the frame's identity padding is not kept
-   above it: its content starts `sp-6` under the header row (m-loading, m-empty). */
-.hg-door[data-panes="onboarding"]:has(.hg-invite-landing)
-.hg-door-identity:not(:has(.hg-invite-landing-head)) {
-  padding-bottom: 0;
 }
 
 /* The acts follow the content and hold at the window's foot only when the content overflows —
@@ -182,20 +170,6 @@
 
   .hg-invite-landing-inviter {
     gap: var(--sp-4);
-  }
-
-  /* The task is centred in the task pane both ways, from the window's top to its foot, under the
-     language control (ruling 13). */
-  .hg-door[data-panes="onboarding"]:has(.hg-invite-landing) .hg-door-header {
-    position: relative;
-    z-index: 1;
-  }
-
-  .hg-door[data-panes="onboarding"] .hg-door-task:has(.hg-invite-landing) {
-    grid-row: 1 / -1;
-    align-items: center;
-    justify-content: center;
-    padding: var(--sp-16);
   }
 
   /* The column is as wide as the code boxes. */

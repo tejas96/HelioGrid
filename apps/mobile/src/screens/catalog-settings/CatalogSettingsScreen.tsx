@@ -30,7 +30,7 @@ export function CatalogSettingsScreen() {
   return (
     <ShellPage
       inView="more"
-      drillDown={drillDown}
+      drillDown={{ ...drillDown, summary: t(CATALOG_SETTINGS.purpose) }}
       lead={
         switchable ? (
           <SegmentedControl

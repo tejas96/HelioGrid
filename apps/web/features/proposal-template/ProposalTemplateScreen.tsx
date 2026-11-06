@@ -47,7 +47,7 @@ export function ProposalTemplateScreen() {
   if (page.read.kind !== 'failed') return <TemplatePage screen={screen} frame={frame} />;
   return (
     <div ref={frame} tabIndex={-1} className="hg-shell-page hg-focus-target">
-      <Text as="h1" variant="h2">
+      <Text as="h1" variant="display">
         {words.title}
       </Text>
       <Banner

@@ -68,13 +68,14 @@ function elevation(levels: Readonly<Record<ElevationLevel, readonly Shadow[]>>):
 /** The soft logo-colour glow at the top of the page, and the lit glass of the one hero. */
 function glows(scheme: 'light' | 'dark'): Declarations {
   const a = scheme === 'light' ? [0.1, 0.09, 0.07] : [0.14, 0.08, 0.1];
-  const h = scheme === 'light' ? [0.22, 0.24, 0.16] : [0.18, 0.26, 0.2];
+  const h = scheme === 'light' ? [0.22, 0.24, 0.16] : [0.34, 0.42, 0.34];
   return {
     'glow-page': [
       `radial-gradient(52rem 26rem at 88% -9rem,rgba(33,153,140,${a[0]}),transparent 70%)`,
       `radial-gradient(44rem 22rem at 58% -11rem,rgba(86,189,57,${a[1]}),transparent 70%)`,
       `radial-gradient(40rem 26rem at 8% -10rem,rgba(0,120,185,${a[2]}),transparent 70%)`,
     ].join(','),
+    'glow-mark': `radial-gradient(circle,rgba(33,153,140,${scheme === 'light' ? 0.18 : 0.24}) 0%,rgba(86,189,57,${scheme === 'light' ? 0.1 : 0.14}) 40%,transparent 70%)`,
     'panel-glow': [
       `radial-gradient(70% 95% at 96% -12%,rgba(86,189,57,${h[0]}) 0%,transparent 58%)`,
       `radial-gradient(110% 130% at 100% 0%,rgba(33,153,140,${h[1]}) 0%,transparent 62%)`,
@@ -142,6 +143,7 @@ const FIELD_DECLS: Declarations = {
   'field-edge': FIELD_EDGE,
   ...glows('light'),
   'glow-page': 'none',
+  'glow-mark': 'none',
   e1: `0 0 0 1px ${FIELD_EDGE},0 1px 2px rgba(20,23,26,0.10)`,
   e2: `0 0 0 1px ${FIELD_EDGE},0 2px 6px rgba(20,23,26,0.10)`,
   e3: `0 0 0 1px ${FIELD_EDGE},0 6px 16px rgba(20,23,26,0.12)`,

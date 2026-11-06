@@ -1,17 +1,47 @@
-/* Company signup's step header (`SCR-M01-02` decisions 4 and 13): the track and its counter, or
-   from the door's breakpoint the numbered form — one of the two, never both. */
-
-.hg-signup-steps-numbered {
-  display: none;
+/* SignupSteps — the step said quietly: the counter and the step's name as one overline, then a
+   small dot per step; the one in view is a short accent pill, the done ones are ink. */
+.hg-signup-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
 }
 
-/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
-@media (min-width: 968px) {
-  .hg-signup-steps-track {
-    display: none;
-  }
+.hg-signup-steps-words {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  color: var(--text-secondary);
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  letter-spacing: var(--tr-overline);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+}
 
-  .hg-signup-steps-numbered {
-    display: block;
-  }
+.hg-signup-steps-name::before {
+  content: "·";
+  margin-inline: var(--sp-2);
+}
+
+.hg-signup-steps-dots {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+.hg-signup-steps-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--line-strong);
+  transition: background-color var(--dur-standard) var(--ease-standard);
+}
+
+.hg-signup-steps-dot[data-state="done"] {
+  background: var(--ink);
+}
+
+.hg-signup-steps-dot[data-state="current"] {
+  width: 18px;
+  background: var(--accent);
 }

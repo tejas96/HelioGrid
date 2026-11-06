@@ -1,38 +1,27 @@
-/* BrandBloom — --glow-brand placed the way the artboards place it. The bloom is atmosphere:
-   `pointer-events: none`, `aria-hidden`, and gone in field mode because the token is `none`
-   there. Geometry arrives as per-instance vars set by the component, never typed by a screen. */
-
+/* BrandBloom — the brand's light: the page glow, or a soft bloom behind a mark. `pointer-events:
+   none`, `aria-hidden`, and gone in field mode, where the tokens are `none`. */
 .hg-brand-bloom {
   position: absolute;
-  background: var(--glow-brand);
-  /* An ellipse, as the artboards draw it — a pill's flat sides read as a band. */
-  border-radius: 50%;
   pointer-events: none;
+}
+
+.hg-brand-bloom[data-mode="page"] {
+  inset: 0 0 auto;
+  height: 26rem;
+  background: var(--glow-page);
 }
 
 .hg-brand-bloom[data-mode="fill"] {
   inset: 0;
+  background: var(--glow-mark);
 }
 
 .hg-brand-bloom[data-mode="art"] {
-  width: var(--hg-bloom-w);
-  height: var(--hg-bloom-h);
+  width: var(--hg-bloom-size);
+  height: var(--hg-bloom-size);
   top: 50%;
   left: 50%;
+  border-radius: 50%;
+  background: var(--glow-mark);
   transform: translate(-50%, -50%);
-}
-
-.hg-brand-bloom[data-mode="centred"] {
-  width: var(--hg-bloom-w);
-  height: var(--hg-bloom-h);
-  top: var(--hg-bloom-top);
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.hg-brand-bloom[data-mode="placed"] {
-  width: var(--hg-bloom-w);
-  height: var(--hg-bloom-h);
-  top: var(--hg-bloom-top);
-  left: var(--hg-bloom-left);
 }

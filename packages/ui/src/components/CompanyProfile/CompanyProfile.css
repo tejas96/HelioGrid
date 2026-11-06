@@ -75,8 +75,7 @@
     --door-measure: 600px;
   }
 
-  /* The bloom is the letterhead's here, and the header row holds nothing. */
-  .hg-company-profile[data-preview] .hg-door-bloom-desktop,
+  /* The header row holds nothing here: the letterhead is the preview's own head. */
   .hg-company-profile[data-preview] .hg-door-header {
     display: none;
   }

@@ -15,6 +15,8 @@ import { ShellTopBar } from './ShellTopBar';
 /** A page opened from a list: its title, and its way back with the name the control speaks. */
 interface DrillDown {
   title: TranslatedText;
+  /** One line under the large title: what the page is for. */
+  summary?: TranslatedText;
   back: TranslatedText;
   onBack: () => void;
   /** The title's focus handle: where the page lands the screen reader after its `Try again`. */
@@ -90,7 +92,11 @@ export function ShellPage({
           lead
         ) : (
           <>
-            <LargeTitle title={drillDown.title} titleRef={drillDown.titleRef} />
+            <LargeTitle
+              title={drillDown.title}
+              summary={drillDown.summary}
+              titleRef={drillDown.titleRef}
+            />
             {lead}
           </>
         )

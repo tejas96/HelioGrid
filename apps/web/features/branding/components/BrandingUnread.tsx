@@ -19,7 +19,7 @@ export function BrandingUnread({
 }) {
   return (
     <>
-      <Text as="h1" variant="h2">
+      <Text as="h1" variant="display">
         {title}
       </Text>
       <Banner

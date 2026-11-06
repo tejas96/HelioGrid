@@ -2,77 +2,48 @@ import { theme } from '@heliogrid/theme';
 import { useId } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
-import { colors } from '../../primitives/Color/colors';
-import { BLOOM_GEOMETRY, type BrandBloomProps } from './BrandBloom.types';
+import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
+import { usePalette } from '../../primitives/Color/use-palette.native';
+import { type BrandBloomProps, CENTRE_BLOOM_SIZE, PAGE_GLOW_HEIGHT } from './BrandBloom.types';
 
 interface NativeBrandBloomProps extends BrandBloomProps {
   style?: StyleProp<ViewStyle>;
 }
 
-/**
- * `--glow-brand` for React Native. The token is a CSS radial-gradient RN cannot paint, so its
- * three stops — --hue-ocean at 22%, --hue-teal at 14%, a transparent edge at 72% — are drawn
- * as a real SVG radial gradient from the same tokens. One definition: every bloom on the phone
- * comes through here, never a flat disc that approximates it.
- */
-/**
- * CSS's `radial-gradient(circle, …)` reaches the box's FARTHEST CORNER by default, so the 72%
- * stop of a 520×420 bloom sits 240px out, not 187px; the box's diagonal is the radius the token
- * was drawn with. A box whose size is unknown (fill mode) falls back to half its width.
- */
-function farthestCorner(width: number, height: number): number {
-  return Math.sqrt(width * width + height * height) / 2;
+interface Light {
+  readonly color: string;
+  readonly cx: number;
+  readonly cy: number;
+  readonly r: number;
+  readonly opacity: number;
 }
 
-/**
- * The bloom's ellipse and its gradient, in the box's own units when its size is known, else as
- * fractions of it: the centre, the radii, and the gradient's reach to the farthest corner.
- */
-function shapeOf(known: { width: number; height: number } | null) {
-  if (known === null) {
-    return {
-      cx: '50%',
-      cy: '50%',
-      rx: '50%',
-      ry: '50%',
-      reach: '50%',
-      units: 'objectBoundingBox',
-    } as const;
-  }
-  const { width, height } = known;
-  return {
-    cx: width / 2,
-    cy: height / 2,
-    rx: width / 2,
-    ry: height / 2,
-    reach: farthestCorner(width, height),
-    units: 'userSpaceOnUse',
-  } as const;
+/* The web's `--glow-page`, drawn: teal from the top right, green over the middle, blue from the
+   left, each fading to nothing in its own colour so no edge shows. Stronger on the dark canvas. */
+function pageLights(dark: boolean): readonly Light[] {
+  const lift = dark ? 1.4 : 1;
+  return [
+    { color: theme.brand.teal, cx: 0.9, cy: -0.25, r: 0.95, opacity: 0.12 * lift },
+    { color: theme.brand.green, cx: 0.55, cy: -0.35, r: 0.8, opacity: 0.1 * lift },
+    { color: theme.brand.blue, cx: 0.05, cy: -0.3, r: 0.75, opacity: 0.08 * lift },
+  ];
 }
+
+const MARK_LIGHTS: readonly Light[] = [
+  { color: theme.brand.teal, cx: 0.5, cy: 0.5, r: 0.5, opacity: 0.18 },
+  { color: theme.brand.green, cx: 0.5, cy: 0.5, r: 0.36, opacity: 0.1 },
+];
 
 export function BrandBloom({ placement, size, style }: NativeBrandBloomProps) {
-  const gradientId = `hg-bloom-${useId()}`;
-  const geometry = placement === undefined ? null : BLOOM_GEOMETRY[placement];
-  const known =
-    geometry !== null
-      ? { width: geometry.width, height: geometry.height }
-      : size !== undefined
-        ? { width: size, height: size }
-        : null;
-  const shape = shapeOf(known);
+  const id = `hg-bloom-${useId().replaceAll(':', '')}`;
+  const palette = usePalette();
+  const lights = placement === 'page' ? pageLights(palette === theme.palettes.dark) : MARK_LIGHTS;
+  const side = placement === 'centre' ? CENTRE_BLOOM_SIZE : size;
   const box: ViewStyle =
-    geometry !== null
-      ? {
-          width: geometry.width,
-          height: geometry.height,
-          ...(geometry.top === null
-            ? { top: '50%', marginTop: -geometry.height / 2 }
-            : { top: geometry.top }),
-          ...(geometry.left === null ? { alignSelf: 'center' } : { left: geometry.left }),
-        }
-      : size !== undefined
-        ? { width: size, height: size, alignSelf: 'center', top: '50%', marginTop: -size / 2 }
+    placement === 'page'
+      ? { top: 0, left: 0, right: 0, height: PAGE_GLOW_HEIGHT }
+      : side !== undefined
+        ? { width: side, height: side, alignSelf: 'center', top: '50%', marginTop: -side / 2 }
         : { top: 0, left: 0, right: 0, bottom: 0 };
   return (
     <View
@@ -83,27 +54,29 @@ export function BrandBloom({ placement, size, style }: NativeBrandBloomProps) {
     >
       <Svg width="100%" height="100%">
         <Defs>
-          <RadialGradient
-            id={gradientId}
-            cx={shape.cx}
-            cy={shape.cy}
-            r={shape.reach}
-            gradientUnits={shape.units}
-          >
-            <Stop offset="0" stopColor={theme.brand.teal} stopOpacity={0.22} />
-            <Stop offset="0.4" stopColor={theme.brand.green} stopOpacity={0.14} />
-            {/* biome-ignore lint/plugin/raw-white: illustration — a drawn mark */}
-            <Stop offset="0.72" stopColor={colors.surface} stopOpacity={0} />
-          </RadialGradient>
+          {lights.map((light, index) => (
+            <RadialGradient
+              // biome-ignore lint/suspicious/noArrayIndexKey: the lights are a fixed list in order
+              key={index}
+              id={`${id}-${index}`}
+              cx={light.cx}
+              cy={light.cy}
+              r={light.r}
+            >
+              <Stop offset="0" stopColor={light.color} stopOpacity={light.opacity} />
+              <Stop offset="1" stopColor={light.color} stopOpacity={0} />
+            </RadialGradient>
+          ))}
         </Defs>
-        {/* An ellipse, as the artboards draw it: a box would end in a straight edge. */}
-        <Ellipse
-          cx={shape.cx}
-          cy={shape.cy}
-          rx={shape.rx}
-          ry={shape.ry}
-          fill={`url(#${gradientId})`}
-        />
+        {lights.map((_, index) => (
+          <Rect
+            // biome-ignore lint/suspicious/noArrayIndexKey: the lights are a fixed list in order
+            key={index}
+            width="100%"
+            height="100%"
+            fill={`url(#${id}-${index})`}
+          />
+        ))}
       </Svg>
     </View>
   );

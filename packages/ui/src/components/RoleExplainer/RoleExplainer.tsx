@@ -12,7 +12,6 @@ import type { RoleExplainerProps } from './RoleExplainer.types';
 export function RoleExplainer({ words, read, namesPending: pending, onAct }: RoleExplainerProps) {
   return (
     <DoorFrame
-      panes="onboarding"
       column="near"
       bounded
       identity={

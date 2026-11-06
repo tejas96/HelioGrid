@@ -73,13 +73,6 @@
 
 /* --bp-desktop: @media cannot read a custom property, so its value is written here. */
 @media (min-width: 968px) {
-  /* The wall is centred in the task pane, from the window's top to its foot (d-error). */
-  .hg-door[data-panes="onboarding"] .hg-door-task:has(.hg-setup-ready-wall) {
-    grid-row: 1 / -1;
-    justify-content: center;
-    padding: var(--sp-16);
-  }
-
   .hg-setup-ready-title {
     gap: var(--sp-3);
     padding-bottom: 0;
@@ -102,10 +95,5 @@
     flex: 1;
     font-size: var(--fs-body);
     line-height: var(--lh-body);
-  }
-
-  /* The doors pane's foot (d-default). */
-  .hg-door[data-panes="onboarding"] .hg-door-task:has(.hg-setup-ready-doors) {
-    padding-bottom: var(--sp-10);
   }
 }

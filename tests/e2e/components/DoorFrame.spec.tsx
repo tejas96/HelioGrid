@@ -6,12 +6,10 @@ import { settledBox } from '../support/layout';
 import { resolvedLength } from '../support/token';
 
 /**
- * The door's frame at the boards' two widths (`SCR-M01-01`, `SCR-M01-02`, each record's "375
- * vertical layout"): under the breakpoint the step header leads, the heading takes the phone's
- * `--fs-h2` role and the pinned action stays on screen while the column scrolls; at 1536 the step
- * header and the action join the task column beside the identity, and the heading is `--fs-h1`.
- * `column` places the heading under the breakpoint: centred between the header row and the
- * column's foot, or `sp-8` under the step header.
+ * The door's frame: one centred column at every width — the step header leads, then the heading,
+ * the task and the action, which stays on screen while a phone's column scrolls. `column` places
+ * the heading on a phone: centred between the header row and the column's foot, or `sp-8` under
+ * the step header.
  */
 const en = await createTranslator('en');
 
@@ -125,7 +123,7 @@ test.describe('at 375', () => {
     expect(gap).toBe(await resolvedLength(page, '--sp-4'));
   });
 
-  test('the step header leads, the heading and intro are the phone sizes, and the action stays on screen', async ({
+  test('the step header leads, the heading keeps its role, and the action stays on screen', async ({
     mount,
     page,
   }) => {
@@ -137,10 +135,11 @@ test.describe('at 375', () => {
     const leadBox = await settledBox(lead);
     const headingBox = await settledBox(heading);
     expect(leadBox?.y).toBeLessThan(headingBox?.y ?? 0);
-    await expect(heading).toHaveCSS('font-size', `${await resolvedLength(page, '--fs-h2')}px`);
+    /* The frame never resizes what it holds: a title keeps its own role at every width. */
+    await expect(heading).toHaveCSS('font-size', `${await resolvedLength(page, '--fs-h1')}px`);
     await expect(door.getByText(INTRO)).toHaveCSS(
       'font-size',
-      `${await resolvedLength(page, '--fs-body')}px`,
+      `${await resolvedLength(page, '--fs-body-lg')}px`,
     );
 
     const actionBox = await settledBox(action);
@@ -151,7 +150,7 @@ test.describe('at 375', () => {
 test.describe('at 1536', () => {
   test.use({ viewport: { width: 1536, height: 960 } });
 
-  test('the step header and the action sit in the task column beside the identity', async ({
+  test('the door is one centred column: the step header, the heading, the task and the action in reading order', async ({
     mount,
     page,
   }) => {
@@ -162,68 +161,22 @@ test.describe('at 1536', () => {
     const action = await settledBox(
       door.getByRole('button', { name: en.t(COMPANY_SIGNUP.createAnyway) }),
     );
+    const formMax = await resolvedLength(page, '--form-max');
 
-    await expect(heading).toHaveCSS('font-size', `${await resolvedLength(page, '--fs-h1')}px`);
     await expect(door.getByText(INTRO)).toHaveCSS(
       'font-size',
       `${await resolvedLength(page, '--fs-body-lg')}px`,
     );
     const headingBox = await settledBox(heading);
-    const identityRight = (headingBox?.x ?? 0) + (headingBox?.width ?? 0);
     expect(lead?.x).toBe(task?.x);
+    expect(headingBox?.x).toBe(task?.x);
     expect(action?.x).toBe(task?.x);
-    expect(task?.x).toBeGreaterThan(identityRight);
-    expect(lead?.y).toBeLessThan(task?.y ?? 0);
+    expect(task?.width).toBeLessThanOrEqual(formMax);
+    /* Centred: as much room on the window's left as on its right. */
+    expect(Math.abs((task?.x ?? 0) * 2 + (task?.width ?? 0) - 1536)).toBeLessThanOrEqual(1);
+    expect(lead?.y).toBeLessThan(headingBox?.y ?? 0);
+    expect(headingBox?.y).toBeLessThan(task?.y ?? 0);
     expect(action?.y).toBeGreaterThan(task?.y ?? 0);
-  });
-});
-
-/** The onboarding steps' two panes (`SCR-M01-07` d-default, D261): an identity, a task and its act. */
-function onboardingTree() {
-  return (
-    <DoorFrame
-      panes="onboarding"
-      identity={<Text variant="h1">{en.t(COMPANY_SIGNUP.joinTitle)}</Text>}
-      footer={
-        <Button variant="primary" size="lg">
-          {en.t(COMPANY_SIGNUP.createAnyway)}
-        </Button>
-      }
-    >
-      <div data-testid="task" style={{ height: SHORT_TASK }} />
-    </DoorFrame>
-  );
-}
-
-test.describe('the onboarding panes at 1536', () => {
-  test.use({ viewport: { width: 1536, height: 1000 } });
-
-  test('the brand pane takes columns 1–4 at full height, the task pane columns 5–12', async ({
-    mount,
-    page,
-  }) => {
-    const door = await mount(onboardingTree());
-    const pane = await settledBox(door.locator('.hg-door-identity'));
-    const task = await settledBox(door.getByTestId('task'));
-    const heading = await settledBox(
-      door.getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) }),
-    );
-    const action = await settledBox(
-      door.getByRole('button', { name: en.t(COMPANY_SIGNUP.createAnyway) }),
-    );
-    const sp12 = await resolvedLength(page, '--sp-12');
-    const sp16 = await resolvedLength(page, '--sp-16');
-
-    expect(pane).toEqual({ x: 0, y: 0, width: 512, height: 1000 });
-    expect(heading?.x).toBe(sp12);
-    expect(task?.x).toBe(512 + sp16);
-    expect(task?.width).toBe(1024 - 2 * sp16);
-    expect(task?.y).toBe(heading?.y);
-    expect(action?.y).toBeGreaterThan((task?.y ?? 0) + (task?.height ?? 0));
-    await expect(door.locator('.hg-door-wordmark-desktop > *')).toHaveAttribute(
-      'style',
-      /--hg-wordmark-size: 30px/,
-    );
   });
 });
 

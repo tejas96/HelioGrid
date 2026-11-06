@@ -42,7 +42,6 @@ export function SetupInviteTeam({
   return (
     <DoorFrame
       onFooterHeight={onActsHeight}
-      panes="onboarding"
       taskMeasure="list"
       identity={
         <>

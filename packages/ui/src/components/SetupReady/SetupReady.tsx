@@ -10,6 +10,8 @@ import { Card, IconCircle } from '../Card/Card';
 import { Badge } from '../Chip/Chip';
 import { DoorFrame } from '../DoorFrame/DoorFrame';
 import { EmptyState } from '../EmptyState/EmptyState';
+import { HeroPanel } from '../HeroPanel/HeroPanel';
+import { LottieMoment } from '../LottieMoment/LottieMoment';
 import type { SetupReadyDoorWords, SetupReadyProps, SetupWallRetryProps } from './SetupReady.types';
 
 /* The board's `iconCircle`: each door's mark in a 40 circle (`SCR-M01-06`). */
@@ -35,7 +37,7 @@ export function SetupReady({
   if (read.kind === 'loading' || read.kind === 'empty') return null;
   if (read.kind === 'failed') {
     return (
-      <DoorFrame panes="onboarding" taskMeasure="list">
+      <DoorFrame taskMeasure="list">
         <div className="hg-setup-ready-wall">
           <EmptyState
             icon={<ShellGlyph name="alert-ring" size="xl" tone="primary" />}
@@ -56,16 +58,18 @@ export function SetupReady({
   }
   return (
     <DoorFrame
-      panes="onboarding"
       taskMeasure="list"
       column="deep"
       identity={
-        <div className="hg-setup-ready-title">
-          <Text variant="h1">{words.title}</Text>
-          <Text variant="body-lg" color="secondary">
-            {words.companyLine(read.value)}
-          </Text>
-        </div>
+        <HeroPanel name={words.title}>
+          <LottieMoment name="celebrate" size={72} />
+          <div className="hg-setup-ready-title">
+            <Text variant="display">{words.title}</Text>
+            <Text variant="body-lg" color="secondary">
+              {words.companyLine(read.value)}
+            </Text>
+          </div>
+        </HeroPanel>
       }
     >
       <div className="hg-setup-ready-doors">
