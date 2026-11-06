@@ -25,7 +25,6 @@ import {
 } from '@heliogrid/i18n';
 import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
 import {
-  DoorCodeStep,
   DoorLanguage,
   DoorNumberStep,
   SignupCompanyStep,
@@ -36,6 +35,7 @@ import {
   useFormat,
 } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
+import { InsetCodeStep } from '../shared/InsetCodeStep';
 import { InsetDoor } from '../shared/InsetDoor';
 
 /**
@@ -97,24 +97,22 @@ export function CompanySignupScreen() {
   }
   if (panel.view === 'code') {
     return (
-      <InsetDoor>
-        <DoorCodeStep
-          language={language}
-          lead={<SignupSteps words={signupStepsWords(t)} current={1} />}
-          words={signInWords(t, signIn.frame, signIn.state, {
-            verify: COMPANY_SIGNUP.verifyAndContinue,
-            explainer: signupExplainers(t).whatTheCodeDoes,
-          })}
-          frame={signIn.frame}
-          phone={signIn.state.phone}
-          code={signIn.state.code}
-          onCode={signIn.typeCode}
-          busy={signIn.busy}
-          googleBusy={signIn.googleBusy}
-          onPress={signIn.press}
-          helper={t(COMPANY_SIGNUP.codeHelper)}
-        />
-      </InsetDoor>
+      <InsetCodeStep
+        language={language}
+        lead={<SignupSteps words={signupStepsWords(t)} current={1} />}
+        words={signInWords(t, signIn.frame, signIn.state, {
+          verify: COMPANY_SIGNUP.verifyAndContinue,
+          explainer: signupExplainers(t).whatTheCodeDoes,
+        })}
+        frame={signIn.frame}
+        phone={signIn.state.phone}
+        code={signIn.state.code}
+        onCode={signIn.typeCode}
+        busy={signIn.busy}
+        googleBusy={signIn.googleBusy}
+        onPress={signIn.press}
+        helper={t(COMPANY_SIGNUP.codeHelper)}
+      />
     );
   }
   return <SignupNumberStep signIn={signIn} onSignIn={() => navigation.navigate('Login')} />;

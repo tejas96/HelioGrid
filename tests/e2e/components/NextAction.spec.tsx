@@ -2,8 +2,9 @@ import { createTranslator, presetName, SIGN_IN, TEAM, teamStatusWord } from '@he
 import { Avatar, Badge, Button, ProgressBar, RecordCard, TileAction } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator } from '@playwright/test';
+import { CATEGORY_HUES } from '../support/hues';
 import { settledBox } from '../support/layout';
-import { resolvedColour, resolvedLength } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, resolvedLength, TILE_SHADOW } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 
 const en = await createTranslator('en');
@@ -12,7 +13,7 @@ const tryAgain = en.t(SIGN_IN.tryAgain);
 /** A person's name is data, not a word: it reads the same in every language. */
 const PERSON = 'Anjali Kulkarni';
 
-/** Three roles, one of each kind, in their kind's iris tone — the longest presets wrap first. */
+/** Three roles, one of each kind, in their kind's category hue — the longest presets wrap first. */
 const ROLES = [
   ['sales_manager', 'ocean'],
   ['survey_engineer', 'teal'],
@@ -37,8 +38,8 @@ test('a record card is a tile and its controls are white', async ({ mount, page 
     />,
   );
 
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
-  await expect(card).toHaveCSS('box-shadow', 'none');
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
   await expect(card.getByRole('button', { name: tryAgain })).toHaveCSS(
     'background-color',
     await resolvedColour(page, '--surface'),
@@ -133,9 +134,9 @@ test.describe('at 375', () => {
       expect(Math.abs(face.y + face.height / 2 - (who.y + who.height / 2))).toBeLessThanOrEqual(1);
       expect(Math.round(who.x - (face.x + face.width))).toBe(gap);
 
-      /* The face takes an iris hue from the name, and its standing mark sits 2 out at its foot. */
+      /* The face takes a category hue from the name, and its standing mark sits 2 out at its foot. */
       const disc = card.locator('.hg-avatar');
-      await expect(disc).toHaveAttribute('data-hue', /^(violet|blue|magenta)$/);
+      expect(CATEGORY_HUES).toContain(await disc.getAttribute('data-hue'));
       const ring = card.locator('.hg-avatar-mark');
       await expect(ring).toHaveAttribute('aria-hidden', 'true');
       await expect(ring).toHaveCSS('background-color', await resolvedColour(page, '--canvas'));
@@ -158,7 +159,7 @@ test.describe('at 375', () => {
       const titleBox = await box(title);
       expect(Math.round((await box(line)).y - (titleBox.y + titleBox.height))).toBe(hair);
 
-      /* Three role badges, each whole inside the card, in three different iris washes. */
+      /* Three role badges, each whole inside the card, in three different hue washes. */
       const roles = card.locator('.hg-record-card-marks .hg-badge');
       await expect(roles).toHaveCount(ROLES.length);
       const washes = new Set<string>();
@@ -235,7 +236,8 @@ test('the foot draws labelled pills below a thin rule, each in a 44px target', a
 
   const offPill = off.locator('.hg-tile-action-pill');
   expect((await box(offPill)).height).toBe(36);
-  await expect(offPill).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  /* A control in a tile takes the tile's control fill (`primitives/Ground`). */
+  await expect(offPill).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
   await expect(offPill).toHaveCSS('font-size', `${await resolvedLength(page, '--fs-body-sm')}px`);
   const onPill = on.locator('.hg-tile-action-pill');
   await expect(onPill).toHaveCSS(

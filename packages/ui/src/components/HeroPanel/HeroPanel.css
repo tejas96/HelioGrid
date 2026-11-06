@@ -15,7 +15,7 @@
   box-shadow:
     0 0 0 1px var(--line-soft),
     var(--e2);
-  animation: hg-rise var(--dur-emphasised) var(--ease-enter) both;
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
 }
 
 .hg-hero::before {

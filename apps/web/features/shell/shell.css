@@ -18,7 +18,7 @@
   min-height: 100%;
   padding: var(--sp-6) var(--screen-pad-mobile)
     calc(var(--bottomnav-h) + env(safe-area-inset-bottom) + var(--sp-6));
-  animation: hg-rise var(--dur-emphasised) var(--ease-enter) both;
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
 }
 
 .hg-shell-page[data-pad="functional"] {

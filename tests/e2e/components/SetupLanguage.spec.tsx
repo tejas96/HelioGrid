@@ -1,15 +1,14 @@
 import { createTranslator, LANGUAGE_META, SETUP_LANGUAGE, SIGN_IN } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { expectNoSidewaysScroll, expectSharedEdge, settledBox } from '../support/layout';
+import { bottomOf, expectNoSidewaysScroll, expectSharedEdge, settledBox } from '../support/layout';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 import { LanguageStepAsHeld } from './SetupLanguage.story';
 
 /**
  * The language step at the board's two widths (`SCR-M01-03`), and between them: the languages are
- * one column, with the way on held on screen, until the door's breakpoint and a task column at its
- * whole measure; at 1536 the set is one row of three cards beside the question, and the ways on
- * stand at their own width. A failed save is an alert
- * with two ways on; a device outside the set is a status, with its pill on English.
+ * one column under the question at every width, with the way on held on screen on a phone; from the
+ * door's breakpoint the ways on stand at their own width. A failed save is an alert with two ways
+ * on; a device outside the set is a status, with its pill on English.
  */
 const en = await createTranslator('en');
 
@@ -181,27 +180,23 @@ test.describe('at 968, where the task column is at its narrowest', () => {
 test.describe('at 1536', () => {
   test.use({ viewport: { width: 1536, height: 1000 } });
 
-  test('the set is one row of three cards of one height, beside the question', async ({
+  test('the set is one column of three cards of one width, under the question on its left edge', async ({
     mount,
     page,
   }) => {
     const step = await mount(<LanguageStepAsHeld reader="en" device="en" failed={false} />);
     const cards = step.getByRole('radio');
-    await expectSharedEdge([cards.nth(0), cards.nth(1), cards.nth(2)], 'top');
-    await expectSharedEdge([cards.nth(0), cards.nth(1), cards.nth(2)], 'bottom');
+    const heading = step.getByRole('heading', { name: en.t(SETUP_LANGUAGE.title) });
+    await expectSharedEdge([heading, cards.nth(0), cards.nth(1), cards.nth(2)], 'left');
+    await expectSharedEdge([cards.nth(0), cards.nth(1), cards.nth(2)], 'right');
     const boxes = await Promise.all([0, 1, 2].map((index) => settledBox(cards.nth(index))));
-    expect(boxes[1]?.width).toBe(boxes[0]?.width);
-    expect(boxes[2]?.width).toBe(boxes[0]?.width);
-    expect(boxes[1]?.x).toBeGreaterThan((boxes[0]?.x ?? 0) + (boxes[0]?.width ?? 0));
+    expect(boxes[0]?.y).toBeGreaterThan(await bottomOf(heading));
+    expect(boxes[1]?.y).toBeGreaterThan((boxes[0]?.y ?? 0) + (boxes[0]?.height ?? 0));
+    expect(boxes[2]?.y).toBeGreaterThan((boxes[1]?.y ?? 0) + (boxes[1]?.height ?? 0));
     const pill = await settledBox(cards.nth(0).getByText(DEVICE_PILL));
     expect((pill?.x ?? Infinity) + (pill?.width ?? 0)).toBeLessThanOrEqual(
       (boxes[0]?.x ?? 0) + (boxes[0]?.width ?? 0),
     );
-
-    const heading = await settledBox(
-      step.getByRole('heading', { name: en.t(SETUP_LANGUAGE.title) }),
-    );
-    expect((heading?.x ?? Infinity) + (heading?.width ?? 0)).toBeLessThan(boxes[0]?.x ?? 0);
     await expectNoSidewaysScroll(page);
   });
 
@@ -221,14 +216,16 @@ test.describe('at 1536', () => {
     expect(againBox?.width).toBeLessThan(card?.width ?? 0);
   });
 
-  test('the finding about the person sits in the identity half, left of the languages', async ({
+  test('the finding about the person sits under the question, over the languages, on their edges', async ({
     mount,
   }) => {
     const step = await mount(<LanguageStepAsHeld reader="en" device={null} failed />);
-    const card = await settledBox(step.getByRole('radio').nth(0));
+    const card = step.getByRole('radio').nth(0);
+    const top = (await settledBox(card)).y;
     for (const finding of [step.getByRole('alert'), step.getByRole('status')]) {
-      const box = await settledBox(finding);
-      expect((box?.x ?? Infinity) + (box?.width ?? 0)).toBeLessThan(card?.x ?? 0);
+      expect(await bottomOf(finding)).toBeLessThan(top);
+      await expectSharedEdge([card, finding], 'left');
+      await expectSharedEdge([card, finding], 'right');
     }
   });
 });

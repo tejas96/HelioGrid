@@ -38,6 +38,7 @@ export interface DeclaredPair {
 
 const TEXT_BACKGROUNDS = [
   'surface',
+  'surface-form',
   'canvas',
   'surface-alt',
   'fill',

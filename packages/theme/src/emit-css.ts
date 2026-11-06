@@ -22,7 +22,14 @@ import {
   type Shadow,
   SPACING,
 } from './tokens/layout';
-import { DURATION, EASING, PRESS, REDUCED_DURATION, STAGGER } from './tokens/motion';
+import {
+  DURATION,
+  EASING,
+  PRESS,
+  REDUCED_DURATION,
+  SKELETON_DELAY_MS,
+  STAGGER,
+} from './tokens/motion';
 import { BUNDLED_FACES, FIELD_TYPE, FONT_STACKS, TYPE_ROLES, WEIGHTS } from './tokens/typography';
 
 type Declarations = Readonly<Record<string, string | number>>;
@@ -110,12 +117,15 @@ function rootDeclarations(): Declarations {
   motion['press-scale'] = PRESS.scale;
   motion['stagger-step'] = `${STAGGER.stepMs}ms`;
   motion.rise = px(STAGGER.risePx);
+  motion['skeleton-delay'] = `${SKELETON_DELAY_MS}ms`;
 
   const aliases = Object.fromEntries(Object.entries(ALIASES).map(([a, t]) => [a, `var(--${t})`]));
   return {
     ...palette(LIGHT),
     ...aliases,
     'gradient-brand': `linear-gradient(90deg,${BRAND.green},${BRAND.teal},${BRAND.blue})`,
+    /* The logo mark's disc: the same three colours on the diagonal the logo draws. */
+    'gradient-mark': `linear-gradient(160deg,${BRAND.green},${BRAND.teal} 50%,${BRAND.blue})`,
     ...glows('light'),
     ...type,
     ...sizes,

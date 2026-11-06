@@ -1,7 +1,6 @@
 import { UI_SOURCE_LOCALE } from '@heliogrid/contracts';
 import { LANGUAGE_META } from '@heliogrid/i18n';
 import type { Metadata, Viewport } from 'next';
-import Script from 'next/script';
 import type { ReactNode } from 'react';
 import '@heliogrid/theme/tokens.css';
 import '@heliogrid/theme/base.css';
@@ -32,12 +31,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       dir={LANGUAGE_META[UI_SOURCE_LOCALE].dir}
       suppressHydrationWarning
     >
-      <head>
-        <Script id="hg-appearance" strategy="beforeInteractive">
-          {APPEARANCE_BOOT}
-        </Script>
-      </head>
       <body>
+        {/* Runs while the page is parsed, before anything under it paints: no flash of the wrong
+            scheme. React never renders into it. */}
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: the theme boot — a fixed string from lib/appearance.ts, no input in it */}
+        <script dangerouslySetInnerHTML={{ __html: APPEARANCE_BOOT }} />
         <Providers>{children}</Providers>
       </body>
     </html>

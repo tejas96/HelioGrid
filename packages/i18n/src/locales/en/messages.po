@@ -83,11 +83,6 @@ msgid "{bankName} · account ending {ending}"
 msgstr "{bankName} · account ending {ending}"
 
 #. js-lingui-explicit-id
-#: src/copy/version-diff.ts:26
-msgid "{before} compared with {after}"
-msgstr "{before} compared with {after}"
-
-#. js-lingui-explicit-id
 #: src/copy/invite.ts:70
 msgid "{cap} invites in the last 24 hours — the limit for one company"
 msgstr "{cap} invites in the last 24 hours — the limit for one company"
@@ -371,11 +366,6 @@ msgid "{count, plural, one {Fix # issue to share} other {Fix # issues to share}}
 msgstr "{count, plural, one {Fix # issue to share} other {Fix # issues to share}}"
 
 #. js-lingui-explicit-id
-#: src/copy/version-diff.ts:31
-msgid "{count, plural, one {Hide # unchanged field} other {Hide # unchanged fields}}"
-msgstr "{count, plural, one {Hide # unchanged field} other {Hide # unchanged fields}}"
-
-#. js-lingui-explicit-id
 #: src/copy/finding-list.ts:30
 msgid "{count, plural, one {Hide the # ready check} other {Hide the # ready checks}}"
 msgstr "{count, plural, one {Hide the # ready check} other {Hide the # ready checks}}"
@@ -409,11 +399,6 @@ msgstr "{count, plural, one {Show # item} other {Show # items}}"
 #: src/copy/filter-panel.ts:18
 msgid "{count, plural, one {Show # result} other {Show # results}}"
 msgstr "{count, plural, one {Show # result} other {Show # results}}"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:28
-msgid "{count, plural, one {Show # unchanged field} other {Show # unchanged fields}}"
-msgstr "{count, plural, one {Show # unchanged field} other {Show # unchanged fields}}"
 
 #. js-lingui-explicit-id
 #: src/copy/finding-list.ts:27
@@ -461,16 +446,6 @@ msgid "{count} a month"
 msgstr "{count} a month"
 
 #. js-lingui-explicit-id
-#: src/copy/version-diff.ts:23
-msgid "{count} added"
-msgstr "{count} added"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:21
-msgid "{count} changed"
-msgstr "{count} changed"
-
-#. js-lingui-explicit-id
 #: src/copy/usage-page.ts:61
 msgid "{count} GB"
 msgstr "{count} GB"
@@ -501,11 +476,6 @@ msgid "{count} proposals a month"
 msgstr "{count} proposals a month"
 
 #. js-lingui-explicit-id
-#: src/copy/version-diff.ts:24
-msgid "{count} removed"
-msgstr "{count} removed"
-
-#. js-lingui-explicit-id
 #: src/copy/data-table.ts:21
 #: src/copy/filter-panel.ts:13
 msgid "{count} selected"
@@ -515,11 +485,6 @@ msgstr "{count} selected"
 #: src/copy/stepper.ts:20
 msgid "{count} to fix"
 msgstr "{count} to fix"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:22
-msgid "{count} unchanged"
-msgstr "{count} unchanged"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:33
@@ -1085,11 +1050,6 @@ msgid "{name} — account, grievance contact and sign out"
 msgstr "{name} — account, grievance contact and sign out"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:25
-msgid "{name} — source document"
-msgstr "{name} — source document"
-
-#. js-lingui-explicit-id
 #: src/copy/pricing.ts:111
 msgid "{name} · {capacity}"
 msgstr "{name} · {capacity}"
@@ -1223,11 +1183,6 @@ msgstr "{name}, live"
 #: src/copy/catalog-settings.ts:56
 msgid "{name}, no price set"
 msgstr "{name}, no price set"
-
-#. js-lingui-explicit-id
-#: src/copy/source-document.ts:27
-msgid "{name}, page {page} of {count}"
-msgstr "{name}, page {page} of {count}"
 
 #. js-lingui-explicit-id
 #: src/copy/actor-class.ts:41
@@ -1538,11 +1493,6 @@ msgstr "{shown} of {total} {noun}"
 #: src/copy/activity-stream.ts:40
 msgid "{shown} of {total} {noun} match these filters"
 msgstr "{shown} of {total} {noun} match these filters"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:27
-msgid "{side}: {note}"
-msgstr "{side}: {note}"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:113
@@ -2669,11 +2619,6 @@ msgid "AutoPay"
 msgstr "AutoPay"
 
 #. js-lingui-explicit-id
-#: src/copy/audio-player.ts:33
-msgid "Available until {date}"
-msgstr "Available until {date}"
-
-#. js-lingui-explicit-id
 #: src/copy/branding.ts:83
 msgid "Awaiting your decision"
 msgstr "Awaiting your decision"
@@ -2683,11 +2628,6 @@ msgstr "Awaiting your decision"
 #: src/copy/explainer.ts:8
 msgid "Back"
 msgstr "Back"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:15
-msgid "Back 10 seconds"
-msgstr "Back 10 seconds"
 
 #. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:94
@@ -2893,11 +2833,6 @@ msgstr "Brand"
 #: src/copy/settings.ts:43
 msgid "Branding"
 msgstr "Branding"
-
-#. js-lingui-explicit-id
-#: src/copy/breadcrumb.ts:8
-msgid "Breadcrumb"
-msgstr "Breadcrumb"
 
 #. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:30
@@ -3383,11 +3318,6 @@ msgid "Code limits"
 msgstr "Code limits"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:21
-msgid "Collapse document"
-msgstr "Collapse document"
-
-#. js-lingui-explicit-id
 #: src/copy/settings.ts:48
 msgid "Collections"
 msgstr "Collections"
@@ -3481,11 +3411,6 @@ msgstr "Connect, reconnect and disconnect a channel identity"
 #: src/copy/role-matrix.ts:77
 msgid "Connect, rotate and disconnect the company’s own collections account"
 msgstr "Connect, rotate and disconnect the company’s own collections account"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:35
-msgid "Consent declined {date}"
-msgstr "Consent declined {date}"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:101
@@ -3630,19 +3555,9 @@ msgid "Couldn't load this chart"
 msgstr "Couldn't load this chart"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:14
-msgid "Couldn't load this document"
-msgstr "Couldn't load this document"
-
-#. js-lingui-explicit-id
 #: src/copy/detail-panel.ts:10
 msgid "Couldn't load this record"
 msgstr "Couldn't load this record"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:36
-msgid "Couldn't load this recording. Try again — the transcript is on this record either way."
-msgstr "Couldn't load this recording. Try again — the transcript is on this record either way."
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:52
@@ -4057,11 +3972,6 @@ msgstr "Delete leads"
 #: src/copy/proposal-template.ts:91
 msgid "Delete phase"
 msgstr "Delete phase"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:34
-msgid "Deleted {date}"
-msgstr "Deleted {date}"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:69
@@ -4590,11 +4500,6 @@ msgid "Excel or CSV · up to {size} MB · or browse for it"
 msgstr "Excel or CSV · up to {size} MB · or browse for it"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:20
-msgid "Expand document"
-msgstr "Expand document"
-
-#. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:127
 msgid "Expected generation through the year."
 msgstr "Expected generation through the year."
@@ -4740,16 +4645,6 @@ msgid "First cycle"
 msgstr "First cycle"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:29
-msgid "Fit whole page"
-msgstr "Fit whole page"
-
-#. js-lingui-explicit-id
-#: src/copy/source-document.ts:28
-msgid "Fit width"
-msgstr "Fit width"
-
-#. js-lingui-explicit-id
 #: src/copy/finding-list.ts:34
 msgid "Fix in {step}"
 msgstr "Fix in {step}"
@@ -4798,11 +4693,6 @@ msgstr "For the largest designs and utility work."
 #: src/copy/rich-text.ts:9
 msgid "Formatting"
 msgstr "Formatting"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:16
-msgid "Forward 30 seconds"
-msgstr "Forward 30 seconds"
 
 #. js-lingui-explicit-id
 #: src/copy/filter-panel.ts:20
@@ -5983,11 +5873,6 @@ msgid "Loading"
 msgstr "Loading"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:26
-msgid "Loading {name}"
-msgstr "Loading {name}"
-
-#. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:39
 msgid "Loading {name}'s presets"
 msgstr "Loading {name}'s presets"
@@ -6087,11 +5972,6 @@ msgstr "Loading the proposal cover"
 #: src/copy/proposal-template.ts:79
 msgid "Loading the proposal preview"
 msgstr "Loading the proposal preview"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:11
-msgid "Loading the recording"
-msgstr "Loading the recording"
 
 #. js-lingui-explicit-id
 #: src/copy/transcript.ts:25
@@ -7044,11 +6924,6 @@ msgid "No pipeline here"
 msgstr "No pipeline here"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:12
-msgid "No preview for this file kind"
-msgstr "No preview for this file kind"
-
-#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:94
 msgid "No price"
 msgstr "No price"
@@ -7092,11 +6967,6 @@ msgstr "No rates yet"
 #: src/copy/catalog-import.ts:133
 msgid "No readable file"
 msgstr "No readable file"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:20
-msgid "No recording on this call"
-msgstr "No recording on this call"
 
 #. js-lingui-explicit-id
 #: src/copy/date-picker.ts:14
@@ -7286,11 +7156,6 @@ msgid "Not from your number"
 msgstr "Not from your number"
 
 #. js-lingui-explicit-id
-#: src/copy/version-diff.ts:39
-msgid "Not in this version"
-msgstr "Not in this version"
-
-#. js-lingui-explicit-id
 #: src/copy/derivation.ts:12
 msgid "Not included"
 msgstr "Not included"
@@ -7315,11 +7180,6 @@ msgstr "Not metered on this plan"
 #: src/copy/shell.ts:31
 msgid "Not published yet"
 msgstr "Not published yet"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:24
-msgid "Not recorded — the customer declined"
-msgstr "Not recorded — the customer declined"
 
 #. js-lingui-explicit-id
 #: src/copy/money-summary.ts:11
@@ -7450,11 +7310,6 @@ msgid "Nothing assigned to you yet"
 msgstr "Nothing assigned to you yet"
 
 #. js-lingui-explicit-id
-#: src/copy/version-diff.ts:40
-msgid "Nothing changed between these two versions."
-msgstr "Nothing changed between these two versions."
-
-#. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:41
 msgid "Nothing changed for {name} — try Save again."
 msgstr "Nothing changed for {name} — try Save again."
@@ -7566,11 +7421,6 @@ msgid "Nothing to send — to invite this number again, cancel the pending invit
 msgstr "Nothing to send — to invite this number again, cancel the pending invite on Team."
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:18
-msgid "Nothing to show yet"
-msgstr "Nothing to show yet"
-
-#. js-lingui-explicit-id
 #: src/copy/charts.ts:21
 msgid "Nothing to split yet — this needs at least one recorded value."
 msgstr "Nothing to split yet — this needs at least one recorded value."
@@ -7634,11 +7484,6 @@ msgstr "Nothing you typed is lost, and customers keep the terms already in force
 #: src/copy/shell.ts:26
 msgid "Notifications"
 msgstr "Notifications"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:36
-msgid "Now"
-msgstr "Now"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:37
@@ -7767,11 +7612,6 @@ msgid "Open full size"
 msgstr "Open full size"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:11
-msgid "Open original"
-msgstr "Open original"
-
-#. js-lingui-explicit-id
 #: src/copy/data-table.ts:29
 msgid "Open record"
 msgstr "Open record"
@@ -7787,19 +7627,9 @@ msgid "Open the demo project"
 msgstr "Open the demo project"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:13
-msgid "Open the original to read it."
-msgstr "Open the original to read it."
-
-#. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:83
 msgid "Open the usage screen and the subscription invoice list"
 msgstr "Open the usage screen and the subscription invoice list"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:12
-msgid "Open transcript"
-msgstr "Open transcript"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import-fields.ts:19
@@ -8037,11 +7867,6 @@ msgstr "past versions"
 #: src/copy/usage-page.ts:26
 msgid "Past what’s included"
 msgstr "Past what’s included"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:14
-msgid "Pause recording"
-msgstr "Pause recording"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-strip.ts:27
@@ -8418,19 +8243,9 @@ msgid "Platform standard"
 msgstr "Platform standard"
 
 #. js-lingui-explicit-id
-#: src/copy/audio-player.ts:13
-msgid "Play recording"
-msgstr "Play recording"
-
-#. js-lingui-explicit-id
 #: src/copy/transcript.ts:37
 msgid "Play the call from {offset}, {turn}"
 msgstr "Play the call from {offset}, {turn}"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:19
-msgid "Playback speed {rate}×. Tap to change."
-msgstr "Playback speed {rate}×. Tap to change."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item-fields.ts:20
@@ -8962,16 +8777,6 @@ msgid "Record payments, attach receipts, read any project’s money, and see cat
 msgstr "Record payments, attach receipts, read any project’s money, and see catalog prices and margins"
 
 #. js-lingui-explicit-id
-#: src/copy/audio-player.ts:32
-msgid "Recorded with consent · {at}"
-msgstr "Recorded with consent · {at}"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:28
-msgid "Recording deleted on schedule"
-msgstr "Recording deleted on schedule"
-
-#. js-lingui-explicit-id
 #: src/copy/image.ts:15
 msgid "Ref"
 msgstr "Ref"
@@ -9087,11 +8892,6 @@ msgstr "Remove the logo"
 #: src/copy/branding.ts:65
 msgid "Remove your logo?"
 msgstr "Remove your logo?"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:18
-msgid "Removed"
-msgstr "Removed"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:82
@@ -9666,11 +9466,6 @@ msgstr "See your own stops, check-ins and attendance"
 #: src/copy/role-card.ts:45
 msgid "See your team's leads and follow-ups"
 msgstr "See your team's leads and follow-ups"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:17
-msgid "Seek within the recording"
-msgstr "Seek within the recording"
 
 #. js-lingui-explicit-id
 #: src/copy/data-table.ts:25
@@ -10803,16 +10598,6 @@ msgid "The call did not go through"
 msgstr "The call did not go through"
 
 #. js-lingui-explicit-id
-#: src/copy/audio-player.ts:21
-msgid "The call is on the record; the audio is not. The transcript and the rep's notes are still here."
-msgstr "The call is on the record; the audio is not. The transcript and the rep's notes are still here."
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:25
-msgid "The call went ahead; only the recording was declined. The transcript and the rep's notes are on this record."
-msgstr "The call went ahead; only the recording was declined. The transcript and the rep's notes are on this record."
-
-#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:89
 msgid "The catalog didn't load"
 msgstr "The catalog didn't load"
@@ -10862,11 +10647,6 @@ msgstr "The deductions bring the payable to {payable}. A figure at or below zero
 #: src/copy/catalog-import-notes.ts:9
 msgid "The file did not upload. Try again."
 msgstr "The file did not upload. Try again."
-
-#. js-lingui-explicit-id
-#: src/copy/source-document.ts:15
-msgid "The file didn't load. Try again — if it keeps failing, upload it once more."
-msgstr "The file didn't load. Try again — if it keeps failing, upload it once more."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:132
@@ -11074,11 +10854,6 @@ msgid "The prices and the subsidy in this document were current on the issue dat
 msgstr "The prices and the subsidy in this document were current on the issue date. Both change, so confirm them before you pay."
 
 #. js-lingui-explicit-id
-#: src/copy/audio-player.ts:29
-msgid "The recording reached the retention bound and was deleted. The transcript is retained."
-msgstr "The recording reached the retention bound and was deleted. The transcript is retained."
-
-#. js-lingui-explicit-id
 #: src/copy/billing-records.ts:63
 msgid "The refund window has closed. Reload to see your plan."
 msgstr "The refund window has closed. Reload to see your plan."
@@ -11273,11 +11048,6 @@ msgstr "This cycle"
 #: src/copy/validation.ts:9
 msgid "This field is required."
 msgstr "This field is required."
-
-#. js-lingui-explicit-id
-#: src/copy/source-document.ts:19
-msgid "This file has no readable pages."
-msgstr "This file has no readable pages."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import-notes.ts:7
@@ -11728,7 +11498,6 @@ msgstr "Typical system size"
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:95
 #: src/copy/plan-selection.ts:101
-#: src/copy/version-diff.ts:16
 msgid "Unchanged"
 msgstr "Unchanged"
 
@@ -11840,11 +11609,6 @@ msgstr "Upgrade"
 #: src/copy/billing-strip.ts:53
 msgid "Upgrade plan"
 msgstr "Upgrade plan"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:37
-msgid "Upgraded"
-msgstr "Upgraded"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:59
@@ -11986,16 +11750,6 @@ msgstr "v{number}"
 #: src/copy/price-book.ts:25
 msgid "V{number}"
 msgstr "V{number}"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:34
-msgid "v1"
-msgstr "v1"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:35
-msgid "v2"
-msgstr "v2"
 
 #. js-lingui-explicit-id
 #: src/copy/paged-document.ts:29
@@ -12343,11 +12097,6 @@ msgstr "What can they do?"
 #: src/copy/price-book.ts:59
 msgid "What changed"
 msgstr "What changed"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:38
-msgid "What changed and why"
-msgstr "What changed and why"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:52

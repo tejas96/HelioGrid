@@ -45,7 +45,7 @@ export function FirstRunProfile({
       trailing={language}
       identity={
         <View style={styles.heading}>
-          <Text variant="h2" style={styles.headingText}>
+          <Text variant="display" style={styles.headingText}>
             {words.heading}
           </Text>
           <Explainer

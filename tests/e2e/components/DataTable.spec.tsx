@@ -1,7 +1,13 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { Card } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedColour } from '../support/token';
+import {
+  fillOf,
+  resolvedBoxShadow,
+  resolvedColour,
+  STRONG_EDGE,
+  TILE_SHADOW,
+} from '../support/token';
 import { FlaggedStackedTable, OpeningTable, WordedDataTable } from './DataTable.story';
 
 const en = await createTranslator('en');
@@ -28,10 +34,7 @@ test('a table is a heading on the page — no fill, no shadow', async ({ mount }
   await expect(table).toHaveCSS('border-radius', '0px');
 });
 
-test('a table row is on the page and its cell editor is a field on the fill', async ({
-  mount,
-  page,
-}) => {
+test('a table row is on the page and its cell editor is the field box', async ({ mount, page }) => {
   const table = await mount(
     <WordedDataTable
       read={{ kind: 'ready' }}
@@ -46,11 +49,11 @@ test('a table row is on the page and its cell editor is a field on the fill', as
 
   await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--hg-ground'));
   await expect(row).toHaveCSS('box-shadow', 'none');
-  await expect(editor).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
-  await expect(editor).toHaveCSS('box-shadow', 'none');
+  await expect(editor).toHaveCSS('background-color', await resolvedColour(page, '--surface-form'));
+  await expect(editor).toHaveCSS('box-shadow', await resolvedBoxShadow(page, STRONG_EDGE));
 });
 
-test('the sticky head paints the ground that holds it', async ({ mount, page }) => {
+test('the sticky head paints the ground that holds it', async ({ mount }) => {
   const card = await mount(
     <Card>
       <WordedDataTable
@@ -64,7 +67,7 @@ test('the sticky head paints the ground that holds it', async ({ mount, page }) 
   const head = card.getByRole('columnheader', { name: label });
 
   await expect(head).toHaveCSS('position', 'sticky');
-  await expect(head).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
+  await expect(head).toHaveCSS('background-color', await fillOf(card));
 });
 
 test('a stacked record is a tile, and one holding an editor lies on the page', async ({
@@ -93,20 +96,21 @@ test('a stacked record is a tile, and one holding an editor lies on the page', a
   const tile = page.locator('.hg-dt-card').nth(0);
   const onPage = page.locator('.hg-dt-card').nth(1);
 
-  await expect(tile).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
-  await expect(tile).toHaveCSS('box-shadow', 'none');
+  await expect(tile).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(tile).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
   await expect(tile.locator('.hg-checkbox-box')).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--surface'),
+    await resolvedColour(page, '--fill'),
   );
   await expect(onPage).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  await expect(onPage).toHaveCSS('box-shadow', 'none');
   await expect(onPage.getByRole('textbox', { name: label })).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--fill'),
+    await resolvedColour(page, '--surface-form'),
   );
   await expect(onPage.locator('.hg-checkbox-box')).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--fill'),
+    await resolvedColour(page, '--surface'),
   );
 });
 
@@ -130,7 +134,7 @@ test('a record whose only editor is in its detail list lies on the page', async 
   await expect(table.locator('.hg-dt-card')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   await expect(table.getByRole('textbox', { name: issue })).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--fill'),
+    await resolvedColour(page, '--surface-form'),
   );
 });
 
@@ -149,7 +153,11 @@ test('a column marked editable with nothing to commit to leaves the record a til
 
   await expect(table.locator('.hg-dt-card')).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--fill'),
+    await resolvedColour(page, '--surface'),
+  );
+  await expect(table.locator('.hg-dt-card')).toHaveCSS(
+    'box-shadow',
+    await resolvedBoxShadow(page, TILE_SHADOW),
   );
 });
 
@@ -169,11 +177,11 @@ test('a flagged record holding an editor keeps its tint, and its controls are wh
   );
   await expect(card.getByRole('textbox', { name: label })).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--fill'),
+    await resolvedColour(page, '--surface-form'),
   );
 });
 
-test('a stacked total is a grey tile with no shadow', async ({ mount, page }) => {
+test('a stacked total is a tile', async ({ mount, page }) => {
   const table = await mount(
     <WordedDataTable
       read={{ kind: 'ready' }}
@@ -185,8 +193,8 @@ test('a stacked total is a grey tile with no shadow', async ({ mount, page }) =>
   );
   const total = table.locator('.hg-dt-total-block');
 
-  await expect(total).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
-  await expect(total).toHaveCSS('box-shadow', 'none');
+  await expect(total).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(total).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
 });
 
 test('a flagged stacked record keeps its warning fill', async ({ mount, page }) => {

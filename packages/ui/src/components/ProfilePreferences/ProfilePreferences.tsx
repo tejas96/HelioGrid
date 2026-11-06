@@ -42,7 +42,7 @@ export function ProfilePreferences(props: ProfilePreferencesProps) {
   const title = useRef<HTMLHeadingElement>(null);
   return (
     <div ref={room} className="hg-profile-preferences" data-wide={wide ? 'true' : undefined}>
-      <h1 ref={title} tabIndex={-1} className="hg-profile-preferences-title hg-focus-target">
+      <h1 ref={title} tabIndex={-1} className="hg-large-title-name hg-focus-target">
         {props.words.title}
       </h1>
       <PageBody {...props} title={title} wide={wide} />

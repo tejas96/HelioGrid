@@ -80,7 +80,7 @@ function LandingHead({ words, frame, phone }: InviteLandingProps) {
   return (
     <View style={[styles.stack, styles.head]}>
       {inviter === null ? null : <InviterRow inviter={inviter} />}
-      {title === null ? null : <Text variant="h2">{title}</Text>}
+      {title === null ? null : <Text variant="display">{title}</Text>}
       {banner === null ? null : <LandingBanner banner={banner} />}
       {facts === null || phone === null || frame.kind !== 'landing' ? null : (
         <Card density="expressive">

@@ -74,9 +74,7 @@ export function BillingPlan({
       }
     >
       {named === undefined ? null : (
-        <Text variant="display">
-          <BillingValueText value={named.value} />
-        </Text>
+        <Text variant="display">{named.value.map((run) => run.text).join('')}</Text>
       )}
       <View style={styles.region}>
         {facts.length === 0 ? null : <Facts label={words.yourPlan} facts={facts} />}

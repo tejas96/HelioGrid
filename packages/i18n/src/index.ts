@@ -19,7 +19,6 @@ export type { ApiErrorLike, AttemptFailureLike } from './copy/api-error';
 export { apiErrorMessageId, apiErrorRef, attemptFailureMessageId } from './copy/api-error';
 export { APPEARANCE, type AppearanceWordSet, appearanceWords } from './copy/appearance';
 export * from './copy/assign-roles';
-export * from './copy/audio-player';
 export { shownInNote } from './copy/authored-content';
 export * from './copy/banner';
 export * from './copy/billing-home';
@@ -37,7 +36,6 @@ export {
   brandingWords,
   letterheadRefusalWords,
 } from './copy/branding';
-export * from './copy/breadcrumb';
 export * from './copy/card';
 export type { AddItemCaller, AddItemFacts, CatalogAddItemWords } from './copy/catalog-add-item';
 export { catalogAddItemWords, catalogItemAddedToast } from './copy/catalog-add-item';
@@ -260,7 +258,6 @@ export type {
 } from './copy/sign-in-number';
 export { doorNoticeWords, doorSwitchWords, numberStepWords } from './copy/sign-in-number';
 export * from './copy/slider';
-export * from './copy/source-document';
 export * from './copy/stat-card';
 export * from './copy/stepper';
 export { STRUCTURE_DISCLAIMER } from './copy/structure-disclaimer';
@@ -283,7 +280,6 @@ export * from './copy/usage-meter';
 export * from './copy/usage-page';
 export type { ValidationIssueLike } from './copy/validation';
 export { createFormsValidationMessage } from './copy/validation';
-export * from './copy/version-diff';
 export type { LanguageMeta } from './languages';
 export { LANGUAGE_META, loadCatalog } from './languages';
 export type { I18nRuntime, MessageRef, Translator } from './runtime';

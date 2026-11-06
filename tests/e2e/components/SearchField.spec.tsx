@@ -11,14 +11,14 @@ import {
 import { FacetChips, FilterChips, SearchField } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { settledBox } from '../support/layout';
-import { resolvedColour } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, STRONG_EDGE } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 import { FilterSquareStory, FocusHandlesStory } from './SearchField.story';
 
 /**
- * The open page's list head (the design system's `SearchField` and `FilterChips`): the grey search
- * pill 50 tall with a white clear button, the 50×50 near-black filter square beside it, and the
- * kind chips 44 tall, the chosen one near-black.
+ * The open page's list head (the design system's `SearchField` and `FilterChips`): the search pill
+ * 50 tall, a field box whose clear button takes the fill a control takes in it, the 50×50 near-black
+ * filter square beside it, and the kind chips 44 tall, the chosen one near-black.
  */
 const en = await createTranslator('en');
 const search = en.t(SHELL.search);
@@ -30,7 +30,7 @@ const delivery = en.t(TYPE_GROUP_NAME.delivery);
 
 test.use({ viewport: { width: 375, height: 300 } });
 
-test('the expressive pill is 50 tall at --r-pill on --fill, its clear button white', async ({
+test('the expressive pill is 50 tall at --r-pill, the field box, its clear button on --fill', async ({
   mount,
   page,
 }) => {
@@ -45,13 +45,14 @@ test('the expressive pill is 50 tall at --r-pill on --fill, its clear button whi
   );
   const box = await settledBox(field);
   expect(box?.height).toBe(50);
-  await expect(field).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
+  await expect(field).toHaveCSS('background-color', await resolvedColour(page, '--surface-form'));
+  await expect(field).toHaveCSS('box-shadow', await resolvedBoxShadow(page, STRONG_EDGE));
   expect(
     Number.parseFloat(await field.evaluate((node) => getComputedStyle(node).borderTopLeftRadius)),
   ).toBeGreaterThanOrEqual(25);
   await expect(field.locator('.hg-search-field-clear-pill')).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--surface'),
+    await resolvedColour(page, '--fill'),
   );
 });
 
@@ -120,7 +121,7 @@ test('a kind chip is 44 tall; the chosen one is near-black with inverse words an
   expect((await settledBox(pill))?.height).toBe(44);
   await expect(pill).toHaveCSS('background-color', await resolvedColour(page, '--action-primary'));
   const rest = chips.getByRole('tab', { name: `${delivery} 2` }).locator('.hg-filter-pill');
-  await expect(rest).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
+  await expect(rest).toHaveCSS('background-color', await resolvedColour(page, '--hg-control-fill'));
   await expectTouchFloor(await chips.getByRole('tab').all());
 });
 
@@ -181,7 +182,7 @@ test('a chosen facet is near-black with its tick; the others stay on the control
   await expect(pill).toHaveCSS('background-color', await resolvedColour(page, '--action-primary'));
   await expect(pill.locator('svg')).toHaveCount(1);
   const rest = facets.getByRole('button', { name: delivery }).locator('.hg-filter-pill');
-  await expect(rest).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
+  await expect(rest).toHaveCSS('background-color', await resolvedColour(page, '--hg-control-fill'));
 });
 
 test('the search field and the chosen chip each take focus through their handle (D286)', async ({

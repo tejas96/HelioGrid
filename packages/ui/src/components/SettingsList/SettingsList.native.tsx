@@ -125,9 +125,7 @@ export function SettingsList({
     <View style={styles.list}>
       {/* The primitive has no role prop; the heading's role sits on the node around it. */}
       <View accessibilityRole="header">
-        <Text variant="h3" bold>
-          {title}
-        </Text>
+        <Text variant="display">{title}</Text>
       </View>
       {groups.map((group) => {
         const own = personRow(group);

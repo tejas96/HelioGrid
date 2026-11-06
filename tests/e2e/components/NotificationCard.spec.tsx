@@ -2,7 +2,7 @@ import { createTranslator, NOTIFICATION_CENTRE, notificationCardName } from '@he
 import { NotificationAnnouncement, NotificationCard, NotificationLanding } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { settledBox } from '../support/layout';
-import { resolvedColour } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, resolvedLength, TILE_SHADOW } from '../support/token';
 
 /** The centre's parts (`SCR-SHELL-03`), at the phone's 335 and the web panel's 456. */
 const en = await createTranslator('en');
@@ -89,7 +89,7 @@ for (const width of [335, 456]) {
       expect(text.x + text.width).toBeLessThanOrEqual(box.x + box.width);
     });
 
-    test('the card is a tile: its fill, padding 16, radius 22, a 10 dot, the foot past the glyph', async ({
+    test('the card is a tile: its fill and ring, padding 16, the tile radius, a 10 dot, the foot past the glyph', async ({
       mount,
       page,
     }) => {
@@ -109,12 +109,18 @@ for (const width of [335, 456]) {
       const tile = card;
       const look = await tile.evaluate((node) => {
         const style = getComputedStyle(node);
-        return { fill: style.backgroundColor, padding: style.padding, radius: style.borderRadius };
+        return {
+          fill: style.backgroundColor,
+          ring: style.boxShadow,
+          padding: style.padding,
+          radius: style.borderRadius,
+        };
       });
       expect(look).toEqual({
-        fill: await resolvedColour(page, '--fill'),
+        fill: await resolvedColour(page, '--surface'),
+        ring: await resolvedBoxShadow(page, TILE_SHADOW),
         padding: '16px',
-        radius: '22px',
+        radius: `${await resolvedLength(page, '--r-tile')}px`,
       });
       const dot = await settledBox(card.locator('.hg-notification-dot'));
       expect([dot?.width, dot?.height]).toEqual([10, 10]);

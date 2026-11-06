@@ -17,7 +17,8 @@ src/screens/<name>/       same shape as web's feature, in RN's location
   hooks/use-<thing>.ts    the platform adapter only — keyboard, focus, clipboard, navigation
   styles.ts               screen-level layout; component geometry stays with its component
   types.ts                when two files here share a type
-src/screens/shared/       the door's inset wrapper two screens share, the hand-off out of a step after a
+src/screens/shared/       the door's inset wrappers two screens share (the code step's takes Android's back
+                          to the number), the hand-off out of a step after a
                           join (`use-go-inside.ts`) and the boot screen's placeholder scaffold; a part
                           the web also draws is `packages/ui`'s (`screen-parts.md`), and a leave ask is
                           `packages/data`'s `useLeaveAsk`, fed by `usePreventRemove`

@@ -16,10 +16,6 @@
   --door-measure: calc(var(--form-max) + var(--sp-24));
 }
 
-.hg-door[data-bounded] {
-  height: 100dvh;
-}
-
 .hg-door-page {
   flex: 1;
   display: flex;
@@ -52,7 +48,7 @@
   gap: var(--sp-6);
   padding-top: var(--sp-6);
   min-height: 0;
-  animation: hg-rise var(--dur-emphasised) var(--ease-enter) both;
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
 }
 
 .hg-door-lead {
@@ -97,6 +93,10 @@
 
 /* A centred column sits between the header and the column's foot: the spacer takes half the free
    height, the task's own end the other half. */
+.hg-door[data-column="centred"] .hg-door-body {
+  padding-top: 0;
+}
+
 .hg-door[data-column="centred"] .hg-door-body::before {
   content: "";
   flex: 1 1 0;
@@ -165,5 +165,18 @@
     position: static;
     padding-bottom: var(--sp-16);
     background: none;
+  }
+}
+
+/* `DOOR_BOUNDED_MIN_HEIGHT` (`DoorFrame.logic.ts`): a bounded door is the window's height and its
+   task scrolls inside itself; a shorter window scrolls the column whole. */
+@media (min-height: 560px) {
+  .hg-door[data-bounded] {
+    height: 100dvh;
+  }
+
+  .hg-door[data-bounded] .hg-door-page,
+  .hg-door[data-bounded] .hg-door-task {
+    min-height: 0;
   }
 }

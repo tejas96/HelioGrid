@@ -166,7 +166,9 @@ export const LIGHT: ThemePalette = {
 /** A neutral charcoal with no blue cast; cards lift by tone, and the hero is the deep ocean. */
 export const DARK: ThemePalette = {
   canvas: '#0F1113',
-  'canvas-sunken': '#0A0B0D',
+  /* A well (a track, a skeleton, a disabled box) is a step LIGHTER than the page in dark: one
+     darker than #0F1113 cannot be seen. */
+  'canvas-sunken': '#25292E',
   surface: '#1A1D21',
   'surface-form': '#1A1D21',
   'surface-alt': '#15181B',

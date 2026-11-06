@@ -1,6 +1,6 @@
 import { theme } from '@heliogrid/theme';
-import { useId } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useId, useState } from 'react';
+import { type LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import Svg, {
   Defs,
   Line,
@@ -19,13 +19,21 @@ import type { HeroPanelProps } from './HeroPanel.types';
 
 const CELL = 44;
 
-/** The glass, drawn once behind the content: its ground, the logo's light, the masked cell grid. */
-function Glass({ id }: { id: string }) {
+interface Size {
+  readonly width: number;
+  readonly height: number;
+}
+
+/**
+ * The glass, drawn behind the content at the hero's measured size: a percentage size is read once,
+ * before the content grows the card, so the glass would stop short of its foot.
+ */
+function Glass({ id, size }: { id: string; size: Size }) {
   const palette = usePalette();
   const dark = palette === theme.palettes.dark;
   const strength = dark ? [0.34, 0.42, 0.34] : [0.22, 0.24, 0.16];
   return (
-    <Svg style={StyleSheet.absoluteFill} width="100%" height="100%">
+    <Svg style={StyleSheet.absoluteFill} width={size.width} height={size.height}>
       <Defs>
         <LinearGradient id={`${id}-ground`} x1="0" y1="0" x2="0.6" y2="1">
           <Stop offset="0" stopColor={palette.panel} />
@@ -81,13 +89,25 @@ function Glass({ id }: { id: string }) {
 
 export function HeroPanel({ label, labelAside, name, children }: HeroPanelProps) {
   const id = `hg-hero-${useId().replaceAll(':', '')}`;
+  const [size, setSize] = useState<Size | null>(null);
+  const measure = (event: LayoutChangeEvent) => {
+    const { width, height } = event.nativeEvent.layout;
+    if (size?.width !== width || size?.height !== height) setSize({ width, height });
+  };
   return (
-    <View style={styles.hero} accessibilityLabel={name ?? label} accessibilityRole="summary">
-      <Glass id={id} />
-      <Svg style={styles.line} width="100%" height={2}>
-        <BrandGradientDefs id={`${id}-line`} />
-        <Rect width="100%" height={2} fill={`url(#${id}-line)`} />
-      </Svg>
+    <View
+      style={styles.hero}
+      onLayout={measure}
+      accessibilityLabel={name ?? label}
+      accessibilityRole="summary"
+    >
+      {size === null ? null : <Glass id={id} size={size} />}
+      {size === null ? null : (
+        <Svg style={styles.line} width={size.width} height={2}>
+          <BrandGradientDefs id={`${id}-line`} />
+          <Rect width={size.width} height={2} fill={`url(#${id}-line)`} />
+        </Svg>
+      )}
       {label === undefined && labelAside === undefined ? null : (
         <View style={styles.head}>
           {label === undefined ? null : (
@@ -113,7 +133,7 @@ const styles = StyleSheet.create({
     borderColor: colors['line-soft'],
     backgroundColor: colors.panel,
   },
-  line: { position: 'absolute', top: 0, left: 0, right: 0 },
+  line: { position: 'absolute', top: 0, left: 0 },
   head: {
     flexDirection: 'row',
     flexWrap: 'wrap',

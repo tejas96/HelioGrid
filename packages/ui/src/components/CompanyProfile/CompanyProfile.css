@@ -80,7 +80,10 @@
     display: none;
   }
 
+  /* The page fills its track: the frame's centred measure would squeeze the column inside it. */
   .hg-company-profile[data-preview] .hg-door-page {
+    max-width: none;
+    margin: 0;
     padding: var(--sp-12) clamp(var(--sp-8), 6.25vw, var(--sp-24));
   }
 

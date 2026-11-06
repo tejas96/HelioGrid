@@ -9,7 +9,6 @@ import {
 } from '@heliogrid/i18n';
 import { useLanguageChoice, useTranslate } from '@heliogrid/i18n/react';
 import {
-  DoorCodeStep,
   DoorLanguage,
   DoorLinkStep,
   type DoorLinkStepProps,
@@ -20,8 +19,9 @@ import {
 } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
 import { openGoogle } from '../../auth/google-sign-in';
+import { InsetCodeStep } from '../shared/InsetCodeStep';
 import { InsetDoor } from '../shared/InsetDoor';
-import { useHardwareBack } from './hooks/use-hardware-back';
+import { useHardwareBack } from '../shared/use-hardware-back';
 
 /**
  * The front door (`SCR-M01-01`): phone, then code, then the success beat — which stays mounted
@@ -87,19 +87,17 @@ export function LoginScreen() {
   }
   if (panel.view === 'code') {
     return (
-      <InsetDoor>
-        <DoorCodeStep
-          language={language}
-          words={signInWords(t, signIn.frame, signIn.state)}
-          frame={signIn.frame}
-          phone={signIn.state.phone}
-          code={signIn.state.code}
-          onCode={signIn.typeCode}
-          busy={signIn.busy}
-          googleBusy={signIn.googleBusy}
-          onPress={signIn.press}
-        />
-      </InsetDoor>
+      <InsetCodeStep
+        language={language}
+        words={signInWords(t, signIn.frame, signIn.state)}
+        frame={signIn.frame}
+        phone={signIn.state.phone}
+        code={signIn.state.code}
+        onCode={signIn.typeCode}
+        busy={signIn.busy}
+        googleBusy={signIn.googleBusy}
+        onPress={signIn.press}
+      />
     );
   }
   if (panel.view === 'google-link') {

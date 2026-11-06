@@ -1,13 +1,13 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { BandedFigure, Button } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedColour } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, TILE_SHADOW } from '../support/token';
 
 const en = await createTranslator('en');
 const tryAgain = en.t(SIGN_IN.tryAgain);
 
 for (const variant of ['card', 'box'] as const) {
-  test(`a banded figure's ${variant} is a grey tile with no shadow and its controls are white`, async ({
+  test(`a banded figure's ${variant} is a tile and its controls are white`, async ({
     mount,
     page,
   }) => {
@@ -19,8 +19,8 @@ for (const variant of ['card', 'box'] as const) {
       </BandedFigure>,
     );
 
-    await expect(figure).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
-    await expect(figure).toHaveCSS('box-shadow', 'none');
+    await expect(figure).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+    await expect(figure).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
     await expect(figure.getByRole('button', { name: tryAgain })).toHaveCSS(
       'background-color',
       await resolvedColour(page, '--surface'),

@@ -210,7 +210,7 @@ test.describe('the code at 375', () => {
 test.describe('the code at 1536', () => {
   test.use({ viewport: { width: 1536, height: 1000 } });
 
-  test('the code takes focus on arrival, then Join, then the resend, centred in the task pane', async ({
+  test('the code takes focus on arrival, then Join, then the resend, inside the door’s one column', async ({
     mount,
   }) => {
     const root = await mount(<InviteLandingAt reader="en" events={FRAMES.normal} />);
@@ -220,14 +220,13 @@ test.describe('the code at 1536', () => {
     const resend = await settledBox(root.locator('.hg-invite-landing-resend'));
     expect(field?.y ?? 0).toBeLessThan(join?.y ?? 0);
     expect(join?.y ?? 0).toBeLessThan(resend?.y ?? 0);
-    const pane = await settledBox(root.locator('.hg-door-task'));
+    const door = await settledBox(root.locator('.hg-door-task'));
     const column = await settledBox(root.locator('.hg-invite-landing'));
-    const left = (column?.x ?? 0) - (pane?.x ?? 0);
-    const right = (pane?.x ?? 0) + (pane?.width ?? 0) - ((column?.x ?? 0) + (column?.width ?? 0));
-    expect(Math.abs(left - right)).toBeLessThanOrEqual(1);
+    expect(column.x).toBeGreaterThanOrEqual(door.x);
+    expect(column.x + column.width).toBeLessThanOrEqual(door.x + door.width);
   });
 
-  test('the invite’s facts sit in the context pane, with no card', async ({ mount }) => {
+  test('the invite’s facts sit with the heading, with no card', async ({ mount }) => {
     const root = await mount(<InviteLandingAt reader="en" events={FRAMES.normal} />);
     const identity = await settledBox(root.locator('.hg-door-identity'));
     const facts = await settledBox(root.getByText(words(INVITE_LANDING.codeWent)));

@@ -1,13 +1,20 @@
 import { CARD, createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { Button, Card, DataTable } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedColour, resolvedLength, resolvedShadow } from '../support/token';
+import {
+  resolvedBoxShadow,
+  resolvedColour,
+  resolvedLength,
+  resolvedShadow,
+  STRONG_EDGE,
+  TILE_SHADOW,
+} from '../support/token';
 
 const en = await createTranslator('en');
 const tryAgain = en.t(SIGN_IN.tryAgain);
 const loading = en.t(CARD.loading);
 
-test('an errored card draws its retry as the white raised secondary, since a card is a tile', async ({
+test('an errored card draws its retry as the white ringed secondary, since a card is a tile', async ({
   mount,
   page,
 }) => {
@@ -22,7 +29,7 @@ test('an errored card draws its retry as the white raised secondary, since a car
   const retry = card.getByRole('button', { name: tryAgain });
 
   await expect(retry).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
-  await expect(retry).toHaveCSS('box-shadow', await resolvedShadow(page, '--e2'));
+  await expect(retry).toHaveCSS('box-shadow', await resolvedBoxShadow(page, STRONG_EDGE));
   await retry.click();
   expect(retries).toBe(1);
 });
@@ -62,16 +69,16 @@ test('a failed read always carries its retry: the types refuse a surface state w
   expect([noRetry, handState, looseRetry, noRead]).toHaveLength(4);
 });
 
-test("a card is the open page's tile: the fill, the tile's radius and padding, no shadow", async ({
+test("a card is the open page's tile: the card colour, the tile's radius, padding and ring", async ({
   mount,
   page,
 }) => {
   const card = await mount(<Card>{tryAgain}</Card>);
 
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
   await expect(card).toHaveCSS('border-radius', `${await resolvedLength(page, '--r-tile')}px`);
   await expect(card).toHaveCSS('padding', `${await resolvedLength(page, '--tile-pad')}px`);
-  await expect(card).toHaveCSS('box-shadow', 'none');
+  await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
 });
 
 test('a selected card is ringed inside in the accent, as a focused field is', async ({
@@ -86,7 +93,7 @@ test('a selected card is ringed inside in the accent, as a focused field is', as
   );
 });
 
-test('a tappable card takes the fill-hover under the pointer and keeps its ring off', async ({
+test('a tappable card takes the fill-hover under the pointer and keeps its tile ring', async ({
   mount,
   page,
 }) => {
@@ -98,7 +105,7 @@ test('a tappable card takes the fill-hover under the pointer and keeps its ring 
 
   await card.hover();
   await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--fill-hover'));
-  await expect(card).toHaveCSS('box-shadow', 'none');
+  await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
 });
 
 test('a disabled control in a card sinks below the tile', async ({ mount, page }) => {
@@ -110,7 +117,7 @@ test('a disabled control in a card sinks below the tile', async ({ mount, page }
 
   const sunk = await resolvedColour(page, '--canvas-sunken');
   await expect(card.getByRole('button', { name: tryAgain })).toHaveCSS('background-color', sunk);
-  expect(sunk).not.toBe(await resolvedColour(page, '--fill'));
+  expect(sunk).not.toBe(await resolvedColour(page, '--surface'));
 });
 
 test('a labelled card is pressed by Enter and Space', async ({ mount, page }) => {

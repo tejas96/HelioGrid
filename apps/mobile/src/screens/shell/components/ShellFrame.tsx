@@ -1,5 +1,11 @@
 import { theme } from '@heliogrid/theme';
-import { BottomNav, type BottomNavItem, KeyboardFrame, useKeyboardUp } from '@heliogrid/ui';
+import {
+  BottomNav,
+  type BottomNavItem,
+  BrandBloom,
+  KeyboardFrame,
+  useKeyboardUp,
+} from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -59,6 +65,7 @@ export function ShellFrame({
   const keyboardUp = useKeyboardUp();
   return (
     <SafeAreaView style={styles.page} edges={['top']}>
+      <BrandBloom placement="page" />
       {topBar}
       {/* SCR-SHELL-06: pinned under the bar, outside the scroll; Frame 8 (no pill) reads nothing. */}
       {items.length > 0 ? <ShellBillingStrip /> : null}

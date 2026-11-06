@@ -1,7 +1,7 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { Button } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedColour } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, TILE_SHADOW } from '../support/token';
 import { WordedStatCard } from './StatCard.story';
 
 const en = await createTranslator('en');
@@ -19,17 +19,14 @@ test('an errored stat card is a tile and draws its retry white', async ({ mount,
   );
   const retry = card.getByRole('button', { name: tryAgain });
 
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
-  await expect(card).toHaveCSS('box-shadow', 'none');
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
   await expect(retry).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
   await retry.click();
   expect(retries).toBe(1);
 });
 
-test('a stat card is a grey tile with no shadow and its controls are white', async ({
-  mount,
-  page,
-}) => {
+test('a stat card is a tile and its controls are white', async ({ mount, page }) => {
   const card = await mount(
     <WordedStatCard read={{ kind: 'ready' }} label={tryAgain} value={12}>
       <Button variant="secondary" size="sm">
@@ -38,15 +35,15 @@ test('a stat card is a grey tile with no shadow and its controls are white', asy
     </WordedStatCard>,
   );
 
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
-  await expect(card).toHaveCSS('box-shadow', 'none');
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
   await expect(card.getByRole('button', { name: tryAgain })).toHaveCSS(
     'background-color',
     await resolvedColour(page, '--surface'),
   );
 });
 
-test('a tappable stat card is a grey tile, ringed under the pointer and never lifted', async ({
+test('a tappable stat card is a tile, ringed under the pointer and never lifted', async ({
   mount,
   page,
 }) => {
@@ -60,8 +57,8 @@ test('a tappable stat card is a grey tile, ringed under the pointer and never li
     />,
   );
 
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
-  await expect(card).toHaveCSS('box-shadow', 'none');
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
   await card.hover();
   await expect(card).toHaveCSS(
     'box-shadow',

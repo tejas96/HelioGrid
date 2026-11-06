@@ -83,11 +83,6 @@ msgid "{bankName} · account ending {ending}"
 msgstr "{bankName} · खात्याचे शेवटचे अंक {ending}"
 
 #. js-lingui-explicit-id
-#: src/copy/version-diff.ts:26
-msgid "{before} compared with {after}"
-msgstr "{before} ची {after} शी तुलना"
-
-#. js-lingui-explicit-id
 #: src/copy/invite.ts:70
 msgid "{cap} invites in the last 24 hours — the limit for one company"
 msgstr "गेल्या 24 तासांत {cap} आमंत्रणे — एका कंपनीची मर्यादा"
@@ -371,11 +366,6 @@ msgid "{count, plural, one {Fix # issue to share} other {Fix # issues to share}}
 msgstr "{count, plural, one {शेअर करण्यासाठी # समस्या दुरुस्त करा} other {शेअर करण्यासाठी # समस्या दुरुस्त करा}}"
 
 #. js-lingui-explicit-id
-#: src/copy/version-diff.ts:31
-msgid "{count, plural, one {Hide # unchanged field} other {Hide # unchanged fields}}"
-msgstr "{count, plural, one {# न बदललेले फील्ड लपवा} other {# न बदललेली फील्ड लपवा}}"
-
-#. js-lingui-explicit-id
 #: src/copy/finding-list.ts:30
 msgid "{count, plural, one {Hide the # ready check} other {Hide the # ready checks}}"
 msgstr "{count, plural, one {# तयार तपासणी लपवा} other {# तयार तपासण्या लपवा}}"
@@ -409,11 +399,6 @@ msgstr "{count, plural, one {# आयटम दाखवा} other {# आयट�
 #: src/copy/filter-panel.ts:18
 msgid "{count, plural, one {Show # result} other {Show # results}}"
 msgstr "{count, plural, one {# निकाल दाखवा} other {# निकाल दाखवा}}"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:28
-msgid "{count, plural, one {Show # unchanged field} other {Show # unchanged fields}}"
-msgstr "{count, plural, one {# न बदललेले फील्ड दाखवा} other {# न बदललेली फील्ड दाखवा}}"
 
 #. js-lingui-explicit-id
 #: src/copy/finding-list.ts:27
@@ -461,16 +446,6 @@ msgid "{count} a month"
 msgstr "दरमहा {count}"
 
 #. js-lingui-explicit-id
-#: src/copy/version-diff.ts:23
-msgid "{count} added"
-msgstr "{count} जोडले"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:21
-msgid "{count} changed"
-msgstr "{count} बदलले"
-
-#. js-lingui-explicit-id
 #: src/copy/usage-page.ts:61
 msgid "{count} GB"
 msgstr "{count} GB"
@@ -501,11 +476,6 @@ msgid "{count} proposals a month"
 msgstr "दरमहा {count} प्रस्ताव"
 
 #. js-lingui-explicit-id
-#: src/copy/version-diff.ts:24
-msgid "{count} removed"
-msgstr "{count} काढले"
-
-#. js-lingui-explicit-id
 #: src/copy/data-table.ts:21
 #: src/copy/filter-panel.ts:13
 msgid "{count} selected"
@@ -515,11 +485,6 @@ msgstr "{count} निवडले"
 #: src/copy/stepper.ts:20
 msgid "{count} to fix"
 msgstr "{count} दुरुस्त करायचे"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:22
-msgid "{count} unchanged"
-msgstr "{count} बदल नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:33
@@ -1085,11 +1050,6 @@ msgid "{name} — account, grievance contact and sign out"
 msgstr "{name} — खाते, तक्रार संपर्क आणि साइन आउट"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:25
-msgid "{name} — source document"
-msgstr "{name} — मूळ दस्तऐवज"
-
-#. js-lingui-explicit-id
 #: src/copy/pricing.ts:111
 msgid "{name} · {capacity}"
 msgstr "{name} · {capacity}"
@@ -1223,11 +1183,6 @@ msgstr "{name}, लाइव्ह"
 #: src/copy/catalog-settings.ts:56
 msgid "{name}, no price set"
 msgstr "{name}, किंमत ठरवलेली नाही"
-
-#. js-lingui-explicit-id
-#: src/copy/source-document.ts:27
-msgid "{name}, page {page} of {count}"
-msgstr "{name}, {count} पैकी पान {page}"
 
 #. js-lingui-explicit-id
 #: src/copy/actor-class.ts:41
@@ -1538,11 +1493,6 @@ msgstr "{total} पैकी {shown} {noun}"
 #: src/copy/activity-stream.ts:40
 msgid "{shown} of {total} {noun} match these filters"
 msgstr "{total} पैकी {shown} {noun} या फिल्टरशी जुळतात"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:27
-msgid "{side}: {note}"
-msgstr "{side}: {note}"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:113
@@ -2669,11 +2619,6 @@ msgid "AutoPay"
 msgstr "AutoPay"
 
 #. js-lingui-explicit-id
-#: src/copy/audio-player.ts:33
-msgid "Available until {date}"
-msgstr "{date} पर्यंत उपलब्ध"
-
-#. js-lingui-explicit-id
 #: src/copy/branding.ts:83
 msgid "Awaiting your decision"
 msgstr "तुमच्या निर्णयाची वाट"
@@ -2683,11 +2628,6 @@ msgstr "तुमच्या निर्णयाची वाट"
 #: src/copy/explainer.ts:8
 msgid "Back"
 msgstr "मागे"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:15
-msgid "Back 10 seconds"
-msgstr "10 सेकंद मागे"
 
 #. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:94
@@ -2893,11 +2833,6 @@ msgstr "ब्रँड"
 #: src/copy/settings.ts:43
 msgid "Branding"
 msgstr "ब्रँडिंग"
-
-#. js-lingui-explicit-id
-#: src/copy/breadcrumb.ts:8
-msgid "Breadcrumb"
-msgstr "पानाचा मार्ग"
 
 #. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:30
@@ -3383,11 +3318,6 @@ msgid "Code limits"
 msgstr "कोडची मर्यादा"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:21
-msgid "Collapse document"
-msgstr "दस्तऐवज लहान करा"
-
-#. js-lingui-explicit-id
 #: src/copy/settings.ts:48
 msgid "Collections"
 msgstr "वसुली"
@@ -3481,11 +3411,6 @@ msgstr "चॅनल ओळख जोडा, पुन्हा जोडा आ
 #: src/copy/role-matrix.ts:77
 msgid "Connect, rotate and disconnect the company’s own collections account"
 msgstr "कंपनीचे स्वतःचे कलेक्शन खाते जोडा, बदला आणि काढा"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:35
-msgid "Consent declined {date}"
-msgstr "{date} रोजी संमती नाकारली"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:101
@@ -3630,19 +3555,9 @@ msgid "Couldn't load this chart"
 msgstr "हा चार्ट लोड होऊ शकला नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:14
-msgid "Couldn't load this document"
-msgstr "हा दस्तऐवज लोड होऊ शकला नाही"
-
-#. js-lingui-explicit-id
 #: src/copy/detail-panel.ts:10
 msgid "Couldn't load this record"
 msgstr "हा रेकॉर्ड लोड होऊ शकला नाही"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:36
-msgid "Couldn't load this recording. Try again — the transcript is on this record either way."
-msgstr "हे रेकॉर्डिंग लोड होऊ शकले नाही. पुन्हा प्रयत्न करा — ट्रान्सक्रिप्ट कसेही या रेकॉर्डवर आहे."
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:52
@@ -4057,11 +3972,6 @@ msgstr "लीड हटवा"
 #: src/copy/proposal-template.ts:91
 msgid "Delete phase"
 msgstr "टप्पा काढून टाका"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:34
-msgid "Deleted {date}"
-msgstr "{date} रोजी हटवले"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:69
@@ -4590,11 +4500,6 @@ msgid "Excel or CSV · up to {size} MB · or browse for it"
 msgstr "Excel किंवा CSV · {size} MB पर्यंत · किंवा शोधून निवडा"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:20
-msgid "Expand document"
-msgstr "दस्तऐवज मोठा करा"
-
-#. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:127
 msgid "Expected generation through the year."
 msgstr "वर्षभरातील अपेक्षित उत्पादन."
@@ -4740,16 +4645,6 @@ msgid "First cycle"
 msgstr "पहिले चक्र"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:29
-msgid "Fit whole page"
-msgstr "संपूर्ण पान बसवा"
-
-#. js-lingui-explicit-id
-#: src/copy/source-document.ts:28
-msgid "Fit width"
-msgstr "रुंदीत बसवा"
-
-#. js-lingui-explicit-id
 #: src/copy/finding-list.ts:34
 msgid "Fix in {step}"
 msgstr "{step} मध्ये दुरुस्त करा"
@@ -4798,11 +4693,6 @@ msgstr "सर्वात मोठ्या डिझाइन आणि य�
 #: src/copy/rich-text.ts:9
 msgid "Formatting"
 msgstr "फॉरमॅटिंग"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:16
-msgid "Forward 30 seconds"
-msgstr "30 सेकंद पुढे"
 
 #. js-lingui-explicit-id
 #: src/copy/filter-panel.ts:20
@@ -5983,11 +5873,6 @@ msgid "Loading"
 msgstr "लोड होत आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:26
-msgid "Loading {name}"
-msgstr "{name} लोड होत आहे"
-
-#. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:39
 msgid "Loading {name}'s presets"
 msgstr "{name} यांचे प्रीसेट लोड होत आहेत"
@@ -6087,11 +5972,6 @@ msgstr "प्रस्तावाचे कव्हर लोड होत �
 #: src/copy/proposal-template.ts:79
 msgid "Loading the proposal preview"
 msgstr "प्रस्तावाचे पूर्वावलोकन लोड होत आहे"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:11
-msgid "Loading the recording"
-msgstr "रेकॉर्डिंग लोड होत आहे"
 
 #. js-lingui-explicit-id
 #: src/copy/transcript.ts:25
@@ -7044,11 +6924,6 @@ msgid "No pipeline here"
 msgstr "इथे कोणतीही पाइपलाइन नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:12
-msgid "No preview for this file kind"
-msgstr "या प्रकारच्या फाइलचे प्रिव्ह्यू नाही"
-
-#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:94
 msgid "No price"
 msgstr "किंमत नाही"
@@ -7092,11 +6967,6 @@ msgstr "अजून दर नाहीत"
 #: src/copy/catalog-import.ts:133
 msgid "No readable file"
 msgstr "वाचता येईल अशी फाइल नाही"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:20
-msgid "No recording on this call"
-msgstr "या कॉलचे रेकॉर्डिंग नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/date-picker.ts:14
@@ -7286,11 +7156,6 @@ msgid "Not from your number"
 msgstr "तुमच्या नंबरवरून नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/version-diff.ts:39
-msgid "Not in this version"
-msgstr "या आवृत्तीत नाही"
-
-#. js-lingui-explicit-id
 #: src/copy/derivation.ts:12
 msgid "Not included"
 msgstr "समाविष्ट नाही"
@@ -7315,11 +7180,6 @@ msgstr "या प्लॅनमध्ये मोजले जात ना�
 #: src/copy/shell.ts:31
 msgid "Not published yet"
 msgstr "अजून प्रकाशित नाही"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:24
-msgid "Not recorded — the customer declined"
-msgstr "रेकॉर्ड केले नाही — ग्राहकाने नकार दिला"
 
 #. js-lingui-explicit-id
 #: src/copy/money-summary.ts:11
@@ -7450,11 +7310,6 @@ msgid "Nothing assigned to you yet"
 msgstr "तुम्हाला अजून काहीही सोपवलेले नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/version-diff.ts:40
-msgid "Nothing changed between these two versions."
-msgstr "या दोन आवृत्त्यांमध्ये काहीही बदलले नाही."
-
-#. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:41
 msgid "Nothing changed for {name} — try Save again."
 msgstr "{name} यांच्यासाठी काहीही बदलले नाही — पुन्हा सेव्ह करा."
@@ -7566,11 +7421,6 @@ msgid "Nothing to send — to invite this number again, cancel the pending invit
 msgstr "पाठवण्यासारखे काही नाही — हा नंबर पुन्हा आमंत्रित करण्यासाठी, टीमवर बाकी आमंत्रण रद्द करा."
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:18
-msgid "Nothing to show yet"
-msgstr "अजून दाखवण्यासाठी काहीही नाही"
-
-#. js-lingui-explicit-id
 #: src/copy/charts.ts:21
 msgid "Nothing to split yet — this needs at least one recorded value."
 msgstr "अजून विभागण्यासारखे काही नाही — यासाठी किमान एक नोंदवलेले मूल्य लागते."
@@ -7634,11 +7484,6 @@ msgstr "तुम्ही लिहिलेले काहीही गमा
 #: src/copy/shell.ts:26
 msgid "Notifications"
 msgstr "सूचना"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:36
-msgid "Now"
-msgstr "आता"
 
 #. js-lingui-explicit-id
 #: src/copy/freshness.ts:37
@@ -7767,11 +7612,6 @@ msgid "Open full size"
 msgstr "पूर्ण आकारात उघडा"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:11
-msgid "Open original"
-msgstr "मूळ फाइल उघडा"
-
-#. js-lingui-explicit-id
 #: src/copy/data-table.ts:29
 msgid "Open record"
 msgstr "रेकॉर्ड उघडा"
@@ -7787,19 +7627,9 @@ msgid "Open the demo project"
 msgstr "डेमो प्रोजेक्ट उघडा"
 
 #. js-lingui-explicit-id
-#: src/copy/source-document.ts:13
-msgid "Open the original to read it."
-msgstr "वाचण्यासाठी मूळ फाइल उघडा."
-
-#. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:83
 msgid "Open the usage screen and the subscription invoice list"
 msgstr "वापर स्क्रीन आणि सबस्क्रिप्शन बिलांची यादी उघडा"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:12
-msgid "Open transcript"
-msgstr "ट्रान्सक्रिप्ट उघडा"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import-fields.ts:19
@@ -8037,11 +7867,6 @@ msgstr "मागील व्हर्जन"
 #: src/copy/usage-page.ts:26
 msgid "Past what’s included"
 msgstr "समाविष्टपेक्षा जास्त"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:14
-msgid "Pause recording"
-msgstr "रेकॉर्डिंग थांबवा"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-strip.ts:27
@@ -8418,19 +8243,9 @@ msgid "Platform standard"
 msgstr "प्लॅटफॉर्म मानक"
 
 #. js-lingui-explicit-id
-#: src/copy/audio-player.ts:13
-msgid "Play recording"
-msgstr "रेकॉर्डिंग चालू करा"
-
-#. js-lingui-explicit-id
 #: src/copy/transcript.ts:37
 msgid "Play the call from {offset}, {turn}"
 msgstr "कॉल {offset} पासून चालवा, {turn}"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:19
-msgid "Playback speed {rate}×. Tap to change."
-msgstr "प्लेबॅक वेग {rate}×. बदलण्यासाठी टॅप करा."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item-fields.ts:20
@@ -8962,16 +8777,6 @@ msgid "Record payments, attach receipts, read any project’s money, and see cat
 msgstr "पेमेंट नोंदवा, पावत्या जोडा, कोणत्याही प्रोजेक्टचे पैसे पाहा, आणि कॅटलॉगच्या किमती आणि मार्जिन पाहा"
 
 #. js-lingui-explicit-id
-#: src/copy/audio-player.ts:32
-msgid "Recorded with consent · {at}"
-msgstr "संमतीने रेकॉर्ड केले · {at}"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:28
-msgid "Recording deleted on schedule"
-msgstr "रेकॉर्डिंग ठरलेल्या वेळी हटवले"
-
-#. js-lingui-explicit-id
 #: src/copy/image.ts:15
 msgid "Ref"
 msgstr "संदर्भ"
@@ -9087,11 +8892,6 @@ msgstr "लोगो काढून टाका"
 #: src/copy/branding.ts:65
 msgid "Remove your logo?"
 msgstr "तुमचा लोगो काढायचा?"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:18
-msgid "Removed"
-msgstr "काढले"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:82
@@ -9666,11 +9466,6 @@ msgstr "तुमचे स्वतःचे स्टॉप, चेक-इन 
 #: src/copy/role-card.ts:45
 msgid "See your team's leads and follow-ups"
 msgstr "तुमच्या टीमच्या लीड आणि फॉलो-अप पाहा"
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:17
-msgid "Seek within the recording"
-msgstr "रेकॉर्डिंगमध्ये पुढे-मागे जा"
 
 #. js-lingui-explicit-id
 #: src/copy/data-table.ts:25
@@ -10803,16 +10598,6 @@ msgid "The call did not go through"
 msgstr "कॉल लागला नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/audio-player.ts:21
-msgid "The call is on the record; the audio is not. The transcript and the rep's notes are still here."
-msgstr "कॉलची नोंद आहे; त्याचा ऑडिओ नाही. ट्रान्सक्रिप्ट आणि प्रतिनिधीच्या नोंदी अजूनही इथे आहेत."
-
-#. js-lingui-explicit-id
-#: src/copy/audio-player.ts:25
-msgid "The call went ahead; only the recording was declined. The transcript and the rep's notes are on this record."
-msgstr "कॉल झाला; फक्त रेकॉर्डिंगला नकार दिला. ट्रान्सक्रिप्ट आणि प्रतिनिधीच्या नोंदी या रेकॉर्डवर आहेत."
-
-#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:89
 msgid "The catalog didn't load"
 msgstr "कॅटलॉग लोड झाला नाही"
@@ -10862,11 +10647,6 @@ msgstr "वजावटींमुळे देय रक्कम {payable} �
 #: src/copy/catalog-import-notes.ts:9
 msgid "The file did not upload. Try again."
 msgstr "फाइल अपलोड झाली नाही. पुन्हा प्रयत्न करा."
-
-#. js-lingui-explicit-id
-#: src/copy/source-document.ts:15
-msgid "The file didn't load. Try again — if it keeps failing, upload it once more."
-msgstr "फाइल लोड झाली नाही. पुन्हा प्रयत्न करा — वारंवार अयशस्वी होत असल्यास, ती पुन्हा एकदा अपलोड करा."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:132
@@ -11074,11 +10854,6 @@ msgid "The prices and the subsidy in this document were current on the issue dat
 msgstr "या दस्तऐवजातील किंमती आणि अनुदान जारी केल्याच्या तारखेला लागू होते. दोन्ही बदलतात, म्हणून पैसे भरण्यापूर्वी त्यांची खात्री करा."
 
 #. js-lingui-explicit-id
-#: src/copy/audio-player.ts:29
-msgid "The recording reached the retention bound and was deleted. The transcript is retained."
-msgstr "रेकॉर्डिंग जतन करण्याच्या मर्यादेपर्यंत पोहोचले आणि हटवले गेले. ट्रान्सक्रिप्ट जतन आहे."
-
-#. js-lingui-explicit-id
 #: src/copy/billing-records.ts:63
 msgid "The refund window has closed. Reload to see your plan."
 msgstr "परताव्याचा कालावधी संपला. तुमचा प्लॅन पाहण्यासाठी पुन्हा लोड करा."
@@ -11273,11 +11048,6 @@ msgstr "हे चक्र"
 #: src/copy/validation.ts:9
 msgid "This field is required."
 msgstr "हे फील्ड आवश्यक आहे."
-
-#. js-lingui-explicit-id
-#: src/copy/source-document.ts:19
-msgid "This file has no readable pages."
-msgstr "या फाइलमध्ये वाचता येईल असे एकही पान नाही."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import-notes.ts:7
@@ -11728,7 +11498,6 @@ msgstr "सामान्य सिस्टम आकार"
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:95
 #: src/copy/plan-selection.ts:101
-#: src/copy/version-diff.ts:16
 msgid "Unchanged"
 msgstr "बदल नाही"
 
@@ -11840,11 +11609,6 @@ msgstr "अपग्रेड"
 #: src/copy/billing-strip.ts:53
 msgid "Upgrade plan"
 msgstr "प्लॅन अपग्रेड करा"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:37
-msgid "Upgraded"
-msgstr "अपग्रेडनंतर"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:59
@@ -11986,16 +11750,6 @@ msgstr "v{number}"
 #: src/copy/price-book.ts:25
 msgid "V{number}"
 msgstr "V{number}"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:34
-msgid "v1"
-msgstr "v1"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:35
-msgid "v2"
-msgstr "v2"
 
 #. js-lingui-explicit-id
 #: src/copy/paged-document.ts:29
@@ -12343,11 +12097,6 @@ msgstr "ते काय करू शकतात?"
 #: src/copy/price-book.ts:59
 msgid "What changed"
 msgstr "काय बदलले"
-
-#. js-lingui-explicit-id
-#: src/copy/version-diff.ts:38
-msgid "What changed and why"
-msgstr "काय बदलले आणि का"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:52

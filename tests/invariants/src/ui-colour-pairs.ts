@@ -31,6 +31,11 @@ const NOT_ONE_COLOUR = new Map([
   ['tenant-mark', "the tenant's colour on its monogram — the same engine"],
   ['tenant-mark-on', "the ink chosen for the tenant's colour — the same engine"],
   ['gradient-brand', 'the wordmark — a logotype, which WCAG 1.4.3 exempts'],
+  ['gradient-mark', 'the logo mark — a logotype, which WCAG 1.4.3 exempts'],
+  [
+    'panel-glow',
+    'the solar-glass hero: --panel to --panel-deep under the logo light; its words are on-panel pairs, measured at both ends',
+  ],
   [
     'hg-icon-circle-color',
     "Card's icon circle: a tone the caller picks over a wash of itself — not held, review",

@@ -251,6 +251,8 @@ test.describe('the decline at 1536', () => {
 
 /** The confirm's two acts stacked: the last, Decline, on top; both the row's full width; no label wrapped. */
 async function expectStackedActs(page: Page): Promise<void> {
+  /* The dialog springs in at 0.97 scale: its acts are read once it is up and has stopped. */
+  await expect(page.getByRole('dialog')).toBeVisible();
   await animationsSettled(page);
   const [keep, go] = await page.getByRole('dialog').getByRole('button').all();
   if (keep === undefined || go === undefined) throw new Error('the confirm draws two acts');

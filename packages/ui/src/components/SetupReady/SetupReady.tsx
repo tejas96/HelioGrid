@@ -58,7 +58,7 @@ export function SetupReady({
   }
   return (
     <DoorFrame
-      taskMeasure="list"
+      taskMeasure="choices"
       column="deep"
       identity={
         <HeroPanel name={words.title}>

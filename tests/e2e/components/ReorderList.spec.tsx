@@ -6,7 +6,7 @@ import {
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { bottomOf, rightOf, settledBox } from '../support/layout';
-import { resolvedColour } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, TILE_SHADOW } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 import { FootReorderStory, PlainReorderStory } from './ReorderList.story';
 
@@ -21,12 +21,12 @@ const words = reorderListWords(en.t);
 
 /* A row's own controls are ghost arrows with no fill of their own, so there is no white control to
    read here: the row's grey and its flat rest are the whole of the tile. */
-test('a reorder row is a grey tile with no shadow', async ({ mount, page }) => {
+test('a reorder row is a tile', async ({ mount, page }) => {
   const list = await mount(<PlainReorderStory names={items} />);
   const row = list.getByRole('listitem').first();
 
-  await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
-  await expect(row).toHaveCSS('box-shadow', 'none');
+  await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(row).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
 });
 
 test.describe('controls at the foot, at 375', () => {

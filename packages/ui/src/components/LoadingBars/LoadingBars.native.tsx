@@ -96,7 +96,7 @@ function Bar({
 }: {
   size: LoadingBarSize;
   index: number;
-  opacity: Animated.AnimatedInterpolation<number>;
+  opacity: Animated.AnimatedMultiplication<number>;
 }) {
   if (size === 'count') {
     return (

@@ -19,7 +19,7 @@ import {
   rightOf,
   settledBox,
 } from '../support/layout';
-import { resolvedColour } from '../support/token';
+import { resolvedColour, resolvedLength } from '../support/token';
 import { expectTouchFloor, MIN_TOUCH_TARGET } from '../support/touch-target';
 import { CompanyProfileAsHeld } from './CompanyProfile.story';
 
@@ -39,7 +39,6 @@ const en = READERS.en;
 test.use({ viewport: { width: 375, height: 812 } });
 
 const COLUMN = 335;
-const FIELD = 54;
 /* A unit is a quantity's symbol, never translated, so it is written as the product writes it. */
 const UNIT = 'kWp';
 
@@ -114,13 +113,16 @@ test('what you sell holds the kind as three cards in one column and the size wit
 
   await expect(size).toHaveValue('5');
   const box = profile.locator('.hg-number-field-box');
-  expect(await settledBox(box)).toMatchObject({ width: COLUMN, height: FIELD });
+  expect(await settledBox(box)).toMatchObject({
+    width: COLUMN,
+    height: await resolvedLength(page, '--field-h'),
+  });
   await expect(box.getByText(UNIT, { exact: true })).toBeVisible();
   await expect(steppers).toHaveCount(2);
   for (const index of [0, 1]) {
     expect(await settledBox(steppers.nth(index))).toMatchObject({
       width: MIN_TOUCH_TARGET,
-      height: FIELD,
+      height: await resolvedLength(page, '--field-h'),
     });
   }
   for (const word of TIER_LINE) await expect(tier).toContainText(word);

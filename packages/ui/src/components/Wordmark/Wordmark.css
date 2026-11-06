@@ -34,7 +34,7 @@
   width: var(--hg-logo-tile-size);
   height: var(--hg-logo-tile-size);
   border-radius: var(--hg-logo-tile-radius);
-  background: linear-gradient(160deg, var(--brand-green), var(--brand-teal) 50%, var(--brand-blue));
+  background: var(--gradient-mark);
   color: var(--text-inverse);
 }
 .hg-logo-tile-sun {

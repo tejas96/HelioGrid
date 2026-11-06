@@ -2,48 +2,60 @@ import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator } from '@playwright/test';
 import { RICH_TEXT_ENGLISH, RICH_TEXT_MARKED } from '../support/rich-text-words';
-import { resolvedColour, resolvedLength } from '../support/token';
+import {
+  FOCUS_RING,
+  resolvedBoxShadow,
+  resolvedColour,
+  resolvedLength,
+  STRONG_EDGE,
+} from '../support/token';
 import { WordedRichText } from './RichText.story';
 
 /**
- * The terms editor's frame is a field's well, as every field is (`F7-15`, the design system's
- * `RichText.jsx`): `--fill`, the expressive field radius, no shadow, and focus an inset accent ring.
- * The frame holds its own controls, so the link address inside it is white.
+ * The terms editor's frame is a field's box, as every field is (`F7-15`, `primitives/FieldBox`): the
+ * form colour inside a strong hairline, the expressive field radius, and focus the accent ring. The
+ * frame holds its own controls, so the link address inside it takes the fill a control takes in a
+ * white box (`primitives/Ground`).
  */
 const en = await createTranslator('en');
 const label = en.t(COMPANY_SIGNUP.companyName);
 
-test('the frame is the field well: fill, field radius, no shadow', async ({ mount, page }) => {
+test('the frame is the field box: the form colour, the field radius, the hairline', async ({
+  mount,
+  page,
+}) => {
   const editor = await mount(<WordedRichText label={label} />);
   const frame = editor.locator('.hg-rich-text-frame');
 
-  await expect(frame).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
+  await expect(frame).toHaveCSS('background-color', await resolvedColour(page, '--surface-form'));
   await expect(frame).toHaveCSS(
     'border-radius',
     `${await resolvedLength(page, '--r-input-expressive')}px`,
   );
-  await expect(frame).toHaveCSS('box-shadow', 'none');
+  await expect(frame).toHaveCSS('box-shadow', await resolvedBoxShadow(page, STRONG_EDGE));
 });
 
-test('focus in the text draws the inset accent ring', async ({ mount, page }) => {
+test('focus in the text draws the accent ring', async ({ mount, page }) => {
   const editor = await mount(<WordedRichText label={label} />);
 
   await editor.getByRole('textbox').focus();
-  const accent = await resolvedColour(page, '--accent');
   await expect(editor.locator('.hg-rich-text-frame')).toHaveCSS(
     'box-shadow',
-    `${accent} 0px 0px 0px 1.5px inset`,
+    await resolvedBoxShadow(page, FOCUS_RING),
   );
 });
 
-test('the link address inside the well is white', async ({ mount, page }) => {
+test('the link address inside the box takes the fill a control takes there', async ({
+  mount,
+  page,
+}) => {
   const editor = await mount(<WordedRichText label={label} />);
 
   /* The sixth tool is the link: the five marks come first (`RichText.commands.ts`). */
   await editor.locator('.hg-rich-text-tool').nth(5).dispatchEvent('mousedown');
   await expect(editor.locator('.hg-rich-text-href')).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--surface'),
+    await resolvedColour(page, '--fill'),
   );
 });
 

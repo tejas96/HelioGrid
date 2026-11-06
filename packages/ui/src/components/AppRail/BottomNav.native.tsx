@@ -116,7 +116,8 @@ const styles = StyleSheet.create({
   },
   inView: {
     paddingHorizontal: theme.spacing['sp-4'],
-    backgroundColor: colors['action-primary'],
+    /* The ink pill: the words' own ink as the fill, so the inverse words read on it in both schemes. */
+    backgroundColor: colors['text-primary'],
   },
   icon: {
     position: 'relative',

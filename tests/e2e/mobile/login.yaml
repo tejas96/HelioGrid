@@ -25,3 +25,23 @@ appId: com.heliogrid.app
 - extendedWaitUntil:
     visible: ${ENTER_THE_CODE}
     timeout: 15000
+# Android's back on the code step takes it back to the number, kept, as *Change number* does: the
+# step is a state of the door, not a route, so the navigator would close the app. The first back
+# may only close the keyboard. Sending again is safe: `run.sh` reads the newest code.
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - back
+      - runFlow:
+          when:
+            visible: ${ENTER_THE_CODE}
+          commands:
+            - back
+      - extendedWaitUntil:
+          visible: ${SEND_CODE}
+          timeout: 5000
+      - tapOn: ${SEND_CODE}
+      - extendedWaitUntil:
+          visible: ${ENTER_THE_CODE}
+          timeout: 15000

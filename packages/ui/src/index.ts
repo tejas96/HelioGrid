@@ -20,7 +20,6 @@ export * from './components/AppearanceSwitch';
 export * from './components/AppRail';
 export * from './components/AppShell';
 export * from './components/AssignRoles';
-export * from './components/AudioPlayer';
 export * from './components/Avatar';
 // Named as well as starred: the component tests read only the names an entry lists by name
 // (`tests/e2e/support/hues.ts`).
@@ -34,7 +33,6 @@ export * from './components/Block';
 export * from './components/BrandBloom';
 export * from './components/BrandColorField';
 export * from './components/BrandingSettings';
-export * from './components/Breadcrumb';
 export * from './components/Button';
 export * from './components/Card';
 export * from './components/CatalogImport';
@@ -147,13 +145,11 @@ export * from './components/SignupKnownNumber';
 export * from './components/SignupRequestSent';
 export * from './components/SignupSteps';
 export * from './components/Slider';
-export * from './components/SourceDocument';
 export * from './components/StatCard';
 export * from './components/StatusChip';
 export * from './components/Stepper';
 export * from './components/SuccessDwell';
 export * from './components/Switch';
-export * from './components/Tabs';
 export * from './components/TenantHeader';
 export * from './components/Textarea';
 export * from './components/TextDivider';
@@ -163,13 +159,11 @@ export * from './components/Timeline';
 export * from './components/TintedBlock';
 export * from './components/Toast';
 export * from './components/ToastHost';
-export * from './components/Tooltip';
 export * from './components/Transcript';
 export * from './components/UnavailableNote';
 export * from './components/UsageMeter';
 export * from './components/UsagePage';
 export * from './components/ValueSource';
-export * from './components/VersionDiff';
 export * from './components/Wordmark';
 export type {
   BoxProps,

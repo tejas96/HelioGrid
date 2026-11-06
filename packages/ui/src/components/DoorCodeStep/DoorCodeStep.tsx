@@ -109,7 +109,7 @@ function CodeTitle({ words, phone }: { words: DoorCodeStepWords; phone: string }
   return (
     <div className="hg-door-title">
       <div className="hg-door-title-row">
-        <Text variant="h1">{words.title}</Text>
+        <Text variant="display">{words.title}</Text>
         {words.explainer === null ? null : <Explainer {...words.explainer} />}
       </div>
       {/* The lead-in is a line of its own, sentence case, the number under it (`SCR-M01-01` code family). */}

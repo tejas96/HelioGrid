@@ -60,7 +60,10 @@ test.describe('at 375', () => {
     await expect(act).toBeInViewport();
     const sp4 = await resolvedLength(page, '--sp-4');
     expect(await gapBetween(page, '.hg-door-header', 'h1')).toBe(sp4);
-    expect(await gapBetween(page, 'h1', '.hg-role-card')).toBe(sp4);
+    // The one-column door's gap between its title and its task, the same in every door.
+    expect(await gapBetween(page, 'h1', '.hg-role-card')).toBe(
+      await resolvedLength(page, '--sp-6'),
+    );
     expect(await gapBetween(page, '.hg-role-card', '.hg-role-explainer-act')).toBe(sp4);
     expect(await page.evaluate(() => document.scrollingElement?.scrollHeight)).toBe(812);
     await expectNothingClipped(page, TEXT);
@@ -182,7 +185,7 @@ test.describe('on a window shorter than the bounded floor', () => {
 test.describe('at 1536', () => {
   test.use({ viewport: { width: 1536, height: 1000 } });
 
-  test('d-first-run: the heading in the brand pane, two columns in the card, the act at the right edge', async ({
+  test('d-first-run: the heading over the card in the one column, its sections stacked, the act at the right edge', async ({
     mount,
     page,
   }) => {
@@ -194,32 +197,23 @@ test.describe('at 1536', () => {
       settledBox(page.getByRole('button', { name: SALES.act })),
       settledBox(page.locator('.hg-role-explainer-act .hg-text')),
     ]);
-    const sp16 = await resolvedLength(page, '--sp-16');
-    expect((heading?.x ?? 0) + (heading?.width ?? 0)).toBeLessThanOrEqual(512);
-    expect(card?.x).toBe(512 + sp16);
-    expect(Math.round((card?.x ?? 0) + (card?.width ?? 0))).toBe(1536 - sp16);
+    const column = await settledBox(page.locator('.hg-door-task'));
+    expect(heading.x).toBe(card.x);
+    expect(heading.y + heading.height).toBeLessThan(card.y);
+    expect(card.x).toBe(column.x);
+    expect(card.width).toBe(column.width);
     const [grants, limits] = await Promise.all(
       [0, 1].map((n) => settledBox(page.locator('.hg-role-card-section').nth(n))),
     );
-    expect(limits?.y).toBe(grants?.y);
-    expect(gapOf(grants, limits)).toBe(await resolvedLength(page, '--sp-8'));
-    expect(Math.round((act?.x ?? 0) + (act?.width ?? 0))).toBe(1536 - sp16);
-    expect(act?.width ?? 0).toBeLessThan((card?.width ?? 0) / 2);
-    expect(Math.round((line?.x ?? 0) + (line?.width ?? 0) / 2)).toBe(
-      Math.round((act?.x ?? 0) + (act?.width ?? 0) / 2),
-    );
-    expect(Math.round((act?.y ?? 0) - ((card?.y ?? 0) + (card?.height ?? 0)))).toBe(
-      await resolvedLength(page, '--sp-8'),
-    );
+    expect(limits?.x).toBe(grants?.x);
+    expect(limits?.y).toBeGreaterThan((grants?.y ?? 0) + (grants?.height ?? 0));
+    expect(Math.round(act.x + act.width)).toBe(Math.round(card.x + card.width));
+    expect(act.width).toBeLessThan(card.width / 2);
+    expect(Math.round(line.x + line.width / 2)).toBe(Math.round(act.x + act.width / 2));
+    expect(Math.round(act.y - (card.y + card.height))).toBe(await resolvedLength(page, '--sp-8'));
     /* The two-line heading's ink reaches 2 px under its box, which hides nothing: it is left out here. */
     await expectNothingClipped(page, TEXT.replace('h1, ', ''));
     await expectNoSidewaysScroll(page);
     await page.screenshot({ path: `${PICTURES}/d-first-run.png` });
   });
 });
-
-type Box = { x: number; width: number } | null | undefined;
-
-function gapOf(left: Box, right: Box): number {
-  return Math.round((right?.x ?? 0) - ((left?.x ?? 0) + (left?.width ?? 0)));
-}

@@ -50,7 +50,12 @@ export function MobileTopBar({
   }));
   return (
     <View
-      style={[styles.bar, { backgroundColor: ground }, scrolled ? styles.lifted : undefined, style]}
+      style={[
+        styles.bar,
+        /* Clear over the page's glow at rest; the page's own colour once content scrolls under. */
+        scrolled ? [{ backgroundColor: ground }, styles.lifted] : undefined,
+        style,
+      ]}
     >
       {leading}
       {title !== undefined ? (
@@ -107,7 +112,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing['sp-2'],
     minHeight: theme.layout['topbar-h-mobile'],
-    paddingVertical: theme.spacing['sp-2'],
+    /* The 44 controls centre in the bar's height; a padding of sp-2 would grow it past the token. */
+    paddingVertical: theme.spacing['sp-1'],
     paddingHorizontal: theme.layout['screen-pad-mobile'],
     /* Always over the page, so its lifted shadow falls on the content. Held, never toggled: on
        Fabric a zIndex change re-orders the bar's native siblings, and a field in the page loses

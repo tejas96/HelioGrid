@@ -1,6 +1,6 @@
 import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedColour } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, TILE_SHADOW } from '../support/token';
 import { DateSetAt } from './DateSet.story';
 
 const en = await createTranslator('en');
@@ -10,15 +10,12 @@ const entries = [
 
 /* A row's one control is a ghost delete with no fill of its own, so there is no white control to
    read here: the row's grey and its flat rest are the whole of the tile. */
-test('a date row is a grey tile with no shadow, and the calendar stays on the page', async ({
-  mount,
-  page,
-}) => {
+test('a date row is a tile, and the calendar stays on the page', async ({ mount, page }) => {
   const dateSet = await mount(<DateSetAt entries={entries} month="2026-10-01" />);
   const row = dateSet.getByRole('listitem');
 
-  await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
-  await expect(row).toHaveCSS('box-shadow', 'none');
+  await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(row).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
   await expect(dateSet.locator('.hg-date-set-grid')).toHaveCSS(
     'background-color',
     'rgba(0, 0, 0, 0)',

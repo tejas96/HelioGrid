@@ -16,7 +16,7 @@ export function PlanComparison({ view, words, layout, compareOpen, acts }: PlanS
   if (compare === null) return null;
   if (layout === 'columns') {
     return (
-      <Block title={words.compareAll} density="functional" flat>
+      <Block title={words.compareAll} density="functional">
         <div className="hg-plans-region" data-gap="4">
           <SetChips compare={compare} words={words} onSet={acts.onSet} />
           <Grid

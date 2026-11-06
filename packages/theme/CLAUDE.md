@@ -28,3 +28,4 @@ the tokens as code (`dist/index.js`), `dist/android-res/` (the palette as Androi
   `--canvas` by `tests/platform-colours.test.ts`.
 - A web font file in `assets/fonts` that is not named in `BUNDLED_FACES` is never shipped, and a
   family whose file reads another name fails the build.
+- A dark well (`canvas-sunken`: a track, a skeleton, a disabled box) darker than the page cannot be seen on it, and no contrast pair catches it, since a track has no floor → in dark a well is a step LIGHTER than `canvas` and darker than `fill-hover`.

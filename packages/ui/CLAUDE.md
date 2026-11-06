@@ -9,17 +9,20 @@ Every component draws the approved language (`CLAUDE.md` §10) from the typed to
 ## What lives here / what must never live here
 
 - `src/primitives/` — the atoms every component is built from. **Every field draws its box through
-  `FieldBox`** — the well, the radius and the rings are decided there once (`F7-15`, `F7-24`); a
-  field that paints its own background, shadow or ring is drift. **Every other control takes its
-  fill from `Ground`** — the opposite of what holds it: `var(--hg-control-fill)` on the web,
-  `useGround()` on the phone. A surface that holds controls joins `Ground.css`'s page or tile list
-  and, on the phone, wraps its content in `GroundProvider`; a control that paints `--surface` or
-  the well itself is drift — except the secondary `Button`, which is raised, not filled:
-  `--surface` at `--e2` on every ground (`F7-15`). **A tile is drawn only by `Ground`** (`F7-49`): its class joins
-  `Ground.css`'s tiles list, which paints its fill and its shadow; on the phone it spreads
-  `tileSurface` and wraps `GroundProvider ground="tile"`. A tile keeps only its radius, padding
-  and ring states; one that paints its own grey is drift. A section is a heading on the page —
-  no fill, no shadow; what must stay opaque over scrolling paints `var(--hg-ground)`.
+  `FieldBox`** — the card colour inside a strong hairline, the accent edge and glow on focus,
+  decided there once; a field that paints its own background, shadow or ring is drift. **Every
+  other control takes its fill from `Ground`** — the opposite of what holds it:
+  `var(--hg-control-fill)` on the web, `useGround()` on the phone. On the page (the canvas) a
+  control is the card colour; inside a card or tile it is `--fill`. A surface that holds controls
+  joins `Ground.css`'s list and, on the phone, wraps its content in `GroundProvider`. **A tile is
+  drawn only by `Ground`**: the white card on the page with a hairline edge — its class joins
+  `Ground.css`'s tiles list; on the phone it spreads `tileSurface` and wraps
+  `GroundProvider ground="tile"`. A tile keeps only its radius, padding and ring states. The one
+  hero a screen has is `HeroPanel` (solar glass); a page's large title is `LargeTitle`; a moment
+  that matters is `LottieMoment`.
+- **Every colour comes from the `Color` primitive** (`colors`, `usePalette`): on the web a custom
+  property, on the phone a system colour that follows light and dark. Hex arithmetic reads
+  `theme.palettes` (light for anything printed), never a style colour.
 - **NEVER product logic, policy or money maths** (that is domain). `utils/format.ts` and
   `utils/color-contrast.ts` only bind a pack or this system's inks to domain's maths; they
   implement nothing.
@@ -80,6 +83,9 @@ part there fails it.
 - Native clips a `Text`'s ink to its own box, so a line box shorter than the face's own line loses ो ी ं off the top and reads as a spacing bug; the box is raised to the bundled face's declared line, but a parent's `overflow: hidden` on a heading's top edge, or a style that shrinks the box, brings the clip back → leave the raised box alone and give the parent room.
 - React Native's `flattenStyle` copies EVERY key of every style object, `undefined` values included, so a later `{ x: maybeUndefined }` ERASES the `x` a variant beneath it set — on the phone only, since the web half does the opposite → append the object conditionally (`cond ? { x } : undefined`), never a key whose value may be undefined.
 - A web layout sized from the window (`vw`, `@media` widths) assumes it owns the page, but inside the shell a side list or a panel takes part of it, so a two-column component squeezes a column to nothing at mid widths → size it from its own room (`container` + `cqw`, `@container`), as `CompanyProfile`'s settings life does.
-- A brand-hue wash with its ink (an iris tile, badge or face) mixed by hand is a colour pair `ui-colour-pairs` cannot measure, so the full gate fails late → take the shared iris rule: `hg-iris` with `data-iris` on the web (`Avatar.css`), `irisTintOf` on native.
+- A category wash with its words (a hue tile, a kind badge, a face) mixed by hand is a pair `ui-colour-pairs` cannot measure and a colour dark mode cannot follow → take the token pair: `hg-hue` with `data-hue` on the web (`Avatar.css`), `hueTintOf` on native.
+- A phone colour is a system colour, not a string: concatenating, parsing or interpolating one fails at run time, and a percentage-sized SVG measured before its content grows stops short → arithmetic reads `usePalette()`, and an SVG behind content takes its parent's measured size (`HeroPanel.native.tsx`).
+- A Fast Refresh that changes a component's hooks leaves the phone blank with "Rendered more hooks" → relaunch the app; it is not a product bug.
 - `Sheet` and `EditorSurface` take `inset` only for a part drawn inside a device frame; in an app it measures against the nearest positioned ancestor and, inside a scrolled page at 375, opens off-screen → an app sheet never takes `inset` (`Explainer`'s `inset` is a different prop, a hit-box margin).
 - On iOS a modal `Sheet`, `Modal` or `DetailPanel` panel (`accessibilityViewIsModal`) hides every other portal layer from a screen reader, so a list, menu or bubble opened over it is drawn and tappable but cannot be read → a portal layer a person must use over a modal is `accessibilityViewIsModal` itself while open (`Select.native.tsx`, `Menu.native.tsx`).
+- On the phone a `Text` inside a `Text` that sets its own `variant` keeps that variant's size, so a value component nested in a hero's display line draws at body size → give the hero line its words, or the value component the variant, never a holder around it (`BillingPlan.native.tsx`).

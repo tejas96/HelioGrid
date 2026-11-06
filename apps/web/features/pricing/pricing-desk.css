@@ -47,9 +47,9 @@
   }
 
   .hg-pricing-title {
-    font-size: var(--fs-h1);
-    line-height: var(--lh-h1);
-    letter-spacing: var(--tr-h1);
+    font-size: var(--fs-display);
+    line-height: var(--lh-display);
+    letter-spacing: var(--tr-display);
   }
 
   .hg-pricing-claim {

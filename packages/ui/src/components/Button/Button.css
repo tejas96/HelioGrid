@@ -22,7 +22,7 @@
   letter-spacing: var(--tr-button);
   line-height: 1;
   white-space: nowrap;
-  /* A link drawn as a button (`SourceDocument`'s Open original) takes this rule too. */
+  /* A link drawn as a button takes this rule too. */
   text-decoration: none;
   width: auto;
   cursor: pointer;

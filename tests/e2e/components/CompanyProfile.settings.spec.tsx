@@ -8,6 +8,7 @@ import {
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { bottomOf, expectNoSidewaysScroll, settledBox } from '../support/layout';
+import { resolvedLength } from '../support/token';
 import { CompanyProfileAsHeld } from './CompanyProfile.story';
 
 /**
@@ -25,8 +26,6 @@ const { en } = readers;
 
 const HEADER = 56;
 const CARD = 70;
-const FIELD = 54;
-const ACT = 48;
 const SAVE = en.t(COMPANY_PROFILE.saveChangesSpoken);
 const TITLE = settingsRowName(en.t, 'company_profile');
 /* One picture per language and width, so the fit can be seen by eye. */
@@ -55,11 +54,13 @@ test.describe('at 375', () => {
       // The record measures whole pixels; the card draws a half one under it.
       expect(Math.round((await settledBox(card))?.height ?? 0)).toBe(CARD);
     }
-    expect((await settledBox(profile.locator('.hg-number-field-box')))?.height).toBe(FIELD);
+    expect((await settledBox(profile.locator('.hg-number-field-box')))?.height).toBe(
+      await resolvedLength(page, '--field-h'),
+    );
 
     const act = profile.getByRole('button', { name: SAVE });
     await expect(act).toHaveText(en.t(COMPANY_PROFILE.saveChanges));
-    expect((await settledBox(act))?.height).toBe(ACT);
+    expect((await settledBox(act))?.height).toBe(await resolvedLength(page, '--field-h'));
     expect((await settledBox(act))?.y).toBeGreaterThan(await bottomOf(headers.last()));
     const line = profile.getByText(en.t(COMPANY_PROFILE.reseedScope));
     expect((await settledBox(line))?.y).toBeGreaterThan(await bottomOf(act));
@@ -73,12 +74,12 @@ test.describe('at 375', () => {
     await page.screenshot({ path: `${PICTURES}/en-375.png`, fullPage: true });
   });
 
-  test('every text field keeps its size in settings', async ({ mount }) => {
+  test('every text field keeps its size in settings', async ({ mount, page }) => {
     const profile = await mount(<CompanyProfileAsHeld reader="en" life="settings" open="bank" />);
     const fields = profile.locator('.hg-input-shell');
     await expect(fields).toHaveCount(4);
     for (const field of await fields.all()) {
-      expect((await settledBox(field))?.height).toBe(FIELD);
+      expect((await settledBox(field))?.height).toBe(await resolvedLength(page, '--field-h'));
     }
   });
 
@@ -152,7 +153,7 @@ test.describe('at 1536', () => {
     }
     const act = profile.getByRole('button', { name: SAVE });
     const actBox = await settledBox(act);
-    expect(actBox?.height).toBe(ACT);
+    expect(actBox?.height).toBe(await resolvedLength(page, '--field-h'));
     expect(actBox?.width).toBeLessThan(300);
     expect(actBox?.y).toBeGreaterThan(await bottomOf(headers.last()));
     const line = await settledBox(profile.getByText(en.t(COMPANY_PROFILE.reseedScope)));

@@ -63,7 +63,7 @@ function TitleTrigger({ title, name, onClick }: TitleTriggerProps) {
     <Pressable accessibilityLabel={name} onPress={onClick}>
       <View style={styles.trigger}>
         <View style={styles.titleWords}>
-          <Text variant="h3">{title}</Text>
+          <Text variant="display">{title}</Text>
         </View>
         <ShellGlyph name="chevron" size="md" tone="primary" />
       </View>

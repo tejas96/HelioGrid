@@ -16,7 +16,7 @@ export function RoleExplainer({ words, read, namesPending: pending, onAct }: Rol
       bounded
       identity={
         pending ? undefined : (
-          <Text variant="h1" as="h1">
+          <Text variant="display" as="h1">
             {words.title}
           </Text>
         )
