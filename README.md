@@ -20,7 +20,6 @@ those before your first non-trivial change, not after.
 | Question | Folder |
 |---|---|
 | What does the product do? | [`docs/prd/`](docs/prd/) — **the source of truth**; every row carries its own ruling |
-| What does this screen do? | [`docs/ux/briefs/`](docs/ux/briefs/) |
 | What am I building next? | [`docs/tasks/`](docs/tasks/) and [`docs/build-order.md`](docs/build-order.md) |
 | How is the repo built? | [`docs/engineering/`](docs/engineering/) — start at [`docs/README.md`](docs/README.md) |
 | Where does this new file go? | [`docs/engineering/architecture.md`](docs/engineering/architecture.md) §4 |
@@ -69,7 +68,6 @@ authoritative doc for that layer; this table is only the index.
 | `docs/` | How THIS REPO is built — architecture, tech stack, gates, ADRs | — |
 | `docs/prd/` | **What the product does** — product overview, personas, journey, 8 foundations, 13 modules, and the screens register | — |
 | `docs/tasks/` | Per-module build tasks, written to as work completes | — |
-| `docs/ux/` | The 150 screen briefs plus the context file every design session is given | — |
 | `.claude/` | The `/task` skill, its helper agents, rules, the protections map and the dev-server launch file | [CLAUDE.md](CLAUDE.md) §6 |
 
 ## Prerequisites
@@ -365,7 +363,6 @@ Claude then pushes and opens the PR; the owner merges. `main` is PR-only. A PR i
 |---|---|
 | [`CLAUDE.md`](CLAUDE.md) | The constitution — rules governing every change in this repo |
 | [`.claude/rules/`](.claude/rules/) | Path-scoped rules that load automatically for the paths they name |
-| [`docs/start-here.md`](docs/start-here.md) | **Designing a screen** — the drawing prompt, the fix prompt and the checklist |
 | [`docs/prd/01-product-overview.md`](docs/prd/01-product-overview.md) | Product vision, V1 scope, non-goals — and the **glossary** (EPC, tenant, market pack, tranche, provenance tier) |
 | [`docs/prd/registers/screens.md`](docs/prd/registers/screens.md) | **The screen register** — 150 screens and the 99 locked to V1; a screen is drawn when its task's `DESIGN:` line holds a link |
 | [`docs/build-order.md`](docs/build-order.md) | Build order across modules |

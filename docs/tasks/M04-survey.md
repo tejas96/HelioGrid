@@ -1,6 +1,6 @@
 # M04 · Survey — engineering tasks
 
-This file covers module M04 — Survey: the two survey modes and the mode decision, Mode A's address entry, imagery and the pinned tile, the roof outlined by hand, coverage failure and its honest fallback, the "what remote cannot tell you" gaps list, the derived-vs-measured honesty consequence, Mode B's visits home, guided capture and the five capture groups, review & submit, photographs as reference and never measurement, visits, versions and the survey record, and the survey → design hand-off. Task-id prefix: `T-M04-`. Source doc: `docs/prd/modules/M04-survey.md` (rows M04-01 … M04-66). Screen briefs live in `docs/ux/briefs/` (SCR-M04-01 … SCR-M04-10); ten screen tasks carry one screen each, five engine/integration tasks carry the non-screen builds (`T-M04-012` and `T-M04-013` struck 2026-11-01), and ten policy rows are laws enforced through screens and review. Every row's disposition is indexed at the end of this file.
+This file covers module M04 — Survey: the two survey modes and the mode decision, Mode A's address entry, imagery and the pinned tile, the roof outlined by hand, coverage failure and its honest fallback, the "what remote cannot tell you" gaps list, the derived-vs-measured honesty consequence, Mode B's visits home, guided capture and the five capture groups, review & submit, photographs as reference and never measurement, visits, versions and the survey record, and the survey → design hand-off. Task-id prefix: `T-M04-`. Source doc: `docs/prd/modules/M04-survey.md` (rows M04-01 … M04-66). The screens are SCR-M04-01 … SCR-M04-10; ten screen tasks carry one screen each, five engine/integration tasks carry the non-screen builds (`T-M04-012` and `T-M04-013` struck 2026-11-01), and ten policy rows are laws enforced through screens and review. Every row's disposition is indexed at the end of this file.
 
 ---
 
@@ -10,7 +10,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Status:** planned
 **PRD rows:** M04-05 (P0)
 **DESIGN:** SCR-M04-01 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-01-survey-mode-chooser.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given a lead with a confirmed address, when a survey is started, then both modes are offered and the mode applicable to that lead's segment is stated with its rule (M04-01, M04-05).
@@ -25,7 +25,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Status:** planned
 **PRD rows:** M04-08 (P0), M04-12 (P0)
 **DESIGN:** SCR-M04-02 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-02-remote-address-entry.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given an address search or a dropped pin, when the preview renders, then the resolved building is highlighted and no imagery is consumed or metered until the operator confirms it (M04-08).
@@ -40,7 +40,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Status:** planned
 **PRD rows:** M04-11 (P0), M04-13 (P0), M04-22 (P0)
 **DESIGN:** SCR-M04-03 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-03-remote-roof-review.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given a tile that cannot be fetched, when the operator continues, then a blank canvas with manual outlining and known-distance calibration is available and the survey can be completed (M04-11).
@@ -57,7 +57,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Status:** planned
 **PRD rows:** M04-26 (P0)
 **DESIGN:** SCR-M04-04 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-04-coverage-failure.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given an address with no usable imagery, when the tile fetch completes, then the
@@ -73,7 +73,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Status:** planned
 **PRD rows:** M04-29 (P0), M04-30 (P0), M04-31 (P0), M04-32 (P0)
 **DESIGN:** SCR-M04-05 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-05-gaps-to-fill.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given a completed remote outline, when the flow continues, then the gaps screen renders with all five items present (M04-29, M04-30).
@@ -95,7 +95,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Status:** planned
 **PRD rows:** M04-38 (P0), M04-58 (P0), M04-59 (P0)
 **DESIGN:** SCR-M04-06 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-06-my-visits-today.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given a Survey Engineer signing in, when the app opens, then today's visits are the landing surface with address, customer, time, distance, one-tap navigation and one-tap call (M04-38).
@@ -112,7 +112,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **PRD rows:** M04-03 (P0), M04-42 (P0), M04-43 (P0), M04-44 (P0), M04-45 (P0), M04-47 (P0), M04-54 (P0)
 **Billing gate (T-M12-009):** starting a visit names `create_edit_records` in its `RouteBillingMap`, and the capture writes of a visit already started name `ungated` — reachable only through a visit started before any halt — so a visit under way at a halt completes and only a NEW visit pauses at `halted` (M12-27, owner ruling 2026-08-04).
 **DESIGN:** SCR-M04-07 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-07-guided-capture.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given a completed physical survey, when it is read, then it carries the on-site facts a remote survey cannot establish — the meter and its panel, roof condition, access, and shading not visible from above — each tiered `measured` except where the surveyor estimated it (M04-03).
@@ -135,7 +135,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Status:** planned
 **PRD rows:** M04-46 (P0)
 **DESIGN:** SCR-M04-08 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-08-shading-capture-sketch.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given an obstruction, when it is added, then it carries a photograph, a person-entered height and a position on the roof sketch, and no height is derived from the photograph (M04-46).
@@ -149,7 +149,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Status:** planned
 **PRD rows:** M04-37 (P0), M04-49 (P0), M04-50 (P0), M04-52 (P0)
 **DESIGN:** SCR-M04-09 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-09-review-submit.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given a site with a remote survey, when a physical survey is submitted for it, then the provenance change is stated before it commits and the earlier version remains readable (M04-37).
@@ -169,7 +169,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Status:** planned
 **PRD rows:** M04-28 (P0), M04-63 (P0), M04-64 (P0)
 **DESIGN:** SCR-M04-10 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M04-10-survey-detail.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given any completed remote survey, when the designer opens it, then the basis the roof was

@@ -19,7 +19,7 @@ A task is its header lines, written when the task is:
 **Type:** screen · **Tier:** P0        (screen | engine | policy | integration | port · the highest tier among its rows)
 **Status:** planned                    (planned | designed | shipped | struck — the one ledger)
 **PRD rows:** M02-<nn> (P0), M02-<nn> (P0), M02-<nn> (P1)        — every id carries its tier (rule 6)
-**DESIGN:** SCR-<module>-<nn> → PENDING          — filled with the module's canvas link by the Design track's lock commit, or by the board move of D223 (`docs/start-here.md` *Recording a drawn screen*); whether its boards are locked is `.design/<module>/`'s answer (`.claude/skills/task/design-track.md`); a studio screen reads `ported from the POC`
+**DESIGN:** SCR-<module>-<nn> → PENDING          — filled with the module's canvas link, or by the board move of D223; a studio screen reads `ported from the POC`
 **Design:** (instead of `DESIGN:`) `none — <reason>` for a task with no screen of its own, the existing boards it reuses, or `the same canvas as <task id>'s DESIGN line` and the frames it uses — only the last makes the walk wait, until that task's `DESIGN:` holds a link
 **PORT:** (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
         — files to READ AND PORT FROM, never files to create here. A PORT entry that names a
@@ -61,10 +61,10 @@ task keeps only its header lines, and git holds its history. A split task's `###
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
 2. **Requirement reference whitelist.** A task's header and requirement text may cite only:
-   `docs/prd/**`, the screen's boards on its module's canvas, by the link on its `DESIGN:` line (the one source of a design; the repo keeps only the committed lock in `.design/<module>/`),
+   `docs/prd/**`, the screen's boards on its module's canvas, by the link on its `DESIGN:` line,
    `docs/engineering/data-model.md` and `docs/engineering/forward-compat.md` (a schema-bearing
    task, where naming its entities or its first-migration row is clearer than restating them),
-   `docs/ux/briefs/**`, `docs/prd/modules/M05-studio/defect-register.md`
+   `docs/prd/modules/M05-studio/defect-register.md`
    (studio tasks), and `3d_design_studio/**` — the POC repo, today at
    `/Volumes/works-space/Solar-App-POC/` (tasks typed `port` only). The RFC may additionally cite
    implementation authorities its sections require: architecture, protections, CI and package
@@ -72,7 +72,7 @@ task keeps only its header lines, and git holds its history. A split task's `###
    old research docs, the v1 repo — is a defect in the task. A task never cites an open-question
    id: a PRD row carries its own ruling, and git carries the history.
 3. **`DESIGN: PENDING` blocks the task at its turn**, and so does a board not yet locked
-   (`/task`, *Pick*): the Design track draws, checks and locks the module first. A backend task
+   (`/task`, *Pick*). A backend task
    waits for the drawings of the screens it serves. A screen's UI is not "done" until it matches
    its board.
 4. **Studio tasks are ports, not rewrites** (ruling S12-1): engineering core moves as-is with

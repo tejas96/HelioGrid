@@ -3,11 +3,10 @@ import { join } from 'node:path';
 import { CAPABILITY_MATRIX, VISIBILITY_MATRIX } from '@heliogrid/domain';
 import { prdFiles } from './prd-rows';
 import { gitFiles } from './repo-files';
-import { BRIEFS } from './screens-register';
 import { TASKS } from './task-ledger';
 
 /**
- * Every capability a task or a brief cites is one the matrix holds, in either of its two names:
+ * Every capability a task cites is one the matrix holds, in either of its two names:
  * the id, `<area>.<name>` by the area that owns it (`onboarding.manage_team`), or the PRD's row key
  * (`F2.M01.manage-team`, or a visibility scope's, `F2.M02.lead-visibility`). A cited
  * `m01.manage_team` reads like an id, is copied into guards and tests, and exists nowhere. So a
@@ -33,9 +32,7 @@ interface Matrix {
 
 export function findCapabilityCitationProblems(repo: string): string[] {
   const matrix = readMatrix(repo);
-  const files = gitFiles(repo, [TASKS, BRIEFS]).filter((file) =>
-    /^docs\/(tasks|ux\/briefs)\/[^/]+\.md$/.test(file),
-  );
+  const files = gitFiles(repo, [TASKS]).filter((file) => /^docs\/tasks\/[^/]+\.md$/.test(file));
   if (matrix.ids.size === 0 || files.length === 0) {
     throw new Error('capability-ids-cited: nothing to read — no capability ids or no task files');
   }
@@ -55,7 +52,7 @@ export function runCapabilityIdsCited(repo: string): void {
       `capability-ids-cited: ${problems.length} problem(s):\n  - ${problems.join('\n  - ')}`,
     );
   }
-  console.log('capability ids cited — every capability a task or brief names is in the matrix');
+  console.log('capability ids cited — every capability a task names is in the matrix');
 }
 
 function readMatrix(repo: string): Matrix {

@@ -149,7 +149,7 @@ This file dispositions every requirement row of the suite's four core documents 
 - **F1-58** (P0) — **IN consent records:** per-customer voice-call consent, recording consent, and DND/do-not-call flags — each with timestamps and source — are stored, surfaced pre-dial (the gate read, M07), and **exported on request**.
 - **F1-59** (P0) — **IN breach duty:** notify the Data Protection Board and affected data principals; a grievance contact is published in-app.
 
-*Note:* the in-app grievance-contact surface of F1-59 rides the app shell (SCR-SHELL-01, `docs/ux/briefs/SCR-SHELL-01-app-shell.md`); this task owns the breach-notification duty and the determination/consent/erasure data and workflow.
+*Note:* the in-app grievance-contact surface of F1-59 rides the app shell (SCR-SHELL-01); this task owns the breach-notification duty and the determination/consent/erasure data and workflow.
 
 *Deferred:* parked by owner ruling until the tenant base reaches real-customer scale — roughly 10–20 paying customers, where a full privacy build earns its cost; `T-FCORE-010` proceeds next.
 
@@ -335,11 +335,11 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 - **BM-04** (P0) — **Seats are never the meter.** There is no seat-count anywhere in the price of the product (sole exception: BM-22, a cost-carrying capability add-on, not a licence). Rationale is the moat: whole-company adoption is what makes the single travelling record work, and pricing by headcount punishes exactly that behaviour in a market where EPCs employ many low-cost designers and field reps.
   *Enforced by:* T-FCORE-011's closed meter list (BM-16) (tracked field seats the sole seat-counting line) and T-FCORE-012's meter vocabulary; review rejects a second seat meter.
 - **BM-05** (P0) — **Every module is in every tier. Tiers gate capacity ceilings + usage counts + metered bundles — never features** (owner-confirmed). Every feature is in every tier: CRM and projects, the full studio (shadow analysis, all obstruction types, tin-shed/metal-roof, ground mount, structures, SLD + AC/DC and earthing layouts, industrial drawing sheets, PV/energy reports, DXF/SVG/PDF export), customer links, all languages — and the V2 additions (marketing, field workforce, HR) enter under the same law. Competitors ransom capabilities into higher tiers; the pricing page says so.
-  *Enforced by:* `docs/ux/briefs/SCR-M12-01-pricing-page.md` (the tier comparison states it) and `docs/tasks/M12-platform-billing.md`'s entitlements, which key only to capacity, counts and bundles; review rejects a tier-conditional capability in any module task.
+  *Enforced by:* `SCR-M12-01` (the tier comparison states it) and `docs/tasks/M12-platform-billing.md`'s entitlements, which key only to capacity, counts and bundles; review rejects a tier-conditional capability in any module task.
 - **BM-06** (P0) — **Unlimited users on every tier.** Adding a person to the tenant never changes the bill (sole exception: turning tracking ON for that person, BM-22).
   *Enforced by:* T-FCORE-010's book rows (users unlimited on all four tiers) and `docs/tasks/M12-platform-billing.md`'s invoice, which carries no headcount line.
 - **BM-07** (P0) — **Caps are upgrade signals and abuse bounds, never feature ransoms.** Every cap is visible and generous, published on the pricing page and on the usage screen; outgrowing a cap IS the upgrade signal. Enforcement is soft-block with read + export always working (§04.5).
-  *Enforced by:* `docs/ux/briefs/SCR-M12-01-pricing-page.md` and `docs/ux/briefs/SCR-M12-04-usage-screen.md` (every cap published on both), with T-FCORE-014's cap-enforcement contract behind them.
+  *Enforced by:* `SCR-M12-01` and `SCR-M12-04` (every cap published on both), with T-FCORE-014's cap-enforcement contract behind them.
 - **BM-08** (P0) — **A price for every EPC** (owner directive). The entry tier exists so that price is never the reason a small EPC stays on spreadsheets; the top of the range is a sales-assisted tier for utility-scale and open-access work. The reach law is `OV-17`/`OV-18`/`OV-20`; this document is where the tiers that deliver it live.
   *Enforced by:* T-FCORE-012's four-tier structure and T-FCORE-010's authored book (a self-serve entry price and a sales-assisted top rung in every market's book).
 - **BM-09** (P0) — **One definition per fact.** Prices, caps and bundle sizes are defined once, in this document; `modules/M12` fixes billing mechanics only and restates no number; every other surface (pricing page, usage screens, F1's book identification) points here.
@@ -354,9 +354,9 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 - **OV-04** (P0) — The product replaces the spreadsheet-and-rekeying pipeline with **one record that travels**: CRM → survey → 3D design → proposal → no-login customer link → voice-agent follow-up → light project tracking → payments. No stage re-enters data an earlier stage already holds.
   *Enforced by:* every module task's hand-off contract (`docs/tasks/M02-crm-leads.md` → `docs/tasks/M04-survey.md` → `docs/tasks/MS-studio-a.md` → `docs/tasks/M06-proposals.md` → `docs/tasks/F5-customer-link.md` → `docs/tasks/M07-sales-execution.md` → `docs/tasks/M08-projects.md` → `docs/tasks/M11-payments-collections.md`); review rejects any screen that re-keys a value an upstream stage already holds.
 - **OV-06** (P0) — The owner signs up **self-serve**, with phone number and one-time password. Nothing about acquiring the product requires a sales conversation at the entry tiers.
-  *Enforced by:* `docs/ux/briefs/SCR-M01-01-sign-in.md` and `docs/ux/briefs/SCR-M01-02-company-signup.md` (phone + OTP + company name, no sales step).
+  *Enforced by:* `SCR-M01-01` and `SCR-M01-02` (phone + OTP + company name, no sales step).
 - **OV-07** (P1) — Google Login is offered alongside Mobile OTP as a second authentication route. This is new in V2 and not present in the v1 source, which is OTP-only.
-  *Enforced by:* `docs/ux/briefs/SCR-M01-01-sign-in.md` (both routes present on the one sign-in surface).
+  *Enforced by:* `SCR-M01-01` (both routes present on the one sign-in surface).
 - **OV-08** (P0) — Mobile is **field-first and never a follow-up**: it is built in lockstep with web, carrying My Day, leads, quick-add, surveys, visits and notifications, with the studio reached through an embedded web surface.
   *Enforced by:* the mobile-first construction of every screen task in `docs/tasks/` and the studio's embedded surface in `docs/tasks/MS-studio-a.md`; review rejects a capability specified web-only without a recorded rationale.
 - **OV-09** (P0) — Every screen is designed mobile-first at 375 px with **full web parity** — the small screen is the design constraint, not a reduced edition.
@@ -372,7 +372,7 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 - **OV-25** (P0) — Everything the source states as a price, a benchmark or a mandate mechanic is **the India market's price book**, not the generic model. No number from that book is treated anywhere in this suite as a universal product fact, and no market's prices are ever derived by currency conversion from another market's (the no-FX rule is DD6, design spec §2).
   *Enforced by:* T-FCORE-010 (the price-book law and the India book as an instance, with no FX derivation).
 - **OV-26** (P0) — **The soft-block law** — The product soft-blocks, never hard-blocks. In every billing state — including halted, expired and cancelled — reading everything, searching, dashboards, export (data, CSV, existing proposal documents), the customer's own links and the billing screens with pay/upgrade/reactivate all continue to work *(Final review: "billing screens" restored — the always-works list is `BM-32`'s four items)*. Blocked mutations fail with a clear state banner and a route to reactivate. No data is ever deleted for non-payment. The EPC's customer is never punished for the EPC's billing state.
-  *Enforced by:* T-FCORE-014's state capability matrix, implemented as the billing-state gate in `docs/tasks/M12-platform-billing.md` and surfaced by `docs/ux/briefs/SCR-SHELL-06-billing-state-banner.md`.
+  *Enforced by:* T-FCORE-014's state capability matrix, implemented as the billing-state gate in `docs/tasks/M12-platform-billing.md` and surfaced by `SCR-SHELL-06`.
 - **OV-27** (P0) — **Entitlements are the only gating** — There are no feature flags in the product. Features ship enabled. The single runtime mechanism that can stop a user from doing something they have permission to do is a billing entitlement.
   *Enforced by:* `docs/tasks/M12-platform-billing.md`'s entitlements as the sole runtime gate; review rejects any feature flag in any task.
 - **OV-28** (P0) — **Capacity, not features** — Commercial tiers gate capacity ceilings, usage counts and metered bundles — never features. Every module and every capability is present in every tier. Caps are upgrade signals and abuse bounds, never feature ransoms.
@@ -401,15 +401,15 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 ### From `docs/prd/02-personas.md` — the persona laws
 
 - **PS-01** (P0) — **Role decides the home screen, not a setting.** Every persona lands on the work in front of them, not on a generic dashboard they must navigate away from; the front door is derived from what the person is, never chosen in preferences. The source calls this "the single highest-leverage UX decision in the product".
-  *Enforced by:* `docs/ux/briefs/SCR-SHELL-01-app-shell.md`'s role-derived front door and each persona home brief; review rejects a preference that chooses a home screen.
+  *Enforced by:* `SCR-SHELL-01`'s role-derived front door and each persona home brief; review rejects a preference that chooses a home screen.
 - **PS-02** (P0) — The twelve personas named in §2 are the **fixed persona vocabulary of the suite**. Every module and foundation PRD names its audience from this list, using these exact names; a document that needs a thirteenth persona raises the need with the owner rather than coining one.
-  *Enforced by:* review of every brief's persona list in `docs/ux/briefs/`; a thirteenth persona name is a defect.
+  *Enforced by:* review of every screen's persona list; a thirteenth persona name is a defect.
 - **PS-03** (P0) — **A persona is a job; a role is the grant of access.** The two sets are deliberately different sizes, one person may hold several roles at once, and access is resolved by F2's rules — permission granted if **any** held role grants it, lead visibility taking the **widest** scope among them. No persona section in this document grants, implies or restricts a permission.
   *Enforced by:* `docs/tasks/F-platform.md`'s F2 role-union resolution; review rejects a permission grant written against a persona rather than a role.
 - **PS-04** (P0) — **Every persona sits inside one of the three audiences** of `01` §2 — Owner or Employees. No persona in this suite is the EPC's customer, and no persona-level requirement may imply a customer login: the customer reaches the product through one tokenised link and never acquires an account.
   *Enforced by:* `docs/tasks/F5-customer-link.md` (no-login link) and review of every brief's persona list (see OV-32).
 - **PS-05** (P1) — **One person, one home.** Someone holding several roles gets a **single** home screen — the one for their widest role, with the other roles' work composed inside it — and can switch, "not two competing home screens". A person who both sells and surveys lands on My Day with today's visits shown inside it.
-  *Enforced by:* `docs/tasks/M13-dashboards.md`'s composed-home rule and `docs/ux/briefs/SCR-SHELL-01-app-shell.md`; review rejects a second competing front door.
+  *Enforced by:* `docs/tasks/M13-dashboards.md`'s composed-home rule and `SCR-SHELL-01`; review rejects a second competing front door.
 - **PS-14** (P0) — Surveying is a **capability, not a gatekeeper**: the survey is a task assignable to anyone who holds the capability — a dedicated Survey Engineer or a Sales Executive standing on the roof — and both use one capture flow. The persona describes whose job it usually is, never who is permitted to do it.
   *Enforced by:* `docs/tasks/M04-survey.md`'s single capture flow assignable on capability, not persona.
 - **PS-17** (P0) — This persona also holds **sign-off authority**: reviewing a design and approving it, or returning it with comments pinned to what is wrong. In v1 this is a separate preset (`Engineer` — "reviews and signs off designs"); in V2 it is documented as a distinct **capability of the Design Engineer persona**, and the customer never sees an unapproved design.
@@ -419,7 +419,7 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 - **M01-07** (P0) — **Session lifetimes and revocation.** Web sessions are 30 days rolling. Mobile has no fixed maximum while the person remains active: seven full days without foreground authenticated use expires the session and requires sign-in again. Opening or using the signed-in app in the foreground resets that inactivity window; background refresh, push handling and scheduled work never reset it. Mobile API tokens remain short-lived (≤10 minutes) and renew silently while the underlying session is valid. Deactivating a user, or a user's own "sign out everywhere", kills every device's access within ≤10 minutes. The revocation surface is the Team screen (M01-19).
   *Enforced by:* `docs/tasks/M01-onboarding.md`'s T-M01-025 (auth, session & account-lifecycle engine), consumed by `docs/tasks/M04-survey.md`, `docs/tasks/M08-projects.md` and `docs/tasks/M09-field-workforce.md`. *Rehomed 2026-08-07: the Field Technician platform law formerly carried here as `PS-24` ("Mobile sessions are long-lived") was swept from `docs/prd/02-personas.md` with the offline/sync deletion — no strike note was recorded there, and the row is absent while `PS-22`, `PS-23` and `PS-25` remain. The obligation is live, and with a concrete value, at `M01-07` above; nothing about it was ever a connectivity rule.*
 - **PS-27** (P0) — **The installation surface shows no commercial figures.** No price, no discount, no tranche, no margin, no customer value appears on any screen this persona sees. v1 achieved this by giving crew no screen at all — "crew sees no money because crew sees no screen"; where V2 gives them a screen, the property must be preserved by the surface itself.
-  *Enforced by:* `docs/ux/briefs/SCR-M08-05-installer-job-home.md` and `docs/tasks/M08-projects.md`; review rejects any money figure on an installation surface.
+  *Enforced by:* `SCR-M08-05` and `docs/tasks/M08-projects.md`; review rejects any money figure on an installation surface.
 - **PS-28** (P1) — **Attribution survives a crew that never signs in.** Where the checklist is run by a coordinator rather than the crew, ticks are attributed to the coordinator and an optional free-text "done by" per step records the crew member's name. This fallback is not removed when crew accounts exist, because mixed crews are the normal case.
   *Enforced by:* `docs/tasks/M08-projects.md`'s installation checklist attribution, retained alongside crew accounts.
 - **PS-37** (P0) — Whatever a campaign captures becomes an ordinary lead: **the phone number is the identity and every capture dedupes on it, from every channel, every time.** A marketing-sourced enquiry that matches an existing customer surfaces as a duplicate before it is saved, not after.
@@ -499,53 +499,53 @@ Each persona-definition row is realized by that persona's F2 section and its own
 - **PS-06** (P0) — The **EPC Owner** persona is the person who buys and administers the tenant — the proprietor or director of the solar EPC. Their scope is the whole business: every lead, every design, every project, every unit of money in the tenant's currency, every setting. The source states it flatly: "The business owner. Everything, always. Cannot be deleted or restricted."
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §EPC Owner
 - **PS-07** (P0) — The EPC Owner's **home screen is the pipeline dashboard**, led by the honest attention list — deals stuck or aging, proposals sent and not opened, projects blocked, payments overdue — each item deep-linking to the thing itself, followed by cash collected versus due, pipeline by stage, this period against last, forecast marked a projection, and win/loss.
-  *Realized by:* `docs/ux/briefs/SCR-M13-02-pipeline-dashboard.md` (screen owned by `docs/tasks/M13-dashboards.md`)
+  *Realized by:* `SCR-M13-02` (screen owned by `docs/tasks/M13-dashboards.md`)
 - **PS-08** (P0) — The **Sales Manager** persona runs a selling team. Their scope is the team's leads — seeing them, reassigning them, building and sending proposals against them — and explicitly **not** the company's settings, catalog or billing. Lead visibility is team-wide, one step narrower than the owner and one wider than the executive.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Sales Manager
 - **PS-09** (P0) — The Sales Manager's **home screen is the same dashboard the owner lands on, scoped to their team** — the attention list, cash and pipeline restricted to the team's deals — with the team's per-rep view reachable from it. The source assigns the owner dashboard to "Owner (+ manager, team-scoped)" and makes the same screen serve both, scoped, rather than building a second one.
-  *Realized by:* `docs/ux/briefs/SCR-M13-02-pipeline-dashboard.md` (screen owned by `docs/tasks/M13-dashboards.md`)
+  *Realized by:* `SCR-M13-02` (screen owned by `docs/tasks/M13-dashboards.md`)
 - **PS-10** (P0) — The **Sales Executive** persona sells. Their scope is their **own** leads, their own proposals and their own follow-ups — capture, qualify, book the survey, build and send the proposal, chase it, and mark it won or lost with a reason.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Sales Executive
 - **PS-11** (P0) — The Sales Executive's **home screen is My Day** — "not a dashboard of numbers, a list of what to do today", in a fixed order: **overdue** first and always visually first, **today's** timed items, a separate **agent activity** block for what the automation did on their behalf, then **upcoming**. Snoozed and dormant leads are excluded until they wake.
-  *Realized by:* `docs/ux/briefs/SCR-M07-01-my-day.md` (screen owned by `docs/tasks/M07-sales-execution.md`)
+  *Realized by:* `SCR-M07-01` (screen owned by `docs/tasks/M07-sales-execution.md`)
 - **PS-12** (P0) — The **Survey Engineer** persona visits sites and captures what a design cannot be built without: roof, electrical, shading, access and structural observations — the last "observations only, never a verdict". Their visibility is limited to what they are assigned.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Survey Engineer · `docs/prd/modules/M04-survey.md`
 - **PS-13** (P0) — The Survey Engineer's **home screen is today's site visits** — each with address, customer, time, distance, one-tap navigation and one-tap call.
-  *Realized by:* `docs/ux/briefs/SCR-M04-06-my-visits-today.md` (screen owned by `docs/tasks/M04-survey.md`)
+  *Realized by:* `SCR-M04-06` (screen owned by `docs/tasks/M04-survey.md`)
 - **PS-15** (P0) — The **Design Engineer** persona builds the system: roof geometry, obstructions, components, panel layout, shading analysis, the single-line diagram and the priced bill of materials, plus the variants a customer needs to choose between. In v1 vocabulary this is the `Designer` preset — source wording "builds designs and quotes", read as **proposals** per R1's naming law — with assigned-only visibility.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Design Engineer · `docs/prd/modules/M05-design-studio.md`
 - **PS-16** (P0) — The Design Engineer's **home screen is designs awaiting work** — the queue of surveys handed over and designs in progress, with the blocking gaps named per item.
-  *Realized by:* T-MS-375 (`docs/tasks/MS-studio-c.md`) — brief `docs/ux/briefs/SCR-MS-02-design-queue.md`
+  *Realized by:* T-MS-375 (`docs/tasks/MS-studio-c.md`) — `SCR-MS-02`
 - **PS-18** (P0) — Where a person holds sign-off, their **home screen carries the sign-off queue — designs awaiting review, oldest first** — composed into the one home rather than presented as a second front door (`PS-05`).
-  *Realized by:* T-MS-375 (`docs/tasks/MS-studio-c.md`) — brief `docs/ux/briefs/SCR-MS-02-design-queue.md`
+  *Realized by:* T-MS-375 (`docs/tasks/MS-studio-c.md`) — `SCR-MS-02`
 - **PS-20** (P0) — The **Project Manager** persona owns a won deal from signature to handover: moving it through the stage chain, keeping the document checklist complete, naming blockers with the party responsible, requesting the payment each completed stage makes due, and keeping the customer's progress view honest.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Project Manager · `docs/prd/modules/M08-projects.md`
 - **PS-21** (P0) — The Project Manager's **home screen is their projects ordered by days-in-stage, oldest first** — a blocker flags a card and never reorders it (owner ruling 2026-09-24) — each card showing customer, size, value, days in the current stage, payment collected against payment due, and the blocker flag with who is being waited on.
-  *Realized by:* `docs/ux/briefs/SCR-M08-01-project-board.md` (screen owned by `docs/tasks/M08-projects.md`)
+  *Realized by:* `SCR-M08-01` (screen owned by `docs/tasks/M08-projects.md`)
 - **PS-22** (P0) — The **Field Technician** persona is the employee whose working day is a sequence of places rather than a desk: site visits, service calls, deliveries and checks, with check-in and check-out at each, an activity timeline behind them and attendance derived from the day they actually worked.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Field Technician · `docs/prd/modules/M09-field-workforce.md`
 - **PS-23** (P1) — The Field Technician's **home screen is their route today** — the assigned stops in order, each with address, customer, window, distance, one-tap navigation and one-tap call, plus their current check-in state.
-  *Realized by:* `docs/ux/briefs/SCR-M09-02-my-day-route.md` (screen owned by `docs/tasks/M09-field-workforce.md`)
+  *Realized by:* `SCR-M09-02` (screen owned by `docs/tasks/M09-field-workforce.md`)
 - **PS-25** (P0) — The **Installation Team Member** persona is the crew who physically install the system: working the installation checklist — foundation, legs, rafters, purlins, modules, stringing, balance of system — derived from the structural model, ticking steps as they are completed and attaching photos as evidence.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Installation Team Member · `docs/prd/modules/M08-projects.md`
 - **PS-26** (P1) — The Installation Team Member's **home screen is today's installation** — the assigned job, its checklist with progress, the site's access constraints and the photos expected — and nothing else.
-  *Realized by:* `docs/ux/briefs/SCR-M08-05-installer-job-home.md` (screen owned by `docs/tasks/M08-projects.md`)
+  *Realized by:* `SCR-M08-05` (screen owned by `docs/tasks/M08-projects.md`)
 - **PS-29** (P0) — The **HR/Admin** persona keeps the people side of the company correct: inviting and onboarding employees, keeping their records and documents current, tracking attendance and leave, and deactivating people cleanly when they leave. The scope is SME-weight — only what supports EPC operations, without enterprise HR complexity.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §HR/Admin · `docs/prd/modules/M10-hr-lite.md`
 - **PS-30** (P2) — The HR/Admin's **home screen is people today** — invitations pending or expired, joiners part-way through onboarding, today's attendance exceptions, leave awaiting a decision, and employee documents needing attention (scope per M10).
-  *Realized by:* `docs/ux/briefs/SCR-M10-01-people-today-queue.md` (screen owned by `docs/tasks/M10-hr-lite.md`)
+  *Realized by:* `SCR-M10-01` (screen owned by `docs/tasks/M10-hr-lite.md`)
 - **PS-31** (P0) — The **Finance** persona owns money correctness: the collection schedule each project inherits from its proposal's payment terms, recording what has been received against which tranche with its mode and receipt, keeping revenue honest as projects change or cancel, and holding the tenant's side of tax and invoicing per the market pack.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Finance · `docs/prd/modules/M11-payments-and-collections.md`
 - **PS-32** (P1) — The Finance persona's **home screen is money due** — tranches due now and overdue by project, receipts waiting to be recorded, and the period's collections against what was expected — with every figure obeying the money-never-stale rule.
-  *Realized by:* `docs/ux/briefs/SCR-M11-01-finance-home.md` (screen owned by `docs/tasks/M11-payments-collections.md`)
+  *Realized by:* `SCR-M11-01` (screen owned by `docs/tasks/M11-payments-collections.md`)
 - **PS-33** (P0) — The **Operations** persona keeps the whole portfolio moving: every project's blockers seen together and attributed to a party, aging visible across the board, document and stage hygiene enforced, and the field workforce's day visible as a whole. Their unit of work is the portfolio, where the Project Manager's is one project.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Operations · `docs/prd/modules/M08-projects.md`, `docs/prd/modules/M09-field-workforce.md`
 - **PS-34** (P1) — The Operations persona's **home screen is blockers by party, oldest first** — everything waiting on us before everything waiting on someone else — with aged projects by days-in-stage beneath it and the field team's current day alongside.
-  *Realized by:* `docs/ux/briefs/SCR-M13-03-operations-home.md` (screen owned by `docs/tasks/M13-dashboards.md`)
+  *Realized by:* `SCR-M13-03` (screen owned by `docs/tasks/M13-dashboards.md`)
 - **PS-35** (P0) — The **Marketing** persona runs demand generation: campaigns across the channels the brief names — email, messaging, social and SMS — capturing the enquiries those campaigns produce and feeding them into the sales pipeline as leads that dedupe like any other.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Marketing · `docs/prd/modules/M03-marketing.md`
 - **PS-36** (P1) — The Marketing persona's **home screen is live campaigns and what they captured** — each campaign with its channel, its state and the enquiries it produced, plus captured leads not yet triaged into the pipeline, and whatever campaign-and-channel reporting M03 defines.
-  *Realized by:* `docs/ux/briefs/SCR-M03-01-campaign-list.md` (screen owned by `docs/tasks/M03-marketing.md`)
+  *Realized by:* `SCR-M03-01` (screen owned by `docs/tasks/M03-marketing.md`)
 
 ---
 
@@ -602,36 +602,36 @@ Each persona-definition row is realized by that persona's F2 section and its own
 | PS-04 | LAW |
 | PS-05 | LAW |
 | PS-06 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §EPC Owner |
-| PS-07 | realized-by: T-M13-002 — `docs/ux/briefs/SCR-M13-02-pipeline-dashboard.md` |
+| PS-07 | realized-by: T-M13-002 — `SCR-M13-02` |
 | PS-08 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Sales Manager |
-| PS-09 | realized-by: T-M13-002 — `docs/ux/briefs/SCR-M13-02-pipeline-dashboard.md` |
+| PS-09 | realized-by: T-M13-002 — `SCR-M13-02` |
 | PS-10 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Sales Executive |
-| PS-11 | realized-by: T-M07-001 — `docs/ux/briefs/SCR-M07-01-my-day.md` |
+| PS-11 | realized-by: T-M07-001 — `SCR-M07-01` |
 | PS-12 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Survey Engineer · `docs/prd/modules/M04-survey.md` |
-| PS-13 | realized-by: T-M04-006 — `docs/ux/briefs/SCR-M04-06-my-visits-today.md` |
+| PS-13 | realized-by: T-M04-006 — `SCR-M04-06` |
 | PS-14 | LAW |
 | PS-15 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Design Engineer · `docs/prd/modules/M05-design-studio.md` |
-| PS-16 | realized-by: T-MS-375 (`docs/tasks/MS-studio-c.md`) — brief `docs/ux/briefs/SCR-MS-02-design-queue.md` |
+| PS-16 | realized-by: T-MS-375 (`docs/tasks/MS-studio-c.md`) — `SCR-MS-02` |
 | PS-17 | LAW |
-| PS-18 | realized-by: T-MS-375 (`docs/tasks/MS-studio-c.md`) — brief `docs/ux/briefs/SCR-MS-02-design-queue.md` |
+| PS-18 | realized-by: T-MS-375 (`docs/tasks/MS-studio-c.md`) — `SCR-MS-02` |
 | PS-19 | LAW |
 | PS-20 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Project Manager · `docs/prd/modules/M08-projects.md` |
-| PS-21 | realized-by: T-M08-001 — `docs/ux/briefs/SCR-M08-01-project-board.md` |
+| PS-21 | realized-by: T-M08-001 — `SCR-M08-01` |
 | PS-22 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Field Technician · `docs/prd/modules/M09-field-workforce.md` |
-| PS-23 | realized-by: T-M09-002 — `docs/ux/briefs/SCR-M09-02-my-day-route.md` |
+| PS-23 | realized-by: T-M09-002 — `SCR-M09-02` |
 | PS-24 | *removed 2026-08-07 — swept from `docs/prd/02-personas.md` with the offline/sync deletion (no strike note recorded there). The long-lived-mobile-session law is live at `M01-07` (Laws → persona laws, above; built at T-M01-025 in `docs/tasks/M01-onboarding.md`)* |
 | PS-25 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Installation Team Member · `docs/prd/modules/M08-projects.md` |
-| PS-26 | realized-by: T-M08-005 — `docs/ux/briefs/SCR-M08-05-installer-job-home.md` |
+| PS-26 | realized-by: T-M08-005 — `SCR-M08-05` |
 | PS-27 | LAW |
 | PS-28 | LAW |
 | PS-29 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §HR/Admin · `docs/prd/modules/M10-hr-lite.md` |
-| PS-30 | realized-by: T-M10-001 — `docs/ux/briefs/SCR-M10-01-people-today-queue.md` |
+| PS-30 | realized-by: T-M10-001 — `SCR-M10-01` |
 | PS-31 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Finance · `docs/prd/modules/M11-payments-and-collections.md` |
-| PS-32 | realized-by: T-M11-001 — `docs/ux/briefs/SCR-M11-01-finance-home.md` |
+| PS-32 | realized-by: T-M11-001 — `SCR-M11-01` |
 | PS-33 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Operations · `docs/prd/modules/M08-projects.md`, `docs/prd/modules/M09-field-workforce.md` |
-| PS-34 | realized-by: T-M13-003 — `docs/ux/briefs/SCR-M13-03-operations-home.md` |
+| PS-34 | realized-by: T-M13-003 — `SCR-M13-03` |
 | PS-35 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Marketing · `docs/prd/modules/M03-marketing.md` |
-| PS-36 | realized-by: T-M03-001 — `docs/ux/briefs/SCR-M03-01-campaign-list.md` |
+| PS-36 | realized-by: T-M03-001 — `SCR-M03-01` |
 | PS-37 | LAW |
 | BM-01 | LAW |
 | BM-02 | LAW |

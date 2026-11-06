@@ -4,21 +4,17 @@ import { runBiomePluginScopes } from './biome-plugin-scopes';
 import { runBrandRegistry } from './brand-registry';
 import { runBuildOrderHolds } from './build-order-holds';
 import { runCapabilityIdsCited } from './capability-ids-cited';
-import { runDesignSystemProps } from './design-system-props';
-import { runDesignSystemSnapshot } from './design-system-snapshot';
 import { runDockerfileUnprivileged } from './dockerfile-unprivileged';
 import { runE2eFlowPerScreen } from './e2e-flow-per-screen';
 import { runEnumParity } from './enum-parity';
 import { runEnvExampleComplete } from './env-example-complete';
 import { runFormatInvariants } from './format-rendering';
 import { runLanguageFonts } from './language-fonts';
-import { runLightOnlyPlatformFiles } from './light-only-platform-files';
 import { runMatrixMirrorsF2 } from './matrix-mirrors-f2';
 import { runPrdRowsCited } from './prd-rows-cited';
 import { REPO_ROOT } from './repo-root';
 import { runRfcProofsHold } from './rfc-proofs-hold';
 import { runSchemaParity } from './schema-parity';
-import { runScreensRegisterWhole } from './screens-register-whole';
 import { runTableTenancyScan } from './table-tenancy-scan';
 import { runTemplateKeysMirrorF6 } from './template-keys-mirror-f6';
 import { runTenancyInvariants } from './tenancy-rls';
@@ -32,10 +28,10 @@ import { runVocabularyCopies } from './vocabulary-copies';
  * schema parity (live), tenant-pin (live, and static over its call sites), tenant-id-on-the-wire
  * (static), format rendering (static, F3-19…F3-24), matrix-mirrors-f2 (static, F2-25),
  * brand-registry (static), template-keys-mirror-f6 (static, F6-26), and the static repo
- * checks: vocabulary-copies, dockerfile-unprivileged, light-only-platform-files,
+ * checks: vocabulary-copies, dockerfile-unprivileged,
  * banned-word-other-files, env-example-complete, language-fonts, e2e-flow-per-screen,
- * design-system-props, design-system-snapshot, biome-plugin-scopes, build-order-holds,
- * prd-rows-cited, capability-ids-cited, screens-register-whole, ui-colour-pairs, rfc-proofs-hold.
+ *  biome-plugin-scopes, build-order-holds,
+ * prd-rows-cited, capability-ids-cited, ui-colour-pairs, rfc-proofs-hold.
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
@@ -49,18 +45,14 @@ async function main() {
   runTenantPinCallSites(REPO_ROOT); // static — every tenant pin call is transaction-local
   runVocabularyCopies(REPO_ROOT); // static — no package copies an owner's vocabulary
   runDockerfileUnprivileged(REPO_ROOT); // static — every server image drops root
-  runLightOnlyPlatformFiles(REPO_ROOT); // static — web, iOS and Android hold light-only
   runBannedWordOtherFiles(REPO_ROOT); // static — no "quote" in catalogs, SQL or markup
   runEnvExampleComplete(REPO_ROOT); // static — .env.example names every schema variable
   await runLanguageFonts(REPO_ROOT); // static — reads the BUILT i18n and theme packages
   runE2eFlowPerScreen(REPO_ROOT); // static — every route and screen has its regression flow
-  runDesignSystemProps(REPO_ROOT); // static — no design-system prop dropped by its port
-  runDesignSystemSnapshot(REPO_ROOT); // static — the pulled tokens equal the pulled census
   runBiomePluginScopes(REPO_ROOT); // static — every lint plugin covers a place that exists
   runBuildOrderHolds(REPO_ROOT); // static — every file placed, no loop, later-block waits recorded
   runPrdRowsCited(REPO_ROOT); // static — every cited PRD row is live, every quote matches its cell
-  runCapabilityIdsCited(REPO_ROOT); // static — every capability a task or brief names is in the matrix
-  runScreensRegisterWhole(REPO_ROOT); // static — every screen briefed and designed, every row landed once
+  runCapabilityIdsCited(REPO_ROOT); // static — every capability a task names is in the matrix
   runUiColourPairs(REPO_ROOT); // static — every colour ui sets on a background is a declared pair
   runRfcProofsHold(REPO_ROOT); // static — a changed RFC's named tests exist, its deleted rows are gone
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;

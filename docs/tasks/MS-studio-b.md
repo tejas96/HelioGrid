@@ -20,7 +20,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 - `CODE.step4-components.29/.32/.42 + availability` — polish (4) (S4-5 batch → MS4-17/16/20/08).
 - `BATTERY (absent entirely)` — no battery section/type/catalog in POC (S4-1: first-class section → MS4-24/25).
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-07-step4-components.md`; they are the specification. Every row of this task is present in that brief, so nothing is re-quoted here.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given a new design, Then the accordion shows PANEL → CAPACITY → INVERTER → BATTERY, opening at the first incomplete section with summaries on completed headers (MS4-01)
@@ -129,9 +129,9 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 - `CODE.step6-layout.46/.29 + scene3d.8/.19 + structures.41/.51 (+2)` — consistency & polish (8) (S5-5 batch → MS6-15/06/31/32/49/21/10; the `.29` (MS6-06), `.51` (MS6-21) and MS6-10 halves land on this screen).
 - `CODE.step6-structures.52/.68` — foundation buttons bypass allowed-options; silent clamp (S5-1b: offered ⊆ allowed → MS6-39/47/51; the MS6-51 half — the 2D table-settings surface — lands on this screen).
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md`; they are the specification. Every row of this task is present in that brief, so nothing is re-quoted here.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
-Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-studio.md` are dispositioned in `docs/tasks/MS-studio-a.md` as `surface realized-by` this task, and are not in the PRD-rows line above because they live in the M05 module document rather than this file's `MS6-*` range — **M05-89 (P0)**, the paradigm switch that never loses a census tool (engine half T-MS-116); **M05-91 (P1)**, Tier B large-C&I editing, GPU/CPU shading equivalence and server-side simulation (engine half T-MS-118); and **M05-92 (P2)**, Tier C utility scale (engine half T-MS-119, its surface shared with T-MS-206). `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` carries all three verbatim with their tiers, and the brief states they motivate are drawn here: `block-editing-regime` from M05-89 and `server-sim-provisional` from M05-91. This task builds those surfaces and consumes the engines; it re-derives none of them.
+Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-studio.md` are dispositioned in `docs/tasks/MS-studio-a.md` as `surface realized-by` this task, and are not in the PRD-rows line above because they live in the M05 module document rather than this file's `MS6-*` range — **M05-89 (P0)**, the paradigm switch that never loses a census tool (engine half T-MS-116); **M05-91 (P1)**, Tier B large-C&I editing, GPU/CPU shading equivalence and server-side simulation (engine half T-MS-118); and **M05-92 (P2)**, Tier C utility scale (engine half T-MS-119, its surface shared with T-MS-206). `SCR-MS-08` carries all three verbatim with their tiers, and the brief states they motivate are drawn here: `block-editing-regime` from M05-89 and `server-sim-provisional` from M05-91. This task builds those surfaces and consumes the engines; it re-derives none of them.
 
 **DONE WHEN:**
 - Given roofs and no panels, Then auto-place is offered once with both objectives and a manual escape (MS6-01), replacing layout in one undo step with warnings surfaced (MS6-02)
@@ -156,7 +156,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - the 2D and 3D structure surfaces agree (MS6-51)
 - Given any change, Then Health re-scores against the current design and never shows a stale score (MS6-52)
 - MS6-11, MS6-23 and MS6-26 are P1 and carry no line in the doc's P0 acceptance list; they are verified against their brief rows.
-- Not every brief-listed state closes at this task's P0 tier, and the parity clause below does not make them P0: `block-editing-regime` is P0 (M05-89, engine T-MS-116), while **`server-sim-provisional` is P1** (M05-91, engine T-MS-118) and closes at P1 with that row. M05-92 (P2) contributes no state to this brief today — its Tier C clause here is the provenance line "flat-terrain fallbacks at Tier C carry `assumed` with a visible warning"; the sibling brief `docs/ux/briefs/SCR-MS-09-3d-scene.md` shows the tagging convention for a Tier C state ("terrain-draped (Tier C; flat ground remains the default when no DEM is loaded)"), and if a Tier C state is later added to SCR-MS-08 it closes at P2.
+- Not every brief-listed state closes at this task's P0 tier, and the parity clause below does not make them P0: `block-editing-regime` is P0 (M05-89, engine T-MS-116), while **`server-sim-provisional` is P1** (M05-91, engine T-MS-118) and closes at P1 with that row. M05-92 (P2) contributes no state to this brief today — its Tier C clause here is the provenance line "flat-terrain fallbacks at Tier C carry `assumed` with a visible warning"; the sibling `SCR-MS-09` shows the tagging convention for a Tier C state ("terrain-draped (Tier C; flat ground remains the default when no DEM is loaded)"), and if a Tier C state is later added to SCR-MS-08 it closes at P2.
 - (Of the three, only M05-89 has a surface-facing Given/When/Then in `docs/prd/modules/M05-design-studio.md`'s §M05.15 acceptance block — "given a design with blocks, when editing tools render, then block/table tools present and per-panel editing remains available inside a table" — and that is the `block-editing-regime` condition here. M05-91's only acceptance line is the ±2% executor equivalence, which is T-MS-118's engine line and not this task's; its editing and simulation clauses, and all of M05-92, carry no dedicated Given/When/Then line, so the requirement text carried verbatim in the brief is the binding criterion for those surface halves.)
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 - the ported POC tests for this area pass unchanged in the new project.
@@ -174,7 +174,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - `CODE.step6-layout.46/.29 + scene3d.8/.19 + structures.41/.51 (+2)` — consistency & polish (8) (S5-5 batch → MS6-15/06/31/32/49/21/10; the `scene3d.8` (MS6-31), `scene3d.19` (MS6-32) and `structures.41` (MS6-49) halves land on this screen).
 - `CODE.step6-structures.52/.68` — foundation buttons bypass allowed-options; silent clamp (S5-1b: offered ⊆ allowed → MS6-39/47/51; the MS6-47 half — the in-scene foundation card — lands on this screen).
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-09-3d-scene.md`; they are the specification. Every row of this task is present in that brief, so nothing is re-quoted here.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given the 3D view, Then visible orbit/zoom/reset controls exist alongside gestures (MS6-30)
@@ -184,7 +184,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - shade attribution and blocker focus work (MS6-34)
 - in-scene table editing never persists view state (MS6-35)
 - heatmap states its metric and floor in the legend (MS6-36)
-- share/report/capture surfaces behave per the one-link law — the 3D lives inside the proposal link, captures the fallback (MS6-37) — the customer-facing half renders through `docs/ux/briefs/SCR-F5-05-customer-3d-view.md` (T-F5-005), which builds no rows of its own
+- share/report/capture surfaces behave per the one-link law — the 3D lives inside the proposal link, captures the fallback (MS6-37) — the customer-facing half renders through `SCR-F5-05` (T-F5-005), which builds no rows of its own
 - Given a foundation choice, Then quantities read as ASSUMED with the "engineer to confirm" note, shape overrides apply only where meaningful, and a too-tall foundation is FLAGGED rather than silently clamped (MS6-47)
 - Given the in-scene structure card, Then every control (presets, visibility, profile with specs, foundation, tilt/clearance, MMS, leg plan) commits exactly one undo step through the single choice-applier, and an unavailable card explains why rather than rendering blank (MS6-48)
 - Given a ground table, Then only allowed foundations are offered and none is silently corrected (MS6-39/47/51) — this screen carries the MS6-47 half
@@ -322,7 +322,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - `CODE.step7-proposal.88/.92/.98/.87` — money: rounded energy, gross lifetime, lease basis, 100% offset (S6-3 → MS7-30/31/33/34; the `.87` self-consumption half (MS7-31) and the `.98` lease-basis half (MS7-34) are this screen's).
 - `CODE.step7-proposal.65` — no inverter clipping in the energy chain (S6-6 → MS7-20).
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-10-step7-proposal.md`; they are the specification. Every row of this task is present in that brief, so nothing is re-quoted here.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given 3 saved images of 4, When Step 7 opens, Then it resumes at the missing shot and the counter reads 3/4 (MS7-01)
@@ -532,7 +532,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - `CODE.step8-sld.16/.84` — Step 8 auto-string uses degraded legacy shim, swallows refusals (S7-1c → MS8-07).
 - `CODE.step8-sld.52` — rating dialogs cannot represent legally derived values (S7-1d → MS8-21).
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-11-step8-sld.md`; they are the specification. Every row of this task is present in that brief, so nothing is re-quoted here.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given the step opens, Then four tabs render with live-derived parameters plus overrides (MS8-01)

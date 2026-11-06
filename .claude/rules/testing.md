@@ -10,8 +10,8 @@ paths:
 
 - **Unit tests cover the LOGIC layers** — the set `packages/config/unit-test-packages.json` names,
   which the runner and the dependency-cruiser rule both read; `data`'s hooks run through the real
-  client (`packages/data/CLAUDE.md`). The frontend is not unit-tested: `ui`, `web` and `mobile` are
-  proven by running them, `db` by migrations and `tests/invariants/`.
+  client (`packages/data/CLAUDE.md`); `theme`'s contrast pairs are measured in every mode. The
+  frontend is not unit-tested: `ui`, `web` and `mobile` are proven by running them, `db` by migrations and `tests/invariants/`.
 - **A unit test is `<package>/tests/**/*.test.ts`** — never `*.spec.*` (e2e only), `__tests__/` or
   `src/` (the build would ship it). A test imports `../../src/…`; `@heliogrid/<pkg>` resolves to the
   last BUILD.

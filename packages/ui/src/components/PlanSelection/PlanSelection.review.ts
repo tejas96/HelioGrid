@@ -264,7 +264,7 @@ function workingOf(
 
 /**
  * The charge's second working line, every figure the server's (`F4-04`): two prices on one cycle
- * differ by `difference` a cycle; two cycles compare their day rates (board-check decision 1).
+ * differ by `difference` a cycle; two cycles compare their day rates, the cycle switched to first.
  */
 function comparisonOf(
   input: PlanSelectionInput,

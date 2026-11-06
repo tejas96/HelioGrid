@@ -8,7 +8,7 @@ import { expectTouchFloor } from './touch-target';
 
 /**
  * The Proposal template spec's shared reads (`SCR-M01-19`): the words in each language and the
- * measures every frame is read against (the locked board's code, `.design/M01/`).
+ * measures every frame is read against, so one change to a measure moves every spec that reads it.
  */
 export { COMPANY } from './proposal-template-sample';
 

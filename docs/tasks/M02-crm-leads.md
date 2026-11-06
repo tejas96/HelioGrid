@@ -1,6 +1,6 @@
 # M02 · CRM & Leads — engineering tasks
 
-This file covers module M02 — CRM & leads: quick add and phone-as-identity, duplicate detection and the dedupe sheet, capture channels and the lead source, bulk import, the lead inbox and triage, assignment, lead detail with contacts and the activity timeline, qualification and disqualification, site-visit booking, the R9 lead lifecycle, customer merge, and the capture-channel policy behind M01's settings surface. Task-id prefix: `T-M02-`. Source doc: `docs/prd/modules/M02-crm-and-leads.md` (rows M02-01 … M02-67). Screen briefs live in `docs/ux/briefs/` (SCR-M02-01 … SCR-M02-06); six screen tasks carry one screen each, eleven engine/integration/policy tasks carry the non-screen builds, two rows are laws enforced through screens and review, and one context row is realized by other rows. Every row's disposition is indexed at the end of this file.
+This file covers module M02 — CRM & leads: quick add and phone-as-identity, duplicate detection and the dedupe sheet, capture channels and the lead source, bulk import, the lead inbox and triage, assignment, lead detail with contacts and the activity timeline, qualification and disqualification, site-visit booking, the R9 lead lifecycle, customer merge, and the capture-channel policy behind M01's settings surface. Task-id prefix: `T-M02-`. Source doc: `docs/prd/modules/M02-crm-and-leads.md` (rows M02-01 … M02-67). The screens are SCR-M02-01 … SCR-M02-06; six screen tasks carry one screen each, eleven engine/integration/policy tasks carry the non-screen builds, two rows are laws enforced through screens and review, and one context row is realized by other rows. Every row's disposition is indexed at the end of this file.
 
 ---
 
@@ -10,7 +10,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 **Status:** designed
 **PRD rows:** M02-01 (P0), M02-03 (P0), M02-05 (P0), M02-06 (P0)
 **DESIGN:** SCR-M02-01 → https://claude.ai/artifact/3JumEcRCTvCSvgHGf7yPYi
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-01-quick-add-lead.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given the quick-add screen, when it renders, then exactly four fields are present and no further required field exists anywhere in the flow (M02-01).
@@ -27,7 +27,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 **Status:** designed
 **PRD rows:** M02-23 (P0), M02-24 (P0), M02-25 (P1), M02-28 (P0), M02-29 (P0), M02-67 (P0)
 **DESIGN:** SCR-M02-02 → https://claude.ai/artifact/3JumEcRCTvCSvgHGf7yPYi
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-02-lead-inbox.md`; they are the specification. **Exception — `M02-67`:** the row was added to `docs/prd/modules/M02-crm-and-leads.md` §M02.5 by owner ruling 2026-08-15, restoring the law of `M02-26`, which was deleted 2026-08-07 with the offline capability and stays deleted; the restoring row deliberately carries a new id. The brief now quotes it in full (verified byte-identical to the live cell), so the brief remains the specification for every row of this task without exception; the quote is repeated here for a reader working from the task file alone. *(This sentence read "does not yet quote it… until the brief owner carries it across" — true at the moment it was written, and false within minutes: the brief and this file were amended in the same 2026-08-15 wave.)*
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. **Exception — `M02-67`:** the row was added to `docs/prd/modules/M02-crm-and-leads.md` §M02.5 by owner ruling 2026-08-15, restoring the law of `M02-26`, which was deleted 2026-08-07 with the offline capability and stays deleted; the restoring row deliberately carries a new id. The quote is repeated here for a reader working from the task file alone.
 
 - **M02-67** (P0) — **Triage actions are completed by the server, and the inbox says so rather than assuming.** Assigning a lead and marking one junk — `M02-24`'s two decisions — reach the server to complete; until it confirms, the row shows the action **in progress, never as done**, and a failure returns the lead to the queue naming the reason (`F8-36`). This is an honesty rule, not a confirmation step: `M02-28`'s one-tap assign stands and no dialog is added, and `M02-24`'s under-three-seconds triage binds this state too — the pending treatment is light and in-row, never a blocking overlay or a spinner wall (`F4-27`). The case it exists for is two people triaging the same lead: the second sees it already assigned rather than overwriting the first.
 
@@ -51,7 +51,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 **Status:** designed
 **PRD rows:** M02-40 (P0)
 **DESIGN:** SCR-M02-03 → https://claude.ai/artifact/3JumEcRCTvCSvgHGf7yPYi
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-03-leads-list.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given a monthly bill captured, when the leads list is sorted or filtered by it, then it behaves as data in the tenant's currency (M02-40).
@@ -65,7 +65,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 **Status:** designed
 **PRD rows:** M02-32 (P0), M02-34 (P0), M02-39 (P0), M02-42 (P0)
 **DESIGN:** SCR-M02-04 → https://claude.ai/artifact/3JumEcRCTvCSvgHGf7yPYi
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-04-lead-detail.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given a lead, when detail opens, then the header carries name, phone, city, value, stage and owner, the timeline and the six sections are present, and the five actions are available (M02-32).
@@ -82,7 +82,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 **Status:** designed
 **PRD rows:** M02-18 (P0), M02-19 (P0), M02-20 (P0), M02-21 (P0)
 **DESIGN:** SCR-M02-05 → https://claude.ai/artifact/3JumEcRCTvCSvgHGf7yPYi
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-05-lead-import-wizard.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given an uploaded file, when the mapping step opens, then each column carries an auto-guessed lead field that can be corrected, and no row has been imported yet (M02-18).
@@ -99,7 +99,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 **Status:** designed
 **PRD rows:** M02-59 (P0), M02-63 (P0)
 **DESIGN:** SCR-M02-06 → https://claude.ai/artifact/3JumEcRCTvCSvgHGf7yPYi
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M02-06-customer-merge.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given two customer records for the same person, when merge is run, then one survivor holds every contact, lead, proposal, link, activity, task and file, and the loser exists as a tombstone pointing at the survivor (M02-59, M02-60).
@@ -354,7 +354,7 @@ This file covers module M02 — CRM & leads: quick add and phone-as-identity, du
 **Status:** planned
 **PRD rows:** M02-17, M02-64, M02-65
 
-The settings surface itself is M01's (SCR-M01-22, `docs/ux/briefs/SCR-M01-22-capture-settings.md`); this task builds what it renders — the channel registry, each channel's true state, the toggle semantics, and the later-card facts for deferred channels.
+The settings surface itself is M01's (SCR-M01-22); this task builds what it renders — the channel registry, each channel's true state, the toggle semantics, and the later-card facts for deferred channels.
 
 **Requirements (verbatim):**
 

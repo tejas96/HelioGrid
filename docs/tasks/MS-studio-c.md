@@ -2,7 +2,7 @@
 
 This file covers the last three studio documents: `docs/prd/modules/M05-studio/09-step9-bom.md` (rows MS10-01…MS10-40, the priced bill and the money engine), `docs/prd/modules/M05-studio/10-done-and-installation.md` (rows MS11-01…MS11-38, the Done step, the readiness contract, engineer sign-off, the fingerprint system, duplicate, and the installation work order) and `docs/prd/modules/M05-studio/11-shell-and-platform.md` (rows MS12-01…MS12-30, the wizard shell, design list, sign-in and tenancy, persistence, the shared UI kit and the accessibility gate). Task-id prefix: `T-MS-`, numbered from `T-MS-301`.
 
-Every task here is a studio task, so each carries a **PORT** line naming the POC files claimed for its area in `docs/prd/modules/M05-studio/poc-file-claims.md`, and a **DEFECTS** line listing the rows of `docs/prd/modules/M05-studio/defect-register.md` whose target requirement ids fall inside the task. Owner ruling S12-1 binds: the POC at `3d_design_studio/` is the starting point, never a from-scratch rebuild — where it already implements the behaviour the task is a **port** and the engineering core moves as-is with its tests as the regression net; where the surface is redesigned the task is a **screen** task titled "port + UI rebuild". Screen tasks point at their UX briefs under `docs/ux/briefs/`, where the verbatim requirement rows live; engine, policy, integration and port tasks quote their rows in full. Policy rows that engineering does not build directly are listed under "Laws". The Disposition index at the end of the file accounts for all 108 rows of this bucket exactly once.
+Every task here is a studio task, so each carries a **PORT** line naming the POC files claimed for its area in `docs/prd/modules/M05-studio/poc-file-claims.md`, and a **DEFECTS** line listing the rows of `docs/prd/modules/M05-studio/defect-register.md` whose target requirement ids fall inside the task. Owner ruling S12-1 binds: the POC at `3d_design_studio/` is the starting point, never a from-scratch rebuild — where it already implements the behaviour the task is a **port** and the engineering core moves as-is with its tests as the regression net; where the surface is redesigned the task is a **screen** task titled "port + UI rebuild". Screen tasks' verbatim requirement rows live in the PRD; engine, policy, integration and port tasks quote their rows in full. Policy rows that engineering does not build directly are listed under "Laws". The Disposition index at the end of the file accounts for all 108 rows of this bucket exactly once.
 
 ---
 
@@ -19,7 +19,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 - `CODE.step9-bom.41` — flat discount re-clamped per section, so sections don't reconcile to total (ruling S9-2 → MS10-11).
 - `CODE.step9-bom.24/.39/.71` — wind stated only in high zones; discount control desyncs from project state; derivations are tooltip-only (ruling S9-3 → MS10-08/03/19).
 - `CODE.step9-bom.151/.153-.157/.28` — prices, tax, subsidy, constants, wind and the compliance checklist are India-hardcoded (ruling S9-1 → MS10-39/32/10; the checklist half lands on this screen).
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-12-step9-bom.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given the step opens, Then header, re-sync (with its confirmation) and CSV export are present (MS10-01) and the nine money figures render (MS10-02).
 - Given an undo after a discount change, Then the control reflects the restored state (MS10-03).
@@ -180,7 +180,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **DEFECTS:**
 - `CODE.step10-done.21/.22/.122/.8/.37/.52` — copy silent; duplicate hijacks session/undo; capture rule vs stated law; open-insight count; cover staleness (ruling S10-3 → MS11-04/26/25/09/11; this task owns the MS11-04/09/11 halves, T-MS-317 owns MS11-25/26).
 - `CODE.step10-done.132/.131/.117/.59` — no engineer sign-off queue/review/return anywhere; approval survives duplication; unapproved designs served (ruling S10-1 → MS11-13..17; the `.59` half is why the readiness review is surfaced here at all, per MS11-03).
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-13-done-step.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given all gates pass, Then Step 10 is reachable and shows the project's identity (MS11-01); marking ready requires the readiness review to pass, from every writer (MS11-02); the review is visible on Step 10 (MS11-03); actions work and copy confirms (MS11-04); the customer-facing link is offered (MS11-05). *(The MS11-02 half — the precondition every writer applies — is built in T-MS-311.)*
 - Given a design, Then the review returns its four items derived from the real gates with a worst-of verdict (MS11-07); the electrical item blocks and explains, including the no-components edge (MS11-08); the design-review item counts only insights that are neither accepted nor dismissed (MS11-09); quantity confidence follows the BOM (MS11-10); imagery reports shortfall then staleness including the cover, and never blocks (MS11-11); the verdict gates issuance (MS11-12). *(MS11-10 is built in T-MS-311; MS11-12 is a law, listed below.)*
@@ -213,7 +213,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **PORT:** none — the POC has no engineer sign-off flow at all, so no file in `docs/prd/modules/M05-studio/poc-file-claims.md` claims this area; ruling S10-1 builds it. Owner ruling S12-1's port-first default cannot apply to a surface that does not exist in `3d_design_studio/`.
 **DEFECTS:**
 - `CODE.step10-done.132/.131/.117/.59` — no engineer sign-off queue/review/return anywhere; approval survives duplication; unapproved designs served (ruling S10-1 → MS11-13..17; this task owns MS11-13).
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-15-signoff-queue.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given designs awaiting approval, Then the engineer's queue lists them oldest-first with the stated columns (MS11-13); Given a review, Then approve records who/when/version, and return-with-comments pins each comment and notifies the designer (MS11-14); Given a material change after approval, Then sign-off re-opens (MS11-15); Given a duplicate, Then it carries no approval and no crew ticks (MS11-16); Given an unapproved design, Then no customer surface serves it and the installation sheet states its status (MS11-17). *(This task owns the MS11-13 half; MS11-14 is T-MS-313 and MS11-15/16/17 are T-MS-314.)*
 - Three base states + brief-listed states present at 375px and 1536px with full parity.
@@ -227,7 +227,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **PORT:** none — the POC has no engineer sign-off flow at all (no claimed file in `docs/prd/modules/M05-studio/poc-file-claims.md`); ruling S10-1 builds it. The read-only studio and drawings it composes are the surfaces ported by the earlier studio tasks.
 **DEFECTS:**
 - `CODE.step10-done.132/.131/.117/.59` — no engineer sign-off queue/review/return anywhere; approval survives duplication; unapproved designs served (ruling S10-1 → MS11-13..17; this task owns MS11-14).
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-16-signoff-review.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given designs awaiting approval, Then the engineer's queue lists them oldest-first with the stated columns (MS11-13); Given a review, Then approve records who/when/version, and return-with-comments pins each comment and notifies the designer (MS11-14); Given a material change after approval, Then sign-off re-opens (MS11-15); Given a duplicate, Then it carries no approval and no crew ticks (MS11-16); Given an unapproved design, Then no customer surface serves it and the installation sheet states its status (MS11-17). *(This task owns the MS11-14 half; MS11-13 is T-MS-312 and MS11-15/16/17 are T-MS-314.)*
 - Three base states + brief-listed states present at 375px and 1536px with full parity.
@@ -245,7 +245,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 - **MS11-16** (P0) — Duplicating a design NEVER carries the engineer's approval (S10-1 fixes `.117`); crew tick-offs likewise start clean (`.118`).
 - **MS11-17** (P0) — Unapproved designs cannot reach customer surfaces (S10-1 fixes `.131`, pairs with MS9-06); the installation sheet states the engineering status and is gated on it (S10-1 fixes `installation.10`).
 **DONE WHEN:**
-- Given designs awaiting approval, Then the engineer's queue lists them oldest-first with the stated columns (MS11-13); Given a review, Then approve records who/when/version, and return-with-comments pins each comment and notifies the designer (MS11-14); Given a material change after approval, Then sign-off re-opens (MS11-15); Given a duplicate, Then it carries no approval and no crew ticks (MS11-16); Given an unapproved design, Then no customer surface serves it and the installation sheet states its status (MS11-17). *(This task owns the MS11-15/16/17 halves; MS11-17's drawn half — the installation sheet's engineering-status block — is specified in `docs/ux/briefs/SCR-MS-17-installation-work-order.md` and built with T-MS-318.)*
+- Given designs awaiting approval, Then the engineer's queue lists them oldest-first with the stated columns (MS11-13); Given a review, Then approve records who/when/version, and return-with-comments pins each comment and notifies the designer (MS11-14); Given a material change after approval, Then sign-off re-opens (MS11-15); Given a duplicate, Then it carries no approval and no crew ticks (MS11-16); Given an unapproved design, Then no customer surface serves it and the installation sheet states its status (MS11-17). *(This task owns the MS11-15/16/17 halves; MS11-17's drawn half — the installation sheet's engineering-status block — is specified in `SCR-MS-17` and built with T-MS-318.)*
 
 ### T-MS-315 · The fingerprint system: five layers, exact membership, freshness predicates (port)
 
@@ -294,7 +294,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **DONE WHEN:**
 - Given duplicate, Then the copy is independent with a unique name and the stated reset rules (MS11-25) and the session/undo history are not silently changed (MS11-26).
 - Given designs awaiting approval, Then the engineer's queue lists them oldest-first with the stated columns (MS11-13); Given a review, Then approve records who/when/version, and return-with-comments pins each comment and notifies the designer (MS11-14); Given a material change after approval, Then sign-off re-opens (MS11-15); Given a duplicate, Then it carries no approval and no crew ticks (MS11-16); Given an unapproved design, Then no customer surface serves it and the installation sheet states its status (MS11-17). *(MS11-16's gate is T-MS-314's; the reset this task performs is what satisfies it.)*
-- MS11-27 is P1 and carries no separate line in the document's P0 acceptance block; its requirement text above is its acceptance. The lineage pointer it writes is what `docs/ux/briefs/SCR-MS-14-variant-compare.md` groups on; that compare surface's own rows sit outside this file's slice.
+- MS11-27 is P1 and carries no separate line in the document's P0 acceptance block; its requirement text above is its acceptance. The lineage pointer it writes is what `SCR-MS-14` groups on; that compare surface's own rows sit outside this file's slice.
 - The ported POC tests for this area pass unchanged in the new project.
 
 ### T-MS-318 · The installation work order — the crew's field document (port + UI rebuild)
@@ -307,7 +307,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **DEFECTS:**
 - `CODE.installation.9/.11/.14/.16/.35/.36/.51/.56/.60/.61/.62/.64/.18/.53/.4/.7/.24/.29/.30` — installation sheet: wrong derivation, missing materials, no identity, no print CSS, device-local ticks, no attribution (19 defects) (ruling S10-2 → MS11-28..37).
 - `CODE.step10-done.132/.131/.117/.59` — no engineer sign-off queue/review/return anywhere; approval survives duplication; unapproved designs served (ruling S10-1 → MS11-13..17; `installation.10` is why this sheet states and is gated on the engineering status — the gate itself is T-MS-314).
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-17-installation-work-order.md`; they are the specification. The one row of this task absent from that brief:
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. The one row of this task quoted here:
 - **MS11-32** (P0) — No commercial figure ever reaches this surface (R16's law, `.12/.13`).
 **DONE WHEN:**
 - Given a design with structures and strings, Then the work order emits foundations, legs, rafters, purlins/braces, structured and loose modules, per-string wiring and balance-of-system with model-derived counts, plural-correct titles, and disabled panels excluded (MS11-29). Given a two-table roof, Then each table's steps are distinct and phase headings are not misleadingly repeated (MS11-30).
@@ -332,7 +332,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **DEFECTS:**
 - `CODE.shell.1/.2` — phantom Step 5: named, counted, URL-reachable with no page (ruling S11-1 → MS12-01).
 - `CODE.shell.52-.56/.37/.65-.83/.20` — mock auth, placeholder languages, browser-only storage, no lead scoping (ruling S11-3 → MS12-17/18/20/10; the `.20` half — "save and exit" returning to the LEAD under S11-3d — is MS12-05's and lands here).
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-03-studio-shell.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given the wizard, Then nine steps are shown and no dead step URL resolves, while existing designs still open at their saved step (MS12-01); each gate states its reason in order (MS12-03) and a blocked Next explains accessibly (MS12-04); the header carries all controls and "save and exit" returns to the lead (MS12-05); the health chip shows stamped, provisional or placeholder states correctly (MS12-06); help exists for every step (MS12-07); progress reflects nine steps (MS12-08); the health sheet explains its score with deltas and context (MS12-09).
 - Given a failed save, Then a persistent alert states the design is not saved and no work is silently lost (MS12-24).
@@ -369,7 +369,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **Requirements (verbatim):**
 - **MS12-27** (P0) — Routing: named routes for the wizard, design list, share and sign-in, with guards applied after hydration and a hydration gate that shows loading rather than a blank screen (`.102–.106`, MS9-15); legacy dead routes are removed (S11-2.3 fixes `.102/.83`).
 **DONE WHEN:**
-- Given any sheet or dialog, Then focus traps and restores, Escape closes, and automated accessibility checks pass (MS12-25); shared fields commit once on blur or Enter (MS12-26); routes guard after hydration with a loading state and no legacy dead routes (MS12-27); background recompute stamps the geometry actually used (MS12-28). *(This task owns the MS12-27 half; MS12-25 is T-MS-370, MS12-26 is T-MS-369 and MS12-28 is T-MS-371. The drawn hydration-loading state this row owes is specified in `docs/ux/briefs/SCR-MS-03-studio-shell.md` and `docs/ux/briefs/SCR-MS-01-design-list.md`, built with T-MS-360 and T-MS-363.)*
+- Given any sheet or dialog, Then focus traps and restores, Escape closes, and automated accessibility checks pass (MS12-25); shared fields commit once on blur or Enter (MS12-26); routes guard after hydration with a loading state and no legacy dead routes (MS12-27); background recompute stamps the geometry actually used (MS12-28). *(This task owns the MS12-27 half; MS12-25 is T-MS-370, MS12-26 is T-MS-369 and MS12-28 is T-MS-371. The drawn hydration-loading state this row owes is specified in `SCR-MS-03` and `SCR-MS-01`, built with T-MS-360 and T-MS-363.)*
 - The ported POC tests for this area pass unchanged in the new project.
 
 ### T-MS-363 · Design list — the lead's designs and variants (port + UI rebuild)
@@ -381,7 +381,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Dashboard.tsx` (its route, `3d_design_studio/src/app/(studio)/projects/page.tsx`, is claimed with T-MS-362; the server-backed lead-scoped read it lists from is T-MS-365's)
 **DEFECTS:**
 - `CODE.shell.55/.51/.102/.83` — dead forgot-password; misleading delete copy; legacy dead route + export (ruling S11-2 → MS12-17/14/27; this task owns the `.51` half — the misleading delete copy, per MS12-14).
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-01-design-list.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a tenant user, Then the design list shows that tenant's lead-scoped designs on any device (MS12-10) with counts, filters, search and sort (MS12-11); cards are keyboard-operable with correct menus (MS12-12); opening resumes at the saved step with clean undo (MS12-13); delete confirms accurately (MS12-14); empty and unreadable-record states are honest (MS12-15); new designs get market-aware defaults and a share identity (MS12-16). *(This task owns the MS12-11/12/14/15 halves; MS12-10 is built in T-MS-365, MS12-13 in T-MS-361 and MS12-16 in T-MS-372.)*
 - The ported POC tests for this area pass unchanged in the new project.
@@ -392,7 +392,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **Type:** integration · **Tier:** P0
 **Status:** planned
 **PRD rows:** MS12-17, MS12-18, MS12-19
-**PORT:** `3d_design_studio/src/features/solar-studio/screens/Login.tsx` and `3d_design_studio/src/app/(studio)/login/page.tsx` are retired rather than ported — ruling S11-3a replaces the POC's mock two-phase login with the platform's own sign-in, drawn in `docs/ux/briefs/SCR-M01-01-sign-in.md`, and the top bar the studio signs out from is `docs/ux/briefs/SCR-SHELL-01-app-shell.md`. Owner ruling S12-1's port-first default does not reach behaviour a ruling supersedes outright.
+**PORT:** `3d_design_studio/src/features/solar-studio/screens/Login.tsx` and `3d_design_studio/src/app/(studio)/login/page.tsx` are retired rather than ported — ruling S11-3a replaces the POC's mock two-phase login with the platform's own sign-in, drawn in `SCR-M01-01`, and the top bar the studio signs out from is `SCR-SHELL-01`. Owner ruling S12-1's port-first default does not reach behaviour a ruling supersedes outright.
 **DEFECTS:**
 - `CODE.shell.55/.51/.102/.83` — dead forgot-password; misleading delete copy; legacy dead route + export (ruling S11-2 → MS12-17/14/27; this task owns the `.55` half — the dead "Forgot password?" control, per MS12-17).
 - `CODE.shell.52-.56/.37/.65-.83/.20` — mock auth, placeholder languages, browser-only storage, no lead scoping (ruling S11-3 → MS12-17/18/20/10; this task owns the `.52–.56` and `.37` halves — mock auth and the placeholder language list, per MS12-17/18).
@@ -454,7 +454,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 - **MS12-22** (P0) — Concurrent editing is handled honestly: an external change to the same design is detected and surfaced rather than silently overwriting (`.63/.64/.82/.109`); the POC's last-writer-wins local rule is superseded by the platform's conflict handling (S11-3b).
 - **F4-15** (P0) — **Design — single editor plus a server version check. No merge, ever.** Every design save carries the version it was based on; a mismatch is **refused**, the client reloads server state, and the user re-applies their change. A design is one document and is never algorithmically merged; the version check is what makes a stale second editor impossible to lose silently rather than a mechanism for combining two edits.
 **DONE WHEN:**
-- Given any edit, Then it saves server-side, surviving refresh, device change and a failed write with a visible alert (MS12-20/24); undo is scoped to the open design (MS12-21); a concurrent edit is surfaced, never silently overwritten (MS12-22); a malformed stored design is repaired rather than crashing (MS12-23). *(This task owns the MS12-22 half; the conflict-detected state it raises is drawn in `docs/ux/briefs/SCR-MS-03-studio-shell.md` and built with T-MS-360.)*
+- Given any edit, Then it saves server-side, surviving refresh, device change and a failed write with a visible alert (MS12-20/24); undo is scoped to the open design (MS12-21); a concurrent edit is surfaced, never silently overwritten (MS12-22); a malformed stored design is repaired rather than crashing (MS12-23). *(This task owns the MS12-22 half; the conflict-detected state it raises is drawn in `SCR-MS-03` and built with T-MS-360.)*
 - The ported POC tests for this area pass unchanged in the new project — the last-writer-wins expectations excepted, since S11-3b supersedes them; every other persistence expectation stands.
 - Given a design save based on a superseded version, when it reaches the server, then it is refused, no merge occurs, and the editor is prompted to reload (`F4-15`).
 - Given a studio save that fails the server's version check, when the failure returns, then the optimistically applied state is rolled back and a reload is prompted, and the save is never merged and never silently kept (`F4-15`, `M05-09`).
@@ -471,7 +471,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **Requirements (verbatim):**
 - **MS12-23** (P0) — Every persisted design is normalised and repaired on load — weather validity, pricing clamps, calibration sanity, entity-array coercion, roof/segment defaults, BOM override shape — so a malformed record can never crash a screen (`.84–.93`).
 **DONE WHEN:**
-- Given any edit, Then it saves server-side, surviving refresh, device change and a failed write with a visible alert (MS12-20/24); undo is scoped to the open design (MS12-21); a concurrent edit is surfaced, never silently overwritten (MS12-22); a malformed stored design is repaired rather than crashing (MS12-23). *(This task owns the MS12-23 half; the data-integrity banner that surfaces a record too broken to load is MS12-15's, drawn in `docs/ux/briefs/SCR-MS-01-design-list.md` and built with T-MS-363.)*
+- Given any edit, Then it saves server-side, surviving refresh, device change and a failed write with a visible alert (MS12-20/24); undo is scoped to the open design (MS12-21); a concurrent edit is surfaced, never silently overwritten (MS12-22); a malformed stored design is repaired rather than crashing (MS12-23). *(This task owns the MS12-23 half; the data-integrity banner that surfaces a record too broken to load is MS12-15's, drawn in `SCR-MS-01` and built with T-MS-363.)*
 - The ported POC tests for this area pass unchanged in the new project.
 
 ### T-MS-369 · The shared UI kit: identical controls everywhere, fields that commit once (port)
@@ -550,7 +550,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **DESIGN:** SCR-MS-18 → ported from the POC
 **PORT:** `3d_design_studio/src/app/design/page.tsx` — the POC's living reference page; it renders the kit T-MS-369 ports, so the two move together
 **DEFECTS:** none targeting this row.
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-18-design-system-reference.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - MS12-29 is P1 and carries no separate line in the document's P0 acceptance block; its requirement text in the brief is its acceptance — the reference stays part of the product's development surface, tracking the real shared controls as they ship rather than a curated subset.
 - The POC ships no test for this page; the ported kit and accessibility nets of T-MS-369 and T-MS-370 are its regression cover, and they pass unchanged in the new project.
@@ -564,7 +564,7 @@ Every task here is a studio task, so each carries a **PORT** line naming the POC
 **DESIGN:** SCR-MS-02 → ported from the POC
 **PORT:** none — the POC has no designer home; the queue's content contract is `M05-83`'s, built new against the ported design list (T-MS-363) and the sign-off queue (T-MS-312).
 **DEFECTS:** none targeting these rows. (The absence of any sign-off flow in the POC is defect-register territory closed by S10-1; this screen is the home that surfaces it.)
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-02-design-queue.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 Cross-bucket note: these three rows are dispositioned in `docs/tasks/M13-dashboards.md` and `docs/tasks/F-core.md` as `realized-by` this task — the rows live in M13/personas documents while the screen belongs to the studio's `SCR-MS-*` range. This task is where they are built.
 
@@ -583,7 +583,7 @@ Cross-bucket note: these three rows are dispositioned in `docs/tasks/M13-dashboa
 **PORT:** none as a surface — the POC has no compare screen; it composes over ported outputs: the fingerprint/variant lineage of T-MS-315/T-MS-316, the money engine of the BOM tasks, and Design Health from T-MS-205 (the health engine ported with the layout editor).
 **DEFECTS:** none targeting M05-79 — `docs/prd/modules/M05-studio/poc-file-claims.md` claims no compare-variants surface. One adjacent entry binds this screen indirectly:
 - `CODE.step7-proposal.90/.152` — never-paying system reports "25 years"; ranking sorts the sentinel (S6-1a: no-payback state → MS7-32/50). This screen ranks and marks `is_recommended`, so it consumes the corrected payback of T-MS-264 (MS7-32) and the corrected ranking of T-MS-267 (MS7-50); it owns neither half.
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-14-variant-compare.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 Cross-bucket note: M05-79 is dispositioned in `docs/tasks/MS-studio-a.md` (the bucket owning `M05-design-studio.md`) as `realized-by` this task; the screen belongs to the `SCR-MS-*` range owned by this file.
 

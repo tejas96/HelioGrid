@@ -5,19 +5,16 @@ import { ROW_ID } from './prd-rows';
 /**
  * `docs/prd/registers/screens.md`: its screen index (section 2), read by column name so a column
  * added at the end changes no reader — each screen's `V` mark is the release it ships in, and the
- * build order walks V1 only; its row dispositions (section 3), where every PRD row lands, a struck
- * row written `~~id~~`; and the V1 scope lock, the one line that states how many screens each
- * release holds.
+ * build order walks V1 only; and its row dispositions (section 3), where every PRD row lands, a
+ * struck row written `~~id~~`.
  */
 export const SCREENS_REGISTER = 'docs/prd/registers/screens.md';
-export const BRIEFS = 'docs/ux/briefs';
 const INDEX_HEADING = /^## 2\./;
 const DISPOSITIONS_HEADING = /^## 3\./;
 const ANY_SECTION = /^## /;
 const HEADER_ROW = /^\| SCR \| Screen \|/;
 const SCREEN_ROW = /^\| (SCR-[A-Z0-9]+-\d{2}) \|/;
 const DISPOSITION_ROW = new RegExp(`^\\|\\s*(~~)?\`?(${ROW_ID})\`?(?:~~)?\\s*\\|`);
-const SCOPE_LOCK = /\*\*`V1` = (\d+) screens · `V2` = (\d+) · (\d+) total\.\*\*/;
 
 export interface Disposition {
   id: string;
@@ -40,14 +37,6 @@ export function readDispositions(repo: string): Disposition[] {
   return found;
 }
 
-/** The scope lock's stated counts, or `undefined` when no line states them. */
-export function readScopeLock(repo: string): { v1: number; v2: number; total: number } | undefined {
-  const [, v1, v2, total] =
-    SCOPE_LOCK.exec(readFileSync(join(repo, SCREENS_REGISTER), 'utf8')) ?? [];
-  if (v1 === undefined || v2 === undefined || total === undefined) return undefined;
-  return { v1: Number(v1), v2: Number(v2), total: Number(total) };
-}
-
 /** Each `[line number, text]` of one `## ` section. */
 function linesOfSection(repo: string, heading: RegExp): [number, string][] {
   let inSection = false;
@@ -62,7 +51,7 @@ function linesOfSection(repo: string, heading: RegExp): [number, string][] {
 export interface ScreenRow {
   id: string;
   line: number;
-  /** Each cell by its column's name (`Brief`, `V` …); a missing cell is absent. */
+  /** Each cell by its column's name (`Tier`, `V` …); a missing cell is absent. */
   cells: Map<string, string>;
 }
 

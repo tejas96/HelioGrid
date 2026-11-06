@@ -1,6 +1,6 @@
 # M10 · HR-lite — engineering tasks
 
-This file covers module M10 — HR-lite: the people-today queue, the people list, the employee record, the offboard sweep, the attendance register, leave requests, the team-structure view, the employee-record data model bound to M01 identity, the people-records visibility domain, the flat manager mapping that Team scope resolves over, per-employee document storage, and the data-rights integration for employee PII. Task-id prefix: `T-M10-`. Source doc: `docs/prd/modules/M10-hr-lite.md` (rows M10-01 … M10-39). Screen briefs live in `docs/ux/briefs/` (SCR-M10-01 … SCR-M10-07); seven screen tasks carry one screen each, five engine/policy/integration tasks carry the non-screen builds, and six rows are laws enforced through screens and review. Every row's disposition is indexed at the end of this file.
+This file covers module M10 — HR-lite: the people-today queue, the people list, the employee record, the offboard sweep, the attendance register, leave requests, the team-structure view, the employee-record data model bound to M01 identity, the people-records visibility domain, the flat manager mapping that Team scope resolves over, per-employee document storage, and the data-rights integration for employee PII. Task-id prefix: `T-M10-`. Source doc: `docs/prd/modules/M10-hr-lite.md` (rows M10-01 … M10-39). The screens are SCR-M10-01 … SCR-M10-07; seven screen tasks carry one screen each, five engine/policy/integration tasks carry the non-screen builds, and six rows are laws enforced through screens and review. Every row's disposition is indexed at the end of this file.
 
 ---
 
@@ -10,7 +10,7 @@ This file covers module M10 — HR-lite: the people-today queue, the people list
 **Status:** planned
 **PRD rows:** M10-13 (P0), M10-14 (P0), M10-15 (P1), M10-16 (P2), M10-26 (P1)
 **DESIGN:** SCR-M10-01 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-01-people-today-queue.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given a pending, an expired and a declined invite, when people-today renders, then all three appear with distinct states and the expired one offers one-tap resend to the Owner (M10-14, M10-15).
@@ -27,7 +27,7 @@ This file covers module M10 — HR-lite: the people-today queue, the people list
 **Status:** planned
 **PRD rows:** M10-10 (P0), M10-11 (P1)
 **DESIGN:** SCR-M10-02 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-02-people-list.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 Non-UI (build-side) half carried by this task: M10-10 — deactivate-never-delete invariant (F2-20 family).
 **DONE WHEN:**
 
@@ -43,7 +43,7 @@ Non-UI (build-side) half carried by this task: M10-10 — deactivate-never-delet
 **Status:** planned
 **PRD rows:** M10-04 (P0), M10-07 (P0), M10-35 (P0), M10-36 (P1)
 **DESIGN:** SCR-M10-03 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-03-employee-record.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 Non-UI (build-side) halves carried by this task: M10-04 — role grants stay F2.M01.manage-team; M10 never widens or delegates. M10-36 — expiry blocks nothing; tenant decides consequences.
 **DONE WHEN:**
 
@@ -63,7 +63,7 @@ Non-UI (build-side) halves carried by this task: M10-04 — role grants stay F2.
 **Status:** planned
 **PRD rows:** M10-18 (P0), M10-19 (P0), M10-20 (P0), M10-21 (P0), M10-22 (P0)
 **DESIGN:** SCR-M10-04 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-04-offboard-sweep.md`; they are the specification. M10-20 appears in no brief and is quoted here:
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. M10-20 is quoted here:
 
 - **M10-20** (P0) — **Nothing is orphaned and nothing is rewritten.** Every lead, activity, tick, document and money event the person touched stays attributed to them after offboard (F2-20); the sweep reassigns **open** work only and never edits history. Deleting a user does not exist.
 
@@ -87,7 +87,7 @@ Non-UI (build-side) halves carried by this task: M10-18 — offboard defined as 
 **Status:** planned
 **PRD rows:** M10-25 (P0), M10-28 (P2)
 **DESIGN:** SCR-M10-05 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-05-attendance-register.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 Non-UI (build-side) half carried by this task: M10-28 — distinct data from F1-50 calling-window holiday calendar.
 **DONE WHEN:**
 
@@ -103,7 +103,7 @@ Non-UI (build-side) half carried by this task: M10-28 — distinct data from F1-
 **Status:** planned
 **PRD rows:** M10-27 (P0)
 **DESIGN:** SCR-M10-06 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-06-leave-request.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 Non-UI (build-side) half carried by this task: M10-27 — no accrual arithmetic; leave types are tenant-configured labels.
 **DONE WHEN:**
 
@@ -122,7 +122,7 @@ Non-UI (build-side) half carried by this task: M10-27 — no accrual arithmetic;
 **Status:** planned
 **PRD rows:** M10-34 (P0)
 **DESIGN:** SCR-M10-07 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M10-07-team-structure.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped never widens to everyone.
 **DONE WHEN:**
 

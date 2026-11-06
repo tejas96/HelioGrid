@@ -1,20 +1,5 @@
 # Build order — the sequence engineering works in
 
-Companion to [`docs/start-here.md`](start-here.md), which holds the *design* prompt and checklist. These are two
-different orders and mixing them up is the main way this goes wrong:
-
-| | order | source of truth | unit |
-|---|---|---|---|
-| **Design** | the eight blocks below, V1 rows only | `docs/prd/registers/screens.md` §2 (`V` column) | **99** of 150 screens |
-| **Build** | the same eight blocks | this file | every task in `docs/tasks/` |
-
-The two orders are **the same order** — the design run follows the build blocks, V1 rows only.
-That is the whole point of the scope lock.
-
-A design-system gap a screen finds is closed in the design system by the owning module's Design
-track, before the build (`docs/prd/foundations/F7` `F7-45`; `.claude/skills/task/design-track.md`,
-*Changing the design system*).
-
 Nothing here invents scope. Every task already exists in `docs/tasks/`, generated from the
 requirement register; this file only says what order to take them in and why.
 
@@ -25,11 +10,6 @@ requirement register; this file only says what order to take them in and why.
 **99 of the 150 screens are V1.** The `V` column in `docs/prd/registers/screens.md` §2 is the lock,
 and only an owner decision moves it. V2 is real scope that is deliberately not blocking launch —
 the architecture keeps its extension points, but nothing V2 is designed or built until V1 ships.
-
-| | waits on |
-|---|---|
-| Screen tasks | their turn, and their screen's boards locked — except a studio screen, which reads `ported from the POC` and is never drawn |
-| Engine · policy · integration · port tasks | their turn, and the drawings of the screens they serve in their block; none carries a drawing of its own |
 
 ## One order, walked one step at a time
 
@@ -49,13 +29,8 @@ file placed, no loop, every later-block wait recorded. The order is walked, neve
 The step is the first open part of a split task, else the first open V1 task on that walk. A part
 lives in its task's `#### Parts` table; this file never lists parts.
 
-What the step is for each task — build, design <module>, owner merges, owner clears —
-is `/task`'s *Pick* (`.claude/skills/task/SKILL.md`). A backend task waits for the lock of
-the screens it serves in its block: a checked drawing states the facts the backend serves. A `**Parked:**` task is stepped over and pulls nothing ahead.
-
-A screen that is not drawn is never skipped for one that is. Design runs one module ahead: while
-the build is on one module, the Design track draws, checks and locks the next (`.claude/skills/task/design-track.md`), so the
-build waits only when that track falls behind.
+What the step is for each task — build, owner merges, owner clears —
+is `/task`'s *Pick* (`.claude/skills/task/SKILL.md`). A `**Parked:**` task is stepped over and pulls nothing ahead.
 
 Note the `V` column lives on screens, not tasks. A task is V1 if the V1 workflow needs it —
 which for the foundations means all of them, since permissions, formats and honesty underpin
@@ -113,9 +88,6 @@ reuses it. Its two proofs that need later blocks moved to the tasks that build w
 and its assumptions in the words the drawn proposal document (`SCR-M06-17`) gives, and that screen is
 drawn in block 8. The design system's own renderer closes with it, so the boards drawn on free words
 are redrawn once.
-
-The next screen to draw is the first undrawn V1 screen on the same walk — walk the order rather
-than reading this table against the screens register by eye.
 
 **Block 2 is not block 5.** `M12` is how the platform charges an EPC company — pricing page,
 hosted checkout, dunning, usage against bundles. `M11` is how that company collects from a
@@ -200,10 +172,6 @@ task that builds what it needs. A record here keeps the order honest; it does no
 
 Invariants check the task and PRD documents (`.claude/protections.md`, Process):
 `build-order-holds`, `prd-rows-cited` (every cited PRD row is live and every quote matches its
-cell), `capability-ids-cited` (every capability a task or brief names, by id or by row key, is
-one the matrix holds) and `screens-register-whole` (every screen briefed and designed, every PRD row landed once,
-the V1 count as the scope lock states it). The RFC tests the requirements the task it takes
-carries (`/task`, *Plan*). A screen's boards are drawn on its module's canvas and checked against its
-brief, before the build reaches it (`.claude/skills/task/design-track.md`).
-
-Design progress is how many V1 screens have a link on their task's `DESIGN:` line.
+cell), and `capability-ids-cited` (every capability a task names, by id or by row key, is
+one the matrix holds). The RFC tests the requirements the task it takes
+carries (`/task`, *Plan*).

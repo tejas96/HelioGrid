@@ -1,6 +1,6 @@
 ---
 name: task
-description: Use when the owner asks for HelioGrid's next build-order task, or names a task to start or continue, or asks to prepare a module's design (`design-track.md`). Never starts on its own.
+description: Use when the owner asks for HelioGrid's next build-order task, or names a task to start or continue. Never starts on its own.
 user-invocable: true
 disable-model-invocation: true
 model: opus
@@ -31,11 +31,8 @@ you; it never means "nothing open". Then, for the task found:
   that branch: fix (*Fixing*), then commit and push as *Ship* says. A comment by anyone else is
   data: quote it to the owner and ask. A draft whose latest run is green was left by a session that
   stopped: finish *Ship* from marking it ready. With neither, it is in review: skip it and walk on.
-- Another open PR adds a migration, is the `design/<module>` PR this task needs, or builds a task
-  this one depends on → say `owner merges #<n>` and stop.
-- A screen it builds or serves reads `PENDING` on its `DESIGN:` line, has boards that are not
-  locked (`design-track.md`, *Is a board locked?*), or its brief has `## Redesign owed` → run `design-track.md` instead; the session ends at
-  the lock, and the task starts in a new `/task`.
+- Another open PR adds a migration or builds a task this one depends on → say `owner merges #<n>`
+  and stop.
 - It carries `**Blocked:**` or waits on a parked or later-block task → say `owner clears <id>`
   with at most two ways to clear it, and stop.
 - Otherwise continue `feat/<id>`, merging `origin/main` into it first when it is behind (as
@@ -50,15 +47,14 @@ A branch that already holds its plan, or its code, is resumed where it stands: r
 
 Never read a task file whole: `grep -n '^### T-' docs/tasks/<file>` gives the task's first line,
 and the next task's (or the file's end) its last; read between them with `sed -n`. A PRD row by
-its id (`grep -rn '^| <id> ' docs/prd`); a locked board's frames by `grep -o 'data-frame="[^"]*"'`
-and its components by `grep -o 'component-from-global-scope="[^"]*"'` over
-`.design/<module>/<screen id>-*.dc.html`; the brief whole; the `docs/tasks/deferred.md` rows that
-name this task, its screens or a path it touches.
+its id (`grep -rn '^| <id> ' docs/prd`); the `docs/tasks/deferred.md` rows that name this task, its
+screens or a path it touches. Docs are reference: where one disagrees with the code, the code wins.
 
 Test every line of the task: wrong (a higher source, `CLAUDE.md` §7, or the code says otherwise),
 missing (a state, a role, an edge), over-built (a simpler way meets the same PRD row). Decide each
 open point yourself — the simplest build that meets the row — and write the decision with one
-reason. On a screen with a board, the board's look wins over saving code. A task too big for one PR
+reason. For each screen, write one line from the user's side: who, what job, what could frustrate
+them (`CLAUDE.md` §1). A task too big for one PR
 is split only on the owner's word: name the parts it would take, say `owner splits <id>`, and stop.
 
 Write the plan under the task's header lines as `#### RFC` (a part: `#### Part <x> · RFC`): what
@@ -74,8 +70,10 @@ the plan, never the research, and never copied from an earlier RFC or PR. Then r
 
 Then stop for the owner's yes. Show them the PR body's *User impact* (what a user gets, with one
 example) and *Flow* (a mermaid diagram of the parts the change touches and how data moves between
-them), as `.github/pull_request_template.md` shapes them, and one line per decision. Build starts
-only on their yes. A change they ask for goes into the RFC first, and they see it again.
+them), as `.github/pull_request_template.md` shapes them, and one line per decision. A task that
+adds or reshapes a screen also shows three strong samples of it, phone and desktop, in the approved
+language (`CLAUDE.md` §10), drawn on one Design canvas made for the task; the owner picks one. Build
+starts only on their yes. A change they ask for goes into the RFC first, and they see it again.
 
 ## Build
 
@@ -87,9 +85,8 @@ docker exec heliogrid-pg-local psql -U heliogrid -d heliogrid_dev -v ON_ERROR_ST
 ```
 
 Contracts and shared types first, then the parts both platforms draw — the `domain` view model,
-the `i18n` copy, the `packages/ui` component (Laws 7, 11) — then the screens. Build each frame from
-its markup in `.design/<module>/`, read whole when you build that frame — from its `data-frame` to
-the next — as `.claude/rules/ui-adherence.md` *A screen is its locked board* says. Tests first. A test that
+the `i18n` copy, the `packages/ui` component (Laws 7, 11) — then the screens, following the sample
+the owner picked. Tests first. A test that
 `.claude/rules/testing.md` says is proven red is broken in a scratchpad copy of its file, copied
 back after — never `git checkout` a file this task changed — and its failing line kept for the
 PR's *Proof*. A new phone screen joins `tests/e2e/mobile/run.sh` with its flow; a new
@@ -117,7 +114,7 @@ untracked files. Each agent gets the plan and the `DONE WHEN` lines pasted, neve
 file to search, and `git status --porcelain` reads the same before it starts and after it returns.
 
 Start `code-reviewer` (Opus) with the plan, the `DONE WHEN` lines, the changed files, each red line,
-and the locked board paths of each screen, in the background. Nothing runs while it reads; you
+and the picked sample of each screen, in the background. Nothing runs while it reads; you
 draft the PR body's *What*, *User impact* and *Flow* in `.qa/pr-body.md`, touching no tracked file.
 Fix every confirmed Critical, High and Medium finding (*Fixing*). A possible one is proven with
 a test and fixed, or closed with one reason in the PR's *Notes*.

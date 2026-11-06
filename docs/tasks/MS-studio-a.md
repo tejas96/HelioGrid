@@ -34,7 +34,7 @@ file's slice exactly once.
 - `CODE.step1-setup.11` — Ground Mount PRO-locked, dead toggle (ruling S1-1: un-gate, every plan → MS1-09).
 - `CODE.step1-setup.21` — 5 MB logo cap advertised, never enforced (ruling S1-2: enforce for real + logo from tenant branding → MS1-11/12).
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-04-step1-site-setup.md`; they are the specification. Every row of this task is present in that brief; no row is quoted here.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given a submitted survey, when Step 1 opens, then carried values show with provenance and the gaps list is as prominent as the values (M05-14).
@@ -69,7 +69,7 @@ file's slice exactly once.
 **DEFECTS:**
 - `CODE.step2-roof-drawing.87` — pinch-zoom/two-finger pan absent (ruling S2-1: touch pack added → MS2-03).
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-05-step2-roof.md`; they are the specification. Every row of this task is present in that brief; no row is quoted here.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given a drawn roof, when an edge label is tapped, then exact metres can be typed and the geometry updates (M05-24).
@@ -114,7 +114,7 @@ file's slice exactly once.
 - `CODE.step3-obstructions.30` — Slider drag floods undo stack (ruling S3-3: one gesture = one entry → MS3-27).
 - `CODE.step3-obstructions.12` — Rect obstruction edge labels missing (ruling S3-5.2 → MS3-09).
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-06-step3-obstructions.md`; they are the specification. Every row of this task is present in that brief; no row is quoted here.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given the type picker, when opened, then all eleven types show with defaults, and Ladder carries its BETA marker (M05-32).
@@ -132,7 +132,7 @@ file's slice exactly once.
 - Given shape switch and switch-back, Then prior dims restore (MS3-25). Given an emptied height field, Then nothing commits and the floor is explained (MS3-26). Given a full slider sweep, Then exactly one undo entry exists (MS3-27).
 - Given Casts-shadow OFF on any object, Then the 3D shadow disappears AND the energy math excludes it (MS3-28). Given blocking ON, Then the ring and layout keep-out apply and bridging reveals (MS3-29). Given open-to-sky ON, Then bridging is blocked regardless of clearance (MS3-30).
 - Given a big tank, When converted, Then a "{label} platform" roof appears at base+height with the engineer line, one undo step (MS3-32). Given a pitched roof, Then the height card and the 3D report the SAME top-from-ground (MS3-33).
-- MS3-08, MS3-10, MS3-16 and MS3-23 are P1 and carry no line in the document's P0 acceptance block (`docs/prd/modules/M05-studio/03-step3-obstructions.md`, `## Acceptance criteria (P0 coverage)`); they are verified against their brief rows in `docs/ux/briefs/SCR-MS-06-step3-obstructions.md`.
+- MS3-08, MS3-10, MS3-16 and MS3-23 are P1 and carry no line in the document's P0 acceptance block (`docs/prd/modules/M05-studio/03-step3-obstructions.md`, `## Acceptance criteria (P0 coverage)`); they are verified against their brief rows in `SCR-MS-06`.
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 - the ported POC tests for this area pass unchanged in the new project.
 
@@ -324,7 +324,7 @@ file's slice exactly once.
 
 **DONE WHEN:**
 - Given a stale roof anchor, Then 3D grounds by position and the shading caster matches the mesh (MS3-36); the shadow predicate is shared engine-wide (MS3-37). Given a missing 3D asset, Then the fallback renders and nothing crashes (MS3-38).
-- Given a project containing only some of the six modelled types, When the 3D scene mounts, Then only those types' assets are fetched; and given a corrupt asset or a 404 for a type the project does contain, Then the procedural fallback renders in its place and the scene survives. (Beyond the missing-asset line above, the lazy per-type streaming half and the corrupt/404 half of MS3-38 carry no dedicated Given/When/Then line in `docs/prd/modules/M05-studio/03-step3-obstructions.md`'s P0 acceptance block; the requirement text above is the binding criterion.) The fetch policy is this task's; the mount that triggers it is `3d_design_studio/src/features/solar-studio/three/Scene3D.tsx`, ported by T-MS-206 (`docs/tasks/MS-studio-b.md`), and the fallback's appearance renders on the shared 3D scene (`docs/ux/briefs/SCR-MS-09-3d-scene.md`, same task). Note for the porting engineer: *retired: studio inventory* records no test against `.45`/`.46`, so the ported `obstruction-assets.test.ts` pins `.47`/`.48` (MS3-39) only — this pair needs new coverage rather than an inherited net.
+- Given a project containing only some of the six modelled types, When the 3D scene mounts, Then only those types' assets are fetched; and given a corrupt asset or a 404 for a type the project does contain, Then the procedural fallback renders in its place and the scene survives. (Beyond the missing-asset line above, the lazy per-type streaming half and the corrupt/404 half of MS3-38 carry no dedicated Given/When/Then line in `docs/prd/modules/M05-studio/03-step3-obstructions.md`'s P0 acceptance block; the requirement text above is the binding criterion.) The fetch policy is this task's; the mount that triggers it is `3d_design_studio/src/features/solar-studio/three/Scene3D.tsx`, ported by T-MS-206 (`docs/tasks/MS-studio-b.md`), and the fallback's appearance renders on the shared 3D scene (`SCR-MS-09`, same task). Note for the porting engineer: *retired: studio inventory* records no test against `.45`/`.46`, so the ported `obstruction-assets.test.ts` pins `.47`/`.48` (MS3-39) only — this pair needs new coverage rather than an inherited net.
 - MS3-39 is P1 and carries no separate acceptance line in `docs/prd/modules/M05-studio/03-step3-obstructions.md`; its test-pinned reference dims are the acceptance and travel with the ported suite.
 - the ported POC tests for this area pass unchanged in the new project.
 
@@ -346,7 +346,7 @@ file's slice exactly once.
 - Given a large-C&I design, when created, then blocks/tables exist in the design payload and the per-site projection works (M05-90).
 - Given a design with blocks, when editing tools render, then block/table tools present and per-panel editing remains available inside a table (M05-89).
 - Given a 300 kW rooftop design, when opened, then the full per-panel census toolset presents with no scale-motivated reduction — the pure-rooftop half of M05-89, carried by `M05-87`'s acceptance line in `docs/prd/modules/M05-design-studio.md` and by the Appendix A census run (M05-01).
-- This task owns the build half of M05-89 — the remove-map scoping that keeps per-panel editing reachable inside a table, and the guarantee that no census entry is dropped when the regime switches. The surface half renders on the layout editor (`docs/ux/briefs/SCR-MS-08-step6-layout-editor.md`, state `block-editing-regime`, T-MS-205 in `docs/tasks/MS-studio-b.md`); it consumes this task's scoping rather than re-deriving it.
+- This task owns the build half of M05-89 — the remove-map scoping that keeps per-panel editing reachable inside a table, and the guarantee that no census entry is dropped when the regime switches. The surface half renders on the layout editor (`SCR-MS-08`, state `block-editing-regime`, T-MS-205 in `docs/tasks/MS-studio-b.md`); it consumes this task's scoping rather than re-deriving it.
 
 ---
 
@@ -366,13 +366,13 @@ file's slice exactly once.
 - Moved from `T-FPLAT-066` (option A, taken 2026-11-04 when the owner asked for `T-SHELL-006`'s gate to be fixed): Given the matrix's M05 rows, when they are inspected, then `design_survey_superseded` stands beside `signoff_requested` and `design_returned` with recipient "the design's author (own)" and push marked, sourced to M05-13 (owner ruling 2026-08-04); and given this task's supersession emitter, then delivery resolves that author through F2 scope and the record lands with the standard class (F6-10, F6-13, F6-16).
 - The marker is derived by comparison and never hand-set, per M05-10 and `F8-13` — which requires the design to pin the survey version it was built from. **Prerequisite:** M05-10's pinned-input list and `F8-14`'s (T-FPLAT-028, `docs/tasks/F-platform.md`) enumerate the catalog release, price-book version, market-pack/rules version and engine versions only. This task adds the survey version to the design's pinned inputs; without that pin the comparison has nothing to compare and the marker can never fire.
 - This task owns the three mechanisms behind the row: (1) the review-needed marker state and the diff it names — which superseding version, and which fields differ in provenance or in value; (2) the notification emit to the design's author — the `design_survey_superseded` type registered in `docs/prd/foundations/F6-notifications-and-search.md`'s matrix, never an ad-hoc one (`F6-05`/`F6-10`; recipient and channel resolve there per `F6-16`, and delivery is T-FPLAT-018's in `docs/tasks/F-platform.md`); (3) the design-side state that gates sending, which the proposal share path reads. Nothing is applied automatically; the designer chooses what to apply, edit by edit, and sent proposals stay pinned (`F8-15`, cited).
-- The banner and the persistent marking are drawn by the studio shell — `docs/ux/briefs/SCR-MS-03-studio-shell.md` states `survey-updated-review-needed` and `staleness-marker`, built by T-MS-360 (`docs/tasks/MS-studio-c.md`). The shell renders this task's state; it does not derive it.
+- The banner and the persistent marking are drawn by the studio shell — `SCR-MS-03` states `survey-updated-review-needed` and `staleness-marker`, built by T-MS-360 (`docs/tasks/MS-studio-c.md`). The shell renders this task's state; it does not derive it.
 - The survey side of the join is M04-66 in T-M04-015 (`docs/tasks/M04-survey.md`) — versioned append and the superseded state. This task is the design-side reconciliation that M04-66 points at.
 
 **Counterpart edits outside this file — the two this task depends on have landed; one further `M05-13` counterpart, on the proposal-LIST leg, is still open:**
 1. **DONE** — `docs/prd/foundations/F6-notifications-and-search.md`'s event matrix now carries the `design_survey_superseded` row for M05 with recipient "the design's author (own)", push ✓, sourced to `M05-13` (owner ruling 2026-08-04); `docs/prd/modules/M05-design-studio.md` §4 ("This module provides") registers the same event, so both sides of `F6-10`'s cross-check name it and T-FPLAT-018 (`docs/tasks/F-platform.md`) has a channel for the emit above.
 2. **DONE** — carried by T-M06-018's send-gate DONE WHEN (`docs/tasks/M06-proposals.md`): given a design carrying the review-needed marker, when a draft proposal built on it is sent from the share sheet, then the send is blocked and the stated reason names the superseding survey version. This task holds the gating state; the send path that honours it is M06's. (`F8-17`'s recompute-in-flight block is a different condition and does not cover this one.)
-3. **OPEN when this note was written — being closed in this same wave** — the proposal-LIST leg of the marker's surface. `docs/ux/briefs/SCR-M06-19-proposal-list.md` carries no state for the review-needed condition (its States list has `stale-badge`, the `M06-46` comparison, only, and `M05-13` is not among its verbatim rows), while T-M06-019 (`docs/tasks/M06-proposals.md`) already makes the review-needed row state a closing condition and records the required brief edit as its own **counterpart edit required outside this file** note. That edit is the brief owner's and is being made this wave; when it lands this item closes with nothing further to do here. It does not gate T-MS-117 — this task owns the marker state and the emit, and the list rendering of the marker is M06's — but it is why the ledger above is not a whole-of-`M05-13` clearance. (This header previously read "**both landed; no open counterpart work remains**"; that wording is quoted here for traceability — it was true of items 1 and 2 and overlooked this third leg.)
+3. **OPEN when this note was written — being closed in this same wave** — the proposal-LIST leg of the marker's surface. `SCR-M06-19` carries no state for the review-needed condition (its States list has `stale-badge`, the `M06-46` comparison, only, and `M05-13` is not among its verbatim rows), while T-M06-019 (`docs/tasks/M06-proposals.md`) already makes the review-needed row state a closing condition and records the required brief edit as its own **counterpart edit required outside this file** note. That edit is the brief owner's and is being made this wave; when it lands this item closes with nothing further to do here. It does not gate T-MS-117 — this task owns the marker state and the emit, and the list rendering of the marker is M06's — but it is why the ledger above is not a whole-of-`M05-13` clearance. (This header previously read "**both landed; no open counterpart work remains**"; that wording is quoted here for traceability — it was true of items 1 and 2 and overlooked this third leg.)
 
 **Settle before the build:**
 - Recording the review that clears the marker — ruled: an implicit re-pin; the designer's review ends by pinning the superseding survey version on the design, and the marker — derived by comparing that pin to the newest version (M05-10, `F8-13`) — clears with it, the attributed act being the save that moved the pin (a stored clearance with no pin move is exactly the hand-set flag M05-10 forbids; V1 carries no survey, so the first design this reaches is M04's, and M04-66 points at this same pin).
@@ -397,7 +397,7 @@ file's slice exactly once.
 - The CPU shading path is retained **permanently** — it is a fallback, never a deprecation step. One engine version, two executors: any change to the engine re-runs the golden-scene comparison, and a GPU-only result is never shipped as the sole executor.
 - Server simulation stamps its results and clears staleness on completion; a stamped result that predates a later edit self-stales by comparison like every other pinned output (M05-10, `F8-13`/`F8-14` cited).
 - Release gate: `≤30 s C&I (GPU)` full recompute, `≤3 s` incremental-edit heatmap first paint and the `≥30 fps` orbit floor per M05-95 — a capability tier does not ship over budget.
-- The surface half — the block/table sheets and the on-object manipulation — renders on the layout editor (`docs/ux/briefs/SCR-MS-08-step6-layout-editor.md`, T-MS-205 in `docs/tasks/MS-studio-b.md`) and the 3D scene (`docs/ux/briefs/SCR-MS-09-3d-scene.md`, T-MS-206); those screens consume this engine, and the paradigm switch they present is T-MS-116's M05-89.
+- The surface half — the block/table sheets and the on-object manipulation — renders on the layout editor (`SCR-MS-08`, T-MS-205 in `docs/tasks/MS-studio-b.md`) and the 3D scene (`SCR-MS-09`, T-MS-206); those screens consume this engine, and the paradigm switch they present is T-MS-116's M05-89.
 
 ---
 
@@ -419,7 +419,7 @@ file's slice exactly once.
 - Given sloped ground, when row pitch is solved, then it is T-MS-207's winter-solstice shadow-free pitch model (`3d_design_studio/src/features/solar-studio/lib/spacing.ts`, MS6-04/MS6-53 in `docs/tasks/MS-studio-b.md`) extended at block granularity — one pitch model shared by flat and sloped ground, extended and never replaced, and the flat-ground result it already produces is unchanged by this task.
 - Release gate: `≤90 s utility` full recompute, `≤5 s` incremental-edit heatmap first paint, `≤10 min p95` server simulation at utility and the orbit floors that row states (`≥30 fps`, mobile utility `≥24`, view-prioritised) per M05-95 — a capability tier does not ship over budget.
 - Cross-slope tracker articulation is out of scope by §5 of `docs/prd/modules/M05-design-studio.md`, deferred with an explicit trigger; this task builds the single-axis tracker table on a draped mesh and nothing beyond it.
-- The surface half renders on the layout editor and the 3D scene (`docs/ux/briefs/SCR-MS-08-step6-layout-editor.md`, `docs/ux/briefs/SCR-MS-09-3d-scene.md` — T-MS-205 and T-MS-206 in `docs/tasks/MS-studio-b.md`); those screens consume this engine.
+- The surface half renders on the layout editor and the 3D scene (`SCR-MS-08`, `SCR-MS-09` — T-MS-205 and T-MS-206 in `docs/tasks/MS-studio-b.md`); those screens consume this engine.
 
 ---
 
@@ -440,7 +440,7 @@ file's slice exactly once.
 - Given any scale design, when the plan is validated, then both reconciliation gates hold: Σ combiner inputs = total strings (T-MS-271's existing gate, unchanged) and Σ blocks = project total (this task's addition). A design that fails either gate does not pass the step.
 - Given MV collection, when it appears anywhere, then it is stubbed as a LABELLED ASSUMPTION with no MV engineering claim — no MV sizing, no MV protection coordination, nothing presented as engineered. The structural/engineering disclaimer travels with block-level DXF sheets and MV assumptions (M05-94, `F8-25`/`F8-28` cited).
 - Given permit/DXF output at scale, when a sheet prints, then provenance tiers print on every sheet unchanged — a block aggregate inherits the **weakest** tier of its members (M05-94, `F8-04` cited).
-- The surface half — the scale permit/DXF sheets and the block electrical single-line — renders on the SLD step (`docs/ux/briefs/SCR-MS-11-step8-sld.md`, T-MS-268 in `docs/tasks/MS-studio-b.md`); that screen consumes this engine.
+- The surface half — the scale permit/DXF sheets and the block electrical single-line — renders on the SLD step (`SCR-MS-11`, T-MS-268 in `docs/tasks/MS-studio-b.md`); that screen consumes this engine.
 
 ---
 
@@ -456,41 +456,41 @@ file's slice exactly once.
   *Enforced by:* the "375px and 1536px with full parity" clause in the DONE WHEN of T-MS-101/102/103, and the visible-equivalent rows those screens carry (MS2-03, MS3-20, MS3-21).
 
 - **M05-10** (P0) — **Every design pins its inputs, and staleness is derived by comparison — never a flag someone flips.** The design records the catalog release, price-book version, market-pack rules version and computation-engine versions it used; publishing a newer catalog release or pack revision **self-stales** every design pinned to an older label. The studio surfaces staleness wherever the affected numbers appear, with the specific newer input named.
-  *Enforced by:* the design-record surfaces of the studio shell (`docs/ux/briefs/SCR-MS-03-studio-shell.md`) and every figure-bearing studio screen; review checks that no staleness flag is hand-set. T-MS-117 adds the survey version to this pinned-input set, so M05-13's supersession marker is derived by the same comparison rather than by a flag.
+  *Enforced by:* the design-record surfaces of the studio shell (`SCR-MS-03`) and every figure-bearing studio screen; review checks that no staleness flag is hand-set. T-MS-117 adds the survey version to this pinned-input set, so M05-13's supersession marker is derived by the same comparison rather than by a flag.
   **Owed by `T-FPLAT-028` (`F8-14`):** a design pins what it read as `InputPins` (`packages/domain`) — its fingerprint, the catalog release, the tenant price-book version, the pack pin with the keys read, the engine versions — and every figure it shows takes its freshness from `freshnessOf` over the design's own stored pins, never pins built at the call site.
 
 - **M05-11** (P0) — **A design edited after its proposal exists makes that proposal's pricing visibly stale — the studio's side of the money-never-stale law.** The design surfaces "a proposal was built on an older version of this design" wherever it matters (Done step, BOM, captures review), and the proposal-side staleness display is `modules/M06`'s. Figures inside an already-sent document never move (`F8-15`, cited).
-  *Enforced by:* the Done, BOM and captures-review screens (`docs/ux/briefs/SCR-MS-13-done-step.md`, `docs/ux/briefs/SCR-MS-12-step9-bom.md`, `docs/ux/briefs/SCR-MS-10-step7-proposal.md`).
+  *Enforced by:* the Done, BOM and captures-review screens (`SCR-MS-13`, `SCR-MS-12`, `SCR-MS-10`).
 
 - **M05-12** (P0) — **Entitlement checks touch the studio only at save/creation and at proposal Generate — never mid-edit. The flagship is never interrupted per-keystroke, and existing designs always open.** Gate mechanics, ceilings and upgrade prompts are `modules/M12`'s; this module's law is the placement: no entitlement denial ever interrupts editing, blanks a canvas or locks an open design. **The tension is resolved (owner ruling 2026-08-04): zero feature gates exist in the studio** — the kW ceiling per tier is the **only** gate, enforced exactly at these checkpoints, and over-ceiling designs stay readable forever; the census's no-tier-gate rule holds as law with the ceiling as its single sanctioned boundary.
-  *Enforced by:* the shell's Save/Generate paths (`docs/ux/briefs/SCR-MS-03-studio-shell.md`) and review — every studio screen task closes with zero in-surface entitlement checks; MS1-09 in T-MS-101 is the Step-1 instance.
+  *Enforced by:* the shell's Save/Generate paths (`SCR-MS-03`) and review — every studio screen task closes with zero in-surface entitlement checks; MS1-09 in T-MS-101 is the Step-1 instance.
 
 - **M05-56** (P2) — **Yield-uncertainty reporting (P50/P90 exceedance) is designed-for as an additive layer on the same energy model** — no second engine, no re-labelling of existing figures; needed when enterprise/utility tenants arrive.
-  *Enforced by:* review of the energy-model work behind the energy report (`docs/ux/briefs/SCR-MS-09-3d-scene.md`) — the model must admit an additive exceedance layer; nothing is built for it in v1 (§5 non-goals of `docs/prd/modules/M05-design-studio.md`).
+  *Enforced by:* review of the energy-model work behind the energy report (`SCR-MS-09`) — the model must admit an additive exceedance layer; nothing is built for it in v1 (§5 non-goals of `docs/prd/modules/M05-design-studio.md`).
 
 - **M05-60** (P0) — **The staleness law binds captures: a capture taken before a design change is stale and must say so — never silently show an out-of-date picture.** This is the studio-side instance of the imagery-honesty law; it rides into the proposal and the customer link with the capture.
-  *Enforced by:* the captures/review screen (`docs/ux/briefs/SCR-MS-10-step7-proposal.md`, rows M05-59/M05-61) and the customer surfaces that carry the capture.
+  *Enforced by:* the captures/review screen (`SCR-MS-10`, rows M05-59/M05-61) and the customer surfaces that carry the capture.
 
 - **M05-77** (P0) — **The crew sees no money — a work order, not a priced document — on every surface this module emits.** No commercial figure appears on the installation plan or any crew-facing output; the role-surface law is `F2-05`–`F2-07` (cited).
-  *Enforced by:* the installation work order screen (`docs/ux/briefs/SCR-MS-17-installation-work-order.md`) and its print output; review rejects any money field on a crew surface.
+  *Enforced by:* the installation work order screen (`SCR-MS-17`) and its print output; review rejects any money field on a crew surface.
 
 - **M05-80** (P0) — **Exactly one variant per lead may be recommended, and the customer sees exactly one.** Setting `is_recommended` moves the mark, never duplicates it; the customer link and proposal render the recommended variant (their modules' halves).
-  *Enforced by:* the design list and variant-compare screens (`docs/ux/briefs/SCR-MS-01-design-list.md`, `docs/ux/briefs/SCR-MS-14-variant-compare.md`).
+  *Enforced by:* the design list and variant-compare screens (`SCR-MS-01`, `SCR-MS-14`).
 
 - **M05-81** (P0) — **A customer changing their mind on size is a variant, not a rewrite.** The standing design is preserved; a duplicate is adjusted and compared; the recommendation moves if warranted.
-  *Enforced by:* the design list's duplicate/new-variant actions (`docs/ux/briefs/SCR-MS-01-design-list.md`) and review of any in-place resize path.
+  *Enforced by:* the design list's duplicate/new-variant actions (`SCR-MS-01`) and review of any in-place resize path.
 
 - **M05-82** (P0) — **The rule that does not bend: the product never computes structural adequacy — sign-off is a recorded human decision (who + when), and an unapproved design is never shown to the customer.** The laws are published at `F8-25`/`F8-26`/`F8-28` and are cited, not restated; this module owns the surfaces that make them true.
-  *Enforced by:* the sign-off review screen (`docs/ux/briefs/SCR-MS-16-signoff-review.md`), the customer-facing gate on `docs/ux/briefs/SCR-F5-05-customer-3d-view.md`, and the engineer-verification lines this file's own rows carry (MS3-32 in T-MS-103).
+  *Enforced by:* the sign-off review screen (`SCR-MS-16`), the customer-facing gate on `SCR-F5-05`, and the engineer-verification lines this file's own rows carry (MS3-32 in T-MS-103).
 
 - **M05-87** (P0) — **The studio designs from 1 kW to 100 MW without a rewrite, in three regimes:** Rooftop 1–500 kW (≤ ~1,100 modules, per-panel editing, flat ground) · Large C&I 0.5–10 MW (≤ ~20k modules, block/table editing) · Utility 10–100 MW (≤ ~175k modules, zone → block → tracker table, terrain-aware). Every scale capability is investment into the studio moat, never a reason to cut studio capability.
   *Enforced by:* review of every studio task against the regime table; T-MS-116 builds the payload that makes "without a rewrite" true, and T-MS-118 and T-MS-119 build the Large C&I and Utility regimes it names.
 
 - **M05-88** (P0) — **Above rooftop scale the editable unit is the block/table/zone — never the panel; panels become derived instances of a table.** Regime is a property of the **design**, not the tenant: a 100 kW rooftop and a 40 MW park coexist in one tenant. The design payload carries blocks alongside the per-panel rooftop model from day one, so 100 MW needs no migration.
-  *Enforced by:* T-MS-116, which owns both the payload and row M05-89's census guarantee, and the layout editor's paradigm-switch surface (`docs/ux/briefs/SCR-MS-08-step6-layout-editor.md`, T-MS-205 in `docs/tasks/MS-studio-b.md`).
+  *Enforced by:* T-MS-116, which owns both the payload and row M05-89's census guarantee, and the layout editor's paradigm-switch surface (`SCR-MS-08`, T-MS-205 in `docs/tasks/MS-studio-b.md`).
 
 - **M05-94** (P0) — **Scale changes resolution, never honesty — and never physics claims.** Provenance goes block-level, not away: a block aggregate inherits the **weakest** tier of its members (`F8-04`, cited); DEM-draped ground is `derived` from a public 30 m DEM, never `measured`. The shading model's documented limits print at every scale (beam-only, linear-in-unshaded-area, no bypass-diode cliff, no string mismatch — partial-shade losses read optimistic at 1 kW and 100 MW alike; `F8-11`, cited). Structural adequacy is never computed at any scale — tracker foundations, pile embedment and wind loading on a 100 MW park are engineer-led exactly as a 3 kW rooftop is, and the disclaimer travels with every structure-bearing output including block-level DXF sheets and MV assumptions (`F8-25`/`F8-28`, cited). **Money never renders while stale at scale:** a long server recompute keeps money provisional for the whole window and proposal issue blocked until shading and the money path reconcile — no express lane (`F8-17`, cited).
-  *Enforced by:* review of every provenance-bearing and money-bearing studio surface; T-MS-119 carries the DEM-provenance half (`derived` for draped ground, `assumed` for the flat-ground default) and T-MS-120 the block-level provenance and disclaimer on DXF sheets and MV assumptions; the BOM and proposal screens hold the money-provisional half (`docs/ux/briefs/SCR-MS-12-step9-bom.md`, `docs/ux/briefs/SCR-MS-10-step7-proposal.md`).
+  *Enforced by:* review of every provenance-bearing and money-bearing studio surface; T-MS-119 carries the DEM-provenance half (`derived` for draped ground, `assumed` for the flat-ground default) and T-MS-120 the block-level provenance and disclaimer on DXF sheets and MV assumptions; the BOM and proposal screens hold the money-provisional half (`SCR-MS-12`, `SCR-MS-10`).
 
 - **M05-95** (P1) — **Performance budgets are release criteria per regime — a capability tier does not ship over budget.** Full in-browser shading recompute ≤5 s rooftop / ≤30 s C&I (GPU) / ≤90 s utility; incremental edit → heatmap first paint ≤1 s / ≤3 s / ≤5 s; orbit ≥30 fps floors (mobile utility ≥24, view-prioritised); server simulation ≤10 min p95 at utility — measured on stated mid-range reference devices.
   *Enforced by:* the release gate — measured against T-MS-104's ported analysis worker and the 3D scene; the C&I budgets against T-MS-118 and the utility budgets against T-MS-119; no capability tier ships over budget.
@@ -505,7 +505,7 @@ file's slice exactly once.
   *Enforced by:* T-MS-103 (Step 3 readouts) reading the shell's global units toggle; "Given ft mode, Then all readouts/inputs honor it (MS3-06)" is its acceptance.
 
 - **MS3-35** (P1) — The obstruction layer is reused READ-ONLY by the layout editor so both steps show identical shapes/chips/rings (`.42`).
-  *Enforced by:* the layout editor screen (`docs/ux/briefs/SCR-MS-08-step6-layout-editor.md`) consuming T-MS-103's obstruction layer component unchanged; review rejects a second renderer.
+  *Enforced by:* the layout editor screen (`SCR-MS-08`) consuming T-MS-103's obstruction layer component unchanged; review rejects a second renderer.
 
 ---
 
@@ -517,58 +517,58 @@ named beside it carries the same behavior in detail and its screen brief is wher
 
 | Row | realized-by |
 |---|---|
-| M05-02 (P0) | `docs/ux/briefs/SCR-MS-03-studio-shell.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` (studio wizard frame) |
-| M05-03 (P0) | `docs/ux/briefs/SCR-MS-03-studio-shell.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
-| M05-04 (P0) | `docs/ux/briefs/SCR-MS-03-studio-shell.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
-| M05-05 (P0) | `docs/ux/briefs/SCR-MS-03-studio-shell.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
-| M05-06 (P0) | `docs/ux/briefs/SCR-MS-03-studio-shell.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
-| M05-09 (P0) | `docs/ux/briefs/SCR-MS-03-studio-shell.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
-| M05-21 (P0) | `docs/ux/briefs/SCR-MS-01-design-list.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` (design-list entry surface) |
-| M05-78 (P0) | `docs/ux/briefs/SCR-MS-01-design-list.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.5 (variant lineage) |
-| M05-37 (P0) | `docs/ux/briefs/SCR-MS-07-step4-components.md` + `docs/prd/modules/M05-studio/04-step4-components.md` |
-| M05-38 (P0) | `docs/ux/briefs/SCR-MS-07-step4-components.md` + `docs/prd/modules/M05-studio/04-step4-components.md` |
-| M05-39 (P0) | `docs/ux/briefs/SCR-MS-07-step4-components.md` + `docs/prd/modules/M05-studio/04-step4-components.md` |
-| M05-40 (P0) | `docs/ux/briefs/SCR-MS-07-step4-components.md` + `docs/prd/modules/M05-studio/04-step4-components.md` |
-| M05-41 (P0) | `docs/ux/briefs/SCR-MS-07-step4-components.md` + `docs/prd/modules/M05-studio/04-step4-components.md` |
+| M05-02 (P0) | `SCR-MS-03` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` (studio wizard frame) |
+| M05-03 (P0) | `SCR-MS-03` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
+| M05-04 (P0) | `SCR-MS-03` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
+| M05-05 (P0) | `SCR-MS-03` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
+| M05-06 (P0) | `SCR-MS-03` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
+| M05-09 (P0) | `SCR-MS-03` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
+| M05-21 (P0) | `SCR-MS-01` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` (design-list entry surface) |
+| M05-78 (P0) | `SCR-MS-01` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.5 (variant lineage) |
+| M05-37 (P0) | `SCR-MS-07` + `docs/prd/modules/M05-studio/04-step4-components.md` |
+| M05-38 (P0) | `SCR-MS-07` + `docs/prd/modules/M05-studio/04-step4-components.md` |
+| M05-39 (P0) | `SCR-MS-07` + `docs/prd/modules/M05-studio/04-step4-components.md` |
+| M05-40 (P0) | `SCR-MS-07` + `docs/prd/modules/M05-studio/04-step4-components.md` |
+| M05-41 (P0) | `SCR-MS-07` + `docs/prd/modules/M05-studio/04-step4-components.md` |
 | M05-42 (P0) | `docs/prd/modules/M05-studio/04-step4-components.md` row MS4-34 (everything derived recomputes from the store) |
-| M05-43 (P0) | `docs/ux/briefs/SCR-MS-07-step4-components.md` + `docs/prd/modules/M05-studio/04-step4-components.md` |
-| M05-44 (P0) | `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-45 (P0) | `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-46 (P0) | `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-47 (P0) | `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-48 (P0) | `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-49 (P0) | `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-50 (P0) | `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-51 (P0) | `docs/ux/briefs/SCR-MS-09-3d-scene.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-52 (P0) | `docs/ux/briefs/SCR-MS-09-3d-scene.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-53 (P0) | `docs/ux/briefs/SCR-MS-09-3d-scene.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-54 (P0) | `docs/ux/briefs/SCR-MS-09-3d-scene.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| MS3-40 (P1) | `docs/ux/briefs/SCR-MS-09-3d-scene.md` (per-type obstruction 3D visuals on the shared 3D scene) |
-| M05-55 (P0) | `docs/ux/briefs/SCR-F5-05-customer-3d-view.md` + `docs/prd/modules/M05-studio/08-customer-surfaces.md` |
-| M05-57 (P0) | `docs/ux/briefs/SCR-MS-10-step7-proposal.md` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
-| M05-58 (P0) | `docs/ux/briefs/SCR-MS-10-step7-proposal.md` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
-| M05-59 (P0) | `docs/ux/briefs/SCR-MS-10-step7-proposal.md` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
-| M05-61 (P0) | `docs/ux/briefs/SCR-MS-10-step7-proposal.md` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
-| M05-62 (P0) | `docs/ux/briefs/SCR-MS-11-step8-sld.md` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
-| M05-63 (P0) | `docs/ux/briefs/SCR-MS-11-step8-sld.md` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
-| M05-64 (P0) | `docs/ux/briefs/SCR-MS-11-step8-sld.md` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
-| M05-65 (P0) | `docs/ux/briefs/SCR-MS-11-step8-sld.md` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
-| M05-66 (P0) | `docs/ux/briefs/SCR-MS-11-step8-sld.md` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
-| M05-67 (P0) | `docs/ux/briefs/SCR-MS-11-step8-sld.md` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
-| M05-68 (P0) | `docs/ux/briefs/SCR-MS-12-step9-bom.md` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
-| M05-69 (P0) | `docs/ux/briefs/SCR-MS-12-step9-bom.md` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
+| M05-43 (P0) | `SCR-MS-07` + `docs/prd/modules/M05-studio/04-step4-components.md` |
+| M05-44 (P0) | `SCR-MS-08` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-45 (P0) | `SCR-MS-08` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-46 (P0) | `SCR-MS-08` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-47 (P0) | `SCR-MS-08` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-48 (P0) | `SCR-MS-08` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-49 (P0) | `SCR-MS-08` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-50 (P0) | `SCR-MS-08` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-51 (P0) | `SCR-MS-09` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-52 (P0) | `SCR-MS-09` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-53 (P0) | `SCR-MS-09` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-54 (P0) | `SCR-MS-09` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| MS3-40 (P1) | `SCR-MS-09` (per-type obstruction 3D visuals on the shared 3D scene) |
+| M05-55 (P0) | `SCR-F5-05` + `docs/prd/modules/M05-studio/08-customer-surfaces.md` |
+| M05-57 (P0) | `SCR-MS-10` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
+| M05-58 (P0) | `SCR-MS-10` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
+| M05-59 (P0) | `SCR-MS-10` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
+| M05-61 (P0) | `SCR-MS-10` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
+| M05-62 (P0) | `SCR-MS-11` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
+| M05-63 (P0) | `SCR-MS-11` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
+| M05-64 (P0) | `SCR-MS-11` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
+| M05-65 (P0) | `SCR-MS-11` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
+| M05-66 (P0) | `SCR-MS-11` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
+| M05-67 (P0) | `SCR-MS-11` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
+| M05-68 (P0) | `SCR-MS-12` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
+| M05-69 (P0) | `SCR-MS-12` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
 | M05-70 (P0) | `docs/prd/modules/M05-studio/09-step9-bom.md` §MS10.5 row MS10-30 (locked money invariants) |
-| M05-71 (P0) | `docs/ux/briefs/SCR-MS-12-step9-bom.md` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
-| M05-72 (P0) | `docs/ux/briefs/SCR-MS-12-step9-bom.md` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
-| M05-73 (P0) | `docs/ux/briefs/SCR-MS-12-step9-bom.md` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
-| M05-74 (P0) | `docs/ux/briefs/SCR-MS-12-step9-bom.md` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
-| M05-75 (P0) | `docs/ux/briefs/SCR-MS-13-done-step.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` |
-| M05-76 (P0) | `docs/ux/briefs/SCR-MS-17-installation-work-order.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.6 |
-| M05-79 (P0) | `docs/ux/briefs/SCR-MS-14-variant-compare.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.5 |
-| M05-83 (P0) | `docs/ux/briefs/SCR-MS-15-signoff-queue.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
-| M05-84 (P0) | `docs/ux/briefs/SCR-MS-16-signoff-review.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
-| M05-85 (P0) | `docs/ux/briefs/SCR-MS-16-signoff-review.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
-| M05-86 (P0) | `docs/ux/briefs/SCR-MS-16-signoff-review.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
+| M05-71 (P0) | `SCR-MS-12` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
+| M05-72 (P0) | `SCR-MS-12` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
+| M05-73 (P0) | `SCR-MS-12` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
+| M05-74 (P0) | `SCR-MS-12` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
+| M05-75 (P0) | `SCR-MS-13` + `docs/prd/modules/M05-studio/10-done-and-installation.md` |
+| M05-76 (P0) | `SCR-MS-17` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.6 |
+| M05-79 (P0) | `SCR-MS-14` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.5 |
+| M05-83 (P0) | `SCR-MS-15` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
+| M05-84 (P0) | `SCR-MS-16` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
+| M05-85 (P0) | `SCR-MS-16` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
+| M05-86 (P0) | `SCR-MS-16` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
 
 ---
 
@@ -577,25 +577,25 @@ named beside it carries the same behavior in detail and its screen brief is wher
 | Row | Disposition |
 |---|---|
 | M05-01 | LAW |
-| M05-02 | realized-by: T-MS-360 — `docs/ux/briefs/SCR-MS-03-studio-shell.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
-| M05-03 | realized-by: T-MS-360 — `docs/ux/briefs/SCR-MS-03-studio-shell.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
-| M05-04 | realized-by: T-MS-360 — `docs/ux/briefs/SCR-MS-03-studio-shell.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
-| M05-05 | realized-by: T-MS-360 — `docs/ux/briefs/SCR-MS-03-studio-shell.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
-| M05-06 | realized-by: T-MS-360 — `docs/ux/briefs/SCR-MS-03-studio-shell.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
+| M05-02 | realized-by: T-MS-360 — `SCR-MS-03` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
+| M05-03 | realized-by: T-MS-360 — `SCR-MS-03` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
+| M05-04 | realized-by: T-MS-360 — `SCR-MS-03` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
+| M05-05 | realized-by: T-MS-360 — `SCR-MS-03` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
+| M05-06 | realized-by: T-MS-360 — `SCR-MS-03` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
 | M05-07 | LAW |
 | M05-08 | LAW |
-| M05-09 | realized-by: T-MS-360 — `docs/ux/briefs/SCR-MS-03-studio-shell.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
+| M05-09 | realized-by: T-MS-360 — `SCR-MS-03` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
 | M05-10 | LAW |
 | M05-11 | LAW |
 | M05-12 | LAW |
-| M05-13 | T-MS-117 (marker, notification and send-gating state); banner surface realized-by: T-MS-360 — `docs/ux/briefs/SCR-MS-03-studio-shell.md` |
+| M05-13 | T-MS-117 (marker, notification and send-gating state); banner surface realized-by: T-MS-360 — `SCR-MS-03` |
 | M05-14 | T-MS-101 |
 | M05-15 | T-MS-101 |
 | M05-16 | T-MS-101 |
 | M05-17 | T-MS-101 |
 | M05-19 | T-MS-101 |
 | M05-20 | T-MS-101 (the input and the re-edit case); T-MS-201 (the design-time warning on capacity and inverter) |
-| M05-21 | realized-by: T-MS-363 — `docs/ux/briefs/SCR-MS-01-design-list.md` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
+| M05-21 | realized-by: T-MS-363 — `SCR-MS-01` + `docs/prd/modules/M05-studio/11-shell-and-platform.md` |
 | M05-22 | T-MS-102 |
 | M05-24 | T-MS-102 |
 | M05-25 | T-MS-102 |
@@ -610,63 +610,63 @@ named beside it carries the same behavior in detail and its screen brief is wher
 | M05-34 | T-MS-103 |
 | M05-35 | T-MS-103 |
 | M05-36 | T-MS-114 |
-| M05-37 | realized-by: T-MS-201 — `docs/ux/briefs/SCR-MS-07-step4-components.md` + `docs/prd/modules/M05-studio/04-step4-components.md` |
-| M05-38 | realized-by: T-MS-201 — `docs/ux/briefs/SCR-MS-07-step4-components.md` + `docs/prd/modules/M05-studio/04-step4-components.md` |
-| M05-39 | realized-by: T-MS-201 — `docs/ux/briefs/SCR-MS-07-step4-components.md` + `docs/prd/modules/M05-studio/04-step4-components.md` |
-| M05-40 | realized-by: T-MS-201 — `docs/ux/briefs/SCR-MS-07-step4-components.md` + `docs/prd/modules/M05-studio/04-step4-components.md` |
-| M05-41 | realized-by: T-MS-201 — `docs/ux/briefs/SCR-MS-07-step4-components.md` + `docs/prd/modules/M05-studio/04-step4-components.md` |
+| M05-37 | realized-by: T-MS-201 — `SCR-MS-07` + `docs/prd/modules/M05-studio/04-step4-components.md` |
+| M05-38 | realized-by: T-MS-201 — `SCR-MS-07` + `docs/prd/modules/M05-studio/04-step4-components.md` |
+| M05-39 | realized-by: T-MS-201 — `SCR-MS-07` + `docs/prd/modules/M05-studio/04-step4-components.md` |
+| M05-40 | realized-by: T-MS-201 — `SCR-MS-07` + `docs/prd/modules/M05-studio/04-step4-components.md` |
+| M05-41 | realized-by: T-MS-201 — `SCR-MS-07` + `docs/prd/modules/M05-studio/04-step4-components.md` |
 | M05-42 | realized-by: T-MS-203 (`docs/tasks/MS-studio-b.md`) — deepened as MS4-34, everything derived recomputes from the store |
-| M05-43 | realized-by: T-MS-201 — `docs/ux/briefs/SCR-MS-07-step4-components.md` + `docs/prd/modules/M05-studio/04-step4-components.md` |
-| M05-44 | realized-by: T-MS-205 — `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-45 | realized-by: T-MS-205 — `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-46 | realized-by: T-MS-205 — `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-47 | realized-by: T-MS-205 — `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-48 | realized-by: T-MS-205 — `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-49 | realized-by: T-MS-205 — `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-50 | realized-by: T-MS-205 — `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-51 | realized-by: T-MS-206 — `docs/ux/briefs/SCR-MS-09-3d-scene.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-52 | realized-by: T-MS-206 — `docs/ux/briefs/SCR-MS-09-3d-scene.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-53 | realized-by: T-MS-206 — `docs/ux/briefs/SCR-MS-09-3d-scene.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-54 | realized-by: T-MS-206 — `docs/ux/briefs/SCR-MS-09-3d-scene.md` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
-| M05-55 | realized-by: T-F5-005 — `docs/ux/briefs/SCR-F5-05-customer-3d-view.md` + `docs/prd/modules/M05-studio/08-customer-surfaces.md` |
+| M05-43 | realized-by: T-MS-201 — `SCR-MS-07` + `docs/prd/modules/M05-studio/04-step4-components.md` |
+| M05-44 | realized-by: T-MS-205 — `SCR-MS-08` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-45 | realized-by: T-MS-205 — `SCR-MS-08` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-46 | realized-by: T-MS-205 — `SCR-MS-08` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-47 | realized-by: T-MS-205 — `SCR-MS-08` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-48 | realized-by: T-MS-205 — `SCR-MS-08` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-49 | realized-by: T-MS-205 — `SCR-MS-08` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-50 | realized-by: T-MS-205 — `SCR-MS-08` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-51 | realized-by: T-MS-206 — `SCR-MS-09` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-52 | realized-by: T-MS-206 — `SCR-MS-09` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-53 | realized-by: T-MS-206 — `SCR-MS-09` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-54 | realized-by: T-MS-206 — `SCR-MS-09` + `docs/prd/modules/M05-studio/05-step6-editor.md` |
+| M05-55 | realized-by: T-F5-005 — `SCR-F5-05` + `docs/prd/modules/M05-studio/08-customer-surfaces.md` |
 | M05-56 | LAW |
-| M05-57 | realized-by: T-MS-260 — `docs/ux/briefs/SCR-MS-10-step7-proposal.md` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
-| M05-58 | realized-by: T-MS-260 — `docs/ux/briefs/SCR-MS-10-step7-proposal.md` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
-| M05-59 | realized-by: T-MS-260 — `docs/ux/briefs/SCR-MS-10-step7-proposal.md` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
+| M05-57 | realized-by: T-MS-260 — `SCR-MS-10` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
+| M05-58 | realized-by: T-MS-260 — `SCR-MS-10` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
+| M05-59 | realized-by: T-MS-260 — `SCR-MS-10` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
 | M05-60 | LAW |
-| M05-61 | realized-by: T-MS-260 — `docs/ux/briefs/SCR-MS-10-step7-proposal.md` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
-| M05-62 | realized-by: T-MS-268 — `docs/ux/briefs/SCR-MS-11-step8-sld.md` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
-| M05-63 | realized-by: T-MS-268 — `docs/ux/briefs/SCR-MS-11-step8-sld.md` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
-| M05-64 | realized-by: T-MS-268 — `docs/ux/briefs/SCR-MS-11-step8-sld.md` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
-| M05-65 | realized-by: T-MS-268 — `docs/ux/briefs/SCR-MS-11-step8-sld.md` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
-| M05-66 | realized-by: T-MS-268 — `docs/ux/briefs/SCR-MS-11-step8-sld.md` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
-| M05-67 | realized-by: T-MS-268 — `docs/ux/briefs/SCR-MS-11-step8-sld.md` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
-| M05-68 | realized-by: T-MS-301 — `docs/ux/briefs/SCR-MS-12-step9-bom.md` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
-| M05-69 | realized-by: T-MS-301 — `docs/ux/briefs/SCR-MS-12-step9-bom.md` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
+| M05-61 | realized-by: T-MS-260 — `SCR-MS-10` + `docs/prd/modules/M05-studio/06-step7-proposal.md` |
+| M05-62 | realized-by: T-MS-268 — `SCR-MS-11` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
+| M05-63 | realized-by: T-MS-268 — `SCR-MS-11` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
+| M05-64 | realized-by: T-MS-268 — `SCR-MS-11` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
+| M05-65 | realized-by: T-MS-268 — `SCR-MS-11` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
+| M05-66 | realized-by: T-MS-268 — `SCR-MS-11` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
+| M05-67 | realized-by: T-MS-268 — `SCR-MS-11` + `docs/prd/modules/M05-studio/07-step8-sld.md` |
+| M05-68 | realized-by: T-MS-301 — `SCR-MS-12` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
+| M05-69 | realized-by: T-MS-301 — `SCR-MS-12` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
 | M05-70 | realized-by: T-MS-304 (`docs/tasks/MS-studio-c.md`) — deepened as MS10-30, the locked money invariants |
-| M05-71 | realized-by: T-MS-301 — `docs/ux/briefs/SCR-MS-12-step9-bom.md` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
-| M05-72 | realized-by: T-MS-301 — `docs/ux/briefs/SCR-MS-12-step9-bom.md` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
-| M05-73 | realized-by: T-MS-301 — `docs/ux/briefs/SCR-MS-12-step9-bom.md` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
-| M05-74 | realized-by: T-MS-301 — `docs/ux/briefs/SCR-MS-12-step9-bom.md` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
-| M05-75 | realized-by: T-MS-310 — `docs/ux/briefs/SCR-MS-13-done-step.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` |
-| M05-76 | realized-by: T-MS-318 — `docs/ux/briefs/SCR-MS-17-installation-work-order.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.6 |
+| M05-71 | realized-by: T-MS-301 — `SCR-MS-12` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
+| M05-72 | realized-by: T-MS-301 — `SCR-MS-12` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
+| M05-73 | realized-by: T-MS-301 — `SCR-MS-12` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
+| M05-74 | realized-by: T-MS-301 — `SCR-MS-12` + `docs/prd/modules/M05-studio/09-step9-bom.md` |
+| M05-75 | realized-by: T-MS-310 — `SCR-MS-13` + `docs/prd/modules/M05-studio/10-done-and-installation.md` |
+| M05-76 | realized-by: T-MS-318 — `SCR-MS-17` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.6 |
 | M05-77 | LAW |
-| M05-78 | realized-by: T-MS-363 — `docs/ux/briefs/SCR-MS-01-design-list.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.5 |
-| M05-79 | realized-by: T-MS-376 (`docs/tasks/MS-studio-c.md`) — brief `docs/ux/briefs/SCR-MS-14-variant-compare.md`; variant lineage `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.5 |
+| M05-78 | realized-by: T-MS-363 — `SCR-MS-01` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.5 |
+| M05-79 | realized-by: T-MS-376 (`docs/tasks/MS-studio-c.md`) — `SCR-MS-14`; variant lineage `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.5 |
 | M05-80 | LAW |
 | M05-81 | LAW |
 | M05-82 | LAW |
-| M05-83 | realized-by: T-MS-312 — `docs/ux/briefs/SCR-MS-15-signoff-queue.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
-| M05-84 | realized-by: T-MS-313 — `docs/ux/briefs/SCR-MS-16-signoff-review.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
-| M05-85 | realized-by: T-MS-313 — `docs/ux/briefs/SCR-MS-16-signoff-review.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
-| M05-86 | realized-by: T-MS-313 — `docs/ux/briefs/SCR-MS-16-signoff-review.md` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
+| M05-83 | realized-by: T-MS-312 — `SCR-MS-15` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
+| M05-84 | realized-by: T-MS-313 — `SCR-MS-16` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
+| M05-85 | realized-by: T-MS-313 — `SCR-MS-16` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
+| M05-86 | realized-by: T-MS-313 — `SCR-MS-16` + `docs/prd/modules/M05-studio/10-done-and-installation.md` §MS11.3 |
 | M05-87 | LAW |
 | M05-88 | LAW |
-| M05-89 | T-MS-116 (census guarantee + remove-map scoping); surface realized-by: T-MS-205 — `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` |
+| M05-89 | T-MS-116 (census guarantee + remove-map scoping); surface realized-by: T-MS-205 — `SCR-MS-08` |
 | M05-90 | T-MS-116 |
-| M05-91 | T-MS-118 (Tier B engine); surface realized-by: T-MS-205, T-MS-206 — `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/ux/briefs/SCR-MS-09-3d-scene.md` |
-| M05-92 | T-MS-119 (Tier C engine); surface realized-by: T-MS-205, T-MS-206 — `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` + `docs/ux/briefs/SCR-MS-09-3d-scene.md` |
-| M05-93 | T-MS-120 (block electrical + DXF at scale); surface realized-by: T-MS-268 — `docs/ux/briefs/SCR-MS-11-step8-sld.md` |
+| M05-91 | T-MS-118 (Tier B engine); surface realized-by: T-MS-205, T-MS-206 — `SCR-MS-08` + `SCR-MS-09` |
+| M05-92 | T-MS-119 (Tier C engine); surface realized-by: T-MS-205, T-MS-206 — `SCR-MS-08` + `SCR-MS-09` |
+| M05-93 | T-MS-120 (block electrical + DXF at scale); surface realized-by: T-MS-268 — `SCR-MS-11` |
 | M05-94 | LAW |
 | M05-95 | LAW |
 | MS1-01 | T-MS-101 |
@@ -770,6 +770,6 @@ named beside it carries the same behavior in detail and its screen brief is wher
 | MS3-35 | LAW |
 | MS3-36 | T-MS-115 |
 | MS3-37 | T-MS-115 |
-| MS3-38 | T-MS-115 (lazy per-type streaming + procedural fallback); scene surface realized-by: T-MS-206 — `docs/ux/briefs/SCR-MS-09-3d-scene.md` |
+| MS3-38 | T-MS-115 (lazy per-type streaming + procedural fallback); scene surface realized-by: T-MS-206 — `SCR-MS-09` |
 | MS3-39 | T-MS-115 |
-| MS3-40 | realized-by: T-MS-206 — `docs/ux/briefs/SCR-MS-09-3d-scene.md` |
+| MS3-40 | realized-by: T-MS-206 — `SCR-MS-09` |
