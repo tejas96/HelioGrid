@@ -43,6 +43,8 @@ export interface ShellActionProps {
   name?: TranslatedText;
   onClick?: () => void;
   active?: boolean;
+  /** For a button that opens a panel (the bell): whether that panel is open, said to a reader. */
+  expanded?: boolean;
   /**
    * The 44 grey circle — the phone header's search and bell, and the avatar's button. Without it
    * the button is transparent at `--r-md`, as on the desktop header.
@@ -55,6 +57,7 @@ interface AppHeaderQuiet {
   onNotificationsClick?: undefined;
   notificationsLabel?: undefined;
   notificationsName?: undefined;
+  notificationsOpen?: undefined;
 }
 
 /** A header with the bell, named in the reader's language. */
@@ -64,6 +67,8 @@ interface AppHeaderWithBell {
   notificationsLabel: TranslatedText;
   /** The bell's whole name with its count — "Notifications, 3 unread". */
   notificationsName?: TranslatedText;
+  /** Whether the notification centre the bell opens is open. */
+  notificationsOpen?: boolean;
 }
 
 interface AppHeaderOwnProps {

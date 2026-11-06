@@ -25,6 +25,7 @@ export function ShellAction({
   name: wholeName,
   onClick,
   active = false,
+  expanded,
   round = false,
   style,
 }: NativeShellActionProps) {
@@ -33,6 +34,7 @@ export function ShellAction({
   return (
     <Pressable
       accessibilityLabel={name}
+      accessibilityState={expanded === undefined ? undefined : { expanded }}
       onPress={onClick}
       style={[
         styles.action,

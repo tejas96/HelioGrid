@@ -22,6 +22,7 @@ interface WebBottomNavProps extends BottomNavProps {
  * no slot narrows under 44 when a long label is in view.
  */
 export function BottomNav({
+  label,
   items,
   value,
   onChange,
@@ -37,6 +38,7 @@ export function BottomNav({
   };
   return (
     <nav
+      aria-label={label}
       className={classNames('hg-bottom-nav', className)}
       data-floating={floating ? 'true' : undefined}
       data-safe-bottom={floating && safeBottom ? 'true' : undefined}

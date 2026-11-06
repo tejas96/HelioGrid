@@ -30,8 +30,15 @@
   max-width: calc(100vw - 2 * var(--screen-pad-mobile));
 }
 
+/* The company's name gives way first, cut by an ellipsis, so search, the bell and the account keep
+   their 44 inside a 375 window. */
+.hg-shell .hg-app-shell-header-tenant {
+  flex-shrink: 1;
+  min-width: 0;
+}
+
 .hg-shell-company {
-  max-width: 40vw;
+  min-width: 0;
   text-overflow: ellipsis;
 }
 

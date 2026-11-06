@@ -60,6 +60,7 @@ export function ShellHeader({ companyName, onSearch, bell, account }: ShellHeade
       onNotificationsClick={bell.onClick}
       notificationsLabel={bell.label}
       notificationsName={bell.name}
+      notificationsOpen={bell.open}
       notifications={bell.badge}
     />
   );

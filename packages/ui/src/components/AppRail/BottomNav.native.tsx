@@ -26,6 +26,7 @@ interface NativeBottomNavProps extends BottomNavProps {
  * no slot narrows under 44 when a long label is in view.
  */
 export function BottomNav({
+  label,
   items,
   value,
   onChange,
@@ -33,7 +34,7 @@ export function BottomNav({
   style,
 }: NativeBottomNavProps) {
   return (
-    <View style={[styles.pill, floating ? styles.floating : undefined, style]}>
+    <View aria-label={label} style={[styles.pill, floating ? styles.floating : undefined, style]}>
       {items.map((item) => (
         <NavItem
           key={item.key}

@@ -66,6 +66,8 @@ export type BottomNavItem = RailItem & { verb?: boolean };
  * icon and label; every other item is its icon, named by its label. The order is the caller's.
  */
 export interface BottomNavProps {
+  /** The pill's name, the sidebar's own: what a screen reader calls this navigation. */
+  label: TranslatedText;
   items: BottomNavItem[];
   value?: string;
   onChange?: (key: string) => void;

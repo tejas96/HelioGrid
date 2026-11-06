@@ -31,6 +31,7 @@ export function AppHeader({
   onNotificationsClick,
   notificationsLabel,
   notificationsName,
+  notificationsOpen,
   avatar,
   breadcrumb,
   style,
@@ -74,6 +75,7 @@ export function AppHeader({
             label={notificationsLabel}
             name={notificationsName}
             badge={notifications}
+            expanded={notificationsOpen}
             onClick={onNotificationsClick}
             icon={<ShellGlyph name="bell" size="md" />}
           />

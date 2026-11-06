@@ -1,3 +1,5 @@
+import { SHELL } from '@heliogrid/i18n';
+import { useTranslate } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
 import {
   BottomNav,
@@ -60,6 +62,7 @@ export function ShellFrame({
   foot,
   children,
 }: ShellFrameProps) {
+  const t = useTranslate();
   const insets = useSafeAreaInsets();
   const pill = items.length > 0 && foot === undefined;
   const keyboardUp = useKeyboardUp();
@@ -101,7 +104,7 @@ export function ShellFrame({
       </KeyboardFrame>
       {pill && !keyboardUp ? (
         <View pointerEvents="box-none" style={[styles.pillFrame, { bottom: insets.bottom }]}>
-          <BottomNav items={items} value={inView} />
+          <BottomNav label={t(SHELL.mainNavigation)} items={items} value={inView} />
         </View>
       ) : null}
     </SafeAreaView>

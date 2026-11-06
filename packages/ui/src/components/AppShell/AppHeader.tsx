@@ -30,12 +30,14 @@ export function AppHeader({
   onNotificationsClick,
   notificationsLabel,
   notificationsName,
+  notificationsOpen,
   avatar,
   breadcrumb,
   sticky = true,
   className,
   style,
 }: WebAppHeaderProps) {
+  const titled = breadcrumb !== undefined || title !== undefined || subtitle !== undefined;
   return (
     <header
       className={classNames('hg-app-shell-header', className)}
@@ -46,15 +48,20 @@ export function AppHeader({
       {tenant !== undefined ? (
         <div className="hg-app-shell-header-tenant">
           {tenant}
-          {/* A meta separator, not a structural border — --hairline is the sanctioned line. */}
-          <span aria-hidden="true" className="hg-app-shell-header-rule" />
+          {/* A meta separator, not a structural border — --hairline is the sanctioned line. It
+              separates the tenant from a title, so a bar with no title draws none. */}
+          {titled ? <span aria-hidden="true" className="hg-app-shell-header-rule" /> : null}
         </div>
       ) : null}
-      <div className="hg-app-shell-header-titles">
-        {breadcrumb}
-        {title !== undefined ? <h1 className="hg-app-shell-header-title">{title}</h1> : null}
-        {subtitle !== undefined ? <p className="hg-app-shell-header-subtitle">{subtitle}</p> : null}
-      </div>
+      {titled ? (
+        <div className="hg-app-shell-header-titles">
+          {breadcrumb}
+          {title !== undefined ? <h1 className="hg-app-shell-header-title">{title}</h1> : null}
+          {subtitle !== undefined ? (
+            <p className="hg-app-shell-header-subtitle">{subtitle}</p>
+          ) : null}
+        </div>
+      ) : null}
       {/* The global search box (F6-20) — one box, in the shell, never in the page. */}
       {search !== undefined ? <div className="hg-app-shell-header-search">{search}</div> : null}
       <div
@@ -72,6 +79,7 @@ export function AppHeader({
             label={notificationsLabel}
             name={notificationsName}
             badge={notifications}
+            expanded={notificationsOpen}
             onClick={onNotificationsClick}
             icon={<ShellGlyph name="bell" size="md" />}
           />

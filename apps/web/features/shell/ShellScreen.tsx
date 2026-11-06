@@ -141,7 +141,12 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
       }
     >
       {children}
-      <BottomNav items={rail.items} value={rail.inView} onChange={rail.choose} />
+      <BottomNav
+        label={t(SHELL.mainNavigation)}
+        items={rail.items}
+        value={rail.inView}
+        onChange={rail.choose}
+      />
       {centre.isOpen ? (
         <NotificationCentre
           onClose={centre.close}
