@@ -1,11 +1,12 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
-import { AccessibilityInfo, BackHandler, StyleSheet, View } from 'react-native';
+import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
+import { useCloseOnBack } from '../../primitives/use-close-on-back.native';
 import { explainerGeometry, INERT_TRIGGER } from './Explainer.logic';
 import type { ExplainerProps, ExplainerTriggerProps } from './Explainer.types';
 import { ExplainerBubble } from './ExplainerBubble.native';
@@ -56,15 +57,7 @@ export function Explainer(props: NativeExplainerProps) {
     focusScreenReaderOn(() => host.current ?? trigger.current);
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: listens only while open; `close` is rebuilt every render.
-  useEffect(() => {
-    if (!ask.isOpen) return;
-    const back = BackHandler.addEventListener('hardwareBackPress', () => {
-      close('escape');
-      return true;
-    });
-    return () => back.remove();
-  }, [ask.isOpen]);
+  useCloseOnBack(ask.isOpen, () => close('escape'));
 
   const isPlaced = placed !== null;
   // biome-ignore lint/correctness/useExhaustiveDependencies: moves the reader in once, as the bubble lands; `openedBy` is a ref.

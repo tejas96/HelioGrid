@@ -6,7 +6,7 @@ import { ColumnName } from './DataTableHead';
 const PLACEHOLDER_ROWS = ['a', 'b', 'c'] as const;
 
 /**
- * **A quiet table's loading form keeps its labels and its card**, with three rows the height of the
+ * **A quiet table's loading form keeps its labels and its lines**, with three rows the height of the
  * rows they stand for, so nothing moves when the read lands (`SCR-M01-12`, `d-loading`). The table is
  * hidden from a screen reader: the shell is busy, and the caption names what is loading.
  */
@@ -14,7 +14,7 @@ export function QuietSkeleton<Row>({ table }: { table: DataTableProps<Row> }) {
   const { columns, rowActions } = table;
   const last = columns.length - 1;
   return (
-    <div className="hg-dt-quiet" aria-busy="true">
+    <div aria-busy="true">
       <table className="hg-dt-table" aria-hidden="true">
         <thead>
           <tr>

@@ -28,6 +28,7 @@ export function IconButton({
   disabled = false,
   disabledReason,
   reasonOpen,
+  pressed,
   onClick,
   className,
   style,
@@ -45,6 +46,7 @@ export function IconButton({
       aria-label={label}
       disabled={disabled && !stated}
       aria-disabled={disabled ? true : undefined}
+      aria-pressed={pressed}
       aria-describedby={reason?.describedBy}
       aria-expanded={reason?.expanded}
       onClick={() => {

@@ -5,7 +5,8 @@
    expressive, 24px functional. The difference is transparent padding owned by the target, taken
    back as negative margin so no row grows. A label's height is a floor instead, so larger words
    grow it rather than clip. Neither the pill height nor the 44px floor has a spacing token, so
-   both are named local custom properties rather than loose numbers. */
+   both are named local custom properties rather than loose numbers. A filter chip carries the
+   count of what it holds; the chip in force is the ink pill. */
 
 .hg-chip,
 .hg-badge,
@@ -46,18 +47,56 @@
 /* ── Chip ─────────────────────────────────────────────────────────────────── */
 
 .hg-chip {
-  /* The opposite of what holds it (F7-15): the well on the page or a sheet, white inside a tile.
-     Flat whether it is a label or pressable — a label a record HAS is the tinted Badge. */
+  /* The opposite of what holds it (F7-15): the well on the page or a sheet, white inside a tile,
+     with a hairline so it reads on the glass. A label a record HAS is the tinted Badge. */
   background: var(--hg-control-fill);
   color: var(--text-primary);
-  box-shadow: none;
-  transition: background var(--dur-standard) var(--ease-standard);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+  transition:
+    background var(--dur-standard) var(--ease-standard),
+    box-shadow var(--dur-standard) var(--ease-standard),
+    transform var(--dur-micro) var(--ease-standard);
 }
 
+.hg-chip-target:hover > .hg-chip:not([data-active="true"]) {
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+.hg-chip-target:active > .hg-chip {
+  transform: scale(var(--press-scale));
+}
+
+/* The chip in force is the ink pill, as the active nav item is. */
 .hg-chip[data-active="true"] {
-  background: var(--action-primary);
-  color: var(--text-inverse);
-  box-shadow: none;
+  background: var(--ink);
+  color: var(--on-ink);
+  box-shadow: var(--e1);
+}
+
+/* A kind with nothing in it stays, quiet: its words step down, its count reads 0. */
+.hg-chip[data-empty="true"]:not([data-active="true"]) {
+  color: var(--text-secondary);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+}
+
+.hg-chip-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--sp-5);
+  height: var(--sp-5);
+  margin-inline-end: calc(var(--sp-1) * -1);
+  padding: 0 var(--sp-1);
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  background: color-mix(in srgb, var(--text-primary) 7%, transparent);
+}
+
+.hg-chip[data-active="true"] .hg-chip-count {
+  background: color-mix(in srgb, var(--on-ink) 18%, transparent);
 }
 
 .hg-chip-dot {

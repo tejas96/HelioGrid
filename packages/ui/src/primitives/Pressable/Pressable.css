@@ -33,3 +33,39 @@
   color: var(--text-disabled);
   cursor: not-allowed;
 }
+
+/* A touch's ink (`drawInk` in Pressable.tsx): the target is a positioning box only while an ink is
+   on it, at no specificity, so a caller's own `position` always wins. A bounded ink is clipped to
+   the target's own corners; it grows from the touch by transform and fades by opacity, in the
+   target's own colour, so it reads on a filled and a bare target alike. */
+:where(.hg-pressable[data-inking]) {
+  position: relative;
+}
+
+.hg-pressable-ink-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.hg-pressable-ink {
+  position: absolute;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  pointer-events: none;
+  animation: hg-ink var(--dur-ambient) var(--ease-standard) forwards;
+}
+
+@keyframes hg-ink {
+  from {
+    opacity: 0.16;
+    transform: scale(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1);
+  }
+}

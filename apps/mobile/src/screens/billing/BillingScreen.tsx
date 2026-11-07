@@ -67,7 +67,10 @@ export function BillingScreen() {
   }, [arrival, clearArrival]);
 
   return (
-    <ShellPage inView="more" drillDown={{ ...drillDown, titleRef: heading }}>
+    <ShellPage
+      inView="more"
+      drillDown={{ ...drillDown, titleRef: heading, summary: page.summary ?? undefined }}
+    >
       <View ref={content}>
         <BillingHome ref={body} {...page.body} layout="column" focusAfter={heading} />
       </View>

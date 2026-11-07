@@ -17,6 +17,7 @@ import { SignupFields } from './SignupFields.native';
  * and both roads are that held action.
  */
 export function SignupCompanyStep({
+  story,
   language,
   words,
   phoneE164,
@@ -42,6 +43,8 @@ export function SignupCompanyStep({
   );
   return (
     <DoorFrame
+      sky="door"
+      story={story}
       trailing={language}
       lead={<SignupSteps words={words.steps} current={2} />}
       identity={

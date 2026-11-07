@@ -1,6 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { WhatYouSellQuestion } from '@heliogrid/domain';
+import type { TenantSegment, WhatYouSellQuestion } from '@heliogrid/domain';
 import { useEffect, useRef } from 'react';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import type { SetupWhatYouSellWords } from './SetupWhatYouSell.types';
 
 /** A question a refusal marks, with the one line that fixes it. */
@@ -37,3 +38,10 @@ export function useRefusalAnswer(
     if (refused !== null) latest.current.answer(refused);
   }, [refusals]);
 }
+
+/** Each kind of business's picture on its card: a home, a business's building, and the two together. */
+export const SEGMENT_GLYPH: Readonly<Record<TenantSegment, ShellGlyphName>> = {
+  residential: 'house',
+  ci: 'building',
+  both: 'layers',
+};

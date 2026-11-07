@@ -1,0 +1,79 @@
+/* AppearanceSwitch — Device, Light and Dark as three icons on one track. The chosen one is raised
+   on the track in light and edged in dark, where a raise alone barely shows (the redesign's
+   "selected segment barely visible" defect); each is tipped with its word on hover and focus. */
+
+.hg-appearance-icons {
+  display: inline-flex;
+  min-inline-size: 0;
+  margin: 0;
+  border: 0;
+  align-items: center;
+  gap: var(--sp-0-5);
+  padding: var(--sp-0-5);
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+}
+
+.hg-appearance-tip {
+  position: relative;
+  display: inline-flex;
+}
+
+.hg-appearance-icon {
+  display: grid;
+  place-items: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-standard) var(--ease-standard),
+    box-shadow var(--dur-standard) var(--ease-standard),
+    transform var(--dur-micro) var(--ease-standard);
+}
+
+.hg-appearance-icon:active {
+  transform: scale(var(--press-scale));
+}
+
+.hg-appearance-icon[aria-pressed="true"] {
+  border-color: var(--line-strong);
+  background: var(--hg-control-fill);
+  box-shadow: var(--e1);
+}
+
+@media (hover: hover) {
+  .hg-appearance-icon:hover:not([aria-pressed="true"]) {
+    background: var(--fill-hover);
+  }
+}
+
+.hg-appearance-icon:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-appearance-tip:hover::after,
+.hg-appearance-tip:has(:focus-visible)::after {
+  content: attr(data-tip);
+  position: absolute;
+  z-index: 40;
+  bottom: calc(100% + var(--sp-2));
+  left: 50%;
+  translate: -50% 0;
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-xs);
+  background: var(--ink);
+  color: var(--on-ink);
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-caption);
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: var(--e2);
+  animation: hg-fade-in var(--dur-standard) var(--ease-enter) var(--dur-ambient) backwards;
+}

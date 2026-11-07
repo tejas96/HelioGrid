@@ -24,9 +24,10 @@
 
 /* ── header ──────────────────────────────────────────────────────────────────── */
 
+/* Centred: the action keeps its touch target, and from the top it sat below a one-line title. */
 .hg-block-head {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: var(--sp-3);
   min-width: 0;

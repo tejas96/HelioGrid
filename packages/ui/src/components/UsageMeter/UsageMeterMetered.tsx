@@ -1,9 +1,13 @@
 import type { CSSProperties, ReactNode, RefObject } from 'react';
 import { classNames } from '../../primitives/class-names';
+import type { UsageMeterProps } from './UsageMeter.types';
+import { UsageMeterHead } from './UsageMeterHead';
 import { UsageMeterTrack } from './UsageMeterTrack';
 import { meteredReading, type UsageMeterMeteredFacts } from './usage-meter-model';
 
-export interface UsageMeterMeteredProps extends UsageMeterMeteredFacts {
+export interface UsageMeterMeteredProps
+  extends UsageMeterMeteredFacts,
+    Pick<UsageMeterProps, 'form' | 'glyph'> {
   /** Whether the meter says its status sentence; off where the screen says it already. */
   statusLine: boolean;
   frame: RefObject<HTMLElement | null>;
@@ -36,6 +40,8 @@ export function UsageMeterMetered({
   provenance,
   className,
   style,
+  form,
+  glyph,
 }: UsageMeterMeteredProps) {
   const { scale, line, trackName, valueText } = meteredReading({
     words,
@@ -56,15 +62,13 @@ export function UsageMeterMetered({
       ref={frame}
       tabIndex={-1}
       className={classNames('hg-usage-meter', 'hg-focus-target', className)}
+      data-form={form}
       style={style}
     >
-      <div className="hg-usage-meter-head">
-        <span className="hg-usage-meter-label">{label}</span>
-        <span className="hg-usage-meter-figure">
-          <strong>{format(value)}</strong>
-          <span className="hg-usage-meter-unit"> {words.ofLimit(format(limit), unit)}</span>
-        </span>
-      </div>
+      <UsageMeterHead label={label} form={form} glyph={glyph}>
+        <strong>{format(value)}</strong>
+        <span className="hg-usage-meter-unit"> {words.ofLimit(format(limit), unit)}</span>
+      </UsageMeterHead>
 
       <UsageMeterTrack
         scale={scale}

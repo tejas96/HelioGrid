@@ -58,6 +58,22 @@ export interface PressableAccessibilityState {
   current?: boolean;
 }
 
+/**
+ * The ink a touch leaves. `bounded` spreads inside the target's own shape, `borderless` past it —
+ * for an icon with no ground of its own — and `none` leaves the sink alone, for a target that draws
+ * its own pressed look. Android draws its platform ripple, on a square target only: it draws a
+ * bounded ripple square under round corners, and a clip would cut the target's shadow, so a rounded
+ * target answers with its sink alone. The web draws one for a touch or a pen, never a mouse, which
+ * has hover instead; iOS never ripples, its sink is the answer.
+ */
+export type PressableRipple = 'bounded' | 'borderless' | 'none';
+
+/**
+ * The light tap the phone gives as a press lands: `impact` for a primary act, `selection` for a
+ * choice, `none` for neither. The web has no haptic engine and gives none.
+ */
+export type PressableHaptic = 'impact' | 'selection' | 'none';
+
 export interface PressableProps {
   children?: ReactNode;
   onPress?: () => void;
@@ -83,4 +99,8 @@ export interface PressableProps {
    * merge the top-level `disabled` in.
    */
   accessibilityState?: PressableAccessibilityState;
+  /** The ink a touch leaves (`PressableRipple`). Default `bounded`. */
+  ripple?: PressableRipple;
+  /** The tap the phone gives as the press lands (`PressableHaptic`). Default by role (`hapticOf`). */
+  haptic?: PressableHaptic;
 }

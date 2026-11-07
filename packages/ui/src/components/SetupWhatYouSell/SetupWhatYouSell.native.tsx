@@ -3,13 +3,14 @@ import { theme } from '@heliogrid/theme';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import { closeKeyboard } from '../../primitives/Keyboard/use-keyboard.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { DoorFrame } from '../DoorFrame/DoorFrame.native';
 import { DoorTitle } from '../DoorFrame/DoorTitle.native';
 import { NumberField } from '../NumberField/NumberField.native';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup.native';
 import { TintedBlock } from '../TintedBlock/TintedBlock.native';
-import { useRefusalAnswer } from './SetupWhatYouSell.logic';
+import { SEGMENT_GLYPH, useRefusalAnswer } from './SetupWhatYouSell.logic';
 import type { SetupWhatYouSellProps } from './SetupWhatYouSell.types';
 
 /**
@@ -98,7 +99,10 @@ export function SetupWhatYouSell({
       <View style={styles.questions}>
         <OptionCardGroup
           label={words.group}
-          options={[...words.options]}
+          options={words.options.map((option) => ({
+            ...option,
+            icon: <ShellGlyph name={SEGMENT_GLYPH[option.value]} size="lg" tone="accent" />,
+          }))}
           value={segment ?? undefined}
           error={words.groupError ?? undefined}
           onChange={(value) => {

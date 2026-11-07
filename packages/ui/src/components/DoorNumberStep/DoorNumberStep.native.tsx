@@ -27,8 +27,9 @@ export function DoorNumberStep({
   const { google } = words;
   return (
     <DoorFrame
+      sky="door"
       trailing={language}
-      column={lead === undefined ? 'centred' : 'deep'}
+      column={lead === undefined ? undefined : 'deep'}
       lead={lead}
       identity={
         <View style={styles.title}>

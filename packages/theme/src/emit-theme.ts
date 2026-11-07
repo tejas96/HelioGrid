@@ -18,6 +18,7 @@ import {
   SPACING,
 } from './tokens/layout';
 import {
+  AMBIENT,
   DURATION,
   EASING,
   PRESS,
@@ -104,6 +105,7 @@ export function buildThemeObject(scriptStacks: { sans: BundledFace[]; display: B
     elevationDark: rnElevation(ELEVATION_DARK),
     motion: {
       durations: DURATION,
+      ambient: AMBIENT,
       easings: EASING,
       springs: SPRING,
       stagger: STAGGER,

@@ -5,11 +5,11 @@ import { theme } from '@heliogrid/theme';
 import {
   AppHeader,
   IconButton,
-  LogoTile,
   MIN_TOUCH_TARGET,
   type RailItem,
   ShellGlyph,
   Text,
+  Wordmark,
 } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 
@@ -26,19 +26,23 @@ interface ShellHeaderProps {
 
 /**
  * The web's top bar below the desktop width, where the sidebar gives way to the bottom pill: the
- * product mark and the company's name, then the search, the bell and the account as icons. From
- * the desktop width up the sidebar holds all four and this bar is not drawn (`shell.css`).
+ * wordmark over the company's name, then the search, the bell and the account as icons. From the
+ * desktop width up the sidebar holds all four and this bar is not drawn (`shell.css`).
  */
 export function ShellHeader({ companyName, onSearch, bell, account }: ShellHeaderProps) {
   const t = useTranslate();
-  const tenant =
-    companyName === null ? undefined : (
-      <Text variant="body-sm" bold oneLine className="hg-shell-company">
-        {companyName}
-      </Text>
-    );
+  // The name is the brand: the wordmark, never the sun tile (CLAUDE.md §10), the company under it.
+  const tenant = (
+    <span className="hg-shell-identity">
+      <Wordmark size={theme.type.roles.h3.fontSize} />
+      {companyName === null ? null : (
+        <Text variant="caption" color="secondary" oneLine className="hg-shell-company">
+          {companyName}
+        </Text>
+      )}
+    </span>
+  );
   const own = {
-    brand: <LogoTile size={theme.spacing['sp-8']} />,
     tenant,
     avatar: account,
     actions:

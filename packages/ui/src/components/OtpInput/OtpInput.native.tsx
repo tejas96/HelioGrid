@@ -57,6 +57,7 @@ export function OtpInput({
   value = '',
   onChange,
   onComplete,
+  onSubmit,
   label,
   helper,
   error,
@@ -109,6 +110,8 @@ export function OtpInput({
                 fieldBoxText(disabled),
               ]}
               keyboardType="number-pad"
+              returnKeyType="done"
+              onSubmitEditing={onSubmit}
               textContentType="oneTimeCode"
               autoComplete="sms-otp"
               accessibilityLabel={words.digitOf(label ?? words.code, slot.index + 1)}

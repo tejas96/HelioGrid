@@ -10,7 +10,9 @@ import { bodyActingOf, retryLandingOn } from './BillingHome.logic';
 import type { BillingBodyActing, BillingHomeProps } from './BillingHome.types';
 import { BillingInvoiceRows, BillingInvoiceTable } from './BillingInvoiceRows';
 import { BillingNeeds } from './BillingNeeds';
-import { BillingMethod, BillingPlan, BillingUsage } from './BillingPlan';
+import { BillingMethod, BillingPlan } from './BillingPlan';
+import { BillingQuiet } from './BillingQuiet';
+import { BillingUsage } from './BillingUsage';
 import { useNeedsFocus } from './use-needs-focus';
 
 /**
@@ -178,14 +180,9 @@ function InvoicesBlock({
   if (invoices === null) return null;
   if (invoices.empty !== null) {
     return (
-      <Block
-        title={words.invoices}
-        density="expressive"
-        read={{ kind: 'empty' }}
-        loadingLabel={words.loading}
-        emptyTitle={invoices.empty.title}
-        emptyMessage={invoices.empty.message}
-      />
+      <Block title={words.invoices} density="expressive">
+        <BillingQuiet art="inbox" title={invoices.empty.title} message={invoices.empty.message} />
+      </Block>
     );
   }
   const source = invoices.source === null ? undefined : { source: invoices.source };

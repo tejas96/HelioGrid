@@ -33,8 +33,8 @@ type SearchPillProps = Omit<
 /**
  * Borderless search input with a leading magnifier: a well (`FieldBox`), whose ring sits on its
  * own edge on the phone and is always laid out, so the box never reflows when focus arrives.
- * Expressive is the open page's grey pill, 50 tall; functional the dense 40px box. With
- * `onFilterClick` the 50×50 filter square rides beside the pill, and the caller's style places
+ * One look everywhere: the pill, 50 tall. With
+ * `onFilterClick` the 50 filter circle rides beside the pill, and the caller's style places
  * the pair.
  */
 export function SearchField(props: NativeSearchFieldProps) {
@@ -57,7 +57,6 @@ function SearchPill({
   value,
   onChange,
   placeholder,
-  density = 'expressive',
   onClear,
   clearLabel,
   disabled = false,
@@ -74,8 +73,8 @@ function SearchPill({
     <View
       style={[
         styles.box,
-        fieldBox({ focused: focus, disabled, density }),
-        density === 'functional' ? styles.boxFunctional : styles.boxExpressive,
+        fieldBox({ focused: focus, disabled, density: 'expressive' }),
+        styles.pill,
         style,
       ]}
     >
@@ -166,15 +165,11 @@ const input: TextStyle = {
 
 const styles = StyleSheet.create({
   box,
-  /* After `fieldBox`, so the pill's radius replaces the well's expressive one. */
-  boxExpressive: {
+  /* After `fieldBox`, so the pill's radius replaces the well's own. */
+  pill: {
     height: 50,
     paddingHorizontal: 18 - FIELD_BOX_EDGE,
     borderRadius: theme.radius['r-pill'],
-  },
-  boxFunctional: {
-    height: 40,
-    paddingHorizontal: 14 - FIELD_BOX_EDGE,
   },
   input,
   row: {

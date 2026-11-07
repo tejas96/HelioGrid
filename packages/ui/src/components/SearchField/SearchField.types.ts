@@ -2,15 +2,11 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { Ref } from 'react';
 import type { FocusHandle } from '../../primitives/FocusAfter';
 
-/** Density mode — expressive is the brand's roomy default, functional the dense working set. */
-export type SearchFieldDensity = 'expressive' | 'functional';
-
 interface SearchFieldOwnProps {
   value?: string;
   onChange?: (value: string) => void;
   /** The words in the empty pill, and its spoken name when there is no `ariaLabel`. Required. */
   placeholder: TranslatedText;
-  density?: SearchFieldDensity;
   disabled?: boolean;
   ariaLabel?: TranslatedText;
   /**
@@ -45,27 +41,28 @@ interface SearchFieldAloneProps extends SearchFieldOwnProps {
   filterActiveLabel?: undefined;
 }
 
-/** The search pill with the filter square beside it. */
+/** The search pill with the filter circle beside it. */
 interface SearchFieldWithFilterProps extends SearchFieldOwnProps {
-  /** Draws the 50×50 black filter square beside the pill; opens the filter sheet. */
+  /** Draws the 50 filter circle beside the pill; opens the filter sheet. */
   onFilterClick: () => void;
-  /** Active filter count on the square — feed `FilterSet.countActive`. */
+  /** Active filter count on the circle — feed `FilterSet.countActive`. */
   filterCount?: number;
   /**
-   * Accessible name of the filter square. Required with `onFilterClick`: the square carries no
+   * Accessible name of the filter circle. Required with `onFilterClick`: the circle carries no
    * words, so this is all a screen reader hears, and the caller passes it from `@heliogrid/i18n`.
    */
   filterLabel: TranslatedText;
   /**
-   * The square's whole spoken name while `filterCount` is above zero — *Filters, 3 active* — the
+   * The circle's whole spoken name while `filterCount` is above zero — *Filters, 3 active* — the
    * `activeLabel` `FiltersButton` takes.
    */
   filterActiveLabel: (count: number) => TranslatedText;
 }
 
 /**
- * Grey search pill, magnifier left, tertiary placeholder; 1.5px accent edge on focus. Pass
- * `onFilterClick` with its `filterLabel` for the black filter square beside it.
+ * The one search look (direction A): a 50-tall pill, magnifier left, tertiary placeholder, the accent
+ * ring on focus — in a page's list, a sheet and the sidebar alike, so no screen draws its own. Pass
+ * `onFilterClick` with its `filterLabel` for the filter circle beside it.
  */
 export type SearchFieldProps = (SearchFieldAloneProps | SearchFieldWithFilterProps) &
   (SearchFieldClearing | SearchFieldNotClearing);

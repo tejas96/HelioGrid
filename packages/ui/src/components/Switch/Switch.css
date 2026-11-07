@@ -38,6 +38,17 @@
   background: var(--accent);
 }
 
+/* Off, the track is the control fill on a ground of nearly its own lightness — a white sheet or
+   tile — and all but vanished: a quiet edge keeps it a control. Field mode's stronger edge and the
+   disabled and error looks below still win. */
+.hg-switch:not([data-checked="true"]) .hg-switch-track {
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+[data-field-mode="on"] .hg-switch:not([data-checked="true"]) .hg-switch-track {
+  box-shadow: var(--control-edge);
+}
+
 /* SUNK below the fill, as a disabled field is: --canvas-sunken on the page and in a tile alike. */
 .hg-switch[data-disabled="true"] .hg-switch-track {
   background: var(--hg-control-fill-disabled);

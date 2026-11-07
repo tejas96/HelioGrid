@@ -18,6 +18,12 @@
   min-width: 0;
 }
 
+/* A titled head spaces its lines as `LargeTitle` does, so every settings page's title and line sit
+   alike. */
+.hg-branding-head[data-titled] {
+  gap: var(--sp-2);
+}
+
 .hg-branding-standing {
   text-wrap: pretty;
 }

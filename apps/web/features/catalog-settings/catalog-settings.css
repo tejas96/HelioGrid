@@ -31,3 +31,47 @@
 .hg-catalog-foot-stack > .hg-catalog-foot {
   align-self: stretch;
 }
+
+/* Desktop: the list and the docked editor side by side (`PriceEditorDock`), the editor held in view
+   while the list scrolls. Below the desktop width the split is one column and the editor a sheet. */
+.hg-catalog-split[data-docked="true"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, calc(var(--form-max) * 0.8));
+  gap: var(--sp-6);
+  align-items: start;
+}
+
+.hg-catalog-list {
+  min-width: 0;
+}
+
+/* The dock holds below the shell's pinned header and never runs past the window: taller than it,
+   the detail scrolls inside the panel and *Save* stays pinned at its foot, frosted over what
+   scrolls under it. */
+.hg-catalog-dock {
+  position: sticky;
+  top: calc(var(--header-h) + var(--sp-4));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  max-height: calc(100dvh - var(--header-h) - var(--sp-4) - var(--sp-6));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--sp-6) var(--sp-6) 0;
+  border-radius: var(--r-card-expressive);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+}
+
+.hg-catalog-dock > .hg-catalog-foot {
+  position: sticky;
+  bottom: 0;
+  margin-inline: calc(var(--sp-6) * -1);
+  padding: var(--sp-4) var(--sp-6) var(--sp-6);
+  background: var(--hg-ground-fill, var(--hg-ground));
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+.hg-catalog-dock[data-empty="true"] {
+  padding-block: var(--sp-10);
+}

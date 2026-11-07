@@ -13,6 +13,11 @@
   gap: var(--sp-6);
 }
 
+/* The plans' regions stand on the page's own edges, as the billing page's do. */
+.hg-plans .hg-block[data-density] {
+  padding: var(--sp-2) 0 0;
+}
+
 .hg-plans-line {
   font-size: var(--fs-body-sm);
   line-height: var(--lh-body-sm);
@@ -97,13 +102,12 @@
   color: var(--text-primary);
 }
 
+/* The one way on, under the cards and on the page itself: a slab around a lone button read as an
+   empty card. */
 .hg-plans-act {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding: var(--sp-4);
-  border-radius: var(--r-lg);
-  background: var(--surface-form);
 }
 
 .hg-plans[data-layout="columns"] .hg-plans-act {

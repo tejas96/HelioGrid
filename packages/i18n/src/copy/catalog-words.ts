@@ -5,14 +5,12 @@ import {
   type CatalogProvenanceLabel,
   type CatalogSpec,
   COMPONENT_KINDS,
-  type ComponentKind,
   PANEL_TECHNOLOGIES,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { CATALOG_EDITOR } from './catalog-editor';
 import {
   CATALOG_SETTINGS,
-  catalogKind,
   catalogKinds,
   catalogLayerWord,
   catalogNoSchemeFlag,
@@ -224,20 +222,6 @@ export function catalogRowWords(
   };
 }
 
-/** The editor's item card chips: *Panel* · *550 Wp · verified datasheet* · *TOPCon*. */
-export function catalogEditorChips(
-  t: T,
-  spec: CatalogSpec,
-  provenance: CatalogProvenanceLabel,
-  number: (value: number) => string,
-): string[] {
-  const [, ...facts] = catalogSpecLine(t, spec, number).split(' · ');
-  const [first, ...rest] = facts;
-  const kind: ComponentKind = spec.kind;
-  const lead = first === undefined ? [] : [`${first} · ${catalogProvenance(t, provenance)}`];
-  return [catalogKind(t, kind), ...lead, ...rest];
-}
-
 /** The price editor's fixed words; `taxStays` names the tenant's rate when the pack has none. */
 export function catalogPriceEditorWords(t: T, taxStays: string | null) {
   return {
@@ -247,15 +231,17 @@ export function catalogPriceEditorWords(t: T, taxStays: string | null) {
     yourPrice: t(CATALOG_EDITOR.yourPrice),
     price: t(CATALOG_EDITOR.price),
     priceHint: t(CATALOG_EDITOR.priceHint),
+    priceNeeded: t(CATALOG_EDITOR.priceNeeded),
     taxRate: t(CATALOG_EDITOR.taxRate),
     edited: t(EDITED),
     noMarketRate: t(CATALOG_EDITOR.noMarketRate),
     taxStays: taxStays === null ? null : t(CATALOG_EDITOR.taxStays, { rate: taxStays }),
-    yourOverride: t(CATALOG_EDITOR.yourOverride),
-    defaultSource: t(CATALOG_EDITOR.defaultSource),
     inPickers: t(CATALOG_EDITOR.inPickers),
     hideFromPickers: t(CATALOG_EDITOR.hideFromPickers),
     preferredInPickers: t(CATALOG_EDITOR.preferredInPickers),
+    prefer: t(CATALOG_SETTINGS.prefer),
+    hide: t(CATALOG_SETTINGS.hide),
+    archive: t(CATALOG_SETTINGS.archive),
     numberField: numberFieldWords(t),
   };
 }

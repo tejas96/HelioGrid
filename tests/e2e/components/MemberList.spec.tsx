@@ -6,7 +6,7 @@ import { TeamListStory } from './MemberList.story';
 /**
  * The Team list's body (`SCR-M01-12`) in each state the web draws below the table's width and the
  * phone always draws: the failure with *Try again* (`m-error`), the search with no match, the
- * reader alone, a Status chip with nobody under it, and the named list of cards. The live app shows the failure only on a phone — a web
+ * reader alone, a Status chip with nobody under it, and the named list of rows. The live app shows the failure only on a phone — a web
  * reload without the api stops at the app's own boot — so the web half's is proven here.
  */
 const en = await createTranslator('en');
@@ -67,7 +67,7 @@ test('a Status chip with nobody under it says so and Show all goes back to All',
   await expect.poll(() => shown).toBe(1);
 });
 
-test('the reader alone sees their own card and the teaching words', async ({ mount }) => {
+test('the reader alone sees their own row and the teaching words', async ({ mount }) => {
   const list = await mount(<TeamListStory company={COMPANY} surface="teaching" />);
   await expect(list.getByText('Rajesh Patil')).toBeVisible();
   await expect(list.getByText(en.t(TEAM.you), { exact: true }).first()).toBeVisible();
@@ -75,7 +75,7 @@ test('the reader alone sees their own card and the teaching words', async ({ mou
   await expect(list.getByText(en.t(TEAM.aloneLine))).toBeVisible();
 });
 
-test('the cards sit in a region named for the company, the open invite first', async ({
+test('the rows sit in a region named for the company, the open invite first', async ({
   mount,
   page,
 }) => {
@@ -88,7 +88,7 @@ test('the cards sit in a region named for the company, the open invite first', a
   ]);
 });
 
-test('while the read is out, the placeholder cards are one named busy region', async ({
+test('while the read is out, the placeholder rows are one named busy region', async ({
   mount,
   page,
 }) => {
@@ -96,7 +96,7 @@ test('while the read is out, the placeholder cards are one named busy region', a
   await expect(page.getByRole('status', { name: en.t(TEAM.loading) })).toBeVisible();
 });
 
-test('each card carries its one act, and the only EPC Owner’s own Deactivate is off with its reason (AC-1)', async ({
+test('each row carries its one act, and the only EPC Owner’s own Deactivate is off with its reason (AC-1)', async ({
   mount,
   page,
 }) => {
@@ -105,29 +105,29 @@ test('each card carries its one act, and the only EPC Owner’s own Deactivate i
 
   await expect(page.getByRole('button', { name: acts.act('revoke') })).toBeEnabled();
   const own = page
-    .locator('.hg-record-card', { hasText: 'Rajesh Patil' })
+    .locator('.hg-card-row', { hasText: 'Rajesh Patil' })
     .getByRole('button', { name: acts.act('deactivate') });
   await expect(own).toHaveAttribute('aria-disabled', 'true');
   await expect(own).toHaveAccessibleDescription(acts.onlyOwner);
 });
 
-test('an active card opens the person; an invite does not, and a card act runs its act (D242)', async ({
+test('an active row opens the person; an invite does not, and a row act runs its act (D242)', async ({
   mount,
   page,
 }) => {
   const frame = await mount(<TeamListStory surface="rows" company={COMPANY} withActs withOpen />);
-  const targets = page.locator('.hg-record-card-target');
+  const targets = page.locator('.hg-card-row-target');
   await expect(targets).toHaveCount(2);
   await expect(targets.nth(0)).toHaveAccessibleName('Rajesh Patil');
   await expect(targets.nth(1)).toHaveAccessibleName('Vikram Deshpande');
-  // Vikram's own Deactivate, on a card that opens, runs its act and opens nothing.
-  const vikram = page.locator('.hg-record-card', { hasText: 'Vikram Deshpande' });
+  // Vikram's own Deactivate, on a row that opens, runs its act and opens nothing.
+  const vikram = page.locator('.hg-card-row', { hasText: 'Vikram Deshpande' });
   await vikram.getByRole('button', { name: teamActWords(en.t, COMPANY).act('deactivate') }).click();
   await expect(frame).toHaveAttribute('data-acted', 'Vikram Deshpande');
   await expect(frame).toHaveAttribute('data-opened', '');
-  /* A tap on the role badges opens the person: the row of words lets it through to the card. */
+  /* A tap on the role badges opens the person: the row's words let it through to its target. */
   const badges = await settledBox(
-    page.locator('.hg-record-card', { hasText: 'Rajesh Patil' }).locator('.hg-record-card-marks'),
+    page.locator('.hg-card-row', { hasText: 'Rajesh Patil' }).locator('.hg-member-row-roles'),
   );
   await page.mouse.click(badges.x + 8, badges.y + 8);
   await expect(frame).toHaveAttribute('data-opened', 'Rajesh Patil');
@@ -139,7 +139,7 @@ test('each act is heard with its person, and still found by its visible words (D
 }) => {
   const acts = teamActWords(en.t, COMPANY);
   await mount(<TeamListStory company={COMPANY} surface="rows" withActs />);
-  const vikram = page.locator('.hg-record-card', { hasText: 'Vikram Deshpande' });
+  const vikram = page.locator('.hg-card-row', { hasText: 'Vikram Deshpande' });
   await expect(vikram.getByRole('button', { name: acts.act('deactivate') })).toHaveAccessibleName(
     acts.spoken('deactivate', 'Vikram Deshpande'),
   );

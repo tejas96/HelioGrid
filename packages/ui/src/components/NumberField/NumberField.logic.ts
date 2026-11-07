@@ -19,13 +19,16 @@ import type { NumberFieldWords, OutOfRangeMode } from './NumberField.types';
 
 /** The edited representation. Editing is always a plain number — formatting never leaks in; an unset field edits as nothing. */
 /**
- * A money figure while its field rests: whole rupees as the screen writes them, paise kept — to the
- * minor unit — wherever the figure has them, so the field never reads a rounded amount.
+ * A money figure while its field rests: whole rupees grouped as the market writes them, paise kept
+ * — to the minor unit — wherever the figure has them, so the field never reads a rounded amount.
+ * No symbol: the field's adornment carries it (`CurrencyMark`), and a second read "₹ | ₹14,900".
  */
-export function restingMoney(format: Pick<MarketFormat, 'money' | 'pack'>, figure: number): string {
-  return format.money(figure, {
-    fractionDigits: Number.isInteger(figure) ? 0 : format.pack.minorUnitDigits,
-  });
+export function restingMoney(
+  format: Pick<MarketFormat, 'number' | 'pack'>,
+  figure: number,
+): string {
+  const digits = Number.isInteger(figure) ? 0 : format.pack.minorUnitDigits;
+  return format.number(figure, { minimumFractionDigits: digits, maximumFractionDigits: digits });
 }
 
 export function displayNumber(value: number | undefined): string {

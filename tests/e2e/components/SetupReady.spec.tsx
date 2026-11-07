@@ -2,7 +2,7 @@ import type { DemoDoor } from '@heliogrid/domain';
 import { createTranslator, setupReadyWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator, Page } from '@playwright/test';
-import { bottomOf, rightOf, settledBox } from '../support/layout';
+import { bottomOf, doorSheetOpening, rightOf, settledBox } from '../support/layout';
 import { animationsSettled } from '../support/motion';
 import { resolvedLength } from '../support/token';
 import { SetupReadyAsHeld } from './SetupReady.story';
@@ -89,7 +89,9 @@ test.describe('at 375', () => {
     const heading = await settledBox(root.getByRole('heading', { level: 1 }));
     const line = await settledBox(root.getByText(en.companyLine(COMPANY)));
     const first = await settledBox(root.locator('.hg-setup-ready-doors > *').first());
-    expect((await settledBox(hero)).y - (await bottomOf(root.locator('.hg-door-header')))).toBe(
+    /* The hero opens the glass sheet under the sky, `sp-8` under where its content starts, as it
+       once stood `sp-8` under the head. */
+    expect(Math.round((await settledBox(hero)).y - (await doorSheetOpening(page)))).toBe(
       await resolvedLength(page, '--sp-8'),
     );
     expect((line?.y ?? 0) - ((heading?.y ?? 0) + (heading?.height ?? 0))).toBe(

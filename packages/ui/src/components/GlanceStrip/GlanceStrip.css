@@ -1,0 +1,96 @@
+/* GlanceStrip — small facts in ONE glass capsule, split by hairlines, so a screen never spends a big
+   card on a single number. The hairlines are the capsule's own line colour showing through a 1 px
+   gap between the cells. Four facts sit two by two on a phone and in one row from a wide room up;
+   two or three always sit in one row. */
+.hg-glance {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  background: var(--line-soft);
+  box-shadow:
+    0 0 0 1px var(--line-soft),
+    var(--e2);
+}
+
+.hg-glance[data-count="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@container (min-width: 560px) {
+  .hg-glance[data-count="4"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.hg-glance-cell {
+  display: flex;
+  min-width: 0;
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+.hg-glance-fact {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  padding: var(--sp-3) var(--sp-4) var(--sp-4);
+  text-align: start;
+}
+
+.hg-glance-press {
+  transition:
+    background var(--dur-standard) var(--ease-standard),
+    transform var(--dur-micro) var(--ease-standard);
+}
+
+.hg-glance-press:hover {
+  background: var(--hg-control-fill);
+}
+
+.hg-glance-press:active {
+  transform: scale(var(--press-scale));
+}
+
+.hg-glance-label {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--text-secondary);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  font-weight: var(--fw-medium);
+}
+
+.hg-glance-figure {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-1);
+}
+
+.hg-glance-value {
+  font-family: var(--font-display);
+  font-size: var(--fs-figure);
+  line-height: var(--lh-figure);
+  letter-spacing: var(--tr-figure);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.hg-glance-unit {
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}

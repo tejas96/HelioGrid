@@ -1,7 +1,7 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { OptionCardGroup } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedBoxShadow, resolvedColour, TILE_SHADOW } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, TILE_FILL, TILE_SHADOW } from '../support/token';
 import { MultipleStory } from './OptionCardGroup.story';
 
 const en = await createTranslator('en');
@@ -14,7 +14,13 @@ const options = [
   { value: 'call', title: byCall },
 ];
 
-test('every available option is a tile, the selected one ringed in the accent', async ({
+/** The picked card's ring: the accent at 2px, first of its shadows (its lift follows). */
+async function accentRingFirst(page: Parameters<typeof resolvedColour>[0]): Promise<RegExp> {
+  const accent = (await resolvedColour(page, '--accent')).replace(/[()]/g, '\\$&');
+  return new RegExp(`^${accent} 0px 0px 0px 2px`);
+}
+
+test('every available option is a tile, the selected one solar glass ringed in the accent', async ({
   mount,
   page,
 }) => {
@@ -22,12 +28,9 @@ test('every available option is a tile, the selected one ringed in the accent', 
   const selected = group.getByRole('radio', { name: bySms });
   const unselected = group.getByRole('radio', { name: byCall });
 
-  await expect(selected).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
-  await expect(selected).toHaveCSS(
-    'box-shadow',
-    `${await resolvedColour(page, '--accent')} 0px 0px 0px 2px`,
-  );
-  await expect(unselected).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(selected).toHaveCSS('background-image', /radial-gradient/);
+  await expect(selected).toHaveCSS('box-shadow', await accentRingFirst(page));
+  await expect(unselected).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
   await expect(unselected).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
   await expect(unselected.locator('.hg-option-card-dot')).toHaveCSS(
     'background-color',
@@ -67,10 +70,7 @@ test('multiple toggles by click and Space: each option is a checkbox, its own ta
   await expect(group.getByRole('group', { name: bySms })).toBeVisible();
   await expect(first).toHaveAttribute('aria-checked', 'false');
   await expect(second).toHaveAttribute('aria-checked', 'true');
-  await expect(second).toHaveCSS(
-    'box-shadow',
-    `${await resolvedColour(page, '--accent')} 0px 0px 0px 2px`,
-  );
+  await expect(second).toHaveCSS('box-shadow', await accentRingFirst(page));
   await expect(second.locator('.hg-option-card-dot')).toHaveCSS('border-radius', '6px');
 
   await first.click();

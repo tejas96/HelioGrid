@@ -1,0 +1,72 @@
+/* RollingNumber — a figure whose digits roll into place once. Each digit is an inline box holding
+   its own digit, unseen, for its size and baseline, and a strip of 0–9 laid over it, clipped to that
+   box. The strip rests on its digit; when the figure first comes into view (`data-roll`), it rolls
+   up from 0 by transform alone. Under reduced motion --dur-data falls to 1ms, so it is simply there.
+   The clip is `clip-path`, not `overflow`: an inline box that hides its overflow loses the text's
+   baseline, and the figure would sit above the words beside it. */
+
+.hg-rolling-figure {
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+}
+
+.hg-rolling-digit {
+  position: relative;
+  display: inline-block;
+  clip-path: inset(0 -0.2em);
+}
+
+.hg-rolling-sizer {
+  visibility: hidden;
+}
+
+.hg-rolling-strip {
+  position: absolute;
+  inset: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(var(--hg-roll-to, 0));
+}
+
+.hg-rolling-strip > span {
+  display: block;
+}
+
+.hg-rolling-digit[data-digit="1"] {
+  --hg-roll-to: -10%;
+}
+.hg-rolling-digit[data-digit="2"] {
+  --hg-roll-to: -20%;
+}
+.hg-rolling-digit[data-digit="3"] {
+  --hg-roll-to: -30%;
+}
+.hg-rolling-digit[data-digit="4"] {
+  --hg-roll-to: -40%;
+}
+.hg-rolling-digit[data-digit="5"] {
+  --hg-roll-to: -50%;
+}
+.hg-rolling-digit[data-digit="6"] {
+  --hg-roll-to: -60%;
+}
+.hg-rolling-digit[data-digit="7"] {
+  --hg-roll-to: -70%;
+}
+.hg-rolling-digit[data-digit="8"] {
+  --hg-roll-to: -80%;
+}
+.hg-rolling-digit[data-digit="9"] {
+  --hg-roll-to: -90%;
+}
+
+.hg-rolling-figure[data-roll="on"] .hg-rolling-strip {
+  animation: hg-roll-in var(--dur-data) var(--ease-enter) backwards;
+}
+
+@keyframes hg-roll-in {
+  from {
+    transform: translateY(0);
+  }
+}

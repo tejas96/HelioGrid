@@ -1,10 +1,8 @@
 import { StatusMark } from '../../primitives/StatusMark/StatusMark';
 import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
-import { Badge, Chip } from '../Chip';
-import { ChipGroup } from '../ChipGroup';
+import { Badge } from '../Chip';
 import type { DataTableColumn } from '../DataTable/DataTableColumn.types';
-import { NamedGap } from '../NamedGap';
 import { CATALOG_KIND_LEADING } from './CatalogItems.rows';
 import type { CatalogItemsWords, CatalogRow } from './CatalogItems.types';
 
@@ -72,49 +70,6 @@ function WideSub({
   );
 }
 
-/** The phone card's mark line: layer, the preferred and hidden marks, the spec label, compliance. */
-function NarrowMarks({
-  row,
-  words,
-  schemes,
-}: { row: CatalogRow } & Omit<ColumnFacts, 'administers' | 'money'>) {
-  return (
-    <span className="hg-cat-what">
-      <Text as="span" variant="caption" color="secondary">
-        {row.specLine}
-      </Text>
-      <ChipGroup max={0} density="functional" label={words.marks} empty={null}>
-        <Chip density="functional">{row.layerWord}</Chip>
-        {row.preferred ? (
-          <Badge tone="accent" density="functional">
-            {words.preferred}
-          </Badge>
-        ) : null}
-        {row.hidden ? (
-          <Badge tone="warning" density="functional">
-            {words.hiddenFromPickers}
-          </Badge>
-        ) : null}
-        {row.provenance === 'representative' ? (
-          <Badge tone="warning" density="functional">
-            {row.provenanceWord}
-          </Badge>
-        ) : (
-          <Chip density="functional">{row.provenanceWord}</Chip>
-        )}
-        {row.held.map((scheme) => (
-          <Badge key={scheme} tone="success" density="functional">
-            {scheme}
-          </Badge>
-        ))}
-        {schemes.length > 0 && row.held.length === 0 ? (
-          <NamedGap scale="cell" gap={words.noSchemeFlag} />
-        ) : null}
-      </ChipGroup>
-    </span>
-  );
-}
-
 /** The 1536 table: Item (kind tile, name, its line) · Compliance · Effective price · Price comes from. */
 export function wideColumns(facts: ColumnFacts): DataTableColumn<CatalogRow>[] {
   const { words, schemes, money } = facts;
@@ -171,28 +126,6 @@ export function wideColumns(facts: ColumnFacts): DataTableColumn<CatalogRow>[] {
           {row.priceFrom}
         </Text>
       ),
-    },
-  ];
-}
-
-/** The phone card: the name, its mark line under it, the price on the title row. */
-export function narrowColumns(facts: ColumnFacts): DataTableColumn<CatalogRow>[] {
-  const { words, schemes, money } = facts;
-  return [
-    { key: 'name', label: words.item, primary: true },
-    {
-      key: 'what',
-      label: words.whatItIs,
-      secondary: true,
-      render: (row) => <NarrowMarks row={row} words={words} schemes={schemes} />,
-    },
-    {
-      key: 'price',
-      label: words.effectivePrice,
-      trailing: true,
-      numeric: true,
-      render: (row) => priceOf(row, money),
-      gap: noPrice(words),
     },
   ];
 }

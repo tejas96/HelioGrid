@@ -1,6 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
+import type { SkyFraming } from '../SolarSky/SolarSky.types';
 
 /**
  * The task column's measure (`SCR-M01-02` decision 14): the front door's one field, the signup's
@@ -10,28 +11,46 @@ import type { ExplainerProps } from '../Explainer/Explainer.types';
 export type DoorTaskMeasure = 'field' | 'steps' | 'list' | 'choices';
 
 /**
- * Where the column sits under the door's breakpoint, and on the phone. `centred` — between the
- * header row and the column's foot, the front door's place (`SCR-M01-01` "375 vertical layout").
- * `deep` — the heading `sp-8` under what leads it, a signup step's place (`SCR-M01-02`). `near` —
- * the heading `sp-4` under what leads it, for a failure that takes the heading: its block is taller
- * than a title, and the column must still hold its last line above the action (`SCR-M01-04`
- * `m-error`). Omitted, the column starts under the header row at the frame's own gap.
+ * Where the heading sits under what leads it. `deep` — `sp-8` under it, a signup step's place
+ * (`SCR-M01-02`). `near` — `sp-4` under it, for a failure that takes the heading: its block is
+ * taller than a title, and the column must still hold its last line above the action
+ * (`SCR-M01-04` `m-error`). Omitted, the column opens the door's sheet under the sky at the frame's
+ * own gap, the front door's place.
  */
-export type DoorColumn = 'centred' | 'deep' | 'near';
+export type DoorColumn = 'deep' | 'near';
 
 /** A door's heading, the one ask beside it, and the line under it (`SCR-M01-02` decision 26). */
 export interface DoorTitleProps {
+  /** A quiet line over the title — the front door's greeting by the hour. */
+  overline?: TranslatedText;
   title: TranslatedText;
   explainer?: ExplainerProps;
   intro?: TranslatedText;
 }
 
+/** What the desktop door's sky panel says about the product, under the wordmark. */
+export interface DoorStory {
+  title: TranslatedText;
+  line: TranslatedText;
+}
+
 /**
- * The frame every door and setup step shares: the page's glow, the header row with the product
- * mark and a trailing control, then the step's overline, the identity, the one task and the held
- * action — one centred column on every platform and at every width.
+ * The frame every door and setup step shares: the living sky (`SolarSky`) and the wordmark, a
+ * trailing control, then the step's overline, the identity, the one task and the held action. On
+ * the phone the sky stands over the column, which rides up over its foot as a glass sheet; from the
+ * desktop width the sky is a panel beside the column.
  */
 export interface DoorFrameProps {
+  /** How much sky the door shows: the front door's tall sky, or a setup step's band. Default `band`. */
+  sky?: SkyFraming;
+  /** The desktop sky panel's words about the product. Absent, the panel shows the scene alone. */
+  story?: DoorStory;
+  /**
+   * The step draws its own panel beside the column from the desktop width (the company profile's
+   * letterhead), so the frame's sky panel stands down there and the column is the door's own
+   * centred measure. The phone keeps its sky band.
+   */
+  ownPanel?: boolean;
   /** The header row's right-hand control — the language control; on the code step, the change-number ghost before it. */
   trailing?: ReactNode;
   /** The step's quiet overline (`StepOverline`), above the title. */

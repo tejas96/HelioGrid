@@ -1,5 +1,5 @@
 import { HOME_LADDER } from '@heliogrid/domain';
-import { createTranslator, homeHeadWords, todayLine } from '@heliogrid/i18n';
+import { createTranslator, homeGreeting, homeHeadWords, todayLine } from '@heliogrid/i18n';
 import { HomeHead } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 
@@ -7,8 +7,9 @@ const en = await createTranslator('en');
 const [OWNER, MANAGER] = HOME_LADDER;
 const head = homeHeadWords(en.t, OWNER, [OWNER, MANAGER]);
 const dateLine = todayLine(en.t, '2 Oct 2026');
+const greeting = homeGreeting(en.t, 'morning', 'Asha Patil');
 
-test('the title is the switcher, each home with its preset, the one in force ticked', async ({
+test('the greeting, then the switcher: each home with its preset, the one in force ticked', async ({
   mount,
   page,
 }) => {
@@ -17,6 +18,7 @@ test('the title is the switcher, each home with its preset, the one in force tic
     <HomeHead
       {...head}
       dateLine={dateLine}
+      greeting={greeting}
       switcherWidth={284}
       entries={head.entries.map((entry) => ({
         ...entry,
@@ -29,6 +31,7 @@ test('the title is the switcher, each home with its preset, the one in force tic
   );
 
   await expect(band.getByText(dateLine)).toBeVisible();
+  await expect(band.getByText('Good morning, Asha')).toBeVisible();
   await expect(band.getByText(head.presetLine)).toBeVisible();
   await band.getByRole('button', { name: head.switchName }).click();
   const [own, other] = head.entries;

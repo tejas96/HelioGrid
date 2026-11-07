@@ -37,7 +37,8 @@ async function openTemplate(page: Page) {
   await createCompany(page, en, freshMobile());
   await passTheOwnersMark(page, en);
   await page.goto('/more');
-  await page.getByRole('button', { name: ROWS.proposal_templates }).click();
+  /* The settings page's own row: on desktop the sidebar lists the same row by the same name. */
+  await page.getByRole('main').getByRole('button', { name: ROWS.proposal_templates }).click();
   await expect(page).toHaveURL(/\/more\/proposal-templates$/);
 }
 

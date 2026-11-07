@@ -6,6 +6,7 @@ import { Pressable } from '../../primitives/Pressable';
 import { useFocusRequest } from '../../primitives/use-focus-request';
 import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { useFormat } from '../MarketProvider/market-context';
 import type { NumberDraftState } from './NumberField.state';
 import type { NumberFieldWords } from './NumberField.types';
 
@@ -109,6 +110,7 @@ export function NumberFieldBox({
           <StepIcon glyph="minus" />
         </Pressable>
       ) : null}
+      {currency ? <CurrencyMark side="before" /> : null}
       <input
         ref={control}
         id={id}
@@ -126,8 +128,8 @@ export function NumberFieldBox({
         onBlur={draft.onBlur}
         onKeyDown={(e) => onNumberKey(e, draft, steppers)}
       />
-      {/* `unit` is the suffix for "m" and "kWp"; under `currency` the market pack owns the
-          adornment and this port has no pack, so nothing is printed rather than a guess. */}
+      {/* `unit` is the suffix for "m" and "kWp"; under `currency` the market's symbol stands in. */}
+      {currency ? <CurrencyMark side="after" /> : null}
       {unit !== undefined && !currency ? (
         <span className="hg-number-field-unit">{unit}</span>
       ) : null}
@@ -142,5 +144,20 @@ export function NumberFieldBox({
         </Pressable>
       ) : null}
     </div>
+  );
+}
+
+/**
+ * Money's adornment: the market's currency symbol (`useFormat`, the pack's own), shown always — an
+ * empty price field read as any number — on the side the market writes it, with a hairline
+ * between it and the amount. The field's name says what it holds, so a reader skips the mark.
+ */
+function CurrencyMark({ side }: { side: 'before' | 'after' }) {
+  const { currencySymbol, symbolPosition } = useFormat();
+  if (symbolPosition !== side) return null;
+  return (
+    <span className="hg-number-field-currency" data-side={side} aria-hidden="true">
+      {currencySymbol}
+    </span>
   );
 }

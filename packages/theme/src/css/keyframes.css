@@ -106,6 +106,49 @@
     transform: translateX(300%);
   }
 }
+/* A band of light crossing a hero once: in from the left, gone past the right. */
+@keyframes hg-sweep {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+/* A skeleton's light passing over it while its read is out — the one shimmer, a transform. */
+@keyframes hg-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  @keyframes hg-sweep {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes hg-shimmer {
+    from {
+      transform: none;
+      opacity: 0;
+    }
+    to {
+      transform: none;
+      opacity: 0;
+    }
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   @keyframes hg-sheet-in {
     from {

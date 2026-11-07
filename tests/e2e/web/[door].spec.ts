@@ -6,6 +6,7 @@ import {
   createTranslator,
   destinationLabel,
   doorTitle,
+  onItsWayWords,
   SHELL,
   SIGN_IN,
 } from '@heliogrid/i18n';
@@ -35,7 +36,8 @@ test("a destination on the owner's rail opens its door inside the shell", async 
   await expect(
     page.getByRole('heading', { level: 1, name: doorTitle(en.t, 'leads') }),
   ).toBeAttached();
-  await expect(page.getByText(en.t(SHELL.comingLater))).toBeVisible();
+  // The door says what its module will do until the module lands.
+  await expect(page.getByText(onItsWayWords(en.t, 'leads').line)).toBeVisible();
   await expect(rail.getByRole('button', { name: destinationLabel(en.t, 'leads') })).toHaveAttribute(
     'aria-current',
     'page',
@@ -112,7 +114,7 @@ test('a door the person is not offered, or no door at all, is not found', async 
   // An owner's rail holds Projects, never Proposals; their verb adds a lead, never a survey.
   for (const path of ['/proposals', '/start-survey', '/no-such-door']) {
     await page.goto(path);
-    await expect(page.getByText(en.t(SHELL.comingLater))).toBeHidden();
+    await expect(page.getByText(onItsWayWords(en.t, 'leads').badge)).toBeHidden();
     await expect(page.getByRole('heading', { level: 1, name: en.t(SHELL.notFound) })).toBeVisible();
   }
 });

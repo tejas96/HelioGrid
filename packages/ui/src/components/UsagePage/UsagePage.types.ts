@@ -9,7 +9,6 @@ import type { Read } from '@heliogrid/domain';
 import type { MarketFormat } from '../../utils/format';
 import type { BillingChip, BillingValue } from '../BillingHome/BillingHome.types';
 import type { BillingViewWords } from '../BillingHome/BillingHome.words';
-import type { DataTableWords } from '../DataTable/DataTable.types';
 import type { UsageMeterWords, UsageState } from '../UsageMeter/UsageMeter.types';
 
 /** The rows the usage screen draws (`SCR-M12-04`); the V2 meters join with their modules. */
@@ -71,23 +70,6 @@ export interface UsageRegionView {
   readonly sources: readonly TranslatedText[] | null;
 }
 
-/** A row of the 1536 tables (decision 7). Each cell is text; the meter's chip rides its name. */
-export interface UsageTableRow {
-  readonly key: UsageRowKey;
-  readonly label: TranslatedText;
-  readonly chip: BillingChip | null;
-  readonly used: string;
-  /** Storage's `As of` under its figure (`DataTable` column `sub`). */
-  readonly usedSub: string | null;
-  readonly included: string;
-  readonly rate: BillingValue;
-  /** `Not published yet` where the book has no rate — never a zero. */
-  readonly rateGap: TranslatedText | null;
-  readonly charges: string;
-  readonly ledger: UsageEventMeter | null;
-  readonly plans: boolean;
-}
-
 /** The page, read: everything both halves draw. */
 export interface UsagePageView {
   /** The cycle every count covers and its reset; `null` where no figure is drawn. */
@@ -99,12 +81,6 @@ export interface UsagePageView {
   readonly teaching: { readonly title: TranslatedText; readonly body: TranslatedText } | null;
   readonly limits: UsageRegionView | null;
   readonly included: UsageRegionView | null;
-  readonly tables: {
-    readonly limits: readonly UsageTableRow[];
-    readonly included: readonly UsageTableRow[];
-    readonly limitsCaption: TranslatedText;
-    readonly includedCaption: TranslatedText;
-  } | null;
   /** `This cycle` at 1536: the cycle and its reset, as facts. */
   readonly cycle: { readonly range: string; readonly resets: string } | null;
   readonly extra: { readonly total: string; readonly billsOn: string } | null;
@@ -188,9 +164,6 @@ export interface UsageViewWords {
   gbFigure(count: string): TranslatedText;
   limitsAndRates(priceList: TranslatedText): TranslatedText;
   asOf(date: string, time: string): TranslatedText;
-  /** The tables' captions; `plan` is `null` on a trial, which holds no plan. */
-  limitsCaption(plan: TranslatedText | null, cycle: string): TranslatedText;
-  includedCaption(plan: TranslatedText | null, cycle: string): TranslatedText;
   scope(owners: TenantOwners | null): TranslatedText | null;
   /** The lines of `Needs you`, a rate in a sentence as `FIGURE_SLOT`. */
   readonly lines: {
@@ -228,17 +201,7 @@ export interface UsagePageWords {
   readonly eventsLoading: TranslatedText;
   readonly showMore: TranslatedText;
   readonly close: TranslatedText;
-  readonly columns: {
-    readonly limit: TranslatedText;
-    readonly used: TranslatedText;
-    readonly allowed: TranslatedText;
-    readonly meter: TranslatedText;
-    readonly included: TranslatedText;
-    readonly rate: TranslatedText;
-    readonly charges: TranslatedText;
-  };
   readonly usageMeter: UsageMeterWords;
-  readonly table: DataTableWords;
   /** The ledger chevron's name — `Voice minutes — events this cycle`. */
   eventsOf(meter: TranslatedText): TranslatedText;
 }

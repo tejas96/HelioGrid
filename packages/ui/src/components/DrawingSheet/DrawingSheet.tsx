@@ -65,6 +65,7 @@ function DrawingSheetRoot({
       {zoom?.onChange && <ZoomControls zoom={zoom} words={words} />}
       <section
         className="hg-sheet hg-drawing-sheet"
+        data-paper=""
         data-screen-label={`Drawing ${sheet}`}
         aria-label={words.sheetName(tb.drawingTitle || drawingLabel, sheet, sheets)}
         style={{

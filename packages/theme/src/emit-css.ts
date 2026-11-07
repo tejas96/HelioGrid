@@ -23,6 +23,7 @@ import {
   SPACING,
 } from './tokens/layout';
 import {
+  AMBIENT,
   DURATION,
   EASING,
   PRESS,
@@ -113,6 +114,7 @@ function rootDeclarations(): Declarations {
 
   const motion: Record<string, string | number> = {};
   for (const [k, v] of Object.entries(DURATION)) motion[`dur-${k}`] = `${v}ms`;
+  for (const [k, v] of Object.entries(AMBIENT)) motion[`amb-${k}`] = `${v}ms`;
   for (const [k, v] of Object.entries(EASING)) motion[`ease-${k}`] = `cubic-bezier(${v.join(',')})`;
   motion['press-scale'] = PRESS.scale;
   motion['stagger-step'] = `${STAGGER.stepMs}ms`;
@@ -164,6 +166,17 @@ const FIELD_DECLS: Declarations = {
   'track-edge': `0 0 0 1px ${FIELD_EDGE}`,
 };
 
+/**
+ * Paper is always light: a proposal prints on white and its preview shows the same sheet, so a
+ * `[data-paper]` subtree — a document, a drawing sheet — takes the light palette in every scheme,
+ * and printing takes it for the whole page (a dark scheme's light ink would vanish on white paper).
+ */
+const PAPER_DECLS: Declarations = {
+  ...palette(LIGHT),
+  ...glows('light'),
+  ...elevation(ELEVATION_LIGHT),
+};
+
 function fontFaces(): string {
   return BUNDLED_FACES.flatMap((face) =>
     face.web.map((w) => {
@@ -191,6 +204,8 @@ export function renderTokensCss(keyframes: string, fieldRules: string): string {
       '{\n',
       '{\n  color-scheme:light;\n',
     ),
+    block('[data-paper]', PAPER_DECLS).replace('{\n', '{\n  color-scheme:light;\n'),
+    `@media print{\n${block(':root,:root[data-theme="dark"],:root:not([data-theme="light"])', PAPER_DECLS).replace('{\n', '{\n  color-scheme:light;\n')}}\n`,
     `@media (prefers-reduced-motion:reduce){\n${block(':root', reducedMotion)}}\n`,
     keyframes,
     fieldRules,

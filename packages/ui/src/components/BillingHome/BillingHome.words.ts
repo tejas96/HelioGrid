@@ -59,6 +59,7 @@ export interface BillingViewWords {
   readonly allInvoices: TranslatedText;
   readonly actualUsage: TranslatedText;
   readonly gb: TranslatedText;
+  readonly minutes: TranslatedText;
   readonly ownerAct: TranslatedText;
   readonly limits: {
     readonly biggestDesign: TranslatedText;
@@ -72,7 +73,16 @@ export interface BillingViewWords {
   stateWord(state: BillingState): TranslatedText;
   tier(tier: Tier): TranslatedText;
   forPlan(tier: Tier, cycle: BillingCycle): TranslatedText;
+  /** The page's summary on a trial — *Trial · 14 days left · ends 21 Nov 2026*. */
+  summaryTrial(plan: string, left: string, days: number, date: string): TranslatedText;
+  /** The page's summary on a running plan — *Growth · renews 21 Dec 2026*. */
+  summaryRenews(plan: string, date: string): TranslatedText;
   daysOf(left: string, total: string): TranslatedText;
+  /** The plan ring's caption and spoken name, on a trial and on a paid period. */
+  readonly ringDaysLeft: TranslatedText;
+  readonly ringToRenewal: TranslatedText;
+  ringSpokenLeft(left: string, total: string): TranslatedText;
+  ringSpokenRenewal(left: string): TranslatedText;
   perCycle(cycle: BillingCycle, tax: string | null): TranslatedText;
   perMinute(): TranslatedText;
   carriesOn(date: string): TranslatedText;

@@ -4,10 +4,10 @@ import { PRICING, planSelectionWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
 import {
+  LargeTitle,
   PlanReview,
   PlanSelection,
   planSelectionPageOf,
-  Text,
   useFormat,
   useOwnWidth,
 } from '@heliogrid/ui';
@@ -47,9 +47,7 @@ export function BillingPlansScreen() {
       data-review={open && wide ? 'open' : undefined}
     >
       <div ref={heading} tabIndex={-1} className="hg-focus-target">
-        <Text as="h1" variant="display">
-          {t(PRICING.plans)}
-        </Text>
+        <LargeTitle title={t(PRICING.plans)} />
       </div>
       <PlanSelection {...page} layout={wide ? 'columns' : 'column'} focusAfter={heading} />
       <PlanReview

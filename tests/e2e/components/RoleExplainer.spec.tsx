@@ -5,6 +5,7 @@ import { expect, test } from '@playwright/experimental-ct-react';
 import type { Page } from '@playwright/test';
 import {
   bottomOf,
+  doorSheetOpening,
   expectNoSidewaysScroll,
   expectNothingClipped,
   settledBox,
@@ -59,7 +60,10 @@ test.describe('at 375', () => {
     await expect(page.locator('.hg-role-explainer-act')).toContainText(SALES.atAct);
     await expect(act).toBeInViewport();
     const sp4 = await resolvedLength(page, '--sp-4');
-    expect(await gapBetween(page, '.hg-door-header', 'h1')).toBe(sp4);
+    /* The near column: the heading opens the glass sheet under the sky, `sp-4` under where the
+       sheet's content starts, as it once stood `sp-4` under the head. */
+    const heading = await settledBox(page.locator('h1').first());
+    expect(Math.round(heading.y - (await doorSheetOpening(page)))).toBe(sp4);
     // The one-column door's gap between its title and its task, the same in every door.
     expect(await gapBetween(page, 'h1', '.hg-role-card')).toBe(
       await resolvedLength(page, '--sp-6'),

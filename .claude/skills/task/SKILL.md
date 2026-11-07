@@ -132,8 +132,10 @@ and a worker started on `heliogrid_dev` (`pgrep -f '@heliogrid/worker'`; it has 
 the seed's workflow work into the owner's data. One started outside the preview tool is the
 owner's to stop: ask. Then:
 
-1. Point `.env.local` at the test database, once — a `.qa/env.local.dev` that exists already holds
-   the owner's copy, and a second copy would overwrite it:
+1. Point `.env.local` at the test database, once, and only with 3002 and 8084 free — an owner's
+   `api` in watch mode restarts on any build of a package it imports and reloads `.env.local`, onto
+   the test database. A `.qa/env.local.dev` that exists already holds the owner's copy, and a second
+   copy would overwrite it:
    `[ -e .qa/env.local.dev ] || { cp .env.local .qa/env.local.dev && sed -i '' '/^DATABASE_/s/heliogrid_dev/heliogrid_test/' .env.local; }`.
    Then `pnpm --filter @heliogrid/api pack:publish > .qa/pack.log 2>&1`; *Build* migrated it.
 2. Start `worker` through `.claude/launch.json` (`preview_start`), then seed the QA companies

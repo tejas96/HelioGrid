@@ -115,6 +115,7 @@ export function ToastHost({
               title={toast.title}
               description={toast.description}
               icon={toast.icon}
+              moment={toast.moment}
               action={
                 (toast.undo === undefined || onDismiss === undefined ? undefined : (
                   <Button

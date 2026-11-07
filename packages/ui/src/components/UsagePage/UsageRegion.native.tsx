@@ -3,19 +3,22 @@ import { theme } from '@heliogrid/theme';
 import type { RefObject } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { tileSurface } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { figure, plain } from '../BillingHome/BillingHome.values';
 import { BillingStatusChip } from '../BillingHome/BillingNeeds.native';
 import { BillingValueText } from '../BillingStrip/BillingValue.native';
 import { Block } from '../Block/Block.native';
+import { Button } from '../Button/Button.native';
 import { FactRow } from '../FactRow/FactRow.native';
 import { FactRows } from '../FactRow/FactRows.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { ListRow } from '../ListRow/ListRow.native';
 import { Provenance } from '../Provenance/Provenance.native';
 import { UsageMeter } from '../UsageMeter/UsageMeter.native';
+import { UsageMeterHead } from '../UsageMeter/UsageMeterHead.native';
+import { figureText, USAGE_ROW_GLYPH } from './UsagePage.glyphs';
 import type {
   UsageFactView,
   UsagePageProps,
@@ -39,9 +42,10 @@ interface RegionProps {
 }
 
 /**
- * A card at 375 (decision 1): its rows, each a meter, its facts and — under a signal meter — the
- * way to a bigger plan, with the ledger's ONE named chevron on the row's right (decisions 6, 13);
- * the card's foot holds the two quiet source lines once the figures are in (decision 5).
+ * A region as A's tiles (decision 1): one small glass tile per row — its meter or its one figure,
+ * its facts, the way to a bigger plan under a signal meter, and the ledger's ONE named chevron in
+ * its corner (decisions 6, 13) — two to a row; the extra charges' total closes it across the row
+ * (decision 4), and its foot holds the two quiet source lines once the figures are in (decision 5).
  */
 export function UsageRegion({
   region,
@@ -54,6 +58,7 @@ export function UsageRegion({
 }: RegionProps) {
   return (
     <Block
+      style={styles.flushRegion}
       density="expressive"
       title={region.title}
       {...(region.sources === null
@@ -68,7 +73,7 @@ export function UsageRegion({
             ),
           })}
     >
-      <View style={styles.rows}>
+      <View style={styles.tiles}>
         {region.rows.map((row) => (
           <UsageRow
             key={row.key}
@@ -80,25 +85,28 @@ export function UsageRegion({
             onPlans={onPlans}
           />
         ))}
-        {/* ONE total row ends the card, its one line saying when it bills (decision 4). */}
         {extra === null ? null : (
-          <FactRows label={words.extraCharges} density="expressive" form="pair">
-            <FactRow
-              label={words.extraCharges}
-              value={<BillingValueText value={figure(extra.total)} />}
-            />
-            <FactRow
-              label={words.billsOn}
-              value={<BillingValueText value={plain(extra.billsOn)} />}
-            />
-          </FactRows>
+          <View style={[styles.tile, styles.wholeRow]}>
+            <GroundProvider ground="tile">
+              <FactRows label={words.extraCharges} density="expressive" form="pair">
+                <FactRow
+                  label={words.extraCharges}
+                  value={<BillingValueText value={figure(extra.total)} />}
+                />
+                <FactRow
+                  label={words.billsOn}
+                  value={<BillingValueText value={plain(extra.billsOn)} />}
+                />
+              </FactRows>
+            </GroundProvider>
+          </View>
         )}
       </View>
     </Block>
   );
 }
 
-/** The board's `1fr 44px` grid: the row's parts on the left, its chevron alone on the right. */
+/** One row's tile: its meter, or its one figure where it has none, then its other facts. */
 function UsageRow({
   row,
   words,
@@ -107,46 +115,78 @@ function UsageRow({
   onLedger,
   onPlans,
 }: Omit<RegionProps, 'region' | 'extra'> & { readonly row: UsageRowView }) {
+  /* A row with no meter shows its first fact as the tile's figure; the rest follow as rows. */
+  const rest = row.meter === null ? row.facts.slice(1) : row.facts;
   return (
-    <View style={styles.row}>
-      <View style={styles.parts}>
-        {row.meter === null ? null : (
-          <UsageMeter
-            label={row.label}
-            words={words.usageMeter}
-            value={row.meter.value}
-            limit={row.meter.limit}
-            state={row.meter.state}
-            statusLine={row.meter.statusLine}
-            defaultNotes={false}
-            density="expressive"
-            {...(row.meter.unit === null ? {} : { unit: row.meter.unit })}
-            {...(row.meter.period === null ? {} : { period: row.meter.period })}
-            {...(row.meter.graceDaysLeft === null
-              ? {}
-              : { graceDaysLeft: row.meter.graceDaysLeft })}
-            {...(row.meter.note === null ? {} : { note: row.meter.note })}
-            {...(row.meter.noLimitNote === null ? {} : { noLimitNote: row.meter.noLimitNote })}
-          />
-        )}
-        {row.facts.length === 0 ? null : (
-          <FactRows label={row.label} density="expressive" form="pair">
-            {row.facts.map((fact) => (
-              <FactRow key={fact.key} label={fact.label} value={<FactValue fact={fact} />} />
-            ))}
-          </FactRows>
-        )}
-        {row.plans && plans !== null ? <UsagePlansRow plans={plans} onPlans={onPlans} /> : null}
-      </View>
-      <LedgerCell row={row} words={words} openers={openers} onLedger={onLedger} />
+    <View style={styles.tile}>
+      <GroundProvider ground="tile">
+        <View style={[styles.parts, row.ledger === null ? undefined : styles.clearOpener]}>
+          <RowLead row={row} words={words} />
+          {rest.length === 0 ? null : (
+            <FactRows label={row.label} density="expressive" form="pair">
+              {rest.map((fact) => (
+                <FactRow key={fact.key} label={fact.label} value={<FactValue fact={fact} />} />
+              ))}
+            </FactRows>
+          )}
+          {row.plans && plans !== null ? (
+            <View style={styles.start}>
+              <Button
+                variant="secondary"
+                size="sm"
+                icon={<ShellGlyph name="layers" size="sm" />}
+                onClick={onPlans}
+              >
+                {plans.title}
+              </Button>
+            </View>
+          ) : null}
+        </View>
+        <LedgerCell row={row} words={words} openers={openers} onLedger={onLedger} />
+      </GroundProvider>
     </View>
   );
 }
 
-/**
- * The row's 44 column: its ONE named chevron, or empty — every row keeps the column, so every
- * figure ends on the card's one edge (the board's 1fr / 44px grid).
- */
+/** The tile's lead: its meter, or — a row with none, `Biggest design` — its first fact as a figure. */
+function RowLead({ row, words }: { row: UsageRowView; words: RegionProps['words'] }) {
+  const { meter } = row;
+  const glyph = USAGE_ROW_GLYPH[row.key];
+  if (meter === null) {
+    const lead = row.facts[0];
+    if (lead === undefined || lead.value === null) return null;
+    return (
+      <UsageMeterHead
+        label={row.label}
+        form="tile"
+        glyph={glyph}
+        figure={figureText(lead.value)}
+        after={null}
+      />
+    );
+  }
+  return (
+    <UsageMeter
+      label={row.label}
+      words={words.usageMeter}
+      value={meter.value}
+      limit={meter.limit}
+      state={meter.state}
+      statusLine={meter.statusLine}
+      defaultNotes={false}
+      density="expressive"
+      form="tile"
+      glyph={glyph}
+      {...(meter.unit === null ? {} : { unit: meter.unit })}
+      {...(meter.period === null ? {} : { period: meter.period })}
+      {...(meter.graceDaysLeft === null ? {} : { graceDaysLeft: meter.graceDaysLeft })}
+      {...(meter.note === null ? {} : { note: meter.note })}
+      {...(meter.noLimitNote === null ? {} : { noLimitNote: meter.noLimitNote })}
+    />
+  );
+}
+
+/** The tile's ONE named chevron in its corner, where the row has events to open. */
 function LedgerCell({
   row,
   words,
@@ -154,17 +194,16 @@ function LedgerCell({
   onLedger,
 }: Pick<RegionProps, 'words' | 'openers' | 'onLedger'> & { readonly row: UsageRowView }) {
   const ledger = row.ledger;
+  if (ledger === null) return null;
   return (
-    <View ref={ledger === null ? undefined : openers[ledger]} style={styles.chevron}>
-      {ledger === null ? null : (
-        <IconButton
-          label={words.eventsOf(row.label)}
-          variant="ghost"
-          onClick={() => onLedger(ledger)}
-        >
-          <ShellGlyph name="chevron-right" size="md" tone="primary" />
-        </IconButton>
-      )}
+    <View ref={openers[ledger]} style={styles.chevron}>
+      <IconButton
+        label={words.eventsOf(row.label)}
+        variant="ghost"
+        onClick={() => onLedger(ledger)}
+      >
+        <ShellGlyph name="chevron-right" size="md" tone="primary" />
+      </IconButton>
     </View>
   );
 }
@@ -199,17 +238,29 @@ export function UsagePlansRow({
 }
 
 const styles = StyleSheet.create({
-  rows: { gap: theme.spacing['sp-6'] },
-  row: { flexDirection: 'row', alignItems: 'flex-start', gap: theme.spacing['sp-2'] },
-  parts: { flex: 1, minWidth: 0, gap: theme.spacing['sp-3'] },
-  /** The chevron's 44 column, lifted onto the meter's label line as the board sets it. */
-  chevron: {
-    width: MIN_TOUCH_TARGET,
-    flexShrink: 0,
-    alignItems: 'center',
-    marginTop: -theme.spacing['sp-3'],
-    marginRight: -theme.spacing['sp-2'],
+  /* A region under the hero stands on the page's own edges, as the web's does. */
+  flushRegion: { paddingHorizontal: 0, paddingBottom: 0, paddingTop: theme.spacing['sp-2'] },
+  /* Two tiles to a row on a phone (a 144pt floor each), as the web's grid sets them. */
+  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.layout['tile-gap'] },
+  tile: {
+    ...tileSurface,
+    flexGrow: 1,
+    flexBasis: theme.spacing['sp-24'] + theme.spacing['sp-12'],
+    padding: theme.layout['tile-pad'],
+    borderRadius: theme.radius['r-tile'],
   },
+  wholeRow: { flexBasis: '100%' },
+  parts: { gap: theme.spacing['sp-3'] },
+  /* The label keeps clear of the corner's 44pt chevron. */
+  clearOpener: { paddingRight: theme.spacing['sp-8'] },
+  chevron: {
+    position: 'absolute',
+    top: theme.spacing['sp-1'],
+    right: theme.spacing['sp-1'],
+    width: MIN_TOUCH_TARGET,
+    alignItems: 'center',
+  },
+  start: { flexDirection: 'row' },
   sources: { gap: theme.spacing['sp-0-5'] },
   plans: { ...tileSurface, borderRadius: theme.radius['r-tile'] },
 });

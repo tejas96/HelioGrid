@@ -32,7 +32,7 @@ test('an owner prices an item and publishes a release', async ({ page }) => {
   await createCompany(page, en, freshMobile());
   await passTheOwnersMark(page, en);
   await page.goto('/more');
-  await page.getByRole('button', { name: WORDS.rows.catalog }).click();
+  await page.getByRole('main').getByRole('button', { name: WORDS.rows.catalog }).click();
 
   await expect(page).toHaveURL(/\/more\/catalog$/);
   await expect(
@@ -49,10 +49,11 @@ test('an owner prices an item and publishes a release', async ({ page }) => {
   );
   await unpriced.focus();
   await page.keyboard.press('Enter');
-  const editor = page.getByRole('dialog');
+  /* A sheet below the desktop width; from it, the panel docked beside the list, named for the item. */
+  const editor = page.getByRole('dialog').or(page.getByRole('complementary', { name: itemName }));
   await editor.getByRole('textbox', { name: en.t(CATALOG_EDITOR.price) }).fill(PRICE);
   await editor.getByRole('textbox', { name: en.t(CATALOG_EDITOR.price) }).press('Tab');
-  await page.getByRole('button', { name: en.t(CATALOG_EDITOR.saveOverride) }).click();
+  await page.getByRole('button', { name: en.t(CATALOG_EDITOR.savePrice) }).click();
   await expect(editor).toBeHidden();
   await expect(
     page.getByRole('button', {
@@ -87,7 +88,7 @@ test('an owner opens the import from Catalog and a file over the limit is refuse
   await createCompany(page, en, freshMobile());
   await passTheOwnersMark(page, en);
   await page.goto('/more');
-  await page.getByRole('button', { name: WORDS.rows.catalog }).click();
+  await page.getByRole('main').getByRole('button', { name: WORDS.rows.catalog }).click();
   await expect(page).toHaveURL(/\/more\/catalog$/);
 
   await page.getByRole('button', { name: en.t(CATALOG_SETTINGS.importFile) }).click();
@@ -125,7 +126,7 @@ test('an owner adds a battery from Catalog settings', async ({ page }) => {
   await createCompany(page, en, freshMobile());
   await passTheOwnersMark(page, en);
   await page.goto('/more');
-  await page.getByRole('button', { name: WORDS.rows.catalog }).click();
+  await page.getByRole('main').getByRole('button', { name: WORDS.rows.catalog }).click();
   await expect(page).toHaveURL(/\/more\/catalog$/);
 
   const words = catalogAddItemWords(en.t, {
@@ -172,8 +173,8 @@ test('an owner adds a battery from Catalog settings', async ({ page }) => {
   const raised = page.locator('.hg-toast').filter({ hasText: toast.title });
   await expect(raised).toBeVisible();
   await expect(raised.getByText(toast.description, { exact: true })).toBeVisible();
-  /* A table row at 1536, a card at 375. */
-  const first = page.locator('.hg-dt-row, .hg-dt-card').first();
+  /* A table row in a wide list, a row of the list's card in a narrow one. */
+  const first = page.locator('.hg-dt-row, .hg-card-row').first();
   await expect(first).toContainText(brand);
   await expect(first).toHaveAttribute('data-highlighted', 'true');
 

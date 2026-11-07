@@ -4,7 +4,7 @@ import { settingsRowName, usagePageWords, usageViewWords } from '@heliogrid/i18n
 import { useI18n } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
 import {
-  Text,
+  LargeTitle,
   UsagePage,
   usageLedgerViewOf,
   usagePageViewOf,
@@ -15,8 +15,8 @@ import {
 import { useUsageAdapter } from './hooks/use-usage-adapter';
 
 /**
- * The room from which the body stands as the board's 1536 pair — the tables lane and the 300px
- * standing column: below it the lane could not hold the tables, so the page is the one column.
+ * The room from which the body stands as the board's 1536 pair — the tiles' lane and the 300px
+ * standing column: below it the lane would squeeze the tiles, so the page is the one column.
  */
 const USAGE_LANES_FROM = theme.layout['bp-desktop'];
 
@@ -43,9 +43,7 @@ export function UsageScreen() {
   const usage = read.kind === 'ready' && read.value.kind === 'owner' ? read.value.usage : null;
   return (
     <div ref={room} className="hg-shell-page">
-      <Text as="h1" variant="display">
-        {settingsRowName(t, 'usage')}
-      </Text>
+      <LargeTitle title={settingsRowName(t, 'usage')} />
       <UsagePage
         words={usagePageWords(t)}
         read={

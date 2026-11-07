@@ -73,8 +73,13 @@ export const previewSwitch = (page: Locator) => page.getByRole('radiogroup', { n
 export const partSwitch = (page: Locator) => page.getByRole('radiogroup', { name: en.edit });
 export const closing = (page: Locator) => page.locator('.hg-branding-closing');
 
+/**
+ * The window's own height once it is drawn and still: its layout box, which the desk's slight lean
+ * (a decorative transform) never changes, so the designed height is measured, not its projection.
+ */
 export async function heightOf(locator: Locator): Promise<number> {
-  return (await settledBox(locator))?.height ?? 0;
+  if ((await settledBox(locator)) === null) return 0;
+  return locator.evaluate((node) => (node as HTMLElement).offsetHeight);
 }
 
 /** Every frame's shared blocks: the stage on its desk, its switch row, the part switch, the profile row. */

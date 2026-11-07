@@ -1,8 +1,14 @@
 import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
 import { LoadingBars } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
+import type { Locator } from '@playwright/test';
 import { bottomOf, settledBox } from '../support/layout';
 import { resolvedColour, resolvedLength, resolvedShadow } from '../support/token';
+
+/** The light band passing over a part while the read is out: its own layer, a transform. */
+function shimmerOf(part: Locator): Promise<string> {
+  return part.evaluate((node) => getComputedStyle(node, '::after').animationName);
+}
 
 /**
  * The bars a list shows while its record loads (`SCR-M01-05`'s `m-loading`): one bar per part, an
@@ -49,7 +55,7 @@ test('a bar is a raised sweep: the first elevation, the large radius, the shimme
 
   await expect(bar).toHaveCSS('box-shadow', await resolvedShadow(page, '--e1'));
   await expect(bar).toHaveCSS('border-radius', `${await resolvedLength(page, '--r-lg')}px`);
-  await expect(bar).toHaveCSS('animation-name', 'hg-sheet-shimmer');
+  expect(await shimmerOf(bar)).toBe('hg-shimmer');
 });
 
 test('a line is a mark a glyph wide and a text-high bar beside it, 12 apart, on the card grey', async ({
@@ -69,10 +75,7 @@ test('a line is a mark a glyph wide and a text-high bar beside it, 12 apart, on 
   expect(bar?.height).toBe(text);
   expect(bar?.x).toBe(mark.x + glyph + text);
   expect((await settledBox(lines.nth(1)))?.y).toBe((await bottomOf(lines.first())) + text);
-  await expect(lines.first().locator('.hg-loading-line-bar')).toHaveCSS(
-    'animation-name',
-    'hg-sheet-shimmer',
-  );
+  expect(await shimmerOf(lines.first().locator('.hg-loading-line-bar'))).toBe('hg-shimmer');
 });
 
 test('inside a busy region the caller named, the bars are decoration and announce nothing', async ({
@@ -105,10 +108,7 @@ test('an option is the card it stands for: the grey, the tile radius, a 20 mark,
   expect(mark).toMatchObject({ width: glyph, height: glyph });
   await expect(options.first().locator('.hg-loading-option-line:visible')).toHaveCount(2);
   expect((await settledBox(options.nth(1)))?.y).toBe((await bottomOf(options.first())) + gap);
-  await expect(options.first().locator('.hg-loading-option-mark')).toHaveCSS(
-    'animation-name',
-    'hg-sheet-shimmer',
-  );
+  expect(await shimmerOf(options.first().locator('.hg-loading-option-mark'))).toBe('hg-shimmer');
 });
 
 test('in a wide room an option keeps one description line, as the panel draws it', async ({
@@ -134,5 +134,5 @@ test("a control is one control row's height, before the parts it stands over", a
     expect((await settledBox(bars.nth(index)))?.height).toBe(height);
   }
   expect((await settledBox(bars.nth(1)))?.y).toBe((await bottomOf(bars.first())) + gap);
-  await expect(bars.first()).toHaveCSS('animation-name', 'hg-sheet-shimmer');
+  expect(await shimmerOf(bars.first())).toBe('hg-shimmer');
 });

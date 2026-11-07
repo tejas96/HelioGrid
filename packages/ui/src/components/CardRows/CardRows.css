@@ -1,0 +1,87 @@
+/* CardRows — one glass card (Ground's tiles list) holding a list's rows, a hairline between two.
+   A row's open target lies UNDER its body, which lets presses through to it; only the row's own
+   acts (`aside`) take presses above it. */
+
+.hg-card-rows {
+  margin: 0;
+  padding: var(--sp-1);
+  list-style: none;
+  border-radius: var(--r-card-expressive);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+}
+
+.hg-card-row {
+  position: relative;
+  border-radius: var(--r-tile);
+}
+
+/* The hairline between two rows, inset from the card's edge as a list's is. */
+.hg-card-row:not([data-first="true"])::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline: var(--sp-3);
+  border-top: 1px solid var(--line-soft);
+}
+
+/* The row just added, and the row whose detail is open beside the list, read as the chosen one. */
+.hg-card-row[data-highlighted="true"] {
+  background: var(--accent-subtle);
+}
+
+.hg-card-row[data-highlighted="true"]::before,
+.hg-card-row[data-highlighted="true"] + .hg-card-row::before {
+  border-top-color: transparent;
+}
+
+.hg-card-row-target {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color var(--dur-micro) var(--ease-standard);
+}
+
+@media (hover: hover) {
+  .hg-card-row-target:hover {
+    background: var(--hg-control-fill);
+  }
+}
+
+.hg-card-row-target:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.hg-card-row-body {
+  position: relative;
+  min-height: var(--touch-min);
+  padding: var(--sp-4) var(--sp-3);
+  transition: transform var(--dur-micro) var(--ease-standard);
+}
+
+/* The press answers at once: the row sinks a step under the finger. */
+.hg-card-row:has(> .hg-card-row-target:active) > .hg-card-row-body {
+  transform: scale(var(--press-scale));
+}
+
+.hg-card-row-body[data-inert="true"] {
+  pointer-events: none;
+}
+
+.hg-card-row[data-muted="true"] > .hg-card-row-body {
+  opacity: 0.55;
+}
+
+.hg-card-row-aside {
+  pointer-events: auto;
+}
+
+.hg-card-row-after {
+  position: relative;
+  padding: 0 var(--sp-3) var(--sp-3);
+}

@@ -2,7 +2,7 @@ import type { BillingHome, BillingStanding, TranslatedText } from '@heliogrid/co
 import { MS_PER_DAY, scaledPower, TRIAL_DAYS } from '@heliogrid/domain';
 import type { MarketFormat } from '../../utils/format';
 import { workingOf } from './BillingHome.needs';
-import type { BillingFact, BillingPlanView } from './BillingHome.types';
+import type { BillingCountdown, BillingFact, BillingPlanView } from './BillingHome.types';
 import { fact, figure, figured, plain } from './BillingHome.values';
 import type { BillingInput, BillingViewWords } from './BillingHome.words';
 
@@ -21,6 +21,7 @@ export function planOf(input: BillingInput, home: BillingHome): BillingPlanView 
       : priceListOf(input, home);
   return {
     chip: planChipOf(words, standing, input.now),
+    countdown: countdownOf(input, home),
     rows: planRowsOf(input, home),
     working:
       home.taxScheme !== null && home.plan.nextBill !== null
@@ -33,6 +34,23 @@ export function planOf(input: BillingInput, home: BillingHome): BillingPlanView 
     includes: includesOf(words, format, home),
     scope: null,
   };
+}
+
+/**
+ * The page's one summary line under its title — *Trial · 14 days left · ends 21 Nov 2026*, *Growth ·
+ * renews 21 Dec 2026* — or none on a state the needs region speaks for.
+ */
+export function summaryOf(input: BillingInput, home: BillingHome): TranslatedText | null {
+  const { words, format, now } = input;
+  const { standing } = home;
+  const plan = standing.tier === null ? words.trial : words.tier(standing.tier);
+  if (standing.state === 'trialing' && standing.trialEndsAt !== null) {
+    const days = Math.max(0, Math.ceil((Date.parse(standing.trialEndsAt) - now) / MS_PER_DAY));
+    return words.summaryTrial(plan, format.number(days), days, format.date(standing.trialEndsAt));
+  }
+  const renewsAt = home.renewal?.dueAt ?? home.plan.nextBill?.at ?? null;
+  if (standing.state !== 'active' || renewsAt === null) return null;
+  return words.summaryRenews(plan, format.date(renewsAt));
 }
 
 /** `India price list · 1 Apr 2026` — the list's one source line, never a tier (owner ruling). */
@@ -61,6 +79,40 @@ export function planChipOf(
   return {
     word: words.stateWord(standing.state),
     tone: running ? 'warning' : tone[standing.state],
+  };
+}
+
+/**
+ * The hero's ring: the trial's days left of its 14, or a paid period's days to its next bill out of
+ * the period's own length, read back one cycle from that date. Nothing runs on a dead state.
+ */
+function countdownOf(input: BillingInput, home: BillingHome): BillingCountdown | null {
+  const { words, format, now } = input;
+  const { standing } = home;
+  const daysUntil = (at: number) => Math.max(0, Math.ceil((at - now) / MS_PER_DAY));
+  if (standing.state === 'trialing' && standing.trialEndsAt !== null) {
+    const left = daysUntil(Date.parse(standing.trialEndsAt));
+    const figure = format.number(left);
+    return {
+      share: left / TRIAL_DAYS,
+      figure,
+      caption: words.ringDaysLeft,
+      spoken: words.ringSpokenLeft(figure, format.number(TRIAL_DAYS)),
+    };
+  }
+  const next = home.plan.nextBill;
+  if (standing.state !== 'active' || next === null || standing.cycle === null) return null;
+  const end = Date.parse(next.at);
+  const start = new Date(end);
+  if (standing.cycle === 'yearly') start.setUTCFullYear(start.getUTCFullYear() - 1);
+  else start.setUTCMonth(start.getUTCMonth() - 1);
+  const left = daysUntil(end);
+  const figure = format.number(left);
+  return {
+    share: left / Math.max(1, Math.round((end - start.getTime()) / MS_PER_DAY)),
+    figure,
+    caption: words.ringToRenewal,
+    spoken: words.ringSpokenRenewal(figure),
   };
 }
 

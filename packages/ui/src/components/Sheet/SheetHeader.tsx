@@ -9,6 +9,8 @@ interface SheetHeaderProps {
   leading?: ReactNode;
   /** With a handle above it the header loses its own top padding. */
   handle: boolean;
+  /** The close alone: it rides the handle's row, at its end (`isCloseOnly`). */
+  bare: boolean;
   closeLabel: TranslatedText;
   onClose?: () => void;
   /** Without a handle the header becomes the drag target, exactly as the reference does. */
@@ -28,6 +30,7 @@ interface SheetHeaderProps {
 export function SheetHeader({
   leading,
   handle,
+  bare,
   closeLabel,
   onClose,
   onPointerDown,
@@ -46,6 +49,7 @@ export function SheetHeader({
     <div
       className="hg-sheet-header"
       data-handle={handle ? 'true' : 'false'}
+      data-bare={bare ? 'true' : 'false'}
       data-scrolled={scrolled ? 'true' : 'false'}
       onPointerDown={onPointerDown}
     >

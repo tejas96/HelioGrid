@@ -65,16 +65,16 @@ const styles = StyleSheet.create({
   side: {
     gap: theme.spacing['sp-3'],
   },
+  /* No slot clips: a primary's glow reaches past the pill, and clipping cut it into a box under
+     it. A long label wraps inside its full-width button instead (the web half's slot, too). */
   slot: {
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
     minWidth: 0,
-    overflow: 'hidden',
   },
   slotStacked: {
     flexGrow: 0,
     flexShrink: 0,
-    overflow: 'hidden',
   },
 });

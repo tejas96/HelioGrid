@@ -45,6 +45,13 @@ function Publish(props: CatalogPublishBody) {
    *Show more*, on the changes it grew. */
   const body = useRef<View>(null);
   const grown = useRef<View>(null);
+  if (props.empty !== undefined && props.empty !== null) {
+    return (
+      <View ref={body} style={styles.body}>
+        <EmptyState moment="empty" title={props.empty.title} description={props.empty.line} />
+      </View>
+    );
+  }
   return (
     <View ref={body} style={styles.body}>
       <Input

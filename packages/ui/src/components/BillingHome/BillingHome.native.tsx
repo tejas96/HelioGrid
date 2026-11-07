@@ -12,7 +12,8 @@ import { bodyActingOf, retryLandingOn } from './BillingHome.logic';
 import type { BillingHomeProps } from './BillingHome.types';
 import { BillingInvoices } from './BillingInvoiceRows.native';
 import { BillingNeeds } from './BillingNeeds.native';
-import { BillingMethod, BillingPlan, BillingUsage } from './BillingPlan.native';
+import { BillingMethod, BillingPlan } from './BillingPlan.native';
+import { BillingUsage } from './BillingUsage.native';
 import { useNeedsFocus } from './use-needs-focus';
 
 /**

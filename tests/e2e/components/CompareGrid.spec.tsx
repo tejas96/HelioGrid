@@ -22,7 +22,9 @@ test('a comparison is a heading on the page — no fill, no shadow', async ({ mo
   await expect(grid).toHaveCSS('border-radius', '0px');
 });
 
-test('a pinned cell paints the ground that holds it', async ({ mount }) => {
+test('a pinned cell paints its holder’s own fill and frosts the columns running under it', async ({
+  mount,
+}) => {
   const card = await mount(
     <Card>
       <WordedCompareGrid read={{ kind: 'ready' }} attributes={attributes} options={options} />
@@ -32,6 +34,7 @@ test('a pinned cell paints the ground that holds it', async ({ mount }) => {
 
   await expect(pinned).toHaveCSS('position', 'sticky');
   await expect(pinned).toHaveCSS('background-color', await fillOf(card));
+  await expect(pinned).not.toHaveCSS('backdrop-filter', 'none');
 });
 
 test('a numeric row ends its figures on one right edge; a word row stays left (F7-09)', async ({

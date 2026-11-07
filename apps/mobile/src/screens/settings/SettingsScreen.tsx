@@ -1,6 +1,6 @@
 import { useSettingsScreen } from '@heliogrid/data/react';
 import { SETTINGS_SEGMENT, type SettingsRow } from '@heliogrid/domain';
-import { settingsListFor } from '@heliogrid/i18n';
+import { settingsListFor, settingsWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { SettingsList } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
@@ -17,12 +17,15 @@ export function SettingsScreen() {
   const settings = useSettingsScreen();
   const navigation = useNavigation();
   const list = settingsListFor(t, settings.roles);
+  const words = settingsWords(t);
   const open = (row: SettingsRow) =>
     navigation.navigate('SettingsRow', { segment: SETTINGS_SEGMENT[row] });
   return (
     <ShellPage inView="more">
       <SettingsList
         title={list.title}
+        summary={words.summary}
+        hints={words.hints}
         person={{ name: settings.personName }}
         groups={list.groups}
         onOpen={open}

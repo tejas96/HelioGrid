@@ -4,6 +4,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { Dimensions, Pressable as RNPressable, ScrollView, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Portal } from '../../primitives/Portal/Portal.native';
+import { useCloseOnBack } from '../../primitives/use-close-on-back.native';
 import { actOnChoice, MENU_GAP } from './Menu.logic';
 import type { MenuItem, MenuProps } from './Menu.types';
 import { MenuItemRow } from './MenuItemRow.native';
@@ -31,7 +32,8 @@ const MIN_BELOW = 160;
  * THREE WEB BEHAVIOURS MAPPED FOR TOUCH:
  * · The whole keyboard contract — arrow walk with wrap, Home/End, type-ahead, Escape, focus
  *   returned to the trigger — has no touch equivalent. The two acts are tap-to-open and
- *   tap-to-select, with a full-bleed scrim as the cancel that the outside-click listener was.
+ *   tap-to-select, with a full-bleed scrim as the cancel that the outside-click listener was, and
+ *   Android's Back as the Escape.
  * · There is no hover, so the web half's `data-active` row tint is carried by the Pressable
  *   primitive's own pressed state instead.
  * · `position: absolute` under the trigger becomes `measureInWindow` plus the Portal primitive, so
@@ -51,6 +53,7 @@ export function Menu({
   const [anchor, setAnchor] = useState<Anchor | null>(null);
   const wrapRef = useRef<View>(null);
   const open = anchor !== null;
+  useCloseOnBack(open, () => setAnchor(null));
 
   const openMenu = () => {
     wrapRef.current?.measureInWindow((x, y, triggerWidth, height) => {

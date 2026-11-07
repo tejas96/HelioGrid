@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { LottieMoment } from '../LottieMoment/LottieMoment';
 import type { EmptyStateProps } from './EmptyState.types';
 
 interface WebEmptyStateProps extends EmptyStateProps {
@@ -10,6 +11,7 @@ interface WebEmptyStateProps extends EmptyStateProps {
 /** Centred empty state with a soft brand-glow bloom behind a large circular icon container. */
 export function EmptyState({
   icon,
+  moment,
   title,
   description,
   action,
@@ -23,7 +25,8 @@ export function EmptyState({
         {glow ? <span className="hg-empty-state-glow" /> : null}
         {/* No glyph, no circle. `F7-19` forbids inventing imagery, so a caller with no honest icon
             must be able to omit it — an unguarded container renders a blank 72px disc. */}
-        {icon ? <span className="hg-empty-state-icon">{icon}</span> : null}
+        {moment === undefined ? null : <LottieMoment name={moment} size={96} />}
+        {icon && moment === undefined ? <span className="hg-empty-state-icon">{icon}</span> : null}
       </div>
       <h3 className="hg-empty-state-title">{title}</h3>
       {description ? <p className="hg-empty-state-description">{description}</p> : null}

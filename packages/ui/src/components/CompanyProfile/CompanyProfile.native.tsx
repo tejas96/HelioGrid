@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
+import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { closeKeyboard } from '../../primitives/Keyboard/use-keyboard.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Accordion } from '../Accordion/Accordion.native';
@@ -120,7 +121,7 @@ function ProfileList({
   if (words.loading !== null) {
     return <LoadingBars label={words.loading} bars={['panel', 'row', 'row', 'row', 'row']} />;
   }
-  return (
+  const list = (
     <Accordion
       density={PARTS_DENSITY[life]}
       items={profileItems(words, open, (part) => (
@@ -140,6 +141,13 @@ function ProfileList({
       value={open}
       onChange={(reported) => onOpen(openedPart(reported))}
     />
+  );
+  if (life !== 'settings') return list;
+  /* On the settings page the parts are one glass tile, as the web's tiles' list draws it. */
+  return (
+    <View style={[tileSurface, styles.tile]}>
+      <GroundProvider ground="tile">{list}</GroundProvider>
+    </View>
   );
 }
 
@@ -240,6 +248,11 @@ function UnreadGlyph() {
 }
 
 const styles = StyleSheet.create({
+  tile: {
+    paddingVertical: theme.spacing['sp-1'],
+    paddingHorizontal: theme.spacing['sp-4'],
+    borderRadius: theme.radius['r-card-expressive'],
+  },
   /** The heading `sp-6` under the wordmark (`m-default`). */
   head: { paddingTop: theme.spacing['sp-6'] },
   /** The list `sp-5` under the heading's line. */

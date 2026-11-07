@@ -7,6 +7,7 @@ import {
   resolvedLength,
   resolvedShadow,
   STRONG_EDGE,
+  TILE_FILL,
   TILE_SHADOW,
 } from '../support/token';
 
@@ -75,7 +76,7 @@ test("a card is the open page's tile: the card colour, the tile's radius, paddin
 }) => {
   const card = await mount(<Card>{tryAgain}</Card>);
 
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
   await expect(card).toHaveCSS('border-radius', `${await resolvedLength(page, '--r-tile')}px`);
   await expect(card).toHaveCSS('padding', `${await resolvedLength(page, '--tile-pad')}px`);
   await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
@@ -93,7 +94,7 @@ test('a selected card is ringed inside in the accent, as a focused field is', as
   );
 });
 
-test('a tappable card takes the fill-hover under the pointer and keeps its tile ring', async ({
+test('a tappable card lifts under the pointer: it keeps its glass and its ring firms a step', async ({
   mount,
   page,
 }) => {
@@ -104,8 +105,14 @@ test('a tappable card takes the fill-hover under the pointer and keeps its tile 
   );
 
   await card.hover();
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--fill-hover'));
-  await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
+  await expect(card).toHaveCSS(
+    'box-shadow',
+    await resolvedBoxShadow(
+      page,
+      'inset 0 1px 0 var(--glass-edge), 0 0 0 1px var(--line-strong), var(--e3)',
+    ),
+  );
 });
 
 test('a disabled control in a card sinks below the tile', async ({ mount, page }) => {

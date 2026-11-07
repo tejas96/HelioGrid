@@ -1,5 +1,6 @@
 import type { StyleProp, ViewStyle } from 'react-native';
 import { View } from 'react-native';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import { OverlayEmpty, OverlayError } from './OverlayStates.native';
 import type { OverlayBodyStateProps } from './Sheet.types';
@@ -17,10 +18,21 @@ interface OverlayBodyProps extends OverlayBodyStateProps {
  * market pack does not cover gets neutral words and NO RETRY, because trying again cannot change
  * the answer. `empty` means none **yet**, so it invites. `error` is the only one with a retry.
  */
-export function OverlayBody({
+export function OverlayBody(props: OverlayBodyProps) {
+  /* The overlay is white, as on the web (`Ground.css`): a control inside takes the fill, never the
+     page's white, which drew Prefer and Hide white on the white sheet. */
+  return (
+    <GroundProvider ground="tile">
+      <OverlayState {...props} />
+    </GroundProvider>
+  );
+}
+
+function OverlayState({
   children,
   emptyAction,
   emptyMessage,
+  emptyMoment,
   emptyTitle,
   errorMessage,
   errorTitle,
@@ -69,6 +81,7 @@ export function OverlayBody({
       <OverlayEmpty
         action={emptyAction}
         message={emptyMessage}
+        moment={emptyMoment}
         title={emptyTitle}
         variant={variant}
       />

@@ -51,12 +51,14 @@ const VARIANT: Record<ButtonVariant, VariantVisual> = {
 const TONE: Record<ButtonTone, ThemeColor> = { danger: colors['danger-text'] };
 
 const SIZE: Record<ButtonSize, ViewStyle> = {
+  prominent: { height: theme.spacing['sp-16'], paddingHorizontal: theme.spacing['sp-8'] },
   lg: { height: theme.layout['field-h'], paddingHorizontal: theme.spacing['sp-6'] },
   md: { height: theme.spacing['sp-10'], paddingHorizontal: theme.spacing['sp-5'] },
   sm: { height: theme.spacing['sp-8'], paddingHorizontal: theme.spacing['sp-4'] },
 };
 
 const LABEL_SIZE: Record<ButtonSize, TextStyle> = {
+  prominent: { fontSize: theme.type.roles['body-lg'].fontSize },
   lg: { fontSize: theme.type.roles.button.fontSize },
   md: { fontSize: theme.type.roles.button.fontSize },
   sm: { fontSize: theme.type.roles['body-sm'].fontSize },
@@ -73,6 +75,12 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
   },
   fullWidth: { alignSelf: 'stretch' },
+  prominentGlow: {
+    shadowOffset: { width: 0, height: 12 },
+    shadowRadius: 20,
+    shadowOpacity: 0.45,
+    elevation: 6,
+  },
   label: {
     fontFamily: theme.type.families.sans,
     fontWeight: '500',
@@ -144,6 +152,10 @@ export function Button({
           SIZE[size],
           { backgroundColor: visual.background },
           disabled ? undefined : visual.elevation,
+          // The screen's one main verb carries the deepest glow of the accent (see the web half).
+          size === 'prominent' && variant === 'primary' && !disabled
+            ? styles.prominentGlow
+            : undefined,
           // A ghost has no ground, and being unavailable does not give it one — see the web half.
           // Sunk below the page and the tile alike — see the web half.
           disabled && variant !== 'ghost' ? { backgroundColor: controlFillDisabled } : undefined,

@@ -26,6 +26,7 @@ export { billingCapabilityName, billingNoticeWords } from './copy/billing-notice
 export * from './copy/billing-records';
 export * from './copy/billing-strip';
 export * from './copy/block';
+export { BOOT, bootLabel } from './copy/boot';
 export type { BrandColourFieldWords } from './copy/brand-colour-field';
 export { brandColourFieldWords } from './copy/brand-colour-field';
 export type { BrandingFormats, BrandingPageFacts, BrandingWords } from './copy/branding';
@@ -43,15 +44,20 @@ export type { AddItemFieldWords } from './copy/catalog-add-item-fields';
 export { catalogItemFailuresOf, catalogItemFailureWords } from './copy/catalog-add-item-fields';
 export { catalogAttributionRowOf, catalogAttributionWords } from './copy/catalog-attribution';
 export { CATALOG_EDITOR, releaseChangeWord } from './copy/catalog-editor';
+export {
+  CATALOG_FIGURES,
+  type CatalogStripFigure,
+  catalogStripFigures,
+} from './copy/catalog-figures';
 export { catalogImportFields } from './copy/catalog-import-fields';
 export { catalogImportNotes } from './copy/catalog-import-notes';
 export type { ImportRowSubKind, ImportRowWordsFacts } from './copy/catalog-import-rows';
 export { catalogImportRowWords, catalogImportWords } from './copy/catalog-import-rows';
 export * from './copy/catalog-settings';
+export { type CatalogSpecCell, catalogSpecCells } from './copy/catalog-spec-cells';
 export * from './copy/catalog-views';
 export type { CatalogListFacts, CatalogRowFacts } from './copy/catalog-words';
 export {
-  catalogEditorChips,
   catalogItemsWords,
   catalogPriceEditorWords,
   catalogReleaseStripWords,
@@ -104,6 +110,8 @@ export * from './copy/derivation';
 export * from './copy/detail-panel';
 export { disclosureLead, disclosureLine } from './copy/disclosure';
 export { BASIS_LINE_WORD } from './copy/document-basis';
+export { DOOR_GREETING, doorGreeting } from './copy/door-greeting';
+export { DOOR_STORY, type DoorStoryWords, doorStoryWords } from './copy/door-story';
 export * from './copy/drawing-sheet';
 export * from './copy/dropzone';
 export { energySourceLabel } from './copy/energy-source';
@@ -116,6 +124,14 @@ export * from './copy/finding-list';
 export type { FirstRunProfileFacts, FirstRunProfileWords } from './copy/first-run-profile';
 export { FIRST_RUN_PROFILE, firstRunProfileWords } from './copy/first-run-profile';
 export { freshnessLabel } from './copy/freshness';
+export {
+  HOME_TODAY,
+  homeGlanceWords,
+  homeGreeting,
+  type ReadinessWords,
+  readinessStepWords,
+  readinessWords,
+} from './copy/home-today';
 export { homeTitle } from './copy/homes';
 export * from './copy/image';
 export type {
@@ -144,6 +160,13 @@ export { centreActToast, centreFilterWords, centreHeadWords } from './copy/notif
 export { type CentreClock, centreListWords } from './copy/notification-list';
 export * from './copy/notifications';
 export * from './copy/number-field';
+export {
+  type ComingPage,
+  type ComingRow,
+  isComingRow,
+  type OnItsWayWords,
+  onItsWayWords,
+} from './copy/on-its-way';
 export * from './copy/operation-progress';
 export * from './copy/option-card-group';
 export * from './copy/otp-input';
@@ -215,6 +238,7 @@ export {
   settingsListFor,
   settingsRowName,
   settingsSavedLine,
+  settingsSavedToast,
   settingsWords,
 } from './copy/settings';
 export type { SetupLanguageOption, SetupLanguageWords } from './copy/setup-language';
@@ -244,6 +268,7 @@ export {
   updateOnStoreLabel,
   verbLabel,
 } from './copy/shell';
+export { SIDEBAR } from './copy/sidebar';
 export type { SignInCopyKey } from './copy/sign-in';
 export { SIGN_IN } from './copy/sign-in';
 export type { SignInFacts, SignInLabels, SignInWords } from './copy/sign-in-frames';

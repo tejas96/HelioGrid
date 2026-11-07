@@ -1,17 +1,18 @@
 import { type RefObject, useEffect, useRef } from 'react';
 import { BillingChipMark } from '../BillingHome/BillingNeeds';
+import { BillingQuiet } from '../BillingHome/BillingQuiet';
 import { Block } from '../Block';
 import { ScopeNote } from '../ScopeNote';
 import { UsageLedger } from './UsageLedger';
 import type { UsagePageProps, UsagePageView } from './UsagePage.types';
 import { UsageNeeds, UsagePlansRow, UsageRegion } from './UsageRegion';
-import { UsageStanding, UsageTablesLane } from './UsageTables';
+import { UsageStanding } from './UsageStanding';
 
 /**
  * The usage screen's body (`SCR-M12-04`). At 375 one column: the cycle line and its one chip, then
- * `Nothing used yet`, `Needs you`, the two cards, whose screen this is, and `Bigger plans`. At width
- * the tables lane and the standing column (decision 14); a state with no figure is ONE lane. The
- * events of one meter open over either (`UsageLedger`).
+ * `Nothing used yet`, `Needs you`, the two regions' tiles, whose screen this is, and `Bigger plans`.
+ * At width the tiles' lane and the standing column (decision 14); a state with no figure is ONE
+ * lane. The events of one meter open over either (`UsageLedger`).
  */
 export function UsagePage(props: UsagePageProps) {
   const { words, read } = props;
@@ -59,7 +60,7 @@ export function UsagePage(props: UsagePageProps) {
   const view = read.kind === 'ready' ? read.value : props.waiting;
   return (
     <div className="hg-usage">
-      {props.layout === 'columns' && view.tables !== null ? (
+      {props.layout === 'columns' && view.cycle !== null ? (
         <Lanes {...props} view={view} firstCard={firstCard} />
       ) : (
         <Column {...props} view={view} firstCard={firstCard} />
@@ -90,9 +91,7 @@ function Column({ view, words, acts, layout, firstCard }: PartProps) {
       {wide ? scope : null}
       {wide ? null : <UsageHead view={view} />}
       {view.teaching === null ? null : (
-        <Block title={view.teaching.title} density="expressive">
-          <span className="hg-usage-teaching">{view.teaching.body}</span>
-        </Block>
+        <BillingQuiet art="empty" title={view.teaching.title} message={view.teaching.body} />
       )}
       {view.needs === null ? null : <UsageNeeds title={words.needsYou} rows={view.needs} />}
       {regions.map((region, index) => (
@@ -118,14 +117,25 @@ function Column({ view, words, acts, layout, firstCard }: PartProps) {
   );
 }
 
-/** 1536 for the Owner (decision 14): the tables lane, and the standing column holding still. */
+/**
+ * At width for the Owner (decision 14): the regions' tiles in the lane, and the standing column
+ * holding still beside them. The extra charges stand in that column, so no region closes on them.
+ */
 function Lanes({ view, words, acts, firstCard }: PartProps) {
-  const tables = view.tables;
-  if (tables === null) return null;
+  const regions = [view.limits, view.included].filter((region) => region !== null);
   return (
     <div className="hg-usage-lanes" data-lanes="two">
       <div ref={firstCard} tabIndex={-1} className="hg-usage-lane hg-focus-target">
-        <UsageTablesLane view={view} tables={tables} words={words} acts={acts} />
+        {regions.map((region) => (
+          <UsageRegion
+            key={region.title}
+            region={region}
+            extra={null}
+            words={words}
+            plans={view.plans}
+            acts={acts}
+          />
+        ))}
       </div>
       <div className="hg-usage-side">
         <UsageStanding

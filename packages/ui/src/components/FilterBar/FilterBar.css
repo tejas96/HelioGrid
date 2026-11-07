@@ -1,5 +1,5 @@
 /* FilterBar — the list-screen filtering vocabulary: scope toggle, kind and stage chips, facet
-   chips, sort pills, the filter square. The same parts on 375 and 1440; only the arrangement
+   chips, sort pills, the filter circle. The same parts on 375 and 1440; only the arrangement
    changes.
 
    THE TOUCH TARGET AND THE VISIBLE PILL ARE TWO DIFFERENT RECTANGLES (N2 / F7-29 / F7-32).
@@ -9,9 +9,9 @@
          .hg-filter-pill   height 36 / 44 / 32        ← what you see: scope / chip / sort
 
    The gap is transparent padding belonging to the target, expressed here once rather than left
-   to twenty screens to remember. A chip is 44 — the pill IS the target — and the filter square is
-   50×50. The pill heights, the 14px insets, the 18px option glyph, the chip's 14px words and the
-   square's 20px badge are the design system's own and sit off the token scales, so no token
+   to twenty screens to remember. A chip is 44 — the pill IS the target — and the filter circle is
+   50 across. The pill heights, the 14px insets, the 18px option glyph, the chip's 14px words and the
+   circle's 20px badge are the design system's own and sit off the token scales, so no token
    carries them. Never set a scope or sort pill above the touch floor — the button would grow. */
 
 .hg-filter-target,
@@ -119,7 +119,7 @@
   color: var(--text-inverse);
 }
 
-/* The filter square: the near-black primary marker, white sliders, radius --r-field. */
+/* The filter circle: the primary fill, white sliders, round as the search pill beside it. */
 .hg-filters-button {
   position: relative;
   width: 50px;
@@ -129,7 +129,7 @@
   place-items: center;
   padding: 0;
   border: none;
-  border-radius: var(--r-field);
+  border-radius: var(--r-pill);
   background: var(--action-primary);
   color: var(--text-inverse);
   cursor: pointer;
@@ -145,12 +145,12 @@
   outline-offset: 2px;
 }
 
-/* The active count rides the square's top-right corner, ringed in what holds the square so it
-   reads as lifted off the corner on any ground. */
+/* The active count sits on the circle's top-right edge, ringed in what holds the circle so it
+   reads as lifted off it on any ground. */
 .hg-filters-badge {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: -3px;
+  right: -3px;
   box-sizing: border-box;
   min-width: 20px;
   height: 20px;

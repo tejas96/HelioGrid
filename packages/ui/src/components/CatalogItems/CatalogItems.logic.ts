@@ -164,3 +164,45 @@ export function catalogRowStatesOf(
   }
   return states;
 }
+
+/** The *All* chip's value among the kind chips: no kind is called this, so it never collides. */
+const ALL_KINDS = 'all';
+
+/**
+ * The kind chips where the panel is narrow (direction A): *All* first, with every kind's sum, then
+ * one chip per kind with its count. *All* is the one held while no kind is chosen. `counts` absent
+ * draws no counts rather than a wrong one.
+ */
+export function catalogKindChips(
+  words: CatalogItemsWords,
+  filter: CatalogFilter,
+  counts: Readonly<Record<ComponentKind, number>> | null | undefined,
+) {
+  const options = [
+    { value: ALL_KINDS, label: words.allKinds },
+    ...COMPONENT_KINDS.map((kind) => ({ value: kind, label: words.kinds[kind] })),
+  ];
+  const values = filter.kinds.length === 0 ? [ALL_KINDS] : [...filter.kinds];
+  const chipCounts =
+    counts === null || counts === undefined
+      ? undefined
+      : {
+          [ALL_KINDS]: COMPONENT_KINDS.reduce((sum, kind) => sum + counts[kind], 0),
+          ...counts,
+        };
+  return { options, values, counts: chipCounts };
+}
+
+/**
+ * The filter after a press on the kind chips: pressing *All* clears every kind; pressing a kind
+ * while *All* is held chooses that kind alone; the last kind let go leaves *All* held.
+ */
+export function catalogKindsChosen(
+  filter: CatalogFilter,
+  values: readonly string[],
+): CatalogFilter {
+  const allPressed = values.includes(ALL_KINDS) && filter.kinds.length > 0;
+  if (allPressed) return withKinds(filter, []);
+  const kinds = COMPONENT_KINDS.filter((kind) => values.includes(kind));
+  return withKinds(filter, kinds);
+}

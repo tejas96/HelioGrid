@@ -1,7 +1,7 @@
 /* EmptyState — centred empty/error state. A soft brand bloom behind a circular icon, a
    headline, an encouraging description and one primary action. Never leave a screen blank.
 
-   The bloom is --glow-brand: iridescence as atmosphere, never as information. The icon well
+   The bloom is --glow-mark: the logo's light as atmosphere, never as information. The icon well
    takes the control fill, flat — the well on the page, white in a tile — the opposite of what
    holds it (F7-15), as every round control on the page is. The 180px bloom and the 72px well are off the 4px scale on purpose — they are
    art dimensions, not layout, and the scale has no step for either. */
@@ -14,6 +14,7 @@
   padding: var(--sp-12) var(--sp-6);
   gap: var(--sp-2);
   font-family: var(--font-sans);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
 }
 
 .hg-empty-state-art {
@@ -27,7 +28,7 @@
   position: absolute;
   width: 180px;
   height: 180px;
-  background: var(--glow-brand);
+  background: var(--glow-mark);
   border-radius: var(--r-pill);
   pointer-events: none;
 }
@@ -41,22 +42,27 @@
   align-items: center;
   justify-content: center;
   background: var(--hg-control-fill);
-  box-shadow: none;
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    0 0 0 1px var(--line-soft);
   color: var(--text-tertiary);
 }
 
+/* The title in the display face, as every title is (`CLAUDE.md` §10). */
 .hg-empty-state-title {
   margin: 0;
-  font-size: var(--fs-h3);
-  line-height: var(--lh-h3);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tr-h3);
+  font-family: var(--font-display);
+  font-size: var(--fs-figure);
+  line-height: var(--lh-figure);
+  font-weight: var(--fw-regular);
+  letter-spacing: var(--tr-figure);
   color: var(--text-primary);
+  text-wrap: balance;
 }
 
 .hg-empty-state-description {
   margin: 0;
-  max-width: 320px;
+  max-width: calc(var(--form-max) * 0.75);
   font-size: var(--fs-body-sm);
   line-height: var(--lh-body-sm);
   color: var(--text-secondary);

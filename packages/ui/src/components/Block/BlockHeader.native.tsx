@@ -10,9 +10,10 @@ import type { BlockFrameProps } from './Block.types';
 const type = theme.type.roles;
 
 const styles = StyleSheet.create({
+  /* Centred: the action keeps its 44-point target, and from the top it sat below a one-line title. */
   head: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'space-between',
     gap: theme.spacing['sp-3'],
     minWidth: 0,

@@ -25,7 +25,7 @@ type SearchPillProps = Omit<
  * Borderless search input with a leading magnifier: a well (`FieldBox`) with the system focus
  * ring, never a border. Expressive is the open page's grey pill, 50 tall; functional is the dense
  * 40px box; both clear the 44px touch floor. It is the first control on every records screen:
- * leads, projects, payments, call log. With `onFilterClick` the 50×50 filter square rides beside
+ * leads, projects, payments, call log. With `onFilterClick` the 50 filter circle rides beside
  * the pill — the one way into the filter sheet on a list screen.
  */
 export function SearchField(props: WebSearchFieldProps) {
@@ -49,7 +49,6 @@ function SearchPill({
   value,
   onChange,
   placeholder,
-  density = 'expressive',
   onClear,
   clearLabel,
   disabled = false,
@@ -66,8 +65,7 @@ function SearchPill({
   return (
     <div
       className={classNames('hg-search-field', className)}
-      data-density={density}
-      {...fieldBox({ focused: focus, disabled, density })}
+      {...fieldBox({ focused: focus, disabled, density: 'expressive' })}
       style={style}
     >
       <svg

@@ -13,14 +13,17 @@ export interface HomeHeadEntry {
 }
 
 /**
- * The home's head (`SCR-SHELL-01`): today's date, the title that IS the switcher (`M13-10`, the
- * export's decision 4) and the line saying whose home this is — the first band of the content
- * region at both widths. Every word arrives as a prop.
+ * The home's head (`SCR-SHELL-01`, redesign direction A): today's date, the greeting for the hour
+ * in the display face, the home's title as the switcher (`M13-10`) with the line saying whose home
+ * this is, and the role's verb as THE action — prominent at both widths, never a small button.
+ * The page's one heading still names the home; the greeting is its welcome, not its name.
  */
 export interface HomeHeadProps {
   /** "Today · 2 Oct 2026" — today in the market's style, the words the caller's. */
   // biome-ignore lint/plugin/copy-prop-type: a date the market pack formats
   dateLine: string;
+  /** "Good morning, Arjun" — the part of the day and the person's first name. */
+  greeting: TranslatedText;
   title: TranslatedText;
   /** The title button's accessible name: the title, and that it switches. */
   switchName: string;
@@ -34,6 +37,6 @@ export interface HomeHeadProps {
   switcherWidth: number;
   /** What the switcher's coach mark points at (`M01-16`): a ref the head binds to the title. */
   titleAnchor?: CoachMarkAnchor;
-  /** The head's primary action at the row's end — the desktop's verb button. The phone has none. */
+  /** The role's verb (*Add lead*), a `prominent` button: beside the titles on a wide screen, under them on a phone. */
   action?: ReactNode;
 }

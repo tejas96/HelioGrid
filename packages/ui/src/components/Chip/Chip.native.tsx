@@ -47,10 +47,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-pill'],
   },
-  chipActive: { backgroundColor: colors['action-primary'] },
+  /* The chip in force is the ink pill, as the active nav item is. */
+  chipActive: { backgroundColor: colors.ink },
+  /* A kind with nothing in it stays, quiet: a hairline pill on no fill. */
+  chipEmpty: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors['line-soft'] },
+  rest: { borderWidth: 1, borderColor: colors['line-soft'] },
+  count: {
+    minWidth: theme.spacing['sp-5'],
+    height: theme.spacing['sp-5'],
+    marginRight: -theme.spacing['sp-1'],
+    paddingHorizontal: theme.spacing['sp-1'],
+    borderRadius: theme.radius['r-pill'],
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors['line-tile'],
+  },
+  /* On the ink the slot is an outline: no fill the phone can mix keeps the words readable there. */
+  countActive: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: colors['mark-subtle'],
+  },
+  countWords: { fontFamily: theme.type.families.mono, fontVariant: ['tabular-nums'] },
   dot: { width: DOT, height: DOT, borderRadius: theme.radius['r-pill'] },
-  target: { flexShrink: 0 },
+  /* The pill's shape on the target too: Android draws no square ripple under a round pill. */
+  target: { flexShrink: 0, borderRadius: theme.radius['r-pill'] },
 });
+
+/* The ink pill's words: the page's own colour on the ink (`on-ink` on `ink`). */
+const onInk: TextStyle = { color: colors['on-ink'] };
+
+/** The chip in force is the ink pill; a kind with nothing in it a quiet hairline; else the fill. */
+function chipFill(active: boolean, count: number | undefined, controlFill: ThemeColor): ViewStyle {
+  if (active) return styles.chipActive;
+  if (count === 0) return styles.chipEmpty;
+  return { ...styles.rest, backgroundColor: controlFill };
+}
 
 /* The DS chip weight is --fw-medium, which the type scale's body-sm/caption roles do not carry;
    it rides on the Text primitive's style slot rather than in a second text component. */
@@ -79,7 +111,7 @@ interface NativeBadgeProps extends BadgeProps {
 }
 
 /**
- * Fully-pill filter chip. Active = near-black fill.
+ * Fully-pill filter chip. Active = the ink pill; a `count` rides after the words.
  *
  * **With `onClick` it is a Pressable with a 44×44 hit box around the 28px (24px functional)
  * pill**, the extra height taken back as negative margin so no row grows. **Without `onClick` it
@@ -88,6 +120,7 @@ interface NativeBadgeProps extends BadgeProps {
 export function Chip({
   children,
   active = false,
+  count,
   onClick,
   dot = false,
   tone = 'neutral',
@@ -99,11 +132,7 @@ export function Chip({
   const pill = (
     <View
       style={[
-        pillStyle(
-          density,
-          active ? styles.chipActive : { backgroundColor: controlFill },
-          onClick !== undefined,
-        ),
+        pillStyle(density, chipFill(active, count, controlFill), onClick !== undefined),
         style,
       ]}
     >
@@ -118,11 +147,22 @@ export function Chip({
       ) : null}
       <Text
         variant={density === 'expressive' ? 'body-sm' : 'caption'}
-        color={active ? 'inverse' : 'primary'}
-        style={medium}
+        color={count === 0 && !active ? 'secondary' : 'primary'}
+        style={active ? [medium, onInk] : medium}
       >
         {children}
       </Text>
+      {count === undefined ? null : (
+        <View style={[styles.count, active ? styles.countActive : undefined]}>
+          <Text
+            variant="caption"
+            color="secondary"
+            style={active ? [styles.countWords, onInk] : styles.countWords}
+          >
+            {String(count)}
+          </Text>
+        </View>
+      )}
     </View>
   );
 

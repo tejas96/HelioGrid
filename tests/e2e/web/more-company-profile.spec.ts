@@ -32,18 +32,20 @@ test('the business profile row opens the profile in the shell; a save writes the
   await page.goto('/more');
   const rail = page.getByRole('navigation', { name: en.t(SHELL.mainNavigation) });
 
-  await page.getByRole('button', { name: WORDS.rows.company_profile }).click();
+  await page.getByRole('main').getByRole('button', { name: WORDS.rows.company_profile }).click();
 
   await expect(page).toHaveURL(/\/more\/company-profile$/);
   await expect(
     page.getByRole('heading', { level: 1, name: WORDS.rows.company_profile }),
   ).toBeVisible();
   await expect(page.getByText(en.t(COMPANY_PROFILE.settingsLede))).toBeVisible();
-  await expect(rail.getByRole('button', { name: destinationLabel(en.t, 'more') })).toHaveAttribute(
-    'aria-current',
-    'page',
-  );
-  // At 1536 the settings list stands beside the page, the page in view marked; at 375 it does not.
+  // The phone keeps More in view; at the desktop width the sidebar's *Settings*, and the settings
+  // list beside the page marks the page in view.
+  const inView =
+    testInfo.project.name === 'desktop'
+      ? rail.getByRole('button', { name: WORDS.title, exact: true })
+      : rail.getByRole('button', { name: destinationLabel(en.t, 'more') });
+  await expect(inView).toHaveAttribute('aria-current', 'page');
   const side = page.getByRole('navigation', { name: WORDS.title });
   if (testInfo.project.name === 'desktop') {
     await expect(side.getByRole('button', { name: WORDS.rows.company_profile })).toHaveAttribute(
@@ -92,8 +94,14 @@ test('the business profile row opens the profile in the shell; a save writes the
     page.getByRole('textbox', { name: en.t(SETUP_WHAT_YOU_SELL.sizeLabel) }),
   ).toHaveValue('8');
 
-  // At the desktop width More opens the first settings page beside the side list (owner ruling).
-  await rail.getByRole('button', { name: destinationLabel(en.t, 'more') }).click();
+  // More on the phone opens the list; Settings at the sidebar's foot opens the first settings page
+  // beside the side list (owner ruling).
+  await rail
+    .getByRole('button', {
+      name: testInfo.project.name === 'desktop' ? WORDS.title : destinationLabel(en.t, 'more'),
+      exact: true,
+    })
+    .click();
   await expect(page).toHaveURL(
     testInfo.project.name === 'desktop' ? /\/more\/profile$/ : /\/more$/,
   );

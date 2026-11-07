@@ -1,10 +1,67 @@
 /* The element base: the page, its glow and the global focus ring. Every value is a token. */
+/* Glass: what a tile, a sheet or a bar is made of — a frosted part of the page, mixed from the card
+   colour so it follows light, dark and field mode. `--glass-edge` is the 1 px light on its top
+   edge; `--grid-line` the solar grid's cell lines; `--thumb` the raised part of a switch (a segment
+   in view), which in dark must be LIGHTER than its recessed track or it cannot be seen. Field mode (sunlight) turns the frost and the
+   grid off: every edge there is a line, never a shade. */
+:root {
+  /* biome-ignore lint/plugin/raw-white-css: glass — frosted from the card colour, as a tile is */
+  --glass: color-mix(in srgb, var(--surface) 74%, transparent);
+  /* biome-ignore lint/plugin/raw-white-css: glass — frosted from the card colour, as a tile is */
+  --glass-strong: color-mix(in srgb, var(--surface) 88%, transparent);
+  /* biome-ignore lint/plugin/raw-white-css: glass — frosted from the card colour, as a tile is */
+  --glass-edge: color-mix(in srgb, var(--surface) 96%, transparent);
+  --glass-blur: saturate(1.5) blur(18px);
+  --grid-line: color-mix(in srgb, var(--accent) 12%, transparent);
+  /* biome-ignore lint/plugin/raw-white-css: control — a switch's raised part is the card colour in light */
+  --thumb: var(--surface);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* biome-ignore lint/plugin/raw-white-css: glass — frosted from the card colour, as a tile is */
+    --glass: color-mix(in srgb, var(--surface) 72%, transparent);
+    /* biome-ignore lint/plugin/raw-white-css: glass — frosted from the card colour, as a tile is */
+    --glass-strong: color-mix(in srgb, var(--surface) 90%, transparent);
+    --glass-edge: color-mix(in srgb, var(--ink) 9%, transparent);
+    --grid-line: color-mix(in srgb, var(--accent) 10%, transparent);
+    --thumb: var(--line-strong);
+  }
+}
+:root[data-theme="dark"] {
+  /* biome-ignore lint/plugin/raw-white-css: glass — frosted from the card colour, as a tile is */
+  --glass: color-mix(in srgb, var(--surface) 72%, transparent);
+  /* biome-ignore lint/plugin/raw-white-css: glass — frosted from the card colour, as a tile is */
+  --glass-strong: color-mix(in srgb, var(--surface) 90%, transparent);
+  --glass-edge: color-mix(in srgb, var(--ink) 9%, transparent);
+  --grid-line: color-mix(in srgb, var(--accent) 10%, transparent);
+  --thumb: var(--line-strong);
+}
+:root[data-field-mode="on"],
+[data-field-mode="on"] {
+  /* biome-ignore lint/plugin/raw-white-css: glass — frosted from the card colour, as a tile is */
+  --glass: var(--surface);
+  /* biome-ignore lint/plugin/raw-white-css: glass — frosted from the card colour, as a tile is */
+  --glass-strong: var(--surface);
+  --glass-edge: transparent;
+  --glass-blur: none;
+  --grid-line: transparent;
+  /* biome-ignore lint/plugin/raw-white-css: control — in sunlight a switch's raised part is the card colour */
+  --thumb: var(--surface);
+}
+/* The solar grid below leans back in 3D, so its near edge grows wider than a phone: the page clips
+   it sideways, or a phone browser widens its layout and a fixed bottom pill falls below the fold. */
+html,
+body {
+  overflow-x: clip;
+}
 html {
   background-color: var(--canvas);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 body {
+  position: relative;
+  isolation: isolate;
   margin: 0;
   min-height: 100dvh;
   font-family: var(--font-sans);
@@ -21,6 +78,36 @@ body {
   transition:
     background-color var(--dur-standard) var(--ease-standard),
     color var(--dur-standard) var(--ease-standard);
+}
+/* The solar grid under the page's glow: PV-cell lines laid back in perspective along the top of
+   every page, fading out before the content's first card. Atmosphere only — it never moves here
+   (`AmbientSky` owns the moving light on a door) and it carries nothing. */
+body::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto;
+  /* Never taller than the page: on a short window a taller grid would make the page scroll, and a
+     menu opened at its foot would scroll it away. */
+  height: min(420px, 100%);
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--grid-line) 55%, transparent) 1px,
+      transparent 1px
+    );
+  background-size:
+    64px 40px,
+    64px 40px,
+    16px 40px;
+  background-position: center top;
+  transform: perspective(520px) rotateX(52deg);
+  transform-origin: 50% 0;
+  -webkit-mask-image: radial-gradient(70% 90% at 70% 0%, var(--text-primary) 0%, transparent 72%);
+  mask-image: radial-gradient(70% 90% at 70% 0%, var(--text-primary) 0%, transparent 72%);
 }
 a {
   color: var(--link);

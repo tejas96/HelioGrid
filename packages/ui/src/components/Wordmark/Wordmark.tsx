@@ -70,11 +70,11 @@ export function LogoTile({ size = 40, radius, className, style }: WebLogoTilePro
   );
 }
 
+/** The brand where a door or the shell names the product: the wordmark alone, until a new mark is drawn. */
 export function ProductMark({ size = 32 }: ProductMarkProps) {
   return (
     <span className="hg-product-mark" data-size={size}>
-      <LogoTile size={size} />
-      <Wordmark size={size === 32 ? 17 : 20} />
+      <Wordmark size={size === 32 ? 21 : 25} />
     </span>
   );
 }

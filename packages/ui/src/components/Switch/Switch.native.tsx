@@ -76,7 +76,7 @@ export function Switch({
         style={[
           styles.track,
           { backgroundColor: disabled ? controlFillDisabled : controlFill },
-          on ? styles.trackOn : undefined,
+          on ? styles.trackOn : styles.trackOff,
           hasError ? styles.trackError : undefined,
         ]}
       >
@@ -191,6 +191,12 @@ const styles = StyleSheet.create({
   },
   trackOn: {
     backgroundColor: colors.accent,
+  },
+  /* Off, the control fill on a ground of nearly its own lightness (a white sheet or tile) all but
+     vanished: a quiet edge keeps it a control, as on the web. */
+  trackOff: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors['line-strong'],
   },
   trackError: {
     borderWidth: 1.5,

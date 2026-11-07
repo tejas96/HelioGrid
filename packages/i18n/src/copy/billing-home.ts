@@ -63,6 +63,15 @@ export const BILLING_HOME = {
   trial: /*i18n*/ { id: 'Trial' },
   daysLeft: /*i18n*/ { id: 'Days left' },
   daysOf: /*i18n*/ { id: '{left} of {total}' },
+  ringDaysLeft: /*i18n*/ { id: 'days left' },
+  /** The page's summary under its title: the plan, its days and its end, or its renewal. */
+  summaryTrial: /*i18n*/ {
+    id: '{plan} · {left} {days, plural, one {day left} other {days left}} · ends {date}',
+  },
+  summaryRenews: /*i18n*/ { id: '{plan} · renews {date}' },
+  ringToRenewal: /*i18n*/ { id: 'to renewal' },
+  ringSpokenLeft: /*i18n*/ { id: '{left} of {total} days left' },
+  ringSpokenRenewal: /*i18n*/ { id: '{left} days to renewal' },
   ends: /*i18n*/ { id: 'Ends' },
   ended: /*i18n*/ { id: 'Ended' },
   haltedSince: /*i18n*/ { id: 'Halted since' },
@@ -113,6 +122,8 @@ export const BILLING_HOME = {
   withTax: /*i18n*/ { id: '{source} · {rate}% {tax}' },
   yourContract: /*i18n*/ { id: 'Your contract' },
   gb: /*i18n*/ { id: 'GB' },
+  /** Voice minutes' unit after a figure — the usage page's own word. */
+  minutes: /*i18n*/ { id: 'min' },
   colDate: /*i18n*/ { id: 'Date' },
   colFor: /*i18n*/ { id: 'For' },
   colState: /*i18n*/ { id: 'State' },
@@ -219,6 +230,12 @@ export function billingViewWords(t: T) {
     forPlan: (tier: Tier, cycle: BillingCycle) =>
       t(BILLING_HOME.forPlan, { plan: tierWord(tier), cycle: cycleWord(cycle) }),
     daysOf: (left: string, total: string) => t(BILLING_HOME.daysOf, { left, total }),
+    summaryTrial: (plan: string, left: string, days: number, date: string) =>
+      t(BILLING_HOME.summaryTrial, { plan, left, days, date }),
+    summaryRenews: (plan: string, date: string) => t(BILLING_HOME.summaryRenews, { plan, date }),
+    ringSpokenLeft: (left: string, total: string) =>
+      t(BILLING_HOME.ringSpokenLeft, { left, total }),
+    ringSpokenRenewal: (left: string) => t(BILLING_HOME.ringSpokenRenewal, { left }),
     /** `₹3,999 / mo` — the price is the slot. */
     perCycle: (cycle: BillingCycle, tax: string | null) =>
       tax === null

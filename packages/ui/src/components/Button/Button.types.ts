@@ -12,7 +12,11 @@ export interface ButtonFigures {
 /** primary = near-black (default, the identity marker); never make it coloured. */
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'destructive';
 
-export type ButtonSize = 'lg' | 'md' | 'sm';
+/**
+ * `prominent` is a screen's one main verb (Home's *Add lead*): the largest pill, its glow deepest,
+ * read before anything else on the page. At most one per screen, and only on `primary`.
+ */
+export type ButtonSize = 'prominent' | 'lg' | 'md' | 'sm';
 
 export type ButtonTone = 'danger';
 

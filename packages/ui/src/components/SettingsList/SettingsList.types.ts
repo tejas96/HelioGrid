@@ -9,15 +9,22 @@ export interface SettingsListPerson {
 }
 
 /**
- * The settings list behind `More` (`SCR-SHELL-01`, *More: the settings list*): the page's title;
- * the person's tile — the avatar in a brand ring over the bloom, the name, and their own settings
- * row, one control; then each other group as an overline heading on the page over ONE grey tile
- * holding its rows, each row an icon circle, the name and a chevron, nothing else (`M01-29`).
- * Functional density (`F7-17`). Which rows a person sees is domain's (`settingsRowsFor`, as
+ * The settings list behind `More` (`SCR-SHELL-01`, *More: the settings list*): the page's large
+ * title and its line; the person's hero tile — the avatar in a brand ring over the bloom, the name,
+ * and their own settings row, one control; then each other group as an overline over ONE glass tile
+ * holding its rows, each row an icon chip, the name with what it is for, and a chevron. One column on
+ * a phone; from a wide container the groups stand two by two under the person's tile. Which rows a person sees is domain's (`settingsRowsFor`, as
  * `SettingsListView`); every word is i18n's; this draws, one column in page order.
  */
 export interface SettingsListProps {
   title: TranslatedText;
+  /** The line under the large title: what the page holds. */
+  summary?: TranslatedText;
+  /**
+   * What each row is for, under its name (`settingsWords(t).hints`), so a first-time owner knows
+   * where to go without opening each row. Absent, a row shows its name alone.
+   */
+  hints?: Readonly<Record<SettingsRow, TranslatedText>>;
   person: SettingsListPerson;
   groups: readonly SettingsListGroup<TranslatedText>[];
   /** A row pressed: the app routes to its screen. */

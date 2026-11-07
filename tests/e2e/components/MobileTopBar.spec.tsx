@@ -4,9 +4,10 @@ import { expect, test } from '@playwright/experimental-ct-react';
 import { settledBox } from '../support/layout';
 import { resolvedColour, resolvedLength } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
+import { ScrollingTopBar } from './MobileTopBar.story';
 
 /**
- * The phone header (`MS12-19`, the design system's open-page `MobileTopBar`): the product tile,
+ * The phone header (`MS12-19`, the design system's open-page `MobileTopBar`): the wordmark over
  * the company's name as words — no chip, it opens nothing (`F7-15`) — then the round search and
  * bell in the card colour a control takes on the page (`primitives/Ground`), and the avatar. A page opened from a list shows its way back and its title instead.
  */
@@ -14,7 +15,7 @@ const en = await createTranslator('en');
 const words = { searchLabel: en.t(SHELL.search), notificationsLabel: en.t(SHELL.notifications) };
 const LONG_NAME = 'Suryodaya Solar and Rooftop Energy Systems Private Limited Pune';
 
-test('the bar is the tile, then the company name as bold words on one line, cut by an ellipsis', async ({
+test('the bar is the wordmark, the company name a quiet line under it, cut by an ellipsis', async ({
   mount,
   page,
 }) => {
@@ -36,8 +37,8 @@ test('the bar is the tile, then the company name as bold words on one line, cut 
   const side = `${await resolvedLength(page, '--screen-pad-mobile')}px`;
   await expect(bar).toHaveCSS('padding-left', side);
   await expect(bar).toHaveCSS('padding-right', side);
-  await expect(name).toHaveCSS('font-size', `${await resolvedLength(page, '--fs-body')}px`);
-  await expect(name).toHaveCSS('font-weight', '700');
+  await expect(name).toHaveCSS('font-size', `${await resolvedLength(page, '--fs-caption')}px`);
+  await expect(name).toHaveCSS('color', await resolvedColour(page, '--text-secondary'));
   await expect(name).toHaveCSS('white-space', 'nowrap');
   await expect(name).toHaveCSS('text-overflow', 'ellipsis');
   await expect(name).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
@@ -147,30 +148,34 @@ test('a page opened from a list shows its way back and its title alone, the titl
   expect(gap - (button.x + button.width)).toBe(await resolvedLength(page, '--sp-3'));
 });
 
-test('a bar with content scrolled under it lifts on --e2; at the top it has no shadow', async ({
+test('the bar is clear over the page at rest, and its frosted band fades in by the distance scrolled', async ({
   mount,
   page,
 }) => {
-  const resting = await mount(
-    <div>
-      <MobileTopBar {...words} title={settingsRowName(en.t, 'team')} />
-    </div>,
-  );
-  await expect(resting.getByRole('banner')).toHaveCSS('box-shadow', 'none');
-  await resting.unmount();
+  const screen = await mount(<ScrollingTopBar />);
+  const bar = screen.getByRole('banner');
+  const scroller = screen.getByTestId('page');
+  const band = () => bar.evaluate((node) => Number(getComputedStyle(node, '::before').opacity));
+  const frost = await resolvedLength(page, '--topbar-h-mobile');
+  await expect(bar).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  expect(await band()).toBe(0);
+  // Halfway through the bar's own height the band is halfway in — never all at once.
+  await scroller.evaluate((node, to) => node.scrollTo(0, to), frost / 2);
+  await expect.poll(band).toBeCloseTo(0.5, 1);
+  await scroller.evaluate((node, to) => node.scrollTo(0, to), frost * 3);
+  await expect.poll(band).toBe(1);
+});
+
+test('with no frame telling its scroll, the scrolled flag brings the band in', async ({
+  mount,
+}) => {
   const lifted = await mount(
     <div>
       <MobileTopBar {...words} title={settingsRowName(en.t, 'team')} scrolled />
     </div>,
   );
-  const shadow = await page.evaluate(() => {
-    const probe = document.createElement('div');
-    probe.style.boxShadow = 'var(--e2)';
-    document.body.append(probe);
-    const value = getComputedStyle(probe).boxShadow;
-    probe.remove();
-    return value;
-  });
-  expect(shadow).not.toBe('none');
-  await expect(lifted.getByRole('banner')).toHaveCSS('box-shadow', shadow);
+  const bar = lifted.getByRole('banner');
+  await expect
+    .poll(() => bar.evaluate((node) => Number(getComputedStyle(node, '::before').opacity)))
+    .toBe(1);
 });

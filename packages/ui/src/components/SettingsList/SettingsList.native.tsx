@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useId } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -10,12 +11,13 @@ import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { Block } from '../Block/Block.native';
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
+import { LargeTitle } from '../LargeTitle/LargeTitle.native';
 import { personRow, SETTINGS_ROW_GLYPH } from './SettingsList.logic';
 import type { SettingsListPerson, SettingsListProps } from './SettingsList.types';
 import { SettingsSideList } from './SettingsSideList.native';
 
-/** The person's avatar diameter in their tile, and the ring's 2px around it. */
-const AVATAR = 56;
+/** The person's avatar diameter in their hero tile, and the ring's 3px around it. */
+const AVATAR = 64;
 const RING = 3;
 /** The bloom in the tile's corner — atmosphere, clipped by the tile; wider on the phone, where the
  *  SVG gradient's reach reads smaller than the web's radial-gradient at the same box. */
@@ -89,9 +91,7 @@ function PersonTile({
           <Avatar name={person.name} src={person.picture} size={AVATAR} />
         </BrandRing>
         <View style={styles.words}>
-          <Text variant="h3" bold>
-            {person.name}
-          </Text>
+          <Text variant="h1">{person.name}</Text>
           <Text variant="body" color="secondary">
             {rowName}
           </Text>
@@ -112,6 +112,8 @@ function PersonTile({
  */
 export function SettingsList({
   title,
+  summary,
+  hints,
   person,
   groups,
   onOpen,
@@ -123,10 +125,7 @@ export function SettingsList({
   }
   return (
     <View style={styles.list}>
-      {/* The primitive has no role prop; the heading's role sits on the node around it. */}
-      <View accessibilityRole="header">
-        <Text variant="display">{title}</Text>
-      </View>
+      <LargeTitle title={title} summary={summary} />
       {groups.map((group) => {
         const own = personRow(group);
         if (own !== null) {
@@ -143,13 +142,21 @@ export function SettingsList({
           <Block key={group.key} overline={group.name} density="functional" style={styles.group}>
             <View style={[tileSurface, styles.tile]}>
               <GroundProvider ground="tile">
-                {group.rows.map((row) => (
+                {group.rows.map((row, index) => (
                   <Pressable key={row.key} onPress={() => onOpen(row.key)} style={styles.row}>
-                    <TileCircle raised={false}>
+                    {index === 0 ? null : <View style={styles.rule} />}
+                    <View style={styles.chip}>
                       <ShellGlyph name={SETTINGS_ROW_GLYPH[row.key]} size="md" tone="accent" />
-                    </TileCircle>
+                    </View>
                     <View style={styles.name}>
-                      <Text variant="body">{row.name}</Text>
+                      <Text variant="body" bold>
+                        {row.name}
+                      </Text>
+                      {hints === undefined ? null : (
+                        <Text variant="body-sm" color="secondary">
+                          {hints[row.key]}
+                        </Text>
+                      )}
                     </View>
                     <ShellGlyph name="chevron-right" size="md" />
                   </Pressable>
@@ -171,9 +178,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     gap: theme.spacing['sp-4'],
-    minHeight: 96,
-    padding: theme.layout['tile-pad'],
-    borderRadius: theme.radius['r-tile'],
+    minHeight: theme.spacing['sp-24'] + theme.spacing['sp-4'],
+    padding: theme.spacing['sp-5'],
+    borderRadius: theme.radius['r-card-expressive'],
     overflow: 'hidden',
   },
   /* The bloom's box hangs off the tile's top-right corner, strongest behind the chevron. */
@@ -203,9 +210,8 @@ const styles = StyleSheet.create({
   raised: { ...theme.elevation.e2 },
   flat: { ...theme.elevation.e1 },
   icon: {},
-  /* A group's tile: its rows inset by the record's 8, no rule between them. */
+  /* A group's tile: its rows inset by the record's 8, a hairline between them. */
   tile: {
-    gap: theme.spacing['sp-0-5'],
     padding: theme.spacing['sp-2'],
     borderRadius: theme.radius['r-tile'],
   },
@@ -214,10 +220,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     gap: theme.spacing['sp-3'],
-    minHeight: 56,
+    minHeight: 64,
+    paddingVertical: theme.spacing['sp-2'],
     paddingLeft: theme.spacing['sp-2'],
     paddingRight: theme.spacing['sp-3'],
-    borderRadius: theme.radius['rf-md'],
+    borderRadius: theme.radius['rf-lg'],
   },
-  name: { flex: 1, minWidth: 0 },
+  /* The hairline between two rows starts at the name, under the icon chip's column. */
+  rule: {
+    position: 'absolute',
+    top: 0,
+    left: theme.spacing['sp-2'] + 40 + theme.spacing['sp-3'],
+    right: theme.spacing['sp-3'],
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.hairline,
+  },
+  /* A row's icon chip: a soft accent pane — the row's mark, never a control. */
+  chip: {
+    width: 40,
+    height: 40,
+    borderRadius: theme.radius['r-sm'],
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors['accent-subtle'],
+    ...theme.elevation.e1,
+  },
+  name: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
 });

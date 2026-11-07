@@ -3,9 +3,8 @@
 
    The ghost variant reads --control-edge rather than hardcoding `none`: an inline none beats field
    mode's blanket rule, which would leave the lowest-contrast control in the system without an edge
-   in sunlight. --control-edge is `none` in the base scope, and stays so: a boxed control is made
-   findable by its fill — the opposite of what holds it (F7-15) — never by outlining it, and a
-   text button is not one. */
+   in sunlight. --control-edge is `none` in the base scope, and stays so. A surface bead is found
+   by its fill — the opposite of what holds it (F7-15) — with a glass light and a hairline. */
 
 .hg-icon-button {
   min-width: 44px;
@@ -28,10 +27,14 @@
 }
 
 .hg-icon-button[data-variant="surface"] {
-  /* The opposite of what holds it (F7-15): the well on the page or a sheet, white in a tile. */
+  /* The opposite of what holds it (F7-15): the well on the page or a sheet, white in a tile — with
+     a light on its top edge and a hairline, so a round control reads as a glass bead, not a dot. */
   background: var(--hg-control-fill);
   color: var(--text-primary);
-  box-shadow: none;
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    0 0 0 1px var(--line-soft),
+    var(--e1);
 }
 
 .hg-icon-button[data-variant="dark"] {
@@ -47,8 +50,11 @@
 }
 
 .hg-icon-button[data-variant="surface"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  /* Rest is flat, so hover lifts it one step. */
-  box-shadow: var(--e2);
+  /* Hover lifts it a step. */
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    0 0 0 1px var(--line-strong),
+    var(--e2);
 }
 
 .hg-icon-button[data-variant="ghost"]:hover:not(:disabled):not([aria-disabled="true"]) {
@@ -56,7 +62,7 @@
 }
 
 .hg-icon-button:active:not(:disabled):not([aria-disabled="true"]) {
-  transform: scale(0.94);
+  transform: scale(var(--press-scale));
 }
 
 /* SUNK below the fill, as a disabled field is: --canvas-sunken on the page and in a tile alike. */

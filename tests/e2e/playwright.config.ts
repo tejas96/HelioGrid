@@ -60,7 +60,11 @@ export default defineConfig({
   retries: 0,
   forbidOnly: true,
   reporter: [['list'], ['html', { open: 'never' }]],
-  use: { baseURL: WEB, trace: 'retain-on-failure' },
+  /* Reduced motion: the door's sky and every page's glow loop on (`ui-adherence.md`, *Motion*), and a
+     headless browser draws them in software, a whole core each, so seven workers starved the api
+     into ten-second answers. A flow asserts words, roles and states, never motion (frames are
+     measured on their own), as the phone flows run with the emulator's animations off. */
+  use: { baseURL: WEB, trace: 'retain-on-failure', contextOptions: { reducedMotion: 'reduce' } },
   projects: [
     { name: 'phone', use: { ...devices['Desktop Chrome'], viewport: { width: 375, height: 812 } } },
     {

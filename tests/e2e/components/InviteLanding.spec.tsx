@@ -186,14 +186,18 @@ test.describe('the code at 375', () => {
     await expect(root.getByRole('button', { name: words(INVITE_LANDING.join) })).toBeDisabled();
   });
 
-  test('the acts follow the content with no gap, and the code takes no focus on arrival', async ({
+  test('the acts follow the content with no gap at the end of the column, and the code takes no focus on arrival', async ({
     mount,
     page,
   }) => {
     const root = await mount(<InviteLandingAt reader="en" events={FRAMES.normal} />);
+    /* Under the door's sky the column outgrows 812, so the acts hold at the window's foot while it
+       scrolls (brief ruling 14); at its end they follow the content, never a gap between. */
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     const resend = await settledBox(root.locator('.hg-invite-landing-resend'));
     const join = await settledBox(root.getByRole('button', { name: words(INVITE_LANDING.join) }));
-    expect((join?.y ?? 0) - ((resend?.y ?? 0) + (resend?.height ?? 0))).toBe(
+    /* Rounded: the sky's height is a share of the window, so a scrolled box sits off the pixel. */
+    expect(Math.round((join?.y ?? 0) - ((resend?.y ?? 0) + (resend?.height ?? 0)))).toBe(
       await resolvedLength(page, '--sp-4'),
     );
     await expect(code(root).locator('input').first()).not.toBeFocused();

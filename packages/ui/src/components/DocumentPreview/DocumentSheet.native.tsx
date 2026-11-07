@@ -11,6 +11,8 @@ import { Text } from '../../primitives/Text/Text.native';
 
 const sans = theme.type.families.sans;
 const mono = theme.type.families.mono;
+/* Titles on paper take the display face, as the web sheet's do. */
+const display = theme.type.families.display;
 const ink = colors['text-primary'];
 const muted = colors['text-secondary'];
 const faint = colors['text-tertiary'];
@@ -29,7 +31,8 @@ export const docStyles = StyleSheet.create({
     flexDirection: 'column',
   },
   band: {
-    paddingVertical: 20,
+    paddingTop: 24,
+    paddingBottom: 22,
     paddingHorizontal: 28,
     flexDirection: 'row',
     alignItems: 'center',
@@ -37,7 +40,7 @@ export const docStyles = StyleSheet.create({
     gap: 16,
   },
   bandWords: { flexShrink: 1, minWidth: 0 },
-  company: { fontFamily: sans, fontWeight: '700', fontSize: 17, letterSpacing: -0.34 },
+  company: { fontFamily: display, fontWeight: '400', fontSize: 20, letterSpacing: -0.2 },
   tagline: { fontFamily: sans, fontWeight: '500', fontSize: 10, marginTop: 2 },
   address: { fontFamily: sans, fontSize: 10, lineHeight: 14, marginTop: 3 },
   lines: { fontFamily: sans, fontSize: 9, lineHeight: 13, marginTop: 2 },
@@ -78,16 +81,16 @@ export const docStyles = StyleSheet.create({
   },
   overlineSpaced: { marginTop: 12 },
   customerName: {
-    fontFamily: sans,
-    fontWeight: '700',
-    fontSize: 14,
-    letterSpacing: -0.14,
-    marginTop: 4,
+    fontFamily: display,
+    fontWeight: '400',
+    fontSize: 18,
+    letterSpacing: -0.18,
+    marginTop: 5,
     color: ink,
   },
   customerMeta: { fontFamily: sans, fontSize: 10, color: muted, marginTop: 2 },
   metaBlock: { alignItems: 'flex-end' },
-  docTitle: { fontFamily: sans, fontWeight: '700', fontSize: 15, letterSpacing: -0.3 },
+  docTitle: { fontFamily: display, fontWeight: '400', fontSize: 17, letterSpacing: -0.17 },
   docNumber: { fontFamily: mono, fontSize: 10, color: muted, marginTop: 4 },
   docDate: { fontFamily: sans, fontSize: 10, color: faint, marginTop: 2 },
   body: { paddingTop: 20, paddingHorizontal: 28, flexDirection: 'column', gap: 18, flexGrow: 1 },

@@ -12,6 +12,7 @@ import type {
   BillingInvoicesView,
 } from './BillingHome.types';
 import { BillingStatusChip } from './BillingNeeds.native';
+import { BillingQuiet } from './BillingQuiet.native';
 
 /**
  * One invoice at 375: the date and what it was for, its state as a chip; the PDF act, then the
@@ -77,18 +78,14 @@ export function BillingInvoices({
 }) {
   if (invoices.empty !== null) {
     return (
-      <Block
-        density="expressive"
-        title={words.invoices}
-        read={{ kind: 'empty' }}
-        loadingLabel={words.loading}
-        emptyTitle={invoices.empty.title}
-        emptyMessage={invoices.empty.message}
-      />
+      <Block style={styles.flushRegion} density="expressive" title={words.invoices}>
+        <BillingQuiet art="inbox" title={invoices.empty.title} message={invoices.empty.message} />
+      </Block>
     );
   }
   return (
     <Block
+      style={styles.flushRegion}
       density="expressive"
       title={words.invoices}
       {...(invoices.source === null
@@ -120,6 +117,8 @@ export function BillingInvoices({
 }
 
 const styles = StyleSheet.create({
+  /* A region under the hero stands on the page's own edges, as the web's does. */
+  flushRegion: { paddingHorizontal: 0, paddingBottom: 0, paddingTop: theme.spacing['sp-2'] },
   rows: { gap: theme.layout['tile-gap'] },
   /** A row inside a region sits on the region's own edges, so its amount ends on the right edge. */
   flush: { paddingHorizontal: 0 },

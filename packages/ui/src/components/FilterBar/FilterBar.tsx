@@ -90,8 +90,8 @@ export function SortPills({
 }
 
 /**
- * The filter square that opens the filter body — `FilterPanel`, **at every width**, beside the
- * search pill (`SearchField`'s `onFilterClick` draws it). 50×50, the near-black primary fill
+ * The filter circle that opens the filter body — `FilterPanel`, **at every width**, beside the
+ * search pill (`SearchField`'s `onFilterClick` draws it). 50 across, the primary fill
  * (pressed darker), radius `--r-field`, white sliders; the active count rides its top-right
  * corner. Not a phone affordance: on desktop the same body opens as a side panel, because a
  * six-dimension set has no room in a toolbar row at either size (`F7-31`).

@@ -13,6 +13,11 @@ export async function expectNoSidewaysScroll(page: Page): Promise<void> {
  * that does holds a clipped line.
  */
 export async function expectNothingClipped(page: Page, selector: string): Promise<void> {
+  /* A line is clipped or not only in its own face: measured while a web font still loads, the
+     fallback's taller line box reads as a clip that the real face never draws. */
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+  });
   const clipped = await page.evaluate(
     (boxes) =>
       [...document.querySelectorAll(boxes)].filter(
@@ -106,4 +111,32 @@ export async function expectSharedEdge(locators: readonly Locator[], edge: Edge)
       `${edge} edge of element ${index} is ${value}px, element 0's is ${reference}px`,
     ).toBeLessThanOrEqual(SHARED_EDGE_TOLERANCE_PX);
   }
+}
+
+/**
+ * A door under the desktop width (`DoorFrame`): the sky stands at the window's top, the head (the
+ * wordmark and the trailing control) rides on it clear of the column, and the column is a glass
+ * sheet that rides up `--r-sheet-top` over the sky's foot. Answers where the sheet's content opens
+ * (inside its edge and its top padding): a step's own spacing is measured from there, as it once
+ * was from the head.
+ */
+export async function doorSheetOpening(page: Page): Promise<number> {
+  const sky = await settledBox(page.locator('.hg-door-sky'));
+  const sheet = await settledBox(page.locator('.hg-door-page'));
+  const { overlap, inset } = await page.evaluate(() => {
+    const probe = document.createElement('div');
+    probe.style.height = 'var(--r-sheet-top)';
+    document.body.append(probe);
+    const radius = probe.getBoundingClientRect().height;
+    probe.remove();
+    const style = getComputedStyle(document.querySelector('.hg-door-page') as Element);
+    return {
+      overlap: radius,
+      inset: Number.parseFloat(style.borderTopWidth) + Number.parseFloat(style.paddingTop),
+    };
+  });
+  expect(sky.y).toBe(0);
+  expect(Math.abs(sheet.y - (sky.y + sky.height - overlap))).toBeLessThanOrEqual(1);
+  expect(await bottomOf(page.locator('.hg-door-header'))).toBeLessThanOrEqual(sheet.y);
+  return sheet.y + inset;
 }

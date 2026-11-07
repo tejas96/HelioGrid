@@ -1,6 +1,6 @@
 /* FormActionBar — the act bar a settings form raises with a change (SCR-M01-18 s18-m, s18-r).
-   One order at both placements: the consequence, then Save, then Discard. No motion: the bar shows
-   and hides at once. */
+   One order at both placements: the consequence, then Save, then Discard. On the phone it is a pane
+   of glass that rises into place once when a change is held; it leaves at once. */
 
 .hg-form-action-bar {
   display: flex;
@@ -18,7 +18,19 @@
   z-index: 1;
   padding: var(--sp-4) var(--screen-pad-mobile);
   padding-bottom: calc(var(--sp-4) + env(safe-area-inset-bottom));
+  border-top: 1px solid color-mix(in srgb, var(--hg-ground) 70%, transparent);
+  border-radius: var(--r-sheet-top) var(--r-sheet-top) 0 0;
+  background: color-mix(in srgb, var(--hg-ground) 80%, transparent);
+  -webkit-backdrop-filter: saturate(1.5) blur(20px);
+  backdrop-filter: saturate(1.5) blur(20px);
   box-shadow: var(--e4);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+}
+
+[data-field-mode="on"] .hg-form-action-bar[data-placement="sticky"] {
+  background: var(--hg-ground);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 /* At width: the foot of the settings editor card (s18-r) — its hairline above, its corners below.

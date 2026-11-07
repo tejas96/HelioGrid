@@ -1,0 +1,78 @@
+/* ProgressRing — a figure in a ring that shows its share of a whole. The arc is a conic sweep in
+   the ocean accent and the logo's teal, masked to a 12px ring (`--sp-3`) over a soft track; it
+   turns in once from a quarter back, transform and opacity only. */
+
+.hg-ring {
+  --hg-ring-side: calc(var(--sp-24) + var(--sp-8));
+  --hg-ring-stroke: var(--sp-3);
+  position: relative;
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--hg-ring-side);
+  height: var(--hg-ring-side);
+}
+
+.hg-ring[data-size="lg"] {
+  --hg-ring-side: calc(var(--sp-24) + var(--sp-16));
+}
+
+.hg-ring-track,
+.hg-ring-arc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - var(--hg-ring-stroke)),
+    var(--ink) calc(100% - var(--hg-ring-stroke) + 1px)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - var(--hg-ring-stroke)),
+    var(--ink) calc(100% - var(--hg-ring-stroke) + 1px)
+  );
+}
+
+.hg-ring-track {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.hg-ring-arc {
+  background: conic-gradient(
+    var(--brand-teal),
+    var(--accent) calc(var(--hg-ring-share) * 1turn),
+    transparent 0
+  );
+  filter: drop-shadow(0 0 var(--sp-2) color-mix(in srgb, var(--accent) 35%, transparent));
+  animation: hg-ring-in var(--dur-data) var(--ease-enter) backwards;
+}
+
+.hg-ring[data-on-panel="true"] .hg-ring-track {
+  background: color-mix(in srgb, var(--on-panel) 14%, transparent);
+}
+
+.hg-ring-centre {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-0-5);
+  text-align: center;
+  color: var(--on-panel);
+}
+
+.hg-ring-caption {
+  max-width: calc(var(--hg-ring-side) - 2 * var(--hg-ring-stroke) - var(--sp-4));
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--on-panel-muted);
+  text-wrap: balance;
+}
+
+@keyframes hg-ring-in {
+  from {
+    opacity: 0;
+    transform: rotate(-0.25turn);
+  }
+}

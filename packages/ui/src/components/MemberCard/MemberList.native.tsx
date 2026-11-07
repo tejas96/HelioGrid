@@ -1,19 +1,15 @@
-import { theme } from '@heliogrid/theme';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 /* Cross-component imports in a native half point at the NATIVE file — see NextAction.native.tsx. */
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Banner } from '../Banner/Banner.native';
 import { BannerAction } from '../Banner/BannerAction.native';
 import { Button } from '../Button/Button.native';
+import { CardRows } from '../CardRows/CardRows.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
-import { memberCardOf, memberListEmptyOf } from './MemberCard.logic';
-import { MemberCard } from './MemberCard.native';
+import { memberFactsOf, memberListEmptyOf } from './MemberCard.logic';
 import type { MemberListProps } from './MemberCard.types';
-import { MemberCardsLoading } from './MemberCardsLoading.native';
-
-const styles = StyleSheet.create({
-  list: { gap: theme.layout['tile-gap'] },
-});
+import { MemberRow } from './MemberRow.native';
+import { MemberRowsLoading } from './MemberRowsLoading.native';
 
 /** A team list's body (`SCR-M01-12`): its read's state or one of its bodies (`TeamSurface`), never two at once. */
 export function MemberList({
@@ -30,7 +26,7 @@ export function MemberList({
 }: MemberListProps) {
   /* The reader is on every team, so its read is never empty: only the wait draws here. */
   if (read.kind === 'loading' || read.kind === 'empty') {
-    if (waiting === undefined) return <MemberCardsLoading label={words.loading} />;
+    if (waiting === undefined) return <MemberRowsLoading label={words.loading} />;
     return (
       <View
         accessible
@@ -72,15 +68,18 @@ export function MemberList({
     );
   }
   const list = records ?? (
-    <View style={styles.list} accessibilityLabel={words.label} role="region" collapsable={false}>
-      {view.rows.map((row) => (
-        <MemberCard
-          key={row.id}
-          {...memberCardOf(row, words.row(row), words.role, words.you)}
-          action={actOf?.(row)}
-          onOpen={openOf?.(row)}
-        />
-      ))}
+    <View accessibilityLabel={words.label} role="region" collapsable={false}>
+      <CardRows>
+        {view.rows.map((row, index) => (
+          <MemberRow
+            key={row.id}
+            {...memberFactsOf(row, words.row(row), words.role, words.you)}
+            action={actOf?.(row)}
+            onOpen={openOf?.(row)}
+            first={index === 0}
+          />
+        ))}
+      </CardRows>
     </View>
   );
   if (surface !== 'teaching') return list;
@@ -88,7 +87,7 @@ export function MemberList({
     <>
       {list}
       <EmptyState
-        icon={<ShellGlyph name="people" size="xl" tone="primary" />}
+        moment="empty-team"
         title={words.alone}
         description={words.aloneLine}
         action={teachingAction}

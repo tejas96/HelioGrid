@@ -59,15 +59,22 @@ export const DATA_TABLE_STACK_BELOW = 640;
 export const DATA_TABLE_DEFAULTS = { rowKey: 'id', pageSize: 10, density: 'comfortable' } as const;
 
 /**
- * **The quiet head's geometry** (design-system change 20, `SCR-M01-12`): a caption line over a 16px
- * gap, edges at the gutter, and rows that hold a 40px face with a name over a status chip — 82 tall
- * with their 14px cell padding. The web half names the same numbers in `DataTableQuiet.css`.
+ * **The quiet head's geometry** (design-system change 20, drawn as OneOhm draws a table): a 40 tall
+ * label line with 8 under its words, 16 at the edges and between columns, and rows at least 56 tall
+ * over a 12 cell pad — a face with a name over one quiet line. The web half names the same numbers
+ * in `DataTableQuiet.css`.
  */
-export const QUIET_HEAD = { headH: 34, headGap: 16, cellPadY: 14, rowH: 82 } as const;
+export const QUIET_HEAD = { headH: 40, headGap: 8, cellPadY: 12, rowH: 56, edge: 16 } as const;
 
 /** The density spec a quiet table's wide form draws with. */
 export function quietSpec(spec: DensitySpec): DensitySpec {
-  return { ...spec, edge: spec.gutter, headH: QUIET_HEAD.headH, rowH: QUIET_HEAD.rowH };
+  return {
+    ...spec,
+    edge: QUIET_HEAD.edge,
+    gutter: QUIET_HEAD.edge,
+    headH: QUIET_HEAD.headH,
+    rowH: QUIET_HEAD.rowH,
+  };
 }
 
 /** The spec the wide form draws with at a density — the quiet head's when the table is quiet. */

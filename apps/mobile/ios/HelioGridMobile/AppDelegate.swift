@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     reactNativeDelegate = delegate
     reactNativeFactory = factory
 
-    window = UIWindow(frame: UIScreen.main.bounds)
+    window = AppWindow(frame: UIScreen.main.bounds)
 
     factory.startReactNative(
       withModuleName: "HelioGridMobile",
@@ -62,6 +62,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     options: [UIApplication.OpenURLOptionsKey: Any] = [:]
   ) -> Bool {
     RCTLinkingManager.application(app, open: url, options: options)
+  }
+}
+
+/// The app's one window. React Native resolves a view's background against the window's appearance
+/// but its BORDER against the ambient trait collection, which outside UIKit's own passes is the
+/// phone's: with the app set to Dark on a Light phone, every hairline and card edge drew its light
+/// colour, a bright white line. Each time the window's appearance changes — the app's own choice
+/// (`AppearanceHost`) or the phone's — the ambient collection follows it, after UIKit's pass, since
+/// UIKit puts back what it found when the pass ends.
+final class AppWindow: UIWindow {
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    let traits = traitCollection
+    DispatchQueue.main.async { UITraitCollection.current = traits }
   }
 }
 

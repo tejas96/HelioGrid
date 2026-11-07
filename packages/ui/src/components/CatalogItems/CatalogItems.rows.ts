@@ -12,6 +12,14 @@ import type { CatalogRowStatus } from './CatalogItems.types';
  */
 export const CATALOG_WIDE_FROM = 720;
 
+/**
+ * The own width from which the panel has a desktop's room though it is not yet the table — beside
+ * the docked editor: the kind chips wrap instead of scrolling, so none is cut at the edge, and each
+ * row keeps its two toggles, as direction A's desktop row does. Below it, a phone's row carries
+ * none: *Prefer* and *Hide* are in the item's sheet.
+ */
+export const CATALOG_ROOMY_FROM = 560;
+
 /** A kind's tile: the glyph on its iris, as `Avatar` and `Badge` tint a kind (`D268`). */
 export const CATALOG_KIND_LEADING: Readonly<Record<ComponentKind, DataTableLeading>> = {
   panel: { glyph: 'solar-panel', hue: 'ocean' },

@@ -21,7 +21,7 @@ import { expectTouchFloor } from '../support/touch-target';
 /**
  * `/more/billing/plans` (`SCR-M12-03`), the review panel at width and the comparison on a trial —
  * beside `more-billing-plans.spec.ts`, which holds the route's landing and acts. The panel opens
- * beside the plans with the settings list stepped aside (brief decision 9, board d2), names its
+ * beside the plans, leaving them their room (brief decision 9, board d2), names its
  * Close in every language, and a trial's comparison marks no plan as its own (`M12-52`).
  */
 const en = await createTranslator('en');
@@ -46,27 +46,21 @@ async function start(page: Page, paid: boolean) {
   });
 }
 
-test('at width the settings list steps aside for the plans, and the review panel leaves the plans their room', async ({
-  page,
-}, info) => {
-  test.skip(info.project.name !== 'desktop', 'the side list and the panel are the 1536 layout');
+test('at width the review panel leaves the plans their room', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'the panel beside the plans is the 1536 layout');
   await start(page, true);
   await page.goto('/more/billing/plans');
-  const side = page.locator('.hg-settings-page-side');
   await expect(plan(page, 'pro')).toBeVisible();
-  await expect(side).toBeHidden();
   await plan(page, 'pro').click();
   await page.getByRole('button', { name: en.t(P.reviewChange) }).click();
   const panel = page.getByRole('dialog', { name: en.t(P.review) });
   await expect(panel).toBeVisible();
-  /* Fix 1 holds on these two: the list stays aside, and no card sits under the panel. */
-  await expect(side).toBeHidden();
+  /* No card sits under the panel. */
   const cards = await settledBox(page.getByRole('radiogroup', { name: en.t(P.choosePlan) }));
   const sheet = await settledBox(panel);
   expect(cards.x + cards.width).toBeLessThanOrEqual(sheet.x);
   await panel.getByRole('button', { name: en.t(SHELL.close) }).click();
   await expect(panel).toHaveCount(0);
-  await expect(side).toBeHidden();
 });
 
 test('the review panel names its Close in Hindi, at the touch floor', async ({ page }, info) => {

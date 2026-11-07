@@ -1,11 +1,14 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { Text } from '../../primitives/Text/Text.native';
 import { Banner } from '../Banner/Banner.native';
 import { Button } from '../Button/Button.native';
 import { DoorFrame } from '../DoorFrame/DoorFrame.native';
 import { DoorTitle } from '../DoorFrame/DoorTitle.native';
+import { LottieMoment } from '../LottieMoment/LottieMoment.native';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup.native';
 import { TintedBlock } from '../TintedBlock/TintedBlock.native';
+import { languageGlyph } from './SetupLanguage.logic';
 import type { SetupLanguageProps } from './SetupLanguage.types';
 
 /**
@@ -24,7 +27,13 @@ export function SetupLanguage({
     <DoorFrame
       trailing={null}
       column="deep"
-      identity={<DoorTitle title={words.title} explainer={words.explainer} />}
+      identity={
+        <View style={styles.identity}>
+          {/* The company has just been created: its first sunrise, once. */}
+          <LottieMoment name="sunrise" size={72} />
+          <DoorTitle title={words.title} explainer={words.explainer} />
+        </View>
+      }
       footer={
         <View style={styles.ways}>
           <Button variant="primary" size="lg" fullWidth loading={saving} onClick={onContinue}>
@@ -59,7 +68,14 @@ export function SetupLanguage({
       <View style={styles.choices}>
         <OptionCardGroup
           label={words.group}
-          options={[...words.options]}
+          options={words.options.map((option) => ({
+            ...option,
+            icon: (
+              <Text variant="h2" color="accent" lang={option.lang} style={styles.glyph}>
+                {languageGlyph(option.title)}
+              </Text>
+            ),
+          }))}
           value={language}
           onChange={(value) => {
             const chosen = words.options.find((option) => option.value === value);
@@ -72,6 +88,9 @@ export function SetupLanguage({
 }
 
 const styles = StyleSheet.create({
+  identity: { gap: theme.spacing['sp-2'] },
+  /** The language's first letter in the display face, the way the title is set. */
+  glyph: { fontFamily: theme.type.families.display },
   /** A finding `sp-5` under the title; the languages follow it at the same distance. */
   finding: { paddingTop: theme.spacing['sp-5'] },
   /** The languages `sp-5` under what leads them. */

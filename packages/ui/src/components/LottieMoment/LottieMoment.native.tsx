@@ -4,14 +4,30 @@ import { useReducedMotion } from '../../primitives/use-reduced-motion.native';
 import type { LottieMomentName, LottieMomentProps } from './LottieMoment.types';
 import celebrate from './moments/celebrate.json';
 import empty from './moments/empty.json';
+import emptyCatalog from './moments/empty-catalog.json';
+import emptyInbox from './moments/empty-inbox.json';
+import emptyTeam from './moments/empty-team.json';
+import plan from './moments/plan.json';
+import published from './moments/published.json';
+import saved from './moments/saved.json';
+import sent from './moments/sent.json';
 import success from './moments/success.json';
+import sunrise from './moments/sunrise.json';
 
-/* Metro cannot lazy-load (`apps/mobile/CLAUDE.md`), so the three moments ship in the bundle: each
-   is under 10 KB, with no image inside. */
+/* Metro cannot lazy-load (`apps/mobile/CLAUDE.md`), so the moments ship in the bundle: each is
+   under 20 KB, with no image inside. */
 const MOMENTS: Readonly<Record<LottieMomentName, AnimationObject>> = {
   success: success as AnimationObject,
+  saved: saved as AnimationObject,
   celebrate: celebrate as AnimationObject,
+  sunrise: sunrise as AnimationObject,
+  published: published as AnimationObject,
+  sent: sent as AnimationObject,
+  plan: plan as AnimationObject,
   empty: empty as AnimationObject,
+  'empty-catalog': emptyCatalog as AnimationObject,
+  'empty-team': emptyTeam as AnimationObject,
+  'empty-inbox': emptyInbox as AnimationObject,
 };
 
 export function LottieMoment({ name, size, label }: LottieMomentProps) {
@@ -29,6 +45,7 @@ export function LottieMoment({ name, size, label }: LottieMomentProps) {
         source={MOMENTS[name]}
         autoPlay={!reduced}
         loop={false}
+        /* Reduced motion: a moment shows how it ends. */
         progress={reduced ? 1 : undefined}
         style={box}
       />

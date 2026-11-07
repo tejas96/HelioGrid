@@ -9,6 +9,7 @@ import type { DoorNumberStepProps } from './DoorNumberStep.types';
 
 /** The number step in the frame's two fields: the title in the identity half, the form and the road in the task. The field takes the focus as the step opens (`SCR-M01-01`, desktop only). */
 export function DoorNumberStep({
+  story,
   language,
   title,
   words,
@@ -27,9 +28,11 @@ export function DoorNumberStep({
   const { google } = words;
   return (
     <DoorFrame
+      sky="door"
+      story={story}
       trailing={language}
       taskMeasure={taskMeasure}
-      column={lead === undefined ? 'centred' : 'deep'}
+      column={lead === undefined ? undefined : 'deep'}
       lead={lead}
       identity={<DoorTitle {...title} />}
     >
@@ -38,7 +41,17 @@ export function DoorNumberStep({
           {words.blocks.map((block) => (
             <TintedBlock key={block.title} {...block} />
           ))}
-          <div className="hg-door-number-form">
+          {/* A form, so Enter in the number field sends the code as the button does. `dialog`: an
+              Enter pressed before the page is live does nothing, instead of reloading it. */}
+          <form
+            className="hg-door-number-form"
+            method="dialog"
+            noValidate
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (!busy) onPress('send');
+            }}
+          >
             <PhoneField
               label={words.phoneLabel}
               words={words.phoneField}
@@ -75,7 +88,7 @@ export function DoorNumberStep({
                 </Button>
               </div>
             )}
-          </div>
+          </form>
           <div className="hg-door-number-road">
             <Text variant="body-sm" color="secondary">
               {road.question}

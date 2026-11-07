@@ -1,5 +1,7 @@
-import { useSignInScreen } from '@heliogrid/data/react';
+import { useDayPart, useSignInScreen } from '@heliogrid/data/react';
 import {
+  doorGreeting,
+  doorStoryWords,
   doorSwitchWords,
   googleLinkWords,
   homeTitle,
@@ -34,6 +36,7 @@ export function LoginScreen() {
   const { pack, date } = useFormat();
   const language = <DoorLanguage {...useLanguageChoice()} />;
   const { signIn, panel } = useSignInScreen(pack, openGoogle);
+  const greeting = doorGreeting(t, useDayPart());
   const road = {
     question: t(SIGN_IN.newCompany),
     label: t(SIGN_IN.createCompany),
@@ -44,7 +47,8 @@ export function LoginScreen() {
     <InsetDoor>
       <DoorNumberStep
         language={language}
-        title={{ title: t(SIGN_IN.signIn), intro: t(SIGN_IN.intro) }}
+        story={doorStoryWords(t)}
+        title={{ overline: greeting, title: t(SIGN_IN.signIn), intro: t(SIGN_IN.intro) }}
         words={numberStepWords(t, {
           notice: signIn.notice,
           google: signIn.google,

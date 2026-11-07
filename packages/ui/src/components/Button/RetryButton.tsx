@@ -1,4 +1,5 @@
 import { useFocusAfter } from '../../primitives/FocusAfter';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from './Button';
 import { retryOf } from './Button.logic';
 import type { RetryButtonProps } from './Button.types';
@@ -18,7 +19,12 @@ export function RetryButton({ onRetry, label, focusAfter, size = 'md' }: RetryBu
     return null;
   }
   return (
-    <Button variant="secondary" size={size} onClick={leaving(act.retry)}>
+    <Button
+      variant="secondary"
+      size={size}
+      icon={<ShellGlyph name="retry" size="sm" />}
+      onClick={leaving(act.retry)}
+    >
       {act.label}
     </Button>
   );

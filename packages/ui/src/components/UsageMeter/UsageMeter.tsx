@@ -4,6 +4,7 @@ import { classNames } from '../../primitives/class-names';
 import { useFormat } from '../MarketProvider/market-context';
 import { Provenance } from '../Provenance/Provenance';
 import type { UsageMeterProps } from './UsageMeter.types';
+import { UsageMeterHead } from './UsageMeterHead';
 import { UsageMeterMetered } from './UsageMeterMetered';
 import { UsageMeterError, UsageMeterLoading, UsageMeterUnavailable } from './UsageMeterStates';
 import {
@@ -56,6 +57,8 @@ export function UsageMeter({
   unavailableTitle = words.unavailable,
   unavailableMessage,
   density = 'expressive',
+  form = 'row',
+  glyph,
   className,
   style,
 }: WebUsageMeterProps) {
@@ -122,15 +125,13 @@ export function UsageMeter({
         ref={frame}
         tabIndex={-1}
         className={classNames('hg-usage-meter', 'hg-focus-target', className)}
+        data-form={form}
         style={style}
       >
-        <div className="hg-usage-meter-head">
-          <span className="hg-usage-meter-label">{label}</span>
-          <span className="hg-usage-meter-figure">
-            <strong>{format(shape.value)}</strong>
-            {unit !== undefined ? <span className="hg-usage-meter-unit"> {unit}</span> : null}
-          </span>
-        </div>
+        <UsageMeterHead label={label} form={form} glyph={glyph}>
+          <strong>{format(shape.value)}</strong>
+          {unit !== undefined ? <span className="hg-usage-meter-unit"> {unit}</span> : null}
+        </UsageMeterHead>
         {prov}
         {noLimitNote !== undefined ? <p className="hg-usage-meter-note">{noLimitNote}</p> : null}
         {line !== null ? (
@@ -163,6 +164,8 @@ export function UsageMeter({
       provenance={prov}
       className={className}
       style={style}
+      form={form}
+      glyph={glyph}
     />
   );
 }

@@ -93,7 +93,7 @@ test.describe('at 375', () => {
         <SettingsListAsHeld reader="en" held={['epc_owner']} name="Owner 9112345678" />
       </div>,
     );
-    const name = list.locator('.hg-settings-person-words h3');
+    const name = list.locator('.hg-settings-person-name');
     const inkRight = await name.evaluate((node) => {
       const range = document.createRange();
       range.selectNodeContents(node);
@@ -150,7 +150,8 @@ test.describe('the side form, beside a settings page at 1536', () => {
     await expect(nav.getByText(WORDS.groups.you, { exact: true })).toHaveCount(0);
     const here = nav.getByRole('button', { name: WORDS.rows.company_profile });
     await expect(here).toHaveAttribute('aria-current', 'page');
-    await expect(here).toHaveCSS('background-color', await resolvedColour(page, '--accent-subtle'));
+    // The page in view is a raised card row, as OneOhm marks its settings section.
+    await expect(here).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
     await expect(nav.locator('[aria-current]')).toHaveCount(1);
     await expect(nav.locator('.hg-settings-person, .hg-settings-tile')).toHaveCount(0);
     await expectTouchFloor(await rows.all());
