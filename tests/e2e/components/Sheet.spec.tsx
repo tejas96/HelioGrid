@@ -1,5 +1,5 @@
 import { createTranslator, NOTIFICATION_CENTRE, SHELL } from '@heliogrid/i18n';
-import { Sheet } from '@heliogrid/ui';
+import { Card, Sheet } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { settledBox } from '../support/layout';
 import { animationsSettled } from '../support/motion';
@@ -111,4 +111,37 @@ test('a status sits on the title line and a number under it is set in mono; with
   );
   await expect(page.locator('.hg-status-chip')).toHaveCount(0);
   await expect(page.locator('.hg-sheet-subtitle')).not.toHaveCSS('font-family', /Geist Mono/u);
+});
+
+test('a sheet opened from inside a glass tile stands on the window, not on the tile', async ({
+  mount,
+  page,
+}) => {
+  /* No web float renders through a portal, so the tile around it must never become the box a
+     fixed sheet measures against (a backdrop-filter or a transform on the tile would). */
+  await mount(
+    <div style={{ padding: 40 }}>
+      <Card>
+        <Sheet
+          open
+          showClose
+          closeLabel={en.t(SHELL.close)}
+          title={en.t(NOTIFICATION_CENTRE.title)}
+          size="half"
+        >
+          <p>{en.t(NOTIFICATION_CENTRE.emptyMessage)}</p>
+        </Sheet>
+      </Card>
+    </div>,
+  );
+  await animationsSettled(page);
+  const sheet = await settledBox(page.locator('.hg-sheet'));
+  const window = page.viewportSize();
+
+  expect(sheet).not.toBeNull();
+  expect(window).not.toBeNull();
+  if (sheet === null || window === null) return;
+  expect(sheet.x).toBe(0);
+  expect(sheet.width).toBe(window.width);
+  expect(Math.round(sheet.y + sheet.height)).toBe(window.height);
 });

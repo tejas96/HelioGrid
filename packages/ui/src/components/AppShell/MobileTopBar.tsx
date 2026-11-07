@@ -2,10 +2,11 @@ import { theme } from '@heliogrid/theme';
 import { type CSSProperties, useImperativeHandle, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Text } from '../../primitives/Text/Text';
-import { LogoTile } from '../Wordmark/Wordmark';
+import { Wordmark } from '../Wordmark/Wordmark';
 import type { MobileTopBarProps } from './AppShell.types';
 import { ShellAction } from './ShellAction';
 import { ShellGlyph } from './ShellGlyph';
+import { useBarFade } from './use-bar-fade';
 
 interface WebMobileTopBarProps extends MobileTopBarProps {
   className?: string;
@@ -13,9 +14,10 @@ interface WebMobileTopBarProps extends MobileTopBarProps {
 }
 
 /**
- * The phone header — the product tile and the company's name as words on the left; the round
- * search, the bell and the avatar on the right; or, on a page opened from a list, its way back and
- * its title alone. The name gives way first, so every button keeps its 44.
+ * The phone header — the wordmark over the company's name on the left; the round search, the bell
+ * and the avatar on the right; or, on a page opened from a list, its way back and its title alone.
+ * The name gives way first, so every button keeps its 44. Clear over the page's glow at rest, its
+ * frosted band and small title come in with the distance a frame tells (`BarScrollContext`).
  */
 export function MobileTopBar({
   company,
@@ -39,9 +41,12 @@ export function MobileTopBar({
   style,
 }: WebMobileTopBarProps) {
   const titleFrame = useRef<HTMLDivElement>(null);
+  const bar = useRef<HTMLElement>(null);
   useImperativeHandle(titleRef, () => ({ focus: (options) => titleFrame.current?.focus(options) }));
+  useBarFade(bar);
   return (
     <header
+      ref={bar}
       className={classNames('hg-app-shell-topbar', className)}
       data-sticky={sticky ? 'true' : undefined}
       data-safe-top={safeTop ? 'true' : undefined}
@@ -58,10 +63,16 @@ export function MobileTopBar({
       ) : (
         <div className="hg-app-shell-topbar-identity">
           <span className="hg-app-shell-header-slot">
-            {brand ?? <LogoTile size={theme.spacing['sp-8']} />}
+            {brand ?? <Wordmark size={theme.type.roles.h3.fontSize} />}
           </span>
           {company !== undefined ? (
-            <Text variant="body" bold oneLine fixedSize className="hg-app-shell-topbar-company">
+            <Text
+              variant="caption"
+              color="secondary"
+              oneLine
+              fixedSize
+              className="hg-app-shell-topbar-company"
+            >
               {company}
             </Text>
           ) : null}

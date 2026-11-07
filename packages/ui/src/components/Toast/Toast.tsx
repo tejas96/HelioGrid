@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { LottieMoment } from '../LottieMoment/LottieMoment';
 import type { ToastProps } from './Toast.types';
 
 interface WebToastProps extends ToastProps {
@@ -26,7 +27,8 @@ function CheckGlyph() {
 }
 
 /**
- * White toast card with a leading semantic icon in a circular tint. e5, sits above the bottom nav.
+ * The ink pill with a leading semantic icon in a circular tint, or a Lottie moment. e5, sits above
+ * the bottom nav.
  * `role="status"` is polite: a toast never interrupts.
  */
 export function Toast({
@@ -34,15 +36,22 @@ export function Toast({
   title,
   description,
   icon,
+  moment,
   action,
   className,
   style,
 }: WebToastProps) {
   return (
     <div role="status" className={classNames('hg-toast', className)} style={style}>
-      <span className="hg-toast-mark" data-tone={tone}>
-        {icon ?? <CheckGlyph />}
-      </span>
+      {moment === undefined ? (
+        <span className="hg-toast-mark" data-tone={tone}>
+          {icon ?? <CheckGlyph />}
+        </span>
+      ) : (
+        <span className="hg-toast-moment">
+          <LottieMoment name={moment} size={48} />
+        </span>
+      )}
       <div className="hg-toast-body">
         <div className="hg-toast-title">{title}</div>
         {description ? <div className="hg-toast-description">{description}</div> : null}

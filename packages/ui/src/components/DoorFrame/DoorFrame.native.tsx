@@ -2,26 +2,31 @@ import { theme } from '@heliogrid/theme';
 import { useContext } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { KeyboardFrame } from '../../primitives/Keyboard/KeyboardFrame.native';
+import { useKeyboardUp } from '../../primitives/Keyboard/use-keyboard.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project.
    Metro resolves both spellings to the same module, so this is the same import, correctly typed. */
-import { BrandBloom } from '../BrandBloom/BrandBloom.native';
+import { SolarSky } from '../SolarSky/SolarSky.native';
 import { ProductMark } from '../Wordmark/Wordmark.native';
 import { DOOR_BOUNDED_MIN_HEIGHT, DoorBottomInset, DoorTopInset } from './DoorFrame.logic';
 import type { DoorFrameProps } from './DoorFrame.types';
 
+/** The sky's share of the window: the front door's tall sky, a step's band. */
+const SKY_SHARE = { door: 0.4, band: 0.2 } as const;
+
 /**
- * The page, its glow and the header row every door frame shares: the product mark and the
- * trailing control, `sp-6` above and below, the market's mobile screen padding at the sides. One column, so `lead` and then `identity` are
- * drawn above the task and `taskMeasure` names nothing here. `column` places the identity: centred
- * takes the free height above it, as much as the task's own spacer takes below; deep puts it `sp-8`
+ * The living sky with the wordmark and the trailing control over it, then the column as a glass
+ * sheet riding up over the sky's foot; the sky scrolls away with the column. One column, so `lead`
+ * and then `identity` are drawn above the task and `taskMeasure` and `story` name nothing here. `column` places the identity: deep puts it `sp-8`
  * under the step header and near `sp-4`. `footer` stays under the scrolling column; `bounded`
  * holds the column still at the screen's height, so only a part of the task scrolls. The safe-area
  * insets are the screen's: the export's 375×812 frame starts under the status bar, and the app
  * hands that band's height in through `DoorTopInset` — this package holds no platform adapter.
  */
 export function DoorFrame({
+  sky = 'band',
   trailing,
   lead,
   identity,
@@ -36,17 +41,21 @@ export function DoorFrame({
   /* The band under the door's last part: the footer's, or the column's when there is none. */
   const band = { paddingBottom: theme.spacing['sp-6'] + bottomInset };
   const { height, fontScale } = useWindowDimensions();
+  /* With the keyboard up the sky folds to the band under the header, so the field typed in and
+     the step's primary under it both stay in view above the keyboard. */
+  const keyboardUp = useKeyboardUp();
+  const skyHeight = keyboardUp
+    ? topInset + theme.layout['topbar-h-mobile'] + theme.radius['r-sheet-top']
+    : Math.min(
+        theme.spacing['sp-24'] * 4,
+        Math.max(theme.spacing['sp-24'] * 1.5, height * SKY_SHARE[sky]),
+      );
   /* Grown text needs the room a taller screen gives, so the floor is read in unscaled points. */
   const holdsStill = bounded && height / fontScale >= DOOR_BOUNDED_MIN_HEIGHT;
   const columnView = (
     <View style={[styles.column, footer === undefined ? null : styles.columnAboveFooter]}>
-      <View style={styles.header}>
-        <ProductMark />
-        {trailing}
-      </View>
       {lead}
-      {column === 'centred' ? <View style={styles.centring} /> : null}
-      {column !== 'centred' && column !== undefined && identity !== undefined ? (
+      {column !== undefined && identity !== undefined ? (
         <View style={styles[column]}>{identity}</View>
       ) : (
         identity
@@ -55,8 +64,7 @@ export function DoorFrame({
     </View>
   );
   return (
-    <View style={[styles.root, { paddingTop: topInset }]}>
-      <BrandBloom placement="page" />
+    <View style={styles.root}>
       <KeyboardFrame
         style={styles.fill}
         scrolls={!holdsStill}
@@ -70,7 +78,16 @@ export function DoorFrame({
         footBandUnderKeyboard={bottomInset}
         onFootHeight={onFooterHeight}
       >
-        {columnView}
+        <View style={{ height: skyHeight }}>
+          <SolarSky framing={sky} />
+          <View style={[styles.header, { paddingTop: topInset + theme.spacing['sp-2'] }]}>
+            <ProductMark />
+            {trailing}
+          </View>
+        </View>
+        <View style={styles.sheet}>
+          <GroundProvider ground="tile">{columnView}</GroundProvider>
+        </View>
       </KeyboardFrame>
     </View>
   );
@@ -91,9 +108,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: theme.spacing['sp-3'],
+    paddingHorizontal: theme.layout['screen-pad-mobile'],
   },
-  /** Never under `sp-8`, so the heading keeps its distance from the header row on a short screen. */
-  centring: { flex: 1, minHeight: theme.spacing['sp-8'] },
+  /* The column's glass sheet: rides up over the sky's foot, rounded at the top, lifted. */
+  sheet: {
+    flexGrow: 1,
+    marginTop: -theme.radius['r-sheet-top'],
+    borderTopLeftRadius: theme.radius['r-sheet-top'],
+    borderTopRightRadius: theme.radius['r-sheet-top'],
+    // biome-ignore lint/plugin/raw-white: ground — the door's sheet is the card colour over the sky
+    backgroundColor: colors.surface,
+    ...theme.elevation.e4,
+  },
   deep: { paddingTop: theme.spacing['sp-8'] },
   near: { paddingTop: theme.spacing['sp-4'] },
   /** With a footer the column's bottom padding moves to the footer, so the action sits `sp-6` under the last line. */

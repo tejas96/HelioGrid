@@ -24,7 +24,7 @@ export function ProgressBar({
   style,
 }: WebProgressBarProps) {
   const pct = Math.max(0, Math.min(100, value));
-  const vars: RailVars = { '--hg-progress-bar-value': `${pct}%` };
+  const vars: RailVars = { '--hg-progress-bar-share': `${pct / 100}` };
   return (
     <div
       role="progressbar"

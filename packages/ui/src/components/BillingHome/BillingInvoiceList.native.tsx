@@ -38,7 +38,6 @@ export function BillingInvoiceList(props: BillingInvoiceListProps) {
             placeholder={words.findInList}
             value={props.query}
             onChange={props.onSearch}
-            density="expressive"
             onClear={() => props.onSearch('')}
             clearLabel={words.clearSearch}
           />

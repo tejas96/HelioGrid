@@ -1,13 +1,65 @@
-/* UsagePage — the usage screen's body (`SCR-M12-04`). At 375 one column of cards whose rows read
-   label left, figure right, on ONE edge (brief decision 1); at width the tables lane and the 300px
-   standing column (decision 14), the column holding still while the tables scroll past it. Every
-   figure is mono with tabular digits (`F7-09`). */
+/* UsagePage — the usage screen's body (`SCR-M12-04`). Each region's rows are small glass tiles in
+   A's language — the glyph and the label over the figure, its bar, its lines — two to a row on a
+   phone and as many as fit at width, where the 300px standing column (decision 14) holds still
+   beside them. A figure in a row of facts is mono with tabular digits (`F7-09`). */
 
 .hg-usage {
   display: flex;
   flex-direction: column;
   gap: var(--sp-5);
   min-width: 0;
+}
+
+/* The regions stand on the page's own edges; each row is its own glass tile. */
+.hg-usage .hg-block[data-density] {
+  padding: var(--sp-2) 0 0;
+}
+
+/* Two to a row on a phone (a 144px floor), as many as fit at width; a few stretch to fill it. */
+.hg-usage-tiles {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--sp-24) + var(--sp-12)), 1fr));
+  gap: var(--tile-gap);
+}
+
+/* Two columns — under three 144px floors and their two 10px gaps, 452px: a lone last tile takes
+   the whole row, as the phone's wrapping tiles do. Written raw: `@container` cannot read a custom
+   property. */
+@container (max-width: 451px) {
+  .hg-usage-tile-row:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
+.hg-usage-tile-row {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+  padding: var(--tile-pad);
+  border-radius: var(--r-tile);
+}
+
+/* The extra charges' total closes the region across its whole row. */
+.hg-usage-tile-row[data-span="row"] {
+  grid-column: 1 / -1;
+}
+
+/* The ledger opener stands in the tile's corner; the label keeps clear of its 44px target. */
+.hg-usage-tile-row .hg-icon-button.hg-usage-ledger {
+  position: absolute;
+  top: var(--sp-1);
+  right: var(--sp-1);
+}
+
+.hg-usage-tile-row[data-ledger="true"] .hg-usage-meter-label {
+  padding-inline-end: var(--sp-8);
+}
+
+.hg-usage-tile-act {
+  display: flex;
 }
 
 .hg-usage-stack {
@@ -70,40 +122,7 @@
   color: var(--text-secondary);
 }
 
-.hg-usage-teaching {
-  display: block;
-  font-size: var(--fs-body-sm);
-  line-height: var(--lh-body-sm);
-  text-wrap: pretty;
-  color: var(--text-secondary);
-}
-
-/* ── a card's rows: the meter, its facts and its way on; the ledger in its own 44px track ──── */
-
-/* The second track is the 44px target the ledger opener stands in, on every row, so every figure
-   ends on the one edge whether its row has events or not. */
-.hg-usage-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) calc(var(--sp-10) + var(--sp-1));
-  gap: var(--sp-2);
-  align-items: start;
-}
-
-.hg-usage-row-body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  min-width: 0;
-}
-
-/* The opener sits on the meter's label line, its circle's edge on the card's. */
-.hg-icon-button.hg-usage-ledger {
-  flex-shrink: 0;
-  margin-top: calc(var(--sp-3) * -1);
-  margin-right: calc(var(--sp-2) * -1);
-}
-
-/* One row form inside a card: label left, the figure on the meter's own right edge. */
+/* One row form inside a tile: label left, the figure on the tile's own right edge. */
 .hg-fact-rows.hg-usage-facts[data-fact-group-form="pair"],
 .hg-usage-facts .hg-fact-row[data-fact-form="pair"] {
   grid-template-columns: minmax(0, 1fr) max-content;
@@ -152,7 +171,7 @@
   padding: 0 var(--sp-1);
 }
 
-/* ── 1536: the tables lane and the standing column ──────────────────────── */
+/* ── at width: the tiles' lane and the standing column ──────────────────── */
 
 .hg-usage-lanes {
   display: grid;
@@ -173,7 +192,7 @@
   min-width: 0;
 }
 
-/* It holds still while the tables scroll past it; the ledger panel docks over it. */
+/* It holds still while the tiles scroll past it; the ledger panel docks over it. */
 .hg-usage-side {
   position: sticky;
   top: 0;
@@ -182,14 +201,6 @@
   flex-direction: column;
   gap: var(--sp-4);
   min-width: 0;
-}
-
-/* The meter's name and its chip, wrapping as one cell. */
-.hg-usage-meter-cell {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-1) var(--sp-2);
 }
 
 /* ── the ledger: its overline and source line, then the events ──────────── */

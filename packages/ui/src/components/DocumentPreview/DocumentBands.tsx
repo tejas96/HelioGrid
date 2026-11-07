@@ -71,7 +71,9 @@ export function DocumentTranchesBand({ doc }: { doc: ResolvedDocument }) {
           {doc.tranches.map((tranche, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: a schedule is positional, and two tranches may share a name
             <tr key={index}>
-              <td className="hg-doc-tranche-index">{listOrdinal(index)}</td>
+              <td className="hg-doc-tranche-index">
+                <span>{listOrdinal(index)}</span>
+              </td>
               <td className="hg-doc-tranche-cell">
                 <span className="hg-doc-tranche-label">{tranche.label}</span>
                 {tranche.when === undefined ? null : (

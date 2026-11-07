@@ -140,16 +140,23 @@ test.describe('at 375', () => {
 test.describe('at 1536', () => {
   test.use({ viewport: { width: 1536, height: 1000 } });
 
-  test('the list at the settings measure, the act at its own width under it with its line beside, and the letterhead in its track', async ({
+  test('the tile at the settings measure on the title’s edge, the act at its own width under it with its line beside, and the letterhead in its track', async ({
     mount,
     page,
   }) => {
     const profile = await mount(
       <CompanyProfileAsHeld reader="en" life="settings" open="declarations" />,
     );
+    // The tile's edge is the title's, as on every settings page; the parts sit inside its padding.
+    const tile = await settledBox(profile.locator('.hg-company-profile-list'));
+    expect(tile).toMatchObject({
+      x: (await settledBox(profile.getByRole('heading', { level: 1 })))?.x,
+      width: 640,
+    });
+    const inset = await resolvedLength(page, '--sp-5');
     const headers = profile.locator('.hg-accordion-toggle');
     for (const header of await headers.all()) {
-      expect((await settledBox(header))?.width).toBe(640);
+      expect(await settledBox(header)).toMatchObject({ x: tile.x + inset, width: 640 - 2 * inset });
     }
     const act = profile.getByRole('button', { name: SAVE });
     const actBox = await settledBox(act);

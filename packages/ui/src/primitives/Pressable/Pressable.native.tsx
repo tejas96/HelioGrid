@@ -6,7 +6,10 @@ import type {
   View,
   ViewStyle,
 } from 'react-native';
-import { Pressable as RNPressable } from 'react-native';
+import { Pressable as RNPressable, StyleSheet } from 'react-native';
+import { usePalette } from '../Color/use-palette.native';
+import { tapHaptic } from '../haptic.native';
+import { hapticOf } from './Pressable.logic';
 import type { PressableProps, PressableRole } from './Pressable.types';
 import { MIN_TOUCH_TARGET } from './Pressable.types';
 
@@ -14,6 +17,13 @@ interface NativePressableProps extends PressableProps {
   style?: StyleProp<ViewStyle>;
   /** The pressable view itself, for a caller that moves the screen reader's focus to it. */
   hostRef?: Ref<View>;
+}
+
+/* Android draws a bounded ripple over the whole view, square corners included, and clips neither
+   it nor the view's shadow apart, so a rounded target answers with its sink alone. */
+function isRounded(style: StyleProp<ViewStyle>): boolean {
+  const radius = StyleSheet.flatten(style)?.borderRadius;
+  return radius !== undefined && radius !== 0;
 }
 
 const base: ViewStyle = {
@@ -60,9 +70,24 @@ export function Pressable({
   accessibilityHint,
   accessibilityRole = 'button',
   accessibilityState,
+  ripple = 'bounded',
+  haptic,
   style,
   hostRef,
 }: NativePressableProps) {
+  const palette = usePalette();
+  const felt = hapticOf(accessibilityRole, haptic);
+  /* The ripple is the words' own ink, faint: it reads on any ground the target sits on. Android
+     draws it under the children; iOS ignores it. */
+  const ink = { color: `${palette['text-primary']}24`, borderless: ripple === 'borderless' };
+  const ripples = ripple === 'borderless' || (ripple === 'bounded' && !isRounded(style));
+  const press =
+    onPress === undefined
+      ? undefined
+      : () => {
+          tapHaptic(felt);
+          onPress();
+        };
   return (
     <RNPressable
       ref={hostRef}
@@ -80,7 +105,8 @@ export function Pressable({
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
       disabled={disabled}
-      onPress={onPress}
+      onPress={press}
+      android_ripple={ripples && !disabled ? ink : undefined}
       style={(state: PressableStateCallbackType) => [
         base,
         state.pressed && !disabled ? pressedStyle : undefined,

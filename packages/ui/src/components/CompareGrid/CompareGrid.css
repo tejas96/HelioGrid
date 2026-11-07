@@ -79,7 +79,10 @@
   text-align: left;
   vertical-align: top;
   box-sizing: border-box;
-  background: var(--hg-ground);
+  /* Pinned: it paints its holder's own fill, frosted, so it reads as the tile while columns run under it. */
+  background: var(--hg-ground-fill, var(--hg-ground));
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
   font-size: var(--fs-caption);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
@@ -92,7 +95,7 @@ tr[data-zebra="true"] > .hg-compare-pin {
 .hg-compare-pin--head,
 .hg-compare-pin--foot {
   padding-top: var(--sp-4);
-  background: var(--hg-ground);
+  background: var(--hg-ground-fill, var(--hg-ground));
 }
 
 .hg-compare-label {

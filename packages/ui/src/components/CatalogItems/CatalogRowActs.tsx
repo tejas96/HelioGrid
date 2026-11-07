@@ -1,15 +1,14 @@
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import { IconButton } from '../IconButton';
-import { TileAction, TileActions } from '../TileActions';
 import type { CatalogItemsProps, CatalogRow } from './CatalogItems.types';
 
 type Acts = Pick<CatalogItemsProps, 'words' | 'onPrefer' | 'onHide' | 'onArchive' | 'onRestore'>;
 
 /**
  * One row's acts. An archived row has one, *Restore*. Otherwise the star and the side act — hide
- * on a platform item, archive on an own SKU — as 44px pressed toggles in the 1536 row and as
- * labelled pills on the phone's card, where a thumb is the only input.
+ * on a platform item, archive on an own SKU — as two 44px pressed toggles, each with its whole
+ * spoken name: in the 1536 row, and at the end of the phone's card.
  */
 export function CatalogRowActs({
   row,
@@ -35,60 +34,19 @@ export function CatalogRowActs({
       </Button>
     );
   }
-  return stacked ? <CardActs row={row} acts={acts} /> : <RowActs row={row} acts={acts} />;
+  return <RowActs row={row} stacked={stacked} acts={acts} />;
 }
 
-/** The phone card's labelled pills. */
-function CardActs({ row, acts }: { row: CatalogRow; acts: Acts }) {
-  const { words } = acts;
+/** The two 44px pressed toggles: in the 1536 row, and at the phone card's end. */
+function RowActs({ row, stacked, acts }: { row: CatalogRow; stacked: boolean; acts: Acts }) {
   const own = row.source === 'own_item';
   return (
-    <TileActions>
-      <TileAction
-        label={words.prefer}
-        spokenLabel={row.labels.prefer}
-        onLabel={words.preferred}
-        on={row.preferred}
-        icon={
-          <ShellGlyph
-            name="star"
-            size="sm"
-            filled={row.preferred}
-            tone={row.preferred ? 'inverse' : 'secondary'}
-          />
-        }
-        onClick={() => acts.onPrefer(row)}
-      />
-      {own ? (
-        <TileAction
-          label={words.archive}
-          spokenLabel={row.labels.side}
-          icon={<ShellGlyph name="archive" size="sm" />}
-          onClick={() => acts.onArchive(row)}
-        />
-      ) : (
-        <TileAction
-          label={words.hide}
-          spokenLabel={row.labels.side}
-          onLabel={words.hidden}
-          on={row.hidden}
-          icon={<ShellGlyph name="eye-off" size="sm" tone={row.hidden ? 'inverse' : 'secondary'} />}
-          onClick={() => acts.onHide(row)}
-        />
-      )}
-    </TileActions>
-  );
-}
-
-/** The 1536 row's two 44px pressed toggles. */
-function RowActs({ row, acts }: { row: CatalogRow; acts: Acts }) {
-  const own = row.source === 'own_item';
-  return (
-    <span className="hg-cat-acts">
+    <span className="hg-cat-acts" data-stacked={stacked ? 'true' : undefined}>
       <IconButton
         label={row.labels.prefer}
-        size={44}
+        size={stacked ? 40 : 44}
         variant={row.preferred ? 'dark' : 'surface'}
+        pressed={row.preferred}
         onClick={() => acts.onPrefer(row)}
       >
         <ShellGlyph
@@ -100,8 +58,9 @@ function RowActs({ row, acts }: { row: CatalogRow; acts: Acts }) {
       </IconButton>
       <IconButton
         label={row.labels.side}
-        size={44}
+        size={stacked ? 40 : 44}
         variant={!own && row.hidden ? 'dark' : 'surface'}
+        pressed={own ? undefined : row.hidden}
         onClick={() => (own ? acts.onArchive(row) : acts.onHide(row))}
       >
         <ShellGlyph

@@ -12,7 +12,6 @@ import { Badge, Chip } from '../Chip';
 import { DataTable } from '../DataTable';
 import { EmptyState } from '../EmptyState';
 import { LoadingBars } from '../LoadingBars';
-import { LottieMoment } from '../LottieMoment/LottieMoment';
 import { useFormat } from '../MarketProvider';
 import { SearchField } from '../SearchField';
 import { matchingRates, RATE_BASIS_TONE, ratesByBasis } from './CatalogRates.logic';
@@ -63,12 +62,17 @@ function RatesReady({ props, wide }: { props: CatalogRatesProps; wide: boolean }
       {props.rates.length === 0 ? (
         <EmptyState
           glow={false}
-          icon={<LottieMoment name="empty" size={48} />}
+          moment="empty"
           title={words.noRates}
           description={words.noRatesBody}
           action={
             props.onAddFirst === null ? undefined : (
-              <Button variant="secondary" size="sm" onClick={props.onAddFirst}>
+              <Button
+                variant="primary"
+                size="md"
+                icon={<ShellGlyph name="plus" size="sm" tone="inverse" />}
+                onClick={props.onAddFirst}
+              >
                 {words.addFirstRate}
               </Button>
             )
@@ -144,7 +148,6 @@ function RatesTable({
       <div className="hg-cat-rates-controls">
         <span className="hg-cat-rates-search">
           <SearchField
-            density="functional"
             placeholder={words.searchRates}
             ariaLabel={words.searchRates}
             value={query}

@@ -6,10 +6,12 @@ import { Explainer } from '../Explainer/Explainer';
 import { useFormat } from '../MarketProvider';
 import { OtpInput } from '../OtpInput/OtpInput';
 import { TintedBlock } from '../TintedBlock/TintedBlock';
+import { submitFromBoxes } from './DoorCodeStep.logic';
 import type { DoorCodeStepProps, DoorCodeStepWords } from './DoorCodeStep.types';
 
 /** The code step in the frame's two fields: the title and the number in the identity half, the code and its ways on in the task. */
 export function DoorCodeStep({
+  story,
   language,
   words,
   frame,
@@ -26,6 +28,8 @@ export function DoorCodeStep({
   const { primary, resend } = frame;
   return (
     <DoorFrame
+      sky="door"
+      story={story}
       trailing={
         <>
           <Button variant="ghost" size="sm" onClick={() => onPress('change-number')}>
@@ -35,7 +39,7 @@ export function DoorCodeStep({
         </>
       }
       taskMeasure={taskMeasure}
-      column={lead === undefined ? 'centred' : 'deep'}
+      column={lead === undefined ? undefined : 'deep'}
       lead={lead}
       identity={<CodeTitle words={words} phone={phone} />}
     >
@@ -52,6 +56,7 @@ export function DoorCodeStep({
           busy={busy}
           error={words.codeError ?? undefined}
           autoFocus={frame.code === 'open'}
+          onSubmit={submitFromBoxes({ frame, busy, onPress })}
           helper={helper}
         />
       )}

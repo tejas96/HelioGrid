@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
   group: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', minWidth: 0 },
   item: { flexDirection: 'row', minWidth: 0 },
   /* The floor and the centring are the primitive's; only the "never shrink me" is this row's. */
-  target: { flexShrink: 0 },
+  /* The pill's shape on the target too: Android draws no square ripple under a round pill. */
+  target: { flexShrink: 0, borderRadius: theme.radius['r-pill'] },
   count: {
     flexDirection: 'row',
     alignItems: 'center',

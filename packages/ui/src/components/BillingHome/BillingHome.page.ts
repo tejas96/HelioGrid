@@ -7,6 +7,7 @@ import type {
 import type { BillingNeed, CancellationReason, PackLabel, Read } from '@heliogrid/domain';
 import type { MarketFormat } from '../../utils/format';
 import { type BillingHomeView, billingHomeViewOf } from './BillingHome.logic';
+import { summaryOf } from './BillingHome.plan';
 import type { BillingHomeActs, BillingHomeProps, BillingHomeWords } from './BillingHome.types';
 import type { BillingInput, BillingPageStripWords, BillingViewWords } from './BillingHome.words';
 
@@ -75,6 +76,8 @@ export interface BillingPage {
   /** The Owner's home, whose asks these are; none for anyone else. */
   readonly home: BillingHome | null;
   readonly view: BillingHomeView;
+  /** The one line under the page's title; none for a person who is not the Owner. */
+  readonly summary: TranslatedText | null;
   /** Why `act` did not land, said where the person acted; `null` while it has not failed. */
   readonly failureOf: (act: string) => TranslatedText | null;
 }
@@ -117,6 +120,7 @@ export function billingPageOf(
     input,
     home,
     view,
+    summary: home === null ? null : summaryOf(input, home),
     failureOf,
   };
 }

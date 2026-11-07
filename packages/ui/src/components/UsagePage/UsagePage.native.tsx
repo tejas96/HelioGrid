@@ -7,6 +7,7 @@ import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { Text } from '../../primitives/Text/Text.native';
 import { figure } from '../BillingHome/BillingHome.values';
 import { BillingStatusChip } from '../BillingHome/BillingNeeds.native';
+import { BillingQuiet } from '../BillingHome/BillingQuiet.native';
 import { BillingValueText, valueRuns } from '../BillingStrip/BillingValue.native';
 import { Block } from '../Block/Block.native';
 import { ListRow } from '../ListRow/ListRow.native';
@@ -48,6 +49,7 @@ export function UsagePage(props: UsagePageProps) {
     return (
       <View style={styles.page}>
         <Block
+          style={styles.flushRegion}
           density="expressive"
           read={{
             kind: 'failed',
@@ -117,14 +119,10 @@ function UsageBody({
         </View>
       )}
       {view.teaching === null ? null : (
-        <Block density="expressive" title={view.teaching.title}>
-          <Text variant="body-sm" color="secondary">
-            {view.teaching.body}
-          </Text>
-        </Block>
+        <BillingQuiet art="empty" title={view.teaching.title} message={view.teaching.body} />
       )}
       {view.needs === null ? null : (
-        <Block density="expressive" title={words.needsYou}>
+        <Block style={styles.flushRegion} density="expressive" title={words.needsYou}>
           <View style={styles.needs}>
             {view.needs.map((row) => (
               <ListRow
@@ -169,6 +167,8 @@ function UsageBody({
 }
 
 const styles = StyleSheet.create({
+  /* A region under the hero stands on the page's own edges, as the web's does. */
+  flushRegion: { paddingHorizontal: 0, paddingBottom: 0, paddingTop: theme.spacing['sp-2'] },
   /** The board's column: regions `sp-5` apart; the shell pads the sides and scrolls it. */
   page: { gap: theme.spacing['sp-5'] },
   /** The cycle line and the one chip share a 44 line, and wrap as one when the words are long. */

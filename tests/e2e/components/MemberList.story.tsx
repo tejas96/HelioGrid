@@ -79,9 +79,9 @@ export function TeamListStory({
   onRetry?: () => void;
   onClearSearch?: () => void;
   onShowAll?: () => void;
-  /** Each card's act, as both screens draw it. */
+  /** Each row's act, as both screens draw it. */
   withActs?: boolean;
-  /** Each card opens the person when Assign Roles may: the frame reports it as `data-opened`. */
+  /** Each row opens the person when Assign Roles may: the frame reports it as `data-opened`. */
   withOpen?: boolean;
 }) {
   const [opened, setOpened] = useState('');
@@ -115,7 +115,7 @@ export function TeamListStory({
               actOf: (row) => {
                 const act = memberActOf(row, ROWS, acts, () => false);
                 return act === null ? null : (
-                  <MemberAct {...act} size="md" fullWidth onPress={() => setActed(row.name)} />
+                  <MemberAct {...act} onPress={() => setActed(row.name)} />
                 );
               },
             }

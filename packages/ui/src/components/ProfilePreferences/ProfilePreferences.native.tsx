@@ -3,27 +3,20 @@ import { type RefObject, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyph } from '../AppShell/ShellGlyph.native';
-import { Avatar } from '../Avatar/Avatar.native';
 import { Banner } from '../Banner/Banner.native';
 import { BannerAction } from '../Banner/BannerAction.native';
-import { Button } from '../Button/Button.native';
-import { Badge } from '../Chip/Chip.native';
-import { ChipGroup } from '../ChipGroup/ChipGroup.native';
 import { Explainer } from '../Explainer/Explainer.native';
-import { ListRow } from '../ListRow/ListRow.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup.native';
 import { SegmentedControl } from '../SegmentedControl/SegmentedControl.native';
-import { SettingsCard } from '../SettingsSection/SettingsSection.native';
 import { Switch } from '../Switch/Switch.native';
 import { ValueSource } from '../ValueSource/ValueSource.native';
+import { ProfileHero } from './ProfileHero.native';
 import {
   languageOf,
   PROFILE_PREFERENCES_LOADING,
   pushSwitchesOf,
   pushSwitchWords,
-  roleBadges,
   unitOptions,
   unitsOf,
 } from './ProfilePreferences.logic';
@@ -40,7 +33,9 @@ export function ProfilePreferences(props: ProfilePreferencesProps) {
      through the loading bars and the page that follow. */
   const frame = useRef<View>(null);
   return (
-    <View ref={frame}>
+    <View ref={frame} style={styles.page}>
+      <ProfileHero {...props} />
+      {props.appearance}
       <PageBody {...props} frame={frame} />
     </View>
   );
@@ -76,10 +71,6 @@ function PageBody({
 function Page({
   words,
   view,
-  name,
-  photo,
-  onEditName,
-  onRole,
   onLanguage,
   onUnits,
   read,
@@ -88,39 +79,6 @@ function Page({
 }: ProfilePreferencesProps) {
   return (
     <View style={styles.page}>
-      <View style={styles.section}>
-        <Overline>{words.account}</Overline>
-        <SettingsCard style={styles.tile}>
-          <ListRow
-            style={styles.row}
-            avatar={<Avatar name={name} src={photo} size={48} />}
-            title={name}
-            density="expressive"
-            trailing={
-              <Button variant="secondary" size="sm" onClick={onEditName}>
-                {words.editName}
-              </Button>
-            }
-          />
-          <View style={styles.hairline} />
-          <ListRow
-            style={styles.row}
-            title={words.roles.title}
-            density="functional"
-            onClick={onRole}
-            trailing={<ShellGlyph name="chevron-right" size="md" tone="secondary" />}
-            marks={
-              <ChipGroup label={words.roles.title} max={0} density="functional">
-                {roleBadges(words).map((badge) => (
-                  <Badge key={badge.preset} tone={badge.tone} density="functional">
-                    {badge.label}
-                  </Badge>
-                ))}
-              </ChipGroup>
-            }
-          />
-        </SettingsCard>
-      </View>
       <View style={[styles.section, styles.sectionWide]}>
         <Overline>{words.languageAndUnits}</Overline>
         <View style={styles.control}>

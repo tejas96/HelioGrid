@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Animated, Easing, ScrollView, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
+import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useReducedMotion } from '../../primitives/use-reduced-motion';
@@ -144,7 +145,7 @@ export function Modal({
                 paddingBottom: footer === null ? pad : 0,
               }}
             >
-              {children}
+              <GroundProvider ground="tile">{children}</GroundProvider>
             </ScrollView>
           )}
 

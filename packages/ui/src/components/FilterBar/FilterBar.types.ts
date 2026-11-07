@@ -6,7 +6,7 @@ import type { FocusHandle } from '../../primitives/FocusAfter';
 
    All four parts appear unchanged on a 375px phone, so every one clears 44×44. Each control's
    target is 44px and the pill drawn inside it keeps its own height: scope 36, sort 32. The kind
-   and stage chips are 44 — the pill IS the target — and the filter square is 50×50, above the
+   and stage chips are 44 — the pill IS the target — and the filter circle is 50 across, above the
    floor. Where a pill is shorter, the difference is transparent padding owned by the target.
 
    This is expressed once, in the component, rather than left to twenty records screens to
@@ -21,7 +21,7 @@ import type { FocusHandle } from '../../primitives/FocusAfter';
  */
 export type FilterOption = string | { value: string; label: TranslatedText; icon?: ReactNode };
 
-/** The pill heights and the filter square's side, one declaration for both platforms. */
+/** The pill heights and the filter circle's side, one declaration for both platforms. */
 export const PILL_HEIGHT = {
   scope: 36,
   chip: 44,
@@ -86,10 +86,10 @@ export interface FiltersButtonProps {
   onClick?: () => void;
   /** Number of active filters — shown as an accent counter. */
   count?: number;
-  /** The square's name and its title — *Filters*. */
+  /** The circle's name and its title — *Filters*. */
   label: TranslatedText;
   /**
-   * The square's whole spoken name while `count` is above zero — *Filters, 3 active*. The square
+   * The circle's whole spoken name while `count` is above zero — *Filters, 3 active*. The circle
    * has no words and the counter is a bare number, so the name must say what the number counts.
    */
   activeLabel: (count: number) => TranslatedText;

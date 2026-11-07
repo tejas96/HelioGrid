@@ -1,0 +1,49 @@
+/* DoorFrame, `ownPanel` — a step that draws its own panel beside the column (the company profile's
+   letterhead) keeps the door's single centred column from the desktop width: no sky panel, the
+   header over the column, the action under the task. Written as `.hg-door:where([data-own-panel])` so these stay the
+   frame's defaults: a step that lays its own door out (`CompanyProfile.css`) still wins. */
+
+@media (min-width: 968px) {
+  .hg-door:where([data-own-panel]) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0;
+  }
+
+  .hg-door:where([data-own-panel]) .hg-door-sky {
+    display: none;
+  }
+
+  .hg-door:where([data-own-panel]) .hg-door-header,
+  .hg-door:where([data-own-panel]) .hg-door-page {
+    position: relative;
+    inset: auto;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: calc(var(--door-measure) + 2 * var(--screen-pad-mobile));
+    margin: 0 auto;
+    padding-inline: var(--screen-pad-mobile);
+  }
+
+  .hg-door:where([data-own-panel]) .hg-door-header {
+    padding-top: var(--sp-6);
+    padding-bottom: 0;
+  }
+
+  .hg-door:where([data-own-panel]) .hg-door-page {
+    flex: 1;
+    align-self: auto;
+    justify-content: flex-start;
+    min-height: 0;
+    padding-block: 0;
+  }
+
+  .hg-door:where([data-own-panel]) .hg-door-body {
+    padding-top: var(--sp-16);
+  }
+
+  .hg-door:where([data-own-panel]) .hg-door-footer {
+    padding-bottom: var(--sp-16);
+  }
+}

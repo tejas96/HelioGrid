@@ -4,6 +4,7 @@ import { useI18n } from '@heliogrid/i18n/react';
 import { BrandingSettings, brandingDocumentOf, useFormat } from '@heliogrid/ui';
 import { useRef } from 'react';
 import { View } from 'react-native';
+import { SavedToast } from '../settings/components/SavedToast';
 import { useSettingsDrillDown } from '../settings/hooks/use-settings-drill-down';
 import { ShellPage } from '../shell/components/ShellPage';
 import { BrandingActBar, BrandingUnread } from './components/BrandingActBar';
@@ -102,6 +103,7 @@ export function BrandingSettingsScreen() {
         onRemove={screen.removeLogo}
       />
       <BrandingLeaveAsk words={words} leave={screen.leave} />
+      <SavedToast saving={page.saving} failed={page.saveFailed} focusAfter={body} />
     </ShellPage>
   );
 }

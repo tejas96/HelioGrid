@@ -9,12 +9,13 @@ import { useSettingsList } from './hooks/use-settings-list';
 /**
  * The page behind `More` (`SCR-SHELL-01`, *More: the settings list*). At the shell's desktop
  * width a person whose list stands beside settings pages goes straight to its first page, beside
- * that list — the list page would only repeat it (owner ruling). The move REPLACES `/more` in the
- * history, so Back never lands here to be sent on again. Below that width, and for a list of one
- * row, it is the list page: one `SettingsList`, rows domain's, words i18n's.
+ * that list — the list page would only repeat it (owner ruling), as OneOhm's Settings opens its
+ * first section. The move REPLACES `/more` in the history, so Back never lands here to be sent on
+ * again. Below that width, and for a list of one row, it is the list page: one `SettingsList`,
+ * rows domain's, words i18n's.
  */
 export function SettingsScreen() {
-  const { list, person, open, first } = useSettingsList();
+  const { list, summary, hints, person, open, first } = useSettingsList();
   const desktop = useDesktopShell();
   const router = useRouter();
   useEffect(() => {
@@ -24,7 +25,14 @@ export function SettingsScreen() {
   if (first !== null && desktop !== false) return null;
   return (
     <div className="hg-shell-page">
-      <SettingsList title={list.title} person={person} groups={list.groups} onOpen={open} />
+      <SettingsList
+        title={list.title}
+        summary={summary}
+        hints={hints}
+        person={person}
+        groups={list.groups}
+        onOpen={open}
+      />
     </div>
   );
 }

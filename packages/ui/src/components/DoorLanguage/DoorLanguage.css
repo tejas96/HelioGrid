@@ -1,0 +1,14 @@
+/* DoorLanguage — the language control rides on the door's sky, so it is a small glass pill: the sky
+   shows through it softened, and its words keep their contrast over a cloud or the sun's glow. */
+.hg-door-language .hg-button {
+  /* biome-ignore lint/plugin/raw-white-css: glass — a pill in the card colour let through at an opacity over the sky */
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: 0 0 0 1px var(--hairline);
+}
+
+[data-field-mode="on"] .hg-door-language .hg-button {
+  /* biome-ignore lint/plugin/raw-white-css: glass — field mode draws the pill solid, in the card colour */
+  background: var(--surface);
+}

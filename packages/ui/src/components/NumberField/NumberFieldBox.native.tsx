@@ -7,6 +7,7 @@ import { FIELD_BOX_EDGE, fieldBox, fieldBoxText } from '../../primitives/FieldBo
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFocusRequest } from '../../primitives/use-focus-request';
+import { useFormat } from '../MarketProvider/market-context';
 import type { NumberDraftState } from './NumberField.state';
 import type { NumberFieldWords } from './NumberField.types';
 
@@ -43,7 +44,41 @@ const styles = StyleSheet.create({
   inputCurrency: { fontFamily: theme.type.families.mono },
   step: { width: 44, flexShrink: 0, alignSelf: 'stretch' },
   unit: { paddingRight: theme.spacing['sp-1'] },
+  /* Money's currency symbol, as the web's: mono and quiet, a hairline between it and the amount. */
+  currencyBefore: {
+    marginRight: theme.spacing['sp-3'],
+    paddingRight: theme.spacing['sp-3'],
+    borderRightWidth: StyleSheet.hairlineWidth,
+    borderRightColor: colors['line-soft'],
+  },
+  currencyAfter: {
+    marginLeft: theme.spacing['sp-3'],
+    paddingLeft: theme.spacing['sp-3'],
+    borderLeftWidth: StyleSheet.hairlineWidth,
+    borderLeftColor: colors['line-soft'],
+  },
 });
+
+/**
+ * Money's adornment: the market's currency symbol (`useFormat`, the pack's own), shown always — an
+ * empty price field read as any number — on the side the market writes it. The field's name says
+ * what it holds, so a screen reader skips the mark.
+ */
+function CurrencyMark({ side }: { side: 'before' | 'after' }) {
+  const { currencySymbol, symbolPosition } = useFormat();
+  if (symbolPosition !== side) return null;
+  return (
+    <View
+      style={side === 'before' ? styles.currencyBefore : styles.currencyAfter}
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+    >
+      <Text variant="mono" color="secondary">
+        {currencySymbol}
+      </Text>
+    </View>
+  );
+}
 
 export interface NumberFieldBoxProps {
   draft: NumberDraftState;
@@ -98,6 +133,7 @@ export function NumberFieldBox({
           </Text>
         </Pressable>
       ) : null}
+      {currency ? <CurrencyMark side="before" /> : null}
       <TextInput
         ref={control}
         style={[
@@ -116,6 +152,7 @@ export function NumberFieldBox({
         onBlur={draft.onBlur}
         onSubmitEditing={draft.commit}
       />
+      {currency ? <CurrencyMark side="after" /> : null}
       {unit !== undefined && !currency ? (
         <Text variant="body-sm" color="secondary" style={styles.unit}>
           {unit}

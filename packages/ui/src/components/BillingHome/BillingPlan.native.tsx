@@ -2,7 +2,6 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Accordion } from '../Accordion/Accordion.native';
-import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { BillingValueText, workingParts } from '../BillingStrip/BillingValue.native';
 import { Block } from '../Block/Block.native';
 import { Button } from '../Button/Button.native';
@@ -11,20 +10,19 @@ import { Explainer } from '../Explainer/Explainer.native';
 import { FactRow } from '../FactRow/FactRow.native';
 import { FactRows } from '../FactRow/FactRows.native';
 import { HeroPanel } from '../HeroPanel/HeroPanel.native';
-import { ListRow } from '../ListRow/ListRow.native';
+import { ProgressRing } from '../ProgressRing/ProgressRing.native';
 import { Provenance } from '../Provenance/Provenance.native';
 import { ScopeNote } from '../ScopeNote/ScopeNote.native';
-import { UsageMeter } from '../UsageMeter/UsageMeter.native';
 import type {
   BillingBodyActing,
   BillingFact,
   BillingHomeProps,
   BillingMethodView,
   BillingPlanView,
-  BillingUsageView,
 } from './BillingHome.types';
 import { plain } from './BillingHome.values';
 import { BillingStatusChip } from './BillingNeeds.native';
+import { BillingQuiet } from './BillingQuiet.native';
 
 type Words = BillingHomeProps['words'];
 
@@ -49,10 +47,33 @@ function Facts({ label, facts }: { label: BillingFact['label']; facts: readonly 
   );
 }
 
-/** A route row inside a region sits on the region's edges, its chevron on the right edge. */
-const CHEVRON = <ShellGlyph name="chevron-right" size="md" tone="secondary" />;
+/** The plan's few facts under its name: a quiet label, its value strong; a price as the hero's figure. */
+function HeroFacts({ facts }: { facts: readonly BillingFact[] }) {
+  return (
+    <View style={styles.heroFacts}>
+      {facts.map((fact) =>
+        fact.key === 'price' ? (
+          <Text key={fact.key} variant="figure">
+            {fact.value.map((run) => run.text).join('')}
+          </Text>
+        ) : (
+          <View key={fact.key} style={styles.heroFact}>
+            <Text variant="body-sm" color="secondary">
+              {fact.label}
+            </Text>
+            <FactValue fact={fact} />
+          </View>
+        ),
+      )}
+    </View>
+  );
+}
 
-/** SCR-M12-03's `Your plan`: the state as its one chip, the pairs, the route and what it includes. */
+/**
+ * SCR-M12-03's `Your plan`, the page's one hero: the name and its few facts beside the ring of days
+ * left, the next bill's working, the one way to change it, and what it includes. The ring speaks
+ * the days left, so its fact is not printed twice.
+ */
 export function BillingPlan({
   plan,
   words,
@@ -62,7 +83,8 @@ export function BillingPlan({
   words: Words;
   onRoute: (() => void) | undefined;
 }) {
-  const [named, ...facts] = plan.rows;
+  const [named, ...rest] = plan.rows;
+  const facts = plan.countdown === null ? rest : rest.filter((fact) => fact.key !== 'left');
   return (
     <HeroPanel
       label={words.yourPlan}
@@ -73,11 +95,25 @@ export function BillingPlan({
         </>
       }
     >
-      {named === undefined ? null : (
-        <Text variant="display">{named.value.map((run) => run.text).join('')}</Text>
-      )}
+      <View style={styles.heroTop}>
+        <View style={styles.heroLead}>
+          {named === undefined ? null : (
+            /* The plan's name is what the hero is about: the phone's hero size, as the web's. */
+            <Text variant="hero">{named.value.map((run) => run.text).join('')}</Text>
+          )}
+          {facts.length === 0 ? null : <HeroFacts facts={facts} />}
+        </View>
+        {plan.countdown === null ? null : (
+          <ProgressRing
+            share={plan.countdown.share}
+            value={plan.countdown.figure}
+            caption={plan.countdown.caption}
+            spokenName={plan.countdown.spoken}
+            onPanel
+          />
+        )}
+      </View>
       <View style={styles.region}>
-        {facts.length === 0 ? null : <Facts label={words.yourPlan} facts={facts} />}
         {plan.scope === null ? null : (
           <ScopeNote title={plan.scope.title} variant="line" size={13} />
         )}
@@ -92,7 +128,7 @@ export function BillingPlan({
         )}
         {plan.route === null ? null : (
           <View style={styles.route}>
-            <Button variant="primary" size="md" onClick={onRoute} disabled={onRoute === undefined}>
+            <Button variant="primary" size="lg" onClick={onRoute} disabled={onRoute === undefined}>
               {plan.route.title}
             </Button>
             {plan.route.subtitle === null ? null : (
@@ -119,52 +155,6 @@ export function BillingPlan({
   );
 }
 
-/** SCR-M12-04's meters, nearest a limit first, with where the counts and the limits come from. */
-export function BillingUsage({
-  usage,
-  words,
-  onAllUsage,
-}: {
-  usage: BillingUsageView;
-  words: Words;
-  onAllUsage: (() => void) | undefined;
-}) {
-  return (
-    <Block
-      density="expressive"
-      title={words.usageThisCycle}
-      footer={
-        <View style={styles.sources}>
-          {usage.sources.map((source) => (
-            <Provenance key={source} source={source} size={12} />
-          ))}
-        </View>
-      }
-    >
-      <View style={styles.meters}>
-        {usage.meters.map((meter) => (
-          <UsageMeter
-            key={meter.key}
-            label={meter.label}
-            words={words.usageMeter}
-            value={meter.value}
-            limit={meter.limit}
-            {...(meter.unit === null ? {} : { unit: meter.unit })}
-            density="expressive"
-          />
-        ))}
-        <ListRow
-          title={words.allUsage}
-          trailing={CHEVRON}
-          density="functional"
-          style={styles.flush}
-          {...(onAllUsage === undefined ? {} : { onClick: onAllUsage })}
-        />
-      </View>
-    </Block>
-  );
-}
-
 /** The method as the gateway names it — never an instrument detail — and its one act. */
 export function BillingMethod({
   method,
@@ -179,6 +169,7 @@ export function BillingMethod({
 }) {
   return (
     <Block
+      style={styles.flushRegion}
       density="expressive"
       title={words.paymentMethod}
       {...(method.chip === null ? {} : { badge: <BillingStatusChip chip={method.chip} /> })}
@@ -193,19 +184,16 @@ export function BillingMethod({
       }
     >
       <View style={styles.region}>
-        <FactRows
-          label={words.paymentMethod}
-          density="expressive"
-          form={method.gap === null ? 'pair' : 'lead'}
-        >
-          <FactRow
-            label={words.method}
-            {...(method.value === null
-              ? {}
-              : { value: <BillingValueText value={plain(method.value)} /> })}
-            {...(method.gap === null ? {} : { gap: { gap: method.gap, scale: 'field' } })}
-          />
-        </FactRows>
+        {method.value === null ? (
+          <BillingQuiet art="card" title={method.gap ?? words.method} message={null} />
+        ) : (
+          <FactRows label={words.paymentMethod} density="expressive" form="pair">
+            <FactRow
+              label={words.method}
+              value={<BillingValueText value={plain(method.value)} />}
+            />
+          </FactRows>
+        )}
         {method.canUpdate ? (
           <View style={styles.start}>
             <Button
@@ -225,11 +213,25 @@ export function BillingMethod({
 }
 
 const styles = StyleSheet.create({
+  /* A region under the hero stands on the page's own edges, as the web's does. */
+  flushRegion: { paddingHorizontal: 0, paddingBottom: 0, paddingTop: theme.spacing['sp-2'] },
   region: { gap: theme.spacing['sp-3'] },
-  meters: { gap: theme.spacing['sp-5'] },
+  heroTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: theme.spacing['sp-4'],
+  },
+  heroLead: { flex: 1, minWidth: 0, gap: theme.spacing['sp-3'] },
+  heroFacts: { gap: theme.spacing['sp-1'] },
+  heroFact: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'baseline',
+    gap: theme.spacing['sp-2'],
+  },
   sources: { gap: theme.spacing['sp-0-5'] },
   stacked: { alignItems: 'flex-end', gap: theme.spacing['sp-0-5'] },
-  flush: { paddingHorizontal: 0 },
   start: { flexDirection: 'row' },
   route: { alignItems: 'flex-start', gap: theme.spacing['sp-2'] },
 });

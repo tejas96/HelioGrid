@@ -25,7 +25,7 @@ import {
   BillingSheets,
   billingPageOf,
   billingSheetsViewOf,
-  Text,
+  LargeTitle,
   ToastHost,
   useFormat,
   useOwnWidth,
@@ -89,9 +89,7 @@ export function BillingScreen() {
     /* A closed toast hands the keyboard back to the page it spoke about. */
     <div ref={room} tabIndex={-1} className="hg-shell-page hg-focus-target">
       <div ref={heading} tabIndex={-1} className="hg-focus-target">
-        <Text as="h1" variant="display">
-          {settingsRowName(t, 'billing')}
-        </Text>
+        <LargeTitle title={settingsRowName(t, 'billing')} summary={page.summary ?? undefined} />
       </div>
       <BillingHome
         ref={body}

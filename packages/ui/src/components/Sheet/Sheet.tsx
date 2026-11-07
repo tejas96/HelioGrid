@@ -3,7 +3,7 @@ import { useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { OverlayBody } from './OverlayBody';
-import { isBodyScrolled } from './Sheet.logic';
+import { isBodyScrolled, sheetHeaderOf } from './Sheet.logic';
 import type { SheetProps } from './Sheet.types';
 import { SheetBackdrop } from './SheetBackdrop';
 import { SheetHandle } from './SheetHandle';
@@ -65,6 +65,7 @@ export function Sheet({
   retryLabel,
   emptyTitle,
   emptyMessage,
+  emptyMoment,
   emptyAction = null,
   unavailableTitle,
   unavailableMessage,
@@ -95,7 +96,7 @@ export function Sheet({
     return null;
   }
 
-  const hasHeader = title !== undefined || overline !== undefined || showClose;
+  const header = sheetHeaderOf(handle, showClose, [title, overline, subtitle]);
   const vars: SheetVars = { '--hg-sheet-z': `${zIndex}`, '--hg-sheet-drag': `${dragY}px` };
 
   return (
@@ -114,13 +115,14 @@ export function Sheet({
         tabIndex={-1}
       >
         {handle ? (
-          <SheetHandle draggable={draggable} hasHeader={hasHeader} onPointerDown={onPointerDown} />
+          <SheetHandle draggable={draggable} hasHeader={header.row} onPointerDown={onPointerDown} />
         ) : null}
 
-        {hasHeader ? (
+        {header.drawn ? (
           <SheetHeader
             leading={leading}
             handle={handle}
+            bare={header.closeOnly}
             closeLabel={closeLabel}
             onClose={onClose}
             onPointerDown={handle ? undefined : onPointerDown}
@@ -138,7 +140,7 @@ export function Sheet({
         <SheetMeta meta={meta} />
 
         <div
-          {...sheetBodyAttrs(hasHeader, footer !== null, bodyScrolls)}
+          {...sheetBodyAttrs(header.row, footer !== null, bodyScrolls)}
           className="hg-sheet-body"
           onScroll={(event: UIEvent<HTMLDivElement>) =>
             setScrolled(isBodyScrolled(event.currentTarget.scrollTop))
@@ -149,6 +151,7 @@ export function Sheet({
           <OverlayBody
             emptyAction={emptyAction}
             emptyMessage={emptyMessage}
+            emptyMoment={emptyMoment}
             emptyTitle={emptyTitle}
             errorMessage={errorMessage}
             errorTitle={errorTitle}

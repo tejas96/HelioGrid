@@ -1,6 +1,6 @@
 import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedBoxShadow, resolvedColour, TILE_SHADOW } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, TILE_FILL, TILE_SHADOW } from '../support/token';
 import { WordedFindingList } from './FindingList.story';
 
 const en = await createTranslator('en');
@@ -29,7 +29,7 @@ test('a finding is a tile and its controls are white', async ({ mount, page }) =
   );
   const finding = list.getByRole('listitem');
 
-  await expect(finding).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(finding).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
   await expect(finding).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
   await expect(finding.getByRole('button', { name: jumpLabel })).toHaveCSS(
     'background-color',

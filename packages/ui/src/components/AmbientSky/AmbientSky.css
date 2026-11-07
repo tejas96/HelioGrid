@@ -1,0 +1,77 @@
+/* AmbientSky — the one loop that runs on: fields of the logo's light drifting slowly behind a door
+   or a page's top glow. Transform only; paused off-screen, in a hidden tab and under reduced motion
+   (`data-running`), gone in field mode. */
+
+.hg-ambient {
+  --hg-amb-lift: 1;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+:root[data-theme="dark"] .hg-ambient {
+  --hg-amb-lift: var(--hg-amb-dark-lift);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hg-ambient {
+    --hg-amb-lift: var(--hg-amb-dark-lift);
+  }
+}
+
+[data-field-mode="on"] .hg-ambient {
+  display: none;
+}
+
+.hg-ambient-light {
+  --hue: var(--brand-teal);
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--size);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--hue) calc(var(--a) * var(--hg-amb-lift) * 100%), transparent),
+    transparent
+  );
+  translate: -50% -50%;
+  will-change: transform;
+  animation: hg-ambient-drift var(--amb-drift) var(--ease-standard) infinite alternate both;
+  animation-delay: calc(var(--phase) * var(--amb-drift) / -3.5);
+  animation-play-state: paused;
+}
+
+.hg-ambient[data-running="true"] .hg-ambient-light {
+  animation-play-state: running;
+}
+
+.hg-ambient-light[data-hue="green"] {
+  --hue: var(--brand-green);
+}
+
+.hg-ambient-light[data-hue="blue"] {
+  --hue: var(--brand-blue);
+}
+
+.hg-ambient-light[data-hue="ocean"] {
+  --hue: var(--brand-ocean);
+}
+
+@keyframes hg-ambient-drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(var(--dx), var(--dy)) scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hg-ambient-light {
+    animation: none;
+  }
+}

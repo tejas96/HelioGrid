@@ -1,0 +1,64 @@
+/* CatalogItemList — the narrow list (direction A): a section head, then one glass card (`CardRows`)
+   holding every row. A row's frame, hairline and open target are `CardRow`'s; this lays out its body. */
+
+.hg-cat-list-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  padding: var(--sp-2) var(--sp-1) 0;
+}
+
+/* The tile, the words (and the row's acts) on the first line; under them the marks with the price
+   at their end, the row's whole width, so a phone's row holds them on one line. */
+.hg-cat-row-body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "tile words acts"
+    "marks marks marks";
+  align-items: start;
+  gap: var(--sp-2) var(--sp-3);
+}
+
+.hg-cat-row-body > :first-child {
+  grid-area: tile;
+}
+
+.hg-cat-row-words {
+  grid-area: words;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+/* A brand and model, not a sentence: one line, cut at the end, its whole text in the row's spoken
+   name and its title. */
+.hg-cat-row-name {
+  overflow: hidden;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hg-cat-row-marks {
+  grid-area: marks;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+}
+
+.hg-cat-row-body > .hg-card-row-aside {
+  grid-area: acts;
+}
+
+/* The price — or its absence — closes the marks' line at the row's end. */
+.hg-cat-row-price {
+  margin-inline-start: auto;
+  text-align: end;
+}

@@ -12,6 +12,7 @@ import {
 import { useI18n } from '@heliogrid/i18n/react';
 import {
   Button,
+  type CatalogEditorOwnActs,
   CatalogPriceEditor,
   CatalogRelease,
   catalogEditorSwitches,
@@ -26,7 +27,7 @@ import { ReleasesSurface } from './ReleasesSurface';
 type Release = CatalogFacts['release'];
 
 /** *Cancel* and the act side by side, the act the wider; a consequence line above when given. */
-function Foot({
+export function Foot({
   line = null,
   cancel,
   onCancel,
@@ -65,14 +66,30 @@ export function ItemsOverlays({
   overlays,
   schemes,
   release,
+  onPriceSaved,
+  ownActs,
+  docked,
 }: {
   overlays: CatalogOverlays;
   schemes: readonly string[];
   release: Release;
+  /** A price landed: the panel's toast plays the `saved` moment under the item's name. */
+  onPriceSaved: (name: string) => void;
+  /** An own SKU's *Prefer* and *Archive* in its editor, done at once as its row did them. */
+  ownActs: CatalogEditorOwnActs | null;
+  /** The desktop draws the editor docked beside the list (`PriceEditorDock`), never over it. */
+  docked: boolean;
 }) {
   return (
     <>
-      <PriceEditorSurface overlays={overlays} schemes={schemes} />
+      {docked ? null : (
+        <PriceEditorSurface
+          overlays={overlays}
+          schemes={schemes}
+          onPriceSaved={onPriceSaved}
+          ownActs={ownActs}
+        />
+      )}
       <ArchiveConfirm overlays={overlays} />
       <PublishSurface overlays={overlays} release={release} />
       <ReleasesSurface releases={overlays.releases} />
@@ -83,9 +100,13 @@ export function ItemsOverlays({
 function PriceEditorSurface({
   overlays,
   schemes,
+  onPriceSaved,
+  ownActs,
 }: {
   overlays: CatalogOverlays;
   schemes: readonly string[];
+  onPriceSaved: (name: string) => void;
+  ownActs: CatalogEditorOwnActs | null;
 }) {
   const { t } = useI18n();
   const formats = useCatalogFormats();
@@ -97,19 +118,24 @@ function PriceEditorSurface({
       open={item !== null}
       onClose={draft.close}
       closeLabel={t(CATALOG_EDITOR.close)}
+      showClose
       modal={false}
+      /* The act alone, full width (direction A): the sheet's close is the way out. */
       footer={
-        <Foot cancel={{ label: t(CATALOG_EDITOR.cancel) }} onCancel={draft.close}>
-          <Button
-            variant="primary"
-            size="lg"
-            fullWidth
-            loading={draft.pending}
-            onClick={() => void draft.save()}
-          >
-            {t(platform ? CATALOG_EDITOR.saveOverride : CATALOG_EDITOR.savePrice)}
-          </Button>
-        </Foot>
+        <Button
+          variant="primary"
+          size="lg"
+          fullWidth
+          loading={draft.pending}
+          onClick={() => {
+            const name = item === null ? '' : `${item.brand} ${item.model}`;
+            void draft.save().then((saved) => {
+              if (saved) onPriceSaved(name);
+            });
+          }}
+        >
+          {t(CATALOG_EDITOR.savePrice)}
+        </Button>
       }
     >
       {item === null ? null : (
@@ -126,6 +152,7 @@ function PriceEditorSurface({
           taxOverridden={draft.taxPct !== ''}
           packRateMissing={item.tax?.source !== 'pack'}
           switches={platform ? catalogEditorSwitches(draft) : null}
+          ownActs={ownActs}
           problem={draft.problem === null ? null : t(CATALOG_EDITOR.saveFailed)}
         />
       )}
@@ -219,6 +246,7 @@ function PublishSurface({ overlays, release }: { overlays: CatalogOverlays; rele
         label={overlays.label}
         onLabel={overlays.setLabel}
         problem={shown.problem}
+        empty={shown.empty}
         changes={shown.changes}
         read={preview.lines.read}
         more={

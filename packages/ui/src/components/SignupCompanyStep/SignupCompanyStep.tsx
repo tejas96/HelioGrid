@@ -15,6 +15,7 @@ import { SignupFields } from './SignupFields';
  * and shown once — over the roads under the breakpoint, in the identity half from it.
  */
 export function SignupCompanyStep({
+  story,
   language,
   words,
   phoneE164,
@@ -44,6 +45,8 @@ export function SignupCompanyStep({
   );
   return (
     <DoorFrame
+      sky="door"
+      story={story}
       trailing={language}
       taskMeasure="steps"
       lead={<SignupSteps words={words.steps} current={2} />}

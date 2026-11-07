@@ -2,11 +2,12 @@ import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Banner } from '../Banner/Banner';
 import { BannerAction } from '../Banner/BannerAction';
 import { Button } from '../Button/Button';
+import { CardRows } from '../CardRows';
 import { EmptyState } from '../EmptyState/EmptyState';
-import { MemberCard } from './MemberCard';
-import { memberCardOf, memberListEmptyOf } from './MemberCard.logic';
+import { memberFactsOf, memberListEmptyOf } from './MemberCard.logic';
 import type { MemberListProps } from './MemberCard.types';
-import { MemberCardsLoading } from './MemberCardsLoading';
+import { MemberRow } from './MemberRow';
+import { MemberRowsLoading } from './MemberRowsLoading';
 
 /** A team list's body (`SCR-M01-12`): its read's state or one of its bodies (`TeamSurface`), never two at once. */
 export function MemberList({
@@ -23,7 +24,7 @@ export function MemberList({
 }: MemberListProps) {
   /* The reader is on every team, so its read is never empty: only the wait draws here. */
   if (read.kind === 'loading' || read.kind === 'empty') {
-    if (waiting === undefined) return <MemberCardsLoading label={words.loading} />;
+    if (waiting === undefined) return <MemberRowsLoading label={words.loading} />;
     return (
       <div role="status" aria-busy="true" aria-label={words.loading}>
         {waiting}
@@ -60,15 +61,18 @@ export function MemberList({
     );
   }
   const list = records ?? (
-    <section className="hg-member-list" aria-label={words.label}>
-      {view.rows.map((row) => (
-        <MemberCard
-          key={row.id}
-          {...memberCardOf(row, words.row(row), words.role, words.you)}
-          action={actOf?.(row)}
-          onOpen={openOf?.(row)}
-        />
-      ))}
+    <section aria-label={words.label}>
+      <CardRows>
+        {view.rows.map((row, index) => (
+          <MemberRow
+            key={row.id}
+            {...memberFactsOf(row, words.row(row), words.role, words.you)}
+            action={actOf?.(row)}
+            onOpen={openOf?.(row)}
+            first={index === 0}
+          />
+        ))}
+      </CardRows>
     </section>
   );
   if (surface !== 'teaching') return list;
@@ -76,7 +80,7 @@ export function MemberList({
     <>
       {list}
       <EmptyState
-        icon={<ShellGlyph name="people" size="xl" tone="primary" />}
+        moment="empty-team"
         title={words.alone}
         description={words.aloneLine}
         action={teachingAction}

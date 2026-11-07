@@ -1,21 +1,34 @@
-import { useShellScreen } from '@heliogrid/data/react';
+import { useHomeToday, useShellScreen } from '@heliogrid/data/react';
+import { SETTINGS_SEGMENT, type SettingsRow } from '@heliogrid/domain';
 import {
   accessRemovedWords,
   BLOCK,
   connectionWords,
   homeBlocksWords,
+  homeGreeting,
   homeHeadWords,
   todayLine,
+  verbLabel,
 } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { AccessRemoved, HomeBlocks, HomeHead, NoConnection, useFormat } from '@heliogrid/ui';
-import { useIsFocused } from '@react-navigation/native';
+import {
+  AccessRemoved,
+  Button,
+  HomeBlocks,
+  HomeHead,
+  NoConnection,
+  ShellGlyph,
+  useFormat,
+} from '@heliogrid/ui';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useRef } from 'react';
 import { useWindowDimensions, type View } from 'react-native';
 import { FirstRunMark } from './components/FirstRunMark';
 import { GrievanceNote } from './components/GrievanceNote';
+import { HomeToday } from './components/HomeToday';
 import { ShellFrame } from './components/ShellFrame';
 import { ShellTopBar } from './components/ShellTopBar';
+import { VERB_ROUTE } from './doors';
 import { switcherWidth } from './styles';
 import { usePillItems } from './use-pill-items';
 
@@ -32,6 +45,8 @@ export function ShellScreen() {
   const format = useFormat();
   const { width } = useWindowDimensions();
   const screen = useShellScreen();
+  const today = useHomeToday();
+  const navigation = useNavigation();
   const { shell, grievance, connection } = screen;
   const titleRef = useRef<View>(null);
   const actionRef = useRef<View>(null);
@@ -57,6 +72,9 @@ export function ShellScreen() {
 
   const home = shell.home;
   const head = home === null ? null : homeHeadWords(t, home.home, shell.homes);
+  const verb = shell.centreVerb;
+  const openRow = (row: SettingsRow) =>
+    navigation.navigate('SettingsRow', { segment: SETTINGS_SEGMENT[row] });
   return (
     <ShellFrame topBar={<ShellTopBar screen={screen} />} items={items} inView="home">
       {home === null || head === null ? null : (
@@ -64,6 +82,7 @@ export function ShellScreen() {
           <HomeHead
             {...head}
             dateLine={todayLine(t, format.date(new Date()))}
+            greeting={homeGreeting(t, today.dayPart, today.personName)}
             entries={head.entries.map((entry) => ({
               ...entry,
               key: entry.preset,
@@ -71,7 +90,20 @@ export function ShellScreen() {
             }))}
             switcherWidth={switcherWidth(width)}
             titleAnchor={titleRef}
+            action={
+              verb === null ? undefined : (
+                <Button
+                  size="prominent"
+                  fullWidth
+                  icon={<ShellGlyph name="plus" size="md" tone="inverse" />}
+                  onClick={() => navigation.navigate(VERB_ROUTE[verb])}
+                >
+                  {verbLabel(t, verb)}
+                </Button>
+              )
+            }
           />
+          <HomeToday today={today} open={openRow} />
           <HomeBlocks
             {...homeBlocksWords(t, home)}
             read={shell.read}

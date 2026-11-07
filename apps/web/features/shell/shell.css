@@ -15,7 +15,8 @@
   flex-direction: column;
   gap: var(--sp-6);
   max-width: var(--content-max);
-  min-height: 100%;
+  /* The rest of the main's height, under the pinned top (`AppShell.css`). */
+  flex-grow: 1;
   padding: var(--sp-6) var(--screen-pad-mobile)
     calc(var(--bottomnav-h) + env(safe-area-inset-bottom) + var(--sp-6));
   animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
@@ -34,6 +35,13 @@
    their 44 inside a 375 window. */
 .hg-shell .hg-app-shell-header-tenant {
   flex-shrink: 1;
+  min-width: 0;
+}
+
+/* The wordmark over the company's name, the name cut first. */
+.hg-shell-identity {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
 }
 
@@ -60,9 +68,11 @@
   .hg-shell .hg-bottom-nav {
     display: none;
   }
+  /* One frame for every page: the title starts where the billing strip's chip does
+     (`BillingStrip.css`), and the settings pair takes the same padding (`settings.css`). */
   .hg-shell-page,
   .hg-shell-page[data-pad="functional"] {
-    padding: var(--sp-8) var(--screen-pad-desktop) var(--sp-12) var(--sp-5);
+    padding: var(--sp-8) var(--screen-pad-desktop) var(--sp-12);
   }
   .hg-shell-page .hg-menu-list {
     max-width: calc(100vw - var(--sidebar-w) - 2 * var(--screen-pad-desktop));
@@ -75,4 +85,64 @@
   .hg-shell-centre-open .hg-shell-page {
     padding-inline-end: calc(var(--form-max) + var(--sp-8) + var(--sp-6));
   }
+}
+
+/* The sidebar's search with the keys that bring it to hand at its end; they step aside while the
+   field holds words. */
+.hg-shell-search {
+  position: relative;
+}
+
+.hg-shell-search-keys {
+  position: absolute;
+  inset-inline-end: var(--sp-3);
+  inset-block: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin-block: auto;
+  height: fit-content;
+  padding: 0 var(--sp-1);
+  border-radius: var(--rf-sm);
+  background: var(--fill);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  pointer-events: none;
+}
+
+.hg-shell-search:focus-within .hg-shell-search-keys,
+.hg-shell-search:has(input:not(:placeholder-shown)) .hg-shell-search-keys {
+  opacity: 0;
+}
+
+/* Home (redesign direction A): the head, then the first-proposal hero beside the day at a glance
+   and the preset's blocks — one column on a phone, two from a wide window. */
+.hg-home {
+  gap: var(--sp-8);
+}
+
+.hg-home-verb {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Two columns once each can hold a form's measure, one before: no window width is named. */
+.hg-home-grid {
+  display: grid;
+  grid-template-columns: repeat(
+      auto-fit,
+      minmax(min(100%, calc(var(--form-max) + var(--sp-8))), 1fr)
+    );
+  align-items: start;
+  gap: var(--sp-6);
+}
+
+.hg-home-main,
+.hg-home-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  min-width: 0;
 }

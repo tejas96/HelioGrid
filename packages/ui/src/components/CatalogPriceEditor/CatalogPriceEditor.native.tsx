@@ -1,37 +1,25 @@
-import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
-import { Badge, Chip } from '../Chip/Chip.native';
+import { Badge } from '../Chip/Chip.native';
 import { Explainer } from '../Explainer/Explainer.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
 import { NumberField } from '../NumberField/NumberField.native';
-import { Switch } from '../Switch/Switch.native';
-import { ValueSource } from '../ValueSource/ValueSource.native';
-import type { ValueSourceSpec } from '../ValueSource/ValueSource.types';
-import type { CatalogPriceEditorProps, CatalogPriceEditorWords } from './CatalogPriceEditor.types';
+import { CatalogEditedHead } from './CatalogEditedHead.native';
+import { CatalogPickerActs } from './CatalogPickerActs.native';
+import type { CatalogPriceEditorProps } from './CatalogPriceEditor.types';
 
 /** A decimal string as the field's figure; `''` is no figure. */
 const figureOf = (typed: string): number | undefined => (typed === '' ? undefined : Number(typed));
 
 /**
- * The price editor's body on the phone: the item, its price, a platform item's tax and its two
- * picker switches, each naming the tier it comes from. The app's sheet holds it and draws the foot.
+ * The price editor's body on the phone (direction A): the item — its tile, name, marks and spec
+ * grid — then its price, a platform item's tax and its two picker toggles. The app's sheet holds
+ * it and draws the foot.
  */
 export function CatalogPriceEditor(props: CatalogPriceEditorProps) {
   const { words, item, amount, switches } = props;
-  /* An own SKU's price is its own; a platform item's is the tenant's override. */
-  const priceSource: ValueSourceSpec | undefined =
-    amount === ''
-      ? undefined
-      : {
-          level: 'own',
-          layerName: switches === null ? item.overline : words.yourOverride,
-          fieldName: words.price,
-        };
   return (
     <View style={styles.body}>
       {/* First, where it is seen: the sheet's foot covers the body's end. */}
@@ -40,28 +28,9 @@ export function CatalogPriceEditor(props: CatalogPriceEditorProps) {
           {props.problem}
         </Text>
       )}
-      <View style={[tileSurface, styles.item]}>
-        <GroundProvider ground="tile">
-          <View style={styles.itemWords}>
-            <Text variant="overline" color="secondary">
-              {item.overline}
-            </Text>
-            <Text variant="body" bold>
-              {item.name}
-            </Text>
-            <View style={styles.chips}>
-              {item.chips.map((chip) => (
-                <Chip key={chip} density="functional">
-                  {chip}
-                </Chip>
-              ))}
-              {item.held.map((scheme) => (
-                <Badge key={scheme} tone="success" density="functional">
-                  {scheme}
-                </Badge>
-              ))}
-            </View>
-          </View>
+      <CatalogEditedHead
+        item={item}
+        ask={
           <Explainer
             label={words.howItResolves}
             title={words.howItResolves}
@@ -73,15 +42,13 @@ export function CatalogPriceEditor(props: CatalogPriceEditorProps) {
             backLabel={words.explainer.backLabel}
             positionLabel={words.explainer.positionLabel}
           />
-        </GroundProvider>
-      </View>
+        }
+      />
 
       <View style={styles.section}>
-        <Text variant="overline" color="secondary">
-          {words.yourPrice}
-        </Text>
+        {/* One label for the one field that matters (direction A): *Your price*. */}
         <NumberField
-          label={words.price}
+          label={words.yourPrice}
           words={words.numberField}
           value={figureOf(amount)}
           onCommit={(value) => props.onAmount(String(value))}
@@ -91,36 +58,12 @@ export function CatalogPriceEditor(props: CatalogPriceEditorProps) {
           outOfRange="refuse"
           min={0}
           density="functional"
-          hint={words.priceHint}
-          {...(priceSource === undefined ? {} : { attribution: priceSource })}
+          hint={amount === '' ? words.priceNeeded : words.priceHint}
         />
         {props.taxPct === null ? null : <TaxField props={props} taxPct={props.taxPct} />}
       </View>
 
-      {switches === null ? null : (
-        <View style={styles.switchSection}>
-          <Text variant="overline" color="secondary">
-            {words.inPickers}
-          </Text>
-          <View style={styles.switchCard}>
-            <SwitchRow
-              label={words.hideFromPickers}
-              checked={switches.hidden}
-              onChange={switches.onHidden}
-              fromOverride={switches.hiddenFromOverride}
-              words={words}
-            />
-            <View style={styles.hairline} />
-            <SwitchRow
-              label={words.preferredInPickers}
-              checked={switches.preferred}
-              onChange={switches.onPreferred}
-              fromOverride={switches.preferredFromOverride}
-              words={words}
-            />
-          </View>
-        </View>
-      )}
+      <CatalogPickerActs words={words} switches={switches} own={props.ownActs ?? null} />
     </View>
   );
 }
@@ -164,79 +107,11 @@ function TaxField({ props, taxPct }: { props: CatalogPriceEditorProps; taxPct: s
   );
 }
 
-/** One picker switch: its words and the tier that set it, the switch at the right. */
-function SwitchRow({
-  label,
-  checked,
-  onChange,
-  fromOverride,
-  words,
-}: {
-  label: TranslatedText;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-  fromOverride: boolean;
-  words: CatalogPriceEditorWords;
-}) {
-  return (
-    <View style={styles.switchRow}>
-      <View style={styles.switchWords}>
-        <Text variant="body-sm" bold>
-          {label}
-        </Text>
-        <ValueSource
-          level={fromOverride ? 'own' : 'inherited'}
-          layerName={fromOverride ? words.yourOverride : words.defaultSource}
-          fieldName={label}
-        />
-      </View>
-      <Switch checked={checked} onChange={onChange} ariaLabel={label} />
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
-  body: { gap: theme.spacing['sp-4'] },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: theme.spacing['sp-3'],
-    padding: theme.spacing['sp-3'],
-    borderRadius: theme.radius['r-tile'],
-  },
-  itemWords: { flex: 1, minWidth: 0, gap: theme.spacing['sp-1'] },
-  chips: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: theme.spacing['sp-2'],
-    marginTop: theme.spacing['sp-1'],
-  },
+  body: { gap: theme.spacing['sp-6'] },
   section: { gap: theme.spacing['sp-3'] },
   tax: { gap: theme.spacing['sp-2'] },
-  lockNote: {
-    ...tileSurface,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.layout['tile-gap'],
-    paddingVertical: theme.layout['tile-gap'],
-    paddingHorizontal: theme.spacing['sp-3'],
-    borderRadius: theme.radius['r-sm'],
-  },
+  /* A quiet line under the field, as the web's: a boxed note read as a second form. */
+  lockNote: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
   lockWords: { flex: 1, minWidth: 0 },
-  switchSection: { gap: theme.spacing['sp-2'] },
-  /* The board's card on the sheet: the sheet's own ground inside a soft line, not a tile. */
-  switchCard: {
-    borderWidth: 1,
-    borderColor: colors['line-soft'],
-    borderRadius: theme.radius['r-md'],
-  },
-  switchRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing['sp-3'],
-    paddingVertical: theme.spacing['sp-3'],
-    paddingHorizontal: theme.spacing['sp-3'],
-  },
-  switchWords: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
-  hairline: { height: 1, marginHorizontal: 14, backgroundColor: colors['line-soft'] },
 });

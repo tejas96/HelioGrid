@@ -166,3 +166,7 @@ export interface BillingSheetsView {
   readonly cancel: BillingCancelAskProps | null;
   readonly refund: BillingRefundAskProps | null;
 }
+
+/** What a calm empty tile shows (`BillingQuiet`): a quiet moment for a list with nothing in it yet,
+ *  the card glyph for a payment method not set up. */
+export type QuietArt = 'inbox' | 'empty' | 'card';

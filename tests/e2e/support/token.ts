@@ -72,8 +72,11 @@ export function fillOf(holder: Locator): Promise<string> {
   return holder.evaluate((node) => getComputedStyle(node).backgroundColor);
 }
 
-/** A tile (`packages/ui/src/primitives/Ground/Ground.css`): the card colour, ringed in `--line-soft` over `--e1`. */
-export const TILE_SHADOW = '0 0 0 1px var(--line-soft), var(--e1)';
+/** A tile (`packages/ui/src/primitives/Ground/Ground.css`): glass — a light on its top edge, ringed in `--line-soft`, over `--e2`. */
+export const TILE_SHADOW = 'inset 0 1px 0 var(--glass-edge), 0 0 0 1px var(--line-soft), var(--e2)';
+
+/** A tile's fill (`primitives/Ground/Ground.css`'s tiles list): the card colour frosted — glass. */
+export const TILE_FILL = '--glass';
 
 /** The resting edge a field and a secondary button draw inside themselves: a `--line-strong` hairline. */
 export const STRONG_EDGE = 'inset 0 0 0 1px var(--line-strong)';

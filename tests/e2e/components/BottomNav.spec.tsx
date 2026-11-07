@@ -6,8 +6,8 @@ import { resolvedLength } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 
 /**
- * The phone footer (`F7-22`, the design system's open-page `BottomNav`): one white pill on the
- * footer tokens, separated by its shadow and never a line (`F7-15`); the verb runs its act and is
+ * The phone footer (`F7-22`, the design system's open-page `BottomNav`): one glass pill on the
+ * footer tokens, separated by its shadow and its lit edge, never a line (`F7-15`); the verb runs its act and is
  * never the item in view.
  */
 const en = await createTranslator('en');
@@ -17,7 +17,7 @@ const destination = (key: 'home' | 'leads' | 'proposals' | 'more'): BottomNavIte
   icon: <ShellGlyph name="house" />,
 });
 
-test('the pill floats on the footer tokens, with no border and the e4 shadow', async ({
+test('the pill floats on the footer tokens, a glass float with no border, its edge lit over the e4 shadow', async ({
   mount,
   page,
 }) => {
@@ -47,7 +47,8 @@ test('the pill floats on the footer tokens, with no border and the e4 shadow', a
     probe.remove();
     return value;
   });
-  await expect(pill).toHaveCSS('box-shadow', e4);
+  // The lit edge and the hairline ring come first; the float's own lift is the e4 shadow under them.
+  expect(await pill.evaluate((node) => getComputedStyle(node).boxShadow)).toContain(e4);
 });
 
 test('the verb runs its act, never becomes the item in view, and every slot clears the touch floor', async ({

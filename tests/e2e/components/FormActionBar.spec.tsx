@@ -58,6 +58,38 @@ async function expectOneOrder(bar: Locator, words: Words): Promise<void> {
   await expectTouchFloor([save, discard]);
 }
 
+/** A computed colour's channels, 0–1 with its alpha: `rgb()`/`rgba()` or `color(srgb …)`. */
+function channelsOf(colour: string): readonly number[] {
+  const srgb = colour.match(/color\(srgb ([\d.]+) ([\d.]+) ([\d.]+)(?: \/ ([\d.]+))?\)/);
+  if (srgb !== null) return [srgb[1], srgb[2], srgb[3], srgb[4] ?? '1'].map(Number);
+  const rgb = colour.match(/rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?\)/);
+  if (rgb === null) throw new Error(`not a colour: ${colour}`);
+  return [Number(rgb[1]) / 255, Number(rgb[2]) / 255, Number(rgb[3]) / 255, Number(rgb[4] ?? '1')];
+}
+
+/**
+ * The phone's sticky bar is the card colour frosted over the page: the card's own colour, nearly
+ * opaque, with the page blurred behind it — never a tint that lets the form show through. The glass
+ * may be the bar's own paint or its `::before` layer (a backdrop filter on the bar itself would
+ * hold a fixed overlay opened inside it), so either is read.
+ */
+async function expectFrostedCard(bar: Locator, surface: string) {
+  const { colour, backdrop } = await bar.evaluate((node) => {
+    const own = getComputedStyle(node);
+    const layer = getComputedStyle(node, '::before');
+    const clear = (value: string) => value === 'rgba(0, 0, 0, 0)' || value === 'transparent';
+    return {
+      colour: clear(own.backgroundColor) ? layer.backgroundColor : own.backgroundColor,
+      backdrop: own.backdropFilter === 'none' ? layer.backdropFilter : own.backdropFilter,
+    };
+  });
+  const [r = 0, g = 0, b = 0, alpha = 0] = channelsOf(colour);
+  const [sr = 0, sg = 0, sb = 0] = channelsOf(surface);
+  expect(Math.max(Math.abs(r - sr), Math.abs(g - sg), Math.abs(b - sb))).toBeLessThan(0.01);
+  expect(alpha).toBeGreaterThanOrEqual(0.8);
+  expect(backdrop).toContain('blur');
+}
+
 test('sticky and footer', async ({ mount, page }) => {
   const surface = await resolvedColour(page, '--surface');
   const raised = await resolvedShadow(page, '--e4');
@@ -71,8 +103,9 @@ test('sticky and footer', async ({ mount, page }) => {
       await page.setViewportSize({ width, height: 900 });
       for (const placement of ['sticky', 'footer'] as const) {
         await expectOneOrder(barAt(page, placement), words);
-        await expect(barAt(page, placement)).toHaveCSS('background-color', surface);
       }
+      await expectFrostedCard(barAt(page, 'sticky'), surface);
+      await expect(barAt(page, 'footer')).toHaveCSS('background-color', surface);
       await expectNoSidewaysScroll(page);
     }
   }

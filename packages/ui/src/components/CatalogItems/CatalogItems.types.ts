@@ -42,6 +42,11 @@ export interface CatalogItemsProps {
   /** The market's declared schemes; empty draws no compliance column, badge, gap or scheme filter. */
   schemes: readonly string[];
   rows: readonly CatalogRow[];
+  /**
+   * How many items each kind holds — each kind chip's count, and *All*'s their sum. Absent or
+   * `null` while a count is out: the chips draw no counts rather than a wrong one.
+   */
+  kindCounts?: Readonly<Record<ComponentKind, number>> | null;
   /** A row whose write is out, or came back failed with nothing changed. */
   rowStates: Readonly<Record<string, CatalogRowStatus>>;
   paging: CatalogPaging;
@@ -55,6 +60,11 @@ export interface CatalogItemsProps {
   onAdd: (() => void) | null;
   /** The item just added: its row is tinted until the app clears it (`SCR-M01-16` decision 1). */
   addedId: string | null;
+  /**
+   * The item whose detail is open beside the list — the desktop's docked panel: its row reads as
+   * the chosen one. Absent or `null` where the detail covers the list (a sheet).
+   */
+  openedId?: string | null;
   /** The row was asked for: the app opens its price editor. Absent without the grant. */
   onOpen: (row: CatalogRow) => void;
   onPrefer: (row: CatalogRow) => void;
@@ -80,6 +90,17 @@ export interface CatalogStrip {
   /** *Publish* · *Start version 8*; `null` without the grant. */
   readonly action: TranslatedText | null;
   readonly onAction: () => void;
+  /**
+   * The hero's figures, each a number over its label — on *Items*, the catalog's size and what is
+   * the company's own. Absent or empty draws none.
+   */
+  readonly figures?: readonly CatalogStripFigure[];
+}
+
+/** One of the hero's figures: the number, formatted by the caller, and the label under it. */
+export interface CatalogStripFigure {
+  readonly value: string;
+  readonly label: TranslatedText;
 }
 
 /** One resolved item as the list shows it: the server's facts plus the words chosen for them. */

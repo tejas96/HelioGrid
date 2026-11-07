@@ -1,13 +1,14 @@
 import { TYPICAL_SYSTEM_KWP } from '@heliogrid/domain';
 import { useRef } from 'react';
 import { Text } from '../../primitives/Text/Text';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button/Button';
 import { DoorFrame } from '../DoorFrame/DoorFrame';
 import { DoorTitle } from '../DoorFrame/DoorTitle';
 import { NumberField } from '../NumberField/NumberField';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup';
 import { TintedBlock } from '../TintedBlock/TintedBlock';
-import { useRefusalAnswer } from './SetupWhatYouSell.logic';
+import { SEGMENT_GLYPH, useRefusalAnswer } from './SetupWhatYouSell.logic';
 import type { SetupWhatYouSellProps } from './SetupWhatYouSell.types';
 
 /** What a question's box holds that takes the focus: the group's one tab stop, or the size's input. */
@@ -102,7 +103,10 @@ export function SetupWhatYouSell({
         <div ref={kinds}>
           <OptionCardGroup
             label={words.group}
-            options={[...words.options]}
+            options={words.options.map((option) => ({
+              ...option,
+              icon: <ShellGlyph name={SEGMENT_GLYPH[option.value]} size="lg" tone="accent" />,
+            }))}
             value={segment ?? undefined}
             error={words.groupError ?? undefined}
             onChange={(value) => {

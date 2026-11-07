@@ -245,7 +245,7 @@ msgid "{count, plural, one {# notification} other {# notifications}}"
 msgstr "{count, plural, one {# notification} other {# notifications}}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:35
+#: src/copy/catalog-editor.ts:36
 msgid "{count, plural, one {# open draft keeps it and its price; it leaves every picker until restored.} other {# open drafts keep it and its price; it leaves every picker until restored.}}"
 msgstr "{count, plural, one {# open draft keeps it and its price; it leaves every picker until restored.} other {# open drafts keep it and its price; it leaves every picker until restored.}}"
 
@@ -296,7 +296,7 @@ msgid "{count, plural, one {# proposal opened} other {# proposals opened}}"
 msgstr "{count, plural, one {# proposal opened} other {# proposals opened}}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:61
+#: src/copy/catalog-editor.ts:64
 msgid "{count, plural, one {# release} other {# releases}} · newest first"
 msgstr "{count, plural, one {# release} other {# releases}} · newest first"
 
@@ -341,6 +341,11 @@ msgid "{count, plural, one {# turn} other {# turns}} · {names}"
 msgstr "{count, plural, one {# turn} other {# turns}} · {names}"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-spec-cells.ts:28
+msgid "{count, plural, one {# year} other {# years}}"
+msgstr "{count, plural, one {# year} other {# years}}"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:50
 msgid "{count, plural, one {≈ # page} other {≈ # pages}}"
 msgstr "{count, plural, one {≈ # page} other {≈ # pages}}"
@@ -371,6 +376,16 @@ msgid "{count, plural, one {Hide the # ready check} other {Hide the # ready chec
 msgstr "{count, plural, one {Hide the # ready check} other {Hide the # ready checks}}"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-figures.ts:9
+msgid "{count, plural, one {item in your catalog} other {items in your catalog}}"
+msgstr "{count, plural, one {item in your catalog} other {items in your catalog}}"
+
+#. js-lingui-explicit-id
+#: src/copy/home-today.ts:26
+msgid "{count, plural, one {item} other {items}}"
+msgstr "{count, plural, one {item} other {items}}"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:23
 msgid "{count, plural, one {Mark the # unread notification read} other {Mark all # unread notifications read}}"
 msgstr "{count, plural, one {Mark the # unread notification read} other {Mark all # unread notifications read}}"
@@ -386,12 +401,17 @@ msgid "{count, plural, one {One sheet.} other {# sheets. We read the one with a 
 msgstr "{count, plural, one {One sheet.} other {# sheets. We read the one with a header row.}}"
 
 #. js-lingui-explicit-id
+#: src/copy/home-today.ts:27
+msgid "{count, plural, one {person} other {people}}"
+msgstr "{count, plural, one {person} other {people}}"
+
+#. js-lingui-explicit-id
 #: src/copy/price-book.ts:47
 msgid "{count, plural, one {Price book · # version} other {Price book · # versions}}"
 msgstr "{count, plural, one {Price book · # version} other {Price book · # versions}}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-words.ts:62
+#: src/copy/catalog-words.ts:60
 msgid "{count, plural, one {Show # item} other {Show # items}}"
 msgstr "{count, plural, one {Show # item} other {Show # items}}"
 
@@ -441,12 +461,12 @@ msgid "{count} {noun} waiting"
 msgstr "{count} {noun} waiting"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:57
+#: src/copy/usage-page.ts:56
 msgid "{count} a month"
 msgstr "{count} a month"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:61
+#: src/copy/usage-page.ts:60
 msgid "{count} GB"
 msgstr "{count} GB"
 
@@ -456,7 +476,7 @@ msgid "{count} marked read"
 msgstr "{count} marked read"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:60
+#: src/copy/usage-page.ts:59
 msgid "{count} min"
 msgstr "{count} min"
 
@@ -507,12 +527,12 @@ msgid "{current} of {total}, {name}, {errors} to fix"
 msgstr "{current} of {total}, {name}, {errors} to fix"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:84
+#: src/copy/usage-page.ts:79
 msgid "{cycle} · {count, plural, one {# code} other {# codes}}"
 msgstr "{cycle} · {count, plural, one {# code} other {# codes}}"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:83
+#: src/copy/usage-page.ts:78
 msgid "{cycle} · {minutes} min"
 msgstr "{cycle} · {minutes} min"
 
@@ -542,8 +562,8 @@ msgid "{date}, {marker}, supplied by the market pack, cannot be removed"
 msgstr "{date}, {marker}, supplied by the market pack, cannot be removed"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:57
-#: src/copy/usage-page.ts:86
+#: src/copy/team.ts:59
+#: src/copy/usage-page.ts:81
 msgid "{date}, {time}"
 msgstr "{date}, {time}"
 
@@ -558,6 +578,11 @@ msgid "{days, plural, one {# day left in your trial} other {# days left in your 
 msgstr "{days, plural, one {# day left in your trial} other {# days left in your trial}}"
 
 #. js-lingui-explicit-id
+#: src/copy/home-today.ts:25
+msgid "{days, plural, one {day left} other {days left}}"
+msgstr "{days, plural, one {day left} other {days left}}"
+
+#. js-lingui-explicit-id
 #: src/copy/pricing.ts:61
 msgid "{days} days, no card needed."
 msgstr "{days} days, no card needed."
@@ -568,7 +593,7 @@ msgid "{days}-day trial"
 msgstr "{days}-day trial"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:53
+#: src/copy/usage-page.ts:52
 msgid "{days}-day trial · {range}"
 msgstr "{days}-day trial · {range}"
 
@@ -601,6 +626,11 @@ msgstr "{done} of {total} {noun} done"
 #: src/copy/operation-progress.ts:14
 msgid "{done} of {total} {unit}"
 msgstr "{done} of {total} {unit}"
+
+#. js-lingui-explicit-id
+#: src/copy/home-today.ts:17
+msgid "{done} of {total} done"
+msgstr "{done} of {total} done"
 
 #. js-lingui-explicit-id
 #: src/copy/checklist.ts:13
@@ -759,7 +789,7 @@ msgid "{found} of {rows} rows match “{query}”"
 msgstr "{found} of {rows} rows match “{query}”"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:50
+#: src/copy/usage-page.ts:49
 msgid "{from} – {to}"
 msgstr "{from} – {to}"
 
@@ -874,6 +904,11 @@ msgid "{label}, {summary}"
 msgstr "{label}, {summary}"
 
 #. js-lingui-explicit-id
+#: src/copy/sidebar.ts:12
+msgid "{label}, coming soon"
+msgstr "{label}, coming soon"
+
+#. js-lingui-explicit-id
 #: src/copy/operation-progress.ts:16
 msgid "{label}, in progress"
 msgstr "{label}, in progress"
@@ -882,6 +917,11 @@ msgstr "{label}, in progress"
 #: src/copy/usage-meter.ts:25
 msgid "{label}, not resolved yet"
 msgstr "{label}, not resolved yet"
+
+#. js-lingui-explicit-id
+#: src/copy/home-today.ts:31
+msgid "{label}: {value} {unit}. Open {label}"
+msgstr "{label}: {value} {unit}. Open {label}"
 
 #. js-lingui-explicit-id
 #: src/copy/language-switcher.ts:26
@@ -944,14 +984,29 @@ msgid "{language}, written here, {written} of {total} {sectionNoun}"
 msgstr "{language}, written here, {written} of {total} {sectionNoun}"
 
 #. js-lingui-explicit-id
+#: src/copy/home-today.ts:9
+msgid "{left, plural, one {# step to your first proposal} other {# steps to your first proposal}}"
+msgstr "{left, plural, one {# step to your first proposal} other {# steps to your first proposal}}"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:45
 msgid "{left, plural, one {# try left} other {# tries left}} on this code."
 msgstr "{left, plural, one {# try left} other {# tries left}} on this code."
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:74
+msgid "{left} days to renewal"
+msgstr "{left} days to renewal"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-home.ts:65
 msgid "{left} of {total}"
 msgstr "{left} of {total}"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:73
+msgid "{left} of {total} days left"
+msgstr "{left} of {total} days left"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:64
@@ -974,7 +1029,7 @@ msgid "{list} removed from {name}"
 msgstr "{list} removed from {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:112
+#: src/copy/billing-home.ts:121
 #: src/copy/pricing.ts:106
 msgid "{market} price list · {date}"
 msgstr "{market} price list · {date}"
@@ -1005,7 +1060,7 @@ msgid "{message} Last tried at {time}."
 msgstr "{message} Last tried at {time}."
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:100
+#: src/copy/usage-page.ts:95
 msgid "{meter} — events this cycle"
 msgstr "{meter} — events this cycle"
 
@@ -1035,7 +1090,7 @@ msgid "{meter}: {quantity} beyond the bundle at {rate} each"
 msgstr "{meter}: {quantity} beyond the bundle at {rate} each"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:85
+#: src/copy/usage-page.ts:80
 msgid "{minutes} min {seconds} s"
 msgstr "{minutes} min {seconds} s"
 
@@ -1085,7 +1140,7 @@ msgid "{name} can {list}."
 msgstr "{name} can {list}."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:43
+#: src/copy/catalog-editor.ts:44
 msgid "{name} couldn't be restored. It is still archived — restore it from the Archived filter."
 msgstr "{name} couldn't be restored. It is still archived — restore it from the Archived filter."
 
@@ -1270,7 +1325,7 @@ msgid "{paper} · {points}pt · {column}px column · {lines} lines a page"
 msgstr "{paper} · {points}pt · {column}px column · {lines} lines a page"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:24
+#: src/copy/team.ts:26
 msgid "{people, plural, one {# person} other {# people}} · {invites, plural, one {# invite} other {# invites}}"
 msgstr "{people, plural, one {# person} other {# people}} · {invites, plural, one {# invite} other {# invites}}"
 
@@ -1290,7 +1345,7 @@ msgid "{percent}% of the bundle used."
 msgstr "{percent}% of the bundle used."
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:54
+#: src/copy/usage-page.ts:53
 msgid "{percent}% used"
 msgstr "{percent}% used"
 
@@ -1325,6 +1380,11 @@ msgid "{plan} · {from} to {to}"
 msgstr "{plan} · {from} to {to}"
 
 #. js-lingui-explicit-id
+#: src/copy/billing-home.ts:68
+msgid "{plan} · {left} {days, plural, one {day left} other {days left}} · ends {date}"
+msgstr "{plan} · {left} {days, plural, one {day left} other {days left}} · ends {date}"
+
+#. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:58
 msgid "{plan} · first month"
 msgstr "{plan} · first month"
@@ -1333,6 +1393,11 @@ msgstr "{plan} · first month"
 #: src/copy/plan-selection.ts:59
 msgid "{plan} · first year"
 msgstr "{plan} · first year"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:71
+msgid "{plan} · renews {date}"
+msgstr "{plan} · renews {date}"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:38
@@ -1350,12 +1415,12 @@ msgid "{plan} against {against} · limits"
 msgstr "{plan} against {against} · limits"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:107
+#: src/copy/billing-home.ts:116
 msgid "{plan}, {cycle}"
 msgstr "{plan}, {cycle}"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:51
+#: src/copy/usage-page.ts:50
 msgid "{plans}"
 msgstr "{plans}"
 
@@ -1375,22 +1440,22 @@ msgid "{preset} home · your only preset"
 msgstr "{preset} home · your only preset"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:71
+#: src/copy/billing-home.ts:80
 msgid "{price} / mo"
 msgstr "{price} / mo"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:73
+#: src/copy/billing-home.ts:82
 msgid "{price} / mo + {tax}"
 msgstr "{price} / mo + {tax}"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:72
+#: src/copy/billing-home.ts:81
 msgid "{price} / yr"
 msgstr "{price} / yr"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:74
+#: src/copy/billing-home.ts:83
 msgid "{price} / yr + {tax}"
 msgstr "{price} / yr + {tax}"
 
@@ -1400,22 +1465,22 @@ msgid "{printing} of {of} optional sections print"
 msgstr "{printing} of {of} optional sections print"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:52
+#: src/copy/usage-page.ts:51
 msgid "{range} · resets {date}"
 msgstr "{range} · resets {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:75
+#: src/copy/billing-home.ts:84
 msgid "{rate} / min"
 msgstr "{rate} / min"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:58
+#: src/copy/usage-page.ts:57
 msgid "{rate} a minute"
 msgstr "{rate} a minute"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:59
+#: src/copy/usage-page.ts:58
 msgid "{rate} a minute beyond {bundle}"
 msgstr "{rate} a minute beyond {bundle}"
 
@@ -1431,6 +1496,7 @@ msgstr "{ready} ready to import · {needYou} need you"
 
 #. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:32
+#: src/copy/sidebar.ts:16
 msgid "{role} · {company}"
 msgstr "{role} · {company}"
 
@@ -1495,7 +1561,7 @@ msgid "{shown} of {total} {noun} match these filters"
 msgstr "{shown} of {total} {noun} match these filters"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:113
+#: src/copy/billing-home.ts:122
 msgid "{source} · {rate}% {tax}"
 msgstr "{source} · {rate}% {tax}"
 
@@ -1621,12 +1687,12 @@ msgstr "{unread} unread · {total} in the last {days} days"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:107
-#: src/copy/usage-page.ts:55
+#: src/copy/usage-page.ts:54
 msgid "{used} of {limit}"
 msgstr "{used} of {limit}"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:56
+#: src/copy/usage-page.ts:55
 msgid "{used} of {limit} {unit}"
 msgstr "{used} of {limit} {unit}"
 
@@ -1777,6 +1843,11 @@ msgid "a month"
 msgstr "a month"
 
 #. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:67
+msgid "A name and a number are enough to start"
+msgstr "A name and a number are enough to start"
+
+#. js-lingui-explicit-id
 #: src/copy/setup-ready.ts:14
 msgid "A name and a phone number is enough to begin."
 msgstr "A name and a phone number is enough to begin."
@@ -1790,6 +1861,11 @@ msgstr "A name can have up to {max} characters."
 #: src/copy/pricing.ts:28
 msgid "A named contact"
 msgstr "A named contact"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:99
+msgid "A payment link your customer pays from their phone"
+msgstr "A payment link your customer pays from their phone"
 
 #. js-lingui-explicit-id
 #: src/copy/actor-class.ts:10
@@ -1828,9 +1904,14 @@ msgstr "A Quick proposal goes out exactly as this template stands."
 
 #. js-lingui-explicit-id
 #: src/copy/api-error.ts:74
-#: src/copy/catalog-editor.ts:55
+#: src/copy/catalog-editor.ts:56
 msgid "A release already has this name. Choose another name."
 msgstr "A release already has this name. Choose another name."
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:100
+msgid "A reminder before each stage falls due"
+msgstr "A reminder before each stage falls due"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:75
@@ -1871,6 +1952,11 @@ msgstr "A timeline holds up to {count} phases."
 #: src/copy/payment-terms.ts:53
 msgid "A tranche carries a share between 0.01% and 100%."
 msgstr "A tranche carries a share between 0.01% and 100%."
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:89
+msgid "A voice that answers and follows up when your team cannot."
+msgstr "A voice that answers and follows up when your team cannot."
 
 #. js-lingui-explicit-id
 #: src/copy/setup-ready.ts:18
@@ -1984,7 +2070,7 @@ msgid "Accept proposal"
 msgstr "Accept proposal"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:89
+#: src/copy/billing-home.ts:98
 #: src/copy/shell.ts:27
 msgid "Account"
 msgstr "Account"
@@ -2026,18 +2112,18 @@ msgid "Actions"
 msgstr "Actions"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:128
-#: src/copy/team.ts:36
+#: src/copy/billing-home.ts:139
+#: src/copy/team.ts:38
 msgid "Active"
 msgstr "Active"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:52
+#: src/copy/team.ts:54
 msgid "Active · last seen {date}"
 msgstr "Active · last seen {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:53
+#: src/copy/team.ts:55
 msgid "Active · last seen today"
 msgstr "Active · last seen today"
 
@@ -2048,7 +2134,7 @@ msgid "Active projects"
 msgstr "Active projects"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:110
+#: src/copy/billing-home.ts:119
 msgid "Actual usage"
 msgstr "Actual usage"
 
@@ -2061,6 +2147,11 @@ msgstr "Add a battery"
 #: src/copy/shell.ts:116
 msgid "Add a lead from your home"
 msgstr "Add a lead from your home"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:27
+msgid "Add a lead in seconds, from a call or a site visit"
+msgstr "Add a lead in seconds, from a call or a site visit"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:94
@@ -2184,7 +2275,7 @@ msgid "Add your logo"
 msgstr "Add your logo"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:81
+#: src/copy/catalog-editor.ts:84
 #: src/copy/company-profile.ts:81
 msgid "Added"
 msgstr "Added"
@@ -2208,6 +2299,11 @@ msgstr "Added when your account was created · not changed since"
 #: src/copy/company-profile.ts:70
 msgid "Address"
 msgstr "Address"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:60
+msgid "Address, tax number and bank"
+msgstr "Address, tax number and bank"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:70
@@ -2240,7 +2336,7 @@ msgid "Against invoice"
 msgstr "Against invoice"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:47
+#: src/copy/settings.ts:49
 msgid "Agent & voice"
 msgstr "Agent & voice"
 
@@ -2269,12 +2365,12 @@ msgid "All (money scope)"
 msgstr "All (money scope)"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:105
+#: src/copy/billing-home.ts:114
 msgid "All {count} invoices"
 msgstr "All {count} invoices"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:104
+#: src/copy/billing-home.ts:113
 msgid "All invoices"
 msgstr "All invoices"
 
@@ -2312,11 +2408,6 @@ msgstr "Allocate the remaining {share}% to save these terms."
 #: src/copy/allocation.ts:23
 msgid "Allocation"
 msgstr "Allocation"
-
-#. js-lingui-explicit-id
-#: src/copy/usage-page.ts:103
-msgid "Allowed"
-msgstr "Allowed"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:24
@@ -2381,7 +2472,7 @@ msgid "Answered — ready to import."
 msgstr "Answered — ready to import."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-words.ts:53
+#: src/copy/catalog-words.ts:51
 #: src/copy/range-field.ts:11
 msgid "Any"
 msgstr "Any"
@@ -2433,7 +2524,7 @@ msgstr "Approve spend-adjacent campaign settings"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:45
-#: src/copy/catalog-views.ts:141
+#: src/copy/catalog-views.ts:143
 #: src/copy/payment-terms.ts:58
 msgid "Archive"
 msgstr "Archive"
@@ -2444,29 +2535,34 @@ msgid "Archive {name}"
 msgstr "Archive {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:34
+#: src/copy/catalog-editor.ts:35
 #: src/copy/payment-terms.ts:95
 msgid "Archive {name}?"
 msgstr "Archive {name}?"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:38
+#: src/copy/catalog-editor.ts:39
 msgid "Archive it"
 msgstr "Archive it"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:83
-#: src/copy/catalog-views.ts:89
+#: src/copy/catalog-figures.ts:13
+msgid "archived"
+msgstr "archived"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:86
+#: src/copy/catalog-views.ts:91
 msgid "Archived"
 msgstr "Archived"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:40
+#: src/copy/catalog-editor.ts:41
 msgid "Archived {name}"
 msgstr "Archived {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-words.ts:57
+#: src/copy/catalog-words.ts:55
 msgid "Archived items instead"
 msgstr "Archived items instead"
 
@@ -2501,7 +2597,7 @@ msgid "As of {date}"
 msgstr "As of {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:63
+#: src/copy/usage-page.ts:62
 msgid "As of {date}, {time}"
 msgstr "As of {date}, {time}"
 
@@ -2522,7 +2618,7 @@ msgid "Ask a question"
 msgstr "Ask a question"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:87
+#: src/copy/billing-home.ts:96
 #: src/copy/billing-records.ts:51
 msgid "Ask for a refund"
 msgstr "Ask for a refund"
@@ -2574,24 +2670,29 @@ msgid "Assumed"
 msgstr "Assumed"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:28
+#: src/copy/usage-page.ts:27
 msgid "At a limit"
 msgstr "At a limit"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:30
+#: src/copy/usage-page.ts:29
 msgid "At the cap"
 msgstr "At the cap"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:71
+#: src/copy/usage-page.ts:66
 msgid "At the cap, a 7-day grace, then calls pause."
 msgstr "At the cap, a 7-day grace, then calls pause."
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:70
+#: src/copy/usage-page.ts:65
 msgid "At the cap, a 7-day grace, then new ones pause."
 msgstr "At the cap, a 7-day grace, then new ones pause."
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:52
+msgid "Attendance and leave in one place"
+msgstr "Attendance and leave in one place"
 
 #. js-lingui-explicit-id
 #: src/copy/compare-grid.ts:25
@@ -2640,13 +2741,18 @@ msgid "Back to assign roles"
 msgstr "Back to assign roles"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:122
+#: src/copy/billing-home.ts:133
 msgid "Back to billing"
 msgstr "Back to billing"
 
 #. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:19
+msgid "Back to Home"
+msgstr "Back to Home"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:18
-#: src/copy/settings.ts:22
+#: src/copy/settings.ts:24
 msgid "Back to settings"
 msgstr "Back to settings"
 
@@ -2713,7 +2819,7 @@ msgid "better"
 msgstr "better"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:69
+#: src/copy/usage-page.ts:64
 msgid "Beyond {bundle}, {rate} a minute — no pause, it bills."
 msgstr "Beyond {bundle}, {rate} a minute — no pause, it bills."
 
@@ -2733,7 +2839,7 @@ msgid "Bifaciality (%)"
 msgstr "Bifaciality (%)"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:38
+#: src/copy/usage-page.ts:37
 msgid "Bigger plans"
 msgstr "Bigger plans"
 
@@ -2764,7 +2870,7 @@ msgstr "billing"
 
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:72
-#: src/copy/settings.ts:49
+#: src/copy/settings.ts:51
 msgid "Billing"
 msgstr "Billing"
 
@@ -2784,7 +2890,7 @@ msgid "Billing state"
 msgstr "Billing state"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:94
+#: src/copy/usage-page.ts:89
 msgid "Bills on"
 msgstr "Bills on"
 
@@ -2830,7 +2936,7 @@ msgid "Brand"
 msgstr "Brand"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:43
+#: src/copy/settings.ts:45
 msgid "Branding"
 msgstr "Branding"
 
@@ -2848,6 +2954,11 @@ msgstr "Build and edit proposals, discounts included"
 #: src/copy/company-profile.ts:19
 msgid "Building, street, area"
 msgstr "Building, street, area"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:35
+msgid "Built from your catalog, prices and payment terms"
+msgstr "Built from your catalog, prices and payment terms"
 
 #. js-lingui-explicit-id
 #: src/copy/energy-source.ts:12
@@ -2870,7 +2981,7 @@ msgid "Business is pausing"
 msgstr "Business is pausing"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:42
+#: src/copy/settings.ts:44
 msgid "Business profile"
 msgstr "Business profile"
 
@@ -2886,7 +2997,7 @@ msgstr "calculation method"
 
 #. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:49
-#: src/copy/usage-page.ts:44
+#: src/copy/usage-page.ts:43
 msgid "Call"
 msgstr "Call"
 
@@ -2904,6 +3015,11 @@ msgstr "Call me with the code"
 #: src/copy/freshness.ts:34
 msgid "calling rules"
 msgstr "calling rules"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:91
+msgid "Calls answered in your customer’s language"
+msgstr "Calls answered in your customer’s language"
 
 #. js-lingui-explicit-id
 #: src/copy/time-field.ts:17
@@ -2927,6 +3043,11 @@ msgid "Campaigns and the enquiries they capture"
 msgstr "Campaigns and the enquiries they capture"
 
 #. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:57
+msgid "Campaigns that bring new rooftops to your door."
+msgstr "Campaigns that bring new rooftops to your door."
+
+#. js-lingui-explicit-id
 #: src/copy/payment-terms.ts:71
 msgid "Can be skipped"
 msgstr "Can be skipped"
@@ -2943,7 +3064,7 @@ msgstr "Can’t · {count}"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:65
-#: src/copy/catalog-editor.ts:29
+#: src/copy/catalog-editor.ts:31
 #: src/copy/invite.ts:48
 #: src/copy/operation-progress.ts:9
 #: src/copy/payment-terms.ts:61
@@ -2965,7 +3086,7 @@ msgid "Cancel subscription"
 msgstr "Cancel subscription"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:132
+#: src/copy/billing-home.ts:143
 msgid "Cancelled"
 msgstr "Cancelled"
 
@@ -2995,6 +3116,11 @@ msgid "Capped at the {bound} maximum."
 msgstr "Capped at the {bound} maximum."
 
 #. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:65
+msgid "Capture a new enquiry before the call ends."
+msgstr "Capture a new enquiry before the call ends."
+
+#. js-lingui-explicit-id
 #: src/copy/role-presets.ts:19
 msgid "Capture and submit surveys for the leads assigned to them"
 msgstr "Capture and submit surveys for the leads assigned to them"
@@ -3011,7 +3137,7 @@ msgstr "catalog"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:16
-#: src/copy/settings.ts:46
+#: src/copy/settings.ts:48
 msgid "Catalog"
 msgstr "Catalog"
 
@@ -3052,7 +3178,7 @@ msgid "Certification"
 msgstr "Certification"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-words.ts:55
+#: src/copy/catalog-words.ts:53
 msgid "Certification scheme"
 msgstr "Certification scheme"
 
@@ -3098,7 +3224,7 @@ msgstr "change this plan"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:88
-#: src/copy/catalog-editor.ts:82
+#: src/copy/catalog-editor.ts:85
 #: src/copy/price-book.ts:75
 msgid "Changed"
 msgstr "Changed"
@@ -3120,14 +3246,9 @@ msgid "Charged"
 msgstr "Charged"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:32
+#: src/copy/usage-page.ts:31
 msgid "Charges"
 msgstr "Charges"
-
-#. js-lingui-explicit-id
-#: src/copy/usage-page.ts:107
-msgid "Charges so far"
-msgstr "Charges so far"
 
 #. js-lingui-explicit-id
 #: src/copy/role-matrix.ts:60
@@ -3266,7 +3387,7 @@ msgstr "Clear it and this item has no price."
 
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:40
-#: src/copy/team.ts:19
+#: src/copy/team.ts:21
 msgid "Clear search"
 msgstr "Clear search"
 
@@ -3277,12 +3398,12 @@ msgstr "Clear selection"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:87
-#: src/copy/catalog-editor.ts:33
+#: src/copy/catalog-editor.ts:34
 #: src/copy/catalog-import.ts:13
 #: src/copy/price-book.ts:82
 #: src/copy/roles-reference.ts:41
 #: src/copy/shell.ts:51
-#: src/copy/usage-page.ts:99
+#: src/copy/usage-page.ts:94
 msgid "Close"
 msgstr "Close"
 
@@ -3318,7 +3439,12 @@ msgid "Code limits"
 msgstr "Code limits"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:48
+#: src/copy/sidebar.ts:13
+msgid "Collapse the sidebar"
+msgstr "Collapse the sidebar"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:50
 msgid "Collections"
 msgstr "Collections"
 
@@ -3414,6 +3540,7 @@ msgstr "Connect, rotate and disconnect the company’s own collections account"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:101
+#: src/copy/home-today.ts:19
 #: src/copy/setup-language.ts:27
 msgid "Continue"
 msgstr "Continue"
@@ -3585,12 +3712,12 @@ msgid "Couldn’t mark them read"
 msgstr "Couldn’t mark them read"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:96
+#: src/copy/usage-page.ts:91
 msgid "Couldn’t read these events"
 msgstr "Couldn’t read these events"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:88
+#: src/copy/usage-page.ts:83
 msgid "Couldn’t read this cycle’s usage"
 msgstr "Couldn’t read this cycle’s usage"
 
@@ -3753,6 +3880,11 @@ msgid "CSV or Excel file"
 msgstr "CSV or Excel file"
 
 #. js-lingui-explicit-id
+#: src/copy/sidebar.ts:10
+msgid "Ctrl K"
+msgstr "Ctrl K"
+
+#. js-lingui-explicit-id
 #: src/copy/compare-grid.ts:13
 msgid "Current"
 msgstr "Current"
@@ -3773,7 +3905,7 @@ msgid "Custom"
 msgstr "Custom"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:34
+#: src/copy/settings.ts:36
 msgid "Customer calls"
 msgstr "Customer calls"
 
@@ -3804,7 +3936,7 @@ msgstr "Customer turn"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:96
-#: src/copy/usage-page.ts:91
+#: src/copy/usage-page.ts:86
 msgid "Cycle"
 msgstr "Cycle"
 
@@ -3835,7 +3967,7 @@ msgid "data rights"
 msgstr "data rights"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:116
+#: src/copy/billing-home.ts:127
 msgid "Date"
 msgstr "Date"
 
@@ -3850,7 +3982,7 @@ msgid "Day {day} counted from the charge that failed on {date}, which is day 0 o
 msgstr "Day {day} counted from the charge that failed on {date}, which is day 0 of the 7-day grace."
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:49
+#: src/copy/team.ts:51
 msgid "Day {day} of {days}"
 msgstr "Day {day} of {days}"
 
@@ -3858,6 +3990,11 @@ msgstr "Day {day} of {days}"
 #: src/copy/plan-selection.ts:63
 msgid "Days"
 msgstr "Days"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:66
+msgid "days left"
+msgstr "days left"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:64
@@ -3885,17 +4022,17 @@ msgid "Deactivate {name}?"
 msgstr "Deactivate {name}?"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:37
+#: src/copy/team.ts:39
 msgid "Deactivated"
 msgstr "Deactivated"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:54
+#: src/copy/team.ts:56
 msgid "Deactivated · last seen {date}"
 msgstr "Deactivated · last seen {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:55
+#: src/copy/team.ts:57
 msgid "Deactivated · last seen today"
 msgstr "Deactivated · last seen today"
 
@@ -3932,7 +4069,7 @@ msgid "Decrease value"
 msgstr "Decrease value"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:25
+#: src/copy/catalog-editor.ts:27
 #: src/copy/payment-terms.ts:28
 msgid "Default"
 msgstr "Default"
@@ -4040,7 +4177,7 @@ msgid "Designs and proposals for the leads assigned to them, and design sign-off
 msgstr "Designs and proposals for the leads assigned to them, and design sign-off"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:52
+#: src/copy/catalog-editor.ts:53
 msgid "Designs pinned to {label} will show as out of date. Their count is not available yet."
 msgstr "Designs pinned to {label} will show as out of date. Their count is not available yet."
 
@@ -4131,6 +4268,7 @@ msgstr "done"
 
 #. js-lingui-explicit-id
 #: src/copy/filter-panel.ts:16
+#: src/copy/home-today.ts:21
 #: src/copy/name-and-photo-editor.ts:16
 #: src/copy/payment-terms.ts:73
 msgid "Done"
@@ -4187,7 +4325,7 @@ msgid "Drop files here or tap to browse · PDF up to {size} MB"
 msgstr "Drop files here or tap to browse · PDF up to {size} MB"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:83
+#: src/copy/billing-home.ts:92
 msgid "Due"
 msgstr "Due"
 
@@ -4217,9 +4355,14 @@ msgid "Each amount"
 msgstr "Each amount"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:47
+#: src/copy/usage-page.ts:46
 msgid "Each call the voice agent makes is listed here."
 msgstr "Each call the voice agent makes is listed here."
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:43
+msgid "Each installation’s stage at a glance"
+msgstr "Each installation’s stage at a glance"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:73
@@ -4227,12 +4370,22 @@ msgid "Each invite counts for 24 hours from when it was sent."
 msgstr "Each invite counts for 24 hours from when it was sent."
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:49
+#: src/copy/on-its-way.ts:51
+msgid "Each person’s role, contact and documents"
+msgstr "Each person’s role, contact and documents"
+
+#. js-lingui-explicit-id
+#: src/copy/usage-page.ts:48
 msgid "Each sign-in code sent for your company is listed here."
 msgstr "Each sign-in code sent for your company is listed here."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:66
+#: src/copy/home-today.ts:13
+msgid "Each step fills in what your proposals print: who you are, your look, your prices and how you get paid."
+msgstr "Each step fills in what your proposals print: who you are, your look, your prices and how you get paid."
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:69
 msgid "Earlier releases"
 msgstr "Earlier releases"
 
@@ -4268,7 +4421,7 @@ msgid "Edit your proposal template"
 msgstr "Edit your proposal template"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-words.ts:263
+#: src/copy/catalog-words.ts:249
 #: src/copy/field-override.ts:10
 msgid "Edited"
 msgstr "Edited"
@@ -4324,12 +4477,12 @@ msgid "Employee records, documents, attendance and leave"
 msgstr "Employee records, documents, attendance and leave"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:67
+#: src/copy/billing-home.ts:76
 msgid "Ended"
 msgstr "Ended"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:66
+#: src/copy/billing-home.ts:75
 msgid "Ends"
 msgstr "Ends"
 
@@ -4380,24 +4533,24 @@ msgid "Estimated"
 msgstr "Estimated"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:95
+#: src/copy/usage-page.ts:90
 msgid "Events this cycle"
 msgstr "Events this cycle"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:64
-msgid "Every cap and ceiling on {plan} · {cycle}"
-msgstr "Every cap and ceiling on {plan} · {cycle}"
-
-#. js-lingui-explicit-id
-#: src/copy/usage-page.ts:66
-msgid "Every cap and ceiling on the trial · {cycle}"
-msgstr "Every cap and ceiling on the trial · {cycle}"
+#: src/copy/on-its-way.ts:93
+msgid "Every call written into the lead’s history"
+msgstr "Every call written into the lead’s history"
 
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:28
 msgid "Every change is recorded under your name — roles before and after."
 msgstr "Every change is recorded under your name — roles before and after."
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:25
+msgid "Every enquiry kept alive, from the first call to a signed deal."
+msgstr "Every enquiry kept alive, from the first call to a signed deal."
 
 #. js-lingui-explicit-id
 #: src/copy/pricing.ts:53
@@ -4410,7 +4563,7 @@ msgid "Every item and price your proposals start from."
 msgstr "Every item and price your proposals start from."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:100
+#: src/copy/billing-home.ts:109
 msgid "Every lead, design, proposal and project — kept"
 msgstr "Every lead, design, proposal and project — kept"
 
@@ -4418,16 +4571,6 @@ msgstr "Every lead, design, proposal and project — kept"
 #: src/copy/plan-selection.ts:102
 msgid "Every limit"
 msgstr "Every limit"
-
-#. js-lingui-explicit-id
-#: src/copy/usage-page.ts:65
-msgid "Every meter on {plan} · {cycle}"
-msgstr "Every meter on {plan} · {cycle}"
-
-#. js-lingui-explicit-id
-#: src/copy/usage-page.ts:67
-msgid "Every meter on the trial · {cycle}"
-msgstr "Every meter on the trial · {cycle}"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-strip.ts:67
@@ -4440,6 +4583,11 @@ msgid "Every panel, inverter and part, by make."
 msgstr "Every panel, inverter and part, by make."
 
 #. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:101
+msgid "Every payment matched to its proposal"
+msgstr "Every payment matched to its proposal"
+
+#. js-lingui-explicit-id
 #: src/copy/pricing.ts:57
 msgid "Every plan"
 msgstr "Every plan"
@@ -4448,6 +4596,16 @@ msgstr "Every plan"
 #: src/copy/billing-home.ts:47
 msgid "Every reminder sent, and when"
 msgstr "Every reminder sent, and when"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:60
+msgid "Every reply lands in your lead list"
+msgstr "Every reply lands in your lead list"
+
+#. js-lingui-explicit-id
+#: src/copy/door-story.ts:6
+msgid "Every rooftop, from the first call to the last payment."
+msgstr "Every rooftop, from the first call to the last payment."
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:146
@@ -4460,12 +4618,12 @@ msgid "Every state, when, and why"
 msgstr "Every state, when, and why"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:22
+#: src/copy/team.ts:24
 msgid "Everyone at {company}"
 msgstr "Everyone at {company}"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:23
+#: src/copy/team.ts:25
 msgid "Everyone at {company} matching {query}"
 msgstr "Everyone at {company} matching {query}"
 
@@ -4475,7 +4633,12 @@ msgid "Everything — voice calls and invites included"
 msgstr "Everything — voice calls and invites included"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:97
+#: src/copy/home-today.ts:16
+msgid "Everything a proposal needs is set. Add a lead to begin."
+msgstr "Everything a proposal needs is set. Add a lead to begin."
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:106
 msgid "Everything returns the moment the first payment confirms."
 msgstr "Everything returns the moment the first payment confirms."
 
@@ -4500,22 +4663,27 @@ msgid "Excel or CSV · up to {size} MB · or browse for it"
 msgstr "Excel or CSV · up to {size} MB · or browse for it"
 
 #. js-lingui-explicit-id
+#: src/copy/sidebar.ts:14
+msgid "Expand the sidebar"
+msgstr "Expand the sidebar"
+
+#. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:127
 msgid "Expected generation through the year."
 msgstr "Expected generation through the year."
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:35
+#: src/copy/team.ts:37
 msgid "Expired"
 msgstr "Expired"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:51
+#: src/copy/team.ts:53
 msgid "Expired {date}"
 msgstr "Expired {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:50
+#: src/copy/team.ts:52
 msgid "Expires {date}"
 msgstr "Expires {date}"
 
@@ -4623,6 +4791,11 @@ msgid "Financials"
 msgstr "Financials"
 
 #. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:81
+msgid "Find any lead, customer or project from one box."
+msgstr "Find any lead, customer or project from one box."
+
+#. js-lingui-explicit-id
 #: src/copy/billing-records.ts:30
 #: src/copy/catalog-import.ts:78
 #: src/copy/team.ts:11
@@ -4640,7 +4813,7 @@ msgid "Finish later takes you to your company profile, the next step. You can fi
 msgstr "Finish later takes you to your company profile, the next step. You can finish both answers there."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:85
+#: src/copy/billing-home.ts:94
 msgid "First cycle"
 msgstr "First cycle"
 
@@ -4660,7 +4833,12 @@ msgid "Fixed."
 msgstr "Fixed."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:117
+#: src/copy/on-its-way.ts:92
+msgid "Follow-up calls at the time you choose"
+msgstr "Follow-up calls at the time you choose"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:128
 msgid "For"
 msgstr "For"
 
@@ -4767,7 +4945,7 @@ msgid "Fully allocated."
 msgstr "Fully allocated."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:115
+#: src/copy/billing-home.ts:124
 msgid "GB"
 msgstr "GB"
 
@@ -4874,6 +5052,36 @@ msgid "Go to your leads"
 msgstr "Go to your leads"
 
 #. js-lingui-explicit-id
+#: src/copy/door-greeting.ts:11
+msgid "Good afternoon"
+msgstr "Good afternoon"
+
+#. js-lingui-explicit-id
+#: src/copy/home-today.ts:36
+msgid "Good afternoon, {name}"
+msgstr "Good afternoon, {name}"
+
+#. js-lingui-explicit-id
+#: src/copy/door-greeting.ts:12
+msgid "Good evening"
+msgstr "Good evening"
+
+#. js-lingui-explicit-id
+#: src/copy/home-today.ts:37
+msgid "Good evening, {name}"
+msgstr "Good evening, {name}"
+
+#. js-lingui-explicit-id
+#: src/copy/door-greeting.ts:10
+msgid "Good morning"
+msgstr "Good morning"
+
+#. js-lingui-explicit-id
+#: src/copy/home-today.ts:35
+msgid "Good morning, {name}"
+msgstr "Good morning, {name}"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:85
 msgid "Google sign-in did not finish"
 msgstr "Google sign-in did not finish"
@@ -4894,12 +5102,12 @@ msgid "Grace day and amount"
 msgstr "Grace day and amount"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:79
+#: src/copy/billing-home.ts:88
 msgid "Grace ends"
 msgstr "Grace ends"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:72
+#: src/copy/usage-page.ts:67
 msgid "Grace ends {date} · reading, editing and export never stop."
 msgstr "Grace ends {date} · reading, editing and export never stop."
 
@@ -4919,12 +5127,12 @@ msgid "h:mm AM"
 msgstr "h:mm AM"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:130
+#: src/copy/billing-home.ts:141
 msgid "Halted"
 msgstr "Halted"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:68
+#: src/copy/billing-home.ts:77
 msgid "Halted since"
 msgstr "Halted since"
 
@@ -5044,6 +5252,11 @@ msgid "HelioGrid's standard terms"
 msgstr "HelioGrid's standard terms"
 
 #. js-lingui-explicit-id
+#: src/copy/home-today.ts:38
+msgid "Hello, {name}"
+msgstr "Hello, {name}"
+
+#. js-lingui-explicit-id
 #: src/copy/brand-colour-field.ts:18
 msgid "Hex"
 msgstr "Hex"
@@ -5054,7 +5267,7 @@ msgid "HH:MM"
 msgstr "HH:MM"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:72
+#: src/copy/catalog-editor.ts:75
 #: src/copy/catalog-settings.ts:43
 msgid "Hidden"
 msgstr "Hidden"
@@ -5075,7 +5288,7 @@ msgid "Hide {name} from pickers"
 msgstr "Hide {name} from pickers"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:27
+#: src/copy/catalog-editor.ts:29
 msgid "Hide from pickers"
 msgstr "Hide from pickers"
 
@@ -5173,6 +5386,11 @@ msgstr "How these figures are worked out"
 #: src/copy/derivation.ts:14
 msgid "How this is worked out"
 msgstr "How this is worked out"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:62
+msgid "How your proposals read and look"
+msgstr "How your proposals read and look"
 
 #. js-lingui-explicit-id
 #: src/copy/first-run-profile.ts:22
@@ -5290,13 +5508,13 @@ msgid "In {language}, switched to {switches}"
 msgstr "In {language}, switched to {switches}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:64
+#: src/copy/catalog-editor.ts:67
 #: src/copy/price-book.ts:52
 msgid "In force"
 msgstr "In force"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:65
+#: src/copy/catalog-editor.ts:68
 msgid "In force since {date}"
 msgstr "In force since {date}"
 
@@ -5306,7 +5524,7 @@ msgid "In progress"
 msgstr "In progress"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:26
+#: src/copy/catalog-editor.ts:28
 msgid "In search and pickers"
 msgstr "In search and pickers"
 
@@ -5321,7 +5539,7 @@ msgid "Included"
 msgstr "Included"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:20
+#: src/copy/usage-page.ts:19
 msgid "Included each month"
 msgstr "Included each month"
 
@@ -5413,6 +5631,11 @@ msgid "Invite lasts {days, plural, one {# day} other {# days}} · cancel it from
 msgstr "Invite lasts {days, plural, one {# day} other {# days}} · cancel it from Team"
 
 #. js-lingui-explicit-id
+#: src/copy/team.ts:19
+msgid "Invite sent"
+msgstr "Invite sent"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:27
 msgid "Invite someone"
 msgstr "Invite someone"
@@ -5423,7 +5646,7 @@ msgid "Invite teammate"
 msgstr "Invite teammate"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:18
+#: src/copy/team.ts:20
 msgid "Invite the people who sell, survey, design and install."
 msgstr "Invite the people who sell, survey, design and install."
 
@@ -5438,7 +5661,7 @@ msgid "Invite your first teammate"
 msgstr "Invite your first teammate"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:34
+#: src/copy/team.ts:36
 msgid "Invited"
 msgstr "Invited"
 
@@ -5458,7 +5681,7 @@ msgid "Invoice"
 msgstr "Invoice"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:106
+#: src/copy/billing-home.ts:115
 msgid "Invoice {number} as PDF"
 msgstr "Invoice {number} as PDF"
 
@@ -5489,7 +5712,7 @@ msgid "Issued"
 msgstr "Issued"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:41
+#: src/copy/catalog-editor.ts:42
 msgid "It has left every picker."
 msgstr "It has left every picker."
 
@@ -5524,7 +5747,7 @@ msgid "Item"
 msgstr "Item"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-words.ts:58
+#: src/copy/catalog-words.ts:56
 msgid "items"
 msgstr "items"
 
@@ -5534,14 +5757,34 @@ msgid "Items"
 msgstr "Items"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:64
+msgid "Items and prices your proposals use"
+msgstr "Items and prices your proposals use"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:107
 msgid "Its price is unchanged."
 msgstr "Its price is unchanged."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-figures.ts:18
+msgid "Its specs and your price open here, beside the list."
+msgstr "Its specs and your price open here, beside the list."
+
+#. js-lingui-explicit-id
 #: src/copy/invite-landing.ts:45
 msgid "Join {company}"
 msgstr "Join {company}"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:84
+msgid "Jump straight to what you found"
+msgstr "Jump straight to what you found"
+
+#. js-lingui-explicit-id
+#: src/copy/sidebar.ts:9
+msgid "K"
+msgstr "K"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:140
@@ -5562,7 +5805,7 @@ msgstr "Keep filling it in"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:70
-#: src/copy/catalog-editor.ts:39
+#: src/copy/catalog-editor.ts:40
 #: src/copy/payment-terms.ts:74
 #: src/copy/proposal-template.ts:92
 msgid "Keep it"
@@ -5631,7 +5874,7 @@ msgid "Kind set to {value} — ready to import."
 msgstr "Kind set to {value} — ready to import."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-words.ts:49
+#: src/copy/catalog-words.ts:47
 msgid "kinds"
 msgstr "kinds"
 
@@ -5663,7 +5906,7 @@ msgid "Language not recorded"
 msgstr "Language not recorded"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:29
+#: src/copy/team.ts:31
 msgid "Last active"
 msgstr "Last active"
 
@@ -5706,6 +5949,11 @@ msgstr "Lead-acid"
 #: src/copy/shell.ts:93
 msgid "Leads"
 msgstr "Leads"
+
+#. js-lingui-explicit-id
+#: src/copy/door-story.ts:7
+msgid "Leads, surveys, 3D design, proposals and payments in one calm place, on the phone and at the desk."
+msgstr "Leads, surveys, 3D design, proposals and payments in one calm place, on the phone and at the desk."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:55
@@ -5771,11 +6019,6 @@ msgid "Light"
 msgstr "Light"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:101
-msgid "Limit"
-msgstr "Limit"
-
-#. js-lingui-explicit-id
 #: src/copy/billing-strip.ts:66
 msgid "limit reached"
 msgstr "limit reached"
@@ -5787,12 +6030,12 @@ msgid "Limits"
 msgstr "Limits"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:62
+#: src/copy/usage-page.ts:61
 msgid "Limits and rates · {list}"
 msgstr "Limits and rates · {list}"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:111
+#: src/copy/billing-home.ts:120
 msgid "Limits and rates · {source}"
 msgstr "Limits and rates · {source}"
 
@@ -5869,6 +6112,7 @@ msgstr "Load template…"
 #. js-lingui-explicit-id
 #: src/copy/card.ts:10
 #: src/copy/date-picker.ts:13
+#: src/copy/home-today.ts:22
 msgid "Loading"
 msgstr "Loading"
 
@@ -5979,12 +6223,12 @@ msgid "Loading the transcript"
 msgstr "Loading the transcript"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:97
+#: src/copy/usage-page.ts:92
 msgid "Loading these events"
 msgstr "Loading these events"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:87
+#: src/copy/usage-page.ts:82
 msgid "Loading this cycle’s usage"
 msgstr "Loading this cycle’s usage"
 
@@ -6056,6 +6300,11 @@ msgid "Logo"
 msgstr "Logo"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:61
+msgid "Logo and colours on every proposal"
+msgstr "Logo and colours on every proposal"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:69
 msgid "Logo and company name"
 msgstr "Logo and company name"
@@ -6079,6 +6328,11 @@ msgstr "Logo, colour and letterhead"
 #: src/copy/catalog-add-item.ts:53
 msgid "Low"
 msgstr "Low"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-figures.ts:12
+msgid "made your own"
+msgstr "made your own"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:25
@@ -6187,6 +6441,11 @@ msgid "Max DC voltage"
 msgstr "Max DC voltage"
 
 #. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:75
+msgid "Measure the roof and mark shade and obstacles"
+msgstr "Measure the roof and mark shade and obstacles"
+
+#. js-lingui-explicit-id
 #: src/copy/provenance.ts:13
 msgid "Measured"
 msgstr "Measured"
@@ -6205,11 +6464,6 @@ msgstr "Meena Deshpande"
 #: src/copy/role-matrix.ts:25
 msgid "Merge two customer records onto a survivor"
 msgstr "Merge two customer records onto a survivor"
-
-#. js-lingui-explicit-id
-#: src/copy/usage-page.ts:104
-msgid "Meter"
-msgstr "Meter"
 
 #. js-lingui-explicit-id
 #: src/copy/project-stages.ts:32
@@ -6237,7 +6491,8 @@ msgid "Micro-inverters"
 msgstr "Micro-inverters"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:23
+#: src/copy/billing-home.ts:126
+#: src/copy/usage-page.ts:22
 msgid "min"
 msgstr "min"
 
@@ -6268,7 +6523,7 @@ msgid "Model / SKU"
 msgstr "Model / SKU"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:35
+#: src/copy/settings.ts:37
 msgid "Money"
 msgstr "Money"
 
@@ -6283,7 +6538,7 @@ msgid "Mono PERC"
 msgstr "Mono PERC"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:108
+#: src/copy/billing-home.ts:117
 msgid "monthly"
 msgstr "monthly"
 
@@ -6351,6 +6606,11 @@ msgstr "Move back a stage"
 #: src/copy/kanban.ts:14
 msgid "Move back a stage — move to {stage}"
 msgstr "Move back a stage — move to {stage}"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:29
+msgid "Move each lead through its stages to a decision"
+msgstr "Move each lead through its stages to a decision"
 
 #. js-lingui-explicit-id
 #: src/copy/kanban.ts:15
@@ -6520,7 +6780,7 @@ msgid "Near-black text reads on it. Headings use a darker shade; this colour sta
 msgstr "Near-black text reads on it. Headings use a darker shade; this colour stays for fills and lines."
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:25
+#: src/copy/usage-page.ts:24
 msgid "Nearing a limit"
 msgstr "Nearing a limit"
 
@@ -6571,7 +6831,7 @@ msgid "Never measured from"
 msgstr "Never measured from"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:67
+#: src/copy/catalog-editor.ts:70
 msgid "New"
 msgstr "New"
 
@@ -6696,7 +6956,7 @@ msgid "New uploads pause"
 msgstr "New uploads pause"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:80
+#: src/copy/usage-page.ts:75
 msgid "New uploads paused · remove files or pick a bigger plan · reading and export never stop."
 msgstr "New uploads paused · remove files or pick a bigger plan · reading and export never stop."
 
@@ -6713,6 +6973,7 @@ msgstr "New voice calls"
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:45
 #: src/copy/explainer.ts:7
+#: src/copy/home-today.ts:18
 #: src/copy/shell.ts:52
 msgid "Next"
 msgstr "Next"
@@ -6758,7 +7019,7 @@ msgid "NMC"
 msgstr "NMC"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:70
+#: src/copy/catalog-editor.ts:73
 msgid "No"
 msgstr "No"
 
@@ -6789,7 +7050,7 @@ msgid "No bundle on this plan to measure against — this is a count, not a rate
 msgstr "No bundle on this plan to measure against — this is a count, not a rate."
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:46
+#: src/copy/usage-page.ts:45
 msgid "No calls this cycle"
 msgstr "No calls this cycle"
 
@@ -6809,7 +7070,7 @@ msgid "No checks ran."
 msgstr "No checks ran."
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:48
+#: src/copy/usage-page.ts:47
 msgid "No codes this cycle"
 msgstr "No codes this cycle"
 
@@ -6829,7 +7090,7 @@ msgid "No document for this proposal"
 msgstr "No document for this proposal"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:43
+#: src/copy/team.ts:45
 msgid "No expired invites"
 msgstr "No expired invites"
 
@@ -6849,7 +7110,7 @@ msgid "No invoice matches {query}"
 msgstr "No invoice matches {query}"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:101
+#: src/copy/billing-home.ts:110
 msgid "No invoices yet"
 msgstr "No invoices yet"
 
@@ -6859,12 +7120,12 @@ msgid "No jobs in this pipeline"
 msgstr "No jobs in this pipeline"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:37
+#: src/copy/usage-page.ts:36
 msgid "No limit on {plan}"
 msgstr "No limit on {plan}"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:36
+#: src/copy/usage-page.ts:35
 msgid "No limit on the trial"
 msgstr "No limit on the trial"
 
@@ -6879,12 +7140,12 @@ msgid "No map imagery for this area"
 msgstr "No map imagery for this area"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:22
+#: src/copy/catalog-editor.ts:24
 msgid "No market rate yet"
 msgstr "No market rate yet"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:23
+#: src/copy/catalog-editor.ts:25
 msgid "No market rate yet. Your {rate} stays until one is set."
 msgstr "No market rate yet. Your {rate} stays until one is set."
 
@@ -6894,22 +7155,22 @@ msgid "No more codes for {windowMinutes} minutes"
 msgstr "No more codes for {windowMinutes} minutes"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:44
+#: src/copy/team.ts:46
 msgid "No one active"
 msgstr "No one active"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:45
+#: src/copy/team.ts:47
 msgid "No one deactivated"
 msgstr "No one deactivated"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:21
+#: src/copy/team.ts:23
 msgid "No one matches “{query}”"
 msgstr "No one matches “{query}”"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:42
+#: src/copy/team.ts:44
 msgid "No open invites"
 msgstr "No open invites"
 
@@ -7054,7 +7315,7 @@ msgid "Nominal voltage (V)"
 msgstr "Nominal voltage (V)"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:68
+#: src/copy/catalog-editor.ts:71
 #: src/copy/pricing.ts:82
 msgid "None"
 msgstr "None"
@@ -7105,12 +7366,12 @@ msgid "Not available here"
 msgstr "Not available here"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:33
+#: src/copy/usage-page.ts:32
 msgid "Not billed"
 msgstr "Not billed"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:76
+#: src/copy/billing-home.ts:85
 #: src/copy/pricing.ts:83
 msgid "Not capped"
 msgstr "Not capped"
@@ -7345,7 +7606,7 @@ msgid "Nothing has been created."
 msgstr "Nothing has been created."
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:41
+#: src/copy/usage-page.ts:40
 msgid "Nothing has been used this cycle. Your caps and what’s included are below, ready when you start."
 msgstr "Nothing has been used this cycle. Your caps and what’s included are below, ready when you start."
 
@@ -7355,7 +7616,7 @@ msgid "Nothing has changed — your items, your overrides and the price book are
 msgstr "Nothing has changed — your items, your overrides and the price book are exactly as you left them, and nothing has been published or archived."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:56
+#: src/copy/catalog-editor.ts:57
 msgid "Nothing has changed since the last release, so there is nothing to publish."
 msgstr "Nothing has changed since the last release, so there is nothing to publish."
 
@@ -7416,6 +7677,11 @@ msgid "Nothing to pay"
 msgstr "Nothing to pay"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:61
+msgid "Nothing to publish yet"
+msgstr "Nothing to publish yet"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:66
 msgid "Nothing to send — to invite this number again, cancel the pending invite on Team."
 msgstr "Nothing to send — to invite this number again, cancel the pending invite on Team."
@@ -7431,7 +7697,7 @@ msgid "Nothing unread · {total} in the last {days} days"
 msgstr "Nothing unread · {total} in the last {days} days"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:40
+#: src/copy/usage-page.ts:39
 msgid "Nothing used yet"
 msgstr "Nothing used yet"
 
@@ -7496,6 +7762,11 @@ msgid "Numbered list"
 msgstr "Numbered list"
 
 #. js-lingui-explicit-id
+#: src/copy/home-today.ts:29
+msgid "of {cap}"
+msgstr "of {cap}"
+
+#. js-lingui-explicit-id
 #: src/copy/usage-meter.ts:18
 msgid "of {limit}"
 msgstr "of {limit}"
@@ -7531,12 +7802,17 @@ msgid "On every proposal, invoice and customer link · change it here"
 msgstr "On every proposal, invoice and customer link · change it here"
 
 #. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:17
+msgid "On its way"
+msgstr "On its way"
+
+#. js-lingui-explicit-id
 #: src/copy/brand-colour-field.ts:21
 msgid "On the proposal"
 msgstr "On the proposal"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:27
+#: src/copy/usage-page.ts:26
 msgid "On trial"
 msgstr "On trial"
 
@@ -7551,6 +7827,16 @@ msgid "Once saved, {first} can no longer {list}."
 msgstr "Once saved, {first} can no longer {list}."
 
 #. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:49
+msgid "One accurate record for everyone who works with you."
+msgstr "One accurate record for everyone who works with you."
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:36
+msgid "One link the customer opens, reads and accepts"
+msgstr "One link the customer opens, reads and accepts"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:64
 msgid "One mobile number is one HelioGrid account, whichever way you come in."
 msgstr "One mobile number is one HelioGrid account, whichever way you come in."
@@ -7561,7 +7847,7 @@ msgid "One number, one account"
 msgstr "One number, one account"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:93
+#: src/copy/billing-home.ts:102
 msgid "One payment. Everything returns the moment the payment confirms."
 msgstr "One payment. Everything returns the moment the payment confirms."
 
@@ -7591,7 +7877,7 @@ msgid "Only {holder} can add a teammate."
 msgstr "Only {holder} can add a teammate."
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:68
+#: src/copy/usage-page.ts:63
 msgid "Only {holder} can see this cycle’s usage."
 msgstr "Only {holder} can see this cycle’s usage."
 
@@ -7647,6 +7933,11 @@ msgid "Opening Google sign-in"
 msgstr "Opening Google sign-in"
 
 #. js-lingui-explicit-id
+#: src/copy/boot.ts:6
+msgid "Opening HelioGrid"
+msgstr "Opening HelioGrid"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:108
 msgid "Opening the report you kept."
 msgstr "Opening the report you kept."
@@ -7698,7 +7989,7 @@ msgid "or"
 msgstr "or"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:22
+#: src/copy/usage-page.ts:21
 msgid "OTP codes"
 msgstr "OTP codes"
 
@@ -7799,7 +8090,7 @@ msgid "Paid on your provider’s own page when it starts."
 msgstr "Paid on your provider’s own page when it starts."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:80
+#: src/copy/billing-home.ts:89
 msgid "Paid on your provider’s own page."
 msgstr "Paid on your provider’s own page."
 
@@ -7814,7 +8105,7 @@ msgid "Panel"
 msgstr "Panel"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-words.ts:54
+#: src/copy/catalog-words.ts:52
 msgid "Panel specs"
 msgstr "Panel specs"
 
@@ -7844,12 +8135,12 @@ msgid "parts"
 msgstr "parts"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:79
+#: src/copy/usage-page.ts:74
 msgid "Past {ceiling}, new uploads pause · files you have stay."
 msgstr "Past {ceiling}, new uploads pause · files you have stay."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:78
+#: src/copy/billing-home.ts:87
 msgid "Past due"
 msgstr "Past due"
 
@@ -7864,13 +8155,13 @@ msgid "past versions"
 msgstr "past versions"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:26
+#: src/copy/usage-page.ts:25
 msgid "Past what’s included"
 msgstr "Past what’s included"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-strip.ts:27
-#: src/copy/usage-page.ts:29
+#: src/copy/usage-page.ts:28
 msgid "Paused"
 msgstr "Paused"
 
@@ -7890,17 +8181,17 @@ msgid "Paused for"
 msgstr "Paused for"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:76
+#: src/copy/usage-page.ts:71
 msgid "Paused until {date} or an upgrade · call from your own phone."
 msgstr "Paused until {date} or an upgrade · call from your own phone."
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:73
+#: src/copy/usage-page.ts:68
 msgid "Paused until {date} or an upgrade · reading, editing and export never stop."
 msgstr "Paused until {date} or an upgrade · reading, editing and export never stop."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:81
+#: src/copy/billing-home.ts:90
 msgid "Pay"
 msgstr "Pay"
 
@@ -7920,7 +8211,7 @@ msgid "Pay {amount} with {method}"
 msgstr "Pay {amount} with {method}"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:34
+#: src/copy/usage-page.ts:33
 msgid "Pay as you go"
 msgstr "Pay as you go"
 
@@ -7935,7 +8226,7 @@ msgid "Pay now in Billing."
 msgstr "Pay now in Billing."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:120
+#: src/copy/billing-home.ts:131
 msgid "pay or manage billing"
 msgstr "pay or manage billing"
 
@@ -7955,7 +8246,7 @@ msgid "Payment"
 msgstr "Payment"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:77
+#: src/copy/billing-home.ts:86
 #: src/copy/billing-notices.ts:57
 msgid "Payment failed"
 msgstr "Payment failed"
@@ -8022,7 +8313,7 @@ msgstr "Payment still due"
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:117
-#: src/copy/settings.ts:45
+#: src/copy/settings.ts:47
 msgid "Payment terms"
 msgstr "Payment terms"
 
@@ -8037,12 +8328,17 @@ msgid "Payments"
 msgstr "Payments"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:66
+msgid "Payments due and received"
+msgstr "Payments due and received"
+
+#. js-lingui-explicit-id
 #: src/copy/role-presets.ts:60
 msgid "Payments, receipts and project money"
 msgstr "Payments, receipts and project money"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:119
+#: src/copy/billing-home.ts:130
 msgid "PDF"
 msgstr "PDF"
 
@@ -8092,7 +8388,7 @@ msgid "Performance"
 msgstr "Performance"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:27
+#: src/copy/team.ts:29
 msgid "Person"
 msgstr "Person"
 
@@ -8123,9 +8419,14 @@ msgid "Phone, email or website"
 msgstr "Phone, email or website"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:96
+#: src/copy/on-its-way.ts:76
+msgid "Photos and readings kept, even on a weak signal"
+msgstr "Photos and readings kept, even on a weak signal"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:105
 #: src/copy/billing-strip.ts:52
-#: src/copy/usage-page.ts:39
+#: src/copy/usage-page.ts:38
 msgid "Pick a plan"
 msgstr "Pick a plan"
 
@@ -8145,6 +8446,11 @@ msgid "Pick a plan to see what changes and what you pay."
 msgstr "Pick a plan to see what changes and what you pay."
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-figures.ts:17
+msgid "Pick an item"
+msgstr "Pick an item"
+
+#. js-lingui-explicit-id
 #: src/copy/invite.ts:40
 msgid "Pick at least one role. Someone invited with no role would sign in to an empty app."
 msgstr "Pick at least one role. Someone invited with no role would sign in to an empty app."
@@ -8155,7 +8461,7 @@ msgid "Pick the one that describes your work."
 msgstr "Pick the one that describes your work."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:73
+#: src/copy/catalog-editor.ts:76
 msgid "Pickers"
 msgstr "Pickers"
 
@@ -8228,7 +8534,7 @@ msgstr "Plans and prices"
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:111
 #: src/copy/catalog-settings.ts:118
-#: src/copy/catalog-words.ts:47
+#: src/copy/catalog-words.ts:45
 msgid "Platform"
 msgstr "Platform"
 
@@ -8293,7 +8599,7 @@ msgid "Prefer {name}"
 msgstr "Prefer {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:74
+#: src/copy/catalog-editor.ts:77
 #: src/copy/catalog-settings.ts:41
 msgid "Preferred"
 msgstr "Preferred"
@@ -8304,12 +8610,12 @@ msgid "Preferred first"
 msgstr "Preferred first"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:28
+#: src/copy/catalog-editor.ts:30
 msgid "Preferred in search and pickers"
 msgstr "Preferred in search and pickers"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-words.ts:56
+#: src/copy/catalog-words.ts:54
 msgid "Preferred items only"
 msgstr "Preferred items only"
 
@@ -8393,9 +8699,19 @@ msgid "Price per unit"
 msgstr "Price per unit"
 
 #. js-lingui-explicit-id
+#: src/copy/catalog-figures.ts:15
+msgid "Price saved"
+msgstr "Price saved"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import-rows.ts:120
 msgid "Price set to {value} — ready to import."
 msgstr "Price set to {value} — ready to import."
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:33
+msgid "Priced proposals your customer opens on their phone."
+msgstr "Priced proposals your customer opens on their phone."
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:27
@@ -8438,7 +8754,7 @@ msgid "Products created"
 msgstr "Products created"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:39
+#: src/copy/settings.ts:41
 msgid "Profile & preferences"
 msgstr "Profile & preferences"
 
@@ -8517,7 +8833,7 @@ msgid "Proposal no."
 msgstr "Proposal no."
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:44
+#: src/copy/settings.ts:46
 msgid "Proposal template"
 msgstr "Proposal template"
 
@@ -8544,7 +8860,7 @@ msgid "Proposals price only hardware until you add rates. Your first set becomes
 msgstr "Proposals price only hardware until you add rates. Your first set becomes version 1."
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:21
+#: src/copy/usage-page.ts:20
 msgid "Proposals this month"
 msgstr "Proposals this month"
 
@@ -8559,7 +8875,7 @@ msgid "Publish"
 msgstr "Publish"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:47
+#: src/copy/catalog-editor.ts:48
 msgid "Publish a new release"
 msgstr "Publish a new release"
 
@@ -8595,7 +8911,6 @@ msgstr "Rajesh Kulkarni"
 
 #. js-lingui-explicit-id
 #: src/copy/price-book.ts:35
-#: src/copy/usage-page.ts:106
 msgid "Rate"
 msgstr "Rate"
 
@@ -8647,7 +8962,12 @@ msgid "Rates in force"
 msgstr "Rates in force"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:92
+#: src/copy/on-its-way.ts:59
+msgid "Reach people on the channels they already use"
+msgstr "Reach people on the channels they already use"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:101
 msgid "Reactivate"
 msgstr "Reactivate"
 
@@ -8737,6 +9057,11 @@ msgid "Ready to import"
 msgstr "Ready to import"
 
 #. js-lingui-explicit-id
+#: src/copy/home-today.ts:12
+msgid "Ready to send proposals"
+msgstr "Ready to send proposals"
+
+#. js-lingui-explicit-id
 #: src/copy/energy-source.ts:11
 msgid "Real · PVGIS ({database})"
 msgstr "Real · PVGIS ({database})"
@@ -8798,7 +9123,7 @@ msgid "Refund and end my plan"
 msgstr "Refund and end my plan"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:84
+#: src/copy/billing-home.ts:93
 msgid "Refund available"
 msgstr "Refund available"
 
@@ -8823,12 +9148,12 @@ msgid "Release"
 msgstr "Release"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:50
+#: src/copy/catalog-editor.ts:51
 msgid "Release name"
 msgstr "Release name"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:60
+#: src/copy/catalog-editor.ts:63
 msgid "Releases"
 msgstr "Releases"
 
@@ -8894,12 +9219,12 @@ msgid "Remove your logo?"
 msgstr "Remove your logo?"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:82
+#: src/copy/billing-home.ts:91
 msgid "Renewal invoice"
 msgstr "Renewal invoice"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:70
+#: src/copy/billing-home.ts:79
 msgid "Renews"
 msgstr "Renews"
 
@@ -8921,7 +9246,7 @@ msgid "Replace any part with your own wording."
 msgstr "Replace any part with your own wording."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:48
+#: src/copy/catalog-editor.ts:49
 msgid "Replaces {label} for every new proposal."
 msgstr "Replaces {label} for every new proposal."
 
@@ -9006,7 +9331,7 @@ msgid "Reset to auto — {field}"
 msgstr "Reset to auto — {field}"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:92
+#: src/copy/usage-page.ts:87
 msgid "Resets"
 msgstr "Resets"
 
@@ -9022,7 +9347,7 @@ msgstr "Resolve or waive a remote-survey gap"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:46
-#: src/copy/catalog-views.ts:142
+#: src/copy/catalog-views.ts:144
 #: src/copy/payment-terms.ts:34
 msgid "Restore"
 msgstr "Restore"
@@ -9033,7 +9358,7 @@ msgid "Restore {name}"
 msgstr "Restore {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:46
+#: src/copy/catalog-editor.ts:47
 msgid "Restored {name}"
 msgstr "Restored {name}"
 
@@ -9085,7 +9410,7 @@ msgstr "Revoke invite for {name}"
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:39
 #: src/copy/roles-reference.ts:29
-#: src/copy/team.ts:28
+#: src/copy/team.ts:30
 msgid "Roles"
 msgstr "Roles"
 
@@ -9101,7 +9426,7 @@ msgstr "Roles for this invite"
 
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:27
-#: src/copy/settings.ts:41
+#: src/copy/settings.ts:43
 msgid "Roles reference"
 msgstr "Roles reference"
 
@@ -9212,7 +9537,7 @@ msgid "running"
 msgstr "running"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:69
+#: src/copy/billing-home.ts:78
 msgid "Runs until"
 msgstr "Runs until"
 
@@ -9278,17 +9603,12 @@ msgid "Save changes to your business profile"
 msgstr "Save changes to your business profile"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:30
-msgid "Save override"
-msgstr "Save override"
-
-#. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:61
 msgid "Save phase"
 msgstr "Save phase"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:31
+#: src/copy/catalog-editor.ts:32
 msgid "Save price"
 msgstr "Save price"
 
@@ -9318,17 +9638,17 @@ msgid "saved {date}"
 msgstr "saved {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:26
+#: src/copy/settings.ts:28
 msgid "Saved and in force"
 msgstr "Saved and in force"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:25
+#: src/copy/settings.ts:27
 msgid "Saved and in force · {date}"
 msgstr "Saved and in force · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:24
+#: src/copy/settings.ts:26
 msgid "Saved and in force · {name}, {date}"
 msgstr "Saved and in force · {name}, {date}"
 
@@ -9386,6 +9706,16 @@ msgstr "Search"
 #: src/copy/catalog-settings.ts:28
 msgid "Search brand, model or SKU"
 msgstr "Search brand, model or SKU"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:83
+msgid "Search by name, phone number or city"
+msgstr "Search by name, phone number or city"
+
+#. js-lingui-explicit-id
+#: src/copy/sidebar.ts:6
+msgid "Search or jump to…"
+msgstr "Search or jump to…"
 
 #. js-lingui-explicit-id
 #: src/copy/price-book.ts:32
@@ -9451,6 +9781,21 @@ msgstr "See the evidence"
 #: src/copy/role-card.ts:44
 msgid "See the leads your campaigns bring in"
 msgstr "See the leads your campaigns bring in"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:37
+msgid "See when it was opened, so you call at the right time"
+msgstr "See when it was opened, so you call at the right time"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:61
+msgid "See which campaign brought each lead"
+msgstr "See which campaign brought each lead"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:28
+msgid "See who to call today, and who has waited too long"
+msgstr "See who to call today, and who has waited too long"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:43
@@ -9621,6 +9966,11 @@ msgid "Settings"
 msgstr "Settings"
 
 #. js-lingui-explicit-id
+#: src/copy/home-today.ts:20
+msgid "Setup steps"
+msgstr "Setup steps"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import-rows.ts:59
 msgid "Several products we carry match this row — which one is it?"
 msgstr "Several products we carry match this row — which one is it?"
@@ -9688,7 +10038,7 @@ msgid "Show {name} in pickers"
 msgstr "Show {name} in pickers"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:20
+#: src/copy/team.ts:22
 msgid "Show all"
 msgstr "Show all"
 
@@ -9715,12 +10065,12 @@ msgstr "Show fewer {noun}"
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:42
 #: src/copy/catalog-import.ts:49
-#: src/copy/usage-page.ts:98
+#: src/copy/usage-page.ts:93
 msgid "Show more"
 msgstr "Show more"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:51
+#: src/copy/catalog-editor.ts:52
 msgid "Show more changes"
 msgstr "Show more changes"
 
@@ -9770,7 +10120,7 @@ msgid "Showing {where} of {count} — swipe or use the arrows · {note}"
 msgstr "Showing {where} of {count} — swipe or use the arrows · {note}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:71
+#: src/copy/catalog-editor.ts:74
 msgid "Shown"
 msgstr "Shown"
 
@@ -9831,7 +10181,7 @@ msgid "Sign out"
 msgstr "Sign out"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:45
+#: src/copy/usage-page.ts:44
 msgid "Sign-in code"
 msgstr "Sign-in code"
 
@@ -9864,6 +10214,11 @@ msgstr "Signing up again would not make a second company"
 #: src/copy/catalog-add-item-fields.ts:49
 msgid "Single phase"
 msgstr "Single phase"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:73
+msgid "Site surveys from the roof, on your phone."
+msgstr "Site surveys from the roof, on your phone."
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:126
@@ -9901,7 +10256,7 @@ msgid "SMS codes paused for {lockMinutes} minutes"
 msgstr "SMS codes paused for {lockMinutes} minutes"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:31
+#: src/copy/usage-page.ts:30
 msgid "So far"
 msgstr "So far"
 
@@ -9977,6 +10332,11 @@ msgid "Something went wrong on our side. Try again."
 msgstr "Something went wrong on our side. Try again."
 
 #. js-lingui-explicit-id
+#: src/copy/sidebar.ts:11
+msgid "Soon"
+msgstr "Soon"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:33
 #: src/copy/filter-bar.ts:10
 msgid "Sort"
@@ -9998,7 +10358,7 @@ msgid "Sorts descending"
 msgstr "Sorts descending"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-words.ts:46
+#: src/copy/catalog-words.ts:44
 msgid "Source"
 msgstr "Source"
 
@@ -10048,7 +10408,7 @@ msgid "Starts from version {number}"
 msgstr "Starts from version {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:118
+#: src/copy/billing-home.ts:129
 msgid "State"
 msgstr "State"
 
@@ -10056,6 +10416,11 @@ msgstr "State"
 #: src/copy/team.ts:12
 msgid "Status"
 msgstr "Status"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:41
+msgid "Status, documents and money for every installation."
+msgstr "Status, documents and money for every installation."
 
 #. js-lingui-explicit-id
 #: src/copy/stepper.ts:16
@@ -10155,6 +10520,11 @@ msgid "Storage"
 msgstr "Storage"
 
 #. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:69
+msgid "Straight into today’s list to call back"
+msgstr "Straight into today’s list to call back"
+
+#. js-lingui-explicit-id
 #: src/copy/company-profile.ts:18
 msgid "Street address"
 msgstr "Street address"
@@ -10176,7 +10546,7 @@ msgid "Structures"
 msgstr "Structures"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:90
+#: src/copy/billing-home.ts:99
 msgid "Subscription"
 msgstr "Subscription"
 
@@ -10371,7 +10741,7 @@ msgid "Tax invoice"
 msgstr "Tax invoice"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:21
+#: src/copy/catalog-editor.ts:23
 #: src/copy/invoice-document.ts:29
 msgid "Tax rate"
 msgstr "Tax rate"
@@ -10390,7 +10760,7 @@ msgstr "Tax registration"
 #. js-lingui-explicit-id
 #: src/copy/notifications.ts:71
 #: src/copy/role-matrix.ts:98
-#: src/copy/settings.ts:40
+#: src/copy/settings.ts:42
 msgid "Team"
 msgstr "Team"
 
@@ -10405,12 +10775,12 @@ msgid "Team-scoped"
 msgstr "Team-scoped"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-words.ts:52
+#: src/copy/catalog-words.ts:50
 msgid "technologies"
 msgstr "technologies"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-words.ts:51
+#: src/copy/catalog-words.ts:49
 msgid "Technology"
 msgstr "Technology"
 
@@ -10483,7 +10853,7 @@ msgid "That didn't save — the catalog service didn't answer. {still}"
 msgstr "That didn't save — the catalog service didn't answer. {still}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:32
+#: src/copy/catalog-editor.ts:33
 msgid "That didn't save. Nothing changed — try again."
 msgstr "That didn't save. Nothing changed — try again."
 
@@ -10644,6 +11014,11 @@ msgid "The deductions bring the payable to {payable}. A figure at or below zero 
 msgstr "The deductions bring the payable to {payable}. A figure at or below zero is not a refund — a warning here, a block at Generate."
 
 #. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:44
+msgid "The documents each stage needs, in one place"
+msgstr "The documents each stage needs, in one place"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import-notes.ts:9
 msgid "The file did not upload. Try again."
 msgstr "The file did not upload. Try again."
@@ -10654,17 +11029,17 @@ msgid "The file is still being read."
 msgstr "The file is still being read."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:103
+#: src/copy/billing-home.ts:112
 msgid "The first one arrives when you choose a plan."
 msgstr "The first one arrives when you choose a plan."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:102
+#: src/copy/billing-home.ts:111
 msgid "The first one arrives when your trial converts to a plan."
 msgstr "The first one arrives when your trial converts to a plan."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:88
+#: src/copy/billing-home.ts:97
 msgid "The full first payment goes back to where it came from."
 msgstr "The full first payment goes back to where it came from."
 
@@ -10859,7 +11234,7 @@ msgid "The refund window has closed. Reload to see your plan."
 msgstr "The refund window has closed. Reload to see your plan."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:59
+#: src/copy/catalog-editor.ts:62
 msgid "The release wasn't published. Nothing changed — try again."
 msgstr "The release wasn't published. Nothing changed — try again."
 
@@ -10887,6 +11262,16 @@ msgstr "The size you sell most often"
 #: src/copy/sign-in.ts:51
 msgid "The SMS network turned it away"
 msgstr "The SMS network turned it away"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:63
+msgid "The stages your customers pay in"
+msgstr "The stages your customers pay in"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:77
+msgid "The survey goes straight into the design"
+msgstr "The survey goes straight into the design"
 
 #. js-lingui-explicit-id
 #: src/copy/actor-class.ts:12
@@ -10937,6 +11322,11 @@ msgstr "The version wasn't saved. Nothing changed — try again."
 #: src/copy/billing-notices.ts:32
 msgid "the voice agent"
 msgstr "the voice agent"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:65
+msgid "The voice that calls your leads"
+msgstr "The voice that calls your leads"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:24
@@ -11040,7 +11430,7 @@ msgstr "This company may already be here"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:109
-#: src/copy/usage-page.ts:90
+#: src/copy/usage-page.ts:85
 msgid "This cycle"
 msgstr "This cycle"
 
@@ -11190,7 +11580,7 @@ msgid "This record is no longer in your scope, or was removed. The notification 
 msgstr "This record is no longer in your scope, or was removed. The notification stays here because it reached you."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:75
+#: src/copy/catalog-editor.ts:78
 msgid "This release didn't load."
 msgstr "This release didn't load."
 
@@ -11286,9 +11676,14 @@ msgid "To join another company, ask its owner to invite you."
 msgstr "To join another company, ask its owner to invite you."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:91
+#: src/copy/billing-home.ts:100
 msgid "To reactivate"
 msgstr "To reactivate"
+
+#. js-lingui-explicit-id
+#: src/copy/billing-home.ts:72
+msgid "to renewal"
+msgstr "to renewal"
 
 #. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:15
@@ -11302,7 +11697,12 @@ msgid "Today · {date}"
 msgstr "Today · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/team.ts:56
+#: src/copy/home-today.ts:23
+msgid "Today at a glance"
+msgstr "Today at a glance"
+
+#. js-lingui-explicit-id
+#: src/copy/team.ts:58
 msgid "Today, {time}"
 msgstr "Today, {time}"
 
@@ -11342,7 +11742,7 @@ msgid "Tracked field seats"
 msgstr "Tracked field seats"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:35
+#: src/copy/usage-page.ts:34
 msgid "Tracked only"
 msgstr "Tracked only"
 
@@ -11363,11 +11763,12 @@ msgstr "Transcript"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:63
+#: src/copy/home-today.ts:24
 msgid "Trial"
 msgstr "Trial"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:131
+#: src/copy/billing-home.ts:142
 #: src/copy/billing-strip.ts:71
 msgid "Trial ended"
 msgstr "Trial ended"
@@ -11392,7 +11793,7 @@ msgstr "Try a part of the invoice number."
 #: src/copy/billing-strip.ts:37
 #: src/copy/branding.ts:58
 #: src/copy/catalog-add-item.ts:77
-#: src/copy/catalog-editor.ts:76
+#: src/copy/catalog-editor.ts:79
 #: src/copy/catalog-import.ts:50
 #: src/copy/catalog-settings.ts:93
 #: src/copy/payment-terms.ts:38
@@ -11411,7 +11812,7 @@ msgid "Try again — no tick is lost while this fails."
 msgstr "Try again — no tick is lost while this fails."
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:89
+#: src/copy/usage-page.ts:84
 msgid "Try again — this screen only ever shows the billed figures."
 msgstr "Try again — this screen only ever shows the billed figures."
 
@@ -11502,7 +11903,7 @@ msgid "Unchanged"
 msgstr "Unchanged"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:42
+#: src/copy/catalog-editor.ts:43
 #: src/copy/catalog-import.ts:93
 #: src/copy/remove-roles.ts:32
 msgid "Undo"
@@ -11534,10 +11935,15 @@ msgid "Unread. {title}. {body}. {time}."
 msgstr "Unread. {title}. {body}. {time}."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:86
+#: src/copy/billing-home.ts:95
 #: src/copy/billing-strip.ts:29
 msgid "Until"
 msgstr "Until"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:18
+msgid "Until it arrives, the rest of HelioGrid works as it does today."
+msgstr "Until it arrives, the rest of HelioGrid works as it does today."
 
 #. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:48
@@ -11661,7 +12067,7 @@ msgid "Usable energy (kWh)"
 msgstr "Usable energy (kWh)"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:50
+#: src/copy/settings.ts:52
 msgid "Usage"
 msgstr "Usage"
 
@@ -11722,14 +12128,14 @@ msgid "Use this row’s price"
 msgstr "Use this row’s price"
 
 #. js-lingui-explicit-id
+#: src/copy/home-today.ts:30
+msgid "used"
+msgstr "used"
+
+#. js-lingui-explicit-id
 #: src/copy/brand-colour-field.ts:15
 msgid "Used on the proposal PDF and the customer link page. The HelioGrid app itself is never restyled."
 msgstr "Used on the proposal PDF and the customer link page. The HelioGrid app itself is never restyled."
-
-#. js-lingui-explicit-id
-#: src/copy/usage-page.ts:102
-msgid "Used this cycle"
-msgstr "Used this cycle"
 
 #. js-lingui-explicit-id
 #: src/copy/pricing.ts:75
@@ -11868,6 +12274,7 @@ msgstr "Voice calls pause"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-strip.ts:115
+#: src/copy/home-today.ts:28
 #: src/copy/invoice-document.ts:49
 #: src/copy/pricing.ts:77
 msgid "Voice minutes"
@@ -11919,7 +12326,7 @@ msgid "was {amount}"
 msgstr "was {amount}"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-words.ts:50
+#: src/copy/catalog-words.ts:48
 msgid "Wattage"
 msgstr "Wattage"
 
@@ -12069,6 +12476,16 @@ msgid "Weight (kg)"
 msgstr "Weight (kg)"
 
 #. js-lingui-explicit-id
+#: src/copy/door-greeting.ts:14
+msgid "Welcome"
+msgstr "Welcome"
+
+#. js-lingui-explicit-id
+#: src/copy/door-greeting.ts:13
+msgid "Welcome back"
+msgstr "Welcome back"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:71
 msgid "Welcome back — carry on"
 msgstr "Welcome back — carry on"
@@ -12109,6 +12526,11 @@ msgid "What do you sell?"
 msgstr "What do you sell?"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:59
+msgid "What each role sees and does"
+msgstr "What each role sees and does"
+
+#. js-lingui-explicit-id
 #: src/copy/pricing.ts:56
 msgid "What every plan includes"
 msgstr "What every plan includes"
@@ -12117,6 +12539,11 @@ msgstr "What every plan includes"
 #: src/copy/proposal-template.ts:59
 msgid "What happens in this phase"
 msgstr "What happens in this phase"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:45
+msgid "What is billed, paid and still due"
+msgstr "What is billed, paid and still due"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-strip.ts:75
@@ -12180,6 +12607,11 @@ msgid "What the import will do"
 msgstr "What the import will do"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:68
+msgid "What this cycle has used"
+msgstr "What this cycle has used"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:79
 msgid "What this form needs"
 msgstr "What this form needs"
@@ -12221,7 +12653,7 @@ msgstr "What you pay today"
 
 #. js-lingui-explicit-id
 #: src/copy/company-profile.ts:73
-#: src/copy/settings.ts:33
+#: src/copy/settings.ts:35
 msgid "What you sell"
 msgstr "What you sell"
 
@@ -12311,6 +12743,11 @@ msgid "When your customer signs and the order is confirmed"
 msgstr "When your customer signs and the order is confirmed"
 
 #. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:68
+msgid "Where it came from, so you know what works"
+msgstr "Where it came from, so you know what works"
+
+#. js-lingui-explicit-id
 #: src/copy/derivation.ts:11
 msgid "Where the model stops"
 msgstr "Where the model stops"
@@ -12356,9 +12793,19 @@ msgid "Who"
 msgstr "Who"
 
 #. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:53
+msgid "Who does what, by role"
+msgstr "Who does what, by role"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-add-item.ts:38
 msgid "Who makes it"
 msgstr "Who makes it"
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:58
+msgid "Who works here and what they can do"
+msgstr "Who works here and what they can do"
 
 #. js-lingui-explicit-id
 #: src/copy/setup-what-you-sell.ts:29
@@ -12406,9 +12853,14 @@ msgid "with {tax}"
 msgstr "with {tax}"
 
 #. js-lingui-explicit-id
-#: src/copy/usage-page.ts:24
+#: src/copy/usage-page.ts:23
 msgid "Within plan"
 msgstr "Within plan"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:22
+msgid "Without a price, this item cannot go into a proposal."
+msgstr "Without a price, this item cannot go into a proposal."
 
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:53
@@ -12466,7 +12918,7 @@ msgid "Written in {written} of {of, plural, one {# {languageNoun}} other {# {lan
 msgstr "Written in {written} of {of, plural, one {# {languageNoun}} other {# {languageNoun}s}} · {each} {sectionNoun} each"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:109
+#: src/copy/billing-home.ts:118
 msgid "yearly"
 msgstr "yearly"
 
@@ -12501,7 +12953,7 @@ msgid "years"
 msgstr "years"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:69
+#: src/copy/catalog-editor.ts:72
 msgid "Yes"
 msgstr "Yes"
 
@@ -12516,7 +12968,7 @@ msgid "Yesterday · {date}"
 msgstr "Yesterday · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:30
+#: src/copy/settings.ts:32
 #: src/copy/team.ts:14
 msgid "You"
 msgstr "You"
@@ -12620,6 +13072,11 @@ msgstr "You sell to either"
 #: src/copy/setup-what-you-sell.ts:69
 msgid "You sell to homes and businesses, and pick which one each proposal is for."
 msgstr "You sell to homes and businesses, and pick which one each proposal is for."
+
+#. js-lingui-explicit-id
+#: src/copy/settings.ts:22
+msgid "You, your team and your company, in one place."
+msgstr "You, your team and your company, in one place."
 
 #. js-lingui-explicit-id
 #: src/copy/proposal-template.ts:76
@@ -12726,7 +13183,7 @@ msgstr "Your choice"
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:29
 #: src/copy/company-signup.ts:37
-#: src/copy/settings.ts:32
+#: src/copy/settings.ts:34
 msgid "Your company"
 msgstr "Your company"
 
@@ -12756,7 +13213,7 @@ msgid "Your company profile"
 msgstr "Your company profile"
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:114
+#: src/copy/billing-home.ts:123
 msgid "Your contract"
 msgstr "Your contract"
 
@@ -12771,13 +13228,18 @@ msgid "Your customer sees this when you save"
 msgstr "Your customer sees this when you save"
 
 #. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:97
+msgid "Your customers’ payments, stage by stage."
+msgstr "Your customers’ payments, stage by stage."
+
+#. js-lingui-explicit-id
 #: src/copy/role-card.ts:89
 #: src/copy/role-card.ts:90
 msgid "Your dashboard is one switch away."
 msgstr "Your dashboard is one switch away."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:99
+#: src/copy/billing-home.ts:108
 msgid "Your data"
 msgstr "Your data"
 
@@ -12833,7 +13295,12 @@ msgid "Your first price book"
 msgstr "Your first price book"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:49
+#: src/copy/home-today.ts:8
+msgid "Your first proposal"
+msgstr "Your first proposal"
+
+#. js-lingui-explicit-id
+#: src/copy/catalog-editor.ts:50
 msgid "Your first release. Every new proposal will use it."
 msgstr "Your first release. Every new proposal will use it."
 
@@ -12969,7 +13436,7 @@ msgid "Your operations view is one switch away."
 msgstr "Your operations view is one switch away."
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-editor.ts:24
+#: src/copy/catalog-editor.ts:26
 #: src/copy/catalog-settings.ts:120
 msgid "Your override"
 msgstr "Your override"
@@ -13006,6 +13473,11 @@ msgid "Your photo was not removed"
 msgstr "Your photo was not removed"
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:57
+msgid "Your photo, language and theme"
+msgstr "Your photo, language and theme"
+
+#. js-lingui-explicit-id
 #: src/copy/billing-home.ts:26
 msgid "Your plan"
 msgstr "Your plan"
@@ -13016,7 +13488,7 @@ msgid "Your plan can’t change while a payment is due. Pay it on Billing first.
 msgstr "Your plan can’t change while a payment is due. Pay it on Billing first."
 
 #. js-lingui-explicit-id
-#: src/copy/billing-home.ts:98
+#: src/copy/billing-home.ts:107
 msgid "Your plan carries on past {date} as if nothing changed."
 msgstr "Your plan carries on past {date} as if nothing changed."
 
@@ -13056,6 +13528,11 @@ msgid "Your plan payment is still due. Everything works for now."
 msgstr "Your plan payment is still due. Everything works for now."
 
 #. js-lingui-explicit-id
+#: src/copy/settings.ts:67
+msgid "Your plan, invoices and payment method"
+msgstr "Your plan, invoices and payment method"
+
+#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:49
 msgid "Your preferences didn't load"
 msgstr "Your preferences didn't load"
@@ -13090,6 +13567,11 @@ msgstr "Your proposal is ready."
 #: src/copy/proposal-template.ts:81
 msgid "Your proposal template didn't load"
 msgstr "Your proposal template didn't load"
+
+#. js-lingui-explicit-id
+#: src/copy/on-its-way.ts:85
+msgid "Your recent searches, one tap away"
+msgstr "Your recent searches, one tap away"
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:79
@@ -13139,12 +13621,12 @@ msgid "Your SKU"
 msgstr "Your SKU"
 
 #. js-lingui-explicit-id
-#: src/copy/catalog-words.ts:48
+#: src/copy/catalog-words.ts:46
 msgid "Your SKUs"
 msgstr "Your SKUs"
 
 #. js-lingui-explicit-id
-#: src/copy/settings.ts:31
+#: src/copy/settings.ts:33
 msgid "Your team"
 msgstr "Your team"
 

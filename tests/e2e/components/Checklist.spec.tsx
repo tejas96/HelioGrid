@@ -1,6 +1,6 @@
 import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedBoxShadow, resolvedColour, TILE_SHADOW } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, TILE_FILL, TILE_SHADOW } from '../support/token';
 import { WordedChecklist } from './Checklist.story';
 
 const en = await createTranslator('en');
@@ -27,7 +27,7 @@ test('a checklist row is a tile and its box takes the fill a control takes in a 
   );
   const row = checklist.getByRole('listitem');
 
-  await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(row).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
   await expect(row).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
   await expect(row.locator('.hg-checklist-box')).toHaveCSS(
     'background-color',

@@ -14,27 +14,27 @@ import { optionLabel, optionValue, PILL_HEIGHT } from './FilterBar.types';
 import { FilterChips } from './FilterChips.native';
 import { FilterPill, filterStyles, PillLabel } from './FilterPill.native';
 
-/* The square's 50dp side and the badge's 20dp size, 5dp inset, 2dp ring and corner offset are the
+/* The circle's 50dp side and the badge's 20dp size, 5dp inset, 2dp ring and edge offset are the
    design system's own and sit off the 4dp scale, so no token carries them. The ring is a border,
    so the badge's box grows by it on each side and its offset grows with it: the drawn badge lands
    where the web's outer ring puts it. */
 const BADGE = 20;
 const BADGE_RING = 2;
-const BADGE_OFFSET = -5;
+const BADGE_OFFSET = -3;
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-1'] },
   sortLabel: { marginRight: theme.spacing['sp-1'] },
-  square: {
+  circle: {
     width: PILL_HEIGHT.filters,
     height: PILL_HEIGHT.filters,
     flexShrink: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: theme.radius['r-field'],
+    borderRadius: theme.radius['r-pill'],
     backgroundColor: colors['action-primary'],
   },
-  squarePressed: { backgroundColor: colors['action-primary-pressed'] },
+  circlePressed: { backgroundColor: colors['action-primary-pressed'] },
   badge: {
     position: 'absolute',
     top: BADGE_OFFSET - BADGE_RING,
@@ -120,14 +120,14 @@ export function SortPills({ options, value, onChange, label, style }: NativeSort
   );
 }
 
-/** The sliders' ink: white on the near-black square. */
+/** The sliders' ink: white on the filled circle. */
 const SQUARE_INK = colors['text-inverse'];
 
 /**
- * The filter square that opens the filter body — `FilterPanel`, **at every width**, beside the
- * search pill (`SearchField`'s `onFilterClick` draws it). 50×50, the near-black primary fill,
+ * The filter circle that opens the filter body — `FilterPanel`, **at every width**, beside the
+ * search pill (`SearchField`'s `onFilterClick` draws it). 50 across, the primary fill,
  * darker while pressed, radius `r-field`, white sliders; the active count rides its top-right
- * corner, ringed in what holds the square. Not a phone affordance: on a wide screen the same body
+ * corner, ringed in what holds the circle. Not a phone affordance: on a wide screen the same body
  * opens as a side panel (`F7-31`).
  */
 export function FiltersButton({
@@ -143,7 +143,7 @@ export function FiltersButton({
       accessibilityRole="button"
       accessibilityLabel={filtersButtonName({ count, label, activeLabel })}
       onPress={onClick}
-      style={({ pressed }) => [styles.square, pressed ? styles.squarePressed : undefined, style]}
+      style={({ pressed }) => [styles.circle, pressed ? styles.circlePressed : undefined, style]}
     >
       <Icon size="md" color={SQUARE_INK}>
         <Svg

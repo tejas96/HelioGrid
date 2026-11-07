@@ -78,7 +78,8 @@ export function DocumentPreview({ className, style, ...props }: WebDocumentPrevi
       className={classNames('hg-doc', className)}
       style={sheetVars(doc, contentHeight, style)}
     >
-      <div className="hg-doc-window">
+      {/* Paper is light in every scheme, as it prints (`[data-paper]`). */}
+      <div className="hg-doc-window" data-paper="">
         <div ref={sheetRef} className="hg-doc-sheet">
           <DocumentBandHeader doc={doc} />
           {bands.cover ? <DocumentCover doc={doc} /> : null}

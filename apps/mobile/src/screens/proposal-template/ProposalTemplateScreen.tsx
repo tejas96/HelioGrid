@@ -22,6 +22,7 @@ import {
 } from '@heliogrid/ui';
 import { useRef } from 'react';
 import { View } from 'react-native';
+import { SavedToast } from '../settings/components/SavedToast';
 import { useSettingsDrillDown } from '../settings/hooks/use-settings-drill-down';
 import { ShellPage } from '../shell/components/ShellPage';
 import { TemplateActBar } from './components/TemplateActBar';
@@ -129,6 +130,7 @@ function TemplatePage({
         overlays={overlays}
         leave={screen.leave}
       />
+      <SavedToast saving={page.saving} failed={page.saveFailure !== null} focusAfter={body} />
     </ShellPage>
   );
 }

@@ -1,6 +1,8 @@
 'use client';
-import { useSignInScreen } from '@heliogrid/data/react';
+import { useDayPart, useSignInScreen } from '@heliogrid/data/react';
 import {
+  doorGreeting,
+  doorStoryWords,
   doorSwitchWords,
   googleLinkWords,
   homeTitle,
@@ -34,6 +36,7 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
   const { pack, date } = useFormat();
   const language = <DoorLanguage {...useLanguageChoice()} />;
   const { signIn, panel } = useSignInScreen(pack, useGoogleSheet());
+  const greeting = doorGreeting(t, useDayPart());
   useGoogleReturn(signIn.returnFromGoogle);
   const road = {
     question: t(SIGN_IN.newCompany),
@@ -44,8 +47,9 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
   /** The number step; `task` stands in its form's place while a switch is pending (`F4-37`). */
   const numberStep = (task?: ReactNode) => (
     <DoorNumberStep
+      story={doorStoryWords(t)}
       language={language}
-      title={{ title: t(SIGN_IN.signIn), intro: t(SIGN_IN.intro) }}
+      title={{ overline: greeting, title: t(SIGN_IN.signIn), intro: t(SIGN_IN.intro) }}
       words={numberStepWords(t, {
         notice: signIn.notice,
         google: signIn.google,
@@ -86,6 +90,7 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
   if (panel.view === 'code') {
     return (
       <DoorCodeStep
+        story={doorStoryWords(t)}
         language={language}
         words={signInWords(t, signIn.frame, signIn.state)}
         frame={signIn.frame}
@@ -102,6 +107,7 @@ export function SignInScreen({ companySignupHref }: { companySignupHref: string 
     const { frame } = panel;
     return (
       <DoorLinkStep
+        story={doorStoryWords(t)}
         language={language}
         words={googleLinkWords(t, frame, panel.email, signIn.state.phoneProblem)}
         frame={frame}

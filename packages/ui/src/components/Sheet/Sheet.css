@@ -1,6 +1,6 @@
 /* AN OVERLAY THAT HOLDS THINGS IS --surface, AND WHAT IT HOLDS IS DARKER (F7-15): a field inside is
    a well and a control the opposite of its ground, so nothing inside is white on white. Header and
-   footer match the panel so no seam shows when content scrolls beneath them. */
+   footer are clear, so the panel's one pane of glass shows through with no seam. */
 /* Sheet — the system's primary overlay surface (≈180 screens). Springs from the bottom edge on a
    spring easing, 32px top corners (16px functional), e5. The backdrop BLURS the layer behind and
    FADES IT TOWARD WHITE — never a dark scrim; that inversion is a signature of the system.
@@ -34,7 +34,7 @@
   --hg-sheet-pad-x: var(--sp-5);
   --hg-sheet-pad-top: var(--sp-3);
   --hg-sheet-pad-bottom: var(--sp-6);
-  --hg-sheet-title: var(--fs-h3);
+  --hg-sheet-title: var(--fs-figure);
   /* ONE NUMBER, TWO CONSUMERS: the fade's height and the clearance the body keeps under it. Split
      them and the fade draws over the body's last line — which on a form is the provenance tier. */
   --hg-sheet-footer-fade: var(--sp-5);
@@ -47,10 +47,15 @@
   display: flex;
   flex-direction: column;
   outline: none;
-  /* biome-ignore lint/plugin/raw-white-css: panel — a sheet, a modal, a detail panel: a page ground over the page */
-  background: var(--surface);
+  /* A pane of frosted glass over the page: the card colour, nearly opaque so its words keep their
+     contrast, with a light along its top edge. */
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
   border-radius: var(--hg-sheet-radius) var(--hg-sheet-radius) 0 0;
-  box-shadow: var(--e5);
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    var(--e5);
   max-height: 92%;
   transform: translateY(var(--hg-sheet-drag, 0px));
   transition: transform var(--dur-emphasised) var(--ease-spring);
@@ -108,11 +113,12 @@
   cursor: grab;
 }
 
+/* The strong line: the sunken colour all but vanished on the glass. */
 .hg-sheet-handle-bar {
-  width: 36px;
-  height: 4px;
+  width: 40px;
+  height: 5px;
   border-radius: var(--r-pill);
-  background: var(--canvas-sunken);
+  background: var(--line-strong);
 }
 
 /* ── the header ────────────────────────────────────────────────────────────── */
@@ -124,8 +130,9 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--sp-3);
-  /* biome-ignore lint/plugin/raw-white-css: panel — a sheet, a modal, a detail panel: a page ground over the page */
-  background: var(--surface);
+  /* Clear: the sheet is one pane of glass, and a header painted the card colour drew a seam
+     across it. The body scrolls below the header, never under it. */
+  background: transparent;
   position: relative;
   z-index: 1;
   transition: box-shadow var(--dur-standard) var(--ease-standard);
@@ -133,6 +140,15 @@
 
 .hg-sheet-header[data-handle="true"] {
   padding-top: 0;
+}
+
+/* The close alone rides the handle's row, at its end, and takes no row of its own: a sheet whose
+   content opens on its own title lost a 44-pixel row to a lone ✕. */
+.hg-sheet-header[data-bare="true"] {
+  position: absolute;
+  top: 0;
+  inset-inline-end: var(--sp-3);
+  padding: 0;
 }
 
 /* A scroll shadow, not a divider line — the family separates by luminance, never by rules. The
@@ -162,13 +178,22 @@
   margin-bottom: 6px;
 }
 
+/* A sheet's title is a title: the display face, as the page's large title is. A functional sheet,
+   dense with fields, keeps the compact UI title. */
 .hg-sheet-title {
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: var(--hg-sheet-title);
+  font-weight: var(--fw-regular);
+  letter-spacing: var(--tr-figure);
+  color: var(--text-primary);
+  line-height: var(--lh-figure);
+}
+
+.hg-sheet[data-density="functional"] .hg-sheet-title {
+  font-family: var(--font-sans);
   font-weight: var(--fw-bold);
   letter-spacing: var(--tr-h2);
-  color: var(--text-primary);
   line-height: 1.25;
 }
 
@@ -231,20 +256,19 @@
   flex-shrink: 0;
   position: relative;
   padding: var(--sp-3) var(--hg-sheet-pad-x) var(--hg-sheet-pad-bottom);
-  /* biome-ignore lint/plugin/raw-white-css: panel — a sheet, a modal, a detail panel: a page ground over the page */
-  background: var(--surface);
+  /* Clear, as the header: the sheet's own glass shows through, with no seam above the acts. */
+  background: transparent;
 }
 
-/* A luminance fade above the sticky footer, never a divider line. It fades to the FOOTER'S OWN
-   ground — fading to a colour the footer is not leaves the band a divider line would have drawn. */
+/* A luminance fade above the sticky footer, never a divider line. It fades to the sheet's own
+   glass — fading to a colour the sheet is not leaves the band a divider line would have drawn. */
 .hg-sheet-footer-fade {
   position: absolute;
   top: calc(-1 * var(--hg-sheet-footer-fade));
   left: 0;
   right: 0;
   height: var(--hg-sheet-footer-fade);
-  /* biome-ignore lint/plugin/raw-white-css: panel — a sheet, a modal, a detail panel: a page ground over the page */
-  background: linear-gradient(to top, var(--surface), transparent);
+  background: linear-gradient(to top, var(--glass-strong), transparent);
   pointer-events: none;
 }
 

@@ -56,6 +56,7 @@ export function DetailPanel({
   retryLabel,
   emptyTitle,
   emptyMessage,
+  emptyMoment,
   emptyAction = null,
   unavailableTitle,
   unavailableMessage,
@@ -158,6 +159,7 @@ export function DetailPanel({
             <OverlayBody
               emptyAction={emptyAction}
               emptyMessage={emptyMessage}
+              emptyMoment={emptyMoment}
               emptyTitle={emptyTitle}
               errorMessage={errorMessage}
               errorTitle={errorTitle}

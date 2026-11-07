@@ -3,7 +3,6 @@ import type { ReadKind } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -16,34 +15,37 @@ import type { RolesReferencePreset } from './RolesReference.types';
 
 interface RoleTileProps {
   preset: RolesReferencePreset;
+  /** The card's first row draws no hairline above it. */
+  first: boolean;
   counts: ReadKind;
   countGap: TranslatedText;
   open: boolean;
   onOpen: () => void;
 }
 
-/** One role's tile: its glyph, its name and its count — the figure, its wait, or the named gap. */
-export function RoleTile({ preset, counts, countGap, open, onOpen }: RoleTileProps) {
+/**
+ * One role's row in the roles card: its glyph, its name and its count — the figure, its wait, or
+ * the named gap. The web draws it as a tile in a wide room; the phone's room is always narrow.
+ */
+export function RoleTile({ preset, first, counts, countGap, open, onOpen }: RoleTileProps) {
   return (
     <Pressable
       onPress={onOpen}
       accessibilityState={{ expanded: open, busy: counts === 'loading' }}
       accessibilityLabel={spokenName(preset, counts, countGap)}
-      style={[tileSurface, styles.tile, open ? styles.open : undefined]}
+      style={[styles.row, first ? undefined : styles.after, open ? styles.open : undefined]}
     >
-      <GroundProvider ground="tile">
-        <IconCircle size={36} color={open ? colors.accent : colors['text-secondary']}>
-          <ShellGlyph
-            name={PRESET_GLYPH[preset.value]}
-            size="md"
-            tone={open ? 'accent' : 'secondary'}
-          />
-        </IconCircle>
-        <Text variant="body" bold>
-          {preset.name}
-        </Text>
-        <Count preset={preset} counts={counts} countGap={countGap} />
-      </GroundProvider>
+      <IconCircle size={36} color={open ? colors.accent : colors['text-secondary']}>
+        <ShellGlyph
+          name={PRESET_GLYPH[preset.value]}
+          size="md"
+          tone={open ? 'accent' : 'secondary'}
+        />
+      </IconCircle>
+      <Text variant="body" bold style={styles.name}>
+        {preset.name}
+      </Text>
+      <Count preset={preset} counts={counts} countGap={countGap} />
     </Pressable>
   );
 }
@@ -65,17 +67,16 @@ function Count({
   );
 }
 
-/* The board's tile height, so a two-line name and a one-line name stand level. */
-const TILE_MIN_HEIGHT = 104;
-
 const styles = StyleSheet.create({
-  tile: {
-    flex: 1,
-    minHeight: TILE_MIN_HEIGHT,
-    alignItems: 'flex-start',
-    gap: theme.spacing['sp-2'],
-    padding: theme.layout['tile-pad'],
-    borderRadius: theme.radius['r-tile'],
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: theme.spacing['sp-3'],
+    paddingVertical: theme.spacing['sp-3'],
+    paddingHorizontal: theme.spacing['sp-4'],
   },
+  after: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors['line-soft'] },
+  name: { flex: 1, minWidth: 0 },
   open: { backgroundColor: colors['accent-subtle'] },
 });

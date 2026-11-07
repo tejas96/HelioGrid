@@ -1,0 +1,48 @@
+/* AppRail, folded — each item keeps its icon, and its name is tipped beside it on hover and on
+   focus (`AppRail.css` draws the rail itself). */
+
+/* A folded item's name, tipped beside it on hover and on focus. */
+.hg-app-rail-tip {
+  position: relative;
+  display: inline-flex;
+}
+
+.hg-app-rail [data-tip]:hover::after,
+.hg-app-rail [data-tip]:focus-visible::after,
+.hg-app-rail [data-tip]:has(:focus-visible)::after {
+  content: attr(data-tip);
+  position: absolute;
+  z-index: 40;
+  inset-inline-start: calc(100% + var(--sp-2));
+  top: 50%;
+  translate: 0 -50%;
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-xs);
+  background: var(--ink);
+  color: var(--on-ink);
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-caption);
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: var(--e2);
+  animation: hg-fade-in var(--dur-standard) var(--ease-enter) var(--dur-ambient) backwards;
+}
+
+/* While the sidebar opens (`use-rail-follow.ts`), the words it gains — the wordmark, the company,
+   the search, each name, the account — fade in once the page has slid clear of their room, so no
+   word is drawn over the page in passing. */
+[data-moving="open"]
+  > .hg-app-rail
+  :is(
+    .hg-app-rail-brand,
+    .hg-app-rail-caption,
+    .hg-app-rail-search,
+    .hg-app-rail-label,
+    .hg-app-rail-tag,
+    .hg-app-rail-badge,
+    .hg-app-rail-account-words
+  ) {
+  animation: hg-fade-in var(--dur-standard) var(--ease-enter) var(--dur-standard) backwards;
+}

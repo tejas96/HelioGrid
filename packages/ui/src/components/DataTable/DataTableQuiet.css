@@ -1,48 +1,27 @@
-/* The quiet head (design-system change 20; `SCR-M01-12`, the owner's refined-table pick). A short
-   list read row by row — a team roster — takes sentence-case labels in the caption face on the
-   page, and its rows in one raised card with a hairline between each, never zebra. The card is
-   drawn under the rows by `.hg-dt-quiet::before`, so it is still one <table>.
-
-   The geometry is the design system's own (a caption line over a 16px gap; rows that hold a 40px
-   face with a name over a status chip, 82px with their cell padding), so it is named here, as the
-   density numbers are, and switched by [data-head]. */
+/* The quiet head (design-system change 20), drawn as OneOhm draws a table: straight on the page,
+   with no card behind it. Sentence-case labels in the caption face sit over one line; a line runs
+   under every row; the row under the pointer takes a soft wash. A row takes its content's height
+   over a 12px pad, 56px at least — a face with a name over one quiet line. */
 
 .hg-dt[data-head="quiet"] {
-  --hg-dt-edge: var(--hg-dt-gutter);
-  --hg-dt-head-h: 34px;
-  --hg-dt-quiet-cell-pad: 14px;
-  --hg-dt-row-h: 82px;
+  --hg-dt-edge: var(--sp-4);
+  --hg-dt-gutter: var(--sp-4);
+  --hg-dt-head-h: var(--sp-10);
+  --hg-dt-row-h: calc(var(--sp-12) + var(--sp-2));
   overflow: visible;
-}
-
-.hg-dt-quiet {
-  position: relative;
-}
-
-.hg-dt-quiet::before {
-  content: "";
-  position: absolute;
-  inset: var(--hg-dt-head-h) 0 0;
-  /* biome-ignore lint/plugin/raw-white-css: the card the quiet rows stand in, raised over the page */
-  background: var(--surface);
-  border-radius: var(--r-md);
-  box-shadow: var(--e2);
-}
-
-.hg-dt-quiet .hg-dt-table {
-  position: relative;
 }
 
 /* The label is a caption-face `Text`; the cell's overline casing and tracking must not reach it. */
 .hg-dt[data-head="quiet"] .hg-dt-th {
   letter-spacing: normal;
   text-transform: none;
+  font-weight: var(--fw-medium);
+  border-bottom: 1px solid var(--line-soft);
 }
 
 .hg-dt[data-head="quiet"] .hg-dt-th-inner {
-  align-items: flex-start;
-  padding-top: 0;
-  padding-bottom: var(--sp-4);
+  padding-top: var(--sp-2);
+  padding-bottom: var(--sp-2);
 }
 
 .hg-dt[data-head="quiet"] .hg-dt-row,
@@ -50,17 +29,19 @@
   background: transparent;
 }
 
-/* The row just added keeps its wash on the quiet table's card (`isRowHighlighted`). */
+@media (hover: hover) {
+  .hg-dt[data-head="quiet"] .hg-dt-row:hover:not([data-selected="true"]):not([data-issue="true"]) {
+    background: var(--neutral-bg);
+  }
+}
+
+/* The row just added keeps its wash (`isRowHighlighted`). */
 .hg-dt[data-head="quiet"] .hg-dt-row[data-highlighted="true"] {
   background: var(--hg-dt-highlight);
 }
 
-.hg-dt[data-head="quiet"] .hg-dt-row:not(:first-child) {
-  border-top: 1px solid var(--line-soft);
-}
-
 .hg-dt[data-head="quiet"] .hg-dt-cell-shell {
-  height: var(--hg-dt-row-h);
-  padding-top: var(--hg-dt-quiet-cell-pad);
-  padding-bottom: var(--hg-dt-quiet-cell-pad);
+  padding-top: var(--sp-3);
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--line-soft);
 }

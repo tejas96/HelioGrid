@@ -27,7 +27,7 @@ test('the roles reference reads the roster', async ({ page }) => {
   await passTheOwnersMark(page, en);
   await page.goto('/more');
 
-  await page.getByRole('button', { name: WORDS.rows.roles }).click();
+  await page.getByRole('main').getByRole('button', { name: WORDS.rows.roles }).click();
 
   await expect(page).toHaveURL(/\/more\/roles$/);
   const words = rolesReferenceWords(en.t, null);

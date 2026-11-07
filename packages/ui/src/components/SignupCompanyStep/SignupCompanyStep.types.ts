@@ -1,5 +1,6 @@
 import type { CreateTenant, TranslatedText } from '@heliogrid/contracts';
 import type { ReactElement, ReactNode } from 'react';
+import type { DoorStory } from '../DoorFrame/DoorFrame.types';
 import type { SignupStepsWords } from '../SignupSteps/SignupSteps.types';
 import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
 
@@ -100,6 +101,8 @@ export interface SignupCompanyStepWords {
  * 21). The form, the write and the steer are the screen's; this draws them and raises the presses.
  */
 export interface SignupCompanyStepProps {
+  /** The desktop sky panel's words about the product, as on the door's first two steps. */
+  story?: DoorStory;
   /** The door's language control, the header row's trailing control. */
   language: ReactNode;
   words: SignupCompanyStepWords;

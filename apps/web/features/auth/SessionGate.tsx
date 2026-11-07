@@ -1,6 +1,9 @@
 'use client';
 import { useSessionGate } from '@heliogrid/data/react';
 import type { SetupLanding } from '@heliogrid/domain';
+import { bootLabel } from '@heliogrid/i18n';
+import { useTranslate } from '@heliogrid/i18n/react';
+import { BootSplash } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
 import { type ReactNode, useEffect } from 'react';
 import { ROUTE_OF } from './constants';
@@ -41,6 +44,7 @@ export function SessionGate(props: GateProps) {
   const { need, children } = props;
   const { unreachable, landing, leaves, opensTheLink, setupStep } = useSessionGate(need);
   const router = useRouter();
+  const t = useTranslate();
   const sendTo = landing === 'wait' || !leaves ? null : ROUTE_OF[landing];
 
   useEffect(() => {
@@ -55,6 +59,7 @@ export function SessionGate(props: GateProps) {
   }, [need, landing, sendTo, opensTheLink, router]);
 
   if (unreachable) return <UnreachableScreen />;
-  if (landing === 'wait' || sendTo !== null) return null;
+  /* The wait — and the redirect it ends in — draws the boot splash, never a blank window. */
+  if (landing === 'wait' || sendTo !== null) return <BootSplash label={bootLabel(t)} />;
   return props.need === 'signed-in' && setupStep !== null ? props.setupSteps[setupStep] : children;
 }

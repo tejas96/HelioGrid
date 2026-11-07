@@ -3,7 +3,6 @@ import { MS_PER_DAY, TIERS, type Tier } from '@heliogrid/domain';
 import type { BillingChip } from '../BillingHome/BillingHome.types';
 import { needsOf } from './UsagePage.needs';
 import { inNeeds, isSignal, onTrial, rowsOf, stepChip } from './UsagePage.rows';
-import { tableRowsOf } from './UsagePage.tables';
 import type {
   UsageInput,
   UsageNeedRow,
@@ -83,8 +82,6 @@ function ownerView(usage: BillingUsage, input: UsageInput): UsagePageView {
     ),
   ];
   const range = rangeOf(usage, input);
-  const plan = usage.standing.tier === null ? null : words.view.tier(usage.standing.tier);
-  const tables = tableRowsOf(usage, input, cards);
   return {
     cycleLine: onTrial(usage)
       ? words.trialLine(trialDays(usage), range)
@@ -96,11 +93,6 @@ function ownerView(usage: BillingUsage, input: UsageInput): UsagePageView {
       : null,
     limits: { title: words.limits, rows: cards.limits, sources },
     included: { title: words.included, rows: cards.included, sources },
-    tables: {
-      ...tables,
-      limitsCaption: words.limitsCaption(plan, range),
-      includedCaption: words.includedCaption(plan, range),
-    },
     cycle: { range, resets: format.date(usage.cycle.resetsAt) },
     extra:
       usage.extraCharges === null
@@ -170,7 +162,6 @@ function emptyView(): UsagePageView {
     teaching: null,
     limits: null,
     included: null,
-    tables: null,
     cycle: null,
     extra: null,
     plans: null,

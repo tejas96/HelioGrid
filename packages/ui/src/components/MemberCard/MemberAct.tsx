@@ -3,12 +3,10 @@ import { Button } from '../Button/Button';
 import { MEMBER_ACT_LOOK } from './MemberCard.logic';
 import type { MemberActProps } from './MemberCard.types';
 
-/** A row's one act (`SCR-M01-12`): the card's foot at `md`, the table's last cell at `sm`. */
+/** A row's one act (`SCR-M01-12`), at `sm`: a row's end and the table's last cell. */
 export function MemberAct({
   act,
   label,
-  size,
-  fullWidth = false,
   offReason,
   busy = false,
   spokenName,
@@ -20,8 +18,7 @@ export function MemberAct({
     <Button
       ref={ref}
       variant={look.variant}
-      size={size}
-      fullWidth={fullWidth}
+      size="sm"
       {...(look.danger ? { tone: 'danger' as const } : {})}
       icon={
         <ShellGlyph

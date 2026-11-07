@@ -1,7 +1,7 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { AccountTile } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedColour } from '../support/token';
+import { resolvedColour, TILE_FILL } from '../support/token';
 
 /** The link step's tile (`SCR-M01-01`): "Signing in with Google" over the account, at the phone's 375. */
 const overline = (await createTranslator('en')).t(SIGN_IN.signingInWithGoogle);
@@ -53,7 +53,7 @@ for (const account of [
         tileInnerRight: box.right - Number.parseFloat(style.paddingRight),
       };
     });
-    expect(look.fill).toBe(await resolvedColour(page, '--surface'));
+    expect(look.fill).toBe(await resolvedColour(page, TILE_FILL));
     expect(look.padding).toBe(look.want.padding);
     expect(look.radius).toBe(look.want.radius);
     expect(look.tileWidth).toBe(WIDTH);

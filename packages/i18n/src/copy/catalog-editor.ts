@@ -18,6 +18,8 @@ export const CATALOG_EDITOR = {
   yourPrice: /*i18n*/ { id: 'Your price' },
   price: /*i18n*/ { id: 'Price' },
   priceHint: /*i18n*/ { id: 'Clear it and this item has no price.' },
+  /** The price field's hint while it holds no price: what a price is for. */
+  priceNeeded: /*i18n*/ { id: 'Without a price, this item cannot go into a proposal.' },
   taxRate: /*i18n*/ { id: 'Tax rate' },
   noMarketRate: /*i18n*/ { id: 'No market rate yet' },
   taxStays: /*i18n*/ { id: 'No market rate yet. Your {rate} stays until one is set.' },
@@ -27,7 +29,6 @@ export const CATALOG_EDITOR = {
   hideFromPickers: /*i18n*/ { id: 'Hide from pickers' },
   preferredInPickers: /*i18n*/ { id: 'Preferred in search and pickers' },
   cancel: /*i18n*/ { id: 'Cancel' },
-  saveOverride: /*i18n*/ { id: 'Save override' },
   savePrice: /*i18n*/ { id: 'Save price' },
   saveFailed: /*i18n*/ { id: "That didn't save. Nothing changed — try again." },
   close: /*i18n*/ { id: 'Close' },
@@ -56,6 +57,8 @@ export const CATALOG_EDITOR = {
   nothingChanged: /*i18n*/ {
     id: 'Nothing has changed since the last release, so there is nothing to publish.',
   },
+  /** The publish sheet's calm state when the preview carries nothing new. */
+  nothingToPublish: /*i18n*/ { id: 'Nothing to publish yet' },
   publishFailed: /*i18n*/ { id: "The release wasn't published. Nothing changed — try again." },
   releases: /*i18n*/ { id: 'Releases' },
   releasesCount: /*i18n*/ {

@@ -36,6 +36,13 @@ function PublishBody(props: CatalogPublishBody) {
      the changes it grew. */
   const body = useRef<HTMLDivElement>(null);
   const grown = useRef<HTMLDivElement>(null);
+  if (props.empty !== undefined && props.empty !== null) {
+    return (
+      <div ref={body} tabIndex={-1} className="hg-cat-release hg-focus-target">
+        <EmptyState moment="empty" title={props.empty.title} description={props.empty.line} />
+      </div>
+    );
+  }
   return (
     <div ref={body} tabIndex={-1} className="hg-cat-release hg-focus-target">
       <Input

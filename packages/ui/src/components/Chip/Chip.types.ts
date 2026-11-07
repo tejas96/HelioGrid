@@ -15,8 +15,13 @@ export type ChipDensity = 'expressive' | 'functional';
 
 export interface ChipProps {
   children?: ReactNode;
-  /** filter chip active state — near-black fill, white text */
+  /** filter chip active state — the ink pill, the page's own colour for its words */
   active?: boolean;
+  /**
+   * How many records the chip's filter holds — drawn in a small mono slot after the words. A `0`
+   * chip stays, quiet: hiding it would hide that the kind exists. Spoken with the words.
+   */
+  count?: number;
   /** With a handler the chip is a button inside a 44px target; without one it is a plain span. */
   onClick?: () => void;
   /** show a leading status dot */

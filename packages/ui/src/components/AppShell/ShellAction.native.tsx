@@ -36,6 +36,9 @@ export function ShellAction({
       accessibilityLabel={name}
       accessibilityState={expanded === undefined ? undefined : { expanded }}
       onPress={onClick}
+      /* A toolbar icon's round ripple, as Android draws one: a clip would cut the count badge
+         riding the corner. */
+      ripple="borderless"
       style={[
         styles.action,
         round ? [styles.round, { backgroundColor: controlFill }] : undefined,

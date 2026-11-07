@@ -5,6 +5,7 @@ import {
   badgedSchemesOf,
   type CatalogFilter,
   type CatalogSort,
+  type ComponentKind,
   catalogTeaches,
   holdsOutright,
   mapRead,
@@ -14,9 +15,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { queryKeys } from '../cache/keys';
 import type { CatalogItemsAsk } from '../catalog/repository';
+import type { Repositories } from '../data-layer';
 import { useRepositories } from './context';
 import { readOf } from './read';
 import { companyRead } from './shell-reads';
+import { useCatalogKindCounts } from './use-catalog-kind-counts';
 import { ownersRead } from './use-owners';
 import { usePagedList } from './use-paged-list';
 import { usePaginatedList } from './use-paginated-list';
@@ -149,6 +152,10 @@ export interface CatalogFacts {
   readonly archivedCount: number;
   /** Every item of the slice and the tenant, hidden ones included: the *Items* tab's figure. */
   readonly allCount: number;
+  /** What the tenant changed: its own SKUs and the platform items an override sets something on. */
+  readonly changedCount: number;
+  /** Each kind's item count, hidden ones included — the kind chips'; `null` while one is out. */
+  readonly kindCounts: Readonly<Record<ComponentKind, number>> | null;
   readonly owners: { readonly names: readonly string[]; readonly more: number } | null;
   /**
    * The facts' reads as one: still out until each is in, failed — with the retry that asks each
@@ -168,6 +175,21 @@ const COUNT_ASKS: Record<'all' | 'archived' | 'changed', CatalogItemsAsk> = {
 };
 
 /** The page's own facts beside the list: who may act, the market's schemes, the strip and counts. */
+/** One of the page's counts as a read — the shell's sidebar names the same key, so both share it. */
+export function catalogCountRead(
+  repositories: Repositories,
+  tenantId: string,
+  of: keyof typeof COUNT_ASKS,
+  enabled: boolean,
+) {
+  return {
+    queryKey: queryKeys.catalog.count(tenantId, of),
+    queryFn: async ({ signal }: { signal: AbortSignal }) =>
+      (await repositories.catalog.items(COUNT_ASKS[of], signal)).totalCount,
+    enabled,
+  };
+}
+
 export function useCatalogFacts(): CatalogFacts {
   const repositories = useRepositories();
   const { user } = useSession();
@@ -186,16 +208,13 @@ export function useCatalogFacts(): CatalogFacts {
     queryFn: ({ signal }) => repositories.catalog.releases({ page: 1, limit: 1 }, signal),
     enabled: reading,
   });
-  const counted = (of: keyof typeof COUNT_ASKS) => ({
-    queryKey: queryKeys.catalog.count(tenantId, of),
-    queryFn: async ({ signal }: { signal: AbortSignal }) =>
-      (await repositories.catalog.items(COUNT_ASKS[of], signal)).totalCount,
-    enabled: reading,
-  });
+  const counted = (of: keyof typeof COUNT_ASKS) =>
+    catalogCountRead(repositories, tenantId, of, reading);
   const archived = useQuery(counted('archived'));
   const changed = useQuery(counted('changed'));
   const all = useQuery(counted('all'));
   const owners = useQuery(ownersRead(repositories, tenantId, reading && !administers));
+  const kindCounts = useCatalogKindCounts(tenantId, reading);
 
   const ownersLine = readOf(owners);
   const read = allReads([
@@ -222,6 +241,8 @@ export function useCatalogFacts(): CatalogFacts {
     }),
     archivedCount: archived.data ?? 0,
     allCount: all.data ?? 0,
+    changedCount: changed.data ?? 0,
+    kindCounts,
     owners: owners.data
       ? { names: owners.data.owners.map((owner) => owner.name), more: owners.data.more }
       : null,

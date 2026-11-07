@@ -27,8 +27,10 @@
   min-width: 0;
 }
 
+/* A titled head spaces its lines as `LargeTitle` does, so every settings page's title and line sit
+   alike. */
 .hg-template-head[data-titled] {
-  gap: var(--sp-1);
+  gap: var(--sp-2);
 }
 
 .hg-template[data-layout="narrow"] .hg-template-head:not([data-titled]) {

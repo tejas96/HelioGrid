@@ -8,6 +8,13 @@
   background: var(--hg-ground);
 }
 
+/* The rail's holder: as tall as the shell, as wide as the rail, so its width can be watched. */
+.hg-app-shell-rail {
+  display: flex;
+  flex-shrink: 0;
+  height: 100%;
+}
+
 .hg-app-shell-column {
   flex: 1;
   display: flex;
@@ -15,16 +22,48 @@
   min-width: 0;
 }
 
+/* A column, so the page grows into the room the pinned top leaves: a page sized to the whole main
+   under a billing strip ran past it and scrolled with nothing to scroll to. */
 .hg-app-shell-main {
   flex: 1;
   min-height: 0;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The header and the billing strip, pinned at the scroll's top as one region. Clear over the page's
+   glow at rest; one frosted band comes in with the distance scrolled (`useBarFade`), under both, so
+   content passes beneath instead of meeting a hard edge. */
+.hg-app-shell-top {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  isolation: isolate;
+  --hg-bar-frost: 0;
+}
+
+.hg-app-shell-top::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: color-mix(in srgb, var(--canvas) 82%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(16px);
+  backdrop-filter: saturate(1.4) blur(16px);
+  box-shadow: 0 1px 0 var(--hairline);
+  opacity: var(--hg-bar-frost);
+  pointer-events: none;
+}
+
+.hg-app-shell-top .hg-billing-strip-slot {
+  background: transparent;
 }
 
 /* ── the desktop header ────────────────────────────────────────────────────────────────── */
 
 .hg-app-shell-header {
-  position: static;
+  position: relative;
   top: 0;
   z-index: 20;
   flex-shrink: 0;
@@ -34,15 +73,35 @@
   box-sizing: border-box;
   min-height: var(--topbar-h-mobile);
   padding: 0 var(--screen-pad-mobile-fn);
-  /* A frosted band of the page: what scrolls under it softens instead of colliding. */
+  --hg-bar-frost: 0;
+  isolation: isolate;
+  background: transparent;
+  font-family: var(--font-sans);
+}
+
+/* A frosted band of the page, in with the distance the content has scrolled (`useBarFade`): clear
+   over the page's glow at rest, so nothing turns white in one frame. */
+.hg-app-shell-header::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
   background: color-mix(in srgb, var(--canvas) 86%, transparent);
   -webkit-backdrop-filter: saturate(1.4) blur(14px);
   backdrop-filter: saturate(1.4) blur(14px);
-  font-family: var(--font-sans);
+  box-shadow: 0 1px 0 var(--hairline);
+  opacity: var(--hg-bar-frost);
+  pointer-events: none;
 }
 
 .hg-app-shell-header[data-sticky="true"] {
   position: sticky;
+}
+
+/* Inside the region the bar draws no band of its own: the region's one band covers both. */
+.hg-app-shell-top .hg-app-shell-header::before,
+.hg-app-shell-top .hg-app-shell-topbar::before {
+  content: none;
 }
 
 .hg-app-shell-header-slot {

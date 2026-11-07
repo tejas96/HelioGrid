@@ -1,30 +1,20 @@
 import { type RefObject, useId, useRef } from 'react';
 import { useOwnWidth } from '../../primitives/use-own-width';
-import { ShellGlyph } from '../AppShell/ShellGlyph';
-import { Avatar } from '../Avatar/Avatar';
 import { Banner } from '../Banner/Banner';
 import { BannerAction } from '../Banner/BannerAction';
-import { Button } from '../Button/Button';
-import { Badge } from '../Chip/Chip';
-import { ChipGroup } from '../ChipGroup/ChipGroup';
-import { ListRow } from '../ListRow/ListRow';
 import { LoadingBars } from '../LoadingBars/LoadingBars';
 import { OptionCardGroup } from '../OptionCardGroup/OptionCardGroup';
 import { SegmentedControl } from '../SegmentedControl/SegmentedControl';
-import {
-  SettingsCard,
-  SettingsSection,
-  SettingsSectionRow,
-} from '../SettingsSection/SettingsSection';
+import { SettingsSection, SettingsSectionRow } from '../SettingsSection/SettingsSection';
 import { Switch } from '../Switch/Switch';
 import { ValueSource } from '../ValueSource/ValueSource';
+import { ProfileHero } from './ProfileHero';
 import {
   languageOf,
   PROFILE_PREFERENCES_LOADING,
   PROFILE_PREFERENCES_WIDE_FROM,
   pushSwitchesOf,
   pushSwitchWords,
-  roleBadges,
   unitOptions,
   unitsOf,
 } from './ProfilePreferences.logic';
@@ -45,6 +35,10 @@ export function ProfilePreferences(props: ProfilePreferencesProps) {
       <h1 ref={title} tabIndex={-1} className="hg-large-title-name hg-focus-target">
         {props.words.title}
       </h1>
+      <ProfileHero {...props} />
+      {props.appearance === undefined ? null : (
+        <div className="hg-profile-preferences-look">{props.appearance}</div>
+      )}
       <PageBody {...props} title={title} wide={wide} />
     </div>
   );
@@ -80,27 +74,9 @@ function PageBody({
   return wide ? <WidePage {...props} /> : <PhonePage {...props} />;
 }
 
-function Roles({ words }: Pick<ProfilePreferencesProps, 'words'>) {
-  return (
-    <ChipGroup label={words.roles.title} max={0} density="functional">
-      {roleBadges(words).map((badge) => (
-        <Badge key={badge.preset} tone={badge.tone} density="functional">
-          {badge.label}
-        </Badge>
-      ))}
-    </ChipGroup>
-  );
-}
-
-const CHEVRON = <ShellGlyph name="chevron-right" size="md" tone="secondary" />;
-
 function PhonePage({
   words,
   view,
-  name,
-  photo,
-  onEditName,
-  onRole,
   onLanguage,
   onUnits,
   read,
@@ -110,30 +86,6 @@ function PhonePage({
   const ids = useId();
   return (
     <>
-      <section className="hg-profile-preferences-section">
-        <h2 className="hg-profile-preferences-overline">{words.account}</h2>
-        <SettingsCard className="hg-profile-preferences-tile">
-          <ListRow
-            className="hg-profile-preferences-row"
-            avatar={<Avatar name={name} src={photo} size={48} />}
-            title={name}
-            density="expressive"
-            trailing={
-              <Button variant="secondary" size="sm" onClick={onEditName}>
-                {words.editName}
-              </Button>
-            }
-          />
-          <ListRow
-            className="hg-profile-preferences-row"
-            title={words.roles.title}
-            density="functional"
-            marks={<Roles words={words} />}
-            onClick={onRole}
-            trailing={CHEVRON}
-          />
-        </SettingsCard>
-      </section>
       <section className="hg-profile-preferences-section" data-gap="wide">
         <h2 className="hg-profile-preferences-overline">{words.languageAndUnits}</h2>
         <div className="hg-profile-preferences-control">
@@ -208,10 +160,6 @@ function PhonePage({
 function WidePage({
   words,
   view,
-  name,
-  photo,
-  onEditName,
-  onRole,
   onLanguage,
   onUnits,
   read,
@@ -221,23 +169,6 @@ function WidePage({
   const ids = useId();
   return (
     <>
-      <SettingsSection title={words.account}>
-        <div className="hg-profile-preferences-name">
-          <Avatar name={name} src={photo} size={48} />
-          <span className="hg-profile-preferences-name-words">{name}</span>
-          <Button variant="secondary" size="sm" onClick={onEditName}>
-            {words.editName}
-          </Button>
-        </div>
-        <ListRow
-          className="hg-profile-preferences-row"
-          title={words.roles.title}
-          density="functional"
-          marks={<Roles words={words} />}
-          onClick={onRole}
-          trailing={CHEVRON}
-        />
-      </SettingsSection>
       <SettingsSection title={words.languageAndUnits}>
         <SettingsSectionRow
           label={words.language.label}

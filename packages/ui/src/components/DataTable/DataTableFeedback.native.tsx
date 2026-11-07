@@ -10,6 +10,8 @@ import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
+import { LottieMoment } from '../LottieMoment/LottieMoment.native';
+import type { LottieMomentName } from '../LottieMoment/LottieMoment.types';
 import { rowNoteOf, TABLE_SKELETON_ROWS, tableMessageMarkOf } from './DataTableChrome.logic';
 
 /* DataTable — the loading skeleton, the blocked-state message and the row's own line. Split out
@@ -114,6 +116,7 @@ export function TableMessage({
   onRetry,
   retryLabel,
   action,
+  moment,
   focusAfter,
 }: {
   tone?: 'warning';
@@ -122,25 +125,31 @@ export function TableMessage({
   onRetry?: () => void;
   retryLabel?: TranslatedText;
   action?: ReactNode;
+  /** A Lottie moment in place of the mark: the empty list's own art. */
+  moment?: LottieMomentName;
   /** Where the reader lands once *Try again* has gone with this message. */
   focusAfter: FocusAfter;
 }) {
   const stroke = tone === 'warning' ? colors['warning-text'] : colors['text-tertiary'];
   return (
     <View style={styles.message}>
-      <View style={[styles.mark, tone === 'warning' ? styles.markWarning : null]}>
-        <Svg
-          width={22}
-          height={22}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={stroke}
-          strokeWidth={1.5}
-          strokeLinecap="round"
-        >
-          <ShellGlyphMarks name={tableMessageMarkOf(tone)} />
-        </Svg>
-      </View>
+      {moment === undefined ? (
+        <View style={[styles.mark, tone === 'warning' ? styles.markWarning : null]}>
+          <Svg
+            width={22}
+            height={22}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={stroke}
+            strokeWidth={1.5}
+            strokeLinecap="round"
+          >
+            <ShellGlyphMarks name={tableMessageMarkOf(tone)} />
+          </Svg>
+        </View>
+      ) : (
+        <LottieMoment name={moment} size={96} />
+      )}
       <Text variant="h4" align="center">
         {title}
       </Text>

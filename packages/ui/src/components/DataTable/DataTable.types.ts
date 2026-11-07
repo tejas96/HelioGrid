@@ -1,6 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { PayableReconciliation } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
+import type { LottieMomentName } from '../LottieMoment/LottieMoment.types';
 import type { PendingActionSpec } from '../PendingAction';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { SurfaceRead } from '../UnavailableNote';
@@ -142,6 +143,8 @@ interface DataTableBaseProps<Row> {
   emptyTitle: TranslatedText;
   emptyDescription?: TranslatedText;
   emptyAction?: ReactNode;
+  /** An original Lottie moment drawn over the empty words instead of the plain mark. */
+  emptyMoment?: LottieMomentName;
   errorTitle: TranslatedText;
   errorMessage?: TranslatedText;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */
@@ -203,8 +206,9 @@ interface DataTableBaseProps<Row> {
   density?: 'comfortable' | 'compact';
   /**
    * `overline` (default): the uppercase micro-label head. `quiet`: sentence-case labels in the
-   * caption face, the rows in one raised card with a hairline between each and no zebra, 82px rows
-   * — a short list read row by row, a team roster (`SCR-M01-12`, design-system change 20). The
+   * caption face over a line, the rows on the page with a line under each and no zebra, at least
+   * 56px — a short list read row by row, a team roster, drawn as OneOhm draws a table
+   * (`SCR-M01-12`, design-system change 20). The
    * caption then names the table for a screen reader only. The stacked form is the same in both.
    */
   head?: 'overline' | 'quiet';

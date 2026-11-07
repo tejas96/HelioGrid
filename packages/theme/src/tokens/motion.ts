@@ -10,6 +10,20 @@ export const DURATION = {
   data: 850,
 } as const;
 
+/**
+ * Calm ambient light (`AmbientSky`) and the door's sky: long, slow cycles in ms. `settle` is how
+ * long the sun takes to rise into its place; `install` the gap between two panels landing.
+ */
+export const AMBIENT = {
+  drift: 34000,
+  breathe: 14000,
+  sheen: 9000,
+  flow: 2800,
+  twinkle: 5200,
+  settle: 2200,
+  install: 70,
+} as const;
+
 /** Reduced motion: state still changes, quickly, with nothing travelling. */
 export const REDUCED_DURATION: Readonly<Record<keyof typeof DURATION, number>> = {
   micro: 1,

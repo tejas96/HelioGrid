@@ -20,16 +20,18 @@ const INSET = 14;
 const GLYPH = 18;
 const CHIP_FONT = 14;
 
-/** The pills; the filter square is drawn by `FiltersButton` itself. */
+/** The pills; the filter circle is drawn by `FiltersButton` itself. */
 export type PillKind = Exclude<keyof typeof PILL_HEIGHT, 'filters'>;
 
 export const filterStyles = StyleSheet.create({
+  /* The pill's shape on the target too: Android draws no square ripple under a round pill. */
   target: {
     minHeight: MIN_TOUCH_TARGET,
     minWidth: MIN_TOUCH_TARGET,
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
+    borderRadius: theme.radius['r-pill'],
   },
   pill: {
     flexDirection: 'row',

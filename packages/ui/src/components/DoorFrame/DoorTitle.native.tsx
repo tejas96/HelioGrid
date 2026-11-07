@@ -5,9 +5,14 @@ import { Explainer } from '../Explainer/Explainer.native';
 import type { DoorTitleProps } from './DoorFrame.types';
 
 /** The door's title block: the large title in the display face, its ask on the same row, and the intro under it. */
-export function DoorTitle({ title, explainer, intro }: DoorTitleProps) {
+export function DoorTitle({ overline, title, explainer, intro }: DoorTitleProps) {
   return (
     <View style={styles.block}>
+      {overline === undefined ? null : (
+        <Text variant="overline" color="secondary">
+          {overline}
+        </Text>
+      )}
       <View style={styles.row}>
         <Text variant="display" style={styles.title}>
           {title}

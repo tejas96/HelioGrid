@@ -14,8 +14,15 @@ import {
   catalogRowWords,
   catalogViewOnly,
   createTranslator,
+  provenanceWords,
 } from '@heliogrid/i18n';
-import { CatalogItems, type CatalogRow, type CatalogRowStatus, useFormat } from '@heliogrid/ui';
+import {
+  CatalogItems,
+  type CatalogRow,
+  type CatalogRowStatus,
+  ProvenanceWordsProvider,
+  useFormat,
+} from '@heliogrid/ui';
 import { useState } from 'react';
 
 const READERS = {
@@ -202,55 +209,58 @@ export function CatalogItemsAsRead({ reader, frame }: { reader: UiLanguage; fram
       data-retried={retried}
       style={{ padding: 16, maxWidth: 1104 }}
     >
-      <CatalogItems
-        words={words}
-        read={
-          frame === 'loading'
-            ? { kind: 'loading' }
-            : frame === 'error'
-              ? { kind: 'failed', failure: 'no_answer', retry: () => setRetried(true) }
-              : { kind: 'ready', value: null }
-        }
-        strip={{
-          ...catalogReleaseStripWords(
-            t,
-            fresh ? null : { label: 'r2026-08', since: '12 Aug' },
-            administers,
-          ),
-          onLink: () => setActed('releases'),
-          onAction: () => setActed('publish'),
-        }}
-        viewOnly={administers ? null : catalogViewOnly(t, ['Rajesh'])}
-        teaching={fresh ? t(CATALOG_SETTINGS.teaching, { count }) : null}
-        query={query}
-        onQuery={setQuery}
-        filter={filter}
-        onFilter={setFilter}
-        sort="preferred"
-        onSort={(sort) => setActed(`sort:${sort}`)}
-        schemes={schemes}
-        rows={rows}
-        rowStates={rowStates}
-        paging={{
-          kind: 'pages',
-          page: 0,
-          pageSize: 20,
-          rowCount: count,
-          onPage: (page) => setActed(`page:${page}`),
-        }}
-        archivedCaption={
-          frame === 'normal' ? t(CATALOG_SETTINGS.archivedCaption, { count: 23 }) : null
-        }
-        administers={administers}
-        onImport={administers ? () => undefined : null}
-        onAdd={administers ? () => setActed('add') : null}
-        addedId={frame === 'added' ? 'rayzon' : null}
-        onOpen={(row) => setOpened(row.id)}
-        onPrefer={act('prefer')}
-        onHide={act('hide')}
-        onArchive={act('archive')}
-        onRestore={act('restore')}
-      />
+      {/* The app's root provides the provenance words; a row's data source reads them. */}
+      <ProvenanceWordsProvider value={provenanceWords(t)}>
+        <CatalogItems
+          words={words}
+          read={
+            frame === 'loading'
+              ? { kind: 'loading' }
+              : frame === 'error'
+                ? { kind: 'failed', failure: 'no_answer', retry: () => setRetried(true) }
+                : { kind: 'ready', value: null }
+          }
+          strip={{
+            ...catalogReleaseStripWords(
+              t,
+              fresh ? null : { label: 'r2026-08', since: '12 Aug' },
+              administers,
+            ),
+            onLink: () => setActed('releases'),
+            onAction: () => setActed('publish'),
+          }}
+          viewOnly={administers ? null : catalogViewOnly(t, ['Rajesh'])}
+          teaching={fresh ? t(CATALOG_SETTINGS.teaching, { count }) : null}
+          query={query}
+          onQuery={setQuery}
+          filter={filter}
+          onFilter={setFilter}
+          sort="preferred"
+          onSort={(sort) => setActed(`sort:${sort}`)}
+          schemes={schemes}
+          rows={rows}
+          rowStates={rowStates}
+          paging={{
+            kind: 'pages',
+            page: 0,
+            pageSize: 20,
+            rowCount: count,
+            onPage: (page) => setActed(`page:${page}`),
+          }}
+          archivedCaption={
+            frame === 'normal' ? t(CATALOG_SETTINGS.archivedCaption, { count: 23 }) : null
+          }
+          administers={administers}
+          onImport={administers ? () => undefined : null}
+          onAdd={administers ? () => setActed('add') : null}
+          addedId={frame === 'added' ? 'rayzon' : null}
+          onOpen={(row) => setOpened(row.id)}
+          onPrefer={act('prefer')}
+          onHide={act('hide')}
+          onArchive={act('archive')}
+          onRestore={act('restore')}
+        />
+      </ProvenanceWordsProvider>
     </div>
   );
 }

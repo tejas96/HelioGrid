@@ -1,12 +1,12 @@
-/* Card — the tile (F7-49): one record, grey on the white page, no shadow and no border. Its fill
-   and its ground are drawn by the tiles' list (primitives/Ground/Ground.css), so a control inside
-   it turns white. Under the pointer it takes --fill-hover; selected, the inset accent ring a focused
-   field draws, so the frame never moves. Nothing depends on hover — a touch screen has none. */
+/* Card — the tile (F7-49): one record, a pane of frosted glass on the page. Its fill and its
+   ground are drawn by the tiles' list (primitives/Ground/Ground.css), so a control inside takes the
+   fill. Under the pointer it lifts a step; pressed it sinks; selected, the inset accent ring a
+   focused field draws, so the frame never moves. Nothing depends on hover — a touch screen has none. */
 
 .hg-card {
   transition:
-    box-shadow var(--dur-standard) var(--ease-standard),
-    background var(--dur-standard) var(--ease-standard);
+    transform var(--dur-standard) var(--ease-standard),
+    box-shadow var(--dur-standard) var(--ease-standard);
   cursor: default;
 }
 
@@ -25,7 +25,15 @@
 }
 
 .hg-card[data-interactive="true"]:not([data-surface="raised"]):hover {
-  background: var(--fill-hover);
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    0 0 0 1px var(--line-strong),
+    var(--e3);
+}
+
+.hg-card[data-interactive="true"]:active {
+  transform: scale(var(--press-scale));
 }
 
 .hg-card[data-selected="true"] {
@@ -68,14 +76,19 @@
   height: 12px;
   border-radius: var(--rf-md);
   /* A well on the white tile, in light and dark; the card colour would not show on it. */
-  background: linear-gradient(
-    90deg,
-    var(--canvas-sunken) 25%,
-    var(--fill) 50%,
-    var(--canvas-sunken) 75%
-  );
-  background-size: 320px 100%;
-  animation: hg-sheet-shimmer 1.4s linear infinite;
+  background: var(--canvas-sunken);
+  position: relative;
+  overflow: hidden;
+}
+
+/* The light passing over the bar while the read is out — see LoadingBars' one shimmer. */
+.hg-card-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--glass-edge), transparent);
+  transform: translateX(-100%);
+  animation: hg-shimmer 1.4s var(--ease-standard) infinite;
 }
 
 .hg-card-shimmer[data-w="70"] {

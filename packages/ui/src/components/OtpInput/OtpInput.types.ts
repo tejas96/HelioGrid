@@ -23,6 +23,8 @@ export interface OtpInputProps {
   onChange?: (value: string) => void;
   /** Fired once the full code is entered. */
   onComplete?: (value: string) => void;
+  /** Enter on the web, the keyboard's done key on the phone: the step's primary, as its button is. */
+  onSubmit?: () => void;
   label?: TranslatedText;
   helper?: TranslatedText;
   error?: TranslatedText;

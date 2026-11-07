@@ -3,6 +3,8 @@ export { AppShell } from './AppShell';
 export * from './AppShell.types';
 export { CountBadge } from './CountBadge';
 export { MobileTopBar } from './MobileTopBar';
+export type { BarScroll } from './MobileTopBar.logic';
+export { BarScrollContext, createBarScroll } from './MobileTopBar.logic';
 export { ShellAction } from './ShellAction';
 export { ShellGlyph } from './ShellGlyph';
 export { DESTINATION_GLYPH } from './ShellGlyph.logic';

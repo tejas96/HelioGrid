@@ -8,6 +8,7 @@ import { Explainer } from '../Explainer/Explainer.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { OtpInput } from '../OtpInput/OtpInput.native';
 import { TintedBlock } from '../TintedBlock/TintedBlock.native';
+import { submitFromBoxes } from './DoorCodeStep.logic';
 import type { DoorCodeStepProps, DoorCodeStepWords } from './DoorCodeStep.types';
 
 /**
@@ -30,12 +31,13 @@ export function DoorCodeStep({
   const { primary, resend } = frame;
   return (
     <DoorFrame
+      sky="door"
       trailing={
         <Button variant="ghost" size="sm" onClick={() => onPress('change-number')}>
           {words.changeNumber}
         </Button>
       }
-      column={lead === undefined ? 'centred' : 'deep'}
+      column={lead === undefined ? undefined : 'deep'}
       lead={lead}
       identity={<CodeTitle words={words} phone={phone} />}
     >
@@ -53,6 +55,7 @@ export function DoorCodeStep({
             busy={busy}
             error={words.codeError ?? undefined}
             autoFocus={frame.code === 'open'}
+            onSubmit={submitFromBoxes({ frame, busy, onPress })}
             helper={helper}
           />
         )}

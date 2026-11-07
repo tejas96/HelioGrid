@@ -38,6 +38,7 @@ export function DocumentSheet({
   return (
     <section
       className="hg-sheet hg-paged-document-sheet"
+      data-paper=""
       data-screen-label={`Sheet ${index + 1}`}
       aria-label={words.sheetName(label, index + 1, count)}
       style={{

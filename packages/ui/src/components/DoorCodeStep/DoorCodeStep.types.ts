@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { LoginFrame, LoginPress } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
-import type { DoorTaskMeasure } from '../DoorFrame/DoorFrame.types';
+import type { DoorStory, DoorTaskMeasure } from '../DoorFrame/DoorFrame.types';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
 import type { OtpInputWords } from '../OtpInput/OtpInput.types';
 import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
@@ -42,9 +42,11 @@ export interface DoorCodeStepWords {
  * states and `d-code-family`; `SCR-M01-02` `m-step2-code`). The frame's structure is `domain`'s
  * and its words `i18n`'s; this draws them and raises the presses. The signup door passes its step
  * header, the wider measure and the code field's helper. A door with a step header places its
- * heading `sp-8` under it; a door without one centres its column.
+ * heading `sp-8` under it; a door without one opens its sheet with the heading, under the sky.
  */
 export interface DoorCodeStepProps {
+  /** The desktop sky panel's words about the product; the phone's band shows the scene alone. */
+  story?: DoorStory;
   /**
    * The door's language control. It is page chrome from the door's breakpoint only: under it, and
    * on the phone, the header row holds the way back alone (`SCR-M01-01` "375 vertical layout"), so

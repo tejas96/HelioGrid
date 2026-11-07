@@ -21,5 +21,10 @@ export interface IconButtonProps {
   disabledReason?: ActionReasonSentence;
   /** Holds the reason bubble open (`true`) or shut (`false`); unset lets a tap open it. */
   reasonOpen?: boolean;
+  /**
+   * A toggle's state — a star, a hide: set, the circle is a pressed toggle a screen reader hears as
+   * on or off (`aria-pressed`, the phone's selected state); unset, a plain act.
+   */
+  pressed?: boolean;
   onClick?: () => void;
 }

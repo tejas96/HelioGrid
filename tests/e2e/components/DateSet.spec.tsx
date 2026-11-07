@@ -1,6 +1,6 @@
 import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedBoxShadow, resolvedColour, TILE_SHADOW } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, TILE_FILL, TILE_SHADOW } from '../support/token';
 import { DateSetAt } from './DateSet.story';
 
 const en = await createTranslator('en');
@@ -14,7 +14,7 @@ test('a date row is a tile, and the calendar stays on the page', async ({ mount,
   const dateSet = await mount(<DateSetAt entries={entries} month="2026-10-01" />);
   const row = dateSet.getByRole('listitem');
 
-  await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(row).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
   await expect(row).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
   await expect(dateSet.locator('.hg-date-set-grid')).toHaveCSS(
     'background-color',

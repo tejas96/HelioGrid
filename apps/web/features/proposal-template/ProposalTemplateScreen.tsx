@@ -9,8 +9,10 @@ import {
   proposalTemplateWords,
   SHELL,
   sectionWords,
+  settingsSavedToast,
   templateFieldRefusals,
   templateLanguages,
+  toastHostWords,
 } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
@@ -18,9 +20,12 @@ import {
   BannerAction,
   ProposalTemplateSettings,
   Text,
+  ToastHost,
   templateDocumentOf,
   templateSettingsParts,
   useFormat,
+  useSavedMoment,
+  useToasts,
 } from '@heliogrid/ui';
 import { notFound, useRouter } from 'next/navigation';
 import { type RefObject, useRef } from 'react';
@@ -77,6 +82,8 @@ function TemplatePage({
   const guarded = useGuardedMove();
   const { page, view, overlays, held } = screen;
   useLeaveGuard(held, screen.leave.ask);
+  const toasts = useToasts();
+  useSavedMoment(toasts.push, page.saving, page.saveFailure !== null, settingsSavedToast(t));
 
   const words = proposalTemplateWords(t);
   const said = proposalTemplatePageWords(t, page, { date: (epochMs) => date(new Date(epochMs)) });
@@ -129,6 +136,12 @@ function TemplatePage({
         {...(held
           ? { act: { saving: page.saving, onSave: screen.save, onDiscard: page.discard } }
           : {})}
+      />
+      <ToastHost
+        toasts={toasts.toasts}
+        onDismiss={toasts.dismiss}
+        focusAfter={frame}
+        {...toastHostWords(t)}
       />
       <TemplateOverlays
         page={page}

@@ -4,33 +4,99 @@
 .hg-cat-editor {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-4);
+  gap: var(--sp-6);
   min-width: 0;
 }
 
-.hg-cat-editor-item {
+/* ── the item (direction A): tile, whose it is, the name large, marks, then the spec grid ── */
+
+.hg-cat-edited {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-cat-edited-head {
   display: flex;
   align-items: flex-start;
   gap: var(--sp-3);
 }
 
-.hg-cat-editor-item-words {
+.hg-cat-edited-head > :not(.hg-cat-edited-title) {
+  flex-shrink: 0;
+}
+
+.hg-cat-edited-title {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--sp-1);
+  gap: var(--sp-0-5);
 }
 
-.hg-cat-editor-item > :not(.hg-cat-editor-item-words) {
-  flex-shrink: 0;
+.hg-cat-edited-whose {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
-.hg-cat-editor-chips {
+/* *Panel · Platform item*: the dot is punctuation between two words, drawn, never typed. */
+.hg-cat-edited-whose > .hg-text + .hg-text::before {
+  content: "·";
+  margin-inline: var(--sp-1);
+}
+
+.hg-cat-edited-ask {
+  display: inline-flex;
+  margin-inline-start: var(--sp-1);
+}
+
+.hg-cat-edited-marks {
   display: flex;
   flex-wrap: wrap;
   gap: var(--sp-1);
-  padding-top: var(--sp-1);
+}
+
+/* The spec as a grid in a soft well — the control fill of what holds it — with the holder's own
+   colour as the line between cells, an inlay rather than a frame of rules. */
+.hg-cat-edited-specs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border-radius: var(--r-tile);
+  overflow: hidden;
+  background: var(--hg-control-fill);
+}
+
+.hg-cat-edited-spec {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-top: 1px solid var(--hg-ground);
+}
+
+.hg-cat-edited-spec:nth-child(-n + 2) {
+  border-top: 0;
+}
+
+.hg-cat-edited-spec:nth-child(odd) {
+  border-inline-end: 1px solid var(--hg-ground);
+}
+
+/* An odd last cell runs the grid's width, so no empty cell is drawn beside it. */
+.hg-cat-edited-spec:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  border-inline-end: 0;
+}
+
+.hg-cat-edited-spec dt,
+.hg-cat-edited-spec dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .hg-cat-editor-section {
@@ -49,37 +115,53 @@
   flex-shrink: 0;
 }
 
-/* A section on the page: rows with a hairline between, no fill of their own. */
-.hg-cat-editor-switches {
+/* *Prefer* and *Hide* (direction A): two buttons side by side. The target is the 44px floor; the
+   face inside it is the pill. */
+.hg-cat-pick {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-2);
+  align-items: start;
+}
+
+.hg-cat-pick-toggle {
   display: flex;
-  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
 }
 
-.hg-cat-editor-switch {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-3) 0;
-}
-
-.hg-cat-editor-switch + .hg-cat-editor-switch {
-  border-top: 1px solid var(--line-soft);
-}
-
-.hg-cat-editor-switch > :last-child {
-  flex-shrink: 0;
-}
-
-.hg-cat-editor-switch-words {
+.hg-cat-pick-face {
   flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: var(--touch-min);
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-pill);
+  background: var(--hg-control-fill);
+  color: var(--text-primary);
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    0 0 0 1px var(--line-soft),
+    var(--e1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  transition:
+    background-color var(--dur-standard) var(--ease-standard),
+    transform var(--dur-micro) var(--ease-standard);
 }
 
-.hg-cat-editor-switch-label {
-  font-size: var(--fs-body-sm);
-  font-weight: 700;
-  color: var(--text-primary);
+.hg-cat-pick-toggle:active > .hg-cat-pick-face {
+  transform: scale(var(--press-scale));
+}
+
+/* On: the ink pill, as a chosen chip is — never colour alone, the button also says it is pressed. */
+.hg-cat-pick-face[data-on="true"] {
+  background: var(--ink);
+  color: var(--on-ink);
 }

@@ -5,6 +5,8 @@ import { StyleSheet, View } from 'react-native';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import type { UsageMeterProps } from './UsageMeter.types';
+import { UsageMeterHead } from './UsageMeterHead.native';
 import { UsageMeterTrack } from './UsageMeterTrack.native';
 import type { UsageLineTone } from './usage-meter-model';
 import { meteredReading, type UsageMeterMeteredFacts } from './usage-meter-model';
@@ -15,7 +17,9 @@ const LINE_TONE: Record<UsageLineTone, ThemeColor> = {
   info: colors['info-text'],
 };
 
-export interface UsageMeterMeteredProps extends UsageMeterMeteredFacts {
+export interface UsageMeterMeteredProps
+  extends UsageMeterMeteredFacts,
+    Pick<UsageMeterProps, 'form' | 'glyph'> {
   /** Whether the meter says its status sentence; off where the screen says it already. */
   statusLine: boolean;
   frame: RefObject<View | null>;
@@ -46,6 +50,8 @@ export function UsageMeterMetered({
   format,
   provenance,
   style,
+  form,
+  glyph,
 }: UsageMeterMeteredProps) {
   const { scale, line, trackName, valueText } = meteredReading({
     words,
@@ -62,17 +68,14 @@ export function UsageMeterMetered({
   });
 
   return (
-    <View ref={frame} style={[styles.shell, style]}>
-      <View style={styles.head}>
-        <Text style={labelStyle}>{label}</Text>
-        <Text variant="mono" style={figure}>
-          {format(value)}
-          <Text variant="mono" color="tertiary">
-            {' '}
-            {words.ofLimit(format(limit), unit)}
-          </Text>
-        </Text>
-      </View>
+    <View ref={frame} style={[styles.shell, form === 'tile' ? styles.tile : undefined, style]}>
+      <UsageMeterHead
+        label={label}
+        form={form}
+        glyph={glyph}
+        figure={format(value)}
+        after={words.ofLimit(format(limit), unit)}
+      />
 
       <UsageMeterTrack
         scale={scale}
@@ -99,22 +102,9 @@ export function UsageMeterMetered({
   );
 }
 
-const labelStyle: TextStyle = {
-  fontSize: 14,
-  fontWeight: '500',
-  letterSpacing: -0.14,
-  color: colors['text-primary'],
-};
-
-const figure: TextStyle = { fontWeight: '700' };
 const statusLine: TextStyle = { fontWeight: '500' };
 
 const styles = StyleSheet.create({
   shell: { flexDirection: 'column', gap: theme.spacing['sp-2'] },
-  head: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    justifyContent: 'space-between',
-    gap: theme.spacing['sp-3'],
-  },
+  tile: { gap: theme.spacing['sp-3'] },
 });

@@ -1,45 +1,40 @@
-import {
-  COMPONENT_KINDS,
-  type ComponentKind,
-  catalogFiltersOn,
-  withKinds,
-} from '@heliogrid/domain';
+import { catalogFiltersOn } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import type { FocusAfter } from '../../primitives/FocusAfter';
-import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
+import { tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Banner } from '../Banner/Banner.native';
-import { Block } from '../Block/Block.native';
 import { Button } from '../Button/Button.native';
 import { RetryButton } from '../Button/RetryButton.native';
-import { Badge, Chip } from '../Chip/Chip.native';
-import { ChipGroup } from '../ChipGroup/ChipGroup.native';
-import { DataTable } from '../DataTable/DataTable.native';
-import type { DataTableColumn } from '../DataTable/DataTable.types';
 import { Pagination } from '../DataTable/DataTableChrome.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
 import { FacetChips } from '../FilterBar/FacetChips.native';
 import { FilterPanel } from '../FilterPanel/FilterPanel.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
-import { useFormat } from '../MarketProvider/market-context';
-import { NamedGap } from '../NamedGap/NamedGap.native';
+import { LottieMoment } from '../LottieMoment/LottieMoment.native';
 import { SearchField } from '../SearchField/SearchField.native';
-import { catalogFilterDimensions, catalogFilterOf, catalogFilterValue } from './CatalogItems.logic';
-import { catalogRowPending } from './CatalogItems.rows';
-import type { CatalogItemsProps, CatalogPaging, CatalogRow } from './CatalogItems.types';
+import { CatalogItemList } from './CatalogItemList.native';
+import {
+  catalogFilterDimensions,
+  catalogFilterOf,
+  catalogFilterValue,
+  catalogKindChips,
+  catalogKindsChosen,
+} from './CatalogItems.logic';
+import type { CatalogItemsProps, CatalogPaging } from './CatalogItems.types';
 import { ListEntries } from './CatalogItemsFoot.native';
-import { CatalogRowActs } from './CatalogRowActs';
 import { CatalogStripBar } from './CatalogStrip.native';
 
 /** The placeholder cards while the list loads — the board's six. */
 const LOADING_ROWS = ['panel', 'panel', 'panel', 'panel', 'panel', 'panel'] as const;
 
 /**
- * Catalog settings' Items panel on the phone: the release strip, the view-only line or the
- * first-day card, the search with its filter sheet and the kind chips, then the resolved list as
- * cards. Every word is the caller's; the sheets a row opens are the app's.
+ * Catalog settings' Items panel on the phone (direction A): the release hero, the view-only line or
+ * the first-day card, the search with its filter sheet and the kind chips — *All* first — then the
+ * resolved list as one glass card of rows. Every word is the caller's; the sheets a row opens are
+ * the app's.
  */
 export function CatalogItems(props: CatalogItemsProps) {
   const { words, read, strip, query, onQuery, filter, onFilter, schemes } = props;
@@ -65,7 +60,7 @@ export function CatalogItems(props: CatalogItemsProps) {
   }
 
   const loading = read.kind === 'loading';
-  const kindOptions = COMPONENT_KINDS.map((kind) => ({ value: kind, label: words.kinds[kind] }));
+  const chips = catalogKindChips(words, filter, props.kindCounts);
   return (
     <View ref={panel} style={styles.panel}>
       {loading ? (
@@ -77,20 +72,23 @@ export function CatalogItems(props: CatalogItemsProps) {
         <Banner kind="info" density="functional" title={props.viewOnly} />
       )}
       {loading || props.teaching === null ? null : (
-        <Block
-          overline={words.makeItYours}
-          density="functional"
-          read={{ kind: 'empty' }}
-          loadingLabel={words.loadingList}
-          emptyMessage={props.teaching}
-        />
+        <View style={styles.teach} accessible>
+          <LottieMoment name="empty-catalog" size={72} />
+          <View style={styles.teachWords}>
+            <Text variant="overline" color="secondary">
+              {words.makeItYours}
+            </Text>
+            <Text variant="body" color="secondary">
+              {props.teaching}
+            </Text>
+          </View>
+        </View>
       )}
       <SearchField
         value={query}
         onChange={onQuery}
         placeholder={words.search}
         ariaLabel={words.searchLabel}
-        density="functional"
         onFilterClick={() => setFiltersOpen(true)}
         filterCount={catalogFiltersOn(filter)}
         filterLabel={words.filters}
@@ -102,10 +100,11 @@ export function CatalogItems(props: CatalogItemsProps) {
         <FacetChips
           label={words.kindLabel}
           scroll
-          options={kindOptions}
-          values={[...filter.kinds]}
+          options={chips.options}
+          counts={chips.counts}
+          values={chips.values}
           selectedLabel={words.selectedKind}
-          onChange={(kinds) => onFilter(withKinds(filter, kinds as ComponentKind[]))}
+          onChange={(values) => onFilter(catalogKindsChosen(filter, values))}
         />
       )}
       {loading ? <LoadingList props={props} /> : <ItemList props={props} focusAfter={stripTitle} />}
@@ -136,129 +135,25 @@ function LoadingList({ props }: { props: CatalogItemsProps }) {
   );
 }
 
-/** The resolved list as cards, its foot caption and the way to more rows. */
+/** The resolved list as one glass card of rows, its pager, its foot caption and the entries. */
 function ItemList({ props, focusAfter }: { props: CatalogItemsProps; focusAfter: FocusAfter }) {
-  const { words, administers, rowStates } = props;
-  const columns = useItemColumns(props);
-  const table = {
-    ...words.table,
-    read: props.read,
-    columns,
-    rows: [...props.rows],
-    rowKey: 'id' as const,
-    stackBelow: STACK_ALWAYS,
-    density: 'compact' as const,
-    caption: words.region,
-    summary: words.summary,
-    rowLabel: (row: CatalogRow) => row.labels.row,
-    isRowMuted: (row: CatalogRow) => row.archived,
-    isRowHighlighted: (row: CatalogRow) => row.id === props.addedId,
-    rowPending: (row: CatalogRow) => catalogRowPending(rowStates[row.id], words, focusAfter),
-    onRowClick: administers ? props.onOpen : undefined,
-  };
-  return (
-    <View style={styles.list}>
-      {administers ? (
-        <DataTable<CatalogRow>
-          {...table}
-          rowActions={(row) => <CatalogRowActs row={row} stacked acts={props} />}
-          actionsLabel={words.actions}
-        />
-      ) : (
-        <DataTable<CatalogRow> {...table} />
-      )}
-      <Paging paging={props.paging} props={props} />
-      {props.archivedCaption === null ? null : (
-        <Text variant="caption" color="secondary" align="center">
-          {props.archivedCaption}
-        </Text>
-      )}
-      <ListEntries onAdd={props.onAdd} onImport={props.onImport} words={words} />
-    </View>
-  );
-}
-
-/** The phone's list is always cards: the board stacks below a width no phone reaches. */
-const STACK_ALWAYS = 4000;
-
-function useItemColumns(props: CatalogItemsProps): DataTableColumn<CatalogRow>[] {
-  const { words, schemes } = props;
-  const format = useFormat();
-  return [
-    { key: 'name', label: words.item, primary: true, strong: true },
-    {
-      key: 'spec',
-      label: words.whatItIs,
-      secondary: true,
-      render: (row) => (
-        <View style={styles.spec}>
-          <Text variant="caption" color="secondary">
-            {row.specLine}
-          </Text>
-          <Marks row={row} props={props} schemes={schemes} />
-        </View>
-      ),
-    },
-    {
-      key: 'amount',
-      label: words.effectivePrice,
-      trailing: true,
-      numeric: true,
-      gap: (row) =>
-        row.amount === null ? <StatusMark tone="warning" label={words.noPrice} /> : null,
-      render: (row) =>
-        typeof row.amount === 'string' ? (
-          <Text variant="mono" bold>
-            {format.money(row.amount)}
-          </Text>
-        ) : null,
-    },
-  ];
-}
-
-/** The mark line: layer, preference, picker state, spec label and the schemes held — or their gap. */
-function Marks({
-  row,
-  props,
-  schemes,
-}: {
-  row: CatalogRow;
-  props: CatalogItemsProps;
-  schemes: readonly string[];
-}) {
   const { words } = props;
-  const schemeMarks =
-    schemes.length === 0
-      ? []
-      : row.held.length === 0
-        ? [<NamedGap key="gap" scale="cell" gap={words.noSchemeFlag} />]
-        : row.held.map((scheme) => (
-            <Badge key={scheme} tone="success" density="functional">
-              {scheme}
-            </Badge>
-          ));
   return (
-    <ChipGroup max={0} label={words.marks} density="functional">
-      <Chip density="functional">{row.layerWord}</Chip>
-      {row.preferred ? (
-        <Badge tone="accent" density="functional">
-          {words.preferred}
-        </Badge>
-      ) : null}
-      {row.hidden ? (
-        <Badge tone="warning" density="functional">
-          {words.hiddenFromPickers}
-        </Badge>
-      ) : null}
-      {row.provenance === 'representative' ? (
-        <Badge tone="warning" density="functional">
-          {row.provenanceWord}
-        </Badge>
-      ) : (
-        <Chip density="functional">{row.provenanceWord}</Chip>
-      )}
-      {schemeMarks}
-    </ChipGroup>
+    <CatalogItemList
+      props={props}
+      focusAfter={focusAfter}
+      foot={
+        <>
+          <Paging paging={props.paging} props={props} />
+          {props.archivedCaption === null ? null : (
+            <Text variant="caption" color="secondary" align="center">
+              {props.archivedCaption}
+            </Text>
+          )}
+          <ListEntries onAdd={props.onAdd} onImport={props.onImport} words={words} />
+        </>
+      }
+    />
   );
 }
 
@@ -292,6 +187,16 @@ const styles = StyleSheet.create({
   panel: { gap: theme.spacing['sp-3'] },
   list: { gap: theme.spacing['sp-2'] },
   region: { paddingTop: theme.spacing['sp-3'], paddingHorizontal: theme.spacing['sp-4'] },
-  spec: { gap: theme.spacing['sp-2'], marginTop: theme.spacing['sp-1'] },
   more: { alignItems: 'center' },
+  /* The first-day card is a tile: Ground's look, its moment beside the words. */
+  teach: {
+    ...tileSurface,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing['sp-4'],
+    paddingVertical: theme.spacing['sp-4'],
+    paddingHorizontal: theme.spacing['sp-4'],
+    borderRadius: theme.radius['r-tile'],
+  },
+  teachWords: { flex: 1, gap: theme.spacing['sp-1'] },
 });

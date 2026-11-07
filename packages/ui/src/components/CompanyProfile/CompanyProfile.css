@@ -184,6 +184,20 @@
   margin-top: 0;
 }
 
+/* On the settings page the parts are one glass tile (the tiles' list draws its look). Its edge
+   lines up with the title above it, as every settings page's cards do; the parts sit inside its
+   padding — functional density, every header on one line at 375. */
+.hg-company-profile-list[data-life="settings"] {
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-card-expressive);
+}
+
+@media (min-width: 968px) {
+  .hg-company-profile-list[data-life="settings"] {
+    padding-inline: var(--sp-5);
+  }
+}
+
 .hg-company-profile-page .hg-company-profile-act {
   padding-top: 0;
 }

@@ -1,10 +1,9 @@
-/* SearchField — a well (the FieldBox primitive owns its ground, its focus ring and the functional
-   radius), NEVER a border. Expressive is the open page's grey pill: 50 tall, --r-pill, 18 of side
-   padding. Functional is the dense box: 40 tall, FieldBox's radius, 14 of side padding. Both keep
-   the 44px touch floor. The heights, the side paddings and the 10px gaps are the design system's
-   own and sit off the 4px spacing scale, so no token carries them.
+/* SearchField — a well (the FieldBox primitive owns its ground and its focus ring), NEVER a border.
+   One look on every screen, the sidebar's included: the pill, 50 tall, --r-pill, 18 of side
+   padding. The height, the side padding and the 10px gaps are the design system's own and sit off
+   the 4px spacing scale, so no token carries them.
 
-   With `onFilterClick` the pill and the 50×50 filter square ride side by side in
+   With `onFilterClick` the pill and the 50 filter circle ride side by side in
    `.hg-search-field-row`, which takes the caller's className and style; the pill fills the rest. */
 
 .hg-search-field {
@@ -18,13 +17,8 @@
 }
 
 /* Two attributes, so this outranks FieldBox's one-attribute radius whatever order the sheets load. */
-.hg-search-field[data-density="expressive"] {
+.hg-search-field[data-field-box] {
   border-radius: var(--r-pill);
-}
-
-.hg-search-field[data-density="functional"] {
-  height: 40px;
-  padding: 0 14px;
 }
 
 .hg-search-field-row {

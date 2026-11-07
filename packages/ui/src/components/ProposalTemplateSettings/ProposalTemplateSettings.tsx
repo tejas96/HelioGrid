@@ -87,16 +87,16 @@ function PageHead({ title, standing, read, words }: BodyProps) {
   return (
     <div className="hg-template-head" data-titled={title === undefined ? undefined : 'true'}>
       {title === undefined ? null : (
-        <Text as="h1" variant="display" bold>
+        <Text as="h1" variant="display">
           {title}
         </Text>
       )}
       {standingShown === undefined ? null : (
-        <Text variant="caption" color="secondary" className="hg-template-pretty">
+        <Text variant="body" color="secondary" className="hg-template-pretty">
           {standingShown}
         </Text>
       )}
-      <Text variant="caption" color="secondary" className="hg-template-pretty">
+      <Text variant="body" color="secondary" className="hg-template-pretty">
         {words.intro}
       </Text>
     </div>

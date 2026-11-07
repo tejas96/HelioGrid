@@ -123,10 +123,10 @@ export function RolesReference({ words, read, title, back = null }: RolesReferen
 function Lede({ words }: Pick<RolesReferenceProps, 'words'>) {
   return (
     <>
-      <Text variant="body-sm" color="secondary" className="hg-roles-reference-lede">
+      <Text variant="body" color="secondary" className="hg-roles-reference-lede">
         {words.lede}
       </Text>
-      <Text variant="body-sm" color="secondary" className="hg-roles-reference-lede-wide">
+      <Text variant="body" color="secondary" className="hg-roles-reference-lede-wide">
         {words.ledeWide}
       </Text>
     </>

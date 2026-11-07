@@ -108,6 +108,14 @@ navigator's, and the studio's 3D scene animates in its own code under the same f
 - **A loop stops** when its state ends, when its view leaves the screen and when the app or tab goes
   to the background (web: `IntersectionObserver`, `visibilitychange`; phone: screen blur, `AppState`).
   A loop that never stops also keeps Android from going idle, and every Android view-tree read then fails.
+- **Calm ambient motion is the one loop that runs on** (owner ruling): the drifting light and solar
+  grid behind a door or a page's top glow, and nothing else. It is `AmbientSky` and the door's
+  `SolarSky` (its glints, clouds, stars and the energy on its wires): slow (cycles from
+  `theme.motion`), transform, opacity or a shader's uniforms only, never carrying information, and
+  it costs no frame on a mid-range Android emulator. It pauses off-screen and in the background and
+  stops under reduced motion — which Android reports when the animator scale is 0, as CI's emulator
+  sets it (`disable-animations: true`), so the phone flows still read a settled tree. A local
+  Android check that reads the view tree sets that scale to 0 first.
 - **Nothing waits on an animation.** Content renders at once; motion runs over what is already there.
   No `onAnimationEnd` gates a control or the data, and the rows of a list never arrive one by one.
 - **Heavy motion loads late.** A shader, a motion library or a Lottie file loads lazily (`import()` /

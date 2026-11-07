@@ -67,6 +67,7 @@ export function NotificationCentre({ onClose, onGoToLeads }: NotificationCentreP
         retryLabel={t(NOTIFICATION_CENTRE.tryAgain)}
         emptyTitle={t(NOTIFICATION_CENTRE.emptyTitle)}
         emptyMessage={t(NOTIFICATION_CENTRE.emptyMessage)}
+        emptyMoment="empty-inbox"
         emptyAction={
           onGoToLeads === undefined ? null : (
             <Button variant="secondary" size="sm" onClick={onGoToLeads}>

@@ -16,7 +16,7 @@ interface WebBadgeProps extends BadgeProps {
 }
 
 /**
- * Fully-pill filter chip. Active = near-black fill.
+ * Fully-pill filter chip. Active = the ink pill; a `count` rides after the words.
  *
  * **With `onClick` it is a `<button>` with a 44×44 hit box around the 28px (24px functional)
  * pill** — the two-rectangles rule, with the extra height taken back as negative margin so no row
@@ -26,6 +26,7 @@ interface WebBadgeProps extends BadgeProps {
 export function Chip({
   children,
   active = false,
+  count,
   onClick,
   dot = false,
   tone = 'neutral',
@@ -37,12 +38,14 @@ export function Chip({
     <span
       className={classNames('hg-chip', className)}
       data-active={active ? 'true' : undefined}
+      data-empty={count === 0 ? 'true' : undefined}
       data-tone={tone}
       data-density={density}
       style={style}
     >
       {dot ? <span className="hg-chip-dot" aria-hidden="true" /> : null}
       {children}
+      {count === undefined ? null : <span className="hg-chip-count">{count}</span>}
     </span>
   );
 

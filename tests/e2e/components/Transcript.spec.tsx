@@ -1,6 +1,6 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedBoxShadow, resolvedColour, TILE_SHADOW } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, TILE_FILL, TILE_SHADOW } from '../support/token';
 import { WordedTranscript } from './Transcript.story';
 
 const en = await createTranslator('en');
@@ -17,7 +17,7 @@ test("the agent's turn is a tile under the agent's name", async ({ mount, page }
   const turn = transcript.locator('.hg-transcript-bubble').filter({ hasText: agentSaid });
 
   await expect(turn.locator('.hg-transcript-speaker')).toHaveAttribute('data-party', 'agent');
-  await expect(turn).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(turn).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
   await expect(turn).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
 });
 

@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-3'],
     width: '100%',
     padding: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-md'],
+    borderRadius: theme.radius['r-lg'],
   },
   cardFunctional: { padding: FUNCTIONAL_PAD, borderRadius: theme.radius['r-card-functional'] },
   /* RN has no box-shadow ring: the 2px accent selection ring is a border of the same weight, taken
@@ -54,11 +54,16 @@ const styles = StyleSheet.create({
     borderWidth: RING,
     borderColor: colors.accent,
     padding: theme.spacing['sp-4'] - RING,
+    /* Picked, the card is lit in the accent's tint — the phone's solar glass — and lifts. */
+    backgroundColor: colors['accent-subtle'],
+    ...theme.elevation.e3,
   },
   cardSelectedFunctional: { padding: FUNCTIONAL_PAD - RING },
   /* Not a tile: it lies on the page with no fill, and its reason line says why. A selected off
      option shows its selection by the dot alone, as on the web. */
   cardOff: { borderWidth: 0 },
+  /* A card with only its title — a language — centres it on its chip. */
+  cardTitleOnly: { alignItems: 'center' },
   dot: {
     width: 20,
     height: 20,
@@ -94,7 +99,20 @@ const styles = StyleSheet.create({
   reason: { marginTop: 5 },
   content: { marginTop: 10 },
   meta: { marginTop: 6 },
-  icon: { flexShrink: 0 },
+  /* The option's icon in a chip at the card's start. */
+  icon: {
+    flexShrink: 0,
+    width: theme.spacing['sp-12'],
+    height: theme.spacing['sp-12'],
+    borderRadius: theme.radius['r-sm'],
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconFunctional: {
+    width: theme.spacing['sp-10'],
+    height: theme.spacing['sp-10'],
+    borderRadius: theme.radius['rf-lg'],
+  },
 });
 
 /** An available option is a tile, selected by the 2px accent border plus the filled dot; an off
@@ -152,6 +170,30 @@ function Dot({
   );
 }
 
+/** The icon's chip: the control fill at rest; on a picked card the card colour over its tint. */
+function IconChip({
+  selected,
+  functional,
+  children,
+}: {
+  selected: boolean;
+  functional: boolean;
+  children: ReactNode;
+}) {
+  const ground = useGround();
+  // biome-ignore lint/plugin/raw-white: ground — the chip is the card colour over the picked card's tint
+  const fill = selected ? colors.surface : ground.controlFill;
+  return (
+    <View
+      style={[styles.icon, functional ? styles.iconFunctional : null, { backgroundColor: fill }]}
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+    >
+      {children}
+    </View>
+  );
+}
+
 /** An available option is a tile ground; an off option reads the ground that holds it. */
 function OptionGround({ off, children }: { off: boolean; children: ReactNode }) {
   return off ? children : <GroundProvider ground="tile">{children}</GroundProvider>;
@@ -195,10 +237,19 @@ export function OptionCard({
          be announced to nobody. The children are text, so the card is never left unnamed. */
       accessibilityRole={optionRole(mode)}
       accessibilityState={{ checked, disabled: off }}
-      style={cardStyle(density, selected, off)}
+      style={[
+        cardStyle(density, selected, off),
+        option.description === undefined && option.content === undefined
+          ? styles.cardTitleOnly
+          : null,
+      ]}
     >
       <OptionGround off={off}>
-        <Dot selected={selected} mode={mode} off={off} />
+        {option.icon !== undefined ? (
+          <IconChip selected={selected && !off} functional={density === 'functional'}>
+            {option.icon}
+          </IconChip>
+        ) : null}
         <View style={styles.body}>
           <View style={styles.head}>
             <View style={styles.titles}>
@@ -240,7 +291,7 @@ export function OptionCard({
             </Text>
           ) : null}
         </View>
-        {option.icon !== undefined ? <View style={styles.icon}>{option.icon}</View> : null}
+        <Dot selected={selected} mode={mode} off={off} />
       </OptionGround>
     </Pressable>
   );

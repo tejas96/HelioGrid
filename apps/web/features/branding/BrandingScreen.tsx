@@ -1,9 +1,24 @@
 'use client';
 import { type BrandingScreen as Branding, useBrandingScreen } from '@heliogrid/data/react';
 import { SETTINGS_SEGMENT } from '@heliogrid/domain';
-import { brandingPageWords, brandingWords, SHELL, settingsRowName } from '@heliogrid/i18n';
+import {
+  brandingPageWords,
+  brandingWords,
+  SHELL,
+  settingsRowName,
+  settingsSavedToast,
+  toastHostWords,
+} from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
-import { BrandingSettings, brandingDocumentOf, LeaveConfirm, useFormat } from '@heliogrid/ui';
+import {
+  BrandingSettings,
+  brandingDocumentOf,
+  LeaveConfirm,
+  ToastHost,
+  useFormat,
+  useSavedMoment,
+  useToasts,
+} from '@heliogrid/ui';
 import { notFound, useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import { useGuardedMove, useLeaveGuard } from '../../lib/leave-guard';
@@ -49,6 +64,8 @@ function BrandingIn({ screen }: { screen: Branding }) {
   });
   const title = settingsRowName(t, 'branding');
   const closeLabel = t(SHELL.close);
+  const toasts = useToasts();
+  useSavedMoment(toasts.push, page.saving, said.saveFailure !== undefined, settingsSavedToast(t));
 
   if (page.read.kind === 'failed') {
     return (
@@ -106,6 +123,12 @@ function BrandingIn({ screen }: { screen: Branding }) {
         closeLabel={closeLabel}
         onRemove={screen.removeLogo}
         onKeep={screen.keepLogo}
+      />
+      <ToastHost
+        toasts={toasts.toasts}
+        onDismiss={toasts.dismiss}
+        focusAfter={frame}
+        {...toastHostWords(t)}
       />
       <LeaveConfirm
         open={screen.leave.asking}

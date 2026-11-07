@@ -30,7 +30,6 @@ export function BillingInvoiceList(props: BillingInvoiceListProps) {
     <div className="hg-billing-list-head">
       <SearchField
         ref={search}
-        density="expressive"
         value={query}
         onChange={props.onSearch}
         placeholder={words.findInList}

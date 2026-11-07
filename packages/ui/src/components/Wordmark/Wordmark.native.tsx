@@ -161,15 +161,7 @@ export function LogoTile({ size = 40, radius, style }: NativeLogoTileProps) {
   );
 }
 
+/** The brand where a door or the shell names the product: the wordmark alone, until a new mark is drawn. */
 export function ProductMark({ size = 32 }: ProductMarkProps) {
-  return (
-    <View style={markStyles.row}>
-      <LogoTile size={size} />
-      <Wordmark size={size === 32 ? 17 : 20} />
-    </View>
-  );
+  return <Wordmark size={size === 32 ? 21 : 25} />;
 }
-
-const markStyles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
-});

@@ -60,19 +60,23 @@
   position: relative;
   height: var(--hg-usage-meter-track-h, 10px);
   border-radius: var(--r-pill);
-  background: var(--canvas-sunken);
+  background: color-mix(in srgb, var(--accent) 10%, var(--canvas-sunken));
   box-shadow: var(--track-edge);
-  display: flex;
   overflow: hidden;
 }
 
+/* The used share grows from the left once, by transform; its width is the reading, never animated. */
 .hg-usage-meter-used {
+  position: absolute;
+  inset: 0 auto 0 0;
   width: var(--hg-usage-meter-used, 0%);
-  transition: width var(--dur-emphasised) var(--ease-standard);
+  border-radius: var(--r-pill);
+  transform-origin: left center;
+  animation: hg-usage-meter-grow var(--dur-data) var(--ease-enter) backwards;
 }
 
 .hg-usage-meter-used[data-fill="accent"] {
-  background: var(--accent);
+  background: linear-gradient(90deg, var(--brand-teal), var(--accent));
 }
 .hg-usage-meter-used[data-fill="info"] {
   background: var(--info);
@@ -86,12 +90,70 @@
 
 /* The overage segment is a separate, lighter-weight fill: visible, not shouted. */
 .hg-usage-meter-over {
+  position: absolute;
+  inset: 0 auto 0 var(--hg-usage-meter-used, 0%);
   width: var(--hg-usage-meter-over, 0%);
   background: var(--info);
   opacity: 0.55;
   /* A cut-out: the edge is the ground showing through, so it reads on the page and in a tile. */
   border-left: 2px solid var(--hg-ground);
-  transition: width var(--dur-emphasised) var(--ease-standard);
+}
+
+@keyframes hg-usage-meter-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* The `tile` form (Billing's and Usage's tiles): the glyph and the label over the reading, the
+   figure large in the display face, its denominator quiet after it. */
+.hg-usage-meter[data-form="tile"] {
+  gap: var(--sp-3);
+}
+
+.hg-usage-meter[data-form="tile"] .hg-usage-meter-head {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+
+/* A label that wraps keeps its glyph on its first line. */
+.hg-usage-meter[data-form="tile"] .hg-usage-meter-label {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  font-size: var(--fs-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-usage-meter[data-form="tile"] .hg-usage-meter-label > svg {
+  flex-shrink: 0;
+  margin-top: var(--sp-0-5);
+}
+
+.hg-usage-meter[data-form="tile"] .hg-usage-meter-figure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--sp-1);
+  font-family: var(--font-display);
+  font-size: var(--fs-figure);
+  line-height: var(--lh-figure);
+  letter-spacing: var(--tr-figure);
+  white-space: normal;
+}
+
+.hg-usage-meter[data-form="tile"] .hg-usage-meter-figure > strong {
+  font-weight: var(--fw-regular);
+  white-space: nowrap;
+}
+
+.hg-usage-meter[data-form="tile"] .hg-usage-meter-unit {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  letter-spacing: normal;
+  color: var(--text-secondary);
 }
 
 .hg-usage-meter-tick {

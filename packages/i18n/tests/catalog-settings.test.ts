@@ -7,7 +7,9 @@ import {
   catalogSpecLine,
   catalogViewOnly,
 } from '../src/copy/catalog-settings';
-import { catalogEditorChips, catalogItemsWords, catalogRowWords } from '../src/copy/catalog-words';
+import { catalogSpecCells } from '../src/copy/catalog-spec-cells';
+import { catalogPublishView } from '../src/copy/catalog-views';
+import { catalogItemsWords, catalogRowWords } from '../src/copy/catalog-words';
 import { createTranslator } from '../src/runtime';
 
 const number = (value: number) => String(value);
@@ -103,13 +105,45 @@ describe('Catalog settings words — the board, word for word', () => {
     });
   });
 
-  it('the editor chips carry the spec label beside the headline figure', async () => {
+  it.each<[string, CatalogSpec, readonly { label: string; value: string }[]]>([
+    [
+      'a panel: rating first, every fact it carries',
+      PANEL,
+      [
+        { label: 'Rated power', value: '545 Wp' },
+        { label: 'Cell technology', value: 'Mono PERC' },
+        { label: 'Voc', value: '49.6 V' },
+        { label: 'Isc', value: '14 A' },
+        { label: 'Warranty', value: '30 years' },
+        { label: 'Weight', value: '27 kg' },
+      ],
+    ],
+    [
+      'an inverter: its phases in words',
+      {
+        kind: 'inverter',
+        acKw: 5,
+        phases: 1,
+        mppt: { count: 2, stringsPerMppt: 1, maxCurrentA: 13, minV: 80, maxV: 550 },
+        maxDcV: 600,
+        efficiencyPct: 97.6,
+      } as CatalogSpec,
+      [
+        { label: 'AC power', value: '5 kW' },
+        { label: 'Phases', value: 'Single phase' },
+        { label: 'MPPT trackers', value: '2' },
+        { label: 'Max DC voltage', value: '600 V' },
+        { label: 'Efficiency', value: '97.6%' },
+      ],
+    ],
+    [
+      'a micro-inverter with no warranty: one cell',
+      { kind: 'micro_inverter', ratedAcW: 366 } as CatalogSpec,
+      [{ label: 'Rated AC power', value: '366 W' }],
+    ],
+  ])('the detail grid — %s', async (_, spec, cells) => {
     const { t } = await createTranslator('en');
-    expect(catalogEditorChips(t, PANEL, 'verified_datasheet', number)).toEqual([
-      'Panel',
-      '545 Wp · Verified datasheet',
-      'Mono PERC',
-    ]);
+    expect(catalogSpecCells(t, spec, number)).toEqual(cells);
   });
 
   it.each([
@@ -159,5 +193,26 @@ describe('Catalog settings words — the board, word for word', () => {
     ] as const) {
       expect(words[key]).not.toBe(english[key]);
     }
+  });
+});
+
+describe('the publish sheet — nothing new is a calm state, never a field error', () => {
+  const formats = { number: String, money: String, percent: String };
+  const none = { added: 0, changed: 0, archived: 0 };
+  it.each([
+    ['nothing new, nothing refused', none, null, 'empty', null, false],
+    ['one change waits', { ...none, changed: 1 }, null, null, null, true],
+    ['the name is taken', { ...none, added: 2 }, 'label-taken' as const, null, 'taken', true],
+    ['the preview is still out', undefined, null, null, null, false],
+  ])('%s', async (_, counts, refusal, empty, problem, sendable) => {
+    const { t } = await createTranslator('en');
+    const shown = catalogPublishView(t, { counts, lines: [] }, refusal, formats);
+    expect(shown.empty).toEqual(
+      empty === null
+        ? null
+        : { title: t(CATALOG_EDITOR.nothingToPublish), line: t(CATALOG_EDITOR.nothingChanged) },
+    );
+    expect(shown.problem).toBe(problem === null ? null : t(CATALOG_EDITOR.labelTaken));
+    expect(shown.sendable).toBe(sendable);
   });
 });

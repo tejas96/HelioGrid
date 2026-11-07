@@ -90,12 +90,12 @@ function PageHead({ title, standing, read }: BrandingSettingsProps) {
   return (
     <div className="hg-branding-head" data-titled={title === undefined ? undefined : 'true'}>
       {title === undefined ? null : (
-        <Text as="h1" variant="display" bold>
+        <Text as="h1" variant="display">
           {title}
         </Text>
       )}
       {standingShown === undefined ? null : (
-        <Text variant="caption" color="secondary" className="hg-branding-standing">
+        <Text variant="body" color="secondary" className="hg-branding-standing">
           {standingShown}
         </Text>
       )}

@@ -1,1 +1,1 @@
-export { AppearanceHost, useAppearance, useRedrawKey } from './AppearanceHost';
+export { AppearanceHost, useAppearance } from './AppearanceHost';

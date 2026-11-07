@@ -22,6 +22,9 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.canvas,
   },
+  /* The region under the pinned top paints nothing, so the page's glow runs on behind the content
+     instead of stopping at a hard edge where the scroll begins. */
+  region: { flex: 1 },
   // Grows to the page, so Frame 8 centres in it (`D77`); the home's rows still start at the top.
   scroll: {
     flexGrow: 1,
@@ -39,8 +42,9 @@ export const styles = StyleSheet.create({
   stickyHead: {
     paddingTop: theme.spacing['sp-2'],
     paddingBottom: theme.spacing['sp-4'],
-    backgroundColor: colors.canvas,
   },
+  /* The page's colour behind the head once it is held (`ShellFrame`), so the list runs under it. */
+  stickyHeadHeld: { backgroundColor: colors.canvas },
   stickyHeadParts: { gap: theme.layout['tile-gap'] },
   /* What scrolls away above the held head (`SCR-M01-12` m-default): `sp-2` under the bar, as the
      held head keeps (owner ruling D287 over the board's `sp-1`), and `sp-4` to what follows — the

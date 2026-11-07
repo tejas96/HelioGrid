@@ -1,5 +1,6 @@
-/* RolesReference — the twelve role tiles and one role's details (`SCR-M01-14`). The page sizes its
-   grid from its own room: two across at 375, four at 1536, three while the side panel is open. */
+/* RolesReference — the twelve roles and one role's details (`SCR-M01-14`). The page sizes its list
+   from its own room: one card of rows in a narrow room (a name and a count are small facts, not a
+   card each), tiles three across from 560, four from 880, three while the side panel is open. */
 
 .hg-roles-reference {
   container-type: inline-size;
@@ -38,15 +39,67 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--tile-gap);
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
 }
 
-/* The room decides, the open panel's reserve taken out: three across from 560, four from 880 —
-   at 1536 four closed and three open, as the boards draw. */
+.hg-roles-reference-tile {
+  display: flex;
+}
+
+/* A tile's fill is `Ground`'s; it keeps its radius, padding and its open state. In a narrow room
+   the tiles touch and square their inner corners, so the twelve read as one card of rows, each
+   ring the hairline between two. */
+.hg-pressable.hg-role-tile {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: 0;
+  text-align: left;
+}
+
+/* The name takes the row; the count rests at its end. */
+.hg-pressable.hg-role-tile > :nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-roles-reference-tile:first-child > .hg-role-tile {
+  border-start-start-radius: var(--r-tile);
+  border-start-end-radius: var(--r-tile);
+}
+
+.hg-roles-reference-tile:last-child > .hg-role-tile {
+  border-end-start-radius: var(--r-tile);
+  border-end-end-radius: var(--r-tile);
+}
+
+/* The room decides, the open panel's reserve taken out: tiles three across from 560, four from
+   880 — at 1536 four closed and three open, as the boards draw. */
 @container (min-width: 560px) {
   .hg-roles-reference-tiles {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--tile-gap);
+  }
+
+  .hg-pressable.hg-role-tile,
+  .hg-roles-reference-tile:first-child > .hg-role-tile,
+  .hg-roles-reference-tile:last-child > .hg-role-tile {
+    /* The board's tile height, so a two-line name and a one-line name stand level. */
+    min-height: 112px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-2);
+    padding: var(--tile-pad);
+    border-radius: var(--r-tile);
+  }
+
+  .hg-pressable.hg-role-tile > :nth-child(2) {
+    flex: none;
   }
 }
 
@@ -56,27 +109,39 @@
   }
 }
 
-.hg-roles-reference-tile {
-  display: flex;
-}
-
-/* A tile's fill is `Ground`'s; it keeps its radius, padding and its open state. */
 .hg-pressable.hg-role-tile {
-  box-sizing: border-box;
-  width: 100%;
-  /* The board's tile height, so a two-line name and a one-line name stand level. */
-  min-height: 104px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--sp-2);
-  padding: var(--tile-pad);
-  border-radius: var(--r-tile);
-  text-align: left;
+  transition:
+    transform var(--dur-standard) var(--ease-spring),
+    box-shadow var(--dur-standard) var(--ease-standard);
 }
 
+@media (hover: hover) {
+  .hg-pressable.hg-role-tile:hover {
+    box-shadow: var(--e3);
+  }
+}
+
+@container (min-width: 560px) {
+  @media (hover: hover) {
+    .hg-pressable.hg-role-tile:hover {
+      transform: translateY(calc(var(--sp-0-5) * -1));
+    }
+  }
+}
+
+/* The role in view: lit in the accent, ringed, so the details beside it read as its own. */
 .hg-pressable.hg-role-tile[aria-expanded="true"] {
-  background: var(--accent-subtle);
+  /* The accent ground stays the tile's colour — its words are measured on it — and the light
+     lies over it as an image. */
+  background-color: var(--accent-subtle);
+  background-image: linear-gradient(
+    160deg,
+    transparent,
+    color-mix(in srgb, var(--brand-teal) 14%, transparent)
+  );
+  box-shadow:
+    inset 0 0 0 2px var(--accent),
+    var(--e2);
 }
 
 .hg-role-details-meta {

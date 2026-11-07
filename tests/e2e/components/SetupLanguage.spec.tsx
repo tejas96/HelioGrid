@@ -72,7 +72,11 @@ test.describe('at 375', () => {
     await expect(step.getByTestId('chosen')).toHaveText('mr');
     await expect(marathi).toBeChecked();
     await expect(english).toContainText(DEVICE_PILL);
-    await expect(marathi.locator(`[lang="${LANGUAGE_META.mr.tag}"]`)).toHaveText(MARATHI);
+    /* The card's name is tagged with its own language, so it is shaped and spoken as Marathi. */
+    await expect(marathi.getByText(MARATHI, { exact: true })).toHaveAttribute(
+      'lang',
+      LANGUAGE_META.mr.tag,
+    );
   });
 
   test('a failed save is an alert over the languages, with two ways on, one under the other', async ({
@@ -116,7 +120,7 @@ test.describe('at 375', () => {
   });
 
   for (const reader of ['hi', 'mr'] as const) {
-    test(`in ${reader} a failed save keeps both ways on on screen, and nothing scrolls sideways`, async ({
+    test(`in ${reader} a failed save keeps both ways on on screen, every language clear of them at the column's end, and nothing scrolls sideways`, async ({
       mount,
       page,
     }) => {
@@ -126,9 +130,12 @@ test.describe('at 375', () => {
       const anyway = await settledBox(
         step.getByRole('button', { name: words.t(SETUP_LANGUAGE.continueAnyway) }),
       );
+      expect((anyway?.y ?? Infinity) + (anyway?.height ?? 0)).toBeLessThanOrEqual(HEIGHT);
+      /* Under the door's sky the column outgrows the window, so the ways hold at its foot while it
+         scrolls; at the end of the column every language stands clear above them. */
+      await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
       const lastCard = await settledBox(step.getByRole('radio').nth(2));
       const again = await settledBox(step.getByRole('button', { name: words.t(SIGN_IN.tryAgain) }));
-      expect((anyway?.y ?? Infinity) + (anyway?.height ?? 0)).toBeLessThanOrEqual(HEIGHT);
       expect((lastCard?.y ?? Infinity) + (lastCard?.height ?? 0)).toBeLessThanOrEqual(
         again?.y ?? 0,
       );

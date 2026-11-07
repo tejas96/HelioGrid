@@ -16,3 +16,6 @@ export const DOOR_PATH: Record<ShellDoor, string> = {
   start_survey: `/${DOOR_SEGMENT.start_survey}`,
   search: `/${DOOR_SEGMENT.search}`,
 };
+
+/** A settings row's address: under the door that opens the list (`M01-61`, `SETTINGS_SEGMENT`). */
+export const settingsRowPath = (segment: string): string => `${DOOR_PATH.more}/${segment}`;

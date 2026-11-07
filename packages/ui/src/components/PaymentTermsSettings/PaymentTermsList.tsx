@@ -33,12 +33,12 @@ export function PaymentTermsList(props: PaymentTermsListProps) {
         data-titled={title === undefined ? undefined : 'true'}
       >
         {title === undefined ? null : (
-          <Text as="h1" variant="display" bold>
+          <Text as="h1" variant="display">
             {title}
           </Text>
         )}
         {read.kind === 'ready' && props.savedLine !== undefined ? (
-          <Text variant="caption" color="secondary" className="hg-pay-pretty">
+          <Text variant="body" color="secondary" className="hg-pay-pretty">
             {props.savedLine}
           </Text>
         ) : null}

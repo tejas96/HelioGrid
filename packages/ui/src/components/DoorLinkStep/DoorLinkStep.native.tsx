@@ -11,12 +11,12 @@ import type { DoorLinkStepProps } from './DoorLinkStep.types';
 
 /**
  * The link step in the phone's one column: the way back alone in the header row, the title, the
- * Google login, then its number. The column closes with its own free height, the half the frame
- * leaves to the step under a centred title.
+ * Google login, then its number, opening the sheet under the sky.
  */
 export function DoorLinkStep({ words, frame, phone, onPhone, busy, onPress }: DoorLinkStepProps) {
   return (
     <DoorFrame
+      sky="door"
       trailing={
         <Button
           variant="ghost"
@@ -27,7 +27,6 @@ export function DoorLinkStep({ words, frame, phone, onPhone, busy, onPress }: Do
           {words.useNumber.label}
         </Button>
       }
-      column="centred"
       identity={
         <View style={styles.title}>
           <View style={styles.titleRow}>

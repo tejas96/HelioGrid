@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -11,8 +12,8 @@ type SideRow = SettingsListProps['groups'][number]['rows'][number];
 
 /**
  * The `side` form on the phone: the same column as the web's — the title as an overline, the
- * person's own row first, each group's overline over its rows, the page in view on
- * `accent-subtle` and announced as selected. The phone's own settings pages open from `More`
+ * person's own row first, each group's overline over its rows, the page in view a raised card
+ * row in ink, announced as selected. The phone's own settings pages open from `More`
  * instead, so no phone screen draws it today; it keeps the one prop contract honest.
  */
 export function SettingsSideList({
@@ -21,6 +22,7 @@ export function SettingsSideList({
   onOpen,
   current,
 }: Pick<SettingsListProps, 'title' | 'groups' | 'onOpen' | 'current'>) {
+  const { controlFill } = useGround();
   const row = (item: SideRow) => {
     const here = item.key === current;
     return (
@@ -28,15 +30,15 @@ export function SettingsSideList({
         key={item.key}
         accessibilityState={{ current: here }}
         onPress={() => onOpen(item.key)}
-        style={[styles.row, here ? styles.here : undefined]}
+        style={[styles.row, here ? [styles.here, { backgroundColor: controlFill }] : undefined]}
       >
         <ShellGlyph
           name={SETTINGS_ROW_GLYPH[item.key]}
           size="md"
-          tone={here ? 'accent' : 'secondary'}
+          tone={here ? 'primary' : 'secondary'}
         />
         <View style={styles.name}>
-          <Text variant="body-sm" bold={here} color={here ? 'accent' : 'primary'}>
+          <Text variant="body-sm" bold={here} color={here ? 'primary' : 'secondary'}>
             {item.name}
           </Text>
         </View>
@@ -80,6 +82,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-sm'],
   },
-  here: { backgroundColor: colors['accent-subtle'] },
+  here: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.hairline,
+    ...theme.elevation.e1,
+  },
   name: { flex: 1, minWidth: 0 },
 });

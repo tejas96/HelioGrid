@@ -6,6 +6,7 @@ import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { LottieMoment } from '../LottieMoment/LottieMoment.native';
 import type { ToastProps, ToastTone } from './Toast.types';
 
 interface TonePair {
@@ -45,7 +46,8 @@ function CheckGlyph({ color }: { color: ThemeColor }) {
 }
 
 /**
- * White toast card with a leading semantic icon in a circular tint. e5, sits above the bottom nav.
+ * The ink pill with a leading semantic icon in a circular tint, or a Lottie moment. e5, sits above
+ * the bottom nav.
  * `accessibilityLiveRegion="polite"` is RN's `role="status"`: a toast never interrupts.
  */
 export function Toast({
@@ -53,19 +55,26 @@ export function Toast({
   title,
   description,
   icon,
+  moment,
   action,
   style,
 }: NativeToastProps) {
   const pair = TONE[tone];
   return (
     <View accessibilityLiveRegion="polite" style={[styles.card, style]}>
-      <View style={[styles.mark, { backgroundColor: pair.bg }]}>
-        {icon ?? <CheckGlyph color={pair.text} />}
-      </View>
+      {moment === undefined ? (
+        <View style={[styles.mark, { backgroundColor: pair.bg }]}>
+          {icon ?? <CheckGlyph color={pair.text} />}
+        </View>
+      ) : (
+        <View style={styles.moment}>
+          <LottieMoment name={moment} size={48} />
+        </View>
+      )}
       <View style={styles.body}>
-        <Text style={titleStyle}>{title}</Text>
+        <Text style={[titleStyle, onInk]}>{title}</Text>
         {description !== undefined ? (
-          <Text variant="body-sm" color="secondary">
+          <Text variant="body-sm" style={onInk}>
             {description}
           </Text>
         ) : null}
@@ -76,7 +85,9 @@ export function Toast({
 }
 
 /* -0.01em of the 15px body size, in points — RN letterSpacing has no em unit. */
-const titleStyle: TextStyle = { fontWeight: '700', letterSpacing: -0.15 };
+const titleStyle: TextStyle = { fontWeight: '600', letterSpacing: -0.15 };
+/* The pill's words: the page's own colour on the ink (`on-ink` on `ink`). */
+const onInk: TextStyle = { color: colors['on-ink'] };
 
 const styles = StyleSheet.create({
   card: {
@@ -84,13 +95,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing['sp-3'],
     maxWidth: 420,
-    paddingVertical: theme.spacing['sp-3'],
-    paddingHorizontal: theme.spacing['sp-4'],
-    // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
-    backgroundColor: colors.surface,
-    borderRadius: theme.radius['r-md'],
+    paddingVertical: theme.spacing['sp-2'],
+    paddingLeft: theme.spacing['sp-2'],
+    paddingRight: theme.spacing['sp-5'],
+    /* The ink pill, as the active nav item and a tooltip are. */
+    backgroundColor: colors.ink,
+    borderRadius: theme.radius['r-pill'],
     ...theme.elevation.e5,
   },
+  moment: { flexShrink: 0, marginVertical: -theme.spacing['sp-1'] },
   mark: {
     width: 36,
     height: 36,

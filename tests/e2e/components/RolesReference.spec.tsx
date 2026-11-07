@@ -10,8 +10,8 @@ import { RolesReferenceAsRead } from './RolesReference.story';
 import { BOARD_ROSTER } from './roles-reference-roster';
 
 /**
- * The Roles reference (`SCR-M01-14`): twelve tiles in F2's order with each role's count, two across
- * at 375 and four at 1536, three while the side panel is open; a role's details in the sheet or
+ * The Roles reference (`SCR-M01-14`): twelve roles in F2's order with each role's count — one card
+ * of rows at 375, tiles four across at 1536, three while the side panel is open; a role's details in the sheet or
  * the panel — its holders, then *Can do* and *Can't*. Read-only: no act changes a role (`M01-21`).
  */
 const READERS = {
@@ -34,13 +34,13 @@ const columnsOf = async (page: Page) =>
     .size;
 
 for (const [width, height, form, columns] of [
-  [375, 812, 'sheet', 2],
+  [375, 812, 'sheet', 1],
   [1536, 960, 'panel', 4],
 ] as const) {
   test.describe(`at ${width}`, () => {
     test.use({ viewport: { width, height } });
 
-    test(`the twelve roles in F2 order, ${columns} across, each with its count`, async ({
+    test(`the twelve roles in F2 order, ${columns === 1 ? 'one card of rows' : `${columns} across`}, each with its count`, async ({
       mount,
       page,
     }) => {

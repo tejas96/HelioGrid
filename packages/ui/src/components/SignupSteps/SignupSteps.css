@@ -1,9 +1,11 @@
-/* SignupSteps — the step said quietly: the counter and the step's name as one overline, then a
-   small dot per step; the one in view is a short accent pill, the done ones are ink. */
+/* SignupSteps — the step said quietly: the counter and the step's name as one overline, then a rail
+   of three tracks. Done tracks are filled, the one in view fills as the step opens (transform only),
+   the next ones are bare; the fill is the logo's light. Names sit under the tracks from the door's
+   breakpoint, where the column has room for them. */
 .hg-signup-steps {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
+  gap: var(--sp-3);
 }
 
 .hg-signup-steps-words {
@@ -24,24 +26,71 @@
   margin-inline: var(--sp-2);
 }
 
-.hg-signup-steps-dots {
+.hg-signup-steps-rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-2);
+}
+
+.hg-signup-steps-step {
   display: flex;
-  gap: var(--sp-1);
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
 }
 
-.hg-signup-steps-dot {
-  width: 6px;
-  height: 6px;
+.hg-signup-steps-track {
+  position: relative;
+  display: block;
+  height: var(--sp-1);
+  overflow: hidden;
   border-radius: var(--r-pill);
-  background: var(--line-strong);
-  transition: background-color var(--dur-standard) var(--ease-standard);
+  background: var(--line-soft);
 }
 
-.hg-signup-steps-dot[data-state="done"] {
-  background: var(--ink);
+.hg-signup-steps-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--gradient-brand);
+  transform: scaleX(0);
+  transform-origin: left center;
 }
 
-.hg-signup-steps-dot[data-state="current"] {
-  width: 18px;
-  background: var(--accent);
+.hg-signup-steps-step[data-state="done"] .hg-signup-steps-fill {
+  transform: none;
+}
+
+.hg-signup-steps-step[data-state="current"] .hg-signup-steps-fill {
+  transform: none;
+  animation: hg-signup-steps-fill var(--dur-ambient) var(--ease-enter) var(--dur-standard) backwards;
+}
+
+/* The names stay off the rail on a phone width: the overline already says the one in view. */
+.hg-signup-steps-label {
+  display: none;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hg-signup-steps-step[data-state="current"] .hg-signup-steps-label {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+
+@keyframes hg-signup-steps-fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* --bp-desktop: @media cannot read a custom property, so its value is written here. */
+@media (min-width: 968px) {
+  .hg-signup-steps-label {
+    display: block;
+  }
 }

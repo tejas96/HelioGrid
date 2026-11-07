@@ -259,7 +259,9 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   leadHead: { flex: 1, minWidth: 0 },
-  stackedTarget: { gap: theme.spacing['sp-3'] },
+  /* Stretched: the press target is a `Pressable`, which centres what it holds, and a lone role
+     badge sat in the middle of the card while two or more sat at its start. */
+  stackedTarget: { gap: theme.spacing['sp-3'], alignItems: 'stretch' },
   head: {
     flexDirection: 'row',
     alignItems: 'flex-start',

@@ -37,10 +37,11 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   handleWithHeader: { paddingBottom: theme.spacing['sp-5'] },
+  /* The strong line, as the web's: the sunken colour all but vanished on the sheet. */
   handleBar: {
-    width: 36,
-    height: 4,
+    width: 40,
+    height: 5,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: colors['canvas-sunken'],
+    backgroundColor: colors['line-strong'],
   },
 });
