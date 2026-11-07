@@ -38,7 +38,7 @@ export function SetupInviteTeam({
       onFooterHeight={onActsHeight}
       identity={
         <View style={styles.title}>
-          <Text variant="h2">{words.title}</Text>
+          <Text variant="display">{words.title}</Text>
         </View>
       }
       footer={

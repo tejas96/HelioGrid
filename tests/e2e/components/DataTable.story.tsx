@@ -128,7 +128,7 @@ export function KindTable({
           key: 'name',
           label,
           primary: true,
-          leading: () => ({ glyph: 'layers', iris: 'violet' }),
+          leading: () => ({ glyph: 'layers', hue: 'ocean' }),
           sub: () => sub,
         },
       ]}

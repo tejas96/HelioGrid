@@ -1,15 +1,15 @@
 import { PRICE_BOOK_RATE_BASES, type PriceBookRateBasis } from '@heliogrid/domain';
-import type { IrisHue } from '../Avatar/Avatar.types';
+import type { CategoryHue } from '../Avatar/Avatar.types';
 
 /** How a rate is charged, as the 1536 badge tints it — a kind, never a state (owner pick "Rates P1"). */
 /** The new-version editor's panel: room for a name, a basis and an amount on one row (d-version-new). */
 export const CATALOG_VERSION_PANEL_WIDTH = 640;
 
-export const RATE_BASIS_TONE: Readonly<Record<PriceBookRateBasis, IrisHue>> = {
-  per_job: 'violet',
-  per_kw: 'blue',
-  per_visit: 'magenta',
-  per_metre: 'blue',
+export const RATE_BASIS_TONE: Readonly<Record<PriceBookRateBasis, CategoryHue>> = {
+  per_job: 'ocean',
+  per_kw: 'teal',
+  per_visit: 'plum',
+  per_metre: 'teal',
 };
 
 export interface RateGroup<Rate> {

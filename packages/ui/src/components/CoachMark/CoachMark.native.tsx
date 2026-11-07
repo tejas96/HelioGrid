@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { AccessibilityInfo, Dimensions, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { closingPress } from '../../primitives/FocusAfter';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     padding: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-lg'],
     // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e4,
   },
   /* An unanchored mark is a legitimate variant: it parks at the bottom rather than inventing a

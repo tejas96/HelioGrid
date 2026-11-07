@@ -1,66 +1,114 @@
-/* AppRail — the 72px desktop icon rail. The active item is an accent-subtle tile, never a
-   border and never a left accent bar. */
+/* AppRail — the desktop sidebar, on the page's own glow. The item in view is a solid ink pill,
+   never a border and never a left accent bar. */
 
 .hg-app-rail {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: var(--sp-2);
+  align-items: stretch;
+  gap: var(--sp-1);
   box-sizing: border-box;
-  width: var(--hg-app-rail-width, var(--rail-w, 72px));
+  width: var(--hg-app-rail-width, var(--sidebar-w));
   height: 100%;
-  padding: var(--sp-4) 0;
-  background: var(--hg-ground);
+  padding: var(--sp-5) var(--sp-3);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .hg-app-rail-brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: 0 var(--sp-2);
   margin-bottom: var(--sp-3);
+}
+
+.hg-app-rail-caption {
+  color: var(--text-secondary);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+}
+
+.hg-app-rail-search {
+  margin: 0 var(--sp-1) var(--sp-3);
+}
+
+.hg-app-rail-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
 }
 
 .hg-app-rail-spacer {
   flex: 1;
+  min-height: var(--sp-4);
 }
 
 .hg-app-rail-avatar {
   margin-top: var(--sp-2);
+  padding: 0 var(--sp-1);
 }
 
+/* One destination: its glyph and its name, a pill that lifts to the card colour under the pointer
+   and turns solid ink when it is in view. */
 .hg-app-rail-button {
   position: relative;
   flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--sp-10);
+  padding: var(--sp-2) var(--sp-3);
   border: none;
-  border-radius: var(--r-md);
+  border-radius: var(--r-pill);
   background: transparent;
   color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body-sm);
+  text-align: start;
   cursor: pointer;
   transition:
-    background var(--dur-standard) var(--ease-standard),
-    color var(--dur-standard) var(--ease-standard);
+    background-color var(--dur-standard) var(--ease-standard),
+    color var(--dur-standard) var(--ease-standard),
+    box-shadow var(--dur-standard) var(--ease-standard),
+    transform var(--dur-micro) var(--ease-standard);
 }
 
-.hg-app-rail-button:hover:not([data-active="true"]) {
-  background: var(--neutral-bg);
+@media (hover: hover) {
+  .hg-app-rail-button:hover:not([data-active="true"]) {
+    background: var(--hg-control-fill);
+    color: var(--text-primary);
+  }
 }
 
-/* Pressed, as every pressable in this system: a small give, whatever the item's state. */
 .hg-app-rail-button:active {
-  transform: scale(0.94);
+  transform: scale(var(--press-scale));
 }
 
 .hg-app-rail-button[data-active="true"] {
-  background: var(--accent-subtle);
-  color: var(--accent);
+  background: var(--ink);
+  color: var(--on-ink);
+  font-weight: var(--fw-medium);
+  box-shadow: var(--e2);
 }
 
-/* The rail colours its items — at rest, hovered, in view — so a shell glyph inside one takes the
-   button's colour rather than its own tone. */
+.hg-app-rail-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+
+/* The glyph takes the button's colour rather than its own tone. */
 .hg-app-rail-button .hg-shell-glyph {
   color: inherit;
+}
+
+.hg-app-rail-label {
+  flex: 1;
+  min-width: 0;
 }
 
 .hg-app-rail-button:focus-visible {
@@ -68,12 +116,8 @@
   outline-offset: 2px;
 }
 
-/* The count rides the button's top-right corner, half outside it, so it never covers the glyph:
-   a 20 badge inside a 44 button sat over the bell's upper half. */
 .hg-app-rail-badge {
-  position: absolute;
-  top: calc(-1 * var(--sp-1));
-  right: calc(-1 * var(--sp-1));
+  flex-shrink: 0;
 }
 
 /* ── BottomNav — the phone shell's footer (F7-22) ────────────────────────────────────────
@@ -124,10 +168,19 @@
 
 .hg-bottom-nav-item[data-in-view="true"] {
   padding: 0 var(--sp-4);
-  background: var(--action-primary);
-  color: var(--text-inverse);
+  background: var(--ink);
+  color: var(--on-ink);
 }
 
+.hg-bottom-nav-item {
+  transition:
+    background-color var(--dur-standard) var(--ease-standard),
+    color var(--dur-standard) var(--ease-standard),
+    transform var(--dur-micro) var(--ease-standard);
+}
+.hg-bottom-nav-item:active {
+  transform: scale(var(--press-scale));
+}
 .hg-bottom-nav-item:focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;

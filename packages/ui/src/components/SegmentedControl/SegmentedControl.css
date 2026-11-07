@@ -21,7 +21,8 @@
   gap: 0;
   border-radius: var(--r-pill);
   padding: var(--sp-1);
-  background: var(--hg-control-fill);
+  /* Recessed on every ground, so the white pill in view reads as raised out of it. */
+  background: var(--canvas-sunken);
 }
 
 .hg-segmented-control-pill[data-error="true"] {
@@ -32,17 +33,15 @@
   position: absolute;
   top: var(--sp-1);
   bottom: var(--sp-1);
-  left: calc(
-    var(--sp-1) +
-    var(--hg-segmented-control-index) *
-    (100% - calc(2 * var(--sp-1))) /
-    var(--hg-segmented-control-count)
-  );
+  left: var(--sp-1);
   width: calc((100% - calc(2 * var(--sp-1))) / var(--hg-segmented-control-count));
   border-radius: var(--r-pill);
-  background: var(--hg-ground);
-  box-shadow: var(--e2);
-  transition: left var(--dur-emphasised) var(--ease-spring);
+  /* biome-ignore lint/plugin/raw-white-css: control — the pill in view is raised, the card colour on every ground */
+  background: var(--surface);
+  box-shadow: var(--e1);
+  /* It slides by its own width: a transform, so the move never lays the row out again. */
+  transform: translateX(calc(var(--hg-segmented-control-index) * 100%));
+  transition: transform var(--dur-emphasised) var(--ease-spring);
 }
 
 /* The 44px target around the 32px pill: the extra 12px is borrowed back as negative margin,

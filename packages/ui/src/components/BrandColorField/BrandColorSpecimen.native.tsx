@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { Text as RNText, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import type { BrandColorSpecimenProps } from './BrandColorField.types';
 
 /**
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 14,
     // biome-ignore lint/plugin/raw-white: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
   },
   word: {
     fontFamily: theme.type.families.sans,

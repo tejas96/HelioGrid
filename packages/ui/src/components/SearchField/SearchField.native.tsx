@@ -3,6 +3,7 @@ import { useImperativeHandle, useRef, useState } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Svg } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import {
   FIELD_BOX_EDGE,
   fieldBox,
@@ -84,7 +85,7 @@ function SearchPill({
         height={18}
         viewBox="0 0 24 24"
         fill="none"
-        stroke={theme.colors['text-tertiary']}
+        stroke={colors['text-tertiary']}
         strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -132,7 +133,7 @@ function ClearPill() {
         height={14}
         viewBox="0 0 24 24"
         fill="none"
-        stroke={theme.colors['text-secondary']}
+        stroke={colors['text-secondary']}
         strokeWidth={2}
         strokeLinecap="round"
       >
@@ -160,7 +161,7 @@ const input: TextStyle = {
   padding: 0,
   fontFamily: theme.type.families.sans,
   fontSize: theme.type.roles.body.fontSize,
-  color: theme.colors['text-primary'],
+  color: colors['text-primary'],
 };
 
 const styles = StyleSheet.create({

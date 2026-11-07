@@ -4,12 +4,12 @@ import { Text } from '../../primitives/Text/Text.native';
 import { Explainer } from '../Explainer/Explainer.native';
 import type { DoorTitleProps } from './DoorFrame.types';
 
-/** The door's title block at 375: the heading in the phone's `h2` role with its ask on the same row, and the intro under it. */
+/** The door's title block: the large title in the display face, its ask on the same row, and the intro under it. */
 export function DoorTitle({ title, explainer, intro }: DoorTitleProps) {
   return (
     <View style={styles.block}>
       <View style={styles.row}>
-        <Text variant="h2" style={styles.title}>
+        <Text variant="display" style={styles.title}>
           {title}
         </Text>
         {explainer === undefined ? null : <Explainer {...explainer} />}

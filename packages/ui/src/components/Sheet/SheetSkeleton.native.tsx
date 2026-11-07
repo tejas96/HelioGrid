@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import type { DimensionValue } from 'react-native';
 import { Animated, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import type { SheetDensity } from './Sheet.types';
 
 interface SheetSkeletonProps {
@@ -72,6 +73,6 @@ const styles = StyleSheet.create({
   },
   bar: {
     borderRadius: theme.radius['r-sm'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
 });

@@ -6,6 +6,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
+  /* A wait that ends inside the delay never flashes its bars. */
+  animation: hg-fade-in var(--dur-micro) var(--ease-enter) var(--skeleton-delay) both;
 }
 
 .hg-loading-bar {

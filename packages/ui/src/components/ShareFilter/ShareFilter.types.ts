@@ -27,10 +27,10 @@ export interface ShareFilterItem {
   readonly accessibleLabel: TranslatedText;
   readonly count: number;
   /**
-   * The part's hue: `blue` and `violet` the brand's two iris inks (`--iris-blue`, `--iris-violet`),
+   * The part's hue: `teal` and `ocean` the category hues,
    * the rest the status inks — the warning one at the ink that holds 3:1.
    */
-  readonly hue: 'blue' | 'violet' | 'warning' | 'success' | 'danger';
+  readonly hue: 'teal' | 'ocean' | 'warning' | 'success' | 'danger';
   /** A part that asks for the person (*Need you*): its label bold, in the warning ink. */
   readonly asks?: boolean;
 }

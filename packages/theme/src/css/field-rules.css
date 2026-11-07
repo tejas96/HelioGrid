@@ -1,0 +1,10 @@
+/* Field mode's rules beyond its tokens: every control gains a visible edge and the focus ring
+   grows, because in sunlight a shade is not a line. */
+[data-field-mode="on"]
+:is(button, [role="tab"], [role="button"]):not(:disabled):not([data-field-mode="off"] *) {
+  box-shadow: var(--control-edge);
+}
+[data-field-mode="on"] :focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}

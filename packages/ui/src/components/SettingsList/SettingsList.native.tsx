@@ -34,9 +34,9 @@ function BrandRing({ children }: { children: React.ReactNode }) {
       <Svg width={outer} height={outer} style={StyleSheet.absoluteFill}>
         <Defs>
           <LinearGradient id={id} x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor={theme.colors['iris-violet']} />
-            <Stop offset="0.45" stopColor={theme.colors['iris-blue']} />
-            <Stop offset="1" stopColor={theme.colors['iris-magenta']} />
+            {theme.brand.gradient.map((stop) => (
+              <Stop key={stop.offset} offset={stop.offset} stopColor={stop.color} />
+            ))}
           </LinearGradient>
         </Defs>
         <Circle
@@ -125,9 +125,7 @@ export function SettingsList({
     <View style={styles.list}>
       {/* The primitive has no role prop; the heading's role sits on the node around it. */}
       <View accessibilityRole="header">
-        <Text variant="h3" bold>
-          {title}
-        </Text>
+        <Text variant="display">{title}</Text>
       </View>
       {groups.map((group) => {
         const own = personRow(group);

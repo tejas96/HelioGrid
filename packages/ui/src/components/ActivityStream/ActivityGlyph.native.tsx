@@ -1,6 +1,7 @@
-import { theme } from '@heliogrid/theme';
 import { View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { activityGlyphOf, agentObjectSize } from './ActivityGlyph.logic';
 
@@ -15,7 +16,7 @@ export function ActivityGlyph({
 }: {
   name: string;
   size?: number;
-  color: string;
+  color: ThemeColor;
 }) {
   if (name === 'agent') {
     const object = agentObjectSize(size);
@@ -25,7 +26,7 @@ export function ActivityGlyph({
           width: object,
           height: object,
           borderRadius: object / 2,
-          backgroundColor: theme.colors['iris-violet'],
+          backgroundColor: colors['brand-teal'],
         }}
       />
     );

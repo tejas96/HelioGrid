@@ -18,8 +18,8 @@ import type {
 } from './DocumentPreview.types';
 import { A4_RATIO, DOCUMENT_DESIGN_WIDTH } from './DocumentPreview.types';
 
-/** The system accent, and the fallback whenever `brandColor` will not parse. */
-const FALLBACK_BRAND: string = theme.colors.accent;
+/** The system accent on paper, and the fallback whenever `brandColor` will not parse. */
+const FALLBACK_BRAND: string = theme.palettes.light.accent;
 
 export interface ResolvedDocument {
   /** The specimen draws a labelled logo slot; a real cover (`sample={false}`) never does. */

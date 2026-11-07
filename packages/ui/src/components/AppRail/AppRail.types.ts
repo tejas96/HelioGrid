@@ -45,13 +45,14 @@ export interface AppRailProps {
   /** Utility buttons pinned above the avatar (notifications, settings). */
   footer?: RailItem[];
   avatar?: ReactNode;
-  /**
-   * Rail width. Defaults to `var(--rail-w, 72px)` — the token is the source of the number, the
-   * way `AppHeader` reads `--header-h`. Pass a number to override it.
-   */
+  /** Sidebar width. Defaults to the `--sidebar-w` token; a number overrides it. */
   width?: number | string;
-  /** The product mark. The design system's default is `<LogoTile />` from the brand family. */
+  /** The product mark and name, at the sidebar's top. */
   brand?: ReactNode;
+  /** One quiet line under the brand: the company the person is in. */
+  caption?: ReactNode;
+  /** The one search, under the brand — present only where search exists. */
+  search?: ReactNode;
 }
 
 /**
@@ -61,10 +62,12 @@ export interface AppRailProps {
 export type BottomNavItem = RailItem & { verb?: boolean };
 
 /**
- * The phone footer (`F7-22`): one white pill. The item in view is a near-black pill with its icon
- * and label; every other item is its icon, named by its label. The order is the caller's.
+ * The phone footer: one floating pill in the card colour. The item in view is an ink pill with its
+ * icon and label; every other item is its icon, named by its label. The order is the caller's.
  */
 export interface BottomNavProps {
+  /** The pill's name, the sidebar's own: what a screen reader calls this navigation. */
+  label: TranslatedText;
   items: BottomNavItem[];
   value?: string;
   onChange?: (key: string) => void;

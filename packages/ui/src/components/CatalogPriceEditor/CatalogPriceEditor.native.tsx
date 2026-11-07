@@ -1,6 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
   /* The board's card on the sheet: the sheet's own ground inside a soft line, not a tile. */
   switchCard: {
     borderWidth: 1,
-    borderColor: theme.colors['line-soft'],
+    borderColor: colors['line-soft'],
     borderRadius: theme.radius['r-md'],
   },
   switchRow: {
@@ -237,5 +238,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
   },
   switchWords: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
-  hairline: { height: 1, marginHorizontal: 14, backgroundColor: theme.colors['line-soft'] },
+  hairline: { height: 1, marginHorizontal: 14, backgroundColor: colors['line-soft'] },
 });

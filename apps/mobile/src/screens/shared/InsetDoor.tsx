@@ -1,5 +1,4 @@
-import { theme } from '@heliogrid/theme';
-import { DoorBottomInset, DoorTopInset } from '@heliogrid/ui';
+import { colors, DoorBottomInset, DoorTopInset } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,6 +22,5 @@ export function InsetDoor({ children }: { children: ReactNode }) {
 
 const styles = StyleSheet.create({
   /** The inset behind the frame: the page, so the status-bar and home-indicator bands match the frame's ground. */
-  // biome-ignore lint/plugin/raw-white: page-ground — an app's page or door: the page is white
-  inset: { flex: 1, backgroundColor: theme.colors.surface },
+  inset: { flex: 1, backgroundColor: colors.canvas },
 });

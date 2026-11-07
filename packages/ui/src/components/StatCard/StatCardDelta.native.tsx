@@ -9,15 +9,17 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { StatCardDeltaProps, StatCardSentiment } from './StatCard.types';
 import { DELTA_DIR_GLYPH, deltaChipOf } from './StatCardDelta.logic';
 
-const SENTIMENT_TONE: Record<StatCardSentiment, { bg: string; fg: string }> = {
-  good: { bg: theme.colors['success-bg'], fg: theme.colors['success-text'] },
-  bad: { bg: theme.colors['danger-bg'], fg: theme.colors['danger-text'] },
-  neutral: { bg: theme.colors['neutral-bg'], fg: theme.colors['neutral-text'] },
+const SENTIMENT_TONE: Record<StatCardSentiment, { bg: ThemeColor; fg: ThemeColor }> = {
+  good: { bg: colors['success-bg'], fg: colors['success-text'] },
+  bad: { bg: colors['danger-bg'], fg: colors['danger-text'] },
+  neutral: { bg: colors['neutral-bg'], fg: colors['neutral-text'] },
 };
 
 const styles = StyleSheet.create({

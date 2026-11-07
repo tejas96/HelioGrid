@@ -42,7 +42,7 @@ export function whenRowsOf(input: PlanSelectionInput, preview: PlanChangePreview
   }
 }
 
-/** The review's ONE act and its ONE line (decision 6, board-check decision 1). */
+/** The review's ONE act and its ONE line (decision 6); a cycle switch's act names the new cycle. */
 export function actOf(
   input: PlanSelectionInput,
   preview: PlanChangePreview,

@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 
 /**
  * A theme colour token as the page resolves it, so a spec compares against `packages/theme` and
@@ -45,6 +45,42 @@ export async function resolvedShadow(page: Page, token: `--${string}`): Promise<
   if (shadow === 'none') throw new Error(`${token} resolves to nothing on this page`);
   return shadow;
 }
+
+/**
+ * A box-shadow written in theme tokens, as the page resolves it — a ring, or a ring over a lift, is
+ * compared against the component's own rule and never typed as a colour. One that does not resolve
+ * fails here, as `resolvedShadow` does.
+ */
+export async function resolvedBoxShadow(page: Page, written: string): Promise<string> {
+  const shadow = await page.evaluate((value) => {
+    const probe = document.createElement('div');
+    probe.style.boxShadow = value;
+    document.body.append(probe);
+    const resolved = getComputedStyle(probe).boxShadow;
+    probe.remove();
+    return resolved;
+  }, written);
+  if (shadow === 'none') throw new Error(`${written} resolves to nothing on this page`);
+  return shadow;
+}
+
+/**
+ * The colour a box paints, as the page computes it — so a part that must paint the ground holding
+ * it (a sticky head over rows scrolling under it) is compared with its holder, whatever that is.
+ */
+export function fillOf(holder: Locator): Promise<string> {
+  return holder.evaluate((node) => getComputedStyle(node).backgroundColor);
+}
+
+/** A tile (`packages/ui/src/primitives/Ground/Ground.css`): the card colour, ringed in `--line-soft` over `--e1`. */
+export const TILE_SHADOW = '0 0 0 1px var(--line-soft), var(--e1)';
+
+/** The resting edge a field and a secondary button draw inside themselves: a `--line-strong` hairline. */
+export const STRONG_EDGE = 'inset 0 0 0 1px var(--line-strong)';
+
+/** A focused field (`packages/ui/src/primitives/FieldBox/FieldBox.css`): the inset accent edge and its soft glow. */
+export const FOCUS_RING =
+  'inset 0 0 0 2px var(--accent), 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent)';
 
 /**
  * A theme font token (`--font-*`, `--fw-*`) as the page resolves it — so a spec reads a face or a

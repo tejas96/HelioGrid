@@ -2,6 +2,8 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
@@ -22,10 +24,10 @@ export const FINDING_TONE: Record<FindingStatus, StatusTone> = {
 };
 
 /* The warning MARK takes --warning-text: plain --warning clears no contrast floor. */
-const MARK_FILL: Record<FindingStatus, string> = {
-  blocking: theme.colors.danger,
-  attention: theme.colors['warning-text'],
-  ready: theme.colors.success,
+const MARK_FILL: Record<FindingStatus, ThemeColor> = {
+  blocking: colors.danger,
+  attention: colors['warning-text'],
+  ready: colors.success,
 };
 
 /** The row's own mark. The status pill beside it therefore needs no second glyph. */
@@ -38,7 +40,7 @@ function Mark({ status }: { status: FindingStatus }) {
         viewBox="0 0 24 24"
         fill="none"
         // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-        stroke={theme.colors['text-inverse']}
+        stroke={colors['text-inverse']}
         strokeWidth={3}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -106,7 +108,7 @@ export function FindingListRow({ finding, words, onJump, jumpLabel }: FindingLis
                       height={15}
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke={theme.colors['text-primary']}
+                      stroke={colors['text-primary']}
                       strokeWidth={1.8}
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -174,10 +176,10 @@ const styles = StyleSheet.create({
   fix: {
     paddingHorizontal: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['accent-subtle'],
+    backgroundColor: colors['accent-subtle'],
   },
   fixWords: {
     fontWeight: '700',
-    color: theme.colors.accent,
+    color: colors.accent,
   },
 });

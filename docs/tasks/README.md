@@ -17,10 +17,10 @@ A task is its header lines, written when the task is:
 ```
 ### T-M02-001 · Quick Add Lead
 **Type:** screen · **Tier:** P0        (screen | engine | policy | integration | port · the highest tier among its rows)
-**Status:** planned                    (planned | designed | shipped | struck — the one ledger)
+**Status:** planned                    (planned | shipped | struck — the one ledger)
 **PRD rows:** M02-<nn> (P0), M02-<nn> (P0), M02-<nn> (P1)        — every id carries its tier (rule 6)
-**DESIGN:** SCR-<module>-<nn> → PENDING          — filled with the module's canvas link by the Design track's lock commit, or by the board move of D223 (`docs/start-here.md` *Recording a drawn screen*); whether its boards are locked is `.design/<module>/`'s answer (`.claude/skills/task/design-track.md`); a studio screen reads `ported from the POC`
-**Design:** (instead of `DESIGN:`) `none — <reason>` for a task with no screen of its own, the existing boards it reuses, or `the same canvas as <task id>'s DESIGN line` and the frames it uses — only the last makes the walk wait, until that task's `DESIGN:` holds a link
+**DESIGN:** SCR-<module>-<nn> · SCR-<module>-<nn>          — the screens this task builds; their look is picked in the task (rule 3)
+**Design:** (instead of `DESIGN:`) `none — <reason>` for a task with no screen of its own, or `as <task id>` for one that changes the screens another task builds
 **PORT:** (studio tasks only) POC files from docs/prd/modules/M05-studio/poc-file-claims.md
         — files to READ AND PORT FROM, never files to create here. A PORT entry that names a
         POC `*.test.ts` ports the LOGIC it proves into the studio package's own
@@ -44,9 +44,8 @@ task keeps only its header lines, and git holds its history. A split task's `###
 
 ## Binding rules
 
-0. **`Status:` is the ledger.** `planned` until every `DESIGN:` line holds a link (or, for a
-   studio screen, reads `ported from the POC`), `designed` until the
-   task ships, `shipped` written into the CHANGE commit itself, whose subject names the task —
+0. **`Status:` is the ledger.** `planned` until the task ships, `shipped` written into the CHANGE
+   commit itself, whose subject names the task —
    never a commit and never a PR of its own — and the squash commit on main carries the PR
    number. A split task's parts keep their own ledger in its `#### Parts` table (`open` →
    `shipped`, in the part's own change commit), and the task turns `shipped` with its last part. A
@@ -61,28 +60,25 @@ task keeps only its header lines, and git holds its history. A split task's `###
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
 2. **Requirement reference whitelist.** A task's header and requirement text may cite only:
-   `docs/prd/**`, the screen's boards on its module's canvas, by the link on its `DESIGN:` line (the one source of a design; the repo keeps only the committed lock in `.design/<module>/`),
-   `docs/engineering/data-model.md` and `docs/engineering/forward-compat.md` (a schema-bearing
+   `docs/prd/**`, `docs/engineering/data-model.md` and `docs/engineering/forward-compat.md` (a schema-bearing
    task, where naming its entities or its first-migration row is clearer than restating them),
-   `docs/ux/briefs/**`, `docs/prd/modules/M05-studio/defect-register.md`
+   `docs/prd/modules/M05-studio/defect-register.md`
    (studio tasks), and `3d_design_studio/**` — the POC repo, today at
    `/Volumes/works-space/Solar-App-POC/` (tasks typed `port` only). The RFC may additionally cite
    implementation authorities its sections require: architecture, protections, CI and package
-   instructions. Anything else —
+   instructions, and the sample the owner picked. Anything else —
    old research docs, the v1 repo — is a defect in the task. A task never cites an open-question
    id: a PRD row carries its own ruling, and git carries the history.
-3. **`DESIGN: PENDING` blocks the task at its turn**, and so does a board not yet locked
-   (`/task`, *Pick*): the Design track draws, checks and locks the module first. A backend task
-   waits for the drawings of the screens it serves. A screen's UI is not "done" until it matches
-   its board.
+3. **A screen's look is picked inside its own task** (`CLAUDE.md` §3, `/task` *Plan*), so no task
+   waits for a drawing. A screen's UI is not "done" until it follows the sample the owner picked.
 4. **Studio tasks are ports, not rewrites** (ruling S12-1): engineering core moves as-is with
-   its tests; the UI is rebuilt from the POC and improved on the way, with no board;
+   its tests; the UI is rebuilt from the POC and improved on the way;
    the defect register is the change list.
 5. A task is complete when every DONE WHEN line passes and — for screen tasks — the **three**
-   base states (loading, empty, error) plus brief-listed states exist at both 375px and 1536px
+   base states (loading, empty, error) plus the states its plan lists exist at both 375px and 1536px
    with full parity. This rule is the completion bar every screen task is measured against.
 6. **Every row id shows its tier where it appears.** A verbatim row quote carries it after the
-   id — `**M02-02** (P0) — …`; a task that defers its quoting to the brief carries it on the
+   id — `**M02-02** (P0) — …`; a task that does not quote its rows carries it on the
    `PRD rows:` line instead — `M02-01 (P0), M02-25 (P1)`. A task's own `Tier:` is the highest
    tier among its rows, so a P0 task may still contain P1/P2 rows: those are the cuttable ones,
    and they must be visible as such without opening the register.

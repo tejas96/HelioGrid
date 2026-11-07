@@ -1,7 +1,7 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { Card } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedColour } from '../support/token';
+import { fillOf } from '../support/token';
 import { WordedCompareGrid } from './CompareGrid.story';
 
 const en = await createTranslator('en');
@@ -22,7 +22,7 @@ test('a comparison is a heading on the page — no fill, no shadow', async ({ mo
   await expect(grid).toHaveCSS('border-radius', '0px');
 });
 
-test('a pinned cell paints the ground that holds it', async ({ mount, page }) => {
+test('a pinned cell paints the ground that holds it', async ({ mount }) => {
   const card = await mount(
     <Card>
       <WordedCompareGrid read={{ kind: 'ready' }} attributes={attributes} options={options} />
@@ -31,7 +31,7 @@ test('a pinned cell paints the ground that holds it', async ({ mount, page }) =>
   const pinned = card.getByRole('rowheader', { name: label });
 
   await expect(pinned).toHaveCSS('position', 'sticky');
-  await expect(pinned).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
+  await expect(pinned).toHaveCSS('background-color', await fillOf(card));
 });
 
 test('a numeric row ends its figures on one right edge; a word row stays left (F7-09)', async ({

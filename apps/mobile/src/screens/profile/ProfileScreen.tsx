@@ -1,13 +1,21 @@
 import { useProfileScreen } from '@heliogrid/data/react';
 import { PROFILE_PHOTO_MAX_SIDE_PX } from '@heliogrid/domain';
 import {
+  appearanceWords,
   nameAndPhotoEditorWords,
   profilePreferencesWords,
   roleCardWords,
   SHELL,
 } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
-import { NameAndPhotoEditor, ProfilePreferences, RoleCardSurface, useFormat } from '@heliogrid/ui';
+import {
+  AppearanceSwitch,
+  NameAndPhotoEditor,
+  ProfilePreferences,
+  RoleCardSurface,
+  useFormat,
+} from '@heliogrid/ui';
+import { useAppearance } from '../../appearance';
 import { pickImage } from '../../files/pick-image';
 import { useSettingsDrillDown } from '../settings/hooks/use-settings-drill-down';
 import { ShellPage } from '../shell/components/ShellPage';
@@ -22,6 +30,7 @@ export function ProfileScreen() {
   const drillDown = useSettingsDrillDown('profile');
   const { t, locale, device, setLocale } = useI18n();
   const { pack } = useFormat();
+  const { appearance, choose } = useAppearance();
   const screen = useProfileScreen(device, pack.measurementSystem);
   if (screen === null) return null;
   const { user, view, editor, role, push, photo } = screen;
@@ -42,6 +51,7 @@ export function ProfileScreen() {
         refused={push.refused}
         onPush={push.flip}
       />
+      <AppearanceSwitch words={appearanceWords(t)} value={appearance} onChange={choose} />
       <NameAndPhotoEditor
         open={editor.isOpen}
         words={nameAndPhotoEditorWords(t, editor.frame)}

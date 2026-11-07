@@ -2,6 +2,8 @@ import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { Provenance } from '../Provenance/Provenance.native';
@@ -24,17 +26,17 @@ interface NativeUsageMeterProps extends UsageMeterProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const LINE_TONE: Record<UsageLineTone, string> = {
-  danger: theme.colors['danger-text'],
-  warning: theme.colors['warning-text'],
-  info: theme.colors['info-text'],
+const LINE_TONE: Record<UsageLineTone, ThemeColor> = {
+  danger: colors['danger-text'],
+  warning: colors['warning-text'],
+  info: colors['info-text'],
 };
 
 const labelStyle: TextStyle = {
   fontSize: 14,
   fontWeight: '500',
   letterSpacing: -0.14,
-  color: theme.colors['text-primary'],
+  color: colors['text-primary'],
 };
 
 /**

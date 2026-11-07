@@ -53,7 +53,7 @@ for (const account of [
         tileInnerRight: box.right - Number.parseFloat(style.paddingRight),
       };
     });
-    expect(look.fill).toBe(await resolvedColour(page, '--fill'));
+    expect(look.fill).toBe(await resolvedColour(page, '--surface'));
     expect(look.padding).toBe(look.want.padding);
     expect(look.radius).toBe(look.want.radius);
     expect(look.tileWidth).toBe(WIDTH);

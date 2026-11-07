@@ -37,7 +37,7 @@ export function InviteLanding(props: InviteLandingProps) {
   const actRef = useRef<FocusHandle>(null);
   const wide = useDesktopShell() === true;
   const shell = (identity: ReactNode, task: ReactNode) => (
-    <DoorFrame panes="onboarding" taskMeasure="field" trailing={language} identity={identity}>
+    <DoorFrame taskMeasure="field" trailing={language} identity={identity}>
       <div className="hg-invite-landing" data-frame={frame.kind}>
         {task}
       </div>
@@ -94,7 +94,7 @@ function LandingHead({ words, frame, phone, wide }: InviteLandingProps & { wide:
       <div className="hg-invite-landing-who">
         {inviter === null ? null : <InviterRow inviter={inviter} wide={wide} />}
         {title === null ? null : (
-          <Text variant={wide ? 'h1' : 'h2'} as="h1">
+          <Text variant="display" as="h1">
             {title}
           </Text>
         )}

@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { ChartFrame } from './ChartFrame.native';
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 30,
     borderRadius: theme.radius['rf-md'],
-    backgroundColor: theme.colors['surface-alt'],
+    backgroundColor: colors['surface-alt'],
     overflow: 'hidden',
   },
   fill: { height: '100%', borderRadius: theme.radius['rf-md'] },

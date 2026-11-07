@@ -1,12 +1,13 @@
-import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 
 /** The overflow trigger's three dots. */
 export function OverflowGlyph() {
   return (
-    <Svg width={16} height={16} viewBox="0 0 24 24" fill={theme.colors['text-secondary']}>
+    <Svg width={16} height={16} viewBox="0 0 24 24" fill={colors['text-secondary']}>
       <ShellGlyphMarks name="dots-small" />
     </Svg>
   );
@@ -16,7 +17,7 @@ export function OverflowGlyph() {
  * A destructive item's own glyph. Danger colour is never the only channel — this trash mark is
  * what keeps the meaning alive in greyscale and for a colourblind reader.
  */
-export function TrashGlyph({ color }: { color: string }) {
+export function TrashGlyph({ color }: { color: ThemeColor }) {
   return (
     <Svg
       width={16}
@@ -34,7 +35,7 @@ export function TrashGlyph({ color }: { color: string }) {
 }
 
 /** A destructive row's leading glyph, and nothing at all for an ordinary one. */
-export function MenuLeadGlyph({ color, destructive }: { color: string; destructive: boolean }) {
+export function MenuLeadGlyph({ color, destructive }: { color: ThemeColor; destructive: boolean }) {
   return destructive ? <TrashGlyph color={color} /> : null;
 }
 
@@ -58,7 +59,7 @@ export function TickGlyph() {
       height={15}
       viewBox="0 0 24 24"
       fill="none"
-      stroke={theme.colors.accent}
+      stroke={colors.accent}
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"

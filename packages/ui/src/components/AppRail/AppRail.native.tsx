@@ -1,8 +1,9 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import { useGround } from '../../primitives/Ground/Ground.native';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { Text } from '../../primitives/Text/Text.native';
 import { showsBadge } from '../AppShell/AppShell.types';
 import { CountBadge } from '../AppShell/CountBadge.native';
 import { spokenItemName } from './AppRail.logic';
@@ -13,14 +14,9 @@ interface NativeAppRailProps extends AppRailProps {
 }
 
 /**
- * The icon rail: the product mark at the top, primary destinations, then utilities and the
- * account avatar pinned to the bottom. The active item is an accent-subtle rounded tile — never
- * a border, never a left accent bar.
- *
- * `width` takes the `--rail-w` token's value (72) unless a number is passed. The web default is
- * the literal `var(--rail-w, 72px)` string, which means nothing here, so a string width falls
- * back to the token rather than being parsed. The hover tint has no touch equivalent; the
- * Pressable primitive's pressed state is the feedback.
+ * The sidebar a tablet draws: the brand and the company, the search, the destinations with their
+ * names, then the utilities and the account at the foot. The item in view is a solid ink pill.
+ * React Native models no landmark roles, so the web's `<nav>` is a plain View here.
  */
 export function AppRail({
   items,
@@ -30,18 +26,18 @@ export function AppRail({
   avatar,
   width,
   brand,
+  caption,
+  search,
   style,
 }: NativeAppRailProps) {
-  const { ground } = useGround();
-  const railWidth = typeof width === 'number' ? width : theme.layout['rail-w'];
+  const railWidth = typeof width === 'number' ? width : theme.layout['sidebar-w'];
   return (
-    /* THE RAIL IS A NAVIGATION LANDMARK, NOT A MENUBAR. The web half is `<nav aria-label={label}>`
-       (ds-v2 navigation/AppRail.jsx) and every item carries `aria-current="page"` — destinations,
-       not menu commands, so a `menubar` here would both contradict the DS and demand `menuitem`
-       children it does not have. React Native models no landmark roles at all, so the honest native
-       form of a `<nav>` is a plain View: the drift was the invented role, not a missing one. */
-    <View style={[styles.rail, { width: railWidth, backgroundColor: ground }, style]}>
-      <View style={styles.brand}>{brand}</View>
+    <View style={[styles.rail, { width: railWidth }, style]}>
+      <View style={styles.brand}>
+        {brand}
+        {caption}
+      </View>
+      {search === undefined ? null : <View style={styles.search}>{search}</View>}
       {items.map((item) => (
         <RailButton
           key={item.key}
@@ -66,20 +62,20 @@ interface RailButtonProps {
 }
 
 function RailButton({ item, active, onPress }: RailButtonProps) {
+  const on = active || item.open === true;
   return (
     <Pressable
       accessibilityLabel={spokenItemName(item)}
-      accessibilityState={item.open === undefined ? undefined : { expanded: item.open }}
+      accessibilityState={item.open === undefined ? { selected: active } : { expanded: item.open }}
       onPress={onPress}
-      style={[styles.button, active || item.open === true ? styles.buttonActive : undefined]}
+      style={[styles.button, on ? styles.buttonActive : undefined]}
     >
-      {item.icon}
+      {on && item.activeIcon !== undefined ? item.activeIcon : item.icon}
+      <Text variant="body" style={[styles.label, on ? styles.labelActive : undefined]}>
+        {item.label}
+      </Text>
       {/* F6-17: the badge counts unread from the record. A number, not a dot. */}
-      {showsBadge(item.badge) ? (
-        <View style={styles.badge}>
-          <CountBadge count={item.badge} />
-        </View>
-      ) : null}
+      {showsBadge(item.badge) ? <CountBadge count={item.badge} /> : null}
     </Pressable>
   );
 }
@@ -87,12 +83,17 @@ function RailButton({ item, active, onPress }: RailButtonProps) {
 const styles = StyleSheet.create({
   rail: {
     flexShrink: 0,
-    alignItems: 'center',
-    gap: theme.spacing['sp-2'],
+    gap: theme.spacing['sp-1'],
     height: '100%',
-    paddingVertical: theme.spacing['sp-4'],
+    paddingVertical: theme.spacing['sp-5'],
+    paddingHorizontal: theme.spacing['sp-3'],
   },
   brand: {
+    gap: theme.spacing['sp-1'],
+    paddingHorizontal: theme.spacing['sp-2'],
+    marginBottom: theme.spacing['sp-3'],
+  },
+  search: {
     marginBottom: theme.spacing['sp-3'],
   },
   spacer: {
@@ -102,17 +103,22 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing['sp-2'],
   },
   button: {
-    width: 44,
-    height: 44,
-    borderRadius: theme.radius['r-md'],
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing['sp-3'],
+    minHeight: theme.spacing['sp-10'],
+    paddingHorizontal: theme.spacing['sp-3'],
+    borderRadius: theme.radius['r-pill'],
   },
   buttonActive: {
-    backgroundColor: theme.colors['accent-subtle'],
+    backgroundColor: colors.ink,
+    ...theme.elevation.e2,
   },
-  /* The count rides the button's top-right corner, half outside it, so it never covers the glyph. */
-  badge: {
-    position: 'absolute',
-    top: -theme.spacing['sp-1'],
-    right: -theme.spacing['sp-1'],
+  label: {
+    flex: 1,
+    color: colors['text-secondary'],
+  },
+  labelActive: {
+    color: colors['on-ink'],
   },
 });

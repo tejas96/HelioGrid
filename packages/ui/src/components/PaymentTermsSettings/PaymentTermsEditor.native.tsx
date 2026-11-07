@@ -3,6 +3,7 @@ import { basisPointsOfShare } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { type FocusAfter, useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
   stage: {
     gap: theme.spacing['sp-3'],
     padding: theme.spacing['sp-3'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
     borderRadius: theme.radius['r-lg'],
   },
   captions: { gap: theme.spacing['sp-0-5'], paddingHorizontal: theme.spacing['sp-1'] },
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-1'],
     paddingBottom: theme.spacing['sp-3'],
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: theme.colors['line-soft'],
+    borderBottomColor: colors['line-soft'],
   },
   fields: { flexDirection: 'row', alignItems: 'flex-end', gap: theme.spacing['sp-2'] },
   grow: { flex: 1, minWidth: 0 },

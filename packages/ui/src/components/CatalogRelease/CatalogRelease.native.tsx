@@ -2,6 +2,7 @@ import { RELEASE_CHANGE_KINDS } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -90,7 +91,7 @@ function Contents(props: CatalogContentsBody) {
         <View style={[release.inForce ? styles.inForce : tileSurface, styles.releaseCard]}>
           <GroundProvider ground="tile">
             <View style={styles.releaseHead}>
-              <IconCircle size={40} color={theme.colors.success}>
+              <IconCircle size={40} color={colors.success}>
                 <ShellGlyph name="package" size="md" tone="secondary" />
               </IconCircle>
               <View style={styles.grow}>
@@ -227,7 +228,7 @@ const styles = StyleSheet.create({
   body: { gap: theme.spacing['sp-4'] },
   cards: { gap: theme.layout['tile-gap'] },
   grow: { flex: 1, minWidth: 0 },
-  inForce: { backgroundColor: theme.colors['success-bg'] },
+  inForce: { backgroundColor: colors['success-bg'] },
   releaseCard: {
     gap: theme.spacing['sp-3'],
     padding: theme.spacing['sp-4'],
@@ -265,7 +266,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-3'],
     minHeight: theme.spacing['sp-12'],
     borderTopWidth: 1,
-    borderTopColor: theme.colors['line-soft'],
+    borderTopColor: colors['line-soft'],
   },
 });
 

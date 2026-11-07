@@ -2,7 +2,7 @@
   "name": "@heliogrid/theme",
   "version": "0.0.1",
   "private": true,
-  "description": "GENERATED design tokens + RN theme — parsed from src/_generated (ds:pull, docs/engineering/17 §6). Never hand-edited, never hand-transcribed.",
+  "description": "Design tokens — one typed source (src/tokens), emitted as web CSS (light, dark, field), the phone theme object and Android colour resources.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -19,7 +19,8 @@
     },
     "./tokens.json": "./dist/tokens.json",
     "./contrast.pairs.json": "./dist/contrast.pairs.json",
-    "./fonts/*": "./dist/fonts/*"
+    "./fonts/*": "./dist/fonts/*",
+    "./android-res/*": "./dist/android-res/*"
   },
   "scripts": {
     "build": "tsx build.ts && tsc -p tsconfig.emit.json",
@@ -31,6 +32,7 @@
     "@types/node": "22.20.1",
     "fontkit": "2.0.4",
     "tsx": "4.23.1",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "vitest": "5.0.0"
   }
 }

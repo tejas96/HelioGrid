@@ -15,9 +15,10 @@ interface NativeMobileTopBarProps extends MobileTopBarProps {
 }
 
 /**
- * The phone header — the product tile and the company's name as words on the left; the round
+ * The phone header — the product mark and the company's name as words on the left; the round
  * search, the bell and the avatar on the right; or, on a page opened from a list, its way back and
- * its title alone.
+ * icons only: the page draws its own large title (`LargeTitle`), and the bar names it small only
+ * once it has scrolled away.
  *
  * The name keeps its drawn size at every system text size: the bar is a fixed band, and a grown
  * name only loses more of itself to the ellipsis. `sticky` and `safeTop` are accepted and
@@ -49,20 +50,26 @@ export function MobileTopBar({
   }));
   return (
     <View
-      style={[styles.bar, { backgroundColor: ground }, scrolled ? styles.lifted : undefined, style]}
+      style={[
+        styles.bar,
+        /* Clear over the page's glow at rest; the page's own colour once content scrolls under. */
+        scrolled ? [{ backgroundColor: ground }, styles.lifted] : undefined,
+        style,
+      ]}
     >
       {leading}
       {title !== undefined ? (
-        <View ref={titleView} style={styles.title} accessible accessibilityRole="header">
-          <Text variant="h3" bold>
-            {title}
-          </Text>
+        /* The page's large title names it while in view; once scrolled away, the bar names it. */
+        <View ref={titleView} style={styles.title} accessible={scrolled}>
+          {scrolled ? (
+            <Text variant="h4" bold oneLine>
+              {title}
+            </Text>
+          ) : null}
         </View>
       ) : (
         <View style={styles.identity}>
-          <View style={styles.slot}>
-            {brand ?? <LogoTile size={theme.spacing['sp-8']} radius={theme.radius['r-sm']} />}
-          </View>
+          <View style={styles.slot}>{brand ?? <LogoTile size={theme.spacing['sp-8']} />}</View>
           {company !== undefined ? (
             <View style={styles.company}>
               <Text variant="body" bold oneLine fixedSize>
@@ -105,7 +112,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: theme.spacing['sp-2'],
     minHeight: theme.layout['topbar-h-mobile'],
-    paddingVertical: theme.spacing['sp-2'],
+    /* The 44 controls centre in the bar's height; a padding of sp-2 would grow it past the token. */
+    paddingVertical: theme.spacing['sp-1'],
     paddingHorizontal: theme.layout['screen-pad-mobile'],
     /* Always over the page, so its lifted shadow falls on the content. Held, never toggled: on
        Fabric a zIndex change re-orders the bar's native siblings, and a field in the page loses

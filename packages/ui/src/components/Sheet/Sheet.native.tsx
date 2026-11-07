@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, BackHandler, PanResponder, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { KeyboardFrame } from '../../primitives/Keyboard/KeyboardFrame.native';
 import { Portal, usePortalBottomInset } from '../../primitives/Portal/Portal.native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
@@ -253,7 +254,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     maxHeight: percentOf(SHEET_HEIGHT.cap),
     // biome-ignore lint/plugin/raw-white: panel — a sheet, a modal, a detail panel: a page ground over the page
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e5,
   },
   panelExpressive: {
@@ -293,7 +294,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     paddingTop: theme.spacing['sp-3'],
     // biome-ignore lint/plugin/raw-white: panel — a sheet, a modal, a detail panel: a page ground over the page
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
   },
   footerExpressive: {
     paddingHorizontal: theme.spacing['sp-5'],

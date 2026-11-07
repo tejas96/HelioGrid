@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 import type { StyleProp, TextStyle } from 'react-native';
 import { Animated, StyleSheet, Text, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { RetryButton } from '../Button/RetryButton.native';
 import { UnavailableNote } from '../UnavailableNote/UnavailableNote.native';
 import type { CardBodyProps } from './Card.types';
@@ -15,17 +16,17 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['rf-md'],
     /* Drawn in --surface: the card is a grey tile, and a grey bar on it would not show. */
     // biome-ignore lint/plugin/raw-white: shimmer — a loading bar's shimmer
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
   },
   message: { alignItems: 'flex-start', gap: theme.spacing['sp-2'] },
   messageText: {
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.roles['body-sm'].fontSize,
     lineHeight: theme.type.roles['body-sm'].lineHeight,
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
-  messageWarning: { color: theme.colors['warning-text'] },
-  messageTitle: { fontWeight: '700', color: theme.colors['text-primary'] },
+  messageWarning: { color: colors['warning-text'] },
+  messageTitle: { fontWeight: '700', color: colors['text-primary'] },
 });
 
 /** The web half animates a gradient sweep; RN has no CSS gradient loop, so it pulses opacity. */

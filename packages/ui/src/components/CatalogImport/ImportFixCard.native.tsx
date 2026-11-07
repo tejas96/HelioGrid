@@ -2,6 +2,7 @@ import { COMPONENT_KINDS } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { type ReactNode, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
@@ -196,7 +197,7 @@ export function ImportFixedCard({
   const target = useFocusOnMount(focus);
   return (
     <View ref={target} style={styles.fixed}>
-      <ImportGlyph name="tick" size="md" stroke={2.2} color={theme.colors['success-text']} />
+      <ImportGlyph name="tick" size="md" stroke={2.2} color={colors['success-text']} />
       <View style={styles.fixedWords}>
         <Text variant="body-sm" bold oneLine>
           {title}
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
     padding: 14,
     gap: 10,
     borderLeftWidth: theme.spacing['sp-1'],
-    borderLeftColor: theme.colors.warning,
+    borderLeftColor: colors.warning,
   },
   words: { gap: theme.spacing['sp-0-5'], minWidth: 0 },
   acts: {
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-3'],
     paddingHorizontal: 14,
     borderRadius: CARD_RADIUS,
-    backgroundColor: theme.colors['success-bg'],
+    backgroundColor: colors['success-bg'],
   },
   fixedWords: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
   undo: { flexShrink: 0 },

@@ -40,8 +40,8 @@ export interface FirstRunProfileWords {
 /**
  * First-Run Profile (`SCR-M01-09`, `M01-14`): the name the inviter typed, an optional photo, and
  * one act. No shell, no step counter, no back (brief decision 5). At 375 one column with the
- * heading's ask; from the door's breakpoint the onboarding two panes, the three reasons in the
- * brand pane and the task one centred column (rulings 12, 14).
+ * heading's ask; at every width the door's one centred column, the three reasons in the
+ * one column (rulings 12, 14).
  */
 export interface FirstRunProfileProps {
   /** The header row's language control (`DoorLanguage`, brief decision 6). */

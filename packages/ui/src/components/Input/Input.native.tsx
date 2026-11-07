@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import type { KeyboardTypeOptions, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import {
   FIELD_BOX_EDGE,
   fieldBox,
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
     padding: 0,
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.field.value,
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   controlMono: { fontFamily: theme.type.families.mono },
 });

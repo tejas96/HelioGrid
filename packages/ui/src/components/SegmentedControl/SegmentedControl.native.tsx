@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
-import { useGround } from '../../primitives/Ground/Ground.native';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { Text } from '../../primitives/Text/Text.native';
@@ -46,8 +46,7 @@ export function SegmentedControl({
 }: NativeSegmentedControlProps) {
   const index = selectedIndex(options, value);
   const [trackWidth, setTrackWidth] = useState(0);
-  /* The track takes the control fill; the active pill, the opposite of the track, the ground. */
-  const { ground, controlFill } = useGround();
+  /* The track is recessed and the pill in view raised, on every ground. */
   const slide = useRef(new Animated.Value(0)).current;
   const segmentWidth = options.length > 0 ? Math.max(0, trackWidth - PAD * 2) / options.length : 0;
   const reasoned = reasonedOptions(options);
@@ -79,14 +78,19 @@ export function SegmentedControl({
         onLayout={onLayout}
         style={[
           styles.track,
-          { backgroundColor: controlFill },
+          { backgroundColor: colors['canvas-sunken'] },
           error !== undefined ? styles.trackError : undefined,
         ]}
       >
         <Animated.View
           style={[
             styles.indicator,
-            { width: segmentWidth, backgroundColor: ground, transform: [{ translateX: slide }] },
+            {
+              width: segmentWidth,
+              // biome-ignore lint/plugin/raw-white: control — the pill in view is raised, the card colour on every ground
+              backgroundColor: colors.surface,
+              transform: [{ translateX: slide }],
+            },
           ]}
         />
         {options.map((option) => (
@@ -170,7 +174,7 @@ function OffGlyph() {
       height={13}
       viewBox="0 0 24 24"
       fill="none"
-      stroke={theme.colors['text-secondary']}
+      stroke={colors['text-secondary']}
       strokeWidth={1.8}
       strokeLinecap="round"
     >
@@ -196,7 +200,7 @@ const styles = StyleSheet.create({
   },
   trackError: {
     borderWidth: 1.5,
-    borderColor: theme.colors.danger,
+    borderColor: colors.danger,
     padding: PAD - 1.5,
   },
   indicator: {

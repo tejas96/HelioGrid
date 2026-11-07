@@ -1,21 +1,19 @@
 import { theme } from '@heliogrid/theme';
 import { useContext } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { KeyboardFrame } from '../../primitives/Keyboard/KeyboardFrame.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project.
    Metro resolves both spellings to the same module, so this is the same import, correctly typed. */
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
-import { Wordmark } from '../Wordmark/Wordmark.native';
+import { ProductMark } from '../Wordmark/Wordmark.native';
 import { DOOR_BOUNDED_MIN_HEIGHT, DoorBottomInset, DoorTopInset } from './DoorFrame.logic';
 import type { DoorFrameProps } from './DoorFrame.types';
 
-const WORDMARK_SIZE = 24;
-
 /**
- * The page, the bloom and the header row every door frame shares, at 375 as `SCR-M01-01` and
- * `SCR-M01-02` draw it: the bloom behind the top of the column, `sp-6` above and below, the
- * market's mobile screen padding at the sides. One column, so `lead` and then `identity` are
+ * The page, its glow and the header row every door frame shares: the product mark and the
+ * trailing control, `sp-6` above and below, the market's mobile screen padding at the sides. One column, so `lead` and then `identity` are
  * drawn above the task and `taskMeasure` names nothing here. `column` places the identity: centred
  * takes the free height above it, as much as the task's own spacer takes below; deep puts it `sp-8`
  * under the step header and near `sp-4`. `footer` stays under the scrolling column; `bounded`
@@ -43,7 +41,7 @@ export function DoorFrame({
   const columnView = (
     <View style={[styles.column, footer === undefined ? null : styles.columnAboveFooter]}>
       <View style={styles.header}>
-        <Wordmark size={WORDMARK_SIZE} />
+        <ProductMark />
         {trailing}
       </View>
       {lead}
@@ -58,7 +56,7 @@ export function DoorFrame({
   );
   return (
     <View style={[styles.root, { paddingTop: topInset }]}>
-      <BrandBloom placement="top" />
+      <BrandBloom placement="page" />
       <KeyboardFrame
         style={styles.fill}
         scrolls={!holdsStill}
@@ -79,10 +77,8 @@ export function DoorFrame({
 }
 
 const styles = StyleSheet.create({
-  // The page is `surface` (`F7-15`, `F7-49`): the fields on it are wells, darker than it.
-  // biome-ignore lint/plugin/raw-white: full-screen-ground — a screen that is its own page
-  root: { flex: 1, backgroundColor: theme.colors.surface },
-  /** The layers over the bloom paint nothing, so the wash shows through the column. */
+  // The page is the canvas under the brand's glow; the column over it paints nothing.
+  root: { flex: 1, backgroundColor: colors.canvas },
   fill: { flex: 1 },
   scroll: { flexGrow: 1 },
   column: {

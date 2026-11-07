@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
@@ -168,14 +169,14 @@ const styles = StyleSheet.create({
   swatch: { width: SWATCH, height: SWATCH, borderRadius: SWATCH / 2, ...theme.elevation.e2 },
   swatchSelected: {
     borderWidth: 2,
-    borderColor: theme.colors.accent,
+    borderColor: colors.accent,
     ...theme.elevation.e2,
   },
   chip: {
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   verdicts: { gap: 7 },
   fixRow: {

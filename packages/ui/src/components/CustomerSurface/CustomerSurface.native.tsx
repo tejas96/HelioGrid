@@ -1,6 +1,6 @@
-import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import type { CustomerSurfaceProps } from './CustomerSurface.types';
 import { TenantScopeContext } from './tenant-scope';
 import { tenantTokens } from './tenant-tokens';
@@ -11,7 +11,7 @@ interface NativeCustomerSurfaceProps extends CustomerSurfaceProps {
 
 const styles = StyleSheet.create({
   root: {
-    backgroundColor: theme.colors.canvas,
+    backgroundColor: colors.canvas,
   },
   fullHeight: {
     flex: 1,

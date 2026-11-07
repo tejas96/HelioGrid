@@ -1,5 +1,5 @@
 import type { RoleKind, TeamRowStatus } from '@heliogrid/domain';
-import type { IrisHue } from '../Avatar/Avatar.types';
+import type { CategoryHue } from '../Avatar/Avatar.types';
 import type { BadgeTone } from './Chip.types';
 
 /**
@@ -7,10 +7,10 @@ import type { BadgeTone } from './Chip.types';
  * blue plans and runs, magenta works on site. A `Record` over every kind, so a new kind fails
  * typecheck until it is given a hue.
  */
-export const ROLE_KIND_TONE: Record<RoleKind, IrisHue> = {
-  sell: 'violet',
-  plan: 'blue',
-  site: 'magenta',
+export const ROLE_KIND_TONE: Record<RoleKind, CategoryHue> = {
+  sell: 'ocean',
+  plan: 'teal',
+  site: 'plum',
 };
 
 /**

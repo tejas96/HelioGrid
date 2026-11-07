@@ -1,12 +1,9 @@
 /* Catalog settings' page (`SCR-M01-15`): its head — the title, and at 1536 the panel tabs beside
    it. Everything else is the shared panels' own. */
 
-.hg-catalog-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--sp-4);
+.hg-catalog-switch {
+  width: 100%;
+  max-width: calc(var(--form-max) * 0.75);
 }
 
 /* An overlay's foot: *Cancel* and the act side by side, the act the wider (`SCR-M01-15` sheet

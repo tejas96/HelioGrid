@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 /* Cross-component imports in a native half point at the NATIVE file — see NextAction.native.tsx. */
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -62,7 +63,7 @@ function nameBlock(name: string, badge: ReactNode, line: ReactNode): ReactNode {
 export function RecordCard({
   name,
   initials,
-  avatarTone = theme.colors.accent,
+  avatarTone = colors.accent,
   avatar,
   badge,
   line,

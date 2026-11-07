@@ -2,22 +2,24 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ToastProps, ToastTone } from './Toast.types';
 
 interface TonePair {
-  text: string;
-  bg: string;
+  text: ThemeColor;
+  bg: ThemeColor;
 }
 
 /** The semantic `-text` on `-bg` partner pairs — the same ones StatusMark resolves. */
 const TONE: Record<ToastTone, TonePair> = {
-  success: { text: theme.colors['success-text'], bg: theme.colors['success-bg'] },
-  warning: { text: theme.colors['warning-text'], bg: theme.colors['warning-bg'] },
-  danger: { text: theme.colors['danger-text'], bg: theme.colors['danger-bg'] },
-  info: { text: theme.colors['info-text'], bg: theme.colors['info-bg'] },
-  neutral: { text: theme.colors['neutral-text'], bg: theme.colors['neutral-bg'] },
+  success: { text: colors['success-text'], bg: colors['success-bg'] },
+  warning: { text: colors['warning-text'], bg: colors['warning-bg'] },
+  danger: { text: colors['danger-text'], bg: colors['danger-bg'] },
+  info: { text: colors['info-text'], bg: colors['info-bg'] },
+  neutral: { text: colors['neutral-text'], bg: colors['neutral-bg'] },
 };
 
 interface NativeToastProps extends ToastProps {
@@ -25,7 +27,7 @@ interface NativeToastProps extends ToastProps {
 }
 
 /** The default mark: a check. One glyph for every tone — the words carry the tone. */
-function CheckGlyph({ color }: { color: string }) {
+function CheckGlyph({ color }: { color: ThemeColor }) {
   return (
     <Svg
       width={18}
@@ -85,7 +87,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-3'],
     paddingHorizontal: theme.spacing['sp-4'],
     // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     borderRadius: theme.radius['r-md'],
     ...theme.elevation.e5,
   },

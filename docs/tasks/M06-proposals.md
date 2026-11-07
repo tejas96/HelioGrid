@@ -7,8 +7,7 @@ staleness, duplicate and template consumption, and preview/share/tracking up to 
 boundary. Task ids use the prefix **`T-M06-`**.
 
 **Source docs.** Requirements and acceptance criteria are quoted from
-`docs/prd/modules/M06-proposals.md` (rows `M06-01`–`M06-58`). Screen tasks point at their verified
-screen briefs under `docs/ux/briefs/`; one screen task exists per SID `SCR-M06-01` … `SCR-M06-20`.
+`docs/prd/modules/M06-proposals.md` (rows `M06-01`–`M06-58`). One screen task exists per SID `SCR-M06-01` … `SCR-M06-20`.
 `SCR-M06-20`'s single row is `F5-30`, quoted from `docs/prd/foundations/F5-customer-link.md` (the row
 belongs to F5's bucket; the screen is drawn by M06). Two rows in this bucket (`M06-25`, `M06-58`)
 have their tenant-facing surface on `SCR-M02-04` (Lead Detail, owned by M02); their build-side
@@ -25,9 +24,9 @@ this file: to a task, to `LAW`, or to a `realized-by` pointer.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-05 (P0), M06-18 (P0), M06-19 (P0)
-**DESIGN:** SCR-M06-01 → PENDING
+**DESIGN:** SCR-M06-01
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M06-01-proposal-entry.md`; they
+**Requirements (verbatim):** Verbatim rows live in the PRD; they
 are the specification.
 
 **DONE WHEN:**
@@ -46,10 +45,9 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-18 (P0), M06-21 (P0), M06-22 (P0), M06-23 (P0), M06-24 (P0)
-**DESIGN:** SCR-M06-02 → PENDING
+**DESIGN:** SCR-M06-02
 
-**Requirements (verbatim):** Verbatim rows live in
-`docs/ux/briefs/SCR-M06-02-proposal-builder.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given any step in any completeness state, when any chip or Back/Next is tapped, then navigation succeeds — no disabled Next exists anywhere in the builder (M06-21, M06-22).
@@ -65,10 +63,9 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-06 (P0), M06-07 (P0)
-**DESIGN:** SCR-M06-03 → PENDING
+**DESIGN:** SCR-M06-03
 
-**Requirements (verbatim):** Verbatim rows live in
-`docs/ux/briefs/SCR-M06-03-builder-step-1-company.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given step 1, when the account-linked phone or email is rendered, then the field is locked in the builder and editable only in tenant settings (M06-07).
@@ -81,10 +78,9 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-08 (P0)
-**DESIGN:** SCR-M06-04 → PENDING
+**DESIGN:** SCR-M06-04
 
-**Requirements (verbatim):** Verbatim rows live in
-`docs/ux/briefs/SCR-M06-04-builder-step-2-achievements.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given step 2 numeric fields, when values are entered, then units are auto-added and non-numeric input is refused (M06-08).
@@ -97,11 +93,10 @@ are the specification.
 **Status:** planned
 **Owed by `T-FPLAT-029` (`F8-23`):** the EMI tenure is the projection's `horizonYears`, and this step refuses a tenure that is zero, negative or not a number where it is typed — `@heliogrid/domain` carries the horizon as stated and does not bound it.
 **PRD rows:** M06-09 (P0), M06-30 (P0), M06-35 (P0), M06-40 (P0)
-**DESIGN:** SCR-M06-05 → PENDING
+**DESIGN:** SCR-M06-05
 **Landed ahead:** the equation's domain half — `packages/domain/src/money/equation.ts` (`resolvePayable`, whole minor units, the payable at or below zero reported as M06-35 states, two figures reconciling only when equal per M11-08) — moved out of `packages/ui` by the one-money-path fix, and onto `@heliogrid/domain/server` by `T-FPLAT-070` (`F4-04`: no device computes a money figure). The server runs it on every change and returns the equation; `MoneySummary` (`equation`), `DataTable.totalRow` (`reconcile`) and `DocumentPreview` (`total`, `payable`) print what it returned, and this screen composes them.
 
-**Requirements (verbatim):** Verbatim rows live in
-`docs/ux/briefs/SCR-M06-05-builder-step-3-system-setup.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **Verified:** digest 685b6c3d27ab · 2026-09-11 · smoke (a shared module no screen reaches yet) · web pass — the running dev server on 3002 compiled this tree, `/login` renders the "Sign in" heading, the one console error is `GET /auth/session` refused because no api was running (environment) · mobile bundle pass — Metro resolved the tree to a 3.1 MB bundle; ios/android not booted, no screen mounts `MoneySummary`, `DataTable.totalRow` or `DocumentPreview` · api/worker n/a · parity n/a — both halves call one domain function, `qa-parity` not dispatched · unit 1048 pass, `money/**` and `format/**` at 100% · design-system contract green after the `MoneySummary` re-pull
 **DONE WHEN:**
@@ -121,10 +116,9 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-10 (P0)
-**DESIGN:** SCR-M06-06 → PENDING
+**DESIGN:** SCR-M06-06
 
-**Requirements (verbatim):** Verbatim rows live in
-`docs/ux/briefs/SCR-M06-06-builder-step-4-performance.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given step 4 or 5, when ✦ AI Auto-fill runs, then every filled figure is labelled `estimated`, the chart tabs render, and ↺ restores the AI values after manual edits (M06-10, M06-11).
@@ -137,10 +131,9 @@ are the specification.
 **Status:** planned
 **Owed by `T-FPLAT-029` (`F8-23`):** the lifetime horizon is the projection's `horizonYears`, and this step refuses a horizon that is zero, negative or not a number where it is typed — `@heliogrid/domain` carries the horizon as stated and does not bound it.
 **PRD rows:** M06-11 (P0)
-**DESIGN:** SCR-M06-07 → PENDING
+**DESIGN:** SCR-M06-07
 
-**Requirements (verbatim):** Verbatim rows live in
-`docs/ux/briefs/SCR-M06-07-builder-step-5-financial.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given step 4 or 5, when ✦ AI Auto-fill runs, then every filled figure is labelled `estimated`, the chart tabs render, and ↺ restores the AI values after manual edits (M06-10, M06-11).
@@ -152,10 +145,9 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-12 (P0)
-**DESIGN:** SCR-M06-08 → PENDING
+**DESIGN:** SCR-M06-08
 
-**Requirements (verbatim):** Verbatim rows live in
-`docs/ux/briefs/SCR-M06-08-builder-step-6-timeline.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given step 6, when phases are reordered, added, deleted or reset, then the tenant's timeline template is the reset target (M06-12; `M01-52`).
@@ -167,10 +159,9 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-13 (P0)
-**DESIGN:** SCR-M06-09 → PENDING
+**DESIGN:** SCR-M06-09
 
-**Requirements (verbatim):** Verbatim rows live in
-`docs/ux/briefs/SCR-M06-09-builder-step-7-payment-terms.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given step 7, when tranche percentages do not sum to 100.00, then the gap renders live and Generate lists it with the remainder stated (M06-13).
@@ -182,10 +173,9 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-14 (P0), M06-27 (P0), M06-28 (P0), M06-29 (P0), M06-30 (P0)
-**DESIGN:** SCR-M06-10 → PENDING
+**DESIGN:** SCR-M06-10
 
-**Requirements (verbatim):** Verbatim rows live in
-`docs/ux/briefs/SCR-M06-10-builder-step-8-components.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given a person with `F2.M01.add-own-catalog-items` (the holders of `onboarding.add_own_catalog_items` in `packages/domain/src/authz/onboarding.ts`) or `F2.M01.manage-catalog`, when they open the builder's component picker, then inline add is present; given neither grant, then it is absent (permissions; moved from `T-M01-015`).
@@ -203,10 +193,9 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-15 (P0)
-**DESIGN:** SCR-M06-11 → PENDING
+**DESIGN:** SCR-M06-11
 
-**Requirements (verbatim):** Verbatim rows live in
-`docs/ux/briefs/SCR-M06-11-builder-step-9-terms.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given step 9 with T&C added, when "Save as template" is used, then the tenant's template set gains it and the page estimate reflects the content (M06-15; `M01-51`).
@@ -218,10 +207,9 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-16 (P0)
-**DESIGN:** SCR-M06-12 → PENDING
+**DESIGN:** SCR-M06-12
 
-**Requirements (verbatim):** Verbatim rows live in
-`docs/ux/briefs/SCR-M06-12-builder-step-10-client-details.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given step 10, when it renders, then the proposal number is present, auto-assigned and disabled — never editable, never client-generated (M06-16, M06-44).
@@ -233,10 +221,9 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-17 (P0)
-**DESIGN:** SCR-M06-13 → PENDING
+**DESIGN:** SCR-M06-13
 
-**Requirements (verbatim):** Verbatim rows live in
-`docs/ux/briefs/SCR-M06-13-builder-step-11-bank-details.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given step 11 with the include toggle off, when the document generates, then bank details are saved but do not print, and the note says exactly that (M06-17).
@@ -248,9 +235,9 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-39 (P0)
-**DESIGN:** SCR-M06-14 → PENDING
+**DESIGN:** SCR-M06-14
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M06-14-bom-detail.md`; they are
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are
 the specification.
 
 **DONE WHEN:**
@@ -266,9 +253,9 @@ the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-50 (P0)
-**DESIGN:** SCR-M06-15 → PENDING
+**DESIGN:** SCR-M06-15
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M06-15-proposal-preview.md`;
+**Requirements (verbatim):** Verbatim rows live in the PRD;
 they are the specification.
 
 **DONE WHEN:**
@@ -281,9 +268,9 @@ they are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-42 (P0)
-**DESIGN:** SCR-M06-16 → PENDING
+**DESIGN:** SCR-M06-16
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M06-16-proposal-versions.md`;
+**Requirements (verbatim):** Verbatim rows live in the PRD;
 they are the specification.
 
 **DONE WHEN:**
@@ -297,10 +284,10 @@ they are the specification.
 **Status:** planned
 **Owed by `T-FPLAT-029` (`F8-20`, `F8-22`, `F8-23`; `F8-24`, a law):** the basis line is `basisLineOf({ designed, roofTier })` from `@heliogrid/domain`, printed through `@heliogrid/i18n`'s `BASIS_LINE_WORD` — never a second rule or a second copy of the words; every figure is the `QualifiedAmount` the screen and the link read, projections included with their assumptions, never recomputed for the page. Depends on `T-FPLAT-073`: `Disclosure`'s `indicative-basis` and `remote-survey` kinds print the wrong English until it lands, so this document never uses them before; and on `T-FPLAT-074`, whose label prints a projection with its assumptions.
 **PRD rows:** M06-04 (P0), M06-51 (P0), M06-56 (P0), F3-15 (P0)
-**DESIGN:** SCR-M06-17 → PENDING
+**DESIGN:** SCR-M06-17
 **Owed by `T-FPLAT-027` (`F8-11`, a law):** every shading output this document prints carries `M05-94`'s limit text beside it — beam-only, linear in unshaded area, no bypass-diode cliff, no string mismatch, so partial-shade losses read optimistic — at every scale.
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M06-17-proposal-document.md`;
+**Requirements (verbatim):** Verbatim rows live in the PRD;
 they are the specification. (The same brief also carries `08-customer-surfaces.md` rows `MS9-*`,
 which belong to another bucket and are dispositioned there; this task owns the M06 rows only.)
 
@@ -329,10 +316,10 @@ here and never re-declared.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-46 (P0), M06-47 (P0), M06-48 (P0), M06-53 (P0), M06-54 (P0), M06-57 (P0), M05-13 (P0) (`docs/prd/modules/M05-design-studio.md` — M05's row, dispositioned in the M05 bucket to T-MS-117 (`docs/tasks/MS-studio-a.md`) and not part of this bucket's disposition index; its **proposal-side half** — the review-needed state read on the proposal and the send block — is realized here, and its verbatim text is carried in the brief)
-**DESIGN:** SCR-M06-18 → PENDING
+**DESIGN:** SCR-M06-18
 **Owed by `T-FPLAT-028` (`F8-17`, `F8-18`):** the stale state reads from the version's `Freshness` (`freshnessOf`, `packages/domain`), shown on the detail before any share act with its corrective action; the share, send and issue acts are blocked while `issueBlockedBy` names a reason or `payableStandsUp` is false, and the stated reason is the one returned. Its freshness comes from this output's own stored pins, never pins built at the call site.
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M06-18-proposal-detail.md`;
+**Requirements (verbatim):** Verbatim rows live in the PRD;
 they are the specification.
 
 **DONE WHEN:**
@@ -340,7 +327,7 @@ they are the specification.
 - Given a completed design on a lead with an indicative proposal, when the upgrade is offered, then the changed figures and their tier changes are shown before commit, and declining changes nothing (M06-47).
 - Given an existing proposal, when Duplicate is invoked onto another lead, then every step arrives pre-filled including all components, client details come from the new lead, and a fresh server number is assigned at Generate (M06-48).
 - Given the share sheet with a connected transactional channel, when the share sends, then it goes from the tenant's official channel under the transactional template class and the same act marks the version shared; and given no connected channel, then Download PDF + Copy link + composed message are offered, nothing sends, and only the explicit mark-shared act changes status and starts the clock (M06-53, owner ruling 2026-08-04).
-- Given a design carrying the "survey updated — review needed" marker, when a draft proposal built on that design is **opened** — before any share act — then the review-needed state is visible on the proposal detail with the superseding survey version named and the route to the design's review offered as the corrective action; the condition is never communicated only by absence, only by a colour, or only after the rep tries to send (`F8-18`; `M05-13`, owner ruling 2026-08-04). This is a distinct surface from `M06-46` staleness: `M05-13` applies nothing automatically, so no pinned design value has moved and the fingerprint comparison does not fire — Regenerate is not the remedy, the designer's review is. Brief state: `design-survey-review-needed` (`docs/ux/briefs/SCR-M06-18-proposal-detail.md`).
+- Given a design carrying the "survey updated — review needed" marker, when a draft proposal built on that design is **opened** — before any share act — then the review-needed state is visible on the proposal detail with the superseding survey version named and the route to the design's review offered as the corrective action; the condition is never communicated only by absence, only by a colour, or only after the rep tries to send (`F8-18`; `M05-13`, owner ruling 2026-08-04). This is a distinct surface from `M06-46` staleness: `M05-13` applies nothing automatically, so no pinned design value has moved and the fingerprint comparison does not fire — Regenerate is not the remedy, the designer's review is. Brief state: `design-survey-review-needed` (`SCR-M06-18`).
 - Given a design carrying the "survey updated — review needed" marker, when a draft proposal built on that design is sent from the share sheet, then the send is blocked and the stated reason names the superseding survey version — a draft proposal on the design cannot send until the review clears, and a proposal already sent stays pinned and never mutates (`M05-13`, owner ruling 2026-08-04; the marker and the designer notification are raised on the studio side under `M05-13` in `docs/tasks/MS-studio-a.md`; `F8-15`, `F5-40`). The block lands on both of `M06-53`'s send acts — the connected-channel send and the explicit mark-shared act that starts the clock — and the refusal is never the first place the rep learns of the condition (the pre-send criterion above owns that). Brief state: `send-blocked-survey-superseded`.
 - Given a shared proposal, when tracking renders, then states are shared → opened → viewed-for-how-long, delivery states appear only as the connected channel reported them, the fallback path shows no delivered state anywhere, and an open notifies the rep (M06-54).
 - Given a client phone that fails the pack's format, when step 10 commits, then the failure is stated at entry; given a connected-channel send that the channel reports failed, then the failure is shown and an alternative channel offered; and given a fallback-path share never opened, then the non-opening is visible, the composed message is re-offered for an alternative channel the rep sends, and no fallback surface claims a delivery state (M06-57; owner ruling 2026-08-04 on the transactional lane).
@@ -352,10 +339,10 @@ they are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-46 (P0), M06-48 (P0), M05-13 (P0) (`docs/prd/modules/M05-design-studio.md` — M05's row, dispositioned in the M05 bucket to T-MS-117 (`docs/tasks/MS-studio-a.md`) and not part of this bucket's disposition index; only the list leg of `F8-18`'s "in the list, on the detail screen" obligation is realized here)
-**DESIGN:** SCR-M06-19 → PENDING
+**DESIGN:** SCR-M06-19
 **Owed by `T-FPLAT-028` (`F8-18`, a law):** each row's stale state reads from its version's `Freshness` (`freshnessOf`, `packages/domain`) and is shown on the row with its corrective action, never only by a colour. Its freshness comes from this output's own stored pins, never pins built at the call site.
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M06-19-proposal-list.md`; they
+**Requirements (verbatim):** Verbatim rows live in the PRD; they
 are the specification.
 
 **DONE WHEN:**
@@ -365,7 +352,7 @@ are the specification.
 - Given a draft proposal whose design carries the "survey updated — review needed" marker, when the proposal list renders, then the review-needed state is visible on that row before the rep opens or shares anything, distinct from the `M06-46` stale badge — `F8-18` puts the staleness state "on the object itself — in the list, on the detail screen, in the customer-facing rendering", and M05's behavior detail rules `M05-13` one of the three freshness surfaces that "all follow one pattern: the affected number or surface carries the staleness marker" (`M05-13`, owner ruling 2026-08-04). The customer-facing leg of `F8-18` needs nothing here: a held proposal is a draft with no customer rendering, and a version already shared stays pinned and never mutates (`F8-15`).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
-**Counterpart edit required outside this file** (the brief owner makes it; this task cannot close without it): `docs/ux/briefs/SCR-M06-19-proposal-list.md` carries no state for the review-needed condition — its States list has `stale-badge` (the `M06-46` comparison) only, and `M05-13` is not among its verbatim rows. It needs `M05-13` carried verbatim under a `### From docs/prd/modules/M05-design-studio.md` heading and a per-row state — e.g. `design-survey-review-needed` — modelled on the states added to `docs/ux/briefs/SCR-M06-18-proposal-detail.md`. Until then this criterion has a build target and no design, which is exactly the split the detail-side leg was just corrected for.
+**Counterpart edit required outside this file** (the brief owner makes it; this task cannot close without it): `SCR-M06-19` carries no state for the review-needed condition — its States list has `stale-badge` (the `M06-46` comparison) only, and `M05-13` is not among its verbatim rows. It needs `M05-13` carried verbatim under a `### From docs/prd/modules/M05-design-studio.md` heading and a per-row state — e.g. `design-survey-review-needed` — modelled on the states added to `SCR-M06-18`. Until then this criterion has a build target and no design, which is exactly the split the detail-side leg was just corrected for.
 
 ---
 
@@ -373,9 +360,9 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** F5-30 (P0) (`docs/prd/foundations/F5-customer-link.md` — F5's row; the screen is drawn by M06 and is not part of this bucket's disposition index)
-**DESIGN:** SCR-M06-20 → PENDING
+**DESIGN:** SCR-M06-20
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M06-20-deal-link-manager.md`;
+**Requirements (verbatim):** Verbatim rows live in the PRD;
 they are the specification.
 
 **DONE WHEN:**

@@ -1,6 +1,6 @@
 import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedColour } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, TILE_SHADOW } from '../support/token';
 import { WordedFindingList } from './FindingList.story';
 
 const en = await createTranslator('en');
@@ -18,10 +18,7 @@ test('a finding list is a heading on the page — no fill, no shadow', async ({ 
   await expect(list).toHaveCSS('border-radius', '0px');
 });
 
-test('a finding is a grey tile with no shadow and its controls are white', async ({
-  mount,
-  page,
-}) => {
+test('a finding is a tile and its controls are white', async ({ mount, page }) => {
   const list = await mount(
     <WordedFindingList
       title={title}
@@ -32,8 +29,8 @@ test('a finding is a grey tile with no shadow and its controls are white', async
   );
   const finding = list.getByRole('listitem');
 
-  await expect(finding).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
-  await expect(finding).toHaveCSS('box-shadow', 'none');
+  await expect(finding).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(finding).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
   await expect(finding.getByRole('button', { name: jumpLabel })).toHaveCSS(
     'background-color',
     await resolvedColour(page, '--surface'),

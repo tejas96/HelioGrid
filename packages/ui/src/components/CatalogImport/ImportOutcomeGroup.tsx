@@ -3,7 +3,7 @@ import { Fragment } from 'react';
 import { Pressable } from '../../primitives/Pressable';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Button } from '../Button';
-import { IrisTile } from '../IrisTile/IrisTile';
+import { HueTile } from '../HueTile/HueTile';
 import { StatusChip } from '../StatusChip';
 import { type ImportFormats, type ImportListRowView, listRowOf } from './CatalogImport.logic';
 import type { CatalogImportWords, ImportGroupId, ImportRowList } from './CatalogImport.types';
@@ -16,17 +16,17 @@ type Phase = 'preview' | 'report';
 /** A folded group's tile: its glyph and its iris hue — written prices blue, new products violet. */
 interface GroupTile {
   readonly glyph: ShellGlyphName;
-  readonly hue: 'blue' | 'violet';
+  readonly hue: 'teal' | 'ocean';
 }
 
 const GROUP_TILE: Partial<Record<ImportGroupId, GroupTile>> = {
-  overrides: { glyph: 'pencil', hue: 'blue' },
-  applied: { glyph: 'pencil', hue: 'blue' },
-  newItems: { glyph: 'plus', hue: 'violet' },
-  created: { glyph: 'plus', hue: 'violet' },
+  overrides: { glyph: 'pencil', hue: 'teal' },
+  applied: { glyph: 'pencil', hue: 'teal' },
+  newItems: { glyph: 'plus', hue: 'ocean' },
+  created: { glyph: 'plus', hue: 'ocean' },
 };
 
-const OTHER_TILE: GroupTile = { glyph: 'lines', hue: 'blue' };
+const OTHER_TILE: GroupTile = { glyph: 'lines', hue: 'teal' };
 
 interface ImportOutcomeGroupProps {
   group: ImportRowList & { readonly id: ImportGroupId };
@@ -53,7 +53,7 @@ export function ImportOutcomeGroup(props: ImportOutcomeGroupProps) {
         accessibilityState={{ expanded: open }}
         onPress={props.onToggle}
       >
-        <IrisTile glyph={tile.glyph} iris={tile.hue} size={36} stroke={1.7} />
+        <HueTile glyph={tile.glyph} hue={tile.hue} size={36} stroke={1.7} />
         <span className="hg-import-group-words">
           <span className="hg-import-group-title">
             {words.groupTitle(words.groups[group.id], group.total)}

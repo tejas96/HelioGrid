@@ -14,20 +14,7 @@
   gap: var(--sp-4);
 }
 
-/* ── the strip ─────────────────────────────────────────────────────────────── */
-
-/* The strip is a tile: its fill is `Ground`'s, through `Card`. The board's tight strip (pad 10/12,
-   radius 18) on the nearest steps of the scale. */
-.hg-card[data-density="functional"].hg-cat-strip {
-  padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--r-md);
-}
-
-.hg-cat-strip-row {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-}
+/* ── the hero: the release in force ──────────────────────────────────────────── */
 
 .hg-cat-strip-dot {
   flex-shrink: 0;
@@ -39,13 +26,15 @@
 
 .hg-cat-strip-dot[data-live="true"] {
   background: var(--success);
+  box-shadow: 0 0 0 4px var(--success-bg);
 }
 
-.hg-pressable.hg-cat-strip-open {
-  align-items: stretch;
-  justify-content: center;
-  text-align: left;
-  background: transparent;
+.hg-cat-strip-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-4);
 }
 
 .hg-cat-strip-row:focus {
@@ -58,22 +47,29 @@
 }
 
 .hg-cat-strip-words {
-  flex: 1;
+  flex: 1 1 220px;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--sp-0-5);
+  align-items: flex-start;
+  gap: var(--sp-1);
 }
 
-.hg-cat-strip-line {
+/* A release's tag is an identifier: mono, and the hero's largest words. */
+.hg-cat-strip-tag {
+  font-family: var(--font-mono);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--tr-h2);
+  font-weight: var(--fw-medium);
+  color: var(--on-panel);
+}
+
+.hg-cat-strip-acts {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-1) var(--sp-2);
-}
-
-.hg-cat-strip-act {
-  flex-shrink: 0;
+  gap: var(--sp-2);
 }
 
 /* ── search, sort and kinds ───────────────────────────────────────────────── */

@@ -11,7 +11,8 @@
   gap: var(--sp-2);
   box-sizing: border-box;
   min-height: var(--topbar-h-mobile);
-  padding: var(--sp-2) var(--screen-pad-mobile);
+  /* The 44 controls centre in the bar's height; a padding of sp-2 would grow it past the token. */
+  padding: var(--sp-1) var(--screen-pad-mobile);
   background: var(--hg-ground);
   font-family: var(--font-sans);
 }
@@ -27,7 +28,7 @@
 
 /* The device's own inset, read by the browser — never the typed --safe-top. */
 .hg-app-shell-topbar[data-safe-top="true"] {
-  padding-top: max(var(--sp-2), env(safe-area-inset-top));
+  padding-top: max(var(--sp-1), env(safe-area-inset-top));
 }
 
 /* The tile and the company's name. The name gives way first, so Search, the bell and the avatar

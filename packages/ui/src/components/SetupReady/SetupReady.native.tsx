@@ -2,6 +2,8 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { type ReactNode, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { type FocusHandle, useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import type { ShellGlyphName, ShellGlyphProps } from '../AppShell/AppShell.types';
@@ -11,6 +13,8 @@ import { Card, IconCircle } from '../Card/Card.native';
 import { Badge } from '../Chip/Chip.native';
 import { DoorFrame } from '../DoorFrame/DoorFrame.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
+import { HeroPanel } from '../HeroPanel/HeroPanel.native';
+import { LottieMoment } from '../LottieMoment/LottieMoment.native';
 import type { SetupReadyDoorWords, SetupReadyProps, SetupWallRetryProps } from './SetupReady.types';
 
 /* The board's `iconCircle`: each door's mark in a 40 circle (`SCR-M01-06`). */
@@ -55,19 +59,22 @@ export function SetupReady({
     <DoorFrame
       column="deep"
       identity={
-        <View style={styles.title}>
-          <Text variant="h2">{words.title}</Text>
-          <Text variant="body" color="secondary">
-            {words.companyLine(read.value)}
-          </Text>
-        </View>
+        <HeroPanel name={words.title}>
+          <LottieMoment name="celebrate" size={72} />
+          <View style={styles.title}>
+            <Text variant="display">{words.title}</Text>
+            <Text variant="body" color="secondary">
+              {words.companyLine(read.value)}
+            </Text>
+          </View>
+        </HeroPanel>
       }
     >
       <View style={styles.doors}>
         <Card>
           <Door
             glyph="person-plus"
-            circle={theme.colors.accent}
+            circle={colors.accent}
             tone="accent"
             words={words.lead}
             act={
@@ -89,7 +96,7 @@ export function SetupReady({
           door={
             <Door
               glyph="house-door"
-              circle={theme.colors.info}
+              circle={colors.info}
               tone="info"
               words={words.demo}
               badge={words.demo.badge}
@@ -134,7 +141,7 @@ function Door({
   act,
 }: {
   glyph: ShellGlyphName;
-  circle: string;
+  circle: ThemeColor;
   tone: NonNullable<ShellGlyphProps['tone']>;
   words: SetupReadyDoorWords;
   badge?: string;
@@ -213,9 +220,10 @@ function DemoDoorCard({
 }
 
 const styles = StyleSheet.create({
-  /** The heading `sp-8` under the wordmark (`deep`), the line `sp-2` under it, the doors `sp-6` under that. */
-  title: { gap: theme.spacing['sp-2'], paddingBottom: theme.spacing['sp-6'] },
-  doors: { gap: theme.spacing['sp-4'] },
+  /** The heading and its line sit inside the hero, so padding here grows the hero, never the gap under it. */
+  title: { gap: theme.spacing['sp-2'], paddingBottom: theme.spacing['sp-2'] },
+  /** The phone frame leaves no space under its identity, so the doors keep the web frame's `sp-4` themselves. */
+  doors: { gap: theme.spacing['sp-4'], paddingTop: theme.spacing['sp-4'] },
   door: { gap: theme.spacing['sp-4'] },
   head: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
   /** The name and its `Demo` mark, wrapping under the name when the language is long. */

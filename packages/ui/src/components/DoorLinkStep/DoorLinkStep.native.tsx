@@ -31,7 +31,7 @@ export function DoorLinkStep({ words, frame, phone, onPhone, busy, onPress }: Do
       identity={
         <View style={styles.title}>
           <View style={styles.titleRow}>
-            <Text variant="h2" style={styles.titleText}>
+            <Text variant="display" style={styles.titleText}>
               {words.title}
             </Text>
             {words.explainer === null ? null : <Explainer {...words.explainer} />}

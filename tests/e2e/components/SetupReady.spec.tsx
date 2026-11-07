@@ -2,13 +2,14 @@ import type { DemoDoor } from '@heliogrid/domain';
 import { createTranslator, setupReadyWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator, Page } from '@playwright/test';
-import { settledBox } from '../support/layout';
+import { bottomOf, rightOf, settledBox } from '../support/layout';
+import { animationsSettled } from '../support/motion';
 import { resolvedLength } from '../support/token';
 import { SetupReadyAsHeld } from './SetupReady.story';
 
 /**
  * *You're ready* (`SCR-M01-06` m-default, m-loading, m-error-demo, d-default): the heading with the
- * company read back and exactly two doors; door two follows the demo and keeps the ready door's
+ * company read back in its hero panel, and exactly two doors under it; door two follows the demo and keeps the ready door's
  * height, so the heading and door one never move as it resolves.
  */
 /** The board's company. */
@@ -22,6 +23,8 @@ async function placesOf(page: Page, root: Locator) {
   await page.evaluate(async () => {
     await document.fonts.ready;
   });
+  /* The door and its hero each rise on mount; a place read mid-rise is up to two rises low. */
+  await animationsSettled(page);
   const heading = await settledBox(root.getByRole('heading', { level: 1 }));
   const doors = root.locator('.hg-setup-ready-doors > *');
   const one = await settledBox(doors.nth(0));
@@ -80,23 +83,23 @@ test.describe('at 375', () => {
       en.demo.title,
     ]);
     await expect(root.getByText(en.demo.badge, { exact: true })).toBeVisible();
-    const wordmark = await settledBox(root.locator('.hg-door-wordmark'));
+    const hero = root.locator('.hg-hero');
+    await expect(hero.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(hero.getByText(en.companyLine(COMPANY))).toBeVisible();
     const heading = await settledBox(root.getByRole('heading', { level: 1 }));
     const line = await settledBox(root.getByText(en.companyLine(COMPANY)));
     const first = await settledBox(root.locator('.hg-setup-ready-doors > *').first());
-    expect((heading?.y ?? 0) - ((wordmark?.y ?? 0) + (wordmark?.height ?? 0))).toBe(
+    expect((await settledBox(hero)).y - (await bottomOf(root.locator('.hg-door-header')))).toBe(
       await resolvedLength(page, '--sp-8'),
     );
     expect((line?.y ?? 0) - ((heading?.y ?? 0) + (heading?.height ?? 0))).toBe(
       await resolvedLength(page, '--sp-2'),
     );
-    expect((first?.y ?? 0) - ((line?.y ?? 0) + (line?.height ?? 0))).toBe(
-      await resolvedLength(page, '--sp-6'),
-    );
+    expect((first?.y ?? 0) - (await bottomOf(hero))).toBe(await resolvedLength(page, '--sp-6'));
     const pad = await resolvedLength(page, '--screen-pad-mobile');
     for (const name of [en.lead.act, en.demo.act]) {
       const act = await settledBox(root.getByRole('button', { name }));
-      expect(act?.height).toBe(await resolvedLength(page, '--sp-12'));
+      expect(act?.height).toBe(await resolvedLength(page, '--field-h'));
       expect(act?.width).toBeLessThan(375 - 2 * pad);
       expect(act?.width).toBeGreaterThan(
         375 - 2 * pad - 2 * (await resolvedLength(page, '--tile-pad')) - 1,
@@ -140,7 +143,7 @@ test.describe('the wall', () => {
   test.use({ viewport: { width: 375, height: 812 } });
 
   for (const reader of ['en', 'hi', 'mr'] as const) {
-    test(`in ${reader} at 375 it follows the wordmark with Try again, no door is offered, and the doors take the focus once it works`, async ({
+    test(`in ${reader} at 375 it follows the product mark with Try again, no door is offered, and the doors take the focus once it works`, async ({
       mount,
       page,
     }) => {
@@ -152,9 +155,8 @@ test.describe('the wall', () => {
       await expect(root.getByText(words.wall.line)).toBeVisible();
       await expect(root.getByRole('heading', { level: 2 })).toHaveCount(0);
       await expect(root.getByRole('button')).toHaveCount(1);
-      const wordmark = await settledBox(root.locator('.hg-door-wordmark'));
       const title = await settledBox(root.getByText(words.wall.title));
-      expect(title?.y).toBeGreaterThan((wordmark?.y ?? 0) + (wordmark?.height ?? 0));
+      expect(title?.y).toBeGreaterThan(await bottomOf(root.locator('.hg-product-mark')));
       expect(title?.y).toBeLessThan(400);
       const sideways = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -170,29 +172,30 @@ test.describe('the wall', () => {
 test.describe('at 1536', () => {
   test.use({ viewport: { width: 1536, height: 1000 } });
 
-  test('with the company unread the wall is centred in the task pane, the brand pane holds only the wordmark', async ({
+  test('with the company unread the wall is centred in the column under the product mark, with no heading', async ({
     mount,
   }) => {
     const root = await mount(
       <SetupReadyAsHeld reader="en" demo="unavailable" company={COMPANY} unreachable />,
     );
     await expect(root.getByRole('heading', { level: 1 })).toHaveCount(0);
-    const wall = await settledBox(root.getByText(en.wall.title));
-    const pane = await settledBox(root.locator('.hg-door-task'));
-    expect(
-      Math.abs((wall?.x ?? 0) + (wall?.width ?? 0) / 2 - ((pane?.x ?? 0) + (pane?.width ?? 0) / 2)),
-    ).toBeLessThan(1);
-    expect(pane?.height).toBe(1000);
-    const block = await settledBox(root.locator('.hg-setup-ready-wall'));
-    expect(Math.abs((block?.y ?? 0) + (block?.height ?? 0) / 2 - 500)).toBeLessThan(1);
+    const column = await settledBox(root.locator('.hg-door-task'));
+    const centre = column.x + column.width / 2;
+    for (const part of [root.getByText(en.wall.title), root.getByRole('button')]) {
+      const box = await settledBox(part);
+      expect(Math.abs(box.x + box.width / 2 - centre)).toBeLessThan(1);
+    }
+    expect((await settledBox(root.getByText(en.wall.title))).y).toBeGreaterThan(
+      await bottomOf(root.locator('.hg-product-mark')),
+    );
   });
 
-  test('the doors sit side by side in the task pane, top-aligned with the heading, their lines at the body size and their acts at their own widths', async ({
+  test('the doors sit side by side under the hero across the column, their lines at the body size and their acts at their own widths inside them', async ({
     mount,
     page,
   }) => {
     const root = await mount(<SetupReadyAsHeld reader="en" demo="ready" company={COMPANY} />);
-    const heading = await settledBox(root.getByRole('heading', { level: 1 }));
+    const hero = root.locator('.hg-hero');
     const doors = root.locator('.hg-setup-ready-doors > *');
     const one = await settledBox(doors.nth(0));
     const two = await settledBox(doors.nth(1));
@@ -201,15 +204,19 @@ test.describe('at 1536', () => {
     expect(Math.round((two?.x ?? 0) - ((one?.x ?? 0) + (one?.width ?? 0)))).toBe(
       await resolvedLength(page, '--sp-5'),
     );
-    expect(Math.round(one?.y ?? 0)).toBe(Math.round(heading?.y ?? 0));
-    expect((one?.x ?? 0) - (heading?.x ?? 0)).toBeGreaterThan(400);
-    const act = await settledBox(root.getByRole('button', { name: en.lead.act }));
-    expect(act?.width).toBeLessThan((one?.width ?? 0) / 2);
+    expect(one.y - (await bottomOf(hero))).toBe(await resolvedLength(page, '--sp-6'));
+    expect(one.x).toBe((await settledBox(hero)).x);
+    expect(two.x + two.width).toBe(await rightOf(hero));
+    const pad = await resolvedLength(page, '--tile-pad');
+    for (const [door, name] of [
+      [one, en.lead.act],
+      [two, en.demo.act],
+    ] as const) {
+      const act = await settledBox(root.getByRole('button', { name }));
+      expect(act.width).toBeLessThan(door.width - 2 * pad);
+      expect(act.x + act.width).toBeLessThanOrEqual(door.x + door.width - pad);
+    }
     const line = root.getByText(en.lead.line);
     await expect(line).toHaveCSS('font-size', `${await resolvedLength(page, '--fs-body')}px`);
-    const pane = await root
-      .locator('.hg-door-task')
-      .evaluate((el) => getComputedStyle(el).paddingBottom);
-    expect(pane).toBe(`${await resolvedLength(page, '--sp-10')}px`);
   });
 });

@@ -12,12 +12,11 @@ import type { RoleExplainerProps } from './RoleExplainer.types';
 export function RoleExplainer({ words, read, namesPending: pending, onAct }: RoleExplainerProps) {
   return (
     <DoorFrame
-      panes="onboarding"
       column="near"
       bounded
       identity={
         pending ? undefined : (
-          <Text variant="h1" as="h1">
+          <Text variant="display" as="h1">
             {words.title}
           </Text>
         )

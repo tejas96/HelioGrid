@@ -1,6 +1,6 @@
-import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, StyleSheet } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import type { SheetBackdropProps } from './Sheet.types';
 
 interface NativeSheetBackdropProps extends SheetBackdropProps {
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: theme.colors.canvas,
+    backgroundColor: colors.canvas,
     opacity: 0.72,
   },
 });

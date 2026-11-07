@@ -1,7 +1,8 @@
-import { theme } from '@heliogrid/theme';
 import { useId } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import type { ReasonTriggerProps } from '../ActionReason/ActionReason.types';
@@ -16,13 +17,13 @@ interface NativeIconButtonProps extends IconButtonProps {
 
 interface VariantVisual {
   /** Absent: the variant takes the control fill of what holds it. */
-  background?: string;
+  background?: ThemeColor;
 }
 
 const VARIANT: Record<IconButtonVariant, VariantVisual> = {
   /* The opposite of what holds it (`F7-15`): the well on the page, white inside a tile; flat. */
   surface: {},
-  dark: { background: theme.colors['action-primary'] },
+  dark: { background: colors['action-primary'] },
   /* Web ghost reads --control-edge so field mode can ring it; RN has no field-mode edge yet. */
   ghost: { background: 'transparent' },
 };

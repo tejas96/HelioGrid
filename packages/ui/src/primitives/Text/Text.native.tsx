@@ -2,45 +2,64 @@ import { theme } from '@heliogrid/theme';
 import { Children, isValidElement, type ReactNode } from 'react';
 import type { StyleProp, TextStyle } from 'react-native';
 import { Platform, Text as RNText, StyleSheet } from 'react-native';
+import type { ThemeColor } from '../Color/colors';
+import { colors } from '../Color/colors';
 import { isMono, lineHeightFor, roleOf, runsOfString } from './Text.logic';
 import type { TextAlign, TextColor, TextProps, TextVariant } from './Text.types';
 
 const R = theme.type.roles;
 const sans = theme.type.families.sans;
+const display = theme.type.families.display;
 
-/** The type scale, dp values straight from the generated theme. */
+/** The type scale, dp values straight from the theme. A phone's hero is the phone's size. */
 const VARIANT: Record<TextVariant, TextStyle> = {
+  hero: {
+    fontFamily: display,
+    fontWeight: '400',
+    fontSize: R['hero-phone'].fontSize,
+    lineHeight: R['hero-phone'].lineHeight,
+    letterSpacing: R['hero-phone'].letterSpacing,
+    fontVariant: ['tabular-nums'],
+  },
+  figure: {
+    fontFamily: display,
+    fontWeight: '400',
+    fontSize: R.figure.fontSize,
+    lineHeight: R.figure.lineHeight,
+    letterSpacing: R.figure.letterSpacing,
+    fontVariant: ['tabular-nums'],
+  },
   display: {
-    fontFamily: sans,
-    fontWeight: '700',
+    fontFamily: display,
+    fontWeight: '400',
     fontSize: R.display.fontSize,
     lineHeight: R.display.lineHeight,
     letterSpacing: R.display.letterSpacing,
   },
   h1: {
-    fontFamily: sans,
-    fontWeight: '700',
+    fontFamily: display,
+    fontWeight: '400',
     fontSize: R.h1.fontSize,
     lineHeight: R.h1.lineHeight,
     letterSpacing: R.h1.letterSpacing,
   },
   h2: {
     fontFamily: sans,
-    fontWeight: '700',
+    fontWeight: '600',
     fontSize: R.h2.fontSize,
     lineHeight: R.h2.lineHeight,
     letterSpacing: R.h2.letterSpacing,
   },
   h3: {
     fontFamily: sans,
-    fontWeight: '700',
+    fontWeight: '600',
     fontSize: R.h3.fontSize,
     lineHeight: R.h3.lineHeight,
     letterSpacing: R.h3.letterSpacing,
   },
   h4: {
     fontFamily: sans,
-    fontWeight: '700',
+    fontWeight: '600',
     fontSize: R.h4.fontSize,
     lineHeight: R.h4.lineHeight,
     letterSpacing: R.h4.letterSpacing,
@@ -90,7 +109,7 @@ const VARIANT: Record<TextVariant, TextStyle> = {
   /* The 11px/700/uppercase/0.12em signature — the one sanctioned sub-12px appearance. */
   overline: {
     fontFamily: sans,
-    fontWeight: '700',
+    fontWeight: '600',
     fontSize: R.overline.fontSize,
     lineHeight: roleOf('overline').lineHeight,
     letterSpacing: R.overline.letterSpacing,
@@ -109,17 +128,17 @@ const VARIANT: Record<TextVariant, TextStyle> = {
   },
 };
 
-const COLOR: Record<TextColor, string> = {
-  primary: theme.colors['text-primary'],
-  secondary: theme.colors['text-secondary'],
-  tertiary: theme.colors['text-tertiary'],
-  disabled: theme.colors['text-disabled'],
-  inverse: theme.colors['text-inverse'],
-  accent: theme.colors.accent,
-  success: theme.colors['success-text'],
-  warning: theme.colors['warning-text'],
-  danger: theme.colors['danger-text'],
-  info: theme.colors['info-text'],
+const COLOR: Record<TextColor, ThemeColor> = {
+  primary: colors['text-primary'],
+  secondary: colors['text-secondary'],
+  tertiary: colors['text-tertiary'],
+  disabled: colors['text-disabled'],
+  inverse: colors['text-inverse'],
+  accent: colors.accent,
+  success: colors['success-text'],
+  warning: colors['warning-text'],
+  danger: colors['danger-text'],
+  info: colors['info-text'],
 };
 
 const BOLD: TextStyle = { fontWeight: '700' };
@@ -155,7 +174,7 @@ function drawRuns(children: ReactNode, variant: TextVariant, tracked: boolean): 
     if (isValidElement(child) || (typeof child !== 'string' && typeof child !== 'number')) {
       return child;
     }
-    const runs = runsOfString(String(child));
+    const runs = runsOfString(String(child), variant);
     const tracking = runTracking(tracked, runs.length);
     return runs.map((run, index) => (
       <RNText

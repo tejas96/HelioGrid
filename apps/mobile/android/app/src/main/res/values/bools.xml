@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The system bars' icons: dark on the light scheme. values-night turns them light. -->
+<resources>
+    <bool name="hg_light_bars">true</bool>
+</resources>

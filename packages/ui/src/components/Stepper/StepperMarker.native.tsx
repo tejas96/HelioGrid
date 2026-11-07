@@ -1,6 +1,6 @@
-import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
@@ -34,7 +34,7 @@ export function StepperMarker({ index, size = 28, step }: NativeStepperMarkerPro
             viewBox="0 0 24 24"
             fill="none"
             // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-            stroke={theme.colors['text-inverse']}
+            stroke={colors['text-inverse']}
             strokeWidth={4.4}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -48,7 +48,7 @@ export function StepperMarker({ index, size = 28, step }: NativeStepperMarkerPro
             viewBox="0 0 24 24"
             fill="none"
             // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-            stroke={theme.colors['text-inverse']}
+            stroke={colors['text-inverse']}
             strokeWidth={2.4}
             strokeLinecap="round"
           >
@@ -83,14 +83,14 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   done: {
-    backgroundColor: theme.colors.success,
+    backgroundColor: colors.success,
   },
   errors: {
-    backgroundColor: theme.colors.danger,
+    backgroundColor: colors.danger,
   },
   running: {
     outlineWidth: 5,
-    outlineColor: theme.colors['accent-subtle'],
+    outlineColor: colors['accent-subtle'],
     outlineStyle: 'solid',
   },
   number: {

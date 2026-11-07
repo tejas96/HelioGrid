@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -26,7 +27,7 @@ function NavButton({ direction, disabled, name, onPress }: NavButtonProps) {
         height={18}
         viewBox="0 0 24 24"
         fill="none"
-        stroke={disabled ? theme.colors['text-disabled'] : theme.colors['text-primary']}
+        stroke={disabled ? colors['text-disabled'] : colors['text-primary']}
         strokeWidth={1.8}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -104,7 +105,7 @@ export function StepperIndicator({
           height={15}
           viewBox="0 0 24 24"
           fill="none"
-          stroke={theme.colors['text-tertiary']}
+          stroke={colors['text-tertiary']}
           strokeWidth={1.6}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -156,7 +157,7 @@ const styles = StyleSheet.create({
     width: 3,
     height: 3,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['mark-subtle'],
+    backgroundColor: colors['mark-subtle'],
     flexShrink: 0,
   },
   current: {

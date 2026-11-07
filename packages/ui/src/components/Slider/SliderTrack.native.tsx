@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useRef, useState } from 'react';
 import type { GestureResponderEvent } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { clampToRange } from './slider-math';
 
@@ -117,10 +118,10 @@ const styles = StyleSheet.create({
     top: 19,
     height: 6,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   fillDisabled: {
-    backgroundColor: theme.colors['text-disabled'],
+    backgroundColor: colors['text-disabled'],
   },
   thumb: {
     position: 'absolute',
@@ -130,11 +131,11 @@ const styles = StyleSheet.create({
     marginLeft: -THUMB / 2,
     borderRadius: theme.radius['r-pill'],
     borderWidth: 1.5,
-    borderColor: theme.colors.accent,
+    borderColor: colors.accent,
     ...theme.elevation.e3,
   },
   thumbDisabled: {
-    borderColor: theme.colors['text-disabled'],
+    borderColor: colors['text-disabled'],
     ...theme.elevation.e1,
   },
 });

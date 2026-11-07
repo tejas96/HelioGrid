@@ -22,6 +22,7 @@ export function ShellAction({
   name: wholeName,
   onClick,
   active = false,
+  expanded,
   round = false,
   className,
   style,
@@ -31,6 +32,7 @@ export function ShellAction({
     <button
       type="button"
       aria-label={name}
+      aria-expanded={expanded}
       onClick={onClick}
       className={classNames('hg-app-shell-action', className)}
       data-active={active ? 'true' : undefined}

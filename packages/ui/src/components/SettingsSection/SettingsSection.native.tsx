@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { Children, Fragment, isValidElement } from 'react';
 import { type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type {
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: theme.radius['r-tile'],
     // biome-ignore lint/plugin/raw-white: panel — a sheet, a modal, a detail panel: a page ground over the page
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e2,
   },
   section: { paddingVertical: theme.spacing['sp-2'] },
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
     paddingBottom: theme.spacing['sp-1'],
     paddingHorizontal: theme.spacing['sp-6'],
   },
-  hairline: { height: 1, backgroundColor: theme.colors['line-soft'] },
+  hairline: { height: 1, backgroundColor: colors['line-soft'] },
   row: {
     flexDirection: 'row',
     alignItems: 'center',

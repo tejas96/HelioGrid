@@ -16,7 +16,7 @@ export interface RoleExplainerWords extends RoleCardWords {
  * The role card's first-run life (`SCR-M01-10` m-first-run, d-first-run): the step after First-Run
  * Profile, or after a join that owed no name. The heading, the card bounded to the window — its
  * head stays and its rows scroll — and one act to the home the roles decide. No shell, no back. At
- * 375 one column; from the door's breakpoint the onboarding two panes, the heading in the brand
+ * 375 one column; at every width the door's one centred column, the heading in the brand
  * pane and the card and its act in the task pane.
  */
 export interface RoleExplainerProps {

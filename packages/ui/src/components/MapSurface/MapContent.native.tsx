@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { GestureResponderEvent } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { MapControls } from './MapControls.native';
 import { MapLocationPin } from './MapLocationPin.native';
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-    backgroundColor: theme.colors['surface-alt'],
+    backgroundColor: colors['surface-alt'],
   },
   pill: {
     position: 'absolute',
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-pill'],
     // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e3,
   },
   pillWithOverlay: { bottom: 74 },

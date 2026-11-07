@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Explainer } from '../Explainer/Explainer.native';
@@ -14,9 +15,9 @@ interface NativeTintedBlockProps extends TintedBlockProps {
 
 /* Every tone is its -bg token: the tint is the second channel, the words are the message. */
 const TINT: Record<BlockTone, ViewStyle> = {
-  danger: { backgroundColor: theme.colors['danger-bg'] },
-  warning: { backgroundColor: theme.colors['warning-bg'] },
-  info: { backgroundColor: theme.colors['info-bg'] },
+  danger: { backgroundColor: colors['danger-bg'] },
+  warning: { backgroundColor: colors['warning-bg'] },
+  info: { backgroundColor: colors['info-bg'] },
 };
 
 /** The tinted block above a locked code field or under a finding: the words carry the reason, the tint is the second channel. */

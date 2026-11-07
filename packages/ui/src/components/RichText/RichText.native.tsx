@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import { useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE, fieldBox } from '../../primitives/FieldBox/FieldBox.native';
 import { GroundProvider, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -51,12 +52,12 @@ const styles = StyleSheet.create({
     ...theme.elevation.e2,
     fontFamily: theme.type.families.mono,
     fontSize: theme.type.roles['body-sm'].fontSize,
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   apply: {
     paddingHorizontal: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['action-primary'],
+    backgroundColor: colors['action-primary'],
   },
   body: {
     paddingHorizontal: 18 - FIELD_BOX_EDGE,
@@ -92,7 +93,7 @@ function LinkAddress({
       value={value}
       accessibilityLabel={name}
       placeholder={LINK_SCHEME}
-      placeholderTextColor={theme.colors['text-tertiary']}
+      placeholderTextColor={colors['text-tertiary']}
       autoCapitalize="none"
       onChangeText={onChange}
     />

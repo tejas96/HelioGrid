@@ -8,9 +8,9 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 
 ### T-MS-201 · Step 4 Components — port + UI rebuild
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** M05-20 (P0), MS4-01 (P0), MS4-02 (P0), MS4-03 (P0), MS4-06 (P0), MS4-07 (P0), MS4-08 (P0), MS4-09 (P0), MS4-10 (P0), MS4-11 (P0), MS4-12 (P0), MS4-14 (P0), MS4-15 (P0), MS4-16 (P0), MS4-17 (P1), MS4-18 (P0), MS4-19 (P0), MS4-20 (P0), MS4-21 (P0), MS4-22 (P0), MS4-24 (P0), MS4-27 (P0), MS4-28 (P0), MS4-29 (P0), MS4-30 (P0), MS4-31 (P0), MS4-32 (P0), MS4-33 (P0)
-**DESIGN:** SCR-MS-07 → ported from the POC
+**DESIGN:** SCR-MS-07
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step4Components.tsx` · `3d_design_studio/src/features/solar-studio/data/catalog.ts` · `3d_design_studio/src/features/solar-studio/data/panels.ts` · `3d_design_studio/src/features/solar-studio/data/inverters.ts` · `3d_design_studio/src/features/solar-studio/lib/__tests__/catalog.test.ts`
 **DEFECTS:**
 - `CODE.step4-components.20` — panel swap silently resizes placed modules (S4-2: guard dialog both paths → MS4-12).
@@ -20,7 +20,7 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 - `CODE.step4-components.29/.32/.42 + availability` — polish (4) (S4-5 batch → MS4-17/16/20/08).
 - `BATTERY (absent entirely)` — no battery section/type/catalog in POC (S4-1: first-class section → MS4-24/25).
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-07-step4-components.md`; they are the specification. Every row of this task is present in that brief, so nothing is re-quoted here.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given a new design, Then the accordion shows PANEL → CAPACITY → INVERTER → BATTERY, opening at the first incomplete section with summaries on completed headers (MS4-01)
@@ -115,11 +115,11 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 
 ### T-MS-205 · Step 6 Layout Editor — port + UI rebuild
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** MS6-01 (P0), MS6-02 (P0), MS6-05 (P0), MS6-06 (P0), MS6-07 (P0), MS6-08 (P0), MS6-09 (P0), MS6-10 (P0), MS6-11 (P1), MS6-12 (P0), MS6-13 (P0), MS6-14 (P0), MS6-16 (P0), MS6-17 (P0), MS6-18 (P0), MS6-19 (P0), MS6-20 (P0), MS6-21 (P0), MS6-22 (P0), MS6-23 (P1), MS6-24 (P0), MS6-26 (P1), MS6-27 (P0), MS6-28 (P0), MS6-29 (P0), MS6-51 (P0), MS6-52 (P0)
 **Billing gate (T-M12-009):** design save/creation and proposal Generate name `studio_design_edit` in their controller's `RouteBillingMap`, and refuse a design above the `design_ceiling_kw` limit at those two points only, never mid-edit, by throwing `EntitlementBlockedException` with `reason: 'cap'`, key `design_ceiling_kw` and `resetsAt: null` (M05-12, M12-20, M12-23).
 **Downgrade preview (T-M12-003):** the designs over the lower plan's `design_ceiling_kw` join `PLAN_CHANGE_BLOCKS` (`packages/domain` `commerce/plan-change.ts`) as `designs_over_ceiling`, counted in the api's `plan-change.preview.service.ts` and in its digest, with the board's route to the list (`SCR-M12-03` frame s7: `Designs over 50 kW · 7 — stay readable and exportable`, `See the 7 designs over 50 kW`); after the boundary they still open, read and export (M12-49).
-**DESIGN:** SCR-MS-08 → ported from the POC
+**DESIGN:** SCR-MS-08
 **Owed by `T-FPLAT-027` (`F8-11`, a law):** every shading output this screen prints carries `M05-94`'s limit text beside it — beam-only, linear in unshaded area, no bypass-diode cliff, no string mismatch, so partial-shade losses read optimistic — at every scale.
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step6Editor.tsx` · `3d_design_studio/src/features/solar-studio/screens/step6-erase.ts` · `3d_design_studio/src/features/solar-studio/components/StructurePreview.tsx` · `3d_design_studio/src/features/solar-studio/lib/health.ts` · `3d_design_studio/src/features/solar-studio/store/useHealthSync.ts` · `3d_design_studio/src/features/solar-studio/lib/panel-move.ts` · tests `3d_design_studio/src/features/solar-studio/screens/__tests__/step6-erase.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/health.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/health-coverage.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/panel-move.test.ts`
 **DEFECTS:**
@@ -129,9 +129,9 @@ Binding studio rule (owner ruling S12-1): the POC at `3d_design_studio/` is the 
 - `CODE.step6-layout.46/.29 + scene3d.8/.19 + structures.41/.51 (+2)` — consistency & polish (8) (S5-5 batch → MS6-15/06/31/32/49/21/10; the `.29` (MS6-06), `.51` (MS6-21) and MS6-10 halves land on this screen).
 - `CODE.step6-structures.52/.68` — foundation buttons bypass allowed-options; silent clamp (S5-1b: offered ⊆ allowed → MS6-39/47/51; the MS6-51 half — the 2D table-settings surface — lands on this screen).
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md`; they are the specification. Every row of this task is present in that brief, so nothing is re-quoted here.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
-Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-studio.md` are dispositioned in `docs/tasks/MS-studio-a.md` as `surface realized-by` this task, and are not in the PRD-rows line above because they live in the M05 module document rather than this file's `MS6-*` range — **M05-89 (P0)**, the paradigm switch that never loses a census tool (engine half T-MS-116); **M05-91 (P1)**, Tier B large-C&I editing, GPU/CPU shading equivalence and server-side simulation (engine half T-MS-118); and **M05-92 (P2)**, Tier C utility scale (engine half T-MS-119, its surface shared with T-MS-206). `docs/ux/briefs/SCR-MS-08-step6-layout-editor.md` carries all three verbatim with their tiers, and the brief states they motivate are drawn here: `block-editing-regime` from M05-89 and `server-sim-provisional` from M05-91. This task builds those surfaces and consumes the engines; it re-derives none of them.
+Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-studio.md` are dispositioned in `docs/tasks/MS-studio-a.md` as `surface realized-by` this task, and are not in the PRD-rows line above because they live in the M05 module document rather than this file's `MS6-*` range — **M05-89 (P0)**, the paradigm switch that never loses a census tool (engine half T-MS-116); **M05-91 (P1)**, Tier B large-C&I editing, GPU/CPU shading equivalence and server-side simulation (engine half T-MS-118); and **M05-92 (P2)**, Tier C utility scale (engine half T-MS-119, its surface shared with T-MS-206). `SCR-MS-08` carries all three verbatim with their tiers, and the brief states they motivate are drawn here: `block-editing-regime` from M05-89 and `server-sim-provisional` from M05-91. This task builds those surfaces and consumes the engines; it re-derives none of them.
 
 **DONE WHEN:**
 - Given roofs and no panels, Then auto-place is offered once with both objectives and a manual escape (MS6-01), replacing layout in one undo step with warnings surfaced (MS6-02)
@@ -156,7 +156,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - the 2D and 3D structure surfaces agree (MS6-51)
 - Given any change, Then Health re-scores against the current design and never shows a stale score (MS6-52)
 - MS6-11, MS6-23 and MS6-26 are P1 and carry no line in the doc's P0 acceptance list; they are verified against their brief rows.
-- Not every brief-listed state closes at this task's P0 tier, and the parity clause below does not make them P0: `block-editing-regime` is P0 (M05-89, engine T-MS-116), while **`server-sim-provisional` is P1** (M05-91, engine T-MS-118) and closes at P1 with that row. M05-92 (P2) contributes no state to this brief today — its Tier C clause here is the provenance line "flat-terrain fallbacks at Tier C carry `assumed` with a visible warning"; the sibling brief `docs/ux/briefs/SCR-MS-09-3d-scene.md` shows the tagging convention for a Tier C state ("terrain-draped (Tier C; flat ground remains the default when no DEM is loaded)"), and if a Tier C state is later added to SCR-MS-08 it closes at P2.
+- Not every brief-listed state closes at this task's P0 tier, and the parity clause below does not make them P0: `block-editing-regime` is P0 (M05-89, engine T-MS-116), while **`server-sim-provisional` is P1** (M05-91, engine T-MS-118) and closes at P1 with that row. M05-92 (P2) contributes no state to this brief today — its Tier C clause here is the provenance line "flat-terrain fallbacks at Tier C carry `assumed` with a visible warning"; the sibling `SCR-MS-09` shows the tagging convention for a Tier C state ("terrain-draped (Tier C; flat ground remains the default when no DEM is loaded)"), and if a Tier C state is later added to SCR-MS-08 it closes at P2.
 - (Of the three, only M05-89 has a surface-facing Given/When/Then in `docs/prd/modules/M05-design-studio.md`'s §M05.15 acceptance block — "given a design with blocks, when editing tools render, then block/table tools present and per-panel editing remains available inside a table" — and that is the `block-editing-regime` condition here. M05-91's only acceptance line is the ±2% executor equivalence, which is T-MS-118's engine line and not this task's; its editing and simulation clauses, and all of M05-92, carry no dedicated Given/When/Then line, so the requirement text carried verbatim in the brief is the binding criterion for those surface halves.)
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 - the ported POC tests for this area pass unchanged in the new project.
@@ -165,16 +165,16 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-206 · Step 6 3D scene & in-scene structure card — port + UI rebuild
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** MS6-30 (P0), MS6-31 (P0), MS6-32 (P0), MS6-33 (P0), MS6-34 (P0), MS6-35 (P0), MS6-36 (P0), MS6-37 (P0), MS6-44 (P0), MS6-45 (P1), MS6-46 (P0), MS6-47 (P0), MS6-48 (P0), MS6-49 (P0)
-**DESIGN:** SCR-MS-09 → ported from the POC
+**DESIGN:** SCR-MS-09
 **PORT:** `3d_design_studio/src/features/solar-studio/three/Scene3D.tsx` · `3d_design_studio/src/features/solar-studio/three/HeatmapLayer.tsx` · `3d_design_studio/src/features/solar-studio/three/PanelsInstanced.tsx` · `3d_design_studio/src/features/solar-studio/three/StructEditPanel.tsx` · `3d_design_studio/src/features/solar-studio/three/StructureInstanced.tsx` · `3d_design_studio/src/features/solar-studio/three/StructureNodesInstanced.tsx` · `3d_design_studio/src/features/solar-studio/three/LegPlanEditor.tsx` · `3d_design_studio/src/features/solar-studio/three/profile-geometry.ts` · `3d_design_studio/src/features/solar-studio/lib/sun.ts` · `3d_design_studio/src/features/solar-studio/lib/sim-time.ts` · `3d_design_studio/src/features/solar-studio/lib/solar-heatmap.ts` · `3d_design_studio/src/features/solar-studio/lib/structure-view.ts` · `3d_design_studio/src/features/solar-studio/lib/structure-edit.ts` · `3d_design_studio/src/features/solar-studio/lib/leg-plan-edit.ts` · `3d_design_studio/src/features/solar-studio/lib/scene-model.ts` · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/sim-time.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/solar-heatmap.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/structure-view.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/structure-edit.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/structure-parametrics.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/leg-plan.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/leg-plan-edit.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/mms-customize.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/monorail.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/foundation-clamp.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/panel-inspector.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/scene-model.test.ts`, `3d_design_studio/src/features/solar-studio/three/__tests__/LegPlanEditor.dom.test.tsx`
 **DEFECTS:**
 - `CODE.step6-scene3d.6` — no visible orbit/zoom controls in 3D (S5-3: control cluster added → MS6-30).
 - `CODE.step6-layout.46/.29 + scene3d.8/.19 + structures.41/.51 (+2)` — consistency & polish (8) (S5-5 batch → MS6-15/06/31/32/49/21/10; the `scene3d.8` (MS6-31), `scene3d.19` (MS6-32) and `structures.41` (MS6-49) halves land on this screen).
 - `CODE.step6-structures.52/.68` — foundation buttons bypass allowed-options; silent clamp (S5-1b: offered ⊆ allowed → MS6-39/47/51; the MS6-47 half — the in-scene foundation card — lands on this screen).
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-09-3d-scene.md`; they are the specification. Every row of this task is present in that brief, so nothing is re-quoted here.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given the 3D view, Then visible orbit/zoom/reset controls exist alongside gestures (MS6-30)
@@ -184,7 +184,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - shade attribution and blocker focus work (MS6-34)
 - in-scene table editing never persists view state (MS6-35)
 - heatmap states its metric and floor in the legend (MS6-36)
-- share/report/capture surfaces behave per the one-link law — the 3D lives inside the proposal link, captures the fallback (MS6-37) — the customer-facing half renders through `docs/ux/briefs/SCR-F5-05-customer-3d-view.md` (T-F5-005), which builds no rows of its own
+- share/report/capture surfaces behave per the one-link law — the 3D lives inside the proposal link, captures the fallback (MS6-37) — the customer-facing half renders through `SCR-F5-05` (T-F5-005), which builds no rows of its own
 - Given a foundation choice, Then quantities read as ASSUMED with the "engineer to confirm" note, shape overrides apply only where meaningful, and a too-tall foundation is FLAGGED rather than silently clamped (MS6-47)
 - Given the in-scene structure card, Then every control (presets, visibility, profile with specs, foundation, tilt/clearance, MMS, leg plan) commits exactly one undo step through the single choice-applier, and an unavailable card explains why rather than rendering blank (MS6-48)
 - Given a ground table, Then only allowed foundations are offered and none is silently corrected (MS6-39/47/51) — this screen carries the MS6-47 half
@@ -310,9 +310,9 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-260 · Step 7 Proposal — port + UI rebuild
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** MS7-01 (P0), MS7-02 (P0), MS7-03 (P0), MS7-04 (P0), MS7-06 (P0), MS7-07 (P1), MS7-08 (P0), MS7-10 (P0), MS7-11 (P0), MS7-13 (P0), MS7-14 (P0), MS7-20 (P0), MS7-22 (P0), MS7-31 (P0), MS7-34 (P0), MS7-40 (P0), MS7-41 (P0), MS7-42 (P0), MS7-47 (P0), MS7-49 (P0), MS7-51 (P0)
-**DESIGN:** SCR-MS-10 → ported from the POC
+**DESIGN:** SCR-MS-10
 **Owed by `T-FPLAT-027` (`F8-11`, a law):** every shading output this screen prints carries `M05-94`'s limit text beside it — beam-only, linear in unshaded area, no bypass-diode cliff, no string mismatch, so partial-shade losses read optimistic — at every scale.
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step7Proposal.tsx` · `3d_design_studio/src/features/solar-studio/components/EnergyReportSheet.tsx` · `3d_design_studio/src/features/solar-studio/lib/financing.ts` · `3d_design_studio/src/features/solar-studio/lib/poa.ts` · `3d_design_studio/src/features/solar-studio/lib/comparison.ts` (shared with T-MS-203 and T-MS-267 — this task owns the compare surface, not the ranking core) · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/financing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/poa.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/comparison.test.ts`
 **DEFECTS:**
@@ -322,7 +322,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - `CODE.step7-proposal.88/.92/.98/.87` — money: rounded energy, gross lifetime, lease basis, 100% offset (S6-3 → MS7-30/31/33/34; the `.87` self-consumption half (MS7-31) and the `.98` lease-basis half (MS7-34) are this screen's).
 - `CODE.step7-proposal.65` — no inverter clipping in the energy chain (S6-6 → MS7-20).
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-10-step7-proposal.md`; they are the specification. Every row of this task is present in that brief, so nothing is re-quoted here.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given 3 saved images of 4, When Step 7 opens, Then it resumes at the missing shot and the counter reads 3/4 (MS7-01)
@@ -521,9 +521,9 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 
 ### T-MS-268 · Step 8 SLD & Drawings — port + UI rebuild
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** MS8-01 (P0), MS8-02 (P0), MS8-03 (P0), MS8-04 (P0), MS8-05 (P1), MS8-06 (P0), MS8-07 (P0), MS8-08 (P0), MS8-09 (P0), MS8-10 (P0), MS8-11 (P0), MS8-12 (P0), MS8-13 (P0), MS8-14 (P0), MS8-15 (P0), MS8-16 (P0), MS8-17 (P0), MS8-18 (P0), MS8-19 (P0), MS8-21 (P0), MS8-23 (P0)
-**DESIGN:** SCR-MS-11 → ported from the POC
+**DESIGN:** SCR-MS-11
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/Step8Sld.tsx` · `3d_design_studio/src/features/solar-studio/lib/sld.ts` · `3d_design_studio/src/features/solar-studio/lib/electrical/temps.ts` (the provenance read-out half; the resolver core is T-MS-270's) · tests `3d_design_studio/src/features/solar-studio/lib/__tests__/sld.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/earthing.test.ts`, `3d_design_studio/src/features/solar-studio/lib/__tests__/electrical-temps.test.ts` · `3d_design_studio/src/features/solar-studio/components/drawing/index.tsx` (sitting 2 — the sheet renderers this step hosts) · `3d_design_studio/src/features/solar-studio/components/drawing/StructureSheet.tsx` (sitting 2 — the structure tab's sheet, shared with T-MS-212) · `3d_design_studio/src/features/solar-studio/components/__tests__/drawing.dom.test.tsx` (sitting 2) · `3d_design_studio/src/features/solar-studio/lib/drawing-project.ts` + `3d_design_studio/src/features/solar-studio/lib/__tests__/drawing-project.test.ts` (sitting 10 — the shared plan transform MS8-15 rides on)
 **DEFECTS:**
 - `CODE.step8-sld.2/.13/.37/.39/.41/.42/.43` — drawing accuracy (7): fake zoom, contradictory paper/scale, wrong footprints, phantom legend, static detail, numbering (S7-2 batch → MS8-02/16/17).
@@ -532,7 +532,7 @@ Cross-bucket note: three scale-regime rows from `docs/prd/modules/M05-design-stu
 - `CODE.step8-sld.16/.84` — Step 8 auto-string uses degraded legacy shim, swallows refusals (S7-1c → MS8-07).
 - `CODE.step8-sld.52` — rating dialogs cannot represent legally derived values (S7-1d → MS8-21).
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-MS-11-step8-sld.md`; they are the specification. Every row of this task is present in that brief, so nothing is re-quoted here.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given the step opens, Then four tabs render with live-derived parameters plus overrides (MS8-01)

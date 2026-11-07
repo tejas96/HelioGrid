@@ -1,4 +1,4 @@
-import { createTranslator, destinationLabel, verbLabel } from '@heliogrid/i18n';
+import { createTranslator, destinationLabel, SHELL, verbLabel } from '@heliogrid/i18n';
 import { BottomNav, type BottomNavItem, ShellGlyph } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { settledBox } from '../support/layout';
@@ -23,7 +23,11 @@ test('the pill floats on the footer tokens, with no border and the e4 shadow', a
 }) => {
   const screen = await mount(
     <div style={{ position: 'relative', height: 600 }}>
-      <BottomNav items={[destination('home'), destination('more')]} value="home" />
+      <BottomNav
+        label={en.t(SHELL.mainNavigation)}
+        items={[destination('home'), destination('more')]}
+        value="home"
+      />
     </div>,
   );
   const pill = screen.getByRole('navigation');
@@ -63,7 +67,12 @@ test('the verb runs its act, never becomes the item in view, and every slot clea
   const changes: string[] = [];
   const screen = await mount(
     <div style={{ position: 'relative', height: 600 }}>
-      <BottomNav items={items} value="action" onChange={(key) => changes.push(key)} />
+      <BottomNav
+        label={en.t(SHELL.mainNavigation)}
+        items={items}
+        value="action"
+        onChange={(key) => changes.push(key)}
+      />
     </div>,
   );
   const action = screen.getByRole('button', { name: verbLabel(en.t, 'add_lead') });

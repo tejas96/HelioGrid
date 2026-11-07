@@ -2,6 +2,7 @@ import { OTP_LENGTH } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { type ReactNode, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { type FocusAfter, type FocusHandle, useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -79,7 +80,7 @@ function LandingHead({ words, frame, phone }: InviteLandingProps) {
   return (
     <View style={[styles.stack, styles.head]}>
       {inviter === null ? null : <InviterRow inviter={inviter} />}
-      {title === null ? null : <Text variant="h2">{title}</Text>}
+      {title === null ? null : <Text variant="display">{title}</Text>}
       {banner === null ? null : <LandingBanner banner={banner} />}
       {facts === null || phone === null || frame.kind !== 'landing' ? null : (
         <Card density="expressive">
@@ -274,7 +275,7 @@ const styles = StyleSheet.create({
   bar: {
     height: theme.spacing['sp-3'],
     borderRadius: theme.radius['rf-md'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   disc: {
     width: theme.spacing['sp-10'],

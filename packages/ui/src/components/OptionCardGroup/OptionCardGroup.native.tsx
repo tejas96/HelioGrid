@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { OptionCard } from './OptionCard.native';
 import { isPicked, pressOption } from './OptionCardGroup.logic';
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
     margin: -6,
     borderRadius: theme.radius['r-lg'],
   },
-  listError: { borderWidth: 1.5, borderColor: theme.colors.danger },
+  listError: { borderWidth: 1.5, borderColor: colors.danger },
   error: { lineHeight: 17.4 },
 });
 

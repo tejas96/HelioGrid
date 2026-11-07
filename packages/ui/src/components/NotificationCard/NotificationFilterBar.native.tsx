@@ -2,6 +2,8 @@ import { nextOpenGroup } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { LayoutAnimation, ScrollView, StyleSheet, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -68,13 +70,13 @@ interface FilterButtonProps {
   on: boolean;
   onPress: () => void;
   /** The mark, drawn in the button's ink: dark off, white on. */
-  icon: (ink: string) => ReactNode;
+  icon: (ink: ThemeColor) => ReactNode;
 }
 
 /** On, a dark pill with its name; off, a 44 circle with its icon. */
 function FilterButton({ label, name, on, onPress, icon }: FilterButtonProps) {
   const { controlFill } = useGround();
-  const ink = on ? theme.colors['text-inverse'] : theme.colors['text-secondary'];
+  const ink = on ? colors['text-inverse'] : colors['text-secondary'];
   return (
     <Pressable
       accessibilityRole="button"
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
     width: 1,
     height: theme.spacing['sp-6'],
     marginHorizontal: theme.spacing['sp-2'],
-    backgroundColor: theme.colors['line-soft'],
+    backgroundColor: colors['line-soft'],
   },
   button: {
     flexDirection: 'row',
@@ -115,7 +117,7 @@ const styles = StyleSheet.create({
   },
   buttonOn: {
     paddingRight: theme.spacing['sp-4'],
-    backgroundColor: theme.colors['action-primary'],
+    backgroundColor: colors['action-primary'],
   },
   icon: { width: 18, height: 18, alignItems: 'center', justifyContent: 'center' },
   dot: { width: 9, height: 9, borderRadius: theme.radius['r-pill'] },

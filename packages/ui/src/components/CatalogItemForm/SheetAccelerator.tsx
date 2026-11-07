@@ -1,6 +1,6 @@
 import { Pressable } from '../../primitives/Pressable/Pressable';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
-import { IrisTile } from '../IrisTile/IrisTile';
+import { HueTile } from '../HueTile/HueTile';
 import './SheetAccelerator.css';
 import type { SheetAcceleratorProps, WideProps } from './CatalogItemForm.parts.types';
 
@@ -17,7 +17,7 @@ export function SheetAccelerator({
 }: SheetAcceleratorProps & WideProps) {
   return (
     <Pressable className="hg-item-accelerator" disabled={disabled} onPress={onPress}>
-      <IrisTile glyph="spreadsheet" iris="blue" size={40} stroke={1.6} />
+      <HueTile glyph="spreadsheet" hue="teal" size={40} stroke={1.6} />
       <span className="hg-item-accelerator-words">
         <span className="hg-item-accelerator-title">{title}</span>
         <span className="hg-item-accelerator-sub">{sub}</span>

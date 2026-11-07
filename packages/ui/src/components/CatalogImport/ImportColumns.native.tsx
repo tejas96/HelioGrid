@@ -2,6 +2,7 @@ import { CATALOG_IMPORT_FIELDS } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { Select } from '../Select/Select.native';
 import { raisedCard } from './CatalogImport.surfaces.native';
@@ -84,12 +85,7 @@ function MappingRow({
       <Text variant="mono" style={styles.header}>
         {view.header}
       </Text>
-      <ImportGlyph
-        name="arrow-right-full"
-        size="xs"
-        stroke={1.7}
-        color={theme.colors['text-tertiary']}
-      />
+      <ImportGlyph name="arrow-right-full" size="xs" stroke={1.7} color={colors['text-tertiary']} />
       <View style={styles.field}>
         <Select
           value={view.field ?? (left ? LEAVE_OUT : undefined)}

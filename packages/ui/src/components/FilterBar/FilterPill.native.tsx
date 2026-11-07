@@ -4,6 +4,8 @@ import { cloneElement, isValidElement } from 'react';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import type { SvgProps } from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
@@ -42,10 +44,10 @@ export const filterStyles = StyleSheet.create({
 });
 
 /** Scope and chips are near-black when active (the primary-action marker); sort is accent. */
-const ACTIVE_FILL: Record<PillKind, string> = {
-  scope: theme.colors['action-primary'],
-  chip: theme.colors['action-primary'],
-  sort: theme.colors.accent,
+const ACTIVE_FILL: Record<PillKind, ThemeColor> = {
+  scope: colors['action-primary'],
+  chip: colors['action-primary'],
+  sort: colors.accent,
 };
 
 /** Chips take the control fill, flat (`F7-15`); scope and sort are bare. */
@@ -113,8 +115,8 @@ export function pillInk(kind: PillKind, active: boolean): 'inverse' | 'primary' 
 }
 
 /** The same ink as a colour, for a glyph or a tick — RN has no `currentColor` to inherit. */
-export function pillInkColor(kind: PillKind, active: boolean): string {
-  return theme.colors[`text-${pillInk(kind, active)}`];
+export function pillInkColor(kind: PillKind, active: boolean): ThemeColor {
+  return colors[`text-${pillInk(kind, active)}`];
 }
 
 /** The pill's words, in the one weight and colour pair the whole vocabulary uses. */
@@ -160,7 +162,7 @@ export function PillCount({
  * chip). RN has no inherited colour, so a `react-native-svg` element is handed the ink as `color`,
  * which its `currentColor` strokes read; drawn only when there is one.
  */
-export function OptionGlyph({ icon, color }: { icon: ReactNode; color: string }) {
+export function OptionGlyph({ icon, color }: { icon: ReactNode; color: ThemeColor }) {
   if (!icon) return null;
   const glyph = isValidElement<SvgProps>(icon)
     ? cloneElement(icon, { width: GLYPH, height: GLYPH, color })

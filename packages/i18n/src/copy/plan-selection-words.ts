@@ -23,7 +23,7 @@ const PAIR: Record<PlanSet, typeof P.pairLimits> = {
   included: P.pairIncluded,
   charges: P.pairCharges,
 };
-/** A cycle switch's two day rates, the cycle switched to first (board-check decision 1). */
+/** A cycle switch's two day rates, always the cycle switched to first. */
 const RATES = {
   yearly: { plain: P.yearlyAgainstMonthly, nothing: P.yearlyAgainstMonthlyNothing },
   monthly: { plain: P.monthlyAgainstYearly, nothing: P.monthlyAgainstYearlyNothing },

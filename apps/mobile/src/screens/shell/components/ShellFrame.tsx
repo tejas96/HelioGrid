@@ -1,9 +1,21 @@
-import { BottomNav, type BottomNavItem, KeyboardFrame, useKeyboardUp } from '@heliogrid/ui';
+import { SHELL } from '@heliogrid/i18n';
+import { useTranslate } from '@heliogrid/i18n/react';
+import { theme } from '@heliogrid/theme';
+import {
+  BottomNav,
+  type BottomNavItem,
+  BrandBloom,
+  KeyboardFrame,
+  useKeyboardUp,
+} from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles, underPill } from '../styles';
 import { ShellBillingStrip } from './ShellBillingStrip';
+
+/** Past the large title, the bar takes the page's name over (`LargeTitle`). */
+const LARGE_TITLE_HEIGHT = theme.type.roles.display.lineHeight;
 
 export interface ShellFrameProps {
   topBar: ReactNode;
@@ -50,11 +62,13 @@ export function ShellFrame({
   foot,
   children,
 }: ShellFrameProps) {
+  const t = useTranslate();
   const insets = useSafeAreaInsets();
   const pill = items.length > 0 && foot === undefined;
   const keyboardUp = useKeyboardUp();
   return (
     <SafeAreaView style={styles.page} edges={['top']}>
+      <BrandBloom placement="page" />
       {topBar}
       {/* SCR-SHELL-06: pinned under the bar, outside the scroll; Frame 8 (no pill) reads nothing. */}
       {items.length > 0 ? <ShellBillingStrip /> : null}
@@ -66,7 +80,7 @@ export function ShellFrame({
         footBandUnderKeyboard={insets.bottom}
         /* The held head is the first child, or the second under a lead that scrolls away. */
         heldChild={stickyHead === undefined ? undefined : lead === undefined ? 0 : 1}
-        onScrollOffset={(offset) => onScrolledChange?.(offset > 0)}
+        onScrollOffset={(offset) => onScrolledChange?.(offset > LARGE_TITLE_HEIGHT)}
         contentContainerStyle={[
           styles.scroll,
           // With no pill the page is Frame 8, centred in the whole region: the home's top gap
@@ -90,7 +104,7 @@ export function ShellFrame({
       </KeyboardFrame>
       {pill && !keyboardUp ? (
         <View pointerEvents="box-none" style={[styles.pillFrame, { bottom: insets.bottom }]}>
-          <BottomNav items={items} value={inView} />
+          <BottomNav label={t(SHELL.mainNavigation)} items={items} value={inView} />
         </View>
       ) : null}
     </SafeAreaView>

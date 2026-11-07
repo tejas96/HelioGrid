@@ -1,14 +1,14 @@
 import { readFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { readScreenIndex } from './screens-register';
-import { designLinks, readTaskLedger, SCREEN_ID, TASK_ID, type TaskEntry } from './task-ledger';
+import { designScreens, readTaskLedger, SCREEN_ID, TASK_ID, type TaskEntry } from './task-ledger';
 
 /**
  * The build order holds (`docs/build-order.md`): every task file sits in a block or is wholly V2,
  * every task placed apart exists and every exclusion is placed elsewhere, no open tasks wait on each
  * other in a loop or on a struck task, a V1 task waits on no V2 one, a V1 task that waits on a later
  * block is recorded and its ruling is owed before its block opens, every V1 screen task names the
- * screen it builds, and every task id is defined once, with one status line. `/task`
+ * screen it builds, and every task id is defined once, with one status line in the ledger's words. `/task`
  * (`.claude/skills/task/SKILL.md`, *Pick*) picks the next step; this keeps what it reads true.
  */
 const ORDER = 'docs/build-order.md';
@@ -18,7 +18,6 @@ const BACKTICKED = /`([^`]+)`/g;
 const RECORDED_ROW = new RegExp(`^\\| \`(${TASK_ID})\` \\| \\d+ \\| \`(${TASK_ID})\` \\|`);
 const TASK_IDS = new RegExp(TASK_ID, 'g');
 const SCREEN_IDS = new RegExp(SCREEN_ID, 'g');
-const OPEN = new Set(['planned', 'designed']);
 
 interface Blocks {
   ofFile: Map<string, number>;
@@ -119,7 +118,7 @@ class Order {
     private readonly blocks: Blocks,
     private readonly v2: Set<string>,
   ) {
-    this.open = [...tasks].filter(([, t]) => OPEN.has(t.status)).map(([id]) => id);
+    this.open = [...tasks].filter(([, t]) => t.status === 'planned').map(([id]) => id);
     this.v1Open = new Set(
       this.open.filter((id) => !this.isV2(id) && this.blockOf(id) !== undefined),
     );
@@ -187,7 +186,7 @@ class Order {
       .filter((id) => this.screensNamed(id).length === 0)
       .map(
         (id) =>
-          `${id} is a screen and names no screen — give it a DESIGN line, or a Design line naming its canvas`,
+          `${id} is a screen and names no screen — give it a DESIGN line, or a Design line naming the task whose screens it changes`,
       );
   }
 
@@ -251,10 +250,10 @@ class Order {
 
   private screensOf(id: string): string[] {
     const task = this.tasks.get(id);
-    return task === undefined ? [] : designLinks(task).map(({ screen }) => screen);
+    return task === undefined ? [] : designScreens(task);
   }
 
-  /** A screen's own DESIGN screens, or the canvas its `Design:` line names — a screen, or a task's. */
+  /** A task's own DESIGN screens, or those its `Design:` line names — a screen, or a task's. */
   private screensNamed(id: string): string[] {
     const design = this.tasks.get(id)?.header.get('Design') ?? '';
     const viaTasks = (design.match(TASK_IDS) ?? []).flatMap((other) => this.screensOf(other));

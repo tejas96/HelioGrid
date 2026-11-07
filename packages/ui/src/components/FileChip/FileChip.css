@@ -1,5 +1,4 @@
-/* FileChip — one chosen file, named (SCR-M01-17 step 1). A soft iris-blue wash over what holds it;
-   the glyph in the iris ink, and on `wide` in its own 36px tile. `FileChip.native.tsx` works the
+/* FileChip — one chosen file, named. A soft teal wash; the glyph in the teal words, and on `wide` in its own 36px tile. `FileChip.native.tsx` works the
    same three mixes out for the phone: a share changed here is changed there in the same commit.
    14px is the board's chip radius, which the radius scale does not carry. */
 
@@ -10,7 +9,7 @@
   min-width: 0;
   padding: var(--sp-3) var(--sp-3) var(--sp-3) 14px;
   border-radius: 14px;
-  background: color-mix(in srgb, var(--iris-blue) 8%, var(--hg-ground));
+  background: var(--hue-teal-bg);
   font-family: var(--font-sans);
 }
 .hg-file-chip[data-layout="wide"] {
@@ -19,7 +18,7 @@
 .hg-file-chip-glyph {
   flex-shrink: 0;
   display: inline-flex;
-  color: color-mix(in srgb, var(--iris-blue) 72%, var(--text-primary));
+  color: var(--hue-teal-text);
 }
 .hg-file-chip[data-layout="wide"] .hg-file-chip-glyph {
   width: 36px;
@@ -27,7 +26,7 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--r-sm);
-  background: color-mix(in srgb, var(--iris-blue) 16%, var(--hg-ground));
+  background: var(--hue-teal-bg);
 }
 .hg-file-chip-words {
   flex: 1;

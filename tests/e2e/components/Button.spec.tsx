@@ -2,13 +2,13 @@ import { createTranslator, SIGN_IN, teamActWords } from '@heliogrid/i18n';
 import { Button, Card } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { settledBox } from '../support/layout';
-import { resolvedColour, resolvedShadow } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, STRONG_EDGE } from '../support/token';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
 
 const en = await createTranslator('en');
 const tryAgain = en.t(SIGN_IN.tryAgain);
 
-test('a medium secondary button on the page is white and raised, and no shorter than the touch floor', async ({
+test('a medium secondary button on the page is white inside a strong hairline, and no shorter than the touch floor', async ({
   mount,
   page,
 }) => {
@@ -19,12 +19,12 @@ test('a medium secondary button on the page is white and raised, and no shorter 
   );
 
   await expect(button).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
-  await expect(button).toHaveCSS('box-shadow', await resolvedShadow(page, '--e2'));
+  await expect(button).toHaveCSS('box-shadow', await resolvedBoxShadow(page, STRONG_EDGE));
   const box = await settledBox(button);
   expect(box?.height).toBeGreaterThanOrEqual(MIN_TOUCH_TARGET);
 });
 
-test('a secondary button in a tile is the same white raised pill (D14 B)', async ({
+test('a secondary button in a tile is the same white ringed pill (D14 B)', async ({
   mount,
   page,
 }) => {
@@ -36,7 +36,7 @@ test('a secondary button in a tile is the same white raised pill (D14 B)', async
   const button = card.getByRole('button', { name: tryAgain });
 
   await expect(button).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
-  await expect(button).toHaveCSS('box-shadow', await resolvedShadow(page, '--e2'));
+  await expect(button).toHaveCSS('box-shadow', await resolvedBoxShadow(page, STRONG_EDGE));
 });
 
 test('a disabled primary button sinks to --canvas-sunken, never the white page it sits on', async ({
@@ -62,11 +62,19 @@ test('a disabled secondary sinks to --canvas-sunken with no shadow', async ({ mo
   await expect(button).toHaveCSS('box-shadow', 'none');
 });
 
-test('a secondary lifts one step to --e3 under the pointer', async ({ mount, page }) => {
+test('a secondary darkens its edge, takes --e1 and lifts under the pointer', async ({
+  mount,
+  page,
+}) => {
   const button = await mount(<Button variant="secondary">{tryAgain}</Button>);
+  const resting = await settledBox(button);
 
   await button.hover();
-  await expect(button).toHaveCSS('box-shadow', await resolvedShadow(page, '--e3'));
+  await expect(button).toHaveCSS(
+    'box-shadow',
+    await resolvedBoxShadow(page, 'inset 0 0 0 1px var(--mark-subtle), var(--e1)'),
+  );
+  expect((await settledBox(button)).y).toBeLessThan(resting.y);
 });
 
 const sendCode = en.t(SIGN_IN.sendCode);

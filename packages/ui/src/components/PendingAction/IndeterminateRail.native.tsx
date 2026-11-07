@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef, useState } from 'react';
 import type { DimensionValue, LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useReducedMotion } from '../../primitives/use-reduced-motion';
 import { BrandGradientFill } from '../ProgressBar/BrandGradientFill.native';
 import type { IndeterminateRailProps } from './PendingAction.types';
@@ -63,7 +64,7 @@ function useTravel(trackWidth: number, reduce: boolean) {
 export function IndeterminateRail({
   width = 22,
   thickness = 3,
-  tone = theme.colors.accent,
+  tone = colors.accent,
   gradient = false,
   style,
 }: NativeIndeterminateRailProps) {
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
   track: {
     flexShrink: 0,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
     overflow: 'hidden',
   },
   segment: {

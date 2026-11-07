@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { type RefObject, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-md'],
   },
-  live: { backgroundColor: theme.colors['success-bg'] },
+  live: { backgroundColor: colors['success-bg'] },
   disc: {
     width: DISC,
     height: DISC,

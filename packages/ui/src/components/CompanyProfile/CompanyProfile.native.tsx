@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect } from 'react';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { closeKeyboard } from '../../primitives/Keyboard/use-keyboard.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Accordion } from '../Accordion/Accordion.native';
@@ -219,7 +220,7 @@ function Unread({
 
 /** Decorative: the message beside it carries the meaning. react-native-svg has no currentColor. */
 function UnreadGlyph() {
-  const color = theme.colors['text-tertiary'];
+  const color = colors['text-tertiary'];
   return (
     <Svg
       width={UNREAD_GLYPH_SIZE}

@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ScopeNoteProps, ScopeNoteSpec } from './ScopeNote.types';
@@ -23,7 +24,7 @@ function Glyph({ size }: { size: number }) {
       height={size}
       viewBox="0 0 24 24"
       fill="none"
-      stroke={theme.colors['text-tertiary']}
+      stroke={colors['text-tertiary']}
       strokeWidth={1.5}
       strokeLinecap="round"
     >
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
   panel: {
     padding: 14,
     borderRadius: theme.radius['r-sm'],
-    backgroundColor: theme.colors['neutral-bg'],
+    backgroundColor: colors['neutral-bg'],
   },
   start: { justifyContent: 'flex-start' },
   centred: { justifyContent: 'center' },

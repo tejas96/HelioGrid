@@ -1,89 +1,76 @@
 import { theme } from '@heliogrid/theme';
 import type { RefObject } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { Chip } from '../Chip/Chip.native';
+import { HeroPanel } from '../HeroPanel/HeroPanel.native';
+import { LottieMoment } from '../LottieMoment/LottieMoment.native';
 import type { CatalogStrip as CatalogStripSpec } from './CatalogItems.types';
+import { useJustPublished } from './use-just-published';
 
 export interface CatalogStripProps {
   strip: CatalogStripSpec;
-  /** Where the reader's focus lands when the panel comes back after *Try again*: the text block. */
+  /** Where the reader's focus lands when the panel comes back after *Try again*: the hero's words. */
   focusRef?: RefObject<View | null>;
 }
 
 /**
- * The versioning strip that opens a panel: a dot that says whether anything is in force, the
- * title with its tag, the detail line with the way into the past list, and the panel's act.
- * The words are the caller's; a strip with nothing to list is not a button.
+ * The panel's one hero: what is in force, its tag large, a dot that says whether anything is live,
+ * the line under it, the way into the past list and the panel's act. The words are the caller's.
  */
 export function CatalogStripBar({ strip, focusRef }: CatalogStripProps) {
-  const words = (
-    <>
-      <View style={styles.titleRow}>
-        <Text variant="body-sm" bold>
-          {strip.title}
-        </Text>
-        <Tag strip={strip} />
-      </View>
-      <View style={styles.detailRow}>
-        <Text variant="caption" color="secondary">
-          {strip.detail}
-        </Text>
-        {/* The dot travels with the link, so a wrap never leaves it alone on a line. */}
-        {strip.link === null ? null : (
-          <View style={styles.link}>
-            <Text variant="caption" color="secondary">
-              {'· '}
-            </Text>
-            <Text variant="caption" color="secondary" bold>
-              {strip.link}
-            </Text>
-            <ShellGlyph name="chevron-right" size="sm" tone="secondary" />
-          </View>
-        )}
-      </View>
-    </>
-  );
+  const published = useJustPublished(strip.tag);
   return (
-    <View style={[tileSurface, styles.strip]}>
-      <GroundProvider ground="tile">
+    <HeroPanel
+      label={strip.title}
+      labelAside={
         <View
           style={[styles.dot, strip.tag === null ? styles.dotNone : styles.dotLive]}
           importantForAccessibility="no-hide-descendants"
         />
-        {/* Focus returns after a retry to the text block: the button when there is a past list,
-            else the words alone — never a wrapper around a control. */}
-        {strip.link === null ? (
-          <View ref={focusRef} accessible style={styles.words}>
-            {words}
-          </View>
-        ) : (
-          <Pressable hostRef={focusRef} onPress={strip.onLink} style={styles.press}>
-            {words}
-          </Pressable>
-        )}
-        {strip.action === null ? null : (
-          <Button variant="secondary" size="sm" onClick={strip.onAction}>
-            {strip.action}
-          </Button>
-        )}
-      </GroundProvider>
-    </View>
+      }
+    >
+      <View ref={focusRef} accessible style={styles.words}>
+        {published ? <LottieMoment name="celebrate" size={48} /> : null}
+        <Tag strip={strip} />
+        <Text variant="body" color="secondary">
+          {strip.detail}
+        </Text>
+      </View>
+      {strip.link === null && strip.action === null ? null : (
+        <View style={styles.acts}>
+          {strip.action === null ? null : (
+            <Button variant="primary" size="md" onClick={strip.onAction}>
+              {strip.action}
+            </Button>
+          )}
+          {strip.link === null ? null : (
+            <Button
+              variant="ghost"
+              size="md"
+              onClick={strip.onLink}
+              iconRight={<ShellGlyph name="chevron-right" size="sm" tone="secondary" />}
+            >
+              {strip.link}
+            </Button>
+          )}
+        </View>
+      )}
+    </HeroPanel>
   );
 }
 
-/** *r2026-08* in the mono face, or *V7* as a chip; nothing before the first. */
+/** *r2026-08* large in the mono face, or *V7* as a chip; nothing before the first. */
 function Tag({ strip }: CatalogStripProps) {
   if (strip.tag === null) return null;
   if (strip.tagAs === 'chip') {
     return <Chip density="functional">{strip.tag}</Chip>;
   }
   return (
-    <Text variant="mono" bold>
+    <Text variant="mono" style={styles.tag}>
       {strip.tag}
     </Text>
   );
@@ -92,31 +79,20 @@ function Tag({ strip }: CatalogStripProps) {
 const DOT = theme.spacing['sp-2'];
 
 const styles = StyleSheet.create({
-  strip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing['sp-3'],
-    paddingVertical: theme.spacing['sp-2'],
-    paddingHorizontal: theme.spacing['sp-3'],
-    borderRadius: theme.radius['r-md'],
-  },
   dot: { width: DOT, height: DOT, borderRadius: theme.radius['r-pill'] },
-  dotLive: { backgroundColor: theme.colors.success },
-  dotNone: { backgroundColor: theme.colors['mark-subtle'] },
-  /* The whole text block is the way into the past list; the press keeps the 44 floor. */
-  press: { flex: 1, minWidth: 0, alignItems: 'stretch', justifyContent: 'center' },
-  words: { flex: 1, minWidth: 0, justifyContent: 'center' },
-  titleRow: {
+  dotLive: { backgroundColor: colors.success },
+  dotNone: { backgroundColor: colors['mark-subtle'] },
+  words: { gap: theme.spacing['sp-1'], alignItems: 'flex-start' },
+  tag: {
+    fontSize: theme.type.roles.h2.fontSize,
+    lineHeight: theme.type.roles.h2.lineHeight,
+    fontWeight: '500',
+    color: colors['on-panel'],
+  },
+  acts: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
     gap: theme.spacing['sp-2'],
   },
-  detailRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    columnGap: theme.spacing['sp-1'],
-  },
-  link: { flexDirection: 'row', alignItems: 'center' },
 });

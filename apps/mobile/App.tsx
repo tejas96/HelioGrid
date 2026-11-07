@@ -6,9 +6,10 @@ import { installFormsErrorMap } from '@heliogrid/forms';
 import { type I18nRuntime, provenanceWords } from '@heliogrid/i18n';
 import { KeyboardHost, MarketProvider, PortalHost, ProvenanceWordsProvider } from '@heliogrid/ui';
 import { type ReactNode, useCallback, useState } from 'react';
-import { LogBox, StatusBar } from 'react-native';
+import { LogBox } from 'react-native';
 import { getVersion } from 'react-native-device-info';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AppearanceHost } from './src/appearance';
 import { keychainStorage } from './src/auth/keychain-storage';
 import { API_URL } from './src/env';
 import {
@@ -81,10 +82,11 @@ export default function App() {
               {/* The ONE portal host, above navigation: every menu, sheet and modal escapes its
                 screen through here; without it a Portal renders in place (Portal.native). */}
               <InsetPortalHost>
-                {/* Transparent, with dark icons, on every Android version: the door's bloom runs under it
-                  (`SCR-M01-01`), and each screen keeps clear of the top inset itself. */}
-                <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
-                <AppNavigation />
+                {/* The appearance, and the status bar it sets: transparent, its icons per scheme; each
+                  screen keeps clear of the top inset itself. */}
+                <AppearanceHost>
+                  <AppNavigation />
+                </AppearanceHost>
               </InsetPortalHost>
             </KeyboardHost>
           </SafeAreaProvider>

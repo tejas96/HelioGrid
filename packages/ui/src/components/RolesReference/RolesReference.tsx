@@ -58,7 +58,7 @@ export function RolesReference({ words, read, title, back = null }: RolesReferen
                   icon={<ShellGlyph name="chevron-left" size="md" tone="primary" />}
                 />
               )}
-              <Text as="h1" variant="h2">
+              <Text as="h1" variant="display">
                 {words.title}
               </Text>
               {about}

@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { type FocusAfter, useFocusAfter } from '../../primitives/FocusAfter';
 import { Surface } from '../../primitives/Surface/Surface.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
     height: 108,
     padding: theme.spacing['sp-4'],
     borderWidth: 1,
-    borderColor: theme.colors['line-soft'],
+    borderColor: colors['line-soft'],
     alignItems: 'center',
     justifyContent: 'center',
   },

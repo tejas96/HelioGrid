@@ -3,7 +3,7 @@
 //   · a non-zero number on a size key: `width: 12`, `width={12}`, `size = 24`;
 //   · a Tailwind size class in a class string (className, class, clsx, classNames, cn).
 // A px value equal to a breakpoint passes inside a matchMedia() call or an @media string. The one
-// breakpoint today is --bp-desktop: 968px, read from packages/theme/src/_generated/tokens/spacing.css
+// breakpoint today is --bp-desktop: 968px, read from packages/theme/src/tokens/layout.ts
 // (Grit cannot read a file). The second length regex spells the px length as every number but 968,
 // so a new --bp-* token there must be carved out of it the same way.
 // Each regex sits behind `includes` checks that are cheaper and never narrower.

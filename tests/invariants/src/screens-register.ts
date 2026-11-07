@@ -10,7 +10,6 @@ import { ROW_ID } from './prd-rows';
  * release holds.
  */
 export const SCREENS_REGISTER = 'docs/prd/registers/screens.md';
-export const BRIEFS = 'docs/ux/briefs';
 const INDEX_HEADING = /^## 2\./;
 const DISPOSITIONS_HEADING = /^## 3\./;
 const ANY_SECTION = /^## /;
@@ -62,7 +61,7 @@ function linesOfSection(repo: string, heading: RegExp): [number, string][] {
 export interface ScreenRow {
   id: string;
   line: number;
-  /** Each cell by its column's name (`Brief`, `V` …); a missing cell is absent. */
+  /** Each cell by its column's name (`Tier`, `V` …); a missing cell is absent. */
   cells: Map<string, string>;
 }
 

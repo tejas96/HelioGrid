@@ -28,7 +28,7 @@ const MARKET_DEFAULT = en.t(PROFILE_PREFERENCES.marketDefault, { market: IN_FORM
 const ROLE = (preset: Parameters<typeof presetName>[1]) => presetName(en.t, preset);
 /** Every box that holds words — the boxes a clipped line would show in. */
 const TEXT =
-  '.hg-profile-preferences-title, .hg-profile-preferences-overline, .hg-list-row-title, .hg-chip, .hg-option-card-titles, .hg-segmented-control-segment, .hg-value-source, .hg-settings-section-title, .hg-settings-section-label, .hg-settings-section-caption, .hg-profile-preferences-name-words, .hg-switch-label';
+  '.hg-large-title-name, .hg-profile-preferences-overline, .hg-list-row-title, .hg-chip, .hg-option-card-titles, .hg-segmented-control-segment, .hg-value-source, .hg-settings-section-title, .hg-settings-section-label, .hg-settings-section-caption, .hg-profile-preferences-name-words, .hg-switch-label';
 /** A saved photo, as its download link would draw it. */
 const PHOTO = `data:image/png;base64,${pngOf(8, 8).toString('base64')}`;
 const PICTURES = join(import.meta.dirname, '../../../.qa/components/profile-preferences');

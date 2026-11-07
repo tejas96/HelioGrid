@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Circle, G, Svg } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { ChartFrame } from './ChartFrame.native';
@@ -71,7 +72,7 @@ export function DonutChart({
                 cy={size / 2}
                 r={radius}
                 fill="none"
-                stroke={theme.colors['canvas-sunken']}
+                stroke={colors['canvas-sunken']}
                 strokeWidth={thickness}
               />
               {segments.map((segment) => (

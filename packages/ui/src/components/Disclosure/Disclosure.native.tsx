@@ -1,7 +1,7 @@
-import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import {
   disclosureFor,
@@ -104,10 +104,10 @@ Disclosure.render = renderDisclosure;
 const styles = StyleSheet.create({
   body: {
     maxWidth: 640,
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   lead: {
     fontWeight: '700',
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
 });

@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { type RefObject, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Avatar } from '../Avatar/Avatar.native';
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
     elevation: 0,
   },
-  hairline: { height: 1, backgroundColor: theme.colors['line-soft'] },
+  hairline: { height: 1, backgroundColor: colors['line-soft'] },
   control: { gap: theme.spacing['sp-2'] },
   heading: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-1'] },
   switches: { gap: theme.spacing['sp-1'] },

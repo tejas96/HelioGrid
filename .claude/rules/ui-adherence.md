@@ -13,24 +13,26 @@ paths:
 
 ## Visual values
 
-- **No raw values** — no hex, no px, no inline style; every value comes from `@heliogrid/theme`. On
-  a screen only `0` is written raw; a size or colour the design system lacks is a design system change
-  (`.claude/skills/task/design-track.md`, *Changing the design system*), then pulled into `packages/theme` as
-  `packages/theme/CLAUDE.md` says — never typed into the app.
-- **Primary actions are near-black.** Accent is focus, links, selection, active tab and control
-  fills ONLY — never a button fill. Iridescence is atmosphere, never information. Hierarchy comes
-  from luminance and elevation, not borders.
+- **No raw values** — no hex, no px, no inline style; every value comes from `@heliogrid/theme`,
+  whose one source is the typed tokens in `packages/theme/src/tokens/`. On a screen only `0` is
+  written raw; a size or colour the tokens lack is added there first, in light and dark, with its
+  contrast pair, never typed into the app.
+- **The primary action is the ocean accent** (`--action-primary`); the active nav item is a solid
+  ink pill. The logo gradient is spent once per screen — the hero's top line, a progress fill, the
+  brand mark — and is never information.
+- **Every colour works in light, dark and field mode.** Web reads the CSS variables, which switch
+  with `data-theme`; a phone half reads `colors` from the `Color` primitive, whose values the system
+  resolves per scheme. A hex for arithmetic (a contrast check, an alpha) comes from `palette`,
+  never from a style.
 - **Text is never smaller than 12px**; the 11px uppercase overline is the one exception.
 - **An icon-only control is an `IconButton`**; a `Button` always has words.
 
-## A screen is its locked board
+## A screen follows the approved language
 
-A screen with locked boards (`.design/<module>/<screen id>-*.dc.html`) is built frame by frame
-(`data-frame="…"`) from the frame's markup — the components it names
-(`component-from-global-scope="…<Name>"`, `h(NS.<Name>`), their order, nesting and props, and its
-layout — never from the names alone. The app shell draws the top bar, nav and rail, and the
-words come from the catalog, never from the board. A component the frame does not name, or a
-different structure, is a defect even when every test passes.
+A UI task shows the owner three samples in the approved language (`CLAUDE.md` §10) before it builds,
+and the build follows the sample they pick. The app shell draws the top bar, nav and sidebar; the
+words come from the catalog. A phone page opens on a large Newsreader title under an icon-only top
+bar; one hero per screen at most.
 
 ## Compose from the primitives, don't re-answer them
 
@@ -108,9 +110,12 @@ navigator's, and the studio's 3D scene animates in its own code under the same f
   A loop that never stops also keeps Android from going idle, and every Android view-tree read then fails.
 - **Nothing waits on an animation.** Content renders at once; motion runs over what is already there.
   No `onAnimationEnd` gates a control or the data, and the rows of a list never arrive one by one.
-- **Heavy motion loads late.** A shader or a motion library loads lazily (`import()` /
+- **Heavy motion loads late.** A shader, a motion library or a Lottie file loads lazily (`import()` /
   `next/dynamic`), never in a screen's first-load bundle; one live shader canvas per screen at most,
   with its still frame as the fallback when the GPU path is missing.
+- **Lottie is `LottieMoment`, and only there.** Each file is original, tiny (under 30 KB, no
+  raster), brand-coloured and plays once; it pauses off-screen and shows its last frame under
+  reduced motion.
 
 ## Screens
 

@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useRef, useState } from 'react';
 import type { DimensionValue, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Text`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -129,7 +130,7 @@ export function Image({
         <View style={styles.sheen} importantForAccessibility="no" pointerEvents="none" />
         {referenceOnly ? (
           <View style={styles.reference}>
-            <Glyph name="eye" size={13} color={theme.colors['text-secondary']} />
+            <Glyph name="eye" size={13} color={colors['text-secondary']} />
             <Text variant="overline" color="secondary">
               {compact ? words.referenceShort : referenceLabel}
             </Text>
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: '100%',
     overflow: 'hidden',
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   sheen: {
     position: 'absolute',
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
     right: 0,
     height: 1,
     // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
-    backgroundColor: theme.colors['text-inverse'],
+    backgroundColor: colors['text-inverse'],
     opacity: 0.45,
   },
   reference: {
@@ -209,7 +210,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: theme.radius['r-pill'],
     // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e2,
   },
 });

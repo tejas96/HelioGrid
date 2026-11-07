@@ -1,6 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextColor } from '../../primitives/Text/Text.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -145,7 +146,7 @@ const styles = StyleSheet.create({
   needLine: { fontWeight: '500' },
   act: {
     gap: theme.spacing['sp-2'],
-    backgroundColor: theme.colors['surface-form'],
+    backgroundColor: colors['surface-form'],
     borderRadius: theme.radius['r-lg'],
     padding: theme.spacing['sp-3'],
   },

@@ -16,13 +16,14 @@ export * from './components/ActionReason';
 export * from './components/ActivityStream';
 export * from './components/ActorClass';
 export * from './components/AllocationMeter';
+export * from './components/AppearanceSwitch';
 export * from './components/AppRail';
 export * from './components/AppShell';
 export * from './components/AssignRoles';
-export * from './components/AudioPlayer';
 export * from './components/Avatar';
-// Named as well as starred, for the component tests — see `contrast` below.
-export { IRIS_HUES, irisTintOf } from './components/Avatar';
+// Named as well as starred: the component tests read only the names an entry lists by name
+// (`tests/e2e/support/hues.ts`).
+export { CATEGORY_HUES } from './components/Avatar';
 export * from './components/BandedFigure';
 export * from './components/Banner';
 export * from './components/BillingDenial';
@@ -32,7 +33,6 @@ export * from './components/Block';
 export * from './components/BrandBloom';
 export * from './components/BrandColorField';
 export * from './components/BrandingSettings';
-export * from './components/Breadcrumb';
 export * from './components/Button';
 export * from './components/Card';
 export * from './components/CatalogImport';
@@ -76,20 +76,23 @@ export * from './components/FilterPanel';
 export * from './components/FindingList';
 export * from './components/FirstRunProfile';
 export * from './components/FormActionBar';
+export * from './components/HeroPanel';
 export * from './components/HomeBlocks';
 export * from './components/HomeHead';
+export * from './components/HueTile';
 export * from './components/IconButton';
 export * from './components/Image';
 export * from './components/Input';
 export * from './components/InviteForm';
 export * from './components/InviteLanding';
-export * from './components/IrisTile';
 export * from './components/JobTray';
 export * from './components/Kanban';
 export * from './components/LanguageSwitcher';
+export * from './components/LargeTitle';
 export * from './components/LeaveConfirm';
 export * from './components/ListRow';
 export * from './components/LoadingBars';
+export * from './components/LottieMoment';
 export * from './components/MapSurface';
 export * from './components/MarketProvider';
 export { useFormat } from './components/MarketProvider';
@@ -142,13 +145,11 @@ export * from './components/SignupKnownNumber';
 export * from './components/SignupRequestSent';
 export * from './components/SignupSteps';
 export * from './components/Slider';
-export * from './components/SourceDocument';
 export * from './components/StatCard';
 export * from './components/StatusChip';
 export * from './components/Stepper';
 export * from './components/SuccessDwell';
 export * from './components/Switch';
-export * from './components/Tabs';
 export * from './components/TenantHeader';
 export * from './components/Textarea';
 export * from './components/TextDivider';
@@ -158,13 +159,11 @@ export * from './components/Timeline';
 export * from './components/TintedBlock';
 export * from './components/Toast';
 export * from './components/ToastHost';
-export * from './components/Tooltip';
 export * from './components/Transcript';
 export * from './components/UnavailableNote';
 export * from './components/UsageMeter';
 export * from './components/UsagePage';
 export * from './components/ValueSource';
-export * from './components/VersionDiff';
 export * from './components/Wordmark';
 export type {
   BoxProps,
@@ -175,6 +174,7 @@ export type {
   StackProps,
 } from './primitives/Box';
 export { Box, Stack } from './primitives/Box';
+export { colors, type ThemeColor, usePalette } from './primitives/Color';
 export type { FieldProps } from './primitives/Field';
 export { Field } from './primitives/Field';
 export type { FocusAfter, FocusHandle, LeavingPress } from './primitives/FocusAfter';
@@ -202,14 +202,12 @@ export type {
   SurfaceProps,
   SurfaceRadius,
 } from './primitives/Surface';
+
 export { Surface } from './primitives/Surface';
 export type { TextAlign, TextColor, TextProps, TextVariant } from './primitives/Text';
 export { Text } from './primitives/Text';
 export { useOwnWidth } from './primitives/use-own-width';
 export * from './utils/color-contrast';
-/* Named as well as starred: the component tests read only the names an entry lists by name
-   (`tests/e2e/support/iris.ts`). */
-export { contrast } from './utils/color-contrast';
 /* MarketFormat / IN_FORMAT / useFormat were declared TWICE — once here and once in the
    calendar's own `DatePicker/market-format.ts` — which made a bare `export *` ambiguous (TS2308)
    and had to be resolved by hand. The second declaration is GONE: `utils/format` is the one

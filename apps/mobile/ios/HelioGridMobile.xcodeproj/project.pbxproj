@@ -25,6 +25,10 @@
 		B4F0A17E5D0000000000B110 /* NotoSansDevanagari-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F210 /* NotoSansDevanagari-Medium.ttf */; };
 		B4F0A17E5D0000000000B111 /* NotoSansDevanagari-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F211 /* NotoSansDevanagari-SemiBold.ttf */; };
 		B4F0A17E5D0000000000B112 /* NotoSansDevanagari-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F212 /* NotoSansDevanagari-Bold.ttf */; };
+		B4F0A17E5D0000000000B120 /* Newsreader-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F220 /* Newsreader-Regular.ttf */; };
+		B4F0A17E5D0000000000B121 /* Newsreader-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F221 /* Newsreader-Medium.ttf */; };
+		B4F0A17E5D0000000000B122 /* NotoSerifDevanagari-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F222 /* NotoSerifDevanagari-Regular.ttf */; };
+		B4F0A17E5D0000000000B123 /* NotoSerifDevanagari-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F0A17E5D0000000000F223 /* NotoSerifDevanagari-Medium.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +54,10 @@
 		B4F0A17E5D0000000000F210 /* NotoSansDevanagari-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NotoSansDevanagari-Medium.ttf"; path = "../assets/fonts/NotoSansDevanagari-Medium.ttf"; sourceTree = "<group>"; };
 		B4F0A17E5D0000000000F211 /* NotoSansDevanagari-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NotoSansDevanagari-SemiBold.ttf"; path = "../assets/fonts/NotoSansDevanagari-SemiBold.ttf"; sourceTree = "<group>"; };
 		B4F0A17E5D0000000000F212 /* NotoSansDevanagari-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NotoSansDevanagari-Bold.ttf"; path = "../assets/fonts/NotoSansDevanagari-Bold.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F220 /* Newsreader-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Newsreader-Regular.ttf"; path = "../assets/fonts/Newsreader-Regular.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F221 /* Newsreader-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Newsreader-Medium.ttf"; path = "../assets/fonts/Newsreader-Medium.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F222 /* NotoSerifDevanagari-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NotoSerifDevanagari-Regular.ttf"; path = "../assets/fonts/NotoSerifDevanagari-Regular.ttf"; sourceTree = "<group>"; };
+		B4F0A17E5D0000000000F223 /* NotoSerifDevanagari-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "NotoSerifDevanagari-Medium.ttf"; path = "../assets/fonts/NotoSerifDevanagari-Medium.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -83,6 +91,10 @@
 				B4F0A17E5D0000000000F207 /* GeistMono-SemiBold.ttf */,
 				B4F0A17E5D0000000000F208 /* GeistMono-Bold.ttf */,
 				B4F0A17E5D0000000000F209 /* NotoSansDevanagari-Regular.ttf */,
+				B4F0A17E5D0000000000F220 /* Newsreader-Regular.ttf */,
+				B4F0A17E5D0000000000F221 /* Newsreader-Medium.ttf */,
+				B4F0A17E5D0000000000F222 /* NotoSerifDevanagari-Regular.ttf */,
+				B4F0A17E5D0000000000F223 /* NotoSerifDevanagari-Medium.ttf */,
 				B4F0A17E5D0000000000F210 /* NotoSansDevanagari-Medium.ttf */,
 				B4F0A17E5D0000000000F211 /* NotoSansDevanagari-SemiBold.ttf */,
 				B4F0A17E5D0000000000F212 /* NotoSansDevanagari-Bold.ttf */,
@@ -211,6 +223,10 @@
 				B4F0A17E5D0000000000B107 /* GeistMono-SemiBold.ttf in Resources */,
 				B4F0A17E5D0000000000B108 /* GeistMono-Bold.ttf in Resources */,
 				B4F0A17E5D0000000000B109 /* NotoSansDevanagari-Regular.ttf in Resources */,
+				B4F0A17E5D0000000000B120 /* Newsreader-Regular.ttf in Resources */,
+				B4F0A17E5D0000000000B121 /* Newsreader-Medium.ttf in Resources */,
+				B4F0A17E5D0000000000B122 /* NotoSerifDevanagari-Regular.ttf in Resources */,
+				B4F0A17E5D0000000000B123 /* NotoSerifDevanagari-Medium.ttf in Resources */,
 				B4F0A17E5D0000000000B110 /* NotoSansDevanagari-Medium.ttf in Resources */,
 				B4F0A17E5D0000000000B111 /* NotoSansDevanagari-SemiBold.ttf in Resources */,
 				B4F0A17E5D0000000000B112 /* NotoSansDevanagari-Bold.ttf in Resources */,

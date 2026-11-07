@@ -181,13 +181,12 @@ tenant's MARKET does). Extension point: new copy modules keyed by
 contract enums where applicable.
 
 ### theme — tokens, the semantic layer and the provider
-Owns: `src/_generated/` pulled from the LIVE design system (`ds:pull` — a session action, not a
-script), the semantic
-role mapping, the RN theme registration, the web provider; emits tokens.css + print.css;
-the WCAG DECLARED_PAIRS gate. Allowed deps: none at runtime (config dev-only). Platform
-scope: shared. Belongs: every visual value. Never: hand-edited `_generated/` (the v1
-package was hand-copied and drifted in days — docs/engineering/17 §1); workspace imports. Extension
-point: emit targets grow here. Replaces the v1 `tokens` package, deleted 2026-08-19.
+Owns: the typed tokens in `src/tokens/` — colours in light, dark and field mode, type, spacing,
+radius, elevation, motion — and the build that emits tokens.css, base.css, print.css, the phone
+theme object and Android's light and night colour resources; the WCAG `DECLARED_PAIRS` measured in
+every mode. Allowed deps: none at runtime (config dev-only). Platform scope: shared. Belongs: every
+visual value. Never: a value typed anywhere else; workspace imports. Extension point: emit targets
+grow here.
 
 ### ui — the design system, BOTH platforms  (built ahead of its screens — docs/engineering/17)
 Owns: `primitives/` (the 10 atoms, two of which hold product law — 44px targets and
@@ -387,8 +386,8 @@ Walk top-down; first match wins. The RFC's file table records the answer for eac
    SET of languages? → packages/domain/src/format/languages.ts, and nowhere else — a pack
    declares a label per language, and domain imports nothing. contracts derives the
    z.enum and re-exports, so i18n, the Lingui CLI and the apps still import from contracts.
-7. Is it a visual value (color, spacing, type scale)? → the live design system via
-   packages/theme (`ds:pull` — a session action, not a script) — never a literal in a screen.
+7. Is it a visual value (color, spacing, type scale)? → packages/theme/src/tokens/, in light and
+   dark — never a literal in a screen.
 8. Is it a reusable visual component? → packages/ui/src/components/<Name>/ — the shared
    `<Name>.types.ts` plus `<Name>.tsx` (web) and `<Name>.native.tsx` (RN), one change
    (Law 7).

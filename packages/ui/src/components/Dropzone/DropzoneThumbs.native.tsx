@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { Image, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { closingPress, type FocusAfter } from '../../primitives/FocusAfter';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     height: THUMB,
     borderRadius: theme.radius['r-sm'],
     overflow: 'hidden',
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   image: { width: '100%', height: '100%' },
   glyph: {
@@ -42,13 +43,13 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: theme.radius['r-pill'],
     // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     overflow: 'hidden',
   },
   fill: {
     height: '100%',
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   /* 44dp target around the 28dp circle — the two-rectangles rule. The overhang is deliberate. */
   remove: { position: 'absolute', top: -4, right: -4, width: 44, height: 44 },
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e2,
   },
 });
@@ -107,7 +108,7 @@ export function DropzoneThumbs({ files, onRemove, words, focusAfter }: DropzoneT
                   height={14}
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke={theme.colors['text-secondary']}
+                  stroke={colors['text-secondary']}
                   strokeWidth={2}
                   strokeLinecap="round"
                 >

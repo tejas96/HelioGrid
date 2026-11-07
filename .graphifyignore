@@ -21,17 +21,16 @@ pnpm-lock.yaml
 apps/mobile/ios/
 apps/mobile/android/
 
-# Working documents, not knowledge. Briefs and task files are read ONE AT A TIME while
-# designing a screen or building a slice, so they deliberately inline the requirement rows
+# Working documents, not knowledge. Task files are read ONE AT A TIME while
+# building a slice, so they deliberately inline the requirement rows
 # verbatim — 1,125 of them byte-identical to the PRD cell they quote. That self-containment
 # is the point for a human; for a graph it is 1,600+ requirement rows instantiated twice and
 # 102 three times, diluting every real requirement node. docs/prd/ is canonical for
-# requirement text. The three index files below are NOT excluded — they carry process
+# requirement text. The index file below is NOT excluded — it carries process
 # knowledge that duplicates nothing.
 # Patterns target the FILES, not the directories: a gitignore-style negation cannot
-# re-include a file whose parent directory is excluded, so `docs/ux/briefs/` would have
+# re-include a file whose parent directory is excluded, so `docs/tasks/` would have
 # swallowed its own README.
-docs/ux/briefs/SCR-*.md
 docs/tasks/*.md
 !docs/tasks/README.md
 

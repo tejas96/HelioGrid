@@ -30,10 +30,8 @@ test.use({ viewport: { width: 375, height: HEIGHT } });
 
 /** The board's column at 375: the frame less the screen's padding on both sides. */
 const COLUMN = 335;
-/** A flat section's shut header, and a field's box (`SCR-M01-05`, record list 5, N2). */
+/** A flat section's shut header (`SCR-M01-05`, record list 5, N2); a field and the act are `--field-h`. */
 const HEADER = 56;
-const FIELD = 54;
-const ACT = 48;
 
 const TITLE = {
   identity: en.t(COMPANY_PROFILE_PART_TITLE.identity),
@@ -59,7 +57,7 @@ test('a new company meets five flat parts, the first open on its name, and a liv
   page,
 }) => {
   const profile = await mount(<CompanyProfileAsHeld reader="en" />);
-  await expect(profile.locator('.hg-door-wordmark')).toBeVisible();
+  await expect(profile.locator('.hg-product-mark')).toBeVisible();
   await expect(profile.getByRole('heading', { level: 1 })).toHaveText(en.t(COMPANY_PROFILE.title));
   await expect(profile.getByText(en.t(COMPANY_PROFILE.lede))).toBeVisible();
 
@@ -107,7 +105,10 @@ test('a new company meets five flat parts, the first open on its name, and a liv
   const act = profile.getByRole('button', { name: SAVE });
   await expect(act).toBeEnabled();
   await expect(act).toHaveText(en.t(COMPANY_PROFILE.save));
-  expect(await settledBox(act)).toMatchObject({ width: COLUMN, height: ACT });
+  expect(await settledBox(act)).toMatchObject({
+    width: COLUMN,
+    height: await resolvedLength(page, '--field-h'),
+  });
   expect(await bottomOf(act)).toBeLessThanOrEqual(HEIGHT);
   await expect(profile.getByText(en.t(COMPANY_PROFILE.reseedScope))).toHaveCount(0);
   await act.click();
@@ -151,6 +152,7 @@ test('a part that owes something opens itself, keeps its word while open, and le
 
 test('the address part asks the street, reads back the city and asks the PIN code, each reporting its own field', async ({
   mount,
+  page,
 }) => {
   const profile = await mount(<CompanyProfileAsHeld reader="en" open="address" />);
   const street = profile.getByRole('textbox', { name: en.t(COMPANY_PROFILE.street) });
@@ -169,7 +171,10 @@ test('the address part asks the street, reads back the city and asks the PIN cod
   const boxes = profile.locator('.hg-input-shell');
   await expect(boxes).toHaveCount(3);
   for (const index of [0, 1, 2]) {
-    expect(await settledBox(boxes.nth(index))).toMatchObject({ width: COLUMN, height: FIELD });
+    expect(await settledBox(boxes.nth(index))).toMatchObject({
+      width: COLUMN,
+      height: await resolvedLength(page, '--field-h'),
+    });
   }
   const purpose = profile.getByText(en.t(COMPANY_PROFILE.addressPurpose));
   expect((await settledBox(purpose))?.y).toBeGreaterThan(await bottomOf(pin));

@@ -112,7 +112,7 @@ function CodeTitle({ words, phone }: { words: DoorCodeStepWords; phone: string }
   return (
     <View style={styles.title}>
       <View style={styles.titleRow}>
-        <Text variant="h2" style={styles.titleText}>
+        <Text variant="display" style={styles.titleText}>
           {words.title}
         </Text>
         {words.explainer === null ? null : <Explainer {...words.explainer} />}

@@ -2,6 +2,8 @@ import { theme } from '@heliogrid/theme';
 import { useId, useImperativeHandle, useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { ActivityIndicator, Text as RNText, StyleSheet, type View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
@@ -17,32 +19,39 @@ interface NativeButtonProps extends ButtonProps {
 }
 
 interface VariantVisual {
-  background: string;
-  color: string;
+  background: ThemeColor;
+  color: ThemeColor;
   elevation?: ViewStyle;
 }
 
-/* Primary is near-black. The accent is never a button fill. */
+/* Primary is the ocean accent with a soft glow of itself; secondary the card colour in a hairline. */
 const VARIANT: Record<ButtonVariant, VariantVisual> = {
-  primary: { background: theme.colors['action-primary'], color: theme.colors['text-inverse'] },
-  /* Raised, as the design system's button is (`F7-15`, owner ruling D14 B): white at `e2` on every
-     ground — the page, a sheet, a tile. */
-  secondary: {
-    // biome-ignore lint/plugin/raw-white: control — the secondary is white on every ground (D14 B)
-    background: theme.colors.surface,
-    color: theme.colors['text-primary'],
-    elevation: theme.elevation.e2,
+  primary: {
+    background: colors['action-primary'],
+    color: colors['text-inverse'],
+    elevation: {
+      shadowColor: colors['action-primary'],
+      shadowOffset: { width: 0, height: 6 },
+      shadowRadius: 10,
+      shadowOpacity: 0.35,
+      elevation: 3,
+    },
   },
-  /* Web ghost reads --control-edge so field mode can ring it; RN has no field-mode edge yet. */
-  ghost: { background: 'transparent', color: theme.colors['text-secondary'] },
-  destructive: { background: theme.colors['danger-text'], color: theme.colors['text-inverse'] },
+  secondary: {
+    // biome-ignore lint/plugin/raw-white: control — the secondary is the card colour on every ground
+    background: colors.surface,
+    color: colors['text-primary'],
+    elevation: { borderWidth: 1, borderColor: colors['line-strong'] },
+  },
+  ghost: { background: 'transparent', color: colors['text-secondary'] },
+  destructive: { background: colors['danger-text'], color: colors['text-inverse'] },
 };
 
 /* The words a tone gives a secondary or ghost pill; the white pill keeps its own ground. */
-const TONE: Record<ButtonTone, string> = { danger: theme.colors['danger-text'] };
+const TONE: Record<ButtonTone, ThemeColor> = { danger: colors['danger-text'] };
 
 const SIZE: Record<ButtonSize, ViewStyle> = {
-  lg: { height: theme.spacing['sp-12'], paddingHorizontal: theme.spacing['sp-6'] },
+  lg: { height: theme.layout['field-h'], paddingHorizontal: theme.spacing['sp-6'] },
   md: { height: theme.spacing['sp-10'], paddingHorizontal: theme.spacing['sp-5'] },
   sm: { height: theme.spacing['sp-8'], paddingHorizontal: theme.spacing['sp-4'] },
 };
@@ -113,9 +122,7 @@ export function Button({
   const toned = toneOf(variant, tone);
   const restColor = toned === undefined ? visual.color : TONE[toned];
   /* A stated disabled label is information, not chrome — see the web half. */
-  const labelColor = disabled
-    ? theme.colors[stated ? 'text-secondary' : 'text-disabled']
-    : restColor;
+  const labelColor = disabled ? colors[stated ? 'text-secondary' : 'text-disabled'] : restColor;
   /* Named by its words even while the spinner stands in for them, so a button that is working
      keeps its name (`F7-26`). */
   const name = spokenName ?? figures?.spoken ?? children;

@@ -3,19 +3,19 @@ import { StyleSheet, View } from 'react-native';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { raisedCard } from '../CatalogImport/CatalogImport.surfaces.native';
-import { IrisTile } from '../IrisTile/IrisTile.native';
+import { HueTile } from '../HueTile/HueTile.native';
 import type { ItemCardProps } from './CatalogItemForm.parts.types';
 
 /**
  * One raised card of the add sheet (`SCR-M01-16`, the 375 frames): its glyph on its iris, its title
  * as the section's heading, then its fields. A page ground, so a field in it takes the well.
  */
-export function ItemCard({ glyph, iris, title, trailing, children }: ItemCardProps) {
+export function ItemCard({ glyph, hue, title, trailing, children }: ItemCardProps) {
   return (
     <View style={styles.card}>
       <GroundProvider ground="page">
         <View style={styles.head}>
-          <IrisTile glyph={glyph} iris={iris} size={32} stroke={1.6} />
+          <HueTile glyph={glyph} hue={hue} size={32} stroke={1.6} />
           <View style={styles.title} accessibilityRole="header">
             <Text variant="body" bold>
               {title}

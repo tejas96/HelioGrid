@@ -1,19 +1,17 @@
 # docs/ — everything written lives here
 
-One folder, four trees. Root holds only `README.md`, the canonical `CLAUDE.md`, an `AGENTS.md`
+One folder, three trees. Root holds only `README.md`, the canonical `CLAUDE.md`, an `AGENTS.md`
 compatibility pointer and the code.
 
 | | |
 |---|---|
-| [`start-here.md`](start-here.md) | **Designing a screen.** The drawing prompt, the fix prompt and the checklist. |
 | [`build-order.md`](build-order.md) | **Building.** The sequence engineering works in. |
 
-## The four trees
+## The three trees
 
 | Tree | What it is | Authority |
 |---|---|---|
 | [`prd/`](prd/) | The product spec — the owner brief, foundations, modules, and the screens register; every row carries its own ruling | **Source of truth** |
-| [`ux/`](ux/) | One design brief per screen, plus the design context every drawing agent gets; the boards live on the module canvases that each task's `DESIGN:` line links — the source of truth; the Design track draws them there and locks a committed copy in `.design/<module>/` | **Source of truth** |
 | [`tasks/`](tasks/) | Engineering work, one file per module, derived from the PRD registers | **Source of truth** |
 | [`engineering/`](engineering/) | How this repo is built; `architecture.md` is the canonical spine and each other file states its current status or fate | Support, ranked below `prd/` |
 
@@ -46,6 +44,6 @@ Moving one of these breaks a tool silently.
 
 Two invariants read a PRD file: `matrix-mirrors-f2` reads `prd/foundations/F2-roles-and-permissions.md` and `template-keys-mirror-f6` reads
 `prd/foundations/F6-notifications-and-search.md`. The document invariants read `build-order.md`,
-`tasks/`, `prd/` and `prd/registers/screens.md` with `ux/briefs/` (`tests/invariants/src/`
+`tasks/`, `prd/` and `prd/registers/screens.md` (`tests/invariants/src/`
 `task-ledger.ts`, `prd-rows.ts`, `screens-register.ts`), and `/task` reads `build-order.md`. `.dependency-cruiser.cjs` cites
 `engineering/02`, `03`, `07` and `17`, and `biome.json`'s messages cite `engineering/03` and `17`.

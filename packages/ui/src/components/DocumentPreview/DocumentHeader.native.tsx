@@ -1,6 +1,7 @@
-import { theme } from '@heliogrid/theme';
 import type { TextStyle } from 'react-native';
 import { Image, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { bandContactLine, coverLines } from './DocumentPreview.logic';
 import { DocumentSlot, docStyles } from './DocumentSheet.native';
@@ -41,7 +42,7 @@ function BandLines({
   fade,
 }: {
   doc: ResolvedDocument;
-  colour: string;
+  colour: ThemeColor;
   fade: 'on' | 'off';
 }) {
   const contact = bandContactLine(doc);
@@ -80,8 +81,8 @@ function BandMark({ doc }: { doc: ResolvedDocument }) {
 export function DocumentBandHeader({ doc }: { doc: ResolvedDocument }) {
   const fade = doc.bandOk ? 'on' : 'off';
   // biome-ignore lint/plugin/raw-white: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen
-  const bandColour = doc.bandOk ? doc.brandHex : theme.colors.surface;
-  const bandText = doc.bandOk ? doc.bandTextColor : theme.colors['text-primary'];
+  const bandColour = doc.bandOk ? doc.brandHex : colors.surface;
+  const bandText = doc.bandOk ? doc.bandTextColor : colors['text-primary'];
   const tagline = doc.letterhead?.tagline === '' ? undefined : doc.letterhead?.tagline;
   return (
     <View

@@ -58,7 +58,7 @@ export function MobileTopBar({
       ) : (
         <div className="hg-app-shell-topbar-identity">
           <span className="hg-app-shell-header-slot">
-            {brand ?? <LogoTile size={theme.spacing['sp-8']} radius={theme.radius['r-sm']} />}
+            {brand ?? <LogoTile size={theme.spacing['sp-8']} />}
           </span>
           {company !== undefined ? (
             <Text variant="body" bold oneLine fixedSize className="hg-app-shell-topbar-company">

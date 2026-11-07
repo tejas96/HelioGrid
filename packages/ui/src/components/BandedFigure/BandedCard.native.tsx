@@ -4,6 +4,8 @@ import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { BandChip } from './BandChip.native';
@@ -28,7 +30,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: type.overline.letterSpacing,
     textTransform: 'uppercase',
-    color: theme.colors['text-tertiary'],
+    color: colors['text-tertiary'],
   },
   figureRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 12 },
   figure: { flexDirection: 'row', alignItems: 'baseline', gap: 5 },
@@ -36,14 +38,14 @@ const styles = StyleSheet.create({
     fontFamily: theme.type.families.sans,
     fontWeight: '700',
     letterSpacing: -1.2,
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
-  unit: { fontFamily: theme.type.families.sans, color: theme.colors['text-secondary'] },
+  unit: { fontFamily: theme.type.families.sans, color: colors['text-secondary'] },
   bound: {
     fontFamily: theme.type.families.sans,
     fontSize: type.caption.fontSize,
     lineHeight: 17.4,
-    color: theme.colors['text-tertiary'],
+    color: colors['text-tertiary'],
   },
   remedyRow: { flexDirection: 'row', alignItems: 'flex-start', gap: theme.spacing['sp-2'] },
   remedy: { fontFamily: theme.type.families.sans, fontWeight: '500', flexShrink: 1 },
@@ -51,11 +53,11 @@ const styles = StyleSheet.create({
     fontFamily: theme.type.families.sans,
     fontSize: type.caption.fontSize,
     lineHeight: 18,
-    color: theme.colors['text-tertiary'],
+    color: colors['text-tertiary'],
   },
 });
 
-function RemedyGlyph({ color }: { color: string }) {
+function RemedyGlyph({ color }: { color: ThemeColor }) {
   return (
     <Svg
       width={15}

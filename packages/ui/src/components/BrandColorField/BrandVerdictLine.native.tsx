@@ -1,6 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { ProvenanceTier } from '../Provenance/Provenance.native';
@@ -39,10 +41,10 @@ export function BrandVerdictLine({ kind, children }: BrandVerdictLineProps) {
   );
 }
 
-const COLOR: Record<BrandVerdictKind, string> = {
-  pass: theme.colors['success-text'],
-  warn: theme.colors['warning-text'],
-  info: theme.colors['text-secondary'],
+const COLOR: Record<BrandVerdictKind, ThemeColor> = {
+  pass: colors['success-text'],
+  warn: colors['warning-text'],
+  info: colors['text-secondary'],
 };
 
 const TONE: Record<BrandVerdictKind, 'success' | 'warning' | 'secondary'> = {

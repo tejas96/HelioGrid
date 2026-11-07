@@ -20,7 +20,7 @@ import { WhatYouSellStepAsHeld } from './SetupWhatYouSell.story';
 
 /**
  * The what-you-sell step at the board's two widths (`SCR-M01-04`): two questions in one column
- * with the way on held on screen; at 1536 the cards stay a stacked list beside the question, at the
+ * with the way on held on screen; at 1536 the cards stay a stacked list under the question, at the
  * frame's `list` measure. The size is an empty box under its tier line until it is declared. A
  * refused `Continue` rings what is owed and moves focus there; a failed save takes the heading and
  * keeps both answers.
@@ -245,7 +245,7 @@ test.describe('at 375', () => {
 test.describe('at 1536', () => {
   test.use({ viewport: { width: 1536, height: 1000 } });
 
-  test('the cards stay one stacked column at the frame’s list measure, beside the question, over the size field', async ({
+  test('the cards stay one stacked column at the frame’s list measure, under the question, over the size field', async ({
     mount,
     page,
   }) => {
@@ -264,8 +264,9 @@ test.describe('at 1536', () => {
     expect(card?.width).toBe(measure);
     expect(await bottomOf(cards.nth(2))).toBeLessThan((await settledBox(size))?.y ?? 0);
 
-    const heading = await settledBox(step.getByRole('heading', { level: 1 }));
-    expect((heading?.x ?? Infinity) + (heading?.width ?? 0)).toBeLessThan(card?.x ?? 0);
+    const heading = step.getByRole('heading', { level: 1 });
+    expect(await bottomOf(heading)).toBeLessThan(card?.y ?? 0);
+    await expectSharedEdge([heading, cards.nth(0)], 'left');
     await expectNoSidewaysScroll(page);
   });
 
@@ -285,7 +286,7 @@ test.describe('at 1536', () => {
     expect(await bottomOf(line)).toBeLessThanOrEqual(await bottomOf(way));
   });
 
-  test('after a failed save the two ways on fill the column as one row of one width, their line under them, and the fix sits beside the cards', async ({
+  test('after a failed save the two ways on fill the column as one row of one width, their line under them, and the fix sits over the cards', async ({
     mount,
   }) => {
     const step = await mount(<WhatYouSellStepAsHeld reader="en" failed segment="ci" size={5} />);
@@ -300,6 +301,6 @@ test.describe('at 1536', () => {
     expect(line?.y).toBeGreaterThanOrEqual(await bottomOf(again));
 
     const fix = step.getByRole('alert');
-    expect(await rightOf(fix)).toBeLessThan((await settledBox(card))?.x ?? 0);
+    expect(await bottomOf(fix)).toBeLessThan((await settledBox(card)).y);
   });
 });

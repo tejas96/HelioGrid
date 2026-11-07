@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { DimensionValue, StyleProp, ViewStyle } from 'react-native';
 import { Animated, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import type { LoadingBarSize, LoadingBarsProps } from './LoadingBars.types';
 import { useLoadingPulse } from './use-loading-pulse.native';
 
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
   bar: {
     borderRadius: theme.radius['r-lg'],
     // biome-ignore lint/plugin/raw-white: shimmer — a loading bar's shimmer
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e1,
   },
   line: {
@@ -34,12 +35,12 @@ const styles = StyleSheet.create({
     width: theme.spacing['sp-5'],
     height: theme.spacing['sp-5'],
     borderRadius: theme.radius['rf-md'],
-    backgroundColor: theme.colors.canvas,
+    backgroundColor: colors.canvas,
   },
   lineBar: {
     height: theme.spacing['sp-3'],
     borderRadius: theme.radius['rf-md'],
-    backgroundColor: theme.colors.canvas,
+    backgroundColor: colors.canvas,
   },
   /* The phone opens option cards in a sheet only, so its bar is the sheet's: three lines. */
   option: {
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-3'],
     paddingVertical: theme.spacing['sp-3'],
     paddingHorizontal: theme.spacing['sp-4'],
-    backgroundColor: theme.colors.fill,
+    backgroundColor: colors.fill,
     borderRadius: theme.radius['r-tile'],
   },
   optionMark: {
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     height: theme.spacing['sp-5'],
     marginTop: theme.spacing['sp-0-5'],
     borderRadius: theme.radius['r-xs'],
-    backgroundColor: theme.colors.canvas,
+    backgroundColor: colors.canvas,
   },
   optionText: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
   optionTitle: { height: theme.type.roles.body.lineHeight, justifyContent: 'center' },
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     width: '45%',
     height: theme.type.roles['body-sm'].fontSize,
     borderRadius: theme.radius['r-xs'],
-    backgroundColor: theme.colors.canvas,
+    backgroundColor: colors.canvas,
   },
   count: {
     height: theme.type.roles.caption.lineHeight,
@@ -76,12 +77,12 @@ const styles = StyleSheet.create({
     height: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-pill'],
     // biome-ignore lint/plugin/raw-white: shimmer — a loading bar's shimmer
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
   },
   optionLineBar: {
     height: theme.type.roles.caption.fontSize,
     borderRadius: theme.radius['r-xs'],
-    backgroundColor: theme.colors.canvas,
+    backgroundColor: colors.canvas,
   },
 });
 
@@ -95,7 +96,7 @@ function Bar({
 }: {
   size: LoadingBarSize;
   index: number;
-  opacity: Animated.AnimatedInterpolation<number>;
+  opacity: Animated.AnimatedMultiplication<number>;
 }) {
   if (size === 'count') {
     return (

@@ -16,9 +16,11 @@
   "dependencies": {
     "@heliogrid/contracts": "workspace:*",
     "@heliogrid/domain": "workspace:*",
-    "@heliogrid/theme": "workspace:*"
+    "@heliogrid/theme": "workspace:*",
+    "lottie-web": "5.13.0"
   },
   "peerDependencies": {
+    "lottie-react-native": "7.5.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.0",
@@ -40,6 +42,7 @@
     "@heliogrid/config": "workspace:*",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
+    "lottie-react-native": "7.5.0",
     "react-native": "0.86.0",
     "react-native-keyboard-controller": "1.22.8",
     "react-native-svg": "15.15.5",

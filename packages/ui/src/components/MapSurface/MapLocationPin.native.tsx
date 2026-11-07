@@ -3,6 +3,7 @@ import { useMemo, useRef } from 'react';
 import type { GestureResponderEvent } from 'react-native';
 import { PanResponder, StyleSheet, View } from 'react-native';
 import { G, Svg } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { MapPin, MapSurfaceWords } from './MapSurface.types';
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
     opacity: 0.16,
   },
 });
@@ -94,7 +95,7 @@ export function MapLocationPin({
           <Svg width={26} height={26} viewBox="0 0 24 24" fill="none">
             <G
               // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
-              fill={confirmed ? colour : theme.colors.surface}
+              fill={confirmed ? colour : colors.surface}
               stroke={colour}
               strokeWidth={1.8}
             >
@@ -103,7 +104,7 @@ export function MapLocationPin({
             {confirmed ? (
               <G
                 // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
-                stroke={theme.colors.surface}
+                stroke={colors.surface}
                 strokeWidth={2}
                 strokeLinecap="round"
                 strokeLinejoin="round"

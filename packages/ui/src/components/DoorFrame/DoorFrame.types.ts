@@ -19,15 +19,6 @@ export type DoorTaskMeasure = 'field' | 'steps' | 'list' | 'choices';
  */
 export type DoorColumn = 'centred' | 'deep' | 'near';
 
-/**
- * How the frame lays out from the door's breakpoint. `door` — the doors' two equal fields
- * (`SCR-M01-01` … `-05`). `onboarding` — the setup steps' two panes (`SCR-M01-07` d-default, D261):
- * a brand pane on columns 1–4 at full height, holding the bloom, the wordmark and the identity, and
- * a task pane on columns 5–12 holding the task and its action; it draws no `lead`. Under the
- * breakpoint, and on the phone, both are the one column.
- */
-export type DoorPanes = 'door' | 'onboarding';
-
 /** A door's heading, the one ask beside it, and the line under it (`SCR-M01-02` decision 26). */
 export interface DoorTitleProps {
   title: TranslatedText;
@@ -36,23 +27,16 @@ export interface DoorTitleProps {
 }
 
 /**
- * The frame both doors share (`SCR-M01-01`, `SCR-M01-02`): the canvas, the brand bloom, the
- * header row with the wordmark and a trailing control, then the step header, the identity, the
- * one task and the held action. The web half draws the identity as the left column from the
- * door's own breakpoint and stacks the rest on the right; the native half has one scrolling
- * column and keeps the action under it.
+ * The frame every door and setup step shares: the page's glow, the header row with the product
+ * mark and a trailing control, then the step's overline, the identity, the one task and the held
+ * action — one centred column on every platform and at every width.
  */
 export interface DoorFrameProps {
   /** The header row's right-hand control — the language control; on the code step, the change-number ghost before it. */
   trailing?: ReactNode;
-  /** The layout from the door's breakpoint; the native half has one column and reads none. */
-  panes?: DoorPanes;
-  /**
-   * The step header (`SCR-M01-02`'s progress stepper). Under the door's breakpoint it leads the
-   * column, above the identity's heading; on the web at the breakpoint it heads the task column.
-   */
+  /** The step's quiet overline (`StepOverline`), above the title. */
   lead?: ReactNode;
-  /** The identity half: the title, the intro, the verified number. Web: the left column. Native: above the column. */
+  /** The title, the intro, the verified number. */
   identity?: ReactNode;
   /**
    * An action that stays under the scrolling column — the company step's primary, which expanded

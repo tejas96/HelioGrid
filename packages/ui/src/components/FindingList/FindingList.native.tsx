@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -17,22 +18,22 @@ interface NativeFindingListProps extends FindingListProps {
 const FINDING_STATUSES: Record<FindingStatus, FindingStatusMeta> = {
   blocking: {
     rank: FINDING_RANK.blocking,
-    tone: theme.colors['danger-text'],
-    bg: theme.colors['danger-bg'],
-    mark: theme.colors.danger,
+    tone: colors['danger-text'],
+    bg: colors['danger-bg'],
+    mark: colors.danger,
   },
   attention: {
     rank: FINDING_RANK.attention,
-    tone: theme.colors['warning-text'],
-    bg: theme.colors['warning-bg'],
+    tone: colors['warning-text'],
+    bg: colors['warning-bg'],
     /* The warning MARK takes --warning-text: plain --warning clears no contrast floor. */
-    mark: theme.colors['warning-text'],
+    mark: colors['warning-text'],
   },
   ready: {
     rank: FINDING_RANK.ready,
-    tone: theme.colors['success-text'],
-    bg: theme.colors['success-bg'],
-    mark: theme.colors.success,
+    tone: colors['success-text'],
+    bg: colors['success-bg'],
+    mark: colors.success,
   },
 };
 

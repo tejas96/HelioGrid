@@ -1,5 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { type StyleProp, StyleSheet, type TextStyle, type ViewStyle } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import type { CompareGridProps } from './CompareGrid.types';
 
@@ -12,8 +14,8 @@ export const compareStyles = StyleSheet.create({
      `cellGround`'s, so it stays opaque over the cells sliding under it. */
   pin: { zIndex: 2 },
   cell: { justifyContent: 'flex-start' },
-  zebra: { backgroundColor: theme.colors['surface-alt'] },
-  selected: { backgroundColor: theme.colors['accent-subtle'] },
+  zebra: { backgroundColor: colors['surface-alt'] },
+  selected: { backgroundColor: colors['accent-subtle'] },
   /* 4dp under the label's unit line — the DS's own sub-step, no token carries it. */
   provenance: { marginTop: theme.spacing['sp-1'] },
   optionStack: { gap: 6, minWidth: 0 },
@@ -32,10 +34,10 @@ export const compareStyles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['action-primary'],
+    backgroundColor: colors['action-primary'],
   },
   /* Its fill is the control fill from `useGround()`, set where it is drawn. */
-  chooseSelected: { borderWidth: 2, borderColor: theme.colors.accent },
+  chooseSelected: { borderWidth: 2, borderColor: colors.accent },
   valueRow: { flexDirection: 'row', alignItems: 'baseline', flexWrap: 'wrap' },
   /* A numeric row's figures end on one right edge, as the web half's `data-numeric` cell does. */
   valueRowNumeric: { justifyContent: 'flex-end' },
@@ -65,7 +67,7 @@ export type Density = NonNullable<CompareGridProps['density']>;
 export function cellGround(
   selected: boolean,
   zebra: boolean,
-  ground: string,
+  ground: ThemeColor,
 ): StyleProp<ViewStyle> {
   if (selected) return compareStyles.selected;
   return zebra ? compareStyles.zebra : { backgroundColor: ground };

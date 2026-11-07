@@ -3,6 +3,7 @@ import { BRANDING_PARTS } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Banner } from '../Banner/Banner.native';
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
   editor: { gap: theme.spacing['sp-4'] },
   fullWidth: { alignSelf: 'stretch' },
   /** The soft rule over the profile row. */
-  hairline: { height: 1, backgroundColor: theme.colors['line-soft'] },
+  hairline: { height: 1, backgroundColor: colors['line-soft'] },
   /** The row flush with the column's edges. */
   flushRow: { paddingLeft: 0, paddingRight: 0 },
 });

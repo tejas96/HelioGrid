@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 10,
     borderRadius: theme.radius['r-md'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   panelCell: { paddingVertical: theme.spacing['sp-3'], paddingHorizontal: 14 },
   panelBlock: { paddingVertical: 14, paddingHorizontal: theme.spacing['sp-4'] },
@@ -35,11 +36,11 @@ const styles = StyleSheet.create({
 function Chevron({ open }: { open: boolean }) {
   return (
     <View style={open ? styles.open : undefined}>
-      <Icon size="xs" color={theme.colors['text-secondary']}>
+      <Icon size="xs" color={colors['text-secondary']}>
         <Svg
           viewBox="0 0 24 24"
           fill="none"
-          stroke={theme.colors['text-secondary']}
+          stroke={colors['text-secondary']}
           strokeWidth={2}
           strokeLinecap="round"
           strokeLinejoin="round"

@@ -1,4 +1,5 @@
 import { theme } from '@heliogrid/theme';
+import { colors } from '@heliogrid/ui';
 import { StyleSheet } from 'react-native';
 
 /* The full-size reader (`SCR-M01-19` m19-h) holds the sheet at its column width and never scrolls
@@ -11,6 +12,6 @@ export const styles = StyleSheet.create({
   failure: {
     paddingVertical: theme.spacing['sp-3'],
     paddingHorizontal: theme.layout['screen-pad-mobile'],
-    backgroundColor: theme.colors.canvas,
+    backgroundColor: colors.canvas,
   },
 });

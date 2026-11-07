@@ -1,6 +1,6 @@
-/* Button — pill-shaped action. Primary fill is near-black (--action-primary), NEVER coloured:
-   the accent is focus, links, selection and control fills only. Hover raises to --e2; press
-   scales to 0.97. 44px is the touch floor (Pressable owns the same constant on native).
+/* Button — pill-shaped action. Primary is the ocean accent (--action-primary) with a soft glow of
+   itself; secondary the card colour inside a strong hairline. Hover lifts one pixel; press sinks to
+   --press-scale. 44px is the touch floor (Pressable owns the same constant on native).
 
    Ghost carries no shadow of its own — but it must not hardcode `none`, or an inline none beats
    field mode's rule and the lowest-contrast control in the system is the one control with no edge
@@ -22,7 +22,7 @@
   letter-spacing: var(--tr-button);
   line-height: 1;
   white-space: nowrap;
-  /* A link drawn as a button (`SourceDocument`'s Open original) takes this rule too. */
+  /* A link drawn as a button takes this rule too. */
   text-decoration: none;
   width: auto;
   cursor: pointer;
@@ -47,7 +47,7 @@
 }
 
 .hg-button[data-size="lg"] {
-  height: var(--sp-12);
+  height: var(--field-h);
   padding: 0 var(--sp-6);
   font-size: var(--fs-button);
 }
@@ -67,7 +67,10 @@
 .hg-button[data-variant="primary"] {
   background: var(--action-primary);
   color: var(--text-inverse);
-  box-shadow: none;
+  /* A soft glow of the accent under the one act a screen leads with. */
+  box-shadow:
+    0 1px 2px var(--hairline),
+    0 10px 20px -10px color-mix(in srgb, var(--action-primary) 70%, transparent);
 }
 
 .hg-button[data-variant="secondary"] {
@@ -77,7 +80,7 @@
   /* biome-ignore lint/plugin/raw-white-css: control — the secondary is white on every ground (D14 B) */
   background: var(--surface);
   color: var(--text-primary);
-  box-shadow: var(--e2);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
 }
 
 .hg-button[data-variant="ghost"] {
@@ -105,27 +108,30 @@
 
 .hg-button[data-variant="primary"]:hover:not(:disabled):not([aria-disabled="true"]) {
   background: var(--action-primary-hover);
-  box-shadow: var(--e2);
+  transform: translateY(-1px);
 }
 
 .hg-button[data-variant="secondary"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  /* Rest is --e2, so hover lifts it one step further: a lift to the same step is no lift. */
-  box-shadow: var(--e3);
+  box-shadow:
+    inset 0 0 0 1px var(--mark-subtle),
+    var(--e1);
+  transform: translateY(-1px);
 }
 
 .hg-button[data-variant="ghost"]:hover:not(:disabled):not([aria-disabled="true"]) {
-  background: var(--neutral-bg);
+  background: var(--hg-control-fill);
+  color: var(--text-primary);
 }
 
 /* --danger is the token one step lighter than --danger-text — this hover is a token, never a
    literal lighter red. */
 .hg-button[data-variant="destructive"]:hover:not(:disabled):not([aria-disabled="true"]) {
   background: var(--danger);
-  box-shadow: var(--e2);
 }
 
 .hg-button:active:not(:disabled):not([aria-disabled="true"]) {
-  transform: scale(0.97);
+  transform: scale(var(--press-scale));
+  transition-duration: var(--dur-micro);
 }
 
 .hg-button:disabled,

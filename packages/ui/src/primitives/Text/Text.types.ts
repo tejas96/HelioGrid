@@ -1,12 +1,16 @@
 import type { ReactNode } from 'react';
 
 /**
- * The DS type scale (docs/engineering/17 §4). `overline` is the 11px/700/uppercase/0.12em signature —
- * the one sanctioned appearance below the 12px floor. `mono` is body-sm in Geist Mono,
- * for figures and identifiers. The three `field-` variants are a field's label, typed value and
- * helper or error line, at the design system's field sizes (`--fs-field-*`).
+ * The type scale. `hero`, `display`, `figure` and `h1` are set in Newsreader, the display face:
+ * `hero` the one figure a screen is about (smaller on a phone), `display` the large page title,
+ * `figure` a hero's secondary numbers. `overline` is the 11px/600/uppercase/0.08em signature —
+ * the one sanctioned appearance below the 12px floor. `mono` is body-sm in Geist Mono, for figures
+ * and identifiers in lists. The three `field-` variants are a field's label, typed value and helper
+ * or error line, at the field sizes (`--fs-field-*`).
  */
 export type TextVariant =
+  | 'hero'
+  | 'figure'
   | 'display'
   | 'h1'
   | 'h2'

@@ -5,6 +5,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { TimelineItem } from './Timeline.types';
@@ -96,7 +97,7 @@ export function TimelineStep({
               height={13}
               viewBox="0 0 24 24"
               fill="none"
-              stroke={theme.colors['text-tertiary']}
+              stroke={colors['text-tertiary']}
               strokeWidth={1.5}
               strokeLinecap="round"
             >

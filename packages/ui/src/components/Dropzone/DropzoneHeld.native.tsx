@@ -2,6 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -106,7 +107,7 @@ export function DropzoneHeld({
           style={[styles.retry, { backgroundColor: waiting ? controlFillDisabled : controlFill }]}
         >
           {/* The label stays. A spinner beside it, never instead of it. */}
-          {flushing ? <ActivityIndicator color={theme.colors.accent} size="small" /> : null}
+          {flushing ? <ActivityIndicator color={colors.accent} size="small" /> : null}
           <Text variant="body-sm" color={waiting ? 'disabled' : 'primary'}>
             {retryLabel}
           </Text>

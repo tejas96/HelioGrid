@@ -1,9 +1,8 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { Icon } from '../../primitives/Icon';
 import { Text } from '../../primitives/Text';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { BrandBloom } from '../BrandBloom';
+import { LottieMoment } from '../LottieMoment/LottieMoment';
 import type { SuccessDwellProps } from './SuccessDwell.types';
 
 interface WebSuccessDwellProps extends SuccessDwellProps {
@@ -16,23 +15,9 @@ export function SuccessDwell({ title, line, className, style }: WebSuccessDwellP
   return (
     <main className={classNames('hg-success-dwell', className)} style={style}>
       <BrandBloom placement="centre" />
-      <span className="hg-success-dwell-mark">
-        <Icon size="lg">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <ShellGlyphMarks name="tick-long" />
-          </svg>
-        </Icon>
-      </span>
+      <LottieMoment name="success" size={96} />
       <div className="hg-success-dwell-words">
-        <Text variant="h2">{title}</Text>
+        <Text variant="display">{title}</Text>
         <Text variant="body" color="secondary" align="center">
           {line}
         </Text>

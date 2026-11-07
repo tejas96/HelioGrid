@@ -3,13 +3,16 @@ import { useId, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Text as RNText, StyleSheet, View } from 'react-native';
 import Svg, { Rect, Text as SvgText } from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 /* The primitive's NATIVE half is imported by path: tsc has no `moduleSuffixes` configured, so
    the barrel would hand this file the web signature. Metro resolves the explicit path
    identically, and no web bundler ever reads a .native.tsx. */
 import { Text } from '../../primitives/Text/Text.native';
 import { BrandGradientDefs } from '../../utils/brand-gradient.native';
-import { GRID, HELIO, PRODUCT_INITIAL, PRODUCT_NAME } from './Wordmark.name';
-import type { LogoTileProps, WordmarkProps } from './Wordmark.types';
+import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
+import { GRID, HELIO, PRODUCT_NAME } from './Wordmark.name';
+import type { LogoTileProps, ProductMarkProps, WordmarkProps } from './Wordmark.types';
 
 /** −0.03em, the system's own display tracking, expressed against the caller's size. */
 const TRACKING = -0.03;
@@ -26,8 +29,8 @@ interface NativeLogoTileProps extends LogoTileProps {
   style?: StyleProp<ViewStyle>;
 }
 
-function inkOf(tone: WordmarkProps['tone']): string {
-  return tone === 'onDark' ? theme.colors['text-inverse'] : theme.colors['text-primary'];
+function inkOf(tone: WordmarkProps['tone']): ThemeColor {
+  return tone === 'onDark' ? colors['text-inverse'] : colors['text-primary'];
 }
 
 function baseType(size: number, tone: WordmarkProps['tone']): TextStyle {
@@ -111,12 +114,14 @@ const styles = StyleSheet.create({
   twin: { position: 'absolute', left: 0, top: 0, opacity: 0 },
 });
 
-export function LogoTile({ size = 40, radius = 12, style }: NativeLogoTileProps) {
+export function LogoTile({ size = 40, radius, style }: NativeLogoTileProps) {
   const gradientId = `hg-logo-tile-${useId()}`;
+  const corner = radius ?? size / 2;
+  const sun = Math.round(size * 0.56);
   const frame: ViewStyle = {
     width: size,
     height: size,
-    borderRadius: radius,
+    borderRadius: corner,
     flexShrink: 0,
     alignItems: 'center',
     justifyContent: 'center',
@@ -126,32 +131,45 @@ export function LogoTile({ size = 40, radius = 12, style }: NativeLogoTileProps)
       accessible
       accessibilityRole="image"
       accessibilityLabel={PRODUCT_NAME}
-      style={[frame, theme.elevation.e2, style]}
+      style={[frame, style]}
     >
       <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
-        <BrandGradientDefs id={gradientId} />
+        <BrandGradientDefs id={gradientId} diagonal />
         <Rect
           x="0"
           y="0"
           width={size}
           height={size}
-          rx={radius}
-          ry={radius}
+          rx={corner}
+          ry={corner}
           fill={`url(#${gradientId})`}
         />
       </Svg>
-      <Text
-        fixedSize
-        style={{
-          fontFamily: theme.type.families.sans,
-          fontWeight: '700',
-          fontSize: Math.round(size * 0.45),
-          letterSpacing: Math.round(size * 0.45) * TRACKING,
-          color: theme.colors['text-inverse'],
-        }}
+      <Svg
+        width={sun}
+        height={sun}
+        viewBox="0 0 24 24"
+        fill="none"
+        // biome-ignore lint/plugin/raw-white: brand — the sun on the logo disc reads light on its gradient
+        stroke={colors['text-inverse']}
+        strokeWidth={2}
+        strokeLinecap="round"
       >
-        {PRODUCT_INITIAL}
-      </Text>
+        <ShellGlyphMarks name="sun" />
+      </Svg>
     </View>
   );
 }
+
+export function ProductMark({ size = 32 }: ProductMarkProps) {
+  return (
+    <View style={markStyles.row}>
+      <LogoTile size={size} />
+      <Wordmark size={size === 32 ? 17 : 20} />
+    </View>
+  );
+}
+
+const markStyles = StyleSheet.create({
+  row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
+});

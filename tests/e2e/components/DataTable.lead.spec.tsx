@@ -24,7 +24,7 @@ test.describe('a kind tile and a quiet line on the primary cell (D268)', () => {
       const table = await mount(
         <KindTable label={label} value={value} sub={issue} stacked={form.stacked} />,
       );
-      const tile = table.locator('.hg-iris-tile');
+      const tile = table.locator('.hg-hue-tile');
       const tileBox = await settledBox(tile);
       const nameBox = await settledBox(table.getByText(value, { exact: true }));
 

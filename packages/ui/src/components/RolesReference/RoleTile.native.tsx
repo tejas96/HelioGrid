@@ -2,6 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReadKind } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -31,7 +32,7 @@ export function RoleTile({ preset, counts, countGap, open, onOpen }: RoleTilePro
       style={[tileSurface, styles.tile, open ? styles.open : undefined]}
     >
       <GroundProvider ground="tile">
-        <IconCircle size={36} color={open ? theme.colors.accent : theme.colors['text-secondary']}>
+        <IconCircle size={36} color={open ? colors.accent : colors['text-secondary']}>
           <ShellGlyph
             name={PRESET_GLYPH[preset.value]}
             size="md"
@@ -76,5 +77,5 @@ const styles = StyleSheet.create({
     padding: theme.layout['tile-pad'],
     borderRadius: theme.radius['r-tile'],
   },
-  open: { backgroundColor: theme.colors['accent-subtle'] },
+  open: { backgroundColor: colors['accent-subtle'] },
 });

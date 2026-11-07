@@ -9,12 +9,12 @@ import type {
 } from '@heliogrid/domain';
 import type { ReactNode, Ref } from 'react';
 import type { FocusAfter, FocusHandle } from '../../primitives/FocusAfter';
-import type { AvatarMark, IrisHue } from '../Avatar/Avatar.types';
+import type { AvatarMark, CategoryHue } from '../Avatar/Avatar.types';
 
 /** One preset a person holds, worded, in its kind's iris tone (design-system change 7). */
 export interface MemberRole {
   label: TranslatedText;
-  tone: IrisHue;
+  tone: CategoryHue;
 }
 
 /** An open invite's seven days: the bar, *Day N of 7* and *Expires <date>*. */

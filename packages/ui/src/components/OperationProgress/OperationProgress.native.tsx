@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider';
 import { OperationActions } from './OperationActions.native';
@@ -124,7 +125,7 @@ export function OperationProgress({
   );
 }
 
-const tertiary: TextStyle = { color: theme.colors['text-tertiary'] };
+const tertiary: TextStyle = { color: colors['text-tertiary'] };
 
 const styles = StyleSheet.create({
   shell: { flexDirection: 'column', gap: theme.spacing['sp-2'] },

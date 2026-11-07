@@ -1,6 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { Linking, StyleSheet, View } from 'react-native';
 import Svg, { G } from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
@@ -8,7 +10,7 @@ import { arrowOffset, type ExplainerPagerModel, type PlacedExplainer } from './E
 import type { ExplainerAction } from './Explainer.types';
 
 /** The default "i", drawn from the same geometry as the web half's. */
-export function InfoGlyph({ size, color }: { size: number; color: string }) {
+export function InfoGlyph({ size, color }: { size: number; color: ThemeColor }) {
   return (
     <Svg
       width={size}
@@ -116,7 +118,7 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     transform: [{ rotate: '45deg' }],
     borderRadius: 2,
   },
@@ -138,10 +140,10 @@ const styles = StyleSheet.create({
   pagerButtons: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   pill: { paddingHorizontal: 18, borderRadius: theme.radius['r-pill'] },
   /* Near-black, because a primary action is never coloured. */
-  filled: { backgroundColor: theme.colors['action-primary'] },
+  filled: { backgroundColor: colors['action-primary'] },
   /* The web ghost reads --control-edge so field mode can ring it; RN has no field-mode edge yet. */
   ghost: { paddingHorizontal: 14 },
-  off: { backgroundColor: theme.colors['canvas-sunken'] },
+  off: { backgroundColor: colors['canvas-sunken'] },
   pillWords: { fontWeight: '500' },
 });
 

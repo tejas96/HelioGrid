@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { noteLineScale } from '../ActionReason/ActionReason.logic';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
@@ -15,7 +17,7 @@ interface NativeComplianceFloorProps extends ComplianceFloorSpec {
 }
 
 /* A statute, not a padlock: the owner is not shut out of this row, they may edit and move it. */
-function ShieldGlyph({ size, color }: { size: number; color: string }) {
+function ShieldGlyph({ size, color }: { size: number; color: ThemeColor }) {
   return (
     <Svg
       width={size}
@@ -42,7 +44,7 @@ export function ComplianceFloor(props: NativeComplianceFloorProps) {
     return (
       <View accessibilityRole="alert" style={[styles.refusal, style]}>
         <View style={styles.refusalGlyph}>
-          <ShieldGlyph size={18} color={theme.colors['warning-text']} />
+          <ShieldGlyph size={18} color={colors['warning-text']} />
         </View>
         <View style={styles.refusalBody}>
           <Text variant="body-sm" style={styles.refusalHead}>
@@ -62,7 +64,7 @@ export function ComplianceFloor(props: NativeComplianceFloorProps) {
   return (
     <View style={[styles.line, style]}>
       <View style={styles.lineGlyph}>
-        <ShieldGlyph size={scale.glyphSize} color={theme.colors['text-tertiary']} />
+        <ShieldGlyph size={scale.glyphSize} color={colors['text-tertiary']} />
       </View>
       <Text
         variant={scale.large ? 'body-sm' : 'caption'}
@@ -123,7 +125,7 @@ const styles = StyleSheet.create({
     gap: 10,
     padding: 14,
     borderRadius: theme.radius['r-sm'],
-    backgroundColor: theme.colors['warning-bg'],
+    backgroundColor: colors['warning-bg'],
   },
   refusalGlyph: {
     flexShrink: 0,
@@ -135,6 +137,6 @@ const styles = StyleSheet.create({
   },
   refusalHead: {
     fontWeight: '700',
-    color: theme.colors['warning-text'],
+    color: colors['warning-text'],
   },
 });

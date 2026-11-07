@@ -1,0 +1,18 @@
+/* LargeTitle — a page's name, large, in the display face, and its one summary line. */
+.hg-large-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+}
+
+.hg-large-title-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tr-display);
+  color: var(--text-primary);
+  outline: none;
+}

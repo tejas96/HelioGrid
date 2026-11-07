@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactElement } from 'react';
+import type { ThemeColor } from '../../primitives/Color/colors';
 
 /** The four actor classes — `person | agent | system | customer`. */
 export type ActorClassName = 'person' | 'agent' | 'system' | 'customer';
@@ -27,7 +28,7 @@ export interface ActorClassProps {
   /** The rule's own name, as the company wrote it — M07-06's "a rep always sees WHY a task exists". */
   rule?: string;
   size?: number;
-  color?: string;
+  color?: ThemeColor;
   /** The class's words in the reader's language (`@heliogrid/i18n`'s `actorClassWords`). */
   words: ActorClassWords;
 }

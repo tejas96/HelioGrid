@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
    `./<Name>`, which tsc's bundler resolution reads as the WEB half even in the native project —
    and a web half's DOM types then fail to compile under the native lib. Metro resolves both
@@ -47,7 +48,7 @@ function MoveControls({ columns, column, item, onMove, words }: MoveControlsProp
         height={15}
         viewBox="0 0 24 24"
         fill="none"
-        stroke={target ? theme.colors['text-tertiary'] : theme.colors['text-disabled']}
+        stroke={target ? colors['text-tertiary'] : colors['text-disabled']}
         strokeWidth={1.75}
         strokeLinecap="round"
         strokeLinejoin="round"

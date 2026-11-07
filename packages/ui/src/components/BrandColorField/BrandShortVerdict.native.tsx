@@ -1,6 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
@@ -79,10 +81,10 @@ function InkRow({
   );
 }
 
-const DISC: Record<BrandVerdictKind, { ink: string; ground: string }> = {
-  pass: { ink: theme.colors['success-text'], ground: theme.colors['success-bg'] },
-  warn: { ink: theme.colors['warning-text'], ground: theme.colors['warning-bg'] },
-  info: { ink: theme.colors['text-secondary'], ground: theme.colors.fill },
+const DISC: Record<BrandVerdictKind, { ink: ThemeColor; ground: ThemeColor }> = {
+  pass: { ink: colors['success-text'], ground: colors['success-bg'] },
+  warn: { ink: colors['warning-text'], ground: colors['warning-bg'] },
+  info: { ink: colors['text-secondary'], ground: colors.fill },
 };
 
 const DISC_SIZE = 22;

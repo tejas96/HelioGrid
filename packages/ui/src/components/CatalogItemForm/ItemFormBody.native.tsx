@@ -66,7 +66,7 @@ function TheItemCard({ props }: BodyProps) {
   const leading = CATALOG_KIND_LEADING[props.draft.kind];
   const fields = itemFieldsOf(props);
   return (
-    <ItemCard glyph={leading.glyph} iris={leading.iris} title={props.words.theItem}>
+    <ItemCard glyph={leading.glyph} hue={leading.hue} title={props.words.theItem}>
       <Select {...fields.kind} />
       <View style={styles.pair}>
         <View style={styles.half}>
@@ -86,7 +86,7 @@ function SpecificationCard({ props }: BodyProps) {
   return (
     <ItemCard
       glyph="bolt"
-      iris="blue"
+      hue="teal"
       title={words.specification}
       trailing={
         loading ? null : (
@@ -146,7 +146,7 @@ function SpecLoading({ label }: { label: string }) {
 
 function CertificationCard({ props }: BodyProps) {
   return (
-    <ItemCard glyph="shield-check" iris="magenta" title={props.words.certification}>
+    <ItemCard glyph="shield-check" hue="plum" title={props.words.certification}>
       {schemeRowsOf(props).map((row) => (
         <SchemeSwitchRow key={row.scheme} {...row} onChange={props.onChange} />
       ))}
@@ -158,7 +158,7 @@ function CertificationCard({ props }: BodyProps) {
 function PriceCard({ props }: BodyProps) {
   const { priceNote } = props.words;
   return (
-    <ItemCard glyph="rupee" iris="violet" title={props.words.price}>
+    <ItemCard glyph="rupee" hue="ocean" title={props.words.price}>
       <NumberField {...priceFieldOf(props)} />
       {priceNote === null ? null : <ItemCardNote>{priceNote}</ItemCardNote>}
     </ItemCard>

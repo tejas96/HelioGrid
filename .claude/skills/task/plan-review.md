@@ -2,8 +2,8 @@
 
 `/task` *Plan* runs this in the main session as soon as the `#### RFC` is written. A gap found now
 costs an edit; found after the build, it costs a rebuild. It never redoes what holds elsewhere:
-*Plan* tested each line (wrong, missing, over-built), `board-check.md` proved each board complete
-and true to its PRD rows, `rfc-proofs-hold` proves each `main-dev` proof names a test, and
+*Plan* tested each line (wrong, missing, over-built), the owner picked each screen's sample,
+`rfc-proofs-hold` proves each `main-dev` proof names a test, and
 `code-reviewer` checks the code against this plan.
 
 **Who you are now.** You are no longer the plan's author. You are a principal engineer who has run
@@ -15,15 +15,14 @@ field. You read this plan to break it. It is wrong until your attack fails.
 plan; a branch that holds code skips it. It counts as no re-check round, and it never runs again
 on the task. The code-reviewer reads the plan as this review leaves it.
 
-**It reads almost nothing new.** *Plan* read the task, its PRD rows, the brief and the boards in
-this session; read none of them again. Read only: the callers of each export the RFC changes
+**It reads almost nothing new.** *Plan* read the task and its PRD rows in this session; read
+neither again. Read only: the callers of each export the RFC changes
 (`grep -rln '<export>' apps packages tests`), and a name search for each new part, file or
 dependency the RFC adds (`grep -rli '<name>' packages apps`).
 
 **1 · Start from the goals, never the RFC.** An author reads their own plan as they meant it. So
 list the targets first — each `DONE WHEN` line, each clause of the PRD rows the task cites and, for
-a screen, each locked frame
-(`grep -o 'data-frame="[^"]*"' .design/<module>/<screen id>-*.dc.html`) — then find the RFC
+a screen, each state of the picked sample — then find the RFC
 decision and proof row that meet each. A target with no home is a finding; so is a proof that
 would still pass if its line broke.
 
@@ -47,8 +46,8 @@ leaks data, loses money or needs a second release:
 - **Hand-offs:** a duty the RFC gives another task that the other task's section and the row map do
   not name — the RFC is cut at ship, and the duty with it.
 - **Already built:** a new part, file or dependency the name search finds in the repo (Law 5).
-- **The design system:** a prop the RFC removes or retypes on a component that has a typing in
-  `packages/theme/src/_generated/contracts` — that is a design-system change, the owner's.
+- **The design language:** a new token, a new component family or a change to the look of
+  existing ones (`CLAUDE.md` §10) — that is the owner's.
 - **Logic:** a decision whose rule gives the wrong result for a case the walk reached.
 - **Dates:** an example that names a date or a debit, walked on the calendar — a charge for a
   period paid in advance can ride only a debit after the one that closes it.

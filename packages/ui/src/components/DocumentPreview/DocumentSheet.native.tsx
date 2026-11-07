@@ -1,6 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 
 /* The sheet's own vocabulary. Same split as DocumentPreview.css: every COLOUR is a theme token,
@@ -10,21 +11,21 @@ import { Text } from '../../primitives/Text/Text.native';
 
 const sans = theme.type.families.sans;
 const mono = theme.type.families.mono;
-const ink = theme.colors['text-primary'];
-const muted = theme.colors['text-secondary'];
-const faint = theme.colors['text-tertiary'];
+const ink = colors['text-primary'];
+const muted = colors['text-secondary'];
+const faint = colors['text-tertiary'];
 
 export const docStyles = StyleSheet.create({
   window: {
     borderRadius: theme.radius['r-lg'],
     overflow: 'hidden',
     // biome-ignore lint/plugin/raw-white: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e3,
   },
   sheet: {
     // biome-ignore lint/plugin/raw-white: paper — a document, a drawing sheet, a QR code's quiet zone, a brand specimen
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     flexDirection: 'column',
   },
   band: {
@@ -46,7 +47,7 @@ export const docStyles = StyleSheet.create({
     width: 90,
     height: 34,
     borderRadius: theme.radius['rf-sm'],
-    backgroundColor: theme.colors.hairline,
+    backgroundColor: colors.hairline,
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
@@ -105,7 +106,7 @@ export const docStyles = StyleSheet.create({
     marginTop: 14,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: theme.colors.hairline,
+    borderTopColor: colors.hairline,
     flexDirection: 'row',
     alignItems: 'baseline',
     justifyContent: 'space-between',
@@ -156,7 +157,7 @@ export const docStyles = StyleSheet.create({
   figure: { fontFamily: mono, fontVariant: ['tabular-nums'] },
   footerNote: { fontFamily: sans, fontSize: 9, color: faint, textAlign: 'center', flexShrink: 1 },
   caption: { marginTop: theme.spacing['sp-2'] },
-  captionNote: { color: theme.colors['warning-text'] },
+  captionNote: { color: colors['warning-text'] },
 });
 
 /** The brand rule that opens every band — full strength only when it clears the mark floor. */

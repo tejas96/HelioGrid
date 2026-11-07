@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import type { ShellActionProps } from './AppShell.types';
@@ -24,6 +25,7 @@ export function ShellAction({
   name: wholeName,
   onClick,
   active = false,
+  expanded,
   round = false,
   style,
 }: NativeShellActionProps) {
@@ -32,6 +34,7 @@ export function ShellAction({
   return (
     <Pressable
       accessibilityLabel={name}
+      accessibilityState={expanded === undefined ? undefined : { expanded }}
       onPress={onClick}
       style={[
         styles.action,
@@ -62,7 +65,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
   },
   active: {
-    backgroundColor: theme.colors['accent-subtle'],
+    backgroundColor: colors['accent-subtle'],
   },
   /* The count rides the button's top-right corner, half outside it, so it never covers the glyph. */
   badge: {

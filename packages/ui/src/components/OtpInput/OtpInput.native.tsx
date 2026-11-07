@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useRef, useState } from 'react';
 import type { TextInput as RNTextInput, StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { fieldBox, fieldBoxText } from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { applyOtpEdit, erasedOtp, type OtpEdit, otpDigits, typedOtp } from './OtpInput.logic';
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
     width: theme.spacing['sp-3'],
     height: BAR_HEIGHT,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['mark-subtle'],
+    backgroundColor: colors['mark-subtle'],
   },
   box: {
     width: BOX_WIDTH,
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.type.families.mono,
     fontSize: 22,
     fontWeight: '700',
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
     padding: 0,
   },
   message: { marginTop: theme.spacing['sp-2'], marginHorizontal: 2 },

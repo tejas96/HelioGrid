@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { AppHeaderProps } from './AppShell.types';
@@ -30,6 +31,7 @@ export function AppHeader({
   onNotificationsClick,
   notificationsLabel,
   notificationsName,
+  notificationsOpen,
   avatar,
   breadcrumb,
   style,
@@ -73,6 +75,7 @@ export function AppHeader({
             label={notificationsLabel}
             name={notificationsName}
             badge={notifications}
+            expanded={notificationsOpen}
             onClick={onNotificationsClick}
             icon={<ShellGlyph name="bell" size="md" />}
           />
@@ -105,7 +108,7 @@ const styles = StyleSheet.create({
   rule: {
     width: 1,
     height: theme.spacing['sp-6'],
-    backgroundColor: theme.colors.hairline,
+    backgroundColor: colors.hairline,
   },
   titles: {
     justifyContent: 'center',

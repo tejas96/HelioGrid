@@ -1,14 +1,14 @@
 # M07 · Sales Execution — engineering tasks
 
-This file covers Module M07 (Sales Execution): My Day and the follow-up task system, the voice agent end to end (guided setup, knowledge base, behaviour defaults, the compliance gate, triggers and the call queue, call execution, escalation and hand-to-human, inbound IVR, telephony numbers, agent performance and usage) and the close surfaces (Mark won, Mark lost, Reopen). Task-id prefix: `T-M07-`. Source doc: `docs/prd/modules/M07-sales-execution.md` (rows M07-01…M07-65). Screen tasks point at their UX briefs under `docs/ux/briefs/`, where the verbatim requirement rows live; engine, policy and integration tasks quote their rows in full below.
+This file covers Module M07 (Sales Execution): My Day and the follow-up task system, the voice agent end to end (guided setup, knowledge base, behaviour defaults, the compliance gate, triggers and the call queue, call execution, escalation and hand-to-human, inbound IVR, telephony numbers, agent performance and usage) and the close surfaces (Mark won, Mark lost, Reopen). Task-id prefix: `T-M07-`. Source doc: `docs/prd/modules/M07-sales-execution.md` (rows M07-01…M07-65). Screen tasks' verbatim requirement rows live in the PRD; engine, policy and integration tasks quote their rows in full below.
 
 ### T-M07-001 · My Day
 
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-01 (P0), M07-02 (P0), M07-03 (P0), M07-04 (P0), M07-06 (P0)
-**DESIGN:** SCR-M07-01 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-01-my-day.md`; they are the specification.
+**DESIGN:** SCR-M07-01
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a Sales Executive with overdue, timed, agent-touched and future items, when My Day renders, then the blocks appear in exactly the order OVERDUE · TODAY · AGENT ACTIVITY · UPCOMING THIS WEEK, with overdue styled as the first and most urgent block (M07-01, M07-02).
 - Given the agent called two of the rep's leads overnight, when My Day renders, then those two outcomes appear only inside the AGENT ACTIVITY block, each marked as agent activity and deep-linking to the call result — never interleaved with the rep's own tasks (M07-03).
@@ -21,8 +21,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-62 (P0)
-**DESIGN:** SCR-M07-02 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-02-mark-won.md`; they are the specification.
+**DESIGN:** SCR-M07-02
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a rep marks a lead won with final value and expected install date, when they confirm, then the project exists immediately with no re-entry of customer data, and the lead shows won (M07-62).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
@@ -32,8 +32,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-63 (P0)
-**DESIGN:** SCR-M07-03 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-03-mark-lost.md`; they are the specification.
+**DESIGN:** SCR-M07-03
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a rep marks a lead lost, when they must pick a reason, then the surface offers the ruled seven-reason set (the source six plus "not interested" — owner ruling 2026-08-04), refuses a reasonless save, and postponed losses carry a date (M07-63).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
@@ -43,8 +43,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-64 (P0)
-**DESIGN:** SCR-M07-04 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-04-reopen-lead.md`; they are the specification.
+**DESIGN:** SCR-M07-04
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a postponed loss dated next month, when that date arrives, then the lead resurfaces at 09:00 tenant-local with a follow-up task (M07-64).
 - Given a lost lead is reopened, when it re-enters, then it lands at its prior funnel stage and the timeline records the reopen (M07-64).
@@ -55,8 +55,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-08 (P0), M07-09 (P0), M07-10 (P0), M07-11 (P0), M07-15 (P0), M07-34 (P0)
-**DESIGN:** SCR-M07-05 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-05-agent-setup-settings.md`; they are the specification.
+**DESIGN:** SCR-M07-05
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a new tenant that has never opened agent setup, when the agent is enabled, then every guided field already holds a working pre-filled value and a free-text box exists (M07-08, M07-09).
 - Given the owner edits the opening line, when they save, then the wording change takes effect for newly queued calls only after publish (M07-14) — and no edit path weakens the four hard floors (never claims human · never denies AI when asked · instant handoff · full transcription), nor removes the proactive disclosure where the pack flag ships it ON (M07-10, owner ruling 2026-08-04).
@@ -70,8 +70,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-12 (P0)
-**DESIGN:** SCR-M07-06 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-06-calling-window.md`; they are the specification.
+**DESIGN:** SCR-M07-06
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given the pack's statutory window, when the owner edits the calling window, then only equal or narrower schedules and additional holidays can be saved (M07-12).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
@@ -81,8 +81,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-13 (P0)
-**DESIGN:** SCR-M07-07 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-07-test-agent.md`; they are the specification.
+**DESIGN:** SCR-M07-07
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given the owner runs a test call, when it plays, then it uses the draft configuration and no customer-facing call is affected (M07-13).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
@@ -92,8 +92,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-14 (P0)
-**DESIGN:** SCR-M07-08 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-08-agent-config-history.md`; they are the specification.
+**DESIGN:** SCR-M07-08
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given the owner edits the opening line, when they save, then the wording change takes effect for newly queued calls only after publish (M07-14) — and no edit path weakens the four hard floors (never claims human · never denies AI when asked · instant handoff · full transcription), nor removes the proactive disclosure where the pack flag ships it ON (M07-10, owner ruling 2026-08-04).
 - Given a published config change while ten calls sit queued, when those calls dial, then each uses the version it was queued with and the call record names it (M07-14).
@@ -104,8 +104,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-16 (P0), M07-19 (P0), M07-21 (P1)
-**DESIGN:** SCR-M07-09 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-09-knowledge-base.md`; they are the specification.
+**DESIGN:** SCR-M07-09
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a new tenant, when the agent takes its first call, then every KB section already holds seeded content and no answer is a blank (M07-16, M07-17).
 - Given a KB edit that gives a second, different warranty answer, when the owner saves, then the contradiction is flagged at save time (M07-19).
@@ -120,8 +120,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-18 (P0), M07-58 (P0)
-**DESIGN:** SCR-M07-10 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-10-unanswered-questions.md`; they are the specification.
+**DESIGN:** SCR-M07-10
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given the agent could not answer "does hail damage panels?", when the owner opens the list, then the question shows with its asked-count, and one tap on an answer writes it into the named section, live for the next call (M07-18).
 - Given any listed call, when tapped, then transcript and recording (where consented and within retention) open (M07-57); given the unanswered list, then one tap answers into the KB (M07-58).
@@ -135,8 +135,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-26 (P0)
-**DESIGN:** SCR-M07-11 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-11-corrections-review-queue.md`; they are the specification.
+**DESIGN:** SCR-M07-11
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a rep corrects an agent outcome, when the correction saves, then the lead shows the rep's read, a review-queue item exists for the owner, and the KB is unchanged until the owner explicitly promotes an answer (M07-25, M07-26).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
@@ -147,8 +147,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Status:** planned
 **PRD rows:** M07-28 (P0), M07-30 (P0), M07-35 (P0), M07-36 (P0), M07-37 (P0)
 **Billing gate (T-M12-009):** queue insert names `voice_agent` in its `RouteBillingMap` (paused from `past_due` day 4), and both insert and the pre-dial check refuse past the `voice_minutes` allowance read from `T-M12-010`'s rollup, by throwing `EntitlementBlockedException`; a blocked entry is marked and the owner notified (M07-37, M12-23).
-**DESIGN:** SCR-M07-12 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-12-agent-call-queue.md`; they are the specification.
+**DESIGN:** SCR-M07-12
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given any queued call, when its dial moment arrives, then the gate's checks run first and a block persists its verdict on the queue entry and the lead (M07-27, M07-30).
 - Given a pre-dial view of any customer, when it renders, then consent, registry status, do-not-call, quiet flag and window verdict are all visible (M07-28).
@@ -166,8 +166,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-25 (P0), M07-38 (P0)
-**DESIGN:** SCR-M07-13 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-13-call-record-detail.md`; they are the specification.
+**DESIGN:** SCR-M07-13
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a rep corrects an agent outcome, when the correction saves, then the lead shows the rep's read, a review-queue item exists for the owner, and the KB is unchanged until the owner explicitly promotes an answer (M07-25, M07-26).
 - Given any completed, dropped or failed call, when the lead timeline renders, then the call record exists with its typed outcome, summary, language and config version, with transcript on tap (M07-38, M07-39); and given the customer declined recording, then no recording exists but the call proceeded and the transcript survives per the pack's rules (M07-38).
@@ -178,8 +178,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-42 (P0)
-**DESIGN:** SCR-M07-14 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-14-escalations.md`; they are the specification.
+**DESIGN:** SCR-M07-14
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a customer asks for a discount mid-call, when the hand-over rule fires, then the rep is notified immediately with a deep link, and the escalations surface lists the call with its reason (M07-42, M07-43).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
@@ -189,8 +189,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-44 (P0)
-**DESIGN:** SCR-M07-15 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-15-routing-rules-editor.md`; they are the specification.
+**DESIGN:** SCR-M07-15
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given an escalation chain where no level answers, when the timeouts elapse, then the terminal fallback (callback queue or voicemail) takes the call — a dead end is impossible by construction (M07-44).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
@@ -204,8 +204,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-47 (P0)
-**DESIGN:** SCR-M07-16 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-16-ivr-flow-editor.md`; they are the specification.
+**DESIGN:** SCR-M07-16
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a tenant edits their IVR flow, when they publish, then the whole flow versions and in-flight calls finish on the version they started (M07-47).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
@@ -218,8 +218,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-51 (P0), M07-52 (P0), M07-53 (P0)
-**DESIGN:** SCR-M07-17 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-17-number-provisioning-wizard.md`; they are the specification.
+**DESIGN:** SCR-M07-17
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a new tenant, when they open voice settings, then a platform number is available instantly as the default choice (M07-51).
 - Given a tenant completes BYO setup, when a customer calls their old number, then it forwards in; and when the agent calls out, then the platform number is the caller identity — with the wizard having said exactly that in advance (M07-52, M07-53).
@@ -230,8 +230,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-55 (P0), M07-56 (P0), M07-60 (P1), M07-61 (P0)
-**DESIGN:** SCR-M07-18 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-18-agent-performance.md`; they are the specification.
+**DESIGN:** SCR-M07-18
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a month of agent activity, when the performance screen renders, then attempted, connected, callbacks, site visits, hand-offs and unanswered counts show this month vs last (M07-55).
 - Given the "deals it touched" block renders, then the `F8-30` caption is visible beside the figure without any interaction, in the viewer's language (M07-56).
@@ -244,8 +244,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-57 (P0)
-**DESIGN:** SCR-M07-19 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-19-call-log.md`; they are the specification.
+**DESIGN:** SCR-M07-19
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given any listed call, when tapped, then transcript and recording (where consented and within retention) open (M07-57); given the unanswered list, then one tap answers into the KB (M07-58).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
@@ -255,8 +255,8 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M07-59 (P0)
-**DESIGN:** SCR-M07-20 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M07-20-agent-usage.md`; they are the specification.
+**DESIGN:** SCR-M07-20
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given the usage view and the invoice for the same period, then the minutes shown are the same numbers (M07-59).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
@@ -361,7 +361,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 - **M07-43** (P0) — **A price question is an immediate escalation: the rep gets a notification, not a task buried in a list.** The notification deep-links to the live context. Notification delivery contracts are `foundations/F6`'s (`agent_escalation` type registered there).
 - **M07-45** (P0) — **Every handoff writes a pinned context record** — summary, intent, sentiment, collected fields, transcript pointer — generated once at handoff time, with the target and outcome. A warm transfer delivers a spoken whisper summary before bridging **where the rail declares that capability**; otherwise it degrades to cold transfer plus a push with the summary and a deep link — declared path, never a silent no-op (F8-35 consumed).
 - **M07-46** (P0) — **Per-user routing availability is a manual toggle in v1**: available · busy · off, with an optional until-time. Ring groups and chains read it.
-(M07-46's toggle surface ships in the app shell — verbatim row also carried by `docs/ux/briefs/SCR-SHELL-01-app-shell.md`; this task builds the presence state that ring groups and chains read AND lands the pill and its editor inside both shells, `T-SHELL-001` and `T-SHELL-008`, which host it and claim nothing of it.)
+(M07-46's toggle surface ships in the app shell — verbatim row also carried by `SCR-SHELL-01`; this task builds the presence state that ring groups and chains read AND lands the pill and its editor inside both shells, `T-SHELL-001` and `T-SHELL-008`, which host it and claim nothing of it.)
 **DONE WHEN:**
 - Given a customer asks for a discount mid-call, when the hand-over rule fires, then the rep is notified immediately with a deep link, and the escalations surface lists the call with its reason (M07-42, M07-43).
 - Given any handoff, when the human picks up, then the pinned context (summary, intent, collected fields) is with them — as a whisper where the rail declares it, else as push + deep link, and the record shows which (M07-45).

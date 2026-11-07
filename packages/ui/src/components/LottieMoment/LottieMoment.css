@@ -1,0 +1,20 @@
+/* LottieMoment — one small brand animation, its box held from the first frame so nothing shifts
+   while the file loads. */
+.hg-lottie-moment {
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--hg-lottie-size);
+  height: var(--hg-lottie-size);
+}
+.hg-lottie-moment[data-size="48"] {
+  --hg-lottie-size: 48px;
+}
+.hg-lottie-moment[data-size="72"] {
+  --hg-lottie-size: 72px;
+}
+.hg-lottie-moment[data-size="96"] {
+  --hg-lottie-size: 96px;
+}
+.hg-lottie-moment[data-size="120"] {
+  --hg-lottie-size: 120px;
+}

@@ -1,7 +1,8 @@
-import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { ImageGlyphName } from './Image.missing';
 import { IMAGE_GLYPH } from './Image.missing';
@@ -16,7 +17,7 @@ export function Glyph({
 }: {
   name: ImageGlyphName;
   size: number;
-  color: string;
+  color: ThemeColor;
 }) {
   return (
     <Svg
@@ -58,6 +59,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
 });

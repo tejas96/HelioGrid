@@ -1,6 +1,7 @@
-/* The plans at width (`SCR-M12-03` decision 9): while the review panel is open it stands at the
-   right edge, non-modal, so the page keeps the panel's room clear and the settings list steps aside,
-   as it does for the notification centre — the plans and the panel keep their room. */
+/* The plans at width (`SCR-M12-03` decision 9): four plans side by side need the page's whole room,
+   so the settings list steps aside here, as it does for the notification centre; beside the sidebar
+   it would leave them one column on a laptop. While the review panel is open it stands at the right
+   edge, non-modal, and the page keeps the panel's room clear. */
 
 @media (min-width: 968px) {
   .hg-shell:not(.hg-shell-centre-open)
@@ -10,7 +11,7 @@
     padding-right: calc(var(--sp-24) * 5 + var(--screen-pad-desktop));
   }
 
-  .hg-shell .hg-settings-page:has(.hg-plans-page[data-review="open"]) .hg-settings-page-side {
+  .hg-shell .hg-settings-page:has(.hg-plans-page) .hg-settings-page-side {
     display: none;
   }
 }

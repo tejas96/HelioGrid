@@ -2,6 +2,8 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { renderMarks } from '../ChipGroup';
@@ -22,7 +24,7 @@ const PANEL_FOOT = 6;
 
 const styles = StyleSheet.create({
   /* A thin line above a section is all that parts it from the one before (`F7-49`). */
-  parted: { borderTopWidth: 1, borderTopColor: theme.colors['line-soft'] },
+  parted: { borderTopWidth: 1, borderTopColor: colors['line-soft'] },
   head: { flexDirection: 'row', alignItems: 'center', minWidth: 0 },
   toggle: {
     flex: 1,
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
     fontSize: type.body.fontSize,
     fontWeight: '700',
     letterSpacing: -0.15,
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   standing: {
     flexDirection: 'row',
@@ -59,7 +61,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.type.families.sans,
     fontSize: type.caption.fontSize,
     lineHeight: type.caption.lineHeight,
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
   standingDot: {
     width: theme.spacing['sp-2'],
@@ -72,34 +74,34 @@ const styles = StyleSheet.create({
     fontFamily: theme.type.families.sans,
     fontSize: type.caption.fontSize,
     fontWeight: '500',
-    color: theme.colors['danger-text'],
+    color: colors['danger-text'],
   },
   dot: {
     width: 6,
     height: 6,
     borderRadius: 3,
     flexShrink: 0,
-    backgroundColor: theme.colors.danger,
+    backgroundColor: colors.danger,
   },
   panel: { paddingTop: 4, gap: theme.spacing['sp-4'] },
   meta: {
     fontFamily: theme.type.families.sans,
     fontSize: type.caption.fontSize,
     flexShrink: 0,
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
   total: {
     fontFamily: theme.type.families.mono,
     fontSize: type['body-sm'].fontSize,
     fontWeight: '700',
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
     flexShrink: 0,
   },
   action: { flexShrink: 0 },
   beforeAction: { paddingRight: theme.spacing['sp-2'] },
 });
 
-function Chevron({ open, color }: { open: boolean; color: string }) {
+function Chevron({ open, color }: { open: boolean; color: ThemeColor }) {
   return (
     <Svg
       width={18}
@@ -122,7 +124,7 @@ function Standing({ item }: { item: AccordionItem }) {
   const word = standingWordAt(item, 'title');
   if (word === undefined) return null;
   const marked = markedState(item);
-  const mark = marked === 'done' ? theme.colors.success : theme.colors['mark-subtle'];
+  const mark = marked === 'done' ? colors.success : colors['mark-subtle'];
   return (
     <View style={styles.standing}>
       {marked !== undefined ? (
@@ -206,7 +208,7 @@ export function Accordion({
                   <Standing item={item} />
                 </View>
                 <HeaderFacts item={item} />
-                <Chevron open={isOpen} color={theme.colors['text-primary']} />
+                <Chevron open={isOpen} color={colors['text-primary']} />
               </Pressable>
               {/* A sibling of the toggle, never inside it. */}
               {item.action !== undefined ? <View style={styles.action}>{item.action}</View> : null}

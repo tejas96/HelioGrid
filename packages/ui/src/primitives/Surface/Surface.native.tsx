@@ -1,6 +1,8 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { View } from 'react-native';
+import type { ThemeColor } from '../Color/colors';
+import { colors } from '../Color/colors';
 import { GroundProvider } from '../Ground/Ground.native';
 import type { Ground } from '../Ground/Ground.types';
 import type {
@@ -39,12 +41,12 @@ const RADIUS: Record<Density, Record<SurfaceRadius, number>> = {
   },
 };
 
-const BACKGROUND: Record<SurfaceBackground, string> = {
+const BACKGROUND: Record<SurfaceBackground, ThemeColor> = {
   // biome-ignore lint/plugin/raw-white: ground — the ground itself, and Surface, which sets it
-  surface: theme.colors.surface,
-  'surface-alt': theme.colors['surface-alt'],
-  canvas: theme.colors.canvas,
-  'canvas-sunken': theme.colors['canvas-sunken'],
+  surface: colors.surface,
+  'surface-alt': colors['surface-alt'],
+  canvas: colors.canvas,
+  'canvas-sunken': colors['canvas-sunken'],
 };
 
 /** The ground each background IS, so a control inside takes the opposite (`F7-15`). */

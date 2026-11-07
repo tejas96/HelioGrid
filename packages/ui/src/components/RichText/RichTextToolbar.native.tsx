@@ -2,6 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE } from '../../primitives/FieldBox/FieldBox.native';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -26,11 +27,11 @@ const styles = StyleSheet.create({
   },
   tool: { minWidth: 44, height: 44, borderRadius: theme.radius['r-pill'] },
   toolWide: { paddingHorizontal: theme.spacing['sp-3'] },
-  toolActive: { backgroundColor: theme.colors['accent-subtle'] },
+  toolActive: { backgroundColor: colors['accent-subtle'] },
   divider: {
     width: 1,
     height: 24,
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
     marginHorizontal: 6,
   },
   templates: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 2 },
@@ -47,7 +48,7 @@ interface ToolButtonProps {
 
 /** Every toolbar target is a Pressable, so every one of them is 44px. */
 function ToolButton({ active = false, label, glyph, word, onPress }: ToolButtonProps) {
-  const tint = active ? theme.colors.accent : theme.colors['text-secondary'];
+  const tint = active ? colors.accent : colors['text-secondary'];
   return (
     <Pressable
       accessibilityLabel={label}

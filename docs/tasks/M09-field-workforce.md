@@ -1,6 +1,6 @@
 # M09 · Field workforce — engineering tasks
 
-This file covers module M09 — Field workforce: the tracked-seat lifecycle and the Owner's tracking toggle, site check-in/out, visit tracking, attendance capture, live location and the route timeline, geofencing, the activity timeline and day playback, team visibility, and the module's four privacy laws. Task-id prefix: `T-M09-`. Source doc: `docs/prd/modules/M09-field-workforce.md` (rows M09-01 … M09-71). Screen briefs live in `docs/ux/briefs/` (SCR-M09-01 … SCR-M09-07); seven screen tasks carry one screen each, ten engine/policy/integration tasks carry the non-screen builds, eight rows are laws enforced through screens and review, and five context rows are realized by other rows or other modules' documents. Every row's disposition is indexed at the end of this file. Two rows from other documents — `PS-23` (`docs/prd/02-personas.md`) and `M13-35` (`docs/prd/modules/M13-dashboards-and-reporting.md`), the Field Technician route's content contract — are built at T-M09-002 and are indexed as `realized-by` that task in `docs/tasks/F-core.md` and `docs/tasks/M13-dashboards.md`, not here.
+This file covers module M09 — Field workforce: the tracked-seat lifecycle and the Owner's tracking toggle, site check-in/out, visit tracking, attendance capture, live location and the route timeline, geofencing, the activity timeline and day playback, team visibility, and the module's four privacy laws. Task-id prefix: `T-M09-`. Source doc: `docs/prd/modules/M09-field-workforce.md` (rows M09-01 … M09-71). The screens are SCR-M09-01 … SCR-M09-07; seven screen tasks carry one screen each, ten engine/policy/integration tasks carry the non-screen builds, eight rows are laws enforced through screens and review, and five context rows are realized by other rows or other modules' documents. Every row's disposition is indexed at the end of this file. Two rows from other documents — `PS-23` (`docs/prd/02-personas.md`) and `M13-35` (`docs/prd/modules/M13-dashboards-and-reporting.md`), the Field Technician route's content contract — are built at T-M09-002 and are indexed as `realized-by` that task in `docs/tasks/F-core.md` and `docs/tasks/M13-dashboards.md`, not here.
 
 ---
 
@@ -9,8 +9,8 @@ This file covers module M09 — Field workforce: the tracked-seat lifecycle and 
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-04 (P0), M09-12 (P0), M09-14 (P0), M09-16 (P0), M09-44 (P0), M09-68 (P0)
-**DESIGN:** SCR-M09-01 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M09-01-tracking-settings.md`; they are the specification. Every PRD row of this task is quoted in full in that brief; no additional rows need quoting here. M09-50 (the per-site radius rule) is also quoted verbatim in this brief because the tenant default radius is set here; it is dispositioned at T-M09-007.
+**DESIGN:** SCR-M09-01
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. M09-50 (the per-site radius rule) also binds this screen because the tenant default radius is set here; it is dispositioned at T-M09-007.
 **DONE WHEN:**
 
 - Given the tracking toggle, when it is moved, then the act is attributable to the EPC Owner and its billing unit is tracked-seat-months, with no figure computed in this module (`M09-04`).
@@ -28,12 +28,12 @@ This file covers module M09 — Field workforce: the tracked-seat lifecycle and 
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-13 (P0), M09-19 (P0), M09-21 (P0), M09-23 (P1), M09-24 (P0), M09-28 (P0), M09-32 (P1), M09-33 (P2), M09-35 (P0), M09-37 (P0), M09-51 (P0), M09-66 (P0), M09-71 (P0), PS-23 (P1), M13-35 (P0)
-**DESIGN:** SCR-M09-02 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M09-02-my-day-route.md`; they are the specification. Every PRD row of this task is quoted in full in that brief, `M09-71` included. *(This sentence carved out `M09-71` as an exception — true when written and false within minutes: the brief was amended in the same 2026-08-15 wave and its quote is byte-identical to the live cell.)* M09-24 also binds SCR-M09-04 and M09-66 also binds SCR-M09-05 — both are quoted verbatim in those briefs too; they are dispositioned here. M09-28's lead-side half binds SCR-M02-04 (Lead Detail; see `docs/tasks/M02-crm-leads.md`); the field half — the stop on the route and its check-in/out — is this task's. **Exception — `M09-71`:** the row was added to `docs/prd/modules/M09-field-workforce.md` §M09.5 by owner ruling 2026-08-15, restoring the law of `M09-36`, which was deleted 2026-08-07 with the offline capability and stays deleted; the restoring row deliberately carries a new id. The brief does not yet quote it — and still carries the stale `M09-36` pointer noted below — so it is quoted verbatim here and this quote is the specification for it until the brief owner carries it across:
+**DESIGN:** SCR-M09-02
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. M09-24 also binds SCR-M09-04 and M09-66 also binds SCR-M09-05; they are dispositioned here. M09-28's lead-side half binds SCR-M02-04 (Lead Detail; see `docs/tasks/M02-crm-leads.md`); the field half — the stop on the route and its check-in/out — is this task's. **Exception — `M09-71`:** the row was added to `docs/prd/modules/M09-field-workforce.md` §M09.5 by owner ruling 2026-08-15, restoring the law of `M09-36`, which was deleted 2026-08-07 with the offline capability and stays deleted; the restoring row deliberately carries a new id. It is quoted verbatim here and this quote is the specification for it:
 
 - **M09-71** (P0) — **A day start or a day end is recorded only once the server has it.** The mark is the person's own act (`M09-35`, `M09-37`); until the server confirms it the surface shows it **pending, never as recorded** — no optimistic tick, and no local clock time presented as a record fact. A failure says so plainly and the mark is not lost from the screen (`F8-36`). This binds harder here than anywhere else in the product: attendance is read as a judgement about a person and feeds `modules/M10-hr-lite.md`'s register (`M10-23`), so a mark that *looks* recorded and is not is a wrong answer about someone's day. The time shown is the time the server recorded, which is what makes it an untiered record fact under `F8`'s date rule — a pending mark is not yet a record and cannot be shown as one.
 
-Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** — what the screen lists — and their rows live in `docs/prd/02-personas.md` and `docs/prd/modules/M13-dashboards-and-reporting.md` while the screen belongs to this module. Both are quoted verbatim in `docs/ux/briefs/SCR-M09-02-my-day-route.md` and both are dispositioned `realized-by` this task in `docs/tasks/F-core.md` and `docs/tasks/M13-dashboards.md`; they are listed above as this screen's specification rows and are not indexed in this file's disposition table, which covers the M09 rows only. This task is where they are built.
+Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** — what the screen lists — and their rows live in `docs/prd/02-personas.md` and `docs/prd/modules/M13-dashboards-and-reporting.md` while the screen belongs to this module. Both are quoted verbatim in `SCR-M09-02` and both are dispositioned `realized-by` this task in `docs/tasks/F-core.md` and `docs/tasks/M13-dashboards.md`; they are listed above as this screen's specification rows and are not indexed in this file's disposition table, which covers the M09 rows only. This task is where they are built.
 
 **DONE WHEN:**
 
@@ -56,7 +56,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 - Given a confirmed mark, when its time renders, then it is the time the server recorded and it carries no provenance tier, as a record fact — a recorded date carries no tier (`M09-71`, `F8-02`).
 - No Given/When/Then line covers `M09-33` (REC — suggested day order) in the PRD's acceptance blocks; the requirement text quoted in the brief is the binding criterion, and the suggestion must be acceptable or ignorable, never forced.
 - (`M09-20`'s acceptance line tested the no-connection half of that row and is removed 2026-08-07 with the offline/sync capability. `M09-20`'s surviving halves — a visit's status only moves forward, and server apply order decides ordering, never a device clock — are `F4-17` and `F4-19`, built in `docs/tasks/F-platform.md`.)
-- *Row removed 2026-08-07 by owner decision: `M09-36` (the attendance day-start / day-end mark) was deleted with the offline/sync capability, and its acceptance line went with it. Its connectivity half — the consequence that in a no-signal area the day and the tracking window start only when the mark reaches the server — died correctly with the boundary. **Its other half did not, and no live row carries it:** an attendance day-start or day-end mark is recorded only when the server has it — until then the action is shown to the person as waiting, never as a success, and no attendance record is displayed as recorded before it is acknowledged. `M09-35` establishes only that attendance is two marks a day; `M09-37` governs only that a first check-in offers the day start rather than deriving it; `M09-39` governs absence, not acknowledgement; and `F8-36`'s no-optimistic-result clause is conditioned on an action that cannot be performed — the failure branch, not the in-flight branch this obligation governs. **Open for the owner: this obligation has no live carrier and is built by no task in this file.** Compounding it, `docs/ux/briefs/SCR-M09-02-my-day-route.md` carries no 2026-08-07 amendment note — it still prints `M09-36` as a requirement and still specifies an `attendance-waiting` state citing it; the brief owner must resolve that pointer, and this task cannot close against an `M09-36` state.* **Closed 2026-08-15:** the owner ruled on that open question and the orphaned obligation is now carried by the new live row `M09-71`, quoted verbatim above and built by this task — `M09-36` itself stays deleted, this record of its deletion stays true, and the brief was repointed in the same wave — `docs/ux/briefs/SCR-M09-02-my-day-route.md` now quotes `M09-71` in full and its `attendance-waiting` state cites it, with `M09-36` surviving there only inside the file's own dated amendment notes. Nothing is left outstanding on either side.
+- *Row removed 2026-08-07 by owner decision: `M09-36` (the attendance day-start / day-end mark) was deleted with the offline/sync capability, and its acceptance line went with it. Its connectivity half — the consequence that in a no-signal area the day and the tracking window start only when the mark reaches the server — died correctly with the boundary. **Its other half did not, and no live row carries it:** an attendance day-start or day-end mark is recorded only when the server has it — until then the action is shown to the person as waiting, never as a success, and no attendance record is displayed as recorded before it is acknowledged. `M09-35` establishes only that attendance is two marks a day; `M09-37` governs only that a first check-in offers the day start rather than deriving it; `M09-39` governs absence, not acknowledgement; and `F8-36`'s no-optimistic-result clause is conditioned on an action that cannot be performed — the failure branch, not the in-flight branch this obligation governs. **Open for the owner: this obligation has no live carrier and is built by no task in this file.** Compounding it, `SCR-M09-02` carries no 2026-08-07 amendment note — it still prints `M09-36` as a requirement and still specifies an `attendance-waiting` state citing it; the brief owner must resolve that pointer, and this task cannot close against an `M09-36` state.* **Closed 2026-08-15:** the owner ruled on that open question and the orphaned obligation is now carried by the new live row `M09-71`, quoted verbatim above and built by this task — `M09-36` itself stays deleted, this record of its deletion stays true, and the brief was repointed in the same wave — `SCR-M09-02` now quotes `M09-71` in full and its `attendance-waiting` state cites it, with `M09-36` surviving there only inside the file's own dated amendment notes. Nothing is left outstanding on either side.
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 **Settle before the build:**
@@ -69,8 +69,8 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-27 (P0), M09-31 (P0)
-**DESIGN:** SCR-M09-03 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M09-03-visit-stop-detail.md`; they are the specification. Every PRD row of this task is quoted in full in that brief; no additional rows need quoting here.
+**DESIGN:** SCR-M09-03
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
 - Given a visit with a planned window and an actual arrival, when it renders, then both are shown and the difference is stated as a difference, with no rating, score or ranking (`M09-27`, `M09-09`).
@@ -84,8 +84,8 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-43 (P0), M09-48 (P0), M09-59 (P0), M09-61 (P0), M09-63 (P2)
-**DESIGN:** SCR-M09-04 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M09-04-team-field-day.md`; they are the specification. Every PRD row of this task is quoted in full in that brief; no additional rows need quoting here. M09-24 (open check-in surfacing) is also quoted verbatim in this brief because the exception rows surface here too; it is dispositioned at T-M09-002.
+**DESIGN:** SCR-M09-04
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. M09-24 (open check-in surfacing) also binds this screen because the exception rows surface here too; it is dispositioned at T-M09-002.
 **DONE WHEN:**
 
 - Given the live-location surface, when it opens, then its default view answers who is working and where each person is in their plan, and the moving-position map is a second view of the same people rather than the front door (`M09-43`).
@@ -103,8 +103,8 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-45 (P0), M09-54 (P0), M09-56 (P0)
-**DESIGN:** SCR-M09-05 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M09-05-activity-timeline.md`; they are the specification. Every PRD row of this task is quoted in full in that brief; no additional rows need quoting here. M09-45 also binds SCR-M09-06 (Day Playback) and is quoted verbatim in that brief too; it is dispositioned here. M09-66 (the own-record right) is also quoted verbatim in this brief; it is dispositioned at T-M09-002.
+**DESIGN:** SCR-M09-05
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. M09-45 also binds SCR-M09-06 (Day Playback); it is dispositioned here. M09-66 (the own-record right) also binds this screen; it is dispositioned at T-M09-002.
 **DONE WHEN:**
 
 - Given an untracked employee's day, when their activity timeline is opened, then it renders every act they recorded and states that movement playback is unavailable because tracking is off (`M09-54`, `M09-55`, `M09-61`).
@@ -123,8 +123,8 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-55 (P0)
-**DESIGN:** SCR-M09-06 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M09-06-day-playback.md`; they are the specification. Every PRD row of this task is quoted in full in that brief; no additional rows need quoting here. M09-45 (gaps never interpolated) is also quoted verbatim in this brief and binds this screen's replay; it is dispositioned at T-M09-005. M09-57's retention window bounds which days are replayable; it is dispositioned at T-M09-012.
+**DESIGN:** SCR-M09-06
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. M09-45 (gaps never interpolated) binds this screen's replay; it is dispositioned at T-M09-005. M09-57's retention window bounds which days are replayable; it is dispositioned at T-M09-012.
 **DONE WHEN:**
 
 - Given a tracked employee's day containing an interval with no positions, when the day is played back, then the interval renders as a gap of that duration and no path spans it (`M09-55`, `M09-45`).
@@ -138,8 +138,8 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-49 (P0), M09-50 (P0)
-**DESIGN:** SCR-M09-07 → PENDING
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M09-07-site-geofence.md`; they are the specification. Every PRD row of this task is quoted in full in that brief; no additional rows need quoting here. M09-50 also binds SCR-M09-01 (the tenant default radius) and is quoted verbatim in that brief too; it is dispositioned here.
+**DESIGN:** SCR-M09-07
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. M09-50 also binds SCR-M09-01 (the tenant default radius); it is dispositioned here.
 **DONE WHEN:**
 
 - Given a site with no geofence anchor in `modules/M08`, `modules/M04` or `modules/M02`, when a user attempts to create a geofence, then no new place is created and the user is directed to the module that owns the site (`M09-49`).
@@ -339,7 +339,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 
 **DONE WHEN:**
 
-- No Given/When/Then line covers `M09-34` in the PRD's acceptance blocks; the requirement text above is the binding criterion, and the row's own rationale and conditions bind alongside it — including that it discloses field data on a customer surface and that the customer send channel (the transactional lane, `M03-03`) is not answered by it. The window derives from the assigned visit, never from a live position. The customer-facing surface is SCR-F5-02 (T-F5-002 in `docs/tasks/F5-customer-link.md`); this row is quoted verbatim in `docs/ux/briefs/SCR-F5-02-link-progress.md`.
+- No Given/When/Then line covers `M09-34` in the PRD's acceptance blocks; the requirement text above is the binding criterion, and the row's own rationale and conditions bind alongside it — including that it discloses field data on a customer surface and that the customer send channel (the transactional lane, `M03-03`) is not answered by it. The window derives from the assigned visit, never from a live position. The customer-facing surface is SCR-F5-02 (T-F5-002 in `docs/tasks/F5-customer-link.md`); this row is quoted verbatim in `SCR-F5-02`.
 
 ---
 

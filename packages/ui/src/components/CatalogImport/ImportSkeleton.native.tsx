@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ProgressRing } from '../OperationProgress/ProgressRing.native';
 import { SHARE_RING } from '../OperationProgress/progress-ring';
@@ -67,7 +68,7 @@ function Block({ style }: { style: StyleProp<ViewStyle> }) {
 
 /** A ring's track alone, at the share rings' own size: the run ring part with nothing drawn. */
 function RingTrack() {
-  return <ProgressRing geometry={SHARE_RING} share={0} ink={theme.colors['canvas-sunken']} />;
+  return <ProgressRing geometry={SHARE_RING} share={0} ink={colors['canvas-sunken']} />;
 }
 
 function SkeletonList({ rows }: { rows: readonly string[] }) {
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
   list: { ...raisedCard, borderRadius: CARD_RADIUS },
   row: { gap: theme.spacing['sp-2'], padding: 14 },
   foot: { flexDirection: 'row', justifyContent: 'space-between' },
-  block: { borderRadius: theme.radius['rf-sm'], backgroundColor: theme.colors['canvas-sunken'] },
+  block: { borderRadius: theme.radius['rf-sm'], backgroundColor: colors['canvas-sunken'] },
   heading: { width: 72, height: 14 },
   line: { width: '62%', height: 10 },
   label: { width: RING, height: 10 },

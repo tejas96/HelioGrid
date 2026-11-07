@@ -14,6 +14,12 @@ export interface WordmarkProps {
 export interface LogoTileProps {
   /** Tile edge in px/dp. Default 40. */
   size?: number;
-  /** Corner radius. Follows the density, never a circle. Default 12. */
+  /** Corner radius. Absent, the mark is a disc. */
   radius?: number;
+}
+
+/** The mark and the name side by side: the sidebar's brand, a door's head. */
+export interface ProductMarkProps {
+  /** The mark's side and the name's size follow from this, px/dp. Default 32. */
+  size?: 32 | 40;
 }

@@ -42,11 +42,10 @@ export function SetupInviteTeam({
   return (
     <DoorFrame
       onFooterHeight={onActsHeight}
-      panes="onboarding"
       taskMeasure="list"
       identity={
         <>
-          <Text variant="h1">{words.title}</Text>
+          <Text variant="display">{words.title}</Text>
           <div className="hg-door-wide-only">
             <AfterYouSend words={words.afterYouSend} />
           </div>

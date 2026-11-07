@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { ThemeColor } from '../../primitives/Color/colors';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import type { SurfaceRead, SurfaceState } from '../UnavailableNote';
 
@@ -85,7 +86,7 @@ export type CardBodyProps = {
 
 export interface IconCircleProps {
   children?: ReactNode;
-  /** semantic or brand colour; the circle fills a 6% tint of it over the ground that holds it */
-  color?: string;
+  /** semantic or brand colour; the circle fills a soft tint of it over the ground that holds it */
+  color?: ThemeColor;
   size?: number;
 }

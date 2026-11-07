@@ -7,8 +7,8 @@ import { MIN_TOUCH_TARGET } from '../support/touch-target';
 
 /**
  * The phone header (`MS12-19`, the design system's open-page `MobileTopBar`): the product tile,
- * the company's name as words — no chip, it opens nothing (`F7-15`) — then the round grey search
- * and bell, and the avatar. A page opened from a list shows its way back and its title instead.
+ * the company's name as words — no chip, it opens nothing (`F7-15`) — then the round search and
+ * bell in the card colour a control takes on the page (`primitives/Ground`), and the avatar. A page opened from a list shows its way back and its title instead.
  */
 const en = await createTranslator('en');
 const words = { searchLabel: en.t(SHELL.search), notificationsLabel: en.t(SHELL.notifications) };
@@ -45,7 +45,7 @@ test('the bar is the tile, then the company name as bold words on one line, cut 
   expect(((await settledBox(bar))?.width ?? 0) <= 375).toBe(true);
 });
 
-test('search and the bell are round grey 44 buttons with primary icons', async ({
+test('search and the bell are round 44 buttons in the card colour, with primary icons', async ({
   mount,
   page,
 }) => {
@@ -59,7 +59,7 @@ test('search and the bell are round grey 44 buttons with primary icons', async (
       />
     </div>,
   );
-  const fill = await resolvedColour(page, '--fill');
+  const fill = await resolvedColour(page, '--surface');
   const primary = await resolvedColour(page, '--text-primary');
   const pill = `${await resolvedLength(page, '--r-pill')}px`;
 
@@ -99,7 +99,7 @@ test('safeTop marks the bar and keeps its own padding where no inset is reported
   // A desktop browser reports no camera inset, so the bar keeps its own padding; the inset itself
   // is read only on a device.
   await expect(bar).toHaveAttribute('data-safe-top', 'true');
-  await expect(bar).toHaveCSS('padding-top', `${await resolvedLength(page, '--sp-2')}px`);
+  await expect(bar).toHaveCSS('padding-top', `${await resolvedLength(page, '--sp-1')}px`);
 });
 
 test('a shell button that is not round is transparent at --r-md', async ({ mount, page }) => {

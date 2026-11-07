@@ -1,6 +1,7 @@
 import type { ProvenanceStanding, ProvenanceTier, TranslatedText } from '@heliogrid/contracts';
 import type { EnergySource, Freshness } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
+import type { ThemeColor } from '../../primitives/Color/colors';
 /**
  * The system's one surface-state vocabulary — `unavailable` is the fourth state: neutral, stated
  * rather than styled as a fault, and NEVER a retry. Imported from the folder that owns it, exactly
@@ -114,7 +115,7 @@ export interface ChartDatum {
   // biome-ignore lint/plugin/copy-prop-type: a category of the data — a stage the pack names, a period the format prints
   label: string;
   value: number;
-  color?: string;
+  color?: ThemeColor;
 }
 
 export interface LinePoint {
@@ -124,7 +125,7 @@ export interface LinePoint {
 
 export interface LineSeries {
   name?: string;
-  color?: string;
+  color?: ThemeColor;
   points: LinePoint[];
 }
 
@@ -140,7 +141,7 @@ export interface BarChartProps extends Omit<ChartFrameProps, 'children' | 'insuf
   format?: (n: number) => string;
   /** Below this many values the chart refuses to draw. Default 1. */
   minPoints?: number;
-  color?: string;
+  color?: ThemeColor;
   gridlines?: number;
   /** Horizontal bars — better for long category names on a phone. */
   horizontal?: boolean;
@@ -190,7 +191,7 @@ export interface ChartLegendItem {
   // biome-ignore lint/plugin/copy-prop-type: a series or category of the data, as the caller's data names it
   label: string;
   value?: ReactNode;
-  color?: string;
+  color?: ThemeColor;
 }
 
 export interface ChartLegendProps {

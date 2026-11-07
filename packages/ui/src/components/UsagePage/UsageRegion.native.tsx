@@ -2,6 +2,7 @@ import type { UsageEventMeter } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { RefObject } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { tileSurface } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
@@ -186,7 +187,7 @@ export function UsagePlansRow({
   return (
     <ListRow
       icon={<ShellGlyph name="layers" size="md" tone="secondary" />}
-      iconColor={theme.colors['text-secondary']}
+      iconColor={colors['text-secondary']}
       title={plans.title}
       {...(plans.subtitle === null ? {} : { subtitle: plans.subtitle })}
       trailing={<ShellGlyph name="chevron-right" size="md" tone="secondary" />}

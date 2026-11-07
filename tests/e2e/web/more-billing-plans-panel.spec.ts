@@ -46,26 +46,27 @@ async function start(page: Page, paid: boolean) {
   });
 }
 
-test('at width the settings list steps aside while the review panel is open, and the panel leaves the plans their room', async ({
+test('at width the settings list steps aside for the plans, and the review panel leaves the plans their room', async ({
   page,
 }, info) => {
   test.skip(info.project.name !== 'desktop', 'the side list and the panel are the 1536 layout');
   await start(page, true);
   await page.goto('/more/billing/plans');
   const side = page.locator('.hg-settings-page-side');
-  await expect(side).toBeVisible();
+  await expect(plan(page, 'pro')).toBeVisible();
+  await expect(side).toBeHidden();
   await plan(page, 'pro').click();
   await page.getByRole('button', { name: en.t(P.reviewChange) }).click();
   const panel = page.getByRole('dialog', { name: en.t(P.review) });
   await expect(panel).toBeVisible();
-  /* Fix 1 holds on these two: the list stepped aside, and no card sits under the panel. */
+  /* Fix 1 holds on these two: the list stays aside, and no card sits under the panel. */
   await expect(side).toBeHidden();
   const cards = await settledBox(page.getByRole('radiogroup', { name: en.t(P.choosePlan) }));
   const sheet = await settledBox(panel);
   expect(cards.x + cards.width).toBeLessThanOrEqual(sheet.x);
   await panel.getByRole('button', { name: en.t(SHELL.close) }).click();
   await expect(panel).toHaveCount(0);
-  await expect(side).toBeVisible();
+  await expect(side).toBeHidden();
 });
 
 test('the review panel names its Close in Hindi, at the touch floor', async ({ page }, info) => {

@@ -1,6 +1,6 @@
-import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { LanguageContentState } from './LanguageSwitcher.types';
 
@@ -20,10 +20,10 @@ interface LanguageStateGlyphProps {
  */
 export function LanguageStateGlyph({ state, active }: LanguageStateGlyphProps) {
   const colour = active
-    ? theme.colors['text-inverse']
+    ? colors['text-inverse']
     : state === 'authored'
-      ? theme.colors.accent
-      : theme.colors['text-tertiary'];
+      ? colors.accent
+      : colors['text-tertiary'];
 
   if (state === 'inherited') {
     return (

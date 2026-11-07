@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Pressable } from '../../primitives/Pressable';
-import { isIrisHue } from '../Avatar/Avatar.logic';
+import { isCategoryHue } from '../Avatar/Avatar.logic';
 import type { BadgeProps, ChipProps } from './Chip.types';
 
 interface WebChipProps extends ChipProps {
@@ -59,7 +59,7 @@ export function Chip({
 
 /**
  * Tinted semantic badge — semantic bg + `-text` partner. Never interactive; always a span. An iris
- * tone takes Avatar's iris rule (`hg-iris`, `Avatar.css`), so a role and a face share one mix.
+ * tone takes Avatar's iris rule (`hg-hue`, `Avatar.css`), so a role and a face share one mix.
  */
 export function Badge({
   children,
@@ -68,11 +68,11 @@ export function Badge({
   className,
   style,
 }: WebBadgeProps) {
-  const iris = isIrisHue(tone);
+  const iris = isCategoryHue(tone);
   return (
     <span
-      className={classNames('hg-badge', iris ? 'hg-iris' : undefined, className)}
-      data-iris={iris ? tone : undefined}
+      className={classNames('hg-badge', iris ? 'hg-hue' : undefined, className)}
+      data-hue={iris ? tone : undefined}
       data-tone={tone}
       data-density={density}
       style={style}

@@ -2,16 +2,18 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { OperationState } from './OperationProgress.types';
 import { messageGlyph } from './operation-progress-model';
 
-const TONE: Record<OperationState, string> = {
-  running: theme.colors['text-secondary'],
-  done: theme.colors['success-text'],
-  failed: theme.colors['warning-text'],
-  cancelled: theme.colors['text-secondary'],
+const TONE: Record<OperationState, ThemeColor> = {
+  running: colors['text-secondary'],
+  done: colors['success-text'],
+  failed: colors['warning-text'],
+  cancelled: colors['text-secondary'],
 };
 
 function MessageGlyph({ state }: { state: OperationState }) {

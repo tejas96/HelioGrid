@@ -2,13 +2,12 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
-import { useGround } from '../../primitives/Ground/Ground.native';
+import { colors } from '../../primitives/Color/colors';
 import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import { Text } from '../../primitives/Text/Text.native';
 import { glyphStroke } from '../AppShell/ShellGlyph.logic';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { Button } from '../Button/Button.native';
-import { inkOver } from '../ShareFilter/ShareFilter.inks';
 import type { FileChipProps } from './FileChip.types';
 
 interface NativeFileChipProps extends FileChipProps {
@@ -16,10 +15,7 @@ interface NativeFileChipProps extends FileChipProps {
 }
 
 /* `FileChip.css`'s three mixes: the chip's wash, the wide tile's wash and the glyph's ink. */
-const IRIS = theme.colors['iris-blue'];
-const CHIP_WASH = 0.08;
-const TILE_WASH = 0.16;
-const GLYPH_INK = inkOver(IRIS, theme.colors['text-primary'], 0.72);
+const GLYPH_INK = colors['hue-teal-text'];
 
 /**
  * One chosen file, named: a sheet glyph, the file's name on one line (it is data, so it is cut, not
@@ -35,7 +31,6 @@ export function FileChip({
   replaceLabel,
   style,
 }: NativeFileChipProps) {
-  const { ground } = useGround();
   const wide = layout === 'wide';
   const glyph = (
     <Svg
@@ -58,14 +53,12 @@ export function FileChip({
       style={[
         styles.chip,
         wide ? styles.chipWide : undefined,
-        { backgroundColor: inkOver(IRIS, ground, CHIP_WASH) },
+        { backgroundColor: colors['hue-teal-bg'] },
         style,
       ]}
     >
       {wide ? (
-        <View style={[styles.tile, { backgroundColor: inkOver(IRIS, ground, TILE_WASH) }]}>
-          {glyph}
-        </View>
+        <View style={[styles.tile, { backgroundColor: colors['hue-teal-bg'] }]}>{glyph}</View>
       ) : (
         glyph
       )}

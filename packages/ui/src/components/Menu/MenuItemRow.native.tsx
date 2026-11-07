@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { renderActionReason } from '../ActionReason/ActionReason.native';
@@ -33,7 +34,7 @@ export function MenuItemRow({ item, onSelect, radio }: MenuItemRowProps) {
   const { checked, destructive, disabled, inert } = shape;
   const reason: ReactNode = disabled ? renderActionReason(item.disabledReason) : null;
   const twoLine = reason !== null;
-  const glyphColour = disabled ? theme.colors['text-tertiary'] : theme.colors['danger-text'];
+  const glyphColour = disabled ? colors['text-tertiary'] : colors['danger-text'];
 
   return (
     <Pressable

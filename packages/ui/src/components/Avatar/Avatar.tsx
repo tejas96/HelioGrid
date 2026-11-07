@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { avatarIris } from './Avatar.logic';
+import { avatarCategory } from './Avatar.logic';
 import type { AvatarGroupProps, AvatarProps } from './Avatar.types';
 import { initialsOf, initialsSize, keyedAvatars, overflowSize } from './Avatar.types';
 
@@ -57,11 +57,11 @@ function AvatarDisc({
       </span>
     );
   }
-  const iris = avatarIris(hue, name);
+  const iris = avatarCategory(hue, name);
   return (
     <span
-      className={classNames('hg-avatar', iris === null ? undefined : 'hg-iris', className)}
-      data-iris={iris ?? undefined}
+      className={classNames('hg-avatar', iris === null ? undefined : 'hg-hue', className)}
+      data-hue={iris ?? undefined}
       style={shape}
     >
       {src ? <img className="hg-avatar-img" src={src} alt={name} /> : initialsOf(name)}

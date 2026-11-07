@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Text`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
   ring: {
     flexShrink: 0,
     borderWidth: 1.5,
-    borderColor: theme.colors['mark-subtle'],
+    borderColor: colors['mark-subtle'],
   },
   words: {
     flexShrink: 1,

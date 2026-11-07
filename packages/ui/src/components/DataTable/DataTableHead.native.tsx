@@ -1,6 +1,6 @@
-import { theme } from '@heliogrid/theme';
 import { Pressable as RNPressable, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
@@ -35,7 +35,7 @@ function SortGlyph({ dir, active }: { dir: DataTableSort['dir'] | null; active: 
       height={12}
       viewBox="0 0 24 24"
       fill="none"
-      stroke={theme.colors['text-tertiary']}
+      stroke={colors['text-tertiary']}
       strokeWidth={3}
       strokeLinecap="round"
       strokeLinejoin="round"

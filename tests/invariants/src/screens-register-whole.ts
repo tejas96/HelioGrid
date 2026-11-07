@@ -1,9 +1,5 @@
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 import { type PrdRow, readPrdRows } from './prd-rows';
-import { gitFiles } from './repo-files';
 import {
-  BRIEFS,
   type Disposition,
   readDispositions,
   readScopeLock,
@@ -11,22 +7,20 @@ import {
   SCREENS_REGISTER,
   type ScreenRow,
 } from './screens-register';
-import { designLinks, readTaskLedger } from './task-ledger';
+import { designScreens, readTaskLedger } from './task-ledger';
 
 /**
- * The screens register is whole (`docs/prd/registers/screens.md`): every screen has one brief and
- * at least one task that designs it — a later task may rework a drawn screen — and nothing designs
- * or briefs a screen it does not hold; every live PRD row lands exactly once, a row the PRD struck
- * or deleted is marked struck here, and no landing names a row the PRD never had; and every screen
- * is V1 or V2, in the counts the scope lock states.
+ * The screens register is whole (`docs/prd/registers/screens.md`): every screen has at least one
+ * task that designs it — a later task may rework a drawn screen — and nothing designs a screen it
+ * does not hold; every live PRD row lands exactly once, a row the PRD struck or deleted is marked
+ * struck here, and no landing names a row the PRD never had; and every screen is V1 or V2, in the
+ * counts the scope lock states.
  */
-const BRIEF_FILE = /^docs\/ux\/briefs\/(SCR-[A-Z0-9]+-\d{2})(?:-.*)?\.md$/;
 const RELEASES = new Set(['V1', 'V2']);
 
 export function findScreensRegisterProblems(repo: string): string[] {
   const screens = readScreenIndex(repo);
   return [
-    ...briefProblems(repo, screens),
     ...designProblems(repo, new Set(screens.map((s) => s.id))),
     ...dispositionProblems(repo),
     ...scopeProblems(repo, screens),
@@ -40,41 +34,16 @@ export function runScreensRegisterWhole(repo: string): void {
       `screens-register-whole: ${problems.length} problem(s):\n  - ${problems.join('\n  - ')}`,
     );
   }
-  console.log(
-    'screens register whole — every screen briefed and designed, every PRD row landed once',
-  );
-}
-
-function briefProblems(repo: string, screens: ScreenRow[]): string[] {
-  const briefFiles = gitFiles(repo, [BRIEFS]).flatMap((file) => BRIEF_FILE.exec(file)?.[1] ?? []);
-  const briefed = new Set(briefFiles);
-  const held = new Set(screens.map((s) => s.id));
-  return [
-    ...[...briefed]
-      .filter((id) => briefFiles.filter((other) => other === id).length > 1)
-      .map((id) => `${id} has more than one brief in ${BRIEFS}`),
-    ...screens.filter((s) => !briefed.has(s.id)).map((s) => `${s.id} has no brief in ${BRIEFS}`),
-    ...[...briefed]
-      .filter((id) => !held.has(id))
-      .map((id) => `${BRIEFS} briefs ${id}, which the register does not hold`),
-    ...screens.flatMap((s) => {
-      const path = (s.cells.get('Brief') ?? '').replaceAll('`', '');
-      return existsSync(join(repo, path))
-        ? []
-        : [`${s.id}'s Brief cell names ${path || 'nothing'}, which does not exist`];
-    }),
-  ];
+  console.log('screens register whole — every screen has its task, every PRD row landed once');
 }
 
 function designProblems(repo: string, held: Set<string>): string[] {
-  const designed = new Set(
-    [...readTaskLedger(repo).tasks.values()].flatMap((t) => designLinks(t).map((d) => d.screen)),
-  );
+  const named = new Set([...readTaskLedger(repo).tasks.values()].flatMap(designScreens));
   return [
     ...[...held]
-      .filter((id) => !designed.has(id))
+      .filter((id) => !named.has(id))
       .map((id) => `${id} has no task whose DESIGN line names it`),
-    ...[...designed]
+    ...[...named]
       .filter((id) => !held.has(id))
       .map((id) => `a task's DESIGN line names ${id}, which the register does not hold`),
   ];

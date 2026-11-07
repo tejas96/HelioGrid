@@ -16,12 +16,7 @@ import { newlinesOf, walkFiles } from './repo-files';
  * is read, never blanked, and a `--` inside one starts no comment.
  */
 const BANNED_WORD = /quot(e|ation|ing)|कोटेश|क्वोट|क्वॉट/i;
-const SKIPPED_FOLDERS: ReadonlySet<string> = new Set([
-  '_generated',
-  'node_modules',
-  'dist',
-  '.next',
-]);
+const SKIPPED_FOLDERS: ReadonlySet<string> = new Set(['node_modules', 'dist', '.next']);
 const WORD_DIRS = [
   'apps/api/src',
   'apps/worker/src',

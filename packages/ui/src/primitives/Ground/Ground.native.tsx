@@ -1,32 +1,33 @@
-import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { createContext, useContext } from 'react';
 import type { ViewStyle } from 'react-native';
+import type { ThemeColor } from '../Color/colors';
+import { colors } from '../Color/colors';
 import type { Ground } from './Ground.types';
 
 /** What a control reads from what holds it — the web half's two custom properties. */
 export interface GroundColors {
   /** The colour behind a control: what a knob on a track, or a tint, sits over. */
-  ground: string;
+  ground: ThemeColor;
   /** The fill a control takes here — the opposite of the ground. */
-  controlFill: string;
+  controlFill: ThemeColor;
   /** The fill a disabled control takes, the same on every ground — see the web half. */
-  controlFillDisabled: string;
+  controlFillDisabled: ThemeColor;
 }
 
-const DISABLED = theme.colors['canvas-sunken'];
+const DISABLED = colors['canvas-sunken'];
 
 const COLORS: Record<Ground, GroundColors> = {
   page: {
-    // biome-ignore lint/plugin/raw-white: ground — the ground itself, and Surface, which sets it
-    ground: theme.colors.surface,
-    controlFill: theme.colors.fill,
+    ground: colors.canvas,
+    // biome-ignore lint/plugin/raw-white: ground — a control on the page is the card colour
+    controlFill: colors.surface,
     controlFillDisabled: DISABLED,
   },
   tile: {
-    ground: theme.colors.fill,
-    // biome-ignore lint/plugin/raw-white: ground — the ground itself, and Surface, which sets it
-    controlFill: theme.colors.surface,
+    // biome-ignore lint/plugin/raw-white: ground — a tile is the white card on the page
+    ground: colors.surface,
+    controlFill: colors.fill,
     controlFillDisabled: DISABLED,
   },
 };
@@ -45,12 +46,15 @@ export function useGround(): GroundColors {
 }
 
 /**
- * The tile's look at rest (`F7-49`) — grey on the white page, no shadow — the web half's tiles
+ * The tile's look at rest: the white card on the page, a hairline edge — the web half's tiles
  * list. The ONE place a phone tile is drawn: a tile spreads it first and keeps only its own radius,
  * padding and rings, and wraps its content in `GroundProvider ground="tile"`.
  */
 export const tileSurface = {
-  backgroundColor: theme.colors.fill,
+  // biome-ignore lint/plugin/raw-white: ground — a tile is the white card on the page
+  backgroundColor: colors.surface,
+  borderWidth: 1,
+  borderColor: colors['line-soft'],
   shadowOpacity: 0,
   elevation: 0,
 } satisfies ViewStyle;

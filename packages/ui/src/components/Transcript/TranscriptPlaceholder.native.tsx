@@ -7,6 +7,7 @@
 
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { RetryButton } from '../Button/RetryButton.native';
@@ -18,20 +19,20 @@ import { TRANSCRIPT_GAP } from './TranscriptChrome.native';
 const styles = StyleSheet.create({
   skeletonBar: {
     borderRadius: theme.radius['r-md'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   error: {
     alignItems: 'flex-start',
     gap: theme.spacing['sp-2'],
     padding: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-md'],
-    backgroundColor: theme.colors['warning-bg'],
+    backgroundColor: colors['warning-bg'],
   },
-  errorBody: { color: theme.colors['warning-text'] },
+  errorBody: { color: colors['warning-text'] },
   empty: {
     padding: theme.spacing['sp-5'],
     borderRadius: theme.radius['r-md'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   emptyTitle: { fontWeight: '700', letterSpacing: theme.type.roles.h4.letterSpacing },
   emptyBody: { marginTop: 6 },

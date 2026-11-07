@@ -113,13 +113,12 @@
 .hg-stat-card-shimmer {
   display: block;
   border-radius: var(--rf-md);
-  /* Drawn in --surface, as `Card`'s: a --canvas bar is the tile's own grey and would not show. */
-  /* biome-ignore lint/plugin/raw-white-css: shimmer — a loading bar's shimmer */
+  /* A well on the white tile, in light and dark; the card colour would not show on it. */
   background: linear-gradient(
     90deg,
-    var(--surface) 25%,
-    var(--surface-form) 50%,
-    var(--surface) 75%
+    var(--canvas-sunken) 25%,
+    var(--fill) 50%,
+    var(--canvas-sunken) 75%
   );
   background-size: 320px 100%;
   animation: hg-sheet-shimmer 1.4s linear infinite;

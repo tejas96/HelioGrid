@@ -211,3 +211,27 @@
   font-weight: var(--fw-medium);
   color: var(--danger-text);
 }
+
+/* ── the plan, the page's hero ──────────────────────────────────────────────── */
+
+.hg-billing-hero-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tr-display);
+  color: var(--on-panel);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A figure in the plan's name keeps the display face: it is the hero's figure, not a list's. */
+.hg-billing-hero-name .hg-billing-mono {
+  font-family: inherit;
+}
+
+.hg-billing-hero-route {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}

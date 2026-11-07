@@ -7,6 +7,7 @@
 import { theme } from '@heliogrid/theme';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import type { TextVariant } from '../../primitives/Text/Text.types';
 import { useFormat } from '../MarketProvider/market-context';
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingTop: theme.spacing['sp-3'],
     borderTopWidth: 1,
-    borderTopColor: theme.colors['neutral-bg'],
+    borderTopColor: colors['neutral-bg'],
   },
   payable: {
     flexDirection: 'row',

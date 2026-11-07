@@ -1,13 +1,13 @@
 import { createTranslator, inviteWords, setupInviteWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { settledBox } from '../support/layout';
+import { expectSharedEdge, settledBox } from '../support/layout';
 import { resolvedLength } from '../support/token';
 import { SetupInviteTeamAsHeld } from './SetupInviteTeam.story';
 
 /**
  * The invite step of setup (`SCR-M01-07` m-default, d-default, m-already-member, m-cap-reached):
- * the form in the onboarding frame, the acts that follow the api's answer, and at 1536 the brand
- * pane's *After you send* in the place of the expiry line.
+ * the form in the onboarding frame, the acts that follow the api's answer, and at 1536 *After you
+ * send* under the heading in the place of the expiry line.
  */
 const { t } = await createTranslator('en');
 const en = { ...inviteWords(t), ...setupInviteWords(t) };
@@ -56,7 +56,7 @@ test.describe('at 375', () => {
     await expect(onward).toBeFocused();
     const act = await settledBox(onward);
     expect(act?.width).toBe(375 - 2 * (await resolvedLength(step.page(), '--screen-pad-mobile')));
-    expect(act?.height).toBe(await resolvedLength(step.page(), '--sp-12'));
+    expect(act?.height).toBe(await resolvedLength(step.page(), '--field-h'));
     await onward.click();
     await expect(step.getByTestId('pressed')).toHaveText('skip');
   });
@@ -75,9 +75,8 @@ test.describe('at 375', () => {
 test.describe('at 1536', () => {
   test.use({ viewport: { width: 1536, height: 1000 } });
 
-  test('the brand pane says what happens after the send, and the form spreads across the task pane', async ({
+  test('the column says what happens after the send, and the form spreads across it under the heading', async ({
     mount,
-    page,
   }) => {
     const step = await mount(<SetupInviteTeamAsHeld reader="en" />);
     await expect(step.getByText(en.afterYouSend.heading)).toBeVisible();
@@ -94,13 +93,14 @@ test.describe('at 1536', () => {
     expect(phone?.y).toBe(name?.y);
     expect(phone?.x).toBeGreaterThan((name?.x ?? 0) + (name?.width ?? 0));
 
-    const heading = await settledBox(step.getByRole('heading', { name: en.title, level: 1 }));
-    const send = await settledBox(step.getByRole('button', { name: en.send }));
+    const heading = step.getByRole('heading', { name: en.title, level: 1 });
+    const send = step.getByRole('button', { name: en.send });
     const skip = await settledBox(step.getByRole('button', { name: en.skip }));
-    expect(send?.x).toBeGreaterThan(skip?.x ?? 0);
-    expect((name?.x ?? 0) - (heading?.x ?? 0)).toBeGreaterThan(400);
-    expect(Math.round((send?.x ?? 0) + (send?.width ?? 0))).toBe(
-      1536 - (await resolvedLength(page, '--sp-16')),
-    );
+    expect((await settledBox(send)).x).toBeGreaterThan(skip?.x ?? 0);
+    expect(name?.y).toBeGreaterThan((await settledBox(steps.nth(2))).y);
+    /* One column: the heading, the steps and the name on one left edge; the phone and Send on its right. */
+    const boxes = step.locator('[data-field-box]');
+    await expectSharedEdge([heading, steps.nth(0), boxes.nth(0)], 'left');
+    await expectSharedEdge([boxes.nth(1), send], 'right');
   });
 });

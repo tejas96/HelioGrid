@@ -14,11 +14,11 @@ export const CATALOG_WIDE_FROM = 720;
 
 /** A kind's tile: the glyph on its iris, as `Avatar` and `Badge` tint a kind (`D268`). */
 export const CATALOG_KIND_LEADING: Readonly<Record<ComponentKind, DataTableLeading>> = {
-  panel: { glyph: 'solar-panel', iris: 'violet' },
-  inverter: { glyph: 'inverter', iris: 'blue' },
-  micro_inverter: { glyph: 'inverter', iris: 'blue' },
-  optimiser: { glyph: 'inverter', iris: 'blue' },
-  battery: { glyph: 'battery', iris: 'magenta' },
+  panel: { glyph: 'solar-panel', hue: 'ocean' },
+  inverter: { glyph: 'inverter', hue: 'teal' },
+  micro_inverter: { glyph: 'inverter', hue: 'teal' },
+  optimiser: { glyph: 'inverter', hue: 'teal' },
+  battery: { glyph: 'battery', hue: 'plum' },
 };
 
 /**

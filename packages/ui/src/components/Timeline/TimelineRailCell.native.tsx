@@ -5,8 +5,8 @@
    The web half holds these metrics in Timeline.css; here they arrive as numbers from the sequence,
    so the rail reaches exactly across the row gap it has to bridge. */
 
-import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import type { TimelineStatus } from './Timeline.types';
 import { TimelineNode } from './TimelineParts.native';
 
@@ -42,7 +42,7 @@ export function TimelineRailCell({
             {
               top: node,
               bottom: compact ? -gap : 0,
-              backgroundColor: railLit ? theme.colors.success : theme.colors['canvas-sunken'],
+              backgroundColor: railLit ? colors.success : colors['canvas-sunken'],
               opacity: railLit ? 0.35 : 1,
             },
           ]}

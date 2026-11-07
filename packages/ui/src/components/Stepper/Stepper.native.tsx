@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { resolveSteps, stepLabel } from './resolve-steps';
@@ -179,7 +180,7 @@ const styles = StyleSheet.create({
   fill: {
     height: '100%',
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   dots: {
     flexDirection: 'row',
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
   },
   dotFilled: {
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   dotCurrent: {
     width: 22,

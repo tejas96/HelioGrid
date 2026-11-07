@@ -65,10 +65,11 @@
 
 .hg-pricing-title {
   margin: 0;
-  font-size: var(--fs-h2);
-  line-height: var(--lh-h2);
-  letter-spacing: var(--tr-h2);
-  font-weight: var(--fw-bold);
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--tr-h1);
 }
 
 .hg-pricing-claim {

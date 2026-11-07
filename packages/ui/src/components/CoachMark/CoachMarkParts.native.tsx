@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
@@ -33,7 +34,7 @@ export function CoachMarkHead({ counter, title, dismissLabel, onDismiss }: Coach
             height={16}
             viewBox="0 0 24 24"
             fill="none"
-            stroke={theme.colors['text-tertiary']}
+            stroke={colors['text-tertiary']}
             strokeWidth={2}
             strokeLinecap="round"
           >
@@ -79,11 +80,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     borderRadius: theme.radius['r-md'],
     borderWidth: 2,
-    borderColor: theme.colors.accent,
+    borderColor: colors.accent,
     backgroundColor: 'transparent',
     /* The web half's second halo is a 10px accent bloom; RN draws one border, so the halo is a
        soft accent shadow instead. */
-    shadowColor: theme.colors.accent,
+    shadowColor: colors.accent,
     shadowOpacity: 0.1,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: '700',
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   titleGap: {
     marginTop: 6,
@@ -125,28 +126,28 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   dotCurrent: {
     width: 18,
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   /* Near-black, because a primary action is never coloured. */
   next: {
     paddingHorizontal: theme.spacing['sp-5'],
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['action-primary'],
+    backgroundColor: colors['action-primary'],
   },
   nextWords: {
     fontWeight: '500',
-    color: theme.colors['text-inverse'],
+    color: colors['text-inverse'],
   },
   arrow: {
     position: 'absolute',
     width: 12,
     height: 12,
     // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     transform: [{ rotate: '45deg' }],
     borderRadius: 2,
   },

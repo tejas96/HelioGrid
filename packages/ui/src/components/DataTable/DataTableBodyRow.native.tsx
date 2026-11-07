@@ -2,6 +2,8 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 /* Cross-component imports in a native half point at the NATIVE file: a folder barrel re-exports
@@ -20,10 +22,10 @@ import { needsRoom, resolveRow, rowOpenOf } from './DataTableRow.logic';
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
-  zebra: { backgroundColor: theme.colors['surface-alt'] },
-  issue: { backgroundColor: theme.colors['warning-bg'] },
-  fixed: { backgroundColor: theme.colors['success-bg'] },
-  selected: { backgroundColor: theme.colors['accent-subtle'] },
+  zebra: { backgroundColor: colors['surface-alt'] },
+  issue: { backgroundColor: colors['warning-bg'] },
+  fixed: { backgroundColor: colors['success-bg'] },
+  selected: { backgroundColor: colors['accent-subtle'] },
   muted: { opacity: 0.55 },
   highlighted: { backgroundColor: ROW_HIGHLIGHT },
   actions: { flexDirection: 'row', gap: 6, justifyContent: 'flex-end' },
@@ -34,7 +36,7 @@ const styles = StyleSheet.create({
      The floor stays; only the two alignment rules are handed back. */
   pressRow: { alignItems: 'stretch', justifyContent: 'flex-start' },
   /* A quiet table's rows part by a hairline, never by zebra (design-system change 20). */
-  hairline: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: theme.colors['line-soft'] },
+  hairline: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors['line-soft'] },
 });
 
 /**
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
  */
 function rowTintStyle(
   state: RowState,
-  ground: string,
+  ground: ThemeColor,
   quiet: boolean,
   index: number,
 ): StyleProp<ViewStyle> {

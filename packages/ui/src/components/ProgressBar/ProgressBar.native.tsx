@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { BrandGradientFill } from './BrandGradientFill.native';
 import type { ProgressBarProps } from './ProgressBar.types';
 
@@ -36,13 +37,13 @@ const styles = StyleSheet.create({
     height: 6,
     width: '100%',
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
     overflow: 'hidden',
   },
   fill: {
     height: '100%',
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   gradient: {
     backgroundColor: 'transparent',

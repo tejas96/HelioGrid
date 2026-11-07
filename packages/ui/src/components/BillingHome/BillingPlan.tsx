@@ -1,9 +1,12 @@
+import { Text } from '../../primitives/Text/Text';
 import { Accordion } from '../Accordion';
 import { ShellGlyph } from '../AppShell';
+import { BillingValueText } from '../BillingStrip/BillingValue';
 import { Block } from '../Block';
 import { Button } from '../Button';
 import { Explainer } from '../Explainer';
 import { FactRow, FactRows } from '../FactRow';
+import { HeroPanel } from '../HeroPanel';
 import { ListRow } from '../ListRow';
 import { Provenance } from '../Provenance';
 import { ScopeNote } from '../ScopeNote';
@@ -20,7 +23,10 @@ import { BillingPairs } from './BillingPairs';
 
 const CHEVRON = <ShellGlyph name="chevron-right" />;
 
-/** `Your plan` (`SCR-M12-03`'s block): the pairs, the next bill's working, the route, the includes. */
+/**
+ * `Your plan`, the page's one hero: the plan's name large, its chip and where it comes from, then
+ * the facts, the next bill's working, the one way to change it, and what it includes.
+ */
 export function BillingPlan({
   plan,
   words,
@@ -31,15 +37,24 @@ export function BillingPlan({
   /** Absent while another act's answer is out: the route waits. */
   onRoute: (() => void) | undefined;
 }) {
+  const [named, ...facts] = plan.rows;
   return (
-    <Block
-      title={words.yourPlan}
-      density="expressive"
-      badge={<BillingChipMark chip={plan.chip} />}
-      provenance={plan.source === null ? undefined : { source: plan.source }}
+    <HeroPanel
+      label={words.yourPlan}
+      labelAside={
+        <>
+          <BillingChipMark chip={plan.chip} />
+          {plan.source === null ? null : <Provenance source={plan.source} size={12} />}
+        </>
+      }
     >
+      {named === undefined ? null : (
+        <p className="hg-billing-hero-name">
+          <BillingValueText value={named.value} />
+        </p>
+      )}
       <div className="hg-billing-stack" data-gap="3">
-        {plan.rows.length > 0 ? <BillingPairs label={words.yourPlan} facts={plan.rows} /> : null}
+        {facts.length > 0 ? <BillingPairs label={words.yourPlan} facts={facts} /> : null}
         {plan.scope === null ? null : (
           <ScopeNote title={plan.scope.title} variant="line" size={13} />
         )}
@@ -47,14 +62,16 @@ export function BillingPlan({
           <BillingWorking working={plan.working} words={words} defaultOpen />
         )}
         {plan.route === null ? null : (
-          <ListRow
-            className="hg-billing-flush"
-            density="functional"
-            title={plan.route.title}
-            subtitle={plan.route.subtitle ?? undefined}
-            trailing={CHEVRON}
-            onClick={onRoute}
-          />
+          <div className="hg-billing-hero-route">
+            <Button variant="primary" size="md" onClick={onRoute} disabled={onRoute === undefined}>
+              {plan.route.title}
+            </Button>
+            {plan.route.subtitle === null ? null : (
+              <Text variant="body-sm" color="secondary">
+                {plan.route.subtitle}
+              </Text>
+            )}
+          </div>
         )}
         {plan.includes === null ? null : (
           <Accordion
@@ -69,7 +86,7 @@ export function BillingPlan({
           />
         )}
       </div>
-    </Block>
+    </HeroPanel>
   );
 }
 

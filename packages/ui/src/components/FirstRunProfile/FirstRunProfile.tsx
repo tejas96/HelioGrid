@@ -37,12 +37,7 @@ export function FirstRunProfile(props: FirstRunProfileProps) {
   };
 
   return (
-    <DoorFrame
-      panes="onboarding"
-      taskMeasure="field"
-      trailing={language}
-      identity={<Identity words={words} wide={wide} />}
-    >
+    <DoorFrame taskMeasure="field" trailing={language} identity={<Identity words={words} />}>
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Enter in the name field commits the step; the field itself is the control */}
       <div className="hg-first-run" data-frame={frame.kind} onKeyDown={commitOnEnter}>
         {words.saveFailed === null ? null : (
@@ -84,12 +79,12 @@ export function FirstRunProfile(props: FirstRunProfileProps) {
 }
 
 /** The heading — with its ask under the breakpoint, and over the three reasons from it. */
-function Identity({ words, wide }: { words: FirstRunProfileWords; wide: boolean }) {
+function Identity({ words }: { words: FirstRunProfileWords }) {
   const { label, title, pages, nextLabel, backLabel, positionLabel } = words.about;
   return (
     <div className="hg-first-run-identity">
       <div className="hg-first-run-heading">
-        <Text variant={wide ? 'h1' : 'h2'} as="h1">
+        <Text variant="display" as="h1">
           {words.heading}
         </Text>
         <span className="hg-first-run-narrow-only">

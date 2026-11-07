@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { blockHeaderOf, spokenCountOf } from './Block.logic';
 import type { BlockFrameProps } from './Block.types';
 
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: type.overline.letterSpacing,
     textTransform: 'uppercase',
-    color: theme.colors['text-tertiary'],
+    color: colors['text-tertiary'],
   },
   overlineSpaced: { marginBottom: 6 },
   titleRow: {
@@ -36,27 +37,27 @@ const styles = StyleSheet.create({
     fontFamily: theme.type.families.sans,
     fontWeight: '700',
     letterSpacing: -0.24,
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   count: {
     height: 20,
     paddingHorizontal: 7,
     justifyContent: 'center',
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['neutral-bg'],
+    backgroundColor: colors['neutral-bg'],
   },
   countText: {
     fontFamily: theme.type.families.sans,
     fontSize: type.caption.fontSize,
     fontWeight: '500',
-    color: theme.colors['neutral-text'],
+    color: colors['neutral-text'],
   },
   meta: {
     marginTop: 3,
     fontFamily: theme.type.families.sans,
     fontSize: type.caption.fontSize,
     lineHeight: 17.4,
-    color: theme.colors['text-tertiary'],
+    color: colors['text-tertiary'],
   },
   action: { flexShrink: 0 },
 });

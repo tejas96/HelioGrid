@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { AccessibilityInfo, findNodeHandle, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
 import type { NoConnectionProps } from './NoConnection.types';
@@ -94,7 +95,7 @@ export function NoConnection({
 
 const outcomeText: TextStyle = {
   fontWeight: '500',
-  color: theme.colors['danger-text'],
+  color: colors['danger-text'],
 };
 
 const styles = StyleSheet.create({
@@ -106,7 +107,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-2'],
     paddingVertical: theme.spacing['sp-8'],
     paddingHorizontal: theme.spacing['sp-6'],
-    backgroundColor: theme.colors.canvas,
+    backgroundColor: colors.canvas,
   },
   flow: { position: 'relative', flex: 1 },
   inset: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 },

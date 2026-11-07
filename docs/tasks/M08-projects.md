@@ -2,7 +2,7 @@
 
 This file is the engineering task set for **M08 · Projects**: the post-Won surface set — the stage board and the canonical stage machine, the one project detail screen, blockers and wait attribution, the document checklist, the project-side money surfaces, the installation checklist and the installer's own job surface, handover with the referral ask, and change-after-Won with cancellation. Task ids in this file carry the prefix **`T-M08-`**.
 
-**Source docs.** Every row quoted or cited here comes from `docs/prd/modules/M08-projects.md`. Screen tasks carry their verbatim requirement slice in the screen briefs under `docs/ux/briefs/`; the Screens Register is `docs/prd/registers/screens.md`. Rows this file does not build directly are dispositioned as laws below, and the Disposition index at the end of the file accounts for every row in the M08 bucket exactly once.
+**Source docs.** Every row quoted or cited here comes from `docs/prd/modules/M08-projects.md`. Screen tasks' verbatim requirement slice lives in the PRD; the Screens Register is `docs/prd/registers/screens.md`. Rows this file does not build directly are dispositioned as laws below, and the Disposition index at the end of the file accounts for every row in the M08 bucket exactly once.
 
 **Scope note.** The module's own scope law (`M08-01`) closes the surface set to six surfaces. No task in this file adds a seventh, and nothing outside the rows below is in scope for this file.
 
@@ -10,11 +10,11 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-001 · Project Board
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** M08-10 (P0), M08-11 (P0), M08-12 (P0), M08-14 (P1), M08-51 (P0)
-**DESIGN:** SCR-M08-01 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
+**DESIGN:** SCR-M08-01
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-01-project-board.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given the board on a phone, when it renders, then it shows one column with a stage filter; given the same board on desktop, then it shows every stage with its count and longest wait (M08-10).
@@ -27,11 +27,11 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-002 · Project Detail
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** M08-16 (P0), M08-17 (P0), M08-21 (P0), M08-27 (P0), M08-38 (P0)
-**DESIGN:** SCR-M08-02 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
+**DESIGN:** SCR-M08-02
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-02-project-detail.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given a project, when its detail screen opens, then the stage timeline, design, proposal, payments, documents, blockers and activity are all present on one screen, each naming the object it reads (M08-16).
@@ -41,18 +41,18 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 - Given a coordinator completes the stage a tranche is mapped to, when the move saves, then that tranche is due and the request action is available on it — sending from the tenant's connected transactional channel where one exists, composing the message for a person to send where none is (M08-36, M08-38, owner ruling 2026-08-04).
 - Given a due tranche on a tenant with a connected transactional channel, when the coordinator taps the request action, then a message with the project's real figures sends from that official channel under the transactional template class, and the channel's delivery states are shown as it reports them (M08-38, owner ruling 2026-08-04; `M03-03`).
 - Given a due tranche on a tenant with no connected channel, when the coordinator taps the request action, then the same message is composed with the project's real figures for the person to send in whatever channel they already use, and no delivery state appears anywhere on the surface (M08-38, owner ruling 2026-08-04 — the no-channel fallback branch of the pair above).
-  - (M08-38's PRD acceptance line at §M08.6 formerly stated that fallback half **unscoped** — the pre-ruling wording, retained here for traceability: the request action was clipboard-only, *"nothing transmitted, no delivery state on any path"*, which contradicted the M08-38 row printed in `docs/ux/briefs/SCR-M08-02-project-detail.md`, the row that requires the send. **That acceptance block now carries both branches itself at `docs/prd/modules/M08-projects.md` §M08.6, annotated to the owner ruling of 2026-08-04 — the gap this note was opened for is closed, and the two lines above are the PRD's own criteria rather than a supplement to them.** The reconciled M08-38 row in the brief remains the binding requirement text, together with `docs/prd/modules/M08-projects.md` §5's *"No fabricated delivery state. Request messages and handover-pack sends ride the transactional lane — automatic from the tenant's connected channel, composed for a person to send where none is connected (owner ruling 2026-08-04); the product tracks link opens always, and claims delivery only as a connected channel reports it (`M08-38`, `M03-03`)."*)
+  - (M08-38's PRD acceptance line at §M08.6 formerly stated that fallback half **unscoped** — the pre-ruling wording, retained here for traceability: the request action was clipboard-only, *"nothing transmitted, no delivery state on any path"*, which contradicted the M08-38 row printed in `SCR-M08-02`, the row that requires the send. **That acceptance block now carries both branches itself at `docs/prd/modules/M08-projects.md` §M08.6, annotated to the owner ruling of 2026-08-04 — the gap this note was opened for is closed, and the two lines above are the PRD's own criteria rather than a supplement to them.** The reconciled M08-38 row in the brief remains the binding requirement text, together with `docs/prd/modules/M08-projects.md` §5's *"No fabricated delivery state. Request messages and handover-pack sends ride the transactional lane — automatic from the tenant's connected channel, composed for a person to send where none is connected (owner ruling 2026-08-04); the product tracks link opens always, and claims delivery only as a connected channel reports it (`M08-38`, `M03-03`)."*)
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 ---
 
 ### T-M08-003 · Document Checklist
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** M08-30 (P0), M08-31 (P0)
-**DESIGN:** SCR-M08-03 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
+**DESIGN:** SCR-M08-03
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-03-document-checklist.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given a new project in any market, when the checklist seeds, then its rows are exactly the pack's rows for that project's segment, and no row name originates in this module (M08-30).
@@ -63,11 +63,11 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-004 · Installation Checklist
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** M08-41 (P0), M08-42 (P0)
-**DESIGN:** SCR-M08-04 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
+**DESIGN:** SCR-M08-04
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-04-installation-checklist.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given a designed and strung system, when the installation checklist opens on the project, then its steps are the design's derived work order in build order, and this module has generated no sequence of its own (M08-41).
@@ -78,11 +78,11 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-005 · Installer Job Home
 **Type:** screen · **Tier:** P1
-**Status:** designed
+**Status:** planned
 **PRD rows:** M08-45 (P1)
-**DESIGN:** SCR-M08-05 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
+**DESIGN:** SCR-M08-05
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-05-installer-job-home.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given any step is ticked, when the record is written, then it names the person who ticked, and a free-text "done by" may be recorded against that step (M08-42).
@@ -94,11 +94,11 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-006 · Handover Flow
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** M08-46 (P0), M08-47 (P0)
-**DESIGN:** SCR-M08-06 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
+**DESIGN:** SCR-M08-06
 
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M08-06-handover-flow.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
 **DONE WHEN:**
 - Given every checklist row past pending, when handover runs, then the pack is assembled from the checklist, the link becomes the pack and the project reaches `HANDED_OVER` (M08-46).

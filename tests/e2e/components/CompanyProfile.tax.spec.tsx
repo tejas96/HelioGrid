@@ -13,7 +13,7 @@ import {
   expectNothingClipped,
   settledBox,
 } from '../support/layout';
-import { resolvedColour } from '../support/token';
+import { resolvedColour, resolvedLength } from '../support/token';
 import { CompanyProfileAsHeld } from './CompanyProfile.story';
 
 /**
@@ -26,7 +26,6 @@ const en = await createTranslator('en');
 test.use({ viewport: { width: 375, height: 812 } });
 
 const COLUMN = 335;
-const FIELD = 54;
 
 const [REGISTRATION] = IN_PACK.tax.registrationTypes;
 const FORMAT = REGISTRATION === undefined ? '' : inLanguage(REGISTRATION.format, 'en');
@@ -55,7 +54,10 @@ test('the tax part asks one optional registration, says the market’s format as
   await expect(field).toHaveCSS('font-family', /Mono/);
   const boxes = profile.locator('.hg-input-shell');
   await expect(boxes).toHaveCount(1);
-  expect(await settledBox(boxes)).toMatchObject({ width: COLUMN, height: FIELD });
+  expect(await settledBox(boxes)).toMatchObject({
+    width: COLUMN,
+    height: await resolvedLength(page, '--field-h'),
+  });
 
   const secondary = await resolvedColour(page, '--text-secondary');
   const format = profile.getByText(FORMAT);

@@ -4,6 +4,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -19,12 +20,12 @@ const styles = StyleSheet.create({
   offsetText: { paddingTop: 3, textAlign: 'right' },
   seek: { width: 44, marginVertical: -8, borderRadius: theme.radius['r-sm'] },
   face: { fontFamily: theme.type.families.mono },
-  faceCurrent: { fontWeight: '700', color: theme.colors.accent },
+  faceCurrent: { fontWeight: '700', color: colors.accent },
   /* Every turn is a tile (`tileSurface`), whichever party spoke it: the speaker line tells the two
      apart, never a fill. */
   bubble: { flex: 1, minWidth: 0, borderRadius: theme.radius['r-md'] },
   bubbleFunctional: { borderRadius: theme.radius['r-card-functional'] },
-  bubbleCurrent: { backgroundColor: theme.colors['accent-subtle'] },
+  bubbleCurrent: { backgroundColor: colors['accent-subtle'] },
   speaker: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   speakerWord: { fontWeight: '500' },
   words: { marginTop: theme.spacing['sp-1'] },
@@ -107,7 +108,7 @@ export function TranscriptTurnRow({
             <ActorGlyph
               actorClass={PARTY_CLASS[party]}
               size={13}
-              color={party === 'agent' ? theme.colors.info : theme.colors.accent}
+              color={party === 'agent' ? colors.info : colors.accent}
             />
             <Text variant="caption" color="secondary" style={styles.speakerWord}>
               {label}

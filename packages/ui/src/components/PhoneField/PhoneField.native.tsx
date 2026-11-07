@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useImperativeHandle, useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE, fieldBox, fieldBoxText } from '../../primitives/FieldBox/FieldBox.native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     fontFamily: theme.type.families.mono,
     fontSize: theme.type.field.value,
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
   input: {
     flex: 1,
@@ -47,13 +48,13 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     fontFamily: theme.type.families.mono,
     fontSize: theme.type.field.value,
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   valueNumber: {
     fontFamily: theme.type.families.mono,
     fontSize: theme.type.roles.body.fontSize,
     fontWeight: '700',
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
 });
 

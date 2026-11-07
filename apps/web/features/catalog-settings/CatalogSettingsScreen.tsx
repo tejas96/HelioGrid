@@ -7,9 +7,8 @@ import { CATALOG_SETTINGS, toastHostWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
   DATA_TABLE_STACK_BELOW,
+  LargeTitle,
   SegmentedControl,
-  Tabs,
-  Text,
   ToastHost,
   useOwnWidth,
   useToasts,
@@ -23,8 +22,8 @@ import './catalog-settings.css';
 
 /**
  * Catalog settings behind `More` on the web (`SCR-M01-15`): one destination, two panels — *Items*,
- * the resolved catalog, and *Rates*, the price book — switched by tabs in the page head at the
- * table's width and a segmented control below it (brief decision 1). Only a person whose presets
+ * the resolved catalog, and *Rates*, the price book — under the large title, switched by one
+ * segmented control at every width. Only a person whose presets
  * open the Catalog row reaches it (`F7-48`); without the outright grant every act is absent. What
  * it draws is `useCatalogSettingsScreen`'s, the phone's too.
  */
@@ -48,15 +47,12 @@ function CatalogIn({ screen }: { screen: CatalogSettings }) {
   return (
     /* A closed toast hands the keyboard back to the page it spoke about. */
     <div ref={room} tabIndex={-1} className="hg-shell-page hg-catalog-page hg-focus-target">
-      <header className="hg-catalog-head">
-        <Text as="h1" variant="h2">
-          {t(CATALOG_SETTINGS.title)}
-        </Text>
-        {wide && switchable ? <Tabs tabs={options} value={panel} onChange={choosePanel} /> : null}
-      </header>
-      {wide || !switchable ? null : (
-        <SegmentedControl options={options} value={panel} onChange={choosePanel} />
-      )}
+      <LargeTitle title={t(CATALOG_SETTINGS.title)} summary={t(CATALOG_SETTINGS.purpose)} />
+      {switchable ? (
+        <div className="hg-catalog-switch">
+          <SegmentedControl options={options} value={panel} onChange={choosePanel} />
+        </div>
+      ) : null}
       {panel === 'items' ? (
         <ItemsPanel facts={facts} toasts={toasts} />
       ) : (

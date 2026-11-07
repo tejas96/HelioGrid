@@ -1,7 +1,7 @@
 import { COMPANY_PROFILE, createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { bottomOf, expectNoSidewaysScroll, settledBox } from '../support/layout';
-import { resolvedColour } from '../support/token';
+import { resolvedColour, resolvedLength } from '../support/token';
 import { CompanyProfileAsHeld } from './CompanyProfile.story';
 
 /**
@@ -15,7 +15,6 @@ const HEIGHT = 812;
 test.use({ viewport: { width: 375, height: HEIGHT } });
 
 const COLUMN = 335;
-const ACT = 48;
 const TRY_AGAIN = en.t(SIGN_IN.tryAgain);
 const ONWARD = en.t(COMPANY_PROFILE.onward);
 
@@ -31,9 +30,10 @@ test('while the record loads the heading stays, bars stand for the five parts, a
   await expect(region).toHaveAttribute('aria-busy', 'true');
   const bars = region.locator('.hg-loading-bar');
   await expect(bars).toHaveCount(5);
-  const heights = await bars.evaluateAll((nodes) =>
-    nodes.map((node) => node.getBoundingClientRect().height),
-  );
+  /* Each bar measured once it holds still: the door rises in on a transform, and a box read
+     mid-rise carries its fraction. */
+  const heights: number[] = [];
+  for (const bar of await bars.all()) heights.push((await settledBox(bar)).height);
   expect(heights).toEqual([188, 56, 56, 56, 56]);
   await expect(profile.locator('.hg-accordion')).toHaveCount(0);
 
@@ -64,7 +64,10 @@ test('a profile that could not be read says so in the list’s place, with the r
   await expect(onward).toHaveAttribute('data-variant', 'secondary');
   await expect(retry).toHaveAttribute('data-variant', 'primary');
   expect(await bottomOf(retry)).toBeLessThan((await settledBox(onward))?.y ?? 0);
-  expect(await settledBox(onward)).toMatchObject({ width: COLUMN, height: ACT });
+  expect(await settledBox(onward)).toMatchObject({
+    width: COLUMN,
+    height: await resolvedLength(page, '--field-h'),
+  });
   expect(await bottomOf(onward)).toBeLessThanOrEqual(HEIGHT);
   await expect(profile.getByRole('button')).toHaveCount(2);
 
@@ -112,7 +115,10 @@ test('a failed save keeps everything typed and the same part open, and says so o
   expect(await bottomOf(alert)).toBeLessThanOrEqual((await settledBox(retry))?.y ?? 0);
   expect(await bottomOf(retry)).toBeLessThan((await settledBox(onward))?.y ?? 0);
   for (const act of [retry, onward]) {
-    expect(await settledBox(act)).toMatchObject({ width: COLUMN, height: ACT });
+    expect(await settledBox(act)).toMatchObject({
+      width: COLUMN,
+      height: await resolvedLength(page, '--field-h'),
+    });
   }
   expect(await bottomOf(onward)).toBeLessThanOrEqual(HEIGHT);
 

@@ -54,7 +54,7 @@ export function InviteFactsBlock({
         <FactRow
           label={facts.rolesLabel}
           values={facts.roles.map((role) => (
-            <Badge key={role} tone="violet" density="functional">
+            <Badge key={role} tone="ocean" density="functional">
               {role}
             </Badge>
           ))}

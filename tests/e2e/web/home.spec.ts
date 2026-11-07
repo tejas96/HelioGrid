@@ -63,7 +63,8 @@ test('a new owner lands on their home inside the shell, with one mark on the ver
   const company = await createCompany(page, en, freshMobile());
 
   await expect(page.getByRole('navigation', { name: en.t(SHELL.mainNavigation) })).toBeVisible();
-  await expect(page.getByText(company)).toBeVisible();
+  /* The sidebar names the company at width and the phone's top bar below it; one is drawn. */
+  await expect(page.getByText(company).filter({ visible: true })).toBeVisible();
   await expect(page.getByRole('heading', { level: 1, name: ownerHome })).toBeAttached();
   await expect(page.getByRole('button', { name: addLead })).toBeVisible();
   await expect(page.getByText(verbMark?.body ?? '')).toBeVisible();

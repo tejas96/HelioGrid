@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
@@ -31,11 +32,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: theme.spacing['sp-1'],
-    backgroundColor: theme.colors['neutral-bg'],
+    backgroundColor: colors['neutral-bg'],
   },
-  markWarning: { backgroundColor: theme.colors['warning-bg'] },
+  markWarning: { backgroundColor: colors['warning-bg'] },
   skeletonStack: { padding: theme.spacing['sp-2'] },
-  skeletonHead: { height: MIN_TOUCH_TARGET, backgroundColor: theme.colors.canvas },
+  skeletonHead: { height: MIN_TOUCH_TARGET, backgroundColor: colors.canvas },
   skeletonRow: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-5'] },
   /* The phone's loading shape: one 76px card per record, matching the cards it becomes. */
   skeletonCard: {
@@ -43,13 +44,13 @@ const styles = StyleSheet.create({
     padding: theme.spacing['sp-4'],
     marginBottom: theme.spacing['sp-2'],
     borderRadius: theme.radius['r-md'],
-    backgroundColor: theme.colors['surface-alt'],
+    backgroundColor: colors['surface-alt'],
   },
-  skeletonZebra: { backgroundColor: theme.colors['surface-alt'] },
+  skeletonZebra: { backgroundColor: colors['surface-alt'] },
   bar: {
     height: theme.spacing['sp-3'],
     borderRadius: theme.radius['rf-md'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
 });
 
@@ -124,7 +125,7 @@ export function TableMessage({
   /** Where the reader lands once *Try again* has gone with this message. */
   focusAfter: FocusAfter;
 }) {
-  const stroke = tone === 'warning' ? theme.colors['warning-text'] : theme.colors['text-tertiary'];
+  const stroke = tone === 'warning' ? colors['warning-text'] : colors['text-tertiary'];
   return (
     <View style={styles.message}>
       <View style={[styles.mark, tone === 'warning' ? styles.markWarning : null]}>
@@ -168,7 +169,7 @@ export function RowNote({
   fixedLine: TranslatedText;
 }) {
   const { warn, text, glyph } = rowNoteOf(issue, fixed, fixedLine);
-  const stroke = warn ? theme.colors['warning-text'] : theme.colors['success-text'];
+  const stroke = warn ? colors['warning-text'] : colors['success-text'];
   return (
     <View style={styles.note}>
       <Svg

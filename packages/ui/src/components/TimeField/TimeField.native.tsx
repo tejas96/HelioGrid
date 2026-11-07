@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Svg } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import {
   FIELD_BOX_EDGE,
   fieldBox,
@@ -97,7 +98,7 @@ export function TimeField({
           height={18}
           viewBox="0 0 24 24"
           fill="none"
-          stroke={theme.colors['text-tertiary']}
+          stroke={colors['text-tertiary']}
           strokeWidth={1.5}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
     fontSize: theme.type.field.value,
     fontWeight: '700',
     fontVariant: ['tabular-nums'],
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   presets: {
     flexDirection: 'row',
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
   },
   presetActive: {
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   presetWords: {
     fontWeight: '500',

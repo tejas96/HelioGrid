@@ -1,4 +1,7 @@
 import { useUpdateRequired } from '@heliogrid/data/react';
+import type { NavigationState } from '@react-navigation/native';
+import { useRef } from 'react';
+import { useRedrawKey } from '../appearance';
 import { usePushRegistration } from '../push/usePushRegistration';
 import { BillingDenialHost, UpdateRequired } from '../screens/shell';
 import { linkingOptions } from './linking';
@@ -21,14 +24,21 @@ import { Navigation, reportUnhandledAction } from './root';
 export function AppNavigation() {
   usePushRegistration();
   const refusal = useUpdateRequired();
+  const redrawKey = useRedrawKey();
+  const kept = useRef<NavigationState | undefined>(undefined);
   /* In place of the navigator, not a route in it: the api answers this build nothing, so no door
      and no shell can work, and none may show behind it (`F4-36`). */
   if (refusal !== null) return <UpdateRequired refusal={refusal} />;
   return (
     <NavigationPhaseProvider>
       <Navigation
+        key={redrawKey}
         ref={navigationRef}
         linking={linkingOptions}
+        initialState={kept.current}
+        onStateChange={(state) => {
+          kept.current = state;
+        }}
         onUnhandledAction={reportUnhandledAction}
       />
       <BillingDenialHost />

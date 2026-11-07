@@ -12,6 +12,8 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -30,19 +32,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  core: { borderRadius: theme.radius['r-pill'], backgroundColor: theme.colors.accent },
+  core: { borderRadius: theme.radius['r-pill'], backgroundColor: colors.accent },
   skeleton: { gap: 22 },
   skeletonRow: { flexDirection: 'row', columnGap: theme.spacing['sp-4'] },
   skeletonNode: {
     width: 28,
     height: 28,
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   skeletonLines: { flex: 1, gap: theme.spacing['sp-2'] },
   skeletonBar: {
     borderRadius: theme.radius['r-sm'],
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   message: {
     alignItems: 'center',
@@ -63,11 +65,11 @@ const styles = StyleSheet.create({
 });
 
 /* Current and upcoming take the control fill, read from `Ground` where the node renders. */
-const NODE_FILL: Record<TimelineStatus, string | undefined> = {
-  done: theme.colors.success,
+const NODE_FILL: Record<TimelineStatus, ThemeColor | undefined> = {
+  done: colors.success,
   /* A warning MARK takes --warning-text; --warning itself clears no contrast floor. */
-  blocked: theme.colors['warning-text'],
-  failed: theme.colors.danger,
+  blocked: colors['warning-text'],
+  failed: colors.danger,
   current: undefined,
   upcoming: undefined,
 };
@@ -82,7 +84,7 @@ export function TimelineNode({
   const size = compact ? NODE_SIZE.compact : NODE_SIZE.page;
   const inner = nodeGlyphSize(compact);
   const ring = compact ? 4 : 5;
-  const tick = theme.colors['text-inverse'];
+  const tick = colors['text-inverse'];
   const { controlFill } = useGround();
   return (
     <View style={[styles.nodeWrap, { width: size, height: size }]}>
@@ -93,7 +95,7 @@ export function TimelineNode({
             {
               width: size + ring * 2,
               height: size + ring * 2,
-              backgroundColor: theme.colors['accent-subtle'],
+              backgroundColor: colors['accent-subtle'],
             },
           ]}
         />
@@ -201,7 +203,7 @@ export function TimelineMessage({
         style={[
           styles.messageMark,
           {
-            backgroundColor: warning ? theme.colors['warning-bg'] : theme.colors['neutral-bg'],
+            backgroundColor: warning ? colors['warning-bg'] : colors['neutral-bg'],
           },
         ]}
       >
@@ -210,7 +212,7 @@ export function TimelineMessage({
           height={22}
           viewBox="0 0 24 24"
           fill="none"
-          stroke={warning ? theme.colors['warning-text'] : theme.colors['text-tertiary']}
+          stroke={warning ? colors['warning-text'] : colors['text-tertiary']}
           strokeWidth={1.5}
           strokeLinecap="round"
           strokeLinejoin="round"

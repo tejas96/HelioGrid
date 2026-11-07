@@ -1,19 +1,23 @@
-/* FieldBox — the ground every field draws (F7-15, F7-24; the design system's open page). A field
-   is a --fill well on the white page, never an outline; a white field on a white surface is the
-   defect this exists to end. Each field keeps its own height, padding and layout; this owns the
-   ground, the radius and the rings, so ten fields cannot draw ten different ones again.
-
-   A value inside a well is --text-secondary or stronger (F7-15). A placeholder is a hint, so it is
-   --text-tertiary, 4.71:1 on --fill; on the disabled well tertiary is at the floor's edge (4.54:1),
-   so there it steps up to --text-secondary (packages/theme/src/contrast.ts). */
+/* FieldBox — the box every field draws: the card colour inside a strong hairline, the accent edge
+   and a soft accent glow on focus, so a field reads as one on every ground, in sunlight and in
+   dark. Each field keeps its own height, padding and layout; this owns the fill, the radius and
+   the rings, so ten fields cannot draw ten different ones again. A placeholder is a hint, so it is
+   --text-tertiary; on the disabled box it steps up to --text-secondary
+   (packages/theme/src/contrast.ts). */
 
 [data-field-box] {
-  background: var(--fill);
+  background: var(--surface-form);
   border: none;
-  box-shadow: none;
+  /* The resting edge is drawn inside, so a field keeps its box on every ground and in every mode. */
+  box-shadow: inset 0 0 0 1px var(--line-strong);
   transition:
     box-shadow var(--dur-standard) var(--ease-standard),
     background-color var(--dur-standard) var(--ease-standard);
+}
+@media (hover: hover) {
+  [data-field-box]:not([data-fb-disabled]):not([data-fb-focused]):hover {
+    box-shadow: inset 0 0 0 1px var(--mark-subtle);
+  }
 }
 
 [data-field-box="expressive"] {
@@ -35,13 +39,16 @@
    returns on blur. The selector outranks the verdict's, so the order of the rules cannot undo it. */
 [data-field-box][data-fb-focused],
 [data-field-box][data-fb-focused][data-fb-tone="error"] {
-  box-shadow: inset 0 0 0 1.5px var(--accent);
+  box-shadow:
+    inset 0 0 0 2px var(--accent),
+    0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
 /* Disabled sinks the well and keeps the value readable — a locked number that looked empty would
    read as a hint. The screen's own reason line says why it is locked. */
 [data-field-box][data-fb-disabled] {
   background: var(--canvas-sunken);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
   cursor: not-allowed;
 }
 

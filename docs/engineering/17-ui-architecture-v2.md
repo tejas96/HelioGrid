@@ -43,7 +43,7 @@ in this document.
 packages/
 ├── theme/                       # tokens + semantic layer + provider. ONE package.
 │   ├── src/
-│   │   ├── _generated/          # WRITTEN BY SCRIPT. Never hand-edit.
+│   │   ├── tokens/              # the typed tokens: light, dark, field
 │   │   │   ├── tokens.json      #   pulled from the live design system
 │   │   │   └── manifest.json    #   component + prop census; no check reads it
 │   │   ├── semantic.ts          # raw token -> role mapping (bg-page, text-body, …)
@@ -123,7 +123,7 @@ Plain `StyleSheet.create`, with the variant table written out per component as a
 onto the design system's prop enums and for theme swap without re-render. It was not adopted: the
 dependency and its Babel plugin are not repaid while the density-mode switch has no product
 surface. **ADR-0026 records that reversal**, and its two costs: variant wiring is hand-written and
-compared only by prop NAME, against the design system's typings (invariant `design-system-props`), and "style out of the component
+held by the shared `<Name>.types.ts` and review, and "style out of the component
 file" is true on web and false on native (review-only).
 
 ---
@@ -181,19 +181,14 @@ which components it uses and in what form. Building ahead of that is what produc
 
 ## 6 · What holds a port to the design system
 
-**`ds:pull`** (a session action, NOT a pnpm script) — fetches the live design system's tokens,
-component manifest and per-component typings (as `.d.ts.txt`) into
-`packages/theme/src/_generated/`. Output is committed. Hand-editing anything in `_generated/` is a
-bug. It takes the design system at its word: it cannot tell you the live design system changed
-under a component you already ported, only that the committed snapshot is what it served at pull
-time. Nothing verifies the snapshot is current except pulling again.
+The design system's values live in this repo: the typed tokens in `packages/theme/src/tokens/`
+(`packages/theme/CLAUDE.md`), drawn by `packages/ui`. The look they serve is `CLAUDE.md` §10.
 
 The port is then held by checks that run in `pnpm lint` and `pnpm check:all`, and by review.
 `.claude/protections.md` is the ledger; this is what each holder asks of `packages/ui`:
 
 | The mistake | What holds it |
 | --- | --- |
-| **Dropped prop** — the design system declares a prop the port declares nowhere: not in `<Name>.types.ts`, not in the platform-local props, not in a module the folder imports. `style` and `className` are the platform split's own names, never a finding. | invariant `design-system-props`, which reads the pulled `.d.ts.txt` typings and the `Declared props:` allowlists of `adherence.oxlintrc.json` as text |
 | **Weakened prop** — a spec union (`ProvenanceProps \| ProvenanceTierSpec`, `NamedGapSpec`, …) ported as a bare `ReactNode`; **raw emit** — the spec type came across but its renderer did not | typecheck |
 | **Inert accessibility** — `accessibilityState`, `accessibilityLabel` or `accessibilityValue` on a React Native `View` or `Animated.View` that is not an accessibility element (no `accessible`, no role) | Biome plugin `inert-a11y` |
 | **Folded control** — `accessible` on a tag whose subtree holds a control, so the control is out of a screen reader's reach | Biome plugin `folded-control` |
@@ -235,12 +230,10 @@ own `<Name>.types.ts` header. No check reads the markers; review does (`packages
 | Marker | What it asserts | Declared by |
 | --- | --- | --- |
 | `PRINT SURFACE` | The component renders paper. `@page`, 96dpi sheet geometry and print scoping have no React Native equivalent, and a phone never produces the artefact. | `DrawingSheet`, `PagedDocument` |
-| `POINTER SURFACE` | The design system gives the component no phone form **and** the phone shell has no slot to host one, so a native half would be an invention rather than a port. | `Breadcrumb` |
+| `POINTER SURFACE` | The design system gives the component no phone form **and** the phone shell has no slot to host one, so a native half would be an invention rather than a port. | none today |
 
 Both are stronger claims than "not ported yet". `POINTER SURFACE` in particular needs the design
-system to say so in its own words *and* the mobile shell to corroborate it; `Breadcrumb` qualifies
-because its DS source reads "desktop only … never a trail" and `AppShell`'s `AppHeader` has a
-`breadcrumb` slot while `MobileTopBar` has none.
+system to say so in its own words *and* the mobile shell to corroborate it.
 
 The vocabulary is closed on purpose. Free text — "desktop only", "N/A on mobile" — would let every
 unported component talk its way out. `git grep 'POINTER SURFACE'` lists every component claiming

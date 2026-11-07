@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 import { Fragment } from 'react';
 import type { ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 /* Cross-component imports in a native half point at the NATIVE file — see NextAction.native.tsx. */
 import { Text } from '../../primitives/Text/Text.native';
 import { renderMarks } from '../ChipGroup/ChipGroup.native';
@@ -16,7 +18,7 @@ export function RecordFace({
   initials,
   name,
   tone,
-}: Pick<RecordCardProps, 'avatar' | 'initials' | 'name'> & { tone: string }) {
+}: Pick<RecordCardProps, 'avatar' | 'initials' | 'name'> & { tone: ThemeColor }) {
   if (avatar) {
     return (
       <View
@@ -107,7 +109,7 @@ const styles = StyleSheet.create({
   metaSpaced: { marginTop: theme.spacing['sp-1'] },
   metaWords: { fontSize: theme.type.roles.caption.fontSize },
   /* The middot is a MARK, not a word: mark-subtle sits on WCAG's 3:1 non-text floor. */
-  metaSep: { color: theme.colors['mark-subtle'], fontSize: theme.type.roles.caption.fontSize },
+  metaSep: { color: colors['mark-subtle'], fontSize: theme.type.roles.caption.fontSize },
   provenance: { marginTop: 6 },
   action: { marginTop: theme.spacing['sp-2'] },
   actionRow: {

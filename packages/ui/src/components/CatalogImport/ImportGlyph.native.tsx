@@ -1,4 +1,5 @@
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import type { IconSize } from '../../primitives/Icon/Icon.types';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
@@ -19,7 +20,7 @@ export function ImportGlyph({
   name: ShellGlyphName;
   size: IconSize;
   stroke: number;
-  color: string;
+  color: ThemeColor;
 }) {
   return (
     <Icon size={size} color={color}>

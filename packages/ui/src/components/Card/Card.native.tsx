@@ -2,8 +2,9 @@ import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE } from '../../primitives/FieldBox/FieldBox.native';
-import { GroundProvider, tileSurface, useGround } from '../../primitives/Ground/Ground.native';
+import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 /* The native half of a primitive is imported by file: the folder barrel re-exports `./Pressable`,
    which tsc's bundler resolution reads as the WEB half even in the native project. */
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -30,20 +31,20 @@ const styles = StyleSheet.create({
     borderWidth: FIELD_BOX_EDGE,
     borderColor: 'transparent',
   },
-  selected: { borderColor: theme.colors.accent },
+  selected: { borderColor: colors.accent },
   /* Raised: a white card set on the page, not a tile — a page ground (`GroundProvider ground="page"`).
      Its selected ring is OUTER, as on the web; an outline draws outside the frame, so nothing
      moves. It has no edge to subtract, so the expressive card keeps the whole tile padding. */
   raised: {
     borderRadius: theme.radius['r-lg'],
     // biome-ignore lint/plugin/raw-white: panel — a card raised over the page: a page ground over the page
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e1,
   },
   raisedExpressive: { padding: theme.layout['tile-pad'] },
   raisedSelected: {
     outlineWidth: RAISED_RING,
-    outlineColor: theme.colors.accent,
+    outlineColor: colors.accent,
     outlineStyle: 'solid',
   },
   /* The edge sits inside the tile's padding, so the words start where the web's do. */
@@ -58,6 +59,8 @@ const styles = StyleSheet.create({
   /* Pressable centres its children for icon targets; a card stretches them instead. */
   pressableReset: { alignItems: 'stretch', justifyContent: 'flex-start', width: '100%' },
   circle: { alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  /* The soft tint: the colour itself at the web half's share over what holds it. */
+  tint: { opacity: 0.08 },
 });
 
 /**
@@ -145,43 +148,21 @@ export function Card({
   );
 }
 
-/** A `#rrggbb` theme value as its three channels, or `undefined` for anything else. */
-function channels(color: string): [number, number, number] | undefined {
-  const packed = /^#([0-9a-f]{6})$/i.exec(color.trim())?.[1];
-  if (packed === undefined) return undefined;
-  const value = Number.parseInt(packed, 16);
-  return [(value >> 16) & 255, (value >> 8) & 255, value & 255];
-}
-
 /**
- * Mixes a 6% tint of `color` over `ground` — the web half's
- * `color-mix(in srgb, c 6%, var(--hg-ground))`.
- */
-function tint6(color: string, ground: string): string {
-  const tint = channels(color);
-  const under = channels(ground);
-  if (tint === undefined || under === undefined) return ground;
-  const mix = (channel: number, beneath: number) => Math.round(channel * 0.06 + beneath * 0.94);
-  return `rgb(${mix(tint[0], under[0])},${mix(tint[1], under[1])},${mix(tint[2], under[2])})`;
-}
-
-/**
- * Signature circular icon container — a soft 6% tint of a semantic/brand colour over the ground
- * that holds it. `color` must be a resolved theme value on native (there are no CSS custom
- * properties to dereference).
+ * Signature circular icon container — a soft tint of a semantic or brand colour over the ground
+ * that holds it: the colour itself, faded, so a scheme change re-tints it with no arithmetic.
  */
 export function IconCircle({
   children,
-  color = theme.colors.accent,
+  color = colors.accent,
   size = 40,
   style,
 }: NativeIconCircleProps) {
-  const { ground } = useGround();
-  const shape: ViewStyle = {
-    width: size,
-    height: size,
-    borderRadius: size / 2,
-    backgroundColor: tint6(color, ground),
-  };
-  return <View style={[styles.circle, shape, style]}>{children}</View>;
+  const shape: ViewStyle = { width: size, height: size, borderRadius: size / 2 };
+  return (
+    <View style={[styles.circle, shape, style]}>
+      <View style={[StyleSheet.absoluteFill, shape, styles.tint, { backgroundColor: color }]} />
+      {children}
+    </View>
+  );
 }

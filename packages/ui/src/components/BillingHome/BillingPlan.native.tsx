@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { Text } from '../../primitives/Text/Text.native';
 import { Accordion } from '../Accordion/Accordion.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { BillingValueText, workingParts } from '../BillingStrip/BillingValue.native';
@@ -9,6 +10,7 @@ import { Derivation } from '../Derivation/Derivation.native';
 import { Explainer } from '../Explainer/Explainer.native';
 import { FactRow } from '../FactRow/FactRow.native';
 import { FactRows } from '../FactRow/FactRows.native';
+import { HeroPanel } from '../HeroPanel/HeroPanel.native';
 import { ListRow } from '../ListRow/ListRow.native';
 import { Provenance } from '../Provenance/Provenance.native';
 import { ScopeNote } from '../ScopeNote/ScopeNote.native';
@@ -60,15 +62,22 @@ export function BillingPlan({
   words: Words;
   onRoute: (() => void) | undefined;
 }) {
+  const [named, ...facts] = plan.rows;
   return (
-    <Block
-      density="expressive"
-      title={words.yourPlan}
-      badge={<BillingStatusChip chip={plan.chip} />}
-      {...(plan.source === null ? {} : { provenance: { tier: 'unmarked', source: plan.source } })}
+    <HeroPanel
+      label={words.yourPlan}
+      labelAside={
+        <>
+          <BillingStatusChip chip={plan.chip} />
+          {plan.source === null ? null : <Provenance source={plan.source} size={12} />}
+        </>
+      }
     >
+      {named === undefined ? null : (
+        <Text variant="display">{named.value.map((run) => run.text).join('')}</Text>
+      )}
       <View style={styles.region}>
-        {plan.rows.length === 0 ? null : <Facts label={words.yourPlan} facts={plan.rows} />}
+        {facts.length === 0 ? null : <Facts label={words.yourPlan} facts={facts} />}
         {plan.scope === null ? null : (
           <ScopeNote title={plan.scope.title} variant="line" size={13} />
         )}
@@ -82,14 +91,16 @@ export function BillingPlan({
           />
         )}
         {plan.route === null ? null : (
-          <ListRow
-            title={plan.route.title}
-            {...(plan.route.subtitle === null ? {} : { subtitle: plan.route.subtitle })}
-            trailing={CHEVRON}
-            density="functional"
-            style={styles.flush}
-            {...(onRoute === undefined ? {} : { onClick: onRoute })}
-          />
+          <View style={styles.route}>
+            <Button variant="primary" size="md" onClick={onRoute} disabled={onRoute === undefined}>
+              {plan.route.title}
+            </Button>
+            {plan.route.subtitle === null ? null : (
+              <Text variant="body-sm" color="secondary">
+                {plan.route.subtitle}
+              </Text>
+            )}
+          </View>
         )}
         {plan.includes === null ? null : (
           <Accordion
@@ -104,7 +115,7 @@ export function BillingPlan({
           />
         )}
       </View>
-    </Block>
+    </HeroPanel>
   );
 }
 
@@ -220,4 +231,5 @@ const styles = StyleSheet.create({
   stacked: { alignItems: 'flex-end', gap: theme.spacing['sp-0-5'] },
   flush: { paddingHorizontal: 0 },
   start: { flexDirection: 'row' },
+  route: { alignItems: 'flex-start', gap: theme.spacing['sp-2'] },
 });

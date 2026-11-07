@@ -1,8 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
-import { avatarIris, irisTintOf } from './Avatar.logic';
+import { avatarCategory, hueTintOf } from './Avatar.logic';
 import type { AvatarGroupProps, AvatarMark, AvatarProps } from './Avatar.types';
 import { initialsOf, initialsSize, keyedAvatars, overflowSize } from './Avatar.types';
 
@@ -21,11 +23,11 @@ const DEFAULT_SIZE = 40;
 const MARK_RING = 18;
 const MARK_DOT = 11;
 
-const MARK_TONE: Record<AvatarMark, string> = {
-  info: theme.colors.info,
-  success: theme.colors.success,
-  warning: theme.colors.warning,
-  neutral: theme.colors.neutral,
+const MARK_TONE: Record<AvatarMark, ThemeColor> = {
+  info: colors.info,
+  success: colors.success,
+  warning: colors.warning,
+  neutral: colors.neutral,
 };
 
 const styles = StyleSheet.create({
@@ -34,19 +36,19 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors['accent-subtle'],
+    backgroundColor: colors['accent-subtle'],
   },
   /* A thing, not a person (`glyph`): no name to fall back to and no tint. */
   // biome-ignore lint/plugin/raw-white: illustration — a thing's disc is white on every ground, as the design system draws it
-  glyph: { backgroundColor: theme.colors.surface },
+  glyph: { backgroundColor: colors.surface },
   initials: {
     fontFamily: theme.type.families.sans,
     fontWeight: '500',
-    color: theme.colors.accent,
+    color: colors.accent,
   },
   /* The design system's iris weight. The theme holds no 600 weight token, so it is written as
      the number. */
-  irisInitials: { fontWeight: '600' },
+  hueInitials: { fontWeight: '600' },
   image: { width: '100%', height: '100%' },
   marked: { position: 'relative', flexShrink: 0 },
   /* 2px out from the disc, in a ring of the page. */
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     width: MARK_RING,
     height: MARK_RING,
     borderRadius: MARK_RING / 2,
-    backgroundColor: theme.colors.canvas,
+    backgroundColor: colors.canvas,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -69,12 +71,12 @@ const styles = StyleSheet.create({
   overflow: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.colors['canvas-sunken'],
+    backgroundColor: colors['canvas-sunken'],
   },
   overflowText: {
     fontFamily: theme.type.families.sans,
     fontWeight: '500',
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
 });
 
@@ -115,8 +117,8 @@ function AvatarDisc({
   if (glyph !== undefined && glyph !== null) {
     return <View style={[styles.avatar, styles.glyph, circle, style]}>{glyph}</View>;
   }
-  const iris = avatarIris(hue, name);
-  const tint = iris === null ? null : irisTintOf(iris);
+  const iris = avatarCategory(hue, name);
+  const tint = iris === null ? null : hueTintOf(iris);
   const type: TextStyle = { fontSize: initialsSize(size) };
   return (
     <View style={[styles.avatar, circle, tint ? { backgroundColor: tint.bg } : null, style]}>
@@ -130,7 +132,7 @@ function AvatarDisc({
           style={[
             styles.initials,
             type,
-            tint ? styles.irisInitials : null,
+            tint ? styles.hueInitials : null,
             tint ? { color: tint.fg } : null,
           ]}
         >

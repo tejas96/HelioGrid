@@ -12,12 +12,10 @@ import { type DisplayVocabulary, IN_VOCABULARY } from './vocabulary';
  * The split is the point: a module that needs a market fact names this key and reads it here,
  * so "no market fact is ever a module-level constant" (`F1-01`) holds mechanically.
  *
- * **The shape is FLAT because the design system declares it flat.** `MarketProvider`'s pulled
- * contract (`packages/theme/src/_generated/contracts/data/MarketProvider.d.ts.txt`) fixes
- * `id`, `locale`, `currency`, `currencyFractionDigits`, `clock` and `taxIdLabel` as prop names,
- * and the `design-system-props` invariant fails on a dropped one. Grouping them into sub-objects here would
- * mean the design system and this package each declaring their own pack — the second copy this
- * slice exists to remove. Fields the PRD adds (the minor unit, the timezone, the phone spec)
+ * **The shape is FLAT because `packages/ui`'s `MarketProvider` takes it flat:** `id`, `locale`,
+ * `currency`, `currencyFractionDigits`, `clock` and `taxIdLabel` are its prop names. Grouping them
+ * into sub-objects here would mean the provider and this package each declaring their own pack —
+ * the second copy this slice exists to remove. Fields the PRD adds (the minor unit, the timezone, the phone spec)
  * sit beside them.
  *
  * A pack is DATA. Nothing here reads a clock, an environment or a request — the tenant's own

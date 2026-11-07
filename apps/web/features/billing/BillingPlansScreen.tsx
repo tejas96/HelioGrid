@@ -21,7 +21,7 @@ const PLANS_COLUMNS_FROM = theme.layout['bp-desktop'];
 /**
  * The plans behind Billing on the web (`SCR-M12-03`): `Your plan`, the cycle, the plans, the act
  * and the comparison, and the review as the non-modal side panel at width — the settings list
- * steps aside while it is open (decision 9). What is read and acted on is
+ * steps aside for the plans (decision 9). What is read and acted on is
  * `usePlanSelectionScreen`'s and what is drawn `planSelectionPageOf`'s, the phone's too; this holds
  * the web's own parts — the room's layout, the new tab and where focus lands.
  */
@@ -34,9 +34,9 @@ export function BillingPlansScreen() {
   const words = planSelectionWords(t, locale, format);
   const page = planSelectionPageOf(screen, words, { format, now: Date.now() });
   const open = screen.reviewing && page.view.review !== null;
-  /* The open panel takes its own room from the page and the settings list steps aside, so the
-     page's width moves under it; measured then, the layout would flip back to one column and take
-     the panel's room and the list's step aside with it. The width before it opened holds. */
+  /* The open panel takes its own room from the page, so the page's width moves under it; measured
+     then, the layout would flip back to one column and take the panel's room with it. The width
+     before it opened holds. */
   const settled = useRef(false);
   if (!open) settled.current = width !== null && width >= PLANS_COLUMNS_FROM;
   const wide = settled.current;
@@ -47,7 +47,7 @@ export function BillingPlansScreen() {
       data-review={open && wide ? 'open' : undefined}
     >
       <div ref={heading} tabIndex={-1} className="hg-focus-target">
-        <Text as="h1" variant="h2">
+        <Text as="h1" variant="display">
           {t(PRICING.plans)}
         </Text>
       </div>

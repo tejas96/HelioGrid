@@ -20,7 +20,7 @@ export function RoleExplainer({ words, read, namesPending: pending, onAct }: Rol
       identity={
         pending ? undefined : (
           <View accessibilityRole="header">
-            <Text variant="h2">{words.title}</Text>
+            <Text variant="display">{words.title}</Text>
           </View>
         )
       }

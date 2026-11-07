@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import type { DimensionValue } from 'react-native';
 import { AccessibilityInfo, Animated, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { tileSurface } from '../../primitives/Ground/Ground.native';
 import type { MemberCardsLoadingProps } from './MemberCard.types';
 
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
   },
   head: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
   words: { flex: 1, gap: theme.spacing['sp-2'] },
-  bar: { borderRadius: theme.radius['r-pill'], backgroundColor: theme.colors['canvas-sunken'] },
+  bar: { borderRadius: theme.radius['r-pill'], backgroundColor: colors['canvas-sunken'] },
   face: { width: 48, height: 48 },
   word: { height: theme.spacing['sp-3'] },
   roles: { height: theme.spacing['sp-6'] },

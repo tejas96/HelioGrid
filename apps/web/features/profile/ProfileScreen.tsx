@@ -1,23 +1,33 @@
 'use client';
 import { useProfileScreen } from '@heliogrid/data/react';
 import {
+  appearanceWords,
   nameAndPhotoEditorWords,
   profilePreferencesWords,
   roleCardWords,
   SHELL,
 } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
-import { NameAndPhotoEditor, ProfilePreferences, RoleCardSurface, useFormat } from '@heliogrid/ui';
+import {
+  AppearanceSwitch,
+  NameAndPhotoEditor,
+  ProfilePreferences,
+  RoleCardSurface,
+  useFormat,
+} from '@heliogrid/ui';
+import { useAppearance } from '../../lib/appearance';
 import { openImagePicker, useImageFile } from '../../lib/use-image-file';
 
 /**
  * Profile & preferences (`SCR-M01-11`): every person's own page, open to every preset (the
  * settings row `profile`). What it draws is `useProfileScreen`'s, the phone's too; the web's own
- * part is the file picker. A language applies through the provider, which saves it (`F3-04`).
+ * part is the file picker. A language applies through the provider, which saves it (`F3-04`);
+ * the appearance is kept on this browser.
  */
 export function ProfileScreen() {
   const { t, locale, device, setLocale } = useI18n();
   const { pack } = useFormat();
+  const [appearance, chooseAppearance] = useAppearance();
   const screen = useProfileScreen(device, pack.measurementSystem);
   const chooseFile = useImageFile(screen === null ? () => undefined : screen.editor.choosePhoto);
   if (screen === null) return null;
@@ -39,6 +49,7 @@ export function ProfileScreen() {
         refused={push.refused}
         onPush={push.flip}
       />
+      <AppearanceSwitch words={appearanceWords(t)} value={appearance} onChange={chooseAppearance} />
       <NameAndPhotoEditor
         open={editor.isOpen}
         words={nameAndPhotoEditorWords(t, editor.frame)}

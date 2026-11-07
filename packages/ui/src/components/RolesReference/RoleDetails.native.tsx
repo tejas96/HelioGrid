@@ -2,6 +2,7 @@ import type { ReadKind } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { type ReactNode, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { AvatarGroup } from '../Avatar/Avatar.native';
@@ -187,5 +188,5 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'transparent',
   },
-  cut: { borderTopColor: theme.colors['line-soft'] },
+  cut: { borderTopColor: colors['line-soft'] },
 });

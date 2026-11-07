@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useEffect, useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { AccessibilityInfo, BackHandler, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
@@ -108,7 +109,7 @@ export function Explainer(props: NativeExplainerProps) {
           {glyph ?? (
             <InfoGlyph
               size={geometry.glyph}
-              color={ask.isOpen ? theme.colors.accent : theme.colors['text-secondary']}
+              color={ask.isOpen ? colors.accent : colors['text-secondary']}
             />
           )}
         </Pressable>
@@ -154,6 +155,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: theme.radius['r-pill'],
   },
-  triggerOpen: { backgroundColor: theme.colors['accent-subtle'] },
+  triggerOpen: { backgroundColor: colors['accent-subtle'] },
   catcher: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
 });

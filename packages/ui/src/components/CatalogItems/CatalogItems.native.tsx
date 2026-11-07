@@ -8,6 +8,7 @@ import { theme } from '@heliogrid/theme';
 import { useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import type { FocusAfter } from '../../primitives/FocusAfter';
+import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Banner } from '../Banner/Banner.native';
 import { Block } from '../Block/Block.native';
@@ -203,7 +204,8 @@ function useItemColumns(props: CatalogItemsProps): DataTableColumn<CatalogRow>[]
       label: words.effectivePrice,
       trailing: true,
       numeric: true,
-      gap: (row) => (row.amount === null ? words.noPrice : null),
+      gap: (row) =>
+        row.amount === null ? <StatusMark tone="warning" label={words.noPrice} /> : null,
       render: (row) =>
         typeof row.amount === 'string' ? (
           <Text variant="mono" bold>

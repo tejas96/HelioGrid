@@ -2,6 +2,8 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { Text as RNText, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import type { CalendarCellProps, DayMarker, DayMarkerTone } from './DatePicker.types';
@@ -14,13 +16,13 @@ export const GRID_WIDTH = CELL * 7 + GAP * 6;
 
 /* A marker's label is read out with the date, so the tone is never the only channel. --warning is
    not a legal mark anywhere in this system; a leave dot takes --warning-text. */
-const MARKER_TONE: Record<DayMarkerTone, string> = {
-  present: theme.colors['success-text'],
-  absent: theme.colors['danger-text'],
-  leave: theme.colors['warning-text'],
-  holiday: theme.colors['info-text'],
-  scheduled: theme.colors.accent,
-  neutral: theme.colors['text-tertiary'],
+const MARKER_TONE: Record<DayMarkerTone, ThemeColor> = {
+  present: colors['success-text'],
+  absent: colors['danger-text'],
+  leave: colors['warning-text'],
+  holiday: colors['info-text'],
+  scheduled: colors.accent,
+  neutral: colors['text-tertiary'],
 };
 
 export const styles = StyleSheet.create({
@@ -44,33 +46,33 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cellBetween: { borderRadius: 0, backgroundColor: theme.colors['accent-subtle'] },
+  cellBetween: { borderRadius: 0, backgroundColor: colors['accent-subtle'] },
   cellSelected: {
     borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors.accent,
+    backgroundColor: colors.accent,
   },
   /* RN cannot inset a ring, so today's outline is a border of the same 1.5px and colour. */
-  cellToday: { borderWidth: 1.5, borderColor: theme.colors['canvas-sunken'] },
+  cellToday: { borderWidth: 1.5, borderColor: colors['canvas-sunken'] },
   numeral: {
     fontFamily: theme.type.families.sans,
     fontSize: 14,
     fontWeight: '400',
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   numeralStrong: { fontWeight: '700' },
-  numeralSelected: { color: theme.colors['text-inverse'] },
-  numeralDisabled: { color: theme.colors['text-disabled'] },
+  numeralSelected: { color: colors['text-inverse'] },
+  numeralDisabled: { color: colors['text-disabled'] },
   lockBar: {
     position: 'absolute',
     bottom: theme.spacing['sp-1'],
     width: 14,
     height: 2.5,
     borderRadius: 2,
-    backgroundColor: theme.colors['text-tertiary'],
+    backgroundColor: colors['text-tertiary'],
   },
   marker: { position: 'absolute', bottom: 5, width: 5, height: 5, borderRadius: 2.5 },
   // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
-  onSelected: { backgroundColor: theme.colors['text-inverse'] },
+  onSelected: { backgroundColor: colors['text-inverse'] },
 });
 
 interface CalendarNavProps {
@@ -88,7 +90,7 @@ export function CalendarNav({ dir, label, onPress }: CalendarNavProps) {
         height={18}
         viewBox="0 0 24 24"
         fill="none"
-        stroke={theme.colors['text-secondary']}
+        stroke={colors['text-secondary']}
         strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"

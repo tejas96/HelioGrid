@@ -3,15 +3,17 @@ import type { ReactNode } from 'react';
 import { isValidElement } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import type { ThemeColor } from '../../primitives/Color/colors';
+import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { resetName, resetWords, takeName } from './FieldOverride.names';
 import type { FieldOverrideSpec, FieldOverrideWords } from './FieldOverride.types';
 
-const MARK_TONE: Record<'overridden' | 'stale', { color: string; background: string }> = {
-  overridden: { color: theme.colors['neutral-text'], background: theme.colors['neutral-bg'] },
+const MARK_TONE: Record<'overridden' | 'stale', { color: ThemeColor; background: ThemeColor }> = {
+  overridden: { color: colors['neutral-text'], background: colors['neutral-bg'] },
   /* `stale` tints warning — "the design has moved on since you edited this". */
-  stale: { color: theme.colors['warning-text'], background: theme.colors['warning-bg'] },
+  stale: { color: colors['warning-text'], background: colors['warning-bg'] },
 };
 
 /* Values off the 4px scale (6, 10) are the design system's own; no theme token carries them. */
@@ -36,9 +38,9 @@ const styles = StyleSheet.create({
 });
 
 const medium: TextStyle = { fontWeight: '500' };
-const figure: TextStyle = { fontWeight: '700', color: theme.colors['text-primary'] };
-const linkWords: TextStyle = { fontWeight: '500', color: theme.colors.accent };
-const strongWords: TextStyle = { fontWeight: '700', color: theme.colors['text-primary'] };
+const figure: TextStyle = { fontWeight: '700', color: colors['text-primary'] };
+const linkWords: TextStyle = { fontWeight: '500', color: colors.accent };
+const strongWords: TextStyle = { fontWeight: '700', color: colors['text-primary'] };
 
 interface NativeFieldOverrideProps extends FieldOverrideSpec {
   style?: StyleProp<ViewStyle>;

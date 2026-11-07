@@ -1,5 +1,6 @@
-/* Text — the DS type scale. Values are typography tokens only. 12px is the floor;
-   overline (11px/700/uppercase/0.12em) is the one sanctioned exception. */
+/* Text — the type scale. Values are typography tokens only. 12px is the floor; the overline
+   (11px/600/uppercase/0.08em) is the one sanctioned exception. Titles and hero figures are set in
+   the display face, Newsreader, at its regular weight. */
 
 .hg-text {
   margin: 0;
@@ -7,39 +8,66 @@
   font-weight: var(--fw-regular);
 }
 
+.hg-text[data-variant="hero"],
+.hg-text[data-variant="figure"],
+.hg-text[data-variant="display"],
+.hg-text[data-variant="h1"] {
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.hg-text[data-variant="hero"] {
+  font-size: var(--fs-hero-phone);
+  line-height: var(--lh-hero-phone);
+  letter-spacing: var(--tr-hero-phone);
+}
+
+@media (min-width: 968px) {
+  .hg-text[data-variant="hero"] {
+    font-size: var(--fs-hero);
+    line-height: var(--lh-hero);
+    letter-spacing: var(--tr-hero);
+  }
+}
+
+.hg-text[data-variant="figure"] {
+  font-size: var(--fs-figure);
+  line-height: var(--lh-figure);
+  letter-spacing: var(--tr-figure);
+}
+
 .hg-text[data-variant="display"] {
   font-size: var(--fs-display);
   line-height: var(--lh-display);
   letter-spacing: var(--tr-display);
-  font-weight: var(--fw-bold);
 }
 
 .hg-text[data-variant="h1"] {
   font-size: var(--fs-h1);
   line-height: var(--lh-h1);
   letter-spacing: var(--tr-h1);
-  font-weight: var(--fw-bold);
 }
 
 .hg-text[data-variant="h2"] {
   font-size: var(--fs-h2);
   line-height: var(--lh-h2);
   letter-spacing: var(--tr-h2);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semibold);
 }
 
 .hg-text[data-variant="h3"] {
   font-size: var(--fs-h3);
   line-height: var(--lh-h3);
   letter-spacing: var(--tr-h3);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semibold);
 }
 
 .hg-text[data-variant="h4"] {
   font-size: var(--fs-h4);
   line-height: var(--lh-h4);
   letter-spacing: var(--tr-h4);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semibold);
 }
 
 .hg-text[data-variant="body-lg"] {
@@ -83,7 +111,7 @@
   /* The overline and mono name no line height of their own: like every board, the body's. */
   line-height: var(--lh-body);
   letter-spacing: var(--tr-overline);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semibold);
   text-transform: uppercase;
 }
 

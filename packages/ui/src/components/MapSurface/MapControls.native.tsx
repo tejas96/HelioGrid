@@ -2,6 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { Icon } from '../../primitives/Icon/Icon.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: theme.radius['r-md'],
     // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e3,
   },
   ctrl: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-2'],
     borderRadius: theme.radius['r-pill'],
     // biome-ignore lint/plugin/raw-white: over-media — a chip, a thumbnail or a control drawn over a photograph or a map
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     ...theme.elevation.e2,
   },
   levelText: { fontWeight: '700' },
@@ -48,10 +49,7 @@ interface CtrlProps {
 function Ctrl({ label, onPress, glyph, disabled = false }: CtrlProps) {
   return (
     <Pressable accessibilityLabel={label} onPress={onPress} disabled={disabled} style={styles.ctrl}>
-      <Icon
-        size="md"
-        color={disabled ? theme.colors['text-disabled'] : theme.colors['text-primary']}
-      >
+      <Icon size="md" color={disabled ? colors['text-disabled'] : colors['text-primary']}>
         <Svg
           viewBox="0 0 24 24"
           fill="none"

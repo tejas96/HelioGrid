@@ -1,7 +1,7 @@
 import { createTranslator, SIGN_IN } from '@heliogrid/i18n';
 import { OptionCardGroup } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { resolvedColour } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, TILE_SHADOW } from '../support/token';
 import { MultipleStory } from './OptionCardGroup.story';
 
 const en = await createTranslator('en');
@@ -14,7 +14,7 @@ const options = [
   { value: 'call', title: byCall },
 ];
 
-test('every available option is a grey tile with no shadow, the selected one ringed in the accent', async ({
+test('every available option is a tile, the selected one ringed in the accent', async ({
   mount,
   page,
 }) => {
@@ -22,19 +22,20 @@ test('every available option is a grey tile with no shadow, the selected one rin
   const selected = group.getByRole('radio', { name: bySms });
   const unselected = group.getByRole('radio', { name: byCall });
 
-  await expect(selected).toHaveCSS('background-color', await resolvedColour(page, '--fill'));
+  await expect(selected).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
   await expect(selected).toHaveCSS(
     'box-shadow',
     `${await resolvedColour(page, '--accent')} 0px 0px 0px 2px`,
   );
-  await expect(unselected).toHaveCSS('box-shadow', 'none');
+  await expect(unselected).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(unselected).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
   await expect(unselected.locator('.hg-option-card-dot')).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--surface'),
+    await resolvedColour(page, '--fill'),
   );
 });
 
-test('an off option lies on the page, apart from the grey tiles', async ({ mount, page }) => {
+test('an off option lies on the page, apart from the tiles', async ({ mount, page }) => {
   const group = await mount(
     <OptionCardGroup
       options={[

@@ -54,8 +54,8 @@ export function overviewOf(
   const filters =
     phase === 'preview'
       ? [
-          partOf(words, 'overrides', counts.matched, 'blue'),
-          partOf(words, 'newItems', counts.newItems, 'violet'),
+          partOf(words, 'overrides', counts.matched, 'teal'),
+          partOf(words, 'newItems', counts.newItems, 'ocean'),
           partOf(words, 'attention', counts.needsAttention, 'warning'),
         ]
       : [

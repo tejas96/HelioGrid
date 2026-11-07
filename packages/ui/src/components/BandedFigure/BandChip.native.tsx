@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { bandChipBox, bandChipFace, bandChipFor } from './BandedFigure.logic';
 import type { BandSpec, BandTone, BandToneStyle } from './BandedFigure.types';
 
@@ -13,25 +14,25 @@ import type { BandSpec, BandTone, BandToneStyle } from './BandedFigure.types';
  */
 export const BAND_TONES: Record<BandTone, BandToneStyle> = {
   success: {
-    fg: theme.colors['success-text'],
-    bg: theme.colors['success-bg'],
-    mark: theme.colors.success,
+    fg: colors['success-text'],
+    bg: colors['success-bg'],
+    mark: colors.success,
   },
   warning: {
-    fg: theme.colors['warning-text'],
-    bg: theme.colors['warning-bg'],
-    mark: theme.colors['warning-text'],
+    fg: colors['warning-text'],
+    bg: colors['warning-bg'],
+    mark: colors['warning-text'],
   },
   danger: {
-    fg: theme.colors['danger-text'],
-    bg: theme.colors['danger-bg'],
-    mark: theme.colors.danger,
+    fg: colors['danger-text'],
+    bg: colors['danger-bg'],
+    mark: colors.danger,
   },
-  info: { fg: theme.colors['info-text'], bg: theme.colors['info-bg'], mark: theme.colors.info },
+  info: { fg: colors['info-text'], bg: colors['info-bg'], mark: colors.info },
   neutral: {
-    fg: theme.colors['neutral-text'],
-    bg: theme.colors['neutral-bg'],
-    mark: theme.colors.neutral,
+    fg: colors['neutral-text'],
+    bg: colors['neutral-bg'],
+    mark: colors.neutral,
   },
 };
 

@@ -6,8 +6,8 @@ import { UI_LANGUAGES } from '@heliogrid/domain';
 /**
  * Every language in the set renders, on every platform, in a face we ship.
  *
- *   1. every character its catalog and its endonym draw is covered by a family in the design
- *      system's sans stack — never a system fallback;
+ *   1. every character its catalog and its endonym draw is covered by a family in the sans stack
+ *      AND in the display stack (titles and hero figures) — never a system fallback;
  *   2. every family in the stack ships a static phone face at every sanctioned weight, in the
  *      phone's font folder, both native bundles and the iOS font list — and Android resolves each
  *      family, the mono one too, BY NAME: its faces in `res/font`, its weights in the family's XML,
@@ -57,6 +57,8 @@ const isString = (value: unknown): value is string => typeof value === 'string';
 const isFaceList = (value: unknown): value is readonly Face[] =>
   Array.isArray(value) &&
   value.every((face) => isLoose(face) && isString(face.family) && Array.isArray(face.ranges));
+const isWeightList = (value: unknown): value is readonly number[] =>
+  Array.isArray(value) && value.every((w) => typeof w === 'number');
 const isCatalogLoader = (value: unknown): value is (code: string) => Promise<unknown> =>
   typeof value === 'function';
 
@@ -201,12 +203,27 @@ async function scanLanguageFonts(repo: string): Promise<{ findings: string[]; su
         'weights — with nothing to cover, every check below would pass having read nothing',
     );
   }
+  const display = built(theme, ['theme', 'type', 'displayScriptStack'], BUILT.theme, isFaceList);
+  const displayWeights = built(
+    theme,
+    ['theme', 'type', 'displayWeights'],
+    BUILT.theme,
+    isWeightList,
+  );
   const named = sanctioned.filter((weight) => STATIC_WEIGHT_NAME.has(weight));
   const families = [...new Set([...stack.map(({ family }) => family), mono])];
   const linked = mobile(repo, ANDROID_LINKED);
   const catalogs = await uncoveredCharacters(repo, stack);
+  const displayCatalogs = await uncoveredCharacters(repo, display);
   const findings = [
     ...catalogs.findings,
+    ...displayCatalogs.findings.map((f) => `display stack: ${f}`),
+    ...iosFaceGaps(repo, display, displayWeights),
+    ...androidFaceGaps(
+      repo,
+      display.map(({ family }) => family),
+      displayWeights,
+    ),
     ...sanctioned
       .filter((weight) => !STATIC_WEIGHT_NAME.has(weight))
       .map(
@@ -220,8 +237,8 @@ async function scanLanguageFonts(repo: string): Promise<{ findings: string[]; su
       : []),
   ];
   const summary =
-    `${catalogs.characters} characters in ${UI_LANGUAGES.length} catalogs drawn by the sans ` +
-    `stack; ${stack.length} faces × ${sanctioned.length} weights on the phone`;
+    `${catalogs.characters} characters in ${UI_LANGUAGES.length} catalogs drawn by the sans and ` +
+    `display stacks; ${stack.length} + ${display.length} faces on the phone`;
   return { findings, summary };
 }
 

@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Dimensions, Pressable as RNPressable, ScrollView, StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { actOnChoice, MENU_GAP } from './Menu.logic';
 import type { MenuItem, MenuProps } from './Menu.types';
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
     zIndex: 60,
     padding: 6,
     // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     borderRadius: theme.radius['r-md'],
     ...theme.elevation.e4,
   },

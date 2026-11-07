@@ -1,6 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import type { FocusHandle } from '../../primitives/FocusAfter';
 import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import { Text } from '../../primitives/Text/Text.native';
@@ -66,7 +67,7 @@ export function AssignRoles({
               round
               label={words.reference}
               onClick={onReference}
-              icon={<InfoGlyph size={ICON_SIZE.md} color={theme.colors['text-primary']} />}
+              icon={<InfoGlyph size={ICON_SIZE.md} color={colors['text-primary']} />}
             />
           </View>
         )}
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing['sp-3'],
     paddingBottom: theme.spacing['sp-2'],
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: theme.colors['line-soft'],
+    borderBottomColor: colors['line-soft'],
   },
   /* The side panel draws the line closer to the head (`SCR-M01-13` d-default, `--sp-1`). */
   headingInPanel: { marginTop: theme.spacing['sp-1'] },

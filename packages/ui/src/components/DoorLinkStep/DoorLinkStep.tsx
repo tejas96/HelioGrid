@@ -37,7 +37,7 @@ export function DoorLinkStep({
       identity={
         <div className="hg-door-title">
           <div className="hg-door-title-row">
-            <Text variant="h1">{words.title}</Text>
+            <Text variant="display">{words.title}</Text>
             {words.explainer === null ? null : <Explainer {...words.explainer} />}
           </div>
           <Text variant="body" color="secondary">

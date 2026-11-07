@@ -1,5 +1,6 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE, fieldBox, fieldBoxText } from '../../primitives/FieldBox/FieldBox.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { RangeEndBoxProps } from './RangeField.types';
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '400',
     fontVariant: ['tabular-nums'],
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
     padding: 0,
   },
 });

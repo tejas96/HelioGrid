@@ -1,11 +1,10 @@
 import { theme } from '@heliogrid/theme';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
-import Svg from 'react-native-svg';
-import { Icon } from '../../primitives/Icon/Icon.native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
+import { LottieMoment } from '../LottieMoment/LottieMoment.native';
 import type { SuccessDwellProps } from './SuccessDwell.types';
 
 interface NativeSuccessDwellProps extends SuccessDwellProps {
@@ -17,22 +16,9 @@ export function SuccessDwell({ title, line, style }: NativeSuccessDwellProps) {
   return (
     <View style={[styles.dwell, style]}>
       <BrandBloom placement="centre" />
-      <View style={styles.mark}>
-        <Icon size="lg">
-          <Svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={theme.colors['success-text']}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <ShellGlyphMarks name="tick-long" />
-          </Svg>
-        </Icon>
-      </View>
+      <LottieMoment name="success" size={96} />
       <View style={styles.words}>
-        <Text variant="h2">{title}</Text>
+        <Text variant="display">{title}</Text>
         <Text variant="body" color="secondary" align="center">
           {line}
         </Text>
@@ -47,15 +33,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: theme.spacing['sp-6'],
-    backgroundColor: theme.colors.canvas,
-  },
-  mark: {
-    width: theme.spacing['sp-20'],
-    height: theme.spacing['sp-20'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: theme.colors['success-bg'],
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: colors.canvas,
   },
   words: { alignItems: 'center', gap: theme.spacing['sp-2'] },
 });

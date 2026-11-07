@@ -50,32 +50,48 @@ function toRanges(codePoints: readonly number[]): (readonly [number, number])[] 
  * every codepoint they share, exactly as a browser walks a font stack. Adding a language in a new
  * script is then bundling its face and naming it in the stack — no code change (`F3-26`, `F3-28`).
  */
+interface FaceFile {
+  readonly codePoints: readonly number[];
+  readonly lineEm: number;
+  readonly weights: readonly [number, number];
+}
+
+/** One file of a family: what it draws, the room its ink needs and the weights its axis reaches. */
+function readFaceFile(family: string, file: string): FaceFile {
+  const font = fontkit.openSync(file);
+  if (!('familyName' in font)) throw new Error(`${file} is a font collection, not one face`);
+  if (!font.familyName.startsWith(family)) {
+    throw new Error(`${family} is named in the stack but its file reads ${font.familyName}`);
+  }
+  const axis = font.variationAxes.wght;
+  if (axis === undefined) {
+    throw new Error(
+      `${family} declares no weight axis, so the platform would synthesize every weight but its own (F3-14)`,
+    );
+  }
+  return {
+    codePoints: font.characterSet,
+    lineEm: (font.ascent - font.descent + font.lineGap) / font.unitsPerEm,
+    weights: [axis.min, axis.max],
+  };
+}
+
 export function readBundledFaces(
   families: readonly string[],
-  fileByFamily: ReadonlyMap<string, string>,
+  filesByFamily: ReadonlyMap<string, readonly string[]>,
 ): BundledFace[] {
-  const bundled = families.filter((family) => fileByFamily.has(family));
+  const bundled = families.filter((family) => filesByFamily.has(family));
   if (bundled.length === 0) throw new Error('the font stack names no bundled family');
 
   return bundled.map((family, position) => {
-    const file = fileByFamily.get(family) as string;
-    const font = fontkit.openSync(file);
-    if (!('familyName' in font)) throw new Error(`${file} is a font collection, not one face`);
-    if (font.familyName !== family) {
-      throw new Error(`${family} is named in the stack but its file reads ${font.familyName}`);
-    }
-    const axis = font.variationAxes.wght;
-    if (axis === undefined) {
-      throw new Error(
-        `${family} declares no weight axis, so the platform would synthesize every weight but its own (F3-14)`,
-      );
-    }
-    const line = (font.ascent - font.descent + font.lineGap) / font.unitsPerEm;
+    const files = (filesByFamily.get(family) ?? []).map((file) => readFaceFile(family, file));
+    const first = files[0];
+    if (first === undefined) throw new Error(`${family} names no file`);
     return {
       family,
-      ranges: toRanges(font.characterSet),
-      lineFloorEm: position === 0 ? 0 : Math.round(line * 1000) / 1000,
-      weights: [axis.min, axis.max],
+      ranges: toRanges([...new Set(files.flatMap((f) => f.codePoints))]),
+      lineFloorEm: position === 0 ? 0 : Math.round(first.lineEm * 1000) / 1000,
+      weights: first.weights,
     };
   });
 }

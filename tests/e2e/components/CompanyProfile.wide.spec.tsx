@@ -19,7 +19,7 @@ import { CompanyProfileAsHeld } from './CompanyProfile.story';
 
 /**
  * The company profile from the door's breakpoint (`SCR-M01-05`, `d-default`, `d-tax-invalid`): the
- * wordmark, the heading, the list and the act on one left edge at the list's wide measure, the act
+ * heading, the list and the act on one left edge at the list's wide measure, the act
  * at its natural width, and beside them a letterhead that shows only what the fields hold. The
  * positions are the brief's (rulings 10 and 31) and the RFC's frame map.
  */
@@ -29,7 +29,6 @@ const EDITOR_LEFT = 96;
 const MEASURE = 600;
 const PREVIEW = { left: 880, right: 1520 };
 const SHEET = { left: 980, width: 440 };
-const ACT = 48;
 /* A full-width act would be the measure wide; the board's is 175. */
 const ACT_WIDEST = 300;
 /* The phone's column, the narrowest the list is ever drawn. */
@@ -70,10 +69,7 @@ test.describe('at 1536', () => {
     const act = profile.getByRole('button', { name: SAVE });
     await expect(headers).toHaveCount(5);
 
-    await expectSharedEdge(
-      [profile.locator('.hg-door-wordmark-desktop'), title, lede, headers.first(), field, act],
-      'left',
-    );
+    await expectSharedEdge([title, lede, headers.first(), field, act], 'left');
     expect((await settledBox(title))?.x).toBe(EDITOR_LEFT);
     for (const header of await headers.all()) {
       expect(await settledBox(header)).toMatchObject({ x: EDITOR_LEFT, width: MEASURE });
@@ -81,7 +77,7 @@ test.describe('at 1536', () => {
     expect(await settledBox(field)).toMatchObject({ x: EDITOR_LEFT, width: MEASURE });
 
     const actBox = await settledBox(act);
-    expect(actBox?.height).toBe(ACT);
+    expect(actBox?.height).toBe(await resolvedLength(page, '--field-h'));
     expect(actBox?.width).toBeLessThan(ACT_WIDEST);
 
     await expect(title).toHaveCSS('font-size', `${await resolvedLength(page, '--fs-h1')}px`);

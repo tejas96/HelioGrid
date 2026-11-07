@@ -2,9 +2,8 @@ import { theme } from '@heliogrid/theme';
 
 /**
  * TENANT-BRAND SWATCH DATA — the starting points an operator picks their OWN company's colour
- * from. They are not HelioGrid's visual values, so `@heliogrid/theme` cannot hold them: that
- * package is GENERATED from the live design system (`ds:pull`, docs/engineering/17 §6) and never
- * hand-transcribed, and a tenant's blue is not something the design system has an opinion about.
+ * from. They are not HelioGrid's visual values, so `@heliogrid/theme` does not hold them: a
+ * tenant's blue is not something the design language has an opinion about.
  *
  * This file therefore holds raw colour, and is the ONE path the raw-colour plugin exempts — its
  * `!…/brand-swatches.ts` line in `biome.json`. It holds nothing but the data, so
@@ -20,8 +19,8 @@ export const BRAND_SWATCH_PRESETS: string[] = [
 ];
 
 /**
- * The colour a tenant who has chosen nothing yet is shown. It IS the system accent — the field
- * opens on our own colour, not on an invented one — so it reads the token rather than repeating
+ * The colour a tenant who has chosen nothing yet is shown. It IS the system accent, as a hex — the
+ * field opens on our own colour, not on an invented one — so it reads the token rather than repeating
  * its value.
  */
-export const DEFAULT_BRAND_COLOUR: string = theme.colors.accent;
+export const DEFAULT_BRAND_COLOUR: string = theme.palettes.light.accent;

@@ -1,12 +1,13 @@
-/* The web shell — screen-level layout only; every part's pixels are @heliogrid/ui's. */
-
-/* The shell fills the window; the page scrolls inside AppShell's main, never the window. */
+/* The web shell's widths. From --bp-desktop up: the sidebar, no top bar, no pill. Below it, the
+   phone's layout: the top bar and the floating bottom pill, the sidebar gone. The breakpoint is
+   written as the --bp-desktop token's value, the one place a media query may name it. */
 .hg-shell {
   height: 100dvh;
 }
 
-/* The page region: the home or a door, inside --content-max. The first-run mark is drawn inside
-   it, so the region is what a mark is placed in and clamped to — never the rail. */
+/* A shell page: its own column, at most --content-max wide, padded to the screen's edge — and, on
+   a phone-width page, clear of the floating pill and the device's own bottom inset. Marks inside
+   it (a coach mark) are placed in and clamped to the page, never the sidebar. */
 .hg-shell-page {
   position: relative;
   box-sizing: border-box;
@@ -15,52 +16,60 @@
   gap: var(--sp-6);
   max-width: var(--content-max);
   min-height: 100%;
-  padding: var(--sp-8) var(--screen-pad-mobile) var(--sp-10);
+  padding: var(--sp-6) var(--screen-pad-mobile)
+    calc(var(--bottomnav-h) + env(safe-area-inset-bottom) + var(--sp-6));
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
 }
 
-/* A page of dense rows takes the tighter side padding its board draws (`SCR-M01-11`). */
 .hg-shell-page[data-pad="functional"] {
   padding-inline: var(--screen-pad-mobile-fn);
 }
 
-/* The home switcher's list keeps inside the window at 375: its drawn width is wider than the room
-   right of the rail and the page's sides there. */
+/* A menu opened inside the page stays inside the window on a phone width. */
 .hg-shell-page .hg-menu-list {
-  max-width: calc(100vw - var(--rail-w) - 2 * var(--screen-pad-mobile));
+  max-width: calc(100vw - 2 * var(--screen-pad-mobile));
 }
 
-/* The company's name gives way first, so the search keeps its room. */
+/* The company's name gives way first, cut by an ellipsis, so search, the bell and the account keep
+   their 44 inside a 375 window. */
+.hg-shell .hg-app-shell-header-tenant {
+  flex-shrink: 1;
+  min-width: 0;
+}
+
 .hg-shell-company {
-  max-width: 30vw;
+  min-width: 0;
   text-overflow: ellipsis;
 }
 
-/* Below --bp-desktop the rail and the name leave no room for a field: the search is a button. */
-.hg-shell-search-field {
+.hg-shell .hg-app-rail {
   display: none;
 }
 
+/* The pill floats over the window, not the scrolling page. */
+.hg-shell .hg-bottom-nav[data-floating="true"] {
+  position: fixed;
+  z-index: 30;
+}
+
 @media (min-width: 968px) {
+  .hg-shell .hg-app-rail {
+    display: flex;
+  }
+  .hg-shell .hg-app-shell-header,
+  .hg-shell .hg-bottom-nav {
+    display: none;
+  }
   .hg-shell-page,
   .hg-shell-page[data-pad="functional"] {
-    padding-inline: var(--screen-pad-desktop);
+    padding: var(--sp-8) var(--screen-pad-desktop) var(--sp-12) var(--sp-5);
   }
-
-  /* A page of dense rows opens `--sp-6` under the bar, as its board draws it (`SCR-M01-11`). */
-  .hg-shell-page[data-pad="functional"] {
-    padding-top: var(--sp-6);
-  }
-
-  .hg-shell-search-field {
-    display: block;
-  }
-
-  .hg-shell-search-button {
-    display: none;
+  .hg-shell-page .hg-menu-list {
+    max-width: calc(100vw - var(--sidebar-w) - 2 * var(--screen-pad-desktop));
   }
 }
 
-/* The page beside the open notification centre keeps clear of it (`SCR-SHELL-03` d-default): the
+/* The centre stands beside the page from the desktop width up, so the page keeps clear of the
    panel's width, its inner side and a gap — nothing of the page sits under the panel. */
 @media (min-width: 968px) {
   .hg-shell-centre-open .hg-shell-page {

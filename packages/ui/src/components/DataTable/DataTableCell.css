@@ -25,7 +25,7 @@
   min-width: 0;
 }
 
-/* The kind's tile: the iris wash and ink are `.hg-iris`'s (`Avatar.css`), the rule a kind Badge
+/* The kind's tile: the hue's wash and words are `.hg-hue`'s (`Avatar.css`), the rule a kind Badge
    takes. The board's 34px sits between the scale's 32 and 40, so it is named here. */
 .hg-dt-lead-text {
   display: flex;

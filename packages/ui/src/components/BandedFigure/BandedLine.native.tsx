@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, Text, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { BandChip } from './BandChip.native';
 import type { BandSpec } from './BandedFigure.types';
 
@@ -25,20 +26,20 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.roles['body-sm'].fontSize,
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
   value: {
     fontFamily: theme.type.families.mono,
     fontSize: theme.type.roles.body.fontSize,
     fontWeight: '700',
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
   },
   remedy: {
     width: '100%',
     fontFamily: theme.type.families.sans,
     fontSize: theme.type.roles.caption.fontSize,
     lineHeight: 17.4,
-    color: theme.colors['text-secondary'],
+    color: colors['text-secondary'],
   },
 });
 

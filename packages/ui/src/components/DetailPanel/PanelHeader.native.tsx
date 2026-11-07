@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { TextStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { OverlayClose } from '../Sheet/OverlayClose.native';
 import type { OverlayStatus, OverlaySubtitleFace } from '../Sheet/Sheet.types';
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-3'],
     paddingBottom: theme.spacing['sp-4'],
     // biome-ignore lint/plugin/raw-white: panel — a sheet, a modal, a detail panel: a page ground over the page
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     zIndex: 1,
   },
   /* The web half draws a downward-only scroll shadow; RN shadows have no spread or inset, so e2 —

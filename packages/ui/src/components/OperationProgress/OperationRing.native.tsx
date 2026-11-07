@@ -3,6 +3,7 @@ import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider';
 import type { OperationCount } from './OperationProgress.types';
@@ -33,7 +34,7 @@ export function OperationRing({ label, count, countCaption, style }: OperationRi
       }
       style={[styles.ring, style]}
     >
-      <ProgressRing geometry={RUN_RING} share={countShare(count)} ink={theme.colors.accent} />
+      <ProgressRing geometry={RUN_RING} share={countShare(count)} ink={colors.accent} />
       <View style={styles.centre} pointerEvents="none">
         {count === null ? null : (
           <Text variant="h2" align="center" style={styles.figure}>

@@ -2,6 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE, fieldBox, fieldBoxText } from '../../primitives/FieldBox/FieldBox.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
     fontSize: theme.type.field.value,
     fontWeight: '400',
     fontVariant: ['tabular-nums'],
-    color: theme.colors['text-primary'],
+    color: colors['text-primary'],
     padding: 0,
   },
   inputSteppers: { textAlign: 'center' },

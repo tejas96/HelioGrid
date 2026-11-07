@@ -12,15 +12,6 @@
   max-width: 760px;
 }
 
-.hg-profile-preferences-title {
-  margin: 0;
-  font-size: var(--fs-h2);
-  line-height: var(--lh-h2);
-  letter-spacing: var(--tr-h2);
-  font-weight: var(--fw-bold);
-  color: var(--text-primary);
-}
-
 .hg-profile-preferences-section {
   display: flex;
   flex-direction: column;

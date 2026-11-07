@@ -1,3 +1,4 @@
+import { StatusMark } from '../../primitives/StatusMark/StatusMark';
 import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Badge, Chip } from '../Chip';
@@ -24,8 +25,9 @@ function priceOf(row: CatalogRow, money: ColumnFacts['money']) {
   ) : null;
 }
 
+/* A missing price is a warning a proposal will meet, so it reads as one: glyph, word and tint. */
 const noPrice = (words: CatalogItemsWords) => (row: CatalogRow) =>
-  row.amount === null ? words.noPrice : null;
+  row.amount === null ? <StatusMark tone="warning" label={words.noPrice} /> : null;
 
 /**
  * The 1536 line under the name: *kind · spec*, the spec label as a small mark, and *Hidden from

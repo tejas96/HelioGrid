@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE, fieldBox, fieldWords } from '../../primitives/FieldBox/FieldBox.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -99,7 +100,7 @@ export function DatePicker({
           height={18}
           viewBox="0 0 24 24"
           fill="none"
-          stroke={theme.colors['text-tertiary']}
+          stroke={colors['text-tertiary']}
           strokeWidth={1.5}
           strokeLinecap="round"
         >

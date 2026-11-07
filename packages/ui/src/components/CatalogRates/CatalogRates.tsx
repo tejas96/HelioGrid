@@ -12,6 +12,7 @@ import { Badge, Chip } from '../Chip';
 import { DataTable } from '../DataTable';
 import { EmptyState } from '../EmptyState';
 import { LoadingBars } from '../LoadingBars';
+import { LottieMoment } from '../LottieMoment/LottieMoment';
 import { useFormat } from '../MarketProvider';
 import { SearchField } from '../SearchField';
 import { matchingRates, RATE_BASIS_TONE, ratesByBasis } from './CatalogRates.logic';
@@ -62,7 +63,7 @@ function RatesReady({ props, wide }: { props: CatalogRatesProps; wide: boolean }
       {props.rates.length === 0 ? (
         <EmptyState
           glow={false}
-          icon={<ShellGlyph name="document" size="lg" />}
+          icon={<LottieMoment name="empty" size={48} />}
           title={words.noRates}
           description={words.noRatesBody}
           action={

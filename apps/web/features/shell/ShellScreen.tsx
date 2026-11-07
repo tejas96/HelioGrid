@@ -13,10 +13,12 @@ import {
   AccountMenu,
   AppRail,
   AppShell,
-  LogoTile,
+  BottomNav,
   NoConnection,
+  ProductMark,
   type RailItem,
   ShellGlyph,
+  Text,
 } from '@heliogrid/ui';
 import { useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
@@ -24,15 +26,16 @@ import { LeaveGuardProvider, useGuardedMove } from '../../lib/leave-guard';
 import { NotificationCentre } from '../notifications';
 import { GrievanceNote } from './components/GrievanceNote';
 import { ShellHeader } from './components/ShellHeader';
+import { ShellSearch } from './components/ShellSearch';
 import { DOOR_PATH } from './constants';
 import { useRailItems } from './hooks/use-rail-items';
 import './shell.css';
 
 /**
- * The web shell (`SCR-SHELL-01`, `F7-22`'s sidebar and header) around every inside page, at every
- * width: the rail with the person's destinations, the bell and the account at its foot, and the
- * header with the company and the search. The bell opens the notification centre beside the page
- * (`SCR-SHELL-03`). Every fact is `useShellScreen()`'s, the phone's too, and every part is
+ * The web shell around every inside page. From the desktop width up: the sidebar — the brand and
+ * the company, the search, the person's destinations, the bell and the account at its foot. Below
+ * it, the phone's layout: a top bar with the same four as icons, and the floating bottom pill with
+ * the destinations. The bell opens the notification centre beside the page (`SCR-SHELL-03`). Every fact is `useShellScreen()`'s, the phone's too, and every part is
  * `packages/ui`'s; this composes and routes. A removal (`S1.wrong.4`) replaces the rail and the
  * page with Frame 8, on whichever route is open — every read is refused there. A device gone
  * offline sees the one no-connection screen instead of blocks that would wait forever (`F8-36`).
@@ -89,6 +92,16 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
     open: centre.isOpen,
     onClick: centre.toggle,
   };
+  const account = (
+    <AccountMenu
+      {...accountMenuWords(t, screen.personName)}
+      name={screen.personName}
+      align="start"
+      onGrievance={grievance.open}
+      onSignOut={signOut}
+    />
+  );
+  const openSearch = () => guarded(() => router.push(DOOR_PATH.search));
   return (
     <AppShell
       className={centre.isOpen ? 'hg-shell hg-shell-centre-open' : 'hg-shell'}
@@ -96,34 +109,44 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
       rail={
         <AppRail
           label={t(SHELL.mainNavigation)}
-          brand={<LogoTile />}
+          brand={<ProductMark />}
+          caption={
+            shell.companyName === null ? undefined : (
+              <Text variant="body-sm" color="secondary">
+                {shell.companyName}
+              </Text>
+            )
+          }
+          search={
+            <ShellSearch
+              query={screen.searchQuery}
+              onQuery={screen.typeSearch}
+              onOpen={openSearch}
+            />
+          }
           items={rail.items}
           value={rail.inView}
           onChange={rail.choose}
           footer={[bell]}
-          avatar={
-            <AccountMenu
-              {...accountMenuWords(t, screen.personName)}
-              name={screen.personName}
-              align="start"
-              onGrievance={grievance.open}
-              onSignOut={signOut}
-            />
-          }
+          avatar={account}
         />
       }
       header={
         <ShellHeader
           companyName={shell.companyName}
-          search={{
-            query: screen.searchQuery,
-            onQuery: screen.typeSearch,
-            onOpen: () => guarded(() => router.push(DOOR_PATH.search)),
-          }}
+          onSearch={openSearch}
+          bell={bell}
+          account={account}
         />
       }
     >
       {children}
+      <BottomNav
+        label={t(SHELL.mainNavigation)}
+        items={rail.items}
+        value={rail.inView}
+        onChange={rail.choose}
+      />
       {centre.isOpen ? (
         <NotificationCentre
           onClose={centre.close}

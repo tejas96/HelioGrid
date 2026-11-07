@@ -3,6 +3,7 @@ import { useRef } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable as RNPressable, ScrollView, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { closingPress } from '../../primitives/FocusAfter';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
@@ -19,8 +20,8 @@ type NativeJobTrayProps = JobTrayProps & {
 };
 
 const TONE_COLOUR = {
-  warning: theme.colors['warning-text'],
-  success: theme.colors['success-text'],
+  warning: colors['warning-text'],
+  success: colors['success-text'],
 };
 
 /**
@@ -50,8 +51,7 @@ export function JobTray({
     return null;
   }
   const summary = summariseJobs(jobs, words);
-  const tone =
-    summary.tone === undefined ? theme.colors['text-secondary'] : TONE_COLOUR[summary.tone];
+  const tone = summary.tone === undefined ? colors['text-secondary'] : TONE_COLOUR[summary.tone];
 
   return (
     <View style={[styles.root, style]}>
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   triggerOpen: {
-    backgroundColor: theme.colors['accent-subtle'],
+    backgroundColor: colors['accent-subtle'],
   },
   words: {
     fontWeight: '500',
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     maxHeight: 420,
     padding: theme.spacing['sp-4'],
     // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
-    backgroundColor: theme.colors.surface,
+    backgroundColor: colors.surface,
     borderRadius: theme.radius['r-md'],
     ...theme.elevation.e4,
   },

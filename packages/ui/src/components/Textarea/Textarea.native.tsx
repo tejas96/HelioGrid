@@ -2,6 +2,7 @@ import { theme } from '@heliogrid/theme';
 import { useState } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import {
   FIELD_BOX_EDGE,
   fieldBox,
@@ -107,7 +108,7 @@ const input: TextStyle = {
   fontFamily: theme.type.families.sans,
   fontSize: theme.type.field.value,
   lineHeight: R.body.lineHeight,
-  color: theme.colors['text-primary'],
+  color: colors['text-primary'],
 };
 
 const foot: ViewStyle = {

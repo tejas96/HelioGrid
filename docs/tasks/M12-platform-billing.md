@@ -1,15 +1,15 @@
 # M12 · Platform billing — engineering tasks
 
-This file covers Module M12 (Platform billing): the subscription lifecycle machine and what every state means, entitlements as the product's only runtime gating, the soft-block enforcement gates and the cap ladder, the usage ledger and the usage screen, the dunning ladder and trial nudges, subscription invoicing, refunds and plan changes, the trial's mechanics and conversion, repricing mechanics, and the always-available billing screens (Pricing Page, Billing Home, Plan Selection & Conversion, Usage). Task-id prefix: `T-M12-`. Source doc: `docs/prd/modules/M12-platform-billing.md` (rows M12-01…M12-58); the Pricing Page's specification rows (BM-05, BM-07) come from `docs/prd/04-business-model.md` via its brief and are dispositioned under that document's bucket. Screen tasks point at their UX briefs under `docs/ux/briefs/`, where the verbatim requirement rows live; engine, policy and integration tasks quote their rows in full below. The state banner and denial sheets several rows name are SCR-SHELL-06's surface (`docs/tasks/SHELL.md`, brief `docs/ux/briefs/SCR-SHELL-06-billing-state-banner.md`); this file owns the behavior that feeds them.
+This file covers Module M12 (Platform billing): the subscription lifecycle machine and what every state means, entitlements as the product's only runtime gating, the soft-block enforcement gates and the cap ladder, the usage ledger and the usage screen, the dunning ladder and trial nudges, subscription invoicing, refunds and plan changes, the trial's mechanics and conversion, repricing mechanics, and the always-available billing screens (Pricing Page, Billing Home, Plan Selection & Conversion, Usage). Task-id prefix: `T-M12-`. Source doc: `docs/prd/modules/M12-platform-billing.md` (rows M12-01…M12-58); the Pricing Page's specification rows (BM-05, BM-07) come from `docs/prd/04-business-model.md` and are dispositioned under that document's bucket. Screen tasks' verbatim requirement rows live in the PRD; engine, policy and integration tasks quote their rows in full below. The state banner and denial sheets several rows name are SCR-SHELL-06's surface (`docs/tasks/SHELL.md`); this file owns the behavior that feeds them.
 
 ### T-M12-001 · Pricing Page
 
 **Type:** screen · **Tier:** P0
 **Status:** shipped
 **PRD rows:** BM-05 (P0), BM-07 (P0) (from `docs/prd/04-business-model.md`; dispositioned under that bucket — listed here as this screen's specification rows)
-**DESIGN:** SCR-M12-01 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
+**DESIGN:** SCR-M12-01
 **Sales contact (owner):** `Talk to sales` opens `tejas96patil@gmail.com`, the India book's `salesContact`.
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-01-pricing-page.md`; they are the specification.
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given any tier and any module, when a tenant on that tier opens that module, then no capability is absent that a higher tier has (BM-05) — only ceilings, counts and bundle sizes differ.
 - Given any cap in any tier, when the pricing page and the usage screen render, then the cap is published and visible on both, and reaching it produces §04.5's soft-block with an upgrade path — never a feature withdrawal and never a surprise (BM-07).
@@ -21,9 +21,9 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **Type:** screen · **Tier:** P0
 **Status:** shipped
 **PRD rows:** M12-08 (P0), M12-46 (P0), M12-47 (P0), M12-50 (P0), M12-55 (P0)
-**DESIGN:** SCR-M12-02 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
+**DESIGN:** SCR-M12-02
 **Contract:** declares the company's billing standing read — its state and phase from `T-M12-005`'s `subscription` row and `billingPhaseAt`, and any state history in `id` order, never `entered_at` (a halt undone by a charge inside its grace records an earlier `entered_at`, T-M12-006); reactivation first locks the company's latest subscription row `FOR UPDATE` — the lock T-M12-006's charge path takes — and starts the new row only while that row is still not live, so a late charge and a reactivation run one after the other — as the first screen that shows it; `T-SHELL-006` reads the same route. Reactivation (M12-08) reuses T-M12-007's hosted checkout — `POST /billing/checkout`, `CheckoutService` and the `BillingGateway` port — which opens only from `trialing`: this task extends it to a dead row, whose paying charge starts the NEW subscription row with the checkout's plan, never a resumed one.
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-02-billing-home.md`; they are the specification. (M12-55 is a shared row: its plan-selection half lands on SCR-M12-03 / T-M12-003; the row is dispositioned here.)
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. (M12-55 is a shared row: its plan-selection half lands on SCR-M12-03 / T-M12-003; the row is dispositioned here.)
 **DONE WHEN:**
 - Given a tenant halted for a year, when the owner pays, then a new gateway subscription exists, entitlements are live immediately, and every record is as they left it (M12-08).
 - Given a tenant in `halted`, when they export invoices, then it works (M12-46).
@@ -40,10 +40,10 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **Type:** screen · **Tier:** P0
 **Status:** shipped
 **PRD rows:** M12-48 (P0), M12-49 (P0), M12-53 (P0), M12-54 (P0)
-**DESIGN:** SCR-M12-03 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
+**DESIGN:** SCR-M12-03
 **Contract:** conversion's hosted checkout is T-M12-007's `POST /billing/checkout` (tier + cycle → the gateway's page, `CHECKOUT_NOT_POSSIBLE` · `TIER_NOT_SOLD` · `GATEWAY_UNAVAILABLE`); the screen renders those codes' copy, which lands with it. An upgrade or cycle switch (M12-48, M12-12) reuses the same `plan_price` rows and `BillingGateway` port for its prorated delta and its new subscription at the boundary.
 **From T-M12-002:** this screen lives at `/more/billing/plans` (the phone's plans placeholder too), which T-M12-002 opens with the *coming later* page from Billing's `Change plan` and the expired trial's `Pick a plan`; this task fills it. From an expired trial its pick opens `POST /billing/checkout`, which since T-M12-002 opens a reactivation page from any dead row (`M12-08`). A confirmed downgrade adds its scheduled change to `GET /billing/home` (`billingHomeSchema`, a new nullable field — old clients ignore it) and Billing draws SCR-M12-02 frame 16 with it: `Moving to Starter · Scheduled`, `On <date>`, the act `Keep Growth instead`, and `Next bill` as the new plan's (decision 17). T-M12-002's DONE WHEN on *pay/upgrade/reactivate* leaves the upgrade's proof here.
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-03-plan-selection.md`; they are the specification. (The brief also carries the shared row M12-55 — its plan-selection half — dispositioned under T-M12-002. The trial countdown chip of M12-53 is SCR-SHELL-06's surface, `docs/tasks/SHELL.md`.)
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. (This screen also carries the shared row M12-55 — its plan-selection half — dispositioned under T-M12-002. The trial countdown chip of M12-53 is SCR-SHELL-06's surface, `docs/tasks/SHELL.md`.)
 **DONE WHEN:**
 - Given an upgrade, when it confirms, then entitlements are live immediately and a one-time prorated invoice exists (M12-48).
 - Given a downgrade where usage exceeds the target ceilings, when the owner confirms, then the preview showed exactly what will block, and after the boundary the over-ceiling designs still read and export (M12-49).
@@ -60,8 +60,8 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **Usage ledger (T-M12-010):** every figure reads `UsageService.billedRollupOf` (billed meters only, so no internal cost reaches the screen — M12-32) and storage reads `UsageService.latestStorageGauge`; voice is rolled up in seconds and shown in minutes, turned once on the total by `billedQuantityOf` (`packages/domain`), the function the invoice's add-ons bill by (T-M12-012b).
 **Design run (owner rulings 2026-10-31):** `OTP codes` shows its count, `Not billed`: it reads the `otp_delivery` cost line's count, never its cost, since `billedRollupOf` leaves cost lines out. The voice ledger's panel joins each event's subject — the call — for its site and its caller; the ledger itself stays ids and counts.
 **Billing gate (T-M12-009):** the 80% pre-warning is `capStepOf`'s `warning` step (`packages/domain`), the render half of `T-M12-009`'s D3 — shown before any gate fires (M12-30, M12-34).
-**DESIGN:** SCR-M12-04 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
-**Requirements (verbatim):** Verbatim rows live in `docs/ux/briefs/SCR-M12-04-usage-screen.md`; they are the specification. (The brief also carries M12-30's cap-ladder row, dispositioned under T-M12-009 — the ladder is gate machinery; this screen is where its 80% pre-warning must appear.)
+**DESIGN:** SCR-M12-04
+**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. (This screen also carries M12-30's cap-ladder row, dispositioned under T-M12-009 — the ladder is gate machinery; this screen is where its 80% pre-warning must appear.)
 **DONE WHEN:**
 - Given any usage figure on the usage screen, when compared with what enforcement checks and the invoice bills, then all three come from the same rollup of the same ledger (M12-32, M12-34).
 - Given a bundle at 80%, when the usage screen renders, then the pre-warning is present, and no §M12.4 gate for that meter has fired yet (M12-34).
@@ -174,7 +174,7 @@ The closed table M12-23 names, copied verbatim from `docs/prd/modules/M12-platfo
 | Team invites | Invite send, from `past_due` day 4 | — | Invite blocked with the state named (`DOC16.softblock.invites`) |
 | Billing state (all mutations) | Every UI mutation, per the matrix | The always-on set (M12-22) and the never-gated list (M12-24) | Typed error + state banner + reactivate route (M12-21) |
 
-The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`, brief `docs/ux/briefs/SCR-SHELL-06-billing-state-banner.md`); this task owns the gates, the cap ladder's timers and the specific pause-message content they emit.
+The typed denial and banner render on SCR-SHELL-06 (`docs/tasks/SHELL.md`); this task owns the gates, the cap ladder's timers and the specific pause-message content they emit.
 **DONE WHEN:**
 - Given any state in the matrix and any capability row, when M12's enforcement is audited row by row, then no ✓ has become a block and no block has widened (M12-21, M12-22).
 - Given each gate in the enforcement-point table, when its fire point and denial are tested, then they match the table exactly and no other enforcement point exists (M12-23).

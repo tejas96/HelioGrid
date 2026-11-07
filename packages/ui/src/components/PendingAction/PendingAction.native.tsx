@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
+import { colors } from '../../primitives/Color/colors';
 import { focusAfterFirst, NO_FOCUS_AFTER, useFocusAfter } from '../../primitives/FocusAfter';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
@@ -28,7 +29,7 @@ function ReturnGlyph({ size }: { size: number }) {
       height={size}
       viewBox="0 0 24 24"
       fill="none"
-      stroke={theme.colors['warning-text']}
+      stroke={colors['warning-text']}
       strokeWidth={1.5}
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -72,7 +73,7 @@ export function PendingAction(props: NativePendingActionProps) {
   const line: TextStyle = {
     fontSize,
     lineHeight: Math.round(fontSize * 1.45),
-    color: returned ? theme.colors['warning-text'] : theme.colors['text-secondary'],
+    color: returned ? colors['warning-text'] : colors['text-secondary'],
   };
   return (
     <View
@@ -91,7 +92,7 @@ export function PendingAction(props: NativePendingActionProps) {
         {renderWords(words, line)}
         {/* M02-24's budget, said in words rather than by the rail getting slower. */}
         {shown.showsSlowNote
-          ? renderWords(slowNote, { ...line, color: theme.colors['text-tertiary'] })
+          ? renderWords(slowNote, { ...line, color: colors['text-tertiary'] })
           : null}
       </View>
       {shown.offersActs ? (
