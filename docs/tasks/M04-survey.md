@@ -9,7 +9,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M04-05 (P0)
-**DESIGN:** SCR-M04-01 → PENDING
+**DESIGN:** SCR-M04-01
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
@@ -24,7 +24,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M04-08 (P0), M04-12 (P0)
-**DESIGN:** SCR-M04-02 → PENDING
+**DESIGN:** SCR-M04-02
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
@@ -39,7 +39,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M04-11 (P0), M04-13 (P0), M04-22 (P0)
-**DESIGN:** SCR-M04-03 → PENDING
+**DESIGN:** SCR-M04-03
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
@@ -56,7 +56,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M04-26 (P0)
-**DESIGN:** SCR-M04-04 → PENDING
+**DESIGN:** SCR-M04-04
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
@@ -72,7 +72,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M04-29 (P0), M04-30 (P0), M04-31 (P0), M04-32 (P0)
-**DESIGN:** SCR-M04-05 → PENDING
+**DESIGN:** SCR-M04-05
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
@@ -94,7 +94,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M04-38 (P0), M04-58 (P0), M04-59 (P0)
-**DESIGN:** SCR-M04-06 → PENDING
+**DESIGN:** SCR-M04-06
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
@@ -111,7 +111,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Status:** planned
 **PRD rows:** M04-03 (P0), M04-42 (P0), M04-43 (P0), M04-44 (P0), M04-45 (P0), M04-47 (P0), M04-54 (P0)
 **Billing gate (T-M12-009):** starting a visit names `create_edit_records` in its `RouteBillingMap`, and the capture writes of a visit already started name `ungated` — reachable only through a visit started before any halt — so a visit under way at a halt completes and only a NEW visit pauses at `halted` (M12-27, owner ruling 2026-08-04).
-**DESIGN:** SCR-M04-07 → PENDING
+**DESIGN:** SCR-M04-07
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
@@ -134,7 +134,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M04-46 (P0)
-**DESIGN:** SCR-M04-08 → PENDING
+**DESIGN:** SCR-M04-08
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
@@ -148,7 +148,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M04-37 (P0), M04-49 (P0), M04-50 (P0), M04-52 (P0)
-**DESIGN:** SCR-M04-09 → PENDING
+**DESIGN:** SCR-M04-09
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
@@ -168,7 +168,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M04-28 (P0), M04-63 (P0), M04-64 (P0)
-**DESIGN:** SCR-M04-10 → PENDING
+**DESIGN:** SCR-M04-10
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 

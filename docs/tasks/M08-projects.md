@@ -10,9 +10,9 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-001 · Project Board
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** M08-10 (P0), M08-11 (P0), M08-12 (P0), M08-14 (P1), M08-51 (P0)
-**DESIGN:** SCR-M08-01 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
+**DESIGN:** SCR-M08-01
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -27,9 +27,9 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-002 · Project Detail
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** M08-16 (P0), M08-17 (P0), M08-21 (P0), M08-27 (P0), M08-38 (P0)
-**DESIGN:** SCR-M08-02 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
+**DESIGN:** SCR-M08-02
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -48,9 +48,9 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-003 · Document Checklist
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** M08-30 (P0), M08-31 (P0)
-**DESIGN:** SCR-M08-03 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
+**DESIGN:** SCR-M08-03
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -63,9 +63,9 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-004 · Installation Checklist
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** M08-41 (P0), M08-42 (P0)
-**DESIGN:** SCR-M08-04 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
+**DESIGN:** SCR-M08-04
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -78,9 +78,9 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-005 · Installer Job Home
 **Type:** screen · **Tier:** P1
-**Status:** designed
+**Status:** planned
 **PRD rows:** M08-45 (P1)
-**DESIGN:** SCR-M08-05 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
+**DESIGN:** SCR-M08-05
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -94,9 +94,9 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 
 ### T-M08-006 · Handover Flow
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** M08-46 (P0), M08-47 (P0)
-**DESIGN:** SCR-M08-06 → https://claude.ai/artifact/7yWV5UWYrHjTUu16XThAa9
+**DESIGN:** SCR-M08-06
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 

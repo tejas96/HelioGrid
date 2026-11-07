@@ -11,7 +11,7 @@ This file covers module M01 — company signup and authentication, team invites 
 **Status:** shipped (#53)
 **Why:** Every installer and every field hand enters through this one door with a phone and a code, never a password, and a shared field phone signs the next person in within a minute without handing them a colleague's unuploaded photographs; without it nobody reaches a tenant, a role or a home — and today nothing signs a person in on either platform, so no other screen can be proven. The phone lands first (`M01` §2: employees arrive "phone, almost always"); the desktop door is `T-M01-033`, the Google door `T-M01-032`.
 **PRD rows:** M01-03 (P0), M01-04 (P0), M01-05 (P0), MS12-17 (P0)
-**DESIGN:** SCR-M01-01 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-01
 **Depends on:** `T-M01-025` (shipped, #40 — the OTP, session and tenant routes; the F4-37 switch state) · `T-M13-006` (shipped, #52 — `homeFor`, the destination the dwell names) · `packages/ui` `PhoneField`, `OtpInput`, `Button`, `Banner`, `Sheet`, `LogoTile`, `EmptyState` (landed).
 
 **DONE WHEN:**
@@ -55,7 +55,7 @@ This file covers module M01 — company signup and authentication, team invites 
 **Status:** shipped (#58)
 **Why:** An owner types a phone, a code, a company name, their name and a city and owns a workspace in under a minute with no plan, card or tax number in the way; without it there is no tenant for anything else to happen in. The phone lands first, as the sign-in door did (`T-M01-001`); the desktop composition is `T-M01-034`, the join steer `T-M01-035`.
 **PRD rows:** M01-01 (P0), M01-08 (P0)
-**DESIGN:** SCR-M01-02 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-02
 **Depends on:** `T-M01-036` (the flow, the words, the known-number hold) · `T-M01-025` (migration 0002; POST /tenants, the OTP routes, the public marking of the signup path) · `T-M01-026` (migration 0006; the seeded `onboarding_progress` row) · `T-M01-001` (the door's flow, the code family and its limit states, drawn once on the front door) · `T-FCORE-016` (migration 0001; the market the server assigns from).
 **DONE WHEN:**
 - Given a new phone number, when signup completes, then exactly phone, OTP, company name, owner name and city were required, a tenant exists with the signer as EPC Owner, and no billing or payment step occurred (M01-01, M01-11). → proof: qa-mobile complete signup on both simulators: five inputs and no plan, card or tax step · qa-api `GET /auth/session` then names the new tenant with the `epc_owner` preset
@@ -101,7 +101,7 @@ Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` 
 **Status:** shipped
 **Why:** The door blames the server for the person's own connection (D1), a boot during a deploy or a timeout signs a signed-in person out (D7), a person whose access was removed lands on the door with no reason (D6), the company step says *nothing was created* after a request that got no answer (D39), the web has no offline state and loads forever (D80), both apps render API failures each their own way (D68), and the phone's dev build shows an unread debugger warning (D78).
 **PRD rows:** `F8-36` (a failure says what happened, plainly); `M01-07` (sessions end only by their own rules).
-**DESIGN:** SCR-M01-01 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN · SCR-M01-02 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN — each board holds every frame.
+**DESIGN:** SCR-M01-01 · SCR-M01-02
 **Depends on:** `T-M01-038`.
 **DONE WHEN:**
 - A request that got no answer reads as *could not be reached*, never *something on our side failed*; a server refusal keeps its own words. → proof: unit test of `loginFrame`; QA web and phone with the network off.
@@ -140,7 +140,7 @@ Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` 
 **Status:** shipped
 **Why:** A surveyor whose phone runs in Marathi opens the app in Marathi before anyone explains a setting, and the choice follows them to every screen; without it the first minute is in the wrong language for the people who live on the phone.
 **PRD rows:** F3-03 (P0)
-**DESIGN:** SCR-M01-03 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-03
 **Depends on:** `T-M01-025` (migration 0002; the profile write above) · `T-M01-026` (migration 0006; the onboarding step) · `T-M01-002` (the step this one follows) · `T-FPLAT-005` (the runtime language resolution that redraws the screen in the language just touched) · `T-FPLAT-007` (the Devanagari face on mobile and per-script line height).
 **DONE WHEN:**
 - Given any user of any preset, when they open onboarding for the first time and when they open their profile afterwards, then a language picker is available on both platforms, listing each language in its own script and name (`F3-03`). → proof: QA web · ios · android the first-run picker and the profile picker list English · हिन्दी · मराठी in their own scripts on both platforms, and choosing one redraws the screen in it with no Save
@@ -152,7 +152,7 @@ Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` 
 **Status:** shipped
 **Why:** The owner says whether they sell residential, C&I or both and their typical system size in kWp, and the first proposal opens close to a real job instead of at zero; without it every seeded default is a guess nobody declared.
 **PRD rows:** M01-23 (P0)
-**DESIGN:** SCR-M01-04 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-04
 **Depends on:** `T-M01-025` (migration 0002; `tenantSegmentSchema`) · `T-M01-026` (migration 0006; the business-profile routes and the step write) · `T-M01-003` (the step before).
 **DONE WHEN:**
 - Given the onboarding sequence, when it runs, then segment + typical size are asked (M01-23), company profile and invites are skippable (M01-24, M01-12), and the final screen offers exactly the two doors (M01-26). → proof: QA (web and phone) run onboarding end to end: this step asks the two questions and draws no Skip, the profile and invite steps skip, and the landing shows exactly two doors; the size renders `estimated · Declared by you` and an undeclared size is empty, never 0
@@ -163,7 +163,7 @@ Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` 
 **Status:** shipped
 **Why:** The owner enters the company's logo, tax registration, address and bank details once — or skips them until the first proposal needs them — and every proposal, agent script, customer link and invoice reads the same facts; without it each surface asks again and the documents disagree.
 **PRD rows:** M01-24 (P0), M01-25 (P0), M01-31 (P0)
-**DESIGN:** SCR-M01-05 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-05
 **Depends on:** `T-M01-026` (migration 0006 and every settings route above) · `T-FCORE-016` (migration 0001; the pack read) · `T-FCORE-001` (`IN_FORMATS`, the tax-format validators — landed) · `T-M01-025` (the guard for `onboarding.manage_tenant_settings`) · `T-M01-004` (the step before, whose Finish-later route lands here) · the first `file` slice (the logo upload; no task id yet — the logo part waits on it, the other four parts do not).
 **DONE WHEN:**
 - Given a skipped company profile, when the first proposal is about to be sent, then the prompt to complete it fires there, inline (M01-24, M01-29). → proof: QA (web and phone) skip the step, build a proposal to its send: the tax-registration field set opens over the proposal, do-it-now saves and keep-skipping leaves the default in place; the send itself is `T-M06-022`'s
@@ -176,7 +176,7 @@ Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` 
 **Status:** shipped
 **Why:** Onboarding ends on a real choice — add the first lead or open the finished demo rooftop — so an owner is quoting or learning within a minute of signing up; without it setup ends on a blank dashboard.
 **PRD rows:** M01-26 (P0)
-**DESIGN:** SCR-M01-06 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-06
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** none — reads `tenant` (`T-M01-025`, migration 0002 — the company name read back), `onboarding_progress` (`T-M01-026`, migration 0006) and the demo instance `T-M01-029` seeds from `demo_project_content`.
 **Contract:** `packages/contracts/src/tenant.ts` — GET /tenants/me (the company name) · `packages/contracts/src/onboarding.ts` — PUT /onboarding/progress/{step} (the corridor closed; the screen is never reachable again) · the demo door reads the demo lead through M02's lead read shape carrying `isDemo` (`T-M01-029`, added in M02's contract file when that slice begins) — `error-demo-unavailable` is that read not existing yet (before M02's slice) or failing while the workspace answers.
@@ -191,7 +191,7 @@ Corrected before approval (2026-10-08): the line read "an off-flow title `sp-8` 
 **Status:** shipped
 **Why:** The owner invites a surveyor by name and phone with the presets they need in one tap, from onboarding or from Team, and the invite reaches that phone as a message; without it a company stays one person.
 **PRD rows:** M01-12 (P0), F2-21 (P1)
-**DESIGN:** SCR-M01-07 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-07
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** none — reads `invitation` and `invitation_role` authored by `T-M01-028` (migration 0005); the per-tenant daily invite count (M01-04) is derived from `invitation.sent_at` there, never a counter; the twelve presets are `ROLE_PRESETS` in `packages/domain/src/authz/roles.ts`, never a table.
 **Contract:** `packages/contracts/src/invitation.ts` — POST /invitations (name, phone, ≥1 preset → pending; zero roles refused before anything sends; an already-member phone and the daily cap refused with the reason the surface renders) · `packages/contracts/src/onboarding.ts` — PUT /onboarding/progress/{step} (skip during onboarding). `rolePresetSchema` (`common.ts`); preset display names and clauses are `packages/i18n` copy.
@@ -428,7 +428,7 @@ Reviewer findings rejected: none.
 **Status:** shipped
 **Why:** A new hire taps the message, sees who invited them and to which company, enters the code that arrived with the page, and is a member with their roles in one act — never half-joined; without it the second first-impression is a form.
 **PRD rows:** M01-13 (P0)
-**DESIGN:** SCR-M01-08 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-08
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** none — reads `invitation` and `invitation_role` authored by `T-M01-028` (migration 0005) and `otp_challenge` authored by `T-M01-025` (migration 0002); the accept writes `user_account`, `tenant_membership` and `membership_role` through `T-M01-028`'s one transaction.
 **Contract:** `packages/contracts/src/invitation.ts` — GET /invitations/landing/{token} (public: inviter, company, the prefilled phone, the role names) · POST /invitations/landing/{token}/accept (the verified challenge → the `sessionProjectionSchema`) · POST /invitations/landing/{token}/decline (confirmed; voids and notifies the Owner) · POST /invitations/landing/{token}/request-reinvite (expired only) · `packages/contracts/src/auth.ts` — POST /auth/otp/request (sent on arrival, keyed to the invite's phone — never typed here) · POST /auth/otp/verify. `RESEND_SECONDS` is read from domain — the same 30 s the front door draws.
@@ -453,7 +453,7 @@ Reviewer findings rejected: none.
 **Status:** shipped
 **Why:** The invited person confirms the name the inviter typed, adds a photo or keeps their initials, and is two taps from real work; without it a two-minute first run becomes a form nobody finishes on a phone.
 **PRD rows:** M01-14 (P0)
-**DESIGN:** SCR-M01-09 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-09
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** none — reads `user_account` (name, photo, interface_language) authored by `T-M01-025` (migration 0002) and the invitee name from `invitation` (`T-M01-028`, migration 0005), which the accept already wrote onto an unnamed account.
 **Contract:** `packages/contracts/src/session.ts` — GET /auth/session (the actor's display name, pre-filled from the invite). **Gap filled at `T-M01-025`'s `/start`:** `PATCH /users/me` (`user.ts`, `T-M01-025`) writes name, `interface_language` and `unit_preference`; the photo goes to the one `file` table through the presigned upload — the first file slice, no task id yet.
@@ -477,7 +477,7 @@ Reviewer findings rejected: none.
 **Status:** shipped
 **Why:** A new Sales Executive reads, in one card, what they will see and do and what they will not, and can reopen that card from their profile whenever a screen refuses them; without it a refusal reads as a bug.
 **PRD rows:** M01-15 (P1)
-**DESIGN:** SCR-M01-10 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-10
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** migration `0028` adds `tenant_membership.roles_set_by_user_id` — who last wrote the person's roles, written by the join and by a role change (brief ruling 15). The held presets come from `membership_role` (migration 0002) through the session; the grants are `CAPABILITY_MATRIX` in `packages/domain/src/authz/capabilities.ts`, never a table.
 **Contract:** `packages/contracts/src/tenant.ts` — `GET /tenants/me/membership` answers `rolesSetBy` (the credit line), and `GET /tenants/me/owners` the company's EPC Owners by name (the note); the roles are the session's (`packages/contracts/src/session.ts`). Domain type this task adds (Law 11): `roleCard` in `packages/domain/src/authz/role-card.ts` — the grant and limit lines of the closed `ROLE_CARD_LINES`, each decided by the matrix, and `ROLE_CARD_LIMITS`, each preset's *not theirs* lines from F2; every line and preset name is `packages/i18n` copy.
@@ -502,7 +502,7 @@ Reviewer findings rejected: none.
 **Status:** shipped
 **Why:** A field technician switches the app to Marathi and metres from one place and mutes the push groups they do not need, and the whole app follows without a reload; without it those settings have no home.
 **PRD rows:** F3-03 (P0), F3-23 (P1), F6-15 (P2)
-**DESIGN:** SCR-M01-11 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-11
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** none — reads `user_account.interface_language` and `unit_preference` authored by `T-M01-025` (migration 0002) and the per-user push mutes (`notification_preference`) that `T-FPLAT-018` owns (F6-15).
 **Contract:** `packages/contracts/src/session.ts` — GET /auth/session. The writes of `interface_language` and `unit_preference` are `T-M01-025`'s `PATCH /users/me` (landed, #40); a language choice goes through `useI18n().setLocale`, which `T-FPLAT-005` persists and every mount follows. The push mutes are `T-FPLAT-018`'s `GET /notifications/preferences` and `PUT /notifications/preferences/:group` (`packages/contracts/src/notification.ts`). `uiLanguageSchema` (`locale.ts`) and `measurementSystemSchema` (`common.ts`) exist.
@@ -529,7 +529,7 @@ Reviewer findings rejected: none.
 **Status:** shipped
 **Why:** The owner sees everyone with the presets they hold, when they were last active and whether an invite is still pending, and ends a leaver's access from one tap that also kills their sessions within ten minutes; without it there is no way to run the team or revoke a device.
 **PRD rows:** M01-19 (P0), F2-10 (P0), F2-19 (P0)
-**DESIGN:** SCR-M01-12 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-12
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** none — reads `tenant_membership`, `membership_role`, `user_account` and `session` authored by `T-M01-025` (migration 0002) and `invitation` authored by `T-M01-028` (migration 0005).
 **Contract:** `packages/contracts/src/invitation.ts` — GET /invitations (pending and expired) · POST /invitations/{id}/revoke · `packages/contracts/src/auth.ts` — POST /auth/sign-out-everywhere (the actor's own) · `packages/contracts/src/session.ts` — GET /auth/session. **Gap filled at `T-M01-025`'s `/start`:** the roster is `GET /tenants/me/members` (`tenant.ts`, `T-M01-025`) over the `(tenant_id, status, last_active)` index; the deactivate transition is `POST /tenants/me/members/{membershipId}/deactivate` (`tenant.ts`, `T-FPLAT-003`).
@@ -556,7 +556,7 @@ Reviewer findings rejected: none.
 **Status:** shipped
 **Why:** The owner ticks the presets a person holds and reads, live, one sentence saying what that person can now do — stacking is the only way to widen access; without it a role change is a guess about a matrix nobody can see.
 **PRD rows:** M01-20 (P0)
-**DESIGN:** SCR-M01-13 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-13
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** none — reads `membership_role` authored by `T-M01-025` (migration 0002); presets and grants are `ROLE_PRESETS` and `CAPABILITY_MATRIX` in `packages/domain/src/authz/`, never tables.
 **Contract:** `packages/contracts/src/session.ts` — GET /auth/session. The role-set write is `PUT /tenants/me/members/{membershipId}/roles` (`tenant.ts`, `T-FPLAT-003`): the whole set, old → new, refused with `LAST_OWNER` when it would remove the last EPC Owner. Domain type this task adds (Law 11): the grant-line view-model in `packages/domain/src/authz/` — the set of grants a preset combination yields, rendered through a whole translated sentence with slots and a per-language list joiner in `packages/i18n`, never name + "can" + phrases.
@@ -579,7 +579,7 @@ Reviewer findings rejected: none.
 **Status:** shipped
 **Why:** Before inviting, the owner reads what each of the twelve presets grants and how many people hold each — including none — and finds no way to edit a role, because none exists; without it every invite is composed from memory.
 **PRD rows:** M01-21 (P0)
-**DESIGN:** SCR-M01-14 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-14
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** none — reads holder counts over `membership_role` authored by `T-M01-025` (migration 0002, the `(tenant_id, role_preset)` index); descriptions and matrices are `CAPABILITY_MATRIX` and `packages/i18n` copy, never tables.
 **Contract:** none new — the holders and their counts are read from the Team roster the api already serves (`GET /tenants/me/members` and `GET /invitations`, both behind `onboarding.manage_team`, read whole by `useTeam`), because the details name each holder and their status, which a count route would not carry (RFC, Analysis 1). Everything else on the screen is static: `ROLE_PRESETS`, `CAPABILITY_MATRIX`, `packages/i18n` descriptions.
@@ -595,7 +595,7 @@ Reviewer findings rejected: none.
 **Status:** shipped
 **Why:** The owner browses their market's panels and inverters beside their own SKUs in one list, sets their price and tax on a platform item, hides what they never stock, publishes a named release and keeps every past price-book version readable; without it the studio and the builder resolve against nothing and a rate edit rewrites history.
 **PRD rows:** M01-32 (P0), M01-34 (P0), M01-35 (P0), M01-37 (P0), M01-38 (P0), M01-43 (P0), M01-48 (P0)
-**DESIGN:** SCR-M01-15 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-15
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** none — reads the eight catalog tables authored by `T-M01-027` (migration 0015) and `price_book_version`, `price_book_rate` authored by `T-M01-031` (migration 0016); the schemes it badges are `pack.certificationSchemes` (`T-FCORE-016`, migration 0001).
 **Contract:** `packages/contracts/src/catalog.ts` — GET /catalog/items (the unified search with its filters) · GET /catalog/items/{id} (tier attribution, the open-draft count) · PUT /catalog/items/{id} · POST /catalog/items/{id}/archive · POST /catalog/items/{id}/unarchive · PUT, DELETE /catalog/items/{id}/override · POST, GET /catalog/items/{id}/rate-entries · GET /catalog/releases · GET /catalog/releases/{id} · POST /catalog/releases (the publish act with its label) · `packages/contracts/src/price-book.ts` — GET /price-book/active · GET /price-book/versions · GET /price-book/versions/{id} · POST /price-book/versions (the rates-panel publish) · `packages/contracts/src/market.ts` — GET /market-packs/{marketCode} (the declared schemes). Domain read: `resolveCatalogItem` / `ResolvedCatalogItem`, `CATALOG_PROVENANCE_LABELS`, `PRICE_BOOK_RATE_BASES` (`packages/domain/src/catalog/`); the price-book view-model is the wire's `priceBookActiveSchema` and `priceBookVersionSchema` (`packages/contracts/src/price-book.ts`).
@@ -616,7 +616,7 @@ Reviewer findings rejected: none.
 **Status:** shipped
 **Why:** A rep mid-proposal adds the panel the supplier just quoted — by typing it or through the spreadsheet path — and it is selected in place before the customer notices a pause; without it a missing product means leaving the builder for settings, or waiting on the platform.
 **PRD rows:** M01-36 (P0), M01-39 (P0)
-**DESIGN:** SCR-M01-16 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-16
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** reads `tenant_catalog_item`, `catalog_item` and `catalog_rate_entry` authored by `T-M01-027` (migration 0015); migration 0030 drops `tenant_catalog_item.source_datasheet_id`, which nothing reads or writes (owner ruling 2026-10-25: catalog files are Excel or CSV only).
 **Contract:** `packages/contracts/src/catalog.ts` — POST /catalog/items (the single form; a picker pre-fill carries brand, model and specs only — the server copies no certification and no price) · GET /catalog/items/{id} (the selected item the pre-filled sheet reads) · POST /catalog/items/{id}/rate-entries (the rate entered afresh) · `packages/contracts/src/market.ts` — GET /market-packs/{marketCode} (the scheme flags the tenant enters). Domain read: the per-kind spec envelopes and gates in `packages/domain/src/catalog/specs.ts` (field-addressable `details[]` on a gate failure).
@@ -633,7 +633,7 @@ Reviewer findings rejected: none.
 **Status:** shipped
 **Why:** The owner drops the supplier's price list in, sees how many rows match the platform book, how many are new and how many need attention, fixes those in the grid and watches the import run with the report kept to reopen; without it hundreds of products are typed one by one.
 **PRD rows:** M01-41 (P0)
-**DESIGN:** SCR-M01-17 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-17
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** none — reads `catalog_import_job` and `catalog_import_row` authored by `T-M01-030` (migrations 0019, 0020 and 0021) and the overrides, SKUs and rate entries the run writes through `T-M01-027` (migration 0015); the uploaded file is the one `file` table's row (`T-FPLAT-035`). Migration 0029 adds `catalog_import_row.named_items` and `repeats_row` (the RFC, §7).
 **Contract:** `packages/contracts/src/catalog-import.ts` — POST /catalog/imports (from an uploaded file id, the entry point, and the file's name and saved date as the device's picker gives them — the step 1 subtitle names no supplier, since no source holds one: `T-M01-030c` decision 8) · GET /catalog/imports (the re-openable reports) · GET /catalog/imports/{id} (the one read the wizard polls — its state, mapping and counts) · PUT /catalog/imports/{id}/mapping · GET /catalog/imports/{id}/rows (the preview grid, paged and narrowed by outcome; `T-M01-030d` decision 11) · PUT /catalog/imports/{id}/rows/{rowNumber} · POST /catalog/imports/{id}/run (the job then reads `run: { done, total, at, by }` while it runs and `results` once completed; each row its `result` and `failure` — `T-M01-030f`). The matching pass shows a short wait, not a counted "256 of 412 rows" — the run carries the counted progress (owner ruling R1 at `T-M01-030d`; the brief's decision 24 follows it, and the board is redrawn to match). A row judged again at the run can fail as `changed_since_preview` — its product changed in the catalog since the preview — and the report says so (`T-M01-030f` D2); that row keeps the verdict it was judged by, so the grid asks its question. The rows read also takes comma lists `outcomes` and `results` and a search `q`, and each row names the items its name resolved to (`named`) and the earlier row it repeats (`repeats`) — the RFC, §7. The report pages `GET …/rows?result=…` and renders each row's `priceBefore` and `priceApplied` as *Price before* and *Price now* — null `priceApplied` is *Unchanged*; *Fix the N rows* takes N from domain's `importRowsToFix(results)`, fixes the open rows with the same `PUT …/rows/{rowNumber}` on the completed job, and presses the same `POST …/run`, which writes only those rows (`T-M01-030g`). Domain read: `CATALOG_IMPORT_STATES`, `CATALOG_IMPORT_ENTRY_POINTS`, the target-field vocabulary of `import-columns.ts`, `importRunProgress`, `CATALOG_IMPORT_ROW_RESULTS`, `importRowsToFix`.
@@ -648,7 +648,7 @@ Reviewer findings rejected: none.
 **Status:** shipped
 **Why:** The owner uploads a logo and picks the brand colour, sees the proposal cover and the customer-link header exactly as the customer will — a too-pale colour darkened rather than refused — and the app they work in stays unbranded; without it a customer document goes out unreadable or unbranded.
 **PRD rows:** M01-50 (P0), F7-07 (P0)
-**DESIGN:** SCR-M01-18 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-18
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** none — reads `branding_settings` and `business_profile` authored by `T-M01-026` (migration 0006); logo and letterhead are rows of the one `file` table (no task id yet).
 **Contract:** `packages/contracts/src/tenant-settings.ts` — GET, PUT /settings/branding (the response carries the derived compliant shades the preview draws) · GET /settings/business-profile (company details shown as they print, written once on `T-M01-005`). The preview is the `DocumentPreview` component (`docs/tasks/UI.md`) fed every prop from the tenant's own values — no sample value (`T-M01-029`).
@@ -665,7 +665,7 @@ Reviewer findings rejected: none.
 **Status:** shipped
 **Why:** The owner decides once which sections a proposal carries, the standard terms and the bank details that print, and the phases a project timeline shows, so every quote — Quick mode's included — comes out complete; without it each rep re-types terms and the documents disagree.
 **PRD rows:** M01-51 (P0), M01-52 (P1), M01-53 (P0), M01-28 (P0)
-**DESIGN:** SCR-M01-19 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-19
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** reads `proposal_template_settings`, `timeline_template` and `business_profile` authored by `T-M01-026` (migration 0006); migration 0032 adds `updated_by` to the two template tables, so the page names who saved.
 **Contract:** `packages/contracts/src/tenant-settings.ts` — GET, PUT /settings/proposal-template · GET, PUT /settings/timeline-template · GET /settings/business-profile (bank details as they print, written on `T-M01-005`) · GET /settings/effective (the defaults filled where the tenant set nothing). Domain read: `commerce/proposal-template-defaults.ts`, `commerce/timeline-template-defaults.ts`; the default T&C and phases (per language) are domain's, in those two files; the document name is F3-11's copy.
@@ -682,7 +682,7 @@ Reviewer findings rejected: none.
 **Status:** shipped
 **Why:** The owner names the payment splits customers are asked for — 10/60/20/10 on the stages a job passes through — and every proposal, and the collection schedule at Won, uses the same numbers to the minor unit; without it each rep invents a split and the money paths diverge.
 **PRD rows:** M01-54 (P0)
-**DESIGN:** SCR-M01-20 → https://claude.ai/artifact/6B4UBcKiJsHoreFjiKUSLN
+**DESIGN:** SCR-M01-20
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** reads `tranche_template` and `tranche_template_line` authored by `T-M01-026` (migration 0006) and the stage labels of the tenant's pack (`T-FCORE-016`, migration 0001); adds `tranche_template.changed_by` for the page's saved line and the audit value `settings.tranche_template_restored` (RFC §3).
 **Contract:** `packages/contracts/src/tranche-templates.ts` (spread into `tenantSettingsContract`, `tenant-settings.ts`) — GET, POST /settings/tranche-templates · PUT /settings/tranche-templates/{id} (a save whose lines do not sum to 100.00 is refused with the unallocated remainder) · POST /settings/tranche-templates/{id}/archive · POST /settings/tranche-templates/{id}/make-default · POST /settings/tranche-templates/{id}/restore (archived terms carry *Restore*, brief decision 5; RFC §3) — the list answers the newest save's `changed` · the stage labels and skippable stages from the pack the app's `MarketProvider` binds (`useFormat().pack.vocabulary`; India in v1) — no `GET /market-packs/{marketCode}` read on this screen (RFC §5); POST /settings/tranche-templates/preview (the sample's amounts, `F4-04`). Domain read: `commerce/tranche-template-defaults.ts`; the allocation verdict is ONE domain rule both the `AllocationMeter` and the save read — exact 100.00 in two-decimal percentages, no tolerance (`M01-54`): the meter shows the remainder and the save refuses until it is zero, never computed twice.
@@ -698,7 +698,7 @@ Reviewer findings rejected: none.
 **Status:** planned
 **Why:** The owner writes the proposal-share, follow-up and reminder messages in Hindi, Marathi and English the way their customers are spoken to, sees each composed with a real name and amount, and reps send that text — never a raw placeholder; without it every rep improvises the message a customer reads.
 **PRD rows:** M01-55 (P0)
-**DESIGN:** SCR-M01-21 → PENDING
+**DESIGN:** SCR-M01-21
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** authors `message_template` itself — `T-FPLAT-021` ruled no table in V1, because this V2 editor is the first and only writer of a tenant's own template (per key × language, `F6-26`), and a table with no writer is storage for no need. `T-FPLAT-021` supplies the closed key list and the composer.
 **Contract:** settled at `T-FPLAT-021`'s `/start`: the read and write of a template per key and language, and the composed preview over a sample context, are THIS task's (a `packages/contracts/src/message-template.ts`), landing with their first writer. Domain read: the placeholder rule (resolved or safely omitted) `T-FPLAT-021`'s composer holds; the missing-language note is `packages/i18n` copy.
@@ -713,7 +713,7 @@ Reviewer findings rejected: none.
 **Status:** planned
 **Why:** The owner sees which lead channels actually bring leads in — manual, import, inbound call, referral — switches one off without touching the leads it already brought, and sees website forms and business messaging as later, not as a promise; without it the settings advertise channels the product does not have.
 **PRD rows:** M01-58 (P0), M02-17 (P0), M02-64 (P0), M02-65 (P0)
-**DESIGN:** SCR-M01-22 → PENDING
+**DESIGN:** SCR-M01-22
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** none — reads the channel registry and `lead_channel_setting` that `T-M02-017` builds behind this surface (M02-64: M02 owns the channel set and the toggle, M01 the surface); the closed source set is `T-M02-009`'s. `T-M01-026` defers the table to this screen's slice, where its engine — `T-M02-017`, never this screen (Law 11) — authors it.
 **Contract:** **Gap recorded, not filled:** `T-M02-017` declares no contract file — the channel list with each channel's true state and the toggle write are owed there, in M02's contract area, settled before the build.
@@ -731,7 +731,7 @@ Reviewer findings rejected: none.
 **Status:** planned
 **Why:** The owner sets the language customer documents and new invites default to, and adds the company's own holidays on top of the market's, so the agent never calls and no reminder lands on a day the office is shut; without it the calendar is the statutory floor alone and every document defaults to the platform's language.
 **PRD rows:** M01-59 (P1)
-**DESIGN:** SCR-M01-23 → PENDING
+**DESIGN:** SCR-M01-23
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** none — reads `tenant.default_language` and `tenant.timezone` authored by `T-M01-025` (migration 0002), `tenant_holiday` authored by `T-M01-026` (migration 0006), and the pack's holiday calendar (`T-FCORE-016`, migration 0001).
 **Contract:** `packages/contracts/src/tenant-settings.ts` — GET, PUT /settings/holidays (tenant additions only; the pack calendar is never written) · GET /settings/effective (the language and timezone in force) · `packages/contracts/src/tenant.ts` — GET /tenants/me · `packages/contracts/src/market.ts` — GET /market-packs/{marketCode} (the pack calendar and its labels). **Settled at `T-M01-026`'s `/start`:** the write of `default_language` and `timezone` on `tenant` is this task's own route — PUT /settings/locale in `tenant-settings.ts`, authored when this task begins; `T-M01-026` seeds both and reads them back. Domain read: `holidaysInForce`, `isHoliday` (`packages/domain/src/format/holidays.ts`).
@@ -746,7 +746,7 @@ Reviewer findings rejected: none.
 **Status:** planned
 **Why:** The owner sees every connected credential — the payment gateway's, the messaging and voice ones — as last-4 with a probe verdict, and a failed one nags until it is rotated, so a customer's payment link never fails silently; without it a dead key is discovered by a customer.
 **PRD rows:** M01-60 (P0)
-**DESIGN:** SCR-M01-24 → PENDING
+**DESIGN:** SCR-M01-24
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **Data model:** none — reads the credential rows their owning modules author: `T-M11-010`'s collections-account connection (M11) and M07's messaging and voice credentials; `integration_credential` as the one settings-level row has no author yet — the data model marks it V2 and `T-M01-026` defers it to this screen's slice, where an engine, never this screen (Law 11), takes it.
 **Contract:** **Gap recorded, not filled:** no engine ticket declares a credential read or rotation route — `T-M11-010` states the product-level handling (write-only, last-4, probe, audited decrypt) with no contract file; the last-4 list, the probe-status read and the rotation write are owed to the owning modules' contract areas, and the one-place health read to the engine that takes `integration_credential`, settled before the build.

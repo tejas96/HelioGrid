@@ -13,11 +13,13 @@ const NOT_TASK_FILES = new Set([`${TASKS}/README.md`, `${TASKS}/deferred.md`, `$
 /** A task's id; a part adds its letter (`T-M01-005f`). Every ledger check builds on this one. */
 export const TASK_ID = 'T-[A-Z0-9]+-\\d+';
 export const SCREEN_ID = 'SCR-[A-Z0-9]+-\\d{2}';
-const DESIGN_SCREEN = new RegExp(`(${SCREEN_ID})\\s*→\\s*`, 'g');
+const SCREEN_IDS = new RegExp(SCREEN_ID, 'g');
 const FENCE = /^\s*```/;
 const TASK_HEADING = new RegExp(`^### (${TASK_ID}[a-z]?) · (.*)$`);
 const ANY_HIGHER_HEADING = /^#{1,3} /;
 const STATUS = /^\*\*Status:\*\* (.+)$/;
+/** The ledger's words (`docs/tasks/README.md`, rule 0); a task in any other is lost to the walk. */
+const LEDGER_WORD = /^(planned|shipped|struck)\b/;
 /** A header line, `**Depends on:** …`; only those above the task's first `####` heading count. */
 const HEADER_LINE = /^\*\*([A-Za-z][A-Za-z ]*):\*\*\s*(.*)$/;
 
@@ -34,23 +36,9 @@ export interface TaskEntry {
   statusLines: number;
 }
 
-/** Each screen a task's `DESIGN:` line names, with its canvas link, `PENDING` or `ported from …`. */
-export function designLinks(task: TaskEntry): DesignLink[] {
-  const value = task.header.get('DESIGN') ?? '';
-  const screens = [...value.matchAll(DESIGN_SCREEN)];
-  return screens.map((match, i) => {
-    const from = (match.index ?? 0) + match[0].length;
-    const segment = value.slice(from, screens[i + 1]?.index ?? value.length);
-    return {
-      screen: match[1] ?? '',
-      link: segment.split(/\s/)[0] ?? '',
-    };
-  });
-}
-
-interface DesignLink {
-  screen: string;
-  link: string;
+/** The screens a task builds: each one its `DESIGN:` line names. */
+export function designScreens(task: TaskEntry): string[] {
+  return task.header.get('DESIGN')?.match(SCREEN_IDS) ?? [];
 }
 
 export interface TaskLedger {
@@ -74,8 +62,15 @@ export function readTaskLedger(repo: string): TaskLedger {
       firstHeading.set(id, here);
       if (entry.statusLines > 1)
         problems.push(`${id} at ${here} has ${entry.statusLines} **Status:** lines`);
-      if (entry.status === '') problems.push(`${id} at ${here} has no **Status:** line`);
-      else tasks.set(id, entry);
+      if (entry.status === '') {
+        problems.push(`${id} at ${here} has no **Status:** line`);
+        continue;
+      }
+      if (!LEDGER_WORD.test(entry.status))
+        problems.push(
+          `${id} at ${here} reads **Status:** ${entry.status} — the ledger holds planned, shipped and struck`,
+        );
+      tasks.set(id, entry);
     }
   }
   return { tasks, problems };

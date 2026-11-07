@@ -7,7 +7,7 @@ import {
   SCREENS_REGISTER,
   type ScreenRow,
 } from './screens-register';
-import { designLinks, readTaskLedger } from './task-ledger';
+import { designScreens, readTaskLedger } from './task-ledger';
 
 /**
  * The screens register is whole (`docs/prd/registers/screens.md`): every screen has at least one
@@ -34,18 +34,16 @@ export function runScreensRegisterWhole(repo: string): void {
       `screens-register-whole: ${problems.length} problem(s):\n  - ${problems.join('\n  - ')}`,
     );
   }
-  console.log('screens register whole — every screen designed, every PRD row landed once');
+  console.log('screens register whole — every screen has its task, every PRD row landed once');
 }
 
 function designProblems(repo: string, held: Set<string>): string[] {
-  const designed = new Set(
-    [...readTaskLedger(repo).tasks.values()].flatMap((t) => designLinks(t).map((d) => d.screen)),
-  );
+  const named = new Set([...readTaskLedger(repo).tasks.values()].flatMap(designScreens));
   return [
     ...[...held]
-      .filter((id) => !designed.has(id))
+      .filter((id) => !named.has(id))
       .map((id) => `${id} has no task whose DESIGN line names it`),
-    ...[...designed]
+    ...[...named]
       .filter((id) => !held.has(id))
       .map((id) => `a task's DESIGN line names ${id}, which the register does not hold`),
   ];

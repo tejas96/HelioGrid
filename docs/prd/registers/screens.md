@@ -148,8 +148,8 @@ submitted survey, and survey is V2 — which made the whole 18-screen studio unr
 ruling (2026-08-16) scopes its prerequisite set to what the release actually offers. No
 screen was added; the honesty half of the row is untouched.
 
-Whether a screen is drawn is not recorded here. Its task's `**DESIGN:**` line in `docs/tasks/`
-holds the link once the screen is drawn, and `PENDING` until then.
+A screen's look is not recorded here: it is picked inside the task that builds it
+(`docs/tasks/README.md`, rule 3).
 
 
 ### App shell & global surfaces

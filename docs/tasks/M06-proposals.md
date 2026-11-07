@@ -24,7 +24,7 @@ this file: to a task, to `LAW`, or to a `realized-by` pointer.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-05 (P0), M06-18 (P0), M06-19 (P0)
-**DESIGN:** SCR-M06-01 → PENDING
+**DESIGN:** SCR-M06-01
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they
 are the specification.
@@ -45,7 +45,7 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-18 (P0), M06-21 (P0), M06-22 (P0), M06-23 (P0), M06-24 (P0)
-**DESIGN:** SCR-M06-02 → PENDING
+**DESIGN:** SCR-M06-02
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -63,7 +63,7 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-06 (P0), M06-07 (P0)
-**DESIGN:** SCR-M06-03 → PENDING
+**DESIGN:** SCR-M06-03
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -78,7 +78,7 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-08 (P0)
-**DESIGN:** SCR-M06-04 → PENDING
+**DESIGN:** SCR-M06-04
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -93,7 +93,7 @@ are the specification.
 **Status:** planned
 **Owed by `T-FPLAT-029` (`F8-23`):** the EMI tenure is the projection's `horizonYears`, and this step refuses a tenure that is zero, negative or not a number where it is typed — `@heliogrid/domain` carries the horizon as stated and does not bound it.
 **PRD rows:** M06-09 (P0), M06-30 (P0), M06-35 (P0), M06-40 (P0)
-**DESIGN:** SCR-M06-05 → PENDING
+**DESIGN:** SCR-M06-05
 **Landed ahead:** the equation's domain half — `packages/domain/src/money/equation.ts` (`resolvePayable`, whole minor units, the payable at or below zero reported as M06-35 states, two figures reconciling only when equal per M11-08) — moved out of `packages/ui` by the one-money-path fix, and onto `@heliogrid/domain/server` by `T-FPLAT-070` (`F4-04`: no device computes a money figure). The server runs it on every change and returns the equation; `MoneySummary` (`equation`), `DataTable.totalRow` (`reconcile`) and `DocumentPreview` (`total`, `payable`) print what it returned, and this screen composes them.
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
@@ -116,7 +116,7 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-10 (P0)
-**DESIGN:** SCR-M06-06 → PENDING
+**DESIGN:** SCR-M06-06
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -131,7 +131,7 @@ are the specification.
 **Status:** planned
 **Owed by `T-FPLAT-029` (`F8-23`):** the lifetime horizon is the projection's `horizonYears`, and this step refuses a horizon that is zero, negative or not a number where it is typed — `@heliogrid/domain` carries the horizon as stated and does not bound it.
 **PRD rows:** M06-11 (P0)
-**DESIGN:** SCR-M06-07 → PENDING
+**DESIGN:** SCR-M06-07
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -145,7 +145,7 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-12 (P0)
-**DESIGN:** SCR-M06-08 → PENDING
+**DESIGN:** SCR-M06-08
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -159,7 +159,7 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-13 (P0)
-**DESIGN:** SCR-M06-09 → PENDING
+**DESIGN:** SCR-M06-09
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -173,7 +173,7 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-14 (P0), M06-27 (P0), M06-28 (P0), M06-29 (P0), M06-30 (P0)
-**DESIGN:** SCR-M06-10 → PENDING
+**DESIGN:** SCR-M06-10
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -193,7 +193,7 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-15 (P0)
-**DESIGN:** SCR-M06-11 → PENDING
+**DESIGN:** SCR-M06-11
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -207,7 +207,7 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-16 (P0)
-**DESIGN:** SCR-M06-12 → PENDING
+**DESIGN:** SCR-M06-12
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -221,7 +221,7 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-17 (P0)
-**DESIGN:** SCR-M06-13 → PENDING
+**DESIGN:** SCR-M06-13
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 
@@ -235,7 +235,7 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-39 (P0)
-**DESIGN:** SCR-M06-14 → PENDING
+**DESIGN:** SCR-M06-14
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are
 the specification.
@@ -253,7 +253,7 @@ the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-50 (P0)
-**DESIGN:** SCR-M06-15 → PENDING
+**DESIGN:** SCR-M06-15
 
 **Requirements (verbatim):** Verbatim rows live in the PRD;
 they are the specification.
@@ -268,7 +268,7 @@ they are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-42 (P0)
-**DESIGN:** SCR-M06-16 → PENDING
+**DESIGN:** SCR-M06-16
 
 **Requirements (verbatim):** Verbatim rows live in the PRD;
 they are the specification.
@@ -284,7 +284,7 @@ they are the specification.
 **Status:** planned
 **Owed by `T-FPLAT-029` (`F8-20`, `F8-22`, `F8-23`; `F8-24`, a law):** the basis line is `basisLineOf({ designed, roofTier })` from `@heliogrid/domain`, printed through `@heliogrid/i18n`'s `BASIS_LINE_WORD` — never a second rule or a second copy of the words; every figure is the `QualifiedAmount` the screen and the link read, projections included with their assumptions, never recomputed for the page. Depends on `T-FPLAT-073`: `Disclosure`'s `indicative-basis` and `remote-survey` kinds print the wrong English until it lands, so this document never uses them before; and on `T-FPLAT-074`, whose label prints a projection with its assumptions.
 **PRD rows:** M06-04 (P0), M06-51 (P0), M06-56 (P0), F3-15 (P0)
-**DESIGN:** SCR-M06-17 → PENDING
+**DESIGN:** SCR-M06-17
 **Owed by `T-FPLAT-027` (`F8-11`, a law):** every shading output this document prints carries `M05-94`'s limit text beside it — beam-only, linear in unshaded area, no bypass-diode cliff, no string mismatch, so partial-shade losses read optimistic — at every scale.
 
 **Requirements (verbatim):** Verbatim rows live in the PRD;
@@ -316,7 +316,7 @@ here and never re-declared.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-46 (P0), M06-47 (P0), M06-48 (P0), M06-53 (P0), M06-54 (P0), M06-57 (P0), M05-13 (P0) (`docs/prd/modules/M05-design-studio.md` — M05's row, dispositioned in the M05 bucket to T-MS-117 (`docs/tasks/MS-studio-a.md`) and not part of this bucket's disposition index; its **proposal-side half** — the review-needed state read on the proposal and the send block — is realized here, and its verbatim text is carried in the brief)
-**DESIGN:** SCR-M06-18 → PENDING
+**DESIGN:** SCR-M06-18
 **Owed by `T-FPLAT-028` (`F8-17`, `F8-18`):** the stale state reads from the version's `Freshness` (`freshnessOf`, `packages/domain`), shown on the detail before any share act with its corrective action; the share, send and issue acts are blocked while `issueBlockedBy` names a reason or `payableStandsUp` is false, and the stated reason is the one returned. Its freshness comes from this output's own stored pins, never pins built at the call site.
 
 **Requirements (verbatim):** Verbatim rows live in the PRD;
@@ -339,7 +339,7 @@ they are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-46 (P0), M06-48 (P0), M05-13 (P0) (`docs/prd/modules/M05-design-studio.md` — M05's row, dispositioned in the M05 bucket to T-MS-117 (`docs/tasks/MS-studio-a.md`) and not part of this bucket's disposition index; only the list leg of `F8-18`'s "in the list, on the detail screen" obligation is realized here)
-**DESIGN:** SCR-M06-19 → PENDING
+**DESIGN:** SCR-M06-19
 **Owed by `T-FPLAT-028` (`F8-18`, a law):** each row's stale state reads from its version's `Freshness` (`freshnessOf`, `packages/domain`) and is shown on the row with its corrective action, never only by a colour. Its freshness comes from this output's own stored pins, never pins built at the call site.
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they
@@ -360,7 +360,7 @@ are the specification.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** F5-30 (P0) (`docs/prd/foundations/F5-customer-link.md` — F5's row; the screen is drawn by M06 and is not part of this bucket's disposition index)
-**DESIGN:** SCR-M06-20 → PENDING
+**DESIGN:** SCR-M06-20
 
 **Requirements (verbatim):** Verbatim rows live in the PRD;
 they are the specification.

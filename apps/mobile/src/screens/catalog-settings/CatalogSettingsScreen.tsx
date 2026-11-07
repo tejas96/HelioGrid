@@ -23,7 +23,7 @@ export function CatalogSettingsScreen() {
   const drillDown = useSettingsDrillDown('catalog');
   const { t } = useI18n();
   const insets = useSafeAreaInsets();
-  const { facts, panel, switchable, choosePanel } = useCatalogSettingsScreen();
+  const { facts, panel, switchable, choosePanel, itemsCount } = useCatalogSettingsScreen();
   const toasts = useToasts();
   /* A closed toast hands the screen reader back to the panel it spoke about. */
   const shown = useRef<View>(null);
@@ -35,7 +35,7 @@ export function CatalogSettingsScreen() {
         switchable ? (
           <SegmentedControl
             options={[
-              { value: 'items', label: t(CATALOG_SETTINGS.items) },
+              { value: 'items', label: t(CATALOG_SETTINGS.items), count: itemsCount },
               { value: 'rates', label: t(CATALOG_SETTINGS.rates) },
             ]}
             value={panel}

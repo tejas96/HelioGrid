@@ -19,7 +19,7 @@ bucket exactly once.
 **Type:** screen (port + UI rebuild — the POC share page implements the behavior; UI is rebuilt to the new design) · **Tier:** P0
 **Status:** planned
 **PRD rows:** F5-07 (P0), F5-32 (P0), F5-33 (P0), F5-35 (P0), F5-36 (P0), F5-37 (P0), F5-39 (P0), F5-42 (P1), F5-43 (P0), F5-44 (P0), F5-47 (P0), F5-48 (P0), F5-52 (P0), F5-53 (P0), F5-54 (P0), F5-55 (P0), MS9-10 (P0), MS9-11 (P0), MS9-14 (P0), MS9-15 (P0), MS9-17 (P0), MS9-23 (P0), MS9-24 (P0), MS9-25 (P1), MS9-29 (P0)
-**DESIGN:** SCR-F5-01 → PENDING
+**DESIGN:** SCR-F5-01
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` · `3d_design_studio/src/app/(studio)/share/[shareId]/page.tsx` (share-sitting claims, `docs/prd/modules/M05-studio/poc-file-claims.md`)
 **DEFECTS:**
 - `CODE.share.98/.99/.100/.11` — one permanent unnamed link; no revoke/attribution/acceptance (S8-2c → MS9-09/10; the `.100` acceptance-path half lands on this screen).
@@ -67,7 +67,7 @@ bucket exactly once.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** F5-57 (P0), F5-58 (P0), F5-59 (P0), F5-61 (P0), F5-62 (P0), F5-63 (P0), F5-68 (P0)
-**DESIGN:** SCR-F5-02 → PENDING
+**DESIGN:** SCR-F5-02
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. The cross-phase rows F5-07, F5-52, F5-53, F5-54 and F5-55 also bind this screen — they are dispositioned at T-F5-001. The laws F5-60, F5-64, F5-65, F5-66, F5-67 and F5-69 (Laws section below) are enforced through this screen's build and review. `F5-68`'s build-side half — the evening-before crew message auto-sending from the tenant's connected transactional channel, with copy-paste composition as the no-channel fallback (`M03-03`, owner ruling 2026-08-06) — is part of this task's build; the four facts this task draws on the progress page are the customer's record of them regardless of which path carried the message. That half has two named suppliers, both settled by owner rulings of 2026-08-06: the message composes from the registry's seeded **`crew_arrival`** template (`F6-26` → T-FPLAT-021, F-platform tasks file — the authoring act applying the lane ruling), and the hour it goes out is **market-pack data** — a pack default the tenant may narrow, inside a statutory messaging-window **floor**, a slot outside lawful hours resolving to the last lawful moment before it and never after (`F1-15`, `F1-17`), read on the **tenant's timezone** (`F1-10`) and never the customer's (superseding the earlier "customer's market timezone" wording — the owner's premise is that a solar EPC's customers are local to it, and the accepted consequence is that an out-of-timezone customer receives the message at the EPC's evening hour), **with the statutory messaging window evaluated on that same tenant clock — one clock for the hour and the window, never two** (`F1-10`; the same premise and the same accepted consequence extended to the lawful-hours check, so an out-of-timezone customer's own statutory hours are never evaluated and a tenant whose timezone differs from its market's default is judged on its own clock). This task builds no hour of its own, exposes no setting for one, reads no customer timezone for send timing, and evaluates the window in one frame rather than reconciling two. *(The IN values both resolve against are declared at `F1-62` — an empty messaging window and a 19:00 tenant-local send hour; this task takes both from the pack and defaults neither.)*
 
@@ -92,7 +92,7 @@ bucket exactly once.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** F5-70 (P0), F5-71 (P0), F5-72 (P0), F5-73 (P0)
-**DESIGN:** SCR-F5-03 → PENDING
+**DESIGN:** SCR-F5-03
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. The cross-phase rows F5-07, F5-52, F5-53, F5-54 and F5-55 also bind this screen — they are dispositioned at T-F5-001.
 
@@ -110,7 +110,7 @@ bucket exactly once.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** F5-25 (P0), F5-78 (P0)
-**DESIGN:** SCR-F5-04 → PENDING
+**DESIGN:** SCR-F5-04
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. F5-78's build-side half (per-link view and respond ceilings, global public-route ceiling with backoff, tuned above ordinary reading) is part of this task's build; the page this task draws is what a customer who meets a ceiling sees.
 
@@ -129,7 +129,7 @@ bucket exactly once.
 **Type:** screen (port + UI rebuild — the POC read-only share rendering implements the behavior; UI is rebuilt to the new design) · **Tier:** P0
 **Status:** planned
 **PRD rows:** none from this bucket — this line claims no row. The screen is realized by `M05-55` (cross-ref, P0, dispositioned in `docs/tasks/MS-studio-a.md`) and `MS6-37` (cross-ref, P0, claimed by T-MS-206 in `docs/tasks/MS-studio-b.md`); `F5-33` (cross-ref, P0, claimed by T-F5-001) is the "View in 3D" entry on the carrying proposal page.
-**DESIGN:** SCR-F5-05 → PENDING
+**DESIGN:** SCR-F5-05
 **PORT:** `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` (the POC read-only share rendering host — share-sitting claim) · `3d_design_studio/src/features/solar-studio/three/Scene3D.tsx` (read-only 3D presentation consumed here; the scene-engine port itself is claimed by the step-6 sitting and owned by the studio editor task file, per `docs/prd/modules/M05-studio/poc-file-claims.md`)
 **DEFECTS:** none in `docs/prd/modules/M05-studio/defect-register.md` target this screen's realizing rows; the S8 share-surface defects attach to T-F5-001, T-F5-011, T-F5-012 and T-F5-013.
 

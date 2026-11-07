@@ -9,7 +9,7 @@ This file covers module M10 — HR-lite: the people-today queue, the people list
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M10-13 (P0), M10-14 (P0), M10-15 (P1), M10-16 (P2), M10-26 (P1)
-**DESIGN:** SCR-M10-01 → PENDING
+**DESIGN:** SCR-M10-01
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
@@ -26,7 +26,7 @@ This file covers module M10 — HR-lite: the people-today queue, the people list
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M10-10 (P0), M10-11 (P1)
-**DESIGN:** SCR-M10-02 → PENDING
+**DESIGN:** SCR-M10-02
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 Non-UI (build-side) half carried by this task: M10-10 — deactivate-never-delete invariant (F2-20 family).
 **DONE WHEN:**
@@ -42,7 +42,7 @@ Non-UI (build-side) half carried by this task: M10-10 — deactivate-never-delet
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M10-04 (P0), M10-07 (P0), M10-35 (P0), M10-36 (P1)
-**DESIGN:** SCR-M10-03 → PENDING
+**DESIGN:** SCR-M10-03
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 Non-UI (build-side) halves carried by this task: M10-04 — role grants stay F2.M01.manage-team; M10 never widens or delegates. M10-36 — expiry blocks nothing; tenant decides consequences.
 **DONE WHEN:**
@@ -62,7 +62,7 @@ Non-UI (build-side) halves carried by this task: M10-04 — role grants stay F2.
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M10-18 (P0), M10-19 (P0), M10-20 (P0), M10-21 (P0), M10-22 (P0)
-**DESIGN:** SCR-M10-04 → PENDING
+**DESIGN:** SCR-M10-04
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. M10-20 is quoted here:
 
 - **M10-20** (P0) — **Nothing is orphaned and nothing is rewritten.** Every lead, activity, tick, document and money event the person touched stays attributed to them after offboard (F2-20); the sweep reassigns **open** work only and never edits history. Deleting a user does not exist.
@@ -86,7 +86,7 @@ Non-UI (build-side) halves carried by this task: M10-18 — offboard defined as 
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M10-25 (P0), M10-28 (P2)
-**DESIGN:** SCR-M10-05 → PENDING
+**DESIGN:** SCR-M10-05
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 Non-UI (build-side) half carried by this task: M10-28 — distinct data from F1-50 calling-window holiday calendar.
 **DONE WHEN:**
@@ -102,7 +102,7 @@ Non-UI (build-side) half carried by this task: M10-28 — distinct data from F1-
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M10-27 (P0)
-**DESIGN:** SCR-M10-06 → PENDING
+**DESIGN:** SCR-M10-06
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 Non-UI (build-side) half carried by this task: M10-27 — no accrual arithmetic; leave types are tenant-configured labels.
 **DONE WHEN:**
@@ -121,7 +121,7 @@ Non-UI (build-side) half carried by this task: M10-27 — no accrual arithmetic;
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M10-34 (P0)
-**DESIGN:** SCR-M10-07 → PENDING
+**DESIGN:** SCR-M10-07
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped never widens to everyone.
 **DONE WHEN:**

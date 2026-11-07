@@ -7,7 +7,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M13-14 (P0), M13-15 (P0), M13-16 (P0), M13-20 (P1), M13-29 (P0), M13-30 (P0)
-**DESIGN:** SCR-M13-01 → PENDING
+**DESIGN:** SCR-M13-01
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. (This is the single EPC Owner / Sales Manager home. M13-29 and M13-30 are the rows the PRD tags "`PS-07` consumed" and "`PS-09` consumed" — so the attention list, cash, pipeline, this-period, forecast and win/loss that `docs/prd/02-personas.md`'s PS-07 and PS-09 describe are built once, here, with the manager's rendering the same screen team-scoped. T-M13-002 / SCR-M13-02 is the Sales Executive's own-scoped step-back and builds none of it.)
 **DONE WHEN:**
 - Given the owner dashboard, when it renders, then the seven sections appear in the stated order with "what needs you" and cash leading (M13-14, M13-20).
@@ -22,7 +22,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M13-31 (P0)
-**DESIGN:** SCR-M13-02 → PENDING
+**DESIGN:** SCR-M13-02
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. (This screen is the Sales Executive's own-scoped step-back only. The EPC Owner's and Sales Manager's home is SCR-M13-01 / T-M13-001, which carries M13-29 and M13-30 — the rows the PRD tags "`PS-07` consumed" and "`PS-09` consumed". `docs/tasks/F-core.md` disposes PS-07 and PS-09 to this screen, but their rendering is routed to SCR-M13-01; PS-09's own text requires one screen serving both scopes, "rather than building a second one". Nothing owner- or manager-scoped is built here.)
 **DONE WHEN:**
 - Given each of the twelve presets held singly, when the person signs in, then their home matches their row above, with content identical to the owning module's contract (M13-29 through M13-40, M13-11).
@@ -34,7 +34,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M13-25 (P0), M13-39 (P0), M13-47 (P0)
-**DESIGN:** SCR-M13-03 → PENDING
+**DESIGN:** SCR-M13-03
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given each of the twelve presets held singly, when the person signs in, then their home matches their row above, with content identical to the owning module's contract (M13-29 through M13-40, M13-11).
@@ -48,7 +48,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M13-22 (P0)
-**DESIGN:** SCR-M13-04 → PENDING
+**DESIGN:** SCR-M13-04
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given the funnel, when it renders for a Sales Manager, then conversion, leaks and time-in-stage cover exactly the team's deals (M13-22, M13-07).
@@ -59,7 +59,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M13-23 (P0), M13-26 (P1)
-**DESIGN:** SCR-M13-05 → PENDING
+**DESIGN:** SCR-M13-05
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given win/loss, when it renders, then the disqualify breakdown and the lost breakdown are two distinct lists by count and value (M13-23).

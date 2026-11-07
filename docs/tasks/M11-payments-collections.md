@@ -4,9 +4,9 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-001 · Finance Home (Money Due)
 **Type:** screen · **Tier:** P1
-**Status:** designed
+**Status:** planned
 **PRD rows:** M11-54 (P1)
-**DESIGN:** SCR-M11-01 → https://claude.ai/artifact/JHuQqFRnGtCZmpMUczga7g
+**DESIGN:** SCR-M11-01
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a Finance user, when their home renders, then it shows due, overdue, receipts awaiting recording and the period's collections, each obeying the freshness law (`M11-54`).
@@ -17,9 +17,9 @@ This file carries every engineering task for the tenant's own collections: the t
 
 ### T-M11-002 · Payments Ledger
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **PRD rows:** M11-14 (P0), M11-15 (P0), M11-16 (P0), M11-19 (P0), M11-24 (P0), M11-28 (P0), M11-30 (P1), M11-31 (P0), M11-36 (P0), M11-41 (P0), M11-42 (P0), M11-46 (P0), M11-47 (P0), M11-49 (P0), M11-52 (P0)
-**DESIGN:** SCR-M11-02 → https://claude.ai/artifact/JHuQqFRnGtCZmpMUczga7g
+**DESIGN:** SCR-M11-02
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a new accepted version with revised terms, when the schedule re-renders, then it follows the version in force, every earlier receipt is still present and readable, and the earlier schedule remains viewable (`M11-14`).
@@ -48,7 +48,7 @@ This file carries every engineering task for the tenant's own collections: the t
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M11-33 (P0), M11-34 (P0), M11-35 (P0), M11-36 (P0), M11-37 (P0), M11-38 (P1), M11-39 (P0)
-**DESIGN:** SCR-M11-03 → PENDING
+**DESIGN:** SCR-M11-03
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a tenant with no connected account, when a holder opens any due tranche, then manual recording is available with no precondition (`M11-33`).
@@ -65,7 +65,7 @@ This file carries every engineering task for the tenant's own collections: the t
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M11-19 (P0), M11-23 (P1)
-**DESIGN:** SCR-M11-04 → PENDING
+**DESIGN:** SCR-M11-04
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a credential that fails its probe, when a due tranche is opened, then the surface states the failure and offers manual recording instead of a link action (`M11-19`).

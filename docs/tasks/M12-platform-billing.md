@@ -7,7 +7,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **Type:** screen · **Tier:** P0
 **Status:** shipped
 **PRD rows:** BM-05 (P0), BM-07 (P0) (from `docs/prd/04-business-model.md`; dispositioned under that bucket — listed here as this screen's specification rows)
-**DESIGN:** SCR-M12-01 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
+**DESIGN:** SCR-M12-01
 **Sales contact (owner):** `Talk to sales` opens `tejas96patil@gmail.com`, the India book's `salesContact`.
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
@@ -21,7 +21,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **Type:** screen · **Tier:** P0
 **Status:** shipped
 **PRD rows:** M12-08 (P0), M12-46 (P0), M12-47 (P0), M12-50 (P0), M12-55 (P0)
-**DESIGN:** SCR-M12-02 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
+**DESIGN:** SCR-M12-02
 **Contract:** declares the company's billing standing read — its state and phase from `T-M12-005`'s `subscription` row and `billingPhaseAt`, and any state history in `id` order, never `entered_at` (a halt undone by a charge inside its grace records an earlier `entered_at`, T-M12-006); reactivation first locks the company's latest subscription row `FOR UPDATE` — the lock T-M12-006's charge path takes — and starts the new row only while that row is still not live, so a late charge and a reactivation run one after the other — as the first screen that shows it; `T-SHELL-006` reads the same route. Reactivation (M12-08) reuses T-M12-007's hosted checkout — `POST /billing/checkout`, `CheckoutService` and the `BillingGateway` port — which opens only from `trialing`: this task extends it to a dead row, whose paying charge starts the NEW subscription row with the checkout's plan, never a resumed one.
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. (M12-55 is a shared row: its plan-selection half lands on SCR-M12-03 / T-M12-003; the row is dispositioned here.)
 **DONE WHEN:**
@@ -40,7 +40,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **Type:** screen · **Tier:** P0
 **Status:** shipped
 **PRD rows:** M12-48 (P0), M12-49 (P0), M12-53 (P0), M12-54 (P0)
-**DESIGN:** SCR-M12-03 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
+**DESIGN:** SCR-M12-03
 **Contract:** conversion's hosted checkout is T-M12-007's `POST /billing/checkout` (tier + cycle → the gateway's page, `CHECKOUT_NOT_POSSIBLE` · `TIER_NOT_SOLD` · `GATEWAY_UNAVAILABLE`); the screen renders those codes' copy, which lands with it. An upgrade or cycle switch (M12-48, M12-12) reuses the same `plan_price` rows and `BillingGateway` port for its prorated delta and its new subscription at the boundary.
 **From T-M12-002:** this screen lives at `/more/billing/plans` (the phone's plans placeholder too), which T-M12-002 opens with the *coming later* page from Billing's `Change plan` and the expired trial's `Pick a plan`; this task fills it. From an expired trial its pick opens `POST /billing/checkout`, which since T-M12-002 opens a reactivation page from any dead row (`M12-08`). A confirmed downgrade adds its scheduled change to `GET /billing/home` (`billingHomeSchema`, a new nullable field — old clients ignore it) and Billing draws SCR-M12-02 frame 16 with it: `Moving to Starter · Scheduled`, `On <date>`, the act `Keep Growth instead`, and `Next bill` as the new plan's (decision 17). T-M12-002's DONE WHEN on *pay/upgrade/reactivate* leaves the upgrade's proof here.
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. (This screen also carries the shared row M12-55 — its plan-selection half — dispositioned under T-M12-002. The trial countdown chip of M12-53 is SCR-SHELL-06's surface, `docs/tasks/SHELL.md`.)
@@ -60,7 +60,7 @@ This file covers Module M12 (Platform billing): the subscription lifecycle machi
 **Usage ledger (T-M12-010):** every figure reads `UsageService.billedRollupOf` (billed meters only, so no internal cost reaches the screen — M12-32) and storage reads `UsageService.latestStorageGauge`; voice is rolled up in seconds and shown in minutes, turned once on the total by `billedQuantityOf` (`packages/domain`), the function the invoice's add-ons bill by (T-M12-012b).
 **Design run (owner rulings 2026-10-31):** `OTP codes` shows its count, `Not billed`: it reads the `otp_delivery` cost line's count, never its cost, since `billedRollupOf` leaves cost lines out. The voice ledger's panel joins each event's subject — the call — for its site and its caller; the ledger itself stays ids and counts.
 **Billing gate (T-M12-009):** the 80% pre-warning is `capStepOf`'s `warning` step (`packages/domain`), the render half of `T-M12-009`'s D3 — shown before any gate fires (M12-30, M12-34).
-**DESIGN:** SCR-M12-04 → https://claude.ai/artifact/CtHxvxwH783xAZZKffjGQy
+**DESIGN:** SCR-M12-04
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. (This screen also carries M12-30's cap-ladder row, dispositioned under T-M12-009 — the ladder is gate machinery; this screen is where its 80% pre-warning must appear.)
 **DONE WHEN:**
 - Given any usage figure on the usage screen, when compared with what enforcement checks and the invoice bills, then all three come from the same rollup of the same ledger (M12-32, M12-34).

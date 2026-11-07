@@ -54,7 +54,7 @@ async function main() {
   runBuildOrderHolds(REPO_ROOT); // static — every file placed, no loop, later-block waits recorded
   runPrdRowsCited(REPO_ROOT); // static — every cited PRD row is live, every quote matches its cell
   runCapabilityIdsCited(REPO_ROOT); // static — every capability a task names is in the matrix
-  runScreensRegisterWhole(REPO_ROOT); // static — every screen designed, every row landed once
+  runScreensRegisterWhole(REPO_ROOT); // static — every screen has its task, every row landed once
   runUiColourPairs(REPO_ROOT); // static — every colour ui sets on a background is a declared pair
   runRfcProofsHold(REPO_ROOT); // static — a changed RFC's named tests exist, its deleted rows are gone
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;

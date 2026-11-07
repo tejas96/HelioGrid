@@ -141,7 +141,7 @@ Task-id prefix: `T-SHELL-`. RFC and part-size rules live in `docs/tasks/README.m
 **Status:** shipped (#209)
 **Why:** A rep in a customer's living room reaches Add lead with one thumb and a surveyor reaches Start survey the same way, and every person lands on their own work with the company's name in the bar; without it each module invents its own navigation and the two-minutes-to-useful-work promise has nowhere to land. The phone is the flagship shell (`F7-22`'s pill footer), so it lands first; the desktop shell is `T-SHELL-008`.
 **PRD rows:** F1-59 (P0), F7-22 (P0), F7-48 (P0), F7-50 (P0), M01-16 (P1), M01-17 (P0), M02-06 (P0), M13-10 (P0), MS12-19 (P0)
-**DESIGN:** SCR-SHELL-01 → https://claude.ai/artifact/GmgFEzuBNQFfZBBMuPABoP
+**DESIGN:** SCR-SHELL-01
 
 **Depends on:** `T-SHELL-011` (the bar, the switcher, the verb and the marks) · `T-SHELL-007` (shipped, #198) · `T-SHELL-009` (shipped, #199) · `T-M13-006` (shipped, #52) · `T-FPLAT-025` (shipped, #51) · `T-M01-025` (shipped, #40) · `T-M01-028` (shipped, #47) · `T-M01-001` (shipped, #53) · `packages/ui` `MobileTopBar`, `BottomNav`, `Fab`, `LogoTile`, `Menu`, `CoachMark`, `Block`, `EmptyState`, `Sheet`, `UnavailableNote` (landed).
 
@@ -178,7 +178,7 @@ Task-id prefix: `T-SHELL-`. RFC and part-size rules live in `docs/tasks/README.m
 **Status:** shipped
 **Why:** A surveyor on an old build who opens the app after an api release sees a plain screen naming the version to install and a button to the store, instead of a door or a shell whose every call fails; without it the server's refusal (`T-FPLAT-033`) reaches the person as a bare error (`F4-36`).
 **PRD rows:** F4-36 (P0)
-**DESIGN:** SCR-SHELL-01 → https://claude.ai/artifact/GmgFEzuBNQFfZBBMuPABoP — Frame 10 · update required
+**DESIGN:** SCR-SHELL-01
 **Depends on:** `T-FPLAT-033` (shipped, #185 — the 426 refusal and `clientUpgradeRequiredSchema`) · `T-SHELL-001` (the shell it replaces).
 
 **PRD rows (verbatim):**
@@ -190,7 +190,7 @@ Task-id prefix: `T-SHELL-`. RFC and part-size rules live in `docs/tasks/README.m
 **Status:** shipped
 **Why:** The web shell (`T-SHELL-008`) draws the same home head, teaching blocks, Frame 8 and account menu as the phone. Kept in `apps/mobile` they would be written twice and drift (`.claude/rules/screen-parts.md`). Split from `T-SHELL-008` at its `/start` (owner, 2026-10-02), so the phone's change ships and is checked on its own.
 **PRD rows:** F1-59, M01-16, M13-10, MS12-19 — the rows the moved parts carry; their phone proofs are `T-SHELL-001`'s, run again here
-**DESIGN:** SCR-SHELL-01 → https://claude.ai/artifact/GmgFEzuBNQFfZBBMuPABoP — its 375 frames, with `T-SHELL-001`'s DESIGN DIFFERENCES
+**DESIGN:** SCR-SHELL-01
 
 **PRD rows (verbatim):**
 
@@ -220,10 +220,10 @@ Task-id prefix: `T-SHELL-`. RFC and part-size rules live in `docs/tasks/README.m
 **Depends on:** `T-SHELL-012` (shipped, #214 — the parts both apps draw, split from this task at its `/start`) · `T-SHELL-007` · `T-SHELL-009` · `T-SHELL-001` (the phone shell it must match, state for state) · `T-M13-006` (PR #52) · `T-FPLAT-025` (shipped, #51) · `T-M01-025` (shipped, #40) · `T-M01-001` (shipped, #53 — the sign-in door on web) · `packages/ui` `AppShell`, `AppRail`, `AppHeader`, `TenantHeader`, `Menu`, `CoachMark`, `LogoTile`, `EmptyState` (landed).
 ### T-SHELL-002 · Global Search
 **Type:** screen · **Tier:** P0
-**Status:** designed
+**Status:** planned
 **Why:** An installer types a phone number from anywhere in the app and the caller's lead, site, proposal or project is one tap away — the phone is the CRM's identity; without it a rep scrolls lists to find who is calling, and a lead marked junk by mistake can never be found again.
 **PRD rows:** F6-20, F6-23
-**DESIGN:** SCR-SHELL-02 → https://claude.ai/artifact/GmgFEzuBNQFfZBBMuPABoP
+**DESIGN:** SCR-SHELL-02
 
 **PRD rows (verbatim):**
 
@@ -250,7 +250,7 @@ Domain types it reads, adds none: the search-alias law and the plain ranking are
 **Status:** shipped
 **Why:** A rep sees "proposal opened" and today's payment due in one bell on both devices and acts from the item itself; without it events reach nobody, the badge lies about what is unread, and the owner's monthly summary has nowhere to land.
 **PRD rows:** F4-27, F6-07, F6-12, F6-17, F6-19, M13-21, M13-45
-**DESIGN:** SCR-SHELL-03 → https://claude.ai/artifact/GmgFEzuBNQFfZBBMuPABoP
+**DESIGN:** SCR-SHELL-03
 
 **PRD rows (verbatim):**
 
@@ -274,7 +274,7 @@ Domain types it reads, adds none: the search-alias law and the plain ranking are
 **Status:** shipped
 **Why:** An owner whose card failed keeps selling for seven days and is told on every screen exactly what paused and the one tap that fixes it; without it a blocked save is a silent failure and the team assumes the product is broken.
 **PRD rows:** M12-06, M12-21, M12-30, M12-31, M12-39, M12-53
-**DESIGN:** SCR-SHELL-06 → https://claude.ai/artifact/GmgFEzuBNQFfZBBMuPABoP
+**DESIGN:** SCR-SHELL-06
 
 **PRD rows (verbatim):**
 

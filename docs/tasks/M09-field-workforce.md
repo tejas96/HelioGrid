@@ -9,7 +9,7 @@ This file covers module M09 — Field workforce: the tracked-seat lifecycle and 
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-04 (P0), M09-12 (P0), M09-14 (P0), M09-16 (P0), M09-44 (P0), M09-68 (P0)
-**DESIGN:** SCR-M09-01 → PENDING
+**DESIGN:** SCR-M09-01
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. M09-50 (the per-site radius rule) also binds this screen because the tenant default radius is set here; it is dispositioned at T-M09-007.
 **DONE WHEN:**
 
@@ -28,7 +28,7 @@ This file covers module M09 — Field workforce: the tracked-seat lifecycle and 
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-13 (P0), M09-19 (P0), M09-21 (P0), M09-23 (P1), M09-24 (P0), M09-28 (P0), M09-32 (P1), M09-33 (P2), M09-35 (P0), M09-37 (P0), M09-51 (P0), M09-66 (P0), M09-71 (P0), PS-23 (P1), M13-35 (P0)
-**DESIGN:** SCR-M09-02 → PENDING
+**DESIGN:** SCR-M09-02
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. M09-24 also binds SCR-M09-04 and M09-66 also binds SCR-M09-05; they are dispositioned here. M09-28's lead-side half binds SCR-M02-04 (Lead Detail; see `docs/tasks/M02-crm-leads.md`); the field half — the stop on the route and its check-in/out — is this task's. **Exception — `M09-71`:** the row was added to `docs/prd/modules/M09-field-workforce.md` §M09.5 by owner ruling 2026-08-15, restoring the law of `M09-36`, which was deleted 2026-08-07 with the offline capability and stays deleted; the restoring row deliberately carries a new id. It is quoted verbatim here and this quote is the specification for it:
 
 - **M09-71** (P0) — **A day start or a day end is recorded only once the server has it.** The mark is the person's own act (`M09-35`, `M09-37`); until the server confirms it the surface shows it **pending, never as recorded** — no optimistic tick, and no local clock time presented as a record fact. A failure says so plainly and the mark is not lost from the screen (`F8-36`). This binds harder here than anywhere else in the product: attendance is read as a judgement about a person and feeds `modules/M10-hr-lite.md`'s register (`M10-23`), so a mark that *looks* recorded and is not is a wrong answer about someone's day. The time shown is the time the server recorded, which is what makes it an untiered record fact under `F8`'s date rule — a pending mark is not yet a record and cannot be shown as one.
@@ -69,7 +69,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-27 (P0), M09-31 (P0)
-**DESIGN:** SCR-M09-03 → PENDING
+**DESIGN:** SCR-M09-03
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 
@@ -84,7 +84,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-43 (P0), M09-48 (P0), M09-59 (P0), M09-61 (P0), M09-63 (P2)
-**DESIGN:** SCR-M09-04 → PENDING
+**DESIGN:** SCR-M09-04
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. M09-24 (open check-in surfacing) also binds this screen because the exception rows surface here too; it is dispositioned at T-M09-002.
 **DONE WHEN:**
 
@@ -103,7 +103,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-45 (P0), M09-54 (P0), M09-56 (P0)
-**DESIGN:** SCR-M09-05 → PENDING
+**DESIGN:** SCR-M09-05
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. M09-45 also binds SCR-M09-06 (Day Playback); it is dispositioned here. M09-66 (the own-record right) also binds this screen; it is dispositioned at T-M09-002.
 **DONE WHEN:**
 
@@ -123,7 +123,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-55 (P0)
-**DESIGN:** SCR-M09-06 → PENDING
+**DESIGN:** SCR-M09-06
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. M09-45 (gaps never interpolated) binds this screen's replay; it is dispositioned at T-M09-005. M09-57's retention window bounds which days are replayable; it is dispositioned at T-M09-012.
 **DONE WHEN:**
 
@@ -138,7 +138,7 @@ Cross-bucket note: `PS-23` and `M13-35` are the route's **content contract** —
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M09-49 (P0), M09-50 (P0)
-**DESIGN:** SCR-M09-07 → PENDING
+**DESIGN:** SCR-M09-07
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. M09-50 also binds SCR-M09-01 (the tenant default radius); it is dispositioned here.
 **DONE WHEN:**
 

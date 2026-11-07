@@ -72,7 +72,8 @@ Then stop for the owner's yes. Show them the PR body's *User impact* (what a use
 example) and *Flow* (a mermaid diagram of the parts the change touches and how data moves between
 them), as `.github/pull_request_template.md` shapes them, and one line per decision. A task that
 adds or reshapes a screen also shows three strong samples of it, phone and desktop, in the approved
-language (`CLAUDE.md` §10), drawn on one Design canvas made for the task; the owner picks one. Build
+language (`CLAUDE.md` §10), drawn on one Design canvas made for the task; the owner picks one, and
+the RFC names the pick with the canvas link, so a resumed session builds the same one. Build
 starts only on their yes. A change they ask for goes into the RFC first, and they see it again.
 
 ## Build

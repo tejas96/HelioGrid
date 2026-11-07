@@ -6,7 +6,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M03-08 (P0)
-**DESIGN:** SCR-M03-01 → PENDING
+**DESIGN:** SCR-M03-01
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a campaign in any state, when it is read, then its state is one of the six of `M03-09` and the surface states what that state means for editing and sending (`M03-08`, `M03-09`).
@@ -16,7 +16,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M03-10 (P0), M03-11 (P0)
-**DESIGN:** SCR-M03-02 → PENDING
+**DESIGN:** SCR-M03-02
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given an audience builder used by any holder of the capability — including a Marketing-only holder — when filters are applied, then counts resolve over the whole lead base, and no individual lead file, value or note is readable through the builder (`M03-10`, owner ruling 2026-08-04).
@@ -30,7 +30,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M03-15 (P1), M03-38 (P0), M03-41 (P0)
-**DESIGN:** SCR-M03-03 → PENDING
+**DESIGN:** SCR-M03-03
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given campaign content, when it is authored, then a version exists per language the tenant uses and no version was machine-translated or auto-filled from another (`M03-38`).
@@ -42,7 +42,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M03-12 (P0), M03-44 (P0), M03-45 (P0)
-**DESIGN:** SCR-M03-04 → PENDING
+**DESIGN:** SCR-M03-04
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a scheduled send time outside the market's declared messaging window, when scheduling is attempted, then it is refused with the window named and nothing is silently moved (`M03-12`).
@@ -55,7 +55,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 **Type:** screen · **Tier:** P1
 **Status:** planned
 **PRD rows:** M03-50 (P1)
-**DESIGN:** SCR-M03-05 → PENDING
+**DESIGN:** SCR-M03-05
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - The PRD carries no dedicated Given/When/Then citing `M03-50`; the verbatim row in the brief is the acceptance baseline (channel-imposed throughput/daily ceilings respected, the surface says the run will take longer for that reason, progress visible throughout, and a limit is attributed to its owner — the product does not present a channel-imposed limit as its own, or vice versa).
@@ -65,7 +65,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M03-04 (P0), M03-14 (P0), M03-26 (P0), M03-49 (P0), M03-53 (P0), M03-55 (P0), M03-56 (P0)
-**DESIGN:** SCR-M03-06 → PENDING
+**DESIGN:** SCR-M03-06
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a send on a channel that reports no delivery state, when the campaign's per-recipient results render, then the state reads "not reported by this channel" and no delivery is implied (`M03-04`).
@@ -83,7 +83,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M03-19 (P0), M03-27 (P0), M03-28 (P0)
-**DESIGN:** SCR-M03-07 → PENDING
+**DESIGN:** SCR-M03-07
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a channel the tenant has not connected, when the channel list renders, then it shows as connectable with its requirements — never as a working channel (`M03-19`).
@@ -98,7 +98,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M03-29 (P1), M03-36 (P0), M03-52 (P1)
-**DESIGN:** SCR-M03-08 → PENDING
+**DESIGN:** SCR-M03-08
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given the channel-health surface, when it renders, then every channel's connection state, registration state and remaining allowance are visible in one place (`M03-29`).
@@ -110,7 +110,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M03-39 (P0), M03-40 (P0)
-**DESIGN:** SCR-M03-09 → PENDING
+**DESIGN:** SCR-M03-09
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. `M03-40` is quoted in full:
 - **M03-40** (P0) — **Campaign templates extend the tenant's existing message-template settings; there is no second template system.** `M01-55` establishes message templates as tenant data authored per language on `modules/M01`'s settings surface, for the moments the product **composes** text a person sends. Campaign templates are the same class of tenant content with two additions this module owns: a channel binding and a registration state (`M03-39`). The settings surface, its authoring pattern and its per-language rule are `modules/M01`'s and are not restated.
 - (`M03-40`'s clause "for the moments the product **composes** text a person sends" is the **pre-ruling** description of `M01-55`, quoted above unchanged because the row is the specification. `M01-55` now reads: the composed message "**sends from the tenant's connected transactional channel where one exists, and is copy-paste for a person to send where none is**" (owner ruling 2026-08-04), and only the no-channel path claims no delivery — the lane law is `M03-03`, quoted in full in the Laws section of this file. **Nothing in this task changes:** `M03-40` binds the template *content class*, not a send rail, and the campaign templates built here are campaign-lane objects the ruling left unchanged; a transactional send never uses this surface. The divergence is recorded at `docs/prd/modules/M03-marketing.md` §M03.5 and the requirement cell is not rewritten by this suite.)
@@ -127,7 +127,7 @@ This file covers every requirement row of `docs/prd/modules/M03-marketing.md` (M
 **Type:** screen · **Tier:** P0
 **Status:** planned
 **PRD rows:** M03-24 (P0)
-**DESIGN:** SCR-M03-10 → PENDING
+**DESIGN:** SCR-M03-10
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given the website form, when a visitor submits it, then a lead is created through the same capture path as every other channel and the form itself sends nothing to anyone (`M03-24`).

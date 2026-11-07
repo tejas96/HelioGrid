@@ -220,9 +220,10 @@ function DemoDoorCard({
 }
 
 const styles = StyleSheet.create({
-  /** The heading `sp-8` under the wordmark (`deep`), the line `sp-2` under it, the doors `sp-6` under that. */
-  title: { gap: theme.spacing['sp-2'], paddingBottom: theme.spacing['sp-6'] },
-  doors: { gap: theme.spacing['sp-4'] },
+  /** The heading and its line sit inside the hero, so padding here grows the hero, never the gap under it. */
+  title: { gap: theme.spacing['sp-2'], paddingBottom: theme.spacing['sp-2'] },
+  /** The phone frame leaves no space under its identity, so the doors keep the web frame's `sp-4` themselves. */
+  doors: { gap: theme.spacing['sp-4'], paddingTop: theme.spacing['sp-4'] },
   door: { gap: theme.spacing['sp-4'] },
   head: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
   /** The name and its `Demo` mark, wrapping under the name when the language is long. */
