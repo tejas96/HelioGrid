@@ -23,10 +23,12 @@
     gap: var(--sp-8);
   }
 
-  /* The act at the pane's right edge, as wide as its words, its line centred under it (d-first-run). */
+  /* The act at the pane's right edge, as wide as its words, its line centred under it (d-first-run),
+     and never past half the pane: a line longer than that wraps under the act rather than widening
+     it — on Linux the line's face sets it some 10px wider than on a Mac. */
   .hg-role-explainer-act {
     align-self: flex-end;
     width: max-content;
-    max-width: 100%;
+    max-width: calc(50% - var(--sp-2));
   }
 }
