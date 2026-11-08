@@ -74,3 +74,23 @@ test('the specimen draws only when asked, with no figure', async ({ mount }) => 
   const [r, g, b] = [1, 3, 5].map((at) => Number.parseInt(ink.slice(at, at + 2), 16));
   await expect(word).toHaveCSS('color', `rgb(${r}, ${g}, ${b})`);
 });
+
+test('the dot in the hex field opens a picker, and a picked colour becomes the hex', async ({
+  mount,
+}) => {
+  const field = await mount(<HeldBrandColorField initial="#0D7A4F" />);
+
+  const picker = field
+    .getByLabel(BRAND_COLOUR_WORDS.label, { exact: true })
+    .and(field.locator('input[type="color"]'));
+  await expect(picker).toHaveValue('#0d7a4f');
+  await expectTouchFloor([field.locator('.hg-brand-color-pick')]);
+
+  await picker.fill('#26968f');
+  await expect(
+    field.getByRole('textbox', { name: BRAND_COLOUR_WORDS.hexLabel, exact: true }),
+  ).toHaveValue('#26968F');
+  await expect(field.locator('.hg-brand-color-short-line')).toHaveText(
+    BRAND_COLOUR_WORDS.short.fillsAndLines('near-black'),
+  );
+});

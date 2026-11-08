@@ -54,6 +54,7 @@
 @import "./components/BillingStrip/BillingStrip.css";
 @import "./components/Block/Block.css";
 @import "./components/BrandColorField/BrandColorField.css";
+@import "./components/BrandColorField/BrandColorPick.css";
 @import "./components/BrandingSettings/BrandingSettings.css";
 @import "./components/BrandingSettings/BrandingSettingsStage.css";
 @import "./components/Button/Button.css";

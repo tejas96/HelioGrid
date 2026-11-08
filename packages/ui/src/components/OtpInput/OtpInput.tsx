@@ -106,8 +106,6 @@ export function OtpInput({
               }}
               onBlur={() => setFocusedIndex(null)}
             />
-            {/* An empty cell is found by its mark, not an outline (`SCR-M01-01`); a digit replaces it. */}
-            {slot.char === '' ? <span className="hg-otp-bar" aria-hidden="true" /> : null}
           </span>
         ))}
       </div>
