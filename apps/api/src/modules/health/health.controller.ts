@@ -7,7 +7,7 @@ import { ENV } from '../../config/env';
 import { HealthRepository } from './health.repository';
 
 const SERVICE = 'heliogrid-api';
-const VERSION = ENV.FLY_MACHINE_VERSION;
+const VERSION = ENV.APP_VERSION;
 
 /**
  * Both probes are PUBLIC, and that mark is load-bearing: the deny-by-default guard refuses a

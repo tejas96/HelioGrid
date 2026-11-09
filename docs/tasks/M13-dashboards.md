@@ -66,20 +66,6 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 - (M13-26 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text in the brief is the binding criterion — referral-sourced deals are visible in the win/loss view via the referral row, the "came from" chip's reporting face, with no credits and no balances.)
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
-### T-M13-006 · Home composition engine (preset ladder, home in force, composed presets, switcher list)
-
-**Type:** engine · **Tier:** P0
-**Status:** shipped (#52)
-**Why:** A rep who also surveys signs in and lands on ONE home — My Day with today's visits inside it — and an installer who also surveys lands on today's visits with the route and the job composed in; without one fixed ladder every screen would pick its own front door, a person with two roles would get two competing homes, and the centre verb and the slots (`T-FPLAT-025`) would have no preset to key from.
-**PRD rows:** M13-10
-**Design:** none — an engine task. The surface is `SCR-SHELL-01` (`T-SHELL-001`): the home title IS the switcher, one `menuitemradio` per held preset's home, and switching swaps which body of work is the home's own and which is composed in (decision 4).
-**Depends on:** `T-FPLAT-001` (shipped, #42 — `ROLE_PRESETS`, `inMatrixOrder`) · `T-FPLAT-025` (shipped, #51 — `centreVerbFor(homePreset)` and `standingDestinationsFor(preset)`, the two resolvers this task's output keys).
-
-**DONE WHEN:**
-- Given any combination of held presets, when the person signs in, then their home is the highest-ladder preset's home with every other held preset's today-block composed inside, and a switcher lists each held preset's home (M13-10). → proof: unit `packages/domain/tests/shell/home.test.ts` — the ladder is a permutation of the twelve; the PRD's own cases resolve as written (rep + surveyor → My Day, Sales Executive; Field Technician + Survey Engineer + Installation Team Member → today's visits, Survey Engineer, with the other two composed in ladder order; EPC Owner who also sells → the owner dashboard with My Day one switch away; Marketing + Sales Executive → campaigns first; one preset → its own home with nothing composed); the answer ignores the order the presets were typed in and a preset typed twice; no presets → `null`; the switcher lists each held preset once in ladder order; a switch to a held preset makes it the home and moves the ladder's home into the composed set; a switch to a preset not held falls back to the ladder's home; the home is never in its own composed set (seen red on a ladder with Sales Executive above Marketing); the switcher on screen and the landing at sign-in are `T-SHELL-001`'s qa-parity proof
-- Given a composed home, when its blocks are compared with the owning modules' contracts, then the content is identical and every block law (separate agent block, no-commercial-figures surfaces, gap statements) still holds (M13-11, M13-13). → proof: qa-parity at `T-SHELL-001` and at each block's landing, comparing the composed block with the owning module's own list — nothing in this task holds block content (`ComposedHome` names presets only), and each block law is that block's own proof: the separate agent block with M07's My Day, the no-commercial-figures surface at `T-M08-005` (M13-36), the gap statements at `T-M10-001` (M13-48)
-- Given `packages/domain/src/shell/`, when the unit suite runs with coverage, then it stays at 100%. → proof: gate `M71` (the `shell/**` glob, seen red at #51)
-
 ### T-M13-007 · Revenue and forecast read-model
 
 **Type:** engine · **Tier:** P0
@@ -144,7 +130,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 - (M13-51 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text above is the binding criterion. The PRD's analytics-events note for §M13.8 names the event: trial-to-paid conversion recorded (M13-51).)
 
 **Settle before the build:**
-- No analytics event-stream store in V1: trial-to-paid (M13-51, BM-47) derives from the `subscription` transitions M12 already records — trialing to paid, with timestamps — so the taxonomy is those named transitions and nothing is authored — pick: derive (cost if wrong: an appended analytics_event table whose rows the transitions already imply).
+- No analytics event-stream store in V1: trial-to-paid (M13-51) derives from the `subscription` transitions M12 already records — trialing to paid, with timestamps — so the taxonomy is those named transitions and nothing is authored — pick: derive (cost if wrong: an appended analytics_event table whose rows the transitions already imply).
 
 ### T-M13-012 · Dashboard export
 
@@ -176,7 +162,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 
 - **M13-09** (P0) — **Role decides the home screen, not a setting** — the front door is derived from what the person is (the twelve homes are §M13.5's rows). Nothing in preferences chooses a home; the composition rule below derives it. — *Enforced by:* T-M13-006 deriving the home from held presets alone; review confirms no home-screen preference exists on any settings surface.
 
-- **M13-11** (P0) — **Composition blocks are the owning module's content, unmodified.** The My Day content contract is `M07`'s (§M07.1); the visits block `M04-38`'s; the sign-off queue `M05-83`'s; the people-today queue `M10-14`'s; the field day `M09-62`'s; money due `M11-54`'s. This module owns placement and scoping, never the facts, and a block keeps its own laws inside the composed home (e.g. the agent-activity block stays separate from the person's own tasks — M13-13). — *Enforced by:* T-M13-006 composing owning-module blocks unmodified; review compares each composed block with the owning module's content contract; its acceptance line: Given a composed home, when its blocks are compared with the owning modules' contracts, then the content is identical and every block law (separate agent block, no-commercial-figures surfaces, gap statements) still holds (M13-11, M13-13).
+- **M13-11** (P0) — **Composition blocks are the owning module's content, unmodified.** The My Day content contract is `M07`'s (§M07.1); the visits block `M04-38`'s; the sign-off queue the design studio's; the people-today queue `M10-14`'s; the field day `M09-62`'s; money due `M11-54`'s. This module owns placement and scoping, never the facts, and a block keeps its own laws inside the composed home (e.g. the agent-activity block stays separate from the person's own tasks — M13-13). — *Enforced by:* T-M13-006 composing owning-module blocks unmodified; review compares each composed block with the owning module's content contract; its acceptance line: Given a composed home, when its blocks are compared with the owning modules' contracts, then the content is identical and every block law (separate agent block, no-commercial-figures surfaces, gap statements) still holds (M13-11, M13-13).
 
 - **M13-12** (P0) — **Every home and dashboard has a teaching empty state.** A brand-new tenant, an unassigned joiner or an empty scope sees what will appear here, why, and who to ask — never a blank or broken chart. — *Enforced by:* the teaching empty state on every screen task in this file (each brief lists an `empty-teaching` state; the screen boilerplate DONE WHEN line requires the base states) and on every composed home via T-M13-006.
 
@@ -188,7 +174,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 
 - **M13-28** (P0) — **Campaign-derived figures never render without their caveat.** Any pipeline or win/loss view that cites a campaign renders `M03-57`'s published figures with the correlation caveat travelling — this module may not present them without it, on screen or in export. — *Enforced by:* the `campaign-caveat` state in `SCR-M13-05` (T-M13-005), the caveat travelling on every campaign figure any M13 surface renders, and T-M13-012 carrying it into exports; its acceptance line: Given a campaign column anywhere in pipeline reporting, when it renders or exports, then the caveat is present (M13-28).
 
-- **M13-49** (P0) — **Reporting vocabulary for plans and billing states is `04-business-model.md`'s, verbatim:** any report segmenting by plan uses the four tier names (`BM-11`); any surface naming a billing state uses the six `BM-33` names. No reporting synonym exists. — *Enforced by:* review of report copy on every M13 surface and export against the four tier names and six state names; its acceptance line: Given any plan- or state-segmented report, when its vocabulary is audited, then only `BM-11`/`BM-33` names appear (M13-49).
+- **M13-49** (P0) — **Reporting vocabulary for plans and billing states is platform billing's, verbatim:** any report segmenting by plan uses billing's plan names; any surface naming a billing state uses billing's state names. No reporting synonym exists. — *Enforced by:* review of report copy on every M13 surface and export against billing's plan and state names; its acceptance line: Given any plan- or state-segmented report, when its vocabulary is audited, then only billing's plan and state names appear (M13-49).
 
 - **M13-50** (P0) — **Usage figures on any dashboard read M12's rollups — the same numbers as billed** (`F8-33`); no dashboard recomputes usage, and the usage screen itself stays M12's owner-scoped surface (`F2.M12.view-usage-and-invoices`). — *Enforced by:* dashboards reading M12's rollups only — no task in this file builds any usage recomputation, and the usage screen remains M12's; its acceptance line: Given a usage figure on a dashboard, when compared with M12's rollup, then they are the same number from the same rollup (M13-50).
 
@@ -197,17 +183,17 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 These M13 rows specify homes and dashboard renderings whose surfaces ship as other modules' screens; the verbatim row text lives in the pointed brief, and the owning module's screen task builds it. T-M13-006 composes each home per M13-10.
 
 - **M13-32** (P0) → realized-by: SCR-M04-06 screen task (M04 tasks file)
-- **M13-33** (P0) → realized-by: SCR-MS-02 screen task (studio tasks file)
+- **M13-33** (P0) → realized-by: the 3D Design Studio, rebuilt from scratch — no PRD or task yet
 - **M13-34** (P0) → realized-by: SCR-M08-01 screen task (M08 tasks file)
 - **M13-35** (P0) → realized-by: SCR-M09-02 screen task (M09 tasks file)
 - **M13-36** (P0) → realized-by: SCR-M08-05 screen task (M08 tasks file); the F2-06 no-commercial-figure surface law binds T-M13-006's composition of this home — its acceptance line: Given any surface reachable from the Installation Team Member home, when audited, then no price, discount, tranche, margin or customer value appears (M13-36).
 - **M13-37** (P0) → realized-by: SCR-M10-01 screen task (M10 tasks file)
 - **M13-38** (P0) → realized-by: SCR-M11-01 screen task (M11 tasks file)
 - **M13-40** (P0) → realized-by: `SCR-M03-01` — T-M03-001 (docs/tasks/M03-marketing.md)
-- **M13-41** (P0) → realized-by: `SCR-M07-18` — T-M07-018 (docs/tasks/M07-sales-execution.md)
-- **M13-42** (P0) → realized-by: `SCR-M07-18` — T-M07-018 (docs/tasks/M07-sales-execution.md)
-- **M13-43** (P0) → realized-by: `SCR-M07-19, SCR-M07-10, SCR-M07-20, SCR-M07-18` — T-M07-019, T-M07-010, T-M07-020, T-M07-018 (docs/tasks/M07-sales-execution.md)
-- **M13-44** (P1) → realized-by: `SCR-M07-18` — T-M07-018 (docs/tasks/M07-sales-execution.md)
+- **M13-41** (P0) → realized-by: `SCR-M07-18` — voice, postponed
+- **M13-42** (P0) → realized-by: `SCR-M07-18` — voice, postponed
+- **M13-43** (P0) → realized-by: `SCR-M07-19, SCR-M07-10, SCR-M07-20, SCR-M07-18` — voice, postponed
+- **M13-44** (P1) → realized-by: `SCR-M07-18` — voice, postponed
 - **M13-46** (P0) → realized-by: `SCR-M03-01` — T-M03-001 (docs/tasks/M03-marketing.md); its acceptance line: Given any campaign figure on any M13 surface or export, when audited, then the caveat is present (M13-46).
 - **M13-48** (P0) → realized-by: SCR-M10-01 screen task (M10 tasks file); the non-UI half is a prohibition — no hours-worked, punctuality or people-score computation is built anywhere; its acceptance line: Given a field-day or attendance rollup, when audited, then gaps are stated, unmarked is unmarked, and no score of any kind appears (M13-47, M13-48).
 
@@ -247,7 +233,7 @@ These M13 rows specify homes and dashboard renderings whose surfaces ship as oth
 | M13-30 | T-M13-001 |
 | M13-31 | T-M13-002 |
 | M13-32 | realized-by: T-M04-006 — SCR-M04-06 screen task |
-| M13-33 | realized-by: T-MS-375 (`docs/tasks/MS-studio-c.md`) — `SCR-MS-02` |
+| M13-33 | realized-by: the 3D Design Studio, rebuilt from scratch — no PRD or task yet |
 | M13-34 | realized-by: T-M08-001 — SCR-M08-01 screen task |
 | M13-35 | realized-by: T-M09-002 — SCR-M09-02 screen task |
 | M13-36 | realized-by: T-M08-005 — SCR-M08-05 screen task |
@@ -255,10 +241,10 @@ These M13 rows specify homes and dashboard renderings whose surfaces ship as oth
 | M13-38 | realized-by: T-M11-001 — SCR-M11-01 screen task |
 | M13-39 | T-M13-003 |
 | M13-40 | realized-by: SCR-M03-01 (T-M03-001) |
-| M13-41 | realized-by: SCR-M07-18 (T-M07-018) |
-| M13-42 | realized-by: SCR-M07-18 (T-M07-018) |
-| M13-43 | realized-by: SCR-M07-19, SCR-M07-10, SCR-M07-20, SCR-M07-18 (T-M07-019, T-M07-010, T-M07-020, T-M07-018) |
-| M13-44 | realized-by: SCR-M07-18 (T-M07-018) |
+| M13-41 | realized-by: SCR-M07-18 — voice, postponed |
+| M13-42 | realized-by: SCR-M07-18 — voice, postponed |
+| M13-43 | realized-by: SCR-M07-19, SCR-M07-10, SCR-M07-20, SCR-M07-18 — voice, postponed |
+| M13-44 | realized-by: SCR-M07-18 — voice, postponed |
 | M13-45 | T-M13-010 (engine) — surface half T-SHELL-003 |
 | M13-46 | realized-by: SCR-M03-01 (T-M03-001) |
 | M13-47 | T-M13-003 |

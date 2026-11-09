@@ -3,7 +3,7 @@
 The company entity (Udyam Aadhaar / Shop Act / GST) is **in progress**. Everything below
 waits on it; development does NOT — each row has a dev-mode path and a flip-on playbook,
 and credentials get added via the owner's consoles when they exist (the MSG91 pattern:
-agent configures in the visible browser, secrets land in `.env.local`/Fly secrets only).
+agent configures in the visible browser, secrets land in `.env.local` or the host's secret store only).
 
 | Blocked item | Needs | Dev-mode meanwhile | Flip-on playbook |
 |---|---|---|---|
@@ -21,5 +21,3 @@ becomes "internal distribution via sideload/simulator from Day 5; STORE-internal
 distribution starts when the org accounts exist." The store-review risk row's mitigation
 (code ships in-window, activation follows approval clocks) already covers this pattern.
 
-**Separate (not company-gated):** Fly billing card — owner adds at
-fly.io/dashboard/heliogrid/billing, then run [infra/README.md](../../../infra/README.md).

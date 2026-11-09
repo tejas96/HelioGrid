@@ -247,7 +247,7 @@ notification's words are rendered in the reader's language when it is written, `
 Platform scope: backend only (Node). Belongs: the HTTP edge, its repositories, and `src/scripts/`
 commands that drive a service. Never: ui/theme/data (frontend layers — held by the `app-api`
 Turbo boundary tag); i18n's `./react` or `./rn` (dependency-cruiser `server-no-i18n-frontend-entries`); raw
-process.env (env owns it); a periodic job — every Fly instance would run it, so it is a Temporal
+process.env (env owns it); a periodic job — every api instance would run it, so it is a Temporal
 Schedule whose workflow lives in apps/worker (the step host's reconnect timer is per process by
 design, not a job). Extension point: one Nest module per contract router,
 repositories fenced by db-access-in-repositories-only.
@@ -283,7 +283,7 @@ registration INTERFACE and the root does the composing.
 Owns: `infra/temporal/` — the production-like local Temporal stack (compose, pinned digests,
 development PKI, bootstrap and the probe scripts that prove identity, durability, rotation and
 upgrades) — and `infra/temporal/deploy/` — the reviewed, UNDEPLOYED production candidate
-(image, Fly template, rendered config, runbooks, alerts). Allowed deps: none — it is NOT a
+(image, rendered config, runbooks, alerts). Allowed deps: none — it is NOT a
 workspace package (`pnpm-workspace.yaml` covers apps/packages/tests only), so it is outside the
 build graph, the lockfile and dep-cruiser. Platform scope: operator tooling. Belongs:
 anything needed to RUN or DEPLOY a dependency that is not application code. Never: product

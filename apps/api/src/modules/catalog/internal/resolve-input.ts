@@ -19,7 +19,7 @@ export interface ResolveContext {
 /**
  * A stored row through the one resolver (`T-M01-037`; Law 11) — the spec parsed whole, so an
  * unknown key a newer release wrote is dropped (C11), and the stored decimal re-minted as minor
- * units. The pack's per-kind tax is `null` until block 7 authors it, so an unset tax reads absent
+ * units. The pack's per-kind tax is `null` until its rates are supplied (D241), so an unset tax reads absent
  * (`F8-01`).
  */
 export function resolvedOf(row: SliceRow, context: ResolveContext): ResolvedCatalogItem {

@@ -638,11 +638,6 @@ msgid "{done} of {total} steps done"
 msgstr "{done} of {total} steps done"
 
 #. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:11
-msgid "{drawing} renders here"
-msgstr "{drawing} renders here"
-
-#. js-lingui-explicit-id
 #: src/copy/transcript.ts:30
 msgid "{earlier}, then {later}"
 msgstr "{earlier}, then {later}"
@@ -3266,11 +3261,6 @@ msgid "Check the SMS, or send a new code."
 msgstr "Check the SMS, or send a new code."
 
 #. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:20
-msgid "Checked"
-msgstr "Checked"
-
-#. js-lingui-explicit-id
 #: src/copy/checklist.ts:12
 msgid "Checklist"
 msgstr "Checklist"
@@ -4293,21 +4283,6 @@ msgstr "Downgrade"
 #: src/copy/map-surface.ts:29
 msgid "Drag map to adjust"
 msgstr "Drag map to adjust"
-
-#. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:15
-msgid "Drawing"
-msgstr "Drawing"
-
-#. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:16
-msgid "Drawing no."
-msgstr "Drawing no."
-
-#. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:19
-msgid "Drawn by"
-msgstr "Drawn by"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:26
@@ -5989,11 +5964,6 @@ msgid "Left out — nothing changes for this item."
 msgstr "Left out — nothing changes for this item."
 
 #. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:13
-msgid "Legend"
-msgstr "Legend"
-
-#. js-lingui-explicit-id
 #: src/copy/catalog-add-item-fields.ts:11
 msgid "Length"
 msgstr "Length"
@@ -7321,11 +7291,6 @@ msgid "None"
 msgstr "None"
 
 #. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:12
-msgid "North"
-msgstr "North"
-
-#. js-lingui-explicit-id
 #: src/copy/disclosure.ts:29
 msgid "Not a structural certification"
 msgstr "Not a structural certification"
@@ -8115,11 +8080,6 @@ msgid "Panels"
 msgstr "Panels"
 
 #. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:18
-msgid "Paper"
-msgstr "Paper"
-
-#. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:56
 msgid "Part of this cycle"
 msgstr "Part of this cycle"
@@ -8772,11 +8732,6 @@ msgstr "Profile still loading"
 #: src/copy/stepper.ts:15
 msgid "Progress"
 msgstr "Progress"
-
-#. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:14
-msgid "Project"
-msgstr "Project"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:14
@@ -9676,11 +9631,6 @@ msgstr "Say what changed to save this version."
 #: src/copy/proposal-template.ts:65
 msgid "Say what happens in this phase"
 msgstr "Say what happens in this phase"
-
-#. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:17
-msgid "Scale"
-msgstr "Scale"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:122

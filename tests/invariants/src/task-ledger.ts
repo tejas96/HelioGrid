@@ -18,8 +18,11 @@ const FENCE = /^\s*```/;
 const TASK_HEADING = new RegExp(`^### (${TASK_ID}[a-z]?) · (.*)$`);
 const ANY_HIGHER_HEADING = /^#{1,3} /;
 const STATUS = /^\*\*Status:\*\* (.+)$/;
-/** The ledger's words (`docs/tasks/README.md`, rule 0); a task in any other is lost to the walk. */
-const LEDGER_WORD = /^(planned|shipped|struck)\b/;
+/**
+ * The ledger's one word (`docs/tasks/README.md`, rule 0): the task files hold open work only, so a
+ * shipped or struck task is deleted in its change, and a task in any other word is lost to the walk.
+ */
+const LEDGER_WORD = /^planned\b/;
 /** A header line, `**Depends on:** …`; only those above the task's first `####` heading count. */
 const HEADER_LINE = /^\*\*([A-Za-z][A-Za-z ]*):\*\*\s*(.*)$/;
 
@@ -68,7 +71,7 @@ export function readTaskLedger(repo: string): TaskLedger {
       }
       if (!LEDGER_WORD.test(entry.status))
         problems.push(
-          `${id} at ${here} reads **Status:** ${entry.status} — the ledger holds planned, shipped and struck`,
+          `${id} at ${here} reads **Status:** ${entry.status} — the task files hold planned tasks only; a shipped or struck task is deleted`,
         );
       tasks.set(id, entry);
     }

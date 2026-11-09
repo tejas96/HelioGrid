@@ -94,9 +94,8 @@ export const nodeEnvSchema = z.enum(['development', 'test', 'production']).defau
  * EXECUTES them) — one description, two consumers, which is what this file is for.
  *
  * The certificate paths are FILES, not inline PEM. A private key in an environment variable
- * is readable by every child process, appears in `fly ssh console` output and in any crash
- * dump that snapshots the environment; a file has permissions. Fly writes secrets to files
- * for exactly this reason.
+ * is readable by every child process, appears in a remote shell's output and in any crash
+ * dump that snapshots the environment; a file has permissions.
  */
 export const temporalAddressSchema = z.string().min(3);
 export const temporalNamespaceSchema = z.string().min(1);

@@ -1,6 +1,6 @@
 # ADR-0025: Workflow orchestration — Temporal, superseding the BullMQ scaffold
 
-Date: 2026-08-25 · Supersedes the queue row of `docs/engineering/03-tech-stack.md` (BullMQ 5.x + Upstash)
+Date: 2026-08-25 · Supersedes the queue row of `docs/engineering/03-tech-stack.md` (BullMQ 5.x + Redis)
 
 ## Context
 
@@ -83,14 +83,13 @@ BullMQ processor — the target is Temporal.
 - **Keep BullMQ and hand-roll orchestration.** The status quo. Every multi-step property above
   becomes per-module code, and the failure mode is silent: a partially-applied sequence looks
   like a completed one.
-- **Graphile Worker / pg-boss** (Postgres-native queues). Removes the Redis dependency and the
-  Upstash cost, and is a genuinely good fit for the cron-style sweeps. Same objection as
+- **Graphile Worker / pg-boss** (Postgres-native queues). Removes the Redis dependency for queues, and is a genuinely good fit for the cron-style sweeps. Same objection as
   BullMQ for the multi-step processes, which are the majority of the work.
 - **Temporal Cloud.** Removes the operational burden this ADR accepts. Rejected for launch: it
   is a per-action-priced external dependency requiring an account and a billing decision, and
   the self-hosted path is proven to work on the single machine already planned. Revisit when
   orchestration volume makes the operational cost real rather than theoretical.
-- **Step Functions / Durable Functions.** Cloud-provider lock-in, and we are on Fly.
+- **Step Functions / Durable Functions.** Cloud-provider lock-in.
 
 ## Sources
 

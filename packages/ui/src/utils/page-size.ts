@@ -36,7 +36,7 @@ export function pageSizeRule({
 }: PageSizeSpec = {}): string {
   const size = PAPER_CSS[paper] ?? PAPER_CSS.a4;
   const dir = orientation === 'landscape' ? 'landscape' : 'portrait';
-  /* margin: 0 because the sheet carries its own margins — PagedDocument and DrawingSheet both pad
+  /* margin: 0 because the sheet carries its own margins — PagedDocument pads
      inside the page box, so a page margin here would be counted twice. */
   return `@page{size:${size} ${dir};margin:0}`;
 }

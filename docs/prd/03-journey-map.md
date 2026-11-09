@@ -73,8 +73,7 @@ a **site** when someone surveys the roof, and the survey is one object whichever
 it ([`modules/M04-survey.md`](modules/M04-survey.md) `M04-01`). The site acquires a **design**,
 and the design's bill of materials *is* the money path into the proposal rather than a second
 set of numbers typed again
-([`modules/M05-design-studio.md`](modules/M05-design-studio.md),
-[`modules/M06-proposals.md`](modules/M06-proposals.md) `M06-01`). The proposal acquires a
+([`modules/M06-proposals.md`](modules/M06-proposals.md) `M06-01`). The proposal acquires a
 **link**, and that link is not re-issued when the deal is won: the same tokenised URL becomes the
 progress tracker and then the document pack, because the customer bookmarked it once
 ([`foundations/F5-customer-link.md`](foundations/F5-customer-link.md) `F5-19`). The won deal
@@ -239,22 +238,19 @@ A designer turns a survey into something buildable and sellable: the roof traced
 satellite imagery, obstructions modelled, components chosen, panels laid out with real electrical
 stringing, shading simulated, a 3D view, and a bill of materials that is not a document but the
 proposal's actual money path. This is **the flagship of the product** — the thing no competitor
-at a comparable price has — and it is a redesign rather than an invention: the working
-implementation already carries the tracing, the simulation, the 3D and the layout, and the
-engineering underneath it is validated and must not be redesigned away. The stage produces
+at a comparable price has. The stage produces
 variants rather than rewrites when a customer changes their mind about size, marks one of them
 recommended, and ends at a **human sign-off**: an engineer approves the design, and until they
 do, the customer never sees it. The product does not compute whether a structure is adequate —
 that is a person's judgement, recorded with their name against exactly what they reviewed.
 
-- **Owning module:** [`modules/M05-design-studio.md`](modules/M05-design-studio.md) — the studio
-  in which a survey becomes a buildable, sellable design, from a small rooftop to a large plant,
-  with the studio census adopted verbatim as its acceptance baseline and never allowed to shrink.
+- **Owning module:** the studio, in which a survey becomes a buildable, sellable design, from a
+  small rooftop to a large plant.
 - **Key personas:** **Design Engineer** (both jobs — the design and the sign-off), with **Sales
   Executive** reading variants and **EPC Owner** seeing what it costs to build.
 - **The P0 heart:** the product never computes structural adequacy — sign-off is a recorded human
-  decision, and an unapproved design is never shown to the customer (`M05-82`, with the sign-off
-  record pinned to exactly what was reviewed at `M05-85`).
+  decision, and an unapproved design is never shown to the customer, with the sign-off record
+  pinned to exactly what was reviewed.
 
 ### Stage 6 — Proposal
 
@@ -378,8 +374,7 @@ reads Stage 8's project sites as the places a geofence can be anchored to (`M09-
 capabilities is structural for this journey: **site check-in and check-out and visit logging are
 included for every employee, on every tier, with no tracked seat and no add-on**
 (`M09-02`, `M09-18`). The location-tracking half is the product's single seat-counting
-exception, toggled per employee by the owner, and its commercial law lives in
-[`04-business-model.md`](04-business-model.md), not here.
+exception, toggled per employee by the owner.
 Personas added to the spine: **Field Technician**, and a first-class surface for **Installation
 Team Member**.
 
@@ -466,12 +461,12 @@ brief adds to a v1 stage (§4).
 
 | Stage | Owning module | Also on this stage | Key personas | The stage in one line |
 |---|---|---|---|---|
-| **0 · Company onboarding** | [`modules/M01-onboarding-and-tenant-config.md`](modules/M01-onboarding-and-tenant-config.md) | [`04-business-model.md`](04-business-model.md), [`modules/M12-platform-billing.md`](modules/M12-platform-billing.md) (trial and entitlements), [`foundations/F1-global-market-framework.md`](foundations/F1-global-market-framework.md) (the tenant's market pack) | EPC Owner | Ask for the minimum to produce one real proposal. |
+| **0 · Company onboarding** | [`modules/M01-onboarding-and-tenant-config.md`](modules/M01-onboarding-and-tenant-config.md) | [`foundations/F1-global-market-framework.md`](foundations/F1-global-market-framework.md) (the tenant's market pack) | EPC Owner | Ask for the minimum to produce one real proposal. |
 | **1 · User onboarding** | [`modules/M01-onboarding-and-tenant-config.md`](modules/M01-onboarding-and-tenant-config.md) | [`foundations/F2-roles-and-permissions.md`](foundations/F2-roles-and-permissions.md), [`modules/M13-dashboards-and-reporting.md`](modules/M13-dashboards-and-reporting.md) (the homes), [`modules/M10-hr-lite.md`](modules/M10-hr-lite.md) *(V2)* | All twelve; invited by EPC Owner; HR/Admin *(V2)* | Role decides the home screen, not a setting. |
 | **2 · Lead capture** | [`modules/M02-crm-and-leads.md`](modules/M02-crm-and-leads.md) | [`modules/M03-marketing.md`](modules/M03-marketing.md) *(V2)*, [`modules/M07-sales-execution.md`](modules/M07-sales-execution.md) (inbound voice capture) | EPC Owner, Sales Manager, Sales Executive, Marketing *(V2)* | Phone number is the identity; dedupe on capture, every time. |
 | **3 · Qualify & assign** | [`modules/M02-crm-and-leads.md`](modules/M02-crm-and-leads.md) | [`modules/M04-survey.md`](modules/M04-survey.md) (the booked visit), [`foundations/F6-notifications-and-search.md`](foundations/F6-notifications-and-search.md) (escalation) | EPC Owner, Sales Manager, Sales Executive | Somebody owns every lead, and snooze is a first-class action. |
 | **4 · Site survey** | [`modules/M04-survey.md`](modules/M04-survey.md) | [`foundations/F4-data-integrity.md`](foundations/F4-data-integrity.md), [`foundations/F8-data-honesty.md`](foundations/F8-data-honesty.md), [`modules/M09-field-workforce.md`](modules/M09-field-workforce.md) *(V2)* | Survey Engineer, Sales Executive, Design Engineer, Field Technician *(V2)* | Two modes, one record; derived is not measured, and it says so. |
-| **5 · Design** | [`modules/M05-design-studio.md`](modules/M05-design-studio.md) | [`modules/M01-onboarding-and-tenant-config.md`](modules/M01-onboarding-and-tenant-config.md) (the catalog), [`foundations/F8-data-honesty.md`](foundations/F8-data-honesty.md) | Design Engineer, Sales Executive, EPC Owner | The flagship — and an unapproved design never reaches a customer. |
+| **5 · Design** | — | [`modules/M01-onboarding-and-tenant-config.md`](modules/M01-onboarding-and-tenant-config.md) (the catalog), [`foundations/F8-data-honesty.md`](foundations/F8-data-honesty.md) | Design Engineer, Sales Executive, EPC Owner | The flagship — and an unapproved design never reaches a customer. |
 | **6 · Proposal** | [`modules/M06-proposals.md`](modules/M06-proposals.md) | [`foundations/F5-customer-link.md`](foundations/F5-customer-link.md), [`foundations/F8-data-honesty.md`](foundations/F8-data-honesty.md), [`foundations/F1-global-market-framework.md`](foundations/F1-global-market-framework.md) | Sales Executive, Design Engineer, EPC Owner, Finance | One object, not two — and validation happens once, at Generate. |
 | **7 · Follow-up & close** | [`modules/M07-sales-execution.md`](modules/M07-sales-execution.md) | [`modules/M13-dashboards-and-reporting.md`](modules/M13-dashboards-and-reporting.md) (My Day's rendering), [`foundations/F6-notifications-and-search.md`](foundations/F6-notifications-and-search.md), [`foundations/F1-global-market-framework.md`](foundations/F1-global-market-framework.md) (the statutory floor) | Sales Executive, Sales Manager, EPC Owner | Nothing goes quiet by accident. |
 | **8 · Handover & delivery** | [`modules/M08-projects.md`](modules/M08-projects.md) | [`modules/M11-payments-and-collections.md`](modules/M11-payments-and-collections.md), [`foundations/F5-customer-link.md`](foundations/F5-customer-link.md), [`modules/M09-field-workforce.md`](modules/M09-field-workforce.md) *(V2)* | Project Manager, Operations, Finance, Installation Team Member, Sales Executive, EPC Owner, Field Technician *(V2)* | Make the waiting visible and attributable, and collect the money. |
@@ -504,9 +499,8 @@ market fact any stage renders),
 [`foundations/F3-localization.md`](foundations/F3-localization.md) (the language the reader
 reads it in), and
 [`foundations/F7-design-language.md`](foundations/F7-design-language.md) (what all of it looks
-and behaves like). Underneath those sits
-[`modules/M12-platform-billing.md`](modules/M12-platform-billing.md), whose entitlements are the
-product's only runtime gating — and which never gates reading, search, export or the customer's
+and behaves like). Underneath those sit the billing entitlements, the
+product's only runtime gating — which never gate reading, search, export or the customer's
 link in any billing state.
 
 ## 8. The two convictions the spine bends around

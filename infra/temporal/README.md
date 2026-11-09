@@ -46,7 +46,7 @@ move to, instead of a hypothetical.
 ## 2. What the local stack is, and is not
 
 It is the pinned server image, a **production-like** PostgreSQL, mutual TLS, a real authorizer, a
-JWKS endpoint and namespace bootstrap. It is what Track 8's Fly template is derived from.
+JWKS endpoint and namespace bootstrap. The deploy candidate (`deploy/`) is derived from it.
 
 It is **not** `temporal server start-dev`. The dev server has no TLS, no authorization and an
 in-memory store; every proof below would pass there and mean nothing. Use the dev server for

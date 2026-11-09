@@ -12,11 +12,9 @@ document checklist, utility directory — `F1-09`, `F1-22`, `F1-35`; IN instance
 `foundations/F8-data-honesty.md` (`F8-12`, `F8-23`, `F8-24`, `F8-32`) ·
 `modules/M02-crm-and-leads.md` (`M02-16` referral object, `M02-57` the won transition,
 `DOC04.timeline`) · `modules/M04-survey.md` (the site record and its utility) ·
-`modules/M05-design-studio.md` (`M05-76`, `M05-77` — the installation plan as derived work order)
-· `modules/M06-proposals.md` (`M06-06` proposal type, `M06-13` payment terms, `M06-44` the
+`modules/M06-proposals.md` (`M06-06` proposal type, `M06-13` payment terms, `M06-44` the
 server-identifier law) · `modules/M07-sales-execution.md` (`M07-62` — Mark won) ·
 `modules/M11-payments-and-collections.md` (the money path — Task 19) ·
-`modules/M12-platform-billing.md` (the active-project entitlement gate — Task 23) ·
 `modules/M13-dashboards-and-reporting.md` (aging and revenue surfaces — Task 23)
 
 ## 1. Purpose & scope
@@ -53,7 +51,7 @@ It explicitly does **not** own: the money mechanics behind the tranches (`module
 Mark-won surface that creates the project (`modules/M07`, `M07-62`) or the lead machine behind it
 (`modules/M02`, `M02-57`); the customer-facing progress page, its token, its lifecycle and its
 copy (`foundations/F5`); the derivation of the installation plan from the design
-(`modules/M05`, `M05-76`); stage labels, skippable stages, checklist row names, blocker-party
+(the design studio); stage labels, skippable stages, checklist row names, blocker-party
 labels and the utility directory, all of which are market-pack data (`foundations/F1`); and the
 portfolio dashboards, aging reports and revenue roll-ups that read this module's stages
 (`modules/M13`).
@@ -442,16 +440,16 @@ Team Member preset shows any of it (`F2-06`, `M08-43`). Payment events are audit
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| M08-41 | **The installation checklist is reused, not rebuilt.** The steps are the design's derived work order — the real build sequence the studio already produces (`M05-76`, consumed) — and this module owns its *execution*: working the steps, ticking them, attaching evidence, adding a manual step the design could not know about, and the progress the project reads from it. *"Do not rebuild it."* The steps are the latest signed-off design's: before the first engineer sign-off the checklist waits, and a later design edit shows as a change only once it is signed off again (`MS11-17`; owner ruling 2026-09-25). | `SRC` — `S8.screen.6` (verbatim, incl. "Do not rebuild it"); `DOC04.installation-checklist` (steps generated from the design's structural sequence, "with manual additions"); `M05-76` consumed | P0 |
+| M08-41 | **The installation checklist is reused, not rebuilt.** The steps are the design's derived work order — the real build sequence the studio already produces — and this module owns its *execution*: working the steps, ticking them, attaching evidence, adding a manual step the design could not know about, and the progress the project reads from it. *"Do not rebuild it."* The steps are the latest signed-off design's: before the first engineer sign-off the checklist waits, and a later design edit shows as a change only once it is signed off again (owner ruling 2026-09-25). | `SRC` — `S8.screen.6` (verbatim, incl. "Do not rebuild it"); `DOC04.installation-checklist` (steps generated from the design's structural sequence, "with manual additions") | P0 |
 | M08-42 | **Ticks are attributed to the person who ticked, and an optional free-text "done by" per step records who actually did the work.** `R16` rules the v1 answer and it is carried whole: the coordinator runs the checklist and the attribution never depends on the installer having an account. In V2's preset vocabulary that coordinator is the **Project Manager** — `R16`'s "Manager role" is v1's preset name, and decision B assigns the duty to the Project Manager (`F2-08b`), with `F2-07` keeping the fallback in place permanently because mixed teams are the normal case (`PS-28`). | `SRC` — `R16` (RULING, verbatim: "Ticks are attributed to the coordinator; an optional free-text 'done by' per step captures the crew member's name"); `UXG-20`; `DOC04.installation-checklist`; `F2-07`/`F2-08b` consumed | P0 |
-| M08-43 | **No commercial figure appears on this surface, ever — no price, no discount, no tranche, no margin, no customer value.** v1 got the property free by giving the installation team no screen at all — *"crew sees no money because crew sees no screen"* — and where V2 gives them a screen the surface itself must preserve it. This is a property of the surface, not of the viewer: the rule holds even when an EPC Owner is the one looking at it. | `SRC` — `R16` (verbatim); `S8.rule.roles` ("the installation checklist only … nothing financial"); `F2-06`, `PS-27`, `M05-77` consumed | P0 |
-| M08-45 | **The Installation Team Member's own job surface: today's assigned installation, its checklist with progress, the site's access constraints, and the photographs expected — and nothing else.** This surface is V2 scope: `R16` deferred the login and its own consequence named the path ("v2 adds an Installer preset without schema change"), and the owner's brief names installation teams as primary users. Every rule above rides it unchanged — `M08-42`'s attribution and `M08-43`'s no-figures law — and the coordinator fallback is not removed when accounts exist. The photographs expected are one per checklist step, the evidence that proves it; the home counts the steps with a photo against all of them (owner ruling 2026-09-26). | `BRIEF` — `docs/prd/owner-brief-2026-08-03.md` §Users ("Installation Teams"); `F2-05` (decision C — the preset ships), `PS-26` (the persona's home) · the v1-derived constraints it inherits are source-derived per `R16` and stated at `M08-42`–`M08-43` | P1 |
+| M08-43 | **No commercial figure appears on this surface, ever — no price, no discount, no tranche, no margin, no customer value.** v1 got the property free by giving the installation team no screen at all — *"crew sees no money because crew sees no screen"* — and where V2 gives them a screen the surface itself must preserve it. This is a property of the surface, not of the viewer: the rule holds even when an EPC Owner is the one looking at it. | `SRC` — `R16` (verbatim); `S8.rule.roles` ("the installation checklist only … nothing financial"); `F2-06`, `PS-27` consumed | P0 |
+| M08-45 | **The Installation Team Member's own job surface: today's assigned installation, its checklist with progress, the site's access constraints, and the photographs expected — and nothing else.** This surface is V2 scope: `R16` deferred the login and its own consequence named the path ("v2 adds an Installer preset without schema change"), and the owner's brief names installation teams as primary users. Every rule above rides it unchanged — `M08-42`'s attribution and `M08-43`'s no-figures law — and the coordinator fallback is not removed when accounts exist. The photographs expected are one per checklist step, the evidence that proves it; the home counts the steps with a photo against all of them (owner ruling 2026-09-26). | `BRIEF` ("Installation Teams"); `F2-05` (decision C — the preset ships), `PS-26` (the persona's home) · the v1-derived constraints it inherits are source-derived per `R16` and stated at `M08-42`–`M08-43` | P1 |
 
 **Behavior detail.** The checklist renders as the design's phases with their steps in build order,
 each step a tick with its detail and the materials it needs; progress shows "done of total". A
 manual step can be added where reality diverges from the model, and it is marked as manually
 added so the derived sequence stays legible. The empty state is the design's own
-("place modules and string the array first" — `M05-76`), not a blank. Completing the checklist
+("place modules and string the array first"), not a blank. Completing the checklist
 does not by itself move the stage; a person moves stages (`M08-14`).
 
 Permissions: `F2.M08.installation-checklist` — EPC Owner · Project Manager (as coordinator, with
@@ -607,8 +605,8 @@ audited event by name in `F2-22`'s covered-events list ("Cancelled-after-Won").
 - `modules/M02` — the won transition that creates the project (`M02-57`), the one timeline
   (`DOC04.timeline`), and the referral object the handover ask produces (`M02-16`).
 - `modules/M04` — the site record and the utility it carries (`F1-53`'s directory).
-- `modules/M05` — the installation plan as a derived work order (`M05-76`) and its
-  no-commercial-figures property (`M05-77`).
+- The design studio — the installation plan as a derived work order and its
+  no-commercial-figures property.
 - `modules/M06` — the accepted proposal version, its payment terms (`M06-13`), its type
   (`M06-06`), and the server-identifier law this module's numbering shares (`M06-44`).
 - `modules/M07` — Mark won, the act that creates the project (`M07-62`).

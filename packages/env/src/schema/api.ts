@@ -129,8 +129,8 @@ const apiEnvObject = z.object({
   MOBILE_STORE_URL_IOS: z.string().url().optional(),
   MOBILE_STORE_URL_ANDROID: z.string().url().optional(),
 
-  /* Injected by the platform, not by us. */
-  FLY_MACHINE_VERSION: z.string().default('0.0.1'),
+  /* The release's version, set by the deploy; the health endpoint reports it. */
+  APP_VERSION: z.string().default('0.0.1'),
 });
 
 export const apiEnvSchema = apiEnvObject.superRefine((env, ctx) => {

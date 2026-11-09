@@ -14,7 +14,7 @@ export type Liveness = z.infer<typeof livenessSchema>;
 
 /**
  * Platform health surface — the first implemented contract; also the liveness probe
- * target for Fly checks.
+ * target for the host's health checks.
  */
 /**
  * What a readiness answer says, and the one place the three check verdicts are written. A server

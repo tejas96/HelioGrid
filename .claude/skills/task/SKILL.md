@@ -229,10 +229,10 @@ back what this branch removed. If the merge brought a migration, renumber
 this task's after it (`packages/db/CLAUDE.md`) and rebuild `heliogrid_test` (*Build*). After a
 merge, run the gate again.
 
-The ship commit holds the change, the task's `**Status:** shipped`, and the task cut to its title
-and header lines (those above its first `####`); a part instead marks its own row `shipped` in
-`#### Parts` and removes only its `#### Part <x> · RFC`, and the task turns shipped and is cut with
-its last part. Message `feat: <id> — <what the user gets>`. A commit the hook refused is retried
+The ship commit holds the change and deletes the task — heading, header lines and RFC — from its
+file, since `docs/tasks/` holds open work only and git holds what shipped; a part instead marks its
+own row `shipped` in `#### Parts` and removes only its `#### Part <x> · RFC`, and the task is
+deleted with its last part. Message `feat: <id> — <what the user gets>`. A commit the hook refused is retried
 with its message passed again, never `.git/COMMIT_EDITMSG`, which still holds the last good
 commit's.
 

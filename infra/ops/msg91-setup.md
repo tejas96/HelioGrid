@@ -3,7 +3,7 @@
 **Configured (2026-07-26, workspace `beyondnyx`):**
 - Dedicated authkey **`heliogridDev`** (Owner rule, IP security OFF for dev) — value in
   `.env.local` as `MSG91_AUTH_KEY`. Production gets its own key with IP security ON,
-  whitelisting Fly egress IPs.
+  whitelisting the production host's egress IPs.
 - Wallet balance ₹50 (top up before real sends).
 
 **DLT-gated (honestly blocked — the console requires confirming PE-TM DLT registration,

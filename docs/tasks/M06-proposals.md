@@ -285,11 +285,10 @@ they are the specification.
 **Owed by `T-FPLAT-029` (`F8-20`, `F8-22`, `F8-23`; `F8-24`, a law):** the basis line is `basisLineOf({ designed, roofTier })` from `@heliogrid/domain`, printed through `@heliogrid/i18n`'s `BASIS_LINE_WORD` — never a second rule or a second copy of the words; every figure is the `QualifiedAmount` the screen and the link read, projections included with their assumptions, never recomputed for the page. Depends on `T-FPLAT-073`: `Disclosure`'s `indicative-basis` and `remote-survey` kinds print the wrong English until it lands, so this document never uses them before; and on `T-FPLAT-074`, whose label prints a projection with its assumptions.
 **PRD rows:** M06-04 (P0), M06-51 (P0), M06-56 (P0), F3-15 (P0)
 **DESIGN:** SCR-M06-17
-**Owed by `T-FPLAT-027` (`F8-11`, a law):** every shading output this document prints carries `M05-94`'s limit text beside it — beam-only, linear in unshaded area, no bypass-diode cliff, no string mismatch, so partial-shade losses read optimistic — at every scale.
+**Owed by `T-FPLAT-027` (`F8-11`, a law):** every shading output this document prints carries the shading model's limit text beside it — beam-only, linear in unshaded area, no bypass-diode cliff, no string mismatch, so partial-shade losses read optimistic — at every scale.
 
 **Requirements (verbatim):** Verbatim rows live in the PRD;
-they are the specification. (The same brief also carries `08-customer-surfaces.md` rows `MS9-*`,
-which belong to another bucket and are dispositioned there; this task owns the M06 rows only.)
+they are the specification.
 
 `F3-15` moved here at `T-FPLAT-007`'s `/start`: its proof opens a generated document and reads
 its conjuncts, and this is the ticket that renders the first one. The obligation binds every
@@ -305,6 +304,7 @@ here and never re-declared.
 - Given a design with variants, when the customer-facing rendering is produced, then exactly one recommended system shows by default (M06-56).
 - Given the EMI toggle on, when the document renders, then EMI figures carry the projection label with their assumptions (M06-40).
 - Given a generated document in a non-Latin language, when it is produced and opened, then conjuncts, matras and ligatures are shaped correctly throughout (`F3-15`). → proof: QA (api) renders this document in `mr` and reads the produced artifact's embedded faces and glyph runs, so a broken conjunct is read rather than eyeballed
+- Given a tenant with a saved brand colour and logo, when its proposal document renders, then the document carries the mark and the compliant shade `compliantShades` derived — never a raw colour that fails contrast — and the branding changes no number, label or disclosure (`F7-07`, `F5-81`; moved here from `T-FPLAT-022`). → proof: the rendered document for a colour that fails contrast carries the derived shade and the mark, and its text layer equals the unbranded render's
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 **Settle before the build:**
@@ -315,7 +315,7 @@ here and never re-declared.
 ### T-M06-018 · Proposal Detail — status, tracking, staleness, upgrade offer and the share sheet
 **Type:** screen · **Tier:** P0
 **Status:** planned
-**PRD rows:** M06-46 (P0), M06-47 (P0), M06-48 (P0), M06-53 (P0), M06-54 (P0), M06-57 (P0), M05-13 (P0) (`docs/prd/modules/M05-design-studio.md` — M05's row, dispositioned in the M05 bucket to T-MS-117 (`docs/tasks/MS-studio-a.md`) and not part of this bucket's disposition index; its **proposal-side half** — the review-needed state read on the proposal and the send block — is realized here, and its verbatim text is carried in the brief)
+**PRD rows:** M06-46 (P0), M06-47 (P0), M06-48 (P0), M06-53 (P0), M06-54 (P0), M06-57 (P0)
 **DESIGN:** SCR-M06-18
 **Owed by `T-FPLAT-028` (`F8-17`, `F8-18`):** the stale state reads from the version's `Freshness` (`freshnessOf`, `packages/domain`), shown on the detail before any share act with its corrective action; the share, send and issue acts are blocked while `issueBlockedBy` names a reason or `payableStandsUp` is false, and the stated reason is the one returned. Its freshness comes from this output's own stored pins, never pins built at the call site.
 
@@ -327,8 +327,6 @@ they are the specification.
 - Given a completed design on a lead with an indicative proposal, when the upgrade is offered, then the changed figures and their tier changes are shown before commit, and declining changes nothing (M06-47).
 - Given an existing proposal, when Duplicate is invoked onto another lead, then every step arrives pre-filled including all components, client details come from the new lead, and a fresh server number is assigned at Generate (M06-48).
 - Given the share sheet with a connected transactional channel, when the share sends, then it goes from the tenant's official channel under the transactional template class and the same act marks the version shared; and given no connected channel, then Download PDF + Copy link + composed message are offered, nothing sends, and only the explicit mark-shared act changes status and starts the clock (M06-53, owner ruling 2026-08-04).
-- Given a design carrying the "survey updated — review needed" marker, when a draft proposal built on that design is **opened** — before any share act — then the review-needed state is visible on the proposal detail with the superseding survey version named and the route to the design's review offered as the corrective action; the condition is never communicated only by absence, only by a colour, or only after the rep tries to send (`F8-18`; `M05-13`, owner ruling 2026-08-04). This is a distinct surface from `M06-46` staleness: `M05-13` applies nothing automatically, so no pinned design value has moved and the fingerprint comparison does not fire — Regenerate is not the remedy, the designer's review is. Brief state: `design-survey-review-needed` (`SCR-M06-18`).
-- Given a design carrying the "survey updated — review needed" marker, when a draft proposal built on that design is sent from the share sheet, then the send is blocked and the stated reason names the superseding survey version — a draft proposal on the design cannot send until the review clears, and a proposal already sent stays pinned and never mutates (`M05-13`, owner ruling 2026-08-04; the marker and the designer notification are raised on the studio side under `M05-13` in `docs/tasks/MS-studio-a.md`; `F8-15`, `F5-40`). The block lands on both of `M06-53`'s send acts — the connected-channel send and the explicit mark-shared act that starts the clock — and the refusal is never the first place the rep learns of the condition (the pre-send criterion above owns that). Brief state: `send-blocked-survey-superseded`.
 - Given a shared proposal, when tracking renders, then states are shared → opened → viewed-for-how-long, delivery states appear only as the connected channel reported them, the fallback path shows no delivered state anywhere, and an open notifies the rep (M06-54).
 - Given a client phone that fails the pack's format, when step 10 commits, then the failure is stated at entry; given a connected-channel send that the channel reports failed, then the failure is shown and an alternative channel offered; and given a fallback-path share never opened, then the non-opening is visible, the composed message is re-offered for an alternative channel the rep sends, and no fallback surface claims a delivery state (M06-57; owner ruling 2026-08-04 on the transactional lane).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
@@ -338,7 +336,7 @@ they are the specification.
 ### T-M06-019 · Proposal List — status, staleness and per-row duplicate
 **Type:** screen · **Tier:** P0
 **Status:** planned
-**PRD rows:** M06-46 (P0), M06-48 (P0), M05-13 (P0) (`docs/prd/modules/M05-design-studio.md` — M05's row, dispositioned in the M05 bucket to T-MS-117 (`docs/tasks/MS-studio-a.md`) and not part of this bucket's disposition index; only the list leg of `F8-18`'s "in the list, on the detail screen" obligation is realized here)
+**PRD rows:** M06-46 (P0), M06-48 (P0)
 **DESIGN:** SCR-M06-19
 **Owed by `T-FPLAT-028` (`F8-18`, a law):** each row's stale state reads from its version's `Freshness` (`freshnessOf`, `packages/domain`) and is shown on the row with its corrective action, never only by a colour. Its freshness comes from this output's own stored pins, never pins built at the call site.
 
@@ -349,10 +347,7 @@ are the specification.
 - Given a design edit after generation, when the proposal list or detail renders, then the stale state is visible with Regenerate offered; no flag was stored — removing the design edit restores freshness by comparison alone (M06-46).
 - Given an existing proposal, when Duplicate is invoked onto another lead, then every step arrives pre-filled including all components, client details come from the new lead, and a fresh server number is assigned at Generate (M06-48).
 - Given a newer proposal on the same lead, when it generates, then the older proposal reads superseded and the link serves the latest (M06-45).
-- Given a draft proposal whose design carries the "survey updated — review needed" marker, when the proposal list renders, then the review-needed state is visible on that row before the rep opens or shares anything, distinct from the `M06-46` stale badge — `F8-18` puts the staleness state "on the object itself — in the list, on the detail screen, in the customer-facing rendering", and M05's behavior detail rules `M05-13` one of the three freshness surfaces that "all follow one pattern: the affected number or surface carries the staleness marker" (`M05-13`, owner ruling 2026-08-04). The customer-facing leg of `F8-18` needs nothing here: a held proposal is a draft with no customer rendering, and a version already shared stays pinned and never mutates (`F8-15`).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-**Counterpart edit required outside this file** (the brief owner makes it; this task cannot close without it): `SCR-M06-19` carries no state for the review-needed condition — its States list has `stale-badge` (the `M06-46` comparison) only, and `M05-13` is not among its verbatim rows. It needs `M05-13` carried verbatim under a `### From docs/prd/modules/M05-design-studio.md` heading and a per-row state — e.g. `design-survey-review-needed` — modelled on the states added to `SCR-M06-18`. Until then this criterion has a build target and no design, which is exactly the split the detail-side leg was just corrected for.
 
 ---
 
@@ -509,16 +504,16 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 **Type:** policy · **Tier:** P0
 **Status:** planned
 **PRD rows:** M06-26
-**Billing gate (T-M12-009):** proposal create names `sell_and_deliver` in its `RouteBillingMap`; its count cap reads `capStepOf` (`packages/domain`) over this cycle's proposals, `fullSince` being the created time of the cycle's limit-th proposal, and refuses only at `paused`, by throwing `EntitlementBlockedException` with `reason: 'cap'`, key `proposals_per_cycle` and the cycle's end as `resetsAt` (M12-23, M12-30).
+**Billing gate (T-M12-009):** proposal create names `sell_and_deliver` in its `RouteBillingMap`; its count cap reads `capStepOf` (`packages/domain`) over this cycle's proposals, `fullSince` being the created time of the cycle's limit-th proposal, and refuses only at `paused`, by throwing `EntitlementBlockedException` with `reason: 'cap'`, key `proposals_per_cycle` and the cycle's end as `resetsAt`.
 **Downgrade preview (T-M12-003):** this cycle's proposals against the lower plan's `proposals_per_cycle` join `PLAN_CHANGE_BLOCKS` (`packages/domain` `commerce/plan-change.ts`) as `proposals_this_cycle`, counted in the api's `plan-change.preview.service.ts` and in its digest (`SCR-M12-03` frame s7: `Proposals this month · 41 of 30`).
-**Usage screen (T-M12-004):** this cycle's proposal count, with the `fullSince` the create gate reads, replaces `NOT_COUNTED_YET` for `proposals` in the api's `billing-usage.service.ts`, so `SCR-M12-04`'s `Proposals this month` and its 80%, grace and paused steps read the gate's own count (M12-34).
+**Usage screen (T-M12-004):** this cycle's proposal count, with the `fullSince` the create gate reads, replaces `NOT_COUNTED_YET` for `proposals` in the api's `billing-usage.service.ts`, so `SCR-M12-04`'s `Proposals this month` and its 80%, grace and paused steps read the gate's own count.
 
 **Requirements (verbatim):**
 
-- **M06-26** (P0) — **The entitlement checkpoint sits at proposal create — nowhere else in this module.** Per-cycle proposal-creation counts are a tier capacity dimension (`BM-12`, consumed); enforcement is at **new proposal creation only**, with the ahead-of-the-block disclosure and grace `modules/M12` owns. **Editing, sharing and duplicating existing proposals — and all reads and exports — never pause**, in any billing state (`BM-32`'s soft-block law, consumed). No Generate check and no builder step is entitlement-gated.
+- **M06-26** (P0) — **The entitlement checkpoint sits at proposal create — nowhere else in this module.** Per-cycle proposal-creation counts are a tier capacity dimension; enforcement is at **new proposal creation only**, with the ahead-of-the-block disclosure and grace platform billing owns. **Editing, sharing and duplicating existing proposals — and all reads and exports — never pause**, in any billing state (the soft-block law, consumed). No Generate check and no builder step is entitlement-gated.
 
 **DONE WHEN:**
-- Given a tenant at its proposal-count limit, when they edit, duplicate or share an existing proposal, then nothing pauses; when they create a new one, then the `modules/M12` gate behaviour applies (M06-26).
+- Given a tenant at its proposal-count limit, when they edit, duplicate or share an existing proposal, then nothing pauses; when they create a new one, then the billing gate behaviour applies (M06-26).
 
 ---
 

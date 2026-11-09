@@ -13,7 +13,6 @@ enforces it, so no citation is left pointing at nothing.
 | [0001](0001-monorepo-pnpm-turborepo.md) | Monorepo on pnpm workspaces + Turborepo (Turbo drives the build graph) |
 | [0003](0003-contracts-ts-rest-zod3.md) | API contracts — ts-rest with Zod pinned to 3.x |
 | [0004](0004-orm-drizzle.md) | ORM — Drizzle, and the single-DB + RLS-backstop tenancy it serves |
-| [0007](0007-storage-tigris-single-region-sin.md) | Object storage — Tigris, single-region pin `sin` |
 | [0011](0011-mobile-bare-react-native.md) | Mobile — bare React Native, iOS + Android from day one |
 | [0013](0013-billing-razorpay-inhouse-entitlements.md) | Billing — Razorpay Subscriptions + in-house entitlements |
 | [0015](0015-i18n-lingui-v5.md) | i18n — Lingui v5, one catalog for Next.js and bare React Native |

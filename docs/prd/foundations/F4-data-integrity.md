@@ -31,8 +31,7 @@ and no global indicator.
 ## F4.2 · Two people, one record
 
 The concurrency law. It governs two people working at the same moment on a live connection, and it
-is enforced by `modules/M05-design-studio.md` (`M05-09`) and `modules/M02-crm-and-leads.md`
-(`M02-36`), neither of which defines it.
+is enforced by `modules/M02-crm-and-leads.md` (`M02-36`), which does not define it.
 
 | id | requirement | source | tier |
 |---|---|---|---|
@@ -58,7 +57,6 @@ is enforced by `modules/M05-design-studio.md` (`M05-09`) and `modules/M02-crm-an
 | from | what |
 |---|---|
 | `modules/M04-survey.md` | the survey object, its versions and the revisit flow that `F4-14` and `F4-25` govern; the capture screen that carries the photo queue's status per `F4-21` |
-| `modules/M05-design-studio.md` | the studio editor, its reload prompt and lock behaviour under `F4-15` |
 | `modules/M02-crm-and-leads.md` | lead field edits and the activity log that makes `F4-16` recoverable |
 | `modules/M09-field-workforce.md` | the visit object and its state machine under `F4-17` |
 | `foundations/F8-data-honesty.md` | provenance tiers on every user-visible money and energy figure; `F4-04` owns *who computes* a figure, `F8` owns *how honestly it is labelled* |

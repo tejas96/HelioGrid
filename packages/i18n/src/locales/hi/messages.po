@@ -638,11 +638,6 @@ msgid "{done} of {total} steps done"
 msgstr "{total} में से {done} चरण पूरे"
 
 #. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:11
-msgid "{drawing} renders here"
-msgstr "{drawing} यहाँ दिखेगा"
-
-#. js-lingui-explicit-id
 #: src/copy/transcript.ts:30
 msgid "{earlier}, then {later}"
 msgstr "{earlier}, फिर {later}"
@@ -3266,11 +3261,6 @@ msgid "Check the SMS, or send a new code."
 msgstr "SMS जाँचें, या नया कोड भेजें।"
 
 #. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:20
-msgid "Checked"
-msgstr "जाँचा"
-
-#. js-lingui-explicit-id
 #: src/copy/checklist.ts:12
 msgid "Checklist"
 msgstr "चेकलिस्ट"
@@ -4293,21 +4283,6 @@ msgstr "डाउनग्रेड"
 #: src/copy/map-surface.ts:29
 msgid "Drag map to adjust"
 msgstr "ठीक करने के लिए नक्शा खींचें"
-
-#. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:15
-msgid "Drawing"
-msgstr "ड्रॉइंग"
-
-#. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:16
-msgid "Drawing no."
-msgstr "ड्रॉइंग सं."
-
-#. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:19
-msgid "Drawn by"
-msgstr "बनाने वाले"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import.ts:26
@@ -5989,11 +5964,6 @@ msgid "Left out — nothing changes for this item."
 msgstr "छोड़ दिया — इस आइटम के लिए कुछ नहीं बदलेगा।"
 
 #. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:13
-msgid "Legend"
-msgstr "संकेत सूची"
-
-#. js-lingui-explicit-id
 #: src/copy/catalog-add-item-fields.ts:11
 msgid "Length"
 msgstr "लंबाई"
@@ -7321,11 +7291,6 @@ msgid "None"
 msgstr "कोई नहीं"
 
 #. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:12
-msgid "North"
-msgstr "उत्तर"
-
-#. js-lingui-explicit-id
 #: src/copy/disclosure.ts:29
 msgid "Not a structural certification"
 msgstr "संरचनात्मक प्रमाणन नहीं"
@@ -8115,11 +8080,6 @@ msgid "Panels"
 msgstr "पैनल"
 
 #. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:18
-msgid "Paper"
-msgstr "कागज़"
-
-#. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:56
 msgid "Part of this cycle"
 msgstr "इस चक्र का हिस्सा"
@@ -8772,11 +8732,6 @@ msgstr "प्रोफ़ाइल अभी लोड हो रही है"
 #: src/copy/stepper.ts:15
 msgid "Progress"
 msgstr "प्रगति"
-
-#. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:14
-msgid "Project"
-msgstr "प्रोजेक्ट"
 
 #. js-lingui-explicit-id
 #: src/copy/homes.ts:14
@@ -9676,11 +9631,6 @@ msgstr "इस वर्शन को सहेजने के लिए बत
 #: src/copy/proposal-template.ts:65
 msgid "Say what happens in this phase"
 msgstr "बताएँ कि इस चरण में क्या होता है"
-
-#. js-lingui-explicit-id
-#: src/copy/drawing-sheet.ts:17
-msgid "Scale"
-msgstr "स्केल"
 
 #. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:122
