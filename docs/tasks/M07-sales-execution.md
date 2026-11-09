@@ -50,217 +50,6 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 - Given a lost lead is reopened, when it re-enters, then it lands at its prior funnel stage and the timeline records the reopen (M07-64).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
-### T-M07-005 · Agent setup & settings
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-08 (P0), M07-09 (P0), M07-10 (P0), M07-11 (P0), M07-15 (P0), M07-34 (P0)
-**DESIGN:** SCR-M07-05
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given a new tenant that has never opened agent setup, when the agent is enabled, then every guided field already holds a working pre-filled value and a free-text box exists (M07-08, M07-09).
-- Given the owner edits the opening line, when they save, then the wording change takes effect for newly queued calls only after publish (M07-14) — and no edit path weakens the four hard floors (never claims human · never denies AI when asked · instant handoff · full transcription), nor removes the proactive disclosure where the pack flag ships it ON (M07-10, owner ruling 2026-08-04).
-- Given a hand-over rule list with "asks to stop" deleted attempted, when the owner saves, then the save is refused with the floor named — the opt-out rule cannot be removed (M07-11).
-- Given a customer whose language is Tamil, when the agent calls, then the call runs in Tamil regardless of any user's interface language (M07-15).
-- Given the agent is off, when any trigger condition occurs, then nothing is queued or dialed (M07-34); given attempts reach the configured maximum, then the agent stops and a rep task is created (M07-34, M07-06).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-### T-M07-006 · Calling window
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-12 (P0)
-**DESIGN:** SCR-M07-06
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given the pack's statutory window, when the owner edits the calling window, then only equal or narrower schedules and additional holidays can be saved (M07-12).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-### T-M07-007 · Test the agent
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-13 (P0)
-**DESIGN:** SCR-M07-07
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given the owner runs a test call, when it plays, then it uses the draft configuration and no customer-facing call is affected (M07-13).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-### T-M07-008 · Agent config history
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-14 (P0)
-**DESIGN:** SCR-M07-08
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given the owner edits the opening line, when they save, then the wording change takes effect for newly queued calls only after publish (M07-14) — and no edit path weakens the four hard floors (never claims human · never denies AI when asked · instant handoff · full transcription), nor removes the proactive disclosure where the pack flag ships it ON (M07-10, owner ruling 2026-08-04).
-- Given a published config change while ten calls sit queued, when those calls dial, then each uses the version it was queued with and the call record names it (M07-14).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-### T-M07-009 · Knowledge base
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-16 (P0), M07-19 (P0), M07-21 (P1)
-**DESIGN:** SCR-M07-09
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given a new tenant, when the agent takes its first call, then every KB section already holds seeded content and no answer is a blank (M07-16, M07-17).
-- Given a KB edit that gives a second, different warranty answer, when the owner saves, then the contradiction is flagged at save time (M07-19).
-- Given the knowledge-base configuration screen, when knowledge is edited, then the preview shows the agent **using** that knowledge, so a tone or knowledge mismatch is caught before it goes live (`M07-21`, the `M01-30` live-preview law).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-**Settle before the build:**
-- Knowledge-base change-history granularity and the per-call effective KB (§M07.4, M07-26) — ruled: the change history is one append-only revision row per section save (section, language, content, actor, saved-at); a call's effective KB is each section's latest revision at the call's start, derived by query, and the call record stores no KB pin (§M07.4 says calls pin the config version and never KB content, and M07-26's KB version in the audit pairing is exactly that revision lookup).
-
-### T-M07-010 · Unanswered questions
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-18 (P0), M07-58 (P0)
-**DESIGN:** SCR-M07-10
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given the agent could not answer "does hail damage panels?", when the owner opens the list, then the question shows with its asked-count, and one tap on an answer writes it into the named section, live for the next call (M07-18).
-- Given any listed call, when tapped, then transcript and recording (where consented and within retention) open (M07-57); given the unanswered list, then one tap answers into the KB (M07-58).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-**Settle before the build:**
-- The aggregation identity behind asked_count (M07-18) — pick: exact match on the normalised question text per agent language — lower-cased, punctuation stripped, whitespace collapsed — with no semantic clustering in V1 (the row's identity is then a plain unique key and the count a plain increment; cost if wrong: near-duplicate phrasings split one question across rows, and a later semantic merge is additive — merge rows, sum counts).
-
-### T-M07-011 · Corrections review queue
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-26 (P0)
-**DESIGN:** SCR-M07-11
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given a rep corrects an agent outcome, when the correction saves, then the lead shows the rep's read, a review-queue item exists for the owner, and the KB is unchanged until the owner explicitly promotes an answer (M07-25, M07-26).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-### T-M07-012 · Agent call queue
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-28 (P0), M07-30 (P0), M07-35 (P0), M07-36 (P0), M07-37 (P0)
-**Billing gate (T-M12-009):** queue insert names `voice_agent` in its `RouteBillingMap` (paused from `past_due` day 4), and both insert and the pre-dial check refuse past the `voice_minutes` allowance read from `T-M12-010`'s rollup, by throwing `EntitlementBlockedException`; a blocked entry is marked and the owner notified (M07-37, M12-23).
-**DESIGN:** SCR-M07-12
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given any queued call, when its dial moment arrives, then the gate's checks run first and a block persists its verdict on the queue entry and the lead (M07-27, M07-30).
-- Given a pre-dial view of any customer, when it renders, then consent, registry status, do-not-call, quiet flag and window verdict are all visible (M07-28).
-- Given a lead captured at 11 pm, when it queues, then its scheduled time is not before the window opens (M07-35).
-- Given the owner removes any queued call — or the queuing rep cancels an entry they queued — when the queue refreshes, then the entry is gone and the cancellation is on the lead timeline with its actor (M07-35, owner ruling 2026-08-04).
-- Given allowance exhausted between insert and dial, when the dial moment arrives, then the entry blocks, is marked, and the owner is notified (M07-37).
-- Given a config version published after a call was queued, when that call dials, then it runs the version it was queued with and the queue view names the difference (M07-36).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-**Settle before the build:**
-- Queue-entry uniqueness scope and post-dial entry states (M07-35, §M07.7) — ruled: one live entry per lead, not per lead plus number — a partial unique key on the lead over entries in `queued` — and the closed set `queued → blocked | cancelled | done | exhausted`, where a retryable outcome (no answer, busy) returns the same entry to `queued` with its attempt count incremented and a window-shifted not-before, and reaching the configured maximum moves it to `exhausted` with the rep task (§M07.7 fixes one entry per lead with attempts counted once, and M07-35 counts attempts on the entry, so the entry must outlive a dial).
-
-### T-M07-013 · Call record detail
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-25 (P0), M07-38 (P0)
-**DESIGN:** SCR-M07-13
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given a rep corrects an agent outcome, when the correction saves, then the lead shows the rep's read, a review-queue item exists for the owner, and the KB is unchanged until the owner explicitly promotes an answer (M07-25, M07-26).
-- Given any completed, dropped or failed call, when the lead timeline renders, then the call record exists with its typed outcome, summary, language and config version, with transcript on tap (M07-38, M07-39); and given the customer declined recording, then no recording exists but the call proceeded and the transcript survives per the pack's rules (M07-38).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-### T-M07-014 · Escalations
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-42 (P0)
-**DESIGN:** SCR-M07-14
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given a customer asks for a discount mid-call, when the hand-over rule fires, then the rep is notified immediately with a deep link, and the escalations surface lists the call with its reason (M07-42, M07-43).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-### T-M07-015 · Routing rules editor
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-44 (P0)
-**DESIGN:** SCR-M07-15
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given an escalation chain where no level answers, when the timeouts elapse, then the terminal fallback (callback queue or voicemail) takes the call — a dead end is impossible by construction (M07-44).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-**Settle before the build:**
-- The seeded escalation chain's per-level ring timeout (M07-44) — pick: 30 seconds, a `domain` policy number written onto the seeded `routing_policy_version` row as ordinary tenant data (a ring timeout is product policy, not a market fact, and F1 declares no pack key for it, so none is invented at seed time; cost if wrong: one value on one seeded row per tenant, changed by a data fix or by this editor, never a schema move).
-- How a named ring destination is stored when the PRD defines no ring-group surface (M07-44, M07-46, M07-47, M07-50, §M07.9) — ruled: a typed target descriptor (kind + ref) on every chain level, handoff target and IVR destination, resolved through `user_presence` at ring time; the V1 kinds are only those the seed and M07-47 route to — the lead's owner, a named user, the AI agent, voicemail, the callback queue — and no `ring_group` kind or table exists until a surface authors one (nothing in V1 could write a group row; the descriptor is the seam V2 widens with a new kind without migrating a stored target; what it forgoes — a tenant naming a group apart from a preset — no V1 surface shows).
-
-### T-M07-016 · IVR flow editor
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-47 (P0)
-**DESIGN:** SCR-M07-16
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given a tenant edits their IVR flow, when they publish, then the whole flow versions and in-flight calls finish on the version they started (M07-47).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-**Settle before the build:**
-- What the seeded default IVR greeting plays (M07-47, §M07.9) — ruled: the published `agent_config_version`'s opening line, per offered agent language, by reference — the seeded `ivr_flow_version` row stores no greeting text of its own, and tenant-authored greeting text overrides it only when this editor writes it (F1's pack schema declares no greeting key and none is invented at seed time; the opening line is the one platform-seeded, tenant-editable piece of spoken copy that already exists, M07-08, M07-09).
-
-### T-M07-017 · Number provisioning wizard
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-51 (P0), M07-52 (P0), M07-53 (P0)
-**DESIGN:** SCR-M07-17
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given a new tenant, when they open voice settings, then a platform number is available instantly as the default choice (M07-51).
-- Given a tenant completes BYO setup, when a customer calls their old number, then it forwards in; and when the agent calls out, then the platform number is the caller identity — with the wizard having said exactly that in advance (M07-52, M07-53).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-### T-M07-018 · Agent performance
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-55 (P0), M07-56 (P0), M07-60 (P1), M07-61 (P0)
-**DESIGN:** SCR-M07-18
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given a month of agent activity, when the performance screen renders, then attempted, connected, callbacks, site visits, hand-offs and unanswered counts show this month vs last (M07-55).
-- Given the "deals it touched" block renders, then the `F8-30` caption is visible beside the figure without any interaction, in the viewer's language (M07-56).
-- Given a sharp connect-rate drop, when the screen renders, then the warning with likely cause is present; given a month of no visits to the screen, then the owner received the in-app summary (M07-61).
-- Given the per-rep view — which reps lean on the agent, whose leads it rescued — when it is requested, then it renders for **EPC Owner and Sales Manager only** and is refused for every other preset (`M07-60`, gated by `F2.M07.agent-performance`).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-### T-M07-019 · Call log
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-57 (P0)
-**DESIGN:** SCR-M07-19
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given any listed call, when tapped, then transcript and recording (where consented and within retention) open (M07-57); given the unanswered list, then one tap answers into the KB (M07-58).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
-### T-M07-020 · Agent usage
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-59 (P0)
-**DESIGN:** SCR-M07-20
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given the usage view and the invoice for the same period, then the minutes shown are the same numbers (M07-59).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
 ### T-M07-021 · Follow-up task system (model, provenance, trigger feed)
 
 **Type:** engine · **Tier:** P0
@@ -275,125 +64,6 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 
 **Settle before the build:**
 - The task status vocabulary and its transitions (M07-05) — ruled: `open | done | cancelled`, with open → done, open → cancelled and done → open (an untick), cancelled terminal; overdue is derived on `open` rows only, and a snoozed lead hides its tasks by the lead's own state, never by a task status (every consumer — My Day, the overdue-2d trigger, the snooze hide-and-return — reads only whether a task is still open, and M07-05 forbids storing overdue).
-
-### T-M07-022 · Agent conversation runtime (defaults, holds-back, opener floors, lead scoping, spoken figures)
-
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-20, M07-22, M07-23, M07-24, M07-41
-**Requirements (verbatim):**
-- **M07-20** (P0) — **The agent's context is scoped to the single lead matched by the verified caller number; the knowledge base is per-tenant and read-only to the agent; the agent writes nothing beyond the call-outcome record.** No cross-customer retrieval exists.
-- **M07-22** (P0) — **What the agent does by default — all editable by the owner (D36):** asks whether the proposal was received and reviewed · answers FAQs (timeline, subsidy, warranty, process, financing) · books a callback or a site visit · records interest level and objections · hands off to a human at any point.
-- **M07-23** (P0) — **What it holds back by default:** discussing or offering a discount *(owner can enable)* · negotiating price *(owner can enable)* · accepting or confirming a deal · making technical or structural commitments · continuing after the customer asks to stop. Two of these are not defaults but law: **a deal is only ever accepted by the customer tapping Accept on the link — never by verbal agreement** (C8, `foundations/F5`); **continuing after "stop" violates the statutory opt-out** and is blocked by the gate (F1-36(c)).
-- **M07-24** (P0) — **Every call opens naturally — no proactive AI mention at IN launch — and "talk to a person" works at any moment (owner ruling 2026-08-04, replacing the former ≤30 s disclosure default).** The tiered law of F1-36(d) governs: the four hard floors always hold — the agent **never claims to be human**, **never denies being AI when asked** (honest answer plus an immediate human offer), hands to a human instantly on request, and every call is fully transcribed to the timeline; proactive disclosure is pack data (IN OFF until the TRAI identification rule binds, then auto-ON with owner notification; EU-class packs ON). Each call records what its opener played and how any are-you-an-AI question was answered (§M07.7).
-- **M07-41** (P0) — **Figures the agent speaks are renderings of the product's computed values** — same value, same provenance tier, same disclosure as the screen and the document. The agent never recomputes, never rounds differently, and never drops a qualifier.
-**DONE WHEN:**
-- Given any call, when the agent retrieves context, then it reads only the matched lead and the tenant KB, and writes only the call-outcome record (M07-20).
-- Given default configuration, when a customer asks for a discount, then the agent offers a human instead of discussing it — and given the owner enabled discount discussion, then the agent may discuss it but still cannot accept or confirm a deal (M07-22, M07-23).
-- Given any outbound agent call, when it connects, then it opens with the configured natural opener, "talk to a person" works at any moment of the call, and if the customer asks whether they are speaking to an AI the agent answers honestly and immediately offers a human (M07-24, owner ruling 2026-08-04).
-- Given the agent quotes a system's savings figure, when compared with the proposal document, then value, tier and qualifier match exactly (M07-41).
-
-### T-M07-023 · Seeded knowledge-base default pack
-
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-17
-**Requirements (verbatim):**
-- **M07-17** (P0) — **Seeded, not empty.** Every new tenant starts with a solar-industry default pack — generic but correct answers for the market's staple questions (the IN seed's subsidy/net-metering content is pack material, F1). *"Day one it works; week four it sounds like them."*
-**DONE WHEN:**
-- Given a new tenant, when the agent takes its first call, then every KB section already holds seeded content and no answer is a blank (M07-16, M07-17).
-
-### T-M07-024 · Compliance gate (mechanism, fail-closed, opt-out, tiered disclosure enforcement)
-
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-27, M07-29, M07-31, M07-32
-**Requirements (verbatim):**
-- **M07-27** (P0) — **The compliance gate is product code — one concrete implementation, non-swappable, no alternate adapter, ever, and no override flag.** It runs before **every** dial, on every leg, inbound and outbound. Its statutory **ruleset is data from the market pack** (`pack.calling-rules`, F1-15…F1-17; the IN instance is F1-36): the mechanism never varies per market; the ruleset always does. **A market with no voice ruleset in its pack cannot enable outbound voice** (F1-16 consumed). *"Tenants configure within the law, not around it."*
-- **M07-29** (P0) — **Fail-closed:** when the registry-scrub data is stale beyond the pack's freshness duty, promotional dialing **pauses** — and the pause is alarmed to the owner — while transactional calls continue. Compliance outranks revenue-generating dialing.
-- **M07-31** (P0) — **"Stop calling" sets do-not-call instantly — honored within the pack's deadline, irreversible without the customer's own say-so. A customer complaint sets a permanent quiet flag.** The calling window honors the pack's holiday calendar, so festival-day calls are blocked, not apologised for.
-- **M07-32** (P0) — **The gate enforces the tiered disclosure law (owner ruling 2026-08-04 — the former ≤30 s disclosure floor is retired):** on every automated call the four hard floors hold — never claims human · never denies being AI when asked (honest answer + immediate human offer) · instant handoff · full transcription — and the call record stores the opener version played and any AI-question answer given (§M07.7). Proactive disclosure enforcement follows the pack flag (F1-36(d)): where a pack ships it ON (EU-class; IN after the TRAI auto-flip), the gate enforces the proactive line as floor; where OFF (IN launch), only the hard floors are enforced. The recording of what played never relaxes.
-**DONE WHEN:**
-- Given any queued call, when its dial moment arrives, then the gate's checks run first and a block persists its verdict on the queue entry and the lead (M07-27, M07-30).
-- Given a customer with do-not-call set, when any trigger fires for them, then no agent dial occurs, in any market, under any tenant configuration, with no override path (M07-27, M07-31).
-- Given scrub data older than the pack's freshness duty, when promotional dialing is due, then it is paused and the owner alarmed while transactional calls continue (M07-29).
-- Given any connected agent call, when it completes, then the record shows the opener version played and — where the customer asked — that the AI question was answered honestly with a human offered; where the pack's proactive-disclosure flag is ON, the record shows the proactive line played (M07-32, owner ruling 2026-08-04).
-
-**Settle before the build:**
-- `dnd_scrub_entry`'s data boundary and shape (`F1-36`, `F1-15`) — ruled: platform-owned and platform-wide — one row per E.164 number carrying the registry verdict and its scrubbed-at time, written by the daily refresh sweep before the window opens and read per dial against the dialing tenant's pack freshness duty; no per-tenant copy and no stored batch verdict (`F1-36`(a) defines the scrub as a registry cache refreshed daily, and a number's registration is a fact about the number, not about the tenant dialing it — a tenant-scoped copy would be a second copy of one fact, and the batch is the refresh, not a record).
-
-### T-M07-025 · Agent triggers (safety net, on-demand, requested-callback lane)
-
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-33
-**Requirements (verbatim):**
-- **M07-33** (P0) — **The agent triggers two ways: automatically as a safety net — proposal unopened 3 days (`M06-55` consumed) · rep task overdue 2 days (M07-07) · three failed manual call attempts (`M02-43` consumed) — and on demand, when a rep hands a lead to it.** A customer-requested callback also queues (callback-requested) — and under the **requested-callback lane** (owner ruling 2026-08-04; F1-36(b) lane 3) it may be scheduled **outside the statutory window only on an explicitly recorded, timestamped customer request for that time** (transcript, message or rep note): the call opens by referencing the request, the consent trail is stored as evidence, and a single "stop" ends the lane for that customer; the lane is product law, per-tenant enable/disable only. The owner chooses which automatic triggers are live (M07-34).
-**DONE WHEN:**
-- Given a proposal three days unopened, a task two days overdue, or a third failed manual attempt, when the safety net runs, then a queue entry exists naming that reason — and given a rep hands a lead over, then it queues on demand (M07-33).
-
-**Settle before the build:**
-- Lane-3 activation's operator-side consent-registration data (M07-33; `F1-36`(b), `F1-38`) — pick: no product record in V1 — lane 3 is a per-tenant enable the platform flips when the operator-side registration clears, the same activation-not-scope shape as `F1-38`'s template registration, and the per-call consent evidence stays on the queue entry as M07-33 already stores it (no row states what the scheme would require of a record, so authoring one would invent it; cost if wrong: a registration entity is added beside the queue's evidence, additive, and lane 3 stays disabled until it lands).
-
-### T-M07-026 · Call execution honesty (record always written, stall ladder, wrong number)
-
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-39, M07-40
-**Metering (T-M12-010):** every completed call is metered once with `meterUsage` as `voice_minutes`, `billable: true`, `quantity` in seconds, keyed by the call's id, in the same transaction that writes the call record (M12-33: every call ledgered); the speech upstream's seconds are the cost line `speech`, with its per-tenant quota over `UsageService.costRollupOf` (M12-37). The allowance checks at queue insert and pre-dial read `UsageService.billedRollupOf`.
-**Usage screen (T-M12-004):** the voice events panel (`GET /billing/usage/events?meter=voice_minutes`, `UsageRepository.eventsOf`) joins each event's call for its site and its caller, so a row reads as `SCR-M12-04` frame c draws it — site · city, the time and who ran it — where it reads `Call` today; the voice gate at queue insert and pre-dial reads the trial cap's step from `cappedUsageStep` with the `fullSince` `UsageService.fullSinceOf` answers, the step the usage screen shows.
-**Requirements (verbatim):**
-- **M07-39** (P0) — **Call failure is honest: the call record is always written.** A mid-call media drop attempts one apology line, else hangs up with outcome recorded as dropped; a provider outage pauses outbound and lets inbound fall to voicemail; speech/understanding stalls follow a defined ladder ending in hand-to-human or voicemail per tenant config — never dead air, never a silent no-op.
-- **M07-40** (P0) — **A wrong or reassigned number is flagged and the number marked unverified** — no further automated attempts until a person confirms it.
-**DONE WHEN:**
-- Given the agent reaches a wrong or reassigned number, when the call ends, then the record's outcome is wrong-number, the number is marked unverified, and no further automated attempt occurs until a person confirms it (M07-40).
-- Given any completed, dropped or failed call, when the lead timeline renders, then the call record exists with its typed outcome, summary, language and config version, with transcript on tap (M07-38, M07-39); and given the customer declined recording, then no recording exists but the call proceeded and the transcript survives per the pack's rules (M07-38).
-
-**Settle before the build:**
-- Whether the call record pins the routing-policy and IVR-flow versions or only the agent config (M07-38, M07-44, M07-47) — ruled: it pins both — nullable refs to the `routing_policy_version` in force when the call started and, on inbound, the `ivr_flow_version` that answered it, written beside the agent-config pin (both are versioned-append and platform-seeded before the first call; M07-44 and M07-47 promise that in-flight calls keep their starting version, and that promise is auditable only from the record; a nullable ref costs nothing, and reconstructing the version later by timestamp is the guess M07-14's config pin already rejects).
-
-### T-M07-027 · Escalation notification, handoff context and presence
-
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-43, M07-45, M07-46
-**Requirements (verbatim):**
-- **M07-43** (P0) — **A price question is an immediate escalation: the rep gets a notification, not a task buried in a list.** The notification deep-links to the live context. Notification delivery contracts are `foundations/F6`'s (`agent_escalation` type registered there).
-- **M07-45** (P0) — **Every handoff writes a pinned context record** — summary, intent, sentiment, collected fields, transcript pointer — generated once at handoff time, with the target and outcome. A warm transfer delivers a spoken whisper summary before bridging **where the rail declares that capability**; otherwise it degrades to cold transfer plus a push with the summary and a deep link — declared path, never a silent no-op (F8-35 consumed).
-- **M07-46** (P0) — **Per-user routing availability is a manual toggle in v1**: available · busy · off, with an optional until-time. Ring groups and chains read it.
-(M07-46's toggle surface ships in the app shell — verbatim row also carried by `SCR-SHELL-01`; this task builds the presence state that ring groups and chains read AND lands the pill and its editor inside both shells, `T-SHELL-001` and `T-SHELL-008`, which host it and claim nothing of it.)
-**DONE WHEN:**
-- Given a customer asks for a discount mid-call, when the hand-over rule fires, then the rep is notified immediately with a deep link, and the escalations surface lists the call with its reason (M07-42, M07-43).
-- Given any handoff, when the human picks up, then the pinned context (summary, intent, collected fields) is with them — as a whisper where the rail declares it, else as push + deep link, and the record shows which (M07-45).
-- Given a user sets themself off until 3 pm, when routing runs, then they are skipped until then (M07-46).
-
-### T-M07-028 · Inbound answer, capture and degradation ladders
-
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-48, M07-50
-**Requirements (verbatim):**
-- **M07-48** (P0) — **The agent answers inbound when nobody picks and captures the enquiry — name, city, bill amount, interest — into the CRM capture flow, meeting the same dedupe sheet as every channel** (`modules/M02`'s surface, UXG-02 reuse — cited). An after-hours capture queues its callback window-shifted (M07-35); the customer is served at capture time, called back lawfully.
-- **M07-50** (P0) — **Inbound degradation ladders are defined, never improvised:** AI-inbound over allowance falls back to the human ring group or voicemail per the tenant's own IVR config; a **halted** tenant's inbound degrades to a missed-call log plus voicemail — no AI minutes burned, no caller stranded. (Billing states and the gate mechanics are `modules/M12`'s.)
-**DONE WHEN:**
-- Given an unknown caller the agent serves at 11 pm, when capture completes, then the lead exists via the standard dedupe path and any callback is queued no earlier than the window opening (M07-48).
-- Given AI-inbound over allowance, when a call arrives, then it routes per the tenant's IVR fallback and is logged (M07-50).
-
-**Settle before the build:**
-- Whether the missed-call log is a distinct record type or a view over the call ledger (M07-38, M07-50, §M07.9) — ruled: a view — a missed call is an inbound `call_record` no person or agent answered (outcome no answer or voicemail), and its lead-timeline entry is that row; no second table (M07-38 ledgers every call, human and agent, inbound and outbound, so a separate log would be a second copy of a ledgered call).
-
-### T-M07-029 · Telephony capability framework and DTMF traversal
-
-**Type:** integration · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-49, M07-54
-**Requirements (verbatim):**
-- **M07-49** (P0) — **Automated menu traversal on outbound calls is a declared, negotiated capability — and it degrades honestly.** Where the rail declares DTMF-send, the call record gains a *"navigated an IVR (N steps)"* line and transcript markers. Where it does not — **the v1 reference rail does not provide it** — the step is skipped and the call is flagged for human follow-up; the record states what did not happen rather than looking like a failed call. *"Stuck in IVR — escalated"* is a required failure state either way.
-- **M07-54** (P0) — **Telephony is a provider-agnostic capability framework: every adapter declares what it truly supports, and product behaviour branches on the declaration — never on the vendor name.** A feature needing a missing capability degrades on its defined path (M07-45, M07-49). Vendor names appear in this suite only as v1 reference implementations (Exotel + Sarvam are the IN reference rails behind the capability ports — F1-43; Bolna is the documented alternate behind the same ports).
-**DONE WHEN:**
-- Given an outbound call that encounters an automated menu, when the rail lacks the traversal capability, then the record shows the step was skipped and the call is flagged for human follow-up — and where the rail declares it, the record shows "navigated an IVR (N steps)" with markers (M07-49).
-- Given any telephony feature, when its adapter lacks the declared capability, then the defined degradation path runs and the record says so — no behaviour anywhere branches on a vendor's name (M07-54).
-- Given an automated step whose required capability is unavailable, when the step is reached, then it degrades on its declared path, the record shows what did not happen, and a human is notified (`F8-35`).
 
 ## Laws (enforced through screens and review, no standalone build)
 
@@ -410,60 +80,60 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 | M07-05 | T-M07-021 |
 | M07-06 | T-M07-001 |
 | M07-07 | T-M07-021 |
-| M07-08 | T-M07-005 |
-| M07-09 | T-M07-005 |
-| M07-10 | T-M07-005 |
-| M07-11 | T-M07-005 |
-| M07-12 | T-M07-006 |
-| M07-13 | T-M07-007 |
-| M07-14 | T-M07-008 |
-| M07-15 | T-M07-005 |
-| M07-16 | T-M07-009 |
-| M07-17 | T-M07-023 |
-| M07-18 | T-M07-010 |
-| M07-19 | T-M07-009 |
-| M07-20 | T-M07-022 |
-| M07-21 | T-M07-009 |
-| M07-22 | T-M07-022 |
-| M07-23 | T-M07-022 |
-| M07-24 | T-M07-022 |
-| M07-25 | T-M07-013 |
-| M07-26 | T-M07-011 |
-| M07-27 | T-M07-024 |
-| M07-28 | T-M07-012 |
-| M07-29 | T-M07-024 |
-| M07-30 | T-M07-012 |
-| M07-31 | T-M07-024 |
-| M07-32 | T-M07-024 |
-| M07-33 | T-M07-025 |
-| M07-34 | T-M07-005 |
-| M07-35 | T-M07-012 |
-| M07-36 | T-M07-012 |
-| M07-37 | T-M07-012 |
-| M07-38 | T-M07-013 |
-| M07-39 | T-M07-026 |
-| M07-40 | T-M07-026 |
-| M07-41 | T-M07-022 |
-| M07-42 | T-M07-014 |
-| M07-43 | T-M07-027 |
-| M07-44 | T-M07-015 |
-| M07-45 | T-M07-027 |
-| M07-46 | T-M07-027 |
-| M07-47 | T-M07-016 |
-| M07-48 | T-M07-028 |
-| M07-49 | T-M07-029 |
-| M07-50 | T-M07-028 |
-| M07-51 | T-M07-017 |
-| M07-52 | T-M07-017 |
-| M07-53 | T-M07-017 |
-| M07-54 | T-M07-029 |
-| M07-55 | T-M07-018 |
-| M07-56 | T-M07-018 |
-| M07-57 | T-M07-019 |
-| M07-58 | T-M07-010 |
-| M07-59 | T-M07-020 |
-| M07-60 | T-M07-018 |
-| M07-61 | T-M07-018 |
+| M07-08 | voice — postponed |
+| M07-09 | voice — postponed |
+| M07-10 | voice — postponed |
+| M07-11 | voice — postponed |
+| M07-12 | voice — postponed |
+| M07-13 | voice — postponed |
+| M07-14 | voice — postponed |
+| M07-15 | voice — postponed |
+| M07-16 | voice — postponed |
+| M07-17 | voice — postponed |
+| M07-18 | voice — postponed |
+| M07-19 | voice — postponed |
+| M07-20 | voice — postponed |
+| M07-21 | voice — postponed |
+| M07-22 | voice — postponed |
+| M07-23 | voice — postponed |
+| M07-24 | voice — postponed |
+| M07-25 | voice — postponed |
+| M07-26 | voice — postponed |
+| M07-27 | voice — postponed |
+| M07-28 | voice — postponed |
+| M07-29 | voice — postponed |
+| M07-30 | voice — postponed |
+| M07-31 | voice — postponed |
+| M07-32 | voice — postponed |
+| M07-33 | voice — postponed |
+| M07-34 | voice — postponed |
+| M07-35 | voice — postponed |
+| M07-36 | voice — postponed |
+| M07-37 | voice — postponed |
+| M07-38 | voice — postponed |
+| M07-39 | voice — postponed |
+| M07-40 | voice — postponed |
+| M07-41 | voice — postponed |
+| M07-42 | voice — postponed |
+| M07-43 | voice — postponed |
+| M07-44 | voice — postponed |
+| M07-45 | voice — postponed |
+| M07-46 | voice — postponed |
+| M07-47 | voice — postponed |
+| M07-48 | voice — postponed |
+| M07-49 | voice — postponed |
+| M07-50 | voice — postponed |
+| M07-51 | voice — postponed |
+| M07-52 | voice — postponed |
+| M07-53 | voice — postponed |
+| M07-54 | voice — postponed |
+| M07-55 | voice — postponed |
+| M07-56 | voice — postponed |
+| M07-57 | voice — postponed |
+| M07-58 | voice — postponed |
+| M07-59 | voice — postponed |
+| M07-60 | voice — postponed |
+| M07-61 | voice — postponed |
 | M07-62 | T-M07-002 |
 | M07-63 | T-M07-003 |
 | M07-64 | T-M07-004 |

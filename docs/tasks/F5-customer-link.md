@@ -3,28 +3,19 @@
 This file carries every engineering task for the customer-link bucket: the no-login tokenised
 customer journey of `docs/prd/foundations/F5-customer-link.md` (the link's lifecycle, named links and
 attribution, acceptance, questions and callbacks, payment surface, progress, handover, security
-and branding laws) plus the studio's customer surfaces from
-`docs/prd/modules/M05-studio/08-customer-surfaces.md` (the proposal document render and the share
-page — a port area under ruling S12-1). Task-id prefix: **T-F5-**. Screen tasks own SCR-F5-01
-through SCR-F5-05; the Proposal Document screen (SCR-M06-17) and Deal Link Manager screen
-(SCR-M06-20) are drawn under the M06 tasks file, while the studio document-render port rows that
-feed SCR-M06-17 are built here. Policy rows with no standalone build live in the Laws section;
-context rows in Realized elsewhere. The disposition index at the end covers every row in this
-bucket exactly once.
+and branding laws). Task-id prefix: **T-F5-**. Screen tasks own SCR-F5-01 through SCR-F5-04; the
+Proposal Document screen (SCR-M06-17) and Deal Link Manager screen (SCR-M06-20) are drawn under the
+M06 tasks file. Policy rows with no standalone build live in the Laws section; context rows in
+Realized elsewhere. The disposition index at the end covers every row in this bucket exactly once.
 
 ---
 
 ### T-F5-001 · Customer Link — Proposal page (SCR-F5-01)
 
-**Type:** screen (port + UI rebuild — the POC share page implements the behavior; UI is rebuilt to the new design) · **Tier:** P0
+**Type:** screen · **Tier:** P0
 **Status:** planned
-**PRD rows:** F5-07 (P0), F5-32 (P0), F5-33 (P0), F5-35 (P0), F5-36 (P0), F5-37 (P0), F5-39 (P0), F5-42 (P1), F5-43 (P0), F5-44 (P0), F5-47 (P0), F5-48 (P0), F5-52 (P0), F5-53 (P0), F5-54 (P0), F5-55 (P0), MS9-10 (P0), MS9-11 (P0), MS9-14 (P0), MS9-15 (P0), MS9-17 (P0), MS9-23 (P0), MS9-24 (P0), MS9-25 (P1), MS9-29 (P0)
+**PRD rows:** F5-07 (P0), F5-32 (P0), F5-33 (P0), F5-35 (P0), F5-36 (P0), F5-37 (P0), F5-39 (P0), F5-42 (P1), F5-43 (P0), F5-44 (P0), F5-47 (P0), F5-48 (P0), F5-52 (P0), F5-53 (P0), F5-54 (P0), F5-55 (P0)
 **DESIGN:** SCR-F5-01
-**PORT:** `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` · `3d_design_studio/src/app/(studio)/share/[shareId]/page.tsx` (share-sitting claims, `docs/prd/modules/M05-studio/poc-file-claims.md`)
-**DEFECTS:**
-- `CODE.share.98/.99/.100/.11` — one permanent unnamed link; no revoke/attribution/acceptance (S8-2c → MS9-09/10; the `.100` acceptance-path half lands on this screen).
-- `CODE.share.80/.24` — structure disclaimer conditional/absent on customer surfaces (S8-3b → MS9-17).
-- `CODE.share.4/.5/.7/.8/.13/.16/.27/.28/.29/.37/.41/.53/.54/.61/.64/.70/.97` — robustness/privacy/polish batch (17) (S8-4 → MS9-11/13/15/21/22/23/24/25/27; this screen's share: hydration `.4`, deep link `.5`, operator chrome `.8`, honest incomplete-design message `.13`, image states `.27/.29`, accessible names `.28/.54`, back navigation `.37`, copy-link/QR `.41/.53`).
 
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification. The cross-phase rows F5-07, F5-52, F5-53, F5-54 and F5-55 bind SCR-F5-02 and SCR-F5-03 as well; they are dispositioned here. `F5-48`'s build-side half — the instant confirmation message auto-sending from the tenant's connected transactional channel the moment Accept records, with copy-paste composition as the no-channel fallback (`M03-03`, owner ruling 2026-08-04) — is part of this task's build; the page's own confirmation state, which this task draws, is the acknowledgement of record regardless.
 
@@ -46,12 +37,7 @@ bucket exactly once.
 - Given a submitted question, when it is received, then a notification and a timeline entry exist on the tenant's side, the customer's page acknowledges receipt without promising a delivery or a time the tenant has not committed to, and no reply surface exists (`F5-53`).
 - Given a customer requesting a call, when the request is submitted, then a customer-requested callback entry exists in the queue, scheduled no earlier than the market's lawful window (`F5-54`).
 - Given any phase of the link, when it renders, then a named person and a phone number are present (`F5-55`).
-- Given a recipient, Then a named revocable link can be issued and its opens are attributed (MS9-09); the customer can accept/ask/negotiate, with OTP available but off by default (MS9-10). Given a customer opening a link, Then no operator chrome, alerts or instructions appear (MS9-11), only that design's data is loaded (MS9-12), and nothing is recomputed or written (MS9-13). Given the proposal link, Then the 3D model is reachable inside it, copy-link confirms, and a failed QR is visible (MS9-14). Given a slow hydration, a deep link, or an incomplete design, Then the surface shows loading, never crashes, and explains honestly (MS9-15).
-- Given any quoted structure, Then the disclaimer prints (MS9-17).
-- Given images, Then loading, present and missing are distinct with a stable footprint (MS9-23); accessible names attach to real roles (MS9-24); no third-party resources load (MS9-26); both surfaces have tests including an accessibility pass (MS9-27).
-- Given a reader who arrived from the proposal page, the tenant-side preview, a copied link or a QR scan, when they navigate back from this surface or from the proposal document (SCR-M06-17), then they return to where they came from; and given a design with no real SLD, when the surface renders, then no SLD page is offered (`MS9-25`).
-- Given any figure on the document, Then it equals the studio's single computed value (MS9-28); the surface presents the specified content and consumes F5's framework for the rest (MS9-29).
-- (F5-42 and MS9-25 carry no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text quoted in `SCR-F5-01` is the binding criterion, and the two lines above state it.)
+- (F5-42 carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text quoted in `SCR-F5-01` is the binding criterion, and the financing line above states it.)
 - (`F5-48`'s PRD acceptance line — quoted above — is the **pre-ruling** wording, retained here for traceability: it covers the page-state half only. **That PRD line now carries the automatic-send half itself at `docs/prd/foundations/F5-customer-link.md` §F5.6's acceptance block, annotated to the owner ruling of 2026-08-04 — the gap this note was opened for is closed, and the send line above is now the PRD's own criterion rather than a supplement to it.** The reconciled `F5-48` requirement text quoted in `SCR-F5-01` and `M03-03` remain the binding criteria.)
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 - Given a tenant with a saved brand colour and logo, when its customer-link page renders, then the page carries the tenant's mark and the compliant shade `compliantShades` derived — never a raw colour that fails contrast — and the operator application renders nothing tenant-styled (`F7-07`, `F5-81`; moved here from `T-FPLAT-022`, whose engine and save path are built). → proof: QA (web) the link page shows the mark and the derived shade for a colour that fails contrast; the operator home for the same tenant shows neither
@@ -124,23 +110,6 @@ bucket exactly once.
 
 ---
 
-### T-F5-005 · Customer 3D View (SCR-F5-05)
-
-**Type:** screen (port + UI rebuild — the POC read-only share rendering implements the behavior; UI is rebuilt to the new design) · **Tier:** P0
-**Status:** planned
-**PRD rows:** none from this bucket — this line claims no row. The screen is realized by `M05-55` (cross-ref, P0, dispositioned in `docs/tasks/MS-studio-a.md`) and `MS6-37` (cross-ref, P0, claimed by T-MS-206 in `docs/tasks/MS-studio-b.md`); `F5-33` (cross-ref, P0, claimed by T-F5-001) is the "View in 3D" entry on the carrying proposal page.
-**DESIGN:** SCR-F5-05
-**PORT:** `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` (the POC read-only share rendering host — share-sitting claim) · `3d_design_studio/src/features/solar-studio/three/Scene3D.tsx` (read-only 3D presentation consumed here; the scene-engine port itself is claimed by the step-6 sitting and owned by the studio editor task file, per `docs/prd/modules/M05-studio/poc-file-claims.md`)
-**DEFECTS:** none in `docs/prd/modules/M05-studio/defect-register.md` target this screen's realizing rows; the S8 share-surface defects attach to T-F5-001, T-F5-011, T-F5-012 and T-F5-013.
-
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification (`M05-55`, `MS6-37` — quoted in full there; their behavioural acceptance rides their owning studio task files).
-
-**DONE WHEN:**
-- The behavioural acceptance of `M05-55` and `MS6-37` passes in their owning studio task files, exercised through this screen (read-only rendering behind the proposal link's "View in 3D" button; no separate customer 3D URL; captures/pictures fallback where the live view cannot serve).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
----
-
 ### T-F5-006 · Link token service & lifecycle (mint, scopes, phases, permanence, revocation, billing independence)
 
 **Type:** engine · **Tier:** P0
@@ -152,7 +121,7 @@ bucket exactly once.
 - **F5-20** (P0) — **A link comes into existence when a proposal is shared, and never before.** Sharing is the rep's explicit act on the share surface (`M06-53`); minting the link *is* that act, which is why the capability rows of `foundations/F2` §F2.5-F5 carry exactly the send-proposals holder set. Nothing else in the product creates a customer-facing URL.
 - **F5-21** (P0) — **The link carries its own authority: a scoped, expiring grant, never a session and never an account.** The scope set is fixed at product level — view the proposal · respond to the proposal (accept, negotiate, decline) · view progress · view the handover pack — and **effective rights are the token's scopes intersected with the link's current phase**, so a token that carries a respond scope grants nothing once the deal has moved past the phase in which responding is meaningful. The link sits outside the role system entirely (`F2-18`).
 - **F5-22** (P0) — **The link is permanent (owner ruling 2026-08-04): view scopes never expire, and after handover the same URL is the customer's permanent read-only "solar file" for life.** The former twelve-month view-scope expiry is superseded — a customer returning to a bookmark years later still reaches their page; respond scopes still end with their phase (`F5-21`), and **revocation remains the operator's kill switch** (`F5-76`): re-minting issues a fresh token for the same link, and regenerate-with-revoke kills the old one immediately. The `expired` state survives in the lifecycle vocabulary only for tokens minted under the pre-ruling horizon. Neither expiry nor revocation is ever a consequence of the tenant's billing state (`F5-23`) or of money the customer owes (`F5-24`).
-- **F5-23** (P0) — **Customer links keep working in every tenant billing state, without exception.** View **and** respond, proposal and progress pages alike, in every one of the six billing states — `trialing` · `active` · `past_due` · `halted` · `expired` · `cancelled` (`BM-33`/`M12-04`, the closed vocabulary; no other state name exists) *(Final review: the earlier illustrative list named states outside the six)* — the tenant's customer is never punished for the tenant's billing state. The soft-block matrix is product law and no enforcement surface may move this from working to blocked (`BM-32`, `BM-35`).
+- **F5-23** (P0) — **Customer links keep working in every tenant billing state, without exception.** View **and** respond, proposal and progress pages alike, in every one of the six billing states — `trialing` · `active` · `past_due` · `halted` · `expired` · `cancelled` (the closed vocabulary; no other state name exists) *(Final review: the earlier illustrative list named states outside the six)* — the tenant's customer is never punished for the tenant's billing state. The soft-block matrix is product law and no enforcement surface may move this from working to blocked.
 - **F5-24** (P0) — **A customer link is never revoked, degraded or gated over money the customer owes.** The law is stated where the temptation lives: ***"never block the customer's progress link over money — chase the person, do not punish the view."*** An unpaid tranche is visible to the tenant and chased through a person (`M08-39`, `M11-32`); nothing on the customer's page changes because of it, including the parts of the page that have nothing to do with money.
 - **F5-74** (P1) — **The link keeps serving the pack after the project closes — permanently.** Closing is not deleting: a handed-over project stays readable with its documents intact, and the customer's link continues to serve them **for life** (`F5-22` as ruled — view scopes never expire; owner ruling 2026-08-04). Nothing about closure removes the customer's access, and nothing about the tenant's billing state does either (`F5-23`).
 - **F5-75** (P0) — **The link's product-level security properties are fixed and non-negotiable: unguessable, scoped, expiring, revocable — and attributable.** These are the properties the token scheme must satisfy; how it satisfies them is engineering and is deliberately absent from this suite. No surface may weaken one of them for convenience, and no market pack, plan tier or tenant setting may switch one off. *("Expiring" is the capability of a defined per-scope lifetime: respond scopes end with their phase, and the deal link's view scope carries a **permanent-until-revoked** lifetime by owner ruling 2026-08-04 — revocability is the kill switch that keeps permanence safe.)*
@@ -241,7 +210,7 @@ bucket exactly once.
 **Requirements (verbatim):**
 - **F5-34** (P0) — **An unapproved design never reaches this page.** Structural adequacy is a recorded human decision, and a design that has not been signed off is not shown to the customer on the link, in a document or in a shared file. The law is `F8-29`'s; the gate is this document's, and it is absolute: where no approved design exists, the page renders the proposal without the model rather than rendering an unapproved one.
 - **F5-38** (P0) — **The link and the document never disagree.** One computed value set feeds the page, the generated document and every export; a figure that differs between the customer's page and the customer's document is a defect, not a rounding difference.
-- **F5-40** (P0) — **The page always shows the latest version, and a version already shared never changes underneath the customer.** A newer version supersedes the one the page renders, at the same URL; and the figures of a version that has been shared are pinned forever — a later price change produces a new version rather than editing the one the customer read (`F8-15`). Where the design behind a live proposal has been superseded by newer survey data, the page continues to render what the shared version carries; the reconciliation policy is ruled (owner ruling 2026-08-04: design marked "survey updated — review needed", designer notified, drafts blocked from sending until review, sent versions pinned — `M05-13`), and its customer-visible consequence arrives only as a new version at this same URL.
+- **F5-40** (P0) — **The page always shows the latest version, and a version already shared never changes underneath the customer.** A newer version supersedes the one the page renders, at the same URL; and the figures of a version that has been shared are pinned forever — a later price change produces a new version rather than editing the one the customer read (`F8-15`). Where the design behind a live proposal has been superseded by newer survey data, the page continues to render what the shared version carries; the reconciliation policy is ruled (owner ruling 2026-08-04: design marked "survey updated — review needed", designer notified, drafts blocked from sending until review, sent versions pinned), and its customer-visible consequence arrives only as a new version at this same URL.
 
 **DONE WHEN:**
 - Given a proposal whose design has been signed off, when the page renders, then the read-only 3D view of that design is present with no editing control; and given a design that has not been signed off, when the page renders, then the model is absent (`F5-33`, `F5-34`).
@@ -266,106 +235,16 @@ bucket exactly once.
 
 ---
 
-### T-F5-011 · Studio share page & link plumbing — port to the F5 framework
-
-**Type:** port · **Tier:** P0
-**Status:** planned
-**PRD rows:** MS9-09, MS9-12, MS9-13, MS9-26, MS9-27
-**PORT:** `3d_design_studio/src/app/(studio)/share/[shareId]/page.tsx` · `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` (share-sitting claims, `docs/prd/modules/M05-studio/poc-file-claims.md`)
-**DEFECTS:**
-- `CODE.share.98/.99/.100/.11` — one permanent unnamed link; no revoke/attribution/acceptance (S8-2c → MS9-09/10).
-- `CODE.share.106` — anonymous share hydrates operator's entire project store (S8-4.1 → MS9-12).
-- `CODE.share.4/.5/.7/.8/.13/.16/.27/.28/.29/.37/.41/.53/.54/.61/.64/.70/.97` — robustness/privacy/polish batch (17) (S8-4 → MS9-11/13/15/21/22/23/24/25/27; this task's share: read-only recompute `.7`, missing tests `.97`).
-
-**Requirements (verbatim):**
-- **MS9-09** (P0) — Links follow F5: per-recipient NAMED links, revocable and re-mintable, with open attribution — not one permanent unnamed id per project (S8-2c fixes `.98/.99/.11`); the customer's own view is permanent — the link lives forever (`F5-70`; `.10`).
-- **MS9-12** (P0) — The share page loads ONLY that design's data — never the operator's whole project store (S8-4.1 fixes `.106`, privacy).
-- **MS9-13** (P0) — Read-only means read-only: opening a share link never triggers background recompute or persisted writes (S8-4.11 fixes `.7`) (`.19`).
-- **MS9-26** (P0) — No third-party scripts, fonts or analytics load on the customer surface (`.105`, F5-29).
-- **MS9-27** (P0) — Both customer-facing surfaces carry automated tests including an accessibility pass — today they have none (S8-4.13 fixes `.97`).
-- *Row removed 2026-08-07: `MS9-30` ("Link issuance is an ONLINE operation — never a silent local-only mint", `.104`) was swept with the offline/sync deletion — for its wording, not its content. The prohibition on a client-minted customer URL is a security and attribution law, not a connectivity one, and it is live below. This port still closes `CODE.share.104`; it closes it under `F5-80`.*
-- **F5-80** (P0, consumed here — dispositioned at T-F5-006) — **There is one customer-link framework, and no private or local share path survives beside it.** Every customer-facing share surface in the product is a tokenised link under these laws — server-rendered, scoped, expiring, revocable; the prototype-era local share viewer is replaced and no local-only share path exists anywhere. The framework ships with its full lifecycle, labelling, contact attribution and acceptance challenge from launch rather than in stages. **Resolved (owner ruling 2026-08-04):** the studio's customer-facing 3D view ships **inside the proposal link** ("View in 3D", `F5-33`) — no separate customer-facing 3D share link exists, so the one-framework law holds with nothing beside it.
-- **F5-31** (P0, consumed here — dispositioned at T-F5-007) — **Every act on a link is audit-covered, with attribution.** Mint, re-mint, revoke, open, and each of accept, negotiate and decline are named in the suite's audit checklist and are written with who and when; the customer-side acts are attributed to the link and its contact rather than to a user.
-
-**DONE WHEN:**
-- Given a recipient, Then a named revocable link can be issued and its opens are attributed (MS9-09); the customer can accept/ask/negotiate, with OTP available but off by default (MS9-10). Given a customer opening a link, Then no operator chrome, alerts or instructions appear (MS9-11), only that design's data is loaded (MS9-12), and nothing is recomputed or written (MS9-13). Given the proposal link, Then the 3D model is reachable inside it, copy-link confirms, and a failed QR is visible (MS9-14). Given a slow hydration, a deep link, or an incomplete design, Then the surface shows loading, never crashes, and explains honestly (MS9-15).
-- Given images, Then loading, present and missing are distinct with a stable footprint (MS9-23); accessible names attach to real roles (MS9-24); no third-party resources load (MS9-26); both surfaces have tests including an accessibility pass (MS9-27).
-- Given every customer-facing share surface in the product, when they are enumerated, then each is a tokenised link under this framework and no local-only share path exists (`F5-80`) — this is the acceptance the POC's browser-side mint (`CODE.share.104`) is closed against; the mint itself is an audited, attributed event (`F5-31`). The specification note for this port: link issuance is server-side under the one F5 framework, never a silent local-only mint.
-- The engineering core moves as-is with its tests, and the ~1,000 passing POC tests port with the code as the regression net (ruling S12-1); for this area the share ledger records zero automated coverage on these files, so MS9-27's new automated tests — including the accessibility pass — are the net this port must add.
-
----
-
-### T-F5-012 · Proposal document render — port (identity, pagination, structure, print honesty)
-
-**Type:** port · **Tier:** P0
-**Status:** planned
-**PRD rows:** MS9-01, MS9-02, MS9-03, MS9-04, MS9-05, MS9-16, MS9-18, MS9-19, MS9-20, MS9-21, MS9-22, MS9-28
-**PORT:** `3d_design_studio/src/features/solar-studio/screens/ProposalView.tsx` (share-sitting claim, `docs/prd/modules/M05-studio/poc-file-claims.md`; the narrative library `3d_design_studio/src/features/solar-studio/lib/proposal-narrative.ts` and its tests are the step-7 sitting's claim and port with that bucket)
-**DEFECTS:**
-- `CODE.share.109/.92/.94/.44` — proposal has no number/date/version/validity; internal name printed; bad pagination (S8-1 → MS9-01/02).
-- `CODE.share.35/.62/.63` — staleness stripped from print; no per-capture badge; wrong caption (S8-3a → MS9-16).
-- `CODE.share.59/.75/.83/.73` — false no-estimates claim; ineligible subsidy text; no BOM provenance; -Rs0 (S8-3c/d/e → MS9-18/19/20).
-- `CODE.share.4/.5/.7/.8/.13/.16/.27/.28/.29/.37/.41/.53/.54/.61/.64/.70/.97` — robustness/privacy/polish batch (17) (S8-4 → MS9-11/13/15/21/22/23/24/25/27; this task's share: preset order `.61`, placeholder/operator text `.70/.64`).
-
-The document's customer-facing UI is the Proposal Document screen (SCR-M06-17), drawn under the
-M06 tasks file; this task ports the render core that screen rebuilds on, and closes the S8
-defect set against it.
-
-**Requirements (verbatim):**
-- **MS9-01** (P0) — Every issued proposal carries a full identity block: proposal number, issue date, version/revision, validity period, prepared-by with company identity (M01 branding), and the CUSTOMER-facing project name — never the internal design or variant name (S8-1 fixes `.109/.92/.16`).
-- **MS9-02** (P0) — Pagination is counted, not hardcoded: sequential unique page numbers, no duplicates, and no trailing blank page in the PDF (S8-1 fixes `.94/.44`).
-- **MS9-03** (P0) — Document structure as shipped: headline with capacity, prepared-for line, tenant logo, cover image, 3D-model card with link + QR, narrative, shadow study, system/financial summary, BOM, drawings (`.45–.49/.52/.56/.57/.60`).
-- **MS9-04** (P0) — Audience toggle (customer vs internal) changes only what it claims to change, and the internal view is never the default for a customer artefact (`.38/.39`).
-- **MS9-05** (P0) — Print/PDF is a designed output: page breaks, print-only and screen-only elements are deliberate, and the printed artefact is the one the customer receives (`.31/.36/.43`, with MS9-11's staleness rule).
-- **MS9-16** (P0) — Staleness travels to paper: the staleness warning PRINTS (never print-suppressed), per-capture staleness badges appear on the document, and each capture's caption states the sun position it was actually taken at (S8-3a fixes `.35/.62/.63`) (`.33/.34`).
-- **MS9-18** (P0) — "Nothing is estimated" prints only when it is true; otherwise the estimate provenance line prints in its place (S8-3c fixes `.59`, F8-09). Narrative beats carry their supporting facts (`.58`).
-- **MS9-19** (P0) — Scheme/subsidy sentences print only where the design is actually eligible, with the pack's rule text (S8-3d fixes `.75`), and zero-value lines never render as a negative amount (S8-4.4 fixes `.73`).
-- **MS9-20** (P0) — BOM quantities on the customer document carry their confidence/provenance marker (S8-3e fixes `.83`, F8).
-- **MS9-21** (P0) — No placeholder text ever reaches the customer: no "undefined", no operator instructions, no internal vocabulary (S8-4.2/.4 fix `.70/.64`). *(Binds the share page of T-F5-001/T-F5-011 equally; dispositioned here where the defects land.)*
-- **MS9-22** (P1) — Shadow captures print in the four-preset order, not insertion order (S8-4.5 fixes `.61`).
-- **MS9-28** (P0) — Numbers, narrative, imagery and drawings all come from the single computed set (MS7-15/MS7-46) — the document never recomputes a different answer (`.32`).
-
-**DONE WHEN:**
-- Given an issued proposal, Then it shows number, issue date, version, validity, prepared-by and the customer-facing project name — and never an internal variant name (MS9-01); page numbers are sequential and unique with no blank trailing page (MS9-02); the document sections render as specified (MS9-03); the audience toggle never leaves internal content in a customer artefact (MS9-04); the printed output is the designed one (MS9-05).
-- Given a stale design, Then the printed PDF carries the staleness warning and per-capture badges, and captions state the true sun state (MS9-16). Given any quoted structure, Then the disclaimer prints (MS9-17). Given estimated figures, Then the document says so instead of claiming nothing is estimated (MS9-18). Given a commercial or ineligible project, Then no subsidy sentence prints, and zero values never render as negatives (MS9-19). Given BOM quantities, Then their confidence marker prints (MS9-20). Given any state, Then no placeholder or operator text reaches the customer (MS9-21).
-- Given any figure on the document, Then it equals the studio's single computed value (MS9-28); the surface presents the specified content and consumes F5's framework for the rest (MS9-29).
-- MS9-22 carries no P0 acceptance line; its requirement text above is the specification (four-preset print order).
-- The engineering core moves as-is with its tests, and the ~1,000 passing POC tests port with the code as the regression net (ruling S12-1); the share ledger records zero automated coverage on these files, so the tests MS9-27 requires (T-F5-011) must cover this document surface too.
-- Given a tenant with a saved brand colour and logo, when its proposal document renders, then the document carries the mark and the compliant shade `compliantShades` derived — never a raw colour that fails contrast — and the branding changes no number, label or disclosure (`F7-07`, `F5-81`; moved here from `T-FPLAT-022`). → proof: the rendered document for a colour that fails contrast carries the derived shade and the mark, and its text layer equals the unbranded render's
-
----
-
-### T-F5-013 · Issuance gating & version pinning — port
-
-**Type:** port · **Tier:** P0
-**Status:** planned
-**PRD rows:** MS9-06, MS9-07, MS9-08
-**PORT:** `3d_design_studio/src/features/solar-studio/screens/ProposalView.tsx` · `3d_design_studio/src/features/solar-studio/screens/ShareViewer.tsx` (share-sitting claims, `docs/prd/modules/M05-studio/poc-file-claims.md`; the defect register locates S8-2a in "ProposalView + routes" and S8-2b in ShareViewer)
-**DEFECTS:**
-- `CODE.share.107/.108/.14` — no readiness gate; inconsistent status marking; any design served (S8-2a → MS9-06/07).
-- `CODE.share.101` — issued proposal mutates with later edits (no pinning) (S8-2b → MS9-08).
-
-**Requirements (verbatim):**
-- **MS9-06** (P0) — A proposal can only be ISSUED when the readiness review passes (electrical gate + review verdict + BOM confidence): the document surface enforces the same gate Step 7 displays (S8-2a fixes `.107/.14`).
-- **MS9-07** (P0) — Every entry point that produces a customer document marks the design consistently — no route may leave status untouched (S8-2a fixes `.108`).
-- **MS9-08** (P0) — An issued proposal is PINNED: later design edits create a NEW version and never rewrite what was already sent; the version on the document identifies which one the customer holds (S8-2b fixes `.101`; M06 pinning law, F8-15 family).
-
-**DONE WHEN:**
-- Given a design that fails the readiness review, Then no customer document can be issued and the reason is stated (MS9-06); every issuing route marks status consistently (MS9-07). Given an issued proposal and a later design edit, Then the sent version is unchanged and a new version is created (MS9-08).
-- The engineering core moves as-is with its tests, and the ~1,000 passing POC tests port with the code as the regression net (ruling S12-1).
-
----
-
 ## Laws (enforced through screens and review, no standalone build)
 
 - **F5-01** (P0) — **The customer never logs in — ever.** There is no customer account, no password, no portal, no application to install and no sign-up of any kind anywhere in the product. The customer reaches everything they are entitled to see through one tokenised link, and holds no role: no preset describes them, no matrix column exists for them, and no surface in this suite may introduce a customer credential. The acceptance challenge of `F5-44` is a one-time verification of a person at a moment of commitment — it is **not** a credential, creates no account, and grants nothing that outlives the act it protects.
-  *Enforced by:* review of every customer-facing surface (T-F5-001…005 introduce no credential); the challenge's non-credential shape is T-F5-008's build (`F5-45`); the token grant of T-F5-006 is never a session or account (`F5-21`).
+  *Enforced by:* review of every customer-facing surface (T-F5-001…004 introduce no credential); the challenge's non-credential shape is T-F5-008's build (`F5-45`); the token grant of T-F5-006 is never a session or account (`F5-21`).
 - **F5-02** (P0) — **The customer's entire surface area is messages, calls and one link — and nothing in the product may add a second destination.** The source's whole-project counts are the budget: roughly 12–18 messages, 3–6 calls, **one** web link reused across all three phases, **zero** logins, **zero** app installs. Any proposal to give the customer a second URL, a second page family or an application is a change to this law, not a feature decision inside a module.
   *Enforced by:* review; the one-framework build of T-F5-006 (`F5-80`) is the mechanism that leaves nothing beside the link.
 - **F5-03** (P0) — **Two archetypes, one design.** The residential homeowner and the commercial-and-industrial buyer are served by the same page, the same lifecycle and the same laws; the difference between them is expressed through named links and the acceptance challenge (§F5.4, §F5.6), never through a second design, a second URL family or a segment-conditional surface.
-  *Enforced by:* review of T-F5-001…005 (one page family); named links and the challenge are T-F5-007 and T-F5-001/T-F5-008.
+  *Enforced by:* review of T-F5-001…004 (one page family); named links and the challenge are T-F5-007 and T-F5-001/T-F5-008.
 - **F5-05** (P0) — **Trust is the product, so every number the customer reads carries its honesty labels — with no exception for the customer surface.** Provenance tier (`F8-01`, `F8-02`), energy source label (`F8-08`, `F8-09`), staleness state (`F8-12`) and every required disclosure (`F8-20`, `F8-22`, `F8-23`) render on this page exactly as they render inside the product. No tenant setting, plan, template or white-label arrangement removes, weakens, renames or hides one (`F8-06`). A surface that cannot carry a label does not thereby earn permission to drop it — it carries the label or it does not carry the number (`F8-01`).
-  *Enforced by:* the "Numbers carrying provenance" sections of the SCR-F5-01/02/03 briefs built by T-F5-001/002/003; T-F5-012's document honesty rows; review against F8.
+  *Enforced by:* the "Numbers carrying provenance" sections of the SCR-F5-01/02/03 briefs built by T-F5-001/002/003; review against F8.
 - **F5-08** (P0) — **The page renders in the customer's language, not the rep's — and the product is built for a language set that will grow.** Language follows the reader (`F3-06`); every product-authored string on this page, including every honesty and disclosure line, is translated content (`F3-07`) with English fallback per string (`F3-05`); names, addresses, brand names and technical units are never translated (`F3-08`); money renders through the one money implementation in the tenant market's declared format, identically in every language (`F3-20`). No requirement in this document names a language or assumes the set's size (`F3-25`).
   *Enforced by:* the F3 localization framework consumed by every T-F5 screen task; review of all customer copy through the catalog.
 - **F5-09** (P0) — **The customer's first experience is a callback, and its speed is the single biggest predictor of who wins the job.** The source's own signals: called back within an hour reads as a strong signal; called back three days later means *"the job is already lost"*. The mechanism is lead capture and first-response time (`modules/M02`); what this document fixes is that the speed is a **customer-facing product obligation**, not an internal metric, and that no surface in the product may let a new enquiry sit without an owner.
@@ -381,11 +260,11 @@ defect set against it.
 - **F5-14** (P0) — **A survey leaves the customer with a promise and a date — and nobody leaves a site without saying what happens next.** The trust rule is the source's: what builds trust is the surveyor explaining what they are photographing and why; what destroys it is silent photographing followed by leaving. The customer receives a confirmation of the form *"Survey done. Your proposal will reach you by <date>."* — **a promise with a date**. Where the survey is remote the customer experiences nothing at this step and receives their proposal sooner, which is itself the competitive answer; where it is physical, the visit is confirmed, attended and closed out.
   *Enforced by:* the promise with a date is composed and sent at survey-submission commit by T-M04-009 (M04 tasks file), from the `survey_complete` template, whose starter words T-M04-009 authors under the registry's key (`F6-26` → T-FPLAT-021, F-platform tasks file — the key is named in `F6-26`'s own list, which owner ruling 2026-08-06 makes exhaustive), on the transactional lane with copy-for-a-person where no channel is connected (`M03-03`, owner ruling 2026-08-04); the visit's confirmation, attendance and close-out are `M02-46`'s booking build (T-M02-014) and `M02-47`/`M02-48`'s send build (T-M02-013) in the M02 tasks file. PRD check, verbatim: "Given a completed survey, when the customer is updated, then the update states that the survey is done and names the date by which the proposal will reach them (`F5-14`)."
 - **F5-15** (P0) — **No verbal price is given that the proposal then contradicts.** A figure spoken on a roof becomes the number the customer remembers; a document that disagrees with it reads as a bait. The product's answer is that the priced document is the only price surface and it carries its own honesty labels (`F5-36`, `F5-37`) — no surveyor-side or call-side surface in the product produces a customer-facing price.
-  *Enforced by:* review — T-F5-001's page and T-F5-012's document are the only customer-facing price surfaces; no other task in the suite emits one.
+  *Enforced by:* review — T-F5-001's page and the proposal document (SCR-M06-17) are the only customer-facing price surfaces; no other task in the suite emits one.
 - **F5-18** (P0) — **The follow-up call is configured to protect the customer out of the box.** The shipped defaults are the source's: capped attempts, a calling window, the customer's own language, an always-offered hand-off to a person, and an automated caller that says it is automated. The owner may change what is above the statutory floor and owns that choice; the floor itself is not theirs to move (`F5-11`). Stated as the customer's four protections: not called three times in a week, not called at dinner, not addressed in a language they do not speak, and never trapped without a route to a human.
   *Enforced by:* `M07-22`/`M07-44` shipped defaults (M07 tasks file).
 - **F5-41** (P0) — **The customer-facing document and this page say "Proposal" — in the reader's language, in every language.** The naming ruling binds every locale: one term per concept, and the words for a priced offer that this suite bans are banned in every language, not only in English. This is the customer-link half of the ruling; the entity and the document are `modules/M06`'s and the vocabulary law is `foundations/F3`'s.
-  *Enforced by:* `F3-11`'s vocabulary law and `M06-01` (their task files); review of every customer-facing string in T-F5-001 and T-F5-012.
+  *Enforced by:* `F3-11`'s vocabulary law and `M06-01` (their task files); review of every customer-facing string in T-F5-001 and the proposal document (SCR-M06-17).
 - **F5-50** (P0) — **Negotiation is answered the same day, because nothing in the product makes the customer wait.** A customer asking for a discount is answered by the rep applying it and re-sharing — there is no approval hop, no request sheet, no queue and no pending-approval state (`D34`); the only guard is arithmetic at generation (`M06-36`). The customer's page reflects the revised version at the same URL. *"They should not wait two days for an answer, and now nothing in the product makes them."*
   *Enforced by:* the deliberate absence of any approval flow (review); `M06-36`'s arithmetic guard (M06 tasks file); T-F5-009's latest-version render delivers the revised version at the same URL.
 - **F5-51** (P0) — **A decline is recorded with its reason, and then the customer is left alone.** The reason is mandatory at the close surface (`M02-54`, `M07`'s mark-lost); a customer who has said they are not interested is not called again for the ruled suppression period, and a customer who has postponed resurfaces on the date they named rather than at someone's convenience. *"They should not then be called for six months."* **Ruled (owner ruling 2026-08-04):** the Lost state's own "not interested" — the seventh Lost reason — carries the six-month suppression (`M02-54`, `M07-63`); the customer-facing outcome this row states is delivered exactly as written.
@@ -405,11 +284,11 @@ defect set against it.
 - **F5-69** (P0) — **Commissioning is the system switching on and a pile of documents — and neither the crew's internal detail nor any commercial figure reaches the customer's page.** Installation and commissioning steps are recorded by the coordinator with an optional note of who did the work (`R16`, `M08-42`); the customer sees stages and their dates, never the checklist's internals, and no surface in the installation path shows a price, discount, tranche or margin (`F2-06`, `M08-43`).
   *Enforced by:* T-F5-002 renders published stages and dates only; `F2-06`/`M08-42`/`M08-43` (their task files).
 - **F5-81** (P0) — **Tenant branding applies to customer-facing documents and link pages, on every tier — and to nothing else.** The tenant's mark and brand colour dress the customer's page and the generated document; the operator application is never restyled per tenant. Branding is presentation: it never changes a number, a label, a disclosure or a law of this document (`F5-05`, `F8-06`).
-  *Enforced by:* M01's branding settings build (M01 tasks file); review that branding on T-F5 screens and T-F5-012's document stays presentation-only.
-- **F5-82** (P1) — **Full white-label — a custom domain for customer links and an unbranded customer surface — is an Enterprise commercial arrangement, designed at this document and built when the first Enterprise deal asks for it.** The source is explicit that the routing is designed here rather than in the design or localization documents. Its product-level shape: a tenant-specified domain serves the same pages under the same laws, the link's properties (`F5-75`) are unchanged, and an unbranded surface removes the platform's own marks only — never a provenance label, a disclosure or the named contact. Tier placement is `04-business-model.md`'s (`BM-15`), which records the reading that this is a commercial and service arrangement rather than a withheld product capability.
+  *Enforced by:* M01's branding settings build (M01 tasks file); review that branding on T-F5 screens and the proposal document (SCR-M06-17) stays presentation-only.
+- **F5-82** (P1) — **Full white-label — a custom domain for customer links and an unbranded customer surface — is an Enterprise commercial arrangement, designed at this document and built when the first Enterprise deal asks for it.** The source is explicit that the routing is designed here rather than in the design or localization documents. Its product-level shape: a tenant-specified domain serves the same pages under the same laws, the link's properties (`F5-75`) are unchanged, and an unbranded surface removes the platform's own marks only — never a provenance label, a disclosure or the named contact. This is a commercial and service arrangement rather than a withheld product capability.
   *Enforced by:* the row's own terms — designed here, **built when the first Enterprise deal asks**; no launch build exists. T-F5-006's link properties are domain-independent by construction.
 - **F5-83** (P0) — **Nothing about branding or white-labelling changes what the page must say.** A custom domain, a tenant mark, an unbranded surface and a bespoke Enterprise arrangement all render the same provenance tiers, the same disclosure lines, the same honest wait attribution, the same named contact and the same refusal to gate anything over money. A white-label arrangement that removed an honesty label would be a breach of `F8-06`, not a configuration.
-  *Enforced by:* review of any branding or white-label change against the label, disclosure and contact set of T-F5-001/002/003 and T-F5-012; `F8-06` (F8 framework).
+  *Enforced by:* review of any branding or white-label change against the label, disclosure and contact set of T-F5-001/002/003 and the proposal document (SCR-M06-17); `F8-06` (F8 framework).
 
 ---
 
@@ -428,36 +307,6 @@ defect set against it.
 
 | Row | Disposition |
 |---|---|
-| MS9-01 | T-F5-012 |
-| MS9-02 | T-F5-012 |
-| MS9-03 | T-F5-012 |
-| MS9-04 | T-F5-012 |
-| MS9-05 | T-F5-012 |
-| MS9-06 | T-F5-013 |
-| MS9-07 | T-F5-013 |
-| MS9-08 | T-F5-013 |
-| MS9-09 | T-F5-011 |
-| MS9-10 | T-F5-001 |
-| MS9-11 | T-F5-001 |
-| MS9-12 | T-F5-011 |
-| MS9-13 | T-F5-011 |
-| MS9-14 | T-F5-001 |
-| MS9-15 | T-F5-001 |
-| MS9-16 | T-F5-012 |
-| MS9-17 | T-F5-001 |
-| MS9-18 | T-F5-012 |
-| MS9-19 | T-F5-012 |
-| MS9-20 | T-F5-012 |
-| MS9-21 | T-F5-012 |
-| MS9-22 | T-F5-012 |
-| MS9-23 | T-F5-001 |
-| MS9-24 | T-F5-001 |
-| MS9-25 | T-F5-001 |
-| MS9-26 | T-F5-011 |
-| MS9-27 | T-F5-011 |
-| MS9-28 | T-F5-012 |
-| MS9-29 | T-F5-001 |
-| MS9-30 | *removed 2026-08-07 — swept with the offline/sync deletion; the online-mint law it carried is live at `F5-80` (T-F5-006), with mint attribution at `F5-31`/`F5-79` (T-F5-007), both consumed by T-F5-011* |
 | F5-01 | LAW |
 | F5-02 | LAW |
 | F5-03 | LAW |

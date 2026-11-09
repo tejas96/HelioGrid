@@ -35,8 +35,7 @@
    This is the DEFAULT, so a page that renders sheets without declaring paper still prints on the paper
    this system's geometry assumes (A4 at 96dpi = 794×1123px, which is what --page-w-a4 above says).
    margin: 0 because every sheet pads INSIDE the page box; a page margin here would be counted twice.
-   A component that knows its own paper restates this rule from its own geometry — PagedDocument and
-   DrawingSheetGroup both do, through components/print/page-size.js, which owns the injected <style>. */
+   A component that knows its own paper restates this rule from its own geometry — PagedDocument does, through components/print/page-size.js, which owns the injected <style>. */
 @page {
   size: A4 portrait;
   margin: 0;

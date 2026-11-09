@@ -98,8 +98,8 @@ services:
 # A fixed subnet so the frontend has a STABLE broadcast address. Ringpop's `broadcastAddress`
 # must be an IP — a hostname is rejected outright ("ringpop config malformed `broadcastAddress`
 # param: temporal") — and because the explicit-config path does no ${VAR} expansion, the
-# server image's own TEMPORAL_BROADCAST_ADDRESS computation cannot reach the file. On Fly the
-# equivalent is the machine's stable private 6PN address, which the release step renders in.
+# server image's own TEMPORAL_BROADCAST_ADDRESS computation cannot reach the file. Deployed, the
+# equivalent is the machine's stable private address, which the release step renders in.
 networks:
   default:
     ipam:

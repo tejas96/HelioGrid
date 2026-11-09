@@ -1,133 +1,6 @@
 # F-core — engineering tasks
 
-This file dispositions every requirement row of the suite's four core documents — `docs/prd/01-product-overview.md` (OV), `docs/prd/02-personas.md` (PS), `docs/prd/04-business-model.md` (BM) and `docs/prd/foundations/F1-global-market-framework.md` (F1) — under the task-id prefix **T-FCORE-**. This bucket owns no screens: its build tasks are the market-pack framework and its eight keys, the India pack's data, the market price-book law and the India book, and the commercial configuration contract (meters, tiers, billing-state vocabulary) that `docs/prd/modules/M12-platform-billing.md` consumes. Every other row in the bucket is either a suite law enforced through the screens and reviews that other buckets build (see **## Laws**) or a context/positioning row realized by a named document, module or screen (see **## Realized elsewhere**). Every row appears exactly once in the **## Disposition index** at the end.
-
----
-
-### T-FCORE-001 · Market pack framework — versioned pack unit, eight keys, lifecycle and validation
-**Type:** engine · **Tier:** P0
-**Status:** shipped (#15)
-**PRD rows:** F1-01, F1-02, F1-03, F1-04, F1-05, F1-06, F1-09, F1-10, F1-11, F1-12
-
-**DONE WHEN:**
-
-- Given any module or foundation PRD in this suite, when its body needs a market fact, then the body names a pack key and this document's pack section carries the fact (F1-01, F1-02).
-- Given a new market launch, when it is prepared, then the work is authoring the eight keys plus adapters, and the privacy determination and supplier-of-record decision exist before tenants and sales respectively (F1-04, F1-05).
-- Given any state-machine value, when it renders to a user, then the value name is market-neutral and the rendered label is the pack's (F1-03, F1-09).
-- Given a pack data revision, when it is published, then it is a versioned data update, prior computed outputs self-stale rather than change, and no product release occurs (F1-11).
-- Given a statutory-floor pack item, when any tenant configuration touches its domain, then the configuration can narrow within the floor but no setting, role or flag can cross it (F1-12).
-- Given a tenant in any timezone, when a user-facing scheduled behavior fires (wake-ups, queues, windows), then it fires on the tenant's clock, never a fixed market clock (F1-10).
-- Given the launch state, when markets are enumerated, then India is the only authored pack and expansion regions appear nowhere as v1 scope (F1-06).
-- Given any authored market pack, when it is validated, then all eight keys are present, each satisfying its F1.2 rows, with empty content only where F1-14/F1-16/F1-19 permit (F1-13 through F1-27).
-
----
-
-### T-FCORE-002 · Market-generic money and scheme-neutral tax (pack.tax) + the IN GST instance
-**Type:** engine · **Tier:** P0
-**Status:** shipped (#19)
-**PRD rows:** F1-07, F1-08, F1-13, F1-28, F1-29, F1-30, F1-31
-
-**DONE WHEN:**
-
-- Given any tenant, when it is created, then exactly one currency is assigned from its market, every money-bearing document stamps it, and sums reconcile to its minor unit (F1-07).
-- Given any tax-bearing structure or surface, when tax is stored or rendered, then it is scheme-neutral — strategy and statutory extras come from the pack, and no field or copy is named for one market's tax law (F1-08).
-- Given the platform invoice surface, when a market's scheme requires statutory extras, then they attach as scheme-tagged data and appear on no other market's invoices (F1-13).
-- Given an IN tenant's platform invoice, when a cycle is billed, then it carries our GSTIN, the tenant's GSTIN if captured, SAC 998434 at 18%, and CGST+SGST or IGST per place of supply; and no IRN data appears below the ₹5-crore threshold (F1-28, F1-29, F1-30).
-- Given an IN proposal's money block, when it is computed, then per-line GST rides each line with the document-level breakdown, and BOM ↔ proposal ↔ tranches reconcile to the paise (F1-31).
-
----
-
-### T-FCORE-003 · Subsidy model framework (pack.subsidy) + the IN PM Surya Ghar computation
-**Type:** engine · **Tier:** P0
-**Status:** shipped (#22)
-**PRD rows:** F1-14, F1-33, F1-34, F1-35
-
-**DONE WHEN:**
-
-- Given a proposal-affecting pack rule tying a subsidy to a scheme, when a non-conforming component sits on a subsidy-path output, then the existing gate fails it with the reason (F1-14, F1-19).
-- Given a subsidy-path proposal for an IN residential customer, when the subsidy is shown, then it is computed from state × capacity × DCR under the current pack version, and a non-DCR component fails Generate with the reason (F1-33, F1-34).
-- Given a project's documents for a residential IN deal, when the checklist seeds, then the 8 rows of F1-52 appear; for commercial, the subsidy row is absent (F1-52, F1-35).
-
----
-
-### T-FCORE-004 · Communications-compliance ruleset key (pack.calling-rules) + the IN TRAI ruleset data
-**Type:** policy · **Tier:** P0
-**Status:** shipped (#23)
-**PRD rows:** F1-15, F1-16, F1-17, F1-36, F1-39, F1-62
-
-**DONE WHEN:**
-
-- Given any market pack, when its communications ruleset is read, then voice and messaging duties sit in the one `pack.calling-rules` key and every item carries an explicit floor-or-default classification (F1-15, F1-17).
-- Given a market whose pack carries no voice ruleset, when a tenant in that market attempts to enable outbound voice, then the capability is unavailable — disabled, not defaulted (F1-16).
-- Given a statutory-floor ruleset item, when tenant configuration edits its domain, then only narrowing succeeds and no path exists to cross the floor (F1-17).
-- Given any IN unsolicited promotional agent call, when it is attempted, then it dials only inside 09:00–21:00 tenant-local on a non-holiday, only past a fresh DND scrub, opens naturally without any claim to be human, and the recording is deleted at 90 days with the transcript retained (F1-36).
-- Given a recorded, timestamped customer request for a callback at a time outside the window, when the agent dials at that time, then the call opens by referencing the request, the consent trail is stored as evidence, and a single "stop" ends the requested-callback lane for that customer (F1-36 lane 3, owner ruling 2026-08-04).
-- Given any IN agent call where the customer asks whether they are speaking to an AI, when the agent responds, then it answers honestly and immediately offers a human — and on no call does the agent claim to be human (F1-36d hard floors, owner ruling 2026-08-04).
-- Given TRAI's AI-caller identification rule binding, when the IN pack data updates, then proactive disclosure auto-flips ON and the owner is notified (F1-36d).
-- Given a customer who declines call recording, when the call proceeds, then they are still served and the declination lands as a consent record with timestamp and source (F1-39, F1-58).
-- Given the IN pack, when its messaging window is read, then it is an authored EMPTY window and no code waits on a value for it (`F1-62`).
-- Given a transactional send in IN — the evening-before crew message or any dunning rung — when its moment arrives, then it goes at the configured hour and is never held, delayed or refused for time of day (`F1-62`).
-- Given a promotional send in IN, when it is dispatched, then the product enforces no window of its own and a carrier or DLT refusal is reported honestly rather than pre-empted by a guessed one (`F1-62`, `F1-38`).
-- Given the IN pack's send-hour default, when it is read, then it is 19:00 on the tenant's timezone, and a tenant may narrow within it but never widen (`F1-62`, `F1-10`).
-- Given a statutory messaging window in force and a scheduled send hour that falls before it opens — reached only where a pack revision moves the floor — when the send is resolved, then it goes at the previous day's close and the resolution carries the day it lands on, so it never reads as today's close; and given the same hour falling after the close, then it goes at that day's close — one rule on both sides of the window, the message always earlier than its slot and never later (F1-15, owner ruling 2026-09-07).
-
-*Note:* `F1-15` makes the ruleset DATA and the compliance gate that enforces it `M07`'s non-swappable mechanism, so the lines above divide the same way. This task proves the ones a pack and its pure rules can prove: the one key with every item classified, the hard disable of outbound voice, narrowing without a path across a floor, the authored EMPTY messaging window, the unheld transactional send and the 19:00 default. The lines that describe an agent's own conduct — the dialled promotional call, the requested-callback lane, the AI-honesty floors, the disclosure auto-flip and its owner notification, serving a customer who declines recording — are proven when `M07`'s gate lands and read this pack; the consent RECORD they land in is `pack.data-rights` (`F1-58`, `T-FCORE-009`), and honest reporting of a carrier refusal is `F1-38` (`T-FCORE-005`).
-
----
-
-### T-FCORE-005 · IN telephony and messaging compliance routes — 140-series CLI + DLT-registered SMS
-**Type:** integration · **Tier:** P0
-**Status:** shipped (#24)
-**PRD rows:** F1-37, F1-38
-
-**DONE WHEN:**
-
-- Given IN promotional outbound, when a CLI is selected, then it is a 140-series identity, never a 1600-series one; and given any platform SMS, when it is sent, then it uses a DLT-registered entity/header/template (F1-37, F1-38).
-
-*Note:* these are the last two `pack.calling-rules` items of `F1-15`, so the fields sit on `CallingRulesPack` beside the rest of the ruleset rather than in a key of their own. The done-when line divides where `F1-15` divides it: the market RULE and the registration DUTY are pack data and are proven here, while selecting a line and carrying a send are the consuming modules' — `M07`'s telephony framework and number provisioning (`T-M07-029`, `T-M07-017`), `M12`'s dunning and `M03`'s marketing sends. `F1-38`'s registration clock gates activation, not scope: no account is opened by this task, and a tenant's own registered entity and headers are tenant data, never pack data.
-
----
-
-### T-FCORE-006 · Payment rails pack key (pack.payment-rails) + the IN rails: mandate ladder, mandate types, payment modes, reference adapters
-**Type:** integration · **Tier:** P0
-**Status:** shipped (#25)
-**PRD rows:** F1-18, F1-40, F1-41, F1-42, F1-43
-
-**DONE WHEN:**
-
-- Given a market's rails declaration, when platform billing or tenant collections run, then mandate types, the rail ladder and payment modes validate against the pack, and the manual collection path is available regardless of rail state (F1-18).
-- Given an IN self-serve monthly subscription, when the mandate is set up at conversion, then it is UPI AutoPay with card e-mandate fallback; and given any yearly total, then it is a single invoice/payment link, no mandate (F1-40, F1-41).
-- Given an IN tenant recording an offline payment, when the mode is chosen, then the set is exactly upi / neft / cheque / cash / payment_link (F1-42).
-- Given IN subscription billing, payment links or OTP delivery, when a rail is exercised, then a vendor-neutral capability is served by the IN reference adapter and no payment instrument ever touches the platform (F1-43).
-
----
-
-### T-FCORE-007 · Certification schemes and standards labels (pack.certification-schemes) + the IN ALMM/DCR entries
-**Type:** policy · **Tier:** P0
-**Status:** shipped (#26)
-**PRD rows:** F1-19, F1-20, F1-44, F1-45
-
-**DONE WHEN:**
-
-- Given a proposal-affecting pack rule tying a subsidy to a scheme, when a non-conforming component sits on a subsidy-path output, then the existing gate fails it with the reason (F1-14, F1-19).
-- Given an IN component picker on a subsidy-relevant design, when items render, then ALMM and DCR badges appear from the scheme-keyed certifications (F1-44).
-- (F1-20 and F1-45 carry no Given/When/Then lines in the PRD; the requirement rows above are their acceptance.)
-
----
-
-### T-FCORE-008 · Formats and display-vocabulary pack key (pack.formats) + the IN locale, label, checklist and DISCOM data
-**Type:** policy · **Tier:** P0
-**Status:** shipped (#28)
-**PRD rows:** F1-21, F1-22, F1-46, F1-47, F1-48, F1-49, F1-50, F1-51, F1-52, F1-53
-
-**DONE WHEN:**
-
-- Given any rendering of currency, dates, phone numbers, stage labels, checklists or payment-mode names, when it displays, then the values come from the pack's `pack.formats` declarations and no module defines its own (F1-21, F1-22).
-- Given any money figure in any IN locale, when it renders, then it uses ₹ with lakh/crore grouping and Latin digits; and given an IN project board, when stages render, then the labels read "DISCOM inspection" / "Subsidy claimed" over the market-neutral values (F1-46, F1-47, F1-51).
-- Given a project's documents for a residential IN deal, when the checklist seeds, then the 8 rows of F1-52 appear; for commercial, the subsidy row is absent (F1-52, F1-35).
-- Given an IN date, phone or OTP surface, when it operates, then dates read "12 Mar 2026" style on an Asia/Kolkata default, phones are +91 E.164, and OTP delivery honors the +91 allowlist (F1-48, F1-49).
-- Given an IN site record, when its utility is selected, then the choice comes from the pack's state → DISCOM directory, and a utility blocker renders honest wait attribution on the customer link (F1-53).
-- (F1-50 carries no Given/When/Then line in the PRD; the requirement row above is its acceptance.)
+This file dispositions every requirement row of the suite's three core documents — `docs/prd/01-product-overview.md` (OV), `docs/prd/02-personas.md` (PS) and `docs/prd/foundations/F1-global-market-framework.md` (F1) — under the task-id prefix **T-FCORE-**. This bucket owns no screens: its build tasks are the market-pack framework and its eight keys, the India pack's data, the market price-book law and the India book, and the commercial configuration contract (meters, tiers, billing-state vocabulary) that the billing code consumes. Every other row in the bucket is either a suite law enforced through the screens and reviews that other buckets build (see **## Laws**) or a context/positioning row realized by a named document, module or screen (see **## Realized elsewhere**). Every row appears exactly once in the **## Disposition index** at the end.
 
 ---
 
@@ -170,199 +43,24 @@ This file dispositions every requirement row of the suite's four core documents 
 
 ---
 
-### T-FCORE-010 · Market price-book law (pack.price-book) + the India book
-**Type:** engine · **Tier:** P0
-**Status:** shipped (#32)
-*Builds after `T-FCORE-012`:* the book prices the four `BM-11` tiers and bundles the five `BM-16`
-meters, and both vocabularies are `T-FCORE-012`'s — a book authored first would have to spell them
-a second time. Owner ruling at `T-FCORE-010`'s `/start`.
-*Service terms are NOT authored here:* they are pricing-page copy, not book data (`BM-14`, `BM-41`;
-owner ruling 2026-09-07) — `F1-25` fixes what a book carries, no entitlement, invoice or gate reads
-a service term, and `SCR-M12-01` renders them as Tier-keyed screen copy under the i18n convention
-(`T-M12-001`).
-**PRD rows:** F1-25, F1-26, F1-27, F1-60, F1-61, BM-13, BM-26, BM-37, BM-38, BM-39, BM-40, BM-41
-
-**DONE WHEN:**
-
-- Given a new market's book, when prices are sought before the owner authors them, then no price exists — nothing converts, nothing defaults (F1-25, F1-26).
-- Given the IN price book, when any tier price renders, then the number comes from `04-business-model.md`'s book — nowhere else defines it; and when a tracked-seat or marketing-send price is sought, then it resolves from the IN book's add-on rows and nowhere else (F1-60, F1-61).
-- Given the IN book, when any tier price, cap, bundle, overage rate or trial cap renders anywhere in the product or the suite, then the number comes from BM-41 (via M12's entitlements) and nowhere else (BM-09, `F1-60`).
-- Given any framework row in this document, when it is read for a second market, then it contains no INR amount, no IN benchmark and no IN rail — those exist only in BM-41 and F1 §F1.3 (BM-10, BM-37).
-- Given the two V2 add-on slots, when the IN book is read today, then each slot carries the owner's draft value (seat ≈₹99/mo with the 0/3/10/custom included ladder; send bundles 500/2,000/10,000 with ≈₹1.5/₹0.35/₹0.10 overages) flagged draft-pending-rate-card-verification (BM-41, `F1-61`; owner ruling 2026-08-04).
-- Given a second market's authored and owner-approved book, when that market launches, then the book lands as per-currency price rows against the same four-tier structure with provider-neutral gateway references and zero product change (BM-38).
-- Given any book price and its market's tax scheme, when a subscription invoice is produced, then the price is ex-tax with the scheme applied per the pack's declaration and the supplier-of-record posture recorded there (BM-40; IN instance: ex-GST, the platform as supplier of record per F1-29).
-- Given the yearly cycle on any tier, when its price is checked against the book's monthly price, then it follows the pay-10-get-12 principle (BM-13) — with the authored book value governing where the source's own book deviates: the IN book's Pro yearly is the source's own ₹99,999, ₹9 above the ten-month formula's ₹99,990, and is carried as-is (BM-41). The formula is the sizing principle; the book row is the price.
-- Given the IN pricing page and any competitor row it cites, when the equivalent-capacity comparison is checked, then the price is lower and the claim traceable to BM-41's recorded benchmarks (BM-39, BM-44).
-- Given any COGS-derived figure or V2 meter rate, when it is presented anywhere in the product, then it is never labelled verified, the overage floor is computed against **worst-case** COGS, and draft add-on numbers stay draft and unsellable until that market's book records verified channel rates (`BM-26`).
-- Given a new market's price book, when its rows are authored, then they land as that market's per-currency price rows against the same plan structure with provider-neutral gateway references, and no product code changes (`F1-27`).
-
----
-
-### T-FCORE-011 · Meter definitions and platform cost policy — five meters, COGS floors, absorbed costs, quota containment
-**Type:** engine · **Tier:** P0
-**Status:** shipped (#33)
-*Builds after `T-FCORE-010` and `T-FCORE-012`:* the meter list and the tier capacity axis are
-`T-FCORE-012`'s and the rates are `T-FCORE-010`'s; this adds the cost each rate must clear and the
-lists of what is never charged for at all.
-*The worst-case COGS figures did not exist and are now ruled:* owner ruling 2026-09-07 — `BM-17`
-read backwards, a published rate ÷ 1.4 is the worst-case unit COGS until the vendor rate cards land,
-and the IN book carries the six figures with that provenance and none labelled verified (`BM-26`).
-*This task owns the COST half of its rows; the RUNTIME half is already owned elsewhere and is not
-a gap.* Every row here cites `M12` for its mechanics, and those citations land on named tasks:
-`T-M12-010` (`M12-33`) authors the per-meter rules — one ledger event per completed call, a
-detection billing only when a result was returned, storage as a nightly gauge, tracked-seat-months
-from the owner's toggles, per-channel send events — and (`M12-37`) the per-tenant quotas behind
-`BM-25`; `T-M12-010` authors storage enforcement on new uploads, beside the gauge it reads. So this task authors what a unit
-COSTS and what is never charged for at all, and never what counts one.
-**PRD rows:** BM-17, BM-18, BM-19, BM-20, BM-21, BM-22, BM-23, BM-24, BM-25
-
-**DONE WHEN:**
-
-- Given any tier in any market's book, when every meter — voice minutes (BM-18), AI roof detections (BM-19), storage (BM-20) and marketing sends (BM-21) — is burned to 100% of its bundle and beyond, then per-unit overage bills at the book's published rate and that rate is ≥40% above the market's worst-case unit COGS (BM-17); a detection that returned no result and a manual roof outline bill nothing (BM-19), and storage enforcement touches new uploads only (BM-20).
-- Given a tenant driving an externally priced capability at runaway volume, when per-tenant quotas engage, then containment happens platform-side with no tenant configuration surface involved, and any tenant-visible pause follows §04.5's soft-block honesty (BM-25).
-- Given a tenant with zero tracked seats, when a field employee checks in and logs a visit, then the action succeeds on every tier and no usage line is billed (BM-23, BM-24).
-- Given a tenant with three employees toggled on, when the cycle's usage ledger is rolled up, then tracked-seat-months reflect exactly those three toggles and no other people-count appears anywhere in the bill (BM-22, BM-04).
-
----
-
-### T-FCORE-012 · Commercial structure vocabularies — tier names, capacity axis, meter list, billing-state names
-**Type:** engine · **Tier:** P0
-**Status:** shipped (#30)
-**PRD rows:** BM-11, BM-12, BM-16, BM-33
-
-**DONE WHEN:**
-
-- Given a market book, when its tier rows are read, then they price exactly the four BM-11 tiers and no others.
-- Given M12's usage ledger and M13's usage reporting, when billable usage lines are enumerated, then they are exactly the five meters of BM-16 — voice minutes, AI roof detections, storage, marketing sends, tracked field seats — and no other billable line exists (BM-16).
-- Given a tenant in `halted`, `expired` or post-period `cancelled` — three of the six fixed billing-state names (BM-33) — when any user reads, searches, exports, opens dashboards or opens the billing screen — or the tenant's customer opens any link — then it works (BM-32, BM-35); and when M12's lifecycle machine or M13's reporting names a state, then it is one of BM-33's six names and no other (BM-33).
-- Given any tier, when its limits are read, then they are expressed only on the four capacity kinds — single-design kW ceiling, per-cycle creation counts, metered bundles and storage — and the kW ceiling is enforced at save/generate boundaries, never as a clamp inside the design engine and never as a mid-edit interruption (`BM-12`).
-- Given a tier name, when a subscription is collected, then it maps to one of `TIER_BANDS` — `self_serve` or `enterprise` — and the mandate ladder is read for that band (`F1-18`). **The map lands here**, because it needs the four `BM-11` names: `T-FCORE-006` authored the band axis and the ladder it keys, and deliberately left the map out, having no tier vocabulary to write it against.
-
----
-
-### T-FCORE-013 · The trial contract — 14 days, full-feature, book-defined caps, payment at conversion, soft expiry
-**Type:** policy · **Tier:** P0
-**Status:** shipped (#34)
-**PRD rows:** BM-28, BM-29, BM-30
-
-**DONE WHEN:**
-
-- Given a new signup, when the trial starts, then no payment instrument exists on file and every tier capability is available within the book's trial caps (BM-28, BM-29).
-- Given a trial that converts on day 9, when entitlements are checked, then paid entitlements apply immediately and payment was collected at that moment, not before (BM-29; mechanics M12).
-- Given a trial that never converts, when day 14 passes, then the tenant enters `expired`, keeps read + export + customer links, and can reactivate by paying at any later time (BM-30).
-- Given a new signup that never pays, when its states are enumerated over any span of time, then the only non-paying states are the 14-day `trialing` and its `expired` aftermath — no path into a perpetual free tier exists anywhere in the product (BM-03).
-
----
-
-### T-FCORE-014 · The soft-block contract — state capability matrix, cap enforcement, usage transparency, the field carve-out
-**Type:** policy · **Tier:** P0
-**Status:** shipped (#35)
-**PRD rows:** BM-27, BM-32, BM-34, BM-35, BM-36
-
-**DONE WHEN:**
-
-- Given a tenant in `halted`, `expired` or post-period `cancelled` — three of the six fixed billing-state names (BM-33) — when any user reads, searches, exports, opens dashboards or opens the billing screen — or the tenant's customer opens any link — then it works (BM-32, BM-35); and when M12's lifecycle machine or M13's reporting names a state, then it is one of BM-33's six names and no other (BM-33).
-- Given a capped count at 100% for 7 days, when a user attempts a new creation of that type, then it pauses with the honest banner, and reading/editing-existing/exporting still work (BM-34).
-- Given photographs already captured on a field device and a tenant in any blocked state, when the device reconnects, then those photographs upload and read; and given new field capture during dunning, when any enforcement design addresses it, then capture continues through the full `past_due` grace window and pauses only at `halted`, with a halt that lands mid-visit letting the current visit complete (BM-36; mechanics M12-27).
-- Given any billing state and the matrix above, when M12's enforcement is audited row by row, then no ✓ has become a block and no block has silently widened (BM-35).
-- Given any bundle at 80% consumption, when the owner opens the usage screen, then the screen already says so, before any gate has fired (BM-27 / `F8-33`).
-
----
-
-### T-FCORE-015 · Grandfathering — the price-protection horizon and its forfeiture on lapse
-**Type:** policy · **Tier:** P0
-**Status:** shipped (#36)
-**PRD rows:** BM-42
-**Replaced:** by owner ruling 2026-10-31 — no company keeps a signed-up price; `BM-42` now reprices every company at its next paid period, built by `T-M12-013`.
-
-**DONE WHEN:**
-
-- Given a tenant inside their protection horizon, when the market book is repriced, then their bill is unchanged until the horizon lapses, and they were told honestly what changes and when (BM-42).
-- Given a protected tenant who cancels or is halted, when they reactivate — even inside the original horizon — then they bill against the current list book, and the cancellation/dunning copy they saw before the lapse stated the forfeiture plainly (BM-42, owner ruling 2026-08-04; `M12-57`).
-
----
-
-### T-FCORE-016 · Market pack storage — a pack revision is a row change, not a deploy
-**Type:** engine · **Tier:** P0
-**Status:** shipped (#39)
-**Why:** A GST rate, a subsidy slab or a DISCOM name changes as a published data row that every installer's next proposal reads the same day, and every output can name the pack revision it priced on; without it each market fact stays a TypeScript constant, so a rate change is a pull request and a deploy, and no proposal can say which pack it was computed under.
-**PRD rows:** none of its own — the two rows this task serves are quoted and dispositioned at `T-FCORE-001`, whose structural half shipped; the disposition index names both tasks against them. Quoting them a second time here would be the duplicate this suite forbids.
-
-**Depends on:** `T-FCORE-010` and `T-FCORE-011` (landed — the book and the worst-case COGS floors the payload stores, so no key changes shape after `0001`) · `T-FCORE-001` (landed — `PACK_KEYS`, `packVersion`, `unauthoredKeys`, `IN_PACK`) · `infra/postgres/init/01-roles.sql` (`app_user` exists before the grants) · no migration precedes it — `0001` is the first.
-
-**DONE WHEN:**
-
-- Given a pack revision — a tax rate, a subsidy slab, a label — when it is published, then it lands as rows and a new `market_pack_version`, and no deploy occurs (`F1-04`, `F1-11`). → proof: qa-api the publish command runs against the live API with an edited `IN_PACK` literal; `GET /market-packs/IN` answers the new `revision` and the API process id is unchanged
-- Given a money- or engineering-bearing output, when it is computed, then it pins the `market_pack_version` it read and the keys it read, and a later revision leaves that output's figures untouched and stales it only where one of those keys changed — a repriced `priceBook` never stales a customer design (`F1-11`, `F8-13`, `F8-14`; owner ruling 2026-09-07). → proof: unit `packages/domain/tests/market/staleness.test.ts` — a pin reading `formats` and `tax` against a revision that changed only `priceBook` is fresh, one that changed `tax` names `tax`, and the pinned pack's own values are untouched
-- Given `IN_PACK`, when the pack is seeded, then the seed runs through the application and the migration carries schema only (`CLAUDE.md` §8). → proof: qa-api on a freshly migrated database `pack:publish` writes revision 1, and `0001_market_pack.sql` holds no INSERT
-- Given a pack with an unauthored key, when it is stored, then that key is OMITTED from the payload, and on read `unauthoredKeys` names it exactly as it does for an in-memory pack — the seam `market/launch.ts` already holds, and this task is where it stops being hypothetical (`F1-05`). → proof: unit `packages/domain/tests/market/envelope.test.ts` — `envelopeOf(IN_PACK)` has no `dataRights` property, and `unauthoredKeys` of the pack read back from the row equals `unauthoredKeys(IN_PACK)` (since `T-FCORE-017`, `packages/domain/tests/market/parser.test.ts`)
-- Given the eight keys, when they are stored, then they are ONE versioned payload and never a table per key: `F1-01` versions them as one unit, so a ninth key would be a data change and not a migration. → proof: invariant `schema-parity` — the Drizzle mirror declares `market_pack_version.pack` as the one payload column and the migrated database carries exactly the two tables `0001` names, so a per-key table on either side is a parity failure; the envelope test above holds that every top-level payload property is a `PACK_KEYS` name
-- Given `market_pack` and `market_pack_version`, when the tenancy scan runs, then both pass as readable global reference data — SELECT held, no write privilege, no RLS, for every member of `app_user` — and an injected INSERT grant on either turns the assertion red before the row is cited (`M12`). → proof: invariant `table-tenancy-scan` — `GLOBAL_READABLE_TABLES` asserts SELECT held, INSERT, UPDATE, DELETE and TRUNCATE absent and no RLS for every member of `app_user`, seen red on an injected `grant insert` before `M12` is cited
-- Given the tenant-facing pack read, when any tenant fetches its market's pack, then the response carries no `priceBook` — the book's interior reaches only the billing path (`F1-25`, `BM-17`). → proof: qa-api `GET /market-packs/IN` after the seed carries `tax`, `formats` and the other tenant-readable keys and no `priceBook` property at any depth, and the contract's response object is built from `TENANT_READABLE_KEYS`
-- Given an edited `IN_PACK` literal, when the publish command runs against a market that already holds revision 1, then a second `market_pack_version` exists and the API was not deployed; and given the seed run against that same market, then it reports the difference and writes nothing (`F1-11`). → proof: qa-api `pack:publish` twice — the edited literal yields revision 2 with the API still running, the unedited literal reports no difference, and `GET /market-packs/IN` still answers revision 2
-
----
-
-### T-FCORE-017 · The stored-pack parser — a pack read from a row is validated whole
-**Type:** engine · **Tier:** P0
-**Status:** shipped (#152)
-**Why:** An installer's quote prices from a pack row that is checked whole before use — a tax rate stored as text or a negative subsidy ceiling is refused by name, never priced; without it the first pack written by a hand rather than typed code can put a malformed figure on a customer document with nothing between the row and the money.
-**PRD rows:** none of its own — the three rows this task serves are quoted and dispositioned at `T-FCORE-001`, as `T-FCORE-016` says of its two; the disposition index names this task beside `T-FCORE-016` where the storage row is dispositioned. Quoting them a second time here would be the duplicate this suite forbids.
-
-**Depends on:** `T-FCORE-016` — the envelope reader this task deepens and the stored row it reads. *Due:* before the first writer that is not typed code lands, and not before the first reader — until such a writer exists, typed code is the only writer, and the envelope check is the whole of what a read can doubt.
-
-**DONE WHEN:**
-
-- Given a stored payload whose eight keys are well-formed, when it is parsed, then the result is a `MarketPack` whose every branded value was minted by its owner's constructor, and no `as <Brand>` exists in the parser (`F1-01`, `F1-02`). → proof: unit `packages/domain/tests/market/parser.test.ts` — `IN_PACK`'s own envelope parses to a pack deep-equal to `IN_PACK`, and a payload whose revision is `0` fails with `packVersion`'s own RangeError, which is what proves the brand came through the constructor
-- Given a stored payload with one malformed key — a tax rate stored as text, a subsidy slab with a negative ceiling — when it is parsed, then the failure names that key and the path inside it exactly, and nothing partial is returned (`F1-02`). → proof: unit `parser.test.ts` `it.each` over malformed keys — a text tax rate, a rate above the whole amount, a negative subsidy ceiling, a fractional amount, a clock time past midnight, a calling window that closes before it opens, a market code no market authored, a fractional whole-number length, a missing key — each failure names the key and the path and carries no pack; a second `it.each` drops an undeclared property at the top of the payload, at the top of a key, inside a nested object and inside a label, names each in `dropped`, and serves a pack equal to `IN_PACK`
-- Given the stored keys, when a key is added to `MarketPack`, then the twin fails to compile until that key's schema exists — the list and the twin cannot drift (`F1-02`). → proof: unit `parser.test.ts` asserts `Object.keys(PACK_SCHEMAS)` equals `PACK_KEYS` in order without `dataRights`, and each schema is typed to its key's own type, so a schema-less key or a schema whose output differs from the key's type is a `pnpm verify` typecheck failure
-- Given the first writer that is not typed code — an admin path or a file import — when its slice begins, then this parser already sits on every read of the row, and `T-FCORE-016`'s envelope-only reader is no longer reachable from that path (`F1-11`, `F1-12`). → proof: qa-api `GET /market-packs/IN` is served through `parseStoredPack`, the service's only read path, and `packFromEnvelope` is deleted from `packages/domain/src/market/` in the same change so any remaining caller fails `pnpm verify`'s typecheck
-
----
-
 ## Laws (enforced through screens and review, no standalone build)
 
 Each row below is carried verbatim and is followed by what enforces it. Nothing here is a separate build: every law is either a property another bucket's screens and engines must exhibit, or a discipline the PRD review applies to the suite.
 
-### From `docs/prd/04-business-model.md` — the packaging convictions
-
-- **BM-01** (P0) — **The EPC organisation pays. Nobody else.** One subscription per tenant, owner-administered, covering every employee. What a tenant pays for is capacity, usage counts and metered bundles on one org-level subscription — never a count of people (sole exception: BM-22).
-  *Enforced by:* `docs/tasks/M12-platform-billing.md`'s one org-level subscription per tenant with Owner-only administration; review rejects any second billable relationship.
-- **BM-02** (P0) — **The EPC's customer never pays the platform anything.** Two money systems exist and never mix: (1) platform SaaS billing — the tenant pays us, on our merchant account; (2) tenant customer-collections — the homeowner/factory pays the EPC through the tenant's own gateway account, funds settling EPC-direct. The platform never touches tenant funds.
-  *Enforced by:* the separation between `docs/tasks/M12-platform-billing.md` (platform money) and `docs/tasks/M11-payments-collections.md` (tenant collections on the tenant's own gateway); review rejects any platform revenue line touching a tenant collection.
-- **BM-03** (P0) — **Billing is in the product from the first release. Trial-only; no free tier, ever.** The v1 deferral (D38) is superseded by owner override (2026-07-24): payments, subscriptions, billing, entitlements and usage metering are core scope. A time-boxed trial exists (§04.4); a perpetually free tier does not.
-  *Enforced by:* T-FCORE-013 (the trial as the only non-paying state) plus `docs/tasks/M12-platform-billing.md`'s lifecycle; review rejects any perpetual non-paying state.
-- **BM-04** (P0) — **Seats are never the meter.** There is no seat-count anywhere in the price of the product (sole exception: BM-22, a cost-carrying capability add-on, not a licence). Rationale is the moat: whole-company adoption is what makes the single travelling record work, and pricing by headcount punishes exactly that behaviour in a market where EPCs employ many low-cost designers and field reps.
-  *Enforced by:* T-FCORE-011's closed meter list (BM-16) (tracked field seats the sole seat-counting line) and T-FCORE-012's meter vocabulary; review rejects a second seat meter.
-- **BM-05** (P0) — **Every module is in every tier. Tiers gate capacity ceilings + usage counts + metered bundles — never features** (owner-confirmed). Every feature is in every tier: CRM and projects, the full studio (shadow analysis, all obstruction types, tin-shed/metal-roof, ground mount, structures, SLD + AC/DC and earthing layouts, industrial drawing sheets, PV/energy reports, DXF/SVG/PDF export), customer links, all languages — and the V2 additions (marketing, field workforce, HR) enter under the same law. Competitors ransom capabilities into higher tiers; the pricing page says so.
-  *Enforced by:* `SCR-M12-01` (the tier comparison states it) and `docs/tasks/M12-platform-billing.md`'s entitlements, which key only to capacity, counts and bundles; review rejects a tier-conditional capability in any module task.
-- **BM-06** (P0) — **Unlimited users on every tier.** Adding a person to the tenant never changes the bill (sole exception: turning tracking ON for that person, BM-22).
-  *Enforced by:* T-FCORE-010's book rows (users unlimited on all four tiers) and `docs/tasks/M12-platform-billing.md`'s invoice, which carries no headcount line.
-- **BM-07** (P0) — **Caps are upgrade signals and abuse bounds, never feature ransoms.** Every cap is visible and generous, published on the pricing page and on the usage screen; outgrowing a cap IS the upgrade signal. Enforcement is soft-block with read + export always working (§04.5).
-  *Enforced by:* `SCR-M12-01` and `SCR-M12-04` (every cap published on both), with T-FCORE-014's cap-enforcement contract behind them.
-- **BM-08** (P0) — **A price for every EPC** (owner directive). The entry tier exists so that price is never the reason a small EPC stays on spreadsheets; the top of the range is a sales-assisted tier for utility-scale and open-access work. The reach law is `OV-17`/`OV-18`/`OV-20`; this document is where the tiers that deliver it live.
-  *Enforced by:* T-FCORE-012's four-tier structure and T-FCORE-010's authored book (a self-serve entry price and a sales-assisted top rung in every market's book).
-- **BM-09** (P0) — **One definition per fact.** Prices, caps and bundle sizes are defined once, in this document; `modules/M12` fixes billing mechanics only and restates no number; every other surface (pricing page, usage screens, F1's book identification) points here.
-  *Enforced by:* T-FCORE-010 (the book is the single source of every number) and review: any price, cap or bundle size restated in another task or brief is a defect, and the fix is a pointer.
-- **BM-10** (P0) — **Market scope law.** Every concrete number in this document is a fact of one market's price book — the India book, the source-derived first instance (§04.6) — and is marked as such. Nothing numeric here is the generic model; the framework rules (this section, §04.2 structure, §04.3 policy, §04.4 trial law, §04.5, §04.7 law, §04.8 principles) are market-neutral.
-  *Enforced by:* T-FCORE-010's separation of the price-book law from the India book instance; review rejects an INR amount, an IN benchmark or an IN rail inside a framework statement.
-- **BM-15** (P1) — **Enterprise commercial structure.** Enterprise is custom-priced (anchored in the market book, BM-41), sales-assisted, annual-contract, with custom bundle sizing and — as bespoke commercial arrangements — white-label options (custom domain + unbranded customer links), custom integrations / the public API surface, and BYO voice number. **Reading recorded, not silently resolved:** the source states both the never-features law (BM-05) and these Enterprise items in one document. The reading this suite carries: BM-05 governs the product's capabilities — nothing a self-serve tenant can *do inside the product* is withheld; the Enterprise items are commercial and service arrangements (re-branding of customer-facing surfaces, bespoke integration work, custom bundle economics, number provisioning) that exist only under sales-assisted contracts. If the owner rules the public API is a product capability rather than a service arrangement, it moves under BM-05 and out of this row.
-  *Enforced by:* T-FCORE-010's Enterprise anchor and custom-bundle rows in the IN book, plus review: an Enterprise-only *product capability* is a defect against BM-05, while the service arrangements named here never appear as a tier gate.
-
 ### From `docs/prd/01-product-overview.md` — the product laws
 
 - **OV-04** (P0) — The product replaces the spreadsheet-and-rekeying pipeline with **one record that travels**: CRM → survey → 3D design → proposal → no-login customer link → voice-agent follow-up → light project tracking → payments. No stage re-enters data an earlier stage already holds.
-  *Enforced by:* every module task's hand-off contract (`docs/tasks/M02-crm-leads.md` → `docs/tasks/M04-survey.md` → `docs/tasks/MS-studio-a.md` → `docs/tasks/M06-proposals.md` → `docs/tasks/F5-customer-link.md` → `docs/tasks/M07-sales-execution.md` → `docs/tasks/M08-projects.md` → `docs/tasks/M11-payments-collections.md`); review rejects any screen that re-keys a value an upstream stage already holds.
+  *Enforced by:* every module task's hand-off contract (`docs/tasks/M02-crm-leads.md` → `docs/tasks/M04-survey.md` → `docs/tasks/M06-proposals.md` → `docs/tasks/F5-customer-link.md` → `docs/tasks/M07-sales-execution.md` → `docs/tasks/M08-projects.md` → `docs/tasks/M11-payments-collections.md`); review rejects any screen that re-keys a value an upstream stage already holds.
 - **OV-06** (P0) — The owner signs up **self-serve**, with phone number and one-time password. Nothing about acquiring the product requires a sales conversation at the entry tiers.
   *Enforced by:* `SCR-M01-01` and `SCR-M01-02` (phone + OTP + company name, no sales step).
 - **OV-07** (P1) — Google Login is offered alongside Mobile OTP as a second authentication route. This is new in V2 and not present in the v1 source, which is OTP-only.
   *Enforced by:* `SCR-M01-01` (both routes present on the one sign-in surface).
 - **OV-08** (P0) — Mobile is **field-first and never a follow-up**: it is built in lockstep with web, carrying My Day, leads, quick-add, surveys, visits and notifications, with the studio reached through an embedded web surface.
-  *Enforced by:* the mobile-first construction of every screen task in `docs/tasks/` and the studio's embedded surface in `docs/tasks/MS-studio-a.md`; review rejects a capability specified web-only without a recorded rationale.
+  *Enforced by:* the mobile-first construction of every screen task in `docs/tasks/`; review rejects a capability specified web-only without a recorded rationale.
 - **OV-09** (P0) — Every screen is designed mobile-first at 375 px with **full web parity** — the small screen is the design constraint, not a reduced edition.
   *Enforced by:* the DONE WHEN clause every screen task in this suite carries — three base states plus brief-listed states at 375px and 1536px with full parity.
-- **OV-21** (P0) — **Conviction 1 — the studio is the flagship, and nothing is compromised against it.** Every studio tool and every computed output survives into V2. The studio census (`docs/prd/modules/M05-studio/studio-census.md`) is the acceptance gate and never shrinks. The studio is touch-first with full parity on every surface, including 375 px mobile. When a studio requirement conflicts with a convenience elsewhere, the studio wins.
-  *Enforced by:* `docs/tasks/MS-studio-a.md`, `docs/tasks/MS-studio-b.md` and `docs/tasks/MS-studio-c.md` against *retired: studio inventory* and `docs/prd/modules/M05-studio/defect-register.md`; review rejects any studio capability dropped or downgraded between passes.
+- **OV-21** (P0) — **Conviction 1 — the studio is the flagship, and nothing is compromised against it.** Every studio tool and every computed output survives into V2. The studio is touch-first with full parity on every surface, including 375 px mobile. When a studio requirement conflicts with a convenience elsewhere, the studio wins.
+  *Enforced by:* review rejects any studio capability dropped or downgraded.
 - **OV-22** (P0) — **Conviction 2 — honesty is a feature.** Every user-visible number carries a provenance tier (measured / derived / estimated / assumed — exactly four, no screen invents a fifth). Money never renders while stale. Structural adequacy is never computed — an engineer signs off. Competitors sell certainty; this product sells numbers that can be defended when a customer compares three proposals. Honesty is a differentiator that is marketed, not a disclaimer that is buried.
   *Enforced by:* `docs/prd/foundations/F8-data-honesty.md`'s mechanism as built in `docs/tasks/F-platform.md`, and every screen brief that renders a number; review rejects a fifth provenance tier or a stale money figure rendered as current.
 - **OV-23** (P0) — **Conviction 3 — market-config-first.** Every market fact — tax scheme, incentive model, compliance and calling rules, certification schemes, payment rails, units, number formats, stage labels, document checklists, catalog scope and currency — lives in an injected market-configuration layer, never hard-coded into a module. Launching a market is authoring its pack: configuration, not product change.
@@ -371,16 +69,16 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
   *Enforced by:* T-FCORE-001 (one authored pack at launch) and the IN instance tasks T-FCORE-002 through T-FCORE-010.
 - **OV-25** (P0) — Everything the source states as a price, a benchmark or a mandate mechanic is **the India market's price book**, not the generic model. No number from that book is treated anywhere in this suite as a universal product fact, and no market's prices are ever derived by currency conversion from another market's (the no-FX rule is DD6, design spec §2).
   *Enforced by:* T-FCORE-010 (the price-book law and the India book as an instance, with no FX derivation).
-- **OV-26** (P0) — **The soft-block law** — The product soft-blocks, never hard-blocks. In every billing state — including halted, expired and cancelled — reading everything, searching, dashboards, export (data, CSV, existing proposal documents), the customer's own links and the billing screens with pay/upgrade/reactivate all continue to work *(Final review: "billing screens" restored — the always-works list is `BM-32`'s four items)*. Blocked mutations fail with a clear state banner and a route to reactivate. No data is ever deleted for non-payment. The EPC's customer is never punished for the EPC's billing state.
-  *Enforced by:* T-FCORE-014's state capability matrix, implemented as the billing-state gate in `docs/tasks/M12-platform-billing.md` and surfaced by `SCR-SHELL-06`.
+- **OV-26** (P0) — **The soft-block law** — The product soft-blocks, never hard-blocks. In every billing state — including halted, expired and cancelled — reading everything, searching, dashboards, export (data, CSV, existing proposal documents), the customer's own links and the billing screens with pay/upgrade/reactivate all continue to work. Blocked mutations fail with a clear state banner and a route to reactivate. No data is ever deleted for non-payment. The EPC's customer is never punished for the EPC's billing state.
+  *Enforced by:* T-FCORE-014's state capability matrix, implemented as the billing-state gate in the billing code and surfaced by `SCR-SHELL-06`.
 - **OV-27** (P0) — **Entitlements are the only gating** — There are no feature flags in the product. Features ship enabled. The single runtime mechanism that can stop a user from doing something they have permission to do is a billing entitlement.
-  *Enforced by:* `docs/tasks/M12-platform-billing.md`'s entitlements as the sole runtime gate; review rejects any feature flag in any task.
+  *Enforced by:* the billing entitlements as the sole runtime gate; review rejects any feature flag in any task.
 - **OV-28** (P0) — **Capacity, not features** — Commercial tiers gate capacity ceilings, usage counts and metered bundles — never features. Every module and every capability is present in every tier. Caps are upgrade signals and abuse bounds, never feature ransoms.
-  *Enforced by:* T-FCORE-012's capacity axis and T-FCORE-010's book rows; review rejects a tier-withheld capability (see BM-05).
+  *Enforced by:* T-FCORE-012's capacity axis and T-FCORE-010's book rows; review rejects a tier-withheld capability.
 - **OV-29** (P0) — **The organisation pays, and seats are not the meter** — One subscription per tenant, owner-administered, covering every employee. There is no per-seat pricing: per-seat pricing punishes whole-company adoption, and whole-company adoption is what makes the single travelling record work at all.
-  *Enforced by:* T-FCORE-011's meter set and `docs/tasks/M12-platform-billing.md`'s one org-level subscription (see BM-01, BM-04).
+  *Enforced by:* T-FCORE-011's meter set and the one org-level subscription.
 - **OV-30** (P0) — **The one seat-based exception** — Active field-worker **tracking** is the single per-tracked-seat add-on in the product, because it carries a real per-worker cost. Site check-in/out and visit logging are part of the core visit workflow and are included in every tier for every employee. The owner toggles tracking per employee; the meter counts tracked-seat-months. No other capability is ever priced per seat.
-  *Enforced by:* T-FCORE-011 (BM-22/BM-23 boundary) and `docs/tasks/M09-field-workforce.md`'s owner toggle; review rejects a second per-seat price anywhere.
+  *Enforced by:* T-FCORE-011 (the tracked-seat add-on boundary) and `docs/tasks/M09-field-workforce.md`'s owner toggle; review rejects a second per-seat price anywhere.
 - **OV-31** (P0) — **Phone as identity** — A phone number is the identity anchor on both sides of the product: it is the login identity for users, unique in international format, and it is the deduplication key for customers, checked on capture from every channel. Users are deactivated, never deleted.
   *Enforced by:* `docs/tasks/M01-onboarding.md` (login identity, deactivate-never-delete), `docs/tasks/M02-crm-leads.md` and `docs/tasks/M03-marketing.md` (dedupe on capture from every channel).
 - **OV-32** (P0) — **The customer never logs in** — The EPC's customer has no account, no password and no portal. One tokenised link carries their whole relationship with the project — proposal, acceptance, payment status, progress, handover — and it is never blocked over unpaid platform money. Where a deal has several stakeholders, they get several labelled links, not accounts.
@@ -396,7 +94,7 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 - **OV-43** (P0) — **v1 is the entire product.** There is no Launch-2, no v1.1 and no "later" bucket into which a capability can be deferred while still being counted as planned. A capability is either in v1 scope, or it is an explicit non-goal with a recorded rationale, or it is a recommendation with ONE home — its owning module's own **Later** line or `REC` row, stated with its rationale and never counted as planned. There is no fourth category, and a recommendation is never recorded twice. This is a scope law and carries no schedule: the calendar the source attached to it is superseded, and every source phrase of the form "ships in the N-day build" is read throughout this suite as "in v1 scope".
   *Enforced by:* review of the whole `docs/tasks/` set — every PRD row is dispositioned into a task, a law or a realized-elsewhere pointer, and no task carries a phase, a date or a deferral bucket.
 - **OV-44** (P0) — The only honest exceptions to "shipped at launch" are three, and each is named rather than open-ended: (a) capabilities whose activation waits on a third party's approval process, where the product ships complete and activation follows the third party; (b) the explicitly spec-locked exclusions recorded as non-goals in §6 below; (c) utility-scale studio enhancements that continue immediately afterwards as ongoing investment in the flagship. **1 kW to 100 MW remains a v1 commitment.**
-  *Enforced by:* T-FCORE-005 (the DLT/telephony activation clocks that gate activation, not scope), the non-goals recorded in each module task, and the studio tasks' 1 kW–100 MW capacity commitment.
+  *Enforced by:* T-FCORE-005 (the DLT/telephony activation clocks that gate activation, not scope), and the non-goals recorded in each module task.
 
 ### From `docs/prd/02-personas.md` — the persona laws
 
@@ -413,9 +111,9 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 - **PS-14** (P0) — Surveying is a **capability, not a gatekeeper**: the survey is a task assignable to anyone who holds the capability — a dedicated Survey Engineer or a Sales Executive standing on the roof — and both use one capture flow. The persona describes whose job it usually is, never who is permitted to do it.
   *Enforced by:* `docs/tasks/M04-survey.md`'s single capture flow assignable on capability, not persona.
 - **PS-17** (P0) — This persona also holds **sign-off authority**: reviewing a design and approving it, or returning it with comments pinned to what is wrong. In v1 this is a separate preset (`Engineer` — "reviews and signs off designs"); in V2 it is documented as a distinct **capability of the Design Engineer persona**, and the customer never sees an unapproved design.
-  *Enforced by:* `docs/tasks/MS-studio-c.md`'s sign-off flow and `docs/tasks/F5-customer-link.md`'s gate that no unapproved design reaches the customer link.
+  *Enforced by:* `docs/tasks/F5-customer-link.md`'s gate that no unapproved design reaches the customer link.
 - **PS-19** (P0) — **Sign-off is a capability, and whoever performs it is not the person who drew it.** The reviewer's approval is the structural-safety record for the design, and returning a design sends it back to its author with comments attached to the specific problem. Whether the capability is granted by its own preset role or rides the Design Engineer preset is F2's decision.
-  *Enforced by:* `docs/tasks/F-platform.md`'s F2 capability ruling plus `docs/tasks/MS-studio-c.md`'s reviewer-is-not-author check and return-with-pinned-comments behavior.
+  *Enforced by:* `docs/tasks/F-platform.md`'s F2 capability ruling.
 - **M01-07** (P0) — **Session lifetimes and revocation.** Web sessions are 30 days rolling. Mobile has no fixed maximum while the person remains active: seven full days without foreground authenticated use expires the session and requires sign-in again. Opening or using the signed-in app in the foreground resets that inactivity window; background refresh, push handling and scheduled work never reset it. Mobile API tokens remain short-lived (≤10 minutes) and renew silently while the underlying session is valid. Deactivating a user, or a user's own "sign out everywhere", kills every device's access within ≤10 minutes. The revocation surface is the Team screen (M01-19).
   *Enforced by:* `docs/tasks/M01-onboarding.md`'s T-M01-025 (auth, session & account-lifecycle engine), consumed by `docs/tasks/M04-survey.md`, `docs/tasks/M08-projects.md` and `docs/tasks/M09-field-workforce.md`. *Rehomed 2026-08-07: the Field Technician platform law formerly carried here as `PS-24` ("Mobile sessions are long-lived") was swept from `docs/prd/02-personas.md` with the offline/sync deletion — no strike note was recorded there, and the row is absent while `PS-22`, `PS-23` and `PS-25` remain. The obligation is live, and with a concrete value, at `M01-07` above; nothing about it was ever a connectivity rule.*
 - **PS-27** (P0) — **The installation surface shows no commercial figures.** No price, no discount, no tranche, no margin, no customer value appears on any screen this persona sees. v1 achieved this by giving crew no screen at all — "crew sees no money because crew sees no screen"; where V2 gives them a screen, the property must be preserved by the surface itself.
@@ -431,23 +129,6 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 
 Context, positioning and persona-home rows this bucket dispositions but does not build. Each carries its verbatim text and the pointer that realizes it.
 
-### From `docs/prd/04-business-model.md`
-
-- **BM-14** (P1) — **Tier positioning laws** (each tier has a job): **Starter** is the "every EPC" tier — a 1–5 person residential shop runs its whole business on it, and outgrowing its caps IS the upgrade signal. **Growth** is the default recommendation past roughly 15 installs a month or the first small C&I work. **Pro** is the C&I tier, carrying the voice bundle no competitor offers at any price. **Enterprise** is for the largest single designs, open-access and utility work — sales-assisted, annual contracts. Positioning informs bundle sizing and pricing-page copy — the per-tier service terms are that copy, rendered by the pricing page as Tier-keyed screen copy under the i18n convention and never read from the book (BM-41; owner ruling 2026-09-07); it never creates a feature difference (BM-05).
-  *Realized by:* BM-41's bundle sizing in T-FCORE-010 · `docs/prd/modules/M12-platform-billing.md`
-- **BM-31** (P1) — **Trial COGS is a bounded, accepted acquisition cost.** The trial caps exist to bound the platform's worst-case spend per trial (IN book: ≈₹300–500 per trial at the BM-41 caps) — an accepted customer-acquisition component, sized by the book's cap values, never by degrading the trial experience (BM-28's "every tier capability" is not negotiable against COGS).
-  *Realized by:* BM-28 (T-FCORE-013's trial contract) · BM-41 (T-FCORE-010's IN book cap values)
-- **BM-43** (P1) — **Ride the market's incentive wave — by computing, not configuring.** The IN wedge is that subsidy outcomes are computed in the product (state × capacity × DCR, F1-33) while competitors make tenants configure them by hand; the product consequence is that the demo leads with a computed subsidy in the first five minutes of a first session. Generalized: a market's incentive model is pack data computed by the product (F1-14), and the pricing story leans on it wherever the market has one.
-  *Realized by:* `docs/prd/modules/M01-onboarding-and-tenant-config.md` · `docs/prd/foundations/F1-global-market-framework.md` · `docs/prd/modules/M06-proposals.md`
-- **BM-44** (P1) — **The competitor is the spreadsheet, not another SaaS.** Positioning and pricing assume the buyer currently pays nothing: what displaces the spreadsheet is the 30-second lead add, the sub-ten-minute remote survey-to-proposal path, and the one record that survives sales → design → costing without rekeying. The tiers are priced so that "keep using spreadsheets" is never the rational choice on price (BM-08).
-  *Realized by:* BM-08 (Laws, above) · BM-41 (T-FCORE-010's IN book and its recorded benchmarks)
-- **BM-45** (P1) — **Market-native compliance is a wedge, never a paid feature.** The IN depth — certification checking at design time, tax-native money path, DISCOM-aware states, registered messaging, compliant calling — is in every tier (BM-05) and is sold as the reason global tools cannot follow quickly. Generalized: pack-driven statutory depth (F1) is a GTM asset in every market and is never tiered.
-  *Realized by:* BM-05 (Laws, above) · `docs/prd/foundations/F1-global-market-framework.md` (T-FCORE-001 through T-FCORE-009)
-- **BM-46** (P1) — **The voice agent is the demo that closes — priced to feel included, metered so it cannot hurt margin.** The pitch leads with a live agent call; commercially the agent rides BM-17/BM-18 (bundles on the tier where it anchors the positioning, PAYG elsewhere in the IN book) so it demos as part of the product while every minute stays margin-safe.
-  *Realized by:* BM-17 and BM-18 (T-FCORE-011's metered-COGS law and voice-minute meter) · BM-41 (T-FCORE-010's IN voice bundle rows)
-- **BM-47** (P1) — **Trial-to-paid is the only conversion metric that matters at launch.** The channel motion (founder-led sales into EPC clusters, installer associations, distributor referrals, the demo project that makes first sessions concrete) is sales ops, not product scope — what binds the product is the metric: acquisition instrumentation and M13's reporting treat trial-to-paid conversion as the launch measure, and the trial (§04.4) is designed to maximise it honestly (full capability, honest caps, soft expiry).
-  *Realized by:* `docs/prd/modules/M13-dashboards-and-reporting.md` · BM-28 (T-FCORE-013's trial contract)
-
 ### From `docs/prd/01-product-overview.md` — vision, goals and moat
 
 - **OV-01** (P0) — HelioGrid is a multi-tenant SaaS that runs the **selling engine** of a solar EPC company — from a lead captured in under thirty seconds to a signed project with money collected. Every module in the suite exists to serve that spine or to keep it honest.
@@ -455,9 +136,9 @@ Context, positioning and persona-home rows this bucket dispositions but does not
 - **OV-02** (P0) — V2's framing is global: the world's best **mobile-first SaaS platform for solar EPC companies**, mobile-first without compromising web, global from the outset, with the 3D Design Studio as the flagship. The source's product definition is India-worded — "the selling engine of an *Indian* solar EPC company" — and OV-01 states it with that wording globalized; both readings are on the record.
   *Realized by:* informative; the global framing is carried by `docs/prd/foundations/F1-global-market-framework.md` (T-FCORE-001)
 - **OV-03** (P0) — The flagship asset is a full **3D Design Studio** producing engineering-grade layouts, shading analysis, electrical sizing and a priced bill of materials, across a box that runs from 1 kW rooftops to 100 MW plants.
-  *Realized by:* `docs/prd/modules/M05-design-studio.md` — `docs/tasks/MS-studio-a.md`, `docs/tasks/MS-studio-b.md`, `docs/tasks/MS-studio-c.md`
-- **OV-05** (P0) — The buyer is the **EPC organisation**. Both residential and commercial & industrial business are first-class and both are high volume (D1); deal values in the source's India framing span roughly ₹4.5 lakh to ₹92 lakh+ — customer deal size, not platform pricing, which `04-business-model.md` owns.
-  *Realized by:* `docs/prd/04-business-model.md` (BM-01's org-level subscription, T-FCORE-012's tier structure)
+  *Realized by:* the 3D Design Studio, rebuilt from scratch — no PRD or task yet
+- **OV-05** (P0) — The buyer is the **EPC organisation**. Both residential and commercial & industrial business are first-class and both are high volume (D1); deal values in the source's India framing span roughly ₹4.5 lakh to ₹92 lakh+ — customer deal size, not platform pricing.
+  *Realized by:* informative (T-FCORE-012's tier structure)
 - **OV-10** (P0) — **Close more deals** — The product's job is conversion, not record-keeping. Every surface that touches a live opportunity — My Day, follow-ups, the voice agent, the proposal, the customer link — is measured by whether it moves a deal forward.
   *Realized by:* `docs/prd/modules/M07-sales-execution.md`, `docs/prd/modules/M06-proposals.md`, `docs/prd/foundations/F5-customer-link.md`, `docs/prd/modules/M13-dashboards-and-reporting.md`
 - **OV-11** (P0) — **Reduce sales-cycle time** — Elapsed time from enquiry to signature is a first-class product metric. Stage conversion and cycle time are reportable (M13), and every hand-off between stages is designed to remove waiting rather than to add a step.
@@ -469,17 +150,17 @@ Context, positioning and persona-home rows this bucket dispositions but does not
 - **OV-14** (P1) — **Improve field visibility** — The office can see where field work is happening and what state it is in: attendance, site check-in/out, visit tracking, route timeline, live location for tracked employees (M09). Visibility is for coordination, and its scope is bounded by what an EPC actually needs.
   *Realized by:* `docs/prd/modules/M09-field-workforce.md`
 - **OV-15** (P0) — **Improve proposal quality** — The proposal is the artefact the customer judges the EPC by. Quality means a real 3D roof, defensible numbers with their provenance shown, correct local tax and incentive treatment, and the EPC's own branding — not a prettier template.
-  *Realized by:* `docs/prd/modules/M06-proposals.md`, `docs/prd/modules/M05-design-studio.md`, `docs/prd/foundations/F8-data-honesty.md`
+  *Realized by:* `docs/prd/modules/M06-proposals.md`, `docs/prd/foundations/F8-data-honesty.md`
 - **OV-16** (P0) — **Centralize operations** — One system of record for the EPC: leads, surveys, designs, proposals, projects, money, people and field activity in one place, with one search across them. Centralization is what makes OV-04's travelling record possible.
   *Realized by:* `docs/prd/foundations/F6-notifications-and-search.md` (one search) and all modules
 - **OV-17** (P0) — **Affordable for small EPCs** — A one-to-five-person residential shop must be able to run its whole business on the product without price being the reason it stays on spreadsheets.
-  *Realized by:* `docs/prd/04-business-model.md` (BM-08's entry tier; T-FCORE-010's IN book)
+  *Realized by:* informative (T-FCORE-010's IN book)
 - **OV-18** (P1) — **Scale to enterprise** — The same product serves utility-scale work — the largest designs in the box, the widest teams, custom commercial terms and white-label customer-facing surfaces — without a separate edition or a rewrite.
-  *Realized by:* `docs/prd/04-business-model.md` (BM-15's Enterprise structure) and `docs/prd/modules/M05-design-studio.md`
+  *Realized by:* informative
 - **OV-19** (P0) — **Global from day one** — Market differences are configuration, never product change. "Day one" here is the brief's phrase for *from the outset* — it is an architectural commitment and carries no date, no phase and no schedule.
   *Realized by:* `docs/prd/foundations/F1-global-market-framework.md` (T-FCORE-001 through T-FCORE-010)
-- **OV-20** (P0) — **A price for every EPC** (source anchor for OV-17 and OV-18) — The reach implied by OV-17 and OV-18 is source-anchored: the entry tier exists so that price is never the reason a small EPC stays on spreadsheets, and the top of the range is a sales-assisted tier for utility-scale and open-access work. The tiers themselves, their capacities and every price point live in `04-business-model.md`.
-  *Realized by:* `docs/prd/04-business-model.md` (BM-08 in Laws above; the tier structure at T-FCORE-012 and the book at T-FCORE-010)
+- **OV-20** (P0) — **A price for every EPC** (source anchor for OV-17 and OV-18) — The reach implied by OV-17 and OV-18 is source-anchored: the entry tier exists so that price is never the reason a small EPC stays on spreadsheets, and the top of the range is a sales-assisted tier for utility-scale and open-access work.
+  *Realized by:* informative (the tier structure at T-FCORE-012 and the book at T-FCORE-010)
 - **OV-37** (P0) — **The AI voice agent** — outbound follow-up and inbound answering in the customer's own language, statutorily compliant by construction, every call transcribed onto the lead timeline, with per-tenant numbers. No competitor offers this at any price. The compliance gate's mechanism is fixed; its statutory ruleset is market-pack data, and a market with no voice ruleset cannot enable outbound voice. Where a telephony capability is genuinely unavailable behind the current reference implementation, the product degrades honestly rather than pretending.
   *Realized by:* `docs/prd/modules/M07-sales-execution.md` + `docs/prd/foundations/F1-global-market-framework.md` (T-FCORE-004's ruleset key, T-FCORE-005's IN routes)
 - **OV-38** (P0) — **The provenance and honesty system** — a provenance tier on every number, money never stale, visible "Indicative proposal" labelling, engineer sign-off instead of a computed structural claim, correlation rather than attribution on agent impact. Competitors print confident numbers; this product prints defensible ones.
@@ -490,7 +171,7 @@ Context, positioning and persona-home rows this bucket dispositions but does not
 - **OV-41** (P0) — **Two-tier catalog with tenant price overrides** — a platform master catalog plus tenant catalog plus tenant overrides, with versioned rates so a proposal that has been sent never mutates. The closest rival's local database has no override or versioning layer.
   *Realized by:* `docs/prd/modules/M01-onboarding-and-tenant-config.md` — `docs/tasks/M01-onboarding.md`
 - **OV-42** (P0) — **Organisation pricing with unlimited seats under incumbent prices** — a business-model feature, because whole-company adoption is what makes the single travelling record actually work. Unlimited seats is not unlimited usage: capacity and counts still apply per tier.
-  *Realized by:* `docs/prd/04-business-model.md` (BM-06 unlimited users in Laws above; BM-39's benchmark law and BM-41's book at T-FCORE-010)
+  *Realized by:* informative (the book at T-FCORE-010)
 
 ### From `docs/prd/02-personas.md` — the twelve personas and their home screens
 
@@ -513,11 +194,11 @@ Each persona-definition row is realized by that persona's F2 section and its own
 - **PS-13** (P0) — The Survey Engineer's **home screen is today's site visits** — each with address, customer, time, distance, one-tap navigation and one-tap call.
   *Realized by:* `SCR-M04-06` (screen owned by `docs/tasks/M04-survey.md`)
 - **PS-15** (P0) — The **Design Engineer** persona builds the system: roof geometry, obstructions, components, panel layout, shading analysis, the single-line diagram and the priced bill of materials, plus the variants a customer needs to choose between. In v1 vocabulary this is the `Designer` preset — source wording "builds designs and quotes", read as **proposals** per R1's naming law — with assigned-only visibility.
-  *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Design Engineer · `docs/prd/modules/M05-design-studio.md`
+  *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Design Engineer
 - **PS-16** (P0) — The Design Engineer's **home screen is designs awaiting work** — the queue of surveys handed over and designs in progress, with the blocking gaps named per item.
-  *Realized by:* T-MS-375 (`docs/tasks/MS-studio-c.md`) — `SCR-MS-02`
+  *Realized by:* the 3D Design Studio, rebuilt from scratch — no PRD or task yet
 - **PS-18** (P0) — Where a person holds sign-off, their **home screen carries the sign-off queue — designs awaiting review, oldest first** — composed into the one home rather than presented as a second front door (`PS-05`).
-  *Realized by:* T-MS-375 (`docs/tasks/MS-studio-c.md`) — `SCR-MS-02`
+  *Realized by:* the 3D Design Studio, rebuilt from scratch — no PRD or task yet
 - **PS-20** (P0) — The **Project Manager** persona owns a won deal from signature to handover: moving it through the stage chain, keeping the document checklist complete, naming blockers with the party responsible, requesting the payment each completed stage makes due, and keeping the customer's progress view honest.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Project Manager · `docs/prd/modules/M08-projects.md`
 - **PS-21** (P0) — The Project Manager's **home screen is their projects ordered by days-in-stage, oldest first** — a blocker flags a card and never reorders it (owner ruling 2026-09-24) — each card showing customer, size, value, days in the current stage, payment collected against payment due, and the blocker flag with who is being waited on.
@@ -555,9 +236,9 @@ Each persona-definition row is realized by that persona's F2 section and its own
 |---|---|
 | OV-01 | realized-by: all modules M01–M13 (the selling-engine spine) |
 | OV-02 | realized-by: informative; global framing carried by `docs/prd/foundations/F1-global-market-framework.md` |
-| OV-03 | realized-by: `docs/prd/modules/M05-design-studio.md` |
+| OV-03 | realized-by: the 3D Design Studio, rebuilt from scratch — no PRD or task yet |
 | OV-04 | LAW |
-| OV-05 | realized-by: `docs/prd/04-business-model.md` |
+| OV-05 | realized-by: informative |
 | OV-06 | LAW |
 | OV-07 | LAW |
 | OV-08 | LAW |
@@ -567,12 +248,12 @@ Each persona-definition row is realized by that persona's F2 section and its own
 | OV-12 | realized-by: informative (a design goal in every module) |
 | OV-13 | realized-by: `docs/prd/modules/M07-sales-execution.md` |
 | OV-14 | realized-by: `docs/prd/modules/M09-field-workforce.md` |
-| OV-15 | realized-by: `docs/prd/modules/M06-proposals.md`, `docs/prd/modules/M05-design-studio.md`, `docs/prd/foundations/F8-data-honesty.md` |
+| OV-15 | realized-by: `docs/prd/modules/M06-proposals.md`, `docs/prd/foundations/F8-data-honesty.md` |
 | OV-16 | realized-by: `docs/prd/foundations/F6-notifications-and-search.md` (one search) and all modules |
-| OV-17 | realized-by: `docs/prd/04-business-model.md` |
-| OV-18 | realized-by: `docs/prd/04-business-model.md`, `docs/prd/modules/M05-design-studio.md` |
+| OV-17 | realized-by: informative |
+| OV-18 | realized-by: informative |
 | OV-19 | realized-by: `docs/prd/foundations/F1-global-market-framework.md` |
-| OV-20 | realized-by: `docs/prd/04-business-model.md` |
+| OV-20 | realized-by: informative |
 | OV-21 | LAW |
 | OV-22 | LAW |
 | OV-23 | LAW |
@@ -593,7 +274,7 @@ Each persona-definition row is realized by that persona's F2 section and its own
 | OV-38 | realized-by: `docs/prd/foundations/F8-data-honesty.md` |
 | OV-40 | realized-by: `docs/prd/foundations/F3-localization.md`, `docs/prd/foundations/F7-design-language.md`, `docs/prd/foundations/F1-global-market-framework.md` (grouping) |
 | OV-41 | realized-by: `docs/prd/modules/M01-onboarding-and-tenant-config.md` |
-| OV-42 | realized-by: `docs/prd/04-business-model.md` |
+| OV-42 | realized-by: informative |
 | OV-43 | LAW |
 | OV-44 | LAW |
 | PS-01 | LAW |
@@ -610,10 +291,10 @@ Each persona-definition row is realized by that persona's F2 section and its own
 | PS-12 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Survey Engineer · `docs/prd/modules/M04-survey.md` |
 | PS-13 | realized-by: T-M04-006 — `SCR-M04-06` |
 | PS-14 | LAW |
-| PS-15 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Design Engineer · `docs/prd/modules/M05-design-studio.md` |
-| PS-16 | realized-by: T-MS-375 (`docs/tasks/MS-studio-c.md`) — `SCR-MS-02` |
+| PS-15 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Design Engineer |
+| PS-16 | realized-by: the 3D Design Studio, rebuilt from scratch — no PRD or task yet |
 | PS-17 | LAW |
-| PS-18 | realized-by: T-MS-375 (`docs/tasks/MS-studio-c.md`) — `SCR-MS-02` |
+| PS-18 | realized-by: the 3D Design Studio, rebuilt from scratch — no PRD or task yet |
 | PS-19 | LAW |
 | PS-20 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Project Manager · `docs/prd/modules/M08-projects.md` |
 | PS-21 | realized-by: T-M08-001 — `SCR-M08-01` |
@@ -633,52 +314,6 @@ Each persona-definition row is realized by that persona's F2 section and its own
 | PS-35 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Marketing · `docs/prd/modules/M03-marketing.md` |
 | PS-36 | realized-by: T-M03-001 — `SCR-M03-01` |
 | PS-37 | LAW |
-| BM-01 | LAW |
-| BM-02 | LAW |
-| BM-03 | LAW |
-| BM-04 | LAW |
-| BM-05 | LAW |
-| BM-06 | LAW |
-| BM-07 | LAW |
-| BM-08 | LAW |
-| BM-09 | LAW |
-| BM-10 | LAW |
-| BM-11 | T-FCORE-012 |
-| BM-12 | T-FCORE-012 |
-| BM-13 | T-FCORE-010 |
-| BM-14 | realized-by: BM-41 (T-FCORE-010) · `docs/prd/modules/M12-platform-billing.md` |
-| BM-15 | LAW |
-| BM-16 | T-FCORE-012 |
-| BM-17 | T-FCORE-011 |
-| BM-18 | T-FCORE-011 |
-| BM-20 | T-FCORE-011 |
-| BM-21 | T-FCORE-011 |
-| BM-22 | T-FCORE-011 |
-| BM-23 | T-FCORE-011 |
-| BM-24 | T-FCORE-011 |
-| BM-25 | T-FCORE-011 |
-| BM-26 | T-FCORE-010 |
-| BM-27 | T-FCORE-014 |
-| BM-28 | T-FCORE-013 |
-| BM-29 | T-FCORE-013 |
-| BM-30 | T-FCORE-013 |
-| BM-31 | realized-by: BM-28 (T-FCORE-013) · BM-41 (T-FCORE-010) |
-| BM-32 | T-FCORE-014 |
-| BM-33 | T-FCORE-012 |
-| BM-34 | T-FCORE-014 |
-| BM-35 | T-FCORE-014 |
-| BM-36 | T-FCORE-014 |
-| BM-37 | T-FCORE-010 |
-| BM-38 | T-FCORE-010 |
-| BM-39 | T-FCORE-010 |
-| BM-40 | T-FCORE-010 |
-| BM-41 | T-FCORE-010 |
-| BM-42 | T-FCORE-015 |
-| BM-43 | realized-by: `docs/prd/modules/M01-onboarding-and-tenant-config.md` · `docs/prd/foundations/F1-global-market-framework.md` · `docs/prd/modules/M06-proposals.md` |
-| BM-44 | realized-by: BM-08 (LAW) · BM-41 (T-FCORE-010) |
-| BM-45 | realized-by: BM-05 (LAW) · `docs/prd/foundations/F1-global-market-framework.md` |
-| BM-46 | realized-by: BM-17, BM-18 (T-FCORE-011) · BM-41 (T-FCORE-010) |
-| BM-47 | realized-by: `docs/prd/modules/M13-dashboards-and-reporting.md` · BM-28 (T-FCORE-013) |
 | F1-01 | T-FCORE-001 |
 | F1-02 | T-FCORE-001 |
 | F1-03 | T-FCORE-001 |

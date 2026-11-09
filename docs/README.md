@@ -11,7 +11,7 @@ compatibility pointer and the code.
 
 | Tree | What it is | Authority |
 |---|---|---|
-| [`prd/`](prd/) | The product spec — the owner brief, foundations, modules, and the screens register; every row carries its own ruling | **Source of truth** |
+| [`prd/`](prd/) | The product spec — foundations, modules, and the screens register; every row carries its own ruling | **Source of truth** |
 | [`tasks/`](tasks/) | Engineering work, one file per module, derived from the PRD registers | **Source of truth** |
 | [`engineering/`](engineering/) | How this repo is built; `architecture.md` is the canonical spine and each other file states its current status or fate | Support, ranked below `prd/` |
 

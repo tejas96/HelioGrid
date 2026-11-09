@@ -34,11 +34,6 @@ apps/mobile/android/
 docs/tasks/*.md
 !docs/tasks/README.md
 
-# POC port map. Indexes 287 source files of a codebase that is not in this tree, so every
-# node it would add points outside the graph. The owner brief and the defect register stay
-# graphed: real, dated, non-duplicated signal.
-docs/prd/modules/M05-studio/poc-file-claims.md
-
 # Render harness. Its fixtures carry fabricated product data — invented tariffs, vendors and
 # rupee amounts — which a graph would learn as real market facts, and it describes an
 # apps/web route that does not exist.

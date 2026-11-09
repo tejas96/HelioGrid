@@ -1,13 +1,14 @@
 # heliogrid-temporal — deployment candidate
 
-**Nothing here is deployed.** No Fly app, no database, no certificate authority, no DNS
+**Nothing here is deployed.** No host, no database, no certificate authority, no DNS
 record, no machine, no billable resource exists. Creating any of them is a separate
 owner-approved operation (`CLAUDE.md` §4).
 
-This is a **reviewed candidate**: version-pinned configuration, an image, a Fly template,
+This is a **reviewed candidate**: version-pinned configuration, an image,
 runbooks, and alerts — every one of them validated against the production-like local stack and
 the real built images. It is not a production-ready service; §"What would still be needed"
-says exactly what is missing.
+says exactly what is missing. Its network and secret steps (private address, remote shell,
+proxy) were written for Fly.io; the Oracle hosting task (`docs/tasks/deferred.md` D50) adapts them.
 
 Decisions, and every measured trap behind them: [`../README.md`](../README.md).
 
@@ -18,7 +19,6 @@ Decisions, and every measured trap behind them: [`../README.md`](../README.md).
 | | |
 |---|---|
 | `Dockerfile` | the `heliogrid-temporal` image — server + `temporal-sql-tool` + CLI + `pg_dump`, all pinned by digest |
-| `fly.toml` | the app template: private-only, no auto-stop, drain window, gRPC health check, metrics |
 | `config/server.template.yaml` | the server config, **rendered at container start** |
 | `config/dynamicconfig/production.yaml` | the few knobs that change without a restart |
 | `config/ui.template.yaml` | the UI — **disabled by default**, operator-private, never a deployed service |
@@ -192,7 +192,7 @@ Against the running local stack, the pinned images, and `apps/{api,worker}/dist`
   `PG_TLS` to `true`;
 - the image **boots** from the rendered config against a real database and reports **SERVING**
   through `heliogrid-temporal.internal`, with the client verifying that SAN;
-- the metrics port `fly.toml` scrapes returns **200** on `/metrics`;
+- the metrics port returns **200** on `/metrics`;
 - `bootstrap-schema.sh` runs **idempotently** against the live database from inside the image;
 - `backup.sh` dumps **both** stores from inside the image;
 - the **real** worker and the **real** API gateway complete a workflow against it — 7/7;

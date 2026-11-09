@@ -204,7 +204,7 @@ var from the wrong place; lint fails naming exactly where.
 
 **Where real values live:**
 - Local dev: `.env.local` (git-ignored, never committed — copy from `.env.example`).
-- Production: Fly.io secrets.
+- Production: the host's secret store (Oracle Cloud, not set up yet).
 - **Which commands actually load `.env.local`, and how**, is documented at the top of
   `.env.example` itself — read that comment block before assuming a value is picked up; a few
   commands (`db migrate`, the invariants runner) take the URL from the **shell environment**
@@ -364,10 +364,10 @@ Claude then pushes and opens the PR; the owner merges. `main` is PR-only. A PR i
 | [`CLAUDE.md`](CLAUDE.md) | The constitution — rules governing every change in this repo |
 | [`.claude/rules/`](.claude/rules/) | Path-scoped rules that load automatically for the paths they name |
 | [`docs/prd/01-product-overview.md`](docs/prd/01-product-overview.md) | Product vision, V1 scope, non-goals — and the **glossary** (EPC, tenant, market pack, tranche, provenance tier) |
-| [`docs/prd/registers/screens.md`](docs/prd/registers/screens.md) | **The screen register** — 150 screens and the 99 locked to V1; a screen is drawn when its task's `DESIGN:` line holds a link |
+| [`docs/prd/registers/screens.md`](docs/prd/registers/screens.md) | **The screen register** — every screen, marked V1 or V2, and where every requirement lands |
 | [`docs/build-order.md`](docs/build-order.md) | Build order across modules |
 | [`docs/engineering/architecture.md`](docs/engineering/architecture.md) | **The spine** — package registry, dependency direction, platform rules (RN/Next.js), and where new code goes |
-| `docs/engineering/02-system-architecture.md` | How the system runs — request path, tenancy, background work, storage, studio data flow |
+| `docs/engineering/02-system-architecture.md` | How the system runs — request path, tenancy, background work, storage |
 | `docs/engineering/03-tech-stack.md` | Every technology choice, pinned and justified |
 | `docs/engineering/08-security-and-tenancy.md` | Security & tenancy model |
 | [`docs/engineering/17-ui-architecture-v2.md`](docs/engineering/17-ui-architecture-v2.md) | The UI layer: theme, primitives, the 122 components, and the gates that hold them |

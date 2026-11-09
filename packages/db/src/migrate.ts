@@ -79,7 +79,7 @@ export async function runMigrations(url: string) {
 
     /**
      * LOCK FIRST, then create the ledger. The order used to be reversed, and it crashed real
-     * deploys: Fly runs a `release_command` per app, so apps/api and apps/worker migrate at
+     * deploys: each app runs its release step, so apps/api and apps/worker migrate at
      * the same instant against a fresh database. `create table if not exists` is NOT atomic
      * against a concurrent creator — both sessions find no table, both attempt the CREATE, and
      * the loser dies on a duplicate-key violation in pg_type (23505), which is not the

@@ -1,6 +1,6 @@
 # Temporal UI — OPERATOR-PRIVATE, and DISABLED BY DEFAULT.
 #
-# It is not part of `fly.toml`. Running it means running a second process that can read every
+# It is not part of the deployed server. Running it means running a second process that can read every
 # workflow's history — which is customer data: lead names, phone numbers, money. The local
 # stack does not run it either.
 #

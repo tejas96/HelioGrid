@@ -112,7 +112,6 @@ export { disclosureLead, disclosureLine } from './copy/disclosure';
 export { BASIS_LINE_WORD } from './copy/document-basis';
 export { DOOR_GREETING, doorGreeting } from './copy/door-greeting';
 export { DOOR_STORY, type DoorStoryWords, doorStoryWords } from './copy/door-story';
-export * from './copy/drawing-sheet';
 export * from './copy/dropzone';
 export { energySourceLabel } from './copy/energy-source';
 export type { ExplainerWords } from './copy/explainer';

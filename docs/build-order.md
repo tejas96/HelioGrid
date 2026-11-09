@@ -1,15 +1,15 @@
 # Build order — the sequence engineering works in
 
-Nothing here invents scope. Every task already exists in `docs/tasks/`, generated from the
-requirement register; this file only says what order to take them in and why.
+Nothing here invents scope. Every task already exists in `docs/tasks/`; this file only says what
+order to take them in and why.
 
 ---
 
 ## The V1 scope lock
 
-**99 of the 150 screens are V1.** The `V` column in `docs/prd/registers/screens.md` §2 is the lock,
-and only an owner decision moves it. V2 is real scope that is deliberately not blocking launch —
-the architecture keeps its extension points, but nothing V2 is designed or built until V1 ships.
+The `V` column in `docs/prd/registers/screens.md` §2 is the lock, and only an owner decision moves
+it. V2 is real scope that is deliberately not blocking launch — the architecture keeps its extension
+points, but nothing V2 is designed or built until V1 ships.
 
 ## One order, walked one step at a time
 
@@ -21,8 +21,7 @@ file placed, no loop, every later-block wait recorded. The order is walked, neve
 2. inside a block, its cells in the order the block's row writes them — a file, or a task placed
    apart from its file;
 3. inside a file, its backend tasks first, then its screens — each group in the order the file writes
-   it, which for the screens is the user's journey (`M01`: sign-in → signup → language → … → team →
-   roles → catalog → branding);
+   it, which for the screens is the user's journey;
 4. a task's `Depends on:` pulls a task of its own block ahead of it; a later-block wait is recorded
    below instead.
 
@@ -32,124 +31,79 @@ lives in its task's `#### Parts` table; this file never lists parts.
 What the step is for each task — build, owner merges, owner clears —
 is `/task`'s *Pick* (`.claude/skills/task/SKILL.md`). A `**Parked:**` task is stepped over and pulls nothing ahead.
 
-Note the `V` column lives on screens, not tasks. A task is V1 if the V1 workflow needs it —
-which for the foundations means all of them, since permissions, formats and honesty underpin
-every block below.
+The `V` column lives on screens, not tasks. A task is V1 if the V1 workflow needs it — which for
+the foundations means all of them, since permissions, formats and honesty underpin every block
+below.
 
 ---
 
-## The order, and why the studio is seventh
+## The order
 
-| # | Block | V1 screens | Task files |
+Block numbers are stable: other documents cite them, so a block that empties keeps its number free.
+
+| # | Block | Holds | Task files |
 |---|---|---|---|
-| **0** | **Foundations** | 0 | `F-core` (all but `T-FCORE-009` — see below) · `F-platform` (all but `T-FPLAT-020`, `T-FPLAT-066`, `T-FPLAT-074` — see below) |
-| **1** | **Shell + entry & tenant** | 22 | `SHELL` (all but `T-SHELL-002`, `T-SHELL-006` — see below) · `M01-onboarding` (all but `T-M01-029` — see below) |
-| **2** | **Billing & plans** | 5 | `M12-platform-billing` (13) · `SHELL` → `T-SHELL-006` |
-| **3** | **CRM & leads** | 7 | `M02-crm-leads` (17) · `SHELL` → `T-SHELL-002` · `F-platform` → `T-FPLAT-020`, `T-FPLAT-066` |
-| **4** | **Projects** | 6 | `M08-projects` (15) |
-| **5** | **Payments & collections** | 4 | `M11-payments-collections` (16) |
-| **6** | **Sales exec, calling core + owner home** | 12 | `M07-sales-execution` (29) · `M13-dashboards` (12) |
-| **7** | **3D Design Studio** | 18 | `MS-studio-a/-b/-c` (83) |
-| **8** | **Proposals + customer link** | 25 | `M06-proposals` (31) · `F5-customer-link` (13) · `F-core` → `T-FCORE-009` · `F-platform` → `T-FPLAT-074` · `M01-onboarding` → `T-M01-029` |
+| **0** | **Foundations** | permissions, formats, notifications, honesty | `F-core` (all but `T-FCORE-009` — see below) · `F-platform` (all but `T-FPLAT-020`, `T-FPLAT-066`, `T-FPLAT-074` — see below) |
+| **1** | **Shell + entry & tenant** | sign-in, signup, team, catalog, branding | `SHELL` (all but `T-SHELL-002` — see below) · `M01-onboarding` (all but `T-M01-029` — see below) |
+| **3** | **CRM & leads** | lead capture to a qualified lead | `M02-crm-leads` · `SHELL` → `T-SHELL-002` · `F-platform` → `T-FPLAT-020`, `T-FPLAT-066` |
+| **4** | **Projects** | a won deal to a handed-over system | `M08-projects` |
+| **5** | **Payments & collections** | the homeowner's tranches and receipts | `M11-payments-collections` |
+| **6** | **Sales execution + owner home** | My Day, won, lost, reopen, follow-ups, the owner home | `M07-sales-execution` · `M13-dashboards` |
+| **8** | **Proposals + customer link** | the proposal and the link the homeowner opens | `M06-proposals` · `F5-customer-link` · `F-core` → `T-FCORE-009` · `F-platform` → `T-FPLAT-074` · `M01-onboarding` → `T-M01-029` |
 
-**The `SHELL` task file spans three blocks.** `SCR-SHELL-06` — the billing state banner and its
-denial sheets — sits with the other shell rows in the screens register, because that is where it renders.
-It builds in block 2: it draws a tenant's `M12` state and routes to `SCR-M12-03` and `SCR-M12-04`,
-so designing it in block 1 means inventing the states and the destinations `M12` has not defined
-yet. The block-1 count of 22 already excludes it and the block-2 count of 5 already includes it.
+**The 3D Design Studio is rebuilt from scratch.** Its tasks and its PRD are deleted; its block
+returns, as block 7, with the new studio's tasks.
+
+**Voice calling waits.** Its PRD rows stay in `docs/prd/modules/M07-sales-execution.md` and its
+screens are V2 in the register; its tasks are written again when it returns.
+
+**Platform billing is redesigned.** Its tasks and its PRD are deleted; the shipped code runs until
+the new pricing replaces it, in a task of its own.
+
+**`SHELL` spans two blocks.** `T-SHELL-002`, the search screen, builds beside `T-FPLAT-020` in block 3:
+every step of its proof searches records that block lands, the junk lead above all.
+
 **The data-rights engine waits in block 8, parked.** `T-FCORE-009` — `pack.data-rights`, the erasure
 workflow and the IN DPDP determination — is parked by owner ruling until the tenant base reaches real
-paying customers (roughly 10–20). It sits in the last V1 block so the walk reaches it last; it
-builds when the owner unparks it, and by then the customer record (block 3) and the calling consent
-records (block 6) its proofs erase and export exist.
+paying customers (roughly 10–20). It builds when the owner unparks it, and by then the customer
+record (block 3) and the consent records its proofs erase and export exist.
 
-**The demo project seed builds in block 8, not block 1.** `T-M01-029` instantiates a finished
-demo lead, design and proposal for every new tenant, and its `Depends on:` names the first
-migrations of M02 (`lead`), the studio (`design`) and M06 (`proposal`, `proposal_version`) — three
-later blocks. Owner ruling 2026-10-05: it moves to block 8, after M06's first migration, so the
-block-1 walk no longer stops on a wait it cannot clear; the `DocumentPreview` sample defaults it
-also owns move with it.
+**The demo project seed builds in block 8.** `T-M01-029` instantiates a finished demo lead, design and
+proposal for every new tenant, and its `Depends on:` names the first migrations of M02 (`lead`), the
+studio (`design`) and M06 (`proposal`, `proposal_version`).
 
-**Global search builds in block 3, not block 0.** `T-FPLAT-020` searches leads, proposals,
-projects, customers, sites, catalog items and people, and in block 0 none of those tables exists:
-every done-when line — scope, the "quote" alias, junk leads, a halted tenant's results — would run
-over empty results and prove nothing. It builds once the lead record lands, with leads as its
-first search target, and each later module adds its own target when its slice begins (Law 9). The
-search screen, `T-SHELL-002`, builds beside it in block 3: every step of its proof searches records
-that block lands, the junk lead above all, so in block 1 it could not finish.
+**Global search builds in block 3.** `T-FPLAT-020` searches leads, proposals, projects, customers,
+sites, catalog items and people. It builds once the lead record lands, with leads as its first search
+target, and each later module adds its own target when its slice begins (Law 9).
 
-**Recipient resolution builds in block 3, not block 0.** `T-FPLAT-066` turns a recipient rule —
-"the record's owner", "the assignee" — into people, and in block 0 no record has an owner: the only
-subject kinds are users, invitations and tenant settings. It builds once the lead record lands, before
-`T-M02-011` notifies a lead's new owner, so the resolution is written once and every later module
-reuses it. Its two proofs that need later blocks moved to the tasks that build what they need (option A, taken 2026-11-04 when the owner asked for `T-SHELL-006`'s gate to be fixed): the M05 rows' line to `T-MS-117`, the every-module walk of `F6-10` to `T-FPLAT-074`.
+**Recipient resolution builds in block 3.** `T-FPLAT-066` turns a recipient rule — "the record's
+owner", "the assignee" — into people. It builds once the lead record lands, before `T-M02-011`
+notifies a lead's new owner, so the resolution is written once and every later module reuses it. Its
+every-module walk of `F6-10` belongs to `T-FPLAT-074`.
 
-**The projection label builds in block 8, not block 0.** `T-FPLAT-074` prints a projection's word
-and its assumptions in the words the drawn proposal document (`SCR-M06-17`) gives, and that screen is
-drawn in block 8. The design system's own renderer closes with it, so the boards drawn on free words
-are redrawn once.
+**The projection label builds in block 8.** `T-FPLAT-074` prints a projection's word and its
+assumptions in the words the drawn proposal document (`SCR-M06-17`) gives, and that screen is drawn in
+block 8.
 
-**Block 2 is not block 5.** `M12` is how the platform charges an EPC company — pricing page,
-hosted checkout, dunning, usage against bundles. `M11` is how that company collects from a
-homeowner. Two different money flows, two different modules, and the PRD keeps them apart on
-purpose (`M12` §2: Finance's money scope is the tenant's customers' money, never the platform
-bill). Owner decision 2026-08-16: self-serve billing ships in V1, so `M12` sits early — a
-prospect meets the pricing page before they have an account.
-
-**Block 0 builds what everything else consumes**: roles and the twelve presets, permission
-resolution, the audit log, the message catalog, the four format implementations, script rendering,
-notification delivery, the data-honesty engine. A module that computes money before the format implementation exists will grow its own, and then
-there are two.
-
-**Why the studio is seventh, not first.** It is the primary product and it already exists —
-**63,527 working lines** in `/Volumes/works-space/Solar-App-POC`. But:
-
-- it is **frontend-only**, and this repo's backend and schema are built block by block before it
-  (blocks 0–6);
-- it does not meet this repo's standards, and `pnpm lint` (Biome and its plugins,
-  dependency-cruiser, turbo boundaries) and the duplication check run on every pull request;
-- it carries its own defect register at `docs/prd/modules/M05-studio/defect-register.md`.
-
-Porting it first would mean inventing the API, schema and data-layer conventions *while* fighting
-a port. Blocks 1–6 settle those conventions; then the port has something to conform to.
-
-**Size it honestly.** Block 7 is not "18 screens". It is 18 screens **plus** the studio's backend
-**plus** bringing 63.5k lines to standard **plus** the defect register. It is the largest block in
-V1, not the easiest because code exists.
-
-**Proposals travel with the studio** — a proposal quotes the BOM a design produces. Building M06
-earlier means building against a stubbed design payload and reworking it later.
-
-**Blocks 1–6 ship a working product on their own**: lead → won → project → payment. That is how
-most EPCs operate today with a spreadsheet. The studio lands on top of a system that already
-works.
-
-**39 of the studio's 83 tasks are typed `port`, not `screen` or `engine`.** Per ruling `S12-1`
-they move with their tests and the defect register is the change list. They build at their turn in
-block 7, like every other task.
+**Blocks 1–6 ship a working product on their own**: lead → won → project → payment.
 
 ---
 
-## What V2 holds — 51 screens
+## What V2 holds
 
-Survey (10) · Marketing (10) · Field workforce and location (7) · HR (7) · the voice-agent admin
-console — IVR editor, routing rules, number provisioning, config history, performance, usage (9) ·
-Dashboards beyond the owner home (4) · 4 `M01` settings screens (message templates, capture
-settings, locale defaults, integration credentials).
-
-The task files for these still exist and are still correct. They are not deleted, not deprecated,
-and not started.
+Survey · Marketing · Field workforce and location · HR · the voice agent · Dashboards beyond the
+owner home · 4 `M01` settings screens (message templates, capture settings, locale defaults,
+integration credentials). Their task files stay; they are not started.
 
 ---
 
-## Dependencies that cross phases
+## Dependencies that cross blocks
 
 Build the consumer after the producer, or stub it deliberately and record the stub:
 
 | consumer | needs | why |
 |---|---|---|
 | `M06` proposals | `M01` catalog + payment terms + templates | a proposal is priced from the catalog and worded from the template |
-| `M06` proposals | `MS-studio-*` | the design produces the BOM the proposal quotes |
 | `F5` customer link | `M06` proposals | the link's first payload is a proposal |
 | `M08` projects | `M07` sales execution | a project starts from a closed sale |
 | `M11` payments | `M08` projects | tranches hang off the project's milestones |
@@ -161,7 +115,7 @@ Build the consumer after the producer, or stub it deliberately and record the st
 Each task below sits in one block, and one of its done-when proofs needs a screen or a record that
 only exists in a later block — so, as placed, its block cannot finish. Each owes a ruling BEFORE its
 own block starts: move the task to the block its proof needs, or move that proof line to the later
-task that builds what it needs. A record here keeps the order honest; it does not settle the ruling.
+task that builds what it needs.
 
 | task | block | waits on | block | the proof step that needs it |
 |---|---|---|---|---|
@@ -173,5 +127,4 @@ task that builds what it needs. A record here keeps the order honest; it does no
 Invariants check the task and PRD documents (`.claude/protections.md`, Process):
 `build-order-holds`, `prd-rows-cited` (every cited PRD row is live and every quote matches its
 cell), and `capability-ids-cited` (every capability a task names, by id or by row key, is
-one the matrix holds). The RFC tests the requirements the task it takes
-carries (`/task`, *Plan*).
+one the matrix holds).

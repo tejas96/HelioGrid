@@ -16,9 +16,9 @@ placement are `architecture.md`, not this document; where the two disagree, the 
 
 ## 1. Architecture overview
 
-HelioGrid is a **modular monolith on Fly.io Mumbai (`bom`)** with two already-separate
-compute processes (worker, voice), object storage
-pinned to Tigris Singapore (`sin`), and a thin set of external providers. One Postgres is
+HelioGrid is a **modular monolith** with two already-separate
+compute processes (worker, voice), an object store (any S3 API — `ObjectStore` port),
+and a thin set of external providers. One Postgres is
 the system of record. Orchestration is Temporal on its OWN PostgreSQL (ADR-0025); Redis exists for rate limiting and SSE fan-out, and is read by `apps/api` alone.
 
 ```mermaid
@@ -29,17 +29,14 @@ graph TB
     CL[Customer — tokenised link, no account]
   end
 
-  subgraph flybom [Fly.io bom — Mumbai]
+  subgraph host [Hosting]
     WEB[apps/web — Next.js BFF, no domain logic]
     API[apps/api — NestJS modular monolith]
     WORKER[apps/worker — NestJS standalone, Temporal worker ADR-0025]
     VOICE[voice service — NOT YET BUILT: CallSession media/AI plane + CallOrchestrator control plane, ADR-0019]
-    PG[(Fly postgres-flex — 3-node repmgr HA)]
-    RD[(Upstash Redis — fixed plan, eviction off)]
-  end
-
-  subgraph flysin [Fly.io sin — Singapore]
-    TG[(Tigris object storage — single-region pin)]
+    PG[(Postgres)]
+    RD[(Redis — eviction off)]
+    TG[(Object store)]
   end
 
   subgraph ext [External services]
@@ -53,7 +50,7 @@ graph TB
 
   BR --> WEB
   CL --> WEB
-  WEB -->|ts-rest over 6PN .internal| API
+  WEB -->|ts-rest over the private network| API
   MOB -->|ts-rest + JWT| API
   API --> PG
   API --> RD
@@ -72,14 +69,11 @@ graph TB
   API --> MSG
 ```
 
-Fly topology — **one Fly app per service**, and this is the canonical statement of that rule:
-`heliogrid-web`, `heliogrid-api`, `heliogrid-worker` (`autostop="off"`, larger machines),
-plus the postgres-flex cluster app and the log-shipper. A voice app joins them when that
-service is built. Each app builds its own per-app
-Dockerfiles. `bom` is capacity-tight, so web/api run `min_machines_running=1` (never
-scale-to-zero); `sin` is the overflow fallback. Internal traffic rides 6PN
-`.internal`/flycast private networking — the api is never exposed except through Fly's
-proxy for webhooks and mobile.
+**One service per process**, and this is the canonical statement of that rule: web, api and
+worker each build and run from their own Dockerfile; a voice service joins them when it is
+built. Internal traffic stays on a private network — the api is exposed only through the
+host's proxy, for webhooks and mobile. Hosting runbooks come with the Oracle hosting task
+(`docs/tasks/deferred.md` D50).
 
 ---
 
@@ -97,7 +91,7 @@ apps/
   worker/     NestJS standalone — Temporal workflows + activities (ADR-0025), worker_threads for CPU
   mobile/     bare React Native (iOS + Android, no Expo)
 packages/
-  domain/     ported studio engines — pure TS, rules/catalog INJECTED
+  domain/     studio engines — pure TS, rules/catalog INJECTED
   contracts/  ts-rest contract + Zod 3.x schemas (single API source of truth)
   data/       frontend SDK — the ONLY data path for web and mobile (ADR-0023)
   adapters/   NOT YET CREATED — provider adapters land with the first module that needs a port (07)
@@ -113,8 +107,7 @@ packages/
 - `apps/* → packages/contracts → packages/domain`.
 - `packages/domain` imports **nothing** from db/api/ui and no framework: no NestJS, no
   React, no fetch, no storage, no env reads. Rules, catalogs and market config are
-  injected parameters (§10) — the POC's `resolveRules` module-global dies at port time
-  (the one named coupling smell).
+  injected parameters (§10) — never a module-global.
 - `packages/db` is imported by `apps/api` and `apps/worker` only. Web and mobile never
   see the database; they see `contracts`.
 - Provider adapters implement the ports defined in `07-integrations.md` (telephony,
@@ -173,7 +166,7 @@ OS processes — the queue payload contract and the CallSession WS protocol are 
 service boundaries. For the rest: NestJS module boundaries = future service boundaries.
 Because every module's surface is a ts-rest contract slice and every cross-module call goes
 through the module's exported service, any module (first candidates: `billing`, `agent`)
-can be lifted to its own Fly app behind the same contract with zero client changes. Do not
+can be lifted to its own service behind the same contract with zero client changes. Do not
 extract anything before a scaling or isolation reason exists.
 
 ---
@@ -185,8 +178,7 @@ authored by the auth module, which is not yet built;
 route handlers/server components call `apps/api` through
 `createServerDataContext` (`@heliogrid/data/server`), which is request-scoped and forwards
 only `cookie`, `authorization` and `x-request-id`. Next.js composes pages and holds sessions; it computes
-nothing. The 3D studio runs in the browser against `packages/domain` (client bundle) for
-interactive geometry, and persists via the design endpoints (§9).
+nothing.
 
 **Mobile** — one channel, deliberately:
 
@@ -196,7 +188,7 @@ is written to the device the moment it is taken and uploaded when the connection
 
 **Public customer link** — `/c/<payload>.<mac>` on `apps/web` → `customer-link` module on the api.
 The token is a **stateless HMAC-signed grant** (scope + proposal/project id + expiry),
-never a session, and never an authenticated user at all. Rate-limited per token+IP (Upstash). Grants:
+never a session, and never an authenticated user at all. Rate-limited per token+IP (Redis). Grants:
 view proposal, accept, download PDF (presigned GET), pay tranche via the tenant's
 BYO-Razorpay payment link. Every access is audit-logged.
 
@@ -251,8 +243,8 @@ becomes a task queue when its module lands, not before (Law 9).
 
 | Planned task queue | Work | Notes |
 |---|---|---|
-| `shading` | Server-side solar-access sims via the same pure kernels as the browser (§9) | worker_threads; big-array jobs chunked |
-| `pdf` | Proposal/document render — Playwright/Chromium (only correct Devanagari shaping) | output → Tigris `pdfs` bucket |
+| `shading` | Server-side solar-access sims via the same pure kernels as the browser | worker_threads; big-array jobs chunked |
+| `pdf` | Proposal/document render — Playwright/Chromium (only correct Devanagari shaping) | output → object store `pdfs` bucket |
 | `imports` | Catalog/price-book imports, DEM tile ingestion | validates then versions, never in-place |
 | `agent-triggers` | Voice-agent journeys + compliance housekeeping | queued calls use queue-time agent-config version (D36) |
 | `webhooks` | Razorpay/Exotel/MSG91 event processing + reconciliation | idempotent by provider event id |
@@ -278,7 +270,7 @@ all IST, so the times below read as IST. Platform-internal sweeps stay fixed-clo
 | `storage-gauge` | usage | daily | weigh each company's stored files into `storage_gauge_snapshot` (usage rollups are derived queries over `usage_event`, never a job) |
 
 Infra-level cron (pgBackRest WAL archiving, nightly `pg_dump` to the `heliogrid-backups` bucket, `pg/` prefix) is NOT
-orchestrated — it runs beside Postgres and is specified in `09-observability-and-ops.md`.
+orchestrated — it runs beside Postgres, and the hosting task (`docs/tasks/deferred.md` D50) specifies it.
 Temporal's own persistence is backed up separately (`infra/temporal/deploy/scripts/backup.sh`),
 and BOTH its stores must be restored together.
 
@@ -288,7 +280,7 @@ and BOTH its stores must be restored together.
 
 Nest-native `@Sse` endpoints; Redis pub/sub fans events out across api machines; clients
 reconnect with `Last-Event-ID` replayed from a short Redis stream buffer; 25 s heartbeat
-keeps the Fly proxy from idling connections. SSE chosen over WebSockets: unidirectional
+keeps the host's proxy from idling connections. SSE chosen over WebSockets: unidirectional
 fan-out, no sticky sessions, auto-reconnect for free. WebSockets
 enter only if collaborative design editing ever lands.
 
@@ -306,8 +298,7 @@ The api reaches storage through ONE port, `ObjectStore` (`packages/contracts/src
 whose one adapter speaks the S3 API — the language every vendor the suite has used or will use
 speaks. The vendor is settings (`OBJECT_STORE_*`) plus one `STORAGE_PROVIDERS` value, never code.
 Locally it is RustFS in `pnpm infra:up`. Which vendor production uses — and where it is pinned —
-is the hosting task's (`docs/tasks/deferred.md`); the Tigris `sin` pin this section used to state
-is withdrawn with Fly.
+is the hosting task's (`docs/tasks/deferred.md` D50).
 
 | Bucket | Contents | Access pattern |
 |---|---|---|
@@ -325,57 +316,15 @@ attachment. Clients upload and download **direct to the store** — no request c
 through the api. Only a workflow step reads a stored file back whole, through the file module's
 `readStored`, and only a file its subject's rule bounds — the price list the catalog import reads
 (`T-M01-030c`), which is checked for what it unpacks to before it is opened. No file is larger than 2 MB (`FILE_MAX_BYTES`). The per-tenant quota check on every presign
-and the sweep of never-completed rows are M12's; until they land, pending rows are unbounded.
-
----
-
-## 9. Design-studio data flow (the flagship path)
-
-The studio is the product's moat; this path gets the strictest invariants.
-
-- **Persistence: one JSONB payload.** A `designs` row carries the relational spine
-  (`tenant_id`, project id, name, status, `version`, `updated_by`, stamped fingerprints)
-  plus `payload` JSONB — the canonical `Project` shape ported from the POC Visual meshes are never truth; everything derived (structure
-  graph, poses, casters, heatmap) is a pure function of the payload and is NOT persisted.
-- **Normalize-on-read.** Every load passes the ported normalizer: defaults filled,
-  malformed sub-entities dropped item-by-item, `Exhaustive<T>` guard so no field silently
-  vanishes (the bug that once erased saved discounts). The
-  server never trusts a stored payload across schema evolution.
-- **Write path.** Single-editor LWW with a server version check: writes carry the base
-  `version`; mismatch → 409 and the client rebases. Server assigns all business
-  identifiers. Photo/capture blobs are Tigris refs, never inline base64.
-- **Fingerprints drive freshness.** The 5 nested fingerprints
-  (`siteFp ⊂ geometryFp ⊂ layoutFp ⊂ electricalFp ⊂ designFp`) plus engine-versioned
-  `shadingFp` port intact. `catalogVersion`, `structureModelVersion` and
-  `SHADING_ENGINE_VERSION` join the fingerprints so a price-book or engine change
-  self-stales older outputs. This mechanism IS the "money never renders while stale" rule:
-  a quote whose `designFp` no longer matches reads as provisional, enforced at the API,
-  not in the UI.
-- **One-frame gate.** `panelInstanceMatrix` lives once in `packages/domain`
-  (scene-frame); renderer, analytical footprint and 2D editors all read the same
-  composition. `one-frame.test.ts` and `frame-parity.test.ts` travel with the package as
-  release gates — never deleted, never skipped.
-- **Compute placement.** The same pure TS kernels run in a browser Worker pool
-  (interactive rooftop work) and in Node `worker_threads` via the `shading` queue (giant
-  sims). Results are stamped with the `shadingFp` they were computed from; the
-  `/realtime/designs/:id` channel announces completion.
-- **Scale representation.** Above rooftop scale the editable unit is the
-  **block/table/zone — panels become derived instances**. The
-  payload carries `blocks[]` alongside the per-panel rooftop model from day one so 100 MW
-  does not require a payload migration; GPU shadow-map shading (WebGPU, WebGL2 fallback)
-  with three-mesh-bvh CPU fallback replaces the POC's O(n²) raycaster at that scale
- .
-- **Per-site UTM/ENU origin** (proj4js) replaces the POC single equirectangular origin,
-  removing km-scale distortion for MW sites.
+and the sweep of never-completed rows are the billing module's; until they land, pending rows are unbounded.
 
 ---
 
 ## 10. Global expansion strategy (market packs)
 
 India-first, global-ready means one thing concretely: **no market fact is ever a
-module-level constant.** The POC already reads everything through `resolveRules` /
-`resolveCatalog` / `tariffFor` — the port completes the
-design by making them injected.
+module-level constant.** Rules, catalog and tariffs are read through `resolveRules` /
+`resolveCatalog` / `tariffFor`, and each is injected.
 
 **Market pack = rules + catalog + templates + locale data**, versioned as one unit:
 
@@ -400,8 +349,6 @@ models, locale, telephony adapter (Exotel is India; the capability-negotiated te
 family of ADR-0019 is the seam — a new market's provider declares its own capability
 matrix) and payment adapter (`SubscriptionBillingPort`/`PaymentLinkPort`).
 
-**Region expansion on Fly:** a new market that earns it gets web/api/worker machines in
-the nearest region, a regional Postgres and a regional Tigris pin, with `fly-replay`
-routing tenants to their home region. Single-region `bom` until a paying market demands
-otherwise — expansion is a deployment decision, not an architecture change, because the
-market boundary already exists in code.
+**Region expansion:** single-region until a paying market demands otherwise — expansion is
+a deployment decision, not an architecture change, because the market boundary already
+exists in code.

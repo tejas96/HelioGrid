@@ -200,7 +200,7 @@ Non-UI (build-side) half carried by this task: M10-34 — fail closed; unmapped 
 **PRD rows:** M10-37, M10-38, M10-39
 **Requirements (verbatim):**
 
-- **M10-37** (P1) — **Employee documents live in tenant storage and obey the billing laws.** Uploads count against the tenant's storage meter (`BM-20`); upload gating and soft-block behaviour are `modules/M12`'s (reads and exports never pause — `BM-32`). No separate HR storage quota exists.
+- **M10-37** (P1) — **Employee documents live in tenant storage and obey the billing laws.** Uploads count against the tenant's storage meter; upload gating and soft-block behaviour are platform billing's (reads and exports never pause). No separate HR storage quota exists.
 - **M10-38** (P1) — **Documents are records, not workflow.** No e-signature, no document approval chain, no template generation, no versioned contract lifecycle: a document is uploaded, labelled, viewed, replaced (the old one retained — nothing deleted) and exported. Anything more is the enterprise complexity M10-01 excludes.
 - **M10-39** (P0) — **Employee documents are the narrowest-read objects in the module.** Visible to the EPC Owner, HR/Admin and the employee themself — never through team scope, never to a manager as manager, never on any other module's surface. The people-records domain boundary (M10-05) applies at its strictest here.
 

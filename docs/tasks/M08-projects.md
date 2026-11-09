@@ -132,7 +132,7 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 - Given the project has just been created, when it opens, then the customer, site, approved design, accepted proposal version and the accepted version's tranche schedule are present by reference, and the document checklist is seeded for this project's segment from the tenant's market pack (M08-04, M08-05).
 
 **Settle before the build:**
-- Nothing in V1 authors a `site` row, yet the project references one (`M08-04`) and the utility blocker reads its selection (`M08-28`) — pick: the project's site reference stays empty in V1 and the detail screen says so, no slice of this module writes a site, the studio's address and pin stay on the design (`M05-15`), and a V1 utility blocker names the party and no utility body until a site exists (`site` is `modules/M04`'s table and Law 9 forbids this slice authoring it; the reference is already optional and §M08.1 already makes the emptiness honest; cost if wrong: V1 utility blockers name no body although the approved design already holds the utility, and `M09-49`'s geofence has no project anchor until M04 lands and creates site rows from the pins already on record, nothing re-collected).
+- Nothing in V1 authors a `site` row, yet the project references one (`M08-04`) and the utility blocker reads its selection (`M08-28`) — pick: the project's site reference stays empty in V1 and the detail screen says so, no slice of this module writes a site, the studio's address and pin stay on the design, and a V1 utility blocker names the party and no utility body until a site exists (`site` is `modules/M04`'s table and Law 9 forbids this slice authoring it; the reference is already optional and §M08.1 already makes the emptiness honest; cost if wrong: V1 utility blockers name no body although the approved design already holds the utility, and `M09-49`'s geofence has no project anchor until M04 lands and creates site rows from the pins already on record, nothing re-collected).
 
 ---
 
@@ -239,16 +239,16 @@ This file is the engineering task set for **M08 · Projects**: the post-Won surf
 **Type:** engine · **Tier:** P1
 **Status:** planned
 **PRD rows:** M08-07
-**Billing gate (T-M12-009):** mark-won → project create names `sell_and_deliver` in its `RouteBillingMap` and is refused at the `active_projects` limit as M12-23's row says — the upgrade prompt — by throwing `EntitlementBlockedException` with `reason: 'cap'`, key `active_projects` and `resetsAt: null`; work on an existing project is never gated (M08-07).
+**Billing gate (T-M12-009):** mark-won → project create names `sell_and_deliver` in its `RouteBillingMap` and is refused at the `active_projects` limit — the upgrade prompt — by throwing `EntitlementBlockedException` with `reason: 'cap'`, key `active_projects` and `resetsAt: null`; work on an existing project is never gated (M08-07).
 **Downgrade preview (T-M12-003):** the active projects against the lower plan's `active_projects` join `PLAN_CHANGE_BLOCKS` (`packages/domain` `commerce/plan-change.ts`) as `active_projects`, counted in the api's `plan-change.preview.service.ts` and in its digest (`SCR-M12-03` frame s7: `Active projects · 12 of 10`).
-**Usage screen (T-M12-004):** the count of active projects replaces `NOT_COUNTED_YET` for `activeProjects` in the api's `billing-usage.service.ts`, so `SCR-M12-04`'s `Active projects` reads the gate's own count (M12-34).
+**Usage screen (T-M12-004):** the count of active projects replaces `NOT_COUNTED_YET` for `activeProjects` in the api's `billing-usage.service.ts`, so `SCR-M12-04`'s `Active projects` reads the gate's own count.
 
 **Requirements (verbatim):**
 
 - **M08-07** (P1) — **This module owns the definition of an *active* project — one that is neither handed over nor cancelled** — and the law that a plan limit may gate *creating* one but never *working* one: an existing project stays fully workable however the tenant's entitlements change, because the product must never strand a live installation. The gate's mechanics, its denial message and its upgrade path are `modules/M12`'s.
 
 **DONE WHEN:**
-- (The PRD states no dedicated acceptance line for M08-07; the row is the definition itself. The module's §M08.1 edge case rules the observable behaviour: *the tenant is at its active-project limit* → creating is blocked with the upgrade path (`modules/M12`); every project already live keeps working, unchanged (M08-07).)
+- (The PRD states no dedicated acceptance line for M08-07; the row is the definition itself. The module's §M08.1 edge case rules the observable behaviour: *the tenant is at its active-project limit* → creating is blocked with the upgrade path; every project already live keeps working, unchanged (M08-07).)
 
 ---
 

@@ -3,10 +3,9 @@ import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 /**
- * `M12-03` — billing is provider-neutral: the launch market's gateway is named once in the
- * module's PRD, as its reference implementation, and in code only in its adapter and the one
- * line that binds it. Every other file of the billing module, its port, its contract and its
- * workflows says "gateway".
+ * Billing is provider-neutral: the launch market's gateway is named in code only in its adapter
+ * and the one line that binds it. Every other file of the billing module, its port, its contract
+ * and its workflows says "gateway".
  */
 
 const REPO = join(__dirname, '../../../..');
@@ -29,8 +28,8 @@ function filesUnder(path: string): string[] {
   return readdirSync(full).flatMap((name) => filesUnder(join(path, name)));
 }
 
-describe('provider-neutral billing (M12-03)', () => {
-  it('the vendor is named only in its adapter and once in the module’s PRD', () => {
+describe('provider-neutral billing', () => {
+  it('the vendor is named only in its adapter', () => {
     const files = SCANNED.flatMap(filesUnder);
     expect(files.length).toBeGreaterThan(10);
     const naming = files.filter(
@@ -39,8 +38,5 @@ describe('provider-neutral billing (M12-03)', () => {
         VENDOR.test(readFileSync(join(REPO, file), 'utf8')),
     );
     expect(naming.map((file) => relative('.', file))).toEqual([]);
-
-    const prd = readFileSync(join(REPO, 'docs/prd/modules/M12-platform-billing.md'), 'utf8');
-    expect(prd.match(new RegExp(VENDOR.source, 'gi'))).toHaveLength(1);
   });
 });

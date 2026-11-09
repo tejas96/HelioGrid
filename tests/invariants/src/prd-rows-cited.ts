@@ -3,21 +3,19 @@ import { join } from 'node:path';
 import { type PrdRow, prdFiles, REGISTERS, ROW_ID, readPrdRows } from './prd-rows';
 import { gitFiles } from './repo-files';
 import { readDispositions } from './screens-register';
-import { readTaskLedger, SCREEN_ID, TASK_ID, TASKS } from './task-ledger';
+import { SCREEN_ID, TASK_ID, TASKS } from './task-ledger';
 
 /**
  * Every PRD row cited is a row the PRD still has, and every quote of one still says what its cell
  * says. A citation of a deleted row is legal only inside a dated removal record — the record of the
  * deletion — and a struck register row (`~~id~~`) may name it. A quote may cut the cell short or
- * add to its end; anything else is drift, however small. A shipped or struck task's quotes are
- * history and are not compared.
+ * add to its end; anything else is drift, however small.
  */
 const ROW_REFERENCE = new RegExp(`\\b(${ROW_ID})\\b`, 'g');
 const MASKED_IDS = new RegExp(`\\b(?:${TASK_ID}[a-z]?|${SCREEN_ID})\\b`, 'g');
 const QUOTE = new RegExp(`^\\s*-\\s*\\*\\*\`?(${ROW_ID})\`?\\*\\*\\s*\\([^)]*\\)\\s*—\\s*(.+)$`);
 const REMOVAL_RECORD =
   /\b(removed|deleted|struck|retired|swept|superseded|rehomed|repointed|re-pulled)\b.{0,120}\b20\d\d-\d\d-\d\d|\b20\d\d-\d\d-\d\d\b.{0,200}\b(removed|deleted|struck|retired|swept|superseded|rehomed|repointed|re-pulled|no longer exists)\b|previously (read|carried|listed|said|pointed)\b|\bthis (row|line|item|criterion|state) (was|is) (now )?(removed|deleted|struck)\b/i;
-const FROZEN = /^(shipped|struck)/;
 
 interface Source {
   file: string;
@@ -113,7 +111,6 @@ function isClauseOfLiveRow(id: string, rows: Map<string, PrdRow>, everRows: Set<
 }
 
 function driftedQuotes(repo: string, rows: Map<string, PrdRow>): string[] {
-  const frozen = frozenRanges(repo);
   const files = gitFiles(repo, [TASKS]).filter((f) => /^docs\/tasks\/[^/]+\.md$/.test(f));
   return files.flatMap((file) =>
     readFileSync(join(repo, file), 'utf8')
@@ -121,8 +118,7 @@ function driftedQuotes(repo: string, rows: Map<string, PrdRow>): string[] {
       .flatMap((line, index) => {
         const [, id, quote] = QUOTE.exec(line) ?? [];
         const row = id === undefined ? undefined : rows.get(id);
-        if (row === undefined || quote === undefined || inFrozen(frozen, file, index + 1))
-          return [];
+        if (row === undefined || quote === undefined) return [];
         return quoteMatches(quote, row.cell)
           ? []
           : [`${file}:${index + 1} quotes ${id}, and its PRD cell now says otherwise`];
@@ -141,18 +137,4 @@ function plain(text: string): string {
     .replace(/`|\*\*|\*|_/g, '')
     .replace(/\s+/g, ' ')
     .trim();
-}
-
-/** Each shipped or struck task's own lines, `file → [first, end)`; a file's `## Laws` stay live. */
-function frozenRanges(repo: string): Map<string, [number, number][]> {
-  const ranges = new Map<string, [number, number][]>();
-  for (const task of readTaskLedger(repo).tasks.values()) {
-    if (!FROZEN.test(task.status)) continue;
-    ranges.set(task.file, [...(ranges.get(task.file) ?? []), [task.line, task.endLine]]);
-  }
-  return ranges;
-}
-
-function inFrozen(ranges: Map<string, [number, number][]>, file: string, line: number): boolean {
-  return (ranges.get(file) ?? []).some(([first, end]) => line >= first && line < end);
 }

@@ -3,7 +3,7 @@
 --
 -- Roles live here rather than in a migration because they are CLUSTER objects; tables, grants
 -- and policies are DATABASE objects and belong to the migrations, which name these roles in
--- their GRANTs — so this runs first, in CI as locally. Production matches: Fly Postgres roles
+-- their GRANTs — so this runs first, in CI as locally. Production matches: its roles
 -- are an operator command.
 --
 -- Guards check EXISTENCE only, never attributes. A role already present with the wrong

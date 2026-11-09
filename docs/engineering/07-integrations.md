@@ -32,11 +32,10 @@ into pure domain functions.
 
 1. **Server-side only.** No third-party call from a browser or the RN app, with one
    exception: the Google Maps JS key (intentionally public, HTTP-referrer-locked). All keys
-   live in Fly secrets; per-tenant BYO credentials (Razorpay, WABA) are AES-256-GCM
-   app-layer encrypted at rest with a per-tenant DEK envelope (master key in Fly secrets)
+   live in the host's secret store; per-tenant BYO credentials (Razorpay, WABA) are AES-256-GCM
+   app-layer encrypted at rest with a per-tenant DEK envelope (master key in the host's secret store)
    in `tenant_integration_credentials`, authored by the module that first needs it.
-2. **Status envelope, never throw across the port.** Ported from the POC proxy pattern
-   :
+2. **Status envelope, never throw across the port.**
 
    ```ts
    type PortResult<T> =
@@ -58,11 +57,11 @@ into pure domain functions.
    transaction. That writes one outbox event; the `usageRecord` workflow then writes the
    append-only `usage_event` row (`tenant_id, meter, quantity, billable, subject_kind,
    subject_ref, idempotency_key, period_key, occurred_at`), retried until it lands — metering
-   never blocks or fails the request (`M12-18`). The meters are domain's `LEDGER_METERS`: the
+   never blocks or fails the request. The meters are domain's `LEDGER_METERS`: the
    billed `voice_minutes`, `marketing_sends`, `tracked_field_seats` (a
    billed meter checks its entitlement BEFORE the call), and the cost lines `otp_delivery`,
    `field_location_ingestion`, `solar_imagery`, `ai_extraction`, `speech`, which never bill and
-   feed the per-tenant quotas (`M12-37`). Storage is not a ledger row: it is the nightly
+   feed the per-tenant quotas. Storage is not a ledger row: it is the nightly
    `storage_gauge_snapshot`.
 
 ## Port census
@@ -95,12 +94,12 @@ interface SolarDataPort {
 **v1: `PvgisAdapter`.** Upstream `https://re.jrc.ec.europa.eu/api/v5_3/MRcalc?lat&lon&horirrad=1&d2g=1&raddatabase={db}&outputformat=json`,
 8 s timeout. **DB ladder `['PVGIS-SARAH3','PVGIS-ERA5']`**: a 400 on SARAH3 (all of India is
 outside its grid) falls through to ERA5; 400 on both → `unavailable`. Pure mapper
-`pvgisToWeather` ports as-is from the POC (`SiteWeather{monthlyGhi[12], monthlyDiffuseFrac[12],
+`pvgisToWeather` (`SiteWeather{monthlyGhi[12], monthlyDiffuseFrac[12],
 annualGhi, forLatLng, source, raddatabase, yearsOfRecord}`), including the verified Pune
 fixture test. Server cache: `solar_data_cache` table keyed on lat/lng rounded to 4 dp + db,
 TTL 30 days (PVGIS is multi-year climatology; it does not change daily).
 
-**Scope binding (unchanged from POC):** PVGIS is the ONLY energy source. Google Solar flux
+**Scope binding:** PVGIS is the ONLY energy source. Google Solar flux
 layers are never requested; no adapter may introduce a second irradiance path without an ADR.
 
 **Failure/degradation:** `unavailable` → domain falls back to `mockIrradiance(lat)` with
@@ -239,7 +238,7 @@ the vendor's ([TRAI/DLT compliance](https://www.caller.digital/blog/trai-dnd-com
 Enforces, before **every** dial: daily-refreshed DND scrub (category-level) + tenant opt-out
 list; 9 am–9 pm promotional window + holiday calendar; 1600 (transactional) vs 140x
 (promotional) series routing; keypress opt-out honoured ≤24 h; 90-day recording retention
-via `retentionSweep` (delete from Tigris + tombstone the ledger row).
+via `retentionSweep` (delete from the object store + tombstone the ledger row).
 
 **AMENDED 2026-08-02 (global-backend ruling):** the MECHANISM above is what is
 non-swappable — every outbound dial passes this gate, no override flag, no alternate adapter.
@@ -352,7 +351,7 @@ renderer that shapes Devanagari correctly (HarfBuzz); react-pdf is disqualified 
 conjuncts/matras ([react-pdf #454](https://github.com/diegomura/react-pdf/issues/454)). Noto Sans,
 Noto Sans Devanagari and Noto Sans Mono in the worker image; one browser per process, a fresh
 context per render, no network; concurrency 2 per machine; budget 300–500 MB RAM per render
-(worker sizing in `09-observability-and-ops.md`).
+(worker sizing comes with the hosting task, `docs/tasks/deferred.md` D50).
 
 **Later adapter:** Typst (rustybuzz shaping, far lower memory) if Chromium RAM cost bites — the
 step takes a page and returns a PDF either way, so the swap is invisible to its callers.
@@ -417,7 +416,7 @@ interface MapsPort {
 ```
 
 **v1: `GoogleMapsAdapter`.** Static satellite tiles are fetched **server-side once per site
-capture and stored in Tigris** (`StoredTileRef` = Tigris key + metres-per-pixel + fetch
+capture and stored in the object store** (`StoredTileRef` = object key + metres-per-pixel + fetch
 date). This gives: one stable coordinate frame to trace on, reproducible provenance
 (the tile a design was traced on never changes under it), and one billing event instead of
 per-render fetches. Interactive map picking uses Maps JS with the public key.
@@ -425,7 +424,7 @@ per-render fetches. Interactive map picking uses Maps JS with the public key.
 **Later adapters:** Esri World Imagery, Mapbox — global expansion or cost lever.
 
 **Failure/degradation:** tile fetch failure → studio still opens with blank canvas + manual
-calibration (known-distance rescale ports from the POC). Never blocks.
+calibration (known-distance rescale). Never blocks.
 
 **Metering:** `map_tile_fetch`, non-billable, per-tenant daily quota.
 
@@ -438,7 +437,7 @@ interface DemPort {
 ```
 
 **v1: `CopernicusGlo30Adapter`.** Reads GLO-30 COG tiles from the public AWS Open Data
-bucket (`copernicus-dem-30m`, no credentials), caches fetched tiles in Tigris so each tile
+bucket (`copernicus-dem-30m`, no credentials), caches fetched tiles in the object store so each tile
 is fetched from origin once ever. Serves the scale program: terrain
 awareness for ground-mount siting and the tracker/terrain phases; per-site UTM/ENU origin
 conversion happens in domain code, not here.

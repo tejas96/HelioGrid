@@ -39,9 +39,8 @@ cannot. The invariants run later, in the gate.
    screen is checked against its picked sample and the design language (`CLAUDE.md` §10, the end-user
    law of §1 first), and its motion as `.claude/rules/ui-adherence.md` *Motion* says. Each new brand, enum, token, route, table
    or error code is enrolled with its check (Law 12). A package's `CLAUDE.md` loads itself when you
-   read its files; its rules are part of the review. The task's `#### RFC` is cut at ship, so a
-   doc finding names a line that stays: the task's header lines, a `CLAUDE.md`, a `deferred.md`
-   row.
+   read its files; its rules are part of the review. The task is deleted at ship, so a
+   doc finding names a line that stays: a `CLAUDE.md`, a PRD row, a `deferred.md` row.
 
 ## Rules
 

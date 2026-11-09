@@ -6,7 +6,6 @@
    Only the web imports this entry.
 
    `DocumentSection` here is PagedDocument's; the main entry's is DocumentPreview's. */
-export * from './components/DrawingSheet';
 export * from './components/PagedDocument';
 export * from './utils/page-size';
 export * from './utils/print-scope';

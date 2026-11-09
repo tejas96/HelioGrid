@@ -19,10 +19,10 @@ Ranked by (impact × likelihood) for a multi-tenant Indian EPC SaaS holding phon
 | T4 | **OTP abuse** | SMS pumping (premium-rate number farms burn our MSG91 balance), OTP brute force, invite spam | Direct money loss, account takeover | §7: per-phone/per-IP/per-tenant rate limits, 5-attempt verify lockout, +91 default allowlist, spend-velocity alarms, DLT-registered templates only |
 | T5 | **Voice-agent social misuse** | Caller impersonates a customer to extract another customer's deal data; prompt injection via utterances or tenant knowledge base; agent used to harass (DND/hours violations); vishing our tenants ("HelioGrid support, read me your OTP") | PII leakage, TRAI penalties, brand damage | Agent context is scoped to the **single lead matched by verified caller number** — no cross-customer retrieval tool exists in the agent's toolset. Knowledge base is per-tenant, injected read-only; agent has no DB write tools beyond the call-outcome record. `ComplianceGate` (non-swappable, BLUEPRINT §Voice): DND scrub, 9am–9pm + holiday calendar, AI disclosure ≤30s, keypress opt-out. Recording retention 90 days. Support never asks for OTP — stated in every OTP SMS template |
 | T6 | **Stolen device / session theft** | A field phone is lost while its activity-rolling mobile session remains valid | Tenant data exposure from one rep's scope | Sessions are server-side and revocable from the Team screen; seven full days without foreground authenticated use expires mobile access, while background work cannot extend it (owner ruling). Session material stays device-bound in the hardware keystore, never AsyncStorage. Product API tokens live ≤10 minutes, limiting replay of intercepted traffic; deactivation and “sign out everywhere” end access within that same bound. |
-| T7 | **Per-tenant credential theft** | BYO Razorpay keys / WABA tokens (v2) exfiltrated from DB backup or logs | Attacker drains tenant's payment flows | AES-256-GCM app-layer encryption with per-tenant DEK envelope (§8): ciphertext-only at rest, master key exists solely as a Fly secret on `api`, decrypt-in-memory at call site, never logged, access audit-logged |
-| T8 | **SSRF via imagery proxies** | PVGIS and map-tile relays coerced to fetch internal URLs | Internal network probe, metadata theft | Keep the POC's geotiff-relay guard: hostname allowlist per provider, no redirects across hosts, deny private IP ranges, response-type validation. All third-party calls are server-proxied — API keys never reach clients |
+| T7 | **Per-tenant credential theft** | BYO Razorpay keys / WABA tokens (v2) exfiltrated from DB backup or logs | Attacker drains tenant's payment flows | AES-256-GCM app-layer encryption with per-tenant DEK envelope (§8): ciphertext-only at rest, master key exists solely in the host's secret store for `api`, decrypt-in-memory at call site, never logged, access audit-logged |
+| T8 | **SSRF via imagery proxies** | PVGIS and map-tile relays coerced to fetch internal URLs | Internal network probe, metadata theft | Hostname allowlist per provider, no redirects across hosts, deny private IP ranges, response-type validation. All third-party calls are server-proxied — API keys never reach clients |
 
-Non-threats we explicitly do not engineer for in v1: nation-state actors, malicious tenant *insiders* beyond role scoping (D28 forbids per-user exceptions; audit log is the compensating control), and DDoS beyond Fly/Upstash rate limiting.
+Non-threats we explicitly do not engineer for in v1: nation-state actors, malicious tenant *insiders* beyond role scoping (D28 forbids per-user exceptions; audit log is the compensating control), and DDoS beyond the host's edge and our Redis rate limiting.
 
 ---
 
@@ -136,7 +136,7 @@ https://<app>/c/<base64url(payload)>.<base64url(HMAC-SHA256(secret, payload))>
 payload = { lid: link_id, tid: tenant_id, sc: ["proposal.view"], cid: contact_id|null, exp, kid }
 ```
 
-- Secret: 256-bit, Fly secret, keyring with `kid` for rotation — new tokens sign with the newest key; verification accepts any unexpired key; old keys retired after max token lifetime.
+- Secret: 256-bit, in the host's secret store, keyring with `kid` for rotation — new tokens sign with the newest key; verification accepts any unexpired key; old keys retired after max token lifetime.
 - Verification: recompute MAC (constant-time) → check `exp` → **then load the `customer_links` row** for revocation status and lifecycle stage. Stateless validity, stateful authority: a revoked/regenerated link dies instantly regardless of `exp`.
 - Scopes: `proposal.view`, `proposal.respond` (Accept / Negotiate / Decline), `progress.view`, `handover.view`. One link per deal migrates through the lifecycle (journey C1–C13); effective rights = token scopes ∩ current link-row stage.
 - Expiry: 12 months on view scopes; re-minting from the Share screen issues a fresh token for the same `link_id` (old token keeps working until its own `exp` unless regenerate-with-revoke is chosen).
@@ -144,7 +144,7 @@ payload = { lid: link_id, tid: tenant_id, sc: ["proposal.view"], cid: contact_id
 
 **Open tracking without PII leakage** (Stage 6 link tracking): opens logged server-side as `{link_id, ts, device_class}`; raw IP used only transiently for rate limiting, never persisted on the open event; public pages carry `Referrer-Policy: no-referrer`, `X-Robots-Tag: noindex`, zero third-party scripts/fonts/analytics; the token never appears in server logs (path scrubbing) and no customer PII appears in any URL. There is no "delivered" state — D32 honesty stands.
 
-**Rate limits** (Upstash, per link_id and per IP): 60 views/hr per link; 5 respond-actions/hr; global public-route ceiling with 429 + backoff.
+**Rate limits** (Redis, per link_id and per IP): 60 views/hr per link; 5 respond-actions/hr; global public-route ceiling with 429 + backoff.
 
 **Never block the customer link over the tenant's unpaid platform bill** — links stay live in every billing state (journey rule "chase the person, don't punish the view").
 
@@ -165,14 +165,14 @@ payload = { lid: link_id, tid: tenant_id, sc: ["proposal.view"], cid: contact_id
 | DLT | Only DLT-registered entity/header/templates — unregistered traffic is carrier-blocked anyway; MSG91 manages registration |
 | Content | Every OTP SMS states the app name and "we never call to ask for this code" (T5 vishing) |
 
-All limits live in Upstash with the fixed plan (eviction OFF — a rate-limit key must never be evicted into an allow).
+All limits live in Redis (eviction OFF — a rate-limit key must never be evicted into an allow).
 
 ---
 
 ## 7. Secrets management
 
-- **Platform secrets**: Fly secrets per app (`api`, `worker`) — DB URLs, JWT signing key, link-token keyring, MSG91/Exotel/Sarvam/Razorpay platform keys, Tigris credentials. Never in the repo; `.env.example` documents every var name (CLAUDE.md rule). Rotation: staged dual-read (new+old) → flip → retire, per keyring pattern above.
-- **Per-tenant credentials** (BYO Razorpay key/secret + webhook secret now; WABA tokens in v2): **AES-256-GCM app-layer encryption with a per-tenant DEK envelope**. Ciphertext in Postgres (`tenant_integration_credentials` table: tenant_id, kind, ciphertext, key_fingerprint, created_by, rotated_at); each tenant's DEK is wrapped by a **master key that exists only as a Fly secret on the app that must decrypt** (api for payment-link minting; never web, never mobile). Decrypt in memory at the call site, zero after use, never logged, never returned by any API (write-only from the tenant's side — UI shows last-4 only). Every decrypt emits an audit event. Key rotation: re-wrap the per-tenant DEKs under the new master key in one migration job, then retire the old master key.
+- **Platform secrets**: the host's secret store, per service (`api`, `worker`) — DB URLs, JWT signing key, link-token keyring, MSG91/Exotel/Sarvam/Razorpay platform keys, object-store credentials. Never in the repo; `.env.example` documents every var name (CLAUDE.md rule). Rotation: staged dual-read (new+old) → flip → retire, per keyring pattern above.
+- **Per-tenant credentials** (BYO Razorpay key/secret + webhook secret now; WABA tokens in v2): **AES-256-GCM app-layer encryption with a per-tenant DEK envelope**. Ciphertext in Postgres (`tenant_integration_credentials` table: tenant_id, kind, ciphertext, key_fingerprint, created_by, rotated_at); each tenant's DEK is wrapped by a **master key that exists only in the host's secret store for the service that must decrypt** (api for payment-link minting; never web, never mobile). Decrypt in memory at the call site, zero after use, never logged, never returned by any API (write-only from the tenant's side — UI shows last-4 only). Every decrypt emits an audit event. Key rotation: re-wrap the per-tenant DEKs under the new master key in one migration job, then retire the old master key.
 - Log hygiene: structured logger redacts `phone`, `otp`, `token`, `authorization`, `x-razorpay-signature`, credential ciphertext keys at the serialiser level.
 
 ---
@@ -182,15 +182,15 @@ All limits live in Upstash with the fixed plan (eviction OFF — a rate-limit ke
 | OWASP 2021 | HelioGrid control |
 |---|---|
 | A01 Broken access control | Capability guards + tenant-scoped repos + RLS (§3–4); locked cross-tenant invariant tests; lead-visibility predicates in repo layer; no client-trusted ids |
-| A02 Cryptographic failures | TLS everywhere (Fly edge); HS256 session tokens over server-side session rows (an asymmetric algorithm is a later decision); HMAC-SHA256 link tokens; AES-256-GCM envelope-encrypted tenant credentials; OTPs hashed; no passwords exist at all (phone-OTP only) |
+| A02 Cryptographic failures | TLS everywhere; HS256 session tokens over server-side session rows (an asymmetric algorithm is a later decision); HMAC-SHA256 link tokens; AES-256-GCM envelope-encrypted tenant credentials; OTPs hashed; no passwords exist at all (phone-OTP only) |
 | A03 Injection | Drizzle parameterised queries only; Zod validation on every ts-rest boundary; no string-built SQL (lint-banned); Devanagari-safe output encoding via framework defaults |
 | A04 Insecure design | This threat model; honesty/provenance rules as product law; ComplianceGate non-swappable; designed-for D33 mitigation pre-wired |
-| A05 Security misconfiguration | Fly secrets; `NOBYPASSRLS` boot assertion; `FORCE RLS`; helmet defaults on Nest; separate migrator role; no debug endpoints in prod |
+| A05 Security misconfiguration | Secrets in the host's secret store; `NOBYPASSRLS` boot assertion; `FORCE RLS`; helmet defaults on Nest; separate migrator role; no debug endpoints in prod |
 | A06 Vulnerable components | pnpm lockfile + dependabot + sherif (§10); Biome; minimal dependency policy |
 | A07 Identification & auth failures | OTP rate limits + lockouts (§6); server-side revocable sessions; 10-min JWTs; keychain storage on RN |
 | A08 Software & data integrity | Frozen lockfile in CI; **postinstall scripts disabled**; webhook HMAC + event-id dedupe + reconcile-by-poll; append-only migrations and usage ledger |
 | A09 Logging & monitoring failures | Audit log (§11); structured logs with redaction; spend-velocity + webhook-failure alerts ([`./09`](./09-observability-and-ops.md)) |
-| A10 SSRF | POC geotiff-relay guard ported: per-provider host allowlists, private-range deny, no cross-host redirects; all third-party calls server-proxied |
+| A10 SSRF | The SSRF guard: per-provider host allowlists, private-range deny, no cross-host redirects; all third-party calls server-proxied |
 
 ---
 
@@ -198,8 +198,7 @@ All limits live in Upstash with the fixed plan (eviction OFF — a rate-limit ke
 
 DPDP Act 2023 + DPDP Rules 2025 — **the IN market's determination**; onboarding any new market requires that jurisdiction's own privacy/residency determination BEFORE tenants exist there (forward-compat "Market & money"). Position: **we are Data Fiduciary for tenant users' PII** (phones, names) and **Data Processor for the EPC's customer data** (the tenant is the fiduciary for their customers) — the DPA terms ride in our subscription agreement.
 
-- **Residency**: primary DB (all PII, phone numbers) on Fly `bom` — in India. Payment instruments never touch us (Razorpay, an Indian PA, holds them → RBI localisation satisfied).
-- **Cross-border (Tigris `sin`)**: object storage (photos, PDFs, DEM tiles, backups) pinned single-region Singapore. DPDP Rules 2025 use a **negative-list model — transfer permitted by default unless the destination is blocklisted**; Singapore is not. Compliant today; the S3-compatible API gives a documented migration path to India-region storage if the list changes (BLUEPRINT §Database & infra). Decision recorded in `adr/` with review trigger "negative-list amendment".
+- **Residency**: the database (all PII, phone numbers) and the object store run in the region the hosting task fixes (`docs/tasks/deferred.md` D50 — Mumbai or Hyderabad). Payment instruments never touch us (Razorpay, an Indian PA, holds them → RBI localisation satisfied). DPDP Rules 2025 use a **negative-list model** for cross-border transfer — permitted unless the destination is blocklisted.
 - **Consent records**: per-customer voice-call consent, recording consent, DND/do-not-call flags with timestamps and source (D36 companion rules) — stored, surfaced pre-dial, exported on request. OTP SMS is transactional authentication traffic under DLT.
 - **Data-principal rights**:
   - *Access/export*: tenant-level export always works regardless of billing state (product law). Individual data-principal export: support-backed workflow, JSON/CSV of all rows keyed to the principal, 30-day SLA.
@@ -237,4 +236,4 @@ Append-only `audit_log` (tenant_id, actor {user|agent|system|customer-link}, act
 10. Data rights: export requests, erasure requests and completions.
 11. Admin/back-office access to any tenant's data (impersonation is read-only and always audited).
 
-Retention: 24 months hot, then archived to Tigris (backup layer). The audit log is itself tenant-scoped and RLS-protected; tenants can export their own.
+Retention: 24 months hot, then archived to the object store (backup layer). The audit log is itself tenant-scoped and RLS-protected; tenants can export their own.

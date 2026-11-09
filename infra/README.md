@@ -1,31 +1,17 @@
 # HelioGrid infrastructure — state & one-command provisioning
 
-**Local dev is the priority right now (owner directive 2026-07-26).** Nothing below
-blocks implementation: the api/worker run against local Docker Postgres; deploys come
-later.
+The api and worker run against local Docker Postgres; deploys come later.
 
 ## Temporal (ADR-0025)
 
 The local orchestration stack, its decisions and its runbooks: `infra/temporal/README.md`.
 The reviewed — and **undeployed** — production candidate: `infra/temporal/deploy/README.md`.
-No Fly app, database, certificate authority or machine exists for it; creating one is an
-owner-approved operation.
+Nothing exists for it yet; creating it is an owner-approved operation.
 
-## Current state (2026-07-26)
+## Hosting
 
-| Resource | State |
-|---|---|
-| Fly org `heliogrid` (dedicated) | ✅ created — **needs a credit card** at https://fly.io/dashboard/heliogrid/billing before ANY machine/volume/add-on can be created |
-| Fly apps api/web/worker | ✅ created, moved into `heliogrid` org, machineless (free) |
-
-> Two further Fly apps, `heliogrid-voice` and `heliogrid-powersync`, were created before those
-> capabilities were dropped. Both are machineless and cost nothing. **Deleting them is an owner
-> action** (`CLAUDE.md` §4) — no agent touches Fly.
-| fly.toml per app | ✗ deleted — hosting moved to Oracle; the deploy config comes with that task (`docs/tasks/deferred.md` D50) |
-| Dev Postgres (Fly) | ⏳ blocked on card — use local Docker meanwhile (below) |
-| Upstash Redis | ⏳ blocked on card (plan selection requires billing; no free path pre-card) |
-| Tigris bucket | ⏳ blocked on card (`createAddOn` refuses without payment info) |
-| GitHub CI | ✅ green (changes, quality, e2e-web, e2e-components, mobile-js, android, iOS); every lane but `changes` and `quality` runs only when its own paths change |
+Nothing is deployed. Hosting moves to Oracle Cloud; its deploy config comes with that task
+(`docs/tasks/deferred.md` D50).
 
 ## Local dev
 
@@ -110,33 +96,6 @@ tenant-scoped query must set the tenant first:
 SET LOCAL app.tenant_id = '<uuid>';   -- inside a transaction; without it, fail-closed = 0 rows
 ```
 
-## One-command provisioning (run top-to-bottom AFTER the card is added)
-
-```bash
-# 1. Dev Postgres — single node, smallest practical; upgrade path to HA is
-#    "fly machines clone + repmgr" (plain postgres-flex, no architectural change):
-flyctl postgres create --name heliogrid-db --org heliogrid --region bom \
-  --initial-cluster-size 1 --vm-size shared-cpu-1x --volume-size 1
-
-# 2. Apply migrations + prove RLS on the Fly DB:
-flyctl proxy 15432:5432 -a heliogrid-db &   # then:
-DATABASE_ADMIN_URL=postgres://postgres:<pw>@localhost:15432/heliogrid pnpm --filter @heliogrid/db migrate
-DATABASE_ADMIN_URL=... pnpm --filter @heliogrid/invariants test
-
-# 3. Upstash Redis — rate limiting + SSE only. Plan/eviction were sized for BullMQ and need
-#    re-deriving before provisioning (docs/engineering/09 §costs):
-flyctl redis create --org heliogrid --name heliogrid-redis --region bom \
-  --no-replicas --disable-eviction        # pick the fixed 250MB plan at the prompt
-
-# 4. Tigris bucket (then verify the `sin` pin and RECORD the
-#    working command sequence in that note):
-flyctl storage create --name heliogrid-objects --org heliogrid
-
-# 5. Production upgrade path (later, unchanged from docs/engineering/03 §6): grow to 3-node
-#    repmgr HA + pgBackRest→Tigris + restore drill sequence.
-```
-
 ## Secrets wiring (when deploys start)
 
-Per app: `flyctl secrets set -a heliogrid-api DATABASE_URL=... REDIS_URL=...` — the
-full variable census lives in [.env.example](../.env.example). Never commit values.
+The full variable census lives in [.env.example](../.env.example). Never commit values.

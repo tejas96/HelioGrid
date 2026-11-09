@@ -44,7 +44,7 @@ personas receive their own-work events only.
 |---|---|---|---|
 | F6-01 | **The notification centre, push wiring and global search are committed v1 scope** — a bell centre with grouped, actionable items; push; one app-wide search. This document is their specification; no module builds a private notification surface or a private search box. A long list's *Find in this list* (`F7-47`) is this one search opened scoped to that list, not a private box. | `SRC` — `DOC14.notifications-search` (docs/14); journey §DASHBOARDS L1548 (the "Notifications + global search" screens-table row — "Everyone") | P0 |
 | F6-02 | **Every notification deep-links to its subject and is actionable from where it lands.** A notification is a pointer to a real record — the lead, the design, the tranche, the invite — never a dead announcement. Where the subject offers a one-step act the recipient may perform (approve, resend, pay, reassign), the notification surfaces it. | `SRC` — `DOC04.notification-types` ("each deep-links to its subject"); journey L1548 ("grouped, each actionable") | P0 |
-| F6-03 | **Notification honesty: no false urgency, ever.** A notification's tone matches its fact: informational facts inform, attention items say why they need attention, and nothing is dressed as urgent to drive engagement — the same discipline the dunning ladder (`M12-41`) and the state banners obey (`F8-34`'s family). No engagement mechanics exist: no streaks, no badges-for-opening, no re-notification of an unchanged fact. | `BRIEF` — authoring-plan §Task 23 Step 4 ("notification honesty (no false urgency)"), grounded in `SRC` `F8-34`'s honest-state law and `D37`'s no-vanity posture (consumed) | P0 |
+| F6-03 | **Notification honesty: no false urgency, ever.** A notification's tone matches its fact: informational facts inform, attention items say why they need attention, and nothing is dressed as urgent to drive engagement — the same discipline the dunning ladder and the state banners obey (`F8-34`'s family). No engagement mechanics exist: no streaks, no badges-for-opening, no re-notification of an unchanged fact. | `BRIEF` — authoring-plan §Task 23 Step 4 ("notification honesty (no false urgency)"), grounded in `SRC` `F8-34`'s honest-state law and `D37`'s no-vanity posture (consumed) | P0 |
 | F6-04 | **Nothing in this document reaches the EPC's customer.** Every matrix recipient is a tenant user; the customer's surfaces are the link's own states (`F5-48`'s confirmation-state law) and the transactional message flows. The two source moments that ask for automatic customer messages — the design-wait message and the acceptance acknowledgement — are **ruled (owner ruling 2026-08-04)**: they send automatically from the tenant's connected transactional channel, owned by `foundations/F5` (`F5-16`, `F5-48`) with `modules/M03`'s connection (`M03-03`); this document still defines **no send channel of its own** and stays staff-side. | `SRC` — owner ruling 2026-08-04 on the transactional send channel (the channel lives with `modules/M03`/`foundations/F5`; F6 stays staff-side); `D32` consumed for the fallback path | P0 |
 
 **Behavior detail.** The two surfaces share one discipline: they are *composed views over
@@ -82,7 +82,7 @@ recipient's language **at emit time** (F6-08). **Analytics events:** notificatio
 | F6-06 | **The notification record is the source of truth; push is best-effort by contract.** The in-app inbox and the badge derive from the record, so a dropped push never loses information — push is a tap on the shoulder, the inbox is the fact. Each record tracks read state and a push-sent marker. | `SRC` — `DOC07.push-best-effort` (docs/engineering/07, verbatim posture); `DOC04.notification-types` (read state + push-sent marker) | P0 |
 | F6-07 | **Read state travels up only and is set once** — reading on one device reads everywhere; nothing un-reads. | `SRC` — `DOC06.conflict-matrix` (the notification-read-state entity half routed here by Task 10), quoted: "notification read-state up only" | P0 |
 | F6-08 | **Language is fixed at emit time.** Title and body render in the recipient's language when the notification is created — notifications are not re-translated when the user later switches language; the deep-linked subject renders in whatever language the user has at open time. | `SRC` — `DOC04.notification-language` (docs/04, verbatim) | P0 |
-| F6-09 | **Notifications are never billing-gated.** The inbox, badge and history are reads and live in the soft-block matrix's always-on set; billing-state events themselves are matrix rows (§F6.3). | `SRC` — `BM-32` consumed (reads always work; enforcement `modules/M12`) | P0 |
+| F6-09 | **Notifications are never billing-gated.** The inbox, badge and history are reads and live in the soft-block matrix's always-on set; billing-state events themselves are matrix rows (§F6.3). | `SRC` — `OV-26` (reads always work) | P0 |
 
 **Behavior detail.** A type's registration fixes: its name, the module that raises it, its
 recipient rule (persona/scope — always resolved through F2's visibility, F6-16), its channel
@@ -135,15 +135,15 @@ Manager/Operations per their scopes. Grouping and urgency classes per F6-12/F6-1
 | Survey submitted / ready for design (`survey_submitted`) | M04 | The assigned Design Engineer (assigned); designer notified per `S4.happy` | ✓ | `SRC` `DOC04.notification-types`; M04 §4 |
 | Visit rescheduled | M04 | The assigned Survey Engineer + the lead's owner | ✓ | `SRC` M04 §4 |
 | Survey submission rejected / needs attention | M04 | The submitting Survey Engineer (own) | ✓ | `SRC` M04 §4 |
-| Sign-off requested (`signoff_requested`) | M05 | Sign-off holders (`F2.M05.approve-designs` — queue-scoped) | — (queue is the surface; `M05-83`) | `SRC` `DOC04.notification-types`; `UXG-06`/`M05-83` |
-| Design returned (`design_returned`) | M05 | The design's author (own) — with pinned markers in the studio | ✓ | `SRC` `DOC04.notification-types`; `M05-86` (`UXG-07`'s type registered here) |
-| A newer survey superseded the design's inputs (`design_survey_superseded`) | M05 | The design's author (own) — with the "survey updated — review needed" marker in the studio | ✓ | `SRC` `M05-13` (owner ruling 2026-08-04 — "notifies the designer"); M05 §4 |
+| Sign-off requested (`signoff_requested`) | M05 | Sign-off holders (`F2.M05.approve-designs` — queue-scoped) | — (queue is the surface) | `SRC` `DOC04.notification-types`; `UXG-06` |
+| Design returned (`design_returned`) | M05 | The design's author (own) — with pinned markers in the studio | ✓ | `SRC` `DOC04.notification-types`; `UXG-07`'s type registered here |
+| A newer survey superseded the design's inputs (`design_survey_superseded`) | M05 | The design's author (own) — with the "survey updated — review needed" marker in the studio | ✓ | `SRC` owner ruling 2026-08-04 ("notifies the designer") |
 | Proposal opened (`proposal_opened`) | M06 (via F5's open event) | The proposal's rep (own) | ✓ | `SRC` `DOC04.notification-types`; `M06-54` (`S6.happy` — "the rep is notified") |
 | Follow-up due (`follow_up_due`) | M07 | The task's owner (own) — My Day is the primary surface; the notification is the nudge | — | `SRC` `DOC04.notification-types`; M07 §4 |
 | Agent escalation (`agent_escalation`) | M07 | The lead's rep (own) — "a notification, not a task buried in a list"; owner sees escalations list | ✓ **immediate** | `SRC` `DOC04.notification-types`; `S7.wrong.5` (the F6 half routed by Task 17) |
 | Number-provisioning status | M07 | EPC Owner | — | `SRC` M07 §4 (UXG cross-cutting: new-system types extend the centre) |
 | Monthly agent performance summary | M07/M13 | EPC Owner | in-app push ("pushed to the owner in-app") | `SRC` `AP.wrong.4` (F6 half); `M13-45` |
-| Blocked voice-queue entry (allowance) | M07/M12 | EPC Owner | ✓ | `SRC` `DOC16.gate.voice` ("owner notified"); `M07-37`/`M12-23` |
+| Blocked voice-queue entry (allowance) | M07/M12 | EPC Owner | ✓ | `SRC` `DOC16.gate.voice` ("owner notified"); `M07-37` |
 | Tranche became due (`payment_due`) | M08/M11 | Project Manager (own projects) + Finance (money scope) + EPC Owner | ✓ | `SRC` `DOC04.notification-types`; M08 §4 + M11 §4 |
 | Payment confirmed | M11 | The project's PM + Finance + the deal's rep (read-scope) | ✓ | `SRC` M11 §4 |
 | Payment reversed | M11 | Finance + EPC Owner | ✓ | `SRC` M11 §4 |
@@ -164,18 +164,18 @@ Manager/Operations per their scopes. Grouping and urgency classes per F6-12/F6-1
 | Leave decided | M10 | The requester (self) | ✓ | `BRIEF` M10 §4 |
 | Invite expired | M10/M01 | EPC Owner (act) with HR/Admin visibility | — | `BRIEF` M10 §4; `S1.wrong.1` family |
 | Employee document expiring | M10 | HR/Admin + EPC Owner | — | `BRIEF` M10 §4 (`M10-36`) |
-| Dunning: payment failed / retry (day 0) | M12 | EPC Owner (+ banner to managers) | ✓ + pack channels | `SRC` `DOC16.dunning-ladder`/`DOC16.dunning-channels` (`M12-39`/`M12-40`) |
-| Dunning: metered features paused (day 4) | M12 | EPC Owner (+ banner) | ✓ + pack channels | `SRC` `M12-39` |
-| Dunning: final warning (day 6) / halted (day 7) / post-halt cadence | M12 | EPC Owner | ✓ + pack channels | `SRC` `M12-39` |
-| Trial nudges (day 7 / 12 / 14) and expiry | M12 | EPC Owner | ✓ | `SRC` `DOC16.trial-nudges` (`M12-42`) |
-| Usage 80% warning (per meter/cap) | M12 | EPC Owner | — (usage screen is primary; `M12-34`) | `SRC` `BM-34`/`F8-33` via `M12-34` |
+| Dunning: payment failed / retry (day 0) | M12 | EPC Owner (+ banner to managers) | ✓ + pack channels | `SRC` `DOC16.dunning-ladder`/`DOC16.dunning-channels` |
+| Dunning: metered features paused (day 4) | M12 | EPC Owner (+ banner) | ✓ + pack channels | `SRC` `DOC16.dunning-ladder` |
+| Dunning: final warning (day 6) / halted (day 7) / post-halt cadence | M12 | EPC Owner | ✓ + pack channels | `SRC` `DOC16.dunning-ladder` |
+| Trial nudges (day 7 / 12 / 14) and expiry | M12 | EPC Owner | ✓ | `SRC` `DOC16.trial-nudges` |
+| Usage 80% warning (per meter/cap) | M12 | EPC Owner | — (usage screen is primary) | `SRC` `F8-33` |
 | Reactivation confirmed | M12 | EPC Owner | ✓ | `SRC` M12 §4 |
 | Monthly dashboard summary | M13 | EPC Owner | in-app push | `SRC` journey §DASHBOARDS (owner-never-opens fix); `M13-21` |
 | System (`system`) | platform | Per announcement's audience (default: EPC Owner) | — | `SRC` `DOC04.notification-types` |
 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
-| F6-11 | **Channels are in-app and push, and nothing else, for every staff notification** — with one exception: the M12 dunning family additionally rides the market pack's platform→tenant channel stack (registered-template SMS, opted-in business messaging — `M12-40`'s rows, `F1-38`'s rule). No other event may use an out-of-app channel; a module wanting one is asking for a pack-level decision, not a notification setting. | `SRC` — `DOC14.notifications-search` (push + in-app scope); `DOC16.dunning-channels` (the sanctioned exception; mechanics `M12-40`) | P0 |
+| F6-11 | **Channels are in-app and push, and nothing else, for every staff notification** — with one exception: the M12 dunning family additionally rides the market pack's platform→tenant channel stack (registered-template SMS, opted-in business messaging — `F1-38`'s rule). No other event may use an out-of-app channel; a module wanting one is asking for a pack-level decision, not a notification setting. | `SRC` — `DOC14.notifications-search` (push + in-app scope); `DOC16.dunning-channels` (the sanctioned exception) | P0 |
 | F6-12 | **Grouping: standard events group; nothing important hides.** The centre groups same-type events on the same subject class ("3 proposals opened today") with each item still individually reachable; immediate-class events (F6-13) never group. Grouping is presentation only — every record still exists individually (F6-06). | `SRC` — journey L1548 ("grouped, each actionable") | P1 |
 | F6-13 | **Two urgency classes, fixed per type:** **immediate** (agent escalation, proposal accepted — pushed at once, never grouped, never held by quiet hours *within the working day*) and **standard** (everything else — pushed subject to quiet hours, groupable). A type's class is registered, never per-event improvised (no false urgency — F6-03). | `SRC` — `S7.wrong.5` ("immediate escalation… not a task buried in a list"); `C8`'s acceptance urgency (staff side); class discipline `BRIEF` | P0 |
 | F6-14 | **Quiet hours: tenant-configurable, applied to push only.** The tenant declares staff quiet hours (default: outside ordinary working hours in the tenant's timezone, `F1-10`; formats per `F1-21` — the defaults ride the market pack's locale conventions, the setting is the tenant's). During quiet hours, standard pushes hold and deliver at the window's end; the in-app record is always immediate. Immediate-class events in practice occur inside working hours (agent calls run in the market's lawful calling window — `F1-36` is the voice law, not this document's), so quiet hours and immediacy do not collide; where they ever would, the push holds and the record stands — no staff notification wakes a phone at night. | `BRIEF` — authoring-plan §Task 23 Step 4 ("tenant-configurable quiet hours via pack"); grounded in `F1-10`/`F1-21` (pack-supplied defaults) | P1 |
@@ -187,7 +187,7 @@ provenance, and each raising module's §4 names the same events — the cross-ch
 Recipients marked "(self)" are person-targeted regardless of preset (tracking state, leave
 decisions); everything else is scope-resolved. The billing family's extra
 channels exist because dunning must reach an owner who never opens the app — the one place
-out-of-app delivery is load-bearing (`M12-40`).
+out-of-app delivery is load-bearing.
 
 **Edge cases & what-goes-wrong.**
 
@@ -244,7 +244,7 @@ centre opened · filter used · mark-all-read.
 | F6-21 | **Search is scoped by role visibility — D20, per domain, no leakage.** A result appears only if the searcher's F2 scopes would let them open it: leads per lead visibility, projects per project visibility, people per people-records scope, campaigns per campaign scope (`F2-12`–`F2-14`). Search never becomes the side door around a scope — the dedupe sheet's minimal-disclosure surface (`M02-08`) is the only sanctioned cross-scope reveal in the product, and it is not this one. | `SRC` — `D20` via `F2-12` consumed (authoring-plan Step 4: "scoped by role visibility D20"); `F2-14`/`F2-15`; `M02-08` boundary noted (the dedupe sheet's three-fact disclosure stands untouched) | P0 |
 | F6-22 | **The search-alias law (R1's single exception):** the queries "quote" and "quotation" return **Proposals** — because that is what users will type — while both words stay banned from identifiers, interface strings and documents. The alias is a query behaviour only; results, labels and the opened records say "Proposal" in every locale. | `SRC` — `R1` (docs/15 §1 — the search-alias clause routed to this document by the ruling's own mapping; vocabulary law `F3-11`, entity/document half `M06-01`, link wording `F5`'s) | P0 |
 | F6-23 | **Junk leads surface in search only.** A lead marked junk leaves every queue and list but is never deleted; search is the one surface that still finds it (with its junk state plain), and Reopen exists from there for the rare mistake. | `SRC` — `R9.junk` (the search-only surface half routed here by Task 13; the state is `M02-55`'s) | P0 |
-| F6-24 | **Search is never billing-gated.** In every billing state, search works — it is in the soft-block matrix's always-on set. | `SRC` — `BM-32` consumed (search always on; enforcement M12) | P0 |
+| F6-24 | **Search is never billing-gated.** In every billing state, search works — it is in the soft-block matrix's always-on set. | `SRC` — `OV-26` (search always on) | P0 |
 | F6-25 | **Search finds records, not analytics:** results are records the searcher can open — no computed answers, no cross-record aggregation, no natural-language querying in v1 (§5). Result ranking is plain (exact identifier matches — phone, proposal number — first; then name/city matches); no engagement tuning. | `BRIEF` — scope discipline; honesty posture consumed (`F8`) | P1 |
 
 **Behavior detail.** Phone-number queries normalise before matching (the phone is the CRM's
@@ -352,7 +352,6 @@ ships in all launch languages. **Analytics events:** template copied (key, langu
 | `foundations/F3` | Rendering languages; the content-class law for templates (`F3-10`); vocabulary law (`F3-11` — Proposal everywhere, aliases here only). |
 | `foundations/F1` | Tenant timezone and locale conventions for quiet-hours defaults (`F1-10`, `F1-21`); registered-template messaging where the dunning family leaves the app (`F1-38`); the pack-declared scheduled-send hour and the statutory messaging window it sits inside for the seeded `crew_arrival` template — hour a default read on the tenant's timezone (`F1-10`), window a floor (`F1-15`, `F1-17`; owner ruling 2026-08-06 — clause added when the send hour was ruled, this row previously expected no send-timing content because the registry had no scheduled consumer; the clock added by the same day's tenant-timezone ruling, which supersedes the earlier "customer's market timezone" wording). |
 | `modules/M10` | Team membership (`M10-32`) for manager-scoped recipients. |
-| `modules/M12` | The dunning family's ladder, channels and honesty (`M12-39`–`M12-42`) — F6 registers the types; M12 owns the ladder. |
 
 **This document provides:**
 

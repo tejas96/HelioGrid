@@ -17,8 +17,7 @@ scaffold PR locks the exact patch; a later major bump is a plan-time decision, l
 `docs/engineering/adr/` once taken.
 `sherif` fails CI on cross-package version drift, so one version of everything, everywhere.
 
-Binding context: BLUEPRINT.md final-review directives — NestJS backend; Fly-native services
-only (no AWS); bare React Native (no Expo); billing IS in v1 (D38 superseded); no feature
+Binding context: BLUEPRINT.md final-review directives — NestJS backend; bare React Native (no Expo); billing IS in v1 (D38 superseded); no feature
 flags; the 3D studio is the flagship and is never compromised.
 
 ---
@@ -61,7 +60,7 @@ Sources: [Biome v2.5](https://biomejs.dev/blog/biome-v2-5/) · [sherif](https://
 | Contract layer | **ts-rest** — `@ts-rest/core` + `@ts-rest/nest` + `@ts-rest/open-api` **3.52.1** | The one Nest-native contract-first option giving BOTH end-to-end typed clients (Next.js + bare RN, no codegen drift) AND an emitted OpenAPI document (customer links, webhooks, future public API). CommonJS-friendly — no ESM migration tax. **Version reality (checked 2026-08-25): `@ts-rest/open-api` 3.52.1 emits `"openapi": "3.0.2"`, not 3.1** — the 3.1 figure in earlier docs was never true of the artifact. 3.0.2 costs us nothing today (no route uses a 3.1-only construct); a consumer needing 3.1 is a generator change with its own decision, not a silent bump | **@orpc/nest** (official but beta: ESM-only, Fastify path-param bugs, no one-command client emit; re-check in 6 months) · tRPC v11 (cannot emit OpenAPI) · nestjs-zod+openapi-ts alone (generated clients drift from source) |
 | Validation | **Zod pinned 3.25.x** (v3 API only) + **nestjs-zod 3.x** for DTO pipes | ts-rest Zod-4 support is `3.53.0-rc.1` — still RC. We pin Zod 3 until 3.53 is stable; Biome `noRestrictedImports` bans `zod/v4` subpath imports so nobody drifts early | Zod 4 now (contract layer would sit on an RC) · class-validator (decorator duplication of the contract schemas) |
 | Client binding | **@heliogrid/data** wrapping `@ts-rest/core` + TanStack Query (ADR-0023) — `@ts-rest/react-query` is not installed | One typed client from the same contract on both surfaces, behind one package | Hand-rolled fetch wrappers (untyped drift); per-app clients (the ADR-0023 deletion) |
-| Realtime | **SSE** (Nest-native) for notifications + design-staleness push | HTTP-native, auto-reconnect, no sticky sessions, passes the Fly proxy cleanly | WebSockets (only if collaborative editing lands — not v1) |
+| Realtime | **SSE** (Nest-native) for notifications + design-staleness push | HTTP-native, auto-reconnect, no sticky sessions, passes a reverse proxy cleanly | WebSockets (only if collaborative editing lands — not v1) |
 
 Ruling: the contract package (`packages/contracts`) is edited BEFORE any endpoint or client —
 the contract diff is the API review surface (see CLAUDE.md hard rules).
@@ -82,34 +81,20 @@ Sources: [drizzle-zod](https://orm.drizzle.team/docs/zod) · [Drizzle RLS multit
 
 | Component | Choice & pin | Why | Rejected (reason) |
 |---|---|---|---|
-| Database | **PostgreSQL 16** on **Fly postgres-flex (unmanaged), 3 nodes, `bom` (Mumbai)** | **User directive**: Fly-native only. Data (incl. phone PII) stays in India; single-digit-ms latency from `bom` Machines over 6PN; plain Postgres = zero lock-in | Fly MPG (NO `bom` region — Mumbai absent from all ~12 MPG regions; `sin` = data leaves India + ~60 ms/query) · Crunchy Bridge / Supabase `ap-south-1` (research's managed picks — excluded by no-AWS/Fly-native directive; retained as escape hatch) · Neon (no Mumbai, cold starts) |
+| Database | **PostgreSQL 16** | Plain Postgres = zero lock-in; RLS carries tenancy | Neon (cold starts) |
 
-⚠️ **Deprecation risk — carried verbatim from BLUEPRINT.md (binding):**
-
-> **DB: Fly postgres-flex (unmanaged) in bom — ⚠️ flagged risk: Fly has DEPRECATED unmanaged
-> Postgres (self-support only; wal-g not bundled).** User chose Fly-native; mitigations are
-> MANDATORY and in-scope for the 20-day build: 3-node repmgr HA; **two backup layers → Tigris**
-> (pgBackRest/Barman WAL archiving + nightly `pg_dump` logical dumps); restore drill before
-> launch and monthly; disk/replication/OOM alerts; documented escape hatches (Fly MPG in
-> `sin`, or external managed Mumbai Postgres) via logical replication — plain Postgres,
-> nothing locks in. Revisit at scale.
-
-Operational facts verified: repmgr HA on postgres-flex works; wal-g is NOT bundled (was only
-in the old stolon image); Barman PITR needs manual `barman -q cron` and `fly clone` has
-failed after Barman recovery — hence the second (logical dump) layer and the mandatory
-restore drills. Runbook lives in `docs/engineering/09-observability-and-ops.md`.
-
-Sources: [postgres-flex](https://github.com/fly-apps/postgres-flex) · [Fly PG what-you-should-know](https://fly.io/docs/postgres/getting-started/what-you-should-know/) · [Barman PITR thread](https://community.fly.io/t/point-in-time-recovery-for-postgres-flex-using-barman/13185).
+Where it runs, its backups and restore drills are the hosting task's. Hosting runbooks come
+with the Oracle hosting task (`docs/tasks/deferred.md` D50).
 
 ## 7. Queue & background jobs
 
 | Component | Choice & pin | Why | Rejected (reason) |
 |---|---|---|---|
 | Orchestration | **Temporal 1.30.6 + TypeScript SDK 1.22.0** (ADR-0025, pinned by digest — `infra/temporal/README.md` §1) | Multi-step business processes that outlive a request (proposal→link→OTP→acceptance→tranches; survey→design→sign-off), day-scale durable timers, and exactly-once effects on money. A queue gives at-least-once delivery of one unit of work; everything above it would be hand-rolled per module | BullMQ (the superseded scaffold — see the row below) · Graphile Worker / pg-boss (good for the cron sweeps, same gap on multi-step) · Temporal Cloud (per-action pricing + an account decision; revisit when volume makes the operational cost real) |
-| Queue — **REMOVED 2026-08-26 (Track 7 cutover)** | ~~BullMQ 5.x + @nestjs/bullmq 11.x~~ | NestJS-idiomatic processors in `apps/worker`; repeatable jobs cover all cron sweeps (proposal-unopened-3d, task-overdue-2d, snooze wake-ups, dormant sweep) | Graphile Worker (research's pre-NestJS pick — Postgres-native, but @nestjs/bullmq integration + Fly's explicit Upstash/BullMQ support won after the NestJS + Fly-native overrides) · pg-boss (same reasoning) · Fly Cron Manager (extra machine per job; repeatable jobs suffice) |
-| Redis — **kept**, no longer for queues | **Upstash Redis via Fly extension, `bom`, FIXED plan** (start 250 MB/$10 per month; resize as queues grow) | Fly explicitly recommends fixed plans for BullMQ (PAYG per-request billing is inflated by BullMQ polling). Private IPv6 reachable from all Fly regions incl. `bom` | Self-run Redis on a Machine (one more thing to page on) · PAYG Upstash (cost trap under polling) |
-| Config (binding) | `maxRetriesPerRequest: null` · TCP/RESP endpoint (not REST) · **eviction OFF** | BullMQ requires `noeviction`; Upstash eviction mimics `volatile-random`/`allkeys-random` and silently breaks queues. Off is the Upstash default — never enable it | — |
-| Heavy CPU | **worker_threads** inside `apps/worker` on dedicated larger Machines, `autostop="off"` | Shading sims at scale and Playwright PDF renders are compute-bound, not queue-bound; scale the worker group independently | Serverless/lambda-style burst (no Fly-native fit; cold Chromium) |
+| Queue — **REMOVED 2026-08-26 (Track 7 cutover)** | ~~BullMQ 5.x + @nestjs/bullmq 11.x~~ | NestJS-idiomatic processors in `apps/worker`; repeatable jobs cover all cron sweeps (proposal-unopened-3d, task-overdue-2d, snooze wake-ups, dormant sweep) | Graphile Worker (research's pre-NestJS pick — Postgres-native, but @nestjs/bullmq integration integration won after the NestJS override) · pg-boss (same reasoning) |
+| Redis — **kept**, no longer for queues | **Redis**, on the private network | Rate limiting and SSE fan-out for `apps/api` | — |
+| Config (binding) | TCP/RESP endpoint (not REST) · **eviction OFF** (`noeviction`) | An evicted rate-limit key turns into an allow — never enable eviction | — |
+| Heavy CPU | **worker_threads** inside `apps/worker` | Shading sims at scale and Playwright PDF renders are compute-bound, not queue-bound; scale the worker group independently | Serverless/lambda-style burst (cold Chromium) |
 
 **Reading the two rows above.** Orchestration moved to Temporal (ADR-0025) after a
 production-like spike, and the cutover landed 2026-08-26: `bullmq` and `@nestjs/bullmq` are
@@ -118,22 +103,19 @@ makes re-adding either a build failure. **Redis stays** — `docs/engineering/08
 rate limiting and SSE — but the WORKER no longer reads `REDIS_URL`; those are API concerns.
 No BullMQ residue remains: `@heliogrid/contracts/jobs` was deleted in the Track 9 sweep (2026-08-26).
 
-Sources: [Temporal self-hosted](https://docs.temporal.io/self-hosted-guide) · the measured spike at `infra/temporal/README.md` · [Fly Upstash](https://fly.io/docs/upstash/redis/).
+Sources: [Temporal self-hosted](https://docs.temporal.io/self-hosted-guide) · the measured spike at `infra/temporal/README.md`.
 
 ## 8. Object storage
 
 | Component | Choice & pin | Why | Rejected (reason) |
 |---|---|---|---|
-| Storage | **Tigris**, **single-region bucket pinned `sin`** (Singapore — nearest; Tigris has no India region). Buckets: survey photos, proposal PDFs, DEM tiles, DB backups | Fly-native (user directive), S3-compatible: SigV4, presigned URLs, multipart verified — serves pgBackRest/Barman targets and the presigned uploads; no egress fees | AWS S3 `ap-south-1` (research's residency pick — excluded by the no-AWS directive; documented as the India-region migration path since everything speaks the S3 API) · Cloudflare R2 (no India region either, coarse APAC hint) |
+| Storage | **Any S3 API** behind the `ObjectStore` port — the vendor is settings, never code. Buckets: survey photos, proposal PDFs, DEM tiles, DB backups | SigV4, presigned URLs and multipart serve the presigned uploads and backup targets | — |
 
-Compliance ruling: DPDP Rules 2025 use a negative-list model — cross-border storage is
-permitted by default, so `sin` object storage is compliant while the DB (all primary PII)
-stays in `bom`. RBI payment-data localisation is satisfied because Razorpay (an Indian,
-RBI-licensed PA) holds payment instruments — we never do. Single-region pin mechanics via
-`fly storage create` / `X-Tigris-Regions` are a week-1 spike (CLI flag naming is
-under-documented).
+Compliance ruling: RBI payment-data localisation is satisfied because Razorpay (an Indian,
+RBI-licensed PA) holds payment instruments — we never do. Which vendor and region production
+uses is the hosting task's (`docs/tasks/deferred.md` D50).
 
-Sources: [Tigris locations](https://www.tigrisdata.com/docs/buckets/locations/) · [DPDP Rule 15](https://www.dpdpa.com/dpdprules/rule15.html).
+Sources: [DPDP Rule 15](https://www.dpdpa.com/dpdprules/rule15.html).
 
 ## 10. Auth
 
@@ -159,10 +141,10 @@ file it in week 1 or OTP SMS is blocked at launch.**
 
 | Component | Choice & pin | Why | Rejected (reason) |
 |---|---|---|---|
-| Framework | **Next.js 15.x** (App Router) — `apps/web`, pure frontend/BFF, **no domain logic** | Proven in the POC; route handlers only for cookie/session BFF glue; everything domain-shaped calls `apps/api` through the ts-rest client | Remix/TanStack Start (no advantage worth retraining the corpus) · SPA-only Vite (lose streaming/SSR for the customer link, which must open fast on a stranger's phone) |
-| Styling | **Tailwind v4** (4.x), full `@import "tailwindcss"` — fresh repo, no legacy cascade layer | Utilities read from `packages/theme` CSS variables via `@theme`; the POC's legacy-layer gymnastics die here. **Light-only v1** (owner ruling 2026-07-24) — no dark variants shipped; semantic aliases keep a dark value-set droppable later | CSS-in-JS (runtime cost, token bypass risk) |
+| Framework | **Next.js 15.x** (App Router) — `apps/web`, pure frontend/BFF, **no domain logic** | Route handlers only for cookie/session BFF glue; everything domain-shaped calls `apps/api` through the ts-rest client | Remix/TanStack Start (no advantage worth retraining the corpus) · SPA-only Vite (lose streaming/SSR for the customer link, which must open fast on a stranger's phone) |
+| Styling | **Tailwind v4** (4.x), full `@import "tailwindcss"` — fresh repo, no legacy cascade layer | Utilities read from `packages/theme` CSS variables via `@theme` **Light-only v1** (owner ruling 2026-07-24) — no dark variants shipped; semantic aliases keep a dark value-set droppable later | CSS-in-JS (runtime cost, token bypass risk) |
 | Design tokens | **`packages/theme`** — generated by its own `build.ts` from the live design system; emits `tokens.css` (web), the RN theme object, and `tokens.json` (tooling) | The design system IS the spec. **Never hand-transcribe a value** — re-transcription provably drifts | Hand-authored DTCG JSON (drifts) |
-| Fonts | **Geist + Geist Mono** — the two variable woff2 (weight 100–900) bundled in `packages/theme/assets` — plus **Noto Sans Devanagari** for HI/MR | Geist is the DS default sans; Geist Mono carries IDs/kWh/₹/coordinates (564 mono uses across mockups). Geist has no Devanagari glyphs, so the chain is **Geist → Noto Sans Devanagari** (web `next/font`; RN explicit run-splitting) | Inter (unloaded stack fallback only — shipping it repeats the POC's "declared, never shipped" font bug in reverse) · OS Devanagari fallback (Kohinoor/Nirmala — unacceptable for pixel-perfect commercial documents) |
+| Fonts | **Geist + Geist Mono** — the two variable woff2 (weight 100–900) bundled in `packages/theme/assets` — plus **Noto Sans Devanagari** for HI/MR | Geist is the DS default sans; Geist Mono carries IDs/kWh/₹/coordinates (564 mono uses across mockups). Geist has no Devanagari glyphs, so the chain is **Geist → Noto Sans Devanagari** (web `next/font`; RN explicit run-splitting) | Inter (unloaded stack fallback only — shipping it means a "declared, never shipped" font bug in reverse) · OS Devanagari fallback (Kohinoor/Nirmala — unacceptable for pixel-perfect commercial documents) |
 | Components | **`packages/ui` — one package, both platforms.** `<Name>.types.ts` is the shared prop contract; `<Name>.tsx` is web (plain CSS + token `var()`), `<Name>.native.tsx` is React Native (`StyleSheet`). No Radix and no CSS-in-JS; Tailwind is layout only. ADR-0026, `docs/engineering/17` §3. |
 | Icons | **Drawn in `packages/ui`, no icon dependency** — outlined, **1.5px stroke**, round caps/joins; 24px default / 20px functional / 28px bottom nav; filled variants only for the active bottom-nav item | DS iconography law (`F7-19`); ONE SVG per glyph serves the web half and the native half, so the family cannot be broken by a vendor's release, and every shape is a named entry of `SHELL_GLYPHS` (`AppShell/ShellGlyph.shapes.ts`), drawn by name with `ShellGlyph` or `ShellGlyphMarks`; icons in cards/rows sit in the circular 6%-tint container (40px expressive / 32px functional) | an icon PACKAGE on either platform, Lucide included (owner ruling) · icon fonts / emoji / unicode-as-icon (banned by the DS) |
 
@@ -195,10 +177,10 @@ never ahead of that task.
 
 | Component | Choice & pin | Why | Rejected (reason) |
 |---|---|---|---|
-| Engine | **three.js** 0.18x (≥r171; POC ships r184 — carry forward) + **@react-three/fiber 9.x** + drei 10.x | POC-proven React-19-compatible stack; the ported `packages/domain` keeps only 4 modules importing three as math | Babylon (retrains the whole ported codebase) · custom WebGL (no) |
+| Engine | **three.js** 0.18x (≥r171) + **@react-three/fiber 9.x** + drei 10.x | React-19-compatible stack; `packages/domain` imports three only as math | Babylon (smaller React ecosystem) · custom WebGL (no) |
 | Renderer | **WebGPURenderer** with automatic WebGL2 fallback | WebGPU is baseline across Chrome/Edge/Firefox/Safari in 2026 (~95% coverage); near one-line swap; 2–10× on complex scenes; TSL compute shaders power the GPU shadow-map shading path (288 sun-sample depth maps) — primary shading for the 1 kW→100 MW range | Staying on WebGLRenderer (leaves compute shading + 2–10× on the table for zero benefit given auto-fallback) |
 | CPU fallback / near-field | **three-mesh-bvh** 0.9.x (lock at scaffold) | Order-of-magnitude raycast gains for the CPU/worker shading fallback and precise rooftop obstruction raycasts; caveat honoured: centre geometry to dodge float-precision loss at km scale | Scaling per-panel CPU raycast alone (wrong abstraction above ~10k modules — editable unit is block/table/zone, panels are derived instances) |
-| Projection | **proj4** 2.x — per-site UTM/ENU origin | The POC's single equirectangular origin breaks at scale; per-site origins are the float-precision fix | Keeping one global origin (known scale cliff) |
+| Projection | **proj4** 2.x — per-site UTM/ENU origin | A single equirectangular origin breaks at scale; per-site origins are the float-precision fix | Keeping one global origin (known scale cliff) |
 | Server sims | Same pure-TS kernels in Node worker_threads (`apps/worker`) | One codebase browser Worker pool ↔ server jobs | Headless-gl three.js on Node (fragile, unmaintained) · Rust/WASM kernel (violates TS-domain rule) |
 
 Sources: [three-mesh-bvh](https://github.com/gkjohnson/three-mesh-bvh) · [WebGPU baseline 2026](https://vr.org/articles/webgpu-baseline-2026-three-js-webxr-default) · [GPU solar shading, Appl. Sci. 2020](https://doi.org/10.3390/app10155361).
@@ -248,7 +230,7 @@ Sources: [Razorpay subscriptions webhooks](https://razorpay.com/docs/webhooks/su
 
 | Component | Choice & pin | Why | Rejected (reason) |
 |---|---|---|---|
-| PDF | **Playwright 1.x headless Chromium** in `apps/worker` (`DocumentRenderPort`); Noto Sans Devanagari bundled in the Fly image (`fonts-noto`); 300–500 MB RAM budget/instance, pooled processes | Chromium's HarfBuzz is the only path that shapes Devanagari correctly — proposals in Hindi/Marathi are commercial documents, broken conjuncts are not acceptable; HTML/CSS templates reuse web skills | react-pdf (fontkit does not fully shape Devanagari — long-standing broken conjuncts/matras, issues #454/#856 — disqualified) · Typst (genuine Indic shaping, far lighter — documented swap behind the port if Chromium RAM bites, but a new template language for agents now) |
+| PDF | **Playwright 1.x headless Chromium** in `apps/worker` (`DocumentRenderPort`); Noto Sans Devanagari bundled in the worker image (`fonts-noto`); 300–500 MB RAM budget/instance, pooled processes | Chromium's HarfBuzz is the only path that shapes Devanagari correctly — proposals in Hindi/Marathi are commercial documents, broken conjuncts are not acceptable; HTML/CSS templates reuse web skills | react-pdf (fontkit does not fully shape Devanagari — long-standing broken conjuncts/matras, issues #454/#856 — disqualified) · Typst (genuine Indic shaping, far lighter — documented swap behind the port if Chromium RAM bites, but a new template language for agents now) |
 
 Sources: [react-pdf #454](https://github.com/diegomura/react-pdf/issues/454) · [State of Text Rendering](https://behdad.org/text2024/).
 
@@ -265,19 +247,17 @@ Sources: [react-pdf #454](https://github.com/diegomura/react-pdf/issues/454) · 
 |---|---|---|---|
 | Logging | **pino 9.x** via nestjs-pino (api/worker/voice) — structured JSON, redaction paths for phone numbers/tokens | Fastest Node structured logger; Nest-idiomatic; redaction is DPDP hygiene (no PII in logs) | winston (slower, unstructured drift) |
 | Traces/metrics | **OpenTelemetry** (`@opentelemetry/sdk-node` + auto-instrumentations, OTLP export) | Vendor-neutral pipes; instruments Nest/HTTP/Drizzle-pg/BullMQ out of the box | Vendor SDKs (lock-in for nothing) |
-| Backend | **Grafana Cloud** (decisive pick — not self-host): OTLP-native endpoint; Fly's Prometheus metrics remote-written in; alert rules carry the MANDATORY DB alerts (disk/replication lag/OOM) from §6 | Launch is next month with zero ops headcount — running an LGTM stack on Fly is exactly the "unnecessary complexity" the directives forbid; generous free tier, pay as telemetry grows. Telemetry is not customer PII (redaction enforced), so US/EU-region Grafana is DPDP-fine | Self-hosted LGTM on Fly (ops burden now, revisit at scale) · Datadog (cost curve) · Sentry-only (no metrics/alerting story) |
+| Backend | **Grafana Cloud** (decisive pick — not self-host): OTLP-native endpoint; alert rules carry the MANDATORY DB alerts (disk/replication lag/OOM) | Launch is next month with zero ops headcount — running a self-hosted LGTM stack is exactly the "unnecessary complexity" the directives forbid; generous free tier, pay as telemetry grows. Telemetry is not customer PII (redaction enforced), so US/EU-region Grafana is DPDP-fine | Self-hosted LGTM (ops burden now, revisit at scale) · Datadog (cost curve) · Sentry-only (no metrics/alerting story) |
 | Mobile crashes | **Firebase Crashlytics** (rides the react-native-firebase dependency already in the app) | Zero new vendors for RN crash triage | Sentry RN (fine tool, second vendor for the same job) |
-
-Sources: (Fly metrics/topology context) · [Fly autostop/processes](https://fly.io/docs/launch/autostop-autostart/).
 
 ## 19. CI/CD
 
 | Component | Choice & pin | Why | Rejected (reason) |
 |---|---|---|---|
-| CI | **GitHub Actions**: `quality` lane on ubuntu-24.04 — `pnpm lint` (Biome + dependency-cruiser + sherif) → `typecheck` → `test` (ported domain tests + locked invariants only) → `build`, with Turborepo remote cache | Repo lives on GitHub; Turborepo cache is free/self-hostable (no Nx Cloud credit metering); one YAML surface agents can read and edit | CircleCI/Buildkite (second vendor, no gain) · self-hosted runners (a cost optimisation for later, not launch) |
-| Deploy | `flyctl deploy` per app (api, worker, web) from main — no feature flags, so trunk stays releasable by discipline: small complete slices only | Matches the no-flags directive; incomplete work simply doesn't merge | Preview-env sprawl (not needed at this team size) |
+| CI | **GitHub Actions**: `quality` lane on ubuntu-24.04 — `pnpm lint` (Biome + dependency-cruiser + sherif) → `typecheck` → `test` (domain tests + locked invariants only) → `build`, with Turborepo remote cache | Repo lives on GitHub; Turborepo cache is free/self-hostable (no Nx Cloud credit metering); one YAML surface agents can read and edit | CircleCI/Buildkite (second vendor, no gain) · self-hosted runners (a cost optimisation for later, not launch) |
+| Deploy | One deploy per service (api, worker, web) from main — no feature flags, so trunk stays releasable by discipline: small complete slices only | Matches the no-flags directive; incomplete work simply doesn't merge | Preview-env sprawl (not needed at this team size) |
 
-**Deployment images** — one Fly app per service: each app builds its own Dockerfile — `node:22-slim` base,
+**Deployment images** — one service per process: each app builds its own Dockerfile — `node:22-slim` base,
 `pnpm deploy` pruning for a minimal per-app `node_modules`; the worker image additionally
 installs Chromium + Noto Sans Devanagari fonts (Playwright PDF rendering with correct
 Devanagari shaping).
@@ -290,14 +270,9 @@ Devanagari shaping).
 
 ## Week-1 verification spikes (run before the stack is considered locked)
 
-1. **pgBackRest → Tigris archive + restore drill** — prove the WAL-archive layer AND a full
-   restore on postgres-flex before launch (no doc certifies pgBackRest against Tigris; treat
-   as "S3-compatible, expected to work" until we have restored from it).
-2. **ts-rest 3.53 / Zod-4 status check** — if 3.53 has left RC, decide the Zod-4 migration
+1. **ts-rest 3.53 / Zod-4 status check** — if 3.53 has left RC, decide the Zod-4 migration
    window; until then the Zod 3.25.x pin stands.
-3. **Tigris single-region pin via `fly storage create`** — confirm the CLI/console path to a
-   `sin`-pinned bucket (flag naming under-documented).
-4. ~~**Exotel BYO-number porting mechanics + AgentStream DTMF**~~ — **RESOLVED**; binding form
+2. ~~**Exotel BYO-number porting mechanics + AgentStream DTMF**~~ — **RESOLVED**; binding form
    is ADR-0019. Findings: BYO is inbound forwarding to the platform ExoPhone only (outbound
    CLI is not portable), AgentStream does not provide DTMF-send, and the 1600-series is closed
    to non-BFSI. Nothing left to verify.

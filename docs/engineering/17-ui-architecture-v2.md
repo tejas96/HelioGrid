@@ -168,7 +168,7 @@ Build the primitives before any component. They are ~8 files × 2 platforms.
    galleries exist only to display the v1 components; they are not migrated.
 4. **Components, in the order the screens need them.** Not alphabetically, not all at
    once. The V1 screen list is `docs/prd/registers/screens.md`,
-   99 screens, block 1 first.
+   block 1 first.
 5. **Rebuild the four existing flows** — login, signup, onboarding, home — on the new
    system. Roughly 7,600 lines of app code exists today; about 40% of it is gallery and
    is deleted rather than ported.
