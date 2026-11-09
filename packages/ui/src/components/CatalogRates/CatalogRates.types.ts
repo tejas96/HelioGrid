@@ -1,5 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { PriceBookRateBasis, Read, UiLanguage } from '@heliogrid/domain';
+import type { PriceBookRateBasis, Read } from '@heliogrid/domain';
 import type { CatalogStrip, CatalogTableWords } from '../CatalogItems/CatalogItems.types';
 import type { NumberFieldWords } from '../NumberField/NumberField.types';
 
@@ -19,7 +19,7 @@ export interface CatalogRatesProps {
   onAddFirst: (() => void) | null;
 }
 
-/** One rate as shown: its name already in the reader's language, its amount as the server sent it. */
+/** One rate as shown: its name as the company wrote it, its amount as the server sent it. */
 export interface CatalogRate {
   readonly key: string;
   readonly name: string;
@@ -116,7 +116,7 @@ export interface CatalogVersionEdit {
  */
 export interface CatalogVersionRow {
   readonly key: string;
-  /** The name in the reader's language, English standing in. */
+  /** The name as the company wrote it. */
   readonly name: string;
   readonly onOpen: () => void;
   readonly basis: PriceBookRateBasis;
@@ -128,21 +128,13 @@ export interface CatalogVersionRow {
 }
 
 /**
- * **The rate sheet's body** (owner ruling 2026-10-24): a rate's name in each language, its basis and
- * *Remove*. The app's sheet or modal holds it and draws *Cancel* and *Done*.
+ * **The rate sheet's body**: a rate's one name, as the company writes it, its basis and *Remove*.
+ * The app's sheet or modal holds it and draws *Cancel* and *Done*.
  */
 export interface CatalogRateEditProps {
-  readonly names: readonly {
-    readonly language: UiLanguage;
-    readonly label: TranslatedText;
-    readonly value: string;
-    /** The English name the company wrote, shown while this language is empty. */
-    // biome-ignore lint/plugin/copy-prop-type: the English name the company wrote
-    readonly placeholder: string;
-    /** *No Hindi name yet — English shows in its place.*; `null` when written. */
-    readonly missing: TranslatedText | null;
-  }[];
-  readonly onName: (language: UiLanguage, name: string) => void;
+  readonly name: string;
+  readonly nameLabel: TranslatedText;
+  readonly onName: (name: string) => void;
   readonly basis: PriceBookRateBasis;
   readonly basisLabel: TranslatedText;
   readonly bases: Readonly<Record<PriceBookRateBasis, TranslatedText>>;
@@ -164,7 +156,6 @@ export interface CatalogVersionWords {
   readonly addRate: TranslatedText;
   /** The phone's next page of versions. */
   readonly moreVersions: TranslatedText;
-  readonly rateName: TranslatedText;
   readonly changed: TranslatedText;
   readonly was: (amount: string) => TranslatedText;
   readonly loadFailed: TranslatedText;

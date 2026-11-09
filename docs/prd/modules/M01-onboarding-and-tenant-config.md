@@ -506,8 +506,7 @@ for a company that has published no version (M01-28).
 - Given a draft pinned to an older version, when it is opened after a publish, then it is
   visibly stale and requires an explicit re-price — never a silent recompute (M01-49, F8-13).
 
-**Localization notes.** Rate names are tenant data (per-language where the tenant authors
-them); currency rendering per F3's single money formatter with the pack's format values
+**Localization notes.** Rate names are tenant data, one value as the tenant writes it (`F3-10`); currency rendering per F3's single money formatter with the pack's format values
 (F3-19/F3-20, F1-21). **Analytics events:** price-book version published (rate count changed) ·
 version browsed · margin default changed.
 
@@ -552,7 +551,7 @@ audit events (F2-22).
 - Given a tenant with untouched template settings, when Quick mode builds a proposal, then the
   platform defaults fill the hidden steps and the result is generable (M01-53, M01-28).
 
-**Localization notes.** Template content is tenant data authored per language (F3-10's class);
+**Localization notes.** Template content is tenant data, one value as the tenant writes it (`F3-10`);
 document rendering is script-correct per F3-15. **Analytics events:** branding saved (palette
 derived? logo?) · template edited (which) · timeline template changed · T&C template saved.
 
@@ -590,7 +589,7 @@ events (F2-22 — money-adjacent settings).
 - Given a template whose tranches sum to anything but 100.00, when save is attempted, then it
   is blocked with the unallocated remainder stated (M01-54).
 
-**Localization notes.** Template and tranche labels are tenant data per language; percentages
+**Localization notes.** Template and tranche labels are tenant data, one value each (`F3-10`); percentages
 and money render per F3. **Analytics events:** tranche template created / edited / archived ·
 default changed.
 

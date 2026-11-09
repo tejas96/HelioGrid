@@ -106,8 +106,9 @@ catalog freshness checks with the oasdiff breaking-change judge, the unit tests 
 | what is protected | what holds it |
 |---|---|
 | The commercial document is a Proposal: no *quote*, *quotation* or *quoting*, in any case or spelling | Biome plugins `banned-word` · `banned-word-css` · `banned-word-json` · invariant `banned-word-other-files` |
-| The catalogs are freshly extracted | `pnpm check:catalogs` |
-| Every UI language is registered: `LANGUAGE_META` and the catalog loaders are `satisfies Record<UiLanguage, …>`; the phone's plural data is not (`docs/tasks/deferred.md`) | typecheck |
+| The catalogs are freshly extracted, and every language translates every line | `pnpm check:catalogs` (`lingui compile --strict`) |
+| A translation fills the same `{slots}` as its English, and every message is a whole piece of copy — no edge space, a word or a slot in it | unit test `packages/i18n/tests/catalog-messages.test.ts` |
+| Every UI language is registered: the catalog loaders and the phone's plural data are `satisfies Record<UiLanguage, …>` over `LANGUAGES` | typecheck |
 | A closed vocabulary's words never merge two members (`F3-12`), and a plural message carries every category its language names | unit tests `packages/i18n/tests/closed-vocabularies.test.ts` · `plural-forms.test.ts` |
 | A language is ready (`F3-27`): every character drawn by the sans stack, a static phone face per sanctioned weight in both bundles, Android resolving each family by name; every face ships every weight | invariant `language-fonts` · the `packages/theme` build (`assertWeightsShipped` in `src/font-metrics.ts`) |
 | One format implementation, the PRD's own strings — a date's names in the reader's words, its order and digits the pack's — and a compacted amount keeps its disclosure (`F3-19`–`F3-24`) | invariant `format-rendering` |
@@ -122,7 +123,7 @@ catalog freshness checks with the oasdiff breaking-change judge, the unit tests 
 | what is protected | what holds it |
 |---|---|
 | The committed OpenAPI equals what the contract emits | `pnpm check:openapi` |
-| A breaking change to the API's shape is refused; a set that grows by design is `x-extensible-enum`; the client-upgrade 426 is on every operation and judged too | `pnpm check:openapi` — oasdiff against the branch's base on `origin/main`, the build CI installs by version and sha256, refused at any other version |
+| A breaking change to the API's shape is refused, unless the owner allowed that exact break and it is listed in `packages/contracts/openapi/accepted-breaks.txt`; a set that grows by design is `x-extensible-enum`; the client-upgrade 426 is on every operation and judged too | `pnpm check:openapi` — oasdiff against the branch's base on `origin/main`, the build CI installs by version and sha256, refused at any other version |
 | Every non-2xx response is the canonical envelope, and a response that breaks its contract answers `INTERNAL` | `apps/api/src/common/filters/envelope-exception.filter.ts` · `validateResponses: true` (`apps/api/src/app.module.ts`) |
 | A status a route throws is one its contract declares, or it answers `INTERNAL` and the log names the route and the status | `apps/api/src/common/filters/declared-statuses.ts` · unit test `apps/api/tests/common/undeclared-status.test.ts` |
 | A framework exception's generic code is chosen explicitly | typecheck (the unexported status map; `httpStatusFor` and `genericErrorCodeByStatus` in `packages/contracts/src/error.ts`) |

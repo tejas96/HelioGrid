@@ -1,8 +1,7 @@
 import { join } from 'node:path';
-import { IN_FORMATS } from '@heliogrid/domain';
+import { IN_FORMATS, LANGUAGES } from '@heliogrid/domain';
 import {
   createTranslator,
-  LANGUAGE_META,
   PROFILE_PREFERENCES,
   presetName,
   settingsRowName,
@@ -53,7 +52,7 @@ test.describe('at 375', () => {
     await expect(languages).toHaveCount(3);
     for (const lang of ['en', 'hi', 'mr'] as const) {
       await expect(
-        card.locator(`[lang="${lang}"]`, { hasText: LANGUAGE_META[lang].endonym }).first(),
+        card.locator(`[lang="${lang}"]`, { hasText: LANGUAGES[lang].endonym }).first(),
       ).toBeVisible();
     }
     await expect(card.getByText(W('deviceLanguage'))).toBeVisible();
@@ -75,7 +74,7 @@ test.describe('at 375', () => {
 
   test('a tap applies at once, and the moved line reads "Your choice"', async ({ mount }) => {
     const card = await mount(<ProfilePreferencesAsHeld reader="en" />);
-    await card.getByRole('radio', { name: LANGUAGE_META.mr.endonym }).click();
+    await card.getByRole('radio', { name: LANGUAGES.mr.endonym }).click();
     await expect(card).toHaveAttribute('data-language', 'mr');
     await card.getByRole('radio', { name: W('feet') }).click();
     await expect(card).toHaveAttribute('data-units', 'imperial');
@@ -197,7 +196,7 @@ test.describe('at 1536', () => {
       expect((await settledBox(row))?.height).toBeGreaterThanOrEqual(64);
     }
     await expect(card.locator('.hg-segmented-control-segment span[lang="hi"]')).toHaveText(
-      LANGUAGE_META.hi.endonym,
+      LANGUAGES.hi.endonym,
     );
     await expect(card.getByText(W('deviceLanguage'))).toBeVisible();
     await expect(card.getByText(MARKET_DEFAULT)).toBeVisible();
@@ -206,7 +205,7 @@ test.describe('at 1536', () => {
     await expect(
       card.getByRole('radiogroup', { name: W('language') }).getByRole('radio'),
     ).toHaveCount(3);
-    await card.getByRole('radio', { name: LANGUAGE_META.hi.endonym }).click();
+    await card.getByRole('radio', { name: LANGUAGES.hi.endonym }).click();
     await expect(card).toHaveAttribute('data-language', 'hi');
     await expectNoSidewaysScroll(page);
   });

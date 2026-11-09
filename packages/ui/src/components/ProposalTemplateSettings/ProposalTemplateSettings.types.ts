@@ -1,10 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { CoverCount, Read, TemplatePart } from '@heliogrid/domain';
 import type { BrandingDocumentFacts } from '../BrandingSettings/BrandingSettings.types';
-import type {
-  LanguageContentState,
-  LanguageSwitcherWords,
-} from '../LanguageSwitcher/LanguageSwitcher.types';
 import type { NumberFieldWords } from '../NumberField/NumberField.types';
 import type { ReorderListWords } from '../ReorderList/ReorderList.types';
 import type { RichTextValue, RichTextWords } from '../RichText/RichText.types';
@@ -37,10 +33,6 @@ export interface ProposalTemplateSettingsWords {
   readonly sections: TranslatedText;
   readonly terms: TranslatedText;
   readonly timeline: TranslatedText;
-  readonly language: TranslatedText;
-  readonly languageNoun: TranslatedText;
-  /** What the strip counts in a language — the parts of the template it holds. */
-  readonly partsNoun: TranslatedText;
   readonly document: TranslatedText;
   readonly documentName: TranslatedText;
   /** The document's ruled name (`F3-11`), stated as content, never a greyed field. */
@@ -83,41 +75,22 @@ export interface ProposalTemplateSettingsWords {
     >
   >;
   sectionsPrint(printing: number, of: number): TranslatedText;
-  /** *Terms in English* — the language named as the strip names it. */
-  termsIn(language: string): TranslatedText;
   /** *≈ 3 pages*, under the terms editor; nothing at zero. */
   pages(count: number): TranslatedText;
   editPhase(phase: string): TranslatedText;
   /** The cover logo's spoken name — *{company} logo*. */
   logoAlt(company: string): TranslatedText;
   readonly richText: RichTextWords;
-  readonly languageSwitcher: LanguageSwitcherWords;
   /** The phases' list says these itself (`reorderListWords`). */
   readonly reorderList: ReorderListWords;
   /** A cover count's field says these itself (`numberFieldWords`). */
   readonly numberField: NumberFieldWords;
 }
 
-/** A language in a part's strip (`LanguageSwitcher`, `labelHidden`): named in itself, written or not. */
-export interface TemplateLanguage {
-  readonly code: string;
-  readonly label: TranslatedText;
-  readonly state: LanguageContentState;
-}
-
-/** The strip a part draws once it is the tenant's own; a HelioGrid's part draws none. */
-export interface TemplateLanguageStrip {
-  readonly languages: readonly TemplateLanguage[];
-  readonly value: string;
-  onChange(code: string): void;
-}
-
 export interface TemplateCoverPart {
   readonly origin: TemplateOrigin;
-  readonly strip: TemplateLanguageStrip;
-  /** The *About* text in the strip's language. */
+  /** The *About* text as the company wrote it, shown as written in every language. */
   readonly about: string;
-  readonly aboutError?: TranslatedText;
   onAbout(text: string): void;
   readonly counts: Readonly<Record<TemplateCoverCount, number | null>>;
   onCount(count: TemplateCoverCount, value: number | null): void;
@@ -143,15 +116,12 @@ export interface TemplateSectionsPart {
 
 export interface TemplateTermsPart {
   readonly origin: TemplateOrigin;
-  readonly strip: TemplateLanguageStrip;
-  /** The strip's language's name, for *Terms in …*. */
-  readonly languageName: string;
   readonly value: RichTextValue;
   readonly error?: TranslatedText;
   onChange(value: RichTextValue): void;
 }
 
-/** A phase row: its name and sentence in the reader's language, and the key it moves by. */
+/** A phase row: its name and sentence as the company wrote them, and the key it moves by. */
 export interface TemplatePhaseRow {
   readonly key: number;
   /** The phase's name as the company wrote it. */
@@ -234,17 +204,12 @@ export interface ProposalTemplateSettingsProps {
   readonly act?: TemplateAct;
 }
 
-/** The phase editor's body (m19-g, m19-l): the strip, *Phase name*, *What happens in this phase*. */
+/** The phase editor's body (m19-g, m19-l): *Phase name*, then *What happens in this phase*. */
 export interface TemplatePhaseFieldsProps {
   readonly words: {
-    readonly language: TranslatedText;
-    readonly languageNoun: TranslatedText;
-    readonly partsNoun: TranslatedText;
     readonly phaseName: TranslatedText;
     readonly phaseWhat: TranslatedText;
-    readonly languageSwitcher: LanguageSwitcherWords;
   };
-  readonly strip: TemplateLanguageStrip;
   readonly name: string;
   readonly what: string;
   readonly nameError?: TranslatedText;

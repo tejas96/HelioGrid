@@ -19,7 +19,10 @@ export function gitFiles(repo: string, paths: readonly string[]): string[] {
     .filter((file) => file !== '' && existsSync(join(repo, file)));
 }
 
-/** Every file under `folder` (relative to `repo`), never descending into a folder `skip` names. */
+/**
+ * Every file under `folder` (relative to `repo`), never descending into a folder `skip` names. A
+ * link whose target is gone (a generated header CocoaPods points at before a build) is no file.
+ */
 export function walkFiles(repo: string, folder: string, skip: ReadonlySet<string>): string[] {
   const full = join(repo, folder);
   if (!existsSync(full)) return [];
@@ -28,9 +31,9 @@ export function walkFiles(repo: string, folder: string, skip: ReadonlySet<string
     .sort()
     .flatMap((entry) => {
       const path = join(folder, entry);
-      if (statSync(join(repo, path)).isDirectory()) {
-        return skip.has(entry) ? [] : walkFiles(repo, path, skip);
-      }
+      const found = statSync(join(repo, path), { throwIfNoEntry: false });
+      if (found === undefined) return [];
+      if (found.isDirectory()) return skip.has(entry) ? [] : walkFiles(repo, path, skip);
       return [path];
     });
 }

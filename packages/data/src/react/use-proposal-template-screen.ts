@@ -1,9 +1,9 @@
 'use client';
 import {
   opensSettingsRow,
+  type TemplateDefaults,
   type TemplatePart,
   type TimelinePhase,
-  type UiLanguage,
 } from '@heliogrid/domain';
 import { useState } from 'react';
 import { type ProposalTemplateView, templateViewOf } from './proposal-template-view';
@@ -36,51 +36,40 @@ export interface TemplateOverlayState {
 
 /**
  * The Proposal template (`SCR-M01-19`, `M01-51`, `M01-52`) as both screens draw it, assembled once
- * (Law 11, `F7-30`): the page as read, edited and saved, its view in the chosen languages, which
+ * (Law 11, `F7-30`): the page as read, edited and saved, its view, which
  * part is open, the overlays and the ask before leaving a held change.
  */
 export interface ProposalTemplateScreen {
   /** The person's presets open the Proposal template row (`F7-48`); the web answers not found without. */
   readonly allowed: boolean;
   readonly page: ProposalTemplatePage;
-  /** The page in the languages chosen on the Cover and Terms strips, phases in the reader's own. */
   readonly view: ProposalTemplateView;
   readonly part: TemplatePart;
-  readonly coverLanguage: UiLanguage;
-  readonly termsLanguage: UiLanguage;
   /** Either record differs from what is saved: the act bar shows, and a way out asks first. */
   readonly held: boolean;
   readonly overlays: TemplateOverlayState;
   readonly leave: LeaveAsk;
   choosePart(next: TemplatePart): void;
-  chooseCoverLanguage(next: UiLanguage): void;
-  chooseTermsLanguage(next: UiLanguage): void;
   /** *Save template*; a refused save first opens the part whose field says why, so the reason is in view. */
   save(): void;
 }
 
-/** `reader` is the person's own language (`useI18n().locale`), which a phase shows in (`F3-10`). */
-export function useProposalTemplateScreen(reader: UiLanguage): ProposalTemplateScreen {
+/** `defaults` are the platform's terms and phases in the reader's words (`documentDefaults(t)`). */
+export function useProposalTemplateScreen(defaults: TemplateDefaults): ProposalTemplateScreen {
   const { user } = useSession();
-  const page = useProposalTemplate();
+  const page = useProposalTemplate(defaults);
   const [part, setPart] = useState<TemplatePart>('cover');
-  const [coverLanguage, setCoverLanguage] = useState<UiLanguage>('en');
-  const [termsLanguage, setTermsLanguage] = useState<UiLanguage>('en');
   const overlays = useTemplateOverlays(page);
   const leave = useLeaveAsk(page.discard);
   return {
     allowed: opensSettingsRow(user?.tenant?.roles ?? [], 'proposal_templates'),
     page,
-    view: templateViewOf(page.draft, { cover: coverLanguage, terms: termsLanguage }, reader),
+    view: templateViewOf(page.draft, defaults),
     part,
-    coverLanguage,
-    termsLanguage,
     held: page.changed.template || page.changed.timeline,
     overlays,
     leave,
     choosePart: setPart,
-    chooseCoverLanguage: setCoverLanguage,
-    chooseTermsLanguage: setTermsLanguage,
     save: () => {
       if (page.refusedPart !== null) setPart(page.refusedPart);
       page.save();

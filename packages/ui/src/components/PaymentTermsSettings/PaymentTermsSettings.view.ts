@@ -98,13 +98,13 @@ export function termsEditorViewOf(input: {
   const { draft } = editor;
   const id = draft.id;
   return {
-    title: editor.made ? words.newTerms : draft.name.shown,
+    title: editor.made ? words.newTerms : draft.name,
     ...(editor.changed ? { overline: words.notSaved } : {}),
     body: {
       words,
       letterhead: input.letterhead,
       preview: termsPreviewOf(editor.preview, context),
-      name: draft.name.shown,
+      name: draft.name,
       ...(editor.refusalsShown && editor.refusals.name === 'required'
         ? { nameError: words.termsNameNeeded }
         : {}),

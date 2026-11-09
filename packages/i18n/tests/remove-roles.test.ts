@@ -27,8 +27,8 @@ describe('removeRolesWords — the confirm names what leaves and what is lost (m
       leave: 'Cancel',
       body: 'Once saved, Vikram can no longer design.',
       note: {
-        lead: 'You can give it back at any time',
-        rest: " — tick Design Engineer on Vikram's row again.",
+        lead: 'You can give it back at any time.',
+        rest: "Tick Design Engineer on Vikram's row again.",
       },
     });
   });
@@ -38,9 +38,9 @@ describe('removeRolesWords — the confirm names what leaves and what is lost (m
     expect(words.title).toBe('Remove Design Engineer and Installation Team Member from Vikram?');
     expect(words.go).toBe('Remove roles');
     expect(words.body).toBe('Once saved, Vikram can no longer design and install.');
-    expect(words.note.lead).toBe('You can give them back at any time');
+    expect(words.note.lead).toBe('You can give them back at any time.');
     expect(words.note.rest).toBe(
-      " — tick Design Engineer and Installation Team Member on Vikram's row again.",
+      "Tick Design Engineer and Installation Team Member on Vikram's row again.",
     );
   });
 

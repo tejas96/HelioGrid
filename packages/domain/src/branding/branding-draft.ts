@@ -1,5 +1,4 @@
 import type { BrandingSettings, Letterhead } from '../commerce/effective-settings';
-import type { PackLabel } from '../format/languages';
 import {
   type SettingsLastSave,
   type SettingsStanding,
@@ -49,14 +48,12 @@ export interface BrandingDraftWrite extends BrandingSettings {
   readonly logoFileId?: string | null;
 }
 
-const english = (label: PackLabel | null | undefined): string => label?.en ?? '';
-
 export function brandingDraftOf(saved: BrandingSaved): BrandingDraft {
   return {
     brandColour: saved.brandColour,
-    tagline: english(saved.letterhead?.tagline),
-    lines: (saved.letterhead?.lines ?? []).map(english).join('\n'),
-    footerNote: english(saved.letterhead?.footerNote),
+    tagline: saved.letterhead?.tagline ?? '',
+    lines: (saved.letterhead?.lines ?? []).join('\n'),
+    footerNote: saved.letterhead?.footerNote ?? '',
     logoFileId: saved.logoFileId,
   };
 }
@@ -112,22 +109,18 @@ export function brandingSendable(draft: BrandingDraft): boolean {
   );
 }
 
-/** The English slot replaced, every other language kept; an empty English clears the label. */
-function relabelled(stored: PackLabel | null | undefined, text: string): PackLabel | null {
+/** A one-line field as saved: trimmed, and an empty one clears it. */
+function fieldOf(text: string): string | null {
   const trimmed = text.trim();
-  return trimmed === '' ? null : { ...stored, en: trimmed };
+  return trimmed === '' ? null : trimmed;
 }
 
 function letterheadOf(saved: BrandingSaved, draft: BrandingDraft): Letterhead | null {
   const stored = saved.letterhead;
   const letterhead: Letterhead = {
-    tagline: relabelled(stored?.tagline, draft.tagline),
-    // A line keeps its other languages only while its English is the same line, found by its
-    // words: by position, a line deleted or moved would hand its neighbour's Hindi to another.
-    lines: letterheadLinesOf(draft.lines).map(
-      (line) => stored?.lines.find((held) => held.en === line) ?? { en: line },
-    ),
-    footerNote: relabelled(stored?.footerNote, draft.footerNote),
+    tagline: fieldOf(draft.tagline),
+    lines: letterheadLinesOf(draft.lines),
+    footerNote: fieldOf(draft.footerNote),
   };
   const empty =
     letterhead.tagline === null && letterhead.lines.length === 0 && letterhead.footerNote === null;

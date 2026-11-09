@@ -4,6 +4,7 @@ import {
   COMPANY_PROFILE_STANDING_WORD,
   COMPANY_SIGNUP,
   createTranslator,
+  POSTAL_CODE_SPECIMEN,
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator } from '@playwright/test';
@@ -163,7 +164,7 @@ test('the address part asks the street, reads back the city and asks the PIN cod
   expect(await bottomOf(city)).toBeLessThan((await settledBox(pin))?.y ?? 0);
 
   await expect(street).toHaveAttribute('placeholder', en.t(COMPANY_PROFILE.streetExample));
-  await expect(pin).toHaveAttribute('placeholder', en.t(COMPANY_PROFILE.postalCodeExample));
+  await expect(pin).toHaveAttribute('placeholder', POSTAL_CODE_SPECIMEN);
   await expect(city).toHaveValue('Pune');
   await expect(profile.getByText(FROM_SIGNUP)).toBeVisible();
   await expect(pin).toHaveCSS('font-family', /Mono/);

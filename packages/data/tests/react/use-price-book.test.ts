@@ -21,7 +21,7 @@ describe('the price book, through the real client', () => {
       await view.result.current.publish.run({
         note: 'First rates',
         defaultMarginPct: '16.50',
-        rates: [{ name: { en: 'Site survey' }, basis: 'per_visit', amount: '1500' }],
+        rates: [{ name: 'Site survey', basis: 'per_visit', amount: '1500' }],
       });
     });
     expect(told).toEqual([1]);

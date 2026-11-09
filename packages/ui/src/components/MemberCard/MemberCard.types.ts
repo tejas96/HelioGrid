@@ -184,7 +184,7 @@ export interface TeamConfirmWords {
   refusal?: { title: TranslatedText; body: TranslatedText | null };
   /** The go button is off, and why — the refused form's route out. */
   goOffReason?: TranslatedText;
-  /** The way back, under the body: a bold lead, then the rest of the sentence. */
+  /** The way back, under the body: a bold lead sentence, then the sentence that says how. */
   note?: { lead: TranslatedText; rest: TranslatedText };
 }
 

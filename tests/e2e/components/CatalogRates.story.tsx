@@ -161,9 +161,7 @@ export function CatalogVersionAsRead({
     const amount = rate.key === 'engineering' ? '7000' : rate.amount;
     return {
       key: rate.key,
-      ...versionRowWords(t, { name: { en: rate.name }, amount, was: rate.amount }, reader, (a) =>
-        format.money(a),
-      ),
+      ...versionRowWords(t, { name: rate.name, amount, was: rate.amount }, (a) => format.money(a)),
       onOpen: () => setOpened(rate.key),
       basis: rate.basis,
       amount,
@@ -188,18 +186,17 @@ export function CatalogVersionAsRead({
   );
 }
 
-/** The rate sheet on *Engineering and drawings*: English written, Hindi and Marathi not yet. */
+/** The rate sheet on *Engineering and drawings*. */
 export function CatalogRateEditAsRead({ reader }: { reader: UiLanguage }) {
   const { t } = READERS[reader];
-  const [name, setName] = useState<Partial<Record<UiLanguage, string>>>({
-    en: 'Engineering and drawings',
-  });
+  const [name, setName] = useState('Engineering and drawings');
   const words = rateSheetWords(t, { name }, false);
   return (
     <div lang={reader} style={{ padding: 16, maxWidth: 480 }}>
       <CatalogRateEdit
-        names={words.names}
-        onName={(language, value) => setName((now) => ({ ...now, [language]: value }))}
+        name={name}
+        nameLabel={words.nameLabel}
+        onName={setName}
         basis="per_job"
         basisLabel={words.basis}
         select={words.select}

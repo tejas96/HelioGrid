@@ -1,11 +1,6 @@
 import { type CompliantShades, compliantShades } from '../branding/compliant-shades';
 import { type CalendarDate, holidaysInForce } from '../format/holidays';
-import {
-  type AuthoredPerLanguage,
-  type PackLabel,
-  UI_SOURCE_LOCALE,
-  type UiLanguage,
-} from '../format/languages';
+import { UI_SOURCE_LOCALE, type UiLanguage } from '../format/languages';
 import type { FormatPack } from '../format/pack';
 import type { BasisPoints } from '../money/basis-points';
 import type { ProjectChainStage } from '../projects/stages';
@@ -17,13 +12,12 @@ import {
 import type { TenantSegment } from '../tenancy/segment';
 import {
   DEFAULT_SECTIONS_INCLUDED,
-  DEFAULT_TERMS,
   type ProposalCover,
   type ProposalSection,
 } from './proposal-template-defaults';
 import type { RichTextValue } from './rich-text';
-import { DEFAULT_TIMELINE_PHASES, type TimelinePhase } from './timeline-template-defaults';
-import { STANDARD_TRANCHE_TEMPLATES } from './tranche-template-defaults';
+import type { TimelinePhase } from './timeline-template-defaults';
+import type { TrancheTemplateDefault } from './tranche-template-defaults';
 
 /**
  * The tenant's settings as ONE shape (`M01-28`, `M01-53` — Law 11): what the tenant stored, and
@@ -68,9 +62,9 @@ export interface TaxRegistration {
 
 /** The band's extra lines and the note along every page's foot — the design system's `DocumentLetterhead`. */
 export interface Letterhead {
-  readonly tagline: PackLabel | null;
-  readonly lines: readonly PackLabel[];
-  readonly footerNote: PackLabel | null;
+  readonly tagline: string | null;
+  readonly lines: readonly string[];
+  readonly footerNote: string | null;
 }
 
 export interface BrandingSettings {
@@ -81,22 +75,35 @@ export interface BrandingSettings {
 export interface ProposalTemplateSettings {
   readonly cover: ProposalCover | null;
   readonly sectionsIncluded: readonly ProposalSection[];
-  /** The tenant's own words, per language — resolved through `authoredIn`, never silently (`F3-10`). */
-  readonly defaultTerms: AuthoredPerLanguage<RichTextValue>;
+  /** The tenant's own words — one value, shown as written (`F3-10`). */
+  readonly defaultTerms: RichTextValue;
+}
+
+/**
+ * The proposal template as stored: `defaultTerms` is null while the terms are still the platform's,
+ * so they keep reading in each reader's words until the tenant writes its own (`F3-10`).
+ */
+export interface StoredProposalTemplate extends Omit<ProposalTemplateSettings, 'defaultTerms'> {
+  readonly defaultTerms: RichTextValue | null;
 }
 
 export interface TimelineTemplateSettings {
   readonly phases: readonly TimelinePhase[];
 }
 
+/** The timeline as stored: `phases` null while they are still the platform's, read per reader (`F3-10`). */
+export interface StoredTimelineTemplate {
+  readonly phases: readonly TimelinePhase[] | null;
+}
+
 export interface TrancheLine {
-  readonly label: PackLabel;
+  readonly label: string;
   readonly share: BasisPoints;
   readonly dueOnStage: ProjectChainStage;
 }
 
 export interface TrancheTemplateContent {
-  readonly name: PackLabel;
+  readonly name: string;
   readonly lines: readonly TrancheLine[];
 }
 
@@ -118,8 +125,8 @@ export interface TenantSettings {
   readonly businessProfile: BusinessProfileSettings | null;
   readonly taxRegistrations: readonly TaxRegistration[];
   readonly branding: BrandingSettings | null;
-  readonly proposalTemplate: ProposalTemplateSettings | null;
-  readonly timelineTemplate: TimelineTemplateSettings | null;
+  readonly proposalTemplate: StoredProposalTemplate | null;
+  readonly timelineTemplate: StoredTimelineTemplate | null;
   readonly trancheTemplates: readonly TrancheTemplate[];
   readonly holidays: readonly TenantHoliday[];
 }
@@ -170,11 +177,23 @@ export interface EffectiveSettings {
   readonly pendingPromptPoints: readonly PromptPointFact[];
 }
 
+/**
+ * The platform's document defaults in ONE reader's words — catalog copy, so `packages/i18n`'s
+ * `documentDefaults` builds them and this package never holds a translation. A default stays the
+ * platform's, in whoever reads it, until the tenant saves its own (`M01-28`, `F3-10`).
+ */
+export interface DocumentDefaults {
+  readonly terms: RichTextValue;
+  readonly phases: readonly TimelinePhase[];
+  readonly trancheTemplates: readonly [TrancheTemplateDefault, TrancheTemplateDefault];
+}
+
 export interface EffectiveSettingsInput {
   readonly formats: FormatPack;
   readonly tenant: TenantFacts;
   readonly settings: TenantSettings;
   readonly promptPoints: PromptPointStates;
+  readonly defaults: DocumentDefaults;
 }
 
 /**
@@ -229,10 +248,11 @@ function brandingInForce(branding: BrandingSettings | null): Resolved<BrandingIn
 
 function trancheTemplateInForce(
   templates: readonly TrancheTemplate[],
+  defaults: DocumentDefaults,
 ): Resolved<TrancheTemplateInForce> {
   const own = templates.find((template) => template.isDefault && !template.archived);
   if (own === undefined) {
-    const [first] = STANDARD_TRANCHE_TEMPLATES;
+    const [first] = defaults.trancheTemplates;
     return { source: 'platform', value: { id: null, name: first.name, lines: first.lines } };
   }
   return {
@@ -265,7 +285,7 @@ function localeInForce(formats: FormatPack, tenant: TenantFacts): Resolved<Local
 
 /** Every setting in force for one tenant — the platform default wherever the tenant set nothing (`M01-28`). */
 export function resolveEffectiveSettings(input: EffectiveSettingsInput): EffectiveSettings {
-  const { formats, tenant, settings, promptPoints } = input;
+  const { formats, tenant, settings, promptPoints, defaults } = input;
   return {
     companyIdentity: identityInForce(tenant, settings.businessProfile),
     taxRegistrations:
@@ -273,13 +293,22 @@ export function resolveEffectiveSettings(input: EffectiveSettingsInput): Effecti
         ? { source: 'platform', value: [] }
         : { source: 'tenant', value: settings.taxRegistrations },
     branding: brandingInForce(settings.branding),
-    proposalTemplate: tenantOr(settings.proposalTemplate, {
-      cover: null,
-      sectionsIncluded: DEFAULT_SECTIONS_INCLUDED,
-      defaultTerms: DEFAULT_TERMS,
-    }),
-    timelineTemplate: tenantOr(settings.timelineTemplate, { phases: DEFAULT_TIMELINE_PHASES }),
-    defaultTrancheTemplate: trancheTemplateInForce(settings.trancheTemplates),
+    proposalTemplate: tenantOr(
+      settings.proposalTemplate === null
+        ? null
+        : {
+            ...settings.proposalTemplate,
+            defaultTerms: settings.proposalTemplate.defaultTerms ?? defaults.terms,
+          },
+      { cover: null, sectionsIncluded: DEFAULT_SECTIONS_INCLUDED, defaultTerms: defaults.terms },
+    ),
+    timelineTemplate: tenantOr(
+      settings.timelineTemplate === null
+        ? null
+        : { phases: settings.timelineTemplate.phases ?? defaults.phases },
+      { phases: defaults.phases },
+    ),
+    defaultTrancheTemplate: trancheTemplateInForce(settings.trancheTemplates, defaults),
     holidays: holidaysResolved(formats, settings.holidays),
     locale: localeInForce(formats, tenant),
     pendingPromptPoints: pendingPromptPoints(promptPoints, absentFacts(settings)),

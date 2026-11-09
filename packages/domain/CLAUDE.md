@@ -45,7 +45,8 @@
   label falls back to English, `F3-05`). Labels live on the pack, not in `packages/i18n`, so
   `UI_LANGUAGES` is authored here. Stage, blocker, checklist and payment-mode keys are open-set
   strings checked against the pack: a reader returns `null` for an unknown key. A tenant's own
-  words go through `authoredIn`, never `inLanguage` (`F3-10`); only review holds this.
+  words are one `string` (or one `RichTextValue`), shown as written — never a `PackLabel`
+  (`F3-10`). The platform's document defaults are catalog copy, passed in as `DocumentDefaults`.
 - **An amount is `MinorUnits` and a rate is `BasisPoints`** (`money/`), brands with one constructor
   each, and `money/` is the ONLY slice that rounds — `applyRate` for a fraction of an
   amount, `amountForQuantity` for a quantity at a per-unit price — so BOM, proposal and invoice can

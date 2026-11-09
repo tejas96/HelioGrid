@@ -110,8 +110,8 @@ function SessionLanguage({
   children: ReactNode;
 }) {
   const { user, setInterfaceLanguage } = useSession();
-  const onDocumentLanguage = useCallback(({ meta }: LocaleChange) => {
-    document.documentElement.lang = meta.tag;
+  const onDocumentLanguage = useCallback(({ locale, meta }: LocaleChange) => {
+    document.documentElement.lang = locale;
     document.documentElement.dir = meta.dir;
   }, []);
   return (

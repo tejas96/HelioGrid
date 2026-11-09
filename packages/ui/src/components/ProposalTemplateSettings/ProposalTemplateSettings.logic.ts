@@ -81,7 +81,7 @@ export function templatePartOf(value: string): TemplatePartName | undefined {
 /**
  * The document the stage and an app's full-size reader both draw (`docPreview`): the cover from
  * Branding's facts (`brandingCoverProps`, so the two covers cannot differ), the sample customer and
- * number, the sections in document order and the terms in the strip's language.
+ * number, the sections in document order and the terms.
  */
 export function templateDocumentProps(
   document: TemplateDocument,

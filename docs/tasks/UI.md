@@ -36,7 +36,7 @@ facts block sit on the page with no surface (`SCR-M01-02`).
 control is the opposite of what holds it: `--fill` on the page or a sheet (`T-FPLAT-082c`),
 `--surface` inside a tile, flat, and `--canvas-sunken` when disabled — `Checkbox`, `Radio`, `Chip`
 (static and pressable alike) and the neutral `Badge`, `IconButton`'s surface variant,
-`LanguageSwitcher`'s pill, `EmptyState`'s disc, `TimeField`'s presets, `Slider`'s steps,
+`EmptyState`'s disc, `TimeField`'s presets, `Slider`'s steps,
 `Stepper`'s markers and indicator. A track takes that fill (`Switch`,
 `Slider`, `SegmentedControl`, `Stepper`'s track, dots and lines) and the knob on it the ground
 (white on the page, `--fill` in a tile). A step not yet reached is a filled disc with its

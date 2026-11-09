@@ -1,7 +1,12 @@
-import { type TranslatedText, UI_SOURCE_LOCALE, type UiLanguage } from '@heliogrid/contracts';
+import {
+  LANGUAGES,
+  type TranslatedText,
+  UI_SOURCE_LOCALE,
+  type UiLanguage,
+} from '@heliogrid/contracts';
 import { inLanguage, type PackLabel, withLatinDigits } from '@heliogrid/domain';
 import { type I18n, type Messages, setupI18n } from '@lingui/core';
-import { LANGUAGE_META, loadCatalog, SOURCE_CATALOG } from './languages';
+import { loadCatalog, SOURCE_CATALOG } from './languages';
 
 /** A sentence as a copy module authors it: the id IS the English source text — THE CONVENTION. */
 export interface MessageRef {
@@ -27,7 +32,7 @@ function idOf(message: string | MessageRef): string {
 function activate(i18n: I18n, locale: UiLanguage, messages: Messages): void {
   i18n.loadAndActivate({
     locale,
-    locales: [withLatinDigits(LANGUAGE_META[locale].tag)],
+    locales: [withLatinDigits(locale)],
     messages,
   });
 }
@@ -81,7 +86,7 @@ export function packWords(label: PackLabel, reader: UiLanguage): TranslatedText 
 function translatorFor(i18n: I18n, locale: UiLanguage): Translator {
   return {
     locale,
-    dir: LANGUAGE_META[locale].dir,
+    dir: LANGUAGES[locale].dir,
     t: (message, values) => wordsOf(i18n, message, values),
   };
 }

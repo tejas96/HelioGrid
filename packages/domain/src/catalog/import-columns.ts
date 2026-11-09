@@ -1,4 +1,4 @@
-import { UI_LANGUAGES, type UiLanguage } from '../format/languages';
+import { type PerLanguage, UI_LANGUAGES } from '../format/languages';
 import { importTextKey } from './import-text';
 
 /**
@@ -56,16 +56,16 @@ export type CatalogImportField = (typeof CATALOG_IMPORT_FIELDS)[number];
 export type CatalogImportCells = Readonly<Partial<Record<CatalogImportField, string>>>;
 
 /**
- * The header words each field answers to, per launch language. Keyed by `UiLanguage`, so a language
- * added to `UI_LANGUAGES` does not compile here until every field says which words it answers to
- * in it — an empty list where a sheet in that language writes the English term (`Voc`, `MPPT`).
+ * The header words each field answers to, per language. English is required; another language
+ * lists its own words where a sheet in it writes them, and is absent where its sheets write the
+ * English term (`Voc`, `MPPT`) — so a new language needs no entry here to ship.
  * Compared through `importTextKey` with a trailing unit dropped, so `Rate (₹)`, `RATE` and
  * `rate inr` all read `rate`. A word belongs to one field only, and a word that could name two —
  * `type`, `company`, `cost` — names none: the person places that column.
  */
-type HeaderWords = Readonly<Record<UiLanguage, readonly string[]>>;
+type HeaderWords = PerLanguage<readonly string[]>;
 
-const ENGLISH_ONLY = (...en: string[]): HeaderWords => ({ en, hi: [], mr: [] });
+const ENGLISH_ONLY = (...en: string[]): HeaderWords => ({ en });
 
 export const HEADER_WORDS: Readonly<Record<CatalogImportField, HeaderWords>> = {
   kind: {
@@ -169,7 +169,7 @@ export function columnKey(header: string): string {
 
 const FIELD_BY_KEY: ReadonlyMap<string, CatalogImportField> = new Map(
   CATALOG_IMPORT_FIELDS.flatMap((field) =>
-    UI_LANGUAGES.flatMap((language) => HEADER_WORDS[field][language]).map(
+    UI_LANGUAGES.flatMap((language) => HEADER_WORDS[field][language] ?? []).map(
       (word) => [columnKey(word), field] as const,
     ),
   ),

@@ -50,13 +50,7 @@ export function TemplatePart(props: PartProps) {
 function CoverPart({ words, wide, cover, onWriteOwn }: PartProps) {
   return (
     <div className="hg-template-part">
-      <PartSource
-        words={words}
-        part="cover"
-        origin={cover.origin}
-        strip={cover.strip}
-        onWriteOwn={onWriteOwn}
-      />
+      <PartSource words={words} part="cover" origin={cover.origin} onWriteOwn={onWriteOwn} />
       <FactRows label={words.document} density="functional">
         <FactRow label={words.documentName} value={words.proposal} density="functional" />
       </FactRows>
@@ -67,7 +61,6 @@ function CoverPart({ words, wide, cover, onWriteOwn }: PartProps) {
         rows={wide ? TEMPLATE_ABOUT.rows.wide : TEMPLATE_ABOUT.rows.narrow}
         maxLength={TEMPLATE_ABOUT.maxLength}
         density="functional"
-        {...(cover.aboutError === undefined ? {} : { error: cover.aboutError })}
       />
       <div className="hg-template-counts">
         <CountField {...{ words, cover }} count="totalCapacityInstalledKw" />
@@ -110,18 +103,12 @@ function CountField({
   );
 }
 
-/** The terms: whose they are, then the editor in the strip's language with its page count. */
+/** The terms: whose they are, then the editor with its page count. */
 function TermsPart({ words, terms, onWriteOwn }: PartProps) {
   const pages = termsPageCount(terms.value);
   return (
     <div className="hg-template-part">
-      <PartSource
-        words={words}
-        part="terms"
-        origin={terms.origin}
-        strip={terms.strip}
-        onWriteOwn={onWriteOwn}
-      />
+      <PartSource words={words} part="terms" origin={terms.origin} onWriteOwn={onWriteOwn} />
       <div className="hg-template-terms">
         {/* Above the editor, so a refused save's reason is in view over the act bar. */}
         {terms.error === undefined ? null : (
@@ -130,10 +117,8 @@ function TermsPart({ words, terms, onWriteOwn }: PartProps) {
           </Text>
         )}
         <RichText
-          /* A new language is a new body: the editor starts again from that language's value. */
-          key={terms.strip.value}
           words={words.richText}
-          label={words.termsIn(terms.languageName)}
+          label={words.termsTitle}
           value={terms.value}
           onChange={terms.onChange}
           minHeight={TEMPLATE_TERMS_MIN_HEIGHT}

@@ -12,6 +12,9 @@ import { SettingsTemplatesService } from './settings.templates.service';
 
 const MANAGE = { capability: 'onboarding.manage_tenant_settings' } as const;
 
+/** The language the request's person reads in — the words of any platform default it is shown. */
+const readerOf = (req: Request) => uiLanguageOrSource(sessionOf(req).actor.interfaceLanguage);
+
 @Controller()
 export class SettingsController {
   // Explicit tokens: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
@@ -66,7 +69,10 @@ export class SettingsController {
   handler(@Req() req: Request) {
     const tenantId = () => tenantIdOf(req);
     return tsRestHandler(tenantSettingsContract, {
-      effective: async () => ({ status: 200, body: await this.settings.effective(tenantId()) }),
+      effective: async () => ({
+        status: 200,
+        body: await this.settings.effective(tenantId(), readerOf(req)),
+      }),
       businessProfile: async () => ({
         status: 200,
         body: await this.settings.businessProfile(tenantId()),
@@ -81,12 +87,7 @@ export class SettingsController {
       }),
       saveTaxRegistrations: async ({ body }) => ({
         status: 200,
-        body: await this.settings.saveTaxRegistrations(
-          tenantId(),
-          body,
-          actOf(req),
-          uiLanguageOrSource(sessionOf(req).actor.interfaceLanguage),
-        ),
+        body: await this.settings.saveTaxRegistrations(tenantId(), body, actOf(req), readerOf(req)),
       }),
       quietHours: async () => ({
         status: 200 as const,
@@ -101,21 +102,31 @@ export class SettingsController {
         status: 200,
         body: await this.branding.save(tenantId(), body, actOf(req)),
       }),
-      proposalTemplate: async () => ({
+      proposalTemplate: async ({ query }) => ({
         status: 200,
-        body: await this.templates.proposalTemplate(tenantId()),
+        body: await this.templates.proposalTemplate(tenantId(), query.reader ?? readerOf(req)),
       }),
       saveProposalTemplate: async ({ body }) => ({
         status: 200,
-        body: await this.templates.saveProposalTemplate(tenantId(), body, actOf(req)),
+        body: await this.templates.saveProposalTemplate(
+          tenantId(),
+          body,
+          actOf(req),
+          readerOf(req),
+        ),
       }),
-      timelineTemplate: async () => ({
+      timelineTemplate: async ({ query }) => ({
         status: 200,
-        body: await this.templates.timelineTemplate(tenantId()),
+        body: await this.templates.timelineTemplate(tenantId(), query.reader ?? readerOf(req)),
       }),
       saveTimelineTemplate: async ({ body }) => ({
         status: 200,
-        body: await this.templates.saveTimelineTemplate(tenantId(), body, actOf(req)),
+        body: await this.templates.saveTimelineTemplate(
+          tenantId(),
+          body,
+          actOf(req),
+          readerOf(req),
+        ),
       }),
       trancheTemplates: async () => ({
         status: 200,

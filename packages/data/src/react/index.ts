@@ -10,7 +10,7 @@ export type { BrandingCover, BrandingFields } from './branding-cover';
 export { useRepositories } from './context';
 export type { HostLifecycle } from './host-lifecycle';
 export { followHostLifecycle } from './host-lifecycle';
-export type { ProposalTemplateView, WrittenIn } from './proposal-template-view';
+export type { ProposalTemplateView } from './proposal-template-view';
 export { templateViewOf } from './proposal-template-view';
 export { DataProvider } from './provider';
 export type { AddCatalogItemOptions } from './use-add-catalog-item';

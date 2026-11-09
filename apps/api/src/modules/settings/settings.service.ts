@@ -25,6 +25,7 @@ import { ContractException } from '../../common/errors/contract-exception';
 import { FileService } from '../file/file.public';
 import { MarketPackService } from '../market/market.public';
 import type { TenantQuietHours } from '../notification/notification.public';
+import { documentDefaultsIn } from './internal/document-defaults';
 import { refuseUnlessOwnLogo } from './internal/own-logo';
 import { effectiveWire } from './internal/wire';
 import { SettingsAdminRepository } from './settings.admin.repository';
@@ -49,8 +50,13 @@ export class SettingsService {
     @Inject(FileService) private readonly files: FileService,
   ) {}
 
-  async effective(tenantId: string): Promise<EffectiveSettingsWire> {
-    return effectiveWire(await this.inForce(tenantId));
+  /**
+   * `reader` words the platform's document defaults — catalog copy, in its reader's language until
+   * the tenant saves its own (`F3-10`). A read that shows none of them leaves it out, and the
+   * company's default language words them.
+   */
+  async effective(tenantId: string, reader?: UiLanguage): Promise<EffectiveSettingsWire> {
+    return effectiveWire(await this.inForce(tenantId, reader));
   }
 
   /** The identity facts in force, and beside them the bank details typed half way, as stored. */
@@ -133,8 +139,8 @@ export class SettingsService {
   }
 
   /** Every setting resolved for this tenant — one read, one rule (`M01-28`). */
-  private async inForce(tenantId: string): Promise<EffectiveSettings> {
-    return this.resolved(await this.stored(tenantId));
+  private async inForce(tenantId: string, reader?: UiLanguage): Promise<EffectiveSettings> {
+    return this.resolved(await this.stored(tenantId), reader);
   }
 
   private async stored(tenantId: string): Promise<TenantSettingsRead> {
@@ -143,14 +149,21 @@ export class SettingsService {
     return read;
   }
 
-  private async resolved(read: TenantSettingsRead): Promise<EffectiveSettings> {
+  private async resolved(
+    read: TenantSettingsRead,
+    reader: UiLanguage = read.tenant.defaultLanguage,
+  ): Promise<EffectiveSettings> {
     const { marketCode, ...tenant } = read.tenant;
-    const pack = await this.markets.currentPackOf(marketCode);
+    const [pack, defaults] = await Promise.all([
+      this.markets.currentPackOf(marketCode),
+      documentDefaultsIn(reader),
+    ]);
     return resolveEffectiveSettings({
       formats: pack.formats,
       tenant,
       settings: read.settings,
       promptPoints: read.promptPoints,
+      defaults,
     });
   }
 

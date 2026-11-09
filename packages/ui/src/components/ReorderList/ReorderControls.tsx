@@ -11,7 +11,7 @@
    WHAT DOES: THE REF. `ReorderList` moves focus onto a named control after every move and every
    delete (ReorderList.focus.ts), so it must hold the real `HTMLButtonElement` to call `.focus()`
    on it and to read its `aria-disabled` — and the `Pressable` primitive forwards no ref. This is
-   the same family as `LanguagePill`, `OptionCard` and `MenuItemRow`, every one of which stays a
+   the same family as `OptionCard` and `MenuItemRow`, each of which stays a
    raw <button> for a ref, a roving `tabIndex` or a key handler the primitive does not take. The
    44×44 floor is kept in ReorderList.css instead. */
 

@@ -1,5 +1,5 @@
 'use client';
-import { opensSettingsRow, type TrancheCard, type UiLanguage } from '@heliogrid/domain';
+import { opensSettingsRow, type TrancheCard, type TrancheTemplateDefault } from '@heliogrid/domain';
 import { useState } from 'react';
 import { useSession } from './use-session';
 import { type PaymentTermsPage, useTrancheTemplates } from './use-tranche-templates';
@@ -44,10 +44,10 @@ export interface PaymentTermsScreen {
   discardAndLeave(): void;
 }
 
-/** Fills `PaymentTermsScreen`; the reader's language is its input, which names a new template's lines. */
-export function usePaymentTermsScreen(language: UiLanguage): PaymentTermsScreen {
+/** Fills `PaymentTermsScreen`; `standard` is the default split in the reader's words (`documentDefaults`). */
+export function usePaymentTermsScreen(standard: TrancheTemplateDefault): PaymentTermsScreen {
   const { user } = useSession();
-  const page = useTrancheTemplates(language);
+  const page = useTrancheTemplates(standard);
   const [archived, setArchived] = useState(false);
   const [picking, setPicking] = useState<number | null>(null);
   const [archiveAsked, setArchiveAsked] = useState(false);

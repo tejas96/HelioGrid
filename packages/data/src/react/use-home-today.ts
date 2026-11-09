@@ -7,6 +7,7 @@ import {
   type Read,
   type SetupReadiness,
   setupReadiness,
+  UI_SOURCE_LOCALE,
 } from '@heliogrid/domain';
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -67,7 +68,14 @@ export function useHomeToday(): HomeToday {
   const registrations = useQuery(registrationsFactRead(repositories, tenantId, company));
   const releases = useQuery(releasesFactRead(repositories, tenantId, opens('catalog')));
   const terms = useQuery(paymentTermsFactRead(repositories, tenantId, opens('payment_terms')));
-  const template = useQuery(templateFactRead(repositories, tenantId, opens('proposal_templates')));
+  const template = useQuery(
+    templateFactRead(
+      repositories,
+      tenantId,
+      user?.interfaceLanguage ?? UI_SOURCE_LOCALE,
+      opens('proposal_templates'),
+    ),
+  );
   const members = useQuery(membersRead(repositories, tenantId, opens('team')));
   const invites = useQuery(pendingInvitesFactRead(repositories, tenantId, opens('team')));
   const owner = reading && billingStripAudienceOf(roles) === 'owner';

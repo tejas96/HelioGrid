@@ -1,0 +1,2 @@
+PUT /settings/proposal-template added the new required request property `defaultTerms/blocks`
+PUT /settings/proposal-template added the new required request property `defaultTerms/version`

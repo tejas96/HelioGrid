@@ -6,7 +6,7 @@ import type { TeamConfirmWords } from './MemberCard.types';
 
 /**
  * A confirm's lines: what the act does, quiet, then — on a roles removal — the way back, with its
- * lead in bold (`SCR-M01-13` m-confirm). Either may be absent; nothing is drawn for one that is.
+ * lead sentence in bold and the next one after it (`SCR-M01-13` m-confirm). Either may be absent; nothing is drawn for one that is.
  */
 export function TeamConfirmLines({ body, note }: Pick<TeamConfirmWords, 'body' | 'note'>) {
   return (
@@ -20,7 +20,7 @@ export function TeamConfirmLines({ body, note }: Pick<TeamConfirmWords, 'body' |
         <Text variant="body-sm">
           <Text variant="body-sm" bold>
             {note.lead}
-          </Text>
+          </Text>{' '}
           {note.rest}
         </Text>
       )}

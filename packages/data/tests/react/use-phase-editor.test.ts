@@ -9,8 +9,8 @@ import { type PhaseOpen, usePhaseEditor } from '../../src/react/use-phase-editor
  * a refusal is said only once the person tried, and *Save phase* hands on only a whole phase.
  */
 const SURVEY: TimelinePhase = {
-  name: { en: 'Site survey and design' },
-  description: { en: 'We measure your roof.' },
+  name: 'Site survey and design',
+  description: 'We measure your roof.',
 };
 
 describe('the phase editor', () => {
@@ -19,7 +19,7 @@ describe('the phase editor', () => {
     const view = renderHook(
       ({ open }: { open: PhaseOpen | null }) => {
         const editor = usePhaseEditor(open, () => undefined);
-        frames.push(editor.phase.name.en);
+        frames.push(editor.phase.name);
         return editor;
       },
       { initialProps: { open: null as PhaseOpen | null } },
@@ -41,11 +41,10 @@ describe('the phase editor', () => {
     );
 
     act(() => view.result.current.editName('Survey'));
-    expect(view.result.current.phase.name.en).toBe('Survey');
+    expect(view.result.current.phase.name).toBe('Survey');
     view.rerender({ open: { key: null } });
 
-    expect(view.result.current.phase.name.en).toBe('');
-    expect(view.result.current.language).toBe('en');
+    expect(view.result.current.phase.name).toBe('');
   });
 
   it('a refusal is said only once the person tried, and a whole phase is handed on', () => {
@@ -57,21 +56,18 @@ describe('the phase editor', () => {
     expect(view.result.current.shown).toEqual({ name: null, description: null });
     act(() => view.result.current.save());
     expect(view.result.current.shown).toEqual({
-      name: 'needs-english',
-      description: 'needs-english',
+      name: 'empty',
+      description: 'empty',
     });
     expect(onSave).not.toHaveBeenCalled();
 
-    act(() => view.result.current.editName('Handover'));
-    act(() => view.result.current.chooseLanguage('hi'));
     act(() => view.result.current.editName('हैंडओवर'));
-    act(() => view.result.current.chooseLanguage('en'));
     act(() => view.result.current.editWhat('We hand the plant over.'));
     act(() => view.result.current.save());
 
     expect(onSave).toHaveBeenCalledWith(null, {
-      name: { en: 'Handover', hi: 'हैंडओवर' },
-      description: { en: 'We hand the plant over.' },
+      name: 'हैंडओवर',
+      description: 'We hand the plant over.',
     });
   });
 });

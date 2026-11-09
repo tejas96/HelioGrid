@@ -12,8 +12,8 @@ import {
   type BankDetails,
   type BankDetailsTyped,
   ONBOARDING_STEPS,
-  STANDARD_TRANCHE_TEMPLATES,
   type TenantSegment,
+  type TrancheTemplateDefault,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
@@ -27,13 +27,18 @@ import { withKwp } from './settings.repository';
 /**
  * What a company has before its owner has touched a setting (`M01-28`, `M01-54`): the setup
  * corridor at its first step, an empty profile, and the two standard splits with the first as
- * the default. Written INSIDE the tenant-creation transaction on the admin path, so a company
- * is never observed without them; every row lands once — the unique keys refuse a second seed,
- * and the splits are skipped where a template already exists.
+ * the default — in the words of the person creating the company, whose they now are (`F3-10`).
+ * Written INSIDE the tenant-creation transaction on the admin path, so a company is never observed
+ * without them; every row lands once — the unique keys refuse a second seed, and the splits are
+ * skipped where a template already exists.
  */
 export async function seedTenantSettings(
   tx: DbTransaction,
-  input: { readonly tenantId: string; readonly now: number },
+  input: {
+    readonly tenantId: string;
+    readonly now: number;
+    readonly standardSplits: readonly TrancheTemplateDefault[];
+  },
 ): Promise<void> {
   const { tenantId } = input;
   const now = new Date(input.now);
@@ -57,7 +62,7 @@ export async function seedTenantSettings(
     .where(eq(trancheTemplate.tenantId, tenantId))
     .limit(1);
   if (existing !== undefined) return;
-  for (const [position, standard] of STANDARD_TRANCHE_TEMPLATES.entries()) {
+  for (const [position, standard] of input.standardSplits.entries()) {
     const [template] = await tx
       .insert(trancheTemplate)
       .values({

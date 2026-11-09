@@ -1,5 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { ProposalSection, TemplateEdit, TimelinePhase, UiLanguage } from '@heliogrid/domain';
+import type { ProposalSection, TemplateEdit, TimelinePhase } from '@heliogrid/domain';
 import { brandingDocumentOf } from '../BrandingSettings/BrandingSettings.logic';
 import type { BrandingDocumentFacts } from '../BrandingSettings/BrandingSettings.types';
 import type { RichTextValue } from '../RichText/RichText.types';
@@ -8,7 +8,6 @@ import type {
   ProposalTemplateSettingsProps,
   TemplateCoverCount,
   TemplateDocument,
-  TemplateLanguageStrip,
   TemplateOrigin,
   TemplatePhaseEditorProps,
 } from './ProposalTemplateSettings.types';
@@ -19,14 +18,11 @@ import type {
  * so the web and the phone cannot wire a part two ways.
  */
 
-type Written = Readonly<Record<UiLanguage, 'authored' | 'empty'>>;
-
 /** `templateViewOf`'s answer, as this binder reads it. */
 export interface TemplateViewShape {
   readonly cover: {
     readonly origin: TemplateOrigin;
     readonly about: string;
-    readonly written: Written;
     readonly counts: Readonly<Record<TemplateCoverCount, number | null>>;
   };
   readonly sections: {
@@ -42,7 +38,6 @@ export interface TemplateViewShape {
   readonly terms: {
     readonly origin: TemplateOrigin;
     readonly value: RichTextValue;
-    readonly written: Written;
   };
   readonly timeline: {
     readonly origin: TemplateOrigin;
@@ -59,18 +54,11 @@ export interface TemplateViewShape {
 }
 
 export interface TemplateBinding {
-  /** The strip's languages in the set's order, each named in itself. */
-  readonly languages: readonly { readonly code: UiLanguage; readonly label: TranslatedText }[];
-  readonly coverLanguage: UiLanguage;
-  readonly termsLanguage: UiLanguage;
-  onCoverLanguage(language: UiLanguage): void;
-  onTermsLanguage(language: UiLanguage): void;
   /** A section's name and line in the reader's words (`sectionWords`). */
   sectionWord(key: ProposalSection): {
     readonly title: TranslatedText;
     readonly about: TranslatedText;
   };
-  readonly aboutError?: TranslatedText;
   readonly termsError?: TranslatedText;
   edit(edit: TemplateEdit): void;
   /** Opens the editor on a phase: its key, and the phase as it stands. */
@@ -80,40 +68,16 @@ export interface TemplateBinding {
   onAddPhase(): void;
 }
 
-function stripOf(
-  languages: TemplateBinding['languages'],
-  written: Written,
-  value: UiLanguage,
-  onChange: (language: UiLanguage) => void,
-): TemplateLanguageStrip {
-  return {
-    languages: languages.map(({ code, label }) => ({ code, label, state: written[code] })),
-    value,
-    onChange: (code) => {
-      const chosen = languages.find((language) => language.code === code);
-      if (chosen !== undefined) onChange(chosen.code);
-    },
-  };
-}
-
 export function templateSettingsParts(
   view: TemplateViewShape,
   binding: TemplateBinding,
 ): Pick<ProposalTemplateSettingsProps, 'cover' | 'sections' | 'terms' | 'timeline'> {
   const { edit } = binding;
-  const termsLabel = binding.languages.find((language) => language.code === binding.termsLanguage);
   return {
     cover: {
       origin: view.cover.origin,
-      strip: stripOf(
-        binding.languages,
-        view.cover.written,
-        binding.coverLanguage,
-        binding.onCoverLanguage,
-      ),
       about: view.cover.about,
-      ...(binding.aboutError === undefined ? {} : { aboutError: binding.aboutError }),
-      onAbout: (text) => edit({ kind: 'about', language: binding.coverLanguage, text }),
+      onAbout: (text) => edit({ kind: 'about', text }),
       counts: view.cover.counts,
       onCount: (count, value) => edit({ kind: 'count', count, value }),
     },
@@ -129,16 +93,9 @@ export function templateSettingsParts(
     },
     terms: {
       origin: view.terms.origin,
-      strip: stripOf(
-        binding.languages,
-        view.terms.written,
-        binding.termsLanguage,
-        binding.onTermsLanguage,
-      ),
-      languageName: termsLabel?.label ?? binding.termsLanguage,
       value: view.terms.value,
       ...(binding.termsError === undefined ? {} : { error: binding.termsError }),
-      onChange: (value) => edit({ kind: 'terms', language: binding.termsLanguage, value }),
+      onChange: (value) => edit({ kind: 'terms', value }),
     },
     timeline: {
       origin: view.timeline.origin,
@@ -158,23 +115,9 @@ export function templateSettingsParts(
   };
 }
 
-/** The phase editor's strip: a language reads written once the phase's name holds words in it. */
-export function phaseStripOf(
-  languages: TemplateBinding['languages'],
-  name: Readonly<Partial<Record<UiLanguage, string>>>,
-  value: UiLanguage,
-  onChange: (language: UiLanguage) => void,
-): TemplateLanguageStrip {
-  const written = Object.fromEntries(
-    languages.map(({ code }) => [code, (name[code] ?? '').trim() === '' ? 'empty' : 'authored']),
-  ) as Written;
-  return stripOf(languages, written, value, onChange);
-}
-
 /**
  * What the stage prints, from the view: the cover facts as Branding draws them, the optional
- * sections in the document's order with whether each prints, the terms in the strip's language,
- * and the sample number and the date the screen formats. The stage and the full-size reader both
+ * sections in the document's order with whether each prints, the terms, and the sample number and the date the screen formats. The stage and the full-size reader both
  * draw it.
  */
 export function templateDocumentOf(
@@ -204,18 +147,14 @@ export function templateDocumentOf(
 export function phaseEditorFieldsOf(
   editor: {
     readonly phase: TimelinePhase;
-    readonly language: UiLanguage;
-    chooseLanguage(language: UiLanguage): void;
     editName(text: string): void;
     editWhat(text: string): void;
   },
-  languages: TemplateBinding['languages'],
   errors: { readonly nameError?: TranslatedText; readonly whatError?: TranslatedText },
 ): TemplatePhaseEditorProps['fields'] {
   return {
-    strip: phaseStripOf(languages, editor.phase.name, editor.language, editor.chooseLanguage),
-    name: editor.phase.name[editor.language] ?? '',
-    what: editor.phase.description[editor.language] ?? '',
+    name: editor.phase.name,
+    what: editor.phase.description,
     ...(errors.nameError === undefined ? {} : { nameError: errors.nameError }),
     ...(errors.whatError === undefined ? {} : { whatError: errors.whatError }),
     onName: editor.editName,

@@ -2,8 +2,6 @@ import type {
   BankDetails,
   BankDetailsTyped,
   Letterhead,
-  PackLabel,
-  PerLanguage,
   PromptPointStates,
   ProposalCover,
   ProposalSection,
@@ -134,7 +132,7 @@ export const brandingSettings = pgTable(
 
 /**
  * The document defaults (`M01-51`, `M01-53`): the cover's achievements block, the section set and
- * the one default T&C body per language. Bank details are read from the profile. One row per
+ * the one default T&C body. Bank details are read from the profile. One row per
  * tenant, absent until first saved; sent documents never change when it does (`F8-15`).
  */
 export const proposalTemplateSettings = pgTable(
@@ -144,7 +142,8 @@ export const proposalTemplateSettings = pgTable(
     tenantId: tenantId(),
     cover: jsonb('cover').$type<ProposalCover>(),
     sectionsIncluded: text('sections_included').array().$type<ProposalSection[]>().notNull(),
-    defaultTerms: jsonb('default_terms').$type<PerLanguage<RichTextValue>>().notNull(),
+    /** Null while the terms are the platform's, which read in each reader's words (`F3-10`). */
+    defaultTerms: jsonb('default_terms').$type<RichTextValue>(),
     updatedAt: instant('updated_at').notNull(),
     /** Who saved it last; null on a row written before the column. */
     updatedBy: uuid('updated_by').references(() => userAccount.id),
@@ -152,13 +151,14 @@ export const proposalTemplateSettings = pgTable(
   (table) => [uniqueIndex('proposal_template_settings_tenant_key').on(table.tenantId)],
 );
 
-/** The project-timeline template (`M01-52`): ordered phases, name and description per language. One per tenant. */
+/** The project-timeline template (`M01-52`): ordered phases, each a name and a description. One per tenant. */
 export const timelineTemplate = pgTable(
   'timeline_template',
   {
     id: id(),
     tenantId: tenantId(),
-    phases: jsonb('phases').$type<TimelinePhase[]>().notNull(),
+    /** Null while the phases are the platform's, which read in each reader's words (`F3-10`). */
+    phases: jsonb('phases').$type<TimelinePhase[]>(),
     updatedAt: instant('updated_at').notNull(),
     /** Who saved it last; null on a row written before the column. */
     updatedBy: uuid('updated_by').references(() => userAccount.id),
@@ -177,7 +177,7 @@ export const trancheTemplate = pgTable(
   {
     id: id(),
     tenantId: tenantId(),
-    name: jsonb('name').$type<PackLabel>().notNull(),
+    name: text('name').notNull(),
     isDefault: boolean('is_default').notNull(),
     archived: boolean('archived').notNull(),
     createdAt: instant('created_at').notNull(),
@@ -219,7 +219,7 @@ export const trancheTemplateLine = pgTable(
       .notNull()
       .references(() => trancheTemplate.id),
     position: integer('position').notNull(),
-    label: jsonb('label').$type<PackLabel>().notNull(),
+    label: text('label').notNull(),
     shareBasisPoints: integer('share_basis_points').notNull(),
     dueOnStage: text('due_on_stage').notNull(),
   },

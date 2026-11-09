@@ -3,12 +3,12 @@ import {
   useProposalTemplateScreen,
 } from '@heliogrid/data/react';
 import {
+  documentDefaults,
   proposalTemplatePageWords,
   proposalTemplateWords,
   SHELL,
   sectionWords,
   templateFieldRefusals,
-  templateLanguages,
 } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
@@ -38,8 +38,8 @@ import { useTemplateActs } from './hooks/use-template-acts';
  */
 export function ProposalTemplateScreen() {
   const drillDown = useSettingsDrillDown('proposal_templates');
-  const { t, locale } = useI18n();
-  const screen = useProposalTemplateScreen(locale);
+  const { t } = useI18n();
+  const screen = useProposalTemplateScreen(documentDefaults(t));
   const { page } = screen;
   const words = proposalTemplateWords(t);
   if (page.read.kind === 'failed') {
@@ -107,11 +107,6 @@ function TemplatePage({
           part={screen.part}
           onPart={screen.choosePart}
           {...templateSettingsParts(view, {
-            languages: templateLanguages(),
-            coverLanguage: screen.coverLanguage,
-            termsLanguage: screen.termsLanguage,
-            onCoverLanguage: screen.chooseCoverLanguage,
-            onTermsLanguage: screen.chooseTermsLanguage,
             sectionWord,
             ...templateFieldRefusals(t, page.refusals),
             edit: page.edit,

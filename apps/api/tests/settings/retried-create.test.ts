@@ -28,10 +28,10 @@ const skip = skipWithoutHarness(
 const PATH = '/settings/tranche-templates';
 
 const template = (name: string): TrancheTemplateWrite => ({
-  name: { en: name },
+  name: name,
   lines: [
-    { label: { en: 'Booking' }, percent: '40.00', dueOnStage: 'won' },
-    { label: { en: 'Done' }, percent: '60.00', dueOnStage: 'commissioned' },
+    { label: 'Booking', percent: '40.00', dueOnStage: 'won' },
+    { label: 'Done', percent: '60.00', dueOnStage: 'commissioned' },
   ],
 });
 
@@ -122,7 +122,7 @@ describe.skipIf(skip)('a retried payment-template create, over HTTP (F4-07)', ()
     expect(saved.status).toBe(HttpStatus.OK);
     const replay = await add(template('Before the edit'), key);
     expect(replay.status).toBe(HttpStatus.CREATED);
-    expect(replay.body).toMatchObject({ id: made.body.id, name: { en: 'After the edit' } });
+    expect(replay.body).toMatchObject({ id: made.body.id, name: 'After the edit' });
   });
 
   it.each([{ key: 'not-a-uuid' }, { key: '' }])(
@@ -173,7 +173,7 @@ describe.skipIf(skip)('a retried payment-template create, over HTTP (F4-07)', ()
       .select({ name: trancheTemplate.name })
       .from(trancheTemplate)
       .where(eq(trancheTemplate.tenantId, tenantId));
-    return rows.filter((row) => row.name.en === name).length;
+    return rows.filter((row) => row.name === name).length;
   }
 
   function createdEntriesFor(id: string): Promise<number> {

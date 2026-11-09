@@ -1,4 +1,3 @@
-import type { PackLabel } from '../format/languages';
 import { type BasisPoints, basisPoints } from '../money/basis-points';
 import type { ProjectChainStage } from '../projects/stages';
 
@@ -6,50 +5,72 @@ import type { ProjectChainStage } from '../projects/stages';
 export const TRANCHE_LINE_LIMIT = 12;
 
 export interface TrancheLineDefault {
-  readonly label: PackLabel;
+  readonly label: string;
   readonly share: BasisPoints;
   readonly dueOnStage: ProjectChainStage;
 }
 
 export interface TrancheTemplateDefault {
-  readonly name: PackLabel;
+  readonly name: string;
   readonly lines: readonly TrancheLineDefault[];
 }
 
-/** The first tranche of both splits, and of a template a tenant adds (`SCR-M01-20`). */
-export const ON_SIGNING: PackLabel = {
-  en: 'Advance on signing',
-  hi: 'हस्ताक्षर पर अग्रिम',
-  mr: 'स्वाक्षरीवर आगाऊ रक्कम',
-};
-/** Demanded once the material is ordered, so nothing ships before it is paid. */
-const BEFORE_DISPATCH: PackLabel = { en: 'Before dispatch', hi: 'डिस्पैच से पहले', mr: 'डिस्पॅचपूर्वी' };
-const ON_INSTALLATION: PackLabel = { en: 'On installation', hi: 'इंस्टॉलेशन पर', mr: 'इन्स्टॉलेशनवर' };
-const ON_COMMISSIONING: PackLabel = { en: 'On commissioning', hi: 'कमीशनिंग पर', mr: 'कमिशनिंगवर' };
+/** The tranches the standard splits are made of; their words are catalog copy (`packages/i18n`). */
+export const STANDARD_TRANCHES = [
+  'on_signing',
+  'before_dispatch',
+  'on_installation',
+  'on_commissioning',
+] as const;
+export type StandardTranche = (typeof STANDARD_TRANCHES)[number];
+
+/** What the standard splits say, in one reader's words. `name` takes the split, as `10/60/20/10`. */
+export interface StandardTrancheWords {
+  readonly name: (split: string) => string;
+  readonly tranche: Readonly<Record<StandardTranche, string>>;
+}
+
+interface StandardLine {
+  readonly tranche: StandardTranche;
+  readonly share: BasisPoints;
+  readonly dueOnStage: ProjectChainStage;
+}
 
 /**
  * The two standard splits every tenant starts with (`M01-54` — the source's 10/60/20/10 and
- * 30/60/10), seeded at creation as the tenant's own rows: given, not locked (`SCR-M01-20`). The
- * first is the default. Names and labels in the three launch languages, as the pack's message
- * templates are, because the seed runs on the server and a document reads the row.
+ * 30/60/10), seeded at creation as the tenant's own rows in the creator's words: given, not locked
+ * (`SCR-M01-20`). The first is the default.
  */
-export const STANDARD_TRANCHE_TEMPLATES: readonly [TrancheTemplateDefault, TrancheTemplateDefault] =
+const STANDARD_SPLITS: readonly [readonly StandardLine[], readonly StandardLine[]] = [
   [
-    {
-      name: { en: 'Standard 10/60/20/10', hi: 'मानक 10/60/20/10', mr: 'मानक 10/60/20/10' },
-      lines: [
-        { label: ON_SIGNING, share: basisPoints(1000), dueOnStage: 'won' },
-        { label: BEFORE_DISPATCH, share: basisPoints(6000), dueOnStage: 'material_ordered' },
-        { label: ON_INSTALLATION, share: basisPoints(2000), dueOnStage: 'installation' },
-        { label: ON_COMMISSIONING, share: basisPoints(1000), dueOnStage: 'commissioned' },
-      ],
-    },
-    {
-      name: { en: 'Standard 30/60/10', hi: 'मानक 30/60/10', mr: 'मानक 30/60/10' },
-      lines: [
-        { label: ON_SIGNING, share: basisPoints(3000), dueOnStage: 'won' },
-        { label: BEFORE_DISPATCH, share: basisPoints(6000), dueOnStage: 'material_ordered' },
-        { label: ON_COMMISSIONING, share: basisPoints(1000), dueOnStage: 'commissioned' },
-      ],
-    },
-  ];
+    { tranche: 'on_signing', share: basisPoints(1000), dueOnStage: 'won' },
+    { tranche: 'before_dispatch', share: basisPoints(6000), dueOnStage: 'material_ordered' },
+    { tranche: 'on_installation', share: basisPoints(2000), dueOnStage: 'installation' },
+    { tranche: 'on_commissioning', share: basisPoints(1000), dueOnStage: 'commissioned' },
+  ],
+  [
+    { tranche: 'on_signing', share: basisPoints(3000), dueOnStage: 'won' },
+    { tranche: 'before_dispatch', share: basisPoints(6000), dueOnStage: 'material_ordered' },
+    { tranche: 'on_commissioning', share: basisPoints(1000), dueOnStage: 'commissioned' },
+  ],
+];
+
+/** A split as its name writes it — each share in whole percent, `10/60/20/10`. */
+function splitOf(lines: readonly StandardLine[]): string {
+  return lines.map((line) => line.share / 100).join('/');
+}
+
+/** The two standard splits in one reader's words; the first is the default. */
+export function standardTrancheTemplates(
+  words: StandardTrancheWords,
+): readonly [TrancheTemplateDefault, TrancheTemplateDefault] {
+  const inWords = (lines: readonly StandardLine[]): TrancheTemplateDefault => ({
+    name: words.name(splitOf(lines)),
+    lines: lines.map((line) => ({
+      label: words.tranche[line.tranche],
+      share: line.share,
+      dueOnStage: line.dueOnStage,
+    })),
+  });
+  return [inWords(STANDARD_SPLITS[0]), inWords(STANDARD_SPLITS[1])];
+}

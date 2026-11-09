@@ -1,4 +1,4 @@
-import { UI_LANGUAGES, UI_SOURCE_LOCALE } from '@heliogrid/domain';
+import { LANGUAGES, type LanguageFacts, UI_LANGUAGES, UI_SOURCE_LOCALE } from '@heliogrid/domain';
 import { z } from 'zod';
 import { extensibleEnum } from './common';
 
@@ -12,7 +12,7 @@ import { extensibleEnum } from './common';
  * enum-parity invariant keep one import site; moving the authorship moved no consumer.
  *
  * This file still exists rather than folding into `common.ts` because its consumers are not all
- * contracts: `packages/i18n` derives its metadata table, its catalog loaders and its Lingui CLI
+ * contracts: `packages/i18n` derives its catalog loaders and its Lingui CLI
  * configuration from these exports, and a `lingui.config.js` reaching into a grab-bag of
  * pagination and money schemas to find a locale list is how a second list gets written instead.
  *
@@ -23,7 +23,7 @@ import { extensibleEnum } from './common';
  * The agent/voice language set is broader (it includes languages we have no UI catalog
  * for) and lives with the agent contract.
  */
-export { UI_LANGUAGES, UI_SOURCE_LOCALE };
+export { LANGUAGES, type LanguageFacts, UI_LANGUAGES, UI_SOURCE_LOCALE };
 
 export const uiLanguageSchema = z.enum(UI_LANGUAGES);
 export type UiLanguage = z.infer<typeof uiLanguageSchema>;

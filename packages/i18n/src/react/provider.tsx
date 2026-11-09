@@ -1,5 +1,5 @@
 'use client';
-import type { UiLanguage } from '@heliogrid/contracts';
+import { LANGUAGES, type LanguageFacts, type UiLanguage } from '@heliogrid/contracts';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
 import {
   createContext,
@@ -11,13 +11,12 @@ import {
   useRef,
   useState,
 } from 'react';
-import { LANGUAGE_META, type LanguageMeta } from '../languages';
 import type { I18nRuntime } from '../runtime';
 
 /** The one language surface a screen sees, identical on web and React Native. */
 export interface I18nControls {
   locale: UiLanguage;
-  meta: LanguageMeta;
+  meta: LanguageFacts;
   /**
    * The device's own language where the set holds it (`F3-03`), else null — which a screen needs
    * to say where a language nobody chose came from, and `locale` cannot tell it.
@@ -33,7 +32,7 @@ export type LocaleChangeSource = 'user' | 'follow';
 
 export interface LocaleChange {
   locale: UiLanguage;
-  meta: LanguageMeta;
+  meta: LanguageFacts;
   source: LocaleChangeSource;
 }
 
@@ -90,7 +89,7 @@ export function HelioI18nProvider({
   const announce = useCallback(
     (next: UiLanguage, source: LocaleChangeSource) => {
       setLocaleState(next);
-      onLocaleChange?.({ locale: next, meta: LANGUAGE_META[next], source });
+      onLocaleChange?.({ locale: next, meta: LANGUAGES[next], source });
     },
     [onLocaleChange],
   );
@@ -140,7 +139,7 @@ export function HelioI18nProvider({
   const controls = useMemo<I18nControls>(
     () => ({
       locale,
-      meta: LANGUAGE_META[locale],
+      meta: LANGUAGES[locale],
       device: device ?? null,
       setLocale,
       t: runtime.t,

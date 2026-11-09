@@ -17,7 +17,7 @@ import {
 
 const ROUTE = { method: 'POST', path: '/settings/tranche-templates' };
 const OTHER_ROUTE = { method: 'POST', path: '/invitations' };
-const BODY = { name: { en: 'Half and half' }, lines: [] };
+const BODY = { name: 'Half and half', lines: [] };
 const key = randomUUID();
 
 const keyOf = (overrides: {
@@ -44,7 +44,7 @@ describe('which request a retry key answers (F4-07)', () => {
   it.each([
     { changed: 'the actor', overrides: { actor: 'actor-b' } },
     { changed: 'the route', overrides: { route: OTHER_ROUTE } },
-    { changed: 'the body', overrides: { body: { ...BODY, name: { en: 'Thirds' } } } },
+    { changed: 'the body', overrides: { body: { ...BODY, name: 'Thirds' } } },
   ])('is another request when $changed changes', ({ overrides }) => {
     const first = keyOf({});
     const second = keyOf(overrides);

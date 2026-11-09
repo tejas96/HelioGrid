@@ -1,5 +1,5 @@
 import { MAX_PAGE_LIMIT } from '@heliogrid/contracts';
-import type { SetupFacts } from '@heliogrid/domain';
+import type { SetupFacts, UiLanguage } from '@heliogrid/domain';
 import { queryKeys } from '../cache/keys';
 import type { Repositories } from '../data-layer';
 
@@ -41,11 +41,12 @@ export function registrationsFactRead(
 export function templateFactRead(
   repositories: Repositories,
   tenantId: string,
+  reader: UiLanguage,
   enabled: boolean,
 ): Fact<Awaited<ReturnType<Repositories['settings']['proposalTemplate']>>> {
   return {
-    queryKey: queryKeys.settings.proposalTemplate(tenantId),
-    queryFn: ({ signal }) => repositories.settings.proposalTemplate(signal),
+    queryKey: queryKeys.settings.proposalTemplate(tenantId, reader),
+    queryFn: ({ signal }) => repositories.settings.proposalTemplate(reader, signal),
     enabled,
   };
 }

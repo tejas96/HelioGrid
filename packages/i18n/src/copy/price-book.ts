@@ -3,15 +3,7 @@ import type {
   PriceBookVersionSummaryWire,
   TranslatedText,
 } from '@heliogrid/contracts';
-import {
-  authoredIn,
-  PRICE_BOOK_RATE_BASES,
-  type PriceBookRateBasis,
-  UI_LANGUAGES,
-  UI_SOURCE_LOCALE,
-  type UiLanguage,
-} from '@heliogrid/domain';
-import { LANGUAGE_META } from '../languages';
+import { PRICE_BOOK_RATE_BASES, type PriceBookRateBasis } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { catalogTableWords } from './catalog-words';
 import { FILTER_PANEL } from './filter-panel';
@@ -62,14 +54,12 @@ export const PRICE_BOOK = {
   addRate: /*i18n*/ { id: 'Add a rate' },
   moreVersions: /*i18n*/ { id: 'Show more versions' },
   rateName: /*i18n*/ { id: 'Rate name' },
-  rateNameIn: /*i18n*/ { id: 'Rate name in {language}' },
-  missingName: /*i18n*/ { id: 'No {language} name yet — English shows in its place.' },
   rateAmount: /*i18n*/ { id: 'Amount, {name}' },
   rateBasis: /*i18n*/ { id: 'How {name} is charged' },
   removeRate: /*i18n*/ { id: 'Remove {name}' },
-  /** A row's name in its labels before any English name is typed. */
+  /** A row's name in its labels before any name is typed. */
   unnamedRate: /*i18n*/ { id: 'the new rate' },
-  /** The rate sheet's title before the rate has an English name. */
+  /** The rate sheet's title before the rate has a name. */
   newRate: /*i18n*/ { id: 'New rate' },
   was: /*i18n*/ { id: 'was {amount}' },
   changed: /*i18n*/ { id: 'Changed' },
@@ -135,7 +125,6 @@ export function catalogVersionWords(t: Translator['t']) {
     whatChanged: t(PRICE_BOOK.whatChanged),
     addRate: t(PRICE_BOOK.addRate),
     moreVersions: t(PRICE_BOOK.moreVersions),
-    rateName: t(PRICE_BOOK.rateName),
     changed: t(PRICE_BOOK.changed),
     was: (amount: string) => t(PRICE_BOOK.was, { amount }),
     loadFailed: t(PRICE_BOOK.loadFailed),
@@ -168,20 +157,15 @@ export function priceBookStripWords(
 }
 
 /**
- * One rate of the new version as the editor's list shows it (s-version-new): its name in the
- * reader's language, English standing in (`F3-10`), and its struck *was* once its amount moved.
+ * One rate of the new version as the editor's list shows it (s-version-new): its name as the
+ * company wrote it, and its struck *was* once its amount moved.
  */
 export function versionRowWords(
   t: Translator['t'],
-  rate: {
-    readonly name: Partial<Record<UiLanguage, string>>;
-    readonly amount: string;
-    readonly was: string | null;
-  },
-  language: UiLanguage,
+  rate: { readonly name: string; readonly amount: string; readonly was: string | null },
   money: (amount: string) => string,
 ) {
-  const name = authoredIn({ ...rate.name, en: rate.name.en }, language).value ?? '';
+  const { name } = rate;
   return {
     name,
     /* Compared as figures: the wire writes *6500.00*, a typed amount *6500*. */
@@ -191,32 +175,19 @@ export function versionRowWords(
 }
 
 /**
- * The rate sheet (owner ruling 2026-10-24): a rate's name in each language — English required,
- * an empty Hindi or Marathi one named with English standing in (`F3-10`) — its basis and *Remove*.
+ * The rate sheet: a rate's one name, written in the language the company chooses and shown as
+ * written to every reader, its basis and *Remove*.
  */
 export function rateSheetWords(
   t: Translator['t'],
-  rate: { readonly name: Partial<Record<UiLanguage, string>> },
+  rate: { readonly name: string },
   added: boolean,
 ) {
-  const english = (rate.name.en ?? '').trim();
-  const named = english === '' ? t(PRICE_BOOK.unnamedRate) : english;
+  const written = rate.name.trim();
+  const named = written === '' ? t(PRICE_BOOK.unnamedRate) : written;
   return {
-    title: english === '' ? t(PRICE_BOOK.newRate) : english,
-    names: UI_LANGUAGES.map((language) => {
-      const endonym = LANGUAGE_META[language].endonym;
-      const written = (rate.name[language] ?? '').trim() !== '';
-      return {
-        language,
-        label: t(PRICE_BOOK.rateNameIn, { language: endonym }),
-        value: rate.name[language] ?? '',
-        placeholder: language === UI_SOURCE_LOCALE ? '' : english,
-        missing:
-          language === UI_SOURCE_LOCALE || written
-            ? null
-            : t(PRICE_BOOK.missingName, { language: endonym }),
-      };
-    }),
+    title: written === '' ? t(PRICE_BOOK.newRate) : written,
+    nameLabel: t(PRICE_BOOK.rateName),
     basis: t(PRICE_BOOK.rateBasis, { name: named }),
     select: { placeholder: t(SELECT.placeholder), closeLabel: t(SELECT.closeList) },
     remove: added ? null : t(PRICE_BOOK.removeRate, { name: named }),
@@ -254,11 +225,11 @@ export function versionSummaryOf(
   };
 }
 
-/** A version's rates, each named in the reader's language with English standing in (`F3-10`). */
-export function versionRatesOf(rates: readonly PriceBookRateWire[], language: UiLanguage) {
+/** A version's rates, each named as the company wrote it. */
+export function versionRatesOf(rates: readonly PriceBookRateWire[]) {
   return rates.map((rate, at) => ({
     key: String(at),
-    name: authoredIn(rate.name, language).value,
+    name: rate.name,
     basis: rate.basis,
     amount: rate.amount,
   }));

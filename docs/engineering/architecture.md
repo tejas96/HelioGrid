@@ -161,8 +161,8 @@ Platform scope: shared frontend. Belongs: form-state wiring. Never: schemas them
 index only.
 
 ### i18n — catalogs, language metadata and the provider
-Owns: Lingui catalogs (compiled messages committed), the LANGUAGE_META table and the
-catalog loaders (both `satisfies Record<UiLanguage, …>` over the re-exported UI_LANGUAGES —
+Owns: Lingui catalogs (compiled messages committed) and the catalog loaders
+(`satisfies Record<UiLanguage, …>` over domain's `LANGUAGES`, re-exported by contracts —
 never a second list), the per-mount/per-request runtime and translator factories, the ONE
 React provider both platforms use, the Hermes Intl polyfills, and src/copy/ shared-copy
 modules (React-free /*i18n*/ descriptors — JSX is banned there for the dual-instance

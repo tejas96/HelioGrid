@@ -1,11 +1,11 @@
 import {
-  DEFAULT_TIMELINE_PHASES,
+  type DocumentDefaults,
   FOUNDER_ROLE,
   IN_FORMATS,
   resolveEffectiveSettings,
-  STANDARD_TRANCHE_TEMPLATES,
 } from '@heliogrid/domain';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { documentDefaultsIn } from '../../src/modules/settings/internal/document-defaults';
 import { seedTenantSettings } from '../../src/modules/settings/settings.admin.repository';
 import { SettingsRepository } from '../../src/modules/settings/settings.repository';
 import {
@@ -48,13 +48,19 @@ const skip = skipWithoutDatabase(
 describe.skipIf(skip)('the effective settings read, against a migrated database', () => {
   let pools: ReturnType<typeof openPools>;
   let settings: SettingsRepository;
+  let defaults: DocumentDefaults;
 
   beforeAll(async () => {
     pools = openPools();
     settings = new SettingsRepository(pools.tenants);
+    defaults = await documentDefaultsIn('en');
     await seed(pools.admin.db, fixture);
     await pools.admin.db.transaction((tx) =>
-      seedTenantSettings(tx, { tenantId: seeded.tenantId, now: Date.now() }),
+      seedTenantSettings(tx, {
+        tenantId: seeded.tenantId,
+        now: Date.now(),
+        standardSplits: defaults.trancheTemplates,
+      }),
     );
   });
 
@@ -68,7 +74,7 @@ describe.skipIf(skip)('the effective settings read, against a migrated database'
     if (read === null) throw new Error('the bare company is not visible to its own session');
     const { marketCode, ...tenant } = read.tenant;
     expect(marketCode).toBe('IN');
-    const effective = resolveEffectiveSettings({ formats: IN_FORMATS, ...read, tenant });
+    const effective = resolveEffectiveSettings({ formats: IN_FORMATS, ...read, tenant, defaults });
     for (const [name, setting] of Object.entries(effective)) {
       expect(setting, name).toBeDefined();
     }
@@ -92,7 +98,7 @@ describe.skipIf(skip)('the effective settings read, against a migrated database'
     expect(effective.proposalTemplate.source).toBe('platform');
     expect(effective.timelineTemplate).toEqual({
       source: 'platform',
-      value: { phases: DEFAULT_TIMELINE_PHASES },
+      value: { phases: defaults.phases },
     });
     expect(effective.defaultTrancheTemplate.source).toBe('platform');
     expect(effective.defaultTrancheTemplate.value.id).toBeNull();
@@ -104,13 +110,13 @@ describe.skipIf(skip)('the effective settings read, against a migrated database'
     const read = await settings.everything(seeded.tenantId);
     if (read === null) throw new Error('the seeded company is not visible to its own session');
     const { marketCode: _market, ...tenant } = read.tenant;
-    const effective = resolveEffectiveSettings({ formats: IN_FORMATS, ...read, tenant });
+    const effective = resolveEffectiveSettings({ formats: IN_FORMATS, ...read, tenant, defaults });
     expect(effective.timelineTemplate.value.phases.length).toBeGreaterThan(0);
-    expect(effective.proposalTemplate.value.defaultTerms.en.blocks.length).toBeGreaterThan(0);
+    expect(effective.proposalTemplate.value.defaultTerms.blocks.length).toBeGreaterThan(0);
     expect(effective.defaultTrancheTemplate.source).toBe('platform');
     expect(effective.defaultTrancheTemplate.value.id).not.toBeNull();
     expect(effective.defaultTrancheTemplate.value.lines).toEqual(
-      STANDARD_TRANCHE_TEMPLATES[0].lines,
+      defaults.trancheTemplates[0].lines,
     );
     expect(effective.companyIdentity.value.bankDetails).toBeNull();
     expect(effective.pendingPromptPoints).toEqual([

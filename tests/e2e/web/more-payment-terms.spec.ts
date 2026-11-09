@@ -2,6 +2,7 @@ import { allocationVerdict, basisPoints } from '@heliogrid/domain';
 import {
   allocationRefusal,
   createTranslator,
+  documentDefaults,
   paymentTermsSavedLine,
   paymentTermsWords,
   SHELL,
@@ -23,9 +24,10 @@ import { passTheOwnersMark } from '../support/shell';
 const en = await createTranslator('en');
 const ROWS = settingsWords(en.t).rows;
 const WORDS = paymentTermsWords(en.t);
-/* The seeded split the flow edits, as the platform seeds it (`STANDARD_TRANCHE_TEMPLATES`). */
-const SECOND_SEEDED = 'Standard 30/60/10';
-const SECOND_LINE = 'Before dispatch';
+/* The seeded split the flow edits, as the platform seeds it in its creator's words. */
+const [, SECOND] = documentDefaults(en.t).trancheTemplates;
+const SECOND_SEEDED = SECOND.name;
+const SECOND_LINE = SECOND.lines[1]?.label ?? '';
 
 const SAVED_BY_OWNER = wordsBeforeDate((date) =>
   paymentTermsSavedLine(en.t, { kind: 'saved', at: 0, name: OWNER_NAME }, { date }),

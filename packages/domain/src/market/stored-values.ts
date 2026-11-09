@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { clockTimeOfMinutes } from '../calling/clock-time';
-import type { UiLanguage } from '../format/languages';
+import { UI_LANGUAGES, type UiLanguage } from '../format/languages';
 import { basisPoints } from '../money/basis-points';
 import { minorUnits } from '../money/minor-units';
 import { marketCode } from './code';
@@ -46,14 +46,13 @@ export function oneOf<const T extends readonly number[]>(values: T) {
 }
 
 /**
- * A value per language, English required (`F3-05`), no language outside the set. The shape
- * `satisfies` a record over the language set, so a language added there fails to compile here.
+ * A value per language, English required (`F3-05`), no language outside the set — built from the
+ * set itself, so a new language is accepted here without an edit.
  */
 export function perLanguage<T>(value: z.ZodType<T, z.ZodTypeDef, unknown>) {
-  return z.object({
-    en: value,
-    hi: value.optional(),
-    mr: value.optional(),
-  } satisfies Record<UiLanguage, z.ZodTypeAny>);
+  const optional = Object.fromEntries(
+    UI_LANGUAGES.map((language) => [language, value.optional()]),
+  ) as Record<UiLanguage, z.ZodOptional<typeof value>>;
+  return z.object({ ...optional, en: value });
 }
 export const packLabel = perLanguage(z.string());

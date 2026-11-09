@@ -1,6 +1,6 @@
-import { DEFAULT_TIMELINE_PHASES } from '@heliogrid/domain';
 import {
   createTranslator,
+  documentDefaults,
   proposalTemplateWords,
   SHELL,
   sectionWords,
@@ -23,8 +23,9 @@ import { passTheOwnersMark } from '../support/shell';
 const en = await createTranslator('en');
 const ROWS = settingsWords(en.t).rows;
 const WORDS = proposalTemplateWords(en.t);
-const SECTION = sectionWords(en.t, DEFAULT_TIMELINE_PHASES.length);
-const [FIRST, SECOND] = DEFAULT_TIMELINE_PHASES.map((phase) => phase.name.en);
+const PHASES = documentDefaults(en.t).phases;
+const SECTION = sectionWords(en.t, PHASES.length);
+const [FIRST, SECOND] = PHASES.map((phase) => phase.name);
 
 const SAVED_BY_OWNER = wordsBeforeDate((date) =>
   settingsSavedLine(en.t, { kind: 'saved', at: 0, name: OWNER_NAME }, { date }),

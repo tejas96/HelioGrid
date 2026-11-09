@@ -1,12 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
   DEFAULT_SECTIONS_INCLUDED,
-  DEFAULT_TERMS,
   isSectionFloor,
   PROPOSAL_SECTIONS,
   sectionsIncluded,
 } from '../../src/commerce/proposal-template-defaults';
-import { authoredIn, UI_LANGUAGES } from '../../src/format/languages';
 
 describe('sectionsIncluded — the tenant’s choice made whole (M01-51, SCR-M01-19)', () => {
   it('keeps the terms in when the tenant left them out: whether they print is not a setting', () => {
@@ -31,18 +29,4 @@ describe('sectionsIncluded — the tenant’s choice made whole (M01-51, SCR-M01
     expect(sectionsIncluded([])).toEqual(['terms']);
     expect(sectionsIncluded(DEFAULT_SECTIONS_INCLUDED)).toEqual([...PROPOSAL_SECTIONS]);
   });
-});
-
-describe('the platform terms (M01-28) — a body for every reader, no number in it', () => {
-  it.each(UI_LANGUAGES.map((language) => [language]))(
-    'gives a %s reader paragraphs',
-    (language) => {
-      const body = authoredIn(DEFAULT_TERMS, language).value;
-      expect(body.blocks.length).toBeGreaterThan(0);
-      for (const block of body.blocks) {
-        expect(block.type).toBe('p');
-        expect(JSON.stringify(block)).not.toMatch(/\d/);
-      }
-    },
-  );
 });

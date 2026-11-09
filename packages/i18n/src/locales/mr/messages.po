@@ -13,16 +13,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:22
-msgid "411038"
-msgstr "411038"
-
-#. js-lingui-explicit-id
-#: src/copy/remove-roles.ts:28
-msgid " — tick {list} on {first}'s row again."
-msgstr " — {first} यांच्या ओळीवर {list} पुन्हा टिक करा."
-
-#. js-lingui-explicit-id
 #: src/copy/date-set.ts:22
 msgid "“{name}”"
 msgstr "“{name}”"
@@ -73,12 +63,12 @@ msgid "{applied, plural, one {# price applied} other {# prices applied}} · {cre
 msgstr "{applied, plural, one {# किंमत लागू} other {# किंमती लागू}} · {created, plural, one {# प्रॉडक्ट तयार} other {# प्रॉडक्ट तयार}}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:73
+#: src/copy/proposal-template.ts:62
 msgid "{bank} · from Business profile"
 msgstr "{bank} · व्यवसाय प्रोफाइलमधून"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:61
+#: src/copy/company-profile.ts:66
 msgid "{bankName} · account ending {ending}"
 msgstr "{bankName} · खात्याचे शेवटचे अंक {ending}"
 
@@ -98,7 +88,7 @@ msgid "{chain} codes were invalidated in a row"
 msgstr "सलग {chain} कोड अवैध झाले"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:79
+#: src/copy/company-profile.ts:84
 msgid "{city} only"
 msgstr "फक्त {city}"
 
@@ -130,7 +120,7 @@ msgstr "{company} तयार आहे."
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:43
 #: src/copy/payment-terms.ts:100
-#: src/copy/proposal-template.ts:98
+#: src/copy/proposal-template.ts:87
 msgid "{company} logo"
 msgstr "{company} चा लोगो"
 
@@ -271,7 +261,7 @@ msgstr "{count, plural, one {# व्यक्ती} other {# व्यक्�
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:176
-#: src/copy/proposal-template.ts:135
+#: src/copy/proposal-template.ts:124
 msgid "{count, plural, one {# phase} other {# phases}}"
 msgstr "{count, plural, one {# फेज} other {# फेज}}"
 
@@ -346,7 +336,7 @@ msgid "{count, plural, one {# year} other {# years}}"
 msgstr "{count, plural, one {# वर्ष} other {# वर्षे}}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:50
+#: src/copy/proposal-template.ts:42
 msgid "{count, plural, one {≈ # page} other {≈ # pages}}"
 msgstr "{count, plural, one {≈ # पान} other {≈ # पाने}}"
 
@@ -406,7 +396,7 @@ msgid "{count, plural, one {person} other {people}}"
 msgstr "{count, plural, one {व्यक्ती} other {व्यक्ती}}"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:47
+#: src/copy/price-book.ts:39
 msgid "{count, plural, one {Price book · # version} other {Price book · # versions}}"
 msgstr "{count, plural, one {प्राइस बुक · # व्हर्जन} other {प्राइस बुक · # व्हर्जन}}"
 
@@ -446,7 +436,7 @@ msgid "{count, select, 2 {Both plans} 3 {All three plans} 4 {All four plans} oth
 msgstr "{count, select, 2 {दोन्ही प्लॅन} 3 {तिन्ही प्लॅन} 4 {चारही प्लॅन} other {सर्व प्लॅन}} · मर्यादा"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:39
+#: src/copy/price-book.ts:31
 msgid "{count}"
 msgstr "{count}"
 
@@ -537,7 +527,7 @@ msgid "{cycle} · {minutes} min"
 msgstr "{cycle} · {minutes} min"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:51
+#: src/copy/price-book.ts:43
 msgid "{date} · {name}"
 msgstr "{date} · {name}"
 
@@ -844,7 +834,7 @@ msgid "{inviter} is told it was not for you, and the link stops working. If it w
 msgstr "{inviter} यांना कळवले जाईल की हे तुमच्यासाठी नव्हते, आणि लिंक काम करणे बंद होईल. हे खरंच तुमच्यासाठी असेल, तर {first} तुम्हाला पुन्हा आमंत्रित करू शकतात."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:24
+#: src/copy/company-profile.ts:29
 msgid "{label} (optional)"
 msgstr "{label} (ऐच्छिक)"
 
@@ -919,64 +909,9 @@ msgid "{label}: {value} {unit}. Open {label}"
 msgstr "{label}: {value} {unit}. {label} उघडा"
 
 #. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:26
-msgid "{language} · {written} of {total} {sectionNoun} written here · {left} fall back to {fallback}"
-msgstr "{language} · {total} पैकी {written} {sectionNoun} इथे लिहिले · {left} {fallback} वर परत येतात"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:23
-msgid "{language} · {written} of {total} {sectionNoun} written here · nothing falls back"
-msgstr "{language} · {total} पैकी {written} {sectionNoun} इथे लिहिले · काहीही परत येत नाही"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:22
-msgid "{language} · written here"
-msgstr "{language} · इथे लिहिले आहे"
-
-#. js-lingui-explicit-id
 #: src/copy/transcript.ts:29
 msgid "{language} at {time}"
 msgstr "{time} ला {language}"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:19
-msgid "{language} is the primary {languageNoun} · {written} of {total} {sectionNoun} written · nothing falls back"
-msgstr "{language} ही मुख्य {languageNoun} आहे · {total} पैकी {written} {sectionNoun} लिहिले · काहीही परत येत नाही"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:16
-msgid "{language} is the primary {languageNoun} · everything else falls back to it"
-msgstr "{language} ही मुख्य {languageNoun} आहे · बाकी सर्व तिच्यावरच परत येते"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:43
-msgid "{language}, {written} of {total} {sectionNoun} written here, {left} fall back to {fallback}"
-msgstr "{language}, {total} पैकी {written} {sectionNoun} इथे लिहिले, {left} {fallback} वर परत येतात"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:46
-msgid "{language}, nothing written, falls back to {fallback}"
-msgstr "{language}, काहीही लिहिले नाही, {fallback} वर परत येते"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:35
-msgid "{language}, primary {languageNoun}"
-msgstr "{language}, मुख्य {languageNoun}"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:36
-msgid "{language}, primary {languageNoun}, {written} of {total} {sectionNoun} written"
-msgstr "{language}, मुख्य {languageNoun}, {total} पैकी {written} {sectionNoun} लिहिले"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:39
-msgid "{language}, written here"
-msgstr "{language}, इथे लिहिले आहे"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:40
-msgid "{language}, written here, {written} of {total} {sectionNoun}"
-msgstr "{language}, इथे लिहिले आहे, {total} पैकी {written} {sectionNoun}"
 
 #. js-lingui-explicit-id
 #: src/copy/home-today.ts:9
@@ -1455,7 +1390,7 @@ msgid "{price} / yr + {tax}"
 msgstr "{price} / वर्ष + {tax}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:47
+#: src/copy/proposal-template.ts:40
 msgid "{printing} of {of} optional sections print"
 msgstr "{of} पैकी {printing} पर्यायी विभाग छापले जातात"
 
@@ -1868,7 +1803,7 @@ msgid "A person"
 msgstr "एक व्यक्ती"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:64
+#: src/copy/proposal-template.ts:56
 msgid "A phase name holds up to {count} characters"
 msgstr "टप्प्याचे नाव जास्तीत जास्त {count} अक्षरांचे असते"
 
@@ -1893,7 +1828,7 @@ msgid "A platform item's price comes from your override and nowhere else; the pl
 msgstr "प्लॅटफॉर्म आयटमची किंमत फक्त तुमच्या ओव्हरराइडमधून येते; प्लॅटफॉर्म यादीत कोणतीही किंमत नसते."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:29
+#: src/copy/proposal-template.ts:25
 msgid "A Quick proposal goes out exactly as this template stands."
 msgstr "Quick प्रस्ताव अगदी याच टेम्पलेटप्रमाणे जातो."
 
@@ -1939,7 +1874,7 @@ msgid "A team member"
 msgstr "टीमचा एक सदस्य"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:55
+#: src/copy/proposal-template.ts:47
 msgid "A timeline holds up to {count} phases."
 msgstr "एका टाइमलाइनमध्ये जास्तीत जास्त {count} टप्पे असतात."
 
@@ -2025,12 +1960,12 @@ msgid "About what the code does"
 msgstr "कोड काय करतो याबद्दल"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:45
+#: src/copy/proposal-template.ts:38
 msgid "About your company"
 msgstr "तुमच्या कंपनीबद्दल"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:125
+#: src/copy/proposal-template.ts:114
 msgid "About your company and your counts."
 msgstr "तुमची कंपनी आणि तुमचे आकडे."
 
@@ -2086,17 +2021,17 @@ msgid "Account halts"
 msgstr "खाते थांबेल"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:30
+#: src/copy/company-profile.ts:35
 msgid "Account holder"
 msgstr "खातेधारक"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:31
+#: src/copy/company-profile.ts:36
 msgid "Account number"
 msgstr "खाते क्रमांक"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:112
+#: src/copy/proposal-template.ts:101
 msgid "Achievements"
 msgstr "कामगिरी"
 
@@ -2159,7 +2094,7 @@ msgid "Add a panel"
 msgstr "पॅनेल जोडा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:53
+#: src/copy/proposal-template.ts:45
 msgid "Add a phase"
 msgstr "टप्पा जोडा"
 
@@ -2169,7 +2104,7 @@ msgid "Add a photo"
 msgstr "फोटो जोडा"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:62
+#: src/copy/price-book.ts:54
 msgid "Add a rate"
 msgstr "दर जोडा"
 
@@ -2240,7 +2175,7 @@ msgid "Add payment terms"
 msgstr "पेमेंट अटी जोडा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:62
+#: src/copy/proposal-template.ts:54
 msgid "Add phase"
 msgstr "टप्पा जोडा"
 
@@ -2260,7 +2195,7 @@ msgid "Add to catalog"
 msgstr "कॅटलॉगमध्ये जोडा"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:44
+#: src/copy/price-book.ts:36
 msgid "Add your first rate"
 msgstr "तुमचा पहिला दर जोडा"
 
@@ -2271,7 +2206,7 @@ msgstr "तुमचा लोगो जोडा"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:84
-#: src/copy/company-profile.ts:81
+#: src/copy/company-profile.ts:86
 msgid "Added"
 msgstr "जोडलेले"
 
@@ -2291,7 +2226,7 @@ msgid "Added when your account was created · not changed since"
 msgstr "तुमचे खाते तयार झाले तेव्हा जोडल्या · तेव्हापासून बदलल्या नाहीत"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:70
+#: src/copy/company-profile.ts:75
 msgid "Address"
 msgstr "पत्ता"
 
@@ -2314,6 +2249,11 @@ msgstr "हे तुमच्या कॅटलॉगमध्ये जोड
 #: src/copy/catalog-add-item.ts:68
 msgid "Adds it to your catalog, then shows its row in this list."
 msgstr "हे तुमच्या कॅटलॉगमध्ये जोडते, मग या यादीत त्याची ओळ दाखवते."
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:73
+msgid "Advance on signing"
+msgstr "स्वाक्षरीवर आगाऊ रक्कम"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:56
@@ -2348,7 +2288,7 @@ msgstr "एजंटची पाळी"
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:32
 #: src/copy/catalog-settings.ts:32
-#: src/copy/price-book.ts:34
+#: src/copy/price-book.ts:26
 #: src/copy/role-matrix.ts:97
 #: src/copy/team.ts:13
 msgid "All"
@@ -2410,7 +2350,7 @@ msgid "Already on HelioGrid?"
 msgstr "आधीच HelioGrid वर आहात?"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:48
+#: src/copy/proposal-template.ts:41
 msgid "Always prints"
 msgstr "नेहमी छापले जाते"
 
@@ -2422,7 +2362,7 @@ msgstr "नेहमी पाठवले जाते, आणि ते बं
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:58
 #: src/copy/invoice-document.ts:30
-#: src/copy/price-book.ts:37
+#: src/copy/price-book.ts:29
 msgid "Amount"
 msgstr "रक्कम"
 
@@ -2432,7 +2372,7 @@ msgid "Amount due"
 msgstr "देय रक्कम"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:67
+#: src/copy/price-book.ts:57
 msgid "Amount, {name}"
 msgstr "रक्कम, {name}"
 
@@ -2457,7 +2397,7 @@ msgid "Annual contract"
 msgstr "वार्षिक करार"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:82
+#: src/copy/company-profile.ts:87
 msgid "Answered"
 msgstr "उत्तर दिले"
 
@@ -2488,7 +2428,7 @@ msgid "Appearance"
 msgstr "स्वरूप"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:84
+#: src/copy/proposal-template.ts:73
 msgid "Applies to every new proposal, Quick ones included."
 msgstr "प्रत्येक नव्या प्रस्तावाला लागू, Quick प्रस्तावांनाही."
 
@@ -2757,7 +2697,7 @@ msgid "Back to the list"
 msgstr "यादीकडे परत"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:54
+#: src/copy/price-book.ts:46
 msgid "Back to versions"
 msgstr "व्हर्जनकडे परत"
 
@@ -2767,19 +2707,19 @@ msgid "Background work"
 msgstr "बॅकग्राउंडमधील काम"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:60
+#: src/copy/company-profile.ts:65
 msgid "Bank"
 msgstr "बँक"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:72
-#: src/copy/proposal-template.ts:72
-#: src/copy/proposal-template.ts:120
+#: src/copy/company-profile.ts:77
+#: src/copy/proposal-template.ts:61
+#: src/copy/proposal-template.ts:109
 msgid "Bank details"
 msgstr "बँक तपशील"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:28
+#: src/copy/company-profile.ts:33
 msgid "Bank name"
 msgstr "बँकेचे नाव"
 
@@ -2802,6 +2742,11 @@ msgstr "बॅटरी केमिस्ट्री"
 #: src/copy/catalog-import.ts:96
 msgid "becomes"
 msgstr "बदलून"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:74
+msgid "Before dispatch"
+msgstr "डिस्पॅचपूर्वी"
 
 #. js-lingui-explicit-id
 #: src/copy/compare-grid.ts:24
@@ -2946,7 +2891,7 @@ msgid "Build and edit proposals, discounts included"
 msgstr "प्रस्ताव तयार करा आणि बदला, सवलतीसह"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:19
+#: src/copy/company-profile.ts:26
 msgid "Building, street, area"
 msgstr "इमारत, रस्ता, परिसर"
 
@@ -2981,7 +2926,7 @@ msgid "Business profile"
 msgstr "व्यवसाय प्रोफाइल"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:44
+#: src/copy/company-profile.ts:49
 msgid "Business profile saved"
 msgstr "व्यवसाय प्रोफाइल जतन केली"
 
@@ -3063,8 +3008,8 @@ msgstr "करू शकत नाहीत · {count}"
 #: src/copy/invite.ts:48
 #: src/copy/operation-progress.ts:9
 #: src/copy/payment-terms.ts:61
-#: src/copy/price-book.ts:81
-#: src/copy/proposal-template.ts:60
+#: src/copy/price-book.ts:71
+#: src/copy/proposal-template.ts:52
 #: src/copy/team-acts.ts:22
 msgid "Cancel"
 msgstr "रद्द करा"
@@ -3220,7 +3165,7 @@ msgstr "हा प्लॅन बदलू शकतात"
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:88
 #: src/copy/catalog-editor.ts:85
-#: src/copy/price-book.ts:75
+#: src/copy/price-book.ts:65
 msgid "Changed"
 msgstr "बदललेले"
 
@@ -3236,7 +3181,7 @@ msgstr "विचार बदलला, किंवा ही तीच कं
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:59
-#: src/copy/price-book.ts:36
+#: src/copy/price-book.ts:28
 msgid "Charged"
 msgstr "आकारणी"
 
@@ -3251,7 +3196,7 @@ msgid "Check in and out of a site, and log a visit and its outcome"
 msgstr "साइटवर चेक-इन आणि चेक-आउट करा, आणि भेट व तिचा निकाल नोंदवा"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:84
+#: src/copy/company-profile.ts:89
 msgid "Check the format"
 msgstr "स्वरूप तपासा"
 
@@ -3346,7 +3291,7 @@ msgid "Chosen for you"
 msgstr "तुमच्यासाठी निवडलेली"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:108
+#: src/copy/proposal-template.ts:97
 msgid "Cities served"
 msgstr "सेवा दिलेली शहरे"
 
@@ -3390,7 +3335,7 @@ msgstr "निवड काढा"
 #: src/copy/catalog-add-item.ts:87
 #: src/copy/catalog-editor.ts:34
 #: src/copy/catalog-import.ts:13
-#: src/copy/price-book.ts:82
+#: src/copy/price-book.ts:72
 #: src/copy/roles-reference.ts:41
 #: src/copy/shell.ts:51
 #: src/copy/usage-page.ts:94
@@ -3454,6 +3399,11 @@ msgid "Commercial & industrial (C&I)"
 msgstr "व्यावसायिक व औद्योगिक (C&I)"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:54
+msgid "Commissioning"
+msgstr "कमिशनिंग"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:41
 msgid "Company name"
 msgstr "कंपनीचे नाव"
@@ -3494,7 +3444,7 @@ msgid "Component kind"
 msgstr "कंपोनंटचा प्रकार"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:118
+#: src/copy/proposal-template.ts:107
 msgid "Components"
 msgstr "भाग-पुर्जे"
 
@@ -3541,12 +3491,12 @@ msgid "Continue anyway"
 msgstr "तरीही पुढे चला"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:55
+#: src/copy/company-profile.ts:60
 msgid "Continue setting up HelioGrid without saving your company profile"
 msgstr "तुमची कंपनी प्रोफाइल जतन न करता HelioGrid चा सेटअप सुरू ठेवा"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:50
+#: src/copy/company-profile.ts:55
 msgid "Continue setting up HelioGrid without your company profile"
 msgstr "तुमच्या कंपनी प्रोफाइलशिवाय HelioGrid चा सेटअप सुरू ठेवा"
 
@@ -3571,7 +3521,7 @@ msgid "Continue without a photo"
 msgstr "फोटोशिवाय पुढे जा"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:49
+#: src/copy/company-profile.ts:54
 msgid "Continue without it"
 msgstr "याशिवाय पुढे जा"
 
@@ -3752,8 +3702,8 @@ msgid "Counts include active members only. Someone whose invite is still open, o
 msgstr "संख्येत फक्त सक्रिय सदस्य आहेत. ज्यांचे आमंत्रण अजून खुले आहे, किंवा ज्यांना निष्क्रिय केले, त्यांचे नाव भूमिकेखाली आहे पण ते मोजले जात नाहीत."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:35
-#: src/copy/proposal-template.ts:142
+#: src/copy/proposal-template.ts:31
+#: src/copy/proposal-template.ts:131
 msgid "Cover"
 msgstr "कव्हर"
 
@@ -4027,7 +3977,7 @@ msgid "Deactivated · last seen today"
 msgstr "निष्क्रिय · शेवटचे आज दिसले"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:46
+#: src/copy/proposal-template.ts:39
 msgid "declared by you"
 msgstr "तुम्ही सांगितल्याप्रमाणे"
 
@@ -4070,7 +4020,7 @@ msgid "Default for {market}"
 msgstr "{market} साठी डीफॉल्ट"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:55
+#: src/copy/price-book.ts:47
 msgid "Default margin"
 msgstr "डिफॉल्ट मार्जिन"
 
@@ -4085,7 +4035,7 @@ msgid "Delete {name}, position {position} of {total}"
 msgstr "{name} हटवा, स्थान {total} पैकी {position}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:89
+#: src/copy/proposal-template.ts:78
 msgid "Delete {phase}?"
 msgstr "{phase} काढून टाकायचा?"
 
@@ -4096,7 +4046,7 @@ msgid "Delete leads"
 msgstr "लीड हटवा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:91
+#: src/copy/proposal-template.ts:80
 msgid "Delete phase"
 msgstr "टप्पा काढून टाका"
 
@@ -4199,13 +4149,13 @@ msgstr "टाकून द्या"
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:73
 #: src/copy/payment-terms.ts:80
-#: src/copy/proposal-template.ts:95
+#: src/copy/proposal-template.ts:84
 msgid "Discard and leave"
 msgstr "काढून टाका आणि बाहेर जा"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:61
-#: src/copy/proposal-template.ts:86
+#: src/copy/proposal-template.ts:75
 msgid "Discard changes"
 msgstr "बदल काढून टाका"
 
@@ -4242,14 +4192,24 @@ msgid "Dismiss"
 msgstr "काढून टाका"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:42
+#: src/copy/document-defaults.ts:38
+msgid "Dispatched"
+msgstr "डिस्पॅच"
+
+#. js-lingui-explicit-id
+#: src/copy/proposal-template.ts:35
 msgid "Document"
 msgstr "दस्तऐवज"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:43
+#: src/copy/proposal-template.ts:36
 msgid "Document name"
 msgstr "दस्तऐवजाचे नाव"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:63
+msgid "Documents, warranties and the monitoring login are handed over to you."
+msgstr "कागदपत्रे, वॉरंटी आणि मॉनिटरिंग लॉगिन तुम्हाला सुपूर्द केले जातात."
 
 #. js-lingui-explicit-id
 #: src/copy/operation-progress.ts:17
@@ -4366,7 +4326,7 @@ msgstr "आधीच्या रिलीज"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:34
-#: src/copy/proposal-template.ts:34
+#: src/copy/proposal-template.ts:30
 msgid "Edit"
 msgstr "बदला"
 
@@ -4376,7 +4336,7 @@ msgid "Edit {name}"
 msgstr "{name} बदला"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:54
+#: src/copy/proposal-template.ts:46
 msgid "Edit {phase}"
 msgstr "{phase} बदला"
 
@@ -4391,7 +4351,7 @@ msgid "Edit your branding"
 msgstr "तुमचे ब्रँडिंग बदला"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:33
+#: src/copy/proposal-template.ts:29
 msgid "Edit your proposal template"
 msgstr "तुमचा प्रस्ताव टेम्पलेट बदला"
 
@@ -4442,6 +4402,11 @@ msgid "Efficiency (%)"
 msgstr "कार्यक्षमता (%)"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:46
+msgid "Electrical work and metering"
+msgstr "इलेक्ट्रिकल काम आणि मीटरिंग"
+
+#. js-lingui-explicit-id
 #: src/copy/role-presets.ts:59
 msgid "Employee records, attendance and leave"
 msgstr "कर्मचारी नोंदी, हजेरी आणि रजा"
@@ -4460,12 +4425,6 @@ msgstr "संपले"
 #: src/copy/billing-home.ts:75
 msgid "Ends"
 msgstr "संपेल"
-
-#. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:151
-#: src/copy/proposal-template.ts:156
-msgid "English, Hindi and Marathi"
-msgstr "इंग्रजी, हिंदी आणि मराठी"
 
 #. js-lingui-explicit-id
 #: src/copy/brand-colour-field.ts:19
@@ -4501,6 +4460,11 @@ msgstr "नोंदी"
 #: src/copy/shell.ts:76
 msgid "EPC Owner"
 msgstr "EPC मालक"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:26
+msgid "Equipment warranties are the manufacturers’ and are handed over at commissioning."
+msgstr "उपकरणांची वॉरंटी उत्पादकांची असते आणि ती कमिशनिंगच्या वेळी सुपूर्द केली जाते."
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:15
@@ -4553,7 +4517,7 @@ msgid "every other feature"
 msgstr "इतर प्रत्येक सुविधा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:130
+#: src/copy/proposal-template.ts:119
 msgid "Every panel, inverter and part, by make."
 msgstr "प्रत्येक पॅनल, इन्व्हर्टर आणि भाग, ब्रँडसह."
 
@@ -4583,7 +4547,7 @@ msgid "Every rooftop, from the first call to the last payment."
 msgstr "प्रत्येक छप्पर, पहिल्या कॉलपासून शेवटच्या पेमेंटपर्यंत."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:146
+#: src/copy/proposal-template.ts:135
 msgid "every section prints"
 msgstr "प्रत्येक विभाग छापला जातो"
 
@@ -4643,7 +4607,7 @@ msgid "Expand the sidebar"
 msgstr "साइडबार मोठा करा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:127
+#: src/copy/proposal-template.ts:116
 msgid "Expected generation through the year."
 msgstr "वर्षभरातील अपेक्षित उत्पादन."
 
@@ -4688,7 +4652,7 @@ msgid "Extra voice"
 msgstr "अतिरिक्त व्हॉइस"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:90
+#: src/copy/company-profile.ts:95
 msgid "Factories, offices, warehouses"
 msgstr "कारखाने, कार्यालये, गोदामे"
 
@@ -4761,7 +4725,7 @@ msgid "Finance Home"
 msgstr "फायनान्स होम"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:115
+#: src/copy/proposal-template.ts:104
 msgid "Financials"
 msgstr "आर्थिक तपशील"
 
@@ -4875,12 +4839,12 @@ msgid "from {source}"
 msgstr "{source} मधून"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:71
+#: src/copy/proposal-template.ts:60
 msgid "From Branding"
 msgstr "ब्रँडिंगमधून"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:132
+#: src/copy/proposal-template.ts:121
 msgid "From Business profile"
 msgstr "व्यवसाय प्रोफाइलमधून"
 
@@ -4890,7 +4854,12 @@ msgid "From HelioGrid · product news"
 msgstr "HelioGrid कडून · प्रॉडक्ट बातमी"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:129
+#: src/copy/proposal-template.ts:145
+msgid "from order to handover"
+msgstr "ऑर्डरपासून हस्तांतरणापर्यंत"
+
+#. js-lingui-explicit-id
+#: src/copy/proposal-template.ts:118
 msgid "From Payment terms"
 msgstr "पेमेंटच्या अटींमधून"
 
@@ -4910,7 +4879,7 @@ msgid "From your Business profile"
 msgstr "तुमच्या व्यवसाय प्रोफाइलमधून"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:17
+#: src/copy/company-profile.ts:24
 msgid "From your signup"
 msgstr "तुमच्या साइनअपमधून"
 
@@ -4950,7 +4919,7 @@ msgid "Give these terms a name"
 msgstr "या अटींना नाव द्या"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:63
+#: src/copy/proposal-template.ts:55
 msgid "Give this phase a name"
 msgstr "या टप्प्याला नाव द्या"
 
@@ -5127,17 +5096,22 @@ msgid "handle people and admin"
 msgstr "लोक आणि प्रशासन"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:107
+#: src/copy/document-defaults.ts:62
+msgid "Handover"
+msgstr "हस्तांतरण"
+
+#. js-lingui-explicit-id
+#: src/copy/proposal-template.ts:96
 msgid "Happy customers"
 msgstr "समाधानी ग्राहक"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:29
+#: src/copy/company-profile.ts:34
 msgid "HDFC Bank"
 msgstr "HDFC Bank"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:33
+#: src/copy/company-profile.ts:38
 msgid "HDFC0001234"
 msgstr "HDFC0001234"
 
@@ -5207,22 +5181,22 @@ msgid "HelioGrid's answer could not be read. If you were saving, check whether i
 msgstr "HelioGrid चे उत्तर वाचता आले नाही. तुम्ही काही सेव्ह करत असाल, तर पुन्हा प्रयत्न करण्यापूर्वी ते सेव्ह झाले का ते तपासा."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:140
+#: src/copy/proposal-template.ts:129
 msgid "HelioGrid's cover"
 msgstr "HelioGrid चे कव्हर"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:145
+#: src/copy/proposal-template.ts:134
 msgid "HelioGrid's standard"
 msgstr "HelioGrid चे मानक"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:155
+#: src/copy/proposal-template.ts:144
 msgid "HelioGrid's standard phases"
 msgstr "HelioGrid चे मानक टप्पे"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:150
+#: src/copy/proposal-template.ts:139
 msgid "HelioGrid's standard terms"
 msgstr "HelioGrid च्या मानक अटी"
 
@@ -5313,7 +5287,7 @@ msgid "Home"
 msgstr "होम"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:89
+#: src/copy/company-profile.ts:94
 msgid "Homes and housing societies"
 msgstr "घरे आणि गृहनिर्माण संस्था"
 
@@ -5323,7 +5297,7 @@ msgid "Homes and individual rooftops, sold to the owner living under the system.
 msgstr "घरे आणि वैयक्तिक छते — जिथे मालक स्वतः त्या सिस्टीमखाली राहतो."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:68
+#: src/copy/price-book.ts:58
 msgid "How {name} is charged"
 msgstr "{name} चे शुल्क कसे आकारले जाते"
 
@@ -5343,7 +5317,7 @@ msgid "How the part-cycle amount is worked out"
 msgstr "अंशतः-चक्राची रक्कम कशी काढली"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:33
+#: src/copy/price-book.ts:25
 msgid "How the rate is charged"
 msgstr "दर कसा आकारला जातो"
 
@@ -5484,7 +5458,7 @@ msgstr "{language} मध्ये, नंतर {switches} वर बदलल�
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:67
-#: src/copy/price-book.ts:52
+#: src/copy/price-book.ts:44
 msgid "In force"
 msgstr "लागू"
 
@@ -5507,6 +5481,11 @@ msgstr "शोध आणि निवड यादींमध्ये"
 #: src/copy/pricing.ts:25
 msgid "In the app"
 msgstr "ॲपमध्ये"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:58
+msgid "Incentive claim"
+msgstr "प्रोत्साहन दावा"
 
 #. js-lingui-explicit-id
 #: src/copy/pricing.ts:99
@@ -5548,6 +5527,11 @@ msgstr "औद्योगिक ड्रॉइंग शीट"
 #. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:54
 msgid "install"
+msgstr "इन्स्टॉलेशन"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:42
+msgid "Installation"
 msgstr "इन्स्टॉलेशन"
 
 #. js-lingui-explicit-id
@@ -5769,7 +5753,7 @@ msgstr "त्याऐवजी {plan} ठेवा"
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:74
 #: src/copy/payment-terms.ts:81
-#: src/copy/proposal-template.ts:96
+#: src/copy/proposal-template.ts:85
 msgid "Keep editing"
 msgstr "बदलत रहा"
 
@@ -5782,7 +5766,7 @@ msgstr "भरणे सुरू ठेवा"
 #: src/copy/branding.ts:70
 #: src/copy/catalog-editor.ts:40
 #: src/copy/payment-terms.ts:74
-#: src/copy/proposal-template.ts:92
+#: src/copy/proposal-template.ts:81
 msgid "Keep it"
 msgstr "राहू द्या"
 
@@ -5854,18 +5838,12 @@ msgid "kinds"
 msgstr "प्रकार"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:100
+#: src/copy/proposal-template.ts:89
 msgid "Kothrud, Pune"
 msgstr "कोथरूड, पुणे"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:40
-msgid "language"
-msgstr "भाषा"
-
-#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:31
-#: src/copy/proposal-template.ts:39
 #: src/copy/setup-language.ts:21
 msgid "Language"
 msgstr "भाषा"
@@ -5948,7 +5926,7 @@ msgstr "हा कॉलम वगळा"
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:71
 #: src/copy/payment-terms.ts:78
-#: src/copy/proposal-template.ts:93
+#: src/copy/proposal-template.ts:82
 msgid "Leave without saving?"
 msgstr "जतन न करता बाहेर जायचे?"
 
@@ -6168,7 +6146,7 @@ msgid "Loading the plans"
 msgstr "प्लॅन लोड होत आहेत"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:148
+#: src/copy/price-book.ts:137
 msgid "Loading the price book"
 msgstr "प्राइस बुक लोड होत आहे"
 
@@ -6183,7 +6161,7 @@ msgid "Loading the proposal cover"
 msgstr "प्रस्तावाचे कव्हर लोड होत आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:79
+#: src/copy/proposal-template.ts:68
 msgid "Loading the proposal preview"
 msgstr "प्रस्तावाचे पूर्वावलोकन लोड होत आहे"
 
@@ -6223,7 +6201,7 @@ msgid "Loading your branding"
 msgstr "तुमचे ब्रँडिंग लोड होत आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:45
+#: src/copy/company-profile.ts:50
 msgid "Loading your company profile"
 msgstr "तुमची कंपनी प्रोफाइल लोड होत आहे"
 
@@ -6243,7 +6221,7 @@ msgid "Loading your preferences"
 msgstr "तुमच्या पसंती लोड होत आहेत"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:80
+#: src/copy/proposal-template.ts:69
 msgid "Loading your proposal template"
 msgstr "तुमचा प्रस्ताव टेम्पलेट लोड होत आहे"
 
@@ -6265,7 +6243,7 @@ msgstr "स्थानाची पुष्टी झाली"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:35
-#: src/copy/company-profile.ts:59
+#: src/copy/company-profile.ts:64
 msgid "Logo"
 msgstr "लोगो"
 
@@ -6275,7 +6253,7 @@ msgid "Logo and colours on every proposal"
 msgstr "प्रत्येक प्रस्तावावर लोगो आणि रंग"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:69
+#: src/copy/company-profile.ts:74
 msgid "Logo and company name"
 msgstr "लोगो आणि कंपनीचे नाव"
 
@@ -6290,7 +6268,7 @@ msgid "Logo prints here"
 msgstr "लोगो इथे छापला जाईल"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:70
+#: src/copy/proposal-template.ts:59
 msgid "Logo, colour and letterhead"
 msgstr "लोगो, रंग आणि लेटरहेड"
 
@@ -6340,7 +6318,7 @@ msgid "Manage the plan and billing"
 msgstr "प्लॅन आणि बिलिंग सांभाळा"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:28
+#: src/copy/price-book.ts:20
 msgid "Margin {margin} · since {date}"
 msgstr "मार्जिन {margin} · {date} पासून"
 
@@ -6361,7 +6339,7 @@ msgid "Market calling window"
 msgstr "बाजाराची कॉलिंग विंडो"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:38
+#: src/copy/company-profile.ts:43
 msgid "Market defaults until you set these"
 msgstr "तुम्ही हे ठरवेपर्यंत बाजाराचे डिफॉल्ट लागू राहतील"
 
@@ -6401,9 +6379,19 @@ msgid "Material leaves for site"
 msgstr "साहित्य साइटकडे निघते"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:34
+msgid "Material ordered"
+msgstr "साहित्य ऑर्डर केले"
+
+#. js-lingui-explicit-id
 #: src/copy/checklist.ts:16
 msgid "Materials"
 msgstr "साहित्य"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:39
+msgid "Materials leave the warehouse for your site."
+msgstr "साहित्य गोदामातून तुमच्या साइटकडे रवाना होते."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item-fields.ts:26
@@ -6426,7 +6414,7 @@ msgid "Measurements"
 msgstr "मापे"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:99
+#: src/copy/proposal-template.ts:88
 msgid "Meena Deshpande"
 msgstr "मीना देशपांडे"
 
@@ -6700,7 +6688,7 @@ msgid "Name"
 msgstr "नाव"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:141
+#: src/copy/proposal-template.ts:130
 msgid "name and logo only"
 msgstr "फक्त नाव आणि लोगो"
 
@@ -6715,7 +6703,7 @@ msgid "Name of these terms"
 msgstr "या अटींचे नाव"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:78
+#: src/copy/company-profile.ts:83
 msgid "Name only"
 msgstr "फक्त नाव"
 
@@ -6841,7 +6829,7 @@ msgid "New payment terms"
 msgstr "नवीन पेमेंट अटी"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:57
+#: src/copy/proposal-template.ts:49
 msgid "New phase"
 msgstr "नवा टप्पा"
 
@@ -6906,7 +6894,7 @@ msgid "New proposals use these terms."
 msgstr "नवीन प्रस्ताव या अटी वापरतात."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:73
+#: src/copy/price-book.ts:63
 msgid "New rate"
 msgstr "नवीन दर"
 
@@ -6992,11 +6980,6 @@ msgstr "NMC"
 #: src/copy/catalog-editor.ts:73
 msgid "No"
 msgstr "नाही"
-
-#. js-lingui-explicit-id
-#: src/copy/price-book.ts:66
-msgid "No {language} name yet — English shows in its place."
-msgstr "अजून {language} नाव नाही — त्याऐवजी इंग्रजी दिसेल."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:53
@@ -7185,12 +7168,12 @@ msgid "No project name yet"
 msgstr "अजून प्रोजेक्टचे नाव नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:45
+#: src/copy/price-book.ts:37
 msgid "No rate matches."
 msgstr "कोणताही दर जुळत नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:40
+#: src/copy/price-book.ts:32
 msgid "No rates yet"
 msgstr "अजून दर नाहीत"
 
@@ -7265,7 +7248,7 @@ msgid "No transcript on this call"
 msgstr "या कॉलवर ट्रान्सक्रिप्ट नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:30
+#: src/copy/price-book.ts:22
 msgid "No version yet"
 msgstr "अजून व्हर्जन नाही"
 
@@ -7296,7 +7279,7 @@ msgid "Not a structural certification"
 msgstr "संरचनात्मक प्रमाणपत्र नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:80
+#: src/copy/company-profile.ts:85
 msgid "Not added"
 msgstr "जोडलेले नाही"
 
@@ -7311,7 +7294,7 @@ msgid "Not added or selected — everything you typed is still here."
 msgstr "जोडले किंवा निवडले नाही — तुम्ही लिहिलेले सर्व इथेच आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:74
+#: src/copy/proposal-template.ts:63
 msgid "not added yet · from Business profile"
 msgstr "अजून जोडले नाही · व्यवसाय प्रोफाइलमधून"
 
@@ -7357,7 +7340,7 @@ msgid "Not comparable here"
 msgstr "इथे तुलना करता येत नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:83
+#: src/copy/company-profile.ts:88
 msgid "Not declared"
 msgstr "सांगितलेले नाही"
 
@@ -7458,14 +7441,14 @@ msgid "Not saved — this cannot be widened"
 msgstr "सेव्ह झाले नाही — हे वाढवता येत नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:53
+#: src/copy/company-profile.ts:58
 msgid "Not saved · our end · nothing typed is lost"
 msgstr "जतन झाले नाही · अडचण आमच्या बाजूने · लिहिलेले काहीही गमावलेले नाही"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:59
 #: src/copy/payment-terms.ts:42
-#: src/copy/proposal-template.ts:83
+#: src/copy/proposal-template.ts:72
 msgid "Not saved yet"
 msgstr "अजून जतन केले नाही"
 
@@ -7687,16 +7670,6 @@ msgid "Nothing was lost — press Save and continue to try again."
 msgstr "काहीही गेले नाही — पुन्हा प्रयत्न करण्यासाठी जतन करा आणि पुढे जा दाबा."
 
 #. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:32
-msgid "Nothing written in {language} yet · all {total} {sectionNoun} fall back to {fallback}"
-msgstr "{language} मध्ये अजून काही लिहिले नाही · सर्व {total} {sectionNoun} {fallback} वर परत येतात"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:29
-msgid "Nothing written in {language} yet · it falls back to {fallback}"
-msgstr "{language} मध्ये अजून काही लिहिले नाही · ते {fallback} वर परत येते"
-
-#. js-lingui-explicit-id
 #: src/copy/shell.ts:56
 msgid "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
 msgstr "या डिव्हाइसवर तुम्ही नोंदवलेले काहीही हरवलेले नाही. तुमचा प्रवेश परत मिळवण्यासाठी तुमच्या अ‍ॅडमिनला सांगा, किंवा दुसऱ्या खात्याने साइन इन करा."
@@ -7757,14 +7730,24 @@ msgid "On"
 msgstr "तारीख"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:13
+#: src/copy/document-defaults.ts:76
+msgid "On commissioning"
+msgstr "कमिशनिंगवर"
+
+#. js-lingui-explicit-id
+#: src/copy/company-profile.ts:20
 msgid "On every proposal, invoice and customer link · asked for once"
 msgstr "प्रत्येक प्रस्ताव, बिल आणि ग्राहक लिंकवर · एकदाच विचारले जाते"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:14
+#: src/copy/company-profile.ts:21
 msgid "On every proposal, invoice and customer link · change it here"
 msgstr "प्रत्येक प्रस्ताव, बिल आणि ग्राहक लिंकवर · येथे बदला"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:75
+msgid "On installation"
+msgstr "इन्स्टॉलेशनवर"
 
 #. js-lingui-explicit-id
 #: src/copy/on-its-way.ts:17
@@ -7782,7 +7765,7 @@ msgid "On trial"
 msgstr "ट्रायलवर"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:34
+#: src/copy/company-profile.ts:39
 msgid "On your invoices · never used to move your money"
 msgstr "तुमच्या बिलांवर · तुमच्या पैशांच्या व्यवहारासाठी कधीच नाही"
 
@@ -7852,13 +7835,13 @@ msgid "Only EPC Owner"
 msgstr "एकमेव EPC मालक"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:37
+#: src/copy/company-profile.ts:42
 msgid "Only new proposals reprice · sent ones keep theirs"
 msgstr "फक्त नवीन प्रस्तावांच्या किमती बदलतील · पाठवलेले तसेच राहतील"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:38
-#: src/copy/proposal-template.ts:32
+#: src/copy/proposal-template.ts:28
 msgid "Open full size"
 msgstr "पूर्ण आकारात उघडा"
 
@@ -7959,7 +7942,7 @@ msgid "OTP codes"
 msgstr "OTP कोड"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:48
+#: src/copy/company-profile.ts:53
 msgid "Our end, not yours · nothing is lost"
 msgstr "अडचण आमच्या बाजूने आहे, तुमच्या नाही · काहीही गमावलेले नाही"
 
@@ -8080,6 +8063,11 @@ msgid "Panels"
 msgstr "पॅनेल"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:35
+msgid "Panels, inverter and structure are ordered for your site."
+msgstr "तुमच्या साइटसाठी पॅनेल, इन्व्हर्टर आणि स्ट्रक्चर ऑर्डर केले जातात."
+
+#. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:56
 msgid "Part of this cycle"
 msgstr "या चक्राचा भाग"
@@ -8088,11 +8076,6 @@ msgstr "या चक्राचा भाग"
 #: src/copy/plan-selection.ts:57
 msgid "Part of this cycle · {left} of {total} days"
 msgstr "या चक्राचा भाग · {total} पैकी {left} दिवस"
-
-#. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:41
-msgid "parts"
-msgstr "भाग"
 
 #. js-lingui-explicit-id
 #: src/copy/usage-page.ts:74
@@ -8110,7 +8093,7 @@ msgid "past releases"
 msgstr "मागील रिलीज"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:29
+#: src/copy/price-book.ts:21
 msgid "past versions"
 msgstr "मागील व्हर्जन"
 
@@ -8227,6 +8210,11 @@ msgid "Payment failed · day {day} of the 7-day grace"
 msgstr "पेमेंट अयशस्वी · 7 दिवसांच्या सवलतीचा दिवस {day}"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:20
+msgid "Payment falls due in the tranches listed in the payment schedule. Work at each stage starts once the tranche for that stage is received."
+msgstr "पेमेंट शेड्यूलमध्ये दिलेल्या हप्त्यांनुसार रक्कम देय आहे. प्रत्येक टप्प्याचे काम त्या टप्प्याचा हप्ता मिळाल्यानंतर सुरू होते."
+
+#. js-lingui-explicit-id
 #: src/copy/billing-home.ts:39
 msgid "Payment link"
 msgstr "पेमेंट लिंक"
@@ -8272,7 +8260,7 @@ msgid "Payment still due"
 msgstr "पेमेंट अजून बाकी आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:117
+#: src/copy/proposal-template.ts:106
 #: src/copy/settings.ts:47
 msgid "Payment terms"
 msgstr "पेमेंटच्या अटी"
@@ -8318,17 +8306,17 @@ msgid "People Today"
 msgstr "आजचे लोक"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:91
+#: src/copy/price-book.ts:81
 msgid "Per job"
 msgstr "प्रति काम"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:92
+#: src/copy/price-book.ts:82
 msgid "Per kW"
 msgstr "प्रति kW"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:94
+#: src/copy/price-book.ts:84
 msgid "Per metre"
 msgstr "प्रति मीटर"
 
@@ -8338,12 +8326,12 @@ msgid "Per minute"
 msgstr "प्रति मिनिट"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:93
+#: src/copy/price-book.ts:83
 msgid "Per visit"
 msgstr "प्रति भेट"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:114
+#: src/copy/proposal-template.ts:103
 msgid "Performance"
 msgstr "कार्यक्षमता"
 
@@ -8353,17 +8341,17 @@ msgid "Person"
 msgstr "व्यक्ती"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:56
+#: src/copy/proposal-template.ts:48
 msgid "Phase {position} of {count}"
 msgstr "{count} पैकी टप्पा {position}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:58
+#: src/copy/proposal-template.ts:50
 msgid "Phase name"
 msgstr "टप्प्याचे नाव"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:52
+#: src/copy/proposal-template.ts:44
 msgid "phases"
 msgstr "टप्पे"
 
@@ -8426,7 +8414,7 @@ msgid "Pickers"
 msgstr "निवड याद्या"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:20
+#: src/copy/company-profile.ts:27
 msgid "PIN code"
 msgstr "पिन कोड"
 
@@ -8634,7 +8622,7 @@ msgid "price book"
 msgstr "किंमत यादी"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:24
+#: src/copy/price-book.ts:16
 msgid "Price book"
 msgstr "प्राइस बुक"
 
@@ -8694,11 +8682,6 @@ msgid "Prices exclude {scheme}"
 msgstr "किमतींमध्ये {scheme} समाविष्ट नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:9
-msgid "primary"
-msgstr "मुख्य"
-
-#. js-lingui-explicit-id
 #: src/copy/brand-colour-field.ts:14
 msgid "Primary brand colour"
 msgstr "मुख्य ब्रँड रंग"
@@ -8724,7 +8707,7 @@ msgid "Profile photo, optional"
 msgstr "प्रोफाइल फोटो, ऐच्छिक"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:46
+#: src/copy/company-profile.ts:51
 msgid "Profile still loading"
 msgstr "प्रोफाइल अजून लोड होत आहे"
 
@@ -8744,7 +8727,7 @@ msgid "Project Manager"
 msgstr "प्रोजेक्ट मॅनेजर"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:51
+#: src/copy/proposal-template.ts:43
 msgid "Project phases"
 msgstr "प्रकल्पाचे टप्पे"
 
@@ -8754,8 +8737,8 @@ msgid "Project stages, documents and blockers across all projects, plus the cata
 msgstr "सर्व प्रोजेक्टचे टप्पे, कागदपत्रे आणि अडथळे, तसेच कॅटलॉग आणि प्राइस बुक"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:116
-#: src/copy/proposal-template.ts:157
+#: src/copy/proposal-template.ts:105
+#: src/copy/proposal-template.ts:146
 msgid "Project timeline"
 msgstr "प्रकल्पाची टाइमलाइन"
 
@@ -8773,7 +8756,7 @@ msgstr "प्रोजेक्ट्स"
 #. js-lingui-explicit-id
 #: src/copy/brand-colour-field.ts:23
 #: src/copy/branding.ts:32
-#: src/copy/proposal-template.ts:44
+#: src/copy/proposal-template.ts:37
 msgid "Proposal"
 msgstr "प्रस्ताव"
 
@@ -8805,12 +8788,12 @@ msgid "Proposals a month"
 msgstr "दरमहा प्रस्ताव"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:75
+#: src/copy/proposal-template.ts:64
 msgid "Proposals already sent keep the template they were built with."
 msgstr "आधीच पाठवलेले प्रस्ताव ज्या टेम्पलेटने बनले तोच ठेवतात."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:41
+#: src/copy/price-book.ts:33
 msgid "Proposals price only hardware until you add rates. Your first set becomes version 1."
 msgstr "तुम्ही दर जोडेपर्यंत प्रस्तावांमध्ये फक्त हार्डवेअरची किंमत लागते. तुमचा पहिला संच व्हर्जन 1 होईल."
 
@@ -8865,19 +8848,14 @@ msgid "Rajesh Kulkarni"
 msgstr "राजेश कुलकर्णी"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:35
+#: src/copy/price-book.ts:27
 msgid "Rate"
 msgstr "दर"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:64
+#: src/copy/price-book.ts:56
 msgid "Rate name"
 msgstr "दराचे नाव"
-
-#. js-lingui-explicit-id
-#: src/copy/price-book.ts:65
-msgid "Rate name in {language}"
-msgstr "{language} मध्ये दराचे नाव"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import-fields.ts:44
@@ -8907,12 +8885,12 @@ msgstr "रेटेड पॉवर"
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:20
 #: src/copy/plan-selection.ts:72
-#: src/copy/price-book.ts:56
+#: src/copy/price-book.ts:48
 msgid "Rates"
 msgstr "दर"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:38
+#: src/copy/price-book.ts:30
 msgid "Rates in force"
 msgstr "लागू दर"
 
@@ -8957,7 +8935,7 @@ msgid "Read others’ attendance records"
 msgstr "इतरांची हजेरी वाचा"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:53
+#: src/copy/price-book.ts:45
 msgid "Read-only"
 msgstr "फक्त वाचण्यासाठी"
 
@@ -9124,7 +9102,7 @@ msgid "Remove {list} from {first}?"
 msgstr "{first} यांच्याकडून {list} काढायचे?"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:69
+#: src/copy/price-book.ts:59
 msgid "Remove {name}"
 msgstr "{name} काढा"
 
@@ -9196,7 +9174,7 @@ msgid "Replace"
 msgstr "बदला"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:77
+#: src/copy/proposal-template.ts:66
 msgid "Replace any part with your own wording."
 msgstr "कोणताही भाग तुमच्या शब्दांत बदला."
 
@@ -9522,7 +9500,7 @@ msgid "Sample contract"
 msgstr "नमुना करार"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:97
+#: src/copy/proposal-template.ts:86
 msgid "Sample customer and proposal number"
 msgstr "नमुना ग्राहक आणि प्रस्ताव क्रमांक"
 
@@ -9532,13 +9510,13 @@ msgid "Save"
 msgstr "जतन करा"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:39
+#: src/copy/company-profile.ts:44
 #: src/copy/first-run-profile.ts:50
 msgid "Save and continue"
 msgstr "जतन करा आणि पुढे जा"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:80
+#: src/copy/price-book.ts:70
 msgid "Save as version {number}"
 msgstr "व्हर्जन {number} म्हणून जतन करा"
 
@@ -9548,17 +9526,17 @@ msgid "Save branding"
 msgstr "ब्रँडिंग जतन करा"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:41
+#: src/copy/company-profile.ts:46
 msgid "Save changes"
 msgstr "बदल जतन करा"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:42
+#: src/copy/company-profile.ts:47
 msgid "Save changes to your business profile"
 msgstr "तुमच्या व्यवसाय प्रोफाइलमधील बदल जतन करा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:61
+#: src/copy/proposal-template.ts:53
 msgid "Save phase"
 msgstr "टप्पा जतन करा"
 
@@ -9573,7 +9551,7 @@ msgid "Save roles"
 msgstr "भूमिका सेव्ह करा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:85
+#: src/copy/proposal-template.ts:74
 msgid "Save template"
 msgstr "टेम्पलेट जतन करा"
 
@@ -9583,7 +9561,7 @@ msgid "Save terms"
 msgstr "अटी सेव्ह करा"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:40
+#: src/copy/company-profile.ts:45
 msgid "Save your company profile and continue setting up HelioGrid"
 msgstr "तुमची कंपनी प्रोफाइल जतन करा आणि पुढे जा"
 
@@ -9623,12 +9601,12 @@ msgid "Saves both; you can change them in your company profile."
 msgstr "दोन्ही साठवते; तुम्ही ती तुमच्या कंपनी प्रोफाइलमध्ये बदलू शकता."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:61
+#: src/copy/price-book.ts:53
 msgid "Say what changed to save this version."
 msgstr "हे व्हर्जन जतन करण्यासाठी काय बदलले ते लिहा."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:65
+#: src/copy/proposal-template.ts:57
 msgid "Say what happens in this phase"
 msgstr "या टप्प्यात काय होते ते सांगा"
 
@@ -9668,7 +9646,7 @@ msgid "Search or jump to…"
 msgstr "शोधा किंवा थेट जा…"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:32
+#: src/copy/price-book.ts:24
 msgid "Search rates"
 msgstr "दर शोधा"
 
@@ -9678,12 +9656,12 @@ msgid "Search the catalog"
 msgstr "कॅटलॉगमध्ये शोधा"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:36
+#: src/copy/proposal-template.ts:32
 msgid "Sections"
 msgstr "विभाग"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:147
+#: src/copy/proposal-template.ts:136
 msgid "Sections that print"
 msgstr "छापले जाणारे विभाग"
 
@@ -10035,7 +10013,7 @@ msgid "Show more of the call"
 msgstr "कॉलचा आणखी भाग दाखवा"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:63
+#: src/copy/price-book.ts:55
 msgid "Show more versions"
 msgstr "आणखी व्हर्जन दाखवा"
 
@@ -10075,12 +10053,7 @@ msgid "Shown"
 msgstr "दाखवलेले"
 
 #. js-lingui-explicit-id
-#: src/copy/authored-content.ts:13
-msgid "Shown in {shown} — not yet written in {requested}."
-msgstr "{shown} मध्ये दाखवले — अजून {requested} मध्ये लिहिलेले नाही."
-
-#. js-lingui-explicit-id
-#: src/copy/company-profile.ts:23
+#: src/copy/company-profile.ts:28
 msgid "Shown to customers on every document"
 msgstr "प्रत्येक दस्तऐवजावर ग्राहकांना दिसतो"
 
@@ -10171,7 +10144,7 @@ msgid "Site surveys from the roof, on your phone."
 msgstr "छपरावरून साइट सर्व्हे, तुमच्या फोनवर."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:126
+#: src/copy/proposal-template.ts:115
 msgid "Size, type and price of your system."
 msgstr "तुमच्या सिस्टमचा आकार, प्रकार आणि किंमत."
 
@@ -10186,7 +10159,7 @@ msgid "Skip for now"
 msgstr "आत्ता वगळा"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:15
+#: src/copy/company-profile.ts:22
 msgid "Skipped during setup · your first proposal needs it"
 msgstr "सेटअपमध्ये वगळले · तुमच्या पहिल्या प्रस्तावाला याची गरज आहे"
 
@@ -10217,7 +10190,7 @@ msgid "Solar proposal"
 msgstr "सोलर प्रस्ताव"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:113
+#: src/copy/proposal-template.ts:102
 msgid "Solar system"
 msgstr "सोलर सिस्टम"
 
@@ -10328,6 +10301,11 @@ msgid "Stage change"
 msgstr "टप्प्यातील बदल"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:70
+msgid "Standard {split}"
+msgstr "मानक {split}"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:120
 msgid "Start a survey from your home"
 msgstr "तुमच्या होममधून सर्व्हे सुरू करा"
@@ -10343,7 +10321,7 @@ msgid "Start survey"
 msgstr "सर्व्हे सुरू करा"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:31
+#: src/copy/price-book.ts:23
 msgid "Start version {number}"
 msgstr "व्हर्जन {number} सुरू करा"
 
@@ -10353,7 +10331,7 @@ msgid "Start with a real lead"
 msgstr "खऱ्या लीडपासून सुरुवात करा"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:57
+#: src/copy/price-book.ts:49
 msgid "Starts from version {number}"
 msgstr "व्हर्जन {number} पासून सुरू"
 
@@ -10475,7 +10453,7 @@ msgid "Straight into today’s list to call back"
 msgstr "परत कॉल करण्यासाठी थेट आजच्या यादीत"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:18
+#: src/copy/company-profile.ts:25
 msgid "Street address"
 msgstr "रस्त्याचा पत्ता"
 
@@ -10702,7 +10680,7 @@ msgid "tax rates"
 msgstr "कर दर"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:71
+#: src/copy/company-profile.ts:76
 #: src/copy/invoice-document.ts:25
 msgid "Tax registration"
 msgstr "कर नोंदणी"
@@ -10740,22 +10718,17 @@ msgid "Tenant holiday"
 msgstr "कंपनीची सुट्टी"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:37
+#: src/copy/proposal-template.ts:33
 msgid "Terms"
 msgstr "अटी"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:102
-#: src/copy/proposal-template.ts:119
-#: src/copy/proposal-template.ts:152
+#: src/copy/proposal-template.ts:91
+#: src/copy/proposal-template.ts:108
+#: src/copy/proposal-template.ts:141
 #: src/copy/rich-text.ts:26
 msgid "Terms and conditions"
 msgstr "नियम आणि अटी"
-
-#. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:49
-msgid "Terms in {language}"
-msgstr "{language} मधील अटी"
 
 #. js-lingui-explicit-id
 #: src/copy/project-stages.ts:40
@@ -10969,6 +10942,11 @@ msgid "The documents each stage needs, in one place"
 msgstr "प्रत्येक टप्प्यासाठी लागणारी कागदपत्रे, एकाच ठिकाणी"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:51
+msgid "The electricity utility inspects and approves the installation."
+msgstr "वीज कंपनी इन्स्टॉलेशनची तपासणी करून मंजुरी देते."
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import-notes.ts:9
 msgid "The file did not upload. Try again."
 msgstr "फाइल अपलोड झाली नाही. पुन्हा प्रयत्न करा."
@@ -11009,6 +10987,16 @@ msgid "The import keeps running. Its report waits in Import a file."
 msgstr "इम्पोर्ट सुरू राहील. त्याचा रिपोर्ट फाइल इम्पोर्टमध्ये मिळेल."
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:59
+msgid "The incentive claim is filed on your behalf."
+msgstr "तुमच्या वतीने प्रोत्साहन रकमेचा दावा दाखल केला जातो."
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:23
+msgid "The installation follows the design agreed in this proposal. A change to the design after acceptance may change the price, and a revised proposal is issued before work continues."
+msgstr "इन्स्टॉलेशन या प्रस्तावात ठरलेल्या डिझाइननुसार केले जाते. स्वीकृतीनंतर डिझाइनमध्ये बदल केल्यास किंमत बदलू शकते, आणि काम पुढे नेण्यापूर्वी सुधारित प्रस्ताव दिला जातो."
+
+#. js-lingui-explicit-id
 #: src/copy/role-presets.ts:58
 msgid "The installation job assigned to them"
 msgstr "त्यांना सोपवलेले इन्स्टॉलेशनचे काम"
@@ -11017,6 +11005,11 @@ msgstr "त्यांना सोपवलेले इन्स्टॉल�
 #: src/copy/role-presets.ts:27
 msgid "The installation job assigned to them, its checklist and photos"
 msgstr "त्यांना दिलेले इंस्टॉलेशनचे काम, त्याची चेकलिस्ट आणि फोटो"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:47
+msgid "The inverter is connected and the meter application is filed."
+msgstr "इन्व्हर्टर जोडला जातो आणि मीटरसाठी अर्ज केला जातो."
 
 #. js-lingui-explicit-id
 #: src/copy/team-acts.ts:29
@@ -11069,7 +11062,7 @@ msgid "The item is still preferred."
 msgstr "आयटम अजूनही पसंतीचा आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:71
+#: src/copy/price-book.ts:61
 msgid "the new rate"
 msgstr "नवीन दर"
 
@@ -11089,12 +11082,12 @@ msgid "The PDF could not open. Try again."
 msgstr "PDF उघडले नाही. पुन्हा प्रयत्न करा."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:30
+#: src/copy/proposal-template.ts:26
 msgid "The PDF your customer opens"
 msgstr "तुमचा ग्राहक उघडतो ती PDF"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:31
+#: src/copy/proposal-template.ts:27
 msgid "The PDF your customer opens · sample customer and number"
 msgstr "तुमचा ग्राहक उघडतो ती PDF · नमुना ग्राहक आणि क्रमांक"
 
@@ -11109,7 +11102,7 @@ msgid "The preview opens when matching ends."
 msgstr "जुळवणी पूर्ण झाल्यावर प्रिव्ह्यू उघडेल."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:85
+#: src/copy/price-book.ts:75
 msgid "The price book didn't load."
 msgstr "प्राइस बुक लोड झाले नाही."
 
@@ -11204,7 +11197,7 @@ msgid "The same hue, a shade darker."
 msgstr "तोच रंग, थोडा गडद."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:36
+#: src/copy/company-profile.ts:41
 msgid "The size you sell most often"
 msgstr "तुम्ही सर्वाधिक विकता तो आकार"
 
@@ -11219,6 +11212,11 @@ msgid "The stages your customers pay in"
 msgstr "ज्या टप्प्यांत तुमचे ग्राहक पैसे भरतात"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:43
+msgid "The structure, panels and wiring are installed on your roof."
+msgstr "तुमच्या छतावर स्ट्रक्चर, पॅनेल आणि वायरिंग बसवली जाते."
+
+#. js-lingui-explicit-id
 #: src/copy/on-its-way.ts:77
 msgid "The survey goes straight into the design"
 msgstr "सर्व्हे थेट डिझाइनमध्ये जातो"
@@ -11227,6 +11225,11 @@ msgstr "सर्व्हे थेट डिझाइनमध्ये जा
 #: src/copy/actor-class.ts:12
 msgid "The system"
 msgstr "सिस्टम"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:55
+msgid "The system is switched on and starts generating."
+msgstr "सिस्टम सुरू केली जाते आणि वीजनिर्मिती सुरू होते."
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:16
@@ -11244,12 +11247,12 @@ msgid "The team’s leads, proposals and payments"
 msgstr "टीमच्या लीड, प्रस्ताव आणि पेमेंट"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:66
-msgid "The terms always print, so they need words in English."
-msgstr "अटी नेहमी छापल्या जातात, म्हणून त्यांना इंग्रजीत शब्द हवेत."
+#: src/copy/proposal-template.ts:58
+msgid "The terms always print, so write at least one line."
+msgstr "अटी नेहमी छापल्या जातात, म्हणून किमान एक ओळ लिहा."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:131
+#: src/copy/proposal-template.ts:120
 msgid "The terms you write."
 msgstr "तुम्ही लिहिलेल्या अटी."
 
@@ -11264,7 +11267,7 @@ msgid "The trial ended"
 msgstr "ट्रायल संपली"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:84
+#: src/copy/price-book.ts:74
 msgid "The version wasn't saved. Nothing changed — try again."
 msgstr "व्हर्जन सेव्ह झाले नाही. काहीही बदलले नाही — पुन्हा प्रयत्न करा."
 
@@ -11525,6 +11528,11 @@ msgid "This product changed in your catalog after the preview, so the row was no
 msgstr "प्रिव्ह्यूनंतर तुमच्या कॅटलॉगमध्ये हे प्रॉडक्ट बदलले, म्हणून ही ओळ जतन झाली नाही."
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:17
+msgid "This proposal is valid until the date stated on it. Prices and taxes are as itemised in it."
+msgstr "हा प्रस्ताव त्यात नमूद केलेल्या तारखेपर्यंत वैध आहे. किमती आणि कर त्यात दिलेल्या तपशिलानुसार आहेत."
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:57
 msgid "This record is no longer in your scope, or was removed. The notification stays here because it reached you."
 msgstr "हा रेकॉर्ड आता तुमच्या कक्षेत नाही, किंवा काढून टाकला आहे. सूचना इथे राहते कारण ती तुमच्यापर्यंत पोहोचली होती."
@@ -11580,6 +11588,11 @@ msgid "Three phase"
 msgstr "थ्री फेज"
 
 #. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:28
+msgid "Tick {list} on {first}'s row again."
+msgstr "{first} यांच्या ओळीवर {list} पुन्हा टिक करा."
+
+#. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:34
 msgid "Tick at least one preset."
 msgstr "किमान एक प्रीसेट निवडा."
@@ -11605,7 +11618,7 @@ msgid "Tick them again on {first}'s row whenever you like."
 msgstr "हवे तेव्हा {first} यांच्या ओळीवर त्या पुन्हा टिक करा."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:38
+#: src/copy/proposal-template.ts:34
 msgid "Timeline"
 msgstr "टाइमलाइन"
 
@@ -11677,7 +11690,7 @@ msgid "Total"
 msgstr "एकूण"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:106
+#: src/copy/proposal-template.ts:95
 msgid "Total capacity installed"
 msgstr "एकूण बसवलेली क्षमता"
 
@@ -11747,9 +11760,9 @@ msgstr "इनव्हॉइस नंबरचा एखादा भाग �
 #: src/copy/catalog-import.ts:50
 #: src/copy/catalog-settings.ts:93
 #: src/copy/payment-terms.ts:38
-#: src/copy/price-book.ts:86
+#: src/copy/price-book.ts:76
 #: src/copy/pricing.ts:118
-#: src/copy/proposal-template.ts:82
+#: src/copy/proposal-template.ts:71
 #: src/copy/role-card.ts:39
 #: src/copy/roles-reference.ts:34
 #: src/copy/sign-in.ts:40
@@ -11802,7 +11815,7 @@ msgid "Try again. If it keeps failing, you can still pay from the link in your l
 msgstr "पुन्हा प्रयत्न करा. वारंवार अयशस्वी झाल्यास, तुमच्या शेवटच्या स्मरणपत्रातील लिंकवरून पेमेंट करू शकता."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:54
+#: src/copy/company-profile.ts:59
 msgid "Try saving your company profile again"
 msgstr "तुमची कंपनी प्रोफाइल पुन्हा जतन करून पाहा"
 
@@ -11901,7 +11914,7 @@ msgid "Until you finish, proposals start without your answers."
 msgstr "पूर्ण करेपर्यंत प्रस्ताव तुमच्या उत्तरांशिवाय सुरू होतात."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:90
+#: src/copy/proposal-template.ts:79
 msgid "Until you save, Discard changes brings it back."
 msgstr "जतन करेपर्यंत, बदल काढून टाका तो परत आणतो."
 
@@ -12098,12 +12111,17 @@ msgid "Utility clears the plant"
 msgstr "युटिलिटी प्लांटला मंजुरी देते"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:27
+#: src/copy/document-defaults.ts:50
+msgid "Utility inspection"
+msgstr "वीज कंपनीची तपासणी"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:19
 msgid "v{number}"
 msgstr "v{number}"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:25
+#: src/copy/price-book.ts:17
 msgid "V{number}"
 msgstr "V{number}"
 
@@ -12111,6 +12129,11 @@ msgstr "V{number}"
 #: src/copy/paged-document.ts:29
 msgid "Valid until"
 msgstr "पर्यंत वैध"
+
+#. js-lingui-explicit-id
+#: src/copy/proposal-template.ts:140
+msgid "validity, payment, changes and warranties"
+msgstr "वैधता, पेमेंट, बदल आणि वॉरंटी"
 
 #. js-lingui-explicit-id
 #: src/copy/otp-input.ts:8
@@ -12153,27 +12176,27 @@ msgid "Verifying the code creates your account. Your company is created at the n
 msgstr "कोड तपासल्याने तुमचे खाते तयार होते. तुमची कंपनी पुढच्या पायरीत तयार होते."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:76
+#: src/copy/price-book.ts:66
 msgid "Version {next} goes in force at once. Version {current} stays readable."
 msgstr "व्हर्जन {next} लगेच लागू होईल. व्हर्जन {current} वाचता येत राहील."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:50
+#: src/copy/price-book.ts:42
 msgid "Version {number}"
 msgstr "व्हर्जन {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:83
+#: src/copy/price-book.ts:73
 msgid "Version {number} is in force"
 msgstr "व्हर्जन {number} लागू आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:79
+#: src/copy/price-book.ts:69
 msgid "Version 1 goes in force at once."
 msgstr "व्हर्जन 1 लगेच लागू होईल."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:46
+#: src/copy/price-book.ts:38
 msgid "Versions"
 msgstr "व्हर्जन"
 
@@ -12271,7 +12294,7 @@ msgid "was"
 msgstr "आधी"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:74
+#: src/copy/price-book.ts:64
 msgid "was {amount}"
 msgstr "आधी {amount}"
 
@@ -12296,7 +12319,7 @@ msgid "We cannot tell what kind of item this is — what is it?"
 msgstr "हा कोणत्या प्रकारचा आयटम आहे ते आम्हाला समजत नाही — हा काय आहे?"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:25
+#: src/copy/company-profile.ts:30
 msgid "We check the format against your market's rules — never with the issuing authority."
 msgstr "आम्ही स्वरूप तुमच्या बाजाराच्या नियमांनुसार तपासतो — जारी करणाऱ्या प्राधिकरणाकडून कधीच नाही."
 
@@ -12351,7 +12374,7 @@ msgid "We couldn't load your payment terms."
 msgstr "आम्ही तुमच्या पेमेंट अटी लोड करू शकलो नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:47
+#: src/copy/company-profile.ts:52
 msgid "We couldn't load your profile"
 msgstr "आम्ही तुमची प्रोफाइल लोड करू शकलो नाही"
 
@@ -12461,7 +12484,7 @@ msgid "What can they do?"
 msgstr "ते काय करू शकतात?"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:59
+#: src/copy/price-book.ts:51
 msgid "What changed"
 msgstr "काय बदलले"
 
@@ -12486,7 +12509,7 @@ msgid "What every plan includes"
 msgstr "प्रत्येक प्लॅनमध्ये काय समाविष्ट आहे"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:59
+#: src/copy/proposal-template.ts:51
 msgid "What happens in this phase"
 msgstr "या टप्प्यात काय होते"
 
@@ -12572,7 +12595,7 @@ msgid "What this gives them"
 msgstr "यातून त्यांना काय मिळते"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:101
+#: src/copy/proposal-template.ts:90
 msgid "What this proposal covers"
 msgstr "या प्रस्तावात काय आहे"
 
@@ -12592,7 +12615,7 @@ msgid "What you cannot do"
 msgstr "तुम्ही काय करू शकत नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:35
+#: src/copy/company-profile.ts:40
 msgid "What you mostly sell"
 msgstr "तुम्ही मुख्यतः काय विकता"
 
@@ -12602,13 +12625,13 @@ msgid "What you pay today"
 msgstr "आज तुम्ही किती द्याल"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:73
+#: src/copy/company-profile.ts:78
 #: src/copy/settings.ts:35
 msgid "What you sell"
 msgstr "तुम्ही काय विकता"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:16
+#: src/copy/company-profile.ts:23
 msgid "What you sell · not saved on the last step"
 msgstr "तुम्ही काय विकता · मागील टप्प्यात जतन झाले नाही"
 
@@ -12843,29 +12866,14 @@ msgid "worse"
 msgstr "वाईट"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:78
+#: src/copy/proposal-template.ts:67
 msgid "Write our own"
 msgstr "आमचे स्वतःचे लिहा"
-
-#. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:67
-msgid "Write this in English too — every other language falls back to it."
-msgstr "हे इंग्रजीतही लिहा — बाकी प्रत्येक भाषा त्यावरच परत येते."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:51
 msgid "Writing these three details now."
 msgstr "हे तीन तपशील आता लिहिले जात आहेत."
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:10
-msgid "Written in {written} of {of, plural, one {# {languageNoun}} other {# {languageNoun}s}}"
-msgstr "{of, plural, one {# {languageNoun}} other {# {languageNoun}}} पैकी {written} मध्ये लिहिले"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:13
-msgid "Written in {written} of {of, plural, one {# {languageNoun}} other {# {languageNoun}s}} · {each} {sectionNoun} each"
-msgstr "{of, plural, one {# {languageNoun}} other {# {languageNoun}}} पैकी {written} मध्ये लिहिले · प्रत्येकी {each} {sectionNoun}"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:118
@@ -12878,7 +12886,7 @@ msgid "Yearly"
 msgstr "वार्षिक"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:128
+#: src/copy/proposal-template.ts:117
 msgid "Yearly and lifetime savings, payback."
 msgstr "वार्षिक आणि आयुष्यभराची बचत, परतफेड."
 
@@ -12970,13 +12978,13 @@ msgstr "दोन्ही तुम्ही नंतर पुढच्या
 
 #. js-lingui-explicit-id
 #: src/copy/remove-roles.ts:26
-msgid "You can give it back at any time"
-msgstr "तुम्ही ती कधीही परत देऊ शकता"
+msgid "You can give it back at any time."
+msgstr "तुम्ही ती कधीही परत देऊ शकता."
 
 #. js-lingui-explicit-id
 #: src/copy/remove-roles.ts:27
-msgid "You can give them back at any time"
-msgstr "तुम्ही त्या कधीही परत देऊ शकता"
+msgid "You can give them back at any time."
+msgstr "तुम्ही त्या कधीही परत देऊ शकता."
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:74
@@ -13014,7 +13022,7 @@ msgid "You order the material"
 msgstr "तुम्ही साहित्याची ऑर्डर देता"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:91
+#: src/copy/company-profile.ts:96
 msgid "You sell to either"
 msgstr "तुम्ही दोघांनाही विकता"
 
@@ -13029,7 +13037,7 @@ msgid "You, your team and your company, in one place."
 msgstr "तुम्ही, तुमची टीम आणि तुमची कंपनी, एकाच ठिकाणी."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:76
+#: src/copy/proposal-template.ts:65
 msgid "You're on HelioGrid's standard template"
 msgstr "तुम्ही HelioGrid च्या मानक टेम्पलेटवर आहात"
 
@@ -13106,12 +13114,12 @@ msgid "Your catalog starts with {count} platform items and no prices. Add your o
 msgstr "तुमचा कॅटलॉग {count} प्लॅटफॉर्म आयटमनी सुरू होतो, किंमतींशिवाय. तुमचे स्वतःचे SKU जोडा, किंवा प्लॅटफॉर्म आयटमची किंमत त्या आयटममधूनच ठरवा."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:88
+#: src/copy/proposal-template.ts:77
 msgid "Your changes are kept — press Save template again."
 msgstr "तुमचे बदल ठेवले आहेत — टेम्पलेट जतन करा पुन्हा दाबा."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:94
+#: src/copy/proposal-template.ts:83
 msgid "Your changes are lost, and the saved template stays in force."
 msgstr "तुमचे बदल जातील, आणि जतन केलेला टेम्पलेट लागू राहील."
 
@@ -13158,7 +13166,7 @@ msgid "Your company may have been made — trying again cannot make a second."
 msgstr "तुमची कंपनी कदाचित तयार झाली असेल — पुन्हा प्रयत्न केल्याने दुसरी तयार होणार नाही."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:12
+#: src/copy/company-profile.ts:19
 msgid "Your company profile"
 msgstr "तुमची कंपनी प्रोफाइल"
 
@@ -13168,7 +13176,7 @@ msgid "Your contract"
 msgstr "तुमचा करार"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:32
+#: src/copy/company-profile.ts:37
 msgid "Your current account"
 msgstr "तुमचे चालू खाते"
 
@@ -13240,7 +13248,7 @@ msgid "Your file says {file}; the product we carry is {catalog} — which is rig
 msgstr "तुमच्या फाइलमध्ये {file} आहे; आमच्याकडील प्रॉडक्टमध्ये {catalog} आहे — कोणते बरोबर आहे?"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:58
+#: src/copy/price-book.ts:50
 msgid "Your first price book"
 msgstr "तुमचे पहिले प्राइस बुक"
 
@@ -13305,7 +13313,7 @@ msgid "Your language was not saved"
 msgstr "तुमची भाषा जतन झाली नाही"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:58
+#: src/copy/company-profile.ts:63
 msgid "Your letterhead"
 msgstr "तुमचे लेटरहेड"
 
@@ -13514,7 +13522,7 @@ msgid "Your proposal is ready."
 msgstr "तुमचा प्रस्ताव तयार आहे."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:81
+#: src/copy/proposal-template.ts:70
 msgid "Your proposal template didn't load"
 msgstr "तुमचा प्रस्ताव टेम्पलेट लोड झाला नाही"
 
@@ -13581,7 +13589,7 @@ msgid "Your team"
 msgstr "तुमची टीम"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:87
+#: src/copy/proposal-template.ts:76
 msgid "Your template didn't save"
 msgstr "तुमचा टेम्पलेट जतन झाला नाही"
 

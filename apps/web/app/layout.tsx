@@ -1,5 +1,4 @@
-import { UI_SOURCE_LOCALE } from '@heliogrid/contracts';
-import { LANGUAGE_META } from '@heliogrid/i18n';
+import { LANGUAGES, UI_SOURCE_LOCALE } from '@heliogrid/contracts';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import '@heliogrid/theme/tokens.css';
@@ -26,11 +25,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // The SOURCE locale, because the server has no per-user language until M01 lands a
     // session. Providers moves both attributes on a client switch.
     // The boot script sets `data-theme` before hydration, so React is told the attribute may differ.
-    <html
-      lang={LANGUAGE_META[UI_SOURCE_LOCALE].tag}
-      dir={LANGUAGE_META[UI_SOURCE_LOCALE].dir}
-      suppressHydrationWarning
-    >
+    <html lang={UI_SOURCE_LOCALE} dir={LANGUAGES[UI_SOURCE_LOCALE].dir} suppressHydrationWarning>
       <body>
         {/* Runs while the page is parsed, before anything under it paints: no flash of the wrong
             scheme. React never renders into it. */}

@@ -4,8 +4,9 @@ One file per module (`M01-onboarding.md` … `M13-dashboards.md`), plus `SHELL.m
 shell, and `F-core.md` / `F-platform.md` / `F5-customer-link.md` where a foundation builds something
 itself. `UI.md` is the one
 file here that is a REGISTER rather than tasks — component gaps with no requirement rows behind
-them, so no `T-` ids and no task anatomy. `deferred.md` holds what a task found outside its
-scope; each row names what reopens it. Every task was
+them, so no `T-` ids and no task anatomy. `deferred.md` holds rows earlier tasks found
+outside their scope; each names what reopens it, a task closes the rows it meets, and none is
+added — a bug a task finds is fixed in that task. Every task was
 generated from the requirement register, and no P0 requirement exists without a task (or an
 explicit `realized-by` pointer to the requirement that carries it); a task whose `PRD rows:` reads
 `none` builds what other tasks' rows need.

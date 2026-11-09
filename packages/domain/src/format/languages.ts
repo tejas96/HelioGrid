@@ -10,12 +10,40 @@
  * Per-USER, not per-tenant (`D25`), and distinct from the tenant's MARKET: a Marathi-reading user
  * in an Indian tenant still reads INR in lakh/crore grouping. Never derive one from the other.
  *
- * Adding a language is the playbook in `docs/engineering/adding-a-language.md`, and
- * `pnpm check:all` refuses it until the language is ready (`F3-26`, `F3-27`): the typecheck holds
- * its registration and the invariant `language-fonts` its fonts.
+ * Adding a language is ONE entry below plus its catalog — the playbook in
+ * `docs/engineering/adding-a-language.md`. `pnpm check:all` refuses it until the language is ready
+ * (`F3-26`, `F3-27`): the typecheck names every loader still missing it, `check:catalogs` every
+ * untranslated line, and the invariant `language-fonts` every glyph no bundled face draws.
  */
-export const UI_LANGUAGES = ['en', 'hi', 'mr'] as const;
-export type UiLanguage = (typeof UI_LANGUAGES)[number];
+
+/** What the product knows about a language beyond its code. */
+export interface LanguageFacts {
+  /** The language's own name, for a picker. NEVER translated: a reader finds it in their script. */
+  readonly endonym: string;
+  /** Writing direction, so a right-to-left language is a data edit, not a layout rewrite. */
+  readonly dir: 'ltr' | 'rtl';
+}
+
+/**
+ * THE language set, keyed by BCP-47 tag — the key is what `<html lang>`, `Intl` and the catalog
+ * folder receive. Key order is the picker's order and `UI_LANGUAGES`' order.
+ */
+export const LANGUAGES = {
+  en: { endonym: 'English', dir: 'ltr' },
+  hi: { endonym: 'हिन्दी', dir: 'ltr' },
+  mr: { endonym: 'मराठी', dir: 'ltr' },
+} as const satisfies Readonly<Record<string, LanguageFacts>>;
+
+export type UiLanguage = keyof typeof LANGUAGES;
+
+/**
+ * The set as a tuple, for `z.enum` and the database enum. `Object.keys` keeps insertion order, and
+ * `LANGUAGES` is non-empty by construction, so the tuple type is exact.
+ */
+export const UI_LANGUAGES = Object.keys(LANGUAGES) as unknown as readonly [
+  UiLanguage,
+  ...UiLanguage[],
+];
 
 /**
  * The language message ids are authored in — Lingui's `sourceLocale`, whose catalog needs no
@@ -60,10 +88,8 @@ export type PackLabel = PerLanguage<string>;
 
 /**
  * `F3-05` — the one SILENT fallback, so no surface writes `value[lang] ?? value.en` for itself.
- * For a pack label and the platform's own copy, English in place of an unauthored Hindi is the
- * ruled behaviour and needs no note. It is NOT the door for a tenant's own words: `F3-10` forbids
- * showing a different language's version as if it were the reader's, so `AuthoredPerLanguage`
- * resolves through `authoredIn` below, which says which language was shown.
+ * For a pack label, English in place of an unauthored Hindi is the ruled behaviour and needs no
+ * note. A tenant's own words never come here: they are one value, shown as written (`F3-10`).
  */
 export function inLanguage<T>(value: PerLanguage<T>, language: UiLanguage): T {
   return value[language] ?? value.en;
@@ -71,49 +97,4 @@ export function inLanguage<T>(value: PerLanguage<T>, language: UiLanguage): T {
 
 export function packLabel(label: PackLabel, language: UiLanguage): string {
   return inLanguage(label, language);
-}
-
-/**
- * Tenant-authored content per language (`F3-10`) — a template, a knowledge-base entry, document
- * terms — under a name that says which law applies. The SHAPE is a pack label's, because the store
- * and the wire are one; the LAW is not: the product never machine-translates it, never fills one
- * language from another, and never shows a version as a language it is not. It resolves through
- * `authoredIn`, never `inLanguage`.
- */
-export type AuthoredPerLanguage<T> = PerLanguage<T>;
-
-/** What a reader gets from authored content: the value, and the truth about its language. */
-export interface AuthoredInLanguage<T> {
-  readonly value: T;
-  /** The language the reader asked for. */
-  readonly requested: UiLanguage;
-  /** The language actually shown — `requested` where the tenant wrote it, else the original. */
-  readonly shownIn: UiLanguage;
-  /** The set's languages with no version yet, in the set's order — the author's gap list. */
-  readonly missing: readonly UiLanguage[];
-}
-
-/** A stored version exists — null is an absent version, never content. */
-function isWritten<T>(version: T | undefined | null): version is NonNullable<T> {
-  return version !== undefined && version !== null;
-}
-
-/**
- * `F3-10`'s fallback, LABELLED (owner ruling): the reader's language where the tenant wrote it,
- * otherwise the ORIGINAL — `en`, the version the type requires — with `shownIn` saying so, so the
- * surface can carry the note beside it. Never a third language: a Hindi version is not shown to a
- * Marathi reader as if it were Marathi, however close the two sit. `missing` is the same gap seen
- * from the author's side, so the switcher and the note cannot disagree about what is unwritten.
- */
-export function authoredIn<T>(
-  content: AuthoredPerLanguage<T>,
-  requested: UiLanguage,
-): AuthoredInLanguage<T> {
-  const written = content[requested];
-  return {
-    value: isWritten(written) ? written : content.en,
-    requested,
-    shownIn: isWritten(written) ? requested : UI_SOURCE_LOCALE,
-    missing: UI_LANGUAGES.filter((language) => !isWritten(content[language])),
-  };
 }

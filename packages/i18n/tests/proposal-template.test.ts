@@ -10,7 +10,7 @@ import {
   proposalTemplateWords,
   sectionWords,
 } from '../src/copy/proposal-template';
-import { templateRefusalWords } from '../src/copy/proposal-template-phase';
+import { phaseEditorWords, templateRefusalWords } from '../src/copy/proposal-template-phase';
 import { createTranslator } from '../src/runtime';
 
 type T = Awaited<ReturnType<typeof createTranslator>>['t'];
@@ -90,9 +90,9 @@ describe('the refusals', () => {
   it.each([
     ['name', 'Give this phase a name'],
     ['what', 'Say what happens in this phase'],
-    ['terms', 'The terms always print, so they need words in English.'],
+    ['terms', 'The terms always print, so write at least one line.'],
   ] as const)('%s', (field, words) => {
-    expect(templateRefusalWords(en, field, 'needs-english')).toBe(words);
+    expect(templateRefusalWords(en, field, 'empty')).toBe(words);
     expect(templateRefusalWords(en, field, null)).toBeNull();
   });
 
@@ -100,5 +100,19 @@ describe('the refusals', () => {
     expect(templateRefusalWords(en, 'name', 'too-long')).toBe(
       'A phase name holds up to 120 characters',
     );
+  });
+});
+
+describe('the phase editor’s heading', () => {
+  const shown = { name: null, description: null } as const;
+
+  it.each([
+    ['a new phase', true, '', 'New phase', 'Phase 4 of 4'],
+    ['a held phase, its name as the company wrote it', false, 'स्थापना', 'स्थापना', 'Phase 2 of 3'],
+  ] as const)('%s', (_case, adding, name, title, subtitle) => {
+    const words = phaseEditorWords(en, { adding, name, position: 2, count: 3, shown });
+
+    expect(words.title).toBe(title);
+    expect(words.subtitle).toBe(subtitle);
   });
 });

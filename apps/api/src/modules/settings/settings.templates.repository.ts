@@ -7,9 +7,9 @@ import {
   userAccount,
 } from '@heliogrid/db';
 import type {
-  ProposalTemplateSettings,
+  StoredProposalTemplate,
+  StoredTimelineTemplate,
   TimelinePhase,
-  TimelineTemplateSettings,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
@@ -28,15 +28,15 @@ export class SettingsTemplatesRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).
   constructor(@Inject(TENANT_DB) private readonly db: TenantPool) {}
 
-  async proposalTemplate(tenantId: string): Promise<ProposalTemplateSettings | null> {
+  async proposalTemplate(tenantId: string): Promise<StoredProposalTemplate | null> {
     return this.db.withTenantTransaction(tenantId, (tx) => storedProposalTemplate(tx, tenantId));
   }
 
   async saveProposalTemplate(
     tenantId: string,
-    settings: ProposalTemplateSettings,
+    settings: StoredProposalTemplate,
     act: Act,
-  ): Promise<ProposalTemplateSettings> {
+  ): Promise<StoredProposalTemplate> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
       const stored = await storedProposalTemplate(tx, tenantId);
       if (stored !== null && isDeepStrictEqual(stored, settings)) return stored;
@@ -102,25 +102,25 @@ export class SettingsTemplatesRepository {
     });
   }
 
-  async timelineTemplate(tenantId: string): Promise<TimelineTemplateSettings | null> {
+  async timelineTemplate(tenantId: string): Promise<StoredTimelineTemplate | null> {
     return this.db.withTenantTransaction(tenantId, (tx) => storedTimelineTemplate(tx, tenantId));
   }
 
   async saveTimelineTemplate(
     tenantId: string,
-    phases: readonly TimelinePhase[],
+    phases: readonly TimelinePhase[] | null,
     act: Act,
-  ): Promise<TimelineTemplateSettings> {
+  ): Promise<StoredTimelineTemplate> {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
       const stored = await storedTimelineTemplate(tx, tenantId);
       if (stored !== null && isDeepStrictEqual(stored.phases, phases)) return stored;
       const now = new Date(act.now);
       const [row] = await tx
         .insert(timelineTemplate)
-        .values({ tenantId, phases: [...phases], updatedAt: now, updatedBy: act.actorUserId })
+        .values({ tenantId, phases: asStored(phases), updatedAt: now, updatedBy: act.actorUserId })
         .onConflictDoUpdate({
           target: timelineTemplate.tenantId,
-          set: { phases: [...phases], updatedAt: now, updatedBy: act.actorUserId },
+          set: { phases: asStored(phases), updatedAt: now, updatedBy: act.actorUserId },
         })
         .returning({ id: timelineTemplate.id, phases: timelineTemplate.phases });
       if (!row) throw new Error('timeline_template upsert returned no row');
@@ -141,7 +141,7 @@ export class SettingsTemplatesRepository {
 export async function storedProposalTemplate(
   tx: TenantScopedDb,
   tenantId: string,
-): Promise<ProposalTemplateSettings | null> {
+): Promise<StoredProposalTemplate | null> {
   const [row] = await tx
     .select(proposalColumns())
     .from(proposalTemplateSettings)
@@ -153,7 +153,7 @@ export async function storedProposalTemplate(
 export async function storedTimelineTemplate(
   tx: TenantScopedDb,
   tenantId: string,
-): Promise<TimelineTemplateSettings | null> {
+): Promise<StoredTimelineTemplate | null> {
   const [row] = await tx
     .select({ phases: timelineTemplate.phases })
     .from(timelineTemplate)
@@ -168,4 +168,9 @@ function proposalColumns() {
     sectionsIncluded: proposalTemplateSettings.sectionsIncluded,
     defaultTerms: proposalTemplateSettings.defaultTerms,
   };
+}
+
+/** The column's spelling of the phases: a mutable copy, or null while they are the platform's. */
+function asStored(phases: readonly TimelinePhase[] | null): TimelinePhase[] | null {
+  return phases === null ? null : [...phases];
 }

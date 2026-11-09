@@ -10,7 +10,7 @@ import {
   percentSchema,
   uuidSchema,
 } from './common';
-import { labelSchema, lineSchema, perLanguage } from './document-content';
+import { labelSchema, lineSchema } from './document-content';
 import { baseError, errorEnvelope, IDEMPOTENCY_KEY_REUSED } from './error';
 
 const c = initContract();
@@ -40,9 +40,9 @@ const defaultMarginPctSchema = percentSchema.refine((pct) => {
   }
 }, 'a default margin is at most the builder’s highest margin');
 
-/** One rate: the tenant's name for it (`F3-10`), how it applies, and its amount. */
+/** One rate: the tenant's name for it — one value, as written (`F3-10`) — how it applies, and its amount. */
 export const priceBookRateSchema = z.object({
-  name: perLanguage(labelSchema),
+  name: labelSchema,
   basis: priceBookRateBasisSchema,
   amount: priceSchema,
 });

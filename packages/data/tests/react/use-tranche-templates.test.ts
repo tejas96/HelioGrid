@@ -82,7 +82,7 @@ describe('the Payment terms page — its list, its editor and its acts, through 
     await waitFor(() => expect(view.result.current.editor?.saveFailure).not.toBeNull());
 
     expect(view.result.current.editor?.saveConflict).toBe(false);
-    expect(view.result.current.editor?.draft.name.shown).toBe('Renamed');
+    expect(view.result.current.editor?.draft.name).toBe('Renamed');
     act(() => view.result.current.save());
     await waitFor(() => expect(view.result.current.editor).toBeNull());
   });
@@ -159,7 +159,7 @@ describe('the Payment terms page — its list, its editor and its acts, through 
     await waitFor(() => expect(view.result.current.cards.inUse).toHaveLength(3));
 
     expect(view.result.current.editor?.draft.id).toBeNull();
-    expect(view.result.current.editor?.draft.name.shown).toBe('');
+    expect(view.result.current.editor?.draft.name).toBe('');
     expect(view.result.current.editor?.made).toBe(true);
   });
 
@@ -263,7 +263,7 @@ describe('the Payment terms page — its list, its editor and its acts, through 
     await waitFor(() => expect(view.result.current.editor?.saveConflict).toBe(true));
 
     await waitFor(() => expect(termsOrigin.listReads).toBe(reads + 1));
-    expect(view.result.current.editor?.draft.name.shown).toBe('Renamed');
+    expect(view.result.current.editor?.draft.name).toBe('Renamed');
   });
 
   it('an archive closes the editor and moves the card; a restore puts it back', async () => {

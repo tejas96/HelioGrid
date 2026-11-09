@@ -1,7 +1,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { UI_LANGUAGES } from '@heliogrid/domain';
+import { LANGUAGES, UI_LANGUAGES } from '@heliogrid/domain';
 
 /**
  * Every language in the set renders, on every platform, in a face we ship.
@@ -109,7 +109,7 @@ async function uncoveredCharacters(
   const findings: string[] = [];
   let characters = 0;
   for (const language of UI_LANGUAGES) {
-    const endonym = built(i18n, ['LANGUAGE_META', language, 'endonym'], BUILT.i18n, isString);
+    const endonym = LANGUAGES[language].endonym;
     const catalog = await loadCatalog(language);
     if (!isLoose(catalog) || Object.keys(catalog).length === 0) {
       throw new Error(

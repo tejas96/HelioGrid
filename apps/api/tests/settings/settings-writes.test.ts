@@ -119,14 +119,12 @@ describe.skipIf(skip)('the settings writes, against a migrated database', () => 
       here.tenantId,
       {
         brandColour: null,
-        letterhead: { tagline: { en: 'Solar since 2011' }, lines: [], footerNote: null },
+        letterhead: { tagline: 'Solar since 2011', lines: [], footerNote: null },
       },
       by(),
     );
     expect(cleared).toMatchObject({ brandColour: null, shades: null });
-    expect((await branding.read(here.tenantId)).letterhead?.tagline).toEqual({
-      en: 'Solar since 2011',
-    });
+    expect((await branding.read(here.tenantId)).letterhead?.tagline).toBe('Solar since 2011');
     expect(await entriesOf(pools, here.tenantId, 'settings.branding_changed')).toHaveLength(2);
   });
 
@@ -215,18 +213,20 @@ describe.skipIf(skip)('the settings writes, against a migrated database', () => 
       {
         cover: null,
         sectionsIncluded: ['system'],
-        defaultTerms: { en: { version: 1, blocks: [] } },
+        defaultTerms: { version: 1, blocks: [] },
       },
       by(),
+      'en',
     );
     expect(saved.sectionsIncluded).toEqual(['system', 'terms']);
     const timeline = await templates.saveTimelineTemplate(
       here.tenantId,
-      { phases: [{ name: { en: 'Survey' }, description: { en: 'We visit your roof.' } }] },
+      { phases: [{ name: 'Survey', description: 'We visit your roof.' }] },
       by(),
+      'en',
     );
     expect(timeline.phases).toHaveLength(1);
-    expect((await templates.timelineTemplate(here.tenantId)).phases).toEqual(timeline.phases);
+    expect((await templates.timelineTemplate(here.tenantId, 'en')).phases).toEqual(timeline.phases);
     expect(
       await entriesOf(pools, here.tenantId, 'settings.proposal_template_changed'),
     ).toHaveLength(1);

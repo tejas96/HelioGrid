@@ -8,17 +8,13 @@ import {
 } from '@heliogrid/domain';
 import { z } from 'zod';
 import { percentSchema, uuidSchema } from './common';
-import {
-  packLabelSchema,
-  paragraphSchema,
-  perLanguage,
-  richTextValueSchema,
-} from './document-content';
+import { labelSchema, paragraphSchema, richTextValueSchema } from './document-content';
 
 /**
  * The tenant's document defaults (`M01-50`–`M01-54`): branding, the proposal template, the
  * timeline template and the payment-term templates — what every proposal is made of before a
- * tenant says otherwise. Each mirrors a domain view-model (`commerce/effective-settings.ts`).
+ * tenant says otherwise. Each mirrors a domain view-model (`commerce/effective-settings.ts`). Every
+ * word the tenant types here is one value, shown as written in every language (`F3-10`).
  */
 
 /** `#RRGGBB` or `#RGB` — the same pattern the derivation accepts. */
@@ -26,11 +22,9 @@ export const hexColourSchema = z.string().regex(HEX_COLOUR, 'a colour is #RRGGBB
 
 /** The band's extra lines and the note along every page's foot — the design system's `DocumentLetterhead`. */
 export const letterheadSchema = z.object({
-  tagline: perLanguage(z.string().trim().min(1).max(LETTERHEAD_LIMITS.tagline)).nullable(),
-  lines: z
-    .array(perLanguage(z.string().trim().min(1).max(LETTERHEAD_LIMITS.line)))
-    .max(LETTERHEAD_LIMITS.lines),
-  footerNote: perLanguage(z.string().trim().min(1).max(LETTERHEAD_LIMITS.line)).nullable(),
+  tagline: z.string().trim().min(1).max(LETTERHEAD_LIMITS.tagline).nullable(),
+  lines: z.array(z.string().trim().min(1).max(LETTERHEAD_LIMITS.line)).max(LETTERHEAD_LIMITS.lines),
+  footerNote: z.string().trim().min(1).max(LETTERHEAD_LIMITS.line).nullable(),
 });
 export type Letterhead = z.infer<typeof letterheadSchema>;
 
@@ -85,7 +79,7 @@ export type ProposalSection = z.infer<typeof proposalSectionSchema>;
 
 /** The cover's achievements block (`M06-08`): the tenant's own declarations. Only the kW figure carries a tier, `estimated · declared by you`; the two counts carry none (`F8-01`). */
 export const proposalCoverSchema = z.object({
-  aboutCompany: perLanguage(paragraphSchema).nullable(),
+  aboutCompany: paragraphSchema.nullable(),
   totalCapacityInstalledKw: z.number().nonnegative().nullable(),
   happyCustomers: z.number().int().nonnegative().nullable(),
   citiesServed: z.number().int().nonnegative().nullable(),
@@ -95,7 +89,7 @@ export const proposalCoverSchema = z.object({
 export const proposalTemplateSchema = z.object({
   cover: proposalCoverSchema.nullable(),
   sectionsIncluded: z.array(proposalSectionSchema),
-  defaultTerms: perLanguage(richTextValueSchema),
+  defaultTerms: richTextValueSchema,
 });
 export type ProposalTemplate = z.infer<typeof proposalTemplateSchema>;
 
@@ -110,8 +104,8 @@ export const proposalTemplateReadSchema = proposalTemplateSchema.extend({
 export type ProposalTemplateRead = z.infer<typeof proposalTemplateReadSchema>;
 
 export const timelinePhaseSchema = z.object({
-  name: packLabelSchema,
-  description: perLanguage(paragraphSchema),
+  name: labelSchema,
+  description: paragraphSchema,
 });
 
 /** The project-timeline template (`M01-52`): ordered phases, the order as sent. */
@@ -131,7 +125,7 @@ export const projectChainStageSchema = z.enum(PROJECT_STAGE_CHAIN);
 export type ProjectChainStage = z.infer<typeof projectChainStageSchema>;
 
 export const trancheLineSchema = z.object({
-  label: packLabelSchema,
+  label: labelSchema,
   /** Two-decimal percent on the wire; whole basis points in the store — one number, two spellings. */
   percent: percentSchema,
   dueOnStage: projectChainStageSchema,
@@ -140,7 +134,7 @@ export type TrancheLine = z.infer<typeof trancheLineSchema>;
 
 /** What a save carries: the name and the lines; the sum rule is the server's verdict (`M01-54`). */
 export const trancheTemplateWriteSchema = z.object({
-  name: packLabelSchema,
+  name: labelSchema,
   lines: z.array(trancheLineSchema).min(1).max(TRANCHE_LINE_LIMIT),
 });
 export type TrancheTemplateWrite = z.infer<typeof trancheTemplateWriteSchema>;

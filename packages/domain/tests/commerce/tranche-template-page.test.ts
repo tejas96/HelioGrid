@@ -20,26 +20,25 @@ import {
   trancheWriteOf,
 } from '../../src/commerce/tranche-template-page';
 import { percentToBasisPoints } from '../../src/money/basis-points';
-
-const named = (en: string, hi?: string) => (hi === undefined ? { en } : { en, hi });
+import { standard } from './settings-rows';
 
 const template = (over: Partial<TrancheTemplateRead> = {}): TrancheTemplateRead => ({
   id: 't1',
-  name: named('Standard 10/60/20/10', 'मानक 10/60/20/10'),
+  name: 'Standard 10/60/20/10',
   isDefault: false,
   archived: false,
   changed: false,
   lines: [
-    { label: named('Advance on signing', 'हस्ताक्षर पर अग्रिम'), percent: '10.00', dueOnStage: 'won' },
-    { label: named('Before dispatch'), percent: '60.00', dueOnStage: 'material_ordered' },
-    { label: named('On installation'), percent: '20.00', dueOnStage: 'installation' },
-    { label: named('On commissioning'), percent: '10.00', dueOnStage: 'commissioned' },
+    { label: 'Advance on signing', percent: '10.00', dueOnStage: 'won' },
+    { label: 'Before dispatch', percent: '60.00', dueOnStage: 'material_ordered' },
+    { label: 'On installation', percent: '20.00', dueOnStage: 'installation' },
+    { label: 'On commissioning', percent: '10.00', dueOnStage: 'commissioned' },
   ],
   ...over,
 });
 
 const edits = (draft: TrancheDraft, ...all: TrancheEdit[]) => all.reduce(trancheEdit, draft);
-const opened = () => trancheDraftOf(template(), 'en');
+const opened = () => trancheDraftOf(template());
 const percents = (draft: TrancheDraft) => trancheWriteOf(draft).lines.map((line) => line.percent);
 
 describe('the cards (SCR-M01-20, decision 7)', () => {
@@ -160,14 +159,14 @@ describe('the lines (brief: no reorder control)', () => {
   it('lines list in stage order', () => {
     const shuffled = template({
       lines: [
-        { label: named('Late'), percent: '50.00', dueOnStage: 'commissioned' },
-        { label: named('Early'), percent: '50.00', dueOnStage: 'won' },
+        { label: 'Late', percent: '50.00', dueOnStage: 'commissioned' },
+        { label: 'Early', percent: '50.00', dueOnStage: 'won' },
       ],
     });
-    const draft = trancheDraftOf(shuffled, 'en');
-    expect(draft.lines.map((line) => line.label.shown)).toEqual(['Early', 'Late']);
+    const draft = trancheDraftOf(shuffled);
+    expect(draft.lines.map((line) => line.label)).toEqual(['Early', 'Late']);
     const moved = trancheEdit(draft, { kind: 'line-stage', key: 1, stage: 'handed_over' });
-    expect(moved.lines.map((line) => line.label.shown)).toEqual(['Late', 'Early']);
+    expect(moved.lines.map((line) => line.label)).toEqual(['Late', 'Early']);
   });
 
   it('two tranches may share a name and a stage', () => {
@@ -179,7 +178,7 @@ describe('the lines (brief: no reorder control)', () => {
     expect(
       trancheWriteOf(draft)
         .lines.slice(0, 2)
-        .map((line) => [line.label.en, line.dueOnStage]),
+        .map((line) => [line.label, line.dueOnStage]),
     ).toEqual([
       ['Advance on signing', 'won'],
       ['Advance on signing', 'won'],
@@ -191,31 +190,38 @@ describe('the lines (brief: no reorder control)', () => {
     const draft = trancheEdit(opened(), { kind: 'add-line', label: 'Tranche 5' });
     expect(draft.lines[4]).toEqual({
       key: 4,
-      label: { shown: 'Tranche 5', from: null },
+      label: 'Tranche 5',
       share: null,
       dueOnStage: 'commissioned',
     });
   });
 });
 
-describe('the names in three languages (AC-17)', () => {
-  it('a changed name is stored as typed', () => {
-    const hindi = trancheDraftOf(template(), 'hi');
-    expect(hindi.name.shown).toBe('मानक 10/60/20/10');
-    const draft = edits(
-      hindi,
-      { kind: 'name', text: ' नई शर्तें ' },
-      { kind: 'line-label', key: 0, text: 'बुकिंग' },
-    );
-    const write = trancheWriteOf(draft);
-    expect(write.name).toEqual({ en: 'नई शर्तें' });
-    expect(write.lines[0]?.label).toEqual({ en: 'बुकिंग' });
+describe('a name is one value, shown as written to every reader (F3-10)', () => {
+  it('opens as stored, whatever language the company wrote it in', () => {
+    const hindi = template({
+      name: 'मानक शर्तें',
+      lines: [{ label: 'हस्ताक्षर पर अग्रिम', percent: '100.00', dueOnStage: 'won' }],
+    });
+    expect(trancheWriteOf(trancheDraftOf(hindi))).toMatchObject({
+      name: 'मानक शर्तें',
+      lines: [{ label: 'हस्ताक्षर पर अग्रिम' }],
+    });
   });
 
-  it('an unchanged name keeps its languages', () => {
-    const write = trancheWriteOf(trancheDraftOf(template(), 'mr'));
-    expect(write.name).toEqual(named('Standard 10/60/20/10', 'मानक 10/60/20/10'));
-    expect(write.lines[0]?.label).toEqual(named('Advance on signing', 'हस्ताक्षर पर अग्रिम'));
+  it.each([
+    { field: 'name', text: ' नई शर्तें ', sent: 'नई शर्तें', changed: true },
+    { field: 'name', text: 'Standard 10/60/20/10 ', sent: 'Standard 10/60/20/10', changed: false },
+    { field: 'name', text: 'Standard  10/60/20/10', sent: 'Standard  10/60/20/10', changed: true },
+    { field: 'tranche', text: ' बुकिंग ', sent: 'बुकिंग', changed: true },
+    { field: 'tranche', text: 'Advance on signing ', sent: 'Advance on signing', changed: false },
+  ])('a $field typed “$text” sends “$sent”, changed $changed', ({ field, text, sent, changed }) => {
+    const edit: TrancheEdit =
+      field === 'name' ? { kind: 'name', text } : { kind: 'line-label', key: 0, text };
+    const draft = trancheEdit(opened(), edit);
+    const write = trancheWriteOf(draft);
+    expect(field === 'name' ? write.name : write.lines[0]?.label).toBe(sent);
+    expect(trancheDraftChanged(opened(), draft)).toBe(changed);
   });
 });
 
@@ -238,22 +244,23 @@ describe('what Save sends and whether anything changed (AC-6)', () => {
     { edit: null, changed: false },
     { edit: { kind: 'name', text: 'All upfront' } as const, changed: true },
   ])('a new template untouched is no change; edited, it is ($changed)', ({ edit, changed }) => {
-    const draft = trancheNewDraft('en');
+    const draft = trancheNewDraft(standard);
     expect(trancheDraftChanged(draft, edit === null ? draft : trancheEdit(draft, edit))).toBe(
       changed,
     );
   });
 
-  it('a new template starts as one whole tranche on signing, due at Won, with no name', () => {
-    const draft = trancheNewDraft('hi');
-    expect(draft).toMatchObject({ id: null, name: { shown: '', from: null } });
+  it('a new template from a split with no tranches starts its one tranche unnamed', () => {
+    expect(trancheNewDraft({ ...standard, lines: [] }).lines[0]?.label).toBe('');
+  });
+
+  it('a new template starts as one whole tranche named as the default split’s first, due at Won, with no name', () => {
+    const draft = trancheNewDraft({ ...standard, lines: [...standard.lines].reverse() });
+    expect(draft).toMatchObject({ id: null, name: '' });
     expect(draft.lines).toEqual([
       {
         key: 0,
-        label: {
-          shown: 'हस्ताक्षर पर अग्रिम',
-          from: expect.objectContaining({ en: 'Advance on signing' }),
-        },
+        label: 'On commissioning',
         share: 10_000,
         dueOnStage: 'won',
       },
@@ -277,8 +284,12 @@ describe('the preview’s schedule (AC-16)', () => {
   });
 
   it('a new template shows nothing until its first whole edit', () => {
-    const short = trancheEdit(trancheNewDraft('en'), { kind: 'line-share', key: 0, share: 5000 });
+    const short = trancheEdit(trancheNewDraft(standard), {
+      kind: 'line-share',
+      key: 0,
+      share: 5000,
+    });
     expect(tranchePreviewLines(null, short)).toBeNull();
-    expect(tranchePreviewLines(null, trancheNewDraft('en'))?.source).toBe('draft');
+    expect(tranchePreviewLines(null, trancheNewDraft(standard))?.source).toBe('draft');
   });
 });

@@ -1,3 +1,5 @@
+import type { UiLanguage } from '@heliogrid/contracts';
+
 /**
  * Every query key in both apps. Centralised because scattered keys are how two screens end
  * up unable to invalidate each other's cache.
@@ -20,8 +22,17 @@ export const queryKeys = {
     businessProfile: (tenantId: string) => ['settings', tenantId, 'business-profile'] as const,
     taxRegistrations: (tenantId: string) => ['settings', tenantId, 'tax-registrations'] as const,
     branding: (tenantId: string) => ['settings', tenantId, 'branding'] as const,
-    proposalTemplate: (tenantId: string) => ['settings', tenantId, 'proposal-template'] as const,
-    timelineTemplate: (tenantId: string) => ['settings', tenantId, 'timeline-template'] as const,
+    /**
+     * Keyed by the reader's language too: a template the company never saved is the platform's,
+     * answered in the reader's words, so a language switch must ask again (`F3-10`).
+     */
+    proposalTemplate: (tenantId: string, reader: UiLanguage) =>
+      [...queryKeys.settings.proposalTemplates(tenantId), reader] as const,
+    timelineTemplate: (tenantId: string, reader: UiLanguage) =>
+      [...queryKeys.settings.timelineTemplates(tenantId), reader] as const,
+    /** Every reader's copy of the template, so a save can let the other languages' copies go. */
+    proposalTemplates: (tenantId: string) => ['settings', tenantId, 'proposal-template'] as const,
+    timelineTemplates: (tenantId: string) => ['settings', tenantId, 'timeline-template'] as const,
     trancheTemplates: (tenantId: string) => ['settings', tenantId, 'tranche-templates'] as const,
     /** One schedule per split: the key is the shares, so only the answer for the lines shown is drawn. */
     trancheSchedule: (tenantId: string, shares: readonly string[]) =>

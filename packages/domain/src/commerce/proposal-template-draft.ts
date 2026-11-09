@@ -1,4 +1,3 @@
-import type { PerLanguage, UiLanguage } from '../format/languages';
 import { sameContent } from '../tenancy/settings-page';
 import type { ProposalTemplateSettings } from './effective-settings';
 import {
@@ -41,18 +40,18 @@ export interface TemplateDraft {
 
 export type TemplateEdit =
   | { readonly kind: 'writeOwn'; readonly part: TemplatePart }
-  | { readonly kind: 'about'; readonly language: UiLanguage; readonly text: string }
+  | { readonly kind: 'about'; readonly text: string }
   | { readonly kind: 'count'; readonly count: CoverCount; readonly value: number | null }
   /** Flips the section from what the draft holds, never from a value a control hands back. */
   | { readonly kind: 'section'; readonly section: ProposalSection }
-  | { readonly kind: 'terms'; readonly language: UiLanguage; readonly value: RichTextValue }
+  | { readonly kind: 'terms'; readonly value: RichTextValue }
   /** `key` null adds the phase at the end. */
   | { readonly kind: 'phase'; readonly key: number | null; readonly phase: TimelinePhase }
   | { readonly kind: 'move'; readonly from: number; readonly to: number }
   | { readonly kind: 'delete'; readonly key: number };
 
-/** What a field says before any save: English is the version every language falls back to. */
-export type TemplateRefusal = 'needs-english' | 'too-long';
+/** What a field says before any save: a required value left empty, or a name past its bound. */
+export type TemplateRefusal = 'empty' | 'too-long';
 
 const EMPTY_COVER: ProposalCover = {
   aboutCompany: null,
@@ -81,7 +80,7 @@ export function templateEdit(draft: TemplateDraft, edit: TemplateEdit): Template
     case 'section':
       return withTemplate(draft, { sectionsIncluded: sectionSwitched(draft, edit) });
     case 'terms':
-      return withTemplate(draft, { defaultTerms: termsEdited(draft, edit) });
+      return withTemplate(draft, { defaultTerms: termsEdited(edit) });
     default:
       return { ...draft, phases: phasesEdited(draft.phases, edit) };
   }
@@ -104,8 +103,8 @@ function coverEdited(
   edit: Extract<TemplateEdit, { kind: 'about' | 'count' }>,
 ): ProposalCover {
   if (edit.kind === 'count') return { ...cover, [edit.count]: edit.value };
-  const about = withLanguage(cover.aboutCompany, edit.language, edit.text, '');
-  return { ...cover, aboutCompany: about };
+  // Words of spaces are no words: the wire trims them and refuses what is left empty.
+  return { ...cover, aboutCompany: edit.text.trim() === '' ? null : edit.text };
 }
 
 function sectionSwitched(
@@ -117,33 +116,9 @@ function sectionSwitched(
   return sectionsIncluded(on ? [...others, edit.section] : others);
 }
 
-function termsEdited(
-  draft: TemplateDraft,
-  edit: Extract<TemplateEdit, { kind: 'terms' }>,
-): PerLanguage<RichTextValue> {
-  const blank: RichTextValue = { version: 1, blocks: [] };
-  const value = hasWords(edit.value) ? edit.value : blank;
-  return withLanguage(draft.template.defaultTerms, edit.language, value, blank) ?? { en: blank };
-}
-
-/**
- * One language's version set or cleared. A cleared Hindi or Marathi keeps no entry, so a reader
- * falls back to English; a cleared English stays as an empty English until it is written again —
- * the refusal says so — and the whole value goes once no language holds anything.
- */
-function withLanguage<T>(
-  stored: PerLanguage<T> | null,
-  language: UiLanguage,
-  value: T,
-  empty: T,
-): PerLanguage<T> | null {
-  // Words of spaces are no words: the wire trims them and refuses what is left empty.
-  const cleared = typeof value === 'string' ? value.trim() === '' : sameContent(value, empty);
-  const { [language]: _gone, ...rest } = stored ?? { en: empty };
-  const kept = language === 'en' ? { ...rest, en: empty } : rest;
-  const next = (cleared ? kept : { ...rest, [language]: value }) as PerLanguage<T>;
-  const others = Object.entries(next).filter(([code]) => code !== 'en');
-  return sameContent(next.en, empty) && others.length === 0 ? null : next;
+/** Terms with no words are kept as an empty body, which `termsRefusal` refuses until written. */
+function termsEdited(edit: Extract<TemplateEdit, { kind: 'terms' }>): RichTextValue {
+  return hasWords(edit.value) ? edit.value : { version: 1, blocks: [] };
 }
 
 function phasesEdited(
@@ -172,20 +147,7 @@ function phasesEdited(
 }
 
 /** A new phase as the editor opens it: nothing written yet. */
-export const EMPTY_PHASE: TimelinePhase = { name: { en: '' }, description: { en: '' } };
-
-/**
- * One field of a phase in one language, as the phase editor types it. A cleared Hindi or Marathi
- * keeps no entry; a cleared English stays empty, which the editor refuses (`phaseRefusals`).
- */
-export function phaseWithText(
-  phase: TimelinePhase,
-  field: 'name' | 'description',
-  language: UiLanguage,
-  text: string,
-): TimelinePhase {
-  return { ...phase, [field]: withLanguage(phase[field], language, text, '') ?? { en: '' } };
-}
+export const EMPTY_PHASE: TimelinePhase = { name: '', description: '' };
 
 /** Rich text holds a word: a heading, a paragraph or a list item with text that is not blank. */
 export function hasWords(value: RichTextValue | undefined): boolean {

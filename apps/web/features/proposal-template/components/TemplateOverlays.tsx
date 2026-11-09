@@ -5,7 +5,7 @@ import {
   type TemplateOverlayState,
   usePhaseEditor,
 } from '@heliogrid/data/react';
-import { type ProposalTemplateWords, phaseEditorWords, templateLanguages } from '@heliogrid/i18n';
+import { type ProposalTemplateWords, phaseEditorWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
   LeaveConfirm,
@@ -35,21 +35,17 @@ export function TemplateOverlays({
   overlays: TemplateOverlayState;
   leave: LeaveAsk;
 }) {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const phases = page.draft?.phases ?? [];
   const open = overlays.phaseOpen;
   const editor = usePhaseEditor(open, overlays.savePhase);
-  const said = phaseEditorWords(
-    t,
-    {
-      adding: open?.key === null,
-      name: editor.phase.name,
-      position: phases.findIndex((phase) => phase.key === open?.key) + 1,
-      count: phases.length,
-      shown: editor.shown,
-    },
-    locale,
-  );
+  const said = phaseEditorWords(t, {
+    adding: open?.key === null,
+    name: editor.phase.name,
+    position: phases.findIndex((phase) => phase.key === open?.key) + 1,
+    count: phases.length,
+    shown: editor.shown,
+  });
   return (
     <>
       <TemplatePhaseEditor
@@ -58,7 +54,7 @@ export function TemplateOverlays({
         subtitle={said.subtitle}
         closeLabel={closeLabel}
         words={{ ...words, act: said.act }}
-        fields={phaseEditorFieldsOf(editor, templateLanguages(), said)}
+        fields={phaseEditorFieldsOf(editor, said)}
         onClose={overlays.closePhase}
         onSave={editor.save}
       />

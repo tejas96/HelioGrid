@@ -21,11 +21,18 @@ import {
   trancheTemplateWriteSchema,
 } from './document-templates';
 import { baseError, errorEnvelope } from './error';
-import { uiLanguageResponseSchema } from './locale';
+import { uiLanguageResponseSchema, uiLanguageSchema } from './locale';
 import { promptPointFactSchema } from './onboarding';
 import { trancheTemplateErrorCodes, trancheTemplateRoutes } from './tranche-templates';
 
 const c = initContract();
+
+/**
+ * The language a template read words the platform's defaults in — the one its caller caches it
+ * under, so a language switch can never be answered in the language before it (`F3-10`). Absent,
+ * the session's language words them.
+ */
+const readerQuerySchema = z.object({ reader: uiLanguageSchema.optional() });
 
 /**
  * Tenant settings (`T-M01-026`): every setting's one home, its platform default filled where
@@ -207,7 +214,9 @@ export const tenantSettingsContract = c.router({
   proposalTemplate: {
     method: 'GET',
     path: '/settings/proposal-template',
-    summary: 'The document defaults as stored — cover, sections, terms — and who saved them last',
+    query: readerQuerySchema,
+    summary:
+      'The document defaults as stored — cover, sections, terms — and who saved them last; terms never saved read in the reader’s words',
     responses: { 200: proposalTemplateReadSchema, ...guarded },
   },
   saveProposalTemplate: {
@@ -221,7 +230,9 @@ export const tenantSettingsContract = c.router({
   timelineTemplate: {
     method: 'GET',
     path: '/settings/timeline-template',
-    summary: 'The project-timeline template as stored, and who saved it last',
+    query: readerQuerySchema,
+    summary:
+      'The project-timeline template as stored, and who saved it last; phases never saved read in the reader’s words',
     responses: { 200: timelineTemplateReadSchema, ...guarded },
   },
   saveTimelineTemplate: {

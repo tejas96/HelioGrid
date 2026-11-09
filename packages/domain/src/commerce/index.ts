@@ -89,6 +89,7 @@ export type {
   BrandingSettings,
   BusinessProfileSettings,
   CompanyIdentity,
+  DocumentDefaults,
   EffectiveSettings,
   EffectiveSettingsInput,
   Letterhead,
@@ -96,6 +97,8 @@ export type {
   ProposalTemplateSettings,
   Resolved,
   SettingSource,
+  StoredProposalTemplate,
+  StoredTimelineTemplate,
   TaxRegistration,
   TenantFacts,
   TenantHoliday,
@@ -176,7 +179,6 @@ export {
 export type { ProposalCover, ProposalSection } from './proposal-template-defaults';
 export {
   DEFAULT_SECTIONS_INCLUDED,
-  DEFAULT_TERMS,
   isSectionFloor,
   PROPOSAL_SECTIONS,
   SECTION_FLOOR,
@@ -194,14 +196,12 @@ export type {
 export {
   EMPTY_PHASE,
   hasWords,
-  phaseWithText,
   TEMPLATE_PARTS,
   templateDraftOf,
   templateEdit,
 } from './proposal-template-draft';
-export type { PhaseRefusals } from './proposal-template-page';
+export type { PhaseRefusals, TemplateDefaults } from './proposal-template-page';
 export {
-  aboutRefusal,
   onPlatformTemplate,
   optionalSectionsShown,
   phaseRefusals,
@@ -229,20 +229,24 @@ export { BILLING_STATES, LIVE_BILLING_STATES } from './states';
 export type { CountedCreation, Tier, TierCapacity, TierLimit } from './tiers';
 export { COUNTED_CREATIONS, TIERS, tierBand } from './tiers';
 export type { TimelinePhase } from './timeline-template-defaults';
-export {
-  DEFAULT_TIMELINE_PHASES,
-  PHASE_NAME_LIMIT,
-  TIMELINE_PHASE_LIMIT,
-} from './timeline-template-defaults';
+export { PHASE_NAME_LIMIT, TIMELINE_PHASE_LIMIT } from './timeline-template-defaults';
 export type { AllocationVerdict } from './tranche-allocation';
 export { allocationVerdict, WHOLE_ALLOCATION } from './tranche-allocation';
-export type { TrancheLineDefault, TrancheTemplateDefault } from './tranche-template-defaults';
-export { STANDARD_TRANCHE_TEMPLATES, TRANCHE_LINE_LIMIT } from './tranche-template-defaults';
+export type {
+  StandardTranche,
+  StandardTrancheWords,
+  TrancheLineDefault,
+  TrancheTemplateDefault,
+} from './tranche-template-defaults';
+export {
+  STANDARD_TRANCHES,
+  standardTrancheTemplates,
+  TRANCHE_LINE_LIMIT,
+} from './tranche-template-defaults';
 export type {
   TrancheCard,
   TrancheDraft,
   TrancheDraftLine,
-  TrancheDraftText,
   TrancheEdit,
   TrancheLineRead,
   TrancheRefusals,

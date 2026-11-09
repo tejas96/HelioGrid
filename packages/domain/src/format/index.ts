@@ -51,10 +51,10 @@ export {
   UNCHECKED,
 } from './freshness';
 export { type CalendarDate, holidaysInForce, isHoliday } from './holidays';
-export type { AuthoredInLanguage, AuthoredPerLanguage } from './languages';
 export {
-  authoredIn,
   inLanguage,
+  LANGUAGES,
+  type LanguageFacts,
   type PackLabel,
   type PerLanguage,
   packLabel,

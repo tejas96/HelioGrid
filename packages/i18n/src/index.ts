@@ -19,7 +19,6 @@ export type { ApiErrorLike, AttemptFailureLike } from './copy/api-error';
 export { apiErrorMessageId, apiErrorRef, attemptFailureMessageId } from './copy/api-error';
 export { APPEARANCE, type AppearanceWordSet, appearanceWords } from './copy/appearance';
 export * from './copy/assign-roles';
-export { shownInNote } from './copy/authored-content';
 export * from './copy/banner';
 export * from './copy/billing-home';
 export { billingCapabilityName, billingNoticeWords } from './copy/billing-notices';
@@ -74,6 +73,7 @@ export {
   COMPANY_PROFILE,
   COMPANY_PROFILE_PART_TITLE,
   COMPANY_PROFILE_STANDING_WORD,
+  POSTAL_CODE_SPECIMEN,
 } from './copy/company-profile';
 export type { CompanyProfileStepFacts } from './copy/company-profile-step-words';
 export { companyProfileStepWords } from './copy/company-profile-step-words';
@@ -110,6 +110,7 @@ export * from './copy/derivation';
 export * from './copy/detail-panel';
 export { disclosureLead, disclosureLine } from './copy/disclosure';
 export { BASIS_LINE_WORD } from './copy/document-basis';
+export { documentDefaults } from './copy/document-defaults';
 export { DOOR_GREETING, doorGreeting } from './copy/door-greeting';
 export { DOOR_STORY, type DoorStoryWords, doorStoryWords } from './copy/door-story';
 export * from './copy/dropzone';
@@ -149,7 +150,6 @@ export * from './copy/job-tray';
 export type { JoinRequestAsker } from './copy/join-request';
 export { joinRequestNotice } from './copy/join-request';
 export * from './copy/kanban';
-export { languageSwitcherWords } from './copy/language-switcher';
 export * from './copy/map-surface';
 export * from './copy/menu';
 export * from './copy/money-summary';
@@ -200,11 +200,9 @@ export { PROFILE_PREFERENCES, profilePreferencesWords } from './copy/profile-pre
 export { stageWords } from './copy/project-stages';
 export type { ProposalTemplateWords } from './copy/proposal-template';
 export {
-  languageName,
   proposalTemplatePageWords,
   proposalTemplateWords,
   sectionWords,
-  templateLanguages,
 } from './copy/proposal-template';
 export {
   phaseEditorWords,
@@ -304,7 +302,6 @@ export * from './copy/usage-meter';
 export * from './copy/usage-page';
 export type { ValidationIssueLike } from './copy/validation';
 export { createFormsValidationMessage } from './copy/validation';
-export type { LanguageMeta } from './languages';
-export { LANGUAGE_META, loadCatalog } from './languages';
+export { loadCatalog } from './languages';
 export type { I18nRuntime, MessageRef, Translator } from './runtime';
 export { createI18nRuntime, createTranslator, packWords } from './runtime';

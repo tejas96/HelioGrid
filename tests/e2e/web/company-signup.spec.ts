@@ -1,5 +1,5 @@
-import { RESEND_SECONDS } from '@heliogrid/domain';
-import { COMPANY_SIGNUP, createTranslator, LANGUAGE_META, SHELL, SIGN_IN } from '@heliogrid/i18n';
+import { LANGUAGES, RESEND_SECONDS } from '@heliogrid/domain';
+import { COMPANY_SIGNUP, createTranslator, SHELL, SIGN_IN } from '@heliogrid/i18n';
 import { type Browser, expect, type Page, type Response, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import {
@@ -205,8 +205,8 @@ test('a language chosen on the door is the new account’s, and where sign-out r
   const mr = await createTranslator('mr');
   const mobile = freshMobile();
   await page.goto('/company-signup');
-  await page.getByRole('button', { name: LANGUAGE_META.en.endonym }).click();
-  await page.getByRole('menuitemradio', { name: LANGUAGE_META.mr.endonym }).click();
+  await page.getByRole('button', { name: LANGUAGES.en.endonym }).click();
+  await page.getByRole('menuitemradio', { name: LANGUAGES.mr.endonym }).click();
 
   await typeCode(page, mr, await requestCode(page, mr, mobile));
   await page.getByRole('button', { name: mr.t(COMPANY_SIGNUP.verifyAndContinue) }).click();

@@ -1,5 +1,6 @@
 import { usePaymentTermsScreen } from '@heliogrid/data/react';
 import {
+  documentDefaults,
   paymentTermsFailureWords,
   paymentTermsSavedLine,
   paymentTermsWords,
@@ -33,7 +34,7 @@ export function PaymentTermsScreen() {
   const drillDown = useSettingsDrillDown('payment_terms');
   const { t, locale } = useI18n();
   const format = useFormat();
-  const screen = usePaymentTermsScreen(locale);
+  const screen = usePaymentTermsScreen(documentDefaults(t).trancheTemplates[0]);
   const { page } = screen;
   const editor = page.editor;
   const navigation = useNavigation();
