@@ -48,10 +48,10 @@ const en = await createTranslator('en');
 const bar = filterBarWords(en.t);
 
 /**
- * The search pill with its filter square, the square's name bound in the browser: `filterActiveLabel`
+ * The search pill with its filter circle, the circle's name bound in the browser: `filterActiveLabel`
  * is a function the field calls while it renders, so it cannot be handed to `mount`.
  */
-export function FilterSquareStory({ label, count }: { label: TranslatedText; count: number }) {
+export function FilterCircleStory({ label, count }: { label: TranslatedText; count: number }) {
   return (
     <SearchField
       ariaLabel={label}

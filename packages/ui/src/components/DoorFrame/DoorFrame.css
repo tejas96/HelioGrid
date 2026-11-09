@@ -1,7 +1,7 @@
-/* DoorFrame — every door and setup step: one calm column, at most --form-max wide, centred on the
-   page's glow at every width, as the phone draws it. The product mark and the trailing control head
-   it; the step's overline, the title and the task follow; the action is held at the window's foot
-   on a phone and sits under the task from the desktop width up. */
+/* DoorFrame — every door and setup step: the living sky (`SolarSky`) with the wordmark over it,
+   then one calm column at most --form-max wide. On a phone width the column is a glass sheet over
+   the sky's foot and its action is held at the window's foot; from the desktop width the sky is a
+   panel beside the column and the action sits under the task. */
 
 .hg-door {
   --door-measure: var(--form-max);
@@ -16,23 +16,36 @@
   --door-measure: calc(var(--form-max) + var(--sp-24));
 }
 
-.hg-door-page {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  width: 100%;
-  max-width: calc(var(--door-measure) + 2 * var(--screen-pad-mobile));
-  margin: 0 auto;
-  padding: var(--sp-4) var(--screen-pad-mobile) 0;
+/* The sky stands over the column on a phone width: tall on the front door, a band over a step. */
+.hg-door-sky {
+  position: relative;
+  flex: none;
+  height: 40dvh;
+  min-height: calc(var(--sp-24) * 2);
+  max-height: calc(var(--sp-24) * 4);
 }
 
+.hg-door[data-sky="band"] .hg-door-sky {
+  height: 20dvh;
+  min-height: calc(var(--sp-24) + var(--sp-12));
+  max-height: calc(var(--sp-24) * 2);
+}
+
+.hg-door-story {
+  display: none;
+}
+
+/* The wordmark and the trailing control ride over the sky's top, clear of the status bar. */
 .hg-door-header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-3);
   min-height: var(--topbar-h-mobile);
+  padding: max(var(--sp-3), env(safe-area-inset-top)) var(--screen-pad-mobile) 0;
 }
 
 .hg-door-trailing {
@@ -41,11 +54,37 @@
   gap: var(--sp-2);
 }
 
+/* The column: a glass sheet that rides up over the sky's foot, painted over the sky by coming after
+   it. A `position: fixed` overlay inside a door (a `Sheet`, a `Modal`) must still stand on the
+   window: a backdrop-filter or a transform here would make the sheet the box it measures against
+   (it falls below the window), and a z-index would hold it under the door's head. */
+.hg-door-page {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: calc(var(--r-sheet-top) * -1);
+  padding: var(--sp-2) var(--screen-pad-mobile) 0;
+  border-radius: var(--r-sheet-top) var(--r-sheet-top) 0 0;
+  border-top: 1px solid color-mix(in srgb, var(--hg-ground) 70%, transparent);
+  background: color-mix(in srgb, var(--hg-ground) 94%, transparent);
+  box-shadow: var(--e4);
+}
+
+[data-field-mode="on"] .hg-door-page {
+  background: var(--hg-ground);
+}
+
 .hg-door-body {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: var(--sp-6);
+  width: 100%;
+  max-width: var(--door-measure);
+  margin: 0 auto;
   padding-top: var(--sp-6);
   min-height: 0;
   animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
@@ -91,19 +130,6 @@
   align-self: stretch;
 }
 
-/* A centred column sits between the header and the column's foot: the spacer takes half the free
-   height, the task's own end the other half. */
-.hg-door[data-column="centred"] .hg-door-body {
-  padding-top: 0;
-}
-
-.hg-door[data-column="centred"] .hg-door-body::before {
-  content: "";
-  flex: 1 1 0;
-  min-height: var(--sp-2);
-  margin-bottom: calc(var(--sp-6) * -1);
-}
-
 .hg-door[data-column="deep"] .hg-door-identity {
   margin-top: var(--sp-2);
 }
@@ -138,23 +164,79 @@
   padding: var(--sp-4) 0 calc(var(--sp-6) + env(safe-area-inset-bottom));
   background: linear-gradient(
     to top,
-    var(--canvas) 72%,
-    color-mix(in srgb, var(--canvas) 0%, transparent)
+    var(--hg-ground) 72%,
+    color-mix(in srgb, var(--hg-ground) 0%, transparent)
   );
 }
 
+/* From the desktop width the sky is a panel beside the column: the front door's wide, a step's
+   narrower so its choices keep their room. The wordmark sits on the panel, the trailing control at
+   the window's top right, and the column is centred in what is left. */
 @media (min-width: 968px) {
+  .hg-door {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--sp-6);
+    padding: var(--sp-4);
+  }
+
+  .hg-door-sky,
+  .hg-door[data-sky="band"] .hg-door-sky {
+    position: sticky;
+    top: var(--sp-4);
+    flex: 0 0 54%;
+    height: calc(100dvh - 2 * var(--sp-4));
+    min-height: 0;
+    max-height: none;
+    overflow: hidden;
+    border-radius: var(--r-2xl);
+    box-shadow: var(--e3);
+  }
+
+  .hg-door[data-sky="band"] .hg-door-sky {
+    flex-basis: 40%;
+  }
+
+  .hg-door-story {
+    position: absolute;
+    z-index: 1;
+    top: calc(var(--sp-24) + var(--sp-10));
+    left: var(--sp-12);
+    right: var(--sp-12);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    max-width: calc(var(--form-max) + var(--sp-16));
+    animation: hg-rise var(--dur-ambient) var(--ease-enter) backwards;
+  }
+
+  .hg-door-story > :first-child {
+    font-size: var(--fs-hero-phone);
+    line-height: var(--lh-hero-phone);
+    letter-spacing: var(--tr-hero-phone);
+  }
+
+  .hg-door-header {
+    inset: var(--sp-4) var(--sp-4) auto;
+    padding: var(--sp-8) var(--sp-8) 0 var(--sp-12);
+  }
+
   .hg-door-page {
-    padding-top: var(--sp-6);
+    flex: 1 1 0;
+    align-self: stretch;
+    justify-content: center;
+    min-height: calc(100dvh - 2 * var(--sp-4));
+    margin: 0;
+    padding: calc(var(--sp-24) + var(--sp-4)) var(--sp-8) var(--sp-12);
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
   }
 
   .hg-door-body {
     flex: 0 1 auto;
-    padding-top: var(--sp-16);
-  }
-
-  .hg-door[data-column="centred"] .hg-door-body::before {
-    content: none;
+    padding-top: 0;
   }
 
   .hg-door-wide-only {
@@ -163,7 +245,7 @@
 
   .hg-door-footer {
     position: static;
-    padding-bottom: var(--sp-16);
+    padding-bottom: 0;
     background: none;
   }
 }

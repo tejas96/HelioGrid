@@ -69,6 +69,8 @@ export const COLOR_TOKENS = [
   'hue-plum',
   'hue-plum-bg',
   'hue-plum-text',
+  // The sun on the door's sky: art, never words or status.
+  'sun',
   // The solar-glass hero.
   'panel',
   'panel-deep',
@@ -147,6 +149,7 @@ export const LIGHT: ThemePalette = {
   'hue-plum': '#8A5384',
   'hue-plum-bg': '#F3E6F1',
   'hue-plum-text': '#6A3A65',
+  sun: '#F7C548',
   panel: '#FFFFFF',
   'panel-deep': '#EFF6F8',
   'on-panel': '#14171A',
@@ -222,6 +225,7 @@ export const DARK: ThemePalette = {
   'hue-plum': '#D49ACB',
   'hue-plum-bg': '#2E1A2C',
   'hue-plum-text': '#E7BFE0',
+  sun: '#F7C548',
   panel: '#062B3F',
   'panel-deep': '#03161F',
   'on-panel': '#EEF5F4',

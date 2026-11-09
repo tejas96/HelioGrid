@@ -5,9 +5,10 @@ import type { CoachMarkAnchor } from '../CoachMark/CoachMark.types';
 import { Menu } from '../Menu/Menu';
 import type { HomeHeadProps } from './HomeHead.types';
 
-/** The home's head — the date, the title that switches homes, whose home this is, and an action. */
+/** The home's head — the date, the greeting, the home's switcher and whose home it is, the verb. */
 export function HomeHead({
   dateLine,
+  greeting,
   title,
   switchName,
   switchLabel,
@@ -19,38 +20,45 @@ export function HomeHead({
 }: HomeHeadProps) {
   return (
     <div className="hg-home-head">
-      <div className="hg-home-head-titles">
-        <Text variant="overline" color="secondary">
-          {dateLine}
-        </Text>
-        {/* Not a heading: the menu draws its open list inside this wrapper, and a list inside a
-            heading names the heading with every home in it. */}
-        <div className="hg-home-head-title" ref={elementRef(titleAnchor)}>
-          <Menu
-            label={switchLabel}
-            align="start"
-            selection="single"
-            width={switcherWidth}
-            trigger={
-              <button type="button" className="hg-home-head-trigger" aria-label={switchName}>
-                {title}
-                <ShellGlyph name="chevron" size="md" tone="primary" />
-              </button>
-            }
-            items={entries.map((entry) => ({
-              key: entry.key,
-              label: entry.label,
-              meta: entry.meta,
-              selected: entry.selected,
-              onSelect: entry.onSelect,
-            }))}
-          />
+      <div className="hg-home-head-band">
+        <div className="hg-home-head-titles">
+          <Text variant="overline" color="secondary">
+            {dateLine}
+          </Text>
+          <Text variant="display" as="p">
+            {greeting}
+          </Text>
+          <div className="hg-home-head-switch">
+            {/* Not a heading: the menu draws its open list inside this wrapper, and a list inside a
+              heading names the heading with every home in it. */}
+            <div className="hg-home-head-title" ref={elementRef(titleAnchor)}>
+              <Menu
+                label={switchLabel}
+                align="start"
+                selection="single"
+                width={switcherWidth}
+                trigger={
+                  <button type="button" className="hg-home-head-trigger" aria-label={switchName}>
+                    {title}
+                    <ShellGlyph name="chevron" size="sm" tone="primary" />
+                  </button>
+                }
+                items={entries.map((entry) => ({
+                  key: entry.key,
+                  label: entry.label,
+                  meta: entry.meta,
+                  selected: entry.selected,
+                  onSelect: entry.onSelect,
+                }))}
+              />
+            </div>
+            <Text variant="body-sm" color="secondary">
+              {presetLine}
+            </Text>
+          </div>
         </div>
-        <Text variant="body-sm" color="secondary">
-          {presetLine}
-        </Text>
+        {action === undefined ? null : <div className="hg-home-head-action">{action}</div>}
       </div>
-      {action === undefined ? null : <div className="hg-home-head-action">{action}</div>}
     </div>
   );
 }

@@ -4,7 +4,13 @@ import { expect, test } from '@playwright/experimental-ct-react';
 import type { Locator } from '@playwright/test';
 import { CATEGORY_HUES } from '../support/hues';
 import { settledBox } from '../support/layout';
-import { resolvedBoxShadow, resolvedColour, resolvedLength, TILE_SHADOW } from '../support/token';
+import {
+  resolvedBoxShadow,
+  resolvedColour,
+  resolvedLength,
+  TILE_FILL,
+  TILE_SHADOW,
+} from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 
 const en = await createTranslator('en');
@@ -38,7 +44,7 @@ test('a record card is a tile and its controls are white', async ({ mount, page 
     />,
   );
 
-  await expect(card).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(card).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
   await expect(card).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
   await expect(card.getByRole('button', { name: tryAgain })).toHaveCSS(
     'background-color',

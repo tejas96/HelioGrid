@@ -1,52 +1,71 @@
-/* HomeHead — the first band of the home's content region (SCR-SHELL-01). */
+/* HomeHead — the first band of the home's content region (SCR-SHELL-01, redesign direction A):
+   the date, the greeting large in the display face, the home's switcher as a glass chip with whose
+   home it is, and the verb as the prominent action — under the titles on a phone, at the row's end
+   from a wide content box. */
 
+/* The head measures its own width (a container), and its band lays out by it. */
 .hg-home-head {
+  container-type: inline-size;
+}
+
+.hg-home-head-band {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--sp-6);
+  flex-direction: column;
+  gap: var(--sp-5);
 }
 
 .hg-home-head-titles {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-1);
+  gap: var(--sp-2);
   min-width: 0;
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
 }
 
-/* The mark points at the title alone, never the row it sits in. */
+.hg-home-head-switch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+}
+
+/* The mark points at the switcher alone, never the row it sits in. */
 .hg-home-head-title {
   align-self: flex-start;
 }
 
+/* The home's title as a glass chip that opens the other homes. */
 .hg-home-head-trigger {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-1);
-  min-height: var(--sp-12);
+  gap: var(--sp-2);
+  min-height: var(--touch-min);
   margin: 0;
-  padding: 0 var(--sp-2) 0 0;
-  border: none;
-  background: transparent;
+  padding: 0 var(--sp-3) 0 var(--sp-4);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-pill);
+  background: var(--glass);
+  -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  backdrop-filter: saturate(1.4) blur(12px);
+  box-shadow: var(--e1);
   cursor: pointer;
-  font-family: var(--font-display);
-  font-size: var(--fs-display);
-  line-height: var(--lh-display);
-  font-weight: var(--fw-regular);
-  letter-spacing: var(--tr-display);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-body-sm);
   color: var(--text-primary);
   text-align: start;
   transition:
     background-color var(--dur-standard) var(--ease-standard),
+    box-shadow var(--dur-standard) var(--ease-standard),
     transform var(--dur-micro) var(--ease-standard);
 }
 
-/* Hover tints and a press gives, as a ghost control's do; the focus ring is base.css's. */
 @media (hover: hover) {
   .hg-home-head-trigger:hover {
-    border-radius: var(--r-md);
-    background: var(--hg-control-fill);
+    /* biome-ignore lint/plugin/raw-white-css: glass — the chip lifts to the card colour under the pointer (redesign direction A) */
+    background: var(--surface);
+    box-shadow: var(--e2);
   }
 }
 
@@ -54,7 +73,24 @@
   transform: scale(var(--press-scale));
 }
 
+/* On a phone the verb spans the column, the first thing a thumb reaches under the greeting. */
 .hg-home-head-action {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) var(--stagger-step) backwards;
+}
+
+@container (min-width: 640px) {
+  .hg-home-head-band {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--sp-8);
+  }
+
+  .hg-home-head-action {
+    flex-shrink: 0;
+    align-items: flex-end;
+  }
 }

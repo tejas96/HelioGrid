@@ -1,7 +1,20 @@
 import { type CatalogFacts, useCatalogItemsPanel } from '@heliogrid/data/react';
-import { catalogActToast, catalogItemAddedToast, catalogItemsViewOf } from '@heliogrid/i18n';
+import {
+  CATALOG_FIGURES,
+  catalogActToast,
+  catalogItemAddedToast,
+  catalogItemsViewOf,
+  catalogStripFigures,
+} from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
-import { CatalogItems, catalogRowStatesOf, useCatalogFormats, type useToasts } from '@heliogrid/ui';
+import {
+  CatalogItems,
+  catalogEditorOwnActs,
+  catalogRowStatesOf,
+  useCatalogFormats,
+  useFormat,
+  type useToasts,
+} from '@heliogrid/ui';
 import { useRef } from 'react';
 import { View } from 'react-native';
 import { AddItemSheet } from './AddItemSheet';
@@ -25,6 +38,7 @@ export function ItemsPanel({
   /* An undone archive brings its row back into this list; the reader lands on the list. */
   const list = useRef<View>(null);
   const formats = useCatalogFormats();
+  const format = useFormat();
   const panel = useCatalogItemsPanel(facts, 'scroll', {
     act: (note) => {
       const toast = catalogActToast(t, note);
@@ -36,6 +50,17 @@ export function ItemsPanel({
   });
   const { view, overlays: sheets, acts, onItem } = panel;
   const shown = catalogItemsViewOf(t, panel.listed, formats);
+  /* An own SKU's *Prefer* and *Archive* in its sheet, as its row did them (direction A). */
+  const ownActs = catalogEditorOwnActs(sheets.draft.item, shown.rows, {
+    onPrefer: onItem(acts.togglePreferred),
+    onArchive: onItem((item) => void sheets.askArchive(item)),
+    close: sheets.draft.close,
+  });
+  const figures = catalogStripFigures(
+    t,
+    { all: facts.allCount, changed: facts.changedCount, archived: facts.archivedCount },
+    (n) => format.number(n),
+  );
 
   return (
     <>
@@ -45,6 +70,7 @@ export function ItemsPanel({
           read={panel.read}
           strip={{
             ...shown.strip,
+            figures,
             action: panel.adding ? null : shown.strip.action,
             onLink: sheets.openReleases,
             onAction: sheets.openPublish,
@@ -59,6 +85,7 @@ export function ItemsPanel({
           onSort={(sort) => panel.change({ sort })}
           schemes={facts.schemes}
           rows={shown.rows}
+          kindCounts={facts.kindCounts}
           rowStates={catalogRowStatesOf(shown.statuses, acts.rows)}
           paging={panel.paging}
           archivedCaption={shown.archivedCaption}
@@ -73,7 +100,20 @@ export function ItemsPanel({
           onRestore={onItem(acts.restore)}
         />
       </View>
-      <ItemsSheets sheets={sheets} schemes={facts.schemes} release={facts.release} />
+      <ItemsSheets
+        sheets={sheets}
+        schemes={facts.schemes}
+        ownActs={ownActs}
+        release={facts.release}
+        onPriceSaved={(name) =>
+          toasts.push({
+            tone: 'success',
+            title: t(CATALOG_FIGURES.priceSaved),
+            description: name,
+            moment: 'saved',
+          })
+        }
+      />
       {panel.importing ? <ImportSheet onClose={panel.closeImport} /> : null}
       {panel.adding ? (
         <AddItemSheet

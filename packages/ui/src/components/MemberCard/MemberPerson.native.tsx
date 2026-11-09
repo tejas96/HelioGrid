@@ -4,12 +4,11 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Avatar } from '../Avatar/Avatar.native';
 import { Badge } from '../Chip/Chip.native';
-import { StatusChip } from '../StatusChip/StatusChip.native';
 import type { MemberPersonProps } from './MemberCard.types';
 
 const styles = StyleSheet.create({
   person: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'], minWidth: 0 },
-  who: { alignItems: 'flex-start', gap: theme.spacing['sp-1'], minWidth: 0, flexShrink: 1 },
+  who: { alignItems: 'flex-start', gap: theme.spacing['sp-0-5'], minWidth: 0, flexShrink: 1 },
   name: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -19,11 +18,11 @@ const styles = StyleSheet.create({
   },
 });
 
-/** A person in the team table's first cell (`SCR-M01-12`, `d-default`). */
-export function MemberPerson({ name, youLabel, status, tone }: MemberPersonProps) {
+/** A person in the team table's first cell (`MemberPersonProps`). */
+export function MemberPerson({ name, youLabel, phone }: MemberPersonProps) {
   return (
     <View style={styles.person}>
-      <Avatar name={name} size={40} />
+      <Avatar name={name} size={32} />
       <View style={styles.who}>
         <View style={styles.name}>
           <Text variant="body" bold>
@@ -35,7 +34,9 @@ export function MemberPerson({ name, youLabel, status, tone }: MemberPersonProps
             </Badge>
           )}
         </View>
-        <StatusChip label={status} tone={tone} density="functional" />
+        <Text variant="mono" color="secondary">
+          {phone}
+        </Text>
       </View>
     </View>
   );

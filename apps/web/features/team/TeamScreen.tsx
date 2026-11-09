@@ -16,16 +16,17 @@ import {
   DATA_TABLE_STACK_BELOW,
   type FocusHandle,
   InviteEditor,
+  LargeTitle,
   MemberAct,
   MemberList,
   MemberListHead,
   memberActOf,
   ShellGlyph,
   TeamConfirm,
-  Text,
   ToastHost,
   useFormat,
   useOwnWidth,
+  useRiseMoment,
   useToasts,
 } from '@heliogrid/ui';
 import { notFound, useRouter } from 'next/navigation';
@@ -85,6 +86,11 @@ export function TeamScreen() {
   if (!screen.allowed) notFound();
 
   const { team, acts, list, company } = screen;
+  useRiseMoment(toasts.push, list?.view.invites ?? null, {
+    tone: 'success',
+    title: t(TEAM.inviteSent),
+    moment: 'sent',
+  });
   const wide = width !== null && width >= DATA_TABLE_STACK_BELOW;
   const words = teamListWords(t, {
     pack,
@@ -132,14 +138,12 @@ export function TeamScreen() {
       {invite.words.inviteFirst}
     </Button>
   );
-  const actOf = (row: TeamRow, size: 'md' | 'sm') => {
+  const actOf = (row: TeamRow) => {
     const act = memberActOf(row, team.roster, actWords, acts.sending);
     return act === null ? null : (
       <MemberAct
         {...act}
         ref={acts.opener === row.id ? opener : undefined}
-        size={size}
-        fullWidth={size === 'md'}
         onPress={() => acts.start(row)}
       />
     );
@@ -151,7 +155,7 @@ export function TeamScreen() {
       read={screen.rows}
       words={words}
       actions={actWords.actions}
-      actOf={(row) => actOf(row, 'sm')}
+      actOf={actOf}
       openOf={screen.openOf}
     />
   ) : undefined;
@@ -160,14 +164,14 @@ export function TeamScreen() {
     <div className="hg-shell-page" ref={room}>
       <header className="hg-team-head">
         <div className="hg-team-title">
-          <Text as="h1" variant="display">
-            {settingsRowName(t, 'team')}
-          </Text>
-          {wide && list !== null ? (
-            <Text variant="body-sm" color="secondary">
-              {t(TEAM.headCount, { people: list.view.people, invites: list.view.invites })}
-            </Text>
-          ) : null}
+          <LargeTitle
+            title={settingsRowName(t, 'team')}
+            summary={
+              list === null
+                ? undefined
+                : t(TEAM.headCount, { people: list.view.people, invites: list.view.invites })
+            }
+          />
         </div>
         {wide ? inviteAct : null}
       </header>
@@ -194,7 +198,7 @@ export function TeamScreen() {
         teachingAction={inviteFirstAct}
         onClearSearch={clearSearch}
         onShowAll={showAll}
-        actOf={(row) => actOf(row, 'md')}
+        actOf={actOf}
         openOf={screen.openOf}
         records={table}
         waiting={table}

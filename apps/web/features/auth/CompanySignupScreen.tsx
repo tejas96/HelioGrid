@@ -15,6 +15,7 @@ import {
   companyFacts,
   companyFieldWords,
   companyStepWords,
+  doorStoryWords,
   explainerPagerWords,
   homeTitle,
   knownNumberWords,
@@ -111,6 +112,7 @@ export function CompanySignupScreen() {
   if (panel.view === 'code') {
     return (
       <DoorCodeStep
+        story={doorStoryWords(t)}
         language={language}
         taskMeasure="steps"
         lead={<SignupSteps words={signupStepsWords(t)} current={1} />}
@@ -176,6 +178,7 @@ function SignupDetailsStep({
   });
   return (
     <SignupCompanyStep
+      story={doorStoryWords(t)}
       language={language}
       words={words}
       phoneE164={user.phoneE164}
@@ -197,6 +200,7 @@ function SignupNumberStep({ signIn, onSignIn }: { signIn: SignIn; onSignIn: () =
   const language = <DoorLanguage {...useLanguageChoice()} />;
   return (
     <DoorNumberStep
+      story={doorStoryWords(t)}
       language={language}
       taskMeasure="steps"
       lead={<SignupSteps words={signupStepsWords(t)} current={0} />}

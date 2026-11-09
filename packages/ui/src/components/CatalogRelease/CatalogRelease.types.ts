@@ -17,6 +17,11 @@ export interface CatalogPublishBody {
   readonly onLabel: (label: string) => void;
   /** Under the name: *A release already has this name…*; `null` while there is none. */
   readonly problem: TranslatedText | null;
+  /**
+   * The preview carries nothing new: in the name's place, a calm *Nothing to publish yet* and why —
+   * never the name field in error, which nothing typed caused. Absent or `null` otherwise.
+   */
+  readonly empty?: { readonly title: TranslatedText; readonly line: TranslatedText } | null;
   /** What the release will carry; `null` while it is still being read. */
   readonly changes: CatalogReleaseChanges | null;
   /** The preview's read: the dialog waits, or says it failed with *Try again*. */

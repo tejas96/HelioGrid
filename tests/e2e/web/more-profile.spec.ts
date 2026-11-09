@@ -35,7 +35,8 @@ test('a person changes language and units in place, and a reload keeps both', as
   await expect(
     page.getByRole('heading', { level: 1, name: settingsRowName(en.t, 'profile') }),
   ).toBeVisible();
-  await expect(page.getByText(presetName(en.t, 'epc_owner'))).toBeVisible();
+  /* The page's own role badge: the sidebar's account block names the role too. */
+  await expect(page.getByRole('main').getByText(presetName(en.t, 'epc_owner'))).toBeVisible();
   const languages = page.getByRole('radiogroup', { name: W('language') });
   for (const language of ['en', 'hi', 'mr'] as const)
     await expect(
@@ -118,10 +119,8 @@ test('a person changes their name from Edit name, and the page and the account m
   await expect(panel).toBeVisible();
   await expectNoSeriousViolations(page);
   const renamed = 'Anjali Joshi';
-  // The phone page names the person in its first row's title; the wide page in its own words.
-  const nameShown = page.locator(
-    '.hg-profile-preferences-name-words, .hg-profile-preferences-row:first-child .hg-list-row-title',
-  );
+  // The page names the person in its hero, at every width.
+  const nameShown = page.locator('.hg-profile-hero-name');
   await panel.getByLabel(en.t(FIRST_RUN_PROFILE.nameLabel)).fill(renamed);
   await panel.getByRole('button', { name: en.t(NAME_AND_PHOTO_EDITOR.save) }).click();
   await expect(panel).toBeHidden();
@@ -157,6 +156,9 @@ test('a renewal re-reads the session once: the role card reads the person again'
   await passTheOwnersMark(page, en);
   await page.goto('/more/profile');
   await expect(page.getByRole('button', { name: W('yourRole') })).toBeVisible();
+  /* The page's own membership read must land first: the card's re-read joins one still out, and
+     never meets the stale answer below (a race on a slow runner). */
+  await page.waitForLoadState('networkidle');
 
   let refused = false;
   await page.route(THE_MEMBERSHIP, (route) => {
@@ -181,6 +183,8 @@ test('a refused refresh reads nothing more: the person is at the door', async ({
   await passTheOwnersMark(page, en);
   await page.goto('/more/profile');
   await expect(page.getByRole('button', { name: W('yourRole') })).toBeVisible();
+  /* As above: the page's own membership read lands before the stale answer is set. */
+  await page.waitForLoadState('networkidle');
 
   await page.route(THE_MEMBERSHIP, (route) => route.fulfill(STALE));
   await page.route('**/auth/refresh', (route) => route.fulfill(STALE));

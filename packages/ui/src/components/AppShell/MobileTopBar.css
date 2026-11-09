@@ -1,10 +1,16 @@
-/* The phone top bar (`MobileTopBar`): the tile and the company's name, or a page's way back and its
-   title; the round search, the bell and the avatar. Heights come from --topbar-h-mobile. */
+/* The phone top bar (`MobileTopBar`): the wordmark over the company's name, or a page's way back
+   and its title; the round search, the bell and the avatar. Heights come from --topbar-h-mobile.
+   Clear over the page's glow at rest; its frosted band and small title come in with the distance
+   scrolled (`--hg-bar-frost`, `--hg-bar-title`, set by `useBarFade`), or once on `scrolled`. */
 
 .hg-app-shell-topbar {
-  position: static;
+  --hg-bar-frost: 0;
+  /* The web's title stands from the start; a frame that tells its scroll fades it in instead. */
+  --hg-bar-title: 1;
+  position: relative;
   top: 0;
   z-index: 20;
+  isolation: isolate;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -13,17 +19,36 @@
   min-height: var(--topbar-h-mobile);
   /* The 44 controls centre in the bar's height; a padding of sp-2 would grow it past the token. */
   padding: var(--sp-1) var(--screen-pad-mobile);
-  background: var(--hg-ground);
+  background: transparent;
   font-family: var(--font-sans);
+}
+
+/* The frosted band: the page's own colour let through and blurred, its foot a hairline. */
+.hg-app-shell-topbar::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: color-mix(in srgb, var(--hg-ground) 78%, transparent);
+  -webkit-backdrop-filter: saturate(1.5) blur(18px);
+  backdrop-filter: saturate(1.5) blur(18px);
+  box-shadow: 0 1px 0 var(--hairline);
+  opacity: var(--hg-bar-frost);
+  pointer-events: none;
 }
 
 .hg-app-shell-topbar[data-sticky="true"] {
   position: sticky;
 }
 
-/* Content has scrolled under the bar: it lifts, so the two never read as overlapped. */
+/* With no frame telling its scroll, the flag brings the band in once, over one duration. */
 .hg-app-shell-topbar[data-scrolled="true"] {
-  box-shadow: var(--e2);
+  --hg-bar-frost: 1;
+}
+
+.hg-app-shell-topbar::before,
+.hg-app-shell-topbar-title {
+  transition: opacity var(--dur-micro) var(--ease-standard);
 }
 
 /* The device's own inset, read by the browser — never the typed --safe-top. */
@@ -31,14 +56,14 @@
   padding-top: max(var(--sp-1), env(safe-area-inset-top));
 }
 
-/* The tile and the company's name. The name gives way first, so Search, the bell and the avatar
-   keep their 44. The board's 10 between them is no token; --sp-2 is the nearest step. */
+/* The wordmark over the company's name. The name gives way first, so Search, the bell and the
+   avatar keep their 44. */
 .hg-app-shell-topbar-identity {
   flex: 1;
   min-width: 0;
   display: flex;
-  align-items: center;
-  gap: var(--sp-2);
+  flex-direction: column;
+  justify-content: center;
 }
 
 .hg-app-shell-topbar-company {
@@ -51,6 +76,7 @@
   flex: 1;
   min-width: 0;
   margin-inline-start: var(--sp-1);
+  opacity: var(--hg-bar-title);
 }
 
 .hg-app-shell-topbar-actions {

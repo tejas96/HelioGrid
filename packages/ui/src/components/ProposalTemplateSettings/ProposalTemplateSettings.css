@@ -27,8 +27,10 @@
   min-width: 0;
 }
 
+/* A titled head spaces its lines as `LargeTitle` does, so every settings page's title and line sit
+   alike. */
 .hg-template-head[data-titled] {
-  gap: var(--sp-1);
+  gap: var(--sp-2);
 }
 
 .hg-template[data-layout="narrow"] .hg-template-head:not([data-titled]) {
@@ -71,23 +73,6 @@
   flex-direction: column;
   gap: var(--sp-4);
   min-width: 0;
-}
-
-.hg-template-part-switch {
-  align-self: stretch;
-}
-
-.hg-template-part-switch .hg-segmented-control-pill {
-  display: flex;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* Beside the web's rail at 375 the column is 263 wide: 18 px sides left *Sections* no room and
-   the page scrolled sideways, so the segments shrink to their share. A word is never cut. */
-.hg-template[data-layout="narrow"] .hg-template-part-switch .hg-segmented-control-segment {
-  min-width: 0;
-  padding-inline: var(--sp-0-5);
 }
 
 /* A part's blocks, `sp-4` apart (`Cover part`, `Terms part`, `Timeline part`). */

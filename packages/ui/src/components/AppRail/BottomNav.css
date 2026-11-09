@@ -1,0 +1,137 @@
+/* ── BottomNav — the phone shell's footer (F7-22) ────────────────────────────────────────
+   A float: separated by its shadow, never a line (F7-15). Floating, it sits over the screen at the
+   design system's inset and gap, above the device's own bottom inset (F7-50). */
+
+.hg-bottom-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: var(--bottomnav-pill-h);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-pill);
+  /* biome-ignore lint/plugin/raw-white-css: glass — a float in the card colour let through at an opacity, its edge lit (redesign direction A) */
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  -webkit-backdrop-filter: saturate(1.6) blur(20px);
+  backdrop-filter: saturate(1.6) blur(20px);
+  /* biome-ignore lint/plugin/raw-white-css: glass — the lit top edge of the float (redesign direction A) */
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--surface) 90%, transparent),
+    0 0 0 1px var(--hairline),
+    var(--e4);
+}
+
+/* Above the screen's scrolling content, below every sheet. */
+.hg-bottom-nav[data-floating="true"] {
+  position: absolute;
+  z-index: 1;
+  left: var(--bottomnav-inset);
+  right: var(--bottomnav-inset);
+  bottom: var(--bottomnav-gap);
+}
+
+.hg-bottom-nav[data-safe-bottom="true"] {
+  bottom: calc(env(safe-area-inset-bottom) + var(--bottomnav-gap));
+}
+
+.hg-bottom-nav-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  box-sizing: border-box;
+  min-width: var(--hg-pill-slot-width);
+  height: var(--hg-pill-slot-height);
+  padding: 0;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.hg-bottom-nav-item[data-in-view="true"] {
+  padding: 0 var(--sp-4);
+  background: var(--ink);
+  color: var(--on-ink);
+  box-shadow: var(--e2);
+  animation: hg-fade-in var(--dur-standard) var(--ease-enter);
+}
+
+/* The glyph takes the item's colour; `[data-tone]` keeps this above ShellGlyph.css's later tone
+   rules, which would leave it grey on the ink pill. */
+.hg-bottom-nav-item .hg-shell-glyph[data-tone] {
+  color: inherit;
+}
+
+@media (hover: hover) {
+  .hg-bottom-nav-item:hover:not([data-in-view="true"]) {
+    background: var(--hg-control-fill);
+    color: var(--text-primary);
+  }
+}
+
+.hg-bottom-nav-item {
+  transition:
+    background-color var(--dur-standard) var(--ease-standard),
+    color var(--dur-standard) var(--ease-standard),
+    transform var(--dur-micro) var(--ease-standard);
+}
+.hg-bottom-nav-item:active {
+  transform: scale(var(--press-scale));
+}
+.hg-bottom-nav-item:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-bottom-nav-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.hg-bottom-nav-badge {
+  position: absolute;
+  top: -6px;
+  right: -14px;
+}
+
+.hg-bottom-nav-label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-button);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tr-button);
+  white-space: nowrap;
+}
+
+/* ── Fab ───────────────────────────────────────────────────────────────────────────────── */
+
+.hg-fab {
+  display: grid;
+  place-items: center;
+  width: var(--hg-fab-size, 56px);
+  height: var(--hg-fab-size, 56px);
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--action-primary);
+  color: var(--text-inverse);
+  box-shadow: var(--e5);
+  cursor: pointer;
+  transform: scale(1);
+  transition: transform var(--dur-micro) var(--ease-spring);
+}
+
+.hg-fab:active {
+  transform: scale(0.94);
+}
+
+.hg-fab:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-fab-glyph {
+  width: 24px;
+  height: 24px;
+}

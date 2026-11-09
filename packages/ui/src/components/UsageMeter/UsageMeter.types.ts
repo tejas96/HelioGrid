@@ -1,4 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import type { ProvenanceStanding, ProvenanceTierSpec } from '../Provenance/Provenance.types';
 import type { SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 
@@ -137,4 +138,12 @@ export interface UsageMeterProps {
   unavailableTitle?: TranslatedText;
   unavailableMessage?: TranslatedText;
   density?: 'expressive' | 'functional';
+  /**
+   * `row` (default): the label and the figure on one line. `tile`: a small glass tile's reading —
+   * the glyph and the label over the figure, large in the display face, its denominator quiet after
+   * it (Billing's and Usage's tiles).
+   */
+  form?: 'row' | 'tile';
+  /** The glyph beside the label, by name; drawn in the `tile` form only. */
+  glyph?: ShellGlyphName;
 }

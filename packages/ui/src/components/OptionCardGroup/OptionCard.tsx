@@ -25,8 +25,9 @@ interface OptionCardProps {
 }
 
 /**
- * One card. The card IS the radio (or, in a multiple group, the checkbox), which is why `content`
- * is static by contract: a focusable child would be a button inside a button.
+ * One card: its icon in a chip at the start, the words, and the pick's mark at the end; picked, the
+ * card turns to solar glass. The card IS the radio (or, in a multiple group, the checkbox), which is
+ * why `content` is static by contract: a focusable child would be a button inside a button.
  */
 export function OptionCard({
   option,
@@ -63,7 +64,11 @@ export function OptionCard({
       }}
       onKeyDown={onKeyDown}
     >
-      <OptionMark selected={selected} mode={mode} />
+      {option.icon !== undefined ? (
+        <span className="hg-option-card-icon" aria-hidden="true">
+          {option.icon}
+        </span>
+      ) : null}
       <span className="hg-option-card-body">
         <span className="hg-option-card-head">
           <span className="hg-option-card-titles">
@@ -95,9 +100,7 @@ export function OptionCard({
           <span className="hg-option-card-meta">{option.meta}</span>
         ) : null}
       </span>
-      {option.icon !== undefined ? (
-        <span className="hg-option-card-icon">{option.icon}</span>
-      ) : null}
+      <OptionMark selected={selected} mode={mode} />
     </button>
   );
 }

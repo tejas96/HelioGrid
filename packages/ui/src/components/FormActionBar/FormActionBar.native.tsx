@@ -80,9 +80,14 @@ const styles = StyleSheet.create({
     // biome-ignore lint/plugin/raw-white: panel — a sheet, a modal, a detail panel: a page ground over the page
     backgroundColor: colors.surface,
   },
+  /* The phone's bar: a raised sheet top over the scroller's foot, its corners rounded. */
   sticky: {
     paddingTop: theme.spacing['sp-4'],
     paddingHorizontal: theme.layout['screen-pad-mobile'],
+    borderTopLeftRadius: theme.radius['r-sheet-top'],
+    borderTopRightRadius: theme.radius['r-sheet-top'],
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors['line-soft'],
     ...theme.elevation.e4,
   },
   /* The foot of the settings editor card (s18-r): it reaches through the card's --sp-5 padding to

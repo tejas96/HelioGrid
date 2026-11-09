@@ -1,6 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { FocusAfter } from '../../primitives/FocusAfter';
+import type { LottieMomentName } from '../LottieMoment/LottieMoment.types';
 import type { ToastTone } from '../Toast/Toast.types';
 
 export interface ToastItem {
@@ -10,6 +11,8 @@ export interface ToastItem {
   // biome-ignore lint/plugin/copy-prop-type: words, or the record a toast names (an item's brand and model)
   description?: string;
   icon?: ReactNode;
+  /** An original Lottie moment in place of the mark, played once: a price saved, a release out. */
+  moment?: LottieMomentName;
   action?: ReactNode;
   /**
    * The toast's own way back — *Undo*, drawn as a quiet small button, only on a host given

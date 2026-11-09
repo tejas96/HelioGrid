@@ -50,8 +50,13 @@ export const pageEnd = (body: Locator) => body.locator('.hg-template-end');
 export const actBar = (body: Locator) => body.locator('.hg-form-action-bar');
 export const card = (body: Locator) => body.getByRole('region', { name: en.editor });
 
+/**
+ * The window's own height once it is drawn and still: its layout box, which the desk's slight lean
+ * (a decorative transform) never changes, so the designed height is measured, not its projection.
+ */
 export async function heightOf(locator: Locator): Promise<number> {
-  return (await settledBox(locator))?.height ?? 0;
+  if ((await settledBox(locator)) === null) return 0;
+  return locator.evaluate((node) => (node as HTMLElement).offsetHeight);
 }
 
 /**

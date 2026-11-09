@@ -2,6 +2,7 @@ import { useTeamScreen } from '@heliogrid/data/react';
 import {
   rolesRemovedToast,
   rolesUndoFailedToast,
+  TEAM,
   teamActWords,
   teamListWords,
 } from '@heliogrid/i18n';
@@ -23,6 +24,7 @@ import { ShellPage } from '../shell/components/ShellPage';
 import { TeamAssignRoles } from './components/TeamAssignRoles';
 import { InviteTeammate, useInviteActs, useTeamInvite } from './components/TeamInvite';
 import { TeamToastHost } from './components/TeamToastHost';
+import { useInviteSent } from './hooks/use-invite-sent';
 
 /**
  * The Team page behind `More` on the phone (`SCR-M01-12`, the 375 frames): the settings page's bar
@@ -61,6 +63,7 @@ export function TeamScreen() {
   });
   const invite = useTeamInvite(screen.invite, inviteActs, toasts.push);
   const { team, acts, list, company } = screen;
+  useInviteSent(toasts.push, list?.view.invites ?? null);
   const words = teamListWords(t, {
     pack,
     language: locale,
@@ -74,7 +77,9 @@ export function TeamScreen() {
   return (
     <ShellPage
       inView="more"
-      drillDown={drillDown}
+      drillDown={
+        list === null ? drillDown : { ...drillDown, summary: t(TEAM.headCount, { ...list.view }) }
+      }
       lead={list?.surface === 'teaching' ? undefined : <InviteTeammate invite={invite} />}
       stickyHead={
         screen.showsHead ? (
@@ -111,8 +116,6 @@ export function TeamScreen() {
             <MemberAct
               {...act}
               ref={acts.opener === row.id ? opener : undefined}
-              size="md"
-              fullWidth
               onPress={() => acts.start(row)}
             />
           );

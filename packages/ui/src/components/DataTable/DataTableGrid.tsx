@@ -6,7 +6,7 @@ import { DataTableRows } from './DataTableRows';
 import { TotalFoot } from './DataTableTotal';
 
 interface WebGridProps<Row> extends GridProps<Row> {
-  /** The quiet head: the rows stand in one raised card under the labels. */
+  /** The quiet head: the labels over one line, the rows on the page between lines. */
   quiet: boolean;
 }
 
@@ -36,7 +36,7 @@ export function DataTableGrid<Row>({
   /* Resolved once for the whole header: the statement each column's tier is measured against. */
   const tableSpec = asProvenanceSpec(table.provenance);
 
-  const grid = (
+  return (
     <table className="hg-dt-table" aria-labelledby={labelledBy}>
       <DataTableHead
         columns={columns}
@@ -76,6 +76,4 @@ export function DataTableGrid<Row>({
       )}
     </table>
   );
-  /* Only a quiet table grows the wrapper its card is drawn in; every other table is unchanged. */
-  return quiet ? <div className="hg-dt-quiet">{grid}</div> : grid;
 }

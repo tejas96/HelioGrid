@@ -118,6 +118,7 @@ function memberViewOf(
     needs,
     plan: {
       chip: planChipOf(words, standing, input.now),
+      countdown: null,
       rows: [
         fact('plan', words.plan, standing.tier === null ? words.trial : words.tier(standing.tier)),
         ...(next === null ? [] : [fact('next', words.nextBill, format.date(next))]),
@@ -145,6 +146,7 @@ function usageOf(input: BillingInput, home: BillingHome): BillingUsageView {
       meter.meter === 'storage'
         ? {
             key: 'storage',
+            glyph: 'layers',
             label: words.limits.storage,
             value: Math.round(meter.used / BYTES_PER_GB),
             limit: meter.included === null ? null : Math.round(meter.included / BYTES_PER_GB),
@@ -152,10 +154,11 @@ function usageOf(input: BillingInput, home: BillingHome): BillingUsageView {
           }
         : {
             key: 'voice',
+            glyph: 'headset',
             label: words.limits.voiceMinutes,
             value: meter.used,
             limit: meter.included,
-            unit: null,
+            unit: words.minutes,
           },
     ),
     sources: [

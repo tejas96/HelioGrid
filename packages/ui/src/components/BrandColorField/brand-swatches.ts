@@ -24,3 +24,51 @@ export const BRAND_SWATCH_PRESETS: string[] = [
  * its value.
  */
 export const DEFAULT_BRAND_COLOUR: string = theme.palettes.light.accent;
+
+/**
+ * The phone's colour grid — React Native has no system colour picker, so a tap on the hex field's
+ * dot opens these. Ten hue families, each dark to light, row by row; the web opens the browser's
+ * own picker instead. A brand hex outside them is still typed.
+ */
+export const BRAND_PICKER_COLOURS: string[] = [
+  '#7F1D1D',
+  '#9A3412',
+  '#92400E',
+  '#3F6212',
+  '#065F46',
+  '#115E59',
+  '#1E3A8A',
+  '#3730A3',
+  '#6B21A8',
+  '#9D174D',
+  '#B91C1C',
+  '#C2410C',
+  '#B45309',
+  '#4D7C0F',
+  '#047857',
+  '#0F766E',
+  '#1D4ED8',
+  '#4338CA',
+  '#7E22CE',
+  '#BE185D',
+  '#EF4444',
+  '#F97316',
+  '#F59E0B',
+  '#84CC16',
+  '#10B981',
+  '#14B8A6',
+  '#3B82F6',
+  '#6366F1',
+  '#A855F7',
+  '#EC4899',
+  '#111827',
+  '#374151',
+  '#4B5563',
+  '#6B7280',
+  '#9CA3AF',
+  '#57534E',
+  '#78716C',
+  '#0C4A6E',
+  '#164E63',
+  '#134E4A',
+];

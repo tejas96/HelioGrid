@@ -1,0 +1,138 @@
+/* BillingPlan — the billing page's hero and its two small forms: the plan with its ring of days,
+   the usage meters as small tiles side by side, and the calm tile a region with nothing in it yet
+   shows (`BillingQuiet`). */
+
+/* ── the plan, the page's hero ──────────────────────────────────────────────── */
+
+/* The plan's name is what the hero is about: the phone's hero size, larger than a page title. */
+.hg-billing-hero-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-hero-phone);
+  line-height: var(--lh-hero-phone);
+  letter-spacing: var(--tr-hero-phone);
+  color: var(--on-panel);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A figure in the plan's name keeps the display face: it is the hero's figure, not a list's. */
+.hg-billing-hero-name .hg-billing-mono {
+  font-family: inherit;
+}
+
+.hg-billing-hero-route {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+/* The name and its facts on the left, the ring of days on the right; on a narrow card the ring
+   keeps its size and the words wrap beside it. */
+.hg-billing-hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-5);
+}
+
+.hg-billing-hero-lead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-billing-hero-facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  margin: 0;
+}
+
+.hg-billing-hero-fact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-0-5) var(--sp-2);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-billing-hero-fact dt {
+  color: var(--on-panel-muted);
+}
+
+.hg-billing-hero-fact dd {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-weight: var(--fw-semibold);
+  color: var(--on-panel);
+}
+
+/* A price under a plan's name is the hero's figure: the display face, not a list's mono. */
+.hg-billing-hero-fact[data-key="price"] {
+  flex-direction: column;
+  gap: 0;
+}
+
+.hg-billing-hero-fact[data-key="price"] dd {
+  font-family: var(--font-display);
+  font-size: var(--fs-figure);
+  line-height: var(--lh-figure);
+  letter-spacing: var(--tr-figure);
+  font-weight: var(--fw-regular);
+}
+
+.hg-billing-hero-fact[data-key="price"] .hg-billing-mono {
+  font-family: inherit;
+}
+
+.hg-billing-hero-under {
+  font-weight: var(--fw-regular);
+  color: var(--on-panel-muted);
+}
+
+/* ── usage: the meters side by side, each a small glass tile ─────────────── */
+
+.hg-billing-meters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--sp-24) + var(--sp-8)), 1fr));
+  gap: var(--tile-gap);
+}
+
+.hg-billing-meter {
+  padding: var(--tile-pad);
+  border-radius: var(--r-tile);
+}
+
+/* ── a region with nothing in it yet: one calm tile ──────────────────────── */
+
+.hg-billing-quiet {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--tile-pad);
+  border-radius: var(--r-tile);
+}
+
+/* The art in its own soft square, tinted with the accent, as a list's icon tile is. */
+.hg-billing-quiet-art {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--sp-12);
+  height: var(--sp-12);
+  border-radius: var(--r-md);
+  background: var(--accent-subtle);
+  color: var(--accent);
+  box-shadow: inset 0 1px 0 var(--glass-edge);
+}
+
+.hg-billing-quiet-words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}

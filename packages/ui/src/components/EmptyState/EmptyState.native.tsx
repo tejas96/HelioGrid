@@ -5,6 +5,7 @@ import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
+import { LottieMoment } from '../LottieMoment/LottieMoment.native';
 import type { EmptyStateProps } from './EmptyState.types';
 
 interface NativeEmptyStateProps extends EmptyStateProps {
@@ -14,6 +15,7 @@ interface NativeEmptyStateProps extends EmptyStateProps {
 /** Centred empty state with a soft brand bloom behind a large circular icon container. */
 export function EmptyState({
   icon,
+  moment,
   title,
   description,
   action,
@@ -27,9 +29,12 @@ export function EmptyState({
       <View style={styles.art}>
         {glow ? <BrandBloom size={BLOOM_SIZE} /> : null}
         {/* No glyph, no circle — see the web half. */}
-        {icon ? <View style={[styles.icon, { backgroundColor: controlFill }]}>{icon}</View> : null}
+        {moment === undefined ? null : <LottieMoment name={moment} size={96} />}
+        {icon && moment === undefined ? (
+          <View style={[styles.icon, { backgroundColor: controlFill }]}>{icon}</View>
+        ) : null}
       </View>
-      <Text variant="h3" align="center" style={styles.title}>
+      <Text variant="figure" align="center" style={styles.title}>
         {title}
       </Text>
       {description === undefined ? null : (

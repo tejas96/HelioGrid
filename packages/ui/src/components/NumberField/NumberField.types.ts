@@ -118,8 +118,8 @@ export interface NumberFieldProps {
    *
    * It also **defaults `steppers` to false**: a payment is not arrived at by pressing +.
    *
-   * The pack's symbol adornment and grouping are NOT rendered in this port — see the folder's
-   * port notes; `@heliogrid/ui` has no market pack to read them from.
+   * The market's currency symbol (`useFormat`) stands beside the amount, always, on the side the
+   * market writes it; the grouping is not applied while the amount is edited.
    */
   currency?: boolean;
   /**

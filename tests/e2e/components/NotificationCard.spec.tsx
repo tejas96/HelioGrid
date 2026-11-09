@@ -2,7 +2,13 @@ import { createTranslator, NOTIFICATION_CENTRE, notificationCardName } from '@he
 import { NotificationAnnouncement, NotificationCard, NotificationLanding } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { settledBox } from '../support/layout';
-import { resolvedBoxShadow, resolvedColour, resolvedLength, TILE_SHADOW } from '../support/token';
+import {
+  resolvedBoxShadow,
+  resolvedColour,
+  resolvedLength,
+  TILE_FILL,
+  TILE_SHADOW,
+} from '../support/token';
 
 /** The centre's parts (`SCR-SHELL-03`), at the phone's 335 and the web panel's 456. */
 const en = await createTranslator('en');
@@ -117,7 +123,7 @@ for (const width of [335, 456]) {
         };
       });
       expect(look).toEqual({
-        fill: await resolvedColour(page, '--surface'),
+        fill: await resolvedColour(page, TILE_FILL),
         ring: await resolvedBoxShadow(page, TILE_SHADOW),
         padding: '16px',
         radius: `${await resolvedLength(page, '--r-tile')}px`,

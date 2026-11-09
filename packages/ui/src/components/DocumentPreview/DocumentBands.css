@@ -11,9 +11,10 @@
   min-height: 0;
 }
 
+/* The brand rule: a short bar of the brand, then a hairline across the sheet. */
 .hg-doc-rule {
   height: 2px;
-  background: var(--hg-doc-brand);
+  background: linear-gradient(90deg, var(--hg-doc-brand) 0 40px, var(--hairline) 40px 100%);
   opacity: var(--hg-doc-rule-opacity);
   border-radius: 2px;
 }
@@ -29,10 +30,11 @@
 }
 
 .hg-doc-cell {
-  padding: 7px 0;
+  padding: 8px 0;
   font-size: 11px;
   color: var(--text-primary);
   vertical-align: top;
+  border-bottom: 1px solid var(--hairline);
 }
 
 .hg-doc-amount {
@@ -44,10 +46,13 @@
 
 /* The total IS the sum of the lines and the payable IS the total less the subsidy — neither is
    a literal, which is why nothing here can be styled into disagreeing with the arithmetic. */
+/* The total sits on a soft wash of the brand, the one figure a customer looks for first. */
 .hg-doc-total-row {
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid var(--hairline);
+  margin-top: 12px;
+  padding: 11px 14px;
+  border-radius: 8px;
+  /* biome-ignore lint/plugin/raw-white-css: paper — the brand's wash over the white sheet */
+  background: color-mix(in srgb, var(--hg-doc-brand) 7%, var(--surface));
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -61,7 +66,7 @@
 }
 
 .hg-doc-total-value {
-  font-size: var(--fs-h4);
+  font-size: 17px;
   font-weight: var(--fw-bold);
   letter-spacing: var(--tr-h2);
   font-family: var(--font-mono);
@@ -92,11 +97,18 @@
   font-size: 11px;
 }
 
+/* Each section's number on a small bead of the brand's wash. */
 .hg-doc-section-index {
   font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--text-tertiary);
-  width: 14px;
+  font-size: 8px;
+  color: var(--hg-doc-ink);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  /* biome-ignore lint/plugin/raw-white-css: paper — the brand's wash over the white sheet */
+  background: color-mix(in srgb, var(--hg-doc-brand) 10%, var(--surface));
+  display: inline-grid;
+  place-items: center;
   flex-shrink: 0;
 }
 
@@ -109,17 +121,29 @@
   color: var(--text-tertiary);
 }
 
+/* A payment stage's number on a bead of the brand's wash: a schedule, read top to bottom. */
 .hg-doc-tranche-index {
-  padding: 8px 0;
+  padding: 8px 8px 8px 0;
   vertical-align: top;
-  width: 18px;
+  width: 26px;
   font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--text-tertiary);
+  font-size: 8px;
+  color: var(--hg-doc-ink);
+}
+
+.hg-doc-tranche-index > * {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  /* biome-ignore lint/plugin/raw-white-css: paper — the brand's wash over the white sheet */
+  background: color-mix(in srgb, var(--hg-doc-brand) 10%, var(--surface));
 }
 
 .hg-doc-tranche-cell {
   padding: 8px 0;
+  border-bottom: 1px solid var(--hairline);
   font-size: 11px;
   vertical-align: top;
 }
@@ -137,6 +161,7 @@
 
 .hg-doc-tranche-share {
   padding: 8px 0;
+  border-bottom: 1px solid var(--hairline);
   font-size: 10px;
   text-align: right;
   color: var(--text-secondary);
@@ -145,6 +170,7 @@
 
 .hg-doc-tranche-amount {
   padding: 8px 0;
+  border-bottom: 1px solid var(--hairline);
   font-size: 11px;
   text-align: right;
   font-family: var(--font-mono);

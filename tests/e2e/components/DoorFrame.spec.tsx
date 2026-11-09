@@ -2,14 +2,15 @@ import { COMPANY_SIGNUP, createTranslator } from '@heliogrid/i18n';
 import { Button, type DoorColumn, DoorFrame, Text } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Page } from '@playwright/test';
-import { settledBox } from '../support/layout';
+import { doorSheetOpening, settledBox } from '../support/layout';
 import { resolvedLength } from '../support/token';
 
 /**
- * The door's frame: one centred column at every width — the step header leads, then the heading,
- * the task and the action, which stays on screen while a phone's column scrolls. `column` places
- * the heading on a phone: centred between the header row and the column's foot, or `sp-8` under
- * the step header.
+ * The door's frame: the living sky and one column — on a phone the sky stands over the column,
+ * which rides up over its foot as a glass sheet; from the desktop width the sky is a panel beside
+ * it. The step header leads, then the heading, the task and the action, which stays on screen
+ * while a phone's column scrolls. `column` places the heading `sp-8` or `sp-4` under the step
+ * header; with none the heading opens the sheet.
  */
 const en = await createTranslator('en');
 
@@ -51,7 +52,7 @@ function doorTree() {
 const SHORT_TASK = 120;
 
 /** One door with a short task: its heading placed by `column`, under a step header when it has one. */
-function placedDoor(column: DoorColumn, withLead: boolean) {
+function placedDoor(column: DoorColumn | undefined, withLead: boolean) {
   return (
     <DoorFrame
       trailing={<span />}
@@ -81,22 +82,22 @@ async function settledType(page: Page) {
 test.describe('at 375', () => {
   test.use({ viewport: { width: 375, height: 812 } });
 
-  test('a centred column leaves as much room above its heading as under its task', async ({
+  test('with no column the heading opens the glass sheet under the sky, the head clear of the sheet', async ({
     mount,
     page,
   }) => {
-    const door = await mount(placedDoor('centred', false));
+    const door = await mount(placedDoor(undefined, false));
     await settledType(page);
-    const header = await settledBox(door.locator('header'));
+    const opening = await doorSheetOpening(page);
     const heading = await settledBox(
       door.getByRole('heading', { name: en.t(COMPANY_SIGNUP.joinTitle) }),
     );
     const task = await settledBox(door.getByTestId('task'));
 
-    const above = (heading?.y ?? 0) - ((header?.y ?? 0) + (header?.height ?? 0));
-    const under = 812 - ((task?.y ?? 0) + (task?.height ?? 0));
-    expect(above).toBeGreaterThan(await resolvedLength(page, '--sp-8'));
-    expect(Math.abs(above - under)).toBeLessThanOrEqual(1);
+    /* The column's own top gap: the heading is the first thing the sheet holds. */
+    expect(Math.round(heading.y - opening)).toBe(await resolvedLength(page, '--sp-6'));
+    expect(task.y).toBeGreaterThan(heading.y + heading.height);
+    expect(task.y + task.height).toBeLessThanOrEqual(812);
   });
 
   test('a deep column puts its heading sp-8 under the step header', async ({ mount, page }) => {
@@ -150,7 +151,7 @@ test.describe('at 375', () => {
 test.describe('at 1536', () => {
   test.use({ viewport: { width: 1536, height: 960 } });
 
-  test('the door is one centred column: the step header, the heading, the task and the action in reading order', async ({
+  test('the door is the sky panel beside one column, centred in its pane: the step header, the heading, the task and the action in reading order', async ({
     mount,
     page,
   }) => {
@@ -172,8 +173,14 @@ test.describe('at 1536', () => {
     expect(headingBox?.x).toBe(task?.x);
     expect(action?.x).toBe(task?.x);
     expect(task?.width).toBeLessThanOrEqual(formMax);
-    /* Centred: as much room on the window's left as on its right. */
-    expect(Math.abs((task?.x ?? 0) * 2 + (task?.width ?? 0) - 1536)).toBeLessThanOrEqual(1);
+    /* The sky is a panel on the left; the column stands beside it, centred in what is left: as
+       much room on the pane's left as on its right. */
+    const sky = await settledBox(page.locator('.hg-door-sky'));
+    const pane = await settledBox(page.locator('.hg-door-page'));
+    expect(sky.x + sky.width).toBeLessThanOrEqual(pane.x);
+    expect(
+      Math.abs((task?.x ?? 0) * 2 + (task?.width ?? 0) - (pane.x * 2 + pane.width)),
+    ).toBeLessThanOrEqual(1);
     expect(lead?.y).toBeLessThan(headingBox?.y ?? 0);
     expect(headingBox?.y).toBeLessThan(task?.y ?? 0);
     expect(action?.y).toBeGreaterThan(task?.y ?? 0);

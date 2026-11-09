@@ -1,14 +1,10 @@
 import type { UiLanguage } from '@heliogrid/domain';
 import {
-  CATALOG_EDITOR,
   CATALOG_SETTINGS,
   catalogEditFailed,
   catalogItemsWords,
-  catalogPriceEditorWords,
-  catalogReleaseWords,
   catalogViewOnly,
   createTranslator,
-  releaseChangeWord,
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Page } from '@playwright/test';
@@ -16,7 +12,6 @@ import { expectNoSeriousViolations } from '../support/axe';
 import { expectNoSidewaysScroll, expectNothingClipped, settledBox } from '../support/layout';
 import { animationsSettled } from '../support/motion';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
-import { PriceEditorAsRead, ReleaseAsRead } from './CatalogEditors.story';
 import { CatalogItemsAsRead } from './CatalogItems.story';
 
 /**
@@ -78,11 +73,14 @@ test('every items frame at 375 and 1536', async ({ mount, page }) => {
       await page.keyboard.press('Escape');
     } else {
       await expect(page.getByText(en.summary)).toBeVisible();
+      /* The narrow rows carry no toggles (direction A): *Prefer* and *Hide* moved into the item's
+         sheet, one tap from the row — the price editor's test below presses them there. */
       await expect(
         page.getByRole('button', {
           name: t(CATALOG_SETTINGS.stopPreferringNamed, { name: ADANI }),
         }),
-      ).toBeVisible();
+      ).toHaveCount(0);
+      await expect(page.locator('.hg-cat-acts')).toHaveCount(0);
     }
     /* The row opens by its whole sentence — a real button for the keyboard in both forms. */
     await page.getByRole('button', { name: new RegExp(`^${ADANI},`) }).focus();
@@ -91,15 +89,17 @@ test('every items frame at 375 and 1536', async ({ mount, page }) => {
     await expectNoSidewaysScroll(page);
     await expectNoSeriousViolations(page);
 
-    /* hidden-from-pickers: the mark in words, and the act that un-hides it, pressed. */
+    /* hidden-from-pickers: the mark in words in both forms; at 1536 the act that un-hides it, a
+       pressed toggle with the item's name — at 375 it is the sheet's *Hide* (the editor's test). */
     await expect(page.getByText(en.hiddenFromPickers)).toBeVisible();
-    /* Both forms speak the act with the item's name; the pill is also a pressed toggle. */
-    const show = page.getByRole('button', {
-      name: t(CATALOG_SETTINGS.showNamed, { name: GROWATT }),
-    });
-    if (!wide) await expect(show).toHaveAttribute('aria-pressed', 'true');
-    await show.click();
-    await expect(frame).toHaveAttribute('data-acted', 'hide:growatt');
+    if (wide) {
+      const show = page.getByRole('button', {
+        name: t(CATALOG_SETTINGS.showNamed, { name: GROWATT }),
+      });
+      await expect(show).toHaveAttribute('aria-pressed', 'true');
+      await show.click();
+      await expect(frame).toHaveAttribute('data-acted', 'hide:growatt');
+    }
     await frame.unmount();
 
     /* search-filtered: the summary counts the matches at 375; 1536 draws none. */
@@ -222,7 +222,7 @@ test('tints the added row at both widths', async ({ mount, page }) => {
     const [added, other] = await Promise.all([
       tinted.first().evaluate((node) => getComputedStyle(node).backgroundColor),
       page
-        .locator('.hg-dt-row, .hg-dt-card')
+        .locator('.hg-dt-row, .hg-dt-card, .hg-card-row')
         .filter({ hasText: GROWATT })
         .first()
         .evaluate((node) => getComputedStyle(node).backgroundColor),
@@ -249,50 +249,6 @@ test('a pack with no schemes draws no compliance column', async ({ mount, page }
     await expect(page.getByText(en.noSchemeFlag)).toHaveCount(0);
     await page.getByRole('button', { name: words.filters }).first().click();
     await expect(page.getByRole('dialog').getByText(words.filterPanel.scheme)).toHaveCount(0);
-    await frame.unmount();
-  }
-});
-
-test('the price editor names each tier', async ({ mount, page }) => {
-  const words = catalogPriceEditorWords(t, '5%');
-  for (const { width } of WIDTHS) {
-    await at(page, width);
-    const frame = await mount(<PriceEditorAsRead reader="en" />);
-    await expect(page.getByText(t(CATALOG_EDITOR.platformItem))).toBeVisible();
-    await expect(page.getByText(words.yourOverride)).toBeVisible();
-    await expect(page.getByText(words.defaultSource)).toHaveCount(2);
-    await expect(page.getByText(words.edited)).toBeVisible();
-    await expect(page.getByText(words.taxStays ?? '')).toBeVisible();
-    await expect(page.getByText(words.priceHint)).toBeVisible();
-    /* The switch's input is the accessible node; its drawn track takes the press. */
-    await page.getByRole('switch', { name: words.hideFromPickers }).locator('..').click();
-    await expect(frame).toHaveAttribute('data-hidden', 'true');
-    await expectNoSidewaysScroll(page);
-    await frame.unmount();
-  }
-});
-
-test("a release's before-and-after", async ({ mount, page }) => {
-  const words = catalogReleaseWords(t);
-  for (const { width } of WIDTHS) {
-    await at(page, width);
-    let frame = await mount(<ReleaseAsRead reader="en" mode="publish" />);
-    await expect(page.getByRole('textbox', { name: words.releaseName })).toHaveValue(
-      'September price update',
-    );
-    await expect(page.getByText(releaseChangeWord(t, 'added'), { exact: true })).toBeVisible();
-    await expect(page.getByText(releaseChangeWord(t, 'archived'), { exact: true })).toHaveCount(0);
-    /* A price given for the first time is an addition, with no before. */
-    await expect(page.getByText(words.newValue, { exact: true })).toHaveCount(2);
-    await expect(page.getByText(t(CATALOG_EDITOR.no), { exact: true })).toBeVisible();
-    await frame.unmount();
-
-    frame = await mount(<ReleaseAsRead reader="en" mode="contents" />);
-    await expect(page.getByText(words.inForce)).toBeVisible();
-    await expect(page.getByText(words.earlier)).toBeVisible();
-    await page.getByRole('button', { name: /r2026-06/ }).click();
-    await expect(frame).toHaveAttribute('data-opened', 'r6');
-    await expectNoSidewaysScroll(page);
     await frame.unmount();
   }
 });

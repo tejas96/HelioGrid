@@ -1,6 +1,8 @@
 import { ACCESS_REMOVED } from '@heliogrid/contracts';
+import { session } from '@heliogrid/db';
 import { FOUNDER_ROLE, ROLE_PRESETS } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
+import { eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { SESSION_COOKIE, TOKEN_COOKIE } from '../../src/common/auth/cookies';
 import { TenantRepository } from '../../src/modules/tenant/tenant.repository';
@@ -38,6 +40,7 @@ const owner = aPerson('Rajesh Sharma');
 const unswept = aPerson('Priya Kulkarni');
 const swept = aPerson('Kavita Joshi');
 const signedOut = aPerson('Suresh Nair');
+const noCompanyYet = aPerson('Meera Patil');
 const ownerHere = aMembership(here, owner, [FOUNDER_ROLE]);
 const unsweptHere = aMembership(here, unswept, [WORKING_PRESET]);
 const sweptHere = aMembership(here, swept, [WORKING_PRESET]);
@@ -50,12 +53,23 @@ const sweptDevice = aDevice(swept, here);
 const sweptDeviceElsewhere = aDevice(swept, elsewhere);
 const revokedDevice = aDevice(signedOut, here, { revokedAt: now - MS_PER_MINUTE });
 const expiredDevice = aDevice(signedOut, here, { expiresAt: now - MS_PER_MINUTE });
+/* Signed in before the company existed; the company was then made on another device. */
+const ownerDeviceBeforeCompany = aDevice(owner, null);
+const deviceWithNoCompany = aDevice(noCompanyYet, null);
 
 const fixture: Fixture = {
   companies: [here, elsewhere],
-  people: [owner, unswept, swept, signedOut],
+  people: [owner, unswept, swept, signedOut, noCompanyYet],
   memberships: [ownerHere, unsweptHere, sweptHere, sweptElsewhere, signedOutHere],
-  devices: [unsweptDevice, sweptDevice, sweptDeviceElsewhere, revokedDevice, expiredDevice],
+  devices: [
+    unsweptDevice,
+    sweptDevice,
+    sweptDeviceElsewhere,
+    revokedDevice,
+    expiredDevice,
+    ownerDeviceBeforeCompany,
+    deviceWithNoCompany,
+  ],
 };
 
 interface Refusal {
@@ -126,6 +140,19 @@ describe.skipIf(skip)('the refresh names why a session ended, over HTTP', () => 
     const expiresIn = Date.parse(reply.body.tokenExpiresAt ?? '') - Date.now();
     expect(expiresIn).toBeGreaterThan(0);
     expect(expiresIn).toBeLessThanOrEqual(10 * MS_PER_MINUTE);
+  });
+
+  it.each([
+    { who: 'a company made on another device', device: ownerDeviceBeforeCompany, company: here },
+    { who: 'no company yet', device: deviceWithNoCompany, company: null },
+  ])('renews a session with no company and binds it to $who', async ({ device, company }) => {
+    const reply = await refresh(device);
+    expect(reply.status).toBe(HttpStatus.OK);
+    const [row] = await pools.admin.db
+      .select({ activeTenantId: session.activeTenantId })
+      .from(session)
+      .where(eq(session.id, device.sessionId));
+    expect(row?.activeTenantId).toBe(company?.tenantId ?? null);
   });
 
   it.each([

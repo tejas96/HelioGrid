@@ -17,11 +17,7 @@ export function NotFoundScreen() {
   const router = useRouter();
   const signedIn = useSessionPhase() === 'signedIn';
   return (
-    <DoorFrame
-      trailing={language}
-      column="centred"
-      identity={<DoorTitle title={t(SHELL.notFound)} />}
-    >
+    <DoorFrame trailing={language} identity={<DoorTitle title={t(SHELL.notFound)} />}>
       <Button
         variant="primary"
         size="lg"

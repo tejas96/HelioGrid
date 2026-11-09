@@ -6,6 +6,7 @@ import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
+import { LottieMoment } from '../LottieMoment/LottieMoment.native';
 import type { OverlayEmptyProps, OverlayErrorProps } from './Sheet.types';
 
 /**
@@ -13,9 +14,10 @@ import type { OverlayEmptyProps, OverlayErrorProps } from './Sheet.types';
  * first one. The absence of a mark here is the point — a fault glyph would make "none yet" read
  * as "something went wrong".
  */
-export function OverlayEmpty({ title, message, action, variant }: OverlayEmptyProps) {
+export function OverlayEmpty({ title, message, action, moment, variant }: OverlayEmptyProps) {
   return (
     <View style={[styles.state, variant === 'panel' ? styles.panelPad : styles.sheetPad]}>
+      {moment === undefined ? null : <LottieMoment name={moment} size={96} />}
       {title === undefined ? null : <Text style={titleStyle}>{title}</Text>}
       {message === undefined ? null : (
         <Text

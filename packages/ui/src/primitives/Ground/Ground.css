@@ -8,6 +8,10 @@
                                 sits over.
    --hg-control-fill            the fill a control takes here.
    --hg-control-fill-disabled   the fill a disabled control takes, the same on every ground.
+   --hg-ground-fill             what the holder paints where that is not its ground — a glass tile's
+                                frosted fill. A part that must read as its holder while content runs
+                                under it (a sticky head, a pinned cell) paints this, frosted, and
+                                falls back to `--hg-ground` wherever no tile set it.
 
    These lists are the ONE record of which surface is which ground, and the tiles' list is the ONE
    place a tile's look is drawn: a tile keeps only its own radius, padding and rings, so changing
@@ -54,16 +58,37 @@
   /* biome-ignore lint/plugin/raw-white-css: ground — the ground itself, and Surface, which sets it */
   --hg-ground: var(--surface);
   --hg-control-fill: var(--fill);
+  /* Not glass: a part pinned here paints the ground itself, never a tile's fill it sits inside. */
+  --hg-ground-fill: initial;
 }
 
-/* The tiles (F7-49): one record, or one item of a list — grey on the white page, no shadow, and a
-   tile ground, so a control inside turns white. The ONE place a tile is drawn, in one list, so a
+/* The door's column on a phone width is a glass sheet over the sky (`DoorFrame`): a white ground,
+   so a control on it takes the fill. From the desktop width it is the page itself. */
+@media (max-width: 967.98px) {
+  .hg-door-page {
+    /* biome-ignore lint/plugin/raw-white-css: ground — the door's sheet is the card colour */
+    --hg-ground: var(--surface);
+    --hg-control-fill: var(--fill);
+  }
+}
+
+/* The tiles (F7-49): one record, or one item of a list — a pane of frosted glass on the page, and a
+   tile ground, so a control inside takes the fill. The ONE place a tile is drawn, in one list, so a
    tile's fill and its ground cannot part. Loaded before every component, so a tile's own state rule — an off
    option, a played turn — still wins over this fill at rest. */
 .hg-card,
+/* The business profile's parts on the settings page (`CompanyProfile`): one glass tile. */
+.hg-company-profile-list[data-life="settings"],
+/* Catalog's first-day card (`CatalogItems`). */
+.hg-cat-teach,
 /* The brand colour field's offered ink (`BrandColorField`, the short verdict). */
 .hg-brand-color-ink,
 .hg-account-tile,
+/* Billing's empty regions and its usage meters, each a small tile (`BillingHome`); each row of
+   the usage page's regions (`UsagePage`). */
+.hg-billing-quiet,
+.hg-usage-tile-row,
+.hg-billing-meter,
 .hg-stat-card,
 /* A tappable tile is a `Pressable`, whose reset loads later and clears a one-class fill. */
 .hg-pressable.hg-stat-card-button,
@@ -83,6 +108,12 @@
 .hg-date-set-row,
 .hg-option-card:not([data-off="true"]),
 .hg-transcript-bubble,
+/* What a coming page will hold (`OnItsWay`): one tile, its points split by hairlines. */
+.hg-on-its-way-points,
+/* The catalog's price editor docked beside the list on desktop (`PriceEditorDock`, apps/web). */
+.hg-catalog-dock,
+/* One card holding a list's rows (`CardRows`): the catalog's narrow list, the Team list. */
+.hg-card-rows,
 .hg-dt-total-block,
 /* The billing home's two record rows (`SCR-M12-02`, `Payment reminders` and `Plan history`). */
 .hg-list-row.hg-billing-record,
@@ -91,11 +122,18 @@
 /* The usage screen's `Bigger plans` row and its ledger events (`SCR-M12-04`). */
 .hg-list-row.hg-usage-tile,
 .hg-dt-card:not([data-editable="true"]) {
-  /* biome-ignore lint/plugin/raw-white-css: ground — a tile is the white card on the page */
-  background: var(--surface);
+  /* Glass: the card colour let through over the page's glow, a 1 px light on its top edge, a
+     hairline and a soft lift — the tile reads as a pane of the page, never a flat box. No frost on the
+     tile itself: what lies behind a tile is the page's smooth glow, which a blur would not change, and
+     a backdrop-filter would make the tile the box every `position: fixed` float inside it measures
+     against — no web float renders through a portal, so a sheet opened from a card would open inside
+     the card. A part that runs content under it (a sticky head) frosts itself. */
+  --hg-ground-fill: var(--glass);
+  background: var(--hg-ground-fill);
   box-shadow:
+    inset 0 1px 0 var(--glass-edge),
     0 0 0 1px var(--line-soft),
-    var(--e1);
+    var(--e2);
   /* biome-ignore lint/plugin/raw-white-css: ground — a tile is the white card on the page */
   --hg-ground: var(--surface);
   --hg-control-fill: var(--fill);
@@ -131,6 +169,7 @@
   --hg-ground: var(--canvas-sunken);
   /* biome-ignore lint/plugin/raw-white-css: ground — the ground itself, and Surface, which sets it */
   --hg-control-fill: var(--surface);
+  --hg-ground-fill: initial;
 }
 
 /* A field's well that holds controls of its own — `RichText`'s toolbar and link address, the search
@@ -139,6 +178,7 @@
 .hg-search-field {
   --hg-ground: var(--surface-form);
   --hg-control-fill: var(--fill);
+  --hg-ground-fill: initial;
 }
 
 /* The page: the canvas, under its glow. A control set straight on it is the white card colour, as

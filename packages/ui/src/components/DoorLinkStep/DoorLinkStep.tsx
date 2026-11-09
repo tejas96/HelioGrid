@@ -9,6 +9,7 @@ import type { DoorLinkStepProps } from './DoorLinkStep.types';
 
 /** The link step in the frame's two fields: the title in the identity half, the Google login and its number in the task. */
 export function DoorLinkStep({
+  story,
   language,
   words,
   frame,
@@ -20,6 +21,8 @@ export function DoorLinkStep({
   const anotherAccount = () => onPress('google');
   return (
     <DoorFrame
+      sky="door"
+      story={story}
       trailing={
         <>
           <Button
@@ -33,7 +36,6 @@ export function DoorLinkStep({
           <div className="hg-door-wide-only">{language}</div>
         </>
       }
-      column="centred"
       identity={
         <div className="hg-door-title">
           <div className="hg-door-title-row">

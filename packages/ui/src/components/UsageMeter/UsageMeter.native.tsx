@@ -8,6 +8,7 @@ import { Text } from '../../primitives/Text/Text.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { Provenance } from '../Provenance/Provenance.native';
 import type { UsageMeterProps } from './UsageMeter.types';
+import { UsageMeterHead } from './UsageMeterHead.native';
 import { UsageMeterMetered } from './UsageMeterMetered.native';
 import {
   UsageMeterError,
@@ -30,13 +31,6 @@ const LINE_TONE: Record<UsageLineTone, ThemeColor> = {
   danger: colors['danger-text'],
   warning: colors['warning-text'],
   info: colors['info-text'],
-};
-
-const labelStyle: TextStyle = {
-  fontSize: 14,
-  fontWeight: '500',
-  letterSpacing: -0.14,
-  color: colors['text-primary'],
 };
 
 /**
@@ -71,6 +65,8 @@ export function UsageMeter({
   unavailableTitle = words.unavailable,
   unavailableMessage,
   density = 'expressive',
+  form = 'row',
+  glyph,
   style,
 }: NativeUsageMeterProps) {
   /* Every state draws its own frame, and each takes this one ref: after Try again leaves, the
@@ -130,14 +126,14 @@ export function UsageMeter({
   if (shape.draws === 'unmetered') {
     const line = saysStatus ? unmeteredStatusLine(shape.billing, graceDaysLeft, words) : null;
     return (
-      <View ref={frame} style={[styles.shell, style]}>
-        <View style={styles.head}>
-          <Text style={labelStyle}>{label}</Text>
-          <Text variant="mono" style={figure}>
-            {format(shape.value)}
-            {unit !== undefined ? <Text variant="mono" color="tertiary">{` ${unit}`}</Text> : null}
-          </Text>
-        </View>
+      <View ref={frame} style={[styles.shell, form === 'tile' ? styles.tile : undefined, style]}>
+        <UsageMeterHead
+          label={label}
+          form={form}
+          glyph={glyph}
+          figure={format(shape.value)}
+          after={unit ?? null}
+        />
         {prov}
         {noLimitNote !== undefined ? (
           <Text variant="caption" color="tertiary">
@@ -177,19 +173,15 @@ export function UsageMeter({
       format={format}
       provenance={prov}
       style={style}
+      form={form}
+      glyph={glyph}
     />
   );
 }
 
-const figure: TextStyle = { fontWeight: '700' };
 const statusLine: TextStyle = { fontWeight: '500' };
 
 const styles = StyleSheet.create({
   shell: { flexDirection: 'column', gap: theme.spacing['sp-2'] },
-  head: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    justifyContent: 'space-between',
-    gap: theme.spacing['sp-3'],
-  },
+  tile: { gap: theme.spacing['sp-3'] },
 });

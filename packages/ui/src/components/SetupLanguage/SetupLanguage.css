@@ -1,6 +1,19 @@
 /* The language step (`SCR-M01-03`): the ways on, and the languages' row where the task column has
    its whole measure. Every value a token var(). */
 
+/* The company's first sunrise sits over the question, a quiet moment the step opens on. */
+.hg-setup-language-moment {
+  display: flex;
+  margin-bottom: calc(var(--sp-2) * -1);
+}
+
+/* A language's first letter in its chip, in the display face the titles are set in. */
+.hg-setup-language-glyph {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  line-height: 1;
+}
+
 /* The languages answer to the room their own column has, never to the window: the task track is
    narrower than its measure from the door's breakpoint up to a wide window. */
 .hg-setup-language-choices {

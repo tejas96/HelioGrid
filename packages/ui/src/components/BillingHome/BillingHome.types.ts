@@ -2,6 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { Ref } from 'react';
 import type { FocusAfter } from '../../primitives/FocusAfter/FocusAfter.types';
 import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
+import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import type {
   BillingStripView,
   BillingValue,
@@ -60,8 +61,22 @@ export interface BillingNeedsView {
   readonly scope: { readonly title: TranslatedText } | null;
 }
 
+/** How much of the trial, or of the paid period, is left: the hero's ring. */
+export interface BillingCountdown {
+  /** The share of the period still to run, 0 to 1. */
+  readonly share: number;
+  /** The days left, formatted. */
+  readonly figure: string;
+  /** Under the figure — *days left*, *to renewal*. */
+  readonly caption: TranslatedText;
+  /** The ring's spoken name — *14 of 14 days left*. */
+  readonly spoken: TranslatedText;
+}
+
 export interface BillingPlanView {
   readonly chip: BillingChip;
+  /** The ring beside the plan's name; `null` with no running period (expired, halted, ended). */
+  readonly countdown: BillingCountdown | null;
   readonly rows: readonly BillingFact[];
   readonly working: { readonly label: TranslatedText; readonly parts: BillingWorkingPart[] } | null;
   readonly source: TranslatedText | null;
@@ -81,6 +96,8 @@ export interface BillingPlanView {
 
 export interface BillingMeterView {
   readonly key: string;
+  /** The glyph beside the meter's label in its tile. */
+  readonly glyph: ShellGlyphName;
   readonly label: TranslatedText;
   readonly value: number;
   readonly limit: number | null;

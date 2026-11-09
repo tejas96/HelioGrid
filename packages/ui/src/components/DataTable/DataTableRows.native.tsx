@@ -3,7 +3,7 @@ import type { DataTableProps, DataTableSort } from './DataTable.types';
 import { DataTableBodyRow } from './DataTableBodyRow.native';
 import { DataTableHead } from './DataTableHead.native';
 import { asProvenanceSpec } from './DataTableProvenance.logic';
-import { QuietCard } from './DataTableQuiet.native';
+import { QuietRules } from './DataTableQuiet.native';
 import { provenanceColumnOf } from './DataTableRow.logic';
 
 export interface NativeRowsProps<Row> {
@@ -71,7 +71,7 @@ export function DataTableRows<Row>({
         tableSpec={tableSpec}
         words={table.words}
       />
-      <QuietCard quiet={quiet}>
+      <QuietRules quiet={quiet}>
         {rows.map((row, index) => (
           <DataTableBodyRow
             key={rowKeyOf(rowKey, row, index)}
@@ -86,7 +86,7 @@ export function DataTableRows<Row>({
             table={table}
           />
         ))}
-      </QuietCard>
+      </QuietRules>
     </>
   );
 }

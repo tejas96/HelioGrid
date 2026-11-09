@@ -7,7 +7,9 @@ import { WordedActivityStream } from './ActivityStream.story';
 const en = await createTranslator('en');
 const tryAgain = en.t(SIGN_IN.tryAgain);
 
-test('the sticky day heading paints the ground that holds it', async ({ mount }) => {
+test('the sticky day heading paints its holder’s own fill and frosts the entries running under it', async ({
+  mount,
+}) => {
   const card = await mount(
     <Card>
       <WordedActivityStream
@@ -22,4 +24,5 @@ test('the sticky day heading paints the ground that holds it', async ({ mount })
 
   await expect(day).toHaveCSS('position', 'sticky');
   await expect(day).toHaveCSS('background-color', await fillOf(card));
+  await expect(day).not.toHaveCSS('backdrop-filter', 'none');
 });

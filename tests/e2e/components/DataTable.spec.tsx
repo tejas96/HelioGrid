@@ -6,6 +6,7 @@ import {
   resolvedBoxShadow,
   resolvedColour,
   STRONG_EDGE,
+  TILE_FILL,
   TILE_SHADOW,
 } from '../support/token';
 import { FlaggedStackedTable, OpeningTable, WordedDataTable } from './DataTable.story';
@@ -53,7 +54,9 @@ test('a table row is on the page and its cell editor is the field box', async ({
   await expect(editor).toHaveCSS('box-shadow', await resolvedBoxShadow(page, STRONG_EDGE));
 });
 
-test('the sticky head paints the ground that holds it', async ({ mount }) => {
+test('the sticky head paints its holder’s own fill and frosts the rows running under it', async ({
+  mount,
+}) => {
   const card = await mount(
     <Card>
       <WordedDataTable
@@ -68,6 +71,7 @@ test('the sticky head paints the ground that holds it', async ({ mount }) => {
 
   await expect(head).toHaveCSS('position', 'sticky');
   await expect(head).toHaveCSS('background-color', await fillOf(card));
+  await expect(head).not.toHaveCSS('backdrop-filter', 'none');
 });
 
 test('a stacked record is a tile, and one holding an editor lies on the page', async ({
@@ -96,7 +100,7 @@ test('a stacked record is a tile, and one holding an editor lies on the page', a
   const tile = page.locator('.hg-dt-card').nth(0);
   const onPage = page.locator('.hg-dt-card').nth(1);
 
-  await expect(tile).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(tile).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
   await expect(tile).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
   await expect(tile.locator('.hg-checkbox-box')).toHaveCSS(
     'background-color',
@@ -153,7 +157,7 @@ test('a column marked editable with nothing to commit to leaves the record a til
 
   await expect(table.locator('.hg-dt-card')).toHaveCSS(
     'background-color',
-    await resolvedColour(page, '--surface'),
+    await resolvedColour(page, TILE_FILL),
   );
   await expect(table.locator('.hg-dt-card')).toHaveCSS(
     'box-shadow',
@@ -193,7 +197,7 @@ test('a stacked total is a tile', async ({ mount, page }) => {
   );
   const total = table.locator('.hg-dt-total-block');
 
-  await expect(total).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(total).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
   await expect(total).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
 });
 

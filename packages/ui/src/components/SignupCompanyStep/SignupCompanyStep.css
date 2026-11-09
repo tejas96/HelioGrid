@@ -8,13 +8,33 @@
   gap: var(--sp-5);
 }
 
-/* The verified number as a fact (`SCR-M01-02` decision 1): the value and its chip on the page, with
-   no surface (F7-49) — a grey tile would read as a field, a white card vanishes on the white page. */
+/* The verified number as a fact (`SCR-M01-02` decision 1): a chip lit in the success tint — the
+   phone, the number in mono and its status — so it never reads as one of the white fields under it. */
 .hg-signup-account {
   display: flex;
   align-items: center;
-  gap: var(--sp-4);
-  align-self: flex-start;
+  gap: var(--sp-3);
+  align-self: stretch;
+  padding: var(--sp-3) var(--sp-4) var(--sp-3) var(--sp-3);
+  border-radius: var(--r-tile);
+  background: var(--success-bg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--success) 22%, transparent);
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) var(--dur-standard) backwards;
+}
+
+.hg-signup-account .hg-phone-value {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-signup-account-glyph {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--sp-10);
+  height: var(--sp-10);
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--success) 16%, transparent);
 }
 
 /* The three values as facts while they are written, on the page with no surface (F7-49). */

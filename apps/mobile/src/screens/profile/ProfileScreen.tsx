@@ -50,8 +50,10 @@ export function ProfileScreen() {
         read={push.read}
         refused={push.refused}
         onPush={push.flip}
+        appearance={
+          <AppearanceSwitch words={appearanceWords(t)} value={appearance} onChange={choose} />
+        }
       />
-      <AppearanceSwitch words={appearanceWords(t)} value={appearance} onChange={choose} />
       <NameAndPhotoEditor
         open={editor.isOpen}
         words={nameAndPhotoEditorWords(t, editor.frame)}

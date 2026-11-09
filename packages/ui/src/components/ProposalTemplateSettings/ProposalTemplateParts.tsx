@@ -26,7 +26,7 @@ import { type PartProps, PartSource } from './TemplatePartSource';
 export function TemplatePartSwitch({ words, part, onPart }: ProposalTemplateSettingsProps) {
   return (
     <SegmentedControl
-      className="hg-template-part-switch"
+      className="hg-template-part-switch hg-segmented-control-hug"
       ariaLabel={words.edit}
       options={TEMPLATE_PARTS.map((value) => ({ value, label: words[value] }))}
       value={part}

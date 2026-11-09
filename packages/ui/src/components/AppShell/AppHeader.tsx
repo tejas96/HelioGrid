@@ -1,8 +1,9 @@
-import type { CSSProperties } from 'react';
+import { type CSSProperties, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import type { AppHeaderProps } from './AppShell.types';
 import { ShellAction } from './ShellAction';
 import { ShellGlyph } from './ShellGlyph';
+import { useBarFade } from './use-bar-fade';
 
 type WebAppHeaderProps = AppHeaderProps & {
   className?: string;
@@ -38,8 +39,11 @@ export function AppHeader({
   style,
 }: WebAppHeaderProps) {
   const titled = breadcrumb !== undefined || title !== undefined || subtitle !== undefined;
+  const bar = useRef<HTMLElement>(null);
+  useBarFade(bar);
   return (
     <header
+      ref={bar}
       className={classNames('hg-app-shell-header', className)}
       data-sticky={sticky ? 'true' : undefined}
       style={style}

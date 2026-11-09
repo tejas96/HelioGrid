@@ -28,7 +28,7 @@ const MARKET_DEFAULT = en.t(PROFILE_PREFERENCES.marketDefault, { market: IN_FORM
 const ROLE = (preset: Parameters<typeof presetName>[1]) => presetName(en.t, preset);
 /** Every box that holds words — the boxes a clipped line would show in. */
 const TEXT =
-  '.hg-large-title-name, .hg-profile-preferences-overline, .hg-list-row-title, .hg-chip, .hg-option-card-titles, .hg-segmented-control-segment, .hg-value-source, .hg-settings-section-title, .hg-settings-section-label, .hg-settings-section-caption, .hg-profile-preferences-name-words, .hg-switch-label';
+  '.hg-large-title-name, .hg-profile-preferences-overline, .hg-list-row-title, .hg-chip, .hg-option-card-titles, .hg-segmented-control-segment, .hg-value-source, .hg-settings-section-title, .hg-settings-section-label, .hg-settings-section-caption, .hg-profile-hero-name, .hg-profile-hero-roles-label, .hg-switch-label';
 /** A saved photo, as its download link would draw it. */
 const PHOTO = `data:image/png;base64,${pngOf(8, 8).toString('base64')}`;
 const PICTURES = join(import.meta.dirname, '../../../.qa/components/profile-preferences');
@@ -36,13 +36,13 @@ const PICTURES = join(import.meta.dirname, '../../../.qa/components/profile-pref
 test.describe('at 375', () => {
   test.use({ viewport: { width: 375, height: 812 } });
 
-  test('m-default: the account tile, the languages in their own scripts, each source line', async ({
+  test('m-default: the person’s hero, the languages in their own scripts, each source line', async ({
     mount,
     page,
   }) => {
     const card = await mount(<ProfilePreferencesAsHeld reader="en" />);
     await expect(card.getByRole('heading', { level: 1, name: TITLE })).toBeVisible();
-    await expect(card.getByRole('heading', { level: 2, name: W('account') })).toBeVisible();
+    await expect(card.getByRole('region', { name: W('account') })).toBeVisible();
     await expect(
       card.getByRole('heading', { level: 2, name: W('languageAndUnits') }),
     ).toBeVisible();
@@ -66,11 +66,8 @@ test.describe('at 375', () => {
       'aria-checked',
       'true',
     );
-    const tile = card.locator('.hg-profile-preferences-tile');
-    await expect(tile).toHaveCSS('box-shadow', await resolvedShadow(page, '--e2'));
-    for (const row of await tile.locator('.hg-list-row').all()) {
-      expect((await settledBox(row))?.height).toBeGreaterThanOrEqual(64);
-    }
+    const roles = card.locator('.hg-profile-hero-roles');
+    expect((await settledBox(roles))?.height).toBeGreaterThanOrEqual(48);
     await expectTouchFloor(await card.getByRole('radio').all());
     await expectNoSidewaysScroll(page);
     await page.screenshot({ path: `${PICTURES}/m-default.png`, fullPage: true });
@@ -107,7 +104,7 @@ test.describe('at 375', () => {
 
   test('the name row: the saved photo, and Edit name opens the editor', async ({ mount }) => {
     const card = await mount(<ProfilePreferencesAsHeld reader="en" photo={PHOTO} />);
-    const row = card.locator('.hg-profile-preferences-tile .hg-list-row').first();
+    const row = card.locator('.hg-profile-hero-who');
     await expect(row.locator('img')).toHaveAttribute('src', PHOTO);
     const edit = row.getByRole('button', { name: W('editName') });
     await expectTouchFloor([edit]);
@@ -185,7 +182,7 @@ test.describe('at 1536', () => {
     const card = await mount(<ProfilePreferencesAsHeld reader="en" />);
     await expect(card.getByRole('heading', { level: 1, name: TITLE })).toBeVisible();
     const sections = card.locator('.hg-settings-section');
-    await expect(sections).toHaveCount(3);
+    await expect(sections).toHaveCount(2);
     await expect(sections.first()).toHaveCSS('box-shadow', await resolvedShadow(page, '--e2'));
     await expect(sections.first()).toHaveCSS(
       'border-top-left-radius',
@@ -193,7 +190,7 @@ test.describe('at 1536', () => {
     );
     const page760 = await settledBox(card.locator('.hg-profile-preferences'));
     expect(page760?.width).toBeLessThanOrEqual(760);
-    await expect(card.getByRole('heading', { level: 2, name: W('account') })).toBeVisible();
+    await expect(card.getByRole('region', { name: W('account') })).toBeVisible();
     // Language, units, and the four push groups a Sales Executive is shown.
     await expect(card.locator('.hg-settings-section-row')).toHaveCount(6);
     for (const row of await card.locator('.hg-settings-section-row').all()) {
@@ -216,7 +213,7 @@ test.describe('at 1536', () => {
 
   test('d-default: the name row ends with Edit name, beside the saved photo', async ({ mount }) => {
     const card = await mount(<ProfilePreferencesAsHeld reader="en" photo={PHOTO} />);
-    const row = card.locator('.hg-profile-preferences-name');
+    const row = card.locator('.hg-profile-hero-who');
     await expect(row.locator('img')).toHaveAttribute('src', PHOTO);
     const edit = row.getByRole('button', { name: W('editName') });
     const rowBox = await settledBox(row);

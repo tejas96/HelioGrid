@@ -1,6 +1,6 @@
 /* The Branding page body (`SCR-M01-18`). `data-layout` is the room the shell gives it, measured
    by the component: `narrow` is the 375 column, `wide` the 1536 pair. Every value is a token but
-   the board's own sizes: the 380 editor card, the 480 sheet, the logo's paper heights and the link
+   the board's own sizes: the 380 editor card, the 480 sheet and the link
    page's 360 floor. The stage's ground and the card's are `Ground.css`'s lists. */
 
 .hg-branding {
@@ -16,6 +16,12 @@
   flex-direction: column;
   gap: var(--sp-1);
   min-width: 0;
+}
+
+/* A titled head spaces its lines as `LargeTitle` does, so every settings page's title and line sit
+   alike. */
+.hg-branding-head[data-titled] {
+  gap: var(--sp-2);
 }
 
 .hg-branding-standing {
@@ -66,17 +72,6 @@
   background: transparent;
 }
 
-/* The part's switch across the editor's width. */
-.hg-branding-part-switch {
-  align-self: stretch;
-}
-
-.hg-branding-part-switch .hg-segmented-control-pill {
-  display: flex;
-  width: 100%;
-  box-sizing: border-box;
-}
-
 /* The link page in its frame: header, state and acts, `sp-4` apart. */
 .hg-customer-surface.hg-branding-link {
   display: flex;
@@ -106,47 +101,52 @@
   min-width: 0;
 }
 
-/* The logo part, `sp-3` apart: a refusal, the mark on its paper, the acts and the limits. */
+/* The logo part, `sp-3` apart: a refusal, then the mark's row on its paper. */
 .hg-branding-logo {
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
 }
 
+/* One row: the mark's tile, its name over the limits, the acts — which wrap to their own line. */
 .hg-branding-logo-paper {
   box-sizing: border-box;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  height: 108px;
-  padding: var(--sp-4);
+  gap: var(--sp-3);
+  padding: var(--sp-3);
   /* biome-ignore lint/plugin/raw-white-css: paper — the mark shown on the white it prints on, never a control */
   background: var(--surface);
   border: 1px solid var(--line-soft);
   border-radius: var(--r-md);
 }
 
-/* At 375 the acts and the limits are centred under the mark. */
-.hg-branding-logo-acts {
+/* The mark's tile: the logo contained in a quiet well, so a wide or a round mark both read. */
+.hg-branding-logo-mark {
+  flex-shrink: 0;
+  padding: var(--sp-2);
+  background: var(--canvas-sunken);
+  border-radius: var(--r-md);
+}
+
+.hg-branding-logo-words {
   display: flex;
+  flex: 1 1 0;
   flex-direction: column;
-  align-items: center;
-  gap: var(--sp-2);
+  gap: var(--sp-0-5);
+  min-width: var(--sp-24);
+  text-wrap: pretty;
 }
 
 .hg-branding-logo-buttons {
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap;
   gap: var(--sp-2);
 }
 
 .hg-branding-logo-buttons .hg-button {
   flex-shrink: 0;
-}
-
-.hg-branding-limits {
-  text-align: center;
-  text-wrap: pretty;
 }
 
 /* The letterhead's fields, label over field, `sp-4` apart. */
@@ -244,20 +244,4 @@
 
 .hg-branding[data-layout="wide"] .hg-branding-hairline {
   margin: 0 calc(-1 * var(--sp-5));
-}
-
-.hg-branding[data-layout="wide"] .hg-branding-logo-paper {
-  height: 120px;
-}
-
-/* At width the acts sit in one row, the limits at its right. */
-.hg-branding[data-layout="wide"] .hg-branding-logo-acts {
-  flex-direction: row;
-  align-items: center;
-}
-
-.hg-branding[data-layout="wide"] .hg-branding-limits {
-  flex: 1;
-  min-width: 0;
-  text-align: end;
 }

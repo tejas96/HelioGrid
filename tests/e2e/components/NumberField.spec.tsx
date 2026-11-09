@@ -101,18 +101,20 @@ test("a money field at rest reads in the market's money format, and editing show
 }) => {
   const field = await mount(<HeldNumberField label={LABEL} unit={UNIT} initial={18000} currency />);
   const input = field.getByRole('textbox', { name: LABEL });
-  await expect(input).toHaveValue(/^₹18,000$/u);
+  /* The market's symbol stands beside the amount once, as the field's adornment, never inside it. */
+  await expect(field.getByText('₹', { exact: true })).toHaveCount(1);
+  await expect(input).toHaveValue(/^18,000$/u);
   await input.focus();
   await expect(input).toHaveValue('18000');
   await input.fill('7000');
   await input.blur();
   await expect(field.getByTestId('held')).toHaveText('7000');
-  await expect(input).toHaveValue(/^₹7,000$/u);
+  await expect(input).toHaveValue(/^7,000$/u);
 });
 
 test('a money field at rest keeps its paise', async ({ mount }) => {
   const field = await mount(<HeldNumberField label={LABEL} unit={UNIT} initial={95.5} currency />);
-  await expect(field.getByRole('textbox', { name: LABEL })).toHaveValue(/^₹95\.50$/u);
+  await expect(field.getByRole('textbox', { name: LABEL })).toHaveValue(/^95\.50$/u);
 });
 
 test('from an unset field a step lands on the floor where there is one, and one step from 0 where there is none', async ({

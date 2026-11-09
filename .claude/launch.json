@@ -6,7 +6,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "lsof -ti tcp:3002 -sTCP:LISTEN >/dev/null && { echo 'port 3002 is busy: reuse that server, or free it with clean-dev-ports'; exit 1; }; log=\"$(git rev-parse --show-toplevel)/.qa/web.log\"; mkdir -p \"${log%/*}\"; exec > >(tee \"$log\") 2>&1; WATCHPACK_POLLING=true exec pnpm --filter @heliogrid/web dev"
+        "lsof -ti tcp:3002 -sTCP:LISTEN >/dev/null && { echo 'port 3002 is busy: reuse that server, or free it with clean-dev-ports'; exit 1; }; log=\"$(git rev-parse --show-toplevel)/.qa/web.log\"; mkdir -p \"${log%/*}\"; exec > >(tee \"$log\") 2>&1; exec pnpm --filter @heliogrid/web dev"
       ],
       "port": 3002
     },

@@ -57,6 +57,7 @@ function SetupColumn(props: CompanyProfileProps) {
   if (unread !== null) {
     return (
       <DoorFrame
+        ownPanel
         trailing={null}
         taskMeasure="list"
         footer={
@@ -79,6 +80,7 @@ function SetupColumn(props: CompanyProfileProps) {
   }
   return (
     <DoorFrame
+      ownPanel
       trailing={null}
       taskMeasure="list"
       identity={
@@ -144,7 +146,7 @@ function ProfileList({
   onChooseLogo,
 }: CompanyProfileProps) {
   return (
-    <div className="hg-company-profile-list">
+    <div className="hg-company-profile-list" data-life={life}>
       {words.loading === null ? (
         <Accordion
           density={PARTS_DENSITY[life]}

@@ -1,6 +1,6 @@
 import { theme } from '@heliogrid/theme';
-import { useId, useState } from 'react';
-import { type LayoutChangeEvent, StyleSheet, View } from 'react-native';
+import { useEffect, useId, useRef, useState } from 'react';
+import { Animated, Easing, type LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import Svg, {
   Defs,
   Line,
@@ -14,6 +14,7 @@ import Svg, {
 import { colors } from '../../primitives/Color/colors';
 import { usePalette } from '../../primitives/Color/use-palette.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { useReducedMotion } from '../../primitives/use-reduced-motion.native';
 import { BrandGradientDefs } from '../../utils/brand-gradient.native';
 import type { HeroPanelProps } from './HeroPanel.types';
 
@@ -87,6 +88,61 @@ function Glass({ id, size }: { id: string; size: Size }) {
   );
 }
 
+/**
+ * One slow band of light crosses the glass as the hero arrives, then rests (the web's
+ * `.hg-hero-sweep`): a transform on the UI thread, once; nothing under reduced motion.
+ */
+function Sweep({ id, size }: { id: string; size: Size }) {
+  const reduced = useReducedMotion();
+  const travel = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (reduced) return;
+    const run = Animated.timing(travel, {
+      toValue: 1,
+      delay: theme.motion.durations.emphasised,
+      duration: theme.motion.ambient.settle,
+      easing: Easing.bezier(...theme.motion.easings.standard),
+      useNativeDriver: true,
+    });
+    run.start();
+    return () => run.stop();
+  }, [reduced, travel]);
+  if (reduced) return null;
+  const band = size.width * 0.6;
+  return (
+    <Animated.View
+      pointerEvents="none"
+      style={[
+        styles.sweep,
+        {
+          width: band,
+          opacity: travel.interpolate({ inputRange: [0, 0.2, 1], outputRange: [0, 1, 0] }),
+          transform: [
+            {
+              translateX: travel.interpolate({
+                inputRange: [0, 1],
+                outputRange: [-band, size.width],
+              }),
+            },
+          ],
+        },
+      ]}
+    >
+      <Svg width={band} height={size.height}>
+        <Defs>
+          <LinearGradient id={`${id}-sweep`} x1="0" y1="0" x2="1" y2="0.2">
+            <Stop offset="0" stopColor={theme.brand.teal} stopOpacity={0} />
+            <Stop offset="0.45" stopColor={theme.brand.teal} stopOpacity={0.16} />
+            <Stop offset="0.55" stopColor={theme.brand.green} stopOpacity={0.12} />
+            <Stop offset="1" stopColor={theme.brand.green} stopOpacity={0} />
+          </LinearGradient>
+        </Defs>
+        <Rect width={band} height={size.height} fill={`url(#${id}-sweep)`} />
+      </Svg>
+    </Animated.View>
+  );
+}
+
 export function HeroPanel({ label, labelAside, name, children }: HeroPanelProps) {
   const id = `hg-hero-${useId().replaceAll(':', '')}`;
   const [size, setSize] = useState<Size | null>(null);
@@ -101,7 +157,11 @@ export function HeroPanel({ label, labelAside, name, children }: HeroPanelProps)
       accessibilityLabel={name ?? label}
       accessibilityRole="summary"
     >
-      {size === null ? null : <Glass id={id} size={size} />}
+      {/* Keyed on the size: react-native-svg keeps a gradient's first geometry when only the
+          size changes, so a hero whose content grows after its first layout would stop its light
+          short. A new size draws the light afresh. */}
+      {size === null ? null : <Glass key={`${size.width}x${size.height}`} id={id} size={size} />}
+      {size === null ? null : <Sweep id={id} size={size} />}
       {size === null ? null : (
         <Svg style={styles.line} width={size.width} height={2}>
           <BrandGradientDefs id={`${id}-line`} />
@@ -134,6 +194,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.panel,
   },
   line: { position: 'absolute', top: 0, left: 0 },
+  sweep: { position: 'absolute', top: 0, bottom: 0, left: 0 },
   head: {
     flexDirection: 'row',
     flexWrap: 'wrap',

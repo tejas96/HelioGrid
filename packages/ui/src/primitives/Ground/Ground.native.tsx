@@ -33,7 +33,8 @@ const COLORS: Record<Ground, GroundColors> = {
 };
 
 /* The page by default. Every float renders through `Portal` at the host the app mounts, outside
-   any tile, so a sheet or a menu opened from inside a tile reads the page without being told. */
+   any tile, so it never inherits a tile's ground; a sheet, a modal or a panel is white, as on the
+   web, and says so itself (`OverlayBody`, `Modal`). */
 const GroundContext = createContext<Ground>('page');
 
 /** Wrapped around a ground's content by the surface that IS the ground — a tile, a `Surface`. */
@@ -46,7 +47,7 @@ export function useGround(): GroundColors {
 }
 
 /**
- * The tile's look at rest: the white card on the page, a hairline edge — the web half's tiles
+ * The tile's look at rest: the card colour on the page, a hairline edge and a soft lift — the web half's tiles
  * list. The ONE place a phone tile is drawn: a tile spreads it first and keeps only its own radius,
  * padding and rings, and wraps its content in `GroundProvider ground="tile"`.
  */
@@ -55,6 +56,11 @@ export const tileSurface = {
   backgroundColor: colors.surface,
   borderWidth: 1,
   borderColor: colors['line-soft'],
-  shadowOpacity: 0,
-  elevation: 0,
+  /* The web's glass lift: a soft shadow under the pane. The phone draws no frost — a static
+     style cannot mix a system colour — so the lift alone carries the depth. */
+  shadowColor: colors.ink,
+  shadowOpacity: 0.07,
+  shadowRadius: 16,
+  shadowOffset: { width: 0, height: 8 },
+  elevation: 2,
 } satisfies ViewStyle;

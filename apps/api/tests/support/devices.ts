@@ -13,7 +13,8 @@ export interface Device {
   readonly secret: string;
   /** The fixture's `Person` and `Company` fit here; only their ids reach the row. */
   readonly of: { readonly userId: string };
-  readonly under: { readonly tenantId: string };
+  /** `null`: a verified number that has made no company yet on this device. */
+  readonly under: { readonly tenantId: string } | null;
   readonly expiresAt?: number;
   readonly revokedAt?: number;
 }
@@ -31,7 +32,7 @@ export async function seedDevices(db: Db, devices: readonly Device[], now: Date)
       userAccountId: device.of.userId,
       tokenHash: hashSecret(device.secret),
       platformKind: 'mobile' as const,
-      activeTenantId: device.under.tenantId,
+      activeTenantId: device.under?.tenantId ?? null,
       // The real policy, so a seeded device lives exactly as long as a signed-in one does.
       expiresAt: new Date(device.expiresAt ?? sessionExpiresAt('mobile', now.getTime())),
       revokedAt: device.revokedAt === undefined ? null : new Date(device.revokedAt),

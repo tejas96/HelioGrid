@@ -23,8 +23,9 @@ import { passTheOwnersMark } from '../support/shell';
  * `/more/team` (`SCR-M01-12`, `T-M01-012b`, `T-M01-012c`): the team behind `More`, inside the
  * shell. A new company's owner is alone on it, so the page teaches — the owner's own card with
  * *You*, its *Deactivate* off because they are the only EPC Owner, and the empty state, with no
- * list head; at the desktop width the quiet table shows the owner's row and the head count. CI's
- * company has no team, so a search, the chips, the other rows and their acts are the live-QA rows of
+ * list head, under the head count every width's large title carries; at the desktop width the quiet
+ * table shows the owner's row. CI's company has no team, so a search, the chips, the other rows and
+ * their acts are the live-QA rows of
  * the task. The teaching state's *Invite your first teammate*, and at the desktop width the page
  * head's *Invite teammate*, open Invite Teammate over the page (`SCR-M01-07`, `T-M01-007`); a send
  * is the task's live-QA rows. The owner's own row opens Assign Roles (`SCR-M01-13`, `T-M01-013`): as
@@ -43,7 +44,7 @@ test('the Team row opens the team; a new owner is alone, and the page teaches', 
   await passTheOwnersMark(page, en);
   await page.goto('/more');
 
-  await page.getByRole('button', { name: WORDS.rows.team }).click();
+  await page.getByRole('main').getByRole('button', { name: WORDS.rows.team }).click();
 
   await expect(page).toHaveURL(/\/more\/team$/);
   await expect(page.getByRole('heading', { level: 1, name: WORDS.rows.team })).toBeVisible();
@@ -94,15 +95,14 @@ test('the Team row opens the team; a new owner is alone, and the page teaches', 
   );
   await editor.getByRole('button', { name: roles.close }).click();
   await expect(editor).toHaveCount(0);
+  /* The head count is the large title's summary line, at every width (`CLAUDE.md` §10). */
+  await expect(page.getByText(en.t(TEAM.headCount, { people: 1, invites: 0 }))).toBeVisible();
   if (testInfo.project.name === 'desktop') {
-    await expect(page.getByText(en.t(TEAM.headCount, { people: 1, invites: 0 }))).toBeVisible();
     await expect(page.getByRole('table', { name: en.t(TEAM.everyone, { company }) })).toBeVisible();
     await page.getByRole('button', { name: invite.inviteTeammate }).click();
     await expect(page.getByRole('dialog', { name: invite.title })).toBeVisible();
     await page.getByRole('button', { name: invite.cancel }).click();
     await expect(page.getByRole('dialog', { name: invite.title })).toHaveCount(0);
-  } else {
-    await expect(page.getByText(en.t(TEAM.headCount, { people: 1, invites: 0 }))).toHaveCount(0);
   }
   await expectNoSidewaysScroll(page);
   await expect(page).toHaveTitle(/\S/);

@@ -1,0 +1,100 @@
+/* ProposalReadiness — Home's hero (redesign direction A): solar glass holding the ring, what the
+   steps are for and the next step, then the steps as glass rows rising one after another. */
+
+.hg-readiness {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-readiness-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.hg-readiness-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+}
+
+.hg-readiness-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* The next step: a glass band across the hero's foot, its one action at the end. */
+.hg-readiness-next {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--r-tile);
+  /* biome-ignore lint/plugin/raw-white-css: glass — the card colour let through at an opacity over the hero (redesign direction A) */
+  background: color-mix(in srgb, var(--surface) 64%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  backdrop-filter: saturate(1.4) blur(10px);
+  box-shadow: 0 0 0 1px var(--hairline);
+}
+
+.hg-readiness-next-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border-radius: var(--r-md);
+  background: var(--accent-subtle);
+}
+
+.hg-readiness-next-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-readiness-steps {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: var(--sp-1);
+  list-style: none;
+  border-radius: var(--r-card-expressive);
+  /* biome-ignore lint/plugin/raw-white-css: glass — the steps sit on a frosted pane over the page glow (redesign direction A) */
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  backdrop-filter: saturate(1.4) blur(14px);
+  box-shadow:
+    0 0 0 1px var(--hairline),
+    var(--e2);
+}
+
+.hg-readiness-step {
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+  animation-delay: calc(var(--i) * var(--stagger-step));
+}
+
+.hg-readiness-step + .hg-readiness-step {
+  border-top: 1px solid var(--hairline);
+}
+
+/* A narrow hero puts the next step's action under its words. */
+@container (max-width: 420px) {
+  .hg-readiness-head {
+    align-items: flex-start;
+  }
+
+  .hg-readiness-next {
+    flex-wrap: wrap;
+  }
+
+  .hg-readiness-next > :last-child {
+    flex-basis: 100%;
+  }
+}

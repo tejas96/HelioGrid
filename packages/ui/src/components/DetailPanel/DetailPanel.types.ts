@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { LottieMomentName } from '../LottieMoment/LottieMoment.types';
 import type { OverlayCloseWords } from '../Sheet/OverlayClose.types';
 import type { OverlayStatus, OverlaySubtitleFace } from '../Sheet/Sheet.types';
 import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';
@@ -54,6 +55,8 @@ interface DetailPanelOwnProps extends OverlayCloseWords {
   emptyTitle?: TranslatedText;
   emptyMessage?: TranslatedText;
   emptyAction?: ReactNode;
+  /** The moment the `empty` state draws over its words, played once — `empty-inbox` for none yet. */
+  emptyMoment?: LottieMomentName;
   /** `unavailable` renders through `UnavailableNote` — no note without its title — and no retry. */
   unavailableTitle?: TranslatedText;
   unavailableMessage?: TranslatedText;

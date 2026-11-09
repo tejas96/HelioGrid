@@ -28,6 +28,11 @@ const VARIANT: Record<IconButtonVariant, VariantVisual> = {
   ghost: { background: 'transparent' },
 };
 
+/** A toggle's state rides `selected`, as the phone's other toggles do; a plain act carries none. */
+function toggleState(pressed: boolean | undefined): { selected: boolean } | undefined {
+  return pressed === undefined ? undefined : { selected: pressed };
+}
+
 const styles = StyleSheet.create({
   circle: { alignItems: 'center', justifyContent: 'center' },
 });
@@ -46,6 +51,7 @@ export function IconButton({
   disabled = false,
   disabledReason,
   reasonOpen,
+  pressed,
   onClick,
   style,
 }: NativeIconButtonProps) {
@@ -61,7 +67,7 @@ export function IconButton({
         reason?.spokenReason === undefined ? label : `${label}, ${reason.spokenReason}`
       }
       accessibilityState={
-        reason === undefined ? undefined : { disabled: true, expanded: reason.expanded }
+        reason === undefined ? toggleState(pressed) : { disabled: true, expanded: reason.expanded }
       }
       disabled={disabled && reason === undefined}
       onPress={reason === undefined ? onClick : reason.onPress}

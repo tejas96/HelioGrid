@@ -13,12 +13,12 @@ import { expect, test } from '@playwright/experimental-ct-react';
 import { settledBox } from '../support/layout';
 import { resolvedBoxShadow, resolvedColour, STRONG_EDGE } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
-import { FilterSquareStory, FocusHandlesStory } from './SearchField.story';
+import { FilterCircleStory, FocusHandlesStory } from './SearchField.story';
 
 /**
  * The open page's list head (the design system's `SearchField` and `FilterChips`): the search pill
  * 50 tall, a field box whose clear button takes the fill a control takes in it, the 50×50 near-black
- * filter square beside it, and the kind chips 44 tall, the chosen one near-black.
+ * filter circle beside it, and the kind chips 44 tall, the chosen one near-black.
  */
 const en = await createTranslator('en');
 const search = en.t(SHELL.search);
@@ -30,7 +30,7 @@ const delivery = en.t(TYPE_GROUP_NAME.delivery);
 
 test.use({ viewport: { width: 375, height: 300 } });
 
-test('the expressive pill is 50 tall at --r-pill, the field box, its clear button on --fill', async ({
+test('the one search pill is 50 tall at --r-pill, the field box, its clear button on --fill', async ({
   mount,
   page,
 }) => {
@@ -83,16 +83,20 @@ test('with a value, only the field’s own clear button shows — never the brow
   await expect(field.getByRole('button')).toHaveCount(1);
 });
 
-test('with onFilterClick the 50 square rides beside the pill, near-black, named with its count', async ({
+test('with onFilterClick the 50 circle rides beside the pill, round as it is, named with its count', async ({
   mount,
   page,
 }) => {
-  const row = await mount(<FilterSquareStory label={search} count={3} />);
-  const square = row.getByRole('button', { name: bar.filtersActive(3) });
-  const box = await settledBox(square);
+  const row = await mount(<FilterCircleStory label={search} count={3} />);
+  const circle = row.getByRole('button', { name: bar.filtersActive(3) });
+  const box = await settledBox(circle);
   expect(box?.width).toBe(50);
   expect(box?.height).toBe(50);
-  await expect(square).toHaveCSS(
+  /* Round as the search pill beside it: two shapes side by side read as two different things. */
+  expect(
+    Number.parseFloat(await circle.evaluate((node) => getComputedStyle(node).borderTopLeftRadius)),
+  ).toBeGreaterThanOrEqual(25);
+  await expect(circle).toHaveCSS(
     'background-color',
     await resolvedColour(page, '--action-primary'),
   );
@@ -123,13 +127,6 @@ test('a kind chip is 44 tall; the chosen one is near-black with inverse words an
   const rest = chips.getByRole('tab', { name: `${delivery} 2` }).locator('.hg-filter-pill');
   await expect(rest).toHaveCSS('background-color', await resolvedColour(page, '--hg-control-fill'));
   await expectTouchFloor(await chips.getByRole('tab').all());
-});
-
-test('the functional box keeps the 44 floor, as the shell header draws it', async ({ mount }) => {
-  const field = await mount(
-    <SearchField density="functional" ariaLabel={search} placeholder={search} />,
-  );
-  expect((await settledBox(field))?.height).toBe(44);
 });
 
 test('a kind chip draws its 18 glyph before the label, in the chip’s ink', async ({

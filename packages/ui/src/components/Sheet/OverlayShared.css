@@ -57,20 +57,16 @@
   gap: var(--sp-2);
 }
 
+/* Nothing here clips: a primary's glow and a focus ring reach past the pill, and clipping cut them
+   into a box under it. A long label wraps inside its full-width button instead (`Button.css`). */
 .hg-sheet-actions-slot {
   flex: 1 1 0;
   min-width: 0;
   display: flex;
-  overflow: hidden;
 }
 
 .hg-sheet-actions[data-stacked="true"] .hg-sheet-actions-slot {
   flex: 0 0 auto;
-}
-
-/* A footer act that is off opens its reason in a bubble above itself; the slot must not clip it. */
-.hg-sheet-actions-slot:has(> .hg-explainer) {
-  overflow: visible;
 }
 
 /* ── the `empty` and `error` bodies ────────────────────────────────────────── */

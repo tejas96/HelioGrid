@@ -2,7 +2,6 @@ import type { TenantOwners, TranslatedText } from '@heliogrid/contracts';
 import { FIGURE_SLOT, type UiLanguage } from '@heliogrid/domain';
 import { type MessageRef, packWords, type Translator } from '../runtime';
 import { BILLING_HOME, billingViewWords } from './billing-home';
-import { dataTableWords } from './data-table';
 import { PRICING } from './pricing';
 import { ownersHolder } from './role-card';
 import { usageMeterWords } from './usage-meter';
@@ -61,10 +60,6 @@ const USAGE_PAGE = {
   gbFigure: /*i18n*/ { id: '{count} GB' },
   limitsAndRates: /*i18n*/ { id: 'Limits and rates · {list}' },
   asOf: /*i18n*/ { id: 'As of {date}, {time}' },
-  limitsCaption: /*i18n*/ { id: 'Every cap and ceiling on {plan} · {cycle}' },
-  includedCaption: /*i18n*/ { id: 'Every meter on {plan} · {cycle}' },
-  limitsCaptionTrial: /*i18n*/ { id: 'Every cap and ceiling on the trial · {cycle}' },
-  includedCaptionTrial: /*i18n*/ { id: 'Every meter on the trial · {cycle}' },
   scope: /*i18n*/ { id: 'Only {holder} can see this cycle’s usage.' },
   bundleWarning: /*i18n*/ { id: 'Beyond {bundle}, {rate} a minute — no pause, it bills.' },
   capWarning: /*i18n*/ { id: 'At the cap, a 7-day grace, then new ones pause.' },
@@ -98,13 +93,6 @@ const USAGE_PAGE = {
   showMore: /*i18n*/ { id: 'Show more' },
   close: /*i18n*/ { id: 'Close' },
   eventsOf: /*i18n*/ { id: '{meter} — events this cycle' },
-  limit: /*i18n*/ { id: 'Limit' },
-  usedThisCycle: /*i18n*/ { id: 'Used this cycle' },
-  allowed: /*i18n*/ { id: 'Allowed' },
-  meter: /*i18n*/ { id: 'Meter' },
-  includedColumn: PRICING.setIncluded,
-  rate: /*i18n*/ { id: 'Rate' },
-  chargesSoFar: /*i18n*/ { id: 'Charges so far' },
 } satisfies Record<string, MessageRef>;
 
 /** What the view model says — `packages/ui`'s `UsageViewWords`. */
@@ -157,10 +145,6 @@ export function usageViewWords(t: T, reader: UiLanguage) {
     gbFigure: (count: string) => t(W.gbFigure, { count }),
     limitsAndRates: (list: TranslatedText) => t(W.limitsAndRates, { list }),
     asOf: (date: string, time: string) => t(W.asOf, { date, time }),
-    limitsCaption: (plan: TranslatedText | null, cycle: string) =>
-      plan === null ? t(W.limitsCaptionTrial, { cycle }) : t(W.limitsCaption, { plan, cycle }),
-    includedCaption: (plan: TranslatedText | null, cycle: string) =>
-      plan === null ? t(W.includedCaptionTrial, { cycle }) : t(W.includedCaption, { plan, cycle }),
     scope: (owners: TenantOwners | null) => {
       if (owners === null) return null;
       const holder = ownersHolder(t, {
@@ -188,13 +172,9 @@ export function usageViewWords(t: T, reader: UiLanguage) {
   };
 }
 
-/** The tables' own words at 1536. */
-export interface UsageTableWords extends ReturnType<typeof dataTableWords> {}
-
 /** What only the markup says — `packages/ui`'s `UsagePageWords`. */
 export function usagePageWords(t: T) {
   const W = USAGE_PAGE;
-  const table: UsageTableWords = dataTableWords(t);
   return {
     needsYou: t(BILLING_HOME.needsYou),
     loading: t(W.loading),
@@ -213,17 +193,7 @@ export function usagePageWords(t: T) {
     eventsLoading: t(W.eventsLoading),
     showMore: t(W.showMore),
     close: t(W.close),
-    columns: {
-      limit: t(W.limit),
-      used: t(W.usedThisCycle),
-      allowed: t(W.allowed),
-      meter: t(W.meter),
-      included: t(W.includedColumn),
-      rate: t(W.rate),
-      charges: t(W.chargesSoFar),
-    },
     usageMeter: usageMeterWords(t),
-    table,
     eventsOf: (meter: TranslatedText) => t(W.eventsOf, { meter }),
   };
 }

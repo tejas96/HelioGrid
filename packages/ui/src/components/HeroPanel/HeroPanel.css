@@ -1,6 +1,13 @@
 /* HeroPanel — solar glass. The light is the theme's `--panel-glow` (light and dark); the cell grid
    shows only where the light falls, masked away to the left; the top line is the logo gradient. */
 .hg-hero {
+  /* A mask reads only alpha: the grid and the sweep show where the light falls, fading to the left. */
+  --hg-hero-light: radial-gradient(
+    85% 115% at 88% 0%,
+    var(--text-primary) 0%,
+    color-mix(in srgb, var(--text-primary) 55%, transparent) 38%,
+    transparent 72%
+  );
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -13,9 +20,34 @@
   background: var(--panel-glow);
   color: var(--on-panel);
   box-shadow:
+    inset 0 1px 0 var(--glass-edge),
     0 0 0 1px var(--line-soft),
-    var(--e2);
+    var(--e3);
   animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+}
+
+/* One slow band of light crosses the cells as the hero arrives, then rests: the sun catching the
+   glass. A transform only, once; none under reduced motion or in sunlight (field mode). */
+.hg-hero-sweep {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    color-mix(in srgb, var(--brand-teal) 16%, transparent) 46%,
+    color-mix(in srgb, var(--brand-green) 12%, transparent) 54%,
+    transparent 70%
+  );
+  -webkit-mask-image: var(--hg-hero-light);
+  mask-image: var(--hg-hero-light);
+  transform: translateX(-100%);
+  animation: hg-sweep var(--amb-settle) var(--ease-standard) var(--dur-emphasised) 1 forwards;
+}
+
+[data-field-mode="on"] .hg-hero-sweep {
+  display: none;
 }
 
 .hg-hero::before {
@@ -37,13 +69,6 @@
     44px 44px,
     11px 44px;
   background-position: -1px -1px;
-  /* A mask reads only alpha: the grid shows where the light falls, fading out to the left. */
-  --hg-hero-light: radial-gradient(
-    85% 115% at 88% 0%,
-    var(--text-primary) 0%,
-    color-mix(in srgb, var(--text-primary) 55%, transparent) 38%,
-    transparent 72%
-  );
   -webkit-mask-image: var(--hg-hero-light);
   mask-image: var(--hg-hero-light);
 }

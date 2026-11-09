@@ -24,6 +24,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.0",
+    "react-native-haptic-feedback": "3.0.0",
     "react-native-keyboard-controller": "1.22.8",
     "react-native-svg": "15.15.5"
   },
@@ -44,6 +45,7 @@
     "@types/react-dom": "19.2.3",
     "lottie-react-native": "7.5.0",
     "react-native": "0.86.0",
+    "react-native-haptic-feedback": "3.0.0",
     "react-native-keyboard-controller": "1.22.8",
     "react-native-svg": "15.15.5",
     "typescript": "5.8.3"

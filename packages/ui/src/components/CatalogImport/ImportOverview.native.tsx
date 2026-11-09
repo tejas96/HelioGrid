@@ -81,7 +81,6 @@ export function ImportFind({
       onChange={onQuery}
       onClear={query === '' ? undefined : () => onQuery('')}
       clearLabel={words.clearSearch}
-      density="functional"
     />
   );
 }

@@ -23,7 +23,7 @@
 .hg-pay-head {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-0-5);
+  gap: var(--sp-2); /* as `LargeTitle` spaces a title and its line */
   min-width: 0;
 }
 
@@ -241,4 +241,70 @@
   display: flex;
   align-items: center;
   gap: var(--sp-3);
+}
+
+/* A template's stages read as a timeline when they fit one row: a node per stage on one line, the
+   share in the display face, the stage under it. More stages keep the split's own wrapping key. */
+.hg-pay-card .hg-allocation-split-key[data-rows="one"] {
+  display: grid;
+  grid-auto-flow: column;
+  /* Each column grows to its words and never past the card: a short stage ("Won") gives its room
+     to a long one, which in equal columns broke mid-word ("Commission ed"). */
+  grid-auto-columns: minmax(0, auto);
+  gap: 0;
+}
+
+.hg-pay-card .hg-allocation-split-key[data-rows="one"] .hg-allocation-split-entry {
+  /* A stage name longer than any room (a Hindi compound) still breaks inside its column, with a
+     hyphen where the language has one. */
+  overflow-wrap: break-word;
+  hyphens: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+  padding-top: var(--sp-6);
+  padding-inline-end: var(--sp-2);
+}
+
+.hg-pay-card .hg-allocation-split-key[data-rows="one"] .hg-allocation-split-entry::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--sp-2) - 1px);
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--line-soft);
+}
+
+.hg-pay-card
+  .hg-allocation-split-key[data-rows="one"]
+  .hg-allocation-split-entry:first-child::before {
+  left: var(--sp-2);
+}
+
+.hg-pay-card
+  .hg-allocation-split-key[data-rows="one"]
+  .hg-allocation-split-entry:last-child::before {
+  right: auto;
+  width: var(--sp-2);
+}
+
+.hg-pay-card .hg-allocation-split-key[data-rows="one"] .hg-allocation-swatch {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: var(--sp-4);
+  height: var(--sp-4);
+  border-radius: var(--r-pill);
+  box-shadow: 0 0 0 3px var(--hg-ground);
+}
+
+.hg-pay-card .hg-allocation-split-key[data-rows="one"] .hg-allocation-split-share {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  font-variant-numeric: tabular-nums;
 }

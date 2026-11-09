@@ -35,7 +35,8 @@ async function openTerms(page: Page) {
   await createCompany(page, en, freshMobile());
   await passTheOwnersMark(page, en);
   await page.goto('/more');
-  await page.getByRole('button', { name: ROWS.payment_terms }).click();
+  /* The settings list's row: on the phone the list page, on desktop the side list beside the page. */
+  await page.getByRole('main').getByRole('button', { name: ROWS.payment_terms }).click();
   await expect(page).toHaveURL(/\/more\/payment-terms$/);
 }
 

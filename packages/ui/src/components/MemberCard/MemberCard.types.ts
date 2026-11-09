@@ -26,13 +26,11 @@ export interface MemberInvite {
 }
 
 /**
- * **A person on the team, on a phone** (`SCR-M01-12`, the 375 card): the face with the status dot,
- * the name with *You* beside it for the reader, the status line, every preset held as a badge that
- * wraps whole, an open invite's day of seven, and the one act. Drawn by both apps from this one
- * contract (`.claude/rules/screen-parts.md`); it is a `RecordCard` in its `stacked` layout, so it
- * adds no look of its own. Every word is the caller's.
+ * **What a team row says of its person** (`SCR-M01-12`): the face with the status dot, the name with
+ * *You* beside it for the reader, the status line, every preset held as a badge that wraps whole,
+ * and an open invite's day of seven. Every word is the caller's.
  */
-export interface MemberCardProps {
+export interface MemberFacts {
   name: string;
   mark: AvatarMark;
   /** The reader's own card: the words of the badge beside the name. */
@@ -41,14 +39,23 @@ export interface MemberCardProps {
   /** In F2's order, every one held — never capped (F2-10). */
   roles: MemberRole[];
   invite?: MemberInvite;
-  /** The card's one act, full width at its foot. */
-  action?: ReactNode;
-  /** The whole card opens the person; an invite and a deactivated card take none. */
-  onOpen?: () => void;
 }
 
-/** The three placeholder cards a team list shows while its read is out (`SCR-M01-12`, `m-loading`). */
-export interface MemberCardsLoadingProps {
+/**
+ * **A person on the team, one row of the list's glass card** (`SCR-M01-12`, direction A): their
+ * facts, and the row's one act at its end, outside the target that opens the person.
+ */
+export interface MemberRowProps extends MemberFacts {
+  /** The row's one act, at its end — the caller's `MemberAct`. */
+  action?: ReactNode;
+  /** The whole row opens the person; an invite and a deactivated row take none. */
+  onOpen?: () => void;
+  /** The first row draws no hairline above it. */
+  first: boolean;
+}
+
+/** The placeholder rows a team list shows while its read is out (`SCR-M01-12`, `m-loading`). */
+export interface MemberRowsLoadingProps {
   /** Required words — what is loading. A busy region with no name tells a screen reader nothing. */
   label: TranslatedText;
 }
@@ -84,16 +91,16 @@ export interface MemberListWords {
 }
 
 /**
- * **A team list's body** (`SCR-M01-12`): the placeholder cards, the failure with *Try again*, the
- * reader's own card with the teaching state, the empty state for a search with no match, or the
- * cards. Drawn by the phone and by the web below the table's width from this one contract. A wide
+ * **A team list's body** (`SCR-M01-12`): the placeholder rows, the failure with *Try again*, the
+ * reader's own row with the teaching state, the empty state for a search with no match, or the
+ * rows in one glass card. Drawn by the phone and by the web below the table's width from this one contract. A wide
  * web page hands its table in `records` and its table's loading in `waiting`, so the states around
  * them stay this component's.
  */
 export interface MemberListProps {
   /**
    * The list's read: its wait, its failure with *Try again*, then the rows in view in the list's
-   * order — each a card through `memberCardOf` — drawn as `@heliogrid/domain`'s `teamSurface` says.
+   * order — each through `memberFactsOf` — drawn as `@heliogrid/domain`'s `teamSurface` says.
    */
   read: Read<TeamList>;
   words: MemberListWords;
@@ -103,40 +110,38 @@ export interface MemberListProps {
   onClearSearch: () => void;
   /** Back to *All* from a Status chip with nobody under it. */
   onShowAll: () => void;
-  /** Drawn in place of the cards — a wide page's table. */
+  /** Drawn in place of the rows — a wide page's table. */
   records?: ReactNode;
-  /** Drawn in place of the placeholder cards — a wide page's table loading. */
+  /** Drawn in place of the placeholder rows — a wide page's table loading. */
   waiting?: ReactNode;
-  /** A card's one act at its foot — the caller's `MemberAct`, or nothing for a row with none. */
+  /** A row's one act at its end — the caller's `MemberAct`, or nothing for a row with none. */
   actOf?: (row: TeamRow) => ReactNode;
-  /** A card's open — the whole card; undefined for a row that opens nothing (Assign Roles opens an active person only). */
+  /** A row's open — the whole row; undefined for a row that opens nothing (Assign Roles opens an active person only). */
   openOf?: (row: TeamRow) => (() => void) | undefined;
   /** The teaching state's act under its words — *Invite your first teammate* (`SCR-M01-12` m-teaching). */
   teachingAction?: ReactNode;
 }
 
 /**
- * **A person in the team table's first cell** (`SCR-M01-12`, `d-default`): a 40px face, the name
- * with *You* beside it for the reader, and the status chip under the name.
+ * **A person in the team table's first cell**, as OneOhm draws one: the face, the name with *You*
+ * beside it for the viewer, and the phone number under it in the quiet mono face. The status has
+ * its own column.
  */
 export interface MemberPersonProps {
   name: string;
   youLabel?: TranslatedText;
-  /** The status in words — the chip carries a word as well as its tone. */
-  status: TranslatedText;
-  tone: AvatarMark;
+  /** The person's phone number, grouped for the market — a fact, shown as given. */
+  phone: string;
 }
 
 /**
- * **A row's one act** (`SCR-M01-12`): *Deactivate* a raised pill in danger words, *Revoke invite* a
- * raised pill, *Invite again* the near-black pill, each with its glyph (design-system change 7). The
- * card draws it full width at `md`; the 1536 table at `sm`, right-aligned.
+ * **A row's one act** (`SCR-M01-12`): *Deactivate* quiet danger words, *Revoke invite* quiet
+ * words, *Invite again* the filled pill, each with its glyph (`MEMBER_ACT_LOOK`), at `sm` — at a
+ * row's end and in the 1536 table's last cell alike.
  */
 export interface MemberActProps {
   act: TeamAct;
   label: TranslatedText;
-  size: 'md' | 'sm';
-  fullWidth?: boolean;
   /** Why the act cannot run — the only EPC Owner's own *Deactivate*; opens in the reason bubble. */
   offReason?: TranslatedText;
   /** The act's write is out. */

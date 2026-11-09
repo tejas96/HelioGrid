@@ -13,6 +13,7 @@ import {
   shortVerdict,
   specimenWordColour,
 } from './BrandColorField.verdicts';
+import { BrandColorPick } from './BrandColorPick';
 import { BrandColorSpecimen } from './BrandColorSpecimen';
 import { BrandShortVerdict } from './BrandShortVerdict';
 import { BrandVerdictLine } from './BrandVerdictLine';
@@ -90,13 +91,7 @@ export function BrandColorField({
         density={density}
         helper={hex === null ? words.hexHelper : undefined}
         error={hex === null ? words.hexError : undefined}
-        leading={
-          <span
-            aria-hidden="true"
-            className="hg-brand-color-chip"
-            style={hex === null ? undefined : { background: hex }}
-          />
-        }
+        leading={<BrandColorPick hex={hex} label={shown.label} disabled={disabled} onPick={set} />}
       />
 
       {/* Document context only — this specimen is the ONLY thing the tenant colour paints. */}

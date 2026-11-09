@@ -4,12 +4,12 @@ import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { CatalogStripBar } from '../CatalogItems/CatalogStrip';
 import { EmptyState } from '../EmptyState/EmptyState.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
-import { LottieMoment } from '../LottieMoment/LottieMoment.native';
 import { useFormat } from '../MarketProvider/market-context';
 import type { CatalogRate, CatalogRatesProps } from './CatalogRates.types';
 
@@ -46,12 +46,17 @@ export function CatalogRates({ words, read, strip, rates, onAddFirst }: CatalogR
       {rates.length === 0 ? (
         <EmptyState
           glow={false}
-          icon={<LottieMoment name="empty" size={48} />}
+          moment="empty"
           title={words.noRates}
           description={words.noRatesBody}
           action={
             onAddFirst === null ? undefined : (
-              <Button variant="secondary" size="sm" onClick={onAddFirst}>
+              <Button
+                variant="primary"
+                size="md"
+                icon={<ShellGlyph name="plus" size="sm" tone="inverse" />}
+                onClick={onAddFirst}
+              >
                 {words.addFirstRate}
               </Button>
             )

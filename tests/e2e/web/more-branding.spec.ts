@@ -34,7 +34,8 @@ test('an owner saves a colour and reads it back', async ({ page }) => {
   await createCompany(page, en, freshMobile());
   await passTheOwnersMark(page, en);
   await page.goto('/more');
-  await page.getByRole('button', { name: ROWS.branding }).click();
+  /* The settings page's own row: on desktop the sidebar lists the same row by the same name. */
+  await page.getByRole('main').getByRole('button', { name: ROWS.branding }).click();
 
   await expect(page).toHaveURL(/\/more\/branding$/);
   await expect(page.getByRole('heading', { level: 1, name: ROWS.branding })).toBeVisible();

@@ -8,8 +8,8 @@ type SideRow = SettingsListProps['groups'][number]['rows'][number];
 
 /**
  * The `side` form: a named navigation column — the title as an overline, the person's own row
- * first under it, then each group's overline over its rows. The page in view is marked on
- * `--accent-subtle` and announced as the current page.
+ * first under it, then each group's overline over its rows. The page in view is a raised card
+ * row in ink, announced as the current page.
  */
 export function SettingsSideList({
   title,
@@ -29,9 +29,9 @@ export function SettingsSideList({
         <ShellGlyph
           name={SETTINGS_ROW_GLYPH[item.key]}
           size="md"
-          tone={here ? 'accent' : 'secondary'}
+          tone={here ? 'primary' : 'secondary'}
         />
-        <Text variant="body-sm" bold={here} color={here ? 'accent' : 'primary'}>
+        <Text variant="body-sm" bold={here} color={here ? 'primary' : 'secondary'}>
           {item.name}
         </Text>
       </Pressable>

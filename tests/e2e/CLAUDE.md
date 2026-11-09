@@ -68,3 +68,4 @@ app shows no fault, and 4 cores only doubles the CPU peak for the same run time.
 
 - A list row's open button is a 1×1 px button for screen readers under the visible row, so a `click()` on it is caught by the row's cover and opens nothing at 1536 → focus that named button and press Enter, as a keyboard user does (`web/more-roles.spec.ts`).
 - A choice that draws at once and saves after (a language, a unit, a switch) is on screen before its request answers, so a `page.reload()` right after the click can stop the save and the reload reads the old value — a flake only on a slow runner → wait for the save's response (`page.waitForResponse`) before the reload (`web/more-profile.spec.ts`).
+- A `page.route` stub set after a page loads misses a read already out: the press's re-read joins that in-flight query and never meets the stub, a race only a loaded runner loses → wait for `networkidle` before stubbing a read the page itself makes (`web/more-profile.spec.ts`).

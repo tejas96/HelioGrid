@@ -37,6 +37,14 @@ const NOT_ONE_COLOUR = new Map([
     'the solar-glass hero: --panel to --panel-deep under the logo light; its words are on-panel pairs, measured at both ends',
   ],
   [
+    'glass',
+    'the card colour let through over the page (base.css): words on it are measured on both ends, on --surface and on --canvas, and field mode makes it solid',
+  ],
+  [
+    'hg-ground-fill',
+    "a pinned part's fill: its holder's own, glass or the ground (Ground.css) — its words are measured on the ground beneath",
+  ],
+  [
     'hg-icon-circle-color',
     "Card's icon circle: a tone the caller picks over a wash of itself — not held, review",
   ],

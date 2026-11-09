@@ -12,23 +12,23 @@ import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ROLE_KIND_TONE, TEAM_STATUS_TONE } from '../Chip/Chip.logic';
 import type {
   MemberActProps,
-  MemberCardProps,
+  MemberFacts,
   MemberListProps,
   MemberRowWords,
   TeamConfirmProps,
 } from './MemberCard.types';
 
 /**
- * One list row as the member card draws it (`SCR-M01-12`): its status as the dot's tone, each
- * preset in its kind's iris tone and the caller's words, and an open invite's share of its seven
- * days. Both apps call this one mapping, so the two cards cannot disagree.
+ * One list row's facts as the team row and the table draw them (`SCR-M01-12`): its status as the
+ * dot's tone, each preset in its kind's iris tone and the caller's words, and an open invite's share
+ * of its seven days. Both apps call this one mapping, so the two lists cannot disagree.
  */
-export function memberCardOf(
+export function memberFactsOf(
   row: TeamRow,
   words: MemberRowWords,
   roleName: (preset: RolePreset) => TranslatedText,
   youLabel: TranslatedText,
-): MemberCardProps {
+): MemberFacts {
   return {
     name: row.name,
     mark: TEAM_STATUS_TONE[row.status],
@@ -79,18 +79,22 @@ export function memberListEmptyOf({
   return null;
 }
 
-/** How each act looks: its pill, its words' tone and its glyph (`SCR-M01-12`, design-system change 7). */
+/**
+ * How each act looks: its pill, its words' tone and its glyph (`SCR-M01-12`, design-system change 7).
+ * Deactivate and Revoke are quiet — words and a glyph, no pill — so a list of people never reads
+ * as a column of red boxes; Invite again, the one act that moves work on, keeps its fill.
+ */
 export const MEMBER_ACT_LOOK: Record<
   TeamAct,
   {
-    variant: 'primary' | 'secondary';
+    variant: 'primary' | 'ghost';
     danger: boolean;
     glyph: ShellGlyphName;
     glyphTone: 'primary' | 'inverse' | 'danger';
   }
 > = {
-  deactivate: { variant: 'secondary', danger: true, glyph: 'user-minus', glyphTone: 'danger' },
-  revoke: { variant: 'secondary', danger: false, glyph: 'undo', glyphTone: 'primary' },
+  deactivate: { variant: 'ghost', danger: true, glyph: 'user-minus', glyphTone: 'danger' },
+  revoke: { variant: 'ghost', danger: false, glyph: 'undo', glyphTone: 'primary' },
   'invite-again': { variant: 'primary', danger: false, glyph: 'send', glyphTone: 'inverse' },
 };
 

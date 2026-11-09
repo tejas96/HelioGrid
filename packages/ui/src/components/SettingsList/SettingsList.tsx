@@ -5,12 +5,13 @@ import { useDesktopShell } from '../AppShell/use-desktop-shell';
 import { Avatar } from '../Avatar/Avatar';
 import { Block } from '../Block/Block';
 import { BrandBloom } from '../BrandBloom/BrandBloom';
+import { LargeTitle } from '../LargeTitle/LargeTitle';
 import { personRow, SETTINGS_ROW_GLYPH } from './SettingsList.logic';
 import type { SettingsListPerson, SettingsListProps } from './SettingsList.types';
 import { SettingsSideList } from './SettingsSideList';
 
-/** The person's avatar diameter in their tile: the phone's frame measures 56, the 1536 frame 72. */
-const AVATAR = { narrow: 56, wide: 72 } as const;
+/** The person's avatar diameter in their hero tile, on a phone and on a wide screen. */
+const AVATAR = { narrow: 64, wide: 80 } as const;
 /** The bloom in the tile's corner — atmosphere, clipped by the tile. */
 const BLOOM = 260;
 function PersonTile({
@@ -32,9 +33,7 @@ function PersonTile({
         <Avatar name={person.name} src={person.picture} size={wide ? AVATAR.wide : AVATAR.narrow} />
       </span>
       <span className="hg-settings-person-words">
-        <Text variant="h3" bold>
-          {person.name}
-        </Text>
+        <span className="hg-settings-person-name">{person.name}</span>
         <span className="hg-settings-row-name">
           <Text variant="body" color="secondary">
             {rowName}
@@ -56,6 +55,8 @@ function PersonTile({
  */
 export function SettingsList({
   title,
+  summary,
+  hints,
   person,
   groups,
   onOpen,
@@ -67,9 +68,7 @@ export function SettingsList({
   }
   return (
     <div className="hg-settings-list">
-      <Text as="h1" variant="h3" bold>
-        {title}
-      </Text>
+      <LargeTitle title={title} summary={summary} />
       <div className="hg-settings-column">
         {groups.map((group) => {
           const own = personRow(group);
@@ -95,8 +94,17 @@ export function SettingsList({
                     <span className="hg-settings-row-icon">
                       <ShellGlyph name={SETTINGS_ROW_GLYPH[row.key]} size="md" tone="accent" />
                     </span>
-                    <span className="hg-settings-row-name">
-                      <Text variant="body">{row.name}</Text>
+                    <span className="hg-settings-row-words">
+                      <span className="hg-settings-row-name">
+                        <Text variant="body" bold>
+                          {row.name}
+                        </Text>
+                      </span>
+                      {hints === undefined ? null : (
+                        <Text variant="body-sm" color="secondary">
+                          {hints[row.key]}
+                        </Text>
+                      )}
                     </span>
                     <ShellGlyph name="chevron-right" size="md" />
                   </Pressable>

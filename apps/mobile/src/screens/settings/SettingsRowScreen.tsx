@@ -61,5 +61,5 @@ export function SettingsRowScreen({ route }: Props) {
 
 /** A row whose screen has not landed: the bar names the page, so the body says only that it is coming. */
 function ComingLater({ row }: { row: SettingsRow }) {
-  return <ComingLaterPage drillDown={useSettingsDrillDown(row)} />;
+  return <ComingLaterPage row={row} drillDown={useSettingsDrillDown(row)} />;
 }

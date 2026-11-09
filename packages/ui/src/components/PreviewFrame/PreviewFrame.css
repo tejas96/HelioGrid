@@ -17,8 +17,12 @@
   min-width: 0;
 }
 
+/* Never wider than the subject it draws: the subject stops growing at full size, so a frame wider
+   than that would show a strip of empty paper beside it. The window centres in the spare room. */
 .hg-preview-frame-window {
   width: 100%;
+  max-width: calc(var(--hg-preview-design-width) * var(--hg-preview-scale));
+  margin-inline: auto;
   height: var(--hg-preview-box-height, auto);
   overflow: hidden;
 }

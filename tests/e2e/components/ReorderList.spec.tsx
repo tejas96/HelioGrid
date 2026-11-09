@@ -6,7 +6,7 @@ import {
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { bottomOf, rightOf, settledBox } from '../support/layout';
-import { resolvedBoxShadow, resolvedColour, TILE_SHADOW } from '../support/token';
+import { resolvedBoxShadow, resolvedColour, TILE_FILL, TILE_SHADOW } from '../support/token';
 import { expectTouchFloor } from '../support/touch-target';
 import { FootReorderStory, PlainReorderStory } from './ReorderList.story';
 
@@ -25,7 +25,7 @@ test('a reorder row is a tile', async ({ mount, page }) => {
   const list = await mount(<PlainReorderStory names={items} />);
   const row = list.getByRole('listitem').first();
 
-  await expect(row).toHaveCSS('background-color', await resolvedColour(page, '--surface'));
+  await expect(row).toHaveCSS('background-color', await resolvedColour(page, TILE_FILL));
   await expect(row).toHaveCSS('box-shadow', await resolvedBoxShadow(page, TILE_SHADOW));
 });
 

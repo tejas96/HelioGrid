@@ -9,6 +9,7 @@ import {
 } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import {
+  type CatalogEditorOwnActs,
   CatalogPriceEditor,
   CatalogRelease,
   catalogEditorSwitches,
@@ -29,15 +30,26 @@ type Release = CatalogFacts['release'];
 export function ItemsSheets({
   sheets,
   schemes,
+  ownActs,
   release,
+  onPriceSaved,
 }: {
   sheets: CatalogOverlays;
   schemes: readonly string[];
+  /** An own SKU's *Prefer* and *Archive* in its sheet, done at once as its row did them. */
+  ownActs: CatalogEditorOwnActs | null;
   release: Release;
+  /** A price landed: the panel's toast plays the `saved` moment under the item's name. */
+  onPriceSaved: (name: string) => void;
 }) {
   return (
     <>
-      <EditorSheet sheets={sheets} schemes={schemes} />
+      <EditorSheet
+        sheets={sheets}
+        schemes={schemes}
+        ownActs={ownActs}
+        onPriceSaved={onPriceSaved}
+      />
       <ArchiveAsk sheets={sheets} />
       <PublishSheet sheets={sheets} release={release} />
       <ReleasesSheet releases={sheets.releases} />
@@ -45,7 +57,17 @@ export function ItemsSheets({
   );
 }
 
-function EditorSheet({ sheets, schemes }: { sheets: CatalogOverlays; schemes: readonly string[] }) {
+function EditorSheet({
+  sheets,
+  schemes,
+  ownActs,
+  onPriceSaved,
+}: {
+  sheets: CatalogOverlays;
+  schemes: readonly string[];
+  ownActs: CatalogEditorOwnActs | null;
+  onPriceSaved: (name: string) => void;
+}) {
   const { t } = useI18n();
   const formats = useCatalogFormats();
   const { draft } = sheets;
@@ -60,10 +82,13 @@ function EditorSheet({ sheets, schemes }: { sheets: CatalogOverlays; schemes: re
       showClose
       footer={
         <SheetFoot
-          cancel={t(CATALOG_EDITOR.cancel)}
-          onCancel={draft.close}
-          act={t(platform ? CATALOG_EDITOR.saveOverride : CATALOG_EDITOR.savePrice)}
-          onAct={() => void draft.save()}
+          act={t(CATALOG_EDITOR.savePrice)}
+          onAct={() => {
+            const name = item === null ? '' : `${item.brand} ${item.model}`;
+            void draft.save().then((saved) => {
+              if (saved) onPriceSaved(name);
+            });
+          }}
           busy={draft.pending}
         />
       }
@@ -79,6 +104,7 @@ function EditorSheet({ sheets, schemes }: { sheets: CatalogOverlays; schemes: re
           taxOverridden={draft.taxPct !== ''}
           packRateMissing={item.tax?.source !== 'pack'}
           switches={platform ? catalogEditorSwitches(draft) : null}
+          ownActs={ownActs}
           problem={draft.problem === null ? null : t(CATALOG_EDITOR.saveFailed)}
         />
       )}
@@ -165,6 +191,7 @@ function PublishSheet({ sheets, release }: { sheets: CatalogOverlays; release: R
         label={sheets.label}
         onLabel={sheets.setLabel}
         problem={shown.problem}
+        empty={shown.empty}
         changes={shown.changes}
         read={preview.lines.read}
         more={

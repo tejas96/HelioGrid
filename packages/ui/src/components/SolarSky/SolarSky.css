@@ -1,0 +1,303 @@
+/* SolarSky — the door's living sky: a lit sky over a rooftop solar system. Panels land once, the sun
+   rises once, then only calm loops run (the glint across the cells, energy along the wires, the
+   stars), all paused off-screen, in a hidden tab and under reduced motion. Lines are drawn in the
+   page's ink at low strength, so the same scene reads in light and dark. */
+
+.hg-sky {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--brand-teal) 18%, var(--panel-deep)) 0%,
+    color-mix(in srgb, var(--brand-green) 8%, var(--panel)) 58%,
+    var(--canvas) 100%
+  );
+}
+
+.hg-sky[data-phase="night"] {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--brand-ocean) 26%, var(--panel-deep)) 0%,
+    color-mix(in srgb, var(--brand-blue) 10%, var(--panel)) 60%,
+    var(--canvas) 100%
+  );
+}
+
+[data-field-mode="on"] .hg-sky {
+  background: var(--canvas);
+}
+
+.hg-sky-art {
+  position: absolute;
+  inset: auto 0 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.hg-sky[data-framing="door"] .hg-sky-art {
+  height: 92%;
+}
+
+.hg-sky-arc {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-opacity: 0.22;
+  stroke-width: 1.2;
+  stroke-dasharray: 2 7;
+  stroke-linecap: round;
+}
+
+.hg-sky-floor path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-opacity: 0.16;
+  stroke-width: 0.8;
+}
+
+.hg-sky-line path,
+.hg-sky-line circle {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-opacity: 0.62;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hg-sky-faint path,
+.hg-sky-faint circle {
+  stroke-opacity: 0.28;
+}
+
+.hg-sky-line,
+.hg-sky-wires,
+.hg-sky-floor {
+  animation: hg-sky-appear var(--dur-ambient) var(--ease-enter) backwards;
+}
+
+.hg-sky-wires path {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-opacity: 0.4;
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+}
+
+.hg-sky-walls path {
+  fill: var(--canvas);
+  fill-opacity: 0.72;
+  stroke: none;
+}
+
+/* Glass by day; warm and lit once the sun has set. */
+.hg-sky-window {
+  fill: var(--accent);
+  fill-opacity: 0.14;
+  stroke: none;
+}
+
+.hg-sky[data-phase="night"] .hg-sky-window {
+  fill: var(--sun);
+  fill-opacity: 0.6;
+  animation: hg-sky-appear var(--dur-ambient) var(--ease-standard) var(--amb-settle) backwards;
+}
+
+.hg-sky-skyline path {
+  fill: var(--text-primary);
+  fill-opacity: 0.06;
+  stroke: none;
+}
+
+.hg-sky-skyline .hg-sky-skyline-panel {
+  fill: var(--brand-ocean);
+  fill-opacity: 0.32;
+}
+
+.hg-sky-shadow {
+  fill: var(--text-primary);
+  fill-opacity: 0.07;
+}
+
+/* Clouds drift across on the longest cycle, out of step with each other. */
+.hg-sky-cloud circle,
+.hg-sky-cloud rect {
+  /* biome-ignore lint/plugin/raw-white-css: art — a cloud by day is white light over the sky */
+  fill: var(--surface);
+  fill-opacity: 0.7;
+}
+
+:root[data-theme="dark"] .hg-sky-cloud circle,
+:root[data-theme="dark"] .hg-sky-cloud rect {
+  fill: var(--text-primary);
+  fill-opacity: 0.1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hg-sky-cloud circle,
+  :root:not([data-theme="light"]) .hg-sky-cloud rect {
+    fill: var(--text-primary);
+    fill-opacity: 0.1;
+  }
+}
+
+.hg-sky[data-phase="night"] .hg-sky-cloud circle,
+.hg-sky[data-phase="night"] .hg-sky-cloud rect {
+  fill: var(--text-primary);
+  fill-opacity: 0.07;
+}
+
+.hg-sky-cloud {
+  animation: hg-sky-cloud calc(var(--amb-drift) * 2) var(--ease-standard) infinite alternate both;
+  animation-delay: calc(var(--i) * var(--amb-drift) * -1);
+  animation-play-state: paused;
+}
+
+/* A module lands on the frame, one after another: the installation, once. */
+.hg-sky-module {
+  transform-box: fill-box;
+  animation: hg-sky-land var(--dur-emphasised) var(--ease-spring) backwards;
+  animation-delay: calc(var(--dur-emphasised) + var(--i) * var(--amb-install));
+}
+
+.hg-sky-module-face {
+  fill: var(--brand-ocean);
+  stroke: var(--brand-blue);
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+}
+
+.hg-sky-module-cells {
+  fill: none;
+  stroke: var(--brand-teal);
+  stroke-opacity: 0.7;
+  stroke-width: 0.6;
+}
+
+.hg-sky-glint {
+  fill: var(--sun);
+  stroke: none;
+  opacity: 0;
+  animation: hg-sky-glint var(--amb-sheen) var(--ease-standard) infinite;
+  animation-delay: calc(var(--amb-settle) + var(--i) * var(--amb-install) * 2);
+  animation-play-state: paused;
+}
+
+.hg-sky-ray {
+  fill: none;
+  stroke: var(--sun);
+  stroke-opacity: 0.7;
+  stroke-width: 1.2;
+  stroke-dasharray: 3 6;
+  stroke-linecap: round;
+  animation: hg-sky-appear var(--dur-ambient) var(--ease-standard) var(--amb-settle) backwards;
+}
+
+.hg-sky-spark {
+  fill: var(--brand-green);
+  opacity: 0;
+}
+
+.hg-sky-glow-core {
+  stop-color: var(--sun);
+  stop-opacity: 0.55;
+}
+
+.hg-sky-glow-edge {
+  stop-color: var(--sun);
+  stop-opacity: 0;
+}
+
+.hg-sky[data-phase="night"] .hg-sky-glow-core,
+.hg-sky[data-phase="night"] .hg-sky-glow-edge {
+  stop-color: var(--text-primary);
+}
+
+.hg-sky[data-phase="night"] .hg-sky-glow-core {
+  stop-opacity: 0.16;
+}
+
+.hg-sky-sun-core {
+  fill: var(--sun);
+}
+
+.hg-sky-moon {
+  fill: var(--text-primary);
+  fill-opacity: 0.82;
+}
+
+.hg-sky-star {
+  fill: var(--text-primary);
+  opacity: 0.5;
+  animation: hg-sky-twinkle var(--amb-twinkle) var(--ease-standard) infinite alternate;
+  animation-delay: calc(var(--i) * var(--amb-twinkle) / -4);
+  animation-play-state: paused;
+}
+
+.hg-sky[data-running="true"] .hg-sky-glint,
+.hg-sky[data-running="true"] .hg-sky-cloud,
+.hg-sky[data-running="true"] .hg-sky-star {
+  animation-play-state: running;
+}
+
+@keyframes hg-sky-land {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--sp-3) * -1)) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hg-sky-cloud {
+  from {
+    transform: translateX(calc(var(--sp-6) * -1));
+  }
+  to {
+    transform: translateX(var(--sp-8));
+  }
+}
+
+@keyframes hg-sky-appear {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes hg-sky-glint {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  6% {
+    opacity: 0.85;
+  }
+  16% {
+    opacity: 0;
+  }
+}
+
+@keyframes hg-sky-twinkle {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hg-sky *,
+  .hg-sky *::before,
+  .hg-sky *::after {
+    animation: none;
+  }
+
+  .hg-sky-spark {
+    display: none;
+  }
+}

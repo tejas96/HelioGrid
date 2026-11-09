@@ -1,7 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
-import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { Animated, Easing, StyleSheet, useColorScheme, View } from 'react-native';
 import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -45,6 +45,8 @@ export function SegmentedControl({
   style,
 }: NativeSegmentedControlProps) {
   const index = selectedIndex(options, value);
+  // biome-ignore lint/plugin/raw-white: control — the pill in view is the card colour in light
+  const thumb = useColorScheme() === 'dark' ? colors['line-strong'] : colors.surface;
   const [trackWidth, setTrackWidth] = useState(0);
   /* The track is recessed and the pill in view raised, on every ground. */
   const slide = useRef(new Animated.Value(0)).current;
@@ -87,8 +89,9 @@ export function SegmentedControl({
             styles.indicator,
             {
               width: segmentWidth,
-              // biome-ignore lint/plugin/raw-white: control — the pill in view is raised, the card colour on every ground
-              backgroundColor: colors.surface,
+              /* Raised out of the recessed track: the card colour in light, a lighter step in dark,
+                 so the segment in view is plain to see in every mode (the web's `--thumb`). */
+              backgroundColor: thumb,
               transform: [{ translateX: slide }],
             },
           ]}
@@ -209,6 +212,8 @@ const styles = StyleSheet.create({
     bottom: PAD,
     left: 0,
     borderRadius: theme.radius['r-pill'],
+    borderWidth: 1,
+    borderColor: colors['line-soft'],
     ...theme.elevation.e2,
   },
   /* The 44dp target around the 32dp pill: the extra 12dp is taken back as negative margin, so the

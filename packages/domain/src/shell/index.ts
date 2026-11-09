@@ -11,6 +11,8 @@ export type { ClientVersion, StorePlatform } from './client-version';
 export { isBelowMinimum, parseClientVersion, STORE_PLATFORMS } from './client-version';
 export type { FirstRunMark, MarkedControls, MarkInView } from './coach-marks';
 export { FIRST_RUN_COACH_MARKS, firstRunMarksFor, markInView, marksToShow } from './coach-marks';
+export type { DayPart } from './day-part';
+export { DAY_PARTS, dayPart } from './day-part';
 export type { ShellDoor } from './doors';
 export { DOOR_SEGMENT, offeredDoors, offersDoor } from './doors';
 export type {
@@ -57,8 +59,16 @@ export {
   settingsRowOfSegment,
   settingsRowsFor,
 } from './settings-rows';
+export type {
+  SetupFacts,
+  SetupReadiness,
+  SetupStep,
+  SetupStepState,
+} from './setup-readiness';
+export { SETUP_STEPS, setupReadiness } from './setup-readiness';
 export type { ShellView } from './shell-view';
 export { shellViewFor } from './shell-view';
+export { workListLanded } from './sidebar';
 export type {
   StandingDestination,
   StandingDestinationSet,

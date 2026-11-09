@@ -16,6 +16,7 @@ import {
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { queryKeys } from '../cache/keys';
+import type { Repositories } from '../data-layer';
 import { useRepositories } from './context';
 import { readOf } from './read';
 import { useSession } from './use-session';
@@ -55,6 +56,16 @@ async function everyPage<T>(read: (page: number) => Promise<Paginated<T>>): Prom
   }
 }
 
+/** The whole roster as one read — the shell's sidebar counts it from the same key. */
+export function membersRead(repositories: Repositories, tenantId: string, enabled: boolean) {
+  return {
+    queryKey: queryKeys.team.members(tenantId),
+    queryFn: ({ signal }: { signal: AbortSignal }) =>
+      everyPage((page) => repositories.tenant.members({ page, limit: MAX_PAGE_LIMIT }, signal)),
+    enabled,
+  };
+}
+
 /**
  * The roster and every invitation, joined by domain's `teamRoster` and narrowed by
  * `teamRosterView`. Mounted only under a session that acts for a company.
@@ -69,12 +80,7 @@ export function useTeam(language: UiLanguage): Team {
   const [status, filter] = useState<TeamStatusFilter>('all');
 
   const reading = tenantId !== '';
-  const members = useQuery({
-    queryKey: queryKeys.team.members(tenantId),
-    queryFn: ({ signal }) =>
-      everyPage((page) => repositories.tenant.members({ page, limit: MAX_PAGE_LIMIT }, signal)),
-    enabled: reading,
-  });
+  const members = useQuery(membersRead(repositories, tenantId, reading));
   const invites = useQuery({
     queryKey: queryKeys.team.invites(tenantId),
     queryFn: ({ signal }) =>

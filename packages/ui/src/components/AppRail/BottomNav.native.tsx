@@ -18,7 +18,7 @@ interface NativeBottomNavProps extends BottomNavProps {
 
 /**
  * The phone shell's footer (`F7-22`): one white pill that floats, so it separates by its shadow
- * and never a line (`F7-15`). Floating, it sits at the design system's inset and gap from the
+ * and its lit hairline edge, never a dividing line (`F7-15`). Floating, it sits at the design system's inset and gap from the
  * bottom of the frame it floats in. The device's bottom inset is the app's (`F7-50`): its frame
  * ends there, so `safeBottom` is met by the caller on the phone and not read here.
  *
@@ -98,6 +98,10 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     // biome-ignore lint/plugin/raw-white: float — a menu, a list, a calendar, a toast, a bubble: white with its shadow (F7-15)
     backgroundColor: colors.surface,
+    /* The glass pill's lit edge: the phone draws no blur, so the edge and the deep ocean shadow
+       carry the float (redesign direction A). */
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.hairline,
     ...theme.elevation.e4,
   },
   floating: {

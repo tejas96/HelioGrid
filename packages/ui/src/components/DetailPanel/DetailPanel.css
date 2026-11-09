@@ -20,9 +20,32 @@
   display: flex;
   flex-direction: column;
   outline: none;
-  /* biome-ignore lint/plugin/raw-white-css: panel — a sheet, a modal, a detail panel: a page ground over the page */
+  /* biome-ignore lint/plugin/raw-white-css: panel — a page ground over the page, frosted glass (redesign direction A) */
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  /* Its own stacking layer, so the frost below lies behind its content and nothing else. */
+  isolation: isolate;
+  box-shadow:
+    0 0 0 1px var(--hairline),
+    var(--e5);
+}
+
+/* The frost on its own layer behind the panel's content, never on the panel itself: a
+   backdrop-filter there would make the panel the box a `position: fixed` float opened inside it (a
+   leave ask, a sheet) measures against, and it would open inside the panel. */
+.hg-detail-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  -webkit-backdrop-filter: saturate(1.4) blur(24px);
+  backdrop-filter: saturate(1.4) blur(24px);
+}
+
+[data-field-mode="on"] .hg-detail-panel {
+  /* biome-ignore lint/plugin/raw-white-css: panel — field mode draws the card colour whole, for sunlight */
   background: var(--surface);
-  box-shadow: var(--e5);
 }
 
 .hg-detail-panel[data-density="expressive"] {
@@ -52,8 +75,8 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--sp-3);
-  /* biome-ignore lint/plugin/raw-white-css: panel — a sheet, a modal, a detail panel: a page ground over the page */
-  background: var(--surface);
+  /* The header is the panel's own glass, so no seam shows when content scrolls beneath it. */
+  background: transparent;
   position: relative;
   z-index: 1;
   transition: box-shadow var(--dur-standard) var(--ease-standard);

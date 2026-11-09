@@ -1,16 +1,15 @@
 import { useSession } from '@heliogrid/data/react';
-import { connectionWords, SHELL } from '@heliogrid/i18n';
+import { bootLabel, connectionWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { NoConnection } from '@heliogrid/ui';
-import { PlaceholderScaffold } from '../shared/PlaceholderScaffold';
+import { BootSplash, NoConnection } from '@heliogrid/ui';
 
 /**
- * While the session resolves. A boot check with no answer keeps the session and asks again
- * (`M01-07`); otherwise a placeholder — replaced when the real Boot screen is designed.
+ * While the session resolves: the wordmark and the breathing sun (`BootSplash`). A boot check with
+ * no answer keeps the session and asks again (`M01-07`).
  */
 export function BootScreen() {
   const { unreachable, retryBoot } = useSession();
   const t = useTranslate();
   if (unreachable) return <NoConnection {...connectionWords(t)} onRetry={retryBoot} />;
-  return <PlaceholderScaffold title={t(SHELL.boot)} description={t(SHELL.bootPlaceholder)} />;
+  return <BootSplash label={bootLabel(t)} />;
 }

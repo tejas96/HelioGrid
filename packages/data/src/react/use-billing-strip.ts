@@ -78,16 +78,8 @@ export function useBillingStrip(adapter: BillingStripAdapter): BillingStripScree
   const signedIn = tenantId !== '';
   const audience = billingStripAudienceOf(roles);
   const owner = audience === 'owner';
-  const home = useQuery({
-    queryKey: queryKeys.billing.home(tenantId),
-    queryFn: ({ signal }) => repositories.billing.home(signal),
-    enabled: signedIn && owner,
-  });
-  const standing = useQuery({
-    queryKey: queryKeys.billing.standing(tenantId),
-    queryFn: ({ signal }) => repositories.billing.standing(signal),
-    enabled: signedIn && !owner,
-  });
+  const home = useQuery(billingHomeRead(repositories, tenantId, signedIn && owner));
+  const standing = useQuery(billingStandingRead(repositories, tenantId, signedIn && !owner));
   const signals = useQuery({
     queryKey: queryKeys.billing.usageSignals(tenantId),
     queryFn: ({ signal }) => repositories.billingUsage.signals(signal),
@@ -135,6 +127,28 @@ export function useBillingStrip(adapter: BillingStripAdapter): BillingStripScree
     },
     refusal,
     dismissRefusal: () => blocked.dismiss(),
+  };
+}
+
+/** The Owner's billing home as one read: the strip and the sidebar's trial count share it. */
+export function billingHomeRead(repositories: Repositories, tenantId: string, enabled: boolean) {
+  return {
+    queryKey: queryKeys.billing.home(tenantId),
+    queryFn: ({ signal }: { signal: AbortSignal }) => repositories.billing.home(signal),
+    enabled,
+  };
+}
+
+/** The standing everyone but the Owner reads, as one read the strip and the sidebar share. */
+export function billingStandingRead(
+  repositories: Repositories,
+  tenantId: string,
+  enabled: boolean,
+) {
+  return {
+    queryKey: queryKeys.billing.standing(tenantId),
+    queryFn: ({ signal }: { signal: AbortSignal }) => repositories.billing.standing(signal),
+    enabled,
   };
 }
 

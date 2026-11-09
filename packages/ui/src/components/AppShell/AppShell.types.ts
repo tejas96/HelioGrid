@@ -151,7 +151,11 @@ export interface MobileTopBarProps {
    */
   safeTop?: boolean;
   sticky?: boolean;
-  /** Content has scrolled under the bar: it lifts on `--e2`, so the two never read as overlapped. */
+  /**
+   * Content has scrolled under the bar: the small title is there for a screen reader. The band and
+   * the title fade by the distance a frame tells through `BarScrollContext`; with none, they fade
+   * in once on this flag.
+   */
   scrolled?: boolean;
 }
 
@@ -188,6 +192,12 @@ export interface AppShellProps {
    * the header (decision 12) and never scrolled away. The slot part draws its own room.
    */
   strip?: ReactNode;
+  /**
+   * The address in view. A new one opens its page at the top: the web's column is one scroll the
+   * pages share, so without it a page opens where the last one was scrolled to. The phone's screens
+   * each scroll on their own and start at their top already.
+   */
+  page?: string;
   children?: ReactNode;
 }
 

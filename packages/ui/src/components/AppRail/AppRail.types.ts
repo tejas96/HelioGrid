@@ -27,6 +27,11 @@ export interface RailItem {
   name?: TranslatedText;
   /** A footer item whose overlay is open — the bell while its centre shows: drawn active. */
   open?: boolean;
+  /**
+   * A quiet word after the label — *Soon* on a list whose module has not landed. Pass the row's
+   * whole spoken sentence in `name` with it, so a screen reader hears it too.
+   */
+  tag?: TranslatedText;
   onClick?: () => void;
   /**
    * What a coach mark points at to name this item (`M01-16`): a ref the item binds to its
@@ -36,15 +41,47 @@ export interface RailItem {
   anchor?: CoachMarkAnchor;
 }
 
+/** The account at the sidebar's foot: who is signed in, their menu, and the theme switch. */
+export interface RailAccount {
+  /** The avatar's menu (`AccountMenu`): it carries the initials and opens the account's acts. */
+  menu: ReactNode;
+  /** The person's name, as they gave it — a fact, shown as given. */
+  name: string;
+  /** One quiet line under the name: the role and the company. */
+  caption?: TranslatedText;
+  /** The Light / Dark / Device switch (`AppearanceSwitch` in its `icons` form). */
+  appearance?: ReactNode;
+}
+
 export interface AppRailProps {
   /** The navigation landmark's name, in the reader's language. */
   label: TranslatedText;
+  /** The work destinations, at the top and with no overline: Home, then the person's lists. */
   items: RailItem[];
   value?: string;
   onChange?: (key: string) => void;
-  /** Utility buttons pinned above the avatar (notifications, settings). */
+  /** Utility buttons pinned above the account (the settings list). */
   footer?: RailItem[];
+  /** The bell, a round icon beside the brand with its unread count. */
+  bell?: RailItem;
+  /** The search's door as one icon, drawn in the search's place while the sidebar is folded. */
+  searchItem?: RailItem;
+  /** The account block at the foot. */
+  account?: RailAccount;
+  /** The avatar alone, for a sidebar with no account block. */
   avatar?: ReactNode;
+  /**
+   * The sidebar folded to its icons: the names leave, each icon keeps its name as its spoken name
+   * and its tooltip, and the brand, the search and the overlines give way. The app keeps the
+   * choice on the device.
+   */
+  collapsed?: boolean;
+  /** The fold control's two names. Without them the sidebar has no fold control. */
+  fold?: {
+    collapse: TranslatedText;
+    expand: TranslatedText;
+    onToggle: () => void;
+  };
   /** Sidebar width. Defaults to the `--sidebar-w` token; a number overrides it. */
   width?: number | string;
   /** The product mark and name, at the sidebar's top. */

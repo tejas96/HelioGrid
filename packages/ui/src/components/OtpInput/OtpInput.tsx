@@ -23,6 +23,7 @@ export function OtpInput({
   value = '',
   onChange,
   onComplete,
+  onSubmit,
   label,
   helper,
   error,
@@ -55,6 +56,9 @@ export function OtpInput({
     if (e.key === 'Backspace') {
       e.preventDefault();
       apply(erasedOtp(value, i, length));
+    } else if (e.key === 'Enter' && onSubmit !== undefined) {
+      e.preventDefault();
+      onSubmit();
     } else if (e.key === 'ArrowLeft' && i > 0) refs.current[i - 1]?.focus();
     else if (e.key === 'ArrowRight' && i < length - 1) refs.current[i + 1]?.focus();
   };
@@ -102,8 +106,6 @@ export function OtpInput({
               }}
               onBlur={() => setFocusedIndex(null)}
             />
-            {/* An empty cell is found by its mark, not an outline (`SCR-M01-01`); a digit replaces it. */}
-            {slot.char === '' ? <span className="hg-otp-bar" aria-hidden="true" /> : null}
           </span>
         ))}
       </div>

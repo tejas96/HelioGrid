@@ -5,21 +5,22 @@ import { Text } from '../../primitives/Text/Text';
 import { useOwnWidth } from '../../primitives/use-own-width';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Banner } from '../Banner';
-import { Block } from '../Block';
 import { Button } from '../Button';
 import { RetryButton } from '../Button/RetryButton';
 import { DataTable, Pagination } from '../DataTable';
 import { EmptyState } from '../EmptyState';
 import { LoadingBars } from '../LoadingBars';
+import { LottieMoment } from '../LottieMoment/LottieMoment';
 import { useFormat } from '../MarketProvider';
-import { CATALOG_WIDE_FROM, catalogRowPending } from './CatalogItems.rows';
+import { CatalogItemList } from './CatalogItemList';
+import { CATALOG_ROOMY_FROM, CATALOG_WIDE_FROM, catalogRowPending } from './CatalogItems.rows';
 import type {
   CatalogItemsProps,
   CatalogItemsWords,
   CatalogPaging,
   CatalogRow,
 } from './CatalogItems.types';
-import { narrowColumns, wideColumns } from './CatalogItemsColumns';
+import { wideColumns } from './CatalogItemsColumns';
 import { CatalogItemsControls } from './CatalogItemsControls';
 import { CatalogRowActs } from './CatalogRowActs';
 import { CatalogStripBar } from './CatalogStrip';
@@ -39,6 +40,7 @@ export function CatalogItems(props: CatalogItemsProps) {
   const { words, read } = props;
   const [room, width] = useOwnWidth();
   const wide = width !== null && width >= CATALOG_WIDE_FROM;
+  const roomy = width !== null && width >= CATALOG_ROOMY_FROM;
   /* A dismissed row's line hands the keyboard to the strip's title, which stays. */
   const stripTitle = useRef<HTMLDivElement>(null);
 
@@ -76,11 +78,17 @@ export function CatalogItems(props: CatalogItemsProps) {
         <Banner kind="info" density="functional" title={props.viewOnly} />
       )}
       {props.teaching === null || loading ? null : (
-        <Block overline={words.makeItYours} density="functional">
-          <Text variant="body-sm" color="secondary">
-            {props.teaching}
-          </Text>
-        </Block>
+        <section className="hg-cat-teach" aria-label={words.makeItYours}>
+          <LottieMoment name="empty-catalog" size={72} />
+          <div className="hg-cat-teach-words">
+            <Text variant="overline" color="secondary">
+              {words.makeItYours}
+            </Text>
+            <Text variant="body" color="secondary">
+              {props.teaching}
+            </Text>
+          </div>
+        </section>
       )}
       {wide ? <ListEntries props={props} wide /> : null}
       <CatalogItemsControls
@@ -92,7 +100,9 @@ export function CatalogItems(props: CatalogItemsProps) {
         sort={props.sort}
         onSort={props.onSort}
         schemes={props.schemes}
+        kindCounts={props.kindCounts}
         wide={wide}
+        scrollKinds={!roomy}
         resultCount={props.paging.rowCount}
         loadingKinds={loading}
       />
@@ -104,7 +114,7 @@ export function CatalogItems(props: CatalogItemsProps) {
           <LoadingBars label={words.loadingList} bars={LOADING_ROWS} />
         </section>
       ) : (
-        <CatalogList {...props} wide={wide} focusAfter={stripTitle} />
+        <CatalogList {...props} wide={wide} roomy={roomy} focusAfter={stripTitle} />
       )}
       {wide || loading ? null : <ListEntries props={props} wide={false} />}
     </div>
@@ -158,7 +168,9 @@ function ImportEntry({ onImport, label, wide }: EntryProps & { onImport: () => v
 }
 
 /** The list, its pager or its growing foot, and the archived count's caption under it. */
-function CatalogList(props: CatalogItemsProps & { wide: boolean; focusAfter: FocusAfter }) {
+function CatalogList(
+  props: CatalogItemsProps & { wide: boolean; roomy: boolean; focusAfter: FocusAfter },
+) {
   const { words, wide, administers } = props;
   const format = useFormat();
   const facts = {
@@ -167,18 +179,39 @@ function CatalogList(props: CatalogItemsProps & { wide: boolean; focusAfter: Foc
     administers,
     money: (amount: string) => format.money(amount),
   };
+  const foot = (
+    <>
+      <ListFoot paging={props.paging} words={words} />
+      {props.archivedCaption === null ? null : (
+        <Text variant="caption" color="secondary" align="center">
+          {props.archivedCaption}
+        </Text>
+      )}
+    </>
+  );
+  /* Narrow — a phone, or beside the docked editor — the list is one glass card of rows. */
+  if (!wide) {
+    return (
+      <CatalogItemList
+        props={props}
+        toggles={props.roomy}
+        focusAfter={props.focusAfter}
+        foot={foot}
+      />
+    );
+  }
   const acts = (row: CatalogRow, form: { stacked: boolean }) => (
     <CatalogRowActs row={row} stacked={form.stacked} acts={props} />
   );
   const table = {
     ...words.table,
+    emptyMoment: 'empty-catalog' as const,
     read: props.read,
     rows: [...props.rows],
     rowKey: 'id',
-    columns: wide ? wideColumns(facts) : narrowColumns(facts),
+    columns: wideColumns(facts),
     caption: words.region,
-    summary: wide ? undefined : words.summary,
-    head: wide ? ('quiet' as const) : ('overline' as const),
+    head: 'quiet' as const,
     density: 'compact' as const,
     stackBelow: CATALOG_WIDE_FROM,
     rowLabel: (row: CatalogRow) => row.labels.row,
@@ -198,12 +231,7 @@ function CatalogList(props: CatalogItemsProps & { wide: boolean; focusAfter: Foc
       ) : (
         <DataTable<CatalogRow> {...table} />
       )}
-      <ListFoot paging={props.paging} words={words} />
-      {props.archivedCaption === null ? null : (
-        <Text variant="caption" color="secondary" align="center">
-          {props.archivedCaption}
-        </Text>
-      )}
+      {foot}
     </section>
   );
 }

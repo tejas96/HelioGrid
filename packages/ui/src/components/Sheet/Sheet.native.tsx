@@ -7,11 +7,11 @@ import { KeyboardFrame } from '../../primitives/Keyboard/KeyboardFrame.native';
 import { Portal, usePortalBottomInset } from '../../primitives/Portal/Portal.native';
 import { retryOf, surfaceStateOf } from '../UnavailableNote/UnavailableNote.read';
 import { OverlayBody } from './OverlayBody.native';
-import { isBodyScrolled } from './Sheet.logic';
+import { isBodyScrolled, sheetHeaderOf } from './Sheet.logic';
 import type { SheetDensity, SheetProps, SheetSize } from './Sheet.types';
 import { SheetBackdrop } from './SheetBackdrop.native';
 import { SheetHandle } from './SheetHandle.native';
-import { SheetHeader } from './SheetHeader.native';
+import { SheetHeaderSlot } from './SheetHeader.native';
 import { SheetMeta } from './SheetMeta.native';
 import { SheetSkeleton } from './SheetSkeleton.native';
 import { percentOf, SHEET_HEIGHT, useKeyboardLift } from './use-keyboard-lift.native';
@@ -38,9 +38,8 @@ const DRAG_DISMISS = 96;
  *   `accessibilityViewIsModal`, which is what hides the layer behind from a screen reader.
  * · The web half clears the home-indicator band in CSS; here the app root hands the band's height
  *   to `PortalHost`, and the sheet's last line sits above it.
- * · The body scroll lock is inherent: a modal sheet's layer covers the screen. A non-modal one
- *   sets `pointerEvents="box-none"` so the surface behind stays live and scrollable — the same
- *   three-things-together decision the web half makes.
+ * · The body scroll lock is inherent: a modal sheet's layer covers the screen; a non-modal one sets
+ *   `pointerEvents="box-none"`, so the surface behind stays live and scrollable, as on the web.
  */
 export function Sheet({
   open = true,
@@ -69,6 +68,7 @@ export function Sheet({
   retryLabel,
   emptyTitle,
   emptyMessage,
+  emptyMoment,
   emptyAction = null,
   unavailableTitle,
   unavailableMessage,
@@ -136,12 +136,12 @@ export function Sheet({
   }
 
   const ladder = DENSITY[density];
-  const hasHeader = title !== undefined || overline !== undefined || showClose;
+  const header = sheetHeaderOf(handle, showClose, [title, overline, subtitle]);
   const onLayout = (event: LayoutChangeEvent) => setPanelHeight(event.nativeEvent.layout.height);
 
   const bodyPad = [
     ladder.bodyPad,
-    hasHeader ? styles.bodyNoTop : undefined,
+    header.row ? styles.bodyNoTop : undefined,
     footer === null ? undefined : styles.bodyWithFooter,
     bodyStyle,
     footer === null ? clearBand(ladder.bodyPad, bottomInset) : undefined,
@@ -150,6 +150,7 @@ export function Sheet({
     <OverlayBody
       emptyAction={emptyAction}
       emptyMessage={emptyMessage}
+      emptyMoment={emptyMoment}
       emptyTitle={emptyTitle}
       errorMessage={errorMessage}
       errorTitle={errorTitle}
@@ -195,25 +196,23 @@ export function Sheet({
             style,
           ]}
         >
-          {handle ? <SheetHandle hasHeader={hasHeader} pan={pan} /> : null}
-
-          {hasHeader ? (
-            <View {...(handle ? {} : pan.panHandlers)}>
-              <SheetHeader
-                density={density}
-                leading={leading}
-                handle={handle}
-                closeLabel={closeLabel}
-                onClose={onClose}
-                overline={overline}
-                scrolled={scrolled}
-                showClose={showClose}
-                status={status}
-                subtitle={subtitle}
-                subtitleFace={subtitleFace}
-                title={title}
-              />
-            </View>
+          {handle ? <SheetHandle hasHeader={header.row} pan={pan} /> : null}
+          {header.drawn ? (
+            <SheetHeaderSlot
+              panHandlers={handle ? undefined : pan.panHandlers}
+              density={density}
+              leading={leading}
+              handle={handle}
+              closeLabel={closeLabel}
+              onClose={onClose}
+              overline={overline}
+              scrolled={scrolled}
+              showClose={showClose}
+              status={status}
+              subtitle={subtitle}
+              subtitleFace={subtitleFace}
+              title={title}
+            />
           ) : null}
 
           <SheetMeta meta={meta} density={density} />

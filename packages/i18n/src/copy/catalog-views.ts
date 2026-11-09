@@ -18,14 +18,12 @@ import {
   CATALOG_SETTINGS,
   type CatalogStill,
   catalogEditFailed,
+  catalogKind,
+  catalogProvenance,
   catalogViewOnly,
 } from './catalog-settings';
-import {
-  catalogEditorChips,
-  catalogItemsWords,
-  catalogReleaseStripWords,
-  catalogRowWords,
-} from './catalog-words';
+import { catalogSpecCells } from './catalog-spec-cells';
+import { catalogItemsWords, catalogReleaseStripWords, catalogRowWords } from './catalog-words';
 
 type T = Translator['t'];
 
@@ -66,7 +64,7 @@ export function catalogRowOf(
   };
 }
 
-/** The price editor's item card. */
+/** The price editor's item: its kind, whose it is, its name, its spec as a grid and its marks. */
 export function catalogEditedItemOf(
   t: T,
   item: ResolvedCatalogItemWire,
@@ -74,9 +72,13 @@ export function catalogEditedItemOf(
   formats: CatalogFormats,
 ) {
   return {
+    kind: item.spec.kind,
+    kindWord: catalogKind(t, item.spec.kind),
     overline: t(item.source === 'own_item' ? CATALOG_EDITOR.ownItem : CATALOG_EDITOR.platformItem),
     name: `${item.brand} ${item.model}`,
-    chips: catalogEditorChips(t, item.spec, item.provenance, formats.number),
+    specs: catalogSpecCells(t, item.spec, formats.number),
+    provenance: item.provenance,
+    provenanceWord: catalogProvenance(t, item.provenance),
     held: heldOf(item, schemes),
   };
 }
@@ -242,8 +244,8 @@ export function catalogPublishProblem(
 
 /**
  * The publish dialog's body from the preview (`SCR-M01-15` s-publish): the count tiles and change
- * cards, the refusal under the name — the publish's own, or the preview's empty set, said as the
- * publish would say it — and whether *Publish* may be pressed.
+ * cards, the publish's own refusal under the name, the calm state in the name's place when the
+ * preview carries nothing new, and whether *Publish* may be pressed.
  */
 export function catalogPublishView(
   t: T,
@@ -259,7 +261,11 @@ export function catalogPublishView(
   return {
     changes:
       counts === undefined ? null : catalogReleaseChangesOf(t, counts, preview.lines, formats),
-    problem: catalogPublishProblem(t, empty ? 'nothing-changed' : refusal),
+    problem: catalogPublishProblem(t, refusal),
+    /* Nothing new is no fault of the name: the body says it calmly in the name's place. */
+    empty: empty
+      ? { title: t(CATALOG_EDITOR.nothingToPublish), line: t(CATALOG_EDITOR.nothingChanged) }
+      : null,
     sendable: counts !== undefined && !empty,
     moreLabel: t(CATALOG_EDITOR.moreChanges),
   };

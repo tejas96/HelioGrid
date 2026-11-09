@@ -1,7 +1,8 @@
 /* OptionCardGroup — a card-shaped radiogroup. One tab stop, arrow keys move the selection.
-   Each available option is a tile (F7-49), drawn by Ground.css's tiles list; an off option is not,
-   and lies on the page. Selection reads as a 2px accent ring PLUS a filled dot, so it is never
-   carried by colour alone. `current` is a different fact from selected and takes a word in a
+   Each available option is a glass tile (F7-49), drawn by Ground.css's tiles list; an off option is
+   not, and lies on the page. Picked, a card turns to solar glass — the logo's light and a faint
+   PV-cell grid in its lit corner — and keeps a 2px accent ring PLUS a filled mark, so the pick is
+   never carried by colour alone. `current` is a different fact from selected and takes a word in a
    neutral pill (StatusMark), never the accent. */
 
 .hg-option-card-group {
@@ -41,6 +42,9 @@
 /* ── the card ─────────────────────────────────────────────────────────────── */
 
 .hg-option-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   align-items: flex-start;
   gap: var(--sp-3);
@@ -50,11 +54,44 @@
   text-align: left;
   border: none;
   cursor: pointer;
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   font-family: var(--font-sans);
   transition:
     box-shadow var(--dur-standard) var(--ease-standard),
-    background var(--dur-standard) var(--ease-standard);
+    background var(--dur-standard) var(--ease-standard),
+    transform var(--dur-micro) var(--ease-standard);
+}
+
+/* The faint PV-cell grid of solar glass, in the picked card's lit corner. */
+.hg-option-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--panel-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--panel-line) 1px, transparent 1px);
+  background-size: var(--sp-8) var(--sp-8);
+  -webkit-mask-image: radial-gradient(70% 120% at 100% 0%, var(--text-primary) 0%, transparent 70%);
+  mask-image: radial-gradient(70% 120% at 100% 0%, var(--text-primary) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity var(--dur-emphasised) var(--ease-standard);
+}
+
+/* A card with only its title — a language — centres it on its chip, with no empty line under it. */
+.hg-option-card:not(:has(.hg-option-card-description, .hg-option-card-content)) {
+  align-items: center;
+}
+
+.hg-option-card:active:not([data-off="true"]) {
+  transform: scale(0.985);
+}
+
+@media (hover: hover) {
+  .hg-option-card:hover:not([data-off="true"]):not([data-selected="true"]) {
+    box-shadow: var(--e3);
+  }
 }
 
 .hg-option-card[data-density="functional"] {
@@ -62,8 +99,19 @@
   border-radius: var(--r-card-functional);
 }
 
-.hg-option-card[data-selected="true"] {
-  box-shadow: 0 0 0 2px var(--accent);
+.hg-option-card[data-selected="true"]:not([data-off="true"]) {
+  background: var(--panel-glow);
+  box-shadow:
+    0 0 0 2px var(--accent),
+    var(--e3);
+}
+
+.hg-option-card[data-selected="true"]:not([data-off="true"])::before {
+  opacity: 1;
+}
+
+[data-field-mode="on"] .hg-option-card[data-selected="true"]:not([data-off="true"]) {
+  background: var(--hg-ground);
 }
 
 /* Off the tiles' list, so it reads the ground that holds it. No fill: a grey tile is what can be
@@ -191,11 +239,34 @@
   color: var(--text-tertiary);
 }
 
+/* The option's icon in a chip at the card's start: the control fill at rest; picked, the logo's
+   disc with the icon in the inverse ink. */
 .hg-option-card-icon {
+  display: grid;
   flex-shrink: 0;
-  color: var(--text-tertiary);
+  place-items: center;
+  width: var(--sp-12);
+  height: var(--sp-12);
+  border-radius: var(--r-sm);
+  background: var(--hg-control-fill);
+  color: var(--accent);
+  transition:
+    background var(--dur-standard) var(--ease-standard),
+    color var(--dur-standard) var(--ease-standard);
 }
 
-.hg-option-card[data-selected="true"] .hg-option-card-icon {
-  color: var(--accent);
+.hg-option-card[data-density="functional"] .hg-option-card-icon {
+  width: var(--sp-10);
+  height: var(--sp-10);
+  border-radius: var(--rf-lg);
+}
+
+.hg-option-card[data-selected="true"]:not([data-off="true"]) .hg-option-card-icon {
+  background: var(--gradient-mark);
+  box-shadow: var(--e2);
+}
+
+/* The icon's ink on the logo's disc: the inverse, as on every mark the gradient holds. */
+.hg-option-card[data-selected="true"]:not([data-off="true"]) .hg-option-card-icon > * {
+  color: var(--text-inverse);
 }

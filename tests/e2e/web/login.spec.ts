@@ -8,6 +8,7 @@ import {
   SIGN_IN,
 } from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
+import { codeSentTo } from '../support/api-log';
 import { expectNoSeriousViolations } from '../support/axe';
 import {
   createCompany,
@@ -46,6 +47,23 @@ test('a new number signs in with the code it was sent and is taken to set up its
   await expect(page).toHaveURL(/\/company-signup$/);
   await expect(page.getByRole('heading', { name: en.t(COMPANY_SIGNUP.yourCompany) })).toBeVisible();
   await expectNoSeriousViolations(page);
+});
+
+test('Enter sends the number, and Enter in the code boxes signs in, as a keyboard user expects', async ({
+  page,
+}) => {
+  await page.goto('/login');
+  await expectNumberFieldRinged(page, en);
+  const mobile = freshMobile();
+  const since = Date.now();
+  await page.getByRole('textbox', { name: en.t(SIGN_IN.mobileNumber) }).fill(mobile.national);
+  await page.keyboard.press('Enter');
+  const code = await codeSentTo(mobile.e164, since);
+
+  await typeCode(page, en, code);
+  await page.keyboard.press('Enter');
+
+  await expect(page).toHaveURL(/\/company-signup$/);
 });
 
 test('the door speaks every language in the set, each in its own words', async ({ page }) => {

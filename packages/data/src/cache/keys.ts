@@ -55,6 +55,9 @@ export const queryKeys = {
     items: (tenantId: string, ask: unknown) => ['catalog', tenantId, 'items', ask] as const,
     count: (tenantId: string, of: 'all' | 'archived' | 'changed') =>
       ['catalog', tenantId, 'count', of] as const,
+    /** One kind's item count, for the kind chips: under the prefix, so every act refreshes it. */
+    kindCount: (tenantId: string, kind: string) =>
+      ['catalog', tenantId, 'kind-count', kind] as const,
     releases: (tenantId: string) => ['catalog', tenantId, 'releases'] as const,
     release: (tenantId: string, id: string) => ['catalog', tenantId, 'release', id] as const,
     /** What a publish now would carry: under the prefix, so every act and the publish refresh it. */

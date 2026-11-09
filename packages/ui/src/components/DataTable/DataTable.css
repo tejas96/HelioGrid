@@ -97,7 +97,10 @@
   letter-spacing: var(--tr-overline);
   text-transform: uppercase;
   color: var(--text-secondary);
-  background: var(--hg-ground);
+  /* Sticky: it paints its holder's own fill, frosted, so it reads as the tile while rows run under it. */
+  background: var(--hg-ground-fill, var(--hg-ground));
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
   text-align: left;
   position: sticky;
   top: 0;

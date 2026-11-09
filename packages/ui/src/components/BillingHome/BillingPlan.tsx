@@ -1,31 +1,29 @@
 import { Text } from '../../primitives/Text/Text';
 import { Accordion } from '../Accordion';
-import { ShellGlyph } from '../AppShell';
 import { BillingValueText } from '../BillingStrip/BillingValue';
 import { Block } from '../Block';
 import { Button } from '../Button';
 import { Explainer } from '../Explainer';
 import { FactRow, FactRows } from '../FactRow';
 import { HeroPanel } from '../HeroPanel';
-import { ListRow } from '../ListRow';
+import { ProgressRing } from '../ProgressRing';
 import { Provenance } from '../Provenance';
 import { ScopeNote } from '../ScopeNote';
-import { UsageMeter } from '../UsageMeter';
 import type {
   BillingBodyActing,
+  BillingFact,
   BillingHomeWords,
   BillingMethodView,
   BillingPlanView,
-  BillingUsageView,
 } from './BillingHome.types';
 import { BillingChipMark, BillingWorking } from './BillingNeeds';
 import { BillingPairs } from './BillingPairs';
-
-const CHEVRON = <ShellGlyph name="chevron-right" />;
+import { BillingQuiet } from './BillingQuiet';
 
 /**
- * `Your plan`, the page's one hero: the plan's name large, its chip and where it comes from, then
- * the facts, the next bill's working, the one way to change it, and what it includes.
+ * `Your plan`, the page's one hero: the plan's name large with its few facts, the ring of days left
+ * beside it, the next bill's working, the one way to change it, and what it includes opened in
+ * place. The ring speaks the days left, so its fact is not printed twice.
  */
 export function BillingPlan({
   plan,
@@ -37,7 +35,8 @@ export function BillingPlan({
   /** Absent while another act's answer is out: the route waits. */
   onRoute: (() => void) | undefined;
 }) {
-  const [named, ...facts] = plan.rows;
+  const [named, ...rest] = plan.rows;
+  const facts = plan.countdown === null ? rest : rest.filter((fact) => fact.key !== 'left');
   return (
     <HeroPanel
       label={words.yourPlan}
@@ -48,13 +47,26 @@ export function BillingPlan({
         </>
       }
     >
-      {named === undefined ? null : (
-        <p className="hg-billing-hero-name">
-          <BillingValueText value={named.value} />
-        </p>
-      )}
-      <div className="hg-billing-stack" data-gap="3">
-        {facts.length > 0 ? <BillingPairs label={words.yourPlan} facts={facts} /> : null}
+      <div className="hg-billing-hero-top">
+        <div className="hg-billing-hero-lead">
+          {named === undefined ? null : (
+            <p className="hg-billing-hero-name">
+              <BillingValueText value={named.value} />
+            </p>
+          )}
+          {facts.length > 0 ? <HeroFacts facts={facts} /> : null}
+        </div>
+        {plan.countdown === null ? null : (
+          <ProgressRing
+            share={plan.countdown.share}
+            value={plan.countdown.figure}
+            caption={plan.countdown.caption}
+            spokenName={plan.countdown.spoken}
+            onPanel
+          />
+        )}
+      </div>
+      <div className="hg-billing-stack" data-gap="4">
         {plan.scope === null ? null : (
           <ScopeNote title={plan.scope.title} variant="line" size={13} />
         )}
@@ -63,7 +75,7 @@ export function BillingPlan({
         )}
         {plan.route === null ? null : (
           <div className="hg-billing-hero-route">
-            <Button variant="primary" size="md" onClick={onRoute} disabled={onRoute === undefined}>
+            <Button variant="primary" size="lg" onClick={onRoute} disabled={onRoute === undefined}>
               {plan.route.title}
             </Button>
             {plan.route.subtitle === null ? null : (
@@ -90,50 +102,25 @@ export function BillingPlan({
   );
 }
 
-/** `Usage this cycle`: `SCR-M12-04`'s meters nearest their limits, the route, two source lines. */
-export function BillingUsage({
-  usage,
-  words,
-  onAllUsage,
-}: {
-  usage: BillingUsageView;
-  words: BillingHomeWords;
-  /** Absent while another act's answer is out: the route waits. */
-  onAllUsage: (() => void) | undefined;
-}) {
+/** The plan's few facts under its name: a quiet label, its value strong; the price as a figure. */
+function HeroFacts({ facts }: { facts: readonly BillingFact[] }) {
   return (
-    <Block
-      title={words.usageThisCycle}
-      density="expressive"
-      footer={
-        <span className="hg-billing-sources">
-          {usage.sources.map((source) => (
-            <Provenance key={source} source={source} size={12} />
-          ))}
-        </span>
-      }
-    >
-      <div className="hg-billing-stack" data-gap="5">
-        {usage.meters.map((meter) => (
-          <UsageMeter
-            key={meter.key}
-            density="expressive"
-            label={meter.label}
-            words={words.usageMeter}
-            value={meter.value}
-            limit={meter.limit}
-            unit={meter.unit ?? undefined}
-          />
-        ))}
-        <ListRow
-          className="hg-billing-flush"
-          density="functional"
-          title={words.allUsage}
-          trailing={CHEVRON}
-          onClick={onAllUsage}
-        />
-      </div>
-    </Block>
+    <dl className="hg-billing-hero-facts">
+      {facts.map((fact) => (
+        <div key={fact.key} className="hg-billing-hero-fact" data-key={fact.key}>
+          {/* A price under the name is read as the figure it is; its label is still spoken. */}
+          <dt className={fact.key === 'price' ? 'hg-spoken-only' : undefined}>{fact.label}</dt>
+          <dd>
+            <BillingValueText value={fact.value} />
+            {fact.under === null ? null : (
+              <span className="hg-billing-hero-under">
+                <BillingValueText value={fact.under} />
+              </span>
+            )}
+          </dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 
@@ -166,12 +153,7 @@ export function BillingMethod({
     >
       <div className="hg-billing-stack" data-gap="3">
         {method.value === null ? (
-          <FactRows label={words.paymentMethod} density="expressive" form="lead">
-            <FactRow
-              label={words.method}
-              gap={method.gap === null ? undefined : { gap: method.gap, scale: 'field' }}
-            />
-          </FactRows>
+          <BillingQuiet art="card" title={method.gap ?? words.method} message={null} />
         ) : (
           <FactRows
             className="hg-billing-pairs"

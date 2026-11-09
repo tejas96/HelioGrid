@@ -15,6 +15,8 @@ export const TEAM = {
   loading: /*i18n*/ { id: 'Loading your team' },
   loadFailed: /*i18n*/ { id: 'The team list didn’t load' },
   alone: /*i18n*/ { id: 'It’s just you so far' },
+  /** The toast with the `sent` moment once a new invite stands on the team. */
+  inviteSent: /*i18n*/ { id: 'Invite sent' },
   aloneLine: /*i18n*/ { id: 'Invite the people who sell, survey, design and install.' },
   clearSearch: /*i18n*/ { id: 'Clear search' },
   showAll: /*i18n*/ { id: 'Show all' },

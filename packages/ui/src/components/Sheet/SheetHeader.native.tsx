@@ -1,12 +1,13 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
-import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
+import type { GestureResponderHandlers, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { StatusChip } from '../StatusChip/StatusChip.native';
 import { OverlayClose } from './OverlayClose.native';
+import { sheetHeaderOf } from './Sheet.logic';
 import type { OverlayStatus, OverlaySubtitleFace, SheetDensity } from './Sheet.types';
 
 interface SheetHeaderProps {
@@ -28,10 +29,13 @@ interface SheetHeaderProps {
   style?: StyleProp<ViewStyle>;
 }
 
-/** 1.25 line-height on the reference's 20/17 title sizes; RN takes points, not a ratio. */
-const TITLE: Record<SheetDensity, TextStyle> = {
-  expressive: { fontWeight: '700', letterSpacing: -0.4, lineHeight: 25 },
-  functional: { fontWeight: '700', letterSpacing: -0.34, lineHeight: 21 },
+/**
+ * A sheet's title is a title: the display face, as the web's. A functional sheet, dense with
+ * fields, keeps the compact UI title — 1.25 line-height on the reference's 17 size.
+ */
+const TITLE_LOOK: Record<SheetDensity, { variant: 'figure' | 'h4'; style?: TextStyle }> = {
+  expressive: { variant: 'figure' },
+  functional: { variant: 'h4', style: { fontWeight: '700', letterSpacing: -0.34, lineHeight: 21 } },
 };
 
 /**
@@ -75,8 +79,8 @@ export function SheetHeader({
           {title === undefined ? null : (
             <View style={styles.titleLine}>
               <Text
-                variant={density === 'functional' ? 'h4' : 'h3'}
-                style={TITLE[density]}
+                variant={TITLE_LOOK[density].variant}
+                style={TITLE_LOOK[density].style}
                 fixedSize
               >
                 {title}
@@ -119,6 +123,33 @@ function Lead({ leading, children }: { leading: ReactNode; children: ReactNode }
     </View>
   );
 }
+
+interface SheetHeaderSlotProps extends Omit<SheetHeaderProps, 'style'> {
+  /** The drag, when no handle above the header takes it. */
+  panHandlers?: GestureResponderHandlers;
+}
+
+/**
+ * Where the header sits in the panel: a row of its own, or — the close alone — at the end of the
+ * handle's row, as on the web, so a sheet whose content opens on its own title keeps that row.
+ */
+export function SheetHeaderSlot({ panHandlers, ...header }: SheetHeaderSlotProps) {
+  const bare = sheetHeaderOf(header.handle, header.showClose, [
+    header.title,
+    header.overline,
+    header.subtitle,
+  ]).closeOnly;
+  return (
+    <View {...panHandlers} style={bare ? slot.closeOnly : undefined}>
+      <SheetHeader {...header} style={bare ? slot.bare : undefined} />
+    </View>
+  );
+}
+
+const slot = StyleSheet.create({
+  closeOnly: { position: 'absolute', top: 0, right: theme.spacing['sp-3'], zIndex: 2 },
+  bare: { padding: 0, backgroundColor: 'transparent' },
+});
 
 const styles = StyleSheet.create({
   header: {

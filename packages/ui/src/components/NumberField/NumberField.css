@@ -70,6 +70,27 @@
 }
 
 /* A unit is part of the number, so it is load-bearing and never tertiary (F7-11). */
+/* Money's currency symbol (`CurrencyMark`): mono and quiet, a hairline between it and the amount. */
+.hg-number-field-currency {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.hg-number-field-currency[data-side="before"] {
+  margin-inline-end: var(--sp-3);
+  padding-inline-end: var(--sp-3);
+  border-inline-end: 1px solid var(--line-soft);
+}
+
+.hg-number-field-currency[data-side="after"] {
+  margin-inline-start: var(--sp-3);
+  padding-inline-start: var(--sp-3);
+  border-inline-start: 1px solid var(--line-soft);
+}
+
 .hg-number-field-unit {
   padding-right: var(--sp-1);
   font-size: var(--fs-body-sm);

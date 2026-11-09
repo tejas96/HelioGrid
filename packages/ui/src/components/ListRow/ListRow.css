@@ -18,7 +18,9 @@
   background: transparent;
   border-radius: var(--r-md);
   box-shadow: var(--surface-edge);
-  transition: background var(--dur-standard) var(--ease-standard);
+  transition:
+    background var(--dur-standard) var(--ease-standard),
+    transform var(--dur-micro) var(--ease-standard);
 }
 
 .hg-list-row[data-density="functional"] {
@@ -34,6 +36,11 @@
 
 .hg-list-row[data-clickable="true"] {
   cursor: pointer;
+}
+
+/* A press sinks the row a touch, so every tap answers at once. */
+.hg-list-row[data-clickable="true"]:active {
+  transform: scale(0.985);
 }
 
 /* A clickable row is a button and takes the ring every focusable surface draws. */

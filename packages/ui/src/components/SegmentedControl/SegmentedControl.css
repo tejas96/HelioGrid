@@ -1,6 +1,6 @@
 /* SegmentedControl — the track takes the control fill (the well on the page, white in a tile);
-   the active pill is the opposite of the track, the ground, at e2, and springs between positions.
-   On the page that is a grey track and a white pill.
+   the active pill is raised out of it (`--thumb`), at e2, and springs between positions. On the
+   page that is a grey track and a white pill; in dark a charcoal track and a lighter pill.
 
    THE TRACK IS A THIRD BACKGROUND AND THE NUMERALS ARE MEASURED ON IT. The well is not
    one of the two backgrounds colors.css certifies text tokens on, and --text-tertiary lands at
@@ -36,9 +36,13 @@
   left: var(--sp-1);
   width: calc((100% - calc(2 * var(--sp-1))) / var(--hg-segmented-control-count));
   border-radius: var(--r-pill);
-  /* biome-ignore lint/plugin/raw-white-css: control — the pill in view is raised, the card colour on every ground */
-  background: var(--surface);
-  box-shadow: var(--e1);
+  /* Raised out of the recessed track: the card colour in light, a lighter step in dark (`--thumb`),
+     so the segment in view is plain to see in every mode. */
+  background: var(--thumb);
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    0 0 0 1px var(--line-soft),
+    var(--e2);
   /* It slides by its own width: a transform, so the move never lays the row out again. */
   transform: translateX(calc(var(--hg-segmented-control-index) * 100%));
   transition: transform var(--dur-emphasised) var(--ease-spring);
@@ -71,6 +75,7 @@
 
 .hg-segmented-control-segment[data-active="true"] {
   color: var(--text-primary);
+  font-weight: var(--fw-semibold);
 }
 
 .hg-segmented-control-segment[aria-disabled="true"],
@@ -111,3 +116,31 @@
 
 /* Marks are ChipGroup's MarkRow and the sentence under the control is ActionReason — both own
    their own treatment, so nothing about either is restated here. */
+
+/* `hg-segmented-control-hug`, on a labelled control's wrapper: the switch hugs its words, every
+   segment as wide as the widest (the sliding pill assumes equal segments), so a few short words are
+   not spread across a wide editor. In a phone-sized row it fills the row instead and the segments
+   shrink to their share, as a phone's own switch does. Measured from its own room, not the window. */
+.hg-segmented-control-hug {
+  align-self: stretch;
+  container-type: inline-size;
+}
+
+.hg-segmented-control-hug .hg-segmented-control-pill {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@container (max-width: 420px) {
+  .hg-segmented-control-hug .hg-segmented-control-pill {
+    width: 100%;
+  }
+
+  .hg-segmented-control-hug .hg-segmented-control-segment {
+    min-width: 0;
+    padding-inline: var(--sp-0-5);
+  }
+}

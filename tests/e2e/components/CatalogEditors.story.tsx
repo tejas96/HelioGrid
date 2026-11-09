@@ -3,8 +3,9 @@ import {
   CATALOG_EDITOR,
   catalogKind,
   catalogPriceEditorWords,
+  catalogProvenance,
   catalogReleaseWords,
-  catalogTechnology,
+  catalogSpecCells,
   createTranslator,
   releaseChangeWord,
 } from '@heliogrid/i18n';
@@ -25,6 +26,21 @@ const READERS = {
 /** The IN pack's two schemes (`F1-44`); a pack with none draws no compliance at all. */
 const IN_SCHEMES = ['ALMM', 'DCR'] as const;
 
+/** The story's panel: its headline facts, the ones its detail grid draws. */
+const PREMIER_SPEC = {
+  kind: 'panel',
+  watt: 550,
+  technology: 'topcon',
+  lengthMm: 2278,
+  widthMm: 1134,
+  vocV: 49.9,
+  vmpV: 42.1,
+  iscA: 13.9,
+  impA: 13.1,
+  tempCoeffVocPct: -0.25,
+  warrantyYears: 30,
+} as const;
+
 /** `s-attrib` / `d-attrib`: a platform panel with the tenant's price and 5% tax, no market rate. */
 export function PriceEditorAsRead({ reader }: { reader: UiLanguage }) {
   const { t } = READERS[reader];
@@ -40,9 +56,13 @@ export function PriceEditorAsRead({ reader }: { reader: UiLanguage }) {
       <CatalogPriceEditor
         words={catalogPriceEditorWords(t, '5%')}
         item={{
+          kind: 'panel',
+          kindWord: catalogKind(t, 'panel'),
           overline: t(CATALOG_EDITOR.platformItem),
           name: 'Premier Energies PE-M550',
-          chips: [catalogKind(t, 'panel'), '550 Wp', catalogTechnology(t, 'topcon')],
+          specs: catalogSpecCells(t, PREMIER_SPEC, String),
+          provenance: 'verified_datasheet',
+          provenanceWord: catalogProvenance(t, 'verified_datasheet'),
           held: IN_SCHEMES,
         }}
         amount={amount}
@@ -54,10 +74,8 @@ export function PriceEditorAsRead({ reader }: { reader: UiLanguage }) {
         switches={{
           hidden,
           onHidden: setHidden,
-          hiddenFromOverride: false,
           preferred: false,
           onPreferred: () => undefined,
-          preferredFromOverride: false,
         }}
         problem={null}
       />

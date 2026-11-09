@@ -1,6 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { GoogleLinkFrame, LoginPress } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
+import type { DoorStory } from '../DoorFrame/DoorFrame.types';
 import type { ExplainerProps } from '../Explainer/Explainer.types';
 import type { PhoneFieldWords } from '../PhoneField/PhoneField.types';
 import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
@@ -39,6 +40,8 @@ export interface DoorLinkStepWords {
  * this draws them and raises the presses.
  */
 export interface DoorLinkStepProps {
+  /** The desktop sky panel's words about the product; the phone's band shows the scene alone. */
+  story?: DoorStory;
   /**
    * The door's language control. It is page chrome from the door's breakpoint only: under it, and
    * on the phone, the header row holds the way back alone (`SCR-M01-01` "375 vertical layout"), so

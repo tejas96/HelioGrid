@@ -21,10 +21,7 @@ export const BRANDING_STAGE = { minScale: 0.6, maxHeight: 186, shortHeight: 120 
 export const BRANDING_LINK_MARK = { width: 100, height: 28 } as const;
 
 /** The logo on its white paper: 200×56 in the 375 box; at width 240 across, the box's inside height. */
-export const BRANDING_LOGO_MARK = {
-  narrow: { width: 200, height: 56 },
-  wide: { width: 240, height: 86 },
-} as const;
+export const BRANDING_LOGO_MARK = { width: 96, height: 56 } as const;
 
 /** *Open full size* (m18-f, d18-i): the cover across a 375 sheet, or in the 720 side panel at width. */
 export const BRANDING_FULL_SIZE = { narrow: 343, wide: 560, panel: 720 } as const;

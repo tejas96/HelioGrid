@@ -4,11 +4,14 @@ import type { BillingValue } from '../BillingHome/BillingHome.types';
 import { BillingChipMark } from '../BillingHome/BillingNeeds';
 import { BillingValueText } from '../BillingStrip/BillingValue';
 import { Block } from '../Block';
+import { Button } from '../Button';
 import { FactRow, FactRows } from '../FactRow';
 import { IconButton } from '../IconButton';
 import { ListRow } from '../ListRow';
 import { Provenance } from '../Provenance';
 import { UsageMeter } from '../UsageMeter';
+import { UsageMeterHead } from '../UsageMeter/UsageMeterHead';
+import { figureText, USAGE_ROW_GLYPH } from './UsagePage.glyphs';
 import type {
   UsageFactView,
   UsageNeedRow,
@@ -120,7 +123,46 @@ interface RowActs {
   readonly onPlans: () => void;
 }
 
-/** One row of a card: its meter, its facts, `Bigger plans` at its cap, and its ledger opener. */
+/** The tile's lead: its meter, or — a row with none, `Biggest design` — its first fact as a figure. */
+function RowLead({ row, words }: { row: UsageRowView; words: UsagePageWords }) {
+  const { meter } = row;
+  const glyph = USAGE_ROW_GLYPH[row.key];
+  if (meter === null) {
+    const lead = row.facts[0];
+    if (lead === undefined || lead.value === null) return null;
+    return (
+      <div className="hg-usage-meter" data-form="tile">
+        <UsageMeterHead label={row.label} form="tile" glyph={glyph}>
+          <strong>{figureText(lead.value)}</strong>
+        </UsageMeterHead>
+      </div>
+    );
+  }
+  return (
+    <UsageMeter
+      density="expressive"
+      form="tile"
+      glyph={glyph}
+      label={row.label}
+      words={words.usageMeter}
+      value={meter.value}
+      limit={meter.limit}
+      unit={meter.unit ?? undefined}
+      period={meter.period ?? undefined}
+      state={meter.state}
+      graceDaysLeft={meter.graceDaysLeft ?? undefined}
+      note={meter.note ?? undefined}
+      noLimitNote={meter.noLimitNote ?? undefined}
+      statusLine={meter.statusLine}
+      defaultNotes={false}
+    />
+  );
+}
+
+/**
+ * One row as a small glass tile: its meter (or its one figure), its other facts, the way to a bigger
+ * plan at its cap, and its ledger opener in the tile's corner.
+ */
 function UsageRow({
   row,
   words,
@@ -132,32 +174,25 @@ function UsageRow({
   plans: UsagePageView['plans'];
   acts: RowActs;
 }) {
-  const { meter, ledger } = row;
+  const { ledger } = row;
+  /* A row with no meter shows its first fact as the tile's figure; the rest follow as rows. */
+  const rest = row.meter === null ? row.facts.slice(1) : row.facts;
   return (
-    <div className="hg-usage-row">
-      <div className="hg-usage-row-body">
-        {meter === null ? null : (
-          <UsageMeter
-            density="expressive"
-            label={row.label}
-            words={words.usageMeter}
-            value={meter.value}
-            limit={meter.limit}
-            unit={meter.unit ?? undefined}
-            period={meter.period ?? undefined}
-            state={meter.state}
-            graceDaysLeft={meter.graceDaysLeft ?? undefined}
-            note={meter.note ?? undefined}
-            noLimitNote={meter.noLimitNote ?? undefined}
-            statusLine={meter.statusLine}
-            defaultNotes={false}
-          />
-        )}
-        {row.facts.length === 0 ? null : <UsageFacts label={row.label} facts={row.facts} />}
-        {row.plans && plans !== null ? (
-          <UsagePlansRow plans={plans} onPlans={acts.onPlans} />
-        ) : null}
-      </div>
+    <div className="hg-usage-tile-row" data-ledger={ledger !== null}>
+      <RowLead row={row} words={words} />
+      {rest.length === 0 ? null : <UsageFacts label={row.label} facts={rest} />}
+      {row.plans && plans !== null ? (
+        <span className="hg-usage-tile-act">
+          <Button
+            variant="secondary"
+            size="sm"
+            icon={<ShellGlyph name="layers" size="sm" />}
+            onClick={acts.onPlans}
+          >
+            {plans.title}
+          </Button>
+        </span>
+      ) : null}
       {ledger === null ? null : (
         <IconButton
           className="hg-usage-ledger"
@@ -174,8 +209,9 @@ function UsageRow({
 }
 
 /**
- * A card at 375 (decision 1): `Limits` or `Included each month`, its rows on ONE edge, the extra
- * charges' total row closing `Included each month` (decision 4), and the two source lines.
+ * A region — `Limits` or `Included each month` — as A's tiles: one small glass tile per row, two to
+ * a row on a phone and as many as fit at width, the extra charges' total closing `Included each
+ * month` across the row (decision 4), and the two source lines at its foot.
  */
 export function UsageRegion({
   region,
@@ -185,7 +221,7 @@ export function UsageRegion({
   acts,
 }: {
   region: UsageRegionView;
-  /** The total row this card ends in; only `Included each month` carries one. */
+  /** The total tile this region ends in; only `Included each month` carries one, at 375. */
   extra: UsagePageView['extra'];
   words: UsagePageWords;
   plans: UsagePageView['plans'];
@@ -197,26 +233,21 @@ export function UsageRegion({
       density="expressive"
       footer={region.sources === null ? undefined : <UsageSources sources={region.sources} />}
     >
-      <div className="hg-usage-stack" data-gap="6">
+      <div className="hg-usage-tiles">
         {region.rows.map((row) => (
           <UsageRow key={row.key} row={row} words={words} plans={plans} acts={acts} />
         ))}
         {extra === null ? null : (
-          <div className="hg-usage-row">
-            <div className="hg-usage-row-body">
-              <FactRows
-                className="hg-usage-facts"
-                label={words.extraCharges}
-                density="expressive"
-                form="pair"
-              >
-                <FactRow
-                  label={words.extraCharges}
-                  value={<UsagePlainFigure text={extra.total} />}
-                />
-                <FactRow label={words.billsOn} value={<UsagePlainFigure text={extra.billsOn} />} />
-              </FactRows>
-            </div>
+          <div className="hg-usage-tile-row" data-span="row">
+            <FactRows
+              className="hg-usage-facts"
+              label={words.extraCharges}
+              density="expressive"
+              form="pair"
+            >
+              <FactRow label={words.extraCharges} value={<UsagePlainFigure text={extra.total} />} />
+              <FactRow label={words.billsOn} value={<UsagePlainFigure text={extra.billsOn} />} />
+            </FactRows>
           </div>
         )}
       </div>

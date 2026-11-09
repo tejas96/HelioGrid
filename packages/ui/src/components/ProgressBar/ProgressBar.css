@@ -14,14 +14,29 @@
   overflow: hidden;
 }
 
+/* The fill is the rail's full width, slid left until only its share shows: a transform, so a
+   change of value never lays the row out again. It fills in from empty when it first shows. */
 .hg-progress-bar-fill {
   height: 100%;
-  width: var(--hg-progress-bar-value, 0%);
+  width: 100%;
   border-radius: var(--r-pill);
   background: var(--accent);
-  transition: width var(--dur-emphasised) var(--ease-standard);
+  transform: translateX(calc((var(--hg-progress-bar-share, 0) - 1) * 100%));
+  transition: transform var(--dur-emphasised) var(--ease-standard);
+  animation: hg-progress-in var(--dur-data) var(--ease-enter) backwards;
 }
 
+/* The logo gradient spans the share that shows, end to end, at any value. */
 .hg-progress-bar-fill[data-gradient="true"] {
-  background: var(--gradient-brand);
+  background-color: transparent;
+  background-image: var(--gradient-brand);
+  background-repeat: no-repeat;
+  background-size: calc(100% * var(--hg-progress-bar-share, 0)) 100%;
+  background-position: 100% 0;
+}
+
+@keyframes hg-progress-in {
+  from {
+    transform: translateX(-100%);
+  }
 }

@@ -8,8 +8,10 @@ import {
   DataTable,
   type DataTableColumn,
   MemberPerson,
-  memberCardOf,
+  memberFactsOf,
+  StatusChip,
   TEAM_STATUS_TONE,
+  useFormat,
 } from '@heliogrid/ui';
 import type { ReactNode } from 'react';
 
@@ -26,36 +28,36 @@ interface TeamTableProps {
 }
 
 /**
- * The team at the table's width (`SCR-M01-12`, `d-default`): Person (the face, the name, *You* and
- * the status), Roles (each in its kind's tone, as the member card draws them) and Last active, in
- * the owner's 2.2 : 2.4 : 1.2, on `DataTable`'s quiet head (design-system change 20), and each
- * row's act in a column of its own.
+ * The team at the table's width (`SCR-M01-12`, `d-default`), as OneOhm lays out its people: Person
+ * (the face, the name with *You*, the phone under it), Roles (each in its kind's tone, as the member
+ * card draws them), Status and Last active, on `DataTable`'s quiet head (design-system change 20),
+ * and each row's act in a column of its own.
  */
 export function TeamTable({ read, words, actions, actOf, openOf }: TeamTableProps) {
   const t = useTranslate();
+  const format = useFormat();
   const columns: DataTableColumn<TeamRow>[] = [
     {
       key: 'person',
       label: t(TEAM.person),
       primary: true,
-      width: '38%',
+      width: '34%',
       render: (row) => (
         <MemberPerson
           name={row.name}
           {...(row.isViewer ? { youLabel: words.you } : {})}
-          status={words.row(row).status}
-          tone={TEAM_STATUS_TONE[row.status]}
+          phone={format.phone(row.phoneE164)}
         />
       ),
     },
     {
       key: 'roles',
       label: t(TEAM.roles),
-      width: '41%',
+      width: '32%',
       wrap: true,
       render: (row) => (
         <div className="hg-team-roles">
-          {memberCardOf(row, words.row(row), words.role, words.you).roles.map((role) => (
+          {memberFactsOf(row, words.row(row), words.role, words.you).roles.map((role) => (
             <Badge key={role.label} tone={role.tone} density="functional">
               {role.label}
             </Badge>
@@ -64,9 +66,21 @@ export function TeamTable({ read, words, actions, actOf, openOf }: TeamTableProp
       ),
     },
     {
+      key: 'status',
+      label: t(TEAM.statusFilter),
+      width: '16%',
+      render: (row) => (
+        <StatusChip
+          label={words.row(row).status}
+          tone={TEAM_STATUS_TONE[row.status]}
+          density="functional"
+        />
+      ),
+    },
+    {
       key: 'last-active',
       label: t(TEAM.lastActive),
-      width: '21%',
+      width: '18%',
       muted: true,
       render: (row) => words.row(row).lastActive,
     },

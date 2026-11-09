@@ -228,5 +228,8 @@ source, `packages/theme/src/tokens/`, holds every value; `packages/ui` builds ev
 - **Motion everywhere it helps, never in the way.** Every interactive element answers (press,
   hover, focus, select, toggle, expand) and every change of state moves, from the motion tokens,
   built once into `packages/ui`. Lottie marks the moments that matter, played once. Taps answer at
-  once, reduced motion shows the end state, a loop stops when its wait ends, and only transform and
-  opacity animate (`.claude/rules/ui-adherence.md`, *Motion*).
+  once, reduced motion shows the end state, a loop stops when its wait ends — calm ambient light
+  behind a door or a page's glow is the one that runs on — and only transform and opacity animate
+  (`.claude/rules/ui-adherence.md`, *Motion*).
+- **The name is the brand.** Doors, the sidebar and the phone's top bar show the HelioGrid wordmark,
+  never the sun tile, until a new logo is drawn.

@@ -83,12 +83,18 @@ for (const [width, height, form] of [
     test(`loading with reduced motion: the bars hold still (${form})`, async ({ mount, page }) => {
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await mount(<AssignRolesAsHeld reader="en" held={VIKRAM} loading />);
+      /* The shimmer is a band of light moved across each part by transform (`::after`); under
+         reduced motion it is never drawn and never moves. */
       const mark = page.locator('.hg-loading-option-mark').first();
-      const at = () => mark.evaluate((node) => getComputedStyle(node).backgroundPosition);
-      const first = await at();
+      const band = () =>
+        mark.evaluate((node) => {
+          const style = getComputedStyle(node, '::after');
+          return `${style.transform} ${style.opacity}`;
+        });
+      const first = await band();
       await page.waitForTimeout(300);
-      expect(await at()).toBe(first);
-      expect(first).toBe('0px 0px');
+      expect(await band()).toBe(first);
+      expect(first).toBe('none 0');
     });
 
     test(`error: a failed save keeps the ticks, the banner says so over the card, Save retries (${form})`, async ({

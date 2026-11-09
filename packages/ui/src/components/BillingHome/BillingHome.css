@@ -37,6 +37,16 @@
   min-width: 0;
 }
 
+/* The regions under the hero are headings on the page: their words and tiles stand on the hero's
+   own edges, not inset from them. */
+.hg-billing-body .hg-block[data-density] {
+  padding: var(--sp-2) 0 0;
+}
+
+.hg-billing-body .hg-block-head {
+  align-items: center;
+}
+
 /* ── shared pieces ──────────────────────────────────────────────────────── */
 
 .hg-billing-stack {
@@ -210,28 +220,4 @@
   line-height: var(--lh-body-sm);
   font-weight: var(--fw-medium);
   color: var(--danger-text);
-}
-
-/* ── the plan, the page's hero ──────────────────────────────────────────────── */
-
-.hg-billing-hero-name {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--fs-display);
-  line-height: var(--lh-display);
-  letter-spacing: var(--tr-display);
-  color: var(--on-panel);
-  font-variant-numeric: tabular-nums;
-}
-
-/* A figure in the plan's name keeps the display face: it is the hero's figure, not a list's. */
-.hg-billing-hero-name .hg-billing-mono {
-  font-family: inherit;
-}
-
-.hg-billing-hero-route {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-3);
 }

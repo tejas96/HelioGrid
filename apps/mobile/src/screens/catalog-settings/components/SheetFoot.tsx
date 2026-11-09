@@ -5,7 +5,8 @@ import { styles } from '../styles';
 
 /**
  * A catalog sheet's pinned foot (`SCR-M01-15` sheetFoot): an optional consequence line centred
- * above *Cancel* and the act, the act the wider.
+ * above *Cancel* and the act, the act the wider — or the act alone, full width, where the sheet's
+ * own close is the way out (the price sheet, direction A).
  */
 export function SheetFoot({
   line = null,
@@ -18,8 +19,9 @@ export function SheetFoot({
   destructive = false,
 }: {
   line?: TranslatedText | null;
-  cancel: TranslatedText;
-  onCancel: () => void;
+  /** Absent on a sheet whose close is the way out: the act then runs the sheet's width. */
+  cancel?: TranslatedText;
+  onCancel?: () => void;
   act: TranslatedText;
   onAct: () => void;
   busy?: boolean;
@@ -34,11 +36,13 @@ export function SheetFoot({
         </Text>
       )}
       <View style={styles.footActs}>
-        <View style={styles.footCancel}>
-          <Button variant="secondary" size="lg" fullWidth onClick={onCancel}>
-            {cancel}
-          </Button>
-        </View>
+        {cancel === undefined || onCancel === undefined ? null : (
+          <View style={styles.footCancel}>
+            <Button variant="secondary" size="lg" fullWidth onClick={onCancel}>
+              {cancel}
+            </Button>
+          </View>
+        )}
         <View style={styles.footAct}>
           <Button
             variant={destructive ? 'destructive' : 'primary'}

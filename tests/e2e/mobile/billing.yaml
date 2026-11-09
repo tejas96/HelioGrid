@@ -37,7 +37,13 @@ appId: com.heliogrid.app
     visible: ${CHOOSE_A_PLAN}
     timeout: 15000
 # A trial's cards carry no relation chip; the card's name leads it (decision 3). The word
-# boundary keeps the bottom bar's `Projects` tab from matching `Pro`.
+# boundary keeps the bottom bar's `Projects` tab from matching `Pro`. The card is brought to the
+# middle first: low on the screen its centre sits under the floating bottom bar, and the tap
+# lands on Home.
+- scrollUntilVisible:
+    element:
+      text: "${PLAN_PRO}\\b.*"
+    centerElement: true
 - tapOn:
     text: "${PLAN_PRO}\\b.*"
 - scrollUntilVisible:

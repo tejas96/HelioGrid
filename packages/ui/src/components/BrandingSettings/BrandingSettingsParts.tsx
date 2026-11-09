@@ -27,7 +27,7 @@ type PartProps = BrandingSettingsProps & { wide: boolean };
 export function BrandingPartSwitch({ words, part, onPart }: BrandingSettingsProps) {
   return (
     <SegmentedControl
-      className="hg-branding-part-switch"
+      className="hg-branding-part-switch hg-segmented-control-hug"
       ariaLabel={words.edit}
       options={[
         { value: 'logo', label: words.logo },
@@ -63,8 +63,9 @@ export function BrandingPart(props: PartProps) {
 }
 
 /**
- * The logo: a refused file said first, the saved mark kept under it (s18-p, s18-s); the mark on
- * white with Replace and Remove, then the limits. With no logo, the place to add one (s18-k).
+ * The logo: a refused file said first, the saved mark kept under it (s18-p, s18-s); the mark in
+ * one row on white with its name, the limits, Replace and Remove. With no logo, the place to add
+ * one (s18-k).
  */
 function LogoPart(props: PartProps) {
   const { words, document, logoRefusal, onChooseLogo } = props;
@@ -99,11 +100,11 @@ function LogoPart(props: PartProps) {
 }
 
 /**
- * A held mark and its two acts. Replace opens the app's picker where it has one; otherwise the
+ * A held mark and its two acts, in one row on its paper: the mark in its tile, the part's name over
+ * the limits, then *Replace* and *Remove* — which drop to their own line when the row runs short. Replace opens the app's picker where it has one; otherwise the
  * browser's own chooser, through a file input no one tabs to — the button is the one control.
  */
 function HeldLogo({
-  wide,
   words,
   logoSrc,
   onChooseLogo,
@@ -113,23 +114,30 @@ function HeldLogo({
 }: PartProps & { logoSrc: string; dropSurface: FocusAfter }) {
   const chooser = useRef<HTMLInputElement>(null);
   const leaving = useFocusAfter(dropSurface);
-  const mark = wide ? BRANDING_LOGO_MARK.wide : BRANDING_LOGO_MARK.narrow;
   return (
     <>
       <div className="hg-branding-logo-paper">
-        <ImageFrame
-          src={logoSrc}
-          alt={words.logoAlt}
-          missingLabel={words.logoUnavailable}
-          missingDetail=""
-          words={words.image}
-          width={mark.width}
-          height={mark.height}
-          fit="contain"
-          density="functional"
-        />
-      </div>
-      <div className="hg-branding-logo-acts">
+        <div className="hg-branding-logo-mark">
+          <ImageFrame
+            src={logoSrc}
+            alt={words.logoAlt}
+            missingLabel={words.logoUnavailable}
+            missingDetail=""
+            words={words.image}
+            width={BRANDING_LOGO_MARK.width}
+            height={BRANDING_LOGO_MARK.height}
+            fit="contain"
+            density="functional"
+          />
+        </div>
+        <div className="hg-branding-logo-words">
+          <Text variant="body-sm" bold>
+            {words.logo}
+          </Text>
+          <Text variant="caption" color="secondary">
+            {words.limits}
+          </Text>
+        </div>
         <div className="hg-branding-logo-buttons">
           <Button
             variant="secondary"
@@ -142,9 +150,6 @@ function HeldLogo({
             {words.remove}
           </Button>
         </div>
-        <Text variant="caption" color="secondary" className="hg-branding-limits">
-          {words.limits}
-        </Text>
       </div>
       {onPickLogo === undefined ? (
         <input

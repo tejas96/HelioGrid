@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { LoginPress } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
-import type { DoorTaskMeasure, DoorTitleProps } from '../DoorFrame/DoorFrame.types';
+import type { DoorStory, DoorTaskMeasure, DoorTitleProps } from '../DoorFrame/DoorFrame.types';
 import type { PhoneFieldWords } from '../PhoneField/PhoneField.types';
 import type { TintedBlockProps } from '../TintedBlock/TintedBlock.types';
 
@@ -31,9 +31,11 @@ export interface DoorRoad {
  * `m-normal`, `SCR-M01-02` `m-step1-number`). The two doors share the field and the primary and
  * differ in what they pass: the title, the road at the foot, and on the signup door the step
  * header, the wider measure and the field's helper. A door with a step header places its heading
- * `sp-8` under it; a door without one centres its column.
+ * `sp-8` under it; a door without one opens its sheet with the heading, under the sky.
  */
 export interface DoorNumberStepProps {
+  /** The desktop sky panel's words about the product; the phone's band shows the scene alone. */
+  story?: DoorStory;
   /** The header row's control: the door's language control. */
   language: ReactNode;
   title: DoorTitleProps;

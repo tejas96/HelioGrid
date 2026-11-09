@@ -8,6 +8,7 @@ import type {
   RolePreset,
   UiLanguage,
 } from '@heliogrid/domain';
+import type { ReactNode } from 'react';
 
 /** Every word the page draws, already translated: `@heliogrid/i18n`'s `profilePreferencesWords`. */
 export interface ProfilePreferencesWords {
@@ -85,4 +86,9 @@ export interface ProfilePreferencesProps {
   /** A group's switch was tapped: its push flips. The page passes no value, since a second tap can
    * land before the switch redraws; the caller flips from what it last asked for. */
   readonly onPush: (group: NotificationTypeGroup) => void;
+  /**
+   * The appearance switch (`AppearanceSwitch`, kept on the device by the app), drawn under the
+   * person's hero so the page's look sits beside who they are.
+   */
+  readonly appearance?: ReactNode;
 }

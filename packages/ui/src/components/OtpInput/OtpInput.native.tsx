@@ -14,23 +14,10 @@ interface NativeOtpInputProps extends OtpInputProps {
 
 const BOX_WIDTH = 48;
 const BOX_HEIGHT = 56;
-/** A stroke, as FieldBox's rings are: the theme carries no stroke-width token. */
-const BAR_HEIGHT = 2;
 
 const styles = StyleSheet.create({
   label: { marginBottom: theme.spacing['sp-2'] },
   boxes: { flexDirection: 'row', gap: theme.spacing['sp-2'] },
-  cell: { position: 'relative' },
-  // The empty cell's mark: --mark-subtle clears 3:1 where the well itself does not (1.10:1).
-  bar: {
-    position: 'absolute',
-    top: (BOX_HEIGHT - BAR_HEIGHT) / 2,
-    left: (BOX_WIDTH - theme.spacing['sp-3']) / 2,
-    width: theme.spacing['sp-3'],
-    height: BAR_HEIGHT,
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: colors['mark-subtle'],
-  },
   box: {
     width: BOX_WIDTH,
     height: BOX_HEIGHT,
@@ -57,6 +44,7 @@ export function OtpInput({
   value = '',
   onChange,
   onComplete,
+  onSubmit,
   label,
   helper,
   error,
@@ -93,7 +81,7 @@ export function OtpInput({
           "Digit n" name and the visible label above names the set. */}
       <View style={styles.boxes}>
         {slots.map((slot) => (
-          <View key={slot.key} style={styles.cell}>
+          <View key={slot.key}>
             <TextInput
               ref={(el) => {
                 refs.current[slot.index] = el;
@@ -109,6 +97,8 @@ export function OtpInput({
                 fieldBoxText(disabled),
               ]}
               keyboardType="number-pad"
+              returnKeyType="done"
+              onSubmitEditing={onSubmit}
               textContentType="oneTimeCode"
               autoComplete="sms-otp"
               accessibilityLabel={words.digitOf(label ?? words.code, slot.index + 1)}
@@ -125,7 +115,6 @@ export function OtpInput({
               onFocus={() => setFocused(slot.index)}
               onBlur={() => setFocused(-1)}
             />
-            {slot.char === '' ? <View style={styles.bar} pointerEvents="none" /> : null}
           </View>
         ))}
       </View>

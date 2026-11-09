@@ -4,9 +4,9 @@ import type { DimensionValue } from 'react-native';
 import { AccessibilityInfo, Animated, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { tileSurface } from '../../primitives/Ground/Ground.native';
-import type { MemberCardsLoadingProps } from './MemberCard.types';
+import type { MemberRowsLoadingProps } from './MemberCard.types';
 
-/** Each placeholder's two name bars, so three cards do not read as one shape repeated. */
+/** Each placeholder's bar widths, so three rows do not read as one shape repeated. */
 const PLACEHOLDERS = [
   { key: 'a', name: '46%', line: '68%', roles: '40%' },
   { key: 'b', name: '52%', line: '60%', roles: '34%' },
@@ -15,32 +15,17 @@ const PLACEHOLDERS = [
 /** Half of the web sweep's 1.4 s: the pulse dims, then returns. */
 const HALF_PULSE_MS = 700;
 
-const styles = StyleSheet.create({
-  list: { gap: theme.layout['tile-gap'] },
-  card: {
-    gap: theme.spacing['sp-3'],
-    padding: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-tile'],
-  },
-  head: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
-  words: { flex: 1, gap: theme.spacing['sp-2'] },
-  bar: { borderRadius: theme.radius['r-pill'], backgroundColor: colors['canvas-sunken'] },
-  face: { width: 48, height: 48 },
-  word: { height: theme.spacing['sp-3'] },
-  roles: { height: theme.spacing['sp-6'] },
-  act: { width: '100%', height: 44 },
-});
-
 function Bar({ style, width }: { style: object; width?: DimensionValue }) {
   return <View style={[styles.bar, style, width === undefined ? null : { width }]} />;
 }
 
 /**
- * Three member cards' shapes while the read is out (`SCR-M01-12`, `m-loading`). React Native has no
- * gradient loop, so the cards pulse opacity; under reduced motion they rest at full ink. React
- * Native has no `status` role: `accessible` makes the region one element so its name speaks.
+ * Three team rows' shapes in the list's one card while the read is out (`SCR-M01-12`, `m-loading`).
+ * React Native has no gradient loop, so the rows pulse opacity; under reduced motion they rest at
+ * full ink. React Native has no `status` role: `accessible` makes the region one element so its
+ * name speaks.
  */
-export function MemberCardsLoading({ label }: MemberCardsLoadingProps) {
+export function MemberRowsLoading({ label }: MemberRowsLoadingProps) {
   const value = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     const loop = Animated.loop(
@@ -66,21 +51,35 @@ export function MemberCardsLoading({ label }: MemberCardsLoadingProps) {
       accessibilityLiveRegion="polite"
       accessibilityState={{ busy: true }}
     >
-      <Animated.View style={[styles.list, { opacity }]}>
-        {PLACEHOLDERS.map((card) => (
-          <View key={card.key} style={[tileSurface, styles.card]}>
-            <View style={styles.head}>
-              <Bar style={styles.face} />
-              <View style={styles.words}>
-                <Bar style={styles.word} width={card.name} />
-                <Bar style={styles.word} width={card.line} />
-              </View>
+      <Animated.View style={[tileSurface, styles.card, { opacity }]}>
+        {PLACEHOLDERS.map((row, index) => (
+          <View key={row.key} style={[styles.row, index === 0 ? undefined : styles.hairline]}>
+            <Bar style={styles.face} />
+            <View style={styles.words}>
+              <Bar style={styles.word} width={row.name} />
+              <Bar style={styles.word} width={row.line} />
+              <Bar style={styles.roles} width={row.roles} />
             </View>
-            <Bar style={styles.roles} width={card.roles} />
-            <Bar style={styles.act} />
           </View>
         ))}
       </Animated.View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  card: { padding: theme.spacing['sp-1'], borderRadius: theme.radius['r-card-expressive'] },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: theme.spacing['sp-3'],
+    paddingVertical: theme.spacing['sp-4'],
+    paddingHorizontal: theme.spacing['sp-3'],
+  },
+  hairline: { borderTopWidth: 1, borderTopColor: colors['line-soft'] },
+  words: { flex: 1, gap: theme.spacing['sp-2'] },
+  bar: { borderRadius: theme.radius['r-pill'], backgroundColor: colors['canvas-sunken'] },
+  face: { width: 40, height: 40 },
+  word: { height: theme.spacing['sp-3'] },
+  roles: { height: theme.spacing['sp-6'] },
+});
