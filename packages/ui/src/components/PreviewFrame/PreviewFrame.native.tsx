@@ -121,6 +121,8 @@ export function PreviewFrame({
           { opacity: pulse },
           loading ? styles.loading : undefined,
           boxHeight === null ? undefined : { height: boxHeight },
+          // Never wider than the subject: past full size it stops growing, so the rest is empty paper.
+          { maxWidth: designWidth * scale, alignSelf: 'center' },
         ]}
       >
         <View

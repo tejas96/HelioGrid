@@ -137,8 +137,20 @@ export class AuthService {
       expiresAt: refreshedExpiry(row.platformKind, now, foreground),
       lastForegroundActivityAt: foreground ? now : null,
     });
-    const minted = await this.tokens.mint(claimsOf(row.userAccountId, row.id, membership), now);
+    const carried = membership ?? (await this.companyMadeSince(row.id, row.userAccountId, now));
+    const minted = await this.tokens.mint(claimsOf(row.userAccountId, row.id, carried), now);
     return { verdict, ...minted };
+  }
+
+  /**
+   * A session with no company takes the one its person now holds — made or joined on another
+   * device after this one signed in, as sign-in would pick it. Without this the device stays on
+   * the company step and offers to make a second company (`M01-10`: no duplicate).
+   */
+  private async companyMadeSince(sessionId: string, userId: string, now: number) {
+    const latest = await this.store.latestActiveMembership(userId);
+    if (latest !== null) await this.store.setActiveTenant(sessionId, latest.tenantId, now);
+    return latest;
   }
 
   async signOut(sessionId: string, now: number): Promise<void> {

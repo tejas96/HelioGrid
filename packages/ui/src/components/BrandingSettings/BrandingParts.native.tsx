@@ -43,8 +43,8 @@ export function BrandingPart(props: PartProps) {
 }
 
 /**
- * The logo: the held or saved mark on the white it prints on, with *Replace* and *Remove* under
- * it and the limits; with none, the capture surface a tap opens the system's picker from. A file
+ * The logo: the held or saved mark in one row on the white it prints on, with its name, the
+ * limits, *Replace* and *Remove*; with none, the capture surface a tap opens the system's picker from. A file
  * refused is said first, and the mark it would have replaced stays (s18-p).
  */
 function LogoPart(props: PartProps) {
@@ -77,7 +77,10 @@ function LogoPart(props: PartProps) {
   );
 }
 
-/** A held mark on the white it prints on, with *Replace* and *Remove* under it and the limits. */
+/**
+ * A held mark and its two acts, in one row on the white it prints on: the mark in its tile, the
+ * part's name over the limits, then *Replace* and *Remove* — on their own line when the row runs short.
+ */
 function HeldLogo({
   words,
   logoSrc,
@@ -90,19 +93,27 @@ function HeldLogo({
     <>
       {/* The paper the mark prints on: a page ground, whatever holds it. */}
       <Surface background="surface" radius="md" style={styles.paper}>
-        <ImageFrame
-          src={logoSrc}
-          alt={words.logoAlt}
-          missingLabel={words.logoUnavailable}
-          missingDetail=""
-          words={words.image}
-          width={BRANDING_LOGO_MARK.narrow.width}
-          height={BRANDING_LOGO_MARK.narrow.height}
-          fit="contain"
-          density="functional"
-        />
-      </Surface>
-      <View style={styles.logoFoot}>
+        <View style={styles.mark}>
+          <ImageFrame
+            src={logoSrc}
+            alt={words.logoAlt}
+            missingLabel={words.logoUnavailable}
+            missingDetail=""
+            words={words.image}
+            width={BRANDING_LOGO_MARK.width}
+            height={BRANDING_LOGO_MARK.height}
+            fit="contain"
+            density="functional"
+          />
+        </View>
+        <View style={styles.logoWords}>
+          <Text variant="body-sm" bold>
+            {words.logo}
+          </Text>
+          <Text variant="caption" color="secondary">
+            {words.limits}
+          </Text>
+        </View>
         <View style={styles.logoActs}>
           <Button variant="secondary" size="sm" onClick={onPickLogo}>
             {words.replace}
@@ -111,10 +122,7 @@ function HeldLogo({
             {words.remove}
           </Button>
         </View>
-        <Text variant="caption" color="secondary" align="center">
-          {words.limits}
-        </Text>
-      </View>
+      </Surface>
     </>
   );
 }
@@ -170,24 +178,33 @@ function LetterheadPart({ words, letterheadFields: fields }: PartProps) {
 const styles = StyleSheet.create({
   /** A refusal, the mark and its foot, `sp-3` apart (`SCR-M01-18`, *Logo* at 375). */
   logo: { gap: theme.spacing['sp-3'] },
-  /** The white box, 108 tall, the mark centred `sp-4` inside its soft edge. */
+  /** One row on the white, `sp-3` apart inside its soft edge; the acts wrap to their own line. */
   paper: {
-    height: 108,
-    padding: theme.spacing['sp-4'],
-    borderWidth: 1,
-    borderColor: colors['line-soft'],
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  /** The acts over the limits line, centred, `sp-2` apart. */
-  logoFoot: { alignItems: 'center', gap: theme.spacing['sp-2'] },
-  /** *Replace* and *Remove*, `sp-2` apart, centred; they wrap when a language runs long. */
-  logoActs: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: theme.spacing['sp-2'],
+    alignItems: 'center',
+    gap: theme.spacing['sp-3'],
+    padding: theme.spacing['sp-3'],
+    borderWidth: 1,
+    borderColor: colors['line-soft'],
   },
+  /** The mark's tile: the logo contained in a quiet well, so a wide or a round mark both read. */
+  mark: {
+    flexShrink: 0,
+    padding: theme.spacing['sp-2'],
+    backgroundColor: colors['canvas-sunken'],
+    borderRadius: theme.radius['r-md'],
+  },
+  /** The part's name over the limits; it keeps room for a word before the acts wrap. */
+  logoWords: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+    minWidth: theme.spacing['sp-24'],
+    gap: theme.spacing['sp-0-5'],
+  },
+  /** *Replace* and *Remove*, `sp-2` apart; they wrap when a language runs long. */
+  logoActs: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing['sp-2'] },
   /** The three letterhead fields, `sp-4` apart. */
   letterhead: { gap: theme.spacing['sp-4'] },
 });

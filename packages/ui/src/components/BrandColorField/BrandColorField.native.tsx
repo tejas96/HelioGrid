@@ -1,4 +1,5 @@
 import { theme } from '@heliogrid/theme';
+import { useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
@@ -17,6 +18,7 @@ import {
   shortVerdict,
   specimenWordColour,
 } from './BrandColorField.verdicts';
+import { BrandColorDot, BrandColorGrid } from './BrandColorGrid.native';
 import { BrandColorSpecimen } from './BrandColorSpecimen.native';
 import { BrandShortVerdict } from './BrandShortVerdict.native';
 import { BrandVerdictLine } from './BrandVerdictLine.native';
@@ -51,6 +53,7 @@ export function BrandColorField({
   const shown = fieldWordsOf(words, { label, helper, specimenLabel, specimenWord });
   const { hex, reading } = readFieldColour(value, showSuggestion);
   const { set, takeInk } = brandColourActs(reading, onChange);
+  const [picking, setPicking] = useState(false);
 
   return (
     <View style={[styles.column, style]}>
@@ -99,9 +102,27 @@ export function BrandColorField({
         helper={hex === null ? words.hexHelper : undefined}
         error={hex === null ? words.hexError : undefined}
         leading={
-          <View style={[styles.chip, hex === null ? undefined : { backgroundColor: hex }]} />
+          <BrandColorDot
+            hex={hex}
+            label={shown.label}
+            open={picking}
+            disabled={disabled}
+            onToggle={() => setPicking((open) => !open)}
+          />
         }
       />
+
+      {picking && !disabled ? (
+        <BrandColorGrid
+          hex={hex}
+          label={shown.label}
+          disabled={disabled}
+          onPick={(picked) => {
+            set(picked);
+            setPicking(false);
+          }}
+        />
+      ) : null}
 
       {reading !== null && specimen ? (
         <View>
@@ -171,12 +192,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: colors.accent,
     ...theme.elevation.e2,
-  },
-  chip: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: colors['canvas-sunken'],
   },
   verdicts: { gap: 7 },
   fixRow: {

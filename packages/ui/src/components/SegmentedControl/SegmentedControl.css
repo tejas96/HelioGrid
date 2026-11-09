@@ -116,3 +116,31 @@
 
 /* Marks are ChipGroup's MarkRow and the sentence under the control is ActionReason — both own
    their own treatment, so nothing about either is restated here. */
+
+/* `hg-segmented-control-hug`, on a labelled control's wrapper: the switch hugs its words, every
+   segment as wide as the widest (the sliding pill assumes equal segments), so a few short words are
+   not spread across a wide editor. In a phone-sized row it fills the row instead and the segments
+   shrink to their share, as a phone's own switch does. Measured from its own room, not the window. */
+.hg-segmented-control-hug {
+  align-self: stretch;
+  container-type: inline-size;
+}
+
+.hg-segmented-control-hug .hg-segmented-control-pill {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@container (max-width: 420px) {
+  .hg-segmented-control-hug .hg-segmented-control-pill {
+    width: 100%;
+  }
+
+  .hg-segmented-control-hug .hg-segmented-control-segment {
+    min-width: 0;
+    padding-inline: var(--sp-0-5);
+  }
+}

@@ -75,23 +75,6 @@
   min-width: 0;
 }
 
-.hg-template-part-switch {
-  align-self: stretch;
-}
-
-.hg-template-part-switch .hg-segmented-control-pill {
-  display: flex;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* Beside the web's rail at 375 the column is 263 wide: 18 px sides left *Sections* no room and
-   the page scrolled sideways, so the segments shrink to their share. A word is never cut. */
-.hg-template[data-layout="narrow"] .hg-template-part-switch .hg-segmented-control-segment {
-  min-width: 0;
-  padding-inline: var(--sp-0-5);
-}
-
 /* A part's blocks, `sp-4` apart (`Cover part`, `Terms part`, `Timeline part`). */
 .hg-template-part {
   display: flex;
