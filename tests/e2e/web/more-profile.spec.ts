@@ -1,7 +1,7 @@
+import { LANGUAGES } from '@heliogrid/domain';
 import {
   createTranslator,
   FIRST_RUN_PROFILE,
-  LANGUAGE_META,
   NAME_AND_PHOTO_EDITOR,
   PROFILE_PREFERENCES,
   presetName,
@@ -39,9 +39,7 @@ test('a person changes language and units in place, and a reload keeps both', as
   await expect(page.getByRole('main').getByText(presetName(en.t, 'epc_owner'))).toBeVisible();
   const languages = page.getByRole('radiogroup', { name: W('language') });
   for (const language of ['en', 'hi', 'mr'] as const)
-    await expect(
-      languages.getByRole('radio', { name: LANGUAGE_META[language].endonym }),
-    ).toBeVisible();
+    await expect(languages.getByRole('radio', { name: LANGUAGES[language].endonym })).toBeVisible();
   await expectNoSidewaysScroll(page);
   await expectNoSeriousViolations(page);
 
@@ -69,7 +67,7 @@ test('a person changes language and units in place, and a reload keeps both', as
   );
   await page
     .getByRole('radiogroup', { name: W('language') })
-    .getByRole('radio', { name: LANGUAGE_META.hi.endonym })
+    .getByRole('radio', { name: LANGUAGES.hi.endonym })
     .click();
   expect((await languageSaved).status()).toBe(200);
   const hindiTitle = page.getByRole('heading', {
@@ -99,7 +97,7 @@ test('the Owner turns a push group off, and it stays off; Billing stays on', asy
   await expect(payments).not.toBeChecked();
   await page
     .getByRole('radiogroup', { name: W('language') })
-    .getByRole('radio', { name: LANGUAGE_META.hi.endonym })
+    .getByRole('radio', { name: LANGUAGES.hi.endonym })
     .click();
   await expect(
     page.getByRole('switch', { name: hi.t(TYPE_GROUP_NAME.payments) }),

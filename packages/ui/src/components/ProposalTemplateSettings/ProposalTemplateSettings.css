@@ -277,7 +277,7 @@
   flex-direction: column;
 }
 
-/* The phase editor's body (m19-g): the strip and the two fields, `sp-4` apart. */
+/* The phase editor's body (m19-g): the two fields, `sp-4` apart. */
 .hg-template-phase-fields {
   display: flex;
   flex-direction: column;

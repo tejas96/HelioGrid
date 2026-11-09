@@ -4,7 +4,6 @@ import {
   actBar,
   card,
   en,
-  englishName,
   expectNothingWiderThanItsRoom,
   expectStageAndEditor,
   frameWindow,
@@ -34,12 +33,11 @@ for (const width of WIDTHS) {
     test('every frame at 375 and 1536', async ({ mount, page }) => {
       const { wide } = width;
 
-      // m19-a · m19-i — saved, Cover: the strip, the ruled name, About, the kW figure and its tier.
+      // m19-a · m19-i — saved, Cover: the ruled name, About, the kW figure and its tier.
       let body = await mount(<ProposalTemplateAsHeld reader="en" />);
       await expectStageAndEditor(page, body, wide);
       await expect(body.getByText(en.intro)).toBeVisible();
       await expect(partSwitch(body).getByRole('radio', { name: en.cover })).toBeChecked();
-      await expect(body.getByRole('tablist', { name: en.language })).toBeVisible();
       await expect(body.getByText(en.proposal, { exact: true }).first()).toBeVisible();
       await expect(body.getByRole('textbox', { name: en.about })).toHaveAttribute(
         'rows',
@@ -75,11 +73,10 @@ for (const width of WIDTHS) {
       if (!wide) expect(await heightOf(frameWindow(body))).toBe(windowHeightFor('sections'));
       await body.unmount();
 
-      // m19-c · m19-i2 — Terms: the strip, the editor named in the strip's language, its pages.
+      // m19-c · m19-i2 — Terms: the editor, named for the terms, and its pages.
       body = await mount(<ProposalTemplateAsHeld reader="en" part="terms" />);
       await expectStageAndEditor(page, body, wide);
-      await expect(body.getByRole('tablist', { name: en.language })).toBeVisible();
-      await expect(body.getByText(en.termsIn(englishName))).toBeVisible();
+      await expect(body.getByRole('textbox', { name: en.termsTitle })).toBeVisible();
       await expect(body.getByText(en.pages(1))).toBeVisible();
       if (!wide) expect(await heightOf(frameWindow(body))).toBe(windowHeightFor('terms'));
       await body.unmount();
@@ -107,7 +104,6 @@ for (const width of WIDTHS) {
         await expect(body.getByText(en.teachTitle)).toBeVisible();
         await expect(body.getByText(en.teachBody)).toBeVisible();
         await expect(body.getByText(en.platform[part].layer, { exact: true })).toBeVisible();
-        await expect(body.getByRole('tablist', { name: en.language })).toHaveCount(0);
         if (part === 'cover') await expect(body.getByText(en.declaredByYou)).toHaveCount(0);
         if (part === 'sections') await expect(body.getByText(en.sectionsPrint(8, 8))).toBeVisible();
         const writeOwn = body.getByRole('button', { name: en.writeOwn });

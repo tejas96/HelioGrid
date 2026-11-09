@@ -8,7 +8,6 @@ export {
 export * from './ProposalTemplateSettings.types';
 export {
   phaseEditorFieldsOf,
-  phaseStripOf,
   type TemplateBinding,
   type TemplateViewShape,
   templateDocumentOf,

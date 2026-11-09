@@ -1,6 +1,3 @@
-import type { AuthoredPerLanguage, PackLabel } from '../format/languages';
-import { type RichTextValue, richTextParagraphs } from './rich-text';
-
 /**
  * The sections a proposal document carries (`M01-51`): the builder's content steps (`M06-08`
  * to `M06-17`), in document order. Company and client identity are not sections — a document
@@ -47,34 +44,9 @@ export const DEFAULT_SECTIONS_INCLUDED: readonly ProposalSection[] = PROPOSAL_SE
  * figure carries a tier, `estimated · declared by you`; the two counts carry none (`F8-01`).
  */
 export interface ProposalCover {
-  readonly aboutCompany: PackLabel | null;
+  /** The tenant's own words about itself — one value, shown as written (`F3-10`). */
+  readonly aboutCompany: string | null;
   readonly totalCapacityInstalledKw: number | null;
   readonly happyCustomers: number | null;
   readonly citiesServed: number | null;
 }
-
-/**
- * The platform terms (`M01-51`, `M01-28`): short, neutral, and the tenant's to replace. Three
- * launch languages, authored here because the effective read serves them to a document from the
- * server. No number lives in them — a validity period or a price is the proposal's own fact.
- */
-export const DEFAULT_TERMS: AuthoredPerLanguage<RichTextValue> = {
-  en: richTextParagraphs([
-    'This proposal is valid until the date stated on it. Prices and taxes are as itemised in it.',
-    'Payment falls due in the tranches listed in the payment schedule. Work at each stage starts once the tranche for that stage is received.',
-    'The installation follows the design agreed in this proposal. A change to the design after acceptance may change the price, and a revised proposal is issued before work continues.',
-    'Equipment warranties are the manufacturers’ and are handed over at commissioning.',
-  ]),
-  hi: richTextParagraphs([
-    'यह प्रस्ताव इसमें बताई गई तारीख तक मान्य है। कीमतें और कर इसमें दिए गए विवरण के अनुसार हैं।',
-    'भुगतान भुगतान-अनुसूची में दी गई किस्तों के अनुसार देय है। हर चरण का काम उस चरण की किस्त मिलने के बाद शुरू होता है।',
-    'इंस्टॉलेशन इस प्रस्ताव में तय डिज़ाइन के अनुसार किया जाता है। स्वीकृति के बाद डिज़ाइन में बदलाव से कीमत बदल सकती है, और काम आगे बढ़ने से पहले संशोधित प्रस्ताव जारी किया जाता है।',
-    'उपकरणों की वारंटी निर्माताओं की है और कमीशनिंग के समय सौंपी जाती है।',
-  ]),
-  mr: richTextParagraphs([
-    'हा प्रस्ताव त्यात नमूद केलेल्या तारखेपर्यंत वैध आहे. किमती आणि कर त्यात दिलेल्या तपशिलानुसार आहेत.',
-    'पेमेंट शेड्यूलमध्ये दिलेल्या हप्त्यांनुसार रक्कम देय आहे. प्रत्येक टप्प्याचे काम त्या टप्प्याचा हप्ता मिळाल्यानंतर सुरू होते.',
-    'इन्स्टॉलेशन या प्रस्तावात ठरलेल्या डिझाइननुसार केले जाते. स्वीकृतीनंतर डिझाइनमध्ये बदल केल्यास किंमत बदलू शकते, आणि काम पुढे नेण्यापूर्वी सुधारित प्रस्ताव दिला जातो.',
-    'उपकरणांची वॉरंटी उत्पादकांची असते आणि ती कमिशनिंगच्या वेळी सुपूर्द केली जाते.',
-  ]),
-};

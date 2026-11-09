@@ -23,7 +23,7 @@ export function priceBookServiceOf(pools: Pools): CatalogPriceBookService {
 
 /** One rate the contract accepts, per kW. */
 export const aRate = (overrides: Partial<PriceBookRateWire> = {}): PriceBookRateWire => ({
-  name: { en: 'Standard installation, above 10 kW' },
+  name: 'Standard installation, above 10 kW',
   basis: 'per_kw',
   amount: '1450',
   ...overrides,
@@ -35,7 +35,7 @@ export const aRateSet = (overrides: Partial<PriceBookPublish> = {}): PriceBookPu
   defaultMarginPct: '18.00',
   rates: [
     aRate(),
-    aRate({ name: { en: 'DISCOM liaison and net metering' }, basis: 'per_job', amount: '9000' }),
+    aRate({ name: 'DISCOM liaison and net metering', basis: 'per_job', amount: '9000' }),
   ],
   ...overrides,
 });

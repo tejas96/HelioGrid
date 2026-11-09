@@ -1,7 +1,6 @@
-import { can, ROLE_PRESETS } from '@heliogrid/domain';
+import { can, LANGUAGES, ROLE_PRESETS } from '@heliogrid/domain';
 import {
   createTranslator,
-  LANGUAGE_META,
   SETUP_LANGUAGE,
   SETUP_WHAT_YOU_SELL,
   SHELL,
@@ -28,8 +27,8 @@ const nextStep = (page: Page, t: Translator) =>
   page.getByRole('heading', { name: t.t(SETUP_WHAT_YOU_SELL.title) });
 const shell = (page: Page, t: Translator) =>
   page.getByRole('navigation', { name: t.t(SHELL.mainNavigation) });
-const card = (page: Page, language: keyof typeof LANGUAGE_META) =>
-  page.getByRole('radio', { name: LANGUAGE_META[language].endonym });
+const card = (page: Page, language: keyof typeof LANGUAGES) =>
+  page.getByRole('radio', { name: LANGUAGES[language].endonym });
 const notSaved = (page: Page) =>
   page.getByRole('alert').filter({ hasText: en.t(SETUP_LANGUAGE.notSavedTitle) });
 const theStepsSave = '**/onboarding/progress/language';
@@ -71,7 +70,7 @@ test('a tap redraws the step in that language and saves it, with no Save to pres
   await card(page, 'mr').click();
   await expect(heading(page, mr)).toBeVisible();
   await expect(card(page, 'mr')).toBeChecked();
-  await expect(page.locator('html')).toHaveAttribute('lang', LANGUAGE_META.mr.tag);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'mr');
   expect((await saved).postDataJSON()).toEqual({ interfaceLanguage: 'mr' });
 
   await passLanguageStep(page, mr);

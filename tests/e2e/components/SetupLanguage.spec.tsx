@@ -1,4 +1,5 @@
-import { createTranslator, LANGUAGE_META, SETUP_LANGUAGE, SIGN_IN } from '@heliogrid/i18n';
+import { LANGUAGES } from '@heliogrid/domain';
+import { createTranslator, SETUP_LANGUAGE, SIGN_IN } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { bottomOf, expectNoSidewaysScroll, expectSharedEdge, settledBox } from '../support/layout';
 import { MIN_TOUCH_TARGET } from '../support/touch-target';
@@ -17,7 +18,7 @@ const CONTINUE = en.t(SETUP_LANGUAGE.continue);
 const TRY_AGAIN = en.t(SIGN_IN.tryAgain);
 const CONTINUE_ANYWAY = en.t(SETUP_LANGUAGE.continueAnyway);
 const DEVICE_PILL = en.t(SETUP_LANGUAGE.devicePill);
-const MARATHI = LANGUAGE_META.mr.endonym;
+const MARATHI = LANGUAGES.mr.endonym;
 
 test.describe('at 375', () => {
   const HEIGHT = 812;
@@ -73,10 +74,7 @@ test.describe('at 375', () => {
     await expect(marathi).toBeChecked();
     await expect(english).toContainText(DEVICE_PILL);
     /* The card's name is tagged with its own language, so it is shaped and spoken as Marathi. */
-    await expect(marathi.getByText(MARATHI, { exact: true })).toHaveAttribute(
-      'lang',
-      LANGUAGE_META.mr.tag,
-    );
+    await expect(marathi.getByText(MARATHI, { exact: true })).toHaveAttribute('lang', 'mr');
   });
 
   test('a failed save is an alert over the languages, with two ways on, one under the other', async ({

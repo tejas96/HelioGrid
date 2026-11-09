@@ -5,13 +5,13 @@ import {
 } from '@heliogrid/data/react';
 import { SETTINGS_SEGMENT } from '@heliogrid/domain';
 import {
+  documentDefaults,
   proposalTemplatePageWords,
   proposalTemplateWords,
   SHELL,
   sectionWords,
   settingsSavedToast,
   templateFieldRefusals,
-  templateLanguages,
   toastHostWords,
 } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
@@ -41,8 +41,8 @@ import { TemplateOverlays } from './components/TemplateOverlays';
  * leave guard. Only a person whose presets open the row reaches it (`F7-48`).
  */
 export function ProposalTemplateScreen() {
-  const { t, locale } = useI18n();
-  const screen = useProposalTemplateScreen(locale);
+  const { t } = useI18n();
+  const screen = useProposalTemplateScreen(documentDefaults(t));
   /* One page element through a failed read and the page that follows it: *Try again* leaves with
      the failure, and the focus goes here. */
   const frame = useRef<HTMLDivElement>(null);
@@ -116,11 +116,6 @@ function TemplatePage({
         teaching={page.teaching}
         onWriteOwn={(written) => page.edit({ kind: 'writeOwn', part: written })}
         {...templateSettingsParts(view, {
-          languages: templateLanguages(),
-          coverLanguage: screen.coverLanguage,
-          termsLanguage: screen.termsLanguage,
-          onCoverLanguage: screen.chooseCoverLanguage,
-          onTermsLanguage: screen.chooseTermsLanguage,
           sectionWord,
           ...templateFieldRefusals(t, page.refusals),
           edit: page.edit,

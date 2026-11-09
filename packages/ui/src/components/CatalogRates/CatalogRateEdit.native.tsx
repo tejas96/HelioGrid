@@ -7,24 +7,16 @@ import { Input } from '../Input/Input.native';
 import { Select } from '../Select/Select.native';
 import type { CatalogRateEditProps } from './CatalogRates.types';
 
-/**
- * The rate sheet's body on the phone (owner ruling 2026-10-24): the rate's name in English, Hindi
- * and Marathi — an empty Hindi or Marathi name says English stands in (`F3-10`) — its basis, *Remove*.
- */
+/** The rate sheet's body on the phone: the rate's one name, how it is charged, and *Remove*. */
 export function CatalogRateEdit(props: CatalogRateEditProps) {
   return (
     <View style={styles.body}>
-      {props.names.map((name) => (
-        <Input
-          key={name.language}
-          label={name.label}
-          value={name.value}
-          onChange={(value) => props.onName(name.language, value)}
-          placeholder={name.placeholder}
-          density="functional"
-          {...(name.missing === null ? {} : { helper: name.missing })}
-        />
-      ))}
+      <Input
+        label={props.nameLabel}
+        value={props.name}
+        onChange={props.onName}
+        density="functional"
+      />
       <Select
         {...props.select}
         label={props.basisLabel}

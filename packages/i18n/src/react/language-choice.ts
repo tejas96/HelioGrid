@@ -1,7 +1,11 @@
-import { type TranslatedText, UI_LANGUAGES, type UiLanguage } from '@heliogrid/contracts';
+import {
+  LANGUAGES,
+  type TranslatedText,
+  UI_LANGUAGES,
+  type UiLanguage,
+} from '@heliogrid/contracts';
 import { namedInItself } from '../copy/assembled';
 import { SIGN_IN } from '../copy/sign-in';
-import { LANGUAGE_META } from '../languages';
 import { useI18n } from './provider';
 
 /** What a language control draws and raises: its name, the mount's language, each language's own name, and the choice. */
@@ -14,7 +18,7 @@ export interface LanguageChoice {
 }
 
 const NAMES = Object.fromEntries(
-  UI_LANGUAGES.map((code) => [code, namedInItself(LANGUAGE_META[code].endonym)]),
+  UI_LANGUAGES.map((code) => [code, namedInItself(LANGUAGES[code].endonym)]),
 ) as Record<UiLanguage, TranslatedText>;
 
 /**

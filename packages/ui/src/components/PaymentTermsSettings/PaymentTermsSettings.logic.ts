@@ -1,7 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import {
   type AllocationVerdict,
-  authoredIn,
   type DisplayVocabulary,
   isSkippableStage,
   PROJECT_STAGE_CHAIN,
@@ -51,7 +50,7 @@ const STAGE_GLYPH: Record<ProjectChainStage, ShellGlyphName> = {
   handed_over: 'key',
 };
 
-/** What the page's views read besides the page itself: the words, the language and the pack. */
+/** What the page's views read besides the page itself: the words, the pack and the language its stages read in. */
 export interface PaymentTermsContext {
   readonly words: PaymentTermsSettingsWords;
   readonly language: UiLanguage;
@@ -95,16 +94,15 @@ export function termsCardsOf(
   context: PaymentTermsContext,
 ): PaymentTermsCardView[] {
   return cards.map((card) => {
-    const name = authoredIn(card.name, context.language).value;
     return {
       id: card.id,
-      name,
-      label: context.words.cardLabel(name, card.isDefault),
+      name: card.name,
+      label: context.words.cardLabel(card.name, card.isDefault),
       isDefault: card.isDefault,
       platformStandard: card.platformStandard,
       selected: card.id === openId,
       parts: card.lines.map((line) => ({
-        label: authoredIn(line.label, context.language).value,
+        label: line.label,
         share: Number(line.percent),
         stage: stageNameOf(context, line.dueOnStage),
       })),
@@ -122,7 +120,7 @@ export function termsLinesOf(
     const refused = shown ? refusals.lines.get(line.key) : undefined;
     return {
       key: line.key,
-      name: line.label.shown,
+      name: line.label,
       ...(refused?.label === 'required' ? { nameError: context.words.trancheNameNeeded } : {}),
       ...(line.share === null ? {} : { share: shareOfBasisPoints(line.share) }),
       ...(refused?.share === 'range' ? { shareError: context.words.shareRange } : {}),
@@ -146,7 +144,7 @@ export function termsPreviewOf(
     loading: schedule === null,
     ...(schedule === null ? {} : { contract: context.money(schedule.contract) }),
     tranches: preview.lines.map((line, index) => ({
-      label: authoredIn(line.label, context.language).value,
+      label: line.label,
       when: context.stages[line.dueOnStage].when,
       share: `${shareTextOf(percentToBasisPoints(line.percent))}%`,
       amount: context.money(schedule?.amounts[index] ?? '0'),
@@ -162,7 +160,7 @@ export function termsFootOf(
 ): Pick<PaymentTermsFootProps, 'parts' | 'state'> {
   return {
     parts: draft.lines.map((line) => ({
-      label: line.label.shown,
+      label: line.label,
       value: shareOfBasisPoints(line.share ?? 0),
     })),
     state: verdict.state,
@@ -185,7 +183,7 @@ export function termsStagesOf(
       .filter((line) => line.dueOnStage === stage)
       .map((line) => ({
         key: line.key,
-        text: context.words.trancheShare(line.label.shown, shareTextOf(line.share ?? 0)),
+        text: context.words.trancheShare(line.label, shareTextOf(line.share ?? 0)),
         mine: line.key === picking,
       })),
   }));
@@ -198,7 +196,7 @@ export function termsPickerWordsOf(
   words: Pick<PaymentTermsSettingsWords, 'whenDue' | 'trancheShare'>,
 ): { readonly label: TranslatedText; readonly overline: TranslatedText } {
   const line = draft.lines.find((one) => one.key === picking);
-  const name = line?.label.shown ?? '';
+  const name = line?.label ?? '';
   return {
     label: words.whenDue(name),
     overline: words.trancheShare(name, shareTextOf(line?.share ?? 0)),

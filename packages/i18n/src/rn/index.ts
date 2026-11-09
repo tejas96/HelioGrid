@@ -6,17 +6,22 @@
  *
  * Import it ONCE, FIRST, before any ICU formatting runs (verify-bareRn.md §3).
  *
- * Adding a language to the contract must add its line below. Nothing checks it at build time:
- * neither a type nor a lint rule can see that a side-effect import for locale `xx` is
- * missing, because nothing references it (`docs/tasks/deferred.md`). The assertion below is
- * what catches it, on the phone, at import.
+ * Each language's plural data is held by `PLURAL_RULE_DATA` below, so a language added to the set
+ * without its data fails the typecheck, not the phone. The assertion is the second net: it catches a
+ * package whose data module no longer installs anything.
  */
-import '@formatjs/intl-locale/polyfill';
-import '@formatjs/intl-pluralrules/polyfill';
-import '@formatjs/intl-pluralrules/locale-data/en';
-import '@formatjs/intl-pluralrules/locale-data/hi';
-import '@formatjs/intl-pluralrules/locale-data/mr';
-import { UI_LANGUAGES } from '@heliogrid/contracts';
+import '@formatjs/intl-locale/polyfill.js';
+import '@formatjs/intl-pluralrules/polyfill.js';
+import * as en from '@formatjs/intl-pluralrules/locale-data/en.js';
+import * as hi from '@formatjs/intl-pluralrules/locale-data/hi.js';
+import * as mr from '@formatjs/intl-pluralrules/locale-data/mr.js';
+import { UI_LANGUAGES, type UiLanguage } from '@heliogrid/contracts';
+
+/**
+ * The plural data each language installs on import. Importing a module runs it; naming it here is
+ * what lets the typecheck see a missing one — a bare side-effect import is invisible to it.
+ */
+export const PLURAL_RULE_DATA = { en, hi, mr } satisfies Record<UiLanguage, object>;
 
 /**
  * Proves the polyfill actually took. A missing line, a wrong path or a package reshuffle leaves

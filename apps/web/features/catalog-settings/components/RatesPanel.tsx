@@ -30,7 +30,7 @@ type Toasts = ReturnType<typeof useToasts>;
  * phone's too.
  */
 export function RatesPanel({ administers, toasts }: { administers: boolean; toasts: Toasts }) {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const formats = useCatalogFormats();
   const rates = useCatalogRates(administers, (number) =>
     toasts.push({ tone: 'success', title: t(PRICE_BOOK.saved, { number }) }),
@@ -59,7 +59,7 @@ export function RatesPanel({ administers, toasts }: { administers: boolean; toas
         words={catalogRatesWords(t)}
         read={rates.book}
         strip={strip}
-        rates={versionRatesOf(inForce?.rates ?? [], locale)}
+        rates={versionRatesOf(inForce?.rates ?? [])}
         onAddFirst={rates.addFirst}
       />
       <VersionsSurface browse={rates.versions} />
@@ -110,7 +110,7 @@ export function RatesPanel({ administers, toasts }: { administers: boolean; toas
           onNote={draft.setNote}
           rows={draft.rows.map((rate) => ({
             key: rate.key,
-            ...versionRowWords(t, rate, locale, formats.money),
+            ...versionRowWords(t, rate, formats.money),
             onOpen: () => draft.edit(rate.key),
             basis: rate.basis,
             amount: rate.amount,

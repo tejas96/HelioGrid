@@ -79,9 +79,7 @@ export function PaymentTermsAsHeld(frame: TermsFrame) {
   const list = listOf(frame);
   const saved = list.templates.find((one) => one.id === frame.open) ?? null;
   const draft =
-    saved === null
-      ? null
-      : (frame.edits ?? []).reduce(trancheEdit, trancheDraftOf(saved, frame.reader));
+    saved === null ? null : (frame.edits ?? []).reduce(trancheEdit, trancheDraftOf(saved));
   return (
     <ProvenanceWordsProvider value={provenanceWords(t)}>
       <div lang={frame.reader} style={{ padding: '0 var(--screen-pad-mobile)' }}>
@@ -101,7 +99,7 @@ export function PaymentTermsAsHeld(frame: TermsFrame) {
           onRestore={noop}
         />
         {saved === null || draft === null ? null : (
-          <section aria-label={words.edit(draft.name.shown)}>
+          <section aria-label={words.edit(draft.name)}>
             {frame.picking === undefined ? (
               <EditorFrame frame={frame} saved={saved} draft={draft} t={t} context={context} />
             ) : (
@@ -170,7 +168,7 @@ function EditorFrame({
         letterhead={LETTERHEAD}
         preview={termsPreviewOf(previewOf(saved, draft, frame.previewLoading), context)}
         previewHeight={frame.wide ? TERMS_PREVIEW.cardHeight : TERMS_PREVIEW.sheetHeight}
-        name={draft.name.shown}
+        name={draft.name}
         onName={noop}
         lines={termsLinesOf(draft, trancheRefusals(draft), false, context)}
         canAdd
@@ -213,7 +211,7 @@ function PickerFrame({
     <>
       <PaymentTermsPicker
         words={context.words}
-        label={context.words.whenDue(line?.label.shown ?? '')}
+        label={context.words.whenDue(line?.label ?? '')}
         stages={termsStagesOf(draft, picking, context)}
         value={line?.dueOnStage ?? 'won'}
         onChange={noop}

@@ -272,7 +272,7 @@ Permissions: reading the schedule rides `F2.M08.project-visibility`; every act o
 - Given an accepted version with no payment terms, when the money surface renders, then it states
   that there is no schedule and creates no rows (`M11-15`, `M11-16`).
 
-**Localization notes.** Tranche labels are tenant-authored content per language (`M01-54`); stage
+**Localization notes.** Tranche labels are tenant-authored content, one value as written (`M01-54`, `F3-10`); stage
 names render through the pack's labels (`F1-22`); amounts and percentages render through `F3`'s
 single implementations (`F3-19`, `F3-20`). **Analytics events.** `tranche_became_due` (share,
 stage), `tranche_schedule_viewed`, `tranche_schedule_absent_rendered` (proposal type),

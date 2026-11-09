@@ -1,10 +1,8 @@
-import type { AuthoredPerLanguage } from '@heliogrid/domain';
 import { PRICE_BOOK_RATE_BASES } from '@heliogrid/domain';
 import { sql } from 'drizzle-orm';
 import {
   index,
   integer,
-  jsonb,
   numeric,
   pgEnum,
   pgTable,
@@ -74,8 +72,8 @@ export const priceBookRate = pgTable(
       .notNull()
       .references(() => priceBookVersion.id),
     position: integer('position').notNull(),
-    /** Tenant content per language (`F3-10`): `en` required, read through `authoredIn`. */
-    name: jsonb('name').$type<AuthoredPerLanguage<string>>().notNull(),
+    /** The tenant's name for the rate — one value, shown as written (`F3-10`). */
+    name: text('name').notNull(),
     basis: priceBookRateBasis('basis').notNull(),
     amount: numeric('amount', { precision: 14, scale: 3 }).notNull(),
   },

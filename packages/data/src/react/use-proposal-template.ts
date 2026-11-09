@@ -5,12 +5,12 @@ import type {
   TimelineTemplateRead,
 } from '@heliogrid/contracts';
 import {
-  aboutRefusal,
   allReads,
   mapRead,
   onPlatformTemplate,
   type Read,
   type SettingsStanding,
+  type TemplateDefaults,
   type TemplateDraft,
   type TemplateEdit,
   type TemplateRefusal,
@@ -23,6 +23,7 @@ import {
   templateStanding,
   templateWritesOf,
   termsRefusal,
+  UI_SOURCE_LOCALE,
 } from '@heliogrid/domain';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -53,13 +54,10 @@ export interface ProposalTemplatePage {
   readonly saving: boolean;
   /** Every part is HelioGrid's: the teaching banner shows. */
   readonly teaching: boolean;
-  /** What the terms and the about text refuse as they stand, before any save. */
-  readonly refusals: {
-    readonly terms: TemplateRefusal | null;
-    readonly about: TemplateRefusal | null;
-  };
+  /** What the terms refuse as they stand, before any save. */
+  readonly refusals: { readonly terms: TemplateRefusal | null };
   /** The part whose field refuses the draft — the screen opens it when *Save template* is refused. */
-  readonly refusedPart: 'cover' | 'terms' | null;
+  readonly refusedPart: 'terms' | null;
   /** The cover's company facts and colour, as Branding draws them: the same cover on both pages. */
   readonly cover: BrandingCover | null;
   readonly brandColour: string | null;
@@ -85,38 +83,37 @@ function savedOf(template: ProposalTemplateRead, timeline: TimelineTemplateRead)
 }
 
 function templateWireOf(template: TemplateSaved['template']): ProposalTemplate {
-  const terms = Object.entries(template.defaultTerms).map(
-    ([language, value]) => [language, richTextWireOf(value)] as const,
-  );
   return {
     cover: template.cover,
     sectionsIncluded: [...template.sectionsIncluded],
-    defaultTerms: Object.fromEntries(terms) as ProposalTemplate['defaultTerms'],
+    defaultTerms: richTextWireOf(template.defaultTerms),
   };
 }
 
 /**
  * `SCR-M01-19`'s reads and its one *Save template*. Each record is sent only while it differs from
  * what is held as saved, and its answer replaces what is held at once — so when the template lands
- * and the timeline does not, the next save sends the timeline alone.
+ * and the timeline does not, the next save sends the timeline alone. `defaults` are the platform's
+ * terms and phases in the reader's words (`documentDefaults`): a part holding them is HelioGrid's.
  */
-export function useProposalTemplate(): ProposalTemplatePage {
+export function useProposalTemplate(defaults: TemplateDefaults): ProposalTemplatePage {
   const { user } = useSession();
   const repositories = useRepositories();
   const queryClient = useQueryClient();
   const branding = useBranding();
   const tenantId = user?.tenant?.id ?? '';
-  const templateKey = queryKeys.settings.proposalTemplate(tenantId);
-  const timelineKey = queryKeys.settings.timelineTemplate(tenantId);
+  const reader = user?.interfaceLanguage ?? UI_SOURCE_LOCALE;
+  const templateKey = queryKeys.settings.proposalTemplate(tenantId, reader);
+  const timelineKey = queryKeys.settings.timelineTemplate(tenantId, reader);
 
   const template = useQuery({
     queryKey: templateKey,
-    queryFn: ({ signal }) => repositories.settings.proposalTemplate(signal),
+    queryFn: ({ signal }) => repositories.settings.proposalTemplate(reader, signal),
     ...ASKED_ONCE,
   });
   const timeline = useQuery({
     queryKey: timelineKey,
-    queryFn: ({ signal }) => repositories.settings.timelineTemplate(signal),
+    queryFn: ({ signal }) => repositories.settings.timelineTemplate(reader, signal),
     ...ASKED_ONCE,
   });
   const profile = useQuery({
@@ -139,6 +136,14 @@ export function useProposalTemplate(): ProposalTemplatePage {
   const [typed, setTyped] = useState<TemplateDraft | null>(null);
   const draft = typed ?? opened;
 
+  // A save changes the template for every reader; the copies held in other languages are let go,
+  // so a language switch asks again rather than showing the template from before the save.
+  const dropOtherReaders = (every: readonly unknown[]) =>
+    queryClient.removeQueries({
+      queryKey: every,
+      predicate: (query) => query.queryKey[every.length] !== reader,
+    });
+
   const save = useAction(
     async (sent: { saved: TemplateSaved; draft: TemplateDraft }) => {
       const writes = templateWritesOf(sent.saved, sent.draft);
@@ -147,6 +152,7 @@ export function useProposalTemplate(): ProposalTemplatePage {
           templateWireOf(writes.template),
         );
         queryClient.setQueryData(templateKey, answer);
+        dropOtherReaders(queryKeys.settings.proposalTemplates(tenantId));
       }
       if (writes.timeline !== undefined) {
         const phases = writes.timeline.phases.map((phase) => ({ ...phase }));
@@ -154,6 +160,7 @@ export function useProposalTemplate(): ProposalTemplatePage {
           timelineKey,
           await repositories.settings.saveTimelineTemplate({ phases }),
         );
+        dropOtherReaders(queryKeys.settings.timelineTemplates(tenantId));
       }
     },
     // Only the draft the save sent is let go: an edit typed while it was out stays held.
@@ -169,14 +176,11 @@ export function useProposalTemplate(): ProposalTemplatePage {
     standing:
       opened === null
         ? null
-        : templateStanding(opened, template.data?.changed, timeline.data?.changed),
+        : templateStanding(opened, template.data?.changed, timeline.data?.changed, defaults),
     changed,
     saving: save.pending,
-    teaching: draft !== null && onPlatformTemplate(draft),
-    refusals: {
-      terms: draft === null ? null : termsRefusal(draft),
-      about: draft === null ? null : aboutRefusal(draft),
-    },
+    teaching: draft !== null && onPlatformTemplate(draft, defaults),
+    refusals: { terms: draft === null ? null : termsRefusal(draft) },
     refusedPart: draft === null ? null : templateRefusedPart(draft),
     cover: branding.cover,
     brandColour: branding.draft?.brandColour ?? null,

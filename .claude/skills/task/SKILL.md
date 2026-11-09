@@ -171,8 +171,8 @@ the PR's *Notes*.
 
 ## Fixing
 
-A bug seen once that two tries on the running app do not repeat is a `deferred.md` row naming the
-tries, never a third try. A round's fixes start once every agent of that round has reported: an edit while one still checks
+A bug seen once that two tries on the running app do not repeat is a line in the PR's *Notes*
+naming the tries, never a third try. A round's fixes start once every agent of that round has reported: an edit while one still checks
 reloads the app under it, and its report then blames the reload. A behaviour fix starts with a test
 that fails for the bug — a unit or api test, or an assertion in the screen's flow or spec — and then
 makes it pass. After each round of fixes, run

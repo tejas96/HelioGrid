@@ -54,13 +54,7 @@ export function TemplatePart(props: ProposalTemplateSettingsProps) {
 function CoverPart({ words, cover, onWriteOwn }: ProposalTemplateSettingsProps) {
   return (
     <View style={styles.part}>
-      <PartSource
-        words={words}
-        part="cover"
-        origin={cover.origin}
-        strip={cover.strip}
-        onWriteOwn={onWriteOwn}
-      />
+      <PartSource words={words} part="cover" origin={cover.origin} onWriteOwn={onWriteOwn} />
       <FactRows label={words.document} density="functional">
         <FactRow label={words.documentName} value={words.proposal} density="functional" />
       </FactRows>
@@ -70,7 +64,6 @@ function CoverPart({ words, cover, onWriteOwn }: ProposalTemplateSettingsProps) 
         onChange={cover.onAbout}
         rows={TEMPLATE_ABOUT.rows.narrow}
         maxLength={TEMPLATE_ABOUT.maxLength}
-        error={cover.aboutError}
         density="functional"
       />
       <View style={styles.counts}>
@@ -113,18 +106,12 @@ function CountField({
   );
 }
 
-/** The terms: whose they are, then the editor in the strip's language with its page count. */
+/** The terms: whose they are, then the editor with its page count. */
 function TermsPart({ words, terms, onWriteOwn }: ProposalTemplateSettingsProps) {
   const pages = termsPageCount(terms.value);
   return (
     <View style={styles.part}>
-      <PartSource
-        words={words}
-        part="terms"
-        origin={terms.origin}
-        strip={terms.strip}
-        onWriteOwn={onWriteOwn}
-      />
+      <PartSource words={words} part="terms" origin={terms.origin} onWriteOwn={onWriteOwn} />
       <View style={styles.terms}>
         {/* Above the editor, so a refused save's reason is in view over the act bar. */}
         {terms.error === undefined ? null : (
@@ -133,10 +120,8 @@ function TermsPart({ words, terms, onWriteOwn }: ProposalTemplateSettingsProps) 
           </Text>
         )}
         <RichText
-          /* A new language is a new body: the editor starts again from that language's value. */
-          key={terms.strip.value}
           words={words.richText}
-          label={words.termsIn(terms.languageName)}
+          label={words.termsTitle}
           value={terms.value}
           onChange={terms.onChange}
           minHeight={TEMPLATE_TERMS_MIN_HEIGHT}

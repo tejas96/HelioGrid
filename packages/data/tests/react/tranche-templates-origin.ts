@@ -4,6 +4,7 @@ import {
   type TrancheTemplate,
   type TrancheTemplateWrite,
 } from '@heliogrid/contracts';
+import { standardTrancheTemplates } from '@heliogrid/domain';
 import { cleanup, renderHook, waitFor } from '@testing-library/react';
 import { createElement, type ReactNode } from 'react';
 import { afterEach, expect } from 'vitest';
@@ -22,19 +23,30 @@ export { refusal } from './origin-wire';
  */
 
 const line = (
-  en: string,
+  label: string,
   percent: string,
   dueOnStage: TrancheTemplate['lines'][number]['dueOnStage'],
 ) => ({
-  label: { en },
+  label,
   percent,
   dueOnStage,
+});
+
+/** The default split in fixed test words, as a screen hands it over (`documentDefaults`). */
+const [STANDARD_SPLIT] = standardTrancheTemplates({
+  name: (split) => `Standard ${split}`,
+  tranche: {
+    on_signing: 'Advance on signing',
+    before_dispatch: 'Before dispatch',
+    on_installation: 'On installation',
+    on_commissioning: 'On commissioning',
+  },
 });
 
 export const seededTemplates = (): TrancheTemplate[] => [
   {
     id: '01a30000-0000-7000-8000-0000000000a1',
-    name: { en: 'Standard 10/60/20/10' },
+    name: 'Standard 10/60/20/10',
     isDefault: true,
     archived: false,
     changed: false,
@@ -47,7 +59,7 @@ export const seededTemplates = (): TrancheTemplate[] => [
   },
   {
     id: '01a30000-0000-7000-8000-0000000000a2',
-    name: { en: 'Standard 30/60/10' },
+    name: 'Standard 30/60/10',
     isDefault: false,
     archived: false,
     changed: false,
@@ -164,7 +176,7 @@ export async function mounted(ready = true) {
   const layer = createDataLayer({ baseUrl: listening.url(), language: () => 'en' });
   const wrapper = ({ children }: { children: ReactNode }) =>
     createElement(DataProvider, { layer, children });
-  const view = renderHook(() => useTrancheTemplates('en'), { wrapper });
+  const view = renderHook(() => useTrancheTemplates(STANDARD_SPLIT), { wrapper });
   if (ready) await waitFor(() => expect(view.result.current.read.kind).toBe('ready'));
   return view;
 }

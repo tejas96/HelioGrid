@@ -4,7 +4,6 @@ import {
   catalogRatesWords,
   catalogVersionWords,
   createTranslator,
-  LANGUAGE_META,
   PRICE_BOOK,
 } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
@@ -21,7 +20,7 @@ import {
 /**
  * Catalog settings' Rates panel (`SCR-M01-15`, `M01-48`): the price book in force, grouped by how
  * each rate is charged at 375 and one searchable table at 1536; the versions by year, a past one
- * read-only, and the new one with its per-language names (`F3-10`).
+ * read-only, and the new one with each rate's one name.
  */
 const READERS = {
   en: await createTranslator('en'),
@@ -136,19 +135,16 @@ test('Hindi and Marathi at 375 and 1536', async ({ mount, page }) => {
   }
 });
 
-test('the rate sheet names a missing language', async ({ mount, page }) => {
+test('the rate sheet holds one name, kept as the company writes it', async ({ mount, page }) => {
   for (const { width } of WIDTHS) {
     await at(page, width);
     const frame = await mount(<CatalogRateEditAsRead reader="en" />);
-    const hindi = LANGUAGE_META.hi.endonym;
-    await expect(page.getByText(t(PRICE_BOOK.missingName, { language: hindi }))).toBeVisible();
-    /* The English name stands in as the placeholder while the Hindi one is empty. */
-    const name = page.getByRole('textbox', { name: t(PRICE_BOOK.rateNameIn, { language: hindi }) });
-    await expect(name).toHaveValue('');
-    await expect(name).toHaveAttribute('placeholder', ENGINEERING);
-    /* Written in Hindi, Hindi is no longer missing. */
+    /* One name field, never one per language. */
+    await expect(page.getByRole('textbox', { name: /^Rate name/u })).toHaveCount(1);
+    const name = page.getByRole('textbox', { name: t(PRICE_BOOK.rateName) });
+    await expect(name).toHaveValue(ENGINEERING);
     await name.fill('इंजीनियरिंग और ड्रॉइंग');
-    await expect(page.getByText(t(PRICE_BOOK.missingName, { language: hindi }))).toHaveCount(0);
+    await expect(name).toHaveValue('इंजीनियरिंग और ड्रॉइंग');
     await expectNoSidewaysScroll(page);
     await expectNoSeriousViolations(page);
     await frame.unmount();

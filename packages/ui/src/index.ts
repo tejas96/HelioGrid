@@ -90,7 +90,6 @@ export * from './components/InviteForm';
 export * from './components/InviteLanding';
 export * from './components/JobTray';
 export * from './components/Kanban';
-export * from './components/LanguageSwitcher';
 export * from './components/LargeTitle';
 export * from './components/LeaveConfirm';
 export * from './components/ListRow';

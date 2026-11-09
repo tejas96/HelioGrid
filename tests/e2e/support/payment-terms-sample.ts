@@ -6,14 +6,14 @@ import type { TrancheTemplateRead } from '@heliogrid/domain';
  */
 
 const line = (
-  en: string,
+  label: string,
   percent: string,
   dueOnStage: TrancheTemplateRead['lines'][number]['dueOnStage'],
-) => ({ label: { en }, percent, dueOnStage });
+) => ({ label, percent, dueOnStage });
 
-const template = (id: string, en: string, lines: TrancheTemplateRead['lines'], over = {}) => ({
+const template = (id: string, name: string, lines: TrancheTemplateRead['lines'], over = {}) => ({
   id,
-  name: { en },
+  name,
   isDefault: false,
   archived: false,
   changed: true,

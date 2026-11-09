@@ -3,16 +3,14 @@ import { uiLanguageSchema } from './locale';
 
 /**
  * Content shapes a customer document is made of, shared by the tenant's settings (`M01-51`)
- * and the builder that consumes them (`M06-15`, `M06-51`). Each mirrors a domain type: a
- * per-language value is `PerLanguage<T>`, a body is `RichTextValue`.
+ * and the builder that consumes them (`M06-15`, `M06-51`). What a tenant types is one value, shown
+ * as written (`F3-10`); a body is `RichTextValue`.
  */
 
 /**
- * A value per launch language — English required, the rest optional: `F3-05`'s fallback in the
- * type, exactly domain's `PerLanguage`. The record half is what refuses a language the product
- * has no catalog for. One shape serves two laws: a pack label falls back to English silently,
- * while tenant-authored content — terms, a template — is domain's `AuthoredPerLanguage` and
- * resolves through `authoredIn`, which names the language shown (`F3-10`).
+ * A market-pack label on the wire, per language — English required, the rest optional: `F3-05`'s
+ * fallback in the type, exactly domain's `PerLanguage`. The record half refuses a language the
+ * product has no catalog for. Platform data only — never a tenant's own words.
  */
 export function perLanguage<T extends z.ZodTypeAny>(value: T) {
   return z.object({ en: value }).and(z.record(uiLanguageSchema, value));
@@ -22,7 +20,7 @@ export const labelSchema = z.string().trim().min(1).max(120);
 export const lineSchema = z.string().trim().min(1).max(200);
 export const paragraphSchema = z.string().trim().min(1).max(2000);
 
-/** A short per-language label — a template name, a tranche label, a phase name. */
+/** A market pack's short label, per language. */
 export const packLabelSchema = perLanguage(labelSchema);
 export type PackLabelWire = z.infer<typeof packLabelSchema>;
 

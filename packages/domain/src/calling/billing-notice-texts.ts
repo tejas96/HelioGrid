@@ -1,5 +1,5 @@
 import type { BillingNotice } from '../commerce/billing-notices';
-import type { PackLabel } from '../format/languages';
+import { type PackLabel, UI_LANGUAGES, type UiLanguage } from '../format/languages';
 
 /**
  * One billing notice as the platform texts it to an owner's phone (`M12-40`, `F1-38`): a
@@ -22,30 +22,29 @@ export interface BillingNoticeText {
  */
 export type BillingNoticeTexts = Readonly<Partial<Record<BillingNotice, BillingNoticeText>>>;
 
-type Words = { readonly en: string; readonly hi: string; readonly mr: string };
-
 /**
- * A notice's facts, then the one way out. `whileProtected` is `null` on every notice: an api of the
- * release before texts it to a company it thinks protected, so it must add nothing (`D396`).
+ * A notice's facts, then the one way out, joined in every language that registered both halves —
+ * a language missing either half texts the English. `whileProtected` is `null` on every notice: an
+ * api of the release before texts it to a company it thinks protected, so it must add nothing
+ * (`D396`).
  */
-function told(facts: Words, way: Words): BillingNoticeText {
-  return {
-    text: {
-      en: `${facts.en} ${way.en}`,
-      hi: `${facts.hi} ${way.hi}`,
-      mr: `${facts.mr} ${way.mr}`,
-    },
-    whileProtected: null,
-  };
+function told(facts: PackLabel, way: PackLabel): BillingNoticeText {
+  const joined: Partial<Record<UiLanguage, string>> = {};
+  for (const language of UI_LANGUAGES) {
+    const fact = facts[language];
+    const out = way[language];
+    if (fact !== undefined && out !== undefined) joined[language] = `${fact} ${out}`;
+  }
+  return { text: { ...joined, en: `${facts.en} ${way.en}` }, whileProtected: null };
 }
 
-const PAY_OR_UPDATE: Words = {
+const PAY_OR_UPDATE: PackLabel = {
   en: 'Pay or update your payment method: {link}',
   hi: 'भुगतान करें या भुगतान का तरीका बदलें: {link}',
   mr: 'पेमेंट करा किंवा पेमेंटची पद्धत बदला: {link}',
 };
 
-const PICK_A_PLAN: Words = {
+const PICK_A_PLAN: PackLabel = {
   en: 'Pick a plan to keep creating: {link}',
   hi: 'नया काम जारी रखने के लिए प्लान चुनें: {link}',
   mr: 'नवीन काम चालू ठेवण्यासाठी प्लॅन निवडा: {link}',

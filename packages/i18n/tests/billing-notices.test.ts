@@ -14,14 +14,14 @@ import { createTranslator } from '../src/runtime';
  * Words that would threaten a loss of data (`M12-41`): nothing is ever deleted (`BM-32`), so no
  * notice may name one, in any language.
  */
-const THREATS: Record<UiLanguage, RegExp> = {
+const THREATS: Partial<Record<UiLanguage, RegExp>> = {
   en: /delet|eras|remov|wipe|destroy|\blos[et]\b|purge/i,
   hi: /हटा|मिटा|डिलीट|नष्ट|खो /,
   mr: /हटव|पुस|डिलीट|नष्ट|गमाव/,
 };
 
 /** A launch price, as each language writes it: no company keeps one (`BM-42`), so no notice names it. */
-const LAUNCH_PRICE: Record<UiLanguage, string> = {
+const LAUNCH_PRICE: Partial<Record<UiLanguage, string>> = {
   en: 'launch price',
   hi: 'लॉन्च कीमत',
   mr: 'लॉन्च किंमत',
@@ -50,15 +50,18 @@ describe('billingNoticeWords (M12-39, M12-41)', () => {
 
   it('no billing notice in any language threatens deletion or speaks of a launch price', async () => {
     for (const language of UI_LANGUAGES) {
+      const threats = THREATS[language];
+      const launchPrice = LAUNCH_PRICE[language];
+      if (threats === undefined || launchPrice === undefined) continue;
       const { t } = await createTranslator(language);
       for (const notice of BILLING_NOTICES) {
         const { title, body } = billingNoticeWords(t, notice);
         const where = `${language} ${notice}`;
-        expect(`${title} ${body}`, where).not.toMatch(THREATS[language]);
-        expect(`${title} ${body}`, where).not.toContain(LAUNCH_PRICE[language]);
+        expect(`${title} ${body}`, where).not.toMatch(threats);
+        expect(`${title} ${body}`, where).not.toContain(launchPrice);
         const sms = IN_BILLING_NOTICE_TEXTS[notice]?.text[language] ?? '';
-        expect(sms, `${language} ${notice} sms`).not.toMatch(THREATS[language]);
-        expect(sms, `${language} ${notice} sms`).not.toContain(LAUNCH_PRICE[language]);
+        expect(sms, `${language} ${notice} sms`).not.toMatch(threats);
+        expect(sms, `${language} ${notice} sms`).not.toContain(launchPrice);
       }
     }
   });

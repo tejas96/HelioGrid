@@ -17,7 +17,7 @@ import {
  * the line under it, never greyed. Beside the Rates table at 1536, a sheet below.
  */
 export function VersionsSurface({ browse }: { browse: PriceBookBrowse }) {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const formats = useCatalogFormats();
   const words = catalogVersionWords(t);
   const read = browse.picked !== null && browse.one.kind === 'ready' ? browse.one.value : undefined;
@@ -63,7 +63,7 @@ export function VersionsSurface({ browse }: { browse: PriceBookBrowse }) {
           margin={read ? formats.margin(read.defaultMarginPct) : ''}
           rateCount={read ? formats.number(read.rates.length) : ''}
           note={read?.note ?? ''}
-          rates={versionRatesOf(read?.rates ?? [], locale)}
+          rates={versionRatesOf(read?.rates ?? [])}
           read={browse.one}
         />
       )}

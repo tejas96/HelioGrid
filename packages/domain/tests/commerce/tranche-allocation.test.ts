@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { allocationVerdict, WHOLE_ALLOCATION } from '../../src/commerce/tranche-allocation';
-import { STANDARD_TRANCHE_TEMPLATES } from '../../src/commerce/tranche-template-defaults';
 import { basisPoints, percentToBasisPoints } from '../../src/money/basis-points';
+import { standardSplits } from './settings-rows';
 
 const split = (...percents: string[]) => percents.map(percentToBasisPoints);
 
@@ -26,7 +26,7 @@ describe('allocationVerdict — exactly 100.00, no tolerance (M01-54)', () => {
   });
 
   it('is met by both standard splits the platform seeds — the seed can never refuse itself', () => {
-    for (const template of STANDARD_TRANCHE_TEMPLATES) {
+    for (const template of standardSplits) {
       expect(allocationVerdict(template.lines.map((line) => line.share)).state).toBe('met');
     }
   });

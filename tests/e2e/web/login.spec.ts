@@ -1,12 +1,6 @@
 import { UI_LANGUAGES } from '@heliogrid/contracts';
-import {
-  COMPANY_SIGNUP,
-  CONNECTION,
-  createTranslator,
-  LANGUAGE_META,
-  SHELL,
-  SIGN_IN,
-} from '@heliogrid/i18n';
+import { LANGUAGES } from '@heliogrid/domain';
+import { COMPANY_SIGNUP, CONNECTION, createTranslator, SHELL, SIGN_IN } from '@heliogrid/i18n';
 import { expect, type Page, test } from '@playwright/test';
 import { codeSentTo } from '../support/api-log';
 import { expectNoSeriousViolations } from '../support/axe';
@@ -69,13 +63,13 @@ test('Enter sends the number, and Enter in the code boxes signs in, as a keyboar
 test('the door speaks every language in the set, each in its own words', async ({ page }) => {
   await page.goto('/login');
   await expectNumberFieldRinged(page, en);
-  let shown = LANGUAGE_META.en.endonym;
+  let shown: string = LANGUAGES.en.endonym;
 
   for (const language of UI_LANGUAGES) {
     const t = await createTranslator(language);
     await page.getByRole('button', { name: shown }).click();
-    await page.getByRole('menuitemradio', { name: LANGUAGE_META[language].endonym }).click();
-    shown = LANGUAGE_META[language].endonym;
+    await page.getByRole('menuitemradio', { name: LANGUAGES[language].endonym }).click();
+    shown = LANGUAGES[language].endonym;
 
     await expect(page.getByRole('heading', { name: t.t(SIGN_IN.signIn) })).toBeVisible();
     await expect(page.getByRole('button', { name: t.t(SIGN_IN.sendCode) })).toBeVisible();
@@ -127,13 +121,13 @@ for (const [browserLanguage, language] of [
   test.describe(`a ${browserLanguage} browser`, () => {
     test.use({ locale: browserLanguage });
 
-    test(`opens the door in ${LANGUAGE_META[language].endonym}`, async ({ page }) => {
+    test(`opens the door in ${LANGUAGES[language].endonym}`, async ({ page }) => {
       const t = await createTranslator(language);
       await page.goto('/login');
 
       await expect(page.getByRole('heading', { name: t.t(SIGN_IN.signIn) })).toBeVisible();
       await expect(page.getByRole('button', { name: t.t(SIGN_IN.sendCode) })).toBeVisible();
-      await expect(page.locator('html')).toHaveAttribute('lang', LANGUAGE_META[language].tag);
+      await expect(page.locator('html')).toHaveAttribute('lang', language);
     });
   });
 }
@@ -171,7 +165,7 @@ test('an English account reloading on a hi-IN browser keeps its English when the
   await page.goto('/home');
   await expect.poll(() => catalogArrived).toBe(true);
   await expect(englishShell).toBeVisible();
-  await expect(page.locator('html')).toHaveAttribute('lang', LANGUAGE_META.en.tag);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await hindiBrowser.close();
 });
 

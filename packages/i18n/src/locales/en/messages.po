@@ -13,16 +13,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:22
-msgid "411038"
-msgstr "411038"
-
-#. js-lingui-explicit-id
-#: src/copy/remove-roles.ts:28
-msgid " — tick {list} on {first}'s row again."
-msgstr " — tick {list} on {first}'s row again."
-
-#. js-lingui-explicit-id
 #: src/copy/date-set.ts:22
 msgid "“{name}”"
 msgstr "“{name}”"
@@ -73,12 +63,12 @@ msgid "{applied, plural, one {# price applied} other {# prices applied}} · {cre
 msgstr "{applied, plural, one {# price applied} other {# prices applied}} · {created, plural, one {# product created} other {# products created}}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:73
+#: src/copy/proposal-template.ts:62
 msgid "{bank} · from Business profile"
 msgstr "{bank} · from Business profile"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:61
+#: src/copy/company-profile.ts:66
 msgid "{bankName} · account ending {ending}"
 msgstr "{bankName} · account ending {ending}"
 
@@ -98,7 +88,7 @@ msgid "{chain} codes were invalidated in a row"
 msgstr "{chain} codes were invalidated in a row"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:79
+#: src/copy/company-profile.ts:84
 msgid "{city} only"
 msgstr "{city} only"
 
@@ -130,7 +120,7 @@ msgstr "{company} is set up."
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:43
 #: src/copy/payment-terms.ts:100
-#: src/copy/proposal-template.ts:98
+#: src/copy/proposal-template.ts:87
 msgid "{company} logo"
 msgstr "{company} logo"
 
@@ -271,7 +261,7 @@ msgstr "{count, plural, one {# person} other {# people}}"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:176
-#: src/copy/proposal-template.ts:135
+#: src/copy/proposal-template.ts:124
 msgid "{count, plural, one {# phase} other {# phases}}"
 msgstr "{count, plural, one {# phase} other {# phases}}"
 
@@ -346,7 +336,7 @@ msgid "{count, plural, one {# year} other {# years}}"
 msgstr "{count, plural, one {# year} other {# years}}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:50
+#: src/copy/proposal-template.ts:42
 msgid "{count, plural, one {≈ # page} other {≈ # pages}}"
 msgstr "{count, plural, one {≈ # page} other {≈ # pages}}"
 
@@ -406,7 +396,7 @@ msgid "{count, plural, one {person} other {people}}"
 msgstr "{count, plural, one {person} other {people}}"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:47
+#: src/copy/price-book.ts:39
 msgid "{count, plural, one {Price book · # version} other {Price book · # versions}}"
 msgstr "{count, plural, one {Price book · # version} other {Price book · # versions}}"
 
@@ -446,7 +436,7 @@ msgid "{count, select, 2 {Both plans} 3 {All three plans} 4 {All four plans} oth
 msgstr "{count, select, 2 {Both plans} 3 {All three plans} 4 {All four plans} other {All plans}} · limits"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:39
+#: src/copy/price-book.ts:31
 msgid "{count}"
 msgstr "{count}"
 
@@ -537,7 +527,7 @@ msgid "{cycle} · {minutes} min"
 msgstr "{cycle} · {minutes} min"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:51
+#: src/copy/price-book.ts:43
 msgid "{date} · {name}"
 msgstr "{date} · {name}"
 
@@ -844,7 +834,7 @@ msgid "{inviter} is told it was not for you, and the link stops working. If it w
 msgstr "{inviter} is told it was not for you, and the link stops working. If it was meant for you after all, {first} can invite you again."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:24
+#: src/copy/company-profile.ts:29
 msgid "{label} (optional)"
 msgstr "{label} (optional)"
 
@@ -919,64 +909,9 @@ msgid "{label}: {value} {unit}. Open {label}"
 msgstr "{label}: {value} {unit}. Open {label}"
 
 #. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:26
-msgid "{language} · {written} of {total} {sectionNoun} written here · {left} fall back to {fallback}"
-msgstr "{language} · {written} of {total} {sectionNoun} written here · {left} fall back to {fallback}"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:23
-msgid "{language} · {written} of {total} {sectionNoun} written here · nothing falls back"
-msgstr "{language} · {written} of {total} {sectionNoun} written here · nothing falls back"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:22
-msgid "{language} · written here"
-msgstr "{language} · written here"
-
-#. js-lingui-explicit-id
 #: src/copy/transcript.ts:29
 msgid "{language} at {time}"
 msgstr "{language} at {time}"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:19
-msgid "{language} is the primary {languageNoun} · {written} of {total} {sectionNoun} written · nothing falls back"
-msgstr "{language} is the primary {languageNoun} · {written} of {total} {sectionNoun} written · nothing falls back"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:16
-msgid "{language} is the primary {languageNoun} · everything else falls back to it"
-msgstr "{language} is the primary {languageNoun} · everything else falls back to it"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:43
-msgid "{language}, {written} of {total} {sectionNoun} written here, {left} fall back to {fallback}"
-msgstr "{language}, {written} of {total} {sectionNoun} written here, {left} fall back to {fallback}"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:46
-msgid "{language}, nothing written, falls back to {fallback}"
-msgstr "{language}, nothing written, falls back to {fallback}"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:35
-msgid "{language}, primary {languageNoun}"
-msgstr "{language}, primary {languageNoun}"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:36
-msgid "{language}, primary {languageNoun}, {written} of {total} {sectionNoun} written"
-msgstr "{language}, primary {languageNoun}, {written} of {total} {sectionNoun} written"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:39
-msgid "{language}, written here"
-msgstr "{language}, written here"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:40
-msgid "{language}, written here, {written} of {total} {sectionNoun}"
-msgstr "{language}, written here, {written} of {total} {sectionNoun}"
 
 #. js-lingui-explicit-id
 #: src/copy/home-today.ts:9
@@ -1455,7 +1390,7 @@ msgid "{price} / yr + {tax}"
 msgstr "{price} / yr + {tax}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:47
+#: src/copy/proposal-template.ts:40
 msgid "{printing} of {of} optional sections print"
 msgstr "{printing} of {of} optional sections print"
 
@@ -1868,7 +1803,7 @@ msgid "A person"
 msgstr "A person"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:64
+#: src/copy/proposal-template.ts:56
 msgid "A phase name holds up to {count} characters"
 msgstr "A phase name holds up to {count} characters"
 
@@ -1893,7 +1828,7 @@ msgid "A platform item's price comes from your override and nowhere else; the pl
 msgstr "A platform item's price comes from your override and nowhere else; the platform list carries none."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:29
+#: src/copy/proposal-template.ts:25
 msgid "A Quick proposal goes out exactly as this template stands."
 msgstr "A Quick proposal goes out exactly as this template stands."
 
@@ -1939,7 +1874,7 @@ msgid "A team member"
 msgstr "A team member"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:55
+#: src/copy/proposal-template.ts:47
 msgid "A timeline holds up to {count} phases."
 msgstr "A timeline holds up to {count} phases."
 
@@ -2025,12 +1960,12 @@ msgid "About what the code does"
 msgstr "About what the code does"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:45
+#: src/copy/proposal-template.ts:38
 msgid "About your company"
 msgstr "About your company"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:125
+#: src/copy/proposal-template.ts:114
 msgid "About your company and your counts."
 msgstr "About your company and your counts."
 
@@ -2086,17 +2021,17 @@ msgid "Account halts"
 msgstr "Account halts"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:30
+#: src/copy/company-profile.ts:35
 msgid "Account holder"
 msgstr "Account holder"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:31
+#: src/copy/company-profile.ts:36
 msgid "Account number"
 msgstr "Account number"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:112
+#: src/copy/proposal-template.ts:101
 msgid "Achievements"
 msgstr "Achievements"
 
@@ -2159,7 +2094,7 @@ msgid "Add a panel"
 msgstr "Add a panel"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:53
+#: src/copy/proposal-template.ts:45
 msgid "Add a phase"
 msgstr "Add a phase"
 
@@ -2169,7 +2104,7 @@ msgid "Add a photo"
 msgstr "Add a photo"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:62
+#: src/copy/price-book.ts:54
 msgid "Add a rate"
 msgstr "Add a rate"
 
@@ -2240,7 +2175,7 @@ msgid "Add payment terms"
 msgstr "Add payment terms"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:62
+#: src/copy/proposal-template.ts:54
 msgid "Add phase"
 msgstr "Add phase"
 
@@ -2260,7 +2195,7 @@ msgid "Add to catalog"
 msgstr "Add to catalog"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:44
+#: src/copy/price-book.ts:36
 msgid "Add your first rate"
 msgstr "Add your first rate"
 
@@ -2271,7 +2206,7 @@ msgstr "Add your logo"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:84
-#: src/copy/company-profile.ts:81
+#: src/copy/company-profile.ts:86
 msgid "Added"
 msgstr "Added"
 
@@ -2291,7 +2226,7 @@ msgid "Added when your account was created · not changed since"
 msgstr "Added when your account was created · not changed since"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:70
+#: src/copy/company-profile.ts:75
 msgid "Address"
 msgstr "Address"
 
@@ -2314,6 +2249,11 @@ msgstr "Adds it to your catalog, then shows its row in Items."
 #: src/copy/catalog-add-item.ts:68
 msgid "Adds it to your catalog, then shows its row in this list."
 msgstr "Adds it to your catalog, then shows its row in this list."
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:73
+msgid "Advance on signing"
+msgstr "Advance on signing"
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:56
@@ -2348,7 +2288,7 @@ msgstr "Agent turn"
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:32
 #: src/copy/catalog-settings.ts:32
-#: src/copy/price-book.ts:34
+#: src/copy/price-book.ts:26
 #: src/copy/role-matrix.ts:97
 #: src/copy/team.ts:13
 msgid "All"
@@ -2410,7 +2350,7 @@ msgid "Already on HelioGrid?"
 msgstr "Already on HelioGrid?"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:48
+#: src/copy/proposal-template.ts:41
 msgid "Always prints"
 msgstr "Always prints"
 
@@ -2422,7 +2362,7 @@ msgstr "Always sent, and it cannot be muted: billing events are audit-relevant f
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:58
 #: src/copy/invoice-document.ts:30
-#: src/copy/price-book.ts:37
+#: src/copy/price-book.ts:29
 msgid "Amount"
 msgstr "Amount"
 
@@ -2432,7 +2372,7 @@ msgid "Amount due"
 msgstr "Amount due"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:67
+#: src/copy/price-book.ts:57
 msgid "Amount, {name}"
 msgstr "Amount, {name}"
 
@@ -2457,7 +2397,7 @@ msgid "Annual contract"
 msgstr "Annual contract"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:82
+#: src/copy/company-profile.ts:87
 msgid "Answered"
 msgstr "Answered"
 
@@ -2488,7 +2428,7 @@ msgid "Appearance"
 msgstr "Appearance"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:84
+#: src/copy/proposal-template.ts:73
 msgid "Applies to every new proposal, Quick ones included."
 msgstr "Applies to every new proposal, Quick ones included."
 
@@ -2757,7 +2697,7 @@ msgid "Back to the list"
 msgstr "Back to the list"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:54
+#: src/copy/price-book.ts:46
 msgid "Back to versions"
 msgstr "Back to versions"
 
@@ -2767,19 +2707,19 @@ msgid "Background work"
 msgstr "Background work"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:60
+#: src/copy/company-profile.ts:65
 msgid "Bank"
 msgstr "Bank"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:72
-#: src/copy/proposal-template.ts:72
-#: src/copy/proposal-template.ts:120
+#: src/copy/company-profile.ts:77
+#: src/copy/proposal-template.ts:61
+#: src/copy/proposal-template.ts:109
 msgid "Bank details"
 msgstr "Bank details"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:28
+#: src/copy/company-profile.ts:33
 msgid "Bank name"
 msgstr "Bank name"
 
@@ -2802,6 +2742,11 @@ msgstr "Battery chemistry"
 #: src/copy/catalog-import.ts:96
 msgid "becomes"
 msgstr "becomes"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:74
+msgid "Before dispatch"
+msgstr "Before dispatch"
 
 #. js-lingui-explicit-id
 #: src/copy/compare-grid.ts:24
@@ -2946,7 +2891,7 @@ msgid "Build and edit proposals, discounts included"
 msgstr "Build and edit proposals, discounts included"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:19
+#: src/copy/company-profile.ts:26
 msgid "Building, street, area"
 msgstr "Building, street, area"
 
@@ -2981,7 +2926,7 @@ msgid "Business profile"
 msgstr "Business profile"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:44
+#: src/copy/company-profile.ts:49
 msgid "Business profile saved"
 msgstr "Business profile saved"
 
@@ -3063,8 +3008,8 @@ msgstr "Can’t · {count}"
 #: src/copy/invite.ts:48
 #: src/copy/operation-progress.ts:9
 #: src/copy/payment-terms.ts:61
-#: src/copy/price-book.ts:81
-#: src/copy/proposal-template.ts:60
+#: src/copy/price-book.ts:71
+#: src/copy/proposal-template.ts:52
 #: src/copy/team-acts.ts:22
 msgid "Cancel"
 msgstr "Cancel"
@@ -3220,7 +3165,7 @@ msgstr "change this plan"
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:88
 #: src/copy/catalog-editor.ts:85
-#: src/copy/price-book.ts:75
+#: src/copy/price-book.ts:65
 msgid "Changed"
 msgstr "Changed"
 
@@ -3236,7 +3181,7 @@ msgstr "Changed your mind, or it is not the same company?"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:59
-#: src/copy/price-book.ts:36
+#: src/copy/price-book.ts:28
 msgid "Charged"
 msgstr "Charged"
 
@@ -3251,7 +3196,7 @@ msgid "Check in and out of a site, and log a visit and its outcome"
 msgstr "Check in and out of a site, and log a visit and its outcome"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:84
+#: src/copy/company-profile.ts:89
 msgid "Check the format"
 msgstr "Check the format"
 
@@ -3346,7 +3291,7 @@ msgid "Chosen for you"
 msgstr "Chosen for you"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:108
+#: src/copy/proposal-template.ts:97
 msgid "Cities served"
 msgstr "Cities served"
 
@@ -3390,7 +3335,7 @@ msgstr "Clear selection"
 #: src/copy/catalog-add-item.ts:87
 #: src/copy/catalog-editor.ts:34
 #: src/copy/catalog-import.ts:13
-#: src/copy/price-book.ts:82
+#: src/copy/price-book.ts:72
 #: src/copy/roles-reference.ts:41
 #: src/copy/shell.ts:51
 #: src/copy/usage-page.ts:94
@@ -3454,6 +3399,11 @@ msgid "Commercial & industrial (C&I)"
 msgstr "Commercial & industrial (C&I)"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:54
+msgid "Commissioning"
+msgstr "Commissioning"
+
+#. js-lingui-explicit-id
 #: src/copy/company-signup.ts:41
 msgid "Company name"
 msgstr "Company name"
@@ -3494,7 +3444,7 @@ msgid "Component kind"
 msgstr "Component kind"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:118
+#: src/copy/proposal-template.ts:107
 msgid "Components"
 msgstr "Components"
 
@@ -3541,12 +3491,12 @@ msgid "Continue anyway"
 msgstr "Continue anyway"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:55
+#: src/copy/company-profile.ts:60
 msgid "Continue setting up HelioGrid without saving your company profile"
 msgstr "Continue setting up HelioGrid without saving your company profile"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:50
+#: src/copy/company-profile.ts:55
 msgid "Continue setting up HelioGrid without your company profile"
 msgstr "Continue setting up HelioGrid without your company profile"
 
@@ -3571,7 +3521,7 @@ msgid "Continue without a photo"
 msgstr "Continue without a photo"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:49
+#: src/copy/company-profile.ts:54
 msgid "Continue without it"
 msgstr "Continue without it"
 
@@ -3752,8 +3702,8 @@ msgid "Counts include active members only. Someone whose invite is still open, o
 msgstr "Counts include active members only. Someone whose invite is still open, or who was deactivated, is named under the role but not counted."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:35
-#: src/copy/proposal-template.ts:142
+#: src/copy/proposal-template.ts:31
+#: src/copy/proposal-template.ts:131
 msgid "Cover"
 msgstr "Cover"
 
@@ -4027,7 +3977,7 @@ msgid "Deactivated · last seen today"
 msgstr "Deactivated · last seen today"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:46
+#: src/copy/proposal-template.ts:39
 msgid "declared by you"
 msgstr "declared by you"
 
@@ -4070,7 +4020,7 @@ msgid "Default for {market}"
 msgstr "Default for {market}"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:55
+#: src/copy/price-book.ts:47
 msgid "Default margin"
 msgstr "Default margin"
 
@@ -4085,7 +4035,7 @@ msgid "Delete {name}, position {position} of {total}"
 msgstr "Delete {name}, position {position} of {total}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:89
+#: src/copy/proposal-template.ts:78
 msgid "Delete {phase}?"
 msgstr "Delete {phase}?"
 
@@ -4096,7 +4046,7 @@ msgid "Delete leads"
 msgstr "Delete leads"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:91
+#: src/copy/proposal-template.ts:80
 msgid "Delete phase"
 msgstr "Delete phase"
 
@@ -4199,13 +4149,13 @@ msgstr "Discard"
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:73
 #: src/copy/payment-terms.ts:80
-#: src/copy/proposal-template.ts:95
+#: src/copy/proposal-template.ts:84
 msgid "Discard and leave"
 msgstr "Discard and leave"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:61
-#: src/copy/proposal-template.ts:86
+#: src/copy/proposal-template.ts:75
 msgid "Discard changes"
 msgstr "Discard changes"
 
@@ -4242,14 +4192,24 @@ msgid "Dismiss"
 msgstr "Dismiss"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:42
+#: src/copy/document-defaults.ts:38
+msgid "Dispatched"
+msgstr "Dispatched"
+
+#. js-lingui-explicit-id
+#: src/copy/proposal-template.ts:35
 msgid "Document"
 msgstr "Document"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:43
+#: src/copy/proposal-template.ts:36
 msgid "Document name"
 msgstr "Document name"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:63
+msgid "Documents, warranties and the monitoring login are handed over to you."
+msgstr "Documents, warranties and the monitoring login are handed over to you."
 
 #. js-lingui-explicit-id
 #: src/copy/operation-progress.ts:17
@@ -4366,7 +4326,7 @@ msgstr "Earlier releases"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:34
-#: src/copy/proposal-template.ts:34
+#: src/copy/proposal-template.ts:30
 msgid "Edit"
 msgstr "Edit"
 
@@ -4376,7 +4336,7 @@ msgid "Edit {name}"
 msgstr "Edit {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:54
+#: src/copy/proposal-template.ts:46
 msgid "Edit {phase}"
 msgstr "Edit {phase}"
 
@@ -4391,7 +4351,7 @@ msgid "Edit your branding"
 msgstr "Edit your branding"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:33
+#: src/copy/proposal-template.ts:29
 msgid "Edit your proposal template"
 msgstr "Edit your proposal template"
 
@@ -4442,6 +4402,11 @@ msgid "Efficiency (%)"
 msgstr "Efficiency (%)"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:46
+msgid "Electrical work and metering"
+msgstr "Electrical work and metering"
+
+#. js-lingui-explicit-id
 #: src/copy/role-presets.ts:59
 msgid "Employee records, attendance and leave"
 msgstr "Employee records, attendance and leave"
@@ -4460,12 +4425,6 @@ msgstr "Ended"
 #: src/copy/billing-home.ts:75
 msgid "Ends"
 msgstr "Ends"
-
-#. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:151
-#: src/copy/proposal-template.ts:156
-msgid "English, Hindi and Marathi"
-msgstr "English, Hindi and Marathi"
 
 #. js-lingui-explicit-id
 #: src/copy/brand-colour-field.ts:19
@@ -4501,6 +4460,11 @@ msgstr "entries"
 #: src/copy/shell.ts:76
 msgid "EPC Owner"
 msgstr "EPC Owner"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:26
+msgid "Equipment warranties are the manufacturers’ and are handed over at commissioning."
+msgstr "Equipment warranties are the manufacturers’ and are handed over at commissioning."
 
 #. js-lingui-explicit-id
 #: src/copy/provenance.ts:15
@@ -4553,7 +4517,7 @@ msgid "every other feature"
 msgstr "every other feature"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:130
+#: src/copy/proposal-template.ts:119
 msgid "Every panel, inverter and part, by make."
 msgstr "Every panel, inverter and part, by make."
 
@@ -4583,7 +4547,7 @@ msgid "Every rooftop, from the first call to the last payment."
 msgstr "Every rooftop, from the first call to the last payment."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:146
+#: src/copy/proposal-template.ts:135
 msgid "every section prints"
 msgstr "every section prints"
 
@@ -4643,7 +4607,7 @@ msgid "Expand the sidebar"
 msgstr "Expand the sidebar"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:127
+#: src/copy/proposal-template.ts:116
 msgid "Expected generation through the year."
 msgstr "Expected generation through the year."
 
@@ -4688,7 +4652,7 @@ msgid "Extra voice"
 msgstr "Extra voice"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:90
+#: src/copy/company-profile.ts:95
 msgid "Factories, offices, warehouses"
 msgstr "Factories, offices, warehouses"
 
@@ -4761,7 +4725,7 @@ msgid "Finance Home"
 msgstr "Finance Home"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:115
+#: src/copy/proposal-template.ts:104
 msgid "Financials"
 msgstr "Financials"
 
@@ -4875,12 +4839,12 @@ msgid "from {source}"
 msgstr "from {source}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:71
+#: src/copy/proposal-template.ts:60
 msgid "From Branding"
 msgstr "From Branding"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:132
+#: src/copy/proposal-template.ts:121
 msgid "From Business profile"
 msgstr "From Business profile"
 
@@ -4890,7 +4854,12 @@ msgid "From HelioGrid · product news"
 msgstr "From HelioGrid · product news"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:129
+#: src/copy/proposal-template.ts:145
+msgid "from order to handover"
+msgstr "from order to handover"
+
+#. js-lingui-explicit-id
+#: src/copy/proposal-template.ts:118
 msgid "From Payment terms"
 msgstr "From Payment terms"
 
@@ -4910,7 +4879,7 @@ msgid "From your Business profile"
 msgstr "From your Business profile"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:17
+#: src/copy/company-profile.ts:24
 msgid "From your signup"
 msgstr "From your signup"
 
@@ -4950,7 +4919,7 @@ msgid "Give these terms a name"
 msgstr "Give these terms a name"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:63
+#: src/copy/proposal-template.ts:55
 msgid "Give this phase a name"
 msgstr "Give this phase a name"
 
@@ -5127,17 +5096,22 @@ msgid "handle people and admin"
 msgstr "handle people and admin"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:107
+#: src/copy/document-defaults.ts:62
+msgid "Handover"
+msgstr "Handover"
+
+#. js-lingui-explicit-id
+#: src/copy/proposal-template.ts:96
 msgid "Happy customers"
 msgstr "Happy customers"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:29
+#: src/copy/company-profile.ts:34
 msgid "HDFC Bank"
 msgstr "HDFC Bank"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:33
+#: src/copy/company-profile.ts:38
 msgid "HDFC0001234"
 msgstr "HDFC0001234"
 
@@ -5207,22 +5181,22 @@ msgid "HelioGrid's answer could not be read. If you were saving, check whether i
 msgstr "HelioGrid's answer could not be read. If you were saving, check whether it saved before trying again."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:140
+#: src/copy/proposal-template.ts:129
 msgid "HelioGrid's cover"
 msgstr "HelioGrid's cover"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:145
+#: src/copy/proposal-template.ts:134
 msgid "HelioGrid's standard"
 msgstr "HelioGrid's standard"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:155
+#: src/copy/proposal-template.ts:144
 msgid "HelioGrid's standard phases"
 msgstr "HelioGrid's standard phases"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:150
+#: src/copy/proposal-template.ts:139
 msgid "HelioGrid's standard terms"
 msgstr "HelioGrid's standard terms"
 
@@ -5313,7 +5287,7 @@ msgid "Home"
 msgstr "Home"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:89
+#: src/copy/company-profile.ts:94
 msgid "Homes and housing societies"
 msgstr "Homes and housing societies"
 
@@ -5323,7 +5297,7 @@ msgid "Homes and individual rooftops, sold to the owner living under the system.
 msgstr "Homes and individual rooftops, sold to the owner living under the system."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:68
+#: src/copy/price-book.ts:58
 msgid "How {name} is charged"
 msgstr "How {name} is charged"
 
@@ -5343,7 +5317,7 @@ msgid "How the part-cycle amount is worked out"
 msgstr "How the part-cycle amount is worked out"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:33
+#: src/copy/price-book.ts:25
 msgid "How the rate is charged"
 msgstr "How the rate is charged"
 
@@ -5484,7 +5458,7 @@ msgstr "In {language}, switched to {switches}"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:67
-#: src/copy/price-book.ts:52
+#: src/copy/price-book.ts:44
 msgid "In force"
 msgstr "In force"
 
@@ -5507,6 +5481,11 @@ msgstr "In search and pickers"
 #: src/copy/pricing.ts:25
 msgid "In the app"
 msgstr "In the app"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:58
+msgid "Incentive claim"
+msgstr "Incentive claim"
 
 #. js-lingui-explicit-id
 #: src/copy/pricing.ts:99
@@ -5549,6 +5528,11 @@ msgstr "Industrial drawing sheets"
 #: src/copy/assign-roles.ts:54
 msgid "install"
 msgstr "install"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:42
+msgid "Installation"
+msgstr "Installation"
 
 #. js-lingui-explicit-id
 #: src/copy/shell.ts:87
@@ -5769,7 +5753,7 @@ msgstr "Keep {plan} instead"
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:74
 #: src/copy/payment-terms.ts:81
-#: src/copy/proposal-template.ts:96
+#: src/copy/proposal-template.ts:85
 msgid "Keep editing"
 msgstr "Keep editing"
 
@@ -5782,7 +5766,7 @@ msgstr "Keep filling it in"
 #: src/copy/branding.ts:70
 #: src/copy/catalog-editor.ts:40
 #: src/copy/payment-terms.ts:74
-#: src/copy/proposal-template.ts:92
+#: src/copy/proposal-template.ts:81
 msgid "Keep it"
 msgstr "Keep it"
 
@@ -5854,18 +5838,12 @@ msgid "kinds"
 msgstr "kinds"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:100
+#: src/copy/proposal-template.ts:89
 msgid "Kothrud, Pune"
 msgstr "Kothrud, Pune"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:40
-msgid "language"
-msgstr "language"
-
-#. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:31
-#: src/copy/proposal-template.ts:39
 #: src/copy/setup-language.ts:21
 msgid "Language"
 msgstr "Language"
@@ -5948,7 +5926,7 @@ msgstr "Leave this column out"
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:71
 #: src/copy/payment-terms.ts:78
-#: src/copy/proposal-template.ts:93
+#: src/copy/proposal-template.ts:82
 msgid "Leave without saving?"
 msgstr "Leave without saving?"
 
@@ -6168,7 +6146,7 @@ msgid "Loading the plans"
 msgstr "Loading the plans"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:148
+#: src/copy/price-book.ts:137
 msgid "Loading the price book"
 msgstr "Loading the price book"
 
@@ -6183,7 +6161,7 @@ msgid "Loading the proposal cover"
 msgstr "Loading the proposal cover"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:79
+#: src/copy/proposal-template.ts:68
 msgid "Loading the proposal preview"
 msgstr "Loading the proposal preview"
 
@@ -6223,7 +6201,7 @@ msgid "Loading your branding"
 msgstr "Loading your branding"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:45
+#: src/copy/company-profile.ts:50
 msgid "Loading your company profile"
 msgstr "Loading your company profile"
 
@@ -6243,7 +6221,7 @@ msgid "Loading your preferences"
 msgstr "Loading your preferences"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:80
+#: src/copy/proposal-template.ts:69
 msgid "Loading your proposal template"
 msgstr "Loading your proposal template"
 
@@ -6265,7 +6243,7 @@ msgstr "Location confirmed"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:35
-#: src/copy/company-profile.ts:59
+#: src/copy/company-profile.ts:64
 msgid "Logo"
 msgstr "Logo"
 
@@ -6275,7 +6253,7 @@ msgid "Logo and colours on every proposal"
 msgstr "Logo and colours on every proposal"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:69
+#: src/copy/company-profile.ts:74
 msgid "Logo and company name"
 msgstr "Logo and company name"
 
@@ -6290,7 +6268,7 @@ msgid "Logo prints here"
 msgstr "Logo prints here"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:70
+#: src/copy/proposal-template.ts:59
 msgid "Logo, colour and letterhead"
 msgstr "Logo, colour and letterhead"
 
@@ -6340,7 +6318,7 @@ msgid "Manage the plan and billing"
 msgstr "Manage the plan and billing"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:28
+#: src/copy/price-book.ts:20
 msgid "Margin {margin} · since {date}"
 msgstr "Margin {margin} · since {date}"
 
@@ -6361,7 +6339,7 @@ msgid "Market calling window"
 msgstr "Market calling window"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:38
+#: src/copy/company-profile.ts:43
 msgid "Market defaults until you set these"
 msgstr "Market defaults until you set these"
 
@@ -6401,9 +6379,19 @@ msgid "Material leaves for site"
 msgstr "Material leaves for site"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:34
+msgid "Material ordered"
+msgstr "Material ordered"
+
+#. js-lingui-explicit-id
 #: src/copy/checklist.ts:16
 msgid "Materials"
 msgstr "Materials"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:39
+msgid "Materials leave the warehouse for your site."
+msgstr "Materials leave the warehouse for your site."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-add-item-fields.ts:26
@@ -6426,7 +6414,7 @@ msgid "Measurements"
 msgstr "Measurements"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:99
+#: src/copy/proposal-template.ts:88
 msgid "Meena Deshpande"
 msgstr "Meena Deshpande"
 
@@ -6700,7 +6688,7 @@ msgid "Name"
 msgstr "Name"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:141
+#: src/copy/proposal-template.ts:130
 msgid "name and logo only"
 msgstr "name and logo only"
 
@@ -6715,7 +6703,7 @@ msgid "Name of these terms"
 msgstr "Name of these terms"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:78
+#: src/copy/company-profile.ts:83
 msgid "Name only"
 msgstr "Name only"
 
@@ -6841,7 +6829,7 @@ msgid "New payment terms"
 msgstr "New payment terms"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:57
+#: src/copy/proposal-template.ts:49
 msgid "New phase"
 msgstr "New phase"
 
@@ -6906,7 +6894,7 @@ msgid "New proposals use these terms."
 msgstr "New proposals use these terms."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:73
+#: src/copy/price-book.ts:63
 msgid "New rate"
 msgstr "New rate"
 
@@ -6992,11 +6980,6 @@ msgstr "NMC"
 #: src/copy/catalog-editor.ts:73
 msgid "No"
 msgstr "No"
-
-#. js-lingui-explicit-id
-#: src/copy/price-book.ts:66
-msgid "No {language} name yet — English shows in its place."
-msgstr "No {language} name yet — English shows in its place."
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:53
@@ -7185,12 +7168,12 @@ msgid "No project name yet"
 msgstr "No project name yet"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:45
+#: src/copy/price-book.ts:37
 msgid "No rate matches."
 msgstr "No rate matches."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:40
+#: src/copy/price-book.ts:32
 msgid "No rates yet"
 msgstr "No rates yet"
 
@@ -7265,7 +7248,7 @@ msgid "No transcript on this call"
 msgstr "No transcript on this call"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:30
+#: src/copy/price-book.ts:22
 msgid "No version yet"
 msgstr "No version yet"
 
@@ -7296,7 +7279,7 @@ msgid "Not a structural certification"
 msgstr "Not a structural certification"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:80
+#: src/copy/company-profile.ts:85
 msgid "Not added"
 msgstr "Not added"
 
@@ -7311,7 +7294,7 @@ msgid "Not added or selected — everything you typed is still here."
 msgstr "Not added or selected — everything you typed is still here."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:74
+#: src/copy/proposal-template.ts:63
 msgid "not added yet · from Business profile"
 msgstr "not added yet · from Business profile"
 
@@ -7357,7 +7340,7 @@ msgid "Not comparable here"
 msgstr "Not comparable here"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:83
+#: src/copy/company-profile.ts:88
 msgid "Not declared"
 msgstr "Not declared"
 
@@ -7458,14 +7441,14 @@ msgid "Not saved — this cannot be widened"
 msgstr "Not saved — this cannot be widened"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:53
+#: src/copy/company-profile.ts:58
 msgid "Not saved · our end · nothing typed is lost"
 msgstr "Not saved · our end · nothing typed is lost"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:59
 #: src/copy/payment-terms.ts:42
-#: src/copy/proposal-template.ts:83
+#: src/copy/proposal-template.ts:72
 msgid "Not saved yet"
 msgstr "Not saved yet"
 
@@ -7687,16 +7670,6 @@ msgid "Nothing was lost — press Save and continue to try again."
 msgstr "Nothing was lost — press Save and continue to try again."
 
 #. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:32
-msgid "Nothing written in {language} yet · all {total} {sectionNoun} fall back to {fallback}"
-msgstr "Nothing written in {language} yet · all {total} {sectionNoun} fall back to {fallback}"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:29
-msgid "Nothing written in {language} yet · it falls back to {fallback}"
-msgstr "Nothing written in {language} yet · it falls back to {fallback}"
-
-#. js-lingui-explicit-id
 #: src/copy/shell.ts:56
 msgid "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
 msgstr "Nothing you captured on this device is lost. Ask your admin to restore your access, or sign in with another account."
@@ -7757,14 +7730,24 @@ msgid "On"
 msgstr "On"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:13
+#: src/copy/document-defaults.ts:76
+msgid "On commissioning"
+msgstr "On commissioning"
+
+#. js-lingui-explicit-id
+#: src/copy/company-profile.ts:20
 msgid "On every proposal, invoice and customer link · asked for once"
 msgstr "On every proposal, invoice and customer link · asked for once"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:14
+#: src/copy/company-profile.ts:21
 msgid "On every proposal, invoice and customer link · change it here"
 msgstr "On every proposal, invoice and customer link · change it here"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:75
+msgid "On installation"
+msgstr "On installation"
 
 #. js-lingui-explicit-id
 #: src/copy/on-its-way.ts:17
@@ -7782,7 +7765,7 @@ msgid "On trial"
 msgstr "On trial"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:34
+#: src/copy/company-profile.ts:39
 msgid "On your invoices · never used to move your money"
 msgstr "On your invoices · never used to move your money"
 
@@ -7852,13 +7835,13 @@ msgid "Only EPC Owner"
 msgstr "Only EPC Owner"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:37
+#: src/copy/company-profile.ts:42
 msgid "Only new proposals reprice · sent ones keep theirs"
 msgstr "Only new proposals reprice · sent ones keep theirs"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:38
-#: src/copy/proposal-template.ts:32
+#: src/copy/proposal-template.ts:28
 msgid "Open full size"
 msgstr "Open full size"
 
@@ -7959,7 +7942,7 @@ msgid "OTP codes"
 msgstr "OTP codes"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:48
+#: src/copy/company-profile.ts:53
 msgid "Our end, not yours · nothing is lost"
 msgstr "Our end, not yours · nothing is lost"
 
@@ -8080,6 +8063,11 @@ msgid "Panels"
 msgstr "Panels"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:35
+msgid "Panels, inverter and structure are ordered for your site."
+msgstr "Panels, inverter and structure are ordered for your site."
+
+#. js-lingui-explicit-id
 #: src/copy/plan-selection.ts:56
 msgid "Part of this cycle"
 msgstr "Part of this cycle"
@@ -8088,11 +8076,6 @@ msgstr "Part of this cycle"
 #: src/copy/plan-selection.ts:57
 msgid "Part of this cycle · {left} of {total} days"
 msgstr "Part of this cycle · {left} of {total} days"
-
-#. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:41
-msgid "parts"
-msgstr "parts"
 
 #. js-lingui-explicit-id
 #: src/copy/usage-page.ts:74
@@ -8110,7 +8093,7 @@ msgid "past releases"
 msgstr "past releases"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:29
+#: src/copy/price-book.ts:21
 msgid "past versions"
 msgstr "past versions"
 
@@ -8227,6 +8210,11 @@ msgid "Payment failed · day {day} of the 7-day grace"
 msgstr "Payment failed · day {day} of the 7-day grace"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:20
+msgid "Payment falls due in the tranches listed in the payment schedule. Work at each stage starts once the tranche for that stage is received."
+msgstr "Payment falls due in the tranches listed in the payment schedule. Work at each stage starts once the tranche for that stage is received."
+
+#. js-lingui-explicit-id
 #: src/copy/billing-home.ts:39
 msgid "Payment link"
 msgstr "Payment link"
@@ -8272,7 +8260,7 @@ msgid "Payment still due"
 msgstr "Payment still due"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:117
+#: src/copy/proposal-template.ts:106
 #: src/copy/settings.ts:47
 msgid "Payment terms"
 msgstr "Payment terms"
@@ -8318,17 +8306,17 @@ msgid "People Today"
 msgstr "People Today"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:91
+#: src/copy/price-book.ts:81
 msgid "Per job"
 msgstr "Per job"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:92
+#: src/copy/price-book.ts:82
 msgid "Per kW"
 msgstr "Per kW"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:94
+#: src/copy/price-book.ts:84
 msgid "Per metre"
 msgstr "Per metre"
 
@@ -8338,12 +8326,12 @@ msgid "Per minute"
 msgstr "Per minute"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:93
+#: src/copy/price-book.ts:83
 msgid "Per visit"
 msgstr "Per visit"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:114
+#: src/copy/proposal-template.ts:103
 msgid "Performance"
 msgstr "Performance"
 
@@ -8353,17 +8341,17 @@ msgid "Person"
 msgstr "Person"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:56
+#: src/copy/proposal-template.ts:48
 msgid "Phase {position} of {count}"
 msgstr "Phase {position} of {count}"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:58
+#: src/copy/proposal-template.ts:50
 msgid "Phase name"
 msgstr "Phase name"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:52
+#: src/copy/proposal-template.ts:44
 msgid "phases"
 msgstr "phases"
 
@@ -8426,7 +8414,7 @@ msgid "Pickers"
 msgstr "Pickers"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:20
+#: src/copy/company-profile.ts:27
 msgid "PIN code"
 msgstr "PIN code"
 
@@ -8634,7 +8622,7 @@ msgid "price book"
 msgstr "price book"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:24
+#: src/copy/price-book.ts:16
 msgid "Price book"
 msgstr "Price book"
 
@@ -8694,11 +8682,6 @@ msgid "Prices exclude {scheme}"
 msgstr "Prices exclude {scheme}"
 
 #. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:9
-msgid "primary"
-msgstr "primary"
-
-#. js-lingui-explicit-id
 #: src/copy/brand-colour-field.ts:14
 msgid "Primary brand colour"
 msgstr "Primary brand colour"
@@ -8724,7 +8707,7 @@ msgid "Profile photo, optional"
 msgstr "Profile photo, optional"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:46
+#: src/copy/company-profile.ts:51
 msgid "Profile still loading"
 msgstr "Profile still loading"
 
@@ -8744,7 +8727,7 @@ msgid "Project Manager"
 msgstr "Project Manager"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:51
+#: src/copy/proposal-template.ts:43
 msgid "Project phases"
 msgstr "Project phases"
 
@@ -8754,8 +8737,8 @@ msgid "Project stages, documents and blockers across all projects, plus the cata
 msgstr "Project stages, documents and blockers across all projects, plus the catalog and price book"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:116
-#: src/copy/proposal-template.ts:157
+#: src/copy/proposal-template.ts:105
+#: src/copy/proposal-template.ts:146
 msgid "Project timeline"
 msgstr "Project timeline"
 
@@ -8773,7 +8756,7 @@ msgstr "Projects"
 #. js-lingui-explicit-id
 #: src/copy/brand-colour-field.ts:23
 #: src/copy/branding.ts:32
-#: src/copy/proposal-template.ts:44
+#: src/copy/proposal-template.ts:37
 msgid "Proposal"
 msgstr "Proposal"
 
@@ -8805,12 +8788,12 @@ msgid "Proposals a month"
 msgstr "Proposals a month"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:75
+#: src/copy/proposal-template.ts:64
 msgid "Proposals already sent keep the template they were built with."
 msgstr "Proposals already sent keep the template they were built with."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:41
+#: src/copy/price-book.ts:33
 msgid "Proposals price only hardware until you add rates. Your first set becomes version 1."
 msgstr "Proposals price only hardware until you add rates. Your first set becomes version 1."
 
@@ -8865,19 +8848,14 @@ msgid "Rajesh Kulkarni"
 msgstr "Rajesh Kulkarni"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:35
+#: src/copy/price-book.ts:27
 msgid "Rate"
 msgstr "Rate"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:64
+#: src/copy/price-book.ts:56
 msgid "Rate name"
 msgstr "Rate name"
-
-#. js-lingui-explicit-id
-#: src/copy/price-book.ts:65
-msgid "Rate name in {language}"
-msgstr "Rate name in {language}"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-import-fields.ts:44
@@ -8907,12 +8885,12 @@ msgstr "Rated power"
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:20
 #: src/copy/plan-selection.ts:72
-#: src/copy/price-book.ts:56
+#: src/copy/price-book.ts:48
 msgid "Rates"
 msgstr "Rates"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:38
+#: src/copy/price-book.ts:30
 msgid "Rates in force"
 msgstr "Rates in force"
 
@@ -8957,7 +8935,7 @@ msgid "Read others’ attendance records"
 msgstr "Read others’ attendance records"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:53
+#: src/copy/price-book.ts:45
 msgid "Read-only"
 msgstr "Read-only"
 
@@ -9124,7 +9102,7 @@ msgid "Remove {list} from {first}?"
 msgstr "Remove {list} from {first}?"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:69
+#: src/copy/price-book.ts:59
 msgid "Remove {name}"
 msgstr "Remove {name}"
 
@@ -9196,7 +9174,7 @@ msgid "Replace"
 msgstr "Replace"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:77
+#: src/copy/proposal-template.ts:66
 msgid "Replace any part with your own wording."
 msgstr "Replace any part with your own wording."
 
@@ -9522,7 +9500,7 @@ msgid "Sample contract"
 msgstr "Sample contract"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:97
+#: src/copy/proposal-template.ts:86
 msgid "Sample customer and proposal number"
 msgstr "Sample customer and proposal number"
 
@@ -9532,13 +9510,13 @@ msgid "Save"
 msgstr "Save"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:39
+#: src/copy/company-profile.ts:44
 #: src/copy/first-run-profile.ts:50
 msgid "Save and continue"
 msgstr "Save and continue"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:80
+#: src/copy/price-book.ts:70
 msgid "Save as version {number}"
 msgstr "Save as version {number}"
 
@@ -9548,17 +9526,17 @@ msgid "Save branding"
 msgstr "Save branding"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:41
+#: src/copy/company-profile.ts:46
 msgid "Save changes"
 msgstr "Save changes"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:42
+#: src/copy/company-profile.ts:47
 msgid "Save changes to your business profile"
 msgstr "Save changes to your business profile"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:61
+#: src/copy/proposal-template.ts:53
 msgid "Save phase"
 msgstr "Save phase"
 
@@ -9573,7 +9551,7 @@ msgid "Save roles"
 msgstr "Save roles"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:85
+#: src/copy/proposal-template.ts:74
 msgid "Save template"
 msgstr "Save template"
 
@@ -9583,7 +9561,7 @@ msgid "Save terms"
 msgstr "Save terms"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:40
+#: src/copy/company-profile.ts:45
 msgid "Save your company profile and continue setting up HelioGrid"
 msgstr "Save your company profile and continue setting up HelioGrid"
 
@@ -9623,12 +9601,12 @@ msgid "Saves both; you can change them in your company profile."
 msgstr "Saves both; you can change them in your company profile."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:61
+#: src/copy/price-book.ts:53
 msgid "Say what changed to save this version."
 msgstr "Say what changed to save this version."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:65
+#: src/copy/proposal-template.ts:57
 msgid "Say what happens in this phase"
 msgstr "Say what happens in this phase"
 
@@ -9668,7 +9646,7 @@ msgid "Search or jump to…"
 msgstr "Search or jump to…"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:32
+#: src/copy/price-book.ts:24
 msgid "Search rates"
 msgstr "Search rates"
 
@@ -9678,12 +9656,12 @@ msgid "Search the catalog"
 msgstr "Search the catalog"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:36
+#: src/copy/proposal-template.ts:32
 msgid "Sections"
 msgstr "Sections"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:147
+#: src/copy/proposal-template.ts:136
 msgid "Sections that print"
 msgstr "Sections that print"
 
@@ -10035,7 +10013,7 @@ msgid "Show more of the call"
 msgstr "Show more of the call"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:63
+#: src/copy/price-book.ts:55
 msgid "Show more versions"
 msgstr "Show more versions"
 
@@ -10075,12 +10053,7 @@ msgid "Shown"
 msgstr "Shown"
 
 #. js-lingui-explicit-id
-#: src/copy/authored-content.ts:13
-msgid "Shown in {shown} — not yet written in {requested}."
-msgstr "Shown in {shown} — not yet written in {requested}."
-
-#. js-lingui-explicit-id
-#: src/copy/company-profile.ts:23
+#: src/copy/company-profile.ts:28
 msgid "Shown to customers on every document"
 msgstr "Shown to customers on every document"
 
@@ -10171,7 +10144,7 @@ msgid "Site surveys from the roof, on your phone."
 msgstr "Site surveys from the roof, on your phone."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:126
+#: src/copy/proposal-template.ts:115
 msgid "Size, type and price of your system."
 msgstr "Size, type and price of your system."
 
@@ -10186,7 +10159,7 @@ msgid "Skip for now"
 msgstr "Skip for now"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:15
+#: src/copy/company-profile.ts:22
 msgid "Skipped during setup · your first proposal needs it"
 msgstr "Skipped during setup · your first proposal needs it"
 
@@ -10217,7 +10190,7 @@ msgid "Solar proposal"
 msgstr "Solar proposal"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:113
+#: src/copy/proposal-template.ts:102
 msgid "Solar system"
 msgstr "Solar system"
 
@@ -10328,6 +10301,11 @@ msgid "Stage change"
 msgstr "Stage change"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:70
+msgid "Standard {split}"
+msgstr "Standard {split}"
+
+#. js-lingui-explicit-id
 #: src/copy/shell.ts:120
 msgid "Start a survey from your home"
 msgstr "Start a survey from your home"
@@ -10343,7 +10321,7 @@ msgid "Start survey"
 msgstr "Start survey"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:31
+#: src/copy/price-book.ts:23
 msgid "Start version {number}"
 msgstr "Start version {number}"
 
@@ -10353,7 +10331,7 @@ msgid "Start with a real lead"
 msgstr "Start with a real lead"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:57
+#: src/copy/price-book.ts:49
 msgid "Starts from version {number}"
 msgstr "Starts from version {number}"
 
@@ -10475,7 +10453,7 @@ msgid "Straight into today’s list to call back"
 msgstr "Straight into today’s list to call back"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:18
+#: src/copy/company-profile.ts:25
 msgid "Street address"
 msgstr "Street address"
 
@@ -10702,7 +10680,7 @@ msgid "tax rates"
 msgstr "tax rates"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:71
+#: src/copy/company-profile.ts:76
 #: src/copy/invoice-document.ts:25
 msgid "Tax registration"
 msgstr "Tax registration"
@@ -10740,22 +10718,17 @@ msgid "Tenant holiday"
 msgstr "Tenant holiday"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:37
+#: src/copy/proposal-template.ts:33
 msgid "Terms"
 msgstr "Terms"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:102
-#: src/copy/proposal-template.ts:119
-#: src/copy/proposal-template.ts:152
+#: src/copy/proposal-template.ts:91
+#: src/copy/proposal-template.ts:108
+#: src/copy/proposal-template.ts:141
 #: src/copy/rich-text.ts:26
 msgid "Terms and conditions"
 msgstr "Terms and conditions"
-
-#. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:49
-msgid "Terms in {language}"
-msgstr "Terms in {language}"
 
 #. js-lingui-explicit-id
 #: src/copy/project-stages.ts:40
@@ -10969,6 +10942,11 @@ msgid "The documents each stage needs, in one place"
 msgstr "The documents each stage needs, in one place"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:51
+msgid "The electricity utility inspects and approves the installation."
+msgstr "The electricity utility inspects and approves the installation."
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-import-notes.ts:9
 msgid "The file did not upload. Try again."
 msgstr "The file did not upload. Try again."
@@ -11009,6 +10987,16 @@ msgid "The import keeps running. Its report waits in Import a file."
 msgstr "The import keeps running. Its report waits in Import a file."
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:59
+msgid "The incentive claim is filed on your behalf."
+msgstr "The incentive claim is filed on your behalf."
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:23
+msgid "The installation follows the design agreed in this proposal. A change to the design after acceptance may change the price, and a revised proposal is issued before work continues."
+msgstr "The installation follows the design agreed in this proposal. A change to the design after acceptance may change the price, and a revised proposal is issued before work continues."
+
+#. js-lingui-explicit-id
 #: src/copy/role-presets.ts:58
 msgid "The installation job assigned to them"
 msgstr "The installation job assigned to them"
@@ -11017,6 +11005,11 @@ msgstr "The installation job assigned to them"
 #: src/copy/role-presets.ts:27
 msgid "The installation job assigned to them, its checklist and photos"
 msgstr "The installation job assigned to them, its checklist and photos"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:47
+msgid "The inverter is connected and the meter application is filed."
+msgstr "The inverter is connected and the meter application is filed."
 
 #. js-lingui-explicit-id
 #: src/copy/team-acts.ts:29
@@ -11069,7 +11062,7 @@ msgid "The item is still preferred."
 msgstr "The item is still preferred."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:71
+#: src/copy/price-book.ts:61
 msgid "the new rate"
 msgstr "the new rate"
 
@@ -11089,12 +11082,12 @@ msgid "The PDF could not open. Try again."
 msgstr "The PDF could not open. Try again."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:30
+#: src/copy/proposal-template.ts:26
 msgid "The PDF your customer opens"
 msgstr "The PDF your customer opens"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:31
+#: src/copy/proposal-template.ts:27
 msgid "The PDF your customer opens · sample customer and number"
 msgstr "The PDF your customer opens · sample customer and number"
 
@@ -11109,7 +11102,7 @@ msgid "The preview opens when matching ends."
 msgstr "The preview opens when matching ends."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:85
+#: src/copy/price-book.ts:75
 msgid "The price book didn't load."
 msgstr "The price book didn't load."
 
@@ -11204,7 +11197,7 @@ msgid "The same hue, a shade darker."
 msgstr "The same hue, a shade darker."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:36
+#: src/copy/company-profile.ts:41
 msgid "The size you sell most often"
 msgstr "The size you sell most often"
 
@@ -11219,6 +11212,11 @@ msgid "The stages your customers pay in"
 msgstr "The stages your customers pay in"
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:43
+msgid "The structure, panels and wiring are installed on your roof."
+msgstr "The structure, panels and wiring are installed on your roof."
+
+#. js-lingui-explicit-id
 #: src/copy/on-its-way.ts:77
 msgid "The survey goes straight into the design"
 msgstr "The survey goes straight into the design"
@@ -11227,6 +11225,11 @@ msgstr "The survey goes straight into the design"
 #: src/copy/actor-class.ts:12
 msgid "The system"
 msgstr "The system"
+
+#. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:55
+msgid "The system is switched on and starts generating."
+msgstr "The system is switched on and starts generating."
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:16
@@ -11244,12 +11247,12 @@ msgid "The team’s leads, proposals and payments"
 msgstr "The team’s leads, proposals and payments"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:66
-msgid "The terms always print, so they need words in English."
-msgstr "The terms always print, so they need words in English."
+#: src/copy/proposal-template.ts:58
+msgid "The terms always print, so write at least one line."
+msgstr "The terms always print, so write at least one line."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:131
+#: src/copy/proposal-template.ts:120
 msgid "The terms you write."
 msgstr "The terms you write."
 
@@ -11264,7 +11267,7 @@ msgid "The trial ended"
 msgstr "The trial ended"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:84
+#: src/copy/price-book.ts:74
 msgid "The version wasn't saved. Nothing changed — try again."
 msgstr "The version wasn't saved. Nothing changed — try again."
 
@@ -11525,6 +11528,11 @@ msgid "This product changed in your catalog after the preview, so the row was no
 msgstr "This product changed in your catalog after the preview, so the row was not written."
 
 #. js-lingui-explicit-id
+#: src/copy/document-defaults.ts:17
+msgid "This proposal is valid until the date stated on it. Prices and taxes are as itemised in it."
+msgstr "This proposal is valid until the date stated on it. Prices and taxes are as itemised in it."
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:57
 msgid "This record is no longer in your scope, or was removed. The notification stays here because it reached you."
 msgstr "This record is no longer in your scope, or was removed. The notification stays here because it reached you."
@@ -11580,6 +11588,11 @@ msgid "Three phase"
 msgstr "Three phase"
 
 #. js-lingui-explicit-id
+#: src/copy/remove-roles.ts:28
+msgid "Tick {list} on {first}'s row again."
+msgstr "Tick {list} on {first}'s row again."
+
+#. js-lingui-explicit-id
 #: src/copy/assign-roles.ts:34
 msgid "Tick at least one preset."
 msgstr "Tick at least one preset."
@@ -11605,7 +11618,7 @@ msgid "Tick them again on {first}'s row whenever you like."
 msgstr "Tick them again on {first}'s row whenever you like."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:38
+#: src/copy/proposal-template.ts:34
 msgid "Timeline"
 msgstr "Timeline"
 
@@ -11677,7 +11690,7 @@ msgid "Total"
 msgstr "Total"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:106
+#: src/copy/proposal-template.ts:95
 msgid "Total capacity installed"
 msgstr "Total capacity installed"
 
@@ -11747,9 +11760,9 @@ msgstr "Try a part of the invoice number."
 #: src/copy/catalog-import.ts:50
 #: src/copy/catalog-settings.ts:93
 #: src/copy/payment-terms.ts:38
-#: src/copy/price-book.ts:86
+#: src/copy/price-book.ts:76
 #: src/copy/pricing.ts:118
-#: src/copy/proposal-template.ts:82
+#: src/copy/proposal-template.ts:71
 #: src/copy/role-card.ts:39
 #: src/copy/roles-reference.ts:34
 #: src/copy/sign-in.ts:40
@@ -11802,7 +11815,7 @@ msgid "Try again. If it keeps failing, you can still pay from the link in your l
 msgstr "Try again. If it keeps failing, you can still pay from the link in your last reminder."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:54
+#: src/copy/company-profile.ts:59
 msgid "Try saving your company profile again"
 msgstr "Try saving your company profile again"
 
@@ -11901,7 +11914,7 @@ msgid "Until you finish, proposals start without your answers."
 msgstr "Until you finish, proposals start without your answers."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:90
+#: src/copy/proposal-template.ts:79
 msgid "Until you save, Discard changes brings it back."
 msgstr "Until you save, Discard changes brings it back."
 
@@ -12098,12 +12111,17 @@ msgid "Utility clears the plant"
 msgstr "Utility clears the plant"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:27
+#: src/copy/document-defaults.ts:50
+msgid "Utility inspection"
+msgstr "Utility inspection"
+
+#. js-lingui-explicit-id
+#: src/copy/price-book.ts:19
 msgid "v{number}"
 msgstr "v{number}"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:25
+#: src/copy/price-book.ts:17
 msgid "V{number}"
 msgstr "V{number}"
 
@@ -12111,6 +12129,11 @@ msgstr "V{number}"
 #: src/copy/paged-document.ts:29
 msgid "Valid until"
 msgstr "Valid until"
+
+#. js-lingui-explicit-id
+#: src/copy/proposal-template.ts:140
+msgid "validity, payment, changes and warranties"
+msgstr "validity, payment, changes and warranties"
 
 #. js-lingui-explicit-id
 #: src/copy/otp-input.ts:8
@@ -12153,27 +12176,27 @@ msgid "Verifying the code creates your account. Your company is created at the n
 msgstr "Verifying the code creates your account. Your company is created at the next step."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:76
+#: src/copy/price-book.ts:66
 msgid "Version {next} goes in force at once. Version {current} stays readable."
 msgstr "Version {next} goes in force at once. Version {current} stays readable."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:50
+#: src/copy/price-book.ts:42
 msgid "Version {number}"
 msgstr "Version {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:83
+#: src/copy/price-book.ts:73
 msgid "Version {number} is in force"
 msgstr "Version {number} is in force"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:79
+#: src/copy/price-book.ts:69
 msgid "Version 1 goes in force at once."
 msgstr "Version 1 goes in force at once."
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:46
+#: src/copy/price-book.ts:38
 msgid "Versions"
 msgstr "Versions"
 
@@ -12271,7 +12294,7 @@ msgid "was"
 msgstr "was"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:74
+#: src/copy/price-book.ts:64
 msgid "was {amount}"
 msgstr "was {amount}"
 
@@ -12296,7 +12319,7 @@ msgid "We cannot tell what kind of item this is — what is it?"
 msgstr "We cannot tell what kind of item this is — what is it?"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:25
+#: src/copy/company-profile.ts:30
 msgid "We check the format against your market's rules — never with the issuing authority."
 msgstr "We check the format against your market's rules — never with the issuing authority."
 
@@ -12351,7 +12374,7 @@ msgid "We couldn't load your payment terms."
 msgstr "We couldn't load your payment terms."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:47
+#: src/copy/company-profile.ts:52
 msgid "We couldn't load your profile"
 msgstr "We couldn't load your profile"
 
@@ -12461,7 +12484,7 @@ msgid "What can they do?"
 msgstr "What can they do?"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:59
+#: src/copy/price-book.ts:51
 msgid "What changed"
 msgstr "What changed"
 
@@ -12486,7 +12509,7 @@ msgid "What every plan includes"
 msgstr "What every plan includes"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:59
+#: src/copy/proposal-template.ts:51
 msgid "What happens in this phase"
 msgstr "What happens in this phase"
 
@@ -12572,7 +12595,7 @@ msgid "What this gives them"
 msgstr "What this gives them"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:101
+#: src/copy/proposal-template.ts:90
 msgid "What this proposal covers"
 msgstr "What this proposal covers"
 
@@ -12592,7 +12615,7 @@ msgid "What you cannot do"
 msgstr "What you cannot do"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:35
+#: src/copy/company-profile.ts:40
 msgid "What you mostly sell"
 msgstr "What you mostly sell"
 
@@ -12602,13 +12625,13 @@ msgid "What you pay today"
 msgstr "What you pay today"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:73
+#: src/copy/company-profile.ts:78
 #: src/copy/settings.ts:35
 msgid "What you sell"
 msgstr "What you sell"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:16
+#: src/copy/company-profile.ts:23
 msgid "What you sell · not saved on the last step"
 msgstr "What you sell · not saved on the last step"
 
@@ -12843,29 +12866,14 @@ msgid "worse"
 msgstr "worse"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:78
+#: src/copy/proposal-template.ts:67
 msgid "Write our own"
 msgstr "Write our own"
-
-#. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:67
-msgid "Write this in English too — every other language falls back to it."
-msgstr "Write this in English too — every other language falls back to it."
 
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:51
 msgid "Writing these three details now."
 msgstr "Writing these three details now."
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:10
-msgid "Written in {written} of {of, plural, one {# {languageNoun}} other {# {languageNoun}s}}"
-msgstr "Written in {written} of {of, plural, one {# {languageNoun}} other {# {languageNoun}s}}"
-
-#. js-lingui-explicit-id
-#: src/copy/language-switcher.ts:13
-msgid "Written in {written} of {of, plural, one {# {languageNoun}} other {# {languageNoun}s}} · {each} {sectionNoun} each"
-msgstr "Written in {written} of {of, plural, one {# {languageNoun}} other {# {languageNoun}s}} · {each} {sectionNoun} each"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:118
@@ -12878,7 +12886,7 @@ msgid "Yearly"
 msgstr "Yearly"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:128
+#: src/copy/proposal-template.ts:117
 msgid "Yearly and lifetime savings, payback."
 msgstr "Yearly and lifetime savings, payback."
 
@@ -12970,13 +12978,13 @@ msgstr "You can change both later in your company profile, the next step. Propos
 
 #. js-lingui-explicit-id
 #: src/copy/remove-roles.ts:26
-msgid "You can give it back at any time"
-msgstr "You can give it back at any time"
+msgid "You can give it back at any time."
+msgstr "You can give it back at any time."
 
 #. js-lingui-explicit-id
 #: src/copy/remove-roles.ts:27
-msgid "You can give them back at any time"
-msgstr "You can give them back at any time"
+msgid "You can give them back at any time."
+msgstr "You can give them back at any time."
 
 #. js-lingui-explicit-id
 #: src/copy/invite.ts:74
@@ -13014,7 +13022,7 @@ msgid "You order the material"
 msgstr "You order the material"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:91
+#: src/copy/company-profile.ts:96
 msgid "You sell to either"
 msgstr "You sell to either"
 
@@ -13029,7 +13037,7 @@ msgid "You, your team and your company, in one place."
 msgstr "You, your team and your company, in one place."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:76
+#: src/copy/proposal-template.ts:65
 msgid "You're on HelioGrid's standard template"
 msgstr "You're on HelioGrid's standard template"
 
@@ -13106,12 +13114,12 @@ msgid "Your catalog starts with {count} platform items and no prices. Add your o
 msgstr "Your catalog starts with {count} platform items and no prices. Add your own SKUs, or set a platform item's price from the item."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:88
+#: src/copy/proposal-template.ts:77
 msgid "Your changes are kept — press Save template again."
 msgstr "Your changes are kept — press Save template again."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:94
+#: src/copy/proposal-template.ts:83
 msgid "Your changes are lost, and the saved template stays in force."
 msgstr "Your changes are lost, and the saved template stays in force."
 
@@ -13158,7 +13166,7 @@ msgid "Your company may have been made — trying again cannot make a second."
 msgstr "Your company may have been made — trying again cannot make a second."
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:12
+#: src/copy/company-profile.ts:19
 msgid "Your company profile"
 msgstr "Your company profile"
 
@@ -13168,7 +13176,7 @@ msgid "Your contract"
 msgstr "Your contract"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:32
+#: src/copy/company-profile.ts:37
 msgid "Your current account"
 msgstr "Your current account"
 
@@ -13240,7 +13248,7 @@ msgid "Your file says {file}; the product we carry is {catalog} — which is rig
 msgstr "Your file says {file}; the product we carry is {catalog} — which is right?"
 
 #. js-lingui-explicit-id
-#: src/copy/price-book.ts:58
+#: src/copy/price-book.ts:50
 msgid "Your first price book"
 msgstr "Your first price book"
 
@@ -13305,7 +13313,7 @@ msgid "Your language was not saved"
 msgstr "Your language was not saved"
 
 #. js-lingui-explicit-id
-#: src/copy/company-profile.ts:58
+#: src/copy/company-profile.ts:63
 msgid "Your letterhead"
 msgstr "Your letterhead"
 
@@ -13514,7 +13522,7 @@ msgid "Your proposal is ready."
 msgstr "Your proposal is ready."
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:81
+#: src/copy/proposal-template.ts:70
 msgid "Your proposal template didn't load"
 msgstr "Your proposal template didn't load"
 
@@ -13581,7 +13589,7 @@ msgid "Your team"
 msgstr "Your team"
 
 #. js-lingui-explicit-id
-#: src/copy/proposal-template.ts:87
+#: src/copy/proposal-template.ts:76
 msgid "Your template didn't save"
 msgstr "Your template didn't save"
 

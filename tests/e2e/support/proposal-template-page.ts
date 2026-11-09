@@ -1,5 +1,5 @@
-import { DEFAULT_TIMELINE_PHASES, type UiLanguage } from '@heliogrid/domain';
-import { createTranslator, languageName, proposalTemplateWords } from '@heliogrid/i18n';
+import type { UiLanguage } from '@heliogrid/domain';
+import { createTranslator, documentDefaults, proposalTemplateWords } from '@heliogrid/i18n';
 import { expect } from '@playwright/experimental-ct-react';
 import type { Locator, Page } from '@playwright/test';
 import { expectNoSidewaysScroll, settledBox } from './layout';
@@ -31,12 +31,10 @@ export const en = wordsIn('en');
 
 /** The tenant's six phases (m19-e): the platform's first six, in the reader's language. */
 export function phaseTitles(reader: UiLanguage, count: number): string[] {
-  return DEFAULT_TIMELINE_PHASES.slice(0, count).map(
-    (phase) => phase.name[reader] ?? phase.name.en,
-  );
+  return documentDefaults(READERS[reader].t)
+    .phases.slice(0, count)
+    .map((phase) => phase.name);
 }
-
-export const englishName = languageName('en');
 
 export const WIDTHS = [
   { name: '375', viewport: { width: 375, height: 812 }, wide: false },

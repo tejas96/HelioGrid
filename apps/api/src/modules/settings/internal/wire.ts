@@ -12,14 +12,12 @@ import {
   basisPointsToPercent,
   type EffectiveSettings,
   type Letterhead,
-  type PerLanguage,
   percentToBasisPoints,
   type RichTextValue,
   type TimelinePhase,
   type TrancheLine,
   type TrancheTemplate,
   type TrancheTemplateContent,
-  type UiLanguage,
 } from '@heliogrid/domain';
 
 /**
@@ -43,16 +41,6 @@ function blockWire(block: RichTextValue['blocks'][number]): RichTextValueWire['b
 
 export function richTextWire(value: RichTextValue): RichTextValueWire {
   return { version: value.version, blocks: value.blocks.map(blockWire) };
-}
-
-export function perLanguageWire<T, W>(
-  value: PerLanguage<T>,
-  map: (one: T) => W,
-): { en: W } & Partial<Record<UiLanguage, W>> {
-  const wire: { en: W } & Partial<Record<UiLanguage, W>> = { en: map(value.en) };
-  if (value.hi !== undefined) wire.hi = map(value.hi);
-  if (value.mr !== undefined) wire.mr = map(value.mr);
-  return wire;
 }
 
 export function letterheadWire(letterhead: Letterhead): LetterheadWire {
@@ -120,7 +108,7 @@ export function effectiveWire(effective: EffectiveSettings): EffectiveSettingsWi
       value: {
         cover: proposalTemplate.value.cover,
         sectionsIncluded: [...proposalTemplate.value.sectionsIncluded],
-        defaultTerms: perLanguageWire(proposalTemplate.value.defaultTerms, richTextWire),
+        defaultTerms: richTextWire(proposalTemplate.value.defaultTerms),
       },
     },
     timelineTemplate: {

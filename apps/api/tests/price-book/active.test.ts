@@ -86,8 +86,8 @@ describe.skipIf(skip)('the price book in force, against a migrated database', ()
     );
   });
 
-  it('a rate’s name keeps every language its author wrote', async () => {
-    const name = { en: 'Site survey visit', hi: 'साइट सर्वे विज़िट' };
+  it('a rate’s name is kept as its author wrote it, in any language', async () => {
+    const name = 'साइट सर्वे विज़िट';
     await book.publish(
       here.tenantId,
       OWNER,

@@ -16,6 +16,7 @@ import {
   type TrancheEdit,
   type TrancheLineRead,
   type TrancheRefusals,
+  type TrancheTemplateDefault,
   type TrancheTemplateRead,
   trancheCardsOf,
   trancheDraftChanged,
@@ -28,7 +29,6 @@ import {
   trancheStanding,
   trancheVerdictOf,
   trancheWriteOf,
-  type UiLanguage,
 } from '@heliogrid/domain';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
@@ -117,9 +117,10 @@ const CONFLICT = 409;
 /**
  * `SCR-M01-20`'s reads, its editor and its five acts. A write's answer replaces the template in
  * the list at once, and the list is read again for what the answer does not carry — the saved line,
- * and the default that stepped down.
+ * and the default that stepped down. `standard` is the default split in the reader's words
+ * (`documentDefaults`), which names a new template's first tranche.
  */
-export function useTrancheTemplates(language: UiLanguage): PaymentTermsPage {
+export function useTrancheTemplates(standard: TrancheTemplateDefault): PaymentTermsPage {
   const { user } = useSession();
   const repositories = useRepositories();
   const queryClient = useQueryClient();
@@ -169,7 +170,7 @@ export function useTrancheTemplates(language: UiLanguage): PaymentTermsPage {
           if (was.opened !== sent.opened) return was;
           return {
             ...was,
-            opened: trancheDraftOf(template, language),
+            opened: trancheDraftOf(template),
             draft: { ...was.draft, id: template.id },
           };
         });
@@ -225,12 +226,12 @@ export function useTrancheTemplates(language: UiLanguage): PaymentTermsPage {
     open: (id) => {
       const template = templates.find((one) => one.id === id);
       if (template === undefined) return;
-      const draft = trancheDraftOf(template, language);
+      const draft = trancheDraftOf(template);
       save.clear();
       setEditing({ opened: draft, draft, made: false, refusalsShown: false });
     },
     openNew: () => {
-      const draft = trancheNewDraft(language);
+      const draft = trancheNewDraft(standard);
       save.clear();
       setEditing({ opened: draft, draft, made: true, refusalsShown: false });
     },

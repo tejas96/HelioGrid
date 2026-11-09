@@ -46808,29 +46808,9 @@
                         "type": "object",
                         "properties": {
                           "name": {
-                            "allOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "en": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 120
-                                  }
-                                },
-                                "required": [
-                                  "en"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              }
-                            ]
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 120
                           },
                           "basis": {
                             "type": "string",
@@ -47766,29 +47746,9 @@
                       "type": "object",
                       "properties": {
                         "name": {
-                          "allOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "en": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              },
-                              "required": [
-                                "en"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "additionalProperties": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 120
-                              }
-                            }
-                          ]
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120
                         },
                         "basis": {
                           "type": "string",
@@ -48388,29 +48348,9 @@
                         "type": "object",
                         "properties": {
                           "name": {
-                            "allOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "en": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 120
-                                  }
-                                },
-                                "required": [
-                                  "en"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              }
-                            ]
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 120
                           },
                           "basis": {
                             "type": "string",
@@ -55338,84 +55278,24 @@
                               "type": "object",
                               "properties": {
                                 "tagline": {
-                                  "allOf": [
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "en": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 120
-                                        }
-                                      },
-                                      "required": [
-                                        "en"
-                                      ]
-                                    },
-                                    {
-                                      "type": "object",
-                                      "additionalProperties": {
-                                        "type": "string",
-                                        "minLength": 1,
-                                        "maxLength": 120
-                                      }
-                                    }
-                                  ],
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 120,
                                   "nullable": true
                                 },
                                 "lines": {
                                   "type": "array",
                                   "items": {
-                                    "allOf": [
-                                      {
-                                        "type": "object",
-                                        "properties": {
-                                          "en": {
-                                            "type": "string",
-                                            "minLength": 1,
-                                            "maxLength": 200
-                                          }
-                                        },
-                                        "required": [
-                                          "en"
-                                        ]
-                                      },
-                                      {
-                                        "type": "object",
-                                        "additionalProperties": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 200
-                                        }
-                                      }
-                                    ]
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 200
                                   },
                                   "maxItems": 6
                                 },
                                 "footerNote": {
-                                  "allOf": [
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "en": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 200
-                                        }
-                                      },
-                                      "required": [
-                                        "en"
-                                      ]
-                                    },
-                                    {
-                                      "type": "object",
-                                      "additionalProperties": {
-                                        "type": "string",
-                                        "minLength": 1,
-                                        "maxLength": 200
-                                      }
-                                    }
-                                  ],
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 200,
                                   "nullable": true
                                 }
                               },
@@ -55478,29 +55358,9 @@
                               "type": "object",
                               "properties": {
                                 "aboutCompany": {
-                                  "allOf": [
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "en": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 2000
-                                        }
-                                      },
-                                      "required": [
-                                        "en"
-                                      ]
-                                    },
-                                    {
-                                      "type": "object",
-                                      "additionalProperties": {
-                                        "type": "string",
-                                        "minLength": 1,
-                                        "maxLength": 2000
-                                      }
-                                    }
-                                  ],
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 2000,
                                   "nullable": true
                                 },
                                 "totalCapacityInstalledKw": {
@@ -55545,272 +55405,130 @@
                               }
                             },
                             "defaultTerms": {
-                              "allOf": [
-                                {
-                                  "type": "object",
-                                  "properties": {
-                                    "en": {
-                                      "type": "object",
-                                      "properties": {
-                                        "version": {
-                                          "type": "number",
-                                          "enum": [
-                                            1
-                                          ]
-                                        },
-                                        "blocks": {
-                                          "type": "array",
-                                          "items": {
-                                            "discriminator": {
-                                              "propertyName": "type"
-                                            },
-                                            "oneOf": [
-                                              {
-                                                "type": "object",
-                                                "properties": {
-                                                  "type": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "p",
-                                                      "h"
-                                                    ]
-                                                  },
-                                                  "spans": {
-                                                    "type": "array",
-                                                    "items": {
-                                                      "type": "object",
-                                                      "properties": {
-                                                        "text": {
-                                                          "type": "string"
-                                                        },
-                                                        "b": {
-                                                          "type": "boolean"
-                                                        },
-                                                        "i": {
-                                                          "type": "boolean"
-                                                        },
-                                                        "href": {
-                                                          "type": "string",
-                                                          "format": "uri"
-                                                        }
-                                                      },
-                                                      "required": [
-                                                        "text"
-                                                      ]
-                                                    }
-                                                  }
-                                                },
-                                                "required": [
-                                                  "type",
-                                                  "spans"
-                                                ]
-                                              },
-                                              {
-                                                "type": "object",
-                                                "properties": {
-                                                  "type": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "ul",
-                                                      "ol"
-                                                    ]
-                                                  },
-                                                  "items": {
-                                                    "type": "array",
-                                                    "items": {
-                                                      "type": "array",
-                                                      "items": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                          "text": {
-                                                            "type": "string"
-                                                          },
-                                                          "b": {
-                                                            "type": "boolean"
-                                                          },
-                                                          "i": {
-                                                            "type": "boolean"
-                                                          },
-                                                          "href": {
-                                                            "type": "string",
-                                                            "format": "uri"
-                                                          }
-                                                        },
-                                                        "required": [
-                                                          "text"
-                                                        ]
-                                                      }
-                                                    }
-                                                  },
-                                                  "start": {
-                                                    "type": "integer",
-                                                    "minimum": 0,
-                                                    "exclusiveMinimum": 0
-                                                  }
-                                                },
-                                                "required": [
-                                                  "type",
-                                                  "items"
-                                                ]
-                                              },
-                                              {
-                                                "type": "object",
-                                                "properties": {
-                                                  "type": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "logo"
-                                                    ]
-                                                  }
-                                                },
-                                                "required": [
-                                                  "type"
-                                                ]
-                                              }
-                                            ]
-                                          }
-                                        }
-                                      },
-                                      "required": [
-                                        "version",
-                                        "blocks"
-                                      ]
-                                    }
-                                  },
-                                  "required": [
-                                    "en"
+                              "type": "object",
+                              "properties": {
+                                "version": {
+                                  "type": "number",
+                                  "enum": [
+                                    1
                                   ]
                                 },
-                                {
-                                  "type": "object",
-                                  "additionalProperties": {
-                                    "type": "object",
-                                    "properties": {
-                                      "version": {
-                                        "type": "number",
-                                        "enum": [
-                                          1
-                                        ]
-                                      },
-                                      "blocks": {
-                                        "type": "array",
-                                        "items": {
-                                          "discriminator": {
-                                            "propertyName": "type"
+                                "blocks": {
+                                  "type": "array",
+                                  "items": {
+                                    "discriminator": {
+                                      "propertyName": "type"
+                                    },
+                                    "oneOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "type": {
+                                            "type": "string",
+                                            "enum": [
+                                              "p",
+                                              "h"
+                                            ]
                                           },
-                                          "oneOf": [
-                                            {
+                                          "spans": {
+                                            "type": "array",
+                                            "items": {
                                               "type": "object",
                                               "properties": {
-                                                "type": {
-                                                  "type": "string",
-                                                  "enum": [
-                                                    "p",
-                                                    "h"
-                                                  ]
+                                                "text": {
+                                                  "type": "string"
                                                 },
-                                                "spans": {
-                                                  "type": "array",
-                                                  "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                      "text": {
-                                                        "type": "string"
-                                                      },
-                                                      "b": {
-                                                        "type": "boolean"
-                                                      },
-                                                      "i": {
-                                                        "type": "boolean"
-                                                      },
-                                                      "href": {
-                                                        "type": "string",
-                                                        "format": "uri"
-                                                      }
-                                                    },
-                                                    "required": [
-                                                      "text"
-                                                    ]
-                                                  }
+                                                "b": {
+                                                  "type": "boolean"
+                                                },
+                                                "i": {
+                                                  "type": "boolean"
+                                                },
+                                                "href": {
+                                                  "type": "string",
+                                                  "format": "uri"
                                                 }
                                               },
                                               "required": [
-                                                "type",
-                                                "spans"
-                                              ]
-                                            },
-                                            {
-                                              "type": "object",
-                                              "properties": {
-                                                "type": {
-                                                  "type": "string",
-                                                  "enum": [
-                                                    "ul",
-                                                    "ol"
-                                                  ]
-                                                },
-                                                "items": {
-                                                  "type": "array",
-                                                  "items": {
-                                                    "type": "array",
-                                                    "items": {
-                                                      "type": "object",
-                                                      "properties": {
-                                                        "text": {
-                                                          "type": "string"
-                                                        },
-                                                        "b": {
-                                                          "type": "boolean"
-                                                        },
-                                                        "i": {
-                                                          "type": "boolean"
-                                                        },
-                                                        "href": {
-                                                          "type": "string",
-                                                          "format": "uri"
-                                                        }
-                                                      },
-                                                      "required": [
-                                                        "text"
-                                                      ]
-                                                    }
-                                                  }
-                                                },
-                                                "start": {
-                                                  "type": "integer",
-                                                  "minimum": 0,
-                                                  "exclusiveMinimum": 0
-                                                }
-                                              },
-                                              "required": [
-                                                "type",
-                                                "items"
-                                              ]
-                                            },
-                                            {
-                                              "type": "object",
-                                              "properties": {
-                                                "type": {
-                                                  "type": "string",
-                                                  "enum": [
-                                                    "logo"
-                                                  ]
-                                                }
-                                              },
-                                              "required": [
-                                                "type"
+                                                "text"
                                               ]
                                             }
-                                          ]
-                                        }
+                                          }
+                                        },
+                                        "required": [
+                                          "type",
+                                          "spans"
+                                        ]
+                                      },
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "type": {
+                                            "type": "string",
+                                            "enum": [
+                                              "ul",
+                                              "ol"
+                                            ]
+                                          },
+                                          "items": {
+                                            "type": "array",
+                                            "items": {
+                                              "type": "array",
+                                              "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "text": {
+                                                    "type": "string"
+                                                  },
+                                                  "b": {
+                                                    "type": "boolean"
+                                                  },
+                                                  "i": {
+                                                    "type": "boolean"
+                                                  },
+                                                  "href": {
+                                                    "type": "string",
+                                                    "format": "uri"
+                                                  }
+                                                },
+                                                "required": [
+                                                  "text"
+                                                ]
+                                              }
+                                            }
+                                          },
+                                          "start": {
+                                            "type": "integer",
+                                            "minimum": 0,
+                                            "exclusiveMinimum": 0
+                                          }
+                                        },
+                                        "required": [
+                                          "type",
+                                          "items"
+                                        ]
+                                      },
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "type": {
+                                            "type": "string",
+                                            "enum": [
+                                              "logo"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "type"
+                                        ]
                                       }
-                                    },
-                                    "required": [
-                                      "version",
-                                      "blocks"
                                     ]
                                   }
                                 }
+                              },
+                              "required": [
+                                "version",
+                                "blocks"
                               ]
                             }
                           },
@@ -55845,54 +55563,14 @@
                                 "type": "object",
                                 "properties": {
                                   "name": {
-                                    "allOf": [
-                                      {
-                                        "type": "object",
-                                        "properties": {
-                                          "en": {
-                                            "type": "string",
-                                            "minLength": 1,
-                                            "maxLength": 120
-                                          }
-                                        },
-                                        "required": [
-                                          "en"
-                                        ]
-                                      },
-                                      {
-                                        "type": "object",
-                                        "additionalProperties": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 120
-                                        }
-                                      }
-                                    ]
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 120
                                   },
                                   "description": {
-                                    "allOf": [
-                                      {
-                                        "type": "object",
-                                        "properties": {
-                                          "en": {
-                                            "type": "string",
-                                            "minLength": 1,
-                                            "maxLength": 2000
-                                          }
-                                        },
-                                        "required": [
-                                          "en"
-                                        ]
-                                      },
-                                      {
-                                        "type": "object",
-                                        "additionalProperties": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 2000
-                                        }
-                                      }
-                                    ]
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 2000
                                   }
                                 },
                                 "required": [
@@ -55928,29 +55606,9 @@
                           "type": "object",
                           "properties": {
                             "name": {
-                              "allOf": [
-                                {
-                                  "type": "object",
-                                  "properties": {
-                                    "en": {
-                                      "type": "string",
-                                      "minLength": 1,
-                                      "maxLength": 120
-                                    }
-                                  },
-                                  "required": [
-                                    "en"
-                                  ]
-                                },
-                                {
-                                  "type": "object",
-                                  "additionalProperties": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 120
-                                  }
-                                }
-                              ]
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 120
                             },
                             "lines": {
                               "type": "array",
@@ -55958,29 +55616,9 @@
                                 "type": "object",
                                 "properties": {
                                   "label": {
-                                    "allOf": [
-                                      {
-                                        "type": "object",
-                                        "properties": {
-                                          "en": {
-                                            "type": "string",
-                                            "minLength": 1,
-                                            "maxLength": 120
-                                          }
-                                        },
-                                        "required": [
-                                          "en"
-                                        ]
-                                      },
-                                      {
-                                        "type": "object",
-                                        "additionalProperties": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 120
-                                        }
-                                      }
-                                    ]
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 120
                                   },
                                   "percent": {
                                     "type": "string",
@@ -59491,84 +59129,24 @@
                       "type": "object",
                       "properties": {
                         "tagline": {
-                          "allOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "en": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              },
-                              "required": [
-                                "en"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "additionalProperties": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 120
-                              }
-                            }
-                          ],
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120,
                           "nullable": true
                         },
                         "lines": {
                           "type": "array",
                           "items": {
-                            "allOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "en": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 200
-                                  }
-                                },
-                                "required": [
-                                  "en"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 200
-                                }
-                              }
-                            ]
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
                           },
                           "maxItems": 6
                         },
                         "footerNote": {
-                          "allOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "en": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 200
-                                }
-                              },
-                              "required": [
-                                "en"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "additionalProperties": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 200
-                              }
-                            }
-                          ],
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200,
                           "nullable": true
                         }
                       },
@@ -60047,84 +59625,24 @@
                     "type": "object",
                     "properties": {
                       "tagline": {
-                        "allOf": [
-                          {
-                            "type": "object",
-                            "properties": {
-                              "en": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 120
-                              }
-                            },
-                            "required": [
-                              "en"
-                            ]
-                          },
-                          {
-                            "type": "object",
-                            "additionalProperties": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 120
-                            }
-                          }
-                        ],
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120,
                         "nullable": true
                       },
                       "lines": {
                         "type": "array",
                         "items": {
-                          "allOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "en": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 200
-                                }
-                              },
-                              "required": [
-                                "en"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "additionalProperties": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 200
-                              }
-                            }
-                          ]
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200
                         },
                         "maxItems": 6
                       },
                       "footerNote": {
-                        "allOf": [
-                          {
-                            "type": "object",
-                            "properties": {
-                              "en": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 200
-                              }
-                            },
-                            "required": [
-                              "en"
-                            ]
-                          },
-                          {
-                            "type": "object",
-                            "additionalProperties": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 200
-                            }
-                          }
-                        ],
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200,
                         "nullable": true
                       }
                     },
@@ -60166,84 +59684,24 @@
                       "type": "object",
                       "properties": {
                         "tagline": {
-                          "allOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "en": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              },
-                              "required": [
-                                "en"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "additionalProperties": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 120
-                              }
-                            }
-                          ],
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120,
                           "nullable": true
                         },
                         "lines": {
                           "type": "array",
                           "items": {
-                            "allOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "en": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 200
-                                  }
-                                },
-                                "required": [
-                                  "en"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 200
-                                }
-                              }
-                            ]
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
                           },
                           "maxItems": 6
                         },
                         "footerNote": {
-                          "allOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "en": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 200
-                                }
-                              },
-                              "required": [
-                                "en"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "additionalProperties": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 200
-                              }
-                            }
-                          ],
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 200,
                           "nullable": true
                         }
                       },
@@ -60703,11 +60161,24 @@
     },
     "/settings/proposal-template": {
       "get": {
-        "summary": "The document defaults as stored — cover, sections, terms — and who saved them last",
+        "summary": "The document defaults as stored — cover, sections, terms — and who saved them last; terms never saved read in the reader’s words",
         "tags": [
           "tenantSettings"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "reader",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "hi",
+                "mr"
+              ]
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "200",
@@ -60720,29 +60191,9 @@
                       "type": "object",
                       "properties": {
                         "aboutCompany": {
-                          "allOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "en": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 2000
-                                }
-                              },
-                              "required": [
-                                "en"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "additionalProperties": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 2000
-                              }
-                            }
-                          ],
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2000,
                           "nullable": true
                         },
                         "totalCapacityInstalledKw": {
@@ -60787,272 +60238,130 @@
                       }
                     },
                     "defaultTerms": {
-                      "allOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "en": {
-                              "type": "object",
-                              "properties": {
-                                "version": {
-                                  "type": "number",
-                                  "enum": [
-                                    1
-                                  ]
-                                },
-                                "blocks": {
-                                  "type": "array",
-                                  "items": {
-                                    "discriminator": {
-                                      "propertyName": "type"
-                                    },
-                                    "oneOf": [
-                                      {
-                                        "type": "object",
-                                        "properties": {
-                                          "type": {
-                                            "type": "string",
-                                            "enum": [
-                                              "p",
-                                              "h"
-                                            ]
-                                          },
-                                          "spans": {
-                                            "type": "array",
-                                            "items": {
-                                              "type": "object",
-                                              "properties": {
-                                                "text": {
-                                                  "type": "string"
-                                                },
-                                                "b": {
-                                                  "type": "boolean"
-                                                },
-                                                "i": {
-                                                  "type": "boolean"
-                                                },
-                                                "href": {
-                                                  "type": "string",
-                                                  "format": "uri"
-                                                }
-                                              },
-                                              "required": [
-                                                "text"
-                                              ]
-                                            }
-                                          }
-                                        },
-                                        "required": [
-                                          "type",
-                                          "spans"
-                                        ]
-                                      },
-                                      {
-                                        "type": "object",
-                                        "properties": {
-                                          "type": {
-                                            "type": "string",
-                                            "enum": [
-                                              "ul",
-                                              "ol"
-                                            ]
-                                          },
-                                          "items": {
-                                            "type": "array",
-                                            "items": {
-                                              "type": "array",
-                                              "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                  "text": {
-                                                    "type": "string"
-                                                  },
-                                                  "b": {
-                                                    "type": "boolean"
-                                                  },
-                                                  "i": {
-                                                    "type": "boolean"
-                                                  },
-                                                  "href": {
-                                                    "type": "string",
-                                                    "format": "uri"
-                                                  }
-                                                },
-                                                "required": [
-                                                  "text"
-                                                ]
-                                              }
-                                            }
-                                          },
-                                          "start": {
-                                            "type": "integer",
-                                            "minimum": 0,
-                                            "exclusiveMinimum": 0
-                                          }
-                                        },
-                                        "required": [
-                                          "type",
-                                          "items"
-                                        ]
-                                      },
-                                      {
-                                        "type": "object",
-                                        "properties": {
-                                          "type": {
-                                            "type": "string",
-                                            "enum": [
-                                              "logo"
-                                            ]
-                                          }
-                                        },
-                                        "required": [
-                                          "type"
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                }
-                              },
-                              "required": [
-                                "version",
-                                "blocks"
-                              ]
-                            }
-                          },
-                          "required": [
-                            "en"
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "type": "number",
+                          "enum": [
+                            1
                           ]
                         },
-                        {
-                          "type": "object",
-                          "additionalProperties": {
-                            "type": "object",
-                            "properties": {
-                              "version": {
-                                "type": "number",
-                                "enum": [
-                                  1
-                                ]
-                              },
-                              "blocks": {
-                                "type": "array",
-                                "items": {
-                                  "discriminator": {
-                                    "propertyName": "type"
+                        "blocks": {
+                          "type": "array",
+                          "items": {
+                            "discriminator": {
+                              "propertyName": "type"
+                            },
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "p",
+                                      "h"
+                                    ]
                                   },
-                                  "oneOf": [
-                                    {
+                                  "spans": {
+                                    "type": "array",
+                                    "items": {
                                       "type": "object",
                                       "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "enum": [
-                                            "p",
-                                            "h"
-                                          ]
+                                        "text": {
+                                          "type": "string"
                                         },
-                                        "spans": {
-                                          "type": "array",
-                                          "items": {
-                                            "type": "object",
-                                            "properties": {
-                                              "text": {
-                                                "type": "string"
-                                              },
-                                              "b": {
-                                                "type": "boolean"
-                                              },
-                                              "i": {
-                                                "type": "boolean"
-                                              },
-                                              "href": {
-                                                "type": "string",
-                                                "format": "uri"
-                                              }
-                                            },
-                                            "required": [
-                                              "text"
-                                            ]
-                                          }
+                                        "b": {
+                                          "type": "boolean"
+                                        },
+                                        "i": {
+                                          "type": "boolean"
+                                        },
+                                        "href": {
+                                          "type": "string",
+                                          "format": "uri"
                                         }
                                       },
                                       "required": [
-                                        "type",
-                                        "spans"
-                                      ]
-                                    },
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "enum": [
-                                            "ul",
-                                            "ol"
-                                          ]
-                                        },
-                                        "items": {
-                                          "type": "array",
-                                          "items": {
-                                            "type": "array",
-                                            "items": {
-                                              "type": "object",
-                                              "properties": {
-                                                "text": {
-                                                  "type": "string"
-                                                },
-                                                "b": {
-                                                  "type": "boolean"
-                                                },
-                                                "i": {
-                                                  "type": "boolean"
-                                                },
-                                                "href": {
-                                                  "type": "string",
-                                                  "format": "uri"
-                                                }
-                                              },
-                                              "required": [
-                                                "text"
-                                              ]
-                                            }
-                                          }
-                                        },
-                                        "start": {
-                                          "type": "integer",
-                                          "minimum": 0,
-                                          "exclusiveMinimum": 0
-                                        }
-                                      },
-                                      "required": [
-                                        "type",
-                                        "items"
-                                      ]
-                                    },
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "enum": [
-                                            "logo"
-                                          ]
-                                        }
-                                      },
-                                      "required": [
-                                        "type"
+                                        "text"
                                       ]
                                     }
-                                  ]
-                                }
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "spans"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "ul",
+                                      "ol"
+                                    ]
+                                  },
+                                  "items": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "text": {
+                                            "type": "string"
+                                          },
+                                          "b": {
+                                            "type": "boolean"
+                                          },
+                                          "i": {
+                                            "type": "boolean"
+                                          },
+                                          "href": {
+                                            "type": "string",
+                                            "format": "uri"
+                                          }
+                                        },
+                                        "required": [
+                                          "text"
+                                        ]
+                                      }
+                                    }
+                                  },
+                                  "start": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "exclusiveMinimum": 0
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "items"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "logo"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "type"
+                                ]
                               }
-                            },
-                            "required": [
-                              "version",
-                              "blocks"
                             ]
                           }
                         }
+                      },
+                      "required": [
+                        "version",
+                        "blocks"
                       ]
                     },
                     "changed": {
@@ -61491,29 +60800,9 @@
                     "type": "object",
                     "properties": {
                       "aboutCompany": {
-                        "allOf": [
-                          {
-                            "type": "object",
-                            "properties": {
-                              "en": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 2000
-                              }
-                            },
-                            "required": [
-                              "en"
-                            ]
-                          },
-                          {
-                            "type": "object",
-                            "additionalProperties": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 2000
-                            }
-                          }
-                        ],
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2000,
                         "nullable": true
                       },
                       "totalCapacityInstalledKw": {
@@ -61558,272 +60847,130 @@
                     }
                   },
                   "defaultTerms": {
-                    "allOf": [
-                      {
-                        "type": "object",
-                        "properties": {
-                          "en": {
-                            "type": "object",
-                            "properties": {
-                              "version": {
-                                "type": "number",
-                                "enum": [
-                                  1
-                                ]
-                              },
-                              "blocks": {
-                                "type": "array",
-                                "items": {
-                                  "discriminator": {
-                                    "propertyName": "type"
-                                  },
-                                  "oneOf": [
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "enum": [
-                                            "p",
-                                            "h"
-                                          ]
-                                        },
-                                        "spans": {
-                                          "type": "array",
-                                          "items": {
-                                            "type": "object",
-                                            "properties": {
-                                              "text": {
-                                                "type": "string"
-                                              },
-                                              "b": {
-                                                "type": "boolean"
-                                              },
-                                              "i": {
-                                                "type": "boolean"
-                                              },
-                                              "href": {
-                                                "type": "string",
-                                                "format": "uri"
-                                              }
-                                            },
-                                            "required": [
-                                              "text"
-                                            ]
-                                          }
-                                        }
-                                      },
-                                      "required": [
-                                        "type",
-                                        "spans"
-                                      ]
-                                    },
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "enum": [
-                                            "ul",
-                                            "ol"
-                                          ]
-                                        },
-                                        "items": {
-                                          "type": "array",
-                                          "items": {
-                                            "type": "array",
-                                            "items": {
-                                              "type": "object",
-                                              "properties": {
-                                                "text": {
-                                                  "type": "string"
-                                                },
-                                                "b": {
-                                                  "type": "boolean"
-                                                },
-                                                "i": {
-                                                  "type": "boolean"
-                                                },
-                                                "href": {
-                                                  "type": "string",
-                                                  "format": "uri"
-                                                }
-                                              },
-                                              "required": [
-                                                "text"
-                                              ]
-                                            }
-                                          }
-                                        },
-                                        "start": {
-                                          "type": "integer",
-                                          "minimum": 0,
-                                          "exclusiveMinimum": 0
-                                        }
-                                      },
-                                      "required": [
-                                        "type",
-                                        "items"
-                                      ]
-                                    },
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "enum": [
-                                            "logo"
-                                          ]
-                                        }
-                                      },
-                                      "required": [
-                                        "type"
-                                      ]
-                                    }
-                                  ]
-                                }
-                              }
-                            },
-                            "required": [
-                              "version",
-                              "blocks"
-                            ]
-                          }
-                        },
-                        "required": [
-                          "en"
+                    "type": "object",
+                    "properties": {
+                      "version": {
+                        "type": "number",
+                        "enum": [
+                          1
                         ]
                       },
-                      {
-                        "type": "object",
-                        "additionalProperties": {
-                          "type": "object",
-                          "properties": {
-                            "version": {
-                              "type": "number",
-                              "enum": [
-                                1
-                              ]
-                            },
-                            "blocks": {
-                              "type": "array",
-                              "items": {
-                                "discriminator": {
-                                  "propertyName": "type"
+                      "blocks": {
+                        "type": "array",
+                        "items": {
+                          "discriminator": {
+                            "propertyName": "type"
+                          },
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "p",
+                                    "h"
+                                  ]
                                 },
-                                "oneOf": [
-                                  {
+                                "spans": {
+                                  "type": "array",
+                                  "items": {
                                     "type": "object",
                                     "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "enum": [
-                                          "p",
-                                          "h"
-                                        ]
+                                      "text": {
+                                        "type": "string"
                                       },
-                                      "spans": {
-                                        "type": "array",
-                                        "items": {
-                                          "type": "object",
-                                          "properties": {
-                                            "text": {
-                                              "type": "string"
-                                            },
-                                            "b": {
-                                              "type": "boolean"
-                                            },
-                                            "i": {
-                                              "type": "boolean"
-                                            },
-                                            "href": {
-                                              "type": "string",
-                                              "format": "uri"
-                                            }
-                                          },
-                                          "required": [
-                                            "text"
-                                          ]
-                                        }
+                                      "b": {
+                                        "type": "boolean"
+                                      },
+                                      "i": {
+                                        "type": "boolean"
+                                      },
+                                      "href": {
+                                        "type": "string",
+                                        "format": "uri"
                                       }
                                     },
                                     "required": [
-                                      "type",
-                                      "spans"
-                                    ]
-                                  },
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "enum": [
-                                          "ul",
-                                          "ol"
-                                        ]
-                                      },
-                                      "items": {
-                                        "type": "array",
-                                        "items": {
-                                          "type": "array",
-                                          "items": {
-                                            "type": "object",
-                                            "properties": {
-                                              "text": {
-                                                "type": "string"
-                                              },
-                                              "b": {
-                                                "type": "boolean"
-                                              },
-                                              "i": {
-                                                "type": "boolean"
-                                              },
-                                              "href": {
-                                                "type": "string",
-                                                "format": "uri"
-                                              }
-                                            },
-                                            "required": [
-                                              "text"
-                                            ]
-                                          }
-                                        }
-                                      },
-                                      "start": {
-                                        "type": "integer",
-                                        "minimum": 0,
-                                        "exclusiveMinimum": 0
-                                      }
-                                    },
-                                    "required": [
-                                      "type",
-                                      "items"
-                                    ]
-                                  },
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "type": {
-                                        "type": "string",
-                                        "enum": [
-                                          "logo"
-                                        ]
-                                      }
-                                    },
-                                    "required": [
-                                      "type"
+                                      "text"
                                     ]
                                   }
-                                ]
-                              }
+                                }
+                              },
+                              "required": [
+                                "type",
+                                "spans"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "ul",
+                                    "ol"
+                                  ]
+                                },
+                                "items": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "text": {
+                                          "type": "string"
+                                        },
+                                        "b": {
+                                          "type": "boolean"
+                                        },
+                                        "i": {
+                                          "type": "boolean"
+                                        },
+                                        "href": {
+                                          "type": "string",
+                                          "format": "uri"
+                                        }
+                                      },
+                                      "required": [
+                                        "text"
+                                      ]
+                                    }
+                                  }
+                                },
+                                "start": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "exclusiveMinimum": 0
+                                }
+                              },
+                              "required": [
+                                "type",
+                                "items"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "logo"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "type"
+                              ]
                             }
-                          },
-                          "required": [
-                            "version",
-                            "blocks"
                           ]
                         }
                       }
+                    },
+                    "required": [
+                      "version",
+                      "blocks"
                     ]
                   }
                 },
@@ -61848,29 +60995,9 @@
                       "type": "object",
                       "properties": {
                         "aboutCompany": {
-                          "allOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "en": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 2000
-                                }
-                              },
-                              "required": [
-                                "en"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "additionalProperties": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 2000
-                              }
-                            }
-                          ],
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2000,
                           "nullable": true
                         },
                         "totalCapacityInstalledKw": {
@@ -61915,272 +61042,130 @@
                       }
                     },
                     "defaultTerms": {
-                      "allOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "en": {
-                              "type": "object",
-                              "properties": {
-                                "version": {
-                                  "type": "number",
-                                  "enum": [
-                                    1
-                                  ]
-                                },
-                                "blocks": {
-                                  "type": "array",
-                                  "items": {
-                                    "discriminator": {
-                                      "propertyName": "type"
-                                    },
-                                    "oneOf": [
-                                      {
-                                        "type": "object",
-                                        "properties": {
-                                          "type": {
-                                            "type": "string",
-                                            "enum": [
-                                              "p",
-                                              "h"
-                                            ]
-                                          },
-                                          "spans": {
-                                            "type": "array",
-                                            "items": {
-                                              "type": "object",
-                                              "properties": {
-                                                "text": {
-                                                  "type": "string"
-                                                },
-                                                "b": {
-                                                  "type": "boolean"
-                                                },
-                                                "i": {
-                                                  "type": "boolean"
-                                                },
-                                                "href": {
-                                                  "type": "string",
-                                                  "format": "uri"
-                                                }
-                                              },
-                                              "required": [
-                                                "text"
-                                              ]
-                                            }
-                                          }
-                                        },
-                                        "required": [
-                                          "type",
-                                          "spans"
-                                        ]
-                                      },
-                                      {
-                                        "type": "object",
-                                        "properties": {
-                                          "type": {
-                                            "type": "string",
-                                            "enum": [
-                                              "ul",
-                                              "ol"
-                                            ]
-                                          },
-                                          "items": {
-                                            "type": "array",
-                                            "items": {
-                                              "type": "array",
-                                              "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                  "text": {
-                                                    "type": "string"
-                                                  },
-                                                  "b": {
-                                                    "type": "boolean"
-                                                  },
-                                                  "i": {
-                                                    "type": "boolean"
-                                                  },
-                                                  "href": {
-                                                    "type": "string",
-                                                    "format": "uri"
-                                                  }
-                                                },
-                                                "required": [
-                                                  "text"
-                                                ]
-                                              }
-                                            }
-                                          },
-                                          "start": {
-                                            "type": "integer",
-                                            "minimum": 0,
-                                            "exclusiveMinimum": 0
-                                          }
-                                        },
-                                        "required": [
-                                          "type",
-                                          "items"
-                                        ]
-                                      },
-                                      {
-                                        "type": "object",
-                                        "properties": {
-                                          "type": {
-                                            "type": "string",
-                                            "enum": [
-                                              "logo"
-                                            ]
-                                          }
-                                        },
-                                        "required": [
-                                          "type"
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                }
-                              },
-                              "required": [
-                                "version",
-                                "blocks"
-                              ]
-                            }
-                          },
-                          "required": [
-                            "en"
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "type": "number",
+                          "enum": [
+                            1
                           ]
                         },
-                        {
-                          "type": "object",
-                          "additionalProperties": {
-                            "type": "object",
-                            "properties": {
-                              "version": {
-                                "type": "number",
-                                "enum": [
-                                  1
-                                ]
-                              },
-                              "blocks": {
-                                "type": "array",
-                                "items": {
-                                  "discriminator": {
-                                    "propertyName": "type"
+                        "blocks": {
+                          "type": "array",
+                          "items": {
+                            "discriminator": {
+                              "propertyName": "type"
+                            },
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "p",
+                                      "h"
+                                    ]
                                   },
-                                  "oneOf": [
-                                    {
+                                  "spans": {
+                                    "type": "array",
+                                    "items": {
                                       "type": "object",
                                       "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "enum": [
-                                            "p",
-                                            "h"
-                                          ]
+                                        "text": {
+                                          "type": "string"
                                         },
-                                        "spans": {
-                                          "type": "array",
-                                          "items": {
-                                            "type": "object",
-                                            "properties": {
-                                              "text": {
-                                                "type": "string"
-                                              },
-                                              "b": {
-                                                "type": "boolean"
-                                              },
-                                              "i": {
-                                                "type": "boolean"
-                                              },
-                                              "href": {
-                                                "type": "string",
-                                                "format": "uri"
-                                              }
-                                            },
-                                            "required": [
-                                              "text"
-                                            ]
-                                          }
+                                        "b": {
+                                          "type": "boolean"
+                                        },
+                                        "i": {
+                                          "type": "boolean"
+                                        },
+                                        "href": {
+                                          "type": "string",
+                                          "format": "uri"
                                         }
                                       },
                                       "required": [
-                                        "type",
-                                        "spans"
-                                      ]
-                                    },
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "enum": [
-                                            "ul",
-                                            "ol"
-                                          ]
-                                        },
-                                        "items": {
-                                          "type": "array",
-                                          "items": {
-                                            "type": "array",
-                                            "items": {
-                                              "type": "object",
-                                              "properties": {
-                                                "text": {
-                                                  "type": "string"
-                                                },
-                                                "b": {
-                                                  "type": "boolean"
-                                                },
-                                                "i": {
-                                                  "type": "boolean"
-                                                },
-                                                "href": {
-                                                  "type": "string",
-                                                  "format": "uri"
-                                                }
-                                              },
-                                              "required": [
-                                                "text"
-                                              ]
-                                            }
-                                          }
-                                        },
-                                        "start": {
-                                          "type": "integer",
-                                          "minimum": 0,
-                                          "exclusiveMinimum": 0
-                                        }
-                                      },
-                                      "required": [
-                                        "type",
-                                        "items"
-                                      ]
-                                    },
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "enum": [
-                                            "logo"
-                                          ]
-                                        }
-                                      },
-                                      "required": [
-                                        "type"
+                                        "text"
                                       ]
                                     }
-                                  ]
-                                }
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "spans"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "ul",
+                                      "ol"
+                                    ]
+                                  },
+                                  "items": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "text": {
+                                            "type": "string"
+                                          },
+                                          "b": {
+                                            "type": "boolean"
+                                          },
+                                          "i": {
+                                            "type": "boolean"
+                                          },
+                                          "href": {
+                                            "type": "string",
+                                            "format": "uri"
+                                          }
+                                        },
+                                        "required": [
+                                          "text"
+                                        ]
+                                      }
+                                    }
+                                  },
+                                  "start": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "exclusiveMinimum": 0
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "items"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "logo"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "type"
+                                ]
                               }
-                            },
-                            "required": [
-                              "version",
-                              "blocks"
                             ]
                           }
                         }
+                      },
+                      "required": [
+                        "version",
+                        "blocks"
                       ]
                     },
                     "changed": {
@@ -62605,11 +61590,24 @@
     },
     "/settings/timeline-template": {
       "get": {
-        "summary": "The project-timeline template as stored, and who saved it last",
+        "summary": "The project-timeline template as stored, and who saved it last; phases never saved read in the reader’s words",
         "tags": [
           "tenantSettings"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "reader",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en",
+                "hi",
+                "mr"
+              ]
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "200",
@@ -62624,54 +61622,14 @@
                         "type": "object",
                         "properties": {
                           "name": {
-                            "allOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "en": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 120
-                                  }
-                                },
-                                "required": [
-                                  "en"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              }
-                            ]
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 120
                           },
                           "description": {
-                            "allOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "en": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 2000
-                                  }
-                                },
-                                "required": [
-                                  "en"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 2000
-                                }
-                              }
-                            ]
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
                           }
                         },
                         "required": [
@@ -63118,54 +62076,14 @@
                       "type": "object",
                       "properties": {
                         "name": {
-                          "allOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "en": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              },
-                              "required": [
-                                "en"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "additionalProperties": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 120
-                              }
-                            }
-                          ]
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120
                         },
                         "description": {
-                          "allOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "en": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 2000
-                                }
-                              },
-                              "required": [
-                                "en"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "additionalProperties": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 2000
-                              }
-                            }
-                          ]
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2000
                         }
                       },
                       "required": [
@@ -63198,54 +62116,14 @@
                         "type": "object",
                         "properties": {
                           "name": {
-                            "allOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "en": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 120
-                                  }
-                                },
-                                "required": [
-                                  "en"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              }
-                            ]
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 120
                           },
                           "description": {
-                            "allOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "en": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 2000
-                                  }
-                                },
-                                "required": [
-                                  "en"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 2000
-                                }
-                              }
-                            ]
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
                           }
                         },
                         "required": [
@@ -63695,29 +62573,9 @@
                         "type": "object",
                         "properties": {
                           "name": {
-                            "allOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "en": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 120
-                                  }
-                                },
-                                "required": [
-                                  "en"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              }
-                            ]
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 120
                           },
                           "lines": {
                             "type": "array",
@@ -63725,29 +62583,9 @@
                               "type": "object",
                               "properties": {
                                 "label": {
-                                  "allOf": [
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "en": {
-                                          "type": "string",
-                                          "minLength": 1,
-                                          "maxLength": 120
-                                        }
-                                      },
-                                      "required": [
-                                        "en"
-                                      ]
-                                    },
-                                    {
-                                      "type": "object",
-                                      "additionalProperties": {
-                                        "type": "string",
-                                        "minLength": 1,
-                                        "maxLength": 120
-                                      }
-                                    }
-                                  ]
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 120
                                 },
                                 "percent": {
                                   "type": "string",
@@ -64241,29 +63079,9 @@
                 "type": "object",
                 "properties": {
                   "name": {
-                    "allOf": [
-                      {
-                        "type": "object",
-                        "properties": {
-                          "en": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 120
-                          }
-                        },
-                        "required": [
-                          "en"
-                        ]
-                      },
-                      {
-                        "type": "object",
-                        "additionalProperties": {
-                          "type": "string",
-                          "minLength": 1,
-                          "maxLength": 120
-                        }
-                      }
-                    ]
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
                   },
                   "lines": {
                     "type": "array",
@@ -64271,29 +63089,9 @@
                       "type": "object",
                       "properties": {
                         "label": {
-                          "allOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "en": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              },
-                              "required": [
-                                "en"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "additionalProperties": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 120
-                              }
-                            }
-                          ]
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120
                         },
                         "percent": {
                           "type": "string",
@@ -64341,29 +63139,9 @@
                   "type": "object",
                   "properties": {
                     "name": {
-                      "allOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "en": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 120
-                            }
-                          },
-                          "required": [
-                            "en"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 120
-                          }
-                        }
-                      ]
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
                     },
                     "lines": {
                       "type": "array",
@@ -64371,29 +63149,9 @@
                         "type": "object",
                         "properties": {
                           "label": {
-                            "allOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "en": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 120
-                                  }
-                                },
-                                "required": [
-                                  "en"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              }
-                            ]
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 120
                           },
                           "percent": {
                             "type": "string",
@@ -64908,29 +63666,9 @@
                 "type": "object",
                 "properties": {
                   "name": {
-                    "allOf": [
-                      {
-                        "type": "object",
-                        "properties": {
-                          "en": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 120
-                          }
-                        },
-                        "required": [
-                          "en"
-                        ]
-                      },
-                      {
-                        "type": "object",
-                        "additionalProperties": {
-                          "type": "string",
-                          "minLength": 1,
-                          "maxLength": 120
-                        }
-                      }
-                    ]
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
                   },
                   "lines": {
                     "type": "array",
@@ -64938,29 +63676,9 @@
                       "type": "object",
                       "properties": {
                         "label": {
-                          "allOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "en": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              },
-                              "required": [
-                                "en"
-                              ]
-                            },
-                            {
-                              "type": "object",
-                              "additionalProperties": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 120
-                              }
-                            }
-                          ]
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120
                         },
                         "percent": {
                           "type": "string",
@@ -65008,29 +63726,9 @@
                   "type": "object",
                   "properties": {
                     "name": {
-                      "allOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "en": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 120
-                            }
-                          },
-                          "required": [
-                            "en"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 120
-                          }
-                        }
-                      ]
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
                     },
                     "lines": {
                       "type": "array",
@@ -65038,29 +63736,9 @@
                         "type": "object",
                         "properties": {
                           "label": {
-                            "allOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "en": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 120
-                                  }
-                                },
-                                "required": [
-                                  "en"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              }
-                            ]
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 120
                           },
                           "percent": {
                             "type": "string",
@@ -65685,29 +64363,9 @@
                   "type": "object",
                   "properties": {
                     "name": {
-                      "allOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "en": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 120
-                            }
-                          },
-                          "required": [
-                            "en"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 120
-                          }
-                        }
-                      ]
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
                     },
                     "lines": {
                       "type": "array",
@@ -65715,29 +64373,9 @@
                         "type": "object",
                         "properties": {
                           "label": {
-                            "allOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "en": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 120
-                                  }
-                                },
-                                "required": [
-                                  "en"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              }
-                            ]
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 120
                           },
                           "percent": {
                             "type": "string",
@@ -66307,29 +64945,9 @@
                   "type": "object",
                   "properties": {
                     "name": {
-                      "allOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "en": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 120
-                            }
-                          },
-                          "required": [
-                            "en"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 120
-                          }
-                        }
-                      ]
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
                     },
                     "lines": {
                       "type": "array",
@@ -66337,29 +64955,9 @@
                         "type": "object",
                         "properties": {
                           "label": {
-                            "allOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "en": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 120
-                                  }
-                                },
-                                "required": [
-                                  "en"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              }
-                            ]
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 120
                           },
                           "percent": {
                             "type": "string",
@@ -66874,29 +65472,9 @@
                   "type": "object",
                   "properties": {
                     "name": {
-                      "allOf": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "en": {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 120
-                            }
-                          },
-                          "required": [
-                            "en"
-                          ]
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 120
-                          }
-                        }
-                      ]
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
                     },
                     "lines": {
                       "type": "array",
@@ -66904,29 +65482,9 @@
                         "type": "object",
                         "properties": {
                           "label": {
-                            "allOf": [
-                              {
-                                "type": "object",
-                                "properties": {
-                                  "en": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                    "maxLength": 120
-                                  }
-                                },
-                                "required": [
-                                  "en"
-                                ]
-                              },
-                              {
-                                "type": "object",
-                                "additionalProperties": {
-                                  "type": "string",
-                                  "minLength": 1,
-                                  "maxLength": 120
-                                }
-                              }
-                            ]
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 120
                           },
                           "percent": {
                             "type": "string",

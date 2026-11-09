@@ -1,4 +1,3 @@
-import { authoredIn, type PackLabel, type UiLanguage } from '../format/languages';
 import {
   type BasisPoints,
   basisPoints,
@@ -13,7 +12,7 @@ import {
   standingOf,
 } from '../tenancy/settings-page';
 import { type AllocationVerdict, allocationVerdict, WHOLE_ALLOCATION } from './tranche-allocation';
-import { ON_SIGNING, TRANCHE_LINE_LIMIT } from './tranche-template-defaults';
+import { TRANCHE_LINE_LIMIT, type TrancheTemplateDefault } from './tranche-template-defaults';
 
 /**
  * What the Payment terms page reads off its templates and its open editor (`SCR-M01-20`): the
@@ -24,7 +23,7 @@ import { ON_SIGNING, TRANCHE_LINE_LIMIT } from './tranche-template-defaults';
 /** A template as the list read answers it: shares as the wire's two-decimal percent. */
 export interface TrancheTemplateRead {
   readonly id: string;
-  readonly name: PackLabel;
+  readonly name: string;
   readonly isDefault: boolean;
   readonly archived: boolean;
   /** Edited since it was given: a seeded split reads *Platform standard* until it is. */
@@ -33,14 +32,14 @@ export interface TrancheTemplateRead {
 }
 
 export interface TrancheLineRead {
-  readonly label: PackLabel;
+  readonly label: string;
   readonly percent: string;
   readonly dueOnStage: ProjectChainStage;
 }
 
 /** What a create or a save sends (`trancheTemplateWriteSchema`). */
 export interface TrancheTemplateWriteOf {
-  readonly name: PackLabel;
+  readonly name: string;
   readonly lines: readonly TrancheLineRead[];
 }
 
@@ -81,19 +80,11 @@ export function trancheStanding(
   return unknown ? { kind: 'saved-unknown' } : { kind: 'never-set' };
 }
 
-/**
- * A name as the editor holds it: the text shown in the screen's language, and the stored label
- * it came from. A shown text left as it read keeps every language; a typed one replaces them all.
- */
-export interface TrancheDraftText {
-  readonly shown: string;
-  readonly from: PackLabel | null;
-}
-
 export interface TrancheDraftLine {
   /** Stable across edits and reorders, for the screen's keys and the edits' aim. */
   readonly key: number;
-  readonly label: TrancheDraftText;
+  /** The company's own words, as it typed them: shown as written in every language (`F3-10`). */
+  readonly label: string;
   /** Whole basis points; `null` while the share is empty. */
   readonly share: number | null;
   readonly dueOnStage: ProjectChainStage;
@@ -102,18 +93,9 @@ export interface TrancheDraftLine {
 export interface TrancheDraft {
   /** `null` for *Add payment terms*. */
   readonly id: string | null;
-  readonly language: UiLanguage;
-  readonly name: TrancheDraftText;
+  readonly name: string;
   readonly lines: readonly TrancheDraftLine[];
 }
-
-/** A name is the company's own words (`F3-10`): shown in the reader's language where written, else the original. */
-const shownIn = (label: PackLabel, language: UiLanguage) => authoredIn(label, language).value;
-
-const textOf = (label: PackLabel, language: UiLanguage): TrancheDraftText => ({
-  shown: shownIn(label, language),
-  from: label,
-});
 
 /** Lines read in the order of their stages; two on one stage keep the order they had. */
 function inStageOrder(lines: readonly TrancheDraftLine[]): TrancheDraftLine[] {
@@ -122,15 +104,14 @@ function inStageOrder(lines: readonly TrancheDraftLine[]): TrancheDraftLine[] {
 }
 
 /** A template opened in the editor. */
-export function trancheDraftOf(template: TrancheTemplateRead, language: UiLanguage): TrancheDraft {
+export function trancheDraftOf(template: TrancheTemplateRead): TrancheDraft {
   return {
     id: template.id,
-    language,
-    name: textOf(template.name, language),
+    name: template.name,
     lines: inStageOrder(
       template.lines.map((line, key) => ({
         key,
-        label: textOf(line.label, language),
+        label: line.label,
         share: percentToBasisPoints(line.percent),
         dueOnStage: line.dueOnStage,
       })),
@@ -138,16 +119,18 @@ export function trancheDraftOf(template: TrancheTemplateRead, language: UiLangua
   };
 }
 
-/** *Add payment terms*: no name yet, one tranche of the whole on signing, due at Won. */
-export function trancheNewDraft(language: UiLanguage): TrancheDraft {
+/**
+ * *Add payment terms*: no name yet, one tranche of the whole due at Won, named as the default
+ * split's first — in the reader's words, as `standard` comes (`documentDefaults`).
+ */
+export function trancheNewDraft(standard: TrancheTemplateDefault): TrancheDraft {
   return {
     id: null,
-    language,
-    name: { shown: '', from: null },
+    name: '',
     lines: [
       {
         key: 0,
-        label: textOf(ON_SIGNING, language),
+        label: standard.lines[0]?.label ?? '',
         share: WHOLE_ALLOCATION,
         dueOnStage: 'won',
       },
@@ -170,12 +153,9 @@ export function trancheEdit(draft: TrancheDraft, edit: TrancheEdit): TrancheDraf
     draft.lines.map((line) => (line.key === key ? { ...line, ...change } : line));
   switch (edit.kind) {
     case 'name':
-      return { ...draft, name: { ...draft.name, shown: edit.text } };
-    case 'line-label': {
-      const line = draft.lines.find((one) => one.key === edit.key);
-      const label = line === undefined ? null : { ...line.label, shown: edit.text };
-      return label === null ? draft : { ...draft, lines: lineEdit(edit.key, { label }) };
-    }
+      return { ...draft, name: edit.text };
+    case 'line-label':
+      return { ...draft, lines: lineEdit(edit.key, { label: edit.text }) };
     case 'line-share':
       return { ...draft, lines: lineEdit(edit.key, { share: edit.share }) };
     case 'line-stage':
@@ -196,7 +176,7 @@ function newLine(draft: TrancheDraft, label: string): TrancheDraftLine {
   const lastStage = draft.lines.reduce<ProjectChainStage>((_, line) => line.dueOnStage, 'won');
   return {
     key: Math.max(-1, ...draft.lines.map((line) => line.key)) + 1,
-    label: { shown: label, from: null },
+    label,
     share: null,
     dueOnStage: lastStage,
   };
@@ -235,7 +215,7 @@ export function trancheRefusals(draft: TrancheDraft): TrancheRefusals {
     draft.lines.map((line) => [
       line.key,
       {
-        label: line.label.shown.trim() === '' ? ('required' as const) : null,
+        label: line.label.trim() === '' ? ('required' as const) : null,
         share:
           line.share === null || line.share < 1 || line.share > WHOLE_ALLOCATION
             ? ('range' as const)
@@ -243,7 +223,7 @@ export function trancheRefusals(draft: TrancheDraft): TrancheRefusals {
       },
     ]),
   );
-  return { name: draft.name.shown.trim() === '' ? 'required' : null, lines };
+  return { name: draft.name.trim() === '' ? 'required' : null, lines };
 }
 
 /** *Save terms* sends: every field holds and the split is whole. */
@@ -255,18 +235,12 @@ export function trancheSendable(draft: TrancheDraft): boolean {
   return refusals.name === null && linesHold && trancheVerdictOf(draft).state === 'met';
 }
 
-/** A name as stored: the label it came from when the text still reads it, else the typed text alone. */
-function labelWriteOf(text: TrancheDraftText, language: UiLanguage): PackLabel {
-  const kept = text.from !== null && shownIn(text.from, language) === text.shown;
-  return kept && text.from !== null ? text.from : { en: text.shown.trim() };
-}
-
-/** What *Save terms* sends, in the lines' stage order. */
+/** What *Save terms* sends, in the lines' stage order: each name as typed, its edges trimmed. */
 export function trancheWriteOf(draft: TrancheDraft): TrancheTemplateWriteOf {
   return {
-    name: labelWriteOf(draft.name, draft.language),
+    name: draft.name.trim(),
     lines: draft.lines.map((line) => ({
-      label: labelWriteOf(line.label, draft.language),
+      label: line.label.trim(),
       percent: basisPointsToPercent(shareOf(line.share)),
       dueOnStage: line.dueOnStage,
     })),

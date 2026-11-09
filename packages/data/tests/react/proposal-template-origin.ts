@@ -7,8 +7,8 @@ import type {
 } from '@heliogrid/contracts';
 import {
   DEFAULT_SECTIONS_INCLUDED,
-  DEFAULT_TERMS,
-  DEFAULT_TIMELINE_PHASES,
+  richTextParagraphs,
+  type TemplateDefaults,
 } from '@heliogrid/domain';
 import { cleanup, renderHook, waitFor } from '@testing-library/react';
 import { createElement, type ReactNode } from 'react';
@@ -32,16 +32,25 @@ const SAVED_BY = {
   by: { id: '01a30000-0000-7000-8000-000000000002', name: 'Rajesh Kulkarni' },
 };
 
+/** The platform's terms and phases as the reader's catalog words them (`documentDefaults`). */
+export const DEFAULTS: TemplateDefaults = {
+  terms: richTextParagraphs(['This proposal is valid until the date stated on it.']),
+  phases: [
+    { name: 'Material ordered', description: 'Panels are ordered for your site.' },
+    { name: 'Handover', description: 'Documents are handed over to you.' },
+  ],
+};
+
 const platformTemplate = (): ProposalTemplateRead =>
   structuredClone({
     cover: null,
     sectionsIncluded: [...DEFAULT_SECTIONS_INCLUDED],
-    defaultTerms: DEFAULT_TERMS,
+    defaultTerms: DEFAULTS.terms,
     changed: null,
   }) as ProposalTemplateRead;
 
 const platformTimeline = (): TimelineTemplateRead =>
-  structuredClone({ phases: DEFAULT_TIMELINE_PHASES, changed: null }) as TimelineTemplateRead;
+  structuredClone({ phases: DEFAULTS.phases, changed: null }) as TimelineTemplateRead;
 
 interface TemplateOrigin {
   template: ProposalTemplateRead;
@@ -51,6 +60,8 @@ interface TemplateOrigin {
   timelineSaves: Answer[];
   templateBodies: ProposalTemplate[];
   timelineBodies: TimelineTemplate[];
+  /** The `reader` each template read asked in, in order. */
+  readers: (string | null)[];
   bankName: string | null;
 }
 
@@ -61,6 +72,7 @@ export const templateOrigin: TemplateOrigin = {
   timelineSaves: [],
   templateBodies: [],
   timelineBodies: [],
+  readers: [],
   bankName: 'HDFC Bank',
 };
 
@@ -86,8 +98,11 @@ async function answerSave(
 }
 
 function answer(req: IncomingMessage, res: ServerResponse) {
-  const path = new URL(req.url ?? '/', 'http://origin').pathname;
+  const url = new URL(req.url ?? '/', 'http://origin');
+  const path = url.pathname;
   const saving = req.method === 'PUT';
+  if (!saving && path.endsWith('-template'))
+    templateOrigin.readers.push(url.searchParams.get('reader'));
   if (path === '/settings/proposal-template') {
     return saving
       ? void answerSave(req, res, 'template')
@@ -113,6 +128,7 @@ afterEach(() => {
     timelineSaves: [],
     templateBodies: [],
     timelineBodies: [],
+    readers: [],
     bankName: 'HDFC Bank',
   });
 });
@@ -122,7 +138,7 @@ export async function mounted() {
   const layer = createDataLayer({ baseUrl: listening.url(), language: () => 'en' });
   const wrapper = ({ children }: { children: ReactNode }) =>
     createElement(DataProvider, { layer, children });
-  const view = renderHook(() => useProposalTemplate(), { wrapper });
+  const view = renderHook(() => useProposalTemplate(DEFAULTS), { wrapper });
   await waitFor(() => expect(view.result.current.read.kind).toBe('ready'));
   return view;
 }

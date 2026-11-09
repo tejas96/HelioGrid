@@ -6,7 +6,7 @@ import { SheetFoot } from './SheetFoot';
 
 /**
  * The rate sheet over the new-version sheet on the phone (owner ruling 2026-10-24). *Done* waits
- * for an English name; *Cancel* leaves the draft as it was.
+ * for a name; *Cancel* leaves the draft as it was.
  */
 export function RateSheet({ draft }: { draft: PriceBookDraft }) {
   const { t } = useI18n();
@@ -34,7 +34,8 @@ export function RateSheet({ draft }: { draft: PriceBookDraft }) {
     >
       {editing === null || words === null ? null : (
         <CatalogRateEdit
-          names={words.names}
+          name={editing.rate.name}
+          nameLabel={words.nameLabel}
           onName={draft.setEditName}
           basis={editing.rate.basis}
           basisLabel={words.basis}

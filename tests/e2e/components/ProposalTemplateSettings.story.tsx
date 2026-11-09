@@ -1,18 +1,16 @@
 import {
-  DEFAULT_TERMS,
-  DEFAULT_TIMELINE_PHASES,
+  type DocumentDefaults,
   formatDate,
   IN_PACK,
   isSectionFloor,
   PROPOSAL_SECTIONS,
   type ProposalSection,
   TIMELINE_PHASE_LIMIT,
-  UI_LANGUAGES,
   type UiLanguage,
 } from '@heliogrid/domain';
 import {
   createTranslator,
-  languageName,
+  documentDefaults,
   proposalTemplateWords,
   provenanceWords,
   sectionWords,
@@ -24,7 +22,6 @@ import {
   type RichTextValue,
   TEMPLATE_SAMPLE,
   type TemplateCoverCount,
-  type TemplateLanguageStrip,
   type TemplatePartName,
 } from '@heliogrid/ui';
 import { useState } from 'react';
@@ -59,8 +56,7 @@ const READERS = {
 };
 
 /** Domain's terms are read-only lists; the editor's value is its own copy of them. */
-function editable(language: UiLanguage): RichTextValue {
-  const value = DEFAULT_TERMS[language] ?? DEFAULT_TERMS.en;
+function editable(value: DocumentDefaults['terms']): RichTextValue {
   return {
     version: 1,
     blocks: value.blocks.flatMap((block) =>
@@ -104,17 +100,14 @@ export function ProposalTemplateAsHeld({
 }) {
   const { t } = READERS[reader];
   const words = proposalTemplateWords(t);
+  const defaults = documentDefaults(t);
   const [part, setPart] = useState(partAtStart);
   const [off, setOff] = useState<readonly ProposalSection[]>(neverSaved ? [] : SAMPLE.off);
-  const phaseCount = atCap ? TIMELINE_PHASE_LIMIT : neverSaved ? DEFAULT_TIMELINE_PHASES.length : 6;
+  const phaseCount = atCap ? TIMELINE_PHASE_LIMIT : neverSaved ? defaults.phases.length : 6;
   const [phases, setPhases] = useState(() =>
     Array.from({ length: phaseCount }, (_, key) => {
-      const phase = DEFAULT_TIMELINE_PHASES[key % DEFAULT_TIMELINE_PHASES.length];
-      return {
-        key,
-        title: phase?.name[reader] ?? phase?.name.en ?? '',
-        note: phase?.description[reader] ?? phase?.description.en ?? '',
-      };
+      const phase = defaults.phases[key % defaults.phases.length];
+      return { key, title: phase?.name ?? '', note: phase?.description ?? '' };
     }),
   );
   const [pressed, setPressed] = useState<readonly string[]>([]);
@@ -128,15 +121,6 @@ export function ProposalTemplateAsHeld({
     floor: isSectionFloor(key),
   }));
   const optional = rows.filter((row) => !row.floor);
-  const strip = (authored: readonly UiLanguage[]): TemplateLanguageStrip => ({
-    languages: UI_LANGUAGES.map((code) => ({
-      code,
-      label: languageName(code),
-      state: authored.includes(code) ? 'authored' : 'empty',
-    })),
-    value: 'en',
-    onChange: (code) => press(`language:${code}`),
-  });
   const date = (iso: string) => formatDate(IN_PACK.formats, Date.parse(iso), reader);
   const standing = neverSaved
     ? null
@@ -145,7 +129,7 @@ export function ProposalTemplateAsHeld({
         { kind: 'saved', at: Date.parse(SAMPLE.changedOn), name: SAMPLE.changer },
         { date: (epochMs) => formatDate(IN_PACK.formats, epochMs, reader) },
       );
-  const terms = editable('en');
+  const terms = editable(defaults.terms);
   return (
     <ProvenanceWordsProvider value={provenanceWords(t)}>
       {/* The shell's gutter, as the app's page sits in it: the page leaves its sides to the shell. */}
@@ -177,7 +161,6 @@ export function ProposalTemplateAsHeld({
           onWriteOwn={(written) => press(`write-own:${written}`)}
           cover={{
             origin,
-            strip: strip(['en']),
             about: neverSaved ? '' : SAMPLE.about,
             onAbout: () => press('about'),
             counts: neverSaved ? NO_COUNTS : SAMPLE.counts,
@@ -197,8 +180,6 @@ export function ProposalTemplateAsHeld({
           }}
           terms={{
             origin,
-            strip: strip(['en', 'hi']),
-            languageName: languageName('en'),
             value: terms,
             onChange: () => press('terms'),
           }}

@@ -6,7 +6,8 @@
  *
  * A key carries no words yet. Each key's starter text and its placeholders are authored by the task
  * that first sends it, the precedent `T-FPLAT-017` set for notification copy, and every version is
- * tenant content under `F3-10`, read through `authoredIn` — never the translation catalog (`F6-27`).
+ * tenant content per language under `F3-10` — never the translation catalog (`F6-27`). The task that
+ * first sends one authors how a missing version reads.
  */
 export const MESSAGE_TEMPLATE_KEYS = [
   'proposal_share',

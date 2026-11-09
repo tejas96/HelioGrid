@@ -17,18 +17,18 @@ const LOGO = '0199d3a0-7c1e-7b7a-9d7e-4f6a2b8c1d3e';
 const SAVED: BrandingSaved = {
   brandColour: '#0D7A4F',
   letterhead: {
-    tagline: { en: 'Rooftop solar since 2011', hi: 'रूफटॉप सोलर, 2011 से' },
-    lines: [{ en: '+91 98200 41123' }, { en: 'hello@suryodaya.in' }],
+    tagline: 'रूफटॉप सोलर, 2011 से',
+    lines: ['+91 98200 41123', 'hello@suryodaya.in'],
     footerNote: null,
   },
   logoFileId: LOGO,
 };
 
 describe('brandingDraftOf — the saved set as the fields hold it', () => {
-  it('opens the English slot of each part, the lines one per line', () => {
+  it('opens each part as the company wrote it, the lines one per line', () => {
     expect(brandingDraftOf(SAVED)).toEqual({
       brandColour: '#0D7A4F',
-      tagline: 'Rooftop solar since 2011',
+      tagline: 'रूफटॉप सोलर, 2011 से',
       lines: '+91 98200 41123\nhello@suryodaya.in',
       footerNote: '',
       logoFileId: LOGO,
@@ -71,10 +71,7 @@ describe('brandingChanged — what raises the act bar', () => {
       'a blank line added under the lines',
       { kind: 'lines', value: '+91 98200 41123\nhello@suryodaya.in\n  \n' },
     ],
-    [
-      'the tagline with spaces around it',
-      { kind: 'tagline', value: '  Rooftop solar since 2011 ' },
-    ],
+    ['the tagline with spaces around it', { kind: 'tagline', value: '  रूफटॉप सोलर, 2011 से ' }],
   ] as const)('reads %s as no change', (_what, edit) => {
     expect(brandingChanged(SAVED, brandingEdit(brandingDraftOf(SAVED), edit))).toBe(false);
   });
@@ -119,36 +116,23 @@ describe('letterheadLinesOf and its refusal — six lines at most', () => {
 });
 
 describe('brandingWriteOf — the one write Save sends', () => {
-  it('replaces the English slot and keeps every other language stored', () => {
-    const draft = brandingEdit(brandingDraftOf(SAVED), {
-      kind: 'tagline',
-      value: 'Solar for homes',
-    });
-    expect(brandingWriteOf(SAVED, draft).letterhead?.tagline).toEqual({
-      en: 'Solar for homes',
-      hi: 'रूफटॉप सोलर, 2011 से',
-    });
+  it.each([
+    ['Solar for homes', 'Solar for homes'],
+    ['  घरों के लिए सोलर  ', 'घरों के लिए सोलर'],
+    ['   ', null],
+  ])('writes the tagline %j as one value, %j', (typed, written) => {
+    const draft = brandingEdit(brandingDraftOf(SAVED), { kind: 'tagline', value: typed });
+    expect(brandingWriteOf(SAVED, draft).letterhead?.tagline).toBe(written);
   });
 
-  it('a stored line keeps its other languages only while its English stays the same line', () => {
-    const translated: BrandingSaved = {
-      ...SAVED,
-      letterhead: {
-        tagline: null,
-        lines: [
-          { en: 'Pune office', hi: 'पुणे कार्यालय' },
-          { en: 'hello@suryodaya.in', hi: 'hello@suryodaya.in' },
-        ],
-        footerNote: null,
-      },
-    };
-    const draft = brandingEdit(brandingDraftOf(translated), {
+  it('writes the lines as typed, in their order, blank ones dropped', () => {
+    const draft = brandingEdit(brandingDraftOf(SAVED), {
       kind: 'lines',
-      value: 'hello@suryodaya.in\nMumbai office',
+      value: 'hello@suryodaya.in\n\n पुणे कार्यालय ',
     });
-    expect(brandingWriteOf(translated, draft).letterhead?.lines).toEqual([
-      { en: 'hello@suryodaya.in', hi: 'hello@suryodaya.in' },
-      { en: 'Mumbai office' },
+    expect(brandingWriteOf(SAVED, draft).letterhead?.lines).toEqual([
+      'hello@suryodaya.in',
+      'पुणे कार्यालय',
     ]);
   });
 

@@ -280,7 +280,7 @@ Permissions: requesting is `F2.M10.request-leave` (every preset, own-scope); dec
   original preserved, and the register shows the corrected value with its trail (M10-26).
 
 **Localization notes.** Register and leave vocabulary translated; leave type labels are
-tenant data (per-language where the tenant authors them, F3-10's content-class law).
+tenant data, one value as the tenant writes it (F3-10).
 **Analytics events:** leave requested / decided; exception resolved; register period viewed.
 
 ### M10.6 — Team structure: the manager mapping
@@ -372,7 +372,7 @@ M10-39's read boundary is a property of the surface.
 - Given a manager with Team scope who is not HR/Admin or Owner, when they open a report's
   record surfaces available to them, then no document is reachable (M10-39).
 
-**Localization notes.** Type labels are tenant-configurable data (per-language, F3-10);
+**Localization notes.** Type labels are tenant-configurable data, one value (F3-10);
 attention copy translated. **Analytics events:** document uploaded / replaced; expiry
 attention shown / resolved.
 

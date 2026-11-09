@@ -33,14 +33,15 @@ cannot. The invariants run later, in the gate.
    not show. Look for wrong logic or conditions, `undefined`, off-by-one, stale or lost state,
    races and double submits, a swallowed error, a list read with no limit, leaks and needless
    re-renders, focus lost when a control removes itself, and a web half and a phone half that act
-   differently.
+   differently. A value the server words in its reader's language is cached per language, and a
+   whole-record save never stores it back as the company's own.
 3. **The rules no machine checks.** `awk -F'|' 'NF > 2 && $(NF-1) ~ /review/' .claude/protections.md` lists
    them; check each one this change reaches, and skip those about the session's own steps. A
    screen is checked against its picked sample and the design language (`CLAUDE.md` §10, the end-user
    law of §1 first), and its motion as `.claude/rules/ui-adherence.md` *Motion* says. Each new brand, enum, token, route, table
    or error code is enrolled with its check (Law 12). A package's `CLAUDE.md` loads itself when you
    read its files; its rules are part of the review. The task is deleted at ship, so a
-   doc finding names a line that stays: a `CLAUDE.md`, a PRD row, a `deferred.md` row.
+   doc finding names a line that stays: a `CLAUDE.md` or a PRD row.
 
 ## Rules
 

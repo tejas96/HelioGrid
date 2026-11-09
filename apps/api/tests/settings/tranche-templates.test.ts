@@ -6,6 +6,7 @@ import { eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Act } from '../../src/common/auth/session-context';
 import { ContractException } from '../../src/common/errors/contract-exception';
+import { documentDefaultsIn } from '../../src/modules/settings/internal/document-defaults';
 import { seedTenantSettings } from '../../src/modules/settings/settings.admin.repository';
 import {
   aCompany,
@@ -49,7 +50,7 @@ const skip = skipWithoutDatabase(
 const SEEDED_PLUS_ADDED = 3;
 
 const line = (label: string, percent: string, dueOnStage: 'won' | 'commissioned' = 'won') => ({
-  label: { en: label },
+  label,
   percent,
   dueOnStage,
 });
@@ -64,10 +65,15 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
 
   beforeAll(async () => {
     pools = openPools();
+    const standardSplits = await documentDefaultsIn('en');
     await seed(pools.admin.db, fixture);
     await publishIndiaPack(pools);
     await pools.admin.db.transaction((tx) =>
-      seedTenantSettings(tx, { tenantId: here.tenantId, now: Date.now() }),
+      seedTenantSettings(tx, {
+        tenantId: here.tenantId,
+        now: Date.now(),
+        standardSplits: standardSplits.trancheTemplates,
+      }),
     );
     ({ templates } = settingsServicesOf(pools));
   });
@@ -99,7 +105,7 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
       const before = await countOf(here.tenantId);
       const attempt = templates.createTrancheTemplate(
         here.tenantId,
-        { name: { en: 'Uneven' }, lines: split.map((percent, i) => line(`Part ${i}`, percent)) },
+        { name: 'Uneven', lines: split.map((percent, i) => line(`Part ${i}`, percent)) },
         {},
         by(),
       );
@@ -117,7 +123,7 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
     const created = await templates.createTrancheTemplate(
       here.tenantId,
       {
-        name: { en: 'Half and half' },
+        name: 'Half and half',
         lines: [line('Now', '50.00'), line('Later', '50.00', 'commissioned')],
       },
       {},
@@ -152,7 +158,7 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
       templates.saveTrancheTemplate(
         here.tenantId,
         added,
-        { name: { en: 'x' }, lines: [line('All', '100.00')] },
+        { name: 'x', lines: [line('All', '100.00')] },
         by(),
       ),
     ).rejects.toThrow('That template is archived.');
@@ -204,7 +210,7 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
       here.tenantId,
       seededOther,
       {
-        name: { en: 'Three stage', mr: 'तीन टप्पे' },
+        name: 'तीन टप्पे',
         lines: [line('Booking', '40.00'), line('Done', '60.00', 'commissioned')],
       },
       by(),
@@ -212,7 +218,7 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
     expect(saved).toMatchObject({
       id: seededOther,
       changed: true,
-      name: { en: 'Three stage', mr: 'तीन टप्पे' },
+      name: 'तीन टप्पे',
     });
     expect(saved.lines.map((one) => one.percent)).toEqual(['40.00', '60.00']);
     const [entry] = await entriesOf(pools, here.tenantId, 'settings.tranche_template_changed');
@@ -224,7 +230,7 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
       templates.saveTrancheTemplate(
         elsewhere.tenantId,
         seededDefault,
-        { name: { en: 'x' }, lines: [line('All', '100.00')] },
+        { name: 'x', lines: [line('All', '100.00')] },
         by(),
       ),
     ).rejects.toThrow('That template is not this company’s.');
@@ -232,7 +238,7 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
 
   it('refuses a retry key another person sent, and never reads another company’s record by it (F4-07)', async () => {
     const headers = { [IDEMPOTENCY_KEY_HEADER]: randomUUID() };
-    const body = { name: { en: 'Keyed' }, lines: [line('All', '100.00')] };
+    const body = { name: 'Keyed', lines: [line('All', '100.00')] };
     const made = await templates.createTrancheTemplate(here.tenantId, body, headers, by());
     const byColleague = { actorUserId: colleague.userId, now: Date.now() };
     const attempt = templates.createTrancheTemplate(here.tenantId, body, headers, byColleague);
@@ -243,7 +249,7 @@ describe.skipIf(skip)('the payment-term templates, against a migrated database',
 
   it('the list names the newest save — its person and time', async () => {
     const byColleague = { actorUserId: colleague.userId, now: Date.now() };
-    const body = { name: { en: 'Colleague’s' }, lines: [line('All', '100.00')] };
+    const body = { name: 'Colleague’s', lines: [line('All', '100.00')] };
     await templates.saveTrancheTemplate(here.tenantId, added, body, byColleague);
     const { lastSaved } = await templates.trancheTemplates(here.tenantId);
     expect(lastSaved?.by).toEqual({ id: colleague.userId, name: 'Meera Iyer' });

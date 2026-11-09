@@ -31,7 +31,7 @@ export function RatesPanel({
   administers: boolean;
   toasts: ReturnType<typeof useToasts>;
 }) {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const formats = useCatalogFormats();
   const rates = useCatalogRates(administers, (number) =>
     toasts.push({ tone: 'success', title: t(PRICE_BOOK.saved, { number }) }),
@@ -59,7 +59,7 @@ export function RatesPanel({
           onLink: rates.versions.show,
           onAction: rates.start,
         }}
-        rates={versionRatesOf(inForce?.rates ?? [], locale)}
+        rates={versionRatesOf(inForce?.rates ?? [])}
         onAddFirst={rates.addFirst}
       />
       <VersionsSheet browse={rates.versions} />
@@ -99,7 +99,7 @@ export function RatesPanel({
           note={draft.note}
           onNote={draft.setNote}
           rows={draft.rows.map((rate) => ({
-            ...versionRowWords(t, rate, locale, formats.money),
+            ...versionRowWords(t, rate, formats.money),
             key: rate.key,
             basis: rate.basis,
             amount: rate.amount,

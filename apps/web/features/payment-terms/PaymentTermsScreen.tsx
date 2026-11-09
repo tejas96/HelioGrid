@@ -6,6 +6,7 @@ import {
   usePaymentTermsScreen,
 } from '@heliogrid/data/react';
 import {
+  documentDefaults,
   type PaymentTermsWords,
   paymentTermsEditorSaid,
   paymentTermsFailureWords,
@@ -55,8 +56,8 @@ const TERMS_WIDE_FROM = EDITOR_CARD_WIDTH * 2 + theme.spacing['sp-8'];
  * whose presets open the row reaches it (`F7-48`).
  */
 export function PaymentTermsScreen() {
-  const { locale } = useI18n();
-  const screen = usePaymentTermsScreen(locale);
+  const { t } = useI18n();
+  const screen = usePaymentTermsScreen(documentDefaults(t).trancheTemplates[0]);
   if (!screen.allowed) notFound();
   return <PaymentTermsIn screen={screen} />;
 }

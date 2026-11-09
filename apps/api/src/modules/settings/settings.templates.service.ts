@@ -17,8 +17,10 @@ import {
   basisPointsToPercent,
   minorUnits,
   percentToBasisPoints,
+  sameContent,
   sectionsIncluded,
   type TrancheTemplateContent,
+  type UiLanguage,
 } from '@heliogrid/domain';
 import {
   minorUnitsToDecimal,
@@ -35,9 +37,9 @@ import {
 import type { Act } from '../../common/auth/session-context';
 import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException } from '../../common/errors/contract-exception';
+import { documentDefaultsIn } from './internal/document-defaults';
 import {
   lastSaveWire,
-  perLanguageWire,
   richTextWire,
   timelineWire,
   trancheLineFromWire,
@@ -62,9 +64,10 @@ export class SettingsTemplatesService {
     @Inject(CreationReplies) private readonly replies: CreationReplies,
   ) {}
 
-  async proposalTemplate(tenantId: string): Promise<ProposalTemplateRead> {
+  /** Until the tenant saves one, the platform's template in `reader`'s words (`F3-10`). */
+  async proposalTemplate(tenantId: string, reader: UiLanguage): Promise<ProposalTemplateRead> {
     const [effective, last] = await Promise.all([
-      this.settings.effective(tenantId),
+      this.settings.effective(tenantId, reader),
       this.scoped.proposalTemplateLastSave(tenantId),
     ]);
     return { ...effective.proposalTemplate.value, changed: lastSaveWire(last) };
@@ -75,36 +78,50 @@ export class SettingsTemplatesService {
     tenantId: string,
     body: ProposalTemplate,
     act: Act,
+    reader: UiLanguage,
   ): Promise<ProposalTemplateRead> {
+    // Terms sent back as the platform's, in the saver's words, stay the platform's: stored as
+    // null, they keep reading in each reader's words — a cover edit never freezes them (`F3-10`).
+    const { terms: platformTerms } = await documentDefaultsIn(reader);
+    const ownTerms = sameContent(body.defaultTerms, platformTerms) ? null : body.defaultTerms;
     const saved = await this.scoped.saveProposalTemplate(
       tenantId,
-      { ...body, sectionsIncluded: sectionsIncluded(body.sectionsIncluded) },
+      {
+        ...body,
+        sectionsIncluded: sectionsIncluded(body.sectionsIncluded),
+        defaultTerms: ownTerms,
+      },
       act,
     );
     return {
       cover: saved.cover,
       sectionsIncluded: [...saved.sectionsIncluded],
-      defaultTerms: perLanguageWire(saved.defaultTerms, richTextWire),
+      defaultTerms: richTextWire(saved.defaultTerms ?? platformTerms),
       changed: lastSaveWire(await this.scoped.proposalTemplateLastSave(tenantId)),
     };
   }
 
-  async timelineTemplate(tenantId: string): Promise<TimelineTemplateRead> {
+  /** Until the tenant saves one, the platform's phases in `reader`'s words (`F3-10`). */
+  async timelineTemplate(tenantId: string, reader: UiLanguage): Promise<TimelineTemplateRead> {
     const [effective, last] = await Promise.all([
-      this.settings.effective(tenantId),
+      this.settings.effective(tenantId, reader),
       this.scoped.timelineTemplateLastSave(tenantId),
     ]);
     return { ...effective.timelineTemplate.value, changed: lastSaveWire(last) };
   }
 
+  /** Phases sent back as the platform's, in the saver's words, stay the platform's (`F3-10`). */
   async saveTimelineTemplate(
     tenantId: string,
     body: TimelineTemplate,
     act: Act,
+    reader: UiLanguage,
   ): Promise<TimelineTemplateRead> {
-    const saved = await this.scoped.saveTimelineTemplate(tenantId, body.phases, act);
+    const { phases: platformPhases } = await documentDefaultsIn(reader);
+    const ownPhases = sameContent(body.phases, platformPhases) ? null : body.phases;
+    const saved = await this.scoped.saveTimelineTemplate(tenantId, ownPhases, act);
     return {
-      ...timelineWire(saved.phases),
+      ...timelineWire(saved.phases ?? platformPhases),
       changed: lastSaveWire(await this.scoped.timelineTemplateLastSave(tenantId)),
     };
   }

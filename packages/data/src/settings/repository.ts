@@ -13,6 +13,7 @@ import type {
   TrancheTemplate,
   TrancheTemplateList,
   TrancheTemplateWrite,
+  UiLanguage,
 } from '@heliogrid/contracts';
 import type { ApiClient } from '../client/client';
 import { createCreationKeys } from '../client/creation-key';
@@ -31,11 +32,11 @@ export interface SettingsRepository {
   /** The colour, the letterhead and the logo as one write; the colour is never refused (`F7-07`). */
   saveBranding(branding: BrandingSave): Promise<BrandingRead>;
   /** The document defaults and who saved them last (`SCR-M01-19`); the platform's where unset. */
-  proposalTemplate(signal?: AbortSignal): Promise<ProposalTemplateRead>;
+  proposalTemplate(reader: UiLanguage, signal?: AbortSignal): Promise<ProposalTemplateRead>;
   /** Replaces the document defaults whole; the terms always stay in the section set. */
   saveProposalTemplate(template: ProposalTemplate): Promise<ProposalTemplateRead>;
   /** The project phases in order and who saved them last; the platform's where unset. */
-  timelineTemplate(signal?: AbortSignal): Promise<TimelineTemplateRead>;
+  timelineTemplate(reader: UiLanguage, signal?: AbortSignal): Promise<TimelineTemplateRead>;
   /** Replaces the phases whole, in the order sent. */
   saveTimelineTemplate(timeline: TimelineTemplate): Promise<TimelineTemplateRead>;
   /** Every payment-term template and who saved one last (`SCR-M01-20`). */
@@ -119,9 +120,12 @@ export function createSettingsRepository(api: ApiClient): SettingsRepository {
         throw normalizeClientError(error);
       }
     },
-    async proposalTemplate(signal) {
+    async proposalTemplate(reader, signal) {
       try {
-        const res = await api.tenantSettings.proposalTemplate({ fetchOptions: { signal } });
+        const res = await api.tenantSettings.proposalTemplate({
+          query: { reader },
+          fetchOptions: { signal },
+        });
         if (res.status !== 200) throw toApiError(res);
         return res.body;
       } catch (error) {
@@ -137,9 +141,12 @@ export function createSettingsRepository(api: ApiClient): SettingsRepository {
         throw normalizeClientError(error);
       }
     },
-    async timelineTemplate(signal) {
+    async timelineTemplate(reader, signal) {
       try {
-        const res = await api.tenantSettings.timelineTemplate({ fetchOptions: { signal } });
+        const res = await api.tenantSettings.timelineTemplate({
+          query: { reader },
+          fetchOptions: { signal },
+        });
         if (res.status !== 200) throw toApiError(res);
         return res.body;
       } catch (error) {

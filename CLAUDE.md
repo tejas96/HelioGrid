@@ -94,8 +94,8 @@ code that is gone — `tsc -p` never removes old output, and the web typecheck r
   except as `/task` says.
 
 Everything else is decided in the session and written down with one reason: a reading of the PRD
-(the simplest that meets the row), a layer conflict (§7), a fix outside the task (a
-`docs/tasks/deferred.md` row). Nothing is built that no PRD row implies. Schema or API work a later
+(the simplest that meets the row), a layer conflict (§7), a bug found on the way (fixed in the
+task, §8). Nothing is built that no PRD row implies. Schema or API work a later
 module owns (Law 9) is written into that module's task in `docs/tasks/`, never built here.
 
 ## 5. Commands
@@ -172,8 +172,9 @@ code. If a doc and the code disagree, fix the one that is wrong in the same PR.
   enum value, response, workflow message, queued job, cached payload, pack) names its readers and
   proves both ways: old readers read the new shape, new code reads what the old wrote. If it can't,
   ship two releases: expand, then contract.
-- **A bug you find is reported at once.** In scope: fix it now. Out of scope: one row in
-  `docs/tasks/deferred.md` (issue, next step, `reopens when`), never in this diff.
+- **A bug you find is fixed in the task that found it** and listed in the PR body — never deferred,
+  never left half-built. Only what §4 keeps for the owner is raised to them instead.
+  `docs/tasks/deferred.md` takes no new row; a task closes the rows it meets.
 - **Dependencies change only through `pnpm add`/`pnpm remove`** — never a hand-edited dependency
   block or lockfile. Schema goes through a migration, and test or development data through the
   application (§4).

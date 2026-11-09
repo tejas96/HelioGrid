@@ -17,7 +17,7 @@ import { BackHandler, View } from 'react-native';
  * that lists them by year and opens one read-only in place, *Back to versions* before its title.
  */
 export function VersionsSheet({ browse }: { browse: PriceBookBrowse }) {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const formats = useCatalogFormats();
   const words = catalogVersionWords(t);
   const opened =
@@ -78,7 +78,7 @@ export function VersionsSheet({ browse }: { browse: PriceBookBrowse }) {
             margin={opened ? formats.margin(opened.defaultMarginPct) : ''}
             rateCount={opened ? formats.number(opened.rates.length) : ''}
             note={opened?.note ?? ''}
-            rates={versionRatesOf(opened?.rates ?? [], locale)}
+            rates={versionRatesOf(opened?.rates ?? [])}
             read={browse.one}
           />
         )}

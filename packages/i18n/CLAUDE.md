@@ -17,7 +17,7 @@ src/copy/<area>.ts            copy BOTH platforms need — pure data, no React, 
 src/locales/<lang>/           messages.po (source of truth) + messages.ts (compiled by `build`, committed, never hand-edited)
 src/index.ts                  REACT-FREE root — re-exports the runtime, metadata and copy
 src/runtime.ts                createI18nRuntime, createTranslator
-src/languages.ts              LANGUAGE_META + the statically-imported source catalog
+src/languages.ts              the picker's options + the statically-imported source catalog
 src/catalog-loader.ts         web: one import() chunk per language
 src/catalog-loader.native.ts  RN: static imports — Metro substitutes it, because `import()`
                               cannot lazy-load on the phone
@@ -39,8 +39,8 @@ pnpm --filter @heliogrid/i18n extract | build | typecheck   # extract sweeps web
 - **THE CONVENTION: runtime `<Trans id="<English source text>" />`** from `@heliogrid/i18n/react`,
   both platforms. The id IS the English string, so the first paint is right before any catalog
   loads.
-- **The language SET is not written here:** `UI_LANGUAGES` is authored in
-  `packages/domain/src/format/languages.ts`.
+- **The language SET is not written here:** `LANGUAGES` (code, own name, direction) is authored
+  in `packages/domain/src/format/languages.ts`.
 - **The provider FOLLOWS the session.** A root mounts `LanguageFollowsUser` with
   `follow={user?.interfaceLanguage ?? null}`, `device` and `onChosen`; a screen calls `setLocale`
   and never writes the profile itself (`F3-02`, `F3-04`). With nobody signed in the mount rests in
@@ -60,10 +60,10 @@ pnpm --filter @heliogrid/i18n extract | build | typecheck   # extract sweeps web
 
 ## Adding a language
 
-Follow `docs/engineering/adding-a-language.md`; the `language-fonts` invariant and
-`tests/plural-forms.test.ts` refuse a half-added one.
+Follow `docs/engineering/adding-a-language.md`; the typecheck, `check:catalogs`, the
+`language-fonts` invariant and `tests/plural-forms.test.ts` refuse a half-added one.
 
 ## Done means
 
-Every locale has zero missing messages, or the gap is a deliberate English fallback · every
+Every locale has zero missing messages (`check:catalogs` refuses one) · every
 language RENDERED on web and on both phones, switching and not merely loading.

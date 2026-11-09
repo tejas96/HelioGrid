@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { act, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { mounted, refusal, templateOrigin } from './proposal-template-origin';
+import { DEFAULTS, mounted, refusal, templateOrigin } from './proposal-template-origin';
 
 /**
  * The Proposal template page's one save, end to end through the real client (`SCR-M01-19`): only
@@ -19,6 +19,12 @@ describe('the Proposal template page — its reads and its one save, through the
     await waitFor(() =>
       expect(view.result.current.cover).toMatchObject({ companyName: 'Suryodaya Solar Pvt Ltd' }),
     );
+  });
+
+  it('asks for both records in the reader’s language, the one it holds them under', async () => {
+    await mounted();
+
+    expect(new Set(templateOrigin.readers)).toEqual(new Set(['en']));
   });
 
   it('only the changed record is sent', async () => {
@@ -95,7 +101,6 @@ describe('the Proposal template page — its reads and its one save, through the
     act(() =>
       view.result.current.edit({
         kind: 'terms',
-        language: 'en',
         value: { version: 1, blocks: [] },
       }),
     );
@@ -112,7 +117,16 @@ describe('the Proposal template page — its reads and its one save, through the
     act(() => view.result.current.discard());
 
     expect(view.result.current.changed).toEqual({ template: false, timeline: false });
-    expect(view.result.current.draft?.phases).toHaveLength(8);
+    expect(view.result.current.draft?.phases).toHaveLength(DEFAULTS.phases.length);
+  });
+
+  it('teaches while every part holds the platform’s defaults, and stops at the first own part', async () => {
+    const view = await mounted();
+
+    expect(view.result.current.teaching).toBe(true);
+    act(() => view.result.current.edit({ kind: 'section', section: 'performance' }));
+
+    expect(view.result.current.teaching).toBe(false);
   });
 
   it('a refused save names the part to open', async () => {
@@ -121,7 +135,6 @@ describe('the Proposal template page — its reads and its one save, through the
     act(() =>
       view.result.current.edit({
         kind: 'terms',
-        language: 'en',
         value: { version: 1, blocks: [] },
       }),
     );

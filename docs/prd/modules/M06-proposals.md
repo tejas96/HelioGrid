@@ -551,8 +551,8 @@ creates counts as a creation (`M06-26`).
 - Given untouched tenant settings, when a proposal is built, then platform-seeded defaults carry
   every templated step and no settings visit is required (M06-49; `M01-28` consumed).
 
-**Localization notes.** Template content is tenant data per language (`F3-10`); duplicates carry
-the source's content language as-is.
+**Localization notes.** Template content is tenant data, one value as written (`F3-10`); duplicates
+carry it as-is.
 
 **Analytics events.** `proposal.duplicated` (source_id → new_id),
 `proposal.duplicate_component_flagged`.

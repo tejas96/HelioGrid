@@ -1,16 +1,21 @@
 import { describe, expect, it } from 'vitest';
 import {
+  type DocumentDefaults,
   resolveEffectiveSettings,
   type TenantFacts,
   type TenantSettings,
 } from '../../src/commerce/effective-settings';
-import {
-  DEFAULT_SECTIONS_INCLUDED,
-  DEFAULT_TERMS,
-} from '../../src/commerce/proposal-template-defaults';
-import { DEFAULT_TIMELINE_PHASES } from '../../src/commerce/timeline-template-defaults';
+import { DEFAULT_SECTIONS_INCLUDED } from '../../src/commerce/proposal-template-defaults';
+import { richTextParagraphs } from '../../src/commerce/rich-text';
 import { IN_FORMATS } from '../../src/format/pack';
-import { nothingSet, seeded, standard } from './settings-rows';
+import { nothingSet, seeded, standard, standardSplits } from './settings-rows';
+
+/** The platform's defaults in one reader's words — catalog copy, handed in. */
+const defaults: DocumentDefaults = {
+  terms: richTextParagraphs(['This proposal is valid until the date stated on it.']),
+  phases: [{ name: 'Material ordered', description: 'Panels are ordered for your site.' }],
+  trancheTemplates: standardSplits,
+};
 
 const signupOnly: TenantFacts = {
   companyName: 'Sunrise Solar',
@@ -37,18 +42,18 @@ const everythingSet: TenantSettings = {
   branding: { brandColour: '#FF0000', letterhead: null },
   proposalTemplate: {
     cover: {
-      aboutCompany: { en: 'Since 2011' },
+      aboutCompany: 'Since 2011',
       totalCapacityInstalledKw: 200,
       happyCustomers: 350,
       citiesServed: 10,
     },
     sectionsIncluded: ['system', 'terms'],
-    defaultTerms: { en: { version: 1, blocks: [] } },
+    defaultTerms: { version: 1, blocks: [] },
   },
-  timelineTemplate: { phases: [{ name: { en: 'Survey' }, description: { en: 'We visit.' } }] },
+  timelineTemplate: { phases: [{ name: 'Survey', description: 'We visit.' }] },
   trancheTemplates: [
     { ...seeded, changed: true },
-    { ...seeded, id: 'tt-2', isDefault: false, name: { en: 'Old' } },
+    { ...seeded, id: 'tt-2', isDefault: false, name: 'Old' },
   ],
   holidays: [{ date: '2026-08-15', label: 'Independence Day' }],
 };
@@ -59,6 +64,7 @@ describe('resolveEffectiveSettings — a tenant with no rows gets the platform e
     tenant: signupOnly,
     settings: nothingSet,
     promptPoints: {},
+    defaults,
   });
 
   it('marks every setting platform and fills each with its default', () => {
@@ -82,12 +88,12 @@ describe('resolveEffectiveSettings — a tenant with no rows gets the platform e
       value: {
         cover: null,
         sectionsIncluded: DEFAULT_SECTIONS_INCLUDED,
-        defaultTerms: DEFAULT_TERMS,
+        defaultTerms: defaults.terms,
       },
     });
     expect(effective.timelineTemplate).toEqual({
       source: 'platform',
-      value: { phases: DEFAULT_TIMELINE_PHASES },
+      value: { phases: defaults.phases },
     });
     expect(effective.defaultTrancheTemplate).toEqual({
       source: 'platform',
@@ -121,6 +127,7 @@ describe('resolveEffectiveSettings — the tenant’s own rows win, each marked 
     tenant: { ...signupOnly, segment: 'both', typicalSystemKwp: 5, defaultLanguage: 'mr' },
     settings: everythingSet,
     promptPoints: {},
+    defaults,
   });
 
   it('reads the profile, registrations, template and timeline from the rows', () => {
@@ -175,6 +182,7 @@ describe('the seeded split is the platform’s until touched (SCR-M01-20: given,
       tenant: signupOnly,
       settings: { ...nothingSet, trancheTemplates: [seeded] },
       promptPoints: {},
+      defaults,
     });
     expect(effective.defaultTrancheTemplate).toEqual({
       source: 'platform',
@@ -188,6 +196,7 @@ describe('the seeded split is the platform’s until touched (SCR-M01-20: given,
       tenant: signupOnly,
       settings: { ...nothingSet, trancheTemplates: [{ ...seeded, archived: true, changed: true }] },
       promptPoints: {},
+      defaults,
     });
     expect(effective.defaultTrancheTemplate.value.id).toBeNull();
   });
@@ -198,6 +207,7 @@ describe('the seeded split is the platform’s until touched (SCR-M01-20: given,
       tenant: { ...signupOnly, timezone: 'Asia/Dubai' },
       settings: nothingSet,
       promptPoints: {},
+      defaults,
     });
     expect(effective.locale.source).toBe('tenant');
   });
@@ -220,6 +230,7 @@ describe('the seeded split is the platform’s until touched (SCR-M01-20: given,
         },
       },
       promptPoints: {},
+      defaults,
     });
     expect(effective.companyIdentity.source).toBe('tenant');
     expect(effective.companyIdentity.value).toMatchObject(held);
@@ -233,10 +244,11 @@ describe('the seeded split is the platform’s until touched (SCR-M01-20: given,
         ...nothingSet,
         branding: {
           brandColour: null,
-          letterhead: { tagline: { en: 'Rooftop solar since 2011' }, lines: [], footerNote: null },
+          letterhead: { tagline: 'Rooftop solar since 2011', lines: [], footerNote: null },
         },
       },
       promptPoints: {},
+      defaults,
     });
     expect(effective.branding.source).toBe('tenant');
     expect(effective.branding.value.shades).toBeNull();

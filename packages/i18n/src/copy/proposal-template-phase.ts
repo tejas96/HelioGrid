@@ -3,7 +3,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
  * The Proposal template's field refusals and the phase editor's words (`SCR-M01-19` m19-g): its
  * heading, its act and each field's refusal. The page's other words are `proposal-template.ts`'s.
  */
-import { PHASE_NAME_LIMIT, type TemplateRefusal, type UiLanguage } from '@heliogrid/domain';
+import { PHASE_NAME_LIMIT, type TemplateRefusal } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { TEMPLATE } from './proposal-template';
 
@@ -11,17 +11,16 @@ type T = Translator['t'];
 
 /**
  * The phase editor's heading (m19-g): a new phase is *New phase*, last of one more; a held phase
- * is its own name in the reader's language where written, else English (`F3-10`), at its place.
+ * is its own name as the company wrote it (`F3-10`), at its place.
  */
 function phaseEditorHeading(
   t: T,
   phase: {
     readonly adding: boolean;
-    readonly name: Readonly<Partial<Record<UiLanguage, string>>> & { readonly en: string };
+    readonly name: string;
     readonly position: number;
     readonly count: number;
   },
-  reader: UiLanguage,
 ): { readonly title: string; readonly subtitle: TranslatedText } {
   if (phase.adding) {
     return {
@@ -30,7 +29,7 @@ function phaseEditorHeading(
     };
   }
   return {
-    title: phase.name[reader] ?? phase.name.en,
+    title: phase.name,
     subtitle: t(TEMPLATE.phaseOf, { position: phase.position, count: phase.count }),
   };
 }
@@ -38,7 +37,7 @@ function phaseEditorHeading(
 /** A field's refusal in words. */
 export function templateRefusalWords(
   t: T,
-  field: 'name' | 'what' | 'terms' | 'about',
+  field: 'name' | 'what' | 'terms',
   refusal: TemplateRefusal | null,
 ): TranslatedText | null {
   if (refusal === null) return null;
@@ -46,23 +45,18 @@ export function templateRefusalWords(
   const words = {
     name: TEMPLATE.nameNeeded,
     what: TEMPLATE.whatNeeded,
-    terms: TEMPLATE.termsNeedEnglish,
-    about: TEMPLATE.aboutNeedsEnglish,
+    terms: TEMPLATE.termsNeeded,
   } as const;
   return t(words[field]);
 }
 
-/** The terms' and the about text's refusals, each present only when its field refuses. */
+/** The terms' refusal, present only when the field refuses. */
 export function templateFieldRefusals(
   t: T,
-  refusals: { readonly terms: TemplateRefusal | null; readonly about: TemplateRefusal | null },
-): { readonly termsError?: TranslatedText; readonly aboutError?: TranslatedText } {
+  refusals: { readonly terms: TemplateRefusal | null },
+): { readonly termsError?: TranslatedText } {
   const terms = templateRefusalWords(t, 'terms', refusals.terms);
-  const about = templateRefusalWords(t, 'about', refusals.about);
-  return {
-    ...(terms === null ? {} : { termsError: terms }),
-    ...(about === null ? {} : { aboutError: about }),
-  };
+  return terms === null ? {} : { termsError: terms };
 }
 
 /**
@@ -73,7 +67,7 @@ export function phaseEditorWords(
   t: T,
   phase: {
     readonly adding: boolean;
-    readonly name: Readonly<Partial<Record<UiLanguage, string>>> & { readonly en: string };
+    readonly name: string;
     readonly position: number;
     readonly count: number;
     readonly shown: {
@@ -81,7 +75,6 @@ export function phaseEditorWords(
       readonly description: TemplateRefusal | null;
     };
   },
-  reader: UiLanguage,
 ): {
   /** *New phase*, or the phase's name as the company wrote it. */
   readonly title: string;
@@ -93,7 +86,7 @@ export function phaseEditorWords(
   const nameError = templateRefusalWords(t, 'name', phase.shown.name);
   const whatError = templateRefusalWords(t, 'what', phase.shown.description);
   return {
-    ...phaseEditorHeading(t, phase, reader),
+    ...phaseEditorHeading(t, phase),
     act: t(phase.adding ? TEMPLATE.addPhaseAct : TEMPLATE.savePhase),
     ...(nameError === null ? {} : { nameError }),
     ...(whatError === null ? {} : { whatError }),

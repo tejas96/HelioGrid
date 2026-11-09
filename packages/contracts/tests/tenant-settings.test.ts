@@ -10,7 +10,7 @@ import {
 } from '../src';
 import { packLabelSchema, richTextValueSchema } from '../src/document-content';
 
-describe('a per-language value on the wire — English required, a stranger language refused (F3-05)', () => {
+describe('a market-pack label on the wire — English required, a stranger language refused (F3-05)', () => {
   it.each([[{ en: 'Standard' }], [{ en: 'Standard', hi: 'मानक', mr: 'मानक' }]])(
     'accepts %o',
     (label) => {
@@ -66,11 +66,24 @@ describe('the small shapes at their edges', () => {
   });
 
   it('binds a tranche to a chain stage in two-decimal percent, never the terminal', () => {
-    const line = { label: { en: 'On signing' }, percent: '10.00', dueOnStage: 'won' };
+    const line = { label: 'On signing', percent: '10.00', dueOnStage: 'won' };
     expect(trancheLineSchema.safeParse(line).success).toBe(true);
     expect(trancheLineSchema.safeParse({ ...line, dueOnStage: 'cancelled' }).success).toBe(false);
     expect(trancheLineSchema.safeParse({ ...line, percent: '10' }).success).toBe(false);
     expect(trancheLineSchema.safeParse({ ...line, percent: '100.01' }).success).toBe(false);
+  });
+});
+
+describe('a tenant label on the wire — one value as written, never one per language (F3-10)', () => {
+  const line = { percent: '10.00', dueOnStage: 'won' };
+
+  it.each([
+    ['On signing', true],
+    ['हस्ताक्षर पर अग्रिम', true],
+    ['', false],
+    [{ en: 'On signing' }, false],
+  ])('a tranche label %o is accepted: %s', (label, ok) => {
+    expect(trancheLineSchema.safeParse({ ...line, label }).success).toBe(ok);
   });
 });
 

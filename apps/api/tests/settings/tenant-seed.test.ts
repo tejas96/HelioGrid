@@ -13,6 +13,7 @@ import {
 } from '@heliogrid/domain';
 import { asc, eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { documentDefaultsIn } from '../../src/modules/settings/internal/document-defaults';
 import { seedTenantSettings } from '../../src/modules/settings/settings.admin.repository';
 import { TenantAdminRepository } from '../../src/modules/tenant/tenant.admin.repository';
 import {
@@ -57,6 +58,7 @@ describe.skipIf(skip)(
         defaultLanguage: 'en',
         timezone: 'Asia/Kolkata',
         trialLimits: bookEntitlements(IN_PACK.priceBook, null),
+        standardSplits: (await documentDefaultsIn('mr')).trancheTemplates,
         ownerUserId: founder.userId,
         ownerName: founder.name,
         now: Date.now(),
@@ -107,16 +109,39 @@ describe.skipIf(skip)(
 
     it('seeds nothing twice: a second seed for the same company changes no count', async () => {
       const before = await counts();
+      const { trancheTemplates } = await documentDefaultsIn('en');
       await pools.admin.db.transaction((tx) =>
-        seedTenantSettings(tx, { tenantId: created.tenantId, now: Date.now() }),
+        seedTenantSettings(tx, {
+          tenantId: created.tenantId,
+          now: Date.now(),
+          standardSplits: trancheTemplates,
+        }),
       );
       expect(await counts()).toEqual(before);
+    });
+
+    it('seeds the splits in the words of the person who created the company — theirs from then on', async () => {
+      const splits = (await documentDefaultsIn('mr')).trancheTemplates;
+      expect((await templatesOf()).map((template) => template.name)).toEqual(
+        splits.map((split) => split.name),
+      );
+      const [first] = await templatesOf();
+      const labels = await pools.admin.db
+        .select({ label: trancheTemplateLine.label })
+        .from(trancheTemplateLine)
+        .where(eq(trancheTemplateLine.trancheTemplateId, first?.id ?? ''))
+        .orderBy(asc(trancheTemplateLine.position));
+      expect(labels.map((line) => line.label)).toEqual(splits[0].lines.map((line) => line.label));
+      expect(splits[0].lines[0]?.label).not.toBe(
+        (await documentDefaultsIn('en')).trancheTemplates[0].lines[0]?.label,
+      );
     });
 
     async function templatesOf() {
       return pools.admin.db
         .select({
           id: trancheTemplate.id,
+          name: trancheTemplate.name,
           isDefault: trancheTemplate.isDefault,
           archived: trancheTemplate.archived,
         })

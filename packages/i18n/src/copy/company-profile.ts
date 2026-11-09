@@ -5,8 +5,15 @@
  * them by state. The tax label, the bank-routing label and the format line are the market pack's:
  * this module names no market's tax or bank identifier.
  */
+import type { TranslatedText } from '@heliogrid/contracts';
 import type { CompanyProfilePart, CompanyProfileStanding, TenantSegment } from '@heliogrid/domain';
 import type { MessageRef } from '../runtime';
+
+/**
+ * The example the PIN field shows while empty (`SCR-M01-05`, `m-address-open`): a specimen, never a
+ * value, and digits read the same in every language — so it is not catalog copy.
+ */
+export const POSTAL_CODE_SPECIMEN = '411038' as TranslatedText;
 
 export const COMPANY_PROFILE = {
   title: /*i18n*/ { id: 'Your company profile' },
@@ -18,8 +25,6 @@ export const COMPANY_PROFILE = {
   street: /*i18n*/ { id: 'Street address' },
   streetExample: /*i18n*/ { id: 'Building, street, area' },
   postalCode: /*i18n*/ { id: 'PIN code' },
-  /** An example the field shows while empty (`SCR-M01-05`, `m-address-open`); a specimen, never a value. */
-  postalCodeExample: /*i18n*/ { id: '411038' },
   addressPurpose: /*i18n*/ { id: 'Shown to customers on every document' },
   optional: /*i18n*/ { id: '{label} (optional)' },
   formatChecked: /*i18n*/ {

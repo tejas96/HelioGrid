@@ -11,6 +11,7 @@ import { HttpStatus } from '@nestjs/common';
 import { eq, sql } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { creationKeyOf } from '../../src/common/creation-key';
+import { documentDefaultsIn } from '../../src/modules/settings/internal/document-defaults';
 import { TenantAdminRepository } from '../../src/modules/tenant/tenant.admin.repository';
 import { openPools } from '../support/fixture';
 import { holdLock } from '../support/held-lock';
@@ -108,6 +109,7 @@ describe.skipIf(skip)('a retried company signup, over HTTP (F4-07)', () => {
       defaultLanguage: 'en',
       timezone: 'Asia/Kolkata',
       trialLimits: bookEntitlements(IN_PACK.priceBook, null),
+      standardSplits: (await documentDefaultsIn('en')).trancheTemplates,
       ownerUserId: userId,
       now: Date.now(),
       key: creationKeyOf({ [IDEMPOTENCY_KEY_HEADER]: key }, userId, tenantContract.create, body),

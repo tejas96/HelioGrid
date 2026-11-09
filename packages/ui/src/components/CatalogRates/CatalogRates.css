@@ -197,7 +197,7 @@
   width: calc(var(--sp-24) + var(--sp-8));
 }
 
-/* The rate sheet's body: three names, the basis, *Remove*. */
+/* The rate sheet's body: the name, the basis, *Remove*. */
 .hg-cat-rate-edit {
   display: flex;
   flex-direction: column;

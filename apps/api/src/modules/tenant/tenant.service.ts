@@ -17,6 +17,7 @@ import {
   marketOfPhone,
   ROLE_CARD_OWNERS_SHOWN,
   UI_SOURCE_LOCALE,
+  uiLanguageOrSource,
 } from '@heliogrid/domain';
 import {
   ConflictException,
@@ -30,6 +31,7 @@ import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException } from '../../common/errors/contract-exception';
 import { AuthService } from '../auth/auth.public';
 import { MarketPackService } from '../market/market.public';
+import { documentDefaultsIn } from '../settings/settings.public';
 import { TenantAdminRepository, type TenantRow } from './tenant.admin.repository';
 import type { MemberRow } from './tenant.members.repository';
 import { MyMembershipRepository } from './tenant.my-membership.repository';
@@ -71,6 +73,7 @@ export class TenantService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
+    const creator = await documentDefaultsIn(uiLanguageOrSource(session.actor.interfaceLanguage));
     const keyed = await this.crossTenant.createWithOwner({
       companyName: body.companyName,
       city: body.city,
@@ -79,6 +82,7 @@ export class TenantService {
       defaultLanguage: UI_SOURCE_LOCALE,
       timezone: pack.formats.timeZone,
       trialLimits: bookEntitlements(pack.priceBook, null),
+      standardSplits: creator.trancheTemplates,
       ownerUserId: session.actor.userId,
       ownerName: body.ownerName,
       now,

@@ -1,5 +1,10 @@
 import { type Db, membershipRole, tenant, tenantMembership, userAccount } from '@heliogrid/db';
-import { type Entitlement, FOUNDER_ROLE, type UiLanguage } from '@heliogrid/domain';
+import {
+  type Entitlement,
+  FOUNDER_ROLE,
+  type TrancheTemplateDefault,
+  type UiLanguage,
+} from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, asc, eq, sql } from 'drizzle-orm';
 import { type CreationKey, type Keyed, replayOf } from '../../common/creation-key';
@@ -43,6 +48,8 @@ export class TenantAdminRepository {
     timezone: string;
     /** The book's trial limits in the company's market (`M12-16`). */
     trialLimits: readonly Entitlement[];
+    /** The standard payment splits, in the creator's words (`M01-54`, `F3-10`). */
+    standardSplits: readonly TrancheTemplateDefault[];
     ownerUserId: string;
     ownerName: string;
     now: number;
@@ -110,7 +117,11 @@ export class TenantAdminRepository {
         );
       // What a company has before its owner touches a setting (`M01-28`): the corridor, the
       // empty profile, the two standard splits — in this transaction, so none is ever missing.
-      await seedTenantSettings(tx, { tenantId: created.id, now: input.now });
+      await seedTenantSettings(tx, {
+        tenantId: created.id,
+        now: input.now,
+        standardSplits: input.standardSplits,
+      });
       // The trial starts with the company, no card and no billing step (`M12-14`, `M12-52`).
       await startTrial(tx, { tenantId: created.id, now: input.now, limits: input.trialLimits });
       return { outcome: 'created', row: created };

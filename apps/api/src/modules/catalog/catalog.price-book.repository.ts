@@ -5,7 +5,7 @@ import {
   type TenantScopedDb,
   userAccount,
 } from '@heliogrid/db';
-import type { AuthoredPerLanguage, PriceBookRateBasis } from '@heliogrid/domain';
+import type { PriceBookRateBasis } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, asc, count, desc, eq, max, type SQL, sql } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
@@ -16,7 +16,8 @@ import { memberAct, recordAuditEntry } from '../audit/audit.public';
 
 /** A rate as stored: the amount is the column's numeric text, in its version's currency. */
 export interface StoredRate {
-  readonly name: AuthoredPerLanguage<string>;
+  /** The tenant's name for the rate — one value, shown as written (`F3-10`). */
+  readonly name: string;
   readonly basis: PriceBookRateBasis;
   readonly amount: string;
 }

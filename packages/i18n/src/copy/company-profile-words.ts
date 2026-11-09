@@ -28,6 +28,7 @@ import {
   COMPANY_PROFILE_PART_TITLE,
   COMPANY_PROFILE_SEGMENT_LINE,
   COMPANY_PROFILE_STANDING_WORD,
+  POSTAL_CODE_SPECIMEN,
 } from './company-profile';
 import { COMPANY_SIGNUP } from './company-signup';
 import { dropzoneWords } from './dropzone';
@@ -178,7 +179,7 @@ export function companyProfileWords(
       city: translate(COMPANY_SIGNUP.city),
       fromSignup,
       postalCode: translate(COMPANY_PROFILE.postalCode),
-      postalCodeExample: translate(COMPANY_PROFILE.postalCodeExample),
+      postalCodeExample: POSTAL_CODE_SPECIMEN,
       purpose: translate(COMPANY_PROFILE.addressPurpose),
     },
     tax: {

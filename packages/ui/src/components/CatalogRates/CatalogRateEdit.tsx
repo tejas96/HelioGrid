@@ -5,25 +5,16 @@ import { Input } from '../Input';
 import { Select } from '../Select';
 import type { CatalogRateEditProps } from './CatalogRates.types';
 
-/**
- * The rate sheet's body (owner ruling 2026-10-24): the rate's name in English, Hindi and Marathi —
- * an empty Hindi or Marathi name says English stands in (`F3-10`) — how it is charged, and *Remove*.
- */
+/** The rate sheet's body: the rate's one name, how it is charged, and *Remove*. */
 export function CatalogRateEdit(props: CatalogRateEditProps) {
   return (
     <div className="hg-cat-rate-edit">
-      {props.names.map((name) => (
-        <span key={name.language} lang={name.language}>
-          <Input
-            label={name.label}
-            value={name.value}
-            onChange={(value) => props.onName(name.language, value)}
-            placeholder={name.placeholder}
-            density="functional"
-            {...(name.missing === null ? {} : { helper: name.missing })}
-          />
-        </span>
-      ))}
+      <Input
+        label={props.nameLabel}
+        value={props.name}
+        onChange={props.onName}
+        density="functional"
+      />
       <Select
         {...props.select}
         label={props.basisLabel}

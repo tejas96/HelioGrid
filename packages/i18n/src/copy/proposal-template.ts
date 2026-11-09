@@ -1,22 +1,18 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The Proposal template page's words (`SCR-M01-19`, `M01-51`, `M01-52`), authored once for both
- * platforms (Law 11) in three languages (`F3-07`). The section names are a `Record` over domain's
- * `PROPOSAL_SECTIONS`, so a new section fails to compile here. The standing line is the settings
- * pages' one sentence (`settingsSavedLine`); the document's name is the ruled *Proposal* (`F3-11`).
+ * platforms (Law 11) in every catalog language (`F3-07`). The section names are a `Record` over
+ * domain's `PROPOSAL_SECTIONS`, so a new section fails to compile here. The standing line is the
+ * settings pages' one sentence (`settingsSavedLine`); the document's name is the ruled *Proposal*
+ * (`F3-11`).
  */
 import {
   type CoverCount,
   type ProposalSection,
   type SettingsStanding,
   TIMELINE_PHASE_LIMIT,
-  UI_LANGUAGES,
-  type UiLanguage,
 } from '@heliogrid/domain';
-import { LANGUAGE_META } from '../languages';
 import type { MessageRef, Translator } from '../runtime';
-import { namedInItself } from './assembled';
-import { languageSwitcherWords } from './language-switcher';
 import { numberFieldWords } from './number-field';
 import { reorderListWords } from './reorder-list';
 import { richTextWords } from './rich-text';
@@ -36,9 +32,6 @@ export const TEMPLATE = {
   sections: /*i18n*/ { id: 'Sections' },
   terms: /*i18n*/ { id: 'Terms' },
   timeline: /*i18n*/ { id: 'Timeline' },
-  language: /*i18n*/ { id: 'Language' },
-  languageNoun: /*i18n*/ { id: 'language' },
-  partsNoun: /*i18n*/ { id: 'parts' },
   document: /*i18n*/ { id: 'Document' },
   documentName: /*i18n*/ { id: 'Document name' },
   proposal: /*i18n*/ { id: 'Proposal' },
@@ -46,7 +39,6 @@ export const TEMPLATE = {
   declaredByYou: /*i18n*/ { id: 'declared by you' },
   sectionsPrint: /*i18n*/ { id: '{printing} of {of} optional sections print' },
   alwaysPrints: /*i18n*/ { id: 'Always prints' },
-  termsIn: /*i18n*/ { id: 'Terms in {language}' },
   pages: /*i18n*/ { id: '{count, plural, one {≈ # page} other {≈ # pages}}' },
   projectPhases: /*i18n*/ { id: 'Project phases' },
   phasesNoun: /*i18n*/ { id: 'phases' },
@@ -63,10 +55,7 @@ export const TEMPLATE = {
   nameNeeded: /*i18n*/ { id: 'Give this phase a name' },
   nameTooLong: /*i18n*/ { id: 'A phase name holds up to {count} characters' },
   whatNeeded: /*i18n*/ { id: 'Say what happens in this phase' },
-  termsNeedEnglish: /*i18n*/ { id: 'The terms always print, so they need words in English.' },
-  aboutNeedsEnglish: /*i18n*/ {
-    id: 'Write this in English too — every other language falls back to it.',
-  },
+  termsNeeded: /*i18n*/ { id: 'The terms always print, so write at least one line.' },
   brandingRow: /*i18n*/ { id: 'Logo, colour and letterhead' },
   brandingFrom: /*i18n*/ { id: 'From Branding' },
   bankRow: /*i18n*/ { id: 'Bank details' },
@@ -148,12 +137,12 @@ const PLATFORM_PART = {
   },
   terms: {
     layer: /*i18n*/ { id: "HelioGrid's standard terms" },
-    source: /*i18n*/ { id: 'English, Hindi and Marathi' },
+    source: /*i18n*/ { id: 'validity, payment, changes and warranties' },
     field: /*i18n*/ { id: 'Terms and conditions' },
   },
   timeline: {
     layer: /*i18n*/ { id: "HelioGrid's standard phases" },
-    source: /*i18n*/ { id: 'English, Hindi and Marathi' },
+    source: /*i18n*/ { id: 'from order to handover' },
     field: /*i18n*/ { id: 'Project timeline' },
   },
 } as const;
@@ -165,11 +154,6 @@ export function sectionWords(t: T, phaseCount: number) {
   return (section: ProposalSection) => ({ title: t(SECTION_NAME[section]), about: about(section) });
 }
 
-/** A language's name as the strip and *Terms in …* say it: in itself (`F3-03`). */
-export function languageName(language: UiLanguage): TranslatedText {
-  return namedInItself(LANGUAGE_META[language].endonym);
-}
-
 /** Every fixed word the Proposal template page draws, in the reader's language. */
 export function proposalTemplateWords(t: T) {
   const fixed = Object.fromEntries(
@@ -179,7 +163,6 @@ export function proposalTemplateWords(t: T) {
     ...fixed,
     title: settingsRowName(t, 'proposal_templates'),
     richText: richTextWords(t),
-    languageSwitcher: languageSwitcherWords(t),
     reorderList: reorderListWords(t),
     numberField: numberFieldWords(t),
     counts: {
@@ -197,8 +180,6 @@ export function proposalTemplateWords(t: T) {
       { layer: TranslatedText; source: TranslatedText; field: TranslatedText }
     >,
     sectionsPrint: (printing: number, of: number) => t(TEMPLATE.sectionsPrint, { printing, of }),
-    /** *Terms in English*: the language as the strip names it (`languageName`). */
-    termsIn: (language: string) => t(TEMPLATE.termsIn, { language }),
     pages: (count: number) => t(TEMPLATE.pages, { count }),
     editPhase: (phase: string) => t(TEMPLATE.editPhase, { phase }),
     phaseCap: t(TEMPLATE.phaseCap, { count: TIMELINE_PHASE_LIMIT }),
@@ -220,12 +201,4 @@ export function proposalTemplatePageWords(
 ): { readonly standing?: TranslatedText } {
   const standing = page.standing === null ? null : settingsSavedLine(t, page.standing, formats);
   return standing === null ? {} : { standing };
-}
-
-/** The strips' languages in the set's order, each named in itself (`F3-03`). */
-export function templateLanguages(): readonly {
-  readonly code: UiLanguage;
-  readonly label: TranslatedText;
-}[] {
-  return UI_LANGUAGES.map((code) => ({ code, label: languageName(code) }));
 }

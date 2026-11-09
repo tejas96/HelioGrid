@@ -70,7 +70,7 @@ export function TermsEditing({
         onClose={screen.donePicking}
       />
       <TermsArchiveConfirm
-        name={screen.archiveAsked ? editor.draft.name.shown : null}
+        name={screen.archiveAsked ? editor.draft.name : null}
         words={words}
         closeLabel={closeLabel}
         onKeep={screen.keepTemplate}

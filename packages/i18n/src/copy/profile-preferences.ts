@@ -2,7 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 /**
  * The words of Profile & preferences (`SCR-M01-11`), for the view domain's
  * `profilePreferencesView` decides — authored once for both platforms (Law 11). Each language is
- * named in its own script by `LANGUAGE_META`, never here (`F3-03`); the market's name is the pack's.
+ * named in its own script by `LANGUAGES`, never here (`F3-03`); the market's name is the pack's.
  */
 
 import {

@@ -3,9 +3,7 @@ import {
   EMPTY_PHASE,
   type PhaseRefusals,
   phaseRefusals,
-  phaseWithText,
   type TimelinePhase,
-  type UiLanguage,
 } from '@heliogrid/domain';
 import { useState } from 'react';
 
@@ -16,8 +14,6 @@ export type PhaseOpen =
 
 export interface PhaseEditor {
   readonly phase: TimelinePhase;
-  readonly language: UiLanguage;
-  chooseLanguage(language: UiLanguage): void;
   /** The field refusals, said only once the person tried to save the phase. */
   readonly shown: PhaseRefusals;
   editName(text: string): void;
@@ -32,21 +28,20 @@ const NONE: PhaseRefusals = { name: null, description: null };
 interface Held {
   readonly open: PhaseOpen | null;
   readonly phase: TimelinePhase;
-  readonly language: UiLanguage;
   readonly tried: boolean;
 }
 
 function freshFor(open: PhaseOpen | null): Held {
   const phase = open === null || open.key === null ? EMPTY_PHASE : open.phase;
-  return { open, phase, language: 'en', tried: false };
+  return { open, phase, tried: false };
 }
 
 /**
  * The phase editor's one flow for both screens (`SCR-M01-19` m19-g, m19-l): each opening starts
- * from the phase it holds (or an empty one), in English, on its very first frame — the held state
- * belongs to the opening it was made for, so a new opening never shows the last one's fields, nor
- * an empty frame before its own; typing changes one language of one field; *Save phase* hands the
- * phase to the page's draft only when its English name and sentence are written.
+ * from the phase it holds (or an empty one) on its very first frame — the held state belongs to
+ * the opening it was made for, so a new opening never shows the last one's fields, nor an empty
+ * frame before its own; typing changes one field; *Save phase* hands the phase to the page's draft
+ * only when its name and sentence are written.
  */
 export function usePhaseEditor(
   open: PhaseOpen | null,
@@ -63,13 +58,9 @@ export function usePhaseEditor(
   const refusals = phaseRefusals(held.phase);
   return {
     phase: held.phase,
-    language: held.language,
-    chooseLanguage: (language) => change(() => ({ language })),
     shown: held.tried ? refusals : NONE,
-    editName: (text) =>
-      change((was) => ({ phase: phaseWithText(was.phase, 'name', was.language, text) })),
-    editWhat: (text) =>
-      change((was) => ({ phase: phaseWithText(was.phase, 'description', was.language, text) })),
+    editName: (text) => change((was) => ({ phase: { ...was.phase, name: text } })),
+    editWhat: (text) => change((was) => ({ phase: { ...was.phase, description: text } })),
     save: () => {
       change(() => ({ tried: true }));
       if (open === null || refusals.name !== null || refusals.description !== null) return;

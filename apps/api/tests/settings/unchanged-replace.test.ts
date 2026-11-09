@@ -17,6 +17,7 @@ import type { PgTable } from 'drizzle-orm/pg-core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Act } from '../../src/common/auth/session-context';
 import { DECLARED } from '../../src/common/filters/declared-statuses';
+import { documentDefaultsIn } from '../../src/modules/settings/internal/document-defaults';
 import { seedTenantSettings } from '../../src/modules/settings/settings.admin.repository';
 import { TenantRepository } from '../../src/modules/tenant/tenant.repository';
 import {
@@ -149,7 +150,7 @@ const REPLACES: readonly Replace[] = [
         here.tenantId,
         {
           brandColour: send === 'changed' ? null : '#006fff',
-          letterhead: { tagline: { en: 'Solar since 2011' }, lines: [], footerNote: null },
+          letterhead: { tagline: 'Solar since 2011', lines: [], footerNote: null },
         },
         by(),
       ),
@@ -164,9 +165,10 @@ const REPLACES: readonly Replace[] = [
         {
           cover: null,
           sectionsIncluded: send === 'changed' ? ['system', 'timeline'] : ['system'],
-          defaultTerms: { en: { version: 1, blocks: [] } },
+          defaultTerms: { version: 1, blocks: [] },
         },
         by(),
+        'en',
       ),
     rows: () => versionsOf(proposalTemplateSettings, ofHere(proposalTemplateSettings.tenantId)),
   },
@@ -179,12 +181,13 @@ const REPLACES: readonly Replace[] = [
         {
           phases: [
             {
-              name: { en: 'Survey' },
-              description: { en: send === 'changed' ? 'We measure.' : 'We visit your roof.' },
+              name: 'Survey',
+              description: send === 'changed' ? 'We measure.' : 'We visit your roof.',
             },
           ],
         },
         by(),
+        'en',
       ),
     rows: () => versionsOf(timelineTemplate, ofHere(timelineTemplate.tenantId)),
   },
@@ -196,10 +199,10 @@ const REPLACES: readonly Replace[] = [
         here.tenantId,
         splitId,
         {
-          name: { en: send === 'changed' ? 'Half and half' : 'Even split' },
+          name: send === 'changed' ? 'Half and half' : 'Even split',
           lines: [
-            { label: { en: 'Advance' }, percent: '50.00', dueOnStage: 'won' },
-            { label: { en: 'On handover' }, percent: '50.00', dueOnStage: 'commissioned' },
+            { label: 'Advance', percent: '50.00', dueOnStage: 'won' },
+            { label: 'On handover', percent: '50.00', dueOnStage: 'commissioned' },
           ],
         },
         by(),
@@ -251,8 +254,13 @@ describe.skipIf(skip)('a replace equal to what is stored, against a migrated dat
     pools = openPools();
     await seed(pools.admin.db, fixture);
     await publishIndiaPack(pools);
+    const { trancheTemplates } = await documentDefaultsIn('en');
     await pools.admin.db.transaction((tx) =>
-      seedTenantSettings(tx, { tenantId: here.tenantId, now: Date.now() }),
+      seedTenantSettings(tx, {
+        tenantId: here.tenantId,
+        now: Date.now(),
+        standardSplits: trancheTemplates,
+      }),
     );
     services = settingsServicesOf(pools);
     tenants = new TenantRepository(pools.tenants);

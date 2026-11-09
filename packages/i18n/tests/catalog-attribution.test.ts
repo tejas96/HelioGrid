@@ -130,12 +130,7 @@ describe('a rate of the new version', () => {
     ['a new figure', '6500.00', '7000', '₹6500.00'],
   ])('%s: was %s, now %s', async (_case, was, amount, struck) => {
     const { t } = await createTranslator('en');
-    const row = versionRowWords(
-      t,
-      { name: { en: 'Engineering' }, amount, was },
-      'en',
-      formats.money,
-    );
+    const row = versionRowWords(t, { name: 'Engineering', amount, was }, formats.money);
     expect(row.was).toBe(struck);
   });
 });

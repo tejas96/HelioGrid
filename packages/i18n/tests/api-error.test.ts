@@ -1,5 +1,5 @@
 import { UI_LANGUAGES, type UiLanguage } from '@heliogrid/contracts';
-import { TRANSPORT_FAILURES, type TransportFailure } from '@heliogrid/domain';
+import { type PerLanguage, TRANSPORT_FAILURES, type TransportFailure } from '@heliogrid/domain';
 import { describe, expect, it } from 'vitest';
 import { attemptFailureMessageId } from '../src/copy/api-error';
 import { createTranslator } from '../src/runtime';
@@ -12,7 +12,8 @@ import { createTranslator } from '../src/runtime';
 const EN_CHECK = 'If you were saving, check whether it saved before trying again.';
 const HI_CHECK = 'अगर आप कुछ सेव कर रहे थे, तो दोबारा कोशिश करने से पहले देख लें कि वह सेव हुआ या नहीं।';
 const MR_CHECK = 'तुम्ही काही सेव्ह करत असाल, तर पुन्हा प्रयत्न करण्यापूर्वी ते सेव्ह झाले का ते तपासा.';
-const RULED: Record<UiLanguage, Record<TransportFailure, string>> = {
+/** Pinned only where the ruling wrote the words; a language added later is held by the catalog gate. */
+const RULED: PerLanguage<Record<TransportFailure, string>> = {
   en: {
     no_connection: `HelioGrid could not be reached, from your side or ours. ${EN_CHECK}`,
     no_answer: `HelioGrid did not answer in time. ${EN_CHECK}`,
@@ -33,6 +34,14 @@ const RULED: Record<UiLanguage, Record<TransportFailure, string>> = {
   },
 };
 
+/** Each language the ruling wrote, with its words. */
+function rulings(): [UiLanguage, Record<TransportFailure, string>][] {
+  return UI_LANGUAGES.flatMap((language) => {
+    const ruled = RULED[language];
+    return ruled === undefined ? [] : [[language, ruled]];
+  });
+}
+
 describe('the words for a failed attempt', () => {
   it.each(TRANSPORT_FAILURES)(
     'names the reason for each failed attempt the server did not answer, in every language (F8-36) — %s',
@@ -40,9 +49,9 @@ describe('the words for a failed attempt', () => {
       /* No `code`: a client failure carries none, and the lookup must take one as it is. */
       const id = attemptFailureMessageId({ failure });
       expect(id).toBeDefined();
-      for (const language of UI_LANGUAGES) {
+      for (const [language, ruled] of rulings()) {
         const { t } = await createTranslator(language);
-        expect(t(id ?? '')).toBe(RULED[language][failure]);
+        expect(t(id ?? '')).toBe(ruled[failure]);
       }
     },
   );
