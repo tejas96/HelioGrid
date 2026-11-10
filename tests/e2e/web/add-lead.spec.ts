@@ -86,7 +86,7 @@ test('quick add shows four fields and saves with the phone alone', async ({ page
 
   await expect(capture).toBeHidden();
   await expect(page.getByText(en.t(QUICK_ADD.saved))).toBeVisible();
-  await expect(page.getByRole('button', { name: en.t(QUICK_ADD.open) })).toBeVisible();
+  await expect(page.getByRole('button', { name: en.t(QUICK_ADD.open), exact: true })).toBeVisible();
   await expect(page).toHaveURL(/\/leads$/);
 
   /* The page the capture closed onto adds the next lead: a fresh capture opens and saves too. */

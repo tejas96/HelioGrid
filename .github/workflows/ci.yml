@@ -234,7 +234,8 @@ jobs:
     needs: changes
     if: needs.changes.outputs.e2e_web == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    # 338 flows take ~18 min after ~3 min of setup; 20 cut the last ones off.
+    timeout-minutes: 30
     services:
       postgres: &suite-postgres
         # The same pinned image the quality lane runs.
