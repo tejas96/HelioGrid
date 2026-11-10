@@ -9,7 +9,10 @@ appId: com.heliogrid.app
     visible: ${LEADS_PIPELINE_HINT}
     timeout: 15000
 - assertVisible: "${LEADS_LAST_STAGE}.*"
-- assertVisible: ${LEAD_NAME}
+# The newest lead is first and the filters fill a phone's first screen, so the row is scrolled to.
+- scrollUntilVisible:
+    element: ${LEAD_NAME}
+    timeout: 15000
 - tapOn: "${DORMANT}.*"
 - extendedWaitUntil:
     visible: ${LEADS_NO_MATCH}
@@ -17,8 +20,8 @@ appId: com.heliogrid.app
 - assertNotVisible: ${LEAD_NAME}
 - assertVisible: "${DORMANT}.*"
 - tapOn: ${CLEAR_FILTERS}
-- extendedWaitUntil:
-    visible: ${LEAD_NAME}
+- scrollUntilVisible:
+    element: ${LEAD_NAME}
     timeout: 15000
 - tapOn: ${LEAD_NAME}
 - extendedWaitUntil:
