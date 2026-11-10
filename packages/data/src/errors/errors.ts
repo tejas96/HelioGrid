@@ -143,6 +143,33 @@ export async function bodyAt<R extends { status: number; body: unknown }, S exte
   }
 }
 
+/**
+ * One call's answer at its expected status, or the one refusal a screen answers in place — the
+ * record a number already belongs to, the owner who won a race — carried with its own facts, so
+ * the screen draws it in one round trip. Every other answer leaves as a `DataError`.
+ */
+export async function bodyOrRefusalAt<
+  R extends { status: number; body: unknown },
+  S extends R['status'],
+  F extends R['status'],
+>(
+  send: () => Promise<R>,
+  expected: S,
+  refusal: F,
+): Promise<
+  | { readonly answered: true; readonly body: Extract<R, { status: S }>['body'] }
+  | { readonly answered: false; readonly refusal: Extract<R, { status: F }>['body'] }
+> {
+  try {
+    const res = await send();
+    if (answeredAt(res, expected)) return { answered: true, body: res.body };
+    if (answeredAt(res, refusal)) return { answered: false, refusal: res.body };
+    throw toApiError(res);
+  } catch (error) {
+    throw normalizeClientError(error);
+  }
+}
+
 function answeredAt<R extends { status: number }, S extends R['status']>(
   res: R,
   expected: S,

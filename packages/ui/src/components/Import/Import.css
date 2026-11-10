@@ -1,0 +1,22 @@
+/* Import — the shared import's steps (`Import.types.ts`): each step a column of its parts, and the
+   run's ring centred. A wizard's own frame sets the room around them. */
+
+.hg-import-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-import-step[data-step="file"] {
+  gap: var(--sp-4);
+}
+
+.hg-import-step[data-step="running"] {
+  gap: var(--sp-5);
+}
+
+.hg-import-ring {
+  display: flex;
+  justify-content: center;
+}

@@ -91,7 +91,7 @@ function Column({ view, words, acts, layout, firstCard }: PartProps) {
       {wide ? scope : null}
       {wide ? null : <UsageHead view={view} />}
       {view.teaching === null ? null : (
-        <BillingQuiet art="empty" title={view.teaching.title} message={view.teaching.body} />
+        <BillingQuiet art="none-yet" title={view.teaching.title} message={view.teaching.body} />
       )}
       {view.needs === null ? null : <UsageNeeds title={words.needsYou} rows={view.needs} />}
       {regions.map((region, index) => (

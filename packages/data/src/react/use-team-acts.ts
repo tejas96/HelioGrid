@@ -42,7 +42,12 @@ export interface TeamActs {
  * answer means read from domain's `teamActOutcome`. The server decides every write; a stale list
  * meets a refresh, the refused form, or a re-read of the person's own presets.
  */
-export function useTeamActs(team: Team, onNote: (note: TeamActNote) => void): TeamActs {
+export function useTeamActs(
+  team: Team,
+  onNote: (note: TeamActNote) => void,
+  /** Runs before a deactivation is sent — its open leads move first (`SCR-M01-12`); a throw stops it. */
+  beforeDeactivate: () => Promise<void> = async () => {},
+): TeamActs {
   const { signOut, rereadUser } = useSession();
   const repositories = useRepositories();
   const [confirm, setConfirm] = useState<TeamConfirmState>({ kind: 'shut' });
@@ -53,8 +58,10 @@ export function useTeamActs(team: Team, onNote: (note: TeamActNote) => void): Te
 
   const write = async (act: TeamAct, row: TeamRow): Promise<TeamActAnswer> => {
     try {
-      if (act === 'deactivate') await repositories.tenant.deactivate(row.id);
-      else if (act === 'revoke') await repositories.invitation.revoke(row.id);
+      if (act === 'deactivate') {
+        await beforeDeactivate();
+        await repositories.tenant.deactivate(row.id);
+      } else if (act === 'revoke') await repositories.invitation.revoke(row.id);
       else {
         const body = inviteAgainOf(row);
         if (body !== null) await repositories.invitation.create(body);

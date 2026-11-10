@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
-import { LottieMoment } from '../LottieMoment/LottieMoment';
-import type { LottieMomentName } from '../LottieMoment/LottieMoment.types';
+import { EmptyScene } from '../EmptyScene/EmptyScene';
+import type { EmptySceneName } from '../EmptyScene/EmptyScene.types';
 import type { DataTableWords, PaginationProps } from './DataTable.types';
 import type { PageStep } from './DataTableChrome.logic';
 import {
@@ -127,7 +127,7 @@ export function TableMessage({
   onRetry,
   retryLabel,
   action,
-  moment,
+  scene,
   focusAfter,
 }: {
   tone?: 'warning';
@@ -136,14 +136,14 @@ export function TableMessage({
   onRetry?: () => void;
   retryLabel?: TranslatedText;
   action?: ReactNode;
-  /** A Lottie moment in place of the mark: the empty list's own art. */
-  moment?: LottieMomentName;
+  /** A calm line drawing in place of the mark (`EmptyScene`): the empty list's own art. */
+  scene?: EmptySceneName;
   /** Where focus lands once *Try again* has gone with this message. */
   focusAfter: FocusAfter;
 }) {
   return (
     <div className="hg-dt-message">
-      {moment === undefined ? (
+      {scene === undefined ? (
         <span className="hg-dt-message-mark" data-tone={tone}>
           <svg
             viewBox="0 0 24 24"
@@ -158,7 +158,7 @@ export function TableMessage({
           </svg>
         </span>
       ) : (
-        <LottieMoment name={moment} size={96} />
+        <EmptyScene name={scene} />
       )}
       <div className="hg-dt-message-title">{title}</div>
       {message === undefined ? null : <div className="hg-dt-message-body">{message}</div>}

@@ -42,7 +42,7 @@
     .hg-app-rail-label,
     .hg-app-rail-tag,
     .hg-app-rail-badge,
-    .hg-app-rail-account-words
+    .hg-account-row-words
   ) {
   animation: hg-fade-in var(--dur-standard) var(--ease-enter) var(--dur-standard) backwards;
 }

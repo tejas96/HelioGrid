@@ -79,7 +79,11 @@ export function BillingInvoices({
   if (invoices.empty !== null) {
     return (
       <Block style={styles.flushRegion} density="expressive" title={words.invoices}>
-        <BillingQuiet art="inbox" title={invoices.empty.title} message={invoices.empty.message} />
+        <BillingQuiet
+          art="none-yet"
+          title={invoices.empty.title}
+          message={invoices.empty.message}
+        />
       </Block>
     );
   }

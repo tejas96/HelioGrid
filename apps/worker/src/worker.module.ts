@@ -9,10 +9,12 @@ import {
   billingWorkerRegistration,
 } from './modules/billing/billing.public';
 import { catalogWorkerRegistration } from './modules/catalog/catalog.public';
+import { crmWorkerRegistration } from './modules/crm/crm.public';
 import {
   documentRenderWorkerRegistration,
   invoiceDocumentWorkerRegistration,
 } from './modules/documents/documents.public';
+import { notificationWorkerRegistration } from './modules/notification/notification.public';
 import { outboxWorkerRegistration } from './modules/outbox/outbox.public';
 import { platformWorkerRegistration } from './modules/platform/platform.public';
 import { teamWorkerRegistration } from './modules/team/team.public';
@@ -46,6 +48,7 @@ import { usageWorkerRegistration } from './modules/usage/usage.public';
         platformWorkerRegistration,
         outboxWorkerRegistration,
         catalogWorkerRegistration,
+        crmWorkerRegistration,
         teamWorkerRegistration,
         billingWorkerRegistration,
         billingReconcileWorkerRegistration,
@@ -54,6 +57,7 @@ import { usageWorkerRegistration } from './modules/usage/usage.public';
         invoiceDocumentWorkerRegistration,
         documentRenderWorkerRegistration,
         usageWorkerRegistration,
+        notificationWorkerRegistration,
       ],
     },
     TemporalWorkerHost,

@@ -84,6 +84,44 @@ export const queryKeys = {
         ? (['catalog', tenantId, 'import', id, 'rows'] as const)
         : (['catalog', tenantId, 'import', id, 'rows', ask] as const),
   },
+  /**
+   * A company's CRM (`M02`). One prefix, because one act moves many reads at once: an assign moves
+   * the lead, the inbox, the lists, the timeline and every assignee's load; a merge moves both
+   * customers and every lead under them; an import run lands leads into every list. Every write
+   * refreshes the whole prefix.
+   */
+  crm: {
+    all: (tenantId: string) => ['crm', tenantId] as const,
+    /** The live number check (`M02-07`): under the prefix, so a capture asks again. */
+    match: (tenantId: string, phoneE164: string) => ['crm', tenantId, 'match', phoneE164] as const,
+    leads: (tenantId: string, ask: unknown) => ['crm', tenantId, 'leads', ask] as const,
+    inbox: (tenantId: string, ask: unknown) => ['crm', tenantId, 'inbox', ask] as const,
+    lead: (tenantId: string, leadId: string) => ['crm', tenantId, 'lead', leadId] as const,
+    leadTimeline: (tenantId: string, leadId: string, ask: unknown) =>
+      ['crm', tenantId, 'lead', leadId, 'activities', ask] as const,
+    customerTimeline: (tenantId: string, customerId: string, ask: unknown) =>
+      ['crm', tenantId, 'customer', customerId, 'activities', ask] as const,
+    /** Each person's open and overdue counts at this moment (`M02-28`). */
+    assignees: (tenantId: string) => ['crm', tenantId, 'assignees'] as const,
+    /** Who a site visit can go to (`M02-46`). */
+    visitSurveyors: (tenantId: string) => ['crm', tenantId, 'visit-surveyors'] as const,
+    contactRoleLabels: (tenantId: string) => ['crm', tenantId, 'contact-role-labels'] as const,
+    mergePreview: (tenantId: string, survivorId: string, loserId: string) =>
+      ['crm', tenantId, 'merge-preview', survivorId, loserId] as const,
+    leadImport: (tenantId: string, id: string) => ['crm', tenantId, 'lead-import', id] as const,
+    /** The import this device follows, so leaving and coming back finds it (`M02-21`). Never read from the api. */
+    leadImportFollowed: (tenantId: string) => ['crm', tenantId, 'lead-import-followed'] as const,
+    leadImportRows: (tenantId: string, id: string, ask?: unknown) =>
+      ask === undefined
+        ? (['crm', tenantId, 'lead-import', id, 'rows'] as const)
+        : (['crm', tenantId, 'lead-import', id, 'rows', ask] as const),
+  },
+  /**
+   * The global search (`F6-24`), keyed by what was typed. Outside the CRM prefix: it reads catalog
+   * and people too, so an act taken from a result — a junk lead's Reopen — refreshes both prefixes.
+   */
+  search: (tenantId: string, ask?: unknown) =>
+    ask === undefined ? (['search', tenantId] as const) : (['search', tenantId, ask] as const),
   /** A company's price book; a new version refreshes the whole prefix. */
   priceBook: {
     all: (tenantId: string) => ['price-book', tenantId] as const,

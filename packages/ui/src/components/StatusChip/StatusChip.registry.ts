@@ -21,8 +21,23 @@
    F7-12 holds throughout: this chip is always label-plus-mark, never a colour on its own — which is
    why both halves render it through the StatusMark primitive rather than re-answering it. */
 
+import type { LeadStage } from '@heliogrid/domain';
 import type { StatusTone } from '../../primitives/StatusMark';
 import type { SolarStatus } from './StatusChip.types';
+
+/* The leads funnel, read from domain's `LEAD_STAGES` — a stage domain adds fails to compile here
+   until it has a tone. Same semantic palette, no new colours; the words are `M02-41`'s, from
+   `@heliogrid/i18n`'s `LEAD_STAGE_WORD`. */
+const LEAD_STAGE_TONE: Record<LeadStage, StatusTone> = {
+  new: 'neutral',
+  contacted: 'accent',
+  qualified: 'info',
+  survey: 'info',
+  design: 'accent',
+  proposal: 'warning',
+  negotiating: 'warning',
+  won: 'success',
+};
 
 /* The canonical pipeline vocabulary. A registry, not a boundary: `tone` reaches past it. */
 const STATUS_TONE: Record<SolarStatus, StatusTone> = {
@@ -33,16 +48,7 @@ const STATUS_TONE: Record<SolarStatus, StatusTone> = {
   installing: 'info',
   commissioned: 'success',
   'on-hold': 'danger',
-
-  /* V2 sales stages — the leads pipeline. Same semantic palette, no new colours. */
-  'new-lead': 'neutral',
-  contacted: 'accent',
-  qualified: 'info',
-  'site-visit': 'info',
-  designing: 'accent',
-  'proposal-sent': 'warning',
-  negotiating: 'warning',
-  won: 'success',
+  ...LEAD_STAGE_TONE,
   lost: 'danger',
   snoozed: 'neutral',
 };

@@ -3,9 +3,9 @@ import { Pressable } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text';
 import { Button } from '../Button';
 import { IconButton } from '../IconButton';
+import { ImportGlyph } from '../Import/ImportGlyph';
 import { Stepper } from '../Stepper';
 import type { CatalogImportWords } from './CatalogImport.types';
-import { ImportGlyph } from './ImportGlyph';
 
 /** The frames whose head offers *Back*: steps 2 and 3, and the matching wait between them. */
 const BACK_FRAMES: readonly ImportWizardFrame[] = ['columns', 'matching', 'preview'];

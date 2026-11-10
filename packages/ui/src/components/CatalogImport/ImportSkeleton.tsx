@@ -1,6 +1,6 @@
 import { Text } from '../../primitives/Text/Text';
-import type { ImportFormats } from './CatalogImport.logic';
-import { fileOf } from './CatalogImport.steps';
+import { importFileOf } from '../Import/Import.logic';
+import type { ImportFormats } from '../Import/Import.types';
 import type { CatalogImportProps } from './CatalogImport.types';
 import { ImportFind } from './ImportOverview';
 import './ImportSkeleton.css';
@@ -18,7 +18,7 @@ export function ImportSkeleton(
   props: CatalogImportProps & { wide: boolean; formats: ImportFormats },
 ) {
   const { job, words } = props;
-  const stamp = job === null ? null : fileOf(job, words, props.formats, props.mapping).stamp;
+  const stamp = job === null ? null : importFileOf(job, words, props.formats, props.mapping).stamp;
   return (
     <div className="hg-import-step" data-step="rows">
       <div className="hg-import-overview" data-wide={props.wide ? 'true' : 'false'}>

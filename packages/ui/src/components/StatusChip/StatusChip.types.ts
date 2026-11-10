@@ -1,4 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import type { LeadStage } from '@heliogrid/domain';
 import type { StatusTone } from '../../primitives/StatusMark';
 
 /** The canonical pipeline vocabulary. **Not a boundary** — `status` accepts any string. */
@@ -11,15 +12,8 @@ export type SolarStatus =
   | 'installing'
   | 'commissioned'
   | 'on-hold'
-  /* V2 sales stages */
-  | 'new-lead'
-  | 'contacted'
-  | 'qualified'
-  | 'site-visit'
-  | 'designing'
-  | 'proposal-sent'
-  | 'negotiating'
-  | 'won'
+  /* The sales funnel: domain's lead stages (`M02-41`), keyed by the stored value. */
+  | LeadStage
   | 'lost'
   | 'snoozed';
 

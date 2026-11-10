@@ -1,0 +1,128 @@
+/* LeadTile — a lead waiting under the deck (`SCR-M02-02`): a row of the Up next card (its frame is
+   `CardRows`') or a tile of the desktop grid (its look is `Ground`'s tiles list). Only what the
+   decision needs, and the two acts. */
+
+.hg-card-row-body.hg-lead-tile-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding-block: var(--sp-3);
+}
+
+.hg-lead-tile-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.hg-lead-tile-name {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  overflow-wrap: break-word;
+}
+
+.hg-lead-tile-sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  min-width: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  overflow-wrap: break-word;
+}
+
+/* Money in a list is Geist Mono (`CLAUDE.md` §9); its tier stands once, in the column's head. */
+.hg-lead-tile-money {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.hg-lead-tile-acts {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+}
+
+.hg-lead-tile-grow {
+  flex: 1;
+}
+
+.hg-lead-tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+  padding: var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-3);
+  border-radius: var(--r-tile);
+  transition: transform var(--dur-standard) var(--ease-spring);
+}
+
+.hg-lead-tile[data-selected="true"] {
+  box-shadow:
+    0 0 0 2px var(--accent),
+    var(--e2);
+}
+
+@media (hover: hover) {
+  .hg-lead-tile:hover {
+    transform: translateY(calc(-1 * var(--sp-1)));
+  }
+}
+
+.hg-lead-tile-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-inline-start: calc(-1 * var(--sp-3));
+  padding-inline-end: var(--sp-2);
+}
+
+.hg-pressable.hg-lead-tile-open {
+  justify-content: flex-start;
+  min-height: var(--touch-min);
+  padding-inline-end: var(--sp-2);
+  text-align: start;
+}
+
+.hg-lead-tile .hg-lead-tile-sub {
+  padding-inline-end: var(--sp-2);
+}
+
+.hg-lead-tile .hg-pending-action {
+  padding-inline-end: var(--sp-2);
+}
+
+.hg-lead-tile-foot {
+  display: flex;
+  align-items: center;
+  margin-top: var(--sp-1);
+  padding-top: var(--sp-1);
+  border-top: 1px solid var(--line-soft);
+}
+
+.hg-lead-selection {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-4);
+  border-radius: var(--r-pill);
+  background: var(--accent-subtle);
+  color: var(--text-primary);
+  animation: hg-pop-in var(--dur-standard) var(--ease-enter) backwards;
+}
+
+.hg-lead-selection-count {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+}

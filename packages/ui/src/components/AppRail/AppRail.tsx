@@ -134,7 +134,6 @@ interface RailButtonProps {
 }
 
 function RailButton({ item, active, onClick, tipped }: RailButtonProps) {
-  const on = active || item.open === true;
   return (
     <button
       type="button"
@@ -143,11 +142,12 @@ function RailButton({ item, active, onClick, tipped }: RailButtonProps) {
       aria-expanded={item.open}
       onClick={onClick}
       className="hg-app-rail-button"
-      data-active={on ? 'true' : undefined}
+      data-active={active ? 'true' : undefined}
+      data-open={item.open === true ? 'true' : undefined}
       data-tip={tipped ? item.label : undefined}
     >
       <span className="hg-app-rail-icon" aria-hidden="true">
-        {on && item.activeIcon !== undefined ? item.activeIcon : item.icon}
+        {active && item.activeIcon !== undefined ? item.activeIcon : item.icon}
         {tipped && showsBadge(item.badge) ? <span className="hg-app-rail-dot" /> : null}
       </span>
       <span className={tipped ? 'hg-spoken-only' : 'hg-app-rail-label'}>{item.label}</span>

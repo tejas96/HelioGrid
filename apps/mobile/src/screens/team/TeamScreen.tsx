@@ -1,5 +1,7 @@
 import { useTeamScreen } from '@heliogrid/data/react';
 import {
+  confirmReassignOf,
+  deactivatedReason,
   rolesRemovedToast,
   rolesUndoFailedToast,
   TEAM,
@@ -14,7 +16,7 @@ import {
   MemberList,
   MemberListHead,
   memberActOf,
-  TeamConfirm,
+  TeamActConfirm,
   useFormat,
   useToasts,
 } from '@heliogrid/ui';
@@ -60,6 +62,7 @@ export function TeamScreen() {
       toasts.push(rolesUndoFailedToast(t, refusal, { ...removal, companyName: company }));
     },
     onInviteShut: inviteActs.giveBack,
+    deactivatedReason: deactivatedReason(t),
   });
   const invite = useTeamInvite(screen.invite, inviteActs, toasts.push);
   const { team, acts, list, company } = screen;
@@ -121,10 +124,11 @@ export function TeamScreen() {
           );
         }}
       />
-      <TeamConfirm
+      <TeamActConfirm
         words={actWords.confirm(acts.confirm)}
         busy={acts.busy}
         onGo={acts.go}
+        {...confirmReassignOf(t, screen)}
         onLeave={() => {
           acts.shut();
           opener.current?.focus();

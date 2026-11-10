@@ -36,7 +36,7 @@ function reachableIndex(options: SegmentedOption[], from: number, to: number): n
 }
 
 /**
- * Pill segmented control on a sunken track; the active white pill springs between segments.
+ * Pill segmented control on a sunken track; the active accent wash springs between segments.
  *
  * THE SEGMENT IS A 44px TARGET AROUND THE 32px PILL — the button is 44 tall and the extra 12px
  * is taken back as negative margin, so the control still renders 40px tall and the sliding
@@ -199,7 +199,7 @@ function Segment({
 }
 
 /**
- * Off-ness is a GLYPH, not a colour step. Every non-active segment already lacks the white pill,
+ * Off-ness is a GLYPH, not a colour step. Every non-active segment already lacks the accent wash,
  * and no colour clears 4.5:1 on `--canvas-sunken` while still reading as "off" — so the
  * circle-minus is the second channel, and the label keeps `--text-secondary`.
  */

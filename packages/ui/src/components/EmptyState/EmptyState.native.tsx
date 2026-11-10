@@ -5,17 +5,17 @@ import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
-import { LottieMoment } from '../LottieMoment/LottieMoment.native';
+import { EmptyScene } from '../EmptyScene/EmptyScene.native';
 import type { EmptyStateProps } from './EmptyState.types';
 
 interface NativeEmptyStateProps extends EmptyStateProps {
   style?: StyleProp<ViewStyle>;
 }
 
-/** Centred empty state with a soft brand bloom behind a large circular icon container. */
+/** Empty state: a calm line drawing, or a soft brand bloom behind a circular icon. */
 export function EmptyState({
   icon,
-  moment,
+  scene,
   title,
   description,
   action,
@@ -27,10 +27,10 @@ export function EmptyState({
   return (
     <View style={[styles.root, style]}>
       <View style={styles.art}>
-        {glow ? <BrandBloom size={BLOOM_SIZE} /> : null}
+        {glow && scene === undefined ? <BrandBloom size={BLOOM_SIZE} /> : null}
         {/* No glyph, no circle — see the web half. */}
-        {moment === undefined ? null : <LottieMoment name={moment} size={96} />}
-        {icon && moment === undefined ? (
+        {scene === undefined ? null : <EmptyScene name={scene} />}
+        {icon && scene === undefined ? (
           <View style={[styles.icon, { backgroundColor: controlFill }]}>{icon}</View>
         ) : null}
       </View>
@@ -78,4 +78,5 @@ const styles = StyleSheet.create({
   action: {
     marginTop: theme.spacing['sp-4'],
   },
+  /** In a list the block starts where the rows would. */
 });

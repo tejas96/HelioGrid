@@ -1,8 +1,8 @@
 import { moneySymbol } from '../format/money';
 import type { FormatPack } from '../format/pack';
+import { asciiDigits, importTextKey, isBlank } from '../import/text';
 import { minorUnitsOfDecimal, minorUnitsToDecimal } from '../money/minor-units';
 import type { CatalogImportAttentionReason } from './import';
-import { asciiDigits, importTextKey, isBlank } from './import-text';
 import { type CatalogSpec, parseCatalogSpec, SPEC_FIELDS, type SpecField } from './specs';
 import type { BatteryChemistry, ComponentKind, PanelTechnology } from './vocabulary';
 

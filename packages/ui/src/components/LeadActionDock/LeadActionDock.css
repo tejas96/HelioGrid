@@ -1,0 +1,74 @@
+/* LeadActionDock — the lead's five actions (`M02-32`). Call is the ocean pill, the biggest target;
+   the dock (phone) puts the four others beside it as circles with their word under, in thumb
+   reach — or under it as their own row when the words do not fit beside it; the grid (desktop)
+   stands them two by two under a full-width Call. */
+
+.hg-lead-dock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-lead-dock[data-layout="grid"] .hg-lead-dock-acts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-lead-dock-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+
+.hg-lead-dock[data-layout="dock"] .hg-lead-dock-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+
+/* The four rounds as one group: beside Call while they fit, else their own row under it, spread
+   across the column. Each is as wide as its word, which never breaks inside itself. */
+.hg-lead-dock-rounds {
+  display: flex;
+  flex: 1 0 auto;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+/* Call is the tallest target on the lead. */
+.hg-lead-dock .hg-lead-dock-call {
+  height: var(--sp-12);
+}
+
+/* Call takes what the four circles leave, and never shrinks below its own words. */
+.hg-lead-dock[data-layout="dock"] .hg-lead-dock-call {
+  flex: 1 1 auto;
+  min-width: max-content;
+  width: auto;
+}
+
+.hg-lead-dock-round {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.hg-lead-dock-round-word {
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.hg-lead-dock-states {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}

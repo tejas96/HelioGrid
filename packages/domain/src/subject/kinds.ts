@@ -36,5 +36,11 @@ export const SUBJECT_KINDS = [
   'subscription',
   /** One credit note against a refunded invoice — its PDF's file row too (`M12-47`). */
   'credit_note',
+  /** A phone-identified person or organisation, the dedupe anchor (`M02-02`). */
+  'customer',
+  /** One enquiry or deal moving the funnel (`M02-41`). */
+  'lead',
+  /** One bulk import of leads from a file (`M02-18`). */
+  'lead_import',
 ] as const;
 export type SubjectKind = (typeof SUBJECT_KINDS)[number];

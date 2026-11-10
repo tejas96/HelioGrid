@@ -2,6 +2,8 @@
 import { useTeamScreen } from '@heliogrid/data/react';
 import { OPENED_FROM_ASSIGN_ROLES, SETTINGS_SEGMENT, type TeamRow } from '@heliogrid/domain';
 import {
+  confirmReassignOf,
+  deactivatedReason,
   rolesRemovedToast,
   rolesUndoFailedToast,
   settingsRowName,
@@ -22,7 +24,7 @@ import {
   MemberListHead,
   memberActOf,
   ShellGlyph,
-  TeamConfirm,
+  TeamActConfirm,
   ToastHost,
   useFormat,
   useOwnWidth,
@@ -70,6 +72,7 @@ export function TeamScreen() {
     onUndoFailed: (refusal, removal) => {
       toasts.push(rolesUndoFailedToast(t, refusal, { ...removal, companyName: company }));
     },
+    deactivatedReason: deactivatedReason(t),
   });
   const [room, width] = useOwnWidth<HTMLDivElement>();
   /* Stable: the overlay re-runs its focus effect whenever its close handler changes. */
@@ -203,11 +206,12 @@ export function TeamScreen() {
         records={table}
         waiting={table}
       />
-      <TeamConfirm
+      <TeamActConfirm
         words={actWords.confirm(acts.confirm)}
         busy={acts.busy}
         onGo={acts.go}
         onLeave={leave}
+        {...confirmReassignOf(t, screen)}
       />
       <InviteEditor {...invite.editor} />
       <TeamAssignRoles editor={screen.roles} companyName={company} onReference={openReference} />

@@ -105,24 +105,8 @@
   gap: var(--sp-3);
 }
 
-.hg-import-step {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  min-width: 0;
-}
-
-.hg-import-step[data-step="file"],
-.hg-import[data-wide="true"] .hg-import-step[data-step="columns"] {
-  gap: var(--sp-4);
-}
-
 .hg-import[data-wide="true"] .hg-import-step[data-step="file"],
 .hg-import[data-wide="true"] .hg-import-step[data-step="columns"] {
-  gap: var(--sp-5);
-}
-
-.hg-import-step[data-step="running"] {
   gap: var(--sp-5);
 }
 
@@ -146,4 +130,12 @@
 
 .hg-import[data-wide="false"] .hg-import-drop[data-fills="true"] .hg-dropzone-surface {
   justify-content: center;
+}
+
+/* ── the step list ────────────────────────────────────────────────────────── */
+
+.hg-import-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
 }

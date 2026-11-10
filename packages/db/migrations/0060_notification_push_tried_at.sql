@@ -1,0 +1,13 @@
+-- 0060 · when a drain last failed a push (F6-14): the push drain takes the pushes never tried
+-- first, so a push the provider keeps refusing never holds a fresh one back behind it.
+--
+-- ADDITIVE, one release: one nullable column, NULL on every existing row — never tried, as every
+-- row still owed truly is. Readers name their columns, so an older api never sees it, and an older
+-- drain that leaves it NULL only loses the ordering, never a push.
+--
+-- The admin path alone writes it, beside push_sent_at: app_user keeps SELECT, INSERT and UPDATE
+-- (read_at) — no grant changes here.
+--
+-- Locks: adding a nullable column with no default rewrites nothing, so the table's exclusive lock
+-- is held only for the catalogue change.
+ALTER TABLE "notification" ADD COLUMN "push_tried_at" timestamp with time zone;

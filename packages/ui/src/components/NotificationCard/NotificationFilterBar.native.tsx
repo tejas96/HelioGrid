@@ -69,14 +69,14 @@ interface FilterButtonProps {
   name: string;
   on: boolean;
   onPress: () => void;
-  /** The mark, drawn in the button's ink: dark off, white on. */
+  /** The mark, drawn in the button's ink: grey off, the accent words' colour on. */
   icon: (ink: ThemeColor) => ReactNode;
 }
 
-/** On, a dark pill with its name; off, a 44 circle with its icon. */
+/** On, the accent wash with its name, as every chosen filter is; off, a 44 circle with its icon. */
 function FilterButton({ label, name, on, onPress, icon }: FilterButtonProps) {
   const { controlFill } = useGround();
-  const ink = on ? colors['text-inverse'] : colors['text-secondary'];
+  const ink = on ? colors['accent-text'] : colors['text-secondary'];
   return (
     <Pressable
       accessibilityRole="button"
@@ -87,7 +87,7 @@ function FilterButton({ label, name, on, onPress, icon }: FilterButtonProps) {
     >
       <View style={styles.icon}>{icon(ink)}</View>
       {on ? (
-        <Text variant="body-sm" bold color="inverse" style={styles.label}>
+        <Text variant="body-sm" bold style={[styles.label, { color: ink }]}>
           {label}
         </Text>
       ) : null}
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   },
   buttonOn: {
     paddingRight: theme.spacing['sp-4'],
-    backgroundColor: colors['action-primary'],
+    backgroundColor: colors['accent-subtle'],
   },
   icon: { width: 18, height: 18, alignItems: 'center', justifyContent: 'center' },
   dot: { width: 9, height: 9, borderRadius: theme.radius['r-pill'] },

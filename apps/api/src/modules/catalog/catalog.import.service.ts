@@ -33,7 +33,7 @@ import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException } from '../../common/errors/contract-exception';
 import { OutboxDispatcher } from '../../common/temporal/outbox.dispatcher';
 import { stepCannotSucceed } from '../../common/temporal/temporal.activity-host';
-import { FileService } from '../file/file.public';
+import { FileService, readSpreadsheet } from '../file/file.public';
 import {
   CatalogImportRepository,
   type ImportJobRow,
@@ -41,7 +41,6 @@ import {
 } from './catalog.import.repository';
 import { CatalogImportRowsRepository } from './catalog.import-rows.repository';
 import { importJobOf, PRICE_LIST } from './internal/import-job';
-import { readSpreadsheet } from './internal/spreadsheet';
 import { admitWrite } from './internal/write-checks';
 
 /**

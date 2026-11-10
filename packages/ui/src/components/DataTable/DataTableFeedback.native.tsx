@@ -10,8 +10,8 @@ import { MIN_TOUCH_TARGET } from '../../primitives/Pressable';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { RetryButton } from '../Button/RetryButton.native';
-import { LottieMoment } from '../LottieMoment/LottieMoment.native';
-import type { LottieMomentName } from '../LottieMoment/LottieMoment.types';
+import { EmptyScene } from '../EmptyScene/EmptyScene.native';
+import type { EmptySceneName } from '../EmptyScene/EmptyScene.types';
 import { rowNoteOf, TABLE_SKELETON_ROWS, tableMessageMarkOf } from './DataTableChrome.logic';
 
 /* DataTable — the loading skeleton, the blocked-state message and the row's own line. Split out
@@ -116,7 +116,7 @@ export function TableMessage({
   onRetry,
   retryLabel,
   action,
-  moment,
+  scene,
   focusAfter,
 }: {
   tone?: 'warning';
@@ -125,15 +125,15 @@ export function TableMessage({
   onRetry?: () => void;
   retryLabel?: TranslatedText;
   action?: ReactNode;
-  /** A Lottie moment in place of the mark: the empty list's own art. */
-  moment?: LottieMomentName;
+  /** A calm line drawing in place of the mark (`EmptyScene`): the empty list's own art. */
+  scene?: EmptySceneName;
   /** Where the reader lands once *Try again* has gone with this message. */
   focusAfter: FocusAfter;
 }) {
   const stroke = tone === 'warning' ? colors['warning-text'] : colors['text-tertiary'];
   return (
     <View style={styles.message}>
-      {moment === undefined ? (
+      {scene === undefined ? (
         <View style={[styles.mark, tone === 'warning' ? styles.markWarning : null]}>
           <Svg
             width={22}
@@ -148,7 +148,7 @@ export function TableMessage({
           </Svg>
         </View>
       ) : (
-        <LottieMoment name={moment} size={96} />
+        <EmptyScene name={scene} />
       )}
       <Text variant="h4" align="center">
         {title}

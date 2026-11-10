@@ -1,0 +1,35 @@
+# Quick add (`SCR-M02-01`, `M02-06`): the pill's add action opens the four fields as a sheet over the
+# leads page; the number is checked as it is typed, a number alone saves, the sheet closes and its
+# toast says so; Back returns to the settings page the action was pressed on.
+appId: com.heliogrid.app
+---
+- tapOn: ${ADD_LEAD}
+- extendedWaitUntil:
+    visible: ${NEW_LEAD}
+    timeout: 15000
+# Four fields: the phone, name, city and the type — only the phone is needed.
+- assertVisible: "${QUICK_ADD_NAME}(, .*)?"
+- assertVisible: "${QUICK_ADD_CITY}(, .*)?"
+- assertVisible: ${QUICK_ADD_TYPE}
+# A field is the SECOND element its label's words name: the label first, the field after it, and
+# the field's spoken name carries the number after a comma.
+- tapOn:
+    text: "${QUICK_ADD_PHONE}(, .*)?"
+    index: 1
+- waitForAnimationToEnd
+- inputText: ${CUSTOMER}
+- extendedWaitUntil:
+    visible: ${NEW_NUMBER}
+    timeout: 15000
+# Return closes the keyboard first: while it is up, the next tap is spent closing it.
+- pressKey: Enter
+- tapOn: ${SAVE_LEAD}
+- extendedWaitUntil:
+    visible: ${LEAD_SAVED}
+    timeout: 15000
+- assertNotVisible: ${NEW_LEAD}
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - back

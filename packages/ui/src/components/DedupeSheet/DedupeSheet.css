@@ -1,0 +1,151 @@
+/* DedupeSheet — the duplicate sheet (`M02-08`, `M02-09`): the existing record, its three facts,
+   and exactly three choices, each a 64px row with one line under its title. The record sits on the
+   sheet's card colour; the choices and the reason box take the control fill. */
+
+.hg-dedupe-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-dedupe-record {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-dedupe-record-who {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-dedupe-record-words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-dedupe-record-name {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  line-height: 1.45;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-dedupe-record-line {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.hg-dedupe-fact {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-dedupe-choices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-dedupe-choice-slot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-dedupe-choice {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  min-height: var(--sp-16);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-tile);
+  background: var(--hg-control-fill);
+  text-align: start;
+  transition:
+    background var(--dur-micro) var(--ease-standard),
+    transform var(--dur-micro) var(--ease-standard);
+}
+
+.hg-dedupe-choice:hover {
+  background: var(--fill-hover);
+}
+
+.hg-dedupe-choice:active {
+  transform: scale(0.985);
+}
+
+.hg-dedupe-choice:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-dedupe-choice > .hg-shell-glyph {
+  flex-shrink: 0;
+  transition: transform var(--dur-standard) var(--ease-standard);
+}
+
+/* Keep both's chevron turns while its reason box is open. */
+.hg-dedupe-choice[aria-expanded="true"] > .hg-shell-glyph {
+  transform: rotate(180deg);
+}
+
+.hg-dedupe-choice-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-dedupe-choice-title {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  line-height: 1.45;
+  color: var(--text-primary);
+}
+
+.hg-dedupe-choice-line {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.hg-dedupe-reason {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--r-tile);
+  background: var(--hg-control-fill);
+  animation: hg-dedupe-reason-in var(--dur-standard) var(--ease-enter) both;
+}
+
+@keyframes hg-dedupe-reason-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--sp-1)));
+  }
+}
+
+.hg-dedupe-nothing {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}

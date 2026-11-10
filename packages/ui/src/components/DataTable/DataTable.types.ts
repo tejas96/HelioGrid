@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { PayableReconciliation } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
-import type { LottieMomentName } from '../LottieMoment/LottieMoment.types';
+import type { EmptySceneName } from '../EmptyScene/EmptyScene.types';
 import type { PendingActionSpec } from '../PendingAction';
 import type { ProvenanceProps, ProvenanceTierSpec } from '../Provenance';
 import type { SurfaceRead } from '../UnavailableNote';
@@ -143,8 +143,8 @@ interface DataTableBaseProps<Row> {
   emptyTitle: TranslatedText;
   emptyDescription?: TranslatedText;
   emptyAction?: ReactNode;
-  /** An original Lottie moment drawn over the empty words instead of the plain mark. */
-  emptyMoment?: LottieMomentName;
+  /** A calm line drawing (`EmptyScene`) over the empty words instead of the plain mark. */
+  emptyScene?: EmptySceneName;
   errorTitle: TranslatedText;
   errorMessage?: TranslatedText;
   /** The retry's words, from `packages/i18n` — no retry is drawn without them. */

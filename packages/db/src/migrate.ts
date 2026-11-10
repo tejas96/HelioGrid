@@ -25,7 +25,8 @@ const MIGRATION_LOCK_KEY = 8_270_125_001;
 /**
  * A file whose FIRST LINE is this directive runs OUTSIDE a transaction, which is the only
  * way to issue CREATE INDEX CONCURRENTLY / REINDEX CONCURRENTLY / ALTER TABLE … DETACH
- * CONCURRENTLY / VACUUM (Postgres forbids them inside a transaction block).
+ * CONCURRENTLY / VACUUM (Postgres forbids them inside a transaction block), each statement
+ * sent on its own (`STATEMENT_BREAKPOINT`).
  *
  * The trade is real and the author must accept it: such a file is NOT atomic with its
  * schema_migrations insert, so a crash mid-apply leaves it unrecorded and it WILL re-run.
@@ -36,6 +37,18 @@ const NO_TRANSACTION_DIRECTIVE = '-- heliogrid:no-transaction';
 
 function isNoTransaction(body: string): boolean {
   return body.split('\n', 1)[0]?.trim() === NO_TRANSACTION_DIRECTIVE;
+}
+
+/**
+ * Where drizzle's drafts, and every migration written after them, end a statement. A
+ * no-transaction file is sent ONE statement at a time, split on these marks: sent whole, a
+ * multi-statement query runs as one implicit transaction, which a second `CREATE INDEX
+ * CONCURRENTLY` refuses. Two statements left unmarked fail that same way, loudly, never silently.
+ */
+const STATEMENT_BREAKPOINT = '--> statement-breakpoint';
+
+function statementsOf(body: string): string[] {
+  return body.split(STATEMENT_BREAKPOINT).filter((statement) => statement.trim() !== '');
 }
 
 /**
@@ -120,7 +133,7 @@ export async function runMigrations(url: string) {
       if (isNoTransaction(body)) {
         // Not atomic by construction — see NO_TRANSACTION_DIRECTIVE.
         console.log(`apply ${file} (no-transaction) ...`);
-        await sql.unsafe(body);
+        for (const statement of statementsOf(body)) await sql.unsafe(statement);
         await sql`insert into schema_migrations (filename, sha256) values (${file}, ${hash})`;
       } else {
         console.log(`apply ${file} ...`);

@@ -119,7 +119,7 @@ function UsageBody({
         </View>
       )}
       {view.teaching === null ? null : (
-        <BillingQuiet art="empty" title={view.teaching.title} message={view.teaching.body} />
+        <BillingQuiet art="none-yet" title={view.teaching.title} message={view.teaching.body} />
       )}
       {view.needs === null ? null : (
         <Block style={styles.flushRegion} density="expressive" title={words.needsYou}>

@@ -1,6 +1,24 @@
 import type { UiLanguage } from '@heliogrid/contracts';
 import type { MessageRef } from '../runtime';
 import { COMPANY_PROFILE_PART_TITLE, COMPANY_PROFILE_STANDING_WORD } from './company-profile';
+import {
+  ACTIVITY_KIND_WORD,
+  BUYING_TIMELINE_WORD,
+  CALL_OUTCOME_WORD,
+  CONTACT_ROLE_SEED_WORD,
+  DEAL_SEGMENT_WORD,
+  DECISION_MAKER_WORD,
+  DISQUALIFY_REASON_WORD,
+  LEAD_SOURCE_WORD,
+  LEAD_STAGE_WORD,
+  LEAD_STATE_WORD,
+  LOST_REASON_WORD,
+  QUALIFY_QUESTION_LABEL,
+  ROOF_OWNERSHIP_WORD,
+  ROOF_TYPE_WORD,
+  SHADING_WORD,
+  TASK_KIND_WORD,
+} from './crm-vocabulary';
 import { DISCLOSURE_LEAD_WORD } from './disclosure';
 import { BASIS_LINE_WORD } from './document-basis';
 import { ENERGY_SOURCE_WORD } from './energy-source';
@@ -56,6 +74,46 @@ export const CLOSED_VOCABULARY_GROUPS: readonly ClosedVocabularyGroup[] = [
   {
     surface: 'company profile',
     vocabularies: { part: COMPANY_PROFILE_PART_TITLE, standing: COMPANY_PROFILE_STANDING_WORD },
+  },
+  {
+    surface: 'a lead in a list',
+    vocabularies: {
+      stage: LEAD_STAGE_WORD,
+      state: LEAD_STATE_WORD,
+      source: LEAD_SOURCE_WORD,
+      segment: DEAL_SEGMENT_WORD,
+    },
+  },
+  {
+    surface: 'qualify card',
+    vocabularies: {
+      question: QUALIFY_QUESTION_LABEL,
+      roofOwnership: ROOF_OWNERSHIP_WORD,
+      roofType: ROOF_TYPE_WORD,
+      shading: SHADING_WORD,
+      timeline: BUYING_TIMELINE_WORD,
+      decisionMaker: DECISION_MAKER_WORD,
+    },
+  },
+  {
+    surface: 'disqualify reasons',
+    vocabularies: { reason: DISQUALIFY_REASON_WORD },
+  },
+  {
+    surface: 'lost reasons',
+    vocabularies: { reason: LOST_REASON_WORD },
+  },
+  {
+    surface: 'a contact and a call',
+    vocabularies: { role: CONTACT_ROLE_SEED_WORD, outcome: CALL_OUTCOME_WORD },
+  },
+  {
+    surface: 'lead timeline',
+    vocabularies: { activity: ACTIVITY_KIND_WORD },
+  },
+  {
+    surface: 'a follow-up task',
+    vocabularies: { task: TASK_KIND_WORD },
   },
   {
     surface: 'team list',

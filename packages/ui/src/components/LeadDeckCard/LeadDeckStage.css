@@ -1,0 +1,108 @@
+/* LeadDeckCard's stage parts (`SCR-M02-02` desktop): its place in the queue, the three keys, the
+   age ring, and — where its room allows — who, the bill and the ring side by side. */
+
+.hg-lead-deck-place {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-0-5);
+  padding-inline-start: var(--sp-3);
+  border-radius: var(--r-pill);
+  background: var(--glass);
+  box-shadow: 0 0 0 1px var(--line-soft);
+}
+
+.hg-lead-deck-place-words {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+  white-space: nowrap;
+}
+
+.hg-lead-deck-keys {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-4);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--on-panel-muted);
+}
+
+.hg-lead-deck-keys > span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.hg-lead-deck-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--sp-5);
+  height: var(--sp-5);
+  padding-inline: var(--sp-1);
+  border-radius: var(--r-xs);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--on-panel);
+  white-space: nowrap;
+}
+
+.hg-lead-deck-age {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  text-align: center;
+}
+
+/* The stage, where its room allows: who, the bill and the age ring side by side. */
+@container (min-width: 720px) {
+  .hg-lead-deck[data-layout="stage"] .hg-lead-deck-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .hg-lead-deck[data-layout="stage"] .hg-lead-deck-who {
+    justify-content: center;
+    gap: var(--sp-3);
+    padding-inline-end: var(--sp-8);
+  }
+
+  .hg-lead-deck[data-layout="stage"] .hg-lead-deck-name {
+    font-size: var(--fs-hero-phone);
+    line-height: var(--lh-hero-phone);
+    letter-spacing: var(--tr-hero-phone);
+  }
+
+  .hg-lead-deck[data-layout="stage"] .hg-lead-deck-city {
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+  }
+
+  .hg-lead-deck[data-layout="stage"] .hg-lead-deck-bill,
+  .hg-lead-deck[data-layout="stage"] .hg-lead-deck-age {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    padding-inline: var(--sp-8);
+    border-inline-start: 1px solid var(--panel-line);
+  }
+
+  .hg-lead-deck[data-layout="stage"] .hg-lead-deck-bill {
+    align-items: flex-start;
+  }
+
+  .hg-lead-deck[data-layout="stage"] .hg-lead-deck-figure {
+    font-size: var(--fs-display);
+    line-height: var(--lh-display);
+    letter-spacing: var(--tr-display);
+  }
+
+  .hg-lead-deck[data-layout="stage"] .hg-lead-deck-age {
+    padding-inline-end: 0;
+  }
+}

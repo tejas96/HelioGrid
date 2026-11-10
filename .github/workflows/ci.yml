@@ -64,7 +64,9 @@ jobs:
           fi
           lane() { # lane <output> <path regex>
             local on=false
-            if [ "$all" = true ] || printf '%s\n' "$files" | grep -qE "$2"; then on=true; fi
+            # A here-string, never a pipe: grep -q stops at its first match, the writer then dies on
+            # the closed pipe, and pipefail reads that as "no match" — a big PR skipped every lane.
+            if [ "$all" = true ] || grep -qE "$2" <<<"$files"; then on=true; fi
             echo "$1=$on" >> "$GITHUB_OUTPUT"
             echo "$1: $on"
           }
@@ -232,7 +234,8 @@ jobs:
     needs: changes
     if: needs.changes.outputs.e2e_web == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    # 338 flows take ~18 min after ~3 min of setup; 20 cut the last ones off.
+    timeout-minutes: 30
     services:
       postgres: &suite-postgres
         # The same pinned image the quality lane runs.

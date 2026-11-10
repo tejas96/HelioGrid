@@ -1,0 +1,233 @@
+/* The Lead Import Wizard (`SCR-M02-05`): one column on the phone's room; at the desktop's, the
+   preview's hero beside its choice and the report's rows beside the columns read. Sized from the
+   wizard's own room, never the window's. */
+.hg-lead-import {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+
+.hg-lead-import-preview,
+.hg-lead-import-report {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+
+.hg-lead-import-preview[data-wide="true"],
+.hg-lead-import-report[data-wide="true"] {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: var(--sp-8);
+  align-items: start;
+}
+
+.hg-lead-import-counts,
+.hg-lead-import-choice,
+.hg-lead-import-landed,
+.hg-lead-import-tallies {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+/* The hero's one figure line: the file's own count, in the display face. */
+.hg-lead-import-figure {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  font-weight: var(--fw-regular);
+  letter-spacing: var(--tr-display);
+  line-height: var(--lh-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--on-panel);
+  overflow-wrap: anywhere;
+}
+
+.hg-lead-import-land,
+.hg-lead-import-stays {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
+.hg-lead-import-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  padding-top: var(--sp-2);
+}
+
+.hg-lead-import-tally-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-lead-import-tally {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  padding-block: var(--sp-3);
+}
+
+.hg-lead-import-tally + .hg-lead-import-tally {
+  border-top: 1px solid var(--line-soft);
+}
+
+.hg-lead-import-tally-count {
+  flex: none;
+  min-width: var(--sp-16);
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  white-space: nowrap;
+  color: var(--on-panel);
+}
+
+.hg-lead-import-tally-words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-lead-import-tally-title {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-semibold);
+  color: var(--on-panel);
+}
+
+.hg-lead-import-tally-sub {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
+.hg-lead-import-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-lead-import-rows-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding-inline: var(--sp-1);
+}
+
+.hg-lead-import-rows-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding-inline: var(--sp-1);
+}
+
+/* What happens to a row: its mark, the choice's line, and the existing lead's three facts. */
+.hg-lead-import-fate {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.hg-lead-import-fate-head,
+.hg-lead-import-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-3);
+}
+
+.hg-lead-import-fate-line,
+.hg-lead-import-facts {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+.hg-lead-import-fact {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.hg-lead-import-report-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+
+.hg-lead-import-report-grid[data-wide="true"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) calc(var(--sp-24) * 3);
+  align-items: start;
+}
+
+.hg-lead-import-columns {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-lead-import-columns-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.hg-lead-import-column-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-lead-import-column {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--sp-1) var(--sp-3);
+  padding-block: var(--sp-2);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-lead-import-column + .hg-lead-import-column {
+  border-top: 1px solid var(--line-soft);
+}
+
+.hg-lead-import-column-header {
+  min-width: 0;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-lead-import-column-field {
+  color: var(--text-primary);
+}
+
+.hg-lead-import-column-field[data-left="true"] {
+  color: var(--text-secondary);
+}

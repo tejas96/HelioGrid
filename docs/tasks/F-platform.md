@@ -4,60 +4,6 @@ This file dispositions every requirement row of the suite's six platform foundat
 
 ---
 
-### T-FPLAT-066 · The recipients a record names — the matrix cross-check and scope resolution at emit
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** F6-10 (P0), F6-16 (P0)
-
-Moved here at `T-FPLAT-018`'s `/start`. Neither proof can walk yet: `F6-10`'s done-when checks the
-matrix against every module's §4 contract, and eleven of the thirteen modules have none in the
-tree; `F6-16` resolves `subject_owner` and `subject_assignee`, and the subject kinds that exist
-are `user_account`, `tenant_membership`, `invitation` and five tenant settings — not one lead,
-design, proposal or tranche, so eight of the nine registered types have no legal subject to own.
-The two preset-shaped rules, `epc_owner` and `capability_holders`, resolve against presets and
-could be written today; they wait here so that resolution is authored ONCE, against all four
-rules, rather than half now and half beside the first record (Law 11).
-
-**Depends on:** the block-3 slice that lands the lead record — its subject kind, its owner and its assignee — which that block's task names at its start; `T-FPLAT-017` (shipped, #100) carries the registry and the four recipient rules; `T-FPLAT-002` (shipped, #43) carries the F2 resolution this reads.
-**Block:** 3, by owner ruling at its own `/start` — built before `T-M02-011` notifies a lead's new owner, so resolution is written once.
-
-**Requirements (verbatim):**
-
-- **F6-10** (P0) — **The matrix below is the complete v1 event registry** — every notification-worthy event named by a module's §4 contract, with its recipients (persona + scope) and channels. It is the cross-check the suite's modules registered into (M02, M03, M04, M05, M06, M07, M08, M09, M10, M11, M12, M13, F5); an event absent from a module's contract and from this table does not notify. *(Re-pulled verbatim 2026-08-07: `F4` was dropped from the list of registering modules when the offline/sync capability was removed — the deleted document's §4 contract raised the sync and queue events, and `docs/prd/foundations/F4-data-integrity.md` raises none.)*
-- **F6-16** (P0) — **Recipients resolve through F2 scope at emit and at open.** A notification targets personas by scope ("the record's owner", "team's manager", "portfolio Operations"), resolved by F2's domains (`F2-12`–`F2-14`, with team membership per `M10-32`); a recipient who has lost the subject's visibility gets the honest landing (F6.2 edge). No notification widens anyone's visibility — the notification never contains more of the record than its recipient may read.
-
-**DONE WHEN:**
-
-- Given each module whose §4 contract is in the tree when this builds, when its named events are checked against the matrix, then each appears with recipients and channels (F6-10). The walk over every module (M01–M13, F5), and the check that the matrix holds no event no module raises, is `T-FPLAT-074`'s — option A, taken 2026-11-04 when the owner asked for `T-SHELL-006`'s gate to be fixed: only that block can walk them.
-- Given any notification, when its content is compared against the recipient's scope, then it discloses nothing beyond what the recipient may read (F6-16).
-- Given a recipient who has lost the subject's visibility, when they open the notification, then they get the honest landing rather than the record (F6-16).
-
----
-
-### T-FPLAT-020 · Global search — scope-enforced results, the alias law, junk leads and plain ranking
-**Type:** engine · **Tier:** P0
-**Status:** planned
-**PRD rows:** F6-21, F6-22, F6-23, F6-24, F6-25
-**Requirements (verbatim):**
-
-- **F6-21** (P0) — **Search is scoped by role visibility — D20, per domain, no leakage.** A result appears only if the searcher's F2 scopes would let them open it: leads per lead visibility, projects per project visibility, people per people-records scope, campaigns per campaign scope (`F2-12`–`F2-14`). Search never becomes the side door around a scope — the dedupe sheet's minimal-disclosure surface (`M02-08`) is the only sanctioned cross-scope reveal in the product, and it is not this one.
-- **F6-22** (P0) — **The search-alias law (R1's single exception):** the queries "quote" and "quotation" return **Proposals** — because that is what users will type — while both words stay banned from identifiers, interface strings and documents. The alias is a query behaviour only; results, labels and the opened records say "Proposal" in every locale.
-- **F6-23** (P0) — **Junk leads surface in search only.** A lead marked junk leaves every queue and list but is never deleted; search is the one surface that still finds it (with its junk state plain), and Reopen exists from there for the rare mistake.
-- **F6-24** (P0) — **Search is never billing-gated.** In every billing state, search works — it is in the soft-block matrix's always-on set. *(Re-pulled verbatim 2026-08-07: the sweep cut this row's offline half — "Search works offline over synced data"; "Offline, the box searches the device's synced cache with the standard staleness indication (`F4-02`)" — which cited a row that no longer exists. The task title lost "offline reads" with it.)*
-- **F6-25** (P1) — **Search finds records, not analytics:** results are records the searcher can open — no computed answers, no cross-record aggregation, no natural-language querying in v1 (§5). Result ranking is plain (exact identifier matches — phone, proposal number — first; then name/city matches); no engagement tuning.
-
-**Depends on:** the lead record — the first `M02` task that authors it, in block 3 (the `M02` tickets do not yet say which one carries the `lead` table; that task names it here at its start) · `T-M02-015` (the junk state `F6-23` searches for). Each later module adds its own search target when its slice begins (Law 9): proposals (`M06`, block 8) for the alias, projects (`M08`), customers and sites, catalog items, people.
-**Ruled at `/start`:** **the owner moved this task to block 3, out of block 0.** In block 0 no searchable table exists — today's schema is identity, tenancy, settings, invitations, notifications, audit and the market pack — so every done-when line would run over empty results and prove nothing, and building the engine ahead of its first target is a contract for a need no slice has yet. Recorded in `docs/build-order.md`'s block table; `T-SHELL-002`, the screen that calls it, is recorded there as waiting on it.
-
-**DONE WHEN:**
-
-- Given a searcher with any scope set, when results render for each entity type, then every result is a record their scopes let them open, and none other (F6-21).
-- Given the queries "quote" and "quotation", when submitted, then Proposals return and every rendered label says Proposal (F6-22).
-- Given a junk lead, when its phone number is searched by a user whose scope contains it, then it returns with its junk state visible; and given any list or queue, then it does not appear there (F6-23).
-- Given a halted tenant, when search runs, then results return (F6-24).
-- (F6-25 carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text above is the binding criterion)
-
----
 ### T-FPLAT-074 · The provenance label prints a projection, and the design system's renderer closes
 **Type:** engine · **Tier:** P0
 **Status:** planned
@@ -359,11 +305,11 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | F6-17 | realized-by: `SCR-SHELL-03` → `docs/tasks/SHELL.md` `T-SHELL-003` |
 | F6-19 | T-FPLAT-019 |
 | F6-20 | realized-by: `SCR-SHELL-02` → `docs/tasks/SHELL.md` `T-SHELL-002` |
-| F6-21 | T-FPLAT-020 |
-| F6-22 | T-FPLAT-020 |
-| F6-23 | T-FPLAT-020 |
-| F6-24 | T-FPLAT-020 |
-| F6-25 | T-FPLAT-020 |
+| F6-21 | `T-FPLAT-020`, shipped |
+| F6-22 | `T-FPLAT-020`, shipped |
+| F6-23 | `T-FPLAT-020`, shipped |
+| F6-24 | `T-FPLAT-020`, shipped |
+| F6-25 | `T-FPLAT-020`, shipped |
 | F6-26 | T-FPLAT-021 |
 | F6-27 | T-FPLAT-021 |
 | F7-01 | LAW |

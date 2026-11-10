@@ -127,6 +127,18 @@ export function ToastHost({
                   {toast.undo.label}
                 </Button>
               )) ??
+              (toast.act === undefined ? undefined : (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    leave(toast.id);
+                    toast.act?.onAct();
+                  }}
+                >
+                  {toast.act.label}
+                </Button>
+              )) ??
               toast.action ??
               (onDismiss === undefined ? undefined : (
                 <Pressable

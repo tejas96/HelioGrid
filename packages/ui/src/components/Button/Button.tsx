@@ -54,7 +54,13 @@ export function Button({
      this button, and the element to focus is the one drawn after it. */
   useImperativeHandle(
     ref,
-    () => ({ focus: () => setTimeout(() => element.current?.focus(), 0) }),
+    () => ({
+      /* Returns nothing: a timer's id handed back through `focus()` reached an effect written as
+         `useEffect(() => handle.focus())`, which React then called as its cleanup. */
+      focus: () => {
+        setTimeout(() => element.current?.focus(), 0);
+      },
+    }),
     [],
   );
   /* A spec with no sentence opens nothing and describes nothing, so the pill keeps the native

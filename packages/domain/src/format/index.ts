@@ -98,6 +98,7 @@ export {
   type PhoneDigitsMismatch,
   type PhoneOptions,
   phoneDigitsMismatch,
+  phoneE164Of,
 } from './phone';
 export { type PowerUnit, type ScaledPower, scaledPower } from './power';
 export {
@@ -155,4 +156,4 @@ export {
   type StageLabel,
   stageLabel,
 } from './vocabulary';
-export { localDate, localMinutes, MS_PER_DAY, nextLocalTime } from './zone';
+export { localDate, localInstant, localMinutes, MS_PER_DAY, nextLocalTime } from './zone';

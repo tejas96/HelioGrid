@@ -1,9 +1,10 @@
 import type { CatalogImportWire } from '@heliogrid/contracts';
 import { Text } from '../../primitives/Text/Text';
+import { importFileOf } from '../Import/Import.logic';
+import type { ImportFormats } from '../Import/Import.types';
 import { SearchField } from '../SearchField';
 import { ShareFilter } from '../ShareFilter';
-import type { ImportFormats } from './CatalogImport.logic';
-import { fileOf, overviewOf } from './CatalogImport.steps';
+import { overviewOf } from './CatalogImport.steps';
 import type { CatalogImportProps } from './CatalogImport.types';
 import './ImportOverview.css';
 
@@ -56,7 +57,7 @@ export function ImportOverview(props: ImportOverviewProps) {
     );
   }
 
-  const stamp = phase === 'report' ? fileOf(job, words, props.formats, null).stamp : null;
+  const stamp = phase === 'report' ? importFileOf(job, words, props.formats, null).stamp : null;
   return (
     <div className="hg-import-overview">
       {stamp === null ? (

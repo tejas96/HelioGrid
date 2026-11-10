@@ -4,19 +4,19 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Banner } from '../Banner/Banner.native';
 import { EditorSurface } from '../EditorSurface/EditorSurface.native';
-import type { ImportFormats } from './CatalogImport.logic';
-import { actOf } from './CatalogImport.steps';
+import type { ImportFormats } from '../Import/Import.types';
+import { ImportColumns } from '../Import/ImportColumns.native';
+import { ImportFileStep } from '../Import/ImportFileStep.native';
+import { ImportFoot } from '../Import/ImportFoot.native';
+import { ImportMatching, ImportRunning } from '../Import/ImportWaits.native';
+import { useImportFormats } from '../Import/use-import-formats';
+import { actOf, quietLineOf } from './CatalogImport.steps';
 import type { CatalogImportProps } from './CatalogImport.types';
-import { readyNowOf, scopeIn } from './CatalogImport.view';
-import { ImportColumns } from './ImportColumns.native';
-import { ImportFileStep } from './ImportFileStep.native';
-import { ImportFoot } from './ImportFoot.native';
+import { columnFieldsOf, columnsOf, readyNowOf, scopeIn } from './CatalogImport.view';
 import { ImportHead } from './ImportHead.native';
 import { ImportRows } from './ImportRows.native';
 import { ImportSkeleton } from './ImportSkeleton.native';
 import { ImportStepList } from './ImportStepList.native';
-import { ImportMatching, ImportRunning } from './ImportWaits.native';
-import { useImportFormats } from './use-import-formats';
 
 /** The layer width under which the wizard is a sheet: every phone. */
 const PANEL_ABOVE = 720;
@@ -60,7 +60,7 @@ export function CatalogImport(given: CatalogImportProps) {
         panelAbove={PANEL_ABOVE}
         size={wait ? 'auto' : 'full'}
         density="functional"
-        footer={<ImportFoot props={props} act={act} />}
+        footer={<ImportFoot {...props} act={act} quiet={quietLineOf(props)} wide={false} />}
         sheetProps={wait ? {} : { handle: false, bodyScrolls: false }}
         style={wait ? undefined : styles.fullSheet}
       >
@@ -107,13 +107,24 @@ function ImportStep({ props, formats }: { props: CatalogImportProps; formats: Im
     case 'reading':
     case 'unreadable':
     case 'file':
-      return <ImportFileStep {...props} formats={formats} />;
+      return <ImportFileStep {...props} wide={false} formats={formats} />;
     case 'columns':
-      return <ImportColumns {...props} />;
+      return (
+        <ImportColumns
+          words={props.words}
+          fields={columnFieldsOf(props.words)}
+          columns={columnsOf(props.job, props.mapping)}
+          samples={false}
+          wide={false}
+          onPlace={props.onPlace}
+        />
+      );
     case 'matching':
       return <ImportMatching words={props.words} />;
     case 'running':
-      return <ImportRunning {...props} formats={formats} />;
+      return props.job === null ? null : (
+        <ImportRunning {...props} job={props.job} formats={formats} />
+      );
     case 'preview':
     case 'report':
       // A kept report opening, or its lists not yet read: the report's own loading form (m17-j).

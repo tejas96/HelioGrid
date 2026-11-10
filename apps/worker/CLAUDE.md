@@ -12,6 +12,7 @@ src/modules/<area>/<area>.workflows.ts         DETERMINISTIC. The sequence.
                    <area>.public.ts            what the root composes; asserts the name match
                    <area>.activities.types.ts  only where the steps run here: their signatures
                    <area>.activities.ts        only where the steps run here: the side effects
+src/modules/import/import.phases.ts            the spreadsheet imports' one phase sequence; no workflow of its own
 ```
 
 Copy `modules/platform/` for a new area whose steps run here, `modules/outbox/` for one whose

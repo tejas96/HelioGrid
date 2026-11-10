@@ -63,12 +63,12 @@
 }
 
 .hg-filter-pill[data-pill="scope"][data-active="true"] {
-  background: var(--action-primary);
-  color: var(--text-inverse);
+  background: var(--accent-subtle);
+  color: var(--accent-text);
 }
 
-/* Kind, stage and facet chips — the control fill at rest, the near-black primary marker when
-   chosen. */
+/* Kind, stage and facet chips — the control fill at rest, the accent wash when chosen, as every
+   chosen filter is. */
 .hg-filter-pill[data-pill="chip"] {
   height: var(--hg-filter-h-chip);
   padding: 0 var(--sp-4);
@@ -79,8 +79,8 @@
 }
 
 .hg-filter-pill[data-pill="chip"][data-active="true"] {
-  background: var(--action-primary);
-  color: var(--text-inverse);
+  background: var(--accent-subtle);
+  color: var(--accent-text);
 }
 
 /* A glyph or a tick before the label takes two of the leading edge back. */
@@ -105,8 +105,8 @@
 }
 
 .hg-filter-pill[data-pill="sort"][data-active="true"] {
-  background: var(--accent);
-  color: var(--text-inverse);
+  background: var(--accent-subtle);
+  color: var(--accent-text);
 }
 
 /* A count is information, so it reads as --text-secondary, never the quiet role. */
@@ -116,7 +116,7 @@
 }
 
 .hg-filter-pill[data-active="true"] .hg-filter-count {
-  color: var(--text-inverse);
+  color: var(--accent-text);
 }
 
 /* The filter circle: the primary fill, white sliders, round as the search pill beside it. */

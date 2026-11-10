@@ -10,6 +10,7 @@ export type { BrandingCover, BrandingFields } from './branding-cover';
 export { useRepositories } from './context';
 export type { HostLifecycle } from './host-lifecycle';
 export { followHostLifecycle } from './host-lifecycle';
+export type { ChosenSpreadsheet, ImportActFailure, ImportUpload } from './import-job-facts';
 export type { ProposalTemplateView } from './proposal-template-view';
 export { templateViewOf } from './proposal-template-view';
 export { DataProvider } from './provider';
@@ -58,12 +59,7 @@ export type {
   CatalogSaveOutcome,
 } from './use-catalog-acts';
 export { useCatalogActs } from './use-catalog-acts';
-export type {
-  CatalogImport,
-  ChosenSpreadsheet,
-  ImportActFailure,
-  ImportUpload,
-} from './use-catalog-import';
+export type { CatalogImport } from './use-catalog-import';
 export { useCatalogImport } from './use-catalog-import';
 export { useCatalogImportLists } from './use-catalog-import-lists';
 export type { CatalogImportPanel } from './use-catalog-import-panel';
@@ -111,7 +107,20 @@ export { failureOf, useCompanySignup, useSteerDroppedOnEdit } from './use-compan
 export type { CompanySignupScreen, SignupPanel } from './use-company-signup-screen';
 export { useCompanySignupScreen } from './use-company-signup-screen';
 export { useConnection } from './use-connection';
+export type {
+  CustomerMergeCandidate,
+  CustomerMergeDone,
+  CustomerMergeFailure,
+  CustomerMergeFind,
+  CustomerMergeOptions,
+  CustomerMergeRead,
+  CustomerMergeScreen,
+  CustomerMergeStep,
+} from './use-customer-merge-screen';
+export { useCustomerMergeScreen } from './use-customer-merge-screen';
 export { useDayPart } from './use-day-part';
+export type { DeactivateReassign } from './use-deactivate-reassign';
+export { useDeactivateReassign } from './use-deactivate-reassign';
 export type { FirstRunProfile } from './use-first-run-profile';
 export { useEndFirstRun, useFirstRunOwed, useFirstRunProfile } from './use-first-run-profile';
 export { useLiveness } from './use-health';
@@ -122,6 +131,31 @@ export { useInvite } from './use-invite';
 export type { InviteLanding } from './use-invite-landing';
 export { useInviteLanding } from './use-invite-landing';
 export { useLanding } from './use-landing';
+export type { LeadActs, LeadSheet, LeadSheetSend } from './use-lead-acts';
+export type { LeadAssign, LeadAssignReturn } from './use-lead-assign';
+export type { LeadAssignees } from './use-lead-assignees';
+export { useLeadAssignees } from './use-lead-assignees';
+export type { LeadContactSave, LeadContacts } from './use-lead-contacts';
+export type {
+  LeadDetailRead,
+  LeadDetailScreen,
+  LeadDetailShown,
+  LeadTimeline,
+  LeadTimelineEntry,
+} from './use-lead-detail-screen';
+export { useLeadDetailScreen } from './use-lead-detail-screen';
+export type { LeadImportRow, LeadImportRowList } from './use-lead-import-rows';
+export type { LeadImportScreen } from './use-lead-import-screen';
+export { useLeadImportScreen } from './use-lead-import-screen';
+export type { InboxAssignee, InboxBulkReport } from './use-lead-inbox-acts';
+export type { InboxPicking, LeadInboxScreen } from './use-lead-inbox-screen';
+export { useLeadInboxScreen } from './use-lead-inbox-screen';
+export type { LeadMessage, LeadMessageAsk } from './use-lead-message';
+export type { LeadQualify } from './use-lead-qualify';
+export type { LeadSurveyor } from './use-lead-surveyors';
+export type { LeadTasks } from './use-lead-tasks';
+export type { LeadsListScreen } from './use-leads-list-screen';
+export { useLeadsListScreen } from './use-leads-list-screen';
 export type { LeaveAsk } from './use-leave-ask';
 export { useLeaveAsk } from './use-leave-ask';
 export { useMyPhoto } from './use-my-photo';
@@ -169,10 +203,19 @@ export type { ProposalTemplateScreen, TemplateOverlayState } from './use-proposa
 export { useProposalTemplateScreen } from './use-proposal-template-screen';
 export type { PushPreferences } from './use-push-preferences';
 export { usePushPreferences } from './use-push-preferences';
+export type {
+  QuickAddAct,
+  QuickAddOptions,
+  QuickAddReferrer,
+  QuickAddScreen,
+} from './use-quick-add-screen';
+export { useQuickAddScreen } from './use-quick-add-screen';
 export type { RoleCardRead } from './use-role-card';
 export { useRoleCard } from './use-role-card';
 export type { RolesReference } from './use-roles-reference';
 export { useRolesReference } from './use-roles-reference';
+export type { SearchScreen } from './use-search-screen';
+export { useSearchScreen } from './use-search-screen';
 export { useSession } from './use-session';
 export type { GateNeed, SessionGateView } from './use-session-gate';
 export { useSessionGate } from './use-session-gate';

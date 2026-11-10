@@ -7,7 +7,7 @@ import { DESTINATION_GLYPH, ShellGlyph } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
 import { createElement, type RefObject } from 'react';
 import type { View } from 'react-native';
-import { DESTINATION_ROUTE, VERB_ROUTE } from './doors';
+import { doorRoute } from './doors';
 
 const glyph = (destination: StandingDestination, filled: boolean) =>
   createElement(ShellGlyph, {
@@ -20,11 +20,13 @@ const glyph = (destination: StandingDestination, filled: boolean) =>
  * The pill's items, in `SCR-SHELL-01`'s order: Home, the first list, the add action, the second
  * list, More — no action slot for a preset with no verb (`F7-48`). The slots follow the person and
  * the verb the home in force (`T-SHELL-011`); this only names, draws and wires them. `navigate`,
- * never `push`, so a second tap on the route already open does nothing.
+ * never `push`, so a second tap on the route already open does nothing — save the add action on its
+ * own page, where `onAction` opens it again in place (quick add's page after a save).
  */
 export function usePillItems(
   shell: Pick<Shell, 'destinations' | 'centreVerb'>,
   actionRef: RefObject<View | null>,
+  onAction?: () => void,
 ): BottomNavItem[] {
   const t = useTranslate();
   const navigation = useNavigation();
@@ -37,7 +39,7 @@ export function usePillItems(
     onClick: () =>
       destination === 'home'
         ? navigation.navigate('Shell')
-        : navigation.navigate(DESTINATION_ROUTE[destination]),
+        : navigation.navigate(doorRoute[destination]),
   }));
   const verb = shell.centreVerb;
   if (verb === null) return items;
@@ -47,7 +49,7 @@ export function usePillItems(
     label: verbLabel(t, verb),
     icon: createElement(ShellGlyph, { name: 'plus-circle' }),
     anchor: actionRef,
-    onClick: () => navigation.navigate(VERB_ROUTE[verb]),
+    onClick: onAction ?? (() => navigation.navigate(doorRoute[verb])),
   };
   // After Home and the first list; with no list, between Home and More.
   const at = shell.destinations.length === 2 ? 1 : 2;

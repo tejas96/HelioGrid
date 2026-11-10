@@ -11,3 +11,16 @@ export function actOnChoice(item: MenuItem, onSelect: MenuProps['onSelect']): vo
     onSelect(key);
   }
 }
+
+/**
+ * Every menu's order: the safe rows as given, then the destructive ones, last and behind a gap —
+ * so a delete is never the first row the keyboard lands on, and never sits among the safe acts.
+ */
+export function menuInSafeOrder(items: readonly MenuItem[]): MenuItem[] {
+  const safe = items.filter((item) => item.destructive !== true);
+  const risky = items.filter((item) => item.destructive === true);
+  while (safe.at(-1)?.separator === true) safe.pop();
+  if (risky.length === 0) return safe;
+  if (safe.length === 0) return risky;
+  return [...safe, { key: 'destructive-gap', separator: true }, ...risky];
+}

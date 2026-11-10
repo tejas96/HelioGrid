@@ -1,5 +1,6 @@
 import type { ErrorDetail } from '@heliogrid/contracts';
 import { HttpException, type HttpStatus } from '@nestjs/common';
+import type { z } from 'zod';
 
 /**
  * Throw this whenever the route's contract declares a code that is NOT one of the base
@@ -24,7 +25,28 @@ export class ContractException extends HttpException {
     status: HttpStatus | number,
     /** Field-addressable, the schema field path — what a refusal explains per field (`M01-25`). */
     readonly details?: ErrorDetail[],
+    /** What it was refused over, for a code declared with `errorEnvelopeWithFacts`; else absent. */
+    readonly facts?: unknown,
   ) {
     super(message, status);
   }
+}
+
+/** What a refusal declared with `errorEnvelopeWithFacts` carries: its code, its words, its facts. */
+type RefusalOf<Envelope extends z.ZodTypeAny> =
+  z.infer<Envelope> extends { error: { code: infer Code; facts: infer Facts } }
+    ? { readonly code: Code & string; readonly message: string; readonly facts: Facts }
+    : never;
+
+/**
+ * A refusal carrying its facts (`errorEnvelopeWithFacts`), typed by the envelope the route
+ * declares for that status — a fact the contract does not name fails to compile, so the screen
+ * gets in one round trip exactly what its contract promises.
+ */
+export function refusalWithFacts<Envelope extends z.ZodTypeAny>(
+  _declared: Envelope,
+  status: HttpStatus,
+  refusal: RefusalOf<Envelope>,
+): ContractException {
+  return new ContractException(refusal.code, refusal.message, status, undefined, refusal.facts);
 }

@@ -36,7 +36,7 @@ import {
 } from '@nestjs/common';
 import { ContractException } from '../../common/errors/contract-exception';
 import { stepCannotSucceed } from '../../common/temporal/temporal.activity-host';
-import { FileService } from '../file/file.public';
+import { FileService, readSheetRows } from '../file/file.public';
 import { CatalogImportRepository } from './catalog.import.repository';
 import { CatalogImportFixRepository } from './catalog.import-fix.repository';
 import {
@@ -54,7 +54,6 @@ import {
   verdictMoved,
   verdictOf,
 } from './internal/import-judging';
-import { readSheetRows } from './internal/spreadsheet';
 import { rowWire } from './internal/wire';
 import { admitWrite } from './internal/write-checks';
 

@@ -26,6 +26,7 @@ export function WordedDataTable(
     | 'totalRow'
     | 'caption'
     | 'head'
+    | 'sortable'
   >,
 ) {
   return <DataTable {...blocked} {...props} words={words} />;

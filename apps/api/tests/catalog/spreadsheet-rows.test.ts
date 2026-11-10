@@ -5,7 +5,7 @@
  */
 import { HEADER_ROW_SCAN } from '@heliogrid/domain';
 import { describe, expect, it } from 'vitest';
-import { readSheetRows } from '../../src/modules/catalog/internal/spreadsheet';
+import { readSheetRows } from '../../src/modules/file/file.spreadsheet';
 import { aWorkbookOf, priceListType } from './support';
 
 const CSV = priceListType.csv;

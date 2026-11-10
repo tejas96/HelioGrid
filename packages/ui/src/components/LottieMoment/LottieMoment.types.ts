@@ -7,8 +7,8 @@ import type { TranslatedText } from '@heliogrid/contracts';
  * - `celebrate` a milestone (you're ready, setup complete) · `sunrise` the door's welcome and a
  *   company just created · `published` a catalog release going out · `sent` an invite or a link
  *   sent · `plan` a plan that starts
- * - `empty` a calm list with nothing in it yet · `empty-catalog` no items here · `empty-team` it's
- *   just you · `empty-inbox` no notifications, no invoices
+ *
+ * A place with nothing in it is never a moment: it is the grey line drawing of `EmptyScene`.
  */
 export type LottieMomentName =
   | 'success'
@@ -17,11 +17,7 @@ export type LottieMomentName =
   | 'sunrise'
   | 'published'
   | 'sent'
-  | 'plan'
-  | 'empty'
-  | 'empty-catalog'
-  | 'empty-team'
-  | 'empty-inbox';
+  | 'plan';
 
 /** The side, px on the web and dp on the phone: a toast 48, an inline mark 72, a hero 96 or 120. */
 export type LottieMomentSize = 48 | 72 | 96 | 120;

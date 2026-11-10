@@ -1,32 +1,24 @@
 'use client';
-import { SHELL, SIDEBAR } from '@heliogrid/i18n';
+import { SEARCH_FIELD, SHELL, SIDEBAR } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { type FocusHandle, SearchField, ShellGlyph } from '@heliogrid/ui';
-import { useEffect, useRef, useSyncExternalStore } from 'react';
+import { SearchField, ShellGlyph } from '@heliogrid/ui';
+import { useSyncExternalStore } from 'react';
 
 export interface ShellSearchProps {
   query: string;
   onQuery: (query: string) => void;
+  onClear: () => void;
   onOpen: () => void;
 }
 
 /**
- * The one search (`F6-20`), in the sidebar: Enter opens the search door with what is typed, and
- * Command K (Ctrl K off a Mac) brings the field to hand from anywhere in the shell, its keys shown beside it.
+ * The one search (`F6-20`), in the sidebar: what is typed here opens the search over the page with
+ * it, as Enter does, and Command K (Ctrl K off a Mac) opens it from anywhere — its keys shown
+ * beside the field. The field's own clear empties the query; the browser's is hidden.
  */
-export function ShellSearch({ query, onQuery, onOpen }: ShellSearchProps) {
+export function ShellSearch({ query, onQuery, onClear, onOpen }: ShellSearchProps) {
   const t = useTranslate();
-  const field = useRef<FocusHandle>(null);
   const mac = useOnAMac();
-  useEffect(() => {
-    const bring = (event: KeyboardEvent) => {
-      if (event.key?.toLowerCase() !== 'k' || !(event.metaKey || event.ctrlKey)) return;
-      event.preventDefault();
-      field.current?.focus();
-    };
-    document.addEventListener('keydown', bring);
-    return () => document.removeEventListener('keydown', bring);
-  }, []);
   return (
     <form
       className="hg-shell-search"
@@ -36,11 +28,12 @@ export function ShellSearch({ query, onQuery, onOpen }: ShellSearchProps) {
       }}
     >
       <SearchField
-        ref={field}
         placeholder={t(SIDEBAR.searchOrJump)}
         ariaLabel={t(SHELL.search)}
         value={query}
         onChange={onQuery}
+        onClear={onClear}
+        clearLabel={t(SEARCH_FIELD.clear)}
       />
       <span className="hg-shell-search-keys" aria-hidden="true">
         {mac ? <ShellGlyph name="command" size="sm" tone="secondary" /> : null}

@@ -1,7 +1,7 @@
 import { theme } from '@heliogrid/theme';
 import { useEffect, useRef, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
-import { Animated, Easing, StyleSheet, useColorScheme, View } from 'react-native';
+import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
@@ -23,11 +23,11 @@ interface NativeSegmentedControlProps extends SegmentedControlProps {
 const PAD = theme.spacing['sp-1'];
 
 /**
- * Pill segmented control on a sunken track; the active white pill springs between segments.
+ * Pill segmented control on a sunken track; the active accent wash springs between segments.
  *
  * A NAMED OR ERRORED CONTROL IS A FIELD HERE TOO: the group is a `radiogroup` and each segment a
  * `radio` carrying `accessibilityState.checked`, so the chosen one is announced and not left to
- * the white pill alone.
+ * the wash alone.
  *
  * THREE WEB BEHAVIOURS MAP DIFFERENTLY ON TOUCH. Arrow-key roving has no equivalent — selection
  * is a tap, and the field form's one-tab-stop rule is a keyboard concept. `aria-describedby`
@@ -45,10 +45,8 @@ export function SegmentedControl({
   style,
 }: NativeSegmentedControlProps) {
   const index = selectedIndex(options, value);
-  // biome-ignore lint/plugin/raw-white: control — the pill in view is the card colour in light
-  const thumb = useColorScheme() === 'dark' ? colors['line-strong'] : colors.surface;
   const [trackWidth, setTrackWidth] = useState(0);
-  /* The track is recessed and the pill in view raised, on every ground. */
+  /* The track is recessed and the pill in view the accent wash, on every ground. */
   const slide = useRef(new Animated.Value(0)).current;
   const segmentWidth = options.length > 0 ? Math.max(0, trackWidth - PAD * 2) / options.length : 0;
   const reasoned = reasonedOptions(options);
@@ -89,9 +87,7 @@ export function SegmentedControl({
             styles.indicator,
             {
               width: segmentWidth,
-              /* Raised out of the recessed track: the card colour in light, a lighter step in dark,
-                 so the segment in view is plain to see in every mode (the web's `--thumb`). */
-              backgroundColor: thumb,
+              backgroundColor: colors['accent-subtle'],
               transform: [{ translateX: slide }],
             },
           ]}
@@ -128,7 +124,7 @@ interface SegmentProps {
 /**
  * One segment. THE FIELD FORM IS A REAL RADIO ON TOUCH TOO — the web half's `role="radio"` plus
  * `aria-checked` maps to `accessibilityRole="radio"` with `accessibilityState.checked`, so which
- * of ONGRID / OFFGRID / HYBRID is chosen is announced rather than carried by the white pill alone.
+ * of ONGRID / OFFGRID / HYBRID is chosen is announced rather than carried by the wash alone.
  * Both go through the `Pressable` primitive, which is where the 44dp floor and the pressed
  * treatment come from as well.
  */
@@ -150,14 +146,18 @@ function Segment({ option, active, isField, onSelect }: SegmentProps) {
       {off ? <OffGlyph /> : null}
       <Text
         variant="body-sm"
-        color={active ? 'primary' : 'secondary'}
+        color="secondary"
         lang={option.lang}
-        style={styles.word}
+        style={active ? [styles.word, onWash] : styles.word}
       >
         {option.label}
       </Text>
       {option.count !== undefined ? (
-        <Text variant="body-sm" color="secondary" style={styles.count}>
+        <Text
+          variant="body-sm"
+          color="secondary"
+          style={active ? [styles.count, onWash] : styles.count}
+        >
           {clampCount(option.count, option.countMax)}
         </Text>
       ) : null}
@@ -185,6 +185,9 @@ function OffGlyph() {
     </Svg>
   );
 }
+
+/* The segment in view's words and count: the accent words on the accent wash. */
+const onWash = { color: colors['accent-text'] };
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -214,7 +217,6 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     borderWidth: 1,
     borderColor: colors['line-soft'],
-    ...theme.elevation.e2,
   },
   /* The 44dp target around the 32dp pill: the extra 12dp is taken back as negative margin, so the
      control still renders 40dp tall and the sliding indicator is untouched. */

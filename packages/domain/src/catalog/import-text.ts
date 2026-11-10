@@ -1,34 +1,7 @@
 /**
- * The comparable form of a spreadsheet's text (`M01-41`), shared by the column guess every device
- * may show and the cell readers the server runs.
+ * How the catalog import names a product (`M01-41`): its brand and model, compared as the matching
+ * pass compares them. The comparable form of the text itself is the shared import's (`import/text`).
  */
-
-const DEVANAGARI_ZERO = 0x0966;
-
-/** Devanagari digits as ASCII, so `१३२००` reads as `13200`. */
-export function asciiDigits(text: string): string {
-  return text
-    .normalize('NFKC')
-    .replace(/[०-९]/g, (digit) => String(digit.charCodeAt(0) - DEVANAGARI_ZERO));
-}
-
-/**
- * The comparable form of a cell or a header: ASCII digits, lower case, anything in brackets
- * dropped (a header's unit), and every run of non-letters one space. Letters include the combining
- * marks Devanagari is written with, so a Hindi word survives whole.
- */
-export function importTextKey(text: string): string {
-  return asciiDigits(text)
-    .toLowerCase()
-    .replace(/\([^)]*\)|\[[^\]]*\]/g, ' ')
-    .replace(/[^\p{L}\p{M}\p{N}]+/gu, ' ')
-    .trim();
-}
-
-/** A cell with nothing in it is absent, never a zero. */
-export function isBlank(cell: string | undefined): cell is undefined {
-  return cell === undefined || cell.trim() === '';
-}
 
 /** A product as a row names it: its brand and model, outer spaces aside. */
 export interface ImportProductName {

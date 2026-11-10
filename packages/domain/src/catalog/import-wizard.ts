@@ -1,18 +1,14 @@
+import type { ImportColumnsProblem } from '../import/mapping';
 import {
   CATALOG_IMPORT_ATTENTION_REASONS,
   type CatalogImportAttentionReason,
   type CatalogImportCounts,
   type CatalogImportRowOutcome,
   type CatalogImportRowResult,
-  type CatalogImportSheet,
   type CatalogImportState,
 } from './import';
-import { type CatalogImportField, guessColumns, guessHeaderRow } from './import-columns';
-import {
-  type CatalogImportColumnsProblem,
-  type CatalogImportMapping,
-  importColumnsProblem,
-} from './import-mapping';
+import { CATALOG_IMPORT_COLUMNS, type CatalogImportField } from './import-columns';
+import { importColumnsProblem } from './import-mapping';
 
 /*
  * The import wizard's flow (`SCR-M01-17`, `M01-41`), authored once for the web panel and the phone
@@ -149,14 +145,18 @@ export type ImportContinueGate =
   | 'columns_twice'
   | 'matching';
 
-const COLUMNS_GATE: Readonly<Record<CatalogImportColumnsProblem, ImportContinueGate>> = {
+const COLUMNS_GATE: Readonly<Record<ImportColumnsProblem, ImportContinueGate>> = {
   required_field_unplaced: 'columns_unplaced',
   field_placed_twice: 'columns_twice',
 };
 
-export function importContinueGate(
+/**
+ * Why any import's step act waits: the frame's own wait, or — on the columns step — what is wrong
+ * with the columns as placed, by that import's own rule (`columnsProblemOf` over its fields).
+ */
+export function importStepGate(
   frame: ImportWizardFrame,
-  columns: readonly (CatalogImportField | null)[],
+  columnsProblem: ImportColumnsProblem | null,
 ): ImportContinueGate | null {
   switch (frame) {
     case 'empty':
@@ -165,46 +165,29 @@ export function importContinueGate(
     case 'unreadable':
     case 'matching':
       return frame;
-    case 'columns': {
-      const problem = importColumnsProblem(columns);
-      return problem === null ? null : COLUMNS_GATE[problem];
-    }
+    case 'columns':
+      return columnsProblem === null ? null : COLUMNS_GATE[columnsProblem];
     default:
       return null;
   }
 }
 
-/** One sheet's header row as cells, one per column the sheet fills. */
-function headerCells(sheet: CatalogImportSheet, headerRow: number): readonly string[] {
-  const row = sheet.topRows[headerRow] ?? [];
-  return Array.from({ length: sheet.columnCount }, (_, column) => row[column] ?? '');
+/** The catalog import's gate: its columns held to the catalog's required fields. */
+export function importContinueGate(
+  frame: ImportWizardFrame,
+  columns: readonly (CatalogImportField | null)[],
+): ImportContinueGate | null {
+  return importStepGate(frame, frame === 'columns' ? importColumnsProblem(columns) : null);
 }
 
 /** The columns guessed from one header row of one sheet. */
-export function mappingForHeader(
-  sheets: readonly CatalogImportSheet[],
-  sheet: number,
-  headerRow: number,
-): CatalogImportMapping {
-  const read = sheets[sheet];
-  const cells = read === undefined ? [] : headerCells(read, headerRow);
-  return { sheet, headerRow, columns: guessColumns(cells).map((guess) => guess.field) };
-}
+export const mappingForHeader = CATALOG_IMPORT_COLUMNS.mappingForHeader;
 
 /**
  * What the device proposes once a file is read: the first sheet whose top names a field ("We read
  * the one with a header row"), else the first sheet; its best header row; and its columns.
  */
-export function guessImportMapping(
-  sheets: readonly CatalogImportSheet[],
-): CatalogImportMapping | null {
-  if (sheets.length === 0) return null;
-  const guesses = sheets.map((sheet, index) =>
-    mappingForHeader(sheets, index, guessHeaderRow(sheet.topRows)),
-  );
-  const named = guesses.find((guess) => guess.columns.some((field) => field !== null));
-  return named ?? guesses[0] ?? null;
-}
+export const guessImportMapping = CATALOG_IMPORT_COLUMNS.guessMapping;
 
 /** The outcomes each preview group lists: a match on the company's own SKU is counted a match. */
 export const IMPORT_PREVIEW_GROUPS = {

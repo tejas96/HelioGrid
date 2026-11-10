@@ -24,18 +24,18 @@ This file covers module M01 — company signup and authentication, team invites 
 ### T-M01-022 · Capture Settings
 **Type:** screen · **Tier:** P0
 **Status:** planned
-**Why:** The owner sees which lead channels actually bring leads in — manual, import, inbound call, referral — switches one off without touching the leads it already brought, and sees website forms and business messaging as later, not as a promise; without it the settings advertise channels the product does not have.
+**Why:** The owner sees which lead channels actually bring leads in — manual, import, referral — switches one off without touching the leads it already brought, and sees website forms and business messaging as later, not as a promise; without it the settings advertise channels the product does not have.
 **PRD rows:** M01-58 (P0), M02-17 (P0), M02-64 (P0), M02-65 (P0)
 **DESIGN:** SCR-M01-22
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**Data model:** none — reads the channel registry and `lead_channel_setting` that `T-M02-017` builds behind this surface (M02-64: M02 owns the channel set and the toggle, M01 the surface); the closed source set is `T-M02-009`'s. `T-M01-026` defers the table to this screen's slice, where its engine — `T-M02-017`, never this screen (Law 11) — authors it.
-**Contract:** **Gap recorded, not filled:** `T-M02-017` declares no contract file — the channel list with each channel's true state and the toggle write are owed there, in M02's contract area, settled before the build.
-**Depends on:** `T-M02-017` (the policy and its routes) · `T-M02-009` (the source set and the inbound-call intake) · `T-M01-025` (the guard for `onboarding.manage_tenant_settings`).
-**Out of scope:** the channel set, toggle semantics and later-card facts — `T-M02-017`; the capture flows — M02; the voice agent's configuration — postponed; M03's channels — M03.
+**Data model:** the channel registry and `lead_channel_setting`, built in this task. M02 owns the channel set and what a toggle does (M02-64): that rule lives in `packages/domain`, and this screen only renders it (Law 11). `T-M01-026` defers the table to this screen's slice.
+**Contract:** the channel list with each channel's true state, and the toggle write, in M02's contract area — settled before the build.
+**Depends on:** `T-M02-009` (the source set) · `T-M01-025` (the guard for `onboarding.manage_tenant_settings`).
+**Out of scope:** the capture flows — M02; inbound-call capture and the voice agent's configuration — postponed with voice calling; M03's channels — M03.
 **DONE WHEN:**
 - Given the capture-settings screen, when it renders, then every live channel shows a working toggle and every not-yet channel is a "later" card with no toggle (M01-58). → proof: QA (web and phone) every live channel renders a working toggle and each not-yet channel a later card without one, on both platforms
 - Given capture settings, when it renders, then website and business-messaging appear as later cards with no toggle and no capture path exists for them anywhere in this module (M02-17). → proof: QA (web and phone) website and business-messaging render as later cards, and no route, screen or control in M02 captures through them
-- Given a live channel toggled off, when the leads already captured through it are inspected, then they are unchanged and still carry their source badge, and no new capture arrives through that channel (M02-64). → proof: QA (api) toggle a live channel off: existing leads and their source badge are byte-identical and a new capture through that channel is refused — `T-M02-017`'s unit
+- Given a live channel toggled off, when the leads already captured through it are inspected, then they are unchanged and still carry their source badge, and no new capture arrives through that channel (M02-64). → proof: QA (api) toggle a live channel off: existing leads and their source badge are byte-identical and a new capture through that channel is refused — this task's unit
 - Given capture settings, when it renders, then deferred channels appear as later cards with no toggle, no snippet and no number field (M02-65). → proof: QA web · ios · android the later cards carry no toggle, no snippet and no number field at 375px and 1536px
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values. → proof: QA (web and phone) every base and brief-listed state drawn at 375px and 1536px, the colour-literal lint clean on both
 

@@ -42,12 +42,12 @@ for (const scheme of ['light', 'dark'] as const) {
     );
     const inView = rail.getByRole('button', { name: destinationLabel(en.t, 'home') });
     await expect(inView).toHaveAttribute('aria-current', 'page');
-    const ink = await resolvedColour(page, '--on-ink');
+    const ink = await resolvedColour(page, '--on-nav-active');
     await expect(inView).toHaveCSS('color', ink);
     expect(await iconColour(inView)).toBe(ink);
-    // The others keep the quiet tone, so only the pill changes.
+    // The others keep the glyph a step fainter than its name, so only the pill changes.
     const other = rail.getByRole('button', { name: destinationLabel(en.t, 'leads') });
-    expect(await iconColour(other)).toBe(await resolvedColour(page, '--text-secondary'));
+    expect(await iconColour(other)).toBe(await resolvedColour(page, '--text-tertiary'));
   });
 
   test(`in ${scheme}, the phone pill's item in view draws its icon in the pill's ink`, async ({

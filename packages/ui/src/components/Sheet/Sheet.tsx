@@ -65,7 +65,7 @@ export function Sheet({
   retryLabel,
   emptyTitle,
   emptyMessage,
-  emptyMoment,
+  emptyScene,
   emptyAction = null,
   unavailableTitle,
   unavailableMessage,
@@ -151,7 +151,7 @@ export function Sheet({
           <OverlayBody
             emptyAction={emptyAction}
             emptyMessage={emptyMessage}
-            emptyMoment={emptyMoment}
+            emptyScene={emptyScene}
             emptyTitle={emptyTitle}
             errorMessage={errorMessage}
             errorTitle={errorTitle}

@@ -44,7 +44,7 @@ const OUTSIDE = {
   },
 } as const;
 
-interface OutsideFacts {
+export interface OutsideFacts {
   readonly time: string;
   readonly from: string | null;
   readonly to: string | null;

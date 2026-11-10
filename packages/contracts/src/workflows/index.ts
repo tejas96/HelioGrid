@@ -35,6 +35,8 @@ export type {
   CreditNoteDocumentStepResult,
 } from './credit-note-document';
 export { creditNoteDocumentWorkflow } from './credit-note-document';
+export type { CrmDailySweepActivities } from './crm-daily-sweep';
+export { CRM_DAILY_SWEEP_SCHEDULE_ID, crmDailySweepWorkflow } from './crm-daily-sweep';
 export type {
   InviteMessageActivities,
   InviteMessageStepInput,
@@ -50,6 +52,22 @@ export type {
   RenderedDocument,
 } from './invoice-document';
 export { DOCUMENT_RENDER_QUEUE, invoiceDocumentWorkflow } from './invoice-document';
+export type {
+  LeadImportActivities,
+  LeadImportStepInput,
+  LeadImportStepResult,
+} from './lead-import';
+export { LEAD_IMPORT_PHASES, leadImportWorkflow } from './lead-import';
+export type { NotificationHorizonPurgeActivities } from './notification-horizon-purge';
+export {
+  NOTIFICATION_HORIZON_PURGE_SCHEDULE_ID,
+  notificationHorizonPurgeWorkflow,
+} from './notification-horizon-purge';
+export type { NotificationPushDrainActivities } from './notification-push-drain';
+export {
+  NOTIFICATION_PUSH_DRAIN_SCHEDULE_ID,
+  notificationPushDrainWorkflow,
+} from './notification-push-drain';
 export type { OutboxActivities } from './outbox';
 export {
   OUTBOX_SWEEP_SCHEDULE_ID,

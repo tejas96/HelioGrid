@@ -14,6 +14,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 - Given the agent called two of the rep's leads overnight, when My Day renders, then those two outcomes appear only inside the AGENT ACTIVITY block, each marked as agent activity and deep-linking to the call result — never interleaved with the rep's own tasks (M07-03).
 - Given a snoozed lead with a wake date of today, when 09:00 tenant-local passes, then the lead's follow-up task is in TODAY and the lead is no longer hidden (M07-04).
 - Given a proposal marked shared on Monday, when Wednesday arrives with no rep action, then the auto-created follow-up task exists, is owned by the sending rep, and names its provenance rule (M07-06); given it is still open two days past due, then it is visible to the agent's task-overdue trigger (M07-07).
+- Given a lead the nightly sweep flagged dormant, when My Day renders, then the lead and its tasks are absent until activity returns it to its stage (M02-52, M02-58) (moved from the block 3 CRM plan, owner yes 2026-11-09).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 ### T-M07-002 · Mark won
@@ -36,6 +37,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 **Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
 **DONE WHEN:**
 - Given a rep marks a lead lost, when they must pick a reason, then the surface offers the ruled seven-reason set (the source six plus "not interested" — owner ruling 2026-08-04), refuses a reasonless save, and postponed losses carry a date (M07-63).
+- Given a lead marked lost, when the act completes, then the lead enters the Lost state of the R9 machine the CRM block built, with its reason, its resurface date for "postponed" and the six-month no-call suppression for "not interested" (M02-54) (moved from the block 3 CRM plan, owner yes 2026-11-09).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 ### T-M07-004 · Reopen lead
@@ -50,7 +52,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 - Given a lost lead is reopened, when it re-enters, then it lands at its prior funnel stage and the timeline records the reopen (M07-64).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
-### T-M07-021 · Follow-up task system (model, provenance, trigger feed)
+### T-M07-021 · Follow-up task system (provenance, trigger feed)
 
 **Type:** engine · **Tier:** P0
 **Status:** planned
@@ -59,7 +61,6 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 - **M07-05** (P0) — **A task carries an assignee, a kind — follow-up · site visit · call · custom — a due date and a status. Overdue is derived from the due date, never a stored state.**
 - **M07-07** (P0) — **A task overdue two days is an agent trigger.** The task system is what the safety net reads: the task-overdue-2d trigger (§M07.7, M07-33) reads task due dates and statuses — no separate bookkeeping exists to drift from what the rep sees.
 **DONE WHEN:**
-- Given a task due yesterday, when any surface renders it, then it is overdue by derivation — and if its due date is edited to tomorrow, it is nowhere overdue, with no stored flag to clear (M07-05).
 - Given a proposal marked shared on Monday, when Wednesday arrives with no rep action, then the auto-created follow-up task exists, is owned by the sending rep, and names its provenance rule (M07-06); given it is still open two days past due, then it is visible to the agent's task-overdue trigger (M07-07).
 
 **Settle before the build:**

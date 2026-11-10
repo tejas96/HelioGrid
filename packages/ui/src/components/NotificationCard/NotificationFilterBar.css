@@ -53,8 +53,8 @@
 
 .hg-notification-filter[aria-pressed="true"] {
   padding-right: var(--sp-4);
-  background: var(--action-primary);
-  color: var(--text-inverse);
+  background: var(--accent-subtle);
+  color: var(--accent-text);
 }
 
 .hg-notification-filter:focus-visible {

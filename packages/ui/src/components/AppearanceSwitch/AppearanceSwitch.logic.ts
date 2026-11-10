@@ -17,3 +17,9 @@ export function appearanceOptions(words: AppearanceWords) {
     glyph: APPEARANCE_GLYPH[value],
   }));
 }
+
+/** The choice a press of the one-button switch moves to: the next in the drawn order, round. */
+export function nextAppearance(value: Appearance): Appearance {
+  const next = APPEARANCES[(APPEARANCES.indexOf(value) + 1) % APPEARANCES.length];
+  return next ?? value;
+}

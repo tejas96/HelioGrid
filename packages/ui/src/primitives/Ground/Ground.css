@@ -110,6 +110,10 @@
 .hg-transcript-bubble,
 /* What a coming page will hold (`OnItsWay`): one tile, its points split by hairlines. */
 .hg-on-its-way-points,
+/* A lead waiting under the inbox's deck, one tile of the desktop grid (`LeadTile`). */
+.hg-lead-tile,
+/* The pipeline by stage over the Leads list (`StageMeter`). */
+.hg-stage-meter,
 /* The catalog's price editor docked beside the list on desktop (`PriceEditorDock`, apps/web). */
 .hg-catalog-dock,
 /* One card holding a list's rows (`CardRows`): the catalog's narrow list, the Team list. */
@@ -152,6 +156,10 @@
 .hg-banner,
 .hg-banner-pill,
 .hg-tinted-block,
+/* A qualifying answer that came back unsaved (`QualifyCard`): the danger wash holds its Try again. */
+.hg-qualify-fail,
+/* A contact's number already another customer's (`LeadActSheet`): the warning wash holds Merge. */
+.hg-lead-act-taken,
 .hg-source-doc-message,
 .hg-image-missing,
 .hg-audio-panel,

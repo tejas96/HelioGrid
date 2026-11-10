@@ -39,7 +39,7 @@ function PublishBody(props: CatalogPublishBody) {
   if (props.empty !== undefined && props.empty !== null) {
     return (
       <div ref={body} tabIndex={-1} className="hg-cat-release hg-focus-target">
-        <EmptyState moment="empty" title={props.empty.title} description={props.empty.line} />
+        <EmptyState scene="settle" title={props.empty.title} description={props.empty.line} />
       </div>
     );
   }

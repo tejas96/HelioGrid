@@ -49,7 +49,7 @@ export function BrandingLinkPage({
         name={document.companyName}
         caption={linkPreview.ready}
       />
-      <StatusChip status="proposal-sent" label={linkPreview.awaiting} tone="accent" />
+      <StatusChip status="proposal" label={linkPreview.awaiting} tone="accent" />
       <View style={styles.linkActs}>
         <Button variant="primary" size="sm">
           {linkPreview.accept}

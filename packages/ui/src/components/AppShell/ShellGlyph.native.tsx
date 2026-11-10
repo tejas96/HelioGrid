@@ -1,3 +1,4 @@
+import { createContext, useContext } from 'react';
 import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
@@ -19,6 +20,13 @@ const TONE: Record<NonNullable<ShellGlyphProps['tone']>, ThemeColor> = {
 };
 
 /**
+ * The ink of the filled pill a glyph stands on — a primary or destructive `Button`'s words — which
+ * wins over the glyph's own tone, as the web's `.hg-button > svg` inherits it: a glyph left at its
+ * default drew a dark mark on the ocean fill. Null off a filled pill.
+ */
+export const GlyphInkContext = createContext<ThemeColor | null>(null);
+
+/**
  * One of the shell's own glyphs. Decorative — the control that holds it carries the name — so it
  * is hidden from assistive tech. `tone` sets the colour; the stroke follows it.
  */
@@ -30,7 +38,7 @@ export function ShellGlyph({
 }: ShellGlyphProps) {
   const { solid } = glyphMarks(name, filled);
   const px = ICON_SIZE[size];
-  const color = TONE[tone];
+  const color = useContext(GlyphInkContext) ?? TONE[tone];
   return (
     <Svg
       width={px}

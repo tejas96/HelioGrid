@@ -108,11 +108,11 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 
 | Entity | V | Block | Purpose | Owner | Key fields | Lifecycle | PRD refs |
 |---|---|---|---|---|---|---|---|
-| customer | V1 | 3 | Phone-identified person/organisation; the dedupe anchor carrying calling-compliance state read per dial; object of merge with survivor/tombstone semantics | tenant | phone_e164 (pack-normalised; the dedupe lookup key, NOT an enforced unique key — M02-12 create-anyway and M02-66 same-moment server collision both deliberately land a second row with the same number in one tenant, carried by duplicate_link); name; city; preferred_language; voice_consent; dnd_status; do_not_call_flag; complaint_quiet_flag; merged_into (tombstone pointer); merge_status | active → merged (tombstone, never deleted) | M02-02, M02-37, M02-59..63, M03-34 |
+| customer | V1 | 3 | Phone-identified person/organisation; the dedupe anchor carrying calling-compliance state read per dial; object of merge with survivor/tombstone semantics | tenant | phone_e164 (pack-normalised; the dedupe lookup key, NOT an enforced unique key — M02-12 create-anyway deliberately lands a second row with the same number in one tenant, carried by duplicate_link); name; city; preferred_language; do_not_call_flag (voice_consent, dnd_status and complaint_quiet_flag join with voice calling — M02-37); merged_into (tombstone pointer); merge_status | active → merged (tombstone, never deleted) | M02-02, M02-37, M02-59..63, M03-34 |
 | contact | V1 | 3 | Additional person on a customer (decision-maker, landlord, spouse); phones join dedupe; messaging consent ledger hangs per contact | tenant | name; phone_e164 (dedupe-matched); role_label ref; is_primary (exactly one per customer) | — | M02-34, M02-02, M03-34 |
 | contact_role_label | V1 | 3 | Tenant-extendable set of contact role labels, seeded with decision-maker/landlord/spouse-style values *(label vocabulary table shape: one value as written (F3-10), retirement, rename behaviour unspecified — F3-10)*  | tenant | label (canonical identity, fixed regardless of display language) | — | M02-34 |
 | referral | V1 | 3 | Attribution-only link from a referring customer to the referred lead, visible on both records; no credit, redemption or balance *(non-customer 'came from' free-text storage shape unstated — M02-16) · (handover referral-ask outcome: here, on project, or analytics-only? — M08-47)*  | tenant | referring_customer ref; referred_lead ref; created_at; explicitly no money fields | — | M02-16, F5-72 |
-| duplicate_link | V1 | 3 | Pairwise duplicate linkage: create-anyway links the two records; a server-detected collision flags both; each shows the other until resolved  | tenant | record refs (pair — grain follows the open customer-vs-lead ambiguity); origin (create_anyway \| server_detected); resolution_state | open → resolved (sheet choice \| merge) | M02-12, M02-66, M02-09 |
+| duplicate_link | V1 | 3 | Pairwise duplicate linkage: create-anyway links the two records; each shows the other until resolved  | tenant | record refs (pair — grain follows the open customer-vs-lead ambiguity); resolution_state | open → resolved (merge) | M02-12, M02-09 |
 | lead | V1 | 3 | An enquiry/deal: source-badged, segment-carrying, rep-owned, moving the eight-stage funnel with the orthogonal R9 parking/terminal machine  | tenant | source (closed set, immutable); segment; stage; lifecycle_state (R9); owner_ref; estimated_value (provenance + provisional, tenant currency); monthly_bill (tenant currency); snooze_wake_date / postponed_resurface_date; disqualify_reason / lost_reason (closed sets); no_call_suppress_until; reopen_count | new → contacted → qualified → survey → design → proposal → negotiating → won; orthogonal: unassigned · snoozed · dormant · disqualified · lost · junk | M02-01, M02-03, M02-05, M02-13, M02-38..42, M02-49..57 |
 | lead_stage_transition | V1 | 3 | Append-only funnel-history event, the CRM mirror of project_stage_transition: every move of the eight-stage funnel and every orthogonal R9 parking/terminal change, with actor, moment and cause. Without it M13-22 time-in-stage and M13-24 cycle duration have only the free-text timeline to reconstruct from, and lead carries a single scalar prior_stage. | tenant | lead_ref; move_kind (funnel_stage \| lifecycle_state — an R9 parking/terminal change is orthogonal to the funnel and MUST be distinguishable from a stage change, or per-stage duration double-counts); from_value; to_value; moved_at; moved_by; cause (manual \| import \| automation \| wake \| reopen \| system) | — (append-only) | M02-49, M02-51..56, M13-22, M13-24 |
 | activity | V1 | 3 | Append-only timeline entry per lead/customer/project; every module writes into it; the audit-usable account including overwritten concurrent edits *(anchors on lead, customer, or both; post-merge stream composition unstated — M02-35/60) · (field timeline: dedicated stream or derived view? no entity modeled — M09-54/56)*  | tenant | kind (closed vocabulary); actor_type (person\|agent\|system\|customer); actor_ref (survives deactivation); capture_time; server_apply_order; body | — (append-only) | M02-35, M02-36, M02-11, M03-31, M08-16 |
@@ -294,7 +294,7 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 | user_account | currently owns | lead | 1:N | no (unassigned is an R9 state) | Deactivated assignee's leads reassigned via M01 guard-rail; history stays attributed | M02-28, M02-30, M02-50 |
 | lead_import | created | lead | 1:N | no | Imported rows never rolled back for other rows' failures; PRD silent on import-record removal | M02-21, M02-18 |
 | customer | absorbs merged tombstones (survivor ← losers) | customer | 1:N | no | Tombstone never deleted; merge irreversible; provably touches no money | M02-59..63 |
-| customer | duplicate_link (pairwise duplicate linkage; grain follows the open customer-vs-lead ambiguity) | customer | N:M | no | Resolved only by explicit sheet choice or merge; never silently discarded or auto-merged | M02-12, M02-66 |
+| customer | duplicate_link (pairwise duplicate linkage; grain follows the open customer-vs-lead ambiguity) | customer | N:M | no | Resolved only by merge; never auto-merged | M02-12, M02-66 |
 | message_template | is content-class parent of (no second template system) | campaign_template | 1:N | no | PRD silent | M03-40, M01-55 |
 | user_account | owns/authored | campaign | 1:N | yes | PRD silent | M03-08, M03-28 |
 | channel_connection | carries sends of | campaign | 1:N | yes | Disconnection stops new sends only; never rewrites a completed campaign's report | M03-08, M03-27, M03-28 |
@@ -701,11 +701,10 @@ erDiagram
 ```mermaid
 erDiagram
   CUSTOMER {
-    string phone_e164 "dedupe path, NOT unique - M02-12/M02-66"
+    string phone_e164 "dedupe path, NOT unique - M02-12"
     string name
     string preferred_language
     boolean do_not_call_flag
-    boolean complaint_quiet_flag
     string merge_status
     string merged_into FK
   }
@@ -1690,17 +1689,17 @@ erDiagram
 
 ### 5.5 CRM & marketing
 
-- The pack-normalised E.164 phone is the customer's dedupe key, not an enforced unique key: (tenant_id, phone_e164) is a NON-unique lookup path, run on every capture before save across customers' AND contacts' numbers; no other field is an identity. M02-12 create-anyway (mandatory reason, both timelines, audit log) and M02-66 same-moment server collision each deliberately produce a second customer row with the same number inside one tenant, and duplicate_link is what carries the pair until a sheet choice or merge resolves it. Any hard uniqueness is therefore at most PARTIAL — over active, unlinked rows — and cannot be authored until the duplicate_link grain question in §8 (customer-level, lead-level, or both) is ruled. (M02-02, M02-07, M02-12, M02-66, M02-34)
+- The pack-normalised E.164 phone is the customer's dedupe key, not an enforced unique key: (tenant_id, phone_e164) is a NON-unique lookup path, run on every capture before save across customers' AND contacts' numbers; no other field is an identity. M02-12 create-anyway (mandatory reason, both timelines, audit log) deliberately produces a second customer row with the same number inside one tenant; a same-moment capture never does, because the server takes same-number saves one at a time and the second meets the sheet (M02-66), and duplicate_link is what carries the pair until a sheet choice or merge resolves it. Any hard uniqueness is therefore at most PARTIAL — over active, unlinked rows — and cannot be authored until the duplicate_link grain question in §8 (customer-level, lead-level, or both) is ruled. (M02-02, M02-07, M02-12, M02-66, M02-34)
 - The timeline is append-only — no entry edited or deleted; corrections are new entries; lead field edits resolve per-field LWW by server apply order with an activity per applied change; capture_time preserved separately. (M02-35, M02-36)
 - Merge: survivor chosen, every reference re-pointed (contacts, leads, proposals, links, activities, tasks, files), loser tombstoned never deleted, irreversible, both records in actor's visibility scope, provably touches no money. (M02-60..63)
 - No lead state ever deletes; R9 is the single definition of parking/terminal states; wake-ups land at 09:00 tenant-local; reopen restores prior stage; reopens counted; closed period stays on the record. (M02-49, M02-51..56)
 - Lead source is a closed vocabulary set by the creating path and never editable afterwards. (M02-13, M02-17, M03-31)
 - Exactly one primary contact per customer; changing it is audited; merge requires a single primary chosen. (M02-34, M02-60)
 - Assignment is manual (no routing engine); history is append-only with open-load snapshot; current owner is a separate fact from the trail; overdue is derived, never stored. (M02-27, M02-28, M02-30)
-- Create-anyway requires a mandatory reason recorded on both timelines and the audit log and links the two records; same-moment collisions flag both possible-duplicate — never auto-merged, never silently discarded. (M02-09, M02-12, M02-66)
+- Create-anyway requires a mandatory reason recorded on both timelines and the audit log and links the two records; of two same-moment captures the second meets the sheet — never auto-merged, never silently discarded. (M02-09, M02-12, M02-66)
 - Disqualify/lost reasons are mandatory from fixed sets (six/seven); postponed auto-resurfaces on its date; lost=not-interested suppresses calls six months; reason never edited away — correction is reopen + new close. (M02-42, M02-54)
 - Reaching won creates the project in the same transaction — atomic, no re-entry of the customer. (M02-57)
-- Customer carries consent/DND/do-not-call/quiet-flag/preferred-language from day one — the gate reads one row per dial; stop-calling is irreversible without the customer's say-so; wrong-number flags the number against any dialling. (M02-37, M02-44)
+- Customer carries do-not-call and preferred language from day one; consent, DND and the quiet flag join with voice calling, whose gate reads one row per dial; stop-calling is irreversible without the customer's say-so; wrong-number flags the number against any dialling. (M02-37, M02-44)
 - Referral is attribution only — no monetary credit, redemption or balance exists in v1; future credits would reference these rows. (M02-16, F5-72)
 - A campaign is never deleted once it sent anything — archive only; its completion report is a permanent compliance record surviving archival and disconnection. (M03-08, M03-27)
 - Campaign state is a closed six; editing a scheduled campaign returns it to draft; a sending campaign is frozen (pause/cancel only); nothing sent is ever un-sent. (M03-09, M03-13)
@@ -1928,7 +1927,7 @@ erDiagram
 |---|---|---|
 | customer.phone_e164, contact.phone_e164 | PII | Identity key itself; cross-scope disclosure limited to three-fact dedupe sheet; erasure replaces with keyed hash preserving dedupe integrity (M02-02, M02-08, F1-57) |
 | customer.name, customer.city; contact.name; lead address facts | PII | Never translated; cross-scope disclosure limited to owner/stage/last-contact only (M02-01, M02-08, F3-08) |
-| customer consent/DND/do_not_call/complaint_quiet_flag/preferred_language | PII | Regulated compliance data read per dial; stop-calling irreversible without customer's say-so (M02-37, M02-44) |
+| customer do_not_call/preferred_language (consent/DND/complaint_quiet_flag with voice) | PII | Regulated compliance data read per dial; stop-calling irreversible without customer's say-so (M02-37, M02-44) |
 | consent_record.*, suppression_entry.* | PII | Legal-proof data: one-tap provable, honored suite-wide within pack deadlines; no deletion path (M03-34, M03-46, M03-47) |
 | channel_connection.credential | credential-secret | M01 discipline: masked/last-4 display only, every decrypt audited (F2-22), never displayed back (M03-18) |
 | lead.monthly_bill, lead.estimated_value | financial | Tenant-currency; value carries provenance + provisional state, forecast-only, never revenue; merge provably touches no money (M02-38, M02-40, M02-62) |
@@ -2065,14 +2064,14 @@ Logical level only — access paths the PRD itself evidences. Every tenant-owned
 
 | Entity | Suggested index / access path | Justifying access pattern (from the PRD) | PRD refs |
 |---|---|---|---|
-| customer | (tenant, phone_e164) NON-unique; post-erasure keyed phone hash | Dedupe lookup — the product's hottest query: live as typed, on server apply, in bulk for import preview; must survive anonymisation. Deliberately not unique: M02-12 create-anyway and M02-66 same-moment collisions sanction duplicate rows in one tenant (duplicate_link carries them). A partial unique index over active, unlinked rows is the only uniqueness available, and waits on the duplicate_link grain ruling (§8) | M02-02, M02-07, M02-19, M02-12, M02-66, F1-57 |
+| customer | (tenant, phone_e164) NON-unique; post-erasure keyed phone hash | Dedupe lookup — the product's hottest query: live as typed, on server apply, in bulk for import preview; must survive anonymisation. Deliberately not unique: M02-12 create-anyway sanctions duplicate rows in one tenant (duplicate_link carries them); same-number saves are taken one at a time (M02-66). A partial unique index over active, unlinked rows is the only uniqueness available, and waits on the duplicate_link grain ruling (§8) | M02-02, M02-07, M02-19, M02-12, M02-66, F1-57 |
 | contact | (tenant, phone_e164) | Dedupe match set includes contacts' numbers | M02-02, M02-34 |
 | lead | (tenant, lifecycle_state, created_at desc) | Unassigned inbox newest-first; >24h escalation sweep; owner dashboard "needs you" | M02-23, M02-50 |
 | lead | (tenant, snooze_wake_date) and (tenant, postponed_resurface_date) | 09:00 tenant-local wake sweep for snoozed and lost=postponed leads | M02-49, M02-51, M02-54 |
 | lead | (tenant, stage, last-activity date) | Nightly dormancy sweep: open stages with 30 days zero activity | M02-52 |
 | lead | (tenant, owner_ref, stage) | Assign-picker open-lead/overdue counts computed at open; visibility-scoped lists | M02-28, M02 §2 |
 | lead | (tenant, monthly_bill); filters on source, stage, city, qualification facts | Leads list sort/filter; aggregate-only audience resolution with running counts | M02-40, M03-10, M03-11 |
-| activity | (lead_ref, server_apply_order) and (customer_ref, server_apply_order); filter by kind | Chronological single-stream timeline read per lead/customer, filterable by kind; call-attempt count driving three-attempt handoff | M02-35, M02-43 |
+| activity | (lead_ref, server_apply_order) and (customer_ref, server_apply_order); filter by kind | Chronological single-stream timeline read per lead/customer, filterable by kind; the failed call-attempt count shown on the lead | M02-35, M02-43 |
 | campaign_send | (campaign, state) | Campaign report per-recipient state counts; running count while sending; honest partials | M03-04, M03-49, M03-50 |
 | consent_record | (contact_ref, channel_class, recorded_at desc) | Per-recipient consent check at audience resolution and again at send time (fail closed on staleness) | M03-46, M03-34 |
 | suppression_entry | (customer_ref, channel_class) | Auto-applied suppression filter on every audience resolution | M03-47, M03-11 |
@@ -2268,10 +2267,10 @@ The billing PRD is being redesigned, so no other row traces here; the built tabl
 | M02 messaging action | Transactional message, visit confirmation, one reminder per visit (M02-33, 47, 48) | channel_connection, message_template (config), activity | partial (no transactional-send record entity — tracked in §8.1) |
 | M02 contacts | Name/phone/role, tenant-extendable labels, one primary (M02-34) | contact, contact_role_label | yes |
 | M02 timeline | Append-only stream, per-field LWW with activity per change (M02-35, 36) | activity | yes |
-| M02 compliance flags | Consent/DND/quiet/preferred-language from day one; wrong-number flag (M02-37, 44) | customer, consent_record | yes |
+| M02 compliance flags | Do-not-call and preferred language from day one, the voice-only flags with voice; wrong-number flag (M02-37, 44) | customer, consent_record | yes |
 | M02 qualification & value | Six inline facts, estimated value provenance, monthly bill (M02-38..40) | lead | yes |
 | M02 funnel & R9 | Eight stages, closed reason sets, snooze/dormant/junk/reopen, surfacing law (M02-41, 42, 49..56, 58) | lead (stage, lifecycle_state, prior_stage, reasons, dates) | yes |
-| M02 voice attempts | Retry logging, three-attempt agent handoff (M02-43) | activity / call_record (sales); count derived, never stored | yes |
+| M02 call attempts | Retry logging and the failed-attempt count; the agent handoff returns with voice (M02-43) | activity / call_record (sales); count derived, never stored | yes |
 | M02 visit booking | Booking creates M04-owned visit (M02-46, 48) | survey_visit (survey domain owns relationship) — V2, M04, while lead-side booking is V1 block 3 | partial (what a V1 booking writes is unsettled — §8.1) |
 | M02 won→project | Atomic project creation (M02-57) | project (projects domain owns relationship) | yes |
 | M02 merge | Survivor/tombstone, re-point, full audit, no-money proof (M02-59..63) | customer.merged_into/merge_status, activity | yes |

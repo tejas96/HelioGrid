@@ -1,5 +1,7 @@
 /* Cross-component imports in a native half point at the NATIVE file — see NextAction.native.tsx. */
+import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Banner } from '../Banner/Banner.native';
 import { Button } from '../Button/Button.native';
 import { EditorSurface } from '../EditorSurface/EditorSurface.native';
@@ -7,13 +9,21 @@ import { SheetActions } from '../Sheet/SheetActions.native';
 import { CONFIRM_LOOK } from './MemberCard.logic';
 import type { TeamConfirmProps } from './MemberCard.types';
 import { TeamConfirmLines } from './TeamConfirmLines.native';
+import { TeamConfirmReassign } from './TeamConfirmReassign.native';
 
 /**
  * The confirm a Team act opens (`SCR-M01-12`): a decision, so a sheet at 375 and a centred modal at
  * 1536, neither dismissible nor closable but by its own two buttons. On the phone the caller sends
  * the screen reader back to the act that opened it. Its last words stay while it closes.
  */
-export function TeamConfirm({ words, look = 'act', busy, onGo, onLeave }: TeamConfirmProps) {
+export function TeamConfirm({
+  words,
+  look = 'act',
+  busy,
+  onGo,
+  onLeave,
+  reassign,
+}: TeamConfirmProps) {
   const last = useRef(words);
   if (words !== null) last.current = words;
   const shown = last.current;
@@ -49,7 +59,10 @@ export function TeamConfirm({ words, look = 'act', busy, onGo, onLeave }: TeamCo
       }
     >
       {shown.refusal === undefined ? (
-        <TeamConfirmLines body={shown.body} note={shown.note} />
+        <View style={styles.body}>
+          <TeamConfirmLines body={shown.body} note={shown.note} />
+          {reassign === undefined ? null : <TeamConfirmReassign {...reassign} />}
+        </View>
       ) : (
         <Banner kind="validation" density="functional" title={shown.refusal.title}>
           {shown.refusal.body}
@@ -58,3 +71,5 @@ export function TeamConfirm({ words, look = 'act', busy, onGo, onLeave }: TeamCo
     </EditorSurface>
   );
 }
+
+const styles = StyleSheet.create({ body: { gap: theme.spacing['sp-4'] } });

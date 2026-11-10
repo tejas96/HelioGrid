@@ -9,6 +9,7 @@ import type {
 } from '@heliogrid/domain';
 import type { ReactNode, Ref } from 'react';
 import type { FocusAfter, FocusHandle } from '../../primitives/FocusAfter';
+import type { AssignPickerPerson, AssignPickerWords } from '../AssignPicker/AssignPicker.types';
 import type { AvatarMark, CategoryHue } from '../Avatar/Avatar.types';
 
 /** One preset a person holds, worded, in its kind's iris tone (design-system change 7). */
@@ -169,6 +170,37 @@ export interface TeamConfirmProps {
   onGo: () => void;
   /** *Cancel*, or *Close* on the refused form. */
   onLeave: () => void;
+  /** A deactivation's open work and who takes it (`SCR-M01-12`); absent for every other act. */
+  reassign?: TeamConfirmReassignProps;
+}
+
+/**
+ * **A deactivation's open leads, and who takes them** (`SCR-M01-12`, `M02-30`): the person's open-lead
+ * count, and the one row that opens the assign picker to choose who takes them all — moved in one
+ * bulk assign, with the reason, before the person goes. Not choosing leaves them with the person.
+ */
+export interface TeamConfirmReassignProps {
+  /** The person's open leads, counted: `empty` when they hold none. */
+  read: Read<number>;
+  /** Who takes them, by name as written; `null` until someone is chosen. */
+  to: string | null;
+  /** Opens the assign picker. */
+  onChoose: () => void;
+  words: {
+    /** "Holds 12 open leads". */
+    holds: (count: number) => TranslatedText;
+    /** "No open leads to move." */
+    none: TranslatedText;
+    /** "Move them to". */
+    moveTo: TranslatedText;
+    /** The row before anyone is chosen — "Choose who takes them". */
+    choose: TranslatedText;
+    /** Under it, until someone is chosen — "Not moved, they stay with Anjali." */
+    stay: TranslatedText;
+    loading: TranslatedText;
+    failed: TranslatedText;
+    retry: TranslatedText;
+  };
 }
 
 /** A confirm's words: its question and act, then what the act does or the refusal (`@heliogrid/i18n`). */
@@ -216,4 +248,30 @@ export interface MemberListHeadProps {
   searchRef?: Ref<FocusHandle>;
   /** Where the caller sends focus once *Show all* chooses *All*. */
   chipsRef?: Ref<FocusHandle>;
+}
+
+/**
+ * A deactivation's open work as `packages/data` reads it (`useDeactivateReassign`), named by shape
+ * here because this package may not import data; the hook's answer satisfies it.
+ */
+export interface TeamReassignFacts {
+  readonly open: Read<number> | null;
+  readonly to: { readonly name: string } | null;
+  readonly picking: boolean;
+  readonly people: readonly AssignPickerPerson[];
+  readonly peopleRead: Read<readonly AssignPickerPerson[]>;
+  choose(): void;
+  pick(userId: string): void;
+  closePicker(): void;
+}
+
+/**
+ * **A row act's confirm, with a deactivation's open work** (`SCR-M01-12`): `TeamConfirm`, and the one
+ * assign picker that chooses who takes the person's open leads. The confirm steps aside while the
+ * picker is open and comes back with the choice — one layer at a time, so each is read.
+ */
+export interface TeamActConfirmProps extends Omit<TeamConfirmProps, 'reassign'> {
+  reassign: TeamReassignFacts;
+  reassignWords: TeamConfirmReassignProps['words'];
+  pickerWords: AssignPickerWords;
 }

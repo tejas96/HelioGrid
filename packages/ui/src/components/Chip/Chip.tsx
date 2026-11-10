@@ -16,7 +16,7 @@ interface WebBadgeProps extends BadgeProps {
 }
 
 /**
- * Fully-pill filter chip. Active = the ink pill; a `count` rides after the words.
+ * Fully-pill filter chip. Active = the accent wash; a `count` rides after the words.
  *
  * **With `onClick` it is a `<button>` with a 44×44 hit box around the 28px (24px functional)
  * pill** — the two-rectangles rule, with the extra height taken back as negative margin so no row

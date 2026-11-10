@@ -1,0 +1,41 @@
+/* EmptyScene — a calm grey line drawing for a place with nothing in it. Each layer moves in once
+   from its pace's start and rests; nothing loops. Only transform and opacity move. The 120 × 96
+   box (60 × 48 compact) is an art dimension, off the 4px scale on purpose; a layer's start is in
+   the scene's own units, so it scales with the box. */
+
+.hg-empty-scene {
+  display: block;
+  width: 120px;
+  height: 96px;
+  overflow: visible;
+  color: var(--text-tertiary);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hg-empty-scene[data-size="compact"] {
+  width: 60px;
+  height: 48px;
+  /* Half the box draws half the line: twice the units keep it 1.5 on screen. */
+  stroke-width: 3;
+}
+
+.hg-empty-scene-layer {
+  animation: hg-empty-scene-in var(--hg-scene-duration) var(--hg-scene-easing)
+    calc(var(--dur-standard) * var(--hg-scene-step)) backwards;
+}
+
+/* A quieter line for what sits behind: the lower rows, the cards still above the tray. */
+.hg-empty-scene-layer[data-faint="true"] {
+  stroke-opacity: 0.45;
+}
+
+@keyframes hg-empty-scene-in {
+  from {
+    opacity: 0;
+    transform: translate(var(--hg-scene-from-x), var(--hg-scene-from-y));
+  }
+}

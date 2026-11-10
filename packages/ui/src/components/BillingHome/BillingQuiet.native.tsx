@@ -5,13 +5,11 @@ import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
-import { LottieMoment } from '../LottieMoment/LottieMoment.native';
+import { EmptyScene } from '../EmptyScene/EmptyScene.native';
 import type { QuietArt as QuietArtName } from './BillingHome.parts.types';
 
-const QUIET_MOMENT = { inbox: 'empty-inbox', empty: 'empty' } as const;
-
 /**
- * A region with nothing in it yet, said calmly in one tile: a small moment or a glyph, what is not
+ * A region with nothing in it yet, said calmly in one tile: a small calm drawing, or the card glyph in its tinted square, what is not
  * there, and when it comes — no payment method before a plan, no invoice before a charge.
  */
 export function BillingQuiet({
@@ -43,17 +41,14 @@ export function BillingQuiet({
 }
 
 function QuietArt({ art }: { art: QuietArtName }) {
+  if (art !== 'card') return <EmptyScene name="settle" size="compact" />;
   return (
     <View
       style={styles.art}
       importantForAccessibility="no-hide-descendants"
       accessibilityElementsHidden
     >
-      {art === 'card' ? (
-        <ShellGlyph name="credit-card" size="lg" tone="accent" />
-      ) : (
-        <LottieMoment name={QUIET_MOMENT[art]} size={48} />
-      )}
+      <ShellGlyph name="credit-card" size="lg" tone="accent" />
     </View>
   );
 }

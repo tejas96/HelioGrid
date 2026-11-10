@@ -52,10 +52,10 @@ export interface TenantQuietHours {
  * `push_sent_at` is left null: the record is the truth and push is a later, best-effort act on top
  * of it (`F6-06`), never a condition of the record existing.
  *
- * `push_due_at` is set HERE and never moved (`F6-14`). It is the one emit door, so a held push
- * cannot be a state a caller forgets to set: the type's urgency comes from the registry and the
- * window from the tenant, and the decision itself is `packages/domain`'s — this binds the two and
- * computes nothing of its own.
+ * `push_due_at` is set HERE and never moved (`F6-14`) — only cleared, by the push drain, once no
+ * one is owed the push. It is the one emit door, so a held push cannot be a state a caller forgets
+ * to set: the type's urgency comes from the registry and the window from the tenant, and the
+ * decision itself is `packages/domain`'s — this binds the two and computes nothing of its own.
  */
 export async function recordNotification(
   tx: DbTransaction,

@@ -43,9 +43,8 @@ Block numbers are stable: other documents cite them, so a block that empties kee
 
 | # | Block | Holds | Task files |
 |---|---|---|---|
-| **0** | **Foundations** | permissions, formats, notifications, honesty | `F-core` (all but `T-FCORE-009` — see below) · `F-platform` (all but `T-FPLAT-020`, `T-FPLAT-066`, `T-FPLAT-074` — see below) |
-| **1** | **Shell + entry & tenant** | sign-in, signup, team, catalog, branding | `SHELL` (all but `T-SHELL-002` — see below) · `M01-onboarding` (all but `T-M01-029` — see below) |
-| **3** | **CRM & leads** | lead capture to a qualified lead | `M02-crm-leads` · `SHELL` → `T-SHELL-002` · `F-platform` → `T-FPLAT-020`, `T-FPLAT-066` |
+| **0** | **Foundations** | permissions, formats, notifications, honesty | `F-core` (all but `T-FCORE-009` — see below) · `F-platform` (all but `T-FPLAT-074` — see below) |
+| **1** | **Shell + entry & tenant** | sign-in, signup, team, catalog, branding | `M01-onboarding` (all but `T-M01-029` — see below) |
 | **4** | **Projects** | a won deal to a handed-over system | `M08-projects` |
 | **5** | **Payments & collections** | the homeowner's tranches and receipts | `M11-payments-collections` |
 | **6** | **Sales execution + owner home** | My Day, won, lost, reopen, follow-ups, the owner home | `M07-sales-execution` · `M13-dashboards` |
@@ -60,9 +59,6 @@ screens are V2 in the register; its tasks are written again when it returns.
 **Platform billing is redesigned.** Its tasks and its PRD are deleted; the shipped code runs until
 the new pricing replaces it, in a task of its own.
 
-**`SHELL` spans two blocks.** `T-SHELL-002`, the search screen, builds beside `T-FPLAT-020` in block 3:
-every step of its proof searches records that block lands, the junk lead above all.
-
 **The data-rights engine waits in block 8, parked.** `T-FCORE-009` — `pack.data-rights`, the erasure
 workflow and the IN DPDP determination — is parked by owner ruling until the tenant base reaches real
 paying customers (roughly 10–20). It builds when the owner unparks it, and by then the customer
@@ -71,15 +67,6 @@ record (block 3) and the consent records its proofs erase and export exist.
 **The demo project seed builds in block 8.** `T-M01-029` instantiates a finished demo lead, design and
 proposal for every new tenant, and its `Depends on:` names the first migrations of M02 (`lead`), the
 studio (`design`) and M06 (`proposal`, `proposal_version`).
-
-**Global search builds in block 3.** `T-FPLAT-020` searches leads, proposals, projects, customers,
-sites, catalog items and people. It builds once the lead record lands, with leads as its first search
-target, and each later module adds its own target when its slice begins (Law 9).
-
-**Recipient resolution builds in block 3.** `T-FPLAT-066` turns a recipient rule — "the record's
-owner", "the assignee" — into people. It builds once the lead record lands, before `T-M02-011`
-notifies a lead's new owner, so the resolution is written once and every later module reuses it. Its
-every-module walk of `F6-10` belongs to `T-FPLAT-074`.
 
 **The projection label builds in block 8.** `T-FPLAT-074` prints a projection's word and its
 assumptions in the words the drawn proposal document (`SCR-M06-17`) gives, and that screen is drawn in

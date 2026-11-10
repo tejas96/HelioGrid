@@ -6,9 +6,9 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { Button } from '../Button/Button.native';
 import { IconButton } from '../IconButton/IconButton.native';
+import { ImportGlyph } from '../Import/ImportGlyph.native';
 import { Stepper } from '../Stepper/Stepper.native';
 import type { CatalogImportWords } from './CatalogImport.types';
-import { ImportGlyph } from './ImportGlyph.native';
 
 /** The frames whose head offers *Back*: steps 2 and 3, and the matching wait between them. */
 const BACK_FRAMES: readonly ImportWizardFrame[] = ['columns', 'matching', 'preview'];

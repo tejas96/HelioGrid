@@ -113,7 +113,12 @@ export class AuditRepository {
   }
 }
 
-/** The stored envelope as the wire declares it: domain holds the sets readonly, the body does not. */
+/** The stored envelope as the wire declares it: domain holds the lists readonly, the body does not. */
 function toChangePayload(stored: AuditChangePayload | null): AuditLogEntry['changePayload'] {
-  return stored === null ? null : { from: [...stored.from], to: [...stored.to] };
+  if (stored === null) return null;
+  if ('mergedId' in stored) {
+    return { mergedId: stored.mergedId, choices: stored.choices.map((choice) => ({ ...choice })) };
+  }
+  if ('keptBesideId' in stored) return { reason: stored.reason, keptBesideId: stored.keptBesideId };
+  return { from: [...stored.from], to: [...stored.to] };
 }

@@ -20,4 +20,6 @@ export const SUBJECT_LOOKUPS: Readonly<Record<FileSubjectKind, SubjectLookup>> =
    * (`FileService.declare`), and the session guard already admitted the caller to this company.
    */
   user_account: async () => true,
+  /** A lead spreadsheet is stored before its import exists: its ref is the company's id. */
+  lead_import: isTheCompany,
 };

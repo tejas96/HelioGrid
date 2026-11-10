@@ -15,7 +15,7 @@ import {
   zipEntry,
   zipLocal,
   zipMethod,
-} from '../../src/modules/catalog/internal/spreadsheet';
+} from '../../src/modules/file/file.spreadsheet';
 import { aWorkbookOf, priceListType } from './support';
 
 const CSV = priceListType.csv;

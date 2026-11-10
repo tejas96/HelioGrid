@@ -117,6 +117,8 @@ type ReviewedComputesNothing =
   | 'templateDraftOf'
   | 'templateEdit'
   | 'templateWritesOf'
+  /* Global Search's groups, as drawn from the answer it is handed: its rows outrun the depth the check walks, and they hold no figure */
+  | 'searchViewOf'
   /* label a figure they are handed (`F8`) */
   | 'qualifyMoney'
   | 'qualifyMinorUnits'

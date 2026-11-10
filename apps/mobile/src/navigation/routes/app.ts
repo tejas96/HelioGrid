@@ -2,14 +2,22 @@ import { DOOR_SEGMENT } from '@heliogrid/domain';
 import { BillingPlansScreen } from '../../screens/billing';
 import { CompanyProfileScreen } from '../../screens/company-profile';
 import { CompanySignupScreen } from '../../screens/company-signup';
+import { CustomerMergeScreen } from '../../screens/customer-merge';
 import { FirstRunProfileScreen } from '../../screens/first-run-profile';
+import { LeadDetailScreen } from '../../screens/lead-detail';
+import { LeadImportScreen } from '../../screens/lead-import';
+import { LeadInboxScreen } from '../../screens/lead-inbox';
+import { LeadsListScreen } from '../../screens/leads-list';
+import { QuickAddLeadScreen } from '../../screens/quick-add-lead';
 import { RoleExplainerScreen } from '../../screens/role-explainer';
+import { SearchScreen } from '../../screens/search';
 import { SettingsRowScreen, SettingsScreen } from '../../screens/settings';
 import { SetupInviteTeamScreen } from '../../screens/setup-invite-team';
 import { SetupLanguageScreen } from '../../screens/setup-language';
 import { SetupReadyScreen } from '../../screens/setup-ready';
 import { SetupWhatYouSellScreen } from '../../screens/setup-what-you-sell';
 import { PlaceholderScreen, ShellScreen } from '../../screens/shell';
+import { doorRoute, placeholderRoutes } from '../../screens/shell/doors';
 import {
   firstRunRoute,
   roleExplainerRoute,
@@ -55,13 +63,41 @@ export const appScreens = {
   SetupInviteTeam: { screen: SetupInviteTeamScreen, if: useOwesInviteTeamStep },
   /** Then the corridor's end: two doors, and the first taken closes setup (`SCR-M01-06`, `M01-26`). */
   SetupReady: { screen: SetupReadyScreen, if: useOwesReadyStep },
-  Leads: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.leads },
-  Proposals: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.proposals },
-  Projects: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.projects },
-  People: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.people },
-  Campaigns: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.campaigns },
+  /*
+   * Every door whose module has not landed, drawn by `PlaceholderScreen` at domain's address for it:
+   * one row per door of `PLACEHOLDER_DOORS` (`screens/shell/doors.ts`), so a door, its route and its
+   * link cannot disagree. A module's screen takes its door out of that list and its row in here.
+   */
+  ...placeholderRoutes((door) => ({
+    screen: PlaceholderScreen,
+    if: useHasHome,
+    linking: DOOR_SEGMENT[door],
+  })),
+  /** The Leads list (`SCR-M02-03`), the pill's Leads door. */
+  [doorRoute.leads]: { screen: LeadsListScreen, if: useHasHome, linking: DOOR_SEGMENT.leads },
+  /** The morning triage (`SCR-M02-02`): the Leads screen opens it, as the web's `/leads/inbox`. */
+  LeadInbox: { screen: LeadInboxScreen, if: useHasHome, linking: `${DOOR_SEGMENT.leads}/inbox` },
+  /**
+   * The Lead Import Wizard (`SCR-M02-05`), as the web's `/leads/import`: the inbox's and the list's
+   * Import open it, and an import's notice opens `?job=<id>` where it stands.
+   */
+  LeadImport: { screen: LeadImportScreen, if: useHasHome, linking: `${DOOR_SEGMENT.leads}/import` },
+  /**
+   * One lead (`SCR-M02-04`) at `leads/<id>`, the address a list, a search result and a lead notice
+   * open (`subjectAddressOf`). The inbox's fixed segment above wins over the id.
+   */
+  LeadDetail: {
+    screen: LeadDetailScreen,
+    if: useHasHome,
+    linking: `${DOOR_SEGMENT.leads}/:leadId`,
+  },
+  /**
+   * Customer Merge (`SCR-M02-06`) at `customers/merge?survivorId=…&loserId=…`, as the web's
+   * `/customers/merge`: Lead Detail's More menu opens it with this lead's customer.
+   */
+  CustomerMerge: { screen: CustomerMergeScreen, if: useHasHome, linking: 'customers/merge' },
   /** `More` opens the settings list (`SCR-SHELL-01`, *More: the settings list*); a row's screen replaces its placeholder when it lands. */
-  More: { screen: SettingsScreen, if: useHasHome, linking: DOOR_SEGMENT.more },
+  [doorRoute.more]: { screen: SettingsScreen, if: useHasHome, linking: DOOR_SEGMENT.more },
   SettingsRow: {
     screen: SettingsRowScreen,
     if: useHasHome,
@@ -73,7 +109,21 @@ export const appScreens = {
     if: useHasHome,
     linking: `${DOOR_SEGMENT.more}/billing/plans`,
   },
-  QuickAddLead: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.add_lead },
-  StartSurvey: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.start_survey },
-  Search: { screen: PlaceholderScreen, if: useHasHome, linking: DOOR_SEGMENT.search },
+  /**
+   * Quick add (`SCR-M02-01`): the pill's add action opens it as a sheet over the leads page; the page
+   * fades in under the sheet's own rise, so the move reads as one sheet, not a page and a sheet.
+   */
+  [doorRoute.add_lead]: {
+    screen: QuickAddLeadScreen,
+    if: useHasHome,
+    linking: DOOR_SEGMENT.add_lead,
+    options: { animation: 'fade' as const },
+  },
+  /** Global Search (`SCR-SHELL-02`): the top bar's search rises as a full-height sheet over the page. */
+  [doorRoute.search]: {
+    screen: SearchScreen,
+    if: useHasHome,
+    linking: DOOR_SEGMENT.search,
+    options: { animation: 'slide_from_bottom' as const },
+  },
 };

@@ -482,7 +482,8 @@
       "includes": [
         "**/packages/ui/src/**/*.{ts,tsx}",
         "!**/packages/ui/src/components/AppShell/ShellGlyph*.shapes.ts",
-        "!**/packages/ui/src/components/SolarSky/SolarSky.shapes.ts"
+        "!**/packages/ui/src/components/SolarSky/SolarSky.shapes.ts",
+        "!**/packages/ui/src/components/EmptyScene/EmptyScene.shapes.ts"
       ]
     },
     {
@@ -509,6 +510,7 @@
         "!**/packages/ui/src/components/SolarSky/SkyMotion.native.tsx",
         "!**/packages/ui/src/components/SolarSky/SkyClouds.native.tsx",
         "!**/packages/ui/src/components/ProgressRing/ProgressRing.native.tsx",
+        "!**/packages/ui/src/components/TeamDock/TeamDockRing.native.tsx",
         "!**/packages/ui/src/components/ProgressBar/BrandGradientFill.native.tsx",
         "!**/packages/ui/src/components/SettingsList/SettingsList.native.tsx"
       ]

@@ -75,3 +75,19 @@ export function nextLocalTime(from: number, minutesPastMidnight: number, timeZon
   const guess = wall - offsetMs(from, timeZone);
   return wall - offsetMs(guess, timeZone);
 }
+
+/**
+ * The instant that zone's clock reads `minutesPastMidnight` on `date` — a booked visit's moment
+ * (`M02-46`). The offset is taken at the answer, as `nextLocalTime` takes it, so a time on a
+ * daylight-saving morning lands on that morning's offset.
+ */
+export function localInstant(
+  date: CalendarDate,
+  minutesPastMidnight: number,
+  timeZone: string,
+): number {
+  const [year = 0, month = 1, day = 1] = date.split('-').map(Number);
+  const wall = Date.UTC(year, month - 1, day, 0, minutesPastMidnight);
+  const guess = wall - offsetMs(wall, timeZone);
+  return wall - offsetMs(guess, timeZone);
+}

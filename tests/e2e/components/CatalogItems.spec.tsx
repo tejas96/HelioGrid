@@ -219,13 +219,17 @@ test('tints the added row at both widths', async ({ mount, page }) => {
     const tinted = page.locator('[data-highlighted="true"]');
     await expect(tinted.first()).toContainText('Rayzon Solar RS-550');
     await expect(tinted.filter({ hasText: ADANI })).toHaveCount(0);
+    /* A card row paints its tint on its inset fill (`::after`); a table row on itself. */
+    const tintOf = (node: Element) =>
+      getComputedStyle(node, node.classList.contains('hg-card-row') ? '::after' : null)
+        .backgroundColor;
     const [added, other] = await Promise.all([
-      tinted.first().evaluate((node) => getComputedStyle(node).backgroundColor),
+      tinted.first().evaluate(tintOf),
       page
         .locator('.hg-dt-row, .hg-dt-card, .hg-card-row')
         .filter({ hasText: GROWATT })
         .first()
-        .evaluate((node) => getComputedStyle(node).backgroundColor),
+        .evaluate(tintOf),
     ]);
     expect(added).not.toBe(other);
     await frame.unmount();

@@ -1,6 +1,6 @@
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { RetryButton } from '../Button/RetryButton';
-import { LottieMoment } from '../LottieMoment/LottieMoment';
+import { EmptyScene } from '../EmptyScene/EmptyScene';
 import type { OverlayEmptyProps, OverlayErrorProps } from './Sheet.types';
 
 /**
@@ -8,10 +8,10 @@ import type { OverlayEmptyProps, OverlayErrorProps } from './Sheet.types';
  * first one. The absence of a mark here is the point — a fault glyph would make "none yet" read
  * as "something went wrong".
  */
-export function OverlayEmpty({ title, message, action, moment, variant }: OverlayEmptyProps) {
+export function OverlayEmpty({ title, message, action, scene, variant }: OverlayEmptyProps) {
   return (
     <div className="hg-overlay-state" data-variant={variant}>
-      {moment === undefined ? null : <LottieMoment name={moment} size={96} />}
+      {scene === undefined ? null : <EmptyScene name={scene} />}
       <div className="hg-overlay-state-title">{title}</div>
       {message !== undefined ? <div className="hg-overlay-state-message">{message}</div> : null}
       {action}

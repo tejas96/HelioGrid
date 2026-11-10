@@ -139,6 +139,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 - Given a revoked link, when it is opened at any time before its expiry, then it does not serve (`F5-76`).
 - Given every customer-facing share surface in the product, when they are enumerated, then each is a tokenised link under this framework and no local-only share path exists (`F5-80`).
 - (`F5-74` carries no dedicated Given/When/Then line in the PRD's acceptance block; the requirement text above is the binding criterion — the link keeps serving the pack after the project closes, permanently, so closing is not de-provisioning.)
+- Given two customers merged, when the merge completes, then every customer link of the loser resolves to the survivor and its token keeps working (M02-60) (moved from the block 3 CRM plan, owner yes 2026-11-09).
 
 **Settle before the build:**
 - Link vs token — ruled: two entities, a customer_link (label, contact, lead, scope set) served by many link_token rows, each individually revocable, with no expiry column on either — a respond scope's lifetime is derived at read from the deal's phase, never stored (`F5-22` re-mints a fresh token for the same link and lets both serve until one is revoked; `F5-21` makes effective rights scopes ∩ phase; no token was ever minted under the pre-ruling horizon — the POC's local share ids are replaced, not migrated, `F5-80` — so `expired` stays in the contracts vocabulary `F5-22` keeps and no row can reach it).

@@ -120,9 +120,12 @@
 }
 
 /* The header cell carries NO padding: its child does — a child of a table cell can never fill it,
-   so the padding lives on the button/span and the whole header cell is the hit target. */
+   so the padding lives on the button/span and the whole header cell is the hit target. In a
+   narrow column a tier ("Assumed") drops under its label instead of widening the column; the label
+   itself never breaks (the head's `nowrap`). */
 .hg-dt-th-inner {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 6px;
   width: 100%;

@@ -1,0 +1,17 @@
+# Lead inbox (`SCR-M02-02`, `M02-24`): the lead quick add just captured waits unassigned on the deck,
+# its missing name a named gap; one tap on the owner's own face gives it away with no confirm, and
+# with nothing left waiting the inbox teaches what will appear here.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://leads/inbox
+- extendedWaitUntil:
+    visible: ${INBOX_TITLE}
+    timeout: 15000
+- assertVisible: ${NO_NAME_YET}
+- assertVisible: ${JUNK_THIS_LEAD}
+# The face's spoken name carries the person and their open and overdue counts after the words.
+- tapOn: "${GIVE_TO_PREFIX} .*"
+- extendedWaitUntil:
+    visible: ${INBOX_TEACHING}
+    timeout: 15000
+- assertNotVisible: ${NO_NAME_YET}

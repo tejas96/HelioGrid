@@ -1,5 +1,6 @@
+import { type MouseEvent, useImperativeHandle, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
-import type { CardRowProps, CardRowsProps } from './CardRows.types';
+import type { CardRowOpen, CardRowProps, CardRowsProps } from './CardRows.types';
 import './CardRows.css';
 
 /** The one glass card (Ground's tiles list) that holds a list's rows. It rises once; its rows never arrive one by one. */
@@ -20,6 +21,7 @@ export function CardRow({
   highlighted = false,
   muted = false,
   busy = false,
+  targetRef,
   className,
 }: CardRowProps & { className?: string }) {
   return (
@@ -30,15 +32,7 @@ export function CardRow({
       data-muted={muted ? 'true' : undefined}
       aria-busy={busy ? true : undefined}
     >
-      {open === undefined ? null : (
-        <button
-          type="button"
-          className="hg-card-row-target"
-          aria-label={open.name}
-          aria-current={open.current ? 'true' : undefined}
-          onClick={open.onOpen}
-        />
-      )}
+      {open === undefined ? null : <CardRowTarget open={open} targetRef={targetRef} />}
       <div
         className={classNames('hg-card-row-body', className)}
         data-inert={open === undefined ? undefined : 'true'}
@@ -53,4 +47,54 @@ export function CardRow({
       )}
     </li>
   );
+}
+
+/**
+ * The row's whole-width target under its body: a link when the record has an address — its name
+ * its words, spoken and never drawn — else a button.
+ */
+function CardRowTarget({
+  open,
+  targetRef,
+}: Pick<CardRowProps, 'targetRef'> & { open: CardRowOpen }) {
+  const target = useRef<HTMLElement | null>(null);
+  useImperativeHandle(
+    targetRef,
+    () => ({ focus: (options) => target.current?.focus(options) }),
+    [],
+  );
+  const hold = (element: HTMLElement | null) => {
+    target.current = element;
+  };
+  if (open.href === undefined) {
+    return (
+      <button
+        ref={hold}
+        type="button"
+        className="hg-card-row-target"
+        aria-label={open.name}
+        aria-current={open.current ? 'true' : undefined}
+        onClick={open.onOpen}
+      />
+    );
+  }
+  return (
+    <a
+      ref={hold}
+      href={open.href}
+      className="hg-card-row-target"
+      aria-current={open.current ? 'true' : undefined}
+      onClick={(event) => openInPlace(event, open)}
+    >
+      <span className="hg-spoken-only">{open.name}</span>
+    </a>
+  );
+}
+
+/** A plain click opens in place; one with a modifier, or not the main button, is the browser's. */
+function openInPlace(event: MouseEvent<HTMLAnchorElement>, open: CardRowOpen): void {
+  const modified = event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
+  if (modified || event.button !== 0) return;
+  event.preventDefault();
+  open.onOpen();
 }

@@ -173,7 +173,7 @@ export function sortStateOf<Row>(
   const active = sort !== null && sort !== undefined && sort.key === column.key;
   const dir = active ? (sort?.dir ?? null) : null;
   return {
-    canSort: sortable && column.sortable !== false,
+    canSort: sortable && column.sortable === true,
     active,
     dir,
     next: { key: column.key, dir: dir === 'asc' ? 'desc' : 'asc' },

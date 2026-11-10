@@ -61,6 +61,7 @@ function SearchPill({
   clearLabel,
   disabled = false,
   ariaLabel,
+  autoFocus = false,
   ref,
   style,
 }: SearchPillProps) {
@@ -96,6 +97,7 @@ function SearchPill({
         style={[styles.input, fieldBoxText(disabled)]}
         value={value}
         editable={!disabled}
+        autoFocus={autoFocus}
         placeholder={placeholder}
         placeholderTextColor={fieldBoxPlaceholder(disabled)}
         accessibilityLabel={searchName(ariaLabel, placeholder)}

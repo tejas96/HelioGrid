@@ -1,9 +1,10 @@
 import { theme } from '@heliogrid/theme';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useImperativeHandle, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import type { CardRowProps, CardRowsProps } from './CardRows.types';
 
 const AsideRoom = createContext(0);
@@ -38,26 +39,35 @@ export function CardRow({
   highlighted = false,
   muted = false,
   busy = false,
+  targetRef,
 }: CardRowProps) {
   const [asideWidth, setAsideWidth] = useState(0);
+  const target = useRef<View>(null);
+  useImperativeHandle(
+    targetRef,
+    () => ({ focus: () => focusScreenReaderOn(() => target.current) }),
+    [],
+  );
   const acts = aside === undefined || aside === null ? null : aside;
   const bodyLook = [styles.body, muted ? styles.muted : undefined];
   return (
     <View
       role="listitem"
       accessibilityState={{ busy }}
-      style={[
-        styles.row,
-        first ? undefined : styles.hairline,
-        highlighted ? styles.highlighted : undefined,
-      ]}
+      style={[styles.row, first ? undefined : styles.hairline]}
     >
+      {highlighted ? <View style={styles.highlighted} pointerEvents="none" /> : null}
       <View style={styles.frame}>
         <AsideRoom.Provider value={acts === null ? 0 : asideWidth + theme.spacing['sp-2']}>
           {open === undefined ? (
             <View style={bodyLook}>{children}</View>
           ) : (
-            <Pressable accessibilityLabel={open.name} onPress={open.onOpen} style={bodyLook}>
+            <Pressable
+              hostRef={target}
+              accessibilityLabel={open.name}
+              onPress={open.onOpen}
+              style={bodyLook}
+            >
               {children}
             </Pressable>
           )}
@@ -81,7 +91,17 @@ const styles = StyleSheet.create({
   row: { borderRadius: theme.radius['r-tile'] },
   /* A clear line between two rows: a hairline all but vanished on the phone. */
   hairline: { borderTopWidth: 1, borderTopColor: colors['line-soft'] },
-  highlighted: { backgroundColor: colors['accent-subtle'] },
+  /* The highlight inset from the row's top and bottom, as the web's: a filled row beside another
+     keeps a gap and never reads as one block with it. */
+  highlighted: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: theme.spacing['sp-0-5'],
+    bottom: theme.spacing['sp-0-5'],
+    borderRadius: theme.radius['r-tile'],
+    backgroundColor: colors['accent-subtle'],
+  },
   frame: { position: 'relative' },
   /* `Pressable`'s base centres a target; a row lays its parts out from the start. */
   body: {

@@ -63,7 +63,7 @@ interface NativeFiltersButtonProps extends FiltersButtonProps {
   style?: StyleProp<ViewStyle>;
 }
 
-/** Two-or-three-way scope switch. Active = near-black pill, the primary-action marker. */
+/** Two-or-three-way scope switch. Active = the accent wash, as every chosen filter is. */
 export function ScopeToggle({ options, value, onChange, style }: NativeScopeToggleProps) {
   return (
     <View accessibilityRole="tablist" style={[styles.row, style]}>

@@ -13,6 +13,24 @@
 export type { AuditRepository } from './audit/repository';
 export type { AuthRepository } from './auth/repository';
 export { queryKeys } from './cache/keys';
+export type { ActivitiesRepository } from './crm/activities-repository';
+export type { LeadAssignOutcome, LeadAssignRepository } from './crm/assign-repository';
+export type { LeadCallsRepository } from './crm/calls-repository';
+export type {
+  EnquiryOutcome,
+  LeadCaptureOutcome,
+  LeadCaptureRepository,
+} from './crm/capture-repository';
+export type { ContactSaveOutcome, ContactsRepository } from './crm/contacts-repository';
+export type { LeadEditsRepository } from './crm/edits-repository';
+export type { LeadImportRepository, LeadImportRowsAsk } from './crm/import-repository';
+export type { LeadInboxAsk, LeadsAsk, LeadsRepository } from './crm/leads-repository';
+export type { LeadLifecycleRepository } from './crm/lifecycle-repository';
+export { LeadActRefusedError } from './crm/lifecycle-repository';
+export type { CustomerMergeRepository } from './crm/merge-repository';
+export type { LeadMessagesRepository } from './crm/messages-repository';
+export type { TasksRepository } from './crm/tasks-repository';
+export type { VisitsRepository } from './crm/visits-repository';
 export type { DataLayer, DataLayerConfig, Repositories } from './data-layer';
 export { createDataLayer } from './data-layer';
 export type { ApiErrorDetail } from './errors/errors';
@@ -34,6 +52,7 @@ export type {
   NotificationRepository,
 } from './notification/repository';
 export type { OnboardingRepository } from './onboarding/repository';
+export type { SearchAsk, SearchRepository } from './search/repository';
 export type { BlockedRefusal, BlockedStore } from './session/blocked';
 export type { HeldWork } from './session/held-work';
 export { NO_HELD_WORK } from './session/held-work';

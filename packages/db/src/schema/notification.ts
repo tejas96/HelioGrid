@@ -1,4 +1,5 @@
 import { NOTIFICATION_TYPE_GROUPS, NOTIFICATION_TYPES, PUSH_PLATFORMS } from '@heliogrid/domain';
+import { sql } from 'drizzle-orm';
 import {
   boolean,
   index,
@@ -45,7 +46,8 @@ const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'd
  *
  * The grants are SELECT, INSERT and UPDATE on `read_at` ALONE. No role may change any other
  * column, and the writer sets `read_at` only where it is still null — so `F6-07`'s up-only and
- * set-once is a privilege plus a predicate rather than a discipline the code keeps.
+ * set-once is a privilege plus a predicate rather than a discipline the code keeps. The push
+ * marker and the horizon purge cross companies and are the admin path's alone.
  */
 export const notification = pgTable(
   'notification',
@@ -78,6 +80,12 @@ export const notification = pgTable(
      * does not describe.
      */
     pushDueAt: instant('push_due_at'),
+    /**
+     * When a drain last tried the push and it did not leave, as when the provider refused it. A
+     * drain takes the pushes never tried first, so a push that keeps failing never holds a fresh
+     * one back; null while no drain has failed it.
+     */
+    pushTriedAt: instant('push_tried_at'),
   },
   (table) => [
     /** The inbox, newest first — and the badge, which counts over it where `read_at` is null. */
@@ -86,6 +94,12 @@ export const notification = pgTable(
       table.recipientUserRef,
       table.emittedAt.desc(),
     ),
+    /** The push drain: pushes owed and not yet sent, by when they fell due (`F6-14`). */
+    index('notification_push_unsent_due_idx')
+      .on(table.pushDueAt)
+      .where(sql`${table.pushSentAt} is null`),
+    /** The horizon purge: every company's notices past the centre's horizon (`F6-19`). */
+    index('notification_emitted_idx').on(table.emittedAt),
   ],
 );
 

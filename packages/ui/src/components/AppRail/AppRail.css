@@ -1,6 +1,7 @@
-/* AppRail — the desktop sidebar: a frosted column over the page's glow, its edge a hairline. The
-   item in view is a solid ink pill, never a border and never a left accent bar. Folded, it keeps its
-   icons and tips each with its name. */
+/* AppRail — the desktop sidebar, as OneOhm draws it: on light paper it sits on the page's glow with
+   no panel; in the dark it floats as a raised card. The item in view is `nav-active` (the ink pill
+   in light, a soft accent wash in the dark), never a border and never a left accent bar. Folded, it
+   keeps its icons and tips each with its name. */
 
 .hg-app-rail {
   position: relative;
@@ -16,30 +17,61 @@
   isolation: isolate;
 }
 
-/* The panel behind the rail's content — its glass, its frost and its edge — never on the rail: a
-   backdrop-filter there would trap every `position: fixed` float opened from the rail (search, a
-   sheet) inside its width. Being one layer, it stretches from its start edge as the rail folds or
-   opens (`use-rail-follow.ts`), while the content keeps its size. */
+/* The dark card behind the rail's content, never on the rail: a filter or a fill there would trap
+   every `position: fixed` float opened from the rail (search, a sheet) inside its width. Being one
+   layer, it stretches from its start edge as the rail folds or opens (`use-rail-follow.ts`), while
+   the content keeps its size. */
 .hg-app-rail::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: var(--sp-2) 0 var(--sp-2) var(--sp-2);
   z-index: -1;
-  border-radius: inherit;
+  border-radius: var(--r-md);
   pointer-events: none;
   transform-origin: left center;
-  /* biome-ignore lint/plugin/raw-white-css: glass — the card colour let through at an opacity over the page glow (redesign direction A) */
-  background: color-mix(in srgb, var(--surface) 58%, transparent);
-  border-inline-end: 1px solid var(--hairline);
-  /* biome-ignore lint/plugin/raw-white-css: glass — the card colour let through at an opacity over the page glow (redesign direction A) */
-  box-shadow: inset -1px 0 0 color-mix(in srgb, var(--surface) 70%, transparent);
-  -webkit-backdrop-filter: saturate(1.5) blur(22px);
-  backdrop-filter: saturate(1.5) blur(22px);
 }
 
+:root[data-theme="dark"] .hg-app-rail {
+  padding-inline-start: calc(var(--sp-3) + var(--sp-2));
+}
+
+:root[data-theme="dark"] .hg-app-rail::before {
+  border: 1px solid var(--hairline);
+  /* biome-ignore lint/plugin/raw-white-css: the dark sidebar card — the raised panel OneOhm floats the sidebar on, behind its content, never a control */
+  background: var(--surface);
+  box-shadow: var(--e1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hg-app-rail {
+    padding-inline-start: calc(var(--sp-3) + var(--sp-2));
+  }
+
+  :root:not([data-theme="light"]) .hg-app-rail::before {
+    border: 1px solid var(--hairline);
+    /* biome-ignore lint/plugin/raw-white-css: the dark sidebar card — the raised panel OneOhm floats the sidebar on, behind its content, never a control */
+    background: var(--surface);
+    box-shadow: var(--e1);
+  }
+}
+
+/* Folded, the rail is one circle wide: the circle and a small margin each side, and in the dark
+   the card's margin on top. */
 .hg-app-rail[data-collapsed="true"] {
-  width: var(--sp-20);
-  padding-inline: var(--sp-3);
+  width: var(--sp-16);
+  padding-inline: var(--sp-2);
+}
+
+:root[data-theme="dark"] .hg-app-rail[data-collapsed="true"] {
+  width: calc(var(--sp-16) + var(--sp-2));
+  padding-inline-start: calc(var(--sp-2) * 2);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hg-app-rail[data-collapsed="true"] {
+    width: calc(var(--sp-16) + var(--sp-2));
+    padding-inline-start: calc(var(--sp-2) * 2);
+  }
 }
 
 .hg-app-rail-head {
@@ -102,13 +134,16 @@
   border-top: 1px solid var(--hairline);
 }
 
+/* Folded, the theme's one button over the avatar, each centred in the narrow rail. */
 .hg-app-rail-avatar {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
 }
 
-/* One destination: its glyph and its name, a pill that lifts to the card colour under the pointer
-   and turns solid ink when it is in view. */
+/* One destination: its glyph and its name in muted text, a pill that takes a soft well under the
+   pointer and `nav-active` when it is in view. */
 .hg-app-rail-button {
   position: relative;
   flex-shrink: 0;
@@ -124,7 +159,7 @@
   background: transparent;
   color: var(--text-secondary);
   font-family: var(--font-sans);
-  font-size: var(--fs-body);
+  font-size: var(--fs-body-sm);
   line-height: var(--lh-body-sm);
   text-align: start;
   cursor: pointer;
@@ -135,17 +170,26 @@
     transform var(--dur-micro) var(--ease-standard);
 }
 
+/* Folded, each item is a circle — width and height are one size, so the item in view is round. */
 .hg-app-rail[data-collapsed="true"] .hg-app-rail-button {
   justify-content: center;
-  min-height: var(--sp-12);
+  align-self: center;
+  width: var(--sp-12);
+  height: var(--sp-12);
+  min-height: 0;
   padding: 0;
+}
+
+/* Under the pointer, and while its menu is open, an item sits in a soft well. */
+.hg-app-rail-button[data-open="true"]:not([data-active="true"]) {
+  background: var(--canvas-sunken);
+  color: var(--text-primary);
 }
 
 @media (hover: hover) {
   .hg-app-rail-button:hover:not([data-active="true"]) {
-    background: var(--glass);
+    background: var(--canvas-sunken);
     color: var(--text-primary);
-    box-shadow: var(--e1);
   }
 }
 
@@ -154,8 +198,8 @@
 }
 
 .hg-app-rail-button[data-active="true"] {
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--nav-active);
+  color: var(--on-nav-active);
   font-weight: var(--fw-medium);
   box-shadow: var(--e2);
 }
@@ -167,10 +211,15 @@
   place-items: center;
 }
 
-/* The glyph takes the button's colour rather than its own tone. `[data-tone]` keeps this rule
-   above ShellGlyph.css's tone rules, which load later: without it the glyph on the ink pill is
-   grey on near-black. */
+/* The glyph is a step fainter than the name, and takes the name's colour in view and under the
+   pointer. `[data-tone]` keeps these rules above ShellGlyph.css's tone rules, which load later:
+   without it the glyph on the item in view is grey on near-black. */
 .hg-app-rail-button .hg-shell-glyph[data-tone] {
+  color: var(--text-tertiary);
+}
+
+.hg-app-rail-button:is([data-active="true"], [data-open="true"], :hover)
+  .hg-shell-glyph[data-tone] {
   color: inherit;
 }
 
@@ -190,11 +239,11 @@
 }
 
 .hg-app-rail-button[data-active="true"] .hg-app-rail-tag {
-  /* An outline on the ink, no wash: a mix on the ink is a pair no check can measure (the phone's
-     `Chip` draws its count on the ink the same way). */
-  border-color: color-mix(in srgb, var(--on-ink) 40%, transparent);
+  /* An outline on the item in view, no wash: a mix there is a pair no check can measure (the
+     phone's `Chip` draws its count on the ink the same way). */
+  border-color: color-mix(in srgb, var(--on-nav-active) 40%, transparent);
   background: transparent;
-  color: var(--on-ink);
+  color: var(--on-nav-active);
 }
 
 .hg-app-rail[data-collapsed="true"] .hg-app-rail-tag {
@@ -236,5 +285,10 @@
   .hg-app-rail-button {
     min-height: calc(var(--sp-8) + var(--sp-1));
     padding-block: var(--sp-1);
+  }
+
+  .hg-app-rail[data-collapsed="true"] .hg-app-rail-button {
+    width: var(--sp-10);
+    height: var(--sp-10);
   }
 }

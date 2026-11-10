@@ -1,5 +1,10 @@
 'use client';
-import { useSettingsScreen, useShellScreen, useSidebar } from '@heliogrid/data/react';
+import {
+  useSearchScreen,
+  useSettingsScreen,
+  useShellScreen,
+  useSidebar,
+} from '@heliogrid/data/react';
 import {
   accessRemovedWords,
   accountMenuWords,
@@ -9,13 +14,13 @@ import {
   presetName,
   SHELL,
   SIDEBAR,
+  searchWords,
 } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
 import {
   AccessRemoved,
   AccountMenu,
-  AppearanceSwitch,
   AppRail,
   AppShell,
   BottomNav,
@@ -23,6 +28,7 @@ import {
   type RailItem,
   ShellGlyph,
   Text,
+  useFormat,
   Wordmark,
 } from '@heliogrid/ui';
 import { usePathname } from 'next/navigation';
@@ -31,6 +37,7 @@ import { useAppearance } from '../../lib/appearance';
 import { InstantMoveProvider, useInstantMove } from '../../lib/instant-move';
 import { LeaveGuardProvider, useGuardedMove } from '../../lib/leave-guard';
 import { NotificationCentre } from '../notifications';
+import { SearchPalette, useSearchKeys } from '../search';
 import { GrievanceNote } from './components/GrievanceNote';
 import { ShellHeader } from './components/ShellHeader';
 import { ShellSearch } from './components/ShellSearch';
@@ -69,9 +76,16 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
   /* Leaving the page the centre stands beside closes it — an item's subject, or a rail press. A
      page holding a change asks first (`useLeaveGuard`). */
   const goTo = (path: string) => move(path, centre.close);
+  /* A result opened from the palette leaves both overlays behind with the page they stood over. */
+  const closeOverlays = () => {
+    centre.close();
+    screen.search.close();
+  };
   const nav = useRailItems(shell, useSidebar(), useSettingsScreen(), goTo);
   const [appearance, chooseAppearance] = useAppearance();
   const [folded, toggleFold] = useRailFolded();
+  const search = useSearchScreen({ pack: useFormat().pack });
+  useSearchKeys(screen.search.open);
   // A page holding a change asks first, as every in-app move does (D1 A).
   const signOut = () => guarded(screen.signOut);
   const note = <GrievanceNote open={grievance.isOpen} onClose={grievance.close} />;
@@ -103,21 +117,20 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
   };
   /* The rail's account opens towards the page; the phone bar's, at the window's right edge, opens
      back across it, or its list runs off the screen. */
-  const accountMenu = (align: 'start' | 'end') => (
-    <AccountMenu
-      {...accountMenuWords(t, screen.personName)}
-      name={screen.personName}
-      align={align}
-      onGrievance={grievance.open}
-      onSignOut={signOut}
-    />
-  );
-  const openSearch = () => move(DOOR_PATH.search);
+  const accountMenu = (align: 'start' | 'end') => ({
+    ...accountMenuWords(t, screen.personName),
+    name: screen.personName,
+    align,
+    onGrievance: grievance.open,
+    onSignOut: signOut,
+  });
+  /* Below the desktop width the bar's search opens its page; the sidebar's opens the palette. */
+  const openSearchPage = () => move(DOOR_PATH.search);
   const searchItem: RailItem = {
     key: 'search',
     label: t(SHELL.search),
     icon: <ShellGlyph name="search" size="md" />,
-    onClick: openSearch,
+    onClick: screen.search.open,
   };
   const role = shell.home === null ? null : presetName(t, shell.home.home);
   return (
@@ -138,9 +151,13 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
           }
           search={
             <ShellSearch
-              query={screen.searchQuery}
-              onQuery={screen.typeSearch}
-              onOpen={openSearch}
+              query={search.query}
+              onQuery={(query) => {
+                search.type(query);
+                screen.search.open();
+              }}
+              onClear={search.clear}
+              onOpen={screen.search.open}
             />
           }
           searchItem={searchItem}
@@ -151,19 +168,15 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
           bell={bell}
           account={{
             menu: accountMenu('start'),
-            name: screen.personName,
             caption:
               role === null || shell.companyName === null
                 ? (role ?? undefined)
                 : t(SIDEBAR.roleAt, { role, company: shell.companyName }),
-            appearance: (
-              <AppearanceSwitch
-                form="icons"
-                words={appearanceWords(t)}
-                value={appearance}
-                onChange={chooseAppearance}
-              />
-            ),
+            appearance: {
+              words: appearanceWords(t),
+              value: appearance,
+              onChange: chooseAppearance,
+            },
           }}
           collapsed={folded}
           fold={{ collapse: t(SIDEBAR.collapse), expand: t(SIDEBAR.expand), onToggle: toggleFold }}
@@ -172,9 +185,9 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
       header={
         <ShellHeader
           companyName={shell.companyName}
-          onSearch={openSearch}
+          onSearch={openSearchPage}
           bell={bell}
-          account={accountMenu('end')}
+          account={<AccountMenu {...accountMenu('end')} />}
         />
       }
     >
@@ -189,6 +202,14 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
         <NotificationCentre
           onClose={centre.close}
           onGoToLeads={screen.offersLeads ? () => goTo(DOOR_PATH.leads) : undefined}
+        />
+      ) : null}
+      {screen.search.isOpen ? (
+        <SearchPalette
+          screen={search}
+          words={searchWords(t)}
+          onOpen={(address) => move(`/${address}`, closeOverlays)}
+          onClose={screen.search.close}
         />
       ) : null}
       {note}

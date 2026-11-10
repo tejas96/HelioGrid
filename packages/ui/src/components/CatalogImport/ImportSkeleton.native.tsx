@@ -2,11 +2,11 @@ import { theme } from '@heliogrid/theme';
 import { type StyleProp, StyleSheet, View, type ViewStyle } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
+import { importFileOf } from '../Import/Import.logic';
+import { CARD_RADIUS, raisedCard, rowDivider } from '../Import/Import.surfaces.native';
+import type { ImportFormats } from '../Import/Import.types';
 import { ProgressRing } from '../OperationProgress/ProgressRing.native';
 import { SHARE_RING } from '../OperationProgress/progress-ring';
-import type { ImportFormats } from './CatalogImport.logic';
-import { fileOf } from './CatalogImport.steps';
-import { CARD_RADIUS, raisedCard, rowDivider } from './CatalogImport.surfaces.native';
 import type { CatalogImportProps } from './CatalogImport.types';
 import { ImportFind } from './ImportOverview.native';
 
@@ -21,7 +21,7 @@ const SECOND_LIST = ['first', 'second', 'third'] as const;
  */
 export function ImportSkeleton(props: CatalogImportProps & { formats: ImportFormats }) {
   const { job, words } = props;
-  const stamp = job === null ? null : fileOf(job, words, props.formats, props.mapping).stamp;
+  const stamp = job === null ? null : importFileOf(job, words, props.formats, props.mapping).stamp;
   return (
     <View style={styles.step}>
       <View style={styles.overview}>

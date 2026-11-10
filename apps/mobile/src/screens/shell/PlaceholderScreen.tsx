@@ -1,25 +1,12 @@
 import { useShell } from '@heliogrid/data/react';
-import type { ShellDoor } from '@heliogrid/domain';
 import { onItsWayWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
+import type { ReactNode } from 'react';
 import { ComingPageBody } from './components/ComingPageBody';
 import { ShellNotFoundState } from './components/ShellNotFoundState';
 import { ShellPage } from './components/ShellPage';
-import type { DoorRoute } from './doors';
-
-/** Each door: the destination it is on the pill, if any, and its title. */
-const DOOR: Record<DoorRoute, ShellDoor> = {
-  Leads: 'leads',
-  Proposals: 'proposals',
-  Projects: 'projects',
-  People: 'people',
-  Campaigns: 'campaigns',
-  More: 'more',
-  QuickAddLead: 'add_lead',
-  StartSurvey: 'start_survey',
-  Search: 'search',
-};
+import { type PlaceholderRoute, placeholderDoorOf } from './doors';
 
 /**
  * A door the shell opens before its module's screen exists — inside the same shell, so no control
@@ -27,14 +14,16 @@ const DOOR: Record<DoorRoute, ShellDoor> = {
  * reaches every door, so one this person's shell does not offer says the page does not exist
  * (`F7-48`), as the web's does.
  */
-export function PlaceholderScreen() {
+export function PlaceholderScreen(): ReactNode {
   const t = useTranslate();
   const shell = useShell();
-  const route = useRoute();
-  const door = DOOR[route.name as DoorRoute];
+  /* Typed to the routes the placeholder rows make (`doors.ts`): a route it cannot draw fails tsc. */
+  const route =
+    useRoute<RouteProp<Pick<ReactNavigation.RootParamList, PlaceholderRoute>, PlaceholderRoute>>();
+  const door = placeholderDoorOf(route.name);
   return (
     <ShellPage inView={door}>
-      {shell.doors.includes(door) && door !== 'more' ? (
+      {shell.doors.includes(door) ? (
         <ComingPageBody words={onItsWayWords(t, door)} />
       ) : (
         <ShellNotFoundState />

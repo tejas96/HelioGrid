@@ -79,9 +79,19 @@
   }
 }
 
+/* The notification centre's top edge: under the bar while the bar shows, the window's top from the
+   desktop width up, where the bar gives way to the sidebar — never under a bar that is not there. */
+.hg-shell {
+  --hg-shell-centre-top: var(--topbar-h-mobile);
+}
+
 /* The centre stands beside the page from the desktop width up, so the page keeps clear of the
    panel's width, its inner side and a gap — nothing of the page sits under the panel. */
 @media (min-width: 968px) {
+  .hg-shell {
+    --hg-shell-centre-top: 0;
+  }
+
   .hg-shell-centre-open .hg-shell-page {
     padding-inline-end: calc(var(--form-max) + var(--sp-8) + var(--sp-6));
   }
@@ -110,6 +120,18 @@
   font-size: var(--fs-caption);
   line-height: var(--lh-caption);
   pointer-events: none;
+}
+
+/* The sidebar's words are body-sm, as its rows are, and the input stops short of the keys, so the
+   placeholder is never drawn under them. */
+.hg-shell-search .hg-search-field-input {
+  padding-inline-end: var(--sp-10);
+  font-size: var(--fs-body-sm);
+  text-overflow: ellipsis;
+}
+
+.hg-shell-search .hg-search-field-input::placeholder {
+  color: var(--text-secondary);
 }
 
 .hg-shell-search:focus-within .hg-shell-search-keys,

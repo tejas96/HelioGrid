@@ -80,7 +80,7 @@ export function MemberList({
     <>
       {list}
       <EmptyState
-        moment="empty-team"
+        scene="settle"
         title={words.alone}
         description={words.aloneLine}
         action={teachingAction}

@@ -1,7 +1,8 @@
 import { mapRead } from '@heliogrid/domain';
 import { useEffect, useRef, useState } from 'react';
 import { Text } from '../../primitives/Text/Text';
-import { cardOf, fixedLineOf, type ImportFormats, productOf } from './CatalogImport.logic';
+import type { ImportFormats } from '../Import/Import.types';
+import { cardOf, fixedLineOf, productOf } from './CatalogImport.logic';
 import type { CatalogImportProps, ImportRowList } from './CatalogImport.types';
 import { groupsInScope, listFailed, rowsOf } from './CatalogImport.view';
 import { ImportFixCard, ImportFixedCard } from './ImportFixCard';

@@ -1,9 +1,10 @@
+import { asciiDigits } from '../import/text';
 import type { FormatPack } from './pack';
 
 /**
- * Phone DISPLAY, from the market's spec (`F1-49`). Storage and transport are always E.164
- * (`packages/contracts` `phoneE164Schema`); nothing here validates, because a refusal is the
- * caller's to word.
+ * Phone DISPLAY, from the market's spec (`F1-49`), and the one reading of a typed or imported number
+ * into the E.164 it is stored as (`M02-02`). Storage and transport are always E.164
+ * (`packages/contracts` `phoneE164Schema`); nothing here words a refusal — that is the caller's.
  *
  * The grouping is the PACK's, never a fixed 5+5. That constant lived in two places — the auth
  * slice and the design system — which is exactly the drift a pack key exists to end.
@@ -91,4 +92,53 @@ export function phoneDigitsMismatch(pack: FormatPack, value: string): PhoneDigit
   const typed = nationalNumber(pack, value).length;
   const needed = pack.phone.nsnLength;
   return typed === needed ? null : { typed, needed };
+}
+
+/** The shape `phoneE164Schema` holds after its `+`: a non-zero first digit, seven to fifteen in all. */
+const INTERNATIONAL_DIGITS = /^[1-9]\d{6,14}$/;
+
+/**
+ * The digits of a number written for international dialling — after its `+`, or after the `00`
+ * that stands for one — or `null` for a number written the national way.
+ */
+export function internationalDigitsOf(typed: string): string | null {
+  const digits = typed.replace(NON_DIGIT, '');
+  if (typed.trim().startsWith('+')) return digits;
+  return digits.startsWith('00') ? digits.slice(2) : null;
+}
+
+/**
+ * Whether the digits typed before a national number are only dialling prefixes: zeros (a trunk `0`)
+ * and this market's own calling code, in any of the ways people write them — `0`, `91`, `091`, `910`.
+ */
+function onlyDiallingPrefix(prefix: string, code: string): boolean {
+  return new RegExp(`^0*(?:${code})?0*$`).test(prefix);
+}
+
+/**
+ * The E.164 a number is stored and matched as (`M02-02`: identity survives any formatting habit and
+ * any import) — every way one number is written gives one string: `98450 27746`, `098450-27746`,
+ * `+91 (0) 98450 27746`, `0091 9845027746` and `९८४५० २७७४६` all read `+919845027746`. A number
+ * written with `+` or `00` and another market's code is kept whole when it has an international
+ * number's shape. `null` when the text is not a number this market can store: too few digits, too
+ * many, or digits before the national number that are no dialling prefix.
+ */
+export function phoneE164Of(pack: FormatPack, raw: string): string | null {
+  const typed = asciiDigits(raw);
+  const code = pack.phone.dialCode.replace(NON_DIGIT, '');
+  const { nsnLength } = pack.phone;
+  const international = internationalDigitsOf(typed);
+  if (international !== null) {
+    if (!international.startsWith(code)) {
+      return INTERNATIONAL_DIGITS.test(international) ? `+${international}` : null;
+    }
+    /* `+91 (0) 98450 27746`: the trunk zero some write after the code is no digit of the number. */
+    const national = international.slice(code.length).replace(/^0+/, '');
+    return national.length === nsnLength ? `${pack.phone.dialCode}${national}` : null;
+  }
+  const digits = typed.replace(NON_DIGIT, '');
+  if (digits.length < nsnLength) return null;
+  const national = digits.slice(digits.length - nsnLength);
+  const prefix = digits.slice(0, digits.length - nsnLength);
+  return onlyDiallingPrefix(prefix, code) ? `${pack.phone.dialCode}${national}` : null;
 }

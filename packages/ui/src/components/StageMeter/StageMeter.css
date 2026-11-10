@@ -1,0 +1,110 @@
+/* StageMeter — the pipeline by stage (`SCR-M02-03`). Its look as a tile is `Ground`'s tiles list;
+   it keeps its own radius, padding and the stages' pills. Each share of the bar grows with its
+   stage's count (`--hg-stage-meter-share`), so the bar is the funnel's shape. */
+
+.hg-stage-meter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+  padding: var(--sp-4);
+  border-radius: var(--r-card-expressive);
+}
+
+.hg-stage-meter-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-1) var(--sp-3);
+}
+
+.hg-stage-meter-bar {
+  display: flex;
+  gap: var(--sp-0-5);
+}
+
+.hg-stage-meter-share {
+  display: block;
+  flex: var(--hg-stage-meter-share) 1 0;
+  min-width: var(--sp-1);
+  height: var(--sp-1);
+  border-radius: var(--r-pill);
+  background: var(--accent);
+}
+
+/* The card's stages stand in rows of four under the bar, every one in view: a row that scrolled
+   sideways cut a stage in half at the card's edge. A name wider than its quarter takes the room it
+   needs and the row wraps sooner, never breaking inside a word. */
+.hg-stage-meter[data-form="card"] .hg-stage-meter-stages {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: var(--sp-1);
+  margin-inline: calc(-1 * var(--sp-2));
+}
+
+.hg-pressable.hg-stage-meter-stage {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-0-5);
+  min-width: 0;
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-tile);
+  color: var(--text-primary);
+  text-align: start;
+}
+
+.hg-stage-meter[data-form="card"] .hg-pressable.hg-stage-meter-stage {
+  box-sizing: border-box;
+  flex: 0 0 25%;
+  min-width: min-content;
+}
+
+@media (hover: hover) {
+  .hg-pressable.hg-stage-meter-stage:hover {
+    background: var(--hg-control-fill);
+  }
+}
+
+/* The chosen stage is the accent wash, as every chosen filter is — calm however wide its share. */
+.hg-pressable.hg-stage-meter-stage[aria-pressed="true"] {
+  background: var(--accent-subtle);
+  color: var(--accent-text);
+}
+
+.hg-stage-meter-count {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-stage-meter-word {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+.hg-pressable.hg-stage-meter-stage[aria-pressed="true"] .hg-stage-meter-word {
+  color: var(--accent-text);
+}
+
+/* The band: each stage stands over its own share of the bar, wider as it holds more. */
+.hg-stage-meter[data-form="band"] .hg-stage-meter-stages {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.hg-stage-meter[data-form="band"] .hg-pressable.hg-stage-meter-stage {
+  flex: var(--hg-stage-meter-share) 1 0;
+  min-width: min-content;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+}
+
+.hg-stage-meter[data-form="band"] .hg-stage-meter-share {
+  align-self: stretch;
+}

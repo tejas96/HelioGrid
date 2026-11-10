@@ -19,6 +19,7 @@ import {
   amountSchema,
   createHeadersSchema,
   currencyCodeSchema,
+  nonNegativeAmountSchema,
   paginated,
   paginationQuerySchema,
   percentSchema,
@@ -109,10 +110,7 @@ export const catalogItemSchema = resolvedCatalogItemSchema.extend({
 export type CatalogItemWire = z.infer<typeof catalogItemSchema>;
 
 /** A price of one unit in the tenant's currency; zero is a price, a negative one is not. */
-export const priceSchema = amountSchema.refine(
-  (amount) => !amount.startsWith('-'),
-  'a price is ≥ 0',
-);
+export const priceSchema = nonNegativeAmountSchema;
 
 /** A dated entry (`M01-44`): no date means today on the tenant's clock, never a day before it. */
 export const rateWriteSchema = z.object({

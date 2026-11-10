@@ -74,6 +74,32 @@ export function errorEnvelope<C extends z.ZodTypeAny>(code: C) {
   });
 }
 
+/**
+ * A create's 422 when it raises nothing of its own: the retry key already made a record for a
+ * different request (`F4-07`). Extensible, as the create routes' 422 sets are.
+ */
+export const keyReusedEnvelope = errorEnvelope(extensibleEnum([IDEMPOTENCY_KEY_REUSED]));
+
+/**
+ * The envelope of a refusal that carries what it was refused over — the record a number already
+ * belongs to, the owner who won a race — so the screen answers in one round trip instead of asking
+ * again. `facts` is the refusal's own shape; everything else is the canonical envelope.
+ */
+export function errorEnvelopeWithFacts<C extends z.ZodTypeAny, F extends z.ZodTypeAny>(
+  code: C,
+  facts: F,
+) {
+  return z.object({
+    error: z.object({
+      code,
+      message: z.string(),
+      details: z.array(errorDetailSchema).optional(),
+      requestId: z.string(),
+      facts,
+    }),
+  });
+}
+
 /** The generic envelope (any base code) — used by the global exception filter. */
 export const genericErrorSchema = errorEnvelope(baseErrorCodeSchema);
 export type ErrorEnvelope = z.infer<typeof genericErrorSchema>;

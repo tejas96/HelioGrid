@@ -1,7 +1,7 @@
 import type { Translator } from '@heliogrid/i18n';
-import { CATALOG_EDITOR, createTranslator, toastHostWords } from '@heliogrid/i18n';
+import { CATALOG_EDITOR, createTranslator, QUICK_ADD, toastHostWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
-import { UndoToastStory } from './ToastHost.story';
+import { ActToastStory, UndoToastStory } from './ToastHost.story';
 
 /** An undoable toast's words — an archived catalog item, as `SCR-M01-15`'s row act tells it. */
 function undoToast(t: Translator['t']) {
@@ -73,4 +73,24 @@ test('after a keyboard Undo the next toast leaves on its own', async ({ mount, p
   await push.click();
   await expect(page.getByText(words.title)).toBeVisible();
   await expect(page.getByText(words.title)).toHaveCount(0, { timeout: 6000 });
+});
+
+/* A toast's way on — quick add's *Open* — closes its toast as it goes, so it runs once. */
+test('a toast act closes its toast first and runs once', async ({ mount, page }) => {
+  const { t } = await createTranslator('en');
+  const title = t(QUICK_ADD.saved);
+  const open = t(QUICK_ADD.open);
+  const frame = await mount(
+    <ActToastStory
+      act={t('push')}
+      title={title}
+      open={open}
+      dismiss={toastHostWords(t).dismissLabel}
+    />,
+  );
+  await page.getByRole('button', { name: 'push' }).click();
+  await expect(page.getByText(title)).toBeVisible();
+  await page.getByRole('button', { name: open }).click();
+  await expect(page.getByText(title)).toHaveCount(0);
+  await expect(frame).toHaveAttribute('data-acted', '1');
 });

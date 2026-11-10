@@ -63,7 +63,7 @@ export function NotificationSheet({ onClose, onGoToLeads }: NotificationSheetPro
         retryLabel={t(NOTIFICATION_CENTRE.tryAgain)}
         emptyTitle={t(NOTIFICATION_CENTRE.emptyTitle)}
         emptyMessage={t(NOTIFICATION_CENTRE.emptyMessage)}
-        emptyMoment="empty-inbox"
+        emptyScene="settle"
         emptyAction={
           onGoToLeads === undefined ? null : (
             <Button variant="secondary" size="sm" onClick={onGoToLeads}>

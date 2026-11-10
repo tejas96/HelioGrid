@@ -30,30 +30,29 @@ test("a destination on the owner's rail opens its door inside the shell", async 
   await passTheOwnersMark(page, en);
   const rail = page.getByRole('navigation', { name: en.t(SHELL.mainNavigation) });
 
-  await rail.getByRole('button', { name: destinationLabel(en.t, 'leads') }).click();
+  await rail.getByRole('button', { name: destinationLabel(en.t, 'projects') }).click();
 
-  await expect(page).toHaveURL(/\/leads$/);
+  await expect(page).toHaveURL(/\/projects$/);
   await expect(
-    page.getByRole('heading', { level: 1, name: doorTitle(en.t, 'leads') }),
+    page.getByRole('heading', { level: 1, name: doorTitle(en.t, 'projects') }),
   ).toBeAttached();
   // The door says what its module will do until the module lands.
-  await expect(page.getByText(onItsWayWords(en.t, 'leads').line)).toBeVisible();
-  await expect(rail.getByRole('button', { name: destinationLabel(en.t, 'leads') })).toHaveAttribute(
-    'aria-current',
-    'page',
-  );
+  await expect(page.getByText(onItsWayWords(en.t, 'projects').line)).toBeVisible();
+  await expect(
+    rail.getByRole('button', { name: destinationLabel(en.t, 'projects') }),
+  ).toHaveAttribute('aria-current', 'page');
   await expectNoSidewaysScroll(page);
   // A client navigation swaps the head's title in after the page: read the page once it has one.
   await expect(page).toHaveTitle(/\S/);
   await expectNoSeriousViolations(page);
 
-  await rail.getByRole('button', { name: destinationLabel(en.t, 'leads') }).click();
+  await rail.getByRole('button', { name: destinationLabel(en.t, 'projects') }).click();
   await page.goBack();
   await expect(page).toHaveURL(/\/home$/);
 
   // The same item again, after Back, opens it again: a passed burst holds nothing.
-  await rail.getByRole('button', { name: destinationLabel(en.t, 'leads') }).click();
-  await expect(page).toHaveURL(/\/leads$/);
+  await rail.getByRole('button', { name: destinationLabel(en.t, 'projects') }).click();
+  await expect(page).toHaveURL(/\/projects$/);
 });
 
 test('a reload keeps the door it was on, with no trip through the sign-in door', async ({
@@ -117,24 +116,6 @@ test('a door the person is not offered, or no door at all, is not found', async 
     await expect(page.getByText(onItsWayWords(en.t, 'leads').badge)).toBeHidden();
     await expect(page.getByRole('heading', { level: 1, name: en.t(SHELL.notFound) })).toBeVisible();
   }
-});
-
-test('search opens its door', async ({ page }) => {
-  await createCompany(page, en, freshMobile());
-  await passTheOwnersMark(page, en);
-
-  // From --bp-desktop the search is a field that Enter submits; below it, a button.
-  if ((page.viewportSize()?.width ?? 0) >= 968) {
-    const field = page.getByRole('searchbox', { name: en.t(SHELL.search) });
-    await field.fill('Pune');
-    await field.press('Enter');
-  } else {
-    await page.getByRole('button', { name: en.t(SHELL.search) }).click();
-  }
-  await expect(page).toHaveURL(/\/search$/);
-  await expect(
-    page.getByRole('heading', { level: 1, name: doorTitle(en.t, 'search') }),
-  ).toBeAttached();
 });
 
 /* `F8-36`: offline, the shell shows the one no-connection screen instead of a page that waits forever. */

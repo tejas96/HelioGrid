@@ -9,11 +9,11 @@ import { Banner } from '../Banner/Banner.native';
 import { Button } from '../Button/Button.native';
 import { RetryButton } from '../Button/RetryButton.native';
 import { Pagination } from '../DataTable/DataTableChrome.native';
+import { EmptyScene } from '../EmptyScene/EmptyScene.native';
 import { EmptyState } from '../EmptyState/EmptyState.native';
 import { FacetChips } from '../FilterBar/FacetChips.native';
 import { FilterPanel } from '../FilterPanel/FilterPanel.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
-import { LottieMoment } from '../LottieMoment/LottieMoment.native';
 import { SearchField } from '../SearchField/SearchField.native';
 import { CatalogItemList } from './CatalogItemList.native';
 import {
@@ -73,7 +73,7 @@ export function CatalogItems(props: CatalogItemsProps) {
       )}
       {loading || props.teaching === null ? null : (
         <View style={styles.teach} accessible>
-          <LottieMoment name="empty-catalog" size={72} />
+          <EmptyScene name="settle" size="compact" />
           <View style={styles.teachWords}>
             <Text variant="overline" color="secondary">
               {words.makeItYours}

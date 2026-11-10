@@ -17,8 +17,10 @@ paths:
   whose one source is the typed tokens in `packages/theme/src/tokens/`. On a screen only `0` is
   written raw; a size or colour the tokens lack is added there first, in light and dark, with its
   contrast pair, never typed into the app.
-- **The primary action is the ocean accent** (`--action-primary`); the active nav item is a solid
-  ink pill. The logo gradient is spent once per screen — the hero's top line, a progress fill, the
+- **The primary action is the ocean accent** (`--action-primary`); the active sidebar item is
+  `nav-active` (the ink pill in light, a soft accent wash in the dark). A chosen filter or option —
+  a stage, a segment, a filter pill, a chip — is the accent wash, `accent-text` on `accent-subtle`,
+  however wide it grows; the ink pill is the sidebar's and a tooltip's alone. The logo gradient is spent once per screen — the hero's top line, a progress fill, the
   brand mark — and is never information.
 - **Every colour works in light, dark and field mode.** Web reads the CSS variables, which switch
   with `data-theme`; a phone half reads `colors` from the `Color` primitive, whose values the system

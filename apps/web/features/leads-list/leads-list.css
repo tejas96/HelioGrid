@@ -1,0 +1,67 @@
+/* The Leads list (`SCR-M02-03`): its head and its acts, and the table's cells. The filters, the
+   list's read and its rows, and the table are the shared parts'. */
+
+/* The title and its summary on the left, *Import* and *Add lead* on the right; they wrap under
+   the title in a narrow room. */
+.hg-leads-list-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-4) var(--sp-6);
+}
+
+.hg-leads-list-title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.hg-leads-list-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-leads-list-stage {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+/* The lead's face beside its name, as the phone's row and the Team table draw a person. */
+.hg-leads-list-person {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-leads-list-lead {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-leads-list-lead-name {
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  overflow-wrap: break-word;
+}
+
+.hg-leads-list-lead-sub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--sp-2);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  /* The table's first cell is set bold; the number and city under the name never are. */
+  font-weight: var(--fw-regular);
+  color: var(--text-secondary);
+}
+
+.hg-leads-list-mono {
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}

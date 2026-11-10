@@ -1,6 +1,7 @@
 import { isDeepStrictEqual } from 'node:util';
 import {
   businessProfile,
+  contactRoleLabel,
   type Db,
   type DbTransaction,
   onboardingProgress,
@@ -11,6 +12,7 @@ import {
 import {
   type BankDetails,
   type BankDetailsTyped,
+  CONTACT_ROLE_SEEDS,
   ONBOARDING_STEPS,
   type TenantSegment,
   type TrancheTemplateDefault,
@@ -26,8 +28,10 @@ import { withKwp } from './settings.repository';
 
 /**
  * What a company has before its owner has touched a setting (`M01-28`, `M01-54`): the setup
- * corridor at its first step, an empty profile, and the two standard splits with the first as
- * the default — in the words of the person creating the company, whose they now are (`F3-10`).
+ * corridor at its first step, an empty profile, the three contact role labels every company starts
+ * with (`M02-34`, stored by key — their words are catalog copy), and the two standard splits with
+ * the first as the default — in the words of the person creating the company, whose they now are
+ * (`F3-10`).
  * Written INSIDE the tenant-creation transaction on the admin path, so a company is never observed
  * without them; every row lands once — the unique keys refuse a second seed, and the splits are
  * skipped where a template already exists.
@@ -56,6 +60,10 @@ export async function seedTenantSettings(
     .insert(businessProfile)
     .values({ tenantId, address: null, bankDetails: null, createdAt: now, updatedAt: now })
     .onConflictDoNothing({ target: businessProfile.tenantId });
+  await tx
+    .insert(contactRoleLabel)
+    .values(CONTACT_ROLE_SEEDS.map((seedKey) => ({ tenantId, seedKey, createdAt: now })))
+    .onConflictDoNothing();
   const [existing] = await tx
     .select({ id: trancheTemplate.id })
     .from(trancheTemplate)

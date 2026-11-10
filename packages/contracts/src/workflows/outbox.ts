@@ -3,6 +3,7 @@ import { catalogImportWorkflow } from './catalog-import';
 import { creditNoteDocumentWorkflow } from './credit-note-document';
 import { inviteMessageWorkflow } from './invite-message';
 import { invoiceDocumentWorkflow } from './invoice-document';
+import { leadImportWorkflow } from './lead-import';
 import { defineWorkflow, type WorkflowDefinition, type WorkflowResult } from './registry';
 import { usageRecordWorkflow } from './usage-ledger';
 
@@ -52,6 +53,7 @@ const OUTBOX_WORKFLOWS: readonly WorkflowDefinition[] = [
   creditNoteDocumentWorkflow,
   inviteMessageWorkflow,
   invoiceDocumentWorkflow,
+  leadImportWorkflow,
   usageRecordWorkflow,
 ];
 

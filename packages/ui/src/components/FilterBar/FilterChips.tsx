@@ -30,8 +30,8 @@ export function OptionIcon({ icon }: { icon: ReactNode }) {
 
 /**
  * Kind and stage chips: 44px pills — the pill is the target — in the control fill, flat, with an
- * optional 18px glyph before the label; the chosen one is the near-black primary marker with
- * white words. Roving tabindex: one stop in the tab order, arrow keys move between chips.
+ * optional 18px glyph before the label; the chosen one is the accent wash with
+ * accent words. Roving tabindex: one stop in the tab order, arrow keys move between chips.
  *
  * **One-of-N by construction**: `role="tablist"` + `aria-selected`, and its arrow keys change the
  * selection as they move, because in a stage strip moving the highlight *is* choosing. A dimension
@@ -61,7 +61,12 @@ export function FilterChips({
   chosen.current = selectedIndex;
   useImperativeHandle(
     ref,
-    () => ({ focus: () => setTimeout(() => refs.current[chosen.current]?.focus(), 0) }),
+    () => ({
+      /* Returns nothing, as `Button`'s handle: a caller's effect may hand on what `focus()` gives. */
+      focus: () => {
+        setTimeout(() => refs.current[chosen.current]?.focus(), 0);
+      },
+    }),
     [],
   );
 

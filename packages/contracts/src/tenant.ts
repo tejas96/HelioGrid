@@ -32,7 +32,7 @@ export const companyNameSchema = z
   .min(1)
   .max(COMPANY_PROFILE_FIELD_CAP.companyName);
 export const citySchema = z.string().trim().min(1).max(COMPANY_PROFILE_FIELD_CAP.city);
-const personNameSchema = z.string().trim().min(1).max(120);
+export const personNameSchema = z.string().trim().min(1).max(120);
 
 /** Company signup from a verified OTP (`M01-01`): exactly these three, nothing else. */
 export const createTenantSchema = z.object({

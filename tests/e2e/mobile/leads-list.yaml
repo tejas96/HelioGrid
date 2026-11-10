@@ -1,0 +1,29 @@
+# Leads list (`SCR-M02-03`, `M02-52`): the pill's Leads door opens the list — the pipeline card,
+# every stage in view down to the last, none behind a sideways scroll, over the owner's leads; the
+# Dormant chip narrows it to the quiet ones, none in a new company, so the page says nothing
+# matches while the chips stay; Clear filters brings every lead back, and a row opens its lead.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://leads
+- extendedWaitUntil:
+    visible: ${LEADS_PIPELINE_HINT}
+    timeout: 15000
+- assertVisible: "${LEADS_LAST_STAGE}.*"
+# The newest lead is first and the filters fill a phone's first screen, so the row is scrolled to.
+- scrollUntilVisible:
+    element: ${LEAD_NAME}
+    timeout: 15000
+- tapOn: "${DORMANT}.*"
+- extendedWaitUntil:
+    visible: ${LEADS_NO_MATCH}
+    timeout: 15000
+- assertNotVisible: ${LEAD_NAME}
+- assertVisible: "${DORMANT}.*"
+- tapOn: ${CLEAR_FILTERS}
+- scrollUntilVisible:
+    element: ${LEAD_NAME}
+    timeout: 15000
+- tapOn: ${LEAD_NAME}
+- extendedWaitUntil:
+    visible: ${CALL}
+    timeout: 15000

@@ -13,3 +13,16 @@ export function ringShare(share: number): number {
   if (!Number.isFinite(share)) return 0;
   return Math.min(1, Math.max(0, share));
 }
+
+/** The circle a ring of this side and stroke draws, and the length its share fills. */
+export interface RingArc {
+  readonly radius: number;
+  readonly length: number;
+  readonly arc: number;
+}
+
+export function ringArcOf(side: number, stroke: number, share: number): RingArc {
+  const radius = (side - stroke) / 2;
+  const length = 2 * Math.PI * radius;
+  return { radius, length, arc: length * ringShare(share) };
+}

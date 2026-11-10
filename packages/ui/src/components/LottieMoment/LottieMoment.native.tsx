@@ -3,10 +3,6 @@ import { View } from 'react-native';
 import { useReducedMotion } from '../../primitives/use-reduced-motion.native';
 import type { LottieMomentName, LottieMomentProps } from './LottieMoment.types';
 import celebrate from './moments/celebrate.json';
-import empty from './moments/empty.json';
-import emptyCatalog from './moments/empty-catalog.json';
-import emptyInbox from './moments/empty-inbox.json';
-import emptyTeam from './moments/empty-team.json';
 import plan from './moments/plan.json';
 import published from './moments/published.json';
 import saved from './moments/saved.json';
@@ -24,10 +20,6 @@ const MOMENTS: Readonly<Record<LottieMomentName, AnimationObject>> = {
   published: published as AnimationObject,
   sent: sent as AnimationObject,
   plan: plan as AnimationObject,
-  empty: empty as AnimationObject,
-  'empty-catalog': emptyCatalog as AnimationObject,
-  'empty-team': emptyTeam as AnimationObject,
-  'empty-inbox': emptyInbox as AnimationObject,
 };
 
 export function LottieMoment({ name, size, label }: LottieMomentProps) {

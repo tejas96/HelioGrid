@@ -5,7 +5,7 @@ import {
   PANEL_TECHNOLOGIES,
 } from '@heliogrid/domain';
 import { z } from 'zod';
-import { paginationQuerySchema } from './common';
+import { paginationQuerySchema, queryFlagSchema } from './common';
 
 /**
  * The catalog list's query (`MS4-10`, `M01-38`, `SCR-M01-15`): what the picker and Catalog settings
@@ -20,7 +20,6 @@ export type ComponentKind = z.infer<typeof componentKindSchema>;
 /** Which tier supplied a resolved value (`MS4-07`'s second axis). */
 export const catalogSourceSchema = z.enum(CATALOG_SOURCES);
 export const catalogItemSourceSchema = catalogSourceSchema.extract(['platform_item', 'own_item']);
-const flagSchema = z.enum(['true', 'false']).transform((flag) => flag === 'true');
 
 /** The list's orders (`SCR-M01-15`); `preferred` is the default. */
 export const catalogSortSchema = z.enum(CATALOG_SORTS);
@@ -50,8 +49,8 @@ export const catalogItemsQuerySchema = paginationQuerySchema.extend({
   source: catalogItemSourceSchema.optional(),
   kind: componentKindSchema.optional(),
   kinds: kindsSchema.optional(),
-  includeHidden: flagSchema.optional(),
-  changed: flagSchema.optional(),
+  includeHidden: queryFlagSchema.optional(),
+  changed: queryFlagSchema.optional(),
   sort: catalogSortSchema.optional(),
   wattMin: z.coerce.number().positive().optional(),
   wattMax: z.coerce.number().positive().optional(),
@@ -61,7 +60,7 @@ export const catalogItemsQuerySchema = paginationQuerySchema.extend({
     .regex(/^[A-Za-z0-9_-]{1,40}(,[A-Za-z0-9_-]{1,40}){0,9}$/)
     .transform((list) => [...new Set(list.split(','))])
     .optional(),
-  preferred: flagSchema.optional(),
-  archived: flagSchema.optional(),
+  preferred: queryFlagSchema.optional(),
+  archived: queryFlagSchema.optional(),
 });
 export type CatalogItemsQuery = z.infer<typeof catalogItemsQuerySchema>;

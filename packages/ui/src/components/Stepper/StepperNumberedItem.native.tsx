@@ -50,7 +50,13 @@ export function StepperNumberedItem({
       >
         <StepperMarker index={index} size={markerSize} step={step} />
       </Pressable>
-      <View style={[styles.body, tight ? styles.bodyTight : undefined]}>
+      <View
+        style={[
+          styles.body,
+          tight ? styles.bodyTight : undefined,
+          last ? styles.bodyLast : undefined,
+        ]}
+      >
         <View style={styles.name}>
           <Text
             variant="body-sm"
@@ -116,6 +122,12 @@ const styles = StyleSheet.create({
   },
   bodyTight: {
     paddingTop: theme.spacing['sp-0-5'],
+  },
+  /* The last step is as wide as its name: a growing body inside an item sized to its content
+     takes the whole row in Yoga, and the steps before it shrank to nothing under its marker. */
+  bodyLast: {
+    flexGrow: 0,
+    flexBasis: 'auto',
   },
   name: {
     minWidth: 0,

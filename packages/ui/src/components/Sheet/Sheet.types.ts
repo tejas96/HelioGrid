@@ -2,7 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import type { StatusTone } from '../../primitives/StatusMark';
-import type { LottieMomentName } from '../LottieMoment/LottieMoment.types';
+import type { EmptySceneName } from '../EmptyScene/EmptyScene.types';
 import type { SurfaceRead, SurfaceState } from '../UnavailableNote/UnavailableNote.types';
 import type { OverlayCloseWords } from './OverlayClose.types';
 
@@ -84,8 +84,8 @@ interface SheetOwnProps extends OverlayCloseWords {
   emptyTitle?: TranslatedText;
   emptyMessage?: TranslatedText;
   emptyAction?: ReactNode;
-  /** The moment the `empty` state draws over its words, played once — `empty-inbox` for none yet. */
-  emptyMoment?: LottieMomentName;
+  /** The scene the `empty` state draws over its words, once (`EmptyScene`) — `settle` for none yet. */
+  emptyScene?: EmptySceneName;
   /** `unavailable` renders through `UnavailableNote` — no note without its title — and no retry. */
   unavailableTitle?: TranslatedText;
   unavailableMessage?: TranslatedText;
@@ -149,8 +149,8 @@ export interface OverlayEmptyProps {
   title?: TranslatedText;
   message?: TranslatedText;
   action?: ReactNode;
-  /** An original moment drawn over the words, played once: a calm "none yet", never a fault. */
-  moment?: LottieMomentName;
+  /** A calm line drawing over the words, drawn once (`EmptyScene`): a "none yet", never a fault. */
+  scene?: EmptySceneName;
   variant: OverlayStateVariant;
 }
 
@@ -171,8 +171,8 @@ export interface OverlayBodyStateProps {
   emptyAction?: ReactNode;
   emptyMessage?: TranslatedText;
   emptyTitle?: TranslatedText;
-  /** The moment the `empty` state draws over its words — `empty-inbox` for no notifications. */
-  emptyMoment?: LottieMomentName;
+  /** The scene the `empty` state draws over its words (`EmptyScene`) — `settle` for none yet. */
+  emptyScene?: EmptySceneName;
   errorMessage?: TranslatedText;
   errorTitle?: TranslatedText;
   onRetry?: () => void;

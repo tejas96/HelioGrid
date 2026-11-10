@@ -42,7 +42,7 @@ export function PriceEditorDock({
     return (
       <aside className="hg-catalog-dock" data-empty="true">
         <EmptyState
-          moment="empty-catalog"
+          scene="settle"
           title={t(CATALOG_FIGURES.pickTitle)}
           description={t(CATALOG_FIGURES.pickLine)}
         />

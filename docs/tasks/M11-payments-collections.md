@@ -98,6 +98,7 @@ This file carries every engineering task for the tenant's own collections: the t
 - Given a tranche with recorded payments, when its state renders, then the state is the one the entries imply and no control exists that sets it directly (`M11-10`).
 - Given a project whose coordinator completes the stage a tranche is mapped to, when the stage move saves, then that tranche is due (`M11-11`).
 - Given a market pack that marks a mapped stage skippable and a project that skips it, when the project passes the point that stage occupied, then the tranche becomes due rather than remaining upcoming (`M11-12`).
+- Given two customers merged, when the merge completes, then no tranche, payment or due amount changes (M02-62) (moved from the block 3 CRM plan, owner yes 2026-11-09).
 
 **Settle before the build:**
 - Skipped-stage due-ness (`M11-12`, `M08-36`) — ruled: the tranche becomes due when the project passes the point the skipped stage occupied, with no release act and no stored release field on the tranche (both rows carry this reading as the requirement and this task's own DONE WHEN tests it; the alternative — upcoming until a person releases it — is an owner ruling that amends the row, and this task builds the row as written).

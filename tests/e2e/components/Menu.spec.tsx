@@ -1,5 +1,5 @@
-import { accountMenuWords, createTranslator } from '@heliogrid/i18n';
-import { AccountMenu } from '@heliogrid/ui';
+import { accountMenuWords, createTranslator, menuWords } from '@heliogrid/i18n';
+import { AccountMenu, Menu } from '@heliogrid/ui';
 import { expect, test } from '@playwright/experimental-ct-react';
 import { settledBox } from '../support/layout';
 
@@ -52,4 +52,31 @@ test('drops when there is room below', async ({ mount, page }) => {
   if (list === null || button === null) return;
   expect(list.y).toBeGreaterThanOrEqual(button.y + button.height);
   expect(list.y + list.height).toBeLessThanOrEqual(240);
+});
+
+test('draws a destructive row last, behind a gap, wherever the caller put it', async ({
+  mount,
+  page,
+}) => {
+  const say = (id: string) => en.t({ id });
+  const menu = await mount(
+    <Menu
+      {...menuWords(en.t)}
+      items={[
+        { key: 'junk', label: say('Junk'), destructive: true },
+        { key: 'referral', label: say('Add a referral') },
+        { key: 'merge', label: say('Merge duplicate') },
+      ]}
+    />,
+  );
+
+  await menu.getByRole('button', { name: menuWords(en.t).label }).click();
+  const list = page.getByRole('menu');
+  await expect(list.getByRole('menuitem')).toHaveText([
+    'Add a referral',
+    'Merge duplicate',
+    'Junk',
+  ]);
+  await expect(list.locator('.hg-menu-separator + [role="menuitem"]')).toHaveText('Junk');
+  await expect(list.getByRole('menuitem', { name: 'Add a referral' })).toBeFocused();
 });

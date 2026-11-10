@@ -153,7 +153,8 @@ export function useNotificationCentre(timeZone: string): NotificationCentre {
     setOpenGroup: (group) =>
       setChosenGroups(NOTIFICATION_TYPE_GROUPS.filter((known) => known === group)),
     showOlder: () => void list.fetchNextPage(),
-    addressOf: (notification) => subjectAddressOf(notification.subjectKind),
+    addressOf: (notification) =>
+      subjectAddressOf(notification.subjectKind, notification.subjectRef),
     markRead: async (notification) => {
       if (notification.readAt !== null) return true;
       return readOne.mutateAsync(notification.id).then(

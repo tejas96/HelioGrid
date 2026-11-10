@@ -19,4 +19,16 @@ export interface AccountMenuProps {
   onSignOut: () => void;
   /** Which edge the list lines up with: the phone's top bar opens it leftward from the end. */
   align: MenuAlign;
+  /**
+   * The trigger as the whole row — the avatar, the name, an optional quiet line (the role and the
+   * company) and an up-down mark — so the row reads as one that opens. Without it, the avatar alone.
+   */
+  row?: { caption?: TranslatedText };
+}
+
+/** The whole-row trigger's words: whose account, the quiet line under it, and its spoken name. */
+export interface AccountRowProps {
+  name: string;
+  caption?: TranslatedText;
+  label: TranslatedText;
 }

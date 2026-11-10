@@ -16,7 +16,10 @@ export interface MenuItem {
    * `aria-checked`, never colour alone.
    */
   selected?: boolean;
-  /** Danger styling AND a trash glyph, so it isn't carried by colour alone. */
+  /**
+   * Danger styling AND a trash glyph, so it isn't carried by colour alone. The menu draws every
+   * destructive row last, behind a gap, wherever the caller put it (`menuInSafeOrder`).
+   */
   destructive?: boolean;
   disabled?: boolean;
   /**

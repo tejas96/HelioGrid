@@ -106,6 +106,7 @@ are the specification.
 - Given a battery added at step 3, when step 8 renders, then a Battery section exists, the counter's denominator includes it, and the payable includes battery cost (M06-30, M06-27).
 - Given the EMI toggle on, when the document renders, then EMI figures carry the projection label with their assumptions (M06-40).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+- Given a proposal opened from a lead, when Step 3 renders, then the Category is the lead's segment and the bill is the lead's monthly bill, each pre-filled and never asked again (M02-05, OV-04) (moved from the block 3 CRM plan, owner yes 2026-11-09).
 
 **Settle before the build:**
 - Which range bounds the stored capacity field — step 3's 0.5–7000 kW or the design range M06-09 records beside it (M06-09) — ruled: neither; the column takes any positive capacity, step 3's typed entry validates 0.5–7000 kW as M06-09's own row states, and a Path A value is stored exactly as the design derived it (M06-09 records the divergence and forbids normalising either side; a column bound would silently normalise the derived value).
@@ -214,6 +215,7 @@ are the specification.
 **DONE WHEN:**
 - Given step 10, when it renders, then the proposal number is present, auto-assigned and disabled — never editable, never client-generated (M06-16, M06-44).
 - three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
+- Given a proposal opened from a lead, when Step 10 renders, then the client name and phone come from the lead's customer and the address from the lead's confirmed visit booking where one exists, pre-filled and never asked again (OV-04) (moved from the block 3 CRM plan, owner yes 2026-11-09).
 
 ---
 
@@ -460,6 +462,8 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 - Given a newer proposal on the same lead, when it generates, then the older proposal reads superseded and the link serves the latest (M06-45).
 - Given step 10, when it renders, then the proposal number is present, auto-assigned and disabled — never editable, never client-generated (M06-16, M06-44).
 - Given a generated version, when any input later changes, then the version's snapshot and money block are byte-identical to generation time and a change note exists (M06-42).
+- Given the queries "quote" and "quotation", when global search runs, then Proposals return and every rendered label says Proposal — this task adds the proposal search target (F6-22) (moved from the block 3 CRM plan, owner yes 2026-11-09).
+- Given two customers merged, when the merge completes, then every proposal of the loser points at the survivor and no proposal figure, version, discount or total changes (M02-60, M02-62) (moved from the block 3 CRM plan, owner yes 2026-11-09).
 
 **Settle before the build:**
 - Whether a version physically copies its component and tranche rows or references frozen draft rows (M06-31, M06-42) — ruled: physical copy at Generate — each version owns its own copied component and tranche rows beside its field-set and money snapshot, and the draft rows stay the one editable set with no frozen flag (M06-42 defines a version as a snapshot and demands byte-identity, which is provable only on rows nothing else can write; a frozen flag would turn every post-Generate edit into a copy-on-write of the draft).

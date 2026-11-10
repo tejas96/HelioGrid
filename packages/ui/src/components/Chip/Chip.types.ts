@@ -15,7 +15,7 @@ export type ChipDensity = 'expressive' | 'functional';
 
 export interface ChipProps {
   children?: ReactNode;
-  /** filter chip active state — the ink pill, the page's own colour for its words */
+  /** filter chip active state — the accent wash, as every chosen filter is */
   active?: boolean;
   /**
    * How many records the chip's filter holds — drawn in a small mono slot after the words. A `0`

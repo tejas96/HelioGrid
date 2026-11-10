@@ -1,0 +1,68 @@
+/* Customer Merge (`SCR-M02-06`): what only this page lays out — the way back above the title, the
+   compare and its hero side by side once the page has the room, the find step's column and the
+   calm done. The compare, the moves and the done are `packages/ui`'s `MergeCompare` family. */
+
+.hg-customer-merge-back {
+  display: flex;
+  align-items: center;
+}
+
+.hg-customer-merge-pair,
+.hg-customer-merge-compare,
+.hg-customer-merge-find,
+.hg-customer-merge-unavailable,
+.hg-customer-merge-done {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-customer-merge-heading {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-h3);
+  color: var(--text-primary);
+}
+
+.hg-customer-merge-line {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-customer-merge-found {
+  display: inline-flex;
+  flex-wrap: wrap;
+  column-gap: var(--sp-2);
+}
+
+.hg-customer-merge-mono {
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+/* The desktop's room (`MERGE_COLUMNS_FROM`): the compare's two records side by side, its hero
+   beside it; the done's hero beside what moved. */
+.hg-customer-merge[data-columns="true"] .hg-customer-merge-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 3fr);
+  gap: var(--sp-6);
+  align-items: start;
+}
+
+.hg-customer-merge[data-columns="true"] .hg-customer-merge-aside {
+  position: sticky;
+  top: var(--sp-4);
+}
+
+.hg-customer-merge[data-columns="true"] .hg-customer-merge-done {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: var(--sp-6);
+  align-items: start;
+}

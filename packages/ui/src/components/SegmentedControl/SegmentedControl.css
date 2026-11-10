@@ -1,6 +1,6 @@
 /* SegmentedControl — the track takes the control fill (the well on the page, white in a tile);
-   the active pill is raised out of it (`--thumb`), at e2, and springs between positions. On the
-   page that is a grey track and a white pill; in dark a charcoal track and a lighter pill.
+   the active pill is the accent wash, as every chosen filter is, and springs between positions.
+   Its hairline keeps it plain on the track in sunlight, where the wash and the well are close.
 
    THE TRACK IS A THIRD BACKGROUND AND THE NUMERALS ARE MEASURED ON IT. The well is not
    one of the two backgrounds colors.css certifies text tokens on, and --text-tertiary lands at
@@ -15,13 +15,17 @@
   gap: 6px;
 }
 
+/* Equal columns, each as wide as the widest word: the sliding pill is one column wide, so a
+   segment sized to its own word left the pill over its neighbour's first letter. */
 .hg-segmented-control-pill {
   position: relative;
-  display: inline-flex;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
   gap: 0;
   border-radius: var(--r-pill);
   padding: var(--sp-1);
-  /* Recessed on every ground, so the white pill in view reads as raised out of it. */
+  /* Recessed on every ground, so the pill in view reads on it. */
   background: var(--canvas-sunken);
 }
 
@@ -36,13 +40,8 @@
   left: var(--sp-1);
   width: calc((100% - calc(2 * var(--sp-1))) / var(--hg-segmented-control-count));
   border-radius: var(--r-pill);
-  /* Raised out of the recessed track: the card colour in light, a lighter step in dark (`--thumb`),
-     so the segment in view is plain to see in every mode. */
-  background: var(--thumb);
-  box-shadow:
-    inset 0 1px 0 var(--glass-edge),
-    0 0 0 1px var(--line-soft),
-    var(--e2);
+  background: var(--accent-subtle);
+  box-shadow: 0 0 0 1px var(--line-soft);
   /* It slides by its own width: a transform, so the move never lays the row out again. */
   transform: translateX(calc(var(--hg-segmented-control-index) * 100%));
   transition: transform var(--dur-emphasised) var(--ease-spring);
@@ -74,7 +73,7 @@
 }
 
 .hg-segmented-control-segment[data-active="true"] {
-  color: var(--text-primary);
+  color: var(--accent-text);
   font-weight: var(--fw-semibold);
 }
 
@@ -99,6 +98,11 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* A count on the wash is the wash's words: --text-secondary is not measured on the accent tint. */
+.hg-segmented-control-segment[data-active="true"] .hg-segmented-control-count {
+  color: var(--accent-text);
+}
+
 .hg-segmented-control-label {
   color: var(--text-secondary);
   font-family: var(--font-sans);
@@ -117,9 +121,8 @@
 /* Marks are ChipGroup's MarkRow and the sentence under the control is ActionReason — both own
    their own treatment, so nothing about either is restated here. */
 
-/* `hg-segmented-control-hug`, on a labelled control's wrapper: the switch hugs its words, every
-   segment as wide as the widest (the sliding pill assumes equal segments), so a few short words are
-   not spread across a wide editor. In a phone-sized row it fills the row instead and the segments
+/* `hg-segmented-control-hug`, on a labelled control's wrapper: the switch hugs its words, so a
+   few short words are not spread across a wide editor. In a phone-sized row it fills the row instead and the segments
    shrink to their share, as a phone's own switch does. Measured from its own room, not the window. */
 .hg-segmented-control-hug {
   align-self: stretch;
@@ -127,9 +130,6 @@
 }
 
 .hg-segmented-control-hug .hg-segmented-control-pill {
-  display: inline-grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
   max-width: 100%;
   box-sizing: border-box;
 }
