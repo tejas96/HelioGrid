@@ -4,13 +4,15 @@ import type {
   catalogImportWorkflow,
   WorkflowInput,
 } from '@heliogrid/contracts/workflows';
-import { ActivityFailure, proxyActivities } from '@temporalio/workflow';
+import { proxyActivities } from '@temporalio/workflow';
+import { runImportPhase } from '../import/import.public';
 
 /**
  * DETERMINISTIC CODE — replayed from history (`platform.workflows.ts` says what that forbids).
  *
  * The steps are typed against the contract, type-only: they run in the api, beside the catalog's
- * tables and the stored file, and this process never loads their implementation.
+ * tables and the stored file, and this process never loads their implementation. The sequence is
+ * the one every spreadsheet import shares (`import.phases.ts`).
  */
 const { readCatalogImport, matchCatalogImport, applyCatalogImportRows } =
   proxyActivities<CatalogImportActivities>({
@@ -34,45 +36,12 @@ export async function catalogImport(
   input: WorkflowInput<typeof catalogImportWorkflow>,
 ): Promise<CatalogImportStepResult> {
   const step = { tenantId: input.tenantId, jobId: input.jobId };
-  switch (input.phase) {
-    case 'read':
-      return endedOnFailure(
-        () => readCatalogImport(step),
-        () => endCatalogImportRead(step),
-      );
-    case 'match':
-      return endedOnFailure(
-        () => matchCatalogImport(step),
-        () => endCatalogImportMatch(step),
-      );
-    case 'run':
-      return endedOnFailure(
-        () => runEveryBatch(step),
-        () => endCatalogImportRun(step),
-      );
-  }
-}
-
-/** A phase's work, or — once a step has failed past its retries — the step that ends the phase. */
-async function endedOnFailure(
-  work: () => Promise<CatalogImportStepResult>,
-  end: () => Promise<CatalogImportStepResult>,
-): Promise<CatalogImportStepResult> {
-  try {
-    return await work();
-  } catch (error) {
-    if (error instanceof ActivityFailure) return end();
-    throw error;
-  }
-}
-
-/**
- * One batch per step call until none is left: each call writes rows its batch has not, so every
- * call moves the run on and the loop ends with the sheet.
- */
-async function runEveryBatch(step: { tenantId: string; jobId: string }) {
-  for (;;) {
-    const applied = await applyCatalogImportRows(step);
-    if (applied.status !== 'running') return applied;
-  }
+  return runImportPhase(input.phase, {
+    read: () => readCatalogImport(step),
+    endRead: () => endCatalogImportRead(step),
+    match: () => matchCatalogImport(step),
+    endMatch: () => endCatalogImportMatch(step),
+    applyRows: () => applyCatalogImportRows(step),
+    endRun: () => endCatalogImportRun(step),
+  });
 }

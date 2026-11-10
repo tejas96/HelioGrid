@@ -1,4 +1,6 @@
 import type { RolePreset } from '../authz/roles';
+import type { MergeSide } from '../crm/merge-plan';
+import type { MergeField } from '../crm/vocabulary';
 
 /**
  * What the append-only log records (`F2-22`). The vocabulary is CLOSED to F2-22's covered-events
@@ -44,6 +46,10 @@ export const AUDIT_EVENT_TYPES = [
   'billing.plan_changed',
   'billing.plan_change_scheduled',
   'billing.plan_change_withdrawn',
+  /** A second lead kept on purpose despite a matching number, with its reason (`M02-12`). */
+  'crm.duplicate_kept',
+  /** Two customers merged onto a survivor, with every field choice (`M02-61`). */
+  'crm.customers_merged',
 ] as const;
 export type AuditEventType = (typeof AUDIT_EVENT_TYPES)[number];
 
@@ -56,13 +62,31 @@ export const AUDIT_ACTOR_KINDS = ['tenant_user', 'platform_staff'] as const;
 export type AuditActorKind = (typeof AUDIT_ACTOR_KINDS)[number];
 
 /**
- * The change one entry records, old → new (`F2-22`). One shape exists today — the presets a
- * person held before and after — and a slice whose event changes something else widens this into
- * a union discriminated on the event type. An act that changes nothing beyond what its own name
- * says carries null.
+ * The change one entry records (`F2-22`), its shape named by the event type: the presets a person
+ * held before and after a role change, what a customer merge folded in, or why a duplicate was
+ * kept. An act that changes nothing beyond what its own name says carries null.
  */
 export interface AuditRoleSetChange {
   readonly from: readonly RolePreset[];
   readonly to: readonly RolePreset[];
 }
-export type AuditChangePayload = AuditRoleSetChange;
+
+/**
+ * `crm.customers_merged` (`M02-61`): the customer merged away and the side each differing field was
+ * taken from. The survivor is the entry's subject.
+ */
+export interface AuditCustomerMerge {
+  readonly mergedId: string;
+  readonly choices: readonly { readonly field: MergeField; readonly kept: MergeSide }[];
+}
+
+/**
+ * `crm.duplicate_kept` (`M02-12`): why the new customer was kept beside the one its number already
+ * named — the reason the person gave, and that customer. The new customer is the entry's subject.
+ */
+export interface AuditDuplicateKept {
+  readonly reason: string;
+  readonly keptBesideId: string;
+}
+
+export type AuditChangePayload = AuditRoleSetChange | AuditCustomerMerge | AuditDuplicateKept;

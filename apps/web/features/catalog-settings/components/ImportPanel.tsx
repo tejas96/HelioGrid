@@ -4,7 +4,7 @@ import { catalogImportNotes, catalogImportWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import { CatalogImport, IMPORT_FILE_ACCEPT, IMPORT_FILE_MAX_MB } from '@heliogrid/ui';
 import { useMemo } from 'react';
-import { useSpreadsheetFile } from '../hooks/use-spreadsheet-file';
+import { useSpreadsheetFile } from '../../../lib/use-spreadsheet-file';
 
 /**
  * The import wizard opened from Catalog settings on the web (`SCR-M01-17`): what it draws is

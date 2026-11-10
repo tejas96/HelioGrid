@@ -111,6 +111,12 @@ export const DECLARED_PAIRS: readonly DeclaredPair[] = [
   { fg: 'accent-hover', bg: 'surface', role: 'a hovered link on a card', floor: 4.5 },
   { fg: 'accent-text', bg: 'accent-subtle', role: 'selected words on the accent tint', floor: 4.5 },
   { fg: 'accent', bg: 'accent-subtle', role: 'a selected mark on the accent tint', floor: 3 },
+  {
+    fg: 'text-primary',
+    bg: 'accent-subtle',
+    role: "words on the accent tint: a selection's bar, a typed number's match",
+    floor: 4.5,
+  },
   { fg: 'text-secondary', bg: 'neutral-bg', role: 'quiet words on the neutral tint', floor: 4.5 },
   { fg: 'neutral-text', bg: 'fill', role: 'neutral chip words on the control fill', floor: 4.5 },
   { fg: 'text-inverse', bg: 'danger-text', role: 'a destructive button label', floor: 4.5 },

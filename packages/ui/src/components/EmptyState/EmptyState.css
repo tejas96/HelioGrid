@@ -1,4 +1,4 @@
-/* EmptyState — centred empty/error state. A soft brand bloom behind a circular icon, a
+/* EmptyState — the empty/error state, centred on a page and at the start in a list. A soft brand bloom behind a circular icon, a
    headline, an encouraging description and one primary action. Never leave a screen blank.
 
    The bloom is --glow-mark: the logo's light as atmosphere, never as information. The icon well
@@ -71,4 +71,11 @@
 
 .hg-empty-state-action {
   margin-top: var(--sp-4);
+}
+
+/* In a list the block starts where the rows would: the art, words and action at the start. */
+.hg-empty-state[data-align="start"] {
+  align-items: flex-start;
+  text-align: start;
+  padding-inline: 0;
 }

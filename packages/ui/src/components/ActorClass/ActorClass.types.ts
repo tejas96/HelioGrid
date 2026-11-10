@@ -1,9 +1,10 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import { ACTIVITY_ACTORS, type ActivityActor } from '@heliogrid/domain';
 import type { ReactElement } from 'react';
 import type { ThemeColor } from '../../primitives/Color/colors';
 
-/** The four actor classes — `person | agent | system | customer`. */
-export type ActorClassName = 'person' | 'agent' | 'system' | 'customer';
+/** The four actor classes — domain's `ACTIVITY_ACTORS` (`M02-35`). */
+export type ActorClassName = ActivityActor;
 
 /** The glyph each class draws. `agent` is the brand gradient object, not an outlined icon. */
 export type ActorGlyphName = 'user' | 'agent' | 'cog' | 'customer';
@@ -86,8 +87,7 @@ export interface ActorClassOption {
 
 /** `FilterSet` options for the four classes, in one order, so every host filters alike. */
 export function actorClassOptions(words: ActorClassWords): ActorClassOption[] {
-  const order: ActorClassName[] = ['person', 'agent', 'system', 'customer'];
-  return order.map((value) => ({ value, label: words.label[value] }));
+  return ACTIVITY_ACTORS.map((value) => ({ value, label: words.label[value] }));
 }
 
 /** Who did it, in `stream` form: a person with a name is the name itself. */

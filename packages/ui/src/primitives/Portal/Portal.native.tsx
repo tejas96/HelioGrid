@@ -14,6 +14,8 @@ interface PortalRegistry {
 }
 
 const PortalContext = createContext<PortalRegistry | null>(null);
+/** Read inside a layer: whether a layer opened after it is open now. */
+const CoveredContext = createContext(false);
 /** Apart from the registry, so a changed inset never remounts every open portal. */
 const BottomInsetContext = createContext(0);
 
@@ -48,9 +50,11 @@ export function PortalHost({ children, bottomInset = 0 }: PortalHostProps) {
       <BottomInsetContext.Provider value={bottomInset}>
         <View style={styles.host}>
           {children}
-          {portals.map((entry) => (
+          {portals.map((entry, index) => (
             <View key={entry.key} style={StyleSheet.absoluteFill} pointerEvents="box-none">
-              {entry.node}
+              <CoveredContext.Provider value={index < portals.length - 1}>
+                {entry.node}
+              </CoveredContext.Provider>
             </View>
           ))}
         </View>
@@ -66,19 +70,33 @@ export function PortalHost({ children, bottomInset = 0 }: PortalHostProps) {
 export function Portal({ children }: PortalProps): ReactNode {
   const registry = useContext(PortalContext);
   const key = useId();
+  /* A layer keeps its place in the stack while its content changes and leaves only when it closes:
+     taken out and put back on every redraw, a layer drawn again — a mark measuring itself, a sheet
+     whose field changed — would jump above every layer opened after it. */
   useEffect(() => {
     if (registry === null) {
       return;
     }
-    registry.mount(key, children);
     return () => {
       registry.unmount(key);
     };
+  }, [registry, key]);
+  useEffect(() => {
+    registry?.mount(key, children);
   }, [registry, key, children]);
   if (registry === null) {
     return children;
   }
   return null;
+}
+
+/**
+ * Read by a layer's own content: whether a layer opened after it — a sheet, a modal, a menu — is
+ * open now. Guidance drawn over a live screen steps aside while one is (`CoachMark`); `false`
+ * outside a host.
+ */
+export function useCoveredByLaterLayer(): boolean {
+  return useContext(CoveredContext);
 }
 
 /** The home-indicator band a float docked to the bottom edge must clear; 0 without a host. */

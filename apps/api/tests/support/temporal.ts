@@ -32,6 +32,8 @@ export function aRecordingTemporal(
   const connection = { client: async () => client } as unknown as TemporalConnection;
   return {
     gateway: new TemporalGateway(connection),
+    /** The recording client as a connection hands it out, for an app booted with the real one. */
+    connection,
     starts,
     startedIds: () => starts.map((options) => options.workflowId),
   };

@@ -1,12 +1,5 @@
 /* ImportOverview — a part of the catalog import wizard (`SCR-M01-17`); see CatalogImport.css. */
 
-/* ── the run ──────────────────────────────────────────────────────────────── */
-
-.hg-import-ring {
-  display: flex;
-  justify-content: center;
-}
-
 /* ── the overview ─────────────────────────────────────────────────────────── */
 
 .hg-import-overview {

@@ -1,0 +1,42 @@
+# Customer Merge (`SCR-M02-06`, `M02-60`, `M02-63`): the company's two records for one family open at
+# their address; the review sleeps until each differing field is picked from the record that stays;
+# the confirm names what moves, that no money changes and that it cannot be undone; the merge runs
+# only on its press and lands calm on Open customer, which opens the lead that stayed.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://customers/merge?survivorId=${SURVIVOR_ID}&loserId=${LOSER_ID}
+- extendedWaitUntil:
+    visible: ${MERGE_TITLE}
+    timeout: 15000
+- assertVisible: ${WHICH_STAYS}
+# Each value is one choice whose words are the value, then "From <the record it is taken from>".
+- scrollUntilVisible:
+    element: "${SURVIVOR_NAME}.+${FROM_SURVIVOR}.*"
+    direction: DOWN
+- tapOn: "${SURVIVOR_NAME}.+${FROM_SURVIVOR}.*"
+- scrollUntilVisible:
+    element: "${SURVIVOR_CITY}.+${FROM_SURVIVOR}.*"
+    direction: DOWN
+- tapOn: "${SURVIVOR_CITY}.+${FROM_SURVIVOR}.*"
+# The primary contact: the customer is their own, so the value is their number.
+- scrollUntilVisible:
+    element: "[+].+${FROM_SURVIVOR}.*"
+    direction: DOWN
+- tapOn: "[+].+${FROM_SURVIVOR}.*"
+- tapOn: ${REVIEW_MERGE}
+- extendedWaitUntil:
+    visible: ${CONFIRM_MERGE}
+    timeout: 15000
+- assertVisible: ${WHAT_MOVES}
+- assertVisible: ${CANNOT_UNDO}
+- scrollUntilVisible:
+    element: "${NO_MONEY}.*"
+    direction: DOWN
+- tapOn: ${MERGE_ACT}
+- extendedWaitUntil:
+    visible: ${MERGED}
+    timeout: 15000
+- tapOn: ${OPEN_CUSTOMER}
+- extendedWaitUntil:
+    visible: ${SURVIVOR_NAME}
+    timeout: 15000

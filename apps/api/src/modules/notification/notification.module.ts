@@ -7,6 +7,9 @@ import { FcmPushDelivery } from './internal/push-delivery.fcm';
 import { NotificationController } from './notification.controller';
 import { PushDeviceAdminRepository } from './notification.devices.admin.repository';
 import { NotificationDevicesService } from './notification.devices.service';
+import { NotificationHorizonAdminRepository } from './notification.horizon.admin.repository';
+import { NotificationHorizonService } from './notification.horizon.service';
+import { NotificationJobsActivityRegistration } from './notification.jobs.activities';
 import { NotificationPreferencesRepository } from './notification.preferences.repository';
 import { NotificationPreferencesService } from './notification.preferences.service';
 import { NotificationPushAdminRepository } from './notification.push.admin.repository';
@@ -55,6 +58,9 @@ const pushDeliveryProvider: Provider = {
     NotificationPushService,
     NotificationPushAdminRepository,
     pushDeliveryProvider,
+    NotificationHorizonService,
+    NotificationHorizonAdminRepository,
+    NotificationJobsActivityRegistration,
   ],
   exports: [NotificationPushService],
 })

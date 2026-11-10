@@ -11,6 +11,28 @@ import {
 } from './catalog/import-repository';
 import { type CatalogRepository, createCatalogRepository } from './catalog/repository';
 import { createApiClient } from './client/client';
+import { type ActivitiesRepository, createActivitiesRepository } from './crm/activities-repository';
+import { createLeadAssignRepository, type LeadAssignRepository } from './crm/assign-repository';
+import { createLeadCallsRepository, type LeadCallsRepository } from './crm/calls-repository';
+import { createLeadCaptureRepository, type LeadCaptureRepository } from './crm/capture-repository';
+import { type ContactsRepository, createContactsRepository } from './crm/contacts-repository';
+import { createLeadEditsRepository, type LeadEditsRepository } from './crm/edits-repository';
+import { createLeadImportRepository, type LeadImportRepository } from './crm/import-repository';
+import { createLeadsRepository, type LeadsRepository } from './crm/leads-repository';
+import {
+  createLeadLifecycleRepository,
+  type LeadLifecycleRepository,
+} from './crm/lifecycle-repository';
+import {
+  type CustomerMergeRepository,
+  createCustomerMergeRepository,
+} from './crm/merge-repository';
+import {
+  createLeadMessagesRepository,
+  type LeadMessagesRepository,
+} from './crm/messages-repository';
+import { createTasksRepository, type TasksRepository } from './crm/tasks-repository';
+import { createVisitsRepository, type VisitsRepository } from './crm/visits-repository';
 import { createFileRepository, type FileRepository } from './file/repository';
 import { createHealthRepository, type HealthRepository } from './health/repository';
 import { createInvitationRepository, type InvitationRepository } from './invitation/repository';
@@ -22,6 +44,7 @@ import {
 import { createOnboardingRepository, type OnboardingRepository } from './onboarding/repository';
 import { createPriceBookRepository, type PriceBookRepository } from './price-book/repository';
 import { createPricingRepository, type PricingRepository } from './pricing/repository';
+import { createSearchRepository, type SearchRepository } from './search/repository';
 import { createSettingsRepository, type SettingsRepository } from './settings/repository';
 import { createTenantRepository, type TenantRepository } from './tenant/repository';
 import type { TokenStorage } from './transport/storage';
@@ -51,9 +74,23 @@ export interface Repositories {
   pricing: PricingRepository;
   billing: BillingRepository;
   billingUsage: BillingUsageRepository;
+  search: SearchRepository;
   settings: SettingsRepository;
   tenant: TenantRepository;
   user: UserRepository;
+  activities: ActivitiesRepository;
+  contacts: ContactsRepository;
+  customerMerge: CustomerMergeRepository;
+  leadAssign: LeadAssignRepository;
+  leadCalls: LeadCallsRepository;
+  leadCapture: LeadCaptureRepository;
+  leadEdits: LeadEditsRepository;
+  leadImport: LeadImportRepository;
+  leadLifecycle: LeadLifecycleRepository;
+  leadMessages: LeadMessagesRepository;
+  leads: LeadsRepository;
+  tasks: TasksRepository;
+  visits: VisitsRepository;
 }
 
 type RepositoryRegistryConfig = { baseUrl: string } & (
@@ -114,8 +151,22 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
     pricing: createPricingRepository(api),
     billing: createBillingRepository(api),
     billingUsage: createBillingUsageRepository(api),
+    search: createSearchRepository(api),
     settings: createSettingsRepository(api),
     tenant: createTenantRepository(api),
     user: createUserRepository(api),
+    activities: createActivitiesRepository(api),
+    contacts: createContactsRepository(api),
+    customerMerge: createCustomerMergeRepository(api),
+    leadAssign: createLeadAssignRepository(api),
+    leadCalls: createLeadCallsRepository(api),
+    leadCapture: createLeadCaptureRepository(api),
+    leadEdits: createLeadEditsRepository(api),
+    leadImport: createLeadImportRepository(api),
+    leadLifecycle: createLeadLifecycleRepository(api),
+    leadMessages: createLeadMessagesRepository(api),
+    leads: createLeadsRepository(api),
+    tasks: createTasksRepository(api),
+    visits: createVisitsRepository(api),
   };
 }

@@ -110,7 +110,8 @@ specification and **normalises rather than scolds** — a number typed with spac
 zero or a national prefix is normalised to the pack's canonical form, and only a number that
 cannot be a phone number at all is refused, with the expected shape stated. The live duplicate
 check fires as the number becomes complete (M02-07); it never blocks the save button while it
-runs, and where it is still running the save proceeds and the check completes on apply.
+runs, and where it is still running the save proceeds: the server repeats the check on save, and a
+match opens the sheet over the capture (M02-66).
 "Type" is the segment selector of M02-05 and defaults to the
 tenant's declared segment from onboarding (`M01-23`) so the common case is already chosen.
 Empty and error states carry F7's teaching contract; the leads surface's own empty state is
@@ -126,9 +127,9 @@ lead against a detected duplicate additionally requires `F2.M02.dedupe-override`
   shape stated; the rest of the capture is preserved.
 - *The same rep opens quick add twice and saves the same number twice* → the second save meets
   the dedupe sheet (M02-07), like any other channel.
-- *Two reps capture the same number at the same instant* → both records are flagged "possible
-  duplicate" and the rep resolves via the standard three-choice sheet on next open — never an
-  automatic merge (M02-09).
+- *Two reps capture the same number at the same instant* → the server takes the saves one at a
+  time; the second meets the standard three-choice sheet with what was typed kept — never an
+  automatic merge (M02-66).
 
 **Acceptance criteria.**
 
@@ -158,18 +159,19 @@ abandoned (field reached).
 | M02-07 | **The duplicate check runs on capture, from every channel, before anything is saved.** Not nightly, not on a report, not as a cleanup task: *"Dedupe on capture, every time, from every channel."* The check matches the captured number against existing customers' numbers and their contacts' numbers (M02-02). | `SRC` — `S2.rule.dedupe`; `S2.wrong.1` ("Duplicate → detected on the phone number, **before saving**"); `DOC04.phone-identity-dedupe` | P0 |
 | M02-08 | **The dedupe sheet shows the existing record with the three facts that make the decision obvious: who owns it, what stage it is at, and when it was last contacted.** The source's own example is the acceptance shape: *"Priya Sharma from Nashik already exists, owned by Rajesh, last contacted 4 days ago."* The sheet shows the existing record even where the person capturing cannot otherwise see it — with owner name, stage and last-contact date only, never the record's contents — because the whole purpose is to stop a second rep chasing the same customer. **Final (owner ruling 2026-08-04):** the three-fact disclosure is confirmed exactly as specified — no file access, and cross-scope Open-existing resolves to a request-to-owner. | `SRC` — `S2.screen.3`; `UXG-02` (the sheet shows "the existing lead (**owner, stage, last contact**)") · minimal cross-scope disclosure applied with no permission changed (`F2-15` stands); confirmed final per owner ruling 2026-08-04 | P0 |
 | M02-09 | **The sheet offers exactly three choices, and the third demands a reason: Open existing · Log enquiry on existing · Create anyway (reason mandatory, audited).** There is no fourth choice and no silent default; dismissing the sheet leaves nothing created. | `SRC` — `UXG-02` (verbatim: "Open existing / Log enquiry on existing / Create anyway (reason mandatory, audited)"); `S2.screen.3` ("open existing · log as new enquiry on the existing lead · create anyway (needs a reason)") | P0 |
-| M02-10 | **One sheet, three entry points: manual quick add, the import preview, and inbound voice-agent capture.** The same sheet with the same three choices is what fires wherever a capture meets an existing number — *"Sheet on capture from every channel"* — so a person learns it once. Inbound-capture use is M07's call flow reaching this module's sheet. | `SRC` — `UXG-02` ("Same sheet reused by import preview and inbound-call capture" — one sheet, three entry points) | P0 |
+| M02-10 | **One sheet, three entry points: manual quick add, the import preview, and inbound voice-agent capture.** The same sheet with the same three choices is what fires wherever a capture meets an existing number — *"Sheet on capture from every channel"* — so a person learns it once. Inbound-capture use is M07's call flow reaching this module's sheet. The import preview shows the sheet's facts and resolves its duplicates in bulk with the first two choices only; it never offers Create anyway (`M02-20`, owner ruling 2026-11-09). | `SRC` — `UXG-02` ("Same sheet reused by import preview and inbound-call capture" — one sheet, three entry points) | P0 |
 | M02-11 | **"Log enquiry on existing" records the enquiry on the existing record and never creates a second lead.** The enquiry lands on the existing lead's timeline as an activity naming the channel, the time and what was captured, and the existing owner is notified so the next call is theirs to make. Nothing about the existing lead's stage, owner or assignment changes. | `SRC` — `UXG-02` (the choice itself); `S2.screen.3` ("log as new enquiry on the existing lead"); `DOC04.timeline` (append-only activity stream) · notification type registers with `foundations/F6-notifications-and-search.md` per the UX-gap register's cross-cutting rule | P0 |
 | M02-12 | **"Create anyway" requires a reason, audits it, and links the two records.** The reason is mandatory free text, recorded on both records' timelines with who chose it and when, and joins the audit log (`F2-22`). Both records then exist and each shows the other, because a deliberate duplicate is exactly the input the merge flow (§M02.11) exists to resolve later. | `SRC` — `UXG-02` ("Create anyway (reason mandatory, audited)"); `R8`/`UXG-05` (merge as the corrective path) | P0 |
-| M02-66 | **A duplicate the live check could not see is resolved explicitly, never silently.** `M02-07`'s check runs *before* the save, so two captures of the same number in the same moment can both pass it and the server finds the collision only on apply. When it does, **both records are flagged "possible duplicate" and each shows the other** (the linkage `M02-12` already builds), the standard three-choice sheet (`M02-09`) fires on the next open of either record, and **nothing is ever merged automatically** — a capture is never silently discarded and never silently joined to another record. Where the person cannot see the other record under their visibility scope, the flag still shows and Open-existing resolves to a request-to-owner, exactly as `M02-08` provides. | `SRC` — restores the law of `M02-04`, deleted 2026-08-07 with the offline capability and re-instated by owner ruling 2026-08-15; the rule itself is the owner ruling of 2026-08-04 re-stated without its offline framing, since the race it governs is two **online** reps, not a device that saved alone; instance of `F8-36` at this surface | P0 |
+| M02-66 | **Two captures of the same number at the same moment are resolved explicitly, never silently.** `M02-07`'s live check runs *before* the save, so two people can type the same number at once and both pass it. The server therefore repeats the check when it saves, one save at a time per number: the first save lands, and **the second meets the standard three-choice sheet (`M02-09`) over its own capture, with what was typed kept**. A capture is never silently discarded and never silently joined to another record, and **nothing is ever merged automatically**. Where the person cannot see the existing record under their visibility scope, Open-existing resolves to a request-to-owner, exactly as `M02-08` provides. | `SRC` — restores the law of `M02-04`, deleted 2026-08-07 with the offline capability and re-instated by owner ruling 2026-08-15; simplified by owner ruling 2026-11-09 — the server takes same-number saves one at a time, so no "possible duplicate" flag exists; instance of `F8-36` at this surface | P0 |
 
 **Behavior detail.** The sheet is the product's single most consequential three-second decision —
 *"wrong choice here creates the double-chase problem the spec exists to kill"* (`UXG-02`) — so it
 is a sheet, not a page (`F7-21`), it opens over the capture rather than replacing it, and it
 never loses what was typed. It renders identically at both breakpoints and from all three entry
 points; only its header states which entry point it came from ("This number is already in the
-system"). Its third choice reads *Keep both leads* at every entry point, because that is true whether the
-sheet opens on a capture or on an existing record (owner ruling 2026-09-24). Choosing **Open existing** discards the in-progress capture after confirming and opens
+system"). Its third choice reads *Keep both leads* wherever it is offered, because that is true whether the
+sheet opens on a capture or on an existing record (owner ruling 2026-09-24); the import preview
+never offers it (M02-20). Choosing **Open existing** discards the in-progress capture after confirming and opens
 the existing lead. Choosing **Log enquiry** keeps the capture's content as the enquiry's body,
 so nothing the customer said is thrown away. Choosing **Create anyway** requires the reason
 before the confirm becomes available. Where the person capturing cannot see the existing record
@@ -203,13 +205,12 @@ Permissions: the sheet itself rides `F2.M02.add-edit-leads`; the third choice re
 - Given "Create anyway", when no reason is entered, then the confirm is unavailable; and when a
   reason is entered and confirmed, then both records exist, each references the other, and an
   audit entry records who, why and when (M02-12).
-- Given two captures of the same number applied in the same moment, so that neither saw the other
-  in the live check, when the server finds the collision on apply, then both records are flagged
-  "possible duplicate", each shows the other, nothing is merged automatically, and the
-  three-choice sheet fires on the next open of either record (M02-66, owner ruling 2026-08-15).
-- Given a possible-duplicate flag on a record the viewer cannot see under their visibility scope,
-  when the sheet fires, then the flag still shows and Open-existing resolves to a
-  request-to-owner (M02-66, M02-08).
+- Given two captures of the same number saved in the same moment, so that neither saw the other
+  in the live check, when the server applies them, then the first is saved, the second meets the
+  three-choice sheet with what was typed kept, nothing is merged automatically and nothing is
+  discarded (M02-66).
+- Given that second capture by a person who cannot see the existing record under their visibility
+  scope, when the sheet fires, then Open-existing resolves to a request-to-owner (M02-66, M02-08).
 
 **Localization notes.** Sheet copy, the three choice labels and the reason prompt are translated
 per `F3-01`; the existing record's name, city and owner name are data and are never translated
@@ -222,7 +223,7 @@ taken (open / log enquiry / create anyway) · override reason recorded · sheet 
 | ID | Requirement | Tag + source pointer | Tier |
 |---|---|---|---|
 | M02-13 | **The v1 lead-source set is closed and every lead carries its source: manual quick add · file import · inbound call · referral.** The badge is shown wherever a lead is listed, so triage can see at a glance where the enquiry came from. **Post-overlay note carried in-row:** the data model's own row marks referral dormant alongside the deferred channels; `R15` rules the referral tag live in v1, so **only** the website and business-messaging sources stay out (M02-17). The overlay wins; recorded, not silently reconciled. **Suite note (Task 26, closing Task 21 convention 7's flagged reconciliation):** *closed* is `D13`'s claim about the **v1-source** set only — `modules/M03`'s brief-scoped captures extend the suite's badge set (`M03-31`: website form · business messaging · email · SMS · social lead form) under exactly the license this module grants at `M02-17`; a reader meeting `M03-31` first holds two consistent sentences. | `SRC` — `D13` (v1 lead sources: "manual quick-add, CSV import, inbound call via voice agent"); `DOC04.lead-sources` (the source enum, with its "dormant" marking overtaken for `referral` by `R15`); `S2.screen.2` (source badge in the inbox) | P0 |
-| M02-14 | **Inbound-call capture creates a lead in the same inbox, through the same dedupe sheet.** When nobody picks up, the voice agent answers and captures name, city, bill amount and interest; what it captures lands as a lead with source = inbound call, carries the agent's capture into the timeline, and meets the dedupe sheet exactly as a typed capture does (M02-10). The agent's behaviour, its number and its call record are `modules/M07-sales-execution.md`'s. | `SRC` — `S2.rule.channel.2` ("voice agent answers when nobody picks. Captures name, city, bill amount, interest"); `UXG-02` (inbound-call capture is the sheet's third entry point); `DOCFC.crm-compliance-day1` (lead sources include inbound call) | P0 |
+| M02-14 | **Inbound-call capture creates a lead in the same inbox, through the same dedupe sheet.** When nobody picks up, the voice agent answers and captures name, city, bill amount and interest; what it captures lands as a lead with source = inbound call, carries the agent's capture into the timeline, and meets the dedupe sheet exactly as a typed capture does (M02-10). The agent's behaviour, its number and its call record are `modules/M07-sales-execution.md`'s. **Postponed with voice calling (owner ruling 2026-11-09):** nothing builds this path until the voice agent returns, and until then no lead carries source = inbound call. | `SRC` — `S2.rule.channel.2` ("voice agent answers when nobody picks. Captures name, city, bill amount, interest"); `UXG-02` (inbound-call capture is the sheet's third entry point); `DOCFC.crm-compliance-day1` (lead sources include inbound call) | P0 |
 | M02-15 | **A lead may be captured at any hour; a call-back is never scheduled before the market's calling window opens.** Capture is never rate-limited by the clock — an enquiry at any time of night is recorded — but any resulting call-back task or agent queue item is scheduled no earlier than the window's opening on the tenant's timezone. The window is the market pack's statutory floor (`pack.calling-rules`, `F1-36`), enforced by the compliance gate (M07); this module supplies the capture and the scheduling intent, never an exception to the floor. | `SRC` — `S2.wrong.4` ("Lead arrives at 11pm → voice agent may capture but must not call back until 9am"); floor and window are pack data per `F1-36`/`F1-12`; enforcement `modules/M07` | P0 |
 | M02-16 | **Referral is a live v1 source: a referral links the referring customer to the referred lead, and both records say so.** The referred lead carries source = referral with a "came from" chip naming the referrer; the referrer's record shows who they referred. Referrals are visible in win/loss analytics (`modules/M13`). **The credits ledger is a spec-locked exclusion — no monetary credit, no redemption and no balance exists in v1** (§5). The handover-time "ask for a referral" prompt is `modules/M08-projects.md`'s. | `SRC` — `R15` ("the referral tag + 'came from' chip ship in Track A (CRM core); the credits LEDGER is the spec-locked exclusion"); `S2.rule.channel.5` (post-overlay); `UXG-19`; `DOC04.referral-no-credit`; `DOC14.referral-ships` · "Track A" read as v1 scope per `OD-5` | P0 |
 | M02-17 | **Website forms and inbound business-messaging are not lead channels in this module.** `D13` defers both; they appear on capture settings as **"later" cards, never as toggles** (M02-65). **Supersession hand-off, recorded not resolved:** the V2 brief adds a marketing module that captures leads across email, business messaging, social and SMS and feeds them into the sales pipeline — which supersedes `D13`'s deferral **as brief scope, in `modules/M03-marketing.md`, not here**. M02 specifies none of those channels; whatever M03 lands arrives in this module's inbox (M02-23), carries its own source badge, and passes through this module's dedupe sheet (M02-10) unchanged. The v1-source-vs-brief tension is resolved by `DD2`'s brief-driven supersession, with `modules/M03` owning the superseding spec (`M03-01`). | `SRC` — `D13` (website form and inbound WhatsApp deferred; docs/15 HONORED — "later" cards, `UXG-03`); `S2.rule.channel.3`, `S2.rule.channel.4` (the source's channel table lists both without the deferral flag — `D13` governs) · brief supersession per `BRIEF`, owned by `modules/M03` (Task 21) | P0 |
@@ -286,7 +287,7 @@ call-back deferred to window · later-card viewed.
 |---|---|---|---|
 | M02-18 | **Import is a four-step wizard: upload → column mapping → preview → import, ending in a report.** Column mapping **auto-guesses** the mapping from the file's own headers and lets every guess be corrected; nothing is imported before the preview is seen. The wizard is desktop-first because the person doing it is at a desk, and works at both breakpoints (`F7-30`). | `SRC` — `UXG-01` ("upload → column mapping → preview with duplicate count → import report"; "Map columns to lead fields with **auto-guess**"; "Desktop-first (owner at a desk)"); `S2.screen.4`; `S2.rule.channel.6` (bulk from an old spreadsheet — "Every EPC has one"); `DOC14.csv-import` | P0 |
 | M02-19 | **The preview states the counts before importing, in the source's own shape: "N rows · M duplicates by phone".** Duplicates are surfaced **before** the import runs, never discovered afterwards — a file of 400 rows containing 90 duplicates says so on the preview screen. | `SRC` — `UXG-01` (preview shows "N rows · M duplicates by phone"); `S2.wrong.5` ("CSV has 400 rows and 90 duplicates → shown before import, not after"); `S2.screen.4` ("shows how many are duplicates **before** importing") | P0 |
-| M02-20 | **Duplicates in the preview are skippable, or logged as enquiries on the existing leads — through the same dedupe sheet.** The preview reuses M02.2's sheet rather than inventing an import-only dialog, and offers the same resolution in bulk: skip all duplicates, or log them all as enquiries on their existing leads. Creating duplicates deliberately from an import requires the same audited reason, applied per row. | `SRC` — `UXG-01` ("duplicates are **skippable or logged as enquiries on existing leads**"; "Reuses the UXG-02 dedupe sheet from the import preview"); `UXG-02` | P0 |
+| M02-20 | **Duplicates in the preview are skipped, or logged as enquiries on the existing leads — never created.** The preview shows each duplicate with the facts of M02.2's sheet — the existing record's owner, stage and last contact (`M02-08`) — rather than inventing an import-only dialog, and resolves them in bulk: skip all duplicates (the default), or log them all as enquiries on their existing leads. *Keep both* is not offered on import (owner ruling 2026-11-09): a deliberate duplicate is one person's act on one record, made from quick add. | `SRC` — `UXG-01` ("duplicates are **skippable or logged as enquiries on existing leads**"; "Reuses the UXG-02 dedupe sheet from the import preview"); `UXG-02` | P0 |
 | M02-21 | **The import runs as a background job with visible progress and a failure report; a partial success is reported honestly.** The person who started it may leave the screen; progress is visible while it runs and the finished import produces a **report naming every rejected row and why** (unreadable number, missing required column, malformed row). Rows that imported are not rolled back because other rows failed, and the report says exactly how many landed. | `SRC` — `UXG-01` ("import runs as an async background job with **progress + failure report**" — the ledger records the source's job mechanism as engineering detail and the product requirement as async import with visible progress and a failure report) · honest-failure obligation per `F8-36` | P0 |
 
 **Behavior detail.** Bad imports are how a phone-as-identity model gets poisoned — *"bad imports
@@ -303,16 +304,14 @@ source = file import, so triage is unchanged by volume. The import's own record 
 ran it, when, and its report — stays on the tenant's import history so a later question about
 where 300 leads came from has an answer.
 
-Permissions: `F2.M02.import-leads` (EPC Owner · Sales Manager). Per-row duplicate overrides
-additionally require `F2.M02.dedupe-override`.
+Permissions: `F2.M02.import-leads` (EPC Owner · Sales Manager).
 
 **Edge cases & what-goes-wrong.**
 
 - *400 rows, 90 duplicates* (`S2.wrong.5`) → both counts on the preview, before the import
   (M02-19).
 - *Two rows inside the same file share a number* → counted as duplicates of each other in the
-  preview and resolved by the same choice; only one lead is created unless the override reason
-  is given.
+  preview and resolved by the same choice; only one lead is created.
 - *A column cannot be mapped* → the import proceeds without it; unmapped columns are listed in
   the report rather than silently dropped.
 - *The connection drops mid-import* → the job continues server-side; the person is told where it
@@ -326,8 +325,8 @@ additionally require `F2.M02.dedupe-override`.
   lead field that can be corrected, and no row has been imported yet (M02-18).
 - Given a file of 400 rows of which 90 match existing customers by phone, when the preview
   renders, then it states both counts before any import runs (M02-19).
-- Given duplicates in the preview, when they are resolved, then the same three-choice sheet is
-  used, skip is the default, and "create anyway" requires the audited reason per row (M02-20).
+- Given duplicates in the preview, when they are resolved, then skip is the default, log as
+  enquiry is the other choice, and no imported row creates a duplicate (M02-20).
 - Given a running import, when the person leaves the screen and returns, then progress or the
   finished report is shown, listing each rejected row with its reason and the count that landed
   (M02-21).
@@ -461,7 +460,7 @@ at assign) · reassignment (reason present).
 | M02-34 | **A customer carries additional contacts — name, phone and a role label such as decision-maker, landlord or spouse — with exactly one primary.** The role label set is tenant-extendable. Contact numbers participate in deduplication (M02-02), and capturing "who actually decides" is a first-class act on the lead rather than a note. | `SRC` — `DOC04.contacts` (docs/04); `S3.wrong.3` ("Not the decision maker → capture who is, add as a second contact"); `S3.wrong.4` (capture the landlord if offered) | P0 |
 | M02-35 | **One append-only timeline per lead and customer, rendered as a single stream.** Its kinds include notes, logged calls, agent calls, stage changes, assignments, proposal events, link opens, survey submissions, design events, sign-off events, payments, documents, task events and system events; its actor may be a person, the agent, the system or the customer. Every module writes into this one stream; nothing edits or deletes an entry. | `SRC` — `DOC04.timeline` (docs/04 — the kinds and actor classes, append-only, "every module writes here") | P0 |
 | M02-36 | **Activity logging preserves capture time, and never loses a concurrent edit silently.** When a call outcome, a note or a visit status is logged, the time it was captured is preserved for display and audit while server apply order decides ordering (`F4-19`); a lead's field edits resolve per-field last-writer-wins **with an activity entry for every applied change**, so a lost concurrent edit is always visible (`F4-16`). | `SRC` — `R14` via `F4-16`/`F4-19` (capture-time semantics and conflict policy referenced, never restated) | P0 |
-| M02-37 | **The customer record carries calling-compliance state from day one: consent, do-not-disturb status, the do-not-call flag, a complaint-set permanent quiet flag, and preferred language.** These fields live on this module's customer record because the compliance gate reads one row per dial; the gate itself, its scrub freshness and its refusals are `modules/M07-sales-execution.md`'s, and the statutory ruleset behind them is pack data (`F1-36`). A "stop calling" is irreversible without the customer's own say-so. **Consent-ledger cross-ref (owner ruling 2026-08-04):** beside these voice fields, the customer record carries the per-contact **per-channel messaging consent ledger** — opt-in source + timestamp auto-recorded at capture, opt-outs honored suite-wide — owned by `modules/M03` (`M03-34`/`M03-46`); campaign sends auto-filter on it and proof is one tap. | `SRC` — `DOCFC.crm-compliance-day1` (docs/forward-compat: "Customer records carry consent/DND/do-not-call/preferred-language from day 1 (the compliance gate reads them)"); `DOC04.compliance-flags` (cited — the gate's semantics are `modules/M07`'s); consent-ledger cross-ref per owner ruling 2026-08-04 | P0 |
+| M02-37 | **The customer record carries calling-compliance state from day one: consent, do-not-disturb status, the do-not-call flag, a complaint-set permanent quiet flag, and preferred language.** These fields live on this module's customer record because the compliance gate reads one row per dial; the gate itself, its scrub freshness and its refusals are `modules/M07-sales-execution.md`'s, and the statutory ruleset behind them is pack data (`F1-36`). A "stop calling" is irreversible without the customer's own say-so. **Consent-ledger cross-ref (owner ruling 2026-08-04):** beside these voice fields, the customer record carries the per-contact **per-channel messaging consent ledger** — opt-in source + timestamp auto-recorded at capture, opt-outs honored suite-wide — owned by `modules/M03` (`M03-34`/`M03-46`); campaign sends auto-filter on it and proof is one tap. **While voice calling is postponed (owner ruling 2026-11-09)**, the record carries the do-not-call flag and preferred language only; consent, do-not-disturb status and the quiet flag are read only by the agent's gate and are added with it. | `SRC` — `DOCFC.crm-compliance-day1` (docs/forward-compat: "Customer records carry consent/DND/do-not-call/preferred-language from day 1 (the compliance gate reads them)"); `DOC04.compliance-flags` (cited — the gate's semantics are `modules/M07`'s); consent-ledger cross-ref per owner ruling 2026-08-04 | P0 |
 | M02-38 | **A lead's estimated value is a forecast input and is never revenue.** It renders as a weighted-pipeline input wherever it is shown, carries its provenance and provisional state like any other money figure, and never appears in a won total. | `SRC` — `DOC04.forecast-not-revenue` (cited — `modules/M13` owns the forecast surfaces and `D37`'s law); honesty obligations consumed from `F8-23`, `F8-12` | P1 |
 
 **Behavior detail.** Lead detail is the screen a rep opens before dialling, so it is ordered for
@@ -504,8 +503,8 @@ a proposal rides M05's and M06's rows.
 - Given an activity whose capture time precedes its apply time, when it is applied, then its
   capture time is preserved; and given two concurrent edits to the same field, then one wins by
   server apply order and both are visible as activity entries (M02-36).
-- Given a customer record, when it is opened, then consent, do-not-disturb status, do-not-call,
-  quiet flag and preferred language are present and readable by the gate (M02-37).
+- Given a customer record, when it is opened, then do-not-call and preferred language are present;
+  the fields only the voice agent's gate reads arrive with it (M02-37).
 
 **Localization notes.** Section names, action labels, role labels and timeline entry phrasing are
 translated per `F3-01`; timeline entries render in the reader's language while the record stays
@@ -522,7 +521,7 @@ translated (`F3-08`); values render through the money implementation with groupi
 | M02-40 | **Monthly bill is captured in the tenant's currency and is sortable and filterable across the leads list.** It is the strongest single qualifier in the product's segment and is treated as data, not as a note. | `SRC` — `DOC04.qualification` ("monthly bill (tenant currency)… sortable/filterable"); one currency per tenant per `F1-07` | P0 |
 | M02-41 | **The funnel is: new → contacted → qualified → survey → design → proposal → negotiating → won.** Stage is a property of the lead, moved by the work that happens to it; the parking and terminal states — snoozed, dormant, disqualified, lost, junk — are the R9 machine's (§M02.10) and are orthogonal to this line. | `SRC` — `DOC04.lead-machine` (docs/04, the funnel verbatim); parking/terminal semantics per `R9` | P0 |
 | M02-42 | **Disqualifying requires a reason, from the fixed six: renting · budget · not interested · unreachable · already installed · wrong number.** The source states why the list matters: *"The reason list is the most valuable analytics in the product."* Disqualified is a state of the R9 machine (M02-53) — reason mandatory, no timer, reopen returns the lead to its prior stage with history kept. | `SRC` — `S3.screen.5` (the six reasons, verbatim); `R9.disqualified` (reason mandatory — "6 reasons") | P0 |
-| M02-43 | **A customer who does not answer produces a logged attempt and a scheduled retry; after three failed manual attempts the lead is handed to the voice agent.** The attempt log and the retry are this module's; the hand-off trigger and everything after it are `modules/M07-sales-execution.md`'s. | `SRC` — `S3.wrong.1` ("log the attempt, auto-schedule a retry; after 3 failed attempts hand to the voice agent"); `D17` (cited — the three-failed-attempts trigger is M07's) | P0 |
+| M02-43 | **A customer who does not answer produces a logged attempt and a scheduled retry; after three failed manual attempts the lead is handed to the voice agent.** The attempt log and the retry are this module's; the hand-off trigger and everything after it are `modules/M07-sales-execution.md`'s. **Until voice calling returns (owner ruling 2026-11-09)**, nothing is handed off: the lead shows its failed-attempt count to its owner, and the hand-off at three returns with the agent. | `SRC` — `S3.wrong.1` ("log the attempt, auto-schedule a retry; after 3 failed attempts hand to the voice agent"); `D17` (cited — the three-failed-attempts trigger is M07's) | P0 |
 | M02-44 | **A wrong number is disqualified with that reason and no further calls are placed to it.** The reason is one of the six (M02-42); the number is flagged so neither a person nor the agent dials it again. | `SRC` — `S3.wrong.2` ("Wrong number → disqualify with that reason, no further calls"); the unverified-number handling on the agent side is `modules/M07`'s (`S7.wrong.4`, cited) | P0 |
 | M02-45 | **A renting customer is usually disqualified — with the landlord captured as a contact if offered.** The product does not decide it for them: the reason exists in the six, and the landlord contact exists on the record, so a rented roof that can still be sold is not thrown away. | `SRC` — `S3.wrong.4` ("Rents the property → usually disqualified, but capture the landlord if offered"); `DOC04.contacts` | P1 |
 
@@ -544,8 +543,8 @@ junking ride `F2.M02.lead-state-changes`; mark-won and mark-lost are the close s
 
 **Edge cases & what-goes-wrong.**
 
-- *Customer does not answer* (`S3.wrong.1`) → attempt logged, retry scheduled, agent hand-off at
-  three (M02-43).
+- *Customer does not answer* (`S3.wrong.1`) → attempt logged, retry scheduled, the failed-attempt
+  count shown; the agent hand-off at three returns with voice calling (M02-43).
 - *Wrong number* (`S3.wrong.2`) → disqualified with that reason, no further dialling (M02-44).
 - *Not the decision maker* (`S3.wrong.3`) → second contact captured (M02-34), qualification
   continues with the right person.
@@ -568,8 +567,8 @@ junking ride `F2.M02.lead-state-changes`; mark-won and mark-lost are the close s
   complete; and when it completes, then the reason is on the record and in the win/loss list
   (M02-42).
 - Given a call that is not answered, when the outcome is logged, then an attempt is recorded and
-  a retry scheduled; and given a third failed manual attempt, then the lead is handed to the
-  agent (M02-43).
+  a retry scheduled, and the lead shows its failed-attempt count; nothing is handed off until the
+  voice agent returns (M02-43).
 - Given a wrong number disqualification, when it completes, then no further dial to that number
   is offered or scheduled by any surface (M02-44).
 

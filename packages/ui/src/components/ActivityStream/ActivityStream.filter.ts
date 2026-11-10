@@ -1,4 +1,5 @@
 import type { TranslatedText } from '@heliogrid/contracts';
+import { ACTIVITY_ACTORS } from '@heliogrid/domain';
 import type { ActorClassName } from '../ActorClass';
 import type { FilterOption } from '../FilterBar';
 import { kindOf } from './ActivityStream.kinds';
@@ -31,7 +32,7 @@ export interface ActivityFilterOptions {
   words: Pick<ActivityStreamWords, 'kind' | 'actor' | 'actorHint'>;
 }
 
-const ACTOR_ORDER: ActorClassName[] = ['person', 'agent', 'system', 'customer'];
+const ACTOR_ORDER: readonly ActorClassName[] = ACTIVITY_ACTORS;
 
 /**
  * The kind and actor-class dimensions for a `FilterSet` / `FilterPanel`, with live counts — both

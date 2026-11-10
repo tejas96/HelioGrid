@@ -18,7 +18,7 @@ export interface ShellOverlay {
 /**
  * The shell around every inside page (`SCR-SHELL-01`) as both platforms draw it, assembled once
  * (Law 11, `F7-30`): the shell's facts, the person, the connection, the bell and its centre
- * (`SCR-SHELL-03`), the grievance note (`F1-59`), the sign-out and the header's search.
+ * (`SCR-SHELL-03`), the grievance note (`F1-59`), the sign-out and the search over the page.
  */
 export interface ShellScreen {
   readonly shell: Shell;
@@ -38,9 +38,8 @@ export interface ShellScreen {
   readonly signingOut: boolean;
   /** Signs out; a second press while one is out sends nothing. */
   signOut(): void;
-  /** What is typed in the header's search field. Enter opens the search door; it searches nothing. */
-  readonly searchQuery: string;
-  typeSearch(query: string): void;
+  /** The search, opened over the page in view: the web's palette (`SCR-SHELL-02`). */
+  readonly search: ShellOverlay;
 }
 
 export function useShellScreen(): ShellScreen {
@@ -51,7 +50,7 @@ export function useShellScreen(): ShellScreen {
   const grievance = useOverlay();
   const centre = useOverlay();
   const leaving = useAction<void, void>(() => session.signOut());
-  const [searchQuery, setSearchQuery] = useState('');
+  const search = useOverlay();
   return {
     shell,
     personName: session.user?.name ?? '',
@@ -62,8 +61,7 @@ export function useShellScreen(): ShellScreen {
     offersLeads: shell.doors.includes('leads'),
     signingOut: leaving.pending,
     signOut: () => void leaving.run(),
-    searchQuery,
-    typeSearch: setSearchQuery,
+    search,
   };
 }
 

@@ -1,0 +1,21 @@
+/* LeadSourceMark — where an enquiry came from, as a glyph and its word (`M02-13`). The word is
+   information, so it takes --text-secondary; the glyph repeats it. */
+
+.hg-lead-source {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.hg-lead-source .hg-shell-glyph {
+  flex-shrink: 0;
+}
+
+.hg-lead-source-word {
+  min-width: 0;
+}

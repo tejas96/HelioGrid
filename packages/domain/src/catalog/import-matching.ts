@@ -1,3 +1,4 @@
+import { isBlank } from '../import/text';
 import type { CatalogImportAttentionReason, CatalogImportConflictAnswer } from './import';
 import {
   type ImportCurrency,
@@ -8,7 +9,7 @@ import {
   specValueAt,
 } from './import-cells';
 import type { CatalogImportCells, CatalogImportField } from './import-columns';
-import { identityOf, isBlank, productNameOf } from './import-text';
+import { identityOf, productNameOf } from './import-text';
 import type { CatalogItemSource } from './settings-view';
 import { type CatalogSpec, SPEC_FIELDS } from './specs';
 import { COMPONENT_KINDS } from './vocabulary';

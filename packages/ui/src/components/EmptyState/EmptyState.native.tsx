@@ -12,7 +12,7 @@ interface NativeEmptyStateProps extends EmptyStateProps {
   style?: StyleProp<ViewStyle>;
 }
 
-/** Centred empty state with a soft brand bloom behind a large circular icon container. */
+/** Empty state with a soft brand bloom behind a large circular icon container. */
 export function EmptyState({
   icon,
   moment,
@@ -20,13 +20,14 @@ export function EmptyState({
   description,
   action,
   glow = true,
+  align = 'center',
   style,
 }: NativeEmptyStateProps) {
   /* The icon well is the opposite of what holds it (`F7-15`) — see the web half. */
   const { controlFill } = useGround();
   return (
-    <View style={[styles.root, style]}>
-      <View style={styles.art}>
+    <View style={[styles.root, align === 'start' ? styles.atStart : undefined, style]}>
+      <View style={[styles.art, align === 'start' ? styles.atStart : undefined]}>
         {glow ? <BrandBloom size={BLOOM_SIZE} /> : null}
         {/* No glyph, no circle — see the web half. */}
         {moment === undefined ? null : <LottieMoment name={moment} size={96} />}
@@ -34,11 +35,11 @@ export function EmptyState({
           <View style={[styles.icon, { backgroundColor: controlFill }]}>{icon}</View>
         ) : null}
       </View>
-      <Text variant="figure" align="center" style={styles.title}>
+      <Text variant="figure" align={align} style={styles.title}>
         {title}
       </Text>
       {description === undefined ? null : (
-        <Text variant="body-sm" color="secondary" align="center" style={styles.description}>
+        <Text variant="body-sm" color="secondary" align={align} style={styles.description}>
           {description}
         </Text>
       )}
@@ -78,4 +79,6 @@ const styles = StyleSheet.create({
   action: {
     marginTop: theme.spacing['sp-4'],
   },
+  /** In a list the block starts where the rows would. */
+  atStart: { alignItems: 'flex-start', paddingHorizontal: 0 },
 });

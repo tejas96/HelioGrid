@@ -64,6 +64,7 @@ This file covers Module M13 (Dashboards & reporting): the five M13-owned dashboa
 **DONE WHEN:**
 - Given win/loss, when it renders, then the disqualify breakdown and the lost breakdown are two distinct lists by count and value (M13-23).
 - (M13-26 carries no dedicated Given/When/Then line in the PRD's acceptance blocks; the requirement text in the brief is the binding criterion — referral-sourced deals are visible in the win/loss view via the referral row, the "came from" chip's reporting face, with no credits and no balances.)
+- Given a lead disqualified with one of the six reasons, when win/loss renders, then the lead counts under that reason in the disqualify breakdown (M02-42, M02-53) (moved from the block 3 CRM plan, owner yes 2026-11-09).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
 ### T-M13-007 · Revenue and forecast read-model

@@ -40,6 +40,15 @@ export interface FileSubjectRule {
 }
 
 /**
+ * The spreadsheets an import takes (`M01-41`, `M02-18`): CSV and Excel. Every import's subject
+ * names this one list, so the device's chooser and the store's rule cannot disagree.
+ */
+export const SPREADSHEET_CONTENT_TYPES = [
+  'text/csv',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+] as const satisfies readonly FileContentType[];
+
+/**
  * The subjects a file may be stored against. It GROWS with the slice that first stores a file
  * for its subject (Law 9); a subject kind absent here owns no file, and the wire refuses it.
  */
@@ -47,6 +56,7 @@ export const FILE_SUBJECT_KINDS = [
   'tenant',
   'catalog',
   'user_account',
+  'lead_import',
 ] as const satisfies readonly SubjectKind[];
 export type FileSubjectKind = (typeof FILE_SUBJECT_KINDS)[number];
 
@@ -68,7 +78,7 @@ export const FILE_SUBJECT_RULES = {
     upload: 'onboarding.manage_catalog',
     read: 'onboarding.manage_catalog',
     maxBytes: FILE_MAX_BYTES,
-    contentTypes: ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+    contentTypes: SPREADSHEET_CONTENT_TYPES,
   },
   /**
    * A person's photo in this company (`M01-14`): stored by that person alone, whatever they hold,
@@ -79,6 +89,17 @@ export const FILE_SUBJECT_RULES = {
     read: 'member',
     maxBytes: FILE_MAX_BYTES,
     contentTypes: ['image/png', 'image/jpeg'],
+  },
+  /**
+   * An old spreadsheet of leads for the lead import (`M02-18`), its ref the company's own id because
+   * the file is stored before the import that reads it exists. Read by whoever may import leads: the
+   * file is customers' numbers.
+   */
+  lead_import: {
+    upload: 'crm.import_leads',
+    read: 'crm.import_leads',
+    maxBytes: FILE_MAX_BYTES,
+    contentTypes: SPREADSHEET_CONTENT_TYPES,
   },
 } as const satisfies Readonly<Record<FileSubjectKind, FileSubjectRule>>;
 

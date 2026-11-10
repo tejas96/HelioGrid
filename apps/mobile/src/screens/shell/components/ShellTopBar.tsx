@@ -4,7 +4,7 @@ import { useTranslate } from '@heliogrid/i18n/react';
 import { AccountMenu, MobileTopBar } from '@heliogrid/ui';
 import { useNavigation } from '@react-navigation/native';
 import { NotificationSheet } from '../../notifications';
-import { DESTINATION_ROUTE } from '../doors';
+import { doorRoute } from '../doors';
 
 interface ShellTopBarProps {
   /**
@@ -28,7 +28,7 @@ export function ShellTopBar({ screen, nameOnly = false }: ShellTopBarProps) {
   const { centre, unread } = screen;
   const goToLeads = () => {
     centre.close();
-    navigation.navigate(DESTINATION_ROUTE.leads);
+    navigation.navigate(doorRoute.leads);
   };
   return (
     <>

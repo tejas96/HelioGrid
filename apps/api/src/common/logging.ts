@@ -43,6 +43,9 @@ const REDACTED_PATHS = [
   'req.params.phone',
   'req.query.email',
   'req.query.phone',
+  // A Temporal activity's task token completes or fails that activity; the SDK's lines carry
+  // it at the top level (`temporal.sdk-logger.ts`).
+  'taskToken',
 ];
 
 /**
@@ -87,13 +90,70 @@ function requestSerializer(req: Parameters<typeof stdSerializers.req>[0]) {
  */
 const LOGGED_ERROR_KEYS = ['type', 'message', 'stack', 'code', 'status', 'statusCode'] as const;
 
-function errorSerializer(error: Error): Record<string, unknown> {
+/**
+ * pino-http hands this pino's own serialisation of the error, whose `type` reads `Object` and
+ * whose causes are gone; `raw` is the error itself.
+ */
+function errorSerializer(logged: Error & { readonly raw?: Error }): Record<string, unknown> {
+  const error = logged.raw ?? logged;
   const serialized = stdSerializers.err(error) as unknown as Record<string, unknown>;
   const safe: Record<string, unknown> = {};
   for (const key of LOGGED_ERROR_KEYS) {
     if (serialized[key] !== undefined) safe[key] = serialized[key];
   }
-  return safe;
+  return withoutBoundValues(safe, error);
+}
+
+/** Drizzle's error for a failed query: `Failed query: <sql>\nparams: <the values it bound>`. */
+interface FailedQuery extends Error {
+  readonly query: string;
+  readonly params: readonly unknown[];
+  readonly cause?: { readonly code?: unknown };
+}
+
+function isFailedQuery(error: Error): error is FailedQuery {
+  const { query, params } = error as Partial<FailedQuery>;
+  return typeof query === 'string' && Array.isArray(params);
+}
+
+function errorChain(error: Error): Error[] {
+  const chain: Error[] = [];
+  for (
+    let link: unknown = error;
+    link instanceof Error && !chain.includes(link);
+    link = link.cause
+  ) {
+    chain.push(link);
+  }
+  return chain;
+}
+
+/**
+ * A failed query's message names the values it bound — a phone number, a name — and the
+ * message and stack of the error and of every error it causes repeat it. Each is written as
+ * the SQL alone, whose values are placeholders; the database's own message stays, and its
+ * SQLSTATE is the line's `code`. The database error's `detail` (`Key (phone)=(…)`) is never
+ * written.
+ */
+function withoutBoundValues(serialized: Record<string, unknown>, error: Error) {
+  const failedQueries = errorChain(error).filter(isFailedQuery);
+  const [failedQuery] = failedQueries;
+  if (failedQuery === undefined) return serialized;
+
+  const asSqlAlone = (text: unknown) =>
+    typeof text === 'string'
+      ? failedQueries.reduce(
+          (written, { message, query }) => written.replaceAll(message, `Failed query: ${query}`),
+          text,
+        )
+      : text;
+  const sqlState = failedQuery.cause?.code;
+  return {
+    ...serialized,
+    message: asSqlAlone(serialized.message),
+    stack: asSqlAlone(serialized.stack),
+    code: serialized.code ?? (typeof sqlState === 'string' ? sqlState : undefined),
+  };
 }
 
 /**

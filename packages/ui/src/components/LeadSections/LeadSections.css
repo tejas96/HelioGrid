@@ -1,0 +1,191 @@
+/* LeadSections — the lead's six sections (`M02-32`): an underlined tab strip that scrolls sideways
+   on a phone rather than wrapping, each count in mono, over one tile holding the section in view. */
+
+.hg-lead-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-lead-sections-tabs {
+  display: flex;
+  gap: var(--sp-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.hg-lead-sections-tab-slot {
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.hg-lead-sections-tab {
+  gap: var(--sp-1);
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-sm) var(--r-sm) 0 0;
+  box-shadow: inset 0 -2px 0 transparent;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  transition:
+    box-shadow var(--dur-standard) var(--ease-standard),
+    color var(--dur-standard) var(--ease-standard);
+}
+
+.hg-lead-sections-tab[aria-selected="true"] {
+  box-shadow: inset 0 -2px 0 var(--ink);
+  color: var(--text-primary);
+}
+
+.hg-lead-sections-tab:hover {
+  color: var(--text-primary);
+}
+
+.hg-lead-sections-tab-word {
+  white-space: nowrap;
+}
+
+.hg-lead-sections-tab-count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.hg-lead-sections-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-lead-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.hg-lead-section-overline {
+  font-family: var(--font-sans);
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-overline);
+  line-height: var(--lh-overline);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.hg-lead-section-site {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-lead-section-address {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-lead-section-line {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-lead-section-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.hg-lead-section-count {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+}
+
+.hg-lead-section-count-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--sp-10);
+  height: var(--sp-10);
+  border-radius: var(--r-pill);
+  background: var(--hg-control-fill);
+}
+
+.hg-lead-section-count-words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.hg-lead-section-count-value {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+}
+
+.hg-lead-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-lead-task {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.hg-lead-task-words {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-lead-task-title {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+}
+
+.hg-lead-task[data-done="true"] .hg-lead-task-title {
+  color: var(--text-secondary);
+  text-decoration: line-through;
+}
+
+.hg-lead-task-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}

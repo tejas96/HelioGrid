@@ -4,11 +4,12 @@ import { Pressable } from '../../primitives/Pressable';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Button } from '../Button';
 import { HueTile } from '../HueTile/HueTile';
+import type { ImportFormats } from '../Import/Import.types';
+import { ImportGlyph } from '../Import/ImportGlyph';
 import { StatusChip } from '../StatusChip';
-import { type ImportFormats, type ImportListRowView, listRowOf } from './CatalogImport.logic';
+import { type ImportListRowView, listRowOf } from './CatalogImport.logic';
 import type { CatalogImportWords, ImportGroupId, ImportRowList } from './CatalogImport.types';
 import { groupSampleOf, type ImportSampleItem, rowsOf } from './CatalogImport.view';
-import { ImportGlyph } from './ImportGlyph';
 import './ImportOutcomeGroup.css';
 
 type Phase = 'preview' | 'report';

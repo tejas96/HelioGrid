@@ -10,7 +10,7 @@ const FOCUSABLE =
 
 export interface OverlayDismissOptions {
   open: boolean;
-  /** The dialog element. It is focused on open and is the trap's boundary. */
+  /** The dialog element: focused on open unless focus is already inside it; the trap's boundary. */
   panelRef: RefObject<HTMLElement | null>;
   /** false = must resolve via an action; Esc and the backdrop stop closing. */
   dismissible: boolean;
@@ -46,7 +46,7 @@ function trapTab(event: KeyboardEvent, panel: HTMLElement | null): void {
 }
 
 /**
- * Esc, the focus trap, the body scroll lock and focus restore — the four the whole Sheet family
+ * Esc, the focus trap, the page's scroll lock and focus restore — the four the whole Sheet family
  * shares, in one place so Sheet, Modal and DetailPanel cannot answer them three ways.
  *
  * MODAL AND NON-MODAL ARE THREE BEHAVIOURS MOVING TOGETHER, not one flag on a backdrop: a trap, a
@@ -72,7 +72,10 @@ export function useOverlayDismiss({
       return;
     }
     const restore = document.activeElement;
-    panelRef.current?.focus({ preventScroll: true });
+    /* A field the content focuses as it mounts (`autoFocus`, which React applies before any
+       effect) keeps the focus: moving it to the panel here would take the one task's field away. */
+    const panel = panelRef.current;
+    if (panel !== null && !panel.contains(restore)) panel.focus({ preventScroll: true });
 
     const onKey = (event: KeyboardEvent) => {
       const onEscape = close.current;
@@ -86,16 +89,20 @@ export function useOverlayDismiss({
     };
     document.addEventListener('keydown', onKey, true);
 
+    /* The page's scroller is the root: `<body>` keeps its sideways clip, which the page's leaning
+       grid overruns. A lock written on the body turned that clip into a scroller, and a focus or a
+       scroll into view then slid the whole app sideways under the panel. */
     const lock = modal && !inset;
-    const previous = lock ? document.body.style.overflow : '';
+    const scroller = document.documentElement;
+    const previous = lock ? scroller.style.overflow : '';
     if (lock) {
-      document.body.style.overflow = 'hidden';
+      scroller.style.overflow = 'hidden';
     }
 
     return () => {
       document.removeEventListener('keydown', onKey, true);
       if (lock) {
-        document.body.style.overflow = previous;
+        scroller.style.overflow = previous;
       }
       if (restore instanceof HTMLElement) {
         restore.focus({ preventScroll: true });

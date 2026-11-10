@@ -37,4 +37,12 @@ export const APPEND_ONLY_LEDGERS: Record<string, string> = {
   orchestration_outbox:
     'a handoff to Temporal, written in its change’s transaction; only the dispatcher marks it, on ' +
     'the admin path (infra/temporal/README.md §5, T-M01-030)',
+  activity:
+    'the one timeline a customer and their leads show: nothing edits or deletes an entry, a ' +
+    'correction is a new one, and a merge reads through the tombstone (M02-35, T-M02-012)',
+  lead_stage_transition:
+    'every funnel and R9 move of a lead; a reopen is a new row, never a rewrite of the close ' +
+    '(M02-56, M13-22, T-M02-015)',
+  lead_assignment:
+    'every assignment of a lead with the assignee’s open count at that moment (M02-30, T-M02-011)',
 };

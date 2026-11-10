@@ -132,6 +132,12 @@
   color: inherit;
 }
 
+/* On a filled pill the glyph is the words' ink, over any tone the glyph sets on itself: a glyph
+   left at its own default drew a dark mark on the ocean fill. */
+.hg-button:is([data-variant="primary"], [data-variant="destructive"]) > svg {
+  color: inherit;
+}
+
 .hg-button[data-variant="primary"]:hover:not(:disabled):not([aria-disabled="true"]) {
   background: var(--action-primary-hover);
   transform: translateY(-1px);

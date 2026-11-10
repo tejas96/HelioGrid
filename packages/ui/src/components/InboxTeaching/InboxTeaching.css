@@ -1,0 +1,96 @@
+/* InboxTeaching — the empty inbox that teaches (`M02-25`): the hero, then the three ways a lead
+   arrives, one card of rows. Left-aligned, as a list's empty block is. */
+
+.hg-inbox-teaching {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-inbox-teaching-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-inbox-teaching-ring {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--sp-12);
+  height: var(--sp-12);
+  border-radius: var(--r-pill);
+  background: var(--accent-subtle);
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    0 0 0 1px var(--line-soft);
+}
+
+.hg-inbox-teaching-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--tr-h1);
+  color: var(--on-panel);
+  overflow-wrap: break-word;
+}
+
+.hg-inbox-teaching-body {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--on-panel-muted);
+}
+
+.hg-inbox-teaching-over {
+  margin: var(--sp-3) 0 0;
+  padding-inline: var(--sp-1);
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  letter-spacing: var(--tr-overline);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.hg-card-row-body.hg-inbox-teaching-way {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding-block: var(--sp-3);
+}
+
+.hg-inbox-teaching-glyph {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--sp-10);
+  height: var(--sp-10);
+  border-radius: var(--r-md);
+  background: var(--accent-subtle);
+}
+
+.hg-inbox-teaching-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-inbox-teaching-way-title {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.hg-inbox-teaching-way-line {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}

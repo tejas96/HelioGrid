@@ -142,7 +142,9 @@ export function HelioI18nProvider({
       meta: LANGUAGES[locale],
       device: device ?? null,
       setLocale,
-      t: runtime.t,
+      /* A new `t` with each language, as Lingui's own `_`: a screen that builds its words once per
+         `t` (`useMemo(() => words(t), [t])`) kept the first paint's English after the catalog came. */
+      t: (message, values) => runtime.t(message, values),
     }),
     [locale, device, setLocale, runtime],
   );

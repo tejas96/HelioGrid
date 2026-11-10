@@ -18,6 +18,7 @@ import type {
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, asc, eq, inArray, type SQL, sql } from 'drizzle-orm';
+import { inBatches } from '../../common/db/in-batches';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { namesOnPage, type RepeatedRow } from './catalog.import-row-names.repository';
 import { type ItemRate, itemRatesInForce, type RatedItem } from './catalog.rates.repository';
@@ -60,9 +61,6 @@ export interface PreviewRow extends JudgedRow {
   /** The earlier row a `repeated_in_file` row points at. */
   readonly repeats: RepeatedRow | null;
 }
-
-/** Enough rows per statement that a long sheet takes few round trips, few enough for the bind limit. */
-const ROWS_PER_INSERT = 500;
 
 /** A stored row's columns, as the grid and a fix read it. */
 export const previewColumns = {
@@ -194,16 +192,6 @@ export class CatalogImportRowsRepository {
         totalCount: total?.value ?? 0,
       };
     });
-  }
-}
-
-/** The rows in batches of `ROWS_PER_INSERT`, one statement each, in order. */
-export async function inBatches<T>(
-  rows: readonly T[],
-  write: (batch: readonly T[]) => Promise<void>,
-): Promise<void> {
-  for (let start = 0; start < rows.length; start += ROWS_PER_INSERT) {
-    await write(rows.slice(start, start + ROWS_PER_INSERT));
   }
 }
 

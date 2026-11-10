@@ -4,20 +4,21 @@ import { importWizardStepIndex } from '@heliogrid/domain';
 import { useId, useState } from 'react';
 import { Banner } from '../Banner';
 import { EditorSurface } from '../EditorSurface/EditorSurface';
+import { importFileOf } from '../Import/Import.logic';
+import type { ImportFormats } from '../Import/Import.types';
+import { ImportColumns } from '../Import/ImportColumns';
+import { ImportFileStep } from '../Import/ImportFileStep';
+import { ImportFoot } from '../Import/ImportFoot';
+import { ImportMatching, ImportRunning } from '../Import/ImportWaits';
+import { useImportFormats } from '../Import/use-import-formats';
 import { Stepper } from '../Stepper';
-import type { ImportFormats } from './CatalogImport.logic';
-import { actOf, fileOf } from './CatalogImport.steps';
+import { actOf, quietLineOf } from './CatalogImport.steps';
 import type { CatalogImportProps } from './CatalogImport.types';
-import { readyNowOf, scopeIn } from './CatalogImport.view';
-import { ImportColumns } from './ImportColumns';
-import { ImportFileStep } from './ImportFileStep';
-import { ImportFoot } from './ImportFoot';
+import { columnFieldsOf, columnsOf, readyNowOf, scopeIn } from './CatalogImport.view';
 import { ImportHead } from './ImportHead';
 import { ImportRows } from './ImportRows';
 import { ImportSkeleton } from './ImportSkeleton';
 import { ImportStepList } from './ImportStepList';
-import { ImportMatching, ImportRunning } from './ImportWaits';
-import { useImportFormats } from './use-import-formats';
 import './CatalogImport.css';
 
 /** The panel's width at 1536, and the layer width under which the wizard is a sheet. */
@@ -41,7 +42,8 @@ export function CatalogImport(given: CatalogImportProps) {
   const readyNow = readyNowOf(props);
   // A report still opening draws its line alone, no act (m17-j).
   const act = reportUnread(props) ? null : actOf(props, readyNow);
-  const file = job === null ? null : fileOf(job, words, formats, props.mapping);
+  const file = job === null ? null : importFileOf(job, words, formats, props.mapping);
+  const quiet = quietLineOf(props);
   const wait = frame === 'matching' || frame === 'running';
 
   return (
@@ -61,7 +63,7 @@ export function CatalogImport(given: CatalogImportProps) {
           size: wait ? 'auto' : 'full',
           bodyScrolls: false,
           labelId: titleId,
-          footer: <ImportFoot {...props} act={act} wide={false} />,
+          footer: <ImportFoot {...props} act={act} quiet={quiet} wide={false} />,
         }}
         panelProps={{
           title: words.title,
@@ -77,7 +79,7 @@ export function CatalogImport(given: CatalogImportProps) {
               words={words.stepper}
             />
           ),
-          footer: <ImportFoot {...props} act={act} wide />,
+          footer: <ImportFoot {...props} act={act} quiet={quiet} wide />,
         }}
       >
         {({ panel }) => (
@@ -143,11 +145,22 @@ function ImportStep({ props, wide, formats, readyNow }: ImportStepProps) {
     case 'file':
       return <ImportFileStep {...props} wide={wide} formats={formats} />;
     case 'columns':
-      return <ImportColumns {...props} wide={wide} />;
+      return (
+        <ImportColumns
+          words={props.words}
+          fields={columnFieldsOf(props.words)}
+          columns={columnsOf(props.job, props.mapping)}
+          samples={false}
+          wide={wide}
+          onPlace={props.onPlace}
+        />
+      );
     case 'matching':
       return <ImportMatching words={props.words} />;
     case 'running':
-      return <ImportRunning {...props} formats={formats} />;
+      return props.job === null ? null : (
+        <ImportRunning {...props} job={props.job} formats={formats} />
+      );
     case 'preview':
     case 'report':
       // A kept report opening, or its lists not yet read: the report's own loading form (m17-j).

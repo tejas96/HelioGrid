@@ -2,12 +2,12 @@ import { COMPONENT_KINDS } from '@heliogrid/domain';
 import { type ReactNode, useState } from 'react';
 import { Text } from '../../primitives/Text/Text';
 import { Button } from '../Button';
+import { ImportGlyph } from '../Import/ImportGlyph';
 import { NumberField } from '../NumberField';
 import { Select } from '../Select';
 import type { ImportCardView } from './CatalogImport.logic';
 import type { CatalogImportWords } from './CatalogImport.types';
 import { pickAnswers } from './CatalogImport.view';
-import { ImportGlyph } from './ImportGlyph';
 import './ImportFixCard.css';
 import { useFocusOnMount } from './use-focus-on-mount';
 

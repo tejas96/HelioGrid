@@ -39,8 +39,9 @@ It prints the database it migrates before it applies anything, and refuses a URL
 
 - Migrations are append-only: add a new file; the runner refuses an edited applied one.
 - A migration runs in one transaction. One that cannot (`CREATE INDEX CONCURRENTLY`) starts with
-  `-- heliogrid:no-transaction`, and then every statement in it is idempotent (`IF NOT EXISTS`):
-  a crash mid-apply runs it again.
+  `-- heliogrid:no-transaction`, separates its statements with `--> statement-breakpoint` (the
+  runner sends each on its own), and makes every one idempotent (`IF NOT EXISTS`): a crash mid-apply
+  runs it again.
 - `lock_timeout` is 3 s: a migration stuck behind a long query aborts. Run it again; never raise
   the value.
 - **Every tenant-owned table needs all four**: a `tenant_id` column · a composite index leading

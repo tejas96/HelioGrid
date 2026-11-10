@@ -1,0 +1,176 @@
+/* SearchResults — Global Search's groups (`SCR-SHELL-02`): an overline and its count over one
+   `CardRows` card per kind, See all at the head's end. A row's frame is `CardRows`'; this file lays
+   out its face and words, the number with the digits typed marked, and the quiet notes that stand
+   where rows go before anything is typed or when nothing is found. */
+
+.hg-search-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+  outline: none;
+}
+
+.hg-search-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-search-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  padding-inline: var(--sp-1);
+}
+
+.hg-search-group-title {
+  margin: 0;
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.hg-search-group-count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.hg-search-see-all {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: var(--touch-min);
+  margin-inline-start: auto;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+  color: var(--accent-text);
+  text-decoration: none;
+}
+
+.hg-search-see-all:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-card-row-body.hg-search-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding-block: var(--sp-3);
+}
+
+.hg-search-row-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.hg-search-row-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  min-width: 0;
+}
+
+.hg-search-row-title {
+  min-width: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  overflow-wrap: break-word;
+}
+
+.hg-search-row-line,
+.hg-search-row-marks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  min-width: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+/* A number is one token: it never wraps, and it reads in the primary ink beside its city. */
+.hg-search-number {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* The digits typed, lit across the number's spaces. */
+.hg-search-typed {
+  border-radius: var(--r-xs);
+  background: var(--accent-subtle);
+  box-shadow: inset 0 -2px 0 var(--accent);
+  color: inherit;
+}
+
+/* A junk lead's face sinks back; its name and its mark still read in full. */
+.hg-search-face[data-junk="true"] {
+  opacity: 0.6;
+}
+
+.hg-search-face,
+.hg-search-tile,
+.hg-search-row-end {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* An item has no face: its kind's glyph on a quiet tile the size of one. */
+.hg-search-tile {
+  align-items: center;
+  justify-content: center;
+  width: var(--sp-10);
+  height: var(--sp-10);
+  border-radius: var(--r-md);
+  background: var(--fill);
+}
+
+.hg-search-note {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-1);
+}
+
+.hg-search-note-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--sp-10);
+  height: var(--sp-10);
+  border-radius: var(--r-pill);
+  background: var(--fill);
+}
+
+.hg-search-note-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-search-note-body {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-secondary);
+}

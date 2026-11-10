@@ -1,0 +1,44 @@
+/* StageTrack — the eight-step funnel as segments: passed steps in ink, the lead's own step in the
+   accent, the rest on the sunk track. A picture beside the stage word, never its only carrier.
+
+   The `sm` segment is 8 by 4 with 2 between, so the eight sit inline in a row's meta line; `md`
+   spans its column in eight equal cells with a 6px bar — the bar's own height, which the 4px scale
+   has no step for. */
+
+.hg-stage-track {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--sp-0-5);
+  vertical-align: middle;
+}
+
+.hg-stage-track-step {
+  width: var(--sp-2);
+  height: var(--sp-1);
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+  box-shadow: var(--track-edge);
+}
+
+.hg-stage-track-step[data-standing="done"] {
+  background: var(--ink);
+  box-shadow: none;
+}
+
+.hg-stage-track-step[data-standing="now"] {
+  background: var(--accent);
+  box-shadow: none;
+}
+
+.hg-stage-track[data-size="md"] {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: var(--sp-1);
+  width: 100%;
+}
+
+.hg-stage-track[data-size="md"] .hg-stage-track-step {
+  width: auto;
+  height: 6px;
+}

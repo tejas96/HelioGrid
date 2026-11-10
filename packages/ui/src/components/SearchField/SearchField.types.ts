@@ -10,6 +10,11 @@ interface SearchFieldOwnProps {
   disabled?: boolean;
   ariaLabel?: TranslatedText;
   /**
+   * The field takes the keyboard as it appears — a screen whose one job is the search (the phone's
+   * Search): on the phone the keyboard rises with the screen.
+   */
+  autoFocus?: boolean;
+  /**
    * A focus handle for the caller, which sends focus here after the thing it acted on leaves (a
    * row removed, a list cleared): web focuses the input, native the `TextInput`.
    */

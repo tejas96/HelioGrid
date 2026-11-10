@@ -1,4 +1,5 @@
 import { FILE_MAX_BYTES } from '../files/rules';
+import type { ImportSheet } from '../import/sheet';
 
 /**
  * The spreadsheet import's closed sets (`M01-41`). Contracts derives its `z.enum`s from these and
@@ -58,17 +59,8 @@ export const CATALOG_IMPORT_ROW_NUMBER_MAX = 2_147_483_647;
 /** The longest file name a job keeps: the contract's bound and the column's CHECK, one number. */
 export const CATALOG_IMPORT_FILE_NAME_MAX = 255;
 
-/**
- * One sheet of a read file, as the file holds it: its name, how many rows and columns it fills, and
- * its first `HEADER_ROW_SCAN` rows as text — what step 1 places the header row on and step 2 guesses
- * the columns from, on the device (`T-M01-030c` decision 3). Counted, never guessed.
- */
-export interface CatalogImportSheet {
-  readonly name: string;
-  readonly rowCount: number;
-  readonly columnCount: number;
-  readonly topRows: readonly (readonly string[])[];
-}
+/** One sheet of a read file, as the shared import counts it (`import/sheet`). */
+export type CatalogImportSheet = ImportSheet;
 
 /**
  * What the matching pass makes of one row. A match on a platform item becomes a price override and

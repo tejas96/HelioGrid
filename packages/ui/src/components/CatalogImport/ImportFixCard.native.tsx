@@ -6,13 +6,13 @@ import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
+import { CARD_RADIUS, raisedCard } from '../Import/Import.surfaces.native';
+import { ImportGlyph } from '../Import/ImportGlyph.native';
 import { NumberField } from '../NumberField/NumberField.native';
 import { Select } from '../Select/Select.native';
 import type { ImportCardView } from './CatalogImport.logic';
-import { CARD_RADIUS, raisedCard } from './CatalogImport.surfaces.native';
 import type { CatalogImportWords } from './CatalogImport.types';
 import { pickAnswers } from './CatalogImport.view';
-import { ImportGlyph } from './ImportGlyph.native';
 import { useFocusOnMount } from './use-focus-on-mount.native';
 
 /**

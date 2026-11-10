@@ -1,11 +1,26 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 
-/** `F7-43` item 1: the page never scrolls sideways at the viewport it is drawn at. */
+/**
+ * `F7-43` item 1: the page never scrolls sideways at the viewport it is drawn at — neither the root
+ * nor the body moves when asked to, as a focus or a scroll into view asks. The body clips the
+ * page's leaning grid; once a style made it a scroller, a field focused in a panel slid the whole
+ * app sideways while the root still measured flat.
+ */
 export async function expectNoSidewaysScroll(page: Page): Promise<void> {
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
   expect(overflow).toBeLessThanOrEqual(0);
+  const moved = await page.evaluate(() =>
+    [document.documentElement, document.body].map((box) => {
+      const was = box.scrollLeft;
+      box.scrollLeft = Number.MAX_SAFE_INTEGER;
+      const reached = box.scrollLeft;
+      box.scrollLeft = was;
+      return reached;
+    }),
+  );
+  expect(moved, 'how far the root and the body move sideways when asked').toEqual([0, 0]);
 }
 
 /**

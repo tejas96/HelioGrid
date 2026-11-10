@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { useImperativeHandle, useRef, useState } from 'react';
+import { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import { closingPress, type FocusHandle } from '../../primitives/FocusAfter';
@@ -53,6 +53,7 @@ function SearchPill({
   clearLabel,
   disabled = false,
   ariaLabel,
+  autoFocus = false,
   ref,
   className,
   style,
@@ -62,6 +63,11 @@ function SearchPill({
   /* The clear leaves with the value it cleared: focus goes back to the field, to type again. */
   const clearAct = clearActOf(value, onClear, clearLabel);
   useImperativeHandle(ref, () => ({ focus: () => input.current?.focus() }), []);
+  /* Taken once, as the field arrives: the attribute would take it before an overlay's own focus. */
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the field takes the keyboard once, on arrival
+  useEffect(() => {
+    if (autoFocus) input.current?.focus();
+  }, []);
   return (
     <div
       className={classNames('hg-search-field', className)}

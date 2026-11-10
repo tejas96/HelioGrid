@@ -2,7 +2,7 @@
 import type { CatalogImportSummaryWire } from '@heliogrid/contracts';
 import { importListStep } from '@heliogrid/domain';
 import { useState } from 'react';
-import type { ImportActFailure } from './catalog-import-facts';
+import type { ImportActFailure } from './import-job-facts';
 import { type CatalogImport, useCatalogImport } from './use-catalog-import';
 import { useCatalogImportLists } from './use-catalog-import-lists';
 import { useCatalogImportFixes, useCatalogImports } from './use-catalog-import-rows';

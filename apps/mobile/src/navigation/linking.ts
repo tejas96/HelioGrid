@@ -21,7 +21,7 @@ import { onPushOpened, type PushSubject, pushThatOpenedTheApp } from '../push/me
 const PREFIX = 'heliogrid://';
 
 function linkOf(subject: PushSubject | null): string | null {
-  const address = subjectAddressOf(subject?.subjectKind);
+  const address = subjectAddressOf(subject?.subjectKind, subject?.subjectRef);
   return address === null ? null : `${PREFIX}${address}`;
 }
 

@@ -1,9 +1,10 @@
 import { theme } from '@heliogrid/theme';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useImperativeHandle, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
+import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
 import type { CardRowProps, CardRowsProps } from './CardRows.types';
 
 const AsideRoom = createContext(0);
@@ -38,8 +39,15 @@ export function CardRow({
   highlighted = false,
   muted = false,
   busy = false,
+  targetRef,
 }: CardRowProps) {
   const [asideWidth, setAsideWidth] = useState(0);
+  const target = useRef<View>(null);
+  useImperativeHandle(
+    targetRef,
+    () => ({ focus: () => focusScreenReaderOn(() => target.current) }),
+    [],
+  );
   const acts = aside === undefined || aside === null ? null : aside;
   const bodyLook = [styles.body, muted ? styles.muted : undefined];
   return (
@@ -57,7 +65,12 @@ export function CardRow({
           {open === undefined ? (
             <View style={bodyLook}>{children}</View>
           ) : (
-            <Pressable accessibilityLabel={open.name} onPress={open.onOpen} style={bodyLook}>
+            <Pressable
+              hostRef={target}
+              accessibilityLabel={open.name}
+              onPress={open.onOpen}
+              style={bodyLook}
+            >
               {children}
             </Pressable>
           )}

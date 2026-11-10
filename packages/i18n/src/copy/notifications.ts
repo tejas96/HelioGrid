@@ -2,6 +2,7 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { NotificationType, NotificationTypeGroup } from '@heliogrid/domain';
 import { NOTIFICATION_CENTRE_HORIZON_DAYS } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
+import { LEAD_ENQUIRIES_COUNT, LEADS_ASSIGNED_COUNT } from './lead-notices';
 import { SHELL } from './shell';
 
 /**
@@ -100,6 +101,8 @@ const GROUP_SENTENCE: Record<NotificationType, MessageRef> = {
   lead_unassigned_24h: /*i18n*/ {
     id: '{count, plural, one {# lead unassigned for a day} other {# leads unassigned for a day}}',
   },
+  lead_assigned: LEADS_ASSIGNED_COUNT,
+  lead_enquiry: LEAD_ENQUIRIES_COUNT,
   join_requested: /*i18n*/ {
     id: '{count, plural, one {# request to join} other {# requests to join}}',
   },

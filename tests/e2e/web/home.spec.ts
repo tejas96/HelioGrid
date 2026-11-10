@@ -1,9 +1,9 @@
 import {
   createTranslator,
-  doorTitle,
   firstRunMarkWords,
   homeTitle,
   NOTIFICATION_CENTRE,
+  QUICK_ADD,
   SHELL,
   todayLine,
   verbLabel,
@@ -90,9 +90,7 @@ test('the verb opens its door once, however fast it is pressed', async ({ page }
   await page.getByRole('button', { name: addLead }).dblclick();
 
   await expect(page).toHaveURL(/\/add-lead$/);
-  await expect(
-    page.getByRole('heading', { level: 1, name: doorTitle(en.t, 'add_lead') }),
-  ).toBeAttached();
+  await expect(page.getByRole('dialog', { name: en.t(QUICK_ADD.title) })).toBeVisible();
   await page.goBack();
   await expect(page).toHaveURL(/\/home$/);
 });

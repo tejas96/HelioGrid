@@ -19,6 +19,7 @@ export {
   judgeFileDeclaration,
   mayReadFile,
   mayUploadFile,
+  SPREADSHEET_CONTENT_TYPES,
 } from './rules';
 export type { FileContentType, StorageProvider } from './vocabulary';
 export { FILE_CONTENT_TYPES, STORAGE_PROVIDERS } from './vocabulary';

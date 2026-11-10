@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Dimensions, Pressable as RNPressable, ScrollView, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
-import { Portal } from '../../primitives/Portal/Portal.native';
+import { Portal, usePortalBottomInset } from '../../primitives/Portal/Portal.native';
 import { useCloseOnBack } from '../../primitives/use-close-on-back.native';
 import { actOnChoice, MENU_GAP } from './Menu.logic';
 import type { MenuItem, MenuProps } from './Menu.types';
@@ -15,11 +15,11 @@ interface NativeMenuProps extends MenuProps {
   style?: StyleProp<ViewStyle>;
 }
 
+/** Where the list stands: under its trigger by its top edge, or risen over it by its bottom. */
 interface Anchor {
   left: number;
   max: number;
-  top: number;
-  up: boolean;
+  edge: { top: number } | { bottom: number };
 }
 
 const MIN_BELOW = 160;
@@ -54,19 +54,24 @@ export function Menu({
   const wrapRef = useRef<View>(null);
   const open = anchor !== null;
   useCloseOnBack(open, () => setAnchor(null));
+  /* The window's foot a list never opens into: the home indicator and, over it, the app's floating
+     pill — opened over the pill, the menu's last rows sat under the nav. As the toasts, it clears
+     the pill's band whether or not the page shows the pill. */
+  const foot = usePortalBottomInset() + theme.layout['bottomnav-h'];
 
   const openMenu = () => {
     wrapRef.current?.measureInWindow((x, y, triggerWidth, height) => {
       const windowSize = Dimensions.get('window');
-      const below = windowSize.height - (y + height) - MENU_GAP;
+      const below = windowSize.height - foot - (y + height) - MENU_GAP;
       const above = y - MENU_GAP;
       const up = below < MIN_BELOW && above > below;
       const left = align === 'end' ? x + triggerWidth - width : x;
       setAnchor({
         left: Math.max(MENU_GAP, Math.min(left, windowSize.width - width - MENU_GAP)),
         max: Math.max(120, up ? above : below),
-        top: up ? y - MENU_GAP : y + height + MENU_GAP,
-        up,
+        /* A risen list hangs from its bottom edge: placed by its top less its ceiling, a list
+           shorter than the room above stood at the window's top, under the status bar. */
+        edge: up ? { bottom: windowSize.height - (y - MENU_GAP) } : { top: y + height + MENU_GAP },
       });
     });
   };
@@ -107,12 +112,7 @@ export function Menu({
             accessibilityViewIsModal
             style={[
               styles.list,
-              {
-                width,
-                left: anchor.left,
-                maxHeight: anchor.max,
-                top: anchor.up ? anchor.top - anchor.max : anchor.top,
-              },
+              { width, left: anchor.left, maxHeight: anchor.max, ...anchor.edge },
             ]}
           >
             <ScrollView>

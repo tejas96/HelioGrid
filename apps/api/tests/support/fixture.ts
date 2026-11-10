@@ -3,6 +3,7 @@ import {
   auditLogEntry,
   authIdentity,
   createDb,
+  customer,
   type Db,
   file,
   invitation,
@@ -31,6 +32,7 @@ import { adminUrl, databaseUrl } from './preconditions';
 import {
   TENANT_BILLING_TABLES,
   TENANT_CATALOG_TABLES,
+  TENANT_CRM_TABLES,
   TENANT_SETTING_TABLES,
 } from './tenant-tables';
 
@@ -254,6 +256,13 @@ export async function unseed(db: Db, fixture: Fixture): Promise<void> {
   }
   for (const catalogTable of TENANT_CATALOG_TABLES) {
     await db.delete(catalogTable).where(inArray(catalogTable.tenantId, companies));
+  }
+  await db
+    .update(customer)
+    .set({ primaryContactId: null })
+    .where(inArray(customer.tenantId, companies));
+  for (const crmTable of TENANT_CRM_TABLES) {
+    await db.delete(crmTable).where(inArray(crmTable.tenantId, companies));
   }
   await db.delete(orchestrationOutbox).where(inArray(orchestrationOutbox.tenantId, companies));
   await db.delete(notification).where(inArray(notification.tenantId, companies));

@@ -30,7 +30,9 @@ flow -e "COMPANY=E2E $national" -e "OWNER=Owner $national" company-signup.yaml
 # a company meets: setup's steps, the shell and settings. The phone's own *Create company* press
 # never reaches the api on iOS inside Maestro (`D5`), so it is not the way in.
 read -r owner_national owner_e164 < <(node ../support/mobile-cli.ts phone)
-node ../support/mobile-cli.ts company "$owner_national" "$owner_e164"
+# It also makes two leads given to the owner: one for Lead Detail, and that customer and the same
+# family's second record for Customer Merge — their ids come back.
+read -r lead_id survivor_id loser_id < <(node ../support/mobile-cli.ts company "$owner_national" "$owner_e164")
 flow boot.yaml
 since="$(node -e 'console.log(Date.now())')"
 flow -e "PHONE=$owner_national" login.yaml
@@ -52,4 +54,20 @@ flow payment-terms.yaml
 flow catalog-settings.yaml
 flow billing.yaml
 flow usage.yaml
+# A customer's fresh number, so the capture meets no lead another run left.
+read -r customer_national _ < <(node ../support/mobile-cli.ts phone)
+flow -e "CUSTOMER=$customer_national" quick-add-lead.yaml
+# The lead quick add just captured is the inbox's one waiting lead.
+flow lead-inbox.yaml
+# Search finds that lead by its customer's number, and a fresh number finds nothing.
+read -r nobody_national _ < <(node ../support/mobile-cli.ts phone)
+flow -e "CUSTOMER=$customer_national" -e "NOBODY=$nobody_national" search.yaml
+flow -e "LEAD_NAME=Lead $owner_national" leads-list.yaml
+# The import opens on its first step over the same list, and its way back returns to it.
+flow lead-import.yaml
+flow -e "LEAD_ID=$lead_id" -e "LEAD_NAME=Lead $owner_national" lead-detail.yaml
+# The company's two records for one family merge last: the other flows read them as they stand.
+from_survivor="$(node ../support/mobile-cli.ts merge-from "Lead $owner_national")"
+pair=(-e "SURVIVOR_ID=$survivor_id" -e "LOSER_ID=$loser_id" -e "SURVIVOR_NAME=Lead $owner_national")
+flow "${pair[@]}" -e "SURVIVOR_CITY=Pune" -e "FROM_SURVIVOR=$from_survivor" customer-merge.yaml
 echo "mobile suite PASS on $device"

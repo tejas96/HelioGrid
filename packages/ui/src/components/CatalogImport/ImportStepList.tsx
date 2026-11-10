@@ -2,7 +2,6 @@ import { Text } from '../../primitives/Text/Text';
 import { EditorSurface } from '../EditorSurface/EditorSurface';
 import { StepList } from '../Stepper';
 import type { CatalogImportWords } from './CatalogImport.types';
-import './ImportFoot.css';
 
 /** The steps *Back* reaches from: Columns and Preview, one step at a time. */
 const BACK_FROM_STEPS: readonly number[] = [1, 2];

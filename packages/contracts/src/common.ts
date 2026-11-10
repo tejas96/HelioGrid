@@ -65,6 +65,12 @@ export const amountSchema = z
   .string()
   .regex(/^-?\d{1,12}(\.\d{1,3})?$/, 'amount as decimal string scaled to the currency minor unit');
 
+/** An amount never below zero — a price, a monthly bill. Zero is an amount; a negative one is not. */
+export const nonNegativeAmountSchema = amountSchema.refine(
+  (amount) => !amount.startsWith('-'),
+  'never below zero',
+);
+
 /** ISO 4217 — the tenant's one currency, server-assigned from its market's pack (`F1-07`). */
 export const currencyCodeSchema = z.string().length(3);
 
@@ -189,6 +195,9 @@ export const paginationQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
 });
 export type PaginationQuery = z.infer<typeof paginationQuerySchema>;
+
+/** A yes or no in a query string: `true` or `false`, read as a boolean. */
+export const queryFlagSchema = z.enum(['true', 'false']).transform((flag) => flag === 'true');
 
 export function paginated<T extends z.ZodTypeAny>(item: T) {
   return z.object({

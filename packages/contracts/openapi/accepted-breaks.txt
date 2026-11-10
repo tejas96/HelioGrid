@@ -1,2 +1,3 @@
 PUT /settings/proposal-template added the new required request property `defaultTerms/blocks`
 PUT /settings/proposal-template added the new required request property `defaultTerms/version`
+GET /tenants/me/audit-log added `subschema #1, subschema #2, subschema #3` to the `items/items/changePayload` response property `oneOf` list for the response status `200`

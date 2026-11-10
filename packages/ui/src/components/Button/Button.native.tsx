@@ -10,6 +10,7 @@ import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native
 import { Text } from '../../primitives/Text/Text.native';
 import type { ReasonTriggerProps } from '../ActionReason/ActionReason.types';
 import { ReasonExplainer } from '../ActionReason/ReasonExplainer.native';
+import { GlyphInkContext } from '../AppShell/ShellGlyph.native';
 import { isStatedOff, labelRunsOf, toneOf } from './Button.logic';
 import type { ButtonProps, ButtonSize, ButtonTone, ButtonVariant } from './Button.types';
 
@@ -46,6 +47,9 @@ const VARIANT: Record<ButtonVariant, VariantVisual> = {
   ghost: { background: 'transparent', color: colors['text-secondary'] },
   destructive: { background: colors['danger-text'], color: colors['text-inverse'] },
 };
+
+/* The pills with a fill of their own, whose glyphs take the words' ink (`GlyphInkContext`). */
+const FILLED: ReadonlySet<ButtonVariant> = new Set<ButtonVariant>(['primary', 'destructive']);
 
 /* The words a tone gives a secondary or ghost pill; the white pill keeps its own ground. */
 const TONE: Record<ButtonTone, ThemeColor> = { danger: colors['danger-text'] };
@@ -134,6 +138,17 @@ export function Button({
   /* Named by its words even while the spinner stands in for them, so a button that is working
      keeps its name (`F7-26`). */
   const name = spokenName ?? figures?.spoken ?? children;
+  const content = loading ? (
+    <ActivityIndicator color={labelColor} size="small" />
+  ) : (
+    <GlyphInkContext.Provider value={FILLED.has(variant) ? labelColor : null}>
+      {icon}
+      <Text style={[styles.label, LABEL_SIZE[size], { color: labelColor }]}>
+        {labelOf(children, figures?.values)}
+      </Text>
+      {iconRight}
+    </GlyphInkContext.Provider>
+  );
 
   const pill = (reason?: ReasonTriggerProps) => {
     const open = expanded ?? reason?.expanded;
@@ -163,17 +178,7 @@ export function Button({
           style,
         ]}
       >
-        {loading ? (
-          <ActivityIndicator color={labelColor} size="small" />
-        ) : (
-          <>
-            {icon}
-            <Text style={[styles.label, LABEL_SIZE[size], { color: labelColor }]}>
-              {labelOf(children, figures?.values)}
-            </Text>
-            {iconRight}
-          </>
-        )}
+        {content}
       </Pressable>
     );
   };

@@ -1,4 +1,5 @@
 import {
+  activity,
   billingCheckout,
   brandingSettings,
   businessProfile,
@@ -7,23 +8,36 @@ import {
   catalogRateEntry,
   catalogRelease,
   catalogReleaseLine,
+  contact,
+  contactRoleLabel,
   creditNote,
+  crmDailySweep,
+  customer,
   dunningEvent,
+  duplicateLink,
   entitlement,
   entitlementOverride,
   invoiceLine,
   invoiceLineTax,
+  lead,
+  leadAssignment,
+  leadImport,
+  leadImportRow,
+  leadStageTransition,
+  leadVisitBooking,
   onboardingProgress,
   overageAddOn,
   priceBookRate,
   priceBookVersion,
   proposalTemplateSettings,
+  referral,
   storageGaugeSnapshot,
   subscription,
   subscriptionInvoice,
   subscriptionPayment,
   subscriptionPlanChange,
   subscriptionStateHistory,
+  task,
   taxRegistration,
   tenantCatalogItem,
   tenantCatalogOverride,
@@ -91,4 +105,28 @@ export const TENANT_BILLING_TABLES = [
   entitlement,
   usageEvent,
   storageGaugeSnapshot,
+] as const;
+
+/**
+ * A company's CRM rows: the import's rows (they name a lead, a customer and an enquiry) before its
+ * jobs; the sweep's claims; the timeline, the two lead histories, tasks and visit bookings before the
+ * leads they name; referrals before leads; leads and duplicate links before customers; contacts
+ * before customers and the role labels they carry. A customer names its primary contact and a
+ * contact its customer, so `unseed` unties that pair before walking the list.
+ */
+export const TENANT_CRM_TABLES = [
+  leadImportRow,
+  leadImport,
+  crmDailySweep,
+  activity,
+  leadStageTransition,
+  leadAssignment,
+  task,
+  leadVisitBooking,
+  referral,
+  lead,
+  duplicateLink,
+  contact,
+  customer,
+  contactRoleLabel,
 ] as const;

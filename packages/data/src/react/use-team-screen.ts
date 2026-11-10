@@ -13,6 +13,7 @@ import {
 } from '@heliogrid/domain';
 import { useCallback, useRef, useState } from 'react';
 import { type AssignRolesEditor, type RolesRemovalNotes, useAssignRoles } from './use-assign-roles';
+import { type DeactivateReassign, useDeactivateReassign } from './use-deactivate-reassign';
 import { type Invite, useInvite } from './use-invite';
 import { useSession } from './use-session';
 import { useShell } from './use-shell';
@@ -34,6 +35,8 @@ export interface TeamScreenNotes extends RolesRemovalNotes {
    * web's overlay returns it itself.
    */
   onInviteShut?(): void;
+  /** The reason a deactivation's moved leads record (`SCR-M01-12`, `M02-30`), in the reader's words. */
+  readonly deactivatedReason: string;
 }
 
 /** Assign Roles over the Team page (`SCR-M01-13`): `useAssignRoles`' editor, and its rows' read. */
@@ -77,6 +80,8 @@ export interface TeamScreen {
   /** The rows in view, as the table draws them with its own wait. */
   readonly rows: Read<readonly TeamRow[]>;
   readonly acts: TeamActs;
+  /** A deactivation's open leads and who takes them (`SCR-M01-12`). */
+  readonly reassign: DeactivateReassign;
   readonly roles: TeamRolesEditor;
   /** A row's open — none before the company's name has come, as the sole-owner reason names it. */
   readonly openOf: AssignRolesEditor['openerOf'] | undefined;
@@ -95,10 +100,18 @@ export function useTeamScreen(
   const { user } = useSession();
   const shell = useShell();
   const team = useTeam(language);
-  const acts = useTeamActs(team, (note) => {
-    notes.onActNote(note);
-    if (noteLeavesRow(note)) notes.onLeftRow();
-  });
+  /* The confirm's act sends the move, which reads the confirm it belongs to: a ref joins the two. */
+  const move = useRef<() => Promise<void>>(async () => {});
+  const acts = useTeamActs(
+    team,
+    (note) => {
+      notes.onActNote(note);
+      if (noteLeavesRow(note)) notes.onLeftRow();
+    },
+    () => move.current(),
+  );
+  const reassign = useDeactivateReassign(acts.confirm, notes.deactivatedReason);
+  move.current = reassign.move;
   const roles = useTeamRoles(team, notes);
   const invite = useTeamInvite(team, pack, notes);
   return {
@@ -109,6 +122,7 @@ export function useTeamScreen(
     showsHead: showsListHead(team.read),
     rows: mapRead(team.read, (shown) => shown.view.rows),
     acts,
+    reassign,
     roles,
     openOf: shell.companyName === null ? undefined : roles.openerOf,
     invite,

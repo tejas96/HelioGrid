@@ -10,6 +10,7 @@ import { NativeConnection, Worker } from '@temporalio/worker';
 import { PinoLogger } from 'nestjs-pino';
 import { ENV } from '../../config/env';
 import { TemporalGateway } from './temporal.gateway';
+import { routeTemporalLogsTo } from './temporal.sdk-logger';
 
 /** A schedule a queue's steps are run by — one per cluster, created when absent. */
 export interface ActivitySchedule {
@@ -32,6 +33,18 @@ export interface ActivityRegistration {
  */
 export function stepCannotSucceed(message: string): Error {
   return ApplicationFailure.nonRetryable(message);
+}
+
+/**
+ * Every queue's steps in one object: a second worker on a queue, holding only some of its steps,
+ * would take tasks for the others and fail them.
+ */
+function stepsByQueue(registrations: readonly ActivityRegistration[]): Map<TaskQueue, object> {
+  const byQueue = new Map<TaskQueue, object>();
+  for (const { taskQueue, activities } of registrations) {
+    byQueue.set(taskQueue, { ...byQueue.get(taskQueue), ...activities });
+  }
+  return byQueue;
 }
 
 /** How long an unreachable Temporal is left before the host connects again. */
@@ -69,11 +82,14 @@ export class TemporalActivityHost implements OnApplicationShutdown {
     this.logger.setContext(TemporalActivityHost.name);
   }
 
+  /** Areas whose workflows share a queue each register their own steps on it (`stepsByQueue`). */
   register(registration: ActivityRegistration): void {
     this.registrations.push(registration);
   }
 
+  /** Once per process (`main.ts`), so the SDK's runtime is created with the app's logger. */
   start(): void {
+    routeTemporalLogsTo(this.logger);
     void this.open();
   }
 
@@ -88,7 +104,7 @@ export class TemporalActivityHost implements OnApplicationShutdown {
     try {
       await this.hostEveryQueue();
       this.logger.info(
-        { queues: this.registrations.map((registration) => registration.taskQueue) },
+        { queues: [...new Set(this.registrations.map((registration) => registration.taskQueue))] },
         'hosting workflow steps',
       );
     } catch (error) {
@@ -108,7 +124,7 @@ export class TemporalActivityHost implements OnApplicationShutdown {
     this.connection = connection;
     this.stopTokenRefresh = watchIdentityToken(readToken, (token) => connection.setApiKey(token));
 
-    for (const { taskQueue, activities } of this.registrations) {
+    for (const [taskQueue, activities] of stepsByQueue(this.registrations)) {
       const worker = await Worker.create({
         connection,
         namespace: ENV.TEMPORAL_NAMESPACE,

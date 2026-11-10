@@ -8,12 +8,13 @@ import { Text } from '../../primitives/Text/Text.native';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Button } from '../Button/Button.native';
 import { HueTile } from '../HueTile/HueTile.native';
+import { CARD_RADIUS, raisedCard, rowDivider } from '../Import/Import.surfaces.native';
+import type { ImportFormats } from '../Import/Import.types';
+import { ImportGlyph } from '../Import/ImportGlyph.native';
 import { StatusChip } from '../StatusChip/StatusChip.native';
-import { type ImportFormats, type ImportListRowView, listRowOf } from './CatalogImport.logic';
-import { CARD_RADIUS, raisedCard, rowDivider } from './CatalogImport.surfaces.native';
+import { type ImportListRowView, listRowOf } from './CatalogImport.logic';
 import type { CatalogImportWords, ImportGroupId, ImportRowList } from './CatalogImport.types';
 import { groupSampleOf, type ImportSampleItem, rowsOf } from './CatalogImport.view';
-import { ImportGlyph } from './ImportGlyph.native';
 
 type Phase = 'preview' | 'report';
 

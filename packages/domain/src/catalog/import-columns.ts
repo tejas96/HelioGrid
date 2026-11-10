@@ -1,5 +1,5 @@
-import { type PerLanguage, UI_LANGUAGES } from '../format/languages';
-import { importTextKey } from './import-text';
+import { type HeaderWords, type ImportColumnGuess, importColumnGuesser } from '../import/columns';
+import type { ImportCells } from '../import/mapping';
 
 /**
  * The columns an import can fill (`M01-41`), and the guess that places a sheet's headers on them in
@@ -53,18 +53,14 @@ export const CATALOG_IMPORT_FIELDS = [
 export type CatalogImportField = (typeof CATALOG_IMPORT_FIELDS)[number];
 
 /** One row's cells by the field each fills, as text — the file's, or the person's fix over it. */
-export type CatalogImportCells = Readonly<Partial<Record<CatalogImportField, string>>>;
+export type CatalogImportCells = ImportCells<CatalogImportField>;
 
 /**
- * The header words each field answers to, per language. English is required; another language
- * lists its own words where a sheet in it writes them, and is absent where its sheets write the
- * English term (`Voc`, `MPPT`) — so a new language needs no entry here to ship.
- * Compared through `importTextKey` with a trailing unit dropped, so `Rate (₹)`, `RATE` and
- * `rate inr` all read `rate`. A word belongs to one field only, and a word that could name two —
- * `type`, `company`, `cost` — names none: the person places that column.
+ * The header words each field answers to, per language. A language is absent where its sheets
+ * write the English term (`Voc`, `MPPT`) — so a new language needs no entry here to ship. A word
+ * that could name two fields — `type`, `company`, `cost` — names none: the person places that
+ * column.
  */
-type HeaderWords = PerLanguage<readonly string[]>;
-
 const ENGLISH_ONLY = (...en: string[]): HeaderWords => ({ en });
 
 export const HEADER_WORDS: Readonly<Record<CatalogImportField, HeaderWords>> = {
@@ -137,77 +133,11 @@ export const HEADER_WORDS: Readonly<Record<CatalogImportField, HeaderWords>> = {
   ratedInputW: ENGLISH_ONLY('rated input', 'input power'),
 };
 
-/** A unit written after a header's name — `Length mm`, `Price INR` — is not part of its name. */
-const UNIT_WORDS: ReadonlySet<string> = new Set([
-  'mm',
-  'cm',
-  'kg',
-  'v',
-  'a',
-  'w',
-  'wp',
-  'kw',
-  'kwp',
-  'kwh',
-  'pct',
-  'percent',
-  'year',
-  'years',
-  'yrs',
-  'rs',
-  'inr',
-  'वर्ष',
-  'रुपये',
-]);
+/** The catalog's guesses: its fields placed by their header words (`import/columns`). */
+export const CATALOG_IMPORT_COLUMNS = importColumnGuesser(CATALOG_IMPORT_FIELDS, HEADER_WORDS);
 
-/** A header's comparable form: its text key with any trailing unit words dropped. */
-export function columnKey(header: string): string {
-  const words = importTextKey(header).split(' ');
-  while (words.length > 1 && UNIT_WORDS.has(words[words.length - 1] ?? '')) words.pop();
-  return words.join(' ');
-}
+export type ColumnGuess = ImportColumnGuess<CatalogImportField>;
+export const { guessColumns, guessHeaderRow } = CATALOG_IMPORT_COLUMNS;
 
-const FIELD_BY_KEY: ReadonlyMap<string, CatalogImportField> = new Map(
-  CATALOG_IMPORT_FIELDS.flatMap((field) =>
-    UI_LANGUAGES.flatMap((language) => HEADER_WORDS[field][language] ?? []).map(
-      (word) => [columnKey(word), field] as const,
-    ),
-  ),
-);
-
-/** One column of the sheet: its header exactly as the file wrote it, and the field guessed. */
-export interface ColumnGuess {
-  readonly header: string;
-  readonly field: CatalogImportField | null;
-}
-
-/**
- * Each header placed on the field its words name, or on none. A field is placed once — the first
- * column naming it wins and a later one is left for the person to place — so two columns never
- * fight over one value.
- */
-export function guessColumns(headers: readonly string[]): readonly ColumnGuess[] {
-  const placed = new Set<CatalogImportField>();
-  return headers.map((header) => {
-    const field = FIELD_BY_KEY.get(columnKey(header)) ?? null;
-    if (field === null || placed.has(field)) return { header, field: null };
-    placed.add(field);
-    return { header, field };
-  });
-}
-
-/** A header row sits near the top: a supplier's title block runs a few lines, never a page. */
-export const HEADER_ROW_SCAN = 10;
-
-/**
- * The row whose cells name the most fields, among the first `HEADER_ROW_SCAN`; the earliest wins a
- * tie, and a sheet whose top names no field starts at its first row.
- */
-export function guessHeaderRow(rows: readonly (readonly string[])[]): number {
-  let best = { row: 0, placed: 0 };
-  rows.slice(0, HEADER_ROW_SCAN).forEach((cells, row) => {
-    const placed = guessColumns(cells).filter((guess) => guess.field !== null).length;
-    if (placed > best.placed) best = { row, placed };
-  });
-  return best.row;
-}
+export { columnKey } from '../import/columns';
+export { HEADER_ROW_SCAN } from '../import/sheet';

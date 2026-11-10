@@ -14,6 +14,7 @@ import {
   importFixRequest,
 } from '@heliogrid/domain';
 import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
+import type { ImportFormats } from '../Import/Import.types';
 import type {
   CatalogImportProps,
   CatalogImportWords,
@@ -21,16 +22,9 @@ import type {
 } from './CatalogImport.types';
 
 /**
- * What both halves draw from the props (`SCR-M01-17`): a row's card or list line, the overview's
- * figures and filters, the file chip and the step's act. Pure: no markup, no data access.
+ * What both halves draw from a row (`SCR-M01-17`): its card or its list line. Pure: no markup, no
+ * data access.
  */
-
-/** The market's formats, from `useCatalogFormats` and the pack's clock. */
-export interface ImportFormats {
-  readonly money: (amount: string) => string;
-  readonly date: (iso: string) => string;
-  readonly clockAt: (iso: string) => string;
-}
 
 export function stateOf(job: CatalogImportWire | null): CatalogImportState | null {
   if (job === null) return null;

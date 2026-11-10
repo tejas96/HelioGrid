@@ -38,6 +38,7 @@ export function ShellPage({
   lead,
   pad,
   foot,
+  onAction,
   children,
 }: {
   inView?: string;
@@ -50,6 +51,8 @@ export function ShellPage({
   pad?: ShellFrameProps['pad'];
   /** An act bar in the pill's place while it shows (`ShellFrame`). */
   foot?: ReactNode;
+  /** The add action's press on the page the action itself opened: it opens again in place. */
+  onAction?: () => void;
   children: ReactNode;
 }) {
   const t = useTranslate();
@@ -58,7 +61,7 @@ export function ShellPage({
   const navigation = useNavigation();
   // biome-ignore lint/plugin/screen-assembly: the native scroll view's offset, told as it scrolls; only the phone's drill-down bar lifts on it
   const [scrolled, setScrolled] = useState(false);
-  const items = usePillItems(screen.shell, actionRef);
+  const items = usePillItems(screen.shell, actionRef, onAction);
   const lit = inView !== undefined && items.some((item) => item.key === inView);
   return (
     <ShellFrame

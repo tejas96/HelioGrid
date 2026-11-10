@@ -263,7 +263,7 @@ SIGTERM), and one folder per business area under src/modules/<area>/ holding
 `<area>.workflows.ts` (DETERMINISTIC — imports nothing from Node, Nest, db, HTTP or env),
 `<area>.activities.types.ts` (the seam the workflow types against), `<area>.activities.ts`
 (idempotent side effects) and `<area>.public.ts` — or no activity files at all, when the area's
-steps run in apps/api beside their data (the outbox, the catalog import): the workflow then types
+steps run in apps/api beside their data (the outbox, the catalog and lead imports): the workflow then types
 its steps against the activity interface in `@heliogrid/contracts/workflows`, and its registration
 carries no activities. The workflow BUNDLE is a build artifact, built from `src/worker.workflows.ts`,
 which re-exports every area; the worker refuses to boot without it. Held by: workflows-are-deterministic ·

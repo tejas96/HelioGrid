@@ -64,6 +64,6 @@ import { CatalogSliceRepository } from './catalog.slice.repository';
     CatalogImportRunRepository,
     CatalogImportActivityRegistration,
   ],
-  exports: [CatalogPlatformService],
+  exports: [CatalogPlatformService, CatalogService],
 })
 export class CatalogModule {}

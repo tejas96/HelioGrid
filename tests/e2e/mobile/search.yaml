@@ -1,0 +1,25 @@
+# Global Search (`SCR-SHELL-02`, `F6-20`): the search rises as a full sheet with its hint, the field
+# taking the keyboard at once; the number of the customer quick add captured finds its lead; a
+# number no one has says nothing was found and what search covers; Cancel goes back.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://search
+- extendedWaitUntil:
+    visible: ${SEARCH_IDLE}
+    timeout: 15000
+# The field has the keyboard already: the digits go straight in.
+- waitForAnimationToEnd
+- inputText: ${CUSTOMER}
+# The lead has no name yet: its row is spoken by its kind, the one target that opens it.
+- extendedWaitUntil:
+    visible: ${OPEN_THIS_LEAD}
+    timeout: 15000
+- eraseText: 20
+- inputText: ${NOBODY}
+- extendedWaitUntil:
+    visible: ${SEARCH_NONE_BODY}
+    timeout: 15000
+# Return closes the keyboard first: while it is up, the next tap is spent closing it.
+- pressKey: Enter
+- tapOn: ${SEARCH_CANCEL}
+- assertNotVisible: ${SEARCH_NONE_BODY}

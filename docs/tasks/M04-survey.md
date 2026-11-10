@@ -236,6 +236,7 @@ This file covers module M04 — Survey: the two survey modes and the mode decisi
 
 - **F4-25** (P0) — **The version-kept notice.** When a revisit creates a new survey version, the product tells the user what just happened in one line — the source's wording is **"v2 — v1 kept"** — shown at the moment of the revisit and carried on the record afterwards, with the earlier version reachable from it. The notice exists because `F4-14`'s guarantee is worthless if the person on the roof does not know it held: the fear it removes is *"have I just overwritten what I did last month?"*
 **DONE WHEN:**
+- Given a site visit booked from a lead in block 3, when the survey module's visit is created for it, then the visit references the booking that opened it (M02-46) (moved from the block 3 CRM plan, owner yes 2026-11-09).
 
 - Given a lead with a confirmed address, when a survey is started, then both modes are offered and the mode applicable to that lead's segment is stated with its rule (M04-01, M04-05).
 - Given a site with a submitted survey, when a revisit is captured and submitted, then a new version exists, the earlier version is readable and unchanged, and the version-kept notice was shown (M04-57).

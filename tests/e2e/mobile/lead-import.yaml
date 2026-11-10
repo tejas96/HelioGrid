@@ -1,0 +1,20 @@
+# Lead import (`SCR-M02-05`, `M02-18`): the wizard opens on its first step — the four steps named,
+# each under its own bar, none drawn over another — the picker for the old spreadsheet and the
+# promise that nothing is imported until Import — and its
+# way back returns to the Leads list. Maestro cannot hand the system's document picker a file, so
+# the columns, the preview and the run are proven by the web flow and on the running phone, as the
+# catalog's import is.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://leads/import
+- extendedWaitUntil:
+    visible: ${IMPORT_CHOOSE}
+    timeout: 15000
+- assertVisible: ${IMPORT_TITLE}
+- assertVisible: ${IMPORT_STEP_UPLOAD}
+- assertVisible: ${IMPORT_STEP_MAP}
+- assertVisible: ${IMPORT_UNTOUCHED}
+- tapOn: ${IMPORT_BACK}
+- extendedWaitUntil:
+    visible: ${LEADS_PIPELINE_HINT}
+    timeout: 15000

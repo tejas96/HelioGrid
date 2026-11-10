@@ -6,11 +6,11 @@ import type {
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, asc, eq, inArray, or, sql } from 'drizzle-orm';
+import { inBatches } from '../../common/db/in-batches';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import {
   asShown,
   countsIn,
-  inBatches,
   lockedJob,
   type PreviewRow,
   previewColumns,

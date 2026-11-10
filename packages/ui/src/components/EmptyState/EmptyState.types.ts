@@ -1,5 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
+import type { FocusAfter } from '../../primitives/FocusAfter';
 import type { LottieMomentName } from '../LottieMoment/LottieMoment.types';
 
 /**
@@ -23,4 +24,24 @@ export interface EmptyStateProps {
   action?: ReactNode;
   /** soft brand glow bloom behind the icon (default on) */
   glow?: boolean;
+  /**
+   * Where the block sits: `center` on a page of its own (the default); `start` in a list, where the
+   * rows it stands for would begin — a list's empty block is left-aligned.
+   */
+  align?: EmptyStateAlign;
+}
+
+export type EmptyStateAlign = 'center' | 'start';
+
+/**
+ * **A read that failed**, in place of what it could not read: the warning mark, what happened and
+ * the one *Try again* (`RetryButton`). The retry leaves with the failure, so focus moves to
+ * `focusAfter` — the frame that stays while the read is out again.
+ */
+export interface FailedReadProps {
+  title: TranslatedText;
+  message: TranslatedText;
+  retryLabel: TranslatedText;
+  onRetry: () => void;
+  focusAfter: FocusAfter;
 }

@@ -3,8 +3,8 @@ import { StyleSheet, View } from 'react-native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
-import { raisedCard } from '../CatalogImport/CatalogImport.surfaces.native';
 import { HueTile } from '../HueTile/HueTile.native';
+import { raisedCard } from '../Import/Import.surfaces.native';
 import type { SheetAcceleratorProps } from './CatalogItemForm.parts.types';
 
 /**

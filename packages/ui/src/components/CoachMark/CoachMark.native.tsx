@@ -1,10 +1,10 @@
 import { theme } from '@heliogrid/theme';
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 import { AccessibilityInfo, Dimensions, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { closingPress } from '../../primitives/FocusAfter';
-import { Portal } from '../../primitives/Portal/Portal.native';
+import { Portal, useCoveredByLaterLayer } from '../../primitives/Portal/Portal.native';
 import { Text } from '../../primitives/Text/Text.native';
 import type { CoachMarkProps } from './CoachMark.types';
 import { MAX_STEPS } from './CoachMark.types';
@@ -86,45 +86,55 @@ export function CoachMark({
 
   return (
     <Portal>
-      {ring && rect !== null ? <CoachMarkRing rect={rect} padding={padding} /> : null}
-      {/* `role="group"`, which is exactly what the web half carries — and deliberately NOT a
+      <YieldsToLaterLayers>
+        {ring && rect !== null ? <CoachMarkRing rect={rect} padding={padding} /> : null}
+        {/* `role="group"`, which is exactly what the web half carries — and deliberately NOT a
           dialog: this is guidance over a live screen, it traps nothing and the screen underneath
           stays usable (M01-16, MS1-08). A role, never `accessible`: Dismiss and Next are 44dp
           controls inside this card and folding would put both out of reach. */}
-      <View
-        role="group"
-        accessibilityLabel={coachMarkName(title, counter)}
-        onLayout={onLayout}
-        style={[
-          styles.card,
-          { width },
-          placed === null ? styles.parked : { top: placed.top, left: placed.left },
-          style,
-        ]}
-      >
-        {placed === null ? null : <CoachMarkArrow placed={placed} />}
-        <CoachMarkHead
-          counter={counter}
-          title={title}
-          dismissLabel={dismissLabel}
-          onDismiss={closing(onDismiss)}
-        />
-        {body === undefined ? null : (
-          <Text variant="body-sm" color="secondary" style={styles.body}>
-            {body}
-          </Text>
-        )}
-        <CoachMarkFoot
-          steps={steps}
-          step={step}
-          isLast={isLast}
-          nextLabel={nextLabel}
-          onNext={isLast ? closing(onNext) : onNext}
-          onDismiss={closing(onDismiss)}
-        />
-      </View>
+        <View
+          role="group"
+          accessibilityLabel={coachMarkName(title, counter)}
+          onLayout={onLayout}
+          style={[
+            styles.card,
+            { width },
+            placed === null ? styles.parked : { top: placed.top, left: placed.left },
+            style,
+          ]}
+        >
+          {placed === null ? null : <CoachMarkArrow placed={placed} />}
+          <CoachMarkHead
+            counter={counter}
+            title={title}
+            dismissLabel={dismissLabel}
+            onDismiss={closing(onDismiss)}
+          />
+          {body === undefined ? null : (
+            <Text variant="body-sm" color="secondary" style={styles.body}>
+              {body}
+            </Text>
+          )}
+          <CoachMarkFoot
+            steps={steps}
+            step={step}
+            isLast={isLast}
+            nextLabel={nextLabel}
+            onNext={isLast ? closing(onNext) : onNext}
+            onDismiss={closing(onDismiss)}
+          />
+        </View>
+      </YieldsToLaterLayers>
     </Portal>
   );
+}
+
+/**
+ * The mark steps aside while a sheet, modal or menu opened after it is open, and returns when that
+ * layer closes: guidance over the screen never draws over the layer the person opened since.
+ */
+function YieldsToLaterLayers({ children }: { children: ReactNode }) {
+  return useCoveredByLaterLayer() ? null : children;
 }
 
 CoachMark.useCoachMarks = useCoachMarks;

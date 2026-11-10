@@ -17,6 +17,7 @@ export { readReleaseSnapshot } from './catalog/release';
 export { resolveCatalogItem } from './catalog/resolve';
 export { addOnVerdict, overageAddOns } from './commerce/overage-amounts';
 export { PREVIEW_CONTRACT_VALUE, previewTrancheAmounts } from './commerce/tranche-preview';
+export { judgeLeadImportRows, readLeadImportRow } from './crm/lead-import-rows';
 export { applyRate } from './money/basis-points';
 export { reconcileMinorUnits, resolvePayable } from './money/equation';
 export {

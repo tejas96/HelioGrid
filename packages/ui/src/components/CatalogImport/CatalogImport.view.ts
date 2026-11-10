@@ -1,11 +1,15 @@
-import type { CatalogImportRowWire, CatalogImportWire } from '@heliogrid/contracts';
+import type { CatalogImportRowWire, CatalogImportWire, TranslatedText } from '@heliogrid/contracts';
 import {
+  CATALOG_IMPORT_FIELDS,
   type CatalogImportField,
   type CatalogImportMapping,
+  type ImportColumnViews,
+  importColumnViews,
   importReadyCount,
   mappingForHeader,
 } from '@heliogrid/domain';
-import { type ImportCardView, type ImportFormats, listRowOf } from './CatalogImport.logic';
+import type { ImportFormats } from '../Import/Import.types';
+import { type ImportCardView, listRowOf } from './CatalogImport.logic';
 import type {
   CatalogImportProps,
   CatalogImportWords,
@@ -109,56 +113,20 @@ export function groupsInScope(
   return held.filter((group) => ids.includes(group.id));
 }
 
-/** One column of the mapping step: the file's own header and the field it fills now. */
-export interface ImportColumnView {
-  readonly column: number;
-  readonly header: string;
-  readonly field: CatalogImportField | null;
-}
-
 /**
- * The columns step's two sections: the columns the device's guess could not place, above the ones
- * it matched. A column stays in its section while the person changes it, so nothing jumps.
+ * The columns step's two sections, by the catalog's guess for the header row: the columns it could
+ * not place, above the ones it matched.
  */
 export function columnsOf(
   job: CatalogImportWire | null,
   mapping: CatalogImportMapping | null,
-): { readonly open: readonly ImportColumnView[]; readonly matched: readonly ImportColumnView[] } {
-  const sheets = job?.sheets ?? [];
-  if (mapping === null || sheets.length === 0) return { open: [], matched: [] };
-  const sheet = sheets[mapping.sheet];
-  const top = sheet?.topRows[mapping.headerRow] ?? [];
-  const guess = mappingForHeader(sheets, mapping.sheet, mapping.headerRow).columns;
-  const columns: ImportColumnView[] = Array.from(
-    { length: sheet?.columnCount ?? 0 },
-    (_, column) => ({
-      column,
-      header: top[column] ?? '',
-      field: mapping.columns[column] ?? null,
-    }),
-  );
-  return {
-    open: columns.filter((view) => (guess[view.column] ?? null) === null),
-    matched: columns.filter((view) => (guess[view.column] ?? null) !== null),
-  };
+): ImportColumnViews<CatalogImportField> {
+  return importColumnViews(job?.sheets ?? null, mapping, mappingForHeader);
 }
 
-/** One cell of the header row: a file may repeat a header, so each cell keeps its column. */
-export interface ImportHeaderCell {
-  readonly column: number;
-  readonly text: string;
-}
-
-/** The cells of the header row the step reads, for *Row N reads*. */
-export function headerCellsOf(
-  job: CatalogImportWire | null,
-  mapping: CatalogImportMapping | null,
-): readonly ImportHeaderCell[] {
-  if (job === null || mapping === null) return [];
-  const sheet = job.sheets?.[mapping.sheet];
-  const row = sheet?.topRows[mapping.headerRow] ?? [];
-  return Array.from({ length: sheet?.columnCount ?? 0 }, (_, column) => ({
-    column,
-    text: row[column] ?? '',
-  }));
+/** The catalog's fields as the columns step's choice lists them, each with its word. */
+export function columnFieldsOf(
+  words: CatalogImportWords,
+): readonly { readonly value: CatalogImportField; readonly label: TranslatedText }[] {
+  return CATALOG_IMPORT_FIELDS.map((field) => ({ value: field, label: words.fields[field] }));
 }

@@ -8,7 +8,7 @@ interface WebEmptyStateProps extends EmptyStateProps {
   style?: CSSProperties;
 }
 
-/** Centred empty state with a soft brand-glow bloom behind a large circular icon container. */
+/** Empty state with a soft brand-glow bloom behind a large circular icon container. */
 export function EmptyState({
   icon,
   moment,
@@ -16,11 +16,12 @@ export function EmptyState({
   description,
   action,
   glow = true,
+  align = 'center',
   className,
   style,
 }: WebEmptyStateProps) {
   return (
-    <div className={classNames('hg-empty-state', className)} style={style}>
+    <div className={classNames('hg-empty-state', className)} data-align={align} style={style}>
       <div className="hg-empty-state-art">
         {glow ? <span className="hg-empty-state-glow" /> : null}
         {/* No glyph, no circle. `F7-19` forbids inventing imagery, so a caller with no honest icon

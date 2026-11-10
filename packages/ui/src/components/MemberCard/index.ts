@@ -6,4 +6,5 @@ export { MemberListHead } from './MemberListHead';
 export { MemberPerson } from './MemberPerson';
 export { MemberRow } from './MemberRow';
 export { MemberRowsLoading } from './MemberRowsLoading';
+export { TeamActConfirm } from './TeamActConfirm';
 export { TeamConfirm } from './TeamConfirm';

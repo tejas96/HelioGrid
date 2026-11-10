@@ -28,7 +28,7 @@ import { GrievanceNote } from './components/GrievanceNote';
 import { HomeToday } from './components/HomeToday';
 import { ShellFrame } from './components/ShellFrame';
 import { ShellTopBar } from './components/ShellTopBar';
-import { VERB_ROUTE } from './doors';
+import { doorRoute } from './doors';
 import { switcherWidth } from './styles';
 import { usePillItems } from './use-pill-items';
 
@@ -96,7 +96,7 @@ export function ShellScreen() {
                   size="prominent"
                   fullWidth
                   icon={<ShellGlyph name="plus" size="md" tone="inverse" />}
-                  onClick={() => navigation.navigate(VERB_ROUTE[verb])}
+                  onClick={() => navigation.navigate(doorRoute[verb])}
                 >
                   {verbLabel(t, verb)}
                 </Button>

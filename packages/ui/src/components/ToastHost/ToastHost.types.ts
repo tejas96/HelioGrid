@@ -15,6 +15,12 @@ export interface ToastItem {
   moment?: LottieMomentName;
   action?: ReactNode;
   /**
+   * The toast's one way on — *Open* the record it names — drawn as a small secondary button: a
+   * press closes the toast, on a host given `onDismiss`, then calls `onAct`, which goes elsewhere.
+   * Takes the place of `action`.
+   */
+  act?: { label: TranslatedText; onAct: () => void };
+  /**
    * The toast's own way back — *Undo*, drawn as a quiet small button, only on a host given
    * `onDismiss`: a press closes the toast first, so it runs once, then calls `onUndo`, which also
    * says where the keyboard goes next — the pressed button is gone. Takes the place of `action`.

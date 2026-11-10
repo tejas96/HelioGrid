@@ -1,4 +1,9 @@
-import { AUDIT_ACTOR_KINDS, AUDIT_EVENT_TYPES, SUBJECT_KINDS } from '@heliogrid/domain';
+import {
+  AUDIT_ACTOR_KINDS,
+  AUDIT_EVENT_TYPES,
+  MERGE_FIELDS,
+  SUBJECT_KINDS,
+} from '@heliogrid/domain';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 import {
@@ -8,6 +13,7 @@ import {
   rolePresetSchema,
   uuidSchema,
 } from './common';
+import { mergeSideSchema } from './crm/merge';
 import { unauthenticatedEnvelope } from './error';
 
 const c = initContract();
@@ -26,9 +32,9 @@ export const auditActorKindSchema = z.enum(AUDIT_ACTOR_KINDS);
 export type AuditActorKind = z.infer<typeof auditActorKindSchema>;
 
 /**
- * The change one entry records, old → new (`F2-22`): the presets a person held before and after.
- * An act that changes nothing beyond what its own event name says carries null, and a slice
- * whose event changes something else widens this into a union discriminated on the event type.
+ * The change one entry records (`F2-22`), its shape named by the event type: the presets a person
+ * held before and after a role change, what a customer merge folded in, or why a duplicate was
+ * kept. An act that changes nothing beyond what its own event name says carries null.
  */
 export const auditRoleSetChangeSchema = z.object({
   from: z.array(rolePresetSchema),
@@ -36,7 +42,23 @@ export const auditRoleSetChangeSchema = z.object({
 });
 export type AuditRoleSetChange = z.infer<typeof auditRoleSetChangeSchema>;
 
-export const auditChangePayloadSchema = auditRoleSetChangeSchema.nullable();
+/** `crm.customers_merged` (`M02-61`): the customer merged away and the side each field was taken from. */
+export const auditCustomerMergeSchema = z.object({
+  mergedId: uuidSchema,
+  choices: z.array(z.object({ field: extensibleEnum(MERGE_FIELDS), kept: mergeSideSchema })),
+});
+export type AuditCustomerMerge = z.infer<typeof auditCustomerMergeSchema>;
+
+/** `crm.duplicate_kept` (`M02-12`): the reason given, and the customer the new one was kept beside. */
+export const auditDuplicateKeptSchema = z.object({
+  reason: z.string(),
+  keptBesideId: uuidSchema,
+});
+export type AuditDuplicateKept = z.infer<typeof auditDuplicateKeptSchema>;
+
+export const auditChangePayloadSchema = z
+  .union([auditRoleSetChangeSchema, auditCustomerMergeSchema, auditDuplicateKeptSchema])
+  .nullable();
 export type AuditChangePayload = z.infer<typeof auditChangePayloadSchema>;
 
 /**

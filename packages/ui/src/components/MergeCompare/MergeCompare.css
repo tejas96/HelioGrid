@@ -1,0 +1,211 @@
+/* MergeCompare — Customer Merge's parts (`SCR-M02-06`): the compare (which record stays, a pick
+   per differing field), what moves, and the calm done. The compare sizes itself from its own room:
+   given two records' width, every row is one shared grid — label, record A, record B — so each
+   record's values stand under its card. */
+
+.hg-merge-compare {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-merge-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-merge-over {
+  font-family: var(--font-sans);
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-overline);
+  line-height: var(--lh-overline);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.hg-merge-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.hg-merge-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-2);
+}
+
+.hg-merge-fields-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding-inline: var(--sp-1);
+}
+
+.hg-merge-count {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* A record and a value are one choice each: the control fill, the accent ring once chosen. */
+.hg-merge-record,
+.hg-merge-option {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  min-width: 0;
+  padding: var(--sp-3);
+  border-radius: var(--r-tile);
+  background: var(--hg-control-fill);
+  text-align: start;
+  transition:
+    background var(--dur-micro) var(--ease-standard),
+    transform var(--dur-micro) var(--ease-standard);
+}
+
+.hg-merge-record[aria-checked="true"],
+.hg-merge-option[aria-checked="true"] {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.hg-merge-record:not(:disabled):hover,
+.hg-merge-option:not(:disabled):hover {
+  background: var(--fill-hover);
+}
+
+.hg-merge-record:not(:disabled):active,
+.hg-merge-option:not(:disabled):active {
+  transform: scale(0.985);
+}
+
+.hg-merge-record:focus-visible,
+.hg-merge-option:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-merge-record > .hg-shell-glyph,
+.hg-merge-option > .hg-shell-glyph {
+  flex-shrink: 0;
+}
+
+.hg-merge-record-words,
+.hg-merge-option-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.hg-merge-record-name,
+.hg-merge-value {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-merge-record-line {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--sp-2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-merge-mono {
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.hg-merge-option-from {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-merge-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.hg-merge-label-words,
+.hg-merge-picked {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-body-sm);
+  color: var(--text-primary);
+}
+
+.hg-merge-picked {
+  font-weight: var(--fw-medium);
+  color: var(--success-text);
+}
+
+.hg-merge-note,
+.hg-merge-same {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-merge-same {
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--line-soft);
+}
+
+/* Two records' width: label, record A, record B — the same three columns on every row. Written
+   raw: `@container` cannot read a custom property. */
+@container (min-width: 640px) {
+  .hg-merge-row {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 2fr);
+    column-gap: var(--sp-4);
+    align-items: start;
+  }
+
+  .hg-merge-pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--sp-4);
+  }
+
+  .hg-merge-label {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: var(--sp-3);
+  }
+
+  .hg-merge-note {
+    grid-column: 2;
+  }
+}

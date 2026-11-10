@@ -1,0 +1,29 @@
+# Lead detail (`SCR-M02-04`, `M02-32`, `M02-39`): the lead the api made for this company opens at
+# its address, as a notice opens it; the hero names it, Call and the four acts sit under it, and a
+# roof answer saves the moment it is tapped — no form, no submit — then the Timeline tab is there.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://leads/${LEAD_ID}
+- extendedWaitUntil:
+    visible: ${LEAD_NAME}
+    timeout: 15000
+- scrollUntilVisible:
+    element: ${CALL}
+    direction: DOWN
+- assertVisible: ${MESSAGE_SHORT}
+- assertVisible: ${LOG_SHORT}
+- assertVisible: ${VISIT_SHORT}
+- assertVisible: ${DESIGN_SHORT}
+# One answer saves alone: its chip is chosen at once and the Saved mark follows the server's answer.
+- scrollUntilVisible:
+    element: ${ROOF_OWNED}
+    direction: DOWN
+- assertVisible: ${ROOF}
+- tapOn: ${ROOF_OWNED}
+- extendedWaitUntil:
+    visible: ${ANSWER_SAVED}
+    timeout: 15000
+- scrollUntilVisible:
+    element: ${TIMELINE_TAB}
+    direction: DOWN
+- tapOn: ${BACK_TO_LIST}

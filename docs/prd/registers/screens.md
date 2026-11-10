@@ -71,8 +71,8 @@ only, and git holds what shipped.
 | SCR-M02-01 | **Quick Add Lead** | P0 | 9 | V1 | — |
 | SCR-M02-02 | **Lead Inbox** | P0 | 8 | V1 | — |
 | SCR-M02-03 | **Leads List** | P0 | 3 | V1 | — |
-| SCR-M02-04 | **Lead Detail** | P0 | 22 | V1 | `M06-proposals:shell-lead-detail`; `M09-field-workforce:shell-lead-detail`; `M03-marketing:shell-lead-consent-trail`; `M06-proposals:shell-customer-record` |
-| SCR-M02-05 | **Lead Import Wizard** | P0 | 8 | V1 | — |
+| SCR-M02-04 | **Lead Detail** | P0 | 21 | V1 | `M06-proposals:shell-lead-detail`; `M09-field-workforce:shell-lead-detail`; `M03-marketing:shell-lead-consent-trail`; `M06-proposals:shell-customer-record` |
+| SCR-M02-05 | **Lead Import Wizard** | P0 | 6 | V1 | — |
 | SCR-M02-06 | **Customer Merge** | P0 | 3 | V1 | — |
 
 ### M03 · Marketing
@@ -471,10 +471,10 @@ document is deleted leaves this register with it.
 | ~~F4-13~~ | — | **excluded** | — | — |
 | F4-14 | P0 | policy | policy | T-M04-015 |
 | F4-15 | P0 | policy | policy | realized-by: the 3D Design Studio, rebuilt from scratch — no PRD or task yet |
-| F4-16 | P0 | policy | policy | T-M02-012 |
+| F4-16 | P0 | policy | policy | `T-M02-012`, shipped |
 | F4-17 | P0 | policy | policy | T-M04-015 |
 | ~~F4-18~~ | — | **excluded** | — | — |
-| F4-19 | P0 | policy | policy | T-M02-012 |
+| F4-19 | P0 | policy | policy | `T-M02-012`, shipped |
 | ~~F4-20~~ | — | **excluded** | — | — |
 | F4-21 | P0 | mixed | SCR-M04-07 · +non-UI: validation-failure preservation; photo hold-and-upload | `T-M04-017` |
 | ~~F4-22~~ | — | **excluded** | — | — |
@@ -595,22 +595,22 @@ document is deleted leaves this register with it.
 | F6-07 | P0 | policy | policy | shipped |
 | F6-08 | P0 | policy | policy | shipped |
 | F6-09 | P0 | policy | policy | shipped |
-| F6-10 | P0 | policy | policy | T-FPLAT-066 |
+| F6-10 | P0 | policy | policy | `T-FPLAT-066`, shipped |
 | F6-11 | P0 | policy | policy | shipped |
 | F6-12 | P1 | screen | SCR-SHELL-03 | shipped |
 | F6-13 | P0 | policy | policy | shipped |
 | F6-14 | P1 | policy | policy | shipped |
 | F6-15 | P2 | mixed | SCR-M01-11 · +non-UI: in-app record always lands; owner billing/compliance push never… | shipped |
-| F6-16 | P0 | policy | policy | T-FPLAT-066 |
+| F6-16 | P0 | policy | policy | `T-FPLAT-066`, shipped |
 | F6-17 | P0 | screen | SCR-SHELL-03 | shipped |
 | ~~F6-18~~ | — | **excluded** | — | — |
 | F6-19 | P2 | mixed | SCR-SHELL-03 · +non-UI: bounded retention horizon; underlying facts persist on record… | shipped |
-| F6-20 | P0 | screen | SCR-SHELL-02 | T-SHELL-002 |
-| F6-21 | P0 | policy | policy | T-FPLAT-020 |
-| F6-22 | P0 | engine | engine | T-FPLAT-020 |
-| F6-23 | P0 | mixed | SCR-SHELL-02 · +non-UI: junk leads leave every queue and list but are never deleted | T-FPLAT-020, T-SHELL-002 |
-| F6-24 | P0 | policy | policy | T-FPLAT-020 |
-| F6-25 | P1 | policy | policy | T-FPLAT-020 |
+| F6-20 | P0 | screen | SCR-SHELL-02 | `T-SHELL-002`, shipped |
+| F6-21 | P0 | policy | policy | `T-FPLAT-020`, shipped |
+| F6-22 | P0 | engine | engine | `T-FPLAT-020`, shipped |
+| F6-23 | P0 | mixed | SCR-SHELL-02 · +non-UI: junk leads leave every queue and list but are never deleted | `T-FPLAT-020`, `T-SHELL-002`, shipped |
+| F6-24 | P0 | policy | policy | `T-FPLAT-020`, shipped |
+| F6-25 | P1 | policy | policy | `T-FPLAT-020`, shipped |
 | F6-26 | P0 | policy | policy | shipped |
 | F6-27 | P0 | policy | policy | shipped |
 
@@ -781,73 +781,73 @@ document is deleted leaves this register with it.
 
 | Row | Tier | Type | Where | Task |
 |---|---|---|---|---|
-| M02-01 | P0 | screen | SCR-M02-01 | T-M02-001 |
-| M02-02 | P0 | policy | policy | T-M02-007 |
-| M02-03 | P0 | mixed | SCR-M02-01, SCR-M02-04 · +non-UI: nothing rejected for incompleteness, nothing invented to fill gaps | T-M02-001 |
+| M02-01 | P0 | screen | SCR-M02-01 | `T-M02-001`, shipped |
+| M02-02 | P0 | policy | policy | `T-M02-007`, shipped |
+| M02-03 | P0 | mixed | SCR-M02-01, SCR-M02-04 · +non-UI: nothing rejected for incompleteness, nothing invented to fill gaps | `T-M02-001`, shipped |
 | ~~M02-04~~ | — | **excluded** | — | — |
-| M02-05 | P0 | mixed | SCR-M02-01 · +non-UI: segment rides the lead to its proposal, never re-asked | T-M02-001 |
+| M02-05 | P0 | mixed | SCR-M02-01 · +non-UI: segment rides the lead to its proposal, never re-asked | `T-M02-001`, shipped |
 | M02-06 | P0 | screen | SCR-M02-01, SCR-SHELL-01 | `T-M02-001`, shipped |
-| M02-07 | P0 | policy | policy | T-M02-008 |
-| M02-08 | P0 | screen | SCR-M02-01, SCR-M02-05, SCR-M02-04 | T-M02-008 |
-| M02-09 | P0 | mixed | SCR-M02-01, SCR-M02-05, SCR-M02-04 · +non-UI: exactly three choices, no silent default; dismissing creates nothing | T-M02-008 |
-| M02-10 | P0 | policy | policy | T-M02-008 |
-| M02-11 | P0 | mixed | SCR-M02-01, SCR-M02-05 · +non-UI: appends enquiry activity, notifies owner, changes no stage or owner | T-M02-008 |
-| M02-12 | P0 | mixed | SCR-M02-01, SCR-M02-05 · +non-UI: mandatory reason audited on both timelines; records cross-linked for… | T-M02-008 |
-| M02-13 | P0 | mixed | SCR-M02-02, SCR-M02-03 · +non-UI: closed v1 source enum; source set by path, immutable | T-M02-009 |
-| M02-14 | P0 | policy | policy | T-M02-009 |
-| M02-15 | P0 | policy | policy | T-M02-010 |
-| M02-16 | P0 | mixed | SCR-M02-04 · +non-UI: bidirectional referral link; credits ledger spec-locked out of v1 | T-M02-009 |
-| M02-17 | P0 | mixed | SCR-M01-22 · +non-UI: D13 deferral; M03 supersedes as brief scope, feeds this inbox | T-M02-017 |
-| M02-18 | P0 | screen | SCR-M02-05 | T-M02-005 |
-| M02-19 | P0 | screen | SCR-M02-05 | T-M02-005 |
-| M02-20 | P0 | mixed | SCR-M02-05 · +non-UI: skip is default; create-anyway needs audited reason per row | T-M02-005 |
-| M02-21 | P0 | mixed | SCR-M02-05 · +non-UI: async background job; landed rows never rolled back on partial… | T-M02-005 |
+| M02-07 | P0 | policy | policy | `T-M02-008`, shipped |
+| M02-08 | P0 | screen | SCR-M02-01, SCR-M02-05, SCR-M02-04 | `T-M02-008`, shipped |
+| M02-09 | P0 | mixed | SCR-M02-01, SCR-M02-04 · +non-UI: exactly three choices, no silent default; dismissing creates nothing | `T-M02-008`, shipped |
+| M02-10 | P0 | policy | policy | `T-M02-008`, shipped |
+| M02-11 | P0 | mixed | SCR-M02-01, SCR-M02-05 · +non-UI: appends enquiry activity, notifies owner, changes no stage or owner | `T-M02-008`, shipped |
+| M02-12 | P0 | mixed | SCR-M02-01 · +non-UI: mandatory reason audited on both timelines; records cross-linked for… | `T-M02-008`, shipped |
+| M02-13 | P0 | mixed | SCR-M02-02, SCR-M02-03 · +non-UI: closed v1 source enum; source set by path, immutable | `T-M02-009`, shipped |
+| M02-14 | P0 | policy | policy | voice — postponed |
+| M02-15 | P0 | policy | policy | `T-M02-010`, shipped |
+| M02-16 | P0 | mixed | SCR-M02-04 · +non-UI: bidirectional referral link; credits ledger spec-locked out of v1 | `T-M02-009`, shipped |
+| M02-17 | P0 | mixed | SCR-M01-22 · +non-UI: D13 deferral; M03 supersedes as brief scope, feeds this inbox | T-M01-022 |
+| M02-18 | P0 | screen | SCR-M02-05 | `T-M02-005`, shipped |
+| M02-19 | P0 | screen | SCR-M02-05 | `T-M02-005`, shipped |
+| M02-20 | P0 | mixed | SCR-M02-05 · +non-UI: skip is default; log as enquiry the other; import never creates a duplicate | `T-M02-005`, shipped |
+| M02-21 | P0 | mixed | SCR-M02-05 · +non-UI: async background job; landed rows never rolled back on partial… | `T-M02-005`, shipped |
 | ~~M02-22~~ | — | **excluded** | — | — |
-| M02-23 | P0 | screen | SCR-M02-02 | T-M02-002 |
-| M02-24 | P0 | screen | SCR-M02-02 | T-M02-002 |
-| M02-25 | P1 | screen | SCR-M02-02 | T-M02-002 |
+| M02-23 | P0 | screen | SCR-M02-02 | `T-M02-002`, shipped |
+| M02-24 | P0 | screen | SCR-M02-02 | `T-M02-002`, shipped |
+| M02-25 | P1 | screen | SCR-M02-02 | `T-M02-002`, shipped |
 | ~~M02-26~~ | — | **excluded** | — | — |
 | M02-27 | P0 | policy | policy | LAW |
-| M02-28 | P0 | screen | SCR-M02-02, SCR-M02-04 | T-M02-002 |
-| M02-29 | P0 | screen | SCR-M02-02, SCR-M02-04 | T-M02-002 |
-| M02-30 | P0 | policy | policy | T-M02-011 |
-| M02-31 | P0 | policy | policy | T-M02-011 |
-| M02-32 | P0 | screen | SCR-M02-04 | T-M02-004 |
-| M02-33 | P0 | mixed | SCR-M02-04 · +non-UI: connected WhatsApp/SMS transactional send with honest delivery… | T-M02-013 |
-| M02-34 | P0 | mixed | SCR-M02-04 · +non-UI: contact numbers participate in dedupe; exactly one primary… | T-M02-004 |
-| M02-35 | P0 | mixed | SCR-M02-04 · +non-UI: append-only law; every module writes; nothing edits or deletes | T-M02-012 |
-| M02-36 | P0 | policy | policy | T-M02-012 |
-| M02-37 | P0 | mixed | SCR-M02-04 · +non-UI: M07 gate reads one row per dial; stop-calling irreversible; M03… | T-M02-007 |
+| M02-28 | P0 | screen | SCR-M02-02, SCR-M02-04 | `T-M02-002`, shipped |
+| M02-29 | P0 | screen | SCR-M02-02, SCR-M02-04 | `T-M02-002`, shipped |
+| M02-30 | P0 | policy | policy | `T-M02-011`, shipped |
+| M02-31 | P0 | policy | policy | `T-M02-011`, shipped |
+| M02-32 | P0 | screen | SCR-M02-04 | `T-M02-004`, shipped |
+| M02-33 | P0 | mixed | SCR-M02-04 · +non-UI: connected WhatsApp/SMS transactional send with honest delivery… | `T-M02-013`, shipped |
+| M02-34 | P0 | mixed | SCR-M02-04 · +non-UI: contact numbers participate in dedupe; exactly one primary… | `T-M02-004`, shipped |
+| M02-35 | P0 | mixed | SCR-M02-04 · +non-UI: append-only law; every module writes; nothing edits or deletes | `T-M02-012`, shipped |
+| M02-36 | P0 | policy | policy | `T-M02-012`, shipped |
+| M02-37 | P0 | mixed | SCR-M02-04 · +non-UI: M07 gate reads one row per dial; stop-calling irreversible; M03… | `T-M02-007`, shipped |
 | M02-38 | P1 | policy | policy | LAW |
-| M02-39 | P0 | screen | SCR-M02-04 | T-M02-004 |
-| M02-40 | P0 | screen | SCR-M02-03 | T-M02-003 |
-| M02-41 | P0 | policy | policy | T-M02-015 |
-| M02-42 | P0 | mixed | SCR-M02-04 · +non-UI: closed six-reason vocabulary, mandatory; feeds win/loss analytics | T-M02-004 |
-| M02-43 | P0 | policy | policy | T-M02-010 |
-| M02-44 | P0 | policy | policy | T-M02-010 |
+| M02-39 | P0 | screen | SCR-M02-04 | `T-M02-004`, shipped |
+| M02-40 | P0 | screen | SCR-M02-03 | `T-M02-003`, shipped |
+| M02-41 | P0 | policy | policy | `T-M02-015`, shipped |
+| M02-42 | P0 | mixed | SCR-M02-04 · +non-UI: closed six-reason vocabulary, mandatory; feeds win/loss analytics | `T-M02-004`, shipped |
+| M02-43 | P0 | policy | policy | `T-M02-010`, shipped |
+| M02-44 | P0 | policy | policy | `T-M02-010`, shipped |
 | M02-45 | P1 | context | context → ['M02-42', 'M02-34'] | realized-by: M02-42, M02-34 |
-| M02-46 | P0 | mixed | SCR-M02-04 · +non-UI: creates the visit object M04 owns from that moment | T-M02-014 |
-| M02-47 | P0 | mixed | SCR-M02-04 · +non-UI: transactional-channel auto-send with honest delivery; copy-paste… | T-M02-013 |
-| M02-48 | P1 | mixed | SCR-M02-04 · +non-UI: exactly one reminder per visit; no surface may generate a second | T-M02-013 |
-| M02-49 | P0 | policy | policy | T-M02-015 |
-| M02-50 | P0 | mixed | SCR-M02-02 · +non-UI: 24h-unassigned timer escalates to owner via notification; state… | T-M02-015 |
-| M02-51 | P0 | mixed | SCR-M02-04 · +non-UI: hidden from My Day; 09:00 wake creates follow-up task | T-M02-015 |
-| M02-52 | P0 | mixed | SCR-M02-03 · +non-UI: nightly sweep flags after thirty inactive days; any activity… | T-M02-015 |
-| M02-53 | P0 | policy | policy | T-M02-015 |
-| M02-54 | P0 | policy | policy | T-M02-015 |
-| M02-55 | P0 | policy | policy | T-M02-015 |
-| M02-56 | P0 | policy | policy | T-M02-015 |
-| M02-57 | P0 | policy | policy | T-M02-015 |
-| M02-58 | P0 | policy | policy | T-M02-015 |
-| M02-59 | P0 | screen | SCR-M02-06 | T-M02-006 |
-| M02-60 | P0 | mixed | SCR-M02-06 · +non-UI: re-points every reference to survivor; loser becomes tombstone, never  | T-M02-016 |
-| M02-61 | P0 | policy | policy | T-M02-016 |
-| M02-62 | P0 | policy | policy | T-M02-016 |
-| M02-63 | P0 | mixed | SCR-M02-06 · +non-UI: both records must be in actor's visibility scope; the merge completes on the server; no undo | T-M02-006 |
-| M02-64 | P0 | mixed | SCR-M01-22 · +non-UI: toggle governs new capture only; existing leads untouched; manual… | T-M02-017 |
-| M02-65 | P0 | screen | SCR-M01-22 | T-M02-017 |
-| M02-66 | P0 | mixed | SCR-M02-01, SCR-M02-04 · +non-UI: apply-time collision flags both records and cross-links them (`M02-12`); nothing ever merged automatically | T-M02-008 |
-| M02-67 | P0 | mixed | SCR-M02-02 · +non-UI: assign and mark-junk are server-completed; failure returns the lead to the queue naming the reason | T-M02-002 |
+| M02-46 | P0 | mixed | SCR-M02-04 · +non-UI: creates the visit object M04 owns from that moment | `T-M02-014`, shipped |
+| M02-47 | P0 | mixed | SCR-M02-04 · +non-UI: transactional-channel auto-send with honest delivery; copy-paste… | `T-M02-013`, shipped |
+| M02-48 | P1 | mixed | SCR-M02-04 · +non-UI: exactly one reminder per visit; no surface may generate a second | `T-M02-013`, shipped |
+| M02-49 | P0 | policy | policy | `T-M02-015`, shipped |
+| M02-50 | P0 | mixed | SCR-M02-02 · +non-UI: 24h-unassigned timer escalates to owner via notification; state… | `T-M02-015`, shipped |
+| M02-51 | P0 | mixed | SCR-M02-04 · +non-UI: hidden from My Day; 09:00 wake creates follow-up task | `T-M02-015`, shipped |
+| M02-52 | P0 | mixed | SCR-M02-03 · +non-UI: nightly sweep flags after thirty inactive days; any activity… | `T-M02-015`, shipped |
+| M02-53 | P0 | policy | policy | `T-M02-015`, shipped |
+| M02-54 | P0 | policy | policy | `T-M02-015`, shipped |
+| M02-55 | P0 | policy | policy | `T-M02-015`, shipped |
+| M02-56 | P0 | policy | policy | `T-M02-015`, shipped |
+| M02-57 | P0 | policy | policy | `T-M02-015`, shipped |
+| M02-58 | P0 | policy | policy | `T-M02-015`, shipped |
+| M02-59 | P0 | screen | SCR-M02-06 | `T-M02-006`, shipped |
+| M02-60 | P0 | mixed | SCR-M02-06 · +non-UI: re-points every reference to survivor; loser becomes tombstone, never  | `T-M02-016`, shipped |
+| M02-61 | P0 | policy | policy | `T-M02-016`, shipped |
+| M02-62 | P0 | policy | policy | `T-M02-016`, shipped |
+| M02-63 | P0 | mixed | SCR-M02-06 · +non-UI: both records must be in actor's visibility scope; the merge completes on the server; no undo | `T-M02-006`, shipped |
+| M02-64 | P0 | mixed | SCR-M01-22 · +non-UI: toggle governs new capture only; existing leads untouched; manual… | T-M01-022 |
+| M02-65 | P0 | screen | SCR-M01-22 | T-M01-022 |
+| M02-66 | P0 | mixed | SCR-M02-01 · +non-UI: the server takes same-number saves one at a time; the second meets the sheet; nothing ever merged automatically | `T-M02-008`, shipped |
+| M02-67 | P0 | mixed | SCR-M02-02 · +non-UI: assign and mark-junk are server-completed; failure returns the lead to the queue naming the reason | `T-M02-002`, shipped |
 
 ### docs/prd/modules/M03-marketing.md
 

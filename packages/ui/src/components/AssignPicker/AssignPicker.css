@@ -1,0 +1,64 @@
+/* AssignPicker — the one list of people a lead can go to (`M02-28`). Rows are ListRows; this
+   file draws only the load each row carries: the two counts and the bar of the person's share. */
+
+.hg-assign-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-assignee-load {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  width: 100%;
+}
+
+.hg-assignee-load-counts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--sp-3);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.hg-assignee-load-overdue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.hg-assignee-load-overdue[data-late="true"] {
+  font-weight: var(--fw-medium);
+  color: var(--warning-text);
+}
+
+.hg-assignee-load-bar {
+  display: block;
+  height: var(--sp-1);
+  overflow: hidden;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+  box-shadow: var(--track-edge);
+}
+
+/* The fill is the bar's full width, scaled from its start to the share: a transform, so it grows
+   once on mount without laying the row out again. */
+.hg-assignee-load-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transform-origin: left center;
+  transform: scaleX(var(--hg-assignee-load-share, 0));
+  animation: hg-assignee-load-grow var(--dur-data) var(--ease-enter) backwards;
+}
+
+@keyframes hg-assignee-load-grow {
+  from {
+    transform: scaleX(0);
+  }
+}

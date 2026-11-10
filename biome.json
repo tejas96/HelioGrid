@@ -509,6 +509,7 @@
         "!**/packages/ui/src/components/SolarSky/SkyMotion.native.tsx",
         "!**/packages/ui/src/components/SolarSky/SkyClouds.native.tsx",
         "!**/packages/ui/src/components/ProgressRing/ProgressRing.native.tsx",
+        "!**/packages/ui/src/components/TeamDock/TeamDockRing.native.tsx",
         "!**/packages/ui/src/components/ProgressBar/BrandGradientFill.native.tsx",
         "!**/packages/ui/src/components/SettingsList/SettingsList.native.tsx"
       ]

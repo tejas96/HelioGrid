@@ -12,20 +12,22 @@ import { BillingModule, BillingStateGuard } from './modules/billing/billing.publ
 import { BillingNoticeModule } from './modules/billing/billing-notice.public';
 import { InvoiceDocumentModule } from './modules/billing/invoice-document.public';
 import { CatalogModule } from './modules/catalog/catalog.public';
+import { CrmModule } from './modules/crm/crm.public';
 import { FileModule } from './modules/file/file.public';
 import { HealthModule } from './modules/health/health.public';
 import { InvitationModule } from './modules/invitation/invitation.public';
 import { MarketModule } from './modules/market/market.public';
 import { NotificationModule } from './modules/notification/notification.public';
+import { SearchModule } from './modules/search/search.public';
 import { SettingsModule } from './modules/settings/settings.public';
 import { TenantModule } from './modules/tenant/tenant.public';
 import { UserModule } from './modules/user/user.public';
 
 /**
  * Modular monolith root. One Nest module per bounded context (apps/api/CLAUDE.md) — health,
- * the market pack, auth, the audit log, tenant, user, invitation, settings and the catalog today; the
- * rest land with their slices: crm, survey, design, proposal, customer-link, projects, billing, agent,
- * notifications, admin.
+ * the market pack, auth, the audit log, tenant, user, invitation, settings, the catalog, the CRM and
+ * search today; the rest land with their slices: survey, design, proposal, customer-link, projects,
+ * agent, admin.
  *
  * The deny-by-default guard is bound HERE, as APP_GUARD, because this is the one module that
  * imports both `common/` (the guard) and the auth module (the `SessionResolver` it depends on);
@@ -51,6 +53,8 @@ import { UserModule } from './modules/user/user.public';
     NotificationModule,
     FileModule,
     CatalogModule,
+    CrmModule,
+    SearchModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: SessionGuard },

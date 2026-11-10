@@ -2,8 +2,8 @@ import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { GroundProvider } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { raisedCard } from '../CatalogImport/CatalogImport.surfaces.native';
 import { HueTile } from '../HueTile/HueTile.native';
+import { raisedCard } from '../Import/Import.surfaces.native';
 import type { ItemCardProps } from './CatalogItemForm.parts.types';
 
 /**

@@ -52,6 +52,7 @@ export {
 export type { ImportCurrency } from './import-cells';
 export type { CatalogImportCells, CatalogImportField, ColumnGuess } from './import-columns';
 export {
+  CATALOG_IMPORT_COLUMNS,
   CATALOG_IMPORT_FIELDS,
   guessColumns,
   guessHeaderRow,
@@ -114,6 +115,7 @@ export {
   importFixAct,
   importListStep,
   importReadyCount,
+  importStepGate,
   importWizardFrame,
   importWizardStepIndex,
   importWizardViewAfter,

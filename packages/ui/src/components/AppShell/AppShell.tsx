@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode, useEffect, useMemo, useRef } from 'react';
+import { type CSSProperties, Fragment, type ReactNode, useEffect, useMemo, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import type { AppShellProps } from './AppShell.types';
 import { BarScrollContext, createBarScroll } from './MobileTopBar.logic';
@@ -48,10 +48,7 @@ export function AppShell({
             className="hg-app-shell-main"
             onScroll={(event) => scroll.tell(event.currentTarget.scrollTop)}
           >
-            <PinnedTop>
-              {header}
-              {strip}
-            </PinnedTop>
+            <PinnedTop header={header} strip={strip} />
             {children}
           </main>
         </div>
@@ -60,13 +57,18 @@ export function AppShell({
   );
 }
 
-/** The pinned region: its frosted band rides the scroll's distance, as a bar's does. */
-function PinnedTop({ children }: { children: ReactNode }) {
+/**
+ * The pinned region: its frosted band rides the scroll's distance, as a bar's does. Each slot is
+ * keyed: the strip is made by the server's layout and may arrive still loading, and a keyless
+ * element of the server's in a list is warned about on every inside page.
+ */
+function PinnedTop({ header, strip }: { header: ReactNode; strip: ReactNode }) {
   const top = useRef<HTMLDivElement>(null);
   useBarFade(top);
   return (
     <div ref={top} className="hg-app-shell-top">
-      {children}
+      <Fragment key="header">{header}</Fragment>
+      <Fragment key="strip">{strip}</Fragment>
     </div>
   );
 }

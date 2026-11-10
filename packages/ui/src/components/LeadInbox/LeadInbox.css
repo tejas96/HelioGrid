@@ -1,0 +1,57 @@
+/* LeadInbox — the inbox's body (`SCR-M02-02`): the Up next head and the stage's grid of tiles.
+   The deck, the dock and each tile draw themselves. */
+
+.hg-lead-inbox-next {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-lead-inbox-next-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+  min-height: var(--touch-min);
+  padding-inline: var(--sp-1);
+}
+
+.hg-lead-inbox-over {
+  margin: 0;
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  letter-spacing: var(--tr-overline);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.hg-lead-inbox-grow {
+  flex: 1;
+}
+
+.hg-lead-inbox-column {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+.hg-lead-inbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--sp-24) * 2), 1fr));
+  gap: var(--sp-4);
+}
+
+.hg-lead-inbox-next > .hg-button {
+  align-self: center;
+}
+
+.hg-lead-inbox-note {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}

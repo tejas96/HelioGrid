@@ -1,0 +1,94 @@
+/* LeadContactsCard — who to reach on the lead (`M02-34`, `M02-37`): one tile of people split by
+   hairlines, each name with its role or primary mark and its number in mono, and two small tiles
+   for do-not-call and the preferred language under it. */
+
+.hg-lead-contacts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tile-gap);
+}
+
+.hg-lead-contacts-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.hg-lead-contacts-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.hg-lead-contacts-title {
+  font-family: var(--font-sans);
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-overline);
+  line-height: var(--lh-overline);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.hg-lead-contact {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.hg-lead-contact-words {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-lead-contact-name {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-lead-contact-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-lead-contact-phone {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-lead-contact-acts {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.hg-lead-contacts-failure {
+  margin: var(--sp-2) 0 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--danger-text);
+}
+
+/* The two calling facts side by side from where they fit, stacked below it. */
+.hg-lead-contacts-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--sp-24) * 2)), 1fr));
+  gap: var(--tile-gap);
+}

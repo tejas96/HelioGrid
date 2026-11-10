@@ -84,6 +84,23 @@ export const NOTIFICATION_REGISTRY: Record<NotificationType, NotificationRegistr
     channels: ['in_app', 'push'],
     urgency: 'standard',
   },
+  /** A lead was given to someone (`M02-31`); its subject is the lead, its recipient its new owner. */
+  lead_assigned: {
+    raisedBy: 'crm',
+    recipients: ['subject_owner'],
+    channels: ['in_app', 'push'],
+    urgency: 'standard',
+  },
+  /**
+   * A capture met an existing customer and was logged on their lead (`M02-11`), or a colleague who
+   * cannot see that lead asked its owner for it (`M02-08`); its subject is the existing lead.
+   */
+  lead_enquiry: {
+    raisedBy: 'crm',
+    recipients: ['subject_owner'],
+    channels: ['in_app'],
+    urgency: 'standard',
+  },
   /**
    * Someone signing up asked to be added to this company (`M01-09`); its subject is the asker's
    * account. Never an invitation: an invitation carries an inviter and a preset, a request has

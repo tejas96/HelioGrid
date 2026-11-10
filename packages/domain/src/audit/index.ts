@@ -1,6 +1,8 @@
 export type {
   AuditActorKind,
   AuditChangePayload,
+  AuditCustomerMerge,
+  AuditDuplicateKept,
   AuditEventType,
   AuditRoleSetChange,
 } from './events';

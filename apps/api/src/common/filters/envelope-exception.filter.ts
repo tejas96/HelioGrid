@@ -30,6 +30,8 @@ interface Envelope {
   message: string;
   details?: ErrorDetail[];
   blocked?: EntitlementBlocked;
+  /** What a refusal declared with `errorEnvelopeWithFacts` was refused over. */
+  facts?: unknown;
 }
 
 /**
@@ -119,6 +121,7 @@ function envelopeFor(exception: unknown): Envelope {
       code: exception.code,
       message: httpExceptionMessage(exception),
       details: exception.details,
+      facts: exception.facts,
     };
   }
   const code = genericErrorCodeByStatus[status];
@@ -172,7 +175,7 @@ export class EnvelopeExceptionFilter implements ExceptionFilter {
     // ts-rest checks only what a handler RETURNS, so a thrown status meets its contract here or
     // nowhere.
     const undeclaredOn = routeNotDeclaring(req, thrown.status);
-    const { status, code, message, details, blocked } =
+    const { status, code, message, details, blocked, facts } =
       undeclaredOn === undefined ? thrown : OPAQUE_INTERNAL;
     if (status >= SERVER_ERROR_STATUS) {
       // The client sees opaque INTERNAL; the log keeps the truth, under the same request id.
@@ -183,6 +186,6 @@ export class EnvelopeExceptionFilter implements ExceptionFilter {
         'Request failed internally',
       );
     }
-    res.status(status).json({ error: { code, message, details, requestId, blocked } });
+    res.status(status).json({ error: { code, message, details, requestId, blocked, facts } });
   }
 }

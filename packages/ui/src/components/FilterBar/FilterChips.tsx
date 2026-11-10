@@ -61,7 +61,12 @@ export function FilterChips({
   chosen.current = selectedIndex;
   useImperativeHandle(
     ref,
-    () => ({ focus: () => setTimeout(() => refs.current[chosen.current]?.focus(), 0) }),
+    () => ({
+      /* Returns nothing, as `Button`'s handle: a caller's effect may hand on what `focus()` gives. */
+      focus: () => {
+        setTimeout(() => refs.current[chosen.current]?.focus(), 0);
+      },
+    }),
     [],
   );
 

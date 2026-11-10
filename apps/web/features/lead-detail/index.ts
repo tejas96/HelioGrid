@@ -1,0 +1,1 @@
+export { LeadDetailScreen } from './LeadDetailScreen';

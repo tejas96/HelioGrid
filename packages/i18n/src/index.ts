@@ -103,6 +103,7 @@ export * from './copy/compare-grid';
 export * from './copy/compliance-floor';
 export { CONNECTION, connectionWords } from './copy/connection';
 export { AGENT_CALL_CORRELATION, agentCallCorrelation } from './copy/correlation';
+export * from './copy/crm';
 export * from './copy/data-table';
 export * from './copy/date-picker';
 export * from './copy/date-set';

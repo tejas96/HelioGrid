@@ -16,9 +16,17 @@ export function readFailureOf(error: unknown): ReadFailure {
  */
 export function readOf<T>(query: UseQueryResult<T>, isEmpty?: (value: T) => boolean): Read<T> {
   const { data } = query;
-  if (data !== undefined) {
-    return isEmpty?.(data) === true ? { kind: 'empty' } : { kind: 'ready', value: data };
-  }
+  if (data !== undefined && isEmpty?.(data) === true) return { kind: 'empty' };
+  return recordReadOf(query);
+}
+
+/**
+ * The read of one record by its id: there, still out, or failed — never empty, since one record
+ * either answers or is not found. A screen that reads one need draw no empty state.
+ */
+export function recordReadOf<T>(query: UseQueryResult<T>): Exclude<Read<T>, { kind: 'empty' }> {
+  const { data } = query;
+  if (data !== undefined) return { kind: 'ready', value: data };
   if (query.isError) {
     return {
       kind: 'failed',

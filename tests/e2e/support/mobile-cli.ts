@@ -1,4 +1,6 @@
-import { OTP_LENGTH } from '@heliogrid/domain';
+import { randomUUID } from 'node:crypto';
+import { IDEMPOTENCY_KEY_HEADER } from '@heliogrid/contracts';
+import { IN_FORMATS, OTP_LENGTH } from '@heliogrid/domain';
 import {
   BILLING_HOME,
   BILLING_STATE_WORD,
@@ -10,14 +12,23 @@ import {
   destinationLabel,
   INVITE_LANDING,
   inviteWords,
+  leadDetailPageWords,
+  leadDockWords,
+  leadInboxWords,
+  leadSectionsWords,
+  leadsListWords,
   PLAN_SELECTION,
   PRICING,
   paymentTermsWords,
+  QUALIFY_QUESTION_LABEL,
+  QUICK_ADD,
+  qualifyCardWords,
   SETUP_LANGUAGE,
   SETUP_READY,
   SETUP_WHAT_YOU_SELL,
   SHELL,
   SIGN_IN,
+  searchWords,
   settingsRowName,
   settingsWords,
   setupInviteWords,
@@ -25,8 +36,11 @@ import {
   tierName,
   usagePageWords,
   usageViewWords,
+  verbLabel,
 } from '@heliogrid/i18n';
 import { API, codeSentTo } from './api-log.ts';
+import { customerMergeFlowWords, mergeFromLine } from './customer-merge-flow.ts';
+import { leadImportFlowWords } from './lead-import-flow.ts';
 import { freshMobile } from './phone.ts';
 
 /**
@@ -38,12 +52,18 @@ import { freshMobile } from './phone.ts';
  *                          `E2E <national>` owned by `Owner <national>`, so a flow signs in to a
  *                          member who has one:
  *                          the phone's own *Create company* press never reaches the api on iOS
- *                          inside Maestro (`D5`)
+ *                          inside Maestro (`D5`). It adds two leads given to the owner, so they
+ *                          wait in no inbox — `Lead <national>` and the same family's second record,
+ *                          `Family <national>` — and prints `<lead id> <its customer> <the family's
+ *                          customer>` for the Lead Detail and Customer Merge flows
+ *   merge-from <name>  — Customer Merge's "From <name>" under each value that record holds
  */
 const [command, ...args] = process.argv.slice(2);
 
 if (command === 'words') {
   const t = await createTranslator('en');
+  const inbox = leadInboxWords(t.t);
+  const search = searchWords(t.t);
   const words = {
     SIGN_IN_TITLE: SIGN_IN.signIn,
     MOBILE_NUMBER: SIGN_IN.mobileNumber,
@@ -93,6 +113,31 @@ if (command === 'words') {
     WHAT_CHANGES: PLAN_SELECTION.whatChanges,
     PLAN_PRO: tierName('pro'),
     CLOSE: SHELL.close,
+    /** `SCR-M02-01`: the pill's add action and quick add's four fields, Save and its answers. */
+    ADD_LEAD: verbLabel(t.t, 'add_lead'),
+    NEW_LEAD: QUICK_ADD.title,
+    QUICK_ADD_PHONE: QUICK_ADD.phone,
+    QUICK_ADD_NAME: QUICK_ADD.name,
+    QUICK_ADD_CITY: QUICK_ADD.city,
+    QUICK_ADD_TYPE: QUICK_ADD.type,
+    SAVE_LEAD: QUICK_ADD.save,
+    NEW_NUMBER: QUICK_ADD.newNumber,
+    LEAD_SAVED: QUICK_ADD.saved,
+    /** `SCR-M02-02`: the inbox's title, a face's spoken name, junk and the teaching inbox. */
+    INBOX_TITLE: inbox.title,
+    GIVE_TO_PREFIX: inbox.dock.giveTo('', 0, 0).split(':')[0]?.trim() ?? '',
+    JUNK_THIS_LEAD: inbox.deck.junkThis,
+    INBOX_TEACHING: inbox.teaching.title,
+    NO_NAME_YET: inbox.deck.noName,
+    /** `SCR-SHELL-02`: the hint, an unnamed lead's row, nothing found, and Cancel. */
+    SEARCH_IDLE: search.idle.title,
+    OPEN_THIS_LEAD: search.open('lead', null),
+    SEARCH_NONE_BODY: search.none('').body,
+    SEARCH_CANCEL: search.cancel,
+    ...leadDetailWords(t),
+    ...customerMergeFlowWords(t),
+    ...leadsListFlowWords(t),
+    ...leadImportFlowWords(t),
     ...usageWords(t),
     /** `SCR-SHELL-06`: a fresh trial's quiet count, the day it starts. */
     TRIAL_CHIP: billingStripWords(t.t).trialDaysLeft(14),
@@ -108,9 +153,11 @@ if (command === 'words') {
   process.stdout.write(`${await codeSentTo(args[0], Number(args[1]))}\n`);
 } else if (command === 'company' && args[0] !== undefined && args[1] !== undefined) {
   await companyFor(args[0], args[1]);
+} else if (command === 'merge-from' && args[0] !== undefined) {
+  process.stdout.write(`${await mergeFromLine(args[0])}\n`);
 } else {
   process.stderr.write(
-    'usage: mobile-cli.ts words | phone | code <e164> <since-epoch-ms> | company <national> <e164>\n',
+    'usage: mobile-cli.ts words | phone | code <e164> <since-epoch-ms> | company <national> <e164> | merge-from <name>\n',
   );
   process.exit(2);
 }
@@ -129,22 +176,107 @@ async function companyFor(national: string, phoneE164: string): Promise<void> {
     .getSetCookie()
     .map((line) => line.split(';')[0])
     .join('; ');
+  const { actor } = (await verified.json()) as { actor: { userId: string } };
   const made = { companyName: `E2E ${national}`, ownerName: `Owner ${national}`, city: 'Pune' };
-  await call('/tenants', made, cookie);
+  const company = await call('/tenants', made, cookie);
+  const owned = cookieAfter(cookie, company);
+  const lead = await leadFor(owned, actor.userId, { name: `Lead ${national}`, city: 'Pune' });
+  /* The same family's second record, for Customer Merge's flow: another name, city and number. */
+  const family = await leadFor(owned, actor.userId, { name: `Family ${national}`, city: 'Mumbai' });
+  process.stdout.write(`${lead.leadId} ${lead.customerId} ${family.customerId}\n`);
   /* The phone asks the same number for a code next, and the api sends none until the resend time
      it gave here has passed — a code asked for sooner never reaches the api log. */
   const wait = Date.parse(resendAvailableAt) - Date.now();
   if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
 }
 
-async function call(route: string, body: object, cookie?: string): Promise<Response> {
+/**
+ * One lead for the Lead Detail and Customer Merge flows (`SCR-M02-04`, `SCR-M02-06`), captured as
+ * quick add does and given to the owner at once, so it waits in no inbox and the inbox flow still
+ * meets only the lead it captured.
+ */
+async function leadFor(
+  cookie: string,
+  ownerId: string,
+  who: { name: string; city: string },
+): Promise<{ leadId: string; customerId: string }> {
+  const capture = {
+    phoneE164: freshMobile().e164,
+    ...who,
+    segment: 'residential',
+    capturedAt: new Date().toISOString(),
+  };
+  const created = await call('/leads', capture, cookie, { [IDEMPOTENCY_KEY_HEADER]: randomUUID() });
+  const { lead, customer } = (await created.json()) as {
+    lead: { id: string };
+    customer: { id: string };
+  };
+  await call(`/leads/${lead.id}/assign`, { assigneeId: ownerId, expectedOwnerId: null }, cookie);
+  return { leadId: lead.id, customerId: customer.id };
+}
+
+/** The session's cookies after an answer that set new ones — making a company reissues the token. */
+function cookieAfter(cookie: string, answer: Response): string {
+  const jar = new Map(cookie.split('; ').map((pair) => [pair.split('=')[0] ?? '', pair]));
+  for (const line of answer.headers.getSetCookie()) {
+    const pair = line.split(';')[0] ?? '';
+    jar.set(pair.split('=')[0] ?? '', pair);
+  }
+  return [...jar.values()].join('; ');
+}
+
+async function call(
+  route: string,
+  body: object,
+  cookie?: string,
+  headers: Record<string, string> = {},
+): Promise<Response> {
   const answer = await fetch(`${API}${route}`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json', ...(cookie === undefined ? {} : { cookie }) },
+    headers: {
+      'content-type': 'application/json',
+      ...(cookie === undefined ? {} : { cookie }),
+      ...headers,
+    },
     body: JSON.stringify(body),
   });
   if (!answer.ok) throw new Error(`${route} answered ${answer.status}: ${await answer.text()}`);
   return answer;
+}
+
+/** The Leads list's words (`SCR-M02-03`): the meter's hint, the Dormant chip, no match and its way back. */
+function leadsListFlowWords(
+  t: Awaited<ReturnType<typeof createTranslator>>,
+): Record<string, string> {
+  const list = leadsListWords(t.t, { pack: IN_FORMATS, language: 'en', now: Date.now() });
+  return {
+    LEADS_PIPELINE_HINT: list.meter(0).hint,
+    LEADS_LAST_STAGE: list.meter(0).stage('negotiating'),
+    DORMANT: list.dormant,
+    LEADS_NO_MATCH: list.noMatch.title,
+    CLEAR_FILTERS: list.noMatch.clear,
+  };
+}
+
+/**
+ * Lead Detail's words (`SCR-M02-04`): Call and the four acts' words under the dock's round buttons,
+ * the roof question and one answer, the mark an answer saved shows, the Timeline tab and the way back.
+ */
+function leadDetailWords(t: Awaited<ReturnType<typeof createTranslator>>): Record<string, string> {
+  const dock = leadDockWords(t.t);
+  const qualify = qualifyCardWords(t.t);
+  return {
+    CALL: dock.call,
+    MESSAGE_SHORT: dock.message.short,
+    LOG_SHORT: dock.log.short,
+    VISIT_SHORT: dock.visit.short,
+    DESIGN_SHORT: dock.design.short,
+    ROOF: t.t(QUALIFY_QUESTION_LABEL.roofOwnership),
+    ROOF_OWNED: qualify.choice('roofOwnership', 'own'),
+    ANSWER_SAVED: qualify.saved,
+    TIMELINE_TAB: leadSectionsWords(t.t).tabs.timeline,
+    BACK_TO_LIST: leadDetailPageWords(t.t).backToList,
+  };
 }
 
 /** The first answer *What do you sell?* offers, as the card names it. */

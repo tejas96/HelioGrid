@@ -17,6 +17,8 @@ export const NOTIFICATION_TYPES = [
   'signoff_requested',
   'payment_due',
   'lead_unassigned_24h',
+  'lead_assigned',
+  'lead_enquiry',
   'join_requested',
   'invite_declined',
   'reinvite_requested',

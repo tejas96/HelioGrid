@@ -25,7 +25,7 @@ const DATE_PICKER = {
   datesChosen: /*i18n*/ { id: '{count, plural, one {# date} other {# dates}}' },
 } as const;
 
-interface DayFacts {
+export interface DayFacts {
   readonly date: string;
   readonly marker: string | null;
   readonly locked: boolean;

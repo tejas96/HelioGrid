@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
+import type { FocusHandle } from '../../primitives/FocusAfter';
 
 /**
  * **One glass card holding a list's rows** (direction A): a tile on the page with a hairline between
@@ -35,6 +36,8 @@ export interface CardRowProps {
   muted?: boolean;
   /** The row's write is out. */
   busy?: boolean;
+  /** The open target's focus handle: an act in `aside` that removes itself sends focus here. */
+  targetRef?: Ref<FocusHandle>;
 }
 
 export interface CardRowOpen {
@@ -43,4 +46,10 @@ export interface CardRowOpen {
   readonly onOpen: () => void;
   /** This row's detail is open beside the list. */
   readonly current?: boolean;
+  /**
+   * The record's address on the web: the target is then a link — announced as one, opened in a new
+   * tab by a modified click — while a plain click still opens through `onOpen`. The phone has no
+   * address to show, so its target presses `onOpen` alone.
+   */
+  readonly href?: string;
 }

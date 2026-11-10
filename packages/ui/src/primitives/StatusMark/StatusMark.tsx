@@ -21,7 +21,8 @@ export function StatusMark({ tone, label, mark = true, className, style }: WebSt
           {STATUS_GLYPH[tone]}
         </span>
       ) : null}
-      {label}
+      {/* The word is its own element, as the phone's own `Text`: found and read as the word alone. */}
+      <span className="hg-status-mark-label">{label}</span>
     </span>
   );
 }

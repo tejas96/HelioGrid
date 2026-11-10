@@ -2,11 +2,12 @@ import type { CatalogImportWire } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../primitives/Text/Text.native';
+import { importFileOf } from '../Import/Import.logic';
+import { raisedCard } from '../Import/Import.surfaces.native';
+import type { ImportFormats } from '../Import/Import.types';
 import { SearchField } from '../SearchField/SearchField.native';
 import { ShareFilter } from '../ShareFilter/ShareFilter.native';
-import type { ImportFormats } from './CatalogImport.logic';
-import { fileOf, overviewOf } from './CatalogImport.steps';
-import { raisedCard } from './CatalogImport.surfaces.native';
+import { overviewOf } from './CatalogImport.steps';
 import type { CatalogImportProps } from './CatalogImport.types';
 
 interface ImportOverviewProps
@@ -24,7 +25,7 @@ interface ImportOverviewProps
 export function ImportOverview(props: ImportOverviewProps) {
   const { job, phase, words } = props;
   const overview = overviewOf(job, phase, words);
-  const stamp = phase === 'report' ? fileOf(job, words, props.formats, null).stamp : null;
+  const stamp = phase === 'report' ? importFileOf(job, words, props.formats, null).stamp : null;
   return (
     <View style={styles.card}>
       {stamp === null ? (

@@ -1,0 +1,19 @@
+/* LeadAge — how long a waiting lead has waited (`M02-24`). The age is a number, so it never
+   wraps; past 24 hours it is a warning StatusMark, the escalation visible before it fires. */
+
+.hg-lead-age {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.hg-lead-age-seen {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: 1.45;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}

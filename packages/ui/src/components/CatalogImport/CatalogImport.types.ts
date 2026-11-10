@@ -1,7 +1,6 @@
 import type {
   CatalogImportRowFixWrite,
   CatalogImportRowWire,
-  CatalogImportSummaryWire,
   CatalogImportWire,
   TranslatedText,
 } from '@heliogrid/contracts';
@@ -15,9 +14,16 @@ import type {
   ImportWizardFrame,
   Read,
 } from '@heliogrid/domain';
-import type { DropzoneWords, PickedFile } from '../Dropzone/Dropzone.types';
+import type { PickedFile } from '../Dropzone/Dropzone.types';
+import type {
+  ImportColumnsWords,
+  ImportFileWords,
+  ImportFootWords,
+  ImportKept,
+  ImportUpload,
+  ImportWaitWords,
+} from '../Import/Import.types';
 import type { NumberFieldWords } from '../NumberField/NumberField.types';
-import type { OperationProgressWords } from '../OperationProgress/OperationProgress.types';
 import type { StepperWords } from '../Stepper/Stepper.types';
 
 /**
@@ -94,25 +100,6 @@ export interface CatalogImportProps {
   notice: { readonly title: TranslatedText; readonly message: TranslatedText } | null;
 }
 
-/** Where a chosen file stands before its job exists. */
-export interface ImportUpload {
-  readonly state: 'idle' | 'storing' | 'refused' | 'failed';
-  /** The Dropzone's `accept`: the catalog file rule's types, as extensions and media types. */
-  readonly accept: string;
-  /** The catalog file rule's ceiling, in MB, for the hint. */
-  readonly maxSizeMB: number;
-  /** The words of a refusal or a failed upload; `null` otherwise. */
-  readonly message: TranslatedText | null;
-  readonly onRetry: () => void;
-}
-
-/** *Kept reports*: each import by file name and saved date, newest first. */
-export interface ImportKept {
-  readonly rows: readonly CatalogImportSummaryWire[];
-  readonly hasMore: boolean;
-  readonly onMore: () => void;
-}
-
 /** One list of rows as a hook pages it. */
 export interface ImportRowList {
   /** The list's read: a failed one offers *Try again* instead of looking empty. */
@@ -172,53 +159,23 @@ export interface ImportRowWordsFacts {
   readonly unit: string | null;
 }
 
-/** Every word the wizard draws. Facts in, sentences out; the language is the caller's. */
-export interface CatalogImportWords {
+/**
+ * Every word the wizard draws: the shared parts' words, and the catalog's own. Facts in, sentences
+ * out; the language is the caller's.
+ */
+export interface CatalogImportWords
+  extends ImportFileWords,
+    ImportColumnsWords,
+    ImportWaitWords,
+    ImportFootWords {
   readonly title: TranslatedText;
-  readonly close: TranslatedText;
-  readonly back: TranslatedText;
   readonly steps: readonly [TranslatedText, TranslatedText, TranslatedText, TranslatedText];
   readonly stepsLabel: TranslatedText;
   readonly location: (step: number) => TranslatedText;
   readonly locationLabel: (step: number) => TranslatedText;
   readonly whereYouAre: TranslatedText;
   readonly reportAfterRun: TranslatedText;
-  readonly choose: TranslatedText;
-  readonly chooseHint: (maxSizeMB: number) => TranslatedText;
-  readonly dropAnother: TranslatedText;
-  readonly dropAnotherHint: (maxSizeMB: number) => TranslatedText;
-  readonly replace: TranslatedText;
-  readonly fileMeta: (rows: number, columns: number) => TranslatedText;
-  readonly fileProblem: TranslatedText;
-  readonly subtitle: (file: string, rows: number) => TranslatedText;
-  readonly subtitleImported: (
-    file: string,
-    rows: number,
-    date: string,
-    time: string,
-  ) => TranslatedText;
-  readonly stamp: (date: string, time: string) => TranslatedText;
-  readonly sheetLabel: TranslatedText;
-  readonly sheetHelper: (count: number) => TranslatedText;
-  readonly headerRowLabel: TranslatedText;
-  readonly rowOption: (row: number) => TranslatedText;
-  readonly rowReads: (row: number) => TranslatedText;
-  readonly rowOfFile: (row: number) => TranslatedText;
-  readonly untouched: TranslatedText;
-  readonly keptReports: TranslatedText;
-  readonly saved: (date: string) => TranslatedText;
-  readonly showMore: TranslatedText;
-  readonly tryAgain: TranslatedText;
-  readonly unreadableTitle: TranslatedText;
-  readonly unreadableMessage: TranslatedText;
-  readonly matchedIntro: (matched: number, columns: number, open: number) => TranslatedText;
-  readonly matchedAutomatically: TranslatedText;
-  readonly chooseField: TranslatedText;
-  readonly importColumnAs: (header: string) => TranslatedText;
-  readonly leftOutHelper: TranslatedText;
-  readonly leaveColumnOut: TranslatedText;
   readonly fields: Readonly<Record<CatalogImportField, TranslatedText>>;
-  readonly matching: TranslatedText;
   readonly heading: (rows: number) => TranslatedText;
   readonly readyShort: (ready: number) => TranslatedText;
   readonly readyLong: (ready: number, needYou: number) => TranslatedText;
@@ -281,19 +238,13 @@ export interface CatalogImportWords {
   readonly nextRows: TranslatedText;
   readonly continue: TranslatedText;
   readonly gates: Readonly<Record<ImportContinueGate | 'nothing_ready', TranslatedText>>;
-  readonly importing: TranslatedText;
-  readonly ofRows: (total: number) => TranslatedText;
   readonly stopWatching: TranslatedText;
   readonly keepsRunning: TranslatedText;
   readonly fixRows: (count: number) => TranslatedText;
   readonly kept: TranslatedText;
   readonly opening: TranslatedText;
-  /** What a select, the search, the steps, the drop, a price field and the waits say of their own. */
-  readonly selectPlaceholder: TranslatedText;
-  readonly closeList: TranslatedText;
+  /** What the search, the steps and a price field say of their own. */
   readonly clearSearch: TranslatedText;
   readonly stepper: StepperWords;
-  readonly dropzone: DropzoneWords;
   readonly numberField: NumberFieldWords;
-  readonly progress: OperationProgressWords;
 }
