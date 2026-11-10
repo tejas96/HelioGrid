@@ -45,7 +45,7 @@ export interface ScopedLead {
 
 /**
  * The lead, when it is in this company AND in the reader's scope; `null` otherwise — another
- * company's lead and one outside the scope answer alike, as 404 (RFC decision 9).
+ * company's lead and one outside the scope answer alike, as 404.
  */
 export async function findLeadInScope(
   tx: DbTransaction,

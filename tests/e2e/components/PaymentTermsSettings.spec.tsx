@@ -13,7 +13,7 @@ import { PaymentTermsAsHeld } from './PaymentTermsSettings.story';
 
 /**
  * The Payment terms page body (`SCR-M01-20`) at the board's two widths, each frame mounted in the
- * state that shows it and read against the RFC's §6 frame map — its parts in order, its words the
+ * state that shows it and read against the owner's picked sample — its parts in order, its words the
  * real catalog's. The editor and the picker stand under the list here; their surfaces are the apps'.
  */
 

@@ -22,8 +22,8 @@ import { ProposalTemplateAsHeld } from './ProposalTemplateSettings.story';
 
 /**
  * The Proposal template page body (`SCR-M01-19`) at the board's two widths: the 375 column and the
- * 1536 pair, each frame mounted in the state that shows it and read against the RFC's §6 frame
- * map — its components in order, its tokens measured, its words the real catalog's.
+ * 1536 pair, each frame mounted in the state that shows it and read against the owner's picked
+ * sample — its components in order, its tokens measured, its words the real catalog's.
  */
 
 for (const width of WIDTHS) {

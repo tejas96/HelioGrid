@@ -161,7 +161,7 @@ file it in week 1 or OTP SMS is blocked at launch.**
 
 ### Motion (`F7-51`; how to build it fast: `.claude/rules/ui-adherence.md`, *Motion*)
 
-A library here is added with `pnpm add`, pinned then, by the first task whose approved RFC needs it —
+A library here is added with `pnpm add`, pinned then, by the first task whose approved plan needs it —
 never ahead of that task.
 
 | Job | Choice | Why | Rejected (reason) |
@@ -170,7 +170,7 @@ never ahead of that task.
 | Phone UI motion | **`Animated` with `useNativeDriver: true`** for fades and moves; **react-native-reanimated** 4.x (with react-native-worklets, New Architecture only) when a motion follows a gesture or a layout change | Both run every frame on the UI thread, so a busy JS thread never drops one; Reanimated adds what `Animated` cannot — gesture-driven and layout motion | JS-driven `Animated` (drops frames under load) · Moti (a wrapper over Reanimated, one more layer) |
 | Phone keyboard | **react-native-keyboard-controller** 1.22.x, behind `packages/ui`'s `KeyboardFrame` | One measure of the keyboard on iOS and on Android edge to edge: the focused field, its line and an act bar stay above it, which hand-written `KeyboardAvoidingView` and listener code got wrong on one phone or the other again and again | React Native's `KeyboardAvoidingView` with per-surface listeners (behaves differently per platform; Android stops resizing the window edge to edge) |
 | Shaders, web | **One WebGL2 fragment shader on one `<canvas>`** | A full-screen quad needs no engine | three.js outside the studio (an engine shipped for one quad) |
-| Shaders, phone | **@shopify/react-native-skia** (`RuntimeEffect`) | The one GPU shader path in React Native | Its native code adds several MB to the app, so the RFC that adds it states the size it adds |
+| Shaders, phone | **@shopify/react-native-skia** (`RuntimeEffect`) | The one GPU shader path in React Native | Its native code adds several MB to the app, so the plan that adds it states the size it adds |
 | Rendered video | **Remotion** — only for a video FILE the product plays (an explainer), rendered ahead of time | It renders React to a video file | Live UI (it is not a runtime animation library and has no React Native renderer) · its company licence is paid above a small team, so first use waits for the owner (`CLAUDE.md` §4) |
 
 ## 12. 3D studio (the flagship — nothing is compromised against it)

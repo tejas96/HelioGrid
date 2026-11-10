@@ -25,7 +25,7 @@ function scopeWhere(scope: LeadScope, actorId: string, ownerId: SQL): SQL {
 }
 
 /**
- * The ONE visibility predicate every lead read and act applies (RFC decision 9): every lead at
+ * The ONE visibility predicate every lead read and act applies: every lead at
  * `all`, else the OR of the reaches — and no lead at all when the presets reach none, so a scope
  * fails closed. It names `lead` unaliased, so a query applying it reads `from lead`.
  */

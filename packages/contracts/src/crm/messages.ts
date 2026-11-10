@@ -9,7 +9,7 @@ import { capturedAtSchema } from './schemas';
 const c = initContract();
 
 /*
- * Customer messages as copy-paste text (`M02-33`, `M02-47`, `M02-48`, block 3 RFC decision 15): the
+ * Customer messages as copy-paste text (`M02-33`, `M02-47`, `M02-48`): the
  * tenant's template filled for this lead, handed back to be sent from the person's own phone. The
  * timeline records "Message copied" and never claims a delivery.
  */

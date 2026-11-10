@@ -7,7 +7,7 @@ import { defineWorkflow } from './registry';
  * The lead import (`T-M02-005`): ONE workflow type, started once per handoff with the phase it runs
  * — `read` opens the stored file, `match` judges its rows by the confirmed mapping into a preview,
  * `run` lands them with the run's duplicate choice. The same three phases and the same job machine
- * as the catalog import, lifted rather than copied (block 3 RFC decision 16).
+ * as the catalog import, lifted rather than copied.
  *
  * The input is ids only (`infra/temporal/README.md` §4): the tenant, because a durable run has no
  * session, and the job, whose row holds everything else. The worker holds the sequence; every step

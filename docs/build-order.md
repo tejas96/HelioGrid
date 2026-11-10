@@ -11,11 +11,11 @@ The `V` column in `docs/prd/registers/screens.md` §2 is the lock, and only an o
 it. V2 is real scope that is deliberately not blocking launch — the architecture keeps its extension
 points, but nothing V2 is designed or built until V1 ships.
 
-## One order, walked one step at a time
+## One order
 
-Every task is built in ONE fixed order, and `/task` (`.claude/skills/task/SKILL.md`) walks it to
-pick the next step; the invariant `build-order-holds` keeps the order itself whole — every task
-file placed, no loop, every later-block wait recorded. The order is walked, never chosen:
+Every task is built in ONE fixed order, one block per session and per PR (`CLAUDE.md` §3); the
+invariant `build-order-holds` keeps the order itself whole — every task file placed, no loop, every
+later-block wait recorded. The order is followed, never chosen:
 
 1. the blocks below, lowest first;
 2. inside a block, its cells in the order the block's row writes them — a file, or a task placed
@@ -25,11 +25,10 @@ file placed, no loop, every later-block wait recorded. The order is walked, neve
 4. a task's `Depends on:` pulls a task of its own block ahead of it; a later-block wait is recorded
    below instead.
 
-The step is the first open part of a split task, else the first open V1 task on that walk. A part
-lives in its task's `#### Parts` table; this file never lists parts.
-
-What the step is for each task — build, owner merges, owner clears —
-is `/task`'s *Pick* (`.claude/skills/task/SKILL.md`). A `**Parked:**` task is stepped over and pulls nothing ahead.
+The next block is the lowest one with an open V1 task that is not `**Parked:**`. A `**Parked:**`
+task is stepped over and pulls nothing ahead; a `**Blocked:**` task stops the work until the owner
+clears it. A split task's parts live in its
+`#### Parts` table; this file never lists parts.
 
 The `V` column lives on screens, not tasks. A task is V1 if the V1 workflow needs it — which for
 the foundations means all of them, since permissions, formats and honesty underpin every block

@@ -5,8 +5,7 @@ shell, and `F-core.md` / `F-platform.md` / `F5-customer-link.md` where a foundat
 itself. `UI.md` is the one
 file here that is a REGISTER rather than tasks — component gaps with no requirement rows behind
 them, so no `T-` ids and no task anatomy. `deferred.md` holds rows earlier tasks found
-outside their scope; each names what reopens it, a task closes the rows it meets, and none is
-added — a bug a task finds is fixed in that task. Every task was
+outside their scope, each naming what reopens it (`CLAUDE.md` §1). Every task was
 generated from the requirement register, and no P0 requirement exists without a task (or an
 explicit `realized-by` pointer to the requirement that carries it); a task whose `PRD rows:` reads
 `none` builds what other tasks' rows need.
@@ -27,16 +26,16 @@ A task is its header lines, written when the task is:
 **Blocked:** (only while true) what only the owner can clear — a ruling, an account; the work stops here
 **Parked:** (only while true) the owner's reason; the order steps over it
 **DONE WHEN:** the requirement rows' own Given/When/Then, copied verbatim — never paraphrased.
-        The plan names a test for each of them (`/task`, *Plan*); the PRD's own lines stay word for word
+        The plan names a test for each of them; the PRD's own lines stay word for word
 ```
 
 
-While a task is built, its RFC sits under these lines as `#### RFC` (a part: `#### Part <x> · RFC`),
-as `/task` (*Plan*) writes it. The commit that ships a task deletes it from this file — heading,
-header lines and RFC — so the task files hold open work only, and git holds what shipped. A split
-task's `#### Parts` table and task RFC stay until its last part ships.
+The commit that ships a task deletes it from this file — heading and header lines — so the task
+files hold open work only, and git holds what shipped; a file left with no open task is deleted,
+and `docs/build-order.md` drops it from its block row. A split task's `#### Parts` table stays until
+its last part ships.
 
-**Size.** A task is one PR; it splits into parts only on the owner's word.
+**Size.** One block per PR, split only on the owner's word (`CLAUDE.md` §3, §4).
 
 ## Binding rules
 
@@ -46,23 +45,22 @@ task's `#### Parts` table and task RFC stay until its last part ships.
    number. A split task's parts keep their own ledger in its `#### Parts` table (`open` →
    `shipped`, in the part's own change commit), and the task is deleted with its last part. A
    part's id is the task id plus its letter (`T-SHELL-003a`); wherever `<T-id>` is written — the
-   branch, the commit subject — a part uses its own id. Build, tests and verification are proven
+   commit subject — a part uses its own id. Build, tests and verification are proven
    inside the PR, never tracked as states. A task whose rows move to another task is deleted in that change. An id is
    never reused: a new task takes the next number its file has never held.
-   **The ORDER is `docs/build-order.md`**, walked by `/task` — never a task picked from
-   memory, and never a later task because it is ready. A ticket with no `Depends on:` line waits on
-   nothing, and the RFC writes the line.
+   **The ORDER is `docs/build-order.md`** — never a task picked from memory, and never a later
+   task because it is ready. A ticket with no `Depends on:` line waits on nothing.
 1. **Acceptance criteria are copied, never rewritten.** They were authored and locked in the
    PRD; "task language" paraphrases are how requirements drift.
 2. **Requirement reference whitelist.** A task's header and requirement text may cite only:
    `docs/prd/**`, `docs/engineering/data-model.md` and `docs/engineering/forward-compat.md` (a schema-bearing
    task, where naming its entities or its first-migration row is clearer than restating them).
-   The RFC may additionally cite
+   The plan may additionally cite
    implementation authorities its sections require: architecture, protections, CI and package
    instructions, and the sample the owner picked. Anything else —
    old research docs, the v1 repo — is a defect in the task. A task never cites an open-question
    id: a PRD row carries its own ruling, and git carries the history.
-3. **A screen's look is picked inside its own task** (`CLAUDE.md` §3, `/task` *Plan*), so no task
+3. **A screen's look is picked inside its own task** (`CLAUDE.md` §3), so no task
    waits for a drawing. A screen's UI is not "done" until it follows the sample the owner picked.
 5. A task is complete when every DONE WHEN line passes and — for screen tasks — the **three**
    base states (loading, empty, error) plus the states its plan lists exist at both 375px and 1536px

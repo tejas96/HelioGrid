@@ -51,7 +51,7 @@ export type DedupeSheetRecord =
 /**
  * The three choices, in order, and no fourth (`M02-09`). *Open existing* opens the record in scope,
  * and outside it becomes *Ask the owner* — an enquiry naming the asker, sent to the owner
- * (`M02-08`, RFC decision 11). *Keep both* asks for a reason and needs `crm.dedupe_override`.
+ * (`M02-08`). *Keep both* asks for a reason and needs `crm.dedupe_override`.
  */
 export type DedupeSheetChoice =
   | {

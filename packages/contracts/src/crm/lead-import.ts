@@ -18,8 +18,8 @@ import { importDuplicateChoiceSchema } from './vocabulary';
 const c = initContract();
 
 /*
- * The lead import (`M02-18`…`M02-21`, `SCR-M02-05`): the catalog import's shape and machine, lifted
- * (block 3 RFC decision 16). A stored spreadsheet becomes a job read in the background; the wizard
+ * The lead import (`M02-18`…`M02-21`, `SCR-M02-05`): the catalog import's shape and machine, lifted.
+ * A stored spreadsheet becomes a job read in the background; the wizard
  * maps its columns, the preview counts the rows and the duplicates by phone, and the run lands them
  * with one bulk choice for duplicates — skip, or log as enquiry; never keep both (`M02-20`).
  */

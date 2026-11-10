@@ -80,8 +80,8 @@ const DIAL_BLOCK: Record<DialBlock, MessageRef> = {
 
 /**
  * The page's own words: its reads and its ways back. A lead gone from the reader's scope — a
- * notice opened after a reassignment, a stale link, a search result — lands on the honest landing
- * (RFC decision 12), in words that hold however the lead was opened.
+ * notice opened after a reassignment, a stale link, a search result — lands on the honest landing,
+ * in words that hold however the lead was opened.
  */
 export function leadDetailPageWords(t: T) {
   return {

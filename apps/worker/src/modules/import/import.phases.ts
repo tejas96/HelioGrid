@@ -7,7 +7,7 @@ import { ActivityFailure } from '@temporalio/workflow';
 /**
  * DETERMINISTIC CODE — replayed from history (`platform.workflows.ts` says what that forbids).
  *
- * The sequence every spreadsheet import shares (`M01-41`, `M02-18`; block 3 RFC decision 16): a
+ * The sequence every spreadsheet import shares (`M01-41`, `M02-18`): a
  * phase's step, and once it has failed past its retries, the step that ends the phase. Each
  * import's workflow proxies its own steps and hands them here, so the two imports run one
  * sequence. Changing the order of the steps called here changes every deployed import workflow's

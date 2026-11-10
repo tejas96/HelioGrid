@@ -75,7 +75,7 @@ export const customer = pgTable(
   },
   (table) => [
     index('customer_tenant_phone_idx').on(table.tenantId, table.phoneE164.op('text_pattern_ops')),
-    /** The survivor's stream reads every customer merged into it (RFC decision 17). */
+    /** The survivor's stream reads every customer merged into it. */
     index('customer_tenant_merged_into_idx')
       .on(table.tenantId, table.mergedInto)
       .where(sql`${table.mergedInto} is not null`),

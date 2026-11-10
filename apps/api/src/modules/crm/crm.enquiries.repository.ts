@@ -123,7 +123,7 @@ export class CrmEnquiriesRepository {
   }
 
   /**
-   * Open existing outside the reader's scope (`M02-08`, RFC decision 11): the enquiry names the
+   * Open existing outside the reader's scope (`M02-08`): the enquiry names the
    * asker and the owner is told. The asker learns only the owner's name — one of the sheet's three
    * facts — and when the request was made.
    */

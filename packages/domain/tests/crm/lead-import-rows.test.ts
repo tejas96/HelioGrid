@@ -73,7 +73,7 @@ describe('reading one row of an old spreadsheet of leads (M02-19, M02-21)', () =
   });
 });
 
-describe('judging a sheet: two rows with one number (RFC decision 16)', () => {
+describe('judging a sheet: two rows with one number', () => {
   it('the first lands and a later one names it; a rejected row is no first', () => {
     const judged = judgeLeadImportRows(
       [

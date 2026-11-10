@@ -28,7 +28,7 @@ import { BrandingAsHeld } from './BrandingSettings.story';
 
 /**
  * The Branding page body (`SCR-M01-18`) at the board's two widths: the 375 column and the 1536
- * pair, each frame mounted in the state that shows it and read against the RFC's frame map — its
+ * pair, each frame mounted in the state that shows it and read against the owner's picked sample — its
  * components in order, its tokens measured, its words the real catalog's.
  */
 

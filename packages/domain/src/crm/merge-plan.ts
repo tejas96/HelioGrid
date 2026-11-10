@@ -35,8 +35,8 @@ export interface MergePlan {
   readonly city: string | null;
   readonly primary: MergedPrimary;
   /**
-   * The loser's own number as a new contact on the survivor, so dedupe still finds it (RFC decision
-   * 3); `null` when the survivor already holds that number or a moving contact carries it.
+   * The loser's own number as a new contact on the survivor, so dedupe still finds it;
+   * `null` when the survivor already holds that number or a moving contact carries it.
    */
   readonly loserPhoneContact: { readonly phoneE164: string; readonly name: string } | null;
   /** Each field that differed and the side kept — what the timeline and the audit record (`M02-61`). */
@@ -142,7 +142,7 @@ export function planMerge(
 }
 
 /**
- * Every table a merge writes (RFC decision 17): the two customers — the survivor's picked fields and
+ * Every table a merge writes: the two customers — the survivor's picked fields and
  * the loser's tombstone — the rows naming the loser, re-pointed to the survivor, and the two ledgers
  * it appends one entry to. Bookings, tasks, files and notices name a lead, whose id survives, so they
  * move with it unwritten. The timeline is append-only, so no activity is re-pointed: the survivor's

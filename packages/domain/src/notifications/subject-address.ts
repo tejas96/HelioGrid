@@ -8,7 +8,7 @@ import type { SubjectKind } from '../subject/kinds';
  * A record's own screen needs its id: without one it answers `null` too.
  *
  * A lead opens its Lead Detail even when it has since left the reader's scope: that read answers
- * 404, and the screen lands on the honest landing (RFC decision 12). A customer has no page of its
+ * 404, and the screen lands on the honest landing. A customer has no page of its
  * own — its records open through their leads.
  */
 const SUBJECT_ADDRESS: Partial<Record<SubjectKind, (ref: string | undefined) => string | null>> = {

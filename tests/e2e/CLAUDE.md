@@ -38,18 +38,50 @@ Deps: `architecture.md` §2 tests/e2e.
 ## Commands
 
 ```
-pnpm --filter @heliogrid/e2e test:web [<spec files>]  # the web flows — locally only on heliogrid_test, after the gate (`/task`); all of them in CI
+pnpm --filter @heliogrid/e2e test:web [<spec files>]  # the web flows — locally only on heliogrid_test, after `pnpm check:all` (it builds the api and web they start); all of them in CI
 pnpm --filter @heliogrid/e2e test:ct [<spec files>]   # the component tests (port 3100)
 pnpm --filter @heliogrid/e2e test:web --project qa-seed  # the QA companies (support/qa-accounts.ts), off CI, with the worker and Temporal up
 pnpm --filter @heliogrid/e2e test:mobile <udid>      # the phone flows by hand, only to repeat a CI failure
 ```
 
-The phone flows run in CI on Android only; no one runs them on iOS, and `/task` runs none locally.
+The phone flows run in CI on Android only; no one runs them on iOS, and a session runs none locally.
 `test:mobile` needs Metro, the api and the app installed on the device, and drives one device per
 call; one call per phone may run at the same time. An emulator gets 2 cores, 4 GB and the host GPU on the
 command line (the `android-emulator` launch configuration does it; the AVD's `hw.ramSize` is
 ignored): at 2 GB Maestro's on-device server dies mid-suite (`DeviceServerDiedException`) while the
 app shows no fault, and 4 cores only doubles the CPU peak for the same run time.
+
+## Running the app for QA
+
+`qa-live` checks a running app and starts nothing; the session runs it on `heliogrid_test` this way.
+A change no screen shows and no route serves (worker or database only) is proven by its tests and
+skips this.
+
+1. What is running stays as found (`CLAUDE.md` §4), but an `api`, `web` or `worker` started from
+   `.claude/launch.json` is stopped by its preview id. A worker on `heliogrid_dev` (`pgrep -f
+   '@heliogrid/worker'`; it has no port) would take the seed's workflow work into the owner's data.
+   One started outside the preview tool is the owner's to stop: ask.
+2. With 3002 and 8084 free — an `api` in watch mode reloads `.env.local` — point `.env.local` at the
+   test database once, never over an existing copy:
+   `[ -e .qa/env.local.dev ] || { cp .env.local .qa/env.local.dev && sed -i '' '/^DATABASE_/s/heliogrid_dev/heliogrid_test/' .env.local; }`,
+   then `pnpm --filter @heliogrid/api pack:publish > .qa/pack.log 2>&1`.
+3. Start `worker`, then seed while 8084 is free (the seed starts its own api):
+   `pnpm turbo build --filter=@heliogrid/api > .qa/build-api.log 2>&1 && <prefix> pnpm --filter @heliogrid/e2e test:web --project qa-seed > .qa/seed.log 2>&1` (`<prefix>`: `CLAUDE.md` §5).
+4. Start `api`, then what the change needs: `web`, `mobile-metro`, an iPhone simulator holding
+   `com.heliogrid.app`, and `android-emulator` only when Android is in scope. Rebuild the phone app
+   when the device lacks it, the change touches `apps/mobile/ios`, `apps/mobile/android` or a native
+   dependency, or it opens on a red error naming a `NativeModule` (`apps/mobile/CLAUDE.md`).
+5. One `qa-live` on the api first when a route changed; fix its `FAIL`s before any screen. Then one
+   `qa-live` per screen surface, all at once: web for a web change, iOS for any phone change, Android
+   only for what CI's `android` lane cannot show — native code or dependency, an `.android.*` file, a
+   `Platform.OS` branch, the keyboard, Back, insets, a system picker or a permission. A change to
+   one half of a twinned screen brings the other platform in (`.claude/rules/screen-parts.md`).
+6. Fix only after every agent of the round has reported — an edit reloads the app under one still
+   checking. A fix in `packages/*` reaches the running web only once built
+   (`pnpm turbo build --filter='./packages/*'`). Re-check with a fresh agent given the fixes.
+7. After: stop what you started (never Docker), delete the logs, and
+   `mv .qa/env.local.dev .env.local`. Start again what you stopped of the owner's — a web dev server
+   after `rm -rf apps/web/.next`, since the gate's build leaves a production `.next`.
 
 ## Local conventions
 
@@ -66,6 +98,7 @@ app shows no fault, and 4 cores only doubles the CPU peak for the same run time.
 
 ## Traps
 
+- `test:web <spec>` reads a spec path as a pattern: a route's brackets match nothing and the run reads green with no spec run → escape them (`'web/more-\[row\]'`) and check the log names every spec.
 - A list row's open button is a 1×1 px button for screen readers under the visible row, so a `click()` on it is caught by the row's cover and opens nothing at 1536 → focus that named button and press Enter, as a keyboard user does (`web/more-roles.spec.ts`).
 - A choice that draws at once and saves after (a language, a unit, a switch) is on screen before its request answers, so a `page.reload()` right after the click can stop the save and the reload reads the old value — a flake only on a slow runner → wait for the save's response (`page.waitForResponse`) before the reload (`web/more-profile.spec.ts`).
 - A `page.route` stub set after a page loads misses a read already out: the press's re-read joins that in-flight query and never meets the stub, a race only a loaded runner loses → wait for `networkidle` before stubbing a read the page itself makes (`web/more-profile.spec.ts`).

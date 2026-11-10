@@ -20,7 +20,7 @@ paths:
   character (a no-break space, a zero-width space) is written as a `\u` escape.
 - **A money, tenancy or permission rule, and a check a change adds or alters, is proven red once.**
   Break the rule its test names — never a neighbour or its input data — see the test fail BY NAME,
-  then restore it. A lint rule or type is planted in every written form the bad line can take
+  then restore it from a scratchpad copy, never `git checkout` (it drops the file's other changes). A lint rule or type is planted in every written form the bad line can take
   (with type arguments, through a member or an alias), not only the plain one. A crash or a compile error is not red. A test of a race FORCES its overlap — it holds
   a lock both sides need until both are seen waiting (`apps/api/tests/support/held-lock.ts`) —
   because two requests merely fired together mostly run one after the other.
@@ -30,8 +30,8 @@ paths:
   `heliogrid_test` locally (`infra/README.md`): off CI `vitest.config.mts` collects them only when
   both `DATABASE_URL` and `DATABASE_ADMIN_URL` name `heliogrid_test` and skips them with a warning
   otherwise; whenever they are collected (as with `CI` set) a URL naming `heliogrid_dev` throws
-  before collection. One file runs locally on the test database with the line in `/task`
-  (`.claude/skills/task/SKILL.md`, *Build*); `CI=1` is never the way in.
+  before collection. One file runs locally as `<prefix> pnpm exec vitest run <file>` (the prefix:
+  `CLAUDE.md` §5); `CI=1` is never the way in.
 - **`tests/e2e/` is the regression suite** (`tests/e2e/CLAUDE.md`); it never replaces checking the
   running app.
 - **Unit tests do not replace `tests/invariants/`.** An invariant proves a property of the SYSTEM

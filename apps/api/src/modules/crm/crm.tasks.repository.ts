@@ -34,7 +34,7 @@ export type TaskActOutcome =
   | { readonly outcome: 'cancelled' };
 
 /**
- * Follow-up tasks on a lead (`M07-05`, RFC decision 8) on the runtime pool. A task goes to the
+ * Follow-up tasks on a lead (`M07-05`) on the runtime pool. A task goes to the
  * lead's owner unless a person is named, and only to an active member; a task is closed by
  * whoever holds it or may work its lead, and a cancelled one is history, never reopened.
  */

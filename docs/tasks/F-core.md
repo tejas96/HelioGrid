@@ -50,7 +50,7 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 ### From `docs/prd/01-product-overview.md` — the product laws
 
 - **OV-04** (P0) — The product replaces the spreadsheet-and-rekeying pipeline with **one record that travels**: CRM → survey → 3D design → proposal → no-login customer link → voice-agent follow-up → light project tracking → payments. No stage re-enters data an earlier stage already holds.
-  *Enforced by:* every module task's hand-off contract (`docs/tasks/M02-crm-leads.md` → `docs/tasks/M04-survey.md` → `docs/tasks/M06-proposals.md` → `docs/tasks/F5-customer-link.md` → `docs/tasks/M07-sales-execution.md` → `docs/tasks/M08-projects.md` → `docs/tasks/M11-payments-collections.md`); review rejects any screen that re-keys a value an upstream stage already holds.
+  *Enforced by:* every module task's hand-off contract (the shipped CRM (`docs/prd/modules/M02-crm-and-leads.md`) → `docs/tasks/M04-survey.md` → `docs/tasks/M06-proposals.md` → `docs/tasks/F5-customer-link.md` → `docs/tasks/M07-sales-execution.md` → `docs/tasks/M08-projects.md` → `docs/tasks/M11-payments-collections.md`); review rejects any screen that re-keys a value an upstream stage already holds.
 - **OV-06** (P0) — The owner signs up **self-serve**, with phone number and one-time password. Nothing about acquiring the product requires a sales conversation at the entry tiers.
   *Enforced by:* `SCR-M01-01` and `SCR-M01-02` (phone + OTP + company name, no sales step).
 - **OV-07** (P1) — Google Login is offered alongside Mobile OTP as a second authentication route. This is new in V2 and not present in the v1 source, which is OTP-only.
@@ -80,7 +80,7 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 - **OV-30** (P0) — **The one seat-based exception** — Active field-worker **tracking** is the single per-tracked-seat add-on in the product, because it carries a real per-worker cost. Site check-in/out and visit logging are part of the core visit workflow and are included in every tier for every employee. The owner toggles tracking per employee; the meter counts tracked-seat-months. No other capability is ever priced per seat.
   *Enforced by:* T-FCORE-011 (the tracked-seat add-on boundary) and `docs/tasks/M09-field-workforce.md`'s owner toggle; review rejects a second per-seat price anywhere.
 - **OV-31** (P0) — **Phone as identity** — A phone number is the identity anchor on both sides of the product: it is the login identity for users, unique in international format, and it is the deduplication key for customers, checked on capture from every channel. Users are deactivated, never deleted.
-  *Enforced by:* `docs/tasks/M01-onboarding.md` (login identity, deactivate-never-delete), `docs/tasks/M02-crm-leads.md` and `docs/tasks/M03-marketing.md` (dedupe on capture from every channel).
+  *Enforced by:* `docs/tasks/M01-onboarding.md` (login identity, deactivate-never-delete), the shipped CRM (`docs/prd/modules/M02-crm-and-leads.md`) and `docs/tasks/M03-marketing.md` (dedupe on capture from every channel).
 - **OV-32** (P0) — **The customer never logs in** — The EPC's customer has no account, no password and no portal. One tokenised link carries their whole relationship with the project — proposal, acceptance, payment status, progress, handover — and it is never blocked over unpaid platform money. Where a deal has several stakeholders, they get several labelled links, not accounts.
   *Enforced by:* `docs/tasks/F5-customer-link.md` and the customer-link row of T-FCORE-014's matrix; review rejects any requirement granting the EPC's customer a login.
 - **OV-33** (P0) — **Progressive onboarding** — Nothing is required on day one of a tenant's life. Every setting has a working default, and a tenant can sign up and send a real proposal without opening a settings screen. Configuration happens in context — at the moment a user needs the thing being configured — and settings screens exist for revisiting, not for setup. Every configuration surface shows the effect of the setting.
@@ -121,7 +121,7 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 - **PS-28** (P1) — **Attribution survives a crew that never signs in.** Where the checklist is run by a coordinator rather than the crew, ticks are attributed to the coordinator and an optional free-text "done by" per step records the crew member's name. This fallback is not removed when crew accounts exist, because mixed crews are the normal case.
   *Enforced by:* `docs/tasks/M08-projects.md`'s installation checklist attribution, retained alongside crew accounts.
 - **PS-37** (P0) — Whatever a campaign captures becomes an ordinary lead: **the phone number is the identity and every capture dedupes on it, from every channel, every time.** A marketing-sourced enquiry that matches an existing customer surfaces as a duplicate before it is saved, not after.
-  *Enforced by:* `docs/tasks/M03-marketing.md`'s capture path into `docs/tasks/M02-crm-leads.md`'s dedupe-before-save (see OV-31).
+  *Enforced by:* `docs/tasks/M03-marketing.md`'s capture path into the shipped CRM's dedupe-before-save (`docs/prd/modules/M02-crm-and-leads.md`) (see OV-31).
 
 ---
 

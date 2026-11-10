@@ -13,8 +13,7 @@ import ExcelJS, { type CellValue, type Worksheet } from 'exceljs';
  * A stored spreadsheet read into what an import's wizard maps (`T-M01-030c`, `M02-18`) — a price
  * list or an old file of leads: each sheet's name, how many rows and columns it fills, and its
  * first rows as the file wrote them. A cell is text, never a value this reader made up — each
- * import's own pass judges it later. Every spreadsheet import reads through here (block 3 RFC
- * decision 16).
+ * import's own pass judges it later. Every spreadsheet import reads through here.
  */
 export type SpreadsheetRead =
   | { readonly readable: true; readonly sheets: readonly ImportSheet[] }

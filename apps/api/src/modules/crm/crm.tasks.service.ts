@@ -19,7 +19,7 @@ import { CrmTasksRepository, type TaskActOutcome } from './crm.tasks.repository'
 import type { LeadReader } from './internal/reader';
 
 /**
- * Follow-up tasks (`M07-05`, RFC decision 8): added on a lead for its owner or a named person, and
+ * Follow-up tasks (`M07-05`): added on a lead for its owner or a named person, and
  * done or reopened by whoever holds them. Overdue is the screen's to derive from `dueAt`.
  */
 @Injectable()

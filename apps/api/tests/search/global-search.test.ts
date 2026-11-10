@@ -21,7 +21,7 @@ import {
 import { skipWithoutDatabase } from '../support/fixture';
 
 /**
- * The global search (`F6-20`…`F6-25`, `T-FPLAT-020`, RFC decision 18): one read over leads,
+ * The global search (`F6-20`…`F6-25`, `T-FPLAT-020`): one read over leads,
  * customers, people and catalog items, each group narrowed as its own domain is — and never by the
  * billing state. A junk lead is in no queue or list; search is where it is found (`M02-55`).
  */

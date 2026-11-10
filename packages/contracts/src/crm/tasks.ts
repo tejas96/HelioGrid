@@ -14,7 +14,7 @@ import { taskKindSchema } from './vocabulary';
 const c = initContract();
 
 /*
- * Follow-up tasks (`M07-05`, block 3 RFC decision 8): built once here for the call-backs, retries,
+ * Follow-up tasks (`M07-05`): built once here for the call-backs, retries,
  * wakes and the Tasks section. Overdue is derived from `dueAt`, never stored.
  */
 

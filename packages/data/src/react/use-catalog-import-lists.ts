@@ -29,7 +29,7 @@ function useList(jobId: string | null, ask: CatalogImportRowsAsk | null) {
 }
 
 /**
- * Every list of one import the wizard shows (`SCR-M01-17` RFC §5, *Reads*): in the preview, the
+ * Every list of one import the wizard shows (`SCR-M01-17`): in the preview, the
  * rows that need the person and the two outcome groups — or, under a search, the rows it finds
  * that need the person and those ready; in the fix scope of a completed job, the same narrowed to
  * the rows its run left open; in the report, failed, left out, prices applied and products created,

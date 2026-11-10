@@ -119,7 +119,7 @@ const contactPhones = sql<string[]>`array(select k.phone_e164 from ${contact} k
   where k.tenant_id = ${customer.tenantId} and k.customer_id = ${customer.id})`;
 
 /**
- * The global search's own groups (`F6-24`, RFC decision 18) on the runtime pool: leads in the
+ * The global search's own groups (`F6-24`) on the runtime pool: leads in the
  * reader's lead scope, junk ones too with their state (`M02-55`); customers with a lead in that
  * scope and never a merged one; team members within the people-records scope. Each group counts
  * with its own `where` and ranks by domain's order, newest first within a rank.

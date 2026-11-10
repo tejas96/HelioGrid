@@ -15,7 +15,7 @@ const INCLUDES = (kw: number, proposals: number | 'unlimited', storage: number) 
   storageGb: storage,
 });
 
-/** Growth → Pro, 16 of 30 days left: ₹3,200.00 today (the board's figures, RFC decision 3). */
+/** Growth → Pro, 16 of 30 days left: ₹3,200.00 today (the board's figures). */
 export function previewOf(tier: string, cycle: string): PlanChangePreview {
   const base: PlanChangePreview = {
     kind: 'upgrade',

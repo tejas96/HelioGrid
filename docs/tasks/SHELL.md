@@ -1,6 +1,6 @@
 # Tasks — SHELL (app shell & platform surfaces)
 
-Task-id prefix: `T-SHELL-`. RFC and part-size rules live in `docs/tasks/README.md`.
+Task-id prefix: `T-SHELL-`. Part and size rules live in `docs/tasks/README.md`.
 
 ---
 

@@ -10,7 +10,7 @@ import type { Act } from '../../common/auth/session-context';
 import type { CreationKey } from '../../common/creation-key';
 
 /*
- * The follow-up tasks a rule or a person raises on a lead (`M07-05`, RFC decision 8), written on the
+ * The follow-up tasks a rule or a person raises on a lead (`M07-05`), written on the
  * CALLER's transaction so a task commits with the act that raised it. A task lands on a named person,
  * never a pool (`M07-06`); overdue is derived from `due_at` and never stored.
  */

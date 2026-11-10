@@ -8,8 +8,8 @@ import { designScreens, readTaskLedger, SCREEN_ID, TASK_ID, type TaskEntry } fro
  * every task placed apart exists and every exclusion is placed elsewhere, no open tasks wait on each
  * other in a loop or on a struck task, a V1 task waits on no V2 one, a V1 task that waits on a later
  * block is recorded and its ruling is owed before its block opens, every V1 screen task names the
- * screen it builds, and every task id is defined once, with one status line, `planned`. `/task`
- * (`.claude/skills/task/SKILL.md`, *Pick*) picks the next step; this keeps what it reads true.
+ * screen it builds, and every task id is defined once, with one status line, `planned`. A
+ * session picks its block from this order; this keeps what it reads true.
  */
 const ORDER = 'docs/build-order.md';
 const BLOCK_ROW = /^\| \*\*(\d+)\*\* \|/;
