@@ -15,7 +15,7 @@ import {
 } from './support';
 
 /**
- * The work on a lead follows its owner (`M02-27`, RFC decision 8): an assignment moves the lead's
+ * The work on a lead follows its owner (`M02-27`): an assignment moves the lead's
  * open calls and follow-ups from whoever held them for it — the previous owner, or the person who
  * captured it while it had none — to the new owner, in the same transaction. A site visit stays
  * with its surveyor, a custom task and a closed one stay as they are, and a colleague's own

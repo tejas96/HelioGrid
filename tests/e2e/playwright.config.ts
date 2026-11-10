@@ -5,7 +5,7 @@ import { API, API_LOG } from './support/api-log';
 const WEB = 'http://localhost:3002';
 
 /* The flows sign companies up through the api and remove none, so off CI they run only against
-   the test database: both URLs name `heliogrid_test` (the `/task` test-database prefix), and the
+   the test database: both URLs name `heliogrid_test` (the test-database prefix, `CLAUDE.md` §5), and the
    api this config starts reads them, since a shell variable wins over `.env.local`. Off CI a
    server already listening is never reused either: it may be one serving `heliogrid_dev`. */
 const ON_CI = process.env.CI !== undefined;
@@ -43,14 +43,14 @@ if (
   )
 ) {
   throw new Error(
-    `The web flows run locally only on ${TEST_DATABASE}: put the /task test-database prefix in front of the command (.claude/skills/task/SKILL.md, top).`,
+    `The web flows run locally only on ${TEST_DATABASE}: put the test-database prefix in front of the command (CLAUDE.md §5).`,
   );
 }
 
 /**
  * The web suite, against the BUILT api and web. `webServer` is the one thing that starts them: in
- * CI, whose ports are free, it starts both; locally it starts both too, on the test database, after
- * `/task`'s clean-up has freed the ports. Every flow runs at the two viewports `F7-43` item 1 names. `retries: 0` — a flake
+ * CI, whose ports are free, it starts both; locally it starts both too, on the test database, once
+ * 3002 and 8084 are free. Every flow runs at the two viewports `F7-43` item 1 names. `retries: 0` — a flake
  * is a bug to fix, never a pass on the second try; the trace of a failure is kept for replay.
  */
 export default defineConfig({

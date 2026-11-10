@@ -41,7 +41,7 @@ const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'd
 
 /**
  * One spreadsheet of leads being imported (`M02-18`…`M02-21`). One import family, lifted and never
- * copied (RFC decision 16): the job walks the catalog import's state machine on those same two
+ * copied: the job walks the catalog import's state machine on those same two
  * types, and its mapping, revision and runner behave as `catalogImportJob`'s. The duplicate choice
  * belongs to the run and is set with it.
  *

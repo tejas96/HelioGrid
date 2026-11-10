@@ -49,7 +49,7 @@ interface SweepClock {
 }
 
 /**
- * The CRM's one timer for one company (`M02-49`…`M02-54`, RFC decision 7) on the runtime pool, in
+ * The CRM's one timer for one company (`M02-49`…`M02-54`) on the runtime pool, in
  * ONE transaction: the day's claim, then each lead whose time has come — flagged dormant after
  * thirty quiet days, woken or resurfaced at 09:00 with a follow-up task, and an EPC Owner told,
  * once, of each lead left unassigned past a day. No state deletes a lead; the system acts. Every

@@ -60,7 +60,7 @@ export const leadVisitBooking = pgTable(
       table.leadId,
       table.scheduledAt.desc(),
     ),
-    /** The Assigned scope: leads whose booked visit names me (RFC decision 9). */
+    /** The Assigned scope: leads whose booked visit names me. */
     index('lead_visit_booking_tenant_surveyor_idx').on(
       table.tenantId,
       table.surveyorUserId,

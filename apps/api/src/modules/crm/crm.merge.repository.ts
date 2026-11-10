@@ -59,7 +59,7 @@ const shownCustomer = (side: MergeSideRow) => ({
   city: side.city,
 });
 
-/** Customer merge (`M02-59`…`M02-63`, RFC decision 17) on the runtime pool. */
+/** Customer merge (`M02-59`…`M02-63`) on the runtime pool. */
 @Injectable()
 export class CrmMergeRepository {
   // Explicit token: tsx (esbuild) emits no decorator metadata (apps/api/CLAUDE.md landmine).

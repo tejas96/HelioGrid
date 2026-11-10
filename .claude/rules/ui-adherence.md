@@ -31,10 +31,8 @@ paths:
 
 ## A screen follows the approved language
 
-A UI task shows the owner three samples in the approved language (`CLAUDE.md` §10) before it builds,
-and the build follows the sample they pick. The app shell draws the top bar, nav and sidebar; the
-words come from the catalog. A phone page opens on a large Newsreader title under an icon-only top
-bar; one hero per screen at most.
+The build follows the sample the owner picked (`CLAUDE.md` §3) and the language of `CLAUDE.md` §10.
+The app shell draws the top bar, nav and sidebar; the words come from the catalog.
 
 ## Compose from the primitives, don't re-answer them
 
@@ -74,7 +72,7 @@ how untranslated copy ships.
 
 ## States, saves and focus — decided before the markup
 
-The plan names them for each read and each action a screen has (`/task`, *Plan*); the code builds
+The plan names them for each read and each action a screen has; the code builds
 what the plan names (`F7-23` N5 and N10, `F7-43` items 2 and 3):
 
 - **A read** draws loading, empty and failed. Failed says what happened and offers its retry; a
@@ -110,7 +108,7 @@ navigator's, and the studio's 3D scene animates in its own code under the same f
 - **A loop stops** when its state ends, when its view leaves the screen and when the app or tab goes
   to the background (web: `IntersectionObserver`, `visibilitychange`; phone: screen blur, `AppState`).
   A loop that never stops also keeps Android from going idle, and every Android view-tree read then fails.
-- **Calm ambient motion is the one loop that runs on** (owner ruling): the drifting light and solar
+- **Calm ambient motion is the one loop that runs on**: the drifting light and solar
   grid behind a door or a page's top glow, and nothing else. It is `AmbientSky` and the door's
   `SolarSky` (its glints, clouds, stars and the energy on its wires): slow (cycles from
   `theme.motion`), transform, opacity or a shader's uniforms only, never carrying information, and

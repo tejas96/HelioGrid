@@ -14,7 +14,7 @@ import { CrmDailySweepRepository } from './crm.daily-sweep.repository';
 const SWEEP_BATCH = 200;
 
 /**
- * The CRM's one timer (`M02-49`, RFC decision 7): every run sweeps each company whose day has passed
+ * The CRM's one timer (`M02-49`): every run sweeps each company whose day has passed
  * 09:00 on its own clock and has not been swept, once per local day. One company's failure is
  * logged by its id and leaves its day unclaimed, so the next run tries it again and every other
  * company is swept meanwhile.

@@ -4,7 +4,7 @@ import { createCreationKeys } from '../client/creation-key';
 import { bodyAt } from '../errors/errors';
 
 /**
- * Follow-up tasks (`M07-05`, block 3 RFC decision 8): add one to a lead, mark it done, reopen it.
+ * Follow-up tasks (`M07-05`): add one to a lead, mark it done, reopen it.
  * Overdue is derived from `dueAt` on the screen, never asked for.
  */
 export interface TasksRepository {

@@ -26,7 +26,7 @@ import {
 } from './support';
 
 /**
- * Customer merge (`M02-59`…`M02-63`, RFC decision 17): one transaction re-points everything naming
+ * Customer merge (`M02-59`…`M02-63`): one transaction re-points everything naming
  * the loser and leaves it a tombstone; both customers must be in the person's scope; the timeline
  * and the audit log carry every choice; and the transaction writes no money table.
  */

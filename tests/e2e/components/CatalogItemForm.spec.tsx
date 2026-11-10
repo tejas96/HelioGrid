@@ -15,7 +15,7 @@ import { ALMM_REFERENCE, FRAMES } from './CatalogItemForm.frames';
 import { CatalogItemFormAsRead, type ItemFormSetup } from './CatalogItemForm.story';
 
 /**
- * The add sheet (`SCR-M01-16`, RFC P4, P9): every built frame at 375 and as the 1536 panel — parts
+ * The add sheet (`SCR-M01-16`): every built frame at 375 and as the 1536 panel — parts
  * in the board's order, the tile alone in its row, the touch floor, no axe finding; Hindi and
  * Marathi unclipped; the end state at once under reduced motion. No datasheet path is built.
  */

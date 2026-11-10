@@ -18,7 +18,7 @@ async function wordsFor(roles: readonly RolePreset[], reader: UiLanguage) {
   return roleCardWords(t, roleCard(roles), { companyName: null, setterName: null, owners: null });
 }
 
-/** In `HOME_LADDER` order: the act on a card whose home it is, in en, hi and mr (RFC §5). */
+/** In `HOME_LADDER` order: the act on a card whose home it is, in en, hi and mr. */
 const ACT_BY_HOME: readonly (readonly [string, string, string])[] = [
   ['Go to the dashboard', 'डैशबोर्ड पर जाएँ', 'डॅशबोर्डवर जा'],
   ['Go to the dashboard', 'डैशबोर्ड पर जाएँ', 'डॅशबोर्डवर जा'],

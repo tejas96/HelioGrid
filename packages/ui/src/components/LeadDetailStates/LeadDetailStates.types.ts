@@ -27,8 +27,7 @@ export interface LeadDetailStatesWords {
  * **Lead Detail before its lead is ready** (`SCR-M02-04`), both platforms: the calm skeleton of
  * the hero, the action dock and the qualify card over the sections; what failed with *Try again*;
  * or — the lead gone from the reader's scope or removed, which a notice opened after a
- * reassignment or a stale link meets — the honest landing with the way back to the list (RFC
- * decision 12).
+ * reassignment or a stale link meets — the honest landing with the way back to the list.
  */
 export interface LeadDetailStatesProps {
   read: LeadDetailWaitingRead;

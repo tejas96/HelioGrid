@@ -135,7 +135,7 @@ export const leadSummarySchema = z.object({
 export type LeadSummary = z.infer<typeof leadSummarySchema>;
 
 /**
- * One follow-up task (`M07-05`, decision 8 of the block 3 RFC). Overdue is derived on the screen
+ * One follow-up task (`M07-05`). Overdue is derived on the screen
  * from `dueAt` (`tasks/overdue.ts`), never stored; `title` is a custom task's words.
  */
 export const taskSchema = z.object({

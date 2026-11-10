@@ -4,7 +4,7 @@ import type { CatalogImportRowFix } from './import-fix';
 import type { ComponentKind } from './vocabulary';
 
 /**
- * What a card's answer sends (`SCR-M01-17` RFC §5): the row the request goes to, the fix, and the
+ * What a card's answer sends (`SCR-M01-17`): the row the request goes to, the fix, and the
  * fix that takes it back. Authored once for the web panel and the phone sheet (Law 11).
  */
 

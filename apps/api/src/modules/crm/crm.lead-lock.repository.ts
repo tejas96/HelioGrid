@@ -63,7 +63,7 @@ export async function lockLeads(
     .for('update');
 }
 
-/** The lead in this company and the reader's scope, locked; `null` answers 404 (RFC decision 9). */
+/** The lead in this company and the reader's scope, locked; `null` answers 404. */
 export async function lockLeadInScope(
   tx: DbTransaction,
   reader: LeadReader,

@@ -1,6 +1,6 @@
 import type { ItemFormSetup } from './CatalogItemForm.story';
 
-/** The add sheet's built frames as the spec mounts them (`SCR-M01-16`, RFC §6 *Frames*). */
+/** The add sheet's built frames as the spec mounts them (`SCR-M01-16`). */
 export const ALMM_REFERENCE = 'List-I, S. No. 38';
 const ALMM_ON = {
   ALMM: { on: true, reference: ALMM_REFERENCE },

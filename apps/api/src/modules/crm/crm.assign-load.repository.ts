@@ -5,7 +5,7 @@ import { and, count, eq, inArray, lt } from 'drizzle-orm';
 import { activeMembersHolding, memberName } from './crm.member-roles.repository';
 
 /*
- * Who a lead can go to, and the load beside each face (`M02-28`, RFC decision 10): read on the
+ * Who a lead can go to, and the load beside each face (`M02-28`): read on the
  * caller's transaction, so an assignment's open-count snapshot and the write it records see the
  * same rows (`M02-30`).
  */

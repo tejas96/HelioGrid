@@ -141,7 +141,7 @@ These rows state properties of the product that engineering does not build as a 
   **Enforced by:** `T-FPLAT-026`, `T-FPLAT-027`, `T-FPLAT-028` and `T-FPLAT-029`, which produce the tier, source, staleness and disclosure values; the adjacency and persistence of the rendering is enforced per screen.
 
 - **F7-37** (P0, `docs/prd/foundations/F7-design-language.md`) — **Principle 8 — the source's speed budgets are product requirements, and the interface is measured against them.** Two are carried from the source as binding: **a lead is added in under thirty seconds on a phone**, and **a remote survey reaches a sendable proposal in under ten minutes**. They are requirements on the *experience*, not on a server: the number of fields, taps, screens and confirmations between intent and done is what determines whether they hold, so any design that adds a step to either path is measured against the budget before it ships. Where a design cannot meet the budget, that is a finding to record, not a number to quietly restate.
-  **Enforced by:** measurement of the two named paths at review — the lead-add flow of `docs/tasks/M02-crm-leads.md` and the remote-survey-to-proposal path of `docs/tasks/M04-survey.md` and `docs/tasks/M06-proposals.md`.
+  **Enforced by:** measurement of the two named paths at review — the shipped lead-add flow (`docs/prd/modules/M02-crm-and-leads.md`) and the remote-survey-to-proposal path of `docs/tasks/M04-survey.md` and `docs/tasks/M06-proposals.md`.
 
 - **F7-38** (P0, `docs/prd/foundations/F7-design-language.md`) — **Principle 9 — consistency and stability over cleverness.** Where a problem has already been solved somewhere in the product, it is solved the same way again: one sheet grammar, one gesture vocabulary, one status treatment, one empty-state pattern, one error voice. A novel interaction must be *better enough* to justify the cost of being learned twice, and this principle is the standing tie-breaker whenever a proposed enhancement trades familiarity for ingenuity.
   **Enforced by:** cross-module design review whenever two modules solve the same interaction problem.
@@ -280,9 +280,9 @@ These rows are screen rows: their verbatim text is the specification of a screen
 | F4-07 | T-FPLAT-011 |
 | F4-14 | moved to T-M04-015 (`docs/tasks/M04-survey.md`) |
 | F4-15 | realized-by: the 3D Design Studio, rebuilt from scratch — no PRD or task yet |
-| F4-16 | moved to T-M02-012 (`docs/tasks/M02-crm-leads.md`) |
+| F4-16 | moved to T-M02-012, shipped |
 | F4-17 | moved to T-M04-015 (`docs/tasks/M04-survey.md`) |
-| F4-19 | moved to T-M02-012 (`docs/tasks/M02-crm-leads.md`) |
+| F4-19 | moved to T-M02-012, shipped |
 | F4-21 | moved to `docs/tasks/M04-survey.md` T-M04-017 (the module that captures photographs, Law 9) |
 | F4-25 | T-FPLAT-014 |
 | F4-27 | LAW |

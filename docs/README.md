@@ -45,5 +45,5 @@ Moving one of these breaks a tool silently.
 Two invariants read a PRD file: `matrix-mirrors-f2` reads `prd/foundations/F2-roles-and-permissions.md` and `template-keys-mirror-f6` reads
 `prd/foundations/F6-notifications-and-search.md`. The document invariants read `build-order.md`,
 `tasks/`, `prd/` and `prd/registers/screens.md` (`tests/invariants/src/`
-`task-ledger.ts`, `prd-rows.ts`, `screens-register.ts`), and `/task` reads `build-order.md`. `.dependency-cruiser.cjs` cites
+`task-ledger.ts`, `prd-rows.ts`, `screens-register.ts`). `.dependency-cruiser.cjs` cites
 `engineering/02`, `03`, `07` and `17`, and `biome.json`'s messages cite `engineering/03` and `17`.

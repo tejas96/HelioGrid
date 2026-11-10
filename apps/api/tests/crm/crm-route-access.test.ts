@@ -16,7 +16,7 @@ import {
 } from './support';
 
 /**
- * The CRM's doors on the wire (`F2-25`, RFC decision 9): a preset without the add-and-edit grant
+ * The CRM's doors on the wire (`F2-25`): a preset without the add-and-edit grant
  * is refused every write before its handler runs, and another company's lead or customer answers
  * 404 on every route that names one — never 403, which would say it exists.
  */

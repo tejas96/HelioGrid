@@ -1,6 +1,6 @@
 ## What
 
-<!-- `<task id> — <name>`: one line on what was built. -->
+<!-- The module and its block, and the task ids: one line on what was built. -->
 
 ## User impact
 
@@ -23,7 +23,3 @@ flowchart LR
 
 <!-- One line each, or "none": a decision taken, a mistake found (its kind and what now prevents
      it), a deferred row met. -->
-
-## Cost
-
-<!-- The meter's one line (`/task`, *Ship*). -->

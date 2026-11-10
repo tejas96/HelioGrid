@@ -23,7 +23,7 @@ import {
 } from './support';
 
 /**
- * Follow-up tasks (`M07-05`, RFC decision 8): a task lands on the lead's owner unless a person is
+ * Follow-up tasks (`M07-05`): a task lands on the lead's owner unless a person is
  * named, and only on an active member; no call is set for a number no one may dial (`M02-44`);
  * whoever holds it or may work its lead closes it, the timeline records it done, and a cancelled
  * task is history.

@@ -2,7 +2,7 @@
 -- `pnpm infra:reset`); on an existing volume it is applied ONCE by hand, as infra/README.md says.
 -- CI names 01 and 02 by file and never runs this: its lane has one database, heliogrid_ci.
 --
--- SAME container, SEPARATE database: `/task` QA, local api tests and the invariants run here, and
+-- SAME container, SEPARATE database: live QA, local api tests and the invariants run here, and
 -- heliogrid_dev keeps only the owner's own development data.
 -- vitest.config.mts skips the api tests off CI unless both URLs name heliogrid_test, and throws on
 -- heliogrid_dev whenever they are collected. Switching is the database name in DATABASE_URL and

@@ -132,7 +132,7 @@ export interface JudgedLeadImportRow {
   readonly cells: LeadImportCells;
   readonly phoneE164: string | null;
   readonly problems: readonly LeadImportProblem[];
-  /** The earlier landable row of the file with this number, which lands first (RFC decision 16). */
+  /** The earlier landable row of the file with this number, which lands first. */
   readonly repeatsRow: number | null;
 }
 

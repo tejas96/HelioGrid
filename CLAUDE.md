@@ -1,7 +1,7 @@
 # HelioGrid — constitution
 
 Multi-tenant SaaS for solar EPC companies — India-first, global-capable: CRM → survey →
-3D design → proposal → customer link → voice follow-up → projects → payments. The 3D Design
+3D design → proposal → customer link → projects → payments; voice follow-up later. The 3D Design
 Studio is the flagship. Light and dark · EN/HI/MR · tenant-currency money (INR v1).
 
 ## 1. Core principles
@@ -23,14 +23,14 @@ reproduced on the RUNNING app, never a mock. Read failures, not exit codes, and 
 declarations. A check you add or change is trusted only after it fires on a planted bad line
 (`.claude/rules/testing.md`).
 
-**Every mistake leaves a record.** A mistake found in the work — yours, a reviewer's, a check's or
-the owner's — is fixed at once and listed in the PR body by its kind. One a machine could have
+**Every mistake leaves a record.** A mistake or bug found in the work — yours, a reviewer's, a
+check's or the owner's — is fixed in this change, never deferred or left half-built, and listed in
+the PR body by its kind; only what §4 keeps for the owner is raised to them instead.
+`docs/tasks/deferred.md` takes no new row; a change closes the rows it meets. A behaviour fix
+starts with a test that fails for the bug, then makes it pass. One a machine could have
 caught gets that check: a type, a lint rule or a test. One no machine can decide gets one line in
-`.claude/skills/task/SKILL.md`, `.claude/agents/code-reviewer.md` or `qa-live.md`, `plan-review.md`
-or its package's `CLAUDE.md` Traps — never a new rule file or a new step.
-
-**Avoid over-engineering.** The simplest thing that meets the need. A structure that is poor or hard
-to maintain is replaced with one clearly better, and the PR says why in one line.
+`.claude/agents/code-reviewer.md`, `qa-live.md` or its package's `CLAUDE.md` Traps — never a new
+rule file or a new step.
 
 **No new script.** A code fact goes into a type, Biome, dependency-cruiser or a test. A script or
 a `package.json` command is added only when none of those can hold the fact, and the PR says why.
@@ -49,7 +49,7 @@ Law ids are stable — never reuse or renumber one.
 7. **One prop contract per shared component.** Both platform files implement the one
    `<Name>.types.ts`; a prop belongs to that contract, never to a single platform.
 8. **Fix the harness your change made wrong** — same commit: `CLAUDE.md`, `.claude/**`, a package
-   `CLAUDE.md`, the configs and `.env.example`. Product docs (`docs/prd/`, `docs/tasks/`, RFCs) are
+   `CLAUDE.md`, the configs and `.env.example`. Product docs (`docs/prd/`, `docs/tasks/`) are
    reference: where one disagrees with the code, the code wins and the doc is not rewritten to
    match. Cleaning up is always allowed — a change that DELETES or MOVES files removes every
    pointer to them anywhere, `docs/` included, and a dead doc is deleted.
@@ -65,53 +65,75 @@ Law ids are stable — never reuse or renumber one.
 
 ## 3. Workflow
 
-The work follows ONE order, `docs/build-order.md`, and `/task` (`.claude/skills/task/SKILL.md`)
-runs it: one task, one session, one PR. The session decides, builds and proves; the owner keeps
-what §4 lists. A task that adds or reshapes a screen shows the owner three strong samples in the
-approved design language (§10), each as good as the best product work on Dribbble, before it
-builds; the owner picks one, and the build follows it.
+Product work follows ONE order, `docs/build-order.md`: one block — a module and the tasks its row
+names — per session and per PR. The session decides how to plan, build and prove it; the owner
+keeps what §4 lists. A change that adds or reshapes a screen shows the owner three strong samples in
+the approved design language (§10), each as good as the best product work on Dribbble, before it
+builds, at phone and desktop width; the owner picks one, the plan names the pick, and the build
+follows it.
 
-**A PR is one complete task:** every acceptance line is met and proven before it opens, or by its
-CI lane. After a source file is deleted or a branch switches, stale build output keeps a check red on
+The main session builds. A shared part is reused by importing it, extending its one contract
+(Law 7) or lifting it into its shared package first (Law 5) — never by copying it. A helper agent
+gets only work that touches no shared file, with its exact files named; never a fork.
+
+**A PR is complete:** every acceptance line of its tasks is met and proven before it opens, or by
+its CI lane; `code-reviewer` has reviewed the change, every confirmed finding is fixed and every
+possible one is proven and fixed or closed with one reason in the PR's *Notes*, and a later fix
+that touches money, tenancy or permissions is reviewed again; when a screen or a route changed, `qa-live`
+has checked it on the running app (`tests/e2e/CLAUDE.md`, *Running the app for QA*); the gate
+passes with no `SKIP ` line; and CI is green, its Android phone-flow step run unless `PHONE_E2E` is
+`off`.
+
+After a source file is deleted or a branch switches, stale build output keeps a check red on
 code that is gone — `tsc -p` never removes old output, and the web typecheck reads
 `apps/web/.next/types` — so delete the git-ignored `dist/` (`rm -r apps/api/dist`) or
 `apps/web/.next`, then `pnpm turbo build --force`.
 
 ## 4. What the owner keeps
 
-- **Every commit** waits for the owner's yes to its file list and message; one yes is one commit
-  and its push.
+- **Every commit** waits for the owner's yes to its file list and message, and the staged list
+  (`git diff --cached --name-only`) is exactly that list; one yes is one commit and its push. A
+  branch behind `origin/main` merges it, never rebases.
 - **The merge.** Every PR is merged by the owner. Never `--no-verify`, never force-push, never
   push to `main` (`.claude/settings.json` denies them).
-- **The plan:** a task is built only after the owner's yes to its plan
-  (`.claude/skills/task/SKILL.md` *Plan*).
-- **A split:** a task is split into parts only on the owner's word (`docs/tasks/README.md`).
-- **The look:** the owner picks one of a UI task's three samples, and a change to the design
+- **The plan:** a block is built only after the owner's yes to its plan.
+- **A split:** a block or a task is split into parts only on the owner's word
+  (`docs/tasks/README.md`).
+- **The look:** the owner picks one of the three samples (§3), and a change to the design
   language itself (§10) waits for their yes.
 - **Anything billable or external-account-shaped** (cloud, store accounts, paid APIs): stop and ask.
-- **Their data and machines:** never write the database directly (`/task` alone rebuilds the
-  disposable `heliogrid_test`), never touch a product volume, never stop what they left running
-  except as `/task` says.
+- **Their data and machines:** never write the database directly (only the disposable
+  `heliogrid_test` is rebuilt, §5), never touch a product volume, and leave what they left as found
+  — their dev servers, devices, browser tabs, and a dirty tree on another branch (never switch it)
+  — except an `api`, `web` or `worker` started from `.claude/launch.json`, stopped as
+  `tests/e2e/CLAUDE.md` *Running the app for QA* says.
 
-Everything else is decided in the session and written down with one reason: a reading of the PRD
-(the simplest that meets the row), a layer conflict (§7), a bug found on the way (fixed in the
-task, §8). Nothing is built that no PRD row implies. Schema or API work a later
-module owns (Law 9) is written into that module's task in `docs/tasks/`, never built here.
+Everything else is decided in the session, with one reason written in the plan. Nothing is built
+that no PRD row implies. Schema or API work a later module owns (Law 9) is written into that
+module's task in `docs/tasks/`, never built here.
 
 ## 5. Commands
 
 - `pnpm infra:up` · `pnpm infra:down` — the local Docker stack.
 - `pnpm check` — the fast check on what differs from `origin/main`, while building; never the proof.
-- `pnpm check:all` — the full gate (`.claude/protections.md`, top), on the test database as `/task`
-  runs it.
+- `pnpm check:all` — the full gate (`.claude/protections.md`, top), on the test database, with
+  3002 and 8084 free and no worker on `heliogrid_dev`; the web flows run after it
+  (`tests/e2e/CLAUDE.md`).
 - `pnpm lint:fix` — format and auto-fix.
 - `pnpm db:migration:new` · `pnpm db:migrate` — every migration starts here; never hand-author one.
 
-Tests, invariants and QA run on `heliogrid_test`, never the owner's `heliogrid_dev`: put the
-test-database prefix (`.claude/skills/task/SKILL.md`, top) in front. The api tests, the web flows
-and the invariants refuse `heliogrid_dev`. An invariant that SKIPs (no database) or reports
-VACUOUS (empty schema) has not passed. Never weaken
-a check to make a change pass.
+Tests, invariants and QA run on `heliogrid_test`, never the owner's `heliogrid_dev`: put **the
+test-database prefix** in front of the command — it stops when it cannot point both URLs there:
+
+```bash
+export DATABASE_URL="$(sed -n 's/^DATABASE_URL=//p' .env.local | sed 's/heliogrid_dev/heliogrid_test/')" DATABASE_ADMIN_URL="$(sed -n 's/^DATABASE_ADMIN_URL=//p' .env.local | sed 's/heliogrid_dev/heliogrid_test/')" && [[ "$DATABASE_URL $DATABASE_ADMIN_URL" == *heliogrid_test*heliogrid_test* ]] &&
+```
+
+Rebuild it as `infra/README.md` says.
+
+The api tests, the web flows and the invariants refuse `heliogrid_dev`. An invariant that SKIPs (no
+database) or reports VACUOUS (empty schema) has not passed. Never weaken a check to make a change
+pass. One session at a time uses the test database, the ports, `.qa/` and `.env.local`.
 
 **Ports are dedicated:** web 3002 · api 8084 · Metro 8081 · Postgres 5544 · object store 9000 ·
 Temporal 7233 · component tests 3100. Reuse a healthy HelioGrid service; free a foreign listener
@@ -127,10 +149,11 @@ only through the `clean-dev-ports` launch configuration, never by port or proces
 - `docs/prd/` · `docs/tasks/` — the product spec and the tasks: reference for what to build (Law 8).
 - `.claude/rules/` — a law that spans packages; a one-package rule goes in that package's
   `CLAUDE.md`.
-- `.qa/` (git-ignored) — one task's `*.log` files (the dev servers' and each check's), the api
+- `.qa/` (git-ignored) — the session's `*.log` files (the dev servers' and each check's), the api
   check's `*.cookies` and live QA's `*.png`, deleted once its QA is done; `pr-body.md`, the PR's
-  draft; and `env.local.dev`, the owner's `.env.local` while `/task` points it at the test database —
-  never deleted. Once the PR is ready, everything but `env.local.dev` is deleted.
+  draft; and `env.local.dev`, the owner's `.env.local` while the app runs on the test database —
+  a session that finds it left moves it back to `.env.local` before anything else. Once the PR is
+  ready, everything else is deleted.
 - The approved design canvas — not in the repo: <https://claude.ai/artifact/AhGc2c1KLPE8L1q8z8d4cP>
   (Dashboard, CRM and Onboarding, desktop and phone). It shows the language; a module it draws
   that is not built yet is not built from it.
@@ -141,8 +164,8 @@ only through the `clean-dev-ports` launch configuration, never by port or proces
 
 Higher wins: **the product spec (`docs/prd/`; a row carries its own ruling) →
 `docs/engineering/architecture.md` → contracts → design system → this file → package `CLAUDE.md`
-→ implementation detail.** A package `CLAUDE.md` beats a cross-cutting rule, being closer to the
-code. If a doc and the code disagree, fix the one that is wrong in the same PR.
+→ implementation detail.** A package `CLAUDE.md` beats a `.claude/rules/` file, being closer to
+the code. Where a doc and the code disagree, Law 8 says which is fixed.
 
 ## 8. Coding standards
 
@@ -157,7 +180,8 @@ code. If a doc and the code disagree, fix the one that is wrong in the same PR.
   codebase follows a function top to bottom without scrolling back. Needing a comment to explain it
   means the code is wrong. A comment states the CONSTRAINT — what breaks if you change this — and
   never a date; when and why it changed goes in the commit.
-- **Solve today's problem.** No speculative abstraction, no config for one caller, no indirection
+- **Solve today's problem, the simplest way.** A poor structure is replaced with one clearly
+  better, and the PR says why in one line. No speculative abstraction, no config for one caller, no indirection
   for a future that has not been specified — unless a PRD row asks for the extension point; then
   it is built, and an acceptance line proves it.
 - **Shape.** A file is split by responsibility (Biome refuses one over 300 lines) and named for what it does —
@@ -172,19 +196,15 @@ code. If a doc and the code disagree, fix the one that is wrong in the same PR.
   enum value, response, workflow message, queued job, cached payload, pack) names its readers and
   proves both ways: old readers read the new shape, new code reads what the old wrote. If it can't,
   ship two releases: expand, then contract.
-- **A bug you find is fixed in the task that found it** and listed in the PR body — never deferred,
-  never left half-built. Only what §4 keeps for the owner is raised to them instead.
-  `docs/tasks/deferred.md` takes no new row; a task closes the rows it meets.
 - **Dependencies change only through `pnpm add`/`pnpm remove`** — never a hand-edited dependency
-  block or lockfile. Schema goes through a migration, and test or development data through the
-  application (§4).
+  block or lockfile.
 
 ## 9. Product law
 
 Digest of the foundations `F1`–`F8`, which are canonical.
 
 - Every money and energy figure a user sees carries a provenance tier: measured / derived /
-  estimated / assumed. Dates, times, counts, durations and progress carry none; nor do an
+  estimated / assumed, shown as a small quiet pill. Dates, times, counts, durations and progress carry none; nor do an
   identifier, a limit the product enforces or a value the company sets in its own settings (`F8-01`).
 - Money never renders stale — a design changed since the proposal was computed reads provisional.
 - One money path: BOM ↔ proposal ↔ tranches ↔ payments reconcile to the currency's minor unit.
@@ -195,7 +215,7 @@ Digest of the foundations `F1`–`F8`, which are canonical.
   every structure-bearing output.
 - Money renders in the tenant currency's grouping in every locale (INR: lakh/crore); kW/kWh/kWp are
   never translated. A hero figure is Newsreader with tabular figures; money in a list or table
-  is Geist Mono. Every money or energy figure keeps its provenance tier as a small quiet pill.
+  is Geist Mono.
 - Read and export work regardless of billing state. Never hold data hostage.
 - The server assigns business identifiers. No feature flags — entitlements are the only gating.
 
@@ -204,8 +224,8 @@ Digest of the foundations `F1`–`F8`, which are canonical.
 The look is the OneOhm official design system as the approved canvas (§6) draws it: calm, premium,
 minimal. A neutral canvas with a soft logo-colour glow at the top; white cards; one *solar glass*
 hero per screen (white lit by the logo's green, teal and blue, a faint PV-cell grid in the lit
-corner, a 2 px logo-gradient top line); Newsreader for titles and hero figures, Geist for UI text,
-Geist Mono for phones, IDs and money in lists; status always glyph + word + tint, never colour
+corner, a 2 px logo-gradient top line); Newsreader for titles, Geist for UI text, Geist Mono for
+phones and IDs (money's type is §9); status always glyph + word + tint, never colour
 alone; the active sidebar item `nav-active` (ink pill in light, soft accent wash in dark); the primary action the ocean accent. One typed token
 source, `packages/theme/src/tokens/`, holds every value; `packages/ui` builds every component on it.
 

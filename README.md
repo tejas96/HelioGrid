@@ -68,7 +68,7 @@ authoritative doc for that layer; this table is only the index.
 | `docs/` | How THIS REPO is built — architecture, tech stack, gates, ADRs | — |
 | `docs/prd/` | **What the product does** — product overview, personas, journey, 8 foundations, 13 modules, and the screens register | — |
 | `docs/tasks/` | Per-module build tasks, written to as work completes | — |
-| `.claude/` | The `/task` skill, its helper agents, rules, the protections map and the dev-server launch file | [CLAUDE.md](CLAUDE.md) §6 |
+| `.claude/` | The review and QA agents, rules, the protections map and the dev-server launch file | [CLAUDE.md](CLAUDE.md) §6 |
 
 ## Prerequisites
 
@@ -353,8 +353,8 @@ every test) — run it once before considering any non-trivial change done. See
 
 ## Git workflow
 
-Work starts on a branch off `main` and ends with a PR. The owner approves the RFC and every commit;
-Claude then pushes and opens the PR; the owner merges. `main` is PR-only. A PR is one complete task, never half of one. Full detail:
+Work starts on a branch off `main` and ends with a PR. The owner approves the plan and every commit;
+Claude then pushes and opens the PR; the owner merges. `main` is PR-only. A PR is one complete block of the build order, never half of one. Full detail:
 [`CLAUDE.md`](CLAUDE.md) §3, §4.
 
 ## Where to find things

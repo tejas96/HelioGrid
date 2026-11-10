@@ -6,7 +6,7 @@ import { settledBox } from '../support/layout';
 import { FirstRunProfileAt } from './FirstRunProfile.story';
 
 /**
- * First-Run Profile (`SCR-M01-09`): every frame of the RFC's map at 375 and 1536 — the name the
+ * First-Run Profile (`SCR-M01-09`): every frame of the owner's picked sample at 375 and 1536 — the name the
  * inviter typed, the photo, the one act — and the same screen in Hindi and Marathi.
  */
 const en = await createTranslator('en');

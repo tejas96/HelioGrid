@@ -20,7 +20,7 @@ pnpm --filter @heliogrid/invariants test     # reads the BUILT packages as they 
 pnpm turbo test                              # builds the packages first (`^build`), then runs
 ```
 
-Both need the test-database prefix (`.claude/skills/task/SKILL.md`, top); `src/run.ts` refuses a
+Both need the test-database prefix (`CLAUDE.md` §5); `src/run.ts` refuses a
 `heliogrid_dev` URL.
 
 ## Local conventions

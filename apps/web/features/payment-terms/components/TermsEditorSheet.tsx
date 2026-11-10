@@ -13,7 +13,7 @@ import { useRef } from 'react';
 
 type TermsPickerView = NonNullable<TermsEditorView['picker']>;
 
-/** The sheet's room from which it stands as a side panel instead (`SCR-M01-20` RFC §6). */
+/** The sheet's room from which it stands as a side panel instead (`SCR-M01-20`). */
 const PANEL_ABOVE = 720;
 
 /** The picker's sheet stands above the editor's, which stays open under it. */

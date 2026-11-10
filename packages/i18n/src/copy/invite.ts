@@ -20,7 +20,7 @@ import { REQUIRED_FIELD } from './validation';
 
 /**
  * Invite Teammate's words (`SCR-M01-07`), in both lives — Team's editor and the setup step. Every
- * word of the screen is here (the RFC's part a), so the parts that draw the refusals and the setup
+ * word of the screen is here, so the parts that draw the refusals and the setup
  * step add no catalog entries.
  */
 const INVITE = {

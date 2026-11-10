@@ -102,7 +102,7 @@ export function leadImportProgressOf(run: {
 /**
  * What happens to one row — in the preview, what the run will do with it under the choice; once
  * run, what it did (`M02-20`, `M02-21`). A row repeating an earlier row of the file follows the
- * duplicate choice once the first has landed (RFC decision 16).
+ * duplicate choice once the first has landed.
  */
 export type LeadImportRowFate =
   | 'new_lead'

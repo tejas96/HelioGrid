@@ -64,7 +64,7 @@ const sender = alias(userAccount, 'message_sender');
 const surveyor = alias(userAccount, 'visit_surveyor');
 
 /**
- * Customer messages as copy-paste text (`M02-33`, `M02-47`, `M02-48`, RFC decision 15) on the
+ * Customer messages as copy-paste text (`M02-33`, `M02-47`, `M02-48`) on the
  * runtime pool. Composing records "Message copied" on the timeline and claims no delivery; a visit
  * is messaged once — its confirmation, or for a no-show's successor its one reminder — and a second
  * compose for it answers the same words and records nothing (`reminder_composed_at`).

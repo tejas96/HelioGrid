@@ -40,8 +40,7 @@ export interface LeadDetailShown {
 
 /**
  * The lead read — never empty, as one record's is not — or `unavailable` when it answered 404: gone
- * from the reader's scope or removed, the honest landing a notice opened after a reassignment meets
- * (RFC decision 12).
+ * from the reader's scope or removed, the honest landing a notice opened after a reassignment meets.
  */
 export type LeadDetailRead =
   | Exclude<Read<LeadDetailShown>, { readonly kind: 'empty' }>

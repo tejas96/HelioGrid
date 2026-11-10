@@ -13,7 +13,6 @@ import { runLanguageFonts } from './language-fonts';
 import { runMatrixMirrorsF2 } from './matrix-mirrors-f2';
 import { runPrdRowsCited } from './prd-rows-cited';
 import { REPO_ROOT } from './repo-root';
-import { runRfcProofsHold } from './rfc-proofs-hold';
 import { runSchemaParity } from './schema-parity';
 import { runScreensRegisterWhole } from './screens-register-whole';
 import { runTableTenancyScan } from './table-tenancy-scan';
@@ -32,7 +31,7 @@ import { runVocabularyCopies } from './vocabulary-copies';
  * checks: vocabulary-copies, dockerfile-unprivileged,
  * banned-word-other-files, env-example-complete, language-fonts, e2e-flow-per-screen,
  * biome-plugin-scopes, build-order-holds, prd-rows-cited, capability-ids-cited,
- * screens-register-whole, ui-colour-pairs, rfc-proofs-hold.
+ * screens-register-whole, ui-colour-pairs.
  * Requires a migrated database via DATABASE_URL/DATABASE_ADMIN_URL; skips LOUDLY when
  * absent (CI always provides one — see .github/workflows/ci.yml).
  */
@@ -56,7 +55,6 @@ async function main() {
   runCapabilityIdsCited(REPO_ROOT); // static — every capability a task names is in the matrix
   runScreensRegisterWhole(REPO_ROOT); // static — every screen has its task, every row landed once
   runUiColourPairs(REPO_ROOT); // static — every colour ui sets on a background is a declared pair
-  runRfcProofsHold(REPO_ROOT); // static — a changed RFC's named tests exist, its deleted rows are gone
   const url = env.DATABASE_ADMIN_URL ?? env.DATABASE_URL;
   if (!url) {
     // Fail CLOSED in CI: a skipped invariant that reports success is worse than no
@@ -75,7 +73,7 @@ async function main() {
   // The database checks write seed rows, so the owner's development data is never their target.
   if ([env.DATABASE_ADMIN_URL, env.DATABASE_URL].some((each) => each?.includes('/heliogrid_dev'))) {
     throw new Error(
-      "INVARIANTS NOT RUN: a database URL names heliogrid_dev. Put /task's test-database prefix in front.",
+      'INVARIANTS NOT RUN: a database URL names heliogrid_dev. Put the test-database prefix (CLAUDE.md §5) in front.',
     );
   }
   const { tables, tenantTables, hasRlsSubjectRole } = await inspectDatabase(url);

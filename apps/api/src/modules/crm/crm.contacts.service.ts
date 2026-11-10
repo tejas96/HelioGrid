@@ -22,7 +22,7 @@ const notFound = () => new NotFoundException('No such customer, contact or label
 
 /**
  * A customer's contacts and the company's role labels (`M02-34`). A number already held by a
- * customer or a contact is refused with that record's facts, pointing to Merge (RFC decision 3).
+ * customer or a contact is refused with that record's facts, pointing to Merge.
  */
 @Injectable()
 export class CrmContactsService {

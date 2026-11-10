@@ -1,7 +1,8 @@
 # @heliogrid/db — append-only, tenant-scoped, fail-closed
 
 > Before a migration, read its task's Data model block in `docs/tasks/`. Numbers go in LANDING
-> order: a task landing out of sequence takes the next free number and fixes the docs that name it.
+> order: a branch whose merge of `origin/main` brings a migration renumbers its own after it, fixes
+> the docs that name it, and rebuilds `heliogrid_test` (`infra/README.md`).
 
 ## What lives here / what must never live here
 
@@ -32,7 +33,7 @@ then move it to `migrations/` as the next free `NNNN_<what>.sql`.
 
 `pnpm db:migrate` migrates the database `$DATABASE_ADMIN_URL` (else `$DATABASE_URL`) names in the
 SHELL, so load it in the same command: `set -a; . ./.env.local; set +a; pnpm db:migrate`. For
-`heliogrid_test`, use the test-database prefix (`.claude/skills/task/SKILL.md`, top) instead.
+`heliogrid_test`, use the test-database prefix (`CLAUDE.md` §5) instead.
 It prints the database it migrates before it applies anything, and refuses a URL typed after it.
 
 ## Rules

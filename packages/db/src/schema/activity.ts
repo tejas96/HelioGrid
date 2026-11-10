@@ -36,7 +36,7 @@ const instant = (name: string) => timestamp(name, { withTimezone: true, mode: 'd
  * server decides and the device clock never does (`F4-19`); `captured_at` is shown, never sorted by.
  * `actor_ref` carries no key, as the audit log's does not: an entry outlives what it names, and the
  * agent and the customer hold no account. A merge changes no entry: the survivor's stream reads every
- * customer merged into it (RFC decision 17).
+ * customer merged into it.
  *
  * An entry a person's create wrote — a call, a note, an enquiry, a message copied — carries that
  * create's retry key, so a retried send finds it (`F4-07`); an entry a create wrote beside its own

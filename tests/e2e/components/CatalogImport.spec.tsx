@@ -16,7 +16,7 @@ import { expectTouchFloor } from '../support/touch-target';
 import { CatalogImportAsRead, type ImportBoardFrame } from './CatalogImport.story';
 
 /**
- * The catalog import wizard (`SCR-M01-17`, RFC row P12): every board frame at 375 — the full sheet,
+ * The catalog import wizard (`SCR-M01-17`): every board frame at 375 — the full sheet,
  * or the auto sheet of the two waits — and at 1536 the 960px side panel, each with its title, its
  * step, its act as drawn, no sideways scroll, every control at the touch floor and no serious axe
  * finding; Hindi and Marathi at 375 with nothing clipped and the file's own words untouched; and

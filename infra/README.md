@@ -24,11 +24,19 @@ pnpm infra:reset   # down -v — destroys the volume
 
 **One Postgres container, four databases** (owner ruling 2026-08-27; the fourth 2026-10-05).
 `heliogrid-pg-local` on port `5544` holds `heliogrid_dev` (the owner's development data) and
-`heliogrid_test` (`/task` QA with its seeded QA companies, the local api tests, the local web flows
+`heliogrid_test` (live QA with its seeded QA companies, the local api tests, the local web flows
 and the invariants — disposable, but reseed the QA companies after a reset), both on the
 Drizzle migrations, plus `temporal` and `temporal_visibility` (owned by `temporal-sql-tool`). Two
 migration tools, separate databases, so neither can reach the other's tables — and the tenancy
 invariant scans the one database its URL names, because `pg_class` is per-database.
+
+A branch's first build rebuilds `heliogrid_test` empty, so no other branch's migration is left in
+it (`pnpm infra:up` first when `docker ps` does not list `heliogrid-pg-local`), then migrates it
+with the test-database prefix (`CLAUDE.md` §5):
+
+```bash
+docker exec heliogrid-pg-local psql -U heliogrid -d heliogrid_dev -v ON_ERROR_STOP=1 -c 'DROP DATABASE IF EXISTS heliogrid_test WITH (FORCE)' && docker exec -i heliogrid-pg-local psql -U heliogrid -d heliogrid_dev -v ON_ERROR_STOP=1 -f - < infra/postgres/init/03-test-database.sql
+```
 
 Roles and databases are provisioned by `infra/postgres/init/*.sql`, which Postgres runs once on
 an empty volume. Nothing is created by hand any more. Put these in `.env.local`:

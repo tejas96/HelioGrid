@@ -21,7 +21,7 @@ import type { LeadReader } from './internal/reader';
 
 /**
  * The survivor and every customer merged into it, at any depth — a chain of merges reads as one
- * stream (RFC decision 17). A customer nobody merged into is its own one-item list.
+ * stream. A customer nobody merged into is its own one-item list.
  */
 export async function customerIdsOf(
   tx: DbTransaction,

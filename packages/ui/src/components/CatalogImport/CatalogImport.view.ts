@@ -78,7 +78,7 @@ export function groupSampleOf(
 /**
  * Whether a *Which product is it?* card can be answered by its choice: the pick sends the
  * candidate's kind, so two candidates of one kind cannot be told apart and only *Leave out*
- * answers (RFC known difference 6).
+ * answers.
  */
 export function pickAnswers(card: ImportCardView): boolean {
   const kinds = card.options.map((option) => option.value);
