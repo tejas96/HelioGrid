@@ -25,8 +25,8 @@ interface NativeFilterChipsProps extends FilterChipsProps {
 
 /**
  * Kind and stage chips: 44dp pills — the pill is the target — in the control fill, flat, with an
- * optional 18dp glyph before the label; the chosen one is the near-black primary marker with
- * white words.
+ * optional 18dp glyph before the label; the chosen one is the accent wash with
+ * accent words.
  *
  * **One-of-N by construction** — `accessibilityRole="tablist"` with each chip a `tab` carrying
  * `selected`, the RN reading of the web half's `role="tablist"` + `aria-selected`. A dimension

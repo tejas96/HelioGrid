@@ -3,7 +3,7 @@
 
 .hg-lead-source {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--sp-1);
   min-width: 0;
   font-family: var(--font-sans);
@@ -14,6 +14,8 @@
 
 .hg-lead-source .hg-shell-glyph {
   flex-shrink: 0;
+  /* Level with the word's first line, should a narrow cell wrap it. */
+  margin-top: calc((1lh - var(--sp-4)) / 2);
 }
 
 .hg-lead-source-word {

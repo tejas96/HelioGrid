@@ -1,31 +1,33 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
-import { Text } from '../../primitives/Text/Text.native';
+import { AccountMenu } from '../AccountMenu/AccountMenu.native';
+import { AppearanceSwitch } from '../AppearanceSwitch/AppearanceSwitch.native';
 import type { RailAccount as RailAccountProps } from './AppRail.types';
 
 /**
- * The sidebar's foot: the person signed in — their avatar menu, name, role and company — and the
- * theme switch under them. Folded, the avatar alone.
+ * The sidebar's foot: the person signed in — one row, avatar, name, role and company, that opens
+ * their menu — and the theme switch under them. Folded, the theme's one button over the avatar.
  */
 export function RailAccount({ account, folded }: { account: RailAccountProps; folded: boolean }) {
-  if (folded) return <View style={styles.avatar}>{account.menu}</View>;
+  if (folded) {
+    return (
+      <View style={styles.avatar}>
+        {account.appearance === undefined ? null : (
+          <AppearanceSwitch {...account.appearance} form="step" />
+        )}
+        <AccountMenu {...account.menu} />
+      </View>
+    );
+  }
   return (
     <View style={styles.account}>
-      <View style={styles.who}>
-        {account.menu}
-        <View style={styles.words}>
-          <Text variant="body-sm" bold oneLine>
-            {account.name}
-          </Text>
-          {account.caption === undefined ? null : (
-            <Text variant="caption" color="secondary" oneLine>
-              {account.caption}
-            </Text>
-          )}
-        </View>
-      </View>
-      {account.appearance}
+      <AccountMenu
+        {...account.menu}
+        row={account.caption === undefined ? {} : { caption: account.caption }}
+      />
+      {account.appearance === undefined ? null : (
+        <AppearanceSwitch {...account.appearance} form="icons" />
+      )}
     </View>
   );
 }
@@ -33,22 +35,9 @@ export function RailAccount({ account, folded }: { account: RailAccountProps; fo
 const styles = StyleSheet.create({
   avatar: {
     alignItems: 'center',
+    gap: theme.spacing['sp-2'],
   },
   account: {
     gap: theme.spacing['sp-2'],
-    padding: theme.spacing['sp-2'],
-    borderRadius: theme.radius['r-tile'],
-    // biome-ignore lint/plugin/raw-white: the account block is a card on the sidebar
-    backgroundColor: colors.surface,
-    ...theme.elevation.e1,
-  },
-  who: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing['sp-2'],
-  },
-  words: {
-    flex: 1,
-    minWidth: 0,
   },
 });

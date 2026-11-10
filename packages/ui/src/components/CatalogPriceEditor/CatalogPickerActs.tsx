@@ -72,7 +72,7 @@ export function CatalogPickerActs({
   );
 }
 
-/** One glass toggle: its glyph and word, pressed while on (`aria-pressed`), the ink pill when on. */
+/** One glass toggle: its glyph and word, pressed while on (`aria-pressed`), the accent wash when on. */
 function PickToggle({
   glyph,
   word,

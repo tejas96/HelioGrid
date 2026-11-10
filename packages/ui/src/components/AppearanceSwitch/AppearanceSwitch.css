@@ -51,6 +51,17 @@
   }
 }
 
+/* The one-button form (`step`): the round button on the sunk track colour, tipped by its holder. */
+.hg-appearance-step {
+  position: relative;
+  display: inline-flex;
+  align-self: center;
+}
+
+.hg-appearance-step .hg-appearance-icon {
+  background: var(--canvas-sunken);
+}
+
 .hg-appearance-icon:focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;

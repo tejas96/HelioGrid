@@ -4,7 +4,9 @@ import type { LeadsListScreen } from '@heliogrid/data/react';
 import type { LeadsListRow, LeadsListSort, LeadsListView } from '@heliogrid/domain';
 import { DATA_TABLE, dataTableWords, type LeadsListWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
+import { theme } from '@heliogrid/theme';
 import {
+  Avatar,
   DataTable,
   type DataTableColumn,
   type DataTableSort,
@@ -22,16 +24,16 @@ type Row = LeadsListRow<LeadListRowWire>;
 
 /** The table's sortable columns and the list's orders they stand for; newest first is no column's. */
 const COLUMN_OF_SORT = { monthly_bill: 'bill', last_activity: 'lastActivity' } as const;
+const LIST_SORT_KEYS = Object.keys(COLUMN_OF_SORT) as (keyof typeof COLUMN_OF_SORT)[];
 
 function tableSortOf(sort: LeadsListSort): DataTableSort | null {
   return sort.key === 'created_at' ? null : { key: COLUMN_OF_SORT[sort.key], dir: sort.order };
 }
 
-function listSortOf(sort: DataTableSort): LeadsListSort {
-  return {
-    key: sort.key === COLUMN_OF_SORT.monthly_bill ? 'monthly_bill' : 'last_activity',
-    order: sort.dir,
-  };
+/** The list's order a header asks for; a column with no order of its own asks for none. */
+function listSortOf(sort: DataTableSort): LeadsListSort | null {
+  const key = LIST_SORT_KEYS.find((each) => COLUMN_OF_SORT[each] === sort.key);
+  return key === undefined ? null : { key, order: sort.dir };
 }
 
 /**
@@ -62,15 +64,18 @@ export function LeadsTable({
       key: 'lead',
       label: words.columns.lead,
       primary: true,
-      width: '24%',
+      width: '27%',
       render: ({ lead }) => (
-        <span className="hg-leads-list-lead">
-          <span className="hg-leads-list-lead-name">
-            {lead.name ?? <NamedGap gap={words.row.noName} scale="cell" />}
-          </span>
-          <span className="hg-leads-list-lead-sub">
-            <span className="hg-leads-list-mono">{format.phone(lead.phoneE164)}</span>
-            {lead.city ?? <NamedGap gap={words.row.noCity} scale="cell" />}
+        <span className="hg-leads-list-person">
+          <Avatar name={lead.name ?? undefined} size={theme.spacing['sp-8']} />
+          <span className="hg-leads-list-lead">
+            <span className="hg-leads-list-lead-name">
+              {lead.name ?? <NamedGap gap={words.row.noName} scale="cell" />}
+            </span>
+            <span className="hg-leads-list-lead-sub">
+              <span className="hg-leads-list-mono">{format.phone(lead.phoneE164)}</span>
+              {lead.city ?? <NamedGap gap={words.row.noCity} scale="cell" />}
+            </span>
           </span>
         </span>
       ),
@@ -78,7 +83,7 @@ export function LeadsTable({
     {
       key: 'stage',
       label: words.columns.stage,
-      width: '16%',
+      width: '13%',
       render: ({ lead }) => (
         <span className="hg-leads-list-stage">
           <StageTrack stage={lead.stage} size="sm" words={words.row.track} />
@@ -143,7 +148,10 @@ export function LeadsTable({
       onRowClick={(row) => onOpen(row.lead.id)}
       sortable
       sort={sort}
-      onSortChange={(next) => screen.setSort(listSortOf(next))}
+      onSortChange={(next) => {
+        const asked = listSortOf(next);
+        if (asked !== null) screen.setSort(asked);
+      }}
       read={{ kind: 'ready' }}
       words={dataTableWords(t)}
       emptyTitle={words.noMatch.title}

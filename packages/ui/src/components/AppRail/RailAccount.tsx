@@ -1,28 +1,31 @@
-import { Text } from '../../primitives/Text/Text';
+import { AccountMenu } from '../AccountMenu/AccountMenu';
+import { AppearanceSwitch } from '../AppearanceSwitch/AppearanceSwitch';
 import type { RailAccount as RailAccountProps } from './AppRail.types';
 
 /**
- * The sidebar's foot: the person signed in — their avatar menu, name, role and company — and the
- * theme switch under them. Folded, the avatar alone.
+ * The sidebar's foot: the person signed in — one row, avatar, name, role and company, that opens
+ * their menu — and the theme switch under them. Folded, the theme's one button over the avatar.
  */
 export function RailAccount({ account, folded }: { account: RailAccountProps; folded: boolean }) {
-  if (folded) return <div className="hg-app-rail-avatar">{account.menu}</div>;
+  if (folded) {
+    return (
+      <div className="hg-app-rail-avatar">
+        {account.appearance === undefined ? null : (
+          <AppearanceSwitch {...account.appearance} form="step" />
+        )}
+        <AccountMenu {...account.menu} />
+      </div>
+    );
+  }
   return (
     <div className="hg-app-rail-account">
-      <div className="hg-app-rail-account-who">
-        {account.menu}
-        <div className="hg-app-rail-account-words">
-          <Text variant="body-sm" bold oneLine>
-            {account.name}
-          </Text>
-          {account.caption === undefined ? null : (
-            <Text variant="caption" color="secondary" oneLine>
-              {account.caption}
-            </Text>
-          )}
-        </div>
-      </div>
-      {account.appearance}
+      <AccountMenu
+        {...account.menu}
+        row={account.caption === undefined ? {} : { caption: account.caption }}
+      />
+      {account.appearance === undefined ? null : (
+        <AppearanceSwitch {...account.appearance} form="icons" />
+      )}
     </div>
   );
 }

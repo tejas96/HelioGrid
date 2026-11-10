@@ -1,8 +1,6 @@
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import { IconButton } from '../IconButton';
-import { Menu } from '../Menu';
-import type { MenuItem } from '../Menu/Menu.types';
 import { PendingAction } from '../PendingAction';
 import { DOCK_ACTION_GLYPH, STATE_ACT_GLYPH } from './LeadActionDock.glyphs';
 import type {
@@ -15,7 +13,7 @@ import type {
 /**
  * The lead's five actions (`M02-32`): Call biggest and first — a `tel:` link, or off with why —
  * and Message, Log activity, Book visit and Create design beside it; under them the state acts the
- * lead's standing offers, with junk and the rest behind More.
+ * lead's standing offers; junk and the record's other acts are the hero's ⋯.
  */
 export function LeadActionDock({
   layout,
@@ -23,18 +21,9 @@ export function LeadActionDock({
   callLabel,
   acts,
   stateActs,
-  more,
-  moreLabel,
   standing,
 }: LeadActionDockProps) {
   const waiting = standing?.kind === 'waiting';
-  const junk = stateActs.find((each) => each.act === 'junk');
-  const items: MenuItem[] = [
-    ...(junk === undefined
-      ? []
-      : [{ key: 'junk', label: junk.label, destructive: true, onSelect: junk.onPress }]),
-    ...more.map((each) => ({ key: each.key, label: each.label, onSelect: each.onPress })),
-  ];
   return (
     <div className="hg-lead-dock" data-layout={layout}>
       <div className="hg-lead-dock-acts">
@@ -54,22 +43,19 @@ export function LeadActionDock({
         )}
       </div>
       <div className="hg-lead-dock-states">
-        {stateActs
-          .filter((each) => each.act !== 'junk')
-          .map((each) => (
-            <Button
-              key={each.act}
-              variant="secondary"
-              size="sm"
-              disabled={waiting}
-              loading={standing?.kind === 'waiting' && standing.act === each.act}
-              icon={<ShellGlyph name={STATE_ACT_GLYPH[each.act]} size="sm" tone="secondary" />}
-              onClick={each.onPress}
-            >
-              {each.label}
-            </Button>
-          ))}
-        {items.length === 0 ? null : <Menu label={moreLabel} items={items} disabled={waiting} />}
+        {stateActs.map((each) => (
+          <Button
+            key={each.act}
+            variant="secondary"
+            size="sm"
+            disabled={waiting}
+            loading={standing?.kind === 'waiting' && standing.act === each.act}
+            icon={<ShellGlyph name={STATE_ACT_GLYPH[each.act]} size="sm" tone="secondary" />}
+            onClick={each.onPress}
+          >
+            {each.label}
+          </Button>
+        ))}
       </div>
       <Standing standing={standing} />
     </div>

@@ -3,11 +3,11 @@ import type { SearchGroupView } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
 import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { CardRows } from '../CardRows/CardRows.native';
+import { EmptyScene } from '../EmptyScene/EmptyScene.native';
 import { FailedRead } from '../EmptyState/FailedRead.native';
 import { LoadingBars } from '../LoadingBars/LoadingBars.native';
 import { useFormat } from '../MarketProvider/market-context';
@@ -51,13 +51,13 @@ export function SearchResults<Failure>(props: SearchResultsProps<Failure>) {
 function SearchNote({ title, body }: { title: TranslatedText; body: TranslatedText }) {
   return (
     <View style={styles.note}>
-      <View style={styles.noteMark}>
-        <ShellGlyph name="search" size="md" tone="secondary" />
-      </View>
+      <EmptyScene name="search" />
       <View accessibilityRole="header">
-        <Text variant="h3">{title}</Text>
+        <Text variant="h3" align="center">
+          {title}
+        </Text>
       </View>
-      <Text variant="body" color="secondary">
+      <Text variant="body" color="secondary" align="center">
         {body}
       </Text>
     </View>
@@ -118,17 +118,9 @@ const styles = StyleSheet.create({
     marginStart: 'auto',
   },
   note: {
-    alignItems: 'flex-start',
-    gap: theme.spacing['sp-2'],
-    paddingVertical: theme.spacing['sp-4'],
-    paddingHorizontal: theme.spacing['sp-1'],
-  },
-  noteMark: {
     alignItems: 'center',
-    justifyContent: 'center',
-    width: theme.spacing['sp-10'],
-    height: theme.spacing['sp-10'],
-    borderRadius: theme.radius['r-pill'],
-    backgroundColor: colors.fill,
+    gap: theme.spacing['sp-2'],
+    paddingVertical: theme.spacing['sp-12'],
+    paddingHorizontal: theme.spacing['sp-1'],
   },
 });

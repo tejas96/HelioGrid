@@ -57,7 +57,7 @@ export function TableStates<Row>({
     emptyTitle,
     emptyDescription,
     emptyAction,
-    emptyMoment,
+    emptyScene,
     errorTitle,
     errorMessage,
     retryLabel,
@@ -92,7 +92,7 @@ export function TableStates<Row>({
           title={emptyTitle}
           message={emptyDescription}
           action={emptyAction}
-          moment={emptyMoment}
+          scene={emptyScene}
           focusAfter={focusAfter}
         />
       ) : null}

@@ -22,6 +22,8 @@ export interface AppearanceSwitchProps {
   /**
    * `section` (the default): Profile & preferences' row, its title, label and caption beside the
    * icons. `icons`: the three icons alone, named by `words.label` — the sidebar's account block.
+   * `step`: one round button showing the choice in force, each press moving to the next — the
+   * folded sidebar, too narrow for three; it is named by `words.label` and the choice's word.
    */
-  readonly form?: 'section' | 'icons';
+  readonly form?: 'section' | 'icons' | 'step';
 }

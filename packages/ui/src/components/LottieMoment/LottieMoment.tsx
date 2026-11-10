@@ -11,10 +11,6 @@ const MOMENTS: Readonly<Record<LottieMomentName, () => Promise<{ default: unknow
   published: () => import('./moments/published.json'),
   sent: () => import('./moments/sent.json'),
   plan: () => import('./moments/plan.json'),
-  empty: () => import('./moments/empty.json'),
-  'empty-catalog': () => import('./moments/empty-catalog.json'),
-  'empty-team': () => import('./moments/empty-team.json'),
-  'empty-inbox': () => import('./moments/empty-inbox.json'),
 };
 
 interface Player {

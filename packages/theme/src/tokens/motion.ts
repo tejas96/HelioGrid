@@ -8,6 +8,8 @@ export const DURATION = {
   emphasised: 320,
   ambient: 500,
   data: 850,
+  /** An empty place's line drawing settling in (`EmptyScene`): slow enough to be seen, once. */
+  scene: 1200,
 } as const;
 
 /**
@@ -31,6 +33,7 @@ export const REDUCED_DURATION: Readonly<Record<keyof typeof DURATION, number>> =
   emphasised: 1,
   ambient: 1,
   data: 1,
+  scene: 1,
 };
 
 export const EASING = {

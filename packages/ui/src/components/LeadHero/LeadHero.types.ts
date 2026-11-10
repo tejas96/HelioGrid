@@ -32,6 +32,22 @@ export interface LeadHeroWords {
   readonly stepLine: TranslatedText;
   readonly nextLine: TranslatedText | null;
   readonly stageTrack: StageTrackWords;
+  /** The record menu's name — "More actions" — and its acts' words. */
+  readonly recordActs: {
+    readonly label: TranslatedText;
+    readonly addReferral: TranslatedText;
+    readonly merge: TranslatedText;
+    readonly junk: TranslatedText;
+  };
+}
+
+/** An act on the whole record — not today's work — so it waits behind the hero's ⋯ menu. */
+export type LeadRecordAct = 'add-referral' | 'merge' | 'junk';
+
+/** One act the record menu offers; `leadRecordMenuOf` puts them in order. */
+export interface LeadRecordActPress {
+  readonly act: LeadRecordAct;
+  readonly onPress: () => void;
 }
 
 /** The record's own facts, as the desktop hero draws them under its name. */
@@ -54,7 +70,7 @@ export interface LeadHeroValue {
  * The lead's one hero (`SCR-M02-04`, `M02-32`): solar glass holding the stage, the deal, where it
  * came from and who has it, any parked state and failed tries, the value — a named gap until a
  * proposal supplies one — and the eight-step track with where it goes next. The owner chip opens
- * the assign picker. The phone draws the name, number and city as its large title, so `identity`
+ * the assign picker; the ⋯ in its corner holds the acts on the whole record. The phone draws the name, number and city as its large title, so `identity`
  * is the desktop's.
  */
 export interface LeadHeroProps {
@@ -69,5 +85,9 @@ export interface LeadHeroProps {
   /** The owner by name — a fact — for the chip's face; null while the lead waits unassigned. */
   readonly ownerName: string | null;
   readonly value: LeadHeroValue | null;
+  /** The acts the record menu offers — empty draws no menu. */
+  readonly recordActs: readonly LeadRecordActPress[];
+  /** Off while a state act is out, as the dock's state acts are. */
+  readonly recordActsOff: boolean;
   readonly words: LeadHeroWords;
 }

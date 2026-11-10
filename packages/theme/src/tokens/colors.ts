@@ -27,9 +27,12 @@ export const COLOR_TOKENS = [
   'text-disabled',
   'text-inverse',
   'mark-subtle',
-  // The ink pill: the active nav item, a tooltip.
+  // The ink pill: a tooltip. A chosen filter is the accent wash (`accent-subtle`, `accent-text`).
   'ink',
   'on-ink',
+  // The sidebar item in view: the ink pill on light paper, a soft accent wash in the dark.
+  'nav-active',
+  'on-nav-active',
   // The logo's colours.
   'brand-green',
   'brand-teal',
@@ -114,6 +117,8 @@ export const LIGHT: ThemePalette = {
   'mark-subtle': '#7E8691',
   ink: '#14171A',
   'on-ink': '#F5F6F8',
+  'nav-active': '#14171A',
+  'on-nav-active': '#F5F6F8',
   'brand-green': '#56BD39',
   'brand-teal': '#21998C',
   'brand-blue': '#0078B9',
@@ -190,6 +195,8 @@ export const DARK: ThemePalette = {
   'mark-subtle': '#7C848E',
   ink: '#ECEEF0',
   'on-ink': '#0F1113',
+  'nav-active': '#10283A',
+  'on-nav-active': '#A6D8F4',
   'brand-green': '#56BD39',
   'brand-teal': '#21998C',
   'brand-blue': '#0078B9',

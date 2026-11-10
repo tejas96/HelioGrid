@@ -29,7 +29,7 @@ export type StageMeterForm = 'card' | 'band';
 /**
  * **The pipeline by stage** (`SCR-M02-03`, `M02-41`): the shape of the open funnel at a glance, each
  * stage's count a button that filters the list to it — pressed again, it lets go. The chosen stage
- * is the ink pill; the bar is a picture of the counts beside it, never their only carrier.
+ * is the accent wash; the bar is a picture of the counts beside it, never their only carrier.
  */
 export interface StageMeterProps {
   /** The open funnel in order, a stage with none counted 0 — the caller never drops one. */

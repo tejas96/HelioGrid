@@ -131,7 +131,7 @@ function Choices({ question, view, failedValue, onAnswer, words }: ChoicesProps)
             ]}
           >
             {failed ? <ShellGlyph name="alert" size="sm" tone="danger" /> : null}
-            <Text variant="body-sm" color={chosen ? 'inverse' : 'primary'}>
+            <Text variant="body-sm" style={chosen ? styles.chosenWords : undefined}>
               {words.choice(question, value)}
             </Text>
           </Pressable>
@@ -163,7 +163,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-4'],
     borderRadius: theme.radius['r-pill'],
   },
-  chosen: { backgroundColor: colors.ink },
+  /* The chosen answer is the accent wash, as the web's chosen Chip is. */
+  chosen: { backgroundColor: colors['accent-subtle'] },
+  chosenWords: { color: colors['accent-text'] },
   failedChoice: { borderWidth: 1, borderColor: colors['danger-text'] },
   fail: {
     flexDirection: 'row',

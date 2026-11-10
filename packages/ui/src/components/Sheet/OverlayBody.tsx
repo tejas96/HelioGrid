@@ -19,7 +19,7 @@ export function OverlayBody({
   children,
   emptyAction,
   emptyMessage,
-  emptyMoment,
+  emptyScene,
   emptyTitle,
   errorMessage,
   errorTitle,
@@ -68,7 +68,7 @@ export function OverlayBody({
       <OverlayEmpty
         action={emptyAction}
         message={emptyMessage}
-        moment={emptyMoment}
+        scene={emptyScene}
         title={emptyTitle}
         variant={variant}
       />

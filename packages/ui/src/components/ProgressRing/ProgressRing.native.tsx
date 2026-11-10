@@ -7,7 +7,7 @@ import { usePalette } from '../../primitives/Color/use-palette.native';
 import { Text } from '../../primitives/Text';
 import { useReducedMotion } from '../../primitives/use-reduced-motion.native';
 import { RollingNumber } from '../RollingNumber/RollingNumber.native';
-import { RING_SIDE, RING_STROKE, ringShare } from './ProgressRing.logic';
+import { RING_SIDE, RING_STROKE, ringArcOf } from './ProgressRing.logic';
 import type { ProgressRingProps } from './ProgressRing.types';
 
 const [x1, y1, x2, y2] = theme.motion.easings.enter;
@@ -44,9 +44,7 @@ export function ProgressRing({
   }, [turn, reduced]);
 
   const side = RING_SIDE[size];
-  const radius = (side - RING_STROKE) / 2;
-  const length = 2 * Math.PI * radius;
-  const arc = length * ringShare(share);
+  const { radius, length, arc } = ringArcOf(side, RING_STROKE, share);
   const sweep = {
     opacity: turn,
     transform: [

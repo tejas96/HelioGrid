@@ -42,7 +42,7 @@ function Tick({ title }: { title: TranslatedText }) {
 
 /**
  * **Multi-select chips — how a dimension holds several values.** The kind chips' 44px pill — the
- * pill is the target. Selected chips take the near-black primary fill *and a tick*, so a set is
+ * pill is the target. Selected chips take the accent wash *and a tick*, so a set is
  * readable without hue; an option's 18px glyph shows only while it is not selected, where the tick
  * takes its place.
  *

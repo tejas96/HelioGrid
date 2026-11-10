@@ -34,7 +34,8 @@ cannot. The invariants run later, in the gate.
    races and double submits, a swallowed error, a list read with no limit, leaks and needless
    re-renders, focus lost when a control removes itself, and a web half and a phone half that act
    differently. A value the server words in its reader's language is cached per language, and a
-   whole-record save never stores it back as the company's own.
+   whole-record save never stores it back as the company's own. Under `pipefail`, a pipe into
+   `grep -q` reads a match as a failure once the writer outlives grep; feed it a here-string.
 3. **The rules no machine checks.** `awk -F'|' 'NF > 2 && $(NF-1) ~ /review/' .claude/protections.md` lists
    them; check each one this change reaches, and skip those about the session's own steps. A
    screen is checked against its picked sample and the design language (`CLAUDE.md` §10, the end-user

@@ -32,7 +32,7 @@ function OverlayState({
   children,
   emptyAction,
   emptyMessage,
-  emptyMoment,
+  emptyScene,
   emptyTitle,
   errorMessage,
   errorTitle,
@@ -81,7 +81,7 @@ function OverlayState({
       <OverlayEmpty
         action={emptyAction}
         message={emptyMessage}
-        moment={emptyMoment}
+        scene={emptyScene}
         title={emptyTitle}
         variant={variant}
       />

@@ -206,7 +206,7 @@ minimal. A neutral canvas with a soft logo-colour glow at the top; white cards; 
 hero per screen (white lit by the logo's green, teal and blue, a faint PV-cell grid in the lit
 corner, a 2 px logo-gradient top line); Newsreader for titles and hero figures, Geist for UI text,
 Geist Mono for phones, IDs and money in lists; status always glyph + word + tint, never colour
-alone; the active nav item a solid ink pill; the primary action the ocean accent. One typed token
+alone; the active sidebar item `nav-active` (ink pill in light, soft accent wash in dark); the primary action the ocean accent. One typed token
 source, `packages/theme/src/tokens/`, holds every value; `packages/ui` builds every component on it.
 
 - **OneOhm is the start, not the ceiling.** Where it is weak — a component, a state, accessibility,

@@ -1,8 +1,7 @@
 /* The element base: the page, its glow and the global focus ring. Every value is a token. */
 /* Glass: what a tile, a sheet or a bar is made of — a frosted part of the page, mixed from the card
    colour so it follows light, dark and field mode. `--glass-edge` is the 1 px light on its top
-   edge; `--grid-line` the solar grid's cell lines; `--thumb` the raised part of a switch (a segment
-   in view), which in dark must be LIGHTER than its recessed track or it cannot be seen. Field mode (sunlight) turns the frost and the
+   edge; `--grid-line` the solar grid's cell lines. Field mode (sunlight) turns the frost and the
    grid off: every edge there is a line, never a shade. */
 :root {
   /* biome-ignore lint/plugin/raw-white-css: glass — frosted from the card colour, as a tile is */
@@ -13,8 +12,6 @@
   --glass-edge: color-mix(in srgb, var(--surface) 96%, transparent);
   --glass-blur: saturate(1.5) blur(18px);
   --grid-line: color-mix(in srgb, var(--accent) 12%, transparent);
-  /* biome-ignore lint/plugin/raw-white-css: control — a switch's raised part is the card colour in light */
-  --thumb: var(--surface);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -24,7 +21,6 @@
     --glass-strong: color-mix(in srgb, var(--surface) 90%, transparent);
     --glass-edge: color-mix(in srgb, var(--ink) 9%, transparent);
     --grid-line: color-mix(in srgb, var(--accent) 10%, transparent);
-    --thumb: var(--line-strong);
   }
 }
 :root[data-theme="dark"] {
@@ -34,7 +30,6 @@
   --glass-strong: color-mix(in srgb, var(--surface) 90%, transparent);
   --glass-edge: color-mix(in srgb, var(--ink) 9%, transparent);
   --grid-line: color-mix(in srgb, var(--accent) 10%, transparent);
-  --thumb: var(--line-strong);
 }
 :root[data-field-mode="on"],
 [data-field-mode="on"] {
@@ -45,8 +40,6 @@
   --glass-edge: transparent;
   --glass-blur: none;
   --grid-line: transparent;
-  /* biome-ignore lint/plugin/raw-white-css: control — in sunlight a switch's raised part is the card colour */
-  --thumb: var(--surface);
 }
 /* The solar grid below leans back in 3D, so its near edge grows wider than a phone: the page clips
    it sideways, or a phone browser widens its layout and a fixed bottom pill falls below the fold. */

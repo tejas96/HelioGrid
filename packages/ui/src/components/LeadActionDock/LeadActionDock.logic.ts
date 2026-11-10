@@ -1,10 +1,6 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import type { DialBlock, LeadDetailView, LeadStateAct } from '@heliogrid/domain';
-import type {
-  LeadActionDockProps,
-  LeadDockMoreAct,
-  LeadDockStateStanding,
-} from './LeadActionDock.types';
+import type { LeadActionDockProps, LeadDockStateStanding } from './LeadActionDock.types';
 
 /** The dock's words, built in `@heliogrid/i18n` (`leadDockWords`). */
 export interface LeadDockWords {
@@ -18,9 +14,6 @@ export interface LeadDockWords {
   readonly closedNoVisit: TranslatedText;
   readonly stateAct: (act: LeadStateAct) => TranslatedText;
   readonly stateActWaiting: (act: Extract<LeadStateAct, 'wake' | 'reopen'>) => TranslatedText;
-  readonly moreActs: TranslatedText;
-  readonly addReferral: TranslatedText;
-  readonly merge: TranslatedText;
 }
 
 /** What each of the dock's acts opens — the screen's sheets and moves. */
@@ -29,9 +22,6 @@ export interface LeadDockPresses {
   readonly log: () => void;
   readonly visit: () => void;
   readonly stateAct: (act: LeadStateAct) => void;
-  readonly addReferral: () => void;
-  /** Merge with another customer; null where the screen has no way to it yet. */
-  readonly merge: (() => void) | null;
 }
 
 /** A sheet-less state act out now, or come back undone with the sentence saying why. */
@@ -46,7 +36,7 @@ export type LeadDockQuickStanding =
 /**
  * The dock's props from domain's view of the lead: Call or why not, the four acts with why one is
  * off — Create design until the studio lands, Book visit while the lead is closed — the state acts
- * its standing offers, and the More menu.
+ * its standing offers but junk, which the hero's record menu holds.
  */
 export function leadDockOf(
   view: LeadDetailView,
@@ -54,12 +44,6 @@ export function leadDockOf(
   presses: LeadDockPresses,
   quick: LeadDockQuickStanding | null,
 ): Omit<LeadActionDockProps, 'layout'> {
-  const more: LeadDockMoreAct[] = [
-    { key: 'add-referral', label: words.addReferral, onPress: presses.addReferral },
-  ];
-  if (presses.merge !== null) {
-    more.push({ key: 'merge', label: words.merge, onPress: presses.merge });
-  }
   const standing: LeadDockStateStanding | null =
     quick === null
       ? null
@@ -83,13 +67,13 @@ export function leadDockOf(
       },
       { action: 'design', ...words.design, disabledReason: words.designLater, onPress: () => {} },
     ],
-    stateActs: view.acts.stateActs.map((act) => ({
-      act,
-      label: words.stateAct(act),
-      onPress: () => presses.stateAct(act),
-    })),
-    more,
-    moreLabel: words.moreActs,
+    stateActs: view.acts.stateActs
+      .filter((act) => act !== 'junk')
+      .map((act) => ({
+        act,
+        label: words.stateAct(act),
+        onPress: () => presses.stateAct(act),
+      })),
     standing,
   };
 }

@@ -64,7 +64,9 @@ jobs:
           fi
           lane() { # lane <output> <path regex>
             local on=false
-            if [ "$all" = true ] || printf '%s\n' "$files" | grep -qE "$2"; then on=true; fi
+            # A here-string, never a pipe: grep -q stops at its first match, the writer then dies on
+            # the closed pipe, and pipefail reads that as "no match" — a big PR skipped every lane.
+            if [ "$all" = true ] || grep -qE "$2" <<<"$files"; then on=true; fi
             echo "$1=$on" >> "$GITHUB_OUTPUT"
             echo "$1: $on"
           }

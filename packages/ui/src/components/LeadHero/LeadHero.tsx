@@ -1,18 +1,20 @@
-import { Pressable } from '../../primitives/Pressable';
 import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Avatar } from '../Avatar';
+import { Button } from '../Button';
 import { HeroPanel } from '../HeroPanel';
 import { LeadSourceMark } from '../LeadSourceMark';
 import { LeadStateBadge } from '../LeadStateBadge';
 import { NamedGap } from '../NamedGap';
 import { ProvenanceTier } from '../Provenance';
 import { StageTrack } from '../StageTrack';
+import { leadRecordMenuOf } from './LeadHero.logic';
 import type { LeadHeroIdentity, LeadHeroProps, LeadHeroValue } from './LeadHero.types';
 
 /**
  * The lead's one hero (`SCR-M02-04`): who it is on the desktop, the stage, the deal, where it came
- * from and who has it — the owner chip opens the assign picker — any parked state and failed tries,
+ * from and who has it — the owner chip opens the assign picker — the ⋯ record menu, any parked state and failed tries,
  * the value or its named gap, and the eight-step track with where the lead goes next.
  */
 export function LeadHero({
@@ -23,37 +25,14 @@ export function LeadHero({
   onOwner,
   ownerName,
   value,
+  recordActs,
+  recordActsOff,
   words,
 }: LeadHeroProps) {
   return (
-    <HeroPanel>
+    <HeroPanel menu={leadRecordMenuOf({ recordActs, recordActsOff, words }, recordGlyph)}>
       {identity === null ? null : <Identity identity={identity} words={words} />}
-      <div className="hg-lead-hero-chips">
-        <StatusMark tone="accent" label={words.stage} />
-        {words.segment === null ? null : <span className="hg-lead-hero-chip">{words.segment}</span>}
-        {words.cameFrom === null ? (
-          <span className="hg-lead-hero-chip">
-            <LeadSourceMark source={source} label={words.source} />
-          </span>
-        ) : (
-          <span className="hg-lead-hero-chip">
-            <ShellGlyph name="link" size="sm" tone="secondary" />
-            {words.cameFrom}
-          </span>
-        )}
-        <Pressable
-          className="hg-lead-hero-owner"
-          accessibilityLabel={words.ownerSpoken}
-          onPress={onOwner}
-        >
-          {ownerName === null ? (
-            <ShellGlyph name="user-plus" size="sm" tone="secondary" />
-          ) : (
-            <Avatar name={ownerName} size={24} />
-          )}
-          <span aria-hidden="true">{words.owner}</span>
-        </Pressable>
-      </div>
+      <Chips source={source} onOwner={onOwner} ownerName={ownerName} words={words} />
       {words.state === null && words.tries === null ? null : (
         <div className="hg-lead-hero-chips">
           {lifecycleState === null || words.state === null ? null : (
@@ -71,6 +50,47 @@ export function LeadHero({
         </div>
       </div>
     </HeroPanel>
+  );
+}
+
+/** The stage, the deal, where it came from, and the owner chip that opens the assign picker. */
+function Chips({
+  source,
+  onOwner,
+  ownerName,
+  words,
+}: Pick<LeadHeroProps, 'source' | 'onOwner' | 'ownerName' | 'words'>) {
+  return (
+    <div className="hg-lead-hero-chips">
+      <StatusMark tone="accent" label={words.stage} />
+      {words.segment === null ? null : <span className="hg-lead-hero-chip">{words.segment}</span>}
+      {words.cameFrom === null ? (
+        <span className="hg-lead-hero-chip">
+          <LeadSourceMark source={source} label={words.source} />
+        </span>
+      ) : (
+        <span className="hg-lead-hero-chip">
+          <ShellGlyph name="link" size="sm" tone="secondary" />
+          {words.cameFrom}
+        </span>
+      )}
+      <Button
+        variant="secondary"
+        size="sm"
+        spokenName={words.ownerSpoken}
+        icon={
+          ownerName === null ? (
+            <ShellGlyph name="person-plus" size="sm" tone="accent" />
+          ) : (
+            <Avatar name={ownerName} size={24} />
+          )
+        }
+        iconRight={<ShellGlyph name="caret-down" size="sm" tone="secondary" />}
+        onClick={onOwner}
+      >
+        {words.owner}
+      </Button>
+    </div>
   );
 }
 
@@ -117,3 +137,5 @@ function Value({ value, words }: { value: LeadHeroValue | null; words: LeadHeroP
     </div>
   );
 }
+
+const recordGlyph = (name: ShellGlyphName) => <ShellGlyph name={name} size="sm" tone="secondary" />;

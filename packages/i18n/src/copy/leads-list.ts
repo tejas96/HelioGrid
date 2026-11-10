@@ -39,7 +39,7 @@ const LIST = {
     id: '{open, plural, one {# open} other {# open}} · {waiting, plural, one {# waiting in the inbox} other {# waiting in the inbox}}',
   },
   summaryFiltered: /*i18n*/ {
-    id: '{matching, plural, one {# match} other {# match}} · {filters, plural, one {# filter on} other {# filters on}}',
+    id: '{matching, plural, one {# match} other {# matches}} · {filters, plural, one {# filter on} other {# filters on}}',
   },
   whoseLabel: /*i18n*/ { id: 'Whose leads' },
   mine: /*i18n*/ { id: 'Mine' },

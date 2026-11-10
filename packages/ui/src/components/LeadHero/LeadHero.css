@@ -69,28 +69,6 @@
   color: var(--text-primary);
 }
 
-/* The owner's chip opens the picker: the chip's look on Pressable's 44 target. */
-.hg-lead-hero-owner {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: 0 var(--sp-3) 0 var(--sp-1);
-  border-radius: var(--r-pill);
-  background: var(--glass);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  box-shadow: 0 0 0 1px var(--line-soft);
-  font-family: var(--font-sans);
-  font-size: var(--fs-body-sm);
-  font-weight: var(--fw-medium);
-  color: var(--text-primary);
-  transition: box-shadow var(--dur-standard) var(--ease-standard);
-}
-
-.hg-lead-hero-owner:hover {
-  box-shadow: 0 0 0 1px var(--line-strong);
-}
-
 .hg-lead-hero-value {
   display: flex;
   flex-direction: column;

@@ -54,12 +54,9 @@ export function CardRow({
     <View
       role="listitem"
       accessibilityState={{ busy }}
-      style={[
-        styles.row,
-        first ? undefined : styles.hairline,
-        highlighted ? styles.highlighted : undefined,
-      ]}
+      style={[styles.row, first ? undefined : styles.hairline]}
     >
+      {highlighted ? <View style={styles.highlighted} pointerEvents="none" /> : null}
       <View style={styles.frame}>
         <AsideRoom.Provider value={acts === null ? 0 : asideWidth + theme.spacing['sp-2']}>
           {open === undefined ? (
@@ -94,7 +91,17 @@ const styles = StyleSheet.create({
   row: { borderRadius: theme.radius['r-tile'] },
   /* A clear line between two rows: a hairline all but vanished on the phone. */
   hairline: { borderTopWidth: 1, borderTopColor: colors['line-soft'] },
-  highlighted: { backgroundColor: colors['accent-subtle'] },
+  /* The highlight inset from the row's top and bottom, as the web's: a filled row beside another
+     keeps a gap and never reads as one block with it. */
+  highlighted: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: theme.spacing['sp-0-5'],
+    bottom: theme.spacing['sp-0-5'],
+    borderRadius: theme.radius['r-tile'],
+    backgroundColor: colors['accent-subtle'],
+  },
   frame: { position: 'relative' },
   /* `Pressable`'s base centres a target; a row lays its parts out from the start. */
   body: {

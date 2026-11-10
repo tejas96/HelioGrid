@@ -36,8 +36,10 @@ export function NamedGap({
       data-align={align}
       style={style}
     >
-      <span className="hg-named-gap-ring" aria-hidden="true" />
-      <span className="hg-named-gap-words">{gap}</span>
+      <span className="hg-named-gap-mark">
+        <span className="hg-named-gap-ring" aria-hidden="true" />
+        <span className="hg-named-gap-words">{gap}</span>
+      </span>
       {act === null ? null : (
         <Pressable
           className="hg-named-gap-fill"

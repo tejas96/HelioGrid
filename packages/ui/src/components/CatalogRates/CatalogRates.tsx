@@ -62,7 +62,7 @@ function RatesReady({ props, wide }: { props: CatalogRatesProps; wide: boolean }
       {props.rates.length === 0 ? (
         <EmptyState
           glow={false}
-          moment="empty"
+          scene="settle"
           title={words.noRates}
           description={words.noRatesBody}
           action={

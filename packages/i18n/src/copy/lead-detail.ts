@@ -1,6 +1,6 @@
 /**
  * Lead Detail's words (`SCR-M02-04`, `M02-32`): the page's reads and its honest landing, the hero
- * (`packages/ui`'s `LeadHeroWords`), the five actions and the state acts (`LeadActionDock`). The
+ * (`packages/ui`'s `LeadHeroWords`) with its record menu, the five actions and the state acts (`LeadActionDock`). The
  * qualify card, contacts and sections are `lead-detail-parts.ts`; the sheets
  * `lead-detail-sheets.ts`; the timeline's entries `lead-timeline.ts`.
  */
@@ -16,6 +16,7 @@ import type { MessageRef, Translator } from '../runtime';
 import { shownAsSent } from './assembled';
 import { DEAL_SEGMENT_WORD, LEAD_STAGE_WORD } from './crm-vocabulary';
 import { leadSourceWord, leadStateLabel, stageTrackWords } from './lead-marks';
+import { MENU } from './menu';
 import { NOTIFICATION_CENTRE } from './notifications';
 import { SHELL } from './shell';
 
@@ -60,9 +61,8 @@ export const LEAD_DETAIL = {
   reopen: /*i18n*/ { id: 'Reopen' },
   waking: /*i18n*/ { id: 'Waking the lead…' },
   reopening: /*i18n*/ { id: 'Reopening the lead…' },
-  moreActs: /*i18n*/ { id: 'More acts' },
   addReferral: /*i18n*/ { id: 'Add a referral' },
-  merge: /*i18n*/ { id: 'Merge with another customer' },
+  merge: /*i18n*/ { id: 'Merge duplicate' },
 } as const;
 
 const STATE_ACT: Record<LeadStateAct, MessageRef> = {
@@ -154,6 +154,12 @@ export function leadHeroWords(t: T, facts: LeadHeroFacts) {
     nextLine:
       next === undefined ? null : t(LEAD_DETAIL.nextStage, { stage: t(LEAD_STAGE_WORD[next]) }),
     stageTrack: stageTrackWords(t),
+    recordActs: {
+      label: t(MENU.moreActions),
+      addReferral: t(LEAD_DETAIL.addReferral),
+      merge: t(LEAD_DETAIL.merge),
+      junk: t(LEAD_DETAIL.junk),
+    },
   };
 }
 
@@ -172,8 +178,5 @@ export function leadDockWords(t: T) {
     /** The line a sheet-less act draws while it is out. */
     stateActWaiting: (act: Extract<LeadStateAct, 'wake' | 'reopen'>): TranslatedText =>
       t(act === 'wake' ? LEAD_DETAIL.waking : LEAD_DETAIL.reopening),
-    moreActs: t(LEAD_DETAIL.moreActs),
-    addReferral: t(LEAD_DETAIL.addReferral),
-    merge: t(LEAD_DETAIL.merge),
   };
 }

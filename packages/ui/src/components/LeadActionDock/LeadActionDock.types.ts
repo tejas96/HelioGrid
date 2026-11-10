@@ -26,16 +26,9 @@ export interface LeadDockAct {
   readonly onPress: () => void;
 }
 
-/** One R9 act the lead's standing offers (`M02-51`…`M02-56`). Junk stands in the More menu. */
+/** One R9 act the lead's standing offers (`M02-51`…`M02-56`); junk is the hero's record menu's. */
 export interface LeadDockStateAct {
   readonly act: LeadStateAct;
-  readonly label: TranslatedText;
-  readonly onPress: () => void;
-}
-
-/** One more act behind the More menu — add a referral, merge with another customer. */
-export interface LeadDockMoreAct {
-  readonly key: string;
   readonly label: TranslatedText;
   readonly onPress: () => void;
 }
@@ -48,7 +41,7 @@ export type LeadDockStateStanding =
 /**
  * The lead's five actions (`M02-32`), Call first and biggest: on the web Call is a `tel:` link,
  * on the phone it opens the dialler — never a dial offer for a number that may not be called.
- * Under them the state acts the lead's standing offers, and the More menu.
+ * Under them the state acts the lead's standing offers.
  */
 export interface LeadActionDockProps {
   readonly layout: LeadActionDockLayout;
@@ -57,9 +50,6 @@ export interface LeadActionDockProps {
   /** Message, Log activity, Book visit and Create design, in that order. */
   readonly acts: readonly LeadDockAct[];
   readonly stateActs: readonly LeadDockStateAct[];
-  readonly more: readonly LeadDockMoreAct[];
-  /** The More menu's name — "More acts". */
-  readonly moreLabel: TranslatedText;
   /** A state act without a sheet (wake, reopen): out, or back undone with why; null otherwise. */
   readonly standing: LeadDockStateStanding | null;
 }

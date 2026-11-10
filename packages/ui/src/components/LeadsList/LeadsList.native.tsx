@@ -61,8 +61,7 @@ export function LeadsList(props: LeadsListProps) {
 function FirstRun({ words, onAdd, onImport }: LeadsListProps) {
   return (
     <EmptyState
-      align="start"
-      icon={<ShellGlyph name="people" size="lg" tone="accent" />}
+      scene="settle"
       title={words.firstRun.title}
       description={words.firstRun.body}
       action={
@@ -106,8 +105,7 @@ function NoMatch({
   );
   return (
     <EmptyState
-      align="start"
-      icon={<ShellGlyph name="search" size="lg" tone="secondary" />}
+      scene="filter"
       title={words.noMatch.title}
       {...(clearable ? { description: words.noMatch.body, action: clear } : {})}
     />

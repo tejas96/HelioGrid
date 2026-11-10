@@ -6,7 +6,7 @@ import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { SettingsSection, SettingsSectionRow } from '../SettingsSection/SettingsSection.native';
-import { appearanceOptions } from './AppearanceSwitch.logic';
+import { APPEARANCE_GLYPH, appearanceOptions, nextAppearance } from './AppearanceSwitch.logic';
 import type { AppearanceSwitchProps } from './AppearanceSwitch.types';
 
 export function AppearanceSwitch({
@@ -15,6 +15,7 @@ export function AppearanceSwitch({
   onChange,
   form = 'section',
 }: AppearanceSwitchProps) {
+  if (form === 'step') return <AppearanceStep words={words} value={value} onChange={onChange} />;
   const icons = <AppearanceIcons words={words} value={value} onChange={onChange} />;
   if (form === 'icons') return icons;
   return (
@@ -51,6 +52,24 @@ function AppearanceIcons({ words, value, onChange }: Omit<AppearanceSwitchProps,
   );
 }
 
+/**
+ * One round button: the choice in force as its icon, each press the next choice. It is named by the
+ * switch's label, and the choice's word is said after it.
+ */
+function AppearanceStep({ words, value, onChange }: Omit<AppearanceSwitchProps, 'form'>) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={words.label}
+      accessibilityHint={words.options[value]}
+      onPress={() => onChange(nextAppearance(value))}
+      style={[styles.icon, styles.step]}
+    >
+      <ShellGlyph name={APPEARANCE_GLYPH[value]} size="md" tone="secondary" />
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   track: {
     flexDirection: 'row',
@@ -68,6 +87,10 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
     borderWidth: 1,
     borderColor: 'transparent',
+  },
+  step: {
+    alignSelf: 'center',
+    backgroundColor: colors['canvas-sunken'],
   },
   chosen: {
     borderColor: colors['line-strong'],

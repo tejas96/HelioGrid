@@ -160,8 +160,9 @@
   transform: scale(var(--press-scale));
 }
 
-/* On: the ink pill, as a chosen chip is — never colour alone, the button also says it is pressed. */
+/* On: the accent wash, as every chosen option is — never colour alone, the button also says it is
+   pressed. */
 .hg-cat-pick-face[data-on="true"] {
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--accent-subtle);
+  color: var(--accent-text);
 }

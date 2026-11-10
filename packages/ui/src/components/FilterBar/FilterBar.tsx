@@ -22,7 +22,7 @@ interface WebFiltersButtonProps extends FiltersButtonProps {
   style?: CSSProperties;
 }
 
-/** Two-or-three-way scope switch. Active = near-black pill, the primary-action marker. */
+/** Two-or-three-way scope switch. Active = the accent wash, as every chosen filter is. */
 export function ScopeToggle({ options, value, onChange, className, style }: WebScopeToggleProps) {
   return (
     <div role="tablist" className={classNames('hg-scope-toggle', className)} style={style}>

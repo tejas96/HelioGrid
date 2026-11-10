@@ -141,22 +141,14 @@
   background: var(--fill);
 }
 
+/* Nothing found: the search scene over its words, centred as every empty state is. */
 .hg-search-note {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--sp-2);
-  padding: var(--sp-4) var(--sp-1);
-}
-
-.hg-search-note-mark {
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: var(--sp-10);
-  height: var(--sp-10);
-  border-radius: var(--r-pill);
-  background: var(--fill);
+  gap: var(--sp-2);
+  padding: var(--sp-12) var(--sp-1);
+  text-align: center;
 }
 
 .hg-search-note-title {

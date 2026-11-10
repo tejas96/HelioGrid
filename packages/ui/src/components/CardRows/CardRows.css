@@ -12,7 +12,27 @@
 
 .hg-card-row {
   position: relative;
+  isolation: isolate;
   border-radius: var(--r-tile);
+}
+
+/* The row's fill — its hover, or its highlight — inset from the row's top and bottom, so two
+   filled rows side by side keep a gap between them and never read as one block. It lies under the
+   target and the body; the target keeps the row's full height to press. */
+.hg-card-row::after {
+  content: "";
+  position: absolute;
+  inset: var(--sp-0-5) 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  transition: background-color var(--dur-micro) var(--ease-standard);
+}
+
+@media (hover: hover) {
+  .hg-card-row:has(> .hg-card-row-target:hover)::after {
+    background: var(--hg-control-fill);
+  }
 }
 
 /* The hairline between two rows, inset from the card's edge as a list's is. */
@@ -24,8 +44,9 @@
   border-top: 1px solid var(--line-soft);
 }
 
-/* The row just added, and the row whose detail is open beside the list, read as the chosen one. */
-.hg-card-row[data-highlighted="true"] {
+/* The row just added, and the row whose detail is open beside the list, read as the chosen one —
+   hovered or not. */
+.hg-card-row[data-highlighted="true"]::after {
   background: var(--accent-subtle);
 }
 
@@ -43,13 +64,6 @@
   border-radius: inherit;
   background: transparent;
   cursor: pointer;
-  transition: background-color var(--dur-micro) var(--ease-standard);
-}
-
-@media (hover: hover) {
-  .hg-card-row-target:hover {
-    background: var(--hg-control-fill);
-  }
 }
 
 .hg-card-row-target:focus-visible {

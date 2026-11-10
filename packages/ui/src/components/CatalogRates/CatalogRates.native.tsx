@@ -46,7 +46,7 @@ export function CatalogRates({ words, read, strip, rates, onAddFirst }: CatalogR
       {rates.length === 0 ? (
         <EmptyState
           glow={false}
-          moment="empty"
+          scene="settle"
           title={words.noRates}
           description={words.noRatesBody}
           action={

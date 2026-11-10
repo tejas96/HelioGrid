@@ -5,11 +5,17 @@ import { Avatar } from '../Avatar/Avatar.native';
 import { Menu } from '../Menu/Menu.native';
 import { accountMenuProps } from './AccountMenu.logic';
 import type { AccountMenuProps } from './AccountMenu.types';
+import { AccountRow } from './AccountRow.native';
 
 /** The avatar, filling its 44 button, and its menu: the grievance contact and sign-out. */
 export function AccountMenu(props: AccountMenuProps) {
   const avatar = <Avatar name={props.name} size={MIN_TOUCH_TARGET} />;
-  const trigger = <ShellAction round label={props.triggerName} icon={avatar} />;
+  const trigger =
+    props.row === undefined ? (
+      <ShellAction round label={props.triggerName} icon={avatar} />
+    ) : (
+      <AccountRow name={props.name} caption={props.row.caption} label={props.triggerName} />
+    );
   const grievanceGlyph = <ShellGlyph name="shield" size="md" />;
   return (
     <Menu

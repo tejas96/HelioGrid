@@ -59,7 +59,7 @@ export function NotificationCentre({ onClose, onGoToLeads }: NotificationCentreP
         modal={false}
         density="expressive"
         width={theme.layout['form-max']}
-        top="var(--header-h)"
+        top="var(--hg-shell-centre-top)"
         read={centre.read}
         loadingLabel={t(CARD.loading)}
         errorTitle={t(NOTIFICATION_CENTRE.errorTitle)}
@@ -67,7 +67,7 @@ export function NotificationCentre({ onClose, onGoToLeads }: NotificationCentreP
         retryLabel={t(NOTIFICATION_CENTRE.tryAgain)}
         emptyTitle={t(NOTIFICATION_CENTRE.emptyTitle)}
         emptyMessage={t(NOTIFICATION_CENTRE.emptyMessage)}
-        emptyMoment="empty-inbox"
+        emptyScene="settle"
         emptyAction={
           onGoToLeads === undefined ? null : (
             <Button variant="secondary" size="sm" onClick={onGoToLeads}>

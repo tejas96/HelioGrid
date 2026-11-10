@@ -181,7 +181,11 @@ function InvoicesBlock({
   if (invoices.empty !== null) {
     return (
       <Block title={words.invoices} density="expressive">
-        <BillingQuiet art="inbox" title={invoices.empty.title} message={invoices.empty.message} />
+        <BillingQuiet
+          art="none-yet"
+          title={invoices.empty.title}
+          message={invoices.empty.message}
+        />
       </Block>
     );
   }

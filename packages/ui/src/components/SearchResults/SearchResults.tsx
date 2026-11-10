@@ -3,6 +3,7 @@ import type { SearchGroupView } from '@heliogrid/domain';
 import { useId, useRef } from 'react';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { CardRows } from '../CardRows';
+import { EmptyScene } from '../EmptyScene/EmptyScene';
 import { FailedRead } from '../EmptyState';
 import { LoadingBars } from '../LoadingBars';
 import { useFormat } from '../MarketProvider/market-context';
@@ -52,9 +53,7 @@ export function SearchResults<Failure>(props: SearchResultsProps<Failure>) {
 function SearchNote({ title, body }: { title: TranslatedText; body: TranslatedText }) {
   return (
     <div className="hg-search-note">
-      <span className="hg-search-note-mark" aria-hidden="true">
-        <ShellGlyph name="search" size="md" tone="secondary" />
-      </span>
+      <EmptyScene name="search" />
       <p className="hg-search-note-title">{title}</p>
       <p className="hg-search-note-body">{body}</p>
     </div>

@@ -19,7 +19,7 @@ Every component draws the approved language (`CLAUDE.md` §10) from the typed to
   `Ground.css`'s tiles list; on the phone it spreads `tileSurface` and wraps
   `GroundProvider ground="tile"`. A tile keeps only its radius, padding and ring states. The one
   hero a screen has is `HeroPanel` (solar glass); a page's large title is `LargeTitle`; a moment
-  that matters is `LottieMoment`.
+  that matters is `LottieMoment`; a place with nothing in it is `EmptyScene`'s grey line drawing.
 - **Every colour comes from the `Color` primitive** (`colors`, `usePalette`): on the web a custom
   property, on the phone a system colour that follows light and dark. Hex arithmetic reads
   `theme.palettes` (light for anything printed), never a style colour.

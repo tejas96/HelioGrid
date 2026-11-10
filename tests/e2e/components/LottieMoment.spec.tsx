@@ -10,10 +10,6 @@ const ONCE: readonly LottieMomentName[] = [
   'published',
   'sent',
   'plan',
-  'empty',
-  'empty-catalog',
-  'empty-team',
-  'empty-inbox',
 ];
 
 /** The drawing as it stands now: the same twice, a moment apart, means nothing is moving. */

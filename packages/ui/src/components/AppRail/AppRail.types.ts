@@ -2,6 +2,8 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import type { ReactNode } from 'react';
 import { MIN_TOUCH_TARGET } from '../../primitives/Pressable/Pressable.types';
+import type { AccountMenuProps } from '../AccountMenu/AccountMenu.types';
+import type { AppearanceSwitchProps } from '../AppearanceSwitch/AppearanceSwitch.types';
 import type { CoachMarkAnchor } from '../CoachMark/CoachMark.types';
 
 export interface RailItem {
@@ -43,14 +45,18 @@ export interface RailItem {
 
 /** The account at the sidebar's foot: who is signed in, their menu, and the theme switch. */
 export interface RailAccount {
-  /** The avatar's menu (`AccountMenu`): it carries the initials and opens the account's acts. */
-  menu: ReactNode;
-  /** The person's name, as they gave it — a fact, shown as given. */
-  name: string;
+  /**
+   * The account's menu (`AccountMenu`), drawn by the rail: open, the whole row — avatar, name,
+   * caption and an up-down mark — opens it; folded, the avatar alone.
+   */
+  menu: Omit<AccountMenuProps, 'row'>;
   /** One quiet line under the name: the role and the company. */
   caption?: TranslatedText;
-  /** The Light / Dark / Device switch (`AppearanceSwitch` in its `icons` form). */
-  appearance?: ReactNode;
+  /**
+   * The Light / Dark / Device switch (`AppearanceSwitch`), drawn by the rail: open, its three
+   * icons; folded, its one button that steps to the next choice.
+   */
+  appearance?: Omit<AppearanceSwitchProps, 'form'>;
 }
 
 export interface AppRailProps {

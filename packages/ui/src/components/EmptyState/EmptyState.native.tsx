@@ -5,41 +5,40 @@ import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { BrandBloom } from '../BrandBloom/BrandBloom.native';
-import { LottieMoment } from '../LottieMoment/LottieMoment.native';
+import { EmptyScene } from '../EmptyScene/EmptyScene.native';
 import type { EmptyStateProps } from './EmptyState.types';
 
 interface NativeEmptyStateProps extends EmptyStateProps {
   style?: StyleProp<ViewStyle>;
 }
 
-/** Empty state with a soft brand bloom behind a large circular icon container. */
+/** Empty state: a calm line drawing, or a soft brand bloom behind a circular icon. */
 export function EmptyState({
   icon,
-  moment,
+  scene,
   title,
   description,
   action,
   glow = true,
-  align = 'center',
   style,
 }: NativeEmptyStateProps) {
   /* The icon well is the opposite of what holds it (`F7-15`) — see the web half. */
   const { controlFill } = useGround();
   return (
-    <View style={[styles.root, align === 'start' ? styles.atStart : undefined, style]}>
-      <View style={[styles.art, align === 'start' ? styles.atStart : undefined]}>
-        {glow ? <BrandBloom size={BLOOM_SIZE} /> : null}
+    <View style={[styles.root, style]}>
+      <View style={styles.art}>
+        {glow && scene === undefined ? <BrandBloom size={BLOOM_SIZE} /> : null}
         {/* No glyph, no circle — see the web half. */}
-        {moment === undefined ? null : <LottieMoment name={moment} size={96} />}
-        {icon && moment === undefined ? (
+        {scene === undefined ? null : <EmptyScene name={scene} />}
+        {icon && scene === undefined ? (
           <View style={[styles.icon, { backgroundColor: controlFill }]}>{icon}</View>
         ) : null}
       </View>
-      <Text variant="figure" align={align} style={styles.title}>
+      <Text variant="figure" align="center" style={styles.title}>
         {title}
       </Text>
       {description === undefined ? null : (
-        <Text variant="body-sm" color="secondary" align={align} style={styles.description}>
+        <Text variant="body-sm" color="secondary" align="center" style={styles.description}>
           {description}
         </Text>
       )}
@@ -80,5 +79,4 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing['sp-4'],
   },
   /** In a list the block starts where the rows would. */
-  atStart: { alignItems: 'flex-start', paddingHorizontal: 0 },
 });

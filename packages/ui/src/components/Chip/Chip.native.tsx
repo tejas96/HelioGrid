@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-pill'],
   },
-  /* The chip in force is the ink pill, as the active nav item is. */
-  chipActive: { backgroundColor: colors.ink },
+  /* The chip in force is the accent wash, as every chosen filter is. */
+  chipActive: { backgroundColor: colors['accent-subtle'] },
   /* A kind with nothing in it stays, quiet: a hairline pill on no fill. */
   chipEmpty: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors['line-soft'] },
   rest: { borderWidth: 1, borderColor: colors['line-soft'] },
@@ -62,11 +62,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors['line-tile'],
   },
-  /* On the ink the slot is an outline: no fill the phone can mix keeps the words readable there. */
+  /* On the wash the slot is an outline in the accent: no fill the phone can mix reads there. */
   countActive: {
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: colors['mark-subtle'],
+    borderColor: colors.accent,
   },
   countWords: { fontFamily: theme.type.families.mono, fontVariant: ['tabular-nums'] },
   dot: { width: DOT, height: DOT, borderRadius: theme.radius['r-pill'] },
@@ -74,10 +74,10 @@ const styles = StyleSheet.create({
   target: { flexShrink: 0, borderRadius: theme.radius['r-pill'] },
 });
 
-/* The ink pill's words: the page's own colour on the ink (`on-ink` on `ink`). */
-const onInk: TextStyle = { color: colors['on-ink'] };
+/* The chosen chip's words: the accent words on the accent wash. */
+const onWash: TextStyle = { color: colors['accent-text'] };
 
-/** The chip in force is the ink pill; a kind with nothing in it a quiet hairline; else the fill. */
+/** The chip in force is the accent wash; a kind with nothing in it a quiet hairline; else the fill. */
 function chipFill(active: boolean, count: number | undefined, controlFill: ThemeColor): ViewStyle {
   if (active) return styles.chipActive;
   if (count === 0) return styles.chipEmpty;
@@ -111,7 +111,7 @@ interface NativeBadgeProps extends BadgeProps {
 }
 
 /**
- * Fully-pill filter chip. Active = the ink pill; a `count` rides after the words.
+ * Fully-pill filter chip. Active = the accent wash; a `count` rides after the words.
  *
  * **With `onClick` it is a Pressable with a 44×44 hit box around the 28px (24px functional)
  * pill**, the extra height taken back as negative margin so no row grows. **Without `onClick` it
@@ -140,15 +140,14 @@ export function Chip({
         <View
           style={[
             styles.dot,
-            // biome-ignore lint/plugin/raw-white: on-accent — a knob or a mark on the accent or the dark fill
-            { backgroundColor: active ? colors['text-inverse'] : DOT_COLOR[tone] },
+            { backgroundColor: active ? colors['accent-text'] : DOT_COLOR[tone] },
           ]}
         />
       ) : null}
       <Text
         variant={density === 'expressive' ? 'body-sm' : 'caption'}
         color={count === 0 && !active ? 'secondary' : 'primary'}
-        style={active ? [medium, onInk] : medium}
+        style={active ? [medium, onWash] : medium}
       >
         {children}
       </Text>
@@ -157,7 +156,7 @@ export function Chip({
           <Text
             variant="caption"
             color="secondary"
-            style={active ? [styles.countWords, onInk] : styles.countWords}
+            style={active ? [styles.countWords, onWash] : styles.countWords}
           >
             {String(count)}
           </Text>

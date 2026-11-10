@@ -45,13 +45,6 @@ export const filterStyles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
 });
 
-/** Scope and chips are near-black when active (the primary-action marker); sort is accent. */
-const ACTIVE_FILL: Record<PillKind, ThemeColor> = {
-  scope: colors['action-primary'],
-  chip: colors['action-primary'],
-  sort: colors.accent,
-};
-
 /** Chips take the control fill, flat (`F7-15`); scope and sort are bare. */
 const TAKES_CONTROL_FILL: Record<PillKind, boolean> = {
   scope: false,
@@ -100,7 +93,7 @@ export function FilterPill({
         {
           height: PILL_HEIGHT[kind],
           paddingHorizontal: PADDING[kind],
-          backgroundColor: active ? ACTIVE_FILL[kind] : resting,
+          backgroundColor: active ? colors['accent-subtle'] : resting,
         },
         lead ? filterStyles.lead : undefined,
       ]}
@@ -110,15 +103,13 @@ export function FilterPill({
   );
 }
 
-/** The ink a pill's words, glyph and tick are drawn in. */
-export function pillInk(kind: PillKind, active: boolean): 'inverse' | 'primary' | 'secondary' {
-  if (active) return 'inverse';
-  return kind === 'chip' ? 'primary' : 'secondary';
-}
-
-/** The same ink as a colour, for a glyph or a tick — RN has no `currentColor` to inherit. */
+/**
+ * The ink a pill's words, glyph and tick are drawn in — the accent words on the chosen pill's
+ * accent wash, as every chosen filter is. A colour, since RN has no `currentColor` to inherit.
+ */
 export function pillInkColor(kind: PillKind, active: boolean): ThemeColor {
-  return colors[`text-${pillInk(kind, active)}`];
+  if (active) return colors['accent-text'];
+  return kind === 'chip' ? colors['text-primary'] : colors['text-secondary'];
 }
 
 /** The pill's words, in the one weight and colour pair the whole vocabulary uses. */
@@ -132,7 +123,10 @@ export function PillLabel({
   children: ReactNode;
 }) {
   return (
-    <Text variant={pillVariant(kind)} color={pillInk(kind, active)} style={wordsStyle(kind)}>
+    <Text
+      variant={pillVariant(kind)}
+      style={[wordsStyle(kind), { color: pillInkColor(kind, active) }]}
+    >
       {children}
     </Text>
   );
@@ -151,8 +145,10 @@ export function PillCount({
   return (
     <Text
       variant={pillVariant(kind)}
-      color={active ? 'inverse' : 'secondary'}
-      style={wordsStyle(kind)}
+      style={[
+        wordsStyle(kind),
+        { color: active ? colors['accent-text'] : colors['text-secondary'] },
+      ]}
     >
       {String(count)}
     </Text>

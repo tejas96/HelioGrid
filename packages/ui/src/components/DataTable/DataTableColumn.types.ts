@@ -34,6 +34,10 @@ export interface DataTableColumn<Row = Record<string, unknown>> {
   /** Sits on the title row, right-aligned, when stacked — usually the value. */
   trailing?: boolean;
   hideStacked?: boolean;
+  /**
+   * The column sorts, on a `sortable` table — opt in. A header left unmarked has no sort button:
+   * a press on a column its caller cannot order would ask for an order no one keeps.
+   */
   sortable?: boolean;
   sortValue?: (row: Row) => string | number;
   render?: (row: Row) => ReactNode;

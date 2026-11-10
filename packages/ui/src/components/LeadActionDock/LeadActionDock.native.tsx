@@ -6,8 +6,6 @@ import type { ShellGlyphName } from '../AppShell/AppShell.types';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
 import { Button } from '../Button/Button.native';
 import { IconButton } from '../IconButton/IconButton.native';
-import { Menu } from '../Menu/Menu.native';
-import type { MenuItem } from '../Menu/Menu.types';
 import { PendingAction } from '../PendingAction/PendingAction.native';
 import type { LeadActionDockProps, LeadDockAct } from './LeadActionDock.types';
 
@@ -25,7 +23,7 @@ const ROUND = 52;
 /**
  * The lead's five actions on the phone (`M02-32`): Call the biggest — the dialler opens on its
  * number, never for one that may not be called — the four round acts in thumb reach, and under them
- * the state acts the lead's standing offers with Junk, the referral and Merge behind More.
+ * the state acts the lead's standing offers; junk, the referral and merge are the hero's ⋯.
  */
 export function LeadActionDock({
   layout,
@@ -33,8 +31,6 @@ export function LeadActionDock({
   callLabel,
   acts,
   stateActs,
-  more,
-  moreLabel,
   standing,
 }: LeadActionDockProps) {
   const waiting = standing?.kind === 'waiting';
@@ -63,17 +59,6 @@ export function LeadActionDock({
         {callLabel}
       </Button>
     );
-  const menuItems: MenuItem[] = [
-    ...stateActs
-      .filter((each) => each.act === 'junk')
-      .map((each) => ({
-        key: each.act,
-        label: each.label,
-        destructive: true,
-        onSelect: each.onPress,
-      })),
-    ...more.map((each) => ({ key: each.key, label: each.label, onSelect: each.onPress })),
-  ];
   return (
     <View style={styles.dock}>
       {layout === 'dock' ? (
@@ -108,23 +93,18 @@ export function LeadActionDock({
         </View>
       )}
       <View style={styles.stateActs}>
-        {stateActs
-          .filter((each) => each.act !== 'junk')
-          .map((each) => (
-            <Button
-              key={each.act}
-              variant="secondary"
-              size="sm"
-              disabled={waiting}
-              loading={waiting && standing?.act === each.act}
-              onClick={each.onPress}
-            >
-              {each.label}
-            </Button>
-          ))}
-        {menuItems.length === 0 ? null : (
-          <Menu label={moreLabel} items={menuItems} disabled={waiting} />
-        )}
+        {stateActs.map((each) => (
+          <Button
+            key={each.act}
+            variant="secondary"
+            size="sm"
+            disabled={waiting}
+            loading={waiting && standing?.act === each.act}
+            onClick={each.onPress}
+          >
+            {each.label}
+          </Button>
+        ))}
       </View>
       {standing === null ? null : standing.kind === 'waiting' ? (
         <PendingAction label={standing.line} />

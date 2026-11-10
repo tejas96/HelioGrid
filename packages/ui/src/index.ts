@@ -71,6 +71,7 @@ export * from './components/DoorNumberStep';
 export * from './components/DoorSwitch';
 export * from './components/Dropzone';
 export * from './components/EditorSurface';
+export * from './components/EmptyScene';
 export * from './components/EmptyState';
 export * from './components/Explainer';
 export * from './components/FactRow';

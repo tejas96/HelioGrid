@@ -39,14 +39,7 @@ export function StageMeter({ stages, chosen, onPick, form, words }: StageMeterPr
             </View>
             <View style={styles.bar} importantForAccessibility="no-hide-descendants">
               {stages.map((one, index) => (
-                <View
-                  key={one.stage}
-                  style={[
-                    styles.share,
-                    { flexGrow: shares[index] ?? 0 },
-                    chosen === one.stage ? styles.chosenShare : undefined,
-                  ]}
-                />
+                <View key={one.stage} style={[styles.share, { flexGrow: shares[index] ?? 0 }]} />
               ))}
             </View>
             <View style={styles.cardStages}>{stageButtons}</View>
@@ -84,13 +77,11 @@ function StageButton({
         chosen ? styles.chosenStage : undefined,
       ]}
     >
-      {share === null ? null : (
-        <View style={[styles.share, styles.bandShare, chosen ? styles.chosenShare : undefined]} />
-      )}
-      <Text variant="figure" style={chosen ? styles.chosenInk : undefined}>
+      {share === null ? null : <View style={[styles.share, styles.bandShare]} />}
+      <Text variant="figure" style={chosen ? styles.chosenWords : undefined}>
         {one.count}
       </Text>
-      <Text variant="caption" color="secondary" style={chosen ? styles.chosenInk : undefined}>
+      <Text variant="caption" color="secondary" style={chosen ? styles.chosenWords : undefined}>
         {words.stage(one.stage)}
       </Text>
     </Pressable>
@@ -119,7 +110,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent,
   },
   bandShare: { alignSelf: 'stretch' },
-  chosenShare: { backgroundColor: colors.ink },
   /* Rows of four, every stage in view: a sideways scroll cut the sixth in half at the card's edge.
      A stage is at least a quarter and as wide as its name, so a long name wraps the row sooner and
      never breaks inside a word. */
@@ -138,7 +128,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing['sp-1'],
     borderRadius: theme.radius['r-tile'],
   },
-  chosenStage: { backgroundColor: colors.ink },
-  /** The chosen stage's words on its ink pill, as the active nav item's are. */
-  chosenInk: { color: colors['on-ink'] },
+  /* The chosen stage is the accent wash, as every chosen filter is — calm however wide its share. */
+  chosenStage: { backgroundColor: colors['accent-subtle'] },
+  chosenWords: { color: colors['accent-text'] },
 });

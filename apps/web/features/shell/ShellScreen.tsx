@@ -21,7 +21,6 @@ import { theme } from '@heliogrid/theme';
 import {
   AccessRemoved,
   AccountMenu,
-  AppearanceSwitch,
   AppRail,
   AppShell,
   BottomNav,
@@ -118,15 +117,13 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
   };
   /* The rail's account opens towards the page; the phone bar's, at the window's right edge, opens
      back across it, or its list runs off the screen. */
-  const accountMenu = (align: 'start' | 'end') => (
-    <AccountMenu
-      {...accountMenuWords(t, screen.personName)}
-      name={screen.personName}
-      align={align}
-      onGrievance={grievance.open}
-      onSignOut={signOut}
-    />
-  );
+  const accountMenu = (align: 'start' | 'end') => ({
+    ...accountMenuWords(t, screen.personName),
+    name: screen.personName,
+    align,
+    onGrievance: grievance.open,
+    onSignOut: signOut,
+  });
   /* Below the desktop width the bar's search opens its page; the sidebar's opens the palette. */
   const openSearchPage = () => move(DOOR_PATH.search);
   const searchItem: RailItem = {
@@ -171,19 +168,15 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
           bell={bell}
           account={{
             menu: accountMenu('start'),
-            name: screen.personName,
             caption:
               role === null || shell.companyName === null
                 ? (role ?? undefined)
                 : t(SIDEBAR.roleAt, { role, company: shell.companyName }),
-            appearance: (
-              <AppearanceSwitch
-                form="icons"
-                words={appearanceWords(t)}
-                value={appearance}
-                onChange={chooseAppearance}
-              />
-            ),
+            appearance: {
+              words: appearanceWords(t),
+              value: appearance,
+              onChange: chooseAppearance,
+            },
           }}
           collapsed={folded}
           fold={{ collapse: t(SIDEBAR.collapse), expand: t(SIDEBAR.expand), onToggle: toggleFold }}
@@ -194,7 +187,7 @@ function ShellIn({ children, strip }: { children: ReactNode; strip?: ReactNode }
           companyName={shell.companyName}
           onSearch={openSearchPage}
           bell={bell}
-          account={accountMenu('end')}
+          account={<AccountMenu {...accountMenu('end')} />}
         />
       }
     >

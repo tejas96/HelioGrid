@@ -55,13 +55,15 @@ export function NamedGap({
       style={[styles.row, { gap: GAP[scale], justifyContent: JUSTIFY[align] }, style]}
       accessible={false}
     >
-      <View
-        style={[styles.ring, { width: ring, height: ring, borderRadius: ring / 2 }]}
-        importantForAccessibility="no"
-      />
-      <Text variant={WORDS[scale]} color="secondary" style={styles.words}>
-        {gap}
-      </Text>
+      <View style={[styles.mark, { gap: GAP[scale] }]}>
+        <View
+          style={[styles.ring, { width: ring, height: ring, borderRadius: ring / 2 }]}
+          importantForAccessibility="no"
+        />
+        <Text variant={WORDS[scale]} color="secondary" style={styles.words}>
+          {gap}
+        </Text>
+      </View>
       {act === null ? null : (
         <Pressable onPress={act.onFill} accessibilityLabel={act.spokenName} style={styles.fill}>
           <Text variant="body-sm" color="accent" style={styles.fillWords}>
@@ -87,6 +89,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
+  },
+  /* The ring and its words never split: the words wrap inside, beside the ring. Only the fill act
+     moves down a line. */
+  mark: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexShrink: 1,
   },
   ring: {
     flexShrink: 0,

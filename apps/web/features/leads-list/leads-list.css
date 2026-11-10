@@ -30,6 +30,14 @@
   min-width: 0;
 }
 
+/* The lead's face beside its name, as the phone's row and the Team table draw a person. */
+.hg-leads-list-person {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
 .hg-leads-list-lead {
   display: flex;
   flex-direction: column;
@@ -48,6 +56,8 @@
   gap: 0 var(--sp-2);
   font-size: var(--fs-body-sm);
   line-height: var(--lh-body-sm);
+  /* The table's first cell is set bold; the number and city under the name never are. */
+  font-weight: var(--fw-regular);
   color: var(--text-secondary);
 }
 

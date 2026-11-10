@@ -5,7 +5,7 @@ import { Dimensions, Pressable as RNPressable, ScrollView, StyleSheet, View } fr
 import { colors } from '../../primitives/Color/colors';
 import { Portal, usePortalBottomInset } from '../../primitives/Portal/Portal.native';
 import { useCloseOnBack } from '../../primitives/use-close-on-back.native';
-import { actOnChoice, MENU_GAP } from './Menu.logic';
+import { actOnChoice, MENU_GAP, menuInSafeOrder } from './Menu.logic';
 import type { MenuItem, MenuProps } from './Menu.types';
 import { MenuItemRow } from './MenuItemRow.native';
 import { MenuTrigger } from './MenuTrigger.native';
@@ -40,7 +40,7 @@ const MIN_BELOW = 160;
  *   nothing above the menu can clip it; the list rises instead of dropping when it would not fit.
  */
 export function Menu({
-  items = [],
+  items: given = [],
   trigger,
   label,
   align = 'end',
@@ -50,6 +50,7 @@ export function Menu({
   disabled = false,
   style,
 }: NativeMenuProps) {
+  const items = menuInSafeOrder(given);
   const [anchor, setAnchor] = useState<Anchor | null>(null);
   const wrapRef = useRef<View>(null);
   const open = anchor !== null;

@@ -3,22 +3,24 @@ import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
-import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Avatar } from '../Avatar/Avatar.native';
+import { Button } from '../Button/Button.native';
 import { HeroPanel } from '../HeroPanel/HeroPanel.native';
 import { LeadSourceMark } from '../LeadSourceMark/LeadSourceMark.native';
 import { LeadStateBadge } from '../LeadStateBadge/LeadStateBadge.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
 import { ProvenanceTier } from '../Provenance/Provenance.native';
 import { StageTrack } from '../StageTrack/StageTrack.native';
+import { leadRecordMenuOf } from './LeadHero.logic';
 import type { LeadHeroProps } from './LeadHero.types';
 
 /**
  * The lead's one hero (`SCR-M02-04`, `M02-32`) on the phone: the stage, the deal, where it came
- * from and who has it — the owner chip opens the assign picker — any parked state and failed tries,
+ * from and who has it — the owner chip opens the assign picker — the ⋯ record menu, any parked state and failed tries,
  * the value or its named gap, and the eight-step track with where it goes next.
  */
 export function LeadHero({
@@ -29,23 +31,31 @@ export function LeadHero({
   onOwner,
   ownerName,
   value,
+  recordActs,
+  recordActsOff,
   words,
 }: LeadHeroProps) {
+  const chips = (
+    <View style={styles.chips}>
+      <StatusMark tone="accent" label={words.stage} />
+      {words.segment === null ? null : <HeroChip>{words.segment}</HeroChip>}
+      {words.cameFrom === null ? (
+        <HeroChip>
+          <LeadSourceMark source={source} label={words.source} />
+        </HeroChip>
+      ) : (
+        <HeroChip glyph="link">{words.cameFrom}</HeroChip>
+      )}
+      <OwnerChip ownerName={ownerName} onOwner={onOwner} words={words} />
+    </View>
+  );
   return (
-    <HeroPanel name={words.stage}>
+    <HeroPanel
+      name={words.stage}
+      menu={leadRecordMenuOf({ recordActs, recordActsOff, words }, recordGlyph)}
+    >
       {identity === null ? null : <Identity identity={identity} words={words} />}
-      <View style={styles.chips}>
-        <StatusMark tone="accent" label={words.stage} />
-        {words.segment === null ? null : <HeroChip>{words.segment}</HeroChip>}
-        {words.cameFrom === null ? (
-          <HeroChip>
-            <LeadSourceMark source={source} label={words.source} />
-          </HeroChip>
-        ) : (
-          <HeroChip glyph="link">{words.cameFrom}</HeroChip>
-        )}
-        <OwnerChip ownerName={ownerName} onOwner={onOwner} words={words} />
-      </View>
+      {chips}
       {words.state === null && words.tries === null ? null : (
         <View style={styles.chips}>
           {lifecycleState === null || words.state === null ? null : (
@@ -143,22 +153,27 @@ function OwnerChip({
   onOwner,
   words,
 }: Pick<LeadHeroProps, 'ownerName' | 'onOwner' | 'words'>) {
-  const { controlFill } = useGround();
   return (
-    <Pressable
-      onPress={onOwner}
-      accessibilityLabel={words.ownerSpoken}
-      style={[styles.chip, styles.owner, { backgroundColor: controlFill }]}
+    <Button
+      variant="secondary"
+      size="sm"
+      spokenName={words.ownerSpoken}
+      icon={
+        ownerName === null ? (
+          <ShellGlyph name="person-plus" size="sm" tone="accent" />
+        ) : (
+          <Avatar name={ownerName} size={24} />
+        )
+      }
+      iconRight={<ShellGlyph name="caret-down" size="sm" tone="secondary" />}
+      onClick={onOwner}
     >
-      {ownerName === null ? (
-        <ShellGlyph name="person-plus" size="sm" tone="primary" />
-      ) : (
-        <Avatar name={ownerName} size={24} />
-      )}
-      <Text variant="body-sm">{words.owner}</Text>
-    </Pressable>
+      {words.owner}
+    </Button>
   );
 }
+
+const recordGlyph = (name: ShellGlyphName) => <ShellGlyph name={name} size="sm" tone="secondary" />;
 
 const styles = StyleSheet.create({
   identity: { gap: theme.spacing['sp-1'] },
@@ -185,7 +200,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors['line-soft'],
   },
-  owner: { paddingLeft: theme.spacing['sp-1'] },
   value: { gap: theme.spacing['sp-1'] },
   valueRow: {
     flexDirection: 'row',

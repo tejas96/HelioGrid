@@ -5,7 +5,7 @@
 import type { CSSProperties, KeyboardEvent } from 'react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
-import { actOnChoice, MENU_GAP } from './Menu.logic';
+import { actOnChoice, MENU_GAP, menuInSafeOrder } from './Menu.logic';
 import type { MenuItem, MenuProps } from './Menu.types';
 import { MenuItemRow } from './MenuItemRow';
 import { MenuTrigger } from './MenuTrigger';
@@ -37,7 +37,7 @@ const FOCUSABLE = 'button,[href],[tabindex]:not([tabindex="-1"])';
  * more room above — the account menu at the rail's foot, as the phone half already does.
  */
 export function Menu({
-  items = [],
+  items: given = [],
   trigger,
   label,
   align = 'end',
@@ -48,6 +48,7 @@ export function Menu({
   className,
   style,
 }: WebMenuProps) {
+  const items = menuInSafeOrder(given);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
   const [rises, setRises] = useState(false);

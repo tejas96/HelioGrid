@@ -41,7 +41,7 @@ export function CatalogItemList({
         </Text>
       </header>
       {rows.length === 0 ? (
-        <EmptyState moment="empty-catalog" title={words.table.emptyTitle} />
+        <EmptyState scene="settle" title={words.table.emptyTitle} />
       ) : (
         <CardRows>
           {rows.map((row, index) => {

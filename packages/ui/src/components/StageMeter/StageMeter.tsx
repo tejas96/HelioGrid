@@ -31,7 +31,6 @@ export function StageMeter({ stages, chosen, onPick, form, words }: StageMeterPr
               <span
                 key={one.stage}
                 className="hg-stage-meter-share"
-                data-chosen={chosen === one.stage ? 'true' : undefined}
                 style={shareOf(shares[index] ?? 0)}
               />
             ))}
@@ -48,13 +47,7 @@ export function StageMeter({ stages, chosen, onPick, form, words }: StageMeterPr
             accessibilityState={{ selected: chosen === one.stage }}
             onPress={() => onPick(one.stage)}
           >
-            {form === 'band' ? (
-              <span
-                className="hg-stage-meter-share"
-                data-chosen={chosen === one.stage ? 'true' : undefined}
-                aria-hidden="true"
-              />
-            ) : null}
+            {form === 'band' ? <span className="hg-stage-meter-share" aria-hidden="true" /> : null}
             <span className="hg-stage-meter-count" aria-hidden="true">
               {one.count}
             </span>

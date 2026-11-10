@@ -83,7 +83,7 @@ export function CatalogPickerActs({
   );
 }
 
-/** One glass toggle: its glyph and word, pressed while on, the ink pill when on. */
+/** One glass toggle: its glyph and word, pressed while on, the accent wash when on. */
 function PickToggle({
   glyph,
   word,
@@ -110,7 +110,7 @@ function PickToggle({
           name={glyph}
           size="sm"
           filled={glyph === 'star' && on}
-          tone={on ? 'inverse' : 'primary'}
+          tone={on ? 'accent' : 'primary'}
         />
         <Text variant="body-sm" bold style={on ? styles.onWord : undefined}>
           {word}
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     borderColor: colors['line-soft'],
   },
   faceRow: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
-  /* On: the ink pill, as a chosen chip is; the toggle also says it is pressed. */
-  on: { backgroundColor: colors.ink, borderColor: colors.ink },
-  onWord: { color: colors['on-ink'] },
+  /* On: the accent wash, as every chosen option is; the toggle also says it is pressed. */
+  on: { backgroundColor: colors['accent-subtle'], borderColor: colors['accent-subtle'] },
+  onWord: { color: colors['accent-text'] },
 });

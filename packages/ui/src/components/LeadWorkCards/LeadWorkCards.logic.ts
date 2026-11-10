@@ -6,16 +6,26 @@ import {
   leadDockOf,
 } from '../LeadActionDock/LeadActionDock.logic';
 import type { LeadActionDockProps } from '../LeadActionDock/LeadActionDock.types';
-import type { LeadHeroProps } from '../LeadHero/LeadHero.types';
+import type { LeadHeroProps, LeadRecordActPress } from '../LeadHero/LeadHero.types';
 import type { QualifyCardProps } from '../QualifyCard/QualifyCard.types';
 import type { LeadWorkCardsProps } from './LeadWorkCards.types';
 
-/** The hero: the record's stage, source, state, owner and value; on the desktop also its identity. */
+/**
+ * The hero: the record's stage, source, state, owner and value, on the desktop also its identity,
+ * and the record menu — a referral always, merge to who may, junk where the standing offers it.
+ */
 export function leadHeroOf(
-  { screen, lead, identity, words }: LeadWorkCardsProps,
+  { screen, lead, view, identity, onAddReferral, onMerge, words }: LeadWorkCardsProps,
   format: MarketFormat,
 ): LeadHeroProps {
   const { lead: summary } = lead;
+  const recordActs: LeadRecordActPress[] = [
+    { act: 'add-referral', onPress: () => onAddReferral(summary.id) },
+  ];
+  if (screen.canMerge) recordActs.push({ act: 'merge', onPress: () => onMerge(lead.customer.id) });
+  if (view.acts.stateActs.includes('junk')) {
+    recordActs.push({ act: 'junk', onPress: () => screen.acts.open({ kind: 'junk' }) });
+  }
   return {
     identity: identity
       ? { name: summary.name, phone: format.phone(summary.phoneE164), city: summary.city }
@@ -26,6 +36,8 @@ export function leadHeroOf(
     onOwner: screen.assign.show,
     ownerName: summary.owner?.name ?? null,
     value: leadValueShownOf(summary.value, format.pack),
+    recordActs,
+    recordActsOff: screen.acts.quickStanding?.kind === 'waiting',
     words: words.hero,
   };
 }
@@ -33,11 +45,8 @@ export function leadHeroOf(
 /** The five actions and the state acts; a sheet-less act (wake, reopen) says where it stands. */
 export function leadWorkDockOf({
   screen,
-  lead,
   view,
   layout,
-  onAddReferral,
-  onMerge,
   words,
 }: LeadWorkCardsProps): LeadActionDockProps {
   const { acts } = screen;
@@ -54,8 +63,6 @@ export function leadWorkDockOf({
       if (act === 'wake' || act === 'reopen') acts.quick(act);
       else acts.open({ kind: act });
     },
-    addReferral: () => onAddReferral(lead.lead.id),
-    merge: screen.canMerge ? () => onMerge(lead.customer.id) : null,
   };
   return { layout, ...leadDockOf(view, words.dock, presses, quick) };
 }

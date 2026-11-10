@@ -8,9 +8,9 @@ import { Banner } from '../Banner';
 import { Button } from '../Button';
 import { RetryButton } from '../Button/RetryButton';
 import { DataTable, Pagination } from '../DataTable';
+import { EmptyScene } from '../EmptyScene/EmptyScene';
 import { EmptyState } from '../EmptyState';
 import { LoadingBars } from '../LoadingBars';
-import { LottieMoment } from '../LottieMoment/LottieMoment';
 import { useFormat } from '../MarketProvider';
 import { CatalogItemList } from './CatalogItemList';
 import { CATALOG_ROOMY_FROM, CATALOG_WIDE_FROM, catalogRowPending } from './CatalogItems.rows';
@@ -79,7 +79,7 @@ export function CatalogItems(props: CatalogItemsProps) {
       )}
       {props.teaching === null || loading ? null : (
         <section className="hg-cat-teach" aria-label={words.makeItYours}>
-          <LottieMoment name="empty-catalog" size={72} />
+          <EmptyScene name="settle" size="compact" />
           <div className="hg-cat-teach-words">
             <Text variant="overline" color="secondary">
               {words.makeItYours}
@@ -205,7 +205,7 @@ function CatalogList(
   );
   const table = {
     ...words.table,
-    emptyMoment: 'empty-catalog' as const,
+    emptyScene: 'settle' as const,
     read: props.read,
     rows: [...props.rows],
     rowKey: 'id',

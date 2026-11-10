@@ -97,6 +97,7 @@ export const SHELL_GLYPHS = {
   'tick-long': [path('M20 6 9 17l-5-5')],
   'tick-small': [path('M5 13 10 18l9-10')],
   'chevron-up': [path('m6 15 6-6 6 6')],
+  'chevrons-up-down': [path('m7 15 5 5 5-5'), path('m7 9 5-5 5 5')],
   lines: [path('M4 6h16M4 12h16M4 18h10')],
   trash: [path('M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6')],
   layers: [path('M12 3 3 8l9 5 9-5-9-5Z'), path('m3 14 9 5 9-5')],
@@ -124,9 +125,12 @@ export const SHELL_GLYPHS = {
     rect(13, 13, 7, 7, 1.5),
   ],
   rupee: [path('M8 5h8M8 9h8M14 5c0 4-2.5 4-6 4l7 10')],
+  /** A toothed wheel — never rays round a ring, which reads as the sun beside it. */
   cog: [
+    path(
+      'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z',
+    ),
     circle(12, 12, 3),
-    path('M12 4v2M12 18v2M4 12h2M18 12h2M6.5 6.5 8 8M16 16l1.5 1.5M17.5 6.5 16 8M8 16l-1.5 1.5'),
   ],
   'bell-short': [path('M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6z'), path('M10 19a2 2 0 0 0 4 0')],
   'undo-loop': [path('M4 10h9a5 5 0 1 1 0 10H8'), path('m8 6-4 4 4 4')],

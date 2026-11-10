@@ -43,25 +43,34 @@
   justify-content: flex-end;
 }
 
+/* The ring and its words are one piece that never splits: in a narrow cell the words wrap inside
+   it, and the ring stays level with their first line. Only the fill act may move down a line. */
+.hg-named-gap-mark {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: inherit;
+  min-width: 0;
+}
+
 .hg-named-gap-ring {
   flex-shrink: 0;
+  width: var(--hg-named-gap-ring);
+  height: var(--hg-named-gap-ring);
+  margin-top: calc((1lh - var(--hg-named-gap-ring)) / 2);
   border-radius: var(--r-pill);
   box-shadow: inset 0 0 0 1.5px var(--mark-subtle);
 }
 
-.hg-named-gap[data-scale="headline"] .hg-named-gap-ring {
-  width: 9px;
-  height: 9px;
+.hg-named-gap[data-scale="headline"] {
+  --hg-named-gap-ring: 9px;
 }
 
-.hg-named-gap[data-scale="field"] .hg-named-gap-ring {
-  width: var(--sp-2);
-  height: var(--sp-2);
+.hg-named-gap[data-scale="field"] {
+  --hg-named-gap-ring: var(--sp-2);
 }
 
-.hg-named-gap[data-scale="cell"] .hg-named-gap-ring {
-  width: 7px;
-  height: 7px;
+.hg-named-gap[data-scale="cell"] {
+  --hg-named-gap-ring: 7px;
 }
 
 .hg-named-gap-words {

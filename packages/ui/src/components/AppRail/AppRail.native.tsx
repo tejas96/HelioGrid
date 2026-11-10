@@ -18,19 +18,21 @@ interface NativeAppRailProps extends AppRailProps {
 
 /**
  * The sidebar a tablet draws: the wordmark, the bell and the fold at the head, the company, the
- * search, the work destinations, the settings list and the account at the foot. The item in view is a solid ink pill. Folded, the column keeps its icons,
+ * search, the work destinations, the settings list and the account at the foot. The item in view is `nav-active`: the ink pill in light, a soft accent wash in the dark. Folded, the column keeps its icons,
  * each named by its label; the phone has no hover, so there is no tip. React Native models no
  * landmark roles, so the web's `<nav>` is a plain View here.
  */
 export function AppRail(props: NativeAppRailProps) {
   const { collapsed = false, width, style } = props;
   const railWidth = collapsed
-    ? theme.spacing['sp-20']
+    ? theme.spacing['sp-16']
     : typeof width === 'number'
       ? width
       : theme.layout['sidebar-w'];
   return (
-    <View style={[styles.rail, { width: railWidth }, style]}>
+    <View
+      style={[styles.rail, collapsed ? styles.railFolded : undefined, { width: railWidth }, style]}
+    >
       <RailHead {...props} collapsed={collapsed} />
       {props.caption === undefined || collapsed ? null : (
         <View style={styles.caption}>{props.caption}</View>
@@ -120,7 +122,6 @@ interface RailButtonProps {
 }
 
 function RailButton({ item, active, onPress, folded }: RailButtonProps) {
-  const on = active || item.open === true;
   return (
     <Pressable
       accessibilityLabel={spokenItemName(item)}
@@ -129,13 +130,13 @@ function RailButton({ item, active, onPress, folded }: RailButtonProps) {
       style={[
         styles.button,
         folded ? styles.buttonFolded : undefined,
-        on ? styles.buttonActive : undefined,
+        active ? styles.buttonActive : item.open === true ? styles.buttonOpen : undefined,
       ]}
     >
-      {on && item.activeIcon !== undefined ? item.activeIcon : item.icon}
+      {active && item.activeIcon !== undefined ? item.activeIcon : item.icon}
       {folded ? null : (
         <>
-          <Text variant="body" style={[styles.label, on ? styles.labelActive : undefined]}>
+          <Text variant="body-sm" style={[styles.label, active ? styles.labelActive : undefined]}>
             {item.label}
           </Text>
           <RailMarks item={item} />
@@ -172,6 +173,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     borderRightWidth: StyleSheet.hairlineWidth,
     borderRightColor: colors.hairline,
+  },
+  railFolded: {
+    paddingHorizontal: theme.spacing['sp-2'],
   },
   head: {
     flexDirection: 'row',
@@ -221,20 +225,25 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius['r-pill'],
   },
   buttonFolded: {
+    alignSelf: 'center',
     justifyContent: 'center',
-    minHeight: theme.spacing['sp-12'],
+    width: theme.spacing['sp-12'],
+    height: theme.spacing['sp-12'],
     paddingHorizontal: 0,
   },
   buttonActive: {
-    backgroundColor: colors.ink,
+    backgroundColor: colors['nav-active'],
     ...theme.elevation.e2,
+  },
+  buttonOpen: {
+    backgroundColor: colors['canvas-sunken'],
   },
   label: {
     flex: 1,
     color: colors['text-secondary'],
   },
   labelActive: {
-    color: colors['on-ink'],
+    color: colors['on-nav-active'],
   },
   tag: {
     paddingHorizontal: theme.spacing['sp-2'],

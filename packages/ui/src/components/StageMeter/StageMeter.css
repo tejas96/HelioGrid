@@ -33,10 +33,6 @@
   background: var(--accent);
 }
 
-.hg-stage-meter-share[data-chosen="true"] {
-  background: var(--ink);
-}
-
 /* The card's stages stand in rows of four under the bar, every one in view: a row that scrolled
    sideways cut a stage in half at the card's edge. A name wider than its quarter takes the room it
    needs and the row wraps sooner, never breaking inside a word. */
@@ -72,9 +68,10 @@
   }
 }
 
+/* The chosen stage is the accent wash, as every chosen filter is — calm however wide its share. */
 .hg-pressable.hg-stage-meter-stage[aria-pressed="true"] {
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--accent-subtle);
+  color: var(--accent-text);
 }
 
 .hg-stage-meter-count {
@@ -92,7 +89,7 @@
 }
 
 .hg-pressable.hg-stage-meter-stage[aria-pressed="true"] .hg-stage-meter-word {
-  color: var(--on-ink);
+  color: var(--accent-text);
 }
 
 /* The band: each stage stands over its own share of the bar, wider as it holds more. */
