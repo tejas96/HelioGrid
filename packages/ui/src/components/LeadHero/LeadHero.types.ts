@@ -52,8 +52,8 @@ export interface LeadHeroWords {
 }
 
 /**
- * An act on the whole record — not today's work — so it waits behind the ⋯ menu. On the narrow
- * page snooze and disqualify join it, out of the action row; the wide page keeps them as pills.
+ * An act on the whole record — not today's work — so it waits behind the page's ⋯ menu, in the
+ * top bar or the way-back row on every width, as a project's page holds its own.
  */
 export type LeadRecordAct =
   | 'snooze'
@@ -64,10 +64,9 @@ export type LeadRecordAct =
   | 'junk';
 
 /**
- * `wide` — the wide web's hero: the name inside it, the facts as chips, the owner chip and the ⋯
- * in its corner. `narrow` — the phone's and the narrow web's: the large title names the lead above
+ * `wide` — the wide web's hero: the name inside it, the facts as chips and the owner chip. `narrow` — the phone's and the narrow web's: the large title names the lead above
  * it, the stage is the one chip, the other facts one quiet line, the owner a row at its foot with
- * its act, and the ⋯ lives in the page's top bar.
+ * its act. Both keep the pencil in the corner; the ⋯ is the page's, never the hero's.
  */
 export type LeadHeroForm = 'wide' | 'narrow';
 
@@ -97,7 +96,8 @@ export interface LeadHeroValue {
  * The lead's one hero (`SCR-M02-04`, `M02-32`): solar glass holding the stage, the deal, where it
  * came from and who has it, any parked state and failed tries, the value — a named gap until a
  * proposal supplies one — and the eight-step track with where it goes next. The owner chip opens
- * the assign picker; the ⋯ in its corner holds the acts on the whole record. The phone draws the name, number and city as its large title, so `identity`
+ * the assign picker; the pencil in its corner edits the name and city. The phone draws the name,
+ * number and city as its large title, so `identity`
  * is the desktop's.
  */
 /** A won lead's project: its number (a fact) and the press that opens it. */
@@ -130,9 +130,5 @@ export interface LeadHeroProps {
    * estimate, which stops mattering once the deal is won. Null before the win.
    */
   readonly project: LeadHeroProject | null;
-  /** The acts the record menu offers — empty draws no menu; the narrow hero draws none itself. */
-  readonly recordActs: readonly LeadRecordActPress[];
-  /** Off while a state act is out, as the dock's state acts are. */
-  readonly recordActsOff: boolean;
   readonly words: LeadHeroWords;
 }

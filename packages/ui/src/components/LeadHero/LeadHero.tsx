@@ -1,6 +1,5 @@
 import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Avatar } from '../Avatar';
 import { Button } from '../Button';
 import { HeroPanel } from '../HeroPanel';
@@ -9,7 +8,6 @@ import { LeadStateBadge } from '../LeadStateBadge';
 import { NamedGap } from '../NamedGap';
 import { ProvenanceTier } from '../Provenance';
 import { StageTrack } from '../StageTrack';
-import { leadRecordMenuOf } from './LeadHero.logic';
 import type { LeadHeroIdentity, LeadHeroProps } from './LeadHero.types';
 
 /**
@@ -28,18 +26,11 @@ export function LeadHero({
   ownerName,
   value,
   project,
-  recordActs,
-  recordActsOff,
   words,
 }: LeadHeroProps) {
   const narrow = form === 'narrow';
   return (
-    <HeroPanel
-      menu={
-        narrow ? undefined : leadRecordMenuOf({ recordActs, recordActsOff, words }, recordGlyph)
-      }
-      edit={{ label: words.editDetails, onPress: onEditDetails }}
-    >
+    <HeroPanel edit={{ label: words.editDetails, onPress: onEditDetails }}>
       {identity === null ? null : <Identity identity={identity} words={words} />}
       {narrow ? (
         <QuietFacts words={words} />
@@ -202,5 +193,3 @@ function Value({ value, project, words }: Pick<LeadHeroProps, 'value' | 'project
     </div>
   );
 }
-
-const recordGlyph = (name: ShellGlyphName) => <ShellGlyph name={name} size="sm" tone="secondary" />;

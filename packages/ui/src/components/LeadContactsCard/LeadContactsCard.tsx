@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { StatusMark } from '../../primitives/StatusMark';
+import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
 import { Card } from '../Card';
@@ -44,7 +45,9 @@ export function LeadContactsCard({
               />
             </span>
           ) : (
-            <span className="hg-lead-contacts-title">{words.title(contacts.length)}</span>
+            <span className="hg-lead-contacts-title">
+              <Text variant="h3">{words.title(contacts.length)}</Text>
+            </span>
           )}
           <IconButton label={words.add} variant="ghost" onClick={onAdd}>
             <ShellGlyph name="user-plus" size="md" tone="primary" />

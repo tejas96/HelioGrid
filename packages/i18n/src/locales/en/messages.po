@@ -506,7 +506,7 @@ msgid "{count, plural, one {Compare # option} other {Compare # options}}"
 msgstr "{count, plural, one {Compare # option} other {Compare # options}}"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:20
+#: src/copy/project-detail.ts:23
 msgid "{count, plural, one {day here} other {days here}}"
 msgstr "{count, plural, one {day here} other {days here}}"
 
@@ -837,7 +837,7 @@ msgstr "{done} of {total} {unit}"
 
 #. js-lingui-explicit-id
 #: src/copy/home-today.ts:17
-#: src/copy/project-detail.ts:47
+#: src/copy/project-detail.ts:50
 msgid "{done} of {total} done"
 msgstr "{done} of {total} done"
 
@@ -1344,7 +1344,7 @@ msgid "{name} · {ticked} of {total} done"
 msgstr "{name} · {ticked} of {total} done"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:59
+#: src/copy/project-detail.ts:62
 msgid "{name} · {time}"
 msgstr "{name} · {time}"
 
@@ -1364,7 +1364,7 @@ msgid "{name} · its history stays on the project."
 msgstr "{name} · its history stays on the project."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:28
+#: src/copy/project-detail.ts:31
 msgid "{name} · manager"
 msgstr "{name} · manager"
 
@@ -1589,7 +1589,7 @@ msgid "{note} · saved, not printed"
 msgstr "{note} · saved, not printed"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:93
+#: src/copy/project-detail.ts:97
 msgid "{number} · {place}"
 msgstr "{number} · {place}"
 
@@ -1874,7 +1874,7 @@ msgid "{reason} · nothing was deleted"
 msgstr "{reason} · nothing was deleted"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:77
+#: src/copy/project-detail.ts:81
 #: src/copy/projects.ts:54
 msgid "{reason} · since {date}"
 msgstr "{reason} · since {date}"
@@ -2442,7 +2442,7 @@ msgid "A platform item's price comes from your override and nowhere else; the pl
 msgstr "A platform item's price comes from your override and nowhere else; the platform list carries none."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:100
+#: src/copy/project-detail.ts:104
 msgid "A project moves one stage at a time."
 msgstr "A project moves one stage at a time."
 
@@ -2538,12 +2538,12 @@ msgid "A voice that answers and follows up when your team cannot."
 msgstr "A voice that answers and follows up when your team cannot."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:110
+#: src/copy/project-detail.ts:114
 msgid "A wait cannot start after today."
 msgstr "A wait cannot start after today."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:107
+#: src/copy/project-detail.ts:111
 msgid "A wait is already open. End it first."
 msgstr "A wait is already open. End it first."
 
@@ -2728,7 +2728,7 @@ msgid "Active projects"
 msgstr "Active projects"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:75
+#: src/copy/project-detail.ts:79
 msgid "Activity"
 msgstr "Activity"
 
@@ -2738,7 +2738,7 @@ msgid "Actual usage"
 msgstr "Actual usage"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:63
+#: src/copy/project-detail.ts:66
 msgid "Add"
 msgstr "Add"
 
@@ -2765,6 +2765,7 @@ msgid "Add a crew"
 msgstr "Add a crew"
 
 #. js-lingui-explicit-id
+#: src/copy/project-detail.ts:67
 #: src/copy/project-sheets.ts:117
 msgid "Add a file"
 msgstr "Add a file"
@@ -2950,7 +2951,7 @@ msgid "Added"
 msgstr "Added"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:65
+#: src/copy/project-detail.ts:69
 msgid "Added by {name}"
 msgstr "Added by {name}"
 
@@ -3535,7 +3536,7 @@ msgstr "Awaiting your decision"
 #: src/copy/catalog-import.ts:14
 #: src/copy/explainer.ts:8
 #: src/copy/lead-import.ts:25
-#: src/copy/project-detail.ts:19
+#: src/copy/project-detail.ts:22
 msgid "Back"
 msgstr "Back"
 
@@ -3887,7 +3888,7 @@ msgid "by {date}"
 msgstr "by {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:34
+#: src/copy/project-detail.ts:37
 msgid "by {name}"
 msgstr "by {name}"
 
@@ -3931,7 +3932,7 @@ msgid "Call · {outcome}"
 msgstr "Call · {outcome}"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:87
+#: src/copy/project-detail.ts:91
 msgid "Call {name}"
 msgstr "Call {name}"
 
@@ -4039,7 +4040,7 @@ msgid "Cancel it on Team"
 msgstr "Cancel it on Team"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:86
+#: src/copy/project-detail.ts:90
 #: src/copy/project-sheets.ts:96
 msgid "Cancel project"
 msgstr "Cancel project"
@@ -4062,7 +4063,7 @@ msgstr "Cancel. Nothing changes"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:143
-#: src/copy/project-detail.ts:88
+#: src/copy/project-detail.ts:92
 #: src/copy/project-next.ts:15
 msgid "Cancelled"
 msgstr "Cancelled"
@@ -4176,12 +4177,12 @@ msgid "Change company settings"
 msgstr "Change company settings"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:84
+#: src/copy/project-detail.ts:88
 msgid "Change how to get in"
 msgstr "Change how to get in"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:82
+#: src/copy/project-detail.ts:86
 msgid "Change install date"
 msgstr "Change install date"
 
@@ -4196,7 +4197,7 @@ msgid "Change language"
 msgstr "Change language"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:83
+#: src/copy/project-detail.ts:87
 #: src/copy/project-sheets.ts:101
 msgid "Change manager"
 msgstr "Change manager"
@@ -5126,7 +5127,7 @@ msgstr "Credit note number"
 
 #. js-lingui-explicit-id
 #: src/copy/installer-job.ts:34
-#: src/copy/project-detail.ts:60
+#: src/copy/project-detail.ts:63
 msgid "Crew"
 msgstr "Crew"
 
@@ -5177,7 +5178,7 @@ msgid "Custom"
 msgstr "Custom"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:69
+#: src/copy/project-detail.ts:73
 msgid "Customer"
 msgstr "Customer"
 
@@ -5271,7 +5272,7 @@ msgid "Date of issue"
 msgstr "Date of issue"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:33
+#: src/copy/project-detail.ts:36
 msgid "dates, never a % bar"
 msgstr "dates, never a % bar"
 
@@ -5342,7 +5343,7 @@ msgid "Deactivated · last seen today"
 msgstr "Deactivated · last seen today"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:68
+#: src/copy/project-detail.ts:72
 msgid "Deal"
 msgstr "Deal"
 
@@ -5467,7 +5468,7 @@ msgstr "design"
 #: src/copy/activity-stream.ts:56
 #: src/copy/crm-vocabulary.ts:32
 #: src/copy/lead-detail.ts:55
-#: src/copy/project-detail.ts:70
+#: src/copy/project-detail.ts:74
 msgid "Design"
 msgstr "Design"
 
@@ -5598,7 +5599,7 @@ msgid "Dispatched"
 msgstr "Dispatched"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:119
+#: src/copy/project-detail.ts:123
 msgid "Dispatched names its crew — use Move to Dispatched."
 msgstr "Dispatched names its crew — use Move to Dispatched."
 
@@ -5644,7 +5645,7 @@ msgid "Document name"
 msgstr "Document name"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:46
+#: src/copy/project-detail.ts:49
 #: src/copy/project-next.ts:64
 #: src/copy/project-next.ts:65
 msgid "Documents"
@@ -5677,7 +5678,7 @@ msgstr "done"
 #: src/copy/lead-inbox.ts:30
 #: src/copy/name-and-photo-editor.ts:16
 #: src/copy/payment-terms.ts:73
-#: src/copy/project-detail.ts:50
+#: src/copy/project-detail.ts:53
 msgid "Done"
 msgstr "Done"
 
@@ -6535,7 +6536,7 @@ msgid "From Payment terms"
 msgstr "From Payment terms"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:64
+#: src/copy/project-detail.ts:68
 msgid "From the lead"
 msgstr "From the lead"
 
@@ -6829,7 +6830,7 @@ msgid "Hand over"
 msgstr "Hand over"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:89
+#: src/copy/project-detail.ts:93
 #: src/copy/project-handover.ts:45
 #: src/copy/project-next.ts:14
 #: src/copy/project-toast.ts:23
@@ -6857,12 +6858,12 @@ msgid "Handover"
 msgstr "Handover"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:101
+#: src/copy/project-detail.ts:105
 msgid "Handover is its own step. Start it from the project."
 msgstr "Handover is its own step. Start it from the project."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:123
+#: src/copy/project-detail.ts:127
 msgid "Handover makes this one. Nothing to upload."
 msgstr "Handover makes this one. Nothing to upload."
 
@@ -7180,7 +7181,7 @@ msgid "How this is worked out"
 msgstr "How this is worked out"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:73
+#: src/copy/project-detail.ts:77
 #: src/copy/project-sheets.ts:107
 msgid "How to get in"
 msgstr "How to get in"
@@ -7433,7 +7434,7 @@ msgid "install by {date}"
 msgstr "install by {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:29
+#: src/copy/project-detail.ts:32
 msgid "Install by {date}"
 msgstr "Install by {date}"
 
@@ -7459,7 +7460,7 @@ msgstr "Install step"
 
 #. js-lingui-explicit-id
 #: src/copy/installer-job.ts:23
-#: src/copy/project-detail.ts:57
+#: src/copy/project-detail.ts:60
 msgid "Install steps"
 msgstr "Install steps"
 
@@ -7660,7 +7661,7 @@ msgid "It may have been removed, or the link is out of date."
 msgstr "It may have been removed, or the link is out of date."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:95
+#: src/copy/project-detail.ts:99
 msgid "It may have moved to another manager."
 msgstr "It may have moved to another manager."
 
@@ -7730,7 +7731,7 @@ msgid "Join {company}"
 msgstr "Join {company}"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:32
+#: src/copy/project-detail.ts:35
 msgid "Journey"
 msgstr "Journey"
 
@@ -8290,7 +8291,7 @@ msgid "Loading the prices"
 msgstr "Loading the prices"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:91
+#: src/copy/project-detail.ts:95
 msgid "Loading the project"
 msgstr "Loading the project"
 
@@ -8502,7 +8503,7 @@ msgid "Low"
 msgstr "Low"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:52
+#: src/copy/project-detail.ts:55
 msgid "Made at handover"
 msgstr "Made at handover"
 
@@ -8906,7 +8907,7 @@ msgid "More actions"
 msgstr "More actions"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:81
+#: src/copy/project-detail.ts:85
 msgid "More acts on this project"
 msgstr "More acts on this project"
 
@@ -8947,7 +8948,7 @@ msgstr "Move a lead into and out of the parking/terminal states"
 
 #. js-lingui-explicit-id
 #: src/copy/kanban.ts:13
-#: src/copy/project-detail.ts:85
+#: src/copy/project-detail.ts:89
 msgid "Move back a stage"
 msgstr "Move back a stage"
 
@@ -9024,7 +9025,7 @@ msgid "Moved back to {stage}"
 msgstr "Moved back to {stage}"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:35
+#: src/copy/project-detail.ts:38
 #: src/copy/project-timeline.ts:31
 msgid "Moved by HelioGrid · {proof}"
 msgstr "Moved by HelioGrid · {proof}"
@@ -9040,37 +9041,37 @@ msgid "Moved to {stage}"
 msgstr "Moved to {stage}"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:44
+#: src/copy/project-detail.ts:47
 msgid "moves on: {row}"
 msgstr "moves on: {row}"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:45
+#: src/copy/project-detail.ts:48
 msgid "moves on: handover"
 msgstr "moves on: handover"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:40
+#: src/copy/project-detail.ts:43
 msgid "moves on: one tap"
 msgstr "moves on: one tap"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:41
+#: src/copy/project-detail.ts:44
 msgid "moves on: one tap, with the crew"
 msgstr "moves on: one tap, with the crew"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:42
+#: src/copy/project-detail.ts:45
 msgid "moves on: the first install step ticked"
 msgstr "moves on: the first install step ticked"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:43
+#: src/copy/project-detail.ts:46
 msgid "moves on: the last install step ticked"
 msgstr "moves on: the last install step ticked"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:56
+#: src/copy/project-detail.ts:59
 msgid "Moves the project to {stage}"
 msgstr "Moves the project to {stage}"
 
@@ -9266,7 +9267,7 @@ msgid "Needed"
 msgstr "Needed"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:55
+#: src/copy/project-detail.ts:58
 msgid "Needed after all"
 msgstr "Needed after all"
 
@@ -9528,7 +9529,7 @@ msgstr "next"
 #: src/copy/explainer.ts:7
 #: src/copy/home-today.ts:18
 #: src/copy/leads-list.ts:74
-#: src/copy/project-detail.ts:26
+#: src/copy/project-detail.ts:29
 #: src/copy/shell.ts:53
 msgid "Next"
 msgstr "Next"
@@ -9670,7 +9671,7 @@ msgid "No company was made yet — carry on from here."
 msgstr "No company was made yet — carry on from here."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:61
+#: src/copy/project-detail.ts:64
 msgid "No crew yet — it is picked at Dispatched"
 msgstr "No crew yet — it is picked at Dispatched"
 
@@ -9705,7 +9706,7 @@ msgid "No file could be read into the pack. Open each document on the project."
 msgstr "No file could be read into the pack. Open each document on the project."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:103
+#: src/copy/project-detail.ts:107
 msgid "No file on the project proves that stage yet."
 msgstr "No file on the project proves that stage yet."
 
@@ -9725,7 +9726,7 @@ msgid "No holidays yet. Tap a date to add one."
 msgstr "No holidays yet. Tap a date to add one."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:30
+#: src/copy/project-detail.ts:33
 msgid "No install date yet"
 msgstr "No install date yet"
 
@@ -9875,7 +9876,7 @@ msgid "No other customer matches “{query}”."
 msgstr "No other customer matches “{query}”."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:67
+#: src/copy/project-detail.ts:71
 msgid "No other files"
 msgstr "No other files"
 
@@ -10092,7 +10093,7 @@ msgid "None"
 msgstr "None"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:72
+#: src/copy/project-detail.ts:76
 msgid "None linked yet"
 msgstr "None linked yet"
 
@@ -10325,8 +10326,8 @@ msgid "Not moved, they stay with {name}."
 msgstr "Not moved, they stay with {name}."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:51
 #: src/copy/project-detail.ts:54
+#: src/copy/project-detail.ts:57
 #: src/copy/project-sheets.ts:77
 msgid "Not needed"
 msgstr "Not needed"
@@ -10435,7 +10436,7 @@ msgid "Not saved. {reason}"
 msgstr "Not saved. {reason}"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:92
+#: src/copy/project-detail.ts:96
 msgid "Not saved. Check the connection and try again."
 msgstr "Not saved. Check the connection and try again."
 
@@ -10450,7 +10451,7 @@ msgid "Not saved. Your other answers are kept."
 msgstr "Not saved. Your other answers are kept."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:24
+#: src/copy/project-detail.ts:27
 #: src/copy/project-toast.ts:25
 msgid "Not sent · Retry"
 msgstr "Not sent · Retry"
@@ -10492,7 +10493,7 @@ msgid "Not written"
 msgstr "Not written"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:74
+#: src/copy/project-detail.ts:78
 msgid "Not written yet"
 msgstr "Not written yet"
 
@@ -10648,7 +10649,7 @@ msgid "Nothing is imported yet. Next, the counts."
 msgstr "Nothing is imported yet. Next, the counts."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:49
+#: src/copy/project-detail.ts:52
 msgid "Nothing is waiting"
 msgstr "Nothing is waiting"
 
@@ -10768,7 +10769,7 @@ msgid "now"
 msgstr "now"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:25
+#: src/copy/project-detail.ts:28
 msgid "Now"
 msgstr "Now"
 
@@ -11172,7 +11173,7 @@ msgid "or"
 msgstr "or"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:62
+#: src/copy/project-detail.ts:65
 msgid "Other files"
 msgstr "Other files"
 
@@ -11360,7 +11361,7 @@ msgid "Partial"
 msgstr "Partial"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:38
+#: src/copy/project-detail.ts:41
 msgid "passed over"
 msgstr "passed over"
 
@@ -11682,7 +11683,7 @@ msgid "Phone, email or website"
 msgstr "Phone, email or website"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:58
+#: src/copy/project-detail.ts:61
 msgid "Photo"
 msgstr "Photo"
 
@@ -11764,7 +11765,7 @@ msgid "Pick a plan to see what changes and what you pay."
 msgstr "Pick a plan to see what changes and what you pay."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:117
+#: src/copy/project-detail.ts:121
 msgid "Pick a project manager or the owner."
 msgstr "Pick a project manager or the owner."
 
@@ -11794,7 +11795,7 @@ msgid "Pick one of each"
 msgstr "Pick one of each"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:118
+#: src/copy/project-detail.ts:122
 msgid "Pick people from the installation team."
 msgstr "Pick people from the installation team."
 
@@ -11814,7 +11815,7 @@ msgid "Pick the one that describes your work."
 msgstr "Pick the one that describes your work."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:120
+#: src/copy/project-detail.ts:124
 #: src/copy/project-sheets.ts:39
 msgid "Pick today or a later day."
 msgstr "Pick today or a later day."
@@ -12313,7 +12314,7 @@ msgstr "Proof missing"
 #: src/copy/brand-colour-field.ts:23
 #: src/copy/branding.ts:32
 #: src/copy/crm-vocabulary.ts:33
-#: src/copy/project-detail.ts:71
+#: src/copy/project-detail.ts:75
 #: src/copy/proposal-template.ts:37
 msgid "Proposal"
 msgstr "Proposal"
@@ -13421,7 +13422,7 @@ msgid "Say what happens in this phase"
 msgstr "Say what happens in this phase"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:80
+#: src/copy/project-detail.ts:84
 msgid "Say who. The days are counted for you."
 msgstr "Say who. The days are counted for you."
 
@@ -13431,7 +13432,7 @@ msgid "Say why {row} does not apply. It counts as done for handover."
 msgstr "Say why {row} does not apply. It counts as done for handover."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:111
+#: src/copy/project-detail.ts:115
 msgid "Say why."
 msgstr "Say why."
 
@@ -13536,7 +13537,7 @@ msgid "See agent performance"
 msgstr "See agent performance"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:48
+#: src/copy/project-detail.ts:51
 #: src/copy/search.ts:36
 msgid "See all {count}"
 msgstr "See all {count}"
@@ -13964,7 +13965,7 @@ msgid "Show these {count}"
 msgstr "Show these {count}"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:66
+#: src/copy/project-detail.ts:70
 msgid "Show to customer"
 msgstr "Show to customer"
 
@@ -14075,7 +14076,7 @@ msgid "Since"
 msgstr "Since"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:27
+#: src/copy/project-detail.ts:30
 msgid "since {date}"
 msgstr "since {date}"
 
@@ -14194,7 +14195,7 @@ msgid "Solar system"
 msgstr "Solar system"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:106
+#: src/copy/project-detail.ts:110
 msgid "Some documents are still waiting."
 msgstr "Some documents are still waiting."
 
@@ -14229,7 +14230,7 @@ msgid "Some specs this new product needs are missing — fix them in your file, 
 msgstr "Some specs this new product needs are missing — fix them in your file, or leave it out."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:104
+#: src/copy/project-detail.ts:108
 msgid "Someone already moved it. Nothing changed twice."
 msgstr "Someone already moved it. Nothing changed twice."
 
@@ -14881,7 +14882,7 @@ msgid "That code is used up"
 msgstr "That code is used up"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:121
+#: src/copy/project-detail.ts:125
 msgid "That day is before the material was ordered."
 msgstr "That day is before the material was ordered."
 
@@ -14906,7 +14907,7 @@ msgid "That didn't save. Nothing changed — try again."
 msgstr "That didn't save. Nothing changed — try again."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:115
+#: src/copy/project-detail.ts:119
 msgid "That document is not on this project."
 msgstr "That document is not on this project."
 
@@ -14921,7 +14922,7 @@ msgid "That file is not a PNG or JPG."
 msgstr "That file is not a PNG or JPG."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:122
+#: src/copy/project-detail.ts:126
 msgid "That file is not on this project."
 msgstr "That file is not on this project."
 
@@ -14961,7 +14962,7 @@ msgid "That isn't a hex colour."
 msgstr "That isn't a hex colour."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:105
+#: src/copy/project-detail.ts:109
 msgid "That move can no longer be undone. Use Move back."
 msgstr "That move can no longer be undone. Use Move back."
 
@@ -14991,7 +14992,7 @@ msgid "That photo did not upload"
 msgstr "That photo did not upload"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:109
+#: src/copy/project-detail.ts:113
 msgid "That reason does not fit who we wait on."
 msgstr "That reason does not fit who we wait on."
 
@@ -15006,17 +15007,17 @@ msgid "That request is too large. Reduce it and retry."
 msgstr "That request is too large. Reduce it and retry."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:112
+#: src/copy/project-detail.ts:116
 msgid "That step is already ticked."
 msgstr "That step is already ticked."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:116
+#: src/copy/project-detail.ts:120
 msgid "That step is not on this project."
 msgstr "That step is not on this project."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:113
+#: src/copy/project-detail.ts:117
 msgid "That step is not ticked."
 msgstr "That step is not ticked."
 
@@ -15157,7 +15158,7 @@ msgid "The file did not upload. Try again."
 msgstr "The file did not upload. Try again."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:114
+#: src/copy/project-detail.ts:118
 msgid "The file has not finished uploading. Try again."
 msgstr "The file has not finished uploading. Try again."
 
@@ -15168,7 +15169,7 @@ msgid "The file is still being read."
 msgstr "The file is still being read."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:36
+#: src/copy/project-detail.ts:39
 #: src/copy/project-notices.ts:27
 #: src/copy/project-timeline.ts:32
 msgid "the first install step was ticked"
@@ -15305,7 +15306,7 @@ msgid "The item is still preferred."
 msgstr "The item is still preferred."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:37
+#: src/copy/project-detail.ts:40
 #: src/copy/project-notices.ts:28
 #: src/copy/project-timeline.ts:33
 msgid "the last install step was ticked"
@@ -15482,7 +15483,7 @@ msgid "The prices and the subsidy in this document were current on the issue dat
 msgstr "The prices and the subsidy in this document were current on the issue date. Both change, so confirm them before you pay."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:90
+#: src/copy/project-detail.ts:94
 msgid "The project did not load"
 msgstr "The project did not load"
 
@@ -15707,12 +15708,12 @@ msgid "There is activity on this record — none of it is of the kinds you have 
 msgstr "There is activity on this record — none of it is of the kinds you have picked."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:108
+#: src/copy/project-detail.ts:112
 msgid "There is no open wait."
 msgstr "There is no open wait."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:102
+#: src/copy/project-detail.ts:106
 msgid "There is no stage behind this one."
 msgstr "There is no stage behind this one."
 
@@ -15773,7 +15774,7 @@ msgid "This cycle"
 msgstr "This cycle"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:39
+#: src/copy/project-detail.ts:42
 msgid "This deal claims no subsidy"
 msgstr "This deal claims no subsidy"
 
@@ -15954,13 +15955,13 @@ msgid "This product changed in your catalog after the preview, so the row was no
 msgstr "This product changed in your catalog after the preview, so the row was not written."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:99
+#: src/copy/project-detail.ts:103
 #: src/copy/project-handover.ts:23
 msgid "This project is closed. Nothing more moves it."
 msgstr "This project is closed. Nothing more moves it."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:94
+#: src/copy/project-detail.ts:98
 msgid "This project is not yours to see"
 msgstr "This project is not yours to see"
 
@@ -16494,7 +16495,7 @@ msgstr "Upgrade plan"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-import.ts:26
-#: src/copy/project-detail.ts:53
+#: src/copy/project-detail.ts:56
 #: src/copy/project-next.ts:16
 #: src/copy/projects.ts:104
 msgid "Upload"
@@ -16765,7 +16766,7 @@ msgid "View only — an owner or Operations edits."
 msgstr "View only — an owner or Operations edits."
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:31
+#: src/copy/project-detail.ts:34
 msgid "View only · you sold this project"
 msgstr "View only · you sold this project"
 
@@ -16869,7 +16870,7 @@ msgid "Wait closed · on the timeline"
 msgstr "Wait closed · on the timeline"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:78
+#: src/copy/project-detail.ts:82
 msgid "Wait is over"
 msgstr "Wait is over"
 
@@ -16895,7 +16896,7 @@ msgid "Waiting"
 msgstr "Waiting"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:76
+#: src/copy/project-detail.ts:80
 #: src/copy/projects.ts:53
 msgid "Waiting on {party}"
 msgstr "Waiting on {party}"
@@ -16916,7 +16917,7 @@ msgid "Waiting on {party} · since {date}"
 msgstr "Waiting on {party} · since {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/project-detail.ts:79
+#: src/copy/project-detail.ts:83
 msgid "Waiting on someone?"
 msgstr "Waiting on someone?"
 

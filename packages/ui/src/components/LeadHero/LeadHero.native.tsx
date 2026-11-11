@@ -6,7 +6,6 @@ import { useGround } from '../../primitives/Ground/Ground.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Avatar } from '../Avatar/Avatar.native';
 import { Button } from '../Button/Button.native';
 import { HeroPanel } from '../HeroPanel/HeroPanel.native';
@@ -15,7 +14,6 @@ import { LeadStateBadge } from '../LeadStateBadge/LeadStateBadge.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
 import { ProvenanceTier } from '../Provenance/Provenance.native';
 import { StageTrack } from '../StageTrack/StageTrack.native';
-import { leadRecordMenuOf } from './LeadHero.logic';
 import type { LeadHeroProps } from './LeadHero.types';
 
 /**
@@ -34,8 +32,6 @@ export function LeadHero({
   ownerName,
   value,
   project,
-  recordActs,
-  recordActsOff,
   words,
 }: LeadHeroProps) {
   const narrow = form === 'narrow';
@@ -45,13 +41,7 @@ export function LeadHero({
     <Chips source={source} ownerName={ownerName} onOwner={onOwner} words={words} />
   );
   return (
-    <HeroPanel
-      name={words.stage}
-      menu={
-        narrow ? undefined : leadRecordMenuOf({ recordActs, recordActsOff, words }, recordGlyph)
-      }
-      edit={{ label: words.editDetails, onPress: onEditDetails }}
-    >
+    <HeroPanel name={words.stage} edit={{ label: words.editDetails, onPress: onEditDetails }}>
       {identity === null ? null : <Identity identity={identity} words={words} />}
       {chips}
       {words.state === null && words.tries === null ? null : (
@@ -260,8 +250,6 @@ function OwnerChip({
     </Button>
   );
 }
-
-const recordGlyph = (name: ShellGlyphName) => <ShellGlyph name={name} size="sm" tone="secondary" />;
 
 const styles = StyleSheet.create({
   identity: { gap: theme.spacing['sp-1'] },

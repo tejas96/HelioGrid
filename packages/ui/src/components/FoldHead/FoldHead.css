@@ -12,6 +12,7 @@
   background: transparent;
   color: var(--text-primary);
   text-align: start;
+  font: inherit;
   cursor: pointer;
 }
 
@@ -19,23 +20,6 @@
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
   border-radius: var(--r-sm);
-}
-
-.hg-fold-head-title {
-  font-family: var(--font-sans);
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--tr-overline);
-  line-height: var(--lh-overline);
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
-.hg-fold-head-meta {
-  font-family: var(--font-sans);
-  font-size: var(--fs-body-sm);
-  font-weight: var(--fw-semibold);
-  line-height: var(--lh-body-sm);
 }
 
 .hg-fold-head-aside {

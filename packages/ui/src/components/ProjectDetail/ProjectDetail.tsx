@@ -10,7 +10,7 @@ import './ProjectDetail.css';
 
 /**
  * One project on the web (the picked design), laid out from its own room. Narrow, the phone's page:
- * the hero, the wait, the journey, the documents still waiting, the other files and the latest
+ * the hero, the wait, the journey, the deal, the documents still waiting, the other files and the latest
  * activity. Wide, the hero with every document and the journey under it, beside the wait, the deal,
  * the files with *Show to customer* and the activity. Each width keeps one reading order, so the
  * keyboard walks what the eye sees. The checklist's own screen draws its hero, every row, a caption
@@ -46,6 +46,7 @@ export function ProjectDetail(props: ProjectDetailProps) {
         <ProjectHero {...props} />
         <ProjectWait {...props} />
         <ProjectJourney {...props} />
+        <ProjectDeal {...props} />
         <ProjectDocuments {...props} rows="waiting" />
         <ProjectFiles {...props} switches={false} />
         <ProjectActivity {...props} />

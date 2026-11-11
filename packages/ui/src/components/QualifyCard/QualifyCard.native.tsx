@@ -58,10 +58,8 @@ export function QualifyCard({
           />
         ) : (
           <View style={styles.head}>
-            <Text variant="overline" color="secondary">
-              {words.title}
-            </Text>
-            <Text variant="body-sm" bold>
+            <Text variant="h3">{words.title}</Text>
+            <Text variant="caption" color="secondary">
               {count}
             </Text>
             <View style={styles.headDots}>{dots}</View>

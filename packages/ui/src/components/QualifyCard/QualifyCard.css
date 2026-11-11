@@ -15,25 +15,6 @@
   padding-bottom: var(--sp-2);
 }
 
-.hg-qualify-title {
-  font-family: var(--font-sans);
-  font-size: var(--fs-overline);
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--tr-overline);
-  line-height: var(--lh-overline);
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
-.hg-qualify-count {
-  font-family: var(--font-sans);
-  font-size: var(--fs-body-sm);
-  font-weight: var(--fw-semibold);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  color: var(--text-primary);
-}
-
 .hg-qualify-dots {
   display: inline-flex;
   gap: var(--sp-1);

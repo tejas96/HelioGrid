@@ -1,5 +1,6 @@
 import { QUALIFY_QUESTIONS } from '@heliogrid/domain';
 import { useState } from 'react';
+import { Text } from '../../primitives/Text/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Button } from '../Button';
 import { Card } from '../Card';
@@ -52,8 +53,10 @@ export function QualifyCard({
         />
       ) : (
         <div className="hg-qualify-head">
-          <span className="hg-qualify-title">{words.title}</span>
-          <span className="hg-qualify-count">{count}</span>
+          <Text variant="h3">{words.title}</Text>
+          <Text variant="caption" color="secondary">
+            {count}
+          </Text>
           {dots}
         </div>
       )}

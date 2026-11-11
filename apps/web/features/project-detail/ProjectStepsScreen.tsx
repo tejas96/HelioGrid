@@ -54,6 +54,7 @@ export function ProjectStepsScreen({ projectId }: { projectId: string }) {
   return (
     <div ref={room} tabIndex={-1} className="hg-shell-page hg-focus-target hg-project-page">
       <ProjectTrail
+        acts={null}
         board={destinationLabel(t, moves.wayBack)}
         project={title}
         documents={words.steps}

@@ -5,12 +5,12 @@ import { Banner } from '../Banner/Banner.native';
 import type { ProjectDetailProps } from './ProjectDetail.types';
 import { ProjectDocuments, ProjectDocumentsHero, ProjectFiles } from './ProjectDocuments.native';
 import { ProjectHero } from './ProjectHero.native';
-import { ProjectActivity, ProjectJourney } from './ProjectSide.native';
+import { ProjectActivity, ProjectDeal, ProjectJourney } from './ProjectSide.native';
 import { ProjectWait } from './ProjectWait.native';
 
 /**
  * One project on the phone (the picked design), one column: any refusal, the hero, the wait, the
- * journey, the documents still waiting, the other files and the latest activity. Or the checklist's
+ * journey, the deal, the documents still waiting, the other files and the latest activity. Or the checklist's
  * own screen: the row that moves the stage, every row, a caption and the files with *Show to
  * customer*. The screen's scroll view holds it.
  */
@@ -41,6 +41,7 @@ export function ProjectDetail(props: ProjectDetailProps) {
       <ProjectHero {...props} />
       <ProjectWait {...props} />
       <ProjectJourney {...props} />
+      <ProjectDeal {...props} />
       <ProjectDocuments {...props} rows="waiting" />
       <ProjectFiles {...props} switches={false} />
       <ProjectActivity {...props} />

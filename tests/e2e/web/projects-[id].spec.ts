@@ -76,7 +76,8 @@ test('Mark won on the lead starts its project and opens it at Won', async ({ pag
   await page.goto(`/leads/${leadId}`);
   await expect(page.getByRole('heading', { name: CUSTOMER.name }).first()).toBeVisible();
 
-  await page.locator('.hg-hero').getByRole('button', { name: RECORD.label, exact: true }).click();
+  /* The lead's ⋯ is the page's, in its way-back row, on every width. */
+  await page.getByRole('button', { name: RECORD.label, exact: true }).click();
   await page.getByRole('menuitem', { name: RECORD.markWon, exact: true }).click();
   const sheet = page.getByRole('dialog', { name: WON.title });
   await expect(sheet.getByText(WON.who, { exact: true })).toBeVisible();

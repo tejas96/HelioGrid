@@ -63,7 +63,7 @@ export function LeadDetailScreen({ leadId }: { leadId: string }) {
       <BackToLeads
         moves={moves}
         menu={
-          read.kind === 'ready' && !columns ? (
+          read.kind === 'ready' ? (
             <LeadRecordMenu
               screen={screen}
               lead={read.value.lead}
@@ -97,8 +97,8 @@ export function LeadDetailScreen({ leadId }: { leadId: string }) {
 }
 
 /**
- * The way back to the list, above the page — the desktop's crumb and the phone width's back — and,
- * at the phone width, the record menu at its other end, as the phone's top bar holds it.
+ * The way back to the list, above the page — the desktop's crumb and the phone width's back — and
+ * the record menu at its other end on every width, where a project's page holds its own.
  */
 function BackToLeads({ moves, menu }: { moves: LeadDetailMoves; menu: ReactNode }) {
   const t = useTranslate();

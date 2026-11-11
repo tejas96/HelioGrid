@@ -179,3 +179,20 @@ export interface StreamEntryProps {
   density: 'expressive' | 'functional';
   format: MarketFormat;
 }
+
+/**
+ * A few timeline entries on their own — a card's latest activity, with no count, paging or read
+ * states of its own — drawn by the stream's own entry and frame, so a project's activity and a
+ * lead's timeline are one look (`M08-17`, `M02-35`).
+ */
+export interface StreamEntriesProps {
+  entries: ActivityEntry[];
+  kinds: Record<string, ActivityKindSpec>;
+  words: ActivityStreamWords;
+  density: 'expressive' | 'functional';
+  /** The day headings, as the stream groups its entries: an entry's clock alone names no day. */
+  todayLabel: TranslatedText;
+  yesterdayLabel: TranslatedText;
+  /** The stream's count noun; no count line shows, since every entry given is drawn. */
+  countLabel: TranslatedText;
+}

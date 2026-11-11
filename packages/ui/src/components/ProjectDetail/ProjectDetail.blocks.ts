@@ -67,9 +67,10 @@ export function filesBlockOf(props: ProjectDetailProps, switches: boolean): Proj
   const add: DetailRowAct = {
     key: 'add',
     label: words.addFile,
-    spoken: null,
+    spoken: words.addFileSpoken,
     variant: 'secondary',
     glyph: 'plus',
+    iconOnly: true,
     loading: samePlace(uploading, OTHER_PLACE),
     onPress: idleOf(sending)(() => onUpload(OTHER_PLACE)),
   };

@@ -88,8 +88,6 @@ export function leadHeroOf(props: LeadWorkCardsProps, format: MarketFormat): Lea
     ownerName: summary.owner?.name ?? null,
     value: leadValueShownOf(summary.value, format.pack),
     project: screen.canOpenProject ? projectOfLead(lead, onOpenProject) : null,
-    recordActs: leadRecordActsOf(props),
-    recordActsOff: screen.acts.quickStanding?.kind === 'waiting',
     words: words.hero,
   };
 }

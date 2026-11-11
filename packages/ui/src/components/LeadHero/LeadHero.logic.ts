@@ -3,7 +3,7 @@ import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import type { HeroPanelMenu } from '../HeroPanel/HeroPanel.types';
 import { STATE_ACT_GLYPH } from '../LeadActionDock/LeadActionDock.glyphs';
 import type { MenuItem } from '../Menu/Menu.types';
-import type { LeadHeroProps, LeadRecordAct } from './LeadHero.types';
+import type { LeadHeroWords, LeadRecordAct, LeadRecordActPress } from './LeadHero.types';
 
 /** The record menu's order; `Menu` itself puts junk, a destructive row, last behind a gap. */
 const LEAD_RECORD_ACTS: readonly LeadRecordAct[] = [
@@ -25,15 +25,21 @@ const RECORD_ACT_GLYPH: Record<Exclude<LeadRecordAct, 'junk'>, ShellGlyphName> =
 };
 
 /**
- * The record menu — the wide hero's corner, the narrow page's top bar: the offered acts in order, each safe one with its glyph — drawn by the
- * caller's platform — and junk as the destructive row. No act offered draws no menu.
+ * The record menu — the page's ⋯ in its top bar or way-back row: the offered acts in order, each
+ * safe one with its glyph — drawn by the caller's platform — and junk as the destructive row. No act
+ * offered draws no menu.
  */
 export function leadRecordMenuOf(
   {
     recordActs,
     recordActsOff,
     words,
-  }: Pick<LeadHeroProps, 'recordActs' | 'recordActsOff' | 'words'>,
+  }: {
+    readonly recordActs: readonly LeadRecordActPress[];
+    /** Off while a state act is out, as the dock's state acts are. */
+    readonly recordActsOff: boolean;
+    readonly words: LeadHeroWords;
+  },
   glyph: (name: ShellGlyphName) => ReactNode,
 ): HeroPanelMenu | undefined {
   const label: Record<LeadRecordAct, MenuItem['label']> = {

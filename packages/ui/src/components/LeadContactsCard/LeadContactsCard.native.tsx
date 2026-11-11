@@ -48,9 +48,9 @@ export function LeadContactsCard({
                 />
               </View>
             ) : (
-              <Text variant="overline" color="secondary" style={styles.title}>
-                {words.title(contacts.length)}
-              </Text>
+              <View style={styles.title}>
+                <Text variant="h3">{words.title(contacts.length)}</Text>
+              </View>
             )}
             <IconButton label={words.add} onClick={onAdd} variant="ghost">
               <ShellGlyph name="person-plus" size="md" tone="primary" />

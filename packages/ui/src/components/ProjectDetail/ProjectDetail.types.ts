@@ -3,8 +3,9 @@ import type {
   ProjectFile,
   TranslatedText,
 } from '@heliogrid/contracts';
-import type { NextStep, ProjectDetailView, ProjectFileSlot } from '@heliogrid/domain';
+import type { ActivityKind, NextStep, ProjectDetailView, ProjectFileSlot } from '@heliogrid/domain';
 import type { FocusAfter } from '../../primitives/FocusAfter';
+import type { ActivityStreamWords } from '../ActivityStream/ActivityStream.types';
 
 /** A move on the journey as the activity names it — `@heliogrid/i18n`'s `ProjectEventKind`. */
 export type ProjectEventKind =
@@ -72,6 +73,17 @@ export interface ProjectDetailWords {
   readonly docsCaption: TranslatedText;
   readonly otherFiles: TranslatedText;
   readonly addFile: TranslatedText;
+  /** The activity card's entries, in the words the lead's timeline uses (`M08-17`: one timeline). */
+  readonly stream: ActivityStreamWords;
+  /** The activity's day headings and its count noun, as the stream groups its entries. */
+  readonly streamFrame: {
+    readonly todayLabel: TranslatedText;
+    readonly yesterdayLabel: TranslatedText;
+    readonly countLabel: TranslatedText;
+  };
+  readonly activityKind: Readonly<Record<ActivityKind, TranslatedText>>;
+  /** The files card's round add, spoken in full — "Add a file". */
+  readonly addFileSpoken: TranslatedText;
   readonly fromLead: TranslatedText;
   readonly addedBy: (name: string) => TranslatedText;
   readonly showToCustomer: TranslatedText;

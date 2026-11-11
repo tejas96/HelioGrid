@@ -16,11 +16,9 @@ export function FoldHead({ title, meta, aside, open, onToggle }: FoldHeadProps) 
       onPress={onToggle}
       style={styles.head}
     >
-      <Text variant="overline" color="secondary">
-        {title}
-      </Text>
+      <Text variant="h3">{title}</Text>
       {meta === undefined ? null : (
-        <Text variant="body-sm" bold>
+        <Text variant="caption" color="secondary">
           {meta}
         </Text>
       )}
