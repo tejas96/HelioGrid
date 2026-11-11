@@ -11,13 +11,23 @@ export interface NoticeWords {
  * The notice rendered once per language before the write, so the transaction picks each
  * recipient's without loading a catalog while it holds its locks.
  */
-export async function renderedInEveryLanguage(
+export function renderedInEveryLanguage(
   render: (translate: Translator['t']) => NoticeWords,
+): Promise<(language: UiLanguage) => NoticeWords> {
+  return renderedInEveryLanguageWith((translate) => render(translate));
+}
+
+/**
+ * The same, for words that also read the language itself — a market pack's label, which carries
+ * its own per-language text beside the catalog's.
+ */
+export async function renderedInEveryLanguageWith(
+  render: (translate: Translator['t'], language: UiLanguage) => NoticeWords,
 ): Promise<(language: UiLanguage) => NoticeWords> {
   const rendered = await Promise.all(
     UI_LANGUAGES.map(async (language) => ({
       language,
-      words: render((await createTranslator(language)).t),
+      words: render((await createTranslator(language)).t, language),
     })),
   );
   return (language) => {

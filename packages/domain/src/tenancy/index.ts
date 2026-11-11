@@ -64,6 +64,7 @@ export {
 } from './company-profile-draft';
 export type { CompanyProfileLife } from './company-profile-life';
 export { announcesSave, COMPANY_PROFILE_LIVES } from './company-profile-life';
+export { TENANT_COUNTER_KINDS, type TenantCounterKind } from './counters';
 export type { InviteOutcome, InviteRefusal } from './invite';
 export { inviteOutcome, inviteRefusal, numberOnTeam, sendsNothing } from './invite';
 export type { MembershipStatus } from './membership';

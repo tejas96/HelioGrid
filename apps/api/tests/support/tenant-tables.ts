@@ -21,6 +21,7 @@ import {
   invoiceLineTax,
   lead,
   leadAssignment,
+  leadFile,
   leadImport,
   leadImportRow,
   leadStageTransition,
@@ -109,10 +110,10 @@ export const TENANT_BILLING_TABLES = [
 
 /**
  * A company's CRM rows: the import's rows (they name a lead, a customer and an enquiry) before its
- * jobs; the sweep's claims; the timeline, the two lead histories, tasks and visit bookings before the
- * leads they name; referrals before leads; leads and duplicate links before customers; contacts
- * before customers and the role labels they carry. A customer names its primary contact and a
- * contact its customer, so `unseed` unties that pair before walking the list.
+ * jobs; the sweep's claims; the timeline, the two lead histories, tasks, visit bookings and the
+ * lead's files before the leads they name; referrals before leads; leads and duplicate links
+ * before customers; contacts before customers and the role labels they carry. A customer names its
+ * primary contact and a contact its customer, so `unseed` unties that pair before walking the list.
  */
 export const TENANT_CRM_TABLES = [
   leadImportRow,
@@ -123,6 +124,7 @@ export const TENANT_CRM_TABLES = [
   leadAssignment,
   task,
   leadVisitBooking,
+  leadFile,
   referral,
   lead,
   duplicateLink,

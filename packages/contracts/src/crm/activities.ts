@@ -1,9 +1,15 @@
 import {
   ACTIVITY_KINDS,
   type ActivityKind,
+  BLOCKER_CLEARS,
+  BLOCKER_PARTIES,
+  BLOCKER_REASONS,
+  DOCUMENT_STATES,
   LEAD_SOURCES,
   MERGE_FIELDS,
   MESSAGE_TEMPLATE_KEYS,
+  PROJECT_MOVE_CAUSES,
+  PROJECT_STAGES,
   TASK_KINDS,
   TRANSITION_CAUSES,
 } from '@heliogrid/domain';
@@ -134,6 +140,44 @@ export const knownActivitySchema = z.discriminatedUnion('kind', [
     survivorId: uuidSchema,
     mergedId: uuidSchema,
     choices: z.array(z.object({ field: extensibleEnum(MERGE_FIELDS), kept: mergeSideSchema })),
+  }),
+  /**
+   * A project's entries join its lead's stream (`M08-17`): a won deal IS the project. A move names
+   * where from (null at its creation), where to, what moved it and the proof that did.
+   */
+  entryOf('project_moved', {
+    projectId: uuidSchema,
+    from: extensibleEnum(PROJECT_STAGES).nullable(),
+    to: extensibleEnum(PROJECT_STAGES),
+    cause: extensibleEnum(PROJECT_MOVE_CAUSES),
+    proof: z.string().nullable(),
+  }),
+  /** A wait started or ended (`M08-21`): who, why, since when, and how it ended. */
+  entryOf('project_wait', {
+    projectId: uuidSchema,
+    party: extensibleEnum(BLOCKER_PARTIES),
+    reason: extensibleEnum(BLOCKER_REASONS),
+    startedOn: calendarDateSchema,
+    ended: extensibleEnum(BLOCKER_CLEARS).nullable(),
+  }),
+  /** A checklist row's state changed, and the file that did it where one did (`M08-31`). */
+  entryOf('project_document', {
+    projectId: uuidSchema,
+    row: z.string(),
+    state: extensibleEnum(DOCUMENT_STATES),
+    fileName: z.string().nullable(),
+  }),
+  /** An install step ticked or taken back, and who did the work (`M08-42`). */
+  entryOf('project_step', {
+    projectId: uuidSchema,
+    step: z.string(),
+    ticked: z.boolean(),
+    doneBy: z.string().nullable(),
+  }),
+  /** Which of the project's own facts a person changed. */
+  entryOf('project_changed', {
+    projectId: uuidSchema,
+    field: z.enum(['manager', 'install_date', 'crew', 'access_note', 'file_shown']),
   }),
 ]);
 export type KnownActivity = z.infer<typeof knownActivitySchema>;

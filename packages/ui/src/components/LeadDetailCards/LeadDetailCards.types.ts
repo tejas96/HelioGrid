@@ -1,5 +1,5 @@
-import type { LeadDetail, TranslatedText } from '@heliogrid/contracts';
-import type { LeadDetailSection, LeadDetailView } from '@heliogrid/domain';
+import type { LeadDetail, LeadFile, TranslatedText } from '@heliogrid/contracts';
+import type { LeadDetailSection, LeadDetailView, Read } from '@heliogrid/domain';
 import type { ReactNode } from 'react';
 import type { LeadContactRowWords } from '../LeadContactsCard/LeadContactsCard.logic';
 import type {
@@ -43,6 +43,16 @@ export interface LeadDetailCardsScreen<Failure> {
     readonly pendingId: string | null;
     readonly failure: { readonly taskId: string; readonly failure: Failure } | null;
   };
+  readonly files: {
+    readonly read: Read<readonly LeadFile[]>;
+    /** The reader may add a file to the lead. */
+    readonly canAdd: boolean;
+    readonly uploading: boolean;
+    readonly uploadFailed: boolean;
+    /** The last pick's own name. */
+    readonly picked: string | null;
+    retryUpload(): void;
+  };
 }
 
 /** A day and a time, already formatted on the tenant's clock: facts a line puts in its places. */
@@ -57,6 +67,12 @@ export interface LeadVisitLineFacts extends LeadDayAndTime {
   readonly surveyor: string;
 }
 
+/** A file's line facts: who added it, and the day, formatted on the tenant's clock. */
+export interface LeadFileLineFacts {
+  readonly name: string;
+  readonly day: string;
+}
+
 /** Every word the cards say, built in `@heliogrid/i18n` (`leadDetailCardsWords`). */
 export interface LeadDetailCardsWords<Failure> {
   readonly contacts: LeadContactsCardWords;
@@ -69,6 +85,8 @@ export interface LeadDetailCardsWords<Failure> {
   readonly taskDue: (when: LeadDayAndTime) => TranslatedText;
   /** "Fri 14 Nov, 10:00 · Rajesh Jadhav" — the booked visit. */
   readonly visitLine: (visit: LeadVisitLineFacts) => TranslatedText;
+  /** "Added by Asha Patil · 10 Nov" — a file on the lead. */
+  readonly fileLine: (file: LeadFileLineFacts) => TranslatedText;
   /** Why an act came back undone, said where the person acted. */
   readonly failure: (failure: Failure) => TranslatedText;
 }
@@ -77,7 +95,7 @@ export interface LeadDetailCardsWords<Failure> {
  * **Who to reach and what has happened** on Lead Detail (`SCR-M02-04`, `M02-32`, `M02-34`,
  * `M02-37`), both platforms: the contacts with the calling facts, and the six sections — the
  * timeline, the site, designs, proposals, tasks and files. What they read and press is
- * `useLeadDetailScreen`'s; the screen supplies its timeline and its dialler.
+ * `useLeadDetailScreen`'s; the screen supplies its timeline, its dialler and its file chooser.
  */
 export interface LeadDetailCardsProps<Failure> {
   readonly screen: LeadDetailCardsScreen<Failure>;
@@ -87,6 +105,10 @@ export interface LeadDetailCardsProps<Failure> {
   /** The Timeline section: the lead's `LeadTimeline`, read by the screen's hook. */
   readonly timeline: ReactNode;
   readonly onDial: (phoneE164: string) => void;
+  /** The device's own chooser for a file to add — or the pick that came back undone, sent again. */
+  readonly onAddFile: () => void;
+  /** A file of the lead, opened where the device opens one. */
+  readonly onOpenFile: (fileId: string) => void;
   /**
    * Which card leads: the contacts above the sections in one column, or the sections first where
    * they head the desktop's second column.

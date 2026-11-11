@@ -1,7 +1,8 @@
 import type { PlanChangePreview, TranslatedText } from '@heliogrid/contracts';
-import { scaledPower, type TierLimit } from '@heliogrid/domain';
+import { BYTES_PER_GB, scaledPower, type TierLimit } from '@heliogrid/domain';
 import type { MarketFormat } from '../../utils/format';
 import { figured, plain } from '../BillingHome/BillingHome.values';
+import type { PlanSelectionInput } from './PlanSelection.state';
 import type { PlanReviewRow } from './PlanSelection.types';
 import type { PlanSelectionWords } from './PlanSelection.words';
 
@@ -111,4 +112,25 @@ export function cycleRowsOf(
 
 function cycleName(words: PlanSelectionWords, cycle: 'monthly' | 'yearly'): string {
   return cycle === 'yearly' ? words.yearly : words.monthly;
+}
+
+/** One thing the lower plan blocks: what is used now against its limit (`M12-49`). */
+export function blockRowOf(
+  { words, format }: Pick<PlanSelectionInput, 'words' | 'format'>,
+  block: NonNullable<PlanChangePreview['blocks']>[number],
+): PlanReviewRow {
+  if (block.block === 'active_projects') {
+    return row(
+      block.block,
+      words.view.limits.activeProjects,
+      words.usedOf(format.number(block.used), words.book.limit(block.limit)),
+    );
+  }
+  const gb = (bytes: number) => format.number(Math.round(bytes / BYTES_PER_GB));
+  /* `used` is the gauge in bytes; `limit` is the book's own figure, already in GB (the contract). */
+  return row(
+    block.block,
+    words.view.limits.storage,
+    words.usedOf(gb(block.used), words.book.storage(block.limit)),
+  );
 }

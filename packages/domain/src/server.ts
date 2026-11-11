@@ -28,6 +28,7 @@ export {
 export { dayRate, partCycleCharge } from './money/part-cycle';
 export { tenMonthYearly } from './pricing/book';
 export { clearsCogsFloor, metersBelowCogsFloor } from './pricing/cogs';
+export { projectNumberOf } from './projects/number';
 export { subsidyAmount } from './subsidy/amount';
 export { taxBreakdown } from './tax/breakdown';
 export { creditNoteNumber, fiscalYearOf, invoiceNumber } from './tax/fiscal-year';

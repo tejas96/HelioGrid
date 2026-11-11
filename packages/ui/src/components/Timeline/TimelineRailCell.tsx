@@ -2,6 +2,7 @@
    next step. Lit as far as the last done-or-current step, dim beyond it; the last step draws no
    segment at all, because a rail that runs past the end says there is more sequence. */
 
+import type { ReactNode } from 'react';
 import type { TimelineStatus } from './Timeline.types';
 import { TimelineNode } from './TimelineParts';
 
@@ -10,15 +11,17 @@ export function TimelineRailCell({
   compact,
   isLast,
   railLit,
+  icon,
 }: {
   status?: TimelineStatus;
   compact: boolean;
   isLast: boolean;
   railLit: boolean;
+  icon?: ReactNode;
 }) {
   return (
     <div className="hg-timeline-rail-cell">
-      <TimelineNode status={status} compact={compact} />
+      <TimelineNode status={status} compact={compact} icon={icon} />
       {isLast ? null : (
         <span
           aria-hidden="true"

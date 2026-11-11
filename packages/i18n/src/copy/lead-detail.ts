@@ -38,6 +38,8 @@ export const LEAD_DETAIL = {
   },
   valueLabel: /*i18n*/ { id: 'Value' },
   noValue: /*i18n*/ { id: 'No value yet' },
+  projectLabel: /*i18n*/ { id: 'Project' },
+  openProject: /*i18n*/ { id: 'Open project {number}' },
   provisional: /*i18n*/ { id: 'Provisional' },
   nextStage: /*i18n*/ { id: 'Next, {stage}' },
   call: /*i18n*/ { id: 'Call' },
@@ -61,6 +63,7 @@ export const LEAD_DETAIL = {
   reopen: /*i18n*/ { id: 'Reopen' },
   waking: /*i18n*/ { id: 'Waking the lead…' },
   reopening: /*i18n*/ { id: 'Reopening the lead…' },
+  markWon: /*i18n*/ { id: 'Mark won' },
   addReferral: /*i18n*/ { id: 'Add a referral' },
   merge: /*i18n*/ { id: 'Merge duplicate' },
 } as const;
@@ -149,6 +152,8 @@ export function leadHeroWords(t: T, facts: LeadHeroFacts) {
         : t(LEAD_DETAIL.ownerSpoken, { name: facts.ownerName }),
     valueLabel: t(LEAD_DETAIL.valueLabel),
     noValue: t(LEAD_DETAIL.noValue),
+    projectLabel: t(LEAD_DETAIL.projectLabel),
+    openProject: (number: string) => t(LEAD_DETAIL.openProject, { number }),
     provisional: t(LEAD_DETAIL.provisional),
     stepLine: stageTrackWords(t).stepOf(facts.stage),
     nextLine:
@@ -156,6 +161,7 @@ export function leadHeroWords(t: T, facts: LeadHeroFacts) {
     stageTrack: stageTrackWords(t),
     recordActs: {
       label: t(MENU.moreActions),
+      markWon: t(LEAD_DETAIL.markWon),
       addReferral: t(LEAD_DETAIL.addReferral),
       merge: t(LEAD_DETAIL.merge),
       junk: t(LEAD_DETAIL.junk),

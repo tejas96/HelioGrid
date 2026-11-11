@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import type { LeadDetail, SessionProjection } from '@heliogrid/contracts';
+import type { LeadDetail, LeadFile, ProjectDetail, SessionProjection } from '@heliogrid/contracts';
 import { ROLE_PRESETS, type RolePreset } from '@heliogrid/domain';
 import { cleanup, renderHook, waitFor } from '@testing-library/react';
 import { createElement, type ReactNode } from 'react';
@@ -89,21 +89,30 @@ export type Answer = { status: number; body?: unknown } | 'drop';
 
 interface Origin {
   lead: LeadDetail;
+  /** The lead's files as the Files section reads them. */
+  files: LeadFile[];
   /** The lead has left the reader's scope: every read of it answers 404. */
   gone: boolean;
+  /** The won lead's project as this reader reads it; null answers 404 — not theirs to see. */
+  project: ProjectDetail | null;
   /** The next answers to a write, keyed by what the write names — a field or an act — in order. */
   answers: Map<string, Answer[]>;
   /** While set, every write waits for it — the act is out until the test lets it go. */
   gate: Promise<void> | null;
   writes: { path: string; body: unknown }[];
+  /** Every read's path, in order. */
+  reads: string[];
 }
 
 export const origin: Origin = {
   lead: priya(),
+  files: [],
   gone: false,
+  project: null,
   answers: new Map(),
   gate: null,
   writes: [],
+  reads: [],
 };
 
 /** Queues `answers` for the next writes naming `key` — a field (`shading`) or an act (`wake`). */
@@ -191,25 +200,39 @@ const server = listeningOrigin((req, res) => {
     });
     return void res.end();
   }
+  if (req.method === 'GET') origin.reads.push(url.pathname);
   if (url.pathname === '/auth/session') return send(res, req, 200, projection());
-  if (url.pathname === '/visit-surveyors') return send(res, req, 200, { items: SURVEYORS });
-  if (url.pathname === `/leads/${LEAD_ID}/activities`) {
-    return send(res, req, 200, { items: [], totalCount: 0 });
-  }
   if (url.pathname.startsWith(`/leads/${LEAD_ID}`) && req.method !== 'GET') {
     return void answerWrite(req, res, url.pathname);
   }
-  if (url.pathname === `/leads/${LEAD_ID}`) {
-    return origin.gone
-      ? send(res, req, 404, refusal('NOT_FOUND'))
-      : send(res, req, 200, origin.lead);
-  }
-  send(res, req, 404, refusal('NOT_FOUND'));
+  const [status, body] = readAnswerOf(url.pathname);
+  send(res, req, status, body);
 });
+
+/** What a read answers, by its path — every read the screen sends, else not found. */
+function readAnswerOf(path: string): [number, unknown] {
+  const notFound: [number, unknown] = [404, refusal('NOT_FOUND')];
+  if (path === '/visit-surveyors') return [200, { items: SURVEYORS }];
+  if (path === `/leads/${LEAD_ID}/activities`) return [200, { items: [], totalCount: 0 }];
+  if (path === `/leads/${LEAD_ID}/files`) return [200, { items: origin.files }];
+  if (path.startsWith('/projects/'))
+    return origin.project === null ? notFound : [200, origin.project];
+  if (path === `/leads/${LEAD_ID}`) return origin.gone ? notFound : [200, origin.lead];
+  return notFound;
+}
 
 afterEach(() => {
   cleanup();
-  Object.assign(origin, { lead: priya(), gone: false, answers: new Map(), gate: null, writes: [] });
+  Object.assign(origin, {
+    lead: priya(),
+    files: [],
+    gone: false,
+    project: null,
+    answers: new Map(),
+    gate: null,
+    writes: [],
+    reads: [],
+  });
 });
 
 /** Lead Detail, mounted in the real provider over the origin, its lead read. */

@@ -20,6 +20,8 @@ interface MenuTriggerProps {
   onToggle: () => void;
   open: boolean;
   trigger?: ReactElement;
+  /** The default trigger's look: bare, or on the control fill (`MenuProps['triggerLook']`). */
+  look: 'plain' | 'surface';
   wrapRef: Ref<HTMLSpanElement>;
 }
 
@@ -35,6 +37,7 @@ export function MenuTrigger({
   onToggle,
   open,
   trigger,
+  look,
   wrapRef,
 }: MenuTriggerProps) {
   const onKeyDown = (event: KeyboardEvent) => {
@@ -70,6 +73,7 @@ export function MenuTrigger({
         aria-label={label}
         className="hg-menu-overflow"
         data-open={open ? 'true' : 'false'}
+        data-look={look}
         disabled={disabled}
         onClick={onToggle}
         onKeyDown={onKeyDown}

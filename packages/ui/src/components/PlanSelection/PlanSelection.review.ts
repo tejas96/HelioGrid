@@ -1,15 +1,10 @@
 import type { PlanChangePreview, TranslatedText } from '@heliogrid/contracts';
-import { BYTES_PER_GB, minorUnitsOfDecimal, type Tier, tierStepOf } from '@heliogrid/domain';
+import { minorUnitsOfDecimal, type Tier, tierStepOf } from '@heliogrid/domain';
 import type { BillingWorkingPart } from '../BillingHome/BillingHome.types';
 import { figured } from '../BillingHome/BillingHome.values';
-import { changeRowsOf, cycleRowsOf, row } from './PlanSelection.changes';
+import { blockRowOf, changeRowsOf, cycleRowsOf, row } from './PlanSelection.changes';
 import type { PlanSelectionInput, PlanSelectionState } from './PlanSelection.state';
-import type {
-  PlanMoneyLine,
-  PlanReviewRow,
-  PlanReviewSection,
-  PlanReviewView,
-} from './PlanSelection.types';
+import type { PlanMoneyLine, PlanReviewSection, PlanReviewView } from './PlanSelection.types';
 import { actOf, pendingWhenOf, whenRowsOf } from './PlanSelection.when';
 
 type Sale = PlanChangePreview['afterwards'];
@@ -166,29 +161,14 @@ function sectionsOf(
     key: 'blocked',
     title: words.blocksTitle(preview.to.tier),
     rows: blocks.flatMap((block) => {
-      /* Storage is the one block this release can name; one a later release adds waits for it. */
-      if (block.block !== 'storage') return [];
+      /* Storage and live projects are the blocks this release can name; a later one waits for it. */
+      if (block.block !== 'storage' && block.block !== 'active_projects') return [];
       const was = before?.find((old) => old.block === block.block);
       const changed = before !== null && (was === undefined || was.used !== block.used);
       return [{ ...blockRowOf(input, block), mark: changed ? words.changedMark : null }];
     }),
   };
   return [blocked, when];
-}
-
-/** One thing the lower plan blocks: what is used now against its limit (`M12-49`). */
-function blockRowOf(
-  input: PlanSelectionInput,
-  block: NonNullable<PlanChangePreview['blocks']>[number],
-): PlanReviewRow {
-  const { words, format } = input;
-  const gb = (bytes: number) => format.number(Math.round(bytes / BYTES_PER_GB));
-  /* `used` is the gauge in bytes; `limit` is the book's own figure, already in GB (the contract). */
-  return row(
-    block.block,
-    words.view.limits.storage,
-    words.usedOf(gb(block.used), words.book.storage(block.limit)),
-  );
 }
 
 /** `What you pay today`: the part of this cycle, or a conversion's first cycle, with its tax. */

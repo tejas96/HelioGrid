@@ -53,7 +53,13 @@ describe.skipIf(skip)('reading a stored file', () => {
       act(),
     );
     await expect(
-      files.service.downloadUrl(company.tenantId, NON_UPLOADER, declared.file.id, Date.now()),
+      files.service.downloadUrl(
+        company.tenantId,
+        NON_UPLOADER,
+        declared.file.id,
+        Date.now(),
+        act(),
+      ),
     ).rejects.toMatchObject({ code: 'FILE_NOT_UPLOADED', status: HttpStatus.CONFLICT });
   });
 
@@ -74,6 +80,7 @@ describe.skipIf(skip)('reading a stored file', () => {
       NON_UPLOADER,
       declared.file.id,
       now,
+      act(),
     );
     expect(Date.parse(link.expiresAt) - now).toBe(FILE_DOWNLOAD_LINK_SECONDS * SECOND_MS);
     expect(link.url).toContain('type=image%2Fpng');
@@ -101,6 +108,7 @@ describe.skipIf(skip)('reading a stored file', () => {
       UPLOADER,
       declared.file.id,
       Date.now(),
+      act(),
     );
     expect(files.logged.length).toBeGreaterThan(0);
     const log = files.logged.join('');

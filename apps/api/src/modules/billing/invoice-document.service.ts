@@ -40,11 +40,17 @@ export class InvoiceDocumentService {
     return { html: invoiceDocumentHtml(invoice, pack, translator) };
   }
 
-  /** Keeps the PDF and points the invoice at it, once; a second run points nothing. */
+  /**
+   * Keeps the PDF and points the invoice at it, once; a second run points nothing. An invoice gone
+   * since its page was read (its company removed) ends the step: the workflow retries without end,
+   * so a write that can never land would retry forever.
+   */
   async attach(
     { tenantId, invoiceId, pdfBase64 }: InvoiceDocumentStepInput & { readonly pdfBase64: string },
     now: number,
   ): Promise<InvoiceDocumentStepResult> {
+    const waiting = await this.invoices.invoiceForDocument(tenantId, invoiceId);
+    if (waiting === null) return { attached: false };
     const bytes = pdfBytesOf(pdfBase64, invoiceId);
     const fileId = await this.documents.keep({
       tenantId,
@@ -69,7 +75,7 @@ export class InvoiceDocumentService {
     return { html: invoiceDocumentHtml(found.invoice, pack, translator, found.note) };
   }
 
-  /** Keeps the credit note's PDF and points the note at it, once. */
+  /** Keeps the credit note's PDF and points the note at it, once; a note gone since ends the step. */
   async attachCreditNote(
     {
       tenantId,
@@ -78,6 +84,8 @@ export class InvoiceDocumentService {
     }: CreditNoteDocumentStepInput & { readonly pdfBase64: string },
     now: number,
   ): Promise<CreditNoteDocumentStepResult> {
+    const waiting = await this.invoices.creditNoteForDocument(tenantId, creditNoteId);
+    if (waiting === null) return { attached: false };
     const bytes = pdfBytesOf(pdfBase64, creditNoteId);
     const fileId = await this.documents.keep({
       tenantId,

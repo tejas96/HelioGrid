@@ -13,15 +13,18 @@ appId: com.heliogrid.app
 - scrollUntilVisible:
     element: "${SURVIVOR_NAME}.+${FROM_SURVIVOR}.*"
     direction: DOWN
+    centerElement: true
 - tapOn: "${SURVIVOR_NAME}.+${FROM_SURVIVOR}.*"
 - scrollUntilVisible:
     element: "${SURVIVOR_CITY}.+${FROM_SURVIVOR}.*"
     direction: DOWN
+    centerElement: true
 - tapOn: "${SURVIVOR_CITY}.+${FROM_SURVIVOR}.*"
 # The primary contact: the customer is their own, so the value is their number.
 - scrollUntilVisible:
     element: "[+].+${FROM_SURVIVOR}.*"
     direction: DOWN
+    centerElement: true
 - tapOn: "[+].+${FROM_SURVIVOR}.*"
 - tapOn: ${REVIEW_MERGE}
 - extendedWaitUntil:

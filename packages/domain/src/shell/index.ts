@@ -30,7 +30,15 @@ export {
 } from './explainer';
 export type { FilterPanelWords, FilterSetWords } from './filter-words';
 export type { ComposedHome } from './home';
-export { composedHome, HOME_LADDER, homeFor, homesOf } from './home';
+export {
+  composedHome,
+  HOME_LADDER,
+  homeFor,
+  homesOf,
+  MODULE_HOME_BLOCKS,
+  showsInstallerJob,
+  waitingHomeBlocks,
+} from './home';
 export type {
   PreferenceSource,
   ProfilePreferencesFacts,

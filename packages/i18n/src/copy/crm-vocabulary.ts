@@ -156,6 +156,11 @@ export const ACTIVITY_KIND_WORD: Record<ActivityKind, MessageRef> = {
   visit_rescheduled: /*i18n*/ { id: 'Visit rescheduled' },
   task_done: /*i18n*/ { id: 'Task done' },
   customer_merged: /*i18n*/ { id: 'Customers merged' },
+  project_moved: /*i18n*/ { id: 'Project stage' },
+  project_wait: /*i18n*/ { id: 'Project wait' },
+  project_document: /*i18n*/ { id: 'Project document' },
+  project_step: /*i18n*/ { id: 'Install step' },
+  project_changed: /*i18n*/ { id: 'Project changed' },
 };
 
 type Worded<K extends string> = Readonly<Record<K, TranslatedText>>;

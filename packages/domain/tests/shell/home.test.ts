@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { ROLE_PRESETS } from '../../src/authz/roles';
-import { composedHome, homeFor, homesOf } from '../../src/shell/home';
+import {
+  composedHome,
+  homeFor,
+  homesOf,
+  showsInstallerJob,
+  waitingHomeBlocks,
+} from '../../src/shell/home';
 
 describe('homesOf — each held preset once, in ladder order (M13-10)', () => {
   it('gives every one of the twelve presets exactly one rung', () => {
@@ -113,5 +119,26 @@ describe('composedHome — one home, the other held presets composed inside it (
       expect(result?.composed).not.toContain(result?.home);
       expect(result?.composed).toHaveLength(held.length - 1);
     }
+  });
+});
+
+describe('the installer’s job on the home (SCR-M08-05, M08-45)', () => {
+  it.each([
+    { who: 'an installer alone', held: ['installation_team_member'], chosen: null, shows: true },
+    {
+      who: 'an installer who also manages — the job is composed into the home',
+      held: ['project_manager', 'installation_team_member'],
+      chosen: null,
+      shows: true,
+    },
+    { who: 'a project manager', held: ['project_manager'], chosen: null, shows: false },
+    { who: 'no one', held: [], chosen: null, shows: false },
+  ] as const)('$who → $shows', ({ held, chosen, shows }) => {
+    expect(showsInstallerJob(composedHome(held, chosen))).toBe(shows);
+  });
+
+  it('draws no waiting block for the installer, whose block is the job itself', () => {
+    const home = composedHome(['project_manager', 'installation_team_member']);
+    expect(home && waitingHomeBlocks(home)).toEqual(['project_manager']);
   });
 });

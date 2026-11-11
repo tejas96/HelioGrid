@@ -18,6 +18,7 @@ appId: com.heliogrid.app
 - scrollUntilVisible:
     element: ${ROOF_OWNED}
     direction: DOWN
+    centerElement: true
 - assertVisible: ${ROOF}
 - tapOn: ${ROOF_OWNED}
 - extendedWaitUntil:

@@ -22,6 +22,8 @@ export {
   memberNameOf,
 } from './crm.lead-columns.repository';
 export { findLeadInScope, loadLeadDetail, type ScopedLead } from './crm.lead-detail.repository';
+export { leadFilesOf } from './crm.lead-files.repository';
+export { lockLeadInScope, personOf } from './crm.lead-lock.repository';
 export { CrmModule } from './crm.module';
 export { leadReadableBy, leadScopeWhere } from './crm.scope.repository';
 export {
@@ -41,4 +43,4 @@ export {
 } from './internal/lead-lifecycle';
 export { type LeadMoney, leadSummaryOf, moneyOf } from './internal/lead-wire';
 export { phoneLockKey } from './internal/phone-lock';
-export { type LeadReader, readerOf } from './internal/reader';
+export { actorNameOf, type LeadReader, readerOf } from './internal/reader';

@@ -11,10 +11,10 @@ describe('offeredDoors — the doors a person’s shell may open (F7-48)', () =>
       doors: ['leads', 'projects', 'more', 'add_lead', 'search'],
     },
     {
-      who: 'a Project Manager — no list, no verb',
+      who: 'a Project Manager — the board, no verb',
       held: ['project_manager'],
       chosen: null,
-      doors: ['more', 'search'],
+      doors: ['projects', 'more', 'search'],
     },
     {
       who: 'a rep + surveyor on the ladder’s home',

@@ -20,6 +20,7 @@ const GLYPH_BY_TYPE: Record<Exclude<NotificationType, 'system'>, string> = {
   join_requested: 'users',
   invite_declined: 'user',
   reinvite_requested: 'undo',
+  project_moved: 'flag',
   /* Billing's notices wear the billing group's own mark (`M12-39`, `M12-42`). */
   dunning_notice: 'bill',
   trial_nudge: 'bill',

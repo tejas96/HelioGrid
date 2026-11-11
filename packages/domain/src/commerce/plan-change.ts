@@ -1,5 +1,5 @@
 import type { BillingCycle } from '../rails/pack';
-import { TIERS, type Tier } from './tiers';
+import { TIERS, type Tier, type TierLimit } from './tiers';
 
 /**
  * What a pick on the plan screen is (`M12-48`, `M12-49`, `M12-12`, `M12-54`): a live paid row's
@@ -26,8 +26,20 @@ export type PlanChangeStatus = (typeof PLAN_CHANGE_STATUSES)[number];
  * that lands each table (Law 9): designs over the kW ceiling with the studio, proposals this cycle
  * with proposals, active projects with projects. Values append in the order the enum grew.
  */
-export const PLAN_CHANGE_BLOCKS = ['storage'] as const;
+export const PLAN_CHANGE_BLOCKS = ['storage', 'active_projects'] as const;
 export type PlanChangeBlock = (typeof PLAN_CHANGE_BLOCKS)[number];
+
+/**
+ * The lower plan's block on live projects (`M08-07`): more live than it lets a company hold. The
+ * projects already live keep working whatever the plan; the block only says the downgrade would
+ * stop a new one. `null` when the plan holds them all.
+ */
+export function activeProjectsBlock(
+  live: number,
+  limit: TierLimit,
+): { readonly used: number; readonly limit: number } | null {
+  return typeof limit === 'number' && live > limit ? { used: live, limit } : null;
+}
 
 /** What a hosted checkout page is for: a conversion or reactivation, or an upgrade's charge. */
 export const CHECKOUT_PURPOSES = ['conversion', 'plan_change'] as const;

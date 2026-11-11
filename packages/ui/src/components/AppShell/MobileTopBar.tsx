@@ -79,8 +79,7 @@ export function MobileTopBar({
         </div>
       )}
       <div className="hg-app-shell-topbar-actions">
-        {actions}
-        {jobs}
+        {/* Search first, then the page's own acts — a project's *Call* and ⋯ (the picked design). */}
         {onSearchClick !== undefined ? (
           <ShellAction
             round
@@ -89,6 +88,8 @@ export function MobileTopBar({
             icon={<ShellGlyph name="search" size="md" tone="primary" />}
           />
         ) : null}
+        {actions}
+        {jobs}
         {onNotificationsClick !== undefined ? (
           <ShellAction
             round

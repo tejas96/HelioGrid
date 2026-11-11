@@ -52,7 +52,10 @@ const VARIANT: Record<ButtonVariant, VariantVisual> = {
 const FILLED: ReadonlySet<ButtonVariant> = new Set<ButtonVariant>(['primary', 'destructive']);
 
 /* The words a tone gives a secondary or ghost pill; the white pill keeps its own ground. */
-const TONE: Record<ButtonTone, ThemeColor> = { danger: colors['danger-text'] };
+const TONE: Record<ButtonTone, ThemeColor> = {
+  danger: colors['danger-text'],
+  inverse: colors['on-ink'],
+};
 
 const SIZE: Record<ButtonSize, ViewStyle> = {
   prominent: { height: theme.spacing['sp-16'], paddingHorizontal: theme.spacing['sp-8'] },

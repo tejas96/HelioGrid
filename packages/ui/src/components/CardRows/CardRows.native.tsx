@@ -38,7 +38,6 @@ export function CardRow({
   after,
   highlighted = false,
   muted = false,
-  busy = false,
   targetRef,
 }: CardRowProps) {
   const [asideWidth, setAsideWidth] = useState(0);
@@ -51,11 +50,10 @@ export function CardRow({
   const acts = aside === undefined || aside === null ? null : aside;
   const bodyLook = [styles.body, muted ? styles.muted : undefined];
   return (
-    <View
-      role="listitem"
-      accessibilityState={{ busy }}
-      style={[styles.row, first ? undefined : styles.hairline]}
-    >
+    /* No busy state here, though the web's row says `aria-busy`: Android gives a View with no words
+       of its own a spoken "busy" and never takes it back, so the row read "busy" long after its
+       work; the row's own controls say busy while they work. */
+    <View role="listitem" style={[styles.row, first ? undefined : styles.hairline]}>
       {highlighted ? <View style={styles.highlighted} pointerEvents="none" /> : null}
       <View style={styles.frame}>
         <AsideRoom.Provider value={acts === null ? 0 : asideWidth + theme.spacing['sp-2']}>

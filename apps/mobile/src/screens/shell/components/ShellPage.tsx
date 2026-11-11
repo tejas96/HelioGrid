@@ -21,6 +21,8 @@ interface DrillDown {
   onBack: () => void;
   /** The title's focus handle: where the page lands the screen reader after its `Try again`. */
   titleRef?: Ref<FocusHandle>;
+  /** The page's own round acts in the bar, after its search — a project's Call and ⋯. */
+  actions?: ReactNode;
 }
 
 /**
@@ -75,6 +77,7 @@ export function ShellPage({
             title={drillDown.title}
             scrolled={scrolled}
             onSearchClick={() => navigation.navigate('Search')}
+            actions={drillDown.actions}
             leading={
               <ShellAction
                 round

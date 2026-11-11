@@ -33,7 +33,13 @@ export class FileController {
       }),
       downloadUrl: async ({ params }) => ({
         status: 200,
-        body: await this.files.downloadUrl(tenantIdOf(req), rolesOf(req), params.id, Date.now()),
+        body: await this.files.downloadUrl(
+          tenantIdOf(req),
+          rolesOf(req),
+          params.id,
+          Date.now(),
+          actOf(req),
+        ),
       }),
     });
   }

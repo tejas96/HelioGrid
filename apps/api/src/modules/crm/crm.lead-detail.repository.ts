@@ -2,8 +2,8 @@ import type { LeadDetail, Task, Visit } from '@heliogrid/contracts';
 import {
   customer,
   type DbTransaction,
-  file,
   lead,
+  leadFile,
   leadStageTransition,
   leadVisitBooking,
   referral,
@@ -18,7 +18,7 @@ import {
   localDate,
   localMinutes,
 } from '@heliogrid/domain';
-import { and, asc, count, desc, eq, isNotNull, max, notExists } from 'drizzle-orm';
+import { and, asc, count, desc, eq, max, notExists } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { customerRecordOf } from './crm.customer-record.repository';
 import {
@@ -27,6 +27,7 @@ import {
   leadSummaryColumns,
   memberNameOf,
 } from './crm.lead-columns.repository';
+import { projectOf } from './crm.lead-project.repository';
 import { leadScopeWhere } from './crm.scope.repository';
 import { type LeadMoney, leadSummaryOf, memberRefOf } from './internal/lead-wire';
 import type { LeadReader } from './internal/reader';
@@ -139,6 +140,7 @@ export async function loadLeadDetail(
     visit: await visitOf(tx, tenantId, leadId),
     openTasks: await openTasksOf(tx, tenantId, leadId),
     sections: { designs: 0, proposals: 0, files: await filesOf(tx, tenantId, leadId) },
+    project: await projectOf(tx, tenantId, leadId),
   };
 }
 
@@ -279,18 +281,11 @@ async function openTasksOf(tx: DbTransaction, tenantId: string, leadId: string):
   }));
 }
 
-/** Files on the lead whose bytes were confirmed — a declared upload not yet complete is no file. */
+/** The files put on the lead — the rows its Files section lists, so the count and the list agree. */
 async function filesOf(tx: DbTransaction, tenantId: string, leadId: string): Promise<number> {
   const [counted] = await tx
     .select({ n: count() })
-    .from(file)
-    .where(
-      and(
-        eq(file.tenantId, tenantId),
-        eq(file.subjectKind, 'lead'),
-        eq(file.subjectRef, leadId),
-        isNotNull(file.uploadedAt),
-      ),
-    );
+    .from(leadFile)
+    .where(and(eq(leadFile.tenantId, tenantId), eq(leadFile.leadId, leadId)));
   return counted?.n ?? 0;
 }

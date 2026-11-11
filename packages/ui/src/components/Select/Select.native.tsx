@@ -6,6 +6,7 @@ import { Dimensions, StyleSheet, View } from 'react-native';
 import { Svg } from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE, fieldBox, fieldWords } from '../../primitives/FieldBox/FieldBox.native';
+import { useKeyboardHeight } from '../../primitives/Keyboard/use-keyboard.native';
 import { Portal } from '../../primitives/Portal/Portal.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
@@ -36,8 +37,16 @@ const GAP = theme.spacing['sp-2'];
  * the trigger's position in the window against the window height. The list still drops, rises or
  * shortens to fit rather than assuming "8dp under the trigger, 260dp tall".
  */
-function anchorFor(x: number, y: number, w: number, h: number, windowHeight: number): Anchor {
-  const { up, max } = listPlacement(windowHeight - (y + h) - GAP, y - GAP);
+/**
+ * Where the list stands: the room below ends at `visibleBottom` — the keyboard's top while it is up
+ * — while an upward list hangs from the window's own bottom edge, keyboard or not.
+ */
+function anchorFor(
+  { x, y, w, h }: { x: number; y: number; w: number; h: number },
+  visibleBottom: number,
+  windowHeight: number,
+): Anchor {
+  const { up, max } = listPlacement(visibleBottom - (y + h) - GAP, y - GAP);
   return {
     left: x,
     max,
@@ -137,13 +146,17 @@ export function Select({
   const opts = normaliseOptions(options);
   const current = pickedOption(opts, value);
 
+  const keyboardHeight = useKeyboardHeight();
   const toggle = () => {
     if (anchor !== null) {
       setAnchor(null);
       return;
     }
+    // The room it opens into ends at the keyboard: measured against the whole window, a list
+    // opened from a sheet with a field focused fell under the keyboard.
+    const windowHeight = Dimensions.get('window').height;
     wrapRef.current?.measureInWindow((x, y, w, h) => {
-      setAnchor(anchorFor(x, y, w, h, Dimensions.get('window').height));
+      setAnchor(anchorFor({ x, y, w, h }, windowHeight - keyboardHeight, windowHeight));
     });
   };
 

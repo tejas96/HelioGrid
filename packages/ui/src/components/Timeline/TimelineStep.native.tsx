@@ -8,7 +8,7 @@ import Svg from 'react-native-svg';
 import { colors } from '../../primitives/Color/colors';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import type { TimelineItem } from './Timeline.types';
+import type { TimelineItem, TimelineStatus } from './Timeline.types';
 import { TimelineRailCell } from './TimelineRailCell.native';
 
 const styles = StyleSheet.create({
@@ -31,7 +31,16 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   content: { marginTop: 10 },
+  descriptionRow: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-1'] },
+  /* What the system did: the teal ink — the words say it, the ink is a second channel. */
+  descriptionSystem: { flexShrink: 1, color: colors['hue-teal-text'] },
 });
+
+/** Upcoming reads quiet; a step gone past reads secondary; the rest read primary. */
+function labelColorOf(status: TimelineStatus): 'tertiary' | 'secondary' | 'primary' {
+  if (status === 'upcoming') return 'tertiary';
+  return status === 'skipped' ? 'secondary' : 'primary';
+}
 
 export function TimelineStep({
   item,
@@ -53,7 +62,8 @@ export function TimelineStep({
   isLast: boolean;
   railLit: boolean;
 }) {
-  const upcoming = (item.status ?? 'upcoming') === 'upcoming';
+  const status = item.status ?? 'upcoming';
+  const system = item.descriptionTone === 'system';
   return (
     <View
       accessibilityRole="text"
@@ -66,12 +76,13 @@ export function TimelineStep({
         gap={gap}
         isLast={isLast}
         railLit={railLit}
+        icon={item.icon}
       />
       <View style={[styles.body, { paddingBottom: isLast ? 0 : pad }]}>
         <View style={[styles.head, { minHeight: compact ? node : 24 }]}>
           <Text
             variant={compact ? 'body' : 'body-lg'}
-            color={upcoming ? 'tertiary' : 'primary'}
+            color={labelColorOf(status)}
             style={[
               compact ? null : styles.labelPage,
               item.status === 'current' ? styles.labelCurrent : null,
@@ -86,9 +97,29 @@ export function TimelineStep({
           ) : null}
         </View>
         {item.description ? (
-          <Text variant="body-sm" color="secondary" style={styles.description}>
-            {item.description}
-          </Text>
+          <View style={[styles.description, styles.descriptionRow]}>
+            {system ? (
+              <Svg
+                width={13}
+                height={13}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={colors['hue-teal-text']}
+                strokeWidth={1.8}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <ShellGlyphMarks name="spark" />
+              </Svg>
+            ) : null}
+            <Text
+              variant="body-sm"
+              color="secondary"
+              style={system ? styles.descriptionSystem : undefined}
+            >
+              {item.description}
+            </Text>
+          </View>
         ) : null}
         {item.actor ? (
           <View style={styles.actor}>

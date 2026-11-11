@@ -9,7 +9,13 @@
  */
 
 export { APPEARANCES, type Appearance, appearanceOf } from './appearance';
-export { type ChecklistRow, checklistForDeal, IN_DOCUMENT_CHECKLIST } from './checklist';
+export {
+  CHECKLIST_ROW_MAKERS,
+  type ChecklistRow,
+  type ChecklistRowMaker,
+  checklistForDeal,
+  IN_DOCUMENT_CHECKLIST,
+} from './checklist';
 export {
   formatClockAt,
   formatDate,
@@ -51,6 +57,7 @@ export {
   UNCHECKED,
 } from './freshness';
 export { type CalendarDate, holidaysInForce, isHoliday } from './holidays';
+export { IN_INSTALL_STEPS, type InstallStepRow, installStepLabel } from './install-steps';
 export {
   inLanguage,
   LANGUAGES,
@@ -92,6 +99,7 @@ export type {
   PhoneFormats,
 } from './pack';
 export { IN_FORMATS, MEASUREMENT_SYSTEMS, withLatinDigits } from './pack';
+export { PACK_WORD_KINDS, type PackWordKind, packWordOf } from './pack-words';
 export {
   formatPhone,
   nationalNumber,
@@ -147,7 +155,9 @@ export {
 } from './utility';
 export {
   type BlockerPartyLabel,
+  type BlockerReasonLabel,
   blockerPartyLabel,
+  blockerReasonLabel,
   type DisplayVocabulary,
   IN_VOCABULARY,
   isSkippableStage,

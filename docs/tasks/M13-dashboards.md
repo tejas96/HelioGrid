@@ -235,9 +235,9 @@ These M13 rows specify homes and dashboard renderings whose surfaces ship as oth
 | M13-31 | T-M13-002 |
 | M13-32 | realized-by: T-M04-006 — SCR-M04-06 screen task |
 | M13-33 | realized-by: the 3D Design Studio, rebuilt from scratch — no PRD or task yet |
-| M13-34 | realized-by: T-M08-001 — SCR-M08-01 screen task |
+| M13-34 | realized-by: T-M08-001 — SCR-M08-01 screen task, shipped |
 | M13-35 | realized-by: T-M09-002 — SCR-M09-02 screen task |
-| M13-36 | realized-by: T-M08-005 — SCR-M08-05 screen task |
+| M13-36 | realized-by: T-M08-005 — SCR-M08-05 screen task, shipped |
 | M13-37 | realized-by: T-M10-001 — SCR-M10-01 screen task |
 | M13-38 | realized-by: T-M11-001 — SCR-M11-01 screen task |
 | M13-39 | T-M13-003 |

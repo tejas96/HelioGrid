@@ -45,4 +45,9 @@ export const APPEND_ONLY_LEDGERS: Record<string, string> = {
     '(M02-56, M13-22, T-M02-015)',
   lead_assignment:
     'every assignment of a lead with the assignee’s open count at that moment (M02-30, T-M02-011)',
+  project_stage_transition:
+    'every move of a project, forward, back, undone or cancelled; days in stage and the customer ' +
+    'link’s history read it (M08-14, M08-29)',
+  lead_file:
+    'a file added to a lead; a new file is a new row and the earlier one stays readable (M02-32)',
 };

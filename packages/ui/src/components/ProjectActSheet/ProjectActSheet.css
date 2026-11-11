@@ -1,0 +1,144 @@
+/* ProjectActSheet — one sheet per act on a project: its fields stacked, the people to pick as
+   rows, what the customer will read of a wait, and the send at the foot (`LeadActSheet`'s `ActSend`,
+   with any refusal above it). The sheet itself is `EditorSurface`'s. */
+
+.hg-project-act {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-project-act-note {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-project-act-read {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+}
+
+.hg-project-act-failed {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-body-sm);
+  color: var(--danger-text);
+}
+
+/* The people to pick: one row each, on the sheet's control fill; a ticked one is the accent wash
+   with a tick at its end — never the wash alone. */
+.hg-project-act-people {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.hg-pressable.hg-project-act-person {
+  display: flex;
+  justify-content: flex-start;
+  gap: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-tile);
+  background: var(--hg-control-fill);
+  text-align: start;
+  transition:
+    transform var(--dur-micro) var(--ease-standard),
+    background-color var(--dur-micro) var(--ease-standard);
+}
+
+.hg-pressable.hg-project-act-person[aria-checked="true"] {
+  background: var(--accent-subtle);
+}
+
+.hg-project-act-person-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-project-act-person-name {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-pressable.hg-project-act-person[aria-checked="true"] .hg-project-act-person-name {
+  color: var(--accent-text);
+}
+
+/* What the customer will read of the wait: quiet, on the control fill, never the team's note. */
+.hg-project-act-sees {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--hg-control-fill);
+}
+
+.hg-project-act-overline {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-overline);
+  line-height: var(--lh-overline);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.hg-project-act-sees-line {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-primary);
+}
+
+/* A one-line form: Enter in its field sends it. */
+.hg-project-act-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-project-act-label {
+  padding: 0;
+  font-size: var(--fs-field-label);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-project-act-start {
+  display: flex;
+}
+
+/* The wait's day said inline, and *+ Team note* across from it. */
+.hg-project-act-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+/* The early proof's moment: its spark, centred over the move it asks. */
+.hg-project-act-moment {
+  display: flex;
+  justify-content: center;
+}
+
+.hg-project-act-send {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}

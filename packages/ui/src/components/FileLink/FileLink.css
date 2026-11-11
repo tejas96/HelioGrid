@@ -1,0 +1,23 @@
+/* ── a file by its own name ── */
+.hg-pressable.hg-file-link {
+  justify-content: flex-start;
+  gap: var(--sp-1);
+  max-width: 100%;
+  border-radius: var(--r-xs);
+  color: var(--accent-text);
+  text-align: start;
+}
+
+.hg-file-link-name {
+  min-width: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+  overflow-wrap: anywhere;
+}
+
+@media (hover: hover) {
+  .hg-pressable.hg-file-link:hover .hg-file-link-name {
+    text-decoration: underline;
+  }
+}

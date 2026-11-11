@@ -21,7 +21,13 @@ export function TimelineStep({
 }) {
   return (
     <li className="hg-timeline-step" data-last={isLast ? 'true' : undefined}>
-      <TimelineRailCell status={item.status} compact={compact} isLast={isLast} railLit={railLit} />
+      <TimelineRailCell
+        status={item.status}
+        compact={compact}
+        isLast={isLast}
+        railLit={railLit}
+        icon={item.icon}
+      />
       <div className="hg-timeline-body">
         <div className="hg-timeline-head">
           <span
@@ -33,7 +39,26 @@ export function TimelineStep({
           </span>
           {item.meta ? <span className="hg-timeline-meta">{item.meta}</span> : null}
         </div>
-        {item.description ? <p className="hg-timeline-description">{item.description}</p> : null}
+        {item.description ? (
+          <p className="hg-timeline-description" data-tone={item.descriptionTone}>
+            {item.descriptionTone === 'system' ? (
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <ShellGlyphMarks name="spark" />
+              </svg>
+            ) : null}
+            {item.description}
+          </p>
+        ) : null}
         {item.actor ? (
           <div className="hg-timeline-actor">
             <svg

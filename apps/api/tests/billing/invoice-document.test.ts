@@ -175,13 +175,26 @@ describe.skipIf(skip)('the invoice PDF (M12-44, M12-45)', () => {
     // The company's own registration still prints: it was captured at conversion.
     expect(plain).toContain(THEIRS);
     const first = await documents.attach({ tenantId, invoiceId, pdfBase64: A_PDF }, ISSUED_AT);
-    // A second render differs byte for byte; the bytes the row describes stay stored.
+    // A run stopped after its file row, before the invoice pointed at it: the rerun reuses the row,
+    // and a second render, which differs byte for byte, leaves the bytes the row describes stored.
+    await pools.admin.db
+      .update(subscriptionInvoice)
+      .set({ pdfFileId: null })
+      .where(eq(subscriptionInvoice.id, invoiceId));
+    const rerun = await documents.attach(
+      { tenantId, invoiceId, pdfBase64: A_LATER_PDF },
+      ISSUED_AT,
+    );
     const again = await documents.attach(
       { tenantId, invoiceId, pdfBase64: A_LATER_PDF },
       ISSUED_AT,
     );
 
-    expect([first, again]).toEqual([{ attached: true }, { attached: false }]);
+    expect([first, rerun, again]).toEqual([
+      { attached: true },
+      { attached: true },
+      { attached: false },
+    ]);
     const kept = await pools.admin.db
       .select({ id: file.id, uploadedBy: file.uploadedBy, contentType: file.contentType })
       .from(file)
@@ -239,6 +252,22 @@ describe.skipIf(skip)('the invoice PDF (M12-44, M12-45)', () => {
     expect(html).toContain(OURS.value);
     expect(html).toContain('IGST');
     expect(html).not.toContain('No tax is charged on this invoice.');
+  });
+
+  it('a PDF whose company is gone ends its step, storing nothing, instead of retrying forever', async () => {
+    // A store that is down throws on any write: the step must end before it reaches the store.
+    const store = new MemoryObjectStore();
+    store.outage(true);
+    const documents = documentsOf(store);
+    const gone = { tenantId: randomUUID(), pdfBase64: A_PDF };
+
+    const invoice = await documents.attach({ ...gone, invoiceId: randomUUID() }, ISSUED_AT);
+    const note = await documents.attachCreditNote(
+      { ...gone, creditNoteId: randomUUID() },
+      ISSUED_AT,
+    );
+
+    expect([invoice, note]).toEqual([{ attached: false }, { attached: false }]);
   });
 
   it('an invoice’s PDF counts nothing on the company’s storage meter', async () => {

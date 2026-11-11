@@ -25,6 +25,10 @@ import { CrmEditsController } from './crm.edits.controller';
 import { CrmEditsRepository } from './crm.edits.repository';
 import { CrmEditsService } from './crm.edits.service';
 import { CrmEnquiriesRepository } from './crm.enquiries.repository';
+import { CrmFileSubjects } from './crm.file-subjects.repository';
+import { CrmLeadFilesController } from './crm.lead-files.controller';
+import { CrmLeadFilesRepository } from './crm.lead-files.repository';
+import { CrmLeadFilesService } from './crm.lead-files.service';
 import { CrmLeadImportActivityRegistration } from './crm.lead-import.activities';
 import { CrmLeadImportController } from './crm.lead-import.controller';
 import { CrmLeadImportRepository } from './crm.lead-import.repository';
@@ -54,10 +58,10 @@ import { CrmVisitsService } from './crm.visits.service';
 
 /**
  * The CRM (`M02`, build-order block 3): leads and their customers, capture with the dedupe sheet,
- * edits, the timeline and contacts, and the lead import, whose steps run here beside the tables they
- * write. It reads the tenant's market pack and quiet hours through the settings module, a stored
- * spreadsheet through the file module, and raises its notices through the notification module,
- * never the other way.
+ * edits, the timeline, contacts, the lead's files and the lead import, whose steps run here beside
+ * the tables they write. It reads the tenant's market pack and quiet hours through the settings
+ * module, a stored spreadsheet through the file module, and raises its notices through the
+ * notification module, never the other way.
  */
 @Module({
   imports: [SettingsModule, NotificationModule, FileModule],
@@ -67,6 +71,7 @@ import { CrmVisitsService } from './crm.visits.service';
     CrmEditsController,
     CrmActivitiesController,
     CrmContactsController,
+    CrmLeadFilesController,
     CrmAssignController,
     CrmMergeController,
     CrmLeadImportController,
@@ -77,6 +82,9 @@ import { CrmVisitsService } from './crm.visits.service';
     CrmMessagesController,
   ],
   providers: [
+    CrmFileSubjects,
+    CrmLeadFilesService,
+    CrmLeadFilesRepository,
     CrmLeadsService,
     CrmLeadsRepository,
     CrmCaptureService,

@@ -4,8 +4,8 @@ import {
   contact,
   customer,
   type DbTransaction,
-  file,
   lead,
+  leadFile,
   leadVisitBooking,
   referral,
   task,
@@ -160,16 +160,11 @@ export async function mergeMovesOf(
         .from(table)
         .where(and(eq(table.tenantId, tenantId), inArray(table.leadId, leadIds)))
     )[0]?.n ?? 0;
+  // The files the lead lists (`M02-32`) — never an upload that was not put on it.
   const [files] = await tx
     .select({ n: count() })
-    .from(file)
-    .where(
-      and(
-        eq(file.tenantId, tenantId),
-        eq(file.subjectKind, 'lead'),
-        inArray(file.subjectRef, leadIds),
-      ),
-    );
+    .from(leadFile)
+    .where(and(eq(leadFile.tenantId, tenantId), inArray(leadFile.leadId, leadIds)));
   return {
     contacts: await countOf(
       contact,

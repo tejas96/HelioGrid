@@ -111,6 +111,17 @@ describe('lead detail: the acts its standing offers (M02-45, M02-51…M02-56)', 
     expect(leadActsOf(withLead({ stage, state })).markQualified).toBe(offered);
   });
 
+  it.each<[LeadStage, LeadLifecycleState | null, boolean]>([
+    ['new', null, true],
+    ['proposal', null, true],
+    ['negotiating', 'snoozed', true],
+    ['won', null, false],
+    ['negotiating', 'lost', false],
+    ['contacted', 'junk', false],
+  ])('Mark won at stage %s in state %s: %s', (stage, state, offered) => {
+    expect(leadActsOf(withLead({ stage, state })).markWon).toBe(offered);
+  });
+
   it.each([
     [null, null, 'book'],
     [{ id: 'visit-1', address: 'Plot 14, Gangapur Road' }, null, 'reschedule'],

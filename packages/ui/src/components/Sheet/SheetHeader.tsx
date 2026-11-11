@@ -7,6 +7,8 @@ import type { OverlayStatus, OverlaySubtitleFace } from './Sheet.types';
 interface SheetHeaderProps {
   /** The title's own mark, before the heading block; nothing is drawn for it when absent. */
   leading?: ReactNode;
+  /** `moment`: the mark above, the heading centred under it. */
+  headerLook: 'row' | 'moment';
   /** With a handle above it the header loses its own top padding. */
   handle: boolean;
   /** The close alone: it rides the handle's row, at its end (`isCloseOnly`). */
@@ -29,6 +31,7 @@ interface SheetHeaderProps {
 /** The sheet's sticky header: overline, title, subtitle and the 44×44 dismissal. */
 export function SheetHeader({
   leading,
+  headerLook,
   handle,
   bare,
   closeLabel,
@@ -51,6 +54,7 @@ export function SheetHeader({
       data-handle={handle ? 'true' : 'false'}
       data-bare={bare ? 'true' : 'false'}
       data-scrolled={scrolled ? 'true' : 'false'}
+      data-look={headerLook}
       onPointerDown={onPointerDown}
     >
       <Lead leading={leading}>

@@ -27,4 +27,8 @@ export {
   recordNotificationsTo,
   type TenantQuietHours,
 } from './notification.repository';
-export { type NoticeWords, renderedInEveryLanguage } from './notification.words';
+export {
+  type NoticeWords,
+  renderedInEveryLanguage,
+  renderedInEveryLanguageWith,
+} from './notification.words';

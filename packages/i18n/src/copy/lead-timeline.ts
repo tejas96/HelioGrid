@@ -22,6 +22,7 @@ import {
 } from './crm-vocabulary';
 import { leadTaskTitle, qualifyCardWords } from './lead-detail-parts';
 import { leadSourceWord } from './lead-marks';
+import { projectEntryWords } from './project-timeline';
 
 type T = Translator['t'];
 
@@ -82,6 +83,7 @@ export interface LeadTimelineFormats {
   readonly day: (date: string) => string;
   readonly time: (hhmm: string) => string;
   readonly money: (amount: string) => string;
+  readonly word: (kind: 'stage' | 'party' | 'reason' | 'row' | 'step', key: string) => string;
 }
 
 /** What every entry carries, whatever its kind. */
@@ -246,6 +248,12 @@ function knownEntry(t: T, formats: LeadTimelineFormats, entry: KnownActivity) {
       return line(t(ENTRY.taskDone, { task: leadTaskTitle(t, entry.body) }));
     case 'customer_merged':
       return line(t(ENTRY.merged));
+    case 'project_moved':
+    case 'project_wait':
+    case 'project_document':
+    case 'project_step':
+    case 'project_changed':
+      return projectEntryWords(t, formats, entry);
   }
 }
 

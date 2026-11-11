@@ -42,5 +42,7 @@ export const SUBJECT_KINDS = [
   'lead',
   /** One bulk import of leads from a file (`M02-18`). */
   'lead_import',
+  /** A won deal's delivery, from Won to handover (`M08-02`). */
+  'project',
 ] as const;
 export type SubjectKind = (typeof SUBJECT_KINDS)[number];

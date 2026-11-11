@@ -14,6 +14,7 @@ import { leadCallsContract } from './crm/calls';
 import { leadCaptureContract } from './crm/capture';
 import { contactsContract } from './crm/contacts';
 import { leadEditsContract } from './crm/lead-edits';
+import { leadFilesContract } from './crm/lead-files';
 import { leadImportContract } from './crm/lead-import';
 import { leadsContract } from './crm/leads';
 import { leadLifecycleContract } from './crm/lifecycle';
@@ -30,6 +31,8 @@ import { notificationContract } from './notification';
 import { onboardingContract } from './onboarding';
 import { priceBookContract } from './price-book';
 import { pricingContract } from './pricing';
+import { projectActsContract } from './projects/project-acts';
+import { projectsContract } from './projects/projects';
 import { searchContract } from './search';
 import { tenantContract } from './tenant';
 import { tenantSettingsContract } from './tenant-settings';
@@ -63,6 +66,7 @@ export * from './crm/calls';
 export * from './crm/capture';
 export * from './crm/contacts';
 export * from './crm/lead-edits';
+export * from './crm/lead-files';
 export * from './crm/lead-import';
 export * from './crm/lead-import-rows';
 export * from './crm/leads';
@@ -102,6 +106,9 @@ export * from './ports/session';
 // The price book: versioned non-catalog rates (`T-M01-031`).
 export * from './price-book';
 export * from './pricing';
+export * from './projects/project-acts';
+export * from './projects/projects';
+export * from './projects/schemas';
 // Global search (`T-FPLAT-020`): leads, customers, people and catalog items in one read.
 export * from './search';
 export * from './session';
@@ -163,6 +170,7 @@ const crmRouters = c.router(
     leadCalls: leadCallsContract,
     leadCapture: leadCaptureContract,
     leadEdits: leadEditsContract,
+    leadFiles: leadFilesContract,
     leadImport: leadImportContract,
     leadLifecycle: leadLifecycleContract,
     leadMessages: leadMessagesContract,
@@ -173,10 +181,19 @@ const crmRouters = c.router(
   ROOT_OPTIONS,
 );
 
-export type ApiContract = typeof platformRouters & typeof crmRouters;
+/** The delivery after Won (`M08`): the projects' reads and acts, and *Mark won* that starts one. */
+const deliveryRouters = c.router(
+  {
+    projectActs: projectActsContract,
+    projects: projectsContract,
+  },
+  ROOT_OPTIONS,
+);
+
+export type ApiContract = typeof platformRouters & typeof crmRouters & typeof deliveryRouters;
 
 /**
  * The root API contract. Feature modules mount their routers here — contract FIRST,
  * then implementation; the contract diff is the API review surface (CLAUDE.md §2 Law 3).
  */
-export const apiContract: ApiContract = { ...platformRouters, ...crmRouters };
+export const apiContract: ApiContract = { ...platformRouters, ...crmRouters, ...deliveryRouters };

@@ -1,0 +1,106 @@
+/* ProjectRows — a project in a card of rows (`SCR-M08-01`): its kind tile, the words, the mark,
+   and at the end its days figure and manager, its one act, or a chevron. The card and the open
+   target are `CardRows'`. */
+
+.hg-card-row-body.hg-project-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--sp-16);
+  padding-block: var(--sp-3);
+}
+
+.hg-project-row-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-project-row-name {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-project-row-line {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.hg-project-row-mark {
+  display: flex;
+  margin-top: var(--sp-1);
+}
+
+.hg-project-row-end {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-1);
+}
+
+/* The days figure is a number: one token, never wrapped. */
+.hg-project-row-days {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.hg-project-row-manager {
+  display: inline-flex;
+}
+
+/* The kind tile: a hero's 48, a row's 40, a group head's 24; the wash and ink are its tint's
+   token pair. */
+/* A group's head: its tile, its overline and its count, a line above all but the first. */
+.hg-project-row-group {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-3) var(--sp-1);
+  list-style: none;
+}
+
+.hg-project-row-group:not([data-first="true"]) {
+  margin: var(--sp-1) var(--sp-3) 0;
+  padding-inline: 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+/* The row under a group's head draws no line of its own. */
+.hg-project-row-group + .hg-card-row::before {
+  display: none;
+}
+
+.hg-project-row-group-label {
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  letter-spacing: var(--tr-overline);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.hg-project-row-group-count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.hg-project-row-more {
+  padding: var(--sp-1);
+  list-style: none;
+}

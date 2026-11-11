@@ -22,6 +22,12 @@ interface OptionCardProps {
   mode: OptionCardGroupMode;
   off: boolean;
   density: 'expressive' | 'functional';
+  /**
+   * A card in a column of two or more: its chip and dot share the top row and its words take the
+   * card's whole width under them. Beside them, a phone column left the words about 70 points and
+   * broke a word as short as "Customer" in two.
+   */
+  stacked: boolean;
   onSelect: () => void;
   currentLabel: TranslatedText | undefined;
 }
@@ -80,6 +86,10 @@ const styles = StyleSheet.create({
   dotSquare: { borderRadius: theme.radius['rf-sm'] },
   dotFill: { width: 7, height: 7, borderRadius: theme.radius['r-pill'] },
   body: { flex: 1, minWidth: 0 },
+  /* It fills its cell, so two cards in a row are one height whatever their words. */
+  cardStacked: { flexDirection: 'column', alignItems: 'stretch', flexGrow: 1 },
+  stackTop: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
+  stackBody: { minWidth: 0 },
   head: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -199,6 +209,78 @@ function OptionGround({ off, children }: { off: boolean; children: ReactNode }) 
   return off ? children : <GroundProvider ground="tile">{children}</GroundProvider>;
 }
 
+/** The option's icon in its chip, where the option has one. */
+function OptionChip({
+  option,
+  selected,
+  off,
+  density,
+}: Pick<OptionCardProps, 'option' | 'selected' | 'off' | 'density'>) {
+  if (option.icon === undefined) return null;
+  return (
+    <IconChip selected={selected && !off} functional={density === 'functional'}>
+      {option.icon}
+    </IconChip>
+  );
+}
+
+/** The option's words: its title with its marks and price, its line, its reason, what it holds. */
+function OptionWords({
+  option,
+  ink,
+  current,
+  reason,
+  style,
+}: {
+  option: OptionCardItem;
+  ink: 'disabled' | 'primary';
+  current: TranslatedText | undefined;
+  reason: ReactNode;
+  style: StyleProp<ViewStyle>;
+}) {
+  return (
+    <View style={style}>
+      <View style={styles.head}>
+        <View style={styles.titles}>
+          <Text
+            variant="body"
+            color={ink}
+            lang={option.lang}
+            style={[
+              styles.title,
+              { lineHeight: Math.max(TITLE_LINE, scriptFloorFor('body', option.title)) },
+            ]}
+          >
+            {option.title}
+          </Text>
+          {/* A word in its own neutral pill — never the accent, which selection owns. */}
+          {current === undefined ? null : (
+            <StatusMark tone="neutral" mark={false} label={current} />
+          )}
+          {option.marks}
+        </View>
+        {option.price !== undefined ? (
+          <Text variant="body-sm" color={ink} style={styles.price}>
+            {option.price}
+          </Text>
+        ) : null}
+      </View>
+      {option.description !== undefined ? (
+        <Text variant="body-sm" color="secondary" lang={option.lang} style={styles.description}>
+          {option.description}
+        </Text>
+      ) : null}
+      {reason === null ? null : <View style={styles.reason}>{reason}</View>}
+      {option.content !== undefined ? <View style={styles.content}>{option.content}</View> : null}
+      {option.meta !== undefined ? (
+        <Text variant="overline" color="tertiary" style={styles.meta}>
+          {option.meta}
+        </Text>
+      ) : null}
+    </View>
+  );
+}
+
 /** One card. The card IS the radio, so `content` is static by contract. */
 export function OptionCard({
   option,
@@ -206,6 +288,7 @@ export function OptionCard({
   mode,
   off,
   density,
+  stacked,
   onSelect,
   currentLabel,
 }: OptionCardProps) {
@@ -242,56 +325,26 @@ export function OptionCard({
         option.description === undefined && option.content === undefined
           ? styles.cardTitleOnly
           : null,
+        stacked ? styles.cardStacked : null,
       ]}
     >
       <OptionGround off={off}>
-        {option.icon !== undefined ? (
-          <IconChip selected={selected && !off} functional={density === 'functional'}>
-            {option.icon}
-          </IconChip>
-        ) : null}
-        <View style={styles.body}>
-          <View style={styles.head}>
-            <View style={styles.titles}>
-              <Text
-                variant="body"
-                color={ink}
-                lang={option.lang}
-                style={[
-                  styles.title,
-                  { lineHeight: Math.max(TITLE_LINE, scriptFloorFor('body', option.title)) },
-                ]}
-              >
-                {option.title}
-              </Text>
-              {/* A word in its own neutral pill — never the accent, which selection owns. */}
-              {current === undefined ? null : (
-                <StatusMark tone="neutral" mark={false} label={current} />
-              )}
-              {option.marks}
-            </View>
-            {option.price !== undefined ? (
-              <Text variant="body-sm" color={ink} style={styles.price}>
-                {option.price}
-              </Text>
-            ) : null}
+        {stacked ? (
+          <View style={styles.stackTop}>
+            <OptionChip option={option} selected={selected} off={off} density={density} />
+            <Dot selected={selected} mode={mode} off={off} />
           </View>
-          {option.description !== undefined ? (
-            <Text variant="body-sm" color="secondary" lang={option.lang} style={styles.description}>
-              {option.description}
-            </Text>
-          ) : null}
-          {reason === null ? null : <View style={styles.reason}>{reason}</View>}
-          {option.content !== undefined ? (
-            <View style={styles.content}>{option.content}</View>
-          ) : null}
-          {option.meta !== undefined ? (
-            <Text variant="overline" color="tertiary" style={styles.meta}>
-              {option.meta}
-            </Text>
-          ) : null}
-        </View>
-        <Dot selected={selected} mode={mode} off={off} />
+        ) : (
+          <OptionChip option={option} selected={selected} off={off} density={density} />
+        )}
+        <OptionWords
+          option={option}
+          ink={ink}
+          current={current}
+          reason={reason}
+          style={stacked ? styles.stackBody : styles.body}
+        />
+        {stacked ? null : <Dot selected={selected} mode={mode} off={off} />}
       </OptionGround>
     </Pressable>
   );

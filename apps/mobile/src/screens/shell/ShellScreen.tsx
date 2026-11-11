@@ -26,6 +26,7 @@ import { useWindowDimensions, type View } from 'react-native';
 import { FirstRunMark } from './components/FirstRunMark';
 import { GrievanceNote } from './components/GrievanceNote';
 import { HomeToday } from './components/HomeToday';
+import { InstallerHome } from './components/InstallerHome';
 import { ShellFrame } from './components/ShellFrame';
 import { ShellTopBar } from './components/ShellTopBar';
 import { doorRoute } from './doors';
@@ -104,6 +105,7 @@ export function ShellScreen() {
             }
           />
           <HomeToday today={today} open={openRow} />
+          <InstallerHome />
           <HomeBlocks
             {...homeBlocksWords(t, home)}
             read={shell.read}

@@ -447,7 +447,7 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 ### T-M06-025 · Version records, server numbering and the status machine
 **Type:** engine · **Tier:** P0
 **Status:** planned
-**PRD rows:** M06-43, M06-44, M06-45
+**PRD rows:** M06-43, M06-44, M06-45, M08-04 (P0), M08-05 (P0), M08-16 (P0), M08-50 (P0)
 **Owed by `T-FPLAT-028` (`F8-14`, `F8-15`):** a version pins what it was computed from as `InputPins` (`packages/domain`) — the design fingerprint, the catalog release, the tenant price-book version, the pack pin with the keys read, and the engine versions — at generation, in its migration; once shared, its figures qualify as a record (`freshness: null`) and keep their standing, and its pins are never updated. Its freshness comes from this output's own stored pins, never pins built at the call site.
 
 **Requirements (verbatim):**
@@ -464,6 +464,9 @@ M02's screen; this task owns the commit-on-blur draft behaviour and the resume p
 - Given a generated version, when any input later changes, then the version's snapshot and money block are byte-identical to generation time and a change note exists (M06-42).
 - Given the queries "quote" and "quotation", when global search runs, then Proposals return and every rendered label says Proposal — this task adds the proposal search target (F6-22) (moved from the block 3 CRM plan, owner yes 2026-11-09).
 - Given two customers merged, when the merge completes, then every proposal of the loser points at the survivor and no proposal figure, version, discount or total changes (M02-60, M02-62) (moved from the block 3 CRM plan, owner yes 2026-11-09).
+- Given a project, when its detail screen opens, then the stage timeline, design, proposal, payments, documents, blockers and activity are all present on one screen, each naming the object it reads (M08-16). *(Moved from T-M08-002 by owner ruling 2026-11-10: its proof needs the design, the proposal and the payments on the project, the last of them built in block 8.)*
+- Given the project has just been created, when it opens, then the customer, site, approved design, accepted proposal version and the accepted version's tranche schedule are present by reference, and the document checklist is seeded for this project's segment from the tenant's market pack (M08-04, M08-05). *(Moved from T-M08-007 by owner ruling 2026-11-10: its proof needs the approved design, the accepted proposal version and its tranche schedule, the last of them built in block 8.)*
+- Given a customer changes scope after Won, when a new proposal version is accepted, then the project references the new version, the earlier version remains readable, and the collection schedule follows the version in force (M08-50). *(Moved from T-M08-015 by owner ruling 2026-11-10: its proof needs a new proposal version, built in block 8.)*
 
 **Settle before the build:**
 - Whether a version physically copies its component and tranche rows or references frozen draft rows (M06-31, M06-42) — ruled: physical copy at Generate — each version owns its own copied component and tranche rows beside its field-set and money snapshot, and the draft rows stay the one editable set with no frozen flag (M06-42 defines a version as a snapshot and demands byte-identity, which is provable only on rows nothing else can write; a frozen flag would turn every post-Generate edit into a copy-on-write of the draft).

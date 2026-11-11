@@ -8,6 +8,13 @@ import { LeadDetailScreen } from '../../screens/lead-detail';
 import { LeadImportScreen } from '../../screens/lead-import';
 import { LeadInboxScreen } from '../../screens/lead-inbox';
 import { LeadsListScreen } from '../../screens/leads-list';
+import {
+  ProjectDetailScreen,
+  ProjectDocumentsScreen,
+  ProjectStepsScreen,
+} from '../../screens/project-detail';
+import { ProjectHandoverScreen } from '../../screens/project-handover';
+import { ProjectsBoardScreen } from '../../screens/projects-board';
 import { QuickAddLeadScreen } from '../../screens/quick-add-lead';
 import { RoleExplainerScreen } from '../../screens/role-explainer';
 import { SearchScreen } from '../../screens/search';
@@ -90,6 +97,36 @@ export const appScreens = {
     screen: LeadDetailScreen,
     if: useHasHome,
     linking: `${DOOR_SEGMENT.leads}/:leadId`,
+  },
+  /** The Projects board (`SCR-M08-01`), the pill's Projects door. */
+  [doorRoute.projects]: {
+    screen: ProjectsBoardScreen,
+    if: useHasHome,
+    linking: DOOR_SEGMENT.projects,
+  },
+  /**
+   * One project (`SCR-M08-02`) at `projects/<id>`, the address the board, a project notice and
+   * *Mark won* open (`subjectAddressOf`); its checklist and its handover sit under it.
+   */
+  ProjectDetail: {
+    screen: ProjectDetailScreen,
+    if: useHasHome,
+    linking: `${DOOR_SEGMENT.projects}/:projectId`,
+  },
+  ProjectDocuments: {
+    screen: ProjectDocumentsScreen,
+    if: useHasHome,
+    linking: `${DOOR_SEGMENT.projects}/:projectId/documents`,
+  },
+  ProjectSteps: {
+    screen: ProjectStepsScreen,
+    if: useHasHome,
+    linking: `${DOOR_SEGMENT.projects}/:projectId/steps`,
+  },
+  ProjectHandover: {
+    screen: ProjectHandoverScreen,
+    if: useHasHome,
+    linking: `${DOOR_SEGMENT.projects}/:projectId/handover`,
   },
   /**
    * Customer Merge (`SCR-M02-06`) at `customers/merge?survivorId=…&loserId=…`, as the web's

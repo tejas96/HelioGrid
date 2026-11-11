@@ -168,6 +168,7 @@ export {
   assign,
   callAnswered,
   markQualified,
+  markWon,
   visitBooked,
 } from './lifecycle';
 export { disqualify, junk, markLost, reopen, resurface } from './lifecycle-close';

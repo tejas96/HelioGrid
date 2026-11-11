@@ -4,6 +4,7 @@ import type { ReactElement } from 'react';
 import { cloneElement } from 'react';
 import { StyleSheet } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
+import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { OverflowGlyph } from './MenuGlyphs.native';
 
@@ -21,6 +22,8 @@ interface MenuTriggerProps {
   onToggle: () => void;
   open: boolean;
   trigger?: ReactElement;
+  /** The default trigger's look: bare, or on the control fill (`MenuProps['triggerLook']`). */
+  look: 'plain' | 'surface';
 }
 
 /**
@@ -30,7 +33,8 @@ interface MenuTriggerProps {
  * The web half also owns focus restore and the ArrowDown-to-open key; neither has a touch
  * counterpart, so the two acts here are tap-to-open and tap-to-close.
  */
-export function MenuTrigger({ disabled, label, onToggle, open, trigger }: MenuTriggerProps) {
+export function MenuTrigger({ disabled, label, onToggle, open, trigger, look }: MenuTriggerProps) {
+  const { controlFill } = useGround();
   if (trigger !== undefined) {
     return cloneElement(trigger as TriggerElement, {
       disabled,
@@ -49,7 +53,11 @@ export function MenuTrigger({ disabled, label, onToggle, open, trigger }: MenuTr
       accessibilityState={{ expanded: open }}
       disabled={disabled}
       onPress={onToggle}
-      style={[styles.overflow, open ? styles.overflowOpen : undefined]}
+      style={[
+        styles.overflow,
+        look === 'surface' ? { backgroundColor: controlFill } : undefined,
+        open ? styles.overflowOpen : undefined,
+      ]}
     >
       <OverflowGlyph />
     </Pressable>

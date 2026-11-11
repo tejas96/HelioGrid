@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { planChangeKindOf, tierStepOf } from '../../src/commerce/plan-change';
+import { activeProjectsBlock, planChangeKindOf, tierStepOf } from '../../src/commerce/plan-change';
 import { appliesImmediately } from '../../src/commerce/repricing';
 import { TIERS, type Tier } from '../../src/commerce/tiers';
 import { tierRow } from '../../src/pricing/book';
@@ -40,5 +40,18 @@ describe('tierStepOf — the ladder is the order of capacity (BM-11, BM-12)', ()
         throw new Error('the India book sells every self-serve rung');
       expect(appliesImmediately(below.capacity, above.capacity)).toBe(true);
     });
+  });
+});
+
+describe('activeProjectsBlock — a downgrade below the projects already live (M08-07, M12-49)', () => {
+  it.each([
+    { live: 10, limit: 10, block: null },
+    { live: 11, limit: 10, block: { used: 11, limit: 10 } },
+    { live: 0, limit: 0, block: null },
+    { live: 1, limit: 0, block: { used: 1, limit: 0 } },
+    { live: 500, limit: 'unlimited', block: null },
+    { live: 500, limit: 'custom', block: null },
+  ] as const)('$live live against $limit → $block', ({ live, limit, block }) => {
+    expect(activeProjectsBlock(live, limit)).toEqual(block);
   });
 });

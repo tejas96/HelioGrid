@@ -2,8 +2,11 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { ReactNode } from 'react';
 import type { SurfaceRead } from '../UnavailableNote';
 
-/** Done = filled success tick, current = accent dot in a soft ring, upcoming = an empty disc. */
-export type TimelineStatus = 'done' | 'current' | 'upcoming' | 'blocked' | 'failed';
+/**
+ * Done = filled success tick, current = accent dot in a soft ring, upcoming = an empty disc, skipped
+ * = a sunken disc with a chevron — a step the sequence went past without stopping at.
+ */
+export type TimelineStatus = 'done' | 'current' | 'upcoming' | 'blocked' | 'failed' | 'skipped';
 
 export type TimelineVariant = 'page' | 'compact';
 
@@ -28,8 +31,17 @@ export interface TimelineItem {
   /** Arbitrary node under the step: photos, a StatCard pair, an action. */
   content?: ReactNode;
   status?: TimelineStatus;
-  /** Pick mode: the step's own glyph, drawn in its node — a `ShellGlyph` the caller draws. */
+  /**
+   * The step's own glyph, drawn in its node — a `ShellGlyph` the caller draws. In pick mode on every
+   * step; in a sequence only on the current one, whose node it fills with the accent (the glyph in
+   * the inverse ink) in place of its dot.
+   */
   icon?: ReactNode;
+  /**
+   * `system`: the description is what the system itself did, not a person — the teal ink with a spark
+   * before it (a proof that moved a project). The words still say it; the ink is a second channel.
+   */
+  descriptionTone?: 'system';
   /** Pick mode: badges beside the name — *Can be skipped*. */
   marks?: ReactNode;
   /** Pick mode: `warning` gives the node the warning tint (a stage a project may skip). */

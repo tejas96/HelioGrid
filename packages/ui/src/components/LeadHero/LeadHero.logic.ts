@@ -5,10 +5,11 @@ import type { MenuItem } from '../Menu/Menu.types';
 import type { LeadHeroProps, LeadRecordAct } from './LeadHero.types';
 
 /** The record menu's order; `Menu` itself puts junk, a destructive row, last behind a gap. */
-const LEAD_RECORD_ACTS: readonly LeadRecordAct[] = ['add-referral', 'merge', 'junk'];
+const LEAD_RECORD_ACTS: readonly LeadRecordAct[] = ['mark-won', 'add-referral', 'merge', 'junk'];
 
 /** Each safe act's glyph; junk draws the menu's own trash, as every destructive row does. */
 const RECORD_ACT_GLYPH: Record<Exclude<LeadRecordAct, 'junk'>, ShellGlyphName> = {
+  'mark-won': 'circle-check',
   'add-referral': 'person-plus',
   merge: 'layers',
 };
@@ -26,6 +27,7 @@ export function leadRecordMenuOf(
   glyph: (name: ShellGlyphName) => ReactNode,
 ): HeroPanelMenu | undefined {
   const label: Record<LeadRecordAct, MenuItem['label']> = {
+    'mark-won': words.recordActs.markWon,
     'add-referral': words.recordActs.addReferral,
     merge: words.recordActs.merge,
     junk: words.recordActs.junk,

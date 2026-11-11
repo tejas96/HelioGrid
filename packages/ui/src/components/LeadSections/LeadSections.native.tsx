@@ -8,6 +8,7 @@ import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.nati
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { NamedGap } from '../NamedGap/NamedGap.native';
+import { LeadFileList } from './LeadFileList.native';
 import type { LeadSectionsProps } from './LeadSections.types';
 import { LeadSitePanel } from './LeadSitePanel.native';
 import { LeadTaskList } from './LeadTaskList.native';
@@ -15,7 +16,7 @@ import { LeadTaskList } from './LeadTaskList.native';
 /**
  * The lead's six sections as tabs on the phone (`M02-32`): the strip scrolls sideways, each tab
  * with its count where it has one, and the chosen section's panel under it — the caller's timeline,
- * the site, designs and proposals none yet, the tasks with their acts, the files read-only.
+ * the site, designs and proposals none yet, the tasks with their acts, the files with their add.
  */
 export function LeadSections(props: LeadSectionsProps) {
   const { section, onSection, counts, words } = props;
@@ -94,12 +95,9 @@ function Panel(props: LeadSectionsProps) {
       );
     case 'files':
       return (
-        <CountPanel
-          count={counts.files}
-          some={words.files}
-          none={words.noFiles}
-          line={words.filesLine}
-        />
+        <Tile>
+          <LeadFileList files={props.files} words={words} />
+        </Tile>
       );
   }
 }

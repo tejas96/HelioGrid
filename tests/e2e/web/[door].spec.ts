@@ -7,6 +7,7 @@ import {
   destinationLabel,
   doorTitle,
   onItsWayWords,
+  projectBoardWords,
   SHELL,
   SIGN_IN,
 } from '@heliogrid/i18n';
@@ -21,9 +22,11 @@ import {
 } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
 import { freshMobile } from '../support/phone';
+import { PACK } from '../support/project-facts';
 import { passTheOwnersMark } from '../support/shell';
 
 const en = await createTranslator('en');
+const BOARD = projectBoardWords(en.t, PACK, 'en');
 
 test("a destination on the owner's rail opens its door inside the shell", async ({ page }) => {
   await createCompany(page, en, freshMobile());
@@ -33,11 +36,9 @@ test("a destination on the owner's rail opens its door inside the shell", async 
   await rail.getByRole('button', { name: destinationLabel(en.t, 'projects') }).click();
 
   await expect(page).toHaveURL(/\/projects$/);
-  await expect(
-    page.getByRole('heading', { level: 1, name: doorTitle(en.t, 'projects') }),
-  ).toBeAttached();
-  // The door says what its module will do until the module lands.
-  await expect(page.getByText(onItsWayWords(en.t, 'projects').line)).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: BOARD.title })).toBeAttached();
+  // Its module has landed: a new company's board, with nothing on it yet, opens in the shell.
+  await expect(page.getByText(BOARD.emptyTitle, { exact: true })).toBeVisible();
   await expect(
     rail.getByRole('button', { name: destinationLabel(en.t, 'projects') }),
   ).toHaveAttribute('aria-current', 'page');

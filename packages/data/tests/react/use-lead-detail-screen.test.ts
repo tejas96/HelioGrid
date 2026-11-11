@@ -1,4 +1,5 @@
 // @vitest-environment happy-dom
+import type { LeadFile } from '@heliogrid/contracts';
 import { act, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import {
@@ -7,11 +8,22 @@ import {
   LEAD_ID,
   mountedLead,
   origin,
+  priya,
   questionOf,
   SURVEYORS,
   transitionRefused,
 } from './lead-detail-origin';
 import { refusal } from './origin-wire';
+import { aProject, PROJECT_ID } from './projects-fixtures';
+
+const BILL: LeadFile = {
+  id: '01a50000-0000-7000-8000-000000000501',
+  fileId: '01a50000-0000-7000-8000-000000000401',
+  name: 'Bill.pdf',
+  contentType: 'application/pdf',
+  addedAt: '2026-11-10T05:00:00.000Z',
+  addedBy: { userId: '01a50000-0000-7000-8000-000000000002', name: 'Asha Patil' },
+};
 
 /**
  * Lead Detail's answers through the real client (`SCR-M02-04`): each qualify answer saves alone,
@@ -135,5 +147,43 @@ describe('Lead Detail — Book visit (M02-46)', () => {
     await waitFor(() =>
       expect(view.result.current.surveyors).toEqual({ kind: 'ready', value: SURVEYORS }),
     );
+  });
+});
+
+describe('Lead Detail — Files (M02-32)', () => {
+  it('the Files count is the lead’s own until its list is read, then the list’s', async () => {
+    origin.files = [BILL, { ...BILL, id: `${BILL.id.slice(0, -1)}2`, name: 'Roof.jpg' }];
+    const view = await mountedLead();
+    const filesCount = () => {
+      const { read } = view.result.current;
+      return read.kind === 'ready' ? read.value.view.counts.files : null;
+    };
+    expect(filesCount()).toBe(0);
+    act(() => view.result.current.setSection('files'));
+    await waitFor(() => expect(filesCount()).toBe(2));
+    expect(view.result.current.files.read.kind).toBe('ready');
+  });
+});
+
+describe('Lead Detail — a won lead links to its project only where the project answers', () => {
+  it.each([
+    [true, true],
+    [false, false],
+  ] as const)('the project answering %s shows the link: %s', async (answers, shown) => {
+    origin.lead = { ...priya(), project: { id: PROJECT_ID, number: 'PRJ-0042' } };
+    origin.project = answers ? aProject() : null;
+    const view = await mountedLead();
+    if (shown) {
+      await waitFor(() => expect(view.result.current.canOpenProject).toBe(true));
+    } else {
+      await waitFor(() => expect(origin.reads).toContain(`/projects/${PROJECT_ID}`));
+      expect(view.result.current.canOpenProject).toBe(false);
+    }
+  });
+
+  it('a lead before its win reads no project at all', async () => {
+    const view = await mountedLead();
+    expect(view.result.current.canOpenProject).toBe(false);
+    expect(origin.reads).not.toContain(`/projects/${PROJECT_ID}`);
   });
 });

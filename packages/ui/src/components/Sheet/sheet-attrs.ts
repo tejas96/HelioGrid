@@ -1,7 +1,7 @@
 import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';
 import type { SheetDensity, SheetSize } from './Sheet.types';
 
-/** A flag reaches the stylesheet as a STRING — `[data-x="true"]` is what Sheet.css matches on. */
+/** A flag reaches the stylesheet as a STRING — `[data-x="true"]` is what the sheet's CSS matches on. */
 export type BoolAttr = 'true' | 'false';
 
 export interface SheetPanelAttrs {

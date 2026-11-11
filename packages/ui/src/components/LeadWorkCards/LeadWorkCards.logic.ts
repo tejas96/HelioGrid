@@ -12,14 +12,28 @@ import type { LeadWorkCardsProps } from './LeadWorkCards.types';
 
 /**
  * The hero: the record's stage, source, state, owner and value, on the desktop also its identity,
- * and the record menu — a referral always, merge to who may, junk where the standing offers it.
+ * and the record menu — Mark won where the deal may close, a referral always, merge to who may,
+ * junk where the standing offers it.
  */
 export function leadHeroOf(
-  { screen, lead, view, identity, onAddReferral, onMerge, words }: LeadWorkCardsProps,
+  {
+    screen,
+    lead,
+    view,
+    identity,
+    onAddReferral,
+    onMerge,
+    onMarkWon,
+    onOpenProject,
+    words,
+  }: LeadWorkCardsProps,
   format: MarketFormat,
 ): LeadHeroProps {
   const { lead: summary } = lead;
   const recordActs: LeadRecordActPress[] = [
+    ...(screen.canWin && view.acts.markWon
+      ? [{ act: 'mark-won' as const, onPress: onMarkWon }]
+      : []),
     { act: 'add-referral', onPress: () => onAddReferral(summary.id) },
   ];
   if (screen.canMerge) recordActs.push({ act: 'merge', onPress: () => onMerge(lead.customer.id) });
@@ -36,6 +50,7 @@ export function leadHeroOf(
     onOwner: screen.assign.show,
     ownerName: summary.owner?.name ?? null,
     value: leadValueShownOf(summary.value, format.pack),
+    project: screen.canOpenProject ? projectOfLead(lead, onOpenProject) : null,
     recordActs,
     recordActsOff: screen.acts.quickStanding?.kind === 'waiting',
     words: words.hero,
@@ -85,4 +100,13 @@ export function leadQualifyOf({ screen, view, words }: LeadWorkCardsProps): Qual
       : null,
     words: words.qualify,
   };
+}
+
+/** The project a won lead became, opened from the hero; null before the win. */
+function projectOfLead(
+  lead: LeadWorkCardsProps['lead'],
+  onOpenProject: LeadWorkCardsProps['onOpenProject'],
+): LeadHeroProps['project'] {
+  const won = lead.project ?? null;
+  return won === null ? null : { number: won.number, onOpen: () => onOpenProject(won.id) };
 }

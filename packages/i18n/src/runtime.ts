@@ -4,7 +4,14 @@ import {
   UI_SOURCE_LOCALE,
   type UiLanguage,
 } from '@heliogrid/contracts';
-import { inLanguage, type PackLabel, withLatinDigits } from '@heliogrid/domain';
+import {
+  type FormatPack,
+  inLanguage,
+  type PackLabel,
+  type PackWordKind,
+  packWordOf,
+  withLatinDigits,
+} from '@heliogrid/domain';
 import { type I18n, type Messages, setupI18n } from '@lingui/core';
 import { loadCatalog, SOURCE_CATALOG } from './languages';
 
@@ -81,6 +88,18 @@ function wordsOf(
  */
 export function packWords(label: PackLabel, reader: UiLanguage): TranslatedText {
   return inLanguage(label, reader) as TranslatedText;
+}
+
+/**
+ * A project's market word — a stage, a waited-on party, a wait's reason, a checklist row, an install
+ * step — in the reader's language, minted as words like `packWords`; a key the pack does not
+ * declare reads as the key itself, shown as sent (`F1-09`).
+ */
+export function projectPackWords(
+  pack: FormatPack,
+  reader: UiLanguage,
+): (kind: PackWordKind, key: string) => TranslatedText {
+  return (kind, key) => (packWordOf(pack, kind, key, reader) ?? key) as TranslatedText;
 }
 
 function translatorFor(i18n: I18n, locale: UiLanguage): Translator {

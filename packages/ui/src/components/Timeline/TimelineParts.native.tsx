@@ -10,6 +10,7 @@
 
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
+import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
 import type { ThemeColor } from '../../primitives/Color/colors';
@@ -72,15 +73,20 @@ const NODE_FILL: Record<TimelineStatus, ThemeColor | undefined> = {
   failed: colors.danger,
   current: undefined,
   upcoming: undefined,
+  skipped: colors['canvas-sunken'],
 };
 
 export function TimelineNode({
   status = 'upcoming',
   compact,
+  icon,
 }: {
   status?: TimelineStatus;
   compact: boolean;
+  /** The current step's own glyph, in place of its dot. */
+  icon?: ReactNode;
 }) {
+  const own = status === 'current' && icon !== undefined;
   const size = compact ? NODE_SIZE.compact : NODE_SIZE.page;
   const inner = nodeGlyphSize(compact);
   const ring = compact ? 4 : 5;
@@ -104,8 +110,10 @@ export function TimelineNode({
         style={[
           styles.node,
           { width: size, height: size, backgroundColor: NODE_FILL[status] ?? controlFill },
+          own ? { backgroundColor: colors.accent } : undefined,
         ]}
       >
+        {own ? icon : null}
         {status === 'done' ? (
           <Svg
             width={inner}
@@ -120,8 +128,22 @@ export function TimelineNode({
             <ShellGlyphMarks name="tick-small" />
           </Svg>
         ) : null}
-        {status === 'current' ? (
+        {status === 'current' && !own ? (
           <View style={[styles.core, { width: inner - 2, height: inner - 2 }]} />
+        ) : null}
+        {status === 'skipped' ? (
+          <Svg
+            width={inner}
+            height={inner}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={colors['text-secondary']}
+            strokeWidth={3}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <ShellGlyphMarks name="chevron-right" />
+          </Svg>
         ) : null}
         {status === 'blocked' ? (
           <Svg

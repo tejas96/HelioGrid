@@ -18,6 +18,8 @@ import {
   monthNames,
   type Numberish,
   type NumberOptions,
+  type PackWordKind,
+  packWordOf,
   parseNumber,
   weekdayNames,
 } from '@heliogrid/domain';
@@ -81,6 +83,11 @@ export interface MarketFormat {
   weekdayNames: (style?: 'narrow' | 'short' | 'long') => string[];
   /** Strips grouping and symbols so a typed amount parses back to a number. */
   parseNumber: (input: string | number) => number | null;
+  /**
+   * A market word in the reader's language — a project stage, a waited-on party, a wait's reason,
+   * a checklist row, an install step — or the key itself where the pack declares none.
+   */
+  word: (kind: PackWordKind, key: string) => string;
 }
 
 /**
@@ -110,6 +117,7 @@ export function createFormat(
     monthNames: (style) => monthNames(pack, language, style),
     weekdayNames: (style) => weekdayNames(pack, language, style),
     parseNumber,
+    word: (kind, key) => packWordOf(pack, kind, key, language) ?? key,
   };
 }
 

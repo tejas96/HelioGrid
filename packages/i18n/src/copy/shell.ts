@@ -1,11 +1,12 @@
 import type { RolePreset, TranslatedText } from '@heliogrid/contracts';
-import type {
-  CentreVerb,
-  ComposedHome,
-  FirstRunMark,
-  ShellDoor,
-  StandingDestination,
-  StorePlatform,
+import {
+  type CentreVerb,
+  type ComposedHome,
+  type FirstRunMark,
+  type ShellDoor,
+  type StandingDestination,
+  type StorePlatform,
+  waitingHomeBlocks,
 } from '@heliogrid/domain';
 import type { Translator } from '../runtime';
 import { homeTitle } from './homes';
@@ -241,7 +242,7 @@ export function homeHeadWords(
  */
 export function homeBlocksWords(translate: Translator['t'], home: ComposedHome) {
   return {
-    blocks: [home.home, ...home.composed].map((preset) => ({
+    blocks: waitingHomeBlocks(home).map((preset) => ({
       key: preset,
       overline: presetName(translate, preset),
     })),

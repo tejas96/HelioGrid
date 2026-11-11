@@ -132,6 +132,11 @@
   color: inherit;
 }
 
+/* A ghost act inside an ink surface — a toast's *Undo*: the surface's own words. */
+.hg-button[data-tone="inverse"] {
+  color: var(--on-ink);
+}
+
 /* On a filled pill the glyph is the words' ink, over any tone the glyph sets on itself: a glyph
    left at its own default drew a dark mark on the ocean fill. */
 .hg-button:is([data-variant="primary"], [data-variant="destructive"]) > svg {

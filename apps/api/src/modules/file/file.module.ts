@@ -7,6 +7,7 @@ import { FileController } from './file.controller';
 import { FileDocumentService } from './file.documents.service';
 import { FileRepository } from './file.repository';
 import { FileService } from './file.service';
+import { FileSubjectRegistry } from './file.subject.registry';
 import { objectStoreFor } from './internal/object-store.binding';
 
 /** The store every file's bytes live in, chosen from settings alone (`objectStoreFor`). */
@@ -20,8 +21,14 @@ const objectStoreProvider: Provider = {
   // Billing holds the storage gauge the upload gate reads.
   imports: [BillingModule],
   controllers: [FileController],
-  providers: [FileService, FileDocumentService, FileRepository, objectStoreProvider],
+  providers: [
+    FileService,
+    FileDocumentService,
+    FileRepository,
+    FileSubjectRegistry,
+    objectStoreProvider,
+  ],
   // A module that works on a stored file reaches it through the service, never the store.
-  exports: [FileService, FileDocumentService],
+  exports: [FileService, FileDocumentService, FileSubjectRegistry],
 })
 export class FileModule {}

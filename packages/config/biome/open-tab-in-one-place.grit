@@ -1,0 +1,9 @@
+// The web opens a page it does not draw only through openExternal (apps/web/lib/open-external.ts).
+// A tab opened after an answer arrives — a file's signed link — is refused by Safari's popup
+// blocker, and a bare window.open then does nothing with no error; openExternal falls back to
+// this tab, so the act is never lost.
+JsStaticMemberExpression() as $read where {
+  $read <: includes "open",
+  $read <: r"(?s)(?:window|globalThis|self)\s*\??\.\s*open",
+  register_diagnostic(span=$read, message="Open a page through openExternal (apps/web/lib/open-external.ts): Safari blocks a tab opened after an answer, and openExternal then opens it in this tab.")
+}

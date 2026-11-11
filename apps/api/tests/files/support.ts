@@ -11,6 +11,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { CreationReplies } from '../../src/common/creation-key';
 import { FileRepository } from '../../src/modules/file/file.repository';
 import { FileService } from '../../src/modules/file/file.service';
+import { FileSubjectRegistry } from '../../src/modules/file/file.subject.registry';
 import { MemoryObjectStore, sha256Of } from '../../src/modules/file/internal/object-store.memory';
 import { usageServiceOf } from '../billing/support';
 import type { openPools } from '../support/fixture';
@@ -86,6 +87,7 @@ export function fileServiceOf(
     new CreationReplies(logger),
     usageServiceOf(pools),
     logger,
+    new FileSubjectRegistry(),
   );
   return { service, store, logged };
 }

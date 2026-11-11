@@ -5,9 +5,17 @@ import {
   leadDetailPageWords,
   leadDetailSheetWords,
   leadTitleWords,
+  markWonWords,
 } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
-import { LeadAssignPicker, LeadDetailSheet, LeadDetailStates, useFormat } from '@heliogrid/ui';
+import {
+  LeadAssignPicker,
+  LeadDetailSheet,
+  LeadDetailStates,
+  MarkWonSheet,
+  markWonSheetOf,
+  useFormat,
+} from '@heliogrid/ui';
 import type { StaticScreenProps } from '@react-navigation/native';
 import { useRef } from 'react';
 import { View } from 'react-native';
@@ -24,13 +32,13 @@ type Props = StaticScreenProps<{ leadId: string }>;
  * on the phone. Call, Message, Log, Visit and Design sit in thumb reach under the hero; the six
  * questions are answered inline as the customer talks; contacts and calling facts sit above the
  * history. Everything read, answered and sent is `useLeadDetailScreen`'s, the web's too; the
- * phone's own parts are the dialler, the share sheet and the ways back.
+ * phone's own parts are the dialler, the share sheet, the file chooser and the ways back.
  */
 export function LeadDetailScreen({ route }: Props) {
   const t = useTranslate();
   const format = useFormat();
   const screen = useLeadDetailScreen(route.params.leadId, format.pack.timeZone);
-  const moves = useLeadDetailMoves();
+  const moves = useLeadDetailMoves(screen.files);
   const words = leadDetailPageWords(t);
   const { read } = screen;
   /* The page stays while a failed read is tried again: the screen reader lands on it. */
@@ -74,6 +82,13 @@ export function LeadDetailScreen({ route }: Props) {
             onHandOn={moves.share}
             onMerge={moves.merge}
             words={leadDetailSheetWords(t, 'share')}
+          />
+          <MarkWonSheet
+            {...markWonSheetOf(screen.won, moves.openProject, screen.days.today)}
+            words={markWonWords(
+              t,
+              read.value.lead.lead.name ?? format.phone(read.value.lead.lead.phoneE164),
+            )}
           />
           <LeadAssignPicker
             assign={screen.assign}

@@ -20,6 +20,7 @@ export {
   mayReadFile,
   mayUploadFile,
   SPREADSHEET_CONTENT_TYPES,
+  type SubjectAnswer,
 } from './rules';
 export type { FileContentType, StorageProvider } from './vocabulary';
 export { FILE_CONTENT_TYPES, STORAGE_PROVIDERS } from './vocabulary';

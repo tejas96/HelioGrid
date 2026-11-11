@@ -50,7 +50,7 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 ### From `docs/prd/01-product-overview.md` — the product laws
 
 - **OV-04** (P0) — The product replaces the spreadsheet-and-rekeying pipeline with **one record that travels**: CRM → survey → 3D design → proposal → no-login customer link → voice-agent follow-up → light project tracking → payments. No stage re-enters data an earlier stage already holds.
-  *Enforced by:* every module task's hand-off contract (the shipped CRM (`docs/prd/modules/M02-crm-and-leads.md`) → `docs/tasks/M04-survey.md` → `docs/tasks/M06-proposals.md` → `docs/tasks/F5-customer-link.md` → `docs/tasks/M07-sales-execution.md` → `docs/tasks/M08-projects.md` → `docs/tasks/M11-payments-collections.md`); review rejects any screen that re-keys a value an upstream stage already holds.
+  *Enforced by:* every module task's hand-off contract (the shipped CRM (`docs/prd/modules/M02-crm-and-leads.md`) → `docs/tasks/M04-survey.md` → `docs/tasks/M06-proposals.md` → `docs/tasks/F5-customer-link.md` → `docs/tasks/M07-sales-execution.md` → the shipped projects (`docs/prd/modules/M08-projects.md`) → `docs/tasks/M11-payments-collections.md`); review rejects any screen that re-keys a value an upstream stage already holds.
 - **OV-06** (P0) — The owner signs up **self-serve**, with phone number and one-time password. Nothing about acquiring the product requires a sales conversation at the entry tiers.
   *Enforced by:* `SCR-M01-01` and `SCR-M01-02` (phone + OTP + company name, no sales step).
 - **OV-07** (P1) — Google Login is offered alongside Mobile OTP as a second authentication route. This is new in V2 and not present in the v1 source, which is OTP-only.
@@ -115,11 +115,11 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 - **PS-19** (P0) — **Sign-off is a capability, and whoever performs it is not the person who drew it.** The reviewer's approval is the structural-safety record for the design, and returning a design sends it back to its author with comments attached to the specific problem. Whether the capability is granted by its own preset role or rides the Design Engineer preset is F2's decision.
   *Enforced by:* `docs/tasks/F-platform.md`'s F2 capability ruling.
 - **M01-07** (P0) — **Session lifetimes and revocation.** Web sessions are 30 days rolling. Mobile has no fixed maximum while the person remains active: seven full days without foreground authenticated use expires the session and requires sign-in again. Opening or using the signed-in app in the foreground resets that inactivity window; background refresh, push handling and scheduled work never reset it. Mobile API tokens remain short-lived (≤10 minutes) and renew silently while the underlying session is valid. Deactivating a user, or a user's own "sign out everywhere", kills every device's access within ≤10 minutes. The revocation surface is the Team screen (M01-19).
-  *Enforced by:* `docs/tasks/M01-onboarding.md`'s T-M01-025 (auth, session & account-lifecycle engine), consumed by `docs/tasks/M04-survey.md`, `docs/tasks/M08-projects.md` and `docs/tasks/M09-field-workforce.md`. *Rehomed 2026-08-07: the Field Technician platform law formerly carried here as `PS-24` ("Mobile sessions are long-lived") was swept from `docs/prd/02-personas.md` with the offline/sync deletion — no strike note was recorded there, and the row is absent while `PS-22`, `PS-23` and `PS-25` remain. The obligation is live, and with a concrete value, at `M01-07` above; nothing about it was ever a connectivity rule.*
+  *Enforced by:* `docs/tasks/M01-onboarding.md`'s T-M01-025 (auth, session & account-lifecycle engine), consumed by `docs/tasks/M04-survey.md`, the shipped projects (`docs/prd/modules/M08-projects.md`) and `docs/tasks/M09-field-workforce.md`. *Rehomed 2026-08-07: the Field Technician platform law formerly carried here as `PS-24` ("Mobile sessions are long-lived") was swept from `docs/prd/02-personas.md` with the offline/sync deletion — no strike note was recorded there, and the row is absent while `PS-22`, `PS-23` and `PS-25` remain. The obligation is live, and with a concrete value, at `M01-07` above; nothing about it was ever a connectivity rule.*
 - **PS-27** (P0) — **The installation surface shows no commercial figures.** No price, no discount, no tranche, no margin, no customer value appears on any screen this persona sees. v1 achieved this by giving crew no screen at all — "crew sees no money because crew sees no screen"; where V2 gives them a screen, the property must be preserved by the surface itself.
-  *Enforced by:* `SCR-M08-05` and `docs/tasks/M08-projects.md`; review rejects any money figure on an installation surface.
+  *Enforced by:* `SCR-M08-05`, shipped in block 4; review rejects any money figure on an installation surface.
 - **PS-28** (P1) — **Attribution survives a crew that never signs in.** Where the checklist is run by a coordinator rather than the crew, ticks are attributed to the coordinator and an optional free-text "done by" per step records the crew member's name. This fallback is not removed when crew accounts exist, because mixed crews are the normal case.
-  *Enforced by:* `docs/tasks/M08-projects.md`'s installation checklist attribution, retained alongside crew accounts.
+  *Enforced by:* the installation checklist's attribution (`SCR-M08-04`, shipped in block 4), retained alongside crew accounts.
 - **PS-37** (P0) — Whatever a campaign captures becomes an ordinary lead: **the phone number is the identity and every capture dedupes on it, from every channel, every time.** A marketing-sourced enquiry that matches an existing customer surfaces as a duplicate before it is saved, not after.
   *Enforced by:* `docs/tasks/M03-marketing.md`'s capture path into the shipped CRM's dedupe-before-save (`docs/prd/modules/M02-crm-and-leads.md`) (see OV-31).
 
@@ -202,7 +202,7 @@ Each persona-definition row is realized by that persona's F2 section and its own
 - **PS-20** (P0) — The **Project Manager** persona owns a won deal from signature to handover: moving it through the stage chain, keeping the document checklist complete, naming blockers with the party responsible, requesting the payment each completed stage makes due, and keeping the customer's progress view honest.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Project Manager · `docs/prd/modules/M08-projects.md`
 - **PS-21** (P0) — The Project Manager's **home screen is their projects ordered by days-in-stage, oldest first** — a blocker flags a card and never reorders it (owner ruling 2026-09-24) — each card showing customer, size, value, days in the current stage, payment collected against payment due, and the blocker flag with who is being waited on.
-  *Realized by:* `SCR-M08-01` (screen owned by `docs/tasks/M08-projects.md`)
+  *Realized by:* `SCR-M08-01` (shipped in block 4)
 - **PS-22** (P0) — The **Field Technician** persona is the employee whose working day is a sequence of places rather than a desk: site visits, service calls, deliveries and checks, with check-in and check-out at each, an activity timeline behind them and attendance derived from the day they actually worked.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Field Technician · `docs/prd/modules/M09-field-workforce.md`
 - **PS-23** (P1) — The Field Technician's **home screen is their route today** — the assigned stops in order, each with address, customer, window, distance, one-tap navigation and one-tap call, plus their current check-in state.
@@ -210,7 +210,7 @@ Each persona-definition row is realized by that persona's F2 section and its own
 - **PS-25** (P0) — The **Installation Team Member** persona is the crew who physically install the system: working the installation checklist — foundation, legs, rafters, purlins, modules, stringing, balance of system — derived from the structural model, ticking steps as they are completed and attaching photos as evidence.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Installation Team Member · `docs/prd/modules/M08-projects.md`
 - **PS-26** (P1) — The Installation Team Member's **home screen is today's installation** — the assigned job, its checklist with progress, the site's access constraints and the photos expected — and nothing else.
-  *Realized by:* `SCR-M08-05` (screen owned by `docs/tasks/M08-projects.md`)
+  *Realized by:* `SCR-M08-05` (shipped in block 4)
 - **PS-29** (P0) — The **HR/Admin** persona keeps the people side of the company correct: inviting and onboarding employees, keeping their records and documents current, tracking attendance and leave, and deactivating people cleanly when they leave. The scope is SME-weight — only what supports EPC operations, without enterprise HR complexity.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §HR/Admin · `docs/prd/modules/M10-hr-lite.md`
 - **PS-30** (P2) — The HR/Admin's **home screen is people today** — invitations pending or expired, joiners part-way through onboarding, today's attendance exceptions, leave awaiting a decision, and employee documents needing attention (scope per M10).
@@ -297,12 +297,12 @@ Each persona-definition row is realized by that persona's F2 section and its own
 | PS-18 | realized-by: the 3D Design Studio, rebuilt from scratch — no PRD or task yet |
 | PS-19 | LAW |
 | PS-20 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Project Manager · `docs/prd/modules/M08-projects.md` |
-| PS-21 | realized-by: T-M08-001 — `SCR-M08-01` |
+| PS-21 | realized-by: T-M08-001 — `SCR-M08-01`, shipped |
 | PS-22 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Field Technician · `docs/prd/modules/M09-field-workforce.md` |
 | PS-23 | realized-by: T-M09-002 — `SCR-M09-02` |
 | PS-24 | *removed 2026-08-07 — swept from `docs/prd/02-personas.md` with the offline/sync deletion (no strike note recorded there). The long-lived-mobile-session law is live at `M01-07` (Laws → persona laws, above; built at T-M01-025 in `docs/tasks/M01-onboarding.md`)* |
 | PS-25 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §Installation Team Member · `docs/prd/modules/M08-projects.md` |
-| PS-26 | realized-by: T-M08-005 — `SCR-M08-05` |
+| PS-26 | realized-by: T-M08-005 — `SCR-M08-05`, shipped |
 | PS-27 | LAW |
 | PS-28 | LAW |
 | PS-29 | realized-by: `docs/prd/foundations/F2-roles-and-permissions.md` §HR/Admin · `docs/prd/modules/M10-hr-lite.md` |

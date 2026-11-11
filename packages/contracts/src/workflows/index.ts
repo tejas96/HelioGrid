@@ -38,6 +38,12 @@ export { creditNoteDocumentWorkflow } from './credit-note-document';
 export type { CrmDailySweepActivities } from './crm-daily-sweep';
 export { CRM_DAILY_SWEEP_SCHEDULE_ID, crmDailySweepWorkflow } from './crm-daily-sweep';
 export type {
+  HandoverPackActivities,
+  HandoverPackStepInput,
+  HandoverPackStepResult,
+} from './handover-pack';
+export { handoverPackWorkflow } from './handover-pack';
+export type {
   InviteMessageActivities,
   InviteMessageStepInput,
   InviteMessageStepResult,

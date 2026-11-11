@@ -39,6 +39,7 @@ const FOCUSABLE = 'button,[href],[tabindex]:not([tabindex="-1"])';
 export function Menu({
   items: given = [],
   trigger,
+  triggerLook = 'plain',
   label,
   align = 'end',
   width = 220,
@@ -143,6 +144,7 @@ export function Menu({
         onToggle={() => setOpen((current) => !current)}
         open={open}
         trigger={trigger}
+        look={triggerLook}
         wrapRef={triggerRef}
       />
 

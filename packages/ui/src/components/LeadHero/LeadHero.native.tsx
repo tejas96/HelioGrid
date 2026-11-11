@@ -31,6 +31,7 @@ export function LeadHero({
   onOwner,
   ownerName,
   value,
+  project,
   recordActs,
   recordActsOff,
   words,
@@ -64,7 +65,7 @@ export function LeadHero({
           {words.tries === null ? null : <StatusMark tone="warning" label={words.tries} />}
         </View>
       )}
-      <Value value={value} words={words} />
+      <Value value={value} project={project} words={words} />
       <View style={styles.track}>
         <StageTrack stage={stage} size="md" words={words.stageTrack} />
         <View style={styles.stepLine}>
@@ -117,7 +118,24 @@ function Identity({
 }
 
 /** The value in the hero's figure with its tier — or its named gap until a proposal supplies one. */
-function Value({ value, words }: Pick<LeadHeroProps, 'value' | 'words'>) {
+function Value({ value, project, words }: Pick<LeadHeroProps, 'value' | 'project' | 'words'>) {
+  if (project !== null) {
+    return (
+      <View style={styles.value}>
+        <Text variant="overline" color="secondary">
+          {words.projectLabel}
+        </Text>
+        <Button
+          variant="secondary"
+          size="sm"
+          iconRight={<ShellGlyph name="chevron-right" size="sm" tone="primary" />}
+          onClick={project.onOpen}
+        >
+          {words.openProject(project.number)}
+        </Button>
+      </View>
+    );
+  }
   return (
     <View style={styles.value}>
       <Text variant="overline" color="secondary">

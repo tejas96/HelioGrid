@@ -181,6 +181,8 @@ const leadDetailShape = {
     proposals: z.number().int().nonnegative(),
     files: z.number().int().nonnegative(),
   }),
+  /** The project a won lead became (`M07-62`, `M08-02`); null before the win. */
+  project: z.object({ id: uuidSchema, number: z.string() }).nullable().optional(),
 };
 
 /**

@@ -47,6 +47,7 @@ export function Sheet({
   subtitleFace = 'sans',
   overline,
   leading,
+  headerLook = 'row',
   children,
   meta,
   size = 'auto',
@@ -121,6 +122,7 @@ export function Sheet({
         {header.drawn ? (
           <SheetHeader
             leading={leading}
+            headerLook={headerLook}
             handle={handle}
             bare={header.closeOnly}
             closeLabel={closeLabel}

@@ -25,6 +25,11 @@
   cursor: pointer;
 }
 
+/* Beside filled icon buttons — a page's top bar — the overflow sits on the control fill too. */
+.hg-menu-overflow[data-look="surface"] {
+  background: var(--hg-control-fill);
+}
+
 .hg-menu-overflow[data-open="true"] {
   background: var(--neutral-bg);
 }

@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import type { PlanChangePreview, PlanPick } from '@heliogrid/contracts';
 import {
+  activeProjectsBlock,
   type BillingCycle,
   type CollectionKind,
   listedPrice,
@@ -47,7 +48,7 @@ const DIGEST_LENGTH = 32;
 /**
  * One review of one pick (`SCR-M12-03`), every amount worked out here (`F4-04`): the kind from
  * the tiers' order (`M12-48`, `M12-49`, `M12-12`), an upgrade's part-cycle charge, and what a
- * downgrade blocks — real usage only, storage today (`PLAN_CHANGE_BLOCKS`). The digest names the
+ * downgrade blocks — real usage only: storage and live projects (`PLAN_CHANGE_BLOCKS`). The digest names the
  * usage and the price the review read, so a confirm on a picture that moved is refused (`M12-49`).
  */
 @Injectable()
@@ -193,18 +194,27 @@ export class PlanChangePreviewService {
 
   /**
    * What the lower plan blocks, from real usage (`M12-49`): storage, when the latest nightly gauge
-   * is past what the lower plan's storage gate lets through (`storageRefuses`). Empty when nothing
-   * is over.
+   * is past what the lower plan's storage gate lets through (`storageRefuses`); live projects, when
+   * more are live than the lower plan holds (`M08-07`). Empty when nothing is over.
    */
   private async blocksOf(
     tenantId: string,
     pack: MarketPack,
     tier: Tier,
   ): Promise<NonNullable<PlanChangePreview['blocks']>> {
-    const storageGb = tierRow(pack.priceBook, tier)?.capacity.storageGb ?? 'unlimited';
+    const capacity = tierRow(pack.priceBook, tier)?.capacity;
+    const storageGb = capacity?.storageGb ?? 'unlimited';
     const gauge = await this.usage.latestStorageGauge(tenantId);
-    if (gauge === null || !storageRefuses(gauge.gaugeBytes, storageGb)) return [];
-    return [{ block: 'storage', used: gauge.gaugeBytes, limit: storageGb }];
+    const projects = activeProjectsBlock(
+      await this.usage.activeProjects(tenantId),
+      capacity?.creationsPerCycle.active_projects ?? 'unlimited',
+    );
+    return [
+      ...(gauge !== null && storageRefuses(gauge.gaugeBytes, storageGb)
+        ? [{ block: 'storage' as const, used: gauge.gaugeBytes, limit: storageGb }]
+        : []),
+      ...(projects === null ? [] : [{ block: 'active_projects' as const, ...projects }]),
+    ];
   }
 }
 

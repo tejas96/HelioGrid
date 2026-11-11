@@ -12,6 +12,7 @@ import { catalogWorkerRegistration } from './modules/catalog/catalog.public';
 import { crmWorkerRegistration } from './modules/crm/crm.public';
 import {
   documentRenderWorkerRegistration,
+  handoverPackWorkerRegistration,
   invoiceDocumentWorkerRegistration,
 } from './modules/documents/documents.public';
 import { notificationWorkerRegistration } from './modules/notification/notification.public';
@@ -55,6 +56,7 @@ import { usageWorkerRegistration } from './modules/usage/usage.public';
         billingNoticesWorkerRegistration,
         billingOverageWorkerRegistration,
         invoiceDocumentWorkerRegistration,
+        handoverPackWorkerRegistration,
         documentRenderWorkerRegistration,
         usageWorkerRegistration,
         notificationWorkerRegistration,

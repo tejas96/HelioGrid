@@ -30,6 +30,7 @@ export const TASK_QUEUES = [
   'heliogrid-usage',
   'heliogrid-crm',
   'heliogrid-notifications',
+  'heliogrid-projects',
 ] as const;
 export type TaskQueue = (typeof TASK_QUEUES)[number];
 

@@ -14,6 +14,8 @@ interface SheetHeaderProps {
   density: SheetDensity;
   /** The title's own mark, before the heading block; nothing is drawn for it when absent. */
   leading?: ReactNode;
+  /** `moment`: the mark above, the heading centred under it. */
+  headerLook: 'row' | 'moment';
   /** With a handle above it the header loses its own top padding, as on web. */
   handle: boolean;
   closeLabel: TranslatedText;
@@ -47,6 +49,7 @@ const TITLE_LOOK: Record<SheetDensity, { variant: 'figure' | 'h4'; style?: TextS
 export function SheetHeader({
   density,
   leading,
+  headerLook,
   handle,
   closeLabel,
   onClose,
@@ -69,42 +72,16 @@ export function SheetHeader({
         style,
       ]}
     >
-      <Lead leading={leading}>
-        <View style={styles.heading}>
-          {overline === undefined ? null : (
-            <Text variant="overline" color="tertiary" style={styles.overline}>
-              {overline}
-            </Text>
-          )}
-          {title === undefined ? null : (
-            <View style={styles.titleLine}>
-              <Text
-                variant={TITLE_LOOK[density].variant}
-                style={TITLE_LOOK[density].style}
-                fixedSize
-              >
-                {title}
-              </Text>
-              {status === undefined ? null : (
-                <StatusChip
-                  status={status.label}
-                  label={status.label}
-                  tone={status.tone}
-                  density="functional"
-                />
-              )}
-            </View>
-          )}
-          {subtitle === undefined ? null : (
-            <Text
-              variant={subtitleFace === 'mono' ? 'mono' : 'body-sm'}
-              color="secondary"
-              style={styles.subtitle}
-            >
-              {subtitle}
-            </Text>
-          )}
-        </View>
+      <Lead leading={leading} moment={headerLook === 'moment'}>
+        <Heading
+          density={density}
+          moment={headerLook === 'moment'}
+          overline={overline}
+          status={status}
+          subtitle={subtitle}
+          subtitleFace={subtitleFace}
+          title={title}
+        />
       </Lead>
       {showClose ? (
         <OverlayClose label={closeLabel} offset={handle ? 'handle' : 'sheet'} onClick={onClose} />
@@ -113,11 +90,76 @@ export function SheetHeader({
   );
 }
 
-/** The mark and the heading side by side — only when there is a mark, so no empty box is drawn. */
-function Lead({ leading, children }: { leading: ReactNode; children: ReactNode }) {
+/** The heading block: overline, title with its status, and the line under it — centred for a moment. */
+function Heading({
+  density,
+  moment,
+  overline,
+  status,
+  subtitle,
+  subtitleFace,
+  title,
+}: Pick<
+  SheetHeaderProps,
+  'density' | 'overline' | 'status' | 'subtitle' | 'subtitleFace' | 'title'
+> & {
+  moment: boolean;
+}) {
+  return (
+    <View style={[styles.heading, moment ? styles.headingMoment : undefined]}>
+      {overline === undefined ? null : (
+        <Text variant="overline" color="tertiary" style={styles.overline}>
+          {overline}
+        </Text>
+      )}
+      {title === undefined ? null : (
+        <View style={styles.titleLine}>
+          <Text
+            variant={TITLE_LOOK[density].variant}
+            style={[TITLE_LOOK[density].style, moment ? styles.centred : undefined]}
+            fixedSize
+          >
+            {title}
+          </Text>
+          {status === undefined ? null : (
+            <StatusChip
+              status={status.label}
+              label={status.label}
+              tone={status.tone}
+              density="functional"
+            />
+          )}
+        </View>
+      )}
+      {subtitle === undefined ? null : (
+        <Text
+          variant={subtitleFace === 'mono' ? 'mono' : 'body-sm'}
+          color="secondary"
+          style={[styles.subtitle, moment ? styles.centred : undefined]}
+        >
+          {subtitle}
+        </Text>
+      )}
+    </View>
+  );
+}
+
+/**
+ * The mark and the heading side by side — or, for a moment, the mark above it — only when there is
+ * a mark, so no empty box is drawn.
+ */
+function Lead({
+  leading,
+  moment,
+  children,
+}: {
+  leading: ReactNode;
+  moment: boolean;
+  children: ReactNode;
+}) {
   if (leading === undefined || leading === null) return children;
   return (
-    <View style={styles.lead}>
+    <View style={moment ? styles.leadMoment : styles.lead}>
       {leading}
       {children}
     </View>
@@ -178,6 +220,9 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     minWidth: 0,
   },
+  leadMoment: { flex: 1, alignItems: 'center', gap: theme.spacing['sp-3'], minWidth: 0 },
+  headingMoment: { alignItems: 'center' },
+  centred: { textAlign: 'center' },
   titleLine: {
     flexDirection: 'row',
     flexWrap: 'wrap',

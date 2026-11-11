@@ -14,6 +14,7 @@ import * as identity from './identity';
 import * as invitation from './invitation';
 import * as invoice from './invoice';
 import * as lead from './lead';
+import * as leadFile from './lead-file';
 import * as leadHistory from './lead-history';
 import * as leadImport from './lead-import';
 import * as leadVisitBooking from './lead-visit-booking';
@@ -23,10 +24,14 @@ import * as notification from './notification';
 import * as outbox from './outbox';
 import * as planChange from './plan-change';
 import * as priceBook from './price-book';
+import * as project from './project';
+import * as projectInstallation from './project-installation';
+import * as projectPapers from './project-papers';
 import * as settings from './settings';
 import * as subject from './subject';
 import * as task from './task';
 import * as tenant from './tenant';
+import * as tenantCounter from './tenant-counter';
 import * as usage from './usage';
 
 /**
@@ -60,6 +65,11 @@ export const schema = {
   ...customer,
   ...lead,
   ...leadHistory,
+  ...leadFile,
+  ...tenantCounter,
+  ...project,
+  ...projectPapers,
+  ...projectInstallation,
   ...activity,
   ...task,
   ...leadVisitBooking,
@@ -83,6 +93,7 @@ export * from './identity';
 export * from './invitation';
 export * from './invoice';
 export * from './lead';
+export * from './lead-file';
 export * from './lead-history';
 export * from './lead-import';
 export * from './lead-visit-booking';
@@ -92,8 +103,12 @@ export * from './notification';
 export * from './outbox';
 export * from './plan-change';
 export * from './price-book';
+export * from './project';
+export * from './project-installation';
+export * from './project-papers';
 export * from './settings';
 export * from './subject';
 export * from './task';
 export * from './tenant';
+export * from './tenant-counter';
 export * from './usage';

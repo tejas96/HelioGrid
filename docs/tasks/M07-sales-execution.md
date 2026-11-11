@@ -17,17 +17,6 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 - Given a lead the nightly sweep flagged dormant, when My Day renders, then the lead and its tasks are absent until activity returns it to its stage (M02-52, M02-58) (moved from the block 3 CRM plan, owner yes 2026-11-09).
 - Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
 
-### T-M07-002 · Mark won
-
-**Type:** screen · **Tier:** P0
-**Status:** planned
-**PRD rows:** M07-62 (P0)
-**DESIGN:** SCR-M07-02
-**Requirements (verbatim):** Verbatim rows live in the PRD; they are the specification.
-**DONE WHEN:**
-- Given a rep marks a lead won with final value and expected install date, when they confirm, then the project exists immediately with no re-entry of customer data, and the lead shows won (M07-62).
-- Three base states + brief-listed states present at 375px and 1536px with full parity; zero raw colour literals/off-scale values.
-
 ### T-M07-003 · Mark lost
 
 **Type:** screen · **Tier:** P0
@@ -135,7 +124,7 @@ This file covers Module M07 (Sales Execution): My Day and the follow-up task sys
 | M07-59 | voice — postponed |
 | M07-60 | voice — postponed |
 | M07-61 | voice — postponed |
-| M07-62 | T-M07-002 |
+| M07-62 | T-M07-002, shipped |
 | M07-63 | T-M07-003 |
 | M07-64 | T-M07-004 |
 | M07-65 | LAW |

@@ -1,0 +1,26 @@
+# Project handover (`SCR-M08-06`): the project's handover opens at its address and names what still
+# waits. The row the project flow marked not needed waits no more; the next row still does; the
+# pack's tile says there is nothing to put in one yet — no row has a file — and Hand over stays on
+# the page, off, with its reason, while any row waits.
+appId: com.heliogrid.app
+---
+- openLink: heliogrid://projects/${PROJECT_ID}/handover
+- extendedWaitUntil:
+    visible: ${HANDOVER_WAITING_TITLE}
+    timeout: 15000
+- assertVisible: ${HANDOVER_WAITING_LINE}
+- assertVisible: ${NEXT_WAITING_ROW}
+- assertNotVisible: ${FIRST_PERSON_ROW}
+- scrollUntilVisible:
+    element: ${HANDOVER_PACK}
+    centerElement: true
+- assertVisible: ${HANDOVER_PACK_EMPTY}
+# The page's title says Hand over too; only the act is off, and it speaks its reason after its name.
+- scrollUntilVisible:
+    element:
+      text: "${HAND_OVER}(, .*)?"
+      enabled: false
+    centerElement: true
+- assertVisible:
+    text: "${HAND_OVER}(, .*)?"
+    enabled: false
