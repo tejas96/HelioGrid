@@ -199,6 +199,7 @@
 @import "./components/SetupWhatYouSell/SetupWhatYouSell.css";
 @import "./components/Sheet/OverlayShared.css";
 @import "./components/Sheet/Sheet.css";
+@import "./components/Sheet/SheetHeader.css";
 @import "./components/SignupCompanyStep/SignupCompanyStep.css";
 @import "./components/SignupKnownNumber/SignupKnownNumber.css";
 @import "./components/SignupRequestSent/SignupRequestSent.css";

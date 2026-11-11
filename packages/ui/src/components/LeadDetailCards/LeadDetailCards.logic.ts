@@ -1,8 +1,9 @@
+import { mapRead } from '@heliogrid/domain';
 import type { MarketFormat } from '../../utils/format';
 import { leadContactRowsOf } from '../LeadContactsCard/LeadContactsCard.logic';
 import type { LeadContactsCardProps } from '../LeadContactsCard/LeadContactsCard.types';
 import { leadTaskRowsOf } from '../LeadSections/LeadSections.logic';
-import type { LeadSectionsProps } from '../LeadSections/LeadSections.types';
+import type { LeadFilesPanel, LeadSectionsProps } from '../LeadSections/LeadSections.types';
 import type { LeadDetailCardsProps } from './LeadDetailCards.types';
 
 /** The contacts card from the lead's screen: who to reach, the primary, and the calling facts. */
@@ -37,11 +38,12 @@ export function leadContactsCardOf<Failure>(
   };
 }
 
-/** The six sections from the lead's screen: the timeline, the booked visit, and the open tasks. */
+/** The six sections from the lead's screen: the timeline, the booked visit, the tasks and files. */
 export function leadSectionsOf<Failure>(
-  { screen, view, visit, timeline, words }: LeadDetailCardsProps<Failure>,
+  props: LeadDetailCardsProps<Failure>,
   format: MarketFormat,
 ): LeadSectionsProps {
+  const { screen, view, visit, timeline, words } = props;
   const { acts, tasks } = screen;
   return {
     section: screen.section,
@@ -78,6 +80,31 @@ export function leadSectionsOf<Failure>(
           ? null
           : { taskId: tasks.failure.taskId, reason: words.failure(tasks.failure.failure) },
     },
+    files: leadFilesPanelOf(props, format),
     words: words.sections,
+  };
+}
+
+/** The Files section: each file with who added it and when, the add, and the pick's own line. */
+function leadFilesPanelOf<Failure>(
+  { screen, onAddFile, onOpenFile, words }: LeadDetailCardsProps<Failure>,
+  format: MarketFormat,
+): LeadFilesPanel {
+  const { files } = screen;
+  const going = files.uploading || files.uploadFailed;
+  return {
+    read: mapRead(files.read, (listed) =>
+      listed.map((file) => ({
+        id: file.id,
+        fileId: file.fileId,
+        name: file.name,
+        line: words.fileLine({ name: file.addedBy.name, day: format.date(file.addedAt) }),
+      })),
+    ),
+    onAdd: files.canAdd ? onAddFile : null,
+    pending:
+      going && files.picked !== null ? { name: files.picked, failed: files.uploadFailed } : null,
+    onRetry: files.retryUpload,
+    onOpen: onOpenFile,
   };
 }

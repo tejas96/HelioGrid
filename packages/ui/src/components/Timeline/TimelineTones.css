@@ -1,0 +1,30 @@
+/* Timeline's quieter and system steps (web): a step the sequence went past without a stop, a
+   current step that carries its own glyph, and a line that is what the system did — never a
+   person. Each keeps its words; the tint and the glyph are the second channel. */
+
+.hg-timeline-node[data-status="skipped"] {
+  background: var(--canvas-sunken);
+  color: var(--text-secondary);
+}
+
+.hg-timeline-label[data-status="skipped"] {
+  color: var(--text-secondary);
+}
+
+/* A current step with its own glyph: the accent node, the glyph in the inverse ink. Its two
+   attributes outrank the base node's control fill, which this file is read before. */
+.hg-timeline-node[data-status="current"][data-icon="true"] {
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.hg-timeline-description[data-tone="system"] {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--hue-teal-text);
+}
+
+.hg-timeline-description[data-tone="system"] svg {
+  flex-shrink: 0;
+}

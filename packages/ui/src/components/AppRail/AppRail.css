@@ -152,7 +152,8 @@
   gap: var(--sp-3);
   box-sizing: border-box;
   width: 100%;
-  min-height: var(--sp-10);
+  /* The product's touch floor, as every Pressable's: a destination is a press target like any other. */
+  min-height: var(--touch-min);
   padding: var(--sp-2) var(--sp-3);
   border: none;
   border-radius: var(--r-pill);

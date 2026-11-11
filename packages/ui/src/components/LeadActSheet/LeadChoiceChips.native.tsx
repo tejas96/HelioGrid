@@ -1,10 +1,9 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../../primitives/Color/colors';
-import { useGround } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { Chip } from '../Chip/Chip.native';
 
 interface LeadChoiceChipsProps<V extends string> {
   readonly label: TranslatedText;
@@ -17,7 +16,8 @@ interface LeadChoiceChipsProps<V extends string> {
 
 /**
  * One answer of a few, as chips: a radio group a screen reader hears with its name and which chip
- * is on, never the ink alone (`F7-12`).
+ * is on (`F7-12`). The chosen chip is the shared `Chip`'s accent wash, as on the web — never a pill
+ * of its own.
  */
 export function LeadChoiceChips<V extends string>({
   label,
@@ -27,7 +27,6 @@ export function LeadChoiceChips<V extends string>({
   onChoose,
   disabled,
 }: LeadChoiceChipsProps<V>) {
-  const { controlFill } = useGround();
   return (
     <View style={styles.group}>
       <Text variant="field-label">{label}</Text>
@@ -40,12 +39,11 @@ export function LeadChoiceChips<V extends string>({
               accessibilityRole="radio"
               accessibilityState={{ checked: on }}
               disabled={disabled}
+              haptic="selection"
               onPress={() => onChoose(choice)}
-              style={[styles.chip, { backgroundColor: controlFill }, on ? styles.on : undefined]}
+              style={styles.target}
             >
-              <Text variant="body-sm" color={on ? 'inverse' : 'primary'}>
-                {word(choice)}
-              </Text>
+              <Chip active={on}>{word(choice)}</Chip>
             </Pressable>
           );
         })}
@@ -57,10 +55,6 @@ export function LeadChoiceChips<V extends string>({
 const styles = StyleSheet.create({
   group: { gap: theme.spacing['sp-2'] },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing['sp-2'] },
-  chip: {
-    justifyContent: 'center',
-    paddingHorizontal: theme.spacing['sp-4'],
-    borderRadius: theme.radius['r-pill'],
-  },
-  on: { backgroundColor: colors.ink },
+  /* The pill's shape on the target too: Android draws no square ripple under a round pill. */
+  target: { justifyContent: 'center', borderRadius: theme.radius['r-pill'] },
 });

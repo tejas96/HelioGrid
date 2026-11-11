@@ -23,7 +23,6 @@ export const doorRoute = {
  */
 export const PLACEHOLDER_DOORS = [
   'proposals',
-  'projects',
   'people',
   'campaigns',
   'start_survey',

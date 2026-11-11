@@ -53,6 +53,8 @@ describe('judgeFileDeclaration — the size and type a kind takes', () => {
   });
 });
 
+const NO_SUBJECT = { isCaller: false, allows: false } as const;
+
 describe('mayUploadFile / mayReadFile — the kind names the capability', () => {
   it.each([
     [['epc_owner'], true],
@@ -60,7 +62,9 @@ describe('mayUploadFile / mayReadFile — the kind names the capability', () => 
     [['sales_executive', 'epc_owner'], true],
     [[], false],
   ] as const)('%j may upload the logo: %s', (roles, allowed) => {
-    expect(mayUploadFile(roles, FILE_SUBJECT_RULES.tenant, false)).toBe(allowed);
+    expect(
+      mayUploadFile(roles, FILE_SUBJECT_RULES.tenant, { isCaller: false, allows: false }),
+    ).toBe(allowed);
   });
 
   it.each([
@@ -71,8 +75,10 @@ describe('mayUploadFile / mayReadFile — the kind names the capability', () => 
     [['sales_executive'], false, false],
     [[], false, false],
   ] as const)('%j may upload a price list: %s, and read one: %s', (roles, upload, read) => {
-    expect(mayUploadFile(roles, FILE_SUBJECT_RULES.catalog, false)).toBe(upload);
-    expect(mayReadFile(roles, FILE_SUBJECT_RULES.catalog)).toBe(read);
+    expect(
+      mayUploadFile(roles, FILE_SUBJECT_RULES.catalog, { isCaller: false, allows: false }),
+    ).toBe(upload);
+    expect(mayReadFile(roles, FILE_SUBJECT_RULES.catalog, NO_SUBJECT)).toBe(read);
   });
 
   it.each([
@@ -85,31 +91,60 @@ describe('mayUploadFile / mayReadFile — the kind names the capability', () => 
   ] as const)(
     "a user_account file is stored only against the caller's own id: %j, theirs %s → %s",
     (roles, own, allowed) => {
-      expect(mayUploadFile(roles, FILE_SUBJECT_RULES.user_account, own)).toBe(allowed);
+      expect(
+        mayUploadFile(roles, FILE_SUBJECT_RULES.user_account, { isCaller: own, allows: false }),
+      ).toBe(allowed);
     },
   );
 
   it('a capability kind ignores whose subject it is', () => {
-    expect(mayUploadFile(['sales_executive'], FILE_SUBJECT_RULES.tenant, true)).toBe(false);
-    expect(mayUploadFile(['epc_owner'], FILE_SUBJECT_RULES.tenant, true)).toBe(true);
+    expect(
+      mayUploadFile(['sales_executive'], FILE_SUBJECT_RULES.tenant, {
+        isCaller: true,
+        allows: false,
+      }),
+    ).toBe(false);
+    expect(
+      mayUploadFile(['epc_owner'], FILE_SUBJECT_RULES.tenant, { isCaller: true, allows: false }),
+    ).toBe(true);
   });
 
   it('a profile photo is read by any member and takes a 2 MB png or jpeg', () => {
     const photo = FILE_SUBJECT_RULES.user_account;
-    expect(mayReadFile(['field_technician'], photo)).toBe(true);
+    expect(mayReadFile(['field_technician'], photo, NO_SUBJECT)).toBe(true);
     expect(judgeFileDeclaration(photo, 'image/jpeg', 2_000_000)).toBe('accepted');
     expect(judgeFileDeclaration(photo, 'image/png', 2_000_001)).toBe('too-large');
     expect(judgeFileDeclaration(photo, 'text/csv', 10)).toBe('type-not-taken');
   });
 
   it('a member-readable kind is readable by any role and by none', () => {
-    expect(mayReadFile(['field_technician'], pngOnly)).toBe(true);
-    expect(mayReadFile([], pngOnly)).toBe(true);
+    expect(mayReadFile(['field_technician'], pngOnly, NO_SUBJECT)).toBe(true);
+    expect(mayReadFile([], pngOnly, NO_SUBJECT)).toBe(true);
   });
 
   it('a capability-readable kind is readable only with that capability', () => {
     const restricted: FileSubjectRule = { ...pngOnly, read: 'onboarding.manage_tenant_settings' };
-    expect(mayReadFile(['epc_owner'], restricted)).toBe(true);
-    expect(mayReadFile(['sales_executive'], restricted)).toBe(false);
+    expect(mayReadFile(['epc_owner'], restricted, NO_SUBJECT)).toBe(true);
+    expect(mayReadFile(['sales_executive'], restricted, NO_SUBJECT)).toBe(false);
+  });
+});
+
+describe("a subject kind takes its own module's answer", () => {
+  it.each([
+    ['lead', true, true],
+    ['lead', false, false],
+    ['project', true, true],
+    ['project', false, false],
+  ] as const)('%s: the module allows %s → upload and read %s', (kind, allows, expected) => {
+    const subject = { isCaller: false, allows };
+    expect(mayUploadFile(['epc_owner'], FILE_SUBJECT_RULES[kind], subject)).toBe(expected);
+    expect(mayReadFile(['epc_owner'], FILE_SUBJECT_RULES[kind], subject)).toBe(expected);
+  });
+
+  it('a project takes a photo or a PDF, never a spreadsheet', () => {
+    const rule = FILE_SUBJECT_RULES.project;
+    expect(judgeFileDeclaration(rule, 'image/jpeg', 2_000_000)).toBe('accepted');
+    expect(judgeFileDeclaration(rule, 'application/pdf', 1)).toBe('accepted');
+    expect(judgeFileDeclaration(rule, 'text/csv', 1)).toBe('type-not-taken');
   });
 });

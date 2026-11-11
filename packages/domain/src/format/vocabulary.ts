@@ -29,6 +29,15 @@ export interface BlockerPartyLabel {
 }
 
 /**
+ * One wait reason's label (`M08-29`): the reason CLASS is a closed, market-neutral set
+ * (`projects/vocabulary.ts`); the pack supplies only what a user reads for it.
+ */
+export interface BlockerReasonLabel {
+  readonly reason: string;
+  readonly label: PackLabel;
+}
+
+/**
  * One payment mode's display name. The MODE is `pack.payment-rails` vocabulary (`F1-18`,
  * `rails/pack.ts`) and the NAME is this key's (§F1.2's assignment ruling), so the two are
  * declared once each and a market renames without touching the ledger.
@@ -47,6 +56,7 @@ export interface DisplayVocabulary {
    */
   readonly skippableStages: readonly string[];
   readonly blockerParties: readonly BlockerPartyLabel[];
+  readonly blockerReasons: readonly BlockerReasonLabel[];
   readonly paymentModes: readonly PaymentModeLabel[];
 }
 
@@ -58,6 +68,14 @@ export function stageLabel(vocabulary: DisplayVocabulary, stage: string): PackLa
 /** The market's label for a blocker party, or `null` where it declares none (`F1-09`). */
 export function blockerPartyLabel(vocabulary: DisplayVocabulary, party: string): PackLabel | null {
   return vocabulary.blockerParties.find((declared) => declared.party === party)?.label ?? null;
+}
+
+/** The market's label for a wait reason, or `null` where it declares none (`F1-09`). */
+export function blockerReasonLabel(
+  vocabulary: DisplayVocabulary,
+  reason: string,
+): PackLabel | null {
+  return vocabulary.blockerReasons.find((declared) => declared.reason === reason)?.label ?? null;
 }
 
 /** The market's display name for a payment mode, or `null` where it declares none (`F1-09`). */
@@ -105,7 +123,50 @@ export const IN_VOCABULARY: DisplayVocabulary = {
   ],
   /** `F1-51`, per `F1-35`. */
   skippableStages: ['incentive_claimed'],
-  blockerParties: [{ party: 'utility', label: { en: 'DISCOM' } }],
+  /**
+   * `company` is the tenant itself, read in the first person (`M08-20`); `utility` is `F1-51`'s
+   * DISCOM, never translated (`F3-08`).
+   */
+  blockerParties: [
+    { party: 'company', label: { en: 'Us', hi: 'हम', mr: 'आम्ही' } },
+    { party: 'customer', label: { en: 'Customer', hi: 'ग्राहक', mr: 'ग्राहक' } },
+    { party: 'utility', label: { en: 'DISCOM' } },
+    { party: 'material', label: { en: 'Material', hi: 'सामान', mr: 'साहित्य' } },
+  ],
+  blockerReasons: [
+    {
+      reason: 'crew_availability',
+      label: { en: 'Crew not free', hi: 'टीम खाली नहीं', mr: 'टीम उपलब्ध नाही' },
+    },
+    {
+      reason: 'internal_paperwork',
+      label: { en: 'Our paperwork', hi: 'हमारे काग़ज़ात', mr: 'आमची कागदपत्रे' },
+    },
+    { reason: 'site_access', label: { en: 'Site access', hi: 'साइट तक पहुँच', mr: 'साइटवर प्रवेश' } },
+    { reason: 'customer_documents', label: { en: 'Documents', hi: 'दस्तावेज़', mr: 'कागदपत्रे' } },
+    { reason: 'customer_payment', label: { en: 'Payment', hi: 'भुगतान', mr: 'पेमेंट' } },
+    { reason: 'customer_decision', label: { en: 'Decision', hi: 'निर्णय', mr: 'निर्णय' } },
+    { reason: 'utility_approval', label: { en: 'Approval', hi: 'अनुमोदन', mr: 'मान्यता' } },
+    {
+      reason: 'utility_inspection',
+      label: { en: 'Inspection date', hi: 'निरीक्षण की तारीख', mr: 'तपासणीची तारीख' },
+    },
+    { reason: 'utility_meter', label: { en: 'Meter', hi: 'मीटर', mr: 'मीटर' } },
+    {
+      reason: 'incentive_rejected',
+      label: { en: 'Subsidy claim rejected', hi: 'सब्सिडी दावा अस्वीकार', mr: 'अनुदान दावा नाकारला' },
+    },
+    {
+      reason: 'incentive_payout',
+      label: { en: 'Subsidy payout', hi: 'सब्सिडी भुगतान', mr: 'अनुदान वितरण' },
+    },
+    {
+      reason: 'material_supply',
+      label: { en: 'Supplier or stock', hi: 'सप्लायर या स्टॉक', mr: 'पुरवठादार किंवा साठा' },
+    },
+    { reason: 'material_transport', label: { en: 'Transport', hi: 'परिवहन', mr: 'वाहतूक' } },
+    { reason: 'other', label: { en: 'Something else', hi: 'कुछ और', mr: 'इतर काही' } },
+  ],
   /**
    * One name per mode `IN_PAYMENT_RAILS` declares (`F1-18`). `UPI`, `NEFT` and `cheque` are the
    * market's own words, not translated copy.

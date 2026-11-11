@@ -12,7 +12,6 @@ import {
 import {
   FILE_DOWNLOAD_LINK_SECONDS,
   FILE_SIGNATURE_BYTES,
-  FILE_SUBJECT_KINDS,
   FILE_SUBJECT_RULES,
   FILE_UPLOAD_LINK_SECONDS,
   type FileSubjectKind,
@@ -22,7 +21,6 @@ import {
   mayReadFile,
   mayUploadFile,
   type RolePreset,
-  type SubjectKind,
 } from '@heliogrid/domain';
 import {
   ForbiddenException,
@@ -37,6 +35,8 @@ import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException } from '../../common/errors/contract-exception';
 import { UsageService } from '../billing/billing.public';
 import { FileRepository, type FileRow } from './file.repository';
+import { FileSubjectRegistry } from './file.subject.registry';
+import { isFileSubjectKind, isTheCaller, ruleOf } from './internal/subject-kind';
 import { SUBJECT_LOOKUPS } from './internal/subject-lookup';
 
 const SECOND_MS = 1_000;
@@ -56,6 +56,7 @@ export class FileService {
     @Inject(CreationReplies) private readonly replies: CreationReplies,
     @Inject(UsageService) private readonly usage: UsageService,
     @Inject(PinoLogger) private readonly logger: PinoLogger,
+    @Inject(FileSubjectRegistry) private readonly subjects: FileSubjectRegistry,
   ) {
     this.logger.setContext(FileService.name);
   }
@@ -68,7 +69,16 @@ export class FileService {
     act: Act,
   ): Promise<DeclaredFile> {
     const rule = FILE_SUBJECT_RULES[body.subjectKind];
-    if (!mayUploadFile(roles, rule, isTheCaller(body.subjectRef, act))) {
+    const subject = await this.subjects.answerFor(
+      tenantId,
+      roles,
+      body.subjectKind,
+      body.subjectRef,
+      act,
+      'upload',
+      null,
+    );
+    if (!mayUploadFile(roles, rule, subject)) {
       throw new ForbiddenException('You may not store files against this.');
     }
     refuseUnlessAccepted(judgeFileDeclaration(rule, body.contentType, body.byteSize), rule);
@@ -118,7 +128,16 @@ export class FileService {
   ): Promise<StoredFile> {
     const row = await this.files.find(tenantId, id);
     if (row === null || row.uploadedBy !== act.actorUserId) throw new NotFoundException();
-    if (!mayUploadFile(roles, ruleOf(row.subjectKind), isTheCaller(row.subjectRef, act))) {
+    const subject = await this.subjects.answerFor(
+      tenantId,
+      roles,
+      row.subjectKind,
+      row.subjectRef,
+      act,
+      'upload',
+      null,
+    );
+    if (!mayUploadFile(roles, ruleOf(row.subjectKind), subject)) {
       throw new ForbiddenException('You may no longer store files against this.');
     }
     if (row.uploadedAt !== null) return toWire(row);
@@ -131,11 +150,21 @@ export class FileService {
     roles: readonly RolePreset[],
     id: string,
     now: number,
+    reader: Pick<Act, 'actorUserId'>,
   ): Promise<FileDownload> {
     const row = await this.files.find(tenantId, id);
     // A document the platform made is served by its own record's route, never this one.
     if (row === null || !isFileSubjectKind(row.subjectKind)) throw new NotFoundException();
-    if (!mayReadFile(roles, ruleOf(row.subjectKind))) {
+    const subject = await this.subjects.answerFor(
+      tenantId,
+      roles,
+      row.subjectKind,
+      row.subjectRef,
+      reader,
+      'read',
+      row.id,
+    );
+    if (!mayReadFile(roles, ruleOf(row.subjectKind), subject)) {
       throw new ForbiddenException('You may not read this file.');
     }
     if (row.uploadedAt === null) throw notUploaded();
@@ -247,22 +276,6 @@ function refuseUnlessAccepted(
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
   }
-}
-
-/** A stored row's kind was a file kind when it was declared; anything else is a broken table. */
-function ruleOf(kind: SubjectKind): FileSubjectRule {
-  if (!isFileSubjectKind(kind))
-    throw new Error(`a file is stored against ${kind}, which owns none`);
-  return FILE_SUBJECT_RULES[kind];
-}
-
-function isFileSubjectKind(kind: SubjectKind): kind is FileSubjectKind {
-  return (FILE_SUBJECT_KINDS as readonly SubjectKind[]).includes(kind);
-}
-
-/** A `self` kind's subject is the person asking; the wire takes a uuid in either case. */
-function isTheCaller(subjectRef: string, act: Act): boolean {
-  return subjectRef.toLowerCase() === act.actorUserId.toLowerCase();
 }
 
 function notUploaded(): ContractException {

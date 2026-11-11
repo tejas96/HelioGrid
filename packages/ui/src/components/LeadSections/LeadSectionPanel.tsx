@@ -4,6 +4,7 @@ import { ShellGlyph } from '../AppShell/ShellGlyph';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Button } from '../Button';
 import { NamedGap } from '../NamedGap';
+import { LeadFileList } from './LeadFileList';
 import type { LeadSectionsProps, LeadSiteVisit } from './LeadSections.types';
 import { LeadTaskList } from './LeadTaskList';
 
@@ -34,13 +35,7 @@ export function LeadSectionPanel(props: LeadSectionsProps) {
     case 'tasks':
       return <LeadTaskList tasks={props.tasks} acts={props.taskActs} words={words} />;
     case 'files':
-      return (
-        <Count
-          glyph="file"
-          count={counts.files ?? 0}
-          words={{ some: words.files, none: words.noFiles, line: words.filesLine }}
-        />
-      );
+      return <LeadFileList files={props.files} words={words} />;
   }
 }
 

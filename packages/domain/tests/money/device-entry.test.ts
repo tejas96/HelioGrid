@@ -119,6 +119,8 @@ type ReviewedComputesNothing =
   | 'templateWritesOf'
   /* Global Search's groups, as drawn from the answer it is handed: its rows outrun the depth the check walks, and they hold no figure */
   | 'searchViewOf'
+  /* the Projects board, as drawn from the cards it is handed: its groups of rows outrun the depth the check walks, and they hold no figure (block 4 ships no money) */
+  | 'projectBoardViewOf'
   /* label a figure they are handed (`F8`) */
   | 'qualifyMoney'
   | 'qualifyMinorUnits'

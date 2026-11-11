@@ -1,0 +1,181 @@
+/* ProjectHero — the hero's insides and the wait under it (the picked design). The glass is
+   `HeroPanel`'s and the wait's tile is `Card`'s; this file lays out what they hold. */
+
+.hg-project-detail-hero-now {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.hg-project-detail-hero-stage,
+.hg-project-detail-hero-next {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.hg-project-detail-hero-stage-name {
+  font-family: var(--font-display);
+  font-size: var(--fs-figure);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-figure);
+  letter-spacing: var(--tr-figure);
+  color: var(--on-panel);
+  overflow-wrap: anywhere;
+}
+
+.hg-project-detail-on-panel {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
+.hg-project-detail-hero-days {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-1);
+  text-align: end;
+}
+
+/* A hero figure is Newsreader with tabular figures, one token — never wrapped (`CLAUDE.md` §9). */
+.hg-project-detail-hero-days-figure {
+  font-family: var(--font-display);
+  font-size: var(--fs-hero-phone);
+  line-height: var(--lh-hero-phone);
+  letter-spacing: var(--tr-hero-phone);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--on-panel);
+}
+
+.hg-project-detail-hero-rule {
+  display: block;
+  height: 1px;
+  background: var(--line-soft);
+}
+
+.hg-project-detail-overline {
+  font-size: var(--fs-overline);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-overline);
+  line-height: var(--lh-overline);
+  text-transform: uppercase;
+  color: var(--on-panel-muted);
+}
+
+.hg-project-detail-hero-next-title {
+  font-size: var(--fs-body-lg);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-body-lg);
+  color: var(--on-panel);
+}
+
+.hg-project-detail-hero-note {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.hg-project-detail-hero-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.hg-project-detail-hero-view-only {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
+/* ── the wait ── */
+.hg-card.hg-project-detail-wait {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-project-detail-wait-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+}
+
+.hg-project-detail-wait-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-project-detail-wait-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+}
+
+/* The days a wait has run: a count, in mono — one token, never wrapped. */
+.hg-project-detail-days {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-body-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+/* The wait's acts sit under its words, past its tile. */
+.hg-project-detail-wait-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  padding-inline-start: calc(var(--sp-10) + var(--sp-3));
+}
+
+/* No wait open: a quiet tile edged by a ring — an empty place to fill, never a filled card. */
+.hg-pressable.hg-project-detail-ask {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-card-expressive);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+  text-align: start;
+}
+
+@media (hover: hover) {
+  .hg-pressable.hg-project-detail-ask:hover {
+    background: var(--hg-control-fill);
+  }
+}
+
+.hg-project-detail-ask-words {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-project-detail-ask-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+}

@@ -1,0 +1,31 @@
+/* The project's pages (`SCR-M08-02`, `03`, `04`, `06`): what only these pages lay out — the way back
+   above them and the title row with its facts and acts. The project, its checklist, its steps, its
+   sheets and its handover are `packages/ui`'s. */
+
+.hg-project-page-trail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.hg-project-page-here {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-project-page-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3) var(--sp-4);
+}
+
+.hg-project-page-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}

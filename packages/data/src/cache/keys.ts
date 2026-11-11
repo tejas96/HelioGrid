@@ -8,6 +8,22 @@ export const queryKeys = {
   health: {
     liveness: ['health', 'liveness'] as const,
   },
+  /**
+   * The projects (`M08`), keyed by the company. An act answers the project and lets the board, the
+   * jobs and the handover read again — they derive from the same rows.
+   */
+  projects: {
+    all: (tenantId: string) => ['projects', tenantId] as const,
+    board: (tenantId: string) => ['projects', tenantId, 'board'] as const,
+    handedOver: (tenantId: string) => ['projects', tenantId, 'handed-over'] as const,
+    detail: (tenantId: string, projectId: string) =>
+      ['projects', tenantId, 'detail', projectId] as const,
+    handover: (tenantId: string, projectId: string) =>
+      ['projects', tenantId, 'handover', projectId] as const,
+    people: (tenantId: string, role: 'manager' | 'crew') =>
+      ['projects', tenantId, 'people', role] as const,
+    jobs: (tenantId: string) => ['projects', tenantId, 'jobs'] as const,
+  },
   /** Keyed by the company, so one person's facts are never served under another company. */
   shell: {
     tenant: (tenantId: string) => ['shell', tenantId, 'tenant'] as const,
@@ -99,6 +115,9 @@ export const queryKeys = {
     lead: (tenantId: string, leadId: string) => ['crm', tenantId, 'lead', leadId] as const,
     leadTimeline: (tenantId: string, leadId: string, ask: unknown) =>
       ['crm', tenantId, 'lead', leadId, 'activities', ask] as const,
+    /** The lead's files (`M02-32`), oldest first. */
+    leadFiles: (tenantId: string, leadId: string) =>
+      ['crm', tenantId, 'lead', leadId, 'files'] as const,
     customerTimeline: (tenantId: string, customerId: string, ask: unknown) =>
       ['crm', tenantId, 'customer', customerId, 'activities', ask] as const,
     /** Each person's open and overdue counts at this moment (`M02-28`). */

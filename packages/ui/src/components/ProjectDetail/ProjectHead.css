@@ -1,0 +1,35 @@
+/* ProjectHead — the project's facts as pills under its title, and its acts beside it (the picked
+   design). A pill is a fact, never a status: no glyph-and-tint state rides on it. */
+
+.hg-project-detail-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: 0;
+}
+
+.hg-project-detail-fact {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--sp-8);
+  padding: 0 var(--sp-3) 0 var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--neutral-bg);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-caption);
+  color: var(--neutral-text);
+}
+
+.hg-project-detail-fact[data-person="true"] {
+  padding-inline-start: var(--sp-1);
+}
+
+.hg-project-detail-head-acts {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+}

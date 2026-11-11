@@ -17,6 +17,7 @@ import { createLeadCallsRepository, type LeadCallsRepository } from './crm/calls
 import { createLeadCaptureRepository, type LeadCaptureRepository } from './crm/capture-repository';
 import { type ContactsRepository, createContactsRepository } from './crm/contacts-repository';
 import { createLeadEditsRepository, type LeadEditsRepository } from './crm/edits-repository';
+import { createLeadFilesRepository, type LeadFilesRepository } from './crm/files-repository';
 import { createLeadImportRepository, type LeadImportRepository } from './crm/import-repository';
 import { createLeadsRepository, type LeadsRepository } from './crm/leads-repository';
 import {
@@ -44,6 +45,7 @@ import {
 import { createOnboardingRepository, type OnboardingRepository } from './onboarding/repository';
 import { createPriceBookRepository, type PriceBookRepository } from './price-book/repository';
 import { createPricingRepository, type PricingRepository } from './pricing/repository';
+import { createProjectsRepository, type ProjectsRepository } from './projects/projects-repository';
 import { createSearchRepository, type SearchRepository } from './search/repository';
 import { createSettingsRepository, type SettingsRepository } from './settings/repository';
 import { createTenantRepository, type TenantRepository } from './tenant/repository';
@@ -85,8 +87,10 @@ export interface Repositories {
   leadCalls: LeadCallsRepository;
   leadCapture: LeadCaptureRepository;
   leadEdits: LeadEditsRepository;
+  leadFiles: LeadFilesRepository;
   leadImport: LeadImportRepository;
   leadLifecycle: LeadLifecycleRepository;
+  projects: ProjectsRepository;
   leadMessages: LeadMessagesRepository;
   leads: LeadsRepository;
   tasks: TasksRepository;
@@ -162,8 +166,10 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
     leadCalls: createLeadCallsRepository(api),
     leadCapture: createLeadCaptureRepository(api),
     leadEdits: createLeadEditsRepository(api),
+    leadFiles: createLeadFilesRepository(api),
     leadImport: createLeadImportRepository(api),
     leadLifecycle: createLeadLifecycleRepository(api),
+    projects: createProjectsRepository(api),
     leadMessages: createLeadMessagesRepository(api),
     leads: createLeadsRepository(api),
     tasks: createTasksRepository(api),

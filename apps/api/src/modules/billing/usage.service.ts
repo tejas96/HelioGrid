@@ -96,6 +96,11 @@ export class UsageService {
     return this.scoped.eventsOf(tenantId, meter, window, page);
   }
 
+  /** The company's active projects — what the active-projects limit counts (`M08-07`). */
+  activeProjects(tenantId: string): Promise<number> {
+    return this.scoped.activeProjects(tenantId);
+  }
+
   /** The latest nightly weight of a company's files; `null` before its first night. */
   latestStorageGauge(tenantId: string): Promise<StorageGauge | null> {
     return this.scoped.latestGauge(tenantId);

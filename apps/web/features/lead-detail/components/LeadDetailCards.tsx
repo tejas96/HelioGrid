@@ -37,6 +37,8 @@ export function LeadWork({
       layout={columns ? 'grid' : 'dock'}
       onAddReferral={moves.addReferral}
       onMerge={moves.merge}
+      onMarkWon={screen.won.open}
+      onOpenProject={moves.openProject}
       words={leadWorkCardsWords(t, lead, view, format.date)}
     />
   );
@@ -44,7 +46,8 @@ export function LeadWork({
 
 /**
  * Who to reach and what has happened (`M02-32`, `M02-34`, `M02-37`): the contacts with the calling
- * facts and the six sections, in the order the column takes them.
+ * facts and the six sections — the files with the browser's chooser — in the order the column
+ * takes them.
  */
 export function LeadContactsAndSections({
   screen,
@@ -61,6 +64,8 @@ export function LeadContactsAndSections({
       visit={lead.visit}
       timeline={<LeadTimeline timeline={screen.timeline} words={leadTimelineWords(t)} />}
       onDial={moves.dial}
+      onAddFile={moves.addFile}
+      onOpenFile={moves.openFile}
       first={first}
       words={leadDetailCardsWords(t)}
     />

@@ -24,6 +24,8 @@ export const NOTIFICATION_TYPES = [
   'reinvite_requested',
   'dunning_notice',
   'trial_nudge',
+  /** A project moved by proof or by someone else — told to its project manager (`M08`, ruling 2026-11-10). */
+  'project_moved',
   'system',
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
@@ -112,6 +114,8 @@ export const NOTIFICATION_SOURCES = [
   'design',
   'proposals',
   'sales_execution',
+  /** The delivery after Won (`M08`). */
+  'projects',
   'payments',
   /** The company's own team — who joins it. Never the platform: product news is apart (`F6.4`). */
   'team',

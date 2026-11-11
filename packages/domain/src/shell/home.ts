@@ -60,3 +60,22 @@ export function composedHome(
   if (home === null) return null;
   return { home, composed: homes.filter((preset) => preset !== home) };
 }
+
+/**
+ * The presets whose home block is their module's own part, which the home draws itself instead of
+ * a waiting block: the installer's job (`SCR-M08-05`, `M08-45`).
+ */
+export const MODULE_HOME_BLOCKS = [
+  'installation_team_member',
+] as const satisfies readonly RolePreset[];
+
+/** Whether the home in force, or a home composed into it, is the installer's job. */
+export function showsInstallerJob(home: ComposedHome | null): boolean {
+  return home !== null && [home.home, ...home.composed].includes('installation_team_member');
+}
+
+/** The home's blocks still waiting for their module: every preset whose block is not drawn yet. */
+export function waitingHomeBlocks(home: ComposedHome): readonly RolePreset[] {
+  const drawn: readonly RolePreset[] = MODULE_HOME_BLOCKS;
+  return [home.home, ...home.composed].filter((preset) => !drawn.includes(preset));
+}

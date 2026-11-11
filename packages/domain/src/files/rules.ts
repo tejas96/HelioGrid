@@ -32,9 +32,14 @@ export const FILE_STORE_ATTEMPTS = 2;
  * a slice forgot is the leak this shape exists to prevent.
  */
 export interface FileSubjectRule {
-  /** A capability held outright, or `self`: only the person the subject is may store against it. */
-  readonly upload: Capability | 'self';
-  readonly read: Capability | 'member';
+  /**
+   * A capability held outright; `self`, only the person the subject is may store against it; or
+   * `subject`, the subject's own module decides from the record itself — who may see the lead or
+   * the project, and act on it — because a capability alone would let anyone holding it reach
+   * every customer's papers.
+   */
+  readonly upload: Capability | 'self' | 'subject';
+  readonly read: Capability | 'member' | 'subject';
   readonly maxBytes: number;
   readonly contentTypes: readonly FileContentType[];
 }
@@ -57,6 +62,8 @@ export const FILE_SUBJECT_KINDS = [
   'catalog',
   'user_account',
   'lead_import',
+  'lead',
+  'project',
 ] as const satisfies readonly SubjectKind[];
 export type FileSubjectKind = (typeof FILE_SUBJECT_KINDS)[number];
 
@@ -101,6 +108,28 @@ export const FILE_SUBJECT_RULES = {
     maxBytes: FILE_MAX_BYTES,
     contentTypes: SPREADSHEET_CONTENT_TYPES,
   },
+  /**
+   * A customer's papers on their lead (`M02-32`) — a bill, a roof photo. Who may see the lead may
+   * read them, and who may also edit it may add one; the project won from the lead shows them too
+   * (ruling 2026-11-10), so its people read them through it.
+   */
+  lead: {
+    upload: 'subject',
+    read: 'subject',
+    maxBytes: FILE_MAX_BYTES,
+    contentTypes: ['image/png', 'image/jpeg', 'application/pdf'],
+  },
+  /**
+   * A project's documents, install photos and other files (`M08-30`, `M08-42`, ruling 2026-11-10):
+   * read by whoever may see the project; stored by who may work its documents, and by its crew for
+   * their own steps' photos. A phone photo is shrunk before it is declared.
+   */
+  project: {
+    upload: 'subject',
+    read: 'subject',
+    maxBytes: FILE_MAX_BYTES,
+    contentTypes: ['image/png', 'image/jpeg', 'application/pdf'],
+  },
 } as const satisfies Readonly<Record<FileSubjectKind, FileSubjectRule>>;
 
 export type FileDeclarationVerdict = 'accepted' | 'too-large' | 'type-not-taken';
@@ -118,18 +147,39 @@ export function judgeFileDeclaration(
 /**
  * Storing a file is a write, so it needs the capability held outright: a limited cell is a narrower
  * act — Finance's "view prices & margins" on the catalog — and never stores anything. A `self` kind
- * needs no capability, only that the subject is the caller (`subjectIsCaller`).
+ * needs no capability, only that the subject is the caller; a `subject` kind takes its own module's
+ * answer about the record (`subject.allows`).
  */
 export function mayUploadFile(
   roles: readonly RolePreset[],
   rule: FileSubjectRule,
-  subjectIsCaller: boolean,
+  subject: SubjectAnswer,
 ): boolean {
-  if (rule.upload === 'self') return subjectIsCaller;
+  if (rule.upload === 'self') return subject.isCaller;
+  if (rule.upload === 'subject') return subject.allows;
   return holdsOutright(roles, rule.upload);
 }
 
-/** `member` reads for anyone the session guard already admitted into the company. */
-export function mayReadFile(roles: readonly RolePreset[], rule: FileSubjectRule): boolean {
-  return rule.read === 'member' || can(roles, rule.read);
+/**
+ * `member` reads for anyone the session guard already admitted into the company; a `subject` kind
+ * reads for whoever its own module says may see the record.
+ */
+export function mayReadFile(
+  roles: readonly RolePreset[],
+  rule: FileSubjectRule,
+  subject: SubjectAnswer,
+): boolean {
+  if (rule.read === 'member') return true;
+  if (rule.read === 'subject') return subject.allows;
+  return can(roles, rule.read);
+}
+
+/**
+ * What the file service learns about the subject before it judges: whether the subject is the
+ * caller (a `self` kind), and whether the subject's module lets the caller do the act (a `subject`
+ * kind). A kind that uses neither is handed `false` for both.
+ */
+export interface SubjectAnswer {
+  readonly isCaller: boolean;
+  readonly allows: boolean;
 }

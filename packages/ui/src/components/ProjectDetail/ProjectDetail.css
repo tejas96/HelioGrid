@@ -1,0 +1,249 @@
+/* ProjectDetail — one project under its large title (the picked design). Its own room picks the
+   layout (`useOwnWidth`): narrow, one column in the phone's order; wide, the hero's story beside a
+   420 side column. Each card is `Card`'s tile with its head inside; this file lays out what they
+   hold. */
+
+.hg-project-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-project-detail[data-wide="true"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--project-side);
+  align-items: start;
+  gap: var(--sp-6);
+  --project-side: calc(var(--sp-20) * 5 + var(--sp-5));
+}
+
+.hg-project-detail-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-project-detail[data-wide="false"] .hg-project-detail-column {
+  display: contents;
+}
+
+/* ── a card: its head inside the tile, its rows with a hairline between two ── */
+.hg-card.hg-project-detail-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: var(--sp-1);
+}
+
+.hg-project-detail-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-3);
+  padding: var(--sp-3) var(--sp-3) var(--sp-1);
+}
+
+.hg-project-detail-card-title {
+  margin: 0;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-h3);
+  color: var(--text-primary);
+}
+
+.hg-project-detail-card-act {
+  display: inline-flex;
+  margin-inline-start: auto;
+}
+
+.hg-project-detail-quiet {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+.hg-project-detail-nowrap {
+  white-space: nowrap;
+}
+
+.hg-project-detail-none {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-project-detail-more {
+  display: flex;
+  padding: 0 var(--sp-1) var(--sp-2);
+}
+
+.hg-project-detail-rows {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-project-detail-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--sp-16);
+  padding: var(--sp-3);
+}
+
+.hg-project-detail-row + .hg-project-detail-row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline: var(--sp-3);
+  border-top: 1px solid var(--line-soft);
+}
+
+.hg-project-detail-row[aria-busy="true"] {
+  opacity: 0.6;
+}
+
+.hg-project-detail-row-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-project-detail-row-name {
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-body-sm);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-project-detail-row[data-plain="true"] .hg-project-detail-row-name {
+  font-weight: var(--fw-regular);
+}
+
+.hg-project-detail-row-sub,
+.hg-project-detail-note {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.hg-project-detail-note {
+  white-space: pre-wrap;
+}
+
+/* A row's end: a state, a caption, its acts or its switch — wrapping under each other only when
+   the row has no room for them side by side. */
+.hg-project-detail-row-end {
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  width: max-content;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-1) var(--sp-2);
+  max-width: 55%;
+}
+
+.hg-project-detail-failed {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-body-sm);
+  color: var(--danger-text);
+}
+
+.hg-project-detail-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--sp-3);
+}
+
+.hg-project-detail-caption {
+  margin: 0;
+  padding-inline: var(--sp-1);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+/* ── the tile: a glyph on a status wash ── */
+/* ── the deal's facts: a name and its value on one line, a hairline between two ── */
+.hg-project-detail-facts-list {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  margin: 0;
+  padding: 0 var(--sp-3) var(--sp-2);
+}
+
+.hg-project-detail-facts-list dt,
+.hg-project-detail-facts-list dd {
+  margin: 0;
+  padding: var(--sp-2) 0;
+  border-top: 1px solid var(--line-soft);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+}
+
+.hg-project-detail-facts-list dt:first-of-type,
+.hg-project-detail-facts-list dt:first-of-type + dd {
+  border-top: 0;
+}
+
+.hg-project-detail-facts-list dt {
+  padding-inline-end: var(--sp-4);
+  color: var(--text-secondary);
+}
+
+.hg-project-detail-facts-list dd {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: end;
+  color: var(--text-primary);
+}
+
+.hg-project-detail-mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-secondary);
+}
+
+.hg-project-detail-person {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-project-detail-journey {
+  padding: var(--sp-1) var(--sp-3) var(--sp-2);
+}
+
+.hg-project-detail-access {
+  padding: 0 var(--sp-3) var(--sp-3);
+}
+
+/* The crew's note as the manager wrote it: kept on its lines. */
+.hg-project-detail-access-note {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

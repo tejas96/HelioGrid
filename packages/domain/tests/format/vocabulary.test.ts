@@ -3,11 +3,13 @@ import { packLabel } from '../../src/format/languages';
 import { IN_FORMATS } from '../../src/format/pack';
 import {
   blockerPartyLabel,
+  blockerReasonLabel,
   isSkippableStage,
   paymentModeLabel,
   stageLabel,
 } from '../../src/format/vocabulary';
 import { PROJECT_STAGE_CHAIN } from '../../src/projects/stages';
+import { BLOCKER_PARTIES, BLOCKER_REASONS } from '../../src/projects/vocabulary';
 import { IN_PAYMENT_RAILS } from '../../src/rails/pack';
 
 const IN = IN_FORMATS.vocabulary;
@@ -44,6 +46,15 @@ describe('stage and blocker labels — what a user reads for a machine value (F1
     }
   });
 
+  it('labels every party and every reason a wait can name, so no wait shows a bare key (M08-20, M08-27)', () => {
+    for (const party of BLOCKER_PARTIES) {
+      expect(blockerPartyLabel(IN, party), `no label for ${party}`).not.toBeNull();
+    }
+    for (const reason of BLOCKER_REASONS) {
+      expect(blockerReasonLabel(IN, reason), `no label for ${reason}`).not.toBeNull();
+    }
+  });
+
   it('labels a stage it now names in Hindi and Marathi', () => {
     const label = stageLabel(IN, 'material_ordered');
     expect(label && [packLabel(label, 'hi'), packLabel(label, 'mr')]).toEqual([
@@ -54,7 +65,8 @@ describe('stage and blocker labels — what a user reads for a machine value (F1
 
   it('returns null for a stage the market never declared, rather than guessing (F1-09)', () => {
     expect(stageLabel(IN, 'cancelled')).toBeNull();
-    expect(blockerPartyLabel(IN, 'customer')).toBeNull();
+    expect(blockerPartyLabel(IN, 'landlord')).toBeNull();
+    expect(blockerReasonLabel(IN, 'weather')).toBeNull();
   });
 });
 

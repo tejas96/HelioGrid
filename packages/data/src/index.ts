@@ -23,6 +23,7 @@ export type {
 } from './crm/capture-repository';
 export type { ContactSaveOutcome, ContactsRepository } from './crm/contacts-repository';
 export type { LeadEditsRepository } from './crm/edits-repository';
+export type { LeadFilesRepository } from './crm/files-repository';
 export type { LeadImportRepository, LeadImportRowsAsk } from './crm/import-repository';
 export type { LeadInboxAsk, LeadsAsk, LeadsRepository } from './crm/leads-repository';
 export type { LeadLifecycleRepository } from './crm/lifecycle-repository';
@@ -52,6 +53,14 @@ export type {
   NotificationRepository,
 } from './notification/repository';
 export type { OnboardingRepository } from './onboarding/repository';
+export type {
+  ClosedAsk,
+  MarkWonBody,
+  ProjectActBody,
+  ProjectActKind,
+  ProjectsRepository,
+} from './projects/projects-repository';
+export { MarkWonRefusedError, ProjectActRefusedError } from './projects/projects-repository';
 export type { SearchAsk, SearchRepository } from './search/repository';
 export type { BlockedRefusal, BlockedStore } from './session/blocked';
 export type { HeldWork } from './session/held-work';

@@ -1,0 +1,201 @@
+/* HandoverPanel — the handover as one column (`SCR-M08-06`). Before: what it checks in the hero,
+   the rows that still wait, the pack's tile, the message and the act. After: the moment, centred
+   on the page, the pack to download, the message with the person's own ways to send it, and the
+   referral ask as the hero. Kept to a reading width so it reads the same in a page and a panel. */
+
+.hg-handover {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  width: 100%;
+  max-width: var(--form-max);
+  margin-inline: auto;
+  border-radius: var(--r-card-expressive);
+}
+
+/* The hero's state: a glyph tile, its words, and the line under them. */
+.hg-handover-status {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-handover-mark,
+.hg-handover-pack-mark,
+.hg-handover-row-mark {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border-radius: var(--r-sm);
+}
+
+.hg-handover-mark[data-tone="success"] {
+  background: var(--success-bg);
+}
+
+.hg-handover-mark[data-tone="warning"],
+.hg-handover-row-mark {
+  background: var(--warning-bg);
+}
+
+.hg-handover-pack-mark {
+  width: var(--sp-10);
+  height: var(--sp-10);
+  background: var(--accent-subtle);
+}
+
+.hg-handover-status-words,
+.hg-handover-pack-words {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-handover-status-title {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-semibold);
+  color: var(--on-panel);
+}
+
+.hg-handover-on-panel-line {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
+.hg-handover-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-handover-row > svg {
+  flex-shrink: 0;
+}
+
+.hg-handover-row-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+/* The pack's tile: its mark, what it holds, and its one act. */
+.hg-handover-pack-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  border-radius: var(--r-sm);
+}
+
+.hg-handover-pack-act {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.hg-handover-pack-title {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.hg-handover-pack-line {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+/* The ready message: the company's own text as written, in a well, kept on its lines. */
+.hg-handover-message {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-handover-overline {
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  letter-spacing: var(--tr-overline);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.hg-handover-message-text {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-tile);
+  background: var(--hg-control-fill);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body-lg);
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+
+.hg-handover-message-acts,
+.hg-handover-referral-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.hg-handover-act {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* The moment it is handed over, centred on the page above the rest. */
+.hg-handover-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  padding-block: var(--sp-1);
+  text-align: center;
+}
+
+.hg-handover-done-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--tr-h1);
+  font-weight: var(--fw-regular);
+  color: var(--text-primary);
+  border-radius: var(--r-xs);
+}
+
+.hg-handover-done-line {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-secondary);
+}
+
+.hg-handover-referral {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  border-radius: var(--r-card-expressive);
+}
+
+.hg-handover-referral-line {
+  margin: 0;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  letter-spacing: var(--tr-h3);
+  font-weight: var(--fw-semibold);
+  color: var(--on-panel);
+}

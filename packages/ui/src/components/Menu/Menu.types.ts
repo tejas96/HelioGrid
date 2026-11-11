@@ -48,6 +48,11 @@ export interface MenuProps {
   items: MenuItem[];
   /** Custom trigger element. Defaults to a 44×44 overflow button. */
   trigger?: ReactElement;
+  /**
+   * The default trigger's look: `plain`, the default, bare; `surface`, on the control fill, for an
+   * overflow sitting beside filled icon buttons — a page's top bar.
+   */
+  triggerLook?: 'plain' | 'surface';
   /** The menu's accessible name, and the default trigger's — "More actions". */
   label: TranslatedText;
   align?: MenuAlign;

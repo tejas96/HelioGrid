@@ -173,6 +173,16 @@
       ]
     },
     {
+      "path": "./packages/config/biome/open-tab-in-one-place.grit",
+      "includes": [
+        "**/apps/web/**/*.{ts,tsx}",
+        "**/packages/ui/src/**/*.{ts,tsx}",
+        "!**/apps/web/lib/open-external.ts",
+        "!**/node_modules/**",
+        "!**/.next/**"
+      ]
+    },
+    {
       "path": "./packages/config/biome/domain-clock.grit",
       "includes": [
         "**/packages/domain/src/**/*.{ts,mts,cts}",

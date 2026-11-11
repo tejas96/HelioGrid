@@ -18,7 +18,11 @@ export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'destructive';
  */
 export type ButtonSize = 'prominent' | 'lg' | 'md' | 'sm';
 
-export type ButtonTone = 'danger';
+/**
+ * `danger`: the danger words, for a row's act that ends something. `inverse`: the words of an ink
+ * surface, for a ghost act inside one — a toast's *Undo*.
+ */
+export type ButtonTone = 'danger' | 'inverse';
 
 export interface ButtonProps {
   /**
@@ -68,8 +72,9 @@ export interface ButtonProps {
   fullWidth?: boolean;
   /**
    * `danger` on a `secondary` or `ghost` pill: the danger words and glyph on the white pill, for a
-   * row's act that ends something (Deactivate). Not read on `primary` or `destructive`; the confirm
-   * itself stays `destructive`.
+   * row's act that ends something (Deactivate). `inverse` on a `ghost` pill inside an ink surface
+   * (a toast): the surface's own words, which the page's would fail on in the dark. Not read on
+   * `primary` or `destructive`; the confirm itself stays `destructive`.
    */
   tone?: ButtonTone;
   /**

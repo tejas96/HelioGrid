@@ -5,6 +5,7 @@
    The web half holds these metrics in Timeline.css; here they arrive as numbers from the sequence,
    so the rail reaches exactly across the row gap it has to bridge. */
 
+import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import type { TimelineStatus } from './Timeline.types';
@@ -22,8 +23,10 @@ export function TimelineRailCell({
   gap,
   isLast,
   railLit,
+  icon,
 }: {
   status?: TimelineStatus;
+  icon?: ReactNode;
   compact: boolean;
   /** The node's diameter — the rail starts where the node ends. */
   node: number;
@@ -34,7 +37,7 @@ export function TimelineRailCell({
 }) {
   return (
     <View style={[styles.railCell, { width: node }]}>
-      <TimelineNode status={status} compact={compact} />
+      <TimelineNode status={status} compact={compact} icon={icon} />
       {isLast ? null : (
         <View
           style={[

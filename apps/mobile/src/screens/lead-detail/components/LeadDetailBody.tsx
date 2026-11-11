@@ -31,6 +31,8 @@ export function LeadDetailBody({
         layout="dock"
         onAddReferral={moves.addReferral}
         onMerge={moves.merge}
+        onMarkWon={screen.won.open}
+        onOpenProject={moves.openProject}
         words={leadWorkCardsWords(t, lead, view, format.date)}
       />
       <LeadDetailCards
@@ -39,6 +41,8 @@ export function LeadDetailBody({
         visit={lead.visit}
         timeline={<LeadTimeline timeline={screen.timeline} words={leadTimelineWords(t)} />}
         onDial={moves.dial}
+        onAddFile={moves.addFile}
+        onOpenFile={moves.openFile}
         first="contacts"
         words={leadDetailCardsWords(t)}
       />

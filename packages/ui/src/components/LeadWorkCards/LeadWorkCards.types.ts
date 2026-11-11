@@ -38,6 +38,10 @@ export interface LeadWorkCardsScreen {
   };
   /** The reader may merge this customer with another (`crm.merge_customers`). */
   readonly canMerge: boolean;
+  /** The reader may close the deal as won (`sales.mark_won_lost`). */
+  readonly canWin: boolean;
+  /** The won lead's project answered this reader: only then does the lead link to it. */
+  readonly canOpenProject: boolean;
 }
 
 /** Every word the cards say, built in `@heliogrid/i18n` (`leadWorkCardsWords`) over this lead. */
@@ -66,5 +70,9 @@ export interface LeadWorkCardsProps {
   readonly onAddReferral: (leadId: string) => void;
   /** Customer merge with this customer as the survivor (`M02-63`), offered to who may merge. */
   readonly onMerge: (survivorId: string) => void;
+  /** Opens *Mark won* — the deal becomes a project (`M07-62`), offered where the lead may be won. */
+  readonly onMarkWon: () => void;
+  /** Opens the project a won lead became. */
+  readonly onOpenProject: (projectId: string) => void;
   readonly words: LeadWorkCardsWords;
 }

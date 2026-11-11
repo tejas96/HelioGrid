@@ -44,13 +44,16 @@ Block numbers are stable: other documents cite them, so a block that empties kee
 |---|---|---|---|
 | **0** | **Foundations** | permissions, formats, notifications, honesty | `F-core` (all but `T-FCORE-009` — see below) · `F-platform` (all but `T-FPLAT-074` — see below) |
 | **1** | **Shell + entry & tenant** | sign-in, signup, team, catalog, branding | `M01-onboarding` (all but `T-M01-029` — see below) |
-| **4** | **Projects** | a won deal to a handed-over system | `M08-projects` |
 | **5** | **Payments & collections** | the homeowner's tranches and receipts | `M11-payments-collections` |
-| **6** | **Sales execution + owner home** | My Day, won, lost, reopen, follow-ups, the owner home | `M07-sales-execution` · `M13-dashboards` |
+| **6** | **Sales execution + owner home** | My Day, lost, reopen, follow-ups, the owner home | `M07-sales-execution` · `M13-dashboards` |
 | **8** | **Proposals + customer link** | the proposal and the link the homeowner opens | `M06-proposals` · `F5-customer-link` · `F-core` → `T-FCORE-009` · `F-platform` → `T-FPLAT-074` · `M01-onboarding` → `T-M01-029` |
 
 **The 3D Design Studio is rebuilt from scratch.** Its tasks and its PRD are deleted; its block
-returns, as block 7, with the new studio's tasks.
+returns, as block 7, with the new studio's tasks. When its tasks are written, one carries
+`M08-41`'s proof, moved here from the shipped `T-M08-004` by owner ruling 2026-11-10: *Given a
+designed and strung system, when the installation checklist opens on the project, then its steps are
+the design's derived work order in build order, and this module has generated no sequence of its own
+(M08-41).*; until then a project's install steps are the market pack's standard steps.
 
 **Voice calling waits.** Its PRD rows stay in `docs/prd/modules/M07-sales-execution.md` and its
 screens are V2 in the register; its tasks are written again when it returns.
@@ -71,7 +74,9 @@ studio (`design`) and M06 (`proposal`, `proposal_version`).
 assumptions in the words the drawn proposal document (`SCR-M06-17`) gives, and that screen is drawn in
 block 8.
 
-**Blocks 1–6 ship a working product on their own**: lead → won → project → payment.
+**Blocks 1–6 ship a working product on their own**: lead → won → project → payment. Projects
+(block 4) reach real users only together with payments (block 5), by owner ruling 2026-11-10: block 4
+ships no money.
 
 ---
 

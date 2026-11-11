@@ -6,7 +6,7 @@ import type {
   MergePicksWire,
   MergePreview,
 } from '@heliogrid/contracts';
-import { file, leadVisitBooking, task } from '@heliogrid/db';
+import { file, leadFile, leadVisitBooking, task } from '@heliogrid/db';
 import { eq } from 'drizzle-orm';
 import { aCapture, aPhone, type Caller, type CrmWorld, captured, retryKey } from './support';
 
@@ -118,6 +118,15 @@ export async function furnishLoser(
   if (visit === undefined || followUp === undefined || photo === undefined) {
     throw new Error('the loser was not furnished');
   }
+  // Put on the lead, as a person's *Add a file* does — what the lead's Files list counts.
+  await admin.insert(leadFile).values({
+    tenantId,
+    leadId: loser.lead.id,
+    fileId: photo.id,
+    name: 'Roof photo',
+    addedAt: new Date(),
+    addedBy: byUserId,
+  });
   return {
     husband: husband.body,
     referred,

@@ -27,7 +27,20 @@ export const CANCELLED_STAGE = 'cancelled' as const;
 export const PROJECT_STAGES = [...PROJECT_STAGE_CHAIN, CANCELLED_STAGE] as const;
 export type ProjectStage = (typeof PROJECT_STAGES)[number];
 
+/** A stage this build knows — a newer server's stage reads as unknown, never as one of these. */
+export function isProjectStage(value: string): value is ProjectStage {
+  return (PROJECT_STAGES as readonly string[]).includes(value);
+}
+
 /** A tranche falls due on a stage a project passes THROUGH — never on the terminal it leaves by. */
 export function isTrancheDueStage(value: string): value is ProjectChainStage {
   return (PROJECT_STAGE_CHAIN as readonly string[]).includes(value);
+}
+
+/**
+ * `M08-07` — an ACTIVE project is neither handed over nor cancelled. The plan limit counts these
+ * and gates only creating one; a live project stays fully workable whatever the plan does.
+ */
+export function isActiveStage(stage: ProjectStage): boolean {
+  return stage !== 'handed_over' && stage !== CANCELLED_STAGE;
 }

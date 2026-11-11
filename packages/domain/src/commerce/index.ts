@@ -168,6 +168,7 @@ export type {
   ScheduledPlanChange,
 } from './plan-change';
 export {
+  activeProjectsBlock,
   CHECKOUT_PURPOSES,
   PLAN_CHANGE_BLOCKS,
   PLAN_CHANGE_KINDS,

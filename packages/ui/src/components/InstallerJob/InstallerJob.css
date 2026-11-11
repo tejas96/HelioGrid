@@ -1,0 +1,236 @@
+/* InstallerJob — the installer's job home (`SCR-M08-05`). Sized from its own room: narrow, one
+   column as the phone draws it; wide, the steps beside the photos and the other jobs. Built for the
+   sun: tiles and acts on the 44 px floor, words in full ink, no state carried by a tint alone. */
+
+.hg-installer-job {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  container-type: inline-size;
+  border-radius: var(--r-card-expressive);
+}
+
+.hg-installer-job-grid,
+.hg-installer-job-column,
+.hg-installer-job-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  min-width: 0;
+}
+
+.hg-installer-job-section {
+  gap: var(--sp-3);
+}
+
+/* The page's title for the job, in the display face, and whose job it is. */
+.hg-installer-job-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-installer-job-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tr-display);
+  font-weight: var(--fw-regular);
+  color: var(--text-primary);
+}
+
+.hg-installer-job-summary {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-secondary);
+}
+
+/* The hero: the place, the note's lines each with its tick, and the two acts. */
+.hg-installer-job-place {
+  margin: 0;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  letter-spacing: var(--tr-h3);
+  font-weight: var(--fw-semibold);
+  color: var(--on-panel);
+}
+
+.hg-installer-job-quiet {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
+.hg-installer-job-lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-installer-job-line {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--on-panel);
+  overflow-wrap: anywhere;
+}
+
+.hg-installer-job-line > svg {
+  flex-shrink: 0;
+  margin-top: var(--sp-0-5);
+}
+
+.hg-installer-job-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+/* A section: its heading with its count, then its card. */
+.hg-installer-job-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-1) var(--sp-3);
+}
+
+.hg-installer-job-heading {
+  margin: 0;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  letter-spacing: var(--tr-h3);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.hg-installer-job-count {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.hg-installer-job-caption {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* One step: its tile, its words, its one act. */
+.hg-installer-step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-installer-step-tap {
+  display: grid;
+  flex-shrink: 0;
+  border-radius: var(--r-sm);
+}
+
+.hg-installer-step-tap .hg-hue-tile {
+  transition: transform var(--dur-micro) var(--ease-standard);
+}
+
+.hg-installer-step-tap:active .hg-hue-tile {
+  transform: scale(var(--press-scale));
+}
+
+.hg-installer-step-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-installer-step-name {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-installer-step-line,
+.hg-installer-step-failed {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+.hg-installer-step-failed {
+  color: var(--warning-text);
+}
+
+.hg-installer-step-act {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.hg-installer-job-done-by {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+
+.hg-installer-job-done-by > :last-child:not(:first-child) {
+  align-self: stretch;
+}
+
+/* The photos the job expects: each step a mark and its word, wrapping. */
+.hg-installer-job-photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-status-mark.hg-installer-job-photo {
+  min-height: var(--sp-10);
+  padding-inline: var(--sp-4);
+  font-size: var(--fs-body);
+}
+
+.hg-installer-job-other {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+}
+
+.hg-installer-job-other-name {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.hg-installer-job-other-line {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+@container (min-width: 760px) {
+  .hg-installer-job-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: start;
+    gap: var(--sp-6);
+  }
+}

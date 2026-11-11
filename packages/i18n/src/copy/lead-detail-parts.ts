@@ -29,6 +29,7 @@ import {
 import { leadActFailureWords } from './lead-act-failure';
 import { LEAD_DETAIL, leadDockWords, leadHeroWords } from './lead-detail';
 import { numberFieldWords } from './number-field';
+import { FILE_PICK } from './project-sheets';
 import { SHELL } from './shell';
 
 type T = Translator['t'];
@@ -42,7 +43,7 @@ interface TaskTitleFacts {
   readonly title: string | null;
 }
 
-/* The two below are type aliases, not interfaces: `t` takes its values as a record, and only an
+/* The three below are type aliases, not interfaces: `t` takes its values as a record, and only an
    alias carries the implicit index signature a record needs. */
 
 /** A day and a time as the caller formats them on the tenant's clock. */
@@ -50,6 +51,9 @@ type DayAndTime = { readonly day: string; readonly time: string };
 
 /** The booked visit as its line names it. */
 type VisitLineFacts = DayAndTime & { readonly surveyor: string };
+
+/** Who added a file, and the day, formatted on the tenant's clock. */
+type FileLineFacts = { readonly name: string; readonly day: string };
 
 const PARTS = {
   qualify: /*i18n*/ { id: 'Qualify' },
@@ -83,9 +87,15 @@ const PARTS = {
   proposals: /*i18n*/ { id: '{count, plural, one {# proposal} other {# proposals}}' },
   noProposal: /*i18n*/ { id: 'No proposal yet' },
   proposalsLine: /*i18n*/ { id: 'A proposal is made from a design.' },
-  files: /*i18n*/ { id: '{count, plural, one {# file on this lead} other {# files on this lead}}' },
   noFiles: /*i18n*/ { id: 'No files yet' },
-  filesLine: /*i18n*/ { id: 'Files reach the lead from its survey and documents.' },
+  filesLine: /*i18n*/ {
+    id: 'Keep the bill, roof photos and ID here. The project won from this lead shows them too.',
+  },
+  fileLine: /*i18n*/ { id: 'Added by {name} · {day}' },
+  addingFile: /*i18n*/ { id: 'Adding {name}' },
+  fileNotAdded: /*i18n*/ { id: '{name} was not added to the lead.' },
+  loadingFiles: /*i18n*/ { id: 'Loading the files' },
+  filesFailed: /*i18n*/ { id: 'Couldn’t load the files' },
   noTasks: /*i18n*/ { id: 'No open tasks' },
   addCallBack: /*i18n*/ { id: 'Add a call-back' },
   overdue: /*i18n*/ { id: 'Overdue' },
@@ -203,9 +213,15 @@ export function leadSectionsWords(t: T) {
     proposals: (count: number) => t(PARTS.proposals, { count }),
     noProposal: t(PARTS.noProposal),
     proposalsLine: t(PARTS.proposalsLine),
-    files: (count: number) => t(PARTS.files, { count }),
     noFiles: t(PARTS.noFiles),
     filesLine: t(PARTS.filesLine),
+    addFile: t(FILE_PICK.title),
+    addingFile: (name: string) => t(PARTS.addingFile, { name }),
+    fileNotAdded: (name: string) => t(PARTS.fileNotAdded, { name }),
+    loadingFiles: t(PARTS.loadingFiles),
+    filesFailed: t(PARTS.filesFailed),
+    filesFailedLine: t(SHELL.keepsFailing),
+    retry: t(SHELL.tryAgain),
     noTasks: t(PARTS.noTasks),
     addCallBack: t(PARTS.addCallBack),
     overdue: t(PARTS.overdue),
@@ -239,6 +255,7 @@ export function leadDetailCardsWords(t: T) {
     taskTitle: (task: TaskTitleFacts) => leadTaskTitle(t, task),
     taskDue: (when: DayAndTime) => leadTaskDue(t, when),
     visitLine: (visit: VisitLineFacts) => leadVisitLine(t, visit),
+    fileLine: (file: FileLineFacts) => t(PARTS.fileLine, file),
     failure: (failed: LeadActFailure) => leadActFailureWords(t, failed),
   };
 }

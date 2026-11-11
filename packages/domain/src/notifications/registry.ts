@@ -85,6 +85,16 @@ export const NOTIFICATION_REGISTRY: Record<NotificationType, NotificationRegistr
     urgency: 'standard',
   },
   /** A lead was given to someone (`M02-31`); its subject is the lead, its recipient its new owner. */
+  /**
+   * A project moved by its proof (an install tick, a document) or by someone other than its manager
+   * (ruling 2026-11-10): the manager is told what moved it and why, so nothing moves silently.
+   */
+  project_moved: {
+    raisedBy: 'projects',
+    recipients: ['subject_owner'],
+    channels: ['in_app', 'push'],
+    urgency: 'standard',
+  },
   lead_assigned: {
     raisedBy: 'crm',
     recipients: ['subject_owner'],
@@ -174,6 +184,7 @@ const GROUP_BY_SOURCE: Record<NotificationSource, NotificationTypeGroup> = {
   sales_execution: 'sales',
   survey: 'delivery',
   design: 'delivery',
+  projects: 'delivery',
   payments: 'payments',
   team: 'team',
   billing: 'billing',

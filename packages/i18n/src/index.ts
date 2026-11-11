@@ -135,6 +135,7 @@ export {
 } from './copy/home-today';
 export { homeTitle } from './copy/homes';
 export * from './copy/image';
+export * from './copy/installer-job';
 export type {
   InviteRoleWords,
   InviteWords,
@@ -192,13 +193,14 @@ export {
   planName,
   STUDIO_INCLUDES,
 } from './copy/pricing';
-export type {
-  ProfilePreferencesWordFacts,
-  ProfilePreferencesWords,
-  ProfileRoleWords,
-} from './copy/profile-preferences';
-export { PROFILE_PREFERENCES, profilePreferencesWords } from './copy/profile-preferences';
+export * from './copy/profile-preferences';
+export * from './copy/project-cancel';
+export * from './copy/project-detail';
+export * from './copy/project-handover';
+export * from './copy/project-notices';
+export * from './copy/project-sheets';
 export { stageWords } from './copy/project-stages';
+export * from './copy/projects';
 export type { ProposalTemplateWords } from './copy/proposal-template';
 export {
   proposalTemplatePageWords,
@@ -305,4 +307,4 @@ export type { ValidationIssueLike } from './copy/validation';
 export { createFormsValidationMessage } from './copy/validation';
 export { loadCatalog } from './languages';
 export type { I18nRuntime, MessageRef, Translator } from './runtime';
-export { createI18nRuntime, createTranslator, packWords } from './runtime';
+export { createI18nRuntime, createTranslator, packWords, projectPackWords } from './runtime';

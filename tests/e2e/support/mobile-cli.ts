@@ -12,17 +12,12 @@ import {
   destinationLabel,
   INVITE_LANDING,
   inviteWords,
-  leadDetailPageWords,
-  leadDockWords,
   leadInboxWords,
-  leadSectionsWords,
   leadsListWords,
   PLAN_SELECTION,
   PRICING,
   paymentTermsWords,
-  QUALIFY_QUESTION_LABEL,
   QUICK_ADD,
-  qualifyCardWords,
   SETUP_LANGUAGE,
   SETUP_READY,
   SETUP_WHAT_YOU_SELL,
@@ -40,8 +35,11 @@ import {
 } from '@heliogrid/i18n';
 import { API, codeSentTo } from './api-log.ts';
 import { customerMergeFlowWords, mergeFromLine } from './customer-merge-flow.ts';
+import { leadDetailFlowWords } from './lead-detail-flow.ts';
 import { leadImportFlowWords } from './lead-import-flow.ts';
 import { freshMobile } from './phone.ts';
+import { markWonBody } from './project-facts.ts';
+import { projectFlowWords } from './project-flow.ts';
 
 /**
  * What `mobile/run.sh` hands Maestro, which reads no file and imports nothing mid-flow:
@@ -52,10 +50,12 @@ import { freshMobile } from './phone.ts';
  *                          `E2E <national>` owned by `Owner <national>`, so a flow signs in to a
  *                          member who has one:
  *                          the phone's own *Create company* press never reaches the api on iOS
- *                          inside Maestro (`D5`). It adds two leads given to the owner, so they
- *                          wait in no inbox — `Lead <national>` and the same family's second record,
- *                          `Family <national>` — and prints `<lead id> <its customer> <the family's
- *                          customer>` for the Lead Detail and Customer Merge flows
+ *                          inside Maestro (`D5`). It adds three leads given to the owner, so they
+ *                          wait in no inbox — `Lead <national>`, the same family's second record,
+ *                          `Family <national>`, and `Won <national>`, marked won so its project
+ *                          stands at Won — and prints `<lead id> <its customer> <the family's
+ *                          customer> <the project>` for the Lead Detail, Customer Merge and
+ *                          projects flows
  *   merge-from <name>  — Customer Merge's "From <name>" under each value that record holds
  */
 const [command, ...args] = process.argv.slice(2);
@@ -134,10 +134,11 @@ if (command === 'words') {
     OPEN_THIS_LEAD: search.open('lead', null),
     SEARCH_NONE_BODY: search.none('').body,
     SEARCH_CANCEL: search.cancel,
-    ...leadDetailWords(t),
+    ...leadDetailFlowWords(t),
     ...customerMergeFlowWords(t),
     ...leadsListFlowWords(t),
     ...leadImportFlowWords(t),
+    ...projectFlowWords(t),
     ...usageWords(t),
     /** `SCR-SHELL-06`: a fresh trial's quiet count, the day it starts. */
     TRIAL_CHIP: billingStripWords(t.t).trialDaysLeft(14),
@@ -183,7 +184,10 @@ async function companyFor(national: string, phoneE164: string): Promise<void> {
   const lead = await leadFor(owned, actor.userId, { name: `Lead ${national}`, city: 'Pune' });
   /* The same family's second record, for Customer Merge's flow: another name, city and number. */
   const family = await leadFor(owned, actor.userId, { name: `Family ${national}`, city: 'Mumbai' });
-  process.stdout.write(`${lead.leadId} ${lead.customerId} ${family.customerId}\n`);
+  /* A lead of its own for the projects flows, so the lead flows still read theirs as captured. */
+  const won = await leadFor(owned, actor.userId, { name: `Won ${national}`, city: 'Pune' });
+  const projectId = await projectFor(owned, won.leadId, actor.userId);
+  process.stdout.write(`${lead.leadId} ${lead.customerId} ${family.customerId} ${projectId}\n`);
   /* The phone asks the same number for a code next, and the api sends none until the resend time
      it gave here has passed — a code asked for sooner never reaches the api log. */
   const wait = Date.parse(resendAvailableAt) - Date.now();
@@ -191,9 +195,9 @@ async function companyFor(national: string, phoneE164: string): Promise<void> {
 }
 
 /**
- * One lead for the Lead Detail and Customer Merge flows (`SCR-M02-04`, `SCR-M02-06`), captured as
- * quick add does and given to the owner at once, so it waits in no inbox and the inbox flow still
- * meets only the lead it captured.
+ * One lead for the Lead Detail, Customer Merge or projects flows (`SCR-M02-04`, `SCR-M02-06`,
+ * `SCR-M08-01`), captured as quick add does and given to the owner at once, so it waits in no inbox
+ * and the inbox flow still meets only the lead it captured.
  */
 async function leadFor(
   cookie: string,
@@ -213,6 +217,17 @@ async function leadFor(
   };
   await call(`/leads/${lead.id}/assign`, { assigneeId: ownerId, expectedOwnerId: null }, cookie);
   return { leadId: lead.id, customerId: customer.id };
+}
+
+/**
+ * *Mark won* on that lead (`M07-62`), as the lead page's sheet sends it: the owner — the company's
+ * one project manager — a final value and an install date a month ahead. Answers the project's id.
+ */
+async function projectFor(cookie: string, leadId: string, ownerId: string): Promise<string> {
+  const won = await call(`/leads/${leadId}/won`, markWonBody(ownerId), cookie, {
+    [IDEMPOTENCY_KEY_HEADER]: randomUUID(),
+  });
+  return ((await won.json()) as { projectId: string }).projectId;
 }
 
 /** The session's cookies after an answer that set new ones — making a company reissues the token. */
@@ -255,27 +270,6 @@ function leadsListFlowWords(
     DORMANT: list.dormant,
     LEADS_NO_MATCH: list.noMatch.title,
     CLEAR_FILTERS: list.noMatch.clear,
-  };
-}
-
-/**
- * Lead Detail's words (`SCR-M02-04`): Call and the four acts' words under the dock's round buttons,
- * the roof question and one answer, the mark an answer saved shows, the Timeline tab and the way back.
- */
-function leadDetailWords(t: Awaited<ReturnType<typeof createTranslator>>): Record<string, string> {
-  const dock = leadDockWords(t.t);
-  const qualify = qualifyCardWords(t.t);
-  return {
-    CALL: dock.call,
-    MESSAGE_SHORT: dock.message.short,
-    LOG_SHORT: dock.log.short,
-    VISIT_SHORT: dock.visit.short,
-    DESIGN_SHORT: dock.design.short,
-    ROOF: t.t(QUALIFY_QUESTION_LABEL.roofOwnership),
-    ROOF_OWNED: qualify.choice('roofOwnership', 'own'),
-    ANSWER_SAVED: qualify.saved,
-    TIMELINE_TAB: leadSectionsWords(t.t).tabs.timeline,
-    BACK_TO_LIST: leadDetailPageWords(t.t).backToList,
   };
 }
 

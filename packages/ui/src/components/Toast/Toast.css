@@ -14,13 +14,9 @@
   border-radius: var(--r-pill);
   box-shadow: var(--e5);
   font-family: var(--font-sans);
-  /* A control in the pill (an *Undo*) sits on the ink: its words take the pill's own colour. */
+  /* A control in the pill (an *Undo*) sits on the ink; its words are the Button's `inverse` tone. */
   --hg-ground: var(--ink);
   --hg-control-fill: color-mix(in srgb, var(--on-ink) 14%, transparent);
-}
-
-.hg-toast .hg-button[data-variant="ghost"] {
-  color: var(--on-ink);
 }
 
 /* A Lottie moment takes the mark's place, a little larger, so the pill keeps its height. */

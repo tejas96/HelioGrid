@@ -118,6 +118,7 @@ export function ToastHost({
                 <Button
                   variant="ghost"
                   size="sm"
+                  tone="inverse"
                   onClick={() => {
                     leave(toast.id);
                     toast.undo?.onUndo();

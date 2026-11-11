@@ -20,14 +20,16 @@ import { useMemo, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { ApiError } from '../errors/errors';
 import { useRepositories } from './context';
-import { recordReadOf } from './read';
+import { readOf, recordReadOf } from './read';
 import { type LeadActs, type LeadSheetSend, useLeadActs } from './use-lead-acts';
 import { type LeadAssign, useLeadAssign } from './use-lead-assign';
 import { type LeadContactSave, type LeadContacts, useLeadContacts } from './use-lead-contacts';
+import { type LeadFiles, useLeadFiles } from './use-lead-files';
 import { type LeadMessage, useLeadMessage } from './use-lead-message';
 import { type LeadQualify, useLeadQualify } from './use-lead-qualify';
 import { type LeadSurveyor, useLeadSurveyors } from './use-lead-surveyors';
 import { type LeadTasks, useLeadTasks } from './use-lead-tasks';
+import { type MarkWon, useMarkWon } from './use-mark-won';
 import { usePaginatedList } from './use-paginated-list';
 import { useSession } from './use-session';
 import { useTenantId } from './use-tenant-id';
@@ -80,9 +82,20 @@ export interface LeadDetailScreen {
   saveContact(contact: LeadContactSave['contact']): void;
   readonly surveyors: Read<readonly LeadSurveyor[]>;
   readonly tasks: LeadTasks;
+  /** The Files section (`M02-32`): its list, read once in view, and a picked file added. */
+  readonly files: LeadFiles;
   readonly assign: LeadAssign;
   /** The reader may merge this customer with another (`crm.merge_customers`: Owner, Sales Manager). */
   readonly canMerge: boolean;
+  /** The reader may close the deal as won and start its project (`sales.mark_won_lost`, `M07-62`). */
+  readonly canWin: boolean;
+  /**
+   * The won lead's project answered this reader: the lead links to it only then — a seller sees the
+   * deal they sold — never to a page that would answer "not yours to see".
+   */
+  readonly canOpenProject: boolean;
+  /** *Mark won* on this lead: its sheet, its draft and the project it starts (`M07-62`). */
+  readonly won: MarkWon;
 }
 
 const TIMELINE_PAGE = 20;
@@ -96,7 +109,10 @@ function entryOf(activity: Activity): LeadTimelineEntry {
 export function useLeadDetailScreen(leadId: string, timeZone: string): LeadDetailScreen {
   const repositories = useRepositories();
   const tenantId = useTenantId();
-  const canMerge = can(useSession().user?.tenant?.roles ?? [], 'crm.merge_customers');
+  const roles = useSession().user?.tenant?.roles ?? [];
+  const canMerge = can(roles, 'crm.merge_customers');
+  const canWin = can(roles, 'sales.mark_won_lost');
+  const won = useMarkWon(leadId);
   const [section, setSection] = useState<LeadDetailSection>('timeline');
   const query = useQuery({
     queryKey: queryKeys.crm.lead(tenantId, leadId),
@@ -104,9 +120,17 @@ export function useLeadDetailScreen(leadId: string, timeZone: string): LeadDetai
     enabled: tenantId !== '',
   });
   const lead = query.data ?? null;
+  const projectId = lead?.project?.id ?? null;
+  // The project's own read decides the reach: the same answer its page would give, already cached.
+  const project = useQuery({
+    queryKey: queryKeys.projects.detail(tenantId, projectId ?? ''),
+    queryFn: ({ signal }) => repositories.projects.detail(projectId ?? '', signal),
+    enabled: tenantId !== '' && projectId !== null,
+  });
   const acts = useLeadActs(leadId, timeZone);
   const qualify = useLeadQualify(leadId, lead);
   const tasks = useLeadTasks(leadId);
+  const files = useLeadFiles(leadId, section === 'files');
   const assign = useLeadAssign(leadId, lead);
   const sheet = acts.sheet;
   const contacts = useLeadContacts(leadId, lead, sheet?.kind === 'contact');
@@ -142,7 +166,7 @@ export function useLeadDetailScreen(leadId: string, timeZone: string): LeadDetai
           kind: 'ready',
           value: {
             lead: answer.value,
-            view: leadDetailViewOf(answer.value, {
+            view: leadDetailViewOf(withFilesCounted(answer.value, files.read), {
               nowEpoch,
               saves: qualify.saves,
               lastSaved: qualify.lastSaved,
@@ -153,6 +177,9 @@ export function useLeadDetailScreen(leadId: string, timeZone: string): LeadDetai
 
   return {
     canMerge,
+    canWin,
+    canOpenProject: readOf(project).kind === 'ready',
+    won,
     read,
     days,
     section,
@@ -187,6 +214,14 @@ export function useLeadDetailScreen(leadId: string, timeZone: string): LeadDetai
     },
     surveyors,
     tasks,
+    files,
     assign,
   };
+}
+
+/** The Files section's count from its list once read; the lead's own count until then. */
+function withFilesCounted(lead: LeadDetail, files: LeadFiles['read']): LeadDetail {
+  if (files.kind !== 'ready' && files.kind !== 'empty') return lead;
+  const counted = files.kind === 'ready' ? files.value.length : 0;
+  return { ...lead, sections: { ...lead.sections, files: counted } };
 }

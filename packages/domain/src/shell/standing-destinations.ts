@@ -43,7 +43,7 @@ const STANDING_DESTINATIONS_BY_PRESET = {
   sales_executive: ['home', 'leads', 'proposals', 'more'],
   survey_engineer: ['home', 'leads', 'more'],
   design_engineer: ['home', 'leads', 'proposals', 'more'],
-  project_manager: ['home', 'more'],
+  project_manager: ['home', 'projects', 'more'],
   field_technician: ['home', 'more'],
   installation_team_member: ['home', 'more'],
   hr_admin: ['home', 'people', 'more'],

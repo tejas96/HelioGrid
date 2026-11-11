@@ -1,5 +1,5 @@
-/* HueTile — a glyph on its category hue. The wash and ink are `Avatar.css`'s `hg-hue` rule; the side is
-   the board's for the part that holds it, and the corner the system's small radius. */
+/* HueTile — a glyph on its tint. A category hue's wash and ink are `Avatar.css`'s `hg-hue` rule; a
+   tone's are its status pair. The side is the board's for the part that holds it. */
 .hg-hue-tile {
   flex-shrink: 0;
   display: inline-flex;
@@ -8,6 +8,10 @@
   width: var(--hg-hue-tile);
   height: var(--hg-hue-tile);
   border-radius: var(--r-sm);
+}
+.hg-hue-tile[data-size="24"] {
+  --hg-hue-tile: var(--sp-6);
+  border-radius: var(--r-xs);
 }
 .hg-hue-tile[data-size="32"] {
   --hg-hue-tile: 32px;
@@ -19,5 +23,36 @@
   --hg-hue-tile: 36px;
 }
 .hg-hue-tile[data-size="40"] {
-  --hg-hue-tile: 40px;
+  --hg-hue-tile: var(--sp-10);
+}
+.hg-hue-tile[data-size="44"] {
+  --hg-hue-tile: var(--touch-min);
+}
+.hg-hue-tile[data-size="48"] {
+  --hg-hue-tile: var(--sp-12);
+  border-radius: var(--r-tile);
+}
+.hg-hue-tile[data-size="56"] {
+  --hg-hue-tile: calc(var(--sp-12) + var(--sp-2));
+  border-radius: var(--r-tile);
+}
+.hg-hue-tile[data-tone="danger"] {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+.hg-hue-tile[data-tone="warning"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+.hg-hue-tile[data-tone="success"] {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+.hg-hue-tile[data-tone="accent"] {
+  background: var(--accent-subtle);
+  color: var(--accent-text);
+}
+.hg-hue-tile[data-tone="neutral"] {
+  background: var(--neutral-bg);
+  color: var(--neutral-text);
 }

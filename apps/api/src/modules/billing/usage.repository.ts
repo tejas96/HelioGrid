@@ -1,4 +1,5 @@
 import {
+  project,
   storageGaugeSnapshot,
   type TenantPool,
   tenantMembership,
@@ -7,7 +8,7 @@ import {
 } from '@heliogrid/db';
 import { isBilledMeter, type LedgerMeter } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, asc, desc, eq, gte, inArray, lt, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, inArray, lt, notInArray, sql } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
 
 /** A half-open window of instants, `[from, to)`. */
@@ -144,6 +145,22 @@ export class UsageRepository {
         .where(where);
       return { rows, totalCount: count?.totalCount ?? 0 };
     });
+  }
+
+  /** The company's active projects (`M08-07`): neither handed over nor cancelled. */
+  async activeProjects(tenantId: string): Promise<number> {
+    const [row] = await this.db.withTenantTransaction(tenantId, (tx) =>
+      tx
+        .select({ count: sql<number>`count(*)::int` })
+        .from(project)
+        .where(
+          and(
+            eq(project.tenantId, tenantId),
+            notInArray(project.stage, ['handed_over', 'cancelled']),
+          ),
+        ),
+    );
+    return row?.count ?? 0;
   }
 
   /** The newest snapshot, by the primary key's order; `null` before the first night. */

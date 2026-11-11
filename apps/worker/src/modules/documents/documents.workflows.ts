@@ -4,6 +4,9 @@ import type {
   creditNoteDocumentWorkflow,
   DOCUMENT_RENDER_QUEUE,
   DocumentRenderActivities,
+  HandoverPackActivities,
+  HandoverPackStepResult,
+  handoverPackWorkflow,
   InvoiceDocumentActivities,
   InvoiceDocumentStepResult,
   invoiceDocumentWorkflow,
@@ -61,4 +64,18 @@ export async function creditNoteDocument(
   if (page === null) return { attached: false };
   const { pdfBase64 } = await renderPdf({ html: page.html });
   return attachCreditNotePdf({ ...note, pdfBase64 });
+}
+
+const { makeHandoverPack } = proxyActivities<HandoverPackActivities>({
+  // Reads every file of the pack from the store and writes the PDF: a large pack takes a while.
+  startToCloseTimeout: '5 minutes',
+  // Unbounded on purpose: the handover is committed, so an outage only delays the pack.
+  retry: { initialInterval: '10 seconds', maximumInterval: '10 minutes' },
+});
+
+/** A project's handover pack (`M08-46`): one step in the api, beside the project's files. */
+export async function handoverPack(
+  input: WorkflowInput<typeof handoverPackWorkflow>,
+): Promise<HandoverPackStepResult> {
+  return makeHandoverPack({ tenantId: input.tenantId, projectId: input.projectId });
 }

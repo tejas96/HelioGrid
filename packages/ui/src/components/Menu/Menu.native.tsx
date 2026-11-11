@@ -42,6 +42,7 @@ const MIN_BELOW = 160;
 export function Menu({
   items: given = [],
   trigger,
+  triggerLook = 'plain',
   label,
   align = 'end',
   width = 220,
@@ -95,6 +96,7 @@ export function Menu({
         onToggle={toggle}
         open={open}
         trigger={trigger}
+        look={triggerLook}
       />
 
       {anchor === null ? null : (

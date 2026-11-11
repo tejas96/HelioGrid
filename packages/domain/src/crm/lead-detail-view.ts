@@ -131,6 +131,8 @@ export interface LeadActsView {
   readonly stateActs: readonly LeadStateAct[];
   /** From `new` or `contacted`, on a lead not closed (`M02-45`). */
   readonly markQualified: boolean;
+  /** From any stage before Won, on a lead not closed — the deal becomes a project (`M07-62`). */
+  readonly markWon: boolean;
   /** A first booking, the no-show reschedule of the one booked, or none while the lead is closed. */
   readonly visit: 'book' | 'reschedule' | 'closed';
 }
@@ -217,6 +219,7 @@ export function leadActsOf(facts: LeadDetailFacts): LeadActsView {
   return {
     stateActs: leadStateActsOf(state),
     markQualified: !closed && LEAD_STAGES.indexOf(stage) < LEAD_STAGES.indexOf('qualified'),
+    markWon: !closed && LEAD_STAGES.indexOf(stage) < LEAD_STAGES.indexOf('won'),
     visit: closed ? 'closed' : facts.visit === null ? 'book' : 'reschedule',
   };
 }

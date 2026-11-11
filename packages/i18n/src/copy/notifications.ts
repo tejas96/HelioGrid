@@ -3,6 +3,7 @@ import type { NotificationType, NotificationTypeGroup } from '@heliogrid/domain'
 import { NOTIFICATION_CENTRE_HORIZON_DAYS } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { LEAD_ENQUIRIES_COUNT, LEADS_ASSIGNED_COUNT } from './lead-notices';
+import { PROJECTS_MOVED_COUNT } from './project-notices';
 import { SHELL } from './shell';
 
 /**
@@ -118,6 +119,7 @@ const GROUP_SENTENCE: Record<NotificationType, MessageRef> = {
   trial_nudge: /*i18n*/ {
     id: '{count, plural, one {# trial reminder} other {# trial reminders}}',
   },
+  project_moved: PROJECTS_MOVED_COUNT,
   system: /*i18n*/ {
     id: '{count, plural, one {# product update} other {# product updates}}',
   },

@@ -36,9 +36,9 @@ const iso = (moment: Date | number) => new Date(moment).toISOString();
 const SECONDS_PER_MINUTE = 60;
 
 /**
- * No proposal or project exists before `M06` and `M08` land (Law 9), so none is counted: zero is
- * the truth today. Each module's task replaces this with its own count and the `fullSince` its
- * gate reads (`T-M06`, `T-M08`, *Usage screen (T-M12-004)*).
+ * No proposal exists before `M06` lands (Law 9), so none is counted: zero is the truth today. Its
+ * task replaces this with its own count and the `fullSince` its gate reads (`T-M06`, *Usage
+ * screen (T-M12-004)*). Active projects are counted (`M08-07`).
  */
 const NOT_COUNTED_YET = 0;
 
@@ -75,8 +75,13 @@ export class BillingUsageService {
       currencyCode: pack.formats.currency,
       priceListPublishedAt: publishedAt,
       cycle: { from: iso(cycle.from), resetsAt: iso(cycle.resetsAt) },
-      proposals: counted(limits.get('proposals_per_cycle') ?? null, cycle, now),
-      activeProjects: counted(limits.get('active_projects') ?? null, cycle, now),
+      proposals: counted(NOT_COUNTED_YET, limits.get('proposals_per_cycle') ?? null, cycle, now),
+      activeProjects: counted(
+        await this.usage.activeProjects(tenantId),
+        limits.get('active_projects') ?? null,
+        cycle,
+        now,
+      ),
       designCeilingKw: limits.get('design_ceiling_kw') ?? null,
       voice: voice.wire,
       storage: {
@@ -212,14 +217,14 @@ function soFarOf(cycle: UsageCycle, now: number): UsageWindow {
   return { from: cycle.from, to: new Date(Math.min(now, cycle.resetsAt.getTime())) };
 }
 
-/** A count the cap ladder reads; not counted yet, so it stands clear. */
-function counted(limit: TierLimit | null, cycle: UsageCycle, now: number) {
+/** A count the cap ladder reads; one not counted yet passes `NOT_COUNTED_YET` and stands clear. */
+function counted(used: number, limit: TierLimit | null, cycle: UsageCycle, now: number) {
   return {
-    used: NOT_COUNTED_YET,
+    used,
     limit,
     usage: wireStep(
       cappedUsageStep({
-        used: NOT_COUNTED_YET,
+        used,
         limit: limit ?? 'unlimited',
         fullSince: null,
         cycleEndsAt: cycle.resetsAt.getTime(),

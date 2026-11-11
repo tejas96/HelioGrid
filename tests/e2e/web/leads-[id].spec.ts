@@ -16,6 +16,8 @@ import { expectNoSeriousViolations } from '../support/axe';
 import { createCompany, OWNER_NAME } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
 import { freshMobile } from '../support/phone';
+import { markWonThroughApi } from '../support/project';
+import { packWord } from '../support/project-facts';
 import { passTheOwnersMark } from '../support/shell';
 
 /**
@@ -87,7 +89,7 @@ function createdLine(): string {
     kind: 'lead_created',
     body: { source: 'quick_add', segment: 'residential' },
   };
-  const formats = { day: String, time: String, money: String };
+  const formats = { day: String, time: String, money: String, word: packWord };
   return leadTimelineEntryWords(en.t, formats, { known: true, activity: created }).summary;
 }
 
@@ -177,6 +179,23 @@ test('answering a qualifying question saves it with no submit', async ({ page })
       .getByRole('radiogroup', { name: QUALIFY.question.roofOwnership })
       .getByRole('radio', { name: QUALIFY.choice('roofOwnership', 'own') }),
   ).toBeChecked();
+});
+
+test('a won lead’s hero names its project in place of the value, and opens it', async ({
+  page,
+}) => {
+  const lead = await openLead(page);
+  const hero = heroWords();
+  const { projectId, number } = await markWonThroughApi(page, lead.id);
+  await page.reload();
+
+  /* Won, the deal lives on as its project: the hero says so where the value stood. */
+  const panel = page.locator('.hg-hero');
+  await expect(panel.getByText(hero.projectLabel, { exact: true })).toBeVisible();
+  await expect(panel.getByText(hero.noValue)).toHaveCount(0);
+  await panel.getByRole('button', { name: hero.openProject(number), exact: true }).click();
+  await expect(page).toHaveURL(new RegExp(`/projects/${projectId}$`));
+  await expect(page.getByRole('heading', { level: 1, name: NAME })).toBeVisible();
 });
 
 test('a lead opened from a stale link lands on the honest landing in the lead’s own words', async ({

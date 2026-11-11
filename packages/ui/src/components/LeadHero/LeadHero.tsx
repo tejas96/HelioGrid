@@ -10,7 +10,7 @@ import { NamedGap } from '../NamedGap';
 import { ProvenanceTier } from '../Provenance';
 import { StageTrack } from '../StageTrack';
 import { leadRecordMenuOf } from './LeadHero.logic';
-import type { LeadHeroIdentity, LeadHeroProps, LeadHeroValue } from './LeadHero.types';
+import type { LeadHeroIdentity, LeadHeroProps } from './LeadHero.types';
 
 /**
  * The lead's one hero (`SCR-M02-04`): who it is on the desktop, the stage, the deal, where it came
@@ -25,6 +25,7 @@ export function LeadHero({
   onOwner,
   ownerName,
   value,
+  project,
   recordActs,
   recordActsOff,
   words,
@@ -41,7 +42,7 @@ export function LeadHero({
           {words.tries === null ? null : <StatusMark tone="warning" label={words.tries} />}
         </div>
       )}
-      <Value value={value} words={words} />
+      <Value value={value} project={project} words={words} />
       <div className="hg-lead-hero-track">
         <StageTrack stage={stage} size="md" words={words.stageTrack} />
         <div className="hg-lead-hero-step">
@@ -121,7 +122,22 @@ function Identity({
   );
 }
 
-function Value({ value, words }: { value: LeadHeroValue | null; words: LeadHeroProps['words'] }) {
+function Value({ value, project, words }: Pick<LeadHeroProps, 'value' | 'project' | 'words'>) {
+  if (project !== null) {
+    return (
+      <div className="hg-lead-hero-value">
+        <span className="hg-lead-hero-overline">{words.projectLabel}</span>
+        <Button
+          variant="secondary"
+          size="sm"
+          iconRight={<ShellGlyph name="chevron-right" size="sm" tone="primary" />}
+          onClick={project.onOpen}
+        >
+          {words.openProject(project.number)}
+        </Button>
+      </div>
+    );
+  }
   return (
     <div className="hg-lead-hero-value">
       <span className="hg-lead-hero-overline">{words.valueLabel}</span>

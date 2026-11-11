@@ -30,9 +30,10 @@ flow -e "COMPANY=E2E $national" -e "OWNER=Owner $national" company-signup.yaml
 # a company meets: setup's steps, the shell and settings. The phone's own *Create company* press
 # never reaches the api on iOS inside Maestro (`D5`), so it is not the way in.
 read -r owner_national owner_e164 < <(node ../support/mobile-cli.ts phone)
-# It also makes two leads given to the owner: one for Lead Detail, and that customer and the same
-# family's second record for Customer Merge — their ids come back.
-read -r lead_id survivor_id loser_id < <(node ../support/mobile-cli.ts company "$owner_national" "$owner_e164")
+# It also makes three leads given to the owner: one for Lead Detail, that customer and the same
+# family's second record for Customer Merge, and one it marks won, whose project the projects flows
+# open — their ids come back.
+read -r lead_id survivor_id loser_id project_id < <(node ../support/mobile-cli.ts company "$owner_national" "$owner_e164")
 flow boot.yaml
 since="$(node -e 'console.log(Date.now())')"
 flow -e "PHONE=$owner_national" login.yaml
@@ -66,6 +67,12 @@ flow -e "LEAD_NAME=Lead $owner_national" leads-list.yaml
 # The import opens on its first step over the same list, and its way back returns to it.
 flow lead-import.yaml
 flow -e "LEAD_ID=$lead_id" -e "LEAD_NAME=Lead $owner_national" lead-detail.yaml
+# The won lead's project: the board lists it under Won, its page moves it on and back and marks a
+# row not needed, and its handover then names only the rows still waiting.
+project=(-e "PROJECT_ID=$project_id" -e "PROJECT_NAME=Won $owner_national")
+flow "${project[@]}" projects-board.yaml
+flow "${project[@]}" -e "REASON=Signed on paper" project-detail.yaml
+flow "${project[@]}" project-handover.yaml
 # The company's two records for one family merge last: the other flows read them as they stand.
 from_survivor="$(node ../support/mobile-cli.ts merge-from "Lead $owner_national")"
 pair=(-e "SURVIVOR_ID=$survivor_id" -e "LOSER_ID=$loser_id" -e "SURVIVOR_NAME=Lead $owner_national")

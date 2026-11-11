@@ -7,6 +7,8 @@ export interface LeadTimelineFormats {
   readonly day: (date: string) => string;
   readonly time: (hhmm: string) => string;
   readonly money: (amount: string) => string;
+  /** A project's market word — a stage, a party, a reason, a row, a step (`format.word`). */
+  readonly word: (kind: 'stage' | 'party' | 'reason' | 'row' | 'step', key: string) => string;
 }
 
 /**

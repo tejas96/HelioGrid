@@ -114,6 +114,12 @@ export const ACTIVITY_KINDS = [
   'visit_rescheduled',
   'task_done',
   'customer_merged',
+  /** A project's own entries (`M08-17`): they join the lead's stream, since a won deal IS the project. */
+  'project_moved',
+  'project_wait',
+  'project_document',
+  'project_step',
+  'project_changed',
 ] as const;
 export type ActivityKind = (typeof ACTIVITY_KINDS)[number];
 

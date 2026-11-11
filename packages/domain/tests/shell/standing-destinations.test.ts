@@ -15,7 +15,7 @@ describe('standingDestinationsFor — each preset’s bar, as F7-48 rules it', (
     { preset: 'sales_executive', set: ['home', 'leads', 'proposals', 'more'] },
     { preset: 'survey_engineer', set: ['home', 'leads', 'more'] },
     { preset: 'design_engineer', set: ['home', 'leads', 'proposals', 'more'] },
-    { preset: 'project_manager', set: ['home', 'more'] },
+    { preset: 'project_manager', set: ['home', 'projects', 'more'] },
     { preset: 'field_technician', set: ['home', 'more'] },
     { preset: 'installation_team_member', set: ['home', 'more'] },
     { preset: 'hr_admin', set: ['home', 'people', 'more'] },

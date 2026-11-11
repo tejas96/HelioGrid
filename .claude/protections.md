@@ -100,6 +100,7 @@ catalog freshness checks with the oasdiff breaking-change judge, the unit tests 
 | A web page never scrolls sideways at 375 or 1536, and siblings a layout aligns share the edge it names | `expectNoSidewaysScroll` in every web spec and `expectSharedEdge` in the spec that declares the edge (`tests/e2e/support/layout.ts`) · CI jobs `e2e-web` · `e2e-components` · `qa-live`'s width checks on every screen a change reaches |
 | A phone answers the on-screen keyboard in one place: a page, door, sheet or panel holding fields sits in `KeyboardFrame` (`packages/ui/src/primitives/Keyboard/`), which keeps the focused field, its line and the act bar above the keyboard on both phones | Biome plugin `keyboard-in-one-place` · a field in a plain scroll view: review · the field above the keyboard: `qa-live` on each phone a change reaches |
 | A spec measures a box only once the element is drawn and still, and a box not drawn fails by name, never as 0 | Biome plugin `settled-box` (`settledBox`, `tests/e2e/support/layout.ts`) |
+| The web opens a page it does not draw only through `openExternal` (`apps/web/lib/open-external.ts`), which opens it in this tab when the browser blocks the new one | Biome plugin `open-tab-in-one-place` |
 
 ## Language
 

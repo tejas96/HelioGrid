@@ -1,6 +1,7 @@
 import { IN_MARKET, type MarketCode } from '../market/code';
 import { type ChecklistRow, IN_DOCUMENT_CHECKLIST } from './checklist';
 import type { CalendarDate } from './holidays';
+import { IN_INSTALL_STEPS, type InstallStepRow } from './install-steps';
 import type { PackLabel } from './languages';
 import { IN_UTILITIES, type UtilityDirectory } from './utility';
 import { type DisplayVocabulary, IN_VOCABULARY } from './vocabulary';
@@ -113,6 +114,8 @@ export interface FormatPack {
   readonly vocabulary: DisplayVocabulary;
   /** `F1-22`, `F1-52` — the project document rows; `M08` seeds and states them. */
   readonly documentChecklist: readonly ChecklistRow[];
+  /** `M08-41` — the standard installation steps; `M08` seeds and ticks them (`install-steps.ts`). */
+  readonly installSteps: readonly InstallStepRow[];
   /** `F1-53` — regions, their network operators, and how long the operator's queue runs. */
   readonly utilities: UtilityDirectory;
 }
@@ -167,5 +170,6 @@ export const IN_FORMATS: FormatPack = {
   otpDestinationDialCodes: ['+91'],
   vocabulary: IN_VOCABULARY,
   documentChecklist: IN_DOCUMENT_CHECKLIST,
+  installSteps: IN_INSTALL_STEPS,
   utilities: IN_UTILITIES,
 };

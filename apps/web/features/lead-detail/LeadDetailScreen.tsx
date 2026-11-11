@@ -9,6 +9,7 @@ import {
   leadDetailPageWords,
   leadDetailSheetWords,
   leadTitleWords,
+  markWonWords,
 } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import {
@@ -17,6 +18,8 @@ import {
   LeadAssignPicker,
   LeadDetailSheet,
   LeadDetailStates,
+  MarkWonSheet,
+  markWonSheetOf,
   ShellGlyph,
   useFormat,
   useOwnWidth,
@@ -42,7 +45,7 @@ import './lead-detail.css';
 export function LeadDetailScreen({ leadId }: { leadId: string }) {
   const t = useTranslate();
   const screen = useLeadDetailScreen(leadId, useFormat().pack.timeZone);
-  const moves = useLeadDetailMoves();
+  const moves = useLeadDetailMoves(screen.files);
   const [room, width] = useOwnWidth<HTMLDivElement>();
   const columns = width !== null && width >= LEAD_DETAIL_COLUMNS_FROM;
   const { read } = screen;
@@ -112,6 +115,10 @@ function LeadDetailReady({
         assign={screen.assign}
         ownerId={lead.lead.owner?.userId ?? null}
         words={leadAssignPickerWords(t, lead.lead.name)}
+      />
+      <MarkWonSheet
+        {...markWonSheetOf(screen.won, card.moves.openProject, screen.days.today)}
+        words={markWonWords(t, lead.lead.name ?? format.phone(lead.lead.phoneE164))}
       />
     </>
   );

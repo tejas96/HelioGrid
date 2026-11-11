@@ -9,6 +9,7 @@
    the page label's 16px is written out here rather than borrowed from a wrong token. */
 
 @import "./TimelinePick.css";
+@import "./TimelineTones.css";
 
 .hg-timeline {
   list-style: none;

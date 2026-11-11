@@ -39,6 +39,11 @@ interface SheetOwnProps extends OverlayCloseWords {
    * slot as `DetailPanel`'s `leading`.
    */
   leading?: ReactNode;
+  /**
+   * `moment`: the header of a sheet that marks a moment — `leading` above, the title and its line
+   * centred under it (the early proof's spark). `row`, the default: the mark beside the heading.
+   */
+  headerLook?: 'row' | 'moment';
   /** Uppercase micro-label above the title ("SITE SURVEY"). */
   overline?: TranslatedText;
   children?: ReactNode;

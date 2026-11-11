@@ -18,6 +18,7 @@ import { HealthModule } from './modules/health/health.public';
 import { InvitationModule } from './modules/invitation/invitation.public';
 import { MarketModule } from './modules/market/market.public';
 import { NotificationModule } from './modules/notification/notification.public';
+import { ProjectsModule } from './modules/projects/projects.public';
 import { SearchModule } from './modules/search/search.public';
 import { SettingsModule } from './modules/settings/settings.public';
 import { TenantModule } from './modules/tenant/tenant.public';
@@ -25,9 +26,9 @@ import { UserModule } from './modules/user/user.public';
 
 /**
  * Modular monolith root. One Nest module per bounded context (apps/api/CLAUDE.md) — health,
- * the market pack, auth, the audit log, tenant, user, invitation, settings, the catalog, the CRM and
- * search today; the rest land with their slices: survey, design, proposal, customer-link, projects,
- * agent, admin.
+ * the market pack, auth, the audit log, tenant, user, invitation, settings, the catalog, the CRM,
+ * search and projects today; the rest land with their slices: survey, design, proposal,
+ * customer-link, agent, admin.
  *
  * The deny-by-default guard is bound HERE, as APP_GUARD, because this is the one module that
  * imports both `common/` (the guard) and the auth module (the `SessionResolver` it depends on);
@@ -55,6 +56,7 @@ import { UserModule } from './modules/user/user.public';
     CatalogModule,
     CrmModule,
     SearchModule,
+    ProjectsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: SessionGuard },

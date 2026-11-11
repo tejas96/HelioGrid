@@ -13,3 +13,8 @@ export {
   type SheetRowsRead,
   type SpreadsheetRead,
 } from './file.spreadsheet';
+export {
+  FileSubjectRegistry,
+  type SubjectJudge,
+  type SubjectPerson,
+} from './file.subject.registry';

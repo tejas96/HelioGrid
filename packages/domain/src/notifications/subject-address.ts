@@ -21,6 +21,8 @@ const SUBJECT_ADDRESS: Partial<Record<SubjectKind, (ref: string | undefined) => 
    * (`SCR-M02-05`, `M02-21`); both apps read `job` off the address.
    */
   lead_import: (ref) => (ref === undefined ? null : `leads/import?job=${ref}`),
+  /** A project notice opens that project (`SCR-M08-02`) — out of reach, it lands honestly. */
+  project: (ref) => (ref === undefined ? null : `projects/${ref}`),
 };
 
 export function subjectAddressOf(kind: string | undefined, ref?: string): string | null {

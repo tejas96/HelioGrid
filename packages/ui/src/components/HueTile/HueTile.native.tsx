@@ -1,22 +1,24 @@
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
 import Svg from 'react-native-svg';
-import { ICON_SIZE } from '../../primitives/Icon/Icon.types';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
-import { hueTintOf } from '../Avatar/Avatar.logic';
-import type { HueTileProps } from './HueTile.types';
+import { HUE_TILE_GLYPH, hueTileTintOf } from './HueTile.logic';
+import type { HueTileProps, HueTileSize } from './HueTile.types';
 
 export function HueTile({ glyph, hue, size, stroke }: HueTileProps) {
-  const tint = hueTintOf(hue);
+  const tint = hueTileTintOf(hue);
   return (
     <View
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
-      style={[styles.tile, { width: size, height: size, backgroundColor: tint.bg }]}
+      style={[
+        styles.tile,
+        { width: size, height: size, borderRadius: radiusOf(size), backgroundColor: tint.bg },
+      ]}
     >
       <Svg
-        width={ICON_SIZE.md}
-        height={ICON_SIZE.md}
+        width={HUE_TILE_GLYPH[size]}
+        height={HUE_TILE_GLYPH[size]}
         viewBox="0 0 24 24"
         fill="none"
         stroke={tint.fg}
@@ -30,11 +32,16 @@ export function HueTile({ glyph, hue, size, stroke }: HueTileProps) {
   );
 }
 
+/** A group head's small tile rounds less; a hero's or a sheet's moment, as a tile does. */
+function radiusOf(size: HueTileSize): number {
+  if (size === 24) return theme.radius['r-xs'];
+  return size >= 48 ? theme.radius['r-tile'] : theme.radius['r-sm'];
+}
+
 const styles = StyleSheet.create({
   tile: {
     flexShrink: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: theme.radius['r-sm'],
   },
 });

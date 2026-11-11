@@ -6,7 +6,7 @@
    is an empty disc, which is its own shape. */
 
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { classNames } from '../../primitives/class-names';
 import type { FocusAfter } from '../../primitives/FocusAfter';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
@@ -27,13 +27,22 @@ export interface TimelineRoot {
 export function TimelineNode({
   status = 'upcoming',
   compact,
+  icon,
 }: {
   status?: TimelineStatus;
   compact: boolean;
+  /** The current step's own glyph, in place of its dot. */
+  icon?: ReactNode;
 }) {
   const inner = nodeGlyphSize(compact);
+  const own = status === 'current' && icon !== undefined;
   return (
-    <span aria-hidden="true" className="hg-timeline-node" data-status={status}>
+    <span
+      aria-hidden="true"
+      className="hg-timeline-node"
+      data-status={status}
+      data-icon={own ? 'true' : undefined}
+    >
       {status === 'done' ? (
         <svg
           width={inner}
@@ -49,7 +58,23 @@ export function TimelineNode({
           <ShellGlyphMarks name="tick-small" />
         </svg>
       ) : null}
-      {status === 'current' ? <span className="hg-timeline-node-core" /> : null}
+      {own ? icon : null}
+      {status === 'current' && !own ? <span className="hg-timeline-node-core" /> : null}
+      {status === 'skipped' ? (
+        <svg
+          width={inner}
+          height={inner}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <ShellGlyphMarks name="chevron-right" />
+        </svg>
+      ) : null}
       {status === 'blocked' ? (
         <svg
           width={inner}

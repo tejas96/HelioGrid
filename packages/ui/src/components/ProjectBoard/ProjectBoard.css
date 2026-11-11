@@ -1,0 +1,249 @@
+/* ProjectBoard — the board under its large title (`SCR-M08-01`, the picked design). Sized from its
+   own room: the wrapper is the container, so a rule on the board itself can ask how wide it is.
+   Narrow, one column as the phone draws it; at 960 px of room, the desk's frame — the title beside
+   the search field, the rail across the top, the day's work beside the table. */
+
+.hg-project-board-room {
+  container: hg-project-board / inline-size;
+}
+
+/* A part each room draws its own way is drawn in both; the other room hides it. */
+@container hg-project-board (width < 960px) {
+  .hg-project-board-room [data-room="wide"] {
+    display: none;
+  }
+}
+
+@container hg-project-board (width >= 960px) {
+  .hg-project-board-room [data-room="narrow"] {
+    display: none;
+  }
+}
+
+.hg-project-board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  min-width: 0;
+}
+
+/* The title, and the search beside it: a glyph in the narrow room, the field in the wide one. */
+.hg-project-board-top {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.hg-project-board-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.hg-project-board-search-glyph {
+  flex: none;
+  align-self: flex-start;
+}
+
+.hg-project-board-search {
+  flex: none;
+  width: 20rem;
+}
+
+.hg-project-board-columns,
+.hg-project-board-work,
+.hg-project-board-needs,
+.hg-project-board-all {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  min-width: 0;
+}
+
+@container hg-project-board (width >= 960px) {
+  .hg-project-board-top {
+    align-items: flex-end;
+  }
+
+  .hg-project-board-columns {
+    display: grid;
+    grid-template-columns: minmax(0, 23rem) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--sp-6);
+  }
+
+  .hg-project-board-work,
+  .hg-project-board-needs {
+    gap: var(--sp-5);
+  }
+}
+
+/* A section: its heading with a count or a quiet note, then its card. */
+.hg-project-board-section,
+.hg-project-board-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-project-board-group {
+  gap: var(--sp-2);
+}
+
+.hg-project-board-head,
+.hg-project-board-group-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-project-board-head {
+  justify-content: space-between;
+}
+
+.hg-project-board-group-head {
+  align-items: baseline;
+  gap: var(--sp-2);
+  padding-inline: var(--sp-1);
+}
+
+.hg-project-board-heading {
+  margin: 0;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tr-h3);
+  color: var(--text-primary);
+}
+
+.hg-project-board-overline {
+  margin: 0;
+  font-size: var(--fs-overline);
+  line-height: var(--lh-overline);
+  letter-spacing: var(--tr-overline);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.hg-project-board-count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.hg-project-board-group-head .hg-project-board-count {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+}
+
+.hg-project-board-quiet {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-secondary);
+}
+
+.hg-project-board-group-head .hg-project-board-quiet {
+  margin-inline-start: auto;
+}
+
+.hg-project-board-none {
+  margin: 0;
+  padding: var(--sp-5);
+  list-style: none;
+  text-align: center;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+/* The hero's two figures: what is the person's to do, and what waits on others. */
+.hg-project-board-figures {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-5);
+}
+
+.hg-project-board-figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-project-board-number {
+  font-family: var(--font-display);
+  font-size: var(--fs-hero-phone);
+  line-height: var(--lh-hero-phone);
+  letter-spacing: var(--tr-hero-phone);
+  font-variant-numeric: tabular-nums;
+  color: var(--on-panel);
+}
+
+.hg-project-board-figure-word {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-medium);
+  color: var(--on-panel);
+}
+
+.hg-project-board-figure[data-quiet="true"] .hg-project-board-number,
+.hg-project-board-figure[data-quiet="true"] .hg-project-board-figure-word {
+  color: var(--on-panel-muted);
+}
+
+.hg-project-board-rule {
+  align-self: stretch;
+  width: 1px;
+  margin-block: var(--sp-2);
+  background: var(--line-soft);
+}
+
+.hg-project-board-clear {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-project-board-clear-words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-0-5);
+  min-width: 0;
+}
+
+.hg-project-board-clear-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-figure);
+  line-height: var(--lh-figure);
+  letter-spacing: var(--tr-figure);
+  color: var(--on-panel);
+}
+
+.hg-project-board-clear-line {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
+/* A search that found nothing: what was searched, and the way to clear it. */
+.hg-project-board-no-match {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-6) var(--sp-4);
+  text-align: center;
+}
+
+.hg-project-board-no-match-line {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}

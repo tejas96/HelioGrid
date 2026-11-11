@@ -28,6 +28,9 @@ const styles = StyleSheet.create({
   error: { lineHeight: 17.4 },
 });
 
+/** The share of the row a column gives up for the gaps beside it; the cards grow back into it. */
+const COLUMN_GAP_ROOM = 10;
+
 /**
  * Card-shaped choice on touch — one pick (a radiogroup) or any number (checkboxes). Selection is a
  * 2px accent ring plus a filled mark — never colour alone.
@@ -49,7 +52,9 @@ export function OptionCardGroup(props: NativeOptionCardGroupProps) {
     style,
   } = props;
   const multiple = props.mode === 'multiple';
-  const basis = `${100 / Math.max(1, columns)}%` as const;
+  // A whole share (50% of two) plus the row's gap overflows the row, so every card wrapped to a
+  // line of its own: the basis leaves room for the gaps, and the cards grow back to equal widths.
+  const basis = `${100 / Math.max(1, columns) - COLUMN_GAP_ROOM}%` as const;
   return (
     <View style={[styles.group, style]}>
       {label !== undefined ? (
@@ -75,6 +80,7 @@ export function OptionCardGroup(props: NativeOptionCardGroupProps) {
               mode={multiple ? 'multiple' : 'single'}
               off={disabled || o.disabled === true}
               density={density}
+              stacked={columns > 1}
               onSelect={() => pressOption(props, o.value)}
               currentLabel={currentLabel}
             />

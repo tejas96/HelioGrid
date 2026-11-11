@@ -29,6 +29,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import { FirstRunMark } from './components/FirstRunMark';
+import { InstallerHome } from './components/InstallerHome';
 import { DOOR_PATH, settingsRowPath } from './constants';
 
 /**
@@ -106,6 +107,7 @@ export function HomeScreen() {
             />
           </div>
         )}
+        <InstallerHome />
         <div className="hg-home-side">
           {facts.length < 2 ? null : <GlanceStrip facts={facts} name={homeGlanceWords(t).name} />}
           <HomeBlocks

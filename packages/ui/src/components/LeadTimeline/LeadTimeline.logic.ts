@@ -28,6 +28,11 @@ export const LEAD_ACTIVITY_LOOK: Record<ActivityKind, ActivityKindLook> = {
   visit_rescheduled: { tone: 'warning', glyph: 'clipboard' },
   task_done: { tone: 'success', glyph: 'check' },
   customer_merged: { tone: 'neutral', glyph: 'user' },
+  project_moved: { tone: 'success', glyph: 'flag' },
+  project_wait: { tone: 'warning', glyph: 'dot' },
+  project_document: { tone: 'neutral', glyph: 'doc' },
+  project_step: { tone: 'success', glyph: 'check' },
+  project_changed: { tone: 'neutral', glyph: 'cog' },
 };
 
 /** The stream's registry for the CRM's kinds, each named in the reader's words. */
@@ -45,7 +50,7 @@ export function leadTimelineStreamOf<Entry>(
   format: MarketFormat,
 ): Omit<ActivityStreamProps, 'density'> {
   const { read } = timeline;
-  const formats = { day: format.date, time: format.time, money: format.money };
+  const formats = { day: format.date, time: format.time, money: format.money, word: format.word };
   return {
     entries: read.kind === 'ready' ? words.entries(read.value, formats) : [],
     kinds: leadActivityKinds(words.kind),

@@ -103,3 +103,12 @@ export function visitBooked(lead: LeadLifecycle): LeadActResult {
   if (stageIndex(lead.stage) < stageIndex('survey')) return advanceStage(lead, 'survey');
   return activityRecorded(lead);
 }
+
+/**
+ * *Mark won* (`M07-62`): the deal is won and its project starts in the same act (`M08-02`), from any
+ * open stage before it. Refused on a closed lead and on one already won — a won deal is a project,
+ * and there is never a second one.
+ */
+export function markWon(lead: LeadLifecycle): LeadActResult {
+  return advanceStage(lead, 'won');
+}

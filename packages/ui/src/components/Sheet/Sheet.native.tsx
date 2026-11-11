@@ -51,6 +51,7 @@ export function Sheet({
   subtitleFace = 'sans',
   overline,
   leading,
+  headerLook = 'row',
   children,
   meta,
   size = 'auto',
@@ -131,9 +132,7 @@ export function Sheet({
     [draggable, onClose, offset, reducedMotion],
   );
 
-  if (!open) {
-    return null;
-  }
+  if (!open) return null;
 
   const ladder = DENSITY[density];
   const header = sheetHeaderOf(handle, showClose, [title, overline, subtitle]);
@@ -202,6 +201,7 @@ export function Sheet({
               panHandlers={handle ? undefined : pan.panHandlers}
               density={density}
               leading={leading}
+              headerLook={headerLook}
               handle={handle}
               closeLabel={closeLabel}
               onClose={onClose}

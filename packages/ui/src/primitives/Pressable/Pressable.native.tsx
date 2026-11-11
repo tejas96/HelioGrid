@@ -97,8 +97,10 @@ export function Pressable({
       accessibilityState={{
         selected: accessibilityState?.selected ?? accessibilityState?.current,
         checked: accessibilityState?.checked,
-        /* Only a true busy is stated: TalkBack speaks a stated `false` as the word "busy". */
-        busy: accessibilityState?.busy === true ? true : undefined,
+        /* Passed as the caller states it. Android rebuilds the spoken label only while the state
+           carries a `busy` key, and speaks "busy" only for `true`: a control that stops being busy
+           states `false`, or TalkBack keeps saying "…, busy" after the work is done. */
+        busy: accessibilityState?.busy,
         expanded: accessibilityState?.expanded,
         disabled: accessibilityState?.disabled ?? disabled,
       }}
