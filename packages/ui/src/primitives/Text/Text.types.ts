@@ -72,6 +72,12 @@ export interface TextProps {
    * Web: `white-space: nowrap` with `text-overflow: ellipsis`. Native: `numberOfLines={1}`.
    */
   oneLine?: boolean;
+  /**
+   * Keep the words to TWO lines, cut with an ellipsis — for a record's own NAME a title holds,
+   * which a person may type at any length (a lead's). Never translated copy, as `oneLine`.
+   * Web: a two-line clamp. Native: `numberOfLines={2}`.
+   */
+  twoLines?: boolean;
   /** The variant at the bold weight — a name that must stand out in a line of its own size. */
   bold?: boolean;
   /**

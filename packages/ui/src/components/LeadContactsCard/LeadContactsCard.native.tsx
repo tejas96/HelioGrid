@@ -1,8 +1,10 @@
 import { theme } from '@heliogrid/theme';
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Text } from '../../primitives/Text/Text.native';
 import { ShellGlyph } from '../AppShell/ShellGlyph.native';
+import { FoldHead } from '../FoldHead/FoldHead.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { Select } from '../Select/Select.native';
 import { Switch } from '../Switch/Switch.native';
@@ -27,21 +29,34 @@ export function LeadContactsCard({
   doNotCall,
   language,
   failure,
+  foldable,
   words,
 }: LeadContactsCardProps) {
+  const [open, setOpen] = useState(!foldable);
+  const shown = open ? contacts : contacts.filter((contact) => contact.primary);
   return (
     <View style={styles.stack}>
       <View style={[tileSurface, styles.card]}>
         <GroundProvider ground="tile">
           <View style={styles.head}>
-            <Text variant="overline" color="secondary" style={styles.title}>
-              {words.title(contacts.length)}
-            </Text>
+            {foldable ? (
+              <View style={styles.title}>
+                <FoldHead
+                  title={words.title(contacts.length)}
+                  open={open}
+                  onToggle={() => setOpen(!open)}
+                />
+              </View>
+            ) : (
+              <Text variant="overline" color="secondary" style={styles.title}>
+                {words.title(contacts.length)}
+              </Text>
+            )}
             <IconButton label={words.add} onClick={onAdd} variant="ghost">
               <ShellGlyph name="person-plus" size="md" tone="primary" />
             </IconButton>
           </View>
-          {contacts.map((contact) => (
+          {shown.map((contact) => (
             <LeadContactRowView
               key={contact.id ?? contact.phoneE164}
               contact={contact}
@@ -54,32 +69,34 @@ export function LeadContactsCard({
           ))}
         </GroundProvider>
       </View>
-      <View style={styles.facts}>
-        <View style={[tileSurface, styles.fact]}>
-          <GroundProvider ground="tile">
-            <Switch
-              label={words.doNotCall}
-              description={words.doNotCallHint}
-              checked={doNotCall.value}
-              onChange={(on) => doNotCall.onChange(on)}
-              disabled={doNotCall.pending}
-            />
-          </GroundProvider>
+      {open ? (
+        <View style={styles.facts}>
+          <View style={[tileSurface, styles.fact]}>
+            <GroundProvider ground="tile">
+              <Switch
+                label={words.doNotCall}
+                description={words.doNotCallHint}
+                checked={doNotCall.value}
+                onChange={(on) => doNotCall.onChange(on)}
+                disabled={doNotCall.pending}
+              />
+            </GroundProvider>
+          </View>
+          <View style={[tileSurface, styles.fact]}>
+            <GroundProvider ground="tile">
+              <Select
+                label={words.language}
+                placeholder={words.languageUnset}
+                closeLabel={words.close}
+                value={language.value ?? UNSET}
+                options={[{ value: UNSET, label: words.languageUnset }, ...language.options]}
+                onChange={(value) => language.onChange(value === UNSET ? null : value)}
+                disabled={language.pending}
+              />
+            </GroundProvider>
+          </View>
         </View>
-        <View style={[tileSurface, styles.fact]}>
-          <GroundProvider ground="tile">
-            <Select
-              label={words.language}
-              placeholder={words.languageUnset}
-              closeLabel={words.close}
-              value={language.value ?? UNSET}
-              options={[{ value: UNSET, label: words.languageUnset }, ...language.options]}
-              onChange={(value) => language.onChange(value === UNSET ? null : value)}
-              disabled={language.pending}
-            />
-          </GroundProvider>
-        </View>
-      </View>
+      ) : null}
       {failure === null ? null : (
         <Text variant="body-sm" color="danger" live>
           {failure}

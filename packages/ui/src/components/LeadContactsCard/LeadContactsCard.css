@@ -92,3 +92,9 @@
   grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--sp-24) * 2)), 1fr));
   gap: var(--tile-gap);
 }
+
+/* The narrow page's head: the fold toggle takes the row, the add act stays its sibling. */
+.hg-lead-contacts-fold {
+  flex: 1;
+  min-width: 0;
+}

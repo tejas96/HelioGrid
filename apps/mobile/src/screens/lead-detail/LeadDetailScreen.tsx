@@ -5,6 +5,7 @@ import {
   leadDetailPageWords,
   leadDetailSheetWords,
   leadTitleWords,
+  leadWorkCardsWords,
   markWonWords,
 } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
@@ -12,6 +13,7 @@ import {
   LeadAssignPicker,
   LeadDetailSheet,
   LeadDetailStates,
+  LeadRecordMenu,
   MarkWonSheet,
   markWonSheetOf,
   useFormat,
@@ -59,6 +61,21 @@ export function LeadDetailScreen({ route }: Props) {
         ...heading,
         back: words.backToList,
         onBack: moves.back,
+        nameTitle: record !== null,
+        stripless: true,
+        searchless: true,
+        actions:
+          read.kind === 'ready' ? (
+            <LeadRecordMenu
+              screen={screen}
+              lead={read.value.lead}
+              view={read.value.view}
+              onAddReferral={moves.addReferral}
+              onMerge={moves.merge}
+              onMarkWon={screen.won.open}
+              words={leadWorkCardsWords(t, read.value.lead, read.value.view, format.date)}
+            />
+          ) : undefined,
       }}
     >
       <View ref={page} style={styles.page}>

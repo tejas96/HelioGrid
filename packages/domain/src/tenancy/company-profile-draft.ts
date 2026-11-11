@@ -22,6 +22,9 @@ import type { TenantSegment } from './segment';
  * contract reads from here. Typing past one would be refused by the save, and the screen has no
  * words for that refusal, so a field stops at its bound.
  */
+/** The longest a person's name may run — a lead's, a member's, a contact's (`personNameSchema`). */
+export const PERSON_NAME_CAP = 120;
+
 export const COMPANY_PROFILE_FIELD_CAP = {
   companyName: 120,
   city: 80,

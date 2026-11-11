@@ -27,4 +27,9 @@ export interface IconButtonProps {
    */
   pressed?: boolean;
   onClick?: () => void;
+  /**
+   * A link the circle opens in place of `onClick` — a `tel:` number to call. The web draws it as a
+   * link; the phone hands it to the system. Off (`disabled`), it opens nothing.
+   */
+  href?: string;
 }

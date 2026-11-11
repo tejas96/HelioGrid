@@ -8,6 +8,7 @@ import type { SurfaceRead } from '../UnavailableNote/UnavailableNote.types';
 import type {
   LeadCallBackWords,
   LeadContactWords,
+  LeadDetailsWords,
   LeadDisqualifyWords,
   LeadJunkWords,
   LeadLogWords,
@@ -35,6 +36,12 @@ export interface LeadVisitDraft {
   readonly time: string;
   readonly surveyorId: string;
   readonly address: string;
+}
+
+/** The lead's name and city as the sheet sends them; an emptied one goes back to its named gap. */
+export interface LeadDetailsDraft {
+  readonly name: string | null;
+  readonly city: string | null;
 }
 
 /** A contact as the sheet sends it (`M02-34`). */
@@ -110,6 +117,14 @@ export type LeadActForm =
       readonly words: LeadMessageWords;
       /** Copy on the web; the phone's share sheet, which holds Copy and the person's own apps. */
       readonly onSend: () => void;
+    }
+  | {
+      readonly kind: 'details';
+      /** The name and city on the record now — null where a capture left a gap. */
+      readonly start: LeadDetailsDraft;
+      readonly words: LeadDetailsWords;
+      /** Only the fields that differ from `start`: an untouched one is never sent back stale. */
+      readonly onSend: (changed: Partial<LeadDetailsDraft>) => void;
     }
   | {
       readonly kind: 'contact';

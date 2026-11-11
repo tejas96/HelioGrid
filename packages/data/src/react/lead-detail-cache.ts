@@ -41,7 +41,10 @@ export function patchEdited(
   let canDial = standing.canDial;
   for (const field of fields) {
     if (field === 'monthlyBill') lead = { ...lead, monthlyBill: answer.lead.monthlyBill };
-    else if (field === 'doNotCall') {
+    else if (field === 'name' || field === 'city') {
+      lead = { ...lead, [field]: answer.lead[field] };
+      customer = { ...customer, [field]: answer.customer[field] };
+    } else if (field === 'doNotCall') {
       customer = { ...customer, doNotCall: answer.customer.doNotCall };
       canDial = answer.canDial;
     } else if (field === 'preferredLanguage') {

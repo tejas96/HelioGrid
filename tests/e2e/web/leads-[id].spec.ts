@@ -157,8 +157,15 @@ test('lead detail opens the same assign picker with the same counts', async ({ p
   await expectNoSeriousViolations(page);
 });
 
+/** At phone width the qualify card opens folded: its head opens the six questions in place. */
+async function openQualify(page: Page) {
+  if (test.info().project.name !== 'phone') return;
+  await page.getByRole('button', { name: QUALIFY.title }).click();
+}
+
 test('answering a qualifying question saves it with no submit', async ({ page }) => {
   const lead = await openLead(page);
+  await openQualify(page);
   const roof = page.getByRole('radiogroup', { name: QUALIFY.question.roofOwnership });
   const owned = roof.getByRole('radio', { name: QUALIFY.choice('roofOwnership', 'own') });
   await expect(owned).not.toBeChecked();
@@ -174,6 +181,7 @@ test('answering a qualifying question saves it with no submit', async ({ page })
 
   /* A fresh read keeps it: nothing waited on a submit. */
   await page.reload();
+  await openQualify(page);
   await expect(
     page
       .getByRole('radiogroup', { name: QUALIFY.question.roofOwnership })

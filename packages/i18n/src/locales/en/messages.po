@@ -471,7 +471,7 @@ msgid "{count, plural, one {# trial reminder} other {# trial reminders}}"
 msgstr "{count, plural, one {# trial reminder} other {# trial reminders}}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:36
+#: src/copy/lead-detail.ts:39
 msgid "{count, plural, one {# try, no answer} other {# tries, no answer}}"
 msgstr "{count, plural, one {# try, no answer} other {# tries, no answer}}"
 
@@ -2315,7 +2315,7 @@ msgid "A bill that is not an amount, or a type that is not Home or Business."
 msgstr "A bill that is not an amount, or a type that is not Home or Business."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:61
+#: src/copy/lead-detail-sheets.ts:65
 msgid "A call task for the lead’s owner, due when you say."
 msgstr "A call task for the lead’s owner, due when you say."
 
@@ -2345,7 +2345,7 @@ msgid "A company name is needed — it goes on every proposal you send."
 msgstr "A company name is needed — it goes on every proposal you send."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:88
+#: src/copy/lead-detail-sheets.ts:92
 msgid "A customer outside your list"
 msgstr "A customer outside your list"
 
@@ -2462,7 +2462,7 @@ msgid "A Quick proposal goes out exactly as this template stands."
 msgstr "A Quick proposal goes out exactly as this template stands."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:52
+#: src/copy/lead-detail-sheets.ts:56
 msgid "A reason is needed. It stays on the record."
 msgstr "A reason is needed. It stays on the record."
 
@@ -2483,12 +2483,12 @@ msgid "A reminder before each stage falls due"
 msgstr "A reminder before each stage falls due"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:29
+#: src/copy/lead-detail-sheets.ts:33
 msgid "A retry is set inside the calling window."
 msgstr "A retry is set inside the calling window."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:84
+#: src/copy/lead-detail-sheets.ts:88
 msgid "A role of your own"
 msgstr "A role of your own"
 
@@ -2749,13 +2749,13 @@ msgstr "Add a battery"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-parts.ts:100
-#: src/copy/lead-detail-sheets.ts:60
+#: src/copy/lead-detail-sheets.ts:64
 msgid "Add a call-back"
 msgstr "Add a call-back"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-parts.ts:68
-#: src/copy/lead-detail-sheets.ts:74
+#: src/copy/lead-detail-sheets.ts:78
 msgid "Add a contact"
 msgstr "Add a contact"
 
@@ -2817,7 +2817,7 @@ msgid "Add a rate"
 msgstr "Add a rate"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:67
+#: src/copy/lead-detail.ts:70
 msgid "Add a referral"
 msgstr "Add a referral"
 
@@ -2858,7 +2858,7 @@ msgid "Add as a lead"
 msgstr "Add as a lead"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:62
+#: src/copy/lead-detail-sheets.ts:66
 msgid "Add call-back"
 msgstr "Add call-back"
 
@@ -2894,7 +2894,7 @@ msgid "Add many at once from a spreadsheet"
 msgstr "Add many at once from a spreadsheet"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:31
+#: src/copy/lead-detail-sheets.ts:35
 msgid "Add note"
 msgstr "Add note"
 
@@ -2914,7 +2914,7 @@ msgid "Add phase"
 msgstr "Add phase"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:85
+#: src/copy/lead-detail-sheets.ts:89
 msgid "Add role"
 msgstr "Add role"
 
@@ -3353,7 +3353,7 @@ msgid "As printed"
 msgstr "As printed"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:47
+#: src/copy/lead-detail-sheets.ts:51
 msgid "As the customer confirmed it on the call."
 msgstr "As the customer confirmed it on the call."
 
@@ -3414,6 +3414,7 @@ msgid "Asking to join sends its owner a request to add {phone}."
 msgstr "Asking to join sends its owner a request to add {phone}."
 
 #. js-lingui-explicit-id
+#: src/copy/lead-detail.ts:35
 #: src/copy/lead-inbox.ts:65
 msgid "Assign"
 msgstr "Assign"
@@ -3740,7 +3741,7 @@ msgid "Bills on"
 msgstr "Bills on"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:55
+#: src/copy/lead-detail-sheets.ts:59
 msgid "Bin this lead as junk?"
 msgstr "Bin this lead as junk?"
 
@@ -3780,7 +3781,7 @@ msgid "Bold"
 msgstr "Bold"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:32
+#: src/copy/lead-detail-sheets.ts:36
 msgid "Book a site visit"
 msgstr "Book a site visit"
 
@@ -3790,7 +3791,7 @@ msgid "Book a site visit from a lead"
 msgstr "Book a site visit from a lead"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:49
+#: src/copy/lead-detail.ts:52
 msgid "Book visit"
 msgstr "Book visit"
 
@@ -3919,7 +3920,7 @@ msgstr "calculation method"
 #: src/copy/activity-stream.ts:49
 #: src/copy/crm-vocabulary.ts:138
 #: src/copy/crm-vocabulary.ts:146
-#: src/copy/lead-detail.ts:45
+#: src/copy/lead-detail.ts:48
 #: src/copy/usage-page.ts:43
 msgid "Call"
 msgstr "Call"
@@ -3970,7 +3971,7 @@ msgid "Calls are permitted {from}–{to} only."
 msgstr "Calls are permitted {from}–{to} only."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:35
+#: src/copy/lead-detail.ts:38
 #: src/copy/lead-timeline.ts:53
 #: src/copy/quick-add.ts:42
 msgid "Came from {name}"
@@ -4163,6 +4164,11 @@ msgstr "Certification scheme"
 #: src/copy/freshness.ts:36
 msgid "certification schemes"
 msgstr "certification schemes"
+
+#. js-lingui-explicit-id
+#: src/copy/lead-detail.ts:36
+msgid "Change"
+msgstr "Change"
 
 #. js-lingui-explicit-id
 #: src/copy/role-card.ts:67
@@ -4400,6 +4406,7 @@ msgstr "Cities served"
 #. js-lingui-explicit-id
 #: src/copy/company-signup.ts:46
 #: src/copy/customer-merge.ts:107
+#: src/copy/lead-detail-sheets.ts:25
 #: src/copy/lead-import.ts:120
 #: src/copy/lead-timeline.ts:63
 #: src/copy/quick-add.ts:31
@@ -4623,7 +4630,7 @@ msgid "Confirmed"
 msgstr "Confirmed"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:46
+#: src/copy/lead-detail-sheets.ts:50
 msgid "Confirmed address"
 msgstr "Confirmed address"
 
@@ -4741,18 +4748,18 @@ msgid "Copied from the selected item."
 msgstr "Copied from the selected item."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:72
+#: src/copy/lead-detail-sheets.ts:76
 msgid "Copied. Paste it in your own app."
 msgstr "Copied. Paste it in your own app."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:70
+#: src/copy/lead-detail-sheets.ts:74
 #: src/copy/project-handover.ts:41
 msgid "Copy"
 msgstr "Copy"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:71
+#: src/copy/lead-detail-sheets.ts:75
 msgid "Copy or share"
 msgstr "Copy or share"
 
@@ -4824,7 +4831,7 @@ msgid "Couldn’t load the prices"
 msgstr "Couldn’t load the prices"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:83
+#: src/copy/lead-detail-sheets.ts:87
 msgid "Couldn’t load the roles"
 msgstr "Couldn’t load the roles"
 
@@ -4869,7 +4876,7 @@ msgid "Couldn't load this record"
 msgstr "Couldn't load this record"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:44
+#: src/copy/lead-detail-sheets.ts:48
 msgid "Couldn’t load who can survey"
 msgstr "Couldn’t load who can survey"
 
@@ -4969,7 +4976,7 @@ msgid "Couldn’t work out what this change costs"
 msgstr "Couldn’t work out what this change costs"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:69
+#: src/copy/lead-detail-sheets.ts:73
 msgid "Couldn’t write the message"
 msgstr "Couldn’t write the message"
 
@@ -5057,7 +5064,7 @@ msgid "Create company"
 msgstr "Create company"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:51
+#: src/copy/lead-detail.ts:54
 msgid "Create design"
 msgstr "Create design"
 
@@ -5254,7 +5261,7 @@ msgstr "data rights"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:127
-#: src/copy/lead-detail-sheets.ts:39
+#: src/copy/lead-detail-sheets.ts:43
 msgid "Date"
 msgstr "Date"
 
@@ -5459,7 +5466,7 @@ msgstr "design"
 #. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:56
 #: src/copy/crm-vocabulary.ts:32
-#: src/copy/lead-detail.ts:52
+#: src/copy/lead-detail.ts:55
 #: src/copy/project-detail.ts:70
 msgid "Design"
 msgstr "Design"
@@ -5495,7 +5502,7 @@ msgid "Designs and proposals for the leads assigned to them, and design sign-off
 msgstr "Designs and proposals for the leads assigned to them, and design sign-off"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:55
+#: src/copy/lead-detail.ts:58
 msgid "Designs are made in the design studio, which arrives in a later release."
 msgstr "Designs are made in the design studio, which arrives in a later release."
 
@@ -5606,7 +5613,7 @@ msgid "Disqualified · {reason}"
 msgstr "Disqualified · {reason}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:61
+#: src/copy/lead-detail.ts:64
 msgid "Disqualify"
 msgstr "Disqualify"
 
@@ -5617,7 +5624,7 @@ msgid "Do not call"
 msgstr "Do not call"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:53
+#: src/copy/lead-detail.ts:56
 msgid "Do not call is on for this customer."
 msgstr "Do not call is on for this customer."
 
@@ -5859,9 +5866,15 @@ msgid "Edit {who}"
 msgstr "Edit {who}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:75
+#: src/copy/lead-detail-sheets.ts:79
 msgid "Edit contact"
 msgstr "Edit contact"
+
+#. js-lingui-explicit-id
+#: src/copy/lead-detail-sheets.ts:22
+#: src/copy/lead-detail.ts:37
+msgid "Edit details"
+msgstr "Edit details"
 
 #. js-lingui-explicit-id
 #: src/copy/profile-preferences.ts:27
@@ -6409,7 +6422,7 @@ msgstr "Fixed."
 
 #. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:136
-#: src/copy/lead-detail-sheets.ts:66
+#: src/copy/lead-detail-sheets.ts:70
 #: src/copy/lead-timeline.ts:67
 msgid "Follow-up"
 msgstr "Follow-up"
@@ -6435,7 +6448,7 @@ msgid "For a home-rooftop team of 1 to 5 people."
 msgstr "For a home-rooftop team of 1 to 5 people."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:35
+#: src/copy/lead-detail-sheets.ts:39
 msgid "For a no-show: a new visit replaces this one, and one reminder is ready to copy."
 msgstr "For a no-show: a new visit replaces this one, and one reminder is ready to copy."
 
@@ -6824,7 +6837,7 @@ msgid "Handed over"
 msgstr "Handed over"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:73
+#: src/copy/lead-detail-sheets.ts:77
 msgid "Handed to your phone. Nothing is sent from here."
 msgstr "Handed to your phone. Nothing is sent from here."
 
@@ -7127,7 +7140,7 @@ msgid "How a lead arrives"
 msgstr "How a lead arrives"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:28
+#: src/copy/lead-detail-sheets.ts:32
 msgid "How did the call end?"
 msgstr "How did the call end?"
 
@@ -7612,7 +7625,7 @@ msgid "It already moved to {stage}. Nothing changed twice."
 msgstr "It already moved to {stage}. Nothing changed twice."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:49
+#: src/copy/lead-detail-sheets.ts:53
 msgid "It comes back at 09:00 that day, with a follow-up task."
 msgstr "It comes back at 09:00 that day, with a follow-up task."
 
@@ -7627,7 +7640,7 @@ msgid "It keeps going on our side. Try again to see where it stands."
 msgstr "It keeps going on our side. Try again to see where it stands."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:56
+#: src/copy/lead-detail-sheets.ts:60
 msgid "It leaves every list and queue. Search still finds it, and it can be reopened."
 msgstr "It leaves every list and queue. Search still finds it, and it can be reopened."
 
@@ -7733,7 +7746,7 @@ msgstr "junk"
 
 #. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:44
-#: src/copy/lead-detail.ts:62
+#: src/copy/lead-detail.ts:65
 #: src/copy/lead-inbox.ts:40
 msgid "Junk"
 msgstr "Junk"
@@ -7744,7 +7757,7 @@ msgid "Junk {name}"
 msgstr "Junk {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:59
+#: src/copy/lead-detail-sheets.ts:63
 msgid "Junk it"
 msgstr "Junk it"
 
@@ -7917,7 +7930,7 @@ msgstr "Last activity"
 
 #. js-lingui-explicit-id
 #: src/copy/dedupe-sheet.ts:21
-#: src/copy/lead-detail-sheets.ts:91
+#: src/copy/lead-detail-sheets.ts:95
 msgid "Last contact"
 msgstr "Last contact"
 
@@ -8322,7 +8335,7 @@ msgid "Loading what your role can and cannot do"
 msgstr "Loading what your role can and cannot do"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:43
+#: src/copy/lead-detail-sheets.ts:47
 msgid "Loading who can survey"
 msgstr "Loading who can survey"
 
@@ -8398,7 +8411,7 @@ msgid "Location confirmed"
 msgstr "Location confirmed"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:48
+#: src/copy/lead-detail.ts:51
 msgid "Log"
 msgstr "Log"
 
@@ -8408,7 +8421,7 @@ msgid "Log {count, plural, one {# enquiry} other {# enquiries}}"
 msgstr "Log {count, plural, one {# enquiry} other {# enquiries}}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:47
+#: src/copy/lead-detail.ts:50
 msgid "Log activity"
 msgstr "Log activity"
 
@@ -8418,7 +8431,7 @@ msgid "Log as enquiry on the existing lead"
 msgstr "Log as enquiry on the existing lead"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:24
+#: src/copy/lead-detail-sheets.ts:28
 msgid "Log call"
 msgstr "Log call"
 
@@ -8601,7 +8614,7 @@ msgid "Mark qualified"
 msgstr "Mark qualified"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:66
+#: src/copy/lead-detail.ts:69
 #: src/copy/project-sheets.ts:20
 msgid "Mark won"
 msgstr "Mark won"
@@ -8702,7 +8715,7 @@ msgid "Merge customers"
 msgstr "Merge customers"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:68
+#: src/copy/lead-detail.ts:71
 msgid "Merge duplicate"
 msgstr "Merge duplicate"
 
@@ -8713,7 +8726,7 @@ msgstr "Merge not available"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:68
-#: src/copy/lead-detail-sheets.ts:92
+#: src/copy/lead-detail-sheets.ts:96
 msgid "Merge the two customers"
 msgstr "Merge the two customers"
 
@@ -8738,7 +8751,7 @@ msgid "Merging…"
 msgstr "Merging…"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:46
+#: src/copy/lead-detail.ts:49
 msgid "Message"
 msgstr "Message"
 
@@ -8758,7 +8771,7 @@ msgid "Message copied · {template}"
 msgstr "Message copied · {template}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:63
+#: src/copy/lead-detail-sheets.ts:67
 msgid "Message to copy"
 msgstr "Message to copy"
 
@@ -9170,7 +9183,7 @@ msgstr "My Visits Today"
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:168
 #: src/copy/customer-merge.ts:106
-#: src/copy/lead-detail-sheets.ts:78
+#: src/copy/lead-detail-sheets.ts:82
 #: src/copy/lead-import.ts:118
 #: src/copy/lead-timeline.ts:62
 #: src/copy/payment-terms.ts:51
@@ -9551,7 +9564,7 @@ msgid "Next step"
 msgstr "Next step"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:44
+#: src/copy/lead-detail.ts:47
 msgid "Next, {stage}"
 msgstr "Next, {stage}"
 
@@ -9807,7 +9820,7 @@ msgid "No one can manage a project yet. Invite a project manager from Team."
 msgstr "No one can manage a project yet. Invite a project manager from Team."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:45
+#: src/copy/lead-detail-sheets.ts:49
 msgid "No one can survey yet. Give someone a survey role in Team."
 msgstr "No one can survey yet. Give someone a survey role in Team."
 
@@ -9837,7 +9850,7 @@ msgid "No one matches “{query}”"
 msgstr "No one matches “{query}”"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:54
+#: src/copy/lead-detail-sheets.ts:58
 msgid "No one will be offered a call to this number again."
 msgstr "No one will be offered a call to this number again."
 
@@ -9986,7 +9999,7 @@ msgid "No results for “{query}”"
 msgstr "No results for “{query}”"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:82
+#: src/copy/lead-detail-sheets.ts:86
 msgid "No role"
 msgstr "No role"
 
@@ -10046,7 +10059,7 @@ msgid "No transcript on this call"
 msgstr "No transcript on this call"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:40
+#: src/copy/lead-detail.ts:43
 msgid "No value yet"
 msgstr "No value yet"
 
@@ -10497,7 +10510,7 @@ msgstr "Not you? Use a different Google account"
 #: src/copy/activity-stream.ts:48
 #: src/copy/crm-vocabulary.ts:145
 #: src/copy/derivation.ts:13
-#: src/copy/lead-detail-sheets.ts:26
+#: src/copy/lead-detail-sheets.ts:30
 #: src/copy/lead-timeline.ts:31
 #: src/copy/project-sheets.ts:85
 msgid "Note"
@@ -10725,7 +10738,7 @@ msgid "Nothing was lost — press Save and continue to try again."
 msgstr "Nothing was lost — press Save and continue to try again."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:87
+#: src/copy/lead-detail-sheets.ts:91
 msgid "Nothing was saved. If they are one family, merge the two customers."
 msgstr "Nothing was saved. If they are one family, merge the two customers."
 
@@ -11031,7 +11044,7 @@ msgid "Open project"
 msgstr "Open project"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:42
+#: src/copy/lead-detail.ts:45
 msgid "Open project {number}"
 msgstr "Open project {number}"
 
@@ -11255,7 +11268,7 @@ msgstr "Owned"
 
 #. js-lingui-explicit-id
 #: src/copy/dedupe-sheet.ts:19
-#: src/copy/lead-detail-sheets.ts:89
+#: src/copy/lead-detail-sheets.ts:93
 #: src/copy/leads-list.ts:73
 msgid "Owner"
 msgstr "Owner"
@@ -11657,7 +11670,7 @@ msgid "Phases"
 msgstr "Phases"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:79
+#: src/copy/lead-detail-sheets.ts:83
 #: src/copy/lead-import.ts:119
 #: src/copy/quick-add.ts:29
 msgid "Phone"
@@ -11756,7 +11769,7 @@ msgid "Pick a project manager or the owner."
 msgstr "Pick a project manager or the owner."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:81
+#: src/copy/lead-detail-sheets.ts:85
 msgid "Pick a role"
 msgstr "Pick a role"
 
@@ -11817,7 +11830,7 @@ msgid "Pick who manages the project"
 msgstr "Pick who manages the project"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:42
+#: src/copy/lead-detail-sheets.ts:46
 msgid "Pick who visits"
 msgstr "Pick who visits"
 
@@ -12168,7 +12181,7 @@ msgid "Progress"
 msgstr "Progress"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:41
+#: src/copy/lead-detail.ts:44
 #: src/copy/projects.ts:68
 msgid "Project"
 msgstr "Project"
@@ -12354,7 +12367,7 @@ msgid "Proposals, payments and totals stay exactly as they are."
 msgstr "Proposals, payments and totals stay exactly as they are."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:43
+#: src/copy/lead-detail.ts:46
 #: src/copy/provenance.ts:25
 msgid "Provisional"
 msgstr "Provisional"
@@ -12583,7 +12596,7 @@ msgid "Real · PVGIS ({database})"
 msgstr "Real · PVGIS ({database})"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:53
+#: src/copy/lead-detail-sheets.ts:57
 #: src/copy/project-sheets.ts:79
 msgid "Reason"
 msgstr "Reason"
@@ -12783,7 +12796,7 @@ msgid "Renting"
 msgstr "Renting"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:63
+#: src/copy/lead-detail.ts:66
 msgid "Reopen"
 msgstr "Reopen"
 
@@ -12803,7 +12816,7 @@ msgid "Reopen anytime from Profile & preferences."
 msgstr "Reopen anytime from Profile & preferences."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:58
+#: src/copy/lead-detail.ts:61
 msgid "Reopen the lead to book a visit."
 msgstr "Reopen the lead to book a visit."
 
@@ -12818,7 +12831,7 @@ msgid "Reopened"
 msgstr "Reopened"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:65
+#: src/copy/lead-detail.ts:68
 msgid "Reopening the lead…"
 msgstr "Reopening the lead…"
 
@@ -12901,7 +12914,7 @@ msgid "Required by law — cannot be widened"
 msgstr "Required by law — cannot be widened"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:38
+#: src/copy/lead-detail-sheets.ts:42
 msgid "Reschedule"
 msgstr "Reschedule"
 
@@ -12911,7 +12924,7 @@ msgid "Reschedule a no-show"
 msgstr "Reschedule a no-show"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:34
+#: src/copy/lead-detail-sheets.ts:38
 msgid "Reschedule the visit"
 msgstr "Reschedule the visit"
 
@@ -13040,7 +13053,7 @@ msgid "Revoke invite for {name}"
 msgstr "Revoke invite for {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:80
+#: src/copy/lead-detail-sheets.ts:84
 msgid "Role"
 msgstr "Role"
 
@@ -13248,6 +13261,7 @@ msgid "Sample customer and proposal number"
 msgstr "Sample customer and proposal number"
 
 #. js-lingui-explicit-id
+#: src/copy/lead-detail-sheets.ts:24
 #: src/copy/name-and-photo-editor.ts:15
 #: src/copy/project-sheets.ts:109
 msgid "Save"
@@ -13280,7 +13294,7 @@ msgid "Save changes to your business profile"
 msgstr "Save changes to your business profile"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:77
+#: src/copy/lead-detail-sheets.ts:81
 msgid "Save contact"
 msgstr "Save contact"
 
@@ -13677,7 +13691,7 @@ msgid "Send it again"
 msgstr "Send it again"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:64
+#: src/copy/lead-detail-sheets.ts:68
 msgid "Send it from your own phone. Nothing is sent from here."
 msgstr "Send it from your own phone. Nothing is sent from here."
 
@@ -14143,12 +14157,12 @@ msgid "SMS codes paused for {lockMinutes} minutes"
 msgstr "SMS codes paused for {lockMinutes} minutes"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:59
+#: src/copy/lead-detail.ts:62
 msgid "Snooze"
 msgstr "Snooze"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:48
+#: src/copy/lead-detail-sheets.ts:52
 msgid "Snooze until"
 msgstr "Snooze until"
 
@@ -14300,7 +14314,7 @@ msgstr "Spouse"
 #. js-lingui-explicit-id
 #: src/copy/dedupe-sheet.ts:20
 #: src/copy/kanban.ts:12
-#: src/copy/lead-detail-sheets.ts:90
+#: src/copy/lead-detail-sheets.ts:94
 #: src/copy/leads-list.ts:71
 #: src/copy/projects.ts:67
 msgid "Stage"
@@ -14598,7 +14612,7 @@ msgid "Surveyed remotely"
 msgstr "Surveyed remotely"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:41
+#: src/copy/lead-detail-sheets.ts:45
 msgid "Surveyor"
 msgstr "Surveyor"
 
@@ -15308,7 +15322,7 @@ msgid "The lead is marked as referred by them. No credits, no points."
 msgstr "The lead is marked as referred by them. No credits, no points."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:33
+#: src/copy/lead-detail-sheets.ts:37
 msgid "The lead moves to Survey, and the confirmation is ready to copy."
 msgstr "The lead moves to Survey, and the confirmation is ready to copy."
 
@@ -15316,6 +15330,11 @@ msgstr "The lead moves to Survey, and the confirmation is ready to copy."
 #: src/copy/project-handover.ts:58
 msgid "The lead was not added. Try again."
 msgstr "The lead was not added. Try again."
+
+#. js-lingui-explicit-id
+#: src/copy/lead-detail-sheets.ts:23
+msgid "The name and city, as the customer gives them."
+msgstr "The name and city, as the customer gives them."
 
 #. js-lingui-explicit-id
 #: src/copy/price-book.ts:61
@@ -15638,7 +15657,7 @@ msgid "Their name"
 msgstr "Their name"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:76
+#: src/copy/lead-detail-sheets.ts:80
 msgid "Their number joins this customer, so it is found when they call."
 msgstr "Their number joins this customer, so it is found when they call."
 
@@ -15874,7 +15893,7 @@ msgid "This number already has an invite waiting"
 msgstr "This number already has an invite waiting"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:86
+#: src/copy/lead-detail-sheets.ts:90
 msgid "This number is already another customer’s"
 msgstr "This number is already another customer’s"
 
@@ -15900,7 +15919,7 @@ msgid "This number is linked to another Google account"
 msgstr "This number is linked to another Google account"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:54
+#: src/copy/lead-detail.ts:57
 msgid "This number was marked wrong. No call goes to it."
 msgstr "This number was marked wrong. No call goes to it."
 
@@ -16041,7 +16060,7 @@ msgid "Tile"
 msgstr "Tile"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:40
+#: src/copy/lead-detail-sheets.ts:44
 msgid "Time"
 msgstr "Time"
 
@@ -16666,7 +16685,7 @@ msgid "validity, payment, changes and warranties"
 msgstr "validity, payment, changes and warranties"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:39
+#: src/copy/lead-detail.ts:42
 msgid "Value"
 msgstr "Value"
 
@@ -16756,7 +16775,7 @@ msgid "View prices & margins"
 msgstr "View prices & margins"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:50
+#: src/copy/lead-detail.ts:53
 msgid "Visit"
 msgstr "Visit"
 
@@ -16776,7 +16795,7 @@ msgid "Visit bookings"
 msgstr "Visit bookings"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:67
+#: src/copy/lead-detail-sheets.ts:71
 #: src/copy/lead-timeline.ts:68
 msgid "Visit confirmation"
 msgstr "Visit confirmation"
@@ -16912,17 +16931,17 @@ msgid "Waive a tranche"
 msgstr "Waive a tranche"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:50
+#: src/copy/lead-detail-sheets.ts:54
 msgid "Wake on"
 msgstr "Wake on"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:60
+#: src/copy/lead-detail.ts:63
 msgid "Wake up now"
 msgstr "Wake up now"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail.ts:64
+#: src/copy/lead-detail.ts:67
 msgid "Waking the lead…"
 msgstr "Waking the lead…"
 
@@ -17183,7 +17202,7 @@ msgid "What every plan includes"
 msgstr "What every plan includes"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:23
+#: src/copy/lead-detail-sheets.ts:27
 msgid "What happened, while it is fresh. It goes on the timeline."
 msgstr "What happened, while it is fresh. It goes on the timeline."
 
@@ -17295,12 +17314,12 @@ msgid "What this proposal covers"
 msgstr "What this proposal covers"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:27
+#: src/copy/lead-detail-sheets.ts:31
 msgid "What to log"
 msgstr "What to log"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:30
+#: src/copy/lead-detail-sheets.ts:34
 msgid "What was said"
 msgstr "What was said"
 
@@ -17471,7 +17490,7 @@ msgid "Which crew goes?"
 msgstr "Which crew goes?"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:65
+#: src/copy/lead-detail-sheets.ts:69
 msgid "Which message"
 msgstr "Which message"
 
@@ -17562,7 +17581,7 @@ msgid "Why Billing stays on"
 msgstr "Why Billing stays on"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:51
+#: src/copy/lead-detail-sheets.ts:55
 msgid "Why disqualify?"
 msgstr "Why disqualify?"
 
@@ -17677,7 +17696,7 @@ msgid "Write the final value."
 msgstr "Write the final value."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:68
+#: src/copy/lead-detail-sheets.ts:72
 msgid "Writing the message"
 msgstr "Writing the message"
 

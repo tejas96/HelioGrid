@@ -14,7 +14,7 @@ import type { QualifyCardWords } from '../QualifyCard/QualifyCard.types';
 
 /** The sheets these cards open; the screen's `acts.open` takes them among its others. */
 export type LeadWorkCardsSheet =
-  | { readonly kind: 'log' | 'visit' | Exclude<LeadStateAct, LeadQuickAct> }
+  | { readonly kind: 'log' | 'visit' | 'details' | Exclude<LeadStateAct, LeadQuickAct> }
   | { readonly kind: 'message'; readonly template: 'follow_up_nudge' };
 
 /** What the cards read and press on the lead's screen; `useLeadDetailScreen` satisfies it. */
@@ -76,3 +76,12 @@ export interface LeadWorkCardsProps {
   readonly onOpenProject: (projectId: string) => void;
   readonly words: LeadWorkCardsWords;
 }
+
+/**
+ * The narrow page's ⋯ in its top bar (`M02-32`): snooze and disqualify where the standing offers
+ * them, Mark won, a referral, merge, and junk last — the acts the wide hero keeps in its corner.
+ */
+export type LeadRecordMenuProps = Pick<
+  LeadWorkCardsProps,
+  'screen' | 'lead' | 'view' | 'onAddReferral' | 'onMerge' | 'onMarkWon' | 'words'
+>;

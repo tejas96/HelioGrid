@@ -1,6 +1,6 @@
 import { useId } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
-import { StyleSheet } from 'react-native';
+import { Linking, StyleSheet } from 'react-native';
 import type { ThemeColor } from '../../primitives/Color/colors';
 import { colors } from '../../primitives/Color/colors';
 import { useGround } from '../../primitives/Ground/Ground.native';
@@ -53,8 +53,15 @@ export function IconButton({
   reasonOpen,
   pressed,
   onClick,
+  href,
   style,
 }: NativeIconButtonProps) {
+  const press =
+    href === undefined
+      ? onClick
+      : () => {
+          void Linking.openURL(href).catch(() => undefined);
+        };
   const visual = VARIANT[variant];
   const { controlFill, controlFillDisabled } = useGround();
   const reasonId = useId();
@@ -70,7 +77,7 @@ export function IconButton({
         reason === undefined ? toggleState(pressed) : { disabled: true, expanded: reason.expanded }
       }
       disabled={disabled && reason === undefined}
-      onPress={reason === undefined ? onClick : reason.onPress}
+      onPress={reason === undefined ? press : reason.onPress}
       style={[
         styles.circle,
         {

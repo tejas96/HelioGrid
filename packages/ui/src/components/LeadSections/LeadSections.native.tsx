@@ -1,7 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import { LEAD_DETAIL_SECTIONS } from '@heliogrid/domain';
 import { theme } from '@heliogrid/theme';
-import type { ReactNode } from 'react';
+import { type ReactNode, useEffect, useRef } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
@@ -20,9 +20,19 @@ import { LeadTaskList } from './LeadTaskList.native';
  */
 export function LeadSections(props: LeadSectionsProps) {
   const { section, onSection, counts, words } = props;
+  /* The chosen tab is scrolled into view: a strip wider than the phone hid the last tabs, chosen
+     one included, behind the screen's edge with no cue that more were there. */
+  const strip = useRef<ScrollView>(null);
+  const starts = useRef(new Map<string, number>());
+  useEffect(() => {
+    const x = starts.current.get(section);
+    if (x !== undefined)
+      strip.current?.scrollTo({ x: Math.max(0, x - SCROLL_LEAD), animated: true });
+  }, [section]);
   return (
     <View style={styles.sections}>
       <ScrollView
+        ref={strip}
         horizontal
         showsHorizontalScrollIndicator={false}
         accessibilityRole="tablist"
@@ -33,22 +43,26 @@ export function LeadSections(props: LeadSectionsProps) {
           const count = counts[each];
           const chosen = each === section;
           return (
-            <Pressable
+            <View
               key={each}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: chosen }}
-              onPress={() => onSection(each)}
-              style={[styles.tab, chosen ? styles.chosen : undefined]}
+              onLayout={(event) => starts.current.set(each, event.nativeEvent.layout.x)}
             >
-              <Text variant="body-sm" color={chosen ? 'primary' : 'secondary'} bold={chosen}>
-                {words.tabs[each]}
-              </Text>
-              {count === null ? null : (
-                <Text variant="mono" color="secondary">
-                  {String(count)}
+              <Pressable
+                accessibilityRole="tab"
+                accessibilityState={{ selected: chosen }}
+                onPress={() => onSection(each)}
+                style={[styles.tab, chosen ? styles.chosen : undefined]}
+              >
+                <Text variant="body-sm" color={chosen ? 'primary' : 'secondary'} bold={chosen}>
+                  {words.tabs[each]}
                 </Text>
-              )}
-            </Pressable>
+                {count === null ? null : (
+                  <Text variant="mono" color="secondary">
+                    {String(count)}
+                  </Text>
+                )}
+              </Pressable>
+            </View>
           );
         })}
       </ScrollView>
@@ -56,6 +70,9 @@ export function LeadSections(props: LeadSectionsProps) {
     </View>
   );
 }
+
+/** How far before the chosen tab the strip stops, so the tab before it still shows as a cue. */
+const SCROLL_LEAD = theme.spacing['sp-8'];
 
 /** The chosen section's panel. */
 function Panel(props: LeadSectionsProps) {
@@ -141,7 +158,8 @@ function CountPanel({
 
 const styles = StyleSheet.create({
   sections: { gap: theme.spacing['sp-3'] },
-  tabs: { gap: theme.spacing['sp-1'] },
+  /* The strip's end keeps a gutter, so the last tab never sits flush against the screen's edge. */
+  tabs: { gap: theme.spacing['sp-1'], paddingRight: theme.spacing['sp-6'] },
   tab: {
     flexDirection: 'row',
     alignItems: 'center',

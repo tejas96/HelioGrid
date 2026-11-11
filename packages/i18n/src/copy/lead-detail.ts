@@ -32,6 +32,9 @@ export const LEAD_DETAIL = {
   phoneCity: /*i18n*/ { id: '{phone} · {city}' },
   ownerSpoken: /*i18n*/ { id: 'Owner: {name}. Give the lead to someone' },
   noOwnerSpoken: /*i18n*/ { id: 'No owner yet. Give the lead to someone' },
+  assignOwner: /*i18n*/ { id: 'Assign' },
+  changeOwner: /*i18n*/ { id: 'Change' },
+  editDetails: /*i18n*/ { id: 'Edit details' },
   cameFrom: /*i18n*/ { id: 'Came from {name}' },
   tries: /*i18n*/ {
     id: '{count, plural, one {# try, no answer} other {# tries, no answer}}',
@@ -146,6 +149,8 @@ export function leadHeroWords(t: T, facts: LeadHeroFacts) {
         ? null
         : t(LEAD_DETAIL.tries, { count: facts.triesWithoutAnswer }),
     owner: facts.ownerName === null ? t(LEAD_DETAIL.noOwner) : shownAsSent(facts.ownerName),
+    editDetails: t(LEAD_DETAIL.editDetails),
+    ownerAct: facts.ownerName === null ? t(LEAD_DETAIL.assignOwner) : t(LEAD_DETAIL.changeOwner),
     ownerSpoken:
       facts.ownerName === null
         ? t(LEAD_DETAIL.noOwnerSpoken)
@@ -161,6 +166,8 @@ export function leadHeroWords(t: T, facts: LeadHeroFacts) {
     stageTrack: stageTrackWords(t),
     recordActs: {
       label: t(MENU.moreActions),
+      snooze: t(LEAD_DETAIL.snooze),
+      disqualify: t(LEAD_DETAIL.disqualify),
       markWon: t(LEAD_DETAIL.markWon),
       addReferral: t(LEAD_DETAIL.addReferral),
       merge: t(LEAD_DETAIL.merge),

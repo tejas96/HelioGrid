@@ -139,6 +139,46 @@ describe('Lead Detail — acts and their answers', () => {
   });
 });
 
+describe('Lead Detail — the details a capture left out (M02-03)', () => {
+  it('the details sheet fills the name, empties the city back to its gap, and closes on the lead', async () => {
+    const view = await mountedLead();
+    act(() => view.result.current.acts.open({ kind: 'details' }));
+    act(() =>
+      view.result.current.acts.send({ kind: 'details', name: 'Meera Kulkarni', city: null }),
+    );
+    await waitFor(() => expect(view.result.current.acts.sheet).toBeNull());
+    expect(origin.writes.map(({ path, body }) => [path, body])).toEqual([
+      [`/leads/${LEAD_ID}`, expect.objectContaining({ name: 'Meera Kulkarni', city: null })],
+    ]);
+    const { read } = view.result.current;
+    expect(read.kind === 'ready' && [read.value.lead.lead.name, read.value.lead.lead.city]).toEqual(
+      ['Meera Kulkarni', null],
+    );
+  });
+
+  it('a changed city alone is sent alone: the name standing on the record is never sent back', async () => {
+    const view = await mountedLead();
+    act(() => view.result.current.acts.open({ kind: 'details' }));
+    act(() => view.result.current.acts.send({ kind: 'details', city: 'Pune' }));
+    await waitFor(() => expect(view.result.current.acts.sheet).toBeNull());
+    expect(origin.writes).toHaveLength(1);
+    expect(Object.keys(origin.writes[0]?.body ?? {}).sort()).toEqual(['capturedAt', 'city']);
+  });
+
+  it('a name past the limit comes back refused, the sheet stays open and the name is unchanged', async () => {
+    const view = await mountedLead();
+    const before = view.result.current.read;
+    act(() => view.result.current.acts.open({ kind: 'details' }));
+    act(() => view.result.current.acts.send({ kind: 'details', name: 'n'.repeat(121) }));
+    await waitFor(() => expect(view.result.current.acts.sendFailure).not.toBeNull());
+    expect(view.result.current.acts.sheet).toEqual({ kind: 'details' });
+    const { read } = view.result.current;
+    expect(read.kind === 'ready' && before.kind === 'ready' && read.value.lead.lead.name).toBe(
+      before.kind === 'ready' ? before.value.lead.lead.name : null,
+    );
+  });
+});
+
 describe('Lead Detail — Book visit (M02-46)', () => {
   it('Book visit offers whom the booking read names, read only once the sheet opens', async () => {
     const view = await mountedLead();

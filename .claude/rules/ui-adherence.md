@@ -28,6 +28,11 @@ paths:
   never from a style.
 - **Text is never smaller than 12px**; the 11px uppercase overline is the one exception.
 - **An icon-only control is an `IconButton`**; a `Button` always has words.
+- **An icon replaces a word only where the glyph alone says the act** — edit (pencil), close,
+  more (⋯), search, add, delete, call. A card's edit is a pencil `IconButton` in its top-right
+  corner (`HeroPanel`'s `edit`), never a worded "Edit …" button inside it. An act no common glyph
+  names (Assign, Mark won, Reopen, Disqualify), a screen's main act, and a choice between two acts
+  keep their words. Every icon-only control still speaks its full act ("Edit details").
 
 ## A screen follows the approved language
 

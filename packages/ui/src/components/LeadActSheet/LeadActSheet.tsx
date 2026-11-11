@@ -10,6 +10,7 @@ import {
 } from './LeadActForms';
 import type { LeadActForm, LeadActSheetProps } from './LeadActSheet.types';
 import { LeadContactForm } from './LeadContactForm';
+import { LeadDetailsForm } from './LeadDetailsForm';
 import { LeadMessageBody } from './LeadMessageBody';
 import { LeadVisitForm } from './LeadVisitForm';
 
@@ -73,6 +74,8 @@ function FormBody({ form, ...frame }: FormFrame & { form: LeadActForm }) {
       return <LeadMessageBody form={form} />;
     case 'contact':
       return <LeadContactForm form={form} {...frame} />;
+    case 'details':
+      return <LeadDetailsForm form={form} {...frame} />;
   }
 }
 

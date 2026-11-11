@@ -1,6 +1,7 @@
 # Lead detail (`SCR-M02-04`, `M02-32`, `M02-39`): the lead the api made for this company opens at
-# its address, as a notice opens it; the hero names it, Call and the four acts sit under it, and a
-# roof answer saves the moment it is tapped — no form, no submit — then the Timeline tab is there.
+# its address, as a notice opens it; the large title names it, Call and the four acts sit under the
+# hero, the qualify card opens from its folded head, and a roof answer saves the moment it is
+# tapped — no form, no submit — then the Timeline tab is there.
 appId: com.heliogrid.app
 ---
 - openLink: heliogrid://leads/${LEAD_ID}
@@ -14,6 +15,11 @@ appId: com.heliogrid.app
 - assertVisible: ${LOG_SHORT}
 - assertVisible: ${VISIT_SHORT}
 - assertVisible: ${DESIGN_SHORT}
+# The qualify card opens folded on the phone: its head opens the six questions in place.
+- scrollUntilVisible:
+    element: ${QUALIFY_FOLDED}
+    direction: DOWN
+- tapOn: ${QUALIFY_FOLDED}
 # One answer saves alone: its chip is chosen at once and the Saved mark follows the server's answer.
 - scrollUntilVisible:
     element: ${ROOF_OWNED}

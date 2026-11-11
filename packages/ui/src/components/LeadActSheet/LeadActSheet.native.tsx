@@ -5,6 +5,7 @@ import { Sheet } from '../Sheet/Sheet.native';
 import type { LeadFormFrame } from './LeadActSend.native';
 import type { LeadActForm, LeadActSheetProps } from './LeadActSheet.types';
 import { LeadContactForm } from './LeadContactForm.native';
+import { LeadDetailsForm } from './LeadDetailsForm.native';
 import { LeadLogForm } from './LeadLogForm.native';
 import { LeadMessageForm } from './LeadMessageForm.native';
 import {
@@ -78,6 +79,8 @@ function FormOf({ form, frame }: { form: LeadActForm; frame: LeadFormFrame }) {
       return <LeadMessageForm form={form} frame={frame} />;
     case 'contact':
       return <LeadContactForm form={form} frame={frame} />;
+    case 'details':
+      return <LeadDetailsForm form={form} frame={frame} />;
   }
 }
 

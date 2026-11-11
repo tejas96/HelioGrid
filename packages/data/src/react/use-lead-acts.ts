@@ -1,5 +1,5 @@
 'use client';
-import type { CrmMessageTemplateKey, LeadDetail } from '@heliogrid/contracts';
+import type { CrmMessageTemplateKey, LeadDetail, LeadField } from '@heliogrid/contracts';
 import {
   type CallOutcome,
   type DisqualifyReason,
@@ -13,9 +13,11 @@ import { useAction } from './action';
 import { useRepositories } from './context';
 import { leadActFailureOf, useLeadDetailCache } from './lead-detail-cache';
 
-/** The sheet open over the lead: one act's form, the message to copy, or a contact. */
+/** The sheet open over the lead: one act's form, the message to copy, a contact, or its details. */
 export type LeadSheet =
-  | { readonly kind: 'log' | 'visit' | 'snooze' | 'disqualify' | 'junk' | 'callBack' }
+  | {
+      readonly kind: 'log' | 'visit' | 'snooze' | 'disqualify' | 'junk' | 'callBack' | 'details';
+    }
   | { readonly kind: 'message'; readonly template: CrmMessageTemplateKey }
   | { readonly kind: 'contact'; readonly contactId: string | null };
 
@@ -41,7 +43,36 @@ export type LeadSheetSend =
   | { readonly kind: 'snooze'; readonly wakeOn: string }
   | { readonly kind: 'disqualify'; readonly reason: DisqualifyReason }
   | { readonly kind: 'junk' }
-  | { readonly kind: 'callBack'; readonly date: string; readonly time: string };
+  | { readonly kind: 'callBack'; readonly date: string; readonly time: string }
+  /**
+   * The lead's name and city as the customer gives them (`M02-03`: a capture's gaps are filled on
+   * first contact); null empties one back to its named gap.
+   */
+  | {
+      readonly kind: 'details';
+      /** Only the fields the person changed: each is its own last-writer-wins edit (`M02-36`). */
+      readonly name?: string | null;
+      readonly city?: string | null;
+    };
+
+/** The details a sheet changed, each one alone — an untouched field is not sent back stale. */
+function detailsOf(send: Extract<LeadSheetSend, { kind: 'details' }>): {
+  name?: string | null;
+  city?: string | null;
+} {
+  return {
+    ...(send.name === undefined ? {} : { name: send.name }),
+    ...(send.city === undefined ? {} : { city: send.city }),
+  };
+}
+
+/** Which fields a details send carries, for the cache to copy from its answer. */
+function detailFieldsOf(send: Extract<LeadSheetSend, { kind: 'details' }>): LeadField[] {
+  return [
+    ...(send.name === undefined ? [] : (['name'] as const)),
+    ...(send.city === undefined ? [] : (['city'] as const)),
+  ];
+}
 
 export interface LeadActs {
   readonly sheet: LeadSheet | null;
@@ -71,7 +102,7 @@ export function useLeadActs(leadId: string, timeZone: string): LeadActs {
 
   const sheetSend = useAction(
     async (send: LeadSheetSend): Promise<LeadDetail | null> => {
-      const { leadCalls, leadLifecycle, visits, tasks } = repositories;
+      const { leadCalls, leadLifecycle, leadEdits, visits, tasks } = repositories;
       switch (send.kind) {
         case 'log':
           return send.log.kind === 'note'
@@ -94,6 +125,8 @@ export function useLeadActs(leadId: string, timeZone: string): LeadActs {
           });
         case 'junk':
           return leadLifecycle.junk(leadId, { capturedAt: capturedAt() });
+        case 'details':
+          return leadEdits.edit(leadId, { ...detailsOf(send), capturedAt: capturedAt() });
         case 'callBack': {
           const due = tenantInstantOf(send.date, send.time, timeZone);
           await tasks.create(leadId, { kind: 'call', dueAt: new Date(due).toISOString() });
@@ -104,6 +137,7 @@ export function useLeadActs(leadId: string, timeZone: string): LeadActs {
     {
       onDone: (lead, send) => {
         if (lead === null) cache.refresh();
+        else if (send.kind === 'details') cache.edited(lead, detailFieldsOf(send));
         else cache.landed(lead);
         const visit = send.kind === 'visit' ? lead?.visit : null;
         setSheet(

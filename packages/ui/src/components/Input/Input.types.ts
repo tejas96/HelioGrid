@@ -16,6 +16,11 @@ export interface InputProps {
   labelSpokenOnly?: boolean;
   value?: string;
   /**
+   * The most characters the value may hold — the server's own limit, read from its owner (a
+   * person's name, a city); typing stops there, so a long value is never refused after the send.
+   */
+  maxLength?: number;
+  /**
    * The DS declares this as a DOM change event; the shared contract hands back the value instead,
    * so both platforms call it the same way. Ignored in `commitOnBlur` mode.
    */

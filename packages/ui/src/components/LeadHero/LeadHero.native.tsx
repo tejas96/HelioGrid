@@ -24,10 +24,12 @@ import type { LeadHeroProps } from './LeadHero.types';
  * the value or its named gap, and the eight-step track with where it goes next.
  */
 export function LeadHero({
+  form,
   identity,
   stage,
   source,
   lifecycleState,
+  onEditDetails,
   onOwner,
   ownerName,
   value,
@@ -36,24 +38,19 @@ export function LeadHero({
   recordActsOff,
   words,
 }: LeadHeroProps) {
-  const chips = (
-    <View style={styles.chips}>
-      <StatusMark tone="accent" label={words.stage} />
-      {words.segment === null ? null : <HeroChip>{words.segment}</HeroChip>}
-      {words.cameFrom === null ? (
-        <HeroChip>
-          <LeadSourceMark source={source} label={words.source} />
-        </HeroChip>
-      ) : (
-        <HeroChip glyph="link">{words.cameFrom}</HeroChip>
-      )}
-      <OwnerChip ownerName={ownerName} onOwner={onOwner} words={words} />
-    </View>
+  const narrow = form === 'narrow';
+  const chips = narrow ? (
+    <QuietFacts words={words} />
+  ) : (
+    <Chips source={source} ownerName={ownerName} onOwner={onOwner} words={words} />
   );
   return (
     <HeroPanel
       name={words.stage}
-      menu={leadRecordMenuOf({ recordActs, recordActsOff, words }, recordGlyph)}
+      menu={
+        narrow ? undefined : leadRecordMenuOf({ recordActs, recordActsOff, words }, recordGlyph)
+      }
+      edit={{ label: words.editDetails, onPress: onEditDetails }}
     >
       {identity === null ? null : <Identity identity={identity} words={words} />}
       {chips}
@@ -79,7 +76,80 @@ export function LeadHero({
           )}
         </View>
       </View>
+      {narrow ? <OwnerRow ownerName={ownerName} onOwner={onOwner} words={words} /> : null}
     </HeroPanel>
+  );
+}
+
+/** The narrow hero's facts: the stage its one chip, the deal and where it came from one quiet line. */
+function QuietFacts({ words }: Pick<LeadHeroProps, 'words'>) {
+  return (
+    <View style={styles.chips}>
+      <StatusMark tone="accent" label={words.stage} />
+      <View style={styles.facts}>
+        {words.segment === null ? null : (
+          <>
+            <Text variant="body-sm" color="secondary">
+              {words.segment}
+            </Text>
+            <View style={styles.factDot} />
+          </>
+        )}
+        <Text variant="body-sm" color="secondary">
+          {words.cameFrom ?? words.source}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+/** The wide hero's chips: the stage, the deal, where it came from, and the owner chip. */
+function Chips({
+  source,
+  ownerName,
+  onOwner,
+  words,
+}: Pick<LeadHeroProps, 'source' | 'ownerName' | 'onOwner' | 'words'>) {
+  return (
+    <View style={styles.chips}>
+      <StatusMark tone="accent" label={words.stage} />
+      {words.segment === null ? null : <HeroChip>{words.segment}</HeroChip>}
+      {words.cameFrom === null ? (
+        <HeroChip>
+          <LeadSourceMark source={source} label={words.source} />
+        </HeroChip>
+      ) : (
+        <HeroChip glyph="link">{words.cameFrom}</HeroChip>
+      )}
+      <OwnerChip ownerName={ownerName} onOwner={onOwner} words={words} />
+    </View>
+  );
+}
+
+/** Who has the lead, at the narrow hero's foot: their face and name, and the act that changes it. */
+function OwnerRow({
+  ownerName,
+  onOwner,
+  words,
+}: Pick<LeadHeroProps, 'ownerName' | 'onOwner' | 'words'>) {
+  return (
+    <View style={styles.owner}>
+      {ownerName === null ? (
+        <View style={styles.ownerNone}>
+          <ShellGlyph name="person-plus" size="sm" tone="secondary" />
+        </View>
+      ) : (
+        <Avatar name={ownerName} size={32} />
+      )}
+      <View style={styles.ownerName}>
+        <Text variant="body" color="secondary">
+          {words.owner}
+        </Text>
+      </View>
+      <Button variant="secondary" size="md" spokenName={words.ownerSpoken} onClick={onOwner}>
+        {words.ownerAct}
+      </Button>
+    </View>
   );
 }
 
@@ -226,6 +296,39 @@ const styles = StyleSheet.create({
     gap: theme.spacing['sp-2'],
   },
   track: { gap: theme.spacing['sp-2'] },
+  /* The narrow hero's quiet line: the deal and where it came from, a small dot between. */
+  facts: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: theme.spacing['sp-2'],
+    flexShrink: 1,
+  },
+  factDot: {
+    width: theme.spacing['sp-1'],
+    height: theme.spacing['sp-1'],
+    borderRadius: theme.radius['r-pill'],
+    backgroundColor: colors['text-secondary'],
+  },
+  owner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing['sp-3'],
+    paddingTop: theme.spacing['sp-3'],
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors['line-soft'],
+  },
+  ownerNone: {
+    width: theme.spacing['sp-8'],
+    height: theme.spacing['sp-8'],
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: theme.radius['r-pill'],
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: colors['line-strong'],
+  },
+  ownerName: { flex: 1, minWidth: 0 },
   stepLine: {
     flexDirection: 'row',
     flexWrap: 'wrap',

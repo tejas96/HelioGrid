@@ -2,6 +2,9 @@ import type { TranslatedText } from '@heliogrid/contracts';
 import type { DialBlock, LeadDetailView, LeadStateAct } from '@heliogrid/domain';
 import type { LeadActionDockProps, LeadDockStateStanding } from './LeadActionDock.types';
 
+/** The dock's circles: big enough for a thumb outdoors; the 44 target stays the floor under them. */
+export const DOCK_ROUND = 52;
+
 /** The dock's words, built in `@heliogrid/i18n` (`leadDockWords`). */
 export interface LeadDockWords {
   readonly call: TranslatedText;
@@ -75,5 +78,6 @@ export function leadDockOf(
         onPress: () => presses.stateAct(act),
       })),
     standing,
+    closed: view.acts.visit === 'closed',
   };
 }

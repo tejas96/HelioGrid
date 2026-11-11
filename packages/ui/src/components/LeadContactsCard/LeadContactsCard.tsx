@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
 import { Card } from '../Card';
+import { FoldHead } from '../FoldHead';
 import { IconButton } from '../IconButton';
 import { NamedGap } from '../NamedGap';
 import { PendingAction } from '../PendingAction';
@@ -24,18 +26,31 @@ export function LeadContactsCard({
   doNotCall,
   language,
   failure,
+  foldable,
   words,
 }: LeadContactsCardProps) {
+  const [open, setOpen] = useState(!foldable);
+  const shown = open ? contacts : contacts.filter((contact) => contact.primary);
   return (
     <div className="hg-lead-contacts">
       <Card className="hg-lead-contacts-card">
         <div className="hg-lead-contacts-head">
-          <span className="hg-lead-contacts-title">{words.title(contacts.length)}</span>
+          {foldable ? (
+            <span className="hg-lead-contacts-fold">
+              <FoldHead
+                title={words.title(contacts.length)}
+                open={open}
+                onToggle={() => setOpen(!open)}
+              />
+            </span>
+          ) : (
+            <span className="hg-lead-contacts-title">{words.title(contacts.length)}</span>
+          )}
           <IconButton label={words.add} variant="ghost" onClick={onAdd}>
             <ShellGlyph name="user-plus" size="md" tone="primary" />
           </IconButton>
         </div>
-        {contacts.map((contact) => (
+        {shown.map((contact) => (
           <ContactRow
             key={contact.id ?? 'customer'}
             contact={contact}
@@ -52,29 +67,31 @@ export function LeadContactsCard({
           </p>
         )}
       </Card>
-      <div className="hg-lead-contacts-facts">
-        <Card className="hg-lead-contacts-fact" density="functional">
-          <Switch
-            label={words.doNotCall}
-            description={words.doNotCallHint}
-            checked={doNotCall.value}
-            disabled={doNotCall.pending}
-            onChange={doNotCall.onChange}
-          />
-        </Card>
-        <Card className="hg-lead-contacts-fact" density="functional">
-          <Select
-            label={words.language}
-            placeholder={words.languageUnset}
-            closeLabel={words.close}
-            density="functional"
-            disabled={language.pending}
-            value={language.value ?? ''}
-            options={[{ value: '', label: words.languageUnset }, ...language.options]}
-            onChange={(value) => language.onChange(value === '' ? null : value)}
-          />
-        </Card>
-      </div>
+      {open ? (
+        <div className="hg-lead-contacts-facts">
+          <Card className="hg-lead-contacts-fact" density="functional">
+            <Switch
+              label={words.doNotCall}
+              description={words.doNotCallHint}
+              checked={doNotCall.value}
+              disabled={doNotCall.pending}
+              onChange={doNotCall.onChange}
+            />
+          </Card>
+          <Card className="hg-lead-contacts-fact" density="functional">
+            <Select
+              label={words.language}
+              placeholder={words.languageUnset}
+              closeLabel={words.close}
+              density="functional"
+              disabled={language.pending}
+              value={language.value ?? ''}
+              options={[{ value: '', label: words.languageUnset }, ...language.options]}
+              onChange={(value) => language.onChange(value === '' ? null : value)}
+            />
+          </Card>
+        </div>
+      ) : null}
     </div>
   );
 }

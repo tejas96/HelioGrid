@@ -46,6 +46,7 @@ export function Text({
   lang,
   live,
   oneLine,
+  twoLines,
   bold,
   as,
   className,
@@ -67,6 +68,7 @@ export function Text({
       data-color={color}
       data-align={align}
       data-one-line={oneLine === true ? 'true' : undefined}
+      data-two-lines={twoLines === true ? 'true' : undefined}
       data-bold={bold === true ? 'true' : undefined}
       lang={lang}
       role={live === true ? 'alert' : undefined}
