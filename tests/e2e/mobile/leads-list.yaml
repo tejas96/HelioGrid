@@ -23,6 +23,7 @@ appId: com.heliogrid.app
 - scrollUntilVisible:
     element: ${LEAD_NAME}
     timeout: 15000
+    centerElement: true
 - tapOn: ${LEAD_NAME}
 - extendedWaitUntil:
     visible: ${CALL}
