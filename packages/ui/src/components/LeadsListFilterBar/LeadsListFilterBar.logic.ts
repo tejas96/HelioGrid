@@ -1,61 +1,94 @@
-import type { ReactNode } from 'react';
-import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
-import type { ButtonProps } from '../Button/Button.types';
-import type { FacetChipsProps } from '../FilterBar/FilterBar.types';
-import type { MenuProps } from '../Menu/Menu.types';
-import type { SearchFieldProps } from '../SearchField/SearchField.types';
-import type { SegmentedControlProps } from '../SegmentedControl/SegmentedControl.types';
-import type { StageMeterProps } from '../StageMeter/StageMeter.types';
+import {
+  LEADS_LIST_ORDERS,
+  type LeadSource,
+  type LeadStage,
+  leadsOrderKey,
+  leadsSheetFiltersOn,
+  PIPELINE_STAGES,
+} from '@heliogrid/domain';
+import type { FilterValue } from '../FilterPanel/FilterPanel.types';
+import type { ListFigure, ListTopProps } from '../ListTop/ListTop.types';
 import type { LeadsListFilterBarProps } from './LeadsListFilterBar.types';
 
-/** The one chip's value: only the leads thirty quiet days flagged (`M02-52`). */
+/** The chips' value for every lead, whatever the stage. */
+const ALL = 'all';
+const SOURCE = 'source';
 const DORMANT = 'dormant';
 
-/** Each control of the bar as both halves draw it; a null part is not drawn. */
-export interface LeadsListFilterBarParts {
-  /** Whose leads and the inbox — null when there is no choice to make. */
-  readonly whose: SegmentedControlProps | null;
-  readonly meter: StageMeterProps;
-  readonly search: SearchFieldProps;
-  readonly dormant: FacetChipsProps;
-  /** The Bill chip — null where the table's column orders the bill. */
-  readonly bill: ButtonProps | null;
-  /** The source menu, a switcher; its trigger says the source chosen, else the menu's name. */
-  readonly sourceMenu: Omit<MenuProps, 'trigger'>;
-  readonly sourceTrigger: ButtonProps;
+/** The sheet's source choice for any source. */
+const ANY = 'any';
+
+const LEAD_CHIP_STAGES: readonly LeadStage[] = [...PIPELINE_STAGES, 'won'];
+
+function isStage(value: string, stages: readonly LeadStage[]): value is LeadStage {
+  return (stages as readonly string[]).includes(value);
 }
 
-/**
- * The bar's controls from the list's screen: what each shows as set, and what each press sets.
- * `glyph` is the half's own `ShellGlyph` at the chips' size.
- */
-export function leadsListFilterBarPartsOf(
-  { screen, pipeline, form, onInbox, words }: LeadsListFilterBarProps,
-  glyph: (name: ShellGlyphName) => ReactNode,
-): LeadsListFilterBarParts {
+/** The leads list's top, from its screen: what each part shows as set, and what each press sets. */
+export function leadsListTopOf(props: LeadsListFilterBarProps): ListTopProps {
+  const { screen, pipeline, words, top } = props;
   const { filters, whoseChoices } = screen;
-  const whoseOffered = whoseChoices.length > 1 || screen.inboxOffered;
+  const counted = (stage: LeadStage) =>
+    stage === 'won'
+      ? pipeline.won
+      : (pipeline.stages.find((one) => one.stage === stage)?.count ?? 0);
+  /* A stage with no lead is no shortcut: its chip shows only while it is the one chosen. */
+  const chipStages: readonly LeadStage[] = LEAD_CHIP_STAGES.filter(
+    (stage) => counted(stage) > 0 || stage === filters.stage,
+  );
+  const side: ListFigure[] = [];
+  if (screen.inboxOffered && screen.inboxWaiting !== null) {
+    side.push({
+      value: String(screen.inboxWaiting),
+      label: top.inbox,
+      spoken: top.inboxSpoken(screen.inboxWaiting),
+      onPress: props.onInbox,
+      glyph: { name: 'layers', hue: 'accent' },
+    });
+  }
+  side.push({
+    value: String(pipeline.dormant),
+    label: top.dormant,
+    spoken: top.dormantSpoken(pipeline.dormant),
+    onPress: screen.toggleDormant,
+    pressed: filters.dormant,
+    glyph: { name: 'moon', hue: 'neutral' },
+  });
+  const orderLabels = [top.newest, top.billLargest, top.billSmallest, top.lastActivity];
   return {
-    whose: whoseOffered
-      ? {
-          ariaLabel: words.whoseLabel,
-          value: filters.whose,
-          /* The segments are the reader's scopes and the inbox: any other value is the inbox. */
-          onChange: (value) => {
-            const whose = whoseChoices.find((one) => one === value);
-            if (whose === undefined) onInbox();
-            else screen.setWhose(whose);
-          },
-          options: words.whoseOptions(screen),
-        }
-      : null,
-    meter: {
-      form,
-      stages: pipeline.stages,
-      chosen: filters.stage,
-      onPick: screen.pickStage,
-      words: words.meter(pipeline.open),
+    room: props.room,
+    summary: {
+      name: top.name,
+      label: top.today,
+      lead: {
+        value: String(pipeline.open),
+        label: top.open,
+        spoken: top.openSpoken(pipeline.open),
+      },
+      side,
+      note: null,
+      stages: {
+        form: 'band',
+        stages: pipeline.stages,
+        chosen: filters.stage,
+        onPick: screen.pickStage,
+        words: words.meter(pipeline.open),
+      },
     },
+    scope:
+      whoseChoices.length > 1 || screen.inboxOffered
+        ? {
+            ariaLabel: words.whoseLabel,
+            value: filters.whose,
+            /* The segments are the reader's scopes and the inbox: any other value is the inbox. */
+            onChange: (value) => {
+              const whose = whoseChoices.find((one) => one === value);
+              if (whose === undefined) props.onInbox();
+              else screen.setWhose(whose);
+            },
+            options: words.whoseOptions(screen),
+          }
+        : null,
     search: {
       value: filters.query,
       onChange: screen.setQuery,
@@ -64,39 +97,69 @@ export function leadsListFilterBarPartsOf(
       onClear: () => screen.setQuery(''),
       clearLabel: words.clearSearch,
     },
-    dormant: {
-      label: words.filters,
-      selectedLabel: words.selected,
-      options: [{ value: DORMANT, label: words.dormant, icon: glyph('moon') }],
-      values: filters.dormant ? [DORMANT] : [],
-      counts: { [DORMANT]: pipeline.dormant },
-      onChange: screen.toggleDormant,
-    },
-    bill:
-      form === 'band'
-        ? null
-        : {
-            variant: 'secondary',
-            size: 'sm',
-            icon: glyph('sort'),
-            onClick: screen.stepBillSort,
-            children: words.bill(filters.sort),
-          },
-    sourceMenu: {
-      label: words.source,
-      selection: 'single',
-      items: words.sourceChoices.map(({ key, label, source }) => ({
-        key,
-        label,
-        selected: filters.source === source,
-        onSelect: () => screen.setSource(source),
+    sort: {
+      title: top.sortTitle,
+      spokenName: top.sortNamed,
+      closeLabel: top.close,
+      chosen: leadsOrderKey(filters.sort),
+      choices: LEADS_LIST_ORDERS.map((order, index) => ({
+        key: leadsOrderKey(order),
+        label: orderLabels[index] ?? top.newest,
       })),
+      onChoose: (key) => {
+        const order = LEADS_LIST_ORDERS.find((one) => leadsOrderKey(one) === key);
+        if (order !== undefined) screen.setSort(order);
+      },
     },
-    sourceTrigger: {
-      variant: 'secondary',
-      size: 'sm',
-      iconRight: glyph('caret-down'),
-      children: filters.source === null ? words.source : words.sourceWord(filters.source),
+    filter: {
+      label: top.filters,
+      activeLabel: top.filtersActive,
+      on: leadsSheetFiltersOn(filters),
+      words: top.panel,
+      closeLabel: top.close,
+      resultCount: props.matching,
+      dimensions: [
+        {
+          kind: 'one-of',
+          key: SOURCE,
+          label: top.source,
+          allValue: ANY,
+          options: [
+            { value: ANY, label: top.anySource },
+            ...top.sources.map((source) => ({ value: source, label: top.sourceWord(source) })),
+          ],
+        },
+        { kind: 'flag', key: DORMANT, label: top.dormantFilter, optionLabel: top.dormantOnly },
+      ],
+      value: { [SOURCE]: filters.source ?? ANY, [DORMANT]: filters.dormant },
+      onChange: (value: FilterValue) => {
+        const source = top.sources.find((one): one is LeadSource => one === value[SOURCE]);
+        if ((source ?? null) !== filters.source) screen.setSource(source ?? null);
+        if ((value[DORMANT] === true) !== filters.dormant) screen.toggleDormant();
+      },
+      onClear: () => {
+        if (filters.source !== null) screen.setSource(null);
+        if (filters.dormant) screen.toggleDormant();
+      },
+    },
+    chips: {
+      label: top.stages,
+      value: filters.stage ?? ALL,
+      options: [
+        { value: ALL, label: top.all },
+        ...chipStages.map((stage) => ({ value: stage, label: top.stage(stage) })),
+      ],
+      counts: {
+        [ALL]: pipeline.open + pipeline.won,
+        ...Object.fromEntries(chipStages.map((stage) => [stage, counted(stage)])),
+      },
+      onChange: (value) => {
+        if (value === ALL) {
+          if (filters.stage !== null) screen.pickStage(filters.stage);
+        } else if (isStage(value, LEAD_CHIP_STAGES) && value !== filters.stage) {
+          screen.pickStage(value);
+        }
+      },
     },
   };
 }

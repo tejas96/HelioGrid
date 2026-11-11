@@ -3,6 +3,8 @@ import {
   can,
   handedOverSince,
   offersDoor,
+  PROJECT_BOARD_FIRST_SORT,
+  type ProjectBoardSort,
   type ProjectBoardView,
   type ProjectChainStage,
   projectBoardViewOf,
@@ -37,6 +39,10 @@ export interface ProjectBoardScreen {
   /** What is typed in the board's search; blank shows every project. */
   readonly searched: string;
   readonly search: (text: string) => void;
+  /** How the list of projects is ordered — longest in its stage first until changed. */
+  readonly sortBy: (sort: ProjectBoardSort) => void;
+  /** One manager's projects by user id, or everyone's (`null`). */
+  readonly runBy: (manager: string | null) => void;
   /**
    * A to-do row's act opens its project. An early proof opens it asking in its own sheet — the
    * stages it passes over shown before the one tap that moves it — never moved from the board.
@@ -58,6 +64,8 @@ export function useProjectBoardScreen(): ProjectBoardScreen {
   const canAct = can(roles, 'projects.update_stages');
   const [chosen, setChosen] = useState<ProjectChainStage | null>(null);
   const [searched, setSearched] = useState('');
+  const [sort, setSort] = useState<ProjectBoardSort>(PROJECT_BOARD_FIRST_SORT);
+  const [manager, setManager] = useState<string | null>(null);
   const board = useQuery({
     queryKey: queryKeys.projects.board(tenantId),
     queryFn: ({ signal }) => repositories.projects.board(signal),
@@ -91,12 +99,16 @@ export function useProjectBoardScreen(): ProjectBoardScreen {
               searched,
               canAct,
               handedOver: handedOver.data?.items ?? null,
+              sort,
+              manager,
             }),
           }
         : read,
     choose: setChosen,
     searched,
     search: setSearched,
+    sortBy: setSort,
+    runBy: setManager,
     todo: (row) => ({
       projectId: row.card.id,
       ask: row.kind === 'proof_early' && row.card.earlyProofTo !== null ? 'earlyProof' : null,

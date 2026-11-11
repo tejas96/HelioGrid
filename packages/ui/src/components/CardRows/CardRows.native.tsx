@@ -5,9 +5,12 @@ import { colors } from '../../primitives/Color/colors';
 import { GroundProvider, tileSurface } from '../../primitives/Ground/Ground.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { focusScreenReaderOn } from '../../primitives/screen-reader-focus.native';
-import type { CardRowProps, CardRowsProps } from './CardRows.types';
+import type { CardRowProps, CardRowsForm, CardRowsProps } from './CardRows.types';
 
 const AsideRoom = createContext(0);
+
+/** How the rows sit: in one card, or a card each — a row in the separate form draws its own tile. */
+const RowsForm = createContext<CardRowsForm>('joined');
 
 /**
  * The width a row's acts take at its top end, with their gap: the body's first line keeps this much
@@ -17,8 +20,18 @@ export function useCardRowAsideRoom(): number {
   return useContext(AsideRoom);
 }
 
-/** The one glass card that holds a list's rows; what sits in it takes the tile's ground. */
-export function CardRows({ children }: CardRowsProps) {
+/**
+ * The list's rows: one glass card holding them, whose content takes the tile's ground — or, in the
+ * separate form, a bare list whose rows are each a tile, a gap between them.
+ */
+export function CardRows({ children, form }: CardRowsProps) {
+  if (form === 'separate') {
+    return (
+      <View role="list" style={styles.separate}>
+        <RowsForm.Provider value="separate">{children}</RowsForm.Provider>
+      </View>
+    );
+  }
   return (
     <View role="list" style={[tileSurface, styles.card]}>
       <GroundProvider ground="tile">{children}</GroundProvider>
@@ -42,6 +55,7 @@ export function CardRow({
 }: CardRowProps) {
   const [asideWidth, setAsideWidth] = useState(0);
   const target = useRef<View>(null);
+  const separate = useContext(RowsForm) === 'separate';
   useImperativeHandle(
     targetRef,
     () => ({ focus: () => focusScreenReaderOn(() => target.current) }),
@@ -49,11 +63,19 @@ export function CardRow({
   );
   const acts = aside === undefined || aside === null ? null : aside;
   const bodyLook = [styles.body, muted ? styles.muted : undefined];
-  return (
+  const row = (
     /* No busy state here, though the web's row says `aria-busy`: Android gives a View with no words
        of its own a spoken "busy" and never takes it back, so the row read "busy" long after its
        work; the row's own controls say busy while they work. */
-    <View role="listitem" style={[styles.row, first ? undefined : styles.hairline]}>
+    <View
+      role="listitem"
+      style={[
+        styles.row,
+        separate ? tileSurface : undefined,
+        separate ? styles.ownCard : undefined,
+        first || separate ? undefined : styles.hairline,
+      ]}
+    >
       {highlighted ? <View style={styles.highlighted} pointerEvents="none" /> : null}
       <View style={styles.frame}>
         <AsideRoom.Provider value={acts === null ? 0 : asideWidth + theme.spacing['sp-2']}>
@@ -82,10 +104,13 @@ export function CardRow({
       {after === undefined || after === null ? null : <View style={styles.after}>{after}</View>}
     </View>
   );
+  return separate ? <GroundProvider ground="tile">{row}</GroundProvider> : row;
 }
 
 const styles = StyleSheet.create({
   card: { padding: theme.spacing['sp-1'], borderRadius: theme.radius['r-card-expressive'] },
+  separate: { gap: theme.spacing['sp-2'] },
+  ownCard: { borderRadius: theme.radius['r-card-expressive'] },
   row: { borderRadius: theme.radius['r-tile'] },
   /* A clear line between two rows: a hairline all but vanished on the phone. */
   hairline: { borderTopWidth: 1, borderTopColor: colors['line-soft'] },

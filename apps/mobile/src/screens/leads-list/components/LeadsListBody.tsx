@@ -1,5 +1,6 @@
 import type { LeadsListScreen } from '@heliogrid/data/react';
-import type { LeadsListWords } from '@heliogrid/i18n';
+import { type LeadsListWords, leadsListTopWords } from '@heliogrid/i18n';
+import { useI18n } from '@heliogrid/i18n/react';
 import {
   Button,
   type FocusHandle,
@@ -7,6 +8,7 @@ import {
   LeadsList,
   LeadsListFilterBar,
   ShellGlyph,
+  useFormat,
 } from '@heliogrid/ui';
 import { useRef } from 'react';
 import { View } from 'react-native';
@@ -26,12 +28,12 @@ interface BodyProps {
  */
 export function LeadsListBody({ screen, words, moves }: BodyProps) {
   const title = useRef<FocusHandle>(null);
+  const { t, locale } = useI18n();
+  const format = useFormat();
   const { read } = screen;
   const summary =
-    read.kind === 'ready'
+    read.kind === 'ready' && read.value.filtersOn > 0
       ? words.summary({
-          open: read.value.pipeline.open,
-          waiting: screen.inboxWaiting,
           matching: read.value.matching,
           filtersOn: read.value.filtersOn,
         })
@@ -57,8 +59,10 @@ export function LeadsListBody({ screen, words, moves }: BodyProps) {
         <LeadsListFilterBar
           screen={screen}
           pipeline={read.value.pipeline}
-          form="card"
+          matching={read.value.matching}
+          room="narrow"
           words={words}
+          top={leadsListTopWords(t, { pack: format.pack, language: locale, now: Date.now() })}
           onInbox={moves.inbox}
         />
       ) : null}

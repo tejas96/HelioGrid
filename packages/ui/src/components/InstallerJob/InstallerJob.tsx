@@ -116,7 +116,7 @@ function OtherJobs({ words, others, onChoose }: InstallerOtherJobsProps) {
   return (
     <section className="hg-installer-job-section" aria-label={words.otherJobs}>
       <h2 className="hg-installer-job-heading">{words.otherJobs}</h2>
-      <CardRows>
+      <CardRows form="joined">
         {others.map((job, index) => (
           <CardRow
             key={job.id}

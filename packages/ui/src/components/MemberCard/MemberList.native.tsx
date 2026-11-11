@@ -69,7 +69,7 @@ export function MemberList({
   }
   const list = records ?? (
     <View accessibilityLabel={words.label} role="region" collapsable={false}>
-      <CardRows>
+      <CardRows form="joined">
         {view.rows.map((row, index) => (
           <MemberRow
             key={row.id}

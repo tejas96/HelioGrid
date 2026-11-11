@@ -43,11 +43,16 @@ describe('the leads list', () => {
     ['a stage of the meter filters to it', 'pickStage', 'qualified', { stage: 'qualified' }],
     ['Dormant asks for the quiet leads', 'toggleDormant', undefined, { state: 'dormant' }],
     ['a source narrows to it', 'setSource', 'referral', { source: 'referral' }],
-    ['the Bill chip orders largest first', 'stepBillSort', undefined, { sort: 'monthly_bill' }],
+    [
+      'an order from the sort sheet asks for it',
+      'setSort',
+      { key: 'monthly_bill', order: 'asc' },
+      { sort: 'monthly_bill', order: 'asc' },
+    ],
   ] as const)('%s', async (_, act_, value, asked) => {
     const view = await mountedList([MINE, THEIRS, QUIET]);
     const counted = origin.asks.length;
-    act(() => (view.result.current[act_] as (input?: string) => void)(value));
+    act(() => (view.result.current[act_] as (input?: unknown) => void)(value));
     await waitFor(() => expect(origin.asks.length).toBeGreaterThan(counted));
     expect(lastAsk()).toMatchObject(asked);
   });

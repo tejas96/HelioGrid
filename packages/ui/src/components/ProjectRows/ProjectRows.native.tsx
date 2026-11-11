@@ -114,7 +114,7 @@ export function ProjectRowMore({ label, onPress, focusAfter }: ProjectRowMorePro
 
 /** One card of rows on the phone: each group's head, then its projects, then *Show more*. */
 export function ProjectRowList({ items }: ProjectRowListProps) {
-  return <CardRows>{items.map(itemOf)}</CardRows>;
+  return <CardRows form="separate">{items.map(itemOf)}</CardRows>;
 }
 
 function itemOf(item: ProjectRowItem) {

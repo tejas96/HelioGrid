@@ -152,6 +152,7 @@ export * from './copy/job-tray';
 export type { JoinRequestAsker } from './copy/join-request';
 export { joinRequestNotice } from './copy/join-request';
 export * from './copy/kanban';
+export * from './copy/list-top';
 export * from './copy/map-surface';
 export * from './copy/menu';
 export * from './copy/money-summary';

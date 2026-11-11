@@ -51,7 +51,7 @@ export function InboxTeaching({ onAdd, onWay, ways, words, headingRef }: InboxTe
           {words.waysTitle}
         </Text>
       </View>
-      <CardRows>
+      <CardRows form="joined">
         {ways.map((way, index) => (
           <CardRow
             key={way}

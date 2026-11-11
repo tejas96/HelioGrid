@@ -126,13 +126,22 @@ export function leadsListAskOf(
   };
 }
 
-/**
- * The bill's sort, one press at a time (the phone's Bill chip): largest first, then smallest
- * first, then back to newest first.
- */
-export function billSortStepped(sort: LeadsListSort): LeadsListSort {
-  if (sort.key !== 'monthly_bill') return { key: 'monthly_bill', order: 'desc' };
-  return sort.order === 'desc' ? { key: 'monthly_bill', order: 'asc' } : LEADS_LIST_FIRST_SORT;
+/** The orders the list offers, in the sort sheet's order (`M02-40`: the bill sorts both ways). */
+export const LEADS_LIST_ORDERS: readonly LeadsListSort[] = [
+  LEADS_LIST_FIRST_SORT,
+  { key: 'monthly_bill', order: 'desc' },
+  { key: 'monthly_bill', order: 'asc' },
+  { key: 'last_activity', order: 'desc' },
+];
+
+/** One order as a single key — a choice's key in the sort sheet. */
+export function leadsOrderKey(sort: LeadsListSort): string {
+  return `${sort.key}:${sort.order}`;
+}
+
+/** How many of the filter sheet's filters are on: the source and the dormant leads. */
+export function leadsSheetFiltersOn(filters: LeadsListFilters): number {
+  return [filters.dormant, filters.source !== null].filter(Boolean).length;
 }
 
 /** The meter's stages: the open funnel, new to negotiating — a won lead has left the pipeline. */
@@ -147,8 +156,10 @@ export interface PipelineStage {
 export interface LeadsPipeline {
   /** Every open stage in funnel order, a stage with none counted 0. */
   readonly stages: readonly PipelineStage[];
-  /** Active and snoozed leads: what the list holds with nothing filtered. */
+  /** Active and snoozed leads still in the funnel — a won deal is closed, so never open. */
   readonly open: number;
+  /** Won leads the list still holds; with `open` they are what it holds with nothing filtered. */
+  readonly won: number;
   readonly dormant: number;
 }
 
@@ -158,9 +169,11 @@ export function leadsPipelineOf(counted: {
 }): LeadsPipeline {
   const countOf = (stage: LeadStage) =>
     counted.byStage.find((one) => one.stage === stage)?.count ?? 0;
+  const stages = PIPELINE_STAGES.map((stage) => ({ stage, count: countOf(stage) }));
   return {
-    stages: PIPELINE_STAGES.map((stage) => ({ stage, count: countOf(stage) })),
-    open: counted.byStage.reduce((sum, one) => sum + one.count, 0),
+    stages,
+    open: stages.reduce((sum, one) => sum + one.count, 0),
+    won: countOf('won'),
     dormant: counted.dormant,
   };
 }

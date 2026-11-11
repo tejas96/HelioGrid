@@ -1,14 +1,8 @@
 'use client';
 import { useProjectBoardScreen } from '@heliogrid/data/react';
-import { projectBoardWords } from '@heliogrid/i18n';
+import { projectBoardTopWords, projectBoardWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
-import {
-  boardSummaryOf,
-  LargeTitle,
-  ProjectBoard,
-  projectBoardActsOf,
-  useFormat,
-} from '@heliogrid/ui';
+import { LargeTitle, ProjectBoard, projectBoardActsOf, useFormat } from '@heliogrid/ui';
 import { notFound, useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import { projectEarlyProofPath, projectPath } from '../shell';
@@ -29,18 +23,13 @@ export function ProjectsBoardScreen() {
   const words = projectBoardWords(t, format.pack, locale);
   const open = (projectId: string, ask: 'earlyProof' | null) =>
     router.push(ask === null ? projectPath(projectId) : projectEarlyProofPath(projectId));
-  const summary = boardSummaryOf(screen.read);
   return (
     <div ref={room} tabIndex={-1} className="hg-shell-page hg-focus-target">
       <ProjectBoard
         {...projectBoardActsOf(screen, open)}
-        head={
-          <LargeTitle
-            title={words.title}
-            summary={summary === null ? undefined : words.summary(summary)}
-          />
-        }
+        head={<LargeTitle title={words.title} />}
         words={words}
+        top={projectBoardTopWords(t)}
         openId={null}
         focusAfter={room}
       />

@@ -185,12 +185,12 @@ msgid "{count, plural, =0 {Notifications} one {Notifications, # unread} other {N
 msgstr "{count, plural, =0 {Notifications} one {Notifications, # unread} other {Notifications, # unread}}"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:83
+#: src/copy/projects.ts:71
 msgid "{count, plural, =0 {today} one {# day} other {# days}}"
 msgstr "{count, plural, =0 {today} one {# day} other {# days}}"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:54
+#: src/copy/leads-list.ts:47
 msgid "{count, plural, one {{stage}, # lead} other {{stage}, # leads}}"
 msgstr "{count, plural, one {{stage}, # lead} other {{stage}, # leads}}"
 
@@ -248,6 +248,11 @@ msgstr "{count, plural, one {# design returned} other {# designs returned}}"
 #: src/copy/lead-detail-parts.ts:84
 msgid "{count, plural, one {# design} other {# designs}}"
 msgstr "{count, plural, one {# design} other {# designs}}"
+
+#. js-lingui-explicit-id
+#: src/copy/list-top.ts:43
+msgid "{count, plural, one {# dormant lead, show it} other {# dormant leads, show them}}"
+msgstr "{count, plural, one {# dormant lead, show it} other {# dormant leads, show them}}"
 
 #. js-lingui-explicit-id
 #: src/copy/job-tray.ts:13
@@ -320,9 +325,19 @@ msgid "{count, plural, one {# lead unassigned for a day} other {# leads unassign
 msgstr "{count, plural, one {# lead unassigned for a day} other {# leads unassigned for a day}}"
 
 #. js-lingui-explicit-id
+#: src/copy/list-top.ts:39
+msgid "{count, plural, one {# lead waiting in the inbox, open the inbox} other {# leads waiting in the inbox, open the inbox}}"
+msgstr "{count, plural, one {# lead waiting in the inbox, open the inbox} other {# leads waiting in the inbox, open the inbox}}"
+
+#. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:49
 msgid "{count, plural, one {# left to pick: {fields}} other {# left to pick: {fields}}}"
 msgstr "{count, plural, one {# left to pick: {fields}} other {# left to pick: {fields}}}"
+
+#. js-lingui-explicit-id
+#: src/copy/list-top.ts:59
+msgid "{count, plural, one {# live project} other {# live projects}}"
+msgstr "{count, plural, one {# live project} other {# live projects}}"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-marks.ts:32
@@ -353,6 +368,11 @@ msgstr "{count, plural, one {# notification} other {# notifications}}"
 #: src/copy/catalog-editor.ts:36
 msgid "{count, plural, one {# open draft keeps it and its price; it leaves every picker until restored.} other {# open drafts keep it and its price; it leaves every picker until restored.}}"
 msgstr "{count, plural, one {# open draft keeps it and its price; it leaves every picker until restored.} other {# open drafts keep it and its price; it leaves every picker until restored.}}"
+
+#. js-lingui-explicit-id
+#: src/copy/list-top.ts:37
+msgid "{count, plural, one {# open lead} other {# open leads}}"
+msgstr "{count, plural, one {# open lead} other {# open leads}}"
 
 #. js-lingui-explicit-id
 #: src/copy/assign-picker.ts:19
@@ -404,11 +424,6 @@ msgstr "{count, plural, one {# platform item} other {# platform items}} · nothi
 #: src/copy/notifications.ts:123
 msgid "{count, plural, one {# product update} other {# product updates}}"
 msgstr "{count, plural, one {# product update} other {# product updates}}"
-
-#. js-lingui-explicit-id
-#: src/copy/projects.ts:59
-msgid "{count, plural, one {# project is moving.} other {# projects are moving.}} We will tell you when one needs you."
-msgstr "{count, plural, one {# project is moving.} other {# projects are moving.}} We will tell you when one needs you."
 
 #. js-lingui-explicit-id
 #: src/copy/project-notices.ts:13
@@ -466,6 +481,11 @@ msgid "{count, plural, one {# survey submitted} other {# surveys submitted}}"
 msgstr "{count, plural, one {# survey submitted} other {# surveys submitted}}"
 
 #. js-lingui-explicit-id
+#: src/copy/list-top.ts:61
+msgid "{count, plural, one {# to do} other {# to do}}"
+msgstr "{count, plural, one {# to do} other {# to do}}"
+
+#. js-lingui-explicit-id
 #: src/copy/notifications.ts:119
 msgid "{count, plural, one {# trial reminder} other {# trial reminders}}"
 msgstr "{count, plural, one {# trial reminder} other {# trial reminders}}"
@@ -484,6 +504,11 @@ msgstr "{count, plural, one {# turn} other {# turns}}"
 #: src/copy/transcript.ts:34
 msgid "{count, plural, one {# turn} other {# turns}} · {names}"
 msgstr "{count, plural, one {# turn} other {# turns}} · {names}"
+
+#. js-lingui-explicit-id
+#: src/copy/list-top.ts:63
+msgid "{count, plural, one {# waiting on others} other {# waiting on others}}"
+msgstr "{count, plural, one {# waiting on others} other {# waiting on others}}"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-spec-cells.ts:28
@@ -531,7 +556,7 @@ msgid "{count, plural, one {Holds # open lead} other {Holds # open leads}}"
 msgstr "{count, plural, one {Holds # open lead} other {Holds # open leads}}"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:49
+#: src/copy/leads-list.ts:42
 msgid "{count, plural, one {Inbox, # waiting} other {Inbox, # waiting}}"
 msgstr "{count, plural, one {Inbox, # waiting} other {Inbox, # waiting}}"
 
@@ -546,7 +571,7 @@ msgid "{count, plural, one {item} other {items}}"
 msgstr "{count, plural, one {item} other {items}}"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:48
+#: src/copy/projects.ts:41
 msgid "{count, plural, one {last # day} other {last # days}}"
 msgstr "{count, plural, one {last # day} other {last # days}}"
 
@@ -588,7 +613,7 @@ msgstr "{count, plural, one {Show # item} other {Show # items}}"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-inbox.ts:31
-#: src/copy/leads-list.ts:92
+#: src/copy/leads-list.ts:78
 msgid "{count, plural, one {Show # more} other {Show # more}}"
 msgstr "{count, plural, one {Show # more} other {Show # more}}"
 
@@ -781,7 +806,7 @@ msgid "{days, plural, one {day left} other {days left}}"
 msgstr "{days, plural, one {day left} other {days left}}"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:79
+#: src/copy/leads-list.ts:65
 msgid "{days, plural, one {Quiet # day} other {Quiet # days}}"
 msgstr "{days, plural, one {Quiet # day} other {Quiet # days}}"
 
@@ -1197,16 +1222,6 @@ msgid "{list} removed from {name}"
 msgstr "{list} removed from {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:32
-msgid "{live} live · {todo} to do · {waiting} waiting"
-msgstr "{live} live · {todo} to do · {waiting} waiting"
-
-#. js-lingui-explicit-id
-#: src/copy/projects.ts:33
-msgid "{live} live · all clear"
-msgstr "{live} live · all clear"
-
-#. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:61
 msgid "{loser} becomes a merged record that points to {survivor}. It is never deleted; old links still open the right customer."
 msgstr "{loser} becomes a merged record that points to {survivor}. It is never deleted; old links still open the right customer."
@@ -1233,7 +1248,7 @@ msgid "{match} match · {unread} unread in all"
 msgstr "{match} match · {unread} unread in all"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:41
+#: src/copy/leads-list.ts:34
 msgid "{matching, plural, one {# match} other {# matches}} · {filters, plural, one {# filter on} other {# filters on}}"
 msgstr "{matching, plural, one {# match} other {# match}} · {filters, plural, one {# filter on} other {# filters on}}"
 
@@ -1594,17 +1609,7 @@ msgid "{number} · {place}"
 msgstr "{number} · {place}"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:37
-msgid "{open, plural, one {# open} other {# open}}"
-msgstr "{open, plural, one {# open} other {# open}}"
-
-#. js-lingui-explicit-id
-#: src/copy/leads-list.ts:38
-msgid "{open, plural, one {# open} other {# open}} · {waiting, plural, one {# waiting in the inbox} other {# waiting in the inbox}}"
-msgstr "{open, plural, one {# open} other {# open}} · {waiting, plural, one {# waiting in the inbox} other {# waiting in the inbox}}"
-
-#. js-lingui-explicit-id
-#: src/copy/leads-list.ts:52
+#: src/copy/leads-list.ts:45
 msgid "{open, plural, one {Pipeline · # open} other {Pipeline · # open}}"
 msgstr "{open, plural, one {Pipeline · # open} other {Pipeline · # open}}"
 
@@ -1875,7 +1880,7 @@ msgstr "{reason} · nothing was deleted"
 
 #. js-lingui-explicit-id
 #: src/copy/project-detail.ts:81
-#: src/copy/projects.ts:54
+#: src/copy/projects.ts:46
 msgid "{reason} · since {date}"
 msgstr "{reason} · since {date}"
 
@@ -1893,7 +1898,7 @@ msgstr "{role} · {company}"
 #. js-lingui-explicit-id
 #: src/copy/project-next.ts:19
 #: src/copy/project-sheets.ts:87
-#: src/copy/projects.ts:95
+#: src/copy/projects.ts:83
 msgid "{row} came early"
 msgstr "{row} came early"
 
@@ -1997,7 +2002,7 @@ msgid "{stage}"
 msgstr "{stage}"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:99
+#: src/copy/projects.ts:87
 msgid "{stage} by hand · {row} missing"
 msgstr "{stage} by hand · {row} missing"
 
@@ -2038,17 +2043,17 @@ msgid "{surveyor} · {address}"
 msgstr "{surveyor} · {address}"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:81
+#: src/copy/leads-list.ts:67
 msgid "{task} {day}"
 msgstr "{task} {day}"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:80
+#: src/copy/leads-list.ts:66
 msgid "{task} {time}"
 msgstr "{task} {time}"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:82
+#: src/copy/leads-list.ts:68
 msgid "{task}, overdue"
 msgstr "{task}, overdue"
 
@@ -2068,7 +2073,7 @@ msgid "{ticked} of {total} · a photo each"
 msgstr "{ticked} of {total} · a photo each"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:57
+#: src/copy/projects.ts:49
 msgid "{ticked} of {total} steps"
 msgstr "{ticked} of {total} steps"
 
@@ -2447,11 +2452,6 @@ msgid "A project moves one stage at a time."
 msgstr "A project moves one stage at a time."
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:34
-msgid "A project starts when a lead is marked won."
-msgstr "A project starts when a lead is marked won."
-
-#. js-lingui-explicit-id
 #: src/copy/lead-detail-parts.ts:89
 msgid "A proposal is made from a design."
 msgstr "A proposal is made from a design."
@@ -2772,7 +2772,7 @@ msgstr "Add a file"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-inbox.ts:71
-#: src/copy/leads-list.ts:87
+#: src/copy/leads-list.ts:73
 msgid "Add a lead"
 msgstr "Add a lead"
 
@@ -2787,7 +2787,7 @@ msgid "Add a lead in seconds, from a call or a site visit"
 msgstr "Add a lead in seconds, from a call or a site visit"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:84
+#: src/copy/leads-list.ts:70
 msgid "Add a lead with just a number, or bring your old list in from a file."
 msgstr "Add a lead with just a number, or bring your old list in from a file."
 
@@ -2874,7 +2874,7 @@ msgid "Add file"
 msgstr "Add file"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:68
+#: src/copy/leads-list.ts:54
 #: src/copy/shell.ts:110
 msgid "Add lead"
 msgstr "Add lead"
@@ -3043,7 +3043,8 @@ msgstr "Agent turn"
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:32
 #: src/copy/catalog-settings.ts:32
-#: src/copy/leads-list.ts:47
+#: src/copy/leads-list.ts:40
+#: src/copy/list-top.ts:29
 #: src/copy/price-book.ts:26
 #: src/copy/role-matrix.ts:97
 #: src/copy/team.ts:13
@@ -3081,7 +3082,7 @@ msgid "All limits"
 msgstr "All limits"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:42
+#: src/copy/projects.ts:38
 msgid "All live projects"
 msgstr "All live projects"
 
@@ -3096,7 +3097,7 @@ msgid "All picked. Read it once, then merge."
 msgstr "All picked. Read it once, then merge."
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:41
+#: src/copy/projects.ts:37
 msgid "All projects"
 msgstr "All projects"
 
@@ -3104,11 +3105,6 @@ msgstr "All projects"
 #: src/copy/role-presets.ts:61
 msgid "All projects, the catalog and price book"
 msgstr "All projects, the catalog and price book"
-
-#. js-lingui-explicit-id
-#: src/copy/projects.ts:44
-msgid "All stages"
-msgstr "All stages"
 
 #. js-lingui-explicit-id
 #: src/copy/billing-home.ts:28
@@ -3214,7 +3210,12 @@ msgid "Any"
 msgstr "Any"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:63
+#: src/copy/list-top.ts:70
+msgid "Any manager"
+msgstr "Any manager"
+
+#. js-lingui-explicit-id
+#: src/copy/list-top.ts:51
 msgid "Any source"
 msgstr "Any source"
 
@@ -3681,17 +3682,12 @@ msgid "Biggest design"
 msgstr "Biggest design"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:59
-msgid "Bill"
-msgstr "Bill"
-
-#. js-lingui-explicit-id
-#: src/copy/leads-list.ts:60
+#: src/copy/list-top.ts:47
 msgid "Bill, largest first"
 msgstr "Bill, largest first"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:61
+#: src/copy/list-top.ts:48
 msgid "Bill, smallest first"
 msgstr "Bill, smallest first"
 
@@ -3883,7 +3879,7 @@ msgid "Business profile saved"
 msgstr "Business profile saved"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:56
+#: src/copy/projects.ts:48
 msgid "by {date}"
 msgstr "by {date}"
 
@@ -3903,7 +3899,7 @@ msgid "by {name} · Mark won"
 msgstr "by {name} · Mark won"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:43
+#: src/copy/projects.ts:39
 msgid "by stage, oldest first"
 msgstr "by stage, oldest first"
 
@@ -4276,7 +4272,7 @@ msgid "Check the SMS, or send a new code."
 msgstr "Check the SMS, or send a new code."
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:34
+#: src/copy/leads-list.ts:31
 msgid "Check your connection, then try again."
 msgstr "Check your connection, then try again."
 
@@ -4421,7 +4417,7 @@ msgstr "Clear all"
 
 #. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:35
-#: src/copy/leads-list.ts:91
+#: src/copy/leads-list.ts:77
 msgid "Clear filters"
 msgstr "Clear filters"
 
@@ -4438,8 +4434,8 @@ msgstr "Clear it and this item has no price."
 #. js-lingui-explicit-id
 #: src/copy/billing-records.ts:40
 #: src/copy/customer-merge.ts:24
-#: src/copy/leads-list.ts:66
-#: src/copy/projects.ts:78
+#: src/copy/leads-list.ts:53
+#: src/copy/projects.ts:66
 #: src/copy/team.ts:21
 msgid "Clear search"
 msgstr "Clear search"
@@ -4451,12 +4447,12 @@ msgid "Clear selection"
 msgstr "Clear selection"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:52
+#: src/copy/projects.ts:44
 msgid "Clear stage"
 msgstr "Clear stage"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:90
+#: src/copy/leads-list.ts:76
 msgid "Clear them to see every lead again."
 msgstr "Clear them to see every lead again."
 
@@ -4470,6 +4466,7 @@ msgstr "close"
 #: src/copy/catalog-editor.ts:34
 #: src/copy/catalog-import.ts:13
 #: src/copy/lead-import.ts:24
+#: src/copy/list-top.ts:26
 #: src/copy/price-book.ts:72
 #: src/copy/roles-reference.ts:41
 #: src/copy/shell.ts:52
@@ -4892,7 +4889,7 @@ msgid "Couldn't load your inbox"
 msgstr "Couldn't load your inbox"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:33
+#: src/copy/leads-list.ts:30
 msgid "Couldn’t load your leads"
 msgstr "Couldn’t load your leads"
 
@@ -4980,11 +4977,6 @@ msgstr "Couldn’t work out what this change costs"
 #: src/copy/lead-detail-sheets.ts:73
 msgid "Couldn’t write the message"
 msgstr "Couldn’t write the message"
-
-#. js-lingui-explicit-id
-#: src/copy/projects.ts:46
-msgid "Count and longest wait in each."
-msgstr "Count and longest wait in each."
 
 #. js-lingui-explicit-id
 #: src/copy/roles-reference.ts:32
@@ -5292,7 +5284,7 @@ msgid "Days"
 msgstr "Days"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:69
+#: src/copy/projects.ts:58
 msgid "Days here"
 msgstr "Days here"
 
@@ -5704,8 +5696,13 @@ msgid "Donut chart"
 msgstr "Donut chart"
 
 #. js-lingui-explicit-id
+#: src/copy/list-top.ts:42
+msgid "dormant"
+msgstr "dormant"
+
+#. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:41
-#: src/copy/leads-list.ts:58
+#: src/copy/list-top.ts:52
 msgid "Dormant"
 msgstr "Dormant"
 
@@ -6325,7 +6322,6 @@ msgstr "Filter notifications"
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:30
 #: src/copy/filter-panel.ts:9
-#: src/copy/leads-list.ts:57
 msgid "Filters"
 msgstr "Filters"
 
@@ -7254,7 +7250,7 @@ msgstr "Imp"
 #. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:50
 #: src/copy/lead-import.ts:29
-#: src/copy/leads-list.ts:69
+#: src/copy/leads-list.ts:55
 msgid "Import"
 msgstr "Import"
 
@@ -7271,7 +7267,7 @@ msgstr "Import {count, plural, one {# row} other {# rows}}"
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:26
 #: src/copy/lead-inbox.ts:75
-#: src/copy/leads-list.ts:88
+#: src/copy/leads-list.ts:74
 msgid "Import a file"
 msgstr "Import a file"
 
@@ -7371,8 +7367,13 @@ msgid "In the app"
 msgstr "In the app"
 
 #. js-lingui-explicit-id
+#: src/copy/list-top.ts:38
+msgid "in the inbox"
+msgstr "in the inbox"
+
+#. js-lingui-explicit-id
 #: src/copy/lead-inbox.ts:18
-#: src/copy/leads-list.ts:48
+#: src/copy/leads-list.ts:41
 msgid "Inbox"
 msgstr "Inbox"
 
@@ -7424,12 +7425,12 @@ msgid "install"
 msgstr "install"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:70
+#: src/copy/projects.ts:59
 msgid "Install"
 msgstr "Install"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:55
+#: src/copy/projects.ts:47
 msgid "install by {date}"
 msgstr "install by {date}"
 
@@ -7439,7 +7440,7 @@ msgid "Install by {date}"
 msgstr "Install by {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:100
+#: src/copy/projects.ts:88
 msgid "Install by {date} has passed · still {stage}"
 msgstr "Install by {date} has passed · still {stage}"
 
@@ -7449,9 +7450,14 @@ msgid "Install date changed"
 msgstr "Install date changed"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:91
+#: src/copy/projects.ts:79
 msgid "Install date passed"
 msgstr "Install date passed"
+
+#. js-lingui-explicit-id
+#: src/copy/list-top.ts:68
+msgid "Install date, soonest first"
+msgstr "Install date, soonest first"
 
 #. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:162
@@ -7925,7 +7931,7 @@ msgid "Last active"
 msgstr "Last active"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:75
+#: src/copy/leads-list.ts:61
 msgid "Last activity"
 msgstr "Last activity"
 
@@ -7951,6 +7957,11 @@ msgid "Later"
 msgstr "Later"
 
 #. js-lingui-explicit-id
+#: src/copy/list-top.ts:49
+msgid "Latest activity first"
+msgstr "Latest activity first"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:55
 msgid "Layer, spec data and compliance"
 msgstr "Layer, spec data and compliance"
@@ -7961,7 +7972,7 @@ msgid "Laying out the document"
 msgstr "Laying out the document"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:70
+#: src/copy/leads-list.ts:56
 msgid "Lead"
 msgstr "Lead"
 
@@ -8007,7 +8018,7 @@ msgstr "Lead-acid"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:114
-#: src/copy/leads-list.ts:31
+#: src/copy/leads-list.ts:28
 #: src/copy/search.ts:57
 #: src/copy/shell.ts:94
 msgid "Leads"
@@ -8153,6 +8164,11 @@ msgid "listening to past calls"
 msgstr "listening to past calls"
 
 #. js-lingui-explicit-id
+#: src/copy/list-top.ts:58
+msgid "live projects"
+msgstr "live projects"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:22
 msgid "Live since {date}"
 msgstr "Live since {date}"
@@ -8221,12 +8237,12 @@ msgid "Loading map"
 msgstr "Loading map"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:93
+#: src/copy/leads-list.ts:79
 msgid "Loading more leads"
 msgstr "Loading more leads"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:66
+#: src/copy/projects.ts:55
 msgid "Loading projects"
 msgstr "Loading projects"
 
@@ -8371,7 +8387,7 @@ msgid "Loading your job"
 msgstr "Loading your job"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:32
+#: src/copy/leads-list.ts:29
 msgid "Loading your leads"
 msgstr "Loading your leads"
 
@@ -8478,9 +8494,14 @@ msgid "Logo, colour and letterhead"
 msgstr "Logo, colour and letterhead"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:47
+#: src/copy/projects.ts:40
 msgid "longest {days}"
 msgstr "longest {days}"
+
+#. js-lingui-explicit-id
+#: src/copy/list-top.ts:67
+msgid "Longest in stage first"
+msgstr "Longest in stage first"
 
 #. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:43
@@ -8568,8 +8589,9 @@ msgid "Manage the plan and billing"
 msgstr "Manage the plan and billing"
 
 #. js-lingui-explicit-id
+#: src/copy/list-top.ts:69
 #: src/copy/project-page.ts:29
-#: src/copy/projects.ts:71
+#: src/copy/projects.ts:60
 msgid "Manager"
 msgstr "Manager"
 
@@ -8589,7 +8611,7 @@ msgid "Mark “{task}” done"
 msgstr "Mark “{task}” done"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:63
+#: src/copy/projects.ts:52
 msgid "Mark a lead won and its project starts here, at Won."
 msgstr "Mark a lead won and its project starts here, at Won."
 
@@ -8813,7 +8835,7 @@ msgid "min"
 msgstr "min"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:45
+#: src/copy/leads-list.ts:38
 msgid "Mine"
 msgstr "Mine"
 
@@ -8877,7 +8899,7 @@ msgstr "Monthly"
 #: src/copy/crm-vocabulary.ts:62
 #: src/copy/lead-import.ts:122
 #: src/copy/lead-inbox.ts:37
-#: src/copy/leads-list.ts:72
+#: src/copy/leads-list.ts:58
 msgid "Monthly bill"
 msgstr "Monthly bill"
 
@@ -8927,7 +8949,7 @@ msgid "move"
 msgstr "move"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:103
+#: src/copy/projects.ts:91
 msgid "Move"
 msgstr "Move"
 
@@ -9010,7 +9032,7 @@ msgid "Move undone · back at {stage}"
 msgstr "Move undone · back at {stage}"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:110
+#: src/copy/projects.ts:98
 msgid "Move: {name}"
 msgstr "Move: {name}"
 
@@ -9225,10 +9247,15 @@ msgstr "Name, address and {taxLabel}"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:23
-#: src/copy/leads-list.ts:65
+#: src/copy/leads-list.ts:52
 #: src/copy/shell.ts:24
 msgid "Name, phone or city"
 msgstr "Name, phone or city"
+
+#. js-lingui-explicit-id
+#: src/copy/projects.ts:64
+msgid "Name, place or number"
+msgstr "Name, place or number"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-import.ts:69
@@ -9334,12 +9361,12 @@ msgstr "New company on HelioGrid?"
 
 #. js-lingui-explicit-id
 #: src/copy/project-next.ts:58
-#: src/copy/projects.ts:105
+#: src/copy/projects.ts:93
 msgid "New date"
 msgstr "New date"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:112
+#: src/copy/projects.ts:100
 msgid "New date: {name}"
 msgstr "New date: {name}"
 
@@ -9520,6 +9547,11 @@ msgid "New voice calls"
 msgstr "New voice calls"
 
 #. js-lingui-explicit-id
+#: src/copy/list-top.ts:30
+msgid "Newest first"
+msgstr "Newest first"
+
+#. js-lingui-explicit-id
 #: src/copy/lead-inbox.ts:52
 msgid "next"
 msgstr "next"
@@ -9528,7 +9560,7 @@ msgstr "next"
 #: src/copy/billing-records.ts:45
 #: src/copy/explainer.ts:7
 #: src/copy/home-today.ts:18
-#: src/copy/leads-list.ts:74
+#: src/copy/leads-list.ts:60
 #: src/copy/project-detail.ts:29
 #: src/copy/shell.ts:53
 msgid "Next"
@@ -9617,7 +9649,7 @@ msgstr "No answer"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-inbox.ts:36
-#: src/copy/leads-list.ts:76
+#: src/copy/leads-list.ts:62
 msgid "No bill yet"
 msgstr "No bill yet"
 
@@ -9751,12 +9783,12 @@ msgid "No jobs in this pipeline"
 msgstr "No jobs in this pipeline"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:89
+#: src/copy/leads-list.ts:75
 msgid "No leads match these filters"
 msgstr "No leads match these filters"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:36
+#: src/copy/leads-list.ts:33
 msgid "No leads yet"
 msgstr "No leads yet"
 
@@ -9805,7 +9837,7 @@ msgstr "No more codes for {windowMinutes} minutes"
 #: src/copy/dedupe-sheet.ts:17
 #: src/copy/lead-detail.ts:29
 #: src/copy/lead-inbox.ts:34
-#: src/copy/projects.ts:75
+#: src/copy/projects.ts:63
 #: src/copy/search.ts:37
 msgid "No name yet"
 msgstr "No name yet"
@@ -9934,12 +9966,12 @@ msgid "No prices published for this market yet"
 msgstr "No prices published for this market yet"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:50
+#: src/copy/projects.ts:42
 msgid "No project at {stage}"
 msgstr "No project at {stage}"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:79
+#: src/copy/projects.ts:67
 msgid "No project matches “{text}”"
 msgstr "No project matches “{text}”"
 
@@ -9949,7 +9981,7 @@ msgid "No project name yet"
 msgstr "No project name yet"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:62
+#: src/copy/projects.ts:51
 msgid "No projects yet"
 msgstr "No projects yet"
 
@@ -10096,11 +10128,6 @@ msgstr "None"
 #: src/copy/project-detail.ts:76
 msgid "None linked yet"
 msgstr "None linked yet"
-
-#. js-lingui-explicit-id
-#: src/copy/projects.ts:49
-msgid "none now"
-msgstr "none now"
 
 #. js-lingui-explicit-id
 #: src/copy/disclosure.ts:29
@@ -10659,7 +10686,7 @@ msgid "Nothing matches these filters"
 msgstr "Nothing matches these filters"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:58
+#: src/copy/projects.ts:50
 msgid "Nothing needs you"
 msgstr "Nothing needs you"
 
@@ -10820,7 +10847,7 @@ msgid "Off"
 msgstr "Off"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:40
+#: src/copy/projects.ts:36
 msgid "oldest first"
 msgstr "oldest first"
 
@@ -10986,6 +11013,11 @@ msgid "Only {holder} can see this cycle’s usage."
 msgstr "Only {holder} can see this cycle’s usage."
 
 #. js-lingui-explicit-id
+#: src/copy/list-top.ts:53
+msgid "Only dormant leads"
+msgstr "Only dormant leads"
+
+#. js-lingui-explicit-id
 #: src/copy/team-acts.ts:21
 msgid "Only EPC Owner"
 msgstr "Only EPC Owner"
@@ -11017,8 +11049,8 @@ msgstr "Open"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-inbox.ts:48
-#: src/copy/leads-list.ts:78
-#: src/copy/projects.ts:73
+#: src/copy/leads-list.ts:64
+#: src/copy/projects.ts:62
 #: src/copy/search.ts:42
 msgid "Open {name}"
 msgstr "Open {name}"
@@ -11038,6 +11070,11 @@ msgstr "Open existing"
 #: src/copy/proposal-template.ts:28
 msgid "Open full size"
 msgstr "Open full size"
+
+#. js-lingui-explicit-id
+#: src/copy/list-top.ts:36
+msgid "open leads"
+msgstr "open leads"
 
 #. js-lingui-explicit-id
 #: src/copy/project-sheets.ts:30
@@ -11086,7 +11123,7 @@ msgstr "Open this customer"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-inbox.ts:47
-#: src/copy/leads-list.ts:77
+#: src/copy/leads-list.ts:63
 #: src/copy/search.ts:43
 msgid "Open this lead"
 msgstr "Open this lead"
@@ -11270,7 +11307,7 @@ msgstr "Owned"
 #. js-lingui-explicit-id
 #: src/copy/dedupe-sheet.ts:19
 #: src/copy/lead-detail-sheets.ts:93
-#: src/copy/leads-list.ts:73
+#: src/copy/leads-list.ts:59
 msgid "Owner"
 msgstr "Owner"
 
@@ -12183,7 +12220,7 @@ msgstr "Progress"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail.ts:44
-#: src/copy/projects.ts:68
+#: src/copy/projects.ts:57
 msgid "Project"
 msgstr "Project"
 
@@ -12296,17 +12333,17 @@ msgstr "Projects"
 #. js-lingui-explicit-id
 #: src/copy/project-next.ts:29
 #: src/copy/project-sheets.ts:88
-#: src/copy/projects.ts:89
+#: src/copy/projects.ts:77
 msgid "Proof came early"
 msgstr "Proof came early"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:98
+#: src/copy/projects.ts:86
 msgid "Proof for {stage} came early"
 msgstr "Proof for {stage} came early"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:90
+#: src/copy/projects.ts:78
 msgid "Proof missing"
 msgstr "Proof missing"
 
@@ -13477,14 +13514,9 @@ msgid "Search by name, phone or city. Only customers in your list show."
 msgstr "Search by name, phone or city. Only customers in your list show."
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:64
+#: src/copy/leads-list.ts:51
 msgid "Search leads"
 msgstr "Search leads"
-
-#. js-lingui-explicit-id
-#: src/copy/projects.ts:76
-msgid "Search name, place or PRJ number"
-msgstr "Search name, place or PRJ number"
 
 #. js-lingui-explicit-id
 #: src/copy/sidebar.ts:6
@@ -13492,7 +13524,7 @@ msgid "Search or jump to…"
 msgstr "Search or jump to…"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:77
+#: src/copy/projects.ts:65
 msgid "Search projects"
 msgstr "Search projects"
 
@@ -13652,7 +13684,6 @@ msgstr "Select this lead"
 #. js-lingui-explicit-id
 #: src/copy/compare-grid.ts:12
 #: src/copy/filter-panel.ts:19
-#: src/copy/leads-list.ts:67
 msgid "Selected"
 msgstr "Selected"
 
@@ -13872,7 +13903,7 @@ msgstr "Show {count} {noun}"
 
 #. js-lingui-explicit-id
 #: src/copy/activity-stream.ts:37
-#: src/copy/projects.ts:51
+#: src/copy/projects.ts:43
 msgid "Show {count} more"
 msgstr "Show {count} more"
 
@@ -13885,11 +13916,6 @@ msgstr "Show {hidden} more {noun} ({total} in total)"
 #: src/copy/catalog-settings.ts:50
 msgid "Show {name} in pickers"
 msgstr "Show {name} in pickers"
-
-#. js-lingui-explicit-id
-#: src/copy/projects.ts:45
-msgid "Show a stage"
-msgstr "Show a stage"
 
 #. js-lingui-explicit-id
 #: src/copy/team.ts:22
@@ -14282,7 +14308,18 @@ msgid "Sort"
 msgstr "Sort"
 
 #. js-lingui-explicit-id
+#: src/copy/list-top.ts:46
+msgid "Sort leads"
+msgstr "Sort leads"
+
+#. js-lingui-explicit-id
+#: src/copy/list-top.ts:66
+msgid "Sort projects"
+msgstr "Sort projects"
+
+#. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:34
+#: src/copy/list-top.ts:27
 msgid "Sort: {order}"
 msgstr "Sort: {order}"
 
@@ -14298,7 +14335,8 @@ msgstr "Sorts descending"
 
 #. js-lingui-explicit-id
 #: src/copy/catalog-words.ts:44
-#: src/copy/leads-list.ts:62
+#: src/copy/leads-list.ts:50
+#: src/copy/list-top.ts:50
 msgid "Source"
 msgstr "Source"
 
@@ -14316,8 +14354,8 @@ msgstr "Spouse"
 #: src/copy/dedupe-sheet.ts:20
 #: src/copy/kanban.ts:12
 #: src/copy/lead-detail-sheets.ts:94
-#: src/copy/leads-list.ts:71
-#: src/copy/projects.ts:67
+#: src/copy/leads-list.ts:57
+#: src/copy/projects.ts:56
 msgid "Stage"
 msgstr "Stage"
 
@@ -14333,7 +14371,7 @@ msgid "Stage moved · {stage}"
 msgstr "Stage moved · {stage}"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:74
+#: src/copy/list-top.ts:28
 msgid "Stages"
 msgstr "Stages"
 
@@ -14383,7 +14421,7 @@ msgid "State"
 msgstr "State"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:72
+#: src/copy/projects.ts:61
 #: src/copy/team.ts:12
 msgid "Status"
 msgstr "Status"
@@ -14713,7 +14751,7 @@ msgid "Tap a date to add a holiday"
 msgstr "Tap a date to add a holiday"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:53
+#: src/copy/leads-list.ts:46
 msgid "Tap a stage to filter"
 msgstr "Tap a stage to filter"
 
@@ -14796,7 +14834,7 @@ msgid "Tax registration"
 msgstr "Tax registration"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:46
+#: src/copy/leads-list.ts:39
 #: src/copy/notifications.ts:73
 #: src/copy/role-matrix.ts:98
 #: src/copy/settings.ts:42
@@ -15503,7 +15541,7 @@ msgid "The project starts at Won — nothing is typed twice."
 msgstr "The project starts at Won — nothing is typed twice."
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:64
+#: src/copy/projects.ts:53
 msgid "The projects did not load"
 msgstr "The projects did not load"
 
@@ -16088,12 +16126,12 @@ msgid "To"
 msgstr "To"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:36
+#: src/copy/list-top.ts:60
 msgid "to do"
 msgstr "to do"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:38
+#: src/copy/projects.ts:34
 msgid "To do"
 msgstr "To do"
 
@@ -16124,7 +16162,8 @@ msgid "Today · {date}"
 msgstr "Today · {date}"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:35
+#: src/copy/list-top.ts:31
+#: src/copy/projects.ts:32
 msgid "Today · {weekday}, {date}"
 msgstr "Today · {weekday}, {date}"
 
@@ -16239,7 +16278,7 @@ msgstr "Try a part of the invoice number."
 #: src/copy/catalog-import.ts:50
 #: src/copy/catalog-settings.ts:93
 #: src/copy/lead-import.ts:57
-#: src/copy/leads-list.ts:35
+#: src/copy/leads-list.ts:32
 #: src/copy/payment-terms.ts:38
 #: src/copy/price-book.ts:76
 #: src/copy/pricing.ts:118
@@ -16497,7 +16536,7 @@ msgstr "Upgrade plan"
 #: src/copy/lead-import.ts:26
 #: src/copy/project-detail.ts:56
 #: src/copy/project-next.ts:16
-#: src/copy/projects.ts:104
+#: src/copy/projects.ts:92
 msgid "Upload"
 msgstr "Upload"
 
@@ -16534,7 +16573,7 @@ msgid "Upload them or mark them not needed, then hand over."
 msgstr "Upload them or mark them not needed, then hand over."
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:111
+#: src/copy/projects.ts:99
 msgid "Upload: {name}"
 msgstr "Upload: {name}"
 
@@ -16886,18 +16925,19 @@ msgstr "Wait started · {party}"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-inbox.ts:56
-#: src/copy/projects.ts:37
+#: src/copy/list-top.ts:62
+#: src/copy/projects.ts:33
 msgid "waiting"
 msgstr "waiting"
 
 #. js-lingui-explicit-id
-#: src/copy/projects.ts:39
+#: src/copy/projects.ts:35
 msgid "Waiting"
 msgstr "Waiting"
 
 #. js-lingui-explicit-id
 #: src/copy/project-detail.ts:80
-#: src/copy/projects.ts:53
+#: src/copy/projects.ts:45
 msgid "Waiting on {party}"
 msgstr "Waiting on {party}"
 
@@ -17551,7 +17591,7 @@ msgid "Who you sell to"
 msgstr "Who you sell to"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:44
+#: src/copy/leads-list.ts:37
 msgid "Whose leads"
 msgstr "Whose leads"
 
@@ -18186,7 +18226,12 @@ msgid "Your language was not saved"
 msgstr "Your language was not saved"
 
 #. js-lingui-explicit-id
-#: src/copy/leads-list.ts:83
+#: src/copy/list-top.ts:35
+msgid "Your leads at a glance"
+msgstr "Your leads at a glance"
+
+#. js-lingui-explicit-id
+#: src/copy/leads-list.ts:69
 msgid "Your leads will be listed here"
 msgstr "Your leads will be listed here"
 
@@ -18403,6 +18448,11 @@ msgstr "Your profile did not save"
 #: src/copy/role-card.ts:92
 msgid "Your projects are one switch away."
 msgstr "Your projects are one switch away."
+
+#. js-lingui-explicit-id
+#: src/copy/list-top.ts:57
+msgid "Your projects at a glance"
+msgstr "Your projects at a glance"
 
 #. js-lingui-explicit-id
 #: src/copy/branding.ts:82

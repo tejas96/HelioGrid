@@ -1,6 +1,6 @@
-# Projects board (`SCR-M08-01`): the board opens at its address over the day's hero. The one project
-# the company step marked won has nothing to do and waits on no one, so the hero says nothing needs
-# the owner; below it every live project by stage. The project stands in the Won group with its days
+# Projects board (`SCR-M08-01`): the board opens at its address under the shared list top. The one
+# project the company step marked won has nothing to do and waits on no one, so the summary says
+# nothing needs the owner; below it every live project by stage. The project stands in the Won group with its days
 # figure, today, and a tap on it opens its page at its next step.
 appId: com.heliogrid.app
 ---
@@ -8,13 +8,13 @@ appId: com.heliogrid.app
 - extendedWaitUntil:
     visible: ${PROJECTS_ALL_CLEAR}
     timeout: 15000
-# The groups follow the hero and the stage pill, so the row is brought to the middle.
+# The groups follow the list top and its chips, so the row is brought to the middle.
 - scrollUntilVisible:
     element: ${PROJECT_NAME}
     centerElement: true
     timeout: 15000
 - assertVisible: ${STAGE_WON}
-# The days figure under the Won group's head — the hero's own label sits above it.
+# The days figure under the Won group's head — the Won chip sits above it too.
 - assertVisible:
     text: ${DAYS_TODAY}
     below: ${STAGE_WON}

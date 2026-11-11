@@ -3,7 +3,7 @@ import {
   type LeadsListScreen as LeadsListScreenView,
   useLeadsListScreen,
 } from '@heliogrid/data/react';
-import { leadsListWords } from '@heliogrid/i18n';
+import { leadsListTopWords, leadsListWords } from '@heliogrid/i18n';
 import { useI18n } from '@heliogrid/i18n/react';
 import { LargeTitle, LeadsList, LeadsListFilterBar, useFormat, useOwnWidth } from '@heliogrid/ui';
 import { notFound, useRouter } from 'next/navigation';
@@ -17,8 +17,9 @@ import './leads-list.css';
 
 /**
  * The Leads list on the web (`SCR-M02-03`): a rep between calls finds one lead fast, the owner
- * reads where each deal stands. Below the table's width the phone's page — the meter's card, the
- * chips, a card of rows; at it, the stages as one band over the table, its bill column sortable in
+ * reads where each deal stands. The shared list top heads it — the summary hero, whose leads, the
+ * search with the order and the filters, the stage chips — over the phone's cards below the table's
+ * width, and over the table at it, the stages as a band in the hero and the bill column sortable in
  * the tenant's currency (`M02-40`). What is read, filtered and counted is `useLeadsListScreen`'s,
  * the phone's too; the web's own parts are the width and the router. *Add lead* opens quick add
  * over this page; *Import* the file import; the Inbox segment the morning triage.
@@ -50,10 +51,8 @@ function LeadsListIn({ screen }: { screen: LeadsListScreenView }) {
           <LargeTitle
             title={words.title}
             summary={
-              read.kind === 'ready'
+              read.kind === 'ready' && read.value.filtersOn > 0
                 ? words.summary({
-                    open: read.value.pipeline.open,
-                    waiting: screen.inboxWaiting,
                     matching: read.value.matching,
                     filtersOn: read.value.filtersOn,
                   })
@@ -69,8 +68,10 @@ function LeadsListIn({ screen }: { screen: LeadsListScreenView }) {
         <LeadsListFilterBar
           screen={screen}
           pipeline={read.value.pipeline}
-          form={wide ? 'band' : 'card'}
+          matching={read.value.matching}
+          room={wide ? 'wide' : 'narrow'}
           words={words}
+          top={leadsListTopWords(t, { pack: format.pack, language: locale, now: Date.now() })}
           onInbox={moves.inbox}
         />
       ) : null}

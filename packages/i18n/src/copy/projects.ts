@@ -29,11 +29,7 @@ export const PROJECT_FAILED_MESSAGE = /*i18n*/ { id: 'Check the connection and t
 
 const BOARD = {
   title: /*i18n*/ { id: 'Projects' },
-  summary: /*i18n*/ { id: '{live} live · {todo} to do · {waiting} waiting' },
-  summaryAllClear: /*i18n*/ { id: '{live} live · all clear' },
-  summaryNone: /*i18n*/ { id: 'A project starts when a lead is marked won.' },
   today: /*i18n*/ { id: 'Today · {weekday}, {date}' },
-  toDo: /*i18n*/ { id: 'to do' },
   waiting: /*i18n*/ { id: 'waiting' },
   toDoHeading: /*i18n*/ { id: 'To do' },
   waitingHeading: /*i18n*/ { id: 'Waiting' },
@@ -41,12 +37,8 @@ const BOARD = {
   allProjects: /*i18n*/ { id: 'All projects' },
   allLiveProjects: /*i18n*/ { id: 'All live projects' },
   byStage: /*i18n*/ { id: 'by stage, oldest first' },
-  allStages: /*i18n*/ { id: 'All stages' },
-  showStage: /*i18n*/ { id: 'Show a stage' },
-  showStageLine: /*i18n*/ { id: 'Count and longest wait in each.' },
   longest: /*i18n*/ { id: 'longest {days}' },
   lastDays: /*i18n*/ { id: '{count, plural, one {last # day} other {last # days}}' },
-  noneNow: /*i18n*/ { id: 'none now' },
   noneInStage: /*i18n*/ { id: 'No project at {stage}' },
   showMore: /*i18n*/ { id: 'Show {count} more' },
   clearStage: /*i18n*/ { id: 'Clear stage' },
@@ -56,9 +48,6 @@ const BOARD = {
   installByShort: /*i18n*/ { id: 'by {date}' },
   stepsOf: /*i18n*/ { id: '{ticked} of {total} steps' },
   allClearTitle: /*i18n*/ { id: 'Nothing needs you' },
-  allClearBody: /*i18n*/ {
-    id: '{count, plural, one {# project is moving.} other {# projects are moving.}} We will tell you when one needs you.',
-  },
   emptyTitle: /*i18n*/ { id: 'No projects yet' },
   emptyBody: /*i18n*/ { id: 'Mark a lead won and its project starts here, at Won.' },
   failedTitle: /*i18n*/ { id: 'The projects did not load' },
@@ -71,9 +60,8 @@ const BOARD = {
   manager: /*i18n*/ { id: 'Manager' },
   status: /*i18n*/ { id: 'Status' },
   open: /*i18n*/ { id: 'Open {name}' },
-  stagesName: /*i18n*/ { id: 'Stages' },
   noName: /*i18n*/ { id: 'No name yet' },
-  searchPlaceholder: /*i18n*/ { id: 'Search name, place or PRJ number' },
+  searchPlaceholder: /*i18n*/ { id: 'Name, place or number' },
   searchOpen: /*i18n*/ { id: 'Search projects' },
   clearSearch: /*i18n*/ { id: 'Clear search' },
   noMatch: /*i18n*/ { id: 'No project matches “{text}”' },
@@ -170,15 +158,8 @@ export function projectBoardWords(t: T, pack: FormatPack, language: UiLanguage) 
   };
   return {
     title: t(BOARD.title),
-    summary: (facts: { live: number; todo: number; waiting: number; allClear: boolean }) =>
-      facts.live === 0
-        ? t(BOARD.summaryNone)
-        : facts.allClear
-          ? t(BOARD.summaryAllClear, { live: facts.live })
-          : t(BOARD.summary, facts),
     today: (date: string) =>
       t(BOARD.today, { weekday: formatWeekday(pack, date, language), date: day(date) }),
-    toDo: t(BOARD.toDo),
     waiting: t(BOARD.waiting),
     toDoHeading: t(BOARD.toDoHeading),
     waitingHeading: t(BOARD.waitingHeading),
@@ -186,9 +167,6 @@ export function projectBoardWords(t: T, pack: FormatPack, language: UiLanguage) 
     allProjects: t(BOARD.allProjects),
     allLiveProjects: t(BOARD.allLiveProjects),
     byStage: t(BOARD.byStage),
-    allStages: t(BOARD.allStages),
-    showStage: t(BOARD.showStage),
-    showStageLine: t(BOARD.showStageLine),
     /** A stop's line: the longest stay, the handed-over stop's look back, or none there. */
     stopLine: (stop: { readonly longestDays: number | null; readonly recent: boolean }) =>
       stop.recent
@@ -196,8 +174,6 @@ export function projectBoardWords(t: T, pack: FormatPack, language: UiLanguage) 
         : stop.longestDays === null
           ? null
           : t(BOARD.longest, { days: t(PROJECT_DAYS, { count: stop.longestDays }) }),
-    longest: (days: number) => t(BOARD.longest, { days: t(PROJECT_DAYS, { count: days }) }),
-    noneNow: t(BOARD.noneNow),
     noneInStage: (stage: string) => t(BOARD.noneInStage, { stage: word('stage', stage) }),
     showMore: (count: number) => t(BOARD.showMore, { count }),
     clearStage: t(BOARD.clearStage),
@@ -227,7 +203,6 @@ export function projectBoardWords(t: T, pack: FormatPack, language: UiLanguage) 
     todoAct: (kind: TodoKind) => t(TODO_ACT[kind]),
     todoActSpoken: (kind: TodoKind, name: string) => t(TODO_ACT_SPOKEN[kind], { name }),
     allClearTitle: t(BOARD.allClearTitle),
-    allClearBody: (live: number) => t(BOARD.allClearBody, { count: live }),
     emptyTitle: t(BOARD.emptyTitle),
     emptyBody: t(BOARD.emptyBody),
     failedTitle: t(BOARD.failedTitle),
@@ -249,7 +224,6 @@ export function projectBoardWords(t: T, pack: FormatPack, language: UiLanguage) 
       noMatch: (text: string) => t(BOARD.noMatch, { text: text.trim() }),
     },
     open: (name: string) => t(BOARD.open, { name }),
-    stagesName: t(BOARD.stagesName),
     noName: t(BOARD.noName),
     close: t(SHELL.close),
   };

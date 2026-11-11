@@ -32,6 +32,9 @@ const container: ViewStyle = {
   borderRadius: theme.radius['r-pill'],
 };
 
+/* Bare: the tone's ink alone, on the card that holds it. */
+const bareLook: ViewStyle = { paddingVertical: 0, paddingHorizontal: 0 };
+
 /* --fw-medium — the DS chip weight (StatusChip.jsx). */
 const words: TextStyle = {
   fontFamily: theme.type.families.sans,
@@ -53,10 +56,16 @@ interface NativeStatusMarkProps extends StatusMarkProps {
  * Status as label + mark, never colour alone (F7-12, docs/engineering/17 §4). A component that tints
  * a state without composing this primitive is a defect.
  */
-export function StatusMark({ tone, label, mark = true, style }: NativeStatusMarkProps) {
+export function StatusMark({
+  tone,
+  label,
+  mark = true,
+  bare = false,
+  style,
+}: NativeStatusMarkProps) {
   const pair = TONE[tone];
   return (
-    <View style={[container, { backgroundColor: pair.bg }, style]}>
+    <View style={[container, bare ? bareLook : { backgroundColor: pair.bg }, style]}>
       {mark ? (
         <RNText importantForAccessibility="no" style={[glyph, { color: pair.text }]}>
           {STATUS_GLYPH[tone]}

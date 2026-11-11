@@ -1,5 +1,12 @@
 import type { CalendarDate } from '../format/holidays';
 import { localDate } from '../format/zone';
+import {
+  type BoardManager,
+  boardManagersOf,
+  boardRowsOrdered,
+  type ProjectBoardSort,
+  runBy,
+} from './board-order';
 import { needsYouOf, type TodoKind } from './needs-you';
 import { PROJECT_STAGE_CHAIN, type ProjectChainStage } from './stages';
 import { BLOCKER_PARTIES, type BlockerParty, type BlockerReason } from './vocabulary';
@@ -101,6 +108,9 @@ export interface BoardChoice {
   readonly canAct: boolean;
   /** The handed-over projects, read only while that stop is chosen; null otherwise. */
   readonly handedOver: readonly BoardCard[] | null;
+  readonly sort: ProjectBoardSort;
+  /** One manager's projects, by their user id; null shows everyone's. */
+  readonly manager: string | null;
 }
 
 export interface StageGroup {
@@ -126,6 +136,10 @@ export interface ProjectBoardView {
   readonly searched: string;
   /** Nothing to do and nothing waited on: the board says so (ruling 2026-11-10). */
   readonly allClear: boolean;
+  readonly sort: ProjectBoardSort;
+  readonly manager: string | null;
+  /** Every manager of a live project, to narrow the lists to one. */
+  readonly managers: readonly BoardManager[];
 }
 
 /** Whether a card answers the search: its name, its place or its number holds what was typed. */
@@ -186,6 +200,7 @@ function rowOf(card: BoardCard, today: CalendarDate): BoardRow {
 function groupsOf(
   cards: readonly BoardCard[],
   chosen: ProjectChainStage | null,
+  sort: ProjectBoardSort,
   today: CalendarDate,
 ) {
   const stagesShown =
@@ -194,9 +209,12 @@ function groupsOf(
     .map((stage) => {
       const rows = cards
         .filter((card) => isChainStage(card.stage) && card.stage === stage)
-        .map((card) => rowOf(card, today))
-        .sort((a, b) => b.days - a.days || a.card.id.localeCompare(b.card.id));
-      return { stage, rows, longestDays: rows[0]?.days ?? null };
+        .map((card) => rowOf(card, today));
+      const longestDays = rows.reduce<number | null>(
+        (longest, row) => Math.max(longest ?? row.days, row.days),
+        null,
+      );
+      return { stage, rows: boardRowsOrdered(rows, sort), longestDays };
     })
     .filter((group) => chosen !== null || group.rows.length > 0);
 }
@@ -207,13 +225,10 @@ function groupsOf(
  */
 export function projectBoardViewOf(facts: BoardFacts, choice: BoardChoice): ProjectBoardView {
   const { today } = facts;
-  const { stage: chosen, searched, canAct } = choice;
+  const { stage: chosen, searched, canAct, sort, manager } = choice;
+  const shownTo = (card: BoardCard) => answers(card, searched) && runBy(card, manager);
   const everything = needsOf(facts.live, canAct, today);
-  const found = needsOf(
-    facts.live.filter((card) => answers(card, searched)),
-    canAct,
-    today,
-  );
+  const found = needsOf(facts.live.filter(shownTo), canAct, today);
   const stops = PROJECT_STAGE_CHAIN.map((stage) => {
     const counted = facts.stages.find((one) => one.stage === stage);
     return {
@@ -234,13 +249,12 @@ export function projectBoardViewOf(facts: BoardFacts, choice: BoardChoice): Proj
     todo: found.todo,
     waits: found.waits,
     stops,
-    groups: groupsOf(
-      shown.filter((card) => answers(card, searched)),
-      chosen,
-      today,
-    ),
+    groups: groupsOf(shown.filter(shownTo), chosen, sort, today),
     chosen,
     searched,
     allClear: everything.todo.length === 0 && everything.waitCount === 0,
+    sort,
+    manager,
+    managers: boardManagersOf(facts.live),
   };
 }

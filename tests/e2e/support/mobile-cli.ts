@@ -13,6 +13,7 @@ import {
   INVITE_LANDING,
   inviteWords,
   leadInboxWords,
+  leadsListTopWords,
   leadsListWords,
   PLAN_SELECTION,
   PRICING,
@@ -259,15 +260,19 @@ async function call(
   return answer;
 }
 
-/** The Leads list's words (`SCR-M02-03`): the meter's hint, the Dormant chip, no match and its way back. */
+/**
+ * The Leads list's words (`SCR-M02-03`): the summary's open figure and its dormant one as a screen
+ * reader names it, the search's hint, no match and its way back.
+ */
 function leadsListFlowWords(
   t: Awaited<ReturnType<typeof createTranslator>>,
 ): Record<string, string> {
   const list = leadsListWords(t.t, { pack: IN_FORMATS, language: 'en', now: Date.now() });
+  const top = leadsListTopWords(t.t, { pack: IN_FORMATS, language: 'en', now: Date.now() });
   return {
-    LEADS_PIPELINE_HINT: list.meter(0).hint,
-    LEADS_LAST_STAGE: list.meter(0).stage('negotiating'),
-    DORMANT: list.dormant,
+    LEADS_OPEN: top.open,
+    LEADS_SEARCH_HINT: list.searchHint,
+    DORMANT_FIGURE: top.dormantSpoken(0),
     LEADS_NO_MATCH: list.noMatch.title,
     CLEAR_FILTERS: list.noMatch.clear,
   };

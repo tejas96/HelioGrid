@@ -43,7 +43,7 @@ export function CatalogItemList({
       {rows.length === 0 ? (
         <EmptyState scene="settle" title={words.table.emptyTitle} />
       ) : (
-        <CardRows>
+        <CardRows form="joined">
           {rows.map((row, index) => {
             const status = rowStates[row.id];
             const pending = catalogRowPending(status, words, focusAfter);

@@ -1,11 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import type { RolePreset } from '../../src/authz/roles';
 import {
-  billSortStepped,
   LEADS_LIST_FIRST_SORT,
+  LEADS_LIST_ORDERS,
   type LeadsListFilters,
   type LeadsListLead,
-  type LeadsListSort,
   type LeadsWhose,
   leadBillShownOf,
   leadRowNextOf,
@@ -13,7 +12,9 @@ import {
   leadsListAskOf,
   leadsListFiltersFor,
   leadsListViewOf,
+  leadsOrderKey,
   leadsPipelineOf,
+  leadsSheetFiltersOn,
   leadsWhoseOf,
 } from '../../src/crm/leads-list-view';
 import { IN_FORMATS } from '../../src/format/pack';
@@ -109,19 +110,23 @@ describe('the read the filters ask for', () => {
       expect(leadsListAskOf(filters, 'me', whose)).not.toHaveProperty('q');
   });
 
-  it.each<[LeadsListSort, LeadsListSort]>([
-    [LEADS_LIST_FIRST_SORT, { key: 'monthly_bill', order: 'desc' }],
-    [
-      { key: 'monthly_bill', order: 'desc' },
-      { key: 'monthly_bill', order: 'asc' },
-    ],
-    [{ key: 'monthly_bill', order: 'asc' }, LEADS_LIST_FIRST_SORT],
-    [
-      { key: 'last_activity', order: 'asc' },
-      { key: 'monthly_bill', order: 'desc' },
-    ],
-  ])('the bill chip moves %j to %j', (from, to) => {
-    expect(billSortStepped(from)).toEqual(to);
+  it('offers newest first, the bill both ways and the latest activity, each with its own key', () => {
+    expect(LEADS_LIST_ORDERS.map(leadsOrderKey)).toEqual([
+      'created_at:desc',
+      'monthly_bill:desc',
+      'monthly_bill:asc',
+      'last_activity:desc',
+    ]);
+  });
+
+  it.each<[Partial<LeadsListFilters>, number]>([
+    [{}, 0],
+    [{ dormant: true }, 1],
+    [{ source: 'referral' }, 1],
+    [{ dormant: true, source: 'import' }, 2],
+    [{ stage: 'survey', query: 'pune' }, 0],
+  ])('the filter sheet counts %j as %i on', (set, on) => {
+    expect(leadsSheetFiltersOn({ ...leadsListFiltersFor(['all']), ...set })).toBe(on);
   });
 });
 
@@ -141,7 +146,7 @@ describe('a row’s monthly bill in the tenant’s money (M02-40, F3-20)', () =>
 });
 
 describe('the pipeline meter', () => {
-  it('draws every open stage in funnel order, a missing one as 0, and won never', () => {
+  it('draws every open stage in funnel order, a missing one as 0, and won never — not even in the open count', () => {
     const pipeline = leadsPipelineOf({
       byStage: [
         { stage: 'qualified', count: 12 },
@@ -159,7 +164,7 @@ describe('the pipeline meter', () => {
       ['proposal', 0],
       ['negotiating', 0],
     ]);
-    expect(pipeline).toMatchObject({ open: 20, dormant: 9 });
+    expect(pipeline).toMatchObject({ open: 18, won: 2, dormant: 9 });
   });
 });
 

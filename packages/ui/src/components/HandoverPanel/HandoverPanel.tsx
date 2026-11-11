@@ -113,7 +113,7 @@ function Checks({
         </div>
       </HeroPanel>
       {ready ? null : (
-        <CardRows>
+        <CardRows form="joined">
           {pendingRows.map((row, index) => (
             <CardRow
               key={row}

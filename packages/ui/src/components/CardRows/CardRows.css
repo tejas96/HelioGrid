@@ -16,6 +16,23 @@
   border-radius: var(--r-tile);
 }
 
+/* A tile per row: the list itself draws nothing, its rows stand apart with a gap between them, and
+   no hairline is drawn — the gap is the line. */
+.hg-card-rows[data-form="separate"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: 0;
+}
+
+.hg-card-rows[data-form="separate"] > .hg-card-row {
+  border-radius: var(--r-card-expressive);
+}
+
+.hg-card-rows[data-form="separate"] > .hg-card-row::before {
+  content: none;
+}
+
 /* The row's fill — its hover, or its highlight — inset from the row's top and bottom, so two
    filled rows side by side keep a gap between them and never read as one block. It lies under the
    target and the body; the target keeps the row's full height to press. */

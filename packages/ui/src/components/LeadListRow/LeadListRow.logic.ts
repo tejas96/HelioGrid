@@ -1,6 +1,7 @@
 import type { TranslatedText } from '@heliogrid/contracts';
 import {
   type FormatPack,
+  formatPhone,
   type LeadRowNext,
   type LeadSource,
   type LeadStage,
@@ -44,6 +45,7 @@ export function leadNextMarkOf(
 export interface ListableLead {
   readonly id: string;
   readonly name: string | null;
+  readonly phoneE164: string;
   readonly city: string | null;
   readonly source: LeadSource | (string & {});
   readonly stage: LeadStage;
@@ -56,6 +58,7 @@ export function listedLeadOf(lead: ListableLead, pack: FormatPack): ListedLead {
   return {
     id: lead.id,
     name: lead.name,
+    phone: formatPhone(pack, lead.phoneE164),
     city: lead.city,
     source: lead.source,
     stage: lead.stage,

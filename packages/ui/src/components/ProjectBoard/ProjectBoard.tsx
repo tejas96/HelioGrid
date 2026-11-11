@@ -1,77 +1,53 @@
 import type { ProjectBoardView } from '@heliogrid/domain';
-import { useRef, useState } from 'react';
-import { type FocusAfter, type FocusHandle, focusAfterFirst } from '../../primitives/FocusAfter';
-import { ShellGlyph } from '../AppShell/ShellGlyph';
+import { type RefObject, useRef } from 'react';
+import type { FocusAfter, FocusHandle } from '../../primitives/FocusAfter';
+import { useOwnWidth } from '../../primitives/use-own-width';
 import { EmptyState, FailedRead } from '../EmptyState';
-import { IconButton } from '../IconButton';
+import { ListTop } from '../ListTop';
+import type { ListRoom } from '../ListTop/ListTop.types';
 import { LoadingBars } from '../LoadingBars';
 import { projectFailedOf, projectLoadingOf } from '../ProjectDetail/ProjectDetail.states';
-import { SearchField } from '../SearchField';
 import { searchMissed } from './ProjectBoard.logic';
+import { projectBoardTopOf } from './ProjectBoard.top';
 import type { ProjectBoardProps } from './ProjectBoard.types';
-import { ProjectBoardDesk, ProjectBoardRail } from './ProjectBoardDesk';
-import { ProjectBoardHero } from './ProjectBoardHero';
+import { ProjectBoardDesk } from './ProjectBoardDesk';
 import { ProjectBoardNeeds } from './ProjectBoardNeeds';
 import { ProjectBoardNoMatch } from './ProjectBoardNoMatch';
 import { ProjectBoardStages } from './ProjectBoardStages';
 import './ProjectBoard.css';
 
+/** The room at which the board lays the day's work beside the table — the container's own rule. */
+const BOARD_WIDE_FROM = 960;
+
 /**
- * The board on the web (`SCR-M08-01`), sized from its own room (a container on its wrapper, never
- * the window). Narrow, the phone's page: the title with the search glyph, the hero, *To do*,
- * *Waiting* and every project by stage under one stage pill. Wide (the picked desktop frame): the
- * title with the search field, the rail of every stage across the top, then the day's work in a
- * column beside OneOhm's table of projects. A part the other room draws differently is drawn in
- * both and shown in its own (`data-room`).
+ * The board on the web (`SCR-M08-01`), sized from its own room (its wrapper, never the window):
+ * the large title, the list top every list page shares — the summary, the search with the order
+ * and the manager filter, the stage chips — then *To do*, *Waiting* and every project by stage.
+ * Narrow, one column as the phone draws it; wide, the day's work in a column beside OneOhm's table.
+ * A part the other room draws differently is drawn in both and shown in its own (`data-room`).
  */
 export function ProjectBoard(props: ProjectBoardProps) {
-  const { read, head, searched, onSearch, words } = props;
-  const narrowField = useRef<FocusHandle>(null);
-  const wideField = useRef<FocusHandle>(null);
-  const [searching, setSearching] = useState(searched !== '');
-  const ready = read.kind === 'ready';
-  const toggleSearch = () => {
-    if (searching) onSearch('');
-    setSearching(!searching);
-  };
-  const field = {
-    value: searched,
-    onChange: onSearch,
-    placeholder: words.search.placeholder,
-    onClear: () => onSearch(''),
-    clearLabel: words.search.clear,
-  };
+  const [room, width] = useOwnWidth<HTMLDivElement>();
+  const field = useRef<FocusHandle>(null);
+  const listRoom: ListRoom = width !== null && width >= BOARD_WIDE_FROM ? 'wide' : 'narrow';
   return (
-    <div className="hg-project-board-room">
+    <div ref={room} className="hg-project-board-room">
       <div className="hg-project-board">
-        <div className="hg-project-board-top">
-          <div className="hg-project-board-title">{head}</div>
-          {ready ? (
-            <>
-              <div className="hg-project-board-search" data-room="wide">
-                <SearchField ref={wideField} {...field} />
-              </div>
-              <span className="hg-project-board-search-glyph" data-room="narrow">
-                <IconButton label={words.search.open} pressed={searching} onClick={toggleSearch}>
-                  <ShellGlyph name="search" size="md" tone="primary" />
-                </IconButton>
-              </span>
-            </>
-          ) : null}
-        </div>
-        {ready && searching ? (
-          <div data-room="narrow">
-            <SearchField ref={narrowField} autoFocus {...field} />
-          </div>
-        ) : null}
-        <BoardBody {...props} searchField={focusAfterFirst(narrowField, wideField)} />
+        <div className="hg-project-board-title">{props.head}</div>
+        <BoardBody {...props} listRoom={listRoom} field={field} searchField={field} />
       </div>
     </div>
   );
 }
 
+type BodyProps = ProjectBoardProps & {
+  listRoom: ListRoom;
+  field: RefObject<FocusHandle | null>;
+  searchField: FocusAfter;
+};
+
 /** The board under its title: its read's loading, failure and first run, or the board itself. */
-function BoardBody(props: ProjectBoardProps & { searchField: FocusAfter }) {
+function BoardBody(props: BodyProps) {
   const { read, words, focusAfter } = props;
   if (read.kind === 'loading') return <LoadingBars {...projectLoadingOf(words)} />;
   if (read.kind === 'failed') {
@@ -83,17 +59,14 @@ function BoardBody(props: ProjectBoardProps & { searchField: FocusAfter }) {
   return <Board view={read.value} {...props} />;
 }
 
-function Board(props: ProjectBoardProps & { view: ProjectBoardView; searchField: FocusAfter }) {
-  const { view } = props;
+function Board(props: BodyProps & { view: ProjectBoardView }) {
+  const { view, listRoom } = props;
   const missed = searchMissed(view);
   return (
     <>
-      <div data-room="wide">
-        <ProjectBoardRail {...props} />
-      </div>
+      <ListTop {...projectBoardTopOf(props, view, listRoom, props.field)} />
       <div className="hg-project-board-columns">
         <div className="hg-project-board-work">
-          <ProjectBoardHero view={view} words={props.words} />
           <div className="hg-project-board-needs" data-room="narrow">
             <ProjectBoardNeeds room="narrow" {...props} />
           </div>

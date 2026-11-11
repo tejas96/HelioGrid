@@ -2,11 +2,17 @@ import type { ReactNode, Ref } from 'react';
 import type { FocusHandle } from '../../primitives/FocusAfter';
 
 /**
- * **One glass card holding a list's rows** (direction A): a tile on the page with a hairline between
- * two rows — never a card per row. The catalog's narrow list and the Team list draw their rows in it.
+ * How a list's rows sit on the page: `joined`, one glass card with a hairline between two rows
+ * (direction A — the catalog's narrow list, the Team list); `separate`, a tile per row with a gap
+ * between them, where each row is a record a person scans and taps on its own (the list pages'
+ * cards on the phone, the owner's pick L2).
  */
+export type CardRowsForm = 'joined' | 'separate';
+
+/** **A list's rows**, in one card or a card each (`form`). */
 export interface CardRowsProps {
   children: ReactNode;
+  form: CardRowsForm;
 }
 
 /**

@@ -146,9 +146,9 @@ export type {
   PipelineStage,
 } from './leads-list-view';
 export {
-  billSortStepped,
   LEAD_LIST_SORTS,
   LEADS_LIST_FIRST_SORT,
+  LEADS_LIST_ORDERS,
   LEADS_QUERY_SETTLE_MS,
   LEADS_WHOSE,
   leadBillShownOf,
@@ -158,7 +158,9 @@ export {
   leadsListAskOf,
   leadsListFiltersFor,
   leadsListViewOf,
+  leadsOrderKey,
   leadsPipelineOf,
+  leadsSheetFiltersOn,
   leadsWhoseOf,
   PIPELINE_STAGES,
 } from './leads-list-view';

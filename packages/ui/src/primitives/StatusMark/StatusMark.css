@@ -46,3 +46,9 @@
   color: var(--accent);
   background: var(--accent-subtle);
 }
+
+/* Bare: the tone's ink alone, on the card that holds it. */
+.hg-status-mark[data-bare="true"] {
+  padding: 0;
+  background: transparent;
+}

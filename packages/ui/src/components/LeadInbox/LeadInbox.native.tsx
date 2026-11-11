@@ -128,7 +128,7 @@ function UpNext(props: LeadInboxProps) {
           words={words.selection}
         />
       ) : null}
-      <CardRows>
+      <CardRows form="joined">
         {view.upNext.map((card, index) => (
           <LeadTile key={card.lead.id} {...tilePropsOf(props, card, index)} />
         ))}

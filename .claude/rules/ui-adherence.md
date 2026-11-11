@@ -75,6 +75,14 @@ how untranslated copy ships.
 - **A component never states a value it was not told** — a default that invents a limit, a size or
   a ceiling promises one thing while the caller refuses another.
 
+## List page top
+
+Every list page opens with `ListTop` (`packages/ui`), filled by its screen's logic: the summary as
+the page's one `HeroPanel`, whose list when there is a choice, the search — its hint names what it
+finds — with the sort and the filter beside it, then the quick chips in one row that scrolls, a
+chip with nothing in it left out. Sort and filter open a sheet on the phone and a menu or side panel
+where the room is wide. On the phone each row is its own card (`CardRows` `separate`).
+
 ## States, saves and focus — decided before the markup
 
 The plan names them for each read and each action a screen has; the code builds
