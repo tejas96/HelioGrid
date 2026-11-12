@@ -7,8 +7,8 @@ Deps: `architecture.md` §2 i18n. `packages/ui` takes its copy as props.
 - `src/copy/` modules are pure data — React-free, JSX banned, extractor-swept via leading
   `/*i18n*/` descriptors. Where a closed set exists the module is a `Record` over the contract
   enum. Screen-specific copy stays in its screen.
-- NEVER: app copy hard-coded elsewhere, a per-app catalog, agent or WhatsApp templates (tenant
-  DATA), or a raw Intl currency format.
+- NEVER: app copy hard-coded elsewhere, a per-app catalog, WhatsApp or message templates (tenant
+  data), or a raw Intl currency format.
 
 ## Where files go
 
@@ -65,5 +65,5 @@ Follow `docs/engineering/adding-a-language.md`; the typecheck, `check:catalogs`,
 
 ## Done means
 
-Every locale has zero missing messages (`check:catalogs` refuses one) · every
-language RENDERED on web and on both phones, switching and not merely loading.
+Every locale has zero missing messages (`check:catalogs` refuses one) · a changed screen is seen in
+one non-English language per surface (`qa-live`).

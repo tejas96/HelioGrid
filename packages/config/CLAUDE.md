@@ -1,7 +1,6 @@
 # @heliogrid/config — shared build config: tsconfig presets and Biome plugins
 
-- `unit-test-packages.json` — the set of packages that carry unit tests, read by the runner and by
-  dependency-cruiser; its law is `.claude/rules/testing.md`.
+- `unit-test-packages.json`: see `.claude/rules/testing.md`.
 - A preset is strict JSON (Biome refuses a comment), so a preset's reasons go in this file.
 - `tsconfig/node-package.json` — a library package (composite, emits dist and d.ts). `tsconfig/nest-app.json` — a
   NestJS app (decorators, metadata, no composite).

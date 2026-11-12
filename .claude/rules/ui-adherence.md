@@ -13,19 +13,16 @@ paths:
 
 ## Visual values
 
-- **No raw values** — no hex, no px, no inline style; every value comes from `@heliogrid/theme`,
-  whose one source is the typed tokens in `packages/theme/src/tokens/`. On a screen only `0` is
-  written raw; a size or colour the tokens lack is added there first, in light and dark, with its
-  contrast pair, never typed into the app.
-- **The primary action is the ocean accent** (`--action-primary`); the active sidebar item is
-  `nav-active` (the ink pill in light, a soft accent wash in the dark). A chosen filter or option —
+- **No raw values and no inline style on a screen** (Biome `raw-colour*`, `raw-white*`,
+  `screen-size*` hold the raw values; review holds the inline style): a size or colour the
+  tokens lack is added to `packages/theme/src/tokens/` first, in light and dark, with its contrast
+  pair, never typed into the app.
+- A chosen filter or option —
   a stage, a segment, a filter pill, a chip — is the accent wash, `accent-text` on `accent-subtle`,
   however wide it grows; the ink pill is the sidebar's and a tooltip's alone. The logo gradient is spent once per screen — the hero's top line, a progress fill, the
   brand mark — and is never information.
-- **Every colour works in light, dark and field mode.** Web reads the CSS variables, which switch
-  with `data-theme`; a phone half reads `colors` from the `Color` primitive, whose values the system
-  resolves per scheme. A hex for arithmetic (a contrast check, an alpha) comes from `palette`,
-  never from a style.
+- **Every colour works in light, dark and field mode** — how each platform reads it:
+  `packages/theme/CLAUDE.md`.
 - **Text is never smaller than 12px**; the 11px uppercase overline is the one exception.
 - **An icon-only control is an `IconButton`**; a `Button` always has words.
 - **An icon replaces a word only where the glyph alone says the act** — edit (pencil), close,
@@ -51,14 +48,11 @@ style, and a component that re-implements either is a defect:
 and `accessibilityState` to it; reaching for the platform pressable loses the 44px floor and focus
 ring.
 
-**Never put `accessible` on a wrapper that holds controls** — it folds them out of the screen
-reader's reach; state goes on the node that is the accessibility element.
+**State goes on the node that is the accessibility element**, never on a wrapper that holds
+controls (Biome `folded-control`).
 
 A surface the design system does not cover is COMPOSED from the existing vocabulary, never new
-visuals. **No user-visible English lives in `packages/ui`, accessibility labels included** — a
-screen reader speaks an `aria-label`, so a hard-coded one is a Hindi user hearing English. Copy
-props are required, never optional-with-a-fallback: a default that "only shows if you forget" is
-how untranslated copy ships.
+visuals. No user-visible English lives in `packages/ui` (`packages/ui/CLAUDE.md`).
 
 ## Traps no check sees
 
@@ -102,7 +96,7 @@ what the plan names (`F7-23` N5 and N10, `F7-43` items 2 and 3):
 What motion is for and its four floors are `F7-51`; which tool does which job is
 `docs/engineering/03-tech-stack.md` §11, *Motion*. Motion lives in a `packages/ui` component: a
 screen turns it on by a prop and never animates by hand, a move between screens is the
-navigator's, and the studio's 3D scene animates in its own code under the same floors. Build it so:
+navigator's, and a 3D scene animates in its own code under the same floors. Build it so:
 
 - **Durations and easings come from `theme.motion`** (web: `var(--dur-*)`, `var(--ease-*)`) — never a
   typed `ms` or a bezier.
@@ -141,11 +135,11 @@ navigator's, and the studio's 3D scene animates in its own code under the same f
 ## Screens
 
 Hindi and Marathi words are written once, in the catalog, when a screen's words are built. A word
-another screen already shows is reused as it stands. A newly drafted line is listed in the task for
-a native review. A frame drawn in another language is never a word source: it is a second copy.
+another screen already shows is reused as it stands. A newly drafted line is listed in the PR body's
+*Notes* for a native review. A frame drawn in another language is never a word source: it is a second copy.
 
 Every word a screen shows comes from `@heliogrid/i18n`, as `packages/i18n/CLAUDE.md` says. No check
-finds a bare English literal in JSX.
+finds a bare English literal in an app's JSX.
 
 ## Presentation and logic live in different files
 

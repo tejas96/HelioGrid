@@ -13,8 +13,7 @@ features/<capability>/ <Name>Screen.tsx composes · components/ one per componen
                        hooks/use-<thing>.ts the platform adapter only (DOM, router, clipboard) ·
                        <screen>.css token var() only · constants.ts · types.ts ·
                        shared/ when two SCREENS here share · index.ts the barrel
-lib/                   app infrastructure and what two features share that only the web has:
-                       env.ts, use-image-file.ts, leave-guard.tsx, instant-move.tsx
+lib/                   app infrastructure and the web-only platform pieces two features share
 ```
 
 A feature is named for the CAPABILITY it owns. Two FEATURES sharing a part means it belongs in a
@@ -52,5 +51,5 @@ running browser — a task is done only when it has been driven, not read.
 - `"sideEffects": ["**/*.css"]` in `package.json` is load-bearing: without it webpack keeps every module a barrel names, and it holds only while every side-effect import here is CSS → keep it, and recheck it when a non-CSS side-effect import lands.
 - `lib/env.ts` must write each `process.env.NEXT_PUBLIC_*` out literally: Next substitutes text, so `process.env[key]` or a spread reads `undefined` in the browser and falls back to the schema default with nothing failing → literal reads only.
 - The stylesheet import order in `app/layout.tsx` is load-bearing → `@heliogrid/theme/tokens.css`, then `base.css`, then `@heliogrid/ui/styles.css`, then `globals.css`; keep it.
-- `next dev` builds with Turbopack (each page compiles in under a second, and an edit recompiles only what changed), but `next build` still uses webpack, so a page that works in dev can still fail the build or look different there → judge speed and the build on `web-built`, never on `next dev` alone.
-- `next dev` transpiles only `@heliogrid/ui` and `@heliogrid/theme` from source (`next.config`'s `transpilePackages`); every other workspace package — `data`, `domain`, `i18n`, `contracts` — is read from its `dist/`, so a hook change does nothing on the running page and QA reads the old behaviour as a failed fix → `pnpm --filter <package> build` after the change, then reload.
+- `next dev` (Turbopack) ≠ `next build` (webpack): a page that works in dev can fail the build or look different there → judge speed and the build on `web-built`.
+- `next dev` reads only `@heliogrid/ui` from source (its `exports` point at `src/`); `@heliogrid/theme`, though in `next.config.ts`'s `transpilePackages`, and every other workspace package — `data`, `domain`, `i18n`, `contracts` — are read from their `dist/`, so a hook change does nothing on the running page and QA reads the old behaviour as a failed fix → `pnpm --filter <package> build` after the change, then reload.

@@ -131,7 +131,7 @@ Each app has its own dev server; there is no single "start everything" command t
 `apps/*` are wired into one `turbo run dev` invocation in this repo — run what you need):
 
 ```bash
-pnpm infra:token                        # the Temporal token lives ONE HOUR — re-mint it before starting
+pnpm infra:token                        # the Temporal token lives 12 hours — re-mint it when it runs out
                                         # api or worker (.claude/launch.json does this for you)
 pnpm --filter @heliogrid/api dev        # NestJS, tsx watch, http://localhost:8084
 pnpm --filter @heliogrid/web dev        # Next.js, http://localhost:3002

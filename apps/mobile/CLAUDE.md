@@ -5,7 +5,7 @@ AsyncStorage for tokens, or a web-only dependency.
 
 ## Where files go
 
-`src/` is `{auth, files, navigation, push, screens}` plus root `env.ts`, `i18n.ts` and `react-query-host.tsx`.
+`src/` is `{appearance, auth, files, navigation, push, screens}` plus root `env.ts`, `i18n.ts` and `react-query-host.tsx`.
 A module's screen lands in `src/screens/` and replaces its shell placeholder in
 `src/navigation/routes/app.ts`.
 
@@ -14,13 +14,12 @@ src/screens/<name>/       same shape as web's feature, in RN's location
   <Name>Screen.tsx        composes what its pair's `packages/data` hook assembles; holds no state
                           (Biome plugin `screen-assembly`)
   components/<Part>.tsx   one file per component or coherent group
-  hooks/use-<thing>.ts    the platform adapter only — keyboard, focus, clipboard, navigation
+  hooks/use-<thing>.ts    the platform adapter only — focus, clipboard, navigation
   styles.ts               screen-level layout; component geometry stays with its component
   types.ts                when two files here share a type
-src/screens/shared/       the door's inset wrappers two screens share (the code step's takes Android's back
-                          to the number), the hand-off out of a step after a
-                          join (`use-go-inside.ts`) and the boot screen's placeholder scaffold; a part
-                          the web also draws is `packages/ui`'s (`screen-parts.md`), and a leave ask is
+src/screens/shared/       phone-only parts two screens share (the door's inset wrappers, the scaffold
+                          layout, `use-go-inside.ts` after a join, toasts, Android's back); a part
+                          the web also draws is `packages/ui`'s (`screen-parts.md`); a leave ask is
                           `packages/data`'s `useLeaveAsk`, fed by `usePreventRemove`
 src/navigation/           React Navigation static config
 src/auth/ · src/push/ · src/files/   native adapters, one per capability; push isolates
@@ -56,8 +55,9 @@ cd apps/mobile/ios && LANG=en_US.UTF-8 bundle exec pod install
 
 ## Done means
 
-Runs on the iOS simulator and on Android, by `qa-live` and CI's `android` lane · the per-screen DoD
-in `docs/prd/foundations/F7-design-language.md` `F7-43`.
+Runs on iOS, checked by `qa-live`; on Android, checked by CI's `android` lane, and by `qa-live`
+when `tests/e2e/CLAUDE.md` says · the per-screen DoD in `docs/prd/foundations/F7-design-language.md`
+`F7-43`.
 
 ## Traps
 

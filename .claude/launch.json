@@ -33,7 +33,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "lsof -ti tcp:8084 -sTCP:LISTEN >/dev/null && { echo 'port 8084 is busy: reuse that server, or free it with clean-dev-ports'; exit 1; }; log=\"$(git rev-parse --show-toplevel)/.qa/api.log\"; mkdir -p \"${log%/*}\"; exec > >(tee \"$log\") 2>&1; pnpm infra:token && exec pnpm --filter @heliogrid/api start"
+        "lsof -ti tcp:8084 -sTCP:LISTEN >/dev/null && { echo 'port 8084 is busy: reuse that server, or free it with clean-dev-ports'; exit 1; }; log=\"$(git rev-parse --show-toplevel)/.qa/api.log\"; mkdir -p \"${log%/*}\"; exec > >(tee \"$log\") 2>&1; pnpm infra:token && pnpm turbo build --filter=@heliogrid/api && exec pnpm --filter @heliogrid/api start"
       ],
       "port": 8084
     },
@@ -51,7 +51,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "log=\"$(git rev-parse --show-toplevel)/.qa/worker.log\"; mkdir -p \"${log%/*}\"; exec > >(tee \"$log\") 2>&1; pnpm infra:token && pnpm --filter @heliogrid/worker build && exec pnpm --filter @heliogrid/worker dev"
+        "root=$(git rev-parse --show-toplevel); for pid in $(pgrep -f 'src/main.ts|dist/main.js'); do [ \"$(lsof -a -p $pid -d cwd -Fn | sed -n 's/^n//p')\" = \"$root/apps/worker\" ] && { echo \"a worker already runs (pid $pid): reuse it, or stop it first\"; exit 1; }; done; log=\"$root/.qa/worker.log\"; mkdir -p \"${log%/*}\"; exec > >(tee \"$log\") 2>&1; pnpm infra:token && pnpm --filter @heliogrid/worker build && exec pnpm --filter @heliogrid/worker dev"
       ]
     },
     {
@@ -59,7 +59,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "for port in 3002 8084 8081 3100; do pids=$(lsof -ti tcp:$port -sTCP:LISTEN); if [ -n \"$pids\" ]; then echo \"port $port: stopping $pids\"; kill $pids; else echo \"port $port: free\"; fi; done"
+        "root=$(git rev-parse --show-toplevel); for port in 3002 8084 8081 3100; do pids=$(lsof -ti tcp:$port -sTCP:LISTEN); [ -z \"$pids\" ] && { echo \"port $port: free\"; continue; }; for pid in $pids; do cwd=$(lsof -a -p $pid -d cwd -Fn | sed -n 's/^n//p'); case \"$cwd/\" in \"$root\"/*) echo \"port $port: HelioGrid's own server (pid $pid) — reuse it, or stop it through its preview or ask the owner\";; *) echo \"port $port: stopping foreign pid $pid ($cwd)\"; kill $pid;; esac; done; done"
       ]
     },
     {

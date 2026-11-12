@@ -32,9 +32,9 @@ A draft takes drizzle's own number and a random name (`0011_pink_yellowjacket.sq
 then move it to `migrations/` as the next free `NNNN_<what>.sql`.
 
 `pnpm db:migrate` migrates the database `$DATABASE_ADMIN_URL` (else `$DATABASE_URL`) names in the
-SHELL, so load it in the same command: `set -a; . ./.env.local; set +a; pnpm db:migrate`. For
-`heliogrid_test`, use the test-database prefix (`CLAUDE.md` §5) instead.
-It prints the database it migrates before it applies anything, and refuses a URL typed after it.
+shell. A session migrates only `heliogrid_test`, with the test-database prefix (`CLAUDE.md` §5);
+`heliogrid_dev` is the owner's — tell them when it lags. It prints the database before it applies
+anything, and refuses a URL typed after it.
 
 ## Rules
 
@@ -69,7 +69,7 @@ It prints the database it migrates before it applies anything, and refuses a URL
 
 ## Done means
 
-The migration applied twice, then the invariants run against the real database.
+`pnpm db:migrate` run twice on `heliogrid_test` (the second applies nothing), then the invariants.
 
 ## Traps
 

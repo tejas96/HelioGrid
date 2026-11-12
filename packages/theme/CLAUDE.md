@@ -11,13 +11,8 @@ it serves is `CLAUDE.md` §10.
   measures every pair in light, dark and field mode.
 - NEVER component code (that is `@heliogrid/ui`) or anything product-specific.
 - Consumers read `dist/`: after editing `src/`, run `pnpm --filter @heliogrid/theme build`.
-
-## What the build emits
-
-`dist/tokens.css` (the faces, every token in light, dark and field, reduced motion, the
-keyframes), `dist/base.css` and `dist/print.css` (from `src/css/`), the phone's `theme` object and
-the tokens as code (`dist/index.js`), `dist/android-res/` (the palette as Android `values` and
-`values-night`, which the phone's `build.gradle` adds as a resource folder) and `dist/fonts/`.
+- The build's outputs are the `package.json` exports, plus `dist/android-res/` (the palette as
+  Android `values` and `values-night`), which the phone's `build.gradle` adds as a resource folder.
 
 ## Traps
 

@@ -3,9 +3,6 @@
 The compose-don't-invent and no-raw-values laws are `.claude/rules/ui-adherence.md`, which loads
 with this folder.
 
-Every component draws the approved language (`CLAUDE.md` §10) from the typed tokens in
-`packages/theme/src/tokens/`, in light, dark and field mode.
-
 ## What lives here / what must never live here
 
 - `src/primitives/` — the atoms every component is built from. **Every field draws its box through
@@ -20,9 +17,10 @@ Every component draws the approved language (`CLAUDE.md` §10) from the typed to
   `GroundProvider ground="tile"`. A tile keeps only its radius, padding and ring states. The one
   hero a screen has is `HeroPanel` (solar glass); a page's large title is `LargeTitle`; a moment
   that matters is `LottieMoment`; a place with nothing in it is `EmptyScene`'s grey line drawing.
-- **Every colour comes from the `Color` primitive** (`colors`, `usePalette`): on the web a custom
-  property, on the phone a system colour that follows light and dark. Hex arithmetic reads
-  `theme.palettes` (light for anything printed), never a style colour.
+- The keyboard is answered only by `primitives/Keyboard` (`KeyboardFrame`): a field-bearing sheet or
+  editor is wrapped in it.
+- **Every colour comes from the `Color` primitive**; phone colours and arithmetic:
+  `packages/theme/CLAUDE.md` Traps (anything printed reads the light palette).
 - **NEVER product logic, policy or money maths** (that is domain). `utils/format.ts` and
   `utils/color-contrast.ts` only bind a pack or this system's inks to domain's maths; they
   implement nothing.
@@ -44,11 +42,13 @@ src/components/<Name>/
                       through the index
   <Part>.tsx · <Part>.native.tsx    a sub-part of <Name>, kept beside it
   <Name>.<concern>.ts a pure helper split from .logic.ts (.words.ts, .shapes.ts …)
+  <helper>.ts         a pure helper named for what it does (time-parse.ts, commit-draft.ts)
+  moments/            LottieMoment's JSON files
   <Name>.parts.types.ts  the inner parts' contracts, only when <Name>.types.ts would pass 300 lines
   use-<thing>.ts      a hook only this component uses
   index.ts            the only thing outside imports
 src/primitives/       the atoms every component is built from
-src/utils/            binds a pack or the system's inks to domain's maths (format.ts …)
+src/utils/            shared helpers with no markup (format.ts, qr-encode.ts, brand-gradient.native.tsx …)
 ```
 
 A component with only one platform half is incomplete, not "web-only" — unless its types file
@@ -64,7 +64,7 @@ part there fails it.
   the size ladder; a component that keeps its own box puts `<ShellGlyphMarks name="…" />` inside
   its `<svg>` and sets the size, stroke and colour there. Biome's `inline-glyph` and
   `inline-svg-mark` refuse path data and marks written anywhere else.
-- Nothing compares the two halves' behaviour, so the types file is what you must keep honest.
+- No check compares the two halves' behaviour → a change to one half is looked at live on the other (`qa-live`).
 - **No English lives here** (`T-SHELL-016`): every copy prop takes `TranslatedText` with no default,
   and words a component says itself — a counter, an announcement, an error line — arrive as a
   `<Name>Words` prop built in `packages/i18n/src/copy/`. Biome plugins `copy-prop-type`,
@@ -85,10 +85,10 @@ part there fails it.
 - A web layout sized from the window (`vw`, `@media` widths) assumes it owns the page, but inside the shell a side list or a panel takes part of it, so a two-column component squeezes a column to nothing at mid widths → size it from its own room (`container` + `cqw`, `@container`), as `CompanyProfile`'s settings life does.
 - A page's `data-layout="narrow"` holds every width under its wide breakpoint (a 673 px editor at 1280), not only 375, so a squeeze written for 375 under it — 2 px segment sides — shows on a roomy editor once the part stops stretching → size a tight-room rule from the part's own room (`@container`), as `hg-segmented-control-hug` does.
 - A category wash with its words (a hue tile, a kind badge, a face) mixed by hand is a pair `ui-colour-pairs` cannot measure and a colour dark mode cannot follow → take the token pair: `hg-hue` with `data-hue` on the web (`Avatar.css`), `hueTintOf` on native.
-- A phone colour is a system colour, not a string: concatenating, parsing or interpolating one fails at run time, and a percentage-sized SVG measured before its content grows stops short → arithmetic reads `usePalette()`, and an SVG behind content takes its parent's measured size (`HeroPanel.native.tsx`).
+- A percentage-sized phone SVG measured before its content grows stops short → an SVG behind content takes its parent's measured size (`HeroPanel.native.tsx`).
 - A phone layer drawn through `Portal` (a menu, a bubble) is not a screen, so Android's Back passed it by and left the app with the menu still open → a layer that opens over the page closes on Back through `useCloseOnBack` (`primitives/use-close-on-back.native.ts`), as `Menu` and `Explainer` do.
 - Android draws a bounded ripple square, and clips neither it nor a shadow to round corners, so `Pressable` ripples only a target with no `borderRadius`; a target whose round shape sits on an inner view rippled a square box over its pill → put the pill's radius on the target too (`Chip`, `FilterPill`).
-- Android rebuilds a control's spoken label only while its accessibility state carries a `busy` key, and sets it only when it has words, so a control whose `busy` went from `true` to absent, and a View with no label of its own, kept saying "…, busy" after the work was done → a control that can be busy states `busy` as `true` or `false`, never drops it (`Pressable.native.tsx` passes it as given), and a container with no words of its own states no busy at all (`CardRow`).
+- Android rebuilds a control's spoken label only while its accessibility state carries a `busy` key, and sets it only when it has words, so a control whose `busy` went from `true` to absent, and a View with no label of its own, kept saying "…, busy" after the work was done → a control that can be busy states `busy` as `true` or `false`, never drops it (`Pressable.native.tsx` passes it as given), and a container with no words of its own states no busy at all (`CardRows`).
 - A Fast Refresh that changes a component's hooks leaves the phone blank with "Rendered more hooks" → relaunch the app; it is not a product bug.
 - `Sheet` and `EditorSurface` take `inset` only for a part drawn inside a device frame; in an app it measures against the nearest positioned ancestor and, inside a scrolled page at 375, opens off-screen → an app sheet never takes `inset` (`Explainer`'s `inset` is a different prop, a hit-box margin).
 - On iOS a modal `Sheet`, `Modal` or `DetailPanel` panel (`accessibilityViewIsModal`) hides every other portal layer from a screen reader, so a list, menu or bubble opened over it is drawn and tappable but cannot be read → a portal layer a person must use over a modal is `accessibilityViewIsModal` itself while open (`Select.native.tsx`, `Menu.native.tsx`).
@@ -96,3 +96,4 @@ part there fails it.
 - The web spaces a frame's parts with its container's `gap`; the phone's slot is a bare `View`, so a part moved into it — a title wrapped in `HeroPanel`, a large title sharing the shell's lead with a switch — sits flush, its old padding now inside, and no check measures phone spacing → give the phone slot its own gap (`SetupReady.native.tsx` `doors`, `apps/mobile` shell `lead`) and look at the phone after the move.
 - A focus handle that returns what it calls (a timer id, `focus()`'s result) becomes an effect's cleanup when a caller writes `useEffect(() => ref.focus())`, and React crashes the page on unmount (the merge's done page) → a focus handle returns nothing.
 - On the phone a growing child inside a flex item sized to its content takes the whole row and crushes its siblings (the import stepper's last step hid the first three) → give the growing child a bounded basis, or lay the row out as equal cells.
+- `backdrop-filter` on a host that holds fixed overlays makes it their containing block, so the overlays move with it → put the blur on a `::before` layer.
