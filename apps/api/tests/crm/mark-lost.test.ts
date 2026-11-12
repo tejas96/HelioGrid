@@ -1,8 +1,8 @@
 import type { LeadDetail } from '@heliogrid/contracts';
-import { lead, subscription } from '@heliogrid/db';
+import { lead, subscription, tenantMembership } from '@heliogrid/db';
 import { FOUNDER_ROLE, MS_PER_DAY, noCallUntilOf } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { aTrial } from '../billing/support';
 import { skipWithoutDatabase } from '../support/fixture';
@@ -32,6 +32,7 @@ const here = aStaffedCompany('Mark Lost EPC', {
   owner: [FOUNDER_ROLE],
   rep: [preset.sales_executive],
   surveyor: [preset.survey_engineer],
+  leaver: [preset.sales_executive],
 });
 const elsewhere = aStaffedCompany('Other Mark Lost EPC', { owner: [FOUNDER_ROLE] });
 const halted = aStaffedCompany('Halted Mark Lost EPC', { owner: [FOUNDER_ROLE] });
@@ -89,6 +90,43 @@ describe.skipIf(skip)('Mark lost, over HTTP against a migrated database', () => 
     expect(entries.filter((one) => one.subjectRef === made.lead.id)).toMatchObject([
       { subjectKind: 'lead', actorRef: here.people.rep.userId, blocked: false },
     ]);
+  });
+
+  it('a reopen after a loss leaves the lead one next step: a follow-up for its owner, due now', async () => {
+    const made = await captured(owner(), aCapture(aPhone()));
+    await ownLead(world, made.lead.id, here.people.rep.userId);
+    const lost = await lose(world.as(here.members.rep), made.lead.id, { reason: 'price' });
+    expect(lost.status).toBe(HttpStatus.OK);
+    const reopened = await owner().call('POST', `/leads/${made.lead.id}/reopen`, {
+      capturedAt: new Date().toISOString(),
+    });
+    expect(reopened.status).toBe(HttpStatus.OK);
+    const open = (await tasksOf(world, made.lead.id)).filter((one) => one.status === 'open');
+    expect(open).toHaveLength(1);
+    expect(open[0]).toMatchObject({ kind: 'follow_up', assigneeUserId: here.people.rep.userId });
+    expect(Date.parse(String(open[0]?.dueAt))).toBeLessThanOrEqual(Date.now());
+  });
+
+  it('a reopen whose owner has left gives the follow-up to the person who reopened it', async () => {
+    const made = await captured(owner(), aCapture(aPhone()));
+    await ownLead(world, made.lead.id, here.people.leaver.userId);
+    expect((await lose(owner(), made.lead.id, { reason: 'price' })).status).toBe(HttpStatus.OK);
+    await world.pools.admin.db
+      .update(tenantMembership)
+      .set({ status: 'deactivated' })
+      .where(
+        and(
+          eq(tenantMembership.tenantId, here.company.tenantId),
+          eq(tenantMembership.userAccountId, here.people.leaver.userId),
+        ),
+      );
+    const reopened = await owner().call('POST', `/leads/${made.lead.id}/reopen`, {
+      capturedAt: new Date().toISOString(),
+    });
+    expect(reopened.status).toBe(HttpStatus.OK);
+    const open = (await tasksOf(world, made.lead.id)).filter((one) => one.status === 'open');
+    expect(open).toHaveLength(1);
+    expect(open[0]).toMatchObject({ assigneeUserId: here.people.owner.userId });
   });
 
   it('not interested holds calls back for six months', async () => {

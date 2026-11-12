@@ -1,6 +1,6 @@
-/* Checkbox — 20px box, 6px radius. Unchecked = the control fill, flat; checked = accent fill + a
-   white tick; disabled = Ground's disabled fill. The visible box is 20px and the TARGET is 44: two rectangles, the FilterBar rule. The
-   <label> is the hit box, because the real control is the visually hidden input. */
+/* Checkbox — 20px box, 6px radius. Unchecked = the control fill inside the quiet mark's edge;
+   checked = accent fill + a white tick; disabled = Ground's disabled fill. The visible box is 20px
+   and the TARGET is 44: two rectangles, the FilterBar rule. The <label> is the hit box, because the real control is the visually hidden input. */
 
 .hg-checkbox {
   position: relative;
@@ -33,7 +33,9 @@
   /* A CONTROL IS THE OPPOSITE OF WHAT HOLDS IT (F7-15): the well on the page or a sheet, white
      inside a tile (primitives/Ground). Found by luminance, never by an edge. */
   background: var(--hg-control-fill);
-  box-shadow: none;
+  /* The fill alone is one step off its ground — invisible on a dark card — so an open box keeps the
+     quiet mark's edge, which clears 3:1 on every ground in every mode (`contrast.ts`). */
+  box-shadow: inset 0 0 0 1.5px var(--mark-subtle);
   transition: background var(--dur-micro) var(--ease-standard);
 }
 

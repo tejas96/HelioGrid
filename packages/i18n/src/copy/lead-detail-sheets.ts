@@ -70,6 +70,7 @@ const SHEETS = {
   inAMonth: /*i18n*/ { id: '1 month' },
   inThreeMonths: /*i18n*/ { id: '3 months' },
   pickDate: /*i18n*/ { id: 'Pick date' },
+  comesBackOn: /*i18n*/ { id: 'Comes back on' },
   comesBack: /*i18n*/ { id: 'Comes back to Today on {day} · {time} with a follow-up.' },
   notInterestedLine: /*i18n*/ { id: 'No call task is raised for this lead for six months.' },
   markLost: LEAD_DETAIL.markLost,
@@ -193,6 +194,7 @@ export function leadActSheetWords(t: T, copyAct: 'copy' | 'share') {
         threeMonths: t(SHEETS.inThreeMonths),
         pick: t(SHEETS.pickDate),
       },
+      dayLabel: t(SHEETS.comesBackOn),
       comesBack: (day: string, time: string) => t(SHEETS.comesBack, { day, time }),
       notInterestedLine: t(SHEETS.notInterestedLine),
       send: (reason: LostReason | null) =>

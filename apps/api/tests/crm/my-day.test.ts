@@ -127,7 +127,7 @@ describe.skipIf(skip)('My Day, over HTTP against a migrated database', () => {
     expect(day.counts.doneToday).toBe(1);
   });
 
-  it('a parked lead’s task, another person’s task and a lead out of scope are absent', async () => {
+  it('a parked or won lead’s task, another person’s task and a lead out of scope are absent', async () => {
     const visible = await aLeadOf('ben');
     const mine = await aTask(visible.lead.id, 'ben', Date.now() - HOUR_MS);
     await aTask(visible.lead.id, 'cara', Date.now() - HOUR_MS);
@@ -146,6 +146,10 @@ describe.skipIf(skip)('My Day, over HTTP against a migrated database', () => {
       .where(eq(lead.id, dormant.lead.id));
     const caras = await aLeadOf('cara');
     await aTask(caras.lead.id, 'ben', Date.now() - HOUR_MS);
+    // A won deal is a project (M07-62): its lead's follow-ups are not the rep's day any more.
+    const won = await aLeadOf('ben');
+    await aTask(won.lead.id, 'ben', Date.now() - HOUR_MS);
+    await world.pools.admin.db.update(lead).set({ stage: 'won' }).where(eq(lead.id, won.lead.id));
     const day = await myDayOf('ben');
     expect(day.items.map((item) => item.task.id)).toEqual([mine]);
     expect(day.counts).toEqual({ overdue: 1, today: 0, week: 0, doneToday: 0 });

@@ -3,7 +3,7 @@
  * bands, each task's why, and the call's quick ask.
  */
 import type { MyDayItem } from '@heliogrid/contracts';
-import type { MyDayBand } from '@heliogrid/domain';
+import { type MyDayBand, UNDO_TOAST_MS } from '@heliogrid/domain';
 import type { MessageRef, Translator } from '../runtime';
 import { CALL_OUTCOME_WORD, TASK_PROVENANCE_WORD } from './crm-vocabulary';
 import { leadTaskTitle } from './lead-detail-parts';
@@ -37,6 +37,8 @@ const MY_DAY = {
   unnamed: /*i18n*/ { id: 'No name yet' },
   howDidItGo: /*i18n*/ { id: 'How did the call with {name} go?' },
   notNow: /*i18n*/ { id: 'Not now' },
+  whyFirstLate: /*i18n*/ { id: 'First: the most days late on your list' },
+  whyFirstToday: /*i18n*/ { id: 'First: due soonest today' },
   emptyTitle: /*i18n*/ { id: 'You’re clear for today' },
   emptyBody: /*i18n*/ {
     id: 'Nothing is overdue and nothing is due. New follow-ups land here on their day.',
@@ -47,6 +49,7 @@ const MY_DAY = {
   actFailed: /*i18n*/ { id: 'That did not save. Try again.' },
   doneToast: /*i18n*/ { id: 'Done · {name}' },
   movedToast: /*i18n*/ { id: 'Moved to tomorrow · {name}' },
+  calledToast: /*i18n*/ { id: 'Call logged · {name}' },
   undo: /*i18n*/ { id: 'Undo' },
 } satisfies Record<string, MessageRef>;
 
@@ -89,6 +92,8 @@ export function myDayWords(t: T) {
     answered: t(CALL_OUTCOME_WORD.answered),
     noAnswer: t(CALL_OUTCOME_WORD.no_answer),
     notNow: t(MY_DAY.notNow),
+    whyFirstLate: t(MY_DAY.whyFirstLate),
+    whyFirstToday: t(MY_DAY.whyFirstToday),
     emptyTitle: t(MY_DAY.emptyTitle),
     emptyBody: t(MY_DAY.emptyBody),
     loading: t(MY_DAY.loading),
@@ -99,11 +104,37 @@ export function myDayWords(t: T) {
   };
 }
 
-/** The toast an act on My Day leaves, with its *Undo*. */
+/** What a toast is told of an act on My Day: its kind and the task's item. */
+export interface MyDayToastFact {
+  readonly kind: 'done' | 'moved' | 'called';
+  readonly item: MyDayItem;
+}
+
+/** The toast an act on My Day leaves: a tick or a move with its *Undo*, a logged call without. */
 export function myDayToastWords(t: T) {
+  const done = (name: string) => t(MY_DAY.doneToast, { name });
+  const moved = (name: string) => t(MY_DAY.movedToast, { name });
+  const called = (name: string) => t(MY_DAY.calledToast, { name });
+  const undo = t(MY_DAY.undo);
+  const titleOf = { done, moved, called };
   return {
-    done: (name: string) => t(MY_DAY.doneToast, { name }),
-    moved: (name: string) => t(MY_DAY.movedToast, { name }),
-    undo: t(MY_DAY.undo),
+    done,
+    moved,
+    called,
+    undo,
+    /**
+     * The toast's line. A tick or a move offers *Undo*, held on screen long enough to reach
+     * (`UNDO_TOAST_MS`); a logged call is the lead's record and says only that it landed.
+     */
+    line: (fact: MyDayToastFact, onUndo: () => void) => {
+      const title = titleOf[fact.kind](fact.item.lead.name ?? t(MY_DAY.unnamed));
+      return {
+        tone: 'success' as const,
+        title,
+        ...(fact.kind === 'called'
+          ? {}
+          : { undo: { label: undo, onUndo }, duration: UNDO_TOAST_MS }),
+      };
+    },
   };
 }

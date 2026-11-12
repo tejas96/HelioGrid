@@ -16,10 +16,10 @@ import {
   nextUpOf,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, asc, eq, gte, isNull, lt, type SQL, sql } from 'drizzle-orm';
+import { and, asc, eq, gte, lt, type SQL, sql } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { leadCustomerJoin, leadOwner, leadSummaryColumns } from './crm.lead-columns.repository';
-import { leadScopeWhere } from './crm.scope.repository';
+import { activeLead, leadScopeWhere } from './crm.scope.repository';
 import { taskAssigneeJoin, taskOfRow, taskWireColumns } from './crm.tasks.repository';
 import { type LeadMoney, leadSummaryOf } from './internal/lead-wire';
 import type { LeadReader } from './internal/reader';
@@ -60,10 +60,7 @@ export class CrmMyDayRepository {
     return this.db.withTenantTransaction(tenantId, async (tx) => {
       const timeZone = await timeZoneOf(tx, tenantId);
       const day = myDayDayOf(now, timeZone);
-      const visibleActiveLead = and(
-        isNull(lead.lifecycleState),
-        leadScopeWhere(reader.scope, actorId),
-      );
+      const visibleActiveLead = and(activeLead, leadScopeWhere(reader.scope, actorId));
       const mineOpenThisWeek = and(
         eq(task.tenantId, tenantId),
         eq(task.assigneeUserId, actorId),

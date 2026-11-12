@@ -161,6 +161,12 @@
   gap: var(--sp-6);
 }
 
+/* My Day and the owner dashboard lay out their own columns from their room: they take the row,
+   and any waiting block or glance wraps below them. */
+.hg-home-main[data-full="true"] {
+  grid-column: 1 / -1;
+}
+
 .hg-home-main,
 .hg-home-side {
   display: flex;

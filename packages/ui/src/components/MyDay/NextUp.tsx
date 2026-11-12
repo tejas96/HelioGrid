@@ -7,7 +7,7 @@ import { HeroPanel } from '../HeroPanel';
 import { IconButton } from '../IconButton';
 import { useFormat } from '../MarketProvider';
 import { ProvenanceTier } from '../Provenance';
-import { leadActOf, nameOf, positionOf, whenOf } from './MyDay.logic';
+import { leadActOf, nameOf, positionOf, whenOf, whyFirstOf } from './MyDay.logic';
 import type { MyDayProps } from './MyDay.types';
 
 type HeroProps = MyDayProps & { readonly day: MyDay };
@@ -33,6 +33,7 @@ function NextHero(props: HeroProps & { readonly item: MyDayItem }) {
   const act = leadActOf(item, props);
   const why = words.why(item);
   const bill = item.lead.monthlyBill;
+  const whyFirst = whyFirstOf(item, words);
   return (
     <HeroPanel
       label={words.nextUp}
@@ -91,11 +92,12 @@ function NextHero(props: HeroProps & { readonly item: MyDayItem }) {
           <ShellGlyph name="tick" size="md" tone="success" />
         </IconButton>
       </div>
+      {whyFirst === null ? null : <p className="hg-my-day-why-first">{whyFirst}</p>}
       <div className="hg-my-day-later">
         <Button
           variant="ghost"
           size="sm"
-          icon={<ShellGlyph name="calendar" size="sm" tone="secondary" />}
+          icon={<ShellGlyph name="calendar-clock" size="sm" tone="secondary" />}
           disabled={sending}
           onClick={() => props.onMoveToTomorrow(item)}
         >
@@ -138,7 +140,7 @@ function AskingHero(props: HeroProps & { readonly item: MyDayItem }) {
         </Button>
       </div>
       <div className="hg-my-day-later">
-        <Button variant="ghost" size="sm" disabled={sending} onClick={props.onSkipAnswer}>
+        <Button variant="secondary" size="md" disabled={sending} onClick={props.onSkipAnswer}>
           {words.notNow}
         </Button>
       </div>

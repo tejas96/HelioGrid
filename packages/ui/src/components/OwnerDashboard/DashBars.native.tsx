@@ -76,10 +76,13 @@ const TONE = StyleSheet.create({
 const styles = StyleSheet.create({
   bars: { gap: theme.spacing['sp-3'] },
   bar: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
-  label: { flex: 2, minWidth: 0 },
+  /* The words take most of the row, so a reason reads on one line at 375; the rail gives way first,
+     never below a readable length. */
+  label: { flexBasis: '45%', flexGrow: 0, flexShrink: 1, minWidth: 0 },
   /* 6px is the rail's own dimension — the spacing scale has no 6px step (`ProgressBar`). */
   rail: {
-    flex: 3,
+    flex: 1,
+    minWidth: theme.spacing['sp-12'],
     height: 6,
     borderRadius: theme.radius['r-pill'],
     backgroundColor: colors['canvas-sunken'],

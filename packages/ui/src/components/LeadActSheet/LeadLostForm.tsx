@@ -1,6 +1,7 @@
 import { LOST_REASONS, type LostReason, leadBillShownOf } from '@heliogrid/domain';
-import { useId, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { Pressable } from '../../primitives/Pressable';
+import { rovingTargetOf } from '../../primitives/press-keys';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
 import { DatePicker } from '../DatePicker';
@@ -44,7 +45,7 @@ export function LeadLostForm({ form, pending, failure, fields }: FormFrame & { f
           />
           {span === 'pick' ? (
             <DatePicker
-              label={words.span.pick}
+              label={words.dayLabel}
               words={fields.date}
               value={picked ?? undefined}
               min={form.firstDay}
@@ -110,13 +111,24 @@ function LostReasons({
   disabled: boolean;
 }) {
   const labelId = useId();
+  const group = useRef<HTMLDivElement>(null);
+  const tabbable = reason ?? LOST_REASONS[0];
+  /* An arrow moves to the neighbour reason and picks it, as a radio group does. */
+  const keyFrom = (at: number) => (key: string) => {
+    const to = rovingTargetOf(key, at, LOST_REASONS.length, 'both');
+    const next = to === null ? undefined : LOST_REASONS[to];
+    if (to === null || next === undefined) return false;
+    onChange(next);
+    group.current?.querySelectorAll<HTMLElement>('[role="radio"]')[to]?.focus();
+    return true;
+  };
   return (
     <div className="hg-lead-act-choices">
       <span id={labelId} className="hg-lead-act-label">
         {form.words.reasonLabel}
       </span>
-      <div className="hg-lead-lost-reasons" role="radiogroup" aria-labelledby={labelId}>
-        {LOST_REASONS.map((each) => {
+      <div ref={group} className="hg-lead-lost-reasons" role="radiogroup" aria-labelledby={labelId}>
+        {LOST_REASONS.map((each, at) => {
           const look = LOST_REASON_LOOK[each];
           return (
             <Pressable
@@ -126,6 +138,7 @@ function LostReasons({
               accessibilityState={{ checked: reason === each }}
               disabled={disabled}
               haptic="selection"
+              focusGroup={{ tabbable: each === tabbable, onKey: keyFrom(at) }}
               onPress={() => onChange(each)}
             >
               <HueTile glyph={look.glyph} hue={look.hue} size={36} stroke={1.7} />

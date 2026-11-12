@@ -53,7 +53,7 @@ export function LeadLostForm({ form, frame }: { form: LostForm; frame: LeadFormF
           {span === 'pick' ? (
             <DatePicker
               words={frame.fields.date}
-              label={words.span.pick}
+              label={words.dayLabel}
               min={form.firstDay}
               {...(picked === null ? {} : { value: picked })}
               onChange={(value) => setPicked(dayOf(value))}
@@ -204,11 +204,16 @@ const styles = StyleSheet.create({
   /* Two across: each half takes its share of the row less half the gap between them. */
   half: { flexBasis: '47%', flexGrow: 1 },
   wide: { flexBasis: '100%' },
-  /* The chosen reason is the accent wash inside the accent ring, as every chosen option is. */
+  /* The chosen reason is the accent wash inside the accent ring, as every chosen option is. The
+     ring is one point wider than the resting edge, so the padding gives that point back and the
+     words do not move. */
   chosen: {
     backgroundColor: colors['accent-subtle'],
     borderColor: colors.accent,
     borderWidth: 2,
+    paddingVertical: theme.spacing['sp-2'] - 1,
+    paddingStart: theme.spacing['sp-2'] - 1,
+    paddingEnd: theme.spacing['sp-3'] - 1,
   },
   reasonWords: { flex: 1, minWidth: 0 },
   back: {

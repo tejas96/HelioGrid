@@ -125,6 +125,22 @@ describe('My Day — acts', () => {
     expect(writesTo(`/tasks/${item.task.id}/done`)).toHaveLength(1);
   });
 
+  it('a logged call leaves its toast, and Undo there takes nothing back', async () => {
+    const view = mountedOver(() => useMyDay());
+    await waitFor(() => expect(view.result.current.next).not.toBeNull());
+    const item = view.result.current.next;
+    if (item === null) throw new Error('no next');
+    act(() => view.result.current.called(item));
+    act(() => view.result.current.answer('answered'));
+    await waitFor(() => expect(view.result.current.lastAct?.kind).toBe('called'));
+    expect(view.result.current.lastAct).toMatchObject({ outcome: 'answered', item });
+    const sent = origin.writes.length;
+    act(() => view.result.current.undo());
+    await settle();
+    expect(origin.writes).toHaveLength(sent);
+    expect(writesTo(`/tasks/${item.task.id}/reopen`)).toEqual([]);
+  });
+
   it('a tick that fails says so and leaves no Undo', async () => {
     const view = mountedOver(() => useMyDay());
     await waitFor(() => expect(view.result.current.next).not.toBeNull());

@@ -112,11 +112,13 @@ export function ShellScreen() {
           <HomeMoneyDue />
           <HomeToday today={today} open={openRow} />
           <InstallerHome />
-          <HomeBlocks
-            {...homeBlocksWords(t, home)}
-            read={shell.read}
-            loadingLabel={t(BLOCK.loading)}
-          />
+          {homeBlocksWords(t, home).blocks.length === 0 ? null : (
+            <HomeBlocks
+              {...homeBlocksWords(t, home)}
+              read={shell.read}
+              loadingLabel={t(BLOCK.loading)}
+            />
+          )}
         </>
       )}
       {/* A mark points at THIS screen's controls. Under a door a link opened, the home is mounted

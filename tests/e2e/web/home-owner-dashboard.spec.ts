@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { formatMoney, IN_FORMATS } from '@heliogrid/domain';
 import { createTranslator, ownerDashboardWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
@@ -38,6 +39,12 @@ test('a new company reads every section, sets its target inline and keeps it', a
   await page.reload();
   await expect(page.getByRole('button', { name: dashboard.editTarget })).toBeVisible();
   await expect(page.getByRole('button', { name: dashboard.setTarget })).toBeHidden();
+  // The target reads in full money, as every other figure on the home does.
+  await expect(
+    page.getByText(
+      dashboard.ofTarget(dashboard.percent('0'), formatMoney(IN_FORMATS, '2500000.00')),
+    ),
+  ).toBeVisible();
 });
 
 test('the export saves the dashboard as a CSV, each figure beside its label', async ({ page }) => {
@@ -54,4 +61,11 @@ test('the export saves the dashboard as a CSV, each figure beside its label', as
   const text = await readFile(path, 'utf8');
   expect(text).toContain(`"${dashboard.forecastGap}"`);
   expect(text).toContain(`"${dashboard.valuesGap}"`);
+  // The header row opens the file; the day it was taken closes it.
+  const rows = text
+    .replace(/^\uFEFF/, '')
+    .trimEnd()
+    .split('\r\n');
+  expect(rows[0]?.match(/","/g)).toHaveLength(3);
+  expect(rows.at(-1)).not.toContain('","');
 });

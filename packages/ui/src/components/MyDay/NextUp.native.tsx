@@ -13,7 +13,7 @@ import { HeroPanel } from '../HeroPanel/HeroPanel.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { useFormat } from '../MarketProvider';
 import { ProvenanceTier } from '../Provenance/Provenance.native';
-import { leadActOf, nameOf, positionOf, whenOf } from './MyDay.logic';
+import { leadActOf, nameOf, positionOf, whenOf, whyFirstOf } from './MyDay.logic';
 import type { MyDayProps } from './MyDay.types';
 
 type HeroProps = MyDayProps & { readonly day: MyDay };
@@ -39,6 +39,7 @@ function NextHero(props: HeroProps & { readonly item: MyDayItem }) {
   const act = leadActOf(item, props);
   const why = words.why(item);
   const bill = item.lead.monthlyBill;
+  const whyFirst = whyFirstOf(item, words);
   return (
     <HeroPanel
       label={words.nextUp}
@@ -106,16 +107,23 @@ function NextHero(props: HeroProps & { readonly item: MyDayItem }) {
             <ShellGlyph name="tick" size="md" tone="success" />
           </IconButton>
         </View>
+        {whyFirst === null ? null : (
+          <Text variant="body-sm" color="secondary">
+            {whyFirst}
+          </Text>
+        )}
         <View style={styles.later}>
-          <Button
-            variant="ghost"
-            size="sm"
-            icon={<ShellGlyph name="calendar" size="sm" tone="secondary" />}
-            disabled={sending}
-            onClick={() => props.onMoveToTomorrow(item)}
-          >
-            {words.moveToTomorrow}
-          </Button>
+          <View style={styles.flush}>
+            <Button
+              variant="ghost"
+              size="sm"
+              icon={<ShellGlyph name="calendar-clock" size="sm" tone="secondary" />}
+              disabled={sending}
+              onClick={() => props.onMoveToTomorrow(item)}
+            >
+              {words.moveToTomorrow}
+            </Button>
+          </View>
         </View>
       </View>
     </HeroPanel>
@@ -159,7 +167,7 @@ function AskingHero(props: HeroProps & { readonly item: MyDayItem }) {
           </View>
         </View>
         <View style={styles.later}>
-          <Button variant="ghost" size="sm" disabled={sending} onClick={props.onSkipAnswer}>
+          <Button variant="secondary" size="md" disabled={sending} onClick={props.onSkipAnswer}>
             {words.notNow}
           </Button>
         </View>
@@ -240,4 +248,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors['line-soft'],
   },
+  // A ghost act starts where the hero's content starts: a small pill's own padding pulled back.
+  flush: { marginStart: -theme.spacing['sp-4'] },
 });

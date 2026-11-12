@@ -29,7 +29,13 @@ test.describe('at 375', () => {
     await hero.getByRole('button', { name: words.call }).click();
     await expect.poll(() => calls.length).toBe(1);
     await expect(hero.getByRole('button', { name: words.doneName(name(NEXT)) })).toBeVisible();
-    await expect(hero.getByRole('button', { name: words.moveToTomorrow })).toBeVisible();
+    const move = hero.getByRole('button', { name: words.moveToTomorrow });
+    await expect(move).toBeVisible();
+    await expect(hero.getByText(words.whyFirstLate)).toBeVisible();
+    // Move to tomorrow's glyph starts where Call's pill starts: the hero's content edge.
+    const callBox = await settledBox(hero.getByRole('button', { name: words.call }));
+    const moveGlyph = await settledBox(move.locator('svg'));
+    expect(Math.abs((moveGlyph?.x ?? 0) - (callBox?.x ?? 0))).toBeLessThanOrEqual(2);
 
     await expectTouchFloor(await day.getByRole('button').all());
     await expectNoSeriousViolations(page);
@@ -55,7 +61,16 @@ test.describe('at 375', () => {
     await expect(overdue.getByText(words.daysLate(6))).toBeVisible();
     await expect(overdue.getByText(words.unnamed).first()).toBeVisible();
     const callOff = overdue.getByRole('button', { name: words.callName(name(KIRAN)) });
-    await expect(callOff).toHaveAttribute('aria-disabled', 'true');
+    await expect(callOff).toBeDisabled();
+    // The reason is in the row itself, not behind the circle; only the off row says it.
+    await expect(overdue.getByText(words.callOff)).toHaveCount(1);
+    await expect(overdue.getByRole('listitem').filter({ hasText: name(KIRAN) })).toContainText(
+      words.callOff,
+    );
+    // No face on a row: the name and the task line take the room the face held at 375.
+    await expect(overdue.locator('.hg-avatar')).toHaveCount(0);
+    const wordsBox = await settledBox(overdue.locator('.hg-my-day-row-words').first());
+    expect(wordsBox?.width ?? 0).toBeGreaterThan(160);
     await overdue.getByRole('button', { name: words.showMore(11) }).click();
     await expect.poll(() => expanded).toEqual(['overdue']);
 
@@ -96,7 +111,10 @@ test.describe('at 375', () => {
     await expect(day.getByText(words.howDidItGo(name(NEXT)))).toBeVisible();
     await day.getByRole('button', { name: words.answered }).click();
     await expect.poll(() => answers).toEqual(['answered']);
-    await expect(day.getByRole('button', { name: words.notNow })).toBeVisible();
+    const notNow = day.getByRole('button', { name: words.notNow });
+    await expect(notNow).toBeVisible();
+    // A pill, never bare words: its edge is drawn.
+    expect(await notNow.evaluate((node) => getComputedStyle(node).boxShadow)).not.toBe('none');
 
     await day.update(<MyDayStory state="asking" sending />);
     await expect(day.getByRole('button', { name: words.noAnswer })).toBeDisabled();

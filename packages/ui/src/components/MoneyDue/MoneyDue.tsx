@@ -1,6 +1,7 @@
 import type { MoneyDue as Due, MoneyDueRow } from '@heliogrid/contracts';
 import type { MoneyDueGroupView } from '@heliogrid/domain';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark';
+import { Text } from '../../primitives/Text';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
 import { Avatar } from '../Avatar';
 import { Button } from '../Button';
@@ -17,12 +18,19 @@ type DueProps = MoneyDueProps & { readonly due: Due };
 
 /**
  * Money due on the web (`SCR-M11-01`): the hero with the total to collect, the late and due-today
- * tiles and what came in this month; then the groups, each its first few rows until *Show all*.
+ * tiles and what came in this month — or, under a dashboard that holds the cash, a plain head —
+ * then the groups, each its first few rows until *Show all*.
  */
 export function MoneyDue(props: MoneyDueProps) {
   const { read, words } = props;
+  const hero = props.figures !== 'none';
   if (read.kind === 'loading') {
-    return <LoadingBars bars={['panel', 'row', 'row', 'row']} label={words.loading} />;
+    return (
+      <LoadingBars
+        bars={hero ? ['panel', 'row', 'row', 'row'] : ['row', 'row', 'row']}
+        label={words.loading}
+      />
+    );
   }
   if (read.kind === 'failed') {
     return (
@@ -40,7 +48,13 @@ export function MoneyDue(props: MoneyDueProps) {
   const due = read.value;
   return (
     <div className="hg-money-due">
-      <DueHero {...props} due={due} />
+      {hero ? (
+        <DueHero {...props} due={due} />
+      ) : (
+        <Text as="h2" variant="h3">
+          {words.moneyDue}
+        </Text>
+      )}
       {due.rows.totalCount === 0 ? (
         <EmptyState
           icon={<ShellGlyph name="check-check" size="lg" tone="secondary" />}

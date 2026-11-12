@@ -33,7 +33,7 @@ msgid "{alt} — {missing}"
 msgstr "{alt} — {missing}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:43
+#: src/copy/owner-dashboard.ts:29
 msgid "{amount} · {days, plural, one {oldest # day late} other {oldest # days late}}"
 msgstr "{amount} · {days, plural, one {oldest # day late} other {oldest # days late}}"
 
@@ -119,7 +119,7 @@ msgstr "{assigner} assigned them to you."
 
 #. js-lingui-explicit-id
 #: src/copy/my-day.ts:16
-#: src/copy/owner-dashboard.ts:24
+#: src/copy/owner-dashboard.ts:12
 msgid "{at} of {of}"
 msgstr "{at} of {of}"
 
@@ -281,12 +281,7 @@ msgid "{count, plural, one {# day ago} other {# days ago}}"
 msgstr "{count, plural, one {# day ago} other {# days ago}}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:34
-msgid "{count, plural, one {# deal waiting longest} other {# deals waiting longest}}"
-msgstr "{count, plural, one {# deal waiting longest} other {# deals waiting longest}}"
-
-#. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:68
+#: src/copy/owner-dashboard.ts:54
 msgid "{count, plural, one {# deal} other {# deals}}"
 msgstr "{count, plural, one {# deal} other {# deals}}"
 
@@ -366,7 +361,7 @@ msgid "{count, plural, one {# lead given to {name}} other {# leads given to {nam
 msgstr "{count, plural, one {# lead given to {name}} other {# leads given to {name}}}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:25
+#: src/copy/owner-dashboard.ts:13
 msgid "{count, plural, one {# lead has no owner} other {# leads have no owner}}"
 msgstr "{count, plural, one {# lead has no owner} other {# leads have no owner}}"
 
@@ -426,7 +421,7 @@ msgid "{count, plural, one {# notification} other {# notifications}}"
 msgstr "{count, plural, one {# notification} other {# notifications}}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:37
+#: src/copy/owner-dashboard.ts:23
 msgid "{count, plural, one {# of your tasks is overdue} other {# of your tasks are overdue}}"
 msgstr "{count, plural, one {# of your tasks is overdue} other {# of your tasks are overdue}}"
 
@@ -437,7 +432,7 @@ msgstr "{count, plural, one {# open draft keeps it and its price; it leaves ever
 
 #. js-lingui-explicit-id
 #: src/copy/list-top.ts:37
-#: src/copy/owner-dashboard.ts:85
+#: src/copy/owner-dashboard.ts:76
 msgid "{count, plural, one {# open lead} other {# open leads}}"
 msgstr "{count, plural, one {# open lead} other {# open leads}}"
 
@@ -462,7 +457,7 @@ msgid "{count, plural, one {# payment due} other {# payments due}}"
 msgstr "{count, plural, one {# payment due} other {# payments due}}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:28
+#: src/copy/owner-dashboard.ts:16
 msgid "{count, plural, one {# payment is late} other {# payments are late}}"
 msgstr "{count, plural, one {# payment is late} other {# payments are late}}"
 
@@ -508,7 +503,7 @@ msgid "{count, plural, one {# product update} other {# product updates}}"
 msgstr "{count, plural, one {# product update} other {# product updates}}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:31
+#: src/copy/owner-dashboard.ts:19
 msgid "{count, plural, one {# project is blocked on us} other {# projects are blocked on us}}"
 msgstr "{count, plural, one {# project is blocked on us} other {# projects are blocked on us}}"
 
@@ -663,7 +658,7 @@ msgid "{count, plural, one {last # day} other {last # days}}"
 msgstr "{count, plural, one {last # day} other {last # days}}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:66
+#: src/copy/owner-dashboard.ts:52
 msgid "{count, plural, one {Late · #} other {Late · #}}"
 msgstr "{count, plural, one {Late · #} other {Late · #}}"
 
@@ -944,6 +939,11 @@ msgid "{difference} a year between {from}’s {fromPrice} and {to}’s {toPrice}
 msgstr "{difference} a year between {from}’s {fromPrice} and {to}’s {toPrice}."
 
 #. js-lingui-explicit-id
+#: src/copy/owner-dashboard.ts:67
+msgid "{digits, plural, =0 {Use a whole amount, with no decimals.} one {Use at most # decimal place.} other {Use at most # decimal places.}}"
+msgstr "{digits, plural, =0 {Use a whole amount, with no decimals.} one {Use at most # decimal place.} other {Use at most # decimal places.}}"
+
+#. js-lingui-explicit-id
 #: src/copy/paged-document.ts:14
 msgid "{document} · sheet {sheet} of {sheets}"
 msgstr "{document} · sheet {sheet} of {sheets}"
@@ -1190,7 +1190,7 @@ msgid "{home}, switch home"
 msgstr "{home}, switch home"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:40
+#: src/copy/owner-dashboard.ts:26
 msgid "{hours, plural, one {Oldest waiting # hour} other {Oldest waiting # hours}}"
 msgstr "{hours, plural, one {Oldest waiting # hour} other {Oldest waiting # hours}}"
 
@@ -1467,12 +1467,12 @@ msgid "{name} · {capacity}"
 msgstr "{name} · {capacity}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:49
-msgid "{name} · {days, plural, one {# day in {stage}} other {# days in {stage}}}"
-msgstr "{name} · {days, plural, one {# day in {stage}} other {# days in {stage}}}"
+#: src/copy/owner-dashboard.ts:35
+msgid "{name} · {days, plural, =0 {in {stage} since today} one {# day in {stage}} other {# days in {stage}}}"
+msgstr "{name} · {days, plural, =0 {in {stage} since today} one {# day in {stage}} other {# days in {stage}}}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:46
+#: src/copy/owner-dashboard.ts:32
 msgid "{name} · {days, plural, one {# day} other {# days}}"
 msgstr "{name} · {days, plural, one {# day} other {# days}}"
 
@@ -1778,9 +1778,14 @@ msgid "{number} · {place}"
 msgstr "{number} · {place}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:87
-msgid "{of, plural, one {Won deal: {amount}} other {Middle won deal: {amount} of #}}"
-msgstr "{of, plural, one {Won deal: {amount}} other {Middle won deal: {amount} of #}}"
+#: src/copy/owner-dashboard.ts:78
+msgid "{of, plural, one {Won deal: {amount}} other {Middle of # won deals: {amount}}}"
+msgstr "{of, plural, one {Won deal: {amount}} other {Middle of # won deals: {amount}}}"
+
+#. js-lingui-explicit-id
+#: src/copy/owner-dashboard-csv.ts:22
+msgid "{of, plural, one {Won deal} other {Middle of # won deals}}"
+msgstr "{of, plural, one {Won deal} other {Middle of # won deals}}"
 
 #. js-lingui-explicit-id
 #: src/copy/leads-list.ts:45
@@ -2073,7 +2078,7 @@ msgid "{rate} a minute beyond {bundle}"
 msgstr "{rate} a minute beyond {bundle}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:92
+#: src/copy/owner-dashboard.ts:83
 msgid "{rate} win rate"
 msgstr "{rate} win rate"
 
@@ -2180,7 +2185,7 @@ msgid "{schemes} are not copied: your variant isn't the listed model."
 msgstr "{schemes} are not copied: your variant isn't the listed model."
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:69
+#: src/copy/owner-dashboard.ts:55
 msgid "{share} of {target} target"
 msgstr "{share} of {target} target"
 
@@ -2484,7 +2489,7 @@ msgid "{value} of {limit}, {overage} beyond the bundle"
 msgstr "{value} of {limit}, {overage} beyond the bundle"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:70
+#: src/copy/owner-dashboard.ts:56
 msgid "{value}%"
 msgstr "{value}%"
 
@@ -2519,7 +2524,7 @@ msgid "{window}: calls are permitted {from}–{to} only."
 msgstr "{window}: calls are permitted {from}–{to} only."
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:96
+#: src/copy/owner-dashboard.ts:87
 msgid "{won} won · {lost} lost"
 msgstr "{won} won · {lost} lost"
 
@@ -2574,7 +2579,7 @@ msgid "A bill that is not an amount, or a type that is not Home or Business."
 msgstr "A bill that is not an amount, or a type that is not Home or Business."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:83
+#: src/copy/lead-detail-sheets.ts:84
 msgid "A call task for the lead’s owner, due when you say."
 msgstr "A call task for the lead’s owner, due when you say."
 
@@ -2604,7 +2609,7 @@ msgid "A company name is needed — it goes on every proposal you send."
 msgstr "A company name is needed — it goes on every proposal you send."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:110
+#: src/copy/lead-detail-sheets.ts:111
 msgid "A customer outside your list"
 msgstr "A customer outside your list"
 
@@ -2737,7 +2742,7 @@ msgid "A retry is set inside the calling window."
 msgstr "A retry is set inside the calling window."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:106
+#: src/copy/lead-detail-sheets.ts:107
 msgid "A role of your own"
 msgstr "A role of your own"
 
@@ -3019,13 +3024,13 @@ msgstr "Add a battery"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-parts.ts:100
-#: src/copy/lead-detail-sheets.ts:82
+#: src/copy/lead-detail-sheets.ts:83
 msgid "Add a call-back"
 msgstr "Add a call-back"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-parts.ts:68
-#: src/copy/lead-detail-sheets.ts:96
+#: src/copy/lead-detail-sheets.ts:97
 msgid "Add a contact"
 msgstr "Add a contact"
 
@@ -3129,7 +3134,7 @@ msgid "Add as a lead"
 msgstr "Add as a lead"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:84
+#: src/copy/lead-detail-sheets.ts:85
 msgid "Add call-back"
 msgstr "Add call-back"
 
@@ -3195,7 +3200,7 @@ msgid "Add receipt photo"
 msgstr "Add receipt photo"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:107
+#: src/copy/lead-detail-sheets.ts:108
 msgid "Add role"
 msgstr "Add role"
 
@@ -3729,7 +3734,7 @@ msgstr "Asking to join sends its owner a request to add {phone}."
 #. js-lingui-explicit-id
 #: src/copy/lead-detail.ts:35
 #: src/copy/lead-inbox.ts:65
-#: src/copy/owner-dashboard.ts:53
+#: src/copy/owner-dashboard.ts:39
 msgid "Assign"
 msgstr "Assign"
 
@@ -4072,7 +4077,7 @@ msgid "Bills on"
 msgstr "Bills on"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:77
+#: src/copy/lead-detail-sheets.ts:78
 msgid "Bin this lead as junk?"
 msgstr "Bin this lead as junk?"
 
@@ -4289,6 +4294,11 @@ msgid "Call again"
 msgstr "Call again"
 
 #. js-lingui-explicit-id
+#: src/copy/my-day.ts:52
+msgid "Call logged · {name}"
+msgstr "Call logged · {name}"
+
+#. js-lingui-explicit-id
 #: src/copy/sign-in.ts:39
 msgid "Call me with the code"
 msgstr "Call me with the code"
@@ -4372,7 +4382,7 @@ msgstr "Can’t be read"
 #: src/copy/customer-merge.ts:18
 #: src/copy/invite.ts:48
 #: src/copy/operation-progress.ts:9
-#: src/copy/owner-dashboard.ts:77
+#: src/copy/owner-dashboard.ts:63
 #: src/copy/payment-terms.ts:61
 #: src/copy/price-book.ts:71
 #: src/copy/project-sheets.ts:124
@@ -4629,8 +4639,8 @@ msgid "Check the SMS, or send a new code."
 msgstr "Check the SMS, or send a new code."
 
 #. js-lingui-explicit-id
-#: src/copy/my-day.ts:46
-#: src/copy/owner-dashboard.ts:102
+#: src/copy/my-day.ts:48
+#: src/copy/owner-dashboard.ts:93
 #: src/copy/payments-screen.ts:61
 msgid "Check your connection and try again."
 msgstr "Check your connection and try again."
@@ -4821,7 +4831,7 @@ msgid "Clear stage"
 msgstr "Clear stage"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:76
+#: src/copy/owner-dashboard.ts:62
 msgid "Clear target"
 msgstr "Clear target"
 
@@ -4905,7 +4915,7 @@ msgid "Collect {amount}"
 msgstr "Collect {amount}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:62
+#: src/copy/owner-dashboard.ts:48
 msgid "Collected"
 msgstr "Collected"
 
@@ -4947,6 +4957,11 @@ msgstr "Columns left out are named here, never dropped quietly."
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail-sheets.ts:73
+msgid "Comes back on"
+msgstr "Comes back on"
+
+#. js-lingui-explicit-id
+#: src/copy/lead-detail-sheets.ts:74
 msgid "Comes back to Today on {day} · {time} with a follow-up."
 msgstr "Comes back to Today on {day} · {time} with a follow-up."
 
@@ -5155,12 +5170,12 @@ msgid "Copied from the selected item."
 msgstr "Copied from the selected item."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:94
+#: src/copy/lead-detail-sheets.ts:95
 msgid "Copied. Paste it in your own app."
 msgstr "Copied. Paste it in your own app."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:92
+#: src/copy/lead-detail-sheets.ts:93
 #: src/copy/project-handover.ts:41
 msgid "Copy"
 msgstr "Copy"
@@ -5171,7 +5186,7 @@ msgid "Copy message"
 msgstr "Copy message"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:93
+#: src/copy/lead-detail-sheets.ts:94
 msgid "Copy or share"
 msgstr "Copy or share"
 
@@ -5248,7 +5263,7 @@ msgid "Couldn’t load the prices"
 msgstr "Couldn’t load the prices"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:105
+#: src/copy/lead-detail-sheets.ts:106
 msgid "Couldn’t load the roles"
 msgstr "Couldn’t load the roles"
 
@@ -5393,7 +5408,7 @@ msgid "Couldn’t work out what this change costs"
 msgstr "Couldn’t work out what this change costs"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:91
+#: src/copy/lead-detail-sheets.ts:92
 msgid "Couldn’t write the message"
 msgstr "Couldn’t write the message"
 
@@ -6102,7 +6117,7 @@ msgid "Done"
 msgstr "Done"
 
 #. js-lingui-explicit-id
-#: src/copy/my-day.ts:48
+#: src/copy/my-day.ts:50
 msgid "Done · {name}"
 msgstr "Done · {name}"
 
@@ -6337,7 +6352,7 @@ msgid "Edit bank details"
 msgstr "Edit bank details"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:97
+#: src/copy/lead-detail-sheets.ts:98
 msgid "Edit contact"
 msgstr "Edit contact"
 
@@ -6353,7 +6368,7 @@ msgid "Edit name"
 msgstr "Edit name"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:73
+#: src/copy/owner-dashboard.ts:59
 msgid "Edit target"
 msgstr "Edit target"
 
@@ -6472,6 +6487,11 @@ msgstr "Enquiry logged"
 #: src/copy/brand-colour-field.ts:19
 msgid "Enter a 6-digit hex colour, like #1F5FA9"
 msgstr "Enter a 6-digit hex colour, like #1F5FA9"
+
+#. js-lingui-explicit-id
+#: src/copy/owner-dashboard.ts:65
+msgid "Enter a target above zero."
+msgstr "Enter a target above zero."
 
 #. js-lingui-explicit-id
 #: src/copy/validation.ts:10
@@ -6725,7 +6745,7 @@ msgid "export"
 msgstr "export"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:98
+#: src/copy/owner-dashboard.ts:89
 msgid "Export CSV"
 msgstr "Export CSV"
 
@@ -6787,7 +6807,7 @@ msgid "Field-work visibility scope"
 msgstr "Field-work visibility scope"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:104
+#: src/copy/owner-dashboard-csv.ts:16
 msgid "Figure"
 msgstr "Figure"
 
@@ -6906,6 +6926,16 @@ msgid "First cycle"
 msgstr "First cycle"
 
 #. js-lingui-explicit-id
+#: src/copy/my-day.ts:41
+msgid "First: due soonest today"
+msgstr "First: due soonest today"
+
+#. js-lingui-explicit-id
+#: src/copy/my-day.ts:40
+msgid "First: the most days late on your list"
+msgstr "First: the most days late on your list"
+
+#. js-lingui-explicit-id
 #: src/copy/finding-list.ts:34
 msgid "Fix in {step}"
 msgstr "Fix in {step}"
@@ -6922,7 +6952,7 @@ msgstr "Fixed."
 
 #. js-lingui-explicit-id
 #: src/copy/crm-vocabulary.ts:137
-#: src/copy/lead-detail-sheets.ts:88
+#: src/copy/lead-detail-sheets.ts:89
 #: src/copy/lead-timeline.ts:67
 msgid "Follow-up"
 msgstr "Follow-up"
@@ -6974,7 +7004,7 @@ msgid "For the largest designs and utility work."
 msgstr "For the largest designs and utility work."
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:79
+#: src/copy/owner-dashboard.ts:70
 msgid "Forecast"
 msgstr "Forecast"
 
@@ -7348,7 +7378,7 @@ msgid "Handed over"
 msgstr "Handed over"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:95
+#: src/copy/lead-detail-sheets.ts:96
 msgid "Handed to your phone. Nothing is sent from here."
 msgstr "Handed to your phone. Nothing is sent from here."
 
@@ -8186,7 +8216,7 @@ msgid "It keeps going on our side. Try again to see where it stands."
 msgstr "It keeps going on our side. Try again to see where it stands."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:78
+#: src/copy/lead-detail-sheets.ts:79
 msgid "It leaves every list and queue. Search still finds it, and it can be reopened."
 msgstr "It leaves every list and queue. Search still finds it, and it can be reopened."
 
@@ -8303,7 +8333,7 @@ msgid "Junk {name}"
 msgstr "Junk {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:81
+#: src/copy/lead-detail-sheets.ts:82
 msgid "Junk it"
 msgstr "Junk it"
 
@@ -8465,7 +8495,7 @@ msgid "Language not recorded"
 msgstr "Language not recorded"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:91
+#: src/copy/owner-dashboard.ts:82
 msgid "Last {days} days"
 msgstr "Last {days} days"
 
@@ -8481,17 +8511,17 @@ msgstr "Last activity"
 
 #. js-lingui-explicit-id
 #: src/copy/dedupe-sheet.ts:21
-#: src/copy/lead-detail-sheets.ts:113
+#: src/copy/lead-detail-sheets.ts:114
 msgid "Last contact"
 msgstr "Last contact"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:108
+#: src/copy/owner-dashboard-csv.ts:20
 msgid "Last month"
 msgstr "Last month"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:64
+#: src/copy/owner-dashboard.ts:50
 msgid "Last month {amount}"
 msgstr "Last month {amount}"
 
@@ -8507,6 +8537,7 @@ msgstr "Last set by {name}"
 
 #. js-lingui-explicit-id
 #: src/copy/money-due.ts:14
+#: src/copy/owner-dashboard-csv.ts:21
 msgid "Late"
 msgstr "Late"
 
@@ -8584,7 +8615,7 @@ msgid "Leads"
 msgstr "Leads"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:59
+#: src/copy/owner-dashboard.ts:45
 msgid "Leads without an owner, late payments and blocked work show here first."
 msgstr "Leads without an owner, late payments and blocked work show here first."
 
@@ -8861,7 +8892,7 @@ msgid "Loading the component kinds"
 msgstr "Loading the component kinds"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:100
+#: src/copy/owner-dashboard.ts:91
 msgid "Loading the dashboard"
 msgstr "Loading the dashboard"
 
@@ -8966,7 +8997,7 @@ msgid "Loading your company profile"
 msgstr "Loading your company profile"
 
 #. js-lingui-explicit-id
-#: src/copy/my-day.ts:44
+#: src/copy/my-day.ts:46
 msgid "Loading your day"
 msgstr "Loading your day"
 
@@ -9226,7 +9257,7 @@ msgid "Mark lost"
 msgstr "Mark lost"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:76
+#: src/copy/lead-detail-sheets.ts:77
 msgid "Mark lost · {reason}"
 msgstr "Mark lost · {reason}"
 
@@ -9363,7 +9394,7 @@ msgstr "Merge not available"
 
 #. js-lingui-explicit-id
 #: src/copy/customer-merge.ts:68
-#: src/copy/lead-detail-sheets.ts:114
+#: src/copy/lead-detail-sheets.ts:115
 msgid "Merge the two customers"
 msgstr "Merge the two customers"
 
@@ -9414,7 +9445,7 @@ msgid "Message copied · {template}"
 msgstr "Message copied · {template}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:85
+#: src/copy/lead-detail-sheets.ts:86
 msgid "Message to copy"
 msgstr "Message to copy"
 
@@ -9725,7 +9756,7 @@ msgid "Moved to {stage}"
 msgstr "Moved to {stage}"
 
 #. js-lingui-explicit-id
-#: src/copy/my-day.ts:49
+#: src/copy/my-day.ts:51
 msgid "Moved to tomorrow · {name}"
 msgstr "Moved to tomorrow · {name}"
 
@@ -9873,7 +9904,7 @@ msgstr "My Visits Today"
 #. js-lingui-explicit-id
 #: src/copy/catalog-settings.ts:168
 #: src/copy/customer-merge.ts:106
-#: src/copy/lead-detail-sheets.ts:100
+#: src/copy/lead-detail-sheets.ts:101
 #: src/copy/lead-import.ts:118
 #: src/copy/lead-timeline.ts:62
 #: src/copy/payment-terms.ts:51
@@ -10021,7 +10052,7 @@ msgid "Needs you"
 msgstr "Needs you"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:23
+#: src/copy/owner-dashboard.ts:11
 msgid "Needs you now"
 msgstr "Needs you now"
 
@@ -10253,7 +10284,7 @@ msgstr "next"
 #: src/copy/explainer.ts:7
 #: src/copy/home-today.ts:18
 #: src/copy/leads-list.ts:60
-#: src/copy/owner-dashboard.ts:57
+#: src/copy/owner-dashboard.ts:43
 #: src/copy/project-detail.ts:29
 #: src/copy/shell.ts:53
 msgid "Next"
@@ -10367,7 +10398,7 @@ msgid "No bundle on this plan to measure against — this is a count, not a rate
 msgstr "No bundle on this plan to measure against — this is a count, not a rate."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:74
+#: src/copy/lead-detail-sheets.ts:75
 msgid "No call task is raised for this lead for six months."
 msgstr "No call task is raised for this lead for six months."
 
@@ -10426,7 +10457,7 @@ msgid "No data yet"
 msgstr "No data yet"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:97
+#: src/copy/owner-dashboard.ts:88
 msgid "No deals lost in this time."
 msgstr "No deals lost in this time."
 
@@ -10756,7 +10787,7 @@ msgid "No results for “{query}”"
 msgstr "No results for “{query}”"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:104
+#: src/copy/lead-detail-sheets.ts:105
 msgid "No role"
 msgstr "No role"
 
@@ -10796,7 +10827,7 @@ msgid "No steps yet"
 msgstr "No steps yet"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:71
+#: src/copy/owner-dashboard.ts:57
 msgid "No target set"
 msgstr "No target set"
 
@@ -11275,7 +11306,7 @@ msgstr "Not you? Use a different Google account"
 #: src/copy/derivation.ts:13
 #: src/copy/lead-detail-sheets.ts:35
 #: src/copy/lead-timeline.ts:31
-#: src/copy/owner-dashboard.ts:106
+#: src/copy/owner-dashboard-csv.ts:18
 #: src/copy/project-sheets.ts:85
 msgid "Note"
 msgstr "Note"
@@ -11417,7 +11448,7 @@ msgid "Nothing is imported yet. Next, the counts."
 msgstr "Nothing is imported yet. Next, the counts."
 
 #. js-lingui-explicit-id
-#: src/copy/my-day.ts:41
+#: src/copy/my-day.ts:43
 msgid "Nothing is overdue and nothing is due. New follow-ups land here on their day."
 msgstr "Nothing is overdue and nothing is due. New follow-ups land here on their day."
 
@@ -11437,7 +11468,7 @@ msgid "Nothing needs you"
 msgstr "Nothing needs you"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:58
+#: src/copy/owner-dashboard.ts:44
 msgid "Nothing needs you right now"
 msgstr "Nothing needs you right now"
 
@@ -11532,7 +11563,7 @@ msgid "Nothing was lost — press Save and continue to try again."
 msgstr "Nothing was lost — press Save and continue to try again."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:109
+#: src/copy/lead-detail-sheets.ts:110
 msgid "Nothing was saved. If they are one family, merge the two customers."
 msgstr "Nothing was saved. If they are one family, merge the two customers."
 
@@ -11819,7 +11850,7 @@ msgid "open"
 msgstr "open"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:54
+#: src/copy/owner-dashboard.ts:40
 #: src/copy/quick-add.ts:44
 msgid "Open"
 msgstr "Open"
@@ -11855,7 +11886,7 @@ msgid "open leads"
 msgstr "open leads"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:56
+#: src/copy/owner-dashboard.ts:42
 msgid "Open My Day"
 msgstr "Open My Day"
 
@@ -12100,7 +12131,7 @@ msgstr "Owned"
 
 #. js-lingui-explicit-id
 #: src/copy/dedupe-sheet.ts:19
-#: src/copy/lead-detail-sheets.ts:111
+#: src/copy/lead-detail-sheets.ts:112
 #: src/copy/leads-list.ts:59
 msgid "Owner"
 msgstr "Owner"
@@ -12590,7 +12621,7 @@ msgid "Phases"
 msgstr "Phases"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:101
+#: src/copy/lead-detail-sheets.ts:102
 #: src/copy/lead-import.ts:119
 #: src/copy/quick-add.ts:29
 msgid "Phone"
@@ -12699,7 +12730,7 @@ msgid "Pick a project manager or the owner."
 msgstr "Pick a project manager or the owner."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:103
+#: src/copy/lead-detail-sheets.ts:104
 msgid "Pick a role"
 msgstr "Pick a role"
 
@@ -12805,7 +12836,7 @@ msgid "pinned at capture"
 msgstr "pinned at capture"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:84
+#: src/copy/owner-dashboard.ts:75
 msgid "Pipeline by stage"
 msgstr "Pipeline by stage"
 
@@ -14077,7 +14108,7 @@ msgid "Reversed: {reason}"
 msgstr "Reversed: {reason}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:55
+#: src/copy/owner-dashboard.ts:41
 #: src/copy/plan-selection.ts:48
 msgid "Review"
 msgstr "Review"
@@ -14118,7 +14149,7 @@ msgid "Revoke invite for {name}"
 msgstr "Revoke invite for {name}"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:102
+#: src/copy/lead-detail-sheets.ts:103
 msgid "Role"
 msgstr "Role"
 
@@ -14365,7 +14396,7 @@ msgid "Save changes to your business profile"
 msgstr "Save changes to your business profile"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:99
+#: src/copy/lead-detail-sheets.ts:100
 msgid "Save contact"
 msgstr "Save contact"
 
@@ -14400,7 +14431,7 @@ msgid "Save roles"
 msgstr "Save roles"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:75
+#: src/copy/owner-dashboard.ts:61
 msgid "Save target"
 msgstr "Save target"
 
@@ -14607,7 +14638,7 @@ msgid "Searching…"
 msgstr "Searching…"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:103
+#: src/copy/owner-dashboard-csv.ts:15
 msgid "Section"
 msgstr "Section"
 
@@ -14786,7 +14817,7 @@ msgid "Send it again"
 msgstr "Send it again"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:86
+#: src/copy/lead-detail-sheets.ts:87
 msgid "Send it from your own phone. Nothing is sent from here."
 msgstr "Send it from your own phone. Nothing is sent from here."
 
@@ -14872,7 +14903,7 @@ msgid "Set a new date, or say who we are waiting on."
 msgstr "Set a new date, or say who we are waiting on."
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:72
+#: src/copy/owner-dashboard.ts:58
 msgid "Set a target"
 msgstr "Set a target"
 
@@ -15315,7 +15346,7 @@ msgid "So far"
 msgstr "So far"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:63
+#: src/copy/owner-dashboard.ts:49
 msgid "So far this month"
 msgstr "So far this month"
 
@@ -15463,7 +15494,7 @@ msgstr "Spouse"
 #. js-lingui-explicit-id
 #: src/copy/dedupe-sheet.ts:20
 #: src/copy/kanban.ts:12
-#: src/copy/lead-detail-sheets.ts:112
+#: src/copy/lead-detail-sheets.ts:113
 #: src/copy/leads-list.ts:57
 #: src/copy/projects.ts:56
 msgid "Stage"
@@ -15481,7 +15512,7 @@ msgid "Stage moved · {stage}"
 msgstr "Stage moved · {stage}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:86
+#: src/copy/owner-dashboard.ts:77
 msgid "Stage values come with proposals."
 msgstr "Stage values come with proposals."
 
@@ -15536,7 +15567,7 @@ msgid "Starts from version {number}"
 msgstr "Starts from version {number}"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:80
+#: src/copy/owner-dashboard.ts:71
 msgid "Starts with proposals"
 msgstr "Starts with proposals"
 
@@ -15851,7 +15882,7 @@ msgid "Taken on {date} and not uploaded. This cannot be undone."
 msgstr "Taken on {date} and not uploaded. This cannot be undone."
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:107
+#: src/copy/owner-dashboard-csv.ts:19
 msgid "Taken on {day}"
 msgstr "Taken on {day}"
 
@@ -15911,7 +15942,7 @@ msgid "Tap to place, or drag the map"
 msgstr "Tap to place, or drag the map"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:74
+#: src/copy/owner-dashboard.ts:60
 msgid "Target for this month"
 msgstr "Target for this month"
 
@@ -16045,6 +16076,11 @@ msgid "Thank you — {company}"
 msgstr "Thank you — {company}"
 
 #. js-lingui-explicit-id
+#: src/copy/owner-dashboard.ts:66
+msgid "That amount is too large for a target."
+msgstr "That amount is too large for a target."
+
+#. js-lingui-explicit-id
 #: src/copy/api-error.ts:38
 msgid "That change isn't allowed here."
 msgstr "That change isn't allowed here."
@@ -16080,7 +16116,7 @@ msgid "That did not go through. Try again."
 msgstr "That did not go through. Try again."
 
 #. js-lingui-explicit-id
-#: src/copy/my-day.ts:47
+#: src/copy/my-day.ts:49
 #: src/copy/payments-screen.ts:64
 msgid "That did not save. Try again."
 msgstr "That did not save. Try again."
@@ -16317,7 +16353,7 @@ msgid "The customer's word"
 msgstr "The customer's word"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:101
+#: src/copy/owner-dashboard.ts:92
 msgid "The dashboard did not load"
 msgstr "The dashboard did not load"
 
@@ -16807,7 +16843,7 @@ msgid "The system is switched on and starts generating."
 msgstr "The system is switched on and starts generating."
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:78
+#: src/copy/owner-dashboard.ts:64
 msgid "The target did not save. Try again."
 msgstr "The target did not save. Try again."
 
@@ -16887,7 +16923,7 @@ msgid "Their name"
 msgstr "Their name"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:98
+#: src/copy/lead-detail-sheets.ts:99
 msgid "Their number joins this customer, so it is found when they call."
 msgstr "Their number joins this customer, so it is found when they call."
 
@@ -16967,7 +17003,7 @@ msgid "These two differ on a detail this version cannot show. Update the app to 
 msgstr "These two differ on a detail this version cannot show. Update the app to merge them."
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:52
+#: src/copy/owner-dashboard.ts:38
 msgid "They are on your My Day"
 msgstr "They are on your My Day"
 
@@ -17138,7 +17174,7 @@ msgid "This number already has an invite waiting"
 msgstr "This number already has an invite waiting"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:108
+#: src/copy/lead-detail-sheets.ts:109
 msgid "This number is already another customer’s"
 msgstr "This number is already another customer’s"
 
@@ -17362,7 +17398,7 @@ msgid "To"
 msgstr "To"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:65
+#: src/copy/owner-dashboard.ts:51
 #: src/copy/payments-screen.ts:120
 msgid "To collect"
 msgstr "To collect"
@@ -17436,7 +17472,7 @@ msgid "Too expensive"
 msgstr "Too expensive"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:93
+#: src/copy/owner-dashboard.ts:84
 msgid "Too few closed deals for a rate yet · {won} won, {lost} lost"
 msgstr "Too few closed deals for a rate yet · {won} won, {lost} lost"
 
@@ -17663,7 +17699,7 @@ msgstr "Under your file’s own headers, so each row is easy to find and fix."
 #. js-lingui-explicit-id
 #: src/copy/catalog-editor.ts:43
 #: src/copy/catalog-import.ts:93
-#: src/copy/my-day.ts:50
+#: src/copy/my-day.ts:53
 #: src/copy/project-toast.ts:15
 #: src/copy/remove-roles.ts:32
 msgid "Undo"
@@ -18015,7 +18051,7 @@ msgstr "validity, payment, changes and warranties"
 
 #. js-lingui-explicit-id
 #: src/copy/lead-detail.ts:42
-#: src/copy/owner-dashboard.ts:105
+#: src/copy/owner-dashboard-csv.ts:17
 msgid "Value"
 msgstr "Value"
 
@@ -18126,7 +18162,7 @@ msgid "Visit bookings"
 msgstr "Visit bookings"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:89
+#: src/copy/lead-detail-sheets.ts:90
 #: src/copy/lead-timeline.ts:68
 msgid "Visit confirmation"
 msgstr "Visit confirmation"
@@ -18225,6 +18261,11 @@ msgstr "waiting"
 #: src/copy/projects.ts:35
 msgid "Waiting"
 msgstr "Waiting"
+
+#. js-lingui-explicit-id
+#: src/copy/owner-dashboard.ts:22
+msgid "Waiting longest"
+msgstr "Waiting longest"
 
 #. js-lingui-explicit-id
 #: src/copy/project-detail.ts:80
@@ -18494,7 +18535,7 @@ msgid "Weight (kg)"
 msgstr "Weight (kg)"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:81
+#: src/copy/owner-dashboard.ts:72
 msgid "Weighted by stage once proposals carry prices. Expected, not promised — never added to won."
 msgstr "Weighted by stage once proposals carry prices. Expected, not promised — never added to won."
 
@@ -18852,7 +18893,7 @@ msgid "Which crew goes?"
 msgstr "Which crew goes?"
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:87
+#: src/copy/lead-detail-sheets.ts:88
 msgid "Which message"
 msgstr "Which message"
 
@@ -18944,7 +18985,7 @@ msgid "Why Billing stays on"
 msgstr "Why Billing stays on"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:90
+#: src/copy/owner-dashboard.ts:81
 msgid "Why deals were lost"
 msgstr "Why deals were lost"
 
@@ -19029,7 +19070,7 @@ msgid "Won by mistake"
 msgstr "Won by mistake"
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:67
+#: src/copy/owner-dashboard.ts:53
 msgid "Won so far"
 msgstr "Won so far"
 
@@ -19074,7 +19115,7 @@ msgid "Write the final value."
 msgstr "Write the final value."
 
 #. js-lingui-explicit-id
-#: src/copy/lead-detail-sheets.ts:90
+#: src/copy/lead-detail-sheets.ts:91
 msgid "Writing the message"
 msgstr "Writing the message"
 
@@ -19277,7 +19318,7 @@ msgid "You, your team and your company, in one place."
 msgstr "You, your team and your company, in one place."
 
 #. js-lingui-explicit-id
-#: src/copy/my-day.ts:40
+#: src/copy/my-day.ts:42
 msgid "You’re clear for today"
 msgstr "You’re clear for today"
 
@@ -19462,7 +19503,7 @@ msgid "Your data is safe and readable."
 msgstr "Your data is safe and readable."
 
 #. js-lingui-explicit-id
-#: src/copy/my-day.ts:45
+#: src/copy/my-day.ts:47
 msgid "Your day did not load"
 msgstr "Your day did not load"
 
@@ -19884,7 +19925,7 @@ msgid "Your solar project is waiting on your decision. Please reply when you are
 msgstr "Your solar project is waiting on your decision. Please reply when you are ready."
 
 #. js-lingui-explicit-id
-#: src/copy/owner-dashboard.ts:99
+#: src/copy/owner-dashboard.ts:90
 #: src/copy/settings.ts:33
 msgid "Your team"
 msgstr "Your team"

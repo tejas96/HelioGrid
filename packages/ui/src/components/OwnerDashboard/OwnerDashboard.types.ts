@@ -10,7 +10,7 @@ import type { NumberFieldWords } from '../NumberField/NumberField.types';
 export interface OwnerDashboardWords {
   readonly needsYouNow: TranslatedText;
   readonly position: (at: number, of: number) => TranslatedText;
-  /** Each attention item's headline, its count in it. */
+  /** Each attention item's headline, its count in it where it has one. */
   readonly needTitle: (kind: NeedsYouKind, count: number) => TranslatedText;
   readonly unassignedLine: (hours: number) => TranslatedText;
   readonly lateLine: (amount: string, days: number) => TranslatedText;
@@ -41,6 +41,11 @@ export interface OwnerDashboardWords {
   readonly clearTarget: TranslatedText;
   readonly cancel: TranslatedText;
   readonly targetFailed: TranslatedText;
+  /** The device's refusals of a typed target, said on the field before anything is sent. */
+  readonly targetNotPositive: TranslatedText;
+  readonly targetTooLarge: TranslatedText;
+  /** An amount finer than the currency's minor unit: at most `digits` places. */
+  readonly targetTooFine: (digits: number) => TranslatedText;
   /** The inline target field's own words (`numberFieldWords`). */
   readonly numberField: NumberFieldWords;
   readonly forecastTitle: TranslatedText;

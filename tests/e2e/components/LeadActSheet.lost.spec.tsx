@@ -80,6 +80,8 @@ test('postponed needs its day: each chip names the day it comes back, and the da
 
   await spans.getByRole('radio', { name: words.span.pick }).click();
   await expect(send).toBeDisabled();
+  // The field the chip opens says what the day is, not the chip's own words again.
+  await expect(sheet.getByText(words.dayLabel)).toBeVisible();
   await spans.getByRole('radio', { name: words.span.month }).click();
   await send.click();
   await expect(page.locator('[data-sent]')).toHaveAttribute(
@@ -114,4 +116,25 @@ test('a postponed sheet with its day shown has no serious accessibility violatio
     .getByRole('radio', { name: words.span.week })
     .click();
   await expectNoSeriousViolations(page);
+});
+
+test('the reasons are one tab stop, and the arrows move the pick round the seven', async ({
+  mount,
+  page,
+}) => {
+  await mount(<LeadLostSheet />);
+  await animationsSettled(page);
+  const first = reasonOf(page, words.reason.price);
+  const last = reasonOf(page, words.reason.not_interested);
+  const tabbable = sheetOf(page).locator('[role="radio"][tabindex="0"]');
+  await expect(tabbable).toHaveCount(1);
+
+  await first.focus();
+  await page.keyboard.press('ArrowLeft');
+  await expect(last).toBeFocused();
+  await expect(last).toHaveAttribute('aria-checked', 'true');
+  await page.keyboard.press('ArrowRight');
+  await expect(first).toBeFocused();
+  await expect(first).toHaveAttribute('aria-checked', 'true');
+  await expect(tabbable).toHaveCount(1);
 });

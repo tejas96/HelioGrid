@@ -1,5 +1,5 @@
 import type { LeadDetail } from '@heliogrid/contracts';
-import { customer, type DbTransaction, lead, type TenantPool } from '@heliogrid/db';
+import { customer, type DbTransaction, lead, type TenantPool, task } from '@heliogrid/db';
 import {
   type LeadActContext,
   type LeadActRefusal,
@@ -19,7 +19,8 @@ import {
   personOf,
   todayOf,
 } from './crm.lead-lock.repository';
-import { cancelOpenTasks } from './crm.raised-tasks.repository';
+import { activeMemberOf } from './crm.member-roles.repository';
+import { cancelOpenTasks, raiseTask } from './crm.raised-tasks.repository';
 import { recordLeadMoves } from './crm.timeline.repository';
 import type { LeadMoney } from './internal/lead-wire';
 import type { LeadReader } from './internal/reader';
@@ -121,4 +122,43 @@ export async function closeLost(tx: DbTransaction, locked: LockedLead, act: Act)
     tx,
     memberAct('crm.lead_lost', locked.tenantId, { kind: 'lead', ref: locked.leadId }, act),
   );
+}
+
+/**
+ * A reopen (`M02-56`) with no task left open — a loss cancelled them all (`M07-63`) — leaves the
+ * lead one next step: a follow-up due now for its owner, or for whoever reopened an unowned lead,
+ * so the lead never sits back in the funnel with nothing to do (`M07-06`'s "the next action must
+ * already exist and be owned").
+ */
+export async function nextStepAfterReopen(
+  tx: DbTransaction,
+  locked: LockedLead,
+  act: Act,
+): Promise<void> {
+  const [open] = await tx
+    .select({ id: task.id })
+    .from(task)
+    .where(
+      and(
+        eq(task.tenantId, locked.tenantId),
+        eq(task.leadId, locked.leadId),
+        eq(task.status, 'open'),
+      ),
+    )
+    .limit(1);
+  if (open !== undefined) return;
+  const at = new Date(act.now);
+  // An owner who has left the company would hold a task no one sees; the person reopening takes it.
+  const owner = locked.lifecycle.ownerId;
+  const ownerActive = owner !== null && (await activeMemberOf(tx, locked.tenantId, owner)) !== null;
+  await raiseTask(tx, {
+    tenantId: locked.tenantId,
+    leadId: locked.leadId,
+    assigneeUserId: ownerActive ? owner : act.actorUserId,
+    kind: 'follow_up',
+    provenance: 'manual',
+    dueAt: at,
+    raisedBy: act.actorUserId,
+    at,
+  });
 }

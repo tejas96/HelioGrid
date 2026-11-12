@@ -1,5 +1,6 @@
 import type { MyDay, MyDayItem, TranslatedText } from '@heliogrid/contracts';
 import { daysLateOf, type MyDayBand } from '@heliogrid/domain';
+import type { ReactNode } from 'react';
 import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
 import type { MarketFormat } from '../../utils/format';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
@@ -103,15 +104,40 @@ export function isClear(props: Pick<MyDayProps, 'next' | 'asking' | 'bands'>): b
   );
 }
 
-/** A row's other acts behind its menu (gap 12): move it to tomorrow, or open the lead to message. */
-export function rowMenuItemsOf(item: MyDayItem, props: MyDayProps): MenuItem[] {
+/** Why the hero's task leads, under its acts: the latest when overdue, the soonest today. */
+export function whyFirstOf(item: MyDayItem, words: MyDayWords): TranslatedText | null {
+  switch (item.band) {
+    case 'overdue':
+      return words.whyFirstLate;
+    case 'today':
+      return words.whyFirstToday;
+    case 'week':
+      return null;
+  }
+}
+
+/**
+ * A row's other acts behind its menu (gap 12): move it to tomorrow, or open the lead to message.
+ * `glyph` is the half's own glyph, as the lead page's menu draws it.
+ */
+export function rowMenuItemsOf(
+  item: MyDayItem,
+  props: MyDayProps,
+  glyph: (name: ShellGlyphName) => ReactNode,
+): MenuItem[] {
   return [
     {
       key: 'move',
       label: props.words.moveToTomorrow,
+      icon: glyph('calendar-clock'),
       disabled: props.sending,
       onSelect: () => props.onMoveToTomorrow(item),
     },
-    { key: 'message', label: props.words.message, onSelect: () => props.onMessage(item) },
+    {
+      key: 'message',
+      label: props.words.message,
+      icon: glyph('chat'),
+      onSelect: () => props.onMessage(item),
+    },
   ];
 }

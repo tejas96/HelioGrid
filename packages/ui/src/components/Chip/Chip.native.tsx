@@ -47,8 +47,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['sp-3'],
     borderRadius: theme.radius['r-pill'],
   },
-  /* The chip in force is the accent wash, as every chosen filter is. */
-  chipActive: { backgroundColor: colors['accent-subtle'] },
+  /* The chip in force is the accent wash, as every chosen filter is. Its edge is the wash itself,
+     the same width as the resting hairline, so choosing a chip never changes its width. */
+  chipActive: {
+    backgroundColor: colors['accent-subtle'],
+    borderWidth: 1,
+    borderColor: colors['accent-subtle'],
+  },
   /* A kind with nothing in it stays, quiet: a hairline pill on no fill. */
   chipEmpty: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors['line-soft'] },
   rest: { borderWidth: 1, borderColor: colors['line-soft'] },

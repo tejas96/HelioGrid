@@ -25,6 +25,7 @@ import {
   CrmLifecycleRepository,
   closeLost,
   type LeadActPlan,
+  nextStepAfterReopen,
 } from './crm.lifecycle.repository';
 import { moneyOf } from './internal/lead-wire';
 import type { LeadReader } from './internal/reader';
@@ -86,7 +87,10 @@ export class CrmLifecycleService {
 
   /** Reopen (`M02-56`): back at its stage, the close kept, the reopen counted. */
   reopen(reader: LeadReader, leadId: string, body: LeadAct, act: Act) {
-    return this.run(reader, leadId, body, act, { decide: (lead) => reopen(lead) });
+    return this.run(reader, leadId, body, act, {
+      decide: (lead) => reopen(lead),
+      follows: nextStepAfterReopen,
+    });
   }
 
   private async run(

@@ -32,7 +32,8 @@
 }
 
 .hg-owner-export {
-  margin-inline-start: auto;
+  align-self: flex-start;
+  margin-inline-start: calc(-1 * var(--sp-3));
 }
 
 /* ── the cards ────────────────────────────────────────────────────────────────────────── */
@@ -118,6 +119,7 @@
   gap: var(--sp-2);
 }
 
+.hg-owner-target-clear,
 .hg-owner-target-set {
   align-self: flex-start;
   margin-inline-start: calc(-1 * var(--sp-3));
@@ -167,6 +169,11 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--sp-3);
+}
+
+/* The open target editor takes the won card's whole row, the forecast below it. */
+.hg-owner-side[data-editing="true"] {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 /* Two money tiles side by side are too tight under 360: they stack. */

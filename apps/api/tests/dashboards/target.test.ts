@@ -93,6 +93,14 @@ describe.skipIf(skip)('the company target, over HTTP against a migrated database
     expect(refused.body).toMatchObject({ error: { code: TARGET_MONTH_NOT_CURRENT } });
   });
 
+  it('refuses a zero target on its field — clearing is null', async () => {
+    const refused = await setTarget(owner(), '0.00');
+    expect(refused.status).toBe(HttpStatus.BAD_REQUEST);
+    expect(refused.body).toMatchObject({
+      error: { code: 'VALIDATION_FAILED', details: [{ path: 'amount' }] },
+    });
+  });
+
   it('refuses a target finer than the currency on its field, never a 500', async () => {
     const before = await recorded();
     const refused = await setTarget(owner(), '100000.123');

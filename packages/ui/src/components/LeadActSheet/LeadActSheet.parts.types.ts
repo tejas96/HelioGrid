@@ -69,6 +69,8 @@ export interface LeadLostWords {
   /** The postponed row's name — "Bring it back in" — and its four chips. */
   readonly whenLabel: TranslatedText;
   readonly span: Readonly<Record<LeadPostponeSpan, TranslatedText>>;
+  /** The date field's own label, a different word from the *Pick date* chip that opens it. */
+  readonly dayLabel: TranslatedText;
   /** "Comes back to Today on {day} · {time} with a follow-up." */
   readonly comesBack: (day: string, time: string) => TranslatedText;
   /** Under *Not interested*: no call task is raised for six months (`M02-54`). */

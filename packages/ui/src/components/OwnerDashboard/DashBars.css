@@ -2,8 +2,10 @@
    transform (`ProgressBar.css`), each row its words and its count. */
 
 .hg-owner-bars {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  /* The words take their own length where the room allows, so a reason reads on one line at 375;
+     the rail keeps a readable length and gives way first. Every row shares the one set of columns. */
+  grid-template-columns: minmax(0, max-content) minmax(var(--sp-16), 1fr) auto;
   gap: var(--sp-3);
   margin: 0;
   padding: 0;
@@ -12,9 +14,9 @@
 
 .hg-owner-bar {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) auto;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   align-items: center;
-  gap: var(--sp-3);
 }
 
 .hg-owner-bar-label {

@@ -5,9 +5,10 @@ import { expect, test } from '@playwright/experimental-ct-react';
 import { expectNoSidewaysScroll, expectSharedEdge, settledBox } from '../support/layout';
 
 const en = await createTranslator('en');
-const [OWNER, MANAGER] = HOME_LADDER;
+/* Two rungs whose modules are not built yet, so each draws its waiting block (`MODULE_HOME_BLOCKS`). */
+const [, , OPERATIONS, PROJECTS] = HOME_LADDER;
 const words = {
-  ...homeBlocksWords(en.t, { home: OWNER, composed: [MANAGER] }),
+  ...homeBlocksWords(en.t, { home: OPERATIONS, composed: [PROJECTS] }),
   loadingLabel: en.t(BLOCK.loading),
 };
 

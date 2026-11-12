@@ -132,6 +132,20 @@
   border-top: 1px solid var(--line-soft);
 }
 
+/* A ghost act under the hero starts where the hero's content starts: its own inline padding
+   (a small pill's) is pulled back past the edge. */
+.hg-my-day-later > .hg-button[data-variant="ghost"] {
+  margin-inline-start: calc(-1 * var(--sp-4));
+}
+
+/* Why this task leads — one quiet line under the acts. */
+.hg-my-day-why-first {
+  margin: 0;
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
 .hg-my-day-ask {
   margin: 0;
   font-family: var(--font-display);
@@ -233,6 +247,14 @@
   overflow-wrap: anywhere;
 }
 
+/* When it is due, and why its call is off beside it — wrapping under when the room is narrow. */
+.hg-my-day-row-marks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-3);
+}
+
 .hg-my-day-row > .hg-card-row-aside {
   flex-shrink: 0;
 }
@@ -242,4 +264,10 @@
   display: flex;
   align-items: center;
   gap: var(--sp-1);
+}
+
+/* A call that is off reads off: the sunk circle's own disabled ink on its glyph too, not the live
+   call's — the row's mark says why. */
+.hg-my-day-row-acts .hg-icon-button:disabled > .hg-shell-glyph {
+  color: var(--text-disabled);
 }

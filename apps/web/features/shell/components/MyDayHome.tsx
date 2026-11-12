@@ -1,5 +1,5 @@
 'use client';
-import { type MyDayAct, useMyDay } from '@heliogrid/data/react';
+import { useMyDay } from '@heliogrid/data/react';
 import { myDayToastWords, myDayWords } from '@heliogrid/i18n';
 import { useTranslate } from '@heliogrid/i18n/react';
 import { MyDay } from '@heliogrid/ui';
@@ -12,7 +12,7 @@ import { leadPath } from '../constants';
 /**
  * The sales executive's My Day on their home (`SCR-M07-01`): the web's adapters around the one
  * component — a call through the device's dialler, a visit's place in the maps, the lead's page —
- * and the act's toast with *Undo*. Drawn only when the home holds My Day.
+ * and the act's toast, with *Undo* after a tick or a move. Drawn only when the home holds My Day.
  */
 export function MyDayHome() {
   const t = useTranslate();
@@ -22,14 +22,6 @@ export function MyDayHome() {
   if (!day.shown) return null;
   const words = myDayWords(t);
   const toast = myDayToastWords(t);
-  const line = (act: MyDayAct) => {
-    const name = act.item.lead.name ?? words.unnamed;
-    return {
-      tone: 'success' as const,
-      title: act.kind === 'done' ? toast.done(name) : toast.moved(name),
-      undo: { label: toast.undo, onUndo: day.undo },
-    };
-  };
   return (
     <div ref={frame} tabIndex={-1} className="hg-focus-target">
       <MyDay
@@ -56,7 +48,12 @@ export function MyDayHome() {
         failed={day.failed}
         focusAfter={frame}
       />
-      <OneToast fact={day.lastAct} line={line} onDismiss={day.dismissAct} focusAfter={frame} />
+      <OneToast
+        fact={day.lastAct}
+        line={(act) => toast.line(act, day.undo)}
+        onDismiss={day.dismissAct}
+        focusAfter={frame}
+      />
     </div>
   );
 }

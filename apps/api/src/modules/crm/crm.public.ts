@@ -25,7 +25,7 @@ export { findLeadInScope, loadLeadDetail, type ScopedLead } from './crm.lead-det
 export { leadFilesOf } from './crm.lead-files.repository';
 export { lockLeadInScope, personOf } from './crm.lead-lock.repository';
 export { CrmModule } from './crm.module';
-export { leadReadableBy, leadScopeWhere } from './crm.scope.repository';
+export { activeLead, leadReadableBy, leadScopeWhere } from './crm.scope.repository';
 export {
   type ActivityActorRef,
   type ActivityBody,

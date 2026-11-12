@@ -2,7 +2,7 @@ import type { MyDay, MyDayItem } from '@heliogrid/contracts';
 import { useFocusAfter } from '../../primitives/FocusAfter';
 import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
-import { Avatar } from '../Avatar';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Button } from '../Button';
 import { CardRow, CardRows } from '../CardRows';
 import { Checkbox } from '../Checkbox';
@@ -14,6 +14,8 @@ import type { MyDayBandRows, MyDayProps } from './MyDay.types';
 import { useTaskRow } from './use-task-row';
 
 type BandProps = MyDayProps & { readonly day: MyDay; readonly band: MyDayBandRows };
+
+const menuGlyph = (name: ShellGlyphName) => <ShellGlyph name={name} size="sm" tone="secondary" />;
 
 /** One band — overdue, today or this week: its head and count, its rows, and *Show N more*. */
 export function MyDayBand(props: BandProps) {
@@ -51,12 +53,12 @@ export function MyDayBand(props: BandProps) {
 /**
  * One task: the tick, who, what and when, and its call — or directions to a visit. The row opens
  * the lead. The tick fills at once and the row leaves with the next read; focus then lands on the
- * screen's `focusAfter`.
+ * screen's `focusAfter`. A call that is off is the sunk circle, and the row says why beside when.
  */
 function TaskRow(props: BandProps & { readonly item: MyDayItem; readonly first: boolean }) {
   const { item, words, day, sending } = props;
   const format = useFormat();
-  const row = useTaskRow(props, item, useFocusAfter(props.focusAfter));
+  const row = useTaskRow(props, item, useFocusAfter(props.focusAfter), menuGlyph);
   const { name, act } = row;
   const when = whenOf(item, day, words, format);
   return (
@@ -67,12 +69,7 @@ function TaskRow(props: BandProps & { readonly item: MyDayItem; readonly first: 
       open={row.open}
       aside={
         <span className="hg-my-day-row-acts">
-          <IconButton
-            label={act.spokenName}
-            disabled={act.off !== null}
-            disabledReason={act.off ?? undefined}
-            onClick={act.onPress}
-          >
+          <IconButton label={act.spokenName} disabled={act.off !== null} onClick={act.onPress}>
             <ShellGlyph name={act.glyph} size="sm" tone="primary" />
           </IconButton>
           <Menu label={words.rowMenu(name)} items={row.menu} align="end" />
@@ -86,11 +83,13 @@ function TaskRow(props: BandProps & { readonly item: MyDayItem; readonly first: 
         ariaLabel={words.doneName(name)}
         onChange={(checked) => (checked ? row.tick() : undefined)}
       />
-      <Avatar name={name} size={36} />
       <span className="hg-my-day-row-words">
         <span className="hg-my-day-row-name">{name}</span>
         <span className="hg-my-day-row-line">{words.task(item)}</span>
-        <StatusMark tone={when.tone} label={when.label} bare={item.band !== 'overdue'} />
+        <span className="hg-my-day-row-marks">
+          <StatusMark tone={when.tone} label={when.label} bare={item.band !== 'overdue'} />
+          {act.off === null ? null : <StatusMark tone="warning" label={act.off} bare />}
+        </span>
       </span>
     </CardRow>
   );

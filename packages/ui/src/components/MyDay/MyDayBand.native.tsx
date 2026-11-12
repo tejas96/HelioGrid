@@ -1,11 +1,12 @@
-import type { MyDay, MyDayItem } from '@heliogrid/contracts';
+import type { MyDay, MyDayItem, TranslatedText } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '../../primitives/Color/colors';
 import { useFocusAfter } from '../../primitives/FocusAfter/use-focus-after.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
 import { Text } from '../../primitives/Text/Text.native';
-import { ShellGlyph } from '../AppShell/ShellGlyph.native';
-import { Avatar } from '../Avatar/Avatar.native';
+import { GlyphInkContext, ShellGlyph } from '../AppShell/ShellGlyph.native';
+import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
 import { Button } from '../Button/Button.native';
 import { CardRow, CardRows, useCardRowAsideRoom } from '../CardRows/CardRows.native';
 import { Checkbox } from '../Checkbox/Checkbox.native';
@@ -17,6 +18,8 @@ import type { MyDayBandRows, MyDayProps } from './MyDay.types';
 import { useTaskRow } from './use-task-row';
 
 type BandProps = MyDayProps & { readonly day: MyDay; readonly band: MyDayBandRows };
+
+const menuGlyph = (name: ShellGlyphName) => <ShellGlyph name={name} size="sm" tone="secondary" />;
 
 /** One band on the phone — overdue, today or this week: its head, a card per task, *Show N more*. */
 export function MyDayBand(props: BandProps) {
@@ -65,11 +68,12 @@ export function MyDayBand(props: BandProps) {
 /**
  * One task: the tick, who, what and when, and its call — or directions to a visit. The card opens
  * the lead. The tick fills at once and the card leaves with the next read; the screen reader then
- * lands on the screen's `focusAfter`.
+ * lands on the screen's `focusAfter`. A call that is off is the sunk circle with the disabled ink,
+ * and the card says why beside when.
  */
 function TaskRow(props: BandProps & { readonly item: MyDayItem; readonly first: boolean }) {
   const { item, words, sending } = props;
-  const row = useTaskRow(props, item, useFocusAfter(props.focusAfter));
+  const row = useTaskRow(props, item, useFocusAfter(props.focusAfter), menuGlyph);
   const { name, act } = row;
   return (
     <CardRow
@@ -78,13 +82,10 @@ function TaskRow(props: BandProps & { readonly item: MyDayItem; readonly first: 
       open={row.open}
       aside={
         <View style={styles.acts}>
-          <IconButton
-            label={act.spokenName}
-            disabled={act.off !== null}
-            disabledReason={act.off ?? undefined}
-            onClick={act.onPress}
-          >
-            <ShellGlyph name={act.glyph} size="sm" tone="primary" />
+          <IconButton label={act.spokenName} disabled={act.off !== null} onClick={act.onPress}>
+            <GlyphInkContext.Provider value={act.off === null ? null : colors['text-disabled']}>
+              <ShellGlyph name={act.glyph} size="sm" tone="primary" />
+            </GlyphInkContext.Provider>
           </IconButton>
           <Menu label={words.rowMenu(name)} items={row.menu} align="end" />
         </View>
@@ -97,16 +98,21 @@ function TaskRow(props: BandProps & { readonly item: MyDayItem; readonly first: 
           ariaLabel={words.doneName(name)}
           onChange={(checked) => (checked ? row.tick() : undefined)}
         />
-        <Avatar name={name} size={36} />
-        <RowWords {...props} name={name} />
+        <RowWords {...props} name={name} off={act.off} />
       </View>
     </CardRow>
   );
 }
 
 /** The row's words, the name clear of the call at the card's top end. */
-function RowWords(props: BandProps & { readonly item: MyDayItem; readonly name: string }) {
-  const { item, words, day, name } = props;
+function RowWords(
+  props: BandProps & {
+    readonly item: MyDayItem;
+    readonly name: string;
+    readonly off: TranslatedText | null;
+  },
+) {
+  const { item, words, day, name, off } = props;
   const format = useFormat();
   const asideRoom = useCardRowAsideRoom();
   const when = whenOf(item, day, words, format);
@@ -120,6 +126,7 @@ function RowWords(props: BandProps & { readonly item: MyDayItem; readonly name: 
       </Text>
       <View style={styles.when}>
         <StatusMark tone={when.tone} label={when.label} bare={item.band !== 'overdue'} />
+        {off === null ? null : <StatusMark tone="warning" label={off} bare />}
       </View>
     </View>
   );
@@ -137,6 +144,13 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
   acts: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-1'] },
   rowWords: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
-  when: { flexDirection: 'row', paddingTop: theme.spacing['sp-0-5'] },
+  when: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    columnGap: theme.spacing['sp-3'],
+    rowGap: theme.spacing['sp-1'],
+    paddingTop: theme.spacing['sp-0-5'],
+  },
   more: { alignSelf: 'center' },
 });

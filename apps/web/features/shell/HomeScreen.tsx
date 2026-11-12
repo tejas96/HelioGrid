@@ -8,12 +8,10 @@ import {
 } from '@heliogrid/data/react';
 import { SETTINGS_SEGMENT, type SettingsRow } from '@heliogrid/domain';
 import {
-  BLOCK,
   homeBlocksWords,
   homeGlanceWords,
   homeGreeting,
   homeHeadWords,
-  moneyDueWords,
   readinessStepWords,
   readinessWords,
   todayLine,
@@ -23,11 +21,8 @@ import { useTranslate } from '@heliogrid/i18n/react';
 import { theme } from '@heliogrid/theme';
 import {
   Button,
-  GlanceStrip,
-  HomeBlocks,
   HomeHead,
   homeGlanceFacts,
-  MoneyDue,
   ProposalReadiness,
   readinessSteps,
   ShellGlyph,
@@ -37,10 +32,12 @@ import {
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import { FirstRunMark } from './components/FirstRunMark';
+import { HomeMoneyDue } from './components/HomeMoneyDue';
+import { HomeSide } from './components/HomeSide';
 import { InstallerHome } from './components/InstallerHome';
 import { MyDayHome } from './components/MyDayHome';
 import { OwnerHome } from './components/OwnerHome';
-import { DOOR_PATH, projectPaymentsPath, settingsRowPath } from './constants';
+import { DOOR_PATH, settingsRowPath } from './constants';
 
 /**
  * The person's home inside the web shell (`M13-10`, `M01-17`, redesign direction A): the greeting
@@ -54,10 +51,9 @@ export function HomeScreen() {
   const format = useFormat();
   const shell = useShell();
   const today = useHomeToday();
-  const moneyDue = useMoneyDue();
   const ownerShown = useOwnerDashboard().shown;
   const myDayShown = useMyDay().shown;
-  const moneyDueShown = moneyDue.shown;
+  const moneyDueShown = useMoneyDue().shown;
   const router = useRouter();
   const page = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -75,6 +71,7 @@ export function HomeScreen() {
     ready === null
       ? []
       : readinessSteps(ready.steps, (step) => readinessStepWords(t, step), openRow);
+  const blocks = homeBlocksWords(t, home);
   const facts = homeGlanceFacts(today.glance, homeGlanceWords(t), format, openRow);
   return (
     <div className="hg-shell-page hg-home" ref={page}>
@@ -111,22 +108,10 @@ export function HomeScreen() {
       />
       <div className="hg-home-grid">
         {readiness === null && !moneyDueShown && !ownerShown && !myDayShown ? null : (
-          <div className="hg-home-main">
+          <div className="hg-home-main" data-full={ownerShown || myDayShown ? 'true' : undefined}>
             <OwnerHome />
             <MyDayHome />
-            {moneyDueShown ? (
-              <MoneyDue
-                read={moneyDue.read}
-                words={moneyDueWords(t)}
-                groups={moneyDue.groups}
-                onShowAll={moneyDue.expand}
-                onOpen={(projectId) => router.push(projectPaymentsPath(projectId))}
-                onRemind={(projectId, partId) =>
-                  router.push(projectPaymentsPath(projectId, partId))
-                }
-                focusAfter={page}
-              />
-            ) : null}
+            <HomeMoneyDue />
             {readiness === null ? null : (
               <ProposalReadiness
                 words={readinessWords(t, ready ?? { done: 0, total: 0, complete: false })}
@@ -140,14 +125,7 @@ export function HomeScreen() {
           </div>
         )}
         <InstallerHome />
-        <div className="hg-home-side">
-          {facts.length < 2 ? null : <GlanceStrip facts={facts} name={homeGlanceWords(t).name} />}
-          <HomeBlocks
-            {...homeBlocksWords(t, home)}
-            read={shell.read}
-            loadingLabel={t(BLOCK.loading)}
-          />
-        </div>
+        <HomeSide facts={facts} blocks={blocks} read={shell.read} />
       </div>
       <FirstRunMark
         shell={shell}

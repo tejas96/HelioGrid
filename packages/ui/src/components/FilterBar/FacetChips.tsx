@@ -3,6 +3,7 @@ import type { CSSProperties, KeyboardEvent } from 'react';
 import { useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { Icon } from '../../primitives/Icon';
+import { rovingTargetOf } from '../../primitives/press-keys';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
 import { facetGlyph, toggledFacets } from './FilterBar.logic';
 import type { FacetChipsProps } from './FilterBar.types';
@@ -75,14 +76,10 @@ export function FacetChips({
   };
 
   const onKeyDown = (index: number, event: KeyboardEvent<HTMLButtonElement>) => {
-    const go = (next: number) => {
-      event.preventDefault();
-      refs.current[(next + options.length) % options.length]?.focus();
-    };
-    if (event.key === 'ArrowRight') go(index + 1);
-    else if (event.key === 'ArrowLeft') go(index - 1);
-    else if (event.key === 'Home') go(0);
-    else if (event.key === 'End') go(options.length - 1);
+    const target = rovingTargetOf(event.key, index, options.length, 'row');
+    if (target === null) return;
+    event.preventDefault();
+    refs.current[target]?.focus();
   };
 
   return (

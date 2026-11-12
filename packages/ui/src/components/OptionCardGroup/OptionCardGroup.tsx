@@ -1,6 +1,7 @@
 import type { CSSProperties, KeyboardEvent } from 'react';
 import { useId, useRef } from 'react';
 import { classNames } from '../../primitives/class-names';
+import { rovingTargetOf } from '../../primitives/press-keys';
 import { OptionCard } from './OptionCard';
 import { isPicked, pressOption } from './OptionCardGroup.logic';
 import { hasReason } from './OptionCardGroup.options';
@@ -41,32 +42,27 @@ export function OptionCardGroup(props: WebOptionCardGroupProps) {
     options.findIndex((o) => isPicked(props, o.value)),
   );
 
+  /* Skipped only when there is nothing to hear. An option with a stated reason is walked onto,
+     and `hasReason` is the same question `OptionCard` asks before going natively disabled. */
+  const silent = (n: number) => {
+    const at = options[n];
+    return at !== undefined && at.disabled === true && !hasReason(at);
+  };
   const onKey = (i: number, e: KeyboardEvent<HTMLButtonElement>) => {
-    const go = (n: number) => {
-      e.preventDefault();
-      const step = n > i ? 1 : -1;
-      let t = (n + options.length) % options.length;
-      let guard = 0;
-      /* Skipped only when there is nothing to hear. An option with a stated reason is walked onto,
-         and `hasReason` is the same question `OptionCard` asks before going natively disabled. */
-      let at = options[t];
-      while (at !== undefined && at.disabled === true && !hasReason(at) && guard < options.length) {
-        guard += 1;
-        t = (t + step + options.length) % options.length;
-        at = options[t];
-      }
-      refs.current[t]?.focus();
-      if (at !== undefined && at.disabled !== true) onChange(at.value);
-    };
     /* A checkbox is its own tab stop and Space toggles it as the button's own click does. */
     if (multiple) return;
-    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') go(i + 1);
-    else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') go(i - 1);
-    else if (e.key === ' ' || e.key === 'Enter') {
+    if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
       const here = options[i];
       if (here !== undefined) onChange(here.value);
+      return;
     }
+    const t = rovingTargetOf(e.key, i, options.length, 'both', silent);
+    if (t === null) return;
+    e.preventDefault();
+    refs.current[t]?.focus();
+    const at = options[t];
+    if (at !== undefined && at.disabled !== true) onChange(at.value);
   };
 
   return (

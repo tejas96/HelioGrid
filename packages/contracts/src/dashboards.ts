@@ -86,9 +86,18 @@ export const ownerDashboardSchema = z.object({
 });
 export type OwnerDashboard = z.infer<typeof ownerDashboardSchema>;
 
+/**
+ * A target is a goal above zero: a zero target would read as "no target" on the screen while the
+ * row says one is set, so clearing is `null` and nothing else.
+ */
+const targetAmountSchema = nonNegativeAmountSchema.refine(
+  (amount) => /[1-9]/.test(amount),
+  'a target is above zero; clear it instead',
+);
+
 /** Set or clear the company target for the current month (`M13-17`); `null` clears it. */
 export const setTargetSchema = z
-  .object({ month: monthSchema, amount: nonNegativeAmountSchema.nullable() })
+  .object({ month: monthSchema, amount: targetAmountSchema.nullable() })
   .strict();
 export type SetTarget = z.infer<typeof setTargetSchema>;
 

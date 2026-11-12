@@ -28,10 +28,18 @@ export interface MyDayBandView {
   readonly hidden: number;
 }
 
-/** The last act on a task, for its toast: what was done, so *Undo* can take it back. */
-export type MyDayAct =
+/** An act *Undo* can take back: a tick or a move. */
+export type MyDayUndoable =
   | { readonly kind: 'done'; readonly item: MyDayItem }
   | { readonly kind: 'moved'; readonly item: MyDayItem; readonly to: number };
+
+/**
+ * The last act on a task, for its toast: a tick or a move, with *Undo*; or a call's answer logged,
+ * which is the lead's record and has none.
+ */
+export type MyDayAct =
+  | MyDayUndoable
+  | { readonly kind: 'called'; readonly item: MyDayItem; readonly outcome: CallOutcome };
 
 export interface MyDayScreen {
   /** Whether this home holds My Day: the sales executive's, or composed into a higher home. */
@@ -55,7 +63,7 @@ export interface MyDayScreen {
   /** The card's ask closed without an answer. */
   skipAnswer(): void;
   readonly sending: boolean;
-  /** The last act, for its toast with *Undo*; null once dismissed. */
+  /** The last act, for its toast — with *Undo* where it has one; null once dismissed. */
   readonly lastAct: MyDayAct | null;
   undo(): void;
   dismissAct(): void;
@@ -98,7 +106,7 @@ export function useMyDay(): MyDayScreen {
   const capturedAt = () => new Date().toISOString();
 
   const act = useAction(
-    async (input: MyDayAct | { readonly kind: 'undo'; readonly act: MyDayAct }) => {
+    async (input: MyDayUndoable | { readonly kind: 'undo'; readonly act: MyDayUndoable }) => {
       const { tasks } = repositories;
       if (input.kind === 'done')
         return tasks.done(input.item.task.id, { capturedAt: capturedAt() });
@@ -136,9 +144,10 @@ export function useMyDay(): MyDayScreen {
       return repositories.tasks.done(item.task.id, { capturedAt: answer.at });
     },
     {
-      onDone: () => {
+      onDone: (_task, { item, outcome }) => {
         logged.current = null;
         setAsking(null);
+        setLastAct({ kind: 'called', item, outcome });
         void refresh();
       },
     },
@@ -156,7 +165,7 @@ export function useMyDay(): MyDayScreen {
           return [{ band, count, rows, hidden: count - rows.length }];
         });
   const next = day?.items.find((item) => item.task.id === day.nextTaskId) ?? null;
-  const send = (input: MyDayAct | { readonly kind: 'undo'; readonly act: MyDayAct }) => {
+  const send = (input: MyDayUndoable | { readonly kind: 'undo'; readonly act: MyDayUndoable }) => {
     if (act.isOut() || call.isOut()) return;
     void act.run(input);
   };
@@ -188,7 +197,7 @@ export function useMyDay(): MyDayScreen {
     sending: act.pending || call.pending,
     lastAct,
     undo: () => {
-      if (lastAct !== null) send({ kind: 'undo', act: lastAct });
+      if (lastAct !== null && lastAct.kind !== 'called') send({ kind: 'undo', act: lastAct });
     },
     dismissAct: () => setLastAct(null),
     failed: act.failure !== null || call.failure !== null,

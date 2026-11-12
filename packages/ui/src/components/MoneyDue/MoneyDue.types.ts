@@ -44,4 +44,11 @@ export interface MoneyDueProps {
   /** Open the part's request to send again; absent for a reader who may not share it. */
   readonly onRemind?: (projectId: string, partId: string) => void;
   readonly focusAfter: FocusAfter;
+  /**
+   * Where the figures stand. `hero` (Finance's home, the default): the total to collect, the late
+   * and due-today tiles and this month's collected, in the screen's one hero. `none` (a home whose
+   * dashboard already holds the cash — the owner's): the groups only, under a plain *Money due*
+   * head, so no second hero repeats the figures above it.
+   */
+  readonly figures?: 'hero' | 'none';
 }

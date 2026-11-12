@@ -12,16 +12,13 @@ import {
   type LeadStage,
   UNASSIGNED_ESCALATES_AFTER_MS,
 } from '@heliogrid/domain';
-import { and, asc, count, eq, isNull, lt, min, ne, type SQL, sql } from 'drizzle-orm';
-import { leadCustomerJoin } from '../crm/crm.public';
+import { and, asc, count, eq, isNull, lt, min, type SQL, sql } from 'drizzle-orm';
+import { activeLead, leadCustomerJoin } from '../crm/crm.public';
 
 /*
  * "What needs you" (`M13-15`) on the caller's transaction: each item a bounded read — a count, an
  * oldest row, or the top three — under the reader's lead or project predicate and the tenant.
  */
-
-/** An active lead: not parked or closed, and not yet won. */
-const activeLead = and(isNull(lead.lifecycleState), ne(lead.stage, 'won'));
 
 /**
  * Leads with no owner past a day (`M02-50`'s rule, without its once-only notice mark): how many,

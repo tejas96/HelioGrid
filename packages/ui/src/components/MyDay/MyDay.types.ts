@@ -37,6 +37,9 @@ export interface MyDayWords {
   readonly answered: TranslatedText;
   readonly noAnswer: TranslatedText;
   readonly notNow: TranslatedText;
+  /** Why the hero's task leads: an overdue one is the latest, a today one the soonest due. */
+  readonly whyFirstLate: TranslatedText;
+  readonly whyFirstToday: TranslatedText;
   readonly emptyTitle: TranslatedText;
   readonly emptyBody: TranslatedText;
   readonly loading: TranslatedText;
