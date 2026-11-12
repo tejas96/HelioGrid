@@ -13,8 +13,11 @@ export MAESTRO_CLI_NO_ANALYTICS=1 MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=tru
 # Milliseconds the driver may take to start. iOS's 120000 default timed out on a cold simulator.
 export MAESTRO_DRIVER_STARTUP_TIMEOUT=180000
 
+# Read into a variable first: a process substitution's failure never stops `set -e`, and the words
+# step fails on a flow word nothing writes.
+written="$(node ../support/mobile-cli.ts words)"
 words=()
-while IFS= read -r line; do words+=(-e "$line"); done < <(node ../support/mobile-cli.ts words)
+while IFS= read -r line; do words+=(-e "$line"); done <<< "$written"
 flow() { maestro --device "$device" test "${words[@]}" "$@"; }
 
 read -r national e164 < <(node ../support/mobile-cli.ts phone)
