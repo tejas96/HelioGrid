@@ -158,6 +158,9 @@ test('a tick the server refused is undone, so the row can be ticked again', asyn
   await day.update(<MyDayStory state="day" failed />);
   await expect(tick).not.toBeChecked();
   await expect(tick).toBeEnabled();
+  // Another act starts and clears the failure: the refused row stays unticked.
+  await day.update(<MyDayStory state="day" />);
+  await expect(tick).not.toBeChecked();
 });
 
 test("each row's menu moves its task to tomorrow (gap 12)", async ({ mount, page }) => {

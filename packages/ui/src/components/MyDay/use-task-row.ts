@@ -1,5 +1,5 @@
 import type { MyDayItem } from '@heliogrid/contracts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { MenuItem } from '../Menu/Menu.types';
 import { leadActOf, type MyDayLeadAct, nameOf, rowMenuItemsOf } from './MyDay.logic';
 import type { MyDayProps } from './MyDay.types';
@@ -26,8 +26,11 @@ export function useTaskRow(
   item: MyDayItem,
   leaving: (act: () => void) => () => void,
 ): TaskRowState {
-  const [pressed, setPressed] = useState(false);
-  const ticked = pressed && !props.failed;
+  const [ticked, setPressed] = useState(false);
+  /* A refused tick is the row's own to undo: the failure clears as soon as any other act starts. */
+  useEffect(() => {
+    if (props.failed) setPressed(false);
+  }, [props.failed]);
   const name = nameOf(item, props.words);
   return {
     name,
