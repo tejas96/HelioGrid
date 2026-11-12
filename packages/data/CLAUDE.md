@@ -21,7 +21,7 @@
   never retry. Never re-add a bare `retry: N`.
 - **Read methods take an `AbortSignal` and forward it.** A repository that ignores it makes
   cancellation a lie all the way up.
-- `server` mode forwards only `cookie`, `authorization` and `REQUEST_ID_HEADER` (`transport.ts`),
+- `server` mode forwards only `cookie`, `authorization` and `REQUEST_ID_HEADER` (`src/transport/transport.ts`),
   never a spread and never a tenant header. A spread leaks one caller's identity into another's
   request.
 - **`session/store.ts` is the one session store for both platforms**: a `subscribe`/`getSnapshot`
@@ -33,13 +33,10 @@
 
 Consumed by both platforms; transport, error and retry behaviour proven by driving the real client
 against a controllable origin (malformed body, unknown status, non-envelope, timeout, cancellation,
-refused connection). A hook's answers are tested the same way, in `tests/react/<hook>.test.ts`:
-`renderHook` inside the real `DataProvider` over `createDataLayer`, an origin (`node:http`) that
-answers each case in the contract's shapes and reads every write body through
-`tests/react/origin-wire.ts`'s `writeBodyOf`, which refuses what the route's contract refuses (no
-mock: `.claude/rules/testing.md`), and
-`// @vitest-environment happy-dom` at the top
-(`tests/react/use-assign-roles.test.ts` is the pattern).
+refused connection). A hook's answers are tested the same way, in `tests/react/<hook>.test.ts`,
+write bodies read through `tests/react/origin-wire.ts`'s `writeBodyOf`, which refuses what the
+route's contract refuses — `tests/react/use-assign-roles.test.ts` is the pattern; no mock
+(`.claude/rules/testing.md`).
 
 ## Traps
 

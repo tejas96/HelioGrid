@@ -29,8 +29,9 @@ the PR body by its kind; only what §4 keeps for the owner is raised to them ins
 `docs/tasks/deferred.md` takes no new row; a change closes the rows it meets. A behaviour fix
 starts with a test that fails for the bug, then makes it pass. One a machine could have
 caught gets that check: a type, a lint rule or a test. One no machine can decide gets one line in
-`.claude/agents/code-reviewer.md`, `qa-live.md` or its package's `CLAUDE.md` Traps — never a new
-rule file or a new step.
+the file that owns it — `.claude/agents/code-reviewer.md`, `qa-live.md`, a package `CLAUDE.md`
+Traps, or the `.claude/rules/` file of a cross-package law; a new file or step only when no owner
+fits, and the PR says why.
 
 **No new script.** A code fact goes into a type, Biome, dependency-cruiser or a test. A script or
 a `package.json` command is added only when none of those can hold the fact, and the PR says why.
@@ -72,9 +73,16 @@ the approved design language (§10), each as good as the best product work on Dr
 builds, at phone and desktop width; the owner picks one, the plan names the pick, and the build
 follows it.
 
-The main session builds. A shared part is reused by importing it, extending its one contract
-(Law 7) or lifting it into its shared package first (Law 5) — never by copying it. A helper agent
-gets only work that touches no shared file, with its exact files named; never a fork.
+A shared part is reused by importing it, extending its one contract (Law 7) or lifting it into its
+shared package first (Law 5) — never by copying it. The session decides when a helper agent or a
+fork helps. Two agents never edit the same file at once; after each helper, read `git status` and
+`git diff -- docs .claude`; no helper writes an owner ruling.
+
+The plan names, for each new route, who may call it and what each other role gets; a tenant route
+also names its other-company 404. Each is an api test before a screen uses the route.
+
+Before `qa-live`, each changed screen is screenshotted at phone and desktop width beside the frame
+the owner picked; every difference is fixed or named in the plan with its reason.
 
 **A PR is complete:** every acceptance line of its tasks is met and proven before it opens, or by
 its CI lane; `code-reviewer` has reviewed the change, every confirmed finding is fixed and every
@@ -84,10 +92,8 @@ has checked it on the running app (`tests/e2e/CLAUDE.md`, *Running the app for Q
 passes with no `SKIP ` line; and CI is green, its Android phone-flow step run unless `PHONE_E2E` is
 `off`.
 
-After a source file is deleted or a branch switches, stale build output keeps a check red on
-code that is gone — `tsc -p` never removes old output, and the web typecheck reads
-`apps/web/.next/types` — so delete the git-ignored `dist/` (`rm -r apps/api/dist`) or
-`apps/web/.next`, then `pnpm turbo build --force`.
+Stale build output keeps a check red on code that is gone after a delete or a branch switch →
+delete the git-ignored `dist/` or `apps/web/.next`, then `pnpm turbo build --force`.
 
 ## 4. What the owner keeps
 
@@ -133,7 +139,9 @@ Rebuild it as `infra/README.md` says.
 
 The api tests, the web flows and the invariants refuse `heliogrid_dev`. An invariant that SKIPs (no
 database) or reports VACUOUS (empty schema) has not passed. Never weaken a check to make a change
-pass. One session at a time uses the test database, the ports, `.qa/` and `.env.local`.
+pass. One session at a time uses the test database, the ports, `.qa/` and `.env.local`. Inside
+it, `qa-live` agents share the one running app and run in parallel; while they run, no agent edits
+code, builds, migrates or runs the gate or a test suite, and those jobs run one at a time.
 
 **Ports are dedicated:** web 3002 · api 8084 · Metro 8081 · Postgres 5544 · object store 9000 ·
 Temporal 7233 · component tests 3100. Reuse a healthy HelioGrid service; free a foreign listener
@@ -205,10 +213,8 @@ Digest of the foundations `F1`–`F8`, which are canonical.
 
 - Every money and energy figure a user sees carries a provenance tier: measured / derived /
   estimated / assumed, shown as a small quiet pill. Dates, times, counts, durations and progress carry none; nor do an
-  identifier, a limit the product enforces or a value the company sets in its own settings (`F8-01`). Nor does
-  money on the payments surfaces — the payments page and its sheets, a project's Money card, Money
-  due: its figures are the company's own ledger, and the pill only confused its readers (owner
-  ruling).
+  identifier, a limit the product enforces, a value the company sets in its own settings, or money
+  on the payments surfaces (`F8-01`).
 - Money never renders stale — a design changed since the proposal was computed reads provisional.
 - One money path: BOM ↔ proposal ↔ tranches ↔ payments reconcile to the currency's minor unit.
 - One market and one currency per tenant; market facts (tax, stages, checklists, rails, phone spec)
@@ -251,9 +257,7 @@ source, `packages/theme/src/tokens/`, holds every value; `packages/ui` builds ev
   in Newsreader with one summary line. On desktop the same navigation is the left sidebar.
 - **Motion everywhere it helps, never in the way.** Every interactive element answers (press,
   hover, focus, select, toggle, expand) and every change of state moves, from the motion tokens,
-  built once into `packages/ui`. Lottie marks the moments that matter, played once. Taps answer at
-  once, reduced motion shows the end state, a loop stops when its wait ends — calm ambient light
-  behind a door or a page's glow is the one that runs on — and only transform and opacity animate
-  (`.claude/rules/ui-adherence.md`, *Motion*).
+  built once into `packages/ui`. Lottie marks the moments that matter, played once. How it is
+  built: `.claude/rules/ui-adherence.md`, *Motion*.
 - **The name is the brand.** Doors, the sidebar and the phone's top bar show the HelioGrid wordmark,
   never the sun tile, until a new logo is drawn.

@@ -2,14 +2,12 @@
 
 ## What lives here / what must never live here
 
-- The invariant set is the `run…` calls in `src/run.ts`; each lives in its own file in `src/`. The
-  set is deliberately small so a green run means something: a new invariant is added only for a
-  property no lint rule, type or test can hold, and its PR says why.
+- The invariant set is the `run…` calls in `src/run.ts`; each lives in its own file in `src/`. A
+  new invariant is added only for a property no lint rule, type or test can hold, and its PR says
+  why.
 - Never a fixture factory, a mock, or a helper library. An invariant that needs scaffolding to be
-  readable is testing the wrong thing. The shared files are `repo-root.ts`; `repo-files.ts`, the
-  file lister a new static invariant reads the tree through; and one reader per document several
-  checks read — `task-ledger.ts` (the task files), `screens-register.ts` (the screens register)
-  and `prd-rows.ts` (the PRD's requirement rows).
+  readable is testing the wrong thing. The shared files are those another check imports; a new
+  static invariant reads the tree through `repo-files.ts`.
 - A new repo-scanning invariant is a pure `find…(repo)` returning findings plus a `run…(repo)` that
   throws them, and it refuses an empty scan.
 
@@ -20,8 +18,7 @@ pnpm --filter @heliogrid/invariants test     # reads the BUILT packages as they 
 pnpm turbo test                              # builds the packages first (`^build`), then runs
 ```
 
-Both need the test-database prefix (`CLAUDE.md` §5); `src/run.ts` refuses a
-`heliogrid_dev` URL.
+Both need the test-database prefix (`CLAUDE.md` §5).
 
 ## Local conventions
 

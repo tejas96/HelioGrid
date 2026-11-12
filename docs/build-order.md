@@ -42,10 +42,8 @@ Block numbers are stable: other documents cite them, so a block that empties kee
 
 | # | Block | Holds | Task files |
 |---|---|---|---|
-| **0** | **Foundations** | permissions, formats, notifications, honesty | `F-core` (all but `T-FCORE-009` — see below) · `F-platform` (all but `T-FPLAT-074` — see below) |
-| **1** | **Shell + entry & tenant** | sign-in, signup, team, catalog, branding | `M01-onboarding` (all but `T-M01-029` — see below) |
 | **6** | **Sales execution + owner home** | My Day, lost, reopen, follow-ups, the owner home | `M07-sales-execution` · `M13-dashboards` |
-| **8** | **Proposals + customer link** | the proposal and the link the homeowner opens | `M06-proposals` · `F5-customer-link` · `F-core` → `T-FCORE-009` · `F-platform` → `T-FPLAT-074` · `M01-onboarding` → `T-M01-029` · `M11-payments-collections` |
+| **8** | **Proposals + customer link** | the proposal and the link the homeowner opens | `M06-proposals` · `F5-customer-link` · `F-core` · `F-platform` · `M01-onboarding` · `M11-payments-collections` |
 
 **The 3D Design Studio is rebuilt from scratch.** Its tasks and its PRD are deleted; its block
 returns, as block 7, with the new studio's tasks. When its tasks are written, one carries
@@ -60,22 +58,13 @@ screens are V2 in the register; its tasks are written again when it returns.
 **Platform billing is redesigned.** Its tasks and its PRD are deleted; the shipped code runs until
 the new pricing replaces it, in a task of its own.
 
-**The data-rights engine waits in block 8, parked.** `T-FCORE-009` — `pack.data-rights`, the erasure
-workflow and the IN DPDP determination — is parked by owner ruling until the tenant base reaches real
-paying customers (roughly 10–20). It builds when the owner unparks it, and by then the customer
-record (block 3) and the consent records its proofs erase and export exist.
+**Blocks 0 and 1 are built.** Their last tasks sit in block 8: `T-FCORE-009` (the data-rights
+engine) is parked until the tenant base reaches real paying customers (roughly 10–20);
+`T-M01-029` (the demo project seed) needs the lead, design and proposal tables; `T-FPLAT-074`
+(the projection label) prints the words of the proposal document drawn in block 8. `M01`'s other
+four tasks are V2 screens (*What V2 holds*).
 
-**The demo project seed builds in block 8.** `T-M01-029` instantiates a finished demo lead, design and
-proposal for every new tenant, and its `Depends on:` names the first migrations of M02 (`lead`), the
-studio (`design`) and M06 (`proposal`, `proposal_version`).
-
-**The projection label builds in block 8.** `T-FPLAT-074` prints a projection's word and its
-assumptions in the words the drawn proposal document (`SCR-M06-17`) gives, and that screen is drawn in
-block 8.
-
-**Blocks 1–6 ship a working product on their own**: lead → won → project → payment. Projects
-(block 4) reach real users only together with payments (block 5), by owner ruling 2026-11-10: block 4
-ships no money.
+**Blocks 1–6 ship a working product on their own**: lead → won → project → payment.
 
 ---
 
@@ -98,7 +87,7 @@ Build the consumer after the producer, or stub it deliberately and record the st
 | `M08` projects | `M07` sales execution | a project starts from a closed sale |
 | `M11` payments | `M08` projects | tranches hang off the project's milestones |
 | `M13` dashboards | every module | it reports on their data |
-| every module | `F-core` + `F-platform` | permissions, formats, notifications, honesty |
+| every module | `F-core` + `F-platform` (built; their tasks left in block 8 feed only block 8) | permissions, formats, notifications, honesty |
 
 ### Recorded: a V1 task whose proof waits on a later block
 
@@ -114,7 +103,4 @@ task that builds what it needs.
 
 ## Checking the suite
 
-Invariants check the task and PRD documents (`.claude/protections.md`, Process):
-`build-order-holds`, `prd-rows-cited` (every cited PRD row is live and every quote matches its
-cell), and `capability-ids-cited` (every capability a task names, by id or by row key, is
-one the matrix holds).
+The invariants in `.claude/protections.md` *Process* hold this file and the task documents.

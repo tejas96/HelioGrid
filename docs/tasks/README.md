@@ -1,14 +1,13 @@
 # Engineering tasks — structure and rules
 
-One file per module (`M01-onboarding.md` … `M13-dashboards.md`), plus `SHELL.md` for the app
-shell, and `F-core.md` / `F-platform.md` / `F5-customer-link.md` where a foundation builds something
-itself. `UI.md` is the one
+One file per module that still has open work (`M<nn>-<name>.md`), `SHELL.md` (the app shell's
+disposition index, which other task files point to), and `F-core.md` / `F-platform.md` /
+`F5-customer-link.md` where a foundation builds something itself. `UI.md` is the one
 file here that is a REGISTER rather than tasks — component gaps with no requirement rows behind
 them, so no `T-` ids and no task anatomy. `deferred.md` holds rows earlier tasks found
-outside their scope, each naming what reopens it (`CLAUDE.md` §1). Every task was
-generated from the requirement register, and no P0 requirement exists without a task (or an
-explicit `realized-by` pointer to the requirement that carries it); a task whose `PRD rows:` reads
-`none` builds what other tasks' rows need.
+outside their scope, each naming what reopens it (`CLAUDE.md` §1). No P0 requirement exists
+without a task (or an explicit `realized-by` pointer to the requirement that carries it); a task
+whose `PRD rows:` reads `none` builds what other tasks' rows need.
 
 ## Task anatomy
 
@@ -35,8 +34,6 @@ files hold open work only, and git holds what shipped; a file left with no open 
 and `docs/build-order.md` drops it from its block row. A split task's `#### Parts` table stays until
 its last part ships.
 
-**Size.** One block per PR, split only on the owner's word (`CLAUDE.md` §3, §4).
-
 ## Binding rules
 
 0. **`Status:` is the ledger.** `planned` while the task is open; the CHANGE commit that ships it
@@ -62,9 +59,7 @@ its last part ships.
    id: a PRD row carries its own ruling, and git carries the history.
 3. **A screen's look is picked inside its own task** (`CLAUDE.md` §3), so no task
    waits for a drawing. A screen's UI is not "done" until it follows the sample the owner picked.
-5. A task is complete when every DONE WHEN line passes and — for screen tasks — the **three**
-   base states (loading, empty, error) plus the states its plan lists exist at both 375px and 1536px
-   with full parity. This rule is the completion bar every screen task is measured against.
+5. A task is complete when every DONE WHEN line passes and, for a screen task, `F7-43` holds.
 6. **Every row id shows its tier where it appears.** A verbatim row quote carries it after the
    id — `**M02-02** (P0) — …`; a task that does not quote its rows carries it on the
    `PRD rows:` line instead — `M02-01 (P0), M02-25 (P1)`. A task's own `Tier:` is the highest

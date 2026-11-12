@@ -17,7 +17,7 @@ Nothing is deployed. Hosting moves to Oracle Cloud; its deploy config comes with
 
 ```bash
 pnpm infra:up      # from a clean clone: mints dev PKI, starts everything, bootstraps Temporal
-pnpm infra:token   # re-mint the Temporal token (1 hour TTL)
+pnpm infra:token   # re-mint the Temporal token (12-hour TTL)
 pnpm infra:down    # stop, keep the data
 pnpm infra:reset   # down -v — destroys the volume
 ```
