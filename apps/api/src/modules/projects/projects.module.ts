@@ -28,7 +28,8 @@ import { ProjectsWonService } from './projects.won.service';
 
 /**
  * Projects (`M08`): the board, one project, its acts, and *Mark won* that starts one (`M07-62`);
- * and a project's money (`M11`), which is born at Mark won and falls due with its stages.
+ * and a project's money (`M11`), which is born at Mark won and falls due with its stages. Money due
+ * is exported so the owner dashboard reads the very figures the Money due screen shows (`M13-16`).
  */
 @Module({
   imports: [BillingModule, FileModule, NotificationModule, SettingsModule],
@@ -54,5 +55,6 @@ import { ProjectsWonService } from './projects.won.service';
     ProjectsActsRepository,
     ProjectsWonRepository,
   ],
+  exports: [ProjectsPaymentsService],
 })
 export class ProjectsModule {}

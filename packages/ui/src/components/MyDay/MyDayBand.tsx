@@ -1,0 +1,99 @@
+import type { MyDay, MyDayItem } from '@heliogrid/contracts';
+import { useState } from 'react';
+import { useFocusAfter } from '../../primitives/FocusAfter';
+import { StatusMark } from '../../primitives/StatusMark';
+import { ShellGlyph } from '../AppShell/ShellGlyph';
+import { Avatar } from '../Avatar';
+import { Button } from '../Button';
+import { CardRow, CardRows } from '../CardRows';
+import { Checkbox } from '../Checkbox';
+import { IconButton } from '../IconButton';
+import { useFormat } from '../MarketProvider';
+import { BAND_HEAD, leadActOf, nameOf, whenOf } from './MyDay.logic';
+import type { MyDayBandRows, MyDayProps } from './MyDay.types';
+
+type BandProps = MyDayProps & { readonly day: MyDay; readonly band: MyDayBandRows };
+
+/** One band — overdue, today or this week: its head and count, its rows, and *Show N more*. */
+export function MyDayBand(props: BandProps) {
+  const { band, words } = props;
+  const head = BAND_HEAD[band.band];
+  const title = words.band(band.band);
+  return (
+    <section className="hg-my-day-band" data-band={band.band} aria-label={title}>
+      <div className="hg-my-day-band-head">
+        <ShellGlyph name={head.glyph} size="sm" tone={head.tone} />
+        <h3 className="hg-my-day-band-title">{title}</h3>
+        <span className="hg-my-day-count">{band.count}</span>
+      </div>
+      <CardRows form="joined">
+        {band.rows.map((item, index) => (
+          <TaskRow key={item.task.id} {...props} item={item} first={index === 0} />
+        ))}
+      </CardRows>
+      {band.hidden > 0 ? (
+        <div className="hg-my-day-more">
+          <Button
+            variant="ghost"
+            size="md"
+            iconRight={<ShellGlyph name="caret-down" size="sm" tone="secondary" />}
+            onClick={() => props.onExpand(band.band)}
+          >
+            {words.showMore(band.hidden)}
+          </Button>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+/**
+ * One task: the tick, who, what and when, and its call — or directions to a visit. The row opens
+ * the lead. The tick fills at once and the row leaves with the next read; focus then lands on the
+ * screen's `focusAfter`.
+ */
+function TaskRow(props: BandProps & { readonly item: MyDayItem; readonly first: boolean }) {
+  const { item, words, day, sending } = props;
+  const format = useFormat();
+  const leaving = useFocusAfter(props.focusAfter);
+  const [ticked, setTicked] = useState(false);
+  const name = nameOf(item, words);
+  const when = whenOf(item, day, words, format);
+  const act = leadActOf(item, props);
+  const tick = leaving(() => {
+    setTicked(true);
+    props.onDone(item);
+  });
+  return (
+    <CardRow
+      first={props.first}
+      className="hg-my-day-row"
+      busy={ticked && sending}
+      open={{ name: words.open(name), onOpen: () => props.onOpen(item) }}
+      aside={
+        <IconButton
+          label={act.spokenName}
+          disabled={act.off !== null}
+          disabledReason={act.off ?? undefined}
+          onClick={act.onPress}
+        >
+          <ShellGlyph name={act.glyph} size="sm" tone="primary" />
+        </IconButton>
+      }
+    >
+      <Checkbox
+        className="hg-my-day-check"
+        checked={ticked}
+        disabled={sending}
+        ariaLabel={words.doneName(name)}
+        onChange={(checked) => (checked ? tick() : undefined)}
+      />
+      <Avatar name={name} size={36} />
+      <span className="hg-my-day-row-words">
+        <span className="hg-my-day-row-name">{name}</span>
+        <span className="hg-my-day-row-line">{words.task(item)}</span>
+        <StatusMark tone={when.tone} label={when.label} bare={item.band !== 'overdue'} />
+      </span>
+    </CardRow>
+  );
+}

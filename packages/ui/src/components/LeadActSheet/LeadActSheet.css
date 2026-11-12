@@ -136,3 +136,95 @@
   line-height: var(--lh-body-sm);
   color: var(--danger-text);
 }
+
+/* Mark lost (`M07-63`): the lead's disc and name, the seven reasons as tiles two across — the
+   seventh takes the row — and, for *Postponed*, its day and when it comes back. */
+.hg-lead-lost-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-lead-lost-who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-lead-lost-name {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-lead-lost-reasons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-2);
+}
+
+/* The tile's look is `Ground.css`'s tiles list; it keeps its radius, padding and its chosen ring. */
+.hg-pressable.hg-lead-lost-reason {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 58px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3) var(--sp-2) var(--sp-2);
+  border-radius: var(--r-field);
+  text-align: start;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-body-sm);
+  color: var(--text-primary);
+  transition:
+    transform var(--dur-micro) var(--ease-standard),
+    background var(--dur-standard) var(--ease-standard);
+}
+
+.hg-pressable.hg-lead-lost-reason:last-child {
+  grid-column: 1 / -1;
+}
+
+.hg-pressable.hg-lead-lost-reason:active:not(:disabled) {
+  transform: scale(var(--press-scale));
+}
+
+/* The chosen reason is the accent wash with the accent ring, as every chosen option is. */
+.hg-pressable.hg-lead-lost-reason[aria-checked="true"] {
+  background: var(--accent-subtle);
+  color: var(--accent-text);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.hg-pressable.hg-lead-lost-reason:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.hg-lead-lost-when {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-lead-lost-back {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--hg-control-fill);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}

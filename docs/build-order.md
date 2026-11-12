@@ -42,8 +42,8 @@ Block numbers are stable: other documents cite them, so a block that empties kee
 
 | # | Block | Holds | Task files |
 |---|---|---|---|
-| **6** | **Sales execution + owner home** | My Day, lost, reopen, follow-ups, the owner home | `M07-sales-execution` · `M13-dashboards` |
-| **8** | **Proposals + customer link** | the proposal and the link the homeowner opens | `M06-proposals` · `F5-customer-link` · `F-core` · `F-platform` · `M01-onboarding` · `M11-payments-collections` |
+| **6** | **Sales execution + owner home** | built: My Day, lost, reopen, follow-ups, the owner home; left: trial-to-paid (parked) and the V2 dashboards | `M13-dashboards` (all but `T-M13-007`) |
+| **8** | **Proposals + customer link** | the proposal and the link the homeowner opens, and the forecast the proposals price | `M06-proposals` · `F5-customer-link` · `F-core` · `F-platform` · `M01-onboarding` · `M11-payments-collections` · `M13-dashboards` → `T-M13-007` |
 
 **The 3D Design Studio is rebuilt from scratch.** Its tasks and its PRD are deleted; its block
 returns, as block 7, with the new studio's tasks. When its tasks are written, one carries
@@ -53,7 +53,10 @@ the design's derived work order in build order, and this module has generated no
 (M08-41).*; until then a project's install steps are the market pack's standard steps.
 
 **Voice calling waits.** Its PRD rows stay in `docs/prd/modules/M07-sales-execution.md` and its
-screens are V2 in the register; its tasks are written again when it returns.
+screens are V2 in the register; its tasks are written again when it returns, and carry what block 6
+left for the agent: My Day's agent-activity block (M07-03), the overdue-two-days trigger (M07-07),
+the owner dashboard's agent card (M13-14), the monthly agent summary (M13-45) and the per-rep view
+with its per-person target (M13-30, M13-17).
 
 **Platform billing is redesigned.** Its tasks and its PRD are deleted; the shipped code runs until
 the new pricing replaces it, in a task of its own.

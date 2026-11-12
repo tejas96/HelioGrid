@@ -5,9 +5,9 @@ import type {
   LeadListQuery,
   PaginationQuery,
 } from '@heliogrid/contracts';
-import { minorUnitsOfDecimal, searchQueryOf } from '@heliogrid/domain';
-import { HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { ContractException } from '../../common/errors/contract-exception';
+import { searchQueryOf } from '@heliogrid/domain';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { minorUnitsOnField } from '../../common/errors/minor-units-on-field';
 import { SettingsService } from '../settings/settings.public';
 import { CrmLeadsRepository, type LeadListFilters } from './crm.leads.repository';
 import { moneyOf } from './internal/lead-wire';
@@ -19,17 +19,7 @@ import type { LeadReader } from './internal/reader';
  * finer than the currency's smallest unit, never rounded.
  */
 function boundOf(amount: string | undefined, digits: number, path: string): number | undefined {
-  if (amount === undefined) return undefined;
-  try {
-    return minorUnitsOfDecimal(amount, digits);
-  } catch {
-    throw new ContractException(
-      'VALIDATION_FAILED',
-      'Some fields need attention.',
-      HttpStatus.BAD_REQUEST,
-      [{ path, issue: `at most ${digits} decimal places` }],
-    );
-  }
+  return amount === undefined ? undefined : minorUnitsOnField(amount, digits, path);
 }
 
 /** The leads reads (`SCR-M02-02` … `04`): the list, the inbox and one lead, in the reader's scope. */

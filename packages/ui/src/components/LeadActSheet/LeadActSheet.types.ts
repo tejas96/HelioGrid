@@ -1,5 +1,11 @@
 import type { TranslatedText } from '@heliogrid/contracts';
-import type { CallOutcome, DisqualifyReason, LeadStage } from '@heliogrid/domain';
+import type {
+  CallOutcome,
+  DisqualifyReason,
+  LeadPostponeDays,
+  LeadStage,
+  LostReason,
+} from '@heliogrid/domain';
 import type { DatePickerWords, ISODate } from '../DatePicker/DatePicker.types';
 import type { PhoneFieldWords } from '../PhoneField/PhoneField.types';
 import type { SelectOption } from '../Select/Select.types';
@@ -12,6 +18,7 @@ import type {
   LeadDisqualifyWords,
   LeadJunkWords,
   LeadLogWords,
+  LeadLostWords,
   LeadMessageWords,
   LeadSnoozeWords,
   LeadVisitWords,
@@ -97,6 +104,28 @@ export type LeadActForm =
     }
   | { readonly kind: 'junk'; readonly words: LeadJunkWords; readonly onSend: () => void }
   | {
+      readonly kind: 'lost';
+      /** Who is being lost, as the sheet's head names them, and their monthly bill when known. */
+      readonly lead: {
+        /** The lead's own name, as written; null where a capture left it unnamed. */
+        readonly name: string | null;
+        /** The monthly bill's amount as the wire carries it, in the tenant's currency. */
+        readonly bill: { readonly amount: string } | null;
+      };
+      /** The days a postponed loss can come back on, from the tenant's today (`M02-54`). */
+      readonly postpone: LeadPostponeDays;
+      /** The first day a picked date may take — tomorrow on the tenant's clock. */
+      readonly firstDay: ISODate;
+      /** `HH:MM` on the tenant's clock that a postponed lead comes back at (`M02-49`). */
+      readonly comesBackAt: string;
+      readonly words: LeadLostWords;
+      /** The day it comes back travels only with *Postponed*. */
+      readonly onSend: (loss: {
+        readonly reason: LostReason;
+        readonly resurfaceOn: ISODate | null;
+      }) => void;
+    }
+  | {
       readonly kind: 'callBack';
       readonly firstDay: ISODate;
       readonly words: LeadCallBackWords;
@@ -144,7 +173,7 @@ export type LeadActForm =
 /**
  * The lead's acts, each in one sheet (`SCR-M02-04`'s states table): Log activity, Book visit,
  * Snooze (a wake date required), Disqualify (one of the six reasons required — its send sleeps until
- * one is picked), Junk, a call-back, Message (text to copy, never a sent claim) and a contact. While
+ * one is picked), Mark lost (one of the seven, and a day for *Postponed*), Junk, a call-back, Message (text to copy, never a sent claim) and a contact. While
  * its send is out its fields are inert and every way out waits; a failure is said inside the sheet.
  */
 export interface LeadActSheetProps {

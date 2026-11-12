@@ -6,6 +6,7 @@ import {
   type LeadActFailure,
   type LeadQuickAct,
   type LeadQuickStanding,
+  type LostReason,
   tenantInstantOf,
 } from '@heliogrid/domain';
 import { useState } from 'react';
@@ -16,7 +17,15 @@ import { leadActFailureOf, useLeadDetailCache } from './lead-detail-cache';
 /** The sheet open over the lead: one act's form, the message to copy, a contact, or its details. */
 export type LeadSheet =
   | {
-      readonly kind: 'log' | 'visit' | 'snooze' | 'disqualify' | 'junk' | 'callBack' | 'details';
+      readonly kind:
+        | 'log'
+        | 'visit'
+        | 'snooze'
+        | 'disqualify'
+        | 'lost'
+        | 'junk'
+        | 'callBack'
+        | 'details';
     }
   | { readonly kind: 'message'; readonly template: CrmMessageTemplateKey }
   | { readonly kind: 'contact'; readonly contactId: string | null };
@@ -42,6 +51,8 @@ export type LeadSheetSend =
     }
   | { readonly kind: 'snooze'; readonly wakeOn: string }
   | { readonly kind: 'disqualify'; readonly reason: DisqualifyReason }
+  /** Mark lost (`M07-63`): a postponed loss carries the day it comes back; no other reason does. */
+  | { readonly kind: 'lost'; readonly reason: LostReason; readonly resurfaceOn: string | null }
   | { readonly kind: 'junk' }
   | { readonly kind: 'callBack'; readonly date: string; readonly time: string }
   /**
@@ -121,6 +132,12 @@ export function useLeadActs(leadId: string, timeZone: string): LeadActs {
         case 'disqualify':
           return leadLifecycle.disqualify(leadId, {
             reason: send.reason,
+            capturedAt: capturedAt(),
+          });
+        case 'lost':
+          return leadLifecycle.lost(leadId, {
+            reason: send.reason,
+            ...(send.resurfaceOn === null ? {} : { resurfaceOn: send.resurfaceOn }),
             capturedAt: capturedAt(),
           });
         case 'junk':

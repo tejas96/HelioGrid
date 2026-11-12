@@ -43,11 +43,7 @@ export type { AddItemFieldWords } from './copy/catalog-add-item-fields';
 export { catalogItemFailuresOf, catalogItemFailureWords } from './copy/catalog-add-item-fields';
 export { catalogAttributionRowOf, catalogAttributionWords } from './copy/catalog-attribution';
 export { CATALOG_EDITOR, releaseChangeWord } from './copy/catalog-editor';
-export {
-  CATALOG_FIGURES,
-  type CatalogStripFigure,
-  catalogStripFigures,
-} from './copy/catalog-figures';
+export * from './copy/catalog-figures';
 export { catalogImportFields } from './copy/catalog-import-fields';
 export { catalogImportNotes } from './copy/catalog-import-notes';
 export type { ImportRowSubKind, ImportRowWordsFacts } from './copy/catalog-import-rows';
@@ -156,6 +152,8 @@ export * from './copy/list-top';
 export * from './copy/map-surface';
 export * from './copy/menu';
 export * from './copy/money-summary';
+export * from './copy/monthly-summary-notice';
+export * from './copy/my-day';
 export type { NameAndPhotoEditorWords } from './copy/name-and-photo-editor';
 export { NAME_AND_PHOTO_EDITOR, nameAndPhotoEditorWords } from './copy/name-and-photo-editor';
 export { centreActToast, centreFilterWords, centreHeadWords } from './copy/notification-head';
@@ -172,6 +170,7 @@ export {
 export * from './copy/operation-progress';
 export * from './copy/option-card-group';
 export * from './copy/otp-input';
+export * from './copy/owner-dashboard';
 export * from './copy/paged-document';
 export * from './copy/payment-messages';
 export type { PaymentTermsWords } from './copy/payment-terms';

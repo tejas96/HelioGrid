@@ -1,0 +1,208 @@
+/* OwnerDashboard — sample B · Focus. The hero is `HeroPanel`'s glass, each card is `Card`'s tile
+   (`Ground.css`); this file lays out what they hold. Every width rule reads the component's own
+   room (`@container`), never the window: the shell's sidebar takes part of the page. `@container`
+   cannot read a custom property, so its widths are written raw. */
+
+.hg-owner {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+/* Parts rise once, one after another (`F7-51`): transform and opacity, the stagger from the motion
+   tokens. Content is there at once; the motion runs over it. */
+.hg-owner-rise {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  animation: hg-rise var(--dur-emphasised) var(--ease-enter) backwards;
+  animation-delay: calc(var(--i) * var(--stagger-step));
+}
+
+.hg-owner-rise > * {
+  flex: 1 1 auto;
+}
+
+.hg-owner-top {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-owner-export {
+  margin-inline-start: auto;
+}
+
+/* ── the cards ────────────────────────────────────────────────────────────────────────── */
+
+.hg-owner-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.hg-owner-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  min-width: 0;
+}
+
+.hg-owner-card-aside,
+.hg-owner-card-corner {
+  margin-inline-start: auto;
+}
+
+.hg-owner-card-corner {
+  margin-block: calc(-1 * var(--sp-2));
+}
+
+.hg-owner-figure-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  border-radius: var(--r-sm);
+}
+
+/* A figure is one token — never wrapped (`CLAUDE.md` §9: Newsreader, tabular, by `RollingNumber`). */
+.hg-owner-hero-figure,
+.hg-owner-tile-figure {
+  white-space: nowrap;
+}
+
+.hg-owner-cash-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--hairline);
+}
+
+.hg-owner-cash-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.hg-owner-late-word {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+/* Money in a list is Geist Mono with tabular figures (`CLAUDE.md` §9). */
+.hg-owner-amount {
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body-lg);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.hg-owner-target,
+.hg-owner-target-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-owner-target-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.hg-owner-target-set {
+  align-self: flex-start;
+  margin-inline-start: calc(-1 * var(--sp-3));
+}
+
+/* The forecast is a gap, not a figure: a dashed outline on the page, no tile, until proposals
+   price the pipeline. */
+.hg-owner-forecast {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--tile-pad);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-tile);
+}
+
+.hg-owner-card-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-owner-median {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-owner-rate {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+/* ── the room ─────────────────────────────────────────────────────────────────────────── */
+
+.hg-owner-money-row,
+.hg-owner-deals {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-owner-side {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+
+/* Two money tiles side by side are too tight under 360: they stack. */
+@container (max-width: 359px) {
+  .hg-owner-side {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@container (min-width: 720px) {
+  .hg-owner {
+    gap: var(--sp-4);
+  }
+
+  .hg-owner-money-row,
+  .hg-owner-deals {
+    flex-direction: row;
+    gap: var(--sp-4);
+  }
+
+  .hg-owner-cash {
+    flex: 1.3 1 0;
+  }
+
+  .hg-owner-side {
+    flex: 1 1 0;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: var(--sp-4);
+  }
+
+  .hg-owner-pipeline {
+    flex: 1.4 1 0;
+  }
+
+  .hg-owner-winloss {
+    flex: 1 1 0;
+  }
+}

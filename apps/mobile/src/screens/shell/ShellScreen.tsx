@@ -28,6 +28,8 @@ import { GrievanceNote } from './components/GrievanceNote';
 import { HomeMoneyDue } from './components/HomeMoneyDue';
 import { HomeToday } from './components/HomeToday';
 import { InstallerHome } from './components/InstallerHome';
+import { MyDayHome } from './components/MyDayHome';
+import { OwnerHome } from './components/OwnerHome';
 import { ShellFrame } from './components/ShellFrame';
 import { ShellTopBar } from './components/ShellTopBar';
 import { doorRoute } from './doors';
@@ -105,6 +107,8 @@ export function ShellScreen() {
               )
             }
           />
+          <OwnerHome />
+          <MyDayHome />
           <HomeMoneyDue />
           <HomeToday today={today} open={openRow} />
           <InstallerHome />

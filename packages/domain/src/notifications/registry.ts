@@ -176,6 +176,16 @@ export const NOTIFICATION_REGISTRY: Record<NotificationType, NotificationRegistr
     urgency: 'standard',
   },
   /** An announcement from the platform; its subject is the company it is addressed to. */
+  /**
+   * The month in four figures for whoever reads the company's reports (`M13-21`): written in-app,
+   * where the owner reads things, and never pushed — a summary interrupts no one.
+   */
+  monthly_summary: {
+    raisedBy: 'reporting',
+    recipients: ['capability_holders', 'epc_owner'],
+    channels: ['in_app'],
+    urgency: 'standard',
+  },
   system: {
     raisedBy: 'platform',
     recipients: ['epc_owner'],
@@ -202,6 +212,7 @@ const GROUP_BY_SOURCE: Record<NotificationSource, NotificationTypeGroup> = {
   payments: 'payments',
   team: 'team',
   billing: 'billing',
+  reporting: 'sales',
   platform: 'team',
 };
 

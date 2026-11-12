@@ -7,6 +7,7 @@ import type { LeadActForm, LeadActSheetProps } from './LeadActSheet.types';
 import { LeadContactForm } from './LeadContactForm.native';
 import { LeadDetailsForm } from './LeadDetailsForm.native';
 import { LeadLogForm } from './LeadLogForm.native';
+import { LeadLostForm } from './LeadLostForm.native';
 import { LeadMessageForm } from './LeadMessageForm.native';
 import {
   LeadCallBackForm,
@@ -71,6 +72,8 @@ function FormOf({ form, frame }: { form: LeadActForm; frame: LeadFormFrame }) {
       return <LeadSnoozeForm form={form} frame={frame} />;
     case 'disqualify':
       return <LeadDisqualifyForm form={form} frame={frame} />;
+    case 'lost':
+      return <LeadLostForm form={form} frame={frame} />;
     case 'junk':
       return <LeadJunkForm form={form} frame={frame} />;
     case 'callBack':

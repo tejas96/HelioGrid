@@ -23,6 +23,7 @@ export * from './catalog';
 export * from './certification';
 export * from './commerce';
 export * from './crm';
+export * from './dashboards';
 export * from './files';
 export * from './format';
 export * from './import';

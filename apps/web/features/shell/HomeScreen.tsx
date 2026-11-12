@@ -1,5 +1,11 @@
 'use client';
-import { useHomeToday, useMoneyDue, useShell } from '@heliogrid/data/react';
+import {
+  useHomeToday,
+  useMoneyDue,
+  useMyDay,
+  useOwnerDashboard,
+  useShell,
+} from '@heliogrid/data/react';
 import { SETTINGS_SEGMENT, type SettingsRow } from '@heliogrid/domain';
 import {
   BLOCK,
@@ -32,6 +38,8 @@ import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import { FirstRunMark } from './components/FirstRunMark';
 import { InstallerHome } from './components/InstallerHome';
+import { MyDayHome } from './components/MyDayHome';
+import { OwnerHome } from './components/OwnerHome';
 import { DOOR_PATH, projectPaymentsPath, settingsRowPath } from './constants';
 
 /**
@@ -47,6 +55,8 @@ export function HomeScreen() {
   const shell = useShell();
   const today = useHomeToday();
   const moneyDue = useMoneyDue();
+  const ownerShown = useOwnerDashboard().shown;
+  const myDayShown = useMyDay().shown;
   const moneyDueShown = moneyDue.shown;
   const router = useRouter();
   const page = useRef<HTMLDivElement>(null);
@@ -55,6 +65,7 @@ export function HomeScreen() {
 
   const home = shell.home;
   if (home === null) return null;
+
   const head = homeHeadWords(t, home.home, shell.homes);
   const verb = shell.centreVerb;
   const openRow = (row: SettingsRow) => router.push(settingsRowPath(SETTINGS_SEGMENT[row]));
@@ -99,8 +110,10 @@ export function HomeScreen() {
         }
       />
       <div className="hg-home-grid">
-        {readiness === null && !moneyDueShown ? null : (
+        {readiness === null && !moneyDueShown && !ownerShown && !myDayShown ? null : (
           <div className="hg-home-main">
+            <OwnerHome />
+            <MyDayHome />
             {moneyDueShown ? (
               <MoneyDue
                 read={moneyDue.read}

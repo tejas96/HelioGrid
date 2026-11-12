@@ -9,9 +9,9 @@ import { CrmTasksService } from './crm.tasks.service';
 import { readerOf } from './internal/reader';
 
 /**
- * Follow-up tasks (`M07-05`): adding one to a lead is the add-and-edit grant's. Done and reopen are
- * any member's whose task it is or who may work its lead — a surveyor closes the site visit they
- * hold — and the service judges which. Each is a record edit in the billing matrix.
+ * Follow-up tasks (`M07-05`): adding one to a lead is the add-and-edit grant's. Done, move and
+ * reopen are any member's whose task it is or who may work its lead — a surveyor closes the site
+ * visit they hold — and the service judges which. Each is a record edit in the billing matrix.
  */
 @Controller()
 export class CrmTasksController {
@@ -22,11 +22,13 @@ export class CrmTasksController {
   @RouteBillingMap(tasksContract, {
     create: 'create_edit_records',
     done: 'create_edit_records',
+    move: 'create_edit_records',
     reopen: 'create_edit_records',
   })
   @RouteAccessMap(tasksContract, {
     create: { capability: 'crm.add_edit_leads' },
     done: 'member',
+    move: 'member',
     reopen: 'member',
   })
   handler(@Req() req: Request) {
@@ -38,6 +40,10 @@ export class CrmTasksController {
       done: async ({ params, body }) => ({
         status: 200,
         body: await this.tasks.done(readerOf(req), params.id, body, actOf(req)),
+      }),
+      move: async ({ params, body }) => ({
+        status: 200,
+        body: await this.tasks.move(readerOf(req), params.id, body),
       }),
       reopen: async ({ params }) => ({
         status: 200,

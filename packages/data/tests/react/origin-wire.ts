@@ -16,7 +16,7 @@ export function send(res: ServerResponse, req: IncomingMessage, status: number, 
     'access-control-allow-origin': req.headers.origin ?? '*',
     'access-control-allow-credentials': 'true',
     'access-control-allow-headers': req.headers['access-control-request-headers'] ?? '*',
-    'access-control-allow-methods': 'GET, PUT, POST, DELETE, OPTIONS',
+    'access-control-allow-methods': 'GET, PUT, PATCH, POST, DELETE, OPTIONS',
   });
   res.end(body === undefined ? undefined : JSON.stringify(body));
 }

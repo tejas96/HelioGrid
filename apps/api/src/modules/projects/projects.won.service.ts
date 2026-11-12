@@ -5,12 +5,12 @@ import {
   type MarkWon,
   projectActsContract,
 } from '@heliogrid/contracts';
-import { minorUnitsOfDecimal } from '@heliogrid/domain';
 import { HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
 import { CreationReplies, creationKeyOf } from '../../common/creation-key';
 import { ContractException, refusalWithFacts } from '../../common/errors/contract-exception';
 import { EntitlementBlockedException } from '../../common/errors/entitlement-blocked';
+import { minorUnitsOnField } from '../../common/errors/minor-units-on-field';
 import { EntitlementService } from '../billing/billing.public';
 import type { LeadReader } from '../crm/crm.public';
 import { NotificationPushService } from '../notification/notification.public';
@@ -45,7 +45,7 @@ export class ProjectsWonService {
     const route = projectActsContract.markWon;
     const key = creationKeyOf(headers, act.actorUserId, route, { leadId, ...body });
     const pack = await this.settings.packOf(reader.tenantId);
-    refuseFinerThanCurrency(body.finalValue, pack.formats.minorUnitDigits);
+    minorUnitsOnField(body.finalValue, pack.formats.minorUnitDigits, 'finalValue');
     const limit = (await this.entitlements.limitsOf(reader.tenantId))?.get(
       'active_projects',
     )?.limit;
@@ -108,19 +108,5 @@ export class ProjectsWonService {
           facts: { refusal: outcome.refusal },
         });
     }
-  }
-}
-
-/** A final value with more decimal places than the currency has is the person's to fix (`F4-04`). */
-function refuseFinerThanCurrency(amount: string, digits: number): void {
-  try {
-    minorUnitsOfDecimal(amount, digits);
-  } catch {
-    throw new ContractException(
-      'VALIDATION_FAILED',
-      'The final value has more decimal places than your currency.',
-      HttpStatus.BAD_REQUEST,
-      [{ path: 'finalValue', issue: `at most ${digits} decimal places` }],
-    );
   }
 }

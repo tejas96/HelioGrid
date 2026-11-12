@@ -50,11 +50,19 @@ export const AUDIT_EVENT_TYPES = [
   'crm.duplicate_kept',
   /** Two customers merged onto a survivor, with every field choice (`M02-61`). */
   'crm.customers_merged',
+  /** A lead closed lost with its reason (`F2-22`'s Won/Lost, `M07-63`). */
+  'crm.lead_lost',
+  /** A deal marked won — the project it starts is the subject (`F2-22`, `M07-62`). */
+  'projects.project_won',
+  /** A project cancelled after Won, with its reason (`F2-22`, `M13-04`). */
+  'projects.project_cancelled',
   'payments.payment_recorded',
   'payments.payment_reversed',
   'payments.tranche_waived',
   'payments.request_shared',
   'settings.collections_changed',
+  /** The company's monthly target set or cleared on the dashboard (`M13-17`). */
+  'settings.monthly_target_changed',
 ] as const;
 export type AuditEventType = (typeof AUDIT_EVENT_TYPES)[number];
 

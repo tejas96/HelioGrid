@@ -3,19 +3,10 @@ import { installerJobWords, projectPackWords, projectToastWords } from '@heliogr
 import { useI18n } from '@heliogrid/i18n/react';
 import { InstallerJob, installerJobActsOf, useFormat } from '@heliogrid/ui';
 import { useRef } from 'react';
-import { Linking, Platform, View } from 'react-native';
+import { View } from 'react-native';
+import { dial, openDirections, openOutside } from '../../shared/open-outside';
 import { ProjectToast } from '../../shared/ProjectToast';
 import { useProjectFilePick } from '../../shared/use-file-pick';
-
-/** The phone's maps, asked for a place by its words. */
-const mapsFor = (place: string) =>
-  Platform.OS === 'ios'
-    ? `http://maps.apple.com/?q=${encodeURIComponent(place)}`
-    : `geo:0,0?q=${encodeURIComponent(place)}`;
-
-const opened = (url: string) => {
-  void Linking.openURL(url).catch(() => undefined);
-};
 
 /**
  * The installer's job on their home (`SCR-M08-05`, `M08-45`): an installer on a roof, one hand,
@@ -44,10 +35,10 @@ export function InstallerHome() {
           {
             photo: pick,
             openFile: (file) => {
-              void project.fileLink(file.fileId).then(opened, () => undefined);
+              void project.fileLink(file.fileId).then(openOutside, () => undefined);
             },
-            call: (phoneE164) => opened(`tel:${phoneE164}`),
-            directions: (place) => opened(mapsFor(place)),
+            call: dial,
+            directions: openDirections,
           },
           jobs.tickOncePhotographed,
         )}

@@ -1,0 +1,73 @@
+/* DashBars — a card's count bars: the progress rail's 6 px pill, its fill grown once by
+   transform (`ProgressBar.css`), each row its words and its count. */
+
+.hg-owner-bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hg-owner-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) auto;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.hg-owner-bar-label {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.hg-owner-bar-rail {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--canvas-sunken);
+  box-shadow: var(--track-edge);
+  overflow: hidden;
+}
+
+.hg-owner-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  transform-origin: left center;
+  transform: scaleX(var(--hg-owner-bar-share, 0));
+  animation: hg-owner-bar-in var(--dur-data) var(--ease-enter) backwards;
+  animation-delay: calc(var(--i) * var(--stagger-step));
+}
+
+[dir="rtl"] .hg-owner-bar-fill {
+  transform-origin: right center;
+}
+
+.hg-owner-bar-fill[data-tone="danger"] {
+  background: var(--danger);
+}
+
+.hg-owner-bar-fill[data-tone="neutral"] {
+  background: var(--line-strong);
+}
+
+@keyframes hg-owner-bar-in {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.hg-owner-bar-count {
+  min-width: var(--sp-6);
+  font-family: var(--font-mono);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  white-space: nowrap;
+  color: var(--text-secondary);
+}

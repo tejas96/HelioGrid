@@ -28,6 +28,8 @@ export const NOTIFICATION_TYPES = [
   'trial_nudge',
   /** A project moved by proof or by someone else — told to its project manager (`M08`, ruling 2026-11-10). */
   'project_moved',
+  /** The owner's month in four figures, on the first morning of the next (`M13-21`). */
+  'monthly_summary',
   'system',
 ] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
@@ -123,6 +125,8 @@ export const NOTIFICATION_SOURCES = [
   'team',
   /** The company's own subscription with the platform — what it owes and how its trial runs (`M12`). */
   'billing',
+  /** The owner's own read of the company — dashboards and their monthly summary (`M13`). */
+  'reporting',
   'platform',
 ] as const;
 export type NotificationSource = (typeof NOTIFICATION_SOURCES)[number];

@@ -13,7 +13,8 @@ const STATE_CHANGES = { capability: 'crm.lead_state_changes' } as const;
 /**
  * The lead's acts (`SCR-M02-04`): *Mark qualified* is the add-and-edit grant's, since the qualify
  * card is the lead's own edit; snooze, wake, disqualify, junk and reopen are the state-change
- * grant's (`F2.M02.lead-state-changes`). Each is a record edit in the billing matrix.
+ * grant's (`F2.M02.lead-state-changes`); Mark lost is the close grant's (`F2.M07.mark-won-lost`).
+ * Each is a record edit in the billing matrix.
  */
 @Controller()
 export class CrmLifecycleController {
@@ -27,6 +28,7 @@ export class CrmLifecycleController {
     wake: 'create_edit_records',
     disqualify: 'create_edit_records',
     junk: 'create_edit_records',
+    lost: 'create_edit_records',
     reopen: 'create_edit_records',
   })
   @RouteAccessMap(leadLifecycleContract, {
@@ -35,6 +37,7 @@ export class CrmLifecycleController {
     wake: STATE_CHANGES,
     disqualify: STATE_CHANGES,
     junk: STATE_CHANGES,
+    lost: { capability: 'sales.mark_won_lost' },
     reopen: STATE_CHANGES,
   })
   handler(@Req() req: Request) {
@@ -51,6 +54,8 @@ export class CrmLifecycleController {
         answer(this.lifecycle.wake(readerOf(req), params.id, body, actOf(req))),
       disqualify: ({ params, body }) =>
         answer(this.lifecycle.disqualify(readerOf(req), params.id, body, actOf(req))),
+      lost: ({ params, body }) =>
+        answer(this.lifecycle.lost(readerOf(req), params.id, body, actOf(req))),
       junk: ({ params, body }) =>
         answer(this.lifecycle.junk(readerOf(req), params.id, body, actOf(req))),
       reopen: ({ params, body }) =>

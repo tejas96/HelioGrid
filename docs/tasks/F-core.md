@@ -50,7 +50,7 @@ Each row below is carried verbatim and is followed by what enforces it. Nothing 
 ### From `docs/prd/01-product-overview.md` — the product laws
 
 - **OV-04** (P0) — The product replaces the spreadsheet-and-rekeying pipeline with **one record that travels**: CRM → survey → 3D design → proposal → no-login customer link → voice-agent follow-up → light project tracking → payments. No stage re-enters data an earlier stage already holds.
-  *Enforced by:* every module task's hand-off contract (the shipped CRM (`docs/prd/modules/M02-crm-and-leads.md`) → `docs/tasks/M04-survey.md` → `docs/tasks/M06-proposals.md` → `docs/tasks/F5-customer-link.md` → `docs/tasks/M07-sales-execution.md` → the shipped projects (`docs/prd/modules/M08-projects.md`) → `docs/tasks/M11-payments-collections.md`); review rejects any screen that re-keys a value an upstream stage already holds.
+  *Enforced by:* every module task's hand-off contract (the shipped CRM (`docs/prd/modules/M02-crm-and-leads.md`) → `docs/tasks/M04-survey.md` → `docs/tasks/M06-proposals.md` → `docs/tasks/F5-customer-link.md` → the shipped sales execution (`docs/prd/modules/M07-sales-execution.md`) → the shipped projects (`docs/prd/modules/M08-projects.md`) → `docs/tasks/M11-payments-collections.md`); review rejects any screen that re-keys a value an upstream stage already holds.
 - **OV-06** (P0) — The owner signs up **self-serve**, with phone number and one-time password. Nothing about acquiring the product requires a sales conversation at the entry tiers.
   *Enforced by:* `SCR-M01-01` and `SCR-M01-02` (phone + OTP + company name, no sales step).
 - **OV-07** (P1) — Google Login is offered alongside Mobile OTP as a second authentication route. This is new in V2 and not present in the v1 source, which is OTP-only.
@@ -188,7 +188,7 @@ Each persona-definition row is realized by that persona's F2 section and its own
 - **PS-10** (P0) — The **Sales Executive** persona sells. Their scope is their **own** leads, their own proposals and their own follow-ups — capture, qualify, book the survey, build and send the proposal, chase it, and mark it won or lost with a reason.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Sales Executive
 - **PS-11** (P0) — The Sales Executive's **home screen is My Day** — "not a dashboard of numbers, a list of what to do today", in a fixed order: **overdue** first and always visually first, **today's** timed items, a separate **agent activity** block for what the automation did on their behalf, then **upcoming**. Snoozed and dormant leads are excluded until they wake.
-  *Realized by:* `SCR-M07-01` (screen owned by `docs/tasks/M07-sales-execution.md`)
+  *Realized by:* `SCR-M07-01` (shipped in block 6)
 - **PS-12** (P0) — The **Survey Engineer** persona visits sites and captures what a design cannot be built without: roof, electrical, shading, access and structural observations — the last "observations only, never a verdict". Their visibility is limited to what they are assigned.
   *Realized by:* `docs/prd/foundations/F2-roles-and-permissions.md` §Survey Engineer · `docs/prd/modules/M04-survey.md`
 - **PS-13** (P0) — The Survey Engineer's **home screen is today's site visits** — each with address, customer, time, distance, one-tap navigation and one-tap call.

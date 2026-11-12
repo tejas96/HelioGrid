@@ -1,15 +1,17 @@
 import type { LeadDetail } from '@heliogrid/contracts';
 import { customer, type DbTransaction, lead, type TenantPool } from '@heliogrid/db';
-import type {
-  LeadActContext,
-  LeadActRefusal,
-  LeadActResult,
-  LeadLifecycle,
+import {
+  type LeadActContext,
+  type LeadActRefusal,
+  type LeadActResult,
+  type LeadLifecycle,
+  TASK_KINDS,
 } from '@heliogrid/domain';
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, inArray, isNull } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import { TENANT_DB } from '../../common/db/tenant.token';
+import { memberAct, recordAuditEntry } from '../audit/audit.public';
 import {
   detailAfterAct,
   type LockedLead,
@@ -106,5 +108,17 @@ export async function blockWrongNumber(
     tenantId,
     leads.map((one) => one.id),
     DIAL_TASKS,
+  );
+}
+
+/**
+ * A loss (`M07-63`): every task still open on the lead is cancelled — kept as history — and the
+ * close is audited (`F2-22`), both with the loss or neither.
+ */
+export async function closeLost(tx: DbTransaction, locked: LockedLead, act: Act): Promise<void> {
+  await cancelOpenTasks(tx, locked.tenantId, [locked.leadId], TASK_KINDS);
+  await recordAuditEntry(
+    tx,
+    memberAct('crm.lead_lost', locked.tenantId, { kind: 'lead', ref: locked.leadId }, act),
   );
 }

@@ -1,10 +1,5 @@
 import type { RateWrite, RoleSet } from '@heliogrid/contracts';
-import {
-  type CertificationSchemesPack,
-  type FormatPack,
-  holdsOutright,
-  minorUnitsOfDecimal,
-} from '@heliogrid/domain';
+import { type CertificationSchemesPack, type FormatPack, holdsOutright } from '@heliogrid/domain';
 import { minorUnitsToDecimal } from '@heliogrid/domain/server';
 import {
   ConflictException,
@@ -14,6 +9,7 @@ import {
 } from '@nestjs/common';
 import type { ContractRoute, CreationReplies, Keyed } from '../../../common/creation-key';
 import { ContractException } from '../../../common/errors/contract-exception';
+import { minorUnitsOnField } from '../../../common/errors/minor-units-on-field';
 import type { RateToAppend } from '../catalog.rates.repository';
 import type { CatalogTenant } from '../catalog.slice.repository';
 import type { Refusal } from '../catalog.standing.repository';
@@ -78,16 +74,7 @@ export function amountAtScale(amount: string | null, digits: number, at: string)
       [{ path: `${at}amount`, issue: `at most ${LEDGER_WHOLE_DIGITS} whole digits` }],
     );
   }
-  try {
-    return minorUnitsToDecimal(minorUnitsOfDecimal(amount, digits), digits);
-  } catch {
-    throw new ContractException(
-      'VALIDATION_FAILED',
-      'That amount is finer than the currency’s smallest unit.',
-      HttpStatus.BAD_REQUEST,
-      [{ path: `${at}amount`, issue: `at most ${digits} decimal places` }],
-    );
-  }
+  return minorUnitsToDecimal(minorUnitsOnField(amount, digits, `${at}amount`), digits);
 }
 
 export const MANAGE_CATALOG = 'onboarding.manage_catalog';

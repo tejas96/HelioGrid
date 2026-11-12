@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { FOUNDER_ROLE } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { retryKey } from '../crm/support';
+import { auditEntriesOf, retryKey } from '../crm/support';
 import { skipWithoutDatabase } from '../support/fixture';
 import {
   aLead,
@@ -76,6 +76,10 @@ describe.skipIf(skip)('Mark won, over HTTP against a migrated database', () => {
     expect(detail.documents.map((row) => row.row)).toContain('incentive_application');
     expect(detail.steps).toHaveLength(SEEDED_STEPS);
     expect(detail.journey).toMatchObject([{ from: null, to: 'won', cause: 'person' }]);
+    const audited = await auditEntriesOf(world, here.company.tenantId, 'projects.project_won');
+    expect(audited.filter((one) => one.subjectRef === reply.body.projectId)).toMatchObject([
+      { subjectKind: 'project', actorRef: ownerId(), blocked: false },
+    ]);
   });
 
   it('a commercial deal drops the incentive row and walks no incentive stage', async () => {

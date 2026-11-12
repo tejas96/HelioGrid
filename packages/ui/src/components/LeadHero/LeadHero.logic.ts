@@ -10,6 +10,7 @@ const LEAD_RECORD_ACTS: readonly LeadRecordAct[] = [
   'snooze',
   'disqualify',
   'mark-won',
+  'mark-lost',
   'add-referral',
   'merge',
   'junk',
@@ -20,6 +21,7 @@ const RECORD_ACT_GLYPH: Record<Exclude<LeadRecordAct, 'junk'>, ShellGlyphName> =
   snooze: STATE_ACT_GLYPH.snooze,
   disqualify: STATE_ACT_GLYPH.disqualify,
   'mark-won': 'circle-check',
+  'mark-lost': 'trend-down',
   'add-referral': 'person-plus',
   merge: 'layers',
 };
@@ -46,6 +48,7 @@ export function leadRecordMenuOf(
     snooze: words.recordActs.snooze,
     disqualify: words.recordActs.disqualify,
     'mark-won': words.recordActs.markWon,
+    'mark-lost': words.recordActs.markLost,
     'add-referral': words.recordActs.addReferral,
     merge: words.recordActs.merge,
     junk: words.recordActs.junk,

@@ -45,6 +45,7 @@ export interface LeadHeroWords {
     readonly snooze: TranslatedText;
     readonly disqualify: TranslatedText;
     readonly markWon: TranslatedText;
+    readonly markLost: TranslatedText;
     readonly addReferral: TranslatedText;
     readonly merge: TranslatedText;
     readonly junk: TranslatedText;
@@ -59,6 +60,7 @@ export type LeadRecordAct =
   | 'snooze'
   | 'disqualify'
   | 'mark-won'
+  | 'mark-lost'
   | 'add-referral'
   | 'merge'
   | 'junk';

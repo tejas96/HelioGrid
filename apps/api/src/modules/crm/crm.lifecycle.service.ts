@@ -4,9 +4,18 @@ import {
   type LeadAct,
   type LeadDetail,
   leadLifecycleContract,
+  type MarkLost,
   type SnoozeLead,
 } from '@heliogrid/contracts';
-import { disqualify, junk, markQualified, reopen, snooze, wakeNow } from '@heliogrid/domain';
+import {
+  disqualify,
+  junk,
+  markLost,
+  markQualified,
+  reopen,
+  snooze,
+  wakeNow,
+} from '@heliogrid/domain';
 import { HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
 import { refusalWithFacts } from '../../common/errors/contract-exception';
@@ -14,6 +23,7 @@ import { SettingsService } from '../settings/settings.public';
 import {
   blockWrongNumber,
   CrmLifecycleRepository,
+  closeLost,
   type LeadActPlan,
 } from './crm.lifecycle.repository';
 import { moneyOf } from './internal/lead-wire';
@@ -54,6 +64,18 @@ export class CrmLifecycleService {
     return this.run(reader, leadId, body, act, {
       decide: (lead, context) => disqualify(lead, body.reason, context),
       ...(body.reason === 'wrong_number' && { follows: blockWrongNumber }),
+    });
+  }
+
+  /**
+   * Mark lost with one of the seven reasons (`M07-63`, `M02-54`): the lead's open tasks are
+   * cancelled, so a reopen months later brings back none of them, and the loss is audited (`F2-22`).
+   */
+  lost(reader: LeadReader, leadId: string, body: MarkLost, act: Act) {
+    return this.run(reader, leadId, body, act, {
+      decide: (lead, context) =>
+        markLost(lead, { reason: body.reason, resurfaceOn: body.resurfaceOn ?? null }, context),
+      follows: closeLost,
     });
   }
 

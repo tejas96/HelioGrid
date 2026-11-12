@@ -21,6 +21,7 @@ import { DECLARED } from '../../src/common/filters/declared-statuses';
 import { documentDefaultsIn } from '../../src/modules/settings/internal/document-defaults';
 import { seedTenantSettings } from '../../src/modules/settings/settings.admin.repository';
 import { TenantRepository } from '../../src/modules/tenant/tenant.repository';
+import { targetReplace } from '../dashboards/support';
 import {
   aCompany,
   aMembership,
@@ -229,6 +230,7 @@ const REPLACES: readonly Replace[] = [
     },
     rows: () => versionsOf(tenantHoliday, ofHere(tenantHoliday.tenantId)),
   },
+  targetReplace(() => pools, here.tenantId, by),
   {
     route: 'PUT /tenants/me/members/:membershipId/roles',
     event: 'team.roles_changed',

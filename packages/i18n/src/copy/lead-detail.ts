@@ -67,6 +67,7 @@ export const LEAD_DETAIL = {
   waking: /*i18n*/ { id: 'Waking the lead…' },
   reopening: /*i18n*/ { id: 'Reopening the lead…' },
   markWon: /*i18n*/ { id: 'Mark won' },
+  markLost: /*i18n*/ { id: 'Mark lost' },
   addReferral: /*i18n*/ { id: 'Add a referral' },
   merge: /*i18n*/ { id: 'Merge duplicate' },
 } as const;
@@ -169,6 +170,7 @@ export function leadHeroWords(t: T, facts: LeadHeroFacts) {
       snooze: t(LEAD_DETAIL.snooze),
       disqualify: t(LEAD_DETAIL.disqualify),
       markWon: t(LEAD_DETAIL.markWon),
+      markLost: t(LEAD_DETAIL.markLost),
       addReferral: t(LEAD_DETAIL.addReferral),
       merge: t(LEAD_DETAIL.merge),
       junk: t(LEAD_DETAIL.junk),

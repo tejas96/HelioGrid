@@ -94,6 +94,8 @@
 .hg-pressable.hg-stat-card-button,
 .hg-pressable.hg-settings-person,
 .hg-pressable.hg-role-tile,
+/* A reason to mark a lead lost (`LeadActSheet`): one tile of the sheet's grid. */
+.hg-pressable.hg-lead-lost-reason,
 .hg-settings-tile,
 .hg-record-card,
 .hg-member-loading-card,

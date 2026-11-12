@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { callingWindow, IN_CALLING_RULES, NO_WINDOW } from '../../src/calling/pack';
 import {
+  calendarMonthsAfter,
   callBackDueAt,
   callBackWindowOf,
   dailySweepDue,
@@ -123,5 +124,18 @@ describe('noCallUntilOf — six calendar months on (M02-54)', () => {
     ['2026-12-30', '2027-06-30'],
   ])('a loss on %s holds calls back until %s', (today, until) => {
     expect(noCallUntilOf(today)).toBe(until);
+  });
+});
+
+describe('calendarMonthsAfter — the same day, months on, clamped to a short month', () => {
+  it.each([
+    ['2026-11-12', 1, '2026-12-12'],
+    ['2026-11-12', 3, '2027-02-12'],
+    ['2026-01-31', 1, '2026-02-28'],
+    ['2028-01-31', 1, '2028-02-29'],
+    ['2026-10-31', 1, '2026-11-30'],
+    ['2026-12-15', 1, '2027-01-15'],
+  ])('%s plus %i months is %s', (date, months, after) => {
+    expect(calendarMonthsAfter(date, months)).toBe(after);
   });
 });

@@ -10,5 +10,6 @@ export * from './modules/documents/documents.workflows';
 export * from './modules/notification/notification.workflows';
 export * from './modules/outbox/outbox.workflows';
 export * from './modules/platform/platform.workflows';
+export * from './modules/reporting/reporting.workflows';
 export * from './modules/team/team.workflows';
 export * from './modules/usage/usage.workflows';

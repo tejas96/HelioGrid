@@ -11,3 +11,8 @@ export function openExternal(url: string): void {
   if (opened === null) window.location.assign(url);
   else opened.opener = null;
 }
+
+/** The maps a browser opens, asked for a place by its words. */
+export function openDirections(place: string): void {
+  openExternal(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}`);
+}

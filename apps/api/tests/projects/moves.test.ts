@@ -2,6 +2,7 @@ import type { ProjectCard } from '@heliogrid/contracts';
 import { FOUNDER_ROLE } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { auditEntriesOf } from '../crm/support';
 import { skipWithoutDatabase } from '../support/fixture';
 import {
   acted,
@@ -207,6 +208,14 @@ describe.skipIf(skip)('the project moves, over HTTP against a migrated database'
       cancel: { reason: 'customer_backed_out', note: null, by: { userId: ownerId() } },
       acts: { stages: false, documents: false, steps: false },
     });
+    const audited = await auditEntriesOf(
+      world,
+      here.company.tenantId,
+      'projects.project_cancelled',
+    );
+    expect(audited.filter((one) => one.subjectRef === projectId)).toMatchObject([
+      { subjectKind: 'project', actorRef: ownerId() },
+    ]);
     for (const [verb, body] of [
       ['move', { to: 'material_ordered' }],
       ['move-back', { from: 'cancelled' }],

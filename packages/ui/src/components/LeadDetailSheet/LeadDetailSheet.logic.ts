@@ -1,4 +1,5 @@
 import type { CrmMessageTemplateKey, DedupeMatchWire } from '@heliogrid/contracts';
+import { CRM_WAKE_TIME, clockTimeHhmm } from '@heliogrid/domain';
 import type {
   LeadActForm,
   LeadActSheetProps,
@@ -47,6 +48,16 @@ function leadActFormOf(props: LeadDetailSheetProps, sheet: LeadSheetOpen): LeadA
         kind: 'disqualify',
         words: forms.disqualify,
         onSend: (reason) => acts.send({ kind: 'disqualify', reason }),
+      };
+    case 'lost':
+      return {
+        kind: 'lost',
+        lead: { name: props.lead.lead.name, bill: props.lead.lead.monthlyBill },
+        postpone: days.postpone,
+        firstDay: days.tomorrow,
+        comesBackAt: clockTimeHhmm(CRM_WAKE_TIME),
+        words: forms.lost,
+        onSend: (loss) => acts.send({ kind: 'lost', ...loss }),
       };
     case 'junk':
       return { kind: 'junk', words: forms.junk, onSend: () => acts.send({ kind: 'junk' }) };

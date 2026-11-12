@@ -31,7 +31,8 @@ export type TaskCreateOutcome =
 export type TaskActOutcome =
   | { readonly outcome: 'done'; readonly task: Task }
   | { readonly outcome: 'not-found' }
-  | { readonly outcome: 'cancelled' };
+  | { readonly outcome: 'cancelled' }
+  | { readonly outcome: 'not-open' };
 
 /**
  * Follow-up tasks on a lead (`M07-05`) on the runtime pool. A task goes to the
@@ -120,6 +121,21 @@ export class CrmTasksRepository {
   }
 
   /**
+   * Move (`M07-05`): an open task takes its new due moment, and overdue follows it at once; the
+   * same moment again writes nothing, and no timeline entry is written — it is the person's plan.
+   */
+  async move(reader: LeadReader, taskId: string, dueAt: Date): Promise<TaskActOutcome> {
+    const moveOpen = async (tx: DbTransaction, held: HeldTask) => {
+      if (held.dueAt.getTime() === dueAt.getTime()) return;
+      await tx
+        .update(task)
+        .set({ dueAt })
+        .where(and(eq(task.tenantId, reader.tenantId), eq(task.id, taskId)));
+    };
+    return this.closeOrOpen(reader, taskId, moveOpen, 'open');
+  }
+
+  /**
    * The task locked for its act, when the reader holds it or may work its lead; a cancelled task
    * is answered as such and never changed. Its lead is locked first (`lockLead`'s order): an act on
    * the lead — a hand-over, a wrong number — locks the lead and then changes its tasks.
@@ -128,6 +144,8 @@ export class CrmTasksRepository {
     reader: LeadReader,
     taskId: string,
     change: (tx: DbTransaction, held: HeldTask) => Promise<void>,
+    /** The one status the act is for; any other answers `not-open`. */
+    acts?: 'open',
   ): Promise<TaskActOutcome> {
     const { tenantId } = reader;
     return this.db.withTenantTransaction(tenantId, async (tx) => {
@@ -144,6 +162,7 @@ export class CrmTasksRepository {
           kind: task.kind,
           title: task.title,
           status: task.status,
+          dueAt: task.dueAt,
         })
         .from(task)
         .innerJoin(lead, and(eq(lead.id, task.leadId), eq(lead.tenantId, task.tenantId)))
@@ -160,6 +179,7 @@ export class CrmTasksRepository {
         .for('update', { of: task });
       if (held === undefined || held.leadId === null) return { outcome: 'not-found' };
       if (held.status === 'cancelled') return { outcome: 'cancelled' };
+      if (acts !== undefined && held.status !== acts) return { outcome: 'not-open' };
       await change(tx, { ...held, leadId: held.leadId });
       return { outcome: 'done', task: await taskWireOf(tx, tenantId, taskId) };
     });
@@ -172,33 +192,39 @@ interface HeldTask {
   readonly kind: TaskKind;
   readonly title: string | null;
   readonly status: Task['status'];
+  readonly dueAt: Date;
 }
 
-/** One task as the wire states it, read on the caller's transaction. */
-export async function taskWireOf(
-  tx: DbTransaction,
-  tenantId: string,
-  taskId: string,
-): Promise<Task> {
-  const [row] = await tx
-    .select({
-      id: task.id,
-      leadId: task.leadId,
-      kind: task.kind,
-      title: task.title,
-      status: task.status,
-      dueAt: task.dueAt,
-      assigneeId: task.assigneeUserId,
-      assigneeName: memberNameOf(userAccount),
-      provenance: task.provenance,
-      doneAt: task.doneAt,
-    })
-    .from(task)
-    .innerJoin(userAccount, eq(userAccount.id, task.assigneeUserId))
-    .where(and(eq(task.tenantId, tenantId), eq(task.id, taskId)));
-  if (row === undefined || row.leadId === null) {
-    throw new Error(`task ${taskId} is not a lead's task in its own company`);
-  }
+/** The columns a task's wire shape is read with: `from task`, its assignee joined as `user_account`. */
+export const taskWireColumns = {
+  id: task.id,
+  leadId: task.leadId,
+  kind: task.kind,
+  title: task.title,
+  status: task.status,
+  dueAt: task.dueAt,
+  assigneeId: task.assigneeUserId,
+  assigneeName: memberNameOf(userAccount),
+  provenance: task.provenance,
+  doneAt: task.doneAt,
+};
+
+/** The assignee's join `taskWireColumns` reads its name through. */
+export const taskAssigneeJoin = eq(userAccount.id, task.assigneeUserId);
+
+/** One row of `taskWireColumns` on a lead, as the wire states it. */
+export function taskOfRow(row: {
+  readonly id: string;
+  readonly leadId: string;
+  readonly kind: TaskKind;
+  readonly title: string | null;
+  readonly status: Task['status'];
+  readonly dueAt: Date;
+  readonly assigneeId: string;
+  readonly assigneeName: string | null;
+  readonly provenance: Task['provenance'];
+  readonly doneAt: Date | null;
+}): Task {
   return {
     id: row.id,
     leadId: row.leadId,
@@ -210,4 +236,21 @@ export async function taskWireOf(
     provenance: row.provenance,
     doneAt: row.doneAt?.toISOString() ?? null,
   };
+}
+
+/** One task as the wire states it, read on the caller's transaction. */
+export async function taskWireOf(
+  tx: DbTransaction,
+  tenantId: string,
+  taskId: string,
+): Promise<Task> {
+  const [row] = await tx
+    .select(taskWireColumns)
+    .from(task)
+    .innerJoin(userAccount, taskAssigneeJoin)
+    .where(and(eq(task.tenantId, tenantId), eq(task.id, taskId)));
+  if (row === undefined || row.leadId === null) {
+    throw new Error(`task ${taskId} is not a lead's task in its own company`);
+  }
+  return taskOfRow({ ...row, leadId: row.leadId });
 }

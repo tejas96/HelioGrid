@@ -205,8 +205,20 @@ export function dialOfferOf(facts: LeadDetailFacts): DialOffer {
   return { kind: 'blocked', reason: facts.customer.wrongNumber ? 'wrong_number' : 'do_not_call' };
 }
 
-/** The state acts by where the lead stands: a closed lead only reopens; a parked one also wakes or reopens. */
-export function leadStateActsOf(state: LeadLifecycleState | null): readonly LeadStateAct[] {
+/**
+ * The state acts by where the lead stands: a closed lead only reopens; a parked one also wakes or
+ * reopens. A won lead is a project (`M07-62`): no close reaches it, so it offers neither disqualify
+ * nor junk (`lifecycle-close.ts` refuses both with `not_open`).
+ */
+export function leadStateActsOf(
+  state: LeadLifecycleState | null,
+  stage: LeadStage,
+): readonly LeadStateAct[] {
+  const acts = stateActsOf(state);
+  return stage === 'won' ? acts.filter((act) => act !== 'disqualify' && act !== 'junk') : acts;
+}
+
+function stateActsOf(state: LeadLifecycleState | null): readonly LeadStateAct[] {
   if (isClosedState(state)) return ['reopen'];
   if (state === 'snoozed') return ['wake', 'snooze', 'disqualify', 'junk'];
   if (state === 'dormant') return ['reopen', 'snooze', 'disqualify', 'junk'];
@@ -217,7 +229,7 @@ export function leadActsOf(facts: LeadDetailFacts): LeadActsView {
   const { stage, state } = facts.lead;
   const closed = isClosedState(state);
   return {
-    stateActs: leadStateActsOf(state),
+    stateActs: leadStateActsOf(state, stage),
     markQualified: !closed && LEAD_STAGES.indexOf(stage) < LEAD_STAGES.indexOf('qualified'),
     markWon: !closed && LEAD_STAGES.indexOf(stage) < LEAD_STAGES.indexOf('won'),
     visit: closed ? 'closed' : facts.visit === null ? 'book' : 'reschedule',

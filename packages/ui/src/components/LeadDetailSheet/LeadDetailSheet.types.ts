@@ -11,6 +11,7 @@ import type {
   LeadActFailure,
   LeadDetailView,
   LeadMember,
+  LostReason,
   Read,
 } from '@heliogrid/domain';
 import type { ISODate } from '../DatePicker/DatePicker.types';
@@ -26,6 +27,7 @@ import type {
   LeadJunkWords,
   LeadLogDraft,
   LeadLogWords,
+  LeadLostWords,
   LeadMessageWords,
   LeadSnoozeWords,
   LeadVisitDraft,
@@ -43,13 +45,17 @@ export type LeadSheetAct =
   | { readonly kind: 'log'; readonly log: LeadLogDraft }
   | { readonly kind: 'snooze'; readonly wakeOn: ISODate }
   | { readonly kind: 'disqualify'; readonly reason: DisqualifyReason }
+  | { readonly kind: 'lost'; readonly reason: LostReason; readonly resurfaceOn: ISODate | null }
   | { readonly kind: 'junk' }
   | { readonly kind: 'callBack'; readonly date: ISODate; readonly time: string }
   | ({ readonly kind: 'details' } & Partial<LeadDetailsDraft>);
 
 /** What the sheet reads and sends on the lead's screen; `useLeadDetailScreen` satisfies it. */
 export interface LeadDetailSheetScreen {
-  /** Today and tomorrow on the tenant's clock: the first days a visit, call-back or wake may take. */
+  /**
+   * Today and tomorrow on the tenant's clock — the first days a visit, call-back or wake may take —
+   * and the days a postponed loss can come back on.
+   */
   readonly days: LeadActDays;
   readonly acts: {
     readonly sheet: LeadSheetOpen | null;
@@ -94,6 +100,7 @@ export interface LeadActFormWords {
   readonly visit: (mode: 'book' | 'reschedule') => LeadVisitWords;
   readonly snooze: LeadSnoozeWords;
   readonly disqualify: LeadDisqualifyWords;
+  readonly lost: LeadLostWords;
   readonly junk: LeadJunkWords;
   readonly callBack: LeadCallBackWords;
   readonly message: LeadMessageWords;

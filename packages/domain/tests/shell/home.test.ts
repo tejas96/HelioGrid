@@ -6,6 +6,8 @@ import {
   homesOf,
   showsInstallerJob,
   showsMoneyDue,
+  showsMyDay,
+  showsOwnerDashboard,
   waitingHomeBlocks,
 } from '../../src/shell/home';
 
@@ -163,5 +165,37 @@ describe('Money due on the home (SCR-M11-01, M11-54)', () => {
   it('draws no waiting block for Finance, whose block is Money due itself', () => {
     const home = composedHome(['finance']);
     expect(home && waitingHomeBlocks(home)).toEqual([]);
+  });
+});
+
+describe('the owner dashboard and My Day on the home (SCR-M13-01, SCR-M07-01)', () => {
+  it.each([
+    { who: 'the owner', held: ['epc_owner'], dashboard: true, myDay: false },
+    { who: 'a sales manager', held: ['sales_manager'], dashboard: true, myDay: false },
+    {
+      who: 'an owner who also sells',
+      held: ['epc_owner', 'sales_executive'],
+      dashboard: true,
+      myDay: true,
+    },
+    { who: 'a sales executive', held: ['sales_executive'], dashboard: false, myDay: true },
+    { who: 'a field technician', held: ['field_technician'], dashboard: false, myDay: false },
+    { who: 'finance', held: ['finance'], dashboard: false, myDay: false },
+    { who: 'no one', held: [], dashboard: false, myDay: false },
+  ] as const)('$who → dashboard $dashboard, My Day $myDay', ({ held, dashboard, myDay }) => {
+    const home = composedHome(held);
+    expect(showsOwnerDashboard(home)).toBe(dashboard);
+    expect(showsMyDay(home)).toBe(myDay);
+  });
+
+  it('a sales manager chosen over the owner home still shows the dashboard, scoped by role', () => {
+    expect(showsOwnerDashboard(composedHome(['epc_owner', 'sales_manager'], 'sales_manager'))).toBe(
+      true,
+    );
+  });
+
+  it('draws no waiting block for the homes this block draws', () => {
+    const home = composedHome(['epc_owner', 'sales_executive', 'survey_engineer']);
+    expect(home && waitingHomeBlocks(home)).toEqual(['survey_engineer']);
   });
 });

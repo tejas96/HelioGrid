@@ -19,7 +19,7 @@ const MENU_STATE_ACTS = ['snooze', 'disqualify'] as const;
 
 /**
  * The record menu's acts: snooze and disqualify where the standing offers them,
- * then Mark won where the deal may close, a referral always, merge to who may, junk where the
+ * then Mark won and Mark lost where the deal may close, a referral always, merge to who may, junk where the
  * standing offers it.
  */
 export function leadRecordActsOf({
@@ -34,13 +34,19 @@ export function leadRecordActsOf({
   'screen' | 'lead' | 'view' | 'onAddReferral' | 'onMerge' | 'onMarkWon'
 >): LeadRecordActPress[] {
   const offered = view.acts.stateActs;
+  /* Won and lost are the deal's two ends: the same open stages before Won offer both (`M07-62`,
+     `M07-63`), to a reader who may close a deal. */
+  const mayClose = screen.canWin && view.acts.markWon;
   const states: LeadRecordActPress[] = MENU_STATE_ACTS.filter((act) => offered.includes(act)).map(
     (act) => ({ act, onPress: () => screen.acts.open({ kind: act }) }),
   );
   return [
     ...states,
-    ...(screen.canWin && view.acts.markWon
-      ? [{ act: 'mark-won' as const, onPress: onMarkWon }]
+    ...(mayClose
+      ? [
+          { act: 'mark-won' as const, onPress: onMarkWon },
+          { act: 'mark-lost' as const, onPress: () => screen.acts.open({ kind: 'lost' }) },
+        ]
       : []),
     { act: 'add-referral', onPress: () => onAddReferral(lead.lead.id) },
     ...(screen.canMerge

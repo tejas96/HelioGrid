@@ -31,6 +31,8 @@ export const TASK_QUEUES = [
   'heliogrid-crm',
   'heliogrid-notifications',
   'heliogrid-projects',
+  /** The owner's reports — the monthly summary (`M13-21`). */
+  'heliogrid-reporting',
 ] as const;
 export type TaskQueue = (typeof TASK_QUEUES)[number];
 

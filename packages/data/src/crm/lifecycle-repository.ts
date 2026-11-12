@@ -3,6 +3,7 @@ import {
   LEAD_TRANSITION_REFUSED,
   type LeadAct,
   type LeadDetail,
+  type MarkLost,
   type SnoozeLead,
 } from '@heliogrid/contracts';
 import type { ApiClient } from '../client/client';
@@ -34,6 +35,8 @@ export interface LeadLifecycleRepository {
   wake(leadId: string, body: LeadAct): Promise<LeadDetail>;
   /** One of the six reasons, mandatory (`M02-42`). */
   disqualify(leadId: string, body: DisqualifyLead): Promise<LeadDetail>;
+  /** One of the seven reasons; *postponed* carries its day (`M07-63`). The lead's open tasks end. */
+  lost(leadId: string, body: MarkLost): Promise<LeadDetail>;
   junk(leadId: string, body: LeadAct): Promise<LeadDetail>;
   reopen(leadId: string, body: LeadAct): Promise<LeadDetail>;
 }
@@ -59,6 +62,7 @@ export function createLeadLifecycleRepository(api: ApiClient): LeadLifecycleRepo
     wake: (leadId, body) => standingAfter(() => lifecycle.wake({ params: { id: leadId }, body })),
     disqualify: (leadId, body) =>
       standingAfter(() => lifecycle.disqualify({ params: { id: leadId }, body })),
+    lost: (leadId, body) => standingAfter(() => lifecycle.lost({ params: { id: leadId }, body })),
     junk: (leadId, body) => standingAfter(() => lifecycle.junk({ params: { id: leadId }, body })),
     reopen: (leadId, body) =>
       standingAfter(() => lifecycle.reopen({ params: { id: leadId }, body })),

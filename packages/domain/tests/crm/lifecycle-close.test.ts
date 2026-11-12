@@ -123,6 +123,24 @@ describe('markLost — one of the seven, with its rule (M02-54)', () => {
   });
 });
 
+describe('a won lead is a project — no close act reaches it (M07-62)', () => {
+  const won = leadAt({ stage: 'won' });
+  it.each([
+    ['markLost', () => markLost(won, { reason: 'price' }, CONTEXT)],
+    ['disqualify', () => disqualify(won, 'budget', CONTEXT)],
+    ['junk', () => junk(won, CONTEXT)],
+  ] as const)('%s on a won lead is refused as not open', (_act, act) => {
+    expect(refusalOf(act())).toBe('not_open');
+  });
+
+  it.each([
+    ['negotiating', null],
+    ['proposal', null],
+  ] as const)('a lead at %s is still open to a loss', (stage, refusal) => {
+    expect(refusalOf(markLost(leadAt({ stage }), { reason: 'price' }, CONTEXT))).toBe(refusal);
+  });
+});
+
 describe('resurface — the 09:00 sweep returns a postponed loss with a task (M02-54)', () => {
   const postponed = leadAt({
     stage: 'proposal',

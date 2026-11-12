@@ -33,6 +33,10 @@ export const queryKeys = {
     referenceCheck: (tenantId: string, referenceKey: string) =>
       ['projects', tenantId, 'reference', referenceKey] as const,
   },
+  /** The owner dashboard (`SCR-M13-01`): its own prefix — a periodic read, asked again on its target. */
+  dashboards: {
+    owner: (tenantId: string) => ['dashboards', tenantId, 'owner'] as const,
+  },
   /** Keyed by the company, so one person's facts are never served under another company. */
   shell: {
     tenant: (tenantId: string) => ['shell', tenantId, 'tenant'] as const,
@@ -121,6 +125,8 @@ export const queryKeys = {
     /** The live number check (`M02-07`): under the prefix, so a capture asks again. */
     match: (tenantId: string, phoneE164: string) => ['crm', tenantId, 'match', phoneE164] as const,
     leads: (tenantId: string, ask: unknown) => ['crm', tenantId, 'leads', ask] as const,
+    /** My Day (`SCR-M07-01`): under the prefix, so every CRM write asks again. */
+    myDay: (tenantId: string) => ['crm', tenantId, 'my-day'] as const,
     inbox: (tenantId: string, ask: unknown) => ['crm', tenantId, 'inbox', ask] as const,
     lead: (tenantId: string, leadId: string) => ['crm', tenantId, 'lead', leadId] as const,
     leadTimeline: (tenantId: string, leadId: string, ask: unknown) =>

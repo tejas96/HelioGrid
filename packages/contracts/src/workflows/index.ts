@@ -64,6 +64,8 @@ export type {
   LeadImportStepResult,
 } from './lead-import';
 export { LEAD_IMPORT_PHASES, leadImportWorkflow } from './lead-import';
+export type { MonthlySummaryActivities } from './monthly-summary';
+export { MONTHLY_SUMMARY_SCHEDULE_ID, monthlySummaryWorkflow } from './monthly-summary';
 export type { NotificationHorizonPurgeActivities } from './notification-horizon-purge';
 export {
   NOTIFICATION_HORIZON_PURGE_SCHEDULE_ID,

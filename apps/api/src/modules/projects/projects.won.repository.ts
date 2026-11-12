@@ -4,15 +4,12 @@ import {
   type DbTransaction,
   lead,
   project,
-  projectDocument,
-  projectInstallStep,
   projectStageTransition,
   type TenantPool,
   tenant,
 } from '@heliogrid/db';
 import {
   type CalendarDate,
-  checklistForDeal,
   isPromisableInstallDate,
   isSubsidyAvailable,
   type LeadActRefusal,
@@ -28,6 +25,7 @@ import { and, count, eq, notInArray } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import type { CreationKey } from '../../common/creation-key';
 import { TENANT_DB } from '../../common/db/tenant.token';
+import { memberAct, recordAuditEntry } from '../audit/audit.public';
 import {
   type LeadReader,
   lockLeadInScope,
@@ -39,6 +37,7 @@ import { lockCounter, nextNumber } from './projects.counter.repository';
 import { noticePartsNowDue, type PaymentNoticeWords } from './projects.payment-notices.repository';
 import { allHold } from './projects.people.repository';
 import { startSchedule } from './projects.schedule.repository';
+import { seed } from './projects.seed.repository';
 
 export type MarkWonOutcome =
   | {
@@ -104,6 +103,15 @@ export class ProjectsWonRepository {
         key,
         today,
       });
+      await recordAuditEntry(
+        tx,
+        memberAct(
+          'projects.project_won',
+          reader.tenantId,
+          { kind: 'project', ref: created.id },
+          act,
+        ),
+      );
       await recordActivity(tx, {
         tenantId: reader.tenantId,
         customerId: locked.customerId,
@@ -256,38 +264,6 @@ async function activeCount(tx: DbTransaction, tenantId: string): Promise<number>
       and(eq(project.tenantId, tenantId), notInArray(project.stage, ['handed_over', 'cancelled'])),
     );
   return row?.count ?? 0;
-}
-
-/** The checklist and the install steps, seeded ONCE from the pack in force (`M08-05`). */
-async function seed(
-  tx: DbTransaction,
-  tenantId: string,
-  projectId: string,
-  pack: MarketPack,
-  segment: 'residential' | 'commercial',
-  now: Date,
-): Promise<void> {
-  const rows = checklistForDeal(pack.formats.documentChecklist, pack.subsidy, segment);
-  if (rows.length > 0) {
-    await tx.insert(projectDocument).values(
-      rows.map((row, position) => ({
-        tenantId,
-        projectId,
-        rowKey: row.row,
-        position,
-        state: 'pending' as const,
-        changedAt: now,
-      })),
-    );
-  }
-  const steps = pack.formats.installSteps;
-  if (steps.length > 0) {
-    await tx
-      .insert(projectInstallStep)
-      .values(
-        steps.map((step, position) => ({ tenantId, projectId, stepKey: step.step, position })),
-      );
-  }
 }
 
 /** How the won customer reads in a notice: their name, else their phone. */

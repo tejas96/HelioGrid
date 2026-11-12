@@ -3,6 +3,8 @@ export { EmptyShellPage } from './components/EmptyShellPage';
 export {
   DOOR_PATH,
   EARLY_PROOF_ASK,
+  LEAD_INBOX_PATH,
+  leadPath,
   projectDocumentsPath,
   projectEarlyProofPath,
   projectHandoverPath,
