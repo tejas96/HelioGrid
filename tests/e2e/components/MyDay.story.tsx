@@ -14,6 +14,7 @@ export interface MyDayStoryProps {
   readonly onCall?: (taskId: string) => void;
   readonly onDirections?: (taskId: string) => void;
   readonly onDone?: (taskId: string) => void;
+  readonly onMove?: (taskId: string) => void;
   readonly onOpen?: (taskId: string) => void;
   readonly onExpand?: (band: MyDayBand) => void;
   readonly onAnswer?: (outcome: CallOutcome) => void;
@@ -66,7 +67,7 @@ export function MyDayStory(props: MyDayStoryProps) {
         onMessage={() => undefined}
         onDirections={(item) => props.onDirections?.(id(item))}
         onDone={(item) => props.onDone?.(id(item))}
-        onMoveToTomorrow={() => undefined}
+        onMoveToTomorrow={(item) => props.onMove?.(id(item))}
         onAnswer={(outcome) => props.onAnswer?.(outcome)}
         onSkipAnswer={() => undefined}
       />

@@ -1,6 +1,5 @@
 import type { MyDay, MyDayItem } from '@heliogrid/contracts';
 import { theme } from '@heliogrid/theme';
-import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useFocusAfter } from '../../primitives/FocusAfter/use-focus-after.native';
 import { StatusMark } from '../../primitives/StatusMark/StatusMark.native';
@@ -12,8 +11,10 @@ import { CardRow, CardRows, useCardRowAsideRoom } from '../CardRows/CardRows.nat
 import { Checkbox } from '../Checkbox/Checkbox.native';
 import { IconButton } from '../IconButton/IconButton.native';
 import { useFormat } from '../MarketProvider';
-import { BAND_HEAD, leadActOf, nameOf, whenOf } from './MyDay.logic';
+import { Menu } from '../Menu/Menu.native';
+import { BAND_HEAD, whenOf } from './MyDay.logic';
 import type { MyDayBandRows, MyDayProps } from './MyDay.types';
+import { useTaskRow } from './use-task-row';
 
 type BandProps = MyDayProps & { readonly day: MyDay; readonly band: MyDayBandRows };
 
@@ -68,36 +69,33 @@ export function MyDayBand(props: BandProps) {
  */
 function TaskRow(props: BandProps & { readonly item: MyDayItem; readonly first: boolean }) {
   const { item, words, sending } = props;
-  const leaving = useFocusAfter(props.focusAfter);
-  const [ticked, setTicked] = useState(false);
-  const name = nameOf(item, words);
-  const act = leadActOf(item, props);
-  const tick = leaving(() => {
-    setTicked(true);
-    props.onDone(item);
-  });
+  const row = useTaskRow(props, item, useFocusAfter(props.focusAfter));
+  const { name, act } = row;
   return (
     <CardRow
       first={props.first}
-      busy={ticked && sending}
-      open={{ name: words.open(name), onOpen: () => props.onOpen(item) }}
+      busy={row.busy}
+      open={row.open}
       aside={
-        <IconButton
-          label={act.spokenName}
-          disabled={act.off !== null}
-          disabledReason={act.off ?? undefined}
-          onClick={act.onPress}
-        >
-          <ShellGlyph name={act.glyph} size="sm" tone="primary" />
-        </IconButton>
+        <View style={styles.acts}>
+          <IconButton
+            label={act.spokenName}
+            disabled={act.off !== null}
+            disabledReason={act.off ?? undefined}
+            onClick={act.onPress}
+          >
+            <ShellGlyph name={act.glyph} size="sm" tone="primary" />
+          </IconButton>
+          <Menu label={words.rowMenu(name)} items={row.menu} align="end" />
+        </View>
       }
     >
       <View style={styles.row}>
         <Checkbox
-          checked={ticked}
+          checked={row.ticked}
           disabled={sending}
           ariaLabel={words.doneName(name)}
-          onChange={(checked) => (checked ? tick() : undefined)}
+          onChange={(checked) => (checked ? row.tick() : undefined)}
         />
         <Avatar name={name} size={36} />
         <RowWords {...props} name={name} />
@@ -137,6 +135,7 @@ const styles = StyleSheet.create({
   },
   title: { flex: 1, minWidth: 0 },
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-2'] },
+  acts: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-1'] },
   rowWords: { flex: 1, minWidth: 0, gap: theme.spacing['sp-0-5'] },
   when: { flexDirection: 'row', paddingTop: theme.spacing['sp-0-5'] },
   more: { alignSelf: 'center' },

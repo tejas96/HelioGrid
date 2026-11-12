@@ -236,3 +236,10 @@
 .hg-my-day-row > .hg-card-row-aside {
   flex-shrink: 0;
 }
+
+/* A row's call and its menu, side by side at the row's end. */
+.hg-my-day-row-acts {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}

@@ -75,6 +75,13 @@ describe.skipIf(skip)('the owner dashboard, over HTTP against a migrated databas
       .where(eq(lead.id, made.queued));
     await loseLead(world, await aLeadOf(world, owner(), ids.manager), ids.manager, 'price');
     await loseLead(world, await aLeadOf(world, owner(), ids.rep), ids.rep, 'chose_competitor');
+    // A loss the owner took back: reopened, it is no longer lost and counts in no list (M07-65).
+    const cameBack = await aLeadOf(world, owner(), ids.owner);
+    await loseLead(world, cameBack, ids.owner, 'financing_failed');
+    const reopened = await owner().call('POST', `/leads/${cameBack}/reopen`, {
+      capturedAt: new Date().toISOString(),
+    });
+    if (reopened.status !== HttpStatus.OK) throw new Error(`reopen: ${reopened.status}`);
     made.teamDeal = await aDealSoldBy(world, owner(), ids.owner, ids.manager, '200000.00');
     made.repDeal = await aDealSoldBy(world, owner(), ids.owner, ids.rep, '300000.00');
     const cancelled = await aDealSoldBy(world, owner(), ids.owner, ids.owner, '900000.00');
@@ -131,7 +138,8 @@ describe.skipIf(skip)('the owner dashboard, over HTTP against a migrated databas
       },
     });
     expect(read.pipeline).toEqual([
-      { stage: 'new', count: 3 },
+      // The three open leads and the one reopened — back in the funnel, never lost.
+      { stage: 'new', count: 4 },
       { stage: 'contacted', count: 0 },
       { stage: 'qualified', count: 0 },
       { stage: 'survey', count: 0 },

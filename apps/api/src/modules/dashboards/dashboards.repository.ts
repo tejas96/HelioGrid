@@ -4,13 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { leadScopeWhere } from '../crm/crm.public';
 import { collectedIn, projectScopeWhere } from '../projects/projects.public';
-import {
-  lostIn,
-  pipelineOf,
-  targetOf,
-  wonIn,
-  wonValuesSince,
-} from './dashboards.figures.repository';
+import { lostIn, pipelineOf, targetOf, wonIn, wonSince } from './dashboards.figures.repository';
 import {
   blockedOnUsOf,
   myOverdueTasksOf,
@@ -36,7 +30,7 @@ export interface OwnerFacts {
   readonly collectedLastMonth: number;
   readonly wonThisMonth: { readonly count: number; readonly amountMinor: MinorUnits };
   readonly wonLastMonth: { readonly count: number; readonly amountMinor: MinorUnits };
-  readonly wonInWindow: readonly MinorUnits[];
+  readonly wonInWindow: { readonly count: number; readonly medianMinor: MinorUnits | null };
   readonly target: MinorUnits | null;
   readonly pipeline: readonly { stage: LeadStage; count: number }[];
   readonly lostInWindow: readonly { reason: LostReason; count: number }[];
@@ -68,7 +62,7 @@ export class DashboardsRepository {
         collectedLastMonth: await collectedIn(tx, tenantId, money, lastMonth),
         wonThisMonth: await wonIn(tx, tenantId, money, monthSpan(clock.month, clock.timeZone)),
         wonLastMonth: await wonIn(tx, tenantId, money, monthSpan(lastMonth, clock.timeZone)),
-        wonInWindow: await wonValuesSince(tx, tenantId, money, windowStart),
+        wonInWindow: await wonSince(tx, tenantId, money, windowStart),
         target: await targetOf(tx, tenantId, firstDayOf(clock.month)),
         pipeline: await pipelineOf(tx, tenantId, leads),
         lostInWindow: await lostIn(tx, tenantId, leads, { from: windowStart }),

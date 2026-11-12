@@ -40,15 +40,24 @@ export async function wonIn(
   return { count: row?.count ?? 0, amountMinor: minorUnits(Number(row?.amount ?? 0)) };
 }
 
-/** The final value of each deal won since `from` and not cancelled — the median's input (`M13-18`). */
-export async function wonValuesSince(
+/**
+ * The deals won since `from` and not cancelled: how many, and the LOW median of their final values
+ * (`M13-18`) — `percentile_disc(0.5)` picks the lower middle of an even count, so no amount is
+ * split or rounded. One row comes back however many deals the window holds.
+ */
+export async function wonSince(
   tx: DbTransaction,
   tenantId: string,
   scope: SQL | undefined,
   from: Date,
-): Promise<MinorUnits[]> {
-  const rows = await tx
-    .select({ value: project.finalValueMinor })
+): Promise<{ count: number; medianMinor: MinorUnits | null }> {
+  const [row] = await tx
+    .select({
+      count: count(),
+      median: sql<
+        string | null
+      >`percentile_disc(0.5) within group (order by ${project.finalValueMinor})`,
+    })
     .from(project)
     .where(
       and(
@@ -58,10 +67,18 @@ export async function wonValuesSince(
         scope,
       ),
     );
-  return rows.map((row) => minorUnits(row.value));
+  const median = row?.median ?? null;
+  return {
+    count: row?.count ?? 0,
+    medianMinor: median === null ? null : minorUnits(Number(median)),
+  };
 }
 
-/** Leads closed lost in `[from, to)`, counted by reason in the vocabulary's order, zeros left out. */
+/**
+ * Leads closed lost in `[from, to)` and lost still, counted by reason in the vocabulary's order,
+ * zeros left out. The close stays on the record through a reopen (`M02-56`), so `closed_as` alone
+ * would count a lead that came back — or came back and was won — as lost too (`M07-65`).
+ */
 export async function lostIn(
   tx: DbTransaction,
   tenantId: string,
@@ -75,6 +92,7 @@ export async function lostIn(
       and(
         eq(lead.tenantId, tenantId),
         eq(lead.closedAs, 'lost'),
+        eq(lead.lifecycleState, 'lost'),
         gte(lead.closedAt, span.from),
         span.to === undefined ? undefined : lt(lead.closedAt, span.to),
         scope,

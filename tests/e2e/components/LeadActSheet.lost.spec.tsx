@@ -1,4 +1,4 @@
-import { createTranslator, leadDetailSheetWords } from '@heliogrid/i18n';
+import { createTranslator, leadDetailSheetWords, provenanceWords } from '@heliogrid/i18n';
 import { expect, test } from '@playwright/experimental-ct-react';
 import type { Page } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
@@ -9,6 +9,7 @@ import { expectTouchFloor } from '../support/touch-target';
 import { LeadLostSheet } from './LeadActSheet.lost.story';
 
 const en = await createTranslator('en');
+const provenance = provenanceWords(en.t);
 const words = leadDetailSheetWords(en.t, 'copy').forms.lost;
 
 test.use({ viewport: { width: 375, height: 812 } });
@@ -27,6 +28,8 @@ test('the sheet names the lead and its bill, and the send sleeps until a reason 
 
   await expect(sheet.getByText('Kavita Joshi', { exact: true })).toBeVisible();
   await expect(sheet.getByText(words.bill('₹3,100'))).toBeVisible();
+  // A money figure carries its tier where it is read (CLAUDE.md §9).
+  await expect(sheet.getByText(provenance.tier('measured'))).toBeVisible();
   const reasons = Object.values(words.reason);
   for (const reason of reasons) await expect(reasonOf(page, reason)).toBeVisible();
   await expect(sheet.getByRole('button', { name: words.send(null) })).toBeDisabled();

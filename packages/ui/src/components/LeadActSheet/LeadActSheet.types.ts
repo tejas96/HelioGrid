@@ -1,4 +1,4 @@
-import type { TranslatedText } from '@heliogrid/contracts';
+import type { ProvenanceTier as ProvenanceTierName, TranslatedText } from '@heliogrid/contracts';
 import type {
   CallOutcome,
   DisqualifyReason,
@@ -109,8 +109,8 @@ export type LeadActForm =
       readonly lead: {
         /** The lead's own name, as written; null where a capture left it unnamed. */
         readonly name: string | null;
-        /** The monthly bill's amount as the wire carries it, in the tenant's currency. */
-        readonly bill: { readonly amount: string } | null;
+        /** The monthly bill as the wire carries it, in the tenant's currency, with its tier (§9). */
+        readonly bill: { readonly amount: string; readonly tier: ProvenanceTierName } | null;
       };
       /** The days a postponed loss can come back on, from the tenant's today (`M02-54`). */
       readonly postpone: LeadPostponeDays;

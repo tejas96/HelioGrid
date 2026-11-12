@@ -1,6 +1,6 @@
 import type { LostReason } from '@heliogrid/domain';
-import { createTranslator, leadDetailSheetWords } from '@heliogrid/i18n';
-import { LeadActSheet } from '@heliogrid/ui';
+import { createTranslator, leadDetailSheetWords, provenanceWords } from '@heliogrid/i18n';
+import { LeadActSheet, ProvenanceWordsProvider } from '@heliogrid/ui';
 import { useState } from 'react';
 import { LOST_FIRST_DAY, LOST_POSTPONE } from '../support/lead-lost';
 
@@ -23,23 +23,25 @@ export function LeadLostSheet({
   const send = (loss: { reason: LostReason; resurfaceOn: string | null }) =>
     setSent(`${loss.reason}:${loss.resurfaceOn ?? 'none'}`);
   return (
-    <div data-sent={sent}>
-      <LeadActSheet
-        form={{
-          kind: 'lost',
-          lead: { name, bill: bill === null ? null : { amount: bill } },
-          postpone: LOST_POSTPONE,
-          firstDay: LOST_FIRST_DAY,
-          comesBackAt: '09:00',
-          words: words.forms.lost,
-          onSend: send,
-        }}
-        onClose={() => undefined}
-        pending={false}
-        failure={null}
-        closeLabel={words.close}
-        fields={words.fields}
-      />
-    </div>
+    <ProvenanceWordsProvider value={provenanceWords(en.t)}>
+      <div data-sent={sent}>
+        <LeadActSheet
+          form={{
+            kind: 'lost',
+            lead: { name, bill: bill === null ? null : { amount: bill, tier: 'measured' } },
+            postpone: LOST_POSTPONE,
+            firstDay: LOST_FIRST_DAY,
+            comesBackAt: '09:00',
+            words: words.forms.lost,
+            onSend: send,
+          }}
+          onClose={() => undefined}
+          pending={false}
+          failure={null}
+          closeLabel={words.close}
+          fields={words.fields}
+        />
+      </div>
+    </ProvenanceWordsProvider>
   );
 }

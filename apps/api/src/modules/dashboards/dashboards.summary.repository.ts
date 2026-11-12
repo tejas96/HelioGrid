@@ -10,7 +10,7 @@ import {
   type TenantQuietHours,
 } from '../notification/notification.public';
 import { collectedIn } from '../projects/projects.public';
-import { lostIn, wonIn, wonValuesSince } from './dashboards.figures.repository';
+import { lostIn, wonIn, wonSince } from './dashboards.figures.repository';
 import {
   firstDayOf,
   type Month,
@@ -76,14 +76,14 @@ export class DashboardsSummaryRepository {
       const windowStart = windowStartOf(now, company.timeZone);
       const lostThen = await lostIn(tx, tenantId, EVERY_LEAD, span);
       const lostInWindow = await lostIn(tx, tenantId, EVERY_LEAD, { from: windowStart });
-      const wonInWindow = await wonValuesSince(tx, tenantId, undefined, windowStart);
+      const wonInWindow = await wonSince(tx, tenantId, undefined, windowStart);
       const figures: MonthFigures = {
         month,
         timeZone: company.timeZone,
         collectedMinor: await collectedIn(tx, tenantId, undefined, month),
         won: await wonIn(tx, tenantId, undefined, span),
         lostCount: totalOf(lostThen),
-        winRate: winRateOf(wonInWindow.length, totalOf(lostInWindow)),
+        winRate: winRateOf(wonInWindow.count, totalOf(lostInWindow)),
       };
       // The figures are the whole company's, so a team-scoped reader of reports is not told them.
       const recipients = await recipientsFor(

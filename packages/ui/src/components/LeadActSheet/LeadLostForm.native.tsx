@@ -13,6 +13,7 @@ import { DatePicker } from '../DatePicker/DatePicker.native';
 import type { ISODate } from '../DatePicker/DatePicker.types';
 import { HueTile } from '../HueTile/HueTile.native';
 import { useFormat } from '../MarketProvider';
+import { ProvenanceTier } from '../Provenance/Provenance.native';
 import { LeadActSend, type LeadFormFrame } from './LeadActSend.native';
 import { LOST_REASON_LOOK, lostReady, POSTPONE_SPANS, resurfaceOnOf } from './LeadActSheet.lost';
 import type { LeadPostponeSpan } from './LeadActSheet.parts.types';
@@ -95,10 +96,13 @@ function LostHead({ form }: { form: LostForm }) {
         <Text variant="body" bold>
           {lead.name ?? words.noName}
         </Text>
-        {bill === null ? null : (
-          <Text variant="body-sm" color="secondary">
-            {words.bill(bill)}
-          </Text>
+        {bill === null || lead.bill === null ? null : (
+          <View style={styles.bill}>
+            <Text variant="body-sm" color="secondary">
+              {words.bill(bill)}
+            </Text>
+            <ProvenanceTier tier={lead.bill.tier} />
+          </View>
         )}
       </View>
     </View>
@@ -180,6 +184,12 @@ const styles = StyleSheet.create({
   group: { gap: theme.spacing['sp-2'] },
   head: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing['sp-3'] },
   who: { flex: 1, minWidth: 0 },
+  bill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing['sp-1'],
+    flexWrap: 'wrap',
+  },
   reasons: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing['sp-2'] },
   reason: {
     minHeight: 58,

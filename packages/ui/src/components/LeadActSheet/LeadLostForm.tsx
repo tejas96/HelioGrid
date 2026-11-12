@@ -7,6 +7,7 @@ import { DatePicker } from '../DatePicker';
 import type { ISODate } from '../DatePicker/DatePicker.types';
 import { HueTile } from '../HueTile';
 import { useFormat } from '../MarketProvider';
+import { ProvenanceTier } from '../Provenance';
 import type { FormFrame } from './LeadActForms';
 import { ActSend, ChoiceChips, dayOf } from './LeadActParts';
 import { LOST_REASON_LOOK, lostReady, POSTPONE_SPANS, resurfaceOnOf } from './LeadActSheet.lost';
@@ -86,7 +87,11 @@ function LostHead({ form }: { form: LostForm }) {
       <Avatar name={lead.name ?? undefined} size={40} />
       <div className="hg-lead-lost-who">
         <span className="hg-lead-lost-name">{lead.name ?? words.noName}</span>
-        {bill === null ? null : <span className="hg-lead-act-note">{words.bill(bill)}</span>}
+        {bill === null || lead.bill === null ? null : (
+          <span className="hg-lead-act-note">
+            {words.bill(bill)} <ProvenanceTier tier={lead.bill.tier} />
+          </span>
+        )}
       </div>
     </div>
   );

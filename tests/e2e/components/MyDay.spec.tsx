@@ -147,3 +147,27 @@ test.describe('at 1280', () => {
     await expectNoSeriousViolations(page);
   });
 });
+
+test('a tick the server refused is undone, so the row can be ticked again', async ({ mount }) => {
+  const day = await mount(<MyDayStory state="day" />);
+  const overdue = day.getByRole('region', { name: words.band('overdue') });
+  const tick = overdue.getByRole('checkbox', { name: words.doneName(name(ASHA)) });
+
+  await tick.check();
+  await expect(tick).toBeChecked();
+  await day.update(<MyDayStory state="day" failed />);
+  await expect(tick).not.toBeChecked();
+  await expect(tick).toBeEnabled();
+});
+
+test("each row's menu moves its task to tomorrow (gap 12)", async ({ mount, page }) => {
+  const moved: string[] = [];
+  const day = await mount(<MyDayStory state="day" onMove={(taskId) => moved.push(taskId)} />);
+  const overdue = day.getByRole('region', { name: words.band('overdue') });
+
+  await overdue.getByRole('button', { name: words.rowMenu(name(ASHA)) }).click();
+  // A real click, no force: the open menu must stand above the next row's open target.
+  await page.getByRole('menuitem', { name: words.moveToTomorrow }).click();
+
+  await expect.poll(() => moved).toEqual([itemOf(ASHA).task.id]);
+});

@@ -3,6 +3,7 @@ import { daysLateOf, type MyDayBand } from '@heliogrid/domain';
 import type { StatusTone } from '../../primitives/StatusMark/StatusMark.types';
 import type { MarketFormat } from '../../utils/format';
 import type { ShellGlyphName } from '../AppShell/ShellGlyph.shapes';
+import type { MenuItem } from '../Menu/Menu.types';
 import type { MyDayBandRows, MyDayProps, MyDayWords } from './MyDay.types';
 
 /** The name a task's lead goes by: its own, or "No name yet". */
@@ -100,4 +101,17 @@ export function isClear(props: Pick<MyDayProps, 'next' | 'asking' | 'bands'>): b
   return (
     props.next === null && props.asking === null && props.bands.every((band) => band.count === 0)
   );
+}
+
+/** A row's other acts behind its menu (gap 12): move it to tomorrow, or open the lead to message. */
+export function rowMenuItemsOf(item: MyDayItem, props: MyDayProps): MenuItem[] {
+  return [
+    {
+      key: 'move',
+      label: props.words.moveToTomorrow,
+      disabled: props.sending,
+      onSelect: () => props.onMoveToTomorrow(item),
+    },
+    { key: 'message', label: props.words.message, onSelect: () => props.onMessage(item) },
+  ];
 }

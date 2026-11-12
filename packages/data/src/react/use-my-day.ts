@@ -9,7 +9,7 @@ import {
   showsMyDay,
 } from '@heliogrid/domain';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { queryKeys } from '../cache/keys';
 import { useAction } from './action';
 import { useRepositories } from './context';
@@ -80,6 +80,14 @@ export function useMyDay(): MyDayScreen {
   const shown = showsMyDay(useShell().home);
   const [open, setOpen] = useState<ReadonlySet<MyDayBand>>(new Set());
   const [asking, setAsking] = useState<MyDayItem | null>(null);
+  /*
+   * The call's answer, once logged, is the lead's record: a retry after the task's tick failed sends
+   * only the tick. The moment is held from the first press, so a retried send of the log keeps its
+   * retry key — two presses never log two calls.
+   */
+  const logged = useRef<{ readonly taskId: string; readonly at: string; done: boolean } | null>(
+    null,
+  );
   const [lastAct, setLastAct] = useState<MyDayAct | null>(null);
   const query = useQuery({
     queryKey: queryKeys.crm.myDay(tenantId),
@@ -117,11 +125,19 @@ export function useMyDay(): MyDayScreen {
   );
   const call = useAction(
     async ({ item, outcome }: { readonly item: MyDayItem; readonly outcome: CallOutcome }) => {
-      await repositories.leadCalls.logCall(item.lead.id, { outcome, capturedAt: capturedAt() });
-      return repositories.tasks.done(item.task.id, { capturedAt: capturedAt() });
+      if (logged.current?.taskId !== item.task.id) {
+        logged.current = { taskId: item.task.id, at: capturedAt(), done: false };
+      }
+      const answer = logged.current;
+      if (!answer.done) {
+        await repositories.leadCalls.logCall(item.lead.id, { outcome, capturedAt: answer.at });
+        answer.done = true;
+      }
+      return repositories.tasks.done(item.task.id, { capturedAt: answer.at });
     },
     {
       onDone: () => {
+        logged.current = null;
         setAsking(null);
         void refresh();
       },
@@ -158,7 +174,10 @@ export function useMyDay(): MyDayScreen {
       send({ kind: 'moved', item, to });
     },
     asking,
-    called: (item) => setAsking(item),
+    called: (item) => {
+      logged.current = null;
+      setAsking(item);
+    },
     answer: (outcome) => {
       if (asking === null || act.isOut() || call.isOut()) return;
       void call.run({ item: asking, outcome });

@@ -10,7 +10,7 @@ import {
   minorUnits,
   WIN_RATE_WINDOW_DAYS,
 } from '@heliogrid/domain';
-import { lowMedianOf, minorUnitsToDecimal } from '@heliogrid/domain/server';
+import { minorUnitsToDecimal } from '@heliogrid/domain/server';
 import { ForbiddenException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import type { Act } from '../../common/auth/session-context';
 import { ContractException } from '../../common/errors/contract-exception';
@@ -62,7 +62,7 @@ export class DashboardsService {
       count: period.count,
       amount: decimal(period.amountMinor),
     });
-    const median = lowMedianOf(facts.wonInWindow);
+    const { medianMinor: median, count: wonInWindow } = facts.wonInWindow;
     const oldestLate = due.rows.items[0];
     const { oldest: blocked } = facts.blockedOnUs;
     return {
@@ -112,14 +112,14 @@ export class DashboardsService {
       won: {
         thisMonth: won(facts.wonThisMonth),
         lastMonth: won(facts.wonLastMonth),
-        median: median === null ? null : { amount: decimal(median), of: facts.wonInWindow.length },
+        median: median === null ? null : { amount: decimal(median), of: wonInWindow },
       },
       target: facts.target === null ? null : { amount: decimal(facts.target) },
       canSetTarget: reader.companyWide,
       pipeline: [...facts.pipeline],
       winLoss: {
         windowDays: WIN_RATE_WINDOW_DAYS,
-        won: facts.wonInWindow.length,
+        won: wonInWindow,
         lost: facts.lostInWindow.reduce((sum, one) => sum + one.count, 0),
         lostReasons: [...facts.lostInWindow],
       },

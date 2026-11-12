@@ -18,7 +18,6 @@ export { resolveCatalogItem } from './catalog/resolve';
 export { addOnVerdict, overageAddOns } from './commerce/overage-amounts';
 export { PREVIEW_CONTRACT_VALUE, previewTrancheAmounts } from './commerce/tranche-preview';
 export { judgeLeadImportRows, readLeadImportRow } from './crm/lead-import-rows';
-export { lowMedianOf } from './dashboards/median';
 export { applyRate } from './money/basis-points';
 export { reconcileMinorUnits, resolvePayable } from './money/equation';
 export {

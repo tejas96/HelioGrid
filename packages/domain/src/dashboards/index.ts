@@ -1,6 +1,6 @@
 /**
- * The owner dashboard's rules (`M13`): read-only figures, honest at small numbers. A function that
- * works out a money figure is on `./server` (`median.ts`), never here.
+ * The owner dashboard's rules (`M13`): read-only figures, honest at small numbers. The median is the
+ * database's (`percentile_disc`), so no money figure is worked out here.
  */
 
 export { COMPANY_REPORTS, readsCompanyWide } from './company-wide';

@@ -1,5 +1,4 @@
 import type { MyDay, MyDayItem } from '@heliogrid/contracts';
-import { useState } from 'react';
 import { useFocusAfter } from '../../primitives/FocusAfter';
 import { StatusMark } from '../../primitives/StatusMark';
 import { ShellGlyph } from '../AppShell/ShellGlyph';
@@ -9,8 +8,10 @@ import { CardRow, CardRows } from '../CardRows';
 import { Checkbox } from '../Checkbox';
 import { IconButton } from '../IconButton';
 import { useFormat } from '../MarketProvider';
-import { BAND_HEAD, leadActOf, nameOf, whenOf } from './MyDay.logic';
+import { Menu } from '../Menu';
+import { BAND_HEAD, whenOf } from './MyDay.logic';
 import type { MyDayBandRows, MyDayProps } from './MyDay.types';
+import { useTaskRow } from './use-task-row';
 
 type BandProps = MyDayProps & { readonly day: MyDay; readonly band: MyDayBandRows };
 
@@ -55,38 +56,35 @@ export function MyDayBand(props: BandProps) {
 function TaskRow(props: BandProps & { readonly item: MyDayItem; readonly first: boolean }) {
   const { item, words, day, sending } = props;
   const format = useFormat();
-  const leaving = useFocusAfter(props.focusAfter);
-  const [ticked, setTicked] = useState(false);
-  const name = nameOf(item, words);
+  const row = useTaskRow(props, item, useFocusAfter(props.focusAfter));
+  const { name, act } = row;
   const when = whenOf(item, day, words, format);
-  const act = leadActOf(item, props);
-  const tick = leaving(() => {
-    setTicked(true);
-    props.onDone(item);
-  });
   return (
     <CardRow
       first={props.first}
       className="hg-my-day-row"
-      busy={ticked && sending}
-      open={{ name: words.open(name), onOpen: () => props.onOpen(item) }}
+      busy={row.busy}
+      open={row.open}
       aside={
-        <IconButton
-          label={act.spokenName}
-          disabled={act.off !== null}
-          disabledReason={act.off ?? undefined}
-          onClick={act.onPress}
-        >
-          <ShellGlyph name={act.glyph} size="sm" tone="primary" />
-        </IconButton>
+        <span className="hg-my-day-row-acts">
+          <IconButton
+            label={act.spokenName}
+            disabled={act.off !== null}
+            disabledReason={act.off ?? undefined}
+            onClick={act.onPress}
+          >
+            <ShellGlyph name={act.glyph} size="sm" tone="primary" />
+          </IconButton>
+          <Menu label={words.rowMenu(name)} items={row.menu} align="end" />
+        </span>
       }
     >
       <Checkbox
         className="hg-my-day-check"
-        checked={ticked}
+        checked={row.ticked}
         disabled={sending}
         ariaLabel={words.doneName(name)}
-        onChange={(checked) => (checked ? tick() : undefined)}
+        onChange={(checked) => (checked ? row.tick() : undefined)}
       />
       <Avatar name={name} size={36} />
       <span className="hg-my-day-row-words">

@@ -3,6 +3,7 @@ import {
   firstRunMarkWords,
   homeTitle,
   NOTIFICATION_CENTRE,
+  ownerDashboardWords,
   QUICK_ADD,
   SHELL,
   todayLine,
@@ -16,6 +17,7 @@ import { freshMobile } from '../support/phone';
 import { passTheOwnersMark } from '../support/shell';
 
 const en = await createTranslator('en');
+const dashboard = ownerDashboardWords(en.t);
 const ownerHome = homeTitle(en.t, 'epc_owner');
 const addLead = verbLabel(en.t, 'add_lead');
 const verbMark = firstRunMarkWords(en.t, 'centre-action', 'epc_owner', 'add_lead');
@@ -79,8 +81,9 @@ test('a new owner lands on their home inside the shell, with one mark on the ver
   await expect(page.getByText(verbMark?.body ?? '')).toBeHidden();
   await page.reload();
   // The home teaches only once the company and the passed marks are read, so the mark's absence
-  // is checked against the server's count, never against a page still loading.
-  await expect(page.getByText(en.t(SHELL.nothingAssigned)).first()).toBeVisible();
+  // is checked against the server's count, never against a page still loading. A new company has
+  // nothing waiting, so the owner dashboard's hero says so calmly (M13-12).
+  await expect(page.getByText(dashboard.allClearTitle)).toBeVisible();
   await expect(page.getByText(verbMark?.body ?? '')).toBeHidden();
 });
 
@@ -114,15 +117,21 @@ test('the account menu holds the grievance contact and sign-out', async ({ page 
   await expect(page).toHaveURL(/\/login$/);
 });
 
-test("the home's blocks say when its work could not be read", async ({ page }) => {
+test('the owner home says when its work could not be read, and Try again recovers it', async ({
+  page,
+}) => {
   await createCompany(page, en, freshMobile());
-  await page.route('**/tenants/me', (route) => route.abort());
-  await page.route('**/tenants/me/membership', (route) => route.abort());
+  await passTheOwnersMark(page, en);
+  await page.waitForLoadState('networkidle');
+  await page.route('**/dashboards/owner', (route) => route.abort());
 
   await page.reload();
 
-  await expect(page.getByText(en.t(SHELL.couldNotLoad)).first()).toBeVisible();
+  await expect(page.getByText(dashboard.failedTitle)).toBeVisible();
   await expect(page.getByRole('navigation', { name: en.t(SHELL.mainNavigation) })).toBeVisible();
+  await page.unroute('**/dashboards/owner');
+  await page.getByRole('button', { name: dashboard.retry }).click();
+  await expect(page.getByText(dashboard.allClearTitle)).toBeVisible();
 });
 
 test('the bell opens the notification centre beside the home, and Escape hands focus back', async ({

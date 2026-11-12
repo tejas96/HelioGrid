@@ -151,3 +151,21 @@ describe('My Day — acts', () => {
     expect(writesTo('/calls')).toEqual([]);
   });
 });
+
+describe('My Day — a call answer retried after its tick failed', () => {
+  it('logs the call once, and the retry sends only the tick', async () => {
+    const view = mountedOver(() => useMyDay());
+    await waitFor(() => expect(view.result.current.next).not.toBeNull());
+    const item = view.result.current.next;
+    if (item === null) throw new Error('no next');
+    act(() => view.result.current.called(item));
+    answerNext('done', { status: 500, body: { error: { code: 'INTERNAL', message: 'down' } } });
+    act(() => view.result.current.answer('answered'));
+    await waitFor(() => expect(view.result.current.failed).toBe(true));
+    expect(view.result.current.asking?.task.id).toBe(item.task.id);
+    act(() => view.result.current.answer('answered'));
+    await waitFor(() => expect(view.result.current.asking).toBeNull());
+    expect(writesTo(`/leads/${item.lead.id}/calls`)).toHaveLength(1);
+    expect(writesTo(`/tasks/${item.task.id}/done`)).toHaveLength(2);
+  });
+});

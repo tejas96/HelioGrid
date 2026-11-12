@@ -29,6 +29,8 @@ export interface MyDayWords {
   readonly done: TranslatedText;
   readonly doneName: (name: string) => TranslatedText;
   readonly moveToTomorrow: TranslatedText;
+  /** A row's menu of its other acts — move it, message the lead. */
+  readonly rowMenu: (name: string) => TranslatedText;
   readonly open: (name: string) => TranslatedText;
   readonly unnamed: TranslatedText;
   readonly howDidItGo: (name: string) => TranslatedText;
