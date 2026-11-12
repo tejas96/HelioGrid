@@ -30,6 +30,7 @@ export * from './market';
 export * from './messaging';
 export * from './money';
 export * from './notifications';
+export * from './payments';
 export * from './pricing';
 export * from './projects';
 export * from './rails';

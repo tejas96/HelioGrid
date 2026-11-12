@@ -31,6 +31,7 @@ import { notificationContract } from './notification';
 import { onboardingContract } from './onboarding';
 import { priceBookContract } from './price-book';
 import { pricingContract } from './pricing';
+import { paymentsContract } from './projects/payments';
 import { projectActsContract } from './projects/project-acts';
 import { projectsContract } from './projects/projects';
 import { searchContract } from './search';
@@ -57,6 +58,8 @@ export * from './catalog-import-rows';
 export * from './catalog-releases';
 // The too-old phone (`T-FPLAT-033`): the version header and the 426 every route may answer.
 export * from './client-version';
+// How customers pay the company (`SCR-M11-04`): spread into the tenant settings router.
+export * from './collections-settings';
 export * from './common';
 // The CRM (`T-M02-001` … `016`): capture and dedupe, the inbox and list, assignment, lead detail and
 // its acts, the timeline, contacts, visits, messages, tasks, the lead import and customer merge.
@@ -106,6 +109,8 @@ export * from './ports/session';
 // The price book: versioned non-catalog rates (`T-M01-031`).
 export * from './price-book';
 export * from './pricing';
+export * from './projects/money';
+export * from './projects/payments';
 export * from './projects/project-acts';
 export * from './projects/projects';
 export * from './projects/schemas';
@@ -184,6 +189,7 @@ const crmRouters = c.router(
 /** The delivery after Won (`M08`): the projects' reads and acts, and *Mark won* that starts one. */
 const deliveryRouters = c.router(
   {
+    payments: paymentsContract,
     projectActs: projectActsContract,
     projects: projectsContract,
   },

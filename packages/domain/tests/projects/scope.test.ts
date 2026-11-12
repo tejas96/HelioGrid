@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import type { RolePreset } from '../../src/authz/roles';
 import { crewJobRank } from '../../src/projects/people';
-import { projectScopeOf, seesOnlyTheJob } from '../../src/projects/scope';
+import {
+  moneyScopeOf,
+  type ProjectScope,
+  projectScopeOf,
+  seesOnlyTheJob,
+} from '../../src/projects/scope';
 
 describe('projectScopeOf — which projects a person sees, from their presets alone (F2-14, F2-15)', () => {
   it.each([
@@ -53,5 +58,18 @@ describe('crewJobRank — the order an installer’s jobs come in', () => {
     ['dispatched', 'won'],
   ])('a job at %s comes before one at %s', (sooner, later) => {
     expect(crewJobRank(sooner)).toBeLessThan(crewJobRank(later));
+  });
+});
+
+describe('moneyScopeOf — no commercial figure reaches the crew (M11-56)', () => {
+  it.each([
+    ['everyone', { kind: 'all' }, { kind: 'all' }],
+    ['a manager who is also crew', ['managed_by_me', 'crew_on'], ['managed_by_me']],
+    ['the crew alone', ['crew_on'], []],
+    ['the seller', ['sold_by_me'], ['sold_by_me']],
+  ] as const)('%s', (_, from, to) => {
+    const scope = (reaches: unknown) =>
+      Array.isArray(reaches) ? { kind: 'reaches' as const, reaches } : reaches;
+    expect(moneyScopeOf(scope(from) as ProjectScope)).toEqual(scope(to));
   });
 });

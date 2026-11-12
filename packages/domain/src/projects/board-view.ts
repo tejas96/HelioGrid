@@ -169,6 +169,7 @@ function needsOf(cards: readonly BoardCard[], canAct: boolean, today: CalendarDa
       earlyProof: card.todo === 'proof_early',
       missingProof: card.todo === 'proof_missing',
       installDatePassed: card.todo === 'install_date_passed',
+      moneyDue: card.todo === 'money_due',
       wait:
         card.wait !== null && isParty(card.wait.party)
           ? {

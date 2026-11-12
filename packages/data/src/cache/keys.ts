@@ -23,6 +23,11 @@ export const queryKeys = {
     people: (tenantId: string, role: 'manager' | 'crew') =>
       ['projects', tenantId, 'people', role] as const,
     jobs: (tenantId: string) => ['projects', tenantId, 'jobs'] as const,
+    /** A project's money (`SCR-M11-02`): under the projects, so a project's change refreshes it. */
+    payments: (tenantId: string, projectId: string) =>
+      ['projects', tenantId, 'payments', projectId] as const,
+    moneyDue: (tenantId: string, limit: number) =>
+      ['projects', tenantId, 'money-due', limit] as const,
   },
   /** Keyed by the company, so one person's facts are never served under another company. */
   shell: {
@@ -50,6 +55,7 @@ export const queryKeys = {
     proposalTemplates: (tenantId: string) => ['settings', tenantId, 'proposal-template'] as const,
     timelineTemplates: (tenantId: string) => ['settings', tenantId, 'timeline-template'] as const,
     trancheTemplates: (tenantId: string) => ['settings', tenantId, 'tranche-templates'] as const,
+    collections: (tenantId: string) => ['settings', tenantId, 'collections'] as const,
     /** One schedule per split: the key is the shares, so only the answer for the lines shown is drawn. */
     trancheSchedule: (tenantId: string, shares: readonly string[]) =>
       ['settings', tenantId, 'tranche-schedule', shares.join('/')] as const,

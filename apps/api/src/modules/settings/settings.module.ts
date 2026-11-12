@@ -4,6 +4,8 @@ import { MarketModule } from '../market/market.public';
 import { SettingsAdminRepository } from './settings.admin.repository';
 import { SettingsBrandingRepository } from './settings.branding.repository';
 import { SettingsBrandingService } from './settings.branding.service';
+import { SettingsCollectionsRepository } from './settings.collections.repository';
+import { SettingsCollectionsService } from './settings.collections.service';
 import { SettingsController } from './settings.controller';
 import { SettingsOnboardingController } from './settings.onboarding.controller';
 import { SettingsOnboardingRepository } from './settings.onboarding.repository';
@@ -29,15 +31,17 @@ import { SettingsTranchesRepository } from './settings.tranches.repository';
     SettingsService,
     SettingsTemplatesService,
     SettingsBrandingService,
+    SettingsCollectionsService,
     SettingsOnboardingService,
     SettingsRepository,
     SettingsBrandingRepository,
+    SettingsCollectionsRepository,
     SettingsTemplatesRepository,
     SettingsTranchesRepository,
     SettingsOnboardingRepository,
     SettingsAdminRepository,
     QuietHoursRepository,
   ],
-  exports: [SettingsService],
+  exports: [SettingsService, SettingsCollectionsService],
 })
 export class SettingsModule {}

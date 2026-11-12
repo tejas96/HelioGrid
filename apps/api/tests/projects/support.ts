@@ -8,8 +8,11 @@ import {
   projectDocument,
   projectFile,
   projectInstallStep,
+  projectPayment,
   projectStageTransition,
+  projectTranche,
   tenantCounter,
+  trancheRequestShare,
 } from '@heliogrid/db';
 import { checklistForDeal, IN_PACK, type ProjectStage } from '@heliogrid/domain';
 import { HttpStatus } from '@nestjs/common';
@@ -55,6 +58,9 @@ export async function openProjectsWorld(staffed: readonly Staffed<Team>[]): Prom
 async function removeProjectsOf(world: CrmWorld, companies: readonly string[]): Promise<void> {
   const db = world.pools.admin.db;
   for (const table of [
+    trancheRequestShare,
+    projectPayment,
+    projectTranche,
     projectFile,
     projectCrewMember,
     projectInstallStep,

@@ -20,6 +20,7 @@ import type { ProjectReader } from './internal/reader';
 import type { ActContext, ProjectStep } from './projects.act-kit.repository';
 import { ProjectsActsRepository } from './projects.acts.repository';
 import type { MoveNotice } from './projects.moves.repository';
+import { ProjectsPaymentWordsService } from './projects.payment-words.service';
 
 export type { ProjectStep } from './projects.act-kit.repository';
 
@@ -37,6 +38,7 @@ export class ProjectsActsService {
     @Inject(SettingsService) private readonly settings: SettingsService,
     @Inject(NotificationPushService) private readonly push: NotificationPushService,
     @Inject(OutboxDispatcher) private readonly dispatcher: OutboxDispatcher,
+    @Inject(ProjectsPaymentWordsService) private readonly paymentWords: ProjectsPaymentWordsService,
   ) {}
 
   /**
@@ -102,6 +104,7 @@ export class ProjectsActsService {
           });
         }),
       quietHours: await this.settings.quietHoursOf(tenantId),
+      payments: await this.paymentWords.wordsOf(tenantId),
     };
   }
 }

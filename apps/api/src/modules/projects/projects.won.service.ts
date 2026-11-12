@@ -13,7 +13,9 @@ import { ContractException, refusalWithFacts } from '../../common/errors/contrac
 import { EntitlementBlockedException } from '../../common/errors/entitlement-blocked';
 import { EntitlementService } from '../billing/billing.public';
 import type { LeadReader } from '../crm/crm.public';
+import { NotificationPushService } from '../notification/notification.public';
 import { SettingsService } from '../settings/settings.public';
+import { ProjectsPaymentWordsService } from './projects.payment-words.service';
 import { ProjectsWonRepository } from './projects.won.repository';
 
 /**
@@ -29,6 +31,8 @@ export class ProjectsWonService {
     @Inject(SettingsService) private readonly settings: SettingsService,
     @Inject(EntitlementService) private readonly entitlements: EntitlementService,
     @Inject(CreationReplies) private readonly replies: CreationReplies,
+    @Inject(ProjectsPaymentWordsService) private readonly paymentWords: ProjectsPaymentWordsService,
+    @Inject(NotificationPushService) private readonly push: NotificationPushService,
   ) {}
 
   async markWon(
@@ -54,7 +58,15 @@ export class ProjectsWonService {
       typeof limit === 'number' ? limit : null,
       act,
       key,
+      await this.paymentWords.wordsOf(reader.tenantId),
     );
+    if (outcome.outcome === 'done') {
+      await this.push.deliverAfterCommit(
+        reader.tenantId,
+        outcome.notified ?? [],
+        new Date(act.now),
+      );
+    }
     switch (outcome.outcome) {
       case 'done':
       case 'replayed':

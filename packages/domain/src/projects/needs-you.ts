@@ -9,7 +9,12 @@ import { BLOCKER_PARTIES, type BlockerParty, type BlockerReason } from './vocabu
  */
 
 /** Why a project is on a person's list, in the order the list shows them. */
-export const TODO_KINDS = ['proof_early', 'proof_missing', 'install_date_passed'] as const;
+export const TODO_KINDS = [
+  'proof_early',
+  'proof_missing',
+  'install_date_passed',
+  'money_due',
+] as const;
 export type TodoKind = (typeof TODO_KINDS)[number];
 
 /** A project's facts as the list reads them. */
@@ -20,6 +25,8 @@ export interface NeedsYouFacts {
   readonly earlyProof: boolean;
   readonly missingProof: boolean;
   readonly installDatePassed: boolean;
+  /** A part of the price is due and not fully paid (`M11-53`). */
+  readonly moneyDue: boolean;
   readonly wait: {
     readonly party: BlockerParty;
     readonly reason: BlockerReason;
@@ -32,6 +39,7 @@ export function todoOf(facts: NeedsYouFacts): TodoKind | null {
   if (facts.earlyProof) return 'proof_early';
   if (facts.missingProof) return 'proof_missing';
   if (facts.installDatePassed) return 'install_date_passed';
+  if (facts.moneyDue) return 'money_due';
   return null;
 }
 

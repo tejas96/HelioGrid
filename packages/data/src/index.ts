@@ -53,6 +53,12 @@ export type {
   NotificationRepository,
 } from './notification/repository';
 export type { OnboardingRepository } from './onboarding/repository';
+export {
+  type MoneyDueAsk,
+  PaymentActRefusedError,
+  type PaymentsRepository,
+  type RecordPaymentBody,
+} from './payments/payments-repository';
 export type {
   ClosedAsk,
   MarkWonBody,

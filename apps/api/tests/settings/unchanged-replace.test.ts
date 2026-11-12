@@ -1,6 +1,7 @@
 import {
   brandingSettings,
   businessProfile,
+  collectionsSettings,
   membershipRole,
   proposalTemplateSettings,
   taxRegistration,
@@ -30,6 +31,7 @@ import {
   skipWithoutDatabase,
   unseed,
 } from '../support/fixture';
+import { noRepeatToProve } from './replace-census';
 import { entriesOf, publishIndiaPack, settingsServicesOf } from './support';
 
 /**
@@ -64,26 +66,6 @@ interface Replace {
   /** Every stored row the save could touch, by Postgres row version — a write moves one. */
   readonly rows: () => Promise<readonly string[]>;
 }
-
-const NO_REPEAT_TO_PROVE: Readonly<Record<string, string>> = {
-  'PUT /catalog/items/:id': 'records every repeat — deferred D163',
-  'PUT /catalog/items/:id/override': 'records every repeat — deferred D163',
-  'PUT /catalog/imports/:id/mapping': 'an import’s working state; records no entry',
-  'PUT /catalog/imports/:id/rows/:rowNumber': 'an import’s working state; records no entry',
-  'PUT /lead-imports/:id/mapping':
-    'an import’s working state; records no entry; the same mapping again starts no pass (tests/crm/lead-import.test.ts)',
-  'PUT /notifications/preferences/:group': 'records no entry',
-  'PUT /onboarding/progress/:step': 'records no entry',
-  'PUT /onboarding/prompt-points/:fact': 'records no entry',
-  'PATCH /tenants/me/membership': 'records no entry',
-  'PUT /settings/quiet-hours': 'records no entry',
-  'PATCH /users/me': 'records no entry',
-  'PUT /users/me/photo': 'records no entry',
-  'PATCH /leads/:id':
-    'records no entry; a field sent as stored writes no timeline entry (tests/crm/lead-fields.test.ts)',
-  'PATCH /contacts/:id': 'records no entry',
-  'PUT /customers/:id/primary-contact': 'records no entry; the same choice again writes nothing',
-};
 
 const skip = skipWithoutDatabase(
   'UNCHANGED-REPLACE PROOF',
@@ -132,6 +114,17 @@ const REPLACES: readonly Replace[] = [
       ...(await versionsOf(tenant, eq(tenant.id, here.tenantId))),
       ...(await versionsOf(businessProfile, ofHere(businessProfile.tenantId))),
     ],
+  },
+  {
+    route: 'PUT /settings/collections',
+    event: 'settings.collections_changed',
+    save: (send) =>
+      services.collections.save(
+        here.tenantId,
+        { upiId: send === 'changed' ? 'repeat.solar@okaxis' : 'repeat@ybl', payee: 'Repeat Solar' },
+        by(),
+      ),
+    rows: () => versionsOf(collectionsSettings, ofHere(collectionsSettings.tenantId)),
   },
   {
     route: 'PUT /settings/tax-registrations',
@@ -299,7 +292,7 @@ describe.skipIf(skip)('a replace equal to what is stored, against a migrated dat
 describe('the replace-route census', () => {
   it('holds every PUT and PATCH route to the repeat proof or to a stated reason', () => {
     const replaces = [...DECLARED.keys()].filter((key) => /^(PUT|PATCH) /.test(key)).sort();
-    const judged = [...REPLACES.map(({ route }) => route), ...Object.keys(NO_REPEAT_TO_PROVE)];
+    const judged = [...REPLACES.map(({ route }) => route), ...Object.keys(noRepeatToProve)];
     expect(replaces).toEqual(judged.sort());
   });
 });

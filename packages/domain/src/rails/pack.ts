@@ -147,6 +147,11 @@ export interface PaymentRailsPack {
   readonly ladder: Record<TierBand, Record<BillingCycle, CollectionRoute>>;
   /** `F1-18`b — what a tenant may record a collection as. Manual modes always among them. */
   readonly paymentModes: readonly PaymentMode[];
+  /**
+   * The largest amount one UPI request is offered for, where the market has UPI; absent or null,
+   * the pay sheet offers no UPI request and leads with bank transfer.
+   */
+  readonly upiRequestLimit?: MinorUnits | null;
   /** `F1-18`c — the market's reference implementation per capability. Empty where it has none. */
   readonly adapters: Record<RailCapability, readonly string[]>;
   /** `F1-18`d — the market's payment-data constraint and how the market satisfies it. */
@@ -161,6 +166,12 @@ export interface PaymentRailsPack {
  * next pack version (`F1-11`) and nothing else.
  */
 const UPI_AUTOPAY_PER_DEBIT_CAP = minorUnits(1_500_000);
+
+/**
+ * The most one ordinary UPI payment carries, ₹1,00,000 in paise: above it the pay sheet opens on
+ * bank transfer and says why. Many banks hold this cap; a regulator change is a pack update.
+ */
+const UPI_REQUEST_LIMIT = minorUnits(10_000_000);
 
 /**
  * India (`F1-40`–`F1-43`). A reader checks this table against the PRD rows rather than trusting
@@ -194,17 +205,16 @@ export const IN_PAYMENT_RAILS: PaymentRailsPack = {
     enterprise: { monthly: { collection: 'invoice' }, yearly: { collection: 'invoice' } },
   },
   /**
-   * `F1-42` — four manual modes and one rail mode. The link rail is an accelerator, never a
-   * dependency: cash is still king in EPC, so a tenant with no connected account collects on
-   * every other mode and loses only link-minting (`M11-20`).
+   * `F1-42` — the four modes a person records by hand. There is no link rail: the customer pays
+   * the company's own UPI ID or bank account, and a person records it (owner ruling 2026-11-11).
    */
   paymentModes: [
     { mode: 'upi', manual: true },
     { mode: 'neft', manual: true },
     { mode: 'cheque', manual: true },
     { mode: 'cash', manual: true },
-    { mode: 'payment_link', manual: false },
   ],
+  upiRequestLimit: UPI_REQUEST_LIMIT,
   /**
    * `F1-43` — the v1 reference implementations. Telephony carries two because the IN voice stack
    * is two vendors on one lane: Exotel carries the call and Sarvam the speech. `M07` splits the

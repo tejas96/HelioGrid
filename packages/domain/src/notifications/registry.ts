@@ -78,6 +78,20 @@ export const NOTIFICATION_REGISTRY: Record<NotificationType, NotificationRegistr
     channels: ['in_app', 'push'],
     urgency: 'standard',
   },
+  /** Money came in on a project (`F6` payments row): its manager hears who recorded what. */
+  payment_recorded: {
+    raisedBy: 'payments',
+    recipients: ['subject_owner'],
+    channels: ['in_app', 'push'],
+    urgency: 'standard',
+  },
+  /** A payment was taken back (`M11-46`): the people who answer for the money hear it. */
+  payment_reversed: {
+    raisedBy: 'payments',
+    recipients: ['capability_holders', 'epc_owner'],
+    channels: ['in_app', 'push'],
+    urgency: 'standard',
+  },
   lead_unassigned_24h: {
     raisedBy: 'crm',
     recipients: ['epc_owner'],

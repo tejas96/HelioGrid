@@ -31,6 +31,7 @@ export const PAYMENT_RAILS_PACK_SCHEMA: z.ZodType<PaymentRailsPack, z.ZodTypeDef
       z.ZodTypeAny
     >),
     paymentModes: z.array(z.object({ mode: z.string(), manual: z.boolean() })),
+    upiRequestLimit: packAmount.nullable().optional(),
     adapters: z.object({
       subscription_billing: adapters,
       payment_links: adapters,

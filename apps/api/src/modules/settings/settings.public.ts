@@ -6,5 +6,6 @@
  */
 export { documentDefaultsIn } from './internal/document-defaults';
 export { seedTenantSettings } from './settings.admin.repository';
+export { SettingsCollectionsService } from './settings.collections.service';
 export { SettingsModule } from './settings.module';
 export { SettingsService } from './settings.service';

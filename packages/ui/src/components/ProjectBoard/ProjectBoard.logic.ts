@@ -39,13 +39,15 @@ export const TODO_TONE: Readonly<Record<TodoKind, StatusTone>> = {
   proof_early: 'accent',
   proof_missing: 'warning',
   install_date_passed: 'danger',
+  money_due: 'warning',
 };
 
-/** Each ask's tile: a date passed on the calendar, an early proof's spark, a missing file. */
+/** Each ask's tile: a date passed on the calendar, an early proof's spark, a missing file, money due. */
 export const TODO_TILE: Readonly<Record<TodoKind, ProjectRowKind>> = {
   install_date_passed: { glyph: 'calendar', tint: 'danger' },
   proof_early: { glyph: 'spark', tint: 'teal' },
   proof_missing: { glyph: 'file', tint: 'warning' },
+  money_due: { glyph: 'rupee', tint: 'warning' },
 };
 
 /** Who a wait is on, as its group's glyph: the company's building, a person, the grid, the goods. */

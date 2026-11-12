@@ -35,6 +35,8 @@ export interface StandingFacts {
     readonly reason: BlockerReason;
     readonly startedOn: CalendarDate;
   } | null;
+  /** A part of the price is due and not fully paid — for a reader who may see money (`M11-53`). */
+  readonly moneyDue?: boolean;
 }
 
 export interface Asks {
@@ -74,6 +76,7 @@ export function asksOf(formats: FormatPack, facts: StandingFacts, today: Calenda
     earlyProof: earlyProof !== null,
     missingProof: missingProofRow !== null,
     installDatePassed,
+    moneyDue: facts.moneyDue ?? false,
     wait: facts.wait,
   });
   return { todo, earlyProof, missingProofRow };

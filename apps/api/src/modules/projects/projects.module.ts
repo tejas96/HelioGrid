@@ -13,15 +13,23 @@ import { ProjectFileSubjects } from './projects.file-subjects.repository';
 import { ProjectsPackActivityRegistration } from './projects.pack.activities';
 import { ProjectsPackRepository } from './projects.pack.repository';
 import { ProjectsPackService } from './projects.pack.service';
+import { ProjectsPaymentWordsService } from './projects.payment-words.service';
+import { ProjectsPaymentsController } from './projects.payments.controller';
+import { ProjectsPaymentsRepository } from './projects.payments.repository';
+import { ProjectsPaymentsService } from './projects.payments.service';
+import { ProjectsPaymentsReadRepository } from './projects.payments-read.repository';
 import { ProjectsPeopleRepository } from './projects.people.repository';
 import { ProjectsService } from './projects.service';
 import { ProjectsWonRepository } from './projects.won.repository';
 import { ProjectsWonService } from './projects.won.service';
 
-/** Projects (`M08`): the board, one project, its acts, and *Mark won* that starts one (`M07-62`). */
+/**
+ * Projects (`M08`): the board, one project, its acts, and *Mark won* that starts one (`M07-62`);
+ * and a project's money (`M11`), which is born at Mark won and falls due with its stages.
+ */
 @Module({
   imports: [BillingModule, FileModule, NotificationModule, SettingsModule],
-  controllers: [ProjectsController, ProjectsActsController],
+  controllers: [ProjectsController, ProjectsActsController, ProjectsPaymentsController],
   providers: [
     ProjectFileSubjects,
     ProjectsPackRepository,
@@ -30,6 +38,10 @@ import { ProjectsWonService } from './projects.won.service';
     ProjectsService,
     ProjectsActsService,
     ProjectsWonService,
+    ProjectsPaymentWordsService,
+    ProjectsPaymentsService,
+    ProjectsPaymentsReadRepository,
+    ProjectsPaymentsRepository,
     ProjectsBoardRepository,
     ProjectsDetailReadRepository,
     ProjectsPeopleRepository,

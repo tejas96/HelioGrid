@@ -44,5 +44,11 @@ export const SUBJECT_KINDS = [
   'lead_import',
   /** A won deal's delivery, from Won to handover (`M08-02`). */
   'project',
+  /** One part of a project's price, due at a stage (`M11-09`). */
+  'project_tranche',
+  /** One entry of a project's payments ledger — a payment or its reversal (`M11-40`). */
+  'project_payment',
+  /** How the company's customers pay it: its UPI ID and the name shown (`SCR-M11-04`). */
+  'collections_settings',
 ] as const;
 export type SubjectKind = (typeof SUBJECT_KINDS)[number];

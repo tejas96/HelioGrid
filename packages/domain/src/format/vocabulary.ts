@@ -168,14 +168,13 @@ export const IN_VOCABULARY: DisplayVocabulary = {
     { reason: 'other', label: { en: 'Something else', hi: 'कुछ और', mr: 'इतर काही' } },
   ],
   /**
-   * One name per mode `IN_PAYMENT_RAILS` declares (`F1-18`). `UPI`, `NEFT` and `cheque` are the
-   * market's own words, not translated copy.
+   * One name per mode `IN_PAYMENT_RAILS` declares (`F1-18`). `UPI` is the market's own word, not
+   * translated copy; `neft` stands for every bank transfer (NEFT, RTGS, IMPS).
    */
   paymentModes: [
     { mode: 'upi', label: { en: 'UPI' } },
-    { mode: 'neft', label: { en: 'NEFT' } },
-    { mode: 'cheque', label: { en: 'Cheque' } },
-    { mode: 'cash', label: { en: 'Cash' } },
-    { mode: 'payment_link', label: { en: 'Payment link' } },
+    { mode: 'neft', label: { en: 'Bank transfer', hi: 'बैंक ट्रांसफ़र', mr: 'बँक ट्रान्सफर' } },
+    { mode: 'cheque', label: { en: 'Cheque', hi: 'चेक', mr: 'चेक' } },
+    { mode: 'cash', label: { en: 'Cash', hi: 'नकद', mr: 'रोख' } },
   ],
 };

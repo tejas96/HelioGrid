@@ -7,6 +7,7 @@ import { RouteAccessMap } from '../../common/auth/access';
 import { RouteBillingMap } from '../../common/auth/route-billing';
 import { actOf, sessionOf, tenantIdOf } from '../../common/auth/session-context';
 import { SettingsBrandingService } from './settings.branding.service';
+import { SettingsCollectionsService } from './settings.collections.service';
 import { SettingsService } from './settings.service';
 import { SettingsTemplatesService } from './settings.templates.service';
 
@@ -22,6 +23,7 @@ export class SettingsController {
     @Inject(SettingsService) private readonly settings: SettingsService,
     @Inject(SettingsTemplatesService) private readonly templates: SettingsTemplatesService,
     @Inject(SettingsBrandingService) private readonly branding: SettingsBrandingService,
+    @Inject(SettingsCollectionsService) private readonly collections: SettingsCollectionsService,
   ) {}
 
   @TsRestHandler(tenantSettingsContract)
@@ -41,6 +43,7 @@ export class SettingsController {
     makeDefaultTrancheTemplate: 'ungated',
     previewTrancheSchedule: 'ungated',
     saveHolidays: 'ungated',
+    saveCollections: 'ungated',
   })
   @RouteAccessMap(tenantSettingsContract, {
     effective: 'member',
@@ -65,6 +68,8 @@ export class SettingsController {
     previewTrancheSchedule: MANAGE,
     holidays: MANAGE,
     saveHolidays: MANAGE,
+    collections: MANAGE,
+    saveCollections: MANAGE,
   })
   handler(@Req() req: Request) {
     const tenantId = () => tenantIdOf(req);
@@ -98,6 +103,11 @@ export class SettingsController {
         body: await this.settings.saveQuietHours(tenantIdOf(req), body),
       }),
       branding: async () => ({ status: 200, body: await this.branding.read(tenantId()) }),
+      collections: async () => ({ status: 200, body: await this.collections.read(tenantId()) }),
+      saveCollections: async ({ body }) => ({
+        status: 200,
+        body: await this.collections.save(tenantId(), body, actOf(req)),
+      }),
       saveBranding: async ({ body }) => ({
         status: 200,
         body: await this.branding.save(tenantId(), body, actOf(req)),

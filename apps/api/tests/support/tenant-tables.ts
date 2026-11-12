@@ -8,6 +8,7 @@ import {
   catalogRateEntry,
   catalogRelease,
   catalogReleaseLine,
+  collectionsSettings,
   contact,
   contactRoleLabel,
   creditNote,
@@ -64,6 +65,7 @@ export const TENANT_SETTING_TABLES = [
   proposalTemplateSettings,
   timelineTemplate,
   onboardingProgress,
+  collectionsSettings,
 ] as const;
 
 /**

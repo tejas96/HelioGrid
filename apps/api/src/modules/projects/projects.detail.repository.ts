@@ -5,9 +5,11 @@ import { projectNumberOf } from '@heliogrid/domain/server';
 import { and, eq } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { memberNameOf } from '../crm/crm.public';
+import { isMoneyDue, moneyFormatOf } from './internal/money';
 import type { ProjectReader } from './internal/reader';
 import { askFieldsOf, asksOf } from './internal/standing';
 import { detailBlocksOf } from './projects.detail-blocks.repository';
+import { moneyGlanceOf } from './projects.money-glance.repository';
 import { projectScopeWhere } from './projects.scope.repository';
 
 /*
@@ -101,6 +103,7 @@ export async function loadProjectDetail(
   const ticked = steps.filter((step) => step.tickedAt !== null).length;
   const projectWait =
     wait === null ? null : { party: wait.party, reason: wait.reason, startedOn: wait.startedOn };
+  const money = await moneyGlanceOf(tx, reader, row.id, moneyFormatOf(formats, row.timeZone));
   const asks = asksOf(
     formats,
     {
@@ -112,6 +115,7 @@ export async function loadProjectDetail(
       stepsTicked: ticked,
       stepsTotal: steps.length,
       wait: projectWait,
+      moneyDue: isMoneyDue(money),
     },
     today,
   );
@@ -202,5 +206,6 @@ export async function loadProjectDetail(
       documents: isActiveStage(row.stage) && can(reader.roles, 'projects.project_documents'),
       steps: isActiveStage(row.stage) && can(reader.roles, 'projects.installation_checklist'),
     },
+    money,
   };
 }

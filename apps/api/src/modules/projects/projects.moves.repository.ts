@@ -18,6 +18,7 @@ import {
   type TenantQuietHours,
 } from '../notification/notification.public';
 import type { LockedProject } from './projects.lock.repository';
+import { noticePartsNowDue, type PaymentNoticeWords } from './projects.payment-notices.repository';
 import { projectReadableBy } from './projects.scope.repository';
 
 /*
@@ -50,6 +51,8 @@ export interface MoveNotice {
     why: ProjectMoveWhy,
   ) => Promise<(language: UiLanguage) => NoticeWords>;
   readonly quietHours: TenantQuietHours;
+  /** The money notices a forward move may raise: a part that falls due (`M11-11`). */
+  readonly payments?: PaymentNoticeWords;
 }
 
 export interface AppliedMove {
@@ -126,7 +129,21 @@ export async function applyMove(
     actor,
     capturedAt: at.capturedAt,
   });
-  if (causedBy === locked.managerId) return { notified: [] };
+  const due =
+    notice.payments !== undefined && isForward(move) && move.to !== 'cancelled'
+      ? await noticePartsNowDue(
+          tx,
+          {
+            tenantId: locked.tenantId,
+            projectId: locked.projectId,
+            managerId: locked.managerId,
+            name: locked.name,
+          },
+          at.now,
+          notice.payments,
+        )
+      : [];
+  if (causedBy === locked.managerId) return { notified: due };
   const why = whyOf(move, mover, extras.cancel ?? null);
   const recipients = await recipientsFor(
     tx,
@@ -148,7 +165,7 @@ export async function applyMove(
     await notice.wordsFor(locked.name, move.to, why),
     notice.quietHours,
   );
-  return { notified };
+  return { notified: [...due, ...notified] };
 }
 
 /** What the notice says moved it. */

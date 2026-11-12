@@ -99,6 +99,12 @@ const GROUP_SENTENCE: Record<NotificationType, MessageRef> = {
     id: '{count, plural, one {# sign-off requested} other {# sign-offs requested}}',
   },
   payment_due: /*i18n*/ { id: '{count, plural, one {# payment due} other {# payments due}}' },
+  payment_recorded: /*i18n*/ {
+    id: '{count, plural, one {# payment recorded} other {# payments recorded}}',
+  },
+  payment_reversed: /*i18n*/ {
+    id: '{count, plural, one {# payment reversed} other {# payments reversed}}',
+  },
   lead_unassigned_24h: /*i18n*/ {
     id: '{count, plural, one {# lead unassigned for a day} other {# leads unassigned for a day}}',
   },

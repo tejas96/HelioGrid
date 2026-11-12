@@ -5,6 +5,8 @@ import { CreationReplies } from '../../src/common/creation-key';
 import { SettingsAdminRepository } from '../../src/modules/settings/settings.admin.repository';
 import { SettingsBrandingRepository } from '../../src/modules/settings/settings.branding.repository';
 import { SettingsBrandingService } from '../../src/modules/settings/settings.branding.service';
+import { SettingsCollectionsRepository } from '../../src/modules/settings/settings.collections.repository';
+import { SettingsCollectionsService } from '../../src/modules/settings/settings.collections.service';
 import { QuietHoursRepository } from '../../src/modules/settings/settings.quiet-hours.repository';
 import { SettingsRepository } from '../../src/modules/settings/settings.repository';
 import { SettingsService } from '../../src/modules/settings/settings.service';
@@ -38,6 +40,7 @@ export function settingsServicesOf(pools: Pools): {
   settings: SettingsService;
   templates: SettingsTemplatesService;
   branding: SettingsBrandingService;
+  collections: SettingsCollectionsService;
   files: ReturnType<typeof fileServiceOf>;
 } {
   const files = fileServiceOf(pools);
@@ -59,5 +62,9 @@ export function settingsServicesOf(pools: Pools): {
     settings,
     files.service,
   );
-  return { settings, templates, branding, files };
+  const collections = new SettingsCollectionsService(
+    new SettingsCollectionsRepository(pools.tenants),
+    settings,
+  );
+  return { settings, templates, branding, collections, files };
 }

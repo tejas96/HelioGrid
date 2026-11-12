@@ -50,6 +50,11 @@ export const AUDIT_EVENT_TYPES = [
   'crm.duplicate_kept',
   /** Two customers merged onto a survivor, with every field choice (`M02-61`). */
   'crm.customers_merged',
+  'payments.payment_recorded',
+  'payments.payment_reversed',
+  'payments.tranche_waived',
+  'payments.request_shared',
+  'settings.collections_changed',
 ] as const;
 export type AuditEventType = (typeof AUDIT_EVENT_TYPES)[number];
 

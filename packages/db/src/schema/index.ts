@@ -22,6 +22,7 @@ import * as market from './market';
 import * as memberPhoto from './member-photo';
 import * as notification from './notification';
 import * as outbox from './outbox';
+import * as payments from './payments';
 import * as planChange from './plan-change';
 import * as priceBook from './price-book';
 import * as project from './project';
@@ -67,6 +68,7 @@ export const schema = {
   ...leadHistory,
   ...leadFile,
   ...tenantCounter,
+  ...payments,
   ...project,
   ...projectPapers,
   ...projectInstallation,
@@ -101,6 +103,7 @@ export * from './market';
 export * from './member-photo';
 export * from './notification';
 export * from './outbox';
+export * from './payments';
 export * from './plan-change';
 export * from './price-book';
 export * from './project';
