@@ -25,6 +25,11 @@ appId: com.heliogrid.app
     timeout: 15000
 - assertNotVisible: ${LEAD_NAME}
 - assertVisible: ${DORMANT_FIGURE}
+# The way back sits under the list top, below the fold on a phone: brought to the middle first.
+- scrollUntilVisible:
+    element: ${CLEAR_FILTERS}
+    timeout: 15000
+    centerElement: true
 - tapOn: ${CLEAR_FILTERS}
 - scrollUntilVisible:
     element: ${LEAD_NAME}

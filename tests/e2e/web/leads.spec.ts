@@ -107,8 +107,7 @@ test("the leads list sorts by the monthly bill and shows it in the tenant's grou
     /* Narrow, the sort glyph opens the orders as a sheet; a tap sorts and closes it. */
     await page.getByRole('button', { name: TOP.sortNamed(TOP.newest), exact: true }).click();
     const sheet = page.getByRole('dialog', { name: TOP.sortTitle });
-    /* The radio itself is drawn as its box; a person taps the order's words. */
-    await sheet.getByText(TOP.billLargest, { exact: true }).click();
+    await sheet.getByRole('radio', { name: TOP.billLargest }).click();
     await expect(sheet).toBeHidden();
     await expect(
       page.getByRole('button', { name: TOP.sortNamed(TOP.billLargest), exact: true }),

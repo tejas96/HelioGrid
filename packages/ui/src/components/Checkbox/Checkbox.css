@@ -3,6 +3,7 @@
    <label> is the hit box, because the real control is the visually hidden input. */
 
 .hg-checkbox {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -51,10 +52,15 @@
 
 /* The real control: visually hidden, still focusable, still the thing the label points at. */
 .hg-checkbox-input {
+  /* The input fills the whole 44 target: a 0-size input is "not visible", so a screen reader's
+     touch and a test's click on the control itself never land on it. */
   position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
   opacity: 0;
-  width: 0;
-  height: 0;
+  cursor: inherit;
 }
 
 .hg-checkbox:has(.hg-checkbox-input:focus-visible) .hg-checkbox-box {
