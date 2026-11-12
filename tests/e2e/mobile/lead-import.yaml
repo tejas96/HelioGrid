@@ -16,5 +16,5 @@ appId: com.heliogrid.app
 - assertVisible: ${IMPORT_UNTOUCHED}
 - tapOn: ${IMPORT_BACK}
 - extendedWaitUntil:
-    visible: ${LEADS_PIPELINE_HINT}
+    visible: ${LEADS_SEARCH_HINT}
     timeout: 15000

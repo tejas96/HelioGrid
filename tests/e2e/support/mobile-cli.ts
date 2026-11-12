@@ -36,6 +36,7 @@ import {
 } from '@heliogrid/i18n';
 import { API, codeSentTo } from './api-log.ts';
 import { customerMergeFlowWords, mergeFromLine } from './customer-merge-flow.ts';
+import { assertEveryFlowWordKnown } from './flow-words.ts';
 import { leadDetailFlowWords } from './lead-detail-flow.ts';
 import { leadImportFlowWords } from './lead-import-flow.ts';
 import { paymentsFlowWords } from './payments.ts';
@@ -147,6 +148,7 @@ if (command === 'words') {
     TRIAL_CHIP: billingStripWords(t.t).trialDaysLeft(14),
     ...settingsRows(t),
   };
+  assertEveryFlowWordKnown(Object.keys(words));
   for (const [key, message] of Object.entries(words)) {
     process.stdout.write(`${key}=${typeof message === 'string' ? message : t.t(message)}\n`);
   }
