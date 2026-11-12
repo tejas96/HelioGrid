@@ -67,3 +67,12 @@ export function projectScopeOf(roles: readonly RolePreset[]): ProjectScope {
   const reaches = new Set([...rung, ...assigned]);
   return { kind: 'reaches', reaches: PROJECT_REACHES.filter((reach) => reaches.has(reach)) };
 }
+
+/**
+ * The projects whose MONEY a reader may see (`M11-56`): every project they may see, less the ones
+ * they reach only as crew — no commercial figure reaches an installer, whatever else they hold.
+ */
+export function moneyScopeOf(scope: ProjectScope): ProjectScope {
+  if (scope.kind === 'all') return scope;
+  return { kind: 'reaches', reaches: scope.reaches.filter((reach) => reach !== 'crew_on') };
+}

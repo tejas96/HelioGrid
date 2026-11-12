@@ -1,5 +1,6 @@
 import type { ProjectBoardView } from '@heliogrid/domain';
 import { useId } from 'react';
+import { useFormat } from '../MarketProvider';
 import { ProjectRowList } from '../ProjectRows';
 import { BOARD_CAPS, type BoardRoom, todoItemsOf, waitItemsOf } from './ProjectBoard.logic';
 import type { ProjectBoardProps } from './ProjectBoard.types';
@@ -24,6 +25,7 @@ export function ProjectBoardNeeds(props: NeedsProps) {
 function Todo(props: NeedsProps) {
   const { view, words, room } = props;
   const held = useHeld();
+  const format = useFormat();
   const heading = useId();
   return (
     <section className="hg-project-board-section" aria-labelledby={heading}>
@@ -33,7 +35,9 @@ function Todo(props: NeedsProps) {
         </h2>
         <span className="hg-project-board-count">{view.todo.length}</span>
       </div>
-      <ProjectRowList items={todoItemsOf(view.todo, BOARD_CAPS[room].todo, held, props)} />
+      <ProjectRowList
+        items={todoItemsOf(view.todo, BOARD_CAPS[room].todo, held, props, format, view.today)}
+      />
     </section>
   );
 }

@@ -3,6 +3,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { classNames } from '../../primitives/class-names';
 import { fieldBox } from '../../primitives/FieldBox';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks';
+import { useOverlayLayer } from '../Sheet/use-overlay-dismiss';
 import type { SelectProps } from './Select.types';
 import { SelectListbox } from './SelectListbox';
 import { handleSelectKey } from './select-keys';
@@ -39,6 +40,7 @@ export function Select({
   style,
 }: WebSelectProps) {
   const [open, setOpen] = useState(false);
+  useOverlayLayer(open);
   const [active, setActive] = useState(0);
   const wrapRef = useRef<HTMLDivElement>(null);
   const place = useSelectPlacement(wrapRef, open);

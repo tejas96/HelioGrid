@@ -3,6 +3,7 @@ import { expect, type Page, test } from '@playwright/test';
 import { expectNoSeriousViolations } from '../support/axe';
 import { OWNER_NAME } from '../support/door';
 import { expectNoSidewaysScroll } from '../support/layout';
+import { dueNow, packMoney, readPayments } from '../support/payments';
 import {
   CUSTOMER,
   captureLead,
@@ -33,9 +34,16 @@ const TOP = projectBoardTopWords(en.t);
 /** The customer a second project is sold to, kept apart from the first by name. */
 const SECOND = { name: 'Meera Kulkarni', city: 'Pune' } as const;
 
-/** A project's open target: a named button a keyboard user focuses, wide and narrow alike. */
+/**
+ * A project's open target in the list of live projects — the table wide, the stage cards narrow —
+ * a named button a keyboard user focuses. A won project's first part falls due at once, so it also
+ * stands under *To do*; this is its row in the list.
+ */
 const openOf = (page: Page, name: string) =>
-  page.getByRole('button', { name: BOARD.open(name), exact: true });
+  (isWide(page)
+    ? page.getByRole('table')
+    : page.getByRole('region', { name: BOARD.allProjects, exact: true })
+  ).getByRole('button', { name: BOARD.open(name), exact: true });
 
 async function openBoard(page: Page): Promise<void> {
   await page.goto('/projects');
@@ -73,7 +81,7 @@ test('a new company’s board has no project yet and teaches that Mark won start
   await expectNoSeriousViolations(page);
 });
 
-test('the won lead’s project stands under Won, today, and nothing needs the owner yet', async ({
+test('the won lead’s project stands under Won, today, and its first part is due under To do', async ({
   page,
 }) => {
   await ownerWithCompany(page, en);
@@ -88,10 +96,23 @@ test('the won lead’s project stands under Won, today, and nothing needs the ow
     expectedInstallOn: project.expectedInstallOn,
   };
 
-  /* The summary counts one live project, nothing to do and nothing waited on: all clear. */
+  /* The summary counts one live project; its first part fell due at Won, so it asks for money. */
   const summary = page.getByRole('region', { name: TOP.name, exact: true });
   await expect(summary.getByText(TOP.liveSpoken(1), { exact: true })).toBeAttached();
-  await expect(summary.getByText(BOARD.allClearTitle, { exact: true })).toBeVisible();
+  await expect(summary.getByText(BOARD.allClearTitle, { exact: true })).toHaveCount(0);
+  const { part } = dueNow(await readPayments(page, projectId));
+  const toDo = page.getByRole('region', { name: BOARD.toDoHeading, exact: true });
+  await expect(
+    toDo.getByText(
+      BOARD.todoLine('money_due', {
+        ...facts,
+        earlyProofTo: null,
+        missingProofRow: null,
+        money: { part: part.label, amount: packMoney(part.outstanding) },
+      }),
+      { exact: true },
+    ),
+  ).toBeVisible();
   /* The Won chip counts it; a stage with no project draws no chip. */
   await expect(chipOf(page, won)).toContainText('1');
   await expect(chipOf(page, BOARD.stage('material_ordered'))).toHaveCount(0);

@@ -20,14 +20,17 @@ describe('IN_PAYMENT_RAILS — the India rails declaration (F1-40…F1-43)', () 
     expect(mandateType(IN_PAYMENT_RAILS, 'card_emandate')?.perDebitCap).toBeNull();
   });
 
-  it('declares exactly the five IN payment modes, four of them manual (F1-42)', () => {
+  it('declares exactly the four IN payment modes, every one recorded by hand (F1-42)', () => {
     expect(IN_PAYMENT_RAILS.paymentModes).toEqual([
       { mode: 'upi', manual: true },
       { mode: 'neft', manual: true },
       { mode: 'cheque', manual: true },
       { mode: 'cash', manual: true },
-      { mode: 'payment_link', manual: false },
     ]);
+  });
+
+  it('offers a UPI request up to ₹1,00,000, in paise', () => {
+    expect(IN_PAYMENT_RAILS.upiRequestLimit).toBe(10_000_000);
   });
 
   it('names a reference implementation for every capability the product needs (F1-43)', () => {

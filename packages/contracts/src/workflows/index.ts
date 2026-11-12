@@ -81,6 +81,13 @@ export {
   outboxSweepWorkflow,
   outboxWorkflowNamed,
 } from './outbox';
+export type {
+  PaymentReceiptActivities,
+  PaymentReceiptPage,
+  PaymentReceiptStepInput,
+  PaymentReceiptStepResult,
+} from './payment-receipt';
+export { paymentReceiptWorkflow } from './payment-receipt';
 export { platformHealthcheckWorkflow } from './platform';
 export type {
   TaskQueue,

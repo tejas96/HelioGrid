@@ -17,11 +17,13 @@ import { memberRefSchema } from '../crm/schemas';
 import { dealSegmentSchema } from '../crm/vocabulary';
 import { uiLanguageResponseSchema } from '../locale';
 import { calendarDateSchema } from '../tenant-settings';
+import { projectMoneyGlanceSchema } from './money';
 
 /*
  * The projects' shared shapes (`M08`). A stage, a party, a reason and a row are the
  * market-neutral keys; what a person reads for each is the market pack's, rendered on the device.
- * No money crosses here in block 4: the payments block (block 5) owns every figure.
+ * A project's money is the payments block's (`./payments`); the card and the detail carry its
+ * glance.
  */
 
 export const projectStageSchema = z.enum(PROJECT_STAGES);
@@ -83,6 +85,11 @@ export const projectCardSchema = z.object({
   installedOn: calendarDateSchema.nullable().optional(),
   /** The first checklist row a stage reached by hand still waits on. */
   missingProofRow: z.string().nullable(),
+  /**
+   * The project's money at a glance (`M11-53`), for a reader who may see money; absent on an api
+   * built before payments, and for the crew (`M11-56`).
+   */
+  money: projectMoneyGlanceSchema.nullable().optional(),
 });
 export type ProjectCard = z.infer<typeof projectCardSchema>;
 
@@ -218,6 +225,8 @@ export const projectDetailSchema = z.object({
   designId: uuidSchema.nullable(),
   proposalId: uuidSchema.nullable(),
   acts: projectActsSchema,
+  /** The Money card (`M11-52`'s one mirror): absent for the crew and on an older api (`M11-56`). */
+  money: projectMoneyGlanceSchema.nullable().optional(),
 });
 export type ProjectDetail = z.infer<typeof projectDetailSchema>;
 

@@ -8,6 +8,7 @@ import {
   taxRegistrationSchema,
   taxRegistrationsSchema,
 } from './business-profile';
+import { collectionsSettingsErrorCodes, collectionsSettingsRoutes } from './collections-settings';
 import { uuidSchema } from './common';
 import { labelSchema } from './document-content';
 import {
@@ -129,6 +130,7 @@ export type EffectiveSettings = z.infer<typeof effectiveSettingsSchema>;
  */
 export const tenantSettingsErrorCodes = [
   ...trancheTemplateErrorCodes,
+  ...collectionsSettingsErrorCodes,
   'TAX_REGISTRATION_MALFORMED',
 ] as const;
 export const tenantSettingsErrorCodeSchema = z.enum(tenantSettingsErrorCodes);
@@ -243,6 +245,7 @@ export const tenantSettingsContract = c.router({
     responses: { 200: timelineTemplateReadSchema, ...guarded },
   },
   ...trancheTemplateRoutes,
+  ...collectionsSettingsRoutes,
   holidays: {
     method: 'GET',
     path: '/settings/holidays',

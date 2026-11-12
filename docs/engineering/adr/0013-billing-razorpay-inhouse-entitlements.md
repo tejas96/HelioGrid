@@ -16,7 +16,7 @@ Billing is IN v1 by product-owner override of D38 (recorded 2026-07-24). Two mon
 
 **GST**: we are supplier of record — Razorpay Invoices generates GST-compliant invoices per cycle (our GSTIN/SAC); e-invoicing IRN validation is ours; Razorpay's 18% GST on its fees is tracked separately.
 
-**Tenant customer collections: BYO-Razorpay payment links per tenant** through `PaymentLinkPort` — each EPC connects its own Razorpay account; funds settle directly to the EPC; **the platform never touches funds, so no RBI Payment Aggregator licence is needed.** Razorpay Route is documented as an alternate adapter only, never the default.
+**Tenant customer collections: BYO-Razorpay payment links per tenant** through `PaymentLinkPort` — each EPC connects its own Razorpay account; funds settle directly to the EPC; **the platform never touches funds, so no RBI Payment Aggregator licence is needed.** Razorpay Route is documented as an alternate adapter only, never the default. *(Superseded for tenant collections by owner ruling 2026-11-11: no gateway at all — the customer pays the EPC's own UPI ID or bank account, and a person records it; `docs/engineering/07-integrations.md` §8.)*
 
 ## Consequences
 

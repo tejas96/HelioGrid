@@ -5,6 +5,7 @@ import type { ComponentType } from 'react';
 import { BillingScreen } from '../billing';
 import { BrandingSettingsScreen } from '../branding';
 import { CatalogSettingsScreen } from '../catalog-settings';
+import { CollectionsSettingsScreen } from '../collections-settings';
 import { CompanyProfileSettingsScreen } from '../company-profile';
 import { PaymentTermsScreen } from '../payment-terms';
 import { ProfileScreen } from '../profile';
@@ -30,6 +31,7 @@ const BUILT_ROW: Partial<Record<SettingsRow, ComponentType<{ from: string | null
   branding: BrandingSettingsScreen,
   proposal_templates: ProposalTemplateScreen,
   payment_terms: PaymentTermsScreen,
+  collections: CollectionsSettingsScreen,
   billing: BillingScreen,
   usage: UsageScreen,
 };

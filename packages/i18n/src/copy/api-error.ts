@@ -65,6 +65,7 @@ const ROUTE_COPY: Record<
     id: 'Your company has reached its invite limit for the last 24 hours.',
   },
   INVITE_EXPIRED: /*i18n*/ { id: 'This invite has run out. Ask to be invited again.' },
+  UPI_ID_MALFORMED: /*i18n*/ { id: 'A UPI ID reads as name@bank — check it and try again.' },
   TRANCHES_NOT_WHOLE: /*i18n*/ {
     id: 'The tranches must add up to exactly 100%. Place the remainder before saving.',
   },

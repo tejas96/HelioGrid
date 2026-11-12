@@ -42,8 +42,10 @@ import {
 } from 'drizzle-orm';
 import { TENANT_DB } from '../../common/db/tenant.token';
 import { memberNameOf } from '../crm/crm.public';
+import { isMoneyDue, moneyFormatOf } from './internal/money';
 import type { ProjectReader } from './internal/reader';
 import { askFieldsOf, asksOf } from './internal/standing';
+import { moneyGlancesOf } from './projects.money-glance.repository';
 import { projectScopeWhere } from './projects.scope.repository';
 
 const CLOSED_STAGES: readonly ProjectStage[] = ['handed_over', 'cancelled'];
@@ -125,7 +127,7 @@ export class ProjectsBoardRepository {
           ),
         )
         .orderBy(asc(project.stageEnteredAt), asc(project.id))) as CardRow[];
-      const live = await this.cardsOf(tx, reader.tenantId, rows, formats, own.timeZone, today);
+      const live = await this.cardsOf(tx, reader, rows, formats, own.timeZone, today);
       return {
         today,
         stages: PROJECT_STAGES.filter((stage) => stage !== 'cancelled').map((stage) => {
@@ -183,7 +185,7 @@ export class ProjectsBoardRepository {
       const [total] = await tx.select({ count: count() }).from(project).where(where);
       const today = localDate(Date.now(), own.timeZone);
       return {
-        items: await this.cardsOf(tx, reader.tenantId, rows, formats, own.timeZone, today),
+        items: await this.cardsOf(tx, reader, rows, formats, own.timeZone, today),
         totalCount: total?.count ?? 0,
       };
     });
@@ -192,14 +194,16 @@ export class ProjectsBoardRepository {
   /** The cards for these rows: each one's open wait, checklist states and ticks, read by id. */
   private async cardsOf(
     tx: TenantScopedDb,
-    tenantId: string,
+    reader: ProjectReader,
     rows: readonly CardRow[],
     formats: FormatPack,
     timeZone: string,
     today: string,
   ): Promise<ProjectCard[]> {
+    const { tenantId } = reader;
     const ids = rows.map((row) => row.id);
     if (ids.length === 0) return [];
+    const money = await moneyGlancesOf(tx, reader, ids, moneyFormatOf(formats, timeZone));
     const [waits, documents, steps, installs] = await Promise.all([
       tx
         .select({
@@ -274,6 +278,7 @@ export class ProjectsBoardRepository {
           stepsTicked: ticks?.ticked ?? 0,
           stepsTotal: ticks?.total ?? 0,
           wait: projectWait,
+          moneyDue: isMoneyDue(money.get(row.id)),
         },
         today,
       );
@@ -291,6 +296,7 @@ export class ProjectsBoardRepository {
         wait: projectWait,
         ...askFieldsOf(asks),
         installedOn: installs.find((one) => one.projectId === row.id)?.on ?? null,
+        money: money.get(row.id) ?? null,
       };
     });
   }

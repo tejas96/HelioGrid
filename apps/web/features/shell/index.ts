@@ -7,6 +7,7 @@ export {
   projectEarlyProofPath,
   projectHandoverPath,
   projectPath,
+  projectPaymentsPath,
   projectStepsPath,
   settingsRowPath,
 } from './constants';

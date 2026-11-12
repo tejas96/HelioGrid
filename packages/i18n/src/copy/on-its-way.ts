@@ -7,10 +7,10 @@ import { doorTitle } from './shell';
 /**
  * A page whose module has not landed (`F7-48`'s doors and the settings rows behind `More`): what it
  * will do, said plainly, with no figure or record it cannot show yet. A page here is every door
- * but the settings list, which is built, and the two settings rows still to come.
+ * but the settings list, which is built, and the settings row still to come.
  */
 export type ComingDoor = Exclude<ShellDoor, 'more'>;
-export type ComingRow = Extract<SettingsRow, 'agent' | 'collections'>;
+export type ComingRow = Extract<SettingsRow, 'agent'>;
 export type ComingPage = ComingDoor | ComingRow;
 
 const ON_ITS_WAY = {
@@ -93,14 +93,6 @@ const STORY = {
       /*i18n*/ { id: 'Every call written into the lead’s history' },
     ],
   },
-  collections: {
-    line: /*i18n*/ { id: 'Your customers’ payments, stage by stage.' },
-    points: [
-      /*i18n*/ { id: 'A payment link your customer pays from their phone' },
-      /*i18n*/ { id: 'A reminder before each stage falls due' },
-      /*i18n*/ { id: 'Every payment matched to its proposal' },
-    ],
-  },
 } as const satisfies Record<ComingPage, { line: unknown; points: readonly unknown[] }>;
 
 export interface OnItsWayWords {
@@ -113,9 +105,7 @@ export interface OnItsWayWords {
 }
 
 function titleOf(translate: Translator['t'], page: ComingPage): TranslatedText {
-  return page === 'agent' || page === 'collections'
-    ? settingsRowName(translate, page)
-    : doorTitle(translate, page);
+  return page === 'agent' ? settingsRowName(translate, page) : doorTitle(translate, page);
 }
 
 /** A coming page's words: its name, the badge, its promise, three points and the way home. */
@@ -133,5 +123,5 @@ export function onItsWayWords(translate: Translator['t'], page: ComingPage): OnI
 
 /** Whether a settings row is one still to come, so its page says what it will do. */
 export function isComingRow(row: SettingsRow): row is ComingRow {
-  return row === 'agent' || row === 'collections';
+  return row === 'agent';
 }

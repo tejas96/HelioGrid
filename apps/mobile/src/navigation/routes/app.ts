@@ -14,6 +14,7 @@ import {
   ProjectStepsScreen,
 } from '../../screens/project-detail';
 import { ProjectHandoverScreen } from '../../screens/project-handover';
+import { ProjectPaymentsScreen } from '../../screens/project-payments';
 import { ProjectsBoardScreen } from '../../screens/projects-board';
 import { QuickAddLeadScreen } from '../../screens/quick-add-lead';
 import { RoleExplainerScreen } from '../../screens/role-explainer';
@@ -127,6 +128,12 @@ export const appScreens = {
     screen: ProjectHandoverScreen,
     if: useHasHome,
     linking: `${DOOR_SEGMENT.projects}/:projectId/handover`,
+  },
+  /** A project's payments (`SCR-M11-02`); `?collect=<part>` opens that part's collect sheet. */
+  ProjectPayments: {
+    screen: ProjectPaymentsScreen,
+    if: useHasHome,
+    linking: `${DOOR_SEGMENT.projects}/:projectId/payments`,
   },
   /**
    * Customer Merge (`SCR-M02-06`) at `customers/merge?survivorId=…&loserId=…`, as the web's

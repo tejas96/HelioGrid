@@ -57,7 +57,7 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | Entity | Block | Hazard |
 |---|---|---|
 | `message_template` | V1 | 1 | **Stays V1 — the copy-paste path still needs the text to copy.** The M01 *message templates* SETTINGS SCREEN is one of the four M01 V2 screens, but the table and its platform-seeded keys are read by V1 blocks 3 (`M02-33`/`M02-47`/`M02-48`), 5 (`M11` payment reminder), 6 (follow-up nudge) and 8 (`F5` pre-link messages, `M06-53`/`M06-54`). Block 1 authors the table and seeds the keys; the tenant-facing editor waits for V2. |
-| `integration_credential` | V2 — M01 settings | M11's collections_account_connection (V1, block 5) and M03's channel_connection carry the same write-only encrypted-secret + last-4 + probe + audited-decrypt shape (§5.13 rows 2535/2549). The encryption, rotation and decrypt-audit seam is a cross-cutting concern (forward-compat register) that block 5 must build even though this table and its screen are V2 — do not let 'credentials = V2' defer the seam. |
+| `integration_credential` | V2 — M01 settings | M03's channel_connection carries the write-only encrypted-secret + last-4 + probe + audited-decrypt shape. M11 needs none — no payment gateway (owner ruling 2026-11-11): `collections_settings` holds only the company's UPI ID and payee name, nothing secret. |
 | `consent_record` | 6 | Its leading PRD refs are M03-34/M03-46 and it sits in the marketing sub-domain, but M03 is entirely V2. A naive 'M03 → V2' mapping defers the ledger that the V1 calling gate (block 6, M07-28/31/40) and the V1 callback_request consent evidence (F5-54, block 8) both require. Author the calling/DND classes in block 6; only the per-contact messaging-class rows wait for M03. |
 | `channel_connection` | V2 — M03 | **SETTLED — V1 ships no connected channel.** The transactional-lane ruling specifies automatic transactional sending *"with composed copy-paste as the fallback where no channel is connected (no delivery ever claimed there)"*. V1 connects none, so every transactional moment takes that already-specified fallback branch: the product composes the text and a person sends it. This is not a reversal of that ruling — it is the ruling's own no-channel path being the only path in V1. The table stays V2 with M03. **What V1 loses:** the three *time-triggered pushes* that have no pull equivalent — `F5-68` evening-before crew message, `M02-47` visit confirmation, `M02-48` the single no-show reminder — become a person's task. Everything else the customer *pulls* from the customer link (`F5`), which carries proposal, money status and progress. |
 | `site` | 4 | **site does not move.** It sits in §2.6 but carries no survey dependency of its own: its only required parent is `lead` (§3.6, V1), and `survey` requires `site` rather than the reverse — so it is authorable in block 4 with M04 still V2. The second consumer this row used to claim is gone: the studio no longer reaches site through the survey chain, because the tile parents on `design`. What that leaves is an authorship gap, not a placement one — the only writers the model gives site are M04's address capture and correction (M04-12/57/59), both V2, while project (block 4, M08-04) and geofence (M09, V2) reference it. Author site with the projects slice and settle who writes it (§8.1). |
@@ -66,7 +66,7 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | `routing_policy_version` | 6 | **SETTLED — the table is V1 block 6; only the editor is V2.** The *Routing Rules Editor* (`SCR-M07-15`) is one of the nine V2 console screens, but the screen register already splits the requirement itself: it classifies M07-44 as `mixed | SCR-M07-15 · +non-UI: chains ring level-by-level with timeouts, mandatory terminal fallback` — the chain, the timeouts and the fallback are the non-UI half, and the V1 escalations surface (`SCR-M07-14`, whose states include terminal-fallback entries) runs on them. §M07.8 settles the direction in its own words: *"The default hand-over set (§M07.3, M07-11) is the routing layer's seed; the condition→action editor is the grown-up form of the same list, and both edit the same tenant data. Launch scope is deliberately modest: single-level escalation chains as data."* So block 6 writes v1 of the policy as a platform-seeded default (§5.0's seeded-default law; contents in §5.8), exactly as block 1 seeds `message_template`'s keys, and the editor is the second writer, never the first. **What genuinely waits for V2:** the wider condition vocabulary (confidence, intent, priority, VIP/existing-project), multi-level chains, and tenant-authored rule ordering. |
 | `ivr_flow_version` | 6 | **SETTLED — the table is V1 block 6; only the editor is V2.** Same resolution as `routing_policy_version` above, and the screen register draws the same line here too: M07-47 is classified `mixed | SCR-M07-16 · +non-UI: flows versioned and published whole; in-flight calls keep their version` — the versioning half is not the editor's. V1 owns a platform-provisioned number that rings and an agent that answers inbound and captures the enquiry (M07-48), and §M07.9's edge case forbids a hang-up by omission — so block 6 seeds a default flow (§5.8). The seed's chosen shape is a greeting, **no menu keys**, and a fallback route ending in voicemail; that shape is block 6's decision, not something M07-47's acceptance compels, and the missed-call log's own shape is still open (§8). **What waits for V2:** the *IVR Flow Editor* (`SCR-M07-16`) and everything only it can author — tenant menu items, per-language greeting edits, business-hours branches, spoken preview. |
 | `telephony_number` | 6 | **SETTLED — the table and the platform row are V1; the BYO half is V2.** V1 runs outbound agent calling and the platform-provisioned number is *"the only outbound origin"*, so the row cannot wait for the V2 wizard; M07-51's acceptance is that a new tenant opening voice settings finds a platform number available instantly. Block 6 therefore provisions the `kind = platform` row server-side. *(at tenant creation, or when voice is provisioned? — M07-51 vs M12 entitlement, M07-27/F1-16; §8)* **What waits for the *Number Provisioning Wizard* (`SCR-M07-17`):** the whole BYO half — `kind = byo_forwarding`, the requested → verifying → active → failed status machine, its failure reason and retry. Those columns exist from block 6 and stay null in V1. |
-| `payment_link` | 5 | **Resolved with `channel_connection` above.** `send_path` has one live value in V1 — copy — and `channel_delivery_states` stays null and unread until a channel exists, under the transactional lane's no-delivery-claim discipline on the fallback path. The link itself is minted on the tenant's own gateway (`M11-17`/`M11-24`) and is unaffected; only its delivery is manual. `message_template`'s `payment_reminder` key is seeded in block 1, so block 5 has its text. |
+| `payment_link` | — | **None — no payment gateway (owner ruling 2026-11-11).** The customer pays the company directly (an exact-amount `upi://pay` request, or bank transfer); the pay message leaves through the person's own share sheet or clipboard, and `tranche_request_share` records the tap, never a delivery. `message_template`'s `payment_reminder` key is seeded in block 1. |
 
 ### 2.2 Market framework & localization
 
@@ -99,7 +99,7 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | Entity | V | Block | Purpose | Owner | Key fields | Lifecycle | PRD refs |
 |---|---|---|---|---|---|---|---|
 | message_template | V1 | 1 ⚠ | One key × language registry: platform-seeded exhaustive key list plus tenant-authored keys; variables resolved or safely omitted; never translation-catalog strings  | tenant | template_key (7 seeded keys: proposal_share, follow_up_nudge, payment_reminder, visit_confirmation, survey_complete, handover, crew_arrival; plus tenant keys); language; body_with_variables; origin (seeded/tenant-authored) | — | M01-55, F6-26 |
-| integration_credential | V2 | V2 — M01 settings ⚠ | Tenant-supplied write-only credential (BYO gateway, messaging/voice): last-4 display, scheduled probes, every decrypt audit-logged, tenant-rotatable | tenant | kind/owning_module (M11 gateway, M07 messaging/voice); encrypted_secret (write-only, no read-back); last4_display; probe_status; last_probe_result | stored → probe_ok \| probe_failed → rotated | M01-60 |
+| integration_credential | V2 | V2 — M01 settings ⚠ | Tenant-supplied write-only credential (messaging/voice): last-4 display, scheduled probes, every decrypt audit-logged, tenant-rotatable | tenant | kind/owning_module (M07 messaging/voice); encrypted_secret (write-only, no read-back); last4_display; probe_status; last_probe_result | stored → probe_ok \| probe_failed → rotated | M01-60 |
 | lead_channel_setting | V2 | V2 — M01 settings | Per-tenant capture state for each lead source: live channels toggleable; not-yet channels rendered as toggle-less "later" cards | tenant | channel_key (set owned by M02); availability (live/not_yet); enabled (live channels only) | not_yet → live | M01-58 |
 | steel_profile | V1 | 7 | Structural steel profile catalog (8 sections) with mass rules by shape family, derived labels and default ordering, consumed by the BOM structure emitter | platform | section_id (8 sections); shape_family; mass_rule; derived_label; default_profile_order | — | — |
 | pack_rate_entry | V1 | 7 | Pack-supplied BOM base rate for non-component (BOS) lines, which the six emitters resolve through per derivation — never a component's rate; size-stepped for cables (round-up lookup); tenant overrides win via catalog resolution  | market-pack | item_key; size_step (cables); unit_rate (pack currency) | — | — |
@@ -200,10 +200,10 @@ Owner column = data boundary: platform (HelioGrid-global) · tenant (one tenant)
 | project_stage_transition | V1 | 4 | Append-only stage-history event: forward and backward moves with dates; the basis of days-in-stage and the customer link's stage history  | tenant | project ref; from_stage; to_stage; moved_at; moved_by; backward_flag | — (append-only) | M08-11, M08-14, M08-29 |
 | project_assignment | V1 | 4 | Names a person on a project — the only row F2.M08.project-visibility's Own-projects and Assigned-job-only cells can resolve over; without it the crew preset whose whole premise is reaching exactly one job resolves to the whole tenant. | tenant | project_ref; person_ref (user_account); role_on_project (coordinator \| crew_member); assigned_at; assigned_by | — (append-only, per the suite's attribution posture: an ended assignment is a new row, never an edit or a delete) | M08-18, M08-41..43, M08-45, F2 §F2.5-M08, F2-20 |
 | commissioning_artifact | V1 | 4 | Commissioning fact retained as data at handover (certificates, as-built references, system facts) so future O&M attaches without re-collection  | tenant | project ref; artifact_kind; file/document ref; system_facts | — (retained at handover) | M08-48 |
-| tranche | V1 | 5 | One collection-schedule row: the accepted version's payment term inherited at Won; amount is version arithmetic; state derived from ledger.  | tenant | project_ref; proposal_version_ref (pinned); label; share_pct (Σ=100.00/version); amount (tenant currency, minor unit); due_on_stage; state (derived, never typed); state_entered_date; waive_reason; waived_by; waived_at; outstanding (derived) | upcoming → due → part_received → received; waived terminal | M11-08..14, M11-49, M08-35, M08-36 |
-| payment_entry | V1 | 5 | Append-only ledger entry, one ledger per project: recorded, account-confirmed and reversal rows; the receipt is this entry rendered. *(Finance 'receipts waiting to be recorded' queue has no backing entity — M11-54)*  | tenant | project_ref; tranche_ref; amount (positive; negative only on reversals); mode (pack.payment-rails vocabulary); reference; received_on_date; receipt_file; recorded_by; confirmation_state (account-confirmed vs person-recorded); provider + external_id (the gateway's payment/settlement object; null on hand-recorded entries — (tenant, provider, external_id) is the ledger's idempotency key, the thing that makes M11-27's confirmation safe to receive more than once); payment_link_ref (account-confirmed rows); reversal_of_ref; reversal_reason; recorded_at | — (append-only, immutable once recorded) | M11-27, M11-29, M11-34, M11-36..42, M11-46 |
-| payment_link | V1 | 5 ⚠ | Collection instrument minted on the tenant's own account for one tranche's exact outstanding; superseded when the amount changes. *(is 'confirmed' a link state at all, or only a ledger fact? — M11-30) · (channel_delivery_states may move to a unified transactional_send — 8.1, M11-26)*  | tenant | tranche_ref; amount (outstanding at mint, minor unit); provider + external_id (the gateway's own link object — the pair M11-29's on-view re-check and periodic sweep read; per `forward-compat.md`'s provider-ref law, never a bare id or a URL); minted_by; minted_at; state; supersession_reason; send_path (channel vs copy); channel_delivery_states (channel path only) | minted → awaiting_confirmation → confirmed → superseded | M11-24..29, M11-30, M11-23 |
-| collections_account_connection | V1 | 5 | The tenant's own gateway account connection: mints links, receives verified confirmations; tenant is merchant of record. *(one per tenant never stated; the PRD only speaks singular — M11-17)*  | tenant | credential (encrypted, write-only, last-4 display); connection_state; webhook_verification_secret; connected_by (EPC Owner only); probe_results; disconnect_rotation_events | not_connected → connected_healthy → connected_failing_probe | M11-17..23, M11 §M11.3 |
+| project_tranche | V1 | 5 | One part of a project's price, made once at Mark won from the company's default payment terms (`tranche_template_line`; an accepted proposal version's terms take over once proposals land) and never re-typed; state and what is still owed are read from the ledger and the stage history, never stored. | tenant | project_id; position (unique per project); label; share_basis_points (0–10000); amount_minor; due_on_stage (never `cancelled`); source (`payment_terms` \| `proposal_version`); created_at; waived_at + waived_by + waive_reason (all or none) | upcoming → due → part_received → received (derived); waived terminal (the one UPDATE) | M11-08..14, M11-49, M08-35, M08-36 |
+| project_payment | V1 | 5 | Append-only ledger, one per project: every payment a person recorded and every reversal of one; the receipt is this entry rendered. Its receipt photo (stored after the save) and its receipt PDF (made on first ask) are `file` rows whose subject is the payment — no entry ever points at one. *(Finance 'receipts waiting to be recorded' queue has no backing entity — M11-54)* | tenant | project_id; tranche_id; kind (`payment` \| `reversal`); amount_minor (> 0 on a payment, < 0 on a reversal); mode (market pack's rails); reference + reference_key (spaces and dashes gone — one UTR typed two ways is one payment; checked for reuse); received_on; receipt_number (server-assigned from the tenant counter, payments only); reverses_id + reason (reversals only, at most one per payment); recorded_at; recorded_by; creation_key + creation_fingerprint | — (append-only: SELECT + INSERT only for `app_user`) | M11-34, M11-36..42, M11-46 |
+| tranche_request_share | V1 | 5 | Each hand-off of a part's pay message — the customer's chat, the share sheet, the clipboard — that the person then said went out (*Yes, sent*): "Shared by <name> · <date>"; never a delivery. | tenant | tranche_id; shared_at; shared_by | — (append-only) | M11-24, M11-26 |
+| collections_settings | V1 | 5 | How the company's customers pay it: its own UPI ID and the payee name a UPI app shows, from which the domain builds an exact-amount `upi://pay` request (not offered above the pack's `upiRequestLimit`; bank transfer to the business profile's account instead — never a second copy). One row per company, owner-edited. | tenant | tenant_id (PK); upi_id; payee_name; updated_at; updated_by | — (upserted; every change audited) | M11-17, SCR-M11-04 |
 
 ### 2.11 Field workforce & HR-lite
 
@@ -423,17 +423,16 @@ A relationship appears once, in the domain of its child (reference-holding) enti
 | file | holds the bytes of | project_document_file | 1:1 | yes | Replace retains both rows on both sides; nothing deleted. The document row keeps checklist linkage, uploader and verification; the file row keeps bytes, size, checksum and store reference | M08-31, M08-46 |
 | project | executes derived work order via | installation_checklist_step | 1:N | yes | Ticks and attribution survive design changes; divergence visible, never reconciled silently | M08-41, M08 §M08.7 |
 | design | derives step definition of | installation_checklist_step | 1:N | no | PRD silent; manual steps carry no design reference, marked manual | M08-41 (cited) |
-| project | collects on (inherited schedule) | tranche | 1:N | yes | Cancellation never unwinds money; receipts stay readable; refunds are reversing entries | M11-09, M11-50, M08-35, M08-53 |
+| project | collects on (inherited schedule) | project_tranche | 1:N | yes | Cancellation never unwinds money; receipts stay readable; refunds are reversing entries | M11-09, M11-50, M08-35, M08-53 |
 | user_account | is named on jobs via | project_assignment | 1:N | yes | Users are deactivated, never deleted; attribution survives deactivation (F2-20); a deactivated person's rows stay readable and stop granting scope | F2-20, M08-18 |
-| proposal_version | sets pinned terms of | tranche | 1:N | yes | New accepted version revises schedule; earlier schedule stays readable; receipts never rewritten | M11-09, M11-13, M11-14 |
-| proposal_tranche | is inherited as ("same rows, never re-entered") | tranche | 1:1 | yes | Term rows immutable per sent version; materialization shape open (see open questions) | M11-09, M08-35, M11.2 behavior |
-| tranche | receives entries against | payment_entry | 1:N | yes | Append-only: never edited, never deleted; no correction path removes an entry | M11-10, M11-36, M11-40 |
-| project | owns the one ledger of | payment_entry | 1:N | yes | Ledger permanent; readable on cancelled projects in every billing state | M11-40, M11-50 |
-| payment_entry | reverses (negative amount + pointer) | payment_entry | 1:1 | no | Both rows remain visible as a pair; totals reflect the reversal | M11-38, M11-46, M11-47 |
-| payment_link | is confirmed into | payment_entry | 1:N | no (hand-recorded entries carry no link) | Append-only on both sides: a repeat confirmation of the same (tenant, provider, external_id) resolves to the existing entry and writes nothing new; a superseded link keeps the entries already confirmed against it | M11-27, M11-28, M11-29 |
-| tranche | is collected via | payment_link | 1:N | yes | Product cannot revoke minted links (tenant's own account); superseded marked, never removed | M11-24, M11-25, M11-30, M11-23 |
-| collections_account_connection | mints | payment_link | 1:N | yes | Disconnect stops minting immediately; existing links live on on the tenant's account | M11-17, M11-23, M11-24 |
-| tenant | connects own collections account (business 1:1, not mere scoping) | collections_account_connection | 1:1 | yes | Disconnect/rotation recorded and audited; receipts unchanged; singular reading flagged open | M11-17, M11-20, M11-23 |
+| proposal_version | sets pinned terms of (once proposals land) | project_tranche | 1:N | no | No stored pointer — `source = proposal_version` marks such parts; V1 parts come from the company's payment terms at Mark won (`source = payment_terms`); receipts never rewritten | M11-09, M11-13, M11-14 |
+| proposal_tranche | is inherited as ("same rows, never re-entered") | project_tranche | 1:1 | no | Term rows immutable per sent version; copied (label, share, due_on_stage) once proposals land | M11-09, M08-35, M11.2 behavior |
+| project_tranche | receives entries against | project_payment | 1:N | yes | Append-only: never edited, never deleted; no correction path removes an entry | M11-10, M11-36, M11-40 |
+| project | owns the one ledger of | project_payment | 1:N | yes | Ledger permanent; readable on cancelled projects in every billing state | M11-40, M11-50 |
+| project_payment | reverses (negative amount + `reverses_id`) | project_payment | 1:1 | no | At most one reversal per payment (unique index); both rows remain visible as a pair; totals reflect the reversal | M11-38, M11-46, M11-47 |
+| file | holds the receipt photo and the receipt PDF of (subject `project_payment`) | project_payment | 1:N | no | Nothing on the payment changes: the photo is stored after the save, the PDF on the first ask; both optional | M11-37, M11-41 |
+| project_tranche | records each share of its pay message in | tranche_request_share | 1:N | no | Append-only; a tap, never a delivery | M11-24, M11-26 |
+| tenant | takes payments to (its own UPI ID; bank account from the business profile) | collections_settings | 1:1 | no | Owner-edited, audited; receipts unchanged by a change. No gateway connection — owner ruling 2026-11-11 | M11-17 |
 
 ### 3.11 Field workforce & HR-lite
 
@@ -502,8 +501,8 @@ erDiagram
     LEAD ||--o{ CUSTOMER_LINK : "is reached through"
     PROPOSAL_VERSION ||--o| ACCEPTANCE_RECORD : "is accepted as"
     LEAD ||--o| PROJECT : "is won into"
-    PROJECT ||--o{ TRANCHE : "collects through"
-    TRANCHE ||--o{ PAYMENT_ENTRY : "is settled by"
+    PROJECT ||--o{ PROJECT_TRANCHE : "collects through"
+    PROJECT_TRANCHE ||--o{ PROJECT_PAYMENT : "is settled by"
     PROJECT ||--o{ PROJECT_BLOCKER : "attributes waits via"
 ```
 
@@ -1292,46 +1291,40 @@ erDiagram
     string ticked_by
     string done_by_text
   }
-  TRANCHE {
-    string project_ref FK
-    string proposal_version_ref FK
+  PROJECT_TRANCHE {
+    string project_id FK
+    int position
     string label
-    decimal share_pct
-    money amount
+    int share_basis_points
+    money amount_minor
     string due_on_stage
-    string state
+    string source
+    datetime waived_at
     string waive_reason
   }
-  PAYMENT_ENTRY {
-    string project_ref FK
-    string tranche_ref FK
-    money amount
+  PROJECT_PAYMENT {
+    string project_id FK
+    string tranche_id FK
+    string kind
+    money amount_minor
     string mode
-    string confirmation_state
-    date received_on_date
+    string reference_key
+    date received_on
+    string file_id FK
+    int receipt_number
+    string reverses_id FK
     string recorded_by
-    string provider
-    string external_id
-    string payment_link_ref FK
-    string reversal_of_ref FK
   }
-  PAYMENT_LINK {
-    string tranche_ref FK
-    string connection_ref FK
-    money amount
-    string state
-    string provider
-    string external_id
-    string supersession_reason
-    string send_path
-    string minted_by
+  TRANCHE_REQUEST_SHARE {
+    string tranche_id FK
+    datetime shared_at
+    string shared_by
   }
-  COLLECTIONS_ACCOUNT_CONNECTION {
-    string tenant_ref FK
-    string connection_state
-    string credential_last4
-    string webhook_secret_ref
-    string connected_by
+  COLLECTIONS_SETTINGS {
+    string tenant_id PK
+    string upi_id
+    string payee_name
+    string updated_by
   }
   PROJECT_STAGE_TRANSITION {
     string project_ref FK
@@ -1368,16 +1361,13 @@ erDiagram
   DOCUMENT_CHECKLIST_ITEM ||--o{ PROJECT_DOCUMENT_FILE : "holds"
   PROJECT ||--o{ INSTALLATION_CHECKLIST_STEP : "executes work order via"
   DESIGN |o--o{ INSTALLATION_CHECKLIST_STEP : "derives step definition of"
-  PROJECT ||--o{ TRANCHE : "collects on"
-  PROPOSAL_VERSION ||--o{ TRANCHE : "sets pinned terms of"
-  PROPOSAL_TRANCHE ||--o| TRANCHE : "is inherited as"
-  TRANCHE ||--o{ PAYMENT_ENTRY : "receives entries against"
-  PROJECT ||--o{ PAYMENT_ENTRY : "owns ledger of"
-  PAYMENT_ENTRY |o--o| PAYMENT_ENTRY : "reverses"
-  PAYMENT_LINK |o--o{ PAYMENT_ENTRY : "is confirmed into"
-  TRANCHE ||--o{ PAYMENT_LINK : "collected via"
-  COLLECTIONS_ACCOUNT_CONNECTION ||--o{ PAYMENT_LINK : "mints"
-  TENANT ||--o| COLLECTIONS_ACCOUNT_CONNECTION : "connects own account"
+  PROJECT ||--o{ PROJECT_TRANCHE : "collects on"
+  PROPOSAL_TRANCHE ||--o| PROJECT_TRANCHE : "is inherited as"
+  PROJECT_TRANCHE ||--o{ PROJECT_PAYMENT : "receives entries against"
+  PROJECT ||--o{ PROJECT_PAYMENT : "owns ledger of"
+  PROJECT_PAYMENT |o--o| PROJECT_PAYMENT : "reverses"
+  PROJECT_TRANCHE ||--o{ TRANCHE_REQUEST_SHARE : "records shares in"
+  TENANT ||--o| COLLECTIONS_SETTINGS : "takes payments to"
 ```
 
 ### 4.11 Field workforce & HR-lite
@@ -1765,7 +1755,7 @@ erDiagram
 - OFFGRID/HYBRID with no battery is a hard block at Generate. (M06-23, M06-30)
 - client_payable ≤ 0 blocks Generate — the only hard discount guard; below-cost pricing warns with the loss stated, never blocks; no approval flow, status or per-rep ceiling exists. (M06-36, M06-37, D34)
 - Tranche percentages total exactly 100% at Generate; the accepted version's rows become the project's collection schedule at Won — same rows. (M06-13, M07-62)
-- Every proposal_tranche row carries its own version-frozen due_on_stage, and the Generate-time Σ=100.00 check passes only when every row has one — a percentage with no stage mapping is not a payment term. tranche.due_on_stage at Won is copied from proposal_tranche, never resolved through source_template_ref: the template is tenant-mutable and archivable, so reaching back through it would let a later template edit move a schedule that the accepted version froze. source_template_ref is provenance only. (M06-13, M06-23, M11-09, M11-11)
+- Every proposal_tranche row carries its own version-frozen due_on_stage, and the Generate-time Σ=100.00 check passes only when every row has one — a percentage with no stage mapping is not a payment term. project_tranche.due_on_stage is copied from proposal_tranche, never resolved through source_template_ref: the template is tenant-mutable and archivable, so reaching back through it would let a later template edit move a schedule that the accepted version froze. source_template_ref is provenance only. (M06-13, M06-23, M11-09, M11-11)
 - One currency per tenant, stamped at creation; sums reconcile to the currency's minor unit; tax strategy, labels and the incentive computation come from the versioned market pack, never tenant-configured. (M06-34, M06-38, F1-07/13/14 via M06-34)
 - Money is server-computed only; one computed value set feeds builder, document, link, exports and the agent's speech — divergence between renderings is a defect. (M06-41, M06-51, M07-41)
 - Every figure carries one of the closed four provenance tiers; Path B is never presented as derived — a Path B typed figure carries `assumed` — and always renders the verbatim indicative disclaimer; a tier change at upgrade is shown before commit. (M06-03, M06-04, M06-47, F8-02/05/20)
@@ -1826,16 +1816,13 @@ erDiagram
 - No commercial figure ever reaches the installation surface or any surface the Installation Team Member preset reaches. (M08-43, M08-45, M11-56)
 - Person-scoped project visibility resolves over project_assignment: "Own projects" (Project Manager) and "Assigned job only" (Installation Team Member) are exactly the rows naming that person on that project — absent a row, a crew-preset user reaches no project at all, never the whole tenant. "Team" (Sales Manager) does NOT read project_assignment: it resolves over the M10-31 flat manager mapping applied to the source lead's owner, and fails closed to an empty team when the mapping is unset. (F2 §F2.5-M08, M08-18, M10-31..34)
 - Active project = neither HANDED_OVER nor CANCELLED; entitlement limits gate creating one, never working one. (M08-07)
-- Tranche rows ARE the accepted version's terms: Σshare_pct = 100.00 per version, Σamounts = the version's payable to the minor unit; a person never types an amount; one remainder arithmetic everywhere. (M11-08, M11-09, M11-13)
+- Tranche rows ARE the terms they were made from — the company's payment terms at Mark won (an accepted version's terms once proposals land): Σshare_basis_points = 10000, Σamounts = the payable to the minor unit, the rounding remainder on the last part; a person never types an amount; one arithmetic everywhere (`splitSchedule`). (M11-08, M11-09, M11-13)
 - Tranche state is derived from the ledger and can never be typed; a reversal restates it automatically. (M11-10, M11-48)
 - Stage completion is the only event making a tranche due; a tranche mapped to a skipped stage becomes due when the project passes that point (disclosed reading, owner-overturnable). (M11-11, M11-12, M08-36)
-- The ledger is append-only, one per project; entries are never edited or deleted; negatives exist only as reversal rows with pointer, mandatory reason and actor. (M11-38, M11-40, M11-46)
-- Confirmation is verified against the tenant's own webhook secret and is idempotent; only an account confirmation or an explicit person-recorded entry moves state. (M11-27)
-- Every gateway-side object is referenced as a provider + external_id pair, never a bare id: payment_link carries the gateway's link object, payment_entry the gateway's payment/settlement object (null on hand-recorded entries). (tenant, provider, external_id) is the ledger's idempotency key — the same confirmation received twice resolves to the existing entry and writes nothing new — and it is the same handle the M11-29 on-view re-check and periodic sweep read. Collections honours the provider-ref law the M12 side already follows (gateway_charge_ref, gateway_subscription_ref, gateway_mandate_ref, gateway_plan_object_ref); the two money systems still share no surface, total, export or vocabulary. (M11-27, M11-28, M11-29, M11-02)
-- Account-confirmed vs person-recorded provenance travels with every figure and is never dropped or upgraded. (M11-42)
-- A payment link is minted for one tranche for exactly its outstanding amount to the minor unit; mismatch marks it superseded; the product cannot revoke a minted link. (M11-25, M11-30, M11-23)
-- Collections credentials are write-only, encrypted at rest, last-4 display only, never logged or client-side; every decrypt is audited. (M11-18, M11-22)
-- The connected account is an accelerator, never a dependency: manual recording is always available on every tranche; nothing may be conditional on a connection. (M11-19..21, M11-33)
+- The ledger (`project_payment`) is append-only, one per project; entries are never edited or deleted; negatives exist only as reversal rows with `reverses_id`, mandatory reason and actor, at most one per payment. (M11-38, M11-40, M11-46)
+- Only a person-recorded entry moves state — there is no gateway confirmation, webhook or reconciliation sweep (owner ruling 2026-11-11). A recording carries its creation key, so a retried send finds the entry the first one made; a reference (UTR, cheque number) already on a standing receipt is refused, compared by its normalised `reference_key`. (M11-36, M11-39)
+- The pay request is built, never stored: an exact-amount `upi://pay` request to `collections_settings.upi_id` for the part's outstanding, offered only up to the market pack's `upiRequestLimit`; above it, bank transfer to the business profile's account. Sharing it records a `tranche_request_share` row — a tap, never a delivery. (M11-24, M11-25, M11-26)
+- Manual recording is always available on every tranche; nothing is conditional on a payment setting. (M11-33)
 - Waiving is terminal, mandatory-reasoned, audited, never counts as collected, deletes nothing and alters no other row. (M11-49)
 - Unpaid money never gates the customer link, a stage, a document or handover. (M08-39, M11-32)
 - Collected-against-due is one computed figure rendered identically everywhere; no money figure renders final while stale. (M08-37, M11-43, M11-44)
@@ -1876,7 +1863,7 @@ erDiagram
 - Audit retention: 24 months hot, then archived; a tenant exports only its own entries, and export works regardless of billing state. (F2-23)
 - Blocked guard-rail attempts (removing the last EPC Owner / last Manage-team holder) are themselves audit entries. (F2-19, F2-22)
 - Platform-staff access to tenant data is read-only and every such access is an entry in the tenant's own log — the actor reference is wider than the tenant user set. (F2-24)
-- The copy-paste payment-request fallback writes NOTHING — no compose/copy/send record, counter or timeline entry; only the connected-channel send is audited, under the sender's name. (F2-22, M11-07)
+- Sharing a part's payment request records the tap — one `tranche_request_share` row and a `payments.request_shared` audit entry under the sharer's name — and never claims a delivery; no other copy-paste message writes a compose/copy/send record. (F2-22, M11-07)
 - Billing events are audit-covered: plan changes, subscription transitions, entitlement overrides, mandate changes, every reactivation; credential lifecycle and every decrypt likewise. (F2-22)
 - The audit log is not an analytics stream — named analytics events (notification emitted/pushed/read, search performed, template copied, …) are explicitly a separate, unspecified store. (F2 §F2.4, F6 §F6.1–F6.6 analytics)
 - No unregistered notification can exist; a type's registration fixes name, raising module, recipient rule, channel set, grouping class and urgency class — never a per-tenant setting. (F6-05, F6-10, F6 §5)
@@ -1987,16 +1974,15 @@ erDiagram
 
 | Entity.field(s) | Class (PII / credential-secret / financial / location / biometric-none / imagery) | Handling noted in PRD |
 |---|---|---|
-| collections_account_connection.credential | credential-secret | Write-only, last-4 display, encrypted at rest, never logged/returned/client-side; every decrypt audited (M11-18, M11-22) |
-| collections_account_connection.webhook_verification_secret | credential-secret | Same credential family; verifies confirmations genuinely come from the tenant's account (M11-27) |
-| payment_entry.amount / mode / reference / recorded_by | financial | Server owns every figure; append-only; never on Installation Team Member surfaces (M11-34, M11-40, M11-56) |
-| payment_entry.receipt_file | financial / imagery | May contain bank/UPI and customer details; device-held until upload (F4-21 carve-out) (M11-37) |
-| tranche.amount / state / waive_reason | financial | Reads ride project visibility; customer sees only due label + amount via F5 (M11-55, M11-56) |
+| collections_settings.upi_id, payee_name | financial | The company's own payee address — not secret; owner-edited, every change audited (a changed UPI ID sends every later payment somewhere new). No collections credential exists — no payment gateway (owner ruling 2026-11-11) |
+| project_payment.amount_minor / mode / reference / recorded_by | financial | Server owns every figure; append-only; never on Installation Team Member surfaces (M11-34, M11-40, M11-56) |
+| file with subject `project_payment` (receipt photo, receipt PDF) | financial / imagery | May contain bank/UPI and customer details; device-held until upload (F4-21 carve-out) (M11-37) |
+| project_tranche.amount_minor / waive_reason; derived state | financial | Reads ride project visibility; customer sees only due label + amount via F5 (M11-55, M11-56) |
 | project.system_value, collected-vs-due facts | financial | One reconciled figure everywhere; absent from every installation surface (M08-10, M08-37, M08-43) |
 | project_blocker.reason (internal) | financial (internal commercial detail) | Never published to the customer link; only party/reason_class/start/expected_until go out (M08-25, M08-29) |
 | project_document_file (files, handover pack, commissioning artefacts) | PII / imagery | Customer paperwork and certificates retained permanently; served through the link token after handover (M08-30, M08-46, M08-48, M08-49) |
 | installation_checklist_step.done_by_text | PII | Free-text personal names of non-account crew members (M08-42) |
-| payment_link + customer-facing money facts | financial | Published to F5's no-login token surface; may never gate the page (M11-55, M11-32) |
+| UPI pay request + customer-facing money facts | financial | Built on read, never stored; published to F5's no-login token surface; may never gate the page (M11-55, M11-32) |
 
 #### Field workforce & HR-lite
 
@@ -2152,14 +2138,13 @@ Logical level only — access paths the PRD itself evidences. Every tenant-owned
 | project | (tenant, source-lead owner) | Sales Executive read-only list of their own won deals (own-scope filter) | M08-18 |
 | project_blocker | (tenant, cleared_at IS NULL, party, wait_start_date) | Operations view: active blockers grouped by party, company first, oldest first | M08-23, PS-34 (cited) |
 | document_checklist_item | (project, status) | Handover attempt queries and names pending rows; "n of m verified" count | M08-32, M08 §M08.5 |
-| tranche | (project, due_on_stage order) | Payments screen: schedule rows in stage order with per-row state | M11-52 |
-| tranche | (tenant, state = due/part_received, state_entered_date) | Finance home and dashboards: due-now and overdue by project, with since-when | M11-53, M11-54, M08-39 |
-| payment_entry | (project, recorded_at) | Per-project ledger read including reversal pairs | M11-40, M11-47 |
-| payment_entry | (tranche) | Tranche state derivation and outstanding recomputation from its entries | M11-10, M11-36 |
-| payment_link | (state = awaiting_confirmation) | Periodic reconciliation sweep over unconfirmed links; status-poll on view | M11-28, M11-29 |
-| payment_entry | (tenant, provider, external_id) unique, partial where external_id IS NOT NULL | Idempotent confirmation: a repeat webhook or a sweep hit resolves to the existing entry instead of writing a second one. Partial because hand-recorded entries carry no gateway pair | M11-27, M11-29 |
-| payment_link | (tenant, provider, external_id) | Resolving an inbound gateway callback or a sweep result back to the link that minted it | M11-28, M11-29 |
-| collections_account_connection | (connection_state = connected_failing_probe) | Scheduled probes driving alert, settings nag, in-place fallback messaging | M11-19 |
+| project_tranche | (tenant, project, position) unique | Payments screen: schedule rows in order; a project's parts read by project, state and due-ness derived per read (no stored state to index) | M11-52, M11-53, M11-54, M08-39 |
+| project_payment | (tenant, project, recorded_at) | Per-project ledger read including reversal pairs; tranche state and outstanding derived from the project's entries | M11-10, M11-36, M11-40, M11-47 |
+| project_payment | (tenant, reference_key), partial where reference_key IS NOT NULL | A UTR or cheque number already on a standing receipt is refused | M11-36 |
+| project_payment | (tenant, reverses_id) unique, partial where reverses_id IS NOT NULL | At most one reversal per payment | M11-46 |
+| project_payment | (tenant, receipt_number) unique, partial where receipt_number IS NOT NULL | Server-assigned receipt number per company | M11-41 |
+| project_payment | (tenant, creation_key) unique, partial where creation_key IS NOT NULL | A retried recording finds the entry the first one made | M11-39, F4-07 |
+| tranche_request_share | (tenant, tranche, shared_at) | "Shared by <name> · <date>" — the latest share of each part | M11-26 |
 
 ### 6.11 Field workforce & HR-lite
 
@@ -2375,7 +2360,7 @@ The studio is rebuilt from scratch (`docs/build-order.md`); its PRD rows are not
 | F5 §F5.7 | Requested-callback path (F5-54) | callback_request; call_queue_entry (sales) | yes |
 | F5 §F5.8 | Progress phase: stages, blockers, no invented facts (F5-61–F5-67) | project, project_blocker (projects) — rendered as published, no customer-link storage | yes |
 | F5 §F5.3–.10 | Named person with phone number on the page every phase, surviving close (F5-55, F5-73) | no entity/field carries the source — open question | gap |
-| F5 §F5.9 | Payment surface: due tranche, instrument, receipts as published (F5-57–F5-59) | tranche, payment_entry, payment_link (payments) — read-only | yes |
+| F5 §F5.9 | Payment surface: due tranche, instrument, receipts as published (F5-57–F5-59) | project_tranche, project_payment, collections_settings (UPI request built on read; bank details from the business profile) — read-only | yes |
 | F5 §F5.10 | Handover pack, permanence, respond-scope death (F5-70, F5-71, F5-74) | project_document_file, document_checklist_item (projects); link_token per-scope lifetime | yes |
 | F5 §F5.10 | Referral ask at handover, attribution only (F5-72) | referral (crm) with customer/lead attribution | yes |
 | F5 §F5.10 | Evening-before crew message: template row, pack send hour, statutory window (F5-68) | message_template crew_arrival (config); market_pack send-hour default (market) | yes (IN values authored 2026-08-26 at F1-62: empty window, 19:00 tenant-local send hour) |
@@ -2395,27 +2380,27 @@ The studio is rebuilt from scratch (`docs/build-order.md`); its PRD rows are not
 | M08 permissions | Sales Executive read-only own won deals (M08-18) | authorization over project via own-scope; no new stored data | n/a (no stored data) |
 | M08 §M08.4 | Blockers and wait attribution (M08-20..29) | project_blocker; utility → project_blocker; F5 facts (party/reason_class/start/expected_until) | yes |
 | M08 §M08.5 | Document checklist and files (M08-30, 31, 32, 34) | document_checklist_item; project_document_file | yes |
-| M08 §M08.6 | Collection schedule and money surface (M08-35..39) | tranche; payment_entry; payment_link; one-figure collected-vs-due derived | yes |
+| M08 §M08.6 | Collection schedule and money surface (M08-35..39) | project_tranche; project_payment; one-figure collected-vs-due derived | yes |
 | M08 §M08.7 | Installation checklist execution (M08-41..43, 45) | installation_checklist_step; design → step derivation | yes |
 | M08 §M08.8 | Handover, pack, referral ask (M08-46, 47, 49) | document_checklist_item verified rows; customer_link phase; referral (crm); pack snapshot + ask-outcome storage open | partial |
 | M08 commissioning | Commissioning artefacts retained (M08-48) | project.commissioning_artifact_refs; distinct-object shape open | partial |
 | M08 §M08.9 | Cancellation, never delete (M08-51..53) | project.cancellation_reason, terminal CANCELLED; ledger/receipts unaffected | yes |
 | M08 scope laws | Closed surface set; OPEX/PPA never branches (M08-01, 06) | no project-side data (proposal type is M06's) | n/a (no stored data) |
 | M11 posture | Platform never touches funds; two money systems never mix (M11-01..03) | separate collections entities vs billing-domain entities/vocabulary | yes |
-| M11 rails | Pack payment-rails vocabulary (M11-05, 35) | payment_entry.mode validated against market-pack vocabulary | yes |
+| M11 rails | Pack payment-rails vocabulary (M11-05, 35) | project_payment.mode validated against market-pack vocabulary | yes |
 | M11 engine | Online-only mutations, idempotent retry (M11-06, 39) | server-write behaviour only | n/a (no stored data) |
-| M11 audit | Every money event audited, the connected-channel request-message send included and the copy-paste path never (M11-07) | audit_log_entry (platform-services) | yes |
-| M11 §M11.2 | Schedule inheritance and arithmetic (M11-08, 09, 13..16) | tranche; proposal_version → tranche; proposal_tranche → tranche | yes |
-| M11 tranche states | Derived state and stage-driven due-ness (M11-10..12) | tranche.state derived from payment_entry; due_on_stage mapping | yes |
-| M11 §M11.3 | Gateway connection and credentials (M11-17..23) | collections_account_connection | yes |
-| M11 §M11.4 | Payment links and supersession (M11-24..26, 30, 31) | payment_link; connection → link; tranche → link | yes |
-| M11 confirmation | Confirmation and reconciliation healing (M11-27..29) | payment_link.state; payment_entry.confirmation_state; webhook_verification_secret | yes |
-| M11 §M11.5 | Manual recording, append-only ledger (M11-33, 34, 36..40) | payment_entry; project ledger relationship | yes |
-| M11 receipts | Receipt is the rendered entry, instant publish (M11-41, 45) | payment_entry (no separate receipt entity); facts to customer_link | yes |
-| M11 §M11.6/7 | Reversal, waiver, cancellation money (M11-46..51) | payment_entry self-reversal; tranche waive fields | yes |
-| M11 honesty | Provenance qualifiers, one figure, never stale (M11-42..44) | payment_entry.confirmation_state; collected-vs-due derived once | yes |
-| M11 surfaces | Payments screen, finance home, overdue surfacing, ITM exclusion (M11-52..54, 56) | derived reads over tranche/payment_entry; "receipts waiting to be recorded" queue has no backing object | partial |
-| M11 customer | Customer-surface money facts, never a gate (M11-32, 55) | tranche/payment_link/payment_entry facts via customer_link (F5) | yes |
+| M11 audit | Every money event audited, the payment-request share included (M11-07) | audit_log_entry (platform-services); tranche_request_share | yes |
+| M11 §M11.2 | Schedule inheritance and arithmetic (M11-08, 09, 13..16) | project_tranche (from payment terms at Mark won; proposal_tranche once proposals land) | yes |
+| M11 tranche states | Derived state and stage-driven due-ness (M11-10..12) | project_tranche state derived from project_payment and stage history; due_on_stage mapping | yes |
+| M11 §M11.3 | Gateway connection and credentials (M11-17..23) | none — no payment gateway (owner ruling 2026-11-11); collections_settings holds the company's UPI ID | n/a |
+| M11 §M11.4 | Payment links and supersession (M11-24..26, 30, 31) | none — no payment link (owner ruling 2026-11-11); UPI request built on read; tranche_request_share records each share | n/a |
+| M11 confirmation | Confirmation and reconciliation healing (M11-27..29) | none — no gateway confirmation, webhook or sweep (owner ruling 2026-11-11) | n/a |
+| M11 §M11.5 | Manual recording, append-only ledger (M11-33, 34, 36..40) | project_payment; project ledger relationship | yes |
+| M11 receipts | Receipt is the rendered entry, instant publish (M11-41, 45) | project_payment (receipt_number; no separate receipt entity); facts to customer_link | yes |
+| M11 §M11.6/7 | Reversal, waiver, cancellation money (M11-46..51) | project_payment self-reversal; project_tranche waive fields | yes |
+| M11 honesty | Provenance qualifiers, one figure, never stale (M11-42..44) | every entry person-recorded (no account-confirmed tier); collected-vs-due derived once | yes |
+| M11 surfaces | Payments screen, finance home, overdue surfacing, ITM exclusion (M11-52..54, 56) | derived reads over project_tranche/project_payment; "receipts waiting to be recorded" queue has no backing object | partial |
+| M11 customer | Customer-surface money facts, never a gate (M11-32, 55) | project_tranche/project_payment facts and the UPI request via customer_link (F5) | yes |
 
 ### 7.11 Field workforce & HR-lite
 
@@ -2449,7 +2434,7 @@ The studio is rebuilt from scratch (`docs/build-order.md`); its PRD rows are not
 | PRD area | Requirement cluster | Entities / relationships | Covered? |
 |---|---|---|---|
 | F4 | Server truth: identifiers and money server-assigned; server apply order, capture time display-only (F4-04, F4-19) | server-assigned ids on all entities; activity (capture_time + apply order), survey_version | yes |
-| F4 | Survey versioned-append + idempotent submissions (F4-07, F4-14, F4-25) | survey → survey_version (immutable chain, version-kept notice); `creation_key` + `creation_fingerprint` on every row a create route writes — tenant, invitation, tranche_template (migration 0012, T-FPLAT-011) | yes |
+| F4 | Survey versioned-append + idempotent submissions (F4-07, F4-14, F4-25) | survey → survey_version (immutable chain, version-kept notice); `creation_key` + `creation_fingerprint` on every row a create route writes — tenant, invitation, tranche_template (migration 0012, T-FPLAT-011), project_payment (migration 0062) | yes |
 | F4 | Design optimistic version check, no merge (F4-15) | design (server version basis) | yes |
 | F4 | Lead per-field LWW + mandatory activity entry + stage machine (F4-16) | lead → activity (kind, actor_type, actor_ref, capture_time, server_apply_order, body) — activity defines NO field/old/new columns, so the changed-field triple is carried only inside free-text body; lead → lead_stage_transition covers the stage machine | partial (per-field LWW's changed-field record is unmodeled; audit_log_entry.change_payload carries old→new for audited events only) |
 | F4 | Visit status forward-only (F4-17) | field_visit / survey_visit status | yes |

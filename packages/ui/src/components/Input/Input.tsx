@@ -9,7 +9,7 @@ import { renderAttribution } from '../ValueSource';
 import { useCommitDraft } from './commit-draft';
 import type { InputNote as Note } from './Input.logic';
 import { inputNote, ringTone } from './Input.logic';
-import type { InputProps } from './Input.types';
+import { EXACT_INPUT, type InputProps } from './Input.types';
 
 interface WebInputProps extends InputProps {
   className?: string;
@@ -101,7 +101,9 @@ export function Input({
           className="hg-input-control"
           data-mono={mono ? 'true' : undefined}
           id={fieldId}
-          type={type}
+          type={type === 'handle' ? 'text' : type}
+          autoCapitalize={EXACT_INPUT.has(type) ? 'off' : undefined}
+          spellCheck={EXACT_INPUT.has(type) ? false : undefined}
           placeholder={placeholder}
           disabled={disabled}
           value={shown}

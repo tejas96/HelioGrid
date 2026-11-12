@@ -10,6 +10,7 @@ function project(id: string, overrides: Partial<NeedsYouFacts> = {}): NeedsYouFa
     earlyProof: false,
     missingProof: false,
     installDatePassed: false,
+    moneyDue: false,
     wait: null,
     ...overrides,
   };
@@ -33,6 +34,13 @@ describe('todoOf — one act a project asks, early proof first (ruling 2026-11-1
       expect(todoOf(project('p', { earlyProof, missingProof, installDatePassed }))).toBe(todo);
     },
   );
+
+  it.each([
+    [true, 'install_date_passed'],
+    [false, 'money_due'],
+  ] as const)('money due behind install date passed %s asks %s (M11-53)', (passed, todo) => {
+    expect(todoOf(project('p', { installDatePassed: passed, moneyDue: true }))).toBe(todo);
+  });
 
   it('a wait alone asks no act', () => {
     expect(todoOf(project('p', { wait: waitingOn('customer', '2026-11-01') }))).toBeNull();

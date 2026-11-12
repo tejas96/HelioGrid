@@ -50,4 +50,10 @@ export const APPEND_ONLY_LEDGERS: Record<string, string> = {
     'link’s history read it (M08-14, M08-29)',
   lead_file:
     'a file added to a lead; a new file is a new row and the earlier one stays readable (M02-32)',
+  project_payment:
+    'every payment recorded on a project and every reversal of one; a mistake is reversed, never ' +
+    'edited or deleted (M11-40, M11-46)',
+  tranche_request_share:
+    'each tap that shared a part’s pay request — what stops a second person asking twice ' +
+    '(ruling 2026-11-10)',
 };

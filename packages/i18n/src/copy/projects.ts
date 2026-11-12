@@ -77,6 +77,7 @@ const TODO_KIND: Record<TodoKind, MessageRef> = {
   proof_early: /*i18n*/ { id: 'Proof came early' },
   proof_missing: /*i18n*/ { id: 'Proof missing' },
   install_date_passed: /*i18n*/ { id: 'Install date passed' },
+  money_due: /*i18n*/ { id: 'Money due' },
 };
 /** A to-do row's line: what happened, in the project's own facts. */
 /** An early proof that is a checklist row names the row, as the design reads it. */
@@ -86,11 +87,13 @@ const TODO_LINE: Record<TodoKind, MessageRef> = {
   proof_early: /*i18n*/ { id: 'Proof for {stage} came early' },
   proof_missing: /*i18n*/ { id: '{stage} by hand · {row} missing' },
   install_date_passed: /*i18n*/ { id: 'Install by {date} has passed · still {stage}' },
+  money_due: /*i18n*/ { id: '{part} · {amount} to collect' },
 };
 const TODO_ACT: Record<TodoKind, MessageRef> = {
   proof_early: /*i18n*/ { id: 'Move' },
   proof_missing: /*i18n*/ { id: 'Upload' },
   install_date_passed: /*i18n*/ { id: 'New date' },
+  money_due: /*i18n*/ { id: 'Ask' },
 };
 
 /** The act as a screen reader says it: which project it acts on, among a list of the same buttons. */
@@ -98,6 +101,7 @@ const TODO_ACT_SPOKEN: Record<TodoKind, MessageRef> = {
   proof_early: /*i18n*/ { id: 'Move: {name}' },
   proof_missing: /*i18n*/ { id: 'Upload: {name}' },
   install_date_passed: /*i18n*/ { id: 'New date: {name}' },
+  money_due: /*i18n*/ { id: 'Ask for money: {name}' },
 };
 
 /** What a project's own line and its install cell are made of. */
@@ -118,6 +122,8 @@ export interface BoardTodoFacts {
   readonly earlyProofBy?: string | null;
   readonly missingProofRow: string | null;
   readonly expectedInstallOn: string | null;
+  /** The part due and what it owes, the amount already formatted — the money reason's line. */
+  readonly money?: { readonly part: string; readonly amount: string } | null;
 }
 
 /** Where a stage sits against Installation: before it the install is a promise, after it done. */
@@ -199,6 +205,8 @@ export function projectBoardWords(t: T, pack: FormatPack, language: UiLanguage) 
             stage: word('stage', facts.stage),
             row: word('row', facts.missingProofRow ?? ''),
             date: facts.expectedInstallOn === null ? '' : day(facts.expectedInstallOn),
+            part: facts.money?.part ?? '',
+            amount: facts.money?.amount ?? '',
           }),
     todoAct: (kind: TodoKind) => t(TODO_ACT[kind]),
     todoActSpoken: (kind: TodoKind, name: string) => t(TODO_ACT_SPOKEN[kind], { name }),

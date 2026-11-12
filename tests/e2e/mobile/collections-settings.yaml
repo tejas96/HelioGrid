@@ -1,0 +1,15 @@
+# How customers pay you: the owner's page, opened from settings and closed back to it
+# (`SCR-M11-04`) — the money goes straight to the company's bank, the bank section and the market's
+# ways to record below. Saving a UPI ID is the web suite's.
+appId: com.heliogrid.app
+---
+- runFlow:
+    file: steps/open-setting.yaml
+    env:
+      ROW: ${ROW_COLLECTIONS}
+- assertVisible: ${HOW_PAY_LEAD}
+- scrollUntilVisible:
+    element: ${NO_BANK_YET}
+- scrollUntilVisible:
+    element: ${PAY_WAYS}
+- tapOn: ${BACK_TO_SETTINGS}

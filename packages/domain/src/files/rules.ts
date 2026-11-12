@@ -64,6 +64,7 @@ export const FILE_SUBJECT_KINDS = [
   'lead_import',
   'lead',
   'project',
+  'project_payment',
 ] as const satisfies readonly SubjectKind[];
 export type FileSubjectKind = (typeof FILE_SUBJECT_KINDS)[number];
 
@@ -129,6 +130,17 @@ export const FILE_SUBJECT_RULES = {
     read: 'subject',
     maxBytes: FILE_MAX_BYTES,
     contentTypes: ['image/png', 'image/jpeg', 'application/pdf'],
+  },
+  /**
+   * A payment's receipt photo (`M11-37`): stored after the payment is saved, so a slow upload never
+   * holds the money back; by who may record payments, read by whoever may see the project's money.
+   * Its receipt PDF hangs on the same payment, made by the platform, never uploaded.
+   */
+  project_payment: {
+    upload: 'subject',
+    read: 'subject',
+    maxBytes: FILE_MAX_BYTES,
+    contentTypes: ['image/png', 'image/jpeg'],
   },
 } as const satisfies Readonly<Record<FileSubjectKind, FileSubjectRule>>;
 

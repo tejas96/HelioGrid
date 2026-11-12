@@ -3,6 +3,8 @@ import type {
   BrandingSave,
   BusinessProfileRead,
   BusinessProfileWrite,
+  CollectionsSettings,
+  CollectionsSettingsWrite,
   ProposalTemplate,
   ProposalTemplateRead,
   TaxRegistrations,
@@ -46,6 +48,10 @@ export interface SettingsRepository {
   saveTrancheTemplate(id: string, template: TrancheTemplateWrite): Promise<TrancheTemplate>;
   /** One of the three acts on a template: each answers the template as it now stands. */
   actOnTrancheTemplate(id: string, act: TrancheTemplateAct): Promise<TrancheTemplate>;
+  /** How customers pay the company: its UPI ID, the name shown, its bank (`SCR-M11-04`). */
+  collections(signal?: AbortSignal): Promise<CollectionsSettings>;
+  /** The UPI ID and the name shown; the api refuses an ID that does not read as name@bank. */
+  saveCollections(write: CollectionsSettingsWrite): Promise<CollectionsSettings>;
   /** The schedule on the sample contract, worked out by the api (`F4-04`). */
   previewTrancheSchedule(
     request: TrancheSchedulePreviewRequest,
@@ -162,6 +168,10 @@ export function createSettingsRepository(api: ApiClient): SettingsRepository {
         throw normalizeClientError(error);
       }
     },
+    collections: (signal) =>
+      bodyAt(() => api.tenantSettings.collections({ fetchOptions: { signal } }), 200),
+    saveCollections: (write) =>
+      bodyAt(() => api.tenantSettings.saveCollections({ body: write }), 200),
     trancheTemplates: (signal) =>
       bodyAt(() => api.tenantSettings.trancheTemplates({ fetchOptions: { signal } }), 200),
     async createTrancheTemplate(template) {

@@ -43,6 +43,14 @@ export interface BoardCard {
   readonly missingProofRow: string | null;
   /** The company day the install finished; null before. */
   readonly installedOn?: CalendarDate | null;
+  /** The part to collect now, for a reader who sees money — the money reason's line. */
+  readonly money?: {
+    readonly duePart: {
+      readonly label: string;
+      readonly outstanding: string;
+      readonly dueOn: CalendarDate;
+    } | null;
+  } | null;
 }
 
 /** The board's own read: the company's day, the stage counts and every live card. */
@@ -169,6 +177,7 @@ function needsOf(cards: readonly BoardCard[], canAct: boolean, today: CalendarDa
       earlyProof: card.todo === 'proof_early',
       missingProof: card.todo === 'proof_missing',
       installDatePassed: card.todo === 'install_date_passed',
+      moneyDue: card.todo === 'money_due',
       wait:
         card.wait !== null && isParty(card.wait.party)
           ? {

@@ -23,9 +23,11 @@ export const SUBJECT_LOOKUPS: Readonly<Record<FileSubjectKind, SubjectLookup>> =
   /** A lead spreadsheet is stored before its import exists: its ref is the company's id. */
   lead_import: isTheCompany,
   /**
-   * A lead's and a project's papers: their own module has already answered (`FileSubjectRepository`)
-   * that the record is in this company and in the caller's reach, before this runs.
+   * A lead's and a project's papers, and a payment's photo: their own module has already answered
+   * (`FileSubjectRepository`) that the record is in this company and in the caller's reach, before
+   * this runs.
    */
   lead: async () => true,
   project: async () => true,
+  project_payment: async () => true,
 };

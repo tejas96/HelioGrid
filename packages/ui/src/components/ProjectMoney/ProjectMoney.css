@@ -1,0 +1,259 @@
+/* ProjectMoney — a project's money (design A "Quiet Ledger"). The glass is `HeroPanel`'s, the
+   tiles are `Card`'s and the sheet is `EditorSurface`'s; this file lays out what they hold. */
+
+.hg-money {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hg-card.hg-money-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: var(--sp-1);
+}
+
+.hg-money-hero-now,
+.hg-money-hero-quiet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.hg-money-hero-figure-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+
+/* A hero figure is Newsreader with tabular figures, one token — never wrapped (`CLAUDE.md` §9). */
+.hg-money-hero-figure {
+  font-family: var(--font-display);
+  font-size: var(--fs-hero-phone);
+  line-height: var(--lh-hero-phone);
+  letter-spacing: var(--tr-hero-phone);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--on-panel);
+}
+
+.hg-money-hero-figure-words {
+  font-family: var(--font-display);
+  font-size: var(--fs-figure);
+  line-height: var(--lh-figure);
+  color: var(--on-panel);
+}
+
+.hg-money-on-panel {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--on-panel-muted);
+}
+
+.hg-money-bar-frame {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.hg-money-bar {
+  display: flex;
+  gap: var(--sp-1);
+  height: var(--sp-2);
+  overflow: hidden;
+  border-radius: var(--r-pill);
+}
+
+.hg-money-bar-segment {
+  flex-basis: 0;
+  min-width: var(--sp-1);
+  border-radius: var(--r-pill);
+  transform-origin: left center;
+  animation: hg-money-grow var(--dur-data) var(--ease-enter) backwards;
+}
+
+.hg-money-bar-segment[data-part="in"],
+.hg-money-legend-swatch[data-part="in"] {
+  background: var(--success);
+}
+
+.hg-money-bar-segment[data-part="due"],
+.hg-money-legend-swatch[data-part="due"] {
+  background: var(--accent);
+}
+
+.hg-money-bar-segment[data-part="next"],
+.hg-money-legend-swatch[data-part="next"] {
+  background: var(--line-strong);
+}
+
+@keyframes hg-money-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.hg-money-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--sp-1) var(--sp-3);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--on-panel-muted);
+}
+
+.hg-money-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.hg-money-legend-swatch {
+  width: var(--sp-2);
+  height: var(--sp-2);
+  border-radius: var(--r-xs);
+}
+
+.hg-money-hero-acts,
+.hg-money-glance-acts,
+.hg-money-collect-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.hg-money-hero-acts > *,
+.hg-money-collect-acts > :first-child {
+  flex: 1 1 calc(var(--sp-8) * 4);
+}
+
+.hg-money-entry {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.hg-money-entry-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hg-money-entry-title {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-2);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+}
+
+.hg-money-entry-line,
+.hg-money-quiet {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.hg-money-quiet {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+}
+
+/* Money in a list is Geist Mono with tabular figures (`CLAUDE.md` §9). */
+.hg-money-figure,
+.hg-money-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hg-money-glance {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+}
+
+.hg-money-glance-due {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-money-glance-line {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+}
+
+.hg-money-glance-acts {
+  padding: 0 var(--sp-3) var(--sp-3);
+}
+
+.hg-money-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.hg-money-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.hg-money-note {
+  margin: 0;
+  padding: var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--hg-control-fill);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body-sm);
+  color: var(--text-secondary);
+}
+
+.hg-money-part-more {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.hg-money-part-notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+/* The money received: one list inside its card, each row's acts at its end (design A). */
+.hg-money-rows {
+  margin: 0;
+  padding: 0 var(--sp-2) var(--sp-2);
+  list-style: none;
+}
+
+.hg-money-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-2);
+}
+
+.hg-money-row + .hg-money-row {
+  border-top: 1px solid var(--line-soft);
+}
+
+.hg-money-row > .hg-money-entry {
+  flex: 1;
+}

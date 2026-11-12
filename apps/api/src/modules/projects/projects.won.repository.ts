@@ -1,5 +1,6 @@
 import type { MarkWon } from '@heliogrid/contracts';
 import {
+  customer,
   type DbTransaction,
   lead,
   project,
@@ -8,7 +9,6 @@ import {
   projectStageTransition,
   type TenantPool,
   tenant,
-  tenantCounter,
 } from '@heliogrid/db';
 import {
   type CalendarDate,
@@ -24,7 +24,7 @@ import {
 } from '@heliogrid/domain';
 import { projectNumberOf } from '@heliogrid/domain/server';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, count, eq, notInArray, sql } from 'drizzle-orm';
+import { and, count, eq, notInArray } from 'drizzle-orm';
 import type { Act } from '../../common/auth/session-context';
 import type { CreationKey } from '../../common/creation-key';
 import { TENANT_DB } from '../../common/db/tenant.token';
@@ -35,10 +35,19 @@ import {
   recordActivity,
   recordLeadMoves,
 } from '../crm/crm.public';
+import { lockCounter, nextNumber } from './projects.counter.repository';
+import { noticePartsNowDue, type PaymentNoticeWords } from './projects.payment-notices.repository';
 import { allHold } from './projects.people.repository';
+import { startSchedule } from './projects.schedule.repository';
 
 export type MarkWonOutcome =
-  | { readonly outcome: 'done' | 'replayed'; readonly projectId: string; readonly number: string }
+  | {
+      readonly outcome: 'done' | 'replayed';
+      readonly projectId: string;
+      readonly number: string;
+      /** The notices of the parts due at Won, for their push after the commit. */
+      readonly notified?: readonly string[];
+    }
   | { readonly outcome: 'key-reused' }
   | { readonly outcome: 'refused'; readonly refusal: LeadActRefusal }
   | { readonly outcome: 'not-a-manager' }
@@ -66,13 +75,14 @@ export class ProjectsWonRepository {
     activeLimit: number | null,
     act: Act,
     key: CreationKey | null,
+    words: PaymentNoticeWords,
   ): Promise<MarkWonOutcome> {
     return this.db.withTenantTransaction(reader.tenantId, async (tx) => {
       const locked = await lockLeadInScope(tx, reader, leadId);
       if (locked === null) return { outcome: 'not-found' };
       const replay = key === null ? null : await madeWith(tx, reader.tenantId, key);
       if (replay !== null) return replay;
-      await lockCounter(tx, reader.tenantId);
+      await lockCounter(tx, reader.tenantId, 'project');
       const today = await todayOf(tx, reader.tenantId, act);
       if (!isPromisableInstallDate(body.expectedInstallOn, today)) {
         return { outcome: 'install-date-past' };
@@ -103,7 +113,23 @@ export class ProjectsWonRepository {
         actor: personOf(act),
         capturedAt,
       });
-      return { outcome: 'done', projectId: created.id, number: projectNumberOf(created.number) };
+      const notified = await noticePartsNowDue(
+        tx,
+        {
+          tenantId: reader.tenantId,
+          projectId: created.id,
+          managerId: body.managerId,
+          name: await customerNameOf(tx, reader.tenantId, locked.customerId),
+        },
+        new Date(act.now),
+        words,
+      );
+      return {
+        outcome: 'done',
+        projectId: created.id,
+        number: projectNumberOf(created.number),
+        notified,
+      };
     });
   }
 }
@@ -161,8 +187,9 @@ async function startProject(
   // A deal with no segment yet is read as residential: the incentive path then stays open, and
   // a person marks its row Not needed where it does not apply.
   const segment = deal.segment ?? 'residential';
-  const number = await nextNumber(tx, tenantId);
+  const number = await nextNumber(tx, tenantId, 'project');
   const now = new Date(act.now);
+  const finalValueMinor = minorUnitsOfDecimal(body.finalValue, pack.formats.minorUnitDigits);
   const [created] = await tx
     .insert(project)
     .values({
@@ -175,7 +202,7 @@ async function startProject(
       managerId: body.managerId,
       soldBy: deal.ownerUserId,
       expectedInstallOn: body.expectedInstallOn,
-      finalValueMinor: minorUnitsOfDecimal(body.finalValue, pack.formats.minorUnitDigits),
+      finalValueMinor,
       packVersion: start.packVersion,
       incentiveApplies: isSubsidyAvailable(pack.subsidy, segment),
       createdAt: now,
@@ -186,6 +213,7 @@ async function startProject(
     .returning({ id: project.id });
   if (created === undefined) throw new Error('the project insert returned no row');
   await seed(tx, tenantId, created.id, pack, segment, now);
+  await startSchedule(tx, tenantId, created.id, finalValueMinor, now);
   await tx.insert(projectStageTransition).values({
     tenantId,
     projectId: created.id,
@@ -217,39 +245,6 @@ async function madeWith(
   return made.fingerprint === key.fingerprint
     ? { outcome: 'replayed', projectId: made.id, number: projectNumberOf(made.number) }
     : { outcome: 'key-reused' };
-}
-
-/**
- * The company's next project number (`M08-03`): the counter row is created at 1 or bumped, inside
- * this transaction — a second Mark won at the same moment waits on the row and takes the next.
- */
-/**
- * Holds the company's project counter row until the transaction ends, so two wins take turns on
- * it — the company's first wins too: the row is made, at 0, before it is locked.
- */
-async function lockCounter(tx: DbTransaction, tenantId: string): Promise<void> {
-  await tx
-    .insert(tenantCounter)
-    .values({ tenantId, kind: 'project', lastNumber: 0 })
-    .onConflictDoNothing();
-  await tx
-    .select({ lastNumber: tenantCounter.lastNumber })
-    .from(tenantCounter)
-    .where(and(eq(tenantCounter.tenantId, tenantId), eq(tenantCounter.kind, 'project')))
-    .for('update');
-}
-
-async function nextNumber(tx: DbTransaction, tenantId: string): Promise<number> {
-  const [next] = await tx
-    .insert(tenantCounter)
-    .values({ tenantId, kind: 'project', lastNumber: 1 })
-    .onConflictDoUpdate({
-      target: [tenantCounter.tenantId, tenantCounter.kind],
-      set: { lastNumber: sql`${tenantCounter.lastNumber} + 1` },
-    })
-    .returning({ lastNumber: tenantCounter.lastNumber });
-  if (next === undefined) throw new Error('the project counter returned no number');
-  return next.lastNumber;
 }
 
 /** The company's active projects (`M08-07`) — what the plan limit counts. */
@@ -293,4 +288,17 @@ async function seed(
         steps.map((step, position) => ({ tenantId, projectId, stepKey: step.step, position })),
       );
   }
+}
+
+/** How the won customer reads in a notice: their name, else their phone. */
+async function customerNameOf(
+  tx: DbTransaction,
+  tenantId: string,
+  customerId: string,
+): Promise<string> {
+  const [row] = await tx
+    .select({ name: customer.name, phone: customer.phoneE164 })
+    .from(customer)
+    .where(and(eq(customer.tenantId, tenantId), eq(customer.id, customerId)));
+  return row?.name ?? row?.phone ?? '';
 }

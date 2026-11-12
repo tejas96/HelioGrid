@@ -33,6 +33,11 @@ export class FileDocumentService {
     @Inject(OBJECT_STORE) private readonly store: ObjectStore,
   ) {}
 
+  /** The document the platform already made for this record, if it did. */
+  kept(tenantId: string, subjectKind: SubjectKind, subjectRef: string): Promise<string | null> {
+    return this.files.documentOf(tenantId, this.store.provider, subjectKind, subjectRef);
+  }
+
   /**
    * Stores the bytes, then writes their row, and answers its id. A record whose row exists already
    * keeps it and its bytes: a second render differs byte for byte (its timestamp), and the row,
@@ -94,3 +99,15 @@ export class FileDocumentService {
 }
 
 const MS_PER_SECOND = 1_000;
+
+/** A Temporal payload is held to 2 MB; a document's PDF is tens of KB, so this is a broken render. */
+const MAX_PDF_BYTES = 1_048_576;
+
+/** A rendered PDF's bytes from its payload, refused when they cannot be a document. */
+export function pdfBytesOf(pdfBase64: string, documentId: string): Uint8Array {
+  const bytes = new Uint8Array(Buffer.from(pdfBase64, 'base64'));
+  if (bytes.length === 0 || bytes.length > MAX_PDF_BYTES) {
+    throw new Error(`document ${documentId}'s PDF is ${bytes.length} bytes: not a document`);
+  }
+  return bytes;
+}

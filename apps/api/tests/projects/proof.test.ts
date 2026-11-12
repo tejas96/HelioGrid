@@ -121,7 +121,12 @@ describe.skipIf(skip)('install ticks as proof, over HTTP against a migrated data
     await walk(owner(), projectId, ['material_ordered']);
     await tick(projectId, 'mounting_structure');
     const confirmed = await acted(owner(), projectId, 'confirm-proof', { to: 'installation' });
-    expect(confirmed).toMatchObject({ stage: 'installation', todo: null, earlyProofTo: null });
+    // Nothing about proof is asked any more; the parts due by Installation still owe money.
+    expect(confirmed).toMatchObject({
+      stage: 'installation',
+      todo: 'money_due',
+      earlyProofTo: null,
+    });
     expect(confirmed.journey.at(-1)).toMatchObject({
       from: 'material_ordered',
       to: 'installation',

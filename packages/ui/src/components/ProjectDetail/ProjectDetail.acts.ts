@@ -152,7 +152,7 @@ export function projectBodyOf(
   said: TranslatedText | null,
   heroFocus: FocusAfter,
 ): {
-  readonly page: Omit<ProjectDetailProps, 'words'>;
+  readonly page: Omit<ProjectDetailProps, 'words' | 'money'>;
   readonly sheet: Omit<ProjectActSheetProps, 'words'>;
 } {
   const inSheet = screen.sheet !== null;

@@ -7,6 +7,7 @@ import { colors } from '../../primitives/Color/colors';
 import { FIELD_BOX_EDGE, fieldBox, fieldWords } from '../../primitives/FieldBox/FieldBox.native';
 import { Pressable } from '../../primitives/Pressable/Pressable.native';
 import { Text } from '../../primitives/Text/Text.native';
+import { useCloseOnBack } from '../../primitives/use-close-on-back.native';
 import { ShellGlyphMarks } from '../AppShell/ShellGlyphMarks.native';
 import { useFormat } from '../MarketProvider/market-context';
 import { Calendar } from './Calendar.native';
@@ -65,6 +66,8 @@ export function DatePicker({
 }: NativeDatePickerProps) {
   const mkt = useFormat();
   const [open, setOpen] = useState(false);
+  // Back closes the calendar first, and the sheet under it stays (`CLAUDE.md` §10).
+  useCloseOnBack(open, () => setOpen(false));
   const text = triggerText(mode, value, mkt, words);
 
   return (

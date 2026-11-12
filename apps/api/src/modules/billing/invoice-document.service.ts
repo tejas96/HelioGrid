@@ -8,13 +8,10 @@ import type {
 } from '@heliogrid/contracts/workflows';
 import { createTranslator } from '@heliogrid/i18n';
 import { Inject, Injectable } from '@nestjs/common';
-import { FileDocumentService } from '../file/file.public';
+import { FileDocumentService, pdfBytesOf } from '../file/file.public';
 import { MarketPackService } from '../market/market.public';
 import { invoiceDocumentHtml } from './internal/invoice-document.html';
 import { InvoiceDocumentAdminRepository } from './invoice-document.admin.repository';
-
-/** A Temporal payload is held to 2 MB; an invoice's PDF is tens of KB, so this is a broken render. */
-const MAX_PDF_BYTES = 1_048_576;
 
 /**
  * An invoice's PDF (`M12-44`): the page it is printed from, and the PDF kept once it is rendered.
@@ -97,13 +94,4 @@ export class InvoiceDocumentService {
     });
     return { attached: await this.invoices.attachCreditNotePdf(tenantId, creditNoteId, fileId) };
   }
-}
-
-/** The rendered bytes, refused when they cannot be a document. */
-function pdfBytesOf(pdfBase64: string, documentId: string): Uint8Array {
-  const bytes = new Uint8Array(Buffer.from(pdfBase64, 'base64'));
-  if (bytes.length === 0 || bytes.length > MAX_PDF_BYTES) {
-    throw new Error(`document ${documentId}'s PDF is ${bytes.length} bytes: not a document`);
-  }
-  return bytes;
 }

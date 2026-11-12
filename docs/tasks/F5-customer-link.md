@@ -60,6 +60,7 @@ Realized elsewhere. The disposition index at the end covers every row in this bu
 **DONE WHEN:**
 - Given a confirmed or recorded payment, when the customer opens their link, then a receipt, a named contact with a number, and a statement of what happens next and when are all present (`F5-57`).
 - Given a tenant with a connected collections account and a due tranche, when the customer opens their link, then the instrument presented is the tenant's own for that tranche; and given no connected account, when they open it, then no instrument is shown and none is fabricated (`F5-58`).
+  *(No tenant ever connects a collections account: there is no payment gateway (owner ruling 2026-11-11). The instrument shown is the company's own exact-amount UPI request and bank details that block 5's pay request already carries (`T-M11-015` supplies them); nothing is minted.)*
 - Given a payment confirmed by the tenant's account and a payment recorded by hand, when both render, then each carries its own confirmation state and neither is presented as the other (`F5-59`).
 - Given a won deal, when the customer opens the URL they were sent with the proposal, then the progress phase renders with done, current and waiting items and their dates (`F5-61`).
 - Given any stage rendered on the customer's page, when it is read, then it is a value of the canonical chain displayed with the market pack's label, and a stage the market skips is absent rather than permanently empty (`F5-62`).

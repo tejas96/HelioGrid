@@ -79,6 +79,7 @@ export {
   stepsProve,
 } from './proof';
 export {
+  moneyScopeOf,
   PROJECT_REACHES,
   type ProjectReach,
   type ProjectScope,

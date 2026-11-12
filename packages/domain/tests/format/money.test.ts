@@ -49,7 +49,10 @@ describe('formatMoney — the market decides, in every language (F1-46, F3-20)',
     [452471, '₹4,52,471'],
     ['452471', '₹4,52,471'],
     [0, '₹0'],
-    [-452471, '₹-4,52,471'],
+    /* The sign leads the whole figure, as a reversal shows it. */
+    [-452471, '-₹4,52,471'],
+    [-1, '-₹1'],
+    ['-45000.00', '-₹45,000'],
     /* Number(' ') is 0, so a whitespace cell renders as zero money rather than blank. */
     [' ', '₹0'],
   ])('%o → %s', (amount, expected) => {
@@ -88,7 +91,7 @@ describe('formatCompactMoney (F1-46)', () => {
     [14_000_000, '₹1.4 Cr'],
     [99_999, '₹99,999'],
     [0, '₹0'],
-    [-9_200_000, '₹-92L'],
+    [-9_200_000, '-₹92L'],
   ])('%o → %s', (value, expected) => {
     expect(formatCompactMoney(IN_FORMATS, value)).toBe(expected);
   });
@@ -112,7 +115,7 @@ describe('formatMinorUnits — paise printed to the minor unit, in the market’
     [100, '₹1.00'],
     [1, '₹0.01'],
     [0, '₹0.00'],
-    [-2_000_000, '₹-20,000.00'],
+    [-2_000_000, '-₹20,000.00'],
   ])('%d minor units renders %s', (amount, expected) => {
     expect(formatMinorUnits(IN_FORMATS, minorUnits(amount))).toBe(expected);
   });

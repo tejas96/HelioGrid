@@ -43,6 +43,7 @@ import {
   type NotificationRepository,
 } from './notification/repository';
 import { createOnboardingRepository, type OnboardingRepository } from './onboarding/repository';
+import { createPaymentsRepository, type PaymentsRepository } from './payments/payments-repository';
 import { createPriceBookRepository, type PriceBookRepository } from './price-book/repository';
 import { createPricingRepository, type PricingRepository } from './pricing/repository';
 import { createProjectsRepository, type ProjectsRepository } from './projects/projects-repository';
@@ -90,6 +91,7 @@ export interface Repositories {
   leadFiles: LeadFilesRepository;
   leadImport: LeadImportRepository;
   leadLifecycle: LeadLifecycleRepository;
+  payments: PaymentsRepository;
   projects: ProjectsRepository;
   leadMessages: LeadMessagesRepository;
   leads: LeadsRepository;
@@ -169,6 +171,7 @@ export function createRepositoryRegistry(config: RepositoryRegistryConfig): Repo
     leadFiles: createLeadFilesRepository(api),
     leadImport: createLeadImportRepository(api),
     leadLifecycle: createLeadLifecycleRepository(api),
+    payments: createPaymentsRepository(api),
     projects: createProjectsRepository(api),
     leadMessages: createLeadMessagesRepository(api),
     leads: createLeadsRepository(api),

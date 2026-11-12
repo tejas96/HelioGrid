@@ -40,6 +40,7 @@ export function ProjectDetail(props: ProjectDetailProps) {
       {said}
       <ProjectHero {...props} />
       <ProjectWait {...props} />
+      {props.money}
       <ProjectJourney {...props} />
       <ProjectDeal {...props} />
       <ProjectDocuments {...props} rows="waiting" />

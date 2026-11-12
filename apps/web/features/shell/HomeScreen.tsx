@@ -1,5 +1,5 @@
 'use client';
-import { useHomeToday, useShell } from '@heliogrid/data/react';
+import { useHomeToday, useMoneyDue, useShell } from '@heliogrid/data/react';
 import { SETTINGS_SEGMENT, type SettingsRow } from '@heliogrid/domain';
 import {
   BLOCK,
@@ -7,6 +7,7 @@ import {
   homeGlanceWords,
   homeGreeting,
   homeHeadWords,
+  moneyDueWords,
   readinessStepWords,
   readinessWords,
   todayLine,
@@ -20,6 +21,7 @@ import {
   HomeBlocks,
   HomeHead,
   homeGlanceFacts,
+  MoneyDue,
   ProposalReadiness,
   readinessSteps,
   ShellGlyph,
@@ -30,7 +32,7 @@ import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import { FirstRunMark } from './components/FirstRunMark';
 import { InstallerHome } from './components/InstallerHome';
-import { DOOR_PATH, settingsRowPath } from './constants';
+import { DOOR_PATH, projectPaymentsPath, settingsRowPath } from './constants';
 
 /**
  * The person's home inside the web shell (`M13-10`, `M01-17`, redesign direction A): the greeting
@@ -44,6 +46,8 @@ export function HomeScreen() {
   const format = useFormat();
   const shell = useShell();
   const today = useHomeToday();
+  const moneyDue = useMoneyDue();
+  const moneyDueShown = moneyDue.shown;
   const router = useRouter();
   const page = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -95,16 +99,31 @@ export function HomeScreen() {
         }
       />
       <div className="hg-home-grid">
-        {readiness === null ? null : (
+        {readiness === null && !moneyDueShown ? null : (
           <div className="hg-home-main">
-            <ProposalReadiness
-              words={readinessWords(t, ready ?? { done: 0, total: 0, complete: false })}
-              done={ready?.done ?? 0}
-              total={ready?.total ?? 0}
-              steps={steps}
-              next={steps.find((step) => step.key === ready?.next) ?? null}
-              loading={readiness.kind !== 'ready'}
-            />
+            {moneyDueShown ? (
+              <MoneyDue
+                read={moneyDue.read}
+                words={moneyDueWords(t)}
+                groups={moneyDue.groups}
+                onShowAll={moneyDue.expand}
+                onOpen={(projectId) => router.push(projectPaymentsPath(projectId))}
+                onRemind={(projectId, partId) =>
+                  router.push(projectPaymentsPath(projectId, partId))
+                }
+                focusAfter={page}
+              />
+            ) : null}
+            {readiness === null ? null : (
+              <ProposalReadiness
+                words={readinessWords(t, ready ?? { done: 0, total: 0, complete: false })}
+                done={ready?.done ?? 0}
+                total={ready?.total ?? 0}
+                steps={steps}
+                next={steps.find((step) => step.key === ready?.next) ?? null}
+                loading={readiness.kind !== 'ready'}
+              />
+            )}
           </div>
         )}
         <InstallerHome />

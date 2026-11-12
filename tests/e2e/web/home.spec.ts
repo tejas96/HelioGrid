@@ -72,7 +72,8 @@ test('a new owner lands on their home inside the shell, with one mark on the ver
   await expectNoSidewaysScroll(page);
   await expectNoSeriousViolations(page);
   // The line over the title, read without its date: today's date is the word a run changes.
-  await expect(page.getByText(todayLine(en.t, ''))).toBeVisible();
+  // From its start: Money due's "Due today · 0" tile holds the same words further in.
+  await expect(page.getByText(new RegExp(`^${todayLine(en.t, '')}`))).toBeVisible();
 
   await passTheOwnersMark(page, en);
   await expect(page.getByText(verbMark?.body ?? '')).toBeHidden();

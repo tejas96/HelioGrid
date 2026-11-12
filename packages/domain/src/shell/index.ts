@@ -37,6 +37,7 @@ export {
   homesOf,
   MODULE_HOME_BLOCKS,
   showsInstallerJob,
+  showsMoneyDue,
   waitingHomeBlocks,
 } from './home';
 export type {
